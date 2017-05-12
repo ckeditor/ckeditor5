@@ -19,7 +19,8 @@ export default class RootElement extends Element {
 	 *
 	 * @param {module:engine/model/document~Document} doc Document that is an owner of this root.
 	 * @param {String} name Node name.
-	 * @param {String} [rootName='main'] Unique root name used to identify this root element by {@link module:engine/model/document~Document}.
+	 * @param {String} [rootName='main'] Unique root name used to identify this root
+	 * element by {@link module:engine/model/document~Document}.
 	 */
 	constructor( doc, name, rootName = 'main' ) {
 		super( name );

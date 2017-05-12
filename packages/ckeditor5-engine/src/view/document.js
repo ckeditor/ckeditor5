@@ -63,7 +63,8 @@ export default class Document {
 
 		/**
 		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} use by
-		 * {@link module:engine/view/document~Document#renderer renderer} and {@link module:engine/view/observer/observer~Observer observers}.
+		 * {@link module:engine/view/document~Document#renderer renderer}
+		 * and {@link module:engine/view/observer/observer~Observer observers}.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/document~Document#domConverter
@@ -182,7 +183,8 @@ export default class Document {
 	 *		document.createRoot( 'body' );
 	 *		document.attachDomRoot( document.querySelector( 'body#editor' ) );
 	 *
-	 * In both cases, {@link module:engine/view/rooteditableelement~RootEditableElement#rootName element name} is always transformed to lower
+	 * In both cases, {@link module:engine/view/rooteditableelement~RootEditableElement#rootName element name} is always
+	 * transformed to lower
 	 * case.
 	 *
 	 * @param {Element|String} domRoot DOM root element or the tag name of view root element if the DOM element will be

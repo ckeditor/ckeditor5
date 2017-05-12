@@ -587,7 +587,10 @@ export default class Renderer {
 				currentSelection: this.selection
 			};
 
-			log.warn( 'renderer-skipped-selection-rendering: The selection was not rendered due to its similarity to the current one.', data );
+			log.warn(
+				'renderer-skipped-selection-rendering: The selection was not rendered due to its similarity to the current one.',
+				data
+			);
 
 			return;
 		}

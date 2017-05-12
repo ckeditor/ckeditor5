@@ -120,7 +120,8 @@ export default class AttributeOperation extends Operation {
 				 * @param {*} value
 				 */
 				throw new CKEditorError(
-					'attribute-operation-wrong-old-value: Changed node has different attribute value than operation\'s old attribute value.',
+					'attribute-operation-wrong-old-value: Changed node has different attribute value than operation\'s ' +
+					'old attribute value.',
 					{ item, key: this.key, value: this.oldValue }
 				);
 			}

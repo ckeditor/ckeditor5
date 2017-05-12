@@ -187,8 +187,8 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * {@link module:engine/view/element~Element#insertChildren Insert} a child node or a list of child nodes at the end of this node and sets
-	 * the parent of these nodes to this element.
+	 * {@link module:engine/view/element~Element#insertChildren Insert} a child node or a list of child nodes at the end of this node
+	 * and sets the parent of these nodes to this element.
 	 *
 	 * @fires module:engine/view/node~Node#change
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} nodes Node or the list of nodes to be inserted.
@@ -730,7 +730,7 @@ function parseInlineStyles( stylesMap, stylesString ) {
 
 					break;
 
-				case ';':
+				case ';':  // eslint-disable-line no-case-declarations
 					// Property value just ended.
 					// Use previously stored property value start to obtain property value.
 					const propertyValue = stylesString.substr( propertyValueStart, i - propertyValueStart );
@@ -780,5 +780,5 @@ function normalize( nodes ) {
 	}
 
 	// Array.from to enable .map() on non-arrays.
-	return Array.from( nodes ).map( node => typeof node == 'string' ? new Text( node ) : node );
+	return Array.from( nodes ).map( node => typeof node == 'string' ? new Text( node ) : node ); // eslint-disable-line no-confusing-arrow
 }

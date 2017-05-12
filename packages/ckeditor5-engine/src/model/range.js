@@ -90,7 +90,8 @@ export default class Range {
 	 * Checks whether this range contains given {@link module:engine/model/position~Position position}.
 	 *
 	 * @param {module:engine/model/position~Position} position Position to check.
-	 * @returns {Boolean} `true` if given {@link module:engine/model/position~Position position} is contained in this range, `false` otherwise.
+	 * @returns {Boolean} `true` if given {@link module:engine/model/position~Position position} is contained in this range,
+	 * `false` otherwise.
 	 */
 	containsPosition( position ) {
 		return position.isAfter( this.start ) && position.isBefore( this.end );
@@ -452,7 +453,11 @@ export default class Range {
 		} else {
 			const sourceRange = Range.createFromPositionAndShift( sourcePosition, howMany );
 
-			if ( deltaType == 'merge' && this.isCollapsed && ( this.start.isEqual( sourceRange.start ) || this.start.isEqual( sourceRange.end ) ) ) {
+			if (
+				deltaType == 'merge' &&
+				this.isCollapsed &&
+				( this.start.isEqual( sourceRange.start ) || this.start.isEqual( sourceRange.end ) )
+			) {
 				// Collapsed range is in merged element.
 				// Without fix, the range would end up in the graveyard, together with removed element.
 				// <p>foo</p><p>[]bar</p> -> <p>foobar</p><p>[]</p> -> <p>foobar</p> -> <p>foo[]bar</p>
@@ -464,8 +469,15 @@ export default class Range {
 				// <p>xx</p>^<w>{<p>a[b</p>}</w><p>c]d</p>   -->   <p>xx</p><p>a[b</p><w></w><p>c]d</p>
 				// ^<p>xx</p><w>{<p>a[b</p>}</w><p>c]d</p>   -->   <p>a[b</p><p>xx</p><w></w><p>c]d</p>  // Note <p>xx</p> inclusion.
 				// <w>{<p>a[b</p>}</w>^<p>c]d</p>            -->   <w></w><p>a[b</p><p>c]d</p>
-				if ( sourceRange.containsPosition( this.start ) && this.containsPosition( sourceRange.end ) && this.end.isAfter( targetPosition ) ) {
-					const start = this.start._getCombined( sourcePosition, targetPosition._getTransformedByDeletion( sourcePosition, howMany ) );
+				if (
+					sourceRange.containsPosition( this.start ) &&
+					this.containsPosition( sourceRange.end ) &&
+					this.end.isAfter( targetPosition )
+				) {
+					const start = this.start._getCombined(
+						sourcePosition,
+						targetPosition._getTransformedByDeletion( sourcePosition, howMany )
+					);
 					const end = this.end._getTransformedByMove( sourcePosition, targetPosition, howMany, false, false );
 
 					return [ new Range( start, end ) ];
@@ -475,9 +487,22 @@ export default class Range {
 				// <p>c[d</p><w>{<p>a]b</p>}</w>^<p>xx</p>   -->   <p>c[d</p><w></w><p>a]b</p><p>xx</p>
 				// <p>c[d</p><w>{<p>a]b</p>}</w><p>xx</p>^   -->   <p>c[d</p><w></w><p>xx</p><p>a]b</p>  // Note <p>xx</p> inclusion.
 				// <p>c[d</p>^<w>{<p>a]b</p>}</w>            -->   <p>c[d</p><p>a]b</p><w></w>
-				if ( sourceRange.containsPosition( this.end ) && this.containsPosition( sourceRange.start ) && this.start.isBefore( targetPosition ) ) {
-					const start = this.start._getTransformedByMove( sourcePosition, targetPosition, howMany, true, false );
-					const end = this.end._getCombined( sourcePosition, targetPosition._getTransformedByDeletion( sourcePosition, howMany ) );
+				if (
+					sourceRange.containsPosition( this.end ) &&
+					this.containsPosition( sourceRange.start ) &&
+					this.start.isBefore( targetPosition )
+				) {
+					const start = this.start._getTransformedByMove(
+						sourcePosition,
+						targetPosition,
+						howMany,
+						true,
+						false
+					);
+					const end = this.end._getCombined(
+						sourcePosition,
+						targetPosition._getTransformedByDeletion( sourcePosition, howMany )
+					);
 
 					return [ new Range( start, end ) ];
 				}
@@ -701,7 +726,7 @@ export default class Range {
 		const ref = ranges[ 0 ];
 
 		// 2. Sort all the ranges so it's easier to process them.
-		ranges.sort( ( a, b ) => a.start.isAfter( b.start ) ? 1 : -1 );
+		ranges.sort( ( a, b ) => a.start.isAfter( b.start ) ? 1 : -1 ); // eslint-disable-line no-confusing-arrow
 
 		// 3. Check at which index the reference range is now.
 		const refIndex = ranges.indexOf( ref );

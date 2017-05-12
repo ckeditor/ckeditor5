@@ -66,14 +66,13 @@ register( 'rename', function( element, newName ) {
 	}
 
 	const delta = new RenameDelta();
-	this.addDelta( delta );
+	this.addDelta( delta ); // eslint-disable-line no-invalid-this
 
-	apply(
-		this, delta,
-		new RenameOperation( Position.createBefore( element ), element.name, newName, this.document.version )
-	);
+	// eslint-disable-next-line no-invalid-this
+	const renameOperation = new RenameOperation( Position.createBefore( element ), element.name, newName, this.document.version );
+	apply( this, delta, renameOperation ); // eslint-disable-line no-invalid-this
 
-	return this;
+	return this; // eslint-disable-line no-invalid-this
 } );
 
 DeltaFactory.register( RenameDelta );

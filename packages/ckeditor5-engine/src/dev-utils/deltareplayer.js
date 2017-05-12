@@ -59,7 +59,7 @@ export default class DeltaReplayer {
 	 * @returns {Promise}
 	 */
 	play( timeInterval = 1000 ) {
-		const deltaReplayer = this;
+		const deltaReplayer = this; // eslint-disable-line consistent-this
 
 		return new Promise( ( res, rej ) => {
 			play();

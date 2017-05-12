@@ -304,7 +304,7 @@ export function parse( data, schema, options = {} ) {
 	}
 
 	// Convert view selection to model selection.
-	let selection;
+	let selection; // eslint-disable-line one-var
 
 	if ( viewSelection ) {
 		const ranges = [];

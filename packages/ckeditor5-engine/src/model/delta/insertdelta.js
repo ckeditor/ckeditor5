@@ -100,15 +100,15 @@ register( 'insert', function( position, nodes ) {
 
 	// If nothing is inserted do not create delta and operation.
 	if ( normalizedNodes.length === 0 ) {
-		return this;
+		return this; // eslint-disable-line no-invalid-this
 	}
 
 	const delta = new InsertDelta();
-	const insert = new InsertOperation( position, normalizedNodes, this.document.version );
+	const insert = new InsertOperation( position, normalizedNodes, this.document.version ); // eslint-disable-line no-invalid-this
 
-	this.addDelta( delta );
+	this.addDelta( delta ); // eslint-disable-line no-invalid-this
 	delta.addOperation( insert );
-	this.document.applyOperation( insert );
+	this.document.applyOperation( insert ); // eslint-disable-line no-invalid-this
 
 	// When element is a DocumentFragment we need to move its markers to Document#markers.
 	if ( nodes instanceof DocumentFragment ) {
@@ -120,11 +120,11 @@ register( 'insert', function( position, nodes ) {
 				markerRange.end._getCombined( rangeRootPosition, position )
 			);
 
-			this.setMarker( markerName, range );
+			this.setMarker( markerName, range ); // eslint-disable-line no-invalid-this
 		}
 	}
 
-	return this;
+	return this; // eslint-disable-line no-invalid-this
 } );
 
 DeltaFactory.register( InsertDelta );

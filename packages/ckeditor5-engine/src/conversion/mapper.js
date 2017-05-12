@@ -439,12 +439,13 @@ export default class Mapper {
 
 	/**
 	 * Fired for each model-to-view position mapping request. The purpose of this event is to enable custom model-to-view position
-	 * mapping. Callbacks added to this event take {@link module:engine/model/position~Position model position} and are expected to calculate
-	 * {@link module:engine/view/position~Position view position}. Calculated view position should be added as `viewPosition` value in
-	 * `data` object that is passed as one of parameters to the event callback.
+	 * mapping. Callbacks added to this event take {@link module:engine/model/position~Position model position} and are expected to
+	 * calculate {@link module:engine/view/position~Position view position}. Calculated view position should be added as `viewPosition`
+	 * value in `data` object that is passed as one of parameters to the event callback.
 	 *
 	 * 		// Assume that "captionedImage" model element is converted to <img> and following <span> elements in view,
-	 * 		// and the model element is bound to <img> element. Force mapping model positions inside "captionedImage" to that <span> element.
+	 * 		// and the model element is bound to <img> element. Force mapping model positions inside "captionedImage" to that
+	 * 		// <span> element.
 	 *		mapper.on( 'modelToViewPosition', ( evt, data ) => {
 	 *			const positionParent = modelPosition.parent;
 	 *
@@ -473,8 +474,9 @@ export default class Mapper {
 	 *		const prevViewElement = data.mapper.toViewElement( prevModelElement );
 	 *		// ... Use `prevViewElement` to find correct `data.viewPosition`.
 	 *
-	 * **Note:** default mapping callback is provided with `low` priority setting and does not cancel the event, so it is possible to attach
-	 * a custom callback after default callback and also use `data.viewPosition` calculated by default callback (for example to fix it).
+	 * **Note:** default mapping callback is provided with `low` priority setting and does not cancel the event, so it is possible to
+	 * attach a custom callback after default callback and also use `data.viewPosition` calculated by default callback
+	 * (for example to fix it).
 	 *
 	 * **Note:** default mapping callback will not fire if `data.viewPosition` is already set.
 	 *
@@ -505,8 +507,9 @@ export default class Mapper {
 	 *			}
 	 *		} );
 	 *
-	 * **Note:** default mapping callback is provided with `low` priority setting and does not cancel the event, so it is possible to attach
-	 * a custom callback after default callback and also use `data.modelPosition` calculated by default callback (for example to fix it).
+	 * **Note:** default mapping callback is provided with `low` priority setting and does not cancel the event, so it is possible to
+	 * attach a custom callback after default callback and also use `data.modelPosition` calculated by default callback
+	 * (for example to fix it).
 	 *
 	 * **Note:** default mapping callback will not fire if `data.modelPosition` is already set.
 	 *

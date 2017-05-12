@@ -104,7 +104,8 @@ export default class RootAttributeOperation extends Operation {
 			 * @param {*} value
 			 */
 			throw new CKEditorError(
-				'rootattribute-operation-wrong-old-value: Changed node has different attribute value than operation\'s old attribute value.',
+				'rootattribute-operation-wrong-old-value: Changed node has different attribute value than operation\'s ' +
+				'old attribute value.',
 				{ root: this.root, key: this.key }
 			);
 		}

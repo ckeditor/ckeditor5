@@ -406,7 +406,9 @@ export default class Selection {
 			 *
 			 * @error model-selection-setFocus-no-ranges
 			 */
-			throw new CKEditorError( 'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.' );
+			throw new CKEditorError(
+				'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.'
+			);
 		}
 
 		const newFocus = Position.createAt( itemOrPosition, offset );

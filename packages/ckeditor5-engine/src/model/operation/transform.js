@@ -430,8 +430,20 @@ const ot = {
 			const difference = joinRanges( rangeA.getDifference( rangeB ) );
 
 			if ( difference ) {
-				difference.start = difference.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !a.isSticky, false );
-				difference.end = difference.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, a.isSticky, false );
+				difference.start = difference.start._getTransformedByMove(
+					b.sourcePosition,
+					b.targetPosition,
+					b.howMany,
+					!a.isSticky,
+					false
+				);
+				difference.end = difference.end._getTransformedByMove(
+					b.sourcePosition,
+					b.targetPosition,
+					b.howMany,
+					a.isSticky,
+					false
+				);
 
 				ranges.push( difference );
 			}
@@ -461,7 +473,11 @@ const ot = {
 			// Also if we wouldn't do that, we would get different results on both sides of transformation (i.e. in
 			// collaborative editing).
 			const aIsInside = rangeB.containsRange( rangeA ) &&
-				( rangeB.containsPosition( a.targetPosition ) || rangeB.start.isEqual( a.targetPosition ) || rangeB.end.isEqual( a.targetPosition ) );
+				(
+					rangeB.containsPosition( a.targetPosition ) ||
+					rangeB.start.isEqual( a.targetPosition ) ||
+					rangeB.end.isEqual( a.targetPosition )
+				);
 
 			if ( common !== null && ( aCompB === 'extension' || ( aCompB === 'same' && isStrong ) || aIsInside ) && !bTargetsToA ) {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
@@ -535,7 +551,7 @@ const ot = {
 
 function transform( a, b, isStrong ) {
 	let group;
-	let algorithm;
+	let algorithm; // eslint-disable-line one-var
 
 	if ( a instanceof InsertOperation ) {
 		group = ot.InsertOperation;

@@ -25,8 +25,7 @@ import NoOperation from '../model/operation/nooperation';
 import RenameOperation from '../model/operation/renameoperation';
 import RootAttributeOperation from '../model/operation/rootattributeoperation';
 import Delta from '../model/delta/delta';
-import AttributeDelta from '../model/delta/attributedelta';
-import { RootAttributeDelta } from '../model/delta/attributedelta';
+import { AttributeDelta, RootAttributeDelta } from '../model/delta/attributedelta';
 import InsertDelta from '../model/delta/insertdelta';
 import MarkerDelta from '../model/delta/markerdelta';
 import MergeDelta from '../model/delta/mergedelta';
@@ -63,7 +62,7 @@ const LOG_SEPARATOR = '-------';
 let enabled = false;
 
 // Logging function used to log debug messages.
-let log = console.log;
+let log = console.log; // eslint-disable-line no-console
 
 /**
  * Enhances model classes with logging methods. Returns a plugin that should be loaded in the editor to
@@ -229,7 +228,7 @@ function enableLoggingTools() {
 	};
 
 	ModelDocumentFragment.prototype.toString = function() {
-		return `documentFragment`;
+		return 'documentFragment';
 	};
 
 	ModelDocumentFragment.prototype.log = function() {

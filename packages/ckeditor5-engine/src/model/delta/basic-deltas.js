@@ -12,6 +12,7 @@
 // which would already have all default deltas registered.
 
 // Import default suite of deltas so a feature have to include only Batch class file.
+/* eslint-disable no-unused-vars */
 import d01 from './attributedelta';
 import d02 from './insertdelta';
 import d03 from './mergedelta';
@@ -22,4 +23,4 @@ import d07 from './splitdelta';
 import d08 from './unwrapdelta';
 import d09 from './weakinsertdelta';
 import d10 from './wrapdelta';
-/* jshint unused: false*/
+/* eslint-enable no-unused-vars */

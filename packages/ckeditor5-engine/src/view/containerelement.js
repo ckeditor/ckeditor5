@@ -78,6 +78,5 @@ export default class ContainerElement extends Element {
 //
 // @returns {Number|null} Block filler offset or `null` if block filler is not needed.
 function getFillerOffset() {
-	/* jshint validthis:true */
-	return this.childCount === 0 ? 0 : null;
+	return this.childCount === 0 ? 0 : null; // eslint-disable-line no-invalid-this
 }

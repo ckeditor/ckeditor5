@@ -138,12 +138,12 @@ function bindWithDocument() {
 	// Operation types handled by LivePosition (these are operations that change model tree structure).
 	const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
 
-	this.listenTo(
-		this.root.document,
+	this.listenTo( // eslint-disable-line no-invalid-this
+		this.root.document, // eslint-disable-line no-invalid-this
 		'change',
 		( event, type, changes ) => {
 			if ( supportedTypes.has( type ) ) {
-				transform.call( this, type, changes.range, changes.sourcePosition );
+				transform.call( this, type, changes.range, changes.sourcePosition ); // eslint-disable-line no-invalid-this
 			}
 		},
 		{ priority: 'high' }
@@ -161,8 +161,7 @@ function bindWithDocument() {
  * @param {module:engine/model/position~Position} [position] Additional position parameter provided by some change events.
  */
 function transform( type, range, position ) {
-	/* jshint validthis: true */
-
+	/* eslint-disable no-invalid-this, no-case-declarations */
 	const howMany = range.end.offset - range.start.offset;
 	let transformed;
 
@@ -199,6 +198,7 @@ function transform( type, range, position ) {
 
 		this.fire( 'change', oldPosition );
 	}
+	/* eslint-enable no-invalid-this, no-case-declarations */
 }
 
 mix( LivePosition, EmitterMixin );

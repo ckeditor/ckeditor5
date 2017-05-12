@@ -238,7 +238,7 @@ export default class Element extends Node {
 	 * @returns {module:engine/model/node~Node}
 	 */
 	getNodeByPath( relativePath ) {
-		let node = this;
+		let node = this; // eslint-disable-line consistent-this
 
 		for ( const index of relativePath ) {
 			node = node.getChild( index );
@@ -311,5 +311,5 @@ function normalize( nodes ) {
 	}
 
 	// Array.from to enable .map() on non-arrays.
-	return Array.from( nodes ).map( node => typeof node == 'string' ? new Text( node ) : node );
+	return Array.from( nodes ).map( node => typeof node == 'string' ? new Text( node ) : node ); // eslint-disable-line no-confusing-arrow
 }

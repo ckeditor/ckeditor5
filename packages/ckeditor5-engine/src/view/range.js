@@ -161,7 +161,8 @@ export default class Range {
 	 * Checks whether this range contains given {@link module:engine/view/position~Position position}.
 	 *
 	 * @param {module:engine/view/position~Position} position Position to check.
-	 * @returns {Boolean} `true` if given {@link module:engine/view/position~Position position} is contained in this range, `false` otherwise.
+	 * @returns {Boolean} `true` if given {@link module:engine/view/position~Position position} is contained in this range,
+	 * `false` otherwise.
 	 */
 	containsPosition( position ) {
 		return position.isAfter( this.start ) && position.isBefore( this.end );

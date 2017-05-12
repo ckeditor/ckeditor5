@@ -1192,7 +1192,7 @@ function rangeSpansOnAllChildren( range ) {
 // |module:engine/view/containerelement~ContainerElement> nodes
 function validateNodesToInsert( nodes ) {
 	for ( const node of nodes ) {
-		if ( !validNodesToInsert.some( ( validNode => node instanceof validNode ) ) ) {
+		if ( !validNodesToInsert.some( ( validNode => node instanceof validNode ) ) ) { // eslint-disable-line no-use-before-define
 			/**
 			 * Inserted nodes should be valid to insert. of {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
 			 * {@link module:engine/view/containerelement~ContainerElement ContainerElement},

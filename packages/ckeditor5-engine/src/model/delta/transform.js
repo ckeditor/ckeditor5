@@ -16,8 +16,8 @@ const specialCases = new Map();
 
 const deltaTransform = {
 	/**
-	 * Transforms given {@link module:engine/model/delta/delta~Delta delta} by another {@link module:engine/model/delta/delta~Delta delta} and
-	 * returns the result of that transformation as an array containing one or more {@link module:engine/model/delta/delta~Delta delta}
+	 * Transforms given {@link module:engine/model/delta/delta~Delta delta} by another {@link module:engine/model/delta/delta~Delta delta}
+	 * and returns the result of that transformation as an array containing one or more {@link module:engine/model/delta/delta~Delta delta}
 	 * instances.
 	 *
 	 * Delta transformations heavily base on {@link module:engine/model/operation/transform~transform operational transformations}. Since
@@ -29,8 +29,8 @@ const deltaTransform = {
 	 * we need to handle transformations in special cases in a custom way.
 	 *
 	 * The function itself looks whether two given delta types have a special case function registered. If so, the deltas are
-	 * transformed using that function. If not, {@link module:engine/model/delta/transform~defaultTransform default transformation algorithm}
-	 * is used.
+	 * transformed using that function. If not,
+	 * {@link module:engine/model/delta/transform~defaultTransform default transformation algorithm} is used.
 	 *
 	 * @param {module:engine/model/delta/delta~Delta} a Delta that will be transformed.
 	 * @param {module:engine/model/delta/delta~Delta} b Delta to transform by.
@@ -206,8 +206,10 @@ const deltaTransform = {
 	 * @param {Boolean} isAMoreImportantThanB Flag indicating whether the deltas from `deltasA` set should be treated as more
 	 * important when resolving conflicts.
 	 * @returns {Object}
-	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasA The first set of deltas transformed by the second set of deltas.
-	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasB The second set of deltas transformed by the first set of deltas.
+	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasA The first set of deltas transformed by the second
+	 * set of deltas.
+	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasB The second set of deltas transformed by the first
+	 * set of deltas.
 	 */
 	transformDeltaSets( deltasA, deltasB, isAMoreImportantThanB ) {
 		const transformedDeltasA = Array.from( deltasA );

@@ -125,13 +125,13 @@ export function move( sourceRange, targetPosition ) {
 			'Trying to move a range that starts and ends in different element.' );
 	}
 
-	const nodes = this.remove( sourceRange );
+	const nodes = this.remove( sourceRange ); // eslint-disable-line no-invalid-this
 
 	// We have to fix `targetPosition` because model changed after nodes from `sourceRange` got removed and
 	// that change might have an impact on `targetPosition`.
 	targetPosition = targetPosition._getTransformedByDeletion( sourceRange.start, sourceRange.end.offset - sourceRange.start.offset );
 
-	return this.insert( targetPosition, nodes );
+	return this.insert( targetPosition, nodes ); // eslint-disable-line no-invalid-this
 }
 
 /**
@@ -174,8 +174,7 @@ export function setAttribute( range, key, value ) {
  * @param {String} key Key of attribute to remove.
  */
 export function removeAttribute( range, key ) {
-	/* jshint validthis:true */
-	this.setAttribute( range, key, null );
+	this.setAttribute( range, key, null ); // eslint-disable-line no-invalid-this
 }
 
 /**

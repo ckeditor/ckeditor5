@@ -53,12 +53,14 @@ export default class WrapDelta extends Delta {
 		return range ? range.end.offset - range.start.offset : 0;
 	}
 
+	/* eslint-disable max-len */
 	/**
 	 * Operation that inserts wrapping element or `null` if there are no operations in the delta.
 	 *
 	 * @protected
 	 * @type {module:engine/model/operation/insertoperation~InsertOperation|module:engine/model/operation/reinsertoperation~ReinsertOperation}
 	 */
+	/* eslint-enable max-len */
 	get _insertOperation() {
 		return this.operations[ 0 ] || null;
 	}
@@ -135,18 +137,23 @@ register( 'wrap', function( range, elementOrString ) {
 	}
 
 	const delta = new WrapDelta();
-	this.addDelta( delta );
+	this.addDelta( delta ); // eslint-disable-line no-invalid-this
 
-	const insert = new InsertOperation( range.end, element, this.document.version );
+	const insert = new InsertOperation( range.end, element, this.document.version ); // eslint-disable-line no-invalid-this
 	delta.addOperation( insert );
-	this.document.applyOperation( insert );
+	this.document.applyOperation( insert ); // eslint-disable-line no-invalid-this
 
 	const targetPosition = Position.createFromParentAndOffset( element, 0 );
-	const move = new MoveOperation( range.start, range.end.offset - range.start.offset, targetPosition, this.document.version );
+	const move = new MoveOperation(
+		range.start,
+		range.end.offset - range.start.offset,
+		targetPosition,
+		this.document.version // eslint-disable-line no-invalid-this
+	);
 	delta.addOperation( move );
-	this.document.applyOperation( move );
+	this.document.applyOperation( move ); // eslint-disable-line no-invalid-this
 
-	return this;
+	return this; // eslint-disable-line no-invalid-this
 } );
 
 DeltaFactory.register( WrapDelta );

@@ -100,7 +100,8 @@ export default class DomConverter {
 
 	/**
 	 * Binds given DOM element that represents fake selection to {@link module:engine/view/selection~Selection view selection}.
-	 * View selection copy is stored and can be retrieved by {@link module:engine/view/domconverter~DomConverter#fakeSelectionToView} method.
+	 * View selection copy is stored and can be retrieved by {@link module:engine/view/domconverter~DomConverter#fakeSelectionToView}
+	 * method.
 	 *
 	 * @param {HTMLElement} domElement
 	 * @param {module:engine/view/selection~Selection} viewSelection
@@ -110,8 +111,8 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Returns {@link module:engine/view/selection~Selection view selection} instance corresponding to given DOM element that represents fake
-	 * selection. Returns `undefined` if binding to given DOM element does not exists.
+	 * Returns {@link module:engine/view/selection~Selection view selection} instance corresponding to given DOM element that represents
+	 * fake selection. Returns `undefined` if binding to given DOM element does not exists.
 	 *
 	 * @param {HTMLElement} domElement
 	 * @returns {module:engine/view/selection~Selection|undefined}
@@ -343,9 +344,8 @@ export default class DomConverter {
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
 	 * @param {Boolean} [options.withChildren=true] If `true`, node's and document fragment's children will be converted too.
 	 * @param {Boolean} [options.keepOriginalCase=false] If `false`, node's tag name will be converter to lower case.
-	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Converted node or document fragment or
-	 * `null`
-	 * if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
+	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Converted node or document fragment
+	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
 		if ( isBlockFiller( domNode, this.blockFiller ) ) {
@@ -542,7 +542,8 @@ export default class DomConverter {
 	 * Gets corresponding view item. This function use
 	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewElement getCorrespondingViewElement}
 	 * for elements, {@link  module:engine/view/domconverter~DomConverter#getCorrespondingViewText getCorrespondingViewText} for text
-	 * nodes and {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment}
+	 * nodes and
+	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment}
 	 * for document fragments.
 	 *
 	 * Note that for the block or inline {@link module:engine/view/filler filler} this method returns `null`.
@@ -1018,7 +1019,11 @@ export default class DomConverter {
 			// If there is common ancestor between the text node and next/prev text node,
 			// and there are no block elements on a way from the text node to that ancestor,
 			// and there are no block elements on a way from next/prev text node to that ancestor...
-			if ( lca && !_hasDomParentOfType( node, this.blockElements, lca ) && !_hasDomParentOfType( touchingNode, this.blockElements, lca ) ) {
+			if (
+				lca &&
+				!_hasDomParentOfType( node, this.blockElements, lca ) &&
+				!_hasDomParentOfType( touchingNode, this.blockElements, lca )
+			) {
 				// Then they are in the same container element.
 				return touchingNode;
 			}

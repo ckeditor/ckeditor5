@@ -139,7 +139,7 @@ export default class MutationObserver extends Observer {
 
 		const domConverter = this.domConverter;
 
-		// Use　map and set for deduplication.
+		// Use map and set for deduplication.
 		const mutatedTexts = new Map();
 		const mutatedElements = new Set();
 

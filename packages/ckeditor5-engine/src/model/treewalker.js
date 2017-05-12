@@ -232,7 +232,7 @@ export default class TreeWalker {
 
 			return formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 		} else if ( node instanceof Text ) {
-			let charactersCount, offsetInTextNode;
+			let charactersCount;
 
 			if ( this.singleCharacters ) {
 				charactersCount = 1;
@@ -246,8 +246,7 @@ export default class TreeWalker {
 				charactersCount = offset - position.offset;
 			}
 
-			offsetInTextNode = position.offset - node.startOffset;
-
+			const offsetInTextNode = position.offset - node.startOffset;
 			const item = new TextProxy( node, offsetInTextNode, charactersCount );
 
 			position.offset += charactersCount;
@@ -314,7 +313,7 @@ export default class TreeWalker {
 				return formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 			}
 		} else if ( node instanceof Text ) {
-			let charactersCount, offsetInTextNode;
+			let charactersCount;
 
 			if ( this.singleCharacters ) {
 				charactersCount = 1;
@@ -328,8 +327,7 @@ export default class TreeWalker {
 				charactersCount = position.offset - offset;
 			}
 
-			offsetInTextNode = position.offset - node.startOffset;
-
+			const offsetInTextNode = position.offset - node.startOffset;
 			const item = new TextProxy( node, offsetInTextNode - charactersCount, charactersCount );
 
 			position.offset -= charactersCount;

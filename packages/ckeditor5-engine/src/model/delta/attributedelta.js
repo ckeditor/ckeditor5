@@ -131,9 +131,9 @@ export class RootAttributeDelta extends Delta {
  * @param {*} value Attribute new value.
  */
 register( 'setAttribute', function( itemOrRange, key, value ) {
-	attribute( this, key, value, itemOrRange );
+	attribute( this, key, value, itemOrRange ); // eslint-disable-line no-invalid-this
 
-	return this;
+	return this; // eslint-disable-line no-invalid-this
 } );
 
 /**
@@ -147,9 +147,9 @@ register( 'setAttribute', function( itemOrRange, key, value ) {
  * @param {String} key Attribute key.
  */
 register( 'removeAttribute', function( itemOrRange, key ) {
-	attribute( this, key, null, itemOrRange );
+	attribute( this, key, null, itemOrRange ); // eslint-disable-line no-invalid-this
 
-	return this;
+	return this; // eslint-disable-line no-invalid-this
 } );
 
 function attribute( batch, key, value, itemOrRange ) {
@@ -204,9 +204,9 @@ function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 	// position of the iterator but the previous one (we need to iterate one more time to get the value after).
 	let position;
 	// Value before the currently position.
-	let attributeValueBefore;
+	let attributeValueBefore; // eslint-disable-line one-var
 	// Value after the currently position.
-	let attributeValueAfter;
+	let attributeValueAfter; // eslint-disable-line one-var
 
 	for ( const value of range ) {
 		attributeValueAfter = value.item.getAttribute( attributeKey );

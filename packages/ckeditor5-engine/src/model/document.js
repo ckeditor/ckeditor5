@@ -8,8 +8,10 @@
  */
 
 // Load all basic deltas and transformations, they register themselves, but they need to be imported somewhere.
-import deltas from './delta/basic-deltas'; // jshint ignore:line
-import transformations from './delta/basic-transformations'; // jshint ignore:line
+/* eslint-disable no-unused-vars */
+import deltas from './delta/basic-deltas';
+import transformations from './delta/basic-transformations';
+/* eslint-enable no-unused-vars */
 
 import Range from './range';
 import Position from './position';
@@ -311,7 +313,7 @@ export default class Document {
 		}
 
 		let backwardWalker;
-		let forwardWalker;
+		let forwardWalker; // eslint-disable-line one-var
 
 		if ( direction == 'both' || direction == 'backward' ) {
 			backwardWalker = new TreeWalker( { startPosition: position, direction: 'backward' } );

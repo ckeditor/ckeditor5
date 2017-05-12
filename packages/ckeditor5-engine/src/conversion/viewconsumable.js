@@ -41,8 +41,8 @@ export default class ViewConsumable {
 		/**
 		 * Map of consumable elements. If {@link module:engine/view/element~Element element} is used as a key,
 		 * {@link module:engine/conversion/viewconsumable~ViewElementConsumables ViewElementConsumables} instance is stored as value.
-		 * For {@link module:engine/view/text~Text text nodes} and {@link module:engine/view/documentfragment~DocumentFragment document fragments}
-		 * boolean value is stored as value.
+		 * For {@link module:engine/view/text~Text text nodes} and
+		 * {@link module:engine/view/documentfragment~DocumentFragment document fragments} boolean value is stored as value.
 		 *
 		 * @protected
 		 * @member {Map.<module:engine/conversion/viewconsumable~ViewElementConsumables|Boolean>}

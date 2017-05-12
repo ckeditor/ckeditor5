@@ -457,7 +457,10 @@ class RangeParser {
 				if ( text ) {
 					if (
 						this.sameSelectionCharacters ||
-						( !this.sameSelectionCharacters && ( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) )
+						(
+							!this.sameSelectionCharacters &&
+							( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN )
+						)
 					) {
 						// Store information about text range delimiter.
 						this._positions.push( {
@@ -480,7 +483,10 @@ class RangeParser {
 						} );
 					}
 				} else {
-					if ( !this.sameSelectionCharacters && item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) {
+					if ( !this.sameSelectionCharacters &&
+						item.bracket == TEXT_RANGE_START_TOKEN ||
+						item.bracket == TEXT_RANGE_END_TOKEN
+					) {
 						throw new Error( `Parse error - text range delimiter '${ item.bracket }' is placed inside empty text node. ` );
 					}
 
