@@ -19,8 +19,6 @@ import ViewTreeWalker from './treewalker';
 import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import getCommonAncestor from '@ckeditor/ckeditor5-utils/src/dom/getcommonancestor';
@@ -743,12 +741,9 @@ export default class DomConverter {
 			domEditable.focus();
 
 			// https://github.com/ckeditor/ckeditor5-engine/issues/951
-			if ( env.webkit ) {
-				domEditable.scrollLeft = scrollLeft;
-				domEditable.scrollTop = scrollTop;
-
-				global.window.scrollTo( scrollX, scrollY );
-			}
+			domEditable.scrollLeft = scrollLeft;
+			domEditable.scrollTop = scrollTop;
+			global.window.scrollTo( scrollX, scrollY );
 		}
 	}
 
