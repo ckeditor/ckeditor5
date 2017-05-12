@@ -107,6 +107,20 @@ describe( 'Editor', () => {
 
 			expect( editor.config.get( 'bar' ) ).to.equal( 'foo' );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5-core/issues/50
+		it( 'should attach #dataReady listener to refresh state of the commands', () => {
+			const editor = new Editor();
+			const command = {
+				refreshState: sinon.spy()
+			};
+
+			editor.commands.set( 'foo', command );
+			editor.commands.set( 'bar', command );
+			editor.fire( 'dataReady' );
+
+			sinon.assert.calledTwice( command.refreshState );
+		} );
 	} );
 
 	describe( 'plugins', () => {

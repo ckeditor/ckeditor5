@@ -89,6 +89,14 @@ export default class Editor {
 		 */
 		this.data = new DataController( this.document );
 
+		// Refresh the state of all editor commands as soon as data is ready.
+		// https://github.com/ckeditor/ckeditor5-core/issues/50
+		this.listenTo( this, 'dataReady', () => {
+			for ( const command of this.commands.values() ) {
+				command.refreshState();
+			}
+		} );
+
 		/**
 		 * Instance of the {@link module:engine/controller/editingcontroller~EditingController editing controller}.
 		 *
