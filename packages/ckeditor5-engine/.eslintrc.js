@@ -6,11 +6,5 @@
 'use strict';
 
 module.exports = {
-	extends: 'ckeditor5',
-	env: {
-		node: true
-	},
-	rules: {
-		'no-console': 'off'
-	}
+	extends: 'ckeditor5'
 };
