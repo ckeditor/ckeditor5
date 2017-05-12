@@ -40,7 +40,9 @@
     "beforeOpeningRoundBrace": true
   },
   "disallowSpacesInCallExpression": true,
-  "disallowMultipleVarDecl": "exceptUndefined",
+  "disallowMultipleVarDecl": {
+    "allExcept": [ "undefined" ]
+  },
   "requireBlocksOnNewline": true,
   "disallowPaddingNewlinesInBlocks": true,
   "requirePaddingNewlinesBeforeKeywords": [
