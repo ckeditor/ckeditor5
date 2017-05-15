@@ -5,6 +5,10 @@
 
 import Autoformat from '../src/autoformat';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ListEngine from '@ckeditor/ckeditor5-list/src/listengine';
+import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
+import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
+import ItalicEngine from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -17,7 +21,7 @@ describe( 'Autoformat', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			plugins: [ Enter, Paragraph, Autoformat ]
+			plugins: [ Enter, Paragraph, Autoformat, ListEngine, HeadingEngine, BoldEngine, ItalicEngine ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -139,6 +143,82 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text>[] baz</paragraph>' );
+		} );
+	} );
+
+	describe( 'without commands', () => {
+		beforeEach( () => {
+			return VirtualTestEditor.create( {
+				plugins: [ Enter, Paragraph, Autoformat ]
+			} )
+				.then( newEditor => {
+					editor = newEditor;
+					doc = editor.document;
+					batch = doc.batch();
+				} );
+		} );
+
+		it( 'should not replace asterisk with bulleted list item', () => {
+			setData( doc, '<paragraph>*[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>* []</paragraph>' );
+		} );
+
+		it( 'should not replace minus character with bulleted list item', () => {
+			setData( doc, '<paragraph>-[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>- []</paragraph>' );
+		} );
+
+		it( 'should not replace digit with numbered list item', () => {
+			setData( doc, '<paragraph>1.[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>1. []</paragraph>' );
+		} );
+
+		it( 'should not replace hash character with heading', () => {
+			setData( doc, '<paragraph>#[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph># []</paragraph>' );
+		} );
+
+		it( 'should not replace two hash characters with heading level 2', () => {
+			setData( doc, '<paragraph>##[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>## []</paragraph>' );
+		} );
+
+		it( 'should not replace both `**` with bold', () => {
+			setData( doc, '<paragraph>**foobar*[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), '*' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+		} );
+
+		it( 'should not replace both `*` with italic', () => {
+			setData( doc, '<paragraph>*foobar[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), '*' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
 		} );
 	} );
 } );

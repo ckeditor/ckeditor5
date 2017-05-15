@@ -10,10 +10,6 @@
 import BlockAutoformatEngine from './blockautoformatengine';
 import InlineAutoformatEngine from './inlineautoformatengine';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
-import ListEngine from '@ckeditor/ckeditor5-list/src/listengine';
-import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
-import ItalicEngine from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
 
 /**
  * Includes a set of predefined autoformatting actions.
@@ -47,16 +43,13 @@ import ItalicEngine from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
  * * `**foo bar**` or `__foo bar__` – will bold the text,
  * * `*foo bar*` or `_foo bar_` – will italicize the text,
  *
+ * NOTE: Remember to add proper features to editor configuration. Autoformatting will be enabled only for those
+ * commands that are included in current configuration. For example: `bold` autoformatting will not work if there is no
+ * `bold` command registered in editor.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class Autoformat extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ HeadingEngine, ListEngine, BoldEngine, ItalicEngine ];
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -67,14 +60,14 @@ export default class Autoformat extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	afterInit() {
 		this._addListAutoformats();
+		this._addBasicStylesAutoformats();
 		this._addHeadingAutoformats();
-		this._addInlineAutoformats();
 	}
 
 	/**
-	 * Adds autoformatting related to ListEngine commands.
+	 * Adds autoformatting related to `bulletedList` and `numberedList` commands.
 	 *
 	 * When typed:
 	 * - `* ` or `- ` - paragraph will be changed to a bulleted list,
@@ -83,27 +76,19 @@ export default class Autoformat extends Plugin {
 	 * @private
 	 */
 	_addListAutoformats() {
-		new BlockAutoformatEngine( this.editor, /^[\*\-]\s$/, 'bulletedList' );
-		new BlockAutoformatEngine( this.editor, /^\d+[\.|)]?\s$/, 'numberedList' );
+		const commands = this.editor.commands;
+
+		if ( commands.has( 'bulletedList' ) ) {
+			new BlockAutoformatEngine( this.editor, /^[\*\-]\s$/, 'bulletedList' );
+		}
+
+		if ( commands.has( 'numberedList' ) ) {
+			new BlockAutoformatEngine( this.editor, /^\d+[\.|)]?\s$/, 'numberedList' );
+		}
 	}
 
 	/**
-	 * Adds autoformatting related to HeadingEngine commands.
-	 * When typed `# ` or `## ` or `### ` paragraph will be changed to a corresponding heading level.
-	 *
-	 * @private
-	 */
-	_addHeadingAutoformats() {
-		new BlockAutoformatEngine( this.editor, /^(#{1,3})\s$/, ( context ) => {
-			const { batch, match } = context;
-			const headingLevel = match[ 1 ].length;
-
-			this.editor.execute( `heading${ headingLevel }`, { batch } );
-		} );
-	}
-
-	/**
-	 * Adds inline autoformatting capabilities to the editor.
+	 *Adds autoformatting related to `bold` and `italic` commands.
 	 *
 	 * When typed:
 	 * - `**foobar**`: `**` characters are removed, and `foobar` is set to bold,
@@ -113,13 +98,51 @@ export default class Autoformat extends Plugin {
 	 *
 	 * @private
 	 */
-	_addInlineAutoformats() {
-		new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+)(\*\*)$/g, 'bold' );
-		new InlineAutoformatEngine( this.editor, /(__)([^_]+)(__)$/g, 'bold' );
+	_addBasicStylesAutoformats() {
+		const commands = this.editor.commands;
 
-		// The italic autoformatter cannot be triggered by the bold markers, so we need to check the
-		// text before the pattern (e.g. `(?:^|[^\*])`).
-		new InlineAutoformatEngine( this.editor, /(?:^|[^\*])(\*)([^\*_]+)(\*)$/g, 'italic' );
-		new InlineAutoformatEngine( this.editor, /(?:^|[^_])(_)([^_]+)(_)$/g, 'italic' );
+		if ( commands.has( 'bold' ) ) {
+			new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+)(\*\*)$/g, 'bold' );
+			new InlineAutoformatEngine( this.editor, /(__)([^_]+)(__)$/g, 'bold' );
+		}
+
+		if ( commands.has( 'italic' ) ) {
+			// The italic autoformatter cannot be triggered by the bold markers, so we need to check the
+			// text before the pattern (e.g. `(?:^|[^\*])`).
+			new InlineAutoformatEngine( this.editor, /(?:^|[^\*])(\*)([^\*_]+)(\*)$/g, 'italic' );
+			new InlineAutoformatEngine( this.editor, /(?:^|[^_])(_)([^_]+)(_)$/g, 'italic' );
+		}
+	}
+
+	/**
+	 * Adds autoformatting related to heading commands.
+	 * It is using number at the end of the command name to associate it with proper trigger:
+	 * * `heading1` will be executed when typing `#`,
+	 * * `heading2` will be executed when typing `##`,
+	 * * `heading3` will be executed when typing `###`.
+	 *
+	 * @private
+	 */
+	_addHeadingAutoformats() {
+		const commands = this.editor.commands;
+		const options = this.editor.config.get( 'heading.options' );
+
+		if ( options ) {
+			for ( let option of options ) {
+				const commandName = option.modelElement;
+				let match;
+
+				if ( commands.has( commandName ) && ( match = commandName.match( /\d+$/ ) ) ) {
+					const level = match[ 0 ];
+					const regExp = new RegExp( `^(#{${ level }})\\s$` );
+
+					new BlockAutoformatEngine( this.editor, regExp, ( context ) => {
+						const { batch } = context;
+
+						this.editor.execute( commandName, { batch } );
+					} );
+				}
+			}
+		}
 	}
 }
