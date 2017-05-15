@@ -229,13 +229,22 @@ export default class Link extends Plugin {
 	 * @return {Promise} A promise resolved when the {@link #formView} {@link module:ui/view~View#init} is done.
 	 */
 	_showPanel( focusInput ) {
-		const editing = this.editor.editing;
+		const editor = this.editor;
+		const command = editor.commands.get( 'link' );
+		const editing = editor.editing;
 		const showViewDocument = editing.view;
 		const showIsCollapsed = showViewDocument.selection.isCollapsed;
 		const showSelectedLink = this._getSelectedLinkElement();
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/53
 		this.formView.unlinkButtonView.isVisible = !!showSelectedLink;
+
+		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
+		// the command. If the user typed in the input, then canceled the balloon (`urlInputView#value` stays
+		// unaltered) and re-opened it without changing the value of the link command (e.g. because they
+		// clicked the same link), they would see the old value instead of the actual value of the command.
+		// https://github.com/ckeditor/ckeditor5-link/issues/78
+		this.formView.urlInputView.inputView.element.value = command.value;
 
 		this.listenTo( showViewDocument, 'render', () => {
 			const renderSelectedLink = this._getSelectedLinkElement();

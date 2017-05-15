@@ -214,6 +214,19 @@ describe( 'Link', () => {
 				} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-link/issues/78
+		it( 'should make sure the URL input in the #formView always stays in sync with the value of the command', () => {
+			setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+
+			// Mock some leftover value **in DOM**, e.g. after previous editing.
+			formView.urlInputView.inputView.element.value = 'leftover';
+
+			return linkFeature._showPanel()
+				.then( () => {
+					expect( formView.urlInputView.inputView.element.value ).to.equal( 'url' );
+				} );
+		} );
+
 		describe( 'when the document is rendering', () => {
 			it( 'should not duplicate #render listeners', () => {
 				const viewDocument = editor.editing.view;
