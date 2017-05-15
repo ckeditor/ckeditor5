@@ -43,9 +43,20 @@ export default class ToggleAttributeCommand extends Command {
 		 */
 		this.set( 'value', false );
 
-		this.listenTo( this.editor.document.selection, 'change:attribute', () => {
-			this.value = this.editor.document.selection.hasAttribute( this.attributeKey );
+		// Refresh the value and state of the command on #changesDone to make sure that
+		// the correct state of the command is set initially.
+		// https://github.com/ckeditor/ckeditor5-core/issues/50
+		this.listenTo( editor.document, 'changesDone', () => {
+			this.refreshValue();
+			this.refreshState();
 		} );
+	}
+
+	/**
+	 * Updates command's {@link #value value} based on current selection.
+	 */
+	refreshValue() {
+		this.value = this.editor.document.selection.hasAttribute( this.attributeKey );
 	}
 
 	/**

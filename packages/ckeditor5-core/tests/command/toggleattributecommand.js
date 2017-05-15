@@ -44,12 +44,36 @@ describe( 'ToggleAttributeCommand', () => {
 	} );
 
 	describe( 'value', () => {
+		// https://github.com/ckeditor/ckeditor5-core/issues/50
+		it( 'should be updated on document#changesDone', () => {
+			const spy = sinon.spy( command, 'refreshValue' );
+
+			modelDoc.fire( 'changesDone' );
+			sinon.assert.calledOnce( spy );
+		} );
+
 		it( 'should be set to true or false basing on selection attribute', () => {
-			modelDoc.selection.setAttribute( attrKey, true );
+			modelDoc.enqueueChanges( () => {
+				modelDoc.selection.setAttribute( attrKey, true );
+			} );
+
 			expect( command.value ).to.be.true;
 
-			modelDoc.selection.removeAttribute( attrKey );
+			modelDoc.enqueueChanges( () => {
+				modelDoc.selection.removeAttribute( attrKey );
+			} );
+
 			expect( command.value ).to.be.false;
+		} );
+	} );
+
+	describe( 'state', () => {
+		// https://github.com/ckeditor/ckeditor5-core/issues/50
+		it( 'should be updated on document#changesDone', () => {
+			const spy = sinon.spy( command, 'refreshState' );
+
+			modelDoc.fire( 'changesDone' );
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
@@ -119,11 +143,13 @@ describe( 'ToggleAttributeCommand', () => {
 
 			// It should not save that bold was executed at position ( root, [ 0, 1 ] ).
 
-			// Simulate clicking right arrow key by changing selection ranges.
-			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+			modelDoc.enqueueChanges( () => {
+				// Simulate clicking right arrow key by changing selection ranges.
+				modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
 
-			// Get back to previous selection.
-			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
+				// Get back to previous selection.
+				modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
+			} );
 
 			expect( command.value ).to.be.false;
 		} );
@@ -140,12 +166,16 @@ describe( 'ToggleAttributeCommand', () => {
 
 			// Attribute should be stored.
 			// Simulate clicking somewhere else in the editor.
-			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+			modelDoc.enqueueChanges( () => {
+				modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+			} );
 
 			expect( command.value ).to.be.false;
 
 			// Go back to where attribute was stored.
-			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
+			modelDoc.enqueueChanges( () => {
+				modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
+			} );
 
 			// Attribute should be restored.
 			expect( command.value ).to.be.true;
