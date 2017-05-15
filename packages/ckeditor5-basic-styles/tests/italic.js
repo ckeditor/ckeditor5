@@ -65,13 +65,13 @@ describe( 'Italic', () => {
 
 		expect( italicView.isOn ).to.be.false;
 
-		expect( italicView.isEnabled ).to.be.true;
+		expect( italicView.isEnabled ).to.be.false;
 
 		command.value = true;
 		expect( italicView.isOn ).to.be.true;
 
-		command.isEnabled = false;
-		expect( italicView.isEnabled ).to.be.false;
+		command.isEnabled = true;
+		expect( italicView.isEnabled ).to.be.true;
 	} );
 
 	it( 'should set keystroke in the model', () => {
