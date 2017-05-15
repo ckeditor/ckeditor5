@@ -220,5 +220,28 @@ describe( 'Autoformat', () => {
 
 			expect( getData( doc ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
 		} );
+
+		it( 'should use only configured headings', () => {
+			return VirtualTestEditor.create( {
+				plugins: [ Enter, Paragraph, Autoformat, ListEngine, HeadingEngine ],
+				heading: {
+					options: [
+						{ modelElement: 'paragraph' },
+						{ modelElement: 'heading1', viewElement: 'h2' }
+					]
+				}
+			} )
+			.then( editor => {
+				doc = editor.document;
+				batch = doc.batch();
+
+				setData( doc, '<paragraph>##[]</paragraph>' );
+				doc.enqueueChanges( () => {
+					batch.insert( doc.selection.getFirstPosition(), ' ' );
+				} );
+
+				expect( getData( doc ) ).to.equal( '<paragraph>## []</paragraph>' );
+			} );
+		} );
 	} );
 } );
