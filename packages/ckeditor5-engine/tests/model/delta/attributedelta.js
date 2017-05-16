@@ -11,6 +11,7 @@ import Position from '../../../src/model/position';
 import Element from '../../../src/model/element';
 import { default as AttributeDelta, RootAttributeDelta } from '../../../src/model/delta/attributedelta';
 import AttributeOperation from '../../../src/model/operation/attributeoperation';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'Batch', () => {
 	let batch, doc, root;
@@ -504,6 +505,12 @@ describe( 'AttributeDelta', () => {
 
 	it( 'should provide proper className', () => {
 		expect( AttributeDelta.className ).to.equal( 'engine.model.delta.AttributeDelta' );
+	} );
+
+	it( 'should not have _range property when converted to JSON', () => {
+		const json = jsonParseStringify( delta );
+
+		expect( json ).not.to.have.property( '_range' );
 	} );
 } );
 

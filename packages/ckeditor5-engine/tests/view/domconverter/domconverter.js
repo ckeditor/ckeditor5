@@ -10,6 +10,7 @@ import ViewEditable from '../../../src/view/editableelement';
 import ViewDocument from '../../../src/view/document';
 import { BR_FILLER, NBSP_FILLER } from '../../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 testUtils.createSinonSandbox();
 
@@ -65,6 +66,32 @@ describe( 'DomConverter', () => {
 			converter.focus( viewEditable );
 
 			expect( focusSpy.calledOnce ).to.be.true;
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-engine/issues/951
+		it( 'should actively prevent window scroll in WebKit', () => {
+			const scrollToSpy = testUtils.sinon.stub( global.window, 'scrollTo' );
+			const scrollLeftSpy = sinon.spy();
+			const scrollTopSpy = sinon.spy();
+
+			Object.defineProperties( domEditable, {
+				scrollLeft: {
+					get: () => 20,
+					set: scrollLeftSpy
+				},
+				scrollTop: {
+					get: () => 200,
+					set: scrollTopSpy
+				}
+			} );
+
+			global.window.scrollX = 10;
+			global.window.scrollY = 100;
+
+			converter.focus( viewEditable );
+			sinon.assert.calledWithExactly( scrollToSpy, 10, 100 );
+			sinon.assert.calledWithExactly( scrollLeftSpy, 20 );
+			sinon.assert.calledWithExactly( scrollTopSpy, 200 );
 		} );
 	} );
 

@@ -62,7 +62,7 @@ const LOG_SEPARATOR = '-------';
 let enabled = false;
 
 // Logging function used to log debug messages.
-let log = console.log;
+let logger = console;
 
 /**
  * Enhances model classes with logging methods. Returns a plugin that should be loaded in the editor to
@@ -100,13 +100,12 @@ let log = console.log;
  * All those methods take one parameter, which is a version of {@link module:engine/model/document~Document model document}
  * for which model or view document state should be logged.
  *
- * @param {Function} [logger] Function used to log messages. By default messages are logged to console.
+ * @param {Object} [_logger] Object with functions used to log messages and errors. By default messages are logged to console.
+ * If specified, it is expected to have `log()` and `error()` methods.
  * @returns {module:engine/dev-utils/enableenginedebug~DebugPlugin} Plugin to be loaded in the editor.
  */
-export default function enableEngineDebug( logger ) {
-	if ( logger ) {
-		log = logger;
-	}
+export default function enableEngineDebug( _logger = console ) {
+	logger = _logger;
 
 	if ( !enabled ) {
 		enabled = true;
@@ -125,7 +124,7 @@ function enableLoggingTools() {
 	};
 
 	ModelPosition.prototype.log = function() {
-		log( 'ModelPosition: ' + this );
+		logger.log( 'ModelPosition: ' + this );
 	};
 
 	ModelRange.prototype.toString = function() {
@@ -133,7 +132,7 @@ function enableLoggingTools() {
 	};
 
 	ModelRange.prototype.log = function() {
-		log( 'ModelRange: ' + this );
+		logger.log( 'ModelRange: ' + this );
 	};
 
 	ModelText.prototype.toString = function() {
@@ -141,11 +140,11 @@ function enableLoggingTools() {
 	};
 
 	ModelText.prototype.logExtended = function() {
-		log( `ModelText: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
+		logger.log( `ModelText: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
 	};
 
 	ModelText.prototype.log = function() {
-		log( 'ModelText: ' + this );
+		logger.log( 'ModelText: ' + this );
 	};
 
 	ModelTextProxy.prototype.toString = function() {
@@ -153,11 +152,11 @@ function enableLoggingTools() {
 	};
 
 	ModelTextProxy.prototype.logExtended = function() {
-		log( `ModelTextProxy: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
+		logger.log( `ModelTextProxy: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
 	};
 
 	ModelTextProxy.prototype.log = function() {
-		log( 'ModelTextProxy: ' + this );
+		logger.log( 'ModelTextProxy: ' + this );
 	};
 
 	ModelElement.prototype.toString = function() {
@@ -165,18 +164,18 @@ function enableLoggingTools() {
 	};
 
 	ModelElement.prototype.log = function() {
-		log( 'ModelElement: ' + this );
+		logger.log( 'ModelElement: ' + this );
 	};
 
 	ModelElement.prototype.logExtended = function() {
-		log( `ModelElement: ${ this }, ${ this.childCount } children, attrs: ${ mapString( this.getAttributes() ) }` );
+		logger.log( `ModelElement: ${ this }, ${ this.childCount } children, attrs: ${ mapString( this.getAttributes() ) }` );
 	};
 
 	ModelElement.prototype.logAll = function() {
-		log( '--------------------' );
+		logger.log( '--------------------' );
 
 		this.logExtended();
-		log( 'List of children:' );
+		logger.log( 'List of children:' );
 
 		for ( const child of this.getChildren() ) {
 			child.log();
@@ -216,7 +215,7 @@ function enableLoggingTools() {
 	};
 
 	ModelElement.prototype.logTree = function() {
-		log( this.printTree() );
+		logger.log( this.printTree() );
 	};
 
 	ModelRootElement.prototype.toString = function() {
@@ -224,7 +223,7 @@ function enableLoggingTools() {
 	};
 
 	ModelRootElement.prototype.log = function() {
-		log( 'ModelRootElement: ' + this );
+		logger.log( 'ModelRootElement: ' + this );
 	};
 
 	ModelDocumentFragment.prototype.toString = function() {
@@ -232,7 +231,7 @@ function enableLoggingTools() {
 	};
 
 	ModelDocumentFragment.prototype.log = function() {
-		log( 'ModelDocumentFragment: ' + this );
+		logger.log( 'ModelDocumentFragment: ' + this );
 	};
 
 	ModelDocumentFragment.prototype.printTree = function() {
@@ -262,11 +261,11 @@ function enableLoggingTools() {
 	};
 
 	ModelDocumentFragment.prototype.logTree = function() {
-		log( this.printTree() );
+		logger.log( this.printTree() );
 	};
 
 	Operation.prototype.log = function() {
-		log( this.toString() );
+		logger.log( this.toString() );
 	};
 
 	AttributeOperation.prototype.toString = function() {
@@ -306,11 +305,11 @@ function enableLoggingTools() {
 	};
 
 	Delta.prototype.log = function() {
-		log( this.toString() );
+		logger.log( this.toString() );
 	};
 
 	Delta.prototype.logAll = function() {
-		log( '--------------------' );
+		logger.log( '--------------------' );
 
 		this.log();
 
@@ -336,7 +335,17 @@ function enableLoggingTools() {
 	const _deltaTransformTransform = deltaTransform.transform;
 
 	deltaTransform.transform = function( a, b, isAMoreImportantThanB ) {
-		const results = _deltaTransformTransform( a, b, isAMoreImportantThanB );
+		let results;
+
+		try {
+			results = _deltaTransformTransform( a, b, isAMoreImportantThanB );
+		} catch ( e ) {
+			logger.error( 'Error during delta transformation!' );
+			logger.error( a.toString() + ( isAMoreImportantThanB ? ' (important)' : '' ) );
+			logger.error( b.toString() + ( isAMoreImportantThanB ? '' : ' (important)' ) );
+
+			throw e;
+		}
 
 		for ( let i = 0; i < results.length; i++ ) {
 			results[ i ]._saveHistory( {
@@ -424,11 +433,11 @@ function enableLoggingTools() {
 	};
 
 	ViewText.prototype.logExtended = function() {
-		log( 'ViewText: ' + this );
+		logger.log( 'ViewText: ' + this );
 	};
 
 	ViewText.prototype.log = function() {
-		log( 'ViewText: ' + this );
+		logger.log( 'ViewText: ' + this );
 	};
 
 	ViewTextProxy.prototype.toString = function() {
@@ -436,11 +445,11 @@ function enableLoggingTools() {
 	};
 
 	ViewTextProxy.prototype.logExtended = function() {
-		log( 'ViewTextProxy: ' + this );
+		logger.log( 'ViewTextProxy: ' + this );
 	};
 
 	ViewTextProxy.prototype.log = function() {
-		log( 'ViewTextProxy: ' + this );
+		logger.log( 'ViewTextProxy: ' + this );
 	};
 
 	ViewElement.prototype.printTree = function( level = 0 ) {
@@ -466,7 +475,7 @@ function enableLoggingTools() {
 	};
 
 	ViewElement.prototype.logTree = function() {
-		log( this.printTree() );
+		logger.log( this.printTree() );
 	};
 
 	ViewDocumentFragment.prototype.printTree = function() {
@@ -486,7 +495,7 @@ function enableLoggingTools() {
 	};
 
 	ViewDocumentFragment.prototype.logTree = function() {
-		log( this.printTree() );
+		logger.log( this.printTree() );
 	};
 }
 
@@ -511,7 +520,7 @@ function enableReplayerTools() {
 			return '';
 		}
 
-		const appliedDeltas = this._appliedDeltas.concat( this._lastDelta.toJSON() );
+		const appliedDeltas = this._appliedDeltas.concat( this._lastDelta );
 
 		return appliedDeltas.map( JSON.stringify ).join( LOG_SEPARATOR );
 	};
@@ -525,7 +534,7 @@ function enableDocumentTools() {
 	const _modelDocumentApplyOperation = ModelDocument.prototype.applyOperation;
 
 	ModelDocument.prototype.applyOperation = function( operation ) {
-		log( 'Applying ' + operation );
+		logger.log( 'Applying ' + operation );
 
 		if ( !this._operationLogs ) {
 			this._operationLogs = [];
@@ -564,12 +573,12 @@ function enableDocumentTools() {
 	};
 
 	function logDocument( document, version ) {
-		log( '--------------------' );
+		logger.log( '--------------------' );
 
 		if ( document[ treeDump ][ version ] ) {
-			log( document[ treeDump ][ version ] );
+			logger.log( document[ treeDump ][ version ] );
 		} else {
-			log( 'Tree log unavailable for given version: ' + version );
+			logger.log( 'Tree log unavailable for given version: ' + version );
 		}
 	}
 }
