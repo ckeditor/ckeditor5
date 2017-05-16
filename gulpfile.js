@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* eslint-env node */
+
 'use strict';
 
 const path = require( 'path' );
@@ -10,10 +12,10 @@ const gulp = require( 'gulp' );
 
 // Lint tasks. ---------------------------------------------------------------
 
-const ckeditor5Lint = require( '@ckeditor/ckeditor5-dev-lint' )();
+const ckeditor5Lint = require( '@ckeditor/ckeditor5-dev-lint' );
 
-gulp.task( 'lint', ckeditor5Lint.lint );
-gulp.task( 'lint-staged', ckeditor5Lint.lintStaged );
+gulp.task( 'lint', () => ckeditor5Lint.lint() );
+gulp.task( 'lint-staged', () => ckeditor5Lint.lintStaged() );
 gulp.task( 'pre-commit', [ 'lint-staged' ] );
 
 // Tests. ---------------------------------------------------------------------
@@ -42,7 +44,8 @@ gulp.task( 'docs', () => {
 	const umberto = require( 'umberto' );
 	const ckeditor5Docs = require( '@ckeditor/ckeditor5-dev-docs' );
 
-	return ckeditor5Docs.build( {
+	return ckeditor5Docs
+		.build( {
 			readmePath: path.join( process.cwd(), 'README.md' ),
 			sourceFiles: [
 				process.cwd() + '/packages/ckeditor5-*/src/**/*.@(js|jsdoc)',
@@ -106,8 +109,8 @@ function assertIsInstalled( packageName ) {
 		require( packageName + '/package.json' );
 	} catch ( err ) {
 		console.error( `Error: Cannot find package '${ packageName }'.\n` );
-		console.error( `You need to install optional dependencies.` );
-		console.error( `Run: 'npm run install-optional-dependencies'.` );
+		console.error( 'You need to install optional dependencies.' );
+		console.error( 'Run: \'npm run install-optional-dependencies\'.' );
 
 		process.exit( 1 );
 	}
