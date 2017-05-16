@@ -64,6 +64,7 @@ export default class Autoformat extends Plugin {
 		this._addListAutoformats();
 		this._addBasicStylesAutoformats();
 		this._addHeadingAutoformats();
+		this._addBlockQuoteAutoformats();
 	}
 
 	/**
@@ -143,6 +144,12 @@ export default class Autoformat extends Plugin {
 					} );
 				}
 			}
+		}
+	}
+
+	_addBlockQuoteAutoformats() {
+		if ( this.editor.commands.has( 'blockQuote' ) ) {
+			new BlockAutoformatEngine( this.editor, /^>\s$/, 'blockQuote' );
 		}
 	}
 }

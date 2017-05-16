@@ -9,6 +9,7 @@ import ListEngine from '@ckeditor/ckeditor5-list/src/listengine';
 import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
 import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
 import ItalicEngine from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
+import BlockQuoteEngine from '@ckeditor/ckeditor5-block-quote/src/blockquoteengine';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -21,7 +22,7 @@ describe( 'Autoformat', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			plugins: [ Enter, Paragraph, Autoformat, ListEngine, HeadingEngine, BoldEngine, ItalicEngine ]
+			plugins: [ Enter, Paragraph, Autoformat, ListEngine, HeadingEngine, BoldEngine, ItalicEngine, BlockQuoteEngine ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -105,6 +106,26 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( doc ) ).to.equal( '<heading1># []</heading1>' );
+		} );
+	} );
+
+	describe( 'Block quote', () => {
+		it( 'should replace greater-than character with heading', () => {
+			setData( doc, '<paragraph>>[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<blockQuote><paragraph>[]</paragraph></blockQuote>' );
+		} );
+
+		it( 'should not replace greater-than character when inside heading', () => {
+			setData( doc, '<heading1>>[]</heading1>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<heading1>> []</heading1>' );
 		} );
 	} );
 
@@ -219,6 +240,15 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+		} );
+
+		it( 'should not replace `>` with block quote', () => {
+			setData( doc, '<paragraph>>[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>> []</paragraph>' );
 		} );
 
 		it( 'should use only configured headings', () => {
