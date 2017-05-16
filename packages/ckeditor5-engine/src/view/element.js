@@ -730,7 +730,8 @@ function parseInlineStyles( stylesMap, stylesString ) {
 
 					break;
 
-				case ';':  // eslint-disable-line no-case-declarations
+				// eslint-disable-next-line no-case-declarations
+				case ';':
 					// Property value just ended.
 					// Use previously stored property value start to obtain property value.
 					const propertyValue = stylesString.substr( propertyValueStart, i - propertyValueStart );

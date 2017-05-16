@@ -278,9 +278,7 @@ export function parse( data, schema, options = {} ) {
 	} );
 
 	// Retrieve DocumentFragment and Selection from parsed view.
-	let viewDocumentFragment, viewSelection,
-	// Convert view selection to model selection.
-		selection;
+	let viewDocumentFragment, viewSelection, selection;
 
 	if ( parsedResult.view && parsedResult.selection ) {
 		viewDocumentFragment = parsedResult.view;
@@ -304,6 +302,8 @@ export function parse( data, schema, options = {} ) {
 	if ( model.is( 'documentFragment' ) && model.childCount == 1 ) {
 		model = model.getChild( 0 );
 	}
+
+	// Convert view selection to model selection.
 
 	if ( viewSelection ) {
 		const ranges = [];
