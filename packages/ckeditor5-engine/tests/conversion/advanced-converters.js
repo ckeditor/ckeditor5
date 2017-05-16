@@ -279,7 +279,9 @@ describe( 'advanced-converters', () => {
 			modelDispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'src', 'bar.jpg', 'new.jpg' );
 			modelDispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'title', 'bar', null );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><figure><img src="new.jpg"></img><figcaption>foobar</figcaption></figure></div>' );
+			expect( viewToString( viewRoot ) ).to.equal(
+				'<div><figure><img src="new.jpg"></img><figcaption>foobar</figcaption></figure></div>'
+			);
 		} );
 
 		it( 'should convert view image to model', () => {
@@ -405,7 +407,9 @@ describe( 'advanced-converters', () => {
 				viewWriter.insert( viewPosition, viewElement );
 
 				if ( consumable.consume( data.item, 'addAttribute:linkHref' ) ) {
-					const viewA = new ViewAttributeElement( 'a', { href: data.item.getAttribute( 'linkHref' ) }, new ViewText( 'see source' ) );
+					const viewA = new ViewAttributeElement(
+						'a', { href: data.item.getAttribute( 'linkHref' ) }, new ViewText( 'see source' )
+					);
 
 					if ( consumable.consume( data.item, 'addAttribute:linkTitle' ) ) {
 						viewA.setAttribute( 'title', data.item.getAttribute( 'linkTitle' ) );
@@ -548,8 +552,20 @@ describe( 'advanced-converters', () => {
 			modelElement.removeAttribute( 'linkTitle' );
 			modelElement.setAttribute( 'linkHref', 'bar.html' );
 
-			modelDispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'linkTitle', 'Foo source', null );
-			modelDispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'linkHref', 'foo.html', 'bar.html' );
+			modelDispatcher.convertAttribute(
+				'removeAttribute',
+				createRangeOnElementOnly( modelElement ),
+				'linkTitle',
+				'Foo source',
+				null
+			);
+			modelDispatcher.convertAttribute(
+				'changeAttribute',
+				createRangeOnElementOnly( modelElement ),
+				'linkHref',
+				'foo.html',
+				'bar.html'
+			);
 
 			expected = '<div><blockquote>foo<strong>bar</strong><a href="bar.html">see source</a></blockquote></div>';
 			expect( viewToString( viewRoot ) ).to.equal( expected );

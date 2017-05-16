@@ -126,7 +126,7 @@ describe( 'wrapPosition', () => {
 
 	it( 'should throw if position is set inside EmptyElement', () => {
 		const emptyElement = new EmptyElement( 'img' );
-		new ContainerElement( 'p', null, emptyElement );
+		new ContainerElement( 'p', null, emptyElement ); // eslint-disable-line no-new
 		const attributeElement = new AttributeElement( 'b' );
 		const position = new Position( emptyElement, 0 );
 
@@ -137,7 +137,7 @@ describe( 'wrapPosition', () => {
 
 	it( 'should throw if position is set inside UIElement', () => {
 		const uiElement = new UIElement( 'span' );
-		new ContainerElement( 'p', null, uiElement );
+		new ContainerElement( 'p', null, uiElement ); // eslint-disable-line no-new
 		const attributeElement = new AttributeElement( 'b' );
 		const position = new Position( uiElement, 0 );
 

@@ -293,5 +293,8 @@ function normalize( nodes ) {
 	}
 
 	// Array.from to enable .map() on non-arrays.
-	return Array.from( nodes ).map( node => typeof node == 'string' ? new Text( node ) : node ); // eslint-disable-line no-confusing-arrow
+	return Array.from( nodes )
+		.map( node => {
+			return typeof node == 'string' ? new Text( node ) : node;
+		} );
 }

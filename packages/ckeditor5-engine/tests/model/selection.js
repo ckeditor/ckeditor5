@@ -514,7 +514,7 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'setRanges()', () => {
-		let newRanges, spy, oldRanges;
+		let newRanges, spy;
 
 		beforeEach( () => {
 			newRanges = [
@@ -527,8 +527,6 @@ describe( 'Selection', () => {
 
 			spy = sinon.spy();
 			selection.on( 'change:range', spy );
-
-			oldRanges = selection._ranges;
 		} );
 
 		it( 'should throw an error when range is invalid', () => {

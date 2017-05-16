@@ -527,13 +527,11 @@ describe( 'LiveRange', () => {
 	} );
 
 	describe( 'should not get transformed if', () => {
-		let otherRoot, spy;
+		let otherRoot, spy, live, clone;
 
 		before( () => {
 			otherRoot = doc.createRoot( '$root', 'otherRoot' );
 		} );
-
-		let live, clone;
 
 		beforeEach( () => {
 			live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );

@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import transformations from '../../../../src/model/delta/basic-transformations';
-/* jshint unused: false*/
+import transformations from '../../../../src/model/delta/basic-transformations'; // eslint-disable-line no-unused-vars
 
 import deltaTransform from '../../../../src/model/delta/transform';
 const transform = deltaTransform.transform;
@@ -17,7 +16,6 @@ import Delta from '../../../../src/model/delta/delta';
 import SplitDelta from '../../../../src/model/delta/splitdelta';
 import AttributeDelta from '../../../../src/model/delta/attributedelta';
 import RenameDelta from '../../../../src/model/delta/renamedelta';
-import RemoveDelta from '../../../../src/model/delta/removedelta';
 
 import InsertOperation from '../../../../src/model/operation/insertoperation';
 import AttributeOperation from '../../../../src/model/operation/attributeoperation';
@@ -26,7 +24,7 @@ import MoveOperation from '../../../../src/model/operation/moveoperation';
 import NoOperation from '../../../../src/model/operation/nooperation';
 import RenameOperation from '../../../../src/model/operation/renameoperation';
 
-import { getNodesAndText, jsonParseStringify } from '../../../../tests/model/_utils/utils';
+import { getNodesAndText } from '../../../../tests/model/_utils/utils';
 
 import {
 	applyDelta,

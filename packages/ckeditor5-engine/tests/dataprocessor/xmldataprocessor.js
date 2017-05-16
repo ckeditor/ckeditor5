@@ -68,6 +68,7 @@ describe( 'XmlDataProcessor', () => {
 		for ( const name in xssTemplates ) {
 			const input = xssTemplates[ name ].replace( /%xss%/g, 'testXss()' );
 
+			// eslint-disable-next-line no-loop-func
 			it( 'should prevent XSS attacks: ' + name, done => {
 				window.testXss = sinon.spy();
 				dataProcessor.toView( input );

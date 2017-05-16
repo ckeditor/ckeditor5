@@ -42,21 +42,21 @@ describe( 'TextProxy', () => {
 
 		it( 'should throw if wrong offsetInText is passed', () => {
 			expect( () => {
-				new TextProxy( text, -1, 2 );
+				new TextProxy( text, -1, 2 ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /view-textproxy-wrong-offsetintext/ );
 
 			expect( () => {
-				new TextProxy( text, 9, 1 );
+				new TextProxy( text, 9, 1 ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /view-textproxy-wrong-offsetintext/ );
 		} );
 
 		it( 'should throw if wrong length is passed', () => {
 			expect( () => {
-				new TextProxy( text, 2, -1 );
+				new TextProxy( text, 2, -1 ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /view-textproxy-wrong-length/ );
 
 			expect( () => {
-				new TextProxy( text, 2, 9 );
+				new TextProxy( text, 2, 9 ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /view-textproxy-wrong-length/ );
 		} );
 	} );

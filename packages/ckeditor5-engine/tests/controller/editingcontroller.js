@@ -352,13 +352,11 @@ describe( 'EditingController', () => {
 
 	describe( 'destroy', () => {
 		it( 'should remove listenters', () => {
-			let model, editing;
-
-			model = new ModelDocument();
+			const model = new ModelDocument();
 			model.createRoot();
 			model.schema.registerItem( 'paragraph', '$block' );
 
-			editing = new EditingController( model );
+			const editing = new EditingController( model );
 
 			const spy = sinon.spy();
 
@@ -377,13 +375,11 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should destroy view', () => {
-			let model, editing;
-
-			model = new ModelDocument();
+			const model = new ModelDocument();
 			model.createRoot();
 			model.schema.registerItem( 'paragraph', '$block' );
 
-			editing = new EditingController( model );
+			const editing = new EditingController( model );
 
 			const spy = sinon.spy( editing.view, 'destroy' );
 

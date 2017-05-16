@@ -259,7 +259,7 @@ describe( 'DocumentFragment', () => {
 			const node1 = new Node();
 			const node2 = new Node();
 			const node3 = new Node();
-			new DocumentFragment( [ node1, node2, node3 ] );
+			new DocumentFragment( [ node1, node2, node3 ] ); // eslint-disable-line no-new
 
 			expect( node1.nextSibling ).to.equal( node2 );
 			expect( node2.nextSibling ).to.equal( node3 );
@@ -270,7 +270,7 @@ describe( 'DocumentFragment', () => {
 			const node1 = new Node();
 			const node2 = new Node();
 			const node3 = new Node();
-			new DocumentFragment( [ node1, node2, node3 ] );
+			new DocumentFragment( [ node1, node2, node3 ] ); // eslint-disable-line no-new
 
 			expect( node1.previousSibling ).to.be.null;
 			expect( node2.previousSibling ).to.equal( node1 );

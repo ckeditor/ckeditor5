@@ -9,8 +9,7 @@ import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewConsumable from '../../src/conversion/viewconsumable';
 
 describe( 'ViewConsumable', () => {
-	let viewConsumable;
-	let el;
+	let viewConsumable, el;
 
 	beforeEach( () => {
 		viewConsumable = new ViewConsumable();

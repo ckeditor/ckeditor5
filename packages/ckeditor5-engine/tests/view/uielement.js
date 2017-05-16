@@ -30,7 +30,7 @@ describe( 'UIElement', () => {
 
 		it( 'should throw if child elements are passed to constructor', () => {
 			expect( () => {
-				new UIElement( 'img', null, [ new Element( 'i' ) ] );
+				new UIElement( 'img', null, [ new Element( 'i' ) ] ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
 		} );
 	} );

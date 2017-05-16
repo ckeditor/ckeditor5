@@ -9,7 +9,6 @@ import Document from '../../../src/view/document';
 import DomEventObserver from '../../../src/view/observer/domeventobserver';
 
 const viewDocument = new Document();
-let observer1, observer2;
 
 class ClickObserver1 extends DomEventObserver {
 	constructor( viewDocument ) {
@@ -17,7 +16,6 @@ class ClickObserver1 extends DomEventObserver {
 
 		this.id = 1;
 		this.domEventType = 'click';
-		observer1 = this;
 	}
 
 	onDomEvent( domEvt ) {
@@ -31,7 +29,6 @@ class ClickObserver2 extends DomEventObserver {
 
 		this.id = 2;
 		this.domEventType = 'click';
-		observer2 = this;
 	}
 
 	onDomEvent( domEvt ) {
@@ -39,6 +36,9 @@ class ClickObserver2 extends DomEventObserver {
 	}
 }
 
+const observer1 = new ClickObserver1( viewDocument );
+
+// eslint-disable-next-line no-console
 viewDocument.on( 'click', ( evt, evtData ) => console.log( 'click', evtData.id, evtData.domTarget.id ) );
 document.getElementById( 'enable1' ).addEventListener( 'click', () => observer1.enable() );
 document.getElementById( 'disable1' ).addEventListener( 'click', () => observer1.disable() );

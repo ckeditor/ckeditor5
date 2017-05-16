@@ -131,7 +131,9 @@ describe( 'writer', () => {
 
 		it( 'should unwrap nested attributes', () => {
 			test(
-				'<container:p>[<attribute:u view-priority="1"><attribute:b view-priority="1">foobar</attribute:b></attribute:u>]</container:p>',
+				'<container:p>' +
+					'[<attribute:u view-priority="1"><attribute:b view-priority="1">foobar</attribute:b></attribute:u>]' +
+				'</container:p>',
 				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>[<attribute:u view-priority="1">foobar</attribute:u>]</container:p>'
 			);
@@ -231,7 +233,9 @@ describe( 'writer', () => {
 
 		it( 'should unwrap mixed ranges #2', () => {
 			test(
-				'<container:p>[<attribute:u view-priority="1"><attribute:b view-priority="1">foo}</attribute:b></attribute:u></container:p>',
+				'<container:p>' +
+					'[<attribute:u view-priority="1"><attribute:b view-priority="1">foo}</attribute:b></attribute:u>' +
+				'</container:p>',
 				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>[<attribute:u view-priority="1">foo</attribute:u>]</container:p>'
 			);

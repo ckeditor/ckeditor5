@@ -16,12 +16,12 @@ setData( viewDocument,
 	'<container:p>bom</container:p>' );
 
 viewDocument.on( 'selectionChange', ( evt, data ) => {
-	console.log( 'selectionChange', data );
+	console.log( 'selectionChange', data ); // eslint-disable-line no-console
 	viewDocument.selection.setTo( data.newSelection );
 } );
 
 viewDocument.on( 'selectionChangeDone', ( evt, data ) => {
-	console.log( '%c selectionChangeDone ', 'background: #222; color: #bada55', data );
+	console.log( '%c selectionChangeDone ', 'background: #222; color: #bada55', data ); // eslint-disable-line no-console
 	viewDocument.selection.setTo( data.newSelection );
 } );
 

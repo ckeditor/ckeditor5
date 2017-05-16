@@ -122,7 +122,7 @@ describe( 'writer', () => {
 		it( 'should throw if range is placed inside EmptyElement', () => {
 			const emptyElement = new EmptyElement( 'img' );
 			const attributeElement = new AttributeElement( 'b' );
-			new ContainerElement( 'p', null, [ emptyElement, attributeElement ] );
+			new ContainerElement( 'p', null, [ emptyElement, attributeElement ] ); // eslint-disable-line no-new
 			const range = Range.createFromParentsAndOffsets( emptyElement, 0, attributeElement, 0 );
 
 			expect( () => {
@@ -141,7 +141,7 @@ describe( 'writer', () => {
 		it( 'should throw if range is placed inside UIElement', () => {
 			const uiElement = new UIElement( 'span' );
 			const attributeElement = new AttributeElement( 'b' );
-			new ContainerElement( 'p', null, [ uiElement, attributeElement ] );
+			new ContainerElement( 'p', null, [ uiElement, attributeElement ] ); // eslint-disable-line no-new
 			const range = Range.createFromParentsAndOffsets( uiElement, 0, attributeElement, 0 );
 
 			expect( () => {

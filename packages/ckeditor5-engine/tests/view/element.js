@@ -847,6 +847,7 @@ describe( 'Element', () => {
 
 			it( 'should be able to parse big styles definition', () => {
 				expect( () => {
+					// eslint-disable-next-line no-new
 					new Element( 'div', { style: `background-image:url('data:image/jpeg;base64,${ encodedImage }')` } );
 				} ).not.to.throw();
 			} );
@@ -923,7 +924,7 @@ describe( 'Element', () => {
 
 		it( 'should return null if no matches found', () => {
 			const el1 = new Element( 'p' );
-			new Element( 'div', null, el1 );
+			new Element( 'div', null, el1 ); // eslint-disable-line no-new
 
 			expect( el1.findAncestor( {
 				name: 'div',

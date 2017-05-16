@@ -39,9 +39,7 @@ const spanViewElementForMarker = new ViewAttributeElement( 'span' );
 spanViewElementForMarker.priority = 1;
 
 describe( 'model-selection-to-view-converters', () => {
-	let dispatcher, mapper;
-	let modelDoc, modelRoot, modelSelection;
-	let viewDoc, viewRoot, viewSelection;
+	let dispatcher, mapper, modelDoc, modelRoot, modelSelection, viewDoc, viewRoot, viewSelection;
 
 	beforeEach( () => {
 		modelDoc = new ModelDocument();

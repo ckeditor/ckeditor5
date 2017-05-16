@@ -70,9 +70,7 @@ function viewToString( item ) {
 }
 
 describe( 'Model converter builder', () => {
-	let dispatcher, mapper;
-	let modelDoc, modelRoot;
-	let viewDoc, viewRoot, viewSelection;
+	let dispatcher, mapper, modelDoc, modelRoot, viewDoc, viewRoot, viewSelection;
 
 	beforeEach( () => {
 		modelDoc = new ModelDocument();
@@ -367,7 +365,9 @@ describe( 'Model converter builder', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<strong>ob</strong>ar</p></div>' );
 
-			dispatcher.convertMarker( 'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			dispatcher.convertMarker(
+				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
+			);
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -380,7 +380,9 @@ describe( 'Model converter builder', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search">ob</span>ar</p></div>' );
 
-			dispatcher.convertMarker( 'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			dispatcher.convertMarker(
+				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
+			);
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -392,16 +394,22 @@ describe( 'Model converter builder', () => {
 				return new ViewAttributeElement( 'span', { class: className } );
 			} );
 
-			dispatcher.convertMarker( 'addMarker', 'search:red', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			dispatcher.convertMarker(
+				'addMarker', 'search:red', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
+			);
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search search-color-red">ob</span>ar</p></div>' );
 
-			dispatcher.convertMarker( 'removeMarker', 'search:blue', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			dispatcher.convertMarker(
+				'removeMarker', 'search:blue', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
+			);
 
 			// Nothing should change as we remove a marker with different name, which should generate different view attribute element.
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search search-color-red">ob</span>ar</p></div>' );
 
-			dispatcher.convertMarker( 'removeMarker', 'search:red', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			dispatcher.convertMarker(
+				'removeMarker', 'search:red', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
+			);
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -413,7 +421,9 @@ describe( 'Model converter builder', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 
-			dispatcher.convertMarker( 'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 ) );
+			dispatcher.convertMarker(
+				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 )
+			);
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -504,7 +514,9 @@ describe( 'Model converter builder', () => {
 
 				dispatcher.convertMarker( 'addMarker', 'search', range );
 
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search"></span>ob<span class="search"></span>ar</p></div>' );
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>fo<span class="search"></span>ob<span class="search"></span>ar</p></div>'
+				);
 
 				dispatcher.convertMarker( 'removeMarker', 'search', range );
 
@@ -520,8 +532,9 @@ describe( 'Model converter builder', () => {
 
 				dispatcher.convertMarker( 'addMarker', 'search:red', range );
 
-				expect( viewToString( viewRoot ) )
-					.to.equal( '<div><p>fo<span class="search search-color-red"></span>ob<span class="search search-color-red"></span>ar</p></div>' );
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>fo<span class="search search-color-red"></span>ob<span class="search search-color-red"></span>ar</p></div>'
+				);
 
 				dispatcher.convertMarker( 'removeMarker', 'search:red', range );
 

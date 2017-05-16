@@ -50,7 +50,7 @@ describe( 'EmptyElement', () => {
 
 	it( 'should throw if child elements are passed to constructor', () => {
 		expect( () => {
-			new EmptyElement( 'img', null, [ new Element( 'i' ) ] );
+			new EmptyElement( 'img', null, [ new Element( 'i' ) ] ); // eslint-disable-line no-new
 		} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
 	} );
 

@@ -276,7 +276,6 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'getNearestSelectionRange', () => {
-		let root;
 		let selection;
 
 		beforeEach( () => {
@@ -287,7 +286,7 @@ describe( 'Document', () => {
 			doc.schema.allow( { name: 'widget', inside: '$root' } );
 			doc.schema.objects.add( 'widget' );
 
-			root = doc.createRoot();
+			doc.createRoot();
 			selection = doc.selection;
 		} );
 

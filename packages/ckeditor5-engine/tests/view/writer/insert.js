@@ -186,7 +186,7 @@ describe( 'writer', () => {
 
 		it( 'should throw if trying to insert inside EmptyElement', () => {
 			const emptyElement = new EmptyElement( 'img' );
-			new ContainerElement( 'p', null, emptyElement );
+			new ContainerElement( 'p', null, emptyElement ); // eslint-disable-line no-new
 			const position = new Position( emptyElement, 0 );
 			const attributeElement = new AttributeElement( 'i' );
 
@@ -197,7 +197,7 @@ describe( 'writer', () => {
 
 		it( 'should throw if trying to insert inside UIElement', () => {
 			const uiElement = new UIElement( 'span' );
-			new ContainerElement( 'p', null, uiElement );
+			new ContainerElement( 'p', null, uiElement ); // eslint-disable-line no-new
 			const position = new Position( uiElement, 0 );
 			const attributeElement = new AttributeElement( 'i' );
 

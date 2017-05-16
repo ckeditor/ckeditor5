@@ -27,7 +27,9 @@ describe( 'MutationObserver', () => {
 
 		mutationObserver = viewDocument.getObserver( MutationObserver );
 
-		viewDocument.on( 'mutations', ( evt, mutations ) => lastMutations = mutations );
+		viewDocument.on( 'mutations', ( evt, mutations ) => {
+			lastMutations = mutations;
+		} );
 
 		viewRoot = viewDocument.getRoot();
 

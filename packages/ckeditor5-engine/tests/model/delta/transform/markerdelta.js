@@ -3,10 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import transformations from '../../../../src/model/delta/basic-transformations';
-/* jshint unused: false*/
-
+import transformations from '../../../../src/model/delta/basic-transformations'; // eslint-disable-line no-unused-vars
 import deltaTransform from '../../../../src/model/delta/transform';
+
 const transform = deltaTransform.transform;
 
 import Element from '../../../../src/model/element';
@@ -27,12 +26,11 @@ import {
 } from '../../../model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, gy, baseVersion;
+	let doc, root, baseVersion;
 
 	beforeEach( () => {
 		doc = getFilledDocument();
 		root = doc.getRoot();
-		gy = doc.graveyard;
 		baseVersion = doc.version;
 	} );
 

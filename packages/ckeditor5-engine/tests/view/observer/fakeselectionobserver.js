@@ -13,10 +13,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData, stringify } from '../../../src/dev-utils/view';
 
 describe( 'FakeSelectionObserver', () => {
-	let observer;
-	let viewDocument;
-	let root;
-	let domRoot;
+	let observer, viewDocument, root, domRoot;
 
 	before( () => {
 		domRoot = createElement( document, 'div', {

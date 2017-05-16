@@ -36,7 +36,7 @@ describe( 'LivePosition', () => {
 
 	it( 'should throw if given root is not a RootElement', () => {
 		expect( () => {
-			new LivePosition( new DocumentFragment(), [ 1 ] );
+			new LivePosition( new DocumentFragment(), [ 1 ] ); // eslint-disable-line no-new
 		} ).to.throw( CKEditorError, /model-liveposition-root-not-rootelement/ );
 	} );
 
@@ -231,14 +231,12 @@ describe( 'LivePosition', () => {
 	} );
 
 	describe( 'should not get transformed if', () => {
-		let path, otherRoot, spy;
+		let path, otherRoot, spy, live;
 
 		before( () => {
 			path = [ 1, 4, 6 ];
 			otherRoot = doc.createRoot( '$root', 'otherRoot' );
 		} );
-
-		let live;
 
 		beforeEach( () => {
 			live = new LivePosition( root, path );

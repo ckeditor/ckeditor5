@@ -10,7 +10,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ViewSelection from '../../../src/view/selection';
 import ViewDocument from '../../../src/view/document';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
-import MutationObserver from '../../../src/view/observer/mutationobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import { parse } from '../../../src/dev-utils/view';
@@ -18,7 +17,7 @@ import { parse } from '../../../src/dev-utils/view';
 testUtils.createSinonSandbox();
 
 describe( 'SelectionObserver', () => {
-	let viewDocument, viewRoot, mutationObserver, selectionObserver, domRoot, domMain, domDocument;
+	let viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;
 
 	beforeEach( done => {
 		domDocument = document;
@@ -30,7 +29,6 @@ describe( 'SelectionObserver', () => {
 		viewDocument = new ViewDocument();
 		viewDocument.createRoot( domMain );
 
-		mutationObserver = viewDocument.getObserver( MutationObserver );
 		selectionObserver = viewDocument.getObserver( SelectionObserver );
 
 		viewRoot = viewDocument.getRoot();

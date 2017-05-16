@@ -10,8 +10,8 @@ import { setData } from '../../../src/dev-utils/view';
 
 const viewDocument = new Document();
 
-viewDocument.on( 'focus', ( evt, data ) => console.log( `Focus in ${ data.domTarget.id }.` ) );
-viewDocument.on( 'blur', ( evt, data ) => console.log( `Blur in ${ data.domTarget.id }.` ) );
+viewDocument.on( 'focus', ( evt, data ) => console.log( `Focus in ${ data.domTarget.id }.` ) ); // eslint-disable-line no-console
+viewDocument.on( 'blur', ( evt, data ) => console.log( `Blur in ${ data.domTarget.id }.` ) ); // eslint-disable-line no-console
 
 const domEditable1 = document.getElementById( 'editable1' );
 const domEditable2 = document.getElementById( 'editable2' );
@@ -27,7 +27,11 @@ viewDocument.on( 'selectionChange', ( evt, data ) => {
 setData( viewDocument, '<container:p>{}First editable.</container:p>', { rootName: 'editable1' } );
 setData( viewDocument, '<container:p>Second editable.</container:p>', { rootName: 'editable2' } );
 
-editable1.on( 'change:isFocused', () => domEditable1.style.backgroundColor = editable1.isFocused ? 'green' : 'red' );
-editable2.on( 'change:isFocused', () => domEditable2.style.backgroundColor = editable2.isFocused ? 'green' : 'red' );
+editable1.on( 'change:isFocused', () => {
+	domEditable1.style.backgroundColor = editable1.isFocused ? 'green' : 'red';
+} );
+editable2.on( 'change:isFocused', () => {
+	domEditable2.style.backgroundColor = editable2.isFocused ? 'green' : 'red';
+} );
 
 viewDocument.focus();

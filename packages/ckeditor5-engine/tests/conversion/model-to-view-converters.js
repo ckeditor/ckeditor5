@@ -202,7 +202,7 @@ describe( 'model-to-view-converters', () => {
 
 			const themeConverter = ( value, key, data ) => {
 				if ( data.item instanceof ModelElement && data.item.childCount > 0 ) {
-					value += ' ' + 'fix-content';
+					value += ' fix-content';
 				}
 
 				return { key: 'class', value };

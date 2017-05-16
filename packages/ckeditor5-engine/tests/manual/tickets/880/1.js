@@ -19,9 +19,9 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 	editor.editing.view.on( 'selectionChange', () => {
 		editor.document.enqueueChanges( () => {} );
-		console.log( 'selectionChange', ( new Date() ).getTime() );
+		console.log( 'selectionChange', ( new Date() ).getTime() ); // eslint-disable-line no-console
 	} );
 } )
 .catch( err => {
-	console.error( err.stack );
+	console.error( err.stack ); // eslint-disable-line no-console
 } );

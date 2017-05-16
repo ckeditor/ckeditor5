@@ -20,7 +20,9 @@ import Position from '../../src/model/position';
 import LiveRange from '../../src/model/liverange';
 import ViewAttributeElement from '../../src/view/attributeelement';
 
+const markerNames = [];
 let model = null;
+let _uid = 1;
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Enter, Typing, Paragraph, Bold, Italic, List, Heading, Undo ],
@@ -55,11 +57,8 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	} );
 } )
 .catch( err => {
-	console.error( err.stack );
+	console.error( err.stack ); // eslint-disable-line no-console
 } );
-
-const markerNames = [];
-let _uid = 1;
 
 function uid() {
 	return _uid++;

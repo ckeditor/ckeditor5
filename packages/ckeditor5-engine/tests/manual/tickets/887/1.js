@@ -18,5 +18,5 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	window.editor = editor;
 } )
 .catch( err => {
-	console.error( err.stack );
+	console.error( err.stack ); // eslint-disable-line no-console
 } );

@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Schema from '../../../src/model/schema';
-import { SchemaItem as SchemaItem } from '../../../src/model/schema';
+import { default as Schema, SchemaItem } from '../../../src/model/schema';
 
 let schema, item;
 

@@ -21,7 +21,7 @@ setData( viewDocument,
 
 viewDocument.on( 'selectionChange', ( evt, data ) => {
 	const node = data.newSelection.getFirstPosition().parent;
-	console.log( node.name ? node.name : node._data );
+	console.log( node.name ? node.name : node._data ); // eslint-disable-line no-console
 	viewDocument.selection.setTo( data.newSelection );
 } );
 

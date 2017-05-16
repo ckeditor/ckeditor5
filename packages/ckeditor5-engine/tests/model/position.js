@@ -99,21 +99,21 @@ describe( 'position', () => {
 
 		it( 'should throw error if given path is incorrect', () => {
 			expect( () => {
-				new Position( root, {} );
+				new Position( root, {} ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /model-position-path-incorrect/ );
 
 			expect( () => {
-				new Position( root, [] );
+				new Position( root, [] ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /model-position-path-incorrect/ );
 		} );
 
 		it( 'should throw error if given root is invalid', () => {
 			expect( () => {
-				new Position( new Text( 'a' ) );
+				new Position( new Text( 'a' ) ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /model-position-root-invalid/ );
 
 			expect( () => {
-				new Position();
+				new Position(); // eslint-disable-line no-new
 			} ).to.throw();
 		} );
 	} );
@@ -647,7 +647,8 @@ describe( 'position', () => {
 			expect( transformed.path ).to.deep.equal( [ 1, 4, 3 ] );
 		} );
 
-		it( 'should not update path if insertion position parent is a node from that path and offset is after next node on that path', () => {
+		it( 'should not update path if insertion position parent is a node from that path and offset is ' +
+			'after next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2, false );
 
@@ -706,7 +707,8 @@ describe( 'position', () => {
 			expect( transformed.path ).to.deep.equal( [ 1, 0, 3 ] );
 		} );
 
-		it( 'should not update path if deletion position parent is a node from that path and offset is after next node on that path', () => {
+		it( 'should not update path if deletion position parent is a node from that path and ' +
+			'offset is after next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 3 ] ), 2 );
 
@@ -738,7 +740,12 @@ describe( 'position', () => {
 
 		it( 'should update path if position was at the end of a range and move was sticky', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position._getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false, true );
+			const transformed = position._getTransformedByMove(
+				new Position( root, [ 1, 2, 0 ] ),
+				new Position( root, [ 2 ] ), 3,
+				false,
+				true
+			);
 
 			expect( transformed.path ).to.deep.equal( [ 5 ] );
 		} );

@@ -531,9 +531,12 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should stop to element conversion if creating function returned null', () => {
-		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement(
-			viewElement => viewElement.hasAttribute( 'stop' ) ? null : new ModelElement( 'paragraph' )
-		);
+		buildViewConverter()
+			.for( dispatcher )
+			.fromElement( 'p' )
+			.toElement( viewElement => {
+				return viewElement.hasAttribute( 'stop' ) ? null : new ModelElement( 'paragraph' );
+			} );
 
 		const viewElement = new ViewContainerElement( 'p' );
 		let conversionResult = dispatcher.convert( viewElement, objWithContext );

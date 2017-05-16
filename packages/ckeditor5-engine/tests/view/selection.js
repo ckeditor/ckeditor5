@@ -14,9 +14,7 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 import { parse } from '../../src/dev-utils/view';
 
 describe( 'Selection', () => {
-	let selection;
-	let el;
-	let range1, range2, range3;
+	let selection, el, range1, range2, range3;
 
 	beforeEach( () => {
 		selection = new Selection();

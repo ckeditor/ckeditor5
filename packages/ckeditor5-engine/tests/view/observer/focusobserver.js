@@ -66,14 +66,13 @@ describe( 'FocusObserver', () => {
 	} );
 
 	describe( 'handle isFocused property of the document', () => {
-		let domMain, domHeader, viewMain, viewHeader;
+		let domMain, domHeader, viewMain;
 
 		beforeEach( () => {
 			domMain = document.createElement( 'div' );
 			domHeader = document.createElement( 'h1' );
 
 			viewMain = viewDocument.createRoot( domMain );
-			viewHeader = viewDocument.createRoot( domHeader, 'header' );
 		} );
 
 		it( 'should set isFocused to true on focus', () => {
@@ -143,13 +142,15 @@ describe( 'FocusObserver', () => {
 	} );
 
 	describe( 'integration test', () => {
-		let viewDocument, viewRoot, domRoot, observer, domSelection;
+		let viewDocument, domRoot, observer, domSelection;
 
 		beforeEach( () => {
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );
+
 			viewDocument = new ViewDocument();
-			viewRoot = viewDocument.createRoot( domRoot );
+			viewDocument.createRoot( domRoot );
+
 			observer = viewDocument.getObserver( FocusObserver );
 			domSelection = window.getSelection();
 		} );

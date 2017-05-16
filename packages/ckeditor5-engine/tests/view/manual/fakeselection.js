@@ -13,7 +13,7 @@ import { setData } from '../../../src/dev-utils/view';
 const viewDocument = new ViewDocument();
 const domEditable = document.getElementById( 'editor' );
 const viewRoot = viewDocument.createRoot( domEditable );
-let viewStrong;
+let viewStrong; // eslint-disable-line prefer-const
 
 // Add mouseup oberver.
 viewDocument.addObserver( class extends DomEventObserver {
@@ -33,7 +33,7 @@ viewDocument.on( 'selectionChange', ( evt, data ) => {
 
 viewDocument.on( 'mouseup', ( evt, data ) => {
 	if ( data.target == viewStrong ) {
-		console.log( 'Making selection around the <strong>.' );
+		console.log( 'Making selection around the <strong>.' ); // eslint-disable-line no-console
 
 		const range = ViewRange.createOn( viewStrong );
 		viewDocument.selection.setRanges( [ range ] );
@@ -64,14 +64,14 @@ viewDocument.on( 'focus', () => {
 	viewStrong.addClass( 'focused' );
 	viewDocument.render();
 
-	console.log( 'The document was focused.' );
+	console.log( 'The document was focused.' ); // eslint-disable-line no-console
 } );
 
 viewDocument.on( 'blur', () => {
 	viewStrong.removeClass( 'focused' );
 	viewDocument.render();
 
-	console.log( 'The document was blurred.' );
+	console.log( 'The document was blurred.' ); // eslint-disable-line no-console
 } );
 
 setData( viewDocument, '<container:p>{}foo<strong contenteditable="false">bar</strong>baz</container:p>' );

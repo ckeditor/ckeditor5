@@ -115,7 +115,7 @@ describe( 'filler', () => {
 
 	describe( 'isBlockFiller', () => {
 		it( 'should return true if the node is an instance of the BR block filler', () => {
-			const brFillerInstance = BR_FILLER( document );
+			const brFillerInstance = BR_FILLER( document ); // eslint-disable-line new-cap
 
 			expect( isBlockFiller( brFillerInstance, BR_FILLER ) ).to.be.true;
 			// Check it twice to ensure that caching breaks nothing.
@@ -123,7 +123,7 @@ describe( 'filler', () => {
 		} );
 
 		it( 'should return true if the node is an instance of the NBSP block filler', () => {
-			const nbspFillerInstance = NBSP_FILLER( document );
+			const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
 
 			expect( isBlockFiller( nbspFillerInstance, NBSP_FILLER ) ).to.be.true;
 			// Check it twice to ensure that caching breaks nothing.

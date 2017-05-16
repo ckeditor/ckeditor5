@@ -81,7 +81,7 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	printModelContents( editor );
 } )
 .catch( err => {
-	console.error( err.stack );
+	console.error( err.stack ); // eslint-disable-line no-console
 } );
 
 const modelDiv = global.document.querySelector( '#model' );

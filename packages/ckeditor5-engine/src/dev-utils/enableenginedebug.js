@@ -25,7 +25,7 @@ import NoOperation from '../model/operation/nooperation';
 import RenameOperation from '../model/operation/renameoperation';
 import RootAttributeOperation from '../model/operation/rootattributeoperation';
 import Delta from '../model/delta/delta';
-import { AttributeDelta, RootAttributeDelta } from '../model/delta/attributedelta';
+import { default as AttributeDelta, RootAttributeDelta } from '../model/delta/attributedelta';
 import InsertDelta from '../model/delta/insertdelta';
 import MarkerDelta from '../model/delta/markerdelta';
 import MergeDelta from '../model/delta/mergedelta';

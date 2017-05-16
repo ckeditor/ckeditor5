@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import transformations from '../../../../src/model/delta/basic-transformations';
-/* jshint unused: false*/
+import transformations from '../../../../src/model/delta/basic-transformations'; // eslint-disable-line no-unused-vars
 
 import deltaTransform from '../../../../src/model/delta/transform';
 const transform = deltaTransform.transform;
@@ -18,7 +17,7 @@ import MoveOperation from '../../../../src/model/operation/moveoperation';
 import MergeDelta from '../../../../src/model/delta/mergedelta';
 import UnwrapDelta from '../../../../src/model/delta/unwrapdelta';
 
-import { getNodesAndText, jsonParseStringify } from '../../../../tests/model/_utils/utils';
+import { getNodesAndText } from '../../../../tests/model/_utils/utils';
 
 import {
 	applyDelta,

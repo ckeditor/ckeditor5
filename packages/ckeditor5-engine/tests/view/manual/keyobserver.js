@@ -10,7 +10,7 @@ import { setData } from '../../../src/dev-utils/view';
 
 const viewDocument = new Document();
 
-viewDocument.on( 'keydown', ( evt, data ) => console.log( 'keydown', data ) );
+viewDocument.on( 'keydown', ( evt, data ) => console.log( 'keydown', data ) ); // eslint-disable-line no-console
 
 viewDocument.createRoot( document.getElementById( 'editable' ), 'editable' );
 setData( viewDocument, 'foo{}bar', { rootName: 'editable' } );

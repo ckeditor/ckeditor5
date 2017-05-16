@@ -726,7 +726,9 @@ export default class Range {
 		const ref = ranges[ 0 ];
 
 		// 2. Sort all the ranges so it's easier to process them.
-		ranges.sort( ( a, b ) => a.start.isAfter( b.start ) ? 1 : -1 ); // eslint-disable-line no-confusing-arrow
+		ranges.sort( ( a, b ) => {
+			return a.start.isAfter( b.start ) ? 1 : -1;
+		} );
 
 		// 3. Check at which index the reference range is now.
 		const refIndex = ranges.indexOf( ref );

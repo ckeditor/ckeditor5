@@ -12,9 +12,9 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 
 describe( 'Node', () => {
-	let doc, root, node;
-	let one, two, three;
-	let textBA, textR, img;
+	let doc, root, node,
+		one, two, three,
+		textBA, textR, img;
 
 	before( () => {
 		node = new Node();

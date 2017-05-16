@@ -436,7 +436,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should converter position inside block filler', () => {
 			const converter = new DomConverter( { blockFiller: NBSP_FILLER } );
-			const domFiller = NBSP_FILLER( document );
+			const domFiller = NBSP_FILLER( document ); // eslint-disable-line new-cap
 			const domP = createElement( document, 'p', null, domFiller );
 
 			const viewP = parse( '<p></p>' );

@@ -11,7 +11,7 @@ import Operation from './operation';
 import Position from '../position';
 import NodeList from '../nodelist';
 import RemoveOperation from './removeoperation';
-import { writer, normalizeNodes } from './../writer';
+import { insert, normalizeNodes } from '../writer';
 import Text from '../text';
 import Element from '../element';
 
@@ -84,7 +84,7 @@ export default class InsertOperation extends Operation {
 		const originalNodes = this.nodes;
 		this.nodes = new NodeList( [ ...originalNodes ].map( node => node.clone( true ) ) );
 
-		const range = writer.insert( this.position, originalNodes );
+		const range = insert( this.position, originalNodes );
 
 		return { range };
 	}

@@ -25,12 +25,6 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 testUtils.createSinonSandbox();
 
 describe( 'LiveSelection', () => {
-	let attrFooBar;
-
-	before( () => {
-		attrFooBar = { foo: 'bar' };
-	} );
-
 	let doc, root, selection, liveRange, range;
 
 	beforeEach( () => {

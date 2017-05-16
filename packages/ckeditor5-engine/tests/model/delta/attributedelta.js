@@ -9,9 +9,7 @@ import Text from '../../../src/model/text';
 import Range from '../../../src/model/range';
 import Position from '../../../src/model/position';
 import Element from '../../../src/model/element';
-
-import AttributeDelta from '../../../src/model/delta/attributedelta';
-import { RootAttributeDelta } from '../../../src/model/delta/attributedelta';
+import { default as AttributeDelta, RootAttributeDelta } from '../../../src/model/delta/attributedelta';
 import AttributeOperation from '../../../src/model/operation/attributeoperation';
 
 describe( 'Batch', () => {
