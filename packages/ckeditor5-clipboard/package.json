@@ -8,7 +8,7 @@
     "@ckeditor/ckeditor5-engine": "^0.10.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
+    "@ckeditor/ckeditor5-dev-lint": "^3.0.0",
     "@ckeditor/ckeditor5-basic-styles": "^0.8.1",
     "@ckeditor/ckeditor5-editor-classic": "^0.7.3",
     "@ckeditor/ckeditor5-paragraph": "^0.8.0",
