@@ -6,10 +6,9 @@
 import ToolbarSeparatorView from '../../src/toolbar/toolbarseparatorview';
 
 describe( 'ToolbarSeparatorView', () => {
-	let locale, view;
+	let view;
 
 	beforeEach( () => {
-		locale = {};
 		view = new ToolbarSeparatorView();
 
 		return view.init();

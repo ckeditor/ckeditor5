@@ -42,7 +42,7 @@ describe( 'IframeView', () => {
 	} );
 
 	describe( 'loaded event', () => {
-		it( 'is fired when frame finished loading', ( done ) => {
+		it( 'is fired when frame finished loading', done => {
 			view = new IframeView();
 
 			view.on( 'loaded', () => done() );

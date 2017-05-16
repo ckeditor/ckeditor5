@@ -18,7 +18,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * The main use case for the component factory is the {@link module:core/editor/editorui~EditorUI#componentFactory} factory.
  */
 export default class ComponentFactory {
-	/**ś
+	/**
 	 * Creates ComponentFactory instance.
 	 *
 	 * @constructor

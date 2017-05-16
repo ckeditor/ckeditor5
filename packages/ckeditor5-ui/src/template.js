@@ -171,7 +171,7 @@ export default class Template {
 		this._revertData = getEmptyRevertData();
 
 		this._renderNode( {
-			node: node,
+			node,
 			isApplying: true,
 			revertData: this._revertData
 		} );
@@ -324,7 +324,9 @@ export default class Template {
 			 *
 			 * @error ui-template-wrong-syntax
 			 */
-			throw new CKEditorError( 'ui-template-wrong-syntax: Node definition must have either "tag" or "text" when rendering new Node.' );
+			throw new CKEditorError(
+				'ui-template-wrong-syntax: Node definition must have either "tag" or "text" when rendering new Node.'
+			);
 		}
 
 		if ( this.text ) {
@@ -560,7 +562,7 @@ export default class Template {
 	_renderStyleAttribute( styles, data ) {
 		const node = data.node;
 
-		for ( let styleName in styles ) {
+		for ( const styleName in styles ) {
 			const styleValue = styles[ styleName ];
 
 			// Cases:
@@ -601,12 +603,12 @@ export default class Template {
 		const isApplying = data.isApplying;
 		let childIndex = 0;
 
-		for ( let child of this.children ) {
+		for ( const child of this.children ) {
 			if ( isViewCollection( child ) ) {
 				if ( !isApplying ) {
 					child.setParent( node );
 
-					for ( let view of child ) {
+					for ( const view of child ) {
 						container.appendChild( view.element );
 					}
 				}
@@ -649,7 +651,7 @@ export default class Template {
 			return;
 		}
 
-		for ( let key in this.eventListeners ) {
+		for ( const key in this.eventListeners ) {
 			const revertBindings = this.eventListeners[ key ].map( schemaItem => {
 				const [ domEvtName, domSelector ] = key.split( '@' );
 
@@ -705,7 +707,7 @@ export default class Template {
 	 * what changes have been made by {@link #apply} to the node.
 	 */
 	_revertTemplateFromNode( node, revertData ) {
-		for ( let binding of revertData.bindings ) {
+		for ( const binding of revertData.bindings ) {
 			// Each binding may consist of several observable+observable#attribute.
 			// like the following has 2:
 			//
@@ -716,7 +718,7 @@ export default class Template {
 			//			bind.to( 'bar' )
 			//		]
 			//
-			for ( let revertBinding of binding ) {
+			for ( const revertBinding of binding ) {
 				revertBinding();
 			}
 		}
@@ -727,7 +729,7 @@ export default class Template {
 			return;
 		}
 
-		for ( let attrName in revertData.attributes ) {
+		for ( const attrName in revertData.attributes ) {
 			const attrValue = revertData.attributes[ attrName ];
 
 			// When the attribute has **not** been set before #apply().
@@ -795,7 +797,8 @@ export class TemplateBinding {
 	 * {@link module:ui/template~TemplateBinding#observable}.
 	 *
 	 * @param {Node} [node] A native DOM node, passed to the custom {@link module:ui/template~TemplateBinding#callback}.
-	 * @returns {*} The value of {@link module:ui/template~TemplateBinding#attribute} in {@link module:ui/template~TemplateBinding#observable}.
+	 * @returns {*} The value of {@link module:ui/template~TemplateBinding#attribute} in
+	 * {@link module:ui/template~TemplateBinding#observable}.
 	 */
 	getValue( node ) {
 		const value = this.observable[ this.attribute ];
@@ -1084,7 +1087,7 @@ function normalize( def ) {
 			if ( isViewCollection( def.children ) ) {
 				children.add( def.children );
 			} else {
-				for ( let child of def.children ) {
+				for ( const child of def.children ) {
 					if ( isTemplate( child ) || isView( child ) ) {
 						children.add( child );
 					} else {
@@ -1122,7 +1125,7 @@ function normalize( def ) {
 //
 // @param {Object} attrs
 function normalizeAttributes( attrs ) {
-	for ( let a in attrs ) {
+	for ( const a in attrs ) {
 		if ( attrs[ a ].value ) {
 			attrs[ a ].value = [].concat( attrs[ a ].value );
 		}
@@ -1150,7 +1153,7 @@ function normalizeAttributes( attrs ) {
 // @param {Object} listeners
 // @returns {Object} Object containing normalized listeners.
 function normalizeListeners( listeners ) {
-	for ( let l in listeners ) {
+	for ( const l in listeners ) {
 		arrayify( listeners, l );
 	}
 
@@ -1225,10 +1228,10 @@ function arrayify( obj, key ) {
 function arrayValueReducer( prev, cur ) {
 	if ( isFalsy( cur ) ) {
 		return prev;
-	} else if ( isFalsy( prev ) )  {
+	} else if ( isFalsy( prev ) ) {
 		return cur;
 	} else {
-		return `${prev} ${cur}`;
+		return `${ prev } ${ cur }`;
 	}
 }
 
@@ -1247,7 +1250,7 @@ function arrayValueReducer( prev, cur ) {
 // @param {Object} ext Object extending base.
 // @returns {String}
 function extendObjectValueArray( obj, ext ) {
-	for ( let a in ext ) {
+	for ( const a in ext ) {
 		if ( obj[ a ] ) {
 			obj[ a ].push( ...ext[ a ] );
 		} else {
@@ -1289,12 +1292,14 @@ function extendTemplate( template, def ) {
 			 *
 			 * @error ui-template-extend-children-mismatch
 			 */
-			throw new CKEditorError( 'ui-template-extend-children-mismatch: The number of children in extended definition does not match.' );
+			throw new CKEditorError(
+				'ui-template-extend-children-mismatch: The number of children in extended definition does not match.'
+			);
 		}
 
 		let childIndex = 0;
 
-		for ( let childDef of def.children ) {
+		for ( const childDef of def.children ) {
 			extendTemplate( template.children.get( childIndex++ ), childDef );
 		}
 	}

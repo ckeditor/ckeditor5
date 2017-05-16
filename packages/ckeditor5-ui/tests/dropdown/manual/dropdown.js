@@ -52,7 +52,7 @@ function testList() {
 
 	const dropdownView = createListDropdown( model );
 
-	dropdownView.on( 'execute', ( evt ) => {
+	dropdownView.on( 'execute', evt => {
 		/* global console */
 		console.log( 'List#execute:', evt.source.label );
 	} );

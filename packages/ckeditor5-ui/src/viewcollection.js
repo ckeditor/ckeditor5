@@ -202,26 +202,27 @@ export default class ViewCollection extends Collection {
 			 *
 			 * @memberOf module:ui/viewcollection~ViewCollection#delegate
 			 * @function module:ui/viewcollection~ViewCollection#delegate.to
-			 * @param {module:utils/emittermixin~EmitterMixin} dest An `EmitterMixin` instance which is the destination for delegated events.
+			 * @param {module:utils/emittermixin~EmitterMixin} dest An `EmitterMixin` instance which is
+			 * the destination for delegated events.
 			 */
-			to: ( dest ) => {
+			to: dest => {
 				// Activate delegating on existing views in this collection.
-				for ( let view of this ) {
-					for ( let evtName of events ) {
+				for ( const view of this ) {
+					for ( const evtName of events ) {
 						view.delegate( evtName ).to( dest );
 					}
 				}
 
 				// Activate delegating on future views in this collection.
 				this.on( 'add', ( evt, view ) => {
-					for ( let evtName of events ) {
+					for ( const evtName of events ) {
 						view.delegate( evtName ).to( dest );
 					}
 				} );
 
 				// Deactivate delegating when view is removed from this collection.
 				this.on( 'remove', ( evt, view ) => {
-					for ( let evtName of events ) {
+					for ( const evtName of events ) {
 						view.stopDelegating( evtName, dest );
 					}
 				} );

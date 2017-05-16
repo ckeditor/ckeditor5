@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import BoxedEditorUIView from '../../../src/editorui/boxed/boxededitoruiview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import ViewCollection from '../../../src/viewcollection';
 
 describe( 'BoxedEditorUIView', () => {
-	let view, element, editor;
+	let view, element;
 
 	beforeEach( () => {
-		editor = new Editor();
 		view = new BoxedEditorUIView( new Locale( 'en' ) );
 		element = view.element;
 

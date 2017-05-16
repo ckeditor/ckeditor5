@@ -22,10 +22,10 @@ describe( 'enableToolbarKeyboardFocus()', () => {
 		toolbar = new ToolbarView();
 
 		enableToolbarKeyboardFocus( {
-			origin: origin,
-			originFocusTracker: originFocusTracker,
-			originKeystrokeHandler: originKeystrokeHandler,
-			toolbar: toolbar
+			origin,
+			originFocusTracker,
+			originKeystrokeHandler,
+			toolbar
 		} );
 
 		return toolbar.init();
@@ -87,7 +87,7 @@ describe( 'enableToolbarKeyboardFocus()', () => {
 } );
 
 function viewCreator( name ) {
-	return ( locale ) => {
+	return locale => {
 		const view = new View( locale );
 
 		view.name = name;

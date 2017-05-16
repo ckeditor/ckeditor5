@@ -23,8 +23,8 @@ describe( 'escPressHandler', () => {
 		emitter = Object.create( DomEmitterMixin );
 
 		escPressHandler( {
-			emitter: emitter,
-			activator: activator,
+			emitter,
+			activator,
 			callback: actionSpy
 		} );
 	} );
@@ -73,8 +73,8 @@ describe( 'escPressHandler', () => {
 		emitter = Object.create( DomEmitterMixin );
 
 		escPressHandler( {
-			emitter: emitter,
-			activator: activator,
+			emitter,
+			activator,
 			callback: spy
 		} );
 
@@ -91,8 +91,8 @@ describe( 'escPressHandler', () => {
 		emitter = Object.create( DomEmitterMixin );
 
 		escPressHandler( {
-			emitter: emitter,
-			activator: activator,
+			emitter,
+			activator,
 			callback: spy
 		} );
 

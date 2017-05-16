@@ -116,11 +116,11 @@ export default class StickyToolbarView extends ToolbarView {
 					bind.if( '_isStickyToTheLimiter', 'ck-toolbar_sticky_bottom-limit' ),
 				],
 				style: {
-					width: bind.to( 'isSticky', ( isSticky ) => {
+					width: bind.to( 'isSticky', isSticky => {
 						return isSticky ? toPx( this._elementPlaceholder.getBoundingClientRect().width ) : null;
 					} ),
 
-					bottom: bind.to( '_isStickyToTheLimiter', ( _isStickyToTheLimiter ) => {
+					bottom: bind.to( '_isStickyToTheLimiter', _isStickyToTheLimiter => {
 						return _isStickyToTheLimiter ? toPx( this.limiterOffset ) : null;
 					} ),
 
@@ -144,7 +144,7 @@ export default class StickyToolbarView extends ToolbarView {
 				],
 				style: {
 					display: bind.to( 'isSticky', isSticky => isSticky ? 'block' : 'none' ),
-					height: bind.to( 'isSticky', ( isSticky ) => {
+					height: bind.to( 'isSticky', isSticky => {
 						return isSticky ? toPx( this._toolbarRect.height ) : null;
 					} )
 				}

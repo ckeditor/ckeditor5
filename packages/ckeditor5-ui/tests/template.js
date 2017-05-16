@@ -6,8 +6,7 @@
 /* globals HTMLElement, Event, document */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Template from '../src/template';
-import { TemplateToBinding, TemplateIfBinding } from '../src/template';
+import { default as Template, TemplateToBinding, TemplateIfBinding } from '../src/template';
 import View from '../src/view';
 import ViewCollection from '../src/viewcollection';
 import Model from '../src/model';
@@ -323,12 +322,14 @@ describe( 'Template', () => {
 							}
 						} );
 
-						expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="width:10px;height:10px;background-color:yellow;"></p>' );
+						expect( normalizeHtml( el.outerHTML ) )
+							.to.equal( '<p style="width:10px;height:10px;background-color:yellow;"></p>' );
 
 						observable.width = '20px';
 						observable.backgroundColor = 'green';
 
-						expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="width:20px;height:10px;background-color:green;"></p>' );
+						expect( normalizeHtml( el.outerHTML ) )
+							.to.equal( '<p style="width:20px;height:10px;background-color:green;"></p>' );
 					} );
 
 					it( 'renders with empty string attributes', () => {
@@ -811,7 +812,8 @@ describe( 'Template', () => {
 						}
 					} ).apply( el );
 
-					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="width:20px;height:10px;float:left;background-color:green;"></p>' );
+					expect( normalizeHtml( el.outerHTML ) )
+						.to.equal( '<p style="width:20px;height:10px;float:left;background-color:green;"></p>' );
 				} );
 
 				it( 'applies when bound to observable', () => {
@@ -1783,7 +1785,7 @@ describe( 'Template', () => {
 								'ck-class',
 								bind.to( 'foo' ),
 								bind.to( 'baz' ),
-								bind.to( 'foo', value => `foo-is-${value}` ),
+								bind.to( 'foo', value => `foo-is-${ value }` ),
 								'ck-end'
 							]
 						},
@@ -1810,7 +1812,7 @@ describe( 'Template', () => {
 									'ck-class',
 									bind.to( 'foo' ),
 									bind.to( 'baz' ),
-									bind.to( 'foo', value => `foo-is-${value}` ),
+									bind.to( 'foo', value => `foo-is-${ value }` ),
 									'ck-end'
 								]
 							}
@@ -1839,7 +1841,8 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = 'bar';
-					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p complex="bar" emptystring="bar" simple="bar" zero="0 bar">abc</p>' );
+					expect( normalizeHtml( el.outerHTML ) )
+						.to.equal( '<p complex="bar" emptystring="bar" simple="bar" zero="0 bar">abc</p>' );
 
 					observable.foo = 0;
 					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p complex="0" emptystring="0" simple="0" zero="0 0">abc</p>' );
@@ -2023,7 +2026,7 @@ describe( 'Template', () => {
 							'class': [
 								'ck-class',
 								bind.if( 'foo', 'foo-set' ),
-								bind.if( 'bar', 'bar-not-set', ( value ) => !value ),
+								bind.if( 'bar', 'bar-not-set', value => !value ),
 								'ck-end'
 							]
 						},

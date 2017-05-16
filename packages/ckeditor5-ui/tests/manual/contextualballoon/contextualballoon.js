@@ -124,7 +124,7 @@ class PluginGeneric extends Plugin {
 			cancel();
 		} );
 
-		this.editor.ui.componentFactory.add( this.label, ( locale ) => {
+		this.editor.ui.componentFactory.add( this.label, locale => {
 			const button = new ButtonView( locale );
 
 			button.label = this.label;

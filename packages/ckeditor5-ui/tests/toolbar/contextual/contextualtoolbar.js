@@ -69,7 +69,7 @@ describe( 'ContextualToolbar', () => {
 		expect( contextualToolbar.toolbarView.items ).to.length( 2 );
 	} );
 
-	it( 'should fire internal `_selectionChangeDebounced` event 200 ms after last selection change', ( done ) => {
+	it( 'should fire internal `_selectionChangeDebounced` event 200 ms after last selection change', done => {
 		// This test uses setTimeout to test lodash#debounce because sinon fake timers
 		// doesn't work with lodash. Lodash keeps time related stuff in a closure
 		// and sinon is not able to override it.
@@ -274,7 +274,7 @@ describe( 'ContextualToolbar', () => {
 	} );
 
 	describe( 'destroy()', () => {
-		it( 'should not fire `_selectionChangeDebounced` after plugin destroy', ( done ) => {
+		it( 'should not fire `_selectionChangeDebounced` after plugin destroy', done => {
 			const spy = sandbox.spy();
 
 			contextualToolbar.on( '_selectionChangeDebounced', spy );
@@ -430,7 +430,9 @@ describe( 'ContextualToolbar', () => {
 			sandbox.stub( domRange, 'getClientRects', () => {
 				return {
 					length: 2,
-					item: id => id === 0 ? forwardSelectionRect : backwardSelectionRect
+					item( id ) {
+						return id === 0 ? forwardSelectionRect : backwardSelectionRect;
+					}
 				};
 			} );
 

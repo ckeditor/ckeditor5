@@ -171,7 +171,7 @@ describe( 'BalloonPanelView', () => {
 				innerHeight: 500,
 				scrollX: 0,
 				scrollY: 0,
-				getComputedStyle: ( el ) => {
+				getComputedStyle: el => {
 					return window.getComputedStyle( el );
 				}
 			};
@@ -186,7 +186,7 @@ describe( 'BalloonPanelView', () => {
 
 			sinon.assert.calledWithExactly( spy, sinon.match( {
 				element: view.element,
-				target: target,
+				target,
 				positions: [
 					BalloonPanelView.defaultPositions.southEastArrowNorthEast,
 					BalloonPanelView.defaultPositions.southWestArrowNorthEast,
@@ -223,7 +223,8 @@ describe( 'BalloonPanelView', () => {
 				expect( view.position ).to.equal( 'arrow_ne' );
 			} );
 
-			it( 'should put balloon on the `south east` side of the target element when target is on the top left side of the limiter', () => {
+			it( 'should put balloon on the `south east` side of the target element when ' +
+				'target is on the top left side of the limiter', () => {
 				mockBoundingBox( target, {
 					top: 0,
 					left: 0,
@@ -262,7 +263,8 @@ describe( 'BalloonPanelView', () => {
 				expect( view.position ).to.equal( 'arrow_se' );
 			} );
 
-			it( 'should put balloon on the `north west` side of the target element when target is on the bottom right of the limiter', () => {
+			it( 'should put balloon on the `north west` side of the target element when ' +
+				'target is on the bottom right of the limiter', () => {
 				mockBoundingBox( target, {
 					top: 450,
 					left: 450,

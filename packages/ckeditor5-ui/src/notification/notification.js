@@ -37,7 +37,7 @@ export default class Notification extends Plugin {
 	init() {
 		// Each unhandled and not stopped `show:warning` event is displayed as system alert.
 		this.on( 'show:warning', ( evt, data ) => {
-			window.alert( data.message );
+			window.alert( data.message ); // eslint-disable-line no-alert
 		}, { priority: 'lowest' } );
 	}
 
@@ -59,7 +59,7 @@ export default class Notification extends Plugin {
 	 */
 	showSuccess( message, data = {} ) {
 		this._showNotification( {
-			message: message,
+			message,
 			type: 'success',
 			namespace: data.namespace
 		} );
@@ -83,7 +83,7 @@ export default class Notification extends Plugin {
 	 */
 	showInfo( message, data = {} ) {
 		this._showNotification( {
-			message: message,
+			message,
 			type: 'info',
 			namespace: data.namespace
 		} );
@@ -130,7 +130,7 @@ export default class Notification extends Plugin {
 	 */
 	showWarning( message, data = {} ) {
 		this._showNotification( {
-			message: message,
+			message,
 			type: 'warning',
 			namespace: data.namespace
 		} );

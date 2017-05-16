@@ -82,7 +82,7 @@ describe( 'ViewCollection', () => {
 						tag: 'li',
 						children: [
 							{
-								text: text
+								text
 							}
 						]
 					} );
@@ -132,7 +132,7 @@ describe( 'ViewCollection', () => {
 
 			const childA = {
 				init: () => {
-					return new Promise( ( resolve ) => {
+					return new Promise( resolve => {
 						setTimeout( () => {
 							spyA();
 							resolve();
@@ -143,7 +143,7 @@ describe( 'ViewCollection', () => {
 
 			const childB = {
 				init: () => {
-					return new Promise( ( resolve ) => {
+					return new Promise( resolve => {
 						setTimeout( () => {
 							spyB();
 							resolve();
@@ -154,7 +154,7 @@ describe( 'ViewCollection', () => {
 
 			const childC = {
 				init: () => {
-					return new Promise( ( resolve ) => {
+					return new Promise( resolve => {
 						setTimeout( () => {
 							spyC();
 							resolve();
@@ -250,8 +250,8 @@ describe( 'ViewCollection', () => {
 
 				init() {
 					return new Promise( resolve => {
-							setTimeout( () => resolve(), this.delay );
-						} )
+						setTimeout( () => resolve(), this.delay );
+					} )
 						.then( () => super.init() )
 						.then( () => {
 							this.spy();
@@ -263,9 +263,9 @@ describe( 'ViewCollection', () => {
 			const viewB = new DelayedInitView( 100, spyB );
 
 			return collection.init().then( () => {
-					collection.add( viewA );
-					collection.add( viewB );
-				} )
+				collection.add( viewA );
+				collection.add( viewB );
+			} )
 				.then( () => {
 					return collection.destroy().then( () => {
 						expect( viewA.ready ).to.be.true;
@@ -362,7 +362,7 @@ describe( 'ViewCollection', () => {
 				expect( returned ).to.be.undefined;
 			} );
 
-			it( 'forwards an event to another observable – existing view', ( done ) => {
+			it( 'forwards an event to another observable – existing view', done => {
 				const target = new View();
 				const view = new View();
 
@@ -383,7 +383,7 @@ describe( 'ViewCollection', () => {
 				view.fire( 'foo' );
 			} );
 
-			it( 'forwards an event to another observable – new view', ( done ) => {
+			it( 'forwards an event to another observable – new view', done => {
 				const target = new View();
 				const view = new View();
 
@@ -512,7 +512,7 @@ describe( 'ViewCollection', () => {
 				sinon.assert.callCount( spy, 1 );
 			} );
 
-			it( 'supports deep event delegation', ( done ) => {
+			it( 'supports deep event delegation', done => {
 				const target = new View();
 				const viewA = new View();
 				const viewAA = new View();

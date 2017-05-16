@@ -267,7 +267,7 @@ function nonFocusable() {
 }
 
 function namedFactory( name ) {
-	return ( locale ) => {
+	return locale => {
 		const view = new View( locale );
 
 		view.name = name;

@@ -30,7 +30,7 @@ describe( 'Model', () => {
 	} );
 
 	it( 'should add properties on creation', () => {
-		let car = new Car( null, {
+		const car = new Car( null, {
 			prop: 1
 		} );
 
