@@ -103,7 +103,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  *
  * At this stage the copied/cut content can be processed by the features.
  *
- * @extends module:core.plugin~Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class Clipboard extends Plugin {
 	/**
@@ -213,13 +213,13 @@ export default class Clipboard extends Plugin {
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
  * @event module:engine/view/document~Document#event:clipboardOutput
- * @param {module:clipboard/clipboard/ClipboardOutputEventData} data Event data.
+ * @param {module:clipboard/clipboard~ClipboardOutputEventData} data Event data.
  */
 
 /**
  * The value of the {@link module:engine/view/document~Document#event:clipboardOutput} event.
  *
- * @class module:clipboard/clipboard/ClipboardOutputEventData
+ * @class module:clipboard/clipboard~ClipboardOutputEventData
  */
 
 /**
