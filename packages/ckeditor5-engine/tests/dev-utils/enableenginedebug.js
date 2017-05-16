@@ -62,7 +62,7 @@ describe( 'enableEngineDebug', () => {
 } );
 
 describe( 'debug tools', () => {
-	let DebugPlugin, log;
+	let DebugPlugin, log, error;
 
 	class TestEditor extends StandardEditor {
 		constructor( ...args ) {
@@ -75,7 +75,8 @@ describe( 'debug tools', () => {
 
 	before( () => {
 		log = sinon.spy();
-		DebugPlugin = enableEngineDebug( log );
+		error = sinon.spy();
+		DebugPlugin = enableEngineDebug( { log, error } );
 	} );
 
 	afterEach( () => {
@@ -766,7 +767,7 @@ describe( 'debug tools', () => {
 		} );
 	} );
 
-	describe( 'should provide means for saving delta history transformation', () => {
+	describe( 'should provide debug tools for delta transformation', () => {
 		let document, root, otherRoot;
 
 		beforeEach( () => {
@@ -892,7 +893,7 @@ describe( 'debug tools', () => {
 			} );
 		} );
 
-		it( 'recreate delta using history', () => {
+		it( 'recreate delta using Delta#history', () => {
 			const deltaA = new MoveDelta();
 			const opA = new MoveOperation( ModelPosition.createAt( root, 4 ), 4, ModelPosition.createAt( otherRoot, 4 ), 0 );
 			deltaA.addOperation( opA );
@@ -930,6 +931,24 @@ describe( 'debug tools', () => {
 			delete recreated.history;
 
 			expect( JSON.stringify( recreated ) ).to.equal( JSON.stringify( original ) );
+		} );
+
+		it( 'provide additional logging when transformation crashes', () => {
+			const deltaA = new MoveDelta();
+			const opA = new MoveOperation( ModelPosition.createAt( root, 4 ), 4, ModelPosition.createAt( otherRoot, 4 ), 0 );
+			deltaA.addOperation( opA );
+
+			const deltaB = new InsertDelta();
+			const opB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
+			deltaB.addOperation( opB );
+
+			deltaTransform.defaultTransform = () => {
+				throw new Error();
+			};
+
+			expect( () => deltaTransform.transform( deltaA, deltaB, true ) ).to.throw( Error );
+			expect( error.calledWith( deltaA.toString() + ' (important)' ) ).to.be.true;
+			expect( error.calledWith( deltaB.toString() ) ).to.be.true;
 		} );
 	} );
 

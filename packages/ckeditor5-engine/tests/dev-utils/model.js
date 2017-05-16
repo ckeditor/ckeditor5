@@ -114,7 +114,7 @@ describe( 'model test utils', () => {
 			test( '[this is test] text' );
 		} );
 
-		it( 'should insert text with selection inside #2', () => {
+		it( 'should insert text with selection inside #3', () => {
 			test( 'this is [test text]' );
 		} );
 
