@@ -590,7 +590,7 @@ describe( 'BalloonPanelView', () => {
 				sinon.assert.calledTwice( attachToSpy );
 			} );
 
-			it( 'should work for rect as a target', () => {
+			it( 'should work for a Rect as a target', () => {
 				// Just check if this normally works without errors.
 				const rect = {};
 
@@ -600,6 +600,17 @@ describe( 'BalloonPanelView', () => {
 
 				limiter.dispatchEvent( new Event( 'scroll' ) );
 
+				sinon.assert.calledTwice( attachToSpy );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5-ui/issues/227
+			it( 'should react to #scroll from anywhere when the target is not an HTMLElement or Range', () => {
+				const rect = {};
+
+				view.pin( { target: rect } );
+				sinon.assert.calledOnce( attachToSpy );
+
+				notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
 				sinon.assert.calledTwice( attachToSpy );
 			} );
 		} );
