@@ -33,7 +33,7 @@ viewDocument.on( 'selectionChange', ( evt, data ) => {
 
 viewDocument.on( 'mouseup', ( evt, data ) => {
 	if ( data.target == viewStrong ) {
-		console.log( 'Making selection around the <strong>.' ); // eslint-disable-line no-console
+		console.log( 'Making selection around the <strong>.' );
 
 		const range = ViewRange.createOn( viewStrong );
 		viewDocument.selection.setRanges( [ range ] );
@@ -64,14 +64,14 @@ viewDocument.on( 'focus', () => {
 	viewStrong.addClass( 'focused' );
 	viewDocument.render();
 
-	console.log( 'The document was focused.' ); // eslint-disable-line no-console
+	console.log( 'The document was focused.' );
 } );
 
 viewDocument.on( 'blur', () => {
 	viewStrong.removeClass( 'focused' );
 	viewDocument.render();
 
-	console.log( 'The document was blurred.' ); // eslint-disable-line no-console
+	console.log( 'The document was blurred.' );
 } );
 
 setData( viewDocument, '<container:p>{}foo<strong contenteditable="false">bar</strong>baz</container:p>' );

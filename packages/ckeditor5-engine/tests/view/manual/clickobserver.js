@@ -38,7 +38,6 @@ class ClickObserver2 extends DomEventObserver {
 
 const observer1 = new ClickObserver1( viewDocument );
 
-// eslint-disable-next-line no-console
 viewDocument.on( 'click', ( evt, evtData ) => console.log( 'click', evtData.id, evtData.domTarget.id ) );
 document.getElementById( 'enable1' ).addEventListener( 'click', () => observer1.enable() );
 document.getElementById( 'disable1' ).addEventListener( 'click', () => observer1.disable() );

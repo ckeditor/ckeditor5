@@ -28,5 +28,5 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	viewDoc.render();
 } )
 .catch( err => {
-	console.error( err.stack ); // eslint-disable-line no-console
+	console.error( err.stack );
 } );

@@ -57,7 +57,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	} );
 } )
 .catch( err => {
-	console.error( err.stack ); // eslint-disable-line no-console
+	console.error( err.stack );
 } );
 
 function uid() {

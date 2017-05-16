@@ -11,7 +11,7 @@ import { setData } from '../../../src/dev-utils/view';
 const viewDocument = new Document();
 viewDocument.createRoot( document.getElementById( 'editor' ) );
 
-viewDocument.on( 'mutations', ( evt, mutations ) => console.log( mutations ) ); // eslint-disable-line no-console
+viewDocument.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
 viewDocument.on( 'selectionChange', ( evt, data ) => {
 	viewDocument.selection.setTo( data.newSelection );
 } );

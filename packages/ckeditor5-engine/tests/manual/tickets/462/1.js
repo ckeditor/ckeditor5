@@ -20,7 +20,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	window.editor = editor;
 
 	setInterval( () => {
-		/* eslint-disable no-console */
 		console.clear();
 
 		const domSelection = document.getSelection();
@@ -30,9 +29,8 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		console.log( 'selection.hasAttribute( italic ):', editor.document.selection.hasAttribute( 'italic' ) );
 		console.log( 'selection.hasAttribute( bold ):', editor.document.selection.hasAttribute( 'bold' ) );
 		console.log( 'selection anchor\'s parentNode:', selectionExists ? domSelection.anchorNode.parentNode : 'no DOM selection' );
-		/* eslint-enable no-console */
 	}, 2000 );
 } )
 .catch( err => {
-	console.error( err.stack ); // eslint-disable-line no-console
+	console.error( err.stack );
 } );

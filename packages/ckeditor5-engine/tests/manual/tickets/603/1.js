@@ -24,10 +24,9 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 	sel.on( 'change', ( evt, data ) => {
 		const date = new Date();
-		// eslint-disable-next-line no-console
 		console.log( `${ date.getSeconds() }s${ String( date.getMilliseconds() ).slice( 0, 2 ) }ms`, evt.name, data );
 	} );
 } )
 .catch( err => {
-	console.error( err.stack ); // eslint-disable-line no-console
+	console.error( err.stack );
 } );

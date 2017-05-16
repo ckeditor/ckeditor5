@@ -10,8 +10,8 @@ import { setData } from '../../../src/dev-utils/view';
 
 const viewDocument = new Document();
 
-viewDocument.on( 'focus', ( evt, data ) => console.log( `Focus in ${ data.domTarget.id }.` ) ); // eslint-disable-line no-console
-viewDocument.on( 'blur', ( evt, data ) => console.log( `Blur in ${ data.domTarget.id }.` ) ); // eslint-disable-line no-console
+viewDocument.on( 'focus', ( evt, data ) => console.log( `Focus in ${ data.domTarget.id }.` ) );
+viewDocument.on( 'blur', ( evt, data ) => console.log( `Blur in ${ data.domTarget.id }.` ) );
 
 const domEditable1 = document.getElementById( 'editable1' );
 const domEditable2 = document.getElementById( 'editable2' );

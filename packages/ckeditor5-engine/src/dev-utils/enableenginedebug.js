@@ -62,7 +62,7 @@ const LOG_SEPARATOR = '-------';
 let enabled = false;
 
 // Logging function used to log debug messages.
-let log = console.log; // eslint-disable-line no-console
+let log = console.log;
 
 /**
  * Enhances model classes with logging methods. Returns a plugin that should be loaded in the editor to
