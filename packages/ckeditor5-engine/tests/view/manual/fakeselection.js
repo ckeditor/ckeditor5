@@ -13,7 +13,7 @@ import { setData } from '../../../src/dev-utils/view';
 const viewDocument = new ViewDocument();
 const domEditable = document.getElementById( 'editor' );
 const viewRoot = viewDocument.createRoot( domEditable );
-let viewStrong; // eslint-disable-line prefer-const
+let viewStrong;
 
 // Add mouseup oberver.
 viewDocument.addObserver( class extends DomEventObserver {
