@@ -27,9 +27,7 @@ class FooOperation extends Operation {
 	}
 
 	getReversed() {
-		/* jshint ignore:start */
 		return new BarOperation( this.string, this.baseVersion );
-		/* jshint ignore:end */
 	}
 }
 

@@ -94,7 +94,7 @@ describe( 'TextProxy', () => {
 		} );
 
 		it( 'should return null if element is inside DocumentFragment', () => {
-			new DocumentFragment( [ wrapper ] );
+			new DocumentFragment( [ wrapper ] ); // eslint-disable-line no-new
 
 			expect( textProxy.document ).to.be.null;
 		} );

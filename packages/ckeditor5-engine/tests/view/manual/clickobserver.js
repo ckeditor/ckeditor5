@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals console:false, document */
+/* globals console, document */
 
 import Document from '../../../src/view/document';
 import DomEventObserver from '../../../src/view/observer/domeventobserver';

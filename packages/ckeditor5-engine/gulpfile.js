@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* jshint browser: false, node: true, strict: true */
+/* eslint-env node */
 
 'use strict';
 

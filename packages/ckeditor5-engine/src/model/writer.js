@@ -114,7 +114,6 @@ export function remove( range ) {
  * @returns {module:engine/model/range~Range} Range containing moved nodes.
  */
 export function move( sourceRange, targetPosition ) {
-	/* jshint validthis:true */
 	if ( !sourceRange.isFlat ) {
 		/**
 		 * Trying to move a range that starts and ends in different element.

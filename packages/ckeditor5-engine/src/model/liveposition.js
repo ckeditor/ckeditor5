@@ -134,7 +134,6 @@ export default class LivePosition extends Position {
  * @method module:engine/model/liveposition~LivePosition.bindWithDocument
  */
 function bindWithDocument() {
-	/* jshint validthis: true */
 	// Operation types handled by LivePosition (these are operations that change model tree structure).
 	const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
 
