@@ -11,13 +11,14 @@
     "@ckeditor/ckeditor5-utils": "^0.9.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
+    "@ckeditor/ckeditor5-dev-lint": "^3.0.0",
     "@ckeditor/ckeditor5-basic-styles": "^0.8.1",
     "@ckeditor/ckeditor5-enter": "^0.9.1",
     "@ckeditor/ckeditor5-heading": "^0.9.1",
     "@ckeditor/ckeditor5-paragraph": "^0.8.0",
     "@ckeditor/ckeditor5-undo": "^0.8.1",
     "@ckeditor/ckeditor5-typing": "^0.9.1",
+    "eslint-config-ckeditor5": "^1.0.0",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.4.0"
   },
