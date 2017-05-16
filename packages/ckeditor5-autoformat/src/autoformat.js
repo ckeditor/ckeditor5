@@ -83,8 +83,8 @@ export default class Autoformat extends Plugin {
 	 * @private
 	 */
 	_addListAutoformats() {
-		new BlockAutoformatEngine( this.editor, /^[\*\-]\s$/, 'bulletedList' );
-		new BlockAutoformatEngine( this.editor, /^\d+[\.|)]?\s$/, 'numberedList' );
+		new BlockAutoformatEngine( this.editor, /^[*-]\s$/, 'bulletedList' ); // eslint-disable-line no-new
+		new BlockAutoformatEngine( this.editor, /^\d+[.|)]?\s$/, 'numberedList' ); // eslint-disable-line no-new
 	}
 
 	/**
@@ -94,7 +94,8 @@ export default class Autoformat extends Plugin {
 	 * @private
 	 */
 	_addHeadingAutoformats() {
-		new BlockAutoformatEngine( this.editor, /^(#{1,3})\s$/, ( context ) => {
+		// eslint-disable-next-line no-new
+		new BlockAutoformatEngine( this.editor, /^(#{1,3})\s$/, context => {
 			const { batch, match } = context;
 			const headingLevel = match[ 1 ].length;
 
@@ -114,12 +115,14 @@ export default class Autoformat extends Plugin {
 	 * @private
 	 */
 	_addInlineAutoformats() {
-		new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+)(\*\*)$/g, 'bold' );
+		/* eslint-disable no-new */
+		new InlineAutoformatEngine( this.editor, /(\*\*)([^*]+)(\*\*)$/g, 'bold' );
 		new InlineAutoformatEngine( this.editor, /(__)([^_]+)(__)$/g, 'bold' );
 
 		// The italic autoformatter cannot be triggered by the bold markers, so we need to check the
 		// text before the pattern (e.g. `(?:^|[^\*])`).
-		new InlineAutoformatEngine( this.editor, /(?:^|[^\*])(\*)([^\*_]+)(\*)$/g, 'italic' );
+		new InlineAutoformatEngine( this.editor, /(?:^|[^*])(\*)([^*_]+)(\*)$/g, 'italic' );
 		new InlineAutoformatEngine( this.editor, /(?:^|[^_])(_)([^_]+)(_)$/g, 'italic' );
+		/* eslint-enable no-new */
 	}
 }
