@@ -330,9 +330,9 @@ export default class View {
 	 * @protected
 	 */
 	_addTemplateChildren() {
-		const search = ( def ) => {
+		const search = def => {
 			if ( def.children ) {
-				for ( let defOrView of def.children ) {
+				for ( const defOrView of def.children ) {
 					if ( defOrView instanceof View ) {
 						this.addChildren( defOrView );
 					} else {

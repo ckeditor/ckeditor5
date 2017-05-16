@@ -25,8 +25,8 @@ describe( 'clickOutsideHandler', () => {
 
 		clickOutsideHandler( {
 			emitter: Object.create( DomEmitterMixin ),
-			activator: activator,
-			contextElement: contextElement,
+			activator,
+			contextElement,
 			callback: actionSpy
 		} );
 	} );
@@ -74,8 +74,8 @@ describe( 'clickOutsideHandler', () => {
 
 		clickOutsideHandler( {
 			emitter: Object.create( DomEmitterMixin ),
-			activator: activator,
-			contextElement: contextElement,
+			activator,
+			contextElement,
 			callback: spy
 		} );
 
@@ -91,8 +91,8 @@ describe( 'clickOutsideHandler', () => {
 
 		clickOutsideHandler( {
 			emitter: Object.create( DomEmitterMixin ),
-			activator: activator,
-			contextElement: contextElement,
+			activator,
+			contextElement,
 			callback: spy
 		} );
 

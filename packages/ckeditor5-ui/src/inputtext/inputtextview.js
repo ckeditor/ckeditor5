@@ -62,7 +62,9 @@ export default class InputTextView extends View {
 		} );
 
 		// Note: `value` cannot be an HTML attribute, because it doesn't change HTMLInputElement value once changed.
-		this.on( 'change:value', ( evt, propertyName, value ) => this.element.value = value || '' );
+		this.on( 'change:value', ( evt, propertyName, value ) => {
+			this.element.value = value || '';
+		} );
 	}
 
 	/**

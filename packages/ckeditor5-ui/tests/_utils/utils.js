@@ -35,14 +35,13 @@ const utils = {
 
 				this.element = document.body;
 
-				for ( let name in regions ) {
+				for ( const name in regions ) {
 					const regionCollection = this[ name ] = this.createCollection();
 					const callbackOrSelector = regions[ name ];
 
 					regionCollection.setParent(
 						typeof callbackOrSelector == 'string' ?
-								document.querySelector( callbackOrSelector )
-							:
+								document.querySelector( callbackOrSelector )							:
 								callbackOrSelector( this.element )
 					);
 				}

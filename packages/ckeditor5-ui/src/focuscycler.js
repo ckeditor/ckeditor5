@@ -101,14 +101,14 @@ export default class FocusCycler {
 		 */
 
 		if ( options.actions && options.keystrokeHandler ) {
-			for ( let methodName in options.actions ) {
+			for ( const methodName in options.actions ) {
 				let actions = options.actions[ methodName ];
 
 				if ( typeof actions == 'string' ) {
 					actions = [ actions ];
 				}
 
-				for ( let keystroke of actions ) {
+				for ( const keystroke of actions ) {
 					options.keystrokeHandler.set( keystroke, ( data, cancel ) => {
 						this[ methodName ]();
 						cancel();
@@ -241,7 +241,7 @@ export default class FocusCycler {
 	 */
 	_getFocusableItem( step ) {
 		// Cache for speed.
-		let current = this.current;
+		const current = this.current;
 		const collectionLength = this.focusables.length;
 
 		if ( !collectionLength ) {
@@ -258,7 +258,7 @@ export default class FocusCycler {
 		let index = ( current + collectionLength + step ) % collectionLength;
 
 		do {
-			let view = this.focusables.get( index );
+			const view = this.focusables.get( index );
 
 			// TODO: Check if view is visible.
 			if ( isFocusable( view ) ) {

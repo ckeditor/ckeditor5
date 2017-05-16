@@ -157,7 +157,7 @@ export default class ContextualToolbar extends Plugin {
 			return Promise.resolve();
 		}
 
-		const showPromise = new Promise( ( resolve ) => {
+		const showPromise = new Promise( resolve => {
 			// If `beforeShow` event is not stopped by any external code then panel will be displayed.
 			this.once( 'beforeShow', () => {
 				if ( isStopped ) {

@@ -22,8 +22,8 @@ describe( 'FocusCycler', () => {
 			focusedElement: null
 		};
 		cycler = new FocusCycler( {
-			focusables: focusables,
-			focusTracker: focusTracker
+			focusables,
+			focusTracker
 		} );
 
 		testUtils.sinon.stub( global.window, 'getComputedStyle' );

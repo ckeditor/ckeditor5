@@ -104,12 +104,12 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'add()', () => {
-		it( 'should return promise resolved when view is ready', ( done ) => {
+		it( 'should return promise resolved when view is ready', done => {
 			const clock = sinon.useFakeTimers();
 
 			const view = {
 				init: () => {
-					return new Promise( ( resolve ) => {
+					return new Promise( resolve => {
 						setTimeout( () => {
 							resolve();
 						}, 10 );
@@ -119,7 +119,7 @@ describe( 'ContextualBalloon', () => {
 			};
 
 			const result = balloon.add( {
-				view: view,
+				view,
 				position: { target: 'fake' }
 			} );
 
@@ -183,7 +183,7 @@ describe( 'ContextualBalloon', () => {
 			const view = new View();
 
 			balloon.add( {
-				view: view,
+				view,
 				position: { target: 'fake' },
 				balloonClassName: 'foo'
 			} );
@@ -245,12 +245,12 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.visibleView ).to.equal( viewA );
 		} );
 
-		it( 'should wait for init of preceding view when was is not ready', ( done ) => {
+		it( 'should wait for init of preceding view when was is not ready', done => {
 			const clock = sinon.useFakeTimers();
 
 			const view = {
 				init: () => {
-					return new Promise( ( resolve ) => {
+					return new Promise( resolve => {
 						setTimeout( () => {
 							resolve();
 						}, 10 );
@@ -260,7 +260,7 @@ describe( 'ContextualBalloon', () => {
 			};
 
 			balloon.add( {
-				view: view,
+				view,
 				position: { target: 'fake' }
 			} );
 
@@ -296,7 +296,7 @@ describe( 'ContextualBalloon', () => {
 			const view = new View();
 
 			balloon.add( {
-				view: view,
+				view,
 				position: { target: 'fake' },
 				balloonClassName: 'foo'
 			} );

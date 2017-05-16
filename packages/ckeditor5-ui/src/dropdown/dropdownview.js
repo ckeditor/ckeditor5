@@ -92,7 +92,9 @@ export default class DropdownView extends View {
 		} );
 
 		// Toggle the the dropdown when it's button has been clicked.
-		this.listenTo( buttonView, 'execute', () => this.isOpen = !this.isOpen );
+		this.listenTo( buttonView, 'execute', () => {
+			this.isOpen = !this.isOpen;
+		} );
 
 		// Toggle the visibility of the panel when the dropdown becomes open.
 		panelView.bind( 'isVisible' ).to( this, 'isOpen' );

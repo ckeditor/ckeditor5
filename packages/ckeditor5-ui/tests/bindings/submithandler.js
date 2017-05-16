@@ -25,7 +25,7 @@ describe( 'submitHandler', () => {
 		submitHandler( { view } );
 	} );
 
-	it( 'should fire #submit event on the view and prevent the native DOM #submit', ( done ) => {
+	it( 'should fire #submit event on the view and prevent the native DOM #submit', done => {
 		const evt = new Event( 'submit' );
 		const spy = sinon.spy( evt, 'preventDefault' );
 

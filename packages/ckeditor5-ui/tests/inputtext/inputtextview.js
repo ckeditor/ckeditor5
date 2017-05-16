@@ -39,7 +39,7 @@ describe( 'InputTextView', () => {
 			} );
 
 			it( 'should set to empty string when using `falsy` values', () => {
-				[ undefined, false, null ].forEach( ( value ) => {
+				[ undefined, false, null ].forEach( value => {
 					view.value = value;
 
 					expect( view.element.value ).to.equal( '' );

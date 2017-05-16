@@ -20,7 +20,7 @@ describe( 'createListDropdown', () => {
 		items = new Collection();
 		model = new Model( {
 			isEnabled: true,
-			items: items,
+			items,
 			isOn: false,
 			label: 'foo'
 		} );
@@ -73,10 +73,10 @@ describe( 'createListDropdown', () => {
 				expect( item.baz ).to.equal( 'foo?' );
 			} );
 
-			it( 'delegates view.listView#execute to the view', ( done ) => {
+			it( 'delegates view.listView#execute to the view', done => {
 				items.add( new Model( { label: 'a', style: 'b' } ) );
 
-				view.on( 'execute', ( evt ) => {
+				view.on( 'execute', evt => {
 					expect( evt.source ).to.equal( view.listView.items.get( 0 ) );
 					expect( evt.path ).to.deep.equal( [ view.listView.items.get( 0 ), view ] );
 

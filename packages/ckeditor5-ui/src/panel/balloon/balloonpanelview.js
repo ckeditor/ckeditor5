@@ -118,7 +118,7 @@ export default class BalloonPanelView extends View {
 			attributes: {
 				class: [
 					'ck-balloon-panel',
-					bind.to( 'position', ( value ) => `ck-balloon-panel_${ value }` ),
+					bind.to( 'position', value => `ck-balloon-panel_${ value }` ),
 					bind.if( 'isVisible', 'ck-balloon-panel_visible' ),
 					bind.if( 'withArrow', 'ck-balloon-panel_with-arrow' ),
 					bind.to( 'className' )
@@ -425,7 +425,7 @@ BalloonPanelView.arrowVerticalOffset = 15;
  * @member {Object} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
  */
 BalloonPanelView.defaultPositions = {
-	southEastArrowNorthEast: ( targetRect ) => ( {
+	southEastArrowNorthEast: targetRect => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_ne'

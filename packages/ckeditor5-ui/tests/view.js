@@ -141,7 +141,7 @@ describe( 'View', () => {
 
 					throw new Error( 'This should not be executed.' );
 				} )
-				.catch( ( err ) => {
+				.catch( err => {
 					expect( err ).to.be.instanceof( CKEditorError );
 					expect( err.message ).to.match( /ui-view-init-re/ );
 				} );
@@ -348,8 +348,8 @@ describe( 'View', () => {
 
 				init() {
 					return new Promise( resolve => {
-							setTimeout( () => resolve(), this.delay );
-						} )
+						setTimeout( () => resolve(), this.delay );
+					} )
 						.then( () => super.init() )
 						.then( () => {
 							this.spy();
