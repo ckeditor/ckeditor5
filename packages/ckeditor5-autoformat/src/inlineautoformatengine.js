@@ -88,10 +88,10 @@ export default class InlineAutoformatEngine {
 		}
 
 		// A test callback run on changed text.
-		testCallback = testCallback || ( ( text ) => {
+		testCallback = testCallback || ( text => {
 			let result;
-			let remove = [];
-			let format = [];
+			const remove = [];
+			const format = [];
 
 			while ( ( result = regExp.exec( text ) ) !== null ) {
 				// There should be full match and 3 capture groups.
@@ -134,7 +134,7 @@ export default class InlineAutoformatEngine {
 
 		// A format callback run on matched text.
 		formatCallback = formatCallback || ( ( batch, validRanges ) => {
-			for ( let range of validRanges ) {
+			for ( const range of validRanges ) {
 				batch.setAttribute( range, command, true );
 			}
 		} );
@@ -156,7 +156,7 @@ export default class InlineAutoformatEngine {
 			const rangesToFormat = [];
 
 			// Apply format before deleting text.
-			ranges.format.forEach( ( range ) => {
+			ranges.format.forEach( range => {
 				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
 					return;
 				}
@@ -170,7 +170,7 @@ export default class InlineAutoformatEngine {
 			const rangesToRemove = [];
 
 			// Reverse order to not mix the offsets while removing.
-			ranges.remove.slice().reverse().forEach( ( range ) => {
+			ranges.remove.slice().reverse().forEach( range => {
 				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
 					return;
 				}
@@ -194,7 +194,7 @@ export default class InlineAutoformatEngine {
 				formatCallback( batch, validRanges );
 
 				// Remove delimiters.
-				for ( let range of rangesToRemove ) {
+				for ( const range of rangesToRemove ) {
 					batch.remove( range );
 				}
 			} );

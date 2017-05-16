@@ -31,7 +31,7 @@ describe( 'BlockAutoformatEngine', () => {
 		it( 'should run a command when the pattern is matched', () => {
 			const spy = testUtils.sinon.spy();
 			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
-			new BlockAutoformatEngine( editor, /^[\*]\s$/, 'testCommand' );
+			new BlockAutoformatEngine( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
@@ -44,7 +44,7 @@ describe( 'BlockAutoformatEngine', () => {
 		it( 'should remove found pattern', () => {
 			const spy = testUtils.sinon.spy();
 			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
-			new BlockAutoformatEngine( editor, /^[\*]\s$/, 'testCommand' );
+			new BlockAutoformatEngine( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
@@ -59,7 +59,7 @@ describe( 'BlockAutoformatEngine', () => {
 	describe( 'Callback', () => {
 		it( 'should run callback when the pattern is matched', () => {
 			const spy = testUtils.sinon.spy();
-			new BlockAutoformatEngine( editor, /^[\*]\s$/, spy );
+			new BlockAutoformatEngine( editor, /^[*]\s$/, spy ); // eslint-disable-line no-new
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
@@ -71,7 +71,7 @@ describe( 'BlockAutoformatEngine', () => {
 
 		it( 'should ignore other delta operations', () => {
 			const spy = testUtils.sinon.spy();
-			new BlockAutoformatEngine( editor, /^[\*]\s/, spy );
+			new BlockAutoformatEngine( editor, /^[*]\s/, spy ); // eslint-disable-line no-new
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
@@ -83,7 +83,7 @@ describe( 'BlockAutoformatEngine', () => {
 
 		it( 'should stop if there is no text to run matching on', () => {
 			const spy = testUtils.sinon.spy();
-			new BlockAutoformatEngine( editor, /^[\*]\s/, spy );
+			new BlockAutoformatEngine( editor, /^[*]\s/, spy ); // eslint-disable-line no-new
 
 			setData( doc, '<paragraph>[]</paragraph>' );
 			doc.enqueueChanges( () => {
