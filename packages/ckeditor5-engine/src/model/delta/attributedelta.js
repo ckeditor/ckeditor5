@@ -90,6 +90,17 @@ export default class AttributeDelta extends Delta {
 	/**
 	 * @inheritDoc
 	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		delete json._range;
+
+		return json;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.model.delta.AttributeDelta';
 	}
