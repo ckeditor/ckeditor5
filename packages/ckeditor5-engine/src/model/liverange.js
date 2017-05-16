@@ -94,16 +94,15 @@ export default class LiveRange extends Range {
  * @method module:engine/model/liverange~LiveRange#bindWithDocument
  */
 function bindWithDocument() {
-	/* jshint validthis: true */
 	// Operation types that a range can be transformed by.
 	const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
 
-	this.listenTo( // eslint-disable-line no-invalid-this
-		this.root.document, // eslint-disable-line no-invalid-this
+	this.listenTo(
+		this.root.document,
 		'change',
 		( event, type, changes, batch, deltaType ) => {
 			if ( supportedTypes.has( type ) ) {
-				transform.call( this, type, deltaType, changes.range, changes.sourcePosition ); // eslint-disable-line no-invalid-this
+				transform.call( this, type, deltaType, changes.range, changes.sourcePosition );
 			}
 		},
 		{ priority: 'high' }
@@ -122,7 +121,6 @@ function bindWithDocument() {
  * @param {module:engine/model/position~Position} [sourcePosition] Source position for move, remove and reinsert change types.
  */
 function transform( changeType, deltaType, targetRange, sourcePosition ) {
-	/* jshint validthis: true */
 	const howMany = targetRange.end.offset - targetRange.start.offset;
 	let targetPosition = targetRange.start;
 
@@ -133,7 +131,6 @@ function transform( changeType, deltaType, targetRange, sourcePosition ) {
 		targetPosition = targetPosition._getTransformedByInsertion( sourcePosition, howMany );
 	}
 
-	// eslint-disable-next-line no-invalid-this
 	const result = this._getTransformedByDocumentChange( changeType, deltaType, targetPosition, howMany, sourcePosition );
 
 	// Decide whether moved part should be included in the range.
@@ -148,7 +145,6 @@ function transform( changeType, deltaType, targetRange, sourcePosition ) {
 
 	const updated = Range.createFromRanges( result );
 
-	/* eslint-disable no-invalid-this */
 	// If anything changed, update the range and fire an event.
 	if ( !updated.isEqual( this ) ) {
 		const oldRange = Range.createFromRange( this );
@@ -158,7 +154,6 @@ function transform( changeType, deltaType, targetRange, sourcePosition ) {
 
 		this.fire( 'change', oldRange );
 	}
-	/* eslint-enable no-invalid-this */
 }
 
 mix( LiveRange, EmitterMixin );

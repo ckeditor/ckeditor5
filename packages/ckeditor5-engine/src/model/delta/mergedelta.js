@@ -94,7 +94,7 @@ export default class MergeDelta extends Delta {
  */
 register( 'merge', function( position ) {
 	const delta = new MergeDelta();
-	this.addDelta( delta ); // eslint-disable-line no-invalid-this
+	this.addDelta( delta );
 
 	const nodeBefore = position.nodeBefore;
 	const nodeAfter = position.nodeAfter;
@@ -124,18 +124,18 @@ register( 'merge', function( position ) {
 		positionAfter,
 		nodeAfter.maxOffset,
 		positionBefore,
-		this.document.version // eslint-disable-line no-invalid-this
+		this.document.version
 	);
 
 	move.isSticky = true;
 	delta.addOperation( move );
-	this.document.applyOperation( move ); // eslint-disable-line no-invalid-this
+	this.document.applyOperation( move );
 
-	const remove = new RemoveOperation( position, 1, this.document.version ); // eslint-disable-line no-invalid-this
+	const remove = new RemoveOperation( position, 1, this.document.version );
 	delta.addOperation( remove );
-	this.document.applyOperation( remove ); // eslint-disable-line no-invalid-this
+	this.document.applyOperation( remove );
 
-	return this; // eslint-disable-line no-invalid-this
+	return this;
 } );
 
 DeltaFactory.register( MergeDelta );

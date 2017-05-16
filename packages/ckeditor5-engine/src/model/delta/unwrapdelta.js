@@ -89,7 +89,7 @@ register( 'unwrap', function( element ) {
 	}
 
 	const delta = new UnwrapDelta();
-	this.addDelta( delta ); // eslint-disable-line no-invalid-this
+	this.addDelta( delta );
 
 	const sourcePosition = Position.createFromParentAndOffset( element, 0 );
 
@@ -97,20 +97,20 @@ register( 'unwrap', function( element ) {
 		sourcePosition,
 		element.maxOffset,
 		Position.createBefore( element ),
-		this.document.version // eslint-disable-line no-invalid-this
+		this.document.version
 	);
 
 	move.isSticky = true;
 	delta.addOperation( move );
-	this.document.applyOperation( move ); // eslint-disable-line no-invalid-this
+	this.document.applyOperation( move );
 
 	// Computing new position because we moved some nodes before `element`.
 	// If we would cache `Position.createBefore( element )` we remove wrong node.
-	const remove = new RemoveOperation( Position.createBefore( element ), 1, this.document.version ); // eslint-disable-line no-invalid-this
+	const remove = new RemoveOperation( Position.createBefore( element ), 1, this.document.version );
 	delta.addOperation( remove );
-	this.document.applyOperation( remove ); // eslint-disable-line no-invalid-this
+	this.document.applyOperation( remove );
 
-	return this; // eslint-disable-line no-invalid-this
+	return this;
 } );
 
 DeltaFactory.register( UnwrapDelta );

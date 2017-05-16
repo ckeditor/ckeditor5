@@ -116,7 +116,7 @@ export default class SplitDelta extends Delta {
  */
 register( 'split', function( position ) {
 	const delta = new SplitDelta();
-	this.addDelta( delta ); // eslint-disable-line no-invalid-this
+	this.addDelta( delta );
 
 	const splitElement = position.parent;
 
@@ -134,24 +134,24 @@ register( 'split', function( position ) {
 	const insert = new InsertOperation(
 		Position.createAfter( splitElement ),
 		copy,
-		this.document.version // eslint-disable-line no-invalid-this
+		this.document.version
 	);
 
 	delta.addOperation( insert );
-	this.document.applyOperation( insert ); // eslint-disable-line no-invalid-this
+	this.document.applyOperation( insert );
 
 	const move = new MoveOperation(
 		position,
 		splitElement.maxOffset - position.offset,
 		Position.createFromParentAndOffset( copy, 0 ),
-		this.document.version // eslint-disable-line no-invalid-this
+		this.document.version
 	);
 	move.isSticky = true;
 
 	delta.addOperation( move );
-	this.document.applyOperation( move ); // eslint-disable-line no-invalid-this
+	this.document.applyOperation( move );
 
-	return this; // eslint-disable-line no-invalid-this
+	return this;
 } );
 
 DeltaFactory.register( SplitDelta );

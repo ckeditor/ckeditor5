@@ -131,9 +131,9 @@ export class RootAttributeDelta extends Delta {
  * @param {*} value Attribute new value.
  */
 register( 'setAttribute', function( itemOrRange, key, value ) {
-	attribute( this, key, value, itemOrRange ); // eslint-disable-line no-invalid-this
+	attribute( this, key, value, itemOrRange );
 
-	return this; // eslint-disable-line no-invalid-this
+	return this;
 } );
 
 /**
@@ -147,9 +147,9 @@ register( 'setAttribute', function( itemOrRange, key, value ) {
  * @param {String} key Attribute key.
  */
 register( 'removeAttribute', function( itemOrRange, key ) {
-	attribute( this, key, null, itemOrRange ); // eslint-disable-line no-invalid-this
+	attribute( this, key, null, itemOrRange );
 
-	return this; // eslint-disable-line no-invalid-this
+	return this;
 } );
 
 function attribute( batch, key, value, itemOrRange ) {

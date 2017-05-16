@@ -101,11 +101,11 @@ AttributeElement.DEFAULT_PRIORITY = DEFAULT_PRIORITY;
 // @returns {Number|null} Block filler offset or `null` if block filler is not needed.
 function getFillerOffset() {
 	// <b>foo</b> does not need filler.
-	if ( this.childCount ) { // eslint-disable-line no-invalid-this
+	if ( this.childCount ) {
 		return null;
 	}
 
-	let element = this.parent; // eslint-disable-line no-invalid-this
+	let element = this.parent;
 
 	// <p><b></b></p> needs filler -> <p><b><br></b></p>
 	while ( element && element.is( 'attributeElement' ) ) {

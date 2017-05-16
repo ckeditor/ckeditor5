@@ -49,19 +49,19 @@ export default class WeakInsertDelta extends InsertDelta {
  */
 register( 'weakInsert', function( position, nodes ) {
 	const delta = new WeakInsertDelta();
-	this.addDelta( delta ); // eslint-disable-line no-invalid-this
+	this.addDelta( delta );
 
 	nodes = normalizeNodes( nodes );
 
 	for ( const node of nodes ) {
-		node.setAttributesTo( this.document.selection.getAttributes() ); // eslint-disable-line no-invalid-this
+		node.setAttributesTo( this.document.selection.getAttributes() );
 	}
 
-	const operation = new InsertOperation( position, nodes, this.document.version ); // eslint-disable-line no-invalid-this
+	const operation = new InsertOperation( position, nodes, this.document.version );
 	delta.addOperation( operation );
-	this.document.applyOperation( operation ); // eslint-disable-line no-invalid-this
+	this.document.applyOperation( operation );
 
-	return this; // eslint-disable-line no-invalid-this
+	return this;
 } );
 
 DeltaFactory.register( WeakInsertDelta );

@@ -108,7 +108,7 @@ function addMoveOperation( batch, delta, sourcePosition, howMany, targetPosition
  */
 register( 'move', function( itemOrRange, targetPosition ) {
 	const delta = new MoveDelta();
-	this.addDelta( delta ); // eslint-disable-line no-invalid-this
+	this.addDelta( delta );
 
 	if ( itemOrRange instanceof Range ) {
 		if ( !itemOrRange.isFlat ) {
@@ -120,13 +120,12 @@ register( 'move', function( itemOrRange, targetPosition ) {
 			throw new CKEditorError( 'batch-move-range-not-flat: Range to move is not flat.' );
 		}
 
-		// eslint-disable-next-line no-invalid-this
 		addMoveOperation( this, delta, itemOrRange.start, itemOrRange.end.offset - itemOrRange.start.offset, targetPosition );
 	} else {
-		addMoveOperation( this, delta, Position.createBefore( itemOrRange ), 1, targetPosition ); // eslint-disable-line no-invalid-this
+		addMoveOperation( this, delta, Position.createBefore( itemOrRange ), 1, targetPosition );
 	}
 
-	return this; // eslint-disable-line no-invalid-this
+	return this;
 } );
 
 DeltaFactory.register( MoveDelta );

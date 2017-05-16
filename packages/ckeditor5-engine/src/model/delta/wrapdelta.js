@@ -137,23 +137,23 @@ register( 'wrap', function( range, elementOrString ) {
 	}
 
 	const delta = new WrapDelta();
-	this.addDelta( delta ); // eslint-disable-line no-invalid-this
+	this.addDelta( delta );
 
-	const insert = new InsertOperation( range.end, element, this.document.version ); // eslint-disable-line no-invalid-this
+	const insert = new InsertOperation( range.end, element, this.document.version );
 	delta.addOperation( insert );
-	this.document.applyOperation( insert ); // eslint-disable-line no-invalid-this
+	this.document.applyOperation( insert );
 
 	const targetPosition = Position.createFromParentAndOffset( element, 0 );
 	const move = new MoveOperation(
 		range.start,
 		range.end.offset - range.start.offset,
 		targetPosition,
-		this.document.version // eslint-disable-line no-invalid-this
+		this.document.version
 	);
 	delta.addOperation( move );
-	this.document.applyOperation( move ); // eslint-disable-line no-invalid-this
+	this.document.applyOperation( move );
 
-	return this; // eslint-disable-line no-invalid-this
+	return this;
 } );
 
 DeltaFactory.register( WrapDelta );

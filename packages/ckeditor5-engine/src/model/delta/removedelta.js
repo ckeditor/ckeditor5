@@ -43,20 +43,20 @@ function addRemoveOperation( batch, delta, position, howMany ) {
  */
 register( 'remove', function( itemOrRange ) {
 	const delta = new RemoveDelta();
-	this.addDelta( delta ); // eslint-disable-line no-invalid-this
+	this.addDelta( delta );
 
 	if ( itemOrRange instanceof Range ) {
 		// The array is reversed, so the ranges are correct and do not have to be updated.
 		const ranges = itemOrRange.getMinimalFlatRanges().reverse();
 
 		for ( const flat of ranges ) {
-			addRemoveOperation( this, delta, flat.start, flat.end.offset - flat.start.offset ); // eslint-disable-line no-invalid-this
+			addRemoveOperation( this, delta, flat.start, flat.end.offset - flat.start.offset );
 		}
 	} else {
-		addRemoveOperation( this, delta, Position.createBefore( itemOrRange ), 1 ); // eslint-disable-line no-invalid-this
+		addRemoveOperation( this, delta, Position.createBefore( itemOrRange ), 1 );
 	}
 
-	return this; // eslint-disable-line no-invalid-this
+	return this;
 } );
 
 DeltaFactory.register( RemoveDelta );

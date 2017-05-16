@@ -65,7 +65,7 @@ export default class MarkerDelta extends Delta {
  */
 register( 'setMarker', function( markerOrName, newRange ) {
 	const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
-	const currentMarker = this.document.markers.get( name ); // eslint-disable-line no-invalid-this
+	const currentMarker = this.document.markers.get( name );
 
 	if ( !newRange && !currentMarker ) {
 		/**
@@ -81,13 +81,13 @@ register( 'setMarker', function( markerOrName, newRange ) {
 	if ( !newRange ) {
 		// If `newRange` is not given, treat this as synchronizing existing marker.
 		// Create `MarkerOperation` with `oldRange` set to `null`, so reverse operation will remove the marker.
-		addOperation( this, name, null, currentRange ); // eslint-disable-line no-invalid-this
+		addOperation( this, name, null, currentRange );
 	} else {
 		// Just change marker range.
-		addOperation( this, name, currentRange, newRange ); // eslint-disable-line no-invalid-this
+		addOperation( this, name, currentRange, newRange );
 	}
 
-	return this; // eslint-disable-line no-invalid-this
+	return this;
 } );
 
 /**
@@ -100,7 +100,7 @@ register( 'setMarker', function( markerOrName, newRange ) {
 register( 'removeMarker', function( markerOrName ) {
 	const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
 
-	if ( !this.document.markers.has( name ) ) { // eslint-disable-line no-invalid-this
+	if ( !this.document.markers.has( name ) ) {
 		/**
 		 * Trying to remove marker that does not exist.
 		 *
@@ -109,11 +109,11 @@ register( 'removeMarker', function( markerOrName ) {
 		throw new CKEditorError( 'batch-removeMarker-no-marker: Trying to remove marker that does not exist.' );
 	}
 
-	const oldRange = this.document.markers.get( name ).getRange(); // eslint-disable-line no-invalid-this
+	const oldRange = this.document.markers.get( name ).getRange();
 
-	addOperation( this, name, oldRange, null ); // eslint-disable-line no-invalid-this
+	addOperation( this, name, oldRange, null );
 
-	return this; // eslint-disable-line no-invalid-this
+	return this;
 } );
 
 function addOperation( batch, name, oldRange, newRange ) {
