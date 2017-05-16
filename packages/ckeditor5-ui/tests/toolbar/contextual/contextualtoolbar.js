@@ -140,7 +140,7 @@ describe( 'ContextualToolbar', () => {
 			editor.editing.view.isFocused = true;
 		} );
 
-		it( 'should return promise', () => {
+		it( 'should return a promise', () => {
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
 
 			const returned = contextualToolbar._showPanel();
@@ -160,7 +160,7 @@ describe( 'ContextualToolbar', () => {
 					view: contextualToolbar.toolbarView,
 					balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
 					position: {
-						target: forwardSelectionRect,
+						target: sinon.match( value => value() == backwardSelectionRect ) ,
 						positions: [ defaultPositions.southEastArrowNorth, defaultPositions.northEastArrowSouth ]
 					}
 				} );
@@ -178,7 +178,7 @@ describe( 'ContextualToolbar', () => {
 						view: contextualToolbar.toolbarView,
 						balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
 						position: {
-							target: backwardSelectionRect,
+							target: sinon.match( value => value() == forwardSelectionRect ),
 							positions: [ defaultPositions.northWestArrowSouth, defaultPositions.southWestArrowNorth ]
 						}
 					} );
