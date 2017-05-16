@@ -26,9 +26,9 @@ describe( 'Collection', () => {
 
 	describe( 'constructor()', () => {
 		it( 'allows to change the id property used by the collection', () => {
-			let item1 = { id: 'foo', name: 'xx' };
-			let item2 = { id: 'foo', name: 'yy' };
-			let collection = new Collection( { idProperty: 'name' } );
+			const item1 = { id: 'foo', name: 'xx' };
+			const item2 = { id: 'foo', name: 'yy' };
+			const collection = new Collection( { idProperty: 'name' } );
 
 			collection.add( item1 );
 			collection.add( item2 );
@@ -56,8 +56,8 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should enable get( index )', () => {
-			let item1 = {};
-			let item2 = {};
+			const item1 = {};
+			const item2 = {};
 
 			collection.add( item1 );
 			expect( collection.get( 0 ) ).to.equal( item1 );
@@ -68,8 +68,8 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should enable get( id )', () => {
-			let item1 = getItem( 'foo' );
-			let item2 = getItem( 'bar' );
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'bar' );
 
 			collection.add( item1 );
 			collection.add( item2 );
@@ -79,9 +79,9 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should enable get( id ) - custom id property', () => {
-			let collection = new Collection( { idProperty: 'name' } );
-			let item1 = getItem( 'foo', 'name' );
-			let item2 = getItem( 'bar', 'name' );
+			const collection = new Collection( { idProperty: 'name' } );
+			const item1 = getItem( 'foo', 'name' );
+			const item2 = getItem( 'bar', 'name' );
 
 			collection.add( item1 );
 			collection.add( item2 );
@@ -91,7 +91,7 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should generate an id when not defined', () => {
-			let item = {};
+			const item = {};
 
 			collection.add( item );
 
@@ -100,8 +100,8 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should generate an id when not defined - custom id property', () => {
-			let collection = new Collection( { idProperty: 'name' } );
-			let item = {};
+			const collection = new Collection( { idProperty: 'name' } );
+			const item = {};
 
 			collection.add( item );
 
@@ -110,7 +110,7 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should not change an existing id of an item', () => {
-			let item = getItem( 'foo' );
+			const item = getItem( 'foo' );
 
 			collection.add( item );
 
@@ -118,8 +118,8 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should throw when item with this id already exists', () => {
-			let item1 = getItem( 'foo' );
-			let item2 = getItem( 'foo' );
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'foo' );
 
 			collection.add( item1 );
 
@@ -129,7 +129,7 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should throw when item\'s id is not a string', () => {
-			let item = { id: 1 };
+			const item = { id: 1 };
 
 			expect( () => {
 				collection.add( item );
@@ -195,8 +195,8 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should fire the "add" event', () => {
-			let spy = sinon.spy();
-			let item = {};
+			const spy = sinon.spy();
+			const item = {};
 
 			collection.on( 'add', spy );
 
@@ -206,10 +206,10 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should support an optional index argument', () => {
-			let item1 = getItem( 'foo' );
-			let item2 = getItem( 'bar' );
-			let item3 = getItem( 'baz' );
-			let item4 = getItem( 'abc' );
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'bar' );
+			const item3 = getItem( 'baz' );
+			const item4 = getItem( 'abc' );
 
 			collection.add( item1 );
 			collection.add( item2, 0 );
@@ -223,9 +223,9 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should throw when index argument is invalid', () => {
-			let item1 = getItem( 'foo' );
-			let item2 = getItem( 'bar' );
-			let item3 = getItem( 'baz' );
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'bar' );
+			const item3 = getItem( 'baz' );
 
 			collection.add( item1 );
 
@@ -244,7 +244,7 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should fire the "add" event with the index argument', () => {
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 
 			collection.add( {} );
 			collection.add( {} );
@@ -260,7 +260,7 @@ describe( 'Collection', () => {
 
 	describe( 'get()', () => {
 		it( 'should return an item', () => {
-			let item = getItem( 'foo' );
+			const item = getItem( 'foo' );
 			collection.add( item );
 
 			expect( collection.get( 'foo' ) ).to.equal( item );
@@ -323,7 +323,7 @@ describe( 'Collection', () => {
 
 			expect( collection ).to.have.length( 3 );
 
-			let removedItem = collection.remove( 1 );
+			const removedItem = collection.remove( 1 );
 
 			expect( collection ).to.have.length( 2 );
 			expect( collection.get( 'foo' ) ).to.be.null;
@@ -332,11 +332,11 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should remove the model by index - custom id property', () => {
-			let collection = new Collection( { idProperty: 'name' } );
+			const collection = new Collection( { idProperty: 'name' } );
 
 			collection.add( getItem( 'foo', 'name' ) );
 
-			let removedItem = collection.remove( 0 );
+			const removedItem = collection.remove( 0 );
 
 			expect( collection ).to.have.length( 0 );
 			expect( collection.get( 'foo' ) ).to.be.null;
@@ -350,7 +350,7 @@ describe( 'Collection', () => {
 
 			expect( collection ).to.have.length( 3 );
 
-			let removedItem = collection.remove( 'foo' );
+			const removedItem = collection.remove( 'foo' );
 
 			expect( collection ).to.have.length( 2 );
 			expect( collection.get( 'foo' ) ).to.be.null;
@@ -359,7 +359,7 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should remove the model by model', () => {
-			let item = getItem( 'foo' );
+			const item = getItem( 'foo' );
 
 			collection.add( getItem( 'bom' ) );
 			collection.add( item );
@@ -367,7 +367,7 @@ describe( 'Collection', () => {
 
 			expect( collection ).to.have.length( 3 );
 
-			let removedItem = collection.remove( item );
+			const removedItem = collection.remove( item );
 
 			expect( collection ).to.have.length( 2 );
 			expect( collection.get( 'foo' ) ).to.be.null;
@@ -376,12 +376,12 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should remove the model by model - custom id property', () => {
-			let collection = new Collection( null, 'name' );
-			let item = getItem( 'foo', 'name' );
+			const collection = new Collection( null, 'name' );
+			const item = getItem( 'foo', 'name' );
 
 			collection.add( item );
 
-			let removedItem = collection.remove( item );
+			const removedItem = collection.remove( item );
 
 			expect( collection ).to.have.length( 0 );
 			expect( collection.get( 'foo' ) ).to.be.null;
@@ -389,15 +389,15 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should fire the "remove" event', () => {
-			let item1 = getItem( 'foo' );
-			let item2 = getItem( 'bar' );
-			let item3 = getItem( 'bom' );
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'bar' );
+			const item3 = getItem( 'bom' );
 
 			collection.add( item1 );
 			collection.add( item2 );
 			collection.add( item3 );
 
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 
 			collection.on( 'remove', spy );
 
@@ -444,12 +444,12 @@ describe( 'Collection', () => {
 
 	describe( 'map()', () => {
 		it( 'uses native map', () => {
-			let spy = testUtils.sinon.stub( Array.prototype, 'map', () => {
+			const spy = testUtils.sinon.stub( Array.prototype, 'map', () => {
 				return [ 'foo' ];
 			} );
-			let ctx = {};
+			const ctx = {};
 
-			let ret = collection.map( callback, ctx );
+			const ret = collection.map( callback, ctx );
 
 			sinon.assert.calledWithExactly( spy, callback, ctx );
 			expect( ret ).to.deep.equal( [ 'foo' ], 'ret value was forwarded' );
@@ -460,14 +460,14 @@ describe( 'Collection', () => {
 
 	describe( 'find()', () => {
 		it( 'uses native find', () => {
-			let needl = getItem( 'foo' );
+			const needl = getItem( 'foo' );
 
-			let spy = testUtils.sinon.stub( Array.prototype, 'find', () => {
+			const spy = testUtils.sinon.stub( Array.prototype, 'find', () => {
 				return needl;
 			} );
-			let ctx = {};
+			const ctx = {};
 
-			let ret = collection.find( callback, ctx );
+			const ret = collection.find( callback, ctx );
 
 			sinon.assert.calledWithExactly( spy, callback, ctx );
 			expect( ret ).to.equal( needl, 'ret value was forwarded' );
@@ -478,14 +478,14 @@ describe( 'Collection', () => {
 
 	describe( 'filter()', () => {
 		it( 'uses native filter', () => {
-			let needl = getItem( 'foo' );
+			const needl = getItem( 'foo' );
 
-			let spy = testUtils.sinon.stub( Array.prototype, 'filter', () => {
+			const spy = testUtils.sinon.stub( Array.prototype, 'filter', () => {
 				return [ needl ];
 			} );
-			let ctx = {};
+			const ctx = {};
 
-			let ret = collection.filter( callback, ctx );
+			const ret = collection.filter( callback, ctx );
 
 			sinon.assert.calledWithExactly( spy, callback, ctx );
 			expect( ret ).to.deep.equal( [ needl ], 'ret value was forwarded' );
@@ -642,7 +642,7 @@ describe( 'Collection', () => {
 
 			describe( 'callback', () => {
 				it( 'creates a binding (arrow function)', () => {
-					collection.bindTo( items ).using( ( item ) => {
+					collection.bindTo( items ).using( item => {
 						return new FactoryClass( item );
 					} );
 
@@ -1000,16 +1000,16 @@ describe( 'Collection', () => {
 
 	describe( 'iterator', () => {
 		it( 'covers the whole collection', () => {
-			let item1 = getItem( 'foo' );
-			let item2 = getItem( 'bar' );
-			let item3 = getItem( 'bom' );
-			let items = [];
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'bar' );
+			const item3 = getItem( 'bom' );
+			const items = [];
 
 			collection.add( item1 );
 			collection.add( item2 );
 			collection.add( item3 );
 
-			for ( let item of collection ) {
+			for ( const item of collection ) {
 				items.push( item.id );
 			}
 

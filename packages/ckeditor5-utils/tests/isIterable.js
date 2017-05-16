@@ -8,13 +8,13 @@ import isIterable from '../src/isiterable';
 describe( 'utils', () => {
 	describe( 'isIterable', () => {
 		it( 'should be true for string', () => {
-			let string = 'foo';
+			const string = 'foo';
 
 			expect( isIterable( string ) ).to.be.true;
 		} );
 
 		it( 'should be true for arrays', () => {
-			let array = [ 1, 2, 3 ];
+			const array = [ 1, 2, 3 ];
 
 			expect( isIterable( array ) ).to.be.true;
 		} );
@@ -30,13 +30,13 @@ describe( 'utils', () => {
 				}
 			}
 
-			let instance = new IterableClass();
+			const instance = new IterableClass();
 
 			expect( isIterable( instance ) ).to.be.true;
 		} );
 
 		it( 'should be false for not iterable objects', () => {
-			let notIterable = { foo: 'bar' };
+			const notIterable = { foo: 'bar' };
 
 			expect( isIterable( notIterable ) ).to.be.false;
 		} );

@@ -16,7 +16,7 @@ const positions = {
 		left: targetRect.left,
 		name: 'above'
 	} ),
-	below: ( targetRect ) => ( {
+	below: targetRect => ( {
 		top: targetRect.bottom + 50,
 		left: targetRect.left,
 		name: 'below'
@@ -26,12 +26,12 @@ const positions = {
 function updateSourcePosition() {
 	const position = getOptimalPosition( {
 		element: source,
-		target: target,
+		target,
 		positions: [
 			positions.above,
 			positions.below,
 		],
-		limiter: limiter
+		limiter
 	} );
 
 	source.style.top = position.top + 'px';

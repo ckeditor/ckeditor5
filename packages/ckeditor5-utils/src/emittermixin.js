@@ -46,13 +46,13 @@ const EmitterMixin = {
 		const priority = priorities.get( options.priority );
 
 		callback = {
-			callback: callback,
+			callback,
 			context: options.context || this,
-			priority: priority
+			priority
 		};
 
 		// Add the callback to all callbacks list.
-		for ( let callbacks of lists ) {
+		for ( const callbacks of lists ) {
 			// Add the callback to the list in the right priority position.
 			let added = false;
 
@@ -86,12 +86,12 @@ const EmitterMixin = {
 	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
 	 */
 	once( event, callback, options ) {
-		const onceCallback = function( event ) {
+		const onceCallback = function( event, ...args ) {
 			// Go off() at the first call.
 			event.off();
 
 			// Go with the original callback.
-			callback.apply( this, arguments );
+			callback.call( this, event, ...args );
 		};
 
 		// Make a similar on() call, simply replacing the callback.
@@ -110,7 +110,7 @@ const EmitterMixin = {
 	off( event, callback, context ) {
 		const lists = getCallbacksListsForNamespace( this, event );
 
-		for ( let callbacks of lists ) {
+		for ( const callbacks of lists ) {
 			for ( let i = 0; i < callbacks.length; i++ ) {
 				if ( callbacks[ i ].callback == callback ) {
 					if ( !context || context == callbacks[ i ].context ) {
@@ -137,7 +137,7 @@ const EmitterMixin = {
 	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
 	 */
 	listenTo( emitter, event, callback, options ) {
-		let emitters, emitterId, emitterInfo, eventCallbacks;
+		let emitterInfo, eventCallbacks;
 
 		// _listeningTo contains a list of emitters that this object is listening to.
 		// This list has the following format:
@@ -157,17 +157,17 @@ const EmitterMixin = {
 			this[ _listeningTo ] = {};
 		}
 
-		emitters = this[ _listeningTo ];
+		const emitters = this[ _listeningTo ];
 
 		if ( !_getEmitterId( emitter ) ) {
 			_setEmitterId( emitter );
 		}
 
-		emitterId = _getEmitterId( emitter );
+		const emitterId = _getEmitterId( emitter );
 
 		if ( !( emitterInfo = emitters[ emitterId ] ) ) {
 			emitterInfo = emitters[ emitterId ] = {
-				emitter: emitter,
+				emitter,
 				callbacks: {}
 			};
 		}
@@ -198,10 +198,10 @@ const EmitterMixin = {
 	 * `event`.
 	 */
 	stopListening( emitter, event, callback ) {
-		let emitters = this[ _listeningTo ];
+		const emitters = this[ _listeningTo ];
 		let emitterId = emitter && _getEmitterId( emitter );
-		let emitterInfo = emitters && emitterId && emitters[ emitterId ];
-		let eventCallbacks = emitterInfo && event && emitterInfo.callbacks[ event ];
+		const emitterInfo = emitters && emitterId && emitters[ emitterId ];
+		const eventCallbacks = emitterInfo && event && emitterInfo.callbacks[ event ];
 
 		// Stop if nothing has been listened.
 		if ( !emitters || ( emitter && !emitterInfo ) || ( event && !eventCallbacks ) ) {
@@ -323,8 +323,8 @@ const EmitterMixin = {
 					this._delegations = new Map();
 				}
 
-				for ( let eventName of events ) {
-					let destinations = this._delegations.get( eventName );
+				for ( const eventName of events ) {
+					const destinations = this._delegations.get( eventName );
 
 					if ( !destinations ) {
 						this._delegations.set( eventName, new Map( [ [ emitter, nameOrFunction ] ] ) );
@@ -490,7 +490,7 @@ function createEventNamespace( source, eventName ) {
 		// event we wanted to register.
 
 		// Copy that event's callbacks to newly registered events.
-		for ( let node of newEventNodes ) {
+		for ( const node of newEventNodes ) {
 			node.callbacks = events[ name ].callbacks.slice();
 		}
 
@@ -513,7 +513,7 @@ function getCallbacksListsForNamespace( source, eventName ) {
 	let callbacksLists = [ eventNode.callbacks ];
 
 	for ( let i = 0; i < eventNode.childEvents.length; i++ ) {
-		let childCallbacksLists = getCallbacksListsForNamespace( source, eventNode.childEvents[ i ] );
+		const childCallbacksLists = getCallbacksListsForNamespace( source, eventNode.childEvents[ i ] );
 
 		callbacksLists = callbacksLists.concat( childCallbacksLists );
 	}

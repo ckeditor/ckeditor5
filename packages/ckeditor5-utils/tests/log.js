@@ -18,8 +18,8 @@ describe( 'log', () => {
 
 	describe( 'warn()', () => {
 		it( 'logs the message to the console using console.warn()', () => {
-			let spy = sinon.stub( console, 'warn' );
-			let data = { bar: 1 };
+			const spy = sinon.stub( console, 'warn' );
+			const data = { bar: 1 };
 
 			log.warn( 'foo', data );
 
@@ -34,8 +34,8 @@ describe( 'log', () => {
 
 	describe( 'error()', () => {
 		it( 'logs the message to the console using console.error()', () => {
-			let spy = sinon.stub( console, 'error' );
-			let data = { bar: 1 };
+			const spy = sinon.stub( console, 'error' );
+			const data = { bar: 1 };
 
 			log.error( 'foo', data );
 

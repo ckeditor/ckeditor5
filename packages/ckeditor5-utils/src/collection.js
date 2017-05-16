@@ -410,7 +410,7 @@ export default class Collection {
 			 * @static
 			 * @param {Function} Class Specifies which class factory is to be initialized.
 			 */
-			as: ( Class ) => {
+			as: Class => {
 				this._setUpBindToBinding( item => new Class( item ) );
 			},
 
@@ -422,7 +422,7 @@ export default class Collection {
 			 * produce the items. When the string is provided, the property value is used to create
 			 * the bound collection items.
 			 */
-			using: ( callbackOrProperty ) => {
+			using: callbackOrProperty => {
 				if ( typeof callbackOrProperty == 'function' ) {
 					this._setUpBindToBinding( item => callbackOrProperty( item ) );
 				} else {
@@ -466,7 +466,7 @@ export default class Collection {
 		};
 
 		// Load the initial content of the collection.
-		for ( let externalItem of externalCollection ) {
+		for ( const externalItem of externalCollection ) {
 			addItem( null, externalItem );
 		}
 

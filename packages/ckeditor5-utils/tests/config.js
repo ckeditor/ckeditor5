@@ -335,7 +335,7 @@ describe( 'Config', () => {
 		} );
 
 		it( 'should retrieve a object of the configuration', () => {
-			let resize = config.get( 'resize' );
+			const resize = config.get( 'resize' );
 
 			expect( resize ).to.be.an( 'object' );
 			expect( resize.minHeight ).equal( 300 );

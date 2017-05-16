@@ -31,9 +31,9 @@
  * @param {Object} [...mixins] Objects from which to get properties.
  */
 export default function mix( baseClass, ...mixins ) {
-	mixins.forEach( ( mixin ) => {
+	mixins.forEach( mixin => {
 		Object.getOwnPropertyNames( mixin ).concat( Object.getOwnPropertySymbols( mixin ) )
-			.forEach( ( key ) => {
+			.forEach( key => {
 				if ( key in baseClass.prototype ) {
 					return;
 				}

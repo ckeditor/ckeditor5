@@ -8,6 +8,46 @@ import { getOptimalPosition } from '../../src/dom/position';
 
 let element, target, limiter;
 
+//	+--------+-----+
+//	|    E   |  T  |
+//	+--------+-----+
+const attachLeft = ( targetRect, elementRect ) => ( {
+	top: targetRect.top,
+	left: targetRect.left - elementRect.width,
+	name: 'left'
+} );
+
+//	+-----+--------+
+//	|  T  |    E   |
+//	+-----+--------+
+const attachRight = targetRect => ( {
+	top: targetRect.top,
+	left: targetRect.left + targetRect.width,
+	name: 'right'
+} );
+
+//	+-----+
+//	|  T  |
+//	+-----+--+
+//	|    E   |
+//	+--------+
+const attachBottom = targetRect => ( {
+	top: targetRect.bottom,
+	left: targetRect.left,
+	name: 'bottom'
+} );
+
+//	+--------+
+//	|    E   |
+//	+--+-----+
+//	   |  T  |
+//	   +-----+
+const attachTop = ( targetRect, elementRect ) => ( {
+	top: targetRect.top - elementRect.height,
+	left: targetRect.left - ( elementRect.width - targetRect.width ),
+	name: 'bottom'
+} );
+
 describe( 'getOptimalPosition()', () => {
 	beforeEach( () => {
 		stubWindow( {
@@ -319,46 +359,6 @@ function assertPosition( options, expected ) {
 
 	expect( position ).to.deep.equal( expected );
 }
-
-//	+--------+-----+
-//	|    E   |  T  |
-//	+--------+-----+
-const attachLeft = ( targetRect, elementRect ) => ( {
-	top: targetRect.top,
-	left: targetRect.left - elementRect.width,
-	name: 'left'
-} );
-
-//	+-----+--------+
-//	|  T  |    E   |
-//	+-----+--------+
-const attachRight = ( targetRect ) => ( {
-	top: targetRect.top,
-	left: targetRect.left + targetRect.width,
-	name: 'right'
-} );
-
-//	+-----+
-//	|  T  |
-//	+-----+--+
-//	|    E   |
-//	+--------+
-const attachBottom = ( targetRect ) => ( {
-	top: targetRect.bottom,
-	left: targetRect.left,
-	name: 'bottom'
-} );
-
-//	+--------+
-//	|    E   |
-//	+--+-----+
-//	   |  T  |
-//	   +-----+
-const attachTop = ( targetRect, elementRect ) => ( {
-	top: targetRect.top - elementRect.height,
-	left: targetRect.left - ( elementRect.width - targetRect.width ),
-	name: 'bottom'
-} );
 
 // Returns a synthetic element.
 //

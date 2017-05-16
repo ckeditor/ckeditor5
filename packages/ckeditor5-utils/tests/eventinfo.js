@@ -7,7 +7,7 @@ import EventInfo from '../src/eventinfo';
 
 describe( 'EventInfo', () => {
 	it( 'should be created properly', () => {
-		let event = new EventInfo( this, 'test' );
+		const event = new EventInfo( this, 'test' );
 
 		expect( event.source ).to.equal( this );
 		expect( event.name ).to.equal( 'test' );
@@ -17,7 +17,7 @@ describe( 'EventInfo', () => {
 	} );
 
 	it( 'should have stop() and off() marked', () => {
-		let event = new EventInfo( this, 'test' );
+		const event = new EventInfo( this, 'test' );
 
 		event.stop();
 		event.off();

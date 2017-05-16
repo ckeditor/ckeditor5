@@ -27,7 +27,7 @@ describe( 'utilsTestUtils.createObserver()', () => {
 		function Emitter() {}
 		Emitter.prototype = EmitterMixin;
 
-		expect( observer  ).to.be.instanceof( Emitter );
+		expect( observer ).to.be.instanceof( Emitter );
 		expect( observer.observe ).is.a( 'function' );
 		expect( observer.stopListening ).is.a( 'function' );
 	} );

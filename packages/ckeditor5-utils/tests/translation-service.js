@@ -33,7 +33,8 @@ describe( 'translation-service', () => {
 		expect( translation ).to.be.equal( 'Anuluj' );
 	} );
 
-	it( 'should return english string without context if the translations for the concrete language exist, but translation doesn\'t', () => {
+	it( 'should return english string without context if the translations for the concrete language exist, ' +
+		'but translation doesn\'t', () => {
 		add( 'pl', {
 			'OK': 'OK',
 			'Cancel [context: reject]': 'Anuluj'

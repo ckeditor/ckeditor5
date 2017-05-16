@@ -8,14 +8,14 @@ import spy from '../src/spy';
 describe( 'utils', () => {
 	describe( 'spy', () => {
 		it( 'should not have `called` after creation', () => {
-			let fn = spy();
+			const fn = spy();
 
 			expect( fn.called ).to.not.be.true;
 		} );
 
 		it( 'should register calls', () => {
-			let fn1 = spy();
-			let fn2 = spy();
+			const fn1 = spy();
+			const fn2 = spy();
 
 			fn1();
 

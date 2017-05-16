@@ -48,7 +48,7 @@ export default function diffToChanges( diff, output ) {
 
 				lastOperation = {
 					type: 'insert',
-					index: index,
+					index,
 					values: [ output[ index ] ]
 				};
 			}
@@ -62,7 +62,7 @@ export default function diffToChanges( diff, output ) {
 
 				lastOperation = {
 					type: 'delete',
-					index: index,
+					index,
 					howMany: 1
 				};
 			}

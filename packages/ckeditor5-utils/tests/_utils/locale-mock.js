@@ -10,6 +10,6 @@
  */
 export default class Locale {
 	constructor() {
-		this.t = ( str ) => `t( ${ str } )`;
+		this.t = str => `t( ${ str } )`;
 	}
 }

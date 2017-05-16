@@ -58,7 +58,7 @@ export default class Locale {
 		let translatedString = translate( this.lang, str );
 
 		if ( values ) {
-			translatedString = translatedString.replace( /\%(\d+)/g, ( match, index ) => {
+			translatedString = translatedString.replace( /%(\d+)/g, ( match, index ) => {
 				return ( index < values.length ) ? values[ index ] : match;
 			} );
 		}

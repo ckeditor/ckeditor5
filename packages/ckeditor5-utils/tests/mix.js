@@ -35,7 +35,7 @@ describe( 'utils', () => {
 			class Foo {}
 			mix( Foo, MixinA );
 
-			let foo = new Foo();
+			const foo = new Foo();
 
 			expect( foo ).to.be.instanceof( Foo );
 		} );
@@ -93,8 +93,6 @@ describe( 'utils', () => {
 			const symbolA = Symbol( 'a' );
 			const symbolFoo = Symbol( 'foo' );
 
-			// https://github.com/jscs-dev/node-jscs/issues/2078
-			// jscs:disable disallowSpacesInFunction
 			class Foo {
 				[ symbolFoo ]() {
 					return 'foo';

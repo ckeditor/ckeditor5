@@ -7,8 +7,7 @@
  * @module utils/dom/emittermixin
  */
 
-import EmitterMixin from '../emittermixin';
-import { _getEmitterListenedTo, _setEmitterId } from '../emittermixin';
+import { default as EmitterMixin, _getEmitterListenedTo, _setEmitterId } from '../emittermixin';
 import uid from '../uid';
 import extend from '../lib/lodash/extend';
 import isNative from '../lib/lodash/isNative';
@@ -88,7 +87,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with corresponding ProxyEmitter.
 		if ( isDomNode( emitter ) ) {
-			let proxy = this._getProxyEmitter( emitter );
+			const proxy = this._getProxyEmitter( emitter );
 
 			// Element has no listeners.
 			if ( !proxy ) {
@@ -188,7 +187,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 */
 	on( event, callback, options = {} ) {
 		// Execute parent class method first.
-		EmitterMixin.on.apply( this, arguments );
+		EmitterMixin.on.call( this, event, callback, options );
 
 		// If the DOM Listener for given event already exist it is pointless
 		// to attach another one.
@@ -220,9 +219,9 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 *
 	 * @method module:utils/dom/emittermixin~ProxyEmitter#off
 	 */
-	off( event ) {
+	off( event, callback, context ) {
 		// Execute parent class method first.
-		EmitterMixin.off.apply( this, arguments );
+		EmitterMixin.off.call( this, event, callback, context );
 
 		let events;
 

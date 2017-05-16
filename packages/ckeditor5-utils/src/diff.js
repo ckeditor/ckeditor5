@@ -24,15 +24,15 @@
 export default function diff( a, b, cmp ) {
 	// Set the comparator function.
 	cmp = cmp || function( a, b ) {
-			return a === b;
-		};
+		return a === b;
+	};
 
 	// Temporary action type statics.
 	let _insert, _delete;
 
 	// Swapped the arrays to use the shorter one as the first one.
 	if ( b.length < a.length ) {
-		let tmp = a;
+		const tmp = a;
 
 		a = b;
 		b = tmp;

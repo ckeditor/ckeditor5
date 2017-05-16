@@ -61,7 +61,7 @@ describe( 'KeystrokeHandler', () => {
 			expect( wasHandled ).to.be.true;
 		} );
 
-		it( 'provides a callback which both preventDefault and stopPropagation', ( done ) => {
+		it( 'provides a callback which both preventDefault and stopPropagation', done => {
 			const keyEvtData = getCtrlA();
 
 			Object.assign( keyEvtData, {

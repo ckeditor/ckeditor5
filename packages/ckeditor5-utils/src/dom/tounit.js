@@ -23,5 +23,5 @@ export default function toUnit( unit ) {
  	 * @param {*} value A value to be given the unit.
  	 * @returns {String} A value with the trailing unit.
 	 */
-	return ( value ) => value + unit;
+	return value => value + unit;
 }

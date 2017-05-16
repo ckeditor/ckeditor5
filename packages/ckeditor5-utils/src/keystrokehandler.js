@@ -91,7 +91,7 @@ export default class KeystrokeHandler {
 			return false;
 		}
 
-		for ( let callback of callbacks ) {
+		for ( const callback of callbacks ) {
 			callback( keyEventData, () => {
 				keyEventData.preventDefault();
 				keyEventData.stopPropagation();
