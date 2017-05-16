@@ -46,7 +46,7 @@ describe( 'Batch', () => {
 			sinon.spy( doc, 'applyOperation' );
 			batch.weakInsert( new Position( root, [ 2 ] ), 'xyz' );
 
-			const correctDeltaMatcher = sinon.match( ( operation ) => {
+			const correctDeltaMatcher = sinon.match( operation => {
 				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
 			} );
 
@@ -55,7 +55,7 @@ describe( 'Batch', () => {
 	} );
 } );
 
-describe( 'WeakInsertDelta', ()=> {
+describe( 'WeakInsertDelta', () => {
 	it( 'should provide proper className', () => {
 		expect( WeakInsertDelta.className ).to.equal( 'engine.model.delta.WeakInsertDelta' );
 	} );

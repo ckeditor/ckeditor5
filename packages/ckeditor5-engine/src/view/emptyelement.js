@@ -49,8 +49,8 @@ export default class EmptyElement extends Element {
 
 	/**
 	 * Overrides {@link module:engine/view/element~Element#insertChildren} method.
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-emptyelement-cannot-add` to prevent adding any child nodes
-	 * to EmptyElement.
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-emptyelement-cannot-add` to prevent
+	 * adding any child nodes to EmptyElement.
 	 */
 	insertChildren( index, nodes ) {
 		if ( nodes && ( nodes instanceof Node || Array.from( nodes ).length > 0 ) ) {

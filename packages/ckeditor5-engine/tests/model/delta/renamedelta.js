@@ -78,7 +78,7 @@ describe( 'RenameDelta', () => {
 
 	describe( 'getReversed', () => {
 		it( 'should return instance of RenameDelta', () => {
-			let reversed = renameDelta.getReversed();
+			const reversed = renameDelta.getReversed();
 
 			expect( reversed ).to.be.instanceof( RenameDelta );
 		} );

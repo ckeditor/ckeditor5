@@ -206,7 +206,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should fire change:range event when adding a range', () => {
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
 			selection.addRange( range );
@@ -514,7 +514,7 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'setRanges()', () => {
-		let newRanges, spy, oldRanges;
+		let newRanges, spy;
 
 		beforeEach( () => {
 			newRanges = [
@@ -527,8 +527,6 @@ describe( 'Selection', () => {
 
 			spy = sinon.spy();
 			selection.on( 'change:range', spy );
-
-			oldRanges = selection._ranges;
 		} );
 
 		it( 'should throw an error when range is invalid', () => {
@@ -540,7 +538,7 @@ describe( 'Selection', () => {
 		it( 'should remove all ranges and add given ranges', () => {
 			selection.setRanges( newRanges );
 
-			let ranges = Array.from( selection.getRanges() );
+			const ranges = Array.from( selection.getRanges() );
 			expect( ranges ).to.deep.equal( newRanges );
 		} );
 
@@ -607,7 +605,7 @@ describe( 'Selection', () => {
 			// A random range that is not first.
 			selection.addRange( range3 );
 
-			let range = selection.getFirstRange();
+			const range = selection.getFirstRange();
 
 			expect( range.start.path ).to.deep.equal( [ 1 ] );
 			expect( range.end.path ).to.deep.equal( [ 4 ] );
@@ -629,7 +627,7 @@ describe( 'Selection', () => {
 			// A random range that is not first.
 			selection.addRange( range3 );
 
-			let position = selection.getFirstPosition();
+			const position = selection.getFirstPosition();
 
 			expect( position.path ).to.deep.equal( [ 1 ] );
 		} );
@@ -645,7 +643,7 @@ describe( 'Selection', () => {
 			selection.addRange( range1 );
 			selection.addRange( range2 );
 
-			let range = selection.getLastRange();
+			const range = selection.getLastRange();
 
 			expect( range.start.path ).to.deep.equal( [ 6 ] );
 			expect( range.end.path ).to.deep.equal( [ 7 ] );
@@ -662,7 +660,7 @@ describe( 'Selection', () => {
 			selection.addRange( range1 );
 			selection.addRange( range2 );
 
-			let position = selection.getLastPosition();
+			const position = selection.getLastPosition();
 
 			expect( position.path ).to.deep.equal( [ 7 ] );
 		} );
@@ -1019,7 +1017,7 @@ describe( 'Selection', () => {
 			it( 'should not fire change:attribute event if attribute with same key and value was already set', () => {
 				selection.setAttribute( 'foo', 'bar' );
 
-				let spy = sinon.spy();
+				const spy = sinon.spy();
 				selection.on( 'change:attribute', spy );
 
 				selection.setAttribute( 'foo', 'bar' );
@@ -1040,7 +1038,7 @@ describe( 'Selection', () => {
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'xyz' );
 
-				let attrs = Array.from( selection.getAttributes() );
+				const attrs = Array.from( selection.getAttributes() );
 
 				expect( attrs ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'abc', 'xyz' ] ] );
 			} );
@@ -1052,7 +1050,7 @@ describe( 'Selection', () => {
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'xyz' );
 
-				let attrs = Array.from( selection.getAttributeKeys() );
+				const attrs = Array.from( selection.getAttributeKeys() );
 
 				expect( attrs ).to.deep.equal( [ 'foo', 'abc' ] );
 			} );
@@ -1095,7 +1093,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should not fire change:attribute event if there were no attributes', () => {
-				let spy = sinon.spy();
+				const spy = sinon.spy();
 				selection.on( 'change:attribute', spy );
 
 				selection.clearAttributes();
@@ -1125,7 +1123,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should not fire change:attribute event if such attribute did not exist', () => {
-				let spy = sinon.spy();
+				const spy = sinon.spy();
 				selection.on( 'change:attribute', spy );
 
 				selection.removeAttribute( 'foo' );
@@ -1146,7 +1144,7 @@ describe( 'Selection', () => {
 			it( 'should fire only one change:attribute event', () => {
 				selection.setAttributesTo( { foo: 'bar', xxx: 'yyy' } );
 
-				let spy = sinon.spy();
+				const spy = sinon.spy();
 				selection.on( 'change:attribute', spy );
 
 				selection.setAttributesTo( { foo: 'bar', abc: 'def' } );
@@ -1169,7 +1167,7 @@ describe( 'Selection', () => {
 				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttributesTo( { foo: 'bar', xxx: 'yyy' } );
 
-				let spy = sinon.spy();
+				const spy = sinon.spy();
 				selection.on( 'change:attribute', spy );
 
 				selection.setAttributesTo( { xxx: 'yyy', foo: 'bar' } );

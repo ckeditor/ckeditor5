@@ -88,7 +88,7 @@ export default class MarkerOperation extends Operation {
 
 		this._markers[ type ]( this.name, this.newRange );
 
-		return { name: this.name, type: type };
+		return { name: this.name, type };
 	}
 
 	/**

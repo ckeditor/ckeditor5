@@ -231,8 +231,8 @@ describe( 'Range', () => {
 
 		it( 'should return false for ranges with same root and different offsets', () => {
 			const mockObject = {};
-			const range1 = new Range( new Position( mockObject, 0 ), new Position( mockObject, 10 )  );
-			const range2 = new Range( new Position( mockObject, 2 ), new Position( mockObject, 10 )  );
+			const range1 = new Range( new Position( mockObject, 0 ), new Position( mockObject, 10 ) );
+			const range2 = new Range( new Position( mockObject, 2 ), new Position( mockObject, 10 ) );
 
 			expect( range1.isEqual( range2 ) ).to.be.false;
 		} );
@@ -464,7 +464,7 @@ describe( 'Range', () => {
 			const range = getRange( '<p>fo{o</p><p>ba}r</p><p>xyz</p>' );
 			const values = [];
 
-			for ( let value of range.getWalker() ) {
+			for ( const value of range.getWalker() ) {
 				values.push( value );
 			}
 
@@ -482,7 +482,7 @@ describe( 'Range', () => {
 			const walker = range.getWalker( { singleCharacters: true, ignoreElementEnd: true } );
 			const values = [];
 
-			for ( let value of walker ) {
+			for ( const value of walker ) {
 				values.push( value );
 			}
 
@@ -503,7 +503,7 @@ describe( 'Range', () => {
 			const range = getRange( '<p>fo{o</p><p>bar</p><p>xy}z</p>' );
 			const nodes = [];
 
-			for ( let node of range.getItems() ) {
+			for ( const node of range.getItems() ) {
 				nodes.push( node );
 			}
 
@@ -519,7 +519,7 @@ describe( 'Range', () => {
 			const range = getRange( '<p>foo</p><p>b{ar</p><p>xy}z</p>' );
 			const nodes = [];
 
-			for ( let node of range.getItems( { singleCharacters: true } ) ) {
+			for ( const node of range.getItems( { singleCharacters: true } ) ) {
 				nodes.push( node );
 			}
 
@@ -537,7 +537,7 @@ describe( 'Range', () => {
 			const range = getRange( '<p>fo{o</p><p>b}ar</p><p>xyz</p>' );
 			const positions = [];
 
-			for ( let position of range.getPositions() ) {
+			for ( const position of range.getPositions() ) {
 				positions.push( position );
 			}
 
@@ -563,7 +563,7 @@ describe( 'Range', () => {
 			const range = getRange( '<p>foo</p><p>b{ar</p><p>xy}z</p>' );
 			const positions = [];
 
-			for ( let position of range.getPositions( { singleCharacters: true } ) ) {
+			for ( const position of range.getPositions( { singleCharacters: true } ) ) {
 				positions.push( position );
 			}
 

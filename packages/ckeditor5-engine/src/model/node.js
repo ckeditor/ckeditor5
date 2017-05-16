@@ -185,7 +185,7 @@ export default class Node {
 	 * @type {module:engine/model/node~Node|module:engine/model/documentfragment~DocumentFragment}
 	 */
 	get root() {
-		let root = this;
+		let root = this; // eslint-disable-line consistent-this
 
 		while ( root.parent ) {
 			root = root.parent;
@@ -238,7 +238,7 @@ export default class Node {
 	 */
 	getPath() {
 		const path = [];
-		let node = this;
+		let node = this; // eslint-disable-line consistent-this
 
 		while ( node.parent ) {
 			path.unshift( node.startOffset );
@@ -359,7 +359,7 @@ export default class Node {
 	 * @returns {Object} `Node` converted to plain object.
 	 */
 	toJSON() {
-		let json = {};
+		const json = {};
 
 		if ( this._attrs.size ) {
 			json.attributes = [ ...this._attrs ];

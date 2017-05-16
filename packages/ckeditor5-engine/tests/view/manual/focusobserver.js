@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals console:false, document */
+/* globals console, document */
 
 import Document from '../../../src/view/document';
 import { setData } from '../../../src/dev-utils/view';
@@ -27,7 +27,11 @@ viewDocument.on( 'selectionChange', ( evt, data ) => {
 setData( viewDocument, '<container:p>{}First editable.</container:p>', { rootName: 'editable1' } );
 setData( viewDocument, '<container:p>Second editable.</container:p>', { rootName: 'editable2' } );
 
-editable1.on( 'change:isFocused', () => domEditable1.style.backgroundColor = editable1.isFocused ? 'green' : 'red' );
-editable2.on( 'change:isFocused', () => domEditable2.style.backgroundColor = editable2.isFocused ? 'green' : 'red' );
+editable1.on( 'change:isFocused', () => {
+	domEditable1.style.backgroundColor = editable1.isFocused ? 'green' : 'red';
+} );
+editable2.on( 'change:isFocused', () => {
+	domEditable2.style.backgroundColor = editable2.isFocused ? 'green' : 'red';
+} );
 
 viewDocument.focus();

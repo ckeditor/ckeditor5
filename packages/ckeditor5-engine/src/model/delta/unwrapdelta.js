@@ -91,9 +91,15 @@ register( 'unwrap', function( element ) {
 	const delta = new UnwrapDelta();
 	this.addDelta( delta );
 
-	let sourcePosition = Position.createFromParentAndOffset( element, 0 );
+	const sourcePosition = Position.createFromParentAndOffset( element, 0 );
 
-	const move = new MoveOperation( sourcePosition, element.maxOffset, Position.createBefore( element ), this.document.version );
+	const move = new MoveOperation(
+		sourcePosition,
+		element.maxOffset,
+		Position.createBefore( element ),
+		this.document.version
+	);
+
 	move.isSticky = true;
 	delta.addOperation( move );
 	this.document.applyOperation( move );

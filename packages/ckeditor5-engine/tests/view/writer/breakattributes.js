@@ -24,7 +24,7 @@ describe( 'writer', () => {
 			 * @param {String} expected
 			 */
 			function test( input, expected ) {
-				let { view, selection } = parse( input );
+				const { view, selection } = parse( input );
 
 				const newPosition = breakAttributes( selection.getFirstPosition() );
 				expect( stringify( view.root, newPosition, {
@@ -136,7 +136,7 @@ describe( 'writer', () => {
 			 * @param {String} expected
 			 */
 			function test( input, expected ) {
-				let { view, selection } = parse( input );
+				const { view, selection } = parse( input );
 
 				const newRange = breakAttributes( selection.getFirstRange() );
 				expect( stringify( view.root, newRange, { showType: true } ) ).to.equal( expected );
@@ -176,7 +176,9 @@ describe( 'writer', () => {
 			it( 'should break inside text node #1', () => {
 				test(
 					'<container:p><attribute:b>foo{bar}baz</attribute:b></container:p>',
-					'<container:p><attribute:b>foo</attribute:b>[<attribute:b>bar</attribute:b>]<attribute:b>baz</attribute:b></container:p>'
+					'<container:p>' +
+						'<attribute:b>foo</attribute:b>[<attribute:b>bar</attribute:b>]<attribute:b>baz</attribute:b>' +
+					'</container:p>'
 				);
 			} );
 
@@ -231,7 +233,7 @@ describe( 'writer', () => {
 
 			it( 'should throw if breaking inside EmptyElement #1', () => {
 				const img = new EmptyElement( 'img' );
-				new ContainerElement( 'p', null, img );
+				new ContainerElement( 'p', null, img ); // eslint-disable-line no-new
 				const position = new Position( img, 0 );
 
 				expect( () => {
@@ -242,7 +244,7 @@ describe( 'writer', () => {
 			it( 'should throw if breaking inside EmptyElement #2', () => {
 				const img = new EmptyElement( 'img' );
 				const b = new AttributeElement( 'b' );
-				new ContainerElement( 'p', null, [ img, b ] );
+				new ContainerElement( 'p', null, [ img, b ] ); // eslint-disable-line no-new
 				const range = Range.createFromParentsAndOffsets( img, 0, b, 0 );
 
 				expect( () => {
@@ -252,7 +254,7 @@ describe( 'writer', () => {
 
 			it( 'should throw if breaking inside UIElement #1', () => {
 				const span = new UIElement( 'span' );
-				new ContainerElement( 'p', null, span );
+				new ContainerElement( 'p', null, span ); // eslint-disable-line no-new
 				const position = new Position( span, 0 );
 
 				expect( () => {
@@ -263,7 +265,7 @@ describe( 'writer', () => {
 			it( 'should throw if breaking inside UIElement #2', () => {
 				const span = new UIElement( 'span' );
 				const b = new AttributeElement( 'b' );
-				new ContainerElement( 'p', null, [ span, b ] );
+				new ContainerElement( 'p', null, [ span, b ] ); // eslint-disable-line no-new
 				const range = Range.createFromParentsAndOffsets( span, 0, b, 0 );
 
 				expect( () => {

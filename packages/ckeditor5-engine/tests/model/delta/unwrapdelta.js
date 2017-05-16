@@ -36,7 +36,7 @@ describe( 'Batch', () => {
 		} );
 
 		it( 'should throw if element to unwrap has no parent', () => {
-			let element = new Element( 'p' );
+			const element = new Element( 'p' );
 
 			expect( () => {
 				doc.batch().unwrap( element );
@@ -54,7 +54,7 @@ describe( 'Batch', () => {
 			sinon.spy( doc, 'applyOperation' );
 			const batch = doc.batch().unwrap( p );
 
-			const correctDeltaMatcher = sinon.match( ( operation ) => {
+			const correctDeltaMatcher = sinon.match( operation => {
 				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
 			} );
 
@@ -100,7 +100,7 @@ describe( 'UnwrapDelta', () => {
 
 	describe( 'getReversed', () => {
 		it( 'should return empty WrapDelta if there are no operations in delta', () => {
-			let reversed = unwrapDelta.getReversed();
+			const reversed = unwrapDelta.getReversed();
 
 			expect( reversed ).to.be.instanceof( WrapDelta );
 			expect( reversed.operations.length ).to.equal( 0 );
@@ -110,7 +110,7 @@ describe( 'UnwrapDelta', () => {
 			unwrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 2, 0 ] ), 4, new Position( root, [ 1, 2 ] ) ) );
 			unwrapDelta.operations.push( new RemoveOperation( new Position( root, [ 1, 6 ] ), 1 ) );
 
-			let reversed = unwrapDelta.getReversed();
+			const reversed = unwrapDelta.getReversed();
 
 			expect( reversed ).to.be.instanceof( WrapDelta );
 			expect( reversed.operations.length ).to.equal( 2 );

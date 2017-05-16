@@ -137,7 +137,7 @@ describe( 'DomEventObserver', () => {
 		expect( evtSpy.calledOnce ).to.be.true;
 	} );
 
-	it( 'should allow to listen events on capturing phase', ( done ) => {
+	it( 'should allow to listen events on capturing phase', done => {
 		const domElement = document.createElement( 'div' );
 		const childDomElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );

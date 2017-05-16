@@ -51,8 +51,8 @@ describe( 'model-to-view-converters', () => {
 	function viewAttributesToString( item ) {
 		let result = '';
 
-		for ( let key of item.getAttributeKeys() ) {
-			let value = item.getAttribute( key );
+		for ( const key of item.getAttributeKeys() ) {
+			const value = item.getAttribute( key );
 
 			if ( value ) {
 				result += ' ' + key + '="' + value + '"';
@@ -69,7 +69,7 @@ describe( 'model-to-view-converters', () => {
 			result = item.data;
 		} else {
 			// ViewElement or ViewDocumentFragment.
-			for ( let child of item.getChildren() ) {
+			for ( const child of item.getChildren() ) {
 				result += viewToString( child );
 			}
 
@@ -202,7 +202,7 @@ describe( 'model-to-view-converters', () => {
 
 			const themeConverter = ( value, key, data ) => {
 				if ( data.item instanceof ModelElement && data.item.childCount > 0 ) {
-					value += ' ' + 'fix-content';
+					value += ' fix-content';
 				}
 
 				return { key: 'class', value };
@@ -301,7 +301,7 @@ describe( 'model-to-view-converters', () => {
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { style: 'bold' } ) );
 			const viewP = new ViewContainerElement( 'p' );
 
-			const elementGenerator = ( value ) => {
+			const elementGenerator = value => {
 				if ( value == 'bold' ) {
 					return new ViewAttributeElement( 'b' );
 				}
@@ -333,7 +333,7 @@ describe( 'model-to-view-converters', () => {
 
 			const viewP = new ViewContainerElement( 'p' );
 
-			const elementGenerator = ( href ) => new ViewAttributeElement( 'a', { href } );
+			const elementGenerator = href => new ViewAttributeElement( 'a', { href } );
 
 			modelRoot.appendChildren( modelElement );
 			dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
@@ -490,7 +490,7 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should convert insert/remove of attribute in model with wrapping element generating function as a parameter', () => {
-			const converterCallback = ( data ) => {
+			const converterCallback = data => {
 				const name = data.name.split( ':' )[ 1 ];
 
 				return new ViewAttributeElement( 'span', { class: name } );
@@ -542,7 +542,7 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should be possible to override wrapRange', () => {
-			const converterCallback = ( data ) => {
+			const converterCallback = data => {
 				const name = data.name.split( ':' )[ 1 ];
 
 				return new ViewAttributeElement( 'span', { class: name } );
@@ -559,7 +559,7 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should be possible to override unwrapRange', () => {
-			const converterCallback = ( data ) => {
+			const converterCallback = data => {
 				const name = data.name.split( ':' )[ 1 ];
 
 				return new ViewAttributeElement( 'span', { class: name } );
@@ -609,7 +609,7 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'multiple overlapping non-collapsed markers', () => {
-			const converterCallbackName = ( data ) => {
+			const converterCallbackName = data => {
 				const name = data.name.split( ':' )[ 1 ];
 				const element = new ViewAttributeElement( 'span', { class: name } );
 				element.priority = name.charCodeAt( 0 );
@@ -719,7 +719,7 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should insert and remove ui element - function as a creator', () => {
-			const viewUi = ( data ) => new ViewUIElement( 'span', { 'class': data.name } );
+			const viewUi = data => new ViewUIElement( 'span', { 'class': data.name } );
 
 			dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
 			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
@@ -863,7 +863,7 @@ describe( 'model-to-view-converters', () => {
 			} );
 
 			it( 'should insert and remove ui element - function as a creator', () => {
-				const viewUi = ( data ) => new ViewUIElement( 'span', { 'class': data.name } );
+				const viewUi = data => new ViewUIElement( 'span', { 'class': data.name } );
 
 				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
 				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );

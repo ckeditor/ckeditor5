@@ -125,7 +125,7 @@ export function setData( document, data, options = {} ) {
 		if ( selection ) {
 			const ranges = [];
 
-			for ( let range of selection.getRanges() ) {
+			for ( const range of selection.getRanges() ) {
 				let start, end;
 
 				// Each range returned from `parse()` method has its root placed in DocumentFragment.
@@ -220,7 +220,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: stringifyAttributeValue( value ) } );
 		}
 	} ) );
-	modelToView.on( 'insert', insertElement( ( data ) => {
+	modelToView.on( 'insert', insertElement( data => {
 		// Stringify object types values for properly display as an output string.
 		const attributes = convertAttributes( data.item.getAttributes(), stringifyAttributeValue );
 
@@ -241,7 +241,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	}
 
 	// Parse view to data string.
-	let data = viewStringify( viewDocumentFragment, viewSelection, { sameSelectionCharacters: true } );
+	const data = viewStringify( viewDocumentFragment, viewSelection, { sameSelectionCharacters: true } );
 
 	// Replace valid XML `model-text-with-attributes` element name to `$text`.
 	return data.replace( new RegExp( 'model-text-with-attributes', 'g' ), '$text' );
@@ -278,7 +278,7 @@ export function parse( data, schema, options = {} ) {
 	} );
 
 	// Retrieve DocumentFragment and Selection from parsed view.
-	let viewDocumentFragment, viewSelection;
+	let viewDocumentFragment, viewSelection, selection;
 
 	if ( parsedResult.view && parsedResult.selection ) {
 		viewDocumentFragment = parsedResult.view;
@@ -291,7 +291,7 @@ export function parse( data, schema, options = {} ) {
 	const viewToModel = new ViewConversionDispatcher( { schema, mapper } );
 
 	viewToModel.on( 'documentFragment', convertToModelFragment() );
-	viewToModel.on( `element:model-text-with-attributes`, convertToModelText( true ) );
+	viewToModel.on( 'element:model-text-with-attributes', convertToModelText( true ) );
 	viewToModel.on( 'element', convertToModelElement() );
 	viewToModel.on( 'text', convertToModelText() );
 
@@ -304,13 +304,12 @@ export function parse( data, schema, options = {} ) {
 	}
 
 	// Convert view selection to model selection.
-	let selection;
 
 	if ( viewSelection ) {
 		const ranges = [];
 
 		// Convert ranges.
-		for ( let viewRange of viewSelection.getRanges() ) {
+		for ( const viewRange of viewSelection.getRanges() ) {
 			ranges.push( ( mapper.toModelRange( viewRange ) ) );
 		}
 
@@ -430,7 +429,7 @@ function stringifyAttributeValue( data ) {
 
 // Loop trough attributes map and converts each value by passed converter.
 function *convertAttributes( attributes, converter ) {
-	for ( let [ key, value ] of attributes ) {
+	for ( const [ key, value ] of attributes ) {
 		yield [ key, converter( value ) ];
 	}
 }

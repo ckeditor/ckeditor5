@@ -11,8 +11,8 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 describe( 'RootElement', () => {
 	describe( 'constructor()', () => {
 		it( 'should create root element without attributes', () => {
-			let doc = new Document();
-			let root = new RootElement( doc );
+			const doc = new Document();
+			const root = new RootElement( doc );
 
 			expect( root ).to.be.an.instanceof( Element );
 			expect( root ).to.have.property( 'document' ).that.equals( doc );

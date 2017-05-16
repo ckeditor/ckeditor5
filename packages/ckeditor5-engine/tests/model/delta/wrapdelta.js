@@ -31,7 +31,7 @@ describe( 'Batch', () => {
 
 	describe( 'wrap', () => {
 		it( 'should wrap flat range with given element', () => {
-			let p = new Element( 'p' );
+			const p = new Element( 'p' );
 			doc.batch().wrap( range, p );
 
 			expect( root.maxOffset ).to.equal( 5 );
@@ -53,7 +53,7 @@ describe( 'Batch', () => {
 
 		it( 'should throw if range to wrap is not flat', () => {
 			root.insertChildren( 1, [ new Element( 'p', [], new Text( 'xyz' ) ) ] );
-			let notFlatRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6, 2 ] ) );
+			const notFlatRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6, 2 ] ) );
 
 			expect( () => {
 				doc.batch().wrap( notFlatRange, 'p' );
@@ -61,7 +61,7 @@ describe( 'Batch', () => {
 		} );
 
 		it( 'should throw if element to wrap with has children', () => {
-			let p = new Element( 'p', [], new Text( 'a' ) );
+			const p = new Element( 'p', [], new Text( 'a' ) );
 
 			expect( () => {
 				doc.batch().wrap( range, p );
@@ -69,7 +69,7 @@ describe( 'Batch', () => {
 		} );
 
 		it( 'should throw if element to wrap with has children', () => {
-			let p = new Element( 'p' );
+			const p = new Element( 'p' );
 			root.insertChildren( 0, p );
 
 			expect( () => {
@@ -88,7 +88,7 @@ describe( 'Batch', () => {
 			sinon.spy( doc, 'applyOperation' );
 			const batch = doc.batch().wrap( range, 'p' );
 
-			const correctDeltaMatcher = sinon.match( ( operation ) => {
+			const correctDeltaMatcher = sinon.match( operation => {
 				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
 			} );
 
@@ -138,7 +138,7 @@ describe( 'WrapDelta', () => {
 		} );
 
 		it( 'should be equal to the number of wrapped elements', () => {
-			let howMany = 5;
+			const howMany = 5;
 
 			wrapDelta.operations.push( new InsertOperation( new Position( root, [ 1, 6 ] ), [], 1 ) );
 			wrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), howMany, new Position( root, [ 1, 6, 0 ] ) ) );
@@ -149,7 +149,7 @@ describe( 'WrapDelta', () => {
 
 	describe( 'getReversed', () => {
 		it( 'should return empty UnwrapDelta if there are no operations in delta', () => {
-			let reversed = wrapDelta.getReversed();
+			const reversed = wrapDelta.getReversed();
 
 			expect( reversed ).to.be.instanceof( UnwrapDelta );
 			expect( reversed.operations.length ).to.equal( 0 );
@@ -159,7 +159,7 @@ describe( 'WrapDelta', () => {
 			wrapDelta.operations.push( new InsertOperation( new Position( root, [ 1, 6 ] ), new Element( 'p' ), 1 ) );
 			wrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), 5, new Position( root, [ 1, 6, 0 ] ) ) );
 
-			let reversed = wrapDelta.getReversed();
+			const reversed = wrapDelta.getReversed();
 
 			expect( reversed ).to.be.instanceof( UnwrapDelta );
 			expect( reversed.operations.length ).to.equal( 2 );
@@ -181,7 +181,7 @@ describe( 'WrapDelta', () => {
 		} );
 
 		it( 'should be equal to the first operation in the delta', () => {
-			let insertOperation = new InsertOperation( new Position( root, [ 1, 6 ] ), [], 1 );
+			const insertOperation = new InsertOperation( new Position( root, [ 1, 6 ] ), [], 1 );
 
 			wrapDelta.operations.push( insertOperation );
 			wrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), 5, new Position( root, [ 1, 6, 0 ] ) ) );

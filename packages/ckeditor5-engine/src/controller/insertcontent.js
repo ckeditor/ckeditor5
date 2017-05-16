@@ -289,8 +289,6 @@ class Insertion {
 		}
 
 		if ( mergeRight ) {
-			let position;
-
 			/* istanbul ignore if */
 			if ( !this.position.isEqual( mergePosRight ) ) {
 				// Algorithm's correctness check. We should never end up here but it's good to know that we did.
@@ -305,7 +303,7 @@ class Insertion {
 
 			// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)
 			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
-			position = new LivePosition( this.position.root, this.position.path, 'sticksToPrevious' );
+			const position = new LivePosition( this.position.root, this.position.path, 'sticksToPrevious' );
 
 			this.batch.merge( mergePosRight );
 

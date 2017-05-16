@@ -4,7 +4,6 @@
  */
 
 import { move } from '../../../src/view/writer';
-import ViewPosition from '../../../src/view/position';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
@@ -24,8 +23,8 @@ describe( 'writer', () => {
 	 * @param {String} expectedRemoved
 	 */
 	function test( source, destination, sourceAfterMove, destinationAfterMove ) {
-		let { view: srcView, selection: srcSelection } = parse( source );
-		let { view: dstView, selection: dstSelection } = parse( destination );
+		const { view: srcView, selection: srcSelection } = parse( source );
+		const { view: dstView, selection: dstSelection } = parse( destination );
 
 		const newRange = move( srcSelection.getFirstRange(), dstSelection.getFirstPosition() );
 
@@ -110,19 +109,21 @@ describe( 'writer', () => {
 		} );
 
 		it( 'should correctly move text nodes inside same parent', () => {
-			let { view, selection } = parse( '<container:p>[<attribute:b>a</attribute:b>]b<attribute:b>c</attribute:b></container:p>' );
+			const { view, selection } = parse( '<container:p>[<attribute:b>a</attribute:b>]b<attribute:b>c</attribute:b></container:p>' );
 
-			const newRange = move( selection.getFirstRange(), ViewPosition.createAt( view, 2 ) );
+			const newRange = move( selection.getFirstRange(), Position.createAt( view, 2 ) );
 
 			const expectedView = '<container:p>b[<attribute:b>a}c</attribute:b></container:p>';
 			expect( stringify( view, newRange, { showType: true } ) ).to.equal( expectedView );
 		} );
 
 		it( 'should correctly move text nodes inside same container', () => {
-			let { view, selection } = parse( '<container:p><attribute:b>a{b</attribute:b>xx<attribute:b>c}d</attribute:b>yy</container:p>' );
+			const { view, selection } = parse(
+				'<container:p><attribute:b>a{b</attribute:b>xx<attribute:b>c}d</attribute:b>yy</container:p>'
+			);
 
 			const viewText = view.getChild( 3 );
-			const newRange = move( selection.getFirstRange(), ViewPosition.createAt( viewText, 1 ) );
+			const newRange = move( selection.getFirstRange(), Position.createAt( viewText, 1 ) );
 
 			expect( stringify( view, newRange, { showType: true } ) ).to.equal(
 				'<container:p><attribute:b>ad</attribute:b>y[<attribute:b>b</attribute:b>xx<attribute:b>c</attribute:b>]y</container:p>'
@@ -144,7 +145,7 @@ describe( 'writer', () => {
 			const srcRange = Range.createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
 			const dstEmpty = new EmptyElement( 'img' );
-			new ContainerElement( 'p', null, dstEmpty );
+			new ContainerElement( 'p', null, dstEmpty ); // eslint-disable-line no-new
 			const dstPosition = new Position( dstEmpty, 0 );
 
 			expect( () => {
@@ -167,7 +168,7 @@ describe( 'writer', () => {
 			const srcRange = Range.createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
 			const dstUI = new UIElement( 'span' );
-			new ContainerElement( 'p', null, dstUI );
+			new ContainerElement( 'p', null, dstUI ); // eslint-disable-line no-new
 			const dstPosition = new Position( dstUI, 0 );
 
 			expect( () => {

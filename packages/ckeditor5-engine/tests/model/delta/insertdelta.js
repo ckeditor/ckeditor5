@@ -51,7 +51,7 @@ describe( 'Batch', () => {
 			sinon.spy( doc, 'applyOperation' );
 			batch.insert( new Position( root, [ 2 ] ), [ p, ul ] );
 
-			const correctDeltaMatcher = sinon.match( ( operation ) => {
+			const correctDeltaMatcher = sinon.match( operation => {
 				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
 			} );
 
@@ -83,9 +83,9 @@ describe( 'Batch', () => {
 			batch.insert( new Position( root, [ 3, 0 ] ), documentFragment );
 
 			expect( doc.applyOperation.calledThrice );
-			expect( doc.applyOperation.firstCall.calledWith( sinon.match( ( operation ) => operation instanceof InsertOperation ) ) );
-			expect( doc.applyOperation.secondCall.calledWith( sinon.match( ( operation ) => operation instanceof MarkerOperation ) ) );
-			expect( doc.applyOperation.thirdCall.calledWith( sinon.match( ( operation ) => operation instanceof MarkerOperation ) ) );
+			expect( doc.applyOperation.firstCall.calledWith( sinon.match( operation => operation instanceof InsertOperation ) ) );
+			expect( doc.applyOperation.secondCall.calledWith( sinon.match( operation => operation instanceof MarkerOperation ) ) );
+			expect( doc.applyOperation.thirdCall.calledWith( sinon.match( operation => operation instanceof MarkerOperation ) ) );
 		} );
 
 		it( 'should not create a delta and an operation if no nodes were inserted', () => {
@@ -141,7 +141,7 @@ describe( 'InsertDelta', () => {
 		} );
 
 		it( 'should be equal to the nodes inserted by the delta', () => {
-			let elementX = new Element( 'x' );
+			const elementX = new Element( 'x' );
 			insertDelta.operations.push( new InsertOperation( new Position( root, [ 1, 2, 3 ] ), elementX, 0 ) );
 
 			expect( insertDelta.nodes.length ).to.equal( 1 );
@@ -151,18 +151,18 @@ describe( 'InsertDelta', () => {
 
 	describe( 'getReversed', () => {
 		it( 'should return empty RemoveDelta if there are no operations in delta', () => {
-			let reversed = insertDelta.getReversed();
+			const reversed = insertDelta.getReversed();
 
 			expect( reversed ).to.be.instanceof( RemoveDelta );
 			expect( reversed.operations.length ).to.equal( 0 );
 		} );
 
 		it( 'should return correct RemoveDelta', () => {
-			let position = new Position( root, [ 1, 2, 3 ] );
-			let elementX = new Element( 'x' );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const elementX = new Element( 'x' );
 			insertDelta.operations.push( new InsertOperation( position, elementX, 0 ) );
 
-			let reversed = insertDelta.getReversed();
+			const reversed = insertDelta.getReversed();
 
 			expect( reversed ).to.be.instanceof( RemoveDelta );
 			expect( reversed.operations.length ).to.equal( 1 );

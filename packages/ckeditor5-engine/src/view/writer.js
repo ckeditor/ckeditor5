@@ -283,7 +283,7 @@ export function breakViewRangePerContainer( range ) {
 
 	let start = range.start;
 
-	for ( let value of walker ) {
+	for ( const value of walker ) {
 		if ( value.item.is( 'containerElement' ) ) {
 			if ( !start.isEqual( value.previousPosition ) ) {
 				ranges.push( new Range( start, value.previousPosition ) );
@@ -427,7 +427,7 @@ export function clear( range, element ) {
 		// When range starts inside Text or TextProxy element.
 		} else if ( !current.nextPosition.isAfter( range.start ) && ( item.is( 'text' ) || item.is( 'textProxy' ) ) ) {
 			// We need to check if parent of this text matches to given element.
-			const parentElement = item.getAncestors().find( ( ancestor ) => {
+			const parentElement = item.getAncestors().find( ancestor => {
 				return ancestor.is( 'element' ) && element.isSimilar( ancestor );
 			} );
 
@@ -532,7 +532,7 @@ export function wrap( range, attribute ) {
 		const parent = range.start.parent.parent;
 		const index = range.start.parent.index;
 
-		return Range.createFromParentsAndOffsets( parent, index, parent, index + 1 ) ;
+		return Range.createFromParentsAndOffsets( parent, index, parent, index + 1 );
 	}
 
 	// Break attributes at range start and end.
@@ -863,7 +863,7 @@ function unwrapChildren( parent, startOffset, endOffset, attribute ) {
 		const child = parent.getChild( i );
 
 		// If attributes are the similar, then unwrap.
-		if (  child.isSimilar( attribute ) ) {
+		if ( child.isSimilar( attribute ) ) {
 			const unwrapped = child.getChildren();
 			const count = child.childCount;
 
@@ -894,7 +894,7 @@ function unwrapChildren( parent, startOffset, endOffset, attribute ) {
 	// Merge at each unwrap.
 	let offsetChange = 0;
 
-	for ( let position of unwrapPositions ) {
+	for ( const position of unwrapPositions ) {
 		position.offset -= offsetChange;
 
 		// Do not merge with elements outside selected children.
@@ -955,7 +955,7 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 	// Merge at each wrap.
 	let offsetChange = 0;
 
-	for ( let position of wrapPositions ) {
+	for ( const position of wrapPositions ) {
 		position.offset -= offsetChange;
 
 		// Do not merge with elements outside selected children.
@@ -1060,7 +1060,7 @@ function wrapAttributeElement( wrapper, toWrap ) {
 	}
 
 	// Check if attributes can be merged.
-	for ( let key of wrapper.getAttributeKeys() ) {
+	for ( const key of wrapper.getAttributeKeys() ) {
 		// Classes and styles should be checked separately.
 		if ( key === 'class' || key === 'style' ) {
 			continue;
@@ -1073,14 +1073,14 @@ function wrapAttributeElement( wrapper, toWrap ) {
 	}
 
 	// Check if styles can be merged.
-	for ( let key of wrapper.getStyleNames() ) {
+	for ( const key of wrapper.getStyleNames() ) {
 		if ( toWrap.hasStyle( key ) && toWrap.getStyle( key ) !== wrapper.getStyle( key ) ) {
 			return false;
 		}
 	}
 
 	// Move all attributes/classes/styles from wrapper to wrapped AttributeElement.
-	for ( let key of wrapper.getAttributeKeys() ) {
+	for ( const key of wrapper.getAttributeKeys() ) {
 		// Classes and styles should be checked separately.
 		if ( key === 'class' || key === 'style' ) {
 			continue;
@@ -1092,13 +1092,13 @@ function wrapAttributeElement( wrapper, toWrap ) {
 		}
 	}
 
-	for ( let key of wrapper.getStyleNames() ) {
+	for ( const key of wrapper.getStyleNames() ) {
 		if ( !toWrap.hasStyle( key ) ) {
 			toWrap.setStyle( key, wrapper.getStyle( key ) );
 		}
 	}
 
-	for ( let key of wrapper.getClassNames() ) {
+	for ( const key of wrapper.getClassNames() ) {
 		if ( !toWrap.hasClass( key ) ) {
 			toWrap.addClass( key );
 		}
@@ -1120,7 +1120,7 @@ function unwrapAttributeElement( wrapper, toUnwrap ) {
 	}
 
 	// Check if AttributeElement has all wrapper attributes.
-	for ( let key of wrapper.getAttributeKeys() ) {
+	for ( const key of wrapper.getAttributeKeys() ) {
 		// Classes and styles should be checked separately.
 		if ( key === 'class' || key === 'style' ) {
 			continue;
@@ -1138,7 +1138,7 @@ function unwrapAttributeElement( wrapper, toUnwrap ) {
 	}
 
 	// Check if AttributeElement has all wrapper styles.
-	for ( let key of wrapper.getStyleNames() ) {
+	for ( const key of wrapper.getStyleNames() ) {
 		// If some styles are missing or different we cannot unwrap.
 		if ( !toUnwrap.hasStyle( key ) || toUnwrap.getStyle( key ) !== wrapper.getStyle( key ) ) {
 			return false;
@@ -1146,7 +1146,7 @@ function unwrapAttributeElement( wrapper, toUnwrap ) {
 	}
 
 	// Remove all wrapper's attributes from unwrapped element.
-	for ( let key of wrapper.getAttributeKeys() ) {
+	for ( const key of wrapper.getAttributeKeys() ) {
 		// Classes and styles should be checked separately.
 		if ( key === 'class' || key === 'style' ) {
 			continue;
@@ -1191,8 +1191,8 @@ function rangeSpansOnAllChildren( range ) {
 // @param Iterable.<module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement
 // |module:engine/view/containerelement~ContainerElement> nodes
 function validateNodesToInsert( nodes ) {
-	for ( let node of nodes ) {
-		if ( !validNodesToInsert.some( ( validNode => node instanceof validNode ) ) ) {
+	for ( const node of nodes ) {
+		if ( !validNodesToInsert.some( ( validNode => node instanceof validNode ) ) ) { // eslint-disable-line no-use-before-define
 			/**
 			 * Inserted nodes should be valid to insert. of {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
 			 * {@link module:engine/view/containerelement~ContainerElement ContainerElement},

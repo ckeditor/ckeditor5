@@ -90,26 +90,10 @@ describe( 'Mapper', () => {
 	} );
 
 	describe( 'Standard mapping', () => {
-		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
-			const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
-			const viewPosition = mapper.toViewPosition( modelPosition );
-			expect( viewPosition.parent ).to.equal( viewElement );
-			expect( viewPosition.offset ).to.equal( viewOffset );
-		}
-
-		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
-			const viewPosition = new ViewPosition( viewElement, viewOffset );
-			const modelPosition = mapper.toModelPosition( viewPosition );
-			expect( modelPosition.parent ).to.equal( modelElement );
-			expect( modelPosition.offset ).to.equal( modelOffset );
-		}
-
-		let modelDiv, modelP, modelImg;
-
-		let viewDiv, viewP, viewB, viewI, viewU, viewSup, viewImg;
-		let viewTextB, viewTextO, viewTextM, viewTextX, viewTextY, viewTextZZ, viewTextFOO, viewTextBAR;
-
-		let mapper;
+		let modelDiv, modelP, modelImg,
+			viewDiv, viewP, viewB, viewI, viewU, viewSup, viewImg,
+			viewTextB, viewTextO, viewTextM, viewTextX, viewTextY, viewTextZZ, viewTextFOO, viewTextBAR,
+			mapper;
 
 		beforeEach( () => {
 			// Tree Model:
@@ -378,9 +362,7 @@ describe( 'Mapper', () => {
 				expect( viewRange.end.offset ).to.equal( 2 );
 			} );
 		} );
-	} );
 
-	describe( 'Widget mapping', () => {
 		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
 			const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
 			const viewPosition = mapper.toViewPosition( modelPosition );
@@ -394,13 +376,13 @@ describe( 'Mapper', () => {
 			expect( modelPosition.parent ).to.equal( modelElement );
 			expect( modelPosition.offset ).to.equal( modelOffset );
 		}
+	} );
 
-		let modelDiv, modelWidget, modelImg, modelCaption;
-
-		let viewDiv, viewWidget, viewMask, viewWrapper, viewImg, viewCaption;
-		let viewTextX, viewTextFOO, viewTextZZ, viewTextLABEL;
-
-		let mapper;
+	describe( 'Widget mapping', () => {
+		let modelDiv, modelWidget, modelImg, modelCaption,
+			viewDiv, viewWidget, viewMask, viewWrapper, viewImg, viewCaption,
+			viewTextX, viewTextFOO, viewTextZZ, viewTextLABEL,
+			mapper;
 
 		before( () => {
 			// Tree Model:
@@ -510,26 +492,29 @@ describe( 'Mapper', () => {
 			it( 'should transform modelCaption 2', () => createToViewTest( modelCaption, 2, viewTextFOO, 2 ) );
 			it( 'should transform modelCaption 3', () => createToViewTest( modelCaption, 3, viewTextFOO, 3 ) );
 		} );
-	} );
 
-	describe( 'List mapping (test registerViewToModelLength)', () => {
+		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
+			const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
+			const viewPosition = mapper.toViewPosition( modelPosition );
+			expect( viewPosition.parent ).to.equal( viewElement );
+			expect( viewPosition.offset ).to.equal( viewOffset );
+		}
+
 		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
 			const viewPosition = new ViewPosition( viewElement, viewOffset );
 			const modelPosition = mapper.toModelPosition( viewPosition );
 			expect( modelPosition.parent ).to.equal( modelElement );
 			expect( modelPosition.offset ).to.equal( modelOffset );
 		}
+	} );
 
-		let mapper;
-
-		let modelRoot;
-		let modelListItem1, modelListItem2;
-		let modelListItem11, modelListItem12;
-
-		let viewRoot;
-		let viewList, viewListNested;
-		let viewListItem1, viewListItem2;
-		let viewListItem11, viewListItem12;
+	describe( 'List mapping (test registerViewToModelLength)', () => {
+		let mapper, modelRoot, viewRoot,
+			modelListItem1, modelListItem2,
+			modelListItem11, modelListItem12,
+			viewList, viewListNested,
+			viewListItem1, viewListItem2,
+			viewListItem11, viewListItem12;
 
 		before( () => {
 			modelListItem1 = new ModelElement( 'listItem', null, new ModelText( 'aaa' ) );
@@ -559,9 +544,9 @@ describe( 'Mapper', () => {
 			function getViewListItemLength( element ) {
 				let length = 1;
 
-				for ( let child of element.getChildren() ) {
+				for ( const child of element.getChildren() ) {
 					if ( child.name == 'ul' || child.name == 'ol' ) {
-						for ( let item of child.getChildren() ) {
+						for ( const item of child.getChildren() ) {
 							length += getViewListItemLength( item );
 						}
 					}
@@ -580,6 +565,13 @@ describe( 'Mapper', () => {
 			it( 'should transform viewList 1', () => createToModelTest( viewList, 1, modelRoot, 3 ) );
 			it( 'should transform viewList 2', () => createToModelTest( viewList, 2, modelRoot, 4 ) );
 		} );
+
+		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
+			const viewPosition = new ViewPosition( viewElement, viewOffset );
+			const modelPosition = mapper.toModelPosition( viewPosition );
+			expect( modelPosition.parent ).to.equal( modelElement );
+			expect( modelPosition.offset ).to.equal( modelOffset );
+		}
 	} );
 
 	describe( 'getModelLength', () => {

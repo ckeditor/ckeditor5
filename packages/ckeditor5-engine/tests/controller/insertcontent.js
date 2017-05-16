@@ -387,7 +387,9 @@ describe( 'DataController', () => {
 				it( 'inserts text + inlineWidget + text + paragraph', () => {
 					setData( doc, '<paragraph>f[]oo</paragraph>' );
 					insertHelper( 'xxx<inlineWidget></inlineWidget>yyy<paragraph>zzz</paragraph>' );
-					expect( getData( doc ) ).to.equal( '<paragraph>fxxx<inlineWidget></inlineWidget>yyy</paragraph><paragraph>zzz[]oo</paragraph>' );
+					expect( getData( doc ) ).to.equal(
+						'<paragraph>fxxx<inlineWidget></inlineWidget>yyy</paragraph><paragraph>zzz[]oo</paragraph>'
+					);
 				} );
 
 				it( 'inserts text + paragraph (at the beginning)', () => {
@@ -431,7 +433,9 @@ describe( 'DataController', () => {
 				it( 'inserts paragraph + text + paragraph', () => {
 					setData( doc, '<paragraph>f[]oo</paragraph>' );
 					insertHelper( '<paragraph>yyy</paragraph>xxx<paragraph>zzz</paragraph>' );
-					expect( getData( doc ) ).to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx</paragraph><paragraph>zzz[]oo</paragraph>' );
+					expect( getData( doc ) ).to.equal(
+						'<paragraph>fyyy</paragraph><paragraph>xxx</paragraph><paragraph>zzz[]oo</paragraph>'
+					);
 				} );
 
 				it( 'inserts paragraph + text (at the beginning)', () => {
@@ -455,13 +459,17 @@ describe( 'DataController', () => {
 				it( 'inserts paragraph + object', () => {
 					setData( doc, '<paragraph>f[]oo</paragraph>' );
 					insertHelper( '<paragraph>xxx</paragraph><blockWidget></blockWidget>' );
-					expect( getData( doc ) ).to.equal( '<paragraph>fxxx</paragraph>[<blockWidget></blockWidget>]<paragraph>oo</paragraph>' );
+					expect( getData( doc ) ).to.equal(
+						'<paragraph>fxxx</paragraph>[<blockWidget></blockWidget>]<paragraph>oo</paragraph>'
+					);
 				} );
 
 				it( 'inserts object + paragraph', () => {
 					setData( doc, '<paragraph>f[]oo</paragraph>' );
 					insertHelper( '<blockWidget></blockWidget><paragraph>xxx</paragraph>' );
-					expect( getData( doc ) ).to.equal( '<paragraph>f</paragraph><blockWidget></blockWidget><paragraph>xxx[]oo</paragraph>' );
+					expect( getData( doc ) ).to.equal(
+						'<paragraph>f</paragraph><blockWidget></blockWidget><paragraph>xxx[]oo</paragraph>'
+					);
 				} );
 			} );
 
@@ -469,7 +477,9 @@ describe( 'DataController', () => {
 				it( 'inserts text', () => {
 					setData( doc, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
 					insertHelper( 'xxx' );
-					expect( getData( doc ) ).to.equal( '<paragraph>foo</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>' );
+					expect( getData( doc ) ).to.equal(
+						'<paragraph>foo</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>'
+					);
 				} );
 
 				it( 'inserts paragraph', () => {
@@ -482,28 +492,36 @@ describe( 'DataController', () => {
 					setData( doc, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
 					insertHelper( 'yyy<paragraph>xxx</paragraph>' );
 					expect( getData( doc ) )
-						.to.equal( '<paragraph>foo</paragraph><paragraph>yyy</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>' );
+						.to.equal(
+							'<paragraph>foo</paragraph><paragraph>yyy</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>'
+						);
 				} );
 
 				it( 'inserts two blocks', () => {
 					setData( doc, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
 					insertHelper( '<heading1>xxx</heading1><paragraph>yyy</paragraph>' );
 					expect( getData( doc ) )
-						.to.equal( '<paragraph>foo</paragraph><heading1>xxx</heading1><paragraph>yyy[]</paragraph><paragraph>bar</paragraph>' );
+						.to.equal(
+							'<paragraph>foo</paragraph><heading1>xxx</heading1><paragraph>yyy[]</paragraph><paragraph>bar</paragraph>'
+						);
 				} );
 
 				it( 'inserts block object', () => {
 					setData( doc, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
 					insertHelper( '<blockWidget></blockWidget>' );
 					// It's enough, don't worry.
-					expect( getData( doc ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					expect( getData( doc ) ).to.equal(
+						'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>'
+					);
 				} );
 
 				it( 'inserts inline object', () => {
 					setData( doc, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
 					insertHelper( '<inlineWidget></inlineWidget>' );
 					expect( getData( doc ) )
-						.to.equal( '<paragraph>foo</paragraph><paragraph><inlineWidget></inlineWidget>[]</paragraph><paragraph>bar</paragraph>' );
+						.to.equal(
+							'<paragraph>foo</paragraph><paragraph><inlineWidget></inlineWidget>[]</paragraph><paragraph>bar</paragraph>'
+						);
 				} );
 			} );
 
@@ -541,7 +559,9 @@ describe( 'DataController', () => {
 				it( 'inserts block object', () => {
 					setData( doc, '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
 					insertHelper( '<blockWidget></blockWidget>' );
-					expect( getData( doc ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					expect( getData( doc ) ).to.equal(
+						'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>'
+					);
 				} );
 			} );
 		} );

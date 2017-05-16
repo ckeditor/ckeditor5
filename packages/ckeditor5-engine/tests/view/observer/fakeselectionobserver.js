@@ -13,10 +13,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData, stringify } from '../../../src/dev-utils/view';
 
 describe( 'FakeSelectionObserver', () => {
-	let observer;
-	let viewDocument;
-	let root;
-	let domRoot;
+	let observer, viewDocument, root, domRoot;
 
 	before( () => {
 		domRoot = createElement( document, 'div', {
@@ -100,7 +97,7 @@ describe( 'FakeSelectionObserver', () => {
 		);
 	} );
 
-	it( 'should fire `selectionChangeDone` event after selection stop changing', ( done ) => {
+	it( 'should fire `selectionChangeDone` event after selection stop changing', done => {
 		const spy = sinon.spy();
 
 		viewDocument.on( 'selectionChangeDone', spy );
@@ -127,7 +124,7 @@ describe( 'FakeSelectionObserver', () => {
 		}, 100 );
 	} );
 
-	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', ( done ) => {
+	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', done => {
 		const spy = sinon.spy();
 
 		viewDocument.on( 'selectionChangeDone', spy );

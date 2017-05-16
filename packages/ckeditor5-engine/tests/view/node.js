@@ -12,9 +12,9 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 
 describe( 'Node', () => {
-	let root;
-	let one, two, three;
-	let charB, charA, charR, img;
+	let root,
+		one, two, three,
+		charB, charA, charR, img;
 
 	before( () => {
 		charB = new Text( 'b' );
@@ -126,8 +126,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should throw an error if parent does not contain element', () => {
-			let f = new Text( 'f' );
-			let bar = new Element( 'bar', [], [] );
+			const f = new Text( 'f' );
+			const bar = new Element( 'bar', [], [] );
 
 			f.parent = bar;
 
@@ -158,7 +158,7 @@ describe( 'Node', () => {
 
 		it( 'should return null if element is inside DocumentFragment', () => {
 			const child = new Element( 'p' );
-			new DocumentFragment( [ child ] );
+			new DocumentFragment( [ child ] ); // eslint-disable-line no-new
 
 			expect( child.document ).to.be.null;
 		} );
@@ -205,8 +205,7 @@ describe( 'Node', () => {
 	} );
 
 	describe( 'change event', () => {
-		let root, text, img;
-		let rootChangeSpy;
+		let root, text, img, rootChangeSpy;
 
 		before( () => {
 			rootChangeSpy = sinon.spy();

@@ -126,7 +126,7 @@ describe( 'Renderer', () => {
 
 			// Fake selection editable - it is needed to render selection properly.
 			Object.defineProperty( selection, 'editableElement', {
-				get: function() {
+				get() {
 					return selectionEditable;
 				}
 			} );
@@ -508,7 +508,7 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ] .childNodes[ 0 ] );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ].childNodes[ 0 ] );
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
@@ -560,7 +560,7 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ] .childNodes[ 0 ] );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ].childNodes[ 0 ] );
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 3 );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
@@ -707,8 +707,9 @@ describe( 'Renderer', () => {
 		// #659
 		it( 'should remove filler from a modified DOM when children moved', () => {
 			// Step 1: <p><b>foo</b>"FILLER{}"<b>bar</b></p><p></p>
-			const { view: viewFragment, selection: newSelection }
-				= parse( '<container:p><attribute:b>foo</attribute:b>[]<attribute:b>bar</attribute:b></container:p><container:p></container:p>' );
+			const { view: viewFragment, selection: newSelection } = parse(
+				'<container:p><attribute:b>foo</attribute:b>[]<attribute:b>bar</attribute:b></container:p><container:p></container:p>'
+			);
 			viewRoot.appendChildren( viewFragment );
 			selection.setTo( newSelection );
 
@@ -912,7 +913,7 @@ describe( 'Renderer', () => {
 
 			// Remove text and add filler to both DOM and View <p>{}</p>
 			domP.removeChild( domP.childNodes[ 0 ] );
-			domP.appendChild( BR_FILLER( document ) );
+			domP.appendChild( BR_FILLER( document ) ); // eslint-disable-line new-cap
 
 			domSelection.removeAllRanges();
 			const domRange = document.createRange();
@@ -1465,7 +1466,9 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo<attribute:b>{}bar</attribute:b></container:p>
-				selection.setRanges( [ new ViewRange( new ViewPosition( viewB.getChild( 0 ), 0 ), new ViewPosition( viewB.getChild( 0 ), 0 ) ) ] );
+				selection.setRanges( [
+					new ViewRange( new ViewPosition( viewB.getChild( 0 ), 0 ), new ViewPosition( viewB.getChild( 0 ), 0 ) )
+				] );
 
 				renderer.markToSync( 'children', viewP );
 				renderer.render();
@@ -1503,7 +1506,9 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{}<attribute:b></attribute:b></container:p>
-				selection.setRanges( [ new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewP.getChild( 0 ), 3 ) ) ] );
+				selection.setRanges( [
+					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewP.getChild( 0 ), 3 ) )
+				] );
 
 				renderer.markToSync( 'children', viewP );
 				renderer.render();
@@ -1542,7 +1547,9 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>fo{o<attribute:b>b}ar</attribute:b></container:p>
-				selection.setRanges( [ new ViewRange( new ViewPosition( viewP.getChild( 0 ), 2 ), new ViewPosition( viewB.getChild( 0 ), 1 ) ) ] );
+				selection.setRanges( [
+					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 2 ), new ViewPosition( viewB.getChild( 0 ), 1 ) )
+				] );
 
 				renderer.markToSync( 'children', viewP );
 				renderer.render();
@@ -1581,7 +1588,9 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{<attribute:b>ba}r</attribute:b></container:p>
-				selection.setRanges( [ new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewB.getChild( 0 ), 2 ) ) ] );
+				selection.setRanges( [
+					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewB.getChild( 0 ), 2 ) )
+				] );
 
 				renderer.markToSync( 'children', viewP );
 				renderer.render();
@@ -1618,7 +1627,9 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo<attribute:b>b{ar</attribute:b>}baz</container:p>
-				selection.setRanges( [ new ViewRange( new ViewPosition( viewB.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) ) ] );
+				selection.setRanges( [
+					new ViewRange( new ViewPosition( viewB.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) )
+				] );
 
 				renderer.markToSync( 'children', viewP );
 				renderer.render();
@@ -1655,7 +1666,9 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{<attribute:b><attribute:i>ba}r</attribute:i></attribute:b></container:p>
-				selection.setRanges( [ new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewI.getChild( 0 ), 2 ) ) ] );
+				selection.setRanges( [
+					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewI.getChild( 0 ), 2 ) )
+				] );
 
 				renderer.markToSync( 'children', viewP );
 				renderer.render();
@@ -1691,7 +1704,9 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>f{oo<attribute:b><attribute:i>bar</attribute:i></attribute:b>}baz</container:p>
-				selection.setRanges( [ new ViewRange( new ViewPosition( viewP.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) ) ] );
+				selection.setRanges( [
+					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) )
+				] );
 
 				renderer.markToSync( 'children', viewP );
 				renderer.render();

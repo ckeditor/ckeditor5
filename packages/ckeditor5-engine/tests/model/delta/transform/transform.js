@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import transformations from '../../../../src/model/delta/basic-transformations';
-/*jshint unused: false*/
-
+import transformations from '../../../../src/model/delta/basic-transformations'; // eslint-disable-line no-unused-vars
 import deltaTransform from '../../../../src/model/delta/transform';
 const transformDeltaSets = deltaTransform.transformDeltaSets;
 
@@ -32,7 +30,7 @@ import {
 } from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, gy, baseVersion;
+	let doc, root, baseVersion;
 
 	beforeEach( () => {
 		doc = new Document();
@@ -40,7 +38,6 @@ describe( 'transform', () => {
 
 		root.appendChildren( new Element( 'p', null, new Text( 'foobar' ) ) );
 
-		gy = doc.graveyard;
 		baseVersion = doc.version;
 	} );
 
@@ -290,7 +287,7 @@ describe( 'transform', () => {
 			const insertDeltaA = getInsertDelta( new Position( root, [ 0, 4 ] ), new Text( 'xxx' ), baseVersion );
 			const insertDeltaB = getInsertDelta( new Position( root, [ 0, 4 ] ), new Text( 'yyy' ), baseVersion );
 
-			let { deltasA, deltasB } = transformDeltaSets( [ insertDeltaA ], [ insertDeltaB ], true );
+			const { deltasA, deltasB } = transformDeltaSets( [ insertDeltaA ], [ insertDeltaB ], true );
 
 			expectDelta( deltasA[ 0 ], {
 				type: InsertDelta,
@@ -319,7 +316,7 @@ describe( 'transform', () => {
 			const insertDeltaA = getInsertDelta( new Position( root, [ 0, 4 ] ), new Text( 'xxx' ), baseVersion );
 			const insertDeltaB = getInsertDelta( new Position( root, [ 0, 4 ] ), new Text( 'yyy' ), baseVersion );
 
-			let { deltasA, deltasB } = transformDeltaSets( [ insertDeltaA ], [ insertDeltaB ], false );
+			const { deltasA, deltasB } = transformDeltaSets( [ insertDeltaA ], [ insertDeltaB ], false );
 
 			expectDelta( deltasA[ 0 ], {
 				type: InsertDelta,
@@ -351,7 +348,7 @@ describe( 'transform', () => {
 			const originalDeltasA = [ insertDeltaA ];
 			const originalDeltasB = [ insertDeltaB ];
 
-			let { deltasA, deltasB } = transformDeltaSets( originalDeltasA, originalDeltasB, false );
+			const { deltasA, deltasB } = transformDeltaSets( originalDeltasA, originalDeltasB, false );
 
 			expect( deltasA ).to.not.equal( originalDeltasA );
 			expect( deltasB ).to.not.equal( originalDeltasB );

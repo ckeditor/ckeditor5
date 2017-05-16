@@ -42,7 +42,7 @@ describe( 'Batch', () => {
 		} );
 
 		it( 'should move flat range of nodes', () => {
-			let range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 7 ] ) );
+			const range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 7 ] ) );
 			batch.move( range, new Position( root, [ 1, 3 ] ) );
 
 			expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
@@ -50,7 +50,7 @@ describe( 'Batch', () => {
 		} );
 
 		it( 'should throw if given range is not flat', () => {
-			let notFlatRange = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
+			const notFlatRange = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
 
 			expect( () => {
 				doc.batch().move( notFlatRange, new Position( root, [ 1, 3 ] ) );
@@ -67,7 +67,7 @@ describe( 'Batch', () => {
 			sinon.spy( doc, 'applyOperation' );
 			batch.move( div, new Position( root, [ 2 ] ) );
 
-			const correctDeltaMatcher = sinon.match( ( operation ) => {
+			const correctDeltaMatcher = sinon.match( operation => {
 				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
 			} );
 
@@ -137,7 +137,7 @@ describe( 'MoveDelta', () => {
 
 	describe( 'getReversed', () => {
 		it( 'should return empty MoveDelta if there are no operations in delta', () => {
-			let reversed = moveDelta.getReversed();
+			const reversed = moveDelta.getReversed();
 
 			expect( reversed ).to.be.instanceof( MoveDelta );
 			expect( reversed.operations.length ).to.equal( 0 );
@@ -146,7 +146,7 @@ describe( 'MoveDelta', () => {
 		it( 'should return correct MoveDelta', () => {
 			moveDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), 2, new Position( root, [ 2, 2 ] ), 0 ) );
 
-			let reversed = moveDelta.getReversed();
+			const reversed = moveDelta.getReversed();
 
 			expect( reversed ).to.be.instanceof( MoveDelta );
 			expect( reversed.operations.length ).to.equal( 1 );

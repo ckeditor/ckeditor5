@@ -172,7 +172,7 @@ describe( 'ModelConversionDispatcher', () => {
 		it( 'should not fire any event if changed range in graveyard root and change type is different than remove', () => {
 			sinon.spy( dispatcher, 'fire' );
 
-			let gyNode = new ModelElement( 'image' );
+			const gyNode = new ModelElement( 'image' );
 			doc.graveyard.appendChildren( gyNode );
 
 			doc.batch().setAttribute( gyNode, 'key', 'value' );
@@ -184,7 +184,7 @@ describe( 'ModelConversionDispatcher', () => {
 			// This may happen during OT.
 			sinon.spy( dispatcher, 'fire' );
 
-			let gyNode = new ModelElement( 'image' );
+			const gyNode = new ModelElement( 'image' );
 			doc.graveyard.appendChildren( gyNode );
 
 			doc.batch().remove( gyNode );
@@ -196,7 +196,7 @@ describe( 'ModelConversionDispatcher', () => {
 			// This may happen during OT.
 			sinon.spy( dispatcher, 'fire' );
 
-			let gyNode = new ModelElement( 'image' );
+			const gyNode = new ModelElement( 'image' );
 			doc.graveyard.appendChildren( gyNode );
 
 			doc.batch().rename( gyNode, 'p' );
@@ -385,7 +385,7 @@ describe( 'ModelConversionDispatcher', () => {
 				loggedEvents.push( log );
 			} );
 
-			dispatcher.convertRemove( ModelPosition.createFromParentAndOffset( root , 3 ), range );
+			dispatcher.convertRemove( ModelPosition.createFromParentAndOffset( root, 3 ), range );
 
 			expect( loggedEvents ).to.deep.equal( [ 'remove:3:3' ] );
 		} );

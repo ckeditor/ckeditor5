@@ -9,19 +9,19 @@ import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'Operation', () => {
 	it( 'should save its base version', () => {
-		let op = new Operation( 4 );
+		const op = new Operation( 4 );
 
 		expect( op.baseVersion ).to.equal( 4 );
 	} );
 
 	it( 'should be correctly transformed to JSON', () => {
-		let delta = new Delta();
-		let opInDelta = new Operation( 0 );
+		const delta = new Delta();
+		const opInDelta = new Operation( 0 );
 		delta.addOperation( opInDelta );
 
-		let opOutsideDelta = new Operation( 0 );
+		const opOutsideDelta = new Operation( 0 );
 
-		let parsedOutside = jsonParseStringify( opOutsideDelta );
+		const parsedOutside = jsonParseStringify( opOutsideDelta );
 
 		expect( parsedOutside.delta ).to.be.undefined;
 	} );

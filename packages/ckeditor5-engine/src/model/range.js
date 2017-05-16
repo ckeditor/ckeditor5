@@ -90,7 +90,8 @@ export default class Range {
 	 * Checks whether this range contains given {@link module:engine/model/position~Position position}.
 	 *
 	 * @param {module:engine/model/position~Position} position Position to check.
-	 * @returns {Boolean} `true` if given {@link module:engine/model/position~Position position} is contained in this range, `false` otherwise.
+	 * @returns {Boolean} `true` if given {@link module:engine/model/position~Position position} is contained in this range,
+	 * `false` otherwise.
 	 */
 	containsPosition( position ) {
 		return position.isAfter( this.start ) && position.isBefore( this.end );
@@ -259,12 +260,12 @@ export default class Range {
 		const ranges = [];
 		const diffAt = this.start.getCommonPath( this.end ).length;
 
-		let pos = Position.createFromPosition( this.start );
+		const pos = Position.createFromPosition( this.start );
 		let posParent = pos.parent;
 
 		// Go up.
 		while ( pos.path.length > diffAt + 1 ) {
-			let howMany = posParent.maxOffset - pos.offset;
+			const howMany = posParent.maxOffset - pos.offset;
 
 			if ( howMany !== 0 ) {
 				ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
@@ -277,8 +278,8 @@ export default class Range {
 
 		// Go down.
 		while ( pos.path.length <= this.end.path.length ) {
-			let offset = this.end.path[ pos.path.length - 1 ];
-			let howMany = offset - pos.offset;
+			const offset = this.end.path[ pos.path.length - 1 ];
+			const howMany = offset - pos.offset;
 
 			if ( howMany !== 0 ) {
 				ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
@@ -327,7 +328,7 @@ export default class Range {
 
 		const treeWalker = new TreeWalker( options );
 
-		for ( let value of treeWalker ) {
+		for ( const value of treeWalker ) {
 			yield value.item;
 		}
 	}
@@ -352,7 +353,7 @@ export default class Range {
 
 		yield treeWalker.position;
 
-		for ( let value of treeWalker ) {
+		for ( const value of treeWalker ) {
 			yield value.nextPosition;
 		}
 	}
@@ -368,12 +369,12 @@ export default class Range {
 	 * @returns {Array.<module:engine/model/range~Range>} Range which is the result of transformation.
 	 */
 	getTransformedByDelta( delta ) {
-		let ranges = [ Range.createFromRange( this ) ];
+		const ranges = [ Range.createFromRange( this ) ];
 
 		// Operation types that a range can be transformed by.
 		const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
 
-		for ( let operation of delta.operations ) {
+		for ( const operation of delta.operations ) {
 			if ( supportedTypes.has( operation.type ) ) {
 				for ( let i = 0; i < ranges.length; i++ ) {
 					const result = ranges[ i ]._getTransformedByDocumentChange(
@@ -405,11 +406,11 @@ export default class Range {
 	 * @returns {Array.<module:engine/model/range~Range>} Range which is the result of transformation.
 	 */
 	getTransformedByDeltas( deltas ) {
-		let ranges = [ Range.createFromRange( this ) ];
+		const ranges = [ Range.createFromRange( this ) ];
 
-		for ( let delta of deltas ) {
+		for ( const delta of deltas ) {
 			for ( let i = 0; i < ranges.length; i++ ) {
-				let result = ranges[ i ].getTransformedByDelta( delta );
+				const result = ranges[ i ].getTransformedByDelta( delta );
 
 				ranges.splice( i, 1, ...result );
 				i += result.length - 1;
@@ -452,7 +453,11 @@ export default class Range {
 		} else {
 			const sourceRange = Range.createFromPositionAndShift( sourcePosition, howMany );
 
-			if ( deltaType == 'merge' && this.isCollapsed && ( this.start.isEqual( sourceRange.start ) || this.start.isEqual( sourceRange.end ) ) ) {
+			if (
+				deltaType == 'merge' &&
+				this.isCollapsed &&
+				( this.start.isEqual( sourceRange.start ) || this.start.isEqual( sourceRange.end ) )
+			) {
 				// Collapsed range is in merged element.
 				// Without fix, the range would end up in the graveyard, together with removed element.
 				// <p>foo</p><p>[]bar</p> -> <p>foobar</p><p>[]</p> -> <p>foobar</p> -> <p>foo[]bar</p>
@@ -464,8 +469,15 @@ export default class Range {
 				// <p>xx</p>^<w>{<p>a[b</p>}</w><p>c]d</p>   -->   <p>xx</p><p>a[b</p><w></w><p>c]d</p>
 				// ^<p>xx</p><w>{<p>a[b</p>}</w><p>c]d</p>   -->   <p>a[b</p><p>xx</p><w></w><p>c]d</p>  // Note <p>xx</p> inclusion.
 				// <w>{<p>a[b</p>}</w>^<p>c]d</p>            -->   <w></w><p>a[b</p><p>c]d</p>
-				if ( sourceRange.containsPosition( this.start ) && this.containsPosition( sourceRange.end ) && this.end.isAfter( targetPosition ) ) {
-					let start = this.start._getCombined( sourcePosition, targetPosition._getTransformedByDeletion( sourcePosition, howMany ) );
+				if (
+					sourceRange.containsPosition( this.start ) &&
+					this.containsPosition( sourceRange.end ) &&
+					this.end.isAfter( targetPosition )
+				) {
+					const start = this.start._getCombined(
+						sourcePosition,
+						targetPosition._getTransformedByDeletion( sourcePosition, howMany )
+					);
 					const end = this.end._getTransformedByMove( sourcePosition, targetPosition, howMany, false, false );
 
 					return [ new Range( start, end ) ];
@@ -475,9 +487,22 @@ export default class Range {
 				// <p>c[d</p><w>{<p>a]b</p>}</w>^<p>xx</p>   -->   <p>c[d</p><w></w><p>a]b</p><p>xx</p>
 				// <p>c[d</p><w>{<p>a]b</p>}</w><p>xx</p>^   -->   <p>c[d</p><w></w><p>xx</p><p>a]b</p>  // Note <p>xx</p> inclusion.
 				// <p>c[d</p>^<w>{<p>a]b</p>}</w>            -->   <p>c[d</p><p>a]b</p><w></w>
-				if ( sourceRange.containsPosition( this.end ) && this.containsPosition( sourceRange.start ) && this.start.isBefore( targetPosition ) ) {
-					const start = this.start._getTransformedByMove( sourcePosition, targetPosition, howMany, true, false );
-					let end = this.end._getCombined( sourcePosition, targetPosition._getTransformedByDeletion( sourcePosition, howMany ) );
+				if (
+					sourceRange.containsPosition( this.end ) &&
+					this.containsPosition( sourceRange.start ) &&
+					this.start.isBefore( targetPosition )
+				) {
+					const start = this.start._getTransformedByMove(
+						sourcePosition,
+						targetPosition,
+						howMany,
+						true,
+						false
+					);
+					const end = this.end._getCombined(
+						sourcePosition,
+						targetPosition._getTransformedByDeletion( sourcePosition, howMany )
+					);
 
 					return [ new Range( start, end ) ];
 				}
@@ -538,8 +563,8 @@ export default class Range {
 		} else {
 			const range = Range.createFromRange( this );
 
-			let insertBeforeStart = range.isCollapsed ? true : !isSticky;
-			let insertBeforeEnd = range.isCollapsed ? true : isSticky;
+			const insertBeforeStart = range.isCollapsed ? true : !isSticky;
+			const insertBeforeEnd = range.isCollapsed ? true : isSticky;
 
 			range.start = range.start._getTransformedByInsertion( insertPosition, howMany, insertBeforeStart );
 			range.end = range.end._getTransformedByInsertion( insertPosition, howMany, insertBeforeEnd );
@@ -701,7 +726,9 @@ export default class Range {
 		const ref = ranges[ 0 ];
 
 		// 2. Sort all the ranges so it's easier to process them.
-		ranges.sort( ( a, b ) => a.start.isAfter( b.start ) ? 1 : -1 );
+		ranges.sort( ( a, b ) => {
+			return a.start.isAfter( b.start ) ? 1 : -1;
+		} );
 
 		// 3. Check at which index the reference range is now.
 		const refIndex = ranges.indexOf( ref );

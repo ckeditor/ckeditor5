@@ -63,7 +63,8 @@ export default class Document {
 
 		/**
 		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} use by
-		 * {@link module:engine/view/document~Document#renderer renderer} and {@link module:engine/view/observer/observer~Observer observers}.
+		 * {@link module:engine/view/document~Document#renderer renderer}
+		 * and {@link module:engine/view/observer/observer~Observer observers}.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/document~Document#domConverter
@@ -149,7 +150,7 @@ export default class Document {
 
 		this._observers.set( Observer, observer );
 
-		for ( let [ name, domElement ] of this.domRoots ) {
+		for ( const [ name, domElement ] of this.domRoots ) {
 			observer.observe( domElement, name );
 		}
 
@@ -182,7 +183,8 @@ export default class Document {
 	 *		document.createRoot( 'body' );
 	 *		document.attachDomRoot( document.querySelector( 'body#editor' ) );
 	 *
-	 * In both cases, {@link module:engine/view/rooteditableelement~RootEditableElement#rootName element name} is always transformed to lower
+	 * In both cases, {@link module:engine/view/rooteditableelement~RootEditableElement#rootName element name} is always
+	 * transformed to lower
 	 * case.
 	 *
 	 * @param {Element|String} domRoot DOM root element or the tag name of view root element if the DOM element will be
@@ -231,7 +233,7 @@ export default class Document {
 		this.renderer.markToSync( 'children', viewRoot );
 		this.renderer.domDocuments.add( domRoot.ownerDocument );
 
-		for ( let observer of this._observers.values() ) {
+		for ( const observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
 		}
 	}
@@ -295,7 +297,7 @@ export default class Document {
 	 * Disables all added observers.
 	 */
 	disableObservers() {
-		for ( let observer of this._observers.values() ) {
+		for ( const observer of this._observers.values() ) {
 			observer.disable();
 		}
 	}
@@ -304,7 +306,7 @@ export default class Document {
 	 * Enables all added observers.
 	 */
 	enableObservers() {
-		for ( let observer of this._observers.values() ) {
+		for ( const observer of this._observers.values() ) {
 			observer.enable();
 		}
 	}
@@ -313,7 +315,7 @@ export default class Document {
 	 * Destroys all observers created by view `Document`.
 	 */
 	destroy() {
-		for ( let observer of this._observers.values() ) {
+		for ( const observer of this._observers.values() ) {
 			observer.destroy();
 		}
 	}

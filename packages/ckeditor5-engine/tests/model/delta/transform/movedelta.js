@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import transformations from '../../../../src/model/delta/basic-transformations';
-/*jshint unused: false*/
+import transformations from '../../../../src/model/delta/basic-transformations'; // eslint-disable-line no-unused-vars
 
 import deltaTransform from '../../../../src/model/delta/transform';
 const transform = deltaTransform.transform;
@@ -17,7 +16,7 @@ import SplitDelta from '../../../../src/model/delta/splitdelta';
 
 import MoveOperation from '../../../../src/model/operation/moveoperation';
 
-import { getNodesAndText, jsonParseStringify } from '../../../../tests/model/_utils/utils';
+import { getNodesAndText } from '../../../../tests/model/_utils/utils';
 
 import {
 	applyDelta,
@@ -41,19 +40,19 @@ describe( 'transform', () => {
 		let moveDelta;
 
 		beforeEach( () => {
-			let sourcePosition = new Position( root, [ 3, 3, 3 ] );
-			let howMany = 1;
-			let targetPosition = new Position( root, [ 3, 3, 0 ] );
+			const sourcePosition = new Position( root, [ 3, 3, 3 ] );
+			const howMany = 1;
+			const targetPosition = new Position( root, [ 3, 3, 0 ] );
 
 			moveDelta = getMoveDelta( sourcePosition, howMany, targetPosition, baseVersion );
 		} );
 
 		describe( 'MergeDelta', () => {
 			it( 'node on the right side of merge was moved', () => {
-				let mergePosition = new Position( root, [ 3, 3, 3 ] );
-				let mergeDelta = getMergeDelta( mergePosition, 4, 12, baseVersion );
+				const mergePosition = new Position( root, [ 3, 3, 3 ] );
+				const mergeDelta = getMergeDelta( mergePosition, 4, 12, baseVersion );
 
-				let transformed = transform( moveDelta, mergeDelta );
+				const transformed = transform( moveDelta, mergeDelta );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -72,7 +71,7 @@ describe( 'transform', () => {
 							sourcePosition: new Position( gy, [ 0, 0 ] ),
 							howMany: 1,
 							targetPosition: new Position( root, [ 3, 3, 3 ] ),
-							baseVersion: baseVersion
+							baseVersion
 						},
 						{
 							type: MoveOperation,
@@ -103,17 +102,17 @@ describe( 'transform', () => {
 				applyDelta( transformed[ 0 ], doc );
 				applyDelta( transformed[ 1 ], doc );
 
-				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3 ] ), 1 ) );
+				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3 ] ), 1 ) );
 
 				// MoveDelta is applied. MergeDelta is discarded.
 				expect( nodesAndText ).to.equal( 'DIVPabcfoobarxyzPXXXXXabcdXDIV' );
 			} );
 
 			it( 'move range in merged node', () => {
-				let mergePosition = new Position( root, [ 3, 3 ] );
-				let mergeDelta = getMergeDelta( mergePosition, 1, 4, baseVersion );
+				const mergePosition = new Position( root, [ 3, 3 ] );
+				const mergeDelta = getMergeDelta( mergePosition, 1, 4, baseVersion );
 
-				let transformed = transform( moveDelta, mergeDelta );
+				const transformed = transform( moveDelta, mergeDelta );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -127,7 +126,7 @@ describe( 'transform', () => {
 							sourcePosition: new Position( root, [ 3, 2, 4 ] ),
 							howMany: 1,
 							targetPosition: new Position( root, [ 3, 2, 1 ] ),
-							baseVersion: baseVersion
+							baseVersion
 						}
 					]
 				} );

@@ -59,19 +59,19 @@ export default class DeltaReplayer {
 	 * @returns {Promise}
 	 */
 	play( timeInterval = 1000 ) {
-		const deltaReplayer = this;
+		const deltaReplayer = this; // eslint-disable-line consistent-this
 
 		return new Promise( ( res, rej ) => {
 			play();
 
 			function play() {
-				deltaReplayer.applyNextDelta().then( ( isFinished ) => {
+				deltaReplayer.applyNextDelta().then( isFinished => {
 					if ( isFinished ) {
 						return res();
 					}
 
 					setTimeout( play, timeInterval );
-				} ).catch( ( err ) => {
+				} ).catch( err => {
 					rej( err );
 				} );
 			}
@@ -90,7 +90,7 @@ export default class DeltaReplayer {
 		}
 
 		return this.applyNextDelta()
-			.then( ( isFinished ) => {
+			.then( isFinished => {
 				if ( !isFinished ) {
 					return this.applyDeltas( numberOfDeltas - 1 );
 				}
@@ -104,7 +104,7 @@ export default class DeltaReplayer {
 	 */
 	applyAllDeltas() {
 		return this.applyNextDelta()
-			.then( ( isFinished ) => {
+			.then( isFinished => {
 				if ( !isFinished ) {
 					return this.applyAllDeltas();
 				}
@@ -120,7 +120,7 @@ export default class DeltaReplayer {
 	applyNextDelta() {
 		const document = this._document;
 
-		return new Promise( ( res ) => {
+		return new Promise( res => {
 			document.enqueueChanges( () => {
 				const jsonDelta = this._deltasToReplay.shift();
 

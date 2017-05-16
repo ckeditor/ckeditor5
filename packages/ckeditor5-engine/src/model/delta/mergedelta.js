@@ -44,7 +44,7 @@ export default class MergeDelta extends Delta {
 	 * @inheritDoc
 	 */
 	getReversed() {
-		let delta = super.getReversed();
+		const delta = super.getReversed();
 
 		if ( delta.operations.length > 0 ) {
 			delta.operations[ 1 ].isSticky = false;
@@ -120,7 +120,13 @@ register( 'merge', function( position ) {
 	const positionAfter = Position.createFromParentAndOffset( nodeAfter, 0 );
 	const positionBefore = Position.createFromParentAndOffset( nodeBefore, nodeBefore.maxOffset );
 
-	const move = new MoveOperation( positionAfter, nodeAfter.maxOffset, positionBefore, this.document.version );
+	const move = new MoveOperation(
+		positionAfter,
+		nodeAfter.maxOffset,
+		positionBefore,
+		this.document.version
+	);
+
 	move.isSticky = true;
 	delta.addOperation( move );
 	this.document.applyOperation( move );

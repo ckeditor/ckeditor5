@@ -60,7 +60,7 @@ export default class Delta {
 	 * @param {Number} baseVersion
 	 */
 	set baseVersion( baseVersion ) {
-		for ( let operation of this.operations ) {
+		for ( const operation of this.operations ) {
 			operation.baseVersion = baseVersion++;
 		}
 	}
@@ -100,9 +100,9 @@ export default class Delta {
 	 * @returns {module:engine/model/delta/delta~Delta} Clone of this delta.
 	 */
 	clone() {
-		let delta = new this.constructor();
+		const delta = new this.constructor();
 
-		for ( let op of this.operations ) {
+		for ( const op of this.operations ) {
 			delta.addOperation( op.clone() );
 		}
 
@@ -121,9 +121,9 @@ export default class Delta {
 	 * @returns {module:engine/model/delta/delta~Delta} Reversed delta.
 	 */
 	getReversed() {
-		let delta = new this._reverseDeltaClass();
+		const delta = new this._reverseDeltaClass();
 
-		for ( let op of this.operations ) {
+		for ( const op of this.operations ) {
 			delta.addOperation( op.getReversed() );
 		}
 
@@ -142,7 +142,7 @@ export default class Delta {
 	 * @returns {Object} Clone of this delta with added class name.
 	 */
 	toJSON() {
-		let json = clone( this );
+		const json = clone( this );
 
 		json.__className = this.constructor.className;
 

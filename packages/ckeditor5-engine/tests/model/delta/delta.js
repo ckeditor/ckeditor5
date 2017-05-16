@@ -27,9 +27,7 @@ class FooOperation extends Operation {
 	}
 
 	getReversed() {
-		/* jshint ignore:start */
 		return new BarOperation( this.string, this.baseVersion );
-		/* jshint ignore:end */
 	}
 }
 
@@ -119,7 +117,7 @@ describe( 'Delta', () => {
 	describe( 'getReversed', () => {
 		it( 'should return empty Delta if there are no operations in delta', () => {
 			const delta = new Delta();
-			let reversed = delta.getReversed();
+			const reversed = delta.getReversed();
 
 			expect( reversed ).to.be.instanceof( Delta );
 			expect( reversed.operations.length ).to.equal( 0 );
@@ -130,7 +128,7 @@ describe( 'Delta', () => {
 			delta.addOperation( new FooOperation( 'a', 1 ) );
 			delta.addOperation( new BarOperation( 'b', 2 ) );
 
-			let reversed = delta.getReversed();
+			const reversed = delta.getReversed();
 
 			expect( reversed ).to.be.instanceof( Delta );
 			expect( reversed.operations.length ).to.equal( 2 );
@@ -164,7 +162,7 @@ describe( 'Delta', () => {
 		} );
 
 		it( 'should create delta with AttributeOperation', () => {
-			let operation = new AttributeOperation(
+			const operation = new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 				'foo',
 				true,
@@ -181,7 +179,7 @@ describe( 'Delta', () => {
 		} );
 
 		it( 'should create delta with InsertOperation', () => {
-			let operation = new InsertOperation(
+			const operation = new InsertOperation(
 				new Position( root, [ 0 ] ),
 				'x',
 				doc.version
@@ -196,7 +194,7 @@ describe( 'Delta', () => {
 		} );
 
 		it( 'should create delta with MoveOperation', () => {
-			let operation = new MoveOperation(
+			const operation = new MoveOperation(
 				new Position( root, [ 0, 0 ] ),
 				1,
 				new Position( root, [ 1, 0 ] ),
@@ -212,7 +210,7 @@ describe( 'Delta', () => {
 		} );
 
 		it( 'should create delta with NoOperation', () => {
-			let operation = new NoOperation( 0 );
+			const operation = new NoOperation( 0 );
 
 			delta.addOperation( operation );
 
@@ -223,7 +221,7 @@ describe( 'Delta', () => {
 		} );
 
 		it( 'should create delta with ReinsertOperation', () => {
-			let operation = new ReinsertOperation(
+			const operation = new ReinsertOperation(
 				new Position( doc.graveyard, [ 0 ] ),
 				2,
 				new Position( root, [ 0 ] ),
@@ -239,7 +237,7 @@ describe( 'Delta', () => {
 		} );
 
 		it( 'should create delta with RemoveOperation', () => {
-			let operation = new RemoveOperation(
+			const operation = new RemoveOperation(
 				new Position( root, [ 2 ] ),
 				2,
 				doc.version
@@ -254,7 +252,7 @@ describe( 'Delta', () => {
 		} );
 
 		it( 'should create delta with RootAttributeOperation', () => {
-			let operation = new RootAttributeOperation( root, 'key', null, 'newValue', doc.version );
+			const operation = new RootAttributeOperation( root, 'key', null, 'newValue', doc.version );
 
 			delta.addOperation( operation );
 

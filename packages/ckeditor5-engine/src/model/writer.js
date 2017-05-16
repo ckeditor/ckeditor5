@@ -114,7 +114,6 @@ export function remove( range ) {
  * @returns {module:engine/model/range~Range} Range containing moved nodes.
  */
 export function move( sourceRange, targetPosition ) {
-	/* jshint validthis:true */
 	if ( !sourceRange.isFlat ) {
 		/**
 		 * Trying to move a range that starts and ends in different element.
@@ -147,11 +146,11 @@ export function setAttribute( range, key, value ) {
 	_splitNodeAtPosition( range.end );
 
 	// Iterate over all items in the range.
-	for ( let item of range.getItems() ) {
+	for ( const item of range.getItems() ) {
 		// Iterator will return `TextProxy` instances but we know that those text proxies will
 		// always represent full text nodes (this is guaranteed thanks to splitting we did before).
 		// So, we can operate on those text proxies' text nodes.
-		let node = item.is( 'textProxy' ) ? item.textNode : item;
+		const node = item.is( 'textProxy' ) ? item.textNode : item;
 
 		if ( value !== null ) {
 			node.setAttribute( key, value );
@@ -174,7 +173,6 @@ export function setAttribute( range, key, value ) {
  * @param {String} key Key of attribute to remove.
  */
 export function removeAttribute( range, key ) {
-	/* jshint validthis:true */
 	this.setAttribute( range, key, null );
 }
 
@@ -199,7 +197,7 @@ export function normalizeNodes( nodes ) {
 		} else if ( nodes[ i ] instanceof TextProxy ) {
 			normalized.push( new Text( nodes[ i ].data, nodes[ i ].getAttributes() ) );
 		} else if ( nodes[ i ] instanceof DocumentFragment || nodes[ i ] instanceof NodeList ) {
-			for ( let child of nodes[ i ] ) {
+			for ( const child of nodes[ i ] ) {
 				normalized.push( child );
 			}
 		} else if ( nodes[ i ] instanceof Node ) {
@@ -289,7 +287,7 @@ function _haveSameAttributes( nodeA, nodeB ) {
 	const iteratorA = nodeA.getAttributes();
 	const iteratorB = nodeB.getAttributes();
 
-	for ( let attr of iteratorA ) {
+	for ( const attr of iteratorA ) {
 		if ( attr[ 1 ] !== nodeB.getAttribute( attr[ 0 ] ) ) {
 			return false;
 		}

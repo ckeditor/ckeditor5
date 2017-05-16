@@ -15,7 +15,7 @@ describe( 'DomEventData', () => {
 		viewDocument = new ViewDocument();
 
 		domRoot = document.createElement( 'div' );
-		domRoot.innerHTML = `<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>`;
+		domRoot.innerHTML = '<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>';
 		document.body.appendChild( domRoot );
 
 		viewBody = viewDocument.domConverter.domToView( document.body, { bind: true } );

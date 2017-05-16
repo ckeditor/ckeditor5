@@ -43,7 +43,7 @@ export default class SplitDelta extends Delta {
 	 * @inheritDoc
 	 */
 	getReversed() {
-		let delta = super.getReversed();
+		const delta = super.getReversed();
 
 		if ( delta.operations.length > 0 ) {
 			delta.operations[ 0 ].isSticky = true;
@@ -131,7 +131,11 @@ register( 'split', function( position ) {
 
 	const copy = new Element( splitElement.name, splitElement.getAttributes() );
 
-	const insert = new InsertOperation( Position.createAfter( splitElement ), copy, this.document.version );
+	const insert = new InsertOperation(
+		Position.createAfter( splitElement ),
+		copy,
+		this.document.version
+	);
 
 	delta.addOperation( insert );
 	this.document.applyOperation( insert );

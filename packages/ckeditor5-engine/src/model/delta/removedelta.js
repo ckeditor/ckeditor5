@@ -47,9 +47,9 @@ register( 'remove', function( itemOrRange ) {
 
 	if ( itemOrRange instanceof Range ) {
 		// The array is reversed, so the ranges are correct and do not have to be updated.
-		let ranges = itemOrRange.getMinimalFlatRanges().reverse();
+		const ranges = itemOrRange.getMinimalFlatRanges().reverse();
 
-		for ( let flat of ranges ) {
+		for ( const flat of ranges ) {
 			addRemoveOperation( this, delta, flat.start, flat.end.offset - flat.start.offset );
 		}
 	} else {

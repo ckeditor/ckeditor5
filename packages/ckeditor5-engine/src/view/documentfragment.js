@@ -149,7 +149,7 @@ export default class DocumentFragment {
 
 		nodes = normalize( nodes );
 
-		for ( let node of nodes ) {
+		for ( const node of nodes ) {
 			node.parent = this;
 
 			this._children.splice( index, 0, node );
@@ -207,5 +207,8 @@ function normalize( nodes ) {
 	}
 
 	// Array.from to enable .map() on non-arrays.
-	return Array.from( nodes ).map( ( node ) => typeof node == 'string' ? new Text( node ) : node );
+	return Array.from( nodes )
+		.map( node => {
+			return typeof node == 'string' ? new Text( node ) : node;
+		} );
 }

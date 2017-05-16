@@ -8,12 +8,11 @@ import NoOperation from '../../../src/model/operation/nooperation';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'NoOperation', () => {
-	let noop, doc, root;
+	let noop, doc;
 
 	beforeEach( () => {
 		noop = new NoOperation( 0 );
 		doc = new Document();
-		root = doc.createRoot();
 	} );
 
 	it( 'should not throw an error when applied', () => {

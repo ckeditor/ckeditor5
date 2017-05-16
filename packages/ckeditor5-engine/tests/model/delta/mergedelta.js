@@ -66,7 +66,7 @@ describe( 'Batch', () => {
 			sinon.spy( doc, 'applyOperation' );
 			batch = doc.batch().merge( new Position( root, [ 1 ] ) );
 
-			const correctDeltaMatcher = sinon.match( ( operation ) => {
+			const correctDeltaMatcher = sinon.match( operation => {
 				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
 			} );
 
@@ -112,7 +112,7 @@ describe( 'MergeDelta', () => {
 
 	describe( 'getReversed', () => {
 		it( 'should return empty SplitDelta if there are no operations in delta', () => {
-			let reversed = mergeDelta.getReversed();
+			const reversed = mergeDelta.getReversed();
 
 			expect( reversed ).to.be.instanceof( SplitDelta );
 			expect( reversed.operations.length ).to.equal( 0 );
@@ -122,7 +122,7 @@ describe( 'MergeDelta', () => {
 			mergeDelta.operations.push( new MoveOperation( new Position( root, [ 1, 2, 0 ] ), 4, new Position( root, [ 1, 1, 4 ] ) ) );
 			mergeDelta.operations.push( new RemoveOperation( new Position( root, [ 1, 2, 0 ] ), 1 ) );
 
-			let reversed = mergeDelta.getReversed();
+			const reversed = mergeDelta.getReversed();
 
 			expect( reversed ).to.be.instanceof( SplitDelta );
 			expect( reversed.operations.length ).to.equal( 2 );

@@ -30,44 +30,44 @@ import RemoveOperation from '../../../../../src/model/operation/removeoperation'
 import RenameOperation from '../../../../../src/model/operation/renameoperation';
 
 export function getAttributeDelta( range, key, oldValue, newValue, version ) {
-	let delta = new AttributeDelta();
+	const delta = new AttributeDelta();
 	delta.addOperation( new AttributeOperation( range, key, oldValue, newValue, version ) );
 
 	return delta;
 }
 
 export function getInsertDelta( position, nodes, version ) {
-	let delta = new InsertDelta();
+	const delta = new InsertDelta();
 	delta.addOperation( new InsertOperation( position, nodes, version ) );
 
 	return delta;
 }
 
 export function getWeakInsertDelta( position, nodes, version ) {
-	let delta = new WeakInsertDelta();
+	const delta = new WeakInsertDelta();
 	delta.addOperation( new InsertOperation( position, nodes, version ) );
 
 	return delta;
 }
 
 export function getMarkerDelta( name, oldRange, newRange, version ) {
-	let delta = new MarkerDelta();
+	const delta = new MarkerDelta();
 	delta.addOperation( new MarkerOperation( name, oldRange, newRange, version ) );
 
 	return delta;
 }
 
 export function getMergeDelta( position, howManyInPrev, howManyInNext, version ) {
-	let delta = new MergeDelta();
+	const delta = new MergeDelta();
 
-	let sourcePosition = Position.createFromPosition( position );
+	const sourcePosition = Position.createFromPosition( position );
 	sourcePosition.path.push( 0 );
 
-	let targetPosition = Position.createFromPosition( position );
+	const targetPosition = Position.createFromPosition( position );
 	targetPosition.offset--;
 	targetPosition.path.push( howManyInPrev );
 
-	let move = new MoveOperation( sourcePosition, howManyInNext, targetPosition, version );
+	const move = new MoveOperation( sourcePosition, howManyInNext, targetPosition, version );
 	move.isSticky = true;
 
 	delta.addOperation( move );
@@ -77,45 +77,45 @@ export function getMergeDelta( position, howManyInPrev, howManyInNext, version )
 }
 
 export function getMoveDelta( sourcePosition, howMany, targetPosition, baseVersion ) {
-	let delta = new MoveDelta();
+	const delta = new MoveDelta();
 
-	let move = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
+	const move = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
 	delta.addOperation( move );
 
 	return delta;
 }
 
 export function getRemoveDelta( sourcePosition, howMany, baseVersion ) {
-	let delta = new RemoveDelta();
+	const delta = new RemoveDelta();
 
-	let remove = new RemoveOperation( sourcePosition, howMany, baseVersion );
+	const remove = new RemoveOperation( sourcePosition, howMany, baseVersion );
 	delta.addOperation( remove );
 
 	return delta;
 }
 
 export function getRenameDelta( position, oldName, newName, baseVersion ) {
-	let delta = new RenameDelta();
+	const delta = new RenameDelta();
 
-	let rename = new RenameOperation( position, oldName, newName, baseVersion );
+	const rename = new RenameOperation( position, oldName, newName, baseVersion );
 	delta.addOperation( rename );
 
 	return delta;
 }
 
 export function getSplitDelta( position, nodeCopy, howManyMove, version ) {
-	let delta = new SplitDelta();
+	const delta = new SplitDelta();
 
-	let insertPosition = Position.createFromPosition( position );
+	const insertPosition = Position.createFromPosition( position );
 	insertPosition.path = insertPosition.getParentPath();
 	insertPosition.offset++;
 
-	let targetPosition = Position.createFromPosition( insertPosition );
+	const targetPosition = Position.createFromPosition( insertPosition );
 	targetPosition.path.push( 0 );
 
 	delta.addOperation( new InsertOperation( insertPosition, [ nodeCopy ], version ) );
 
-	let move = new MoveOperation( position, howManyMove, targetPosition, version + 1 );
+	const move = new MoveOperation( position, howManyMove, targetPosition, version + 1 );
 	move.isSticky = true;
 
 	delta.addOperation( move );
@@ -124,13 +124,13 @@ export function getSplitDelta( position, nodeCopy, howManyMove, version ) {
 }
 
 export function getWrapDelta( range, element, version ) {
-	let delta = new WrapDelta();
+	const delta = new WrapDelta();
 
-	let insert = new InsertOperation( range.end, element, version );
+	const insert = new InsertOperation( range.end, element, version );
 
-	let targetPosition = Position.createFromPosition( range.end );
+	const targetPosition = Position.createFromPosition( range.end );
 	targetPosition.path.push( 0 );
-	let move = new MoveOperation( range.start, range.end.offset - range.start.offset, targetPosition, version + 1 );
+	const move = new MoveOperation( range.start, range.end.offset - range.start.offset, targetPosition, version + 1 );
 
 	delta.addOperation( insert );
 	delta.addOperation( move );
@@ -139,18 +139,18 @@ export function getWrapDelta( range, element, version ) {
 }
 
 export function getUnwrapDelta( positionBefore, howManyChildren, version ) {
-	let delta = new UnwrapDelta();
+	const delta = new UnwrapDelta();
 
-	let sourcePosition = Position.createFromPosition( positionBefore );
+	const sourcePosition = Position.createFromPosition( positionBefore );
 	sourcePosition.path.push( 0 );
 
-	let move = new MoveOperation( sourcePosition, howManyChildren, positionBefore, version );
+	const move = new MoveOperation( sourcePosition, howManyChildren, positionBefore, version );
 	move.isSticky = true;
 
-	let removePosition = Position.createFromPosition( positionBefore );
+	const removePosition = Position.createFromPosition( positionBefore );
 	removePosition.offset += howManyChildren;
 
-	let remove = new RemoveOperation( removePosition, 1, version + 1 );
+	const remove = new RemoveOperation( removePosition, 1, version + 1 );
 
 	delta.addOperation( move );
 	delta.addOperation( remove );
@@ -168,7 +168,7 @@ export function expectDelta( delta, expected ) {
 }
 
 export function expectOperation( op, params ) {
-	for ( let i in params ) {
+	for ( const i in params ) {
 		if ( i == 'type' ) {
 			expect( op ).to.be.instanceof( params[ i ] );
 		}
@@ -183,7 +183,7 @@ export function expectOperation( op, params ) {
 }
 
 export function applyDelta( delta, document ) {
-	for ( let op of delta.operations ) {
+	for ( const op of delta.operations ) {
 		document.applyOperation( op );
 	}
 }

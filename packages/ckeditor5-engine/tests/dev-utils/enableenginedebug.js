@@ -22,8 +22,7 @@ import RootAttributeOperation from '../../src/model/operation/rootattributeopera
 import RemoveOperation from '../../src/model/operation/removeoperation';
 import DeltaFactory from '../../src/model/delta/deltafactory';
 import Delta from '../../src/model/delta/delta';
-import AttributeDelta from '../../src/model/delta/attributedelta';
-import { RootAttributeDelta } from '../../src/model/delta/attributedelta';
+import { default as AttributeDelta, RootAttributeDelta } from '../../src/model/delta/attributedelta';
 import InsertDelta from '../../src/model/delta/insertdelta';
 import MarkerDelta from '../../src/model/delta/markerdelta';
 import MergeDelta from '../../src/model/delta/mergedelta';
@@ -597,7 +596,7 @@ describe( 'debug tools', () => {
 
 			return TestEditor.create( div, {
 				plugins: [ DebugPlugin ]
-			} ).then( ( _editor ) => {
+			} ).then( _editor => {
 				editor = _editor;
 			} );
 		} );

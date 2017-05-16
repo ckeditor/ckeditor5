@@ -53,7 +53,7 @@ register( 'weakInsert', function( position, nodes ) {
 
 	nodes = normalizeNodes( nodes );
 
-	for ( let node of nodes ) {
+	for ( const node of nodes ) {
 		node.setAttributesTo( this.document.selection.getAttributes() );
 	}
 

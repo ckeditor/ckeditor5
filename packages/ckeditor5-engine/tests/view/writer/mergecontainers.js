@@ -16,7 +16,7 @@ describe( 'writer', () => {
 	 * @param {String} expected
 	 */
 	function test( input, expected ) {
-		let { view, selection } = parse( input );
+		const { view, selection } = parse( input );
 
 		const newPosition = mergeContainers( selection.getFirstPosition() );
 		expect( stringify( view.root, newPosition, { showType: true, showPriority: false } ) ).to.equal( expected );
@@ -51,7 +51,7 @@ describe( 'writer', () => {
 		} );
 
 		it( 'should throw if there is no element before position', () => {
-			let { selection } = parse( '[]<container:div>foobar</container:div>' );
+			const { selection } = parse( '[]<container:div>foobar</container:div>' );
 
 			expect( () => {
 				mergeContainers( selection.getFirstPosition() );
@@ -59,7 +59,7 @@ describe( 'writer', () => {
 		} );
 
 		it( 'should throw if there is no element after position', () => {
-			let { selection } = parse( '<container:div>foobar</container:div>[]' );
+			const { selection } = parse( '<container:div>foobar</container:div>[]' );
 
 			expect( () => {
 				mergeContainers( selection.getFirstPosition() );
@@ -67,7 +67,7 @@ describe( 'writer', () => {
 		} );
 
 		it( 'should throw if element before position is not a container element', () => {
-			let { selection } = parse( '<attribute:u>foo</attribute:u>[]<container:div>bar</container:div>' );
+			const { selection } = parse( '<attribute:u>foo</attribute:u>[]<container:div>bar</container:div>' );
 
 			expect( () => {
 				mergeContainers( selection.getFirstPosition() );
@@ -75,7 +75,7 @@ describe( 'writer', () => {
 		} );
 
 		it( 'should throw if element after position is not a container element', () => {
-			let { selection } = parse( '<container:div>foo</container:div>[]<attribute:u>bar</attribute:u>' );
+			const { selection } = parse( '<container:div>foo</container:div>[]<attribute:u>bar</attribute:u>' );
 
 			expect( () => {
 				mergeContainers( selection.getFirstPosition() );

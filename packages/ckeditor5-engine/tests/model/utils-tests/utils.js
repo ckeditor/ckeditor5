@@ -46,9 +46,9 @@ describe( 'jsonParseStringify', () => {
 	}
 
 	it( 'should return cleaned object', () => {
-		let foo = new Foo( { bar: 'bar' } );
+		const foo = new Foo( { bar: 'bar' } );
 
-		let fooJsoned = jsonParseStringify( foo );
+		const fooJsoned = jsonParseStringify( foo );
 		expect( fooJsoned ).to.not.be.instanceOf( Foo );
 		expect( fooJsoned ).to.deep.equal( { ra: { bar: 'bar' } } );
 	} );

@@ -14,7 +14,7 @@ describe( 'MutationObserver', () => {
 
 	beforeEach( () => {
 		domRoot = document.createElement( 'div' );
-		domRoot.innerHTML = `<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>`;
+		domRoot.innerHTML = '<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>';
 		document.body.appendChild( domRoot );
 
 		viewDocument = new ViewDocument();
@@ -27,7 +27,9 @@ describe( 'MutationObserver', () => {
 
 		mutationObserver = viewDocument.getObserver( MutationObserver );
 
-		viewDocument.on( 'mutations', ( evt, mutations ) => lastMutations = mutations );
+		viewDocument.on( 'mutations', ( evt, mutations ) => {
+			lastMutations = mutations;
+		} );
 
 		viewRoot = viewDocument.getRoot();
 
@@ -119,7 +121,7 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].node ).to.equal( viewRoot );
 	} );
 
-	it( 'should fire mutations event with view selection instance, if dom selection can be mapped to view', ( done ) => {
+	it( 'should fire mutations event with view selection instance, if dom selection can be mapped to view', done => {
 		const textNode = domEditor.childNodes[ 0 ].childNodes[ 0 ];
 		textNode.data = 'foom';
 
@@ -138,7 +140,7 @@ describe( 'MutationObserver', () => {
 		expectDomEditorNotToChange();
 	} );
 
-	it( 'should fire mutations event with viewSelection param set to null, if dom selection cannot be mapped to view', ( done ) => {
+	it( 'should fire mutations event with viewSelection param set to null, if dom selection cannot be mapped to view', done => {
 		const textNode = domEditor.ownerDocument.createTextNode( 'foo' );
 		domEditor.childNodes[ 0 ].appendChild( textNode );
 

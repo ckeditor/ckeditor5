@@ -149,15 +149,15 @@ export default class Matcher {
 	 * @returns {Array} [result.match.style] Array with matched style names.
 	 */
 	match( ...element ) {
-		for ( let singleElement of element ) {
-			for ( let pattern of this._patterns ) {
+		for ( const singleElement of element ) {
+			for ( const pattern of this._patterns ) {
 				const match = isElementMatching( singleElement, pattern );
 
 				if ( match ) {
 					return {
 						element: singleElement,
-						pattern: pattern,
-						match: match
+						pattern,
+						match
 					};
 				}
 			}
@@ -179,15 +179,15 @@ export default class Matcher {
 	matchAll( ...element ) {
 		const results = [];
 
-		for ( let singleElement of element ) {
-			for ( let pattern of this._patterns ) {
+		for ( const singleElement of element ) {
+			for ( const pattern of this._patterns ) {
 				const match = isElementMatching( singleElement, pattern );
 
 				if ( match ) {
 					results.push( {
 						element: singleElement,
-						pattern: pattern,
-						match: match
+						pattern,
+						match
 					} );
 				}
 			}
@@ -290,7 +290,7 @@ function matchName( pattern, name ) {
 function matchAttributes( patterns, element ) {
 	const match = [];
 
-	for ( let name in patterns ) {
+	for ( const name in patterns ) {
 		const pattern = patterns[ name ];
 
 		if ( element.hasAttribute( name ) ) {
@@ -323,11 +323,11 @@ function matchAttributes( patterns, element ) {
 function matchClasses( patterns, element ) {
 	const match = [];
 
-	for ( let pattern of patterns ) {
+	for ( const pattern of patterns ) {
 		if ( pattern instanceof RegExp ) {
 			const classes = element.getClassNames();
 
-			for ( let name of classes ) {
+			for ( const name of classes ) {
 				if ( pattern.test( name ) ) {
 					match.push( name );
 				}
@@ -355,7 +355,7 @@ function matchClasses( patterns, element ) {
 function matchStyles( patterns, element ) {
 	const match = [];
 
-	for ( let name in patterns ) {
+	for ( const name in patterns ) {
 		const pattern = patterns[ name ];
 
 		if ( element.hasStyle( name ) ) {
@@ -367,7 +367,7 @@ function matchStyles( patterns, element ) {
 				} else {
 					return null;
 				}
-			} else if ( style === pattern  ) {
+			} else if ( style === pattern ) {
 				match.push( name );
 			} else {
 				return null;

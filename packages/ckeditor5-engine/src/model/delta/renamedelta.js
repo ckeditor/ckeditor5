@@ -68,10 +68,8 @@ register( 'rename', function( element, newName ) {
 	const delta = new RenameDelta();
 	this.addDelta( delta );
 
-	apply(
-		this, delta,
-		new RenameOperation( Position.createBefore( element ), element.name, newName, this.document.version )
-	);
+	const renameOperation = new RenameOperation( Position.createBefore( element ), element.name, newName, this.document.version );
+	apply( this, delta, renameOperation );
 
 	return this;
 } );

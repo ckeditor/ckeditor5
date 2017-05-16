@@ -32,8 +32,8 @@ export default class SelectionObserver extends Observer {
 
 		/**
 		 * Instance of the mutation observer. Selection observer calls
-		 * {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the mutations will be handled before the
-		 * {@link module:engine/view/document~Document#event:selectionChange} event is fired.
+		 * {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the mutations will be handled
+		 * before the {@link module:engine/view/document~Document#event:selectionChange} event is fired.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/observer/mutationobserver~MutationObserver}
@@ -57,12 +57,14 @@ export default class SelectionObserver extends Observer {
 		 */
 		this.selection = document.selection;
 
+		/* eslint-disable max-len */
 		/**
 		 * Reference to the {@link module:engine/view/document~Document#domConverter}.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/observer/selectionobserver~SelectionObserver#domConverter
 		 */
+		/* eslint-enable max-len */
 		this.domConverter = document.domConverter;
 
 		/**
@@ -167,7 +169,7 @@ export default class SelectionObserver extends Observer {
 		const data = {
 			oldSelection: this.selection,
 			newSelection: newViewSelection,
-			domSelection: domSelection
+			domSelection
 		};
 
 		// Should be fired only when selection change was the only document change.

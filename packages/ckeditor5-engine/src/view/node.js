@@ -92,7 +92,7 @@ export default class Node {
 	 * @type {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
 	 */
 	get root() {
-		let root = this;
+		let root = this; // eslint-disable-line consistent-this
 
 		while ( root.parent ) {
 			root = root.parent;

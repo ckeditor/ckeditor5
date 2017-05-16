@@ -356,7 +356,7 @@ describe( 'Element', () => {
 				const expected = [ el1, el2, el3 ];
 				let i = 0;
 
-				for ( let child of parent.getChildren() ) {
+				for ( const child of parent.getChildren() ) {
 					expect( child ).to.equal( expected[ i ] );
 					i++;
 				}
@@ -416,8 +416,8 @@ describe( 'Element', () => {
 				expect( el._attrs.get( 'foo' ) ).to.equal( 'bar' );
 			} );
 
-			it( 'should fire change event with attributes type', ( done ) => {
-				el.once( 'change:attributes', ( eventInfo ) => {
+			it( 'should fire change event with attributes type', done => {
+				el.once( 'change:attributes', eventInfo => {
 					expect( eventInfo.source ).to.equal( el );
 					done();
 				} );
@@ -429,18 +429,18 @@ describe( 'Element', () => {
 				el.setAttribute( 'class', 'foo bar' );
 
 				expect( el._attrs.has( 'class' ) ).to.be.false;
-				expect( el._classes.has( 'foo' )  ).to.be.true;
-				expect( el._classes.has( 'bar' )  ).to.be.true;
+				expect( el._classes.has( 'foo' ) ).to.be.true;
+				expect( el._classes.has( 'bar' ) ).to.be.true;
 			} );
 
 			it( 'should replace all existing classes', () => {
 				el.setAttribute( 'class', 'foo bar baz' );
 				el.setAttribute( 'class', 'qux' );
 
-				expect( el._classes.has( 'foo' )  ).to.be.false;
-				expect( el._classes.has( 'bar' )  ).to.be.false;
-				expect( el._classes.has( 'baz' )  ).to.be.false;
-				expect( el._classes.has( 'qux' )  ).to.be.true;
+				expect( el._classes.has( 'foo' ) ).to.be.false;
+				expect( el._classes.has( 'bar' ) ).to.be.false;
+				expect( el._classes.has( 'baz' ) ).to.be.false;
+				expect( el._classes.has( 'qux' ) ).to.be.true;
 			} );
 
 			it( 'should replace all styles', () => {
@@ -534,7 +534,7 @@ describe( 'Element', () => {
 				const expected = [ 'foo', 'bar' ];
 				let i = 0;
 
-				for ( let key of el.getAttributeKeys() ) {
+				for ( const key of el.getAttributeKeys() ) {
 					expect( key ).to.equal( expected[ i ] );
 					i++;
 				}
@@ -548,7 +548,7 @@ describe( 'Element', () => {
 				const expected = [ 'class', 'bar' ];
 				let i = 0;
 
-				for ( let key of el.getAttributeKeys() ) {
+				for ( const key of el.getAttributeKeys() ) {
 					expect( key ).to.equal( expected[ i ] );
 					i++;
 				}
@@ -560,7 +560,7 @@ describe( 'Element', () => {
 				const expected = [ 'style', 'bar' ];
 				let i = 0;
 
-				for ( let key of el.getAttributeKeys() ) {
+				for ( const key of el.getAttributeKeys() ) {
 					expect( key ).to.equal( expected[ i ] );
 					i++;
 				}
@@ -580,9 +580,9 @@ describe( 'Element', () => {
 				expect( count( el.getAttributeKeys() ) ).to.equal( 0 );
 			} );
 
-			it( 'should fire change event with attributes type', ( done ) => {
+			it( 'should fire change event with attributes type', done => {
 				el.setAttribute( 'foo', 'bar' );
-				el.once( 'change:attributes', ( eventInfo ) => {
+				el.once( 'change:attributes', eventInfo => {
 					expect( eventInfo.source ).to.equal( el );
 					done();
 				} );
@@ -633,8 +633,8 @@ describe( 'Element', () => {
 				expect( el._classes.has( 'one' ) ).to.be.true;
 			} );
 
-			it( 'should fire change event with attributes type', ( done ) => {
-				el.once( 'change:attributes', ( eventInfo ) => {
+			it( 'should fire change event with attributes type', done => {
+				el.once( 'change:attributes', eventInfo => {
 					expect( eventInfo.source ).to.equal( el );
 					done();
 				} );
@@ -662,9 +662,9 @@ describe( 'Element', () => {
 				expect( el._classes.has( 'three' ) ).to.be.true;
 			} );
 
-			it( 'should fire change event with attributes type', ( done ) => {
+			it( 'should fire change event with attributes type', done => {
 				el.addClass( 'one' );
-				el.once( 'change:attributes', ( eventInfo ) => {
+				el.once( 'change:attributes', eventInfo => {
 					expect( eventInfo.source ).to.equal( el );
 					done();
 				} );
@@ -710,7 +710,7 @@ describe( 'Element', () => {
 				const iterator = el.getClassNames();
 				let i = 0;
 
-				for ( let name of iterator ) {
+				for ( const name of iterator ) {
 					expect( name ).to.equal( names[ i++ ] );
 				}
 			} );
@@ -732,8 +732,8 @@ describe( 'Element', () => {
 				expect( el._styles.get( 'color' ) ).to.equal( 'red' );
 			} );
 
-			it( 'should fire change event with attributes type', ( done ) => {
-				el.once( 'change:attributes', ( eventInfo ) => {
+			it( 'should fire change event with attributes type', done => {
+				el.once( 'change:attributes', eventInfo => {
 					expect( eventInfo.source ).to.equal( el );
 					done();
 				} );
@@ -778,7 +778,7 @@ describe( 'Element', () => {
 				const iterator = el.getStyleNames();
 				let i = 0;
 
-				for ( let name of iterator ) {
+				for ( const name of iterator ) {
 					expect( name ).to.equal( names[ i++ ] );
 				}
 			} );
@@ -813,9 +813,9 @@ describe( 'Element', () => {
 				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
 			} );
 
-			it( 'should fire change event with attributes type', ( done ) => {
+			it( 'should fire change event with attributes type', done => {
 				el.setStyle( 'color', 'red' );
-				el.once( 'change:attributes', ( eventInfo ) => {
+				el.once( 'change:attributes', eventInfo => {
 					expect( eventInfo.source ).to.equal( el );
 					done();
 				} );
@@ -847,6 +847,7 @@ describe( 'Element', () => {
 
 			it( 'should be able to parse big styles definition', () => {
 				expect( () => {
+					// eslint-disable-next-line no-new
 					new Element( 'div', { style: `background-image:url('data:image/jpeg;base64,${ encodedImage }')` } );
 				} ).not.to.throw();
 			} );
@@ -923,7 +924,7 @@ describe( 'Element', () => {
 
 		it( 'should return null if no matches found', () => {
 			const el1 = new Element( 'p' );
-			new Element( 'div', null, el1 );
+			new Element( 'div', null, el1 ); // eslint-disable-line no-new
 
 			expect( el1.findAncestor( {
 				name: 'div',

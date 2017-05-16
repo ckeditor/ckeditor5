@@ -63,8 +63,8 @@ describe( 'advanced-converters', () => {
 	function viewAttributesToString( item ) {
 		let result = '';
 
-		for ( let key of item.getAttributeKeys() ) {
-			let value = item.getAttribute( key );
+		for ( const key of item.getAttributeKeys() ) {
+			const value = item.getAttribute( key );
 
 			if ( value ) {
 				result += ' ' + key + '="' + value + '"';
@@ -81,7 +81,7 @@ describe( 'advanced-converters', () => {
 			result = item.data;
 		} else {
 			// ViewElement or ViewDocumentFragment.
-			for ( let child of item.getChildren() ) {
+			for ( const child of item.getChildren() ) {
 				result += viewToString( child );
 			}
 
@@ -96,7 +96,7 @@ describe( 'advanced-converters', () => {
 	function modelAttributesToString( item ) {
 		let result = '';
 
-		for ( let attr of item.getAttributes() ) {
+		for ( const attr of item.getAttributes() ) {
 			result += ' ' + attr[ 0 ] + '="' + attr[ 1 ] + '"';
 		}
 
@@ -107,18 +107,18 @@ describe( 'advanced-converters', () => {
 		let result = '';
 
 		if ( item instanceof ModelTextProxy ) {
-			let attributes = modelAttributesToString( item );
+			const attributes = modelAttributesToString( item );
 
 			result = attributes ? '<$text' + attributes + '>' + item.data + '</$text>' : item.data;
 		} else {
-			let walker = new ModelWalker( { boundaries: ModelRange.createIn( item ), shallow: true } );
+			const walker = new ModelWalker( { boundaries: ModelRange.createIn( item ), shallow: true } );
 
-			for ( let value of walker ) {
+			for ( const value of walker ) {
 				result += modelToString( value.item );
 			}
 
 			if ( item instanceof ModelElement ) {
-				let attributes = modelAttributesToString( item );
+				const attributes = modelAttributesToString( item );
 
 				result = '<' + item.name + attributes + '>' + result + '</' + item.name + '>';
 			}
@@ -220,7 +220,7 @@ describe( 'advanced-converters', () => {
 				if ( consumable.consume( data.input, { name: true } ) ) {
 					const modelImage = new ModelElement( 'image' );
 
-					for ( let attributeKey of data.input.getAttributeKeys() ) {
+					for ( const attributeKey of data.input.getAttributeKeys() ) {
 						modelImage.setAttribute( attributeKey, data.input.getAttribute( attributeKey ) );
 					}
 
@@ -249,7 +249,7 @@ describe( 'advanced-converters', () => {
 		} );
 
 		it( 'should convert model images changes without caption to view', () => {
-			let modelElement = new ModelElement( 'image', { src: 'bar.jpg', title: 'bar' } );
+			const modelElement = new ModelElement( 'image', { src: 'bar.jpg', title: 'bar' } );
 			modelRoot.appendChildren( modelElement );
 			modelDispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
@@ -264,7 +264,7 @@ describe( 'advanced-converters', () => {
 		} );
 
 		it( 'should convert model images changes with caption to view', () => {
-			let modelElement = new ModelElement( 'image', { src: 'foo.jpg', title: 'foo' }, [
+			const modelElement = new ModelElement( 'image', { src: 'foo.jpg', title: 'foo' }, [
 				new ModelElement( 'caption', {}, new ModelText( 'foobar' ) )
 			] );
 			modelRoot.appendChildren( modelElement );
@@ -279,12 +279,14 @@ describe( 'advanced-converters', () => {
 			modelDispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'src', 'bar.jpg', 'new.jpg' );
 			modelDispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'title', 'bar', null );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><figure><img src="new.jpg"></img><figcaption>foobar</figcaption></figure></div>' );
+			expect( viewToString( viewRoot ) ).to.equal(
+				'<div><figure><img src="new.jpg"></img><figcaption>foobar</figcaption></figure></div>'
+			);
 		} );
 
 		it( 'should convert view image to model', () => {
-			let viewElement = new ViewContainerElement( 'img', { src: 'bar.jpg', title: 'bar' } );
-			let modelElement = viewDispatcher.convert( viewElement );
+			const viewElement = new ViewContainerElement( 'img', { src: 'bar.jpg', title: 'bar' } );
+			const modelElement = viewDispatcher.convert( viewElement );
 			// Attaching to tree so tree walker works fine in `modelToString`.
 			modelRoot.appendChildren( modelElement );
 
@@ -292,7 +294,7 @@ describe( 'advanced-converters', () => {
 		} );
 
 		it( 'should convert view figure to model', () => {
-			let viewElement = new ViewContainerElement(
+			const viewElement = new ViewContainerElement(
 				'figure',
 				null,
 				[
@@ -300,7 +302,7 @@ describe( 'advanced-converters', () => {
 					new ViewContainerElement( 'figcaption', null, new ViewText( 'foobar' ) )
 				]
 			);
-			let modelElement = viewDispatcher.convert( viewElement );
+			const modelElement = viewDispatcher.convert( viewElement );
 			// Attaching to tree so tree walker works fine in `modelToString`.
 			modelRoot.appendChildren( modelElement );
 
@@ -331,8 +333,8 @@ describe( 'advanced-converters', () => {
 	describe( 'custom attribute handling for given element', () => {
 		beforeEach( () => {
 			// NORMAL LINK MODEL TO VIEW CONVERTERS
-			modelDispatcher.on( 'addAttribute:linkHref', wrapItem( ( value ) => new ViewAttributeElement( 'a', { href: value } ) ) );
-			modelDispatcher.on( 'addAttribute:linkTitle', wrapItem( ( value ) => new ViewAttributeElement( 'a', { title: value } ) ) );
+			modelDispatcher.on( 'addAttribute:linkHref', wrapItem( value => new ViewAttributeElement( 'a', { href: value } ) ) );
+			modelDispatcher.on( 'addAttribute:linkTitle', wrapItem( value => new ViewAttributeElement( 'a', { title: value } ) ) );
 
 			const changeLinkAttribute = function( elementCreator ) {
 				return ( evt, data, consumable, conversionApi ) => {
@@ -351,22 +353,22 @@ describe( 'advanced-converters', () => {
 
 			modelDispatcher.on(
 				'changeAttribute:linkHref',
-				changeLinkAttribute( ( value ) => new ViewAttributeElement( 'a', { href: value } ) )
+				changeLinkAttribute( value => new ViewAttributeElement( 'a', { href: value } ) )
 			);
 
 			modelDispatcher.on(
 				'changeAttribute:linkTitle',
-				changeLinkAttribute( ( value ) => new ViewAttributeElement( 'a', { title: value } ) )
+				changeLinkAttribute( value => new ViewAttributeElement( 'a', { title: value } ) )
 			);
 
 			modelDispatcher.on(
 				'removeAttribute:linkHref',
-				unwrapItem( ( value ) => new ViewAttributeElement( 'a', { href: value } ) )
+				unwrapItem( value => new ViewAttributeElement( 'a', { href: value } ) )
 			);
 
 			modelDispatcher.on(
 				'removeAttribute:linkTitle',
-				unwrapItem( ( value ) => new ViewAttributeElement( 'a', { title: value } ) )
+				unwrapItem( value => new ViewAttributeElement( 'a', { title: value } ) )
 			);
 
 			// NORMAL LINK VIEW TO MODEL CONVERTERS
@@ -376,7 +378,7 @@ describe( 'advanced-converters', () => {
 						data.output = conversionApi.convertChildren( data.input, consumable );
 					}
 
-					for ( let child of data.output ) {
+					for ( const child of data.output ) {
 						child.setAttribute( 'linkHref', data.input.getAttribute( 'href' ) );
 					}
 				}
@@ -388,7 +390,7 @@ describe( 'advanced-converters', () => {
 						data.output = conversionApi.convertChildren( data.input, consumable );
 					}
 
-					for ( let child of data.output ) {
+					for ( const child of data.output ) {
 						child.setAttribute( 'linkTitle', data.input.getAttribute( 'title' ) );
 					}
 				}
@@ -405,7 +407,9 @@ describe( 'advanced-converters', () => {
 				viewWriter.insert( viewPosition, viewElement );
 
 				if ( consumable.consume( data.item, 'addAttribute:linkHref' ) ) {
-					const viewA = new ViewAttributeElement( 'a', { href: data.item.getAttribute( 'linkHref' ) }, new ViewText( 'see source' ) );
+					const viewA = new ViewAttributeElement(
+						'a', { href: data.item.getAttribute( 'linkHref' ) }, new ViewText( 'see source' )
+					);
 
 					if ( consumable.consume( data.item, 'addAttribute:linkTitle' ) ) {
 						viewA.setAttribute( 'title', data.item.getAttribute( 'linkTitle' ) );
@@ -418,7 +422,7 @@ describe( 'advanced-converters', () => {
 			}, { priority: 'high' } );
 
 			const modelChangeLinkAttrQuoteConverter = function( evt, data, consumable, conversionApi ) {
-				let viewKey = data.attributeKey.substr( 4 ).toLowerCase();
+				const viewKey = data.attributeKey.substr( 4 ).toLowerCase();
 
 				consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 
@@ -517,9 +521,9 @@ describe( 'advanced-converters', () => {
 		} );
 
 		it( 'should convert a view element to model', () => {
-			let viewElement = new ViewAttributeElement( 'a', { href: 'foo.html', title: 'Foo title' }, new ViewText( 'foo' ) );
+			const viewElement = new ViewAttributeElement( 'a', { href: 'foo.html', title: 'Foo title' }, new ViewText( 'foo' ) );
 
-			let modelText = viewDispatcher.convert( viewElement ).getChild( 0 );
+			const modelText = viewDispatcher.convert( viewElement ).getChild( 0 );
 
 			expect( modelText ).to.be.instanceof( ModelText );
 			expect( modelText.data ).to.equal( 'foo' );
@@ -528,7 +532,7 @@ describe( 'advanced-converters', () => {
 		} );
 
 		it( 'should convert quote model element with linkHref and linkTitle attribute to view', () => {
-			let modelElement = new ModelElement( 'quote', { linkHref: 'foo.html', linkTitle: 'Foo source' }, new ModelText( 'foo' ) );
+			const modelElement = new ModelElement( 'quote', { linkHref: 'foo.html', linkTitle: 'Foo source' }, new ModelText( 'foo' ) );
 			modelRoot.appendChildren( modelElement );
 			modelDispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
@@ -548,8 +552,20 @@ describe( 'advanced-converters', () => {
 			modelElement.removeAttribute( 'linkTitle' );
 			modelElement.setAttribute( 'linkHref', 'bar.html' );
 
-			modelDispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'linkTitle', 'Foo source', null );
-			modelDispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'linkHref', 'foo.html', 'bar.html' );
+			modelDispatcher.convertAttribute(
+				'removeAttribute',
+				createRangeOnElementOnly( modelElement ),
+				'linkTitle',
+				'Foo source',
+				null
+			);
+			modelDispatcher.convertAttribute(
+				'changeAttribute',
+				createRangeOnElementOnly( modelElement ),
+				'linkHref',
+				'foo.html',
+				'bar.html'
+			);
 
 			expected = '<div><blockquote>foo<strong>bar</strong><a href="bar.html">see source</a></blockquote></div>';
 			expect( viewToString( viewRoot ) ).to.equal( expected );
@@ -562,7 +578,7 @@ describe( 'advanced-converters', () => {
 		} );
 
 		it( 'should convert view blockquote with a element to model', () => {
-			let viewElement = new ViewContainerElement(
+			const viewElement = new ViewContainerElement(
 				'blockquote',
 				null,
 				[
@@ -578,7 +594,7 @@ describe( 'advanced-converters', () => {
 				]
 			);
 
-			let modelElement = viewDispatcher.convert( viewElement );
+			const modelElement = viewDispatcher.convert( viewElement );
 			modelRoot.appendChildren( modelElement );
 
 			expect( modelToString( modelElement ) ).to.equal( '<quote linkHref="foo.html" linkTitle="Foo source">foo</quote>' );
@@ -594,7 +610,7 @@ describe( 'advanced-converters', () => {
 					data.output = conversionApi.convertChildren( data.input, consumable );
 				}
 
-				for ( let child of data.output ) {
+				for ( const child of data.output ) {
 					child.setAttribute( 'linkHref', data.input.getAttribute( 'href' ) );
 				}
 			}
@@ -631,7 +647,7 @@ describe( 'advanced-converters', () => {
 			}
 		} );
 
-		let viewTable = new ViewContainerElement( 'table', null, [
+		const viewTable = new ViewContainerElement( 'table', null, [
 			new ViewContainerElement( 'tr', null, [
 				new ViewContainerElement( 'td', null, new ViewText( 'foo' ) ),
 				new ViewContainerElement( 'td', null, new ViewAttributeElement( 'a', { href: 'bar.html' }, new ViewText( 'bar' ) ) )
@@ -642,8 +658,8 @@ describe( 'advanced-converters', () => {
 			] )
 		] );
 
-		let model = viewDispatcher.convert( viewTable );
-		let modelFragment = new ModelDocumentFragment( model );
+		const model = viewDispatcher.convert( viewTable );
+		const modelFragment = new ModelDocumentFragment( model );
 
 		expect( modelToString( modelFragment ) )
 			.to.equal( '<paragraph>foo <$text linkHref="bar.html">bar</$text></paragraph><paragraph>abc</paragraph>' );
@@ -654,7 +670,7 @@ describe( 'advanced-converters', () => {
 	describe( 'universal converter', () => {
 		beforeEach( () => {
 			// "Universal" converters
-			modelDispatcher.on( 'insert', insertElement( ( data ) => new ViewContainerElement( data.item.name ) ), { priority: 'lowest' } );
+			modelDispatcher.on( 'insert', insertElement( data => new ViewContainerElement( data.item.name ) ), { priority: 'lowest' } );
 			modelDispatcher.on( 'addAttribute', setAttribute(), { priority: 'lowest' } );
 			modelDispatcher.on( 'changeAttribute', setAttribute(), { priority: 'lowest' } );
 			modelDispatcher.on( 'removeAttribute', removeAttribute(), { priority: 'lowest' } );
@@ -663,7 +679,7 @@ describe( 'advanced-converters', () => {
 				if ( consumable.consume( data.input, { name: true } ) ) {
 					data.output = new ModelElement( data.input.name );
 
-					for ( let key of data.input.getAttributeKeys() ) {
+					for ( const key of data.input.getAttributeKeys() ) {
 						if ( consumable.consume( data.input, { attribute: key } ) ) {
 							data.output.setAttribute( key, data.input.getAttribute( key ) );
 						}
@@ -683,7 +699,7 @@ describe( 'advanced-converters', () => {
 				if ( consumable.consume( data.input, { name: true } ) ) {
 					const modelImage = new ModelElement( 'image' );
 
-					for ( let attributeKey of data.input.getAttributeKeys() ) {
+					for ( const attributeKey of data.input.getAttributeKeys() ) {
 						modelImage.setAttribute( attributeKey, data.input.getAttribute( attributeKey ) );
 					}
 
@@ -696,7 +712,7 @@ describe( 'advanced-converters', () => {
 						data.output = conversionApi.convertChildren( data.input, consumable );
 					}
 
-					for ( let child of data.output ) {
+					for ( const child of data.output ) {
 						child.setAttribute( 'bold', true );
 					}
 				}
@@ -704,7 +720,7 @@ describe( 'advanced-converters', () => {
 		} );
 
 		it( 'should convert model to view', () => {
-			let modelElement = new ModelElement( 'table', { cellpadding: 5, cellspacing: 5 }, [
+			const modelElement = new ModelElement( 'table', { cellpadding: 5, cellspacing: 5 }, [
 				new ModelElement( 'tr', null, [
 					new ModelElement( 'td', null, [
 						new ModelText( 'foo ' ),
@@ -733,7 +749,7 @@ describe( 'advanced-converters', () => {
 		} );
 
 		it( 'should convert view to model', () => {
-			let viewElement = new ViewContainerElement( 'table', { cellpadding: 5, cellspacing: 5 }, [
+			const viewElement = new ViewContainerElement( 'table', { cellpadding: 5, cellspacing: 5 }, [
 				new ViewContainerElement( 'tr', null, [
 					new ViewContainerElement( 'td', null, [
 						new ViewText( 'foo ' ),
@@ -744,7 +760,7 @@ describe( 'advanced-converters', () => {
 				] )
 			] );
 
-			let modelElement = viewDispatcher.convert( viewElement );
+			const modelElement = viewDispatcher.convert( viewElement );
 			modelRoot.appendChildren( modelElement );
 
 			expect( modelToString( modelElement ) ).to.equal(

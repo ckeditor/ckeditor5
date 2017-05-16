@@ -144,7 +144,7 @@ class ModelConverterBuilder {
 	fromAttribute( key ) {
 		this._from = {
 			type: 'attribute',
-			key: key,
+			key,
 			priority: null
 		};
 
@@ -228,7 +228,7 @@ class ModelConverterBuilder {
 	toElement( element ) {
 		const priority = this._from.priority === null ? 'normal' : this._from.priority;
 
-		for ( let dispatcher of this._dispatchers ) {
+		for ( const dispatcher of this._dispatchers ) {
 			if ( this._from.type == 'element' ) {
 				// From model element to view element -> insert element.
 				element = typeof element == 'string' ? new ViewContainerElement( element ) : element;
@@ -296,7 +296,7 @@ class ModelConverterBuilder {
 	 * a function that returns view element.
 	 */
 	toStamp( element ) {
-		for ( let dispatcher of this._dispatchers ) {
+		for ( const dispatcher of this._dispatchers ) {
 			if ( this._from.type != 'marker' ) {
 				/**
 				 * To-stamp conversion is supported only for model markers.
@@ -371,12 +371,12 @@ class ModelConverterBuilder {
 			if ( value ) {
 				// If value is set, create "dumb" creator that always returns the same object.
 				attributeCreator = function() {
-					return { key: keyOrCreator, value: value };
+					return { key: keyOrCreator, value };
 				};
 			} else {
 				// If value is not set, take it from the passed parameter.
 				attributeCreator = function( value ) {
-					return { key: keyOrCreator, value: value };
+					return { key: keyOrCreator, value };
 				};
 			}
 		} else {
@@ -384,7 +384,7 @@ class ModelConverterBuilder {
 			attributeCreator = keyOrCreator;
 		}
 
-		for ( let dispatcher of this._dispatchers ) {
+		for ( const dispatcher of this._dispatchers ) {
 			const options = { priority: this._from.priority || 'normal' };
 
 			dispatcher.on( 'addAttribute:' + this._from.key, setAttribute( attributeCreator ), options );

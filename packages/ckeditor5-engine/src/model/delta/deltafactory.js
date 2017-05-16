@@ -43,16 +43,16 @@ export default class DeltaFactory {
 			);
 		}
 
-		let Delta = deserializers.get( json.__className );
+		const Delta = deserializers.get( json.__className );
 
-		let delta = new Delta();
+		const delta = new Delta();
 
-		for ( let operation of json.operations ) {
+		for ( const operation of json.operations ) {
 			delta.addOperation( OperationFactory.fromJSON( operation, doc ) );
 		}
 
 		// Rewrite all other properties.
-		for ( let prop in json ) {
+		for ( const prop in json ) {
 			if ( prop != '__className' && delta[ prop ] === undefined ) {
 				delta[ prop ] = json[ prop ];
 			}

@@ -59,7 +59,7 @@ export default class Position {
 			 * @error position-path-incorrect
 			 * @param path
 			 */
-			throw new CKEditorError( 'model-position-path-incorrect: Position path must be an Array with at least one item.', { path: path } );
+			throw new CKEditorError( 'model-position-path-incorrect: Position path must be an Array with at least one item.', { path } );
 		}
 
 		// Normalize the root and path (if element was passed).
@@ -166,7 +166,7 @@ export default class Position {
 	 * @type {module:engine/model/text~Text|null}
 	 */
 	get textNode() {
-		let node = this.parent.getChild( this.index );
+		const node = this.parent.getChild( this.index );
 
 		return ( node instanceof Text && node.startOffset < this.offset ) ? node : null;
 	}
@@ -311,9 +311,9 @@ export default class Position {
 		}
 
 		// We find on which tree-level start and end have the lowest common ancestor
-		let cmp = compareArrays( this.path, position.path );
+		const cmp = compareArrays( this.path, position.path );
 		// If comparison returned string it means that arrays are same.
-		let diffAt = ( typeof cmp == 'string' ) ? Math.min( this.path.length, position.path.length ) : cmp;
+		const diffAt = ( typeof cmp == 'string' ) ? Math.min( this.path.length, position.path.length ) : cmp;
 
 		return this.path.slice( 0, diffAt );
 	}
@@ -326,9 +326,9 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
-		let shifted = Position.createFromPosition( this );
+		const shifted = Position.createFromPosition( this );
 
-		let offset = shifted.offset + shift;
+		const offset = shifted.offset + shift;
 		shifted.offset = offset < 0 ? 0 : offset;
 
 		return shifted;
@@ -404,7 +404,7 @@ export default class Position {
 	isTouching( otherPosition ) {
 		let left = null;
 		let right = null;
-		let compare = this.compareWith( otherPosition );
+		const compare = this.compareWith( otherPosition );
 
 		switch ( compare ) {
 			case 'same':
@@ -460,7 +460,7 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position|null} Transformed position or `null`.
 	 */
 	_getTransformedByDeletion( deletePosition, howMany ) {
-		let transformed = Position.createFromPosition( this );
+		const transformed = Position.createFromPosition( this );
 
 		// This position can't be affected if deletion was in a different root.
 		if ( this.root != deletePosition.root ) {
@@ -511,7 +511,7 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position} Transformed position.
 	 */
 	_getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
-		let transformed = Position.createFromPosition( this );
+		const transformed = Position.createFromPosition( this );
 
 		// This position can't be affected if insertion was in a different root.
 		if ( this.root != insertPosition.root ) {
@@ -604,7 +604,7 @@ export default class Position {
 		const i = source.path.length - 1;
 
 		// The first part of a path to combined position is a path to the place where nodes were moved.
-		let combined = Position.createFromPosition( target );
+		const combined = Position.createFromPosition( target );
 
 		// Then we have to update the rest of the path.
 

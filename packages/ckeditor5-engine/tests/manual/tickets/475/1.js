@@ -36,16 +36,16 @@ class Link extends Plugin {
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
 			.fromAttribute( 'link' )
-			.toElement( ( href ) => new AttributeElement( 'a', { href } ) );
+			.toElement( href => new AttributeElement( 'a', { href } ) );
 
 		// Build converter from view to model for data pipeline.
 		buildViewConverter().for( data.viewToModel )
 			.fromElement( 'a' )
-			.toAttribute( ( viewElement ) => ( { key: 'link', value: viewElement.getAttribute( 'href' ) } ) );
+			.toAttribute( viewElement => ( { key: 'link', value: viewElement.getAttribute( 'href' ) } ) );
 	}
 }
 
-const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/;
 
 class AutoLinker extends Plugin {
 	init() {
@@ -54,7 +54,7 @@ class AutoLinker extends Plugin {
 				return;
 			}
 
-			for ( let value of changes.range.getItems( { singleCharacters: true } ) ) {
+			for ( const value of changes.range.getItems( { singleCharacters: true } ) ) {
 				const walker = new TreeWalker( {
 					direction: 'backward',
 					startPosition: Position.createAfter( value )
@@ -67,7 +67,7 @@ class AutoLinker extends Plugin {
 					return;
 				}
 
-				let matchedUrl = urlRegex.exec( text );
+				const matchedUrl = urlRegex.exec( text );
 
 				if ( !matchedUrl ) {
 					return;

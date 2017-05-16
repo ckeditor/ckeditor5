@@ -60,7 +60,7 @@ describe( 'position', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create a position with path and document', () => {
-			let position = new Position( root, [ 0 ] );
+			const position = new Position( root, [ 0 ] );
 
 			expect( position ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 			expect( position ).to.have.property( 'root' ).that.equals( root );
@@ -99,21 +99,21 @@ describe( 'position', () => {
 
 		it( 'should throw error if given path is incorrect', () => {
 			expect( () => {
-				new Position( root, {} );
+				new Position( root, {} ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /model-position-path-incorrect/ );
 
 			expect( () => {
-				new Position( root, [] );
+				new Position( root, [] ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /model-position-path-incorrect/ );
 		} );
 
 		it( 'should throw error if given root is invalid', () => {
 			expect( () => {
-				new Position( new Text( 'a' ) );
+				new Position( new Text( 'a' ) ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /model-position-root-invalid/ );
 
 			expect( () => {
-				new Position();
+				new Position(); // eslint-disable-line no-new
 			} ).to.throw();
 		} );
 	} );
@@ -231,8 +231,8 @@ describe( 'position', () => {
 
 	describe( 'createFromPosition', () => {
 		it( 'should create a copy of given position', () => {
-			let original = new Position( root, [ 1, 2, 3 ] );
-			let position = Position.createFromPosition( original );
+			const original = new Position( root, [ 1, 2, 3 ] );
+			const position = Position.createFromPosition( original );
 
 			expect( position ).to.be.instanceof( Position );
 			expect( position.isEqual( original ) ).to.be.true;
@@ -292,7 +292,7 @@ describe( 'position', () => {
 	} );
 
 	it( 'should be able to set offset', () => {
-		let position = new Position( root, [ 1, 0, 2 ] );
+		const position = new Position( root, [ 1, 0, 2 ] );
 		position.offset = 4;
 
 		expect( position.offset ).to.equal( 4 );
@@ -356,29 +356,29 @@ describe( 'position', () => {
 	} );
 
 	it( 'should have proper parent path', () => {
-		let position = new Position( root, [ 1, 2, 3 ] );
+		const position = new Position( root, [ 1, 2, 3 ] );
 
 		expect( position.getParentPath() ).to.deep.equal( [ 1, 2 ] );
 	} );
 
 	describe( 'isBefore', () => {
 		it( 'should return true if given position has same root and is before this position', () => {
-			let position = new Position( root, [ 1, 1, 2 ] );
-			let beforePosition = new Position( root, [ 1, 0 ] );
+			const position = new Position( root, [ 1, 1, 2 ] );
+			const beforePosition = new Position( root, [ 1, 0 ] );
 
 			expect( position.isAfter( beforePosition ) ).to.be.true;
 		} );
 
 		it( 'should return false if given position has same root and is not before this position', () => {
-			let position = new Position( root, [ 1, 1, 2 ] );
-			let afterPosition = new Position( root, [ 1, 2 ] );
+			const position = new Position( root, [ 1, 1, 2 ] );
+			const afterPosition = new Position( root, [ 1, 2 ] );
 
 			expect( position.isAfter( afterPosition ) ).to.be.false;
 		} );
 
 		it( 'should return false if given position has different root', () => {
-			let position = new Position( root, [ 1, 1, 2 ] );
-			let differentPosition = new Position( otherRoot, [ 1, 0 ] );
+			const position = new Position( root, [ 1, 1, 2 ] );
+			const differentPosition = new Position( otherRoot, [ 1, 0 ] );
 
 			expect( position.isAfter( differentPosition ) ).to.be.false;
 		} );
@@ -386,22 +386,22 @@ describe( 'position', () => {
 
 	describe( 'isEqual', () => {
 		it( 'should return true if given position has same path and root', () => {
-			let position = new Position( root, [ 1, 1, 2 ] );
-			let samePosition = new Position( root, [ 1, 1, 2 ] );
+			const position = new Position( root, [ 1, 1, 2 ] );
+			const samePosition = new Position( root, [ 1, 1, 2 ] );
 
 			expect( position.isEqual( samePosition ) ).to.be.true;
 		} );
 
 		it( 'should return false if given position has different path', () => {
-			let position = new Position( root, [ 1, 1, 1 ] );
-			let differentPosition = new Position( root, [ 1, 2, 2 ] );
+			const position = new Position( root, [ 1, 1, 1 ] );
+			const differentPosition = new Position( root, [ 1, 2, 2 ] );
 
 			expect( position.isEqual( differentPosition ) ).to.be.false;
 		} );
 
 		it( 'should return false if given position has different root', () => {
-			let position = new Position( root, [ 1, 1, 1 ] );
-			let differentPosition = new Position( otherRoot, [ 1, 1, 1 ] );
+			const position = new Position( root, [ 1, 1, 1 ] );
+			const differentPosition = new Position( otherRoot, [ 1, 1, 1 ] );
 
 			expect( position.isEqual( differentPosition ) ).to.be.false;
 		} );
@@ -409,22 +409,22 @@ describe( 'position', () => {
 
 	describe( 'isAfter', () => {
 		it( 'should return true if given position has same root and is after this position', () => {
-			let position = new Position( root, [ 1, 1, 2 ] );
-			let afterPosition = new Position( root, [ 1, 2 ] );
+			const position = new Position( root, [ 1, 1, 2 ] );
+			const afterPosition = new Position( root, [ 1, 2 ] );
 
 			expect( position.isBefore( afterPosition ) ).to.be.true;
 		} );
 
 		it( 'should return false if given position has same root and is not after this position', () => {
-			let position = new Position( root, [ 1, 1, 2 ] );
-			let beforePosition = new Position( root, [ 1, 0 ] );
+			const position = new Position( root, [ 1, 1, 2 ] );
+			const beforePosition = new Position( root, [ 1, 0 ] );
 
 			expect( position.isBefore( beforePosition ) ).to.be.false;
 		} );
 
 		it( 'should return false if given position has different root', () => {
-			let position = new Position( root, [ 1, 1, 2 ] );
-			let differentPosition = new Position( otherRoot, [ 1, 2 ] );
+			const position = new Position( root, [ 1, 1, 2 ] );
+			const differentPosition = new Position( otherRoot, [ 1, 2 ] );
 
 			expect( position.isBefore( differentPosition ) ).to.be.false;
 		} );
@@ -432,55 +432,55 @@ describe( 'position', () => {
 
 	describe( 'isTouching', () => {
 		it( 'should return true if positions are same', () => {
-			let position = new Position( root, [ 1, 1, 1 ] );
-			let result = position.isTouching( new Position( root, [ 1, 1, 1 ] ) );
+			const position = new Position( root, [ 1, 1, 1 ] );
+			const result = position.isTouching( new Position( root, [ 1, 1, 1 ] ) );
 
 			expect( result ).to.be.true;
 		} );
 
 		it( 'should return true if given position is in next node and there are no whole nodes before it', () => {
-			let positionA = new Position( root, [ 1 ] );
-			let positionB = new Position( root, [ 1, 0, 0 ] );
+			const positionA = new Position( root, [ 1 ] );
+			const positionB = new Position( root, [ 1, 0, 0 ] );
 
 			expect( positionA.isTouching( positionB ) ).to.be.true;
 			expect( positionB.isTouching( positionA ) ).to.be.true;
 		} );
 
 		it( 'should return true if given position is in previous node and there are no whole nodes after it', () => {
-			let positionA = new Position( root, [ 2 ] );
-			let positionB = new Position( root, [ 1, 1, 3 ] );
+			const positionA = new Position( root, [ 2 ] );
+			const positionB = new Position( root, [ 1, 1, 3 ] );
 
 			expect( positionA.isTouching( positionB ) ).to.be.true;
 			expect( positionB.isTouching( positionA ) ).to.be.true;
 		} );
 
 		it( 'should return true if positions are in different sub-trees but there are no whole nodes between them', () => {
-			let positionA = new Position( root, [ 1, 0, 3 ] );
-			let positionB = new Position( root, [ 1, 1, 0 ] );
+			const positionA = new Position( root, [ 1, 0, 3 ] );
+			const positionB = new Position( root, [ 1, 1, 0 ] );
 
 			expect( positionA.isTouching( positionB ) ).to.be.true;
 			expect( positionB.isTouching( positionA ) ).to.be.true;
 		} );
 
 		it( 'should return false if there are whole nodes between positions', () => {
-			let positionA = new Position( root, [ 2 ] );
-			let positionB = new Position( root, [ 1, 0, 3 ] );
+			const positionA = new Position( root, [ 2 ] );
+			const positionB = new Position( root, [ 1, 0, 3 ] );
 
 			expect( positionA.isTouching( positionB ) ).to.be.false;
 			expect( positionB.isTouching( positionA ) ).to.be.false;
 		} );
 
 		it( 'should return false if there are whole nodes between positions', () => {
-			let positionA = new Position( root, [ 1, 0, 3 ] );
-			let positionB = new Position( root, [ 1, 1, 1 ] );
+			const positionA = new Position( root, [ 1, 0, 3 ] );
+			const positionB = new Position( root, [ 1, 1, 1 ] );
 
 			expect( positionA.isTouching( positionB ) ).to.be.false;
 			expect( positionB.isTouching( positionA ) ).to.be.false;
 		} );
 
 		it( 'should return false if positions are in different roots', () => {
-			let positionA = new Position( root, [ 1, 0, 3 ] );
-			let positionB = new Position( otherRoot, [ 1, 1, 0 ] );
+			const positionA = new Position( root, [ 1, 0, 3 ] );
+			const positionB = new Position( otherRoot, [ 1, 1, 0 ] );
 
 			expect( positionA.isTouching( positionB ) ).to.be.false;
 			expect( positionB.isTouching( positionA ) ).to.be.false;
@@ -582,7 +582,7 @@ describe( 'position', () => {
 		it( 'should skip forward', () => {
 			let position = new Position( root, [ 1, 0, 0 ] );
 
-			position = position.getLastMatchingPosition( ( value ) => value.type == 'text' );
+			position = position.getLastMatchingPosition( value => value.type == 'text' );
 
 			expect( position.path ).to.deep.equal( [ 1, 0, 3 ] );
 		} );
@@ -590,7 +590,7 @@ describe( 'position', () => {
 		it( 'should skip backward', () => {
 			let position = new Position( root, [ 1, 0, 2 ] );
 
-			position = position.getLastMatchingPosition( ( value ) => value.type == 'text', { direction: 'backward' } );
+			position = position.getLastMatchingPosition( value => value.type == 'text', { direction: 'backward' } );
 
 			expect( position.path ).to.deep.equal( [ 1, 0, 0 ] );
 		} );
@@ -647,7 +647,8 @@ describe( 'position', () => {
 			expect( transformed.path ).to.deep.equal( [ 1, 4, 3 ] );
 		} );
 
-		it( 'should not update path if insertion position parent is a node from that path and offset is after next node on that path', () => {
+		it( 'should not update path if insertion position parent is a node from that path and offset is ' +
+			'after next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2, false );
 
@@ -706,7 +707,8 @@ describe( 'position', () => {
 			expect( transformed.path ).to.deep.equal( [ 1, 0, 3 ] );
 		} );
 
-		it( 'should not update path if deletion position parent is a node from that path and offset is after next node on that path', () => {
+		it( 'should not update path if deletion position parent is a node from that path and ' +
+			'offset is after next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 3 ] ), 2 );
 
@@ -738,7 +740,12 @@ describe( 'position', () => {
 
 		it( 'should update path if position was at the end of a range and move was sticky', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position._getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false, true );
+			const transformed = position._getTransformedByMove(
+				new Position( root, [ 1, 2, 0 ] ),
+				new Position( root, [ 2 ] ), 3,
+				false,
+				true
+			);
 
 			expect( transformed.path ).to.deep.equal( [ 5 ] );
 		} );
@@ -765,8 +772,8 @@ describe( 'position', () => {
 
 	describe( 'getShiftedBy', () => {
 		it( 'should return a new instance of Position with offset changed by shift value', () => {
-			let position = new Position( root, [ 1, 2, 3 ] );
-			let shifted = position.getShiftedBy( 2 );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const shifted = position.getShiftedBy( 2 );
 
 			expect( shifted ).to.be.instanceof( Position );
 			expect( shifted ).to.not.equal( position );
@@ -774,15 +781,15 @@ describe( 'position', () => {
 		} );
 
 		it( 'should accept negative values', () => {
-			let position = new Position( root, [ 1, 2, 3 ] );
-			let shifted = position.getShiftedBy( -2 );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const shifted = position.getShiftedBy( -2 );
 
 			expect( shifted.path ).to.deep.equal( [ 1, 2, 1 ] );
 		} );
 
 		it( 'should not let setting offset lower than zero', () => {
-			let position = new Position( root, [ 1, 2, 3 ] );
-			let shifted = position.getShiftedBy( -7 );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const shifted = position.getShiftedBy( -7 );
 
 			expect( shifted.path ).to.deep.equal( [ 1, 2, 0 ] );
 		} );
@@ -790,17 +797,17 @@ describe( 'position', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should serialize position', () => {
-			let position = new Position( root, [ 0 ] );
+			const position = new Position( root, [ 0 ] );
 
-			let serialized = jsonParseStringify( position );
+			const serialized = jsonParseStringify( position );
 
 			expect( serialized ).to.deep.equal( { root: 'main', path: [ 0 ] } );
 		} );
 
 		it( 'should serialize position from graveyard', () => {
-			let position = new Position( doc.graveyard, [ 0 ] );
+			const position = new Position( doc.graveyard, [ 0 ] );
 
-			let serialized = jsonParseStringify( position );
+			const serialized = jsonParseStringify( position );
 
 			expect( serialized ).to.deep.equal( { root: '$graveyard', path: [ 0 ] } );
 		} );
@@ -808,14 +815,14 @@ describe( 'position', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create object with given document', () => {
-			let deserialized = Position.fromJSON( { root: 'main', path: [ 0, 1, 2 ] }, doc );
+			const deserialized = Position.fromJSON( { root: 'main', path: [ 0, 1, 2 ] }, doc );
 
 			expect( deserialized.root ).to.equal( root );
 			expect( deserialized.path ).to.deep.equal( [ 0, 1, 2 ] );
 		} );
 
 		it( 'should create object from graveyard', () => {
-			let deserialized = Position.fromJSON( { root: '$graveyard', path: [ 0, 1, 2 ] }, doc );
+			const deserialized = Position.fromJSON( { root: '$graveyard', path: [ 0, 1, 2 ] }, doc );
 
 			expect( deserialized.root ).to.equal( doc.graveyard );
 			expect( deserialized.path ).to.deep.equal( [ 0, 1, 2 ] );

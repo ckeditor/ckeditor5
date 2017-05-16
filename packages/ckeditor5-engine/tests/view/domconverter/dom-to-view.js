@@ -236,7 +236,7 @@ describe( 'DomConverter', () => {
 				it( 'spaces in a text node: ' + inputTexts.join( '|' ) + ' -> ' + output, () => {
 					const domElement = createElement( document, 'div', {}, [] );
 
-					for ( let text of inputTexts ) {
+					for ( const text of inputTexts ) {
 						domElement.appendChild( document.createTextNode( text.replace( /_/g, '\u00A0' ) ) );
 					}
 
@@ -244,7 +244,7 @@ describe( 'DomConverter', () => {
 
 					let data = '';
 
-					for ( let child of viewElement.getChildren() ) {
+					for ( const child of viewElement.getChildren() ) {
 						data += child.data.replace( /\u00A0/g, '_' );
 					}
 
@@ -369,7 +369,7 @@ describe( 'DomConverter', () => {
 			const domB = createElement( document, 'b', null, 'bar' );
 			const domP = createElement( document, 'p', null, [ domB, domText ] );
 
-			const viewChildren = Array.from( converter.domChildrenToView( domP, { withChildren: false }  ) );
+			const viewChildren = Array.from( converter.domChildrenToView( domP, { withChildren: false } ) );
 
 			expect( viewChildren.length ).to.equal( 2 );
 			expect( stringify( viewChildren[ 0 ] ) ).to.equal( '<b></b>' );
@@ -436,7 +436,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should converter position inside block filler', () => {
 			const converter = new DomConverter( { blockFiller: NBSP_FILLER } );
-			const domFiller = NBSP_FILLER( document );
+			const domFiller = NBSP_FILLER( document ); // eslint-disable-line new-cap
 			const domP = createElement( document, 'p', null, domFiller );
 
 			const viewP = parse( '<p></p>' );

@@ -336,8 +336,8 @@ export function parse( data, options = {} ) {
 		selection.setRanges( ranges, !!options.lastRangeBackward );
 
 		return {
-			view: view,
-			selection: selection
+			view,
+			selection
 		};
 	}
 
@@ -394,7 +394,7 @@ class RangeParser {
 				);
 			}
 
-			ranges = this._sortRanges( ranges,  order );
+			ranges = this._sortRanges( ranges, order );
 		}
 
 		return ranges;
@@ -414,7 +414,7 @@ class RangeParser {
 			// items needed for iteration.
 			const children = [ ...node.getChildren() ];
 
-			for ( let child of children ) {
+			for ( const child of children ) {
 				this._getPositions( child );
 			}
 		}
@@ -435,7 +435,7 @@ class RangeParser {
 				const bracket = match[ 0 ];
 
 				brackets.push( {
-					bracket: bracket,
+					bracket,
 					textOffset: index - offset
 				} );
 
@@ -452,12 +452,15 @@ class RangeParser {
 				node.remove();
 			}
 
-			for ( let item of brackets ) {
+			for ( const item of brackets ) {
 				// Non-empty text node.
 				if ( text ) {
 					if (
 						this.sameSelectionCharacters ||
-						( !this.sameSelectionCharacters && ( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) )
+						(
+							!this.sameSelectionCharacters &&
+							( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN )
+						)
 					) {
 						// Store information about text range delimiter.
 						this._positions.push( {
@@ -480,7 +483,10 @@ class RangeParser {
 						} );
 					}
 				} else {
-					if ( !this.sameSelectionCharacters && item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) {
+					if ( !this.sameSelectionCharacters &&
+						item.bracket == TEXT_RANGE_START_TOKEN ||
+						item.bracket == TEXT_RANGE_END_TOKEN
+					) {
 						throw new Error( `Parse error - text range delimiter '${ item.bracket }' is placed inside empty text node. ` );
 					}
 
@@ -508,7 +514,7 @@ class RangeParser {
 		const sortedRanges = [];
 		let index = 0;
 
-		for ( let newPosition of rangesOrder ) {
+		for ( const newPosition of rangesOrder ) {
 			if ( ranges[ newPosition - 1 ] === undefined ) {
 				throw new Error( 'Parse error - provided ranges order is invalid.' );
 			}
@@ -530,7 +536,7 @@ class RangeParser {
 		const ranges = [];
 		let range = null;
 
-		for ( let item of this._positions ) {
+		for ( const item of this._positions ) {
 			// When end of range is found without opening.
 			if ( !range && ( item.bracket == ELEMENT_RANGE_END_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) ) {
 				throw new Error( `Parse error - end of range was found '${ item.bracket }' but range was not started before.` );
@@ -602,7 +608,7 @@ class ViewStringify {
 	 */
 	stringify() {
 		let result = '';
-		this._walkView( this.root, ( chunk ) => {
+		this._walkView( this.root, chunk => {
 			result += chunk;
 		} );
 
@@ -628,7 +634,7 @@ class ViewStringify {
 			let offset = 0;
 			callback( this._stringifyElementRanges( root, offset ) );
 
-			for ( let child of root.getChildren() ) {
+			for ( const child of root.getChildren() ) {
 				this._walkView( child, callback );
 				offset++;
 				callback( this._stringifyElementRanges( root, offset ) );
@@ -657,7 +663,7 @@ class ViewStringify {
 		let end = '';
 		let collapsed = '';
 
-		for ( let range of this.ranges ) {
+		for ( const range of this.ranges ) {
 			if ( range.start.parent == element && range.start.offset === offset ) {
 				if ( range.isCollapsed ) {
 					collapsed += ELEMENT_RANGE_START_TOKEN + ELEMENT_RANGE_END_TOKEN;
@@ -699,16 +705,16 @@ class ViewStringify {
 		result[ length ] = '';
 
 		// Represent each letter as object with information about opening/closing ranges at each offset.
-		result = result.map( ( letter ) => {
+		result = result.map( letter => {
 			return {
-				letter: letter,
+				letter,
 				start: '',
 				end: '',
 				collapsed: ''
 			};
-		}  );
+		} );
 
-		for ( let range of this.ranges ) {
+		for ( const range of this.ranges ) {
 			const start = range.start;
 			const end = range.end;
 
@@ -720,7 +726,7 @@ class ViewStringify {
 				}
 			}
 
-			if ( end.parent == node && end.offset >= 0 && end.offset <= length && !range.isCollapsed  ) {
+			if ( end.parent == node && end.offset >= 0 && end.offset <= length && !range.isCollapsed ) {
 				result[ end.offset ].end += rangeEndToken;
 			}
 		}
@@ -742,7 +748,7 @@ class ViewStringify {
 		const priority = this._stringifyElementPriority( element );
 
 		const type = this._stringifyElementType( element );
-		const name = [ type, element.name ].filter( i=> i !== '' ).join( ':' );
+		const name = [ type, element.name ].filter( i => i !== '' ).join( ':' );
 		const attributes = this._stringifyElementAttributes( element );
 		const parts = [ name, priority, attributes ];
 
@@ -760,7 +766,7 @@ class ViewStringify {
 	 */
 	_stringifyElementClose( element ) {
 		const type = this._stringifyElementType( element );
-		const name = [ type, element.name ].filter( i=> i !== '' ).join( ':' );
+		const name = [ type, element.name ].filter( i => i !== '' ).join( ':' );
 
 		return `</${ name }>`;
 	}
@@ -781,7 +787,7 @@ class ViewStringify {
 	 */
 	_stringifyElementType( element ) {
 		if ( this.showType ) {
-			for ( let type in allowedTypes ) {
+			for ( const type in allowedTypes ) {
 				if ( element instanceof allowedTypes[ type ] ) {
 					return type;
 				}
@@ -821,7 +827,7 @@ class ViewStringify {
 		const attributes = [];
 		const keys = [ ...element.getAttributeKeys() ].sort();
 
-		for ( let attribute of keys ) {
+		for ( const attribute of keys ) {
 			attributes.push( `${ attribute }="${ element.getAttribute( attribute ) }"` );
 		}
 
@@ -847,13 +853,13 @@ function _convertViewElements( rootNode ) {
 		const convertedElement = rootNode.is( 'documentFragment' ) ? new ViewDocumentFragment() : _convertElement( rootNode );
 
 		// Convert all child nodes.
-		for ( let child of rootNode.getChildren() ) {
+		for ( const child of rootNode.getChildren() ) {
 			if ( convertedElement.is( 'emptyElement' ) ) {
-				throw new Error( `Parse error - cannot parse inside EmptyElement.` );
+				throw new Error( 'Parse error - cannot parse inside EmptyElement.' );
 			}
 
 			if ( convertedElement.is( 'uiElement' ) ) {
-				throw new Error( `Parse error - cannot parse inside UIElement.` );
+				throw new Error( 'Parse error - cannot parse inside UIElement.' );
 			}
 
 			convertedElement.appendChildren( _convertViewElements( child ) );
@@ -898,7 +904,7 @@ function _convertElement( viewElement ) {
 	}
 
 	// Move attributes.
-	for ( let attributeKey of viewElement.getAttributeKeys() ) {
+	for ( const attributeKey of viewElement.getAttributeKeys() ) {
 		newElement.setAttribute( attributeKey, viewElement.getAttribute( attributeKey ) );
 	}
 
@@ -927,7 +933,7 @@ function _convertElementNameAndPriority( viewElement ) {
 		return {
 			name: parts[ 0 ],
 			type: priority !== null ? 'attribute' : null,
-			priority: priority
+			priority
 		};
 	}
 
@@ -937,8 +943,8 @@ function _convertElementNameAndPriority( viewElement ) {
 	if ( type ) {
 		return {
 			name: parts[ 1 ],
-			type: type,
-			priority: priority
+			type,
+			priority
 		};
 	}
 

@@ -64,7 +64,7 @@ export default class AttributeDelta extends Delta {
 		let start = null;
 		let end = null;
 
-		for ( let operation of this.operations ) {
+		for ( const operation of this.operations ) {
 			if ( start === null || start.isAfter( operation.range.start ) ) {
 				start = operation.range.start;
 			}
@@ -213,13 +213,13 @@ function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 
 	// Currently position in the scanning range. Because we need value after the position, it is not a current
 	// position of the iterator but the previous one (we need to iterate one more time to get the value after).
-	let position;
+	let position,
 	// Value before the currently position.
-	let attributeValueBefore;
+		attributeValueBefore,
 	// Value after the currently position.
-	let attributeValueAfter;
+		attributeValueAfter;
 
-	for ( let value of range ) {
+	for ( const value of range ) {
 		attributeValueAfter = value.item.getAttribute( attributeKey );
 
 		// At the first run of the iterator the position in undefined. We also do not have a attributeValueBefore, but
@@ -249,7 +249,7 @@ function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 			batch.addDelta( delta );
 		}
 
-		let range = new Range( lastSplitPosition, position );
+		const range = new Range( lastSplitPosition, position );
 		const operation = new AttributeOperation( range, attributeKey, attributeValueBefore, attributeValue, doc.version );
 
 		delta.addOperation( operation );

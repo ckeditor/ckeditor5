@@ -25,12 +25,6 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 testUtils.createSinonSandbox();
 
 describe( 'LiveSelection', () => {
-	let attrFooBar;
-
-	before( () => {
-		attrFooBar = { foo: 'bar' };
-	} );
-
 	let doc, root, selection, liveRange, range;
 
 	beforeEach( () => {
@@ -344,7 +338,7 @@ describe( 'LiveSelection', () => {
 					)
 				) );
 
-				let range = selection.getFirstRange();
+				const range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 5 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 4 ] );
@@ -364,7 +358,7 @@ describe( 'LiveSelection', () => {
 					)
 				) );
 
-				let range = selection.getFirstRange();
+				const range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 7 ] );
@@ -387,7 +381,7 @@ describe( 'LiveSelection', () => {
 					)
 				) );
 
-				let range = selection.getFirstRange();
+				const range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 0 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 4 ] );
@@ -408,7 +402,7 @@ describe( 'LiveSelection', () => {
 					)
 				) );
 
-				let range = selection.getFirstRange();
+				const range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 4 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 4 ] );
@@ -429,7 +423,7 @@ describe( 'LiveSelection', () => {
 					)
 				) );
 
-				let range = selection.getFirstRange();
+				const range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 2 ] );
@@ -450,7 +444,7 @@ describe( 'LiveSelection', () => {
 					)
 				) );
 
-				let range = selection.getFirstRange();
+				const range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( range.end.path ).to.deep.equal( [ 5 ] );
@@ -483,7 +477,7 @@ describe( 'LiveSelection', () => {
 				doc.applyOperation( insertOperation );
 				doc.applyOperation( moveOperation );
 
-				let range = selection.getFirstRange();
+				const range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( range.end.path ).to.deep.equal( [ 2, 2 ] );
@@ -630,7 +624,7 @@ describe( 'LiveSelection', () => {
 		} );
 
 		describe( 'setAttributesTo', () => {
-			it( 'should fire change:attribute event with correct parameters', ( done ) => {
+			it( 'should fire change:attribute event with correct parameters', done => {
 				selection.setAttributesTo( { foo: 'bar', abc: 'def' } );
 
 				selection.on( 'change:attribute', ( evt, data ) => {
@@ -772,7 +766,7 @@ describe( 'LiveSelection', () => {
 		} );
 
 		it( 'should fire change:attribute event', () => {
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 			selection.on( 'change:attribute', spy );
 
 			selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
@@ -785,7 +779,7 @@ describe( 'LiveSelection', () => {
 
 			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
 
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 			selection.on( 'change:attribute', spy );
 
 			selection.collapse( new Position( root, [ 5, 1 ] ) );
@@ -797,7 +791,7 @@ describe( 'LiveSelection', () => {
 
 	describe( '_getStoredAttributes', () => {
 		it( 'should return no values if there are no ranges in selection', () => {
-			let values = Array.from( selection._getStoredAttributes() );
+			const values = Array.from( selection._getStoredAttributes() );
 
 			expect( values ).to.deep.equal( [] );
 		} );

@@ -41,8 +41,8 @@ export default class ViewConsumable {
 		/**
 		 * Map of consumable elements. If {@link module:engine/view/element~Element element} is used as a key,
 		 * {@link module:engine/conversion/viewconsumable~ViewElementConsumables ViewElementConsumables} instance is stored as value.
-		 * For {@link module:engine/view/text~Text text nodes} and {@link module:engine/view/documentfragment~DocumentFragment document fragments}
-		 * boolean value is stored as value.
+		 * For {@link module:engine/view/text~Text text nodes} and
+		 * {@link module:engine/view/documentfragment~DocumentFragment document fragments} boolean value is stored as value.
 		 *
 		 * @protected
 		 * @member {Map.<module:engine/conversion/viewconsumable~ViewElementConsumables|Boolean>}
@@ -246,7 +246,7 @@ export default class ViewConsumable {
 
 		const attributes = element.getAttributeKeys();
 
-		for ( let attribute of attributes ) {
+		for ( const attribute of attributes ) {
 			// Skip classes and styles - will be added separately.
 			if ( attribute == 'style' || attribute == 'class' ) {
 				continue;
@@ -257,13 +257,13 @@ export default class ViewConsumable {
 
 		const classes = element.getClassNames();
 
-		for ( let className of classes ) {
+		for ( const className of classes ) {
 			consumables.class.push( className );
 		}
 
 		const styles = element.getStyleNames();
 
-		for ( let style of styles ) {
+		for ( const style of styles ) {
 			consumables.style.push( style );
 		}
 
@@ -301,7 +301,7 @@ export default class ViewConsumable {
 			instance.add( from );
 		}
 
-		for ( let child of from.getChildren() ) {
+		for ( const child of from.getChildren() ) {
 			instance = ViewConsumable.createFrom( child, instance );
 		}
 
@@ -320,7 +320,7 @@ class ViewElementConsumables {
 	/**
 	 * Creates ViewElementConsumables instance.
 	 */
-	constructor()  {
+	constructor() {
 		/**
 		 * Flag indicating if name of the element can be consumed.
 		 *
@@ -368,7 +368,7 @@ class ViewElementConsumables {
 			this._canConsumeName = true;
 		}
 
-		for ( let type in this._consumables ) {
+		for ( const type in this._consumables ) {
 			if ( type in consumables ) {
 				this._add( type, consumables[ type ] );
 			}
@@ -401,7 +401,7 @@ class ViewElementConsumables {
 			return this._canConsumeName;
 		}
 
-		for ( let type in this._consumables ) {
+		for ( const type in this._consumables ) {
 			if ( type in consumables ) {
 				const value = this._test( type, consumables[ type ] );
 
@@ -438,7 +438,7 @@ class ViewElementConsumables {
 			this._canConsumeName = false;
 		}
 
-		for ( let type in this._consumables ) {
+		for ( const type in this._consumables ) {
 			if ( type in consumables ) {
 				this._consume( type, consumables[ type ] );
 			}
@@ -467,7 +467,7 @@ class ViewElementConsumables {
 			this._canConsumeName = true;
 		}
 
-		for ( let type in this._consumables ) {
+		for ( const type in this._consumables ) {
 			if ( type in consumables ) {
 				this._revert( type, consumables[ type ] );
 			}
@@ -488,7 +488,7 @@ class ViewElementConsumables {
 		const items = isArray( item ) ? item : [ item ];
 		const consumables = this._consumables[ type ];
 
-		for ( let name of items ) {
+		for ( const name of items ) {
 			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
 				/**
 				 * Class and style attributes should be handled separately.
@@ -515,8 +515,8 @@ class ViewElementConsumables {
 		const items = isArray( item ) ? item : [ item ];
 		const consumables = this._consumables[ type ];
 
-		for ( let name of items ) {
-			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) )  {
+		for ( const name of items ) {
+			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
 				// Check all classes/styles if class/style attribute is tested.
 				const value = this._test( name, [ ...this._consumables[ name ].keys() ] );
 
@@ -550,7 +550,7 @@ class ViewElementConsumables {
 		const items = isArray( item ) ? item : [ item ];
 		const consumables = this._consumables[ type ];
 
-		for ( let name of items ) {
+		for ( const name of items ) {
 			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
 				// If class or style is provided for consumption - consume them all.
 				this._consume( name, [ ...this._consumables[ name ].keys() ] );
@@ -571,7 +571,7 @@ class ViewElementConsumables {
 		const items = isArray( item ) ? item : [ item ];
 		const consumables = this._consumables[ type ];
 
-		for ( let name of items ) {
+		for ( const name of items ) {
 			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
 				// If class or style is provided for reverting - revert them all.
 				this._revert( name, [ ...this._consumables[ name ].keys() ] );

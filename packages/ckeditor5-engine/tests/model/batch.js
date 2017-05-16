@@ -3,11 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import deltas from '../../src/model/delta/basic-deltas'; // jshint ignore:line
+import deltas from '../../src/model/delta/basic-deltas'; // eslint-disable-line no-unused-vars
 
 import Document from '../../src/model/document';
-import Batch from '../../src/model/batch';
-import { register } from '../../src/model/batch';
+import { default as Batch, register } from '../../src/model/batch';
 import Delta from '../../src/model/delta/delta';
 import Operation from '../../src/model/operation/operation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';

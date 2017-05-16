@@ -280,7 +280,7 @@ export default class ModelConsumable {
 	 * @returns {Symbol} Symbol generated for given properties.
 	 */
 	_addSymbolForTextProxy( start, end, parent ) {
-		const symbol = Symbol();
+		const symbol = Symbol( 'textProxySymbol' );
 		let startMap, endMap;
 
 		startMap = this._textProxyRegistry.get( start );

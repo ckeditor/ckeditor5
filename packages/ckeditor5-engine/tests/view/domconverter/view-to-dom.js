@@ -210,7 +210,7 @@ describe( 'DomConverter', () => {
 					new ViewAttributeElement( 'b', null, new ViewText( ' x ' ) ),
 					new ViewAttributeElement( 'i', null,
 						new ViewAttributeElement( 'b', null,
-							new ViewAttributeElement( 'u' , null, new ViewText( ' x' ) )
+							new ViewAttributeElement( 'u', null, new ViewText( ' x' ) )
 						)
 					)
 				] );
@@ -227,7 +227,7 @@ describe( 'DomConverter', () => {
 						new ViewAttributeElement( 'b', null, new ViewText( ' x ' ) ),
 						new ViewAttributeElement( 'i', null,
 							new ViewAttributeElement( 'b', null,
-								new ViewAttributeElement( 'u' , null, new ViewText( ' x ' ) )
+								new ViewAttributeElement( 'u', null, new ViewText( ' x ' ) )
 							)
 						)
 					] ),
@@ -249,7 +249,7 @@ describe( 'DomConverter', () => {
 				it( 'spaces in a text node: ' + inputTexts.join( '|' ) + ' -> ' + output, () => {
 					const viewElement = new ViewContainerElement( 'p' );
 
-					for ( let text of inputTexts ) {
+					for ( const text of inputTexts ) {
 						viewElement.appendChildren( new ViewText( text.replace( /_/g, '\u00A0' ) ) );
 					}
 

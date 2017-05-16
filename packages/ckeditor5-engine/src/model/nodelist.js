@@ -139,8 +139,8 @@ export default class NodeList {
 	offsetToIndex( offset ) {
 		let totalOffset = 0;
 
-		for ( let node of this._nodes ) {
-			if ( offset >= totalOffset && offset < totalOffset + node.offsetSize  ) {
+		for ( const node of this._nodes ) {
+			if ( offset >= totalOffset && offset < totalOffset + node.offsetSize ) {
 				return this.getNodeIndex( node );
 			}
 
@@ -167,7 +167,7 @@ export default class NodeList {
 	 */
 	insertNodes( index, nodes ) {
 		// Validation.
-		for ( let node of nodes ) {
+		for ( const node of nodes ) {
 			if ( !( node instanceof Node ) ) {
 				/**
 				 * Trying to insert an object which is not a Node instance.
@@ -199,6 +199,6 @@ export default class NodeList {
 	 * @returns {Array.<module:engine/model/node~Node>} `NodeList` instance converted to `Array`.
 	 */
 	toJSON() {
-		return this._nodes.map( ( node ) => node.toJSON() );
+		return this._nodes.map( node => node.toJSON() );
 	}
 }

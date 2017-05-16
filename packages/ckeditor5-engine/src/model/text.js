@@ -65,7 +65,7 @@ export default class Text extends Node {
 	 * @returns {Object} `Text` instance converted to plain object.
 	 */
 	toJSON() {
-		let json = super.toJSON();
+		const json = super.toJSON();
 
 		json.data = this.data;
 

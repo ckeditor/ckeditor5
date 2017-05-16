@@ -32,8 +32,8 @@ describe( 'TextProxy', () => {
 		} );
 
 		it( 'should have isPartial property', () => {
-			let startTextProxy = new TextProxy( text, 0, 4 );
-			let fullTextProxy = new TextProxy( text, 0, 8 );
+			const startTextProxy = new TextProxy( text, 0, 4 );
+			const fullTextProxy = new TextProxy( text, 0, 8 );
 
 			expect( textProxy.isPartial ).to.be.true;
 			expect( startTextProxy.isPartial ).to.be.true;
@@ -42,21 +42,21 @@ describe( 'TextProxy', () => {
 
 		it( 'should throw if wrong offsetInText is passed', () => {
 			expect( () => {
-				new TextProxy( text, -1, 2 );
+				new TextProxy( text, -1, 2 ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /view-textproxy-wrong-offsetintext/ );
 
 			expect( () => {
-				new TextProxy( text, 9, 1 );
+				new TextProxy( text, 9, 1 ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /view-textproxy-wrong-offsetintext/ );
 		} );
 
 		it( 'should throw if wrong length is passed', () => {
 			expect( () => {
-				new TextProxy( text, 2, -1 );
+				new TextProxy( text, 2, -1 ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /view-textproxy-wrong-length/ );
 
 			expect( () => {
-				new TextProxy( text, 2, 9 );
+				new TextProxy( text, 2, 9 ); // eslint-disable-line no-new
 			} ).to.throw( CKEditorError, /view-textproxy-wrong-length/ );
 		} );
 	} );
@@ -94,7 +94,7 @@ describe( 'TextProxy', () => {
 		} );
 
 		it( 'should return null if element is inside DocumentFragment', () => {
-			new DocumentFragment( [ wrapper ] );
+			new DocumentFragment( [ wrapper ] ); // eslint-disable-line no-new
 
 			expect( textProxy.document ).to.be.null;
 		} );

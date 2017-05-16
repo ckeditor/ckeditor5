@@ -42,7 +42,7 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should extend MoveOperation class', () => {
-		let operation = new RemoveOperation(
+		const operation = new RemoveOperation(
 			new Position( root, [ 2 ] ),
 			2,
 			doc.version
@@ -91,10 +91,10 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should create RemoveOperation with same parameters when cloned', () => {
-		let pos = new Position( root, [ 2 ] );
+		const pos = new Position( root, [ 2 ] );
 
-		let operation = new RemoveOperation( pos, 2, doc.version );
-		let clone = operation.clone();
+		const operation = new RemoveOperation( pos, 2, doc.version );
+		const clone = operation.clone();
 
 		expect( clone ).to.be.instanceof( RemoveOperation );
 		expect( clone.sourcePosition.isEqual( pos ) ).to.be.true;
@@ -103,9 +103,9 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should create a ReinsertOperation as a reverse', () => {
-		let position = new Position( root, [ 0 ] );
-		let operation = new RemoveOperation( position, 2, 0 );
-		let reverse = operation.getReversed();
+		const position = new Position( root, [ 0 ] );
+		const operation = new RemoveOperation( position, 2, 0 );
+		const reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( ReinsertOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -115,9 +115,9 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should undo remove set of nodes by applying reverse operation', () => {
-		let position = new Position( root, [ 0 ] );
-		let operation = new RemoveOperation( position, 3, 0 );
-		let reverse = operation.getReversed();
+		const position = new Position( root, [ 0 ] );
+		const operation = new RemoveOperation( position, 3, 0 );
+		const reverse = operation.getReversed();
 
 		root.insertChildren( 0, new Text( 'bar' ) );
 
@@ -136,8 +136,8 @@ describe( 'RemoveOperation', () => {
 	it( 'should properly remove a node that is already in a graveyard', () => {
 		doc.graveyard.appendChildren( new Element( '$graveyardHolder', {}, [ new Text( 'foo' ) ] ) );
 
-		let position = new Position( doc.graveyard, [ 0, 0 ] );
-		let operation = new RemoveOperation( position, 1, 0 );
+		const position = new Position( doc.graveyard, [ 0, 0 ] );
+		const operation = new RemoveOperation( position, 1, 0 );
 
 		operation.targetPosition.path = [ 0, 0 ];
 

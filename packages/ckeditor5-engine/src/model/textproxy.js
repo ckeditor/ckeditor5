@@ -75,6 +75,7 @@ export default class TextProxy {
 			 */
 			throw new CKEditorError( 'model-textproxy-wrong-length: Given length value is incorrect.' );
 		}
+
 		/**
 		 * Text data represented by this text proxy.
 		 *

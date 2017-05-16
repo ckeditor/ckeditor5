@@ -66,7 +66,7 @@ describe( 'Batch', () => {
 			sinon.spy( doc, 'applyOperation' );
 			batch.remove( div );
 
-			const correctDeltaMatcher = sinon.match( ( operation ) => {
+			const correctDeltaMatcher = sinon.match( operation => {
 				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
 			} );
 
@@ -75,7 +75,7 @@ describe( 'Batch', () => {
 	} );
 } );
 
-describe( 'RemoveDelta', ()=> {
+describe( 'RemoveDelta', () => {
 	it( 'should provide proper className', () => {
 		expect( RemoveDelta.className ).to.equal( 'engine.model.delta.RemoveDelta' );
 	} );

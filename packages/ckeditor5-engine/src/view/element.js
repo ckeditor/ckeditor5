@@ -164,7 +164,7 @@ export default class Element extends Node {
 		const childrenClone = [];
 
 		if ( deep ) {
-			for ( let child of this.getChildren() ) {
+			for ( const child of this.getChildren() ) {
 				childrenClone.push( child.clone( deep ) );
 			}
 		}
@@ -187,8 +187,8 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * {@link module:engine/view/element~Element#insertChildren Insert} a child node or a list of child nodes at the end of this node and sets
-	 * the parent of these nodes to this element.
+	 * {@link module:engine/view/element~Element#insertChildren Insert} a child node or a list of child nodes at the end of this node
+	 * and sets the parent of these nodes to this element.
 	 *
 	 * @fires module:engine/view/node~Node#change
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} nodes Node or the list of nodes to be inserted.
@@ -243,7 +243,7 @@ export default class Element extends Node {
 
 		// This is not an optimal solution because of https://github.com/ckeditor/ckeditor5-engine/issues/454.
 		// It can be simplified to `yield* this._attrs.keys();`.
-		for ( let key of this._attrs.keys() ) {
+		for ( const key of this._attrs.keys() ) {
 			yield key;
 		}
 	}
@@ -287,7 +287,7 @@ export default class Element extends Node {
 			if ( this._styles.size > 0 ) {
 				let styleString = '';
 
-				for ( let [ property, value ] of this._styles ) {
+				for ( const [ property, value ] of this._styles ) {
 					styleString += `${ property }:${ value };`;
 				}
 
@@ -308,7 +308,7 @@ export default class Element extends Node {
 	 */
 	hasAttribute( key ) {
 		if ( key == 'class' ) {
-			return this._classes.size  > 0;
+			return this._classes.size > 0;
 		}
 
 		if ( key == 'style' ) {
@@ -352,7 +352,7 @@ export default class Element extends Node {
 
 		nodes = normalize( nodes );
 
-		for ( let node of nodes ) {
+		for ( const node of nodes ) {
 			node.parent = this;
 
 			this._children.splice( index, 0, node );
@@ -447,21 +447,21 @@ export default class Element extends Node {
 		}
 
 		// Check if attributes are the same.
-		for ( let [ key, value ] of this._attrs ) {
+		for ( const [ key, value ] of this._attrs ) {
 			if ( !otherElement._attrs.has( key ) || otherElement._attrs.get( key ) !== value ) {
 				return false;
 			}
 		}
 
 		// Check if classes are the same.
-		for ( let className of this._classes ) {
+		for ( const className of this._classes ) {
 			if ( !otherElement._classes.has( className ) ) {
 				return false;
 			}
 		}
 
 		// Check if styles are the same.
-		for ( let [ property, value ] of this._styles ) {
+		for ( const [ property, value ] of this._styles ) {
 			if ( !otherElement._styles.has( property ) || otherElement._styles.get( property ) !== value ) {
 				return false;
 			}
@@ -508,7 +508,7 @@ export default class Element extends Node {
 	 * @param {...String} className
 	 */
 	hasClass( ...className ) {
-		for ( let name of className ) {
+		for ( const name of className ) {
 			if ( !this._classes.has( name ) ) {
 				return false;
 			}
@@ -545,7 +545,7 @@ export default class Element extends Node {
 		if ( isPlainObject( property ) ) {
 			const keys = Object.keys( property );
 
-			for ( let key of keys ) {
+			for ( const key of keys ) {
 				this._styles.set( key, property[ key ] );
 			}
 		} else {
@@ -583,7 +583,7 @@ export default class Element extends Node {
 	 * @param {...String} property
 	 */
 	hasStyle( ...property ) {
-		for ( let name of property ) {
+		for ( const name of property ) {
 			if ( !this._styles.has( name ) ) {
 				return false;
 			}
@@ -730,10 +730,11 @@ function parseInlineStyles( stylesMap, stylesString ) {
 
 					break;
 
+				// eslint-disable-next-line no-case-declarations
 				case ';':
 					// Property value just ended.
 					// Use previously stored property value start to obtain property value.
-					let propertyValue = stylesString.substr( propertyValueStart, i - propertyValueStart );
+					const propertyValue = stylesString.substr( propertyValueStart, i - propertyValueStart );
 
 					if ( propertyName ) {
 						// Save parsed part.
@@ -780,5 +781,8 @@ function normalize( nodes ) {
 	}
 
 	// Array.from to enable .map() on non-arrays.
-	return Array.from( nodes ).map( ( node ) => typeof node == 'string' ? new Text( node ) : node );
+	return Array.from( nodes )
+		.map( node => {
+			return typeof node == 'string' ? new Text( node ) : node;
+		} );
 }

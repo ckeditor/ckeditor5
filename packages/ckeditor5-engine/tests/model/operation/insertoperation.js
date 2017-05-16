@@ -106,14 +106,14 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should create a RemoveOperation as a reverse', () => {
-		let position = new Position( root, [ 0 ] );
-		let operation = new InsertOperation(
+		const position = new Position( root, [ 0 ] );
+		const operation = new InsertOperation(
 			position,
 			[ 'foo', new Text( 'x' ), 'bar' ],
 			0
 		);
 
-		let reverse = operation.getReversed();
+		const reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( RemoveOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -122,13 +122,13 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should undo insert node by applying reverse operation', () => {
-		let operation = new InsertOperation(
+		const operation = new InsertOperation(
 			new Position( root, [ 0 ] ),
 			new Text( 'x' ),
 			doc.version
 		);
 
-		let reverse = operation.getReversed();
+		const reverse = operation.getReversed();
 
 		doc.applyOperation( wrapInDelta( operation ) );
 
@@ -141,13 +141,13 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should undo insert set of nodes by applying reverse operation', () => {
-		let operation = new InsertOperation(
+		const operation = new InsertOperation(
 			new Position( root, [ 0 ] ),
 			'bar',
 			doc.version
 		);
 
-		let reverse = operation.getReversed();
+		const reverse = operation.getReversed();
 
 		doc.applyOperation( wrapInDelta( operation ) );
 
@@ -160,15 +160,15 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should create operation with the same parameters when cloned', () => {
-		let position = new Position( root, [ 0 ] );
-		let nodeA = new Element( 'a' );
-		let nodeB = new Element( 'b' );
-		let nodes = [ nodeA, nodeB ];
-		let baseVersion = doc.version;
+		const position = new Position( root, [ 0 ] );
+		const nodeA = new Element( 'a' );
+		const nodeB = new Element( 'b' );
+		const nodes = [ nodeA, nodeB ];
+		const baseVersion = doc.version;
 
-		let op = new InsertOperation( position, nodes, baseVersion );
+		const op = new InsertOperation( position, nodes, baseVersion );
 
-		let clone = op.clone();
+		const clone = op.clone();
 
 		// New instance rather than a pointer to the old instance.
 		expect( clone ).not.to.be.equal( op );
@@ -187,13 +187,13 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should save copies of inserted nodes after it is executed', () => {
-		let element = new Element( 'p', { key: 'value' } );
+		const element = new Element( 'p', { key: 'value' } );
 
-		let op = new InsertOperation( new Position( root, [ 0 ] ), element, doc.version );
+		const op = new InsertOperation( new Position( root, [ 0 ] ), element, doc.version );
 		doc.applyOperation( wrapInDelta( op ) );
 
-		let text = new Text( 'text' );
-		let op2 = new InsertOperation( new Position( root, [ 0, 0 ] ), text, doc.version );
+		const text = new Text( 'text' );
+		const op2 = new InsertOperation( new Position( root, [ 0, 0 ] ), text, doc.version );
 		doc.applyOperation( wrapInDelta( op2 ) );
 
 		expect( op.nodes.getNode( 0 ) ).not.to.equal( element );

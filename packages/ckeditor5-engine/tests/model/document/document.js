@@ -48,7 +48,7 @@ describe( 'Document', () => {
 
 	describe( 'createRoot', () => {
 		it( 'should create a new RootElement with default element and root names, add it to roots map and return it', () => {
-			let root = doc.createRoot();
+			const root = doc.createRoot();
 
 			expect( doc.roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
@@ -58,7 +58,7 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should create a new RootElement with custom element and root names, add it to roots map and return it', () => {
-			let root = doc.createRoot( 'customElementName', 'customRootName' );
+			const root = doc.createRoot( 'customElementName', 'customRootName' );
 
 			expect( doc.roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
@@ -80,8 +80,8 @@ describe( 'Document', () => {
 
 	describe( 'getRoot', () => {
 		it( 'should return a RootElement previously created with given name', () => {
-			let newRoot = doc.createRoot();
-			let getRoot = doc.getRoot();
+			const newRoot = doc.createRoot();
+			const getRoot = doc.getRoot();
 
 			expect( getRoot ).to.equal( newRoot );
 		} );
@@ -116,8 +116,8 @@ describe( 'Document', () => {
 			const delta = new Delta();
 			delta.type = 'type';
 
-			let operation = {
-				type: type,
+			const operation = {
+				type,
 				baseVersion: 0,
 				_execute: sinon.stub().returns( data )
 			};
@@ -139,7 +139,7 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should throw an error on the operation base version and the document version is different', () => {
-			let operation = {
+			const operation = {
 				baseVersion: 1
 			};
 
@@ -168,7 +168,7 @@ describe( 'Document', () => {
 
 	describe( 'enqueue', () => {
 		it( 'should be executed immediately and fire changesDone event', () => {
-			let order = [];
+			const order = [];
 
 			doc.on( 'changesDone', () => order.push( 'done' ) );
 
@@ -180,7 +180,7 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should fire done every time queue is empty', () => {
-			let order = [];
+			const order = [];
 
 			doc.on( 'changesDone', () => order.push( 'done' ) );
 
@@ -195,7 +195,7 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should put callbacks in the proper order', () => {
-			let order = [];
+			const order = [];
 
 			doc.on( 'changesDone', () => order.push( 'done' ) );
 
@@ -276,7 +276,6 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'getNearestSelectionRange', () => {
-		let root;
 		let selection;
 
 		beforeEach( () => {
@@ -287,7 +286,7 @@ describe( 'Document', () => {
 			doc.schema.allow( { name: 'widget', inside: '$root' } );
 			doc.schema.objects.add( 'widget' );
 
-			root = doc.createRoot();
+			doc.createRoot();
 			selection = doc.selection;
 		} );
 
@@ -437,7 +436,7 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should return the first root added to the document', () => {
-			let rootA = doc.createRoot( '$root', 'rootA' );
+			const rootA = doc.createRoot( '$root', 'rootA' );
 			doc.createRoot( '$root', 'rootB' );
 			doc.createRoot( '$root', 'rootC' );
 

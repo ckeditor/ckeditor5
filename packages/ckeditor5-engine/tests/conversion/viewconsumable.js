@@ -9,8 +9,7 @@ import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewConsumable from '../../src/conversion/viewconsumable';
 
 describe( 'ViewConsumable', () => {
-	let viewConsumable;
-	let el;
+	let viewConsumable, el;
 
 	beforeEach( () => {
 		viewConsumable = new ViewConsumable();
@@ -44,7 +43,7 @@ describe( 'ViewConsumable', () => {
 
 			expect( viewConsumable.test( el, { attribute: 'href' } ) ).to.be.true;
 			expect( viewConsumable.test( el, { class: 'foobar' } ) ).to.be.true;
-			expect( viewConsumable.test( el, { style: 'color' }  ) ).to.be.true;
+			expect( viewConsumable.test( el, { style: 'color' } ) ).to.be.true;
 			expect( viewConsumable.test( el, { name: true } ) ).to.be.null;
 		} );
 

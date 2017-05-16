@@ -105,7 +105,7 @@ export default class MoveOperation extends Operation {
 	 * @returns {module:engine/model/operation/moveoperation~MoveOperation}
 	 */
 	getReversed() {
-		let newTargetPosition = this.sourcePosition._getTransformedByInsertion( this.targetPosition, this.howMany );
+		const newTargetPosition = this.sourcePosition._getTransformedByInsertion( this.targetPosition, this.howMany );
 
 		const op = new this.constructor( this.getMovedRangeStart(), this.howMany, newTargetPosition, this.baseVersion + 1 );
 		op.isSticky = this.isSticky;
@@ -117,10 +117,10 @@ export default class MoveOperation extends Operation {
 	 * @inheritDoc
 	 */
 	_execute() {
-		let sourceElement = this.sourcePosition.parent;
-		let targetElement = this.targetPosition.parent;
-		let sourceOffset = this.sourcePosition.offset;
-		let targetOffset = this.targetPosition.offset;
+		const sourceElement = this.sourcePosition.parent;
+		const targetElement = this.targetPosition.parent;
+		const sourceOffset = this.sourcePosition.offset;
+		const targetOffset = this.targetPosition.offset;
 
 		// Validate whether move operation has correct parameters.
 		// Validation is pretty complex but move operation is one of the core ways to manipulate the document state.
@@ -154,7 +154,7 @@ export default class MoveOperation extends Operation {
 			);
 		} else if ( this.sourcePosition.root == this.targetPosition.root ) {
 			if ( compareArrays( this.sourcePosition.getParentPath(), this.targetPosition.getParentPath() ) == 'prefix' ) {
-				let i = this.sourcePosition.path.length - 1;
+				const i = this.sourcePosition.path.length - 1;
 
 				if ( this.targetPosition.path[ i ] >= sourceOffset && this.targetPosition.path[ i ] < sourceOffset + this.howMany ) {
 					/**
@@ -173,7 +173,7 @@ export default class MoveOperation extends Operation {
 
 		return {
 			sourcePosition: this.sourcePosition,
-			range: range
+			range
 		};
 	}
 
@@ -192,8 +192,8 @@ export default class MoveOperation extends Operation {
 	 * @returns {module:engine/model/operation/moveoperation~MoveOperation}
 	 */
 	static fromJSON( json, document ) {
-		let sourcePosition = Position.fromJSON( json.sourcePosition, document );
-		let targetPosition = Position.fromJSON( json.targetPosition, document );
+		const sourcePosition = Position.fromJSON( json.sourcePosition, document );
+		const targetPosition = Position.fromJSON( json.targetPosition, document );
 
 		const move = new this( sourcePosition, json.howMany, targetPosition, json.baseVersion );
 

@@ -39,7 +39,7 @@ describe( 'DataController', () => {
 				'f[]o'
 			);
 
-			it( 'deletes single character (backward selection)' , () => {
+			it( 'deletes single character (backward selection)', () => {
 				setData( doc, 'f[o]o', { lastRangeBackward: true } );
 
 				deleteContent( doc.selection, doc.batch() );

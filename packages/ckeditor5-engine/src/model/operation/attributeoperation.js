@@ -109,7 +109,7 @@ export default class AttributeOperation extends Operation {
 	 */
 	_execute() {
 		// Validation.
-		for ( let item of this.range.getItems() ) {
+		for ( const item of this.range.getItems() ) {
 			if ( this.oldValue !== null && !isEqual( item.getAttribute( this.key ), this.oldValue ) ) {
 				/**
 				 * Changed node has different attribute value than operation's old attribute value.
@@ -120,8 +120,9 @@ export default class AttributeOperation extends Operation {
 				 * @param {*} value
 				 */
 				throw new CKEditorError(
-					'attribute-operation-wrong-old-value: Changed node has different attribute value than operation\'s old attribute value.',
-					{ item: item, key: this.key, value: this.oldValue }
+					'attribute-operation-wrong-old-value: Changed node has different attribute value than operation\'s ' +
+					'old attribute value.',
+					{ item, key: this.key, value: this.oldValue }
 				);
 			}
 

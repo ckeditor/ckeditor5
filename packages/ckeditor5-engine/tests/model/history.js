@@ -24,7 +24,7 @@ describe( 'History', () => {
 
 	describe( 'addDelta', () => {
 		it( 'should save delta in the history', () => {
-			let delta = new Delta();
+			const delta = new Delta();
 			delta.addOperation( new Operation( 0 ) );
 
 			history.addDelta( delta );
@@ -35,7 +35,7 @@ describe( 'History', () => {
 		} );
 
 		it( 'should save each delta only once', () => {
-			let delta = new Delta();
+			const delta = new Delta();
 			delta.addOperation( new Operation( 0 ) );
 
 			history.addDelta( delta );
@@ -47,9 +47,9 @@ describe( 'History', () => {
 		} );
 
 		it( 'should save multiple deltas and keep their order', () => {
-			let deltas = getDeltaSet();
+			const deltas = getDeltaSet();
 
-			for ( let delta of deltas ) {
+			for ( const delta of deltas ) {
 				history.addDelta( delta );
 			}
 
@@ -58,7 +58,7 @@ describe( 'History', () => {
 		} );
 
 		it( 'should skip deltas that does not have operations', () => {
-			let delta = new Delta();
+			const delta = new Delta();
 
 			history.addDelta( delta );
 
@@ -68,7 +68,7 @@ describe( 'History', () => {
 
 	describe( 'getDelta', () => {
 		it( 'should return array with one delta with given base version', () => {
-			let delta = getDelta( 0 );
+			const delta = getDelta( 0 );
 			history.addDelta( delta );
 
 			const historyDelta = history.getDelta( 0 );
@@ -76,10 +76,10 @@ describe( 'History', () => {
 		} );
 
 		it( 'should return array with all updated deltas of delta with given base version', () => {
-			let delta = getDelta( 0 );
+			const delta = getDelta( 0 );
 			history.addDelta( delta );
 
-			let deltas = getDeltaSet();
+			const deltas = getDeltaSet();
 			history.updateDelta( 0, deltas );
 
 			const historyDelta = history.getDelta( 0 );
@@ -93,7 +93,7 @@ describe( 'History', () => {
 		} );
 
 		it( 'should return null if delta has been removed by removeDelta', () => {
-			let delta = getDelta( 0 );
+			const delta = getDelta( 0 );
 			history.addDelta( delta );
 			history.removeDelta( 0 );
 
@@ -107,7 +107,7 @@ describe( 'History', () => {
 		beforeEach( () => {
 			deltas = getDeltaSet();
 
-			for ( let delta of deltas ) {
+			for ( const delta of deltas ) {
 				history.addDelta( delta );
 			}
 		} );
@@ -174,7 +174,7 @@ describe( 'History', () => {
 
 	describe( 'removeDelta', () => {
 		it( 'should remove deltas that do not have graveyard related operations', () => {
-			for ( let delta of getDeltaSet() ) {
+			for ( const delta of getDeltaSet() ) {
 				history.addDelta( delta );
 			}
 
@@ -185,10 +185,10 @@ describe( 'History', () => {
 		} );
 
 		it( 'should remove multiple updated deltas', () => {
-			let delta = getDelta( 0 );
+			const delta = getDelta( 0 );
 			history.addDelta( delta );
 
-			let updatedDeltas = getDeltaSet( 0 );
+			const updatedDeltas = getDeltaSet( 0 );
 
 			history.updateDelta( 0, updatedDeltas );
 			history.removeDelta( 0 );
@@ -200,7 +200,7 @@ describe( 'History', () => {
 		it( 'should do nothing if deltas for given base version has not been found in history', () => {
 			const deltas = getDeltaSet();
 
-			for ( let delta of deltas ) {
+			for ( const delta of deltas ) {
 				history.addDelta( delta );
 			}
 

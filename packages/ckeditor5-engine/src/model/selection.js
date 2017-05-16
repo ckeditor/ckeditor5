@@ -154,10 +154,10 @@ export default class Selection {
 			return false;
 		}
 
-		for ( let thisRange of this._ranges ) {
+		for ( const thisRange of this._ranges ) {
 			let found = false;
 
-			for ( let otherRange of otherSelection._ranges ) {
+			for ( const otherRange of otherSelection._ranges ) {
 				if ( thisRange.isEqual( otherRange ) ) {
 					found = true;
 					break;
@@ -178,7 +178,7 @@ export default class Selection {
 	 * @returns {Iterator.<module:engine/model/range~Range>}
 	 */
 	*getRanges() {
-		for ( let range of this._ranges ) {
+		for ( const range of this._ranges ) {
 			yield Range.createFromRange( range );
 		}
 	}
@@ -196,7 +196,7 @@ export default class Selection {
 	getFirstRange() {
 		let first = null;
 
-		for ( let range of this._ranges ) {
+		for ( const range of this._ranges ) {
 			if ( !first || range.start.isBefore( first.start ) ) {
 				first = range;
 			}
@@ -218,7 +218,7 @@ export default class Selection {
 	getLastRange() {
 		let last = null;
 
-		for ( let range of this._ranges ) {
+		for ( const range of this._ranges ) {
 			if ( !last || range.end.isAfter( last.end ) ) {
 				last = range;
 			}
@@ -307,12 +307,12 @@ export default class Selection {
 		newRanges = Array.from( newRanges );
 
 		// Check whether there is any range in new ranges set that is different than all already added ranges.
-		const anyNewRange = newRanges.some( ( newRange ) => {
+		const anyNewRange = newRanges.some( newRange => {
 			if ( !( newRange instanceof Range ) ) {
 				throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
 			}
 
-			return this._ranges.every( ( oldRange ) => {
+			return this._ranges.every( oldRange => {
 				return !oldRange.isEqual( newRange );
 			} );
 		} );
@@ -324,7 +324,7 @@ export default class Selection {
 
 		this._removeAllRanges();
 
-		for ( let range of newRanges ) {
+		for ( const range of newRanges ) {
 			this._pushRange( range );
 		}
 
@@ -406,7 +406,9 @@ export default class Selection {
 			 *
 			 * @error model-selection-setFocus-no-ranges
 			 */
-			throw new CKEditorError( 'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.' );
+			throw new CKEditorError(
+				'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.'
+			);
 		}
 
 		const newFocus = Position.createAt( itemOrPosition, offset );
@@ -537,7 +539,7 @@ export default class Selection {
 			// Create a set from keys of old and new attributes.
 			const changed = new Set( Array.from( attrs.keys() ).concat( Array.from( this._attrs.keys() ) ) );
 
-			for ( let [ key, value ] of attrs ) {
+			for ( const [ key, value ] of attrs ) {
 				// If the attribute remains unchanged, remove it from changed set.
 				if ( this._attrs.get( key ) === value ) {
 					changed.delete( key );
@@ -733,7 +735,7 @@ function isUnvisitedBlockContainer( element, visited ) {
 // Marks all ancestors as already visited to not include any of them later on.
 function getParentBlock( position, visited ) {
 	const ancestors = position.parent.getAncestors( { parentFirst: true, includeNode: true } );
-	const block = ancestors.find( ( element ) => isUnvisitedBlockContainer( element, visited ) );
+	const block = ancestors.find( element => isUnvisitedBlockContainer( element, visited ) );
 
 	// Mark all ancestors of this position's parent, because find() might've stopped early and
 	// the found block may be a child of another block.

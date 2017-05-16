@@ -70,7 +70,8 @@ describe( 'writer', () => {
 		it( 'should merge when placed between similar attribute nodes', () => {
 			test(
 				'<container:p>' +
-					'<attribute:b view-priority="1" foo="bar">baz</attribute:b>[]<attribute:b view-priority="1" foo="bar">qux</attribute:b>' +
+					'<attribute:b view-priority="1" foo="bar">baz</attribute:b>[]' +
+					'<attribute:b view-priority="1" foo="bar">qux</attribute:b>' +
 				'</container:p>',
 				'<container:p><attribute:b view-priority="1" foo="bar">baz{}qux</attribute:b></container:p>'
 			);
@@ -101,7 +102,8 @@ describe( 'writer', () => {
 		it( 'should merge attribute nodes and their contents if possible', () => {
 			test(
 				'<container:p>' +
-					'<attribute:b view-priority="1" foo="bar">foo</attribute:b>[]<attribute:b view-priority="1" foo="bar">bar</attribute:b>' +
+					'<attribute:b view-priority="1" foo="bar">foo</attribute:b>[]' +
+					'<attribute:b view-priority="1" foo="bar">bar</attribute:b>' +
 				'</container:p>',
 				'<container:p><attribute:b view-priority="1" foo="bar">foo{}bar</attribute:b></container:p>'
 			);

@@ -18,7 +18,7 @@ describe( 'writer', () => {
 	 * @param {String} expected
 	 */
 	function test( input, expected ) {
-		let { view, selection } = parse( input );
+		const { view, selection } = parse( input );
 
 		const newPosition = breakContainer( selection.getFirstPosition() );
 		expect( stringify( view.root, newPosition, { showType: true, showPriority: false } ) ).to.equal( expected );
@@ -59,7 +59,7 @@ describe( 'writer', () => {
 		} );
 
 		it( 'should throw if position parent is not container', () => {
-			let { selection } = parse( '<container:div>foo{}bar</container:div>' );
+			const { selection } = parse( '<container:div>foo{}bar</container:div>' );
 
 			expect( () => {
 				breakContainer( selection.getFirstPosition() );

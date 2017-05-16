@@ -104,7 +104,7 @@ const ot = {
 			const ranges = a.range._getTransformedByInsertion( b.position, b.nodes.maxOffset, true, false );
 
 			// Map transformed range(s) to operations and return them.
-			return ranges.reverse().map( ( range ) => {
+			return ranges.reverse().map( range => {
 				return new AttributeOperation( range, a.key, a.oldValue, a.newValue, a.baseVersion );
 			} );
 		},
@@ -116,7 +116,7 @@ const ot = {
 				// If operations attributes are in conflict, check if their ranges intersect and manage them properly.
 
 				// First, we want to apply change to the part of a range that has not been changed by the other operation.
-				let operations = a.range.getDifference( b.range ).map( ( range ) => {
+				const operations = a.range.getDifference( b.range ).map( range => {
 					return new AttributeOperation( range, a.key, a.oldValue, a.newValue, a.baseVersion );
 				} );
 
@@ -202,7 +202,7 @@ const ot = {
 			}
 
 			// Map transformed range(s) to operations and return them.
-			return ranges.map( ( range ) => {
+			return ranges.map( range => {
 				return new AttributeOperation( range, a.key, a.oldValue, a.newValue, a.baseVersion );
 			} );
 		}
@@ -345,7 +345,7 @@ const ot = {
 			let range = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
 			range = range._getTransformedByInsertion( b.position, b.nodes.maxOffset, false, a.isSticky )[ 0 ];
 
-			let result = new a.constructor(
+			const result = new a.constructor(
 				range.start,
 				range.end.offset - range.start.offset,
 				a instanceof RemoveOperation ?
@@ -424,14 +424,26 @@ const ot = {
 			const rangeB = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
 
 			// This will aggregate transformed ranges.
-			let ranges = [];
+			const ranges = [];
 
 			// All the other non-special cases are treated by generic algorithm below.
-			let difference = joinRanges( rangeA.getDifference( rangeB ) );
+			const difference = joinRanges( rangeA.getDifference( rangeB ) );
 
 			if ( difference ) {
-				difference.start = difference.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !a.isSticky, false );
-				difference.end = difference.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, a.isSticky, false );
+				difference.start = difference.start._getTransformedByMove(
+					b.sourcePosition,
+					b.targetPosition,
+					b.howMany,
+					!a.isSticky,
+					false
+				);
+				difference.end = difference.end._getTransformedByMove(
+					b.sourcePosition,
+					b.targetPosition,
+					b.howMany,
+					a.isSticky,
+					false
+				);
 
 				ranges.push( difference );
 			}
@@ -446,11 +458,11 @@ const ot = {
 			// That means that we transform common part in two cases:
 			// * `rangeA` is "deeper" than `rangeB` so it does not collide
 			// * `rangeA` is at the same level but is stronger than `rangeB`.
-			let aCompB = compareArrays( a.sourcePosition.getParentPath(), b.sourcePosition.getParentPath() );
+			const aCompB = compareArrays( a.sourcePosition.getParentPath(), b.sourcePosition.getParentPath() );
 
 			// If the `b` MoveOperation points inside the `a` MoveOperation range, the common part will be included in
 			// range(s) that (is) are results of processing `difference`. If that's the case, we cannot include it again.
-			let bTargetsToA = rangeA.containsPosition( b.targetPosition ) ||
+			const bTargetsToA = rangeA.containsPosition( b.targetPosition ) ||
 				( rangeA.start.isEqual( b.targetPosition ) && a.isSticky ) ||
 				( rangeA.end.isEqual( b.targetPosition ) && a.isSticky );
 
@@ -460,8 +472,12 @@ const ot = {
 			// smaller range will be moved to larger range target. The effect of this transformation feels natural.
 			// Also if we wouldn't do that, we would get different results on both sides of transformation (i.e. in
 			// collaborative editing).
-			let aIsInside = rangeB.containsRange( rangeA ) &&
-				( rangeB.containsPosition( a.targetPosition ) || rangeB.start.isEqual( a.targetPosition ) || rangeB.end.isEqual( a.targetPosition ) );
+			const aIsInside = rangeB.containsRange( rangeA ) &&
+				(
+					rangeB.containsPosition( a.targetPosition ) ||
+					rangeB.start.isEqual( a.targetPosition ) ||
+					rangeB.end.isEqual( a.targetPosition )
+				);
 
 			if ( common !== null && ( aCompB === 'extension' || ( aCompB === 'same' && isStrong ) || aIsInside ) && !bTargetsToA ) {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
@@ -500,7 +516,7 @@ const ot = {
 			}
 
 			// Target position also could be affected by the other MoveOperation. We will transform it.
-			let newTargetPosition = a.targetPosition._getTransformedByMove(
+			const newTargetPosition = a.targetPosition._getTransformedByMove(
 				b.sourcePosition,
 				b.targetPosition,
 				b.howMany,
@@ -511,7 +527,7 @@ const ot = {
 			// Map transformed range(s) to operations and return them.
 			return ranges.reverse().map( ( range, i ) => {
 				// We want to keep correct operation class.
-				let result = new a.constructor(
+				const result = new a.constructor(
 					range.start,
 					range.end.offset - range.start.offset,
 					a instanceof RemoveOperation ? a.baseVersion : newTargetPosition,
@@ -534,8 +550,7 @@ const ot = {
 };
 
 function transform( a, b, isStrong ) {
-	let group;
-	let algorithm;
+	let group, algorithm;
 
 	if ( a instanceof InsertOperation ) {
 		group = ot.InsertOperation;
@@ -571,7 +586,7 @@ function transform( a, b, isStrong ) {
 		}
 	}
 
-	let transformed = algorithm( a, b, isStrong );
+	const transformed = algorithm( a, b, isStrong );
 
 	return updateBaseVersions( a.baseVersion, transformed );
 }

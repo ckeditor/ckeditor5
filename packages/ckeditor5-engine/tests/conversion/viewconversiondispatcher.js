@@ -196,8 +196,8 @@ describe( 'ViewConversionDispatcher', () => {
 	} );
 
 	describe( 'conversionApi', () => {
-		let spy, spyP, spyText, viewP, viewText, modelP, modelText, consumableMock, dispatcher;
-		let spyNull, spyArray, viewDiv, viewNull, viewArray;
+		let spy, spyP, spyText, viewP, viewText, modelP, modelText, consumableMock, dispatcher,
+			spyNull, spyArray, viewDiv, viewNull, viewArray;
 
 		beforeEach( () => {
 			spy = sinon.spy();
@@ -308,7 +308,8 @@ describe( 'ViewConversionDispatcher', () => {
 		} );
 
 		describe( 'convertChildren', () => {
-			it( 'should fire conversion for all children of passed element and return conversion results wrapped in document fragment', () => {
+			it( 'should fire conversion for all children of passed element and return conversion results ' +
+				'wrapped in document fragment', () => {
 				silenceWarnings();
 
 				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
