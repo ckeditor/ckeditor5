@@ -202,11 +202,11 @@ function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 
 	// Currently position in the scanning range. Because we need value after the position, it is not a current
 	// position of the iterator but the previous one (we need to iterate one more time to get the value after).
-	let position;
+	let position,
 	// Value before the currently position.
-	let attributeValueBefore; // eslint-disable-line one-var
+		attributeValueBefore,
 	// Value after the currently position.
-	let attributeValueAfter; // eslint-disable-line one-var
+		attributeValueAfter;
 
 	for ( const value of range ) {
 		attributeValueAfter = value.item.getAttribute( attributeKey );

@@ -550,8 +550,7 @@ const ot = {
 };
 
 function transform( a, b, isStrong ) {
-	let group;
-	let algorithm; // eslint-disable-line one-var
+	let group, algorithm;
 
 	if ( a instanceof InsertOperation ) {
 		group = ot.InsertOperation;

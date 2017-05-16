@@ -312,8 +312,7 @@ export default class Document {
 			return new Range( position );
 		}
 
-		let backwardWalker;
-		let forwardWalker; // eslint-disable-line one-var
+		let backwardWalker, forwardWalker;
 
 		if ( direction == 'both' || direction == 'backward' ) {
 			backwardWalker = new TreeWalker( { startPosition: position, direction: 'backward' } );

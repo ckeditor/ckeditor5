@@ -278,7 +278,9 @@ export function parse( data, schema, options = {} ) {
 	} );
 
 	// Retrieve DocumentFragment and Selection from parsed view.
-	let viewDocumentFragment, viewSelection;
+	let viewDocumentFragment, viewSelection,
+	// Convert view selection to model selection.
+		selection;
 
 	if ( parsedResult.view && parsedResult.selection ) {
 		viewDocumentFragment = parsedResult.view;
@@ -302,9 +304,6 @@ export function parse( data, schema, options = {} ) {
 	if ( model.is( 'documentFragment' ) && model.childCount == 1 ) {
 		model = model.getChild( 0 );
 	}
-
-	// Convert view selection to model selection.
-	let selection; // eslint-disable-line one-var
 
 	if ( viewSelection ) {
 		const ranges = [];
