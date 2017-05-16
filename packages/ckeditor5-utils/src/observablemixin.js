@@ -42,7 +42,7 @@ const ObservableMixin = {
 	set( name, value ) {
 		// If the first parameter is an Object, iterate over its properties.
 		if ( isObject( name ) ) {
-			Object.keys( name ).forEach( ( attr ) => {
+			Object.keys( name ).forEach( attr => {
 				this.set( attr, name[ attr ] );
 			}, this );
 
@@ -372,7 +372,6 @@ function initObservable( observable ) {
 // @private
 // @param {...[Observable|String|Function]} args Arguments of the `.to( args )` binding.
 function bindTo( ...args ) {
-	/* jshint validthis: true */
 	const parsedArgs = parseBindToArgs( ...args );
 	const bindingsKeys = Array.from( this._bindings.keys() );
 	const numberOfBindings = bindingsKeys.length;
@@ -384,7 +383,7 @@ function bindTo( ...args ) {
 		 *
 		 * @error observable-bind-no-callback
 		 */
-		throw new CKEditorError( 'observable-bind-to-no-callback: Binding multiple observables only possible with callback.' ) ;
+		throw new CKEditorError( 'observable-bind-to-no-callback: Binding multiple observables only possible with callback.' );
 	}
 
 	// Eliminate A.bind( 'x', 'y' ).to( B, callback )
@@ -394,7 +393,7 @@ function bindTo( ...args ) {
 		 *
 		 * @error observable-bind-to-extra-callback
 		 */
-		throw new CKEditorError( 'observable-bind-to-extra-callback: Cannot bind multiple attributes and use a callback in one binding.' ) ;
+		throw new CKEditorError( 'observable-bind-to-extra-callback: Cannot bind multiple attributes and use a callback in one binding.' );
 	}
 
 	parsedArgs.to.forEach( to => {

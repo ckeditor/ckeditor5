@@ -23,7 +23,7 @@ describe( 'getDataFromElement', () => {
 		divEl.parentElement.removeChild( divEl );
 	} );
 
-	[ 'textarea', 'template', 'div' ].forEach( ( elementName ) => {
+	[ 'textarea', 'template', 'div' ].forEach( elementName => {
 		it( 'should return the content of a ' + elementName, () => {
 			const data = getDataFromElement( document.getElementById( 'getData-' + elementName ) );
 			expect( data ).to.equal( '<b>foo</b>' );

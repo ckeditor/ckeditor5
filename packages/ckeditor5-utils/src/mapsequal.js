@@ -17,9 +17,9 @@ export default function mapsEqual( mapA, mapB ) {
 		return false;
 	}
 
-	for ( let attr of mapA.entries() ) {
-		let valA = JSON.stringify( attr[ 1 ] );
-		let valB = JSON.stringify( mapB.get( attr[ 0 ] ) );
+	for ( const attr of mapA.entries() ) {
+		const valA = JSON.stringify( attr[ 1 ] );
+		const valB = JSON.stringify( mapB.get( attr[ 0 ] ) );
 
 		if ( valA !== valB ) {
 			return false;

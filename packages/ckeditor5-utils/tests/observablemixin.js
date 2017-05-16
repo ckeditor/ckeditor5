@@ -89,10 +89,10 @@ describe( 'Observable', () => {
 		} );
 
 		it( 'should fire the "change" event', () => {
-			let spy = sinon.spy();
-			let spyColor = sinon.spy();
-			let spyYear = sinon.spy();
-			let spyWheels = sinon.spy();
+			const spy = sinon.spy();
+			const spyColor = sinon.spy();
+			const spyYear = sinon.spy();
+			const spyWheels = sinon.spy();
 
 			car.on( 'change', spy );
 			car.on( 'change:color', spyColor );
@@ -122,12 +122,15 @@ describe( 'Observable', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 'wheels', 4, sinon.match.typeOf( 'undefined' ) );
 			sinon.assert.calledWithExactly( spyColor, sinon.match.instanceOf( EventInfo ), 'color', 'blue', 'red' );
 			sinon.assert.calledWithExactly( spyYear, sinon.match.instanceOf( EventInfo ), 'year', 2003, 2015 );
-			sinon.assert.calledWithExactly( spyWheels, sinon.match.instanceOf( EventInfo ), 'wheels', 4, sinon.match.typeOf( 'undefined' ) );
+			sinon.assert.calledWithExactly(
+				spyWheels, sinon.match.instanceOf( EventInfo ),
+				'wheels', 4, sinon.match.typeOf( 'undefined' )
+			);
 		} );
 
 		it( 'should not fire the "change" event for the same attribute value', () => {
-			let spy = sinon.spy();
-			let spyColor = sinon.spy();
+			const spy = sinon.spy();
+			const spyColor = sinon.spy();
 
 			car.on( 'change', spy );
 			car.on( 'change:color', spyColor );
@@ -166,7 +169,7 @@ describe( 'Observable', () => {
 		} );
 
 		it( 'should allow setting attributes with undefined value', () => {
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 
 			car.on( 'change', spy );
 			car.set( 'seats', undefined );
@@ -572,7 +575,7 @@ describe( 'Observable', () => {
 				const car1 = new Car( { hue: 'reds' } );
 
 				vehicle.bind( 'color' )
-					.to( car1, 'hue', ( h ) => h.toUpperCase() );
+					.to( car1, 'hue', h => h.toUpperCase() );
 
 				assertBinding( vehicle,
 					{ color: car1.hue.toUpperCase(), year: undefined },

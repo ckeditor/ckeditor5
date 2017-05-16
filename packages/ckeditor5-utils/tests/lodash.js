@@ -10,17 +10,17 @@ describe( 'utils', () => {
 		// Properties of the subsequent objects should override properties of the preceding objects. This is critical for
 		// CKEditor so we keep this test to ensure that Lo-Dash (or whatever) implements it in the way we need it.
 		it( 'should extend by several params in the correct order', () => {
-			let target = {
+			const target = {
 				a: 0,
 				b: 0
 			};
 
-			let ext1 = {
+			const ext1 = {
 				b: 1,
 				c: 1
 			};
 
-			let ext2 = {
+			const ext2 = {
 				c: 2,
 				d: 2
 			};

@@ -138,7 +138,7 @@ export default class Config {
 		name = parts.pop();
 
 		// Iterate over parts to check if currently stored configuration has proper structure.
-		for ( let part of parts ) {
+		for ( const part of parts ) {
 			// If there is no object for specified part then create one.
 			if ( !isPlainObject( target[ part ] ) ) {
 				target[ part ] = {};
@@ -187,7 +187,7 @@ export default class Config {
 		name = parts.pop();
 
 		// Iterate over parts to check if currently stored configuration has proper structure.
-		for ( let part of parts ) {
+		for ( const part of parts ) {
 			if ( !isPlainObject( source[ part ] ) ) {
 				source = null;
 				break;

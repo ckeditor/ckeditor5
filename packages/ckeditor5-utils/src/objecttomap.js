@@ -19,7 +19,7 @@
 export default function objectToMap( obj ) {
 	const map = new Map();
 
-	for ( let key in obj ) {
+	for ( const key in obj ) {
 		map.set( key, obj[ key ] );
 	}
 

@@ -8,9 +8,9 @@ import uid from '../src/uid';
 describe( 'utils', () => {
 	describe( 'uid', () => {
 		it( 'should return different ids', () => {
-			let id1 = uid();
-			let id2 = uid();
-			let id3 = uid();
+			const id1 = uid();
+			const id2 = uid();
+			const id3 = uid();
 
 			expect( id1 ).to.be.a( 'string' );
 			expect( id2 ).to.be.a( 'string' ).to.not.equal( id1 ).to.not.equal( id3 );

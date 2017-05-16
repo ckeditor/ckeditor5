@@ -103,7 +103,7 @@ describe( 'Keyboard', () => {
 	} );
 
 	describe( 'getEnvKeystrokeText', () => {
-		let initialEnvMac = env.mac;
+		const initialEnvMac = env.mac;
 
 		afterEach( () => {
 			env.mac = initialEnvMac;

@@ -18,7 +18,7 @@
 export default function count( iterator ) {
 	let count = 0;
 
-	for ( let _ of iterator ) { // jshint ignore:line
+	for ( const _ of iterator ) { // eslint-disable-line no-unused-vars
 		count++;
 	}
 

@@ -14,7 +14,7 @@ const target = document.querySelector( '.target' );
 target.scrollIntoView();
 
 const positions = {
-	nw: ( targetRect ) => ( {
+	nw: targetRect => ( {
 		top: targetRect.top,
 		left: targetRect.left,
 		name: 'nw'
@@ -36,17 +36,17 @@ const positions = {
 	} )
 };
 
-for ( let box of boxes ) {
+for ( const box of boxes ) {
 	box.scrollTop = box.scrollHeight;
 	box.scrollLeft = box.scrollWidth;
 }
 
 // Wait for the scroll to stabilize.
 setTimeout( () => {
-	for ( let source of sources ) {
+	for ( const source of sources ) {
 		const position = getOptimalPosition( {
 			element: source,
-			target: target,
+			target,
 			positions: [
 				positions[ source.className.split( '-' )[ 1 ] ]
 			],

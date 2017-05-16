@@ -28,7 +28,7 @@ import isIterable from '../isiterable';
 export default function createElement( doc, name, attributes = {}, children = [] ) {
 	const element = doc.createElement( name );
 
-	for ( let key in attributes ) {
+	for ( const key in attributes ) {
 		element.setAttribute( key, attributes[ key ] );
 	}
 

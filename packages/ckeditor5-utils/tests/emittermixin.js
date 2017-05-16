@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import EmitterMixin from '../src/emittermixin';
-import { _getEmitterListenedTo, _getEmitterId, _setEmitterId } from '../src/emittermixin';
+import { default as EmitterMixin, _getEmitterListenedTo, _getEmitterId, _setEmitterId } from '../src/emittermixin';
 import EventInfo from '../src/eventinfo';
 
 describe( 'EmitterMixin', () => {
@@ -17,9 +16,9 @@ describe( 'EmitterMixin', () => {
 
 	describe( 'fire', () => {
 		it( 'should execute callbacks in the right order without priority', () => {
-			let spy1 = sinon.spy().named( 1 );
-			let spy2 = sinon.spy().named( 2 );
-			let spy3 = sinon.spy().named( 3 );
+			const spy1 = sinon.spy().named( 1 );
+			const spy2 = sinon.spy().named( 2 );
+			const spy3 = sinon.spy().named( 3 );
 
 			emitter.on( 'test', spy1 );
 			emitter.on( 'test', spy2 );
@@ -31,11 +30,11 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should execute callbacks in the right order with priority defined', () => {
-			let spy1 = sinon.spy().named( 1 );
-			let spy2 = sinon.spy().named( 2 );
-			let spy3 = sinon.spy().named( 3 );
-			let spy4 = sinon.spy().named( 4 );
-			let spy5 = sinon.spy().named( 5 );
+			const spy1 = sinon.spy().named( 1 );
+			const spy2 = sinon.spy().named( 2 );
+			const spy3 = sinon.spy().named( 3 );
+			const spy4 = sinon.spy().named( 4 );
+			const spy5 = sinon.spy().named( 5 );
 
 			emitter.on( 'test', spy2, { priority: 'high' } );
 			emitter.on( 'test', spy3 ); // Defaults to 'normal'.
@@ -49,8 +48,8 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should pass arguments to callbacks', () => {
-			let spy1 = sinon.spy();
-			let spy2 = sinon.spy();
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
 
 			emitter.on( 'test', spy1 );
 			emitter.on( 'test', spy2 );
@@ -62,12 +61,12 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should pass proper context to callbacks', () => {
-			let ctx1 = {};
-			let ctx2 = {};
+			const ctx1 = {};
+			const ctx2 = {};
 
-			let spy1 = sinon.spy();
-			let spy2 = sinon.spy();
-			let spy3 = sinon.spy();
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+			const spy3 = sinon.spy();
 
 			emitter.on( 'test', spy1, { context: ctx1 } );
 			emitter.on( 'test', spy2, { context: ctx2 } );
@@ -81,8 +80,8 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should fire the right event', () => {
-			let spy1 = sinon.spy();
-			let spy2 = sinon.spy();
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
 
 			emitter.on( '1', spy1 );
 			emitter.on( '2', spy2 );
@@ -94,7 +93,7 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should execute callbacks many times', () => {
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 
 			emitter.on( 'test', spy );
 
@@ -110,7 +109,7 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should accept the same callback many times', () => {
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 
 			emitter.on( 'test', spy );
 			emitter.on( 'test', spy );
@@ -122,7 +121,7 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should not fire callbacks for an event that were added while firing that event', () => {
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 
 			emitter.on( 'test', () => {
 				emitter.on( 'test', spy );
@@ -134,10 +133,10 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should correctly fire callbacks for namespaced events', () => {
-			let spyFoo = sinon.spy();
-			let spyBar = sinon.spy();
-			let spyAbc = sinon.spy();
-			let spyFoo2 = sinon.spy();
+			const spyFoo = sinon.spy();
+			const spyBar = sinon.spy();
+			const spyAbc = sinon.spy();
+			const spyFoo2 = sinon.spy();
 
 			// Mess up with callbacks order to check whether they are called in adding order.
 			emitter.on( 'foo', spyFoo );
@@ -177,9 +176,9 @@ describe( 'EmitterMixin', () => {
 
 	describe( 'on', () => {
 		it( 'should stop()', () => {
-			let spy1 = sinon.spy();
-			let spy2 = sinon.spy();
-			let spy3 = sinon.spy( ( event ) => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+			const spy3 = sinon.spy( event => {
 				event.stop();
 			} );
 
@@ -197,11 +196,11 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should take a callback off()', () => {
-			let spy1 = sinon.spy();
-			let spy2 = sinon.spy( ( event ) => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy( event => {
 				event.off();
 			} );
-			let spy3 = sinon.spy();
+			const spy3 = sinon.spy();
 
 			emitter.on( 'test', spy1 );
 			emitter.on( 'test', spy2 );
@@ -216,11 +215,11 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should take the callback off() even after stop()', () => {
-			let spy1 = sinon.spy( ( event ) => {
+			const spy1 = sinon.spy( event => {
 				event.stop();
 				event.off();
 			} );
-			let spy2 = sinon.spy();
+			const spy2 = sinon.spy();
 
 			emitter.on( 'test', spy1 );
 			emitter.on( 'test', spy2 );
@@ -235,9 +234,9 @@ describe( 'EmitterMixin', () => {
 
 	describe( 'once', () => {
 		it( 'should be called just once', () => {
-			let spy1 = sinon.spy();
-			let spy2 = sinon.spy();
-			let spy3 = sinon.spy();
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+			const spy3 = sinon.spy();
 
 			emitter.on( 'test', spy1 );
 			emitter.once( 'test', spy2 );
@@ -252,10 +251,10 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should have proper scope', () => {
-			let ctx = {};
+			const ctx = {};
 
-			let spy1 = sinon.spy();
-			let spy2 = sinon.spy();
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
 
 			emitter.once( 'test', spy1, { context: ctx } );
 			emitter.once( 'test', spy2 );
@@ -267,7 +266,7 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should have proper arguments', () => {
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 
 			emitter.once( 'test', spy );
 
@@ -279,9 +278,9 @@ describe( 'EmitterMixin', () => {
 
 	describe( 'off', () => {
 		it( 'should get callbacks off()', () => {
-			let spy1 = sinon.spy();
-			let spy2 = sinon.spy();
-			let spy3 = sinon.spy();
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+			const spy3 = sinon.spy();
 
 			emitter.on( 'test', spy1 );
 			emitter.on( 'test', spy2 );
@@ -304,8 +303,8 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should remove all entries for the same callback', () => {
-			let spy1 = sinon.spy().named( 1 );
-			let spy2 = sinon.spy().named( 2 );
+			const spy1 = sinon.spy().named( 1 );
+			const spy2 = sinon.spy().named( 2 );
 
 			emitter.on( 'test', spy1 );
 			emitter.on( 'test', spy2 );
@@ -323,10 +322,10 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should remove the callback for given context only', () => {
-			let spy = sinon.spy().named( 1 );
+			const spy = sinon.spy().named( 1 );
 
-			let ctx1 = { context: 1 };
-			let ctx2 = { context: 2 };
+			const ctx1 = { context: 1 };
+			const ctx2 = { context: 2 };
 
 			emitter.on( 'test', spy, { context: ctx1 } );
 			emitter.on( 'test', spy, { context: ctx2 } );
@@ -344,10 +343,10 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should properly remove callbacks for namespaced events', () => {
-			let spyFoo = sinon.spy();
-			let spyAbc = sinon.spy();
-			let spyBar = sinon.spy();
-			let spyFoo2 = sinon.spy();
+			const spyFoo = sinon.spy();
+			const spyAbc = sinon.spy();
+			const spyBar = sinon.spy();
+			const spyFoo2 = sinon.spy();
 
 			emitter.on( 'foo', spyFoo );
 			emitter.on( 'foo:bar:abc', spyAbc );
@@ -381,7 +380,7 @@ describe( 'EmitterMixin', () => {
 
 	describe( 'listenTo', () => {
 		it( 'should properly register callbacks', () => {
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 
 			listener.listenTo( emitter, 'test', spy );
 
@@ -391,8 +390,8 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should correctly listen to namespaced events', () => {
-			let spyFoo = sinon.spy();
-			let spyBar = sinon.spy();
+			const spyFoo = sinon.spy();
+			const spyBar = sinon.spy();
 
 			listener.listenTo( emitter, 'foo', spyFoo );
 			listener.listenTo( emitter, 'foo:bar', spyBar );
@@ -411,8 +410,8 @@ describe( 'EmitterMixin', () => {
 
 	describe( 'stopListening', () => {
 		it( 'should stop listening to given event callback', () => {
-			let spy1 = sinon.spy();
-			let spy2 = sinon.spy();
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
 
 			listener.listenTo( emitter, 'event1', spy1 );
 			listener.listenTo( emitter, 'event2', spy2 );
@@ -430,9 +429,9 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should stop listening to given event', () => {
-			let spy1a = sinon.spy();
-			let spy1b = sinon.spy();
-			let spy2 = sinon.spy();
+			const spy1a = sinon.spy();
+			const spy1b = sinon.spy();
+			const spy2 = sinon.spy();
 
 			listener.listenTo( emitter, 'event1', spy1a );
 			listener.listenTo( emitter, 'event1', spy1b );
@@ -452,8 +451,8 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should stop listening to all events from given emitter', () => {
-			let spy1 = sinon.spy();
-			let spy2 = sinon.spy();
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
 
 			listener.listenTo( emitter, 'event1', spy1 );
 			listener.listenTo( emitter, 'event2', spy2 );
@@ -471,11 +470,11 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should stop listening to everything', () => {
-			let spy1 = sinon.spy();
-			let spy2 = sinon.spy();
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
 
-			let emitter1 = getEmitterInstance();
-			let emitter2 = getEmitterInstance();
+			const emitter1 = getEmitterInstance();
+			const emitter2 = getEmitterInstance();
 
 			listener.listenTo( emitter1, 'event1', spy1 );
 			listener.listenTo( emitter2, 'event2', spy2 );
@@ -493,10 +492,10 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should not stop other emitters when a non-listened emitter is provided', () => {
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 
-			let emitter1 = getEmitterInstance();
-			let emitter2 = getEmitterInstance();
+			const emitter1 = getEmitterInstance();
+			const emitter2 = getEmitterInstance();
 
 			listener.listenTo( emitter1, 'test', spy );
 
@@ -508,8 +507,8 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should correctly stop listening to namespaced events', () => {
-			let spyFoo = sinon.spy();
-			let spyBar = sinon.spy();
+			const spyFoo = sinon.spy();
+			const spyBar = sinon.spy();
 
 			listener.listenTo( emitter, 'foo', spyFoo );
 			listener.listenTo( emitter, 'foo:bar', spyBar );
@@ -537,7 +536,7 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		describe( 'to', () => {
-			it( 'forwards an event to another emitter', ( done ) => {
+			it( 'forwards an event to another emitter', done => {
 				const emitterA = getEmitterInstance();
 				const emitterB = getEmitterInstance();
 				const dataA = {};
@@ -644,7 +643,7 @@ describe( 'EmitterMixin', () => {
 				sinon.assert.callCount( spyBaz, 1 );
 			} );
 
-			it( 'supports deep chain event delegation', ( done ) => {
+			it( 'supports deep chain event delegation', done => {
 				const emitterA = getEmitterInstance();
 				const emitterB = getEmitterInstance();
 				const emitterC = getEmitterInstance();
@@ -667,7 +666,7 @@ describe( 'EmitterMixin', () => {
 				emitterC.fire( 'foo', data );
 			} );
 
-			it( 'preserves path in event delegation', ( done ) => {
+			it( 'preserves path in event delegation', done => {
 				const data = {};
 				const emitterA = getEmitterInstance();
 				const emitterB = getEmitterInstance();
@@ -797,7 +796,7 @@ describe( 'EmitterMixin', () => {
 				sinon.assert.callOrder( spyAFooQux, spyABazQux, spyABarQux );
 			} );
 
-			it( 'preserves path in delegation under a different name', ( done ) => {
+			it( 'preserves path in delegation under a different name', done => {
 				const data = {};
 				const emitterA = getEmitterInstance();
 				const emitterB = getEmitterInstance();

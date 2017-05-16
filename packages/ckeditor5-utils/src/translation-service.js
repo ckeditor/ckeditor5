@@ -45,7 +45,7 @@ export function add( lang, translations ) {
  */
 export function translate( lang, translationKey ) {
 	if ( !hasTranslation( lang, translationKey ) ) {
-		return translationKey.replace( / \[context: [^\]]+\]$/, '' ) ;
+		return translationKey.replace( / \[context: [^\]]+\]$/, '' );
 	}
 
 	return dictionaries[ lang ][ translationKey ];
