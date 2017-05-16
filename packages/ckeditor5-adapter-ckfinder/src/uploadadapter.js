@@ -160,7 +160,7 @@ class Adapter {
 		// Upload progress when it's supported.
 		/* istanbul ignore else */
 		if ( xhr.upload ) {
-			xhr.upload.addEventListener( 'progress', ( evt ) => {
+			xhr.upload.addEventListener( 'progress', evt => {
 				if ( evt.lengthComputable ) {
 					loader.uploadTotal = evt.total;
 					loader.uploaded = evt.loaded;

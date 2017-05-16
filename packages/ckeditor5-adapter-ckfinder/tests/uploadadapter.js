@@ -99,24 +99,21 @@ describe( 'CKFinderUploadAdapter', () => {
 			} );
 
 			it( 'should throw an error on generic request error', () => {
-				let request;
-
 				const promise = adapter.upload()
 					.then( () => {
 						throw new Error( 'Promise should throw.' );
 					} )
-					.catch( ( msg ) => {
+					.catch( msg => {
 						expect( msg ).to.equal( 'Cannot upload file: image.jpeg.' );
 					} );
 
-				request = sinonXHR.requests[ 0 ];
+				const request = sinonXHR.requests[ 0 ];
 				request.error();
 
 				return promise;
 			} );
 
 			it( 'should throw an error on error from server', () => {
-				let request;
 				const responseError = {
 					error: {
 						message: 'Foo bar baz.'
@@ -127,18 +124,17 @@ describe( 'CKFinderUploadAdapter', () => {
 					.then( () => {
 						throw new Error( 'Promise should throw.' );
 					} )
-					.catch( ( msg ) => {
+					.catch( msg => {
 						expect( msg ).to.equal( 'Foo bar baz.' );
 					} );
 
-				request = sinonXHR.requests[ 0 ];
+				const request = sinonXHR.requests[ 0 ];
 				request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
 
 				return promise;
 			} );
 
 			it( 'should throw a generic error on error from server without message', () => {
-				let request;
 				const responseError = {
 					error: {}
 				};
@@ -147,11 +143,11 @@ describe( 'CKFinderUploadAdapter', () => {
 					.then( () => {
 						throw new Error( 'Promise should throw.' );
 					} )
-					.catch( ( msg ) => {
+					.catch( msg => {
 						expect( msg ).to.equal( 'Cannot upload file: image.jpeg.' );
 					} );
 
-				request = sinonXHR.requests[ 0 ];
+				const request = sinonXHR.requests[ 0 ];
 				request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
 
 				return promise;

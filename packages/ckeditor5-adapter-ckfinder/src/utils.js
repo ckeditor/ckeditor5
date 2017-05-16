@@ -41,7 +41,7 @@ export function getCookie( name ) {
 	name = name.toLowerCase();
 	const parts = document.cookie.split( ';' );
 
-	for ( let part of parts ) {
+	for ( const part of parts ) {
 		const pair = part.split( '=' );
 		const key = decodeURIComponent( pair[ 0 ].trim().toLowerCase() );
 
@@ -75,7 +75,7 @@ function generateToken( length ) {
 	window.crypto.getRandomValues( randValues );
 
 	for ( let j = 0; j < randValues.length; j++ ) {
-		let character = tokenCharset.charAt( randValues[ j ] % tokenCharset.length );
+		const character = tokenCharset.charAt( randValues[ j ] % tokenCharset.length );
 		result += Math.random() > 0.5 ? character.toUpperCase() : character;
 	}
 
