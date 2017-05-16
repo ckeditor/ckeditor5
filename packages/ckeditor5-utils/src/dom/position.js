@@ -76,6 +76,12 @@ import getPositionedAncestor from './getpositionedancestor';
  * @returns {module:utils/dom/position~Position}
  */
 export function getOptimalPosition( { element, target, positions, limiter, fitInViewport } ) {
+	// If the {@link module:utils/dom/position~Options#target} is a function, use what it returns.
+	// https://github.com/ckeditor/ckeditor5-utils/issues/157
+	if ( typeof target == 'function' ) {
+		target = target();
+	}
+
 	const positionedElementAncestor = getPositionedAncestor( element.parentElement );
 	const elementRect = new Rect( element );
 	const targetRect = new Rect( target );
@@ -255,7 +261,7 @@ function getAbsoluteRectCoordinates( { left, top } ) {
 /**
  * Target with respect to which the `element` is to be positioned.
  *
- * @member {HTMLElement|Range|ClientRect} #target
+ * @member {HTMLElement|Range|ClientRect|Function} #target
  */
 
 /**
