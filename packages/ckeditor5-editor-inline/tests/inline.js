@@ -61,11 +61,11 @@ describe( 'InlineEditor', () => {
 	describe( 'create()', () => {
 		beforeEach( function() {
 			return InlineEditor.create( editorElement, {
-					plugins: [ Paragraph, Bold ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-				} );
+				plugins: [ Paragraph, Bold ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+			} );
 		} );
 
 		afterEach( () => {
@@ -111,13 +111,13 @@ describe( 'InlineEditor', () => {
 			}
 
 			return InlineEditor.create( editorElement, {
-					plugins: [ EventWatcher ]
-				} )
-				.then( ( newEditor ) => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+				plugins: [ EventWatcher ]
+			} )
+			.then( newEditor => {
+				expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
 
-					editor = newEditor;
-				} );
+				editor = newEditor;
+			} );
 		} );
 
 		it( 'fires dataReady once data is loaded', () => {
@@ -132,13 +132,13 @@ describe( 'InlineEditor', () => {
 			}
 
 			return InlineEditor.create( editorElement, {
-					plugins: [ EventWatcher, Paragraph, Bold ]
-				} )
-				.then( ( newEditor ) => {
-					expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
+				plugins: [ EventWatcher, Paragraph, Bold ]
+			} )
+			.then( newEditor => {
+				expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
 
-					editor = newEditor;
-				} );
+				editor = newEditor;
+			} );
 		} );
 
 		it( 'fires uiReady once UI is ready', () => {
@@ -153,13 +153,13 @@ describe( 'InlineEditor', () => {
 			}
 
 			return InlineEditor.create( editorElement, {
-					plugins: [ EventWatcher ]
-				} )
-				.then( ( newEditor ) => {
-					expect( isReady ).to.be.true;
+				plugins: [ EventWatcher ]
+			} )
+			.then( newEditor => {
+				expect( isReady ).to.be.true;
 
-					editor = newEditor;
-				} );
+				editor = newEditor;
+			} );
 		} );
 	} );
 

@@ -13,6 +13,28 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
+// A set of positioning functions used by the
+// {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#panel}.
+//
+// @private
+// @type {module:utils/dom/position~Options#positions}
+const panelPositions = [
+	( editableRect, panelRect ) => {
+		return {
+			top: getPanelPositionTop( editableRect, panelRect ),
+			left: editableRect.left,
+			name: 'toolbar_west'
+		};
+	},
+	( editableRect, panelRect ) => {
+		return {
+			top: getPanelPositionTop( editableRect, panelRect ),
+			left: editableRect.left + editableRect.width - panelRect.width,
+			name: 'toolbar_east'
+		};
+	}
+];
+
 /**
  * Inline editor UI view. Uses inline editable and floating toolbar.
  *
@@ -133,28 +155,6 @@ export default class InlineEditorUIView extends EditorUIView {
 		return panelPositions;
 	}
 }
-
-// A set of positioning functions used by the
-// {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#panel}.
-//
-// @private
-// @type {module:utils/dom/position~Options#positions}
-const panelPositions = [
-	( editableRect, panelRect ) => {
-		return {
-			top: getPanelPositionTop( editableRect, panelRect ),
-			left: editableRect.left,
-			name: 'toolbar_west'
-		};
-	},
-	( editableRect, panelRect ) => {
-		return {
-			top: getPanelPositionTop( editableRect, panelRect ),
-			left: editableRect.left + editableRect.width - panelRect.width,
-			name: 'toolbar_east'
-		};
-	}
-];
 
 // Determines panel top position for
 // {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#panelPositions}

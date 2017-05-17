@@ -29,7 +29,7 @@ function initEditors() {
 			window.editors[ selector ] = editor;
 			window.editables.push( editor.editing.view.getRoot() );
 
-			let observer = testUtils.createObserver();
+			const observer = testUtils.createObserver();
 
 			observer.observe(
 				`${ selector }.ui.focusTracker`,
@@ -46,13 +46,13 @@ function initEditors() {
 }
 
 function destroyEditors() {
-	for ( let selector in window.editors ) {
+	for ( const selector in window.editors ) {
 		window.editors[ selector ].destroy().then( () => {
 			console.log( `${ selector } was destroyed.` );
 		} );
 	}
 
-	for ( let observer of window._observers ) {
+	for ( const observer of window._observers ) {
 		observer.stopListening();
 	}
 
