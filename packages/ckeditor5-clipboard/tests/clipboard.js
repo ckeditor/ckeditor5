@@ -27,13 +27,13 @@ describe( 'Clipboard feature', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-				plugins: [ Clipboard, Paragraph ]
-			} )
-			.then( ( newEditor ) => {
-				editor = newEditor;
-				editingView = editor.editing.view;
-				clipboardPlugin = editor.plugins.get( 'clipboard/clipboard' );
-			} );
+			plugins: [ Clipboard, Paragraph ]
+		} )
+		.then( newEditor => {
+			editor = newEditor;
+			editingView = editor.editing.view;
+			clipboardPlugin = editor.plugins.get( 'clipboard/clipboard' );
+		} );
 	} );
 
 	describe( 'constructor()', () => {
@@ -44,7 +44,7 @@ describe( 'Clipboard feature', () => {
 
 	describe( 'clipboard paste pipeline', () => {
 		describe( 'takes HTML data from the dataTransfer', () => {
-			it( 'and fires the clipboardInput event on the editingView', ( done ) => {
+			it( 'and fires the clipboardInput event on the editingView', done => {
 				const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
 				const preventDefaultSpy = sinon.spy();
 
@@ -61,7 +61,7 @@ describe( 'Clipboard feature', () => {
 				} );
 			} );
 
-			it( 'and fires the inputTransformation event on the clipboardPlugin', ( done ) => {
+			it( 'and fires the inputTransformation event on the clipboardPlugin', done => {
 				const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
 				const preventDefaultSpy = sinon.spy();
 
@@ -80,7 +80,7 @@ describe( 'Clipboard feature', () => {
 		} );
 
 		describe( 'takes plain text data from the dataTransfer if there is no HTML', () => {
-			it( 'and fires the clipboardInput event on the editingView', ( done ) => {
+			it( 'and fires the clipboardInput event on the editingView', done => {
 				const dataTransferMock = createDataTransfer( { 'text/plain': 'x\n\ny  z' } );
 				const preventDefaultSpy = sinon.spy();
 
@@ -97,7 +97,7 @@ describe( 'Clipboard feature', () => {
 				} );
 			} );
 
-			it( 'and fires the inputTransformation event on the clipboardPlugin', ( done ) => {
+			it( 'and fires the inputTransformation event on the clipboardPlugin', done => {
 				const dataTransferMock = createDataTransfer( { 'text/plain': 'x\n\ny  z' } );
 				const preventDefaultSpy = sinon.spy();
 
@@ -115,7 +115,7 @@ describe( 'Clipboard feature', () => {
 			} );
 		} );
 
-		it( 'fires events with empty data if there is no HTML nor plain text', ( done ) => {
+		it( 'fires events with empty data if there is no HTML nor plain text', done => {
 			const dataTransferMock = createDataTransfer( {} );
 			const preventDefaultSpy = sinon.spy();
 			const editorViewCalled = sinon.spy();
@@ -147,7 +147,7 @@ describe( 'Clipboard feature', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': 'x' } );
 			const spy = sinon.spy();
 
-			editingView.on( 'paste', ( evt ) => {
+			editingView.on( 'paste', evt => {
 				evt.stop();
 			} );
 
@@ -205,7 +205,7 @@ describe( 'Clipboard feature', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': 'x' } );
 			const spy = sinon.stub( editor.data, 'insertContent' );
 
-			editingView.on( 'clipboardInput', ( evt ) => {
+			editingView.on( 'clipboardInput', evt => {
 				evt.stop();
 			} );
 
@@ -227,7 +227,7 @@ describe( 'Clipboard feature', () => {
 	} );
 
 	describe( 'clipboard copy/cut pipeline', () => {
-		it( 'fires clipboardOutput for copy with the selected content and correct method', ( done ) => {
+		it( 'fires clipboardOutput for copy with the selected content and correct method', done => {
 			const dataTransferMock = createDataTransfer();
 			const preventDefaultSpy = sinon.spy();
 
@@ -251,7 +251,7 @@ describe( 'Clipboard feature', () => {
 			} );
 		} );
 
-		it( 'fires clipboardOutput for cut with the selected content and correct method', ( done ) => {
+		it( 'fires clipboardOutput for cut with the selected content and correct method', done => {
 			const dataTransferMock = createDataTransfer();
 			const preventDefaultSpy = sinon.spy();
 
@@ -273,7 +273,7 @@ describe( 'Clipboard feature', () => {
 			const dataTransferMock = createDataTransfer();
 			const spy = sinon.spy();
 
-			editingView.on( 'copy', ( evt ) => {
+			editingView.on( 'copy', evt => {
 				evt.stop();
 			} );
 
@@ -413,7 +413,7 @@ describe( 'Clipboard feature', () => {
 		it( 'uses low priority observer for the clipboardOutput event', () => {
 			const dataTransferMock = createDataTransfer();
 
-			editingView.on( 'clipboardOutput', ( evt ) => {
+			editingView.on( 'clipboardOutput', evt => {
 				evt.stop();
 			} );
 

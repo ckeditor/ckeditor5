@@ -7,6 +7,11 @@
  * @module clipboard/utils/viewtoplaintext
  */
 
+// Elements which should not have empty-line padding.
+// Most `view.ContainerElement` want to be separate by new-line, but some are creating one structure
+// together (like `<li>`) so it is better to separate them by only one "\n".
+const smallPaddingElements = [ 'figcaption', 'li' ];
+
 /**
  * Deeply converts {@link module:engine/model/view/item view item} to plain text.
  *
@@ -27,7 +32,7 @@ export default function viewToPlainText( viewItem ) {
 		// They don't have their own text value, so convert their children.
 		let prev = null;
 
-		for ( let child of viewItem.getChildren() ) {
+		for ( const child of viewItem.getChildren() ) {
 			const childText = viewToPlainText( child );
 
 			// Separate container element children with one or more new-line characters.
@@ -46,8 +51,3 @@ export default function viewToPlainText( viewItem ) {
 
 	return text;
 }
-
-// Elements which should not have empty-line padding.
-// Most `view.ContainerElement` want to be separate by new-line, but some are creating one structure
-// together (like `<li>`) so it is better to separate them by only one "\n".
-const smallPaddingElements = [ 'figcaption', 'li' ];
