@@ -58,6 +58,20 @@ describe( 'getOptimalPosition()', () => {
 		} );
 	} );
 
+	it( 'should work when the target is a Function', () => {
+		setElementTargetPlayground();
+
+		assertPosition( {
+			element,
+			target: () => target,
+			positions: [ attachLeft ]
+		}, {
+			top: 100,
+			left: 80,
+			name: 'left'
+		} );
+	} );
+
 	describe( 'for single position', () => {
 		beforeEach( setElementTargetPlayground );
 
