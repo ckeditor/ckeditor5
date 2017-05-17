@@ -44,7 +44,7 @@ describe( 'utils', () => {
 			expect( iterator.next().value ).to.equal( 22 );
 		} );
 
-		function *getGenerator() {
+		function* getGenerator() {
 			yield 11;
 			yield 22;
 			yield 33;
