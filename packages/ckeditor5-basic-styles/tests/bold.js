@@ -65,13 +65,13 @@ describe( 'Bold', () => {
 
 		expect( boldView.isOn ).to.be.false;
 
-		expect( boldView.isEnabled ).to.be.true;
+		expect( boldView.isEnabled ).to.be.false;
 
 		command.value = true;
 		expect( boldView.isOn ).to.be.true;
 
-		command.isEnabled = false;
-		expect( boldView.isEnabled ).to.be.false;
+		command.isEnabled = true;
+		expect( boldView.isEnabled ).to.be.true;
 	} );
 
 	it( 'should set keystroke in the model', () => {
