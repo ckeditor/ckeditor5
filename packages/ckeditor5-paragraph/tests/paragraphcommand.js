@@ -13,7 +13,7 @@ describe( 'ParagraphCommand', () => {
 	let editor, document, command, root, schema;
 
 	beforeEach( () => {
-		return ModelTestEditor.create().then( ( newEditor ) => {
+		return ModelTestEditor.create().then( newEditor => {
 			editor = newEditor;
 			document = editor.document;
 			schema = document.schema;
@@ -133,7 +133,9 @@ describe( 'ParagraphCommand', () => {
 				selection.addRange( Range.createFromParentsAndOffsets( secondTolastHeading, 0, lastHeading, 0 ) );
 
 				command._doExecute( { selection } );
-				expect( getData( document ) ).to.equal( '<heading1>foo[]bar</heading1><paragraph>baz</paragraph><paragraph>qux</paragraph>' );
+				expect( getData( document ) ).to.equal(
+					'<heading1>foo[]bar</heading1><paragraph>baz</paragraph><paragraph>qux</paragraph>'
+				);
 			} );
 		} );
 

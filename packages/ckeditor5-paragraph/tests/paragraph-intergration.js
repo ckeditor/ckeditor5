@@ -17,9 +17,7 @@ import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/vie
 describe( 'Paragraph feature – integration', () => {
 	describe( 'with clipboard', () => {
 		it( 'pastes h1+h2+p as p+p+p when heading feature is not present', () => {
-			return VirtualTestEditor.create( {
-					plugins: [ Paragraph, Clipboard ]
-				} )
+			return VirtualTestEditor.create( { plugins: [ Paragraph, Clipboard ] } )
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
@@ -31,15 +29,15 @@ describe( 'Paragraph feature – integration', () => {
 						content: parseView( '<h1>foo</h1><h2>bar</h2><p>bom</p>' )
 					} );
 
-					expect( getModelData( doc ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph><paragraph>bom[]</paragraph>' );
+					expect( getModelData( doc ) ).to.equal(
+						'<paragraph>foo</paragraph><paragraph>bar</paragraph><paragraph>bom[]</paragraph>'
+					);
 				} );
 		} );
 
 		// Explainer: the heading feature is configured to handle h2-h4 elements, so h1 has no handler.
 		it( 'pastes h1+h2+p as p+h2+p when heading feature is present', () => {
-			return VirtualTestEditor.create( {
-					plugins: [ Paragraph, Clipboard, HeadingEngine ]
-				} )
+			return VirtualTestEditor.create( { plugins: [ Paragraph, Clipboard, HeadingEngine ] } )
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
@@ -51,14 +49,14 @@ describe( 'Paragraph feature – integration', () => {
 						content: parseView( '<h1>foo</h1><h2>bar</h2><p>bom</p>' )
 					} );
 
-					expect( getModelData( doc ) ).to.equal( '<paragraph>foo</paragraph><heading1>bar</heading1><paragraph>bom[]</paragraph>' );
+					expect( getModelData( doc ) ).to.equal(
+						'<paragraph>foo</paragraph><heading1>bar</heading1><paragraph>bom[]</paragraph>'
+					);
 				} );
 		} );
 
 		it( 'pastes ul>li+li as p+p when list feature is not present', () => {
-			return VirtualTestEditor.create( {
-					plugins: [ Paragraph, Clipboard ]
-				} )
+			return VirtualTestEditor.create( { plugins: [ Paragraph, Clipboard ] } )
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
@@ -77,9 +75,7 @@ describe( 'Paragraph feature – integration', () => {
 		// Check whether the paragraph feature doesn't breaking pasting such content by trying to
 		// handle the li element.
 		it( 'pastes ul>li>h2+h3+p as h2+h3+p when heading feature is present', () => {
-			return VirtualTestEditor.create( {
-					plugins: [ Paragraph, Clipboard, HeadingEngine ]
-				} )
+			return VirtualTestEditor.create( { plugins: [ Paragraph, Clipboard, HeadingEngine ] } )
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
@@ -101,9 +97,7 @@ describe( 'Paragraph feature – integration', () => {
 
 		// See 'should convert ul>li>ul>li+li (in clipboard holder)' in clipboard.js.
 		it( 'pastes ul>li>ul>li+li', () => {
-			return VirtualTestEditor.create( {
-					plugins: [ Paragraph, Clipboard ]
-				} )
+			return VirtualTestEditor.create( { plugins: [ Paragraph, Clipboard ] } )
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
@@ -125,9 +119,7 @@ describe( 'Paragraph feature – integration', () => {
 
 		// See 'should convert ul>li>p,text (in clipboard holder)' in clipboard.js.
 		it( 'pastes ul>li>p,text', () => {
-			return VirtualTestEditor.create( {
-					plugins: [ Paragraph, Clipboard ]
-				} )
+			return VirtualTestEditor.create( { plugins: [ Paragraph, Clipboard ] } )
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
@@ -149,9 +141,7 @@ describe( 'Paragraph feature – integration', () => {
 
 	describe( 'with undo', () => {
 		it( 'fixing empty roots should be transparent to undo', () => {
-			return VirtualTestEditor.create( {
-					plugins: [ Paragraph, UndoEngine ]
-				} )
+			return VirtualTestEditor.create( { plugins: [ Paragraph, UndoEngine ] } )
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
@@ -183,9 +173,7 @@ describe( 'Paragraph feature – integration', () => {
 		} );
 
 		it( 'fixing empty roots should be transparent to undo - multiple roots', () => {
-			return VirtualTestEditor.create( {
-					plugins: [ Paragraph, UndoEngine ]
-				} )
+			return VirtualTestEditor.create( { plugins: [ Paragraph, UndoEngine ] } )
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;

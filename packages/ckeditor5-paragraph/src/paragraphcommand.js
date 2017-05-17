@@ -60,7 +60,7 @@ export default class ParagraphCommand extends Command {
 			const batch = options.batch || document.batch();
 			const blocks = ( options.selection || document.selection ).getSelectedBlocks();
 
-			for ( let block of blocks ) {
+			for ( const block of blocks ) {
 				if ( !block.is( 'paragraph' ) ) {
 					batch.rename( block, 'paragraph' );
 				}

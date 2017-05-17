@@ -238,7 +238,7 @@ function isParagraphable( node, context, schema, insideParagraphLikeElement ) {
 
 	// Node is paragraphable if it is inside paragraph like element, or...
 	// It is not allowed at this context...
-	if ( !insideParagraphLikeElement && schema.check( { name: name, inside: context } ) ) {
+	if ( !insideParagraphLikeElement && schema.check( { name, inside: context } ) ) {
 		return false;
 	}
 
@@ -248,7 +248,7 @@ function isParagraphable( node, context, schema, insideParagraphLikeElement ) {
 	}
 
 	// And a node would be allowed in this paragraph...
-	if ( !schema.check( { name: name, inside: context.concat( 'paragraph' ) } ) ) {
+	if ( !schema.check( { name, inside: context.concat( 'paragraph' ) } ) ) {
 		return false;
 	}
 
@@ -259,7 +259,7 @@ function isParagraphable( node, context, schema, insideParagraphLikeElement ) {
 const rootsToFix = new Map();
 
 function findEmptyRoots( doc, batch ) {
-	for ( let rootName of doc.getRootNames() ) {
+	for ( const rootName of doc.getRootNames() ) {
 		const root = doc.getRoot( rootName );
 
 		if ( root.isEmpty ) {
@@ -274,7 +274,7 @@ function findEmptyRoots( doc, batch ) {
 
 // Fixes all empty roots.
 function autoparagraphEmptyRoots() {
-	for ( let [ root, batch ] of rootsToFix ) {
+	for ( const [ root, batch ] of rootsToFix ) {
 		// Only empty roots are in `rootsToFix`. Even if root got content during `changesDone` event (because of, for example
 		// other feature), this will fire `findEmptyRoots` and remove that root from `rootsToFix`. So we are guaranteed
 		// to have only empty roots here.
