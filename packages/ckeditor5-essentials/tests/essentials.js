@@ -20,9 +20,7 @@ describe( 'Essentials preset', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-				plugins: [ EssentialsPreset ]
-			} )
+		return ClassicTestEditor.create( editorElement, { plugins: [ EssentialsPreset ] } )
 			.then( newEditor => {
 				editor = newEditor;
 			} );

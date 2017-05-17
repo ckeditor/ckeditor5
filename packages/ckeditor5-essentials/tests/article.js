@@ -29,9 +29,7 @@ describe( 'Article preset', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-				plugins: [ ArticlePreset ]
-			} )
+		return ClassicTestEditor.create( editorElement, { plugins: [ ArticlePreset ] } )
 			.then( newEditor => {
 				editor = newEditor;
 			} );

@@ -13,7 +13,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ ArticlePreset ],
 	toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 	image: {
-		toolbar: [ 'imageStyleFull', 'imageStyleSide', '|' , 'imageTextAlternative' ]
+		toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
 	}
 } )
 .then( editor => {
