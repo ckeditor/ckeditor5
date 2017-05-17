@@ -68,7 +68,7 @@ describe( 'ImageStyleEngine', () => {
 	} );
 
 	it( 'should not convert from view to model when not in image figure', () => {
-		editor.setData( '<figure class="side-class"></figure>'  );
+		editor.setData( '<figure class="side-class"></figure>' );
 
 		expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '' );
 	} );

@@ -57,7 +57,7 @@ export default class ImageEngine extends Plugin {
 		// Build converter for view img element to model image element.
 		buildViewConverter().for( data.viewToModel )
 			.from( { name: 'img', attribute: { src: /./ } } )
-			.toElement( ( viewImage ) => new ModelElement( 'image', { src: viewImage.getAttribute( 'src' ) } ) );
+			.toElement( viewImage => new ModelElement( 'image', { src: viewImage.getAttribute( 'src' ) } ) );
 
 		data.viewToModel.on( 'element:img', convertHoistableImage, { priority: 'low' } );
 		data.viewToModel.on( 'element', hoistImageThroughElement, { priority: 'low' } );
@@ -68,7 +68,7 @@ export default class ImageEngine extends Plugin {
 		buildViewConverter().for( data.viewToModel )
 			.from( { name: 'img', attribute: { alt: /./ } } )
 			.consuming( { attribute: [ 'alt' ] } )
-			.toAttribute( ( viewImage ) => ( { key: 'alt', value: viewImage.getAttribute( 'alt' ) } ) );
+			.toAttribute( viewImage => ( { key: 'alt', value: viewImage.getAttribute( 'alt' ) } ) );
 
 		// Converter for figure element from view to model.
 		data.viewToModel.on( 'element:figure', viewFigureToModel() );

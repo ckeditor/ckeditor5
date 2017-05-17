@@ -178,8 +178,15 @@ describe( 'ImageEngine', () => {
 				beforeEach( () => {
 					document.schema.registerItem( 'div', '$block' );
 
-					buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
-					buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+					buildModelConverter()
+						.for( editor.data.modelToView, editor.editing.modelToView )
+						.fromElement( 'div' )
+						.toElement( 'div' );
+
+					buildViewConverter()
+						.for( editor.data.viewToModel )
+						.fromElement( 'div' )
+						.toElement( 'div' );
 				} );
 
 				it( 'image between non-hoisted elements', () => {
@@ -284,8 +291,9 @@ describe( 'ImageEngine', () => {
 			it( 'should convert', () => {
 				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) )
-					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>' );
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<figure class="image ck-widget" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>'
+				);
 			} );
 
 			it( 'converted element should be widgetized', () => {
@@ -306,8 +314,9 @@ describe( 'ImageEngine', () => {
 					batch.setAttribute( image, 'alt', 'new text' );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) )
-					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img alt="new text" src="foo.png"></img></figure>' );
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<figure class="image ck-widget" contenteditable="false"><img alt="new text" src="foo.png"></img></figure>'
+				);
 			} );
 
 			it( 'should convert attribute removal', () => {
@@ -338,8 +347,9 @@ describe( 'ImageEngine', () => {
 					batch.removeAttribute( image, 'alt' );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) )
-					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>' );
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<figure class="image ck-widget" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>'
+				);
 			} );
 		} );
 	} );

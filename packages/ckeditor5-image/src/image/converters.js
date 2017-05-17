@@ -71,7 +71,7 @@ export function viewFigureToModel() {
  * @param {String} attributeName
  */
 export function createImageAttributeConverter( dispatchers, attributeName ) {
-	for ( let dispatcher of dispatchers ) {
+	for ( const dispatcher of dispatchers ) {
 		dispatcher.on( `addAttribute:${ attributeName }:image`, modelToViewAttributeConverter );
 		dispatcher.on( `changeAttribute:${ attributeName }:image`, modelToViewAttributeConverter );
 		dispatcher.on( `removeAttribute:${ attributeName }:image`, modelToViewAttributeConverter );

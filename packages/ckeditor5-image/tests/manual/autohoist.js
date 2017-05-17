@@ -25,7 +25,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	],
 	toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ],
 	image: {
-		toolbar: [ 'imageStyleFull', 'imageStyleSide', '|' , 'imageTextAlternative' ]
+		toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
 	}
 } )
 .then( editor => {

@@ -177,7 +177,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should not change attribute if change is already consumed', () => {
-			editor.editing.modelToView.on( `changeAttribute:alt:image`, ( evt, data, consumable ) => {
+			editor.editing.modelToView.on( 'changeAttribute:alt:image', ( evt, data, consumable ) => {
 				consumable.consume( data.item, 'changeAttribute:alt' );
 			}, { priority: 'high' } );
 

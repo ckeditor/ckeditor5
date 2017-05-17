@@ -68,7 +68,7 @@ export default class ImageStyleEngine extends Plugin {
 		data.viewToModel.on( 'element:figure', viewToModelStyleAttribute( styles ), { priority: 'low' } );
 
 		// Register separate command for each style.
-		for ( let style of styles ) {
+		for ( const style of styles ) {
 			editor.commands.set( style.name, new ImageStyleCommand( editor, style ) );
 		}
 	}

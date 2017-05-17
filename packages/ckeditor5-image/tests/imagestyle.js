@@ -11,7 +11,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'ImageStyle', () => {
 	let editor;
-	const styles =  [
+	const styles = [
 		{ name: 'style 1', title: 'Style 1 title', icon: 'style1-icon', value: null },
 		{ name: 'style 2', title: 'Style 2 title', icon: 'style2-icon', value: 'style2', cssClass: 'style2-class' },
 		{ name: 'style 3', title: 'Style 3 title', icon: 'style3-icon', value: 'style3', cssClass: 'style3-class' }
@@ -47,9 +47,9 @@ describe( 'ImageStyle', () => {
 	it( 'should register buttons for each style', () => {
 		const spy = sinon.spy( editor, 'execute' );
 
-		for ( let style of styles ) {
+		for ( const style of styles ) {
 			const command = editor.commands.get( style.name );
-			const buttonView =  editor.ui.componentFactory.create( style.name );
+			const buttonView = editor.ui.componentFactory.create( style.name );
 
 			expect( buttonView ).to.be.instanceOf( ButtonView );
 			expect( buttonView.label ).to.equal( style.title );
@@ -79,7 +79,7 @@ describe( 'ImageStyle', () => {
 			}
 		} )
 		.then( newEditor => {
-			expect( newEditor.config.get( 'image.toolbar' ) ).to.eql( [ 'foo',  'bar' ] );
+			expect( newEditor.config.get( 'image.toolbar' ) ).to.eql( [ 'foo', 'bar' ] );
 			newEditor.destroy();
 		} );
 	} );

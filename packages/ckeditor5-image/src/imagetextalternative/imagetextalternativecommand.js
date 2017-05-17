@@ -21,6 +21,7 @@ export default class ImageTextAlternativeCommand extends Command {
 	 */
 	constructor( editor ) {
 		super( editor );
+
 		/**
 		 * The current command value - `false` if there is no `alt` attribute, otherwise contains string with `alt`
 		 * attribute value.

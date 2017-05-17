@@ -13,20 +13,17 @@ import ImageEngine from '../../../src/image/imageengine';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageBalloonPanel', () => {
-	let editor, panel, document, editingView;
+	let editor, panel, document;
 
 	beforeEach( () => {
 		const editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
 
-		return ClassicEditor.create( editorElement, {
-			plugins: [ ImageEngine ]
-		} )
+		return ClassicEditor.create( editorElement, { plugins: [ ImageEngine ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				panel = new ImageBalloonPanel( editor );
 				document = editor.document;
-				editingView = editor.editing.view;
 
 				return editor.ui.view.body.add( panel );
 			} );
@@ -38,7 +35,7 @@ describe( 'ImageBalloonPanel', () => {
 
 	it( 'init method should return a promise', () => {
 		const panel = new ImageBalloonPanel( editor );
-		const promise  = panel.init();
+		const promise = panel.init();
 
 		expect( promise ).to.be.instanceof( Promise );
 

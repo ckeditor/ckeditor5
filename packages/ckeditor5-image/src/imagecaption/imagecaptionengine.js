@@ -112,7 +112,7 @@ export default class ImageCaptionEngine extends Plugin {
 		if ( selectedElement && isImageWidget( selectedElement ) ) {
 			const modelImage = mapper.toModelElement( selectedElement );
 			const modelCaption = getCaptionFromImage( modelImage );
-			viewCaption =  mapper.toViewElement( modelCaption );
+			viewCaption = mapper.toViewElement( modelCaption );
 		}
 
 		// If selection is placed inside caption.
@@ -165,7 +165,7 @@ function insertMissingModelCaptionElement( evt, changeType, data, batch ) {
 		ignoreElementEnd: true
 	} );
 
-	for ( let value of walker ) {
+	for ( const value of walker ) {
 		const item = value.item;
 
 		if ( value.type == 'elementStart' && isImage( item ) && !getCaptionFromImage( item ) ) {

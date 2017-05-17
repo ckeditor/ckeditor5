@@ -73,7 +73,7 @@ export default class ImageTextAlternative extends Plugin {
 		const command = editor.commands.get( 'imageTextAlternative' );
 		const t = editor.t;
 
-		editor.ui.componentFactory.add( 'imageTextAlternative', ( locale ) => {
+		editor.ui.componentFactory.add( 'imageTextAlternative', locale => {
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -142,7 +142,7 @@ export default class ImageTextAlternative extends Plugin {
 		return Promise.all( [
 			panel.content.add( form ),
 			editor.ui.view.body.add( panel )
-		] ).then( () => panel ) ;
+		] ).then( () => panel );
 	}
 
 	/**

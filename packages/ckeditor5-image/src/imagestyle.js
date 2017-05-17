@@ -39,7 +39,7 @@ export default class ImageStyle extends Plugin {
 	init() {
 		const styles = this.editor.config.get( 'image.styles' );
 
-		for ( let style of styles ) {
+		for ( const style of styles ) {
 			this._createButton( style );
 		}
 	}
@@ -54,7 +54,7 @@ export default class ImageStyle extends Plugin {
 		const editor = this.editor;
 		const command = editor.commands.get( style.name );
 
-		editor.ui.componentFactory.add( style.name, ( locale ) => {
+		editor.ui.componentFactory.add( style.name, locale => {
 			const view = new ButtonView( locale );
 
 			view.set( {

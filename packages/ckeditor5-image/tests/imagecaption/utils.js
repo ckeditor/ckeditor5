@@ -41,7 +41,7 @@ describe( 'image captioning utils', () => {
 		} );
 
 		it( 'should return false for other elements', () => {
-			const editable = new ViewEditableElement( 'figcaption', { contenteditable: true } ) ;
+			const editable = new ViewEditableElement( 'figcaption', { contenteditable: true } );
 			editable.document = document;
 
 			expect( isCaption( editable ) ).to.be.false;
@@ -79,21 +79,21 @@ describe( 'image captioning utils', () => {
 
 		it( 'should return null if figcaption\'s parent is not a figure', () => {
 			const element = new ViewElement( 'figcaption' );
-			new ViewElement( 'div', null, element );
+			new ViewElement( 'div', null, element ); // eslint-disable-line no-new
 
 			expect( matchImageCaption( element ) ).to.be.null;
 		} );
 
 		it( 'should return null if parent has no image class', () => {
 			const element = new ViewElement( 'figcaption' );
-			new ViewElement( 'figure', null, element );
+			new ViewElement( 'figure', null, element ); // eslint-disable-line no-new
 
 			expect( matchImageCaption( element ) ).to.be.null;
 		} );
 
 		it( 'should return object if element is a valid caption', () => {
 			const element = new ViewElement( 'figcaption' );
-			new ViewElement( 'figure', { class: 'image' }, element );
+			new ViewElement( 'figure', { class: 'image' }, element ); // eslint-disable-line no-new
 
 			expect( matchImageCaption( element ) ).to.deep.equal( { name: true } );
 		} );

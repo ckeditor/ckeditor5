@@ -22,9 +22,7 @@ describe( 'ImageCaptionEngine', () => {
 	let editor, document, viewDocument;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ ImageCaptionEngine, ImageEngine, UndoEngine ]
-		} )
+		return VirtualTestEditor.create( { plugins: [ ImageCaptionEngine, ImageEngine, UndoEngine ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				document = editor.document;
@@ -34,8 +32,15 @@ describe( 'ImageCaptionEngine', () => {
 				document.schema.allow( { name: 'caption', inside: 'widget' } );
 				document.schema.allow( { name: '$inline', inside: 'widget' } );
 
-				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'widget' ).toElement( 'widget' );
-				buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView ).fromElement( 'widget' ).toElement( 'widget' );
+				buildViewConverter()
+					.for( editor.data.viewToModel )
+					.fromElement( 'widget' )
+					.toElement( 'widget' );
+
+				buildModelConverter()
+					.for( editor.data.modelToView, editor.editing.modelToView )
+					.fromElement( 'widget' )
+					.toElement( 'widget' );
 			} );
 	} );
 
@@ -78,7 +83,9 @@ describe( 'ImageCaptionEngine', () => {
 			it( 'should convert caption element to figcaption', () => {
 				setModelData( document, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
 
-				expect( editor.getData() ).to.equal( '<figure class="image"><img src="img.png"><figcaption>Foo bar baz.</figcaption></figure>' );
+				expect( editor.getData() ).to.equal(
+					'<figure class="image"><img src="img.png"><figcaption>Foo bar baz.</figcaption></figure>'
+				);
 			} );
 
 			it( 'should not convert caption to figcaption if it\'s empty', () => {
@@ -115,7 +122,8 @@ describe( 'ImageCaptionEngine', () => {
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 					'<figure class="image ck-widget" contenteditable="false">' +
 						'<img src="img.png"></img>' +
-						'<figcaption class="ck-placeholder ck-editable ck-hidden" contenteditable="true" data-placeholder="Enter image caption">' +
+						'<figcaption class="ck-placeholder ck-editable ck-hidden" ' +
+									'contenteditable="true" data-placeholder="Enter image caption">' +
 						'</figcaption>' +
 					'</figure>'
 				);
@@ -182,7 +190,8 @@ describe( 'ImageCaptionEngine', () => {
 				expect( getViewData( viewDocument ) ).to.equal(
 					'[]<figure class="image ck-widget" contenteditable="false">' +
 						'<img src="img.png"></img>' +
-						'<figcaption class="ck-editable ck-hidden ck-placeholder" contenteditable="true" data-placeholder="Enter image caption">' +
+						'<figcaption class="ck-editable ck-hidden ck-placeholder" ' +
+									'contenteditable="true" data-placeholder="Enter image caption">' +
 						'</figcaption>' +
 					'</figure>'
 				);
@@ -224,7 +233,8 @@ describe( 'ImageCaptionEngine', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[]<figure class="image ck-widget" contenteditable="false">' +
 					'<img alt="" src=""></img>' +
-					'<figcaption class="ck-placeholder ck-editable ck-hidden" contenteditable="true" data-placeholder="Enter image caption">' +
+					'<figcaption class="ck-placeholder ck-editable ck-hidden" ' +
+								'contenteditable="true" data-placeholder="Enter image caption">' +
 					'</figcaption>' +
 				'</figure>'
 			);
@@ -274,7 +284,8 @@ describe( 'ImageCaptionEngine', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[]<figure class="image ck-widget" contenteditable="false">' +
 				'<img alt="" src=""></img>' +
-				'<figcaption class="ck-placeholder ck-editable ck-hidden" contenteditable="true" data-placeholder="Enter image caption"></figcaption>' +
+				'<figcaption class="ck-placeholder ck-editable ck-hidden" ' +
+							'contenteditable="true" data-placeholder="Enter image caption"></figcaption>' +
 				'</figure>'
 			);
 		} );
@@ -313,7 +324,8 @@ describe( 'ImageCaptionEngine', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[]<figure class="image ck-widget" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-placeholder ck-editable ck-hidden" contenteditable="true" data-placeholder="Enter image caption">' +
+					'<figcaption class="ck-placeholder ck-editable ck-hidden" ' +
+								'contenteditable="true" data-placeholder="Enter image caption">' +
 					'</figcaption>' +
 				'</figure>'
 			);
@@ -340,7 +352,8 @@ describe( 'ImageCaptionEngine', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[]<figure class="image ck-widget" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-placeholder ck-editable ck-hidden" contenteditable="true" data-placeholder="Enter image caption">' +
+					'<figcaption class="ck-placeholder ck-editable ck-hidden" ' +
+								'contenteditable="true" data-placeholder="Enter image caption">' +
 					'</figcaption>' +
 				'</figure>'
 			);
@@ -375,7 +388,8 @@ describe( 'ImageCaptionEngine', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[<figure class="image ck-widget" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-editable ck-placeholder" contenteditable="true" data-placeholder="Enter image caption"></figcaption>' +
+					'<figcaption class="ck-editable ck-placeholder" ' +
+								'contenteditable="true" data-placeholder="Enter image caption"></figcaption>' +
 				'</figure>]'
 			);
 		} );
@@ -395,7 +409,8 @@ describe( 'ImageCaptionEngine', () => {
 				'</figure>' +
 				'[<figure class="image ck-widget" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-placeholder ck-editable" contenteditable="true" data-placeholder="Enter image caption"></figcaption>' +
+					'<figcaption class="ck-placeholder ck-editable" ' +
+								'contenteditable="true" data-placeholder="Enter image caption"></figcaption>' +
 				'</figure>]'
 			);
 		} );
@@ -420,7 +435,8 @@ describe( 'ImageCaptionEngine', () => {
 				expect( getViewData( viewDocument ) ).to.equal(
 					'[]<figure class="image ck-widget" contenteditable="false">' +
 						'<img src=""></img>' +
-						'<figcaption class="ck-editable ck-hidden ck-placeholder" contenteditable="true" data-placeholder="Enter image caption">' +
+						'<figcaption class="ck-editable ck-hidden ck-placeholder" ' +
+									'contenteditable="true" data-placeholder="Enter image caption">' +
 						'</figcaption>' +
 					'</figure>'
 				);

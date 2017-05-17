@@ -47,7 +47,7 @@ export function viewToModelStyleAttribute( styles ) {
 	const filteredStyles = styles.filter( style => style.value !== null );
 
 	return ( evt, data, consumable, conversionApi ) => {
-		for ( let style of filteredStyles ) {
+		for ( const style of filteredStyles ) {
 			viewToModelImageStyle( style, data, consumable, conversionApi );
 		}
 	};
@@ -93,7 +93,7 @@ function viewToModelImageStyle( style, data, consumable, conversionApi ) {
 // @param {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat> } styles
 // @return {module:image/imagestyle/imagestyleengine~ImageStyleFormat|undefined}
 function getStyleByValue( value, styles ) {
-	for ( let style of styles ) {
+	for ( const style of styles ) {
 		if ( style.value === value ) {
 			return style;
 		}

@@ -49,7 +49,7 @@ export function isCaption( viewElement ) {
  * @return {module:engine/model/element~Element|null}
  */
 export function getCaptionFromImage( imageModelElement ) {
-	for ( let node of imageModelElement.getChildren() ) {
+	for ( const node of imageModelElement.getChildren() ) {
 		if ( node instanceof ModelElement && node.name == 'caption' ) {
 			return node;
 		}

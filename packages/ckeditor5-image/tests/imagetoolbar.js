@@ -13,7 +13,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageToolbar', () => {
-	let editor, button, editingView, doc, panel, plugin;
+	let editor, editingView, doc, panel, plugin;
 
 	beforeEach( () => {
 		const editorElement = global.document.createElement( 'div' );
@@ -105,14 +105,12 @@ describe( 'ImageToolbar', () => {
 	// Plugin that adds fake_button to editor's component factory.
 	class FakeButton extends Plugin {
 		init() {
-			this.editor.ui.componentFactory.add( 'fake_button', ( locale ) => {
+			this.editor.ui.componentFactory.add( 'fake_button', locale => {
 				const view = new ButtonView( locale );
 
 				view.set( {
 					label: 'fake button'
 				} );
-
-				button = view;
 
 				return view;
 			} );
