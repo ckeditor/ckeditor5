@@ -19,7 +19,7 @@
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#6325a77f3ff713095a19aa79f6e1dd36ba01d49a",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#2599dc5773dfc417f84b1bb62d64c01b0851e993",
     "@ckeditor/ckeditor5-presets": "ckeditor/ckeditor5-presets#ac8709e5b6525455f4eaa98d168411050859074b",
-    "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#8304d3b5c9576c18f116d2a35d2eeffd4d4d882f",
+    "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#d36bbe76dffe57c268a593302b005ac02b7e16e3",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#37169c82bfae1415396708e0b3baa740ed5ff75b",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#5b68744a181bb8fca37ca7f25a2dc58c32f2c186",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#a4a14f766dc021b8be49451866d362f2db0a4d81",
