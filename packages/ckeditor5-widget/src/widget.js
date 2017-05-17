@@ -122,7 +122,7 @@ export default class Widget extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_onKeydown( eventInfo, domEventData  ) {
+	_onKeydown( eventInfo, domEventData ) {
 		const keyCode = domEventData.keyCode;
 		const isForward = keyCode == keyCodes.delete || keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright;
 
@@ -263,10 +263,10 @@ function isArrowKeyCode( keyCode ) {
 		keyCode == keyCodes.arrowdown;
 }
 
-//Returns 'true' if provided key code represents one of the delete keys: delete or backspace.
+// Returns 'true' if provided key code represents one of the delete keys: delete or backspace.
 //
-//@param {Number} keyCode
-//@returns {Boolean}
+// @param {Number} keyCode
+// @returns {Boolean}
 function isDeleteKeyCode( keyCode ) {
 	return keyCode == keyCodes.delete || keyCode == keyCodes.backspace;
 }

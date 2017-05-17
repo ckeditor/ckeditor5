@@ -22,9 +22,7 @@ describe( 'Widget', () => {
 	let editor, doc, viewDocument;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ Widget ]
-		} )
+		return VirtualTestEditor.create( { plugins: [ Widget ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				doc = editor.document;
@@ -443,7 +441,7 @@ describe( 'Widget', () => {
 					preventDefault: sinon.spy(),
 				};
 				setModelData( doc, '<paragraph>foo[]</paragraph><widget></widget>' );
-				viewDocument.on( 'keydown',  keydownHandler );
+				viewDocument.on( 'keydown', keydownHandler );
 
 				viewDocument.fire( 'keydown', domEventDataMock );
 
@@ -573,7 +571,7 @@ describe( 'Widget', () => {
 					preventDefault: sinon.spy(),
 				};
 				setModelData( doc, '<paragraph>foo</paragraph>[<widget></widget>]' );
-				viewDocument.on( 'keydown',  keydownHandler );
+				viewDocument.on( 'keydown', keydownHandler );
 
 				viewDocument.fire( 'keydown', domEventDataMock );
 
@@ -589,7 +587,7 @@ describe( 'Widget', () => {
 					preventDefault: sinon.spy(),
 				};
 				setModelData( doc, '[<widget></widget>]<paragraph>foo</paragraph>' );
-				viewDocument.on( 'keydown',  keydownHandler );
+				viewDocument.on( 'keydown', keydownHandler );
 
 				viewDocument.fire( 'keydown', domEventDataMock );
 
