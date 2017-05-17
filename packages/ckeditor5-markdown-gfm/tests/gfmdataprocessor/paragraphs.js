@@ -37,7 +37,7 @@ describe( 'GFMDataProcessor', () => {
 				// GitHub is rendering as:
 				// <p>single line</p>
 				//
-				//<h1>header</h1>
+				// <h1>header</h1>
 				'<p>single line</p><h1>header</h1>',
 
 				// To-markdown always put 2 empty lines after paragraph.
@@ -55,7 +55,7 @@ describe( 'GFMDataProcessor', () => {
 				// GitHub is rendering as:
 				// <p>single line</p>
 				//
-				//<h1>header</h1>
+				// <h1>header</h1>
 				'<p>single line</p><h1>header</h1>',
 
 				// To-markdown always put 2 empty lines after paragraph and normalize header to #.

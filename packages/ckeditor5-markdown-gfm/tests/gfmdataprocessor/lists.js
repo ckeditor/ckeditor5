@@ -131,7 +131,7 @@ describe( 'GFMDataProcessor', () => {
 				'\n' +
 				'-	item 2\n' +
 				'\n' +
-				'-	item 3' ,
+				'-	item 3',
 
 				'<ul>' +
 					'<li>' +

@@ -21,7 +21,7 @@ convertToView();
 function convertToView() {
 	const markdown = markdownTextArea.value;
 
-	viewTextArea.value =  stringify( dataProcessor.toView( markdown ) );
+	viewTextArea.value = stringify( dataProcessor.toView( markdown ) );
 }
 
 function convertToMarkdown() {

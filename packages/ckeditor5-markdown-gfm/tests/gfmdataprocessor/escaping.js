@@ -32,23 +32,23 @@ describe( 'GFMDataProcessor', () => {
 
 	describe( 'escaping', () => {
 		describe( 'toView', () => {
-			for ( let key in testCases ) {
+			for ( const key in testCases ) {
 				const test = testCases[ key ].test;
 				const result = testCases[ key ].result;
 
-				it( `should escape ${key}`, () => {
+				it( `should escape ${ key }`, () => {
 					const documentFragment = dataProcessor.toView( test );
 
 					expect( stringify( documentFragment ) ).to.equal( `<p>${ result }</p>` );
 				} );
 
-				it( `should not escape ${key} in code blocks`, () => {
+				it( `should not escape ${ key } in code blocks`, () => {
 					const documentFragment = dataProcessor.toView( `	${ test }` );
 
 					expect( stringify( documentFragment ) ).to.equal( `<pre><code>${ test }</code></pre>` );
 				} );
 
-				it( `should not escape ${key} in code spans`, () => {
+				it( `should not escape ${ key } in code spans`, () => {
 					const documentFragment = dataProcessor.toView( '`' + test + '`' );
 
 					expect( stringify( documentFragment ) ).to.equal( `<p><code>${ test }</code></p>` );
