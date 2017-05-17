@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
+import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 import LinkEngine from './linkengine';
 import LinkElement from './linkelement';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
@@ -185,11 +186,9 @@ export default class Link extends Plugin {
 		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
 		this.listenTo( viewDocument, 'click', () => {
-			const viewSelection = viewDocument.selection;
 			const parentLink = this._getSelectedLinkElement();
 
-			// When collapsed selection is inside link element (link element is clicked).
-			if ( viewSelection.isCollapsed && parentLink ) {
+			if ( parentLink ) {
 				// Then show panel but keep focus inside editor editable.
 				this._showPanel();
 			}
@@ -345,20 +344,47 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Returns the {@link module:link/linkelement~LinkElement} at the first
-	 * {@link module:engine/model/position~Position} of
+	 * Returns the {@link module:link/linkelement~LinkElement} under
 	 * {@link module:engine/view/document~Document editing view's} selection or `null`
 	 * if there's none.
+	 *
+	 * **Note**: For non–collapsed selection the `LinkElement` is only returned when **fully**
+	 * selected and the **only** element within the selection boundaries.
 	 *
 	 * @private
 	 * @returns {module:link/linkelement~LinkElement|null}
 	 */
 	_getSelectedLinkElement() {
-		return this.editor.editing.view
-			.selection
-			.getFirstPosition()
-			.parent
-			.getAncestors()
-			.find( ancestor => ancestor instanceof LinkElement );
+		const selection = this.editor.editing.view.selection;
+
+		if ( selection.isCollapsed ) {
+			return findLinkElementAncestor( selection.getFirstPosition() );
+		} else {
+			// The range for fully selected link is usually anchored in adjacent text nodes.
+			// Trim it to get closer to the actual LinkElement.
+			const range = selection.getFirstRange().getTrimmed();
+			const startLink = findLinkElementAncestor( range.start );
+			const endLink = findLinkElementAncestor( range.end );
+
+			if ( !startLink || startLink != endLink ) {
+				return null;
+			}
+
+			// Check if the LinkElement is fully selected.
+			if ( Range.createIn( startLink ).getTrimmed().isEqual( range ) ) {
+				return startLink;
+			} else {
+				return null;
+			}
+		}
 	}
+}
+
+// Returns a `LinkElement` if there's one among the ancestors of the provided `Position`.
+//
+// @private
+// @param {module:engine/view/position~Position} View position to analyze.
+// @returns {module:link/linkelement~LinkElement|null} LinkElement at the position or null.
+function findLinkElementAncestor( position ) {
+	return position.getAncestors().find( ancestor => ancestor instanceof LinkElement );
 }

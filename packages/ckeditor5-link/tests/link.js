@@ -595,43 +595,77 @@ describe( 'Link', () => {
 		} );
 
 		describe( 'clicking on editable', () => {
-			let observer;
+			let observer, spy;
 
 			beforeEach( () => {
 				observer = editor.editing.view.getObserver( ClickObserver );
+				editor.document.schema.allow( { name: '$text', inside: '$root' } );
+
+				// Method is stubbed because it returns internal promise which can't be returned in test.
+				spy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
 			} );
 
 			it( 'should open with not selected formView when collapsed selection is inside link element', () => {
-				// Method is stubbed because it returns internal promise which can't be returned in test.
-				const spy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
-
-				editor.document.schema.allow( { name: '$text', inside: '$root' } );
 				setModelData( editor.document, '<$text linkHref="url">fo[]o</$text>' );
 
 				observer.fire( 'click', { target: document.body } );
+				sinon.assert.calledWithExactly( spy );
+			} );
 
+			it( 'should open when selection exclusively encloses a LinkElement (#1)', () => {
+				setModelData( editor.document, '[<$text linkHref="url">foo</$text>]' );
+
+				observer.fire( 'click', { target: {} } );
+				sinon.assert.calledWithExactly( spy );
+			} );
+
+			it( 'should open when selection exclusively encloses a LinkElement (#2)', () => {
+				setModelData( editor.document, '<$text linkHref="url">[foo]</$text>' );
+
+				observer.fire( 'click', { target: {} } );
 				sinon.assert.calledWithExactly( spy );
 			} );
 
 			it( 'should not open when selection is not inside link element', () => {
-				const showSpy = testUtils.sinon.stub( linkFeature, '_showPanel' );
-
 				setModelData( editor.document, '[]' );
 
 				observer.fire( 'click', { target: {} } );
-
-				sinon.assert.notCalled( showSpy );
+				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should not open when selection is non-collapsed', () => {
-				const showSpy = testUtils.sinon.stub( linkFeature, '_showPanel' );
-
-				editor.document.schema.allow( { name: '$text', inside: '$root' } );
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#1)', () => {
 				setModelData( editor.document, '<$text linkHref="url">f[o]o</$text>' );
 
 				observer.fire( 'click', { target: {} } );
+				sinon.assert.notCalled( spy );
+			} );
 
-				sinon.assert.notCalled( showSpy );
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#2)', () => {
+				setModelData( editor.document, '<$text linkHref="url">[fo]o</$text>' );
+
+				observer.fire( 'click', { target: {} } );
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#3)', () => {
+				setModelData( editor.document, '<$text linkHref="url">f[oo]</$text>' );
+
+				observer.fire( 'click', { target: {} } );
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#4)', () => {
+				setModelData( editor.document, 'ba[r<$text linkHref="url">foo]</$text>' );
+
+				observer.fire( 'click', { target: {} } );
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#5)', () => {
+				setModelData( editor.document, 'ba[r<$text linkHref="url">foo</$text>]' );
+
+				observer.fire( 'click', { target: {} } );
+				sinon.assert.notCalled( spy );
 			} );
 		} );
 	} );
