@@ -3,11 +3,11 @@
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#8a79f7a488cd621cc0626a176ce74db9015464d9",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#6bf42408b22cf5f5887ce8b2ad706f4d6d240dd4",
-    "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#079eecf425cdaee9f9cf1846dd18681e40f78957",
+    "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#3fb894485b2462a239303c680a1ad8cbd8677f27",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#6bcf77c6694e5cb788067f93d751cb0d574893e5",
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#b89cfd29ca1ef136486a859b861fac30ad4b23d9",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#6d4e6cc3a5cb80c22ff7041d330a0ffa816a01ba",
-    "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#08e4b2847fb2be5159372525a754a68b13b1bcbb",
+    "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#68165050f0bfd5aaa23b2cbe4e51e45fb4068847",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#679c25227b7b244790745d8f72b61ab7adff1840",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#683bc6353b2a48f862b0c0fe890e7192f58b4595",
     "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#da5b165aee1db14900fa36fb0cd4c030b0655be4",
