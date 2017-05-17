@@ -33,7 +33,7 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'focus()', () => {
-		let viewEditable, domEditable, viewDocument;
+		let viewEditable, domEditable, domEditableParent, viewDocument;
 
 		beforeEach( () => {
 			viewDocument = new ViewDocument();
@@ -41,13 +41,15 @@ describe( 'DomConverter', () => {
 			viewEditable.document = viewDocument;
 
 			domEditable = document.createElement( 'div' );
+			domEditableParent = document.createElement( 'div' );
 			converter.bindElements( domEditable, viewEditable );
 			domEditable.setAttribute( 'contenteditable', 'true' );
-			document.body.appendChild( domEditable );
+			domEditableParent.appendChild( domEditable );
+			document.body.appendChild( domEditableParent );
 		} );
 
 		afterEach( () => {
-			document.body.removeChild( domEditable );
+			document.body.removeChild( domEditableParent );
 			viewDocument.destroy();
 		} );
 
@@ -69,19 +71,46 @@ describe( 'DomConverter', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/951
-		it( 'should actively prevent window scroll in WebKit', () => {
+		// https://github.com/ckeditor/ckeditor5-engine/issues/957
+		it( 'should actively prevent scrolling', () => {
 			const scrollToSpy = testUtils.sinon.stub( global.window, 'scrollTo' );
-			const scrollLeftSpy = sinon.spy();
-			const scrollTopSpy = sinon.spy();
+			const editableScrollLeftSpy = sinon.spy();
+			const editableScrollTopSpy = sinon.spy();
+			const parentScrollLeftSpy = sinon.spy();
+			const parentScrollTopSpy = sinon.spy();
+			const documentElementScrollLeftSpy = sinon.spy();
+			const documentElementScrollTopSpy = sinon.spy();
 
 			Object.defineProperties( domEditable, {
 				scrollLeft: {
 					get: () => 20,
-					set: scrollLeftSpy
+					set: editableScrollLeftSpy
 				},
 				scrollTop: {
 					get: () => 200,
-					set: scrollTopSpy
+					set: editableScrollTopSpy
+				}
+			} );
+
+			Object.defineProperties( domEditableParent, {
+				scrollLeft: {
+					get: () => 40,
+					set: parentScrollLeftSpy
+				},
+				scrollTop: {
+					get: () => 400,
+					set: parentScrollTopSpy
+				}
+			} );
+
+			Object.defineProperties( global.document.documentElement, {
+				scrollLeft: {
+					get: () => 60,
+					set: documentElementScrollLeftSpy
+				},
+				scrollTop: {
+					get: () => 600,
+					set: documentElementScrollTopSpy
 				}
 			} );
 
@@ -90,8 +119,12 @@ describe( 'DomConverter', () => {
 
 			converter.focus( viewEditable );
 			sinon.assert.calledWithExactly( scrollToSpy, 10, 100 );
-			sinon.assert.calledWithExactly( scrollLeftSpy, 20 );
-			sinon.assert.calledWithExactly( scrollTopSpy, 200 );
+			sinon.assert.calledWithExactly( editableScrollLeftSpy, 20 );
+			sinon.assert.calledWithExactly( editableScrollTopSpy, 200 );
+			sinon.assert.calledWithExactly( parentScrollLeftSpy, 40 );
+			sinon.assert.calledWithExactly( parentScrollTopSpy, 400 );
+			sinon.assert.calledWithExactly( documentElementScrollLeftSpy, 60 );
+			sinon.assert.calledWithExactly( documentElementScrollTopSpy, 600 );
 		} );
 	} );
 
