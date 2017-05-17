@@ -58,7 +58,7 @@ export default class PluginCollection {
 	/**
 	 * Collection iterator. Returns `[ PluginConstructor, pluginInstance ]` pairs.
 	 */
-	*[ Symbol.iterator ]() {
+	* [ Symbol.iterator ]() {
 		for ( const entry of this._plugins ) {
 			if ( typeof entry[ 0 ] == 'function' ) {
 				yield entry;
