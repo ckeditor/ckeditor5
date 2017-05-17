@@ -299,9 +299,9 @@ describe( 'BlockQuote', () => {
 
 			// We can't load ImageCaption in this test because it adds <caption> to all images automatically.
 			return ClassicTestEditor.create( element, {
-					plugins: [ BlockQuote, Paragraph, Image ]
-				} )
-				.then( ( editor ) => {
+				plugins: [ BlockQuote, Paragraph, Image ]
+			} )
+				.then( editor => {
 					setModelData( editor.document,
 						'<paragraph>fo[o</paragraph>' +
 						'<image src="foo.png"></image>' +

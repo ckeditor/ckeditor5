@@ -47,7 +47,7 @@ export default class BlockQuote extends Plugin {
 		const t = editor.t;
 		const command = editor.commands.get( 'blockQuote' );
 
-		editor.ui.componentFactory.add( 'blockQuote', ( locale ) => {
+		editor.ui.componentFactory.add( 'blockQuote', locale => {
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {

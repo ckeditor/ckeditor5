@@ -115,7 +115,7 @@ export default class BlockQuoteCommand extends Command {
 	 */
 	_removeQuote( batch, blocks ) {
 		// Unquote all groups of block. Iterate in the reverse order to not break following ranges.
-		getRangesOfBlockGroups( blocks ).reverse().forEach( ( groupRange ) => {
+		getRangesOfBlockGroups( blocks ).reverse().forEach( groupRange => {
 			if ( groupRange.start.isAtStart && groupRange.end.isAtEnd ) {
 				batch.unwrap( groupRange.start.parent );
 
@@ -155,7 +155,7 @@ export default class BlockQuoteCommand extends Command {
 		const quotesToMerge = [];
 
 		// Quote all groups of block. Iterate in the reverse order to not break following ranges.
-		getRangesOfBlockGroups( blocks ).reverse().forEach( ( groupRange ) => {
+		getRangesOfBlockGroups( blocks ).reverse().forEach( groupRange => {
 			let quote = findQuote( groupRange.start );
 
 			if ( !quote ) {

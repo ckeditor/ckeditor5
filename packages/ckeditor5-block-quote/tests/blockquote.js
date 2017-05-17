@@ -11,7 +11,7 @@ import BlockQuoteEngine from '../src/blockquoteengine';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 describe( 'BlockQuote', () => {
-	let editor, doc, command, element;
+	let editor, command, element;
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -22,7 +22,6 @@ describe( 'BlockQuote', () => {
 		} )
 		.then( newEditor => {
 			editor = newEditor;
-			doc = editor.document;
 			command = editor.commands.get( 'blockQuote' );
 		} );
 	} );
