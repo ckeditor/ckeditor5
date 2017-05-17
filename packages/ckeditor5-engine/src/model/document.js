@@ -467,7 +467,7 @@ function validateTextNodePosition( rangeBoundary ) {
 // @param {module:engine/module/treewalker~TreeWalker} [forward] Walker iterating in forward direction.
 // @returns {Iterable.<Object>} Object returned at each iteration contains `value` and `walker` (informing which walker returned
 // given value) fields.
-function *combineWalkers( backward, forward ) {
+function* combineWalkers( backward, forward ) {
 	let done = false;
 
 	while ( !done ) {

@@ -177,7 +177,7 @@ export default class Selection {
 	 *
 	 * @returns {Iterator.<module:engine/model/range~Range>}
 	 */
-	*getRanges() {
+	* getRanges() {
 		for ( const range of this._ranges ) {
 			yield Range.createFromRange( range );
 		}
@@ -592,7 +592,7 @@ export default class Selection {
 	 *
 	 * @returns {Iterator.<module:engine/model/element~Element>}
 	 */
-	*getSelectedBlocks() {
+	* getSelectedBlocks() {
 		const visited = new WeakSet();
 
 		for ( const range of this.getRanges() ) {

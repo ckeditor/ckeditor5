@@ -65,7 +65,7 @@ export default class History {
 	 * Defaults to `Number.POSITIVE_INFINITY` which means that deltas up to the last one will be returned.
 	 * @returns {Iterator.<module:engine/model/delta/delta~Delta>} Deltas added to the history.
 	 */
-	*getDeltas( from = 0, to = Number.POSITIVE_INFINITY ) {
+	* getDeltas( from = 0, to = Number.POSITIVE_INFINITY ) {
 		// No deltas added, nothing to yield.
 		if ( this._deltas.length === 0 ) {
 			return;

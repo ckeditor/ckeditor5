@@ -223,7 +223,7 @@ export default class Selection {
 	 *
 	 * @returns {Iterator.<module:engine/view/range~Range>}
 	 */
-	*getRanges() {
+	* getRanges() {
 		for ( const range of this._ranges ) {
 			yield Range.createFromRange( range );
 		}

@@ -232,7 +232,7 @@ export default class DomConverter {
 	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#viewToDom} options parameter.
 	 * @returns {Iterable.<Node>} DOM nodes.
 	 */
-	*viewChildrenToDom( viewElement, domDocument, options = {} ) {
+	* viewChildrenToDom( viewElement, domDocument, options = {} ) {
 		const fillerPositionOffset = viewElement.getFillerOffset && viewElement.getFillerOffset();
 		let offset = 0;
 
@@ -412,7 +412,7 @@ export default class DomConverter {
 	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
 	 * @returns {Iterable.<module:engine/view/node~Node>} View nodes.
 	 */
-	*domChildrenToView( domElement, options = {} ) {
+	* domChildrenToView( domElement, options = {} ) {
 		for ( let i = 0; i < domElement.childNodes.length; i++ ) {
 			const domChild = domElement.childNodes[ i ];
 			const viewChild = this.domToView( domChild, options );

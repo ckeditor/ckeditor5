@@ -49,7 +49,7 @@ export default class Range {
 	 *
 	 * @returns {Iterable.<module:engine/view/treewalker~TreeWalkerValue>}
 	 */
-	*[ Symbol.iterator ]() {
+	* [ Symbol.iterator ]() {
 		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
 	}
 
@@ -308,7 +308,7 @@ export default class Range {
 	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
 	 * @returns {Iterable.<module:engine/view/item~Item>}
 	 */
-	*getItems( options = {} ) {
+	* getItems( options = {} ) {
 		options.boundaries = this;
 		options.ignoreElementEnd = true;
 
@@ -332,7 +332,7 @@ export default class Range {
 	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
 	 * @returns {Iterable.<module:engine/view/position~Position>}
 	 */
-	*getPositions( options = {} ) {
+	* getPositions( options = {} ) {
 		options.boundaries = this;
 
 		const treeWalker = new TreeWalker( options );

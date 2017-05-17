@@ -126,7 +126,7 @@ export default class LiveSelection extends Selection {
 	/**
 	 * @inheritDoc
 	 */
-	*getRanges() {
+	* getRanges() {
 		if ( this._ranges.length ) {
 			yield* super.getRanges();
 		} else {
@@ -484,7 +484,7 @@ export default class LiveSelection extends Selection {
 	 * @private
 	 * @returns {Iterable.<*>}
 	 */
-	*_getStoredAttributes() {
+	* _getStoredAttributes() {
 		const selectionParent = this.getFirstPosition().parent;
 
 		if ( this.isCollapsed && selectionParent.childCount === 0 ) {
