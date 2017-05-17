@@ -251,19 +251,27 @@ export default class BalloonPanelView extends View {
 		this.attachTo( options );
 
 		const limiter = options.limiter || defaultLimiterElement;
-		let target = null;
+		let targetElement = null;
 
 		// We need to take HTMLElement related to the target if it is possible.
 		if ( isElement( options.target ) ) {
-			target = options.target;
+			targetElement = options.target;
 		} else if ( isRange( options.target ) ) {
-			target = options.target.commonAncestorContainer;
+			targetElement = options.target.commonAncestorContainer;
 		}
 
 		// Then we need to listen on scroll event of eny element in the document.
 		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
-			// We need to update position if scrolled element contains related to the balloon elements.
-			if ( ( target && domEvt.target.contains( target ) ) || domEvt.target.contains( limiter ) ) {
+			const scrollTarget = domEvt.target;
+
+			// The position needs to be updated if the positioning target is within the scrolled element.
+			const isWithinScrollTarget = targetElement && scrollTarget.contains( targetElement );
+
+			// The position needs to be updated if the positioning limiter is within the scrolled element.
+			const isLimiterWithinScrollTarget = scrollTarget.contains( limiter );
+
+			// The positioning target can be a Rect, object etc.. There's no way to optimize the listener then.
+			if ( isWithinScrollTarget || isLimiterWithinScrollTarget || !targetElement ) {
 				this.attachTo( options );
 			}
 		}, { useCapture: true } );

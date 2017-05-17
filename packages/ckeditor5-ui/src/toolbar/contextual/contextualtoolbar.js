@@ -217,16 +217,20 @@ export default class ContextualToolbar extends Plugin {
 		// Get direction of the selection.
 		const isBackward = editingView.selection.isBackward;
 
-		// getBoundingClientRect() makes no sense when the selection spans across number
-		// of lines of text. Using getClientRects() allows us to browse micro–ranges
-		// that would normally make up the bounding client rect.
-		const rangeRects = editingView.domConverter.viewRangeToDom( editingView.selection.getFirstRange() ).getClientRects();
-
-		// Select the proper range rect depending on the direction of the selection.
-		const rangeRect = isBackward ? rangeRects.item( 0 ) : rangeRects.item( rangeRects.length - 1 );
-
 		return {
-			target: rangeRect,
+			// Because the target for BalloonPanelView is a Rect (not DOMRange), it's geometry will stay fixed
+			// as the window scrolls. To let the BalloonPanelView follow such Rect, is must be continuously
+			// computed and hence, the target is defined as a function instead of a static value.
+			// https://github.com/ckeditor/ckeditor5-ui/issues/195
+			target: () => {
+				// getBoundingClientRect() makes no sense when the selection spans across number
+				// of lines of text. Using getClientRects() allows us to browse micro–ranges
+				// that would normally make up the bounding client rect.
+				const rangeRects = editingView.domConverter.viewRangeToDom( editingView.selection.getFirstRange() ).getClientRects();
+
+				// Select the proper range rect depending on the direction of the selection.
+				return isBackward ? rangeRects.item( 0 ) : rangeRects.item( rangeRects.length - 1 );
+			},
 			positions: isBackward ?
 				[ defaultPositions.northWestArrowSouth, defaultPositions.southWestArrowNorth ] :
 				[ defaultPositions.southEastArrowNorth, defaultPositions.northEastArrowSouth ]
