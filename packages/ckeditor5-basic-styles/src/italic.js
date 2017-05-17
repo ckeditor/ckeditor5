@@ -44,7 +44,7 @@ export default class Italic extends Plugin {
 		const keystroke = 'CTRL+I';
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( 'italic', ( locale ) => {
+		editor.ui.componentFactory.add( 'italic', locale => {
 			const view = new ButtonView( locale );
 
 			view.set( {
