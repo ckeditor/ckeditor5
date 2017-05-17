@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
+/* globals document, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -162,7 +162,8 @@ describe( 'Link', () => {
 				} );
 		} );
 
-		it( 'should not focus the #formView when called with a `true` parameter while the balloon is opened but link form is not visible', () => {
+		it( 'should not focus the #formView when called with a `true` parameter while the balloon is opened but link ' +
+			'form is not visible', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 			const viewMock = {
 				ready: true,
@@ -248,7 +249,7 @@ describe( 'Link', () => {
 					} );
 			} );
 
-			//https://github.com/ckeditor/ckeditor5-link/issues/113
+			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'updates the position of the panel – editing a link, then the selection remains in the link upon #render', () => {
 				const viewDocument = editor.editing.view;
 
@@ -270,7 +271,7 @@ describe( 'Link', () => {
 					} );
 			} );
 
-			//https://github.com/ckeditor/ckeditor5-link/issues/113
+			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'updates the position of the panel – creating a new link, then the selection moved upon #render', () => {
 				const viewDocument = editor.editing.view;
 
@@ -295,7 +296,7 @@ describe( 'Link', () => {
 					} );
 			} );
 
-			//https://github.com/ckeditor/ckeditor5-link/issues/113
+			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'hides of the panel – editing a link, then the selection moved out of the link upon #render', () => {
 				const viewDocument = editor.editing.view;
 
@@ -318,11 +319,14 @@ describe( 'Link', () => {
 					} );
 			} );
 
-			//https://github.com/ckeditor/ckeditor5-link/issues/113
+			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'hides of the panel – editing a link, then the selection moved to another link upon #render', () => {
 				const viewDocument = editor.editing.view;
 
-				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text>bar<$text linkHref="url">b[]az</$text></paragraph>' );
+				setModelData(
+					editor.document,
+					'<paragraph><$text linkHref="url">f[]oo</$text>bar<$text linkHref="url">b[]az</$text></paragraph>'
+				);
 
 				return linkFeature._showPanel()
 					.then( () => {
@@ -341,7 +345,7 @@ describe( 'Link', () => {
 					} );
 			} );
 
-			//https://github.com/ckeditor/ckeditor5-link/issues/113
+			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'hides the panel – editing a link, then the selection expands upon #render', () => {
 				const viewDocument = editor.editing.view;
 

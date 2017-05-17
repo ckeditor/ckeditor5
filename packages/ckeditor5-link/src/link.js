@@ -126,7 +126,7 @@ export default class Link extends Plugin {
 		// Handle `Ctrl+K` keystroke and show the panel.
 		editor.keystrokes.set( 'CTRL+K', () => this._showPanel( true ) );
 
-		editor.ui.componentFactory.add( 'link', ( locale ) => {
+		editor.ui.componentFactory.add( 'link', locale => {
 			const button = new ButtonView( locale );
 
 			button.isEnabled = true;
@@ -156,7 +156,7 @@ export default class Link extends Plugin {
 		const t = editor.t;
 		const unlinkCommand = editor.commands.get( 'unlink' );
 
-		editor.ui.componentFactory.add( 'unlink', ( locale ) => {
+		editor.ui.componentFactory.add( 'unlink', locale => {
 			const button = new ButtonView( locale );
 
 			button.isEnabled = false;
@@ -283,13 +283,13 @@ export default class Link extends Plugin {
 			return Promise.resolve();
 		} else {
 			return this._balloon.add( {
-					view: this.formView,
-					position: this._getBalloonPositionData()
-				} ).then( () => {
-					if ( focusInput ) {
-						this.formView.urlInputView.select();
-					}
-				} );
+				view: this.formView,
+				position: this._getBalloonPositionData()
+			} ).then( () => {
+				if ( focusInput ) {
+					this.formView.urlInputView.select();
+				}
+			} );
 		}
 	}
 
@@ -332,8 +332,7 @@ export default class Link extends Plugin {
 
 		const target = targetLink ?
 			// When selection is inside link element, then attach panel to this element.
-			viewDocument.domConverter.getCorrespondingDomElement( targetLink )
-			:
+			viewDocument.domConverter.getCorrespondingDomElement( targetLink ) :
 			// Otherwise attach panel to the selection.
 			viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
 

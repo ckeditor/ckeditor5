@@ -36,12 +36,12 @@ export default class LinkEngine extends Plugin {
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
 			.fromAttribute( 'linkHref' )
-			.toElement( ( linkHref ) => new LinkElement( 'a', { href: linkHref } ) );
+			.toElement( linkHref => new LinkElement( 'a', { href: linkHref } ) );
 
 		// Build converter from view to model for data pipeline.
 		buildViewConverter().for( data.viewToModel )
 			.fromElement( 'a' )
-			.toAttribute( ( viewElement ) => ( {
+			.toAttribute( viewElement => ( {
 				key: 'linkHref',
 				value: viewElement.getAttribute( 'href' )
 			} ) );

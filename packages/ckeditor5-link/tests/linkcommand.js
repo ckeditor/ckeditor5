@@ -34,13 +34,13 @@ describe( 'LinkCommand', () => {
 	describe( 'value', () => {
 		describe( 'collapsed selection', () => {
 			it( 'should be equal attribute value when selection is placed inside element with `linkHref` attribute', () => {
-				setData( document, `<$text linkHref="url">foo[]bar</$text>` );
+				setData( document, '<$text linkHref="url">foo[]bar</$text>' );
 
 				expect( command.value ).to.equal( 'url' );
 			} );
 
 			it( 'should be undefined when selection is placed inside element without `linkHref` attribute', () => {
-				setData( document, `<$text bold="true">foo[]bar</$text>` );
+				setData( document, '<$text bold="true">foo[]bar</$text>' );
 
 				expect( command.value ).to.undefined;
 			} );
@@ -130,7 +130,8 @@ describe( 'LinkCommand', () => {
 				expect( command.value ).to.equal( 'url' );
 			} );
 
-			it( 'should overwrite `linkHref` attribute of selected text only, when selection end inside text with `linkHref` attribute', () => {
+			it( 'should overwrite `linkHref` attribute of selected text only, when selection end inside text with `linkHref` ' +
+				'attribute', () => {
 				setData( document, 'f[o<$text linkHref="other url">ob]a</$text>r' );
 
 				expect( command.value ).to.undefined;

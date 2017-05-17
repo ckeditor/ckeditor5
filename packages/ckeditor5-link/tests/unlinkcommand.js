@@ -91,9 +91,8 @@ describe( 'UnlinkCommand', () => {
 				expect( getData( document ) ).to.equal( 'foo[]bar' );
 			} );
 
-			it(
-				'should remove `linkHref` attribute from selection siblings with the same attribute value and do not modify other attributes',
-			() => {
+			it( 'should remove `linkHref` attribute from selection siblings with the same attribute value and do not modify ' +
+				'other attributes', () => {
 				setData(
 					document,
 					'<$text linkHref="other url">fo</$text>' +
