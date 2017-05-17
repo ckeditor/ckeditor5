@@ -50,7 +50,7 @@ export default class UnlinkCommand extends Command {
 			const batch = document.batch();
 
 			// Remove `linkHref` attribute from specified ranges.
-			for ( let range of rangesToUnlink ) {
+			for ( const range of rangesToUnlink ) {
 				batch.removeAttribute( range, 'linkHref' );
 			}
 		} );

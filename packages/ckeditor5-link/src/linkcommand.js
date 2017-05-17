@@ -59,10 +59,10 @@ export default class LinkCommand extends Command {
 	 * When selection is non-collapsed, then `linkHref` attribute will be applied to nodes inside selection, but only to
 	 * those nodes where `linkHref` attribute is allowed (disallowed nodes will be omitted).
 	 *
-	 * When selection is collapsed and is not inside text with `linkHref` attribute, then new {@link module:engine/model/text~Text Text node}
-	 * with
-	 * `linkHref` attribute will be inserted in place of caret, but only if such an element is allowed in this place. `_data` of
-	 * the inserted text will equal `href` parameter. Selection will be updated to wrap just inserted text node.
+	 * When selection is collapsed and is not inside text with `linkHref` attribute, then
+	 * new {@link module:engine/model/text~Text Text node} with `linkHref` attribute will be inserted in place of caret, but only if such
+	 * an element is allowed in this place. `_data` of the inserted text will equal `href` parameter. Selection will be updated to
+	 * wrap just inserted text node.
 	 *
 	 * When selection is collapsed and inside text with `linkHref` attribute, the attribute value will be updated.
 	 *
@@ -106,7 +106,7 @@ export default class LinkCommand extends Command {
 				// omitting nodes where `linkHref` attribute is disallowed.
 				const ranges = getSchemaValidRanges( 'linkHref', selection.getRanges(), document.schema );
 
-				for ( let range of ranges ) {
+				for ( const range of ranges ) {
 					batch.setAttribute( range, 'linkHref', href );
 				}
 			}

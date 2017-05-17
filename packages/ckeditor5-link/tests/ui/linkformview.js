@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals Event */
+
 import LinkFormView from '../../src/ui/linkformview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -18,7 +20,7 @@ describe( 'LinkFormView', () => {
 	let view;
 
 	beforeEach( () => {
-		view = new LinkFormView( { t: ( val ) => val } );
+		view = new LinkFormView( { t: val => val } );
 
 		return view.init();
 	} );

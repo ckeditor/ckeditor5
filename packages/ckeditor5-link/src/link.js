@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
+import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 import LinkEngine from './linkengine';
 import LinkElement from './linkelement';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
@@ -125,7 +126,7 @@ export default class Link extends Plugin {
 		// Handle `Ctrl+K` keystroke and show the panel.
 		editor.keystrokes.set( 'CTRL+K', () => this._showPanel( true ) );
 
-		editor.ui.componentFactory.add( 'link', ( locale ) => {
+		editor.ui.componentFactory.add( 'link', locale => {
 			const button = new ButtonView( locale );
 
 			button.isEnabled = true;
@@ -155,7 +156,7 @@ export default class Link extends Plugin {
 		const t = editor.t;
 		const unlinkCommand = editor.commands.get( 'unlink' );
 
-		editor.ui.componentFactory.add( 'unlink', ( locale ) => {
+		editor.ui.componentFactory.add( 'unlink', locale => {
 			const button = new ButtonView( locale );
 
 			button.isEnabled = false;
@@ -185,11 +186,9 @@ export default class Link extends Plugin {
 		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
 		this.listenTo( viewDocument, 'click', () => {
-			const viewSelection = viewDocument.selection;
 			const parentLink = this._getSelectedLinkElement();
 
-			// When collapsed selection is inside link element (link element is clicked).
-			if ( viewSelection.isCollapsed && parentLink ) {
+			if ( parentLink ) {
 				// Then show panel but keep focus inside editor editable.
 				this._showPanel();
 			}
@@ -229,13 +228,22 @@ export default class Link extends Plugin {
 	 * @return {Promise} A promise resolved when the {@link #formView} {@link module:ui/view~View#init} is done.
 	 */
 	_showPanel( focusInput ) {
-		const editing = this.editor.editing;
+		const editor = this.editor;
+		const command = editor.commands.get( 'link' );
+		const editing = editor.editing;
 		const showViewDocument = editing.view;
 		const showIsCollapsed = showViewDocument.selection.isCollapsed;
 		const showSelectedLink = this._getSelectedLinkElement();
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/53
 		this.formView.unlinkButtonView.isVisible = !!showSelectedLink;
+
+		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
+		// the command. If the user typed in the input, then canceled the balloon (`urlInputView#value` stays
+		// unaltered) and re-opened it without changing the value of the link command (e.g. because they
+		// clicked the same link), they would see the old value instead of the actual value of the command.
+		// https://github.com/ckeditor/ckeditor5-link/issues/78
+		this.formView.urlInputView.inputView.element.value = command.value;
 
 		this.listenTo( showViewDocument, 'render', () => {
 			const renderSelectedLink = this._getSelectedLinkElement();
@@ -275,13 +283,13 @@ export default class Link extends Plugin {
 			return Promise.resolve();
 		} else {
 			return this._balloon.add( {
-					view: this.formView,
-					position: this._getBalloonPositionData()
-				} ).then( () => {
-					if ( focusInput ) {
-						this.formView.urlInputView.select();
-					}
-				} );
+				view: this.formView,
+				position: this._getBalloonPositionData()
+			} ).then( () => {
+				if ( focusInput ) {
+					this.formView.urlInputView.select();
+				}
+			} );
 		}
 	}
 
@@ -324,8 +332,7 @@ export default class Link extends Plugin {
 
 		const target = targetLink ?
 			// When selection is inside link element, then attach panel to this element.
-			viewDocument.domConverter.getCorrespondingDomElement( targetLink )
-			:
+			viewDocument.domConverter.getCorrespondingDomElement( targetLink ) :
 			// Otherwise attach panel to the selection.
 			viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
 
@@ -336,20 +343,47 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Returns the {@link module:link/linkelement~LinkElement} at the first
-	 * {@link module:engine/model/position~Position} of
+	 * Returns the {@link module:link/linkelement~LinkElement} under
 	 * {@link module:engine/view/document~Document editing view's} selection or `null`
 	 * if there's none.
+	 *
+	 * **Note**: For non–collapsed selection the `LinkElement` is only returned when **fully**
+	 * selected and the **only** element within the selection boundaries.
 	 *
 	 * @private
 	 * @returns {module:link/linkelement~LinkElement|null}
 	 */
 	_getSelectedLinkElement() {
-		return this.editor.editing.view
-			.selection
-			.getFirstPosition()
-			.parent
-			.getAncestors()
-			.find( ancestor => ancestor instanceof LinkElement );
+		const selection = this.editor.editing.view.selection;
+
+		if ( selection.isCollapsed ) {
+			return findLinkElementAncestor( selection.getFirstPosition() );
+		} else {
+			// The range for fully selected link is usually anchored in adjacent text nodes.
+			// Trim it to get closer to the actual LinkElement.
+			const range = selection.getFirstRange().getTrimmed();
+			const startLink = findLinkElementAncestor( range.start );
+			const endLink = findLinkElementAncestor( range.end );
+
+			if ( !startLink || startLink != endLink ) {
+				return null;
+			}
+
+			// Check if the LinkElement is fully selected.
+			if ( Range.createIn( startLink ).getTrimmed().isEqual( range ) ) {
+				return startLink;
+			} else {
+				return null;
+			}
+		}
 	}
+}
+
+// Returns a `LinkElement` if there's one among the ancestors of the provided `Position`.
+//
+// @private
+// @param {module:engine/view/position~Position} View position to analyze.
+// @returns {module:link/linkelement~LinkElement|null} LinkElement at the position or null.
+function findLinkElementAncestor( position ) {
+	return position.getAncestors().find( ancestor => ancestor instanceof LinkElement );
 }

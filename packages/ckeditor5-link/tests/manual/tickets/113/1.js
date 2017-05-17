@@ -44,7 +44,7 @@ ClassicEditor.create( document.querySelector( '#editor-delete' ), {
 .catch( err => console.error( err.stack ) );
 
 function wait( delay ) {
-	return new Promise( ( resolve ) => {
+	return new Promise( resolve => {
 		setTimeout( () => resolve(), delay );
 	} );
 }
@@ -54,7 +54,7 @@ function startExternalInsert( editor ) {
 	const bath = document.batch( 'transparent' );
 
 	function type( path, text ) {
-		return new Promise( ( resolve ) => {
+		return new Promise( resolve => {
 			let position = new Position( document.getRoot(), path );
 			let index = 0;
 
@@ -64,7 +64,7 @@ function startExternalInsert( editor ) {
 						bath.insert( position, new Text( text[ index ] ) );
 						position = position.getShiftedBy( 1 );
 
-						let nextLetter = text[ ++index ];
+						const nextLetter = text[ ++index ];
 
 						if ( nextLetter ) {
 							typing( nextLetter );
@@ -91,7 +91,7 @@ function startExternalInsert( editor ) {
 	}
 
 	wait( 3000 )
-		.then( () => type( [ 0, 36 ], `This specification defines the 5th major revision of the core language of the World Wide Web. ` ) )
+		.then( () => type( [ 0, 36 ], 'This specification defines the 5th major revision of the core language of the World Wide Web. ' ) )
 		.then( () => insertNewLine( [ 0 ] ) )
 		.then( () => type( [ 0, 0 ], 'a' ) )
 		.then( () => insertNewLine( [ 1 ] ) )
