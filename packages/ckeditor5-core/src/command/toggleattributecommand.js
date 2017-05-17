@@ -43,9 +43,17 @@ export default class ToggleAttributeCommand extends Command {
 		 */
 		this.set( 'value', false );
 
-		this.listenTo( this.editor.document.selection, 'change:attribute', () => {
-			this.value = this.editor.document.selection.hasAttribute( this.attributeKey );
+		this.listenTo( editor.document, 'changesDone', () => {
+			this.refreshValue();
+			this.refreshState();
 		} );
+	}
+
+	/**
+	 * Updates command's {@link #value value} based on the current selection.
+	 */
+	refreshValue() {
+		this.value = this.editor.document.selection.hasAttribute( this.attributeKey );
 	}
 
 	/**
