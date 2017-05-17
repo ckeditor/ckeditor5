@@ -52,7 +52,7 @@ describe( 'FileDialogButtonView', () => {
 		expect( view.fileInputView.allowMultipleFiles ).to.be.true;
 	} );
 
-	it( 'should delegate input view done event', ( done ) => {
+	it( 'should delegate input view done event', done => {
 		const files = [];
 
 		view.on( 'done', ( evt, data ) => {

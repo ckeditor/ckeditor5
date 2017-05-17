@@ -27,5 +27,5 @@ describe( 'utils', () => {
 			expect( isImageType( { type: 'audio/mp3' } ) ).to.be.false;
 			expect( isImageType( { type: 'video/mpeg' } ) ).to.be.false;
 		} );
-	}  );
+	} );
 } );

@@ -57,7 +57,7 @@ describe( 'FileReader', () => {
 			const promise = reader.read( fileMock )
 				.then( () => {
 					throw new Error( 'Reader should not resolve.' );
-				}, ( status ) => {
+				}, status => {
 					expect( status ).to.equal( 'error' );
 					expect( reader.error ).to.equal( 'Error during file reading.' );
 				} );
@@ -71,7 +71,7 @@ describe( 'FileReader', () => {
 			const promise = reader.read( fileMock )
 				.then( () => {
 					throw new Error( 'Reader should not resolve.' );
-				}, ( status ) => {
+				}, status => {
 					expect( status ).to.equal( 'aborted' );
 				} );
 
@@ -86,7 +86,7 @@ describe( 'FileReader', () => {
 			const promise = reader.read( fileMock )
 				.then( () => {
 					throw new Error( 'Reader should not resolve.' );
-				}, ( status ) => {
+				}, status => {
 					expect( status ).to.equal( 'aborted' );
 				} );
 

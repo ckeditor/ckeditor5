@@ -20,6 +20,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
 describe( 'ImageUploadEngine', () => {
+	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 	let editor, document, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
 	testUtils.createSinonSandbox();
@@ -102,7 +103,7 @@ describe( 'ImageUploadEngine', () => {
 			'</figure>' );
 	} );
 
-	it( 'should use read data once it is present', ( done ) => {
+	it( 'should use read data once it is present', done => {
 		const file = createNativeFileMock();
 		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
@@ -122,7 +123,7 @@ describe( 'ImageUploadEngine', () => {
 		nativeReaderMock.mockSuccess( base64Sample );
 	} );
 
-	it( 'should replace read data with server response once it is present', ( done ) => {
+	it( 'should replace read data with server response once it is present', done => {
 		const file = createNativeFileMock();
 		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
@@ -143,7 +144,7 @@ describe( 'ImageUploadEngine', () => {
 		nativeReaderMock.mockSuccess( base64Sample );
 	} );
 
-	it( 'should fire notification event in case of error', ( done ) => {
+	it( 'should fire notification event in case of error', done => {
 		const notification = editor.plugins.get( Notification );
 		const file = createNativeFileMock();
 
@@ -160,7 +161,7 @@ describe( 'ImageUploadEngine', () => {
 		nativeReaderMock.mockError( 'Reading error.' );
 	} );
 
-	it( 'should not fire notification on abort', ( done ) => {
+	it( 'should not fire notification on abort', done => {
 		const notification = editor.plugins.get( Notification );
 		const file = createNativeFileMock();
 		const spy = testUtils.sinon.spy();
@@ -188,7 +189,7 @@ describe( 'ImageUploadEngine', () => {
 		);
 	} );
 
-	it( 'should remove image in case of upload error', ( done ) => {
+	it( 'should remove image in case of upload error', done => {
 		const file = createNativeFileMock();
 		const spy = testUtils.sinon.spy();
 		const notification = editor.plugins.get( Notification );

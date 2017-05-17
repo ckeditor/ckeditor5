@@ -34,7 +34,7 @@ export default class ImageUploadButton extends Plugin {
 		const t = editor.t;
 
 		// Setup `insertImage` button.
-		editor.ui.componentFactory.add( 'insertImage', ( locale ) => {
+		editor.ui.componentFactory.add( 'insertImage', locale => {
 			const view = new FileDialogButtonView( locale );
 
 			view.set( {
@@ -47,7 +47,7 @@ export default class ImageUploadButton extends Plugin {
 
 			view.on( 'done', ( evt, files ) => {
 				for ( const file of files ) {
-					editor.execute( 'imageUpload', { file: file } );
+					editor.execute( 'imageUpload', { file } );
 				}
 			} );
 

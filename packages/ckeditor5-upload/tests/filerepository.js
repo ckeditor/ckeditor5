@@ -41,7 +41,7 @@ describe( 'FileRepository', () => {
 			expect( fileRepository.loaders ).to.be.instanceOf( Collection );
 		} );
 
-		it( 'should initialize uploaded observable', ( done ) => {
+		it( 'should initialize uploaded observable', done => {
 			expect( fileRepository.uploaded ).to.equal( 0 );
 
 			fileRepository.on( 'change:uploaded', ( evt, name, value ) => {
@@ -52,7 +52,7 @@ describe( 'FileRepository', () => {
 			fileRepository.uploaded = 10;
 		} );
 
-		it( 'should initialize uploadTotal', ( done ) => {
+		it( 'should initialize uploadTotal', done => {
 			expect( fileRepository.uploadTotal ).to.be.null;
 
 			fileRepository.on( 'change:uploadTotal', ( evt, name, value ) => {
@@ -63,7 +63,7 @@ describe( 'FileRepository', () => {
 			fileRepository.uploadTotal = 10;
 		} );
 
-		it( 'should initialize uploadedPercent', ( done ) => {
+		it( 'should initialize uploadedPercent', done => {
 			expect( fileRepository.uploadedPercent ).to.equal( 0 );
 
 			fileRepository.on( 'change:uploadedPercent', ( evt, name, value ) => {
@@ -83,7 +83,10 @@ describe( 'FileRepository', () => {
 			fileRepository.createLoader( createNativeFileMock() );
 
 			sinon.assert.calledOnce( stub );
-			sinon.assert.calledWithExactly( stub, 'FileRepository: no createAdapter method found. Please define it before creating a loader.' );
+			sinon.assert.calledWithExactly(
+				stub,
+				'FileRepository: no createAdapter method found. Please define it before creating a loader.'
+			);
 		} );
 
 		it( 'should setup listeners to update progress observables', () => {
@@ -176,7 +179,7 @@ describe( 'FileRepository', () => {
 				expect( loader._reader ).to.be.instanceOf( FileReader );
 			} );
 
-			it( 'should initialize status observable', ( done ) => {
+			it( 'should initialize status observable', done => {
 				expect( loader.status ).to.equal( 'idle' );
 
 				loader.on( 'change:status', ( evt, name, value ) => {
@@ -187,7 +190,7 @@ describe( 'FileRepository', () => {
 				loader.status = 'uploading';
 			} );
 
-			it( 'should initialize uploaded observable', ( done ) => {
+			it( 'should initialize uploaded observable', done => {
 				expect( loader.uploaded ).to.equal( 0 );
 
 				loader.on( 'change:uploaded', ( evt, name, value ) => {
@@ -198,7 +201,7 @@ describe( 'FileRepository', () => {
 				loader.uploaded = 100;
 			} );
 
-			it( 'should initialize uploadTotal observable', ( done ) => {
+			it( 'should initialize uploadTotal observable', done => {
 				expect( loader.uploadTotal ).to.equal( null );
 
 				loader.on( 'change:uploadTotal', ( evt, name, value ) => {
@@ -209,7 +212,7 @@ describe( 'FileRepository', () => {
 				loader.uploadTotal = 100;
 			} );
 
-			it( 'should initialize uploadedPercent observable', ( done ) => {
+			it( 'should initialize uploadedPercent observable', done => {
 				expect( loader.uploadedPercent ).to.equal( 0 );
 
 				loader.on( 'change:uploadedPercent', ( evt, name, value ) => {
@@ -221,7 +224,9 @@ describe( 'FileRepository', () => {
 				loader.uploadTotal = 100;
 			} );
 
-			it( 'should initialize uploadResponse observable', ( done ) => {
+			it( 'should initialize uploadResponse observable', done => {
+				const response = {};
+
 				expect( loader.uploadResponse ).to.equal( null );
 
 				loader.on( 'change:uploadResponse', ( evt, name, value ) => {
@@ -229,7 +234,6 @@ describe( 'FileRepository', () => {
 					done();
 				} );
 
-				const response = {};
 				loader.uploadResponse = response;
 			} );
 		} );

@@ -19,6 +19,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import imagePlaceholder from '../theme/icons/image_placeholder.svg';
 
 describe( 'ImageUploadProgress', () => {
+	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 	let editor, document, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
 	testUtils.createSinonSandbox();
@@ -63,7 +64,7 @@ describe( 'ImageUploadProgress', () => {
 		);
 	} );
 
-	it( 'should convert image\'s "uploading" uploadStatus attribute', ( done ) => {
+	it( 'should convert image\'s "uploading" uploadStatus attribute', done => {
 		setModelData( document, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
@@ -81,7 +82,7 @@ describe( 'ImageUploadProgress', () => {
 		nativeReaderMock.mockSuccess( base64Sample );
 	} );
 
-	it( 'should update progressbar width on progress', ( done ) => {
+	it( 'should update progressbar width on progress', done => {
 		setModelData( document, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
@@ -101,7 +102,7 @@ describe( 'ImageUploadProgress', () => {
 		nativeReaderMock.mockSuccess( base64Sample );
 	} );
 
-	it( 'should convert image\'s "complete" uploadStatus attribute', ( done ) => {
+	it( 'should convert image\'s "complete" uploadStatus attribute', done => {
 		setModelData( document, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
