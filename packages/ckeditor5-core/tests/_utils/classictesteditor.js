@@ -51,7 +51,7 @@ export default class ClassicTestEditor extends StandardEditor {
 	 * @inheritDoc
 	 */
 	static create( element, config ) {
-		return new Promise( ( resolve ) => {
+		return new Promise( resolve => {
 			const editor = new this( element, config );
 
 			resolve(

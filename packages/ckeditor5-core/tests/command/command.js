@@ -52,7 +52,7 @@ describe( 'Command', () => {
 
 			expect( command._checkEnabled.called ).to.be.false;
 
-			let newCommand = new CommandWithSchema( editor, true );
+			const newCommand = new CommandWithSchema( editor, true );
 			sinon.spy( newCommand, '_checkEnabled' );
 
 			newCommand.refreshState();
@@ -73,7 +73,7 @@ describe( 'Command', () => {
 
 	describe( 'refreshState', () => {
 		it( 'should fire refreshState event', () => {
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 
 			command.on( 'refreshState', spy );
 			command.refreshState();
@@ -90,7 +90,7 @@ describe( 'Command', () => {
 		} );
 
 		it( 'should set isEnabled to false if _checkEnabled returns false', () => {
-			let disabledCommand = new CommandWithSchema( editor, false );
+			const disabledCommand = new CommandWithSchema( editor, false );
 
 			disabledCommand.refreshState();
 
@@ -106,7 +106,7 @@ describe( 'Command', () => {
 		} );
 
 		it( 'should not make command disabled if there is a high-priority listener forcing command to be enabled', () => {
-			command.on( 'refreshState', ( evt ) => {
+			command.on( 'refreshState', evt => {
 				evt.stop();
 
 				return true;

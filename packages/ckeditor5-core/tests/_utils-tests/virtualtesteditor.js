@@ -58,11 +58,11 @@ describe( 'VirtualTestEditor', () => {
 			}
 
 			return VirtualTestEditor.create( {
-					plugins: [ EventWatcher ]
-				} )
-				.then( () => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'dataReady', 'ready' ] );
-				} );
+				plugins: [ EventWatcher ]
+			} )
+			.then( () => {
+				expect( fired ).to.deep.equal( [ 'pluginsReady', 'dataReady', 'ready' ] );
+			} );
 		} );
 	} );
 } );

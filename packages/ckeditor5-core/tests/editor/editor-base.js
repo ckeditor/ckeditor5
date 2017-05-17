@@ -27,7 +27,7 @@ describe( 'Editor', () => {
 	describe( 'destroy', () => {
 		it( 'should fire "destroy"', () => {
 			const editor = new Editor();
-			let spy = sinon.spy();
+			const spy = sinon.spy();
 
 			editor.on( 'destroy', spy );
 
@@ -54,7 +54,7 @@ describe( 'Editor', () => {
 		it( 'should execute specified command', () => {
 			const editor = new Editor();
 
-			let command = new Command( editor );
+			const command = new Command( editor );
 			sinon.spy( command, '_execute' );
 
 			editor.commands.set( 'commandName', command );

@@ -93,10 +93,7 @@ describe( 'StandardEditor', () => {
 		it( 'initializes editor with plugins and config', () => {
 			class PluginFoo extends Plugin {}
 
-			return StandardEditor.create( editorElement, {
-					foo: 1,
-					plugins: [ PluginFoo ]
-				} )
+			return StandardEditor.create( editorElement, { foo: 1, plugins: [ PluginFoo ] } )
 				.then( editor => {
 					expect( editor ).to.be.instanceof( StandardEditor );
 
@@ -122,9 +119,7 @@ describe( 'StandardEditor', () => {
 				}
 			}
 
-			return StandardEditor.create( editorElement, {
-					plugins: [ EventWatcher ]
-				} )
+			return StandardEditor.create( editorElement, { plugins: [ EventWatcher ] } )
 				.then( () => {
 					expect( fired ).to.deep.equal( [ 'pluginsReady', 'dataReady', 'ready' ] );
 				} );

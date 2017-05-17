@@ -133,7 +133,7 @@ export default class PluginCollection {
 			}
 
 			return instantiatePlugin( PluginConstructor )
-				.catch( ( err ) => {
+				.catch( err => {
 					/**
 					 * It was not possible to load the plugin.
 					 *
@@ -147,13 +147,13 @@ export default class PluginCollection {
 		}
 
 		function instantiatePlugin( PluginConstructor ) {
-			return new Promise( ( resolve ) => {
+			return new Promise( resolve => {
 				loading.add( PluginConstructor );
 
 				assertIsPlugin( PluginConstructor );
 
 				if ( PluginConstructor.requires ) {
-					PluginConstructor.requires.forEach( ( RequiredPluginConstructorOrName ) => {
+					PluginConstructor.requires.forEach( RequiredPluginConstructorOrName => {
 						const RequiredPluginConstructor = getPluginConstructor( RequiredPluginConstructorOrName );
 
 						if ( removePlugins.includes( RequiredPluginConstructor ) ) {

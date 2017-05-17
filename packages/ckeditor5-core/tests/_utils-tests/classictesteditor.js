@@ -108,13 +108,13 @@ describe( 'ClassicTestEditor', () => {
 			}
 
 			return ClassicTestEditor.create( editorElement, {
-					plugins: [ EventWatcher ]
-				} )
-				.then( editor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+				plugins: [ EventWatcher ]
+			} )
+			.then( editor => {
+				expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
 
-					return editor.destroy();
-				} );
+				return editor.destroy();
+			} );
 		} );
 
 		it( 'inserts editor UI next to editor element', () => {

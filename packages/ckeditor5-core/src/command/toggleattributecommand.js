@@ -101,7 +101,7 @@ export default class ToggleAttributeCommand extends Command {
 				// Keep it as one undo step.
 				const batch = options.batch || document.batch();
 
-				for ( let range of ranges ) {
+				for ( const range of ranges ) {
 					if ( value ) {
 						batch.setAttribute( range, this.attributeKey, value );
 					} else {

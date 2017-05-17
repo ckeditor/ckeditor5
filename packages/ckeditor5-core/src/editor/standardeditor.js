@@ -111,7 +111,7 @@ export default class StandardEditor extends Editor {
 	 * @returns {module:core/editor/standardeditor~StandardEditor} return.editor The editor instance.
 	 */
 	static create( element, config ) {
-		return new Promise( ( resolve ) => {
+		return new Promise( resolve => {
 			const editor = new this( element, config );
 
 			resolve(

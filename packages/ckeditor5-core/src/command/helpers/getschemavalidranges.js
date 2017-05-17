@@ -23,19 +23,19 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 export default function getSchemaValidRanges( attribute, ranges, schema ) {
 	const validRanges = [];
 
-	for ( let range of ranges ) {
+	for ( const range of ranges ) {
 		const walker = new TreeWalker( { boundaries: range, mergeCharacters: true } );
 		let step = walker.next();
 
 		let last = range.start;
 		let from = range.start;
-		let to = range.end;
+		const to = range.end;
 
 		while ( !step.done ) {
 			const name = step.value.item.name || '$text';
 			const itemPosition = Position.createBefore( step.value.item );
 
-			if ( !schema.check( { name: name, inside: itemPosition, attributes: attribute } ) ) {
+			if ( !schema.check( { name, inside: itemPosition, attributes: attribute } ) ) {
 				if ( !from.isEqual( last ) ) {
 					validRanges.push( new Range( from, last ) );
 				}

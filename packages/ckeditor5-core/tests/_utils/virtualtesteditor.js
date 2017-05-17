@@ -33,7 +33,7 @@ export default class VirtualTestEditor extends StandardEditor {
 	 * @returns {core.editor.VirtualTestEditor} return.editor The editor instance.
 	 */
 	static create( config ) {
-		return new Promise( ( resolve ) => {
+		return new Promise( resolve => {
 			const editor = new this( config );
 
 			resolve(
