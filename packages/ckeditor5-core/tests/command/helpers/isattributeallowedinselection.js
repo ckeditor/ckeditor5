@@ -9,11 +9,11 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'isAttributeAllowedInSelection', () => {
 	const attribute = 'bold';
-	let document, root;
+	let document;
 
 	beforeEach( () => {
 		document = new Document();
-		root = document.createRoot();
+		document.createRoot();
 
 		document.schema.registerItem( 'p', '$block' );
 		document.schema.registerItem( 'h1', '$block' );

@@ -119,7 +119,7 @@ describe( 'Editor', () => {
 
 	describe( 'create', () => {
 		it( 'should return a promise that resolves properly', () => {
-			let promise = Editor.create();
+			const promise = Editor.create();
 
 			expect( promise ).to.be.an.instanceof( Promise );
 
@@ -128,8 +128,8 @@ describe( 'Editor', () => {
 
 		it( 'loads plugins', () => {
 			return Editor.create( {
-					plugins: [ PluginA ]
-				} )
+				plugins: [ PluginA ]
+			} )
 				.then( editor => {
 					expect( getPlugins( editor ).length ).to.equal( 1 );
 
@@ -152,9 +152,7 @@ describe( 'Editor', () => {
 				}
 			}
 
-			return Editor.create( {
-					plugins: [ EventWatcher ]
-				} )
+			return Editor.create( { plugins: [ EventWatcher ] } )
 				.then( () => {
 					expect( fired ).to.deep.equal( [ 'pluginsReady', 'dataReady', 'ready' ] );
 				} );
@@ -220,7 +218,7 @@ describe( 'Editor', () => {
 					super( editor );
 
 					this.init = sinon.spy( () => {
-						return new Promise( ( resolve ) => {
+						return new Promise( resolve => {
 							setTimeout( () => {
 								asyncSpy();
 								resolve();
@@ -234,15 +232,16 @@ describe( 'Editor', () => {
 				plugins: [ PluginA, PluginSync ]
 			} );
 
-			return editor.initPlugins().then( () => {
-				sinon.assert.callOrder(
-					editor.plugins.get( PluginA ).init,
-					editor.plugins.get( PluginAsync ).init,
-					// This one is called with delay by the async init.
-					asyncSpy,
-					editor.plugins.get( PluginSync ).init
-				);
-			} );
+			return editor.initPlugins()
+				.then( () => {
+					sinon.assert.callOrder(
+						editor.plugins.get( PluginA ).init,
+						editor.plugins.get( PluginAsync ).init,
+						// This one is called with delay by the async init.
+						asyncSpy,
+						editor.plugins.get( PluginSync ).init
+					);
+				} );
 		} );
 
 		it( 'should initialize plugins in the right order, waiting for asynchronous afterInit()', () => {
@@ -265,7 +264,7 @@ describe( 'Editor', () => {
 					super( editor );
 
 					this.afterInit = sinon.spy( () => {
-						return new Promise( ( resolve ) => {
+						return new Promise( resolve => {
 							setTimeout( () => {
 								asyncSpy();
 								resolve();
@@ -279,16 +278,17 @@ describe( 'Editor', () => {
 				plugins: [ PluginA, PluginSync ]
 			} );
 
-			return editor.initPlugins().then( () => {
-				sinon.assert.callOrder(
-					editor.plugins.get( PluginA ).afterInit,
-					editor.plugins.get( PluginAsync ).afterInit,
+			return editor.initPlugins()
+				.then( () => {
+					sinon.assert.callOrder(
+						editor.plugins.get( PluginA ).afterInit,
+						editor.plugins.get( PluginAsync ).afterInit,
 
-					// This one is called with delay by the async init.
-					asyncSpy,
-					editor.plugins.get( PluginSync ).afterInit
-				);
-			} );
+						// This one is called with delay by the async init.
+						asyncSpy,
+						editor.plugins.get( PluginSync ).afterInit
+					);
+				} );
 		} );
 
 		it( 'should load plugins built in the Editor even if the passed config is empty', () => {

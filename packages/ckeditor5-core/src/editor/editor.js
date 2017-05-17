@@ -113,7 +113,7 @@ export default class Editor {
 		const config = this.config;
 
 		return loadPlugins()
-			.then( ( loadedPlugins ) => {
+			.then( loadedPlugins => {
 				return initPlugins( loadedPlugins, 'init' )
 					.then( () => initPlugins( loadedPlugins, 'afterInit' ) );
 			} )
@@ -157,7 +157,7 @@ export default class Editor {
 	 * @param {*} [commandParam] If set, command will be executed with this parameter.
 	 */
 	execute( commandName, commandParam ) {
-		let command = this.commands.get( commandName );
+		const command = this.commands.get( commandName );
 
 		if ( !command ) {
 			/**
@@ -179,7 +179,7 @@ export default class Editor {
 	 * @returns {module:core/editor/editor~Editor} return.editor The editor instance.
 	 */
 	static create( config ) {
-		return new Promise( ( resolve ) => {
+		return new Promise( resolve => {
 			const editor = new this( config );
 
 			resolve(

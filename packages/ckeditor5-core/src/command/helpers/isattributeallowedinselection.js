@@ -28,7 +28,7 @@ export default function isAttributeAllowedInSelection( attribute, selection, sch
 		const ranges = selection.getRanges();
 
 		// For all ranges, check nodes in them until you find a node that is allowed to have `attributeKey` attribute.
-		for ( let range of ranges ) {
+		for ( const range of ranges ) {
 			const walker = new TreeWalker( { boundaries: range, mergeCharacters: true } );
 			let last = walker.position;
 			let step = walker.next();
@@ -38,7 +38,7 @@ export default function isAttributeAllowedInSelection( attribute, selection, sch
 				// If returned item does not have name property, it is a model.TextFragment.
 				const name = step.value.item.name || '$text';
 
-				if ( schema.check( { name: name, inside: last, attributes: attribute } ) ) {
+				if ( schema.check( { name, inside: last, attributes: attribute } ) ) {
 					// If we found a node that is allowed to have the attribute, return true.
 					return true;
 				}

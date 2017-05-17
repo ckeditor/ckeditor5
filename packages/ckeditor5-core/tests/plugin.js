@@ -14,7 +14,7 @@ before( () => {
 
 describe( 'constructor()', () => {
 	it( 'should set the `editor` property', () => {
-		let plugin = new Plugin( editor );
+		const plugin = new Plugin( editor );
 
 		expect( plugin ).to.have.property( 'editor' ).to.equal( editor );
 	} );
@@ -22,7 +22,7 @@ describe( 'constructor()', () => {
 
 describe( 'init', () => {
 	it( 'should exist and do nothing', () => {
-		let plugin = new Plugin( editor );
+		const plugin = new Plugin( editor );
 
 		expect( plugin.init ).to.be.a( 'function' );
 
@@ -32,7 +32,7 @@ describe( 'init', () => {
 
 describe( 'destroy', () => {
 	it( 'should exist and do nothing', () => {
-		let plugin = new Plugin( editor );
+		const plugin = new Plugin( editor );
 
 		expect( plugin.destroy ).to.be.a( 'function' );
 
