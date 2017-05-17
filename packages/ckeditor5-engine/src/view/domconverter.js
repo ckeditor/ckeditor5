@@ -736,14 +736,33 @@ export default class DomConverter {
 		const domEditable = this.getCorrespondingDomElement( viewEditable );
 
 		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
+			// Save the scrollX and scrollY positions before the focus.
 			const { scrollX, scrollY } = global.window;
-			const { scrollLeft, scrollTop } = domEditable;
+			const scrollPositions = [];
+
+			// Save all scrollLeft and scrollTop values starting from domEditable up to
+			// document#documentElement.
+			forEachDomNodeAncestor( domEditable, node => {
+				const { scrollLeft, scrollTop } = node;
+
+				scrollPositions.push( [ scrollLeft, scrollTop ] );
+			} );
 
 			domEditable.focus();
 
+			// Restore scrollLeft and scrollTop values starting from domEditable up to
+			// document#documentElement.
 			// https://github.com/ckeditor/ckeditor5-engine/issues/951
-			domEditable.scrollLeft = scrollLeft;
-			domEditable.scrollTop = scrollTop;
+			// https://github.com/ckeditor/ckeditor5-engine/issues/957
+			forEachDomNodeAncestor( domEditable, node => {
+				const [ scrollLeft, scrollTop ] = scrollPositions.shift();
+
+				node.scrollLeft = scrollLeft;
+				node.scrollTop = scrollTop;
+			} );
+
+			// Restore the scrollX and scrollY positions after the focus.
+			// https://github.com/ckeditor/ckeditor5-engine/issues/951
 			global.window.scrollTo( scrollX, scrollY );
 		}
 	}
@@ -1057,4 +1076,16 @@ function _hasDomParentOfType( node, types, boundaryParent ) {
 	}
 
 	return parents.some( parent => parent.tagName && types.includes( parent.tagName.toLowerCase() ) );
+}
+
+// A helper that executes given callback for each DOM node's ancestor, starting from the given node
+// and ending in document#documentElement.
+//
+// @param {Node} node
+// @param {Function} callback A callback to be executed for each ancestor.
+function forEachDomNodeAncestor( node, callback ) {
+	while ( node && node != global.document ) {
+		callback( node );
+		node = node.parentNode;
+	}
 }
