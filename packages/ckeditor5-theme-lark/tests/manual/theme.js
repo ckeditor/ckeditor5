@@ -24,29 +24,29 @@ import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg'
 import '../../theme/theme.scss';
 
 testUtils.createTestUIView( {
-	'iconPlain1':					'#icon-plain-1',
-	'iconPlain2':					'#icon-plain-2',
-	'iconColor1':					'#icon-color-1',
-	'iconColor2':					'#icon-color-2',
+	'iconPlain1': '#icon-plain-1',
+	'iconPlain2': '#icon-plain-2',
+	'iconColor1': '#icon-color-1',
+	'iconColor2': '#icon-color-2',
 
-	'buttonStates':					'#button-states',
-	'buttonTypes':					'#button-types',
-	'buttonIcon':					'#button-icon',
-	'buttonCustom':					'#button-custom',
-	'buttonIconCustom':				'#button-icon-custom',
-	'buttonIconStates':				'#button-icon-states',
-	'buttonResponsive1':			'#button-responsive-1',
-	'buttonResponsive2':			'#button-responsive-2',
-	'buttonResponsive3':			'#button-responsive-3',
+	'buttonStates': '#button-states',
+	'buttonTypes': '#button-types',
+	'buttonIcon': '#button-icon',
+	'buttonCustom': '#button-custom',
+	'buttonIconCustom': '#button-icon-custom',
+	'buttonIconStates': '#button-icon-states',
+	'buttonResponsive1': '#button-responsive-1',
+	'buttonResponsive2': '#button-responsive-2',
+	'buttonResponsive3': '#button-responsive-3',
 
-	dropdown:						'#dropdown',
+	dropdown: '#dropdown',
 
-	'toolbarText':					'#toolbar-text',
-	'toolbarButton':				'#toolbar-button',
-	'toolbarRounded':				'#toolbar-rounded',
-	'toolbarWrap':					'#toolbar-wrap',
-	'toolbarSeparator':				'#toolbar-separator',
-	'toolbarMultiRow':				'#toolbar-multi-row'
+	'toolbarText': '#toolbar-text',
+	'toolbarButton': '#toolbar-button',
+	'toolbarRounded': '#toolbar-rounded',
+	'toolbarWrap': '#toolbar-wrap',
+	'toolbarSeparator': '#toolbar-separator',
+	'toolbarMultiRow': '#toolbar-multi-row'
 } ).then( ui => {
 	renderIcon( ui );
 	renderButton( ui );
