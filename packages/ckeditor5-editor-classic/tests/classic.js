@@ -61,11 +61,11 @@ describe( 'ClassicEditor', () => {
 	describe( 'create()', () => {
 		beforeEach( function() {
 			return ClassicEditor.create( editorElement, {
-					plugins: [ Paragraph, Bold ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-				} );
+				plugins: [ Paragraph, Bold ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+			} );
 		} );
 
 		afterEach( () => {
@@ -92,16 +92,16 @@ describe( 'ClassicEditor', () => {
 			class CustomClassicEditor extends ClassicEditor {}
 
 			return CustomClassicEditor.create( editorElement, {
-					plugins: [ Paragraph, Bold ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
+				plugins: [ Paragraph, Bold ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
 
-					expect( newEditor ).to.be.instanceof( CustomClassicEditor );
-					expect( newEditor ).to.be.instanceof( ClassicEditor );
+				expect( newEditor ).to.be.instanceof( CustomClassicEditor );
+				expect( newEditor ).to.be.instanceof( ClassicEditor );
 
-					expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
-				} );
+				expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+			} );
 		} );
 	} );
 
@@ -127,13 +127,13 @@ describe( 'ClassicEditor', () => {
 			}
 
 			return ClassicEditor.create( editorElement, {
-					plugins: [ EventWatcher ]
-				} )
-				.then( ( newEditor ) => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+				plugins: [ EventWatcher ]
+			} )
+			.then( newEditor => {
+				expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
 
-					editor = newEditor;
-				} );
+				editor = newEditor;
+			} );
 		} );
 
 		it( 'fires dataReady once data is loaded', () => {
@@ -148,13 +148,13 @@ describe( 'ClassicEditor', () => {
 			}
 
 			return ClassicEditor.create( editorElement, {
-					plugins: [ EventWatcher, Paragraph, Bold ]
-				} )
-				.then( ( newEditor ) => {
-					expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
+				plugins: [ EventWatcher, Paragraph, Bold ]
+			} )
+			.then( newEditor => {
+				expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
 
-					editor = newEditor;
-				} );
+				editor = newEditor;
+			} );
 		} );
 
 		it( 'fires uiReady once UI is ready', () => {
@@ -169,13 +169,13 @@ describe( 'ClassicEditor', () => {
 			}
 
 			return ClassicEditor.create( editorElement, {
-					plugins: [ EventWatcher ]
-				} )
-				.then( ( newEditor ) => {
-					expect( isReady ).to.be.true;
+				plugins: [ EventWatcher ]
+			} )
+			.then( newEditor => {
+				expect( isReady ).to.be.true;
 
-					editor = newEditor;
-				} );
+				editor = newEditor;
+			} );
 		} );
 	} );
 

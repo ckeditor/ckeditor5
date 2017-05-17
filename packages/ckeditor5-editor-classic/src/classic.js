@@ -80,7 +80,7 @@ export default class ClassicEditor extends StandardEditor {
 	 * @returns {module:core/editor/standardeditor~StandardEditor} return.editor The editor instance.
 	 */
 	static create( element, config ) {
-		return new Promise( ( resolve ) => {
+		return new Promise( resolve => {
 			const editor = new this( element, config );
 
 			resolve(

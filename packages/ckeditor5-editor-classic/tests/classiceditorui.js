@@ -193,7 +193,7 @@ describe( 'ClassicEditorUI', () => {
 } );
 
 function viewCreator( name ) {
-	return ( locale ) => {
+	return locale => {
 		const view = new View( locale );
 
 		view.name = name;
