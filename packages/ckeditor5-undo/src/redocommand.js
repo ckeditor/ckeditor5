@@ -43,7 +43,7 @@ export default class RedoCommand extends BaseCommand {
 			// that happened after the selection state got saved. Unfortunately it is tricky, because those deltas
 			// are already compressed in the history (they are removed).
 			// Because of that we will transform the selection only by non-redo deltas
-			const deltas = Array.from( this.editor.document.history.getDeltas( nextBaseVersion ) ).filter( ( delta ) => {
+			const deltas = Array.from( this.editor.document.history.getDeltas( nextBaseVersion ) ).filter( delta => {
 				return !this._createdBatches.has( delta.batch );
 			} );
 
@@ -73,7 +73,7 @@ export default class RedoCommand extends BaseCommand {
 
 		// We will process each delta from `storedBatch`, in reverse order. If there was deltas A, B and C in stored batch,
 		// we need to revert them in reverse order, so first reverse C, then B, then A.
-		for ( let deltaToRedo of deltasToRedo ) {
+		for ( const deltaToRedo of deltasToRedo ) {
 			// Keep in mind that all algorithms return arrays. That's because the transformation might result in multiple
 			// deltas, so we need arrays to handle them anyway. To simplify algorithms, it is better to always have arrays
 			// in mind. For simplicity reasons, we will use singular form in descriptions and names.
@@ -86,14 +86,14 @@ export default class RedoCommand extends BaseCommand {
 			// 1. Transform that delta by deltas from history that happened after it.
 			// Omit deltas from "redo" batches, because reversed delta already bases on them. Transforming by them
 			// again will result in incorrect deltas.
-			for ( let historyDelta of document.history.getDeltas( nextBaseVersion ) ) {
+			for ( const historyDelta of document.history.getDeltas( nextBaseVersion ) ) {
 				if ( !this._createdBatches.has( historyDelta.batch ) ) {
 					reversedDelta = deltaTransform.transformDeltaSets( reversedDelta, [ historyDelta ], true ).deltasA;
 				}
 			}
 
 			// 2. After reversed delta has been transformed by all history deltas, apply it.
-			for ( let delta of reversedDelta ) {
+			for ( const delta of reversedDelta ) {
 				// Fix base version.
 				delta.baseVersion = document.version;
 
@@ -101,7 +101,7 @@ export default class RedoCommand extends BaseCommand {
 				redoingBatch.addDelta( delta );
 
 				// Now, apply all operations of the delta.
-				for ( let operation of delta.operations ) {
+				for ( const operation of delta.operations ) {
 					document.applyOperation( operation );
 				}
 			}

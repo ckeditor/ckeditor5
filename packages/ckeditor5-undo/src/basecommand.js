@@ -87,7 +87,7 @@ export default class BaseCommand extends Command {
 		const selectionRanges = [];
 
 		// Transform all ranges from the restored selection.
-		for ( let range of ranges ) {
+		for ( const range of ranges ) {
 			const transformedRanges = transformSelectionRange( range, deltas );
 
 			// For each `range` from `ranges`, we take only one transformed range.
@@ -95,7 +95,7 @@ export default class BaseCommand extends Command {
 			// got transformed to multi-range selection. We will take the first range that
 			// is not in the graveyard.
 			const transformedRange = transformedRanges.find(
-				( range ) => range.start.root != document.graveyard
+				range => range.start.root != document.graveyard
 			);
 
 			// `transformedRange` might be `undefined` if transformed range ended up in graveyard.
@@ -117,7 +117,7 @@ function transformSelectionRange( range, deltas ) {
 	// The range will be transformed by history deltas that happened after the selection got stored.
 	// Note, that at this point, the document history is already updated by undo command execution. We will
 	// not transform the range by deltas that got undone or their reversing counterparts.
-	let transformed = transformRangesByDeltas( [ range ], deltas );
+	const transformed = transformRangesByDeltas( [ range ], deltas );
 
 	// After `range` got transformed, we have an array of ranges. Some of those
 	// ranges may be "touching" -- they can be next to each other and could be merged.
@@ -125,9 +125,9 @@ function transformSelectionRange( range, deltas ) {
 	transformed.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
 
 	// Then, we check if two consecutive ranges are touching.
-	for ( let i = 1 ; i < transformed.length; i++ ) {
-		let a = transformed[ i - 1 ];
-		let b = transformed[ i ];
+	for ( let i = 1; i < transformed.length; i++ ) {
+		const a = transformed[ i - 1 ];
+		const b = transformed[ i ];
 
 		if ( a.end.isTouching( b.start ) ) {
 			a.end = b.end;
@@ -141,8 +141,8 @@ function transformSelectionRange( range, deltas ) {
 
 // Transforms given set of `ranges` by given set of `deltas`. Returns transformed `ranges`.
 export function transformRangesByDeltas( ranges, deltas ) {
-	for ( let delta of deltas ) {
-		for ( let operation of delta.operations ) {
+	for ( const delta of deltas ) {
+		for ( const operation of delta.operations ) {
 			// We look through all operations from all deltas.
 
 			for ( let i = 0; i < ranges.length; i++ ) {

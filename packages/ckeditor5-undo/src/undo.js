@@ -170,11 +170,11 @@ export default class Undo extends Plugin {
 		const editor = this.editor;
 		const command = editor.commands.get( name );
 
-		editor.ui.componentFactory.add( name, ( locale ) => {
+		editor.ui.componentFactory.add( name, locale => {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: label,
+				label,
 				icon: Icon,
 				keystroke,
 				tooltip: true

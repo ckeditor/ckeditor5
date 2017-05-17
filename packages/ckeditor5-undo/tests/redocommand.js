@@ -32,7 +32,7 @@ describe( 'RedoCommand', () => {
 			const r = ( a, b ) => new Range( p( a ), p( b ) );
 
 			let batch0, batch1, batch2;
-			let batches = new Set();
+			const batches = new Set();
 
 			beforeEach( () => {
 				undo = new UndoCommand( editor );
@@ -53,6 +53,7 @@ describe( 'RedoCommand', () => {
 				batch0 = doc.batch();
 				undo.addBatch( batch0 );
 				batch0.insert( p( 0 ), 'foobar' );
+
 				/*
 				 [root]
 				 - f
@@ -67,6 +68,7 @@ describe( 'RedoCommand', () => {
 				batch1 = doc.batch();
 				undo.addBatch( batch1 );
 				batch1.setAttribute( r( 2, 4 ), 'key', 'value' );
+
 				/*
 				 [root]
 				 - f
@@ -80,6 +82,7 @@ describe( 'RedoCommand', () => {
 				batch2 = doc.batch();
 				undo.addBatch( batch2 );
 				batch2.move( r( 1, 3 ), p( 6 ) );
+
 				/*
 				 [root]
 				 - f

@@ -15,9 +15,7 @@ describe( 'UndoEngine integration', () => {
 	let editor, doc, root;
 
 	beforeEach( () => {
-		return ModelTestEditor.create( {
-				plugins: [ UndoEngine ]
-			} )
+		return ModelTestEditor.create( { plugins: [ UndoEngine ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				doc = editor.document;
@@ -131,7 +129,7 @@ describe( 'UndoEngine integration', () => {
 				output( '<p>fozzz[]o</p><p>bar</p>' );
 
 				setSelection( [ 1, 2 ], [ 1, 2 ] );
-				doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 1, 1 ] ) , 1 ) );
+				doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 1, 1 ] ), 1 ) );
 				output( '<p>fozzzo</p><p>b[]r</p>' );
 
 				editor.execute( 'undo' );
@@ -149,7 +147,7 @@ describe( 'UndoEngine integration', () => {
 				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
 				output( '<p>fozzz[]o</p><p>bar</p>' );
 
-				doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 0, 2 ] ) , 3 ) );
+				doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 0, 2 ] ), 3 ) );
 				output( '<p>fo[]o</p><p>bar</p>' );
 
 				editor.execute( 'undo' );

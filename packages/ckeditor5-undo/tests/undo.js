@@ -21,9 +21,7 @@ describe( 'Undo', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-				plugins: [ Undo ]
-			} )
+		return ClassicTestEditor.create( editorElement, { plugins: [ Undo ] } )
 			.then( newEditor => {
 				editor = newEditor;
 			} );

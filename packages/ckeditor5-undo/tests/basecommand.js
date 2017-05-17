@@ -7,15 +7,13 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import BaseCommand from '../src/basecommand';
 
 describe( 'BaseCommand', () => {
-	let editor, doc, root, base;
+	let editor, doc, base;
 
 	beforeEach( () => {
 		editor = new ModelTestEditor();
 		base = new BaseCommand( editor );
 
 		doc = editor.document;
-
-		root = doc.getRoot();
 	} );
 
 	afterEach( () => {

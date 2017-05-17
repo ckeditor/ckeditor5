@@ -43,6 +43,7 @@ describe( 'UndoCommand', () => {
 				batch0 = doc.batch();
 				undo.addBatch( batch0 );
 				batch0.insert( p( 0 ), 'foobar' );
+
 				/*
 				 [root]
 				 - f
@@ -57,6 +58,7 @@ describe( 'UndoCommand', () => {
 				batch1 = doc.batch();
 				undo.addBatch( batch1 );
 				batch1.setAttribute( r( 2, 4 ), 'key', 'value' );
+
 				/*
 				 [root]
 				 - f
@@ -70,6 +72,7 @@ describe( 'UndoCommand', () => {
 				batch2 = doc.batch();
 				undo.addBatch( batch2 );
 				batch2.move( r( 1, 3 ), p( 6 ) );
+
 				/*
 				 [root]
 				 - f
@@ -83,6 +86,7 @@ describe( 'UndoCommand', () => {
 				batch3 = doc.batch();
 				undo.addBatch( batch3 );
 				batch3.wrap( r( 1, 4 ), 'p' );
+
 				/*
 				 [root]
 				 - f
@@ -95,6 +99,7 @@ describe( 'UndoCommand', () => {
 				 */
 				editor.document.selection.setRanges( [ r( 0, 1 ) ] );
 				batch2.move( r( 0, 1 ), p( 3 ) );
+
 				/*
 				 [root]
 				 - [p]
@@ -239,7 +244,7 @@ describe( 'UndoCommand', () => {
 
 				expect( doc.graveyard.getChild( 0 ).maxOffset ).to.equal( 6 );
 
-				for ( let char of doc.graveyard._children ) {
+				for ( const char of doc.graveyard._children ) {
 					expect( char.hasAttribute( 'key' ) ).to.be.false;
 				}
 
@@ -259,14 +264,15 @@ describe( 'UndoCommand', () => {
 				let text = '';
 
 				for ( let i = 0; i < root.childCount; i++ ) {
-					let node = root.getChild( i );
+					const node = root.getChild( i );
 					text += node.getAttribute( 'uppercase' ) ? node.data.toUpperCase() : node.data;
 				}
 
 				return text;
 			}
 
-			it( 'correctly handles deltas in compressed history that were earlier updated into multiple deltas (or split when undoing)', () => {
+			it( 'correctly handles deltas in compressed history that were earlier updated into multiple deltas ' +
+				'(or split when undoing)', () => {
 				// In this case we assume that one of the deltas in compressed history was updated to two deltas.
 				// This is a tricky edge case because it is almost impossible to come up with convincing scenario that produces it.
 				// At the moment of writing this test and comment, only Undo feature uses `CompressedHistory#updateDelta`.
@@ -280,19 +286,19 @@ describe( 'UndoCommand', () => {
 				expect( getCaseText( root ) ).to.equal( 'abcdef' );
 
 				editor.document.selection.setRanges( [ r( 1, 4 ) ] );
-				let batch0 = doc.batch();
+				const batch0 = doc.batch();
 				undo.addBatch( batch0 );
 				batch0.move( r( 1, 4 ), p( 5 ) );
 				expect( getCaseText( root ) ).to.equal( 'aebcdf' );
 
-				editor.document.selection.setRanges( [ r( 1, 1 ) ]  );
-				let batch1 = doc.batch();
+				editor.document.selection.setRanges( [ r( 1, 1 ) ] );
+				const batch1 = doc.batch();
 				undo.addBatch( batch1 );
 				batch1.remove( r( 0, 1 ) );
 				expect( getCaseText( root ) ).to.equal( 'ebcdf' );
 
 				editor.document.selection.setRanges( [ r( 0, 3 ) ] );
-				let batch2 = doc.batch();
+				const batch2 = doc.batch();
 				undo.addBatch( batch2 );
 				batch2.setAttribute( r( 0, 3 ), 'uppercase', true );
 				expect( getCaseText( root ) ).to.equal( 'EBCdf' );
@@ -301,10 +307,10 @@ describe( 'UndoCommand', () => {
 				expect( getCaseText( root ) ).to.equal( 'BCdEf' );
 
 				// Let's simulate splitting the delta by updating the history by hand.
-				let attrHistoryDelta = doc.history.getDelta( 2 )[ 0 ];
-				let attrDelta1 = new AttributeDelta();
+				const attrHistoryDelta = doc.history.getDelta( 2 )[ 0 ];
+				const attrDelta1 = new AttributeDelta();
 				attrDelta1.addOperation( attrHistoryDelta.operations[ 0 ] );
-				let attrDelta2 = new AttributeDelta();
+				const attrDelta2 = new AttributeDelta();
 				attrDelta2.addOperation( attrHistoryDelta.operations[ 1 ] );
 				doc.history.updateDelta( 2, [ attrDelta1, attrDelta2 ] );
 
@@ -324,13 +330,13 @@ describe( 'UndoCommand', () => {
 				expect( getCaseText( root ) ).to.equal( 'abcdef' );
 
 				editor.document.selection.setRanges( [ r( 1, 4 ) ] );
-				let batch0 = doc.batch();
+				const batch0 = doc.batch();
 				undo.addBatch( batch0 );
 				batch0.setAttribute( r( 1, 4 ), 'uppercase', true );
 				expect( getCaseText( root ) ).to.equal( 'aBCDef' );
 
 				editor.document.selection.setRanges( [ r( 3, 4 ) ] );
-				let batch1 = doc.batch();
+				const batch1 = doc.batch();
 				undo.addBatch( batch1 );
 				batch1.move( r( 3, 4 ), p( 1 ) );
 				expect( getCaseText( root ) ).to.equal( 'aDBCef' );
@@ -349,7 +355,7 @@ describe( 'UndoCommand', () => {
 				expect( getCaseText( root ) ).to.equal( 'abcdef' );
 
 				editor.document.selection.setRanges( [ r( 0, 1 ) ] );
-				let batch0 = doc.batch();
+				const batch0 = doc.batch();
 				undo.addBatch( batch0 );
 				batch0.setAttribute( r( 0, 1 ), 'uppercase', true );
 				expect( getCaseText( root ) ).to.equal( 'Abcdef' );

@@ -7,8 +7,7 @@
  * @module undo/undocommand
  */
 
-import BaseCommand from './basecommand';
-import { transformRangesByDeltas } from './basecommand';
+import { default as BaseCommand, transformRangesByDeltas } from './basecommand';
 import deltaTransform from '@ckeditor/ckeditor5-engine/src/model/delta/transform';
 
 /**
@@ -33,7 +32,7 @@ export default class UndoCommand extends BaseCommand {
 	 */
 	_doExecute( batch = null ) {
 		// If batch is not given, set `batchIndex` to the last index in command stack.
-		let batchIndex = batch ? this._stack.findIndex( ( a ) => a.batch == batch ) : this._stack.length - 1;
+		const batchIndex = batch ? this._stack.findIndex( a => a.batch == batch ) : this._stack.length - 1;
 
 		const item = this._stack.splice( batchIndex, 1 )[ 0 ];
 
@@ -89,7 +88,7 @@ export default class UndoCommand extends BaseCommand {
 
 		// We will process each delta from `batchToUndo`, in reverse order. If there was deltas A, B and C in undone batch,
 		// we need to revert them in reverse order, so first reverse C, then B, then A.
-		for ( let deltaToUndo of deltasToUndo ) {
+		for ( const deltaToUndo of deltasToUndo ) {
 			// Keep in mind that all algorithms return arrays. That's because the transformation might result in multiple
 			// deltas, so we need arrays to handle them anyway. To simplify algorithms, it is better to always have arrays
 			// in mind. For simplicity reasons, we will use singular form in descriptions and names.
@@ -111,7 +110,7 @@ export default class UndoCommand extends BaseCommand {
 			updatedDeltaToUndo.reverse();
 			let reversedDelta = [];
 
-			for ( let delta of updatedDeltaToUndo ) {
+			for ( const delta of updatedDeltaToUndo ) {
 				reversedDelta.push( delta.getReversed() );
 			}
 
@@ -121,7 +120,7 @@ export default class UndoCommand extends BaseCommand {
 			// 3. Transform reversed delta by history deltas that happened after delta to undo. We have to bring
 			// reversed delta to the current state of document. While doing this, we will also update history deltas
 			// to the state which "does not remember" delta that we undo.
-			for ( let historyDelta of history.getDeltas( nextBaseVersion ) ) {
+			for ( const historyDelta of history.getDeltas( nextBaseVersion ) ) {
 				// 3.1. Transform selection range stored with history batch by reversed delta.
 				// It is important to keep stored selection ranges updated. As we are removing and updating deltas in the history,
 				// selection ranges would base on outdated history state.
@@ -131,7 +130,9 @@ export default class UndoCommand extends BaseCommand {
 				// This is fine, because we want to transform each selection only once, before transforming reversed delta
 				// by the first delta of the batch connected with the ranges.
 				if ( itemIndex !== null ) {
-					this._stack[ itemIndex ].selection.ranges = transformRangesByDeltas( this._stack[ itemIndex ].selection.ranges, reversedDelta );
+					this._stack[ itemIndex ].selection.ranges = transformRangesByDeltas(
+						this._stack[ itemIndex ].selection.ranges, reversedDelta
+					);
 				}
 
 				// 3.2. Transform reversed delta by history delta and vice-versa.
@@ -145,11 +146,12 @@ export default class UndoCommand extends BaseCommand {
 					updatedHistoryDeltas[ historyDelta.baseVersion ] = [];
 				}
 
-				updatedHistoryDeltas[ historyDelta.baseVersion ] = updatedHistoryDeltas[ historyDelta.baseVersion ].concat( updatedHistoryDelta );
+				const mergedHistoryDeltas = updatedHistoryDeltas[ historyDelta.baseVersion ].concat( updatedHistoryDelta );
+				updatedHistoryDeltas[ historyDelta.baseVersion ] = mergedHistoryDeltas;
 			}
 
 			// 4. After reversed delta has been transformed by all history deltas, apply it.
-			for ( let delta of reversedDelta ) {
+			for ( const delta of reversedDelta ) {
 				// Fix base version.
 				delta.baseVersion = document.version;
 
@@ -157,7 +159,7 @@ export default class UndoCommand extends BaseCommand {
 				undoingBatch.addDelta( delta );
 
 				// Now, apply all operations of the delta.
-				for ( let operation of delta.operations ) {
+				for ( const operation of delta.operations ) {
 					document.applyOperation( operation );
 				}
 			}
@@ -168,12 +170,12 @@ export default class UndoCommand extends BaseCommand {
 			// And all deltas that are reversing it.
 			// So the history looks like both original and reversing deltas never happened.
 			// That's why we have to update history deltas - some of them might have been basing on deltas that we are now removing.
-			for ( let delta of reversedDelta ) {
+			for ( const delta of reversedDelta ) {
 				history.removeDelta( delta.baseVersion );
 			}
 
 			// 6. Update history deltas in history.
-			for ( let historyBaseVersion in updatedHistoryDeltas ) {
+			for ( const historyBaseVersion in updatedHistoryDeltas ) {
 				history.updateDelta( Number( historyBaseVersion ), updatedHistoryDeltas[ historyBaseVersion ] );
 			}
 		}
