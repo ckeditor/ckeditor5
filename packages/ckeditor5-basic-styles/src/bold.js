@@ -44,7 +44,7 @@ export default class Bold extends Plugin {
 		const keystroke = 'CTRL+B';
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( 'bold', ( locale ) => {
+		editor.ui.componentFactory.add( 'bold', locale => {
 			const view = new ButtonView( locale );
 
 			view.set( {

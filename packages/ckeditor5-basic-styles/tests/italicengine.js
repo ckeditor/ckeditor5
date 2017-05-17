@@ -17,13 +17,13 @@ describe( 'ItalicEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-				plugins: [ Paragraph, ItalicEngine ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
+			plugins: [ Paragraph, ItalicEngine ]
+		} )
+		.then( newEditor => {
+			editor = newEditor;
 
-				doc = editor.document;
-			} );
+			doc = editor.document;
+		} );
 	} );
 
 	it( 'should be loaded', () => {

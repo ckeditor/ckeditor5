@@ -17,13 +17,13 @@ describe( 'BoldEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-				plugins: [ Paragraph, BoldEngine ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
+			plugins: [ Paragraph, BoldEngine ]
+		} )
+		.then( newEditor => {
+			editor = newEditor;
 
-				doc = editor.document;
-			} );
+			doc = editor.document;
+		} );
 	} );
 
 	it( 'should be loaded', () => {

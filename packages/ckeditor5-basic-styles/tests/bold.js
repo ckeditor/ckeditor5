@@ -22,13 +22,13 @@ describe( 'Bold', () => {
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-				plugins: [ Bold ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
+			plugins: [ Bold ]
+		} )
+		.then( newEditor => {
+			editor = newEditor;
 
-				boldView = editor.ui.componentFactory.create( 'bold' );
-			} );
+			boldView = editor.ui.componentFactory.create( 'bold' );
+		} );
 	} );
 
 	afterEach( () => {
