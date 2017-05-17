@@ -160,7 +160,7 @@ describe( 'ContextualToolbar', () => {
 					view: contextualToolbar.toolbarView,
 					balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
 					position: {
-						target: sinon.match( value => value() == backwardSelectionRect ) ,
+						target: sinon.match( value => value() == backwardSelectionRect ),
 						positions: [ defaultPositions.southEastArrowNorth, defaultPositions.northEastArrowSouth ]
 					}
 				} );
