@@ -89,7 +89,7 @@ export default class HeadingCommand extends Command {
 		document.enqueueChanges( () => {
 			const batch = options.batch || document.batch();
 
-			for ( let block of document.selection.getSelectedBlocks() ) {
+			for ( const block of document.selection.getSelectedBlocks() ) {
 				// When removing applied option.
 				if ( shouldRemove ) {
 					if ( block.is( this.modelElement ) ) {

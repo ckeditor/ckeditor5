@@ -106,7 +106,7 @@ describe( 'Heading', () => {
 			} );
 
 			it( 'isEnabled', () => {
-				for ( let name in commands ) {
+				for ( const name in commands ) {
 					commands[ name ].isEnabled = false;
 				}
 
@@ -117,7 +117,7 @@ describe( 'Heading', () => {
 			} );
 
 			it( 'label', () => {
-				for ( let name in commands ) {
+				for ( const name in commands ) {
 					commands[ name ].value = false;
 				}
 
@@ -209,7 +209,7 @@ describe( 'Heading', () => {
 					toolbar: [ 'heading' ],
 					lang: 'pl',
 					heading: {
-						options: options
+						options
 					}
 				} )
 				.then( newEditor => {

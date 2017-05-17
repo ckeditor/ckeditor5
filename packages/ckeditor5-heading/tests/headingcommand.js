@@ -28,7 +28,7 @@ describe( 'HeadingCommand', () => {
 			editor.commands.set( 'paragraph', new ParagraphCommand( editor ) );
 			schema.registerItem( 'paragraph', '$block' );
 
-			for ( let option of options ) {
+			for ( const option of options ) {
 				commands[ option.modelElement ] = new HeadingCommand( editor, option );
 				schema.registerItem( option.modelElement, '$block' );
 			}
@@ -42,13 +42,13 @@ describe( 'HeadingCommand', () => {
 	} );
 
 	afterEach( () => {
-		for ( let modelElement in commands ) {
+		for ( const modelElement in commands ) {
 			commands[ modelElement ].destroy();
 		}
 	} );
 
 	describe( 'basic properties', () => {
-		for ( let option of options ) {
+		for ( const option of options ) {
 			test( option );
 		}
 
@@ -62,7 +62,7 @@ describe( 'HeadingCommand', () => {
 	} );
 
 	describe( 'value', () => {
-		for ( let option of options ) {
+		for ( const option of options ) {
 			test( option );
 		}
 
@@ -75,8 +75,8 @@ describe( 'HeadingCommand', () => {
 				expect( commands[ modelElement ].value ).to.be.true;
 			} );
 
-			it( `equals false if inside to non-block element`, () => {
-				setData( document, `<notBlock>[foo]</notBlock>` );
+			it( 'equals false if inside to non-block element', () => {
+				setData( document, '<notBlock>[foo]</notBlock>' );
 
 				expect( commands[ modelElement ].value ).to.be.false;
 			} );
@@ -149,7 +149,7 @@ describe( 'HeadingCommand', () => {
 		describe( 'collapsed selection', () => {
 			let convertTo = options[ options.length - 1 ];
 
-			for ( let option of options ) {
+			for ( const option of options ) {
 				test( option, convertTo );
 				convertTo = option;
 			}
@@ -186,7 +186,7 @@ describe( 'HeadingCommand', () => {
 		describe( 'non-collapsed selection', () => {
 			let convertTo = options[ options.length - 1 ];
 
-			for ( let option of options ) {
+			for ( const option of options ) {
 				test( option, convertTo );
 				convertTo = option;
 			}
@@ -227,7 +227,7 @@ describe( 'HeadingCommand', () => {
 	} );
 
 	describe( 'isEnabled', () => {
-		for ( let option of options ) {
+		for ( const option of options ) {
 			test( option.modelElement );
 		}
 

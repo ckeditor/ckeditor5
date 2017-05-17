@@ -122,7 +122,7 @@ describe( 'HeadingEngine', () => {
 				return VirtualTestEditor.create( {
 					plugins: [ Enter, HeadingEngine ],
 					heading: {
-						options: options
+						options
 					}
 				} )
 				.then( editor => {

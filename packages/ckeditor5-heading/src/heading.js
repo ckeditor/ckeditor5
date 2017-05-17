@@ -50,7 +50,7 @@ export default class Heading extends Plugin {
 		const defaultTitle = t( 'Choose heading' );
 		const dropdownTooltip = t( 'Heading' );
 
-		for ( let option of options ) {
+		for ( const option of options ) {
 			const command = editor.commands.get( option.modelElement );
 			const itemModel = new Model( {
 				commandName: option.modelElement,
@@ -93,7 +93,7 @@ export default class Heading extends Plugin {
 		);
 
 		// Register UI component.
-		editor.ui.componentFactory.add( 'headings', ( locale ) => {
+		editor.ui.componentFactory.add( 'headings', locale => {
 			const dropdown = createListDropdown( dropdownModel, locale );
 
 			Template.extend( dropdown.template, {
@@ -105,7 +105,7 @@ export default class Heading extends Plugin {
 			} );
 
 			// Execute command when an item from the dropdown is selected.
-			this.listenTo( dropdown, 'execute', ( evt ) => {
+			this.listenTo( dropdown, 'execute', evt => {
 				editor.execute( evt.source.commandName );
 				editor.editing.view.focus();
 			} );

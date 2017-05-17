@@ -57,7 +57,7 @@ export default class HeadingEngine extends Plugin {
 		const editing = editor.editing;
 		const options = editor.config.get( 'heading.options' );
 
-		for ( let option of options ) {
+		for ( const option of options ) {
 			// Skip paragraph - it is defined in required Paragraph feature.
 			if ( option.modelElement !== defaultModelElement ) {
 				// Schema.
