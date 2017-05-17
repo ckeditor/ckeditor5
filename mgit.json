@@ -10,7 +10,7 @@
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#b252b5c2e7dc114b0e7ccd71d061b55c6afe4120",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#448e04dd8d1b2ef1e70449235640581b1cd97930",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#6ad542491418ce615556ac3b6563c72c4170b097",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#e3bc4d17a2668602cbe349905977e936d27092ff",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#a74555e98d9ff848e5bd36cc9540a83c8930c8d6",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#2d4a50d09d6fab4c70807a1295ab6ea4e915e22f",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#795c5b0d5a0bf6fc420094ca06e1d28155d75f09",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#eed3df0c2fc16fdb70835e74539d0d94fe1c2974",
@@ -24,7 +24,7 @@
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#e5ea25ff22e9cf169679a65c4cde59364f8ab523",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#8020f2760549f9512dd77c2d78dc790745028d3e",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#9d26ead1ad672d55042fa84b678271e04440d08a",
-    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#d63abae4616f9f4c875531a6d68af481ca8c8b01",
-    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#9b83e00a31d68dbd62bf5c18d309f60930f54d59"
+    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#a89e85860487b059c6e9ab0f7425f1b9a31209bb",
+    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#4552b30c8c6f59e3e54fb3fa34e4cdb61972366d"
   }
 }
