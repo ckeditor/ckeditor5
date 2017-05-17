@@ -282,7 +282,7 @@ export function modelViewSplitOnInsert( evt, data, consumable, conversionApi ) {
 
 				// Don't merge first list! We want a split in that place (this is why this converter is introduced).
 				if ( i > 0 ) {
-					let mergePos = mergeViewLists( previousList, previousList.nextSibling );
+					const mergePos = mergeViewLists( previousList, previousList.nextSibling );
 
 					// If `mergePos` is in `previousList` it means that the lists got merged.
 					// In this case, we need to fix insert position.
@@ -366,13 +366,13 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
 		data.indent++;
 
 		// `listItem`s will be kept in flat structure.
-		let items = new ModelDocumentFragment();
+		const items = new ModelDocumentFragment();
 		items.appendChildren( listItem );
 
 		// Check all children of the converted `<li>`.
 		// At this point we assume there are no "whitespace" view text nodes in view list, between view list items.
 		// This should be handled by `<ul>` and `<ol>` converters.
-		for ( let child of data.input.getChildren() ) {
+		for ( const child of data.input.getChildren() ) {
 			// Let's convert the child.
 			const converted = conversionApi.convertItem( child, consumable, data );
 
@@ -409,7 +409,7 @@ export function cleanList( evt, data, consumable ) {
 		// Caching children because when we start removing them iterating fails.
 		const children = Array.from( data.input.getChildren() );
 
-		for ( let child of children ) {
+		for ( const child of children ) {
 			if ( !child.is( 'li' ) ) {
 				child.remove();
 			}
@@ -436,7 +436,7 @@ export function cleanListItem( evt, data, consumable ) {
 		let foundList = false;
 		let firstNode = true;
 
-		for ( let child of children ) {
+		for ( const child of children ) {
 			if ( foundList && !child.is( 'ul' ) && !child.is( 'ol' ) ) {
 				child.remove();
 			}
@@ -475,12 +475,12 @@ export function modelToViewPosition( evt, data ) {
 
 	if ( modelItem && modelItem.is( 'listItem' ) ) {
 		const viewItem = data.mapper.toViewElement( modelItem );
-		const topmostViewList = viewItem.getAncestors().find( ( element ) => element.is( 'ul' ) || element.is( 'ol' ) );
+		const topmostViewList = viewItem.getAncestors().find( element => element.is( 'ul' ) || element.is( 'ol' ) );
 		const walker = new ViewTreeWalker( {
 			startPosition: ViewPosition.createAt( viewItem, 0 )
 		} );
 
-		for ( let value of walker ) {
+		for ( const value of walker ) {
 			if ( value.type == 'elementStart' && value.item.is( 'li' ) ) {
 				data.viewPosition = value.previousPosition;
 
@@ -652,7 +652,7 @@ function _fixItemsIndent( changePosition, document, batch ) {
 
 			if ( items.length > 0 ) {
 				// Since we are outdenting list items, it is safer to start from the last one (it will maintain correct model state).
-				for ( let item of items.reverse() ) {
+				for ( const item of items.reverse() ) {
 					batch.setAttribute( item.item, 'indent', item.indent );
 				}
 			}
@@ -794,7 +794,7 @@ function getSiblingListItem( modelItemOrPosition, options ) {
 	let item = modelItemOrPosition instanceof ModelElement ? modelItemOrPosition[ direction ] : modelItemOrPosition[ posDirection ];
 
 	while ( item && item.name == 'listItem' ) {
-		let itemIndent = item.getAttribute( 'indent' );
+		const itemIndent = item.getAttribute( 'indent' );
 
 		if (
 			( sameIndent && indent == itemIndent ) ||
@@ -848,7 +848,7 @@ function injectViewList( modelItem, injectedItem, mapper, removePosition ) {
 	if ( prevItem && prevItem.getAttribute( 'indent' ) == modelItem.getAttribute( 'indent' ) ) {
 		// There is a list item with same indent - we found same-level sibling.
 		// Break the list after it. Inserted view item will be inserted in the broken space.
-		let viewItem = mapper.toViewElement( prevItem );
+		const viewItem = mapper.toViewElement( prevItem );
 		insertPosition = viewWriter.breakContainer( ViewPosition.createAfter( viewItem ) );
 	} else {
 		// There is no list item with same indent. Check previous model item.
@@ -889,11 +889,11 @@ function injectViewList( modelItem, injectedItem, mapper, removePosition ) {
 	// if multiple items in model were inserted/moved at once.
 	const nextItem = getSiblingListItem(
 		modelItem,
-		{ biggerIndent: true, getNext: true, isMapped: true, mapper: mapper }
+		{ biggerIndent: true, getNext: true, isMapped: true, mapper }
 	);
 
 	if ( nextItem ) {
-		let viewItem = mapper.toViewElement( nextItem );
+		const viewItem = mapper.toViewElement( nextItem );
 
 		// Break the list between found view item and its preceding `<li>`s.
 		viewWriter.breakContainer( ViewPosition.createBefore( viewItem ) );
@@ -997,7 +997,7 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 
 	// Handle multiple lists. This happens if list item has nested numbered and bulleted lists. Following lists
 	// are inserted after the first list (no need to recalculate insertion position for them).
-	for ( let child of [ ...viewRemovedItem.getChildren() ] ) {
+	for ( const child of [ ...viewRemovedItem.getChildren() ] ) {
 		if ( child.is( 'ul' ) || child.is( 'ol' ) ) {
 			insertPosition = viewWriter.move( ViewRange.createOn( child ), insertPosition ).end;
 

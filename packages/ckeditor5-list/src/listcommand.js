@@ -160,7 +160,7 @@ export default class ListCommand extends Command {
 
 				changes = changes.reverse();
 
-				for ( let item of changes ) {
+				for ( const item of changes ) {
 					batch.setAttribute( item.element, 'indent', item.indent );
 				}
 			}
@@ -187,7 +187,7 @@ export default class ListCommand extends Command {
 				// top-most list affected by the command.
 				let lowestIndent = Number.POSITIVE_INFINITY;
 
-				for ( let item of blocks ) {
+				for ( const item of blocks ) {
 					if ( item.is( 'listItem' ) && item.getAttribute( 'indent' ) < lowestIndent ) {
 						lowestIndent = item.getAttribute( 'indent' );
 					}
@@ -207,7 +207,7 @@ export default class ListCommand extends Command {
 			// For each block element that was in the selection, we will either: turn it to list item,
 			// turn it to paragraph, or change it's type. Or leave it as it is.
 			// Do it in reverse as there might be multiple blocks (same as with changing indents).
-			for ( let element of blocks.reverse() ) {
+			for ( const element of blocks.reverse() ) {
 				if ( turnOff && element.name == 'listItem' ) {
 					// We are turning off and the element is a `listItem` - it should be converted to `paragraph`.
 					// List item specific attributes are removed by post fixer.

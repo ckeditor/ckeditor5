@@ -72,7 +72,7 @@ export default class ListEngine extends Plugin {
 		// TODO: fix this when changes are converted on `changesDone`.
 		this.editor.document.on( 'change', ( evt, type, changes ) => {
 			if ( type == 'move' ) {
-				for ( let item of changes.range.getItems() ) {
+				for ( const item of changes.range.getItems() ) {
 					if ( item.is( 'listItem' ) ) {
 						editing.mapper.unbindModelElement( item );
 					}
@@ -126,9 +126,9 @@ export default class ListEngine extends Plugin {
 function getViewListItemLength( element ) {
 	let length = 1;
 
-	for ( let child of element.getChildren() ) {
+	for ( const child of element.getChildren() ) {
 		if ( child.name == 'ul' || child.name == 'ol' ) {
-			for ( let item of child.getChildren() ) {
+			for ( const item of child.getChildren() ) {
 				length += getViewListItemLength( item );
 			}
 		}

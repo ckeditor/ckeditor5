@@ -15,18 +15,15 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'List', () => {
-	let editor, doc, bulletedListButton, numberedListButton, schema;
+	let editor, doc, bulletedListButton, numberedListButton;
 
 	beforeEach( () => {
 		const editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, List ]
-		} )
+		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, List ] } )
 			.then( newEditor => {
 				editor = newEditor;
-				schema = editor.document.schema;
 				doc = editor.document;
 
 				bulletedListButton = editor.ui.componentFactory.create( 'bulletedList' );

@@ -69,7 +69,7 @@ export default class IndentCommand extends Command {
 				itemsToChange = itemsToChange.reverse();
 			}
 
-			for ( let item of itemsToChange ) {
+			for ( const item of itemsToChange ) {
 				const indent = item.getAttribute( 'indent' ) + this._indentBy;
 
 				// If indent is lower than 0, it means that the item got outdented when it was not indented.
@@ -92,7 +92,7 @@ export default class IndentCommand extends Command {
 				itemsToChange = itemsToChange.reverse();
 			}
 
-			for ( let item of itemsToChange ) {
+			for ( const item of itemsToChange ) {
 				_fixType( item, batch );
 			}
 		} );

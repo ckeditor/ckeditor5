@@ -99,12 +99,12 @@ export default class List extends Plugin {
 		const editor = this.editor;
 		const command = editor.commands.get( commandName );
 
-		editor.ui.componentFactory.add( commandName, ( locale ) => {
+		editor.ui.componentFactory.add( commandName, locale => {
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
-				label: label,
-				icon: icon,
+				label,
+				icon,
 				tooltip: true
 			} );
 

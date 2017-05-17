@@ -154,6 +154,7 @@ describe( 'ListCommand', () => {
 				} );
 
 				it( 'should handle outdenting sub-items when list item is turned off', () => {
+					/* eslint-disable max-len */
 					// Taken from docs.
 					//
 					// 1  * --------
@@ -189,6 +190,7 @@ describe( 'ListCommand', () => {
 					// 12 * --------
 					// 13    * --------
 					// 14       * --------
+					/* eslint-enable max-len */
 
 					setData(
 						doc,

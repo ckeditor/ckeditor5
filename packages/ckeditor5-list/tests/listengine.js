@@ -90,7 +90,10 @@ describe( 'ListEngine', () => {
 			test( 'numbered list', '<ol><li>a</li><li>b</li></ol>' );
 			test( 'mixed list and content #1', '<p>xxx</p><ul><li>a</li><li>b</li></ul><ol><li>c</li><li>d</li></ol><p>yyy</p>' );
 			test( 'mixed list and content #2', '<ol><li>a</li></ol><p>xxx</p><ul><li>b</li><li>c</li></ul><p>yyy</p><ul><li>d</li></ul>' );
-			test( 'clears incorrect elements', '<ul>x<li>a</li><li>b</li><p>xxx</p>x</ul><p>c</p>', '<ul><li>a</li><li>b</li></ul><p>c</p>' );
+			test(
+				'clears incorrect elements',
+				'<ul>x<li>a</li><li>b</li><p>xxx</p>x</ul><p>c</p>', '<ul><li>a</li><li>b</li></ul><p>c</p>'
+			);
 			test(
 				'clears whitespaces',
 				'<p>foo</p>' +
@@ -3228,7 +3231,7 @@ describe( 'ListEngine', () => {
 	}
 
 	function getViewPath( position ) {
-		let path = [ position.offset ];
+		const path = [ position.offset ];
 		let parent = position.parent;
 
 		while ( parent.parent ) {
