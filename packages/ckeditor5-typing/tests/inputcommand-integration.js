@@ -17,8 +17,7 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getModelData } from  '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'InputCommand integration', () => {
@@ -55,7 +54,7 @@ describe( 'InputCommand integration', () => {
 
 	function simulateTyping( text ) {
 		// While typing, every character is an atomic change.
-		text.split( '' ).forEach( ( character ) => {
+		text.split( '' ).forEach( character => {
 			editor.execute( 'input', {
 				text: character
 			} );
@@ -64,7 +63,7 @@ describe( 'InputCommand integration', () => {
 
 	function simulateBatches( batches ) {
 		// Use longer text at once in input command.
-		batches.forEach( ( batch ) => {
+		batches.forEach( batch => {
 			editor.execute( 'input', {
 				text: batch
 			} );
@@ -191,8 +190,10 @@ describe( 'InputCommand integration', () => {
 			italicView.fire( 'execute' );
 			simulateTyping( 'z' );
 
-			expectOutput( '<paragraph>Foo <$text bold="true">B</$text><$text italic="true"><$text bold="true">a</$text></$text>z[] Bar</paragraph>',
-				'<p>Foo <strong>B</strong><em><strong>a</strong></em>z{} Bar</p>' );
+			expectOutput(
+				'<paragraph>Foo <$text bold="true">B</$text><$text italic="true"><$text bold="true">a</$text></$text>z[] Bar</paragraph>',
+				'<p>Foo <strong>B</strong><em><strong>a</strong></em>z{} Bar</p>'
+			);
 
 			editor.execute( 'undo' );
 

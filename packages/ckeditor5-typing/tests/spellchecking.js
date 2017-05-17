@@ -123,7 +123,7 @@ describe( 'Spellchecking integration', () => {
 	describe( 'Plain text spellchecking (insertText)', () => {
 		// This tests emulates spellchecker correction on non-styled text by inserting correction text via native 'insertText' command.
 
-		it( 'should replace with longer word (collapsed)', ( done ) => {
+		it( 'should replace with longer word (collapsed)', done => {
 			onChangesDone = () => {
 				expectContent( editor,
 					'<paragraph>The Foo house[] a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
@@ -138,7 +138,7 @@ describe( 'Spellchecking integration', () => {
 			emulateSpellcheckerInsertText( editor, 0, 12, 12, 'e', onChangesDone );
 		} );
 
-		it( 'should replace with longer word (non-collapsed)', ( done ) => {
+		it( 'should replace with longer word (non-collapsed)', done => {
 			onChangesDone = () => {
 				expectContent( editor,
 					'<paragraph>The Foo house[] a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
@@ -153,7 +153,7 @@ describe( 'Spellchecking integration', () => {
 			emulateSpellcheckerInsertText( editor, 0, 8, 12, 'house', onChangesDone );
 		} );
 
-		it( 'should replace with shorter word (merging letter after - collapsed)', ( done ) => {
+		it( 'should replace with shorter word (merging letter after - collapsed)', done => {
 			onChangesDone = () => {
 				expectContent( editor,
 					'<paragraph>The Foo hous a is a Foo house[]. A Foo athat and Foo xhat. This is an istane</paragraph>' +
@@ -168,7 +168,7 @@ describe( 'Spellchecking integration', () => {
 			emulateSpellcheckerInsertText( editor, 0, 28, 30, 'e', onChangesDone );
 		} );
 
-		it( 'should replace with shorter word (merging letter after - non-collapsed)', ( done ) => {
+		it( 'should replace with shorter word (merging letter after - non-collapsed)', done => {
 			onChangesDone = () => {
 				expectContent( editor,
 					'<paragraph>The Foo hous a is a Foo house[]. A Foo athat and Foo xhat. This is an istane</paragraph>' +
@@ -183,7 +183,7 @@ describe( 'Spellchecking integration', () => {
 			emulateSpellcheckerInsertText( editor, 0, 24, 30, 'house', onChangesDone );
 		} );
 
-		it( 'should replace with same length text', ( done ) => {
+		it( 'should replace with same length text', done => {
 			onChangesDone = () => {
 				expectContent( editor,
 					'<paragraph>The Foo hous a is a Foo hous e. A Food that[] and Foo xhat. This is an istane</paragraph>' +
@@ -198,7 +198,7 @@ describe( 'Spellchecking integration', () => {
 			emulateSpellcheckerInsertText( editor, 0, 37, 43, 'd that', onChangesDone );
 		} );
 
-		it( 'should replace with longer word on the paragraph end', ( done ) => {
+		it( 'should replace with longer word on the paragraph end', done => {
 			onChangesDone = () => {
 				expectContent( editor,
 					'<paragraph>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an instance[]</paragraph>' +
@@ -213,7 +213,7 @@ describe( 'Spellchecking integration', () => {
 			emulateSpellcheckerInsertText( editor, 0, 69, 75, 'instance', onChangesDone );
 		} );
 
-		it( 'should replace with shorter word on the paragraph end', ( done ) => {
+		it( 'should replace with shorter word on the paragraph end', done => {
 			onChangesDone = () => {
 				expectContent( editor,
 					'<paragraph>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
@@ -240,8 +240,8 @@ function emulateSpellcheckerMutation( editor, nodeIndex, resultPositionIndex, ol
 	view.fire( 'mutations',
 		[ {
 			type: 'text',
-			oldText: oldText,
-			newText: newText,
+			oldText,
+			newText,
 			node: viewRoot.getChild( nodeIndex ).getChild( 0 )
 		} ],
 		viewSelection

@@ -77,7 +77,7 @@ export default class DeleteCommand extends Command {
 
 			let changeCount = 0;
 
-			selection.getFirstRange().getMinimalFlatRanges().forEach( ( range ) => {
+			selection.getFirstRange().getMinimalFlatRanges().forEach( range => {
 				changeCount += count(
 					range.getWalker( { singleCharacters: true, ignoreElementEnd: true, shallow: true } )
 				);

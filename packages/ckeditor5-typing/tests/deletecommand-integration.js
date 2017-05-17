@@ -12,14 +12,7 @@ describe( 'DeleteCommand integration', () => {
 	let editor, doc;
 
 	beforeEach( () => {
-		return ModelTestEditor.create( {
-				plugins: [
-					UndoEngine
-				],
-				typing: {
-					undoStep: 3
-				}
-			} )
+		return ModelTestEditor.create( { plugins: [ UndoEngine ], typing: { undoStep: 3 } } )
 			.then( newEditor => {
 				editor = newEditor;
 				doc = editor.document;

@@ -11,11 +11,11 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'DeleteObserver', () => {
-	let viewDocument, observer;
+	let viewDocument;
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
-		observer = viewDocument.addObserver( DeleteObserver );
+		viewDocument.addObserver( DeleteObserver );
 	} );
 
 	// See ckeditor/ckeditor5-enter#10.

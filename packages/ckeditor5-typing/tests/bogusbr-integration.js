@@ -42,7 +42,7 @@ describe( 'Bogus BR integration', () => {
 		// Tests using 'insertText' generates same mutations as typing. This means they will behave
 		// a little different in every browser (as native mutations may be different in different browsers).
 
-		it( 'space is inserted on the end of the line (paragraph)', ( done ) => {
+		it( 'space is inserted on the end of the line (paragraph)', done => {
 			editor.document.enqueueChanges( () => {
 				editor.editing.view.getDomRoot().focus();
 				setData( editor.document, '<paragraph>Foo[]</paragraph>' );
@@ -56,7 +56,7 @@ describe( 'Bogus BR integration', () => {
 			document.execCommand( 'insertText', false, ' ' );
 		} );
 
-		it( 'space is inserted on the end of the line (empty paragraph)', ( done ) => {
+		it( 'space is inserted on the end of the line (empty paragraph)', done => {
 			editor.document.enqueueChanges( () => {
 				editor.editing.view.getDomRoot().focus();
 				setData( editor.document, '<paragraph>[]</paragraph>' );
@@ -70,7 +70,7 @@ describe( 'Bogus BR integration', () => {
 			document.execCommand( 'insertText', false, ' ' );
 		} );
 
-		it( 'space is inserted on the end of the line (bold)', ( done ) => {
+		it( 'space is inserted on the end of the line (bold)', done => {
 			editor.document.enqueueChanges( () => {
 				editor.editing.view.getDomRoot().focus();
 				setData( editor.document, '<paragraph><$text bold="true">Foo[]</$text></paragraph>' );
@@ -88,7 +88,7 @@ describe( 'Bogus BR integration', () => {
 	describe( 'mutations', () => {
 		// This tests use fixed list of mutation mocks to simulate specific browser behaviours.
 
-		it( 'space is inserted on the end of the paragraph', ( done ) => {
+		it( 'space is inserted on the end of the paragraph', done => {
 			editor.document.enqueueChanges( () => {
 				editor.editing.view.getDomRoot().focus();
 				setData( editor.document, '<paragraph>Foo[]</paragraph>' );
@@ -114,7 +114,7 @@ describe( 'Bogus BR integration', () => {
 			] );
 		} );
 
-		it( 'space is inserted on the end of the line paragraph (with bogus br)', ( done ) => {
+		it( 'space is inserted on the end of the line paragraph (with bogus br)', done => {
 			editor.document.enqueueChanges( () => {
 				editor.editing.view.getDomRoot().focus();
 				setData( editor.document, '<paragraph>Foo[]</paragraph>' );
@@ -126,7 +126,7 @@ describe( 'Bogus BR integration', () => {
 			}, { priority: 'low' } );
 
 			const paragraph = domRoot.childNodes[ 0 ];
-			const text = paragraph.childNodes [ 0 ];
+			const text = paragraph.childNodes[ 0 ];
 			const br = document.createElement( 'br' );
 
 			mutationObserver.disable();
@@ -143,7 +143,7 @@ describe( 'Bogus BR integration', () => {
 			] );
 		} );
 
-		it( 'word is properly corrected on the end of the block element (with bogus br)', ( done ) => {
+		it( 'word is properly corrected on the end of the block element (with bogus br)', done => {
 			editor.document.enqueueChanges( () => {
 				editor.editing.view.getDomRoot().focus();
 				setData( editor.document, '<paragraph>Foo hous[]</paragraph>' );
@@ -155,7 +155,7 @@ describe( 'Bogus BR integration', () => {
 			}, { priority: 'low' } );
 
 			const paragraph = domRoot.childNodes[ 0 ];
-			const text = paragraph.childNodes [ 0 ];
+			const text = paragraph.childNodes[ 0 ];
 			const br = document.createElement( 'br' );
 
 			mutationObserver.disable();
@@ -185,8 +185,8 @@ describe( 'Bogus BR integration', () => {
 			oldValue: null,
 			previousSibling: previousSibling || null,
 			removedNodes: [],
-			target: target,
-			type: type
+			target,
+			type
 		};
 	}
 } );

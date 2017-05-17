@@ -131,7 +131,7 @@ class MutationHandler {
 	 * @param {module:engine/view/selection~Selection|null} viewSelection
 	 */
 	handle( mutations, viewSelection ) {
-		for ( let mutation of mutations ) {
+		for ( const mutation of mutations ) {
 			// Fortunately it will never be both.
 			this._handleTextMutation( mutation, viewSelection );
 			this._handleTextNodeInsertion( mutation );
