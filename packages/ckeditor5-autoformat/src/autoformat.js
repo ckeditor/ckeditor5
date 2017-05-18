@@ -43,9 +43,9 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
  * * `**foo bar**` or `__foo bar__` – will bold the text,
  * * `*foo bar*` or `_foo bar_` – will italicize the text,
  *
- * NOTE: Remember to add proper features to editor configuration. Autoformatting will be enabled only for those
- * commands that are included in current configuration. For example: `bold` autoformatting will not work if there is no
- * `bold` command registered in editor.
+ * NOTE: Remember to add proper features to the editor configuration. Autoformatting will be enabled only for those
+ * commands that are included in the actual configuration. For example: `bold` autoformatting will not work if there is no
+ * `bold` command registered in the editor.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -67,11 +67,11 @@ export default class Autoformat extends Plugin {
 	}
 
 	/**
-	 * Adds autoformatting related to `bulletedList` and `numberedList` commands.
+	 * Adds autoformatting related to the {@link module:list/list~List}.
 	 *
 	 * When typed:
-	 * - `* ` or `- ` - paragraph will be changed to a bulleted list,
-	 * - `1. ` or `1) ` - paragraph will be changed to a numbered list (1 can be any digit or list of digits).
+	 * - `* ` or `- ` - a paragraph will be changed to a bulleted list,
+	 * - `1. ` or `1) ` - a paragraph will be changed to a numbered list ("1" can be any digit or list of digits).
 	 *
 	 * @private
 	 */
@@ -90,7 +90,8 @@ export default class Autoformat extends Plugin {
 	}
 
 	/**
-	 *Adds autoformatting related to `bold` and `italic` commands.
+	 * Adds autoformatting related to the {@link module:basic-styles/bold~Bold} and
+	 * {@link module:basic-styles/italic~Italic}.
 	 *
 	 * When typed:
 	 * - `**foobar**`: `**` characters are removed, and `foobar` is set to bold,
@@ -122,8 +123,9 @@ export default class Autoformat extends Plugin {
 	}
 
 	/**
-	 * Adds autoformatting related to heading commands.
-	 * It is using number at the end of the command name to associate it with proper trigger:
+	 * Adds autoformatting related to {@link module:heading/heading~Heading}.
+	 *
+	 * It is using a number at the end of the command name to associate it with the proper trigger:
 	 * * `heading1` will be executed when typing `#`,
 	 * * `heading2` will be executed when typing `##`,
 	 * * `heading3` will be executed when typing `###`.
