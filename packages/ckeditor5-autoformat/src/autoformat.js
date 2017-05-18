@@ -79,11 +79,13 @@ export default class Autoformat extends Plugin {
 		const commands = this.editor.commands;
 
 		if ( commands.has( 'bulletedList' ) ) {
-			new BlockAutoformatEngine( this.editor, /^[\*\-]\s$/, 'bulletedList' );
+			// eslint-disable-next-line no-new
+			new BlockAutoformatEngine( this.editor, /^[*-]\s$/, 'bulletedList' );
 		}
 
 		if ( commands.has( 'numberedList' ) ) {
-			new BlockAutoformatEngine( this.editor, /^\d+[\.|)]?\s$/, 'numberedList' );
+			// eslint-disable-next-line no-new
+			new BlockAutoformatEngine( this.editor, /^\d+[.|)]?\s$/, 'numberedList' );
 		}
 	}
 
@@ -102,15 +104,20 @@ export default class Autoformat extends Plugin {
 		const commands = this.editor.commands;
 
 		if ( commands.has( 'bold' ) ) {
-			new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+)(\*\*)$/g, 'bold' );
+			/* eslint-disable no-new */
+			new InlineAutoformatEngine( this.editor, /(\*\*)([^*]+)(\*\*)$/g, 'bold' );
 			new InlineAutoformatEngine( this.editor, /(__)([^_]+)(__)$/g, 'bold' );
+			/* eslint-enable no-new */
 		}
 
 		if ( commands.has( 'italic' ) ) {
 			// The italic autoformatter cannot be triggered by the bold markers, so we need to check the
 			// text before the pattern (e.g. `(?:^|[^\*])`).
-			new InlineAutoformatEngine( this.editor, /(?:^|[^\*])(\*)([^\*_]+)(\*)$/g, 'italic' );
+
+			/* eslint-disable no-new */
+			new InlineAutoformatEngine( this.editor, /(?:^|[^*])(\*)([^*_]+)(\*)$/g, 'italic' );
 			new InlineAutoformatEngine( this.editor, /(?:^|[^_])(_)([^_]+)(_)$/g, 'italic' );
+			/* eslint-enable no-new */
 		}
 	}
 
@@ -128,7 +135,7 @@ export default class Autoformat extends Plugin {
 		const options = this.editor.config.get( 'heading.options' );
 
 		if ( options ) {
-			for ( let option of options ) {
+			for ( const option of options ) {
 				const commandName = option.modelElement;
 				let match;
 
@@ -136,7 +143,8 @@ export default class Autoformat extends Plugin {
 					const level = match[ 0 ];
 					const regExp = new RegExp( `^(#{${ level }})\\s$` );
 
-					new BlockAutoformatEngine( this.editor, regExp, ( context ) => {
+					// eslint-disable-next-line no-new
+					new BlockAutoformatEngine( this.editor, regExp, context => {
 						const { batch } = context;
 
 						this.editor.execute( commandName, { batch } );
