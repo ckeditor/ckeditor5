@@ -12,61 +12,74 @@
 			"type": "jsdoc"
 		},
 		{
-			"name": "Guides",
-			"id": "guides",
-			"slug": "guides",
+			"name": "Framework",
+			"id": "framework",
+			"slug": "framework",
 			"categories": [
 				{
-					"name": "Getting started",
-					"id": "getting-started",
-					"slug": "getting-started",
-					"order": 10,
+					"name": "Guides",
+					"id": "framework-guides",
+					"slug": "guides",
 					"categories": [
 						{
-							"name": "Inserting CKEditor",
-							"id": "inserting-ckeditor",
-							"slug": "inserting-ckeditor",
-							"order": 10
+							"name": "Getting started",
+							"id": "getting-started",
+							"slug": "getting-started",
+							"categories": [
+								{
+									"name": "Inserting CKEditor",
+									"id": "inserting-ckeditor",
+									"slug": "inserting-ckeditor"
+								},
+								{
+									"name": "End User Features",
+									"id": "end-user-features",
+									"slug": "end-user-features"
+								}
+							]
 						},
 						{
-							"name": "End User Features",
-							"id": "end-user-features",
-							"order": 20
+							"name": "Plugins",
+							"id": "plugins",
+							"slug": "plugins"
 						}
 					]
 				},
-			  	{
-				  	"name": "Plugins",
-				  	"id": "plugins",
-				  	"slug": "plugins",
-				  	"order": 30
+				{
+					"name": "Tutorials",
+					"id": "tutorials",
+					"slug": "tutorials",
+					"categories": [
+						{
+							"name": "How to",
+							"id": "how-to",
+							"slug": "how-to",
+							"categories": [
+								{
+									"name": "Step by step",
+									"id": "step-by-step",
+									"slug": "step-by-step"
+								}
+							]
+						},
+						{
+							"name": "Advanced tutorials",
+							"id": "advanced-tutorials",
+							"slug": "advanced-tutorials"
+						}
+					]
 				}
 			]
 		},
 		{
-			"name": "Tutorials",
-			"id": "tutorials",
-			"slug": "tutorials",
+			"name": "Builds",
+			"id": "builds",
+			"slug": "builds",
 			"categories": [
 				{
-					"name": "How to",
-					"id": "how-to",
-					"slug": "how-to",
-					"order": 20,
-					"categories": [
-						{
-							"name": "Step by step",
-							"id": "step-by-step",
-							"slug": "step-by-step",
-							"order": 10
-						}
-					]
-				},
-				{
-					"name": "Advanced tutorials",
-					"id": "advanced-tutorials",
-					"slug": "advanced-tutorials",
-					"order": 10
+					"name": "Guides",
+					"id": "builds-guides",
+					"slug": "guides"
 				}
 			]
 		}
