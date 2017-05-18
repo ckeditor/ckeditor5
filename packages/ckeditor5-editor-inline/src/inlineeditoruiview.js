@@ -59,7 +59,12 @@ export default class InlineEditorUIView extends EditorUIView {
 
 		Template.extend( this.toolbar.template, {
 			attributes: {
-				class: 'ck-editor-toolbar'
+				class: [
+					'ck-editor-toolbar',
+
+					// https://github.com/ckeditor/ckeditor5-editor-inline/issues/11
+					'ck-toolbar_floating'
+				]
 			}
 		} );
 
