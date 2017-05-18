@@ -127,6 +127,24 @@ describe( 'Autoformat', () => {
 
 			expect( getData( doc ) ).to.equal( '<heading1>> []</heading1>' );
 		} );
+
+		it( 'should not replace greater-than character when inside numbered list', () => {
+			setData( doc, '<listItem indent="0" type="numbered">1. >[]</listItem>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">1. > []</listItem>' );
+		} );
+
+		it( 'should not replace greater-than character when inside buletted list', () => {
+			setData( doc, '<listItem indent="0" type="bulleted">1. >[]</listItem>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">1. > []</listItem>' );
+		} );
 	} );
 
 	describe( 'Inline autoformat', () => {
