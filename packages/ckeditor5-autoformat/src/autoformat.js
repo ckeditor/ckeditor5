@@ -157,6 +157,13 @@ export default class Autoformat extends Plugin {
 		}
 	}
 
+	/**
+	 * Adds autoformatting related to {@link module:block-quote/blockquote~BlockQuote}.
+	 * When typed:
+	 * * `> ` - a paragraph will be changed to a block quote.
+	 *
+	 * @private
+	 */
 	_addBlockQuoteAutoformats() {
 		if ( this.editor.commands.has( 'blockQuote' ) ) {
 			// eslint-disable-next-line no-new
