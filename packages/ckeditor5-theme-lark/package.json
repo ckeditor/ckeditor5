@@ -11,7 +11,7 @@
     "@ckeditor/ckeditor5-dev-lint": "^3.0.0",
     "@ckeditor/ckeditor5-utils": "^0.9.1",
     "eslint-config-ckeditor5": "^1.0.0",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "guppy-pre-commit": "^0.4.0"
   },
   "engines": {

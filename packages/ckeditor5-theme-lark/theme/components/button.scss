@@ -66,6 +66,13 @@ a.ck-button {
 		float: left;
 	}
 
+	// https://github.com/ckeditor/ckeditor5-theme-lark/issues/70
+	&.ck-disabled {
+		@include ck-button-icon {
+			@include ck-disabled;
+		}
+	}
+
 	&.ck-button_with-text {
 		padding: ck-spacing( 'small' ) ck-spacing();
 
