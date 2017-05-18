@@ -54,6 +54,7 @@ export default class Plugin {
 	 *		}
 	 *
 	 * @static
+	 * @readonly
 	 * @member {Array.<Function>|undefined} module:core/plugin~Plugin.requires
 	 */
 
@@ -76,6 +77,7 @@ export default class Plugin {
 	 *		}
 	 *
 	 * @static
+	 * @readonly
 	 * @member {String|undefined} module:core/plugin~Plugin.pluginName
 	 */
 
