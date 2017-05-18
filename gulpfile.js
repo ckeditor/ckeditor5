@@ -44,6 +44,10 @@ gulp.task( 'docs', () => {
 	const umberto = require( 'umberto' );
 	const ckeditor5Docs = require( '@ckeditor/ckeditor5-dev-docs' );
 
+	if ( process.argv[ 3 ] == '--no-api' ) {
+		return runUmberto();
+	}
+
 	return ckeditor5Docs
 		.build( {
 			readmePath: path.join( process.cwd(), 'README.md' ),
@@ -52,12 +56,14 @@ gulp.task( 'docs', () => {
 				'!' + process.cwd() + '/packages/ckeditor5-*/src/lib/**/*.js'
 			]
 		} )
-		.then( () => {
-			return umberto.buildSingleProject( {
-				configDir: 'docs',
-				clean: true
-			} );
+		.then( runUmberto );
+
+	function runUmberto() {
+		return umberto.buildSingleProject( {
+			configDir: 'docs',
+			clean: true
 		} );
+	}
 } );
 
 // Translations. --------------------------------------------------------------
