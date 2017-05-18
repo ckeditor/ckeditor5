@@ -61,7 +61,7 @@ export default class BlockAutoformatEngine {
 			// We assume that the actual command name was provided.
 			const command = callbackOrCommand;
 
-			callback = ( context ) => {
+			callback = context => {
 				const { batch } = context;
 
 				// Create new batch for removal and command execution.

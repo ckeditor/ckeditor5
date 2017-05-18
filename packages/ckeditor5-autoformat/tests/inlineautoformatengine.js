@@ -29,7 +29,7 @@ describe( 'InlineAutoformatEngine', () => {
 
 	describe( 'attribute', () => {
 		it( 'should stop early if there are less than 3 capture groups', () => {
-			new InlineAutoformatEngine( editor, /(\*)(.+?)\*/g, 'testAttribute' );
+			new InlineAutoformatEngine( editor, /(\*)(.+?)\*/g, 'testAttribute' ); // eslint-disable-line no-new
 
 			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
@@ -40,7 +40,7 @@ describe( 'InlineAutoformatEngine', () => {
 		} );
 
 		it( 'should apply an attribute when the pattern is matched', () => {
-			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, 'testAttribute' );
+			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, 'testAttribute' ); // eslint-disable-line no-new
 
 			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
@@ -51,7 +51,7 @@ describe( 'InlineAutoformatEngine', () => {
 		} );
 
 		it( 'should stop early if selection is not collapsed', () => {
-			new InlineAutoformatEngine( editor, /(\*)(.+?)\*/g, 'testAttribute' );
+			new InlineAutoformatEngine( editor, /(\*)(.+?)\*/g, 'testAttribute' ); // eslint-disable-line no-new
 
 			setData( doc, '<paragraph>*foob[ar]</paragraph>' );
 			doc.enqueueChanges( () => {
@@ -70,7 +70,7 @@ describe( 'InlineAutoformatEngine', () => {
 				remove: []
 			} );
 
-			new InlineAutoformatEngine( editor, testStub, formatSpy );
+			new InlineAutoformatEngine( editor, testStub, formatSpy ); // eslint-disable-line no-new
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
@@ -87,7 +87,7 @@ describe( 'InlineAutoformatEngine', () => {
 				remove: [ [] ]
 			} );
 
-			new InlineAutoformatEngine( editor, testStub, formatSpy );
+			new InlineAutoformatEngine( editor, testStub, formatSpy ); // eslint-disable-line no-new
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
@@ -104,7 +104,7 @@ describe( 'InlineAutoformatEngine', () => {
 				remove: [ [] ]
 			} );
 
-			new InlineAutoformatEngine( editor, testStub, formatSpy );
+			new InlineAutoformatEngine( editor, testStub, formatSpy ); // eslint-disable-line no-new
 
 			setData( doc, '<paragraph>[]</paragraph>' );
 			doc.enqueueChanges( () => {

@@ -43,9 +43,9 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
  * * `**foo bar**` or `__foo bar__` – will bold the text,
  * * `*foo bar*` or `_foo bar_` – will italicize the text,
  *
- * NOTE: Remember to add proper features to editor configuration. Autoformatting will be enabled only for those
- * commands that are included in current configuration. For example: `bold` autoformatting will not work if there is no
- * `bold` command registered in editor.
+ * NOTE: Remember to add proper features to the editor configuration. Autoformatting will be enabled only for those
+ * commands that are included in the actual configuration. For example: `bold` autoformatting will not work if there is no
+ * `bold` command registered in the editor.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -68,11 +68,11 @@ export default class Autoformat extends Plugin {
 	}
 
 	/**
-	 * Adds autoformatting related to `bulletedList` and `numberedList` commands.
+	 * Adds autoformatting related to the {@link module:list/list~List}.
 	 *
 	 * When typed:
-	 * - `* ` or `- ` - paragraph will be changed to a bulleted list,
-	 * - `1. ` or `1) ` - paragraph will be changed to a numbered list (1 can be any digit or list of digits).
+	 * - `* ` or `- ` - a paragraph will be changed to a bulleted list,
+	 * - `1. ` or `1) ` - a paragraph will be changed to a numbered list ("1" can be any digit or list of digits).
 	 *
 	 * @private
 	 */
@@ -80,16 +80,19 @@ export default class Autoformat extends Plugin {
 		const commands = this.editor.commands;
 
 		if ( commands.has( 'bulletedList' ) ) {
-			new BlockAutoformatEngine( this.editor, /^[\*\-]\s$/, 'bulletedList' );
+			// eslint-disable-next-line no-new
+			new BlockAutoformatEngine( this.editor, /^[*-]\s$/, 'bulletedList' );
 		}
 
 		if ( commands.has( 'numberedList' ) ) {
-			new BlockAutoformatEngine( this.editor, /^\d+[\.|)]?\s$/, 'numberedList' );
+			// eslint-disable-next-line no-new
+			new BlockAutoformatEngine( this.editor, /^\d+[.|)]?\s$/, 'numberedList' );
 		}
 	}
 
 	/**
-	 *Adds autoformatting related to `bold` and `italic` commands.
+	 * Adds autoformatting related to the {@link module:basic-styles/bold~Bold} and
+	 * {@link module:basic-styles/italic~Italic}.
 	 *
 	 * When typed:
 	 * - `**foobar**`: `**` characters are removed, and `foobar` is set to bold,
@@ -103,21 +106,27 @@ export default class Autoformat extends Plugin {
 		const commands = this.editor.commands;
 
 		if ( commands.has( 'bold' ) ) {
-			new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+)(\*\*)$/g, 'bold' );
+			/* eslint-disable no-new */
+			new InlineAutoformatEngine( this.editor, /(\*\*)([^*]+)(\*\*)$/g, 'bold' );
 			new InlineAutoformatEngine( this.editor, /(__)([^_]+)(__)$/g, 'bold' );
+			/* eslint-enable no-new */
 		}
 
 		if ( commands.has( 'italic' ) ) {
 			// The italic autoformatter cannot be triggered by the bold markers, so we need to check the
 			// text before the pattern (e.g. `(?:^|[^\*])`).
-			new InlineAutoformatEngine( this.editor, /(?:^|[^\*])(\*)([^\*_]+)(\*)$/g, 'italic' );
+
+			/* eslint-disable no-new */
+			new InlineAutoformatEngine( this.editor, /(?:^|[^*])(\*)([^*_]+)(\*)$/g, 'italic' );
 			new InlineAutoformatEngine( this.editor, /(?:^|[^_])(_)([^_]+)(_)$/g, 'italic' );
+			/* eslint-enable no-new */
 		}
 	}
 
 	/**
-	 * Adds autoformatting related to heading commands.
-	 * It is using number at the end of the command name to associate it with proper trigger:
+	 * Adds autoformatting related to {@link module:heading/heading~Heading}.
+	 *
+	 * It is using a number at the end of the command name to associate it with the proper trigger:
 	 * * `heading1` will be executed when typing `#`,
 	 * * `heading2` will be executed when typing `##`,
 	 * * `heading3` will be executed when typing `###`.
@@ -129,7 +138,7 @@ export default class Autoformat extends Plugin {
 		const options = this.editor.config.get( 'heading.options' );
 
 		if ( options ) {
-			for ( let option of options ) {
+			for ( const option of options ) {
 				const commandName = option.modelElement;
 				let match;
 
@@ -137,7 +146,8 @@ export default class Autoformat extends Plugin {
 					const level = match[ 0 ];
 					const regExp = new RegExp( `^(#{${ level }})\\s$` );
 
-					new BlockAutoformatEngine( this.editor, regExp, ( context ) => {
+					// eslint-disable-next-line no-new
+					new BlockAutoformatEngine( this.editor, regExp, context => {
 						const { batch } = context;
 
 						this.editor.execute( commandName, { batch } );
@@ -149,6 +159,7 @@ export default class Autoformat extends Plugin {
 
 	_addBlockQuoteAutoformats() {
 		if ( this.editor.commands.has( 'blockQuote' ) ) {
+			// eslint-disable-next-line no-new
 			new BlockAutoformatEngine( this.editor, /^>\s$/, 'blockQuote' );
 		}
 	}
