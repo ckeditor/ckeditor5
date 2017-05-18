@@ -23,7 +23,7 @@ export default class UnlinkCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		// Checks when command should be enabled or disabled.
+		// Checks whether the command should be enabled or disabled.
 		this.listenTo( editor.document, 'changesDone', () => {
 			this.refreshState();
 		} );
