@@ -79,7 +79,14 @@
 				{
 					"name": "Guides",
 					"id": "builds-guides",
-					"slug": "guides"
+					"slug": "guides",
+					"categories": [
+						{
+							"name": "Integration",
+							"id": "builds-integration",
+							"slug": "integration"
+						}
+					]
 				}
 			]
 		}

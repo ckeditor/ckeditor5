@@ -1,25 +1,31 @@
 ---
+# Scope:
+# * What is it?
+# * What are the use cases?
+# * What is the difference with CKEditor 5 Framework?
+# * What is the difference with CKEditor 4?
+
 title: Overview
 category-id: builds-guides
 ---
 
 CKEditor 5 Builds are comprised by a set of ready to use rich-text editors, so called "builds", in different configurations. Our goal is providing easy to use solutions that can satisfy good part of the editing use cases out there.
 
-# Builds
+## Builds
 
-## Classic editor
+### Classic editor
 
 The classic "boxed" editing interface, with toolbar at the top:
 
 [ TODO: Classic Editor screenshot or sample ]
 
-## Inline Editor
+### Inline Editor
 
 It leaves the contents as part of the page, attaching a floating toolbar to it:
 
 [ TODO: Inline Editor screenshot ]
 
-# How builds are designed
+## How builds are designed
 
 Each build has been designed to satisfy as many use cases as possible. They differ on their UI/UX and features, based on the following approach:
 
@@ -27,13 +33,13 @@ Each build has been designed to satisfy as many use cases as possible. They diff
 * Include features that contribute to creating quality content. In other words, features like fonts, colors and alignment are excluded.
 * Provide setups as generic as possible, based on research and community feedback.
 
-## Builds customization
+### Builds customization
 
 Although the default builds try to fit many cases, they may still not be perfect in some integrations. They may have either too many or too few features. They may not have your preferred theme or UI implementation. Customization is required then.
 
 Check Customize and extend for in-depth details on how to change the default builds to match your needs and preferences.
 
-# Use cases
+## Use cases
 
 Each of the builds fits several different use cases. Just think about any possible use for writing rich-text in applications.
 
@@ -56,7 +62,7 @@ The following are **some** common use cases:
 	* Social messaging and content sharing.
 	* Creation of ads in recruitment software.
 
-## When NOT to use CKEditor 5 Builds?
+### When NOT to use CKEditor 5 Builds?
 
 The {@link TODO CKEditor 5 Framework} should be used, instead of builds, in the following cases:
 
