@@ -5,7 +5,16 @@
 	line-height: 1;
 	padding: ck-spacing( 'small' );
 	border: 1px solid ck-border-color();
+
+	// Allow wrapping toolbar items to the new line.
 	white-space: initial;
+
+	&_floating {
+		// Disallow wrapping toolbar items to the new line when the toolbar is floating,
+		// resulting in an toolbar shapes when the horizontal space is limited.
+		// https://github.com/ckeditor/ckeditor5-theme-lark/issues/93
+		white-space: nowrap;
+	}
 
 	@include ck-unselectable();
 	@include ck-rounded-corners();
