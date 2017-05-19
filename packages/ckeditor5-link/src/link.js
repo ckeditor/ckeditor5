@@ -243,7 +243,8 @@ export default class Link extends Plugin {
 		// unaltered) and re-opened it without changing the value of the link command (e.g. because they
 		// clicked the same link), they would see the old value instead of the actual value of the command.
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
-		this.formView.urlInputView.inputView.element.value = command.value;
+		// https://github.com/ckeditor/ckeditor5-link/issues/123
+		this.formView.urlInputView.inputView.element.value = command.value || '';
 
 		this.listenTo( showViewDocument, 'render', () => {
 			const renderSelectedLink = this._getSelectedLinkElement();
