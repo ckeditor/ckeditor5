@@ -31,7 +31,25 @@ describe( 'LinkCommand', () => {
 		command.destroy();
 	} );
 
+	describe( 'constructor()', () => {
+		// https://github.com/ckeditor/ckeditor5-link/issues/93
+		it( 'should listen on document#changesDone and refresh the command\'s state', () => {
+			const refreshStateSpy = sinon.spy( command, 'refreshState' );
+
+			document.fire( 'changesDone' );
+
+			expect( refreshStateSpy.calledOnce ).to.true;
+		} );
+	} );
+
 	describe( 'value', () => {
+		it( 'should be updated on document#changesDone', () => {
+			const spy = sinon.spy( command, 'refreshValue' );
+
+			document.fire( 'changesDone' );
+			sinon.assert.calledOnce( spy );
+		} );
+
 		describe( 'collapsed selection', () => {
 			it( 'should be equal attribute value when selection is placed inside element with `linkHref` attribute', () => {
 				setData( document, '<$text linkHref="url">foo[]bar</$text>' );

@@ -34,10 +34,10 @@ describe( 'UnlinkCommand', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should listen on selection attribute change and refresh state', () => {
+		it( 'should listen on document#changesDone and refresh the state', () => {
 			const refreshStateSpy = testUtils.sinon.spy( command, 'refreshState' );
 
-			document.selection.fire( 'change:attribute' );
+			document.fire( 'changesDone' );
 
 			expect( refreshStateSpy.calledOnce ).to.true;
 		} );

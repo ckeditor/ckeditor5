@@ -35,9 +35,18 @@ export default class LinkCommand extends Command {
 		 */
 		this.set( 'value', undefined );
 
-		this.listenTo( this.editor.document.selection, 'change:attribute', () => {
-			this.value = this.editor.document.selection.getAttribute( 'linkHref' );
+		// Checks whether the command should be enabled or disabled.
+		this.listenTo( editor.document, 'changesDone', () => {
+			this.refreshState();
+			this.refreshValue();
 		} );
+	}
+
+	/**
+	 * Updates command's {@link #value} based on the current selection.
+	 */
+	refreshValue() {
+		this.value = this.editor.document.selection.getAttribute( 'linkHref' );
 	}
 
 	/**
