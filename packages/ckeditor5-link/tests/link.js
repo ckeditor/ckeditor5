@@ -216,7 +216,7 @@ describe( 'Link', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
-		it( 'should make sure the URL input in the #formView always stays in sync with the value of the command', () => {
+		it( 'should make sure the URL input in the #formView always stays in sync with the value of the command (selected link)', () => {
 			setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 			// Mock some leftover value **in DOM**, e.g. after previous editing.
@@ -225,6 +225,16 @@ describe( 'Link', () => {
 			return linkFeature._showPanel()
 				.then( () => {
 					expect( formView.urlInputView.inputView.element.value ).to.equal( 'url' );
+				} );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-link/issues/123
+		it( 'should make sure the URL input in the #formView always stays in sync with the value of the command (no link selected)', () => {
+			setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
+
+			return linkFeature._showPanel()
+				.then( () => {
+					expect( formView.urlInputView.inputView.element.value ).to.equal( '' );
 				} );
 		} );
 
