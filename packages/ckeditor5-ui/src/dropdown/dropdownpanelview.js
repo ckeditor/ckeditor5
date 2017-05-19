@@ -55,7 +55,7 @@ export default class DropdownPanelView extends View {
 
 			on: {
 				// https://github.com/ckeditor/ckeditor5-ui/issues/228
-				mousedown: bind.to( evt => evt.preventDefault() )
+				selectstart: bind.to( evt => evt.preventDefault() )
 			}
 		} );
 	}
