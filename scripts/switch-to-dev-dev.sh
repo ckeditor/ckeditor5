@@ -41,4 +41,4 @@ ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-utils node_modules/@ckeditor
 echo "Linking eslint-config-ckeditor5..."
 
 rm -rf node_modules/eslint-config-ckeditor5
-ln -s ../../../ckeditor5-dev/packages/eslint-config-ckeditor5 node_modules/
+ln -s ../../ckeditor5-dev/packages/eslint-config-ckeditor5 node_modules/
