@@ -7,7 +7,6 @@
  * @module core/plugincollection
  */
 
-import Plugin from './plugin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
@@ -150,8 +149,6 @@ export default class PluginCollection {
 			return new Promise( resolve => {
 				loading.add( PluginConstructor );
 
-				assertIsPlugin( PluginConstructor );
-
 				if ( PluginConstructor.requires ) {
 					PluginConstructor.requires.forEach( RequiredPluginConstructorOrName => {
 						const RequiredPluginConstructor = getPluginConstructor( RequiredPluginConstructorOrName );
@@ -189,21 +186,6 @@ export default class PluginCollection {
 			}
 
 			return that._availablePlugins.get( PluginConstructorOrName );
-		}
-
-		function assertIsPlugin( PluginConstructor ) {
-			if ( !( PluginConstructor.prototype instanceof Plugin ) ) {
-				/**
-				 * The loaded plugin module is not an instance of {@link module:core/plugin~PluginInterface}.
-				 *
-				 * @error plugincollection-instance
-				 * @param {*} plugin The constructor which is meant to be loaded as a plugin.
-				 */
-				throw new CKEditorError(
-					'plugincollection-instance: The loaded plugin module is not an instance of Plugin.',
-					{ plugin: PluginConstructor }
-				);
-			}
 		}
 
 		function getMissingPluginNames( plugins ) {
