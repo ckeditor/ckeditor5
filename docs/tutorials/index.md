@@ -1,6 +1,6 @@
 ---
 title: Tutorials Index Page
-category-id: tutorials
+category: tutorials
 order: 30
 ---
 

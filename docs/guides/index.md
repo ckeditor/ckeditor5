@@ -1,5 +1,5 @@
 ---
 title: Guides Index Page
-category-id: guides
+category: guides
 order: 10
 ---
