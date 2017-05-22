@@ -3,8 +3,8 @@
 # * Highlight new things, when compared to CKEditor 4.
 # * Emphasize cool new stuff we’re bringing, for those learning about CKEditor 5.
 
-title: What's news?
-category-id: builds-guides
+title: What's new?
+category: builds-guides
 ---
 
 ## Enhanced UX

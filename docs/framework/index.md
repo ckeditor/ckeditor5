@@ -1,6 +1,6 @@
 ---
 title: Framework
-category-id: framework
+category: framework
 order: 10
 ---
 

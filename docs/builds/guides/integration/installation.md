@@ -3,7 +3,7 @@
 # - Guidance on all possible installation options.
 
 title: Installation
-category-id: builds-integration
+category: builds-integration
 ---
 
 ## Download options

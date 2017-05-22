@@ -3,7 +3,7 @@
 # * Guide developers through the basic API to achieve their very first results with CKEditor.
 
 title: Basic API
-category-id: builds-integration
+category: builds-integration
 ---
 
 ## Creators
@@ -23,7 +23,7 @@ Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), t
 * by [RequireJS](http://requirejs.org/) (or any other AMD library),
 * from the global namespace if any of the above loaders is not available.
 
- For example:
+For example:
 
 ```js
 // If AMD is present, you can do this.
@@ -39,7 +39,7 @@ Having the above in mind, depending on which build you’re using, creating an e
 
 In the HTML:
 
-```
+```html
 <textarea id="text-editor">
 	&lt;p&gt;Here goes the initial contents of the editor.&lt;/p&gt;
 </textarea>

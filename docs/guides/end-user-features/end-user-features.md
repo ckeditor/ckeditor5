@@ -1,6 +1,6 @@
 ---
 title: End User Features Example Guide
-category-id: end-user-features
+category: end-user-features
 slug: euf
 order: 90
 ---

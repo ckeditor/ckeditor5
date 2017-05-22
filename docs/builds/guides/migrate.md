@@ -5,7 +5,7 @@
 # * List and clarify the things that need attention when migrating.
 
 title: Migration from previous versions
-category-id: builds-guides
+category: builds-guides
 ---
 
 When compared to its previous versions, CKEditor 5 can be considered a totally new editor. Every single aspect of it has been redesigned, from installation, to integration, to features, to its data model, to its API. Therefore, moving applications using previous version to version 5 cannot be called simply “upgrade”. It is something bigger, so the “migration” term fits better.

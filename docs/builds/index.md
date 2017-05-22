@@ -1,6 +1,6 @@
 ---
 title: Builds
-category-id: builds
+category: builds
 order: 10
 ---
 
