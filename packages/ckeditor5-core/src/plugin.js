@@ -14,7 +14,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * The base class for CKEditor plugin classes.
  *
  * @implements module:core/plugin~PluginInterface
- * @mixes module:utils/observablemixin~ObservaleMixin
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Plugin {
 	/**
@@ -102,7 +102,7 @@ mix( Plugin, ObservableMixin );
  * The editor instance.
  *
  * @readonly
- * @member {module:core/editor/editor~Editor} module:core/plugin~PluginInterface#editor
+ * @member {module:core/editor/editor~Editor} #editor
  */
 
 /**
