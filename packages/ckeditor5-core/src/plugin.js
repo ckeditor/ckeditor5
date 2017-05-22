@@ -18,36 +18,17 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  */
 export default class Plugin {
 	/**
-	 * Creates a new Plugin instance. This is the
-	 * {@link module:core/plugin~PluginInterface#constructor first step} of a plugin initialization. See also
-	 * {@link module:core/plugin~PluginInterface#init} and {@link module:core/plugin~PluginInterface#afterInit}.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor
+	 * @inheritDoc
 	 */
 	constructor( editor ) {
 		/**
 		 * The editor instance.
 		 *
 		 * @readonly
-		 * @member {module:core/editor/editor~Editor} module:core/plugin~Plugin#editor
+		 * @member {module:core/editor/editor~Editor} #editor
 		 */
 		this.editor = editor;
 	}
-
-	/**
-	 * @returns {null|Promise}
-	 */
-	init() {}
-
-	/**
-	 * @returns {null|Promise}
-	 */
-	afterInit() {}
-
-	/**
-	 * @returns {null|Promise}
-	 */
-	destroy() {}
 }
 
 mix( Plugin, ObservableMixin );
@@ -55,7 +36,46 @@ mix( Plugin, ObservableMixin );
 /**
  * The base interface for CKEditor plugins.
  *
+ * In its minimal form it can be a simple function (it will be used as a constructor) which accepts
+ * {@link module:core/editor/editor~Editor the editor} as a parm.
+ * It can also implement a few methods which, when present, will be used to properly initialize and destroy the plugin.
+ *
+ *		// A simple plugin which enables a data processor.
+ *		function MyPlugin( editor ) {
+ *			editor.data.processor = new MyDataProcessor();
+ *		}
+ *
+ * In most cases, however, you'll want to inherit from the {@link module:core/plugin~Plugin} class which implements the
+ * {@link module:utils/observablemixin~ObservableMixin} and is, therefore, more convenient:
+ *
+ *		class MyPlugin extends Plugin {
+ *			init() {
+ *				// `listenTo()` and `editor` are available thanks to `Plugin`.
+ *				// By using `listenTo()` you'll ensure that the listener will be removed when
+ *				// the plugin is destroyed.
+ *				this.listenTo( this.editor, 'dataReady', () => {
+ *					// Do something when data is ready.
+ *				} );
+ *			}
+ *		}
+ *
  * @interface PluginInterface
+ */
+
+/**
+ * Creates a new plugin instance. This is the first step of a plugin initialization.
+ * See also {@link #init} and {@link #afterInit}.
+ *
+ * A plugin is always instantiated after its {@link module:core/plugin~PluginInterface.requires dependencies} and the
+ * {@link #init} and {@link #afterInit} methods are called in the same order.
+ *
+ * Usually, you'll want to put your plugin's initialization code in the {@link #init} method.
+ * The constructor can be understood as "before init" and used in special cases, just like
+ * {@link #afterInit} servers for the special "after init" scenarios (e.g. code which depends on other
+ * plugins, but which doesn't {@link module:core/plugin~PluginInterface.requires explicitly require} them).
+ *
+ * @method #constructor
+ * @param {module:core/editor/editor~Editor} editor
  */
 
 /**
@@ -99,34 +119,13 @@ mix( Plugin, ObservableMixin );
  */
 
 /**
- * The editor instance.
- *
- * @readonly
- * @member {module:core/editor/editor~Editor} #editor
- */
-
-/**
- * Creates a plugin instance. This is the first step of a plugin initialization.
- * See also {@link #init} and {@link #afterInit}.
- *
- * A plugin is always instantiated after its {@link module:core/plugin~PluginInterface.requires dependencies} and the
- * {@link #init} and {@link #afterInit} methods are called in the same order.
- *
- * Usually, you'll want to put your plugin's initialization code in the {@link #init} method.
- * The constructor can be understood as "before init" and used in special cases, just like
- * {@link #afterInit} servers for the special "after init" scenarios (e.g. code which depends on other
- * plugins, but which doesn't {@link module:core/plugin~PluginInterface.requires explicitly require} them).
- *
- * @method #constructor
- * @param {module:core/editor/editor~Editor} editor
- */
-
-/**
  * The second stage (after plugin {@link #constructor}) of plugin initialization.
- * Unlike the plugin constructor this method can perform asynchronous.
+ * Unlike the plugin constructor this method can be asynchronous.
  *
  * A plugin's `init()` method is called after its {@link module:core/plugin~PluginInterface.requires dependencies} are initialized,
  * so in the same order as constructors of these plugins.
+ *
+ * **Note:** This method is optional. A plugin instance does not need to have to have it defined.
  *
  * @method #init
  * @returns {null|Promise}
@@ -135,12 +134,16 @@ mix( Plugin, ObservableMixin );
 /**
  * The third (and last) stage of plugin initialization. See also {@link #constructor} and {@link #init}.
  *
+ * **Note:** This method is optional. A plugin instance does not need to have to have it defined.
+ *
  * @method #afterInit
  * @returns {null|Promise}
  */
 
 /**
  * Destroys the plugin.
+ *
+ * **Note:** This method is optional. A plugin instance does not need to have to have it defined.
  *
  * @method #destroy
  * @returns {null|Promise}
