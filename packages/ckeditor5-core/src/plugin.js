@@ -55,7 +55,7 @@ mix( Plugin, ObservableMixin );
 /**
  * The base interface for CKEditor plugins.
  *
- * @interface Plugin
+ * @interface PluginInterface
  */
 
 /**
@@ -78,7 +78,7 @@ mix( Plugin, ObservableMixin );
 
 /**
  * Optional name of the plugin. If set, the plugin will be available in
- * {@link module:core/plugincollectioncollection~PluginCollection#get} by its
+ * {@link module:core/plugincollection~PluginCollection#get} by its
  * name and its constructor. If not, then only by its constructor.
  *
  * The name should reflect the package name + the plugin module name. E.g. `ckeditor5-image/src/image.js` plugin
@@ -117,7 +117,7 @@ mix( Plugin, ObservableMixin );
  * {@link #afterInit} servers for the special "after init" scenarios (e.g. code which depends on other
  * plugins, but which doesn't {@link module:core/plugin~PluginInterface.requires explicitly require} them).
  *
- * @method constructor
+ * @method #constructor
  * @param {module:core/editor/editor~Editor} editor
  */
 
@@ -128,20 +128,20 @@ mix( Plugin, ObservableMixin );
  * A plugin's `init()` method is called after its {@link module:core/plugin~PluginInterface.requires dependencies} are initialized,
  * so in the same order as constructors of these plugins.
  *
- * @method init
+ * @method #init
  * @returns {null|Promise}
  */
 
 /**
  * The third (and last) stage of plugin initialization. See also {@link #constructor} and {@link #init}.
  *
- * @method afterInit
+ * @method #afterInit
  * @returns {null|Promise}
  */
 
 /**
  * Destroys the plugin.
  *
- * @method destroy
+ * @method #destroy
  * @returns {null|Promise}
  */

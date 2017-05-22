@@ -21,7 +21,7 @@ export default class PluginCollection {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {Array.<Function>} [availablePlugins] Plugins (constructors) which the collection will be able to use
-	 * when {@link module:core/plugin~PluginCollection#load} is used with plugin names (strings, instead of constructors).
+	 * when {@link module:core/plugincollection~PluginCollection#load} is used with plugin names (strings, instead of constructors).
 	 * Usually, the editor will pass its built-in plugins to the collection so they can later be
 	 * used in `config.plugins` or `config.removePlugins` by names.
 	 */
@@ -69,8 +69,8 @@ export default class PluginCollection {
 	/**
 	 * Gets the plugin instance by its constructor or name.
 	 *
-	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~Plugin.pluginName name}.
-	 * @returns {module:core/plugin~Plugin}
+	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
+	 * @returns {module:core/plugin~PluginInterface}
 	 */
 	get( key ) {
 		return this._plugins.get( key );
@@ -79,14 +79,14 @@ export default class PluginCollection {
 	/**
 	 * Loads a set of plugins and adds them to the collection.
 	 *
-	 * @param {Array.<Function|String>} plugins An array of {@link module:core/plugin~Plugin plugin constructors}
-	 * or {@link module:core/plugin~Plugin.pluginName plugin names}. The second option (names) work only if
+	 * @param {Array.<Function|String>} plugins An array of {@link module:core/plugin~PluginInterface plugin constructors}
+	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}. The second option (names) work only if
 	 * `availablePlugins` were passed to the {@link #constructor}.
 	 * @param {Array.<String|Function>} [removePlugins] Names of plugins or plugin constructors
 	 * which should not be loaded (despite being specified in the `plugins` array).
 	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
 	 * collection.
-	 * @returns {Promise.<Array.<module:core/plugin~Plugin>>} returns.loadedPlugins The array of loaded plugins.
+	 * @returns {Promise.<Array.<module:core/plugin~PluginInterface>>} returns.loadedPlugins The array of loaded plugins.
 	 */
 	load( plugins, removePlugins = [] ) {
 		const that = this;
@@ -194,7 +194,7 @@ export default class PluginCollection {
 		function assertIsPlugin( PluginConstructor ) {
 			if ( !( PluginConstructor.prototype instanceof Plugin ) ) {
 				/**
-				 * The loaded plugin module is not an instance of {@link module:core/plugin~Plugin}.
+				 * The loaded plugin module is not an instance of {@link module:core/plugin~PluginInterface}.
 				 *
 				 * @error plugincollection-instance
 				 * @param {*} plugin The constructor which is meant to be loaded as a plugin.
@@ -230,7 +230,7 @@ export default class PluginCollection {
 	 *
 	 * @protected
 	 * @param {Function} PluginConstructor The plugin constructor.
-	 * @param {module:core/plugin~Plugin} plugin The instance of the plugin.
+	 * @param {module:core/plugin~PluginInterface} plugin The instance of the plugin.
 	 */
 	_add( PluginConstructor, plugin ) {
 		this._plugins.set( PluginConstructor, plugin );
