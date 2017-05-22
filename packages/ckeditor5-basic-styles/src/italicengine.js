@@ -37,7 +37,7 @@ export default class ItalicEngine extends Plugin {
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
 			.fromAttribute( ITALIC )
-			.toElement( 'em' );
+			.toElement( 'i' );
 
 		// Build converter from view to model for data pipeline.
 		buildViewConverter().for( data.viewToModel )

@@ -53,7 +53,7 @@ describe( 'ItalicEngine', () => {
 			expect( getModelData( doc, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><em>foo</em>bar</p>' );
+			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
 		} );
 
 		it( 'should convert <i> to italic attribute', () => {
@@ -62,7 +62,7 @@ describe( 'ItalicEngine', () => {
 			expect( getModelData( doc, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><em>foo</em>bar</p>' );
+			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
 		} );
 
 		it( 'should convert font-weight:italic to italic attribute', () => {
@@ -71,7 +71,7 @@ describe( 'ItalicEngine', () => {
 			expect( getModelData( doc, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><em>foo</em>bar</p>' );
+			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
 		} );
 
 		it( 'should be integrated with autoparagraphing', () => {
@@ -90,7 +90,7 @@ describe( 'ItalicEngine', () => {
 		it( 'should convert attribute', () => {
 			setModelData( doc, '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><em>foo</em>bar</p>' );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><i>foo</i>bar</p>' );
 		} );
 	} );
 } );
