@@ -1,6 +1,6 @@
 ---
 title: Autoformat Guide
-category-id: plugins
+category: plugins
 order: 10
 ---
 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
