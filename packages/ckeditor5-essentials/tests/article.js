@@ -64,7 +64,7 @@ describe( 'Article preset', () => {
 		const data =
 			'<h2>Heading 1</h2>' +
 			'<p>Paragraph</p>' +
-			'<p><strong>Bold</strong> <em>Italic</em> <a href="foo">Link</a></p>' +
+			'<p><strong>Bold</strong> <i>Italic</i> <a href="foo">Link</a></p>' +
 			'<ul>' +
 				'<li>UL List item 1</li>' +
 				'<li>UL List item 2</li>' +
@@ -86,7 +86,7 @@ describe( 'Article preset', () => {
 		const expectedOutput =
 			'<h2>Heading 1</h2>' +
 			'<p>Paragraph</p>' +
-			'<p><strong>Bold</strong> <em>Italic</em> <a href="foo">Link</a></p>' +
+			'<p><strong>Bold</strong> <i>Italic</i> <a href="foo">Link</a></p>' +
 			'<ul>' +
 				'<li>UL List item 1</li>' +
 				'<li>UL List item 2</li>' +
