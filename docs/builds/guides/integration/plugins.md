@@ -11,7 +11,7 @@ order: 40
 
 Features in CKEditor are introduced by plugins. In fact, without plugins CKEditor is an empty API with no use. The builds provided with CKEditor 5 are actually a predefined collection of plugins, put together to satisfy specific needs.
 
-Each plugin is an independent project. For example, plugins provided by the CKEditor core team are available in GitHub and npm. That’s the case for the Basic Styles plugin, which provides the Bold feature, and the Heading plugin, to name a few.
+Plugins provided by the CKEditor core team are available in [npm](https://www.npmjs.com/search?q=ckeditor5) (and [GitHub](https://github.com/ckeditor?utf8=%E2%9C%93&q=ckeditor5&type=&language=) too) in form of npm packages. A package may contain one or more plugins (e.g. the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) packages contains several grannular plugins).
 
 ## Common use cases
 
