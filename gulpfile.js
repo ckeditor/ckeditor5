@@ -66,6 +66,21 @@ gulp.task( 'docs', () => {
 	}
 } );
 
+gulp.task( 'docs:api-json', () => {
+	assertIsInstalled( '@ckeditor/ckeditor5-dev-docs' );
+
+	const ckeditor5Docs = require( '@ckeditor/ckeditor5-dev-docs' );
+
+	return ckeditor5Docs
+		.build( {
+			readmePath: path.join( process.cwd(), 'README.md' ),
+			sourceFiles: [
+				process.cwd() + '/packages/ckeditor5-*/src/**/*.@(js|jsdoc)',
+				'!' + process.cwd() + '/packages/ckeditor5-*/src/lib/**/*.js'
+			]
+		} );
+} );
+
 // Translations. --------------------------------------------------------------
 
 gulp.task( 'translations:collect', () => {
