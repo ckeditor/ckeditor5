@@ -18,4 +18,12 @@ describe( 'constructor()', () => {
 
 		expect( plugin ).to.have.property( 'editor' ).to.equal( editor );
 	} );
+
+	describe( 'destroy()', () => {
+		it( 'should be defined', () => {
+			const plugin = new Plugin( editor );
+
+			expect( plugin.destroy ).to.be.a( 'function' );
+		} );
+	} );
 } );
