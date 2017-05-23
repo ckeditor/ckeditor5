@@ -115,6 +115,19 @@ describe( 'FocusTracker', () => {
 				expect( focusTracker.isFocused ).to.true;
 				expect( changeSpy.notCalled ).to.true;
 			} );
+
+			// https://github.com/ckeditor/ckeditor5-utils/issues/159
+			it( 'should keep `isFocused` synced when multiple blur events are followed by the focus', () => {
+				focusTracker.add( container );
+				focusTracker.isFocused = true;
+
+				container.dispatchEvent( new Event( 'blur' ) );
+				containerFirstInput.dispatchEvent( new Event( 'blur' ) );
+				containerSecondInput.dispatchEvent( new Event( 'focus' ) );
+				testUtils.sinon.clock.tick( 0 );
+
+				expect( focusTracker.isFocused ).to.be.true;
+			} );
 		} );
 	} );
 
