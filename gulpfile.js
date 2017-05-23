@@ -38,15 +38,20 @@ function getTestOptions() {
 // Documentation. -------------------------------------------------------------
 
 gulp.task( 'docs', () => {
-	assertIsInstalled( '@ckeditor/ckeditor5-dev-docs' );
-	assertIsInstalled( 'umberto' );
-
-	const umberto = require( 'umberto' );
-	const ckeditor5Docs = require( '@ckeditor/ckeditor5-dev-docs' );
-
 	if ( process.argv[ 3 ] == '--no-api' ) {
 		return runUmberto();
 	}
+
+	return buildApiDocs()
+		.then( runUmberto );
+} );
+
+gulp.task( 'docs:api-json', buildApiDocs );
+
+function buildApiDocs() {
+	assertIsInstalled( '@ckeditor/ckeditor5-dev-docs' );
+
+	const ckeditor5Docs = require( '@ckeditor/ckeditor5-dev-docs' );
 
 	return ckeditor5Docs
 		.build( {
@@ -55,16 +60,18 @@ gulp.task( 'docs', () => {
 				process.cwd() + '/packages/ckeditor5-*/src/**/*.@(js|jsdoc)',
 				'!' + process.cwd() + '/packages/ckeditor5-*/src/lib/**/*.js'
 			]
-		} )
-		.then( runUmberto );
-
-	function runUmberto() {
-		return umberto.buildSingleProject( {
-			configDir: 'docs',
-			clean: true
 		} );
-	}
-} );
+}
+
+function runUmberto() {
+	assertIsInstalled( 'umberto' );
+	const umberto = require( 'umberto' );
+
+	return umberto.buildSingleProject( {
+		configDir: 'docs',
+		clean: true
+	} );
+}
 
 // Translations. --------------------------------------------------------------
 
