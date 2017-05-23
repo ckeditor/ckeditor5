@@ -93,7 +93,7 @@ describe( 'ClassicEditor', () => {
 			const data = [
 				'<p>',
 				'<strong>Test:strong</strong>',
-				'<em>Test:em</em>',
+				'<i>Test:i</i>',
 				'</p>'
 			].join( '' );
 
