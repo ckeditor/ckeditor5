@@ -187,13 +187,49 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
+		it( 'should load plugin which does not extend the base Plugin class', () => {
+			class Y { }
+
+			const plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.load( [ Y ] )
+				.then( () => {
+					expect( getPlugins( plugins ).length ).to.equal( 1 );
+				} );
+		} );
+
+		it( 'should load plugin which is a simple function', () => {
+			function pluginAsFunction( editor ) {
+				this.editor = editor;
+			}
+
+			const plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.load( [ pluginAsFunction ] )
+				.then( () => {
+					expect( getPlugins( plugins ).length ).to.equal( 1 );
+				} );
+		} );
+
 		it( 'should set the `editor` property on loaded plugins', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ PluginA, PluginB ] )
+			function pluginAsFunction( editor ) {
+				this.editor = editor;
+			}
+
+			class Y {
+				constructor( editor ) {
+					this.editor = editor;
+				}
+			}
+
+			return plugins.load( [ PluginA, PluginB, pluginAsFunction, Y ] )
 				.then( () => {
 					expect( plugins.get( PluginA ).editor ).to.equal( editor );
 					expect( plugins.get( PluginB ).editor ).to.equal( editor );
+					expect( plugins.get( pluginAsFunction ).editor ).to.equal( editor );
+					expect( plugins.get( Y ).editor ).to.equal( editor );
 				} );
 		} );
 
@@ -210,29 +246,6 @@ describe( 'PluginCollection', () => {
 				.catch( err => {
 					expect( err ).to.be.an.instanceof( TestError );
 					expect( err ).to.have.property( 'message', 'Some error inside a plugin' );
-
-					sinon.assert.calledOnce( logSpy );
-					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
-				} );
-		} );
-
-		it( 'should reject when loading a module which is not a plugin', () => {
-			class Y {}
-
-			availablePlugins.push( Y );
-
-			const logSpy = testUtils.sinon.stub( log, 'error' );
-
-			const plugins = new PluginCollection( editor, availablePlugins );
-
-			return plugins.load( [ Y ] )
-				// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
-				.then( () => {
-					throw new Error( 'Test error: this promise should not be resolved successfully' );
-				} )
-				.catch( err => {
-					expect( err ).to.be.an.instanceof( CKEditorError );
-					expect( err.message ).to.match( /^plugincollection-instance/ );
 
 					sinon.assert.calledOnce( logSpy );
 					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
@@ -307,7 +320,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should load chosen plugins (plugins are names, removePlugins contains an anonymous plugin)', () => {
-			class AnonymousPlugin extends Plugin {}
+			class AnonymousPlugin {}
 
 			const plugins = new PluginCollection( editor, [ AnonymousPlugin ].concat( availablePlugins ) );
 
