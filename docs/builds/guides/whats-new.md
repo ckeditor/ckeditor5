@@ -5,6 +5,7 @@
 
 title: What's new?
 category: builds-guides
+order: 20
 ---
 
 ## Enhanced UX

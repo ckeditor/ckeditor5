@@ -4,14 +4,15 @@
 
 title: Installation
 category: builds-integration
+order: 10
 ---
 
 ## Download options
 
 The goal of installing any of the CKEditor 5 builds is enabling you to using its API when integrating it inside your application. For that purpose, several options are available:
 
-* [Zip download](#zip-download)
-* [CDN](#cdn)
+* [Zip download](#Zip-download)
+* [CDN](#CDN)
 * [npm](#npm)
 
 Each of the builds have independent release packages. Before starting, you must define which one you’re interested on. Check the Overview page for the list of available builds.

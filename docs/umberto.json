@@ -85,6 +85,11 @@
 							"name": "Integration",
 							"id": "builds-integration",
 							"slug": "integration"
+						},
+						{
+							"name": "Development",
+							"id": "builds-development",
+							"slug": "development"
 						}
 					]
 				}

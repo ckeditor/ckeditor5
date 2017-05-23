@@ -4,6 +4,7 @@
 
 title: Basic API
 category: builds-integration
+order: 20
 ---
 
 ## Creators
@@ -14,24 +15,29 @@ The following are creator class names for each build:
 
 * Classic Editor: {@link module:editor-classic/classiceditor~ClassicEditor}
 * Inline Editor: {@link module:editor-inline/inlineeditor~InlineEditor}
+* Medium-like Editor: {@link module:editor-medium-like/mediumlikeeditor~MediumLikeEditor}
 
-Most of the examples in the documentation use the `ClassicEditor` class, but things should work in the same way with other creator classes.
+Most of the examples in the documentation use the `ClassicEditor` class, but things should work in similar way with other creator classes.
 
 Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), these classes can be retrieved:
 
 * by [CommonJS](http://wiki.commonjs.org/wiki/CommonJS) compatible loader (e.g. [Webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
 * by [RequireJS](http://requirejs.org/) (or any other AMD library),
-* from the global namespace if any of the above loaders is not available.
+* from the global namespace if none of the above loaders is not available.
 
 For example:
 
 ```js
+// In CommonJS environment.
+const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic/build/ckeditor.js' );
+ClassicEditor.create; // [Function]
+
 // If AMD is present, you can do this.
-require( '/(ckeditor path)/ckeditor.js', ( ClassicEditor ) => {
+require( '/(ckeditor path)/build/ckeditor.js', ClassicEditor => {
 	ClassicEditor.create; // [Function]
 } );
 
-// Or in all cases, just access it as a global.
+// As a global.
 ClassicEditor.create; // [Function]
 ```
 

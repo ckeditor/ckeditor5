@@ -7,6 +7,7 @@
 
 title: Overview
 category: builds-guides
+order: 10
 ---
 
 CKEditor 5 Builds are comprised by a set of ready to use rich-text editors, so called "builds", in different configurations. Our goal is providing easy to use solutions that can satisfy good part of the editing use cases out there.
