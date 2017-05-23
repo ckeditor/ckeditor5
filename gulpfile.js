@@ -38,35 +38,17 @@ function getTestOptions() {
 // Documentation. -------------------------------------------------------------
 
 gulp.task( 'docs', () => {
-	assertIsInstalled( '@ckeditor/ckeditor5-dev-docs' );
-	assertIsInstalled( 'umberto' );
-
-	const umberto = require( 'umberto' );
-	const ckeditor5Docs = require( '@ckeditor/ckeditor5-dev-docs' );
-
 	if ( process.argv[ 3 ] == '--no-api' ) {
 		return runUmberto();
 	}
 
-	return ckeditor5Docs
-		.build( {
-			readmePath: path.join( process.cwd(), 'README.md' ),
-			sourceFiles: [
-				process.cwd() + '/packages/ckeditor5-*/src/**/*.@(js|jsdoc)',
-				'!' + process.cwd() + '/packages/ckeditor5-*/src/lib/**/*.js'
-			]
-		} )
+	return buildApiDocs()
 		.then( runUmberto );
-
-	function runUmberto() {
-		return umberto.buildSingleProject( {
-			configDir: 'docs',
-			clean: true
-		} );
-	}
 } );
 
-gulp.task( 'docs:api-json', () => {
+gulp.task( 'docs:api-json', buildApiDocs );
+
+function buildApiDocs() {
 	assertIsInstalled( '@ckeditor/ckeditor5-dev-docs' );
 
 	const ckeditor5Docs = require( '@ckeditor/ckeditor5-dev-docs' );
@@ -79,7 +61,17 @@ gulp.task( 'docs:api-json', () => {
 				'!' + process.cwd() + '/packages/ckeditor5-*/src/lib/**/*.js'
 			]
 		} );
-} );
+}
+
+function runUmberto() {
+	assertIsInstalled( 'umberto' );
+	const umberto = require( 'umberto' );
+
+	return umberto.buildSingleProject( {
+		configDir: 'docs',
+		clean: true
+	} );
+}
 
 // Translations. --------------------------------------------------------------
 
