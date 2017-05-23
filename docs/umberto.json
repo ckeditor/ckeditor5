@@ -84,12 +84,14 @@
 						{
 							"name": "Integration",
 							"id": "builds-integration",
-							"slug": "integration"
+							"slug": "integration",
+							"order": 100
 						},
 						{
 							"name": "Development",
 							"id": "builds-development",
-							"slug": "development"
+							"slug": "development",
+							"order": 200
 						}
 					]
 				}
