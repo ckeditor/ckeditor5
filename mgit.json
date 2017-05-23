@@ -7,7 +7,7 @@
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#6bcf77c6694e5cb788067f93d751cb0d574893e5",
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#b89cfd29ca1ef136486a859b861fac30ad4b23d9",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#6d4e6cc3a5cb80c22ff7041d330a0ffa816a01ba",
-    "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#3e6802a4169f56cad86e50ef1bd7881c0adcefdf",
+    "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#f476f34c27387bda4c9e446ed2b9fbe83be58efe",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#679c25227b7b244790745d8f72b61ab7adff1840",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#683bc6353b2a48f862b0c0fe890e7192f58b4595",
     "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#da5b165aee1db14900fa36fb0cd4c030b0655be4",
