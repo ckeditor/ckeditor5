@@ -128,6 +128,10 @@ export default class Editor {
 
 		function initPlugins( loadedPlugins, method ) {
 			return loadedPlugins.reduce( ( promise, plugin ) => {
+				if ( !plugin[ method ] ) {
+					return promise;
+				}
+
 				return promise.then( plugin[ method ].bind( plugin ) );
 			}, Promise.resolve() );
 		}
