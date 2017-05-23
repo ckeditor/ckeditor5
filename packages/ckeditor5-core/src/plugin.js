@@ -29,6 +29,12 @@ export default class Plugin {
 		 */
 		this.editor = editor;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+	}
 }
 
 mix( Plugin, ObservableMixin );
