@@ -115,6 +115,8 @@ export default class FocusTracker {
 	 * @fires blur
 	 */
 	_blur() {
+		clearTimeout( this._nextEventLoopTimeout );
+
 		this._nextEventLoopTimeout = setTimeout( () => {
 			this.focusedElement = null;
 			this.isFocused = false;
