@@ -59,6 +59,7 @@ describe( 'ContextualToolbar', () => {
 		expect( contextualToolbar ).to.instanceOf( ContextualToolbar );
 		expect( contextualToolbar.toolbarView ).to.instanceof( ToolbarView );
 		expect( contextualToolbar.toolbarView.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
+		expect( contextualToolbar.toolbarView.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
 	} );
 
 	it( 'should load ContextualBalloon', () => {
@@ -161,7 +162,15 @@ describe( 'ContextualToolbar', () => {
 					balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
 					position: {
 						target: sinon.match( value => value() == backwardSelectionRect ),
-						positions: [ defaultPositions.southEastArrowNorth, defaultPositions.northEastArrowSouth ]
+						limiter: editor.ui.view.editable.element,
+						positions: [
+							defaultPositions.southEastArrowNorth,
+							defaultPositions.southEastArrowNorthEast,
+							defaultPositions.southEastArrowNorthWest,
+							defaultPositions.northEastArrowSouth,
+							defaultPositions.northEastArrowSouthEast,
+							defaultPositions.northEastArrowSouthWest,
+						]
 					}
 				} );
 			} );
@@ -179,7 +188,15 @@ describe( 'ContextualToolbar', () => {
 						balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
 						position: {
 							target: sinon.match( value => value() == forwardSelectionRect ),
-							positions: [ defaultPositions.northWestArrowSouth, defaultPositions.southWestArrowNorth ]
+							limiter: editor.ui.view.editable.element,
+							positions: [
+								defaultPositions.northWestArrowSouth,
+								defaultPositions.northWestArrowSouthWest,
+								defaultPositions.northWestArrowSouthEast,
+								defaultPositions.southWestArrowNorth,
+								defaultPositions.southWestArrowNorthWest,
+								defaultPositions.southWestArrowNorthEast,
+							]
 						}
 					} );
 				} );

@@ -14,8 +14,6 @@ import ToolbarView from '../toolbarview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
 import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
 
-const defaultPositions = BalloonPanelView.defaultPositions;
-
 /**
  * The contextual toolbar.
  *
@@ -51,7 +49,10 @@ export default class ContextualToolbar extends Plugin {
 
 		Template.extend( this.toolbarView.template, {
 			attributes: {
-				class: 'ck-editor-toolbar'
+				class: [
+					'ck-editor-toolbar',
+					'ck-toolbar_floating'
+				]
 			}
 		} );
 
@@ -231,9 +232,8 @@ export default class ContextualToolbar extends Plugin {
 				// Select the proper range rect depending on the direction of the selection.
 				return isBackward ? rangeRects.item( 0 ) : rangeRects.item( rangeRects.length - 1 );
 			},
-			positions: isBackward ?
-				[ defaultPositions.northWestArrowSouth, defaultPositions.southWestArrowNorth ] :
-				[ defaultPositions.southEastArrowNorth, defaultPositions.northEastArrowSouth ]
+			limiter: this.editor.ui.view.editable.element,
+			positions: getBalloonPositions( isBackward )
 		};
 	}
 
@@ -262,4 +262,29 @@ export default class ContextualToolbar extends Plugin {
 	 * @protected
 	 * @event _selectionChangeDebounced
 	 */
+}
+
+// Returns toolbar positions for the given direction of the selection.
+//
+// @private
+// @param {Boolean} isBackward
+// @returns {Array.<module:utils/dom/position~Position>}
+function getBalloonPositions( isBackward ) {
+	const defaultPositions = BalloonPanelView.defaultPositions;
+
+	return isBackward ? [
+		defaultPositions.northWestArrowSouth,
+		defaultPositions.northWestArrowSouthWest,
+		defaultPositions.northWestArrowSouthEast,
+		defaultPositions.southWestArrowNorth,
+		defaultPositions.southWestArrowNorthWest,
+		defaultPositions.southWestArrowNorthEast,
+	] : [
+		defaultPositions.southEastArrowNorth,
+		defaultPositions.southEastArrowNorthEast,
+		defaultPositions.southEastArrowNorthWest,
+		defaultPositions.northEastArrowSouth,
+		defaultPositions.northEastArrowSouthEast,
+		defaultPositions.northEastArrowSouthWest,
+	];
 }
