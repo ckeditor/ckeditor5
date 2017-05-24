@@ -270,7 +270,7 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			it( 'should do nothing if element was not converted', () => {
-				sinon.spy( log, 'warn' );
+				sinon.stub( log, 'warn' );
 
 				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
 					spy();
@@ -289,7 +289,7 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			it( 'should return null if element was incorrectly converted and log a warning', () => {
-				sinon.spy( log, 'warn' );
+				sinon.stub( log, 'warn' );
 
 				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
 					spy();
@@ -331,7 +331,7 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			it( 'should filter out incorrectly converted elements and log warnings', () => {
-				sinon.spy( log, 'warn' );
+				sinon.stub( log, 'warn' );
 
 				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
 					spy();
