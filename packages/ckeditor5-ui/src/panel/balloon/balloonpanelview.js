@@ -623,10 +623,22 @@ BalloonPanelView.defaultPositions = {
 	} ),
 };
 
+// Returns the top coordinate for positions starting with `north*`.
+//
+// @private
+// @param {utils/dom/rect~Rect} targetRect A rect of the target.
+// @param {utils/dom/rect~Rect} elementRect A rect of the balloon.
+// @returns {Number}
 function getNorthTop( targetRect, balloonRect ) {
 	return targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset;
 }
 
+// Returns the top coordinate for positions starting with `south*`.
+//
+// @private
+// @param {utils/dom/rect~Rect} targetRect A rect of the target.
+// @param {utils/dom/rect~Rect} elementRect A rect of the balloon.
+// @returns {Number}
 function getSouthTop( targetRect ) {
 	return targetRect.bottom + BalloonPanelView.arrowVerticalOffset;
 }
