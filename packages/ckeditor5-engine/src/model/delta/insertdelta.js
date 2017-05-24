@@ -87,8 +87,8 @@ export default class InsertDelta extends Delta {
 /**
  * Inserts a node or nodes at the given position.
  *
- * When inserted element is a {@link engine/model/documentfragment~DocumentFragment} and has markers its markers will
- * be set to {@link engine/model/document~Document#markers}.
+ * When inserted element is a {@link module:engine/model/documentfragment~DocumentFragment} and has markers its markers will
+ * be set to {@link module:engine/model/document~Document#markers}.
  *
  * @chainable
  * @method module:engine/model/batch~Batch#insert

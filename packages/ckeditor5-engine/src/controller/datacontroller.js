@@ -229,8 +229,8 @@ export default class DataController {
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment} converted by the
 	 * {@link #viewToModel view to model converters}.
 	 *
-	 * When marker stamps were converted during conversion process then will be set as DocumentFragment
-	 * {@link module:engine/view/documentfragment~DocumentFragment#markers static markers map}.
+	 * When marker stamps were converted during conversion process then will be set as DocumentFragment's
+	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElementOrFragment
 	 * Element or document fragment which content will be converted.

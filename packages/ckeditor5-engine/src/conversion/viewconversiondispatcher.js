@@ -138,7 +138,7 @@ export default class ViewConversionDispatcher {
 	 * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model data that is a result of the conversion process
 	 * wrapped in `DocumentFragment`. Converted marker stamps will be set as that document fragment's
-	 * {@link module:engine/view/documentfragment~DocumentFragment#markers static markers map}.
+	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 */
 	convert( viewItem, additionalData = {} ) {
 		this.fire( 'viewCleanup', viewItem );

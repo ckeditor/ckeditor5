@@ -287,12 +287,12 @@ class ModelConverterBuilder {
 	 *			}
 	 *
 	 * Creator function provides
-	 * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#StampCreatorData} parameters.
+	 * {@link module:engine/conversion/buildmodelconverter~StampCreatorData} parameters.
 	 *
 	 * See how markers {module:engine/model/buildviewconverter~ViewConverterBuilder#toMarker view -> model serialization}
 	 * works to find out what view element format is the best for you.
 	 *
-	 * @param {String|module:engine/view/element~UIElement|Function} element UIElement created by converter or
+	 * @param {String|module:engine/view/uielement~UIElement|Function} element UIElement created by converter or
 	 * a function that returns view element.
 	 */
 	toStamp( element ) {
@@ -404,7 +404,7 @@ export default function buildModelConverter() {
 }
 
 /**
- * @typedef {StampCreatorData} {module:engine/conversion/buildmodelconverter~ModelConverterBuilder#StampCreatorData}
+ * @typedef StampCreatorData
  * @param {Object} data Additional information about the change.
  * @param {String} data.name Marker name.
  * @param {module:engine/model/range~Range} data.range Marker range.

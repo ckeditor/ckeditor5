@@ -14,7 +14,10 @@ import arrayUtils from '@ckeditor/ckeditor5-utils/src/lib/lodash/array';
 
 const specialCases = new Map();
 
-const deltaTransform = {
+/**
+ * @namespace
+ */
+const transform = {
 	/**
 	 * Transforms given {@link module:engine/model/delta/delta~Delta delta} by another {@link module:engine/model/delta/delta~Delta delta}
 	 * and returns the result of that transformation as an array containing one or more {@link module:engine/model/delta/delta~Delta delta}
@@ -30,7 +33,7 @@ const deltaTransform = {
 	 *
 	 * The function itself looks whether two given delta types have a special case function registered. If so, the deltas are
 	 * transformed using that function. If not,
-	 * {@link module:engine/model/delta/transform~defaultTransform default transformation algorithm} is used.
+	 * {@link module:engine/model/delta/transform~transform.defaultTransform default transformation algorithm} is used.
 	 *
 	 * @param {module:engine/model/delta/delta~Delta} a Delta that will be transformed.
 	 * @param {module:engine/model/delta/delta~Delta} b Delta to transform by.
@@ -41,7 +44,7 @@ const deltaTransform = {
 	 * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation.
 	 */
 	transform( a, b, isAMoreImportantThanB ) {
-		const transformAlgorithm = deltaTransform.getTransformationCase( a, b ) || deltaTransform.defaultTransform;
+		const transformAlgorithm = transform.getTransformationCase( a, b ) || transform.defaultTransform;
 
 		const transformed = transformAlgorithm( a, b, isAMoreImportantThanB );
 		const baseVersion = arrayUtils.last( b.operations ).baseVersion;
@@ -151,8 +154,6 @@ const deltaTransform = {
 	/**
 	 * Adds a special case callback for given delta classes.
 	 *
-	 * @external module:engine/model/delta/transform~transform
-	 * @function module:engine/model/delta/transform~transform.addTransformationCase
 	 * @param {Function} A Delta constructor which instance will get transformed.
 	 * @param {Function} B Delta constructor which instance will be transformed by.
 	 * @param {Function} resolver A callback that will handle custom special case transformation for instances of given delta classes.
@@ -223,8 +224,8 @@ const deltaTransform = {
 
 				for ( let k = 0; k < deltaA.length; k++ ) {
 					for ( let l = 0; l < deltaB.length; l++ ) {
-						const resultAB = deltaTransform.transform( deltaA[ k ], deltaB[ l ], isAMoreImportantThanB );
-						const resultBA = deltaTransform.transform( deltaB[ l ], deltaA[ k ], !isAMoreImportantThanB );
+						const resultAB = transform.transform( deltaA[ k ], deltaB[ l ], isAMoreImportantThanB );
+						const resultBA = transform.transform( deltaB[ l ], deltaA[ k ], !isAMoreImportantThanB );
 
 						deltaA.splice( k, 1, ...resultAB );
 						k += resultAB.length - 1;
@@ -255,7 +256,7 @@ const deltaTransform = {
 	}
 };
 
-export default deltaTransform;
+export default transform;
 
 // Updates base versions of operations inside deltas (which are the results of delta transformation).
 function updateBaseVersion( baseVersion, deltas ) {
