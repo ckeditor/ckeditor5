@@ -41,10 +41,10 @@ export default class StandardEditor extends Editor {
 		this.editing = new EditingController( this.document );
 
 		/**
-		 * Instance of the {@link module:core/keystrokehandler~KeystrokeHandler}.
+		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
 		 *
 		 * @readonly
-		 * @member {module:core/keystrokehandler~KeystrokeHandler}
+		 * @member {module:core/editingkeystrokehandler~EditingKeystrokeHandler}
 		 */
 		this.keystrokes = new EditingKeystrokeHandler( this );
 

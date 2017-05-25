@@ -232,3 +232,17 @@ mix( Editor, EmitterMixin );
  *
  * @event destroy
  */
+
+/**
+ * Additional data built into the editor class. It's used while bundling the editor in order to provide
+ * the default set of plugins and config options which are later used during editor initialization.
+ *
+ * Two properties are supported:
+ *
+ * * `plugins` – an array of plugin constructors. They will be automatically initialized by the editor, unless listed
+ * in `config.removePlugins` or unless `config.plugins` is passed.
+ * * `config` – the defalt config options.
+ *
+ * @static
+ * @member {Object} module:core/editor/editor~Editor.build
+ */
