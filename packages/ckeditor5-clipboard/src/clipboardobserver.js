@@ -42,13 +42,14 @@ export default class ClipboardObserver extends DomEventObserver {
 }
 
 /**
- * Fired with a `dataTransfer`, which comes from the clipboard (was pasted or dropped) and
+ * Fired with a `dataTransfer` which comes from the clipboard (was {@link module:engine/view/document~Document#event:paste pasted}
+ * or {@link module:engine/view/document~Document#event:drop dropped}) and
  * should be processed in order to be inserted into the editor.
  * It's part of the {@link module:clipboard/clipboard~Clipboard "clipboard pipeline"}.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
- * @event module:engine/view/document~Document#event:input
+ * @event module:engine/view/document~Document#event:clipboardInput
  * @param {Object} data Event data.
  * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
  */

@@ -21,13 +21,13 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  * The clipboard feature. Currently, it's responsible for intercepting the `paste` and `drop` events and
  * passing the pasted content through the clipboard pipeline.
  *
- * ## Clipboard input pipeline
+ * # Clipboard input pipeline
  *
  * The feature creates the clipboard input pipeline which allows processing clipboard content
  * before it gets inserted into the editor. The pipeline consists of two events on which
  * the features can listen in order to modify or totally override the default behavior.
  *
- * ### On {@link module:engine/view/document~Document#event:paste} and {@link module:engine/view/document~Document#event:drop}
+ * ## On {@link module:engine/view/document~Document#event:paste} and {@link module:engine/view/document~Document#event:drop}
  *
  * The default action is to:
  *
@@ -43,7 +43,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  * data from the clipboard (the {@link module:clipboard/datatransfer~DataTransfer `DataTransfer`}).
  * should plug a listener at this stage.
  *
- * ### On {@link module:engine/view/document~Document#event:clipboardInput}
+ * ## On {@link module:engine/view/document~Document#event:clipboardInput}
  *
  * This action is performed by a low priority listener, so it can be overridden by a normal one.
  *
@@ -55,7 +55,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  *			data.dataTransfer.set( 'text/html', transformedContent );
  *		} );
  *
- * ### On {@link module:clipboard/clipboard~Clipboard#event:inputTransformation}
+ * ## On {@link module:clipboard/clipboard~Clipboard#event:inputTransformation}
  *
  * The default action is to insert the content (`data.content`, represented by a
  * {@link module:engine/view/documentfragment~DocumentFragment}) to an editor if the data is not empty.
@@ -79,12 +79,12 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  *			}
  *		} );
  *
- * ## Clipboard output pipeline
+ * # Clipboard output pipeline
  *
  * The output pipeline is the equivalent of the input pipeline but for the copy and cut operations.
  * It allows to process the content which will be then put into the clipboard or to override the whole process.
  *
- * ### On {@link module:engine/view/document~Document#event:copy} and {@link module:engine/view/document~Document#event:cut}
+ * ## On {@link module:engine/view/document~Document#event:copy} and {@link module:engine/view/document~Document#event:cut}
  *
  * The default action is to:
  *
@@ -93,7 +93,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  * 3. fire {@link module:engine/view/document~Document#event:clipboardOutput} with a clone of the selected content
  * converted to a {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
  *
- * ### On {@link module:engine/view/document~Document#event:clipboardOutput}
+ * ## On {@link module:engine/view/document~Document#event:clipboardOutput}
  *
  * The default action is to put the content (`data.content`, represented by a
  * {@link module:engine/view/documentfragment~DocumentFragment}) to the clipboard as HTML. In case of the cut operation,

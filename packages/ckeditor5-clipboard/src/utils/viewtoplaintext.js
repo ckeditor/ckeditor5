@@ -13,9 +13,9 @@
 const smallPaddingElements = [ 'figcaption', 'li' ];
 
 /**
- * Deeply converts {@link module:engine/model/view/item view item} to plain text.
+ * Converts {@link module:engine/view/item~Item view item} and all of its children to plain text.
  *
- * @param {module:engine/model/view/item} viewItem View item to convert.
+ * @param {module:engine/view/item~Item} viewItem View item to convert.
  * @returns {String} Plain text representation of `viewItem`.
  */
 export default function viewToPlainText( viewItem ) {
