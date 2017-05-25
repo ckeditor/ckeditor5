@@ -38,7 +38,7 @@ describe( 'BalloonPanelView', () => {
 		it( 'should set default values', () => {
 			expect( view.top ).to.equal( 0 );
 			expect( view.left ).to.equal( 0 );
-			expect( view.position ).to.equal( 'arrow_ne' );
+			expect( view.position ).to.equal( 'arrow_nw' );
 			expect( view.isVisible ).to.equal( false );
 			expect( view.withArrow ).to.equal( true );
 		} );
@@ -51,11 +51,11 @@ describe( 'BalloonPanelView', () => {
 	describe( 'DOM bindings', () => {
 		describe( 'arrow', () => {
 			it( 'should react on view#position', () => {
-				expect( view.element.classList.contains( 'ck-balloon-panel_arrow_ne' ) ).to.true;
-
-				view.position = 'arrow_nw';
-
 				expect( view.element.classList.contains( 'ck-balloon-panel_arrow_nw' ) ).to.true;
+
+				view.position = 'arrow_ne';
+
+				expect( view.element.classList.contains( 'ck-balloon-panel_arrow_ne' ) ).to.true;
 			} );
 
 			it( 'should react on view#withArrow', () => {
@@ -220,7 +220,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_ne' );
+				expect( view.position ).to.equal( 'arrow_nw' );
 			} );
 
 			it( 'should put balloon on the `south east` side of the target element when ' +
@@ -234,7 +234,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_ne' );
+				expect( view.position ).to.equal( 'arrow_nw' );
 			} );
 
 			it( 'should put balloon on the `south west` side of the target element when target is on the right side of the limiter', () => {
@@ -247,7 +247,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_nw' );
+				expect( view.position ).to.equal( 'arrow_ne' );
 			} );
 
 			it( 'should put balloon on the `north east` side of the target element when target is on the bottom of the limiter ', () => {
@@ -260,7 +260,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_se' );
+				expect( view.position ).to.equal( 'arrow_sw' );
 			} );
 
 			it( 'should put balloon on the `north west` side of the target element when ' +
@@ -274,7 +274,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_sw' );
+				expect( view.position ).to.equal( 'arrow_se' );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-ui-default/issues/126
@@ -355,7 +355,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_nw' );
+				expect( view.position ).to.equal( 'arrow_ne' );
 			} );
 
 			it( 'should put balloon on the `south east` position when `south west` is limited', () => {
@@ -375,7 +375,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_ne' );
+				expect( view.position ).to.equal( 'arrow_nw' );
 			} );
 
 			it( 'should put balloon on the `north east` position when `south east` is limited', () => {
@@ -399,7 +399,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_se' );
+				expect( view.position ).to.equal( 'arrow_sw' );
 			} );
 
 			it( 'should put balloon on the `south east` position when `north east` is limited', () => {
@@ -419,7 +419,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_ne' );
+				expect( view.position ).to.equal( 'arrow_nw' );
 			} );
 		} );
 	} );
@@ -688,7 +688,7 @@ describe( 'BalloonPanelView', () => {
 			expect( positions.northArrowSouthEast( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 35,
 				left: 130,
-				name: 'arrow_sw'
+				name: 'arrow_se'
 			} );
 		} );
 
@@ -696,7 +696,7 @@ describe( 'BalloonPanelView', () => {
 			expect( positions.northArrowSouthWest( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 35,
 				left: 120,
-				name: 'arrow_se'
+				name: 'arrow_sw'
 			} );
 		} );
 
@@ -714,7 +714,7 @@ describe( 'BalloonPanelView', () => {
 			expect( positions.northWestArrowSouthWest( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 35,
 				left: 70,
-				name: 'arrow_se'
+				name: 'arrow_sw'
 			} );
 		} );
 
@@ -722,7 +722,7 @@ describe( 'BalloonPanelView', () => {
 			expect( positions.northWestArrowSouthEast( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 35,
 				left: 80,
-				name: 'arrow_sw'
+				name: 'arrow_se'
 			} );
 		} );
 
@@ -740,7 +740,7 @@ describe( 'BalloonPanelView', () => {
 			expect( positions.northEastArrowSouthEast( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 35,
 				left: 180,
-				name: 'arrow_sw'
+				name: 'arrow_se'
 			} );
 		} );
 
@@ -748,7 +748,7 @@ describe( 'BalloonPanelView', () => {
 			expect( positions.northEastArrowSouthWest( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 35,
 				left: 170,
-				name: 'arrow_se'
+				name: 'arrow_sw'
 			} );
 		} );
 
@@ -766,7 +766,7 @@ describe( 'BalloonPanelView', () => {
 			expect( positions.southArrowNorthEast( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 215,
 				left: 130,
-				name: 'arrow_nw'
+				name: 'arrow_ne'
 			} );
 		} );
 
@@ -774,7 +774,7 @@ describe( 'BalloonPanelView', () => {
 			expect( positions.southArrowNorthWest( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 215,
 				left: 120,
-				name: 'arrow_ne'
+				name: 'arrow_nw'
 			} );
 		} );
 
@@ -792,7 +792,7 @@ describe( 'BalloonPanelView', () => {
 			expect( positions.southWestArrowNorthWest( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 215,
 				left: 70,
-				name: 'arrow_ne'
+				name: 'arrow_nw'
 			} );
 		} );
 
@@ -800,7 +800,7 @@ describe( 'BalloonPanelView', () => {
 			expect( positions.southWestArrowNorthEast( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 215,
 				left: 80,
-				name: 'arrow_nw'
+				name: 'arrow_ne'
 			} );
 		} );
 
@@ -818,7 +818,7 @@ describe( 'BalloonPanelView', () => {
 			expect( positions.southEastArrowNorthEast( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 215,
 				left: 180,
-				name: 'arrow_nw'
+				name: 'arrow_ne'
 			} );
 		} );
 
@@ -826,7 +826,7 @@ describe( 'BalloonPanelView', () => {
 			expect( positions.southEastArrowNorthWest( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 215,
 				left: 170,
-				name: 'arrow_ne'
+				name: 'arrow_nw'
 			} );
 		} );
 	} );
