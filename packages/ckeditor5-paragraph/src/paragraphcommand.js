@@ -43,7 +43,7 @@ export default class ParagraphCommand extends Command {
 	}
 
 	/**
-	 * Executes the command. All the {@link module:engine/model/schema~Schema#blocks blocks} in the selection
+	 * Executes the command. All the blocks (see {@link module:engine/model/schema~Schema}) in the selection
 	 * will be turned to paragraphs.
 	 *
 	 * @protected
