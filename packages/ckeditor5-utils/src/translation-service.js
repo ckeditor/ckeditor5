@@ -11,7 +11,7 @@ let dictionaries = {};
 
 /**
  * Adds package translations to existing ones.
- * These translations will later be available for {@link module:utils/translations-service~translate translate}.
+ * These translations will later be available for {@link module:utils/translation-service~translate translate}.
  *
  *		add( 'pl', {
  *			'OK': 'OK',
@@ -28,7 +28,7 @@ export function add( lang, translations ) {
 }
 
 /**
- * Translates string if the translation of the string was previously {@link module:utils/translations-service~add added}
+ * Translates string if the translation of the string was previously {@link module:utils/translation-service~add added}
  * to the dictionary. This happens in a multi-language mode were translation modules are created by the bundler.
  *
  * When no translation is defined in the dictionary or the dictionary doesn't exist this function returns
