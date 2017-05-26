@@ -59,7 +59,8 @@ function buildApiDocs() {
 			sourceFiles: [
 				process.cwd() + '/packages/ckeditor5-*/src/**/*.@(js|jsdoc)',
 				'!' + process.cwd() + '/packages/ckeditor5-*/src/lib/**/*.js'
-			]
+			],
+			validationOnly: process.argv[ 3 ] == '--validate'
 		} );
 }
 
