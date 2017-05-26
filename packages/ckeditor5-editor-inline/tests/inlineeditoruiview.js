@@ -26,6 +26,11 @@ describe( 'InlineEditorUIView', () => {
 			it( 'is given a locale object', () => {
 				expect( view.toolbar.locale ).to.equal( locale );
 			} );
+
+			it( 'is given the right CSS classes', () => {
+				expect( view.toolbar.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
+				expect( view.toolbar.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
+			} );
 		} );
 
 		describe( '#panel', () => {
