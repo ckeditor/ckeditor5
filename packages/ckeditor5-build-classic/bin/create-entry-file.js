@@ -12,6 +12,6 @@ const buildConfig = require( '../config-build' );
 
 console.log( 'Creating the entry file...' );
 
-bundler.createEntryFile( 'ckeditor.js', './config-editor', buildConfig );
+bundler.createEntryFile( 'ckeditor.js', './config-build', buildConfig );
 
 console.log( 'Done.' );

@@ -36,5 +36,5 @@ ClassicEditor.build = {
 		ListPlugin,
 		ParagraphPlugin
 	],
-	config: require( './config-editor' )
+	config: require( './config-build' ).config
 };

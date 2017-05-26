@@ -23,5 +23,23 @@ module.exports = {
 		'@ckeditor/ckeditor5-link/src/link',
 		'@ckeditor/ckeditor5-list/src/list',
 		'@ckeditor/ckeditor5-paragraph/src/paragraph',
-	]
+	],
+	config: {
+		toolbar: [
+			'headings',
+			'bold',
+			'italic',
+			'link',
+			'unlink',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'undo',
+			'redo'
+		],
+
+		image: {
+			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+		}
+	}
 };
