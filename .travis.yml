@@ -21,7 +21,7 @@ install:
 script:
   - npm t
 after_script:
-  - gulp docs:api-json --validate
+  - gulp docs:api-json --validate-only
 notifications:
   slack:
     rooms:
