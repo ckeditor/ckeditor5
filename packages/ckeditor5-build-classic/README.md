@@ -63,7 +63,7 @@ ClassicEditor.create( document.querySelector( '#editor' ) )
 
 **Note:** This section assumes that you cloned this package repository and execute the commands inside it.
 
-You can modify `config-editor.js`, `config-build.js` or any of the Webpack configs and run:
+You can modify `build-config.js` or any of the Webpack configs and run:
 
 ```
 npm run build

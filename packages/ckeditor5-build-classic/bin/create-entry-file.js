@@ -8,10 +8,10 @@
 'use strict';
 
 const { bundler } = require( '@ckeditor/ckeditor5-dev-utils' );
-const buildConfig = require( '../config-build' );
+const buildConfig = require( '../build-config' );
 
 console.log( 'Creating the entry file...' );
 
-bundler.createEntryFile( 'ckeditor.js', './config-build', buildConfig );
+bundler.createEntryFile( 'ckeditor.js', buildConfig );
 
 console.log( 'Done.' );
