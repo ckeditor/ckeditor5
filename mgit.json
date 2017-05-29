@@ -5,7 +5,7 @@
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#7d9a5b1c44d6a3911abd23b3468be7995697bb2d",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#9d1d5e26657875f17a497ed57c9e0025e5b318a0",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#6bcf77c6694e5cb788067f93d751cb0d574893e5",
-    "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#7a83fc337482bd4571d6b0b5e5957416c524a918",
+    "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#34704a6889c04373a8fd56f1f31d956e9e67abb2",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#3dbf0ad948af4bef1473e1eb5c1c01980e0e2d2c",
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#919433775c502158ad04cc53fa1a22177397d0a6",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#679c25227b7b244790745d8f72b61ab7adff1840",
