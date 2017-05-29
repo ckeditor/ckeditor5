@@ -20,6 +20,8 @@ install:
   - lerna bootstrap
 script:
   - npm t
+after_script:
+  - gulp docs:api-json --validate
 notifications:
   slack:
     rooms:
