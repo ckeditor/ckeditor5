@@ -41,11 +41,13 @@ describe( 'Editor', () => {
 
 			const spy1 = sinon.spy( editor.data, 'destroy' );
 			const spy2 = sinon.spy( editor.document, 'destroy' );
+			const spy3 = sinon.spy( editor.plugins, 'destroy' );
 
 			return editor.destroy()
 				.then( () => {
 					expect( spy1.calledOnce ).to.be.true;
 					expect( spy2.calledOnce ).to.be.true;
+					expect( spy3.calledOnce ).to.be.true;
 				} );
 		} );
 	} );

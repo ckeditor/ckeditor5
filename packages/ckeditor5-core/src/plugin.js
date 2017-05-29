@@ -34,6 +34,7 @@ export default class Plugin {
 	 * @inheritDoc
 	 */
 	destroy() {
+		this.stopListening();
 	}
 }
 

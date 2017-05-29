@@ -149,6 +149,7 @@ export default class Editor {
 
 		return Promise.resolve()
 			.then( () => {
+				this.plugins.destroy();
 				this.document.destroy();
 				this.data.destroy();
 			} );

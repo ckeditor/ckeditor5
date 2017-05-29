@@ -381,6 +381,26 @@ describe( 'PluginCollection', () => {
 		} );
 	} );
 
+	describe( 'destroy()', () => {
+		it( 'calls "destroy" method on each loaded plugin', () => {
+			let destroySpyForPluginA, destroySpyForPluginB;
+
+			const plugins = new PluginCollection( editor, [] );
+
+			return plugins.load( [ PluginA, PluginB ] )
+				.then( () => {
+					destroySpyForPluginA = testUtils.sinon.spy( plugins.get( PluginA ), 'destroy' );
+					destroySpyForPluginB = testUtils.sinon.spy( plugins.get( PluginB ), 'destroy' );
+
+					return plugins.destroy();
+				} )
+				.then( () => {
+					expect( destroySpyForPluginA.calledOnce ).to.equal( true );
+					expect( destroySpyForPluginB.calledOnce ).to.equal( true );
+				} );
+		} );
+	} );
+
 	describe( 'iterator', () => {
 		it( 'exists', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );

@@ -208,6 +208,21 @@ export default class PluginCollection {
 	}
 
 	/**
+	 * Destroys each loaded plugin.
+	 *
+	 * @returns {Promise}
+	 */
+	destroy() {
+		const promises = [];
+
+		for ( const [ , pluginInstance ] of this ) {
+			promises.push( pluginInstance.destroy() );
+		}
+
+		return Promise.all( promises );
+	}
+
+	/**
 	 * Adds the plugin to the collection. Exposed mainly for testing purposes.
 	 *
 	 * @protected
