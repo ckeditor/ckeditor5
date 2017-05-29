@@ -216,7 +216,9 @@ export default class PluginCollection {
 		const promises = [];
 
 		for ( const [ , pluginInstance ] of this ) {
-			promises.push( pluginInstance.destroy() );
+			if ( typeof pluginInstance.destroy == 'function' ) {
+				promises.push( pluginInstance.destroy() );
+			}
 		}
 
 		return Promise.all( promises );

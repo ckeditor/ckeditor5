@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals setTimeout */
+
 import testUtils from '../tests/_utils/utils';
 import Editor from '../src/editor/editor';
 import PluginCollection from '../src/plugincollection';
@@ -389,14 +391,67 @@ describe( 'PluginCollection', () => {
 
 			return plugins.load( [ PluginA, PluginB ] )
 				.then( () => {
-					destroySpyForPluginA = testUtils.sinon.spy( plugins.get( PluginA ), 'destroy' );
-					destroySpyForPluginB = testUtils.sinon.spy( plugins.get( PluginB ), 'destroy' );
+					destroySpyForPluginA = sinon.spy( plugins.get( PluginA ), 'destroy' );
+					destroySpyForPluginB = sinon.spy( plugins.get( PluginB ), 'destroy' );
 
 					return plugins.destroy();
 				} )
 				.then( () => {
 					expect( destroySpyForPluginA.calledOnce ).to.equal( true );
 					expect( destroySpyForPluginB.calledOnce ).to.equal( true );
+				} );
+		} );
+
+		it( 'waits when all plugins are destroyed', () => {
+			const destroyedPlugins = [];
+
+			class AsynchronousPluginA extends Plugin {
+				destroy() {
+					return new Promise( resolve => {
+						setTimeout( () => {
+							super.destroy();
+							destroyedPlugins.push( 'AsynchronousPluginA.destroy()' );
+							resolve();
+						}, 200 );
+					} );
+				}
+			}
+
+			class AsynchronousPluginB extends Plugin {
+				destroy() {
+					return new Promise( resolve => {
+						setTimeout( () => {
+							super.destroy();
+							destroyedPlugins.push( 'AsynchronousPluginB.destroy()' );
+							resolve();
+						}, 100 );
+					} );
+				}
+			}
+
+			const plugins = new PluginCollection( editor, [] );
+
+			return plugins.load( [ AsynchronousPluginA, AsynchronousPluginB ] )
+				.then( () => plugins.destroy() )
+				.then( () => {
+					expect( destroyedPlugins ).to.contain( 'AsynchronousPluginB.destroy()' );
+					expect( destroyedPlugins ).to.contain( 'AsynchronousPluginA.destroy()' );
+				} );
+		} );
+
+		it( 'does not execute "Plugin.destroy()" for plugins which do not have this method', () => {
+			class FooPlugin {
+				constructor( editor ) {
+					this.editor = editor;
+				}
+			}
+
+			const plugins = new PluginCollection( editor, [] );
+
+			return plugins.load( [ PluginA, FooPlugin ] )
+				.then( () => plugins.destroy() )
+				.then( destroyedPlugins => {
+					expect( destroyedPlugins.length ).to.equal( 1 );
 				} );
 		} );
 	} );
