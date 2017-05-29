@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global Event */
+
 import ViewCollection from '../../src/viewcollection';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 
@@ -43,6 +45,19 @@ describe( 'DropdownPanelView', () => {
 
 					view.isVisible = false;
 					expect( view.element.classList.contains( 'ck-dropdown__panel-visible' ) ).to.be.false;
+				} );
+			} );
+
+			describe( 'listeners', () => {
+				describe( 'selectstart', () => {
+					// https://github.com/ckeditor/ckeditor5-ui/issues/228
+					it( 'gets preventDefault called', () => {
+						const event = new Event( 'selectstart' );
+						const spy = sinon.spy( event, 'preventDefault' );
+
+						view.element.dispatchEvent( event );
+						sinon.assert.calledOnce( spy );
+					} );
 				} );
 			} );
 		} );

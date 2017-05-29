@@ -51,7 +51,13 @@ export default class DropdownPanelView extends View {
 				]
 			},
 
-			children: this.children
+			children: this.children,
+
+			on: {
+				// Drag and drop in the panel should not break the selection in the editor.
+				// https://github.com/ckeditor/ckeditor5-ui/issues/228
+				selectstart: bind.to( evt => evt.preventDefault() )
+			}
 		} );
 	}
 }
