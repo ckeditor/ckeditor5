@@ -17,7 +17,7 @@
     "@ckeditor/ckeditor5-paragraph": "^0.8.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^2.5.0",
+    "@ckeditor/ckeditor5-dev-utils": "^3.0.0",
     "babel-core": "^6.24.0",
     "babel-loader": "^6.4.0",
     "babel-preset-env": "^1.2.2",
