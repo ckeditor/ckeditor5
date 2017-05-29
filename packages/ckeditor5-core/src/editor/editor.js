@@ -147,9 +147,8 @@ export default class Editor {
 		this.fire( 'destroy' );
 		this.stopListening();
 
-		return Promise.resolve()
+		return this.plugins.destroy()
 			.then( () => {
-				this.plugins.destroy();
 				this.document.destroy();
 				this.data.destroy();
 			} );
