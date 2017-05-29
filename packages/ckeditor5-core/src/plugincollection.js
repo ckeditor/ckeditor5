@@ -208,7 +208,7 @@ export default class PluginCollection {
 	}
 
 	/**
-	 * Destroys each loaded plugin.
+	 * Destroys all loaded plugins.
 	 *
 	 * @returns {Promise}
 	 */
