@@ -15,12 +15,11 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 install:
-  - npm install mgit2 lerna @ckeditor/ckeditor5-dev-tests
+  - npm install mgit2 lerna @ckeditor/ckeditor5-dev-tests @ckeditor/ckeditor5-dev-docs
   - mgit bootstrap --resolver-url-template="https://github.com/\${ path }.git"
   - lerna bootstrap
 script:
   - npm t
-after_script:
   - gulp docs:api-json --validate-only
 notifications:
   slack:
