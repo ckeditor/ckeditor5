@@ -13,4 +13,4 @@
 
 set -e
 
-npm i @ckeditor/ckeditor5-dev-docs @ckeditor/ckeditor5-dev-env umberto
+npm i @ckeditor/ckeditor5-dev-env umberto

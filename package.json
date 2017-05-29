@@ -35,6 +35,7 @@
     "@ckeditor/ckeditor5-widget": "^0.1.1"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-dev-docs": "^7.0.0",
     "@ckeditor/ckeditor5-dev-lint": "^3.0.0",
     "@ckeditor/ckeditor5-dev-tests": "^7.3.0",
     "eslint-config-ckeditor5": "^1.0.0",
