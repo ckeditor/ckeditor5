@@ -213,13 +213,10 @@ export default class PluginCollection {
 	 * @returns {Promise}
 	 */
 	destroy() {
-		const promises = [];
-
-		for ( const [ , pluginInstance ] of this ) {
-			if ( typeof pluginInstance.destroy == 'function' ) {
-				promises.push( pluginInstance.destroy() );
-			}
-		}
+		const promises = Array.from( this )
+			.map( ( [ , pluginInstance ] ) => pluginInstance )
+			.filter( pluginInstance => typeof pluginInstance.destroy == 'function' )
+			.map( pluginInstance => pluginInstance.destroy() );
 
 		return Promise.all( promises );
 	}
