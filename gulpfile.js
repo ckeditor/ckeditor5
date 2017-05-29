@@ -46,7 +46,7 @@ gulp.task( 'docs', () => {
 		.then( runUmberto );
 } );
 
-gulp.task( 'docs:api-json', buildApiDocs );
+gulp.task( 'docs:api', buildApiDocs );
 
 function buildApiDocs() {
 	assertIsInstalled( '@ckeditor/ckeditor5-dev-docs' );
