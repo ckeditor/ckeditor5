@@ -384,7 +384,7 @@ describe( 'PluginCollection', () => {
 	} );
 
 	describe( 'destroy()', () => {
-		it( 'calls "destroy" method on each loaded plugin', () => {
+		it( 'calls Plugin#destroy() method on every loaded plugin', () => {
 			let destroySpyForPluginA, destroySpyForPluginB;
 
 			const plugins = new PluginCollection( editor, [] );
@@ -402,7 +402,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'waits when all plugins are destroyed', () => {
+		it( 'waits until all plugins are destroyed', () => {
 			const destroyedPlugins = [];
 
 			class AsynchronousPluginA extends Plugin {
@@ -410,9 +410,10 @@ describe( 'PluginCollection', () => {
 					return new Promise( resolve => {
 						setTimeout( () => {
 							super.destroy();
+
 							destroyedPlugins.push( 'AsynchronousPluginA.destroy()' );
 							resolve();
-						}, 200 );
+						} );
 					} );
 				}
 			}
@@ -422,9 +423,10 @@ describe( 'PluginCollection', () => {
 					return new Promise( resolve => {
 						setTimeout( () => {
 							super.destroy();
+
 							destroyedPlugins.push( 'AsynchronousPluginB.destroy()' );
 							resolve();
-						}, 100 );
+						} );
 					} );
 				}
 			}
@@ -439,7 +441,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'does not execute "Plugin.destroy()" for plugins which do not have this method', () => {
+		it( 'does not execute Plugin#destroy() for plugins which do not have this method', () => {
 			class FooPlugin {
 				constructor( editor ) {
 					this.editor = editor;
