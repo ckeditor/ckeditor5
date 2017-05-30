@@ -148,7 +148,8 @@ export default class DropdownView extends View {
 
 		// Open the dropdown panel using the arrow down key, just like with return or space.
 		this.keystrokes.set( 'arrowdown', ( data, cancel ) => {
-			if ( !this.isOpen ) {
+			// Don't open if the dropdown is disabled or already open.
+			if ( this.isEnabled && !this.isOpen ) {
 				this.isOpen = true;
 				cancel();
 			}
