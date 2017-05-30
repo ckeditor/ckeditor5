@@ -23,7 +23,7 @@ describe( 'TextAlternativeFormView', () => {
 		} );
 
 		it( 'should create child views', () => {
-			expect( view.lebeledInput ).to.be.instanceOf( View );
+			expect( view.labeledInput ).to.be.instanceOf( View );
 			expect( view.saveButtonView ).to.be.instanceOf( View );
 			expect( view.cancelButtonView ).to.be.instanceOf( View );
 		} );
