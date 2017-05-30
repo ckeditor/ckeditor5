@@ -94,6 +94,24 @@ describe( 'ImageTextAlternative', () => {
 	} );
 
 	describe( 'balloon panel form', () => {
+		// https://github.com/ckeditor/ckeditor5-image/issues/114
+		it( 'should make sure the input always stays in sync with the value of the command', () => {
+			const button = editor.ui.componentFactory.create( 'imageTextAlternative' );
+
+			// Mock the value of the input after some past editing.
+			form.lebeledInput.value = 'foo';
+
+			// Mock the user using the form, changing the value but clicking "Cancel".
+			// so the command's value is not updated.
+			form.lebeledInput.inputView.element.value = 'This value was canceled.';
+
+			// Mock the user editing the same image once again.
+			setData( editor.document, '[<image src="" alt="foo"></image>]' );
+
+			button.fire( 'execute' );
+			expect( form.lebeledInput.inputView.element.value ).to.equal( 'foo' );
+		} );
+
 		it( 'should execute command on submit', () => {
 			const spy = sinon.spy( editor, 'execute' );
 			form.fire( 'submit' );
