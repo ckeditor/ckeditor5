@@ -278,13 +278,13 @@ function getBalloonPositions( isBackward ) {
 		defaultPositions.northWestArrowSouthEast,
 		defaultPositions.southWestArrowNorth,
 		defaultPositions.southWestArrowNorthWest,
-		defaultPositions.southWestArrowNorthEast,
+		defaultPositions.southWestArrowNorthEast
 	] : [
 		defaultPositions.southEastArrowNorth,
 		defaultPositions.southEastArrowNorthEast,
 		defaultPositions.southEastArrowNorthWest,
 		defaultPositions.northEastArrowSouth,
 		defaultPositions.northEastArrowSouthEast,
-		defaultPositions.northEastArrowSouthWest,
+		defaultPositions.northEastArrowSouthWest
 	];
 }

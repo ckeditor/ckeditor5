@@ -169,7 +169,7 @@ describe( 'ContextualToolbar', () => {
 							defaultPositions.southEastArrowNorthWest,
 							defaultPositions.northEastArrowSouth,
 							defaultPositions.northEastArrowSouthEast,
-							defaultPositions.northEastArrowSouthWest,
+							defaultPositions.northEastArrowSouthWest
 						]
 					}
 				} );
@@ -195,7 +195,7 @@ describe( 'ContextualToolbar', () => {
 								defaultPositions.northWestArrowSouthEast,
 								defaultPositions.southWestArrowNorth,
 								defaultPositions.southWestArrowNorthWest,
-								defaultPositions.southWestArrowNorthEast,
+								defaultPositions.southWestArrowNorthEast
 							]
 						}
 					} );
