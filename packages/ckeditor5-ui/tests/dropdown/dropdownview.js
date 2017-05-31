@@ -127,6 +127,8 @@ describe( 'DropdownView', () => {
 					stopPropagation: sinon.spy()
 				};
 
+				view.isEnabled = true;
+
 				view.isOpen = true;
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.notCalled( keyEvtData.preventDefault );
