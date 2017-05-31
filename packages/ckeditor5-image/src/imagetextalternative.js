@@ -103,7 +103,7 @@ export default class ImageTextAlternative extends Plugin {
 		const form = new TextAlternativeFormView( editor.locale );
 
 		this.listenTo( form, 'submit', () => {
-			editor.execute( 'imageTextAlternative', { newValue: form.lebeledInput.inputView.element.value } );
+			editor.execute( 'imageTextAlternative', { newValue: form.labeledInput.inputView.element.value } );
 			this._hideBalloonPanel();
 		} );
 
@@ -153,9 +153,17 @@ export default class ImageTextAlternative extends Plugin {
 	_showBalloonPanel() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'imageTextAlternative' );
-		this.form.lebeledInput.value = command.value || '';
+		const labeledInput = this.form.labeledInput;
 		this.balloonPanel.attach();
-		this.form.lebeledInput.select();
+
+		// Make sure that each time the panel shows up, the field remains in sync with the value of
+		// the command. If the user typed in the input, then canceled the balloon (`labeledInput#value`
+		// stays unaltered) and re-opened it without changing the value of the command, they would see the
+		// old value instead of the actual value of the command.
+		// https://github.com/ckeditor/ckeditor5-image/issues/114
+		labeledInput.value = labeledInput.inputView.element.value = command.value || '';
+
+		this.form.labeledInput.select();
 	}
 
 	/**

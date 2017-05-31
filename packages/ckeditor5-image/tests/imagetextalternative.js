@@ -75,31 +75,49 @@ describe( 'ImageTextAlternative', () => {
 		} );
 
 		it( 'should set alt attribute value to textarea and select it', () => {
-			const spy = sinon.spy( form.lebeledInput, 'select' );
+			const spy = sinon.spy( form.labeledInput, 'select' );
 			setData( editor.document, '[<image src="" alt="foo bar"></image>]' );
 			button.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
-			expect( plugin.form.lebeledInput.value ).equals( 'foo bar' );
+			expect( plugin.form.labeledInput.value ).equals( 'foo bar' );
 		} );
 
 		it( 'should set empty text to textarea and select it when there is no alt attribute', () => {
-			const spy = sinon.spy( form.lebeledInput, 'select' );
+			const spy = sinon.spy( form.labeledInput, 'select' );
 			setData( editor.document, '[<image src=""></image>]' );
 			button.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
-			expect( plugin.form.lebeledInput.value ).equals( '' );
+			expect( plugin.form.labeledInput.value ).equals( '' );
 		} );
 	} );
 
 	describe( 'balloon panel form', () => {
+		// https://github.com/ckeditor/ckeditor5-image/issues/114
+		it( 'should make sure the input always stays in sync with the value of the command', () => {
+			const button = editor.ui.componentFactory.create( 'imageTextAlternative' );
+
+			// Mock the value of the input after some past editing.
+			form.labeledInput.value = 'foo';
+
+			// Mock the user using the form, changing the value but clicking "Cancel".
+			// so the command's value is not updated.
+			form.labeledInput.inputView.element.value = 'This value was canceled.';
+
+			// Mock the user editing the same image once again.
+			setData( editor.document, '[<image src="" alt="foo"></image>]' );
+
+			button.fire( 'execute' );
+			expect( form.labeledInput.inputView.element.value ).to.equal( 'foo' );
+		} );
+
 		it( 'should execute command on submit', () => {
 			const spy = sinon.spy( editor, 'execute' );
 			form.fire( 'submit' );
 
 			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, 'imageTextAlternative', { newValue: form.lebeledInput.inputView.element.value } );
+			sinon.assert.calledWithExactly( spy, 'imageTextAlternative', { newValue: form.labeledInput.inputView.element.value } );
 		} );
 
 		it( 'should detach panel on cancel', () => {

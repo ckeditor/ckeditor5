@@ -33,7 +33,7 @@ export default class TextAlternativeFormView extends View {
 		 *
 		 * @member {module:ui/labeledinput/labeledinputview~LabeledInputView} #labeledTextarea
 		 */
-		this.lebeledInput = this._createLabeledInputView();
+		this.labeledInput = this._createLabeledInputView();
 
 		/**
 		 * Button used to submit the form.
@@ -68,7 +68,7 @@ export default class TextAlternativeFormView extends View {
 			},
 
 			children: [
-				this.lebeledInput,
+				this.labeledInput,
 				{
 					tag: 'div',
 
