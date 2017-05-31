@@ -4,7 +4,7 @@
  */
 
 /**
- * @module editor-balloon-toolbar/contextual
+ * @module editor-balloon-toolbar/balloontoolbareditor
  */
 
 import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
@@ -17,7 +17,7 @@ import '../theme/theme.scss';
 
 /**
  * The balloon toolbar editor. Uses an inline editable and a toolbar based
- * on the {@link ui/toolbar/contextual/contextualtoolbar~ContextualToolbar}.
+ * on the {@link module:ui/toolbar/contextual/contextualtoolbar~ContextualToolbar}.
  *
  * @extends module:core/editor/standardeditor~StandardEditor
  */
@@ -54,7 +54,7 @@ export default class BalloonToolbarEditor extends StandardEditor {
 	}
 
 	/**
-	 * Creates an balloon toolbar editor instance.
+	 * Creates a balloon toolbar editor instance.
 	 *
 	 *		BalloonToolbarEditor.create( document.querySelector( '#editor' ), {
 	 *			plugins: [ Delete, Enter, Typing, Paragraph, Undo, Bold, Italic ],
