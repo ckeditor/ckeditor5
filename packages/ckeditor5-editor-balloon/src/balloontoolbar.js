@@ -67,8 +67,8 @@ export default class BalloonToolbarEditor extends StandardEditor {
 	 *			console.error( err.stack );
 	 *		} );
 	 *
-	 * @param {HTMLElement} element See {@link module:editor-balloon-toolbar/contextual~BalloonToolbarEditor#constructor}'s parameters.
-	 * @param {Object} config See {@link module:editor-balloon-toolbar/contextual~BalloonToolbarEditor#constructor}'s parameters.
+	 * @param {HTMLElement} element See {@link #constructor}'s parameters.
+	 * @param {Object} config See {@link #constructor}'s parameters.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * @returns {module:core/editor/standardeditor~StandardEditor} return.editor The editor instance.
 	 */
