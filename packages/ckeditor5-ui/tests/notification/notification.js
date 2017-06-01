@@ -42,7 +42,8 @@ describe( 'Notification', () => {
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
 				message: 'foo bar',
-				type: 'success'
+				type: 'success',
+				title: ''
 			} );
 		} );
 
@@ -58,7 +59,25 @@ describe( 'Notification', () => {
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
 				message: 'foo bar',
-				type: 'success'
+				type: 'success',
+				title: ''
+			} );
+		} );
+
+		it( 'should fire `show:success` event with title', () => {
+			const spy = testUtils.sinon.spy();
+
+			notification.on( 'show:success', spy );
+
+			notification.showSuccess( 'foo bar', {
+				title: 'foo bar baz'
+			} );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
+				message: 'foo bar',
+				type: 'success',
+				title: 'foo bar baz'
 			} );
 		} );
 	} );
@@ -74,7 +93,8 @@ describe( 'Notification', () => {
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
 				message: 'foo bar',
-				type: 'info'
+				type: 'info',
+				title: ''
 			} );
 		} );
 
@@ -90,7 +110,25 @@ describe( 'Notification', () => {
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
 				message: 'foo bar',
-				type: 'info'
+				type: 'info',
+				title: ''
+			} );
+		} );
+
+		it( 'should fire `show:info` event with title', () => {
+			const spy = testUtils.sinon.spy();
+
+			notification.on( 'show:info', spy );
+
+			notification.showInfo( 'foo bar', {
+				title: 'foo bar baz'
+			} );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
+				message: 'foo bar',
+				type: 'info',
+				title: 'foo bar baz'
 			} );
 		} );
 	} );
@@ -112,7 +150,8 @@ describe( 'Notification', () => {
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
 				message: 'foo bar',
-				type: 'warning'
+				type: 'warning',
+				title: ''
 			} );
 		} );
 
@@ -128,7 +167,25 @@ describe( 'Notification', () => {
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
 				message: 'foo bar',
-				type: 'warning'
+				type: 'warning',
+				title: ''
+			} );
+		} );
+
+		it( 'should fire `show:warning` event with title', () => {
+			const spy = testUtils.sinon.spy();
+
+			notification.on( 'show:warning', spy );
+
+			notification.showWarning( 'foo bar', {
+				title: 'foo bar baz'
+			} );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
+				message: 'foo bar',
+				type: 'warning',
+				title: 'foo bar baz'
 			} );
 		} );
 
