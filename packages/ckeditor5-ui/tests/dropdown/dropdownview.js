@@ -127,6 +127,8 @@ describe( 'DropdownView', () => {
 					stopPropagation: sinon.spy()
 				};
 
+				view.isEnabled = true;
+
 				view.isOpen = true;
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.notCalled( keyEvtData.preventDefault );
@@ -138,6 +140,22 @@ describe( 'DropdownView', () => {
 				sinon.assert.calledOnce( keyEvtData.preventDefault );
 				sinon.assert.calledOnce( keyEvtData.stopPropagation );
 				expect( view.isOpen ).to.be.true;
+			} );
+
+			it( 'so "arrowdown" won\'t open the #panelView when #isEnabled is false', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowdown,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				view.isEnabled = false;
+				view.isOpen = false;
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.notCalled( keyEvtData.preventDefault );
+				sinon.assert.notCalled( keyEvtData.stopPropagation );
+				expect( view.isOpen ).to.be.false;
 			} );
 
 			it( 'so "arrowright" is blocked', () => {
