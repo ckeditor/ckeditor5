@@ -52,16 +52,23 @@ export default class Notification extends Plugin {
 	 * 		} );
 	 *
 	 * will fire `show:success:upload:image` event.
+	 * Title of the notification can be provided:
+	 *
+	 *		showSuccess( 'Image is uploaded.', {
+	 *			title: 'Image upload success'
+	 *		});
 	 *
 	 * @param {String} message Content of the notification.
 	 * @param {Object} [data={}] Additional data.
 	 * @param {String} [data.namespace] Additional event namespace.
+	 * @param {String} [data.title] Title of the notification.
 	 */
 	showSuccess( message, data = {} ) {
 		this._showNotification( {
 			message,
 			type: 'success',
-			namespace: data.namespace
+			namespace: data.namespace,
+			title: data.title
 		} );
 	}
 
@@ -76,16 +83,23 @@ export default class Notification extends Plugin {
 	 * 		} );
 	 *
 	 * will fire `show:info:editor:status` event.
+	 * Title of the notification can be provided:
+	 *
+	 *		showInfo( 'Editor is offline.', {
+	 *			title: 'Network information'
+	 *		});
 	 *
 	 * @param {String} message Content of the notification.
 	 * @param {Object} [data={}] Additional data.
 	 * @param {String} [data.namespace] Additional event namespace.
+	 * @param {String} [data.title] Title of the notification.
 	 */
 	showInfo( message, data = {} ) {
 		this._showNotification( {
 			message,
 			type: 'info',
-			namespace: data.namespace
+			namespace: data.namespace,
+			title: data.title
 		} );
 	}
 
@@ -100,6 +114,11 @@ export default class Notification extends Plugin {
 	 * 		} );
 	 *
 	 * will fire `show:warning:upload:image` event.
+	 * Title of the notification can be provided:
+	 *
+	 *		showWarning( 'Image upload error.', {
+	 *			title: 'Upload failed'
+	 *		});
 	 *
 	 * Note that each unhandled and not stopped `warning` notification will be displayed as system alert.
 	 * Plugin responsible for displaying warnings should `stop()` the event to prevent of displaying it as alert:
@@ -127,12 +146,14 @@ export default class Notification extends Plugin {
 	 * @param {String} message Content of the notification.
 	 * @param {Object} [data={}] Additional data.
 	 * @param {String} [data.namespace] Additional event namespace.
+	 * @param {String} [data.title] Title of the notification.
 	 */
 	showWarning( message, data = {} ) {
 		this._showNotification( {
 			message,
 			type: 'warning',
-			namespace: data.namespace
+			namespace: data.namespace,
+			title: data.title
 		} );
 	}
 
@@ -144,13 +165,15 @@ export default class Notification extends Plugin {
 	 * @param {String} data.message Content of the notification.
 	 * @param {'success'|'info'|'warning'} data.type Type of message.
 	 * @param {String} [data.namespace] Additional event namespace.
+	 * @param {String} [data.title=''] Title of the notification.
 	 */
 	_showNotification( data ) {
 		const event = `show:${ data.type }` + ( data.namespace ? `:${ data.namespace }` : '' );
 
 		this.fire( event, {
 			message: data.message,
-			type: data.type
+			type: data.type,
+			title: data.title || ''
 		} );
 	}
 
@@ -160,6 +183,7 @@ export default class Notification extends Plugin {
 	 * @event show
 	 * @param {Object} data Notification data.
 	 * @param {String} data.message Content of the notification.
+	 * @param {String} data.title Title of the notification.
 	 * @param {'success'|'info'|'warning'} data.type Type of notification.
 	 */
 
@@ -169,6 +193,7 @@ export default class Notification extends Plugin {
 	 * @event show:success
 	 * @param {Object} data Notification data.
 	 * @param {String} data.message Content of the notification.
+	 * @param {String} data.title Title of the notification.
 	 * @param {'success'} data.type Type of notification.
 	 */
 
@@ -178,6 +203,7 @@ export default class Notification extends Plugin {
 	 * @event show:info
 	 * @param {Object} data Notification data.
 	 * @param {String} data.message Content of the notification.
+	 * @param {String} data.title Title of the notification.
 	 * @param {'info'} data.type Type of notification.
 	 */
 
@@ -190,6 +216,7 @@ export default class Notification extends Plugin {
 	 * @event show:warning
 	 * @param {Object} data Notification data.
 	 * @param {String} data.message Content of the notification.
+	 * @param {String} data.title Title of the notification.
 	 * @param {'warning'} data.type Type of notification.
 	 */
 }
