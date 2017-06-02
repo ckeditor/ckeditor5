@@ -46,7 +46,7 @@ gulp.task( 'docs', () => {
 		.then( runUmberto );
 } );
 
-gulp.task( 'docs:api-json', buildApiDocs );
+gulp.task( 'docs:api', buildApiDocs );
 
 function buildApiDocs() {
 	assertIsInstalled( '@ckeditor/ckeditor5-dev-docs' );
@@ -59,7 +59,8 @@ function buildApiDocs() {
 			sourceFiles: [
 				process.cwd() + '/packages/ckeditor5-*/src/**/*.@(js|jsdoc)',
 				'!' + process.cwd() + '/packages/ckeditor5-*/src/lib/**/*.js'
-			]
+			],
+			validateOnly: process.argv[ 3 ] == '--validate-only'
 		} );
 }
 
