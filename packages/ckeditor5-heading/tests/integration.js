@@ -7,6 +7,8 @@
 
 import Heading from '../src/heading.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 
@@ -21,7 +23,7 @@ describe( 'Heading integration', () => {
 		document.body.appendChild( element );
 
 		return ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, Heading, Image, ImageCaption ]
+			plugins: [ Paragraph, Heading, Enter, Image, ImageCaption ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -33,6 +35,27 @@ describe( 'Heading integration', () => {
 		element.remove();
 
 		return editor.destroy();
+	} );
+
+	describe( 'with the enter key', () => {
+		it( 'should make the "enter" command insert a default heading block if the selection ended at the end of a heading block', () => {
+			editor.setData( '<h2>foobar</h2>' );
+			doc.selection.collapse( doc.getRoot().getChild( 0 ), 'end' );
+
+			editor.execute( 'enter' );
+
+			expect( getModelData( doc ) ).to.equal( '<heading1>foobar</heading1><paragraph>[]</paragraph>' );
+		} );
+
+		it( 'should not alter the "enter" command if selection not ended at the end of a heading block', () => {
+			// This test is to fill code coverage.
+			editor.setData( '<h2>foobar</h2>' );
+			doc.selection.collapse( doc.getRoot().getChild( 0 ), 3 );
+
+			editor.execute( 'enter' );
+
+			expect( getModelData( doc ) ).to.equal( '<heading1>foo</heading1><heading1>[]bar</heading1>' );
+		} );
 	} );
 
 	describe( 'with the image feature', () => {
