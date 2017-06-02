@@ -88,8 +88,12 @@ export default class HeadingCommand extends Command {
 
 		document.enqueueChanges( () => {
 			const batch = options.batch || document.batch();
+			const blocks = Array.from( document.selection.getSelectedBlocks() )
+				.filter( block => {
+					return checkCanBecomeHeading( block, this.modelElement, document.schema );
+				} );
 
-			for ( const block of document.selection.getSelectedBlocks() ) {
+			for ( const block of blocks ) {
 				// When removing applied option.
 				if ( shouldRemove ) {
 					if ( block.is( this.modelElement ) ) {
@@ -123,13 +127,25 @@ export default class HeadingCommand extends Command {
 	 * @inheritDoc
 	 */
 	_checkEnabled() {
-		const block = first( this.editor.document.selection.getSelectedBlocks() );
+		const document = this.editor.document;
+		const block = first( document.selection.getSelectedBlocks() );
 
-		return !!block && this.editor.document.schema.check( {
-			name: this.modelElement,
-			inside: Position.createBefore( block )
-		} );
+		return !!block && checkCanBecomeHeading( block, this.modelElement, document.schema );
 	}
+}
+
+// Checks whether the given block can be replaced by a specific heading.
+//
+// @private
+// @param {module:engine/model/element~Element} block A block to be tested.
+// @param {module:heading/headingcommand~HeadingCommand#modelElement} heading Command element name in the model.
+// @param {module:engine/model/schema~Schema} schema The schema of the document.
+// @returns {Boolean}
+function checkCanBecomeHeading( block, heading, schema ) {
+	return schema.check( {
+		name: heading,
+		inside: Position.createBefore( block )
+	} );
 }
 
 /**
