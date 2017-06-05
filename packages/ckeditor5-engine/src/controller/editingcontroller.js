@@ -85,7 +85,7 @@ export default class EditingController {
 		 * stop listening on {@link #destroy}.
 		 *
 		 * @private
-		 * @member {utils.EmitterMixin} #_listenter
+		 * @member {utils.EmitterMixin} #_listener
 		 */
 		this._listener = Object.create( EmitterMixin );
 
