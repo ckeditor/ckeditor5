@@ -15,6 +15,7 @@
     "@ckeditor/ckeditor5-dev-lint": "^3.0.0",
     "@ckeditor/ckeditor5-enter": "^0.9.1",
     "@ckeditor/ckeditor5-editor-classic": "^0.7.3",
+    "@ckeditor/ckeditor5-image": "^0.6.0",
     "@ckeditor/ckeditor5-typing": "^0.9.1",
     "@ckeditor/ckeditor5-undo": "^0.8.1",
     "eslint-config-ckeditor5": "^1.0.0",

@@ -118,6 +118,31 @@ describe( 'HeadingCommand', () => {
 			expect( command.value ).to.be.true;
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-heading/issues/73
+		it( 'should not rename blocks which cannot become headings', () => {
+			document.schema.registerItem( 'restricted' );
+			document.schema.allow( { name: 'restricted', inside: '$root' } );
+			document.schema.disallow( { name: 'heading1', inside: 'restricted' } );
+
+			document.schema.registerItem( 'fooBlock', '$block' );
+			document.schema.allow( { name: 'fooBlock', inside: 'restricted' } );
+
+			setData(
+				document,
+				'<paragraph>a[bc</paragraph>' +
+				'<restricted><fooBlock></fooBlock></restricted>' +
+				'<paragraph>de]f</paragraph>'
+			);
+
+			commands.heading1._doExecute();
+
+			expect( getData( document ) ).to.equal(
+				'<heading1>a[bc</heading1>' +
+				'<restricted><fooBlock></fooBlock></restricted>' +
+				'<heading1>de]f</heading1>'
+			);
+		} );
+
 		describe( 'custom options', () => {
 			it( 'should use provided batch', () => {
 				const batch = editor.document.batch();

@@ -8,7 +8,6 @@ import HeadingCommand from '../src/headingcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'HeadingEngine', () => {
@@ -16,7 +15,7 @@ describe( 'HeadingEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			plugins: [ Enter, HeadingEngine ]
+			plugins: [ HeadingEngine ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -75,25 +74,6 @@ describe( 'HeadingEngine', () => {
 		expect( editor.getData() ).to.equal( '<h4>foobar</h4>' );
 	} );
 
-	it( 'should make enter command insert a defaultOption block if selection ended at the end of heading block', () => {
-		editor.setData( '<h2>foobar</h2>' );
-		document.selection.collapse( document.getRoot().getChild( 0 ), 'end' );
-
-		editor.execute( 'enter' );
-
-		expect( getData( document ) ).to.equal( '<heading1>foobar</heading1><paragraph>[]</paragraph>' );
-	} );
-
-	it( 'should not alter enter command if selection not ended at the end of heading block', () => {
-		// This test is to fill code coverage.
-		editor.setData( '<h2>foobar</h2>' );
-		document.selection.collapse( document.getRoot().getChild( 0 ), 3 );
-
-		editor.execute( 'enter' );
-
-		expect( getData( document ) ).to.equal( '<heading1>foo</heading1><heading1>[]bar</heading1>' );
-	} );
-
 	it( 'should not blow up if there\'s no enter command in the editor', () => {
 		return VirtualTestEditor.create( {
 			plugins: [ HeadingEngine ]
@@ -120,7 +100,7 @@ describe( 'HeadingEngine', () => {
 				];
 
 				return VirtualTestEditor.create( {
-					plugins: [ Enter, HeadingEngine ],
+					plugins: [ HeadingEngine ],
 					heading: {
 						options
 					}
