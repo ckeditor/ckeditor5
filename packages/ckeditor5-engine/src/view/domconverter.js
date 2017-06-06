@@ -199,6 +199,14 @@ export default class DomConverter {
 				if ( options.bind ) {
 					this.bindDocumentFragments( domElement, viewNode );
 				}
+			} else if ( viewNode.is( 'uiElement' ) ) {
+				// UIElement has it's own render() method.
+				// https://github.com/ckeditor/ckeditor5-engine/issues/799
+				domElement = viewNode.render( domDocument );
+
+				if ( options.bind ) {
+					this.bindElements( domElement, viewNode );
+				}
 			} else {
 				// Create DOM element.
 				domElement = domDocument.createElement( viewNode.name );

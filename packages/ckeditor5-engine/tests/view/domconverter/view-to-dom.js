@@ -8,6 +8,7 @@
 import ViewText from '../../../src/view/text';
 import ViewElement from '../../../src/view/element';
 import ViewPosition from '../../../src/view/position';
+import ViewUIElement from '../../../src/view/uielement';
 import ViewContainerElement from '../../../src/view/containerelement';
 import ViewAttributeElement from '../../../src/view/attributeelement';
 import DomConverter from '../../../src/view/domconverter';
@@ -177,6 +178,30 @@ describe( 'DomConverter', () => {
 
 			expect( domTextNode ).to.be.instanceof( Text );
 			expect( domTextNode.data ).to.equal( 'foo' );
+		} );
+
+		it( 'should create DOM element from UIElement', () => {
+			const uiElement = new ViewUIElement( 'div' );
+			const domElement = converter.viewToDom( uiElement, document );
+
+			expect( domElement ).to.be.instanceOf( HTMLElement );
+		} );
+
+		it( 'should create DOM structure from UIElement', () => {
+			class MyUIElement extends ViewUIElement {
+				render( domDocument ) {
+					const root = super.render( domDocument );
+					root.innerHTML = '<span>foo bar baz</span>';
+
+					return root;
+				}
+			}
+
+			const myElement = new MyUIElement( 'div' );
+			const domElement = converter.viewToDom( myElement, document );
+
+			expect( domElement ).to.be.instanceOf( HTMLElement );
+			expect( domElement.innerHTML ).to.equal( '<span>foo bar baz</span>' );
 		} );
 
 		describe( 'it should convert spaces to &nbsp;', () => {

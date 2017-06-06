@@ -63,6 +63,16 @@ export default class UIElement extends Element {
 			throw new CKEditorError( 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
 		}
 	}
+
+	render( domDocument ) {
+		const domElement = domDocument.createElement( this.name );
+
+		for ( const key of this.getAttributeKeys() ) {
+			domElement.setAttribute( key, this.getAttribute( key ) );
+		}
+
+		return domElement;
+	}
 }
 
 // Returns `null` because block filler is not needed for UIElements.
