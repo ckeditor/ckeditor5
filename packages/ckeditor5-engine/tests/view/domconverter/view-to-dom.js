@@ -180,14 +180,7 @@ describe( 'DomConverter', () => {
 			expect( domTextNode.data ).to.equal( 'foo' );
 		} );
 
-		it( 'should create DOM element from UIElement', () => {
-			const uiElement = new ViewUIElement( 'div' );
-			const domElement = converter.viewToDom( uiElement, document );
-
-			expect( domElement ).to.be.instanceOf( HTMLElement );
-		} );
-
-		it( 'should create DOM structure from UIElement', () => {
+		describe( 'UIElement', () => {
 			class MyUIElement extends ViewUIElement {
 				render( domDocument ) {
 					const root = super.render( domDocument );
@@ -197,11 +190,30 @@ describe( 'DomConverter', () => {
 				}
 			}
 
-			const myElement = new MyUIElement( 'div' );
-			const domElement = converter.viewToDom( myElement, document );
+			it( 'should create DOM element from UIElement', () => {
+				const uiElement = new ViewUIElement( 'div' );
+				const domElement = converter.viewToDom( uiElement, document );
 
-			expect( domElement ).to.be.instanceOf( HTMLElement );
-			expect( domElement.innerHTML ).to.equal( '<span>foo bar baz</span>' );
+				expect( domElement ).to.be.instanceOf( HTMLElement );
+			} );
+
+			it( 'should create DOM structure from UIElement', () => {
+				const myElement = new MyUIElement( 'div' );
+				const domElement = converter.viewToDom( myElement, document );
+
+				expect( domElement ).to.be.instanceOf( HTMLElement );
+				expect( domElement.innerHTML ).to.equal( '<span>foo bar baz</span>' );
+			} );
+
+			it( 'should not bind rendered elements', () => {
+				const myElement = new MyUIElement( 'div' );
+				const domElement = converter.viewToDom( myElement, document, { bind: true } );
+				const domSpan = domElement.childNodes[ 0 ];
+
+				expect( converter.getCorrespondingView( domElement ) ).to.equal( myElement );
+				expect( converter.getCorrespondingView( domSpan ) ).to.be.falsy;
+				expect( converter.getCorrespondingView( domSpan.childNodes[ 0 ] ) ).to.be.falsy;
+			} );
 		} );
 
 		describe( 'it should convert spaces to &nbsp;', () => {
