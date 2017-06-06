@@ -8,6 +8,7 @@
 import ViewElement from '../../../src/view/element';
 import ViewRange from '../../../src/view/range';
 import ViewSelection from '../../../src/view/selection';
+import ViewUIElement from '../../../src/view/uielement';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler';
@@ -173,6 +174,30 @@ describe( 'DomConverter', () => {
 			const comment = document.createComment( 'abc' );
 
 			expect( converter.domToView( comment ) ).to.be.null;
+		} );
+
+		it( 'should return null for nodes inside UIElement', () => {
+			class MyUIElement extends ViewUIElement {
+				render( doc ) {
+					const root = super.render( doc );
+					root.innerHTML = '<p>foo</p><span>bar</span>';
+
+					return root;
+				}
+			}
+
+			const uiElement = new MyUIElement( 'div' );
+			const domElement = converter.viewToDom( uiElement, document, { bind: true, withChildren: true } );
+
+			const domParagraph = domElement.childNodes[ 0 ];
+			const domSpan = domElement.childNodes[ 1 ];
+
+			expect( domParagraph.innerHTML ).to.equal( 'foo' );
+			expect( domSpan.innerHTML ).to.equal( 'bar' );
+			expect( converter.domToView( domParagraph ) ).to.be.null;
+			expect( converter.domToView( domSpan ) ).to.be.null;
+			expect( converter.domToView( domParagraph.childNodes[ 0 ] ) ).to.be.null;
+			expect( converter.domToView( domSpan.childNodes[ 0 ] ) ).to.be.null;
 		} );
 
 		describe( 'it should clear whitespaces', () => {

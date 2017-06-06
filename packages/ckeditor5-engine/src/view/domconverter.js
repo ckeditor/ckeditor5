@@ -195,30 +195,22 @@ export default class DomConverter {
 			if ( viewNode.is( 'documentFragment' ) ) {
 				// Create DOM document fragment.
 				domElement = domDocument.createDocumentFragment();
-
-				if ( options.bind ) {
-					this.bindDocumentFragments( domElement, viewNode );
-				}
 			} else if ( viewNode.is( 'uiElement' ) ) {
 				// UIElement has it's own render() method.
 				// https://github.com/ckeditor/ckeditor5-engine/issues/799
 				domElement = viewNode.render( domDocument );
-
-				if ( options.bind ) {
-					this.bindElements( domElement, viewNode );
-				}
 			} else {
 				// Create DOM element.
 				domElement = domDocument.createElement( viewNode.name );
-
-				if ( options.bind ) {
-					this.bindElements( domElement, viewNode );
-				}
 
 				// Copy element's attributes.
 				for ( const key of viewNode.getAttributeKeys() ) {
 					domElement.setAttribute( key, viewNode.getAttribute( key ) );
 				}
+			}
+
+			if ( options.bind ) {
+				this.bindDocumentFragments( domElement, viewNode );
 			}
 
 			if ( options.withChildren || options.withChildren === undefined ) {
@@ -358,6 +350,11 @@ export default class DomConverter {
 	 */
 	domToView( domNode, options = {} ) {
 		if ( isBlockFiller( domNode, this.blockFiller ) ) {
+			return null;
+		}
+
+		// When node is inside UIElement it should not be converted to view.
+		if ( isInsideUIElement( domNode, this._domToViewMapping ) ) {
 			return null;
 		}
 
@@ -1096,4 +1093,22 @@ function forEachDomNodeAncestor( node, callback ) {
 		callback( node );
 		node = node.parentNode;
 	}
+}
+
+function isInsideUIElement( domNode, domToViewMapping ) {
+	const ancestors = getAncestors( domNode );
+
+	// Remove domNode from the list.
+	ancestors.pop();
+
+	while ( ancestors.length ) {
+		const domNode = ancestors.pop();
+		const viewNode = domToViewMapping.get( domNode );
+
+		if ( viewNode && viewNode.is( 'uiElement' ) ) {
+			return true;
+		}
+	}
+
+	return false;
 }
