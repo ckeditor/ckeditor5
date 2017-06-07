@@ -8,6 +8,7 @@
 import DomEventObserver from '../../../src/view/observer/domeventobserver';
 import Observer from '../../../src/view/observer/observer';
 import ViewDocument from '../../../src/view/document';
+import UIElement from '../../../src/view/uielement';
 
 class ClickObserver extends DomEventObserver {
 	constructor( document ) {
@@ -151,6 +152,46 @@ describe( 'DomEventObserver', () => {
 		} );
 
 		childDomElement.dispatchEvent( domEvent );
+	} );
+
+	describe( 'integration with UIElement', () => {
+		let domRoot, domEvent, evtSpy;
+
+		class MyUIElement extends UIElement {
+			render( domDocument ) {
+				const root = super.render( domDocument );
+				root.innerHTML = '<span>foo bar</span>';
+
+				return root;
+			}
+		}
+
+		beforeEach( () => {
+			domRoot = document.createElement( 'div' );
+			const viewRoot = viewDocument.createRoot( domRoot, 'root' );
+			const uiElement = new MyUIElement( 'p' );
+			viewRoot.appendChildren( uiElement );
+			viewDocument.render();
+
+			domEvent = new MouseEvent( 'click', { bubbles: true } );
+			evtSpy = sinon.spy();
+			viewDocument.addObserver( ClickObserver );
+			viewDocument.on( 'click', evtSpy );
+		} );
+
+		it( 'should fire events from UIElement itself', () => {
+			const domUiElement = domRoot.childNodes[ 0 ];
+			domUiElement.dispatchEvent( domEvent );
+
+			expect( evtSpy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should block events from inside of UIElement', () => {
+			const domUiElementChild = domRoot.querySelector( 'span' );
+			domUiElementChild.dispatchEvent( domEvent );
+
+			expect( evtSpy.calledOnce ).to.be.false;
+		} );
 	} );
 
 	describe( 'fire', () => {

@@ -353,8 +353,8 @@ export default class DomConverter {
 			return null;
 		}
 
-		// When node is inside UIElement it should not be converted to view.
-		if ( isInsideUIElement( domNode, this._domToViewMapping ) ) {
+		// When node is inside UIElement it has no representation in the view.
+		if ( this.isDomInsideUIlement( domNode ) ) {
 			return null;
 		}
 
@@ -838,6 +838,30 @@ export default class DomConverter {
 	}
 
 	/**
+	 * Returns true if `domNode` is placed inside {@link module:engine/view/uielement~UIElement}/
+	 *
+	 * @param {Node} domNode
+	 * @return {Boolean}
+	 */
+	isDomInsideUIlement( domNode ) {
+		const ancestors = getAncestors( domNode );
+
+		// Remove domNode from the list.
+		ancestors.pop();
+
+		while ( ancestors.length ) {
+			const domNode = ancestors.pop();
+			const viewNode = this._domToViewMapping.get( domNode );
+
+			if ( viewNode && viewNode.is( 'uiElement' ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Takes text data from given {@link module:engine/view/text~Text#data} and processes it so it is correctly displayed in DOM.
 	 *
 	 * Following changes are done:
@@ -1093,22 +1117,4 @@ function forEachDomNodeAncestor( node, callback ) {
 		callback( node );
 		node = node.parentNode;
 	}
-}
-
-function isInsideUIElement( domNode, domToViewMapping ) {
-	const ancestors = getAncestors( domNode );
-
-	// Remove domNode from the list.
-	ancestors.pop();
-
-	while ( ancestors.length ) {
-		const domNode = ancestors.pop();
-		const viewNode = domToViewMapping.get( domNode );
-
-		if ( viewNode && viewNode.is( 'uiElement' ) ) {
-			return true;
-		}
-	}
-
-	return false;
 }
