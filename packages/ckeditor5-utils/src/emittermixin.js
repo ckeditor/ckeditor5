@@ -135,6 +135,9 @@ const EmitterMixin = {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
+	 * @returns By default the method returns `undefined`. However, the return value can be changed by listeners
+	 * through modification of the {@link module:utils/emitterinfo~EmitterInfo#return}'s value (the event info
+	 * is the first param of every callback).
 	 */
 	listenTo( emitter, event, callback, options ) {
 		let emitterInfo, eventCallbacks;
@@ -296,6 +299,8 @@ const EmitterMixin = {
 				fireDelegatedEvents( passAllDestinations, eventInfo, args );
 			}
 		}
+
+		return eventInfo.return;
 	},
 
 	/**

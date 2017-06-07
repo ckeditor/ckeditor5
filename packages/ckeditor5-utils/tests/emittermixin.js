@@ -172,6 +172,72 @@ describe( 'EmitterMixin', () => {
 			sinon.assert.calledThrice( spyFoo );
 			sinon.assert.calledThrice( spyFoo2 );
 		} );
+
+		describe( 'return value', () => {
+			it( 'is undefined by default', () => {
+				expect( emitter.fire( 'foo' ) ).to.be.undefined;
+			} );
+
+			it( 'is undefined if none of the listeners modified EventInfo#return', () => {
+				emitter.on( 'foo', () => {} );
+
+				expect( emitter.fire( 'foo' ) ).to.be.undefined;
+			} );
+
+			it( 'equals EventInfo#return\'s value', () => {
+				emitter.on( 'foo', evt => {
+					evt.return = 1;
+				} );
+
+				expect( emitter.fire( 'foo' ) ).to.equal( 1 );
+			} );
+
+			it( 'equals EventInfo#return\'s value even if the event was stopped', () => {
+				emitter.on( 'foo', evt => {
+					evt.return = 1;
+				} );
+				emitter.on( 'foo', evt => {
+					evt.stop();
+				} );
+
+				expect( emitter.fire( 'foo' ) ).to.equal( 1 );
+			} );
+
+			it( 'equals EventInfo#return\'s value when it was set in a namespaced event', () => {
+				emitter.on( 'foo', evt => {
+					evt.return = 1;
+				} );
+
+				expect( emitter.fire( 'foo:bar' ) ).to.equal( 1 );
+			} );
+
+			// Rationale – delegation keeps the listeners of the two objects separate.
+			// E.g. the emitterB's listeners will always be executed before emitterA's ones.
+			// Hence, values should not be shared either.
+			it( 'is not affected by listeners executed on emitter to which the event was delegated', () => {
+				const emitterA = getEmitterInstance();
+				const emitterB = getEmitterInstance();
+
+				emitterB.delegate( 'foo' ).to( emitterA );
+
+				emitterA.on( 'foo', evt => {
+					evt.return = 1;
+				} );
+
+				expect( emitterB.fire( 'foo' ) ).to.be.undefined;
+			} );
+
+			it( 'equals the value set by the last callback', () => {
+				emitter.on( 'foo', evt => {
+					evt.return = 1;
+				} );
+				emitter.on( 'foo', evt => {
+					evt.return = 2;
+				}, { priority: 'high' } );
+
+				expect( emitter.fire( 'foo' ) ).to.equal( 1 );
+			} );
+		} );
 	} );
 
 	describe( 'on', () => {
