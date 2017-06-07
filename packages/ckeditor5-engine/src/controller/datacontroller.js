@@ -8,7 +8,7 @@
  */
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 import Mapper from '../conversion/mapper';
 
@@ -38,7 +38,7 @@ import getSelectedContent from './getselectedcontent';
  * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher model to view} and
  * * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher view to model} converters.
  *
- * @mixes module:utils/emittermixin~EmitterMixin
+ * @mixes module:utils/emittermixin~ObservableMixin
  */
 export default class DataController {
 	/**
@@ -117,12 +117,7 @@ export default class DataController {
 		this.viewToModel.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.viewToModel.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
-		this.on( 'insertContent', ( evt, data ) => insertContent( this, data.content, data.selection, data.batch ) );
-		this.on( 'deleteContent', ( evt, data ) => deleteContent( data.selection, data.batch, data.options ) );
-		this.on( 'modifySelection', ( evt, data ) => modifySelection( this, data.selection, data.options ) );
-		this.on( 'getSelectedContent', ( evt, data ) => {
-			data.content = getSelectedContent( data.selection );
-		} );
+		this.decorate( 'insertContent', 'deleteContent', 'modifySelection', 'getSelectedContent' );
 	}
 
 	/**
@@ -257,7 +252,7 @@ export default class DataController {
 	 * changes will be added to a new batch.
 	 */
 	insertContent( content, selection, batch ) {
-		this.fire( 'insertContent', { content, selection, batch } );
+		insertContent( this, content, selection, batch );
 	}
 
 	/**
@@ -277,7 +272,7 @@ export default class DataController {
 	 * @param {Object} options See {@link module:engine/controller/deletecontent~deleteContent}'s options.
 	 */
 	deleteContent( selection, batch, options ) {
-		this.fire( 'deleteContent', { batch, selection, options } );
+		deleteContent( selection, batch, options );
 	}
 
 	/**
@@ -288,7 +283,7 @@ export default class DataController {
 	 * @param {Object} options See {@link module:engine/controller/modifyselection~modifySelection}'s options.
 	 */
 	modifySelection( selection, options ) {
-		this.fire( 'modifySelection', { selection, options } );
+		modifySelection( this, selection, options );
 	}
 
 	/**
@@ -299,59 +294,48 @@ export default class DataController {
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Document fragment holding the clone of the selected content.
 	 */
 	getSelectedContent( selection ) {
-		const evtData = { selection };
-
-		this.fire( 'getSelectedContent', evtData );
-
-		return evtData.content;
+		return getSelectedContent( selection );
 	}
 }
 
-mix( DataController, EmitterMixin );
+mix( DataController, ObservableMixin );
 
 /**
  * Event fired when {@link #insertContent} method is called.
+ *
  * The {@link #insertContent default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
  * @event insertContent
- * @param {Object} data
- * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/model/item~Item} data.content The content to insert.
- * @param {module:engine/model/selection~Selection} data.selection Selection into which the content should be inserted.
- * @param {module:engine/model/batch~Batch} [data.batch] Batch to which deltas will be added.
+ * @param {Array} args The arguments passed to the original method.
  */
 
 /**
  * Event fired when {@link #deleteContent} method is called.
- * The {@link module:engine/controller/deletecontent~deleteContent default action of that method} is implemented as a
+ *
+ * The {@link #deleteContent default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
  * @event deleteContent
- * @param {Object} data
- * @param {module:engine/model/batch~Batch} data.batch
- * @param {module:engine/model/selection~Selection} data.selection
- * @param {Object} data.options See {@link module:engine/controller/deletecontent~deleteContent}'s options.
+ * @param {Array} args The arguments passed to the original method.
  */
 
 /**
  * Event fired when {@link #modifySelection} method is called.
- * The {@link module:engine/controller/modifyselection~modifySelection default action of that method} is implemented as a
+ *
+ * The {@link #modifySelection default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
  * @event modifySelection
- * @param {Object} data
- * @param {module:engine/model/selection~Selection} data.selection
- * @param {Object} data.options See {@link module:engine/controller/modifyselection~modifySelection}'s options.
+ * @param {Array} args The arguments passed to the original method.
  */
 
 /**
- * Event fired when {@link module:engine/controller/datacontroller~DataController#getSelectedContent} method is called.
- * The {@link module:engine/controller/getselectedcontent~getSelectedContent default action of that method} is implemented as a
+ * Event fired when {@link #getSelectedContent} method is called.
+ *
+ * The {@link #getSelectedContent default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
- * @event module:engine/controller/datacontroller~DataController#getSelectedContent
- * @param {Object} data
- * @param {module:engine/model/selection~Selection} data.selection
- * @param {module:engine/model/documentfragment~DocumentFragment} data.content The document fragment to return
- * (holding a clone of the selected content).
+ * @event getSelectedContent
+ * @param {Array} args The arguments passed to the original method.
  */
