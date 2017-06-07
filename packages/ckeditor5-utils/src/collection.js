@@ -22,7 +22,7 @@ import mix from './mix';
  * By default an item in the collection is identified by its `id` property. The name of the identifier can be
  * configured through the constructor of the collection.
  *
- * @mixes EventEmitter
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class Collection {
 	/**
