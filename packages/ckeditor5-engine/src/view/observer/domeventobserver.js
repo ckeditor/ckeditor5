@@ -75,10 +75,7 @@ export default class DomEventObserver extends Observer {
 
 		types.forEach( type => {
 			this.listenTo( domElement, type, ( eventInfo, domEvent ) => {
-				const domConverter = this.document.domConverter;
-
-				// Block all events if observer is disabled and events from inside of UIElement.
-				if ( this.isEnabled && !domConverter.isDomInsideUIlement( domEvent.target ) ) {
+				if ( this.isEnabled ) {
 					this.onDomEvent( domEvent );
 				}
 			}, { useCapture: this.useCapture } );

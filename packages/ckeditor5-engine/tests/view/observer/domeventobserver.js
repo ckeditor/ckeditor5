@@ -155,7 +155,7 @@ describe( 'DomEventObserver', () => {
 	} );
 
 	describe( 'integration with UIElement', () => {
-		let domRoot, domEvent, evtSpy;
+		let domRoot, domEvent, evtSpy, uiElement;
 
 		class MyUIElement extends UIElement {
 			render( domDocument ) {
@@ -169,7 +169,7 @@ describe( 'DomEventObserver', () => {
 		beforeEach( () => {
 			domRoot = document.createElement( 'div' );
 			const viewRoot = viewDocument.createRoot( domRoot, 'root' );
-			const uiElement = new MyUIElement( 'p' );
+			uiElement = new MyUIElement( 'p' );
 			viewRoot.appendChildren( uiElement );
 			viewDocument.render();
 
@@ -183,14 +183,20 @@ describe( 'DomEventObserver', () => {
 			const domUiElement = domRoot.childNodes[ 0 ];
 			domUiElement.dispatchEvent( domEvent );
 
-			expect( evtSpy.calledOnce ).to.be.true;
+			const data = evtSpy.args[ 0 ][ 1 ];
+
+			sinon.assert.calledOnce( evtSpy );
+			expect( data.target ).to.equal( uiElement );
 		} );
 
-		it( 'should block events from inside of UIElement', () => {
+		it( 'events from inside of UIElement should target UIElement', () => {
 			const domUiElementChild = domRoot.querySelector( 'span' );
 			domUiElementChild.dispatchEvent( domEvent );
 
-			expect( evtSpy.calledOnce ).to.be.false;
+			const data = evtSpy.args[ 0 ][ 1 ];
+
+			sinon.assert.calledOnce( evtSpy );
+			expect( data.target ).to.equal( uiElement );
 		} );
 	} );
 

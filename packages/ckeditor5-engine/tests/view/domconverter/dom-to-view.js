@@ -176,7 +176,7 @@ describe( 'DomConverter', () => {
 			expect( converter.domToView( comment ) ).to.be.null;
 		} );
 
-		it( 'should return null for nodes inside UIElement', () => {
+		it( 'should return UIElement for nodes inside', () => {
 			class MyUIElement extends ViewUIElement {
 				render( doc ) {
 					const root = super.render( doc );
@@ -192,12 +192,10 @@ describe( 'DomConverter', () => {
 			const domParagraph = domElement.childNodes[ 0 ];
 			const domSpan = domElement.childNodes[ 1 ];
 
-			expect( domParagraph.innerHTML ).to.equal( 'foo' );
-			expect( domSpan.innerHTML ).to.equal( 'bar' );
-			expect( converter.domToView( domParagraph ) ).to.be.null;
-			expect( converter.domToView( domSpan ) ).to.be.null;
-			expect( converter.domToView( domParagraph.childNodes[ 0 ] ) ).to.be.null;
-			expect( converter.domToView( domSpan.childNodes[ 0 ] ) ).to.be.null;
+			expect( converter.domToView( domParagraph ) ).to.equal( uiElement );
+			expect( converter.domToView( domSpan ) ).to.be.equal( uiElement );
+			expect( converter.domToView( domParagraph.childNodes[ 0 ] ) ).equal( uiElement );
+			expect( converter.domToView( domSpan.childNodes[ 0 ] ) ).equal( uiElement );
 		} );
 
 		describe( 'it should clear whitespaces', () => {

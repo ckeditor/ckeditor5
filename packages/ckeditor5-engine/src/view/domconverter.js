@@ -354,8 +354,10 @@ export default class DomConverter {
 		}
 
 		// When node is inside UIElement it has no representation in the view.
-		if ( this.isDomInsideUIlement( domNode ) ) {
-			return null;
+		const uiElement = this.getParentUIElement( domNode, this._domToViewMapping );
+
+		if ( uiElement ) {
+			return uiElement;
 		}
 
 		if ( this.isText( domNode ) ) {
@@ -577,7 +579,7 @@ export default class DomConverter {
 	 * @returns {module:engine/view/element~Element|null} Corresponding element or `null` if no element was bound.
 	 */
 	getCorrespondingViewElement( domElement ) {
-		return this._domToViewMapping.get( domElement );
+		return this.getParentUIElement( domElement ) || this._domToViewMapping.get( domElement );
 	}
 
 	/**
@@ -613,6 +615,12 @@ export default class DomConverter {
 	getCorrespondingViewText( domText ) {
 		if ( isInlineFiller( domText ) ) {
 			return null;
+		}
+
+		const uiElement = this.getParentUIElement( domText );
+
+		if ( uiElement ) {
+			return uiElement;
 		}
 
 		const previousSibling = domText.previousSibling;
@@ -838,12 +846,13 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Returns true if `domNode` is placed inside {@link module:engine/view/uielement~UIElement}/
+	 * Returns parent {@link module:engine/view/uielement~UIElement} for provided DOM node. Returns null if there is no
+	 * parent UIElement.
 	 *
 	 * @param {Node} domNode
-	 * @return {Boolean}
+	 * @return {module:engine/view/uielement~UIElement|null}
 	 */
-	isDomInsideUIlement( domNode ) {
+	getParentUIElement( domNode ) {
 		const ancestors = getAncestors( domNode );
 
 		// Remove domNode from the list.
@@ -854,11 +863,11 @@ export default class DomConverter {
 			const viewNode = this._domToViewMapping.get( domNode );
 
 			if ( viewNode && viewNode.is( 'uiElement' ) ) {
-				return true;
+				return viewNode;
 			}
 		}
 
-		return false;
+		return null;
 	}
 
 	/**
