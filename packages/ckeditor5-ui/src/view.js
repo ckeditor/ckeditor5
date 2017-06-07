@@ -48,7 +48,6 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  *			document.body.appendChild( view.element );
  *		} );
  *
- * @mixes module:utils/dom/emittermixin~EmmiterMixin
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class View {

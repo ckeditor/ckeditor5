@@ -46,7 +46,7 @@ export default class ViewCollection extends Collection {
 		} );
 
 		/**
-		 * The {@link module:core/editor~Editor editor's locale} instance.
+		 * The {@link module:core/editor/editor~Editor editor's locale} instance.
 		 *
 		 * @member {module:utils/locale~Locale}
 		 */
