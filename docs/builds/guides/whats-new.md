@@ -20,7 +20,7 @@ Inserting images into the content is now very intuitive, with all technical aspe
 
 [ TODO Animated GIF of DnD ]
 
-The outdated concept of image “alignment” was dropped in favor of image “styles”:
+The outdated concept of image "alignment" was dropped in favor of image "styles":
 
 [ TODO Animated GIF of styles ]
 
@@ -79,7 +79,7 @@ A much more efficient data model was designed for CKEditor 5. This makes the dev
 
 ## Collaborative editing
 
-Another important benefit of the custom data model is that it enables the possibility of real-time collaborative editing inside CKEditor by introducing the concepts of “operations” and “operational transformations”. Read more about {@link TODO collaboration in the CKEditor 5 Framework documentation}.
+Another important benefit of the custom data model is that it enables the possibility of real-time collaborative editing inside CKEditor by introducing the concepts of "operations" and "operational transformations". Read more about {@link TODO collaboration in the CKEditor 5 Framework documentation}.
 
 <!-- TODO 3 -->
 

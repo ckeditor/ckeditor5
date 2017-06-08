@@ -9,9 +9,9 @@ category: builds-guides
 order: 30
 ---
 
-When compared to its previous versions, CKEditor 5 should be considered a totally new editor. Every single aspect of it was redesigned, from installation, to integration, to features, to its data model, and finally to its API. Therefore, moving applications using a previous version to version 5 cannot be simply called an “upgrade”. It is something bigger, so the “migration” term fits better.
+When compared to its previous versions, CKEditor 5 should be considered a totally new editor. Every single aspect of it was redesigned, from installation, to integration, to features, to its data model, and finally to its API. Therefore, moving applications using a previous version to version 5 cannot be simply called an "upgrade". It is something bigger, so the "migration" term fits better.
 
-There is no “drop in” solution for migrating. In this guide we hope to summarize the most important aspects to be taken into consideration before you proceed with installing CKEditor 5.
+There is no "drop in" solution for migrating. In this guide we hope to summarize the most important aspects to be taken into consideration before you proceed with installing CKEditor 5.
 
 Before starting, be sure that migrating is your best choice. Check {@link TODO When NOT to use CKEditor 5 Builds}?
 
@@ -44,7 +44,7 @@ Check the {@link TODO Plugins guide} for more information on the development of 
 
 ## Themes (skins)
 
-In CKEditor 5, the previous concept of "skins” was reviewed and is now called “themes”.
+In CKEditor 5, the previous concept of "skins" was reviewed and is now called "themes".
 
 If you have custom skins for CKEditor 4, these skins need to be recreated for CKEditor 5. Fortunately custom theming in CKEditor 5 is much more powerful and simpler than before. For more information, check how to {@link TODO create new themes in the CKEditor 5 Framework documentation}.
 
