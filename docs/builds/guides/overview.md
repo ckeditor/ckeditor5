@@ -10,35 +10,35 @@ category: builds-guides
 order: 10
 ---
 
-CKEditor 5 Builds are comprised by a set of ready to use rich-text editors, so called "builds", in different configurations. Our goal is providing easy to use solutions that can satisfy good part of the editing use cases out there.
+CKEditor 5 Builds are comprised of a set of ready to use rich-text editors, so called "builds", with different configurations. Our goal is to provide easy to use solutions that can satisfy a good part of the editing use cases out there.
 
 ## Builds
 
 ### Classic editor
 
-The classic "boxed" editing interface, with toolbar at the top:
+The classic "boxed" editing interface, with a toolbar at the top:
 
-[ TODO: Classic Editor screenshot or sample ]
+[ TODO: Classic editor screenshot or sample ]
 
-### Inline Editor
+### Inline editor
 
-It leaves the contents as part of the page, attaching a floating toolbar to it:
+The edited content remains a part of the page, with a floating toolbar attached:
 
-[ TODO: Inline Editor screenshot ]
+[ TODO: Inline editor screenshot ]
 
 ## How builds are designed
 
-Each build has been designed to satisfy as many use cases as possible. They differ on their UI/UX and features, based on the following approach:
+Each build was designed to satisfy as many use cases as possible. They differ in their UI, UX and features, and are based on the following approach:
 
-* Include the set of features proposed by the Editor Recommendations project.
+* Include the set of features proposed by the {@link TODO Editor Recommendations} project.
 * Include features that contribute to creating quality content. In other words, features like fonts, colors and alignment are excluded.
 * Provide setups as generic as possible, based on research and community feedback.
 
-### Builds customization
+### Build customization
 
 Although the default builds try to fit many cases, they may still not be perfect in some integrations. They may have either too many or too few features. They may not have your preferred theme or UI implementation. Customization is required then.
 
-Check Customize and extend for in-depth details on how to change the default builds to match your needs and preferences.
+Check {@link TODO Custom builds} for details on how to change the default builds to match your preferences.
 
 ## Use cases
 
@@ -54,9 +54,9 @@ The following are **some** common use cases:
 	* Composing e-mail campaigns.
 	* Creating templates.
 * In forum applications:
-	* For the creation of topics and their replies.
-* In team collaboration application:
-	* For the creation of shared documents.
+	* Creation of topics and their replies.
+* In team collaboration applications:
+	* Creation of shared documents.
 * Other uses:
 	* User profile editing pages.
 	* Book writing applications.
@@ -67,13 +67,13 @@ The following are **some** common use cases:
 
 The {@link TODO CKEditor 5 Framework} should be used, instead of builds, in the following cases:
 
-* When you want to create your own text editor, having full control on every aspect of it, from UI to features.
-* When the solution proposed by the builds don't fit your specific use case.
+* When you want to create your own text editor and have full control over every aspect of it, from UI to features.
+* When the solution proposed by the builds does not fit your specific use case.
 
-{@link TODO CKEditor 4} should be used instead, in the following cases:
+In the following cases {@link TODO CKEditor 4} should be used instead:
 
-* When the compatibility with old browsers is a requirement.
+* When compatibility with old browsers is a requirement.
 * If CKEditor 4 contains features that are essential for you, which are not available in CKEditor 5 yet.
-* If CKEditor 4 is already in use in you application and you're still not ready to replace it with CKEditor 5.
+* If CKEditor 4 is already in use in you application and you are still not ready to replace it with CKEditor 5.
 
 <!-- TODO 1 -->
