@@ -149,6 +149,11 @@ export default class MutationObserver extends Observer {
 			if ( mutation.type === 'childList' ) {
 				const element = domConverter.getCorrespondingViewElement( mutation.target );
 
+				// Prevent mutation from UIElements.
+				if ( element && element.is( 'uiElement' ) ) {
+					continue;
+				}
+
 				if ( element && !this._isBogusBrMutation( mutation ) ) {
 					mutatedElements.add( element );
 				}
@@ -157,6 +162,13 @@ export default class MutationObserver extends Observer {
 
 		// Handle `characterData` mutations later, when we have the full list of nodes which changed structure.
 		for ( const mutation of domMutations ) {
+			const element = domConverter.getCorrespondingViewElement( mutation.target );
+
+			// Prevent mutation from UIElements.
+			if ( element && element.is( 'uiElement' ) ) {
+				continue;
+			}
+
 			if ( mutation.type === 'characterData' ) {
 				const text = domConverter.getCorrespondingViewText( mutation.target );
 
