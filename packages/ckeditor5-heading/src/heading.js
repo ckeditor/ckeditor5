@@ -116,14 +116,14 @@ export default class Heading extends Plugin {
 
 	/**
 	 * Returns heading options as defined in `config.heading.options` but processed to consider
-	 * editor localization, i.e. to display {@link module:heading/headingcommand~HeadingOption}
+	 * editor localization, i.e. to display {@link module:heading/heading~HeadingOption}
 	 * in the correct language.
 	 *
 	 * Note: The reason behind this method is that there's no way to use {@link module:utils/locale~Locale#t}
 	 * when the user config is defined because the editor does not exist yet.
 	 *
 	 * @private
-	 * @returns {Array.<module:heading/headingcommand~HeadingOption>}.
+	 * @returns {Array.<module:heading/heading~HeadingOption>}.
 	 */
 	_getLocalizedOptions() {
 		const editor = this.editor;
@@ -159,3 +159,12 @@ export default class Heading extends Plugin {
 function getCommandsBindingTargets( commands, attribute ) {
 	return Array.prototype.concat( ...commands.map( c => [ c, attribute ] ) );
 }
+
+/**
+ * Heading option descriptor.
+ *
+ * @typedef {Object} module:heading/heading~HeadingOption
+ * @property {String} modelElement Element's name in the model.
+ * @property {String} viewElement The name of the view element that will be used to represent the model element in the view.
+ * @property {String} title The user-readable title of the option.
+ */

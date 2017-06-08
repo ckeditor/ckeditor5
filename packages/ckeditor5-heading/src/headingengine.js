@@ -74,7 +74,7 @@ export default class HeadingEngine extends Plugin {
 					.toElement( option.modelElement );
 
 				// Register the heading command for this option.
-				editor.commands.set( option.modelElement, new HeadingCommand( editor, option ) );
+				editor.commands.set( option.modelElement, new HeadingCommand( editor, option.modelElement ) );
 			}
 		}
 	}
