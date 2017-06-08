@@ -23,12 +23,19 @@ export default class HeadingCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {module:heading/headingcommand~HeadingOption} option An option to be used by the command instance.
+	 * @param {String} modelElement Name of the element which this command will apply in the model.
 	 */
-	constructor( editor, option ) {
+	constructor( editor, modelElement ) {
 		super( editor );
 
-		Object.assign( this, option );
+		/**
+		 * Unique identifier of the command, also element's name in the model.
+		 * See {@link module:heading/heading~HeadingOption}.
+		 *
+		 * @readonly
+		 * @member {String}
+		 */
+		this.modelElement = modelElement;
 
 		/**
 		 * Value of the command, indicating whether it is applied in the context
@@ -45,30 +52,6 @@ export default class HeadingCommand extends Command {
 			this.refreshValue();
 			this.refreshState();
 		} );
-
-		/**
-		 * Unique identifier of the command, also element's name in the model.
-		 * See {@link module:heading/headingcommand~HeadingOption}.
-		 *
-		 * @readonly
-		 * @member {String} #modelElement
-		 */
-
-		/**
-		 * Element this command creates in the view.
-		 * See {@link module:heading/headingcommand~HeadingOption}.
-		 *
-		 * @readonly
-		 * @member {String} #viewElement
-		 */
-
-		/**
-		 * User-readable title of the command.
-		 * See {@link module:heading/headingcommand~HeadingOption}.
-		 *
-		 * @readonly
-		 * @member {String} #title
-		 */
 	}
 
 	/**
@@ -147,12 +130,3 @@ function checkCanBecomeHeading( block, heading, schema ) {
 		inside: Position.createBefore( block )
 	} );
 }
-
-/**
- * Heading option descriptor.
- *
- * @typedef {Object} module:heading/headingcommand~HeadingOption
- * @property {String} modelElement Element's name in the model.
- * @property {String} viewElement The name of the view element that will be used to represent the model element in the view.
- * @property {String} title The user-readable title of the option.
- */

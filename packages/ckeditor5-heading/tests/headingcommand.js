@@ -29,7 +29,7 @@ describe( 'HeadingCommand', () => {
 			schema.registerItem( 'paragraph', '$block' );
 
 			for ( const option of options ) {
-				commands[ option.modelElement ] = new HeadingCommand( editor, option );
+				commands[ option.modelElement ] = new HeadingCommand( editor, option.modelElement );
 				schema.registerItem( option.modelElement, '$block' );
 			}
 
@@ -47,18 +47,10 @@ describe( 'HeadingCommand', () => {
 		}
 	} );
 
-	describe( 'basic properties', () => {
-		for ( const option of options ) {
-			test( option );
-		}
-
-		function test( { modelElement, viewElement, title } ) {
-			it( `are set for option.modelElement = ${ modelElement }`, () => {
-				expect( commands[ modelElement ].modelElement ).to.equal( modelElement );
-				expect( commands[ modelElement ].viewElement ).to.equal( viewElement );
-				expect( commands[ modelElement ].title ).to.equal( title );
-			} );
-		}
+	describe( 'modelElement', () => {
+		it( 'is set', () => {
+			expect( commands.heading1.modelElement ).to.equal( 'heading1' );
+		} );
 	} );
 
 	describe( 'value', () => {
