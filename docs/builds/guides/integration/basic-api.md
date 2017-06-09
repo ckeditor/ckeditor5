@@ -9,21 +9,21 @@ order: 20
 
 ## Creators
 
-Each CKEditor 5 build provides a class that handles the creation of editor instances inside a page. For this reason they’re called “creators”. Every creator comes with a static `create()` method.
+Each CKEditor 5 build provides a class that handles the creation of editor instances inside a page. For this reason they are called "creators". Every creator comes with a static `create()` method.
 
 The following are creator class names for each build:
 
-* Classic Editor: {@link module:editor-classic/classiceditor~ClassicEditor}
-* Inline Editor: {@link module:editor-inline/inlineeditor~InlineEditor}
-* Medium-like Editor: {@link module:editor-medium-like/mediumlikeeditor~MediumLikeEditor}
+* Classic Editor &ndash; {@link module:editor-classic/classiceditor~ClassicEditor}
+* Inline Editor &ndash; {@link module:editor-inline/inlineeditor~InlineEditor}
+* Medium-like Editor &ndash; {@link module:editor-medium-like/mediumlikeeditor~MediumLikeEditor}
 
-Most of the examples in the documentation use the `ClassicEditor` class, but things should work in similar way with other creator classes.
+Most of the examples in the documentation use the `ClassicEditor` class, but things should work in a similar way with other creator classes.
 
 Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), these classes can be retrieved:
 
-* by [CommonJS](http://wiki.commonjs.org/wiki/CommonJS) compatible loader (e.g. [Webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
+* by a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (e.g. [Webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
 * by [RequireJS](http://requirejs.org/) (or any other AMD library),
-* from the global namespace if none of the above loaders is not available.
+* from the global namespace if none of the above loaders is available.
 
 For example:
 
@@ -41,13 +41,13 @@ require( '/(ckeditor path)/build/ckeditor.js', ClassicEditor => {
 ClassicEditor.create; // [Function]
 ```
 
-Having the above in mind, depending on which build you’re using, creating an editor in the page is a breeze:
+Depending on which build you are using, creating an editor in the page is then a breeze:
 
-In the HTML:
+In the HTML code:
 
 ```html
 <textarea id="text-editor">
-	&lt;p&gt;Here goes the initial contents of the editor.&lt;/p&gt;
+	&lt;p&gt;Here goes the initial content of the editor.&lt;/p&gt;
 </textarea>
 ```
 
@@ -63,21 +63,21 @@ ClassicEditor.create( document.querySelector( '#text-editor' ) )
 	} );
 ```
 
-In the above case, the `<textarea>` element is hidden and replaced with an editor. The `<textarea>` data is used to initialize the editor contents. A `<div>` element could have been used in the same fashion.
+In the above case, the `<textarea>` element is hidden and replaced with an editor. The `<textarea>` data is used to initialize the editor content. A `<div>` element can be used in the same fashion.
 
 <side-box info>
 	Every creator may accept different parameters and handle initialization differently. For instance, the classic editor will replace a given element with an editor, while the inline editor will use the given element to initialize the editor on it. See each editor's documentation to learn the details.
 
-	The interface of the editor class isn't enforced either. Since different implementations of editors may vary heavily in terms of functionality, the editor class implementers have full freedom regarding the API. Therefore, the examples in this guide may not work with some editor classes.
+	The interface of the editor class is not enforced either. Since different implementations of editors may vary heavily in terms of functionality, the editor class implementers have full freedom regarding the API. Therefore, the examples in this guide may not work with some editor classes.
 </side-box>
 
 ## Interacting with the editor
 
-Once the editor is created, it is possible to interact with it through its API. The `editor` variable, from the above examples, should enable that.
+Once the editor is created, it is possible to interact with it through its API. The `editor` variable from the examples above should enable that.
 
 ### Setting the editor data
 
-To replace the editor contents with new data, just use the `setData` method:
+To replace the editor content with new data, just use the `setData` method:
 
 ```js
 editor.setData( '<p>Some text.</p>' );
@@ -85,7 +85,7 @@ editor.setData( '<p>Some text.</p>' );
 
 ### Getting the editor data
 
-If the editor contents need to be retrieved for any reason, like for the scope of sending it to the server through an Ajax call, simply use the `getData` method:
+If the editor content needs to be retrieved for any reason, like for sending it to the server through an Ajax call, simply use the `getData` method:
 
 ```js
 const data = editor.getData();
