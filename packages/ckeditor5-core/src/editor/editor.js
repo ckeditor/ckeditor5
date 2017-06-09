@@ -7,14 +7,14 @@
  * @module core/editor/editor
  */
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import Config from '@ckeditor/ckeditor5-utils/src/config';
 import PluginCollection from '../plugincollection';
+import CommandCollection from './commandcollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
 import Document from '@ckeditor/ckeditor5-engine/src/model/document';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
@@ -55,9 +55,9 @@ export default class Editor {
 		 * Commands registered to the editor.
 		 *
 		 * @readonly
-		 * @member {Map.<module:core/command/command~Command>}
+		 * @member {module:core/command/commandcollection~CommandCollection}
 		 */
-		this.commands = new Map();
+		this.commands = new CommandCollection();
 
 		/**
 		 * @readonly
@@ -140,12 +140,15 @@ export default class Editor {
 	/**
 	 * Destroys the editor instance, releasing all resources used by it.
 	 *
-	 * @fires module:core/editor/editor~Editor#destroy
+	 * @fires destroy
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
 	destroy() {
 		this.fire( 'destroy' );
+
 		this.stopListening();
+
+		this.commands.destroy();
 
 		return Promise.resolve()
 			.then( () => {
@@ -155,24 +158,17 @@ export default class Editor {
 	}
 
 	/**
-	 * Executes specified command with given parameter.
+	 * Executes specified command with given parameters.
+	 *
+	 * Shorthand for:
+	 *
+	 *		editor.commands.get( commandName ).execute( ... )
 	 *
 	 * @param {String} commandName Name of command to execute.
-	 * @param {*} [commandParam] If set, command will be executed with this parameter.
+	 * @param {*} [...commandParams] Command parameters.
 	 */
-	execute( commandName, commandParam ) {
-		const command = this.commands.get( commandName );
-
-		if ( !command ) {
-			/**
-			 * Specified command has not been added to the editor.
-			 *
-			 * @error editor-command-not-found
-			 */
-			throw new CKEditorError( 'editor-command-not-found: Specified command has not been added to the editor.' );
-		}
-
-		command._execute( commandParam );
+	execute( ...args ) {
+		this.commands.execute( ...args );
 	}
 
 	/**
