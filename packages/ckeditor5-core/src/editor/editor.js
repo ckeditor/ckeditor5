@@ -9,7 +9,7 @@
 
 import Config from '@ckeditor/ckeditor5-utils/src/config';
 import PluginCollection from '../plugincollection';
-import CommandCollection from './commandcollection';
+import CommandCollection from '../commandcollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
 import Document from '@ckeditor/ckeditor5-engine/src/model/document';

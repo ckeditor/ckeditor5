@@ -7,7 +7,7 @@
  * @module core/command/toggleattributecommand
  */
 
-import Command from './command';
+import Command from '../command';
 import getSchemaValidRanges from './helpers/getschemavalidranges';
 import isAttributeAllowedInSelection from './helpers/isattributeallowedinselection';
 
@@ -17,10 +17,11 @@ import isAttributeAllowedInSelection from './helpers/isattributeallowedinselecti
  * to decide which nodes (if any) should be changed, and applies or removes attributes from them.
  *
  * The command checks {@link module:engine/model/document~Document#schema} to decide if it should be enabled.
+ *
+ * @extends module:core/command~Command
  */
 export default class ToggleAttributeCommand extends Command {
 	/**
-	 * @see module:core/command/command~Command
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {String} attributeKey Attribute that will be set by the command.
 	 */
@@ -30,43 +31,29 @@ export default class ToggleAttributeCommand extends Command {
 		/**
 		 * Attribute that will be set by the command.
 		 *
+		 * @readonly
 		 * @member {String}
 		 */
 		this.attributeKey = attributeKey;
 
 		/**
-		 * Flag indicating whether command is active. For collapsed selection it means that typed characters will have
+		 * Flag indicating whether the command is active. For collapsed selection it means that typed characters will have
 		 * the command's attribute set. For range selection it means that all nodes inside have the attribute applied.
 		 *
 		 * @observable
+		 * @readonly
 		 * @member {Boolean} #value
 		 */
-		this.set( 'value', false );
-
-		this.listenTo( editor.document, 'changesDone', () => {
-			this.refreshValue();
-			this.refreshState();
-		} );
 	}
 
 	/**
-	 * Updates command's {@link #value value} based on the current selection.
+	 * Updates command's {@link #value} based on the current selection.
 	 */
-	refreshValue() {
-		this.value = this.editor.document.selection.hasAttribute( this.attributeKey );
-	}
+	refresh() {
+		const doc = this.editor.document;
 
-	/**
-	 * Checks if {@link module:engine/model/document~Document#schema} allows to create attribute in
-	 * {@link module:engine/model/document~Document#selection}.
-	 *
-	 * @private
-	 * @returns {Boolean}
-	 */
-	_checkEnabled() {
-		const document = this.editor.document;
-
-		return isAttributeAllowedInSelection( this.attributeKey, document.selection, document.schema );
+		this.value = doc.selection.hasAttribute( this.attributeKey );
+		this.isEnabled = isAttributeAllowedInSelection( this.attributeKey, doc.selection, doc.schema );
 	}
 
 	/**
@@ -84,19 +71,23 @@ export default class ToggleAttributeCommand extends Command {
 	 *
 	 * If the command is disabled (`isEnabled == false`) when it is executed, nothing will happen.
 	 *
-	 * @private
+	 * @fires execute
 	 * @param {Object} [options] Options of command.
 	 * @param {Boolean} [options.forceValue] If set it will force command behavior. If `true`, command will apply attribute,
 	 * otherwise command will remove attribute. If not set, command will look for it's current value to decide what it should do.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to group undo steps.
 	 */
-	_doExecute( options = {} ) {
-		const document = this.editor.document;
-		const selection = document.selection;
+	execute( options = {} ) {
+		if ( !this.isEnabled ) {
+			return;
+		}
+
+		const doc = this.editor.document;
+		const selection = doc.selection;
 		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
 
 		// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges.
-		document.enqueueChanges( () => {
+		doc.enqueueChanges( () => {
 			if ( selection.isCollapsed ) {
 				if ( value ) {
 					selection.setAttribute( this.attributeKey, true );
@@ -104,10 +95,10 @@ export default class ToggleAttributeCommand extends Command {
 					selection.removeAttribute( this.attributeKey );
 				}
 			} else {
-				const ranges = getSchemaValidRanges( this.attributeKey, selection.getRanges(), document.schema );
+				const ranges = getSchemaValidRanges( this.attributeKey, selection.getRanges(), doc.schema );
 
 				// Keep it as one undo step.
-				const batch = options.batch || document.batch();
+				const batch = options.batch || doc.batch();
 
 				for ( const range of ranges ) {
 					if ( value ) {

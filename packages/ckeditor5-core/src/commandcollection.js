@@ -43,7 +43,7 @@ export default class CommandCollection {
 	 * @returns {module:core/command~CommandInterface}
 	 */
 	get( commandName ) {
-		this._commands.get( commandName );
+		return this._commands.get( commandName );
 	}
 
 	/**
@@ -93,16 +93,7 @@ export default class CommandCollection {
 	}
 
 	/**
-	 * Refreshes all commands.
-	 */
-	refreshAll() {
-		for ( const command of this.commands() ) {
-			command.refresh();
-		}
-	}
-
-	/**
-	 * Destroys the collection and all its commands.
+	 * Destroys all collection commands.
 	 */
 	destroy() {
 		for ( const command of this.commands() ) {
