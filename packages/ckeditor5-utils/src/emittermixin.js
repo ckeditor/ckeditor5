@@ -22,14 +22,23 @@ const _emitterId = Symbol( 'emitterId' );
  */
 const EmitterMixin = {
 	/**
-	 * Registers a callback function to be executed when an event is fired. Events can be grouped in namespaces using `:`.
+	 * Registers a callback function to be executed when an event is fired.
+	 *
+	 * Events can be grouped in namespaces using `:`.
 	 * When namespaced event is fired, it additionaly fires all callbacks for that namespace.
 	 *
 	 *		myEmitter.on( 'myGroup', genericCallback );
 	 *		myEmitter.on( 'myGroup:myEvent', specificCallback );
-	 *		myEmitter.fire( 'myGroup' ); // genericCallback is fired.
-	 *		myEmitter.fire( 'myGroup:myEvent' ); // both genericCallback and specificCallback are fired.
-	 *		myEmitter.fire( 'myGroup:foo' ); // genericCallback is fired even though there are no callbacks for "foo".
+	 *
+	 *		// genericCallback is fired.
+	 *		myEmitter.fire( 'myGroup' );
+	 *		// both genericCallback and specificCallback are fired.
+	 *		myEmitter.fire( 'myGroup:myEvent' );
+	 *		// genericCallback is fired even though there are no callbacks for "foo".
+	 *		myEmitter.fire( 'myGroup:foo' );
+	 *
+	 * An event callback can {@link module:utils/eventinfo~EventInfo#stop stop the event} and
+	 * set the {@link module:utils/eventinfo~EventInfo#return return value} of the {@link #fire} method.
 	 *
 	 * @method #on
 	 * @param {String} event The name of the event.
@@ -135,9 +144,6 @@ const EmitterMixin = {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
-	 * @returns By default the method returns `undefined`. However, the return value can be changed by listeners
-	 * through modification of the {@link module:utils/emitterinfo~EmitterInfo#return}'s value (the event info
-	 * is the first param of every callback).
 	 */
 	listenTo( emitter, event, callback, options ) {
 		let emitterInfo, eventCallbacks;
@@ -247,6 +253,9 @@ const EmitterMixin = {
 	 * @method #fire
 	 * @param {String|module:utils/eventinfo~EventInfo} eventOrInfo The name of the event or `EventInfo` object if event is delegated.
 	 * @param {...*} [args] Additional arguments to be passed to the callbacks.
+	 * @returns {*} By default the method returns `undefined`. However, the return value can be changed by listeners
+	 * through modification of the {@link module:utils/eventinfo~EventInfo#return}'s value (the event info
+	 * is the first param of every callback).
 	 */
 	fire( eventOrInfo, ...args ) {
 		const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );

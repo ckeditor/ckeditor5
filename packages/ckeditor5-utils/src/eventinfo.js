@@ -64,10 +64,10 @@ export default class EventInfo {
 		 *
 		 * It's `undefined` by default and can be changed by an event listener:
 		 *
-		 *		editor.data.on( 'getSelectedContent', ( evt ) => {
-		 *			// This listener will make `editor.data.getSelectedContent()`
+		 *		dataController.fire( 'getSelectedContent', ( evt ) => {
+		 *			// This listener will make `dataController.fire( 'getSelectedContent' )`
 		 *			// always return an empty DocumentFragment.
-		 *			evt.return = new DataFragment();
+		 *			evt.return = new DocumentFragment();
 		 *
 		 *			// Make sure no other listeners are executed.
 		 *			evt.stop();
