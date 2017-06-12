@@ -24,14 +24,14 @@ describe( 'UndoCommand', () => {
 	} );
 
 	afterEach( () => {
-		undo.destroy();
+		return editor.destroy();
 	} );
 
 	describe( 'UndoCommand', () => {
 		const p = pos => new Position( root, [].concat( pos ) );
 		const r = ( a, b ) => new Range( p( a ), p( b ) );
 
-		describe( '_execute', () => {
+		describe( 'execute()', () => {
 			let batch0, batch1, batch2, batch3;
 
 			beforeEach( () => {
@@ -114,7 +114,7 @@ describe( 'UndoCommand', () => {
 			} );
 
 			it( 'should revert changes done by deltas from the batch that was most recently added to the command stack', () => {
-				undo._execute();
+				undo.execute();
 
 				// Selection is restored. Wrap is removed:
 				/*
@@ -134,7 +134,7 @@ describe( 'UndoCommand', () => {
 				expect( editor.document.selection.getFirstRange().isEqual( r( 0, 3 ) ) ).to.be.true;
 				expect( editor.document.selection.isBackward ).to.be.false;
 
-				undo._execute();
+				undo.execute();
 
 				// Two moves are removed:
 				/*
@@ -154,7 +154,7 @@ describe( 'UndoCommand', () => {
 				expect( editor.document.selection.getFirstRange().isEqual( r( 1, 3 ) ) ).to.be.true;
 				expect( editor.document.selection.isBackward ).to.be.false;
 
-				undo._execute();
+				undo.execute();
 
 				// Set attribute is undone:
 				/*
@@ -174,7 +174,7 @@ describe( 'UndoCommand', () => {
 				expect( editor.document.selection.getFirstRange().isEqual( r( 2, 4 ) ) ).to.be.true;
 				expect( editor.document.selection.isBackward ).to.be.true;
 
-				undo._execute();
+				undo.execute();
 
 				// Insert is undone:
 				/*
@@ -186,7 +186,7 @@ describe( 'UndoCommand', () => {
 			} );
 
 			it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert set attribute)', () => {
-				undo._execute( batch1 );
+				undo.execute( batch1 );
 				// Remove attribute:
 				/*
 				 [root]
@@ -214,7 +214,7 @@ describe( 'UndoCommand', () => {
 			} );
 
 			it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert insert foobar)', () => {
-				undo._execute( batch0 );
+				undo.execute( batch0 );
 				// Remove foobar:
 				/*
 				 [root]
@@ -230,7 +230,7 @@ describe( 'UndoCommand', () => {
 				expect( editor.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).to.be.true;
 				expect( editor.document.selection.isBackward ).to.be.false;
 
-				undo._execute( batch1 );
+				undo.execute( batch1 );
 				// Remove attributes.
 				// This does nothing in the `root` because attributes were set on nodes that already got removed.
 				// But those nodes should change in the graveyard and we can check them there.
@@ -249,7 +249,7 @@ describe( 'UndoCommand', () => {
 				}
 
 				// Let's undo wrapping. This should leave us with empty root.
-				undo._execute( batch3 );
+				undo.execute( batch3 );
 				expect( root.maxOffset ).to.equal( 0 );
 
 				// Once again transformed range ends up in the graveyard.
@@ -303,7 +303,7 @@ describe( 'UndoCommand', () => {
 				batch2.setAttribute( r( 0, 3 ), 'uppercase', true );
 				expect( getCaseText( root ) ).to.equal( 'EBCdf' );
 
-				undo._execute( batch0 );
+				undo.execute( batch0 );
 				expect( getCaseText( root ) ).to.equal( 'BCdEf' );
 
 				// Let's simulate splitting the delta by updating the history by hand.
@@ -314,12 +314,12 @@ describe( 'UndoCommand', () => {
 				attrDelta2.addOperation( attrHistoryDelta.operations[ 1 ] );
 				doc.history.updateDelta( 2, [ attrDelta1, attrDelta2 ] );
 
-				undo._execute( batch1 );
+				undo.execute( batch1 );
 				// After this execution, undo algorithm should update both `attrDelta1` and `attrDelta2` with new
 				// versions, that have incremented offsets.
 				expect( getCaseText( root ) ).to.equal( 'aBCdEf' );
 
-				undo._execute( batch2 );
+				undo.execute( batch2 );
 				// This execution checks whether undo algorithm correctly updated deltas in previous execution
 				// and also whether it correctly "reads" both deltas from history.
 				expect( getCaseText( root ) ).to.equal( 'abcdef' );
@@ -341,7 +341,7 @@ describe( 'UndoCommand', () => {
 				batch1.move( r( 3, 4 ), p( 1 ) );
 				expect( getCaseText( root ) ).to.equal( 'aDBCef' );
 
-				undo._execute( batch0 );
+				undo.execute( batch0 );
 
 				// After undo-attr: acdbef <--- "cdb" should be selected, it would look weird if only "cd" or "b" is selected
 				// but the whole unbroken part "cdb" changed attribute.
@@ -364,7 +364,7 @@ describe( 'UndoCommand', () => {
 				root.getChild( 0 ).removeAttribute( 'uppercase' );
 				expect( getCaseText( root ) ).to.equal( 'abcdef' );
 
-				undo._execute();
+				undo.execute();
 
 				// Nothing happened. We are still alive.
 				expect( getCaseText( root ) ).to.equal( 'abcdef' );
