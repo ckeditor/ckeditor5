@@ -7,8 +7,9 @@
  * @module heading/headingcommand
  */
 
+import Command from '@ckeditor/ckeditor5-core/src/command';
+
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import first from '@ckeditor/ckeditor5-utils/src/first';
@@ -16,7 +17,7 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
 /**
  * The heading command. It is used by the {@link module:heading/heading~Heading heading feature} to apply headings.
  *
- * @extends module:core/command/command~Command
+ * @extends module:core/command~Command
  */
 export default class HeadingCommand extends Command {
 	/**
@@ -29,6 +30,14 @@ export default class HeadingCommand extends Command {
 		super( editor );
 
 		/**
+		 * Whether the selection starts in a heading of {@link #modelElement this level}.
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {Boolean} #value
+		 */
+
+		/**
 		 * Unique identifier of the command, also element's name in the model.
 		 * See {@link module:heading/heading~HeadingOption}.
 		 *
@@ -36,33 +45,28 @@ export default class HeadingCommand extends Command {
 		 * @member {String}
 		 */
 		this.modelElement = modelElement;
-
-		/**
-		 * Value of the command, indicating whether it is applied in the context
-		 * of current {@link module:engine/model/document~Document#selection selection}.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean}
-		 */
-		this.set( 'value', false );
-
-		// Update current value each time changes are done on document.
-		this.listenTo( editor.document, 'changesDone', () => {
-			this.refreshValue();
-			this.refreshState();
-		} );
 	}
 
 	/**
-	 * Executes command.
+	 * @inheritDoc
+	 */
+	refresh() {
+		const block = first( this.editor.document.selection.getSelectedBlocks() );
+
+		this.value = !!block && block.is( this.modelElement );
+		this.isEnabled = !!block && checkCanBecomeHeading( block, this.modelElement, this.editor.document.schema );
+	}
+
+	/**
+	 * Executes the command. Applies the heading to the selected blocks or, if the first selected
+	 * block is a heading already, turns selected headings (of this level only) to paragraphs.
 	 *
-	 * @protected
+	 * @fires execute
 	 * @param {Object} [options] Options for executed command.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
-	_doExecute( options = {} ) {
+	execute( options = {} ) {
 		const editor = this.editor;
 		const document = editor.document;
 
@@ -95,25 +99,6 @@ export default class HeadingCommand extends Command {
 				}
 			}
 		} );
-	}
-
-	/**
-	 * Updates command's {@link #value value} based on current selection.
-	 */
-	refreshValue() {
-		const block = first( this.editor.document.selection.getSelectedBlocks() );
-
-		this.value = !!block && block.is( this.modelElement );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	_checkEnabled() {
-		const document = this.editor.document;
-		const block = first( document.selection.getSelectedBlocks() );
-
-		return !!block && checkCanBecomeHeading( block, this.modelElement, document.schema );
 	}
 }
 

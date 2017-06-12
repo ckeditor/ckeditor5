@@ -25,7 +25,7 @@ describe( 'HeadingCommand', () => {
 			commands = {};
 			schema = document.schema;
 
-			editor.commands.set( 'paragraph', new ParagraphCommand( editor ) );
+			editor.commands.add( 'paragraph', new ParagraphCommand( editor ) );
 			schema.registerItem( 'paragraph', '$block' );
 
 			for ( const option of options ) {
@@ -84,7 +84,7 @@ describe( 'HeadingCommand', () => {
 				expect( commands[ modelElement ].value ).to.be.false;
 			} );
 
-			it( 'should be refreshed after calling refreshValue()', () => {
+			it( 'should be refreshed after calling refresh()', () => {
 				const command = commands[ modelElement ];
 				setData( document, `<${ modelElement }>[foo]</${ modelElement }><notBlock>foo</notBlock>` );
 				const element = document.getRoot().getChild( 1 );
@@ -93,18 +93,18 @@ describe( 'HeadingCommand', () => {
 				document.selection.setRanges( [ Range.createIn( element ) ] );
 
 				expect( command.value ).to.be.true;
-				command.refreshValue();
+				command.refresh();
 				expect( command.value ).to.be.false;
 			} );
 		}
 	} );
 
-	describe( '_doExecute', () => {
+	describe( 'execute()', () => {
 		it( 'should update value after execution', () => {
 			const command = commands.heading1;
 
 			setData( document, '<paragraph>[]</paragraph>' );
-			command._doExecute();
+			command.execute();
 
 			expect( getData( document ) ).to.equal( '<heading1>[]</heading1>' );
 			expect( command.value ).to.be.true;
@@ -126,7 +126,7 @@ describe( 'HeadingCommand', () => {
 				'<paragraph>de]f</paragraph>'
 			);
 
-			commands.heading1._doExecute();
+			commands.heading1.execute();
 
 			expect( getData( document ) ).to.equal(
 				'<heading1>a[bc</heading1>' +
@@ -144,7 +144,7 @@ describe( 'HeadingCommand', () => {
 
 				expect( batch.deltas.length ).to.equal( 0 );
 
-				command._doExecute( { batch } );
+				command.execute( { batch } );
 
 				expect( batch.deltas.length ).to.be.above( 0 );
 			} );
@@ -157,7 +157,7 @@ describe( 'HeadingCommand', () => {
 
 				expect( batch.deltas.length ).to.equal( 0 );
 
-				command._doExecute( { batch } );
+				command.execute( { batch } );
 
 				expect( batch.deltas.length ).to.be.above( 0 );
 			} );
@@ -175,7 +175,7 @@ describe( 'HeadingCommand', () => {
 				const command = commands.heading1;
 
 				setData( document, '<heading1>foo[]bar</heading1>' );
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
@@ -185,7 +185,7 @@ describe( 'HeadingCommand', () => {
 				schema.allow( { name: '$text', inside: 'inlineImage' } );
 
 				setData( document, '<paragraph><inlineImage>foo[]</inlineImage>bar</paragraph>' );
-				commands.heading1._doExecute();
+				commands.heading1.execute();
 
 				expect( getData( document ) ).to.equal( '<heading1><inlineImage>foo[]</inlineImage>bar</heading1>' );
 			} );
@@ -193,7 +193,7 @@ describe( 'HeadingCommand', () => {
 			function test( from, to ) {
 				it( `converts ${ from.modelElement } to ${ to.modelElement } on collapsed selection`, () => {
 					setData( document, `<${ from.modelElement }>foo[]bar</${ from.modelElement }>` );
-					commands[ to.modelElement ]._doExecute();
+					commands[ to.modelElement ].execute();
 
 					expect( getData( document ) ).to.equal( `<${ to.modelElement }>foo[]bar</${ to.modelElement }>` );
 				} );
@@ -210,7 +210,7 @@ describe( 'HeadingCommand', () => {
 
 			it( 'converts all elements where selection is applied', () => {
 				setData( document, '<heading1>foo[</heading1><heading2>bar</heading2><heading3>]baz</heading3>' );
-				commands.heading3._doExecute();
+				commands.heading3.execute();
 
 				expect( getData( document ) ).to.equal(
 					'<heading3>foo[</heading3><heading3>bar</heading3><heading3>]baz</heading3>'
@@ -219,7 +219,7 @@ describe( 'HeadingCommand', () => {
 
 			it( 'resets to default value all elements with same option', () => {
 				setData( document, '<heading1>foo[</heading1><heading1>bar</heading1><heading2>baz</heading2>]' );
-				commands.heading1._doExecute();
+				commands.heading1.execute();
 
 				expect( getData( document ) ).to.equal(
 					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><heading2>baz</heading2>]'
@@ -233,7 +233,7 @@ describe( 'HeadingCommand', () => {
 						`<${ fromElement }>foo[bar</${ fromElement }><${ fromElement }>baz]qux</${ fromElement }>`
 					);
 
-					commands[ toElement ]._doExecute();
+					commands[ toElement ].execute();
 
 					expect( getData( document ) ).to.equal(
 						`<${ toElement }>foo[bar</${ toElement }><${ toElement }>baz]qux</${ toElement }>`
