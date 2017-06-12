@@ -30,7 +30,7 @@ export default class CommandCollection {
 	 * Registers a new command.
 	 *
 	 * @param {String} commandName The name of the command.
-	 * @param {module:core/command~CommandInterface} command
+	 * @param {module:core/command~Command} command
 	 */
 	add( commandName, command ) {
 		this._commands.set( commandName, command );
@@ -40,7 +40,7 @@ export default class CommandCollection {
 	 * Retrieves a command from the collection.
 	 *
 	 * @param {String} commandName The name of the command.
-	 * @returns {module:core/command~CommandInterface}
+	 * @returns {module:core/command~Command}
 	 */
 	get( commandName ) {
 		return this._commands.get( commandName );
@@ -79,7 +79,7 @@ export default class CommandCollection {
 	/**
 	 * Returns iterator of command instances.
 	 *
-	 * @returns {Iterator.<module:core/command~CommandInterface>}
+	 * @returns {Iterator.<module:core/command~Command>}
 	 */
 	* commands() {
 		yield* this._commands.values();

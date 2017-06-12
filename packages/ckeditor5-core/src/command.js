@@ -18,9 +18,8 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * the {@link module:core/editor/editor~Editor editor} instance.
  *
  * Instances of registered commands can be retrieved from {@link module:core/editor/editor~Editor#commands}.
- * The shortest way to execute a command is through {@link module:core/editor/editor~Editor#execute}.
+ * The easiest way to execute a command is through {@link module:core/editor/editor~Editor#execute}.
  *
- * @implements module:core/command~CommandInterface
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Command {
@@ -38,7 +37,28 @@ export default class Command {
 		 */
 		this.editor = editor;
 
+		/**
+		 * The value of a command. Concrete command class should define what it represents.
+		 *
+		 * For example, the `bold` command's value is whether the selection starts in a bolded text.
+		 * And the value of the `link` command may be an object with links details.
+		 *
+		 * It's possible for a command to have no value (e.g. for stateless actions such as `uploadImage`).
+		 *
+		 * @observable
+		 * @readonly
+		 * @member #value
+		 */
 		this.set( 'value', undefined );
+
+		/**
+		 * Flag indicating whether a command is enabled or disabled.
+		 * A disabled command should do nothing when executed.
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {Boolean} #isEnabled
+		 */
 		this.set( 'isEnabled', true );
 
 		this.decorate( 'execute' );
@@ -47,84 +67,56 @@ export default class Command {
 		this.listenTo( this.editor.document, 'changesDone', () => {
 			this.refresh();
 		} );
+
+		this.on( 'execute', evt => {
+			if ( !this.isEnabled ) {
+				evt.stop();
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**
-	 * @inheritDoc
+	 * Refreshes the command. The command should update its {@link #isEnabled} and {@link #value} property
+	 * in this method.
+	 *
+	 * This method is automatically called when
+	 * {@link module:engine/model/document~Document#event:changesDone any changes are applied to the model}.
 	 */
 	refresh() {
 		this.isEnabled = true;
 	}
 
 	/**
-	 * @inheritDoc
+	 * Destroys the command.
 	 */
 	destroy() {
 		this.stopListening();
 	}
+
+	/**
+	 * Executes the command.
+	 *
+	 * A command may accept parameters. They will be passed from {@link module:core/editor/editor~Editor#execute}
+	 * to the command.
+	 *
+	 * The `execute()` method will automatically abort when the command is disabled ({@link #isEnabled} is `false`).
+	 * This behavior is implemented by a high priority listener to the {@link #event:execute} event.
+	 *
+	 * @fires execute
+	 * @method #execute
+	 */
+
+	/**
+	 * Event fired by the {@link #execute} method. The command action is a listener to this event so it's
+	 * possible to change/cancel the behavior of the command by listening to this event.
+	 *
+	 * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
+	 *
+	 * **Note:** This event is fired even if command is disabled. However, it is automatically blocked
+	 * by a high priority listener in order to prevent command execution.
+	 *
+	 * @event execute
+	 */
 }
 
 mix( Command, ObservableMixin );
-
-/**
- * The command interface. Usually implemented by inheriting from the {@link module:core/command~Command base `Command` class}.
- *
- * @interface CommandInterface
- */
-
-/**
- * Flag indicating whether a command is enabled or disabled.
- * A disabled command should do nothing when executed.
- *
- * @observable
- * @readonly
- * @member {Boolean} #isEnabled
- */
-
-/**
- * The value of a command. Concrete command class should define what it represents.
- *
- * For example, the `bold` command's value is whether the selection starts in a bolded text.
- * And the value of the `link` command may be an object with links details.
- *
- * It's possible for a command to have no value (e.g. for stateless actions such as `uploadImage`).
- *
- * @observable
- * @readonly
- * @member #value
- */
-
-/**
- * Executes the command.
- *
- * A command may accept parameters. They will be passed from {@link module:core/editor/editor~Editor#execute}
- * to the command.
- *
- * The `execute()` method should abort when the command is disabled ({@link #isEnabled} is `false`).
- *
- * @method #execute
- */
-
-/**
- * Refreshes the command. The command should update its {@link #isEnabled} and {@link #value} property
- * in this method.
- *
- * @method #refresh
- */
-
-/**
- * Destroys the command.
- *
- * @method #destroy
- */
-
-/**
- * Event fired by the {@link #execute} method. The command action is a listener to this event so it's
- * possible to change/cancel the behavior of the command by listening to this event.
- *
- * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
- *
- * **Note:** This event is fired even if command is disabled.
- *
- * @event execute
- */

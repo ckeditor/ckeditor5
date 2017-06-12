@@ -162,7 +162,7 @@ export default class Editor {
 	 *
 	 * Shorthand for:
 	 *
-	 *		editor.commands.get( commandName ).execute( ... )
+	 *		editor.commands.get( commandName ).execute( ... );
 	 *
 	 * @param {String} commandName Name of command to execute.
 	 * @param {*} [...commandParams] Command parameters.

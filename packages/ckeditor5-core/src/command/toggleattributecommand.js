@@ -78,10 +78,6 @@ export default class ToggleAttributeCommand extends Command {
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to group undo steps.
 	 */
 	execute( options = {} ) {
-		if ( !this.isEnabled ) {
-			return;
-		}
-
 		const doc = this.editor.document;
 		const selection = doc.selection;
 		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;

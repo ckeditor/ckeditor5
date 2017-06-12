@@ -82,6 +82,31 @@ describe( 'Command', () => {
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( [ 1, 2 ] );
 		} );
+
+		it( 'is automatically blocked (with low priority listener) if command is disabled', () => {
+			const spyExecute = sinon.spy();
+			const spyHighest = sinon.spy();
+			const spyHigh = sinon.spy();
+
+			class SpyCommand extends Command {
+				execute() {
+					spyExecute();
+				}
+			}
+
+			const command = new SpyCommand( editor );
+
+			command.on( 'execute', spyHighest, { priority: 'highest' } );
+			command.on( 'execute', spyHigh, { priority: 'high' } );
+
+			command.isEnabled = false;
+
+			command.execute();
+
+			expect( spyExecute.called ).to.be.false;
+			expect( spyHighest.calledOnce ).to.be.true;
+			expect( spyHigh.called ).to.be.false;
+		} );
 	} );
 
 	describe( 'refresh()', () => {
