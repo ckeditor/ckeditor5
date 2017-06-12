@@ -908,5 +908,15 @@ describe( 'Observable', () => {
 
 			foo.method();
 		} );
+
+		it( 'throws when trying to decorate non existing method', () => {
+			class Foo extends Observable {}
+
+			const foo = new Foo();
+
+			expect( () => {
+				foo.decorate( 'method' );
+			} ).to.throw( CKEditorError, /^observablemixin-cannot-decorate-undefined:/ );
+		} );
 	} );
 } );

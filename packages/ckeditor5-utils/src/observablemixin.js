@@ -309,6 +309,20 @@ const ObservableMixin = {
 		methodNames.forEach( methodName => {
 			const originalMethod = this[ methodName ];
 
+			if ( !originalMethod ) {
+				/**
+				 * Cannot decorate an undefined method.
+				 *
+				 * @error observablemixin-cannot-decorate-undefined
+				 * @param {Object} object The object on which you try to decorate a method.
+				 * @param {String} methodName Name of the method which does not exist.
+				 */
+				throw new CKEditorError(
+					'observablemixin-cannot-decorate-undefined: Cannot decorate an undefined method.',
+					{ object: this, methodName }
+				);
+			}
+
 			this.on( methodName, ( evt, args ) => {
 				evt.return = originalMethod.apply( this, args );
 			} );
