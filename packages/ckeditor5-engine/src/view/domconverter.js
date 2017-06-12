@@ -516,7 +516,7 @@ export default class DomConverter {
 			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 		}
 
-		// If position inside UIElement - return position before.
+		// If position is somewhere inside UIElement - return position before that element.
 		const viewElement = this.getCorrespondingViewElement( domParent );
 		if ( viewElement && viewElement.is( 'uiElement' ) ) {
 			return ViewPosition.createBefore( viewElement );

@@ -41,7 +41,7 @@ describe( 'DOMConverter UIElement integration', () => {
 			expect( domElement.innerHTML ).to.equal( '<p><span>foo</span> bar</p>' );
 		} );
 
-		it( 'should not bind rendered elements', () => {
+		it( 'should bind only UIElement not child elements', () => {
 			const myElement = new MyUIElement( 'div' );
 			const domElement = converter.viewToDom( myElement, document, { bind: true } );
 			const domSpan = domElement.childNodes[ 0 ];
@@ -95,6 +95,51 @@ describe( 'DOMConverter UIElement integration', () => {
 
 			expect( viewPosition.parent ).to.equal( container );
 			expect( viewPosition.offset ).to.equal( 1 );
+		} );
+	} );
+
+	describe( 'getCorrespondingViewElement', () => {
+		it( 'should return UIElement for DOM elements inside', () => {
+			const myElement = new MyUIElement( 'div' );
+			const domElement = converter.viewToDom( myElement, document, { bind: true } );
+
+			expect( converter.getCorrespondingViewElement( domElement ) ).to.equal( myElement );
+
+			const domParagraph = domElement.childNodes[ 0 ];
+			expect( converter.getCorrespondingViewElement( domParagraph ) ).to.equal( myElement );
+
+			const domSpan = domParagraph.childNodes[ 0 ];
+			expect( converter.getCorrespondingViewElement( domSpan ) ).to.equal( myElement );
+		} );
+	} );
+
+	describe( 'getCorrespondingViewText', () => {
+		it( 'should return UIElement for DOM text inside', () => {
+			const myElement = new MyUIElement( 'div' );
+			const domElement = converter.viewToDom( myElement, document, { bind: true } );
+
+			const domText = domElement.querySelector( 'span' ).childNodes[ 0 ];
+			expect( converter.getCorrespondingViewText( domText ) ).to.equal( myElement );
+		} );
+	} );
+
+	describe( 'getParentUIElement', () => {
+		it( 'should return UIElement for DOM children', () => {
+			const uiElement = new MyUIElement( 'div' );
+			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
+
+			const domParagraph = domElement.childNodes[ 0 ];
+			const domSpan = domParagraph.childNodes[ 0 ];
+
+			expect( converter.getParentUIElement( domParagraph ) ).to.equal( uiElement );
+			expect( converter.getParentUIElement( domSpan ) ).to.equal( uiElement );
+		} );
+
+		it( 'should return null for element itself', () => {
+			const uiElement = new MyUIElement( 'div' );
+			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
+
+			expect( converter.getParentUIElement( domElement ) ).to.be.null;
 		} );
 	} );
 } );
