@@ -117,7 +117,8 @@ export default class DataController {
 		this.viewToModel.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.viewToModel.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
-		this.decorate( 'insertContent', 'deleteContent', 'modifySelection', 'getSelectedContent' );
+		[ 'insertContent', 'deleteContent', 'modifySelection', 'getSelectedContent' ]
+			.forEach( methodName => this.decorate( methodName ) );
 	}
 
 	/**
