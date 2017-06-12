@@ -20,8 +20,8 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Instances of registered commands can be retrieved from {@link module:core/editor/editor~Editor#commands}.
  * The shortest way to execute a command is through {@link module:core/editor/editor~Editor#execute}.
  *
- * @implements CommandInterface
- * @mixes module:utils/observablemixin~ObservaleMixin
+ * @implements module:core/command~CommandInterface
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Command {
 	/**
@@ -60,7 +60,7 @@ export default class Command {
 mix( Command, ObservableMixin );
 
 /**
- * The command interface. Usually implemented by inheriting from the {@link Command base `Command` class}.
+ * The command interface. Usually implemented by inheriting from the {@link module:core/command~Command base `Command` class}.
  *
  * @interface CommandInterface
  */
@@ -109,7 +109,7 @@ mix( Command, ObservableMixin );
  * Event fired by the {@link #execute} method. The command action is a listener to this event so it's
  * possible to change/cancel the behavior of the command by listening to this event.
  *
- * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+ * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
  *
  * **Note:** This event is fired even if command is disabled.
  *

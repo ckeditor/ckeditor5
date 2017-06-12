@@ -12,7 +12,7 @@ import getSchemaValidRanges from './helpers/getschemavalidranges';
 import isAttributeAllowedInSelection from './helpers/isattributeallowedinselection';
 
 /**
- * An extension of the base {@link module:core/command/command~Command} class, which provides utilities for a command which toggles a single
+ * An extension of the base {@link module:core/command~Command} class, which provides utilities for a command which toggles a single
  * attribute on a text or an element. `ToggleAttributeCommand` uses {@link module:engine/model/document~Document#selection}
  * to decide which nodes (if any) should be changed, and applies or removes attributes from them.
  *
