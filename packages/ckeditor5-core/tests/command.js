@@ -6,10 +6,6 @@
 import Command from '../src/command';
 import ModelTestEditor from './_utils/modeltesteditor';
 
-class SomeCommand extends Command {
-	execute() {}
-}
-
 describe( 'Command', () => {
 	let editor, command;
 
@@ -18,7 +14,7 @@ describe( 'Command', () => {
 			.create()
 			.then( newEditor => {
 				editor = newEditor;
-				command = new SomeCommand( editor );
+				command = new Command( editor );
 			} );
 	} );
 

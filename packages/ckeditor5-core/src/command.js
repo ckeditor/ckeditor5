@@ -87,13 +87,6 @@ export default class Command {
 	}
 
 	/**
-	 * Destroys the command.
-	 */
-	destroy() {
-		this.stopListening();
-	}
-
-	/**
 	 * Executes the command.
 	 *
 	 * A command may accept parameters. They will be passed from {@link module:core/editor/editor~Editor#execute}
@@ -103,8 +96,15 @@ export default class Command {
 	 * This behavior is implemented by a high priority listener to the {@link #event:execute} event.
 	 *
 	 * @fires execute
-	 * @method #execute
 	 */
+	execute() {}
+
+	/**
+	 * Destroys the command.
+	 */
+	destroy() {
+		this.stopListening();
+	}
 
 	/**
 	 * Event fired by the {@link #execute} method. The command action is a listener to this event so it's
