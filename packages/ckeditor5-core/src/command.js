@@ -38,8 +38,8 @@ export default class Command {
 		 */
 		this.editor = editor;
 
-		this.set( 'value', null );
-		this.set( 'isEnabled', false );
+		this.set( 'value', undefined );
+		this.set( 'isEnabled', true );
 
 		this.decorate( 'execute' );
 
@@ -50,7 +50,14 @@ export default class Command {
 	}
 
 	/**
-	 * Destroys the command.
+	 * @inheritDoc
+	 */
+	refresh() {
+		this.isEnabled = true;
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	destroy() {
 		this.stopListening();
@@ -103,6 +110,12 @@ mix( Command, ObservableMixin );
  * in this method.
  *
  * @method #refresh
+ */
+
+/**
+ * Destroys the command.
+ *
+ * @method #destroy
  */
 
 /**

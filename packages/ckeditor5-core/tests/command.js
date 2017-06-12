@@ -8,8 +8,6 @@ import ModelTestEditor from './_utils/modeltesteditor';
 
 class SomeCommand extends Command {
 	execute() {}
-
-	refresh() {}
 }
 
 describe( 'Command', () => {
@@ -36,8 +34,8 @@ describe( 'Command', () => {
 		} );
 
 		it( 'sets the state properties', () => {
-			expect( command.value ).to.be.null;
-			expect( command.isEnabled ).to.be.false;
+			expect( command.value ).to.be.undefined;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'adds a listener which refreshed the command on editor.document#changesDone', () => {
@@ -67,7 +65,7 @@ describe( 'Command', () => {
 
 			command.on( 'change:isEnabled', spy );
 
-			command.isEnabled = true;
+			command.isEnabled = false;
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
@@ -83,6 +81,38 @@ describe( 'Command', () => {
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( [ 1, 2 ] );
+		} );
+	} );
+
+	describe( 'refresh()', () => {
+		it( 'sets isEnabled to true', () => {
+			command.isEnabled = false;
+
+			command.refresh();
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		// This is an acceptance test for the ability to override a command's state from outside
+		// in a way that at any moment the action can be reverted by just offing the listener and
+		// refreshing the command once again.
+		it( 'is safely overridable using change:isEnabled', () => {
+			command.on( 'change:isEnabled', callback, { priority: 'high' } );
+			command.isEnabled = false;
+			command.refresh();
+
+			expect( command.isEnabled ).to.be.false;
+
+			command.off( 'change:isEnabled', callback );
+			command.refresh();
+
+			expect( command.isEnabled ).to.be.true;
+
+			function callback( evt ) {
+				command.isEnabled = false;
+
+				evt.stop();
+			}
 		} );
 	} );
 } );
