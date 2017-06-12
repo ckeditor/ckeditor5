@@ -37,8 +37,6 @@ describe( 'BoldEngine', () => {
 
 	describe( 'command', () => {
 		it( 'should register bold command', () => {
-			expect( editor.commands.has( 'bold' ) ).to.be.true;
-
 			const command = editor.commands.get( 'bold' );
 
 			expect( command ).to.be.instanceOf( ToggleAttributeCommand );

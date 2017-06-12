@@ -47,6 +47,6 @@ export default class ItalicEngine extends Plugin {
 			.toAttribute( ITALIC, true );
 
 		// Create italic command.
-		editor.commands.set( ITALIC, new ToggleAttributeCommand( editor, ITALIC ) );
+		editor.commands.add( ITALIC, new ToggleAttributeCommand( editor, ITALIC ) );
 	}
 }
