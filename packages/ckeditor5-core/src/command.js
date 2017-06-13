@@ -59,7 +59,7 @@ export default class Command {
 		 * @readonly
 		 * @member {Boolean} #isEnabled
 		 */
-		this.set( 'isEnabled', true );
+		this.set( 'isEnabled', false );
 
 		this.decorate( 'execute' );
 

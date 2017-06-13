@@ -31,7 +31,7 @@ describe( 'Command', () => {
 
 		it( 'sets the state properties', () => {
 			expect( command.value ).to.be.undefined;
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).to.be.false;
 		} );
 
 		it( 'adds a listener which refreshed the command on editor.document#changesDone', () => {
@@ -61,7 +61,7 @@ describe( 'Command', () => {
 
 			command.on( 'change:isEnabled', spy );
 
-			command.isEnabled = false;
+			command.isEnabled = true;
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
@@ -72,6 +72,8 @@ describe( 'Command', () => {
 			const spy = sinon.spy();
 
 			command.on( 'execute', spy );
+
+			command.isEnabled = true;
 
 			command.execute( 1, 2 );
 
@@ -95,8 +97,6 @@ describe( 'Command', () => {
 			command.on( 'execute', spyHighest, { priority: 'highest' } );
 			command.on( 'execute', spyHigh, { priority: 'high' } );
 
-			command.isEnabled = false;
-
 			command.execute();
 
 			expect( spyExecute.called ).to.be.false;
@@ -107,8 +107,6 @@ describe( 'Command', () => {
 
 	describe( 'refresh()', () => {
 		it( 'sets isEnabled to true', () => {
-			command.isEnabled = false;
-
 			command.refresh();
 
 			expect( command.isEnabled ).to.be.true;
