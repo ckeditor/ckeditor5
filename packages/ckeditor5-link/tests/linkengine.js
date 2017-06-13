@@ -38,16 +38,12 @@ describe( 'LinkEngine', () => {
 
 	describe( 'command', () => {
 		it( 'should register link command', () => {
-			expect( editor.commands.has( 'link' ) ).to.be.true;
-
 			const command = editor.commands.get( 'link' );
 
 			expect( command ).to.be.instanceOf( LinkCommand );
 		} );
 
 		it( 'should register unlink command', () => {
-			expect( editor.commands.has( 'unlink' ) ).to.be.true;
-
 			const command = editor.commands.get( 'unlink' );
 
 			expect( command ).to.be.instanceOf( UnlinkCommand );

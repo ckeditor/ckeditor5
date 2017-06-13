@@ -28,28 +28,44 @@ describe( 'LinkCommand', () => {
 	} );
 
 	afterEach( () => {
-		command.destroy();
+		return editor.destroy();
 	} );
 
-	describe( 'constructor()', () => {
-		// https://github.com/ckeditor/ckeditor5-link/issues/93
-		it( 'should listen on document#changesDone and refresh the command\'s state', () => {
-			const refreshStateSpy = sinon.spy( command, 'refreshState' );
+	describe( 'isEnabled', () => {
+		// This test doesn't tests every possible case.
+		// refresh() uses `isAttributeAllowedInSelection` helper which is fully tested in his own test.
 
-			document.fire( 'changesDone' );
+		beforeEach( () => {
+			document.schema.registerItem( 'x', '$block' );
+			document.schema.disallow( { name: '$text', inside: 'x', attributes: 'linkHref' } );
+		} );
 
-			expect( refreshStateSpy.calledOnce ).to.true;
+		describe( 'when selection is collapsed', () => {
+			it( 'should be true if characters with the attribute can be placed at caret position', () => {
+				setData( document, '<p>f[]oo</p>' );
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be false if characters with the attribute cannot be placed at caret position', () => {
+				setData( document, '<x>fo[]o</x>' );
+				expect( command.isEnabled ).to.be.false;
+			} );
+		} );
+
+		describe( 'when selection is not collapsed', () => {
+			it( 'should be true if there is at least one node in selection that can have the attribute', () => {
+				setData( document, '<p>[foo]</p>' );
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be false if there are no nodes in selection that can have the attribute', () => {
+				setData( document, '<x>[foo]</x>' );
+				expect( command.isEnabled ).to.be.false;
+			} );
 		} );
 	} );
 
 	describe( 'value', () => {
-		it( 'should be updated on document#changesDone', () => {
-			const spy = sinon.spy( command, 'refreshValue' );
-
-			document.fire( 'changesDone' );
-			sinon.assert.calledOnce( spy );
-		} );
-
 		describe( 'collapsed selection', () => {
 			it( 'should be equal attribute value when selection is placed inside element with `linkHref` attribute', () => {
 				setData( document, '<$text linkHref="url">foo[]bar</$text>' );
@@ -60,7 +76,7 @@ describe( 'LinkCommand', () => {
 			it( 'should be undefined when selection is placed inside element without `linkHref` attribute', () => {
 				setData( document, '<$text bold="true">foo[]bar</$text>' );
 
-				expect( command.value ).to.undefined;
+				expect( command.value ).to.be.undefined;
 			} );
 		} );
 
@@ -74,19 +90,19 @@ describe( 'LinkCommand', () => {
 			it( 'should be undefined when selection contains not only elements with `linkHref` attribute', () => {
 				setData( document, 'f[o<$text linkHref="url">ob</$text>]ar' );
 
-				expect( command.value ).to.undefined;
+				expect( command.value ).to.be.undefined;
 			} );
 		} );
 	} );
 
-	describe( '_doExecute', () => {
+	describe( 'execute()', () => {
 		describe( 'non-collapsed selection', () => {
 			it( 'should set `linkHref` attribute to selected text', () => {
 				setData( document, 'f[ooba]r' );
 
-				expect( command.value ).to.undefined;
+				expect( command.value ).to.be.undefined;
 
-				command._doExecute( 'url' );
+				command.execute( 'url' );
 
 				expect( getData( document ) ).to.equal( 'f[<$text linkHref="url">ooba</$text>]r' );
 				expect( command.value ).to.equal( 'url' );
@@ -95,9 +111,9 @@ describe( 'LinkCommand', () => {
 			it( 'should set `linkHref` attribute to selected text when text already has attributes', () => {
 				setData( document, 'f[o<$text bold="true">oba]r</$text>' );
 
-				expect( command.value ).to.undefined;
+				expect( command.value ).to.be.undefined;
 
-				command._doExecute( 'url' );
+				command.execute( 'url' );
 
 				expect( command.value ).to.equal( 'url' );
 				expect( getData( document ) ).to.equal(
@@ -110,9 +126,9 @@ describe( 'LinkCommand', () => {
 			it( 'should overwrite existing `linkHref` attribute when selected text wraps text with `linkHref` attribute', () => {
 				setData( document, 'f[o<$text linkHref="other url">o</$text>ba]r' );
 
-				expect( command.value ).to.undefined;
+				expect( command.value ).to.be.undefined;
 
-				command._doExecute( 'url' );
+				command.execute( 'url' );
 
 				expect( getData( document ) ).to.equal( 'f[<$text linkHref="url">ooba</$text>]r' );
 				expect( command.value ).to.equal( 'url' );
@@ -123,7 +139,7 @@ describe( 'LinkCommand', () => {
 
 				expect( command.value ).to.equal( 'other url' );
 
-				command._doExecute( 'url' );
+				command.execute( 'url' );
 
 				expect( getData( document ) ).to.equal(
 					'f' +
@@ -142,7 +158,7 @@ describe( 'LinkCommand', () => {
 
 				expect( command.value ).to.equal( 'other url' );
 
-				command._doExecute( 'url' );
+				command.execute( 'url' );
 
 				expect( getData( document ) ).to.equal( 'f<$text linkHref="other url">o</$text>[<$text linkHref="url">oba</$text>]r' );
 				expect( command.value ).to.equal( 'url' );
@@ -152,9 +168,9 @@ describe( 'LinkCommand', () => {
 				'attribute', () => {
 				setData( document, 'f[o<$text linkHref="other url">ob]a</$text>r' );
 
-				expect( command.value ).to.undefined;
+				expect( command.value ).to.be.undefined;
 
-				command._doExecute( 'url' );
+				command.execute( 'url' );
 
 				expect( getData( document ) ).to.equal( 'f[<$text linkHref="url">oob</$text>]<$text linkHref="other url">a</$text>r' );
 				expect( command.value ).to.equal( 'url' );
@@ -163,9 +179,9 @@ describe( 'LinkCommand', () => {
 			it( 'should set `linkHref` attribute to selected text when text is split by $block element', () => {
 				setData( document, '<p>f[oo</p><p>ba]r</p>' );
 
-				expect( command.value ).to.undefined;
+				expect( command.value ).to.be.undefined;
 
-				command._doExecute( 'url' );
+				command.execute( 'url' );
 
 				expect( getData( document ) )
 					.to.equal( '<p>f[<$text linkHref="url">oo</$text></p><p><$text linkHref="url">ba</$text>]r</p>' );
@@ -178,9 +194,9 @@ describe( 'LinkCommand', () => {
 
 				setData( document, '<p>f[oo<img></img>ba]r</p>' );
 
-				expect( command.value ).to.undefined;
+				expect( command.value ).to.be.undefined;
 
-				command._doExecute( 'url' );
+				command.execute( 'url' );
 
 				expect( getData( document ) )
 					.to.equal( '<p>f[<$text linkHref="url">oo</$text><img></img><$text linkHref="url">ba</$text>]r</p>' );
@@ -192,7 +208,7 @@ describe( 'LinkCommand', () => {
 			it( 'should insert text with `linkHref` attribute, text data equal to href and select new link', () => {
 				setData( document, 'foo[]bar' );
 
-				command._doExecute( 'url' );
+				command.execute( 'url' );
 
 				expect( getData( document ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
 			} );
@@ -200,7 +216,7 @@ describe( 'LinkCommand', () => {
 			it( 'should update `linkHref` attribute and select whole link when selection is inside text with `linkHref` attribute', () => {
 				setData( document, '<$text linkHref="other url">foo[]bar</$text>' );
 
-				command._doExecute( 'url' );
+				command.execute( 'url' );
 
 				expect( getData( document ) ).to.equal( '[<$text linkHref="url">foobar</$text>]' );
 			} );
@@ -209,43 +225,9 @@ describe( 'LinkCommand', () => {
 				document.schema.disallow( { name: '$text', attributes: 'linkHref', inside: 'p' } );
 				setData( document, '<p>foo[]bar</p>' );
 
-				command._doExecute( 'url' );
+				command.execute( 'url' );
 
 				expect( getData( document ) ).to.equal( '<p>foo[]bar</p>' );
-			} );
-		} );
-	} );
-
-	describe( '_checkEnabled', () => {
-		// This test doesn't tests every possible case.
-		// Method `_checkEnabled` uses `isAttributeAllowedInSelection` helper which is fully tested in his own test.
-
-		beforeEach( () => {
-			document.schema.registerItem( 'x', '$block' );
-			document.schema.disallow( { name: '$text', inside: 'x', attributes: 'linkHref' } );
-		} );
-
-		describe( 'when selection is collapsed', () => {
-			it( 'should return true if characters with the attribute can be placed at caret position', () => {
-				setData( document, '<p>f[]oo</p>' );
-				expect( command._checkEnabled() ).to.be.true;
-			} );
-
-			it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
-				setData( document, '<x>fo[]o</x>' );
-				expect( command._checkEnabled() ).to.be.false;
-			} );
-		} );
-
-		describe( 'when selection is not collapsed', () => {
-			it( 'should return true if there is at least one node in selection that can have the attribute', () => {
-				setData( document, '<p>[foo]</p>' );
-				expect( command._checkEnabled() ).to.be.true;
-			} );
-
-			it( 'should return false if there are no nodes in selection that can have the attribute', () => {
-				setData( document, '<x>[foo]</x>' );
-				expect( command._checkEnabled() ).to.be.false;
 			} );
 		} );
 	} );
