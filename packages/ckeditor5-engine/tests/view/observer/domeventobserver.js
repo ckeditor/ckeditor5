@@ -180,7 +180,7 @@ describe( 'DomEventObserver', () => {
 		} );
 
 		it( 'should fire events from UIElement itself', () => {
-			const domUiElement = domRoot.childNodes[ 0 ];
+			const domUiElement = domRoot.querySelector( 'p' );
 			domUiElement.dispatchEvent( domEvent );
 
 			const data = evtSpy.args[ 0 ][ 1 ];
