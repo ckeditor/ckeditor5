@@ -247,6 +247,88 @@ const ObservableMixin = {
 			boundObservables.clear();
 			boundAttributes.clear();
 		}
+	},
+
+	/**
+	 * Turns the given methods of this object into event-based ones. This means that the new method will fire an event
+	 * (named after the method) and the original action will be plugged as a listener to that event.
+	 *
+	 * This is a very simplified method decoration. Itself it doesn't change the behavior of a method (expect adding the event),
+	 * but it allows to modify it later on by listening to the method's event.
+	 *
+	 * For example, in order to cancel the method execution one can stop the event:
+	 *
+	 *		class Foo {
+	 *			constructor() {
+	 *				this.decorate( 'method' );
+	 *			}
+	 *
+	 *			method() {
+	 *				console.log( 'called!' );
+	 *			}
+	 *		}
+	 *
+	 *		const foo = new Foo();
+	 *		foo.on( 'method', ( evt ) => {
+	 *			evt.stop();
+	 *		}, { priority: 'high' } );
+	 *
+	 *		foo.method(); // Nothing is logged.
+	 *
+	 *
+	 * Note: we used a high priority listener here to execute this callback before the one which
+	 * calls the orignal method (which used the default priority).
+	 *
+	 * It's also possible to change the return value:
+	 *
+	 *		foo.on( 'method', ( evt ) => {
+	 *			evt.return = 'Foo!';
+	 *		} );
+	 *
+	 *		foo.method(); // -> 'Foo'
+	 *
+	 * Finally, it's possible to access and modify the parameters:
+	 *
+	 *		method( a, b ) {
+	 *			console.log( `${ a }, ${ b }`  );
+	 *		}
+	 *
+	 *		// ...
+	 *
+	 *		foo.on( 'method', ( evt, args ) => {
+	 *			args[ 0 ] = 3;
+	 *
+	 *			console.log( args[ 1 ] ); // -> 2
+	 *		}, { priority: 'high' } );
+	 *
+	 *		foo.method( 1, 2 ); // -> '3, 2'
+	 *
+	 * @param {String} methodName Name of the method to decorate.
+	 */
+	decorate( methodName ) {
+		const originalMethod = this[ methodName ];
+
+		if ( !originalMethod ) {
+			/**
+			 * Cannot decorate an undefined method.
+			 *
+			 * @error observablemixin-cannot-decorate-undefined
+			 * @param {Object} object The object which method should be decorated.
+			 * @param {String} methodName Name of the method which does not exist.
+			 */
+			throw new CKEditorError(
+				'observablemixin-cannot-decorate-undefined: Cannot decorate an undefined method.',
+				{ object: this, methodName }
+			);
+		}
+
+		this.on( methodName, ( evt, args ) => {
+			evt.return = originalMethod.apply( this, args );
+		} );
+
+		this[ methodName ] = function( ...args ) {
+			return this.fire( methodName, args );
+		};
 	}
 
 	/**

@@ -61,7 +61,7 @@ describe( 'Observable', () => {
 		expect( car.color ).to.equal( 'blue' );
 	} );
 
-	describe( 'set', () => {
+	describe( 'set()', () => {
 		it( 'should work when passing an object', () => {
 			car.set( {
 				color: 'blue',	// Override
@@ -185,7 +185,7 @@ describe( 'Observable', () => {
 		} );
 	} );
 
-	describe( 'bind', () => {
+	describe( 'bind()', () => {
 		it( 'should chain for a single attribute', () => {
 			expect( car.bind( 'color' ) ).to.contain.keys( 'to' );
 		} );
@@ -225,7 +225,7 @@ describe( 'Observable', () => {
 			} ).to.throw( CKEditorError, /observable-bind-rebind/ );
 		} );
 
-		describe( 'to', () => {
+		describe( 'to()', () => {
 			it( 'should not chain', () => {
 				expect(
 					car.bind( 'color' ).to( new Observable( { color: 'red' } ) )
@@ -732,7 +732,7 @@ describe( 'Observable', () => {
 		} );
 	} );
 
-	describe( 'unbind', () => {
+	describe( 'unbind()', () => {
 		it( 'should not fail when unbinding a fresh observable', () => {
 			const observable = new Observable();
 
@@ -809,6 +809,114 @@ describe( 'Observable', () => {
 				],
 				{ color: 'red', interiorColor: 'red' }
 			);
+		} );
+	} );
+
+	describe( 'decorate()', () => {
+		it( 'makes the method fire an event', () => {
+			const spy = sinon.spy();
+
+			class Foo extends Observable {
+				method() {}
+			}
+
+			const foo = new Foo();
+
+			foo.decorate( 'method' );
+
+			foo.on( 'method', spy );
+
+			foo.method( 1, 2 );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( [ 1, 2 ] );
+		} );
+
+		it( 'executes the original method in a listener with the default priority', () => {
+			const calls = [];
+
+			class Foo extends Observable {
+				method() {
+					calls.push( 'original' );
+				}
+			}
+
+			const foo = new Foo();
+
+			foo.decorate( 'method' );
+
+			foo.on( 'method', () => calls.push( 'high' ), { priority: 'high' } );
+			foo.on( 'method', () => calls.push( 'low' ), { priority: 'low' } );
+
+			foo.method();
+
+			expect( calls ).to.deep.equal( [ 'high', 'original', 'low' ] );
+		} );
+
+		it( 'supports overriding return values', () => {
+			class Foo extends Observable {
+				method() {
+					return 1;
+				}
+			}
+
+			const foo = new Foo();
+
+			foo.decorate( 'method' );
+
+			foo.on( 'method', evt => {
+				expect( evt.return ).to.equal( 1 );
+
+				evt.return = 2;
+			} );
+
+			expect( foo.method() ).to.equal( 2 );
+		} );
+
+		it( 'supports overriding arguments', () => {
+			class Foo extends Observable {
+				method( a ) {
+					expect( a ).to.equal( 2 );
+				}
+			}
+
+			const foo = new Foo();
+
+			foo.decorate( 'method' );
+
+			foo.on( 'method', ( evt, args ) => {
+				args[ 0 ] = 2;
+			}, { priority: 'high' } );
+
+			foo.method( 1 );
+		} );
+
+		it( 'supports stopping the event (which prevents execution of the orignal method', () => {
+			class Foo extends Observable {
+				method() {
+					throw new Error( 'this should not be executed' );
+				}
+			}
+
+			const foo = new Foo();
+
+			foo.decorate( 'method' );
+
+			foo.on( 'method', evt => {
+				evt.stop();
+			}, { priority: 'high' } );
+
+			foo.method();
+		} );
+
+		it( 'throws when trying to decorate non existing method', () => {
+			class Foo extends Observable {}
+
+			const foo = new Foo();
+
+			expect( () => {
+				foo.decorate( 'method' );
+			} ).to.throw( CKEditorError, /^observablemixin-cannot-decorate-undefined:/ );
 		} );
 	} );
 } );
