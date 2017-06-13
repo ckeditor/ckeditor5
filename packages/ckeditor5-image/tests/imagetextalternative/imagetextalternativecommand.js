@@ -58,7 +58,7 @@ describe( 'ImageTextAlternativeCommand', () => {
 	it( 'should set proper alt if executed on image without alt attribute', () => {
 		setData( document, '[<image src="image.png"></image>]' );
 
-		command._doExecute( { newValue: 'fiz buz' } );
+		command.execute( { newValue: 'fiz buz' } );
 
 		expect( getData( document ) ).to.equal( '[<image alt="fiz buz" src="image.png"></image>]' );
 	} );
@@ -66,7 +66,7 @@ describe( 'ImageTextAlternativeCommand', () => {
 	it( 'should change alt if executed on image with alt attribute', () => {
 		setData( document, '[<image alt="foo bar" src="image.png"></image>]' );
 
-		command._doExecute( { newValue: 'fiz buz' } );
+		command.execute( { newValue: 'fiz buz' } );
 
 		expect( getData( document ) ).to.equal( '[<image alt="fiz buz" src="image.png"></image>]' );
 	} );
@@ -77,7 +77,7 @@ describe( 'ImageTextAlternativeCommand', () => {
 
 		setData( document, '[<image src="image.png"></image>]' );
 
-		command._doExecute( { newValue: 'foo bar', batch } );
+		command.execute( { newValue: 'foo bar', batch } );
 
 		expect( getData( document ) ).to.equal( '[<image alt="foo bar" src="image.png"></image>]' );
 		sinon.assert.calledOnce( spy );

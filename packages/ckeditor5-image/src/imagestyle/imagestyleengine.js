@@ -69,7 +69,7 @@ export default class ImageStyleEngine extends Plugin {
 
 		// Register separate command for each style.
 		for ( const style of styles ) {
-			editor.commands.set( style.name, new ImageStyleCommand( editor, style ) );
+			editor.commands.add( style.name, new ImageStyleCommand( editor, style ) );
 		}
 	}
 }
@@ -89,7 +89,7 @@ export default class ImageStyleEngine extends Plugin {
  *
  * @typedef {Object} module:image/imagestyle/imagestyleengine~ImageStyleFormat
  * @property {String} name Name of the style. It will be used to:
- * * register {@link module:core/command/command~Command command} which will apply this style,
+ * * register {@link module:core/command~Command command} which will apply this style,
  * * store style's button in editor's {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
  * @property {String} value Value used to store this style in model attribute.
  * When value is `null` style will be used as default one. Default style does not apply any CSS class to the view element.

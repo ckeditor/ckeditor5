@@ -21,6 +21,6 @@ export default class ImageTextAlternativeEngine extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		this.editor.commands.set( 'imageTextAlternative', new ImageTextAlternativeCommand( this.editor ) );
+		this.editor.commands.add( 'imageTextAlternative', new ImageTextAlternativeCommand( this.editor ) );
 	}
 }
