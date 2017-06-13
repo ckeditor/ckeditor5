@@ -18,7 +18,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 
 testUtils.createSinonSandbox();
 
@@ -122,19 +122,19 @@ describe( 'Autoformat', () => {
 			const spy6 = sinon.spy();
 
 			class Heading6 extends Command {
-				_doExecute() {
+				execute() {
 					spy6();
 				}
 			}
 			class Heading1 extends Command {
-				_doExecute() {
+				execute() {
 					spy1();
 				}
 			}
 
 			function HeadingPlugin( editor ) {
-				editor.commands.set( 'heading1', new Heading1() );
-				editor.commands.set( 'heading6', new Heading6() );
+				editor.commands.add( 'heading1', new Heading1( editor ) );
+				editor.commands.add( 'heading6', new Heading6( editor ) );
 			}
 
 			return VirtualTestEditor
