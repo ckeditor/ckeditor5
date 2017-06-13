@@ -7,7 +7,7 @@
  * @module typing/deletecommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import ChangeBuffer from './changebuffer';
 import count from '@ckeditor/ckeditor5-utils/src/count';
@@ -52,11 +52,12 @@ export default class DeleteCommand extends Command {
 	 * Executes the delete command. Depending on whether the selection is collapsed or not, deletes its content
 	 * or a piece of content in the {@link #direction defined direction}.
 	 *
+	 * @fires execute
 	 * @param {Object} [options] The command options.
 	 * @param {'character'} [options.unit='character'] See {@link module:engine/controller/modifyselection~modifySelection}'s
 	 * options.
 	 */
-	_doExecute( options = {} ) {
+	execute( options = {} ) {
 		const doc = this.editor.document;
 		const dataController = this.editor.data;
 
