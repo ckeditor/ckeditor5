@@ -10,7 +10,7 @@ import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import FileRepository from './filerepository';
 import { isImageType } from './utils';
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
  * @module upload/imageuploadcommand
@@ -19,19 +19,19 @@ import Command from '@ckeditor/ckeditor5-core/src/command/command';
 /**
  * Image upload command.
  *
- * @extends module:core/command/command~Command
+ * @extends module:core/command~Command
  */
 export default class ImageUploadCommand extends Command {
 	/**
-	 * Executes command.
+	 * Executes the command.
 	 *
-	 * @protected
+	 * @fires execute
 	 * @param {Object} options Options for executed command.
 	 * @param {File} options.file Image file to upload.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
-	_doExecute( options ) {
+	execute( options ) {
 		const editor = this.editor;
 		const doc = editor.document;
 		const batch = options.batch || doc.batch();

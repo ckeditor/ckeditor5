@@ -41,7 +41,7 @@ export default class ImageUploadEngine extends Plugin {
 		schema.requireAttributes( 'image', [ 'uploadId' ] );
 
 		// Register imageUpload command.
-		editor.commands.set( 'imageUpload', new ImageUploadCommand( editor ) );
+		editor.commands.add( 'imageUpload', new ImageUploadCommand( editor ) );
 
 		// Execute imageUpload command when image is dropped or pasted.
 		editor.editing.view.on( 'clipboardInput', ( evt, data ) => {
