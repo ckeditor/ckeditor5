@@ -21,6 +21,8 @@ install:
 script:
   - npm t
   - gulp docs:api --validate-only
+after_success:
+  - ./node_modules/.bin/ckeditor5-dev-docs
 notifications:
   slack:
     rooms:
