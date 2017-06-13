@@ -23,11 +23,11 @@ describe( 'RedoCommand', () => {
 	} );
 
 	afterEach( () => {
-		redo.destroy();
+		return editor.destroy();
 	} );
 
 	describe( 'RedoCommand', () => {
-		describe( '_execute', () => {
+		describe( 'execute()', () => {
 			const p = pos => new Position( root, [].concat( pos ) );
 			const r = ( a, b ) => new Range( p( a ), p( b ) );
 
@@ -95,9 +95,9 @@ describe( 'RedoCommand', () => {
 			} );
 
 			it( 'should redo batch undone by undo command', () => {
-				undo._execute( batch2 );
+				undo.execute( batch2 );
 
-				redo._execute();
+				redo.execute();
 				// Should be back at original state:
 				/*
 				 [root]
@@ -117,11 +117,11 @@ describe( 'RedoCommand', () => {
 			} );
 
 			it( 'should redo series of batches undone by undo command', () => {
-				undo._execute();
-				undo._execute();
-				undo._execute();
+				undo.execute();
+				undo.execute();
+				undo.execute();
 
-				redo._execute();
+				redo.execute();
 				// Should be like after applying `batch0`:
 				/*
 				 [root]
@@ -138,7 +138,7 @@ describe( 'RedoCommand', () => {
 				expect( editor.document.selection.getRanges().next().value.isEqual( r( 6, 6 ) ) ).to.be.true;
 				expect( editor.document.selection.isBackward ).to.be.false;
 
-				redo._execute();
+				redo.execute();
 				// Should be like after applying `batch1`:
 				/*
 				 [root]
@@ -156,7 +156,7 @@ describe( 'RedoCommand', () => {
 				expect( editor.document.selection.getRanges().next().value.isEqual( r( 2, 4 ) ) ).to.be.true;
 				expect( editor.document.selection.isBackward ).to.be.true;
 
-				redo._execute();
+				redo.execute();
 				// Should be like after applying `batch2`:
 				/*
 				 [root]
@@ -176,8 +176,8 @@ describe( 'RedoCommand', () => {
 			} );
 
 			it( 'should redo batch selectively undone by undo command', () => {
-				undo._execute( batch0 );
-				redo._execute();
+				undo.execute( batch0 );
+				redo.execute();
 
 				// Should be back to original state:
 				/*
@@ -198,10 +198,10 @@ describe( 'RedoCommand', () => {
 			} );
 
 			it( 'should redo batch selectively undone by undo command #2', () => {
-				undo._execute( batch1 );
-				undo._execute( batch2 );
-				redo._execute();
-				redo._execute();
+				undo.execute( batch1 );
+				undo.execute( batch2 );
+				redo.execute();
+				redo.execute();
 
 				// Should be back to original state:
 				/*
@@ -224,19 +224,19 @@ describe( 'RedoCommand', () => {
 			it( 'should transform redo batch by changes written in history that happened after undo but before redo #2', () => {
 				// Now it is "fBaroO".
 				// Undo moving "oo" to the end of string. Now it is "foOBar". Capitals mean set attribute.
-				undo._execute();
+				undo.execute();
 
 				// Remove "ar".
 				doc.batch().remove( r( 4, 6 ) );
 
 				// Undo setting attribute on "ob". Now it is "foob".
-				undo._execute();
+				undo.execute();
 
 				// Append "xx" at the beginning. Now it is "xxfoob".
 				doc.batch().insert( p( 0 ), 'xx' );
 
 				// Redo setting attribute on "ob". Now it is "xxfoOB".
-				redo._execute();
+				redo.execute();
 
 				expect( getText( root ) ).to.equal( 'xxfoob' );
 				expect( itemAt( root, 4 ).getAttribute( 'key' ) ).to.equal( 'value' );
@@ -245,7 +245,7 @@ describe( 'RedoCommand', () => {
 				expect( editor.document.selection.isBackward ).to.be.true;
 
 				// Redo moving "oo". Now it is "xxfBoO". Selection is expected to be on just moved "oO".
-				redo._execute();
+				redo.execute();
 
 				expect( getText( root ) ).to.equal( 'xxfboo' );
 				expect( itemAt( root, 3 ).getAttribute( 'key' ) ).to.equal( 'value' );

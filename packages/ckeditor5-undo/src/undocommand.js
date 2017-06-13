@@ -26,11 +26,11 @@ export default class UndoCommand extends BaseCommand {
 	 * and applies the reverted version on the {@link module:engine/model/document~Document document} and removes the batch from the stack.
 	 * Then, it restores the {@link module:engine/model/document~Document#selection document selection}.
 	 *
-	 * @protected
+	 * @fires execute
 	 * @fires revert
 	 * @param {module:engine/model/batch~Batch} [batch] A batch that should be undone. If not set, the last added batch will be undone.
 	 */
-	_doExecute( batch = null ) {
+	execute( batch = null ) {
 		// If batch is not given, set `batchIndex` to the last index in command stack.
 		const batchIndex = batch ? this._stack.findIndex( a => a.batch == batch ) : this._stack.length - 1;
 
@@ -47,7 +47,7 @@ export default class UndoCommand extends BaseCommand {
 			this.fire( 'revert', item.batch, undoingBatch );
 		} );
 
-		this.refreshState();
+		this.refresh();
 	}
 
 	/**
@@ -70,7 +70,7 @@ export default class UndoCommand extends BaseCommand {
 
 	/**
 	 * Undoes a batch by reversing a batch from history, transforming that reversed batch and applying it. This is
-	 * a helper method for {@link #_doExecute}.
+	 * a helper method for {@link #execute}.
 	 *
 	 * @private
 	 * @param {module:engine/model/batch~Batch} batchToUndo A batch whose deltas will be reversed, transformed and applied.

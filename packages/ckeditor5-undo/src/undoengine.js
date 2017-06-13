@@ -60,8 +60,8 @@ export default class UndoEngine extends Plugin {
 		this._redoCommand = new RedoCommand( this.editor );
 
 		// Register command to the editor.
-		this.editor.commands.set( 'undo', this._undoCommand );
-		this.editor.commands.set( 'redo', this._redoCommand );
+		this.editor.commands.add( 'undo', this._undoCommand );
+		this.editor.commands.add( 'redo', this._redoCommand );
 
 		this.listenTo( this.editor.document, 'change', ( evt, type, changes, batch ) => {
 			// If changes are not a part of a batch or this is not a new batch, omit those changes.

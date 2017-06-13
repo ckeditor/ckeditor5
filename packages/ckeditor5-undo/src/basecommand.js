@@ -7,13 +7,13 @@
  * @module undo/basecommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
  * Base class for undo feature commands: {@link module:undo/undocommand~UndoCommand} and {@link module:undo/redocommand~RedoCommand}.
  *
  * @protected
- * @extends module:core/command/command~Command
+ * @extends module:core/command~Command
  */
 export default class BaseCommand extends Command {
 	constructor( editor ) {
@@ -38,8 +38,15 @@ export default class BaseCommand extends Command {
 		 */
 		this._createdBatches = new WeakSet();
 
-		// Refresh state, so command is inactive just after initialization.
-		this.refreshState();
+		// Refresh state, so the command is inactive right after initialization.
+		this.refresh();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	refresh() {
+		this.isEnabled = this._stack.length > 0;
 	}
 
 	/**
@@ -55,7 +62,7 @@ export default class BaseCommand extends Command {
 		};
 
 		this._stack.push( { batch, selection } );
-		this.refreshState();
+		this.refresh();
 	}
 
 	/**
@@ -63,14 +70,7 @@ export default class BaseCommand extends Command {
 	 */
 	clearStack() {
 		this._stack = [];
-		this.refreshState();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	_checkEnabled() {
-		return this._stack.length > 0;
+		this.refresh();
 	}
 
 	/**
