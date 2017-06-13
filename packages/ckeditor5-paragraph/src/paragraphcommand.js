@@ -7,38 +7,35 @@
  * @module paragraph/paragraphcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * The paragraph command.
  *
- * @extends module:core/command/command~Command
+ * @extends module:core/command~Command
  */
 export default class ParagraphCommand extends Command {
 	/**
-	 * Creates an instance of the command.
+	 * The value of the command. Indicates whether the selection's start is placed in a paragraph.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor instance.
+	 * @readonly
+	 * @observable
+	 * @member {Boolean} #value
 	 */
-	constructor( editor ) {
-		super( editor );
 
-		/**
-		 * Value of the command, indicating whether it is applied in the context
-		 * of current {@link module:engine/model/document~Document#selection selection}.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean}
-		 */
-		this.set( 'value', false );
+	/**
+	 * @inheritDoc
+	 */
+	refresh() {
+		const block = first( this.editor.document.selection.getSelectedBlocks() );
 
-		// Update current value each time changes are done on document.
-		this.listenTo( editor.document, 'changesDone', () => {
-			this.refreshValue();
-			this.refreshState();
+		this.value = !!block && block.is( 'paragraph' );
+
+		this.isEnabled = !!block && this.editor.document.schema.check( {
+			name: 'paragraph',
+			inside: Position.createBefore( block )
 		} );
 	}
 
@@ -46,14 +43,14 @@ export default class ParagraphCommand extends Command {
 	 * Executes the command. All the blocks (see {@link module:engine/model/schema~Schema}) in the selection
 	 * will be turned to paragraphs.
 	 *
-	 * @protected
+	 * @fires execute
 	 * @param {Object} [options] Options for executed command.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 * @param {module:engine/model/selection~Selection} [options.selection] Selection the command should be applied to.
 	 * By default, if not provided, the command is applied to {@link module:engine/model/document~Document#selection}.
 	 */
-	_doExecute( options = {} ) {
+	execute( options = {} ) {
 		const document = this.editor.document;
 
 		document.enqueueChanges( () => {
@@ -65,27 +62,6 @@ export default class ParagraphCommand extends Command {
 					batch.rename( block, 'paragraph' );
 				}
 			}
-		} );
-	}
-
-	/**
-	 * Updates command's {@link #value value} based on current selection.
-	 */
-	refreshValue() {
-		const block = first( this.editor.document.selection.getSelectedBlocks() );
-
-		this.value = !!block && block.is( 'paragraph' );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	_checkEnabled() {
-		const block = first( this.editor.document.selection.getSelectedBlocks() );
-
-		return !!block && this.editor.document.schema.check( {
-			name: 'paragraph',
-			inside: Position.createBefore( block )
 		} );
 	}
 }
