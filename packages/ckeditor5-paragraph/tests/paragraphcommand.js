@@ -20,7 +20,7 @@ describe( 'ParagraphCommand', () => {
 			command = new ParagraphCommand( editor );
 			root = document.getRoot();
 
-			editor.commands.set( 'paragraph', command );
+			editor.commands.add( 'paragraph', command );
 			schema.registerItem( 'paragraph', '$block' );
 			schema.registerItem( 'heading1', '$block' );
 
@@ -35,10 +35,6 @@ describe( 'ParagraphCommand', () => {
 	} );
 
 	describe( 'value', () => {
-		it( 'has default value', () => {
-			expect( command.value ).to.be.false;
-		} );
-
 		it( 'responds to changes in selection (collapsed selection)', () => {
 			setData( document, '<heading1>foo[]bar</heading1>' );
 			expect( command.value ).to.be.false;
@@ -81,7 +77,7 @@ describe( 'ParagraphCommand', () => {
 			expect( command.value ).to.be.false;
 		} );
 
-		it( 'should be refreshed after calling refreshValue()', () => {
+		it( 'should be refreshed after calling refresh()', () => {
 			setData( document, '<paragraph>[foo]</paragraph><notBlock>foo</notBlock>' );
 			const element = document.getRoot().getChild( 1 );
 
@@ -89,15 +85,15 @@ describe( 'ParagraphCommand', () => {
 			document.selection.setRanges( [ Range.createIn( element ) ] );
 
 			expect( command.value ).to.be.true;
-			command.refreshValue();
+			command.refresh();
 			expect( command.value ).to.be.false;
 		} );
 	} );
 
-	describe( '_doExecute', () => {
+	describe( 'execute()', () => {
 		it( 'should update value after execution', () => {
 			setData( document, '<heading1>[]</heading1>' );
-			command._doExecute();
+			command.execute();
 
 			expect( getData( document ) ).to.equal( '<paragraph>[]</paragraph>' );
 			expect( command.value ).to.be.true;
@@ -109,7 +105,7 @@ describe( 'ParagraphCommand', () => {
 			setData( document, '<paragraph>foo[</paragraph><heading1>bar]</heading1>' );
 			expect( batch.deltas.length ).to.equal( 0 );
 
-			command._doExecute( { batch } );
+			command.execute( { batch } );
 			expect( batch.deltas.length ).to.equal( 1 );
 		} );
 
@@ -120,7 +116,7 @@ describe( 'ParagraphCommand', () => {
 				setData( document, '<heading1>foo[]bar</heading1>' );
 				expect( batch.deltas.length ).to.equal( 0 );
 
-				command._doExecute( { batch } );
+				command.execute( { batch } );
 				expect( batch.deltas.length ).to.be.above( 0 );
 			} );
 
@@ -132,7 +128,7 @@ describe( 'ParagraphCommand', () => {
 				const selection = new Selection();
 				selection.addRange( Range.createFromParentsAndOffsets( secondTolastHeading, 0, lastHeading, 0 ) );
 
-				command._doExecute( { selection } );
+				command.execute( { selection } );
 				expect( getData( document ) ).to.equal(
 					'<heading1>foo[]bar</heading1><paragraph>baz</paragraph><paragraph>qux</paragraph>'
 				);
@@ -142,7 +138,7 @@ describe( 'ParagraphCommand', () => {
 		describe( 'collapsed selection', () => {
 			it( 'does nothing when executed with already applied', () => {
 				setData( document, '<paragraph>foo[]bar</paragraph>' );
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
@@ -152,7 +148,7 @@ describe( 'ParagraphCommand', () => {
 				schema.allow( { name: '$text', inside: 'inlineImage' } );
 
 				setData( document, '<heading1><inlineImage>foo[]</inlineImage>bar</heading1>' );
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) ).to.equal( '<paragraph><inlineImage>foo[]</inlineImage>bar</paragraph>' );
 			} );
@@ -164,7 +160,7 @@ describe( 'ParagraphCommand', () => {
 
 				setData( document, '<heading1>foo[</heading1><heading2>bar</heading2><heading2>]baz</heading2>' );
 
-				command._doExecute();
+				command.execute();
 				expect( getData( document ) ).to.equal(
 					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><paragraph>]baz</paragraph>'
 				);
@@ -175,7 +171,7 @@ describe( 'ParagraphCommand', () => {
 
 				setData( document, '<paragraph>foo[</paragraph><heading2>bar]</heading2>' );
 
-				command._doExecute();
+				command.execute();
 				expect( getData( document ) ).to.equal( '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
 			} );
 		} );
