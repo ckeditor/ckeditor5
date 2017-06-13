@@ -13,6 +13,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
+import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+
 describe( 'LinkEngine', () => {
 	let editor, doc;
 
@@ -81,6 +83,22 @@ describe( 'LinkEngine', () => {
 			setModelData( doc, '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
 			expect( editor.editing.view.getRoot().getChild( 0 ).getChild( 0 ) ).to.be.instanceof( LinkElement );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-link/issues/121
+		it( 'should should set priority for `linkHref` higher than all other attribute elements', () => {
+			editor.document.schema.allow( { name: '$inline', attributes: [ 'foo' ], inside: '$block' } );
+
+			buildModelConverter().for( editor.data.modelToView )
+				.fromAttribute( 'foo' )
+				.toElement( 'f' );
+
+			setModelData( doc,
+				'<paragraph>' +
+					'<$text linkHref="url">a</$text><$text foo="true" linkHref="url">b</$text><$text linkHref="url">c</$text>' +
+				'</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><a href="url">a<f>b</f>c</a></p>' );
 		} );
 	} );
 } );
