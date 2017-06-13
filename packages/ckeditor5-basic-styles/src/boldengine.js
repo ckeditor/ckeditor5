@@ -47,6 +47,6 @@ export default class BoldEngine extends Plugin {
 			.toAttribute( BOLD, true );
 
 		// Create bold command.
-		editor.commands.set( BOLD, new ToggleAttributeCommand( editor, BOLD ) );
+		editor.commands.add( BOLD, new ToggleAttributeCommand( editor, BOLD ) );
 	}
 }
