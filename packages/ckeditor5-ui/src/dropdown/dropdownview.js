@@ -98,34 +98,6 @@ export default class DropdownView extends View {
 
 		// Toggle the visibility of the panel when the dropdown becomes open.
 		panelView.bind( 'isVisible' ).to( this, 'isOpen' );
-
-		/**
-		 * The label of the dropdown.
-		 *
-		 * @observable
-		 * @member {String} #label
-		 */
-
-		/**
-		 * Controls whether the dropdown is enabled (can be clicked).
-		 *
-		 * @observable
-		 * @member {Boolean} #isEnabled
-		 */
-
-		/**
-		 * Controls whether the {@link #buttonView} is "pushed".
-		 *
-		 * @observable
-		 * @member {Boolean} #isOn
-		 */
-
-		/**
-		 * (Optional) Whether the label of the dropdown is visible. See {@link module:ui/button/buttonview~ButtonView#withText}.
-		 *
-		 * @observable
-		 * @member {Boolean} #withText
-		 */
 	}
 
 	/**
@@ -149,7 +121,7 @@ export default class DropdownView extends View {
 		// Open the dropdown panel using the arrow down key, just like with return or space.
 		this.keystrokes.set( 'arrowdown', ( data, cancel ) => {
 			// Don't open if the dropdown is disabled or already open.
-			if ( this.isEnabled && !this.isOpen ) {
+			if ( this.buttonView.isEnabled && !this.isOpen ) {
 				this.isOpen = true;
 				cancel();
 			}
