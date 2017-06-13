@@ -7,19 +7,19 @@
  * @module enter/entercommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
  * Enter command. It is used by the {@link module:enter/enter~Enter Enter feature} to handle the <kbd>Enter</kbd> key.
  *
- * @extends modue:core/command/command~Command
+ * @extends module:core/command~Command
  */
 export default class EnterCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	_doExecute() {
+	execute() {
 		const doc = this.editor.document;
 		const batch = doc.batch();
 
