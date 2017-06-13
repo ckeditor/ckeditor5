@@ -44,21 +44,15 @@ describe( 'ToggleAttributeCommand', () => {
 	} );
 
 	describe( 'value', () => {
-		// https://github.com/ckeditor/ckeditor5-core/issues/50
-		it( 'should be updated on document#changesDone', () => {
-			const spy = sinon.spy( command, 'refreshValue' );
-
-			modelDoc.fire( 'changesDone' );
-			sinon.assert.calledOnce( spy );
-		} );
-
-		it( 'should be set to true or false basing on selection attribute', () => {
+		it( 'is true when selection has the attribute', () => {
 			modelDoc.enqueueChanges( () => {
 				modelDoc.selection.setAttribute( attrKey, true );
 			} );
 
 			expect( command.value ).to.be.true;
+		} );
 
+		it( 'is false when selection does not have the attribute', () => {
 			modelDoc.enqueueChanges( () => {
 				modelDoc.selection.removeAttribute( attrKey );
 			} );
@@ -67,23 +61,57 @@ describe( 'ToggleAttributeCommand', () => {
 		} );
 	} );
 
-	describe( 'state', () => {
-		// https://github.com/ckeditor/ckeditor5-core/issues/50
-		it( 'should be updated on document#changesDone', () => {
-			const spy = sinon.spy( command, 'refreshState' );
+	describe( 'isEnabled', () => {
+		// This test doesn't tests every possible case.
+		// Method `refresh()` uses `isAttributeAllowedInSelection` helper which is fully tested in his own test.
 
-			modelDoc.fire( 'changesDone' );
-			sinon.assert.calledOnce( spy );
+		beforeEach( () => {
+			modelDoc.schema.registerItem( 'x', '$block' );
+			modelDoc.schema.disallow( { name: '$text', inside: 'x', attributes: 'link' } );
+		} );
+
+		describe( 'when selection is collapsed', () => {
+			it( 'should return true if characters with the attribute can be placed at caret position', () => {
+				setData( modelDoc, '<p>f[]oo</p>' );
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
+				setData( modelDoc, '<x>fo[]o</x>' );
+				expect( command.isEnabled ).to.be.false;
+			} );
+		} );
+
+		describe( 'when selection is not collapsed', () => {
+			it( 'should return true if there is at least one node in selection that can have the attribute', () => {
+				setData( modelDoc, '<p>[foo]</p>' );
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should return false if there are no nodes in selection that can have the attribute', () => {
+				setData( modelDoc, '<x>[foo]</x>' );
+				expect( command.isEnabled ).to.be.false;
+			} );
 		} );
 	} );
 
-	describe( '_doExecute', () => {
+	describe( 'execute()', () => {
+		it( 'should do nothing if the command is disabled', () => {
+			setData( modelDoc, '<p>fo[ob]ar</p>' );
+
+			command.isEnabled = false;
+
+			command.execute();
+
+			expect( getData( modelDoc ) ).to.equal( '<p>fo[ob]ar</p>' );
+		} );
+
 		it( 'should add attribute on selected nodes if the command value was false', () => {
 			setData( modelDoc, '<p>a[bc<$text bold="true">fo]obar</$text>xyz</p>' );
 
 			expect( command.value ).to.be.false;
 
-			command._doExecute();
+			command.execute();
 
 			expect( command.value ).to.be.true;
 			expect( getData( modelDoc ) ).to.equal( '<p>a[<$text bold="true">bcfo]obar</$text>xyz</p>' );
@@ -94,7 +122,7 @@ describe( 'ToggleAttributeCommand', () => {
 
 			expect( command.value ).to.be.true;
 
-			command._doExecute();
+			command.execute();
 
 			expect( getData( modelDoc ) ).to.equal( '<p>abc[foo]<$text bold="true">bar</$text>xyz</p>' );
 			expect( command.value ).to.be.false;
@@ -105,7 +133,7 @@ describe( 'ToggleAttributeCommand', () => {
 
 			expect( command.value ).to.be.true;
 
-			command._doExecute( { forceValue: true } );
+			command.execute( { forceValue: true } );
 
 			expect( command.value ).to.be.true;
 			expect( getData( modelDoc ) ).to.equal( '<p>abc<$text bold="true">foob[arx</$text>]yz</p>' );
@@ -114,7 +142,7 @@ describe( 'ToggleAttributeCommand', () => {
 		it( 'should remove attribute on selected nodes if execute parameter was set to false', () => {
 			setData( modelDoc, '<p>a[bc<$text bold="true">fo]obar</$text>xyz</p>' );
 
-			command._doExecute( { forceValue: false } );
+			command.execute( { forceValue: false } );
 
 			expect( command.value ).to.be.false;
 			expect( getData( modelDoc ) ).to.equal( '<p>a[bcfo]<$text bold="true">obar</$text>xyz</p>' );
@@ -125,12 +153,12 @@ describe( 'ToggleAttributeCommand', () => {
 
 			expect( command.value ).to.be.false;
 
-			command._doExecute();
+			command.execute();
 
 			expect( command.value ).to.be.true;
 			expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.true;
 
-			command._doExecute();
+			command.execute();
 
 			expect( command.value ).to.be.false;
 			expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.false;
@@ -139,7 +167,7 @@ describe( 'ToggleAttributeCommand', () => {
 		it( 'should not store attribute change on selection if selection is collapsed in non-empty parent', () => {
 			setData( modelDoc, '<p>a[]bc<$text bold="true">foobar</$text>xyz</p>' );
 
-			command._doExecute();
+			command.execute();
 
 			// It should not save that bold was executed at position ( root, [ 0, 1 ] ).
 
@@ -159,7 +187,7 @@ describe( 'ToggleAttributeCommand', () => {
 
 			expect( command.value ).to.be.false;
 
-			command._doExecute();
+			command.execute();
 
 			expect( command.value ).to.be.true;
 			expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.true;
@@ -180,7 +208,7 @@ describe( 'ToggleAttributeCommand', () => {
 			// Attribute should be restored.
 			expect( command.value ).to.be.true;
 
-			command._doExecute();
+			command.execute();
 
 			expect( command.value ).to.be.false;
 			expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.false;
@@ -192,7 +220,7 @@ describe( 'ToggleAttributeCommand', () => {
 
 			expect( command.isEnabled ).to.be.true;
 
-			command._doExecute();
+			command.execute();
 
 			expect( getData( modelDoc ) )
 				.to.equal( '<p>ab[<$text bold="true">c</$text><img></img><$text bold="true">foobarxy</$text><img></img>]z</p>' );
@@ -204,7 +232,7 @@ describe( 'ToggleAttributeCommand', () => {
 
 			expect( batch.deltas.length ).to.equal( 0 );
 
-			command._doExecute( { batch } );
+			command.execute( { batch } );
 
 			expect( batch.deltas.length ).to.equal( 1 );
 			expect( getData( modelDoc ) ).to.equal( '<p>a[<$text bold="true">bcfo]obar</$text>xyz</p>' );
@@ -222,7 +250,7 @@ describe( 'ToggleAttributeCommand', () => {
 
 				modelDoc.on( 'changesDone', spy );
 
-				command._doExecute();
+				command.execute();
 
 				expect( spy.calledOnce ).to.be.true;
 			} );
@@ -232,7 +260,7 @@ describe( 'ToggleAttributeCommand', () => {
 
 				modelDoc.on( 'changesDone', spy );
 
-				command._doExecute();
+				command.execute();
 
 				expect( spy.calledOnce ).to.be.true;
 			} );
@@ -242,45 +270,9 @@ describe( 'ToggleAttributeCommand', () => {
 
 				modelDoc.on( 'changesDone', spy );
 
-				command._doExecute();
+				command.execute();
 
 				expect( spy.calledOnce ).to.be.true;
-			} );
-		} );
-	} );
-
-	describe( '_checkEnabled', () => {
-		describe( '_checkEnabled', () => {
-			// This test doesn't tests every possible case.
-			// Method `_checkEnabled` uses `isAttributeAllowedInSelection` helper which is fully tested in his own test.
-
-			beforeEach( () => {
-				modelDoc.schema.registerItem( 'x', '$block' );
-				modelDoc.schema.disallow( { name: '$text', inside: 'x', attributes: 'link' } );
-			} );
-
-			describe( 'when selection is collapsed', () => {
-				it( 'should return true if characters with the attribute can be placed at caret position', () => {
-					setData( modelDoc, '<p>f[]oo</p>' );
-					expect( command._checkEnabled() ).to.be.true;
-				} );
-
-				it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
-					setData( modelDoc, '<x>fo[]o</x>' );
-					expect( command._checkEnabled() ).to.be.false;
-				} );
-			} );
-
-			describe( 'when selection is not collapsed', () => {
-				it( 'should return true if there is at least one node in selection that can have the attribute', () => {
-					setData( modelDoc, '<p>[foo]</p>' );
-					expect( command._checkEnabled() ).to.be.true;
-				} );
-
-				it( 'should return false if there are no nodes in selection that can have the attribute', () => {
-					setData( modelDoc, '<x>[foo]</x>' );
-					expect( command._checkEnabled() ).to.be.false;
-				} );
 			} );
 		} );
 	} );
