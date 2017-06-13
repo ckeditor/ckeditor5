@@ -37,12 +37,12 @@ describe( 'ImageUploadCommand', () => {
 		} );
 	} );
 
-	describe( '_doExecute', () => {
+	describe( 'execute()', () => {
 		it( 'should insert image', () => {
 			const file = createNativeFileMock();
 			setModelData( document, '<paragraph>[]foo</paragraph>' );
 
-			command._doExecute( { file } );
+			command.execute( { file } );
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( document ) ).to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
@@ -52,7 +52,7 @@ describe( 'ImageUploadCommand', () => {
 			const file = createNativeFileMock();
 			setModelData( document, '<paragraph>foo[]</paragraph>' );
 
-			command._doExecute( { file } );
+			command.execute( { file } );
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( document ) ).to.equal( `<paragraph>foo</paragraph>[<image uploadId="${ id }"></image>]` );
@@ -62,7 +62,7 @@ describe( 'ImageUploadCommand', () => {
 			const file = createNativeFileMock();
 			setModelData( document, '<paragraph>f{}oo</paragraph>' );
 
-			command._doExecute( { file } );
+			command.execute( { file } );
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( document ) ).to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
@@ -72,7 +72,7 @@ describe( 'ImageUploadCommand', () => {
 			const file = createNativeFileMock();
 			setModelData( document, '[<image src="image.png"></image>]' );
 
-			command._doExecute( { file } );
+			command.execute( { file } );
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( document ) ).to.equal( `<image src="image.png"></image>[<image uploadId="${ id }"></image>]` );
@@ -88,7 +88,7 @@ describe( 'ImageUploadCommand', () => {
 
 			setModelData( document, '<other>[]</other>' );
 
-			command._doExecute( { file } );
+			command.execute( { file } );
 
 			expect( getModelData( document ) ).to.equal( '<other>[]</other>' );
 		} );
@@ -97,7 +97,7 @@ describe( 'ImageUploadCommand', () => {
 			const file = createNativeFileMock();
 			file.type = 'audio/mpeg3';
 			setModelData( document, '<paragraph>foo[]</paragraph>' );
-			command._doExecute( { file } );
+			command.execute( { file } );
 
 			expect( getModelData( document ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 		} );
@@ -109,7 +109,7 @@ describe( 'ImageUploadCommand', () => {
 
 			setModelData( document, '<paragraph>[]foo</paragraph>' );
 
-			command._doExecute( { batch, file } );
+			command.execute( { batch, file } );
 			const id = fileRepository.getLoader( file ).id;
 
 			expect( getModelData( document ) ).to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
