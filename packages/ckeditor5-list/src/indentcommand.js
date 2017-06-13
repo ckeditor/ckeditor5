@@ -7,13 +7,13 @@
  * @module list/indentcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * The list indent command. It is used by the {@link module:list/list~List list feature}.
  *
- * @extends core.command.Command
+ * @extends module:core/command~Command
  */
 export default class IndentCommand extends Command {
 	/**
@@ -34,16 +34,21 @@ export default class IndentCommand extends Command {
 		 * @member {Number}
 		 */
 		this._indentBy = indentDirection == 'forward' ? 1 : -1;
-
-		this.listenTo( editor.document, 'changesDone', () => {
-			this.refreshState();
-		} );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	_doExecute() {
+	refresh() {
+		this.isEnabled = this._checkEnabled();
+	}
+
+	/**
+	 * Indents or outdents (depends on {@link #constructor}'s `indentDirection` parameter) selected list items.
+	 *
+	 * @fires execute
+	 */
+	execute() {
 		const doc = this.editor.document;
 		const batch = doc.batch();
 		let itemsToChange = Array.from( doc.selection.getSelectedBlocks() );
@@ -99,7 +104,10 @@ export default class IndentCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks whether the command can be enabled in the current context.
+	 *
+	 * @private
+	 * @returns {Boolean} Whether the command should be enabled.
 	 */
 	_checkEnabled() {
 		// Check whether any of position's ancestor is a list item.
