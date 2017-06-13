@@ -29,7 +29,7 @@ export default class BlockQuoteEngine extends Plugin {
 		const editor = this.editor;
 		const schema = editor.document.schema;
 
-		editor.commands.set( 'blockQuote', new BlockQuoteCommand( editor ) );
+		editor.commands.add( 'blockQuote', new BlockQuoteCommand( editor ) );
 
 		schema.registerItem( 'blockQuote' );
 		schema.allow( { name: 'blockQuote', inside: '$root' } );

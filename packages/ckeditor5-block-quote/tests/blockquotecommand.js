@@ -12,7 +12,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 
 describe( 'BlockQuoteCommand', () => {
 	let editor, doc, command;
@@ -139,7 +139,7 @@ describe( 'BlockQuoteCommand', () => {
 		// } );
 	} );
 
-	describe( '_doExecute()', () => {
+	describe( 'execute()', () => {
 		describe( 'applying quote', () => {
 			it( 'should wrap a single block', () => {
 				setModelData(
