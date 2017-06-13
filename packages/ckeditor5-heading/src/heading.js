@@ -153,7 +153,7 @@ export default class Heading extends Plugin {
 // commands.
 //
 // @private
-// @param {Iterable.<module:core/command/command~Command>} commands
+// @param {Iterable.<module:core/command~Command>} commands
 // @param {String} attribute
 // @returns {Array.<String>}
 function getCommandsBindingTargets( commands, attribute ) {
