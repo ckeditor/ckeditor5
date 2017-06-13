@@ -42,94 +42,6 @@ describe( 'DataController', () => {
 
 			expect( data.processor ).to.be.undefined;
 		} );
-
-		it( 'should add insertContent listener and inserts document fragment when event fires', () => {
-			const batch = modelDocument.batch();
-			const content = new ModelDocumentFragment( [ new ModelText( 'x' ) ] );
-
-			schema.registerItem( 'paragraph', '$block' );
-
-			setData( modelDocument, '<paragraph>a[]b</paragraph>' );
-
-			data.fire( 'insertContent', { content, selection: modelDocument.selection, batch } );
-
-			expect( getData( modelDocument ) ).to.equal( '<paragraph>ax[]b</paragraph>' );
-			expect( batch.deltas.length ).to.be.above( 0 );
-		} );
-
-		it( 'should add insertContent listener and inserts an item when event fires', () => {
-			const batch = modelDocument.batch();
-			const content = new ModelText( 'x' );
-
-			schema.registerItem( 'paragraph', '$block' );
-
-			setData( modelDocument, '<paragraph>a[]b</paragraph>' );
-
-			data.fire( 'insertContent', { content, selection: modelDocument.selection, batch } );
-
-			expect( getData( modelDocument ) ).to.equal( '<paragraph>ax[]b</paragraph>' );
-			expect( batch.deltas.length ).to.be.above( 0 );
-		} );
-
-		it( 'should add deleteContent listener', () => {
-			schema.registerItem( 'paragraph', '$block' );
-
-			setData( modelDocument, '<paragraph>f[oo</paragraph><paragraph>ba]r</paragraph>' );
-
-			const batch = modelDocument.batch();
-
-			data.fire( 'deleteContent', { batch, selection: modelDocument.selection } );
-
-			expect( getData( modelDocument ) ).to.equal( '<paragraph>f[]</paragraph><paragraph>r</paragraph>' );
-			expect( batch.deltas ).to.not.be.empty;
-		} );
-
-		it( 'should add deleteContent listener which passes ', () => {
-			schema.registerItem( 'paragraph', '$block' );
-
-			setData( modelDocument, '<paragraph>f[oo</paragraph><paragraph>ba]r</paragraph>' );
-
-			const batch = modelDocument.batch();
-
-			data.fire( 'deleteContent', {
-				batch,
-				selection: modelDocument.selection,
-				options: { merge: true }
-			} );
-
-			expect( getData( modelDocument ) ).to.equal( '<paragraph>f[]r</paragraph>' );
-		} );
-
-		it( 'should add modifySelection listener', () => {
-			schema.registerItem( 'paragraph', '$block' );
-
-			setData( modelDocument, '<paragraph>foo[]bar</paragraph>' );
-
-			data.fire( 'modifySelection', {
-				selection: modelDocument.selection,
-				options: {
-					direction: 'backward'
-				}
-			} );
-
-			expect( getData( modelDocument ) )
-				.to.equal( '<paragraph>fo[o]bar</paragraph>' );
-			expect( modelDocument.selection.isBackward ).to.true;
-		} );
-
-		it( 'should add getSelectedContent listener', () => {
-			schema.registerItem( 'paragraph', '$block' );
-
-			setData( modelDocument, '<paragraph>fo[ob]ar</paragraph>' );
-
-			const evtData = {
-				selection: modelDocument.selection
-			};
-
-			data.fire( 'getSelectedContent', evtData );
-
-			expect( stringify( evtData.content ) ).to.equal( 'ob' );
-		} );
 	} );
 
 	describe( 'parse', () => {
@@ -425,58 +337,88 @@ describe( 'DataController', () => {
 	} );
 
 	describe( 'insertContent', () => {
-		it( 'should fire the insertContent event', () => {
+		it( 'should be decorated', () => {
+			schema.allow( { name: '$text', inside: '$root' } ); // To surpress warnings.
+
 			const spy = sinon.spy();
-			const content = new ModelDocumentFragment( [ new ModelText( 'x' ) ] );
-			const batch = modelDocument.batch();
-			schema.allow( { name: '$text', inside: '$root' } );
 
 			data.on( 'insertContent', spy );
 
-			data.insertContent( content, modelDocument.selection, batch );
+			data.insertContent( new ModelText( 'a' ), modelDocument.selection );
 
-			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( {
-				batch,
-				selection: modelDocument.selection,
-				content
-			} );
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should insert content (item)', () => {
+			schema.registerItem( 'paragraph', '$block' );
+
+			setData( modelDocument, '<paragraph>fo[]ar</paragraph>' );
+
+			data.insertContent( new ModelText( 'ob' ), modelDocument.selection );
+
+			expect( getData( modelDocument ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
+		} );
+
+		it( 'should insert content (document fragment)', () => {
+			schema.registerItem( 'paragraph', '$block' );
+
+			setData( modelDocument, '<paragraph>fo[]ar</paragraph>' );
+
+			data.insertContent( new ModelDocumentFragment( [ new ModelText( 'ob' ) ] ), modelDocument.selection );
+
+			expect( getData( modelDocument ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
 		} );
 	} );
 
 	describe( 'deleteContent', () => {
-		it( 'should fire the deleteContent event', () => {
+		it( 'should be decorated', () => {
 			const spy = sinon.spy();
-			const batch = modelDocument.batch();
 
 			data.on( 'deleteContent', spy );
 
-			data.deleteContent( modelDocument.selection, batch );
+			data.deleteContent( modelDocument.selection );
 
-			const evtData = spy.args[ 0 ][ 1 ];
+			expect( spy.calledOnce ).to.be.true;
+		} );
 
-			expect( evtData.batch ).to.equal( batch );
-			expect( evtData.selection ).to.equal( modelDocument.selection );
+		it( 'should delete selected content', () => {
+			schema.registerItem( 'paragraph', '$block' );
+
+			setData( modelDocument, '<paragraph>fo[ob]ar</paragraph>' );
+
+			data.deleteContent( modelDocument.selection, modelDocument.batch() );
+
+			expect( getData( modelDocument ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
 		} );
 	} );
 
 	describe( 'modifySelection', () => {
-		it( 'should fire the deleteContent event', () => {
+		it( 'should be decorated', () => {
+			schema.registerItem( 'paragraph', '$block' );
+			setData( modelDocument, '<paragraph>fo[ob]ar</paragraph>' );
+
 			const spy = sinon.spy();
-			const opts = { direction: 'backward' };
 
 			data.on( 'modifySelection', spy );
 
-			data.modifySelection( modelDocument.selection, opts );
+			data.modifySelection( modelDocument.selection );
 
-			const evtData = spy.args[ 0 ][ 1 ];
+			expect( spy.calledOnce ).to.be.true;
+		} );
 
-			expect( evtData.selection ).to.equal( modelDocument.selection );
-			expect( evtData.options ).to.equal( opts );
+		it( 'should modify a selection', () => {
+			schema.registerItem( 'paragraph', '$block' );
+
+			setData( modelDocument, '<paragraph>fo[ob]ar</paragraph>' );
+
+			data.modifySelection( modelDocument.selection, { direction: 'backward' } );
+
+			expect( getData( modelDocument ) ).to.equal( '<paragraph>fo[o]bar</paragraph>' );
 		} );
 	} );
 
 	describe( 'getSelectedContent', () => {
-		it( 'should fire the getSelectedContent event', () => {
+		it( 'should be decorated', () => {
 			const spy = sinon.spy();
 			const sel = new ModelSelection();
 
@@ -484,21 +426,17 @@ describe( 'DataController', () => {
 
 			data.getSelectedContent( sel );
 
-			const evtData = spy.args[ 0 ][ 1 ];
-
-			expect( evtData.selection ).to.equal( sel );
+			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'should return the evtData.content of the getSelectedContent event', () => {
-			const frag = new ModelDocumentFragment();
+		it( 'should return selected content', () => {
+			schema.registerItem( 'paragraph', '$block' );
 
-			data.on( 'getSelectedContent', ( evt, data ) => {
-				data.content = frag;
+			setData( modelDocument, '<paragraph>fo[ob]ar</paragraph>' );
 
-				evt.stop();
-			}, { priority: 'high' } );
+			const content = data.getSelectedContent( modelDocument.selection );
 
-			expect( data.getSelectedContent() ).to.equal( frag );
+			expect( stringify( content ) ).to.equal( 'ob' );
 		} );
 	} );
 } );

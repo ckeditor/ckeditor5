@@ -117,13 +117,7 @@ export default class Document {
 
 		injectQuirksHandling( this );
 
-		// Listens `render` event on default priority.
-		// This way we can attach other listeners before or after rendering execution.
-		this.on( 'render', () => {
-			this.disableObservers();
-			this.renderer.render();
-			this.enableObservers();
-		} );
+		this.decorate( 'render' );
 	}
 
 	/**
@@ -266,7 +260,9 @@ export default class Document {
 	 * @fires render
 	 */
 	render() {
-		this.fire( 'render' );
+		this.disableObservers();
+		this.renderer.render();
+		this.enableObservers();
 	}
 
 	/**
