@@ -47,7 +47,7 @@ export default class LinkEngine extends Plugin {
 			} ) );
 
 		// Create linking commands.
-		editor.commands.set( 'link', new LinkCommand( editor ) );
-		editor.commands.set( 'unlink', new UnlinkCommand( editor ) );
+		editor.commands.add( 'link', new LinkCommand( editor ) );
+		editor.commands.add( 'unlink', new UnlinkCommand( editor ) );
 	}
 }
