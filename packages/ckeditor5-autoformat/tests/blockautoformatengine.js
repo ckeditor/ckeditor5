@@ -9,7 +9,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 
 testUtils.createSinonSandbox();
 
@@ -30,7 +30,7 @@ describe( 'BlockAutoformatEngine', () => {
 	describe( 'Command name', () => {
 		it( 'should run a command when the pattern is matched', () => {
 			const spy = testUtils.sinon.spy();
-			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
+			editor.commands.add( 'testCommand', new TestCommand( editor, spy ) );
 			new BlockAutoformatEngine( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
@@ -43,7 +43,7 @@ describe( 'BlockAutoformatEngine', () => {
 
 		it( 'should remove found pattern', () => {
 			const spy = testUtils.sinon.spy();
-			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
+			editor.commands.add( 'testCommand', new TestCommand( editor, spy ) );
 			new BlockAutoformatEngine( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
@@ -103,7 +103,7 @@ class TestCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor~Editor} editor Editor instance.
-	 * @param {Function} onExecuteCallback _doExecute call hook
+	 * @param {Function} onExecuteCallback execute call hook
 	 */
 	constructor( editor, onExecuteCallback ) {
 		super( editor );
@@ -116,7 +116,7 @@ class TestCommand extends Command {
 	 *
 	 * @protected
 	 */
-	_doExecute() {
+	execute() {
 		this.onExecute();
 	}
 }
