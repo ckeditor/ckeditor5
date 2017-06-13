@@ -17,7 +17,7 @@ describe( 'EnterCommand', () => {
 				doc = editor.document;
 
 				command = new EnterCommand( editor );
-				editor.commands.set( 'enter', command );
+				editor.commands.add( 'enter', command );
 
 				schema = doc.schema;
 
@@ -53,7 +53,7 @@ describe( 'EnterCommand', () => {
 		} );
 	} );
 
-	describe( '_doExecute', () => {
+	describe( 'execute()', () => {
 		describe( 'collapsed selection', () => {
 			test(
 				'does nothing in the root',
@@ -146,7 +146,7 @@ describe( 'EnterCommand', () => {
 				// @TODO: Add option for setting selection direction to model utils.
 				doc.selection._lastRangeBackward = true;
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc ) ).to.equal( '<p>[]</p>' );
 			} );
@@ -158,7 +158,7 @@ describe( 'EnterCommand', () => {
 
 				setData( doc, '<p>[x]</p>' );
 
-				command._doExecute();
+				command.execute();
 
 				expect( spy.calledOnce ).to.be.true;
 			} );
@@ -168,7 +168,7 @@ describe( 'EnterCommand', () => {
 			it( title, () => {
 				setData( doc, input );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc ) ).to.equal( output );
 			} );
