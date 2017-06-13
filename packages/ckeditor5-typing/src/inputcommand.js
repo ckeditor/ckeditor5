@@ -7,13 +7,13 @@
  * @module typing/inputcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 import ChangeBuffer from './changebuffer';
 
 /**
  * The input command. Used by the {@link module:typing/input~Input input feature} to handle typing.
  *
- * @extends module:core/command/command~Command
+ * @extends module:core/command~Command
  */
 export default class InputCommand extends Command {
 	/**
@@ -37,16 +37,6 @@ export default class InputCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		super.destroy();
-
-		this._buffer.destroy();
-		this._buffer = null;
-	}
-
-	/**
 	 * The current change buffer.
 	 *
 	 * @type {module:typing/changebuffer~ChangeBuffer}
@@ -56,10 +46,20 @@ export default class InputCommand extends Command {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this._buffer.destroy();
+	}
+
+	/**
 	 * Executes the input command. It replaces the content within the given range with the given text.
 	 * Replacing is a two step process, first content within the range is removed and then new text is inserted
 	 * on the beginning of the range (which after removal is a collapsed range).
 	 *
+	 * @fires execute
 	 * @param {Object} [options] The command options.
 	 * @param {String} [options.text=''] Text to be inserted.
 	 * @param {module:engine/model/range~Range} [options.range] Range in which the text is inserted. Defaults
@@ -68,7 +68,7 @@ export default class InputCommand extends Command {
 	 * should be placed after the insertion. If not specified, the selection will be placed right after
 	 * the inserted text.
 	 */
-	_doExecute( options = {} ) {
+	execute( options = {} ) {
 		const doc = this.editor.document;
 		const text = options.text || '';
 		const textInsertions = text.length;

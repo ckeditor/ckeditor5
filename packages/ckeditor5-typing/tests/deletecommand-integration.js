@@ -18,7 +18,7 @@ describe( 'DeleteCommand integration', () => {
 				doc = editor.document;
 
 				const command = new DeleteCommand( editor, 'backward' );
-				editor.commands.set( 'delete', command );
+				editor.commands.add( 'delete', command );
 
 				doc.schema.registerItem( 'p', '$block' );
 				doc.schema.registerItem( 'img', '$inline' );

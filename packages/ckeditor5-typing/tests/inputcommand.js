@@ -25,7 +25,7 @@ describe( 'InputCommand', () => {
 				doc = editor.document;
 
 				const inputCommand = new InputCommand( editor, 20 );
-				editor.commands.set( 'input', inputCommand );
+				editor.commands.add( 'input', inputCommand );
 
 				buffer = inputCommand.buffer;
 
@@ -64,7 +64,7 @@ describe( 'InputCommand', () => {
 		} );
 	} );
 
-	describe( 'execute', () => {
+	describe( 'execute()', () => {
 		it( 'uses enqueueChanges', () => {
 			setData( doc, '<p>foo[]bar</p>' );
 
@@ -231,7 +231,6 @@ describe( 'InputCommand', () => {
 			command.destroy();
 
 			expect( destroy.calledOnce ).to.be.true;
-			expect( command._buffer ).to.be.null;
 		} );
 	} );
 } );

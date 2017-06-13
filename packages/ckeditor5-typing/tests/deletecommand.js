@@ -20,7 +20,7 @@ describe( 'DeleteCommand', () => {
 				doc = editor.document;
 
 				const command = new DeleteCommand( editor, 'backward' );
-				editor.commands.set( 'delete', command );
+				editor.commands.add( 'delete', command );
 
 				doc.schema.registerItem( 'p', '$block' );
 			} );
@@ -36,7 +36,7 @@ describe( 'DeleteCommand', () => {
 		expect( command ).to.have.property( 'direction', 'forward' );
 	} );
 
-	describe( 'execute', () => {
+	describe( 'execute()', () => {
 		it( 'uses enqueueChanges', () => {
 			setData( doc, '<p>foo[]bar</p>' );
 
@@ -108,7 +108,7 @@ describe( 'DeleteCommand', () => {
 
 			expect( spy.callCount ).to.equal( 1 );
 
-			const modifyOpts = spy.args[ 0 ][ 1 ].options;
+			const modifyOpts = spy.args[ 0 ][ 1 ][ 1 ];
 			expect( modifyOpts ).to.have.property( 'direction', 'forward' );
 			expect( modifyOpts ).to.have.property( 'unit', 'word' );
 		} );
