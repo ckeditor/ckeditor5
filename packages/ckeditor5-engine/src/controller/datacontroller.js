@@ -248,7 +248,7 @@ export default class DataController {
 	destroy() {}
 
 	/**
-	 * See {@link module:engine/controller/insertcontent~insertContent}.
+	 * See {@link module:engine/controller/insertcontent.insertContent}.
 	 *
 	 * @fires insertContent
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
@@ -261,7 +261,7 @@ export default class DataController {
 	}
 
 	/**
-	 * See {@link module:engine/controller/deletecontent~deleteContent}.
+	 * See {@link module:engine/controller/deletecontent.deleteContent}.
 	 *
 	 * Note: For the sake of predictability, the resulting selection should always be collapsed.
 	 * In cases where a feature wants to modify deleting behavior so selection isn't collapsed
@@ -281,7 +281,7 @@ export default class DataController {
 	}
 
 	/**
-	 * See {@link module:engine/controller/modifyselection~modifySelection}.
+	 * See {@link module:engine/controller/modifyselection.modifySelection}.
 	 *
 	 * @fires modifySelection
 	 * @param {module:engine/model/selection~Selection} selection The selection to modify.
@@ -292,7 +292,7 @@ export default class DataController {
 	}
 
 	/**
-	 * See {@link module:engine/controller/getselectedcontent~getSelectedContent}.
+	 * See {@link module:engine/controller/getselectedcontent.getSelectedContent}.
 	 *
 	 * @fires module:engine/controller/datacontroller~DataController#getSelectedContent
 	 * @param {module:engine/model/selection~Selection} selection The selection of which content will be retrieved.
