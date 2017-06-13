@@ -57,8 +57,6 @@ describe( 'ListEngine', () => {
 
 	describe( 'commands', () => {
 		it( 'should register bulleted list command', () => {
-			expect( editor.commands.has( 'bulletedList' ) ).to.be.true;
-
 			const command = editor.commands.get( 'bulletedList' );
 
 			expect( command ).to.be.instanceOf( ListCommand );
@@ -66,8 +64,6 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'should register numbered list command', () => {
-			expect( editor.commands.has( 'numberedList' ) ).to.be.true;
-
 			const command = editor.commands.get( 'numberedList' );
 
 			expect( command ).to.be.instanceOf( ListCommand );

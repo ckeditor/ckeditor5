@@ -114,12 +114,12 @@ export default class ListEngine extends Plugin {
 		data.on( 'insertContent', modelIndentPasteFixer, { priority: 'high' } );
 
 		// Register commands for numbered and bulleted list.
-		editor.commands.set( 'numberedList', new ListCommand( editor, 'numbered' ) );
-		editor.commands.set( 'bulletedList', new ListCommand( editor, 'bulleted' ) );
+		editor.commands.add( 'numberedList', new ListCommand( editor, 'numbered' ) );
+		editor.commands.add( 'bulletedList', new ListCommand( editor, 'bulleted' ) );
 
 		// Register commands for indenting.
-		editor.commands.set( 'indentList', new IndentCommand( editor, 'forward' ) );
-		editor.commands.set( 'outdentList', new IndentCommand( editor, 'backward' ) );
+		editor.commands.add( 'indentList', new IndentCommand( editor, 'forward' ) );
+		editor.commands.add( 'outdentList', new IndentCommand( editor, 'backward' ) );
 	}
 }
 
