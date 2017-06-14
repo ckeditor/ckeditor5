@@ -149,9 +149,6 @@ export default class View {
 		return ( this._element = this.template.render() );
 	}
 
-	/**
-	 * @type {HTMLElement}
-	 */
 	set element( el ) {
 		this._element = el;
 	}
