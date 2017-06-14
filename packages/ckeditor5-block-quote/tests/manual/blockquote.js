@@ -5,7 +5,7 @@
 
 /* global document, console, window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
