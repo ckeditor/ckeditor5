@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageUpload from '../src/imageupload';
 import ImageUploadProgress from '../src/imageuploadprogress';

@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import FileDialogButtonView from '../../src/ui/filedialogbuttonview';
 
 describe( 'FileDialogButtonView', () => {
