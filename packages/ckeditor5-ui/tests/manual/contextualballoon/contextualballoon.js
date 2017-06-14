@@ -11,7 +11,7 @@
 // CKE5 plugins will be integrated with ContextualBalloon and when
 // ContextualToolbar plugin will land as CKE5 plugin.
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import EssentialsPresets from '@ckeditor/ckeditor5-presets/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
