@@ -26,19 +26,13 @@ describe( 'Document', () => {
 	const DEFAULT_OBSERVERS_COUNT = 5;
 	let ObserverMock, ObserverMockGlobalCount, instantiated, enabled, domRoot, viewDocument;
 
-	before( () => {
+	beforeEach( () => {
 		domRoot = createElement( document, 'div', {
 			id: 'editor',
 			contenteditable: 'true'
 		} );
 		document.body.appendChild( domRoot );
-	} );
 
-	after( () => {
-		domRoot.parentElement.removeChild( domRoot );
-	} );
-
-	beforeEach( () => {
 		instantiated = 0;
 		enabled = 0;
 
@@ -70,6 +64,7 @@ describe( 'Document', () => {
 
 	afterEach( () => {
 		viewDocument.destroy();
+		domRoot.remove();
 	} );
 
 	describe( 'constructor()', () => {
@@ -91,7 +86,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'createRoot', () => {
+	describe( 'createRoot()', () => {
 		it( 'should create root', () => {
 			const domP = document.createElement( 'p' );
 			const domDiv = document.createElement( 'div' );
@@ -175,7 +170,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'attachDomRoot', () => {
+	describe( 'attachDomRoot()', () => {
 		it( 'should create root without attach DOM element to the view element', () => {
 			const domDiv = document.createElement( 'div' );
 			const viewRoot = viewDocument.createRoot( 'div' );
@@ -217,7 +212,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'getRoot', () => {
+	describe( 'getRoot()', () => {
 		it( 'should return "main" root', () => {
 			viewDocument.createRoot( document.createElement( 'div' ) );
 
@@ -235,7 +230,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'addObserver', () => {
+	describe( 'addObserver()', () => {
 		beforeEach( () => {
 			// The variable will be overwritten.
 			viewDocument.destroy();
@@ -311,7 +306,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'getObserver', () => {
+	describe( 'getObserver()', () => {
 		it( 'should return observer it it is added', () => {
 			const addedObserverMock = viewDocument.addObserver( ObserverMock );
 			const getObserverMock = viewDocument.getObserver( ObserverMock );
@@ -327,7 +322,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'disableObservers', () => {
+	describe( 'disableObservers()', () => {
 		it( 'should disable observers', () => {
 			const addedObserverMock = viewDocument.addObserver( ObserverMock );
 
@@ -341,7 +336,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'enableObservers', () => {
+	describe( 'enableObservers()', () => {
 		it( 'should enable observers', () => {
 			const addedObserverMock = viewDocument.addObserver( ObserverMock );
 
@@ -369,7 +364,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'focus', () => {
+	describe( 'focus()', () => {
 		let domEditable, viewEditable;
 
 		beforeEach( () => {
@@ -419,6 +414,27 @@ describe( 'Document', () => {
 			viewDocument.focus();
 			expect( logSpy.calledOnce ).to.be.true;
 			expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^view-focus-no-selection/ );
+		} );
+	} );
+
+	describe( 'render()', () => {
+		it( 'should fire an event', () => {
+			const spy = sinon.spy();
+
+			viewDocument.on( 'render', spy );
+
+			viewDocument.render();
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'disable observers, renders and enable observers', () => {
+			const observerMock = viewDocument.addObserver( ObserverMock );
+			const renderStub = sinon.stub( viewDocument.renderer, 'render' );
+
+			viewDocument.render();
+
+			sinon.assert.callOrder( observerMock.disable, renderStub, observerMock.enable );
 		} );
 	} );
 } );
