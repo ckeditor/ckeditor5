@@ -20,7 +20,8 @@ install:
   - lerna bootstrap
 script:
   - npm t
-  - gulp docs:api --validate-only
+  # Temporarily disable API docs validation until https://github.com/ckeditor/ckeditor5-dev/issues/229 is resolved.
+  # - gulp docs:api --validate-only
 after_success:
   - ./node_modules/.bin/ckeditor5-dev-docs
 notifications:

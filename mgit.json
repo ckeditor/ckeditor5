@@ -8,6 +8,7 @@
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard",
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core",
+    "@ckeditor/ckeditor5-editor-balloon-toolbar": "ckeditor/ckeditor5-editor-balloon-toolbar",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline",
     "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine",
