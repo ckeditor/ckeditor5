@@ -199,6 +199,16 @@ export default class DomConverter {
 				if ( options.bind ) {
 					this.bindDocumentFragments( domElement, viewNode );
 				}
+			} else if ( viewNode.is( 'uiElement' ) ) {
+				// UIElement has it's own render() method.
+				// https://github.com/ckeditor/ckeditor5-engine/issues/799
+				domElement = viewNode.render( domDocument );
+
+				if ( options.bind ) {
+					this.bindElements( domElement, viewNode );
+				}
+
+				return domElement;
 			} else {
 				// Create DOM element.
 				domElement = domDocument.createElement( viewNode.name );
@@ -339,6 +349,7 @@ export default class DomConverter {
 	 * Converts DOM to view. For all text nodes, not bound elements and document fragments new items will
 	 * be created. For bound elements and document fragments function will return corresponding items. For
 	 * {@link module:engine/view/filler fillers} `null` will be returned.
+	 * For all DOM elements rendered by {@link module:engine/view/uielement~UIElement} that UIElement will be returned.
 	 *
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment to transform.
 	 * @param {Object} [options] Conversion options.
@@ -351,6 +362,13 @@ export default class DomConverter {
 	domToView( domNode, options = {} ) {
 		if ( isBlockFiller( domNode, this.blockFiller ) ) {
 			return null;
+		}
+
+		// When node is inside UIElement return that UIElement as it's view representation.
+		const uiElement = this.getParentUIElement( domNode, this._domToViewMapping );
+
+		if ( uiElement ) {
+			return uiElement;
 		}
 
 		if ( this.isText( domNode ) ) {
@@ -488,6 +506,9 @@ export default class DomConverter {
 	 * If the position is inside a {@link module:engine/view/filler filler} which has no corresponding view node,
 	 * position of the filler will be converted and returned.
 	 *
+	 * If the position is inside DOM element rendered by {@link module:engine/view/uielement~UIElement}
+	 * that position will be converted to view position before that UIElement.
+	 *
 	 * If structures are too different and it is not possible to find corresponding position then `null` will be returned.
 	 *
 	 * @param {Node} domParent DOM position parent.
@@ -497,6 +518,12 @@ export default class DomConverter {
 	domPositionToView( domParent, domOffset ) {
 		if ( isBlockFiller( domParent, this.blockFiller ) ) {
 			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
+		}
+
+		// If position is somewhere inside UIElement - return position before that element.
+		const viewElement = this.getCorrespondingViewElement( domParent );
+		if ( viewElement && viewElement.is( 'uiElement' ) ) {
+			return ViewPosition.createBefore( viewElement );
 		}
 
 		if ( this.isText( domParent ) ) {
@@ -567,12 +594,13 @@ export default class DomConverter {
 	/**
 	 * Gets corresponding view element. Returns element if an view element was
 	 * {@link module:engine/view/domconverter~DomConverter#bindElements bound} to the given DOM element or `null` otherwise.
+	 * For all DOM elements rendered by {@link module:engine/view/uielement~UIElement} that UIElement will be returned.
 	 *
 	 * @param {HTMLElement} domElement DOM element.
 	 * @returns {module:engine/view/element~Element|null} Corresponding element or `null` if no element was bound.
 	 */
 	getCorrespondingViewElement( domElement ) {
-		return this._domToViewMapping.get( domElement );
+		return this.getParentUIElement( domElement ) || this._domToViewMapping.get( domElement );
 	}
 
 	/**
@@ -597,6 +625,8 @@ export default class DomConverter {
 	 * If this is a first child in the parent and the parent is a {@link module:engine/view/domconverter~DomConverter#bindElements bound}
 	 * element, it is used to find the corresponding text node.
 	 *
+	 * For all text nodes rendered by {@link module:engine/view/uielement~UIElement} that UIElement will be returned.
+	 *
 	 * Otherwise `null` is returned.
 	 *
 	 * Note that for the block or inline {@link module:engine/view/filler filler} this method returns `null`.
@@ -608,6 +638,13 @@ export default class DomConverter {
 	getCorrespondingViewText( domText ) {
 		if ( isInlineFiller( domText ) ) {
 			return null;
+		}
+
+		// If DOM text was rendered by UIElement - return that element.
+		const uiElement = this.getParentUIElement( domText );
+
+		if ( uiElement ) {
+			return uiElement;
 		}
 
 		const previousSibling = domText.previousSibling;
@@ -830,6 +867,31 @@ export default class DomConverter {
 		range.detach();
 
 		return backward;
+	}
+
+	/**
+	 * Returns parent {@link module:engine/view/uielement~UIElement} for provided DOM node. Returns null if there is no
+	 * parent UIElement.
+	 *
+	 * @param {Node} domNode
+	 * @return {module:engine/view/uielement~UIElement|null}
+	 */
+	getParentUIElement( domNode ) {
+		const ancestors = getAncestors( domNode );
+
+		// Remove domNode from the list.
+		ancestors.pop();
+
+		while ( ancestors.length ) {
+			const domNode = ancestors.pop();
+			const viewNode = this._domToViewMapping.get( domNode );
+
+			if ( viewNode && viewNode.is( 'uiElement' ) ) {
+				return viewNode;
+			}
+		}
+
+		return null;
 	}
 
 	/**

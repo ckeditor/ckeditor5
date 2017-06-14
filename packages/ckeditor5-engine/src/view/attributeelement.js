@@ -101,7 +101,7 @@ AttributeElement.DEFAULT_PRIORITY = DEFAULT_PRIORITY;
 // @returns {Number|null} Block filler offset or `null` if block filler is not needed.
 function getFillerOffset() {
 	// <b>foo</b> does not need filler.
-	if ( this.childCount ) {
+	if ( nonUiChildrenCount( this ) ) {
 		return null;
 	}
 
@@ -109,16 +109,24 @@ function getFillerOffset() {
 
 	// <p><b></b></p> needs filler -> <p><b><br></b></p>
 	while ( element && element.is( 'attributeElement' ) ) {
-		if ( element.childCount > 1 ) {
+		if ( nonUiChildrenCount( element ) > 1 ) {
 			return null;
 		}
 
 		element = element.parent;
 	}
 
-	if ( !element || element.childCount > 1 ) {
+	if ( !element || nonUiChildrenCount( element ) > 1 ) {
 		return null;
 	}
 
 	return 0;
+}
+
+// Returns total count of children that are not {@link module:engine/view/uielement~UIElement UIElements}.
+//
+// @param {module:engine/view/element~Element} element
+// @return {Number}
+function nonUiChildrenCount( element ) {
+	return Array.from( element.getChildren() ).filter( element => !element.is( 'uiElement' ) ).length;
 }

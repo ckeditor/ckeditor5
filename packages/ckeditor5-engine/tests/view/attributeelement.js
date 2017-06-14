@@ -137,5 +137,20 @@ describe( 'AttributeElement', () => {
 
 			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
+
+		it( 'should return position 0 if it is the only nested element in the container and has UIElement inside', () => {
+			const { selection } = parse(
+				'<container:p><attribute:b><attribute:i>[]<ui:span></ui:span></attribute:i></attribute:b></container:p>' );
+			const attribute = selection.getFirstPosition().parent;
+
+			expect( attribute.getFillerOffset() ).to.equals( 0 );
+		} );
+
+		it( 'should return 0 if there is no parent container element and has UIElement inside', () => {
+			const { selection } = parse( '<attribute:b>[]<ui:span></ui:span></attribute:b>' );
+			const attribute = selection.getFirstPosition().parent;
+
+			expect( attribute.getFillerOffset() ).to.equal( 0 );
+		} );
 	} );
 } );

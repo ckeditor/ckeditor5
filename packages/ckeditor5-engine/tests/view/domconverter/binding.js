@@ -365,4 +365,54 @@ describe( 'DomConverter', () => {
 			expect( bindSelection.isEqual( selectionCopy ) ).to.be.true;
 		} );
 	} );
+
+	describe( 'unbindDomElement', () => {
+		it( 'should unbind elements', () => {
+			const domElement = document.createElement( 'p' );
+			const viewElement = new ViewElement( 'p' );
+
+			converter.bindElements( domElement, viewElement );
+
+			expect( converter.getCorrespondingView( domElement ) ).to.equal( viewElement );
+			expect( converter.getCorrespondingDom( viewElement ) ).to.equal( domElement );
+
+			converter.unbindDomElement( domElement );
+
+			expect( converter.getCorrespondingView( domElement ) ).to.be.undefined;
+			expect( converter.getCorrespondingDom( viewElement ) ).to.be.undefined;
+		} );
+
+		it( 'should unbind element\'s child nodes', () => {
+			const domElement = document.createElement( 'p' );
+			const domChild = document.createElement( 'span' );
+			domElement.appendChild( domChild );
+
+			const viewElement = new ViewElement( 'p' );
+			const viewChild = new ViewElement( 'span' );
+
+			converter.bindElements( domElement, viewElement );
+			converter.bindElements( domChild, viewChild );
+
+			expect( converter.getCorrespondingView( domChild ) ).to.equal( viewChild );
+			expect( converter.getCorrespondingDom( viewChild ) ).to.equal( domChild );
+
+			converter.unbindDomElement( domElement );
+
+			expect( converter.getCorrespondingView( domChild ) ).to.be.undefined;
+			expect( converter.getCorrespondingDom( viewChild ) ).to.be.undefined;
+		} );
+
+		it( 'should do nothing if there are no elements bind', () => {
+			const domElement = document.createElement( 'p' );
+			const viewElement = new ViewElement( 'p' );
+
+			expect( converter.getCorrespondingView( domElement ) ).to.be.undefined;
+			expect( converter.getCorrespondingDom( viewElement ) ).to.be.undefined;
+
+			converter.unbindDomElement( domElement );
+
+			expect( converter.getCorrespondingView( domElement ) ).to.be.undefined;
+			expect( converter.getCorrespondingDom( viewElement ) ).to.be.undefined;
+		} );
+	} );
 } );
