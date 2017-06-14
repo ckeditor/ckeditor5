@@ -6,7 +6,7 @@
 'use strict';
 
 module.exports = {
-	editor: '@ckeditor/ckeditor5-editor-classic/src/classic',
+	editor: '@ckeditor/ckeditor5-editor-classic/src/classiceditor',
 	moduleName: 'ClassicEditor',
 	plugins: [
 		'@ckeditor/ckeditor5-presets/src/essentials',
