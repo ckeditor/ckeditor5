@@ -5,7 +5,7 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import EssentialsPreset from '@ckeditor/ckeditor5-presets/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
