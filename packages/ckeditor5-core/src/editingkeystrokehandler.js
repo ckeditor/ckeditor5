@@ -57,24 +57,12 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 		if ( typeof callback == 'string' ) {
 			const commandName = callback;
 
-			callback = () => {
+			callback = ( evtData, cancel ) => {
 				this.editor.execute( commandName );
+				cancel();
 			};
 		}
 
 		super.set( keystroke, callback );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	listenTo( emitter ) {
-		this._listener.listenTo( emitter, 'keydown', ( evt, data ) => {
-			const handled = this.press( data );
-
-			if ( handled ) {
-				data.preventDefault();
-			}
-		} );
 	}
 }
