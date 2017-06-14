@@ -42,10 +42,9 @@ export default class InlineEditor extends StandardEditor {
 	 * @returns {Promise}
 	 */
 	destroy() {
-		this.updateEditorElement();
-
 		return this.ui.destroy()
-			.then( () => super.destroy() );
+			.then( () => super.destroy() )
+			.then( () => this.updateEditorElement() );
 	}
 
 	/**

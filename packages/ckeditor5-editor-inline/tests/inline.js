@@ -9,6 +9,8 @@ import InlineEditorUI from '../src/inlineeditorui';
 import InlineEditorUIView from '../src/inlineeditoruiview';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 
 import InlineEditor from '../src/inline';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -168,15 +170,33 @@ describe( 'InlineEditor', () => {
 			return InlineEditor.create( editorElement, { plugins: [ Paragraph ] } )
 				.then( newEditor => {
 					editor = newEditor;
+
+					const schema = editor.document.schema;
+
+					schema.registerItem( 'bold' );
+					schema.allow( { name: 'bold', inside: '$root' } );
+					schema.allow( { name: '$text', inside: 'bold' } );
+
+					buildViewConverter().for( editor.data.viewToModel )
+						.fromElement( 'b' )
+						.toElement( 'bold' );
+
+					buildModelConverter().for( editor.data.modelToView )
+						.fromElement( 'bold' )
+						.toElement( 'b' );
+
+					buildModelConverter().for( editor.editing.modelToView )
+						.fromElement( 'bold' )
+						.toElement( 'i-should-never-show-up-in-data' );
 				} );
 		} );
 
 		it( 'sets the data back to the editor element', () => {
-			editor.setData( '<p>foo</p>' );
+			editor.setData( '<p>a</p><b>b</b>' );
 
 			return editor.destroy()
 				.then( () => {
-					expect( editorElement.innerHTML ).to.equal( '<p>foo</p>' );
+					expect( editorElement.innerHTML ).to.equal( '<p>a</p><b>b</b>' );
 				} );
 		} );
 	} );
