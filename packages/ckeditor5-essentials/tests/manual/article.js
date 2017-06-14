@@ -5,7 +5,7 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import ArticlePreset from '../../src/article';
 
