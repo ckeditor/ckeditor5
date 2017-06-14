@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ImageToolbar from '../src/imagetoolbar';
 import Image from '../src/image';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
