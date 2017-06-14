@@ -182,8 +182,8 @@ export default class ViewCollection extends Collection {
 	 *
 	 * See {@link module:utils/emittermixin~EmitterMixin#delegate}.
 	 *
-	 * @param {...String} events {@link module:ui/view~View} event names to be delegated to another {@link
-	 * module:utils/emittermixin~EmitterMixin}.
+	 * @param {...String} events {@link module:ui/view~View} event names to be delegated to another
+	 * {@link module:utils/emittermixin~EmitterMixin}.
 	 * @returns {module:ui/viewcollection~ViewCollection#delegate.to}
 	 */
 	delegate( ...events ) {
