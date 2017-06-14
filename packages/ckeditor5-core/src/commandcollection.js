@@ -10,7 +10,7 @@
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Collection of commands. Its instance is available in {@module:core/editor/editor~Editor#commands}.
+ * Collection of commands. Its instance is available in {@link module:core/editor/editor~Editor#commands `editor.commands`}.
  */
 export default class CommandCollection {
 	/**
