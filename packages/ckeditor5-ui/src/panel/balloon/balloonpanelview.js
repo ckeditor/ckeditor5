@@ -134,7 +134,10 @@ export default class BalloonPanelView extends View {
 
 			on: {
 				// https://github.com/ckeditor/ckeditor5-ui/issues/206
-				mousedown: preventDefault( this )
+				mousedown: preventDefault( this ),
+
+				// https://github.com/ckeditor/ckeditor5-ui/issues/243
+				selectstart: bind.to( evt => evt.preventDefault() )
 			}
 		} );
 	}
