@@ -303,6 +303,7 @@ const ObservableMixin = {
 	 *
 	 *		foo.method( 1, 2 ); // -> '3, 2'
 	 *
+	 * @method #decorate
 	 * @param {String} methodName Name of the method to decorate.
 	 */
 	decorate( methodName ) {
