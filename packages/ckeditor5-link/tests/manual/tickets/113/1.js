@@ -5,7 +5,7 @@
 
 /* globals console:false, document, setTimeout */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
 
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
