@@ -66,7 +66,7 @@ export default class UIElement extends Element {
 
 	/**
 	 * Renders this {@link module:engine/view/uielement~UIElement} to DOM. This method is called by
-	 * {@link engine/view/domconverter~DomConverter}.
+	 * {@link module:engine/view/domconverter~DomConverter}.
 	 *
 	 * @param {Document} domDocument
 	 * @return {HTMLElement}
