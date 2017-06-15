@@ -26,6 +26,10 @@ describe( 'ItalicEngine', () => {
 		} );
 	} );
 
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ItalicEngine ) ).to.be.instanceOf( ItalicEngine );
 	} );
@@ -37,8 +41,6 @@ describe( 'ItalicEngine', () => {
 
 	describe( 'command', () => {
 		it( 'should register italic command', () => {
-			expect( editor.commands.has( 'italic' ) ).to.be.true;
-
 			const command = editor.commands.get( 'italic' );
 
 			expect( command ).to.be.instanceOf( ToggleAttributeCommand );
