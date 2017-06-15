@@ -28,9 +28,9 @@ export default class RedoCommand extends BaseCommand {
 	 * {@link module:engine/model/document~Document document} and removes the batch from the stack.
 	 * Then, it restores the {@link module:engine/model/document~Document#selection document selection}.
 	 *
-	 * @protected
+	 * @fires execute
 	 */
-	_doExecute() {
+	execute() {
 		const item = this._stack.pop();
 
 		// All changes have to be done in one `enqueueChanges` callback so other listeners will not
@@ -51,12 +51,12 @@ export default class RedoCommand extends BaseCommand {
 			this._redo( item.batch );
 		} );
 
-		this.refreshState();
+		this.refresh();
 	}
 
 	/**
 	 * Redoes a batch by reversing the batch that has undone it, transforming that batch and applying it. This is
-	 * a helper method for {@link #_doExecute}.
+	 * a helper method for {@link #execute}.
 	 *
 	 * @private
 	 * @param {module:engine/model/batch~Batch} storedBatch The batch whose deltas will be reversed, transformed and applied.

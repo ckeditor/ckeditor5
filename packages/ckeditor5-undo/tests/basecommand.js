@@ -22,19 +22,19 @@ describe( 'BaseCommand', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create command with empty batch stack', () => {
-			expect( base._checkEnabled() ).to.be.false;
+			expect( base.isEnabled ).to.be.false;
 		} );
 	} );
 
-	describe( '_checkEnabled', () => {
-		it( 'should return false if there are no batches in command stack', () => {
-			expect( base._checkEnabled() ).to.be.false;
+	describe( 'isEnabled', () => {
+		it( 'should be false if there are no batches in command stack', () => {
+			expect( base.isEnabled ).to.be.false;
 		} );
 
-		it( 'should return true if there are batches in command stack', () => {
+		it( 'should be true if there are batches in command stack', () => {
 			base.addBatch( doc.batch() );
 
-			expect( base._checkEnabled() ).to.be.true;
+			expect( base.isEnabled ).to.be.true;
 		} );
 	} );
 
@@ -43,7 +43,7 @@ describe( 'BaseCommand', () => {
 			base.addBatch( doc.batch() );
 			base.clearStack();
 
-			expect( base._checkEnabled() ).to.be.false;
+			expect( base.isEnabled ).to.be.false;
 		} );
 	} );
 } );
