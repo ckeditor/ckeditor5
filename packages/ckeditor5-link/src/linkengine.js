@@ -36,7 +36,14 @@ export default class LinkEngine extends Plugin {
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
 			.fromAttribute( 'linkHref' )
-			.toElement( linkHref => new LinkElement( 'a', { href: linkHref } ) );
+			.toElement( linkHref => {
+				const linkElement = new LinkElement( 'a', { href: linkHref } );
+
+				// https://github.com/ckeditor/ckeditor5-link/issues/121
+				linkElement.priority = 5;
+
+				return linkElement;
+			} );
 
 		// Build converter from view to model for data pipeline.
 		buildViewConverter().for( data.viewToModel )
@@ -47,7 +54,7 @@ export default class LinkEngine extends Plugin {
 			} ) );
 
 		// Create linking commands.
-		editor.commands.set( 'link', new LinkCommand( editor ) );
-		editor.commands.set( 'unlink', new UnlinkCommand( editor ) );
+		editor.commands.add( 'link', new LinkCommand( editor ) );
+		editor.commands.add( 'unlink', new UnlinkCommand( editor ) );
 	}
 }

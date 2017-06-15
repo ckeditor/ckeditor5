@@ -30,25 +30,33 @@ describe( 'UnlinkCommand', () => {
 	} );
 
 	afterEach( () => {
-		command.destroy();
+		return editor.destroy();
 	} );
 
-	describe( 'constructor()', () => {
-		it( 'should listen on document#changesDone and refresh the state', () => {
-			const refreshStateSpy = testUtils.sinon.spy( command, 'refreshState' );
+	describe( 'isEnabled', () => {
+		it( 'should be true when selection has `linkHref` attribute', () => {
+			document.enqueueChanges( () => {
+				document.selection.setAttribute( 'linkHref', 'value' );
+			} );
 
-			document.fire( 'changesDone' );
+			expect( command.isEnabled ).to.true;
+		} );
 
-			expect( refreshStateSpy.calledOnce ).to.true;
+		it( 'should be false when selection doesn\'t have `linkHref` attribute', () => {
+			document.enqueueChanges( () => {
+				document.selection.removeAttribute( 'linkHref' );
+			} );
+
+			expect( command.isEnabled ).to.false;
 		} );
 	} );
 
-	describe( '_doExecute', () => {
+	describe( 'execute()', () => {
 		describe( 'non-collapsed selection', () => {
 			it( 'should remove `linkHref` attribute from selected text', () => {
 				setData( document, '<$text linkHref="url">f[ooba]r</$text>' );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) ).to.equal( '<$text linkHref="url">f</$text>[ooba]<$text linkHref="url">r</$text>' );
 			} );
@@ -56,7 +64,7 @@ describe( 'UnlinkCommand', () => {
 			it( 'should remove `linkHref` attribute from selected text and do not modified other attributes', () => {
 				setData( document, '<$text bold="true" linkHref="url">f[ooba]r</$text>' );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) ).to.equal(
 					'<$text bold="true" linkHref="url">f</$text>' +
@@ -68,7 +76,7 @@ describe( 'UnlinkCommand', () => {
 			it( 'should remove `linkHref` attribute from selected text when attributes have different value', () => {
 				setData( document, '[<$text linkHref="url">foo</$text><$text linkHref="other url">bar</$text>]' );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) ).to.equal( '[foobar]' );
 			} );
@@ -76,7 +84,7 @@ describe( 'UnlinkCommand', () => {
 			it( 'should remove `linkHref` attribute from selection', () => {
 				setData( document, '<$text linkHref="url">f[ooba]r</$text>' );
 
-				command._doExecute();
+				command.execute();
 
 				expect( document.selection.hasAttribute( 'linkHref' ) ).to.false;
 			} );
@@ -86,7 +94,7 @@ describe( 'UnlinkCommand', () => {
 			it( 'should remove `linkHref` attribute from selection siblings with the same attribute value', () => {
 				setData( document, '<$text linkHref="url">foo[]bar</$text>' );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) ).to.equal( 'foo[]bar' );
 			} );
@@ -100,7 +108,7 @@ describe( 'UnlinkCommand', () => {
 					'<$text linkHref="other url">ar</$text>'
 				);
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) ).to.equal(
 					'<$text linkHref="other url">fo</$text>' +
@@ -120,7 +128,7 @@ describe( 'UnlinkCommand', () => {
 					'<$text linkHref="same url">r</$text>'
 				);
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) )
 					.to.equal(
@@ -145,7 +153,7 @@ describe( 'UnlinkCommand', () => {
 					'<$text linkHref="url">r</$text>'
 				);
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) ).to.equal(
 					'f' +
@@ -164,7 +172,7 @@ describe( 'UnlinkCommand', () => {
 					'<p><$text linkHref="url">bar</$text></p>'
 				);
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) ).to.equal(
 					'<p><$text linkHref="url">bar</$text></p>' +
@@ -176,7 +184,7 @@ describe( 'UnlinkCommand', () => {
 			it( 'should remove `linkHref` attribute from selection siblings when selection is at the end of link', () => {
 				setData( document, '<$text linkHref="url">foobar</$text>[]' );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) ).to.equal( 'foobar[]' );
 			} );
@@ -184,7 +192,7 @@ describe( 'UnlinkCommand', () => {
 			it( 'should remove `linkHref` attribute from selection siblings when selection is at the beginning of link', () => {
 				setData( document, '[]<$text linkHref="url">foobar</$text>' );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) ).to.equal( '[]foobar' );
 			} );
@@ -194,7 +202,7 @@ describe( 'UnlinkCommand', () => {
 			() => {
 				setData( document, '<$text linkHref="url">foo</$text>[]<$text linkHref="other url">bar</$text>' );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( document ) ).to.equal( 'foo[]<$text linkHref="other url">bar</$text>' );
 			} );
@@ -202,24 +210,10 @@ describe( 'UnlinkCommand', () => {
 			it( 'should remove `linkHref` attribute from selection', () => {
 				setData( document, '<$text linkHref="url">foo[]bar</$text>' );
 
-				command._doExecute();
+				command.execute();
 
 				expect( document.selection.hasAttribute( 'linkHref' ) ).to.false;
 			} );
-		} );
-	} );
-
-	describe( '_checkEnabled', () => {
-		it( 'should return false when selection has `linkHref` attribute', () => {
-			document.selection.setAttribute( 'linkHref', 'value' );
-
-			expect( command._checkEnabled() ).to.true;
-		} );
-
-		it( 'should return false when selection doesn\'t have `linkHref` attribute', () => {
-			document.selection.removeAttribute( 'linkHref' );
-
-			expect( command._checkEnabled() ).to.false;
 		} );
 	} );
 } );

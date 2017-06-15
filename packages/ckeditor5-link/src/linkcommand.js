@@ -7,7 +7,7 @@
  * @module link/linkcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import getSchemaValidRanges from '@ckeditor/ckeditor5-core/src/command/helpers/getschemavalidranges';
@@ -17,49 +17,25 @@ import findLinkRange from './findlinkrange';
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
  *
- * @extends module:core/command/command~Command
+ * @extends module:core/command~Command
  */
 export default class LinkCommand extends Command {
 	/**
-	 * @see module:core/command/command~Command
-	 * @param {module:core/editor/editor~Editor} editor
-	 */
-	constructor( editor ) {
-		super( editor );
-
-		/**
-		 * Currently selected `linkHref` attribute value.
-		 *
-		 * @observable
-		 * @member {Boolean} module:core/command/toggleattributecommand~ToggleAttributeCommand#value
-		 */
-		this.set( 'value', undefined );
-
-		// Checks whether the command should be enabled or disabled.
-		this.listenTo( editor.document, 'changesDone', () => {
-			this.refreshState();
-			this.refreshValue();
-		} );
-	}
-
-	/**
-	 * Updates command's {@link #value} based on the current selection.
-	 */
-	refreshValue() {
-		this.value = this.editor.document.selection.getAttribute( 'linkHref' );
-	}
-
-	/**
-	 * Checks if {@link module:engine/model/document~Document#schema} allows to create attribute in {@link
-	 * module:engine/model/document~Document#selection}
+	 * The value of `'linkHref'` attribute if the start of a selection is located in a node with this attribute.
 	 *
-	 * @protected
-	 * @returns {Boolean}
+	 * @observable
+	 * @readonly
+	 * @member {Object|undefined} #value
 	 */
-	_checkEnabled() {
-		const document = this.editor.document;
 
-		return isAttributeAllowedInSelection( 'linkHref', document.selection, document.schema );
+	/**
+	 * @inheritDoc
+	 */
+	refresh() {
+		const doc = this.editor.document;
+
+		this.value = doc.selection.getAttribute( 'linkHref' );
+		this.isEnabled = isAttributeAllowedInSelection( 'linkHref', doc.selection, doc.schema );
 	}
 
 	/**
@@ -75,10 +51,10 @@ export default class LinkCommand extends Command {
 	 *
 	 * When selection is collapsed and inside text with `linkHref` attribute, the attribute value will be updated.
 	 *
-	 * @protected
+	 * @fires execute
 	 * @param {String} href Link destination.
 	 */
-	_doExecute( href ) {
+	execute( href ) {
 		const document = this.editor.document;
 		const selection = document.selection;
 
@@ -89,7 +65,6 @@ export default class LinkCommand extends Command {
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
 			if ( selection.isCollapsed ) {
 				const position = selection.getFirstPosition();
-				const parent = position.parent;
 
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
@@ -102,7 +77,7 @@ export default class LinkCommand extends Command {
 					selection.setRanges( [ linkRange ] );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
-				else if ( document.schema.check( { name: '$text', attributes: 'linkHref', inside: parent.name } ) ) {
+				else {
 					const node = new Text( href, { linkHref: href } );
 
 					batch.insert( position, node );
