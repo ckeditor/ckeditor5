@@ -46,10 +46,6 @@ describe( 'ImageStyleEngine', () => {
 	} );
 
 	it( 'should register separate command for each style', () => {
-		expect( editor.commands.has( 'fullStyle' ) ).to.be.true;
-		expect( editor.commands.has( 'sideStyle' ) ).to.be.true;
-		expect( editor.commands.has( 'dummyStyle' ) ).to.be.true;
-
 		expect( editor.commands.get( 'fullStyle' ) ).to.be.instanceOf( ImageStyleCommand );
 		expect( editor.commands.get( 'sideStyle' ) ).to.be.instanceOf( ImageStyleCommand );
 		expect( editor.commands.get( 'dummyStyle' ) ).to.be.instanceOf( ImageStyleCommand );

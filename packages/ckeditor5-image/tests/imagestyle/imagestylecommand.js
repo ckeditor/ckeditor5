@@ -60,7 +60,7 @@ describe( 'ImageStyleCommand', () => {
 	it( 'should set proper value when executed', () => {
 		setData( document, '[<image></image>]' );
 
-		otherStyleCommand._doExecute();
+		otherStyleCommand.execute();
 
 		expect( getData( document ) ).to.equal( '[<image imageStyle="other"></image>]' );
 	} );
@@ -68,7 +68,7 @@ describe( 'ImageStyleCommand', () => {
 	it( 'should do nothing when attribute already present', () => {
 		setData( document, '[<image imageStyle="other"></image>]' );
 
-		otherStyleCommand._doExecute();
+		otherStyleCommand.execute();
 
 		expect( getData( document ) ).to.equal( '[<image imageStyle="other"></image>]' );
 	} );
@@ -79,7 +79,7 @@ describe( 'ImageStyleCommand', () => {
 
 		setData( document, '[<image></image>]' );
 
-		otherStyleCommand._doExecute( { batch } );
+		otherStyleCommand.execute( { batch } );
 
 		expect( getData( document ) ).to.equal( '[<image imageStyle="other"></image>]' );
 		sinon.assert.calledOnce( spy );
