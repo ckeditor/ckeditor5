@@ -39,7 +39,7 @@ export default class Paragraph extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
-		editor.commands.set( 'paragraph', new ParagraphCommand( editor ) );
+		editor.commands.add( 'paragraph', new ParagraphCommand( editor ) );
 
 		// Schema.
 		doc.schema.registerItem( 'paragraph', '$block' );
