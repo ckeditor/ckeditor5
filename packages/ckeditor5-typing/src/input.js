@@ -86,7 +86,8 @@ export default class Input extends Plugin {
 	 * Handles DOM mutations.
 	 *
 	 * @private
-	 * @param {Array.<module:engine/view/document~MutatatedText|module:engine/view/document~MutatatedChildren>} mutations
+	 * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
+	 * module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
 	 * @param {module:engine/view/selection~Selection|null} viewSelection
 	 */
 	_handleMutations( mutations, viewSelection ) {
@@ -127,7 +128,7 @@ class MutationHandler {
 	 * Handles given mutations.
 	 *
 	 * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
-	 * module:engine/view/observer/mutationobserver~MutatatedChildren>} mutations
+	 * module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
 	 * @param {module:engine/view/selection~Selection|null} viewSelection
 	 */
 	handle( mutations, viewSelection ) {

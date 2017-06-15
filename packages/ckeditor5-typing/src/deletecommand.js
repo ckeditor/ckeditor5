@@ -16,7 +16,7 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
  * The delete command. Used by the {@link module:typing/delete~Delete delete feature} to handle the <kbd>Delete</kbd> and
  * <kbd>Backspace</kbd> keys.
  *
- * @extends core.command.Command
+ * @extends module:core/command~Command
  */
 export default class DeleteCommand extends Command {
 	/**
