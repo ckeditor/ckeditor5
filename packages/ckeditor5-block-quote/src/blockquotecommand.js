@@ -7,49 +7,33 @@
  * @module block-quote/blockquotecommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
+
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
- * The block quote command.
+ * The block quote command plugin.
  *
- * @extends module:core/command/command~Command
+ * @extends module:core/command~Command
  */
 export default class BlockQuoteCommand extends Command {
 	/**
-	 * @inheritDoc
+	 * Whether the selection starts in a block quote.
+	 *
+	 * @observable
+	 * @readonly
+	 * @member {Boolean} #value
 	 */
-	constructor( editor ) {
-		super( editor );
-
-		/**
-		 * Flag indicating whether the command is active. It's on when the selection starts
-		 * in a quoted block.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #value
-		 */
-		this.set( 'value', false );
-
-		// Update current value each time changes are done to the document.
-		this.listenTo( editor.document, 'changesDone', () => {
-			this.refreshValue();
-			this.refreshState();
-		} );
-	}
 
 	/**
-	 * Updates command's {@link #value} based on the current selection.
+	 * @inheritDoc
 	 */
-	refreshValue() {
-		const firstBlock = first( this.editor.document.selection.getSelectedBlocks() );
-
-		// In the current implementation, the block quote must be an immediate parent of a block element.
-		this.value = !!( firstBlock && findQuote( firstBlock ) );
+	refresh() {
+		this.value = this._getValue();
+		this.isEnabled = this._checkEnabled();
 	}
 
 	/**
@@ -57,12 +41,12 @@ export default class BlockQuoteCommand extends Command {
 	 * the selection will be removed. If it's off, then all selected blocks will be wrapped with
 	 * a block quote.
 	 *
-	 * @protected
+	 * @fires execute
 	 * @param {Object} [options] Options for executed command.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
-	_doExecute( options = {} ) {
+	execute( options = {} ) {
 		const doc = this.editor.document;
 		const schema = doc.schema;
 		const batch = options.batch || doc.batch();
@@ -84,7 +68,23 @@ export default class BlockQuoteCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks the command's {@link #value}.
+	 *
+	 * @private
+	 * @returns {Boolean} The current value.
+	 */
+	_getValue() {
+		const firstBlock = first( this.editor.document.selection.getSelectedBlocks() );
+
+		// In the current implementation, the block quote must be an immediate parent of a block element.
+		return !!( firstBlock && findQuote( firstBlock ) );
+	}
+
+	/**
+	 * Checks whether the command can be enabled in the current context.
+	 *
+	 * @private
+	 * @returns {Boolean} Whether the command should be enabled.
 	 */
 	_checkEnabled() {
 		if ( this.value ) {
@@ -110,6 +110,7 @@ export default class BlockQuoteCommand extends Command {
 	 * start it or end it, then the quote will be split (if needed) and the blocks
 	 * will be moved out of it, so other quoted blocks remained quoted.
 	 *
+	 * @private
 	 * @param {module:engine/model/batch~Batch} batch
 	 * @param {Array.<module:engine/model/element~Element>} blocks
 	 */
@@ -148,6 +149,7 @@ export default class BlockQuoteCommand extends Command {
 	/**
 	 * Applies the quote to the given blocks.
 	 *
+	 * @private
 	 * @param {module:engine/model/batch~Batch} batch
 	 * @param {Array.<module:engine/model/element~Element>} blocks
 	 */
