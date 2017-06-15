@@ -79,12 +79,12 @@ export default class Autoformat extends Plugin {
 	_addListAutoformats() {
 		const commands = this.editor.commands;
 
-		if ( commands.has( 'bulletedList' ) ) {
+		if ( commands.get( 'bulletedList' ) ) {
 			// eslint-disable-next-line no-new
 			new BlockAutoformatEngine( this.editor, /^[*-]\s$/, 'bulletedList' );
 		}
 
-		if ( commands.has( 'numberedList' ) ) {
+		if ( commands.get( 'numberedList' ) ) {
 			// eslint-disable-next-line no-new
 			new BlockAutoformatEngine( this.editor, /^\d+[.|)]?\s$/, 'numberedList' );
 		}
@@ -105,14 +105,14 @@ export default class Autoformat extends Plugin {
 	_addBasicStylesAutoformats() {
 		const commands = this.editor.commands;
 
-		if ( commands.has( 'bold' ) ) {
+		if ( commands.get( 'bold' ) ) {
 			/* eslint-disable no-new */
 			new InlineAutoformatEngine( this.editor, /(\*\*)([^*]+)(\*\*)$/g, 'bold' );
 			new InlineAutoformatEngine( this.editor, /(__)([^_]+)(__)$/g, 'bold' );
 			/* eslint-enable no-new */
 		}
 
-		if ( commands.has( 'italic' ) ) {
+		if ( commands.get( 'italic' ) ) {
 			// The italic autoformatter cannot be triggered by the bold markers, so we need to check the
 			// text before the pattern (e.g. `(?:^|[^\*])`).
 
@@ -127,34 +127,27 @@ export default class Autoformat extends Plugin {
 	 * Adds autoformatting related to {@link module:heading/heading~Heading}.
 	 *
 	 * It is using a number at the end of the command name to associate it with the proper trigger:
+	 *
 	 * * `heading1` will be executed when typing `#`,
 	 * * `heading2` will be executed when typing `##`,
-	 * * `heading3` will be executed when typing `###`.
+	 * * ... up to `heading6` and `######`.
 	 *
 	 * @private
 	 */
 	_addHeadingAutoformats() {
-		const commands = this.editor.commands;
-		const options = this.editor.config.get( 'heading.options' );
+		Array.from( this.editor.commands.names() )
+			.filter( name => name.match( /^heading[1-6]$/ ) )
+			.forEach( commandName => {
+				const level = commandName[ 7 ];
+				const pattern = new RegExp( `^(#{${ level }})\\s$` );
 
-		if ( options ) {
-			for ( const option of options ) {
-				const commandName = option.modelElement;
-				let match;
+				// eslint-disable-next-line no-new
+				new BlockAutoformatEngine( this.editor, pattern, context => {
+					const { batch } = context;
 
-				if ( commands.has( commandName ) && ( match = commandName.match( /\d+$/ ) ) ) {
-					const level = match[ 0 ];
-					const regExp = new RegExp( `^(#{${ level }})\\s$` );
-
-					// eslint-disable-next-line no-new
-					new BlockAutoformatEngine( this.editor, regExp, context => {
-						const { batch } = context;
-
-						this.editor.execute( commandName, { batch } );
-					} );
-				}
-			}
-		}
+					this.editor.execute( commandName, { batch } );
+				} );
+			} );
 	}
 
 	/**
@@ -165,7 +158,7 @@ export default class Autoformat extends Plugin {
 	 * @private
 	 */
 	_addBlockQuoteAutoformats() {
-		if ( this.editor.commands.has( 'blockQuote' ) ) {
+		if ( this.editor.commands.get( 'blockQuote' ) ) {
 			// eslint-disable-next-line no-new
 			new BlockAutoformatEngine( this.editor, /^>\s$/, 'blockQuote' );
 		}
