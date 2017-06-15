@@ -127,6 +127,17 @@ describe( 'BalloonPanelView', () => {
 				view.element.dispatchEvent( evt );
 				sinon.assert.calledOnce( spy );
 			} );
+
+			// https://github.com/ckeditor/ckeditor5-ui/issues/243
+			it( 'prevents default on #selectstart', () => {
+				const event = new Event( 'selectstart', { bubbles: true } );
+				const spy = sinon.spy( event, 'preventDefault' );
+				const child = document.createElement( 'div' );
+
+				view.element.appendChild( child );
+				child.dispatchEvent( event );
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 	} );
 

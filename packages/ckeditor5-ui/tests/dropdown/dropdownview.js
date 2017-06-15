@@ -127,7 +127,7 @@ describe( 'DropdownView', () => {
 					stopPropagation: sinon.spy()
 				};
 
-				view.isEnabled = true;
+				view.buttonView.isEnabled = true;
 
 				view.isOpen = true;
 				view.keystrokes.press( keyEvtData );
@@ -149,7 +149,7 @@ describe( 'DropdownView', () => {
 					stopPropagation: sinon.spy()
 				};
 
-				view.isEnabled = false;
+				view.buttonView.isEnabled = false;
 				view.isOpen = false;
 
 				view.keystrokes.press( keyEvtData );
