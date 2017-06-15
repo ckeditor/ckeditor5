@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-docs": "^7.1.0",
-    "@ckeditor/ckeditor5-dev-lint": "^3.0.0",
+    "@ckeditor/ckeditor5-dev-lint": "^3.1.0",
     "@ckeditor/ckeditor5-dev-tests": "^7.3.0",
     "eslint-config-ckeditor5": "^1.0.0",
     "gulp": "^3.9.1",
