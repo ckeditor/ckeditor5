@@ -1,7 +1,5 @@
 # These files will be ignored by Git and by our linting tools:
 #	gulp lint
 #	gulp lint-staged
-#
-# Be sure to append /** to folders to have everything inside them ignored.
 
-node_modules/**
+node_modules/
