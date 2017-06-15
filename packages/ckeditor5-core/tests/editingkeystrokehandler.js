@@ -24,7 +24,7 @@ describe( 'EditingKeystrokeHandler', () => {
 			it( 'prevents default when the keystroke was handled', () => {
 				const keyEvtData = getCtrlA();
 
-				keystrokes.set( 'ctrl + A', 'foo' );
+				keystrokes.set( 'Ctrl+A', 'foo' );
 				keystrokes.press( keyEvtData );
 
 				sinon.assert.calledWithExactly( executeSpy, 'foo' );
@@ -48,7 +48,7 @@ describe( 'EditingKeystrokeHandler', () => {
 				const callback = sinon.spy();
 				const keyEvtData = getCtrlA();
 
-				keystrokes.set( 'ctrl + A', callback );
+				keystrokes.set( 'Ctrl+A', callback );
 				keystrokes.press( keyEvtData );
 
 				sinon.assert.calledOnce( callback );
@@ -60,7 +60,7 @@ describe( 'EditingKeystrokeHandler', () => {
 
 	describe( 'press()', () => {
 		it( 'executes a command', () => {
-			keystrokes.set( 'ctrl + A', 'foo' );
+			keystrokes.set( 'Ctrl+A', 'foo' );
 
 			const wasHandled = keystrokes.press( getCtrlA() );
 
@@ -72,7 +72,7 @@ describe( 'EditingKeystrokeHandler', () => {
 		it( 'executes a callback', () => {
 			const callback = sinon.spy();
 
-			keystrokes.set( 'ctrl + A', callback );
+			keystrokes.set( 'Ctrl+A', callback );
 
 			const wasHandled = keystrokes.press( getCtrlA() );
 

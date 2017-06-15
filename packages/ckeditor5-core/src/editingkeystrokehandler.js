@@ -16,9 +16,9 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
  *
  * E.g. an undo plugin would do this:
  *
- *		editor.keystrokes.set( 'ctrl + Z', 'undo' );
- *		editor.keystrokes.set( 'ctrl + shift + Z', 'redo' );
- *		editor.keystrokes.set( 'ctrl + Y', 'redo' );
+ *		editor.keystrokes.set( 'Ctrl+Z', 'undo' );
+ *		editor.keystrokes.set( 'Ctrl+Shift+Z', 'redo' );
+ *		editor.keystrokes.set( 'Ctrl+Y', 'redo' );
  *
  * @extends utils/keystrokehandler~KeystrokeHandler
  */
@@ -43,15 +43,15 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 	/**
 	 * Registers a handler for the specified keystroke.
 	 *
-	 * * The handler can be specified as a command name or a callback.
+	 * The handler can be specified as a command name or a callback.
 	 *
 	 * @param {String|Array.<String|Number>} keystroke Keystroke defined in a format accepted by
 	 * the {@link module:utils/keyboard~parseKeystroke} function.
-	 * @param {Function} callback If a string is passed, then the keystroke will
+	 * @param {Function|String} callback If a string is passed, then the keystroke will
 	 * {@link module:core/editor/editor~Editor#execute execute a command}.
 	 * If a function, then it will be called with the
 	 * {@link module:engine/view/observer/keyobserver~KeyEventData key event data} object and
-	 * a helper to both `preventDefault` and `stopPropagation` of the event.
+	 * a `cancel()` helper to both `preventDefault()` and `stopPropagation()` of the event.
 	 */
 	set( keystroke, callback ) {
 		if ( typeof callback == 'string' ) {
