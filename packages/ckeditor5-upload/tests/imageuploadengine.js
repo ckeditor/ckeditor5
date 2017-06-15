@@ -150,6 +150,7 @@ describe( 'ImageUploadEngine', () => {
 
 		notification.on( 'show:warning', ( evt, data ) => {
 			expect( data.message ).to.equal( 'Reading error.' );
+			expect( data.title ).to.equal( 'Upload failed' );
 			evt.stop();
 
 			done();

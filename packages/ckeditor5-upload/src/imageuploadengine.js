@@ -41,7 +41,7 @@ export default class ImageUploadEngine extends Plugin {
 		schema.requireAttributes( 'image', [ 'uploadId' ] );
 
 		// Register imageUpload command.
-		editor.commands.set( 'imageUpload', new ImageUploadCommand( editor ) );
+		editor.commands.add( 'imageUpload', new ImageUploadCommand( editor ) );
 
 		// Execute imageUpload command when image is dropped or pasted.
 		editor.editing.view.on( 'clipboardInput', ( evt, data ) => {
@@ -93,6 +93,7 @@ export default class ImageUploadEngine extends Plugin {
 	 */
 	load( loader, batch, imageElement ) {
 		const editor = this.editor;
+		const t = editor.locale.t;
 		const doc = editor.document;
 		const fileRepository = editor.plugins.get( FileRepository );
 		const notification = editor.plugins.get( Notification );
@@ -127,7 +128,10 @@ export default class ImageUploadEngine extends Plugin {
 			.catch( msg => {
 				// Might be 'aborted'.
 				if ( loader.status == 'error' ) {
-					notification.showWarning( msg, { namespace: 'upload' } );
+					notification.showWarning( msg, {
+						title: t( 'Upload failed' ),
+						namespace: 'upload'
+					} );
 				}
 
 				clean();
