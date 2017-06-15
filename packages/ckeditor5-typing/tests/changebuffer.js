@@ -230,7 +230,7 @@ describe( 'ChangeBuffer', () => {
 		} );
 	} );
 
-	describe( 'destroy', () => {
+	describe( 'destroy()', () => {
 		it( 'offs the buffer from the document', () => {
 			const batch1 = buffer.batch;
 

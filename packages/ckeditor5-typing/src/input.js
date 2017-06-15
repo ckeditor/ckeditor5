@@ -39,7 +39,7 @@ export default class Input extends Plugin {
 
 		// TODO The above default configuration value should be defined using editor.config.define() once it's fixed.
 
-		editor.commands.set( 'input', inputCommand );
+		editor.commands.add( 'input', inputCommand );
 
 		this.listenTo( editingView, 'keydown', ( evt, data ) => {
 			this._handleKeydown( data, inputCommand.buffer );

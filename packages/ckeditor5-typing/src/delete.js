@@ -30,8 +30,8 @@ export default class Delete extends Plugin {
 
 		editingView.addObserver( DeleteObserver );
 
-		editor.commands.set( 'forwardDelete', new DeleteCommand( editor, 'forward' ) );
-		editor.commands.set( 'delete', new DeleteCommand( editor, 'backward' ) );
+		editor.commands.add( 'forwardDelete', new DeleteCommand( editor, 'forward' ) );
+		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( editingView, 'delete', ( evt, data ) => {
 			editor.execute( data.direction == 'forward' ? 'forwardDelete' : 'delete', { unit: data.unit } );
