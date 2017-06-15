@@ -114,14 +114,14 @@ describe( 'ListCommand', () => {
 			} );
 		} );
 
-		describe( '_doExecute', () => {
+		describe( 'execute()', () => {
 			describe( 'custom options', () => {
 				it( 'should use provided batch', () => {
 					const batch = editor.document.batch();
 
 					expect( batch.deltas.length ).to.equal( 0 );
 
-					command._doExecute( { batch } );
+					command.execute( { batch } );
 
 					expect( batch.deltas.length ).to.be.above( 0 );
 				} );
@@ -131,7 +131,7 @@ describe( 'ListCommand', () => {
 				it( 'should rename closest block to listItem and set correct attributes', () => {
 					setData( doc, '<paragraph>fo[]o</paragraph>' );
 
-					command._doExecute();
+					command.execute();
 
 					expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
 				} );
@@ -139,7 +139,7 @@ describe( 'ListCommand', () => {
 				it( 'should rename closest listItem to paragraph', () => {
 					setData( doc, '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
 
-					command._doExecute();
+					command.execute();
 
 					// Attributes will be removed by post fixer.
 					expect( getData( doc ) ).to.equal( '<paragraph indent="0" type="bulleted">fo[]o</paragraph>' );
@@ -148,7 +148,7 @@ describe( 'ListCommand', () => {
 				it( 'should change closest listItem\' type', () => {
 					setData( doc, '<listItem indent="0" type="numbered">fo[]o</listItem>' );
 
-					command._doExecute();
+					command.execute();
 
 					expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
 				} );
@@ -210,7 +210,7 @@ describe( 'ListCommand', () => {
 						'<listItem indent="2" type="bulleted">---</listItem>'
 					);
 
-					command._doExecute();
+					command.execute();
 
 					const expectedData =
 						'<listItem indent="0" type="bulleted">---</listItem>' +
@@ -257,7 +257,7 @@ describe( 'ListCommand', () => {
 						) ] );
 					} );
 
-					command._doExecute();
+					command.execute();
 
 					const expectedData =
 						'<listItem indent="0" type="bulleted">---</listItem>' +
@@ -283,7 +283,7 @@ describe( 'ListCommand', () => {
 					} );
 
 					// Convert paragraphs, leave numbered list items.
-					command._doExecute();
+					command.execute();
 
 					const expectedData =
 						'<listItem indent="0" type="bulleted">---</listItem>' +
@@ -308,7 +308,7 @@ describe( 'ListCommand', () => {
 					} );
 
 					// Convert paragraphs, leave numbered list items.
-					command._doExecute();
+					command.execute();
 
 					const expectedData =
 						'<listItem indent="0" type="bulleted">---</listItem>' +
@@ -333,7 +333,7 @@ describe( 'ListCommand', () => {
 					} );
 
 					// Convert paragraphs, leave numbered list items.
-					command._doExecute();
+					command.execute();
 
 					const expectedData =
 						'<listItem indent="0" type="bulleted">---</listItem>' +
@@ -381,7 +381,7 @@ describe( 'ListCommand', () => {
 					//      * ------		<-- do not fix, item is not affected (different list)
 					// * ------				<-- do not fix, top level item
 
-					command._doExecute();
+					command.execute();
 
 					const expectedData =
 						'<listItem indent="0" type="numbered">---</listItem>' +

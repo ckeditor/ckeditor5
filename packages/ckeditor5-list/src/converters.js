@@ -715,18 +715,18 @@ function _fixItemsType( changePosition, fixPrevious, document, batch ) {
  *		<listItem type="bulleted" indent=2>Y/listItem>
  *		<listItem type="bulleted" indent=2>C</listItem>
  *
- * @param {module:engine/model/document~Document} document Document to observe.
- * @returns {Function} Callback to be attached to {@link module:engine/model/document~Document#event:change document change event}.
+ * @param {module:utils/eventinfo~EventInfo} evt Event info object.
+ * @param {Array} args Arguments of {@link module:engine/controller/datacontroller~DataController#insertContent}.
  */
-export function modelIndentPasteFixer( evt, data ) {
+export function modelIndentPasteFixer( evt, [ content, selection ] ) {
 	// Check whether inserted content starts from a `listItem`. If it does not, it means that there are some other
 	// elements before it and there is no need to fix indents, because even if we insert that content into a list,
 	// that list will be broken.
-	let item = data.content.getChild( 0 );
+	let item = content.getChild( 0 );
 
 	if ( item.is( 'listItem' ) ) {
 		// Get a reference list item. Inserted list items will be fixed according to that item.
-		const pos = data.selection.getFirstPosition();
+		const pos = selection.getFirstPosition();
 		let refItem = null;
 
 		if ( pos.parent.is( 'listItem' ) ) {

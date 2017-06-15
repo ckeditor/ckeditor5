@@ -7,14 +7,14 @@
  * @module list/listcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * The list command. It is used by the {@link module:list/list~List list feature}.
  *
- * @extends module:core/command/command~Command
+ * @extends module:core/command~Command
  */
 export default class ListCommand extends Command {
 	/**
@@ -38,25 +38,17 @@ export default class ListCommand extends Command {
 		 * Flag indicating whether the command is active, which means that selection starts in a list of the same type.
 		 *
 		 * @observable
+		 * @readonly
 		 * @member {Boolean} #value
 		 */
-		this.set( 'value', false );
-
-		// Listen on selection and document changes and set the current command's value.
-		this.listenTo( editor.document, 'changesDone', () => {
-			this.refreshValue();
-			this.refreshState();
-		} );
 	}
 
 	/**
-	 * Sets command's value based on the document selection.
+	 * @inheritDoc
 	 */
-	refreshValue() {
-		// Check whether closest `listItem` ancestor of the position has a correct type.
-		const listItem = first( this.editor.document.selection.getSelectedBlocks() );
-
-		this.value = listItem && listItem.is( 'listItem' ) && listItem.getAttribute( 'type' ) == this.type;
+	refresh() {
+		this.value = this._getValue();
+		this.isEnabled = this._checkEnabled();
 	}
 
 	/**
@@ -67,7 +59,7 @@ export default class ListCommand extends Command {
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
-	_doExecute( options = {} ) {
+	execute( options = {} ) {
 		const document = this.editor.document;
 		const blocks = Array.from( document.selection.getSelectedBlocks() );
 
@@ -226,7 +218,23 @@ export default class ListCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks the command's {@link #value}.
+	 *
+	 * @private
+	 * @returns {Boolean} The current value.
+	 */
+	_getValue() {
+		// Check whether closest `listItem` ancestor of the position has a correct type.
+		const listItem = first( this.editor.document.selection.getSelectedBlocks() );
+
+		return !!listItem && listItem.is( 'listItem' ) && listItem.getAttribute( 'type' ) == this.type;
+	}
+
+	/**
+	 * Checks whether the command can be enabled in the current context.
+	 *
+	 * @private
+	 * @returns {Boolean} Whether the command should be enabled.
 	 */
 	_checkEnabled() {
 		// If command value is true it means that we are in list item, so the command should be enabled.

@@ -124,13 +124,13 @@ describe( 'IndentCommand', () => {
 			} );
 		} );
 
-		describe( '_doExecute', () => {
+		describe( 'execute()', () => {
 			it( 'should increment indent attribute by 1', () => {
 				doc.enqueueChanges( () => {
 					doc.selection.collapse( root.getChild( 5 ) );
 				} );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -148,7 +148,7 @@ describe( 'IndentCommand', () => {
 					doc.selection.collapse( root.getChild( 1 ) );
 				} );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -169,7 +169,7 @@ describe( 'IndentCommand', () => {
 					) ] );
 				} );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -191,7 +191,7 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="1" type="bulleted">[]d</listItem>'
 				);
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -213,7 +213,7 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="0" type="bulleted">f</listItem>'
 				);
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -266,13 +266,13 @@ describe( 'IndentCommand', () => {
 			} );
 		} );
 
-		describe( '_doExecute', () => {
+		describe( 'execute()', () => {
 			it( 'should decrement indent attribute by 1 (if it is bigger than 0)', () => {
 				doc.enqueueChanges( () => {
 					doc.selection.collapse( root.getChild( 5 ) );
 				} );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -290,7 +290,7 @@ describe( 'IndentCommand', () => {
 					doc.selection.collapse( root.getChild( 0 ) );
 				} );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<paragraph indent="0" type="bulleted">a</paragraph>' +
@@ -308,7 +308,7 @@ describe( 'IndentCommand', () => {
 					doc.selection.collapse( root.getChild( 1 ) );
 				} );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -329,7 +329,7 @@ describe( 'IndentCommand', () => {
 					) ] );
 				} );
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -350,7 +350,7 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="2" type="numbered">[]c</listItem>'
 				);
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -369,7 +369,7 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="1" type="numbered">d</listItem>'
 				);
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -389,7 +389,7 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="1" type="numbered">d]</listItem>'
 				);
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -407,7 +407,7 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="0" type="numbered">c</listItem>'
 				);
 
-				command._doExecute();
+				command.execute();
 
 				// Another possible behaviour would be that "b" list item becomes first list item of a top level
 				// numbered list (so it does not change it's type) but it seems less correct from UX standpoint.
@@ -430,7 +430,7 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="2" type="bulleted">e</listItem>'
 				);
 
-				command._doExecute();
+				command.execute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
