@@ -48,7 +48,7 @@ export function jsonParseStringify( object ) {
 
 /**
  * Adds given {@link module:engine/model/operation/operation~Operation operation} to a newly created
- * {@link module:engine/model/delta~Delta.Delta delta}
+ * {@link module:engine/model/delta/delta~Delta delta}
  * and returns it back. Every operation, when applied, have to be added to a delta. This helper function is useful in those
  * tests which focus on operations, not deltas.
  *
