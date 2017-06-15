@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document, HTMLElement */
+
 import UIElement from '../../src/view/uielement';
 import Element from '../../src/view/element';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -97,6 +99,28 @@ describe( 'UIElement', () => {
 	describe( 'getFillerOffset()', () => {
 		it( 'should return null', () => {
 			expect( uiElement.getFillerOffset() ).to.null;
+		} );
+	} );
+
+	describe( 'render()', () => {
+		let domElement;
+
+		beforeEach( () => {
+			domElement = uiElement.render( document );
+		} );
+
+		it( 'should return DOM element', () => {
+			expect( domElement ).to.be.instanceOf( HTMLElement );
+		} );
+
+		it( 'should use element name', () => {
+			expect( domElement.tagName.toLowerCase() ).to.equal( uiElement.name );
+		} );
+
+		it( 'should render attributes', () => {
+			for ( const key of uiElement.getAttributeKeys() ) {
+				expect( domElement.getAttribute( key ) ).to.equal( uiElement.getAttribute( key ) );
+			}
 		} );
 	} );
 } );

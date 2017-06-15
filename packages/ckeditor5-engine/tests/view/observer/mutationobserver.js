@@ -7,6 +7,7 @@
 
 import ViewDocument from '../../../src/view/document';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
+import UIElement from '../../../src/view/uielement';
 import { parse } from '../../../src/dev-utils/view';
 
 describe( 'MutationObserver', () => {
@@ -344,6 +345,41 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].newChildren[ 1 ].name ).to.equal( 'span' );
 
 		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 1 );
+	} );
+
+	describe( 'UIElement integration', () => {
+		class MyUIElement extends UIElement {
+			render( domDocument ) {
+				const root = super.render( domDocument );
+				root.innerHTML = 'foo bar';
+
+				return root;
+			}
+		}
+
+		beforeEach( () => {
+			const uiElement = new MyUIElement( 'div' );
+			viewRoot.appendChildren( uiElement );
+
+			viewDocument.render();
+		} );
+
+		it( 'should not collect text mutations from UIElement', () => {
+			domEditor.childNodes[ 2 ].childNodes[ 0 ].data = 'foom';
+
+			mutationObserver.flush();
+
+			expect( lastMutations.length ).to.equal( 0 );
+		} );
+
+		it( 'should not collect child mutations from UIElement', () => {
+			const span = document.createElement( 'span' );
+			domEditor.childNodes[ 2 ].appendChild( span );
+
+			mutationObserver.flush();
+
+			expect( lastMutations.length ).to.equal( 0 );
+		} );
 	} );
 
 	function expectDomEditorNotToChange() {
