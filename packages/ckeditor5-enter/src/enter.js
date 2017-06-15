@@ -30,7 +30,7 @@ export default class Enter extends Plugin {
 
 		editingView.addObserver( EnterObserver );
 
-		editor.commands.set( 'enter', new EnterCommand( editor ) );
+		editor.commands.add( 'enter', new EnterCommand( editor ) );
 
 		// TODO We may use the keystroke handler for that.
 		this.listenTo( editingView, 'enter', ( evt, data ) => {
