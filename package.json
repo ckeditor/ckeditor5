@@ -17,6 +17,7 @@
     "@ckeditor/ckeditor5-core": "^0.8.1",
     "@ckeditor/ckeditor5-editor-classic": "^0.7.3",
     "@ckeditor/ckeditor5-editor-inline": "^0.1.1",
+    "@ckeditor/ckeditor5-editor-balloon-toolbar": "^0.0.1",
     "@ckeditor/ckeditor5-engine": "^0.10.0",
     "@ckeditor/ckeditor5-enter": "^0.9.1",
     "@ckeditor/ckeditor5-heading": "^0.9.1",
@@ -35,7 +36,7 @@
     "@ckeditor/ckeditor5-widget": "^0.1.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-docs": "^7.0.0",
+    "@ckeditor/ckeditor5-dev-docs": "^7.1.0",
     "@ckeditor/ckeditor5-dev-lint": "^3.0.0",
     "@ckeditor/ckeditor5-dev-tests": "^7.3.0",
     "eslint-config-ckeditor5": "^1.0.0",

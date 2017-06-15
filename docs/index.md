@@ -1,4 +1,5 @@
 ---
-title: CKEditor 5 Documentation
-order: 10
+title: CKEditor 5 documentation
 ---
+
+What could we have here?
