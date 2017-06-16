@@ -11,7 +11,7 @@
     "@ckeditor/ckeditor5-editor-balloon-toolbar": "ckeditor/ckeditor5-editor-balloon-toolbar#371f8c401e5263e2419dc5c7e14158dd3937a72b",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#b824a1db96a3d7d15f5351025e5fc0675bb3c20e",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#e6aa6178428f5499f0d636d3aa34903c41dc7785",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#885f6ee7e94296dca58bf3f24665dc8751b002c6",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#f86cb65c5b4e642554c4051f829f1225d0de89a7",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#6ba9633a9c08e7730747c2714c56caa7ee789a10",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#9746357d8bd2a8c553f57b7f77f44f6b2afc9b9d",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#51848fd2ff801e0bb61b3dd49062cff040fa2713",
