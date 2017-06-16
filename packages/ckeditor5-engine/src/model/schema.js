@@ -440,6 +440,20 @@ export class SchemaItem {
 	}
 
 	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @returns {Object} Clone of this object with the parent property replaced with its name.
+	 */
+	toJSON() {
+		const json = clone( this );
+
+		// Due to circular references we need to remove parent reference.
+		json._schema = '[model.Schema]';
+
+		return json;
+	}
+
+	/**
 	 * Adds path to the SchemaItem instance.
 	 *
 	 * @private
@@ -528,20 +542,6 @@ export class SchemaItem {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Custom toJSON method to solve child-parent circular dependencies.
-	 *
-	 * @returns {Object} Clone of this object with the parent property replaced with its name.
-	 */
-	toJSON() {
-		const json = clone( this );
-
-		// Due to circular references we need to remove parent reference.
-		json._schema = '[model.Schema]';
-
-		return json;
 	}
 }
 
