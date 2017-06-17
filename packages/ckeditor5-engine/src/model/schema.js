@@ -13,7 +13,6 @@ import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import isArray from '@ckeditor/ckeditor5-utils/src/lib/lodash/isArray';
 import isString from '@ckeditor/ckeditor5-utils/src/lib/lodash/isString';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 
 /**
  * Schema is a definition of the structure of the document. It allows to define which tree model items (element, text, etc.)
@@ -326,22 +325,14 @@ export default class Schema {
 
 			// For all ranges, check nodes in them until you find a node that is allowed to have the attribute.
 			for ( const range of ranges ) {
-				const walker = new TreeWalker( { boundaries: range, mergeCharacters: true } );
-				let last = walker.position;
-				let step = walker.next();
-
-				// Walk the range.
-				while ( !step.done ) {
+				for ( const value of range ) {
 					// If returned item does not have name property, it is a TextFragment.
-					const name = step.value.item.name || '$text';
+					const name = value.item.name || '$text';
 
-					if ( this.check( { name, inside: last, attributes: attribute } ) ) {
+					if ( this.check( { name, inside: value.previousPosition, attributes: attribute } ) ) {
 						// If we found a node that is allowed to have the attribute, return true.
 						return true;
 					}
-
-					last = walker.position;
-					step = walker.next();
 				}
 			}
 		}
