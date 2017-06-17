@@ -13,6 +13,7 @@ import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import isArray from '@ckeditor/ckeditor5-utils/src/lib/lodash/isArray';
 import isString from '@ckeditor/ckeditor5-utils/src/lib/lodash/isString';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 
 /**
  * Schema is a definition of the structure of the document. It allows to define which tree model items (element, text, etc.)
@@ -303,6 +304,50 @@ export default class Schema {
 		const chain = this._extensionChains.get( childItemName );
 
 		return chain.some( itemName => itemName == parentItemName );
+	}
+
+	/**
+	 * Checks whether the attribute is allowed in selection:
+	 *
+	 * * if the selection is not collapsed, then checks if the attribute is allowed on any of nodes in that range,
+	 * * if the selection is collapsed, then checks if on the selection position there's a text with the
+	 * specified attribute allowed.
+	 *
+	 * @param {module:engine/model/selection~Selection} selection Selection which will be checked.
+	 * @param {String} attribute The name of the attribute to check.
+	 * @returns {Boolean}
+	 */
+	checkAttributeInSelection( selection, attribute ) {
+		if ( selection.isCollapsed ) {
+			// Check whether schema allows for a text with the attribute in the selection.
+			return this.check( { name: '$text', inside: selection.getFirstPosition(), attributes: attribute } );
+		} else {
+			const ranges = selection.getRanges();
+
+			// For all ranges, check nodes in them until you find a node that is allowed to have the attribute.
+			for ( const range of ranges ) {
+				const walker = new TreeWalker( { boundaries: range, mergeCharacters: true } );
+				let last = walker.position;
+				let step = walker.next();
+
+				// Walk the range.
+				while ( !step.done ) {
+					// If returned item does not have name property, it is a TextFragment.
+					const name = step.value.item.name || '$text';
+
+					if ( this.check( { name, inside: last, attributes: attribute } ) ) {
+						// If we found a node that is allowed to have the attribute, return true.
+						return true;
+					}
+
+					last = walker.position;
+					step = walker.next();
+				}
+			}
+		}
+
+		// If we haven't found such node, return false.
+		return false;
 	}
 
 	/**
