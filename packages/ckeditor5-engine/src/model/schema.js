@@ -13,6 +13,8 @@ import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import isArray from '@ckeditor/ckeditor5-utils/src/lib/lodash/isArray';
 import isString from '@ckeditor/ckeditor5-utils/src/lib/lodash/isString';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import TreeWalker from './treewalker';
+import Range from './range';
 
 /**
  * Schema is a definition of the structure of the document. It allows to define which tree model items (element, text, etc.)
@@ -339,6 +341,48 @@ export default class Schema {
 
 		// If we haven't found such node, return false.
 		return false;
+	}
+
+	/**
+	 * Transforms the given set ranges into a set of ranges where the given attribute is allowed (and can be applied).
+	 *
+	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to be validated.
+	 * @param {String} attribute The name of the attribute to check.
+	 * @returns {Array.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
+	 */
+	getValidRanges( ranges, attribute ) {
+		const validRanges = [];
+
+		for ( const range of ranges ) {
+			const walker = new TreeWalker( { boundaries: range, mergeCharacters: true } );
+			let step = walker.next();
+
+			let last = range.start;
+			let from = range.start;
+			const to = range.end;
+
+			while ( !step.done ) {
+				const name = step.value.item.name || '$text';
+				const itemPosition = Position.createBefore( step.value.item );
+
+				if ( !this.check( { name, inside: itemPosition, attributes: attribute } ) ) {
+					if ( !from.isEqual( last ) ) {
+						validRanges.push( new Range( from, last ) );
+					}
+
+					from = walker.position;
+				}
+
+				last = walker.position;
+				step = walker.next();
+			}
+
+			if ( from && !from.isEqual( to ) ) {
+				validRanges.push( new Range( from, to ) );
+			}
+		}
+
+		return validRanges;
 	}
 
 	/**
