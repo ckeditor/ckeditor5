@@ -545,12 +545,12 @@ describe( 'Schema', () => {
 
 	describe( 'getValidRanges()', () => {
 		const attribute = 'bold';
-		let document, root, schema, ranges;
+		let doc, root, schema, ranges;
 
 		beforeEach( () => {
-			document = new Document();
-			schema = document.schema;
-			root = document.createRoot();
+			doc = new Document();
+			schema = doc.schema;
+			root = doc.createRoot();
 
 			schema.registerItem( 'p', '$block' );
 			schema.registerItem( 'h1', '$block' );
@@ -559,7 +559,7 @@ describe( 'Schema', () => {
 			schema.allow( { name: '$text', attributes: 'bold', inside: 'p' } );
 			schema.allow( { name: 'p', attributes: 'bold', inside: '$root' } );
 
-			setData( document, '<p>foo<img />bar</p>' );
+			setData( doc, '<p>foo<img />bar</p>' );
 			ranges = [ Range.createOn( root.getChild( 0 ) ) ];
 		} );
 
@@ -580,9 +580,9 @@ describe( 'Schema', () => {
 			schema.allow( { name: 'img', attributes: 'bold', inside: 'p' } );
 			schema.allow( { name: '$text', inside: 'img' } );
 
-			setData( document, '<p>foo<img>xxx</img>bar</p>' );
+			setData( doc, '[<p>foo<img>xxx</img>bar</p>]' );
 
-			const validRanges = schema.getValidRanges( ranges, attribute );
+			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
 			const sel = new Selection();
 			sel.setRanges( validRanges );
 
@@ -593,18 +593,40 @@ describe( 'Schema', () => {
 			schema.allow( { name: '$text', inside: 'img' } );
 			schema.allow( { name: '$text', attributes: 'bold', inside: 'img' } );
 
-			setData( document, '<p>foo<img>xxx</img>bar</p>' );
+			setData( doc, '[<p>foo<img>xxx</img>bar</p>]' );
 
-			const validRanges = schema.getValidRanges( ranges, attribute );
+			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
 			const sel = new Selection();
 			sel.setRanges( validRanges );
 
 			expect( stringify( root, sel ) ).to.equal( '[<p>foo]<img>[xxx]</img>[bar</p>]' );
 		} );
 
+		it( 'should not leak beyond the given ranges', () => {
+			setData( doc, '<p>[foo<img></img>bar]x[bar<img></img>foo]</p>' );
+
+			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
+			const sel = new Selection();
+			sel.setRanges( validRanges );
+
+			expect( stringify( root, sel ) ).to.equal( '<p>[foo]<img></img>[bar]x[bar]<img></img>[foo]</p>' );
+		} );
+
+		it( 'should correctly handle a range which ends in a disallowed position', () => {
+			schema.allow( { name: '$text', inside: 'img' } );
+
+			setData( doc, '<p>[foo<img>bar]</img>bom</p>' );
+
+			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
+			const sel = new Selection();
+			sel.setRanges( validRanges );
+
+			expect( stringify( root, sel ) ).to.equal( '<p>[foo]<img>bar</img>bom</p>' );
+		} );
+
 		it( 'should split range into two ranges and omit disallowed element', () => {
 			// Disallow bold on img.
-			document.schema.disallow( { name: 'img', attributes: 'bold', inside: 'p' } );
+			doc.schema.disallow( { name: 'img', attributes: 'bold', inside: 'p' } );
 
 			const result = schema.getValidRanges( ranges, attribute );
 

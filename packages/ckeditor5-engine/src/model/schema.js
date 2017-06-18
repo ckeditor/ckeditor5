@@ -13,7 +13,6 @@ import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import isArray from '@ckeditor/ckeditor5-utils/src/lib/lodash/isArray';
 import isString from '@ckeditor/ckeditor5-utils/src/lib/lodash/isString';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import TreeWalker from './treewalker';
 import Range from './range';
 
 /**
@@ -354,27 +353,23 @@ export default class Schema {
 		const validRanges = [];
 
 		for ( const range of ranges ) {
-			const walker = new TreeWalker( { boundaries: range, mergeCharacters: true } );
-			let step = walker.next();
-
 			let last = range.start;
 			let from = range.start;
 			const to = range.end;
 
-			while ( !step.done ) {
-				const name = step.value.item.name || '$text';
-				const itemPosition = Position.createBefore( step.value.item );
+			for ( const value of range.getWalker() ) {
+				const name = value.item.name || '$text';
+				const itemPosition = Position.createBefore( value.item );
 
 				if ( !this.check( { name, inside: itemPosition, attributes: attribute } ) ) {
 					if ( !from.isEqual( last ) ) {
 						validRanges.push( new Range( from, last ) );
 					}
 
-					from = walker.position;
+					from = value.nextPosition;
 				}
 
-				last = walker.position;
-				step = walker.next();
+				last = value.nextPosition;
 			}
 
 			if ( from && !from.isEqual( to ) ) {
