@@ -5,7 +5,7 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Autoformat from '../../src/autoformat';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import List from '@ckeditor/ckeditor5-list/src/list';
