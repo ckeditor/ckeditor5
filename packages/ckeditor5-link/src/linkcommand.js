@@ -10,8 +10,6 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import getSchemaValidRanges from '@ckeditor/ckeditor5-core/src/command/helpers/getschemavalidranges';
-import isAttributeAllowedInSelection from '@ckeditor/ckeditor5-core/src/command/helpers/isattributeallowedinselection';
 import findLinkRange from './findlinkrange';
 
 /**
@@ -35,7 +33,7 @@ export default class LinkCommand extends Command {
 		const doc = this.editor.document;
 
 		this.value = doc.selection.getAttribute( 'linkHref' );
-		this.isEnabled = isAttributeAllowedInSelection( 'linkHref', doc.selection, doc.schema );
+		this.isEnabled = doc.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
 	}
 
 	/**
@@ -55,12 +53,12 @@ export default class LinkCommand extends Command {
 	 * @param {String} href Link destination.
 	 */
 	execute( href ) {
-		const document = this.editor.document;
-		const selection = document.selection;
+		const doc = this.editor.document;
+		const selection = doc.selection;
 
-		document.enqueueChanges( () => {
+		doc.enqueueChanges( () => {
 			// Keep it as one undo step.
-			const batch = document.batch();
+			const batch = doc.batch();
 
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
 			if ( selection.isCollapsed ) {
@@ -88,7 +86,7 @@ export default class LinkCommand extends Command {
 			} else {
 				// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges
 				// omitting nodes where `linkHref` attribute is disallowed.
-				const ranges = getSchemaValidRanges( 'linkHref', selection.getRanges(), document.schema );
+				const ranges = doc.schema.getValidRanges( selection.getRanges(), 'linkHref' );
 
 				for ( const range of ranges ) {
 					batch.setAttribute( range, 'linkHref', href );
