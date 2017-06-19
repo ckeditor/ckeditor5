@@ -68,7 +68,7 @@ export default class AttributeCommand extends Command {
 	 *
 	 * The execution result differs, depending on the {@link module:engine/model/document~Document#selection}:
 	 *
-	 * * if selection is on a range, the command applies the attribute on all nodes in that ranges
+	 * * if selection is on a range, the command applies the attribute on all nodes in that range
 	 * (if they are allowed to have this attribute by the {@link module:engine/model/schema~Schema schema}),
 	 * * if selection is collapsed in non-empty node, the command applies attribute to the
 	 * {@link module:engine/model/document~Document#selection} itself (note that typed characters copy attributes from selection),
