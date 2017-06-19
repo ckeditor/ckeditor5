@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import EssentialsPlugin from '@ckeditor/ckeditor5-presets/src/essentials';
 import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';

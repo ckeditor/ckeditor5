@@ -6,7 +6,7 @@
 /* globals document */
 
 import { ClassicEditor } from '../ckeditor';
-import BaseClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import BaseClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 describe( 'ClassicEditor', () => {
 	let editor, editorElement;
