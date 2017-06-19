@@ -7,8 +7,11 @@ import { default as Schema, SchemaItem } from '../../../src/model/schema';
 import Document from '../../../src/model/document';
 import Element from '../../../src/model/element';
 import Position from '../../../src/model/position';
+import Range from '../../../src/model/range';
+import Selection from '../../../src/model/selection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { setData, stringify } from '../../../src/dev-utils/model';
 
 testUtils.createSinonSandbox();
 
@@ -61,7 +64,7 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( 'registerItem', () => {
+	describe( 'registerItem()', () => {
 		it( 'should register in schema item under given name', () => {
 			schema.registerItem( 'new' );
 
@@ -101,7 +104,7 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( 'hasItem', () => {
+	describe( 'hasItem()', () => {
 		it( 'should return true if given item name has been registered in schema', () => {
 			expect( schema.hasItem( '$block' ) ).to.be.true;
 		} );
@@ -111,7 +114,7 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( '_getItem', () => {
+	describe( '_getItem()', () => {
 		it( 'should return SchemaItem registered under given name', () => {
 			schema.registerItem( 'new' );
 
@@ -127,7 +130,7 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( 'allow', () => {
+	describe( 'allow()', () => {
 		it( 'should add passed query to allowed in schema', () => {
 			schema.registerItem( 'p', '$block' );
 			schema.registerItem( 'div', '$block' );
@@ -140,7 +143,7 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( 'disallow', () => {
+	describe( 'disallow()', () => {
 		it( 'should add passed query to disallowed in schema', () => {
 			schema.registerItem( 'p', '$block' );
 			schema.registerItem( 'div', '$block' );
@@ -155,7 +158,7 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( 'check', () => {
+	describe( 'check()', () => {
 		describe( 'string or array of strings as inside', () => {
 			it( 'should return false if given element is not registered in schema', () => {
 				expect( schema.check( { name: 'new', inside: [ 'div', 'header' ] } ) ).to.be.false;
@@ -409,7 +412,7 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( 'itemExtends', () => {
+	describe( 'itemExtends()', () => {
 		it( 'should return true if given item extends another given item', () => {
 			schema.registerItem( 'div', '$block' );
 			schema.registerItem( 'myDiv', 'div' );
@@ -438,7 +441,7 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( '_normalizeQueryPath', () => {
+	describe( '_normalizeQueryPath()', () => {
 		it( 'should normalize string with spaces to an array of strings', () => {
 			expect( Schema._normalizeQueryPath( '$root div strong' ) ).to.deep.equal( [ '$root', 'div', 'strong' ] );
 		} );
@@ -469,6 +472,169 @@ describe( 'Schema', () => {
 			];
 
 			expect( Schema._normalizeQueryPath( input ) ).to.deep.equal( [ '$root', 'div', 'p', 'strong' ] );
+		} );
+	} );
+
+	describe( 'checkAttributeInSelection()', () => {
+		const attribute = 'bold';
+		let doc, schema;
+
+		beforeEach( () => {
+			doc = new Document();
+			doc.createRoot();
+
+			schema = doc.schema;
+
+			schema.registerItem( 'p', '$block' );
+			schema.registerItem( 'h1', '$block' );
+			schema.registerItem( 'img', '$inline' );
+
+			// Bold text is allowed only in P.
+			schema.allow( { name: '$text', attributes: 'bold', inside: 'p' } );
+			schema.allow( { name: 'p', attributes: 'bold', inside: '$root' } );
+
+			// Disallow bold on image.
+			schema.disallow( { name: 'img', attributes: 'bold', inside: '$root' } );
+		} );
+
+		describe( 'when selection is collapsed', () => {
+			it( 'should return true if characters with the attribute can be placed at caret position', () => {
+				setData( doc, '<p>f[]oo</p>' );
+				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
+			} );
+
+			it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
+				setData( doc, '<h1>[]</h1>' );
+				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
+
+				setData( doc, '[]' );
+				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'when selection is not collapsed', () => {
+			it( 'should return true if there is at least one node in selection that can have the attribute', () => {
+				// Simple selection on a few characters.
+				setData( doc, '<p>[foo]</p>' );
+				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
+
+				// Selection spans over characters but also include nodes that can't have attribute.
+				setData( doc, '<p>fo[o<img />b]ar</p>' );
+				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
+
+				// Selection on whole root content. Characters in P can have an attribute so it's valid.
+				setData( doc, '[<p>foo<img />bar</p><h1></h1>]' );
+				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
+
+				// Selection on empty P. P can have the attribute.
+				setData( doc, '[<p></p>]' );
+				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
+			} );
+
+			it( 'should return false if there are no nodes in selection that can have the attribute', () => {
+				// Selection on DIV which can't have bold text.
+				setData( doc, '[<h1></h1>]' );
+				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
+
+				// Selection on two images which can't be bold.
+				setData( doc, '<p>foo[<img /><img />]bar</p>' );
+				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
+			} );
+		} );
+	} );
+
+	describe( 'getValidRanges()', () => {
+		const attribute = 'bold';
+		let doc, root, schema, ranges;
+
+		beforeEach( () => {
+			doc = new Document();
+			schema = doc.schema;
+			root = doc.createRoot();
+
+			schema.registerItem( 'p', '$block' );
+			schema.registerItem( 'h1', '$block' );
+			schema.registerItem( 'img', '$inline' );
+
+			schema.allow( { name: '$text', attributes: 'bold', inside: 'p' } );
+			schema.allow( { name: 'p', attributes: 'bold', inside: '$root' } );
+
+			setData( doc, '<p>foo<img />bar</p>' );
+			ranges = [ Range.createOn( root.getChild( 0 ) ) ];
+		} );
+
+		it( 'should return unmodified ranges when attribute is allowed on each item (text is not allowed in img)', () => {
+			schema.allow( { name: 'img', attributes: 'bold', inside: 'p' } );
+
+			expect( schema.getValidRanges( ranges, attribute ) ).to.deep.equal( ranges );
+		} );
+
+		it( 'should return unmodified ranges when attribute is allowed on each item (text is allowed in img)', () => {
+			schema.allow( { name: 'img', attributes: 'bold', inside: 'p' } );
+			schema.allow( { name: '$text', inside: 'img' } );
+
+			expect( schema.getValidRanges( ranges, attribute ) ).to.deep.equal( ranges );
+		} );
+
+		it( 'should return two ranges when attribute is not allowed on one item', () => {
+			schema.allow( { name: 'img', attributes: 'bold', inside: 'p' } );
+			schema.allow( { name: '$text', inside: 'img' } );
+
+			setData( doc, '[<p>foo<img>xxx</img>bar</p>]' );
+
+			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
+			const sel = new Selection();
+			sel.setRanges( validRanges );
+
+			expect( stringify( root, sel ) ).to.equal( '[<p>foo<img>]xxx[</img>bar</p>]' );
+		} );
+
+		it( 'should return three ranges when attribute is not allowed on one element but is allowed on its child', () => {
+			schema.allow( { name: '$text', inside: 'img' } );
+			schema.allow( { name: '$text', attributes: 'bold', inside: 'img' } );
+
+			setData( doc, '[<p>foo<img>xxx</img>bar</p>]' );
+
+			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
+			const sel = new Selection();
+			sel.setRanges( validRanges );
+
+			expect( stringify( root, sel ) ).to.equal( '[<p>foo]<img>[xxx]</img>[bar</p>]' );
+		} );
+
+		it( 'should not leak beyond the given ranges', () => {
+			setData( doc, '<p>[foo<img></img>bar]x[bar<img></img>foo]</p>' );
+
+			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
+			const sel = new Selection();
+			sel.setRanges( validRanges );
+
+			expect( stringify( root, sel ) ).to.equal( '<p>[foo]<img></img>[bar]x[bar]<img></img>[foo]</p>' );
+		} );
+
+		it( 'should correctly handle a range which ends in a disallowed position', () => {
+			schema.allow( { name: '$text', inside: 'img' } );
+
+			setData( doc, '<p>[foo<img>bar]</img>bom</p>' );
+
+			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
+			const sel = new Selection();
+			sel.setRanges( validRanges );
+
+			expect( stringify( root, sel ) ).to.equal( '<p>[foo]<img>bar</img>bom</p>' );
+		} );
+
+		it( 'should split range into two ranges and omit disallowed element', () => {
+			// Disallow bold on img.
+			doc.schema.disallow( { name: 'img', attributes: 'bold', inside: 'p' } );
+
+			const result = schema.getValidRanges( ranges, attribute );
+
+			expect( result ).to.length( 2 );
+			expect( result[ 0 ].start.path ).to.members( [ 0 ] );
+			expect( result[ 0 ].end.path ).to.members( [ 0, 3 ] );
+			expect( result[ 1 ].start.path ).to.members( [ 0, 4 ] );
+			expect( result[ 1 ].end.path ).to.members( [ 1 ] );
 		} );
 	} );
 } );
