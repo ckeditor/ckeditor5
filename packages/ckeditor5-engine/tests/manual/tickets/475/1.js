@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
