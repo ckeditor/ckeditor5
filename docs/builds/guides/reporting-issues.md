@@ -21,9 +21,9 @@ Most of the issues are reproducible on the demo. If you have a different case th
 
 ## Reporting Issues
 
-All issues should be reported on the [CKEditor 5 repositories](https://github.com/ckeditor?q=ckeditor5) in GitHub.
+All issues should be reported in the [CKEditor 5 repositories](https://github.com/ckeditor?q=ckeditor5) on GitHub.
 
-Issues related to builds are usually due to issues in the CKEditor 5 Framework components and plugins included in the build. You may report issues directly into the repositories that you think are related to them (like plugins) but, if you are unsure, the [`ckeditor5` issues page](https://github.com/ckeditor/ckeditor5/issues) should be used as the fallback place for any issue. The CKEditor 5 team will them take steps to move the issue to the right place or give you further instructions, if necessary.
+Issues related to builds are usually caused by issues in the CKEditor 5 Framework components and plugins included in the build. You may report issues directly into the repositories that you think are related to them (like plugins) but, if you are unsure, the [`ckeditor5` issues page](https://github.com/ckeditor/ckeditor5/issues) should be used as the fallback place for any issue. The CKEditor 5 team will then take steps to move the issue to the right place or give you further instructions, if necessary.
 
-Issues on third party plugins should be reported to their developers directly.
+Issues with third party plugins should be reported directly to their developers.
 
