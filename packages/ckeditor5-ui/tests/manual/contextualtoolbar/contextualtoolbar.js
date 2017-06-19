@@ -5,7 +5,7 @@
 
 /* globals window, document, console:false */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
 import ContextualToolbar from '../../../src/toolbar/contextual/contextualtoolbar';
 

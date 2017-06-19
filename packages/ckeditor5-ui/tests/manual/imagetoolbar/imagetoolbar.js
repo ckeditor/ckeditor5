@@ -5,7 +5,7 @@
 
 /* globals window, document, console:false */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
