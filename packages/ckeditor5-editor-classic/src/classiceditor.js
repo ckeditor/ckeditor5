@@ -4,7 +4,7 @@
  */
 
 /**
- * @module editor-classic/classic
+ * @module editor-classic/classiceditor
  */
 
 import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
@@ -74,8 +74,8 @@ export default class ClassicEditor extends StandardEditor {
 	 *			console.error( err.stack );
 	 *		} );
 	 *
-	 * @param {HTMLElement} element See {@link module:editor-classic/classic~ClassicEditor#constructor}'s parameters.
-	 * @param {Object} config See {@link module:editor-classic/classic~ClassicEditor#constructor}'s parameters.
+	 * @param {HTMLElement} element See {@link module:editor-classic/classiceditor~ClassicEditor#constructor}'s parameters.
+	 * @param {Object} config See {@link module:editor-classic/classiceditor~ClassicEditor#constructor}'s parameters.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * @returns {module:core/editor/standardeditor~StandardEditor} return.editor The editor instance.
 	 */
