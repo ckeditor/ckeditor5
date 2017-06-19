@@ -14,6 +14,7 @@ import DomEmmiterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
@@ -100,6 +101,16 @@ export default class View {
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
 		this._unboundChildren = this.createCollection();
+
+		/**
+		 * Specifies whether the instance was destroyed using {@link #destroy} method
+		 * in the past.
+		 *
+		 * @private
+		 * @readonly
+		 * @member {Boolean}
+		 */
+		this._wasDestroyed = false;
 
 		// Pass parent locale to its children.
 		this._viewCollections.on( 'add', ( evt, collection ) => {
@@ -307,15 +318,22 @@ export default class View {
 	 * @returns {Promise} A Promise resolved when the destruction process is finished.
 	 */
 	destroy() {
+		/**
+		 * The view has already been destroyed. If you see this warning, it means that some piece
+		 * of code attempted to destroy it again, which usually may (but not must) be a symptom of
+		 * a broken destruction logic in a code that uses this view instance.
+		 *
+		 * @error ui-view-destroy-again
+		 */
+		if ( this._wasDestroyed ) {
+			log.warn( 'ui-view-destroy-again: The view has already been destroyed.', { view: this } );
+		}
+
 		this.stopListening();
 
 		return Promise.all( this._viewCollections.map( c => c.destroy() ) )
 			.then( () => {
-				this._unboundChildren.clear();
-				this._viewCollections.clear();
-
-				this.element = this.template = this.locale = this.t =
-					this._viewCollections = this._unboundChildren = null;
+				this._wasDestroyed = true;
 			} );
 	}
 
