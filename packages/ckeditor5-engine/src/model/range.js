@@ -402,7 +402,7 @@ export default class Range {
 	 * moved to a different part of document tree). For this reason, an array is returned by this method and it
 	 * may contain one or more `Range` instances.
 	 *
-	 * @param {Iterable.<module:engine/model/delta~Delta>} deltas Deltas to transform the range by.
+	 * @param {Iterable.<module:engine/model/delta/delta~Delta>} deltas Deltas to transform the range by.
 	 * @returns {Array.<module:engine/model/range~Range>} Range which is the result of transformation.
 	 */
 	getTransformedByDeltas( deltas ) {

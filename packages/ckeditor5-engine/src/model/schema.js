@@ -13,6 +13,7 @@ import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import isArray from '@ckeditor/ckeditor5-utils/src/lib/lodash/isArray';
 import isString from '@ckeditor/ckeditor5-utils/src/lib/lodash/isString';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Range from './range';
 
 /**
  * Schema is a definition of the structure of the document. It allows to define which tree model items (element, text, etc.)
@@ -306,6 +307,80 @@ export default class Schema {
 	}
 
 	/**
+	 * Checks whether the attribute is allowed in selection:
+	 *
+	 * * if the selection is not collapsed, then checks if the attribute is allowed on any of nodes in that range,
+	 * * if the selection is collapsed, then checks if on the selection position there's a text with the
+	 * specified attribute allowed.
+	 *
+	 * @param {module:engine/model/selection~Selection} selection Selection which will be checked.
+	 * @param {String} attribute The name of the attribute to check.
+	 * @returns {Boolean}
+	 */
+	checkAttributeInSelection( selection, attribute ) {
+		if ( selection.isCollapsed ) {
+			// Check whether schema allows for a text with the attribute in the selection.
+			return this.check( { name: '$text', inside: selection.getFirstPosition(), attributes: attribute } );
+		} else {
+			const ranges = selection.getRanges();
+
+			// For all ranges, check nodes in them until you find a node that is allowed to have the attribute.
+			for ( const range of ranges ) {
+				for ( const value of range ) {
+					// If returned item does not have name property, it is a TextFragment.
+					const name = value.item.name || '$text';
+
+					if ( this.check( { name, inside: value.previousPosition, attributes: attribute } ) ) {
+						// If we found a node that is allowed to have the attribute, return true.
+						return true;
+					}
+				}
+			}
+		}
+
+		// If we haven't found such node, return false.
+		return false;
+	}
+
+	/**
+	 * Transforms the given set ranges into a set of ranges where the given attribute is allowed (and can be applied).
+	 *
+	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to be validated.
+	 * @param {String} attribute The name of the attribute to check.
+	 * @returns {Array.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
+	 */
+	getValidRanges( ranges, attribute ) {
+		const validRanges = [];
+
+		for ( const range of ranges ) {
+			let last = range.start;
+			let from = range.start;
+			const to = range.end;
+
+			for ( const value of range.getWalker() ) {
+				const name = value.item.name || '$text';
+				const itemPosition = Position.createBefore( value.item );
+
+				if ( !this.check( { name, inside: itemPosition, attributes: attribute } ) ) {
+					if ( !from.isEqual( last ) ) {
+						validRanges.push( new Range( from, last ) );
+					}
+
+					from = value.nextPosition;
+				}
+
+				last = value.nextPosition;
+			}
+
+			if ( from && !from.isEqual( to ) ) {
+				validRanges.push( new Range( from, to ) );
+			}
+		}
+
+		return validRanges;
+	}
+
+	/**
 	 * Returns {@link module:engine/model/schema~SchemaItem schema item} that was registered in the schema under given name.
 	 * If item has not been found, throws error.
 	 *
@@ -440,6 +515,20 @@ export class SchemaItem {
 	}
 
 	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @returns {Object} Clone of this object with the parent property replaced with its name.
+	 */
+	toJSON() {
+		const json = clone( this );
+
+		// Due to circular references we need to remove parent reference.
+		json._schema = '[model.Schema]';
+
+		return json;
+	}
+
+	/**
 	 * Adds path to the SchemaItem instance.
 	 *
 	 * @private
@@ -528,20 +617,6 @@ export class SchemaItem {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Custom toJSON method to solve child-parent circular dependencies.
-	 *
-	 * @returns {Object} Clone of this object with the parent property replaced with its name.
-	 */
-	toJSON() {
-		const json = clone( this );
-
-		// Due to circular references we need to remove parent reference.
-		json._schema = '[model.Schema]';
-
-		return json;
 	}
 }
 
