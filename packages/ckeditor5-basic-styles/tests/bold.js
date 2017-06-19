@@ -81,7 +81,12 @@ describe( 'Bold', () => {
 	it( 'should set editor keystroke', () => {
 		const spy = sinon.spy( editor, 'execute' );
 
-		const wasHandled = editor.keystrokes.press( { keyCode: keyCodes.b, ctrlKey: true } );
+		const wasHandled = editor.keystrokes.press( {
+			keyCode: keyCodes.b,
+			ctrlKey: true,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		} );
 
 		expect( wasHandled ).to.be.true;
 		expect( spy.calledOnce ).to.be.true;
