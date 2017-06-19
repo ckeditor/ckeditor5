@@ -43,8 +43,8 @@ export default class InlineEditor extends StandardEditor {
 	 * @returns {Promise}
 	 */
 	destroy() {
-		// Cache the data, then destroy. There's no way to tell whether model->view
-		// conversion will still work properly after StandardEditor#destroy().
+		// Cache the data, then destroy.
+		// It's safe to assume that the model->view conversion will not work after super.destroy().
 		const data = this.getData();
 
 		return this.ui.destroy()
