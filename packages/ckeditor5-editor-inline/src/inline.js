@@ -11,6 +11,7 @@ import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import InlineEditorUI from './inlineeditorui';
 import InlineEditorUIView from './inlineeditoruiview';
+import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
 import '../theme/theme.scss';
 
@@ -42,9 +43,13 @@ export default class InlineEditor extends StandardEditor {
 	 * @returns {Promise}
 	 */
 	destroy() {
+		// Cache the data, then destroy. There's no way to tell whether model->view
+		// conversion will still work properly after StandardEditor#destroy().
+		const data = this.getData();
+
 		return this.ui.destroy()
 			.then( () => super.destroy() )
-			.then( () => this.updateEditorElement() );
+			.then( () => setDataInElement( this.element, data ) );
 	}
 
 	/**
