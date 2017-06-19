@@ -47,7 +47,12 @@ describe( 'Undo', () => {
 	it( 'should set CTRL+Z keystroke', () => {
 		const spy = sinon.stub( editor, 'execute' );
 
-		const wasHandled = editor.keystrokes.press( { keyCode: keyCodes.z, ctrlKey: true } );
+		const wasHandled = editor.keystrokes.press( {
+			keyCode: keyCodes.z,
+			ctrlKey: true,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		} );
 
 		expect( wasHandled ).to.be.true;
 		expect( spy.calledWithExactly( 'undo' ) ).to.be.true;
@@ -56,7 +61,12 @@ describe( 'Undo', () => {
 	it( 'should set CTRL+Y keystroke', () => {
 		const spy = sinon.stub( editor, 'execute' );
 
-		const wasHandled = editor.keystrokes.press( { keyCode: keyCodes.y, ctrlKey: true } );
+		const wasHandled = editor.keystrokes.press( {
+			keyCode: keyCodes.y,
+			ctrlKey: true,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		} );
 
 		expect( wasHandled ).to.be.true;
 		expect( spy.calledWithExactly( 'redo' ) ).to.be.true;
@@ -65,7 +75,13 @@ describe( 'Undo', () => {
 	it( 'should set CTRL+SHIFT+Z keystroke', () => {
 		const spy = sinon.stub( editor, 'execute' );
 
-		const wasHandled = editor.keystrokes.press( { keyCode: keyCodes.z, ctrlKey: true, shiftKey: true } );
+		const wasHandled = editor.keystrokes.press( {
+			keyCode: keyCodes.z,
+			ctrlKey: true,
+			shiftKey: true,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		} );
 
 		expect( wasHandled ).to.be.true;
 		expect( spy.calledWithExactly( 'redo' ) ).to.be.true;
