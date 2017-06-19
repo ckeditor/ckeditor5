@@ -5,7 +5,7 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
