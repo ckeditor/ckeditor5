@@ -352,11 +352,17 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'destroy()', () => {
-		it( 'should remove balloon panel view from editor body collection and clear stack', () => {
+		it( 'can be called multiple times', () => {
+			expect( () => {
+				balloon.destroy();
+				balloon.destroy();
+			} ).to.not.throw();
+		} );
+
+		it( 'should not touch the DOM', () => {
 			balloon.destroy();
 
-			expect( editor.ui.view.body.getIndex( balloon.view ) ).to.equal( -1 );
-			expect( balloon.visibleView ).to.null;
+			expect( editor.ui.view.body.getIndex( balloon.view ) ).to.not.equal( -1 );
 		} );
 	} );
 } );

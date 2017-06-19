@@ -205,14 +205,4 @@ export default class ContextualBalloon extends Plugin {
 	_getBalloonPosition() {
 		return this._stack.values().next().value.position;
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		this.editor.ui.view.body.remove( this.view );
-		this.view.destroy();
-		this._stack.clear();
-		super.destroy();
-	}
 }
