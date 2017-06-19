@@ -178,6 +178,16 @@ describe( 'StickyToolbarView', () => {
 			expect( view.destroy() ).to.be.instanceof( Promise );
 		} );
 
+		it( 'can be called multiple times', done => {
+			expect( () => {
+				view.destroy().then( () => {
+					return view.destroy().then( () => {
+						done();
+					} );
+				} );
+			} ).to.not.throw();
+		} );
+
 		it( 'calls destroy on parent class', () => {
 			const spy = testUtils.sinon.spy( ToolbarView.prototype, 'destroy' );
 

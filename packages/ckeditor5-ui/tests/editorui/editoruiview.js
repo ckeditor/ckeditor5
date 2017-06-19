@@ -51,5 +51,15 @@ describe( 'EditorUIView', () => {
 				expect( el.parentNode ).to.be.null;
 			} );
 		} );
+
+		it( 'can be called multiple times', done => {
+			expect( () => {
+				view.destroy().then( () => {
+					return view.destroy().then( () => {
+						done();
+					} );
+				} );
+			} ).to.not.throw();
+		} );
 	} );
 } );
