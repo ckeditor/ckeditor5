@@ -5,7 +5,7 @@
 
 /* global Event */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ImageBalloonPanel from '../../../src/image/ui/imageballoonpanelview';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
