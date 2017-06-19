@@ -7,7 +7,7 @@ import BoldEngine from '../src/boldengine';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ToggleAttributeCommand from '@ckeditor/ckeditor5-core/src/command/toggleattributecommand';
+import AttributeCommand from '../src/attributecommand';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -39,7 +39,7 @@ describe( 'BoldEngine', () => {
 		it( 'should register bold command', () => {
 			const command = editor.commands.get( 'bold' );
 
-			expect( command ).to.be.instanceOf( ToggleAttributeCommand );
+			expect( command ).to.be.instanceOf( AttributeCommand );
 			expect( command ).to.have.property( 'attributeKey', 'bold' );
 		} );
 	} );
