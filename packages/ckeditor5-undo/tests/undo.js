@@ -74,17 +74,19 @@ describe( 'Undo', () => {
 
 	it( 'should set CTRL+SHIFT+Z keystroke', () => {
 		const spy = sinon.stub( editor, 'execute' );
-
-		const wasHandled = editor.keystrokes.press( {
+		const keyEventData = {
 			keyCode: keyCodes.z,
 			ctrlKey: true,
 			shiftKey: true,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
-		} );
+		};
+
+		const wasHandled = editor.keystrokes.press( keyEventData );
 
 		expect( wasHandled ).to.be.true;
 		expect( spy.calledWithExactly( 'redo' ) ).to.be.true;
+		expect( keyEventData.preventDefault.calledOnce ).to.be.true;
 	} );
 
 	function testButton( featureName, label, featureKeystroke ) {
