@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import ToggleAttributeCommand from '@ckeditor/ckeditor5-core/src/command/toggleattributecommand';
+import AttributeCommand from './attributecommand';
 
 const ITALIC = 'italic';
 
@@ -47,6 +47,6 @@ export default class ItalicEngine extends Plugin {
 			.toAttribute( ITALIC, true );
 
 		// Create italic command.
-		editor.commands.add( ITALIC, new ToggleAttributeCommand( editor, ITALIC ) );
+		editor.commands.add( ITALIC, new AttributeCommand( editor, ITALIC ) );
 	}
 }

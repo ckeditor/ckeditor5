@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import ToggleAttributeCommand from '@ckeditor/ckeditor5-core/src/command/toggleattributecommand';
+import AttributeCommand from './attributecommand';
 
 const BOLD = 'bold';
 
@@ -47,6 +47,6 @@ export default class BoldEngine extends Plugin {
 			.toAttribute( BOLD, true );
 
 		// Create bold command.
-		editor.commands.add( BOLD, new ToggleAttributeCommand( editor, BOLD ) );
+		editor.commands.add( BOLD, new AttributeCommand( editor, BOLD ) );
 	}
 }
