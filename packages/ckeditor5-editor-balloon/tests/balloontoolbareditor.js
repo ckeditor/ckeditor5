@@ -10,7 +10,7 @@ import BalloonToolbarEditorUIView from '../src/balloontoolbareditoruiview';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
-import BalloonToolbarEditor from '../src/balloontoolbar';
+import BalloonToolbarEditor from '../src/balloontoolbareditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';

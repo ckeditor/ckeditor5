@@ -5,7 +5,7 @@
 
 /* globals console:false, document, window */
 
-import BalloonToolbarEditor from '../../src/balloontoolbar';
+import BalloonToolbarEditor from '../../src/balloontoolbareditor';
 import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
 import testUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
