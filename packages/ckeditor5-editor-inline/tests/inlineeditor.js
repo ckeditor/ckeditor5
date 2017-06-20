@@ -173,30 +173,31 @@ describe( 'InlineEditor', () => {
 
 					const schema = editor.document.schema;
 
-					schema.registerItem( 'bold' );
-					schema.allow( { name: 'bold', inside: '$root' } );
-					schema.allow( { name: '$text', inside: 'bold' } );
-
-					buildViewConverter().for( editor.data.viewToModel )
-						.fromElement( 'b' )
-						.toElement( 'bold' );
+					schema.registerItem( 'heading' );
+					schema.allow( { name: 'heading', inside: '$root' } );
+					schema.allow( { name: '$text', inside: 'heading' } );
 
 					buildModelConverter().for( editor.data.modelToView )
-						.fromElement( 'bold' )
-						.toElement( 'b' );
+						.fromElement( 'heading' )
+						.toElement( 'heading' );
+
+					buildViewConverter().for( editor.data.viewToModel )
+						.fromElement( 'heading' )
+						.toElement( 'heading' );
 
 					buildModelConverter().for( editor.editing.modelToView )
-						.fromElement( 'bold' )
-						.toElement( 'i-should-never-show-up-in-data' );
+						.fromElement( 'heading' )
+						.toElement( 'heading-editing-representation' );
 				} );
 		} );
 
 		it( 'sets the data back to the editor element', () => {
-			editor.setData( '<p>a</p><b>b</b>' );
+			editor.setData( '<p>a</p><heading>b</heading>' );
 
 			return editor.destroy()
 				.then( () => {
-					expect( editorElement.innerHTML ).to.equal( '<p>a</p><b>b</b>' );
+					expect( editorElement.innerHTML )
+						.to.equal( '<p>a</p><heading>b</heading>' );
 				} );
 		} );
 	} );
