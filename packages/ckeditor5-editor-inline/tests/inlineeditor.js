@@ -9,6 +9,8 @@ import InlineEditorUI from '../src/inlineeditorui';
 import InlineEditorUIView from '../src/inlineeditoruiview';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 
 import InlineEditor from '../src/inlineeditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -168,15 +170,34 @@ describe( 'InlineEditor', () => {
 			return InlineEditor.create( editorElement, { plugins: [ Paragraph ] } )
 				.then( newEditor => {
 					editor = newEditor;
+
+					const schema = editor.document.schema;
+
+					schema.registerItem( 'heading' );
+					schema.allow( { name: 'heading', inside: '$root' } );
+					schema.allow( { name: '$text', inside: 'heading' } );
+
+					buildModelConverter().for( editor.data.modelToView )
+						.fromElement( 'heading' )
+						.toElement( 'heading' );
+
+					buildViewConverter().for( editor.data.viewToModel )
+						.fromElement( 'heading' )
+						.toElement( 'heading' );
+
+					buildModelConverter().for( editor.editing.modelToView )
+						.fromElement( 'heading' )
+						.toElement( 'heading-editing-representation' );
 				} );
 		} );
 
 		it( 'sets the data back to the editor element', () => {
-			editor.setData( '<p>foo</p>' );
+			editor.setData( '<p>a</p><heading>b</heading>' );
 
 			return editor.destroy()
 				.then( () => {
-					expect( editorElement.innerHTML ).to.equal( '<p>foo</p>' );
+					expect( editorElement.innerHTML )
+						.to.equal( '<p>a</p><heading>b</heading>' );
 				} );
 		} );
 	} );
