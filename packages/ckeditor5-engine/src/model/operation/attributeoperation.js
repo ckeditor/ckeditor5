@@ -89,15 +89,17 @@ export default class AttributeOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
-	 * @returns {module:engine/model/operation/attributeoperation~AttributeOperation}
+	 * Creates and returns an operation that has the same parameters as this operation.
+	 *
+	 * @returns {module:engine/model/operation/attributeoperation~AttributeOperation} Clone of this operation.
 	 */
 	clone() {
 		return new AttributeOperation( this.range, this.key, this.oldValue, this.newValue, this.baseVersion );
 	}
 
 	/**
-	 * @inheritDoc
+	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
+	 *
 	 * @returns {module:engine/model/operation/attributeoperation~AttributeOperation}
 	 */
 	getReversed() {

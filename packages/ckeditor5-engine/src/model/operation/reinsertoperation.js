@@ -41,7 +41,8 @@ export default class ReinsertOperation extends MoveOperation {
 	}
 
 	/**
-	 * @inheritDoc
+	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
+	 *
 	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
 	 */
 	getReversed() {

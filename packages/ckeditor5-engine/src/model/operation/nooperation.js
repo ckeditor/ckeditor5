@@ -21,15 +21,17 @@ import Operation from './operation';
  */
 export default class NoOperation extends Operation {
 	/**
-	 * @inheritDoc
-	 * @returns {module:engine/model/operation/nooperation~NoOperation}
+	 * Creates and returns an operation that has the same parameters as this operation.
+	 *
+	 * @returns {module:engine/model/operation/nooperation~NoOperation} Clone of this operation.
 	 */
 	clone() {
 		return new NoOperation( this.baseVersion );
 	}
 
 	/**
-	 * @inheritDoc
+	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
+	 *
 	 * @returns {module:engine/model/operation/nooperation~NoOperation}
 	 */
 	getReversed() {

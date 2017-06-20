@@ -79,7 +79,8 @@ export default class RemoveOperation extends MoveOperation {
 	}
 
 	/**
-	 * @inheritDoc
+	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
+	 *
 	 * @returns {module:engine/model/operation/reinsertoperation~ReinsertOperation}
 	 */
 	getReversed() {
@@ -87,8 +88,9 @@ export default class RemoveOperation extends MoveOperation {
 	}
 
 	/**
-	 * @inheritDoc
-	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
+	 * Creates and returns an operation that has the same parameters as this operation.
+	 *
+	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation} Clone of this operation.
 	 */
 	clone() {
 		const removeOperation = new RemoveOperation( this.sourcePosition, this.howMany, this.baseVersion );

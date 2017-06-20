@@ -56,8 +56,9 @@ export default class InsertOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
-	 * @returns {module:engine/model/operation/insertoperation~InsertOperation}
+	 * Creates and returns an operation that has the same parameters as this operation.
+	 *
+	 * @returns {module:engine/model/operation/insertoperation~InsertOperation} Clone of this operation.
 	 */
 	clone() {
 		const nodes = new NodeList( [ ...this.nodes ].map( node => node.clone( true ) ) );
@@ -66,7 +67,8 @@ export default class InsertOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
+	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
+	 *
 	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
 	 */
 	getReversed() {

@@ -80,13 +80,17 @@ export default class RootAttributeOperation extends Operation {
 	}
 
 	/**
-	 * @returns {module:engine/model/operation/rootattributeoperation~RootAttributeOperation}
+	 * Creates and returns an operation that has the same parameters as this operation.
+	 *
+	 * @returns {module:engine/model/operation/rootattributeoperation~RootAttributeOperation} Clone of this operation.
 	 */
 	clone() {
 		return new RootAttributeOperation( this.root, this.key, this.oldValue, this.newValue, this.baseVersion );
 	}
 
 	/**
+	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
+	 *
 	 * @returns {module:engine/model/operation/rootattributeoperation~RootAttributeOperation}
 	 */
 	getReversed() {

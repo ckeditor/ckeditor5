@@ -65,15 +65,17 @@ export default class MarkerOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
-	 * @returns {module:engine/model/operation/markeroperation~MarkerOperation}
+	 * Creates and returns an operation that has the same parameters as this operation.
+	 *
+	 * @returns {module:engine/model/operation/markeroperation~MarkerOperation} Clone of this operation.
 	 */
 	clone() {
 		return new MarkerOperation( this.name, this.oldRange, this.newRange, this._markers, this.baseVersion );
 	}
 
 	/**
-	 * @inheritDoc
+	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
+	 *
 	 * @returns {module:engine/model/operation/markeroperation~MarkerOperation}
 	 */
 	getReversed() {

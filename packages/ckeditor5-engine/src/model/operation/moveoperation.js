@@ -17,6 +17,8 @@ import writer from './../writer';
 /**
  * Operation to move a range of {@link module:engine/model/item~Item model items}
  * to given {@link module:engine/model/position~Position target position}.
+ *
+ * @extends module:engine/model/operation/operation~Operation
  */
 export default class MoveOperation extends Operation {
 	/**
@@ -72,8 +74,9 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
-	 * @returns {module:engine/model/operation/moveoperation~MoveOperation}
+	 * Creates and returns an operation that has the same parameters as this operation.
+	 *
+	 * @returns {module:engine/model/operation/moveoperation~MoveOperation} Clone of this operation.
 	 */
 	clone() {
 		const op = new this.constructor( this.sourcePosition, this.howMany, this.targetPosition, this.baseVersion );
@@ -101,7 +104,8 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
+	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
+	 *
 	 * @returns {module:engine/model/operation/moveoperation~MoveOperation}
 	 */
 	getReversed() {

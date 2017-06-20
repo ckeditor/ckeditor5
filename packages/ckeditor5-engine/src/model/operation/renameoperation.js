@@ -61,15 +61,17 @@ export default class RenameOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
-	 * @returns {module:engine/model/operation/renameoperation~RenameOperation}
+	 * Creates and returns an operation that has the same parameters as this operation.
+	 *
+	 * @returns {module:engine/model/operation/renameoperation~RenameOperation} Clone of this operation.
 	 */
 	clone() {
 		return new RenameOperation( Position.createFromPosition( this.position ), this.oldName, this.newName, this.baseVersion );
 	}
 
 	/**
-	 * @inheritDoc
+	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
+	 *
 	 * @returns {module:engine/model/operation/renameoperation~RenameOperation}
 	 */
 	getReversed() {
