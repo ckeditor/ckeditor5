@@ -5,7 +5,7 @@
 
 /* globals console:false, document, window */
 
-import InlineEditor from '../../src/inline';
+import InlineEditor from '../../src/inlineeditor';
 import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
 import testUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 

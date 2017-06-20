@@ -4,7 +4,7 @@
  */
 
 /**
- * @module editor-inline/inline
+ * @module editor-inline/inlineeditor
  */
 
 import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
@@ -66,8 +66,8 @@ export default class InlineEditor extends StandardEditor {
 	 *			console.error( err.stack );
 	 *		} );
 	 *
-	 * @param {HTMLElement} element See {@link module:editor-inline/inline~InlineEditor#constructor}'s parameters.
-	 * @param {Object} config See {@link module:editor-inline/inline~InlineEditor#constructor}'s parameters.
+	 * @param {HTMLElement} element See {@link module:editor-inline/inlineeditor~InlineEditor#constructor}'s parameters.
+	 * @param {Object} config See {@link module:editor-inline/inlineeditor~InlineEditor#constructor}'s parameters.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * @returns {module:core/editor/standardeditor~StandardEditor} return.editor The editor instance.
 	 */
