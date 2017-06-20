@@ -47,6 +47,16 @@ describe( 'ImageEngine', () => {
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
 			} );
+
+			it( 'should convert with srcset attribute and add sizes attribute', () => {
+				setModelData( document, '<image src="foo.png" alt="alt text" srcset="small 148w, big.png 1024w"></image>' );
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="image">' +
+						'<img srcset="small 148w, big.png 1024w" sizes="100vw" alt="alt text" src="foo.png">' +
+					'</figure>'
+				);
+			} );
 		} );
 
 		describe( 'view to model', () => {
@@ -172,6 +182,28 @@ describe( 'ImageEngine', () => {
 				// be added as a child of foo.jpg and then was autohoisted.
 				expect( getModelData( document, { withoutSelection: true } ) )
 					.to.equal( '<image src="bar.jpg"></image><image src="foo.jpg">abc</image>' );
+			} );
+
+			it( 'should convert image with srcset attribute', () => {
+				editor.setData(
+					'<figure class="image">' +
+						'<img src="foo.png" alt="alt text" srcset="small 148w, big.png 1024w" />' +
+					'</figure>'
+				);
+
+				expect( getModelData( document, { withoutSelection: true } ) )
+					.to.equal( '<image alt="alt text" src="foo.png" srcset="small 148w, big.png 1024w"></image>' );
+			} );
+
+			it( 'should ignore sizes attribute', () => {
+				editor.setData(
+					'<figure class="image">' +
+						'<img src="foo.png" alt="alt text" srcset="small 148w, big.png 1024w" sizes="50vw" />' +
+					'</figure>'
+				);
+
+				expect( getModelData( document, { withoutSelection: true } ) )
+					.to.equal( '<image alt="alt text" src="foo.png" srcset="small 148w, big.png 1024w"></image>' );
 			} );
 
 			describe( 'should autohoist images', () => {
@@ -349,6 +381,33 @@ describe( 'ImageEngine', () => {
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 					'<figure class="image ck-widget" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>'
+				);
+			} );
+
+			it( 'should convert srcset attribute to srcset and sizes', () => {
+				setModelData( document, '<image src="foo.png" alt="alt text" srcset="small 148w, big.png 1024w"></image>' );
+
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<figure class="image ck-widget" contenteditable="false">' +
+						'<img alt="alt text" sizes="100vw" src="foo.png" srcset="small 148w, big.png 1024w"></img>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should remove sizes attribute when srcset attribute is removed', () => {
+				setModelData( document, '<image src="foo.png" srcset="small 148w, big.png 1024w"></image>' );
+				const image = document.getRoot().getChild( 0 );
+
+				document.enqueueChanges( () => {
+					const batch = document.batch();
+
+					batch.removeAttribute( image, 'srcset' );
+				} );
+
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<figure class="image ck-widget" contenteditable="false">' +
+						'<img src="foo.png"></img>' +
+					'</figure>'
 				);
 			} );
 		} );
