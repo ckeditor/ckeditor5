@@ -85,6 +85,16 @@ describe( 'EditableUIView', () => {
 			} );
 		} );
 
+		it( 'can be called multiple times', done => {
+			expect( () => {
+				view.destroy().then( () => {
+					return view.destroy().then( () => {
+						done();
+					} );
+				} );
+			} ).to.not.throw();
+		} );
+
 		describe( 'when #editableElement as an argument', () => {
 			it( 'reverts contentEditable property of editableElement (was false)', () => {
 				editableElement = document.createElement( 'div' );

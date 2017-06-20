@@ -262,41 +262,55 @@ describe( 'View', () => {
 		beforeEach( createViewWithChildren );
 
 		it( 'should return a promise', () => {
-			expect( view.destroy() ).to.be.instanceof( Promise );
+			const promise = view.destroy();
+
+			expect( promise ).to.be.instanceof( Promise );
+
+			return promise;
 		} );
 
-		it( 'should set basic properties null', () => {
-			return view.destroy().then( () => {
-				expect( view.element ).to.be.null;
-				expect( view.template ).to.be.null;
-				expect( view.locale ).to.be.null;
-				expect( view.t ).to.be.null;
+		it( 'can be called multiple times', done => {
+			expect( () => {
+				view.destroy().then( () => {
+					return view.destroy().then( () => {
+						done();
+					} );
+				} );
+			} ).to.not.throw();
+		} );
 
-				expect( view._unboundChildren ).to.be.null;
-				expect( view._viewCollections ).to.be.null;
+		it( 'should not touch the basic properties', () => {
+			return view.destroy().then( () => {
+				expect( view.element ).to.be.an.instanceof( HTMLElement );
+				expect( view.template ).to.be.an.instanceof( Template );
+				expect( view.locale ).to.be.an( 'object' );
+				expect( view.locale.t ).to.be.a( 'function' );
+
+				expect( view._viewCollections ).to.be.instanceOf( Collection );
+				expect( view._unboundChildren ).to.be.instanceOf( ViewCollection );
 			} );
 		} );
 
-		it( 'clears #_unboundChildren', () => {
+		it( 'should not clear the #_unboundChildren', () => {
 			const cached = view._unboundChildren;
 
 			return view.addChildren( [ new View(), new View() ] )
 				.then( () => {
-					expect( cached ).to.have.length.above( 2 );
+					expect( cached ).to.have.length( 4 );
 
 					return view.destroy().then( () => {
-						expect( cached ).to.have.length( 0 );
+						expect( cached ).to.have.length( 4 );
 					} );
 				} );
 		} );
 
-		it( 'clears #_viewCollections', () => {
+		it( 'should not clear the #_viewCollections', () => {
 			const cached = view._viewCollections;
 
 			expect( cached ).to.have.length( 1 );
 
 			return view.destroy().then( () => {
-				expect( cached ).to.have.length( 0 );
+				expect( cached ).to.have.length( 1 );
 			} );
 		} );
 
@@ -326,11 +340,15 @@ describe( 'View', () => {
 		} );
 
 		it( 'destroy a template–less view', () => {
+			let promise;
+
 			view = new View();
 
 			expect( () => {
-				view.destroy();
+				promise = view.destroy();
 			} ).to.not.throw();
+
+			return promise;
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-ui/issues/203
@@ -382,6 +400,8 @@ function setTestViewClass( templateDef ) {
 	TestView = class V extends View {
 		constructor() {
 			super();
+
+			this.locale = { t() {} };
 
 			if ( templateDef ) {
 				this.template = new Template( templateDef );

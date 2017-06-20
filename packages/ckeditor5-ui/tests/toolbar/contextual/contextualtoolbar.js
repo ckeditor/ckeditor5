@@ -291,6 +291,13 @@ describe( 'ContextualToolbar', () => {
 	} );
 
 	describe( 'destroy()', () => {
+		it( 'can be called multiple times', () => {
+			expect( () => {
+				contextualToolbar.destroy();
+				contextualToolbar.destroy();
+			} ).to.not.throw();
+		} );
+
 		it( 'should not fire `_selectionChangeDebounced` after plugin destroy', done => {
 			const spy = sandbox.spy();
 

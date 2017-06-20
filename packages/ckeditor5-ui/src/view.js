@@ -309,14 +309,7 @@ export default class View {
 	destroy() {
 		this.stopListening();
 
-		return Promise.all( this._viewCollections.map( c => c.destroy() ) )
-			.then( () => {
-				this._unboundChildren.clear();
-				this._viewCollections.clear();
-
-				this.element = this.template = this.locale = this.t =
-					this._viewCollections = this._unboundChildren = null;
-			} );
+		return Promise.all( this._viewCollections.map( c => c.destroy() ) );
 	}
 
 	/**
