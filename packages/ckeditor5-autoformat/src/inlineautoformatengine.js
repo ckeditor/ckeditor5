@@ -8,7 +8,6 @@
  */
 
 import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
-import getSchemaValidRanges from '@ckeditor/ckeditor5-core/src/command/helpers/getschemavalidranges';
 
 /**
  * The inline autoformatting engine. Allows to format various inline patterns. For example,
@@ -39,7 +38,7 @@ export default class InlineAutoformatEngine {
 	 *		// - first to match starting `**` delimiter,
 	 *		// - second to match text to format,
 	 *		// - third to match ending `**` delimiter.
-	 *		new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
+	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
 	 *
 	 * When function is provided instead of RegExp, it will be executed with text to match as a parameter. Function
 	 * should return proper "ranges" to delete and format.
@@ -58,18 +57,16 @@ export default class InlineAutoformatEngine {
 	 * formatting.
 	 *
 	 *		// Use attribute name:
-	 *		new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
+	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
 	 *
 	 *		// Use formatting callback:
-	 *		new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+?)(\*\*)$/g, ( batch, validRanges ) => {
+	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, ( batch, validRanges ) => {
 	 *			for ( let range of validRanges ) {
 	 *				batch.setAttribute( range, command, true );
 	 *			}
 	 *		} );
 	 */
 	constructor( editor, testRegexpOrCallback, attributeOrCallback ) {
-		this.editor = editor;
-
 		let regExp;
 		let command;
 		let testCallback;
@@ -144,7 +141,7 @@ export default class InlineAutoformatEngine {
 				return;
 			}
 
-			const selection = this.editor.document.selection;
+			const selection = editor.document.selection;
 
 			if ( !selection.isCollapsed || !selection.focus || !selection.focus.parent ) {
 				return;
@@ -188,7 +185,7 @@ export default class InlineAutoformatEngine {
 			const batch = editor.document.batch();
 
 			editor.document.enqueueChanges( () => {
-				const validRanges = getSchemaValidRanges( command, rangesToFormat, editor.document.schema );
+				const validRanges = editor.document.schema.getValidRanges( rangesToFormat, command );
 
 				// Apply format.
 				formatCallback( batch, validRanges );
