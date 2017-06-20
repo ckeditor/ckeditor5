@@ -96,7 +96,7 @@ mix( Plugin, ObservableMixin );
  *			static get requires() {
  *				return [ Image ];
  *			}
- *      }
+ *		}
  *
  * @static
  * @readonly

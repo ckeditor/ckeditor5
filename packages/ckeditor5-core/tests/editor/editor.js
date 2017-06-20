@@ -9,6 +9,10 @@ import Editor from '../../src/editor/editor';
 import Plugin from '../../src/plugin';
 import Config from '@ckeditor/ckeditor5-utils/src/config';
 import PluginCollection from '../../src/plugincollection';
+import CommandCollection from '../../src/commandcollection';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import Command from '../../src/command';
 
 class PluginA extends Plugin {
 	constructor( editor ) {
@@ -98,7 +102,7 @@ describe( 'Editor', () => {
 			const editor = new Editor();
 
 			expect( editor.config ).to.be.an.instanceof( Config );
-			expect( editor.commands ).to.be.an.instanceof( Map );
+			expect( editor.commands ).to.be.an.instanceof( CommandCollection );
 
 			expect( editor.plugins ).to.be.an.instanceof( PluginCollection );
 			expect( getPlugins( editor ) ).to.be.empty;
@@ -139,7 +143,74 @@ describe( 'Editor', () => {
 		} );
 	} );
 
-	describe( 'create', () => {
+	describe( 'locale', () => {
+		it( 'is instantiated and t() is exposed', () => {
+			const editor = new Editor();
+
+			expect( editor.locale ).to.be.instanceof( Locale );
+			expect( editor.t ).to.equal( editor.locale.t );
+		} );
+
+		it( 'is configured with the config.lang', () => {
+			const editor = new Editor( { lang: 'pl' } );
+
+			expect( editor.locale.lang ).to.equal( 'pl' );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should fire "destroy"', () => {
+			const editor = new Editor();
+			const spy = sinon.spy();
+
+			editor.on( 'destroy', spy );
+
+			return editor.destroy().then( () => {
+				expect( spy.calledOnce ).to.be.true;
+			} );
+		} );
+
+		it( 'should destroy all components it initialized', () => {
+			const editor = new Editor();
+
+			const spy1 = sinon.spy( editor.data, 'destroy' );
+			const spy2 = sinon.spy( editor.document, 'destroy' );
+
+			return editor.destroy()
+				.then( () => {
+					expect( spy1.calledOnce ).to.be.true;
+					expect( spy2.calledOnce ).to.be.true;
+				} );
+		} );
+	} );
+
+	describe( 'execute()', () => {
+		it( 'should execute specified command', () => {
+			class SomeCommand extends Command {
+				execute() {}
+			}
+
+			const editor = new Editor();
+
+			const command = new SomeCommand( editor );
+			sinon.spy( command, 'execute' );
+
+			editor.commands.add( 'someCommand', command );
+			editor.execute( 'someCommand' );
+
+			expect( command.execute.calledOnce ).to.be.true;
+		} );
+
+		it( 'should throw an error if specified command has not been added', () => {
+			const editor = new Editor();
+
+			expect( () => {
+				editor.execute( 'command' );
+			} ).to.throw( CKEditorError, /^commandcollection-command-not-found:/ );
+		} );
+	} );
+
+	describe( 'create()', () => {
 		it( 'should return a promise that resolves properly', () => {
 			const promise = Editor.create();
 
@@ -179,7 +250,7 @@ describe( 'Editor', () => {
 		} );
 	} );
 
-	describe( 'initPlugins', () => {
+	describe( 'initPlugins()', () => {
 		it( 'should load plugins', () => {
 			const editor = new Editor( {
 				plugins: [ PluginA, PluginB ]
