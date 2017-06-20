@@ -8,58 +8,71 @@ import EditingKeystrokeHandler from '../src/editingkeystrokehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'EditingKeystrokeHandler', () => {
-	let editor, keystrokes;
+	let editor, keystrokes, executeSpy;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
 				keystrokes = new EditingKeystrokeHandler( editor );
+				executeSpy = sinon.stub( editor, 'execute' );
 			} );
 	} );
 
-	describe( 'listenTo()', () => {
-		it( 'prevents default when keystroke was handled', () => {
-			const keyEvtData = { keyCode: 1, preventDefault: sinon.spy() };
+	describe( 'set()', () => {
+		describe( 'with a command', () => {
+			it( 'prevents default when the keystroke was handled', () => {
+				const keyEvtData = getCtrlA();
 
-			sinon.stub( keystrokes, 'press' ).returns( true );
+				keystrokes.set( 'Ctrl+A', 'foo' );
+				keystrokes.press( keyEvtData );
 
-			keystrokes.listenTo( editor.editing.view );
-			editor.editing.view.fire( 'keydown', keyEvtData );
+				sinon.assert.calledWithExactly( executeSpy, 'foo' );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+			} );
 
-			sinon.assert.calledOnce( keyEvtData.preventDefault );
+			it( 'does not prevent default when the keystroke was not handled', () => {
+				const keyEvtData = getCtrlA();
+
+				keystrokes.press( keyEvtData );
+
+				sinon.assert.notCalled( executeSpy );
+				sinon.assert.notCalled( keyEvtData.preventDefault );
+				sinon.assert.notCalled( keyEvtData.stopPropagation );
+			} );
 		} );
 
-		it( 'does not prevent default when keystroke was not handled', () => {
-			const keyEvtData = { keyCode: 1, preventDefault: sinon.spy() };
+		describe( 'with a callback', () => {
+			it( 'never prevents default', () => {
+				const callback = sinon.spy();
+				const keyEvtData = getCtrlA();
 
-			sinon.stub( keystrokes, 'press' ).returns( false );
+				keystrokes.set( 'Ctrl+A', callback );
+				keystrokes.press( keyEvtData );
 
-			keystrokes.listenTo( editor.editing.view );
-			editor.editing.view.fire( 'keydown', keyEvtData );
-
-			sinon.assert.notCalled( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( callback );
+				sinon.assert.notCalled( keyEvtData.preventDefault );
+				sinon.assert.notCalled( keyEvtData.stopPropagation );
+			} );
 		} );
 	} );
 
 	describe( 'press()', () => {
 		it( 'executes a command', () => {
-			const spy = sinon.stub( editor, 'execute' );
-
-			keystrokes.set( 'ctrl + A', 'foo' );
+			keystrokes.set( 'Ctrl+A', 'foo' );
 
 			const wasHandled = keystrokes.press( getCtrlA() );
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, 'foo' );
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, 'foo' );
 			expect( wasHandled ).to.be.true;
 		} );
 
 		it( 'executes a callback', () => {
-			const executeSpy = sinon.stub( editor, 'execute' );
 			const callback = sinon.spy();
 
-			keystrokes.set( 'ctrl + A', callback );
+			keystrokes.set( 'Ctrl+A', callback );
 
 			const wasHandled = keystrokes.press( getCtrlA() );
 
@@ -71,5 +84,10 @@ describe( 'EditingKeystrokeHandler', () => {
 } );
 
 function getCtrlA() {
-	return { keyCode: keyCodes.a, ctrlKey: true };
+	return {
+		keyCode: keyCodes.a,
+		ctrlKey: true,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	};
 }
