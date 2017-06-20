@@ -150,7 +150,7 @@ export default class Editor {
 
 		this.commands.destroy();
 
-		return Promise.resolve()
+		return this.plugins.destroy()
 			.then( () => {
 				this.document.destroy();
 				this.data.destroy();

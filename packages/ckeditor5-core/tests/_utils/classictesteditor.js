@@ -43,8 +43,8 @@ export default class ClassicTestEditor extends StandardEditor {
 	destroy() {
 		this._elementReplacer.restore();
 
-		return this.ui.destroy()
-			.then( () => super.destroy() );
+		return super.destroy()
+			.then( () => this.ui.destroy() );
 	}
 
 	/**

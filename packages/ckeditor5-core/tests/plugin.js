@@ -25,5 +25,14 @@ describe( 'constructor()', () => {
 
 			expect( plugin.destroy ).to.be.a( 'function' );
 		} );
+
+		it( 'should stop listening', () => {
+			const plugin = new Plugin( editor );
+			const stopListeningSpy = sinon.spy( plugin, 'stopListening' );
+
+			plugin.destroy();
+
+			expect( stopListeningSpy.calledOnce ).to.equal( true );
+		} );
 	} );
 } );
