@@ -394,6 +394,24 @@ describe( 'ImageEngine', () => {
 				);
 			} );
 
+			it( 'should use sizes from configuration', () => {
+				return VirtualTestEditor.create( {
+					plugins: [ ImageEngine ],
+					image: {
+						responsiveSizes: '50vf'
+					}
+				} )
+				.then( newEditor => {
+					setModelData( newEditor.document, '<image src="foo.png" alt="alt text" srcset="small 148w, big.png 1024w"></image>' );
+
+					expect( getViewData( newEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<figure class="image ck-widget" contenteditable="false">' +
+						'<img alt="alt text" sizes="50vf" src="foo.png" srcset="small 148w, big.png 1024w"></img>' +
+						'</figure>'
+					);
+				} );
+			} );
+
 			it( 'should remove sizes attribute when srcset attribute is removed', () => {
 				setModelData( document, '<image src="foo.png" srcset="small 148w, big.png 1024w"></image>' );
 				const image = document.getRoot().getChild( 0 );
