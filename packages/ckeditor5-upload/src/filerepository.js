@@ -444,6 +444,15 @@ mix( FileLoader, ObservableMixin );
  *		original: 'http://server/orginal-size.image.png'
  *	}
  *
+ * Additionally, other image sizes can be provided:
+ *
+ *	{
+ *		original: 'http://server/orginal-size.image.png',
+ *		'160': 'http://server/size-160.image.png',
+ *		'500': 'http://server/size-500.image.png',
+ *		'1000': 'http://server/size-1000.image.png'
+ *	}
+ *
  * Take a look at {@link module:upload/filerepository~Adapter example Adapter implementation} and
  * {@link module:upload/filerepository~FileRepository#createAdapter createAdapter method}.
  *
