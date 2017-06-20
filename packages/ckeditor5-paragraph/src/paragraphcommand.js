@@ -29,14 +29,11 @@ export default class ParagraphCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const block = first( this.editor.document.selection.getSelectedBlocks() );
+		const document = this.editor.document;
+		const block = first( document.selection.getSelectedBlocks() );
 
 		this.value = !!block && block.is( 'paragraph' );
-
-		this.isEnabled = !!block && this.editor.document.schema.check( {
-			name: 'paragraph',
-			inside: Position.createBefore( block )
-		} );
+		this.isEnabled = !!block && checkCanBecomeParagraph( block, document.schema );
 	}
 
 	/**
@@ -58,10 +55,23 @@ export default class ParagraphCommand extends Command {
 			const blocks = ( options.selection || document.selection ).getSelectedBlocks();
 
 			for ( const block of blocks ) {
-				if ( !block.is( 'paragraph' ) ) {
+				if ( !block.is( 'paragraph' ) && checkCanBecomeParagraph( block, document.schema ) ) {
 					batch.rename( block, 'paragraph' );
 				}
 			}
 		} );
 	}
+}
+
+// Checks whether the given block can be replaced by a paragraph.
+//
+// @private
+// @param {module:engine/model/element~Element} block A block to be tested.
+// @param {module:engine/model/schema~Schema} schema The schema of the document.
+// @returns {Boolean}
+function checkCanBecomeParagraph( block, schema ) {
+	return schema.check( {
+		name: 'paragraph',
+		inside: Position.createBefore( block )
+	} );
 }
