@@ -247,6 +247,31 @@ describe( 'ListCommand', () => {
 					);
 				} );
 
+				// https://github.com/ckeditor/ckeditor5-list/issues/62
+				it( 'should not rename blocks which cannot become listItems', () => {
+					doc.schema.registerItem( 'restricted' );
+					doc.schema.allow( { name: 'restricted', inside: '$root' } );
+					doc.schema.disallow( { name: 'paragraph', inside: 'restricted' } );
+
+					doc.schema.registerItem( 'fooBlock', '$block' );
+					doc.schema.allow( { name: 'fooBlock', inside: 'restricted' } );
+
+					setData(
+						doc,
+						'<paragraph>a[bc</paragraph>' +
+						'<restricted><fooBlock></fooBlock></restricted>' +
+						'<paragraph>de]f</paragraph>'
+					);
+
+					command.execute();
+
+					expect( getData( doc ) ).to.equal(
+						'<listItem indent="0" type="bulleted">a[bc</listItem>' +
+						'<restricted><fooBlock></fooBlock></restricted>' +
+						'<listItem indent="0" type="bulleted">de]f</listItem>'
+					);
+				} );
+
 				it( 'should rename closest block to listItem and set correct attributes', () => {
 					// From first paragraph to second paragraph.
 					// Command value=false, we are turning on list items.
