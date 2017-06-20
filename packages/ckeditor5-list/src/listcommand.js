@@ -61,7 +61,8 @@ export default class ListCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const document = this.editor.document;
-		const blocks = Array.from( document.selection.getSelectedBlocks() );
+		const blocks = Array.from( document.selection.getSelectedBlocks() )
+			.filter( block => checkCanBecomeListItem( block, document.schema ) );
 
 		// Whether we are turning off some items.
 		const turnOff = this.value === true;
@@ -252,11 +253,7 @@ export default class ListCommand extends Command {
 		}
 
 		// Otherwise, check if list item can be inserted at the position start.
-		return schema.check( {
-			name: 'listItem',
-			attributes: [ 'type', 'indent' ],
-			inside: Position.createBefore( firstBlock )
-		} );
+		return checkCanBecomeListItem( firstBlock, schema );
 	}
 }
 
@@ -305,4 +302,18 @@ function _fixType( blocks, isBackward, lowestIndent ) {
 			item = item[ isBackward ? 'previousSibling' : 'nextSibling' ];
 		}
 	}
+}
+
+// Checks whether the given block can be replaced by a listItem.
+//
+// @private
+// @param {module:engine/model/element~Element} block A block to be tested.
+// @param {module:engine/model/schema~Schema} schema The schema of the document.
+// @returns {Boolean}
+function checkCanBecomeListItem( block, schema ) {
+	return schema.check( {
+		name: 'listItem',
+		attributes: [ 'type', 'indent' ],
+		inside: Position.createBefore( block )
+	} );
 }
