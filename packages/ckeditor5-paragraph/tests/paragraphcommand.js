@@ -99,6 +99,31 @@ describe( 'ParagraphCommand', () => {
 			expect( command.value ).to.be.true;
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-paragraph/issues/24
+		it( 'should not rename blocks which cannot become paragraphs', () => {
+			document.schema.registerItem( 'restricted' );
+			document.schema.allow( { name: 'restricted', inside: '$root' } );
+			document.schema.disallow( { name: 'paragraph', inside: 'restricted' } );
+
+			document.schema.registerItem( 'fooBlock', '$block' );
+			document.schema.allow( { name: 'fooBlock', inside: 'restricted' } );
+
+			setData(
+				document,
+				'<heading1>a[bc</heading1>' +
+				'<restricted><fooBlock></fooBlock></restricted>' +
+				'<heading1>de]f</heading1>'
+			);
+
+			command.execute();
+
+			expect( getData( document ) ).to.equal(
+				'<paragraph>a[bc</paragraph>' +
+				'<restricted><fooBlock></fooBlock></restricted>' +
+				'<paragraph>de]f</paragraph>'
+			);
+		} );
+
 		it( 'should not rename blocks which already are pargraphs', () => {
 			const batch = editor.document.batch();
 
