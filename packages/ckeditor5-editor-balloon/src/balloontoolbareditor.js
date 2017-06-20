@@ -12,6 +12,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
 import BalloonToolbarEditorUI from './balloontoolbareditorui';
 import BalloonToolbarEditorUIView from './balloontoolbareditoruiview';
+import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
 import '../theme/theme.scss';
 
@@ -47,10 +48,13 @@ export default class BalloonToolbarEditor extends StandardEditor {
 	 * @returns {Promise}
 	 */
 	destroy() {
-		this.updateEditorElement();
+		// Cache the data, then destroy.
+		// It's safe to assume that the model->view conversion will not work after super.destroy().
+		const data = this.getData();
 
 		return this.ui.destroy()
-			.then( () => super.destroy() );
+			.then( () => super.destroy() )
+			.then( () => setDataInElement( this.element, data ) );
 	}
 
 	/**
