@@ -15,8 +15,8 @@ import { getCsrfToken } from './utils';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
- * Plugin that enables CKFinder uploads in CKEditor 5.
- * Configure proper upload URL under `ckfinder.uploadUrl` key, for example:
+ * A plugin that enables CKFinder uploads in CKEditor 5.
+ * Configure proper upload URL under the `ckfinder.uploadUrl` key, for example:
  *
  *	Editor.create( editorElement, {
  *		plugins: [ ... ],
@@ -63,7 +63,7 @@ export default class CKFinderUploadAdapter extends Plugin {
  */
 class Adapter {
 	/**
-	 * Creates new adapter instance.
+	 * Creates a new adapter instance.
 	 *
 	 * @param {module:upload/filerepository~FileLoader} loader
 	 * @param {String} url
@@ -71,7 +71,7 @@ class Adapter {
 	 */
 	constructor( loader, url, t ) {
 		/**
-		 * FileLoader instance to use during upload.
+		 * FileLoader instance to use during the upload.
 		 *
 		 * @member {module:upload/filerepository~FileLoader} #loader
 		 */
@@ -93,7 +93,7 @@ class Adapter {
 	}
 
 	/**
-	 * Starts upload process.
+	 * Starts the upload process.
 	 *
 	 * @see module:upload/filerepository~Adapter#upload
 	 * @returns {Promise}
@@ -107,7 +107,7 @@ class Adapter {
 	}
 
 	/**
-	 * Aborts upload process.
+	 * Aborts the upload process.
 	 *
 	 * @see module:upload/filerepository~Adapter#abort
 	 * @returns {Promise}
@@ -119,7 +119,7 @@ class Adapter {
 	}
 
 	/**
-	 * Initializes XMLHttpRequest object.
+	 * Initializes the XMLHttpRequest object.
 	 *
 	 * @private
 	 */
@@ -134,8 +134,8 @@ class Adapter {
 	 * Initializes XMLHttpRequest listeners.
 	 *
 	 * @private
-	 * @param {Function} resolve Callback function to be called when request is successful.
-	 * @param {Function} reject Callback function to be called when request cannot be completed.
+	 * @param {Function} resolve Callback function to be called when the request is successful.
+	 * @param {Function} reject Callback function to be called when the request cannot be completed.
 	 */
 	_initListeners( resolve, reject ) {
 		const xhr = this.xhr;
@@ -170,7 +170,7 @@ class Adapter {
 	}
 
 	/**
-	 * Prepares data and sends the request.
+	 * Prepares the data and sends the request.
 	 *
 	 * @private
 	 */

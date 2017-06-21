@@ -63,7 +63,7 @@ export function setCookie( name, value ) {
 	document.cookie = encodeURIComponent( name ) + '=' + encodeURIComponent( value ) + ';path=/';
 }
 
-// Generates CSRF token with given length.
+// Generates the CSRF token with the given length.
 //
 // @private
 // @param {Number} length
