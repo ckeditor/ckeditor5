@@ -1,7 +1,7 @@
 {
   "packages": "packages/",
   "dependencies": {
-    "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#4351d697b227e5b360a23120199375661fe13119",
+    "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#bbb97b9431e1d2c4ef847be68288cf8e9a4fe2c2",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#36bee8a81f27489368489b3134c58eef53da2f07",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#72391b3008a808da38b925f5523162b6446739fe",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#ca73838bd026223c57f8648e2417f8594d8f4dfa",
