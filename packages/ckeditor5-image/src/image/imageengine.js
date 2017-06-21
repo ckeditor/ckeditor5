@@ -33,7 +33,6 @@ export default class ImageEngine extends Plugin {
 		const schema = doc.schema;
 		const data = editor.data;
 		const editing = editor.editing;
-		const config = editor.config;
 		const t = editor.t;
 
 		// Configure schema.
@@ -55,17 +54,13 @@ export default class ImageEngine extends Plugin {
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'src' );
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'alt' );
 
-		// Responsive sizes default value. More information and discussion on this topic:
-		// https://github.com/ckeditor/ckeditor5-image/issues/2.
-		config.define( 'image.responsiveSizes', '100vw' );
-		const sizes = config.get( 'image.responsiveSizes' );
-
 		// Convert `srcset` attribute changes and add or remove `sizes` attribute when necessary.
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'srcset', ( viewImg, type ) => {
 			if ( type == 'removeAttribute' ) {
 				viewImg.removeAttribute( 'sizes' );
 			} else {
-				viewImg.setAttribute( 'sizes', sizes );
+				// Always outputting `100vw`. See https://github.com/ckeditor/ckeditor5-image/issues/2.
+				viewImg.setAttribute( 'sizes', '100vw' );
 			}
 		} );
 
