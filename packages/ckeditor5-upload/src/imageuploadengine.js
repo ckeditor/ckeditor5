@@ -127,8 +127,11 @@ export default class ImageUploadEngine extends Plugin {
 						// Filter out keys that are not integers.
 						.filter( key => !isNaN( parseInt( key, 10 ) ) )
 
-						// Create `srcset` attribute value from all elements in the array.
-						.reduce( ( acc, key ) => `${ data[ key ] } ${ key }w,`, '' );
+						// Convert each key to srcset entry.
+						.map( key => `${ data[ key ] } ${ key }w` )
+
+						// Join all entries.
+						.join( ', ' );
 
 					if ( srcsetAttribute != '' ) {
 						batch.setAttribute( imageElement, 'srcset', srcsetAttribute );
