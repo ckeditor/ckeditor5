@@ -11,7 +11,7 @@
     "@ckeditor/ckeditor5-editor-balloon-toolbar": "ckeditor/ckeditor5-editor-balloon-toolbar#0957ce47316e0057deff2847e5ef037f4cbaec14",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#4b079e9b6cb4550f4c0f77ab0c802210cd8c22fa",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#fe7d27b381a50c754957f2c2727d3914c8a2458d",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#f98251861b3ce07697f415e08b66844721fb80ad",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#f1fa1b1934315d1086afcc052a5ee7dd5f54ae72",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#4ee3f03b682c8776f6da2808cc72242005615ee2",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#9d3c9a5c3f545aadb532f431aaa0c5fda539eb72",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#e6f842ab1bba5e2ff16ecad5766e417ec2dce212",
@@ -24,7 +24,7 @@
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#fb51301149fe55f3ef7077cf952639415f1c961b",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#6f5ec0d0ca25be90de9efac12a92024016a0bba0",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#86c0fce690375d05fb82f1048b854db9fa042dd1",
-    "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#7e7258f9c39c9a36a75935f856ee8ec2a391138b",
+    "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#015d60fd8fed927003e3a4f5faff75739203bd99",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#b0f691e02a7e4074cb7bf6aa0607b2553857a95f",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#c4c2db1d1a7687e549689e8659a4f97973927785"
   }
