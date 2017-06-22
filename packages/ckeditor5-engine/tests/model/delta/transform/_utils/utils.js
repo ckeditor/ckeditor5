@@ -71,7 +71,11 @@ export function getMergeDelta( position, howManyInPrev, howManyInNext, version )
 	move.isSticky = true;
 
 	delta.addOperation( move );
-	delta.addOperation( new RemoveOperation( position, 1, version + 1 ) );
+
+	const gy = sourcePosition.root.document.graveyard;
+	const gyPos = Position.createAt( gy, 0 );
+
+	delta.addOperation( new RemoveOperation( position, 1, gyPos, version + 1 ) );
 
 	return delta;
 }
@@ -88,7 +92,10 @@ export function getMoveDelta( sourcePosition, howMany, targetPosition, baseVersi
 export function getRemoveDelta( sourcePosition, howMany, baseVersion ) {
 	const delta = new RemoveDelta();
 
-	const remove = new RemoveOperation( sourcePosition, howMany, baseVersion );
+	const gy = sourcePosition.root.document.graveyard;
+	const gyPos = Position.createAt( gy, 0 );
+
+	const remove = new RemoveOperation( sourcePosition, howMany, gyPos, baseVersion );
 	delta.addOperation( remove );
 
 	return delta;
@@ -150,7 +157,10 @@ export function getUnwrapDelta( positionBefore, howManyChildren, version ) {
 	const removePosition = Position.createFromPosition( positionBefore );
 	removePosition.offset += howManyChildren;
 
-	const remove = new RemoveOperation( removePosition, 1, version + 1 );
+	const gy = sourcePosition.root.document.graveyard;
+	const gyPos = Position.createAt( gy, 0 );
+
+	const remove = new RemoveOperation( removePosition, 1, gyPos, version + 1 );
 
 	delta.addOperation( move );
 	delta.addOperation( remove );

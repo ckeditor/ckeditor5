@@ -49,11 +49,12 @@ describe( 'Batch', () => {
 			expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 		} );
 
-		it( 'should create minimal number of operations when removing a range', () => {
+		it( 'should create minimal number of remove deltas, each with only one operation', () => {
 			batch.remove( range );
 
-			expect( batch.deltas.length ).to.equal( 1 );
-			expect( batch.deltas[ 0 ].operations.length ).to.equal( 2 );
+			expect( batch.deltas.length ).to.equal( 2 );
+			expect( batch.deltas[ 0 ].operations.length ).to.equal( 1 );
+			expect( batch.deltas[ 1 ].operations.length ).to.equal( 1 );
 		} );
 
 		it( 'should be chainable', () => {
@@ -71,6 +72,14 @@ describe( 'Batch', () => {
 			} );
 
 			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+		} );
+
+		it( 'should create permanent RemoveOperation', () => {
+			batch.remove( div, true );
+
+			const operation = batch.deltas[ 0 ].operations[ 0 ];
+
+			expect( operation.isPermanent ).to.be.true;
 		} );
 	} );
 } );

@@ -111,7 +111,7 @@ describe( 'transform', () => {
 							type: RemoveOperation,
 							sourcePosition: new Position( root, [ 3, 3, 3 ] ),
 							howMany: 1,
-							targetPosition: new Position( gy, [ 0, 0 ] ),
+							targetPosition: new Position( gy, [ 0 ] ),
 							baseVersion: baseVersion + 1
 						}
 					]

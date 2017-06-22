@@ -91,7 +91,7 @@ describe( 'UnwrapDelta', () => {
 
 		it( 'should be equal to the position before unwrapped node', () => {
 			unwrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 2, 0 ] ), 4, new Position( root, [ 1, 2 ] ) ) );
-			unwrapDelta.operations.push( new RemoveOperation( new Position( root, [ 1, 6 ] ), 1 ) );
+			unwrapDelta.operations.push( new RemoveOperation( new Position( root, [ 1, 6 ] ), 1, new Position( doc.graveyard, [ 0 ] ) ) );
 
 			expect( unwrapDelta.position.root ).to.equal( root );
 			expect( unwrapDelta.position.path ).to.deep.equal( [ 1, 2 ] );
@@ -108,7 +108,7 @@ describe( 'UnwrapDelta', () => {
 
 		it( 'should return correct WrapDelta', () => {
 			unwrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 2, 0 ] ), 4, new Position( root, [ 1, 2 ] ) ) );
-			unwrapDelta.operations.push( new RemoveOperation( new Position( root, [ 1, 6 ] ), 1 ) );
+			unwrapDelta.operations.push( new RemoveOperation( new Position( root, [ 1, 6 ] ), 1, new Position( doc.graveyard, [ 0 ] ) ) );
 
 			const reversed = unwrapDelta.getReversed();
 

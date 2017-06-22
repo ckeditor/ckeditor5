@@ -5,6 +5,7 @@
 
 import Document from '../../../src/model/document';
 import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
+import NoOperation from '../../../src/model/operation/nooperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
@@ -25,6 +26,7 @@ describe( 'RemoveOperation', () => {
 		const op = new RemoveOperation(
 			new Position( root, [ 2 ] ),
 			2,
+			new Position( doc.graveyard, [ 0 ] ),
 			doc.version
 		);
 
@@ -35,6 +37,7 @@ describe( 'RemoveOperation', () => {
 		const op = new RemoveOperation(
 			new Position( root, [ 2 ] ),
 			2,
+			new Position( doc.graveyard, [ 0 ] ),
 			doc.version
 		);
 
@@ -45,19 +48,21 @@ describe( 'RemoveOperation', () => {
 		const operation = new RemoveOperation(
 			new Position( root, [ 2 ] ),
 			2,
+			new Position( doc.graveyard, [ 0 ] ),
 			doc.version
 		);
 
 		expect( operation ).to.be.instanceof( MoveOperation );
 	} );
 
-	it( 'should be able to remove set of nodes and append them to holder element in graveyard root', () => {
+	it( 'should be able to remove set of nodes and append them to graveyard root', () => {
 		root.insertChildren( 0, new Text( 'fozbar' ) );
 
 		doc.applyOperation( wrapInDelta(
 			new RemoveOperation(
 				new Position( root, [ 2 ] ),
 				2,
+				new Position( doc.graveyard, [ 0 ] ),
 				doc.version
 			)
 		) );
@@ -66,45 +71,26 @@ describe( 'RemoveOperation', () => {
 		expect( root.maxOffset ).to.equal( 4 );
 		expect( root.getChild( 0 ).data ).to.equal( 'foar' );
 
-		expect( graveyard.maxOffset ).to.equal( 1 );
-		expect( graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'zb' );
-	} );
-
-	it( 'should be able to remove set of nodes and append them to existing element in graveyard root', () => {
-		root.insertChildren( 0, new Text( 'fozbar' ) );
-		graveyard.appendChildren( new Element( '$graveyardHolder' ) );
-
-		const op = new RemoveOperation(
-			new Position( root, [ 0 ] ),
-			1,
-			doc.version
-		);
-
-		// Manually set holder element properties.
-		op._needsHolderElement = false;
-		op._holderElementOffset = 0;
-
-		doc.applyOperation( wrapInDelta( op ) );
-
-		expect( graveyard.maxOffset ).to.equal( 1 );
-		expect( graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'f' );
+		expect( graveyard.maxOffset ).to.equal( 2 );
+		expect( graveyard.getChild( 0 ).data ).to.equal( 'zb' );
 	} );
 
 	it( 'should create RemoveOperation with same parameters when cloned', () => {
 		const pos = new Position( root, [ 2 ] );
 
-		const operation = new RemoveOperation( pos, 2, doc.version );
+		const operation = new RemoveOperation( pos, 2, new Position( doc.graveyard, [ 0 ] ), doc.version );
 		const clone = operation.clone();
 
 		expect( clone ).to.be.instanceof( RemoveOperation );
 		expect( clone.sourcePosition.isEqual( pos ) ).to.be.true;
+		expect( clone.targetPosition.isEqual( operation.targetPosition ) ).to.be.true;
 		expect( clone.howMany ).to.equal( operation.howMany );
 		expect( clone.baseVersion ).to.equal( operation.baseVersion );
 	} );
 
-	it( 'should create a ReinsertOperation as a reverse', () => {
+	it( 'should create ReinsertOperation when reversed', () => {
 		const position = new Position( root, [ 0 ] );
-		const operation = new RemoveOperation( position, 2, 0 );
+		const operation = new RemoveOperation( position, 2, new Position( doc.graveyard, [ 0 ] ), 0 );
 		const reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( ReinsertOperation );
@@ -114,9 +100,19 @@ describe( 'RemoveOperation', () => {
 		expect( reverse.targetPosition.isEqual( position ) ).to.be.true;
 	} );
 
+	it( 'should create NoOperation when reversed if was permanent', () => {
+		const position = new Position( root, [ 0 ] );
+		const operation = new RemoveOperation( position, 2, new Position( doc.graveyard, [ 0 ] ), 0 );
+		operation.isPermanent = true;
+		const reverse = operation.getReversed();
+
+		expect( reverse ).to.be.an.instanceof( NoOperation );
+		expect( reverse.baseVersion ).to.equal( 1 );
+	} );
+
 	it( 'should undo remove set of nodes by applying reverse operation', () => {
 		const position = new Position( root, [ 0 ] );
-		const operation = new RemoveOperation( position, 3, 0 );
+		const operation = new RemoveOperation( position, 3, new Position( doc.graveyard, [ 0 ] ), 0 );
 		const reverse = operation.getReversed();
 
 		root.insertChildren( 0, new Text( 'bar' ) );
@@ -134,18 +130,17 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should properly remove a node that is already in a graveyard', () => {
-		doc.graveyard.appendChildren( new Element( '$graveyardHolder', {}, [ new Text( 'foo' ) ] ) );
+		doc.graveyard.appendChildren( [ new Element( 'x' ), new Element( 'y' ), new Element( 'z' ) ] );
 
-		const position = new Position( doc.graveyard, [ 0, 0 ] );
-		const operation = new RemoveOperation( position, 1, 0 );
-
-		operation.targetPosition.path = [ 0, 0 ];
+		const position = new Position( doc.graveyard, [ 2 ] );
+		const operation = new RemoveOperation( position, 1, new Position( doc.graveyard, [ 0 ] ), 0 );
 
 		doc.applyOperation( wrapInDelta( operation ) );
 
-		expect( doc.graveyard.childCount ).to.equal( 2 );
-		expect( doc.graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'f' );
-		expect( doc.graveyard.getChild( 1 ).getChild( 0 ).data ).to.equal( 'oo' );
+		expect( doc.graveyard.childCount ).to.equal( 3 );
+		expect( doc.graveyard.getChild( 0 ).name ).to.equal( 'z' );
+		expect( doc.graveyard.getChild( 1 ).name ).to.equal( 'x' );
+		expect( doc.graveyard.getChild( 2 ).name ).to.equal( 'y' );
 	} );
 
 	describe( 'toJSON', () => {
@@ -153,10 +148,9 @@ describe( 'RemoveOperation', () => {
 			const op = new RemoveOperation(
 				new Position( root, [ 2 ] ),
 				2,
+				new Position( doc.graveyard, [ 0 ] ),
 				doc.version
 			);
-
-			op._needsHolderElement = false;
 
 			const serialized = jsonParseStringify( op );
 
@@ -165,9 +159,9 @@ describe( 'RemoveOperation', () => {
 				baseVersion: 0,
 				howMany: 2,
 				isSticky: false,
+				isPermanent: false,
 				sourcePosition: jsonParseStringify( op.sourcePosition ),
-				targetPosition: jsonParseStringify( op.targetPosition ),
-				_needsHolderElement: false
+				targetPosition: jsonParseStringify( op.targetPosition )
 			} );
 		} );
 	} );
@@ -177,12 +171,9 @@ describe( 'RemoveOperation', () => {
 			const op = new RemoveOperation(
 				new Position( root, [ 2 ] ),
 				2,
+				new Position( doc.graveyard, [ 0 ] ),
 				doc.version
 			);
-
-			op._needsHolderElement = false;
-
-			doc.graveyard.appendChildren( [ new Element( '$graveyardHolder' ), new Element( '$graveyardHolder' ) ] );
 
 			const serialized = jsonParseStringify( op );
 			const deserialized = RemoveOperation.fromJSON( serialized, doc );

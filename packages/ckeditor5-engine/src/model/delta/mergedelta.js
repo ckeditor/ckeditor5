@@ -131,7 +131,10 @@ register( 'merge', function( position ) {
 	delta.addOperation( move );
 	this.document.applyOperation( move );
 
-	const remove = new RemoveOperation( position, 1, this.document.version );
+	const graveyard = this.document.graveyard;
+	const gyPosition = new Position( graveyard, [ 0 ] );
+
+	const remove = new RemoveOperation( position, 1, gyPosition, this.document.version );
 	delta.addOperation( remove );
 	this.document.applyOperation( remove );
 

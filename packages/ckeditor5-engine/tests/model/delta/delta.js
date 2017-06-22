@@ -240,6 +240,7 @@ describe( 'Delta', () => {
 			const operation = new RemoveOperation(
 				new Position( root, [ 2 ] ),
 				2,
+				new Position( doc.graveyard, [ 0 ] ),
 				doc.version
 			);
 

@@ -72,7 +72,10 @@ export default class InsertOperation extends Operation {
 	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
 	 */
 	getReversed() {
-		return new RemoveOperation( this.position, this.nodes.maxOffset, this.baseVersion + 1 );
+		const graveyard = this.position.root.document.graveyard;
+		const gyPosition = new Position( graveyard, [ 0 ] );
+
+		return new RemoveOperation( this.position, this.nodes.maxOffset, gyPosition, this.baseVersion + 1 );
 	}
 
 	/**

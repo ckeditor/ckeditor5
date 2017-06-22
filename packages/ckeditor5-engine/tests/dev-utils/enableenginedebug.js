@@ -324,9 +324,15 @@ describe( 'debug tools', () => {
 
 				otherRoot.appendChildren( [ firstEle, removedEle ] );
 
+				const graveyard = modelDoc.graveyard;
 				const delta = new MergeDelta();
 				const move = new MoveOperation( ModelPosition.createAt( removedEle, 0 ), 3, ModelPosition.createAt( firstEle, 0 ), 0 );
-				const remove = new RemoveOperation( ModelPosition.createBefore( removedEle ), 1, 1 );
+				const remove = new RemoveOperation(
+					ModelPosition.createBefore( removedEle ),
+					1,
+					ModelPosition.createAt( graveyard, 0 ),
+					1
+				);
 
 				delta.addOperation( move );
 				delta.addOperation( remove );
@@ -400,9 +406,10 @@ describe( 'debug tools', () => {
 
 				otherRoot.appendChildren( [ unwrapEle ] );
 
+				const graveyard = modelDoc.graveyard;
 				const delta = new UnwrapDelta();
 				const move = new MoveOperation( ModelPosition.createAt( unwrapEle, 0 ), 3, ModelPosition.createAt( otherRoot, 0 ), 0 );
-				const remove = new RemoveOperation( ModelPosition.createAt( otherRoot, 3 ), 1, 1 );
+				const remove = new RemoveOperation( ModelPosition.createAt( otherRoot, 3 ), 1, ModelPosition.createAt( graveyard, 0 ), 1 );
 
 				delta.addOperation( move );
 				delta.addOperation( remove );
@@ -609,7 +616,8 @@ describe( 'debug tools', () => {
 			const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), 0 );
 			model.applyOperation( wrapInDelta( insert ) );
 
-			const remove = new RemoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, 1 );
+			const graveyard = model.graveyard;
+			const remove = new RemoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( graveyard, 0 ), 1 );
 			model.applyOperation( wrapInDelta( remove ) );
 
 			log.reset();
@@ -631,9 +639,7 @@ describe( 'debug tools', () => {
 			model.log( 2 );
 			expectLog(
 				'<$graveyard>' +
-				'\n\t<$graveyardHolder>' +
-				'\n\t\too' +
-				'\n\t</$graveyardHolder>' +
+				'\n\too' +
 				'\n</$graveyard>' +
 				'\n<main>' +
 				'\n\tfbar' +
@@ -643,9 +649,7 @@ describe( 'debug tools', () => {
 			model.log();
 			expectLog(
 				'<$graveyard>' +
-				'\n\t<$graveyardHolder>' +
-				'\n\t\too' +
-				'\n\t</$graveyardHolder>' +
+				'\n\too' +
 				'\n</$graveyard>' +
 				'\n<main>' +
 				'\n\tfbar' +
@@ -728,8 +732,9 @@ describe( 'debug tools', () => {
 			otherRoot.appendChildren( [ firstEle, removedEle ] );
 
 			const delta = new MergeDelta();
+			const graveyard = modelDoc.graveyard;
 			const move = new MoveOperation( ModelPosition.createAt( removedEle, 0 ), 3, ModelPosition.createAt( firstEle, 0 ), 0 );
-			const remove = new RemoveOperation( ModelPosition.createBefore( removedEle ), 1, 1 );
+			const remove = new RemoveOperation( ModelPosition.createBefore( removedEle ), 1, ModelPosition.createAt( graveyard, 0 ), 1 );
 
 			delta.addOperation( move );
 			delta.addOperation( remove );
@@ -752,8 +757,9 @@ describe( 'debug tools', () => {
 			otherRoot.appendChildren( [ firstEle, removedEle ] );
 
 			const delta = new MergeDelta();
+			const graveyard = modelDoc.graveyard;
 			const move = new MoveOperation( ModelPosition.createAt( removedEle, 0 ), 3, ModelPosition.createAt( firstEle, 0 ), 0 );
-			const remove = new RemoveOperation( ModelPosition.createBefore( removedEle ), 1, 1 );
+			const remove = new RemoveOperation( ModelPosition.createBefore( removedEle ), 1, ModelPosition.createAt( graveyard, 0 ), 1 );
 
 			delta.addOperation( move );
 			delta.addOperation( remove );
@@ -888,7 +894,7 @@ describe( 'debug tools', () => {
 				transformedBy: JSON.stringify( deltaC ),
 				wasImportant: true,
 				resultIndex: 0,
-				resultsTotal: 1
+				resultsTotal: 2
 			} );
 		} );
 
