@@ -391,9 +391,6 @@ describe( 'ModelConversionDispatcher', () => {
 		} );
 	} );
 
-	describe( 'convertRename', () => {
-	} );
-
 	describe( 'convertAttribute', () => {
 		it( 'should fire event for every item in passed range', () => {
 			root.appendChildren( [

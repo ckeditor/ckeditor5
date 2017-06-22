@@ -172,11 +172,21 @@ export default class Range {
 	 * Checks whether this range contains given {@link module:engine/view/range~Range range}.
 	 *
 	 * @param {module:engine/view/range~Range} otherRange Range to check.
+	 * @param {Boolean} [strict=true] Whether the check is strict or loose. If the check is strict (`true`), compared range cannot
+	 * start or end at the same position as this range boundaries. If the check is loose (`false`), compared range can start, end or
+	 * even be equal to this range. Note that collapsed ranges are always compared in strict mode.
 	 * @returns {Boolean} `true` if given {@link module:engine/view/range~Range range} boundaries are contained by this range, `false`
 	 * otherwise.
 	 */
-	containsRange( otherRange ) {
-		return this.containsPosition( otherRange.start ) && this.containsPosition( otherRange.end );
+	containsRange( otherRange, strict = true ) {
+		if ( otherRange.isCollapsed ) {
+			strict = true;
+		}
+
+		const containsStart = this.containsPosition( otherRange.start ) || ( !strict && this.start.isEqual( otherRange.start ) );
+		const containsEnd = this.containsPosition( otherRange.end ) || ( !strict && this.end.isEqual( otherRange.end ) );
+
+		return containsStart && containsEnd;
 	}
 
 	/**

@@ -90,8 +90,8 @@ export default class Range {
 	 * Checks whether this range contains given {@link module:engine/model/position~Position position}.
 	 *
 	 * @param {module:engine/model/position~Position} position Position to check.
-	 * @returns {Boolean} `true` if given {@link module:engine/model/position~Position position} is contained in this range,
-	 * `false` otherwise.
+	 * @returns {Boolean} `true` if given {@link module:engine/model/position~Position position} is contained
+	 * in this range,`false` otherwise.
 	 */
 	containsPosition( position ) {
 		return position.isAfter( this.start ) && position.isBefore( this.end );
@@ -101,15 +101,24 @@ export default class Range {
 	 * Checks whether this range contains given {@link ~Range range}.
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to check.
+	 * @param {Boolean} [strict=true] Whether the check is strict or loose. If the check is strict (`true`), compared range cannot
+	 * start or end at the same position as this range boundaries. If the check is loose (`false`), compared range can start, end or
+	 * even be equal to this range. Note that collapsed ranges are always compared in strict mode.
 	 * @returns {Boolean} `true` if given {@link ~Range range} boundaries are contained by this range, `false` otherwise.
 	 */
-	containsRange( otherRange ) {
-		return this.containsPosition( otherRange.start ) && this.containsPosition( otherRange.end );
+	containsRange( otherRange, strict = true ) {
+		if ( otherRange.isCollapsed ) {
+			strict = true;
+		}
+
+		const containsStart = this.containsPosition( otherRange.start ) || ( !strict && this.start.isEqual( otherRange.start ) );
+		const containsEnd = this.containsPosition( otherRange.end ) || ( !strict && this.end.isEqual( otherRange.end ) );
+
+		return containsStart && containsEnd;
 	}
 
 	/**
-	 * Two ranges are equal if their {@link #start start} and
-	 * {@link #end end} positions are equal.
+	 * Two ranges are equal if their {@link #start start} and {@link #end end} positions are equal.
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to compare with.
 	 * @returns {Boolean} `true` if ranges are equal, `false` otherwise.
@@ -418,8 +427,8 @@ export default class Range {
 		}
 
 		// It may happen that a range is split into two, and then the part of second "piece" is moved into first
-		// "piece". In this case we will have incorrect third rage, which should not be included in the result --
-		// because it is already included in first "piece". In this loop we are looking for all such ranges that
+		// "piece". In this case we will have incorrect third range, which should not be included in the result --
+		// because it is already included in the first "piece". In this loop we are looking for all such ranges that
 		// are inside other ranges and we simply remove them.
 		for ( let i = 0; i < ranges.length; i++ ) {
 			const range = ranges[ i ];
