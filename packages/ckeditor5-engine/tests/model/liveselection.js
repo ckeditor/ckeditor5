@@ -19,6 +19,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { wrapInDelta } from '../../tests/model/_utils/utils';
+import { setData, getData } from '../../src/dev-utils/model';
 
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
@@ -276,6 +277,21 @@ describe( 'LiveSelection', () => {
 			selection.setRanges( [ range ] );
 
 			expect( spy.called ).to.be.true;
+		} );
+
+		// See #630.
+		it( 'should refresh attributes – integration test for #630', () => {
+			doc.schema.allow( { name: '$text', inside: '$root' } );
+
+			setData( doc, 'f<$text italic="true">[o</$text><$text bold="true">ob]a</$text>r' );
+
+			selection.setRanges( [ Range.createFromPositionAndShift( selection.getLastRange().end, 0 ) ] );
+
+			expect( selection.getAttribute( 'bold' ) ).to.equal( true );
+			expect( selection.hasAttribute( 'italic' ) ).to.equal( false );
+
+			expect( getData( doc ) )
+				.to.equal( 'f<$text italic="true">o</$text><$text bold="true">ob[]a</$text>r' );
 		} );
 	} );
 
