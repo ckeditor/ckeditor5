@@ -22,6 +22,7 @@ import LiveSelection from './liveselection';
 import Schema from './schema';
 import TreeWalker from './treewalker';
 import MarkerCollection from './markercollection';
+import deltaTransform from './delta/transform';
 import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -336,6 +337,26 @@ export default class Document {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Transforms two sets of deltas by themselves. Returns both transformed sets.
+	 *
+	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltasA Array with the first set of deltas to transform. These
+	 * deltas are considered more important (than `deltasB`) when resolving conflicts.
+	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltasB Array with the second set of deltas to transform. These
+	 * deltas are considered less important (than `deltasA`) when resolving conflicts.
+	 * @param {Boolean} [useContext=false] When set to `true`, transformation will store and use additional context
+	 * information to guarantee more expected results. Should be used whenever deltas related to already applied
+	 * deltas are transformed (for example when undoing changes).
+	 * @returns {Object}
+	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasA The first set of deltas transformed
+	 * by the second set of deltas.
+	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasB The second set of deltas transformed
+	 * by the first set of deltas.
+	 */
+	transformDeltas( deltasA, deltasB, useContext = false ) {
+		return deltaTransform.transformDeltaSets( deltasA, deltasB, useContext ? this : null );
 	}
 
 	/**
