@@ -40,19 +40,6 @@ export default class SplitDelta extends Delta {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	getReversed() {
-		const delta = super.getReversed();
-
-		if ( delta.operations.length > 0 ) {
-			delta.operations[ 0 ].isSticky = true;
-		}
-
-		return delta;
-	}
-
-	/**
 	 * Operation in the delta that adds to model an element into which split nodes will be moved, or `null` if
 	 * there are no operations in the delta.
 	 *
