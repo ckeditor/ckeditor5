@@ -221,8 +221,8 @@ mix( MarkerCollection, EmitterMixin );
  * best to create and keep at least markers as possible.
  *
  * Markers can be converted to view by adding appropriate converters for
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker addMarker} and
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:removeMarker removeMarker}
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker} and
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:removeMarker}
  * events, or by building converters for {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}
  * using {@link module:engine/conversion/buildmodelconverter~buildModelConverter model converter builder}.
  *
