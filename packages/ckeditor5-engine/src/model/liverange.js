@@ -80,8 +80,13 @@ export default class LiveRange extends Range {
 	 * Fired when `LiveRange` instance is changed due to changes on {@link module:engine/model/document~Document}.
 	 *
 	 * @event change
-	 * @param {module:engine/model/range~Range} oldRange
-	 * Range with start and end position equal to start and end position of this live range before it got changed.
+	 * @param {module:engine/model/range~Range} oldRange Range with start and end position equal to start and end position of this live
+	 * range before it got changed.
+	 * @param {Object} data Object with additional information about the change. Those parameters are passed from
+	 * {@link module:engine/model/document~Document#event:change document change event}.
+	 * @param {String} data.type Change type.
+	 * @param {module:engine/model/range~Range} data.range Range containing the result of applied change.
+	 * @param {module:engine/model/position~Position} data.sourcePosition Source position for move, remove and reinsert change types.
 	 */
 }
 
@@ -152,7 +157,11 @@ function transform( changeType, deltaType, targetRange, sourcePosition ) {
 		this.start = updated.start;
 		this.end = updated.end;
 
-		this.fire( 'change', oldRange );
+		this.fire( 'change', oldRange, {
+			type: changeType,
+			range: targetRange,
+			sourcePosition
+		} );
 	}
 }
 
