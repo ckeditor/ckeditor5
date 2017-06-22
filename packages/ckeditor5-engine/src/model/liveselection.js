@@ -302,11 +302,18 @@ export default class LiveSelection extends Selection {
 		this._checkRange( range );
 
 		const liveRange = LiveRange.createFromRange( range );
-		this.listenTo( liveRange, 'change', ( evt, oldRange ) => {
+
+		this.listenTo( liveRange, 'change', ( evt, oldRange, data ) => {
+			// If `LiveRange` is in whole moved to the graveyard, fix that range.
 			if ( liveRange.root == this._document.graveyard ) {
-				this._fixGraveyardSelection( liveRange, oldRange );
+				const sourceStart = data.sourcePosition;
+				const howMany = data.range.end.offset - data.range.start.offset;
+				const sourceRange = Range.createFromPositionAndShift( sourceStart, howMany );
+
+				this._fixGraveyardSelection( liveRange, sourceRange );
 			}
 
+			// Whenever a live range from selection changes, fire an event informing about that change.
 			this.fire( 'change:range', { directChange: false } );
 		} );
 
@@ -624,29 +631,36 @@ export default class LiveSelection extends Selection {
 	 * Fixes a selection range after it ends up in graveyard root.
 	 *
 	 * @private
-	 * @param {module:engine/model/liverange~LiveRange} gyRange The range added in selection, that ended up in graveyard root.
-	 * @param {module:engine/model/range~Range} oldRange The state of that range before it was added to graveyard root.
+	 * @param {module:engine/model/liverange~LiveRange} liveRange The range from selection, that ended up in the graveyard root.
+	 * @param {module:engine/model/range~Range} removedRange Range which removing had caused moving `liveRange` to the graveyard root.
 	 */
-	_fixGraveyardSelection( gyRange, oldRange ) {
-		const gyPath = gyRange.start.path;
+	_fixGraveyardSelection( liveRange, removedRange ) {
+		// The start of the removed range is the closest position to the `liveRange` - the original selection range.
+		// This is a good candidate for a fixed selection range.
+		const positionCandidate = Position.createFromPosition( removedRange.start );
 
-		const newPathLength = oldRange.start.path.length - ( gyPath.length - 2 );
-		const newPath = oldRange.start.path.slice( 0, newPathLength );
-		newPath[ newPath.length - 1 ] -= gyPath[ 1 ];
+		// Find a range that is a correct selection range and is closest to the start of removed range.
+		let selectionRange = this._document.getNearestSelectionRange( positionCandidate );
 
-		const newPosition = new Position( oldRange.root, newPath );
-		let selectionRange = this._document.getNearestSelectionRange( newPosition );
-
-		// If nearest valid selection range cannot be found - use one created at root beginning.
+		// If nearest valid selection range cannot be found - use one created at the beginning of the root.
 		if ( !selectionRange ) {
-			selectionRange = new Range( new Position( newPosition.root, [ 0 ] ) );
+			selectionRange = new Range( new Position( positionCandidate.root, [ 0 ] ) );
 		}
 
-		const newRange = this._prepareRange( selectionRange );
-		const index = this._ranges.indexOf( gyRange );
-		gyRange.detach();
+		// Remove the old selection range before preparing and adding new selection range. This order is important,
+		// because new range, in some cases, may intersect with old range (it depends on `getNearestSelectionRange()` result).
+		const index = this._ranges.indexOf( liveRange );
+		this._ranges.splice( index, 1 );
+		liveRange.detach();
 
-		this._ranges.splice( index, 1, newRange );
+		// Check the range, convert it to live range, bind events, etc.
+		const newRange = this._prepareRange( selectionRange );
+
+		// Add new range in the place of old range.
+		this._ranges.splice( index, 0, newRange );
+
+		// Fire an event informing about selection change.
+		this.fire( 'change:range', { directChange: false } );
 	}
 }
 
