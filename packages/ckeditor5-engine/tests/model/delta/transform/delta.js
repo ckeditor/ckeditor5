@@ -42,11 +42,15 @@ describe( 'Delta', () => {
 		const deltaA = new Delta();
 		const deltaB = new Delta();
 
+		const context = {
+			isStrong: false
+		};
+
 		deltaA.addOperation( new MoveOperation( new Position( root, [ 1, 2, 3 ] ), 4, new Position( root, [ 4, 0 ] ), baseVersion ) );
 		deltaB.addOperation( new MoveOperation( new Position( root, [ 1, 2, 0 ] ), 2, new Position( root, [ 4, 1 ] ), baseVersion ) );
 
-		const deltaAbyB = transform( deltaA, deltaB );
-		const deltaBbyA = transform( deltaB, deltaA );
+		const deltaAbyB = transform( deltaA, deltaB, context );
+		const deltaBbyA = transform( deltaB, deltaA, context );
 
 		expect( deltaAbyB.length ).to.equal( 1 );
 

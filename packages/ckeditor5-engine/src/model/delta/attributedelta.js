@@ -104,13 +104,6 @@ export default class AttributeDelta extends Delta {
 	static get className() {
 		return 'engine.model.delta.AttributeDelta';
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get _priority() {
-		return 20;
-	}
 }
 
 /**

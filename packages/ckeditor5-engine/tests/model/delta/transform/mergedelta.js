@@ -31,13 +31,14 @@ import {
 } from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, gy, baseVersion;
+	let doc, root, gy, baseVersion, context;
 
 	beforeEach( () => {
 		doc = getFilledDocument();
 		root = doc.getRoot();
 		gy = doc.graveyard;
 		baseVersion = doc.version;
+		context = { isStrong: false };
 	} );
 
 	describe( 'MergeDelta by', () => {
@@ -58,7 +59,7 @@ describe( 'transform', () => {
 
 			it( 'insert at same position as merge', () => {
 				const insertDelta = getInsertDelta( mergePosition, [ nodeA, nodeB ], baseVersion );
-				const transformed = transform( mergeDelta, insertDelta );
+				const transformed = transform( mergeDelta, insertDelta, context );
 
 				// Expected: MergeDelta gets ignored and is not applied.
 
@@ -89,7 +90,7 @@ describe( 'transform', () => {
 
 			it( 'insert inside merged node (sticky move test)', () => {
 				const insertDelta = getInsertDelta( new Position( root, [ 3, 3, 3, 12 ] ), [ nodeA, nodeB ], baseVersion );
-				const transformed = transform( mergeDelta, insertDelta );
+				const transformed = transform( mergeDelta, insertDelta, context );
 
 				baseVersion = insertDelta.operations.length;
 
@@ -132,7 +133,7 @@ describe( 'transform', () => {
 		describe( 'MoveDelta', () => {
 			it( 'node on the right side of merge was moved', () => {
 				const moveDelta = getMoveDelta( new Position( root, [ 3, 3, 3 ] ), 1, new Position( root, [ 3, 3, 0 ] ), baseVersion );
-				const transformed = transform( mergeDelta, moveDelta );
+				const transformed = transform( mergeDelta, moveDelta, context );
 
 				baseVersion = moveDelta.operations.length;
 
@@ -160,7 +161,7 @@ describe( 'transform', () => {
 
 			it( 'node on the left side of merge was moved', () => {
 				const moveDelta = getMoveDelta( new Position( root, [ 3, 3, 2 ] ), 1, new Position( root, [ 3, 3, 0 ] ), baseVersion );
-				const transformed = transform( mergeDelta, moveDelta );
+				const transformed = transform( mergeDelta, moveDelta, context );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -199,7 +200,7 @@ describe( 'transform', () => {
 		describe( 'MergeDelta', () => {
 			it( 'merge two consecutive elements, transformed merge is after', () => {
 				const mergeDeltaB = getMergeDelta( new Position( root, [ 3, 3, 2 ] ), 0, 4, baseVersion );
-				const transformed = transform( mergeDelta, mergeDeltaB );
+				const transformed = transform( mergeDelta, mergeDeltaB, context );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -237,7 +238,7 @@ describe( 'transform', () => {
 				mergeDelta = getMergeDelta( new Position( root, [ 3, 3, 2 ] ), 0, 4, baseVersion );
 				const mergeDeltaB = getMergeDelta( new Position( root, [ 3, 3, 3 ] ), 4, 12, baseVersion );
 
-				const transformed = transform( mergeDelta, mergeDeltaB );
+				const transformed = transform( mergeDelta, mergeDeltaB, context );
 
 				expect( transformed.length ).to.equal( 1 );
 

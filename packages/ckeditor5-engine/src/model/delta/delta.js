@@ -162,18 +162,6 @@ export default class Delta {
 	static get className() {
 		return 'engine.model.delta.Delta';
 	}
-
-	/**
-	 * Delta priority. Used in {@link module:engine/model/delta/transform~transform delta transformations}. Delta with the higher
-	 * priority will be treated as more important when resolving transformation conflicts. If deltas have same
-	 * priority, other factors will be used to determine which delta is more important.
-	 *
-	 * @private
-	 * @type {Number}
-	 */
-	static get _priority() {
-		return 0;
-	}
 }
 
 DeltaFactory.register( Delta );

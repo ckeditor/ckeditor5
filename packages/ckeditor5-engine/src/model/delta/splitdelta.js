@@ -82,13 +82,6 @@ export default class SplitDelta extends Delta {
 	static get className() {
 		return 'engine.model.delta.SplitDelta';
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get _priority() {
-		return 5;
-	}
 }
 
 /**

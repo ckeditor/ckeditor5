@@ -37,13 +37,14 @@ import {
 } from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, gy, baseVersion;
+	let doc, root, gy, baseVersion, context;
 
 	beforeEach( () => {
 		doc = getFilledDocument();
 		root = doc.getRoot();
 		gy = doc.graveyard;
 		baseVersion = doc.version;
+		context = { isStrong: false };
 	} );
 
 	describe( 'SplitDelta by', () => {
@@ -57,7 +58,7 @@ describe( 'transform', () => {
 		describe( 'SplitDelta', () => {
 			it( 'split in same parent and offset', () => {
 				const splitDeltaB = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
-				const transformed = transform( splitDelta, splitDeltaB );
+				const transformed = transform( splitDelta, splitDeltaB, context );
 
 				baseVersion = splitDeltaB.operations.length;
 
@@ -87,7 +88,7 @@ describe( 'transform', () => {
 
 			it( 'split in same parent, incoming delta splits closer', () => {
 				const splitDeltaB = getSplitDelta( new Position( root, [ 3, 3, 3, 5 ] ), new Element( 'p' ), 7, baseVersion );
-				const transformed = transform( splitDelta, splitDeltaB );
+				const transformed = transform( splitDelta, splitDeltaB, context );
 
 				baseVersion = splitDeltaB.operations.length;
 
@@ -140,7 +141,7 @@ describe( 'transform', () => {
 				);
 				splitDeltaB.operations[ 0 ] = reOp;
 
-				const transformed = transform( splitDelta, splitDeltaB );
+				const transformed = transform( splitDelta, splitDeltaB, context );
 
 				baseVersion = splitDeltaB.operations.length;
 
@@ -169,7 +170,7 @@ describe( 'transform', () => {
 
 			it( 'split in same parent, incoming delta splits further', () => {
 				const splitDeltaB = getSplitDelta( new Position( root, [ 3, 3, 3, 1 ] ), new Element( 'p' ), 11, baseVersion );
-				const transformed = transform( splitDelta, splitDeltaB );
+				const transformed = transform( splitDelta, splitDeltaB, context );
 
 				baseVersion = splitDeltaB.operations.length;
 
@@ -222,7 +223,7 @@ describe( 'transform', () => {
 				);
 				splitDeltaB.operations[ 0 ] = reOp;
 
-				const transformed = transform( splitDelta, splitDeltaB );
+				const transformed = transform( splitDelta, splitDeltaB, context );
 
 				baseVersion = splitDeltaB.operations.length;
 
@@ -251,7 +252,7 @@ describe( 'transform', () => {
 
 			it( 'split in split parent', () => {
 				const splitDeltaB = getSplitDelta( new Position( root, [ 3, 3, 3 ] ), new Element( 'div' ), 1, baseVersion );
-				const transformed = transform( splitDelta, splitDeltaB );
+				const transformed = transform( splitDelta, splitDeltaB, context );
 
 				baseVersion = splitDeltaB.operations.length;
 
@@ -290,7 +291,7 @@ describe( 'transform', () => {
 		describe( 'UnwrapDelta', () => {
 			it( 'split position directly in unwrapped node', () => {
 				const unwrapDelta = getUnwrapDelta( new Position( root, [ 3, 3, 3 ] ), 12, baseVersion );
-				const transformed = transform( splitDelta, unwrapDelta );
+				const transformed = transform( splitDelta, unwrapDelta, context );
 
 				baseVersion = unwrapDelta.operations.length;
 
@@ -319,7 +320,7 @@ describe( 'transform', () => {
 			it( 'split position indirectly in unwrapped node', () => {
 				const unwrapDelta = getUnwrapDelta( new Position( root, [ 3, 3 ] ), 4, baseVersion );
 
-				const transformed = transform( splitDelta, unwrapDelta );
+				const transformed = transform( splitDelta, unwrapDelta, context );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -360,7 +361,7 @@ describe( 'transform', () => {
 				const wrapElement = new Element( 'E' );
 				const wrapDelta = getWrapDelta( wrapRange, wrapElement, baseVersion );
 
-				const transformed = transform( splitDelta, wrapDelta );
+				const transformed = transform( splitDelta, wrapDelta, context );
 
 				baseVersion = wrapDelta.operations.length;
 
@@ -391,7 +392,7 @@ describe( 'transform', () => {
 				const wrapElement = new Element( 'E' );
 				const wrapDelta = getWrapDelta( wrapRange, wrapElement, baseVersion );
 
-				const transformed = transform( splitDelta, wrapDelta );
+				const transformed = transform( splitDelta, wrapDelta, context );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -430,7 +431,7 @@ describe( 'transform', () => {
 				const wrapElement = new Element( 'E' );
 				const wrapDelta = getWrapDelta( wrapRange, wrapElement, baseVersion );
 
-				const transformed = transform( splitDelta, wrapDelta );
+				const transformed = transform( splitDelta, wrapDelta, context );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -477,7 +478,7 @@ describe( 'transform', () => {
 					Range.createFromPositionAndShift( new Position( root, [ 3, 3, 2 ] ), 3 ), 'key', null, 'newValue', baseVersion + 1
 				) );
 
-				const transformed = transform( splitDelta, attributeDelta );
+				const transformed = transform( splitDelta, attributeDelta, context );
 
 				baseVersion = attributeDelta.operations.length;
 
@@ -516,7 +517,7 @@ describe( 'transform', () => {
 					Range.createFromPositionAndShift( new Position( root, [ 3, 3, 2 ] ), 3 ), 'key', 'oldValue', null, baseVersion + 1
 				) );
 
-				const transformed = transform( splitDelta, attributeDelta );
+				const transformed = transform( splitDelta, attributeDelta, context );
 
 				baseVersion = attributeDelta.operations.length;
 
@@ -557,7 +558,7 @@ describe( 'transform', () => {
 					Range.createFromParentsAndOffsets( root, 0, root, 4 ), 'key', 'oldValue', 'newValue', baseVersion
 				) );
 
-				const transformed = transform( splitDelta, attributeDelta );
+				const transformed = transform( splitDelta, attributeDelta, context );
 
 				baseVersion = attributeDelta.operations.length;
 				expect( transformed.length ).to.equal( 1 );
@@ -591,7 +592,7 @@ describe( 'transform', () => {
 					new Position( root, [ 3, 3, 3 ] ), 'p', 'li', baseVersion
 				) );
 
-				const transformed = transform( splitDelta, renameDelta );
+				const transformed = transform( splitDelta, renameDelta, context );
 
 				baseVersion = renameDelta.operations.length;
 
@@ -624,7 +625,7 @@ describe( 'transform', () => {
 					new Position( root, [ 4 ] ), 'p', 'li', baseVersion
 				) );
 
-				const transformed = transform( splitDelta, renameDelta );
+				const transformed = transform( splitDelta, renameDelta, context );
 
 				baseVersion = renameDelta.operations.length;
 
@@ -662,7 +663,7 @@ describe( 'transform', () => {
 					new Position( root, [ 3, 3, 3 ] ), 'p', 'li', baseVersion
 				) );
 
-				const transformed = transform( splitDelta, renameDelta );
+				const transformed = transform( splitDelta, renameDelta, context );
 
 				baseVersion = renameDelta.operations.length;
 
@@ -699,7 +700,7 @@ describe( 'transform', () => {
 				const removeDelta = getRemoveDelta( removePosition, 3, baseVersion );
 				const removeOperation = removeDelta.operations[ 0 ];
 
-				const transformed = transform( splitDelta, removeDelta );
+				const transformed = transform( splitDelta, removeDelta, context );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -735,7 +736,7 @@ describe( 'transform', () => {
 				const removeDelta = getRemoveDelta( removePosition, 2, baseVersion );
 				const removeOperation = removeDelta.operations[ 0 ];
 
-				const transformed = transform( splitDelta, removeDelta );
+				const transformed = transform( splitDelta, removeDelta, context );
 
 				expect( transformed.length ).to.equal( 1 );
 

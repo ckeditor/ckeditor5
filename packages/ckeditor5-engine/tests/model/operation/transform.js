@@ -18,7 +18,6 @@ import MarkerOperation from '../../../src/model/operation/markeroperation';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 import RenameOperation from '../../../src/model/operation/renameoperation';
-import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
 import NoOperation from '../../../src/model/operation/nooperation';
 
 describe( 'transform', () => {
@@ -122,7 +121,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( transformBy, true );
+				const transOp = transform( transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -299,7 +298,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -610,7 +609,7 @@ describe( 'transform', () => {
 							baseVersion
 						);
 
-						const transOp = transform( op, transformBy, true );
+						const transOp = transform( op, transformBy, { isStrong: true } );
 
 						expected.oldValue = null;
 
@@ -626,7 +625,7 @@ describe( 'transform', () => {
 							baseVersion
 						);
 
-						const transOp = transform( op, transformBy, true );
+						const transOp = transform( op, transformBy, { isStrong: true } );
 
 						expect( transOp.length ).to.equal( 1 );
 						expectOperation( transOp[ 0 ], expected );
@@ -641,7 +640,7 @@ describe( 'transform', () => {
 							baseVersion
 						);
 
-						const transOp = transform( op, transformBy, true );
+						const transOp = transform( op, transformBy, { isStrong: true } );
 
 						expected.oldValue = null;
 
@@ -664,7 +663,7 @@ describe( 'transform', () => {
 							baseVersion
 						);
 
-						const transOp = transform( op, transformBy, true );
+						const transOp = transform( op, transformBy, { isStrong: true } );
 
 						expect( transOp.length ).to.equal( 2 );
 
@@ -690,7 +689,7 @@ describe( 'transform', () => {
 							baseVersion
 						);
 
-						const transOp = transform( op, transformBy, true );
+						const transOp = transform( op, transformBy, { isStrong: true } );
 
 						expect( transOp.length ).to.equal( 2 );
 
@@ -715,7 +714,7 @@ describe( 'transform', () => {
 							baseVersion
 						);
 
-						const transOp = transform( op, transformBy, true );
+						const transOp = transform( op, transformBy, { isStrong: true } );
 
 						expect( transOp.length ).to.equal( 3 );
 
@@ -1410,33 +1409,35 @@ describe( 'transform', () => {
 				expected.range = new Range( start, end );
 			} );
 
-			it( 'remove operation inserted holder element before attribute operation range: increment path', () => {
+			it( 'remove operation inserted elements before attribute operation range: increment path', () => {
 				const transformBy = new RemoveOperation(
 					new Position( root, [ 0 ] ),
 					2,
+					new Position( doc.graveyard, [ 0 ] ),
 					baseVersion
 				);
 
-				transformBy.targetPosition.path = [ 0, 0 ];
+				transformBy.targetPosition.path = [ 0 ];
 
 				const transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.range.start.path = [ 3, 0 ];
-				expected.range.end.path = [ 3, 4 ];
+				expected.range.start.path = [ 4, 0 ];
+				expected.range.end.path = [ 4, 4 ];
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'remove operation inserted holder element after attribute operation range: do nothing', () => {
+			it( 'remove operation inserted elements after attribute operation range: do nothing', () => {
 				const transformBy = new RemoveOperation(
 					new Position( root, [ 0 ] ),
 					2,
+					new Position( doc.graveyard, [ 0 ] ),
 					baseVersion
 				);
 
-				transformBy.targetPosition.path = [ 4, 0 ];
+				transformBy.targetPosition.path = [ 4 ];
 
 				const transOp = transform( op, transformBy );
 
@@ -1573,7 +1574,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1814,7 +1815,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1985,7 +1986,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2347,7 +2348,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expected.sourcePosition.path = [ 4, 1, 0 ];
 
@@ -2380,7 +2381,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expected.sourcePosition.path = [ 4, 1, 1 ];
 
@@ -2418,7 +2419,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -2456,7 +2457,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2495,7 +2496,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2540,7 +2541,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -2574,7 +2575,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2599,7 +2600,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2667,7 +2668,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2712,13 +2713,60 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 
 				expected.howMany = 6;
 
 				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by RemoveOperation', () => {
+			let transformBy;
+
+			beforeEach( () => {
+				transformBy = new RemoveOperation(
+					Position.createFromPosition( op.sourcePosition ),
+					op.howMany,
+					new Position( doc.graveyard, [ 0 ] ),
+					baseVersion
+				);
+			} );
+
+			it( 'should skip context.isStrong and be less important than RemoveOperation', () => {
+				const transOp = transform( op, transformBy, { isStrong: true } );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expectOperation( transOp[ 0 ], {
+					type: NoOperation,
+					baseVersion: baseVersion + 1
+				} );
+			} );
+
+			it( 'should use context.isStrong if forceWeakRemove flag is used', () => {
+				const transOp = transform( op, transformBy, { isStrong: true, forceWeakRemove: true } );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.sourcePosition = transformBy.targetPosition;
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'should skip context.isStrong and be less important if RemoveOperation is permanent', () => {
+				transformBy.isPermanent = true;
+
+				const transOp = transform( op, transformBy, { isStrong: true, forceWeakRemove: true } );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expectOperation( transOp[ 0 ], {
+					type: NoOperation,
+					baseVersion: baseVersion + 1
+				} );
 			} );
 		} );
 
@@ -2758,48 +2806,9 @@ describe( 'transform', () => {
 	} );
 
 	describe( 'RemoveOperation', () => {
-		describe( 'by InsertOperation', () => {
-			it( 'should not need new graveyard holder if original operation did not needed it either', () => {
-				const op = new RemoveOperation( new Position( root, [ 1 ] ), 1, baseVersion );
-				op._needsHolderElement = false;
-
-				const transformBy = new InsertOperation( new Position( root, [ 0 ] ), [ new Node() ], baseVersion );
-
-				const transOp = transform( op, transformBy )[ 0 ];
-
-				expect( transOp._needsHolderElement ).to.be.false;
-			} );
-		} );
-
 		describe( 'by MoveOperation', () => {
-			it( 'should create not more than one RemoveOperation that needs new graveyard holder', () => {
-				const op = new RemoveOperation( new Position( root, [ 1 ] ), 4, baseVersion );
-				const transformBy = new MoveOperation( new Position( root, [ 0 ] ), 2, new Position( root, [ 8 ] ), baseVersion );
-
-				const transOp = transform( op, transformBy );
-
-				expect( transOp.length ).to.equal( 2 );
-
-				expect( transOp[ 0 ]._needsHolderElement ).to.be.true;
-				expect( transOp[ 1 ]._needsHolderElement ).to.be.false;
-			} );
-
-			it( 'should not need new graveyard holder if original operation did not needed it either', () => {
-				const op = new RemoveOperation( new Position( root, [ 1 ] ), 4, baseVersion );
-				op._needsHolderElement = false;
-
-				const transformBy = new MoveOperation( new Position( root, [ 0 ] ), 2, new Position( root, [ 8 ] ), baseVersion );
-
-				const transOp = transform( op, transformBy );
-
-				expect( transOp.length ).to.equal( 2 );
-
-				expect( transOp[ 0 ]._needsHolderElement ).to.be.false;
-				expect( transOp[ 1 ]._needsHolderElement ).to.be.false;
-			} );
-
 			it( 'should force removing content even if was less important', () => {
-				const op = new RemoveOperation( new Position( root, [ 8 ] ), 2, baseVersion );
+				const op = new RemoveOperation( new Position( root, [ 8 ] ), 2, new Position( doc.graveyard, [ 0 ] ), baseVersion );
 
 				const targetPosition = Position.createFromPosition( op.targetPosition );
 
@@ -2807,7 +2816,7 @@ describe( 'transform', () => {
 
 				const sourcePosition = Position.createFromPosition( transformBy.targetPosition );
 
-				const transOp = transform( op, transformBy, false );
+				const transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -2816,83 +2825,6 @@ describe( 'transform', () => {
 					howMany: 2,
 					sourcePosition,
 					targetPosition,
-					baseVersion: baseVersion + 1
-				} );
-			} );
-		} );
-
-		describe( 'by RemoveOperation', () => {
-			it( 'removes same nodes and transformed is weak: change howMany to 0', () => {
-				const position = new Position( root, [ 2, 1 ] );
-				const op = new RemoveOperation( position, 3, baseVersion );
-				const transformBy = new RemoveOperation( position, 3, baseVersion );
-
-				const transOp = transform( op, transformBy );
-
-				expect( transOp.length ).to.equal( 1 );
-				expectOperation( transOp[ 0 ], {
-					type: RemoveOperation,
-					howMany: 0,
-					sourcePosition: new Position( doc.graveyard, [ 0, 0 ] ),
-					targetPosition: new Position( doc.graveyard, [ 0, 0 ] ),
-					baseVersion: baseVersion + 1
-				} );
-			} );
-
-			it( 'removes same nodes and transformed is strong: change source position', () => {
-				const position = new Position( root, [ 2, 1 ] );
-				const op = new RemoveOperation( position, 3, baseVersion );
-				const transformBy = new RemoveOperation( position, 3, baseVersion );
-
-				const transOp = transform( op, transformBy, true );
-
-				expect( transOp.length ).to.equal( 1 );
-				expectOperation( transOp[ 0 ], {
-					type: RemoveOperation,
-					howMany: 3,
-					sourcePosition: new Position( doc.graveyard, [ 0, 0 ] ),
-					targetPosition: new Position( doc.graveyard, [ 1, 0 ] ),
-					baseVersion: baseVersion + 1
-				} );
-			} );
-		} );
-	} );
-
-	describe( 'ReinsertOperation', () => {
-		describe( 'by RemoveOperation', () => {
-			it( 'should update sourcePosition if remove operation inserted holder offset before reinsert operation holder', () => {
-				const position = new Position( root, [ 2, 1 ] );
-				const transformBy = new RemoveOperation( position, 3, baseVersion );
-				const op = new ReinsertOperation( new Position( doc.graveyard, [ 0, 0 ] ), 3, position, baseVersion );
-
-				const transOp = transform( op, transformBy );
-
-				expect( transOp.length ).to.equal( 1 );
-
-				expectOperation( transOp[ 0 ], {
-					type: ReinsertOperation,
-					howMany: 3,
-					sourcePosition: new Position( doc.graveyard, [ 1, 0 ] ),
-					targetPosition: position,
-					baseVersion: baseVersion + 1
-				} );
-			} );
-
-			it( 'should not update sourcePosition if remove operation inserted holder offset after reinsert operation source', () => {
-				const position = new Position( root, [ 2, 1 ] );
-				const transformBy = new RemoveOperation( position, 3, baseVersion );
-				transformBy.targetPosition = new Position( doc.graveyard, [ 3, 0 ] );
-				const op = new ReinsertOperation( new Position( doc.graveyard, [ 2, 0 ] ), 3, position, baseVersion );
-
-				const transOp = transform( op, transformBy );
-
-				expect( transOp.length ).to.equal( 1 );
-
-				expectOperation( transOp[ 0 ], {
-					type: ReinsertOperation,
-					howMany: 3,
-					sourcePosition: new Position( doc.graveyard, [ 2, 0 ] ),
-					targetPosition: position,
 					baseVersion: baseVersion + 1
 				} );
 			} );
@@ -3158,7 +3090,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, false );
+				const transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], {
@@ -3175,7 +3107,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -3470,7 +3402,7 @@ describe( 'transform', () => {
 				const anotherRange = Range.createFromParentsAndOffsets( root, 2, root, 2 );
 				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, doc.markers, baseVersion );
 
-				const transOp = transform( op, transformBy, true );
+				const transOp = transform( op, transformBy, { isStrong: true } );
 
 				expected.oldRange = anotherRange;
 

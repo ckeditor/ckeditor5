@@ -25,12 +25,13 @@ import {
 } from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, baseVersion;
+	let doc, root, baseVersion, context;
 
 	beforeEach( () => {
 		doc = getFilledDocument();
 		root = doc.getRoot();
 		baseVersion = doc.version;
+		context = { isStrong: false };
 	} );
 
 	describe( 'AttributeDelta by', () => {
@@ -51,7 +52,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				const transformed = transform( attrDelta, insertDelta );
+				const transformed = transform( attrDelta, insertDelta, context );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -117,7 +118,7 @@ describe( 'transform', () => {
 				const insertPosition = new Position( root, [ 5 ] );
 				const insertDelta = getWeakInsertDelta( insertPosition, 'abc', baseVersion );
 
-				const transformed = transform( attrDelta, insertDelta );
+				const transformed = transform( attrDelta, insertDelta, context );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -151,7 +152,7 @@ describe( 'transform', () => {
 				const splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
 				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 
-				const transformed = transform( attrDelta, splitDelta );
+				const transformed = transform( attrDelta, splitDelta, context );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -219,7 +220,7 @@ describe( 'transform', () => {
 				const splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
 				const splitDelta = getSplitDelta( splitPosition, new Element( 'p', { foo: 'old' } ), 9, baseVersion );
 
-				const transformed = transform( attrDelta, splitDelta );
+				const transformed = transform( attrDelta, splitDelta, context );
 
 				expect( transformed.length ).to.equal( 2 );
 

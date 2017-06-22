@@ -861,7 +861,7 @@ describe( 'debug tools', () => {
 			const opC = new MoveOperation( ModelPosition.createAt( root, 4 ), 2, ModelPosition.createAt( root, 0 ), 1 );
 			deltaC.addOperation( opC );
 
-			let result = deltaTransform.transform( deltaA, deltaB, false );
+			let result = deltaTransform.transform( deltaA, deltaB, { document, wasAffected: new Map() } );
 
 			expect( result[ 0 ].history ).not.to.be.undefined;
 			expect( result[ 0 ].history.length ).to.equal( 1 );
@@ -877,7 +877,7 @@ describe( 'debug tools', () => {
 			const firstResultWithoutHistory = result[ 0 ].clone();
 			delete firstResultWithoutHistory.history;
 
-			result = deltaTransform.transform( result[ 0 ], deltaC, true );
+			result = deltaTransform.transform( result[ 0 ], deltaC, { isStrong: true, document, wasAffected: new Map() } );
 			expect( result[ 0 ].history ).not.to.be.undefined;
 			expect( result[ 0 ].history.length ).to.equal( 2 );
 
@@ -911,15 +911,15 @@ describe( 'debug tools', () => {
 			const opC = new MoveOperation( ModelPosition.createAt( root, 4 ), 2, ModelPosition.createAt( root, 0 ), 1 );
 			deltaC.addOperation( opC );
 
-			let original = deltaTransform.transform( deltaA, deltaB, false );
-			original = deltaTransform.transform( original[ 0 ], deltaC, true )[ 0 ];
+			let original = deltaTransform.transform( deltaA, deltaB, { document, wasAffected: new Map() } );
+			original = deltaTransform.transform( original[ 0 ], deltaC, { isStrong: true, document, wasAffected: new Map() } )[ 0 ];
 
 			const history = original.history;
 
 			let recreated = deltaTransform.transform(
 				DeltaFactory.fromJSON( JSON.parse( history[ 0 ].before ), document ),
 				DeltaFactory.fromJSON( JSON.parse( history[ 0 ].transformedBy ), document ),
-				history[ 0 ].wasImportant
+				{ isStrong: history[ 0 ].wasImportant, document, wasAffected: new Map() }
 			);
 
 			recreated = recreated[ history[ 0 ].resultIndex ];
@@ -927,7 +927,7 @@ describe( 'debug tools', () => {
 			recreated = deltaTransform.transform(
 				recreated,
 				DeltaFactory.fromJSON( JSON.parse( history[ 1 ].transformedBy ), document ),
-				history[ 1 ].wasImportant
+				{ isStrong: history[ 1 ].wasImportant, document, wasAffected: new Map() }
 			);
 
 			recreated = recreated[ history[ 1 ].resultIndex ];
@@ -952,7 +952,7 @@ describe( 'debug tools', () => {
 					throw new Error();
 				};
 
-				expect( () => deltaTransform.transform( deltaA, deltaB, true ) ).to.throw( Error );
+				expect( () => deltaTransform.transform( deltaA, deltaB, { isStrong: true } ) ).to.throw( Error );
 				expect( error.calledWith( deltaA.toString() + ' (important)' ) ).to.be.true;
 				expect( error.calledWith( deltaB.toString() ) ).to.be.true;
 			} );
@@ -970,7 +970,7 @@ describe( 'debug tools', () => {
 					throw new Error();
 				};
 
-				expect( () => deltaTransform.transform( deltaA, deltaB, false ) ).to.throw( Error );
+				expect( () => deltaTransform.transform( deltaA, deltaB, { isStrong: false } ) ).to.throw( Error );
 				expect( error.calledWith( deltaA.toString() ) ).to.be.true;
 				expect( error.calledWith( deltaB.toString() + ' (important)' ) ).to.be.true;
 			} );

@@ -334,15 +334,15 @@ function enableLoggingTools() {
 
 	const _deltaTransformTransform = deltaTransform.transform;
 
-	deltaTransform.transform = function( a, b, isAMoreImportantThanB ) {
+	deltaTransform.transform = function( a, b, context ) {
 		let results;
 
 		try {
-			results = _deltaTransformTransform( a, b, isAMoreImportantThanB );
+			results = _deltaTransformTransform( a, b, context );
 		} catch ( e ) {
 			logger.error( 'Error during delta transformation!' );
-			logger.error( a.toString() + ( isAMoreImportantThanB ? ' (important)' : '' ) );
-			logger.error( b.toString() + ( isAMoreImportantThanB ? '' : ' (important)' ) );
+			logger.error( a.toString() + ( context.isStrong ? ' (important)' : '' ) );
+			logger.error( b.toString() + ( context.isStrong ? '' : ' (important)' ) );
 
 			throw e;
 		}
@@ -351,7 +351,7 @@ function enableLoggingTools() {
 			results[ i ]._saveHistory( {
 				before: a,
 				transformedBy: b,
-				wasImportant: !!isAMoreImportantThanB,
+				wasImportant: !!context.isStrong,
 				resultIndex: i,
 				resultsTotal: results.length
 			} );

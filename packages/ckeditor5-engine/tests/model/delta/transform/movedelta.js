@@ -27,13 +27,14 @@ import {
 } from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, gy, baseVersion;
+	let doc, root, gy, baseVersion, context;
 
 	beforeEach( () => {
 		doc = getFilledDocument();
 		root = doc.getRoot();
 		gy = doc.graveyard;
 		baseVersion = doc.version;
+		context = { isStrong: false };
 	} );
 
 	describe( 'MoveDelta by', () => {
@@ -52,7 +53,7 @@ describe( 'transform', () => {
 				const mergePosition = new Position( root, [ 3, 3, 3 ] );
 				const mergeDelta = getMergeDelta( mergePosition, 4, 12, baseVersion );
 
-				const transformed = transform( moveDelta, mergeDelta );
+				const transformed = transform( moveDelta, mergeDelta, context );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -112,7 +113,7 @@ describe( 'transform', () => {
 				const mergePosition = new Position( root, [ 3, 3 ] );
 				const mergeDelta = getMergeDelta( mergePosition, 1, 4, baseVersion );
 
-				const transformed = transform( moveDelta, mergeDelta );
+				const transformed = transform( moveDelta, mergeDelta, context );
 
 				expect( transformed.length ).to.equal( 1 );
 

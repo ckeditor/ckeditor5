@@ -88,13 +88,6 @@ export default class WrapDelta extends Delta {
 	static get className() {
 		return 'engine.model.delta.WrapDelta';
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get _priority() {
-		return 10;
-	}
 }
 
 /**

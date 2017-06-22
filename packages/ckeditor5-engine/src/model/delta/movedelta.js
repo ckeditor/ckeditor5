@@ -83,13 +83,6 @@ export default class MoveDelta extends Delta {
 	static get className() {
 		return 'engine.model.delta.MoveDelta';
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get _priority() {
-		return 20;
-	}
 }
 
 function addMoveOperation( batch, delta, sourcePosition, howMany, targetPosition ) {

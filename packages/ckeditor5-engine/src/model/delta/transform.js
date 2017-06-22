@@ -4,13 +4,17 @@
  */
 
 /**
+ * @protected
  * @module engine/model/delta/transform
  */
 
 import Delta from './delta';
+import MoveDelta from './movedelta';
 import operationTransform from '../operation/transform';
 import NoOperation from '../operation/nooperation';
+import MoveOperation from '../operation/moveoperation';
 import arrayUtils from '@ckeditor/ckeditor5-utils/src/lib/lodash/array';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
 const specialCases = new Map();
 
@@ -37,17 +41,23 @@ const transform = {
 	 *
 	 * @param {module:engine/model/delta/delta~Delta} a Delta that will be transformed.
 	 * @param {module:engine/model/delta/delta~Delta} b Delta to transform by.
-	 * @param {Boolean} isAMoreImportantThanB Flag indicating whether the delta which will be transformed (`a`) should be treated
-	 * as more important when resolving conflicts. Note that this flag is used only if provided deltas have same
-	 * {@link module:engine/model/delta/delta~Delta._priority priority}. If deltas have different priorities, their importance is resolved
-	 * automatically and overwrites this flag.
+	 * @param {module:engine/model/delta/transform~transformationContext} context Transformation context object.
 	 * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation.
 	 */
-	transform( a, b, isAMoreImportantThanB ) {
+	transform( a, b, context ) {
+		if ( context.useAdditionalContext ) {
+			_setContext( a, b, context );
+		}
+
 		const transformAlgorithm = transform.getTransformationCase( a, b ) || transform.defaultTransform;
 
-		const transformed = transformAlgorithm( a, b, isAMoreImportantThanB );
+		// Make new instance of context object, so all changes done during transformation are not saved in original object.
+		const transformed = transformAlgorithm( a, b, Object.assign( {}, context ) );
 		const baseVersion = arrayUtils.last( b.operations ).baseVersion;
+
+		if ( context.useAdditionalContext ) {
+			_updateContext( a, transformed, context );
+		}
 
 		return updateBaseVersion( baseVersion, transformed );
 	},
@@ -60,16 +70,10 @@ const transform = {
 	 *
 	 * @param {module:engine/model/delta/delta~Delta} a Delta that will be transformed.
 	 * @param {module:engine/model/delta/delta~Delta} b Delta to transform by.
-	 * @param {Boolean} isAMoreImportantThanB Flag indicating whether the delta which will be transformed (`a`) should be treated
-	 * as more important when resolving conflicts. Note that this flag is used only if provided deltas have same
-	 * {@link module:engine/model/delta/delta~Delta._priority priority}. If deltas have different priorities, their importance is resolved
-	 * automatically and overwrites this flag.
+	 * @param {module:engine/model/delta/transform~transformationContext} context Transformation context object.
 	 * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation, that is an array with single delta instance.
 	 */
-	defaultTransform( a, b, isAMoreImportantThanB ) {
-		// First, resolve the flag real value.
-		isAMoreImportantThanB = getPriority( a.constructor, b.constructor, isAMoreImportantThanB );
-
+	defaultTransform( a, b, context ) {
 		// Create a new delta instance. Make sure that the new delta is of same type as transformed delta.
 		// We will transform operations in that delta but it doesn't mean the delta's "meaning" which is connected to
 		// the delta's type. Since the delta's type is heavily used in transformations and probably other parts
@@ -110,19 +114,28 @@ const transform = {
 					// This can be easier understood when operations sets to transform are represented by diamond diagrams:
 					// http://www.codecommit.com/blog/java/understanding-and-applying-operational-transformation
 
-					// Using push.apply because operationTransform function is returning an array with one or multiple results.
-					Array.prototype.push.apply( newByOps, operationTransform( opB, op, !isAMoreImportantThanB ) );
-
-					// Then, we transform operation from delta A by operation from delta B.
-					const results = operationTransform( op, opB, isAMoreImportantThanB );
+					// Transform operation from delta A by operation from delta B.
+					const results = operationTransform( op, opB, context );
 
 					// We replace currently processed operation from `ops` array by the results of transformation.
-					// Note, that we process single operation but the operationTransform result might be an array, so we
-					// might splice-in more operations. We will process them further in next iterations. Right now we
-					// just save them in `ops` array and move `i` pointer by proper offset.
+					// Note, that we process single operation but `operationTransform` result is an array, so we
+					// might have to splice-in more than one operation. Save them in `ops` array and move `i` pointer by a proper offset.
 					Array.prototype.splice.apply( ops, [ i, 1 ].concat( results ) );
 
 					i += results.length - 1;
+
+					// Then, transform operation from delta B by operation from delta A.
+					// Since this is a "mirror" transformation, first, we "mirror" some of context values.
+					const reverseContext = Object.assign( {}, context );
+					reverseContext.isStrong = !context.isStrong;
+					reverseContext.insertBefore = context.insertBefore !== undefined ? !context.insertBefore : undefined;
+
+					// Transform operations.
+					const updatedOpB = operationTransform( opB, op, reverseContext );
+
+					// Update `newByOps` by transformed, updated `opB`.
+					// Using push.apply because `operationTransform` returns an array with one or multiple results.
+					Array.prototype.push.apply( newByOps, updatedOpB );
 				}
 
 				// At this point a single operation from delta A got transformed by a single operation from delta B.
@@ -148,7 +161,21 @@ const transform = {
 			// from delta B...
 		}
 
-		return [ transformed ];
+		// If `MoveDelta` or `RemoveDelta` operation got split, instead of returning one delta with multiple operations,
+		// return multiple deltas with single operation each.
+		if ( transformed instanceof MoveDelta && transformed.operations.length > 1 ) {
+			const result = [];
+
+			for ( const operation of transformed.operations ) {
+				const delta = new a.constructor();
+				delta.addOperation( operation );
+				result.push( delta );
+			}
+
+			return result;
+		} else {
+			return [ transformed ];
+		}
 	},
 
 	/**
@@ -200,21 +227,47 @@ const transform = {
 	},
 
 	/**
-	 * Transforms two sets of deltas by themselves. Returns both transformed sets. Does not modify passed parameters.
+	 * Transforms two sets of deltas by themselves. Returns both transformed sets.
 	 *
-	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltasA Array with first set of deltas to transform.
-	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltasB Array with second set of deltas to transform.
-	 * @param {Boolean} isAMoreImportantThanB Flag indicating whether the deltas from `deltasA` set should be treated as more
-	 * important when resolving conflicts.
+	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltasA Array with the first set of deltas to transform. These
+	 * deltas are considered more important (than `deltasB`) when resolving conflicts.
+	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltasB Array with the second set of deltas to transform. These
+	 * deltas are considered less important (than `deltasA`) when resolving conflicts.
+	 * @param {module:engine/model/document~Document} [document=null] If set, deltas will be transformed in "context mode"
+	 * and given `document` will be used to determine relations between deltas. If not set (default), deltas will be
+	 * transforming without additional context information.
 	 * @returns {Object}
-	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasA The first set of deltas transformed by the second
-	 * set of deltas.
-	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasB The second set of deltas transformed by the first
-	 * set of deltas.
+	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasA The first set of deltas transformed
+	 * by the second set of deltas.
+	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasB The second set of deltas transformed
+	 * by the first set of deltas.
 	 */
-	transformDeltaSets( deltasA, deltasB, isAMoreImportantThanB ) {
+	transformDeltaSets( deltasA, deltasB, document = null ) {
 		const transformedDeltasA = Array.from( deltasA );
 		const transformedDeltasB = Array.from( deltasB );
+
+		const useAdditionalContext = document !== null;
+
+		const contextAB = {
+			isStrong: true,
+			useAdditionalContext
+		};
+
+		const contextBA = {
+			isStrong: false,
+			useAdditionalContext
+		};
+
+		if ( useAdditionalContext ) {
+			const additionalContext = {
+				forceWeakRemove: true,
+				document
+			};
+
+			// We need two different instances for `wasAffected` property.
+			Object.assign( contextAB, { wasAffected: new Map() }, additionalContext );
+			Object.assign( contextBA, { wasAffected: new Map() }, additionalContext );
+		}
 
 		for ( let i = 0; i < transformedDeltasA.length; i++ ) {
 			const deltaA = [ transformedDeltasA[ i ] ];
@@ -224,8 +277,8 @@ const transform = {
 
 				for ( let k = 0; k < deltaA.length; k++ ) {
 					for ( let l = 0; l < deltaB.length; l++ ) {
-						const resultAB = transform.transform( deltaA[ k ], deltaB[ l ], isAMoreImportantThanB );
-						const resultBA = transform.transform( deltaB[ l ], deltaA[ k ], !isAMoreImportantThanB );
+						const resultAB = transform.transform( deltaA[ k ], deltaB[ l ], contextAB );
+						const resultBA = transform.transform( deltaB[ l ], deltaA[ k ], contextBA );
 
 						deltaA.splice( k, 1, ...resultAB );
 						k += resultAB.length - 1;
@@ -269,18 +322,6 @@ function updateBaseVersion( baseVersion, deltas ) {
 	return deltas;
 }
 
-// Checks priorities of passed constructors and decides which one is more important.
-// If both priorities are same, value passed in `isAMoreImportantThanB` parameter is used.
-function getPriority( A, B, isAMoreImportantThanB ) {
-	if ( A._priority > B._priority ) {
-		return true;
-	} else if ( A._priority < B._priority ) {
-		return false;
-	} else {
-		return isAMoreImportantThanB;
-	}
-}
-
 // Returns number of operations in given array of deltas.
 function getOpsCount( deltas ) {
 	return deltas.reduce( ( current, delta ) => {
@@ -302,3 +343,167 @@ function padWithNoOps( deltas, howMany ) {
 
 	deltas.push( noDelta );
 }
+
+// Sets context data before delta `a` by delta `b` transformation.
+// Using data given in `context` object, sets `context.insertBefore` and `context.forceNotSticky` flags.
+// Also updates `context.wasAffected`.
+function _setContext( a, b, context ) {
+	_setWasAffected( a, b, context );
+	_setInsertBeforeContext( a, b, context );
+	_setForceNotSticky( b, context );
+}
+
+// Sets `context.insertBefore` basing on `context.document` history for `a` by `b` transformation.
+//
+// Simply saying, if `b` is "undoing delta" it means that `a` might already be transformed by the delta
+// which was undone by `b` (let's call it `oldB`). If this is true, `a` by `b` transformation has to consider
+// how `a` was transformed by `oldB` to get an expected result.
+//
+// This is used to resolve conflict when two operations want to insert nodes at the same position. If the operations
+// are not related, it doesn't matter in what order operations insert those nodes. However if the operations are
+// related (for example, in undo) we need to keep the same order.
+//
+// For example, assume that editor has two letters: 'ab'. Then, both letters are removed, creating two operations:
+// (op. 1) REM [ 1 ] - [ 2 ] => (graveyard) [ 0 ]
+// (op. 2) REM [ 0 ] - [ 1 ] => (graveyard) [ 1 ]
+// Then, we undo operation 2:
+// REM [ 0 ] - [ 1 ] => (graveyard) [ 1 ] is reversed to REI (graveyard) [ 1 ] => [ 0 ] - [ 1 ] and is applied.
+// History stack is:
+// (op. 1) REM [ 1 ] - [ 2 ] => (graveyard) [ 0 ]
+// (op. 2) REM [ 0 ] - [ 1 ] => (graveyard) [ 1 ]
+// (op. 3) REI (graveyard) [ 1 ] => [ 0 ] - [ 1 ]
+// Then, we undo operation 1:
+// REM [ 1 ] - [ 2 ] => (graveyard) [ 0 ] is reversed to REI (graveyard) [ 0 ] => [ 1 ] - [ 2 ] then,
+// is transformed by (op. 2) REM [ 0 ] - [ 1 ] => (graveyard) [ 1 ] and becomes REI (graveyard) [ 0 ] => [ 0 ] - [ 1 ] then,
+// is transformed by (op. 3) REI (graveyard) [ 1 ] => [ 0 ] - [ 1 ] and we have a conflict because both operations
+// insert at the same position, but thanks to keeping the context, we know that in this case, the transformed operation should
+// insert the node after operation 3.
+//
+// Keep in mind, that `context.insertBefore` may be either `Boolean` or `undefined`. If it is `Boolean` then the order is
+// known (deltas are related and `a` should insert nodes before or after `b`). However, if deltas were not related,
+// `context.isBefore` is `undefined` and other factors will be taken into consideration when resolving the order
+// (this, however, happens in operational transformation algorithms).
+//
+// Keep in mind that this problem only affects `MoveOperation` (and operations that derive from it).
+function _setInsertBeforeContext( a, b, context ) {
+	// If `b` is a delta that undoes other delta...
+	if ( context.document.history.isUndoingDelta( b ) ) {
+		// Get the undone delta...
+		const undoneDelta = context.document.history.getUndoneDelta( b );
+		// Get a map with deltas related to `a` delta...
+		const aWasAffectedBy = context.wasAffected.get( a );
+		// And check if the undone delta is related with delta `a`.
+		const affected = aWasAffectedBy.get( undoneDelta );
+
+		if ( affected !== undefined ) {
+			// If deltas are related, set `context.insertBefore` basing on whether `a` was affected by the undone delta.
+			context.insertBefore = affected;
+		}
+	}
+}
+
+// Sets `context.forceNotSticky` basing on `context.document` history for transformation by `b` delta.
+//
+// `MoveOperation` may be "sticky" which means, that anything that was inserted at the boundary of moved range, should
+// also be moved. This is particularly helpful for actions like splitting or merging a node. However, this behavior
+// sometimes leads to an error, for example in undo.
+//
+// Simply saying, if delta is going to be transformed by delta `b`, stickiness should not be taken into consideration
+// if delta `b` was already undone or if delta `b` is an undoing delta.
+//
+// Keep in mind that this problem only affects `MoveOperation` (and operations that derive from it).
+function _setForceNotSticky( b, context ) {
+	// If `b` delta is undoing or undone delta, stickiness should not be taken into consideration.
+	if ( context.document.history.isUndoingDelta( b ) || context.document.history.isUndoneDelta( b ) ) {
+		context.forceNotSticky = true;
+	}
+}
+
+// Sets `context.wasAffected` which holds context information about how transformed deltas are related. `context.wasAffected`
+// is used by `_setInsertBeforeContext` helper function.
+function _setWasAffected( a, b, context ) {
+	if ( !context.wasAffected.get( a ) ) {
+		// Create a new map with relations for `a` delta.
+		context.wasAffected.set( a, new Map() );
+	}
+
+	let wasAffected = false;
+
+	// Cross-check all operations from both deltas...
+	for ( const opA of a.operations ) {
+		for ( const opB of b.operations ) {
+			if ( opA instanceof MoveOperation && opB instanceof MoveOperation ) {
+				if ( _isOperationAffected( opA, opB ) ) {
+					// If any of them are move operations that affect each other, set the relation accordingly.
+					wasAffected = true;
+
+					break;
+				}
+			}
+		}
+
+		// Break both loops if affecting pair has been found.
+		if ( wasAffected ) {
+			break;
+		}
+	}
+
+	context.wasAffected.get( a ).set( b, wasAffected );
+}
+
+// Checks whether `opA` is affected by `opB`. It is assumed that both operations are `MoveOperation`.
+// Operation is affected only if the other operation's source range is before that operation's source range.
+function _isOperationAffected( opA, opB ) {
+	const target = opA.targetPosition;
+	const source = opB.sourcePosition;
+
+	const cmpResult = compareArrays( source.getParentPath(), target.getParentPath() );
+
+	if ( target.root != source.root ) {
+		return false;
+	}
+
+	return cmpResult == 'same' && source.offset < target.offset;
+}
+
+// Updates `context` object after delta by delta transformation is done.
+//
+// This means two things:
+// 1. Some information are removed from context (those that apply only to the transformation that just happened).
+// 2. `context.wasAffected` is updated because `oldDelta` has been transformed to one or many `newDeltas` and we
+// need to update entries in `context.wasAffected`. Basically, anything that was in `context.wasAffected` under
+// `oldDelta` key should be rewritten to `newDeltas`. This way in next transformation steps, `newDeltas` "remember"
+// the context of `oldDelta`.
+function _updateContext( oldDelta, newDeltas, context ) {
+	delete context.insertBefore;
+	delete context.forceNotSticky;
+
+	const wasAffected = context.wasAffected.get( oldDelta );
+
+	context.wasAffected.delete( oldDelta );
+
+	for ( const delta of newDeltas ) {
+		context.wasAffected.set( delta, new Map( wasAffected ) );
+	}
+}
+
+/**
+ * Object containing values and flags describing context of a transformation.
+ *
+ * @typedef {Object} module:engine/model/delta/transform~transformationContext
+ * @property {Boolean} useAdditionalContext Whether additional context should be evaluated and used during transformations.
+ * @property {Boolean} isStrong Whether transformed deltas are more (`true`) or less (`false`) important than deltas to transform by.
+ * @property {module:engine/model/document~Document} [document] Model document which is a context for transformations.
+ * Available only if `useAdditionalContext` is `true`.
+ * @property {Boolean|undefined} forceWeakRemove Whether {@link module:engine/model/operation/removeoperation~RemoveOperation}
+ * should be always more important than other operations. Available only if `useAdditionalContext` is `true`.
+ * @property {Boolean|undefined} insertBefore Used when transforming {@link module:engine/model/operation/moveoperation~MoveOperation}s
+ * If two `MoveOperation`s target to the same position, `insertBefore` is used to resolve such conflict. This flag
+ * is set and used internally by transformation algorithms. Available only if `useAdditionalContext` is `true`.
+ * @property {Boolean|undefined} forceNotSticky Used when transforming
+ * {@link module:engine/model/operation/moveoperation~MoveOperation#isSticky sticky MoveOperation}. If set to `true`,
+ * `isSticky` flag is discarded during transformations. This flag is set and used internally by transformation algorithms.
+ * Available only if `useAdditionalContext` is `true`.
+ * @property {Map|undefined} wasAffected Used to evaluate `insertBefore` flag. This map is set and used internally by
+ * transformation algorithms. Available only if `useAdditionalContext` is `true`.
+ */

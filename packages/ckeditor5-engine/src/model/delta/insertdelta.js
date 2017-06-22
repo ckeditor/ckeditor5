@@ -75,13 +75,6 @@ export default class InsertDelta extends Delta {
 	static get className() {
 		return 'engine.model.delta.InsertDelta';
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get _priority() {
-		return 20;
-	}
 }
 
 /**

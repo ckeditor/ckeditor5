@@ -20,12 +20,13 @@ import {
 } from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, baseVersion;
+	let doc, root, baseVersion, context;
 
 	beforeEach( () => {
 		doc = getFilledDocument();
 		root = doc.getRoot();
 		baseVersion = doc.version;
+		context = { isStrong: false };
 	} );
 
 	describe( 'RenameDelta by', () => {
@@ -42,7 +43,7 @@ describe( 'transform', () => {
 				const splitPosition = new Position( root, [ 3, 3, 3 ] );
 				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 
-				const transformed = transform( renameDelta, splitDelta );
+				const transformed = transform( renameDelta, splitDelta, context );
 
 				baseVersion = splitDelta.length;
 
@@ -85,7 +86,7 @@ describe( 'transform', () => {
 				const splitPosition = new Position( root, [ 3, 2, 1 ] );
 				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 
-				const transformed = transform( renameDelta, splitDelta );
+				const transformed = transform( renameDelta, splitDelta, context );
 
 				baseVersion = splitDelta.length;
 

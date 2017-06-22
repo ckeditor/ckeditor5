@@ -61,13 +61,6 @@ export default class UnwrapDelta extends Delta {
 	static get className() {
 		return 'engine.model.delta.UnwrapDelta';
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get _priority() {
-		return 10;
-	}
 }
 
 /**
