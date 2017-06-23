@@ -69,34 +69,45 @@ export function viewFigureToModel() {
  *
  * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
  * @param {String} attributeName
+ * @param {function} [conversionCallback] Function that will be called each time given attribute conversion is performed.
+ * It will be called with two params: a view image element and type of the conversion: 'addAttribute`, `changeAttribute` or
+ * `removeAttribute`. This callback can be used to perform additional processing on view image element.
  */
-export function createImageAttributeConverter( dispatchers, attributeName ) {
+export function createImageAttributeConverter( dispatchers, attributeName, conversionCallback ) {
 	for ( const dispatcher of dispatchers ) {
-		dispatcher.on( `addAttribute:${ attributeName }:image`, modelToViewAttributeConverter );
-		dispatcher.on( `changeAttribute:${ attributeName }:image`, modelToViewAttributeConverter );
-		dispatcher.on( `removeAttribute:${ attributeName }:image`, modelToViewAttributeConverter );
+		dispatcher.on( `addAttribute:${ attributeName }:image`, modelToViewAttributeConverter( conversionCallback ) );
+		dispatcher.on( `changeAttribute:${ attributeName }:image`, modelToViewAttributeConverter( conversionCallback ) );
+		dispatcher.on( `removeAttribute:${ attributeName }:image`, modelToViewAttributeConverter( conversionCallback ) );
 	}
 }
 
-// Model to view image converter converting given attribute, and adding it to `img` element nested inside `figure` element.
+// Returns model to view image converter converting given attribute, and adding it to `img` element nested inside `figure` element.
+// Allows to provide `conversionCallback` called each time conversion is made.
 //
 // @private
-function modelToViewAttributeConverter( evt, data, consumable, conversionApi ) {
-	const parts = evt.name.split( ':' );
-	const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
+function modelToViewAttributeConverter( conversionCallback ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		const parts = evt.name.split( ':' );
+		const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
 
-	if ( !consumable.consume( data.item, consumableType ) ) {
-		return;
-	}
+		if ( !consumable.consume( data.item, consumableType ) ) {
+			return;
+		}
 
-	const figure = conversionApi.mapper.toViewElement( data.item );
-	const img = figure.getChild( 0 );
+		const figure = conversionApi.mapper.toViewElement( data.item );
+		const img = figure.getChild( 0 );
+		const type = parts[ 0 ];
 
-	if ( parts[ 0 ] == 'removeAttribute' ) {
-		img.removeAttribute( data.attributeKey );
-	} else {
-		img.setAttribute( data.attributeKey, data.attributeNewValue );
-	}
+		if ( type == 'removeAttribute' ) {
+			img.removeAttribute( data.attributeKey );
+		} else {
+			img.setAttribute( data.attributeKey, data.attributeNewValue );
+		}
+
+		if ( conversionCallback ) {
+			conversionCallback( img, type );
+		}
+	};
 }
 
 // Holds all images that were converted for autohoisting.

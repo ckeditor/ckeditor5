@@ -38,7 +38,7 @@ export default class ImageEngine extends Plugin {
 		// Configure schema.
 		schema.registerItem( 'image' );
 		schema.requireAttributes( 'image', [ 'src' ] );
-		schema.allow( { name: 'image', attributes: [ 'alt', 'src' ], inside: '$root' } );
+		schema.allow( { name: 'image', attributes: [ 'alt', 'src', 'srcset' ], inside: '$root' } );
 		schema.objects.add( 'image' );
 
 		// Build converter from model to view for data pipeline.
@@ -53,6 +53,16 @@ export default class ImageEngine extends Plugin {
 
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'src' );
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'alt' );
+
+		// Convert `srcset` attribute changes and add or remove `sizes` attribute when necessary.
+		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'srcset', ( viewImg, type ) => {
+			if ( type == 'removeAttribute' ) {
+				viewImg.removeAttribute( 'sizes' );
+			} else {
+				// Always outputting `100vw`. See https://github.com/ckeditor/ckeditor5-image/issues/2.
+				viewImg.setAttribute( 'sizes', '100vw' );
+			}
+		} );
 
 		// Build converter for view img element to model image element.
 		buildViewConverter().for( data.viewToModel )
@@ -69,6 +79,12 @@ export default class ImageEngine extends Plugin {
 			.from( { name: 'img', attribute: { alt: /./ } } )
 			.consuming( { attribute: [ 'alt' ] } )
 			.toAttribute( viewImage => ( { key: 'alt', value: viewImage.getAttribute( 'alt' ) } ) );
+
+		// Build converter for srcset attribute.
+		buildViewConverter().for( data.viewToModel )
+			.from( { name: 'img', attribute: { srcset: /./ } } )
+			.consuming( { attribute: [ 'srcset' ] } )
+			.toAttribute( viewImage => ( { key: 'srcset', value: viewImage.getAttribute( 'srcset' ) } ) );
 
 		// Converter for figure element from view to model.
 		data.viewToModel.on( 'element:figure', viewFigureToModel() );
