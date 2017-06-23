@@ -34,6 +34,7 @@ describe( 'LinkEngine', () => {
 	it( 'should set proper schema rules', () => {
 		expect( doc.schema.check( { name: '$inline', attributes: [ 'linkHref' ], inside: '$root' } ) ).to.be.false;
 		expect( doc.schema.check( { name: '$inline', attributes: [ 'linkHref' ], inside: '$block' } ) ).to.be.true;
+		expect( doc.schema.check( { name: '$inline', attributes: [ 'linkHref' ], inside: '$clipboardHolder' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
