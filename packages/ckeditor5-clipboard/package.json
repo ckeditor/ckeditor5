@@ -10,6 +10,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^3.1.0",
     "@ckeditor/ckeditor5-basic-styles": "^0.8.1",
+    "@ckeditor/ckeditor5-block-quote": "^0.1.1",
     "@ckeditor/ckeditor5-editor-classic": "^0.7.3",
     "@ckeditor/ckeditor5-paragraph": "^0.8.0",
     "@ckeditor/ckeditor5-enter": "^0.9.1",
