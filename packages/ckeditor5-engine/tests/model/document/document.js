@@ -46,7 +46,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'createRoot', () => {
+	describe( 'createRoot()', () => {
 		it( 'should create a new RootElement with default element and root names, add it to roots map and return it', () => {
 			const root = doc.createRoot();
 
@@ -78,7 +78,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'getRoot', () => {
+	describe( 'getRoot()', () => {
 		it( 'should return a RootElement previously created with given name', () => {
 			const newRoot = doc.createRoot();
 			const getRoot = doc.getRoot();
@@ -95,7 +95,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'hasRoot', () => {
+	describe( 'hasRoot()', () => {
 		it( 'should return true when Document has RootElement with given name', () => {
 			doc.createRoot();
 
@@ -107,7 +107,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'applyOperation', () => {
+	describe( 'applyOperation()', () => {
 		it( 'should increase document version, execute operation and fire event with proper data', () => {
 			const changeCallback = sinon.spy();
 			const type = 't';
@@ -151,7 +151,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'batch', () => {
+	describe( 'batch()', () => {
 		it( 'should create a new batch with the document property', () => {
 			const batch = doc.batch();
 
@@ -166,7 +166,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'enqueue', () => {
+	describe( 'enqueue()', () => {
 		it( 'should be executed immediately and fire changesDone event', () => {
 			const order = [];
 
@@ -275,7 +275,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'getNearestSelectionRange', () => {
+	describe( 'getNearestSelectionRange()', () => {
 		let selection;
 
 		beforeEach( () => {
@@ -430,7 +430,7 @@ describe( 'Document', () => {
 		}
 	} );
 
-	describe( '_getDefaultRoot', () => {
+	describe( '_getDefaultRoot()', () => {
 		it( 'should return graveyard root if there are no other roots in the document', () => {
 			expect( doc._getDefaultRoot() ).to.equal( doc.graveyard );
 		} );
