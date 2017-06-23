@@ -33,6 +33,8 @@ export default class ItalicEngine extends Plugin {
 
 		// Allow italic attribute on all inline nodes.
 		editor.document.schema.allow( { name: '$inline', attributes: [ ITALIC ], inside: '$block' } );
+		// Temporary workaround. See https://github.com/ckeditor/ckeditor5/issues/477.
+		editor.document.schema.allow( { name: '$inline', attributes: [ ITALIC ], inside: '$clipboardHolder' } );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
