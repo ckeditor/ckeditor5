@@ -32,9 +32,9 @@ export default class BoldEngine extends Plugin {
 		const editing = editor.editing;
 
 		// Allow bold attribute on all inline nodes.
-		editor.document.schema.allow( { name: '$inline', attributes: [ BOLD ], inside: '$block' } );
+		editor.document.schema.allow( { name: '$inline', attributes: BOLD, inside: '$block' } );
 		// Temporary workaround. See https://github.com/ckeditor/ckeditor5/issues/477.
-		editor.document.schema.allow( { name: '$inline', attributes: [ BOLD ], inside: '$clipboardHolder' } );
+		editor.document.schema.allow( { name: '$inline', attributes: BOLD, inside: '$clipboardHolder' } );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )

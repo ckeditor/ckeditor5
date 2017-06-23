@@ -26,14 +26,18 @@ describe( 'BoldEngine', () => {
 		} );
 	} );
 
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( BoldEngine ) ).to.be.instanceOf( BoldEngine );
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: [ 'bold' ], inside: '$root' } ) ).to.be.false;
-		expect( doc.schema.check( { name: '$inline', attributes: [ 'bold' ], inside: '$block' } ) ).to.be.true;
-		expect( doc.schema.check( { name: '$inline', attributes: [ 'bold' ], inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( doc.schema.check( { name: '$inline', attributes: 'bold', inside: '$root' } ) ).to.be.false;
+		expect( doc.schema.check( { name: '$inline', attributes: 'bold', inside: '$block' } ) ).to.be.true;
+		expect( doc.schema.check( { name: '$inline', attributes: 'bold', inside: '$clipboardHolder' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
