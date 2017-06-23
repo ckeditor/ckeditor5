@@ -151,9 +151,9 @@ export default class ImageUploadEngine extends Plugin {
 
 				clean();
 
-				// Remove image from insertion batch.
+				// Permanently remove image from insertion batch.
 				doc.enqueueChanges( () => {
-					batch.remove( imageElement );
+					batch.remove( imageElement, true );
 				} );
 			} );
 
