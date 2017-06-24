@@ -129,7 +129,7 @@ function transform( changeType, deltaType, targetRange, sourcePosition ) {
 	const howMany = targetRange.end.offset - targetRange.start.offset;
 	let targetPosition = targetRange.start;
 
-	if ( changeType == 'move' ) {
+	if ( changeType == 'move' || changeType == 'remove' || changeType == 'reinsert' ) {
 		// Range._getTransformedByDocumentChange is expecting `targetPosition` to be "before" move
 		// (before transformation). `targetRange.start` is already after the move happened.
 		// We have to revert `targetPosition` to the state before the move.
@@ -142,7 +142,7 @@ function transform( changeType, deltaType, targetRange, sourcePosition ) {
 	//
 	// First, this concerns only `move` change, because insert change includes inserted part always (changeType == 'move').
 	// Second, this is a case only if moved range was intersecting with this range and was inserted into this range (result.length == 3).
-	if ( changeType == 'move' && result.length == 3 ) {
+	if ( ( changeType == 'move' || changeType == 'remove' || changeType == 'reinsert' ) && result.length == 3 ) {
 		// `result[ 2 ]` is a "common part" of this range and moved range. We substitute that common part with the whole
 		// `targetRange` because we want to include whole `targetRange` in this range.
 		result[ 2 ] = targetRange;

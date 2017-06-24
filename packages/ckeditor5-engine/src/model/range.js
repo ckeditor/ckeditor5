@@ -462,6 +462,7 @@ export default class Range {
 		} else {
 			const sourceRange = Range.createFromPositionAndShift( sourcePosition, howMany );
 
+			// Edge case for merge detla.
 			if (
 				deltaType == 'merge' &&
 				this.isCollapsed &&
@@ -471,50 +472,52 @@ export default class Range {
 				// Without fix, the range would end up in the graveyard, together with removed element.
 				// <p>foo</p><p>[]bar</p> -> <p>foobar</p><p>[]</p> -> <p>foobar</p> -> <p>foo[]bar</p>
 				return [ new Range( targetPosition.getShiftedBy( this.start.offset ) ) ];
-			} else if ( type == 'move' ) {
-				// In all examples `[]` is `this` and `{}` is `sourceRange`, while `^` is move target position.
-				//
-				// Example:
-				// <p>xx</p>^<w>{<p>a[b</p>}</w><p>c]d</p>   -->   <p>xx</p><p>a[b</p><w></w><p>c]d</p>
-				// ^<p>xx</p><w>{<p>a[b</p>}</w><p>c]d</p>   -->   <p>a[b</p><p>xx</p><w></w><p>c]d</p>  // Note <p>xx</p> inclusion.
-				// <w>{<p>a[b</p>}</w>^<p>c]d</p>            -->   <w></w><p>a[b</p><p>c]d</p>
-				if (
-					sourceRange.containsPosition( this.start ) &&
-					this.containsPosition( sourceRange.end ) &&
-					this.end.isAfter( targetPosition )
-				) {
-					const start = this.start._getCombined(
-						sourcePosition,
-						targetPosition._getTransformedByDeletion( sourcePosition, howMany )
-					);
-					const end = this.end._getTransformedByMove( sourcePosition, targetPosition, howMany, false, false );
+			}
+			//
+			// Other edge cases:
+			//
+			// In all examples `[]` is `this` and `{}` is `sourceRange`, while `^` is move target position.
+			//
+			// Example:
+			// <p>xx</p>^<w>{<p>a[b</p>}</w><p>c]d</p>   -->   <p>xx</p><p>a[b</p><w></w><p>c]d</p>
+			// ^<p>xx</p><w>{<p>a[b</p>}</w><p>c]d</p>   -->   <p>a[b</p><p>xx</p><w></w><p>c]d</p>  // Note <p>xx</p> inclusion.
+			// <w>{<p>a[b</p>}</w>^<p>c]d</p>            -->   <w></w><p>a[b</p><p>c]d</p>
+			if (
+				sourceRange.containsPosition( this.start ) &&
+				this.containsPosition( sourceRange.end ) &&
+				this.end.isAfter( targetPosition )
+			) {
+				const start = this.start._getCombined(
+					sourcePosition,
+					targetPosition._getTransformedByDeletion( sourcePosition, howMany )
+				);
+				const end = this.end._getTransformedByMove( sourcePosition, targetPosition, howMany, false, false );
 
-					return [ new Range( start, end ) ];
-				}
+				return [ new Range( start, end ) ];
+			}
 
-				// Example:
-				// <p>c[d</p><w>{<p>a]b</p>}</w>^<p>xx</p>   -->   <p>c[d</p><w></w><p>a]b</p><p>xx</p>
-				// <p>c[d</p><w>{<p>a]b</p>}</w><p>xx</p>^   -->   <p>c[d</p><w></w><p>xx</p><p>a]b</p>  // Note <p>xx</p> inclusion.
-				// <p>c[d</p>^<w>{<p>a]b</p>}</w>            -->   <p>c[d</p><p>a]b</p><w></w>
-				if (
-					sourceRange.containsPosition( this.end ) &&
-					this.containsPosition( sourceRange.start ) &&
-					this.start.isBefore( targetPosition )
-				) {
-					const start = this.start._getTransformedByMove(
-						sourcePosition,
-						targetPosition,
-						howMany,
-						true,
-						false
-					);
-					const end = this.end._getCombined(
-						sourcePosition,
-						targetPosition._getTransformedByDeletion( sourcePosition, howMany )
-					);
+			// Example:
+			// <p>c[d</p><w>{<p>a]b</p>}</w>^<p>xx</p>   -->   <p>c[d</p><w></w><p>a]b</p><p>xx</p>
+			// <p>c[d</p><w>{<p>a]b</p>}</w><p>xx</p>^   -->   <p>c[d</p><w></w><p>xx</p><p>a]b</p>  // Note <p>xx</p> inclusion.
+			// <p>c[d</p>^<w>{<p>a]b</p>}</w>            -->   <p>c[d</p><p>a]b</p><w></w>
+			if (
+				sourceRange.containsPosition( this.end ) &&
+				this.containsPosition( sourceRange.start ) &&
+				this.start.isBefore( targetPosition )
+			) {
+				const start = this.start._getTransformedByMove(
+					sourcePosition,
+					targetPosition,
+					howMany,
+					true,
+					false
+				);
+				const end = this.end._getCombined(
+					sourcePosition,
+					targetPosition._getTransformedByDeletion( sourcePosition, howMany )
+				);
 
-					return [ new Range( start, end ) ];
-				}
+				return [ new Range( start, end ) ];
 			}
 
 			return this._getTransformedByMove( sourcePosition, targetPosition, howMany );
