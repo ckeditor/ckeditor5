@@ -53,7 +53,9 @@ export default class RemoveOperation extends MoveOperation {
 		if ( this.isPermanent ) {
 			return new NoOperation( this.baseVersion + 1 );
 		} else {
-			return new ReinsertOperation( this.targetPosition, this.howMany, this.sourcePosition, this.baseVersion + 1 );
+			const newTargetPosition = this.sourcePosition._getTransformedByInsertion( this.targetPosition, this.howMany );
+
+			return new ReinsertOperation( this.getMovedRangeStart(), this.howMany, newTargetPosition, this.baseVersion + 1 );
 		}
 	}
 

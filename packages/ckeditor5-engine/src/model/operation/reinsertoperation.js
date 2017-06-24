@@ -46,7 +46,9 @@ export default class ReinsertOperation extends MoveOperation {
 	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
 	 */
 	getReversed() {
-		return new RemoveOperation( this.targetPosition, this.howMany, this.sourcePosition, this.baseVersion + 1 );
+		const newTargetPosition = this.sourcePosition._getTransformedByInsertion( this.targetPosition, this.howMany );
+
+		return new RemoveOperation( this.getMovedRangeStart(), this.howMany, newTargetPosition, this.baseVersion + 1 );
 	}
 
 	/**

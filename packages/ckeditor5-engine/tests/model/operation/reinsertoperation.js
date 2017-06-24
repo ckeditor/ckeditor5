@@ -61,7 +61,7 @@ describe( 'ReinsertOperation', () => {
 		expect( clone.baseVersion ).to.equal( operation.baseVersion );
 	} );
 
-	it( 'should create a correct RemoveOperation as a reverse', () => {
+	it( 'should create RemoveOperation as a reverse', () => {
 		graveyard.appendChildren( new Element( 'x' ) );
 
 		const reverse = operation.getReversed();
@@ -71,6 +71,14 @@ describe( 'ReinsertOperation', () => {
 		expect( reverse.howMany ).to.equal( 2 );
 		expect( reverse.sourcePosition.isEqual( rootPosition ) ).to.be.true;
 		expect( reverse.targetPosition.isEqual( graveyardPosition ) ).to.be.true;
+	} );
+
+	it( 'should create correct RemoveOperation when reversed if target position was in graveyard', () => {
+		const operation = new ReinsertOperation( new Position( doc.graveyard, [ 0 ] ), 1, new Position( doc.graveyard, [ 3 ] ), 0 );
+		const reverse = operation.getReversed();
+
+		expect( reverse.sourcePosition.path ).to.deep.equal( [ 2 ] );
+		expect( reverse.targetPosition.path ).to.deep.equal( [ 0 ] );
 	} );
 
 	it( 'should undo reinsert set of nodes by applying reverse operation', () => {

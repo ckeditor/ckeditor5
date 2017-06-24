@@ -100,6 +100,14 @@ describe( 'RemoveOperation', () => {
 		expect( reverse.targetPosition.isEqual( position ) ).to.be.true;
 	} );
 
+	it( 'should create correct ReinsertOperation when reversed if source range was in graveyard', () => {
+		const operation = new RemoveOperation( new Position( doc.graveyard, [ 2 ] ), 1, new Position( doc.graveyard, [ 0 ] ), 0 );
+		const reverse = operation.getReversed();
+
+		expect( reverse.sourcePosition.path ).to.deep.equal( [ 0 ] );
+		expect( reverse.targetPosition.path ).to.deep.equal( [ 3 ] );
+	} );
+
 	it( 'should create NoOperation when reversed if was permanent', () => {
 		const position = new Position( root, [ 0 ] );
 		const operation = new RemoveOperation( position, 2, new Position( doc.graveyard, [ 0 ] ), 0 );
