@@ -2829,6 +2829,25 @@ describe( 'transform', () => {
 				} );
 			} );
 		} );
+
+		describe( 'by RemoveOperation', () => {
+			it( 'should use isPermanent flag even if both operations are remove operations', () => {
+				const op = new RemoveOperation( new Position( root, [ 8 ] ), 2, new Position( doc.graveyard, [ 0 ] ), baseVersion );
+
+				const transformBy = op.clone();
+				transformBy.isPermanent = true;
+
+				// `context.isStrong` will not be considered, because `transformBy` is permanent.
+				const transOp = transform( op, transformBy, { isStrong: true } );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expectOperation( transOp[ 0 ], {
+					type: NoOperation,
+					baseVersion: baseVersion + 1
+				} );
+			} );
+		} );
 	} );
 
 	describe( 'NoOperation', () => {
