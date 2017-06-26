@@ -185,7 +185,7 @@ export default class Clipboard extends Plugin {
 
 			if ( data.method == 'cut' ) {
 				doc.enqueueChanges( () => {
-					editor.data.deleteContent( doc.selection, doc.batch(), { merge: true } );
+					editor.data.deleteContent( doc.selection, doc.batch() );
 				} );
 			}
 		}, { priority: 'low' } );
