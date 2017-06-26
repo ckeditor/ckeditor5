@@ -11,7 +11,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import buildViewConverter from '../../src/conversion/buildviewconverter';
 import buildModelConverter from '../../src/conversion/buildmodelconverter';
 
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Bug ckeditor5-engine#699', () => {
 	let element;
@@ -32,7 +33,8 @@ describe( 'Bug ckeditor5-engine#699', () => {
 			.then( editor => {
 				editor.setData( '<widget></widget><p>foo</p>' );
 
-				expect( getData( editor.document ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
+				expect( getModelData( editor.document ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
+				expect( getViewData( editor.editing.view ) ).to.equal( '[<widget></widget>]<p>foo</p>' );
 
 				return editor.destroy();
 			} );
