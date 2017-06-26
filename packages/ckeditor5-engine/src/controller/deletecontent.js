@@ -18,9 +18,12 @@ import Element from '../model/element';
  * @param {module:engine/model/selection~Selection} selection Selection of which the content should be deleted.
  * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
  * @param {Object} [options]
- * @param {Boolean} [options.merge=false] Merge elements after removing the contents of the selection.
- * For example, `<h>x[x</h><p>y]y</p>` will become: `<h>x^y</h>` with the option enabled
- * and: `<h>x^</h><p>y</p>` without it.
+ * @param {Boolean} [options.leaveUnmerged=false] Whether to merge elements after removing the content of the selection.
+ *
+ * For example `<h>x[x</h><p>y]y</p>` will become:
+ * * `<h>x^y</h>` with the option disabled (`leaveUnmerged == false`)
+ * * `<h>x^</h><p>y</p>` with enabled (`leaveUnmerged == true`).
+ *
  * Note: {@link module:engine/model/schema~Schema#objects object} and {@link module:engine/model/schema~Schema#limits limit}
  * elements will not be merged.
  */
@@ -34,7 +37,7 @@ export default function deleteContent( selection, batch, options = {} ) {
 	const startPos = selRange.start;
 	const endPos = LivePosition.createFromPosition( selRange.end );
 
-	// 1. Remove the contents if there are any.
+	// 1. Remove the content if there is any.
 	if ( !selRange.start.isTouching( selRange.end ) ) {
 		batch.remove( selRange );
 	}
@@ -47,7 +50,7 @@ export default function deleteContent( selection, batch, options = {} ) {
 	// However, the algorithm supports also merging deeper structures (up to the depth of the shallower branch),
 	// as it's hard to imagine what should actually be the default behavior. Usually, specific features will
 	// want to override that behavior anyway.
-	if ( options.merge ) {
+	if ( !options.leaveUnmerged ) {
 		mergeBranches( batch, startPos, endPos );
 	}
 
