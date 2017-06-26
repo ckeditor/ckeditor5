@@ -302,7 +302,7 @@ describe( 'UndoEngine integration', () => {
 			it( 'deleteContent between two nodes', () => {
 				input( '<p>fo[o</p><p>b]ar</p>' );
 
-				editor.data.deleteContent( doc.selection, doc.batch(), { merge: true } );
+				editor.data.deleteContent( doc.selection, doc.batch() );
 				output( '<p>fo[]ar</p>' );
 
 				editor.execute( 'undo' );
