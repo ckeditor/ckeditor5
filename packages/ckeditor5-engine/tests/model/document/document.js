@@ -280,11 +280,17 @@ describe( 'Document', () => {
 
 		beforeEach( () => {
 			doc.schema.registerItem( 'paragraph', '$block' );
+
 			doc.schema.registerItem( 'emptyBlock' );
 			doc.schema.allow( { name: 'emptyBlock', inside: '$root' } );
-			doc.schema.registerItem( 'widget', '$block' );
+
+			doc.schema.registerItem( 'widget' );
 			doc.schema.allow( { name: 'widget', inside: '$root' } );
 			doc.schema.objects.add( 'widget' );
+
+			doc.schema.registerItem( 'blockWidget', '$block' );
+			doc.schema.allow( { name: 'blockWidget', inside: '$root' } );
+			doc.schema.objects.add( 'blockWidget' );
 
 			doc.createRoot();
 			selection = doc.selection;
@@ -374,34 +380,6 @@ describe( 'Document', () => {
 		);
 
 		test(
-			'should select nearest object - both',
-			'<widget></widget>[]<widget></widget>',
-			'both',
-			'[<widget></widget>]<widget></widget>'
-		);
-
-		test(
-			'should select nearest object - forward',
-			'<paragraph></paragraph>[]<widget></widget>',
-			'forward',
-			'<paragraph></paragraph>[<widget></widget>]'
-		);
-
-		test(
-			'should select nearest object - forward',
-			'<paragraph></paragraph>[]<widget></widget>',
-			'forward',
-			'<paragraph></paragraph>[<widget></widget>]'
-		);
-
-		test(
-			'should select nearest object - backward',
-			'<widget></widget>[]<paragraph></paragraph>',
-			'backward',
-			'[<widget></widget>]<paragraph></paragraph>'
-		);
-
-		test(
 			'should move forward when placed at root start',
 			'[]<paragraph></paragraph><paragraph></paragraph>',
 			'both',
@@ -414,6 +392,101 @@ describe( 'Document', () => {
 			'both',
 			'<paragraph></paragraph><paragraph>[]</paragraph>'
 		);
+
+		describe( 'in case of objects which do not allow text inside', () => {
+			test(
+				'should select nearest object (o[]o) - both',
+				'<widget></widget>[]<widget></widget>',
+				'both',
+				'[<widget></widget>]<widget></widget>'
+			);
+
+			test(
+				'should select nearest object (o[]o) - forward',
+				'<widget></widget>[]<widget></widget>',
+				'forward',
+				'<widget></widget>[<widget></widget>]'
+			);
+
+			test(
+				'should select nearest object (o[]o) - backward',
+				'<widget></widget>[]<widget></widget>',
+				'both',
+				'[<widget></widget>]<widget></widget>'
+			);
+
+			test(
+				'should select nearest object (p[]o) - forward',
+				'<paragraph></paragraph>[]<widget></widget>',
+				'forward',
+				'<paragraph></paragraph>[<widget></widget>]'
+			);
+
+			test(
+				'should select nearest object (o[]p) - both',
+				'<widget></widget>[]<paragraph></paragraph>',
+				'both',
+				'[<widget></widget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object (o[]p) - backward',
+				'<widget></widget>[]<paragraph></paragraph>',
+				'backward',
+				'[<widget></widget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object ([]o) - both',
+				'[]<widget></widget><paragraph></paragraph>',
+				'both',
+				'[<widget></widget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object ([]o) - forward',
+				'[]<widget></widget><paragraph></paragraph>',
+				'forward',
+				'[<widget></widget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object (o[]) - both',
+				'<paragraph></paragraph><widget></widget>[]',
+				'both',
+				'<paragraph></paragraph>[<widget></widget>]'
+			);
+
+			test(
+				'should select nearest object (o[]) - backward',
+				'<paragraph></paragraph><widget></widget>[]',
+				'both',
+				'<paragraph></paragraph>[<widget></widget>]'
+			);
+		} );
+
+		describe( 'in case of objects which allow text inside', () => {
+			test(
+				'should select nearest object which allows text (o[]o) - both',
+				'<blockWidget></blockWidget>[]<blockWidget></blockWidget>',
+				'both',
+				'[<blockWidget></blockWidget>]<blockWidget></blockWidget>'
+			);
+
+			test(
+				'should select nearest object (o[]p) - both',
+				'<blockWidget></blockWidget>[]<paragraph></paragraph>',
+				'both',
+				'[<blockWidget></blockWidget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object which allows text ([]o) - both',
+				'[]<blockWidget></blockWidget><paragraph></paragraph>',
+				'both',
+				'[<blockWidget></blockWidget>]<paragraph></paragraph>'
+			);
+		} );
 
 		function test( testName, data, direction, expected ) {
 			it( testName, () => {

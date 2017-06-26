@@ -43,6 +43,9 @@ describe( 'LiveSelection', () => {
 		selection = doc.selection;
 		doc.schema.registerItem( 'p', '$block' );
 
+		doc.schema.registerItem( 'widget' );
+		doc.schema.objects.add( 'widget' );
+
 		liveRange = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 		range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 2 ] ) );
 	} );
@@ -99,8 +102,65 @@ describe( 'LiveSelection', () => {
 	} );
 
 	describe( 'isCollapsed', () => {
-		it( 'should return true for default range', () => {
+		it( 'should be true for the default range (in text position)', () => {
 			expect( selection.isCollapsed ).to.be.true;
+		} );
+
+		it( 'should be false for the default range (object selection) ', () => {
+			root.insertChildren( 0, new Element( 'widget' ) );
+
+			expect( selection.isCollapsed ).to.be.false;
+		} );
+
+		it( 'should back off to the default algorithm if selection has ranges', () => {
+			selection.addRange( range );
+
+			expect( selection.isCollapsed ).to.be.false;
+		} );
+	} );
+
+	describe( 'anchor', () => {
+		it( 'should equal the default range\'s start (in text position)', () => {
+			const expectedPos = new Position( root, [ 0, 0 ] );
+
+			expect( selection.anchor.isEqual( expectedPos ) ).to.be.true;
+		} );
+
+		it( 'should equal the default range\'s start (object selection)', () => {
+			root.insertChildren( 0, new Element( 'widget' ) );
+
+			const expectedPos = new Position( root, [ 0 ] );
+
+			expect( selection.anchor.isEqual( expectedPos ) ).to.be.true;
+		} );
+
+		it( 'should back off to the default algorithm if selection has ranges', () => {
+			selection.addRange( range );
+
+			expect( selection.anchor.isEqual( range.start ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'focus', () => {
+		it( 'should equal the default range\'s end (in text position)', () => {
+			const expectedPos = new Position( root, [ 0, 0 ] );
+
+			expect( selection.focus.isEqual( expectedPos ) ).to.be.true;
+		} );
+
+		it( 'should equal the default range\'s end (object selection)', () => {
+			root.insertChildren( 0, new Element( 'widget' ) );
+
+			const expectedPos = new Position( root, [ 1 ] );
+
+			expect( selection.focus.isEqual( expectedPos ) ).to.be.true;
+			expect( selection.focus.isEqual( selection.getFirstRange().end ) ).to.be.true;
+		} );
+
+		it( 'should back off to the default algorithm if selection has ranges', () => {
+			selection.addRange( range );
+
+			expect( selection.focus.isEqual( range.end ) ).to.be.true;
 		} );
 	} );
 
@@ -118,7 +178,7 @@ describe( 'LiveSelection', () => {
 		} );
 	} );
 
-	describe( 'addRange', () => {
+	describe( 'addRange()', () => {
 		it( 'should convert added Range to LiveRange', () => {
 			selection.addRange( range );
 
@@ -149,7 +209,7 @@ describe( 'LiveSelection', () => {
 		} );
 	} );
 
-	describe( 'collapse', () => {
+	describe( 'collapse()', () => {
 		it( 'detaches all existing ranges', () => {
 			selection.addRange( range );
 			selection.addRange( liveRange );
@@ -161,7 +221,7 @@ describe( 'LiveSelection', () => {
 		} );
 	} );
 
-	describe( 'destroy', () => {
+	describe( 'destroy()', () => {
 		it( 'should unbind all events', () => {
 			selection.addRange( liveRange );
 			selection.addRange( range );
@@ -181,7 +241,7 @@ describe( 'LiveSelection', () => {
 		} );
 	} );
 
-	describe( 'setFocus', () => {
+	describe( 'setFocus()', () => {
 		it( 'modifies default range', () => {
 			const startPos = selection.getFirstPosition();
 			const endPos = Position.createAt( root, 'end' );
@@ -206,7 +266,7 @@ describe( 'LiveSelection', () => {
 		} );
 	} );
 
-	describe( 'removeAllRanges', () => {
+	describe( 'removeAllRanges()', () => {
 		let spy, ranges;
 
 		beforeEach( () => {
@@ -249,7 +309,7 @@ describe( 'LiveSelection', () => {
 		} );
 	} );
 
-	describe( 'setRanges', () => {
+	describe( 'setRanges()', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.setRanges( [ { invalid: 'range' } ] );
@@ -295,7 +355,7 @@ describe( 'LiveSelection', () => {
 		} );
 	} );
 
-	describe( 'getFirstRange', () => {
+	describe( 'getFirstRange()', () => {
 		it( 'should return default range if no ranges were added', () => {
 			const firstRange = selection.getFirstRange();
 
@@ -304,7 +364,7 @@ describe( 'LiveSelection', () => {
 		} );
 	} );
 
-	describe( 'getLastRange', () => {
+	describe( 'getLastRange()', () => {
 		it( 'should return default range if no ranges were added', () => {
 			const lastRange = selection.getLastRange();
 
@@ -313,7 +373,7 @@ describe( 'LiveSelection', () => {
 		} );
 	} );
 
-	describe( 'createFromSelection', () => {
+	describe( 'createFromSelection()', () => {
 		it( 'should return a LiveSelection instance', () => {
 			selection.addRange( range, true );
 
