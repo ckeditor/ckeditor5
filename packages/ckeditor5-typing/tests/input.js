@@ -20,7 +20,7 @@ import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Input feature', () => {
@@ -385,6 +385,15 @@ describe( 'Input feature', () => {
 				model.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
 			} );
+
+			listenter.listenTo( view, 'keydown', () => {
+				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
+			}, { priority: 'lowest' } );
+		} );
+
+		// #97
+		it( 'should remove contents and merge blocks', () => {
+			setModelData( model, '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
 
 			listenter.listenTo( view, 'keydown', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
