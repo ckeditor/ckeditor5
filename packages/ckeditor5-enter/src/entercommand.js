@@ -60,12 +60,12 @@ function enterBlock( dataController, batch, selection, schema ) {
 	if ( isSelectionEmpty ) {
 		splitBlock( batch, selection, range.start );
 	} else {
-		const shouldMerge = range.start.isAtStart && range.end.isAtEnd;
+		const leaveUnmerged = !( range.start.isAtStart && range.end.isAtEnd );
 		const isContainedWithinOneElement = ( startElement == endElement );
 
-		dataController.deleteContent( selection, batch, { merge: shouldMerge } );
+		dataController.deleteContent( selection, batch, { leaveUnmerged } );
 
-		if ( !shouldMerge ) {
+		if ( leaveUnmerged ) {
 			// Partially selected elements.
 			//
 			// <h>x[xx]x</h>		-> <h>x^x</h>			-> <h>x</h><h>^x</h>
