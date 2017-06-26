@@ -11,8 +11,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import buildViewConverter from '../../src/conversion/buildviewconverter';
 import buildModelConverter from '../../src/conversion/buildmodelconverter';
 
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { getData as getModelData } from '../../src/dev-utils/model';
+import { getData as getViewData } from '../../src/dev-utils/view';
 
 describe( 'Bug ckeditor5-engine#699', () => {
 	let element;
