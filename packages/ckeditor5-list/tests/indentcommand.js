@@ -165,7 +165,7 @@ describe( 'IndentCommand', () => {
 				doc.enqueueChanges( () => {
 					doc.selection.setRanges( [ new Range(
 						new Position( root.getChild( 1 ), [ 0 ] ),
-						new Position( root.getChild( 3 ), [ 0 ] )
+						new Position( root.getChild( 3 ), [ 1 ] )
 					) ] );
 				} );
 
@@ -325,7 +325,7 @@ describe( 'IndentCommand', () => {
 				doc.enqueueChanges( () => {
 					doc.selection.setRanges( [ new Range(
 						new Position( root.getChild( 1 ), [ 0 ] ),
-						new Position( root.getChild( 3 ), [ 0 ] )
+						new Position( root.getChild( 3 ), [ 1 ] )
 					) ] );
 				} );
 
