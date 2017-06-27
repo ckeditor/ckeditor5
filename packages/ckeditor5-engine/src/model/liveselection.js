@@ -88,7 +88,7 @@ export default class LiveSelection extends Selection {
 	get isCollapsed() {
 		const length = this._ranges.length;
 
-		return length === 0 ? true : super.isCollapsed;
+		return length === 0 ? this._document._getDefaultRange().isCollapsed : super.isCollapsed;
 	}
 
 	/**
@@ -102,7 +102,7 @@ export default class LiveSelection extends Selection {
 	 * @inheritDoc
 	 */
 	get focus() {
-		return super.focus || this._document._getDefaultRange().start;
+		return super.focus || this._document._getDefaultRange().end;
 	}
 
 	/**
