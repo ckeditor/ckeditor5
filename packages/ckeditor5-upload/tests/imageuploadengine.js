@@ -234,4 +234,27 @@ describe( 'ImageUploadEngine', () => {
 		expect( loader.status ).to.equal( 'aborted' );
 		sinon.assert.calledOnce( abortSpy );
 	} );
+
+	it( 'should create responsive image if server return multiple images', done => {
+		const file = createNativeFileMock();
+		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'imageUpload', { file } );
+
+		document.once( 'changesDone', () => {
+			document.once( 'changesDone', () => {
+				expect( getViewData( viewDocument ) ).to.equal(
+					'[<figure class="image ck-widget" contenteditable="false">' +
+						'<img sizes="100vw" src="image.png" srcset="image-500.png 500w, image-800.png 800w"></img>' +
+					'</figure>]<p>foo bar</p>'
+				);
+				expect( loader.status ).to.equal( 'idle' );
+
+				done();
+			} );
+
+			adapterMock.mockSuccess( { original: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } );
+		} );
+
+		nativeReaderMock.mockSuccess( base64Sample );
+	} );
 } );

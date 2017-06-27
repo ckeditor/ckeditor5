@@ -121,6 +121,21 @@ export default class ImageUploadEngine extends Plugin {
 				doc.enqueueChanges( () => {
 					batch.setAttribute( imageElement, 'uploadStatus', 'complete' );
 					batch.setAttribute( imageElement, 'src', data.original );
+
+					// Srcset attribute for responsive images support.
+					const srcsetAttribute = Object.keys( data )
+						// Filter out keys that are not integers.
+						.filter( key => !isNaN( parseInt( key, 10 ) ) )
+
+						// Convert each key to srcset entry.
+						.map( key => `${ data[ key ] } ${ key }w` )
+
+						// Join all entries.
+						.join( ', ' );
+
+					if ( srcsetAttribute != '' ) {
+						batch.setAttribute( imageElement, 'srcset', srcsetAttribute );
+					}
 				} );
 
 				clean();
