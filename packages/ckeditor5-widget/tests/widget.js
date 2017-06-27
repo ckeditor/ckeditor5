@@ -168,24 +168,24 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'fake selection should be empty if widget is not selected', () => {
-		setModelData( doc, '<widget>foo bar</widget>' );
+		setModelData( doc, '<paragraph>foo</paragraph><widget>foo bar</widget>' );
 
 		expect( viewDocument.selection.fakeSelectionLabel ).to.equal( '' );
 	} );
 
 	it( 'should toggle selected class', () => {
-		setModelData( doc, '[<widget>foo</widget>]' );
+		setModelData( doc, '<paragraph>foo</paragraph>[<widget>foo</widget>]' );
 
 		expect( getViewData( viewDocument ) ).to.equal(
-			'[<div class="ck-widget ck-widget_selected" contenteditable="false">foo<b></b></div>]'
+			'<p>foo</p>[<div class="ck-widget ck-widget_selected" contenteditable="false">foo<b></b></div>]'
 		);
 
 		doc.enqueueChanges( () => {
-			doc.selection.collapseToStart();
+			doc.selection.removeAllRanges();
 		} );
 
 		expect( getViewData( viewDocument ) ).to.equal(
-			'[]<div class="ck-widget" contenteditable="false">foo<b></b></div>'
+			'<p>{}foo</p><div class="ck-widget" contenteditable="false">foo<b></b></div>'
 		);
 	} );
 
