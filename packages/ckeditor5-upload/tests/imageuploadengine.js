@@ -98,9 +98,9 @@ describe( 'ImageUploadEngine', () => {
 		setModelData( document, '<image uploadId="1234"></image>' );
 
 		expect( getViewData( viewDocument ) ).to.equal(
-			'[]<figure class="image ck-widget" contenteditable="false">' +
+			'[<figure class="image ck-widget" contenteditable="false">' +
 				'<img></img>' +
-			'</figure>' );
+			'</figure>]' );
 	} );
 
 	it( 'should use read data once it is present', done => {
@@ -186,7 +186,7 @@ describe( 'ImageUploadEngine', () => {
 		setModelData( document, '<image src="image.png"></image>' );
 
 		expect( getViewData( viewDocument ) ).to.equal(
-			'[]<figure class="image ck-widget" contenteditable="false"><img src="image.png"></img></figure>'
+			'[<figure class="image ck-widget" contenteditable="false"><img src="image.png"></img></figure>]'
 		);
 	} );
 
