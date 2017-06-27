@@ -445,9 +445,7 @@ export default class Renderer {
 		}
 
 		const domDocument = domElement.ownerDocument;
-
 		const filler = options.inlineFillerPosition;
-
 		const actualDomChildren = domElement.childNodes;
 		const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument, { bind: true } ) );
 
@@ -468,22 +466,23 @@ export default class Renderer {
 
 		for ( const action of actions ) {
 			if ( action === 'insert' ) {
-				// this.domConverter.bindElements( expectedDomChildren[ i ],  );
 				insertAt( domElement, i, expectedDomChildren[ i ] );
-				// TODO: bind element it might be unbind when deleting before.
 				i++;
 			} else if ( action === 'delete' ) {
-				// Whenever element is removed from DOM, unbind it and all of its children.
-				this.domConverter.unbindDomElement( actualDomChildren[ i ] );
-				// nodesToUnbind.add( actualDomChildren[ i ] );
-
+				nodesToUnbind.add( actualDomChildren[ i ] );
 				remove( actualDomChildren[ i ] );
 			} else { // 'equal'
 				i++;
 			}
 		}
 
-
+		// Unbind removed nodes. We don't need to check child nodes, because if child node was reinserted, it was moved
+		// to DOM tree out of the removed node.
+		for ( const node of nodesToUnbind ) {
+			if ( !node.parentNode ) {
+				this.domConverter.unbindDomElement( node );
+			}
+		}
 
 		function sameNodes( actualDomChild, expectedDomChild ) {
 			// Elements.
