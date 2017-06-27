@@ -3,33 +3,41 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global Event */
+/* global window, document, Event */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+
+import ImageEngine from '../../../src/image/imageengine';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
 import ImageBalloonPanel from '../../../src/image/ui/imageballoonpanelview';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-import ImageEngine from '../../../src/image/imageengine';
+
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageBalloonPanel', () => {
-	let editor, panel, document;
+	let editor, panel, doc, editorElement;
 
 	beforeEach( () => {
-		const editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
-		return ClassicEditor.create( editorElement, { plugins: [ ImageEngine ] } )
+		return ClassicEditor
+			.create( editorElement, {
+				plugins: [ ImageEngine, Paragraph ]
+			} )
 			.then( newEditor => {
 				editor = newEditor;
 				panel = new ImageBalloonPanel( editor );
-				document = editor.document;
+				doc = editor.document;
 
 				return editor.ui.view.body.add( panel );
 			} );
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
+
 		return editor.destroy();
 	} );
 
@@ -65,11 +73,11 @@ describe( 'ImageBalloonPanel', () => {
 	it( 'should detach when image element is no longer selected', () => {
 		const spy = sinon.spy( panel, 'detach' );
 
-		setData( document, '[<image src=""></image>]' );
+		setData( doc, '<paragraph>foo</paragraph>[<image src=""></image>]' );
 		panel.attach();
 
-		document.enqueueChanges( () => {
-			document.selection.removeAllRanges();
+		doc.enqueueChanges( () => {
+			doc.selection.removeAllRanges();
 		} );
 
 		sinon.assert.calledOnce( spy );
@@ -78,36 +86,36 @@ describe( 'ImageBalloonPanel', () => {
 	it( 'should attach panel correctly', () => {
 		const spy = sinon.spy( panel, 'attachTo' );
 
-		setData( document, '[<image src=""></image>]' );
+		setData( doc, '[<image src=""></image>]' );
 		panel.attach();
 
 		testPanelAttach( spy );
 	} );
 
 	it( 'should calculate panel position on scroll event', () => {
-		setData( document, '[<image src=""></image>]' );
+		setData( doc, '[<image src=""></image>]' );
 		panel.attach();
 
 		const spy = sinon.spy( panel, 'attachTo' );
 
-		global.window.dispatchEvent( new Event( 'scroll' ) );
+		window.dispatchEvent( new Event( 'scroll' ) );
 
 		testPanelAttach( spy );
 	} );
 
 	it( 'should calculate panel position on resize event event', () => {
-		setData( document, '[<image src=""></image>]' );
+		setData( doc, '[<image src=""></image>]' );
 		panel.attach();
 
 		const spy = sinon.spy( panel, 'attachTo' );
 
-		global.window.dispatchEvent( new Event( 'resize' ) );
+		window.dispatchEvent( new Event( 'resize' ) );
 
 		testPanelAttach( spy );
 	} );
 
 	it( 'should hide panel on detach', () => {
-		setData( document, '[<image src=""></image>]' );
+		setData( doc, '[<image src=""></image>]' );
 		panel.attach();
 
 		const spy = sinon.spy( panel, 'hide' );
@@ -118,14 +126,14 @@ describe( 'ImageBalloonPanel', () => {
 	} );
 
 	it( 'should not reposition panel after detaching', () => {
-		setData( document, '[<image src=""></image>]' );
+		setData( doc, '[<image src=""></image>]' );
 		panel.attach();
 
 		const spy = sinon.spy( panel, 'attachTo' );
 
 		panel.detach();
-		global.window.dispatchEvent( new Event( 'resize' ) );
-		global.window.dispatchEvent( new Event( 'scroll' ) );
+		window.dispatchEvent( new Event( 'resize' ) );
+		window.dispatchEvent( new Event( 'scroll' ) );
 
 		sinon.assert.notCalled( spy );
 	} );
