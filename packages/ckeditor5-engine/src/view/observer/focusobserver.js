@@ -35,7 +35,7 @@ export default class FocusObserver extends DomEventObserver {
 			// We need to wait until `SelectionObserver` handle the event and then render. Otherwise rendering will
 			// overwrite new DOM selection with selection from the view.
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/795 for more details.
-			this._renderTimeoutId = setTimeout( () => document.render(), 0 );
+			// this._renderTimeoutId = setTimeout( () => document.render(), 0 );
 		} );
 
 		document.on( 'blur', ( evt, data ) => {
@@ -45,7 +45,7 @@ export default class FocusObserver extends DomEventObserver {
 				document.isFocused = false;
 
 				// Re-render the document to update view elements.
-				document.render();
+				// document.render();
 			}
 		} );
 

@@ -190,7 +190,7 @@ export default class Renderer {
 		if ( this._inlineFiller ) {
 			inlineFillerPosition = this._getInlineFillerPosition();
 		}
-		// Othewise, if it's needed, create it at the selection position.
+		// Otherwise, if it's needed, create it at the selection position.
 		else if ( this._needsInlineFillerAtSelection() ) {
 			inlineFillerPosition = this.selection.getFirstPosition();
 
@@ -464,19 +464,26 @@ export default class Renderer {
 		const actions = diff( actualDomChildren, expectedDomChildren, sameNodes );
 
 		let i = 0;
+		const nodesToUnbind = new Set();
 
 		for ( const action of actions ) {
 			if ( action === 'insert' ) {
+				// this.domConverter.bindElements( expectedDomChildren[ i ],  );
 				insertAt( domElement, i, expectedDomChildren[ i ] );
+				// TODO: bind element it might be unbind when deleting before.
 				i++;
 			} else if ( action === 'delete' ) {
 				// Whenever element is removed from DOM, unbind it and all of its children.
 				this.domConverter.unbindDomElement( actualDomChildren[ i ] );
+				// nodesToUnbind.add( actualDomChildren[ i ] );
+
 				remove( actualDomChildren[ i ] );
 			} else { // 'equal'
 				i++;
 			}
 		}
+
+
 
 		function sameNodes( actualDomChild, expectedDomChild ) {
 			// Elements.
