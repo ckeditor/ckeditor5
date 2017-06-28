@@ -688,49 +688,53 @@ export default class DomConverter {
 		return null;
 	}
 
-	/**
-	 * Gets corresponding DOM item. This function uses
-	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomElement getCorrespondingDomElement} for
-	 * elements, {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomText getCorrespondingDomText} for text nodes
-	 * and {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}
-	 * for document fragments.
-	 *
-	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewNode View node or document fragment.
-	 * @returns {Node|DocumentFragment|null} Corresponding DOM node or document fragment.
-	 */
-	getCorrespondingDom( viewNode ) {
-		if ( viewNode instanceof ViewElement ) {
-			return this.getCorrespondingDomElement( viewNode );
-		} else if ( viewNode instanceof ViewDocumentFragment ) {
-			return this.getCorrespondingDomDocumentFragment( viewNode );
-		} else if ( viewNode instanceof ViewText ) {
-			return this.getCorrespondingDomText( viewNode );
-		}
+	// /**
+	//  * Gets corresponding DOM item. This function uses
+	//  * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomElement getCorrespondingDomElement} for
+	//  * elements, {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomText getCorrespondingDomText} for text nodes
+	//  * and {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}
+	//  * for document fragments.
+	//  *
+	//  * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewNode View node or document fragment.
+	//  * @returns {Node|DocumentFragment|null} Corresponding DOM node or document fragment.
+	//  */
+	// getCorrespondingDom( viewNode ) {
+	// 	if ( viewNode instanceof ViewElement ) {
+	// 		return this.getCorrespondingDomElement( viewNode );
+	// 	} else if ( viewNode instanceof ViewDocumentFragment ) {
+	// 		return this.getCorrespondingDomDocumentFragment( viewNode );
+	// 	} else if ( viewNode instanceof ViewText ) {
+	// 		return this.getCorrespondingDomText( viewNode );
+	// 	}
+    //
+	// 	return null;
+	// }
 
-		return null;
-	}
+	// /**
+	//  * Gets corresponding DOM element. Returns element if an DOM element was
+	//  * {@link module:engine/view/domconverter~DomConverter#bindElements bound} to the given view element or `null` otherwise.
+	//  *
+	//  * @param {module:engine/view/element~Element} viewElement View element.
+	//  * @returns {HTMLElement|null} Corresponding element or `null` if none element was bound.
+	//  */
+	// getCorrespondingDomElement( viewElement ) {
+	// 	return this._viewToDomMapping.get( viewElement );
+	// }
+    //
+	// /**
+	//  * Gets corresponding DOM document fragment. Returns document fragment if an DOM element was
+	//  * {@link module:engine/view/domconverter~DomConverter#bindDocumentFragments bound} to the given view document fragment or `null`
+	//  * otherwise.
+	//  *
+	//  * @param {module:engine/view/documentfragment~DocumentFragment} viewDocumentFragment View document fragment.
+	//  * @returns {DocumentFragment|null} Corresponding document fragment or `null` if no fragment was bound.
+	//  */
+	// getCorrespondingDomDocumentFragment( viewDocumentFragment ) {
+	// 	return this._viewToDomMapping.get( viewDocumentFragment );
+	// }
 
-	/**
-	 * Gets corresponding DOM element. Returns element if an DOM element was
-	 * {@link module:engine/view/domconverter~DomConverter#bindElements bound} to the given view element or `null` otherwise.
-	 *
-	 * @param {module:engine/view/element~Element} viewElement View element.
-	 * @returns {HTMLElement|null} Corresponding element or `null` if none element was bound.
-	 */
-	getCorrespondingDomElement( viewElement ) {
-		return this._viewToDomMapping.get( viewElement );
-	}
-
-	/**
-	 * Gets corresponding DOM document fragment. Returns document fragment if an DOM element was
-	 * {@link module:engine/view/domconverter~DomConverter#bindDocumentFragments bound} to the given view document fragment or `null`
-	 * otherwise.
-	 *
-	 * @param {module:engine/view/documentfragment~DocumentFragment} viewDocumentFragment View document fragment.
-	 * @returns {DocumentFragment|null} Corresponding document fragment or `null` if no fragment was bound.
-	 */
-	getCorrespondingDomDocumentFragment( viewDocumentFragment ) {
-		return this._viewToDomMapping.get( viewDocumentFragment );
+	mapViewToDom( documentFragmentOrElement ) {
+		return this._viewToDomMapping.get( documentFragmentOrElement );
 	}
 
 	/**
