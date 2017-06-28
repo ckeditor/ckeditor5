@@ -186,8 +186,8 @@ export default class DomConverter {
 
 			return domDocument.createTextNode( textData );
 		} else {
-			if ( this.getCorrespondingDom( viewNode ) ) {
-				return this.getCorrespondingDom( viewNode );
+			if ( this.mapViewToDom( viewNode ) ) {
+				return this.mapViewToDom( viewNode );
 			}
 
 			let domElement;
@@ -294,7 +294,7 @@ export default class DomConverter {
 		const viewParent = viewPosition.parent;
 
 		if ( viewParent.is( 'text' ) ) {
-			const domParent = this.getCorrespondingDomText( viewParent );
+			const domParent = this.findCorrespondingDomText( viewParent );
 
 			if ( !domParent ) {
 				// Position is in a view text node that has not been rendered to DOM yet.
@@ -313,7 +313,7 @@ export default class DomConverter {
 			let domParent, domBefore, domAfter;
 
 			if ( viewPosition.offset === 0 ) {
-				domParent = this.getCorrespondingDom( viewPosition.parent );
+				domParent = this.mapViewToDom( viewParent );
 
 				if ( !domParent ) {
 					// Position is in a view element that has not been rendered to DOM yet.
@@ -322,7 +322,10 @@ export default class DomConverter {
 
 				domAfter = domParent.childNodes[ 0 ];
 			} else {
-				domBefore = this.getCorrespondingDom( viewPosition.nodeBefore );
+				const nodeBefore = viewPosition.nodeBefore;
+				domBefore = nodeBefore.is( 'text' ) ?
+					this.findCorrespondingDomText( nodeBefore ) :
+					this.mapViewToDom( viewPosition.nodeBefore );
 
 				if ( !domBefore ) {
 					// Position is after a view element that has not been rendered to DOM yet.
@@ -688,51 +691,6 @@ export default class DomConverter {
 		return null;
 	}
 
-	// /**
-	//  * Gets corresponding DOM item. This function uses
-	//  * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomElement getCorrespondingDomElement} for
-	//  * elements, {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomText getCorrespondingDomText} for text nodes
-	//  * and {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}
-	//  * for document fragments.
-	//  *
-	//  * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewNode View node or document fragment.
-	//  * @returns {Node|DocumentFragment|null} Corresponding DOM node or document fragment.
-	//  */
-	// getCorrespondingDom( viewNode ) {
-	// 	if ( viewNode instanceof ViewElement ) {
-	// 		return this.getCorrespondingDomElement( viewNode );
-	// 	} else if ( viewNode instanceof ViewDocumentFragment ) {
-	// 		return this.getCorrespondingDomDocumentFragment( viewNode );
-	// 	} else if ( viewNode instanceof ViewText ) {
-	// 		return this.getCorrespondingDomText( viewNode );
-	// 	}
-    //
-	// 	return null;
-	// }
-
-	// /**
-	//  * Gets corresponding DOM element. Returns element if an DOM element was
-	//  * {@link module:engine/view/domconverter~DomConverter#bindElements bound} to the given view element or `null` otherwise.
-	//  *
-	//  * @param {module:engine/view/element~Element} viewElement View element.
-	//  * @returns {HTMLElement|null} Corresponding element or `null` if none element was bound.
-	//  */
-	// getCorrespondingDomElement( viewElement ) {
-	// 	return this._viewToDomMapping.get( viewElement );
-	// }
-    //
-	// /**
-	//  * Gets corresponding DOM document fragment. Returns document fragment if an DOM element was
-	//  * {@link module:engine/view/domconverter~DomConverter#bindDocumentFragments bound} to the given view document fragment or `null`
-	//  * otherwise.
-	//  *
-	//  * @param {module:engine/view/documentfragment~DocumentFragment} viewDocumentFragment View document fragment.
-	//  * @returns {DocumentFragment|null} Corresponding document fragment or `null` if no fragment was bound.
-	//  */
-	// getCorrespondingDomDocumentFragment( viewDocumentFragment ) {
-	// 	return this._viewToDomMapping.get( viewDocumentFragment );
-	// }
-
 	mapViewToDom( documentFragmentOrElement ) {
 		return this._viewToDomMapping.get( documentFragmentOrElement );
 	}
@@ -752,17 +710,22 @@ export default class DomConverter {
 	 * @param {module:engine/view/text~Text} viewText View text node.
 	 * @returns {Text|null} Corresponding DOM text node or `null`, if it was not possible to find a corresponding node.
 	 */
-	getCorrespondingDomText( viewText ) {
+	findCorrespondingDomText( viewText ) {
 		const previousSibling = viewText.previousSibling;
 
 		// Try to use previous sibling to find the corresponding text node.
-		if ( previousSibling && this.getCorrespondingDom( previousSibling ) ) {
-			return this.getCorrespondingDom( previousSibling ).nextSibling;
+		if ( previousSibling ) {
+			const previousDomSibling = previousSibling.is( 'text' ) ?
+				this.findCorrespondingDomText( previousSibling ) : this.mapViewToDom( previousSibling );
+
+			if ( previousDomSibling ) {
+				return previousDomSibling.nextSibling;
+			}
 		}
 
 		// If this is a first node, try to use parent to find the corresponding text node.
-		if ( !previousSibling && viewText.parent && this.getCorrespondingDom( viewText.parent ) ) {
-			return this.getCorrespondingDom( viewText.parent ).childNodes[ 0 ];
+		if ( !previousSibling && viewText.parent && this.mapViewToDom( viewText.parent ) ) {
+			return this.mapViewToDom( viewText.parent ).childNodes[ 0 ];
 		}
 
 		return null;
@@ -774,7 +737,7 @@ export default class DomConverter {
 	 * @param {module:engine/view/editableelement~EditableElement} viewEditable
 	 */
 	focus( viewEditable ) {
-		const domEditable = this.getCorrespondingDomElement( viewEditable );
+		const domEditable = this.mapViewToDom( viewEditable );
 
 		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
 			// Save the scrollX and scrollY positions before the focus.
