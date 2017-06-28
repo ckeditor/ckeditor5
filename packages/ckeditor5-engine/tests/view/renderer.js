@@ -5,7 +5,9 @@
 
 /* globals document, window */
 
+import ViewDocument from '../../src/view/document';
 import ViewElement from '../../src/view/element';
+import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewText from '../../src/view/text';
 import ViewRange from '../../src/view/range';
 import ViewPosition from '../../src/view/position';
@@ -13,11 +15,13 @@ import Selection from '../../src/view/selection';
 import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { parse } from '../../src/dev-utils/view';
+import { parse, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import { unwrap, insert } from '../../src/view/writer';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 testUtils.createSinonSandbox();
 
@@ -1715,6 +1719,106 @@ describe( 'Renderer', () => {
 				expect( selectionExtendSpy.notCalled ).to.true;
 				expect( logWarnStub.called ).to.true;
 			} );
+		} );
+	} );
+
+	describe( '#922', () => {
+		let viewDoc, viewRoot, domRoot;
+
+		beforeEach( () => {
+			viewDoc = new ViewDocument();
+			domRoot = document.createElement( 'div' );
+			document.body.appendChild( domRoot );
+			viewRoot = viewDoc.createRoot( domRoot );
+		} );
+
+		it( 'should properly render unwrapped attributes #1', () => {
+			setViewData( viewDoc,
+				'<container:p>' +
+				'[<attribute:italic>' +
+				'<attribute:strong>f</attribute:strong>' +
+				'</attribute:italic>]' +
+				'<attribute:strong>oo</attribute:strong>' +
+				'</container:p>'
+			);
+
+			// Render it to DOM to create initial DOM <-> view mappings.
+			viewDoc.render();
+
+			// Unwrap italic attribute element.
+			unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+			expect( getViewData( viewDoc ) ).to.equal( '<p>[<strong>foo</strong>]</p>' );
+
+			// Re-render changes in view to DOM.
+			viewDoc.render();
+
+			// Check if DOM is rendered correctly.
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>foo</strong></p>' );
+		} );
+
+		it( 'should properly render unwrapped attributes #2', () => {
+			setViewData( viewDoc,
+				'<container:p>' +
+				'[<attribute:italic>' +
+				'<attribute:strong>foo</attribute:strong>' +
+				'</attribute:italic>]' +
+				'</container:p>' );
+
+			// Render it to DOM to create initial DOM <-> view mappings.
+			viewDoc.render();
+
+			// Unwrap italic attribute element and change text inside.
+			unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+			viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ).data = 'bar';
+			expect( getViewData( viewDoc ) ).to.equal( '<p>[<strong>bar</strong>]</p>' );
+
+			// Re-render changes in view to DOM.
+			viewDoc.render();
+
+			// Check if DOM is rendered correctly.
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>bar</strong></p>' );
+		} );
+
+		it( 'should properly render if text is changed and element is inserted into same node #1', () => {
+			setViewData( viewDoc,
+				'<container:p>foo</container:p>'
+			);
+
+			// Render it to DOM to create initial DOM <-> view mappings.
+			viewDoc.render();
+
+			// Change text and insert new element into paragraph.
+			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
+			textNode.data = 'foobar';
+			insert( ViewPosition.createAfter( textNode ), new ViewAttributeElement( 'img' ) );
+			expect( getViewData( viewDoc ) ).to.equal( '<p>foobar<img></img></p>' );
+
+			// Re-render changes in view to DOM.
+			viewDoc.render();
+
+			// Check if DOM is rendered correctly.
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>foobar<img></img></p>' );
+		} );
+
+		it( 'should properly render if text is changed and element is inserted into same node #2', () => {
+			setViewData( viewDoc,
+				'<container:p>foo</container:p>'
+			);
+
+			// Render it to DOM to create initial DOM <-> view mappings.
+			viewDoc.render();
+
+			// Change text and insert new element into paragraph.
+			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
+			textNode.data = 'foobar';
+			insert( ViewPosition.createBefore( textNode ), new ViewAttributeElement( 'img' ) );
+			expect( getViewData( viewDoc ) ).to.equal( '<p><img></img>foobar</p>' );
+
+			// Re-render changes in view to DOM.
+			viewDoc.render();
+
+			// Check if DOM is rendered correctly.
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><img></img>foobar</p>' );
 		} );
 	} );
 } );
