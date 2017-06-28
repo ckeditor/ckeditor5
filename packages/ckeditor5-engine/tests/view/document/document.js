@@ -103,7 +103,7 @@ describe( 'Document', () => {
 			expect( ret ).to.equal( viewRoot );
 
 			expect( domRoot ).to.equal( domDiv );
-			expect( viewDocument.domConverter.getCorrespondingDom( viewRoot ) ).to.equal( domDiv );
+			expect( viewDocument.domConverter.mapViewToDom( viewRoot ) ).to.equal( domDiv );
 
 			expect( viewRoot.name ).to.equal( 'div' );
 			expect( viewDocument.renderer.markedChildren.has( viewRoot ) ).to.be.true;
@@ -185,7 +185,7 @@ describe( 'Document', () => {
 			expect( count( viewDocument.roots ) ).to.equal( 1 );
 
 			expect( viewDocument.getDomRoot() ).to.equal( domDiv );
-			expect( viewDocument.domConverter.getCorrespondingDom( viewRoot ) ).to.equal( domDiv );
+			expect( viewDocument.domConverter.mapViewToDom( viewRoot ) ).to.equal( domDiv );
 
 			expect( viewDocument.renderer.markedChildren.has( viewRoot ) ).to.be.true;
 		} );
@@ -205,7 +205,7 @@ describe( 'Document', () => {
 			expect( count( viewDocument.roots ) ).to.equal( 2 );
 
 			expect( viewDocument.getDomRoot( 'header' ) ).to.equal( domH1 );
-			expect( viewDocument.domConverter.getCorrespondingDom( viewH1 ) ).to.equal( domH1 );
+			expect( viewDocument.domConverter.mapViewToDom( viewH1 ) ).to.equal( domH1 );
 
 			expect( viewDocument.getRoot().name ).to.equal( 'div' );
 			expect( viewDocument.renderer.markedChildren.has( viewH1 ) ).to.be.true;

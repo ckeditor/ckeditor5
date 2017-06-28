@@ -127,13 +127,13 @@ export default class Renderer {
 	 */
 	markToSync( type, node ) {
 		if ( type === 'text' ) {
-			if ( this.domConverter.getCorrespondingDom( node.parent ) ) {
+			if ( this.domConverter.mapViewToDom( node.parent ) ) {
 				this.markedTexts.add( node );
 			}
 		} else {
 			// If the node has no DOM element it is not rendered yet,
 			// its children/attributes do not need to be marked to be sync.
-			if ( !this.domConverter.getCorrespondingDom( node ) ) {
+			if ( !this.domConverter.mapViewToDom( node ) ) {
 				return;
 			}
 
@@ -199,7 +199,7 @@ export default class Renderer {
 		}
 
 		for ( const node of this.markedTexts ) {
-			if ( !this.markedChildren.has( node.parent ) && this.domConverter.getCorrespondingDom( node.parent ) ) {
+			if ( !this.markedChildren.has( node.parent ) && this.domConverter.mapViewToDom( node.parent ) ) {
 				this._updateText( node, { inlineFillerPosition } );
 			}
 		}
@@ -351,7 +351,7 @@ export default class Renderer {
 		const selectionOffset = selectionPosition.offset;
 
 		// If there is no DOM root we do not care about fillers.
-		if ( !this.domConverter.getCorrespondingDomElement( selectionParent.root ) ) {
+		if ( !this.domConverter.mapViewToDom( selectionParent.root ) ) {
 			return false;
 		}
 
@@ -384,7 +384,7 @@ export default class Renderer {
 	 * filler should be rendered.
 	 */
 	_updateText( viewText, options ) {
-		const domText = this.domConverter.getCorrespondingDom( viewText );
+		const domText = this.domConverter.findCorrespondingDomText( viewText );
 		const newDomText = this.domConverter.viewToDom( viewText, domText.ownerDocument );
 
 		const actualText = domText.data;
@@ -408,7 +408,7 @@ export default class Renderer {
 	 * @param {module:engine/view/element~Element} viewElement View element to update.
 	 */
 	_updateAttrs( viewElement ) {
-		const domElement = this.domConverter.getCorrespondingDom( viewElement );
+		const domElement = this.domConverter.mapViewToDom( viewElement );
 		const domAttrKeys = Array.from( domElement.attributes ).map( attr => attr.name );
 		const viewAttrKeys = viewElement.getAttributeKeys();
 
@@ -436,7 +436,7 @@ export default class Renderer {
 	 */
 	_updateChildren( viewElement, options ) {
 		const domConverter = this.domConverter;
-		const domElement = domConverter.getCorrespondingDom( viewElement );
+		const domElement = domConverter.mapViewToDom( viewElement );
 
 		if ( !domElement ) {
 			// If there is no `domElement` it means that it was already removed from DOM.
@@ -518,7 +518,7 @@ export default class Renderer {
 			return;
 		}
 
-		const domRoot = this.domConverter.getCorrespondingDomElement( this.selection.editableElement );
+		const domRoot = this.domConverter.mapViewToDom( this.selection.editableElement );
 
 		// Do nothing if there is no focus, or there is no DOM element corresponding to selection's editable element.
 		if ( !this.isFocused || !domRoot ) {

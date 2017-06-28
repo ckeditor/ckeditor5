@@ -203,7 +203,7 @@ export default class MutationObserver extends Observer {
 		}
 
 		for ( const viewElement of mutatedElements ) {
-			const domElement = domConverter.getCorrespondingDomElement( viewElement );
+			const domElement = domConverter.mapViewToDom( viewElement );
 			const viewChildren = viewElement.getChildren();
 			const newViewChildren = domConverter.domChildrenToView( domElement );
 
