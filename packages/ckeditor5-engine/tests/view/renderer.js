@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, window */
+/* globals document, window, NodeFilter */
 
 import ViewDocument from '../../src/view/document';
 import ViewElement from '../../src/view/element';
@@ -20,7 +20,7 @@ import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '.
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import log from '@ckeditor/ckeditor5-utils/src/log';
-import { unwrap, insert } from '../../src/view/writer';
+import { unwrap, insert, remove } from '../../src/view/writer';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 testUtils.createSinonSandbox();
@@ -1754,6 +1754,7 @@ describe( 'Renderer', () => {
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>foo</strong></p>' );
+			expect( checkMappings() ).to.be.true;
 		} );
 
 		it( 'should properly render unwrapped attributes #2', () => {
@@ -1777,6 +1778,7 @@ describe( 'Renderer', () => {
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>bar</strong></p>' );
+			expect( checkMappings() ).to.be.true;
 		} );
 
 		it( 'should properly render if text is changed and element is inserted into same node #1', () => {
@@ -1798,6 +1800,7 @@ describe( 'Renderer', () => {
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>foobar<img></img></p>' );
+			expect( checkMappings() ).to.be.true;
 		} );
 
 		it( 'should properly render if text is changed and element is inserted into same node #2', () => {
@@ -1819,7 +1822,49 @@ describe( 'Renderer', () => {
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><img></img>foobar</p>' );
+			expect( checkMappings() ).to.be.true;
 		} );
+
+		it( 'should not unbind elements that are removed and reinserted to DOM', () => {
+			setViewData( viewDoc,
+				'<container:p>' +
+					'<attribute:b></attribute:b>' +
+					'<attribute:i></attribute:i>' +
+					'<attribute:span></attribute:span>' +
+				'</container:p>'
+			);
+
+			// Render it to DOM to create initial DOM <-> view mappings.
+			viewDoc.render();
+
+			// Remove first element and reinsert it at the end.
+			const container = viewRoot.getChild( 0 );
+			const firstElement = container.getChild( 0 );
+
+			remove( ViewRange.createOn( firstElement ) );
+			insert( new ViewPosition( container, 2 ), firstElement );
+			expect( getViewData( viewDoc ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
+
+			// Re-render changes in view to DOM.
+			viewDoc.render();
+
+			// Check if DOM is rendered correctly.
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
+			expect( checkMappings() ).to.be.true;
+		} );
+
+		// Checks if every node in DOM tree is mapped to the view.
+		function checkMappings() {
+			const domWalker = document.createTreeWalker( domRoot, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT );
+
+			while ( domWalker.nextNode() ) {
+				if ( !viewDoc.domConverter.getCorrespondingView( domWalker.currentNode ) ) {
+					return false;
+				}
+			}
+
+			return true;
+		}
 	} );
 } );
 
