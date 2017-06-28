@@ -872,4 +872,37 @@ describe( 'LiveSelection', () => {
 			expect( values ).to.deep.equal( [] );
 		} );
 	} );
+
+	describe( '_updateAttributes()', () => {
+		beforeEach( () => {
+			doc.schema.registerItem( 'image', '$inline' );
+			doc.schema.disallow( { name: 'image', attributes: 'bold', inside: '$root' } );
+			doc.schema.objects.add( 'image' );
+
+			doc.schema.registerItem( 'caption', '$block' );
+			doc.schema.allow( { name: '$inline', inside: 'caption' } );
+			doc.schema.allow( { name: 'caption', inside: 'image' } );
+			doc.schema.allow( { name: '$text', attributes: 'bold', inside: 'caption' } );
+
+			root.removeChildren( 0, root.childCount );
+
+			root.insertChildren( 0, [
+				new Element( 'p', null, [
+					new Element( 'image', [], [
+						new Element( 'caption', [], [
+							new Text( 'Caption for the image.', { bold: true } )
+						] )
+					] )
+				] )
+			] );
+
+			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ) );
+		} );
+
+		it( 'ignores attributes from nested editable if selection contains an object', () => {
+			const liveSelection = LiveSelection.createFromSelection( selection );
+
+			expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+		} );
+	} );
 } );

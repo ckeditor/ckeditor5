@@ -7,6 +7,7 @@
  * @module engine/model/liveselection
  */
 
+import Element from './element';
 import Position from './position';
 import Range from './range';
 import LiveRange from './liverange';
@@ -556,6 +557,7 @@ export default class LiveSelection extends Selection {
 	 */
 	_getSurroundingAttributes() {
 		const position = this.getFirstPosition();
+		const schema = this._document.schema;
 
 		let attrs = null;
 
@@ -565,6 +567,11 @@ export default class LiveSelection extends Selection {
 
 			// ...look for a first character node in that range and take attributes from it.
 			for ( const item of range ) {
+				// If the item is an object, we don't want to get attributes from its children.
+				if ( item.item instanceof Element && schema.objects.has( item.item.name ) ) {
+					break;
+				}
+
 				// This is not an optimal solution because of https://github.com/ckeditor/ckeditor5-engine/issues/454.
 				// It can be done better by using `break;` instead of checking `attrs === null`.
 				if ( item.type == 'text' && attrs === null ) {
