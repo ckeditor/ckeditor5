@@ -30,6 +30,7 @@ describe( 'AttributeCommand', () => {
 				doc.schema.registerItem( 'p', '$block' );
 				doc.schema.registerItem( 'h1', '$block' );
 				doc.schema.registerItem( 'img', '$inline' );
+				doc.schema.objects.add( 'img' );
 
 				// Allow block in "root" (DIV)
 				doc.schema.allow( { name: '$block', inside: '$root' } );
@@ -64,6 +65,23 @@ describe( 'AttributeCommand', () => {
 			} );
 
 			expect( command.value ).to.be.false;
+		} );
+
+		it( 'is false when selection contains object with nested editable', () => {
+			doc.schema.registerItem( 'caption', '$block' );
+			doc.schema.allow( { name: '$inline', inside: 'caption' } );
+			doc.schema.allow( { name: 'caption', inside: 'img' } );
+			doc.schema.allow( { name: '$text', attributes: 'bold', inside: 'caption' } );
+
+			setData( doc, '<p>[<img><caption>Some caption inside the image.</caption></img>]</p>' );
+
+			expect( command.value ).to.be.false;
+			command.execute();
+			expect( command.value ).to.be.false;
+
+			expect( getData( doc ) ).to.equal(
+				'<p>[<img><caption><$text bold="true">Some caption inside the image.</$text></caption></img>]</p>'
+			);
 		} );
 	} );
 
