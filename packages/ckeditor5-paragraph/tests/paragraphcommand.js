@@ -148,10 +148,10 @@ describe( 'ParagraphCommand', () => {
 			it( 'should use provided selection', () => {
 				setData( document, '<heading1>foo[]bar</heading1><heading1>baz</heading1><heading1>qux</heading1>' );
 
-				const secondTolastHeading = root.getChild( 1 );
+				const secondToLastHeading = root.getChild( 1 );
 				const lastHeading = root.getChild( 2 );
 				const selection = new Selection();
-				selection.addRange( Range.createFromParentsAndOffsets( secondTolastHeading, 0, lastHeading, 0 ) );
+				selection.addRange( Range.createFromParentsAndOffsets( secondToLastHeading, 0, lastHeading, 1 ) );
 
 				command.execute( { selection } );
 				expect( getData( document ) ).to.equal(
@@ -183,11 +183,11 @@ describe( 'ParagraphCommand', () => {
 			it( 'converts all elements where selection is applied', () => {
 				schema.registerItem( 'heading2', '$block' );
 
-				setData( document, '<heading1>foo[</heading1><heading2>bar</heading2><heading2>]baz</heading2>' );
+				setData( document, '<heading1>foo[</heading1><heading2>bar</heading2><heading2>baz]</heading2>' );
 
 				command.execute();
 				expect( getData( document ) ).to.equal(
-					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><paragraph>]baz</paragraph>'
+					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><paragraph>baz]</paragraph>'
 				);
 			} );
 
