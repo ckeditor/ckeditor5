@@ -66,7 +66,7 @@ describe( 'EditingController', () => {
 			expect( viewRoot ).to.equal( editing.view.getRoot() );
 			expect( domRoot ).to.equal( editing.view.getDomRoot() );
 
-			expect( editing.view.domConverter.getCorrespondingDom( viewRoot ) ).to.equal( domRoot );
+			expect( editing.view.domConverter.mapViewToDom( viewRoot ) ).to.equal( domRoot );
 			expect( editing.view.renderer.markedChildren.has( viewRoot ) ).to.be.true;
 
 			expect( editing.mapper.toModelElement( viewRoot ) ).to.equal( modelRoot );
@@ -81,7 +81,7 @@ describe( 'EditingController', () => {
 			expect( viewRoot ).to.equal( editing.view.getRoot( 'header' ) );
 			expect( domRoot ).to.equal( editing.view.getDomRoot( 'header' ) );
 
-			expect( editing.view.domConverter.getCorrespondingDom( viewRoot ) ).to.equal( domRoot );
+			expect( editing.view.domConverter.mapViewToDom( viewRoot ) ).to.equal( domRoot );
 			expect( editing.view.renderer.markedChildren.has( viewRoot ) ).to.be.true;
 
 			expect( editing.mapper.toModelElement( viewRoot ) ).to.equal( model.getRoot( 'header' ) );
@@ -100,7 +100,7 @@ describe( 'EditingController', () => {
 
 			expect( domRoot ).to.equal( editing.view.getDomRoot() );
 
-			expect( editing.view.domConverter.getCorrespondingDom( viewRoot ) ).to.equal( domRoot );
+			expect( editing.view.domConverter.mapViewToDom( viewRoot ) ).to.equal( domRoot );
 			expect( editing.view.renderer.markedChildren.has( viewRoot ) ).to.be.true;
 
 			expect( editing.mapper.toModelElement( viewRoot ) ).to.equal( modelRoot );

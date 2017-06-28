@@ -714,13 +714,8 @@ export default class DomConverter {
 		const previousSibling = viewText.previousSibling;
 
 		// Try to use previous sibling to find the corresponding text node.
-		if ( previousSibling ) {
-			const previousDomSibling = previousSibling.is( 'text' ) ?
-				this.findCorrespondingDomText( previousSibling ) : this.mapViewToDom( previousSibling );
-
-			if ( previousDomSibling ) {
-				return previousDomSibling.nextSibling;
-			}
+		if ( previousSibling && this.mapViewToDom( previousSibling ) ) {
+			return this.mapViewToDom( previousSibling ).nextSibling;
 		}
 
 		// If this is a first node, try to use parent to find the corresponding text node.
