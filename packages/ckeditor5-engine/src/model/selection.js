@@ -576,7 +576,7 @@ export default class Selection {
 	 *
 	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
 	 *
-	 * *Note:* `getSelectedBlocks` always returns the deepest block.
+	 * **Note:** `getSelectedBlocks()` always returns the deepest block.
 	 *
 	 * In this case the function will return exactly all 3 paragraphs:
 	 *
@@ -589,6 +589,13 @@ export default class Selection {
 	 * In this case the paragraph will also be returned, despite the collapsed selection:
 	 *
 	 *		<paragraph>[]a</paragraph>
+	 *
+	 * **Special case**: If a selection ends at the beginning of a block, that block is not returned as from user perspective
+	 * this block wasn't selected. See [#984](https://github.com/ckeditor/ckeditor5-engine/issues/984) for more details.
+	 *
+	 *		<paragraph>[a</paragraph>
+	 *		<paragraph>b</paragraph>
+	 *		<paragraph>]c</paragraph> // this block will not be returned
 	 *
 	 * @returns {Iterator.<module:engine/model/element~Element>}
 	 */
@@ -610,7 +617,8 @@ export default class Selection {
 
 			const endBlock = getParentBlock( range.end, visited );
 
-			if ( endBlock ) {
+			// #984. Don't return the end block if the range ends right at its beginning.
+			if ( endBlock && !range.end.isTouching( Position.createAt( endBlock ) ) ) {
 				yield endBlock;
 			}
 		}

@@ -865,6 +865,7 @@ describe( 'Selection', () => {
 
 			doc.schema.registerItem( 'image' );
 			doc.schema.allow( { name: 'image', inside: '$root' } );
+			doc.schema.allow( { name: 'image', inside: '$block' } );
 			doc.schema.allow( { name: '$text', inside: 'image' } );
 
 			// Special block which can contain another blocks.
@@ -884,6 +885,15 @@ describe( 'Selection', () => {
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
 		} );
 
+		it( 'returns block for a collapsed selection (empty block)', () => {
+			setData( doc, '<p>a</p><p>[]</p><p>c</p>' );
+
+			const blocks = Array.from( doc.selection.getSelectedBlocks() );
+
+			expect( blocks ).to.have.length( 1 );
+			expect( blocks[ 0 ].childCount ).to.equal( 0 );
+		} );
+
 		it( 'returns block for a non collapsed selection', () => {
 			setData( doc, '<p>a</p><p>[b]</p><p>c</p>' );
 
@@ -896,11 +906,8 @@ describe( 'Selection', () => {
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c' ] );
 		} );
 
-		// This isn't a behaviour that we like (https://github.com/ckeditor/ckeditor5-heading/issues/9) but I don't
-		// want to work on this issue now, when porting this method from the list/heading features.
-		// It has to be covered separately.
-		it( 'returns two blocks for a non collapsed selection if only end of selection is touching a block', () => {
-			setData( doc, '<p>a</p><h>b[</h><p>]c</p><p>d</p>' );
+		it( 'returns two blocks for a non collapsed selection (starts at block end)', () => {
+			setData( doc, '<p>a</p><h>b[</h><p>c]</p><p>d</p>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c' ] );
 		} );
@@ -980,8 +987,62 @@ describe( 'Selection', () => {
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.be.empty;
 		} );
 
+		describe( '#984', () => {
+			it( 'does not return the last block if none of its content is selected', () => {
+				setData( doc, '<p>[a</p><p>b</p><p>]c</p>' );
+
+				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b' ] );
+			} );
+
+			it( 'returns only the first block for a non collapsed selection if only end of selection is touching a block', () => {
+				setData( doc, '<p>a</p><h>b[</h><p>]c</p><p>d</p>' );
+
+				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
+			} );
+
+			it( 'does not return the last block if none of its content is selected (nested case)', () => {
+				setData( doc, '<p>[a</p><nestedBlock><nestedBlock>]b</nestedBlock></nestedBlock>' );
+
+				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a' ] );
+			} );
+
+			// Like a super edge case, we can live with this behavior as I don't even know what we could expect here
+			// since only the innermost block is considerd a block to return (so the <nB>b...</nB> needs to be ignored).
+			it( 'does not return the last block if none of its content is selected (nested case, wrapper with a content)', () => {
+				setData( doc, '<p>[a</p><nestedBlock>b<nestedBlock>]c</nestedBlock></nestedBlock>' );
+
+				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a' ] );
+			} );
+
+			it( 'returns the last block if at least one of its child nodes is selected', () => {
+				setData( doc, '<p>[a</p><p>b</p><p><image></image>]c</p>' );
+
+				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+			} );
+
+			// I needed these last 2 cases to justify the use of isTouching() instead of simple `offset == 0` check.
+			it( 'returns the last block if at least one of its child nodes is selected (end in an inline element)', () => {
+				setData( doc, '<p>[a</p><p>b</p><p><image>x]</image>c</p>' );
+
+				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+			} );
+
+			it(
+				'does not return the last block if at least one of its child nodes is selected ' +
+				'(end in an inline element, no content selected)',
+				() => {
+					setData( doc, '<p>[a</p><p>b</p><p><image>]x</image>c</p>' );
+
+					expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b' ] );
+				}
+			);
+		} );
+
+		// Map all elements to data of its first child text node.
 		function toText( elements ) {
-			return Array.from( elements ).map( el => el.getChild( 0 ).data );
+			return Array.from( elements ).map( el => {
+				return Array.from( el.getChildren() ).find( child => child.data ).data;
+			} );
 		}
 	} );
 

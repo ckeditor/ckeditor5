@@ -15,7 +15,7 @@ import { jsonParseStringify } from '../../tests/model/_utils/utils';
 
 testUtils.createSinonSandbox();
 
-describe( 'position', () => {
+describe( 'Position', () => {
 	let doc, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r, foz, bar;
 
 	// root
@@ -118,7 +118,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'createFromParentAndOffset', () => {
+	describe( 'createFromParentAndOffset()', () => {
 		it( 'should create positions form node and offset', () => {
 			expect( Position.createFromParentAndOffset( root, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 			expect( Position.createFromParentAndOffset( root, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
@@ -149,7 +149,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'createAt', () => {
+	describe( 'createAt()', () => {
 		it( 'should create positions from positions', () => {
 			const spy = testUtils.sinon.spy( Position, 'createFromPosition' );
 
@@ -177,7 +177,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'createBefore', () => {
+	describe( 'createBefore()', () => {
 		it( 'should create positions before elements', () => {
 			expect( Position.createBefore( p ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 
@@ -203,7 +203,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'createAfter', () => {
+	describe( 'createAfter()', () => {
 		it( 'should create positions after elements', () => {
 			expect( Position.createAfter( p ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
 
@@ -229,7 +229,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'createFromPosition', () => {
+	describe( 'createFromPosition()', () => {
 		it( 'should create a copy of given position', () => {
 			const original = new Position( root, [ 1, 2, 3 ] );
 			const position = Position.createFromPosition( original );
@@ -361,7 +361,7 @@ describe( 'position', () => {
 		expect( position.getParentPath() ).to.deep.equal( [ 1, 2 ] );
 	} );
 
-	describe( 'isBefore', () => {
+	describe( 'isBefore()', () => {
 		it( 'should return true if given position has same root and is before this position', () => {
 			const position = new Position( root, [ 1, 1, 2 ] );
 			const beforePosition = new Position( root, [ 1, 0 ] );
@@ -384,7 +384,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'isEqual', () => {
+	describe( 'isEqual()', () => {
 		it( 'should return true if given position has same path and root', () => {
 			const position = new Position( root, [ 1, 1, 2 ] );
 			const samePosition = new Position( root, [ 1, 1, 2 ] );
@@ -407,7 +407,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'isAfter', () => {
+	describe( 'isAfter()', () => {
 		it( 'should return true if given position has same root and is after this position', () => {
 			const position = new Position( root, [ 1, 1, 2 ] );
 			const afterPosition = new Position( root, [ 1, 2 ] );
@@ -430,7 +430,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'isTouching', () => {
+	describe( 'isTouching()', () => {
 		it( 'should return true if positions are same', () => {
 			const position = new Position( root, [ 1, 1, 1 ] );
 			const result = position.isTouching( new Position( root, [ 1, 1, 1 ] ) );
@@ -470,6 +470,14 @@ describe( 'position', () => {
 			expect( positionB.isTouching( positionA ) ).to.be.false;
 		} );
 
+		it( 'should return false if there are whole nodes between positions (same depth)', () => {
+			const positionA = new Position( root, [ 1, 0 ] );
+			const positionB = new Position( root, [ 1, 1 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.false;
+			expect( positionB.isTouching( positionA ) ).to.be.false;
+		} );
+
 		it( 'should return false if there are whole nodes between positions', () => {
 			const positionA = new Position( root, [ 1, 0, 3 ] );
 			const positionB = new Position( root, [ 1, 1, 1 ] );
@@ -487,21 +495,21 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'isAtStart', () => {
+	describe( 'isAtStart()', () => {
 		it( 'should return true if position is at the beginning of its parent', () => {
 			expect( new Position( root, [ 0 ] ).isAtStart ).to.be.true;
 			expect( new Position( root, [ 1 ] ).isAtStart ).to.be.false;
 		} );
 	} );
 
-	describe( 'isAtEnd', () => {
+	describe( 'isAtEnd()', () => {
 		it( 'should return true if position is at the end of its parent', () => {
 			expect( new Position( root, [ root.maxOffset ] ).isAtEnd ).to.be.true;
 			expect( new Position( root, [ 0 ] ).isAtEnd ).to.be.false;
 		} );
 	} );
 
-	describe( 'getAncestors', () => {
+	describe( 'getAncestors()', () => {
 		it( 'should return position parent element and it\'s ancestors', () => {
 			expect( new Position( root, [ 1, 1, 1 ] ).getAncestors() ).to.deep.equal( [ root, ul, li2 ] );
 		} );
@@ -513,7 +521,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'getCommonPath', () => {
+	describe( 'getCommonPath()', () => {
 		it( 'returns the common part', () => {
 			const pos1 = new Position( root, [ 1, 0, 0 ] );
 			const pos2 = new Position( root, [ 1, 0, 1 ] );
@@ -548,7 +556,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'compareWith', () => {
+	describe( 'compareWith()', () => {
 		it( 'should return same if positions are same', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const compared = new Position( root, [ 1, 2, 3 ] );
@@ -578,7 +586,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'getLastMatchingPosition', () => {
+	describe( 'getLastMatchingPosition()', () => {
 		it( 'should skip forward', () => {
 			let position = new Position( root, [ 1, 0, 0 ] );
 
@@ -596,7 +604,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( '_getTransformedByInsertion', () => {
+	describe( '_getTransformedByInsertion()', () => {
 		it( 'should return a new Position instance', () => {
 			const position = new Position( root, [ 0 ] );
 			const transformed = position._getTransformedByInsertion( new Position( root, [ 2 ] ), 4, false );
@@ -656,7 +664,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( '_getTransformedByDeletion', () => {
+	describe( '_getTransformedByDeletion()', () => {
 		it( 'should return a new Position instance', () => {
 			const position = new Position( root, [ 0 ] );
 			const transformed = position._getTransformedByDeletion( new Position( root, [ 2 ] ), 4 );
@@ -716,7 +724,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( '_getTransformedByMove', () => {
+	describe( '_getTransformedByMove()', () => {
 		it( 'should increment offset if a range was moved to the same parent and closer offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByMove( new Position( root, [ 2 ] ), new Position( root, [ 1, 2, 0 ] ), 3, false );
@@ -758,7 +766,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( '_getCombined', () => {
+	describe( '_getCombined()', () => {
 		it( 'should return correct combination of this and given positions', () => {
 			const position = new Position( root, [ 1, 3, 4, 2 ] );
 			const sourcePosition = new Position( root, [ 1, 1 ] );
@@ -770,7 +778,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'getShiftedBy', () => {
+	describe( 'getShiftedBy()', () => {
 		it( 'should return a new instance of Position with offset changed by shift value', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const shifted = position.getShiftedBy( 2 );
@@ -795,7 +803,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'toJSON', () => {
+	describe( 'toJSON()', () => {
 		it( 'should serialize position', () => {
 			const position = new Position( root, [ 0 ] );
 
@@ -813,7 +821,7 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'fromJSON', () => {
+	describe( 'fromJSON()', () => {
 		it( 'should create object with given document', () => {
 			const deserialized = Position.fromJSON( { root: 'main', path: [ 0, 1, 2 ] }, doc );
 
