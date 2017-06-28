@@ -278,7 +278,7 @@ describe( 'ListCommand', () => {
 					doc.enqueueChanges( () => {
 						doc.selection.setRanges( [ new Range(
 							Position.createAt( root.getChild( 2 ) ),
-							Position.createAt( root.getChild( 3 ) )
+							Position.createAt( root.getChild( 3 ), 'end' )
 						) ] );
 					} );
 
@@ -288,7 +288,7 @@ describe( 'ListCommand', () => {
 						'<listItem indent="0" type="bulleted">---</listItem>' +
 						'<listItem indent="0" type="bulleted">---</listItem>' +
 						'<listItem indent="0" type="bulleted">[---</listItem>' +
-						'<listItem indent="0" type="bulleted">]---</listItem>' +
+						'<listItem indent="0" type="bulleted">---]</listItem>' +
 						'<listItem indent="0" type="numbered">---</listItem>' +
 						'<listItem indent="0" type="numbered">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>' +
@@ -303,7 +303,7 @@ describe( 'ListCommand', () => {
 					doc.enqueueChanges( () => {
 						doc.selection.setRanges( [ new Range(
 							Position.createAt( root.getChild( 1 ) ),
-							Position.createAt( root.getChild( 4 ) )
+							Position.createAt( root.getChild( 4 ), 'end' )
 						) ] );
 					} );
 
@@ -315,7 +315,7 @@ describe( 'ListCommand', () => {
 						'<paragraph indent="0" type="bulleted">[---</paragraph>' + // Attributes will be removed by post fixer.
 						'<paragraph>---</paragraph>' +
 						'<paragraph>---</paragraph>' +
-						'<paragraph indent="0" type="numbered">]---</paragraph>' + // Attributes will be removed by post fixer.
+						'<paragraph indent="0" type="numbered">---]</paragraph>' + // Attributes will be removed by post fixer.
 						'<listItem indent="0" type="numbered">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>' +
 						'<listItem indent="2" type="bulleted">---</listItem>';
@@ -353,7 +353,7 @@ describe( 'ListCommand', () => {
 					doc.enqueueChanges( () => {
 						doc.selection.setRanges( [ new Range(
 							Position.createAt( root.getChild( 1 ) ),
-							Position.createAt( root.getChild( 5 ) )
+							Position.createAt( root.getChild( 5 ), 'end' )
 						) ] );
 					} );
 
@@ -366,7 +366,7 @@ describe( 'ListCommand', () => {
 						'<paragraph>---</paragraph>' +
 						'<paragraph>---</paragraph>' +
 						'<paragraph indent="0" type="numbered">---</paragraph>' + // Attributes will be removed by post fixer.
-						'<paragraph indent="0" type="numbered">]---</paragraph>' + // Attributes will be removed by post fixer.
+						'<paragraph indent="0" type="numbered">---]</paragraph>' + // Attributes will be removed by post fixer.
 						'<listItem indent="0" type="bulleted">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>';
 
