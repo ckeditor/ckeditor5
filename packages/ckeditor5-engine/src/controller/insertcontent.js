@@ -35,9 +35,7 @@ export default function insertContent( dataController, content, selection, batch
 	}
 
 	if ( !selection.isCollapsed ) {
-		dataController.deleteContent( selection, batch, {
-			merge: true
-		} );
+		dataController.deleteContent( selection, batch );
 	}
 
 	const insertion = new Insertion( dataController, batch, selection.anchor );

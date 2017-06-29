@@ -74,8 +74,7 @@ describe( 'DataController', () => {
 			test(
 				'does not break things when option.merge passed',
 				'w[x<image></image>y]z',
-				'w[]z',
-				{ merge: true }
+				'w[]z'
 			);
 		} );
 
@@ -173,35 +172,32 @@ describe( 'DataController', () => {
 			test(
 				'do not merge when no need to',
 				'<paragraph>x</paragraph><paragraph>[foo]</paragraph><paragraph>y</paragraph>',
-				'<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>',
-				{ merge: true }
+				'<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>'
 			);
 
 			test(
 				'merges second element into the first one (same name)',
 				'<paragraph>x</paragraph><paragraph>fo[o</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
-				'<paragraph>x</paragraph><paragraph>fo[]ar</paragraph><paragraph>y</paragraph>',
-				{ merge: true }
+				'<paragraph>x</paragraph><paragraph>fo[]ar</paragraph><paragraph>y</paragraph>'
 			);
 
 			test(
 				'does not merge second element into the first one (same name, !option.merge)',
 				'<paragraph>x</paragraph><paragraph>fo[o</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
-				'<paragraph>x</paragraph><paragraph>fo[]</paragraph><paragraph>ar</paragraph><paragraph>y</paragraph>'
+				'<paragraph>x</paragraph><paragraph>fo[]</paragraph><paragraph>ar</paragraph><paragraph>y</paragraph>',
+				{ leaveUnmerged: true }
 			);
 
 			test(
 				'merges second element into the first one (same name)',
 				'<paragraph>x</paragraph><paragraph>fo[o</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
-				'<paragraph>x</paragraph><paragraph>fo[]ar</paragraph><paragraph>y</paragraph>',
-				{ merge: true }
+				'<paragraph>x</paragraph><paragraph>fo[]ar</paragraph><paragraph>y</paragraph>'
 			);
 
 			test(
 				'merges second element into the first one (different name)',
 				'<paragraph>x</paragraph><heading1>fo[o</heading1><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
-				'<paragraph>x</paragraph><heading1>fo[]ar</heading1><paragraph>y</paragraph>',
-				{ merge: true }
+				'<paragraph>x</paragraph><heading1>fo[]ar</heading1><paragraph>y</paragraph>'
 			);
 
 			// Note: in all these cases we ignore the direction of merge.
@@ -214,7 +210,7 @@ describe( 'DataController', () => {
 					{ lastRangeBackward: true }
 				);
 
-				deleteContent( doc.selection, doc.batch(), { merge: true } );
+				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc ) ).to.equal( '<paragraph>x</paragraph><heading1>fo[]ar</heading1><paragraph>y</paragraph>' );
 			} );
@@ -222,29 +218,25 @@ describe( 'DataController', () => {
 			test(
 				'merges second element into the first one (different attrs)',
 				'<paragraph>x</paragraph><paragraph align="l">fo[o</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
-				'<paragraph>x</paragraph><paragraph align="l">fo[]ar</paragraph><paragraph>y</paragraph>',
-				{ merge: true }
+				'<paragraph>x</paragraph><paragraph align="l">fo[]ar</paragraph><paragraph>y</paragraph>'
 			);
 
 			test(
 				'merges second element to an empty first element',
 				'<paragraph>x</paragraph><heading1>[</heading1><paragraph>fo]o</paragraph><paragraph>y</paragraph>',
-				'<paragraph>x</paragraph><heading1>[]o</heading1><paragraph>y</paragraph>',
-				{ merge: true }
+				'<paragraph>x</paragraph><heading1>[]o</heading1><paragraph>y</paragraph>'
 			);
 
 			test(
 				'merges empty element into the first element',
 				'<heading1>f[oo</heading1><paragraph>bar]</paragraph><paragraph>x</paragraph>',
-				'<heading1>f[]</heading1><paragraph>x</paragraph>',
-				{ merge: true }
+				'<heading1>f[]</heading1><paragraph>x</paragraph>'
 			);
 
 			test(
 				'leaves just one element when all selected',
 				'<heading1>[x</heading1><paragraph>foo</paragraph><paragraph>y]</paragraph>',
-				'<heading1>[]</heading1>',
-				{ merge: true }
+				'<heading1>[]</heading1>'
 			);
 
 			it( 'uses remove delta instead of merge delta if merged element is empty', () => {
@@ -254,7 +246,7 @@ describe( 'DataController', () => {
 				const spyMerge = sinon.spy( batch, 'merge' );
 				const spyRemove = sinon.spy( batch, 'remove' );
 
-				deleteContent( doc.selection, batch, { merge: true } );
+				deleteContent( doc.selection, batch );
 
 				expect( getData( doc ) ).to.equal( '<paragraph>ab[]</paragraph>' );
 
@@ -269,7 +261,7 @@ describe( 'DataController', () => {
 				const spyMerge = sinon.spy( batch, 'merge' );
 				const spyMove = sinon.spy( batch, 'move' );
 
-				deleteContent( doc.selection, batch, { merge: true } );
+				deleteContent( doc.selection, batch );
 
 				expect( getData( doc ) ).to.equal( '<paragraph>ab[]gh</paragraph>' );
 
@@ -284,8 +276,7 @@ describe( 'DataController', () => {
 				test(
 					'merges elements when deep nested',
 					'<paragraph>x<pchild>fo[o</pchild></paragraph><paragraph><pchild>b]ar</pchild>y</paragraph>',
-					'<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>',
-					{ merge: true }
+					'<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>'
 				);
 
 				it( 'merges elements when deep nested (3rd level)', () => {
@@ -322,7 +313,7 @@ describe( 'DataController', () => {
 
 					doc.selection.setRanges( [ range ] );
 
-					deleteContent( doc.selection, doc.batch(), { merge: true } );
+					deleteContent( doc.selection, doc.batch() );
 
 					expect( getData( doc ) )
 						.to.equal( '<pparent>x<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>y</pparent>' );
@@ -331,15 +322,13 @@ describe( 'DataController', () => {
 				test(
 					'merges elements when left end deep nested',
 					'<paragraph>x<pchild>fo[o</pchild></paragraph><paragraph>b]ary</paragraph><paragraph>x</paragraph>',
-					'<paragraph>x<pchild>fo[]ary</pchild></paragraph><paragraph>x</paragraph>',
-					{ merge: true }
+					'<paragraph>x<pchild>fo[]ary</pchild></paragraph><paragraph>x</paragraph>'
 				);
 
 				test(
 					'merges elements when right end deep nested',
 					'<paragraph>x</paragraph><paragraph>fo[o</paragraph><paragraph><pchild>b]ar</pchild>x</paragraph>',
-					'<paragraph>x</paragraph><paragraph>fo[]ar</paragraph><paragraph>x</paragraph>',
-					{ merge: true }
+					'<paragraph>x</paragraph><paragraph>fo[]ar</paragraph><paragraph>x</paragraph>'
 				);
 
 				it( 'merges elements when left end deep nested (3rd level)', () => {
@@ -369,7 +358,7 @@ describe( 'DataController', () => {
 
 					doc.selection.setRanges( [ range ] );
 
-					deleteContent( doc.selection, doc.batch(), { merge: true } );
+					deleteContent( doc.selection, doc.batch() );
 
 					expect( getData( doc ) )
 						.to.equal( '<pparent>x<paragraph>foo<pchild>ba[]om</pchild></paragraph></pparent>' );
@@ -378,15 +367,13 @@ describe( 'DataController', () => {
 				test(
 					'merges elements when right end deep nested (in an empty container)',
 					'<paragraph>fo[o</paragraph><paragraph><pchild>bar]</pchild></paragraph>',
-					'<paragraph>fo[]</paragraph>',
-					{ merge: true }
+					'<paragraph>fo[]</paragraph>'
 				);
 
 				test(
 					'merges elements when left end deep nested (in an empty container)',
 					'<paragraph><pchild>[foo</pchild></paragraph><paragraph>b]ar</paragraph><paragraph>x</paragraph>',
-					'<paragraph><pchild>[]ar</pchild></paragraph><paragraph>x</paragraph>',
-					{ merge: true }
+					'<paragraph><pchild>[]ar</pchild></paragraph><paragraph>x</paragraph>'
 				);
 
 				it( 'merges elements when left end deep nested (3rd level)', () => {
@@ -414,7 +401,7 @@ describe( 'DataController', () => {
 
 					doc.selection.setRanges( [ range ] );
 
-					deleteContent( doc.selection, doc.batch(), { merge: true } );
+					deleteContent( doc.selection, doc.batch() );
 
 					expect( getData( doc ) )
 						.to.equal( '<paragraph>fo[]</paragraph>' );
@@ -440,15 +427,13 @@ describe( 'DataController', () => {
 				test(
 					'does not merge an object element (if it is first)',
 					'<blockWidget><nestedEditable>fo[o</nestedEditable></blockWidget><paragraph>b]ar</paragraph>',
-					'<blockWidget><nestedEditable>fo[]</nestedEditable></blockWidget><paragraph>ar</paragraph>',
-					{ merge: true }
+					'<blockWidget><nestedEditable>fo[]</nestedEditable></blockWidget><paragraph>ar</paragraph>'
 				);
 
 				test(
 					'does not merge an object element (if it is second)',
 					'<paragraph>ba[r</paragraph><blockWidget><nestedEditable>f]oo</nestedEditable></blockWidget>',
-					'<paragraph>ba[]</paragraph><blockWidget><nestedEditable>oo</nestedEditable></blockWidget>',
-					{ merge: true }
+					'<paragraph>ba[]</paragraph><blockWidget><nestedEditable>oo</nestedEditable></blockWidget>'
 				);
 			} );
 		} );
@@ -611,22 +596,19 @@ describe( 'DataController', () => {
 			test(
 				'merge option should be ignored if both elements are limits',
 				'<inlineLimit>foo [bar</inlineLimit><inlineLimit>baz] qux</inlineLimit>',
-				'<inlineLimit>foo []</inlineLimit><inlineLimit> qux</inlineLimit>',
-				{ merge: true }
+				'<inlineLimit>foo []</inlineLimit><inlineLimit> qux</inlineLimit>'
 			);
 
 			test(
 				'merge option should be ignored if the first element is a limit',
 				'<inlineLimit>foo [bar</inlineLimit><x>baz] qux</x>',
-				'<inlineLimit>foo []</inlineLimit><x> qux</x>',
-				{ merge: true }
+				'<inlineLimit>foo []</inlineLimit><x> qux</x>'
 			);
 
 			test(
 				'merge option should be ignored if the second element is a limit',
 				'<x>baz [qux</x><inlineLimit>foo] bar</inlineLimit>',
-				'<x>baz []</x><inlineLimit> bar</inlineLimit>',
-				{ merge: true }
+				'<x>baz []</x><inlineLimit> bar</inlineLimit>'
 			);
 		} );
 
@@ -648,14 +630,14 @@ describe( 'DataController', () => {
 			test(
 				'should delete inside block limit element',
 				'<blockLimit><paragraph>fo[o</paragraph><paragraph>b]ar</paragraph></blockLimit>',
-				'<blockLimit><paragraph>fo[]</paragraph><paragraph>ar</paragraph></blockLimit>'
+				'<blockLimit><paragraph>fo[]</paragraph><paragraph>ar</paragraph></blockLimit>',
+				{ leaveUnmerged: true }
 			);
 
 			test(
 				'should delete inside block limit element (with merge)',
 				'<blockLimit><paragraph>fo[o</paragraph><paragraph>b]ar</paragraph></blockLimit>',
-				'<blockLimit><paragraph>fo[]ar</paragraph></blockLimit>',
-				{ merge: true }
+				'<blockLimit><paragraph>fo[]ar</paragraph></blockLimit>'
 			);
 
 			test(
@@ -673,8 +655,7 @@ describe( 'DataController', () => {
 			test(
 				'merge option should be ignored if any of the elements is a limit',
 				'<blockLimit><paragraph>foo [bar</paragraph></blockLimit><blockLimit><paragraph>baz] qux</paragraph></blockLimit>',
-				'<blockLimit><paragraph>foo []</paragraph></blockLimit><blockLimit><paragraph> qux</paragraph></blockLimit>',
-				{ merge: true }
+				'<blockLimit><paragraph>foo []</paragraph></blockLimit><blockLimit><paragraph> qux</paragraph></blockLimit>'
 			);
 		} );
 
