@@ -10,11 +10,11 @@
 import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
 
 /**
- * The inline autoformatting engine. Allows to format various inline patterns. For example,
+ * The inline autoformatting engine. It allows to format various inline patterns. For example,
  * it can be configured to make "foo" bold when typed `**foo**` (the `**` markers will be removed).
  *
  * The autoformatting operation is integrated with the undo manager,
- * so the autoformatting step can be undone, if the user's intention wasn't to format the text.
+ * so the autoformatting step can be undone if the user's intention was not to format the text.
  *
  * See the constructors documentation to learn how to create custom inline autoformatters. You can also use
  * the {@link module:autoformat/autoformat~Autoformat} feature which enables a set of default autoformatters
@@ -22,38 +22,38 @@ import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
  */
 export default class InlineAutoformatEngine {
 	/**
-	 * Enables autoformatting mechanism on a given {@link module:core/editor/editor~Editor}.
+	 * Enables autoformatting mechanism for a given {@link module:core/editor/editor~Editor}.
 	 *
-	 * It formats the matched text by applying given model attribute or by running the provided formatting callback.
-	 * Each time data model changes text from given node (from the beginning of the current node to the collapsed
+	 * It formats the matched text by applying the given model attribute or by running the provided formatting callback.
+	 * Each time the data model changes the text from a given node (from the beginning of the current node to the collapsed
 	 * selection location) will be tested.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {Function|RegExp} testRegexpOrCallback RegExp or callback to execute on text.
-	 * Provided RegExp *must* have three capture groups. First and third capture groups
-	 * should match opening/closing delimiters. Second capture group should match text to format.
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {Function|RegExp} testRegexpOrCallback The regular expression or callback to execute on text.
+	 * Provided regular expression *must* have three capture groups. The first and the third capture group
+	 * should match opening and closing delimiters. The second capture group should match the text to format.
 	 *
-	 *		// Matches `**bold text**` pattern.
+	 *		// Matches the `**bold text**` pattern.
 	 *		// There are three capturing groups:
-	 *		// - first to match starting `**` delimiter,
-	 *		// - second to match text to format,
-	 *		// - third to match ending `**` delimiter.
+	 *		// - The first to match the starting `**` delimiter.
+	 *		// - The second to match the text to format.
+	 *		// - The third to match the ending `**` delimiter.
 	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
 	 *
-	 * When function is provided instead of RegExp, it will be executed with text to match as a parameter. Function
-	 * should return proper "ranges" to delete and format.
+	 * When a function is provided instead of the regular expression, it will be executed with the text to match as a parameter.
+	 * The function should return proper "ranges" to delete and format.
 	 *
 	 *		{
 	 *			remove: [
-	 *				[ 0, 1 ],	// Remove first letter from the given text.
-	 *				[ 5, 6 ]	// Remove 6th letter from the given text.
+	 *				[ 0, 1 ],	// Remove the first letter from the given text.
+	 *				[ 5, 6 ]	// Remove the 6th letter from the given text.
 	 *			],
 	 *			format: [
 	 *				[ 1, 5 ]	// Format all letters from 2nd to 5th.
 	 *			]
 	 *		}
 	 *
-	 * @param {Function|String} attributeOrCallback Name of attribute to apply on matching text or callback for manual
+	 * @param {Function|String} attributeOrCallback The name of attribute to apply on matching text or a callback for manual
 	 * formatting.
 	 *
 	 *		// Use attribute name:

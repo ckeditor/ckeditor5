@@ -11,11 +11,11 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import TextProxy from '@ckeditor/ckeditor5-engine/src/model/textproxy';
 
 /**
- * The block autoformatting engine. Allows to format various block patterns. For example,
- * it can be configured to make a paragraph starting with "* " a list item.
+ * The block autoformatting engine. It allows to format various block patterns. For example,
+ * it can be configured to turn a paragraph starting with "* " into a list item.
  *
  * The autoformatting operation is integrated with the undo manager,
- * so the autoformatting step can be undone, if the user's intention wasn't to format the text.
+ * so the autoformatting step can be undone if the user's intention was not to format the text.
  *
  * See the constructors documentation to learn how to create custom inline autoformatters. You can also use
  * the {@link module:autoformat/autoformat~Autoformat} feature which enables a set of default autoformatters
@@ -23,17 +23,17 @@ import TextProxy from '@ckeditor/ckeditor5-engine/src/model/textproxy';
  */
 export default class BlockAutoformatEngine {
 	/**
-	 * Creates listener triggered on `change` event in document.
-	 * Calls callback when inserted text matches regular expression or command name
-	 * if provided instead of callback.
+	 * Creates a listener triggered on `change` event in the document.
+	 * Calls the callback when inserted text matches the regular expression or the command name
+	 * if provided instead of the callback.
 	 *
 	 * Examples of usage:
 	 *
-	 * To convert paragraph to heading1 when `- ` is typed, using just commmand name:
+	 * To convert a paragraph to heading 1 when `- ` is typed, using just the commmand name:
 	 *
 	 *		new BlockAutoformatEngine( editor, /^\- $/, 'heading1' );
 	 *
-	 * To convert paragraph to heading1 when `- ` is typed, using just callback:
+	 * To convert a paragraph to heading 1 when `- ` is typed, using just the callback:
 	 *
 	 *		new BlockAutoformatEngine( editor, /^\- $/, ( context ) => {
 	 *			const { batch, match } = context;
@@ -45,12 +45,12 @@ export default class BlockAutoformatEngine {
 	 *			} );
 	 * 		} );
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {RegExp} pattern Regular expression to exec on just inserted text.
-	 * @param {Function|String} callbackOrCommand Callback to execute or command to run when text is matched.
-	 * In case of providing callback it receives following parameters:
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {RegExp} pattern The regular expression to execute on just inserted text.
+	 * @param {Function|String} callbackOrCommand The callback to execute or the command to run when the text is matched.
+	 * In case of providing the callback, it receives the following parameters:
 	 * * {module:engine/model/batch~Batch} batch Newly created batch for autoformat changes.
-	 * * {Object} match RegExp.exec() result of matching pattern to inserted text.
+	 * * {Object} match RegExp.exec() result of matching the pattern to inserted text.
 	 */
 	constructor( editor, pattern, callbackOrCommand ) {
 		let callback;
