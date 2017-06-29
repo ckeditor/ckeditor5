@@ -1735,10 +1735,10 @@ describe( 'Renderer', () => {
 		it( 'should properly render unwrapped attributes #1', () => {
 			setViewData( viewDoc,
 				'<container:p>' +
-				'[<attribute:italic>' +
-				'<attribute:strong>f</attribute:strong>' +
-				'</attribute:italic>]' +
-				'<attribute:strong>oo</attribute:strong>' +
+					'[<attribute:italic>' +
+						'<attribute:strong>f</attribute:strong>' +
+					'</attribute:italic>]' +
+					'<attribute:strong>oo</attribute:strong>' +
 				'</container:p>'
 			);
 
@@ -1760,9 +1760,9 @@ describe( 'Renderer', () => {
 		it( 'should properly render unwrapped attributes #2', () => {
 			setViewData( viewDoc,
 				'<container:p>' +
-				'[<attribute:italic>' +
-				'<attribute:strong>foo</attribute:strong>' +
-				'</attribute:italic>]' +
+					'[<attribute:italic>' +
+						'<attribute:strong>foo</attribute:strong>' +
+					'</attribute:italic>]' +
 				'</container:p>' );
 
 			// Render it to DOM to create initial DOM <-> view mappings.
