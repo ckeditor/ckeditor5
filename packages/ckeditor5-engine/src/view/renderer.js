@@ -165,9 +165,9 @@ export default class Renderer {
 	 * attributes which do not exist in the view element.
 	 *
 	 * For text nodes it updates the text string if it is different. Note that if parent element is marked as an element
-	 * which changed child list, text node update will not be done, because it may not be possible do find a
-	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomText corresponding DOM text}. The change will be handled
-	 * in the parent element.
+	 * which changed child list, text node update will not be done, because it may not be possible to
+	 * {@link module:engine/view/domconverter~DomConverter#findCorrespondingDomText find a corresponding DOM text}.
+	 * The change will be handled in the parent element.
 	 *
 	 * For elements, which child lists have changed, it calculates a {@link module:utils/diff~diff} and adds or removes children which have
 	 * changed.

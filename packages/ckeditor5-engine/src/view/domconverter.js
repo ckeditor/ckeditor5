@@ -125,7 +125,7 @@ export default class DomConverter {
 	/**
 	 * Binds DOM and View elements, so it will be possible to get corresponding elements using
 	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewElement getCorrespondingViewElement} and
-	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomElement getCorrespondingDomElement}.
+	 * {@link module:engine/view/domconverter~DomConverter#mapViewToDom mapViewToDom}.
 	 *
 	 * @param {HTMLElement} domElement DOM element to bind.
 	 * @param {module:engine/view/element~Element} viewElement View element to bind.
@@ -158,7 +158,7 @@ export default class DomConverter {
 	/**
 	 * Binds DOM and View document fragments, so it will be possible to get corresponding document fragments using
 	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment} and
-	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}.
+	 * {@link module:engine/view/domconverter~DomConverter#mapViewToDom mapViewToDom}.
 	 *
 	 * @param {DocumentFragment} domFragment DOM document fragment to bind.
 	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment View document fragment to bind.
@@ -691,12 +691,22 @@ export default class DomConverter {
 		return null;
 	}
 
+	/**
+	 * Returns corresponding DOM item for provided {@link module:engine/view/element~Element Element} or
+	 * {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}.
+	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
+	 * use {@link #findCorrespondingDomText}.
+	 *
+	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewNode
+	 * View element or document fragment.
+	 * @returns {Node|DocumentFragment|undefined} Corresponding DOM node or document fragment.
+	 */
 	mapViewToDom( documentFragmentOrElement ) {
 		return this._viewToDomMapping.get( documentFragmentOrElement );
 	}
 
 	/**
-	 * Gets corresponding text node. Text nodes are not {@link module:engine/view/domconverter~DomConverter#bindElements bound},
+	 * Finds corresponding text node. Text nodes are not {@link module:engine/view/domconverter~DomConverter#bindElements bound},
 	 * corresponding text node is returned based on the sibling or parent.
 	 *
 	 * If the directly previous sibling is a {@link module:engine/view/domconverter~DomConverter#bindElements bound} element, it is used
