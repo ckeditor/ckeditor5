@@ -10,7 +10,7 @@ const fs = require( 'fs' );
 const webpack = require( 'webpack' );
 const { bundler } = require( '@ckeditor/ckeditor5-dev-utils' );
 
-const BabiliPlugin = require( 'babili-webpack-plugin' );
+// const BabiliPlugin = require( 'babili-webpack-plugin' );
 
 module.exports = function snippetAdapter( data ) {
 	const webpackConfig = getWebpackConfig( {
@@ -41,9 +41,9 @@ function getWebpackConfig( config ) {
 		},
 
 		plugins: [
-			new BabiliPlugin( null, {
-				comments: false
-			} ),
+			// new BabiliPlugin( null, {
+			// 	comments: false
+			// } ),
 			new webpack.BannerPlugin( {
 				banner: bundler.getLicenseBanner(),
 				raw: true
