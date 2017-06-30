@@ -333,13 +333,13 @@ export default class Link extends Plugin {
 
 		const target = targetLink ?
 			// When selection is inside link element, then attach panel to this element.
-			viewDocument.domConverter.getCorrespondingDomElement( targetLink ) :
+			viewDocument.domConverter.mapViewToDom( targetLink ) :
 			// Otherwise attach panel to the selection.
 			viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
 
 		return {
 			target,
-			limiter: viewDocument.domConverter.getCorrespondingDomElement( viewDocument.selection.editableElement )
+			limiter: viewDocument.domConverter.mapViewToDom( viewDocument.selection.editableElement )
 		};
 	}
 
