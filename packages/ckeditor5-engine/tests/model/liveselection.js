@@ -885,24 +885,30 @@ describe( 'LiveSelection', () => {
 			doc.schema.allow( { name: '$text', attributes: 'bold', inside: 'caption' } );
 
 			root.removeChildren( 0, root.childCount );
-
-			root.insertChildren( 0, [
-				new Element( 'p', null, [
-					new Element( 'image', [], [
-						new Element( 'caption', [], [
-							new Text( 'Caption for the image.', { bold: true } )
-						] )
-					] )
-				] )
-			] );
-
-			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ) );
 		} );
 
 		it( 'ignores attributes from nested editable if selection contains an object', () => {
+			setData( doc, '<p>[<image><caption>Caption for the image.</caption></image>]</p>' );
+
 			const liveSelection = LiveSelection.createFromSelection( selection );
 
 			expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+		} );
+
+		it( 'read attributes from text even if the selection contains an object', () => {
+			setData( doc, '<p>x[<$text bold="true">bar</$text><image></image>foo]</p>' );
+
+			const liveSelection = LiveSelection.createFromSelection( selection );
+
+			expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( true );
+		} );
+
+		it( 'read attributes from editable if selection contains elements inside the object', () => {
+			setData( doc, '<p><image>[<caption><$text bold="true">bar</$text></caption>]</image></p>' );
+
+			const liveSelection = LiveSelection.createFromSelection( selection );
+
+			expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( true );
 		} );
 	} );
 } );

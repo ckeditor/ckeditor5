@@ -7,7 +7,6 @@
  * @module engine/model/liveselection
  */
 
-import Element from './element';
 import Position from './position';
 import Range from './range';
 import LiveRange from './liverange';
@@ -568,7 +567,7 @@ export default class LiveSelection extends Selection {
 			// ...look for a first character node in that range and take attributes from it.
 			for ( const item of range ) {
 				// If the item is an object, we don't want to get attributes from its children.
-				if ( item.item instanceof Element && schema.objects.has( item.item.name ) ) {
+				if ( item.item.is( 'element' ) && schema.objects.has( item.item.name ) ) {
 					break;
 				}
 
