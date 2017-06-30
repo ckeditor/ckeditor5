@@ -212,6 +212,111 @@ describe( 'DomConverter', () => {
 				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( 'foo' );
 			} );
 
+			it( 'after a block element', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					createElement( document, 'p', {}, [
+						document.createTextNode( 'foo' )
+					] ),
+					document.createTextNode( ' ' )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.childCount ).to.equal( 1 );
+				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+			} );
+
+			it( 'after a block element (new line)', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					createElement( document, 'p', {}, [
+						document.createTextNode( 'foo' )
+					] ),
+					document.createTextNode( '\n' )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.childCount ).to.equal( 1 );
+				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+			} );
+
+			it( 'after a block element (carriage return)', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					createElement( document, 'p', {}, [
+						document.createTextNode( 'foo' )
+					] ),
+					document.createTextNode( '\r' )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.childCount ).to.equal( 1 );
+				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+			} );
+
+			it( 'after a block element (tab)', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					createElement( document, 'p', {}, [
+						document.createTextNode( 'foo' )
+					] ),
+					document.createTextNode( '\t' )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.childCount ).to.equal( 1 );
+				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+			} );
+
+			// See https://github.com/ckeditor/ckeditor5-engine/issues/822#issuecomment-311670249
+			it( 'but preserve all except " \\n\\r\\t"', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					createElement( document, 'p', {}, [
+						document.createTextNode( 'x\fx\vx\u00a0x\u1680x\u2000x\u200ax\u2028x\u2029x\u202fx\u205fx\u3000x\ufeffx' )
+					] ),
+					createElement( document, 'p', {}, [
+						// x<two spaces>x because it behaved differently than "x<space>x" when I've been fixing this
+						document.createTextNode( 'x\f\vx\u00a0\u1680x\u2000\u200ax\u2028\u2029x\u202f\u205fx\u3000\ufeffx' )
+					] )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.childCount ).to.equal( 2 );
+				expect( viewDiv.getChild( 0 ).getChild( 0 ).data )
+					.to.equal( 'x\fx\vx\u00a0x\u1680x\u2000x\u200ax\u2028x\u2029x\u202fx\u205fx\u3000x\ufeffx' );
+				expect( viewDiv.getChild( 1 ).getChild( 0 ).data )
+					.to.equal( 'x\f\vx\u00a0\u1680x\u2000\u200ax\u2028\u2029x\u202f\u205fx\u3000\ufeffx' );
+			} );
+
+			it( 'before a block element', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					document.createTextNode( ' ' ),
+					createElement( document, 'p', {}, [
+						document.createTextNode( ' foo' )
+					] )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.childCount ).to.equal( 1 );
+				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+			} );
+
+			it( 'before a block element (new line)', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					document.createTextNode( '\n' ),
+					createElement( document, 'p', {}, [
+						document.createTextNode( 'foo' )
+					] )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.childCount ).to.equal( 1 );
+				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+			} );
+
 			it( 'multiple consecutive whitespaces changed to one', () => {
 				const domDiv = createElement( document, 'div', {}, [
 					createElement( document, 'p', {}, [
@@ -226,6 +331,21 @@ describe( 'DomConverter', () => {
 
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'f o o' );
 				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( 'fo o' );
+			} );
+
+			it( 'multiple consecutive whitespaces changed to one (tab, new line, carriage return)', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					document.createTextNode( '\n\n \t\r\n' ),
+					createElement( document, 'p', {}, [
+						document.createTextNode( 'f\n\t\r\n\to\n\n\no' )
+					] ),
+					document.createTextNode( '\n\n \t\r\n' )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.childCount ).to.equal( 1 );
+				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'f o o' );
 			} );
 
 			function test( inputTexts, output ) {
@@ -339,6 +459,10 @@ describe( 'DomConverter', () => {
 
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( '   foo\n   foo  ' );
 			} );
+
+			//
+			// See also whitespace-handling-integration.js.
+			//
 		} );
 	} );
 
@@ -602,6 +726,8 @@ describe( 'DomConverter', () => {
 
 			expect( viewSelection.rangeCount ).to.equal( 1 );
 			expect( stringify( viewP, viewSelection.getFirstRange() ) ).to.equal( '<p>f{oo<b>ba}r</b></p>' );
+
+			domP.remove();
 		} );
 
 		it( 'should convert empty selection to empty selection', () => {
@@ -638,6 +764,8 @@ describe( 'DomConverter', () => {
 			expect( viewSelection.anchor.offset ).to.equal( 2 );
 			expect( viewSelection.focus.offset ).to.equal( 1 );
 			expect( viewSelection.isBackward ).to.be.true;
+
+			domP.remove();
 		} );
 
 		it( 'should not add null ranges', () => {
@@ -659,6 +787,8 @@ describe( 'DomConverter', () => {
 			const viewSelection = converter.domSelectionToView( domSelection );
 
 			expect( viewSelection.rangeCount ).to.equal( 0 );
+
+			domP.remove();
 		} );
 
 		it( 'should return fake selection', () => {
@@ -679,6 +809,8 @@ describe( 'DomConverter', () => {
 			const bindViewSelection = converter.domSelectionToView( domSelection );
 
 			expect( bindViewSelection.isEqual( viewSelection ) ).to.be.true;
+
+			domContainer.remove();
 		} );
 
 		it( 'should return fake selection if selection is placed inside text node', () => {
@@ -699,6 +831,8 @@ describe( 'DomConverter', () => {
 			const bindViewSelection = converter.domSelectionToView( domSelection );
 
 			expect( bindViewSelection.isEqual( viewSelection ) ).to.be.true;
+
+			domContainer.remove();
 		} );
 	} );
 } );

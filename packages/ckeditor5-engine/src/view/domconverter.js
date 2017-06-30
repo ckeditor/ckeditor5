@@ -982,10 +982,11 @@ export default class DomConverter {
 			return data;
 		}
 
-		// Change all consecutive whitespace characters to a single space character. That's how multiple whitespaces
-		// are treated when rendered, so we normalize those whitespaces.
-		// Note that &nbsp; (`\u00A0`) should not be treated as a whitespace because it is rendered.
-		data = data.replace( /[^\S\u00A0]{2,}/g, ' ' );
+		// Change all consecutive whitespace characters (from the [ \n\t\r] set –
+		// see https://github.com/ckeditor/ckeditor5-engine/issues/822#issuecomment-311670249) to a single space character.
+		// That's how multiple whitespaces are treated when rendered, so we normalize those whitespaces.
+		// We're replacing 1+ (and not 2+) to also normalize singular \n\t\r characters (#822).
+		data = data.replace( /[ \n\t\r]{1,}/g, ' ' );
 
 		const prevNode = this._getTouchingDomTextNode( node, false );
 		const nextNode = this._getTouchingDomTextNode( node, true );
@@ -1007,12 +1008,14 @@ export default class DomConverter {
 		// ` \u00A0` to ensure proper rendering. Since here we convert back, we recognize those pairs and change them
 		// to `  ` which is what we expect to have in model/view.
 		data = data.replace( / \u00A0/g, '  ' );
+
 		// Then, change &nbsp; character that is at the beginning of the text node to space character.
 		// As above, that &nbsp; was created for rendering reasons but it's real meaning is just a space character.
 		// We do that replacement only if this is the first node or the previous node ends on whitespace character.
 		if ( !prevNode || /[^\S\u00A0]/.test( prevNode.data.charAt( prevNode.data.length - 1 ) ) ) {
 			data = data.replace( /^\u00A0/, ' ' );
 		}
+
 		// Since input text data could be: `x_ _`, we would not replace the first &nbsp; after `x` character.
 		// We have to fix it. Since we already change all ` &nbsp;`, we will have something like this at the end of text data:
 		// `x_ _ _` -> `x_    `. Find &nbsp; at the end of string (can be followed only by spaces).
