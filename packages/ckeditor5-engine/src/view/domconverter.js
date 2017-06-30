@@ -124,8 +124,8 @@ export default class DomConverter {
 
 	/**
 	 * Binds DOM and View elements, so it will be possible to get corresponding elements using
-	 * {@link module:engine/view/domconverter~DomConverter#mapDomToView mapDomToView} and
-	 * {@link module:engine/view/domconverter~DomConverter#mapViewToDom mapViewToDom}.
+	 * {@link module:engine/view/domconverter~DomConverter#mapDomToView} and
+	 * {@link module:engine/view/domconverter~DomConverter#mapViewToDom}.
 	 *
 	 * @param {HTMLElement} domElement DOM element to bind.
 	 * @param {module:engine/view/element~Element} viewElement View element to bind.
@@ -157,8 +157,8 @@ export default class DomConverter {
 
 	/**
 	 * Binds DOM and View document fragments, so it will be possible to get corresponding document fragments using
-	 * {@link module:engine/view/domconverter~DomConverter#mapDomToView mapDomToView} and
-	 * {@link module:engine/view/domconverter~DomConverter#mapViewToDom mapViewToDom}.
+	 * {@link module:engine/view/domconverter~DomConverter#mapDomToView} and
+	 * {@link module:engine/view/domconverter~DomConverter#mapViewToDom}.
 	 *
 	 * @param {DocumentFragment} domFragment DOM document fragment to bind.
 	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment View document fragment to bind.
@@ -172,8 +172,8 @@ export default class DomConverter {
 	 * Converts view to DOM. For all text nodes, not bound elements and document fragments new items will
 	 * be created. For bound elements and document fragments function will return corresponding items.
 	 *
-	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewNode View node or document fragment to
-	 * transform.
+	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewNode
+	 * View node or document fragment to transform.
 	 * @param {Document} domDocument Document which will be used to create DOM nodes.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
@@ -200,8 +200,7 @@ export default class DomConverter {
 					this.bindDocumentFragments( domElement, viewNode );
 				}
 			} else if ( viewNode.is( 'uiElement' ) ) {
-				// UIElement has it's own render() method.
-				// https://github.com/ckeditor/ckeditor5-engine/issues/799
+				// UIElement has its own render() method (see #799).
 				domElement = viewNode.render( domDocument );
 
 				if ( options.bind ) {
@@ -234,8 +233,9 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts children of the view element to DOM using {@link module:engine/view/domconverter~DomConverter#viewToDom} method.
-	 * Additionally this method adds block {@link module:engine/view/filler filler} to the list of children, if needed.
+	 * Converts children of the view element to DOM using the
+	 * {@link module:engine/view/domconverter~DomConverter#viewToDom} method.
+	 * Additionally, this method adds block {@link module:engine/view/filler filler} to the list of children, if needed.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElement Parent view element.
 	 * @param {Document} domDocument Document which will be used to create DOM nodes.
@@ -427,7 +427,8 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts children of the DOM element to view nodes using {@link module:engine/view/domconverter~DomConverter#domToView} method.
+	 * Converts children of the DOM element to view nodes using
+	 * the {@link module:engine/view/domconverter~DomConverter#domToView} method.
 	 * Additionally this method omits block {@link module:engine/view/filler filler}, if it exists in the DOM parent.
 	 *
 	 * @param {HTMLElement} domElement Parent DOM element.
@@ -576,14 +577,14 @@ export default class DomConverter {
 
 	/**
 	 * Returns corresponding view {@link module:engine/view/element~Element Element} or
-	 * {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} for provided DOM element or
+	 * {@link module:engine/view/documentfragment~DocumentFragment} for provided DOM element or
 	 * document fragment. If there is no view item {@link module:engine/view/domconverter~DomConverter#bindElements bound}
 	 * to the given DOM - `undefined` is returned.
 	 * For all DOM elements rendered by {@link module:engine/view/uielement~UIElement} that UIElement will be returned.
 	 *
-	 * @param {DocumentFragment|Element} domElementOrDocumentFragment DOM .
+	 * @param {DocumentFragment|Element} domElementOrDocumentFragment DOM element or document fragment.
 	 * @returns {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|undefined}
-	 * Corresponding element or `undefined` if no element was bound.
+	 * Corresponding view element, document fragment or `undefined` if no element was bound.
 	 */
 	mapDomToView( domElementOrDocumentFragment ) {
 		return this.getParentUIElement( domElementOrDocumentFragment ) || this._domToViewMapping.get( domElementOrDocumentFragment );
@@ -708,7 +709,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Focuses DOM editable that is corresponding to provided {@link module:engine/view/editableelement~EditableElement EditableElement}.
+	 * Focuses DOM editable that is corresponding to provided {@link module:engine/view/editableelement~EditableElement}.
 	 *
 	 * @param {module:engine/view/editableelement~EditableElement} viewEditable
 	 */
@@ -813,7 +814,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Returns parent {@link module:engine/view/uielement~UIElement} for provided DOM node. Returns null if there is no
+	 * Returns parent {@link module:engine/view/uielement~UIElement} for provided DOM node. Returns `null` if there is no
 	 * parent UIElement.
 	 *
 	 * @param {Node} domNode
@@ -841,6 +842,7 @@ export default class DomConverter {
 	 * Takes text data from given {@link module:engine/view/text~Text#data} and processes it so it is correctly displayed in DOM.
 	 *
 	 * Following changes are done:
+	 *
 	 * * multiple spaces are replaced to a chain of spaces and `&nbsp;`,
 	 * * space at the beginning of the text node is changed to `&nbsp;` if it is a first text node in it's container
 	 * element or if previous text node ends by space character,
