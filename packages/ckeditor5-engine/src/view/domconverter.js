@@ -323,6 +323,7 @@ export default class DomConverter {
 				domAfter = domParent.childNodes[ 0 ];
 			} else {
 				const nodeBefore = viewPosition.nodeBefore;
+
 				domBefore = nodeBefore.is( 'text' ) ?
 					this.findCorrespondingDomText( nodeBefore ) :
 					this.mapViewToDom( viewPosition.nodeBefore );
