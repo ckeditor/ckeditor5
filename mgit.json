@@ -3,7 +3,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#bbb97b9431e1d2c4ef847be68288cf8e9a4fe2c2",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#75873ffb8abb4b1ea85b7ded8bbe3838cc5c7793",
-    "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#628e5ac8557e8042bbb6924b75444fcde03f5f2d",
+    "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#3187afd392537f20090ae0fd81e3de9850921d8b",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#ca73838bd026223c57f8648e2417f8594d8f4dfa",
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#6d8a2a3730c0ab17d1e55f293772de32bf4275c2",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#14b52d2537e31cb8a2d256370321ef1d24f42d15",
@@ -11,7 +11,7 @@
     "@ckeditor/ckeditor5-editor-balloon-toolbar": "ckeditor/ckeditor5-editor-balloon-toolbar#0957ce47316e0057deff2847e5ef037f4cbaec14",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#4b079e9b6cb4550f4c0f77ab0c802210cd8c22fa",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#fe7d27b381a50c754957f2c2727d3914c8a2458d",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#56347d10af2f1d6bb9059d0469581f488e37cac6",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#93639d08dcfca97f64ae51510a70115fd91bcdc0",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#6b897e30958afb870cfe65871d0b7cb7dc7197ee",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#9d3c9a5c3f545aadb532f431aaa0c5fda539eb72",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#7b763fe6c193ea7f2ad2e1d964eabe9c0a3daec7",
