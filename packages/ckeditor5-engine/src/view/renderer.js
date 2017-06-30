@@ -625,7 +625,7 @@ export default class Renderer {
 
 			if ( domSelection.rangeCount ) {
 				const activeDomElement = doc.activeElement;
-				const viewElement = this.domConverter.getCorrespondingViewElement( activeDomElement );
+				const viewElement = this.domConverter.mapDomToView( activeDomElement );
 
 				if ( activeDomElement && viewElement ) {
 					doc.getSelection().removeAllRanges();

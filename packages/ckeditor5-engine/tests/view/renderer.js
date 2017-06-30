@@ -1264,7 +1264,7 @@ describe( 'Renderer', () => {
 				expect( domRoot.childNodes.length ).to.equal( 2 );
 
 				const container = domRoot.childNodes[ 1 ];
-				expect( domConverter.getCorrespondingViewElement( container ) ).to.be.undefined;
+				expect( domConverter.mapDomToView( container ) ).to.be.undefined;
 				expect( container.childNodes.length ).to.equal( 1 );
 
 				const textNode = container.childNodes[ 0 ];
@@ -1723,13 +1723,14 @@ describe( 'Renderer', () => {
 	} );
 
 	describe( '#922', () => {
-		let viewDoc, viewRoot, domRoot;
+		let viewDoc, viewRoot, domRoot, converter;
 
 		beforeEach( () => {
 			viewDoc = new ViewDocument();
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );
 			viewRoot = viewDoc.createRoot( domRoot );
+			converter = viewDoc.domConverter;
 		} );
 
 		it( 'should properly render unwrapped attributes #1', () => {
@@ -1858,7 +1859,9 @@ describe( 'Renderer', () => {
 			const domWalker = document.createTreeWalker( domRoot, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT );
 
 			while ( domWalker.nextNode() ) {
-				if ( !viewDoc.domConverter.getCorrespondingView( domWalker.currentNode ) ) {
+				const node = domWalker.currentNode;
+
+				if ( !converter.mapDomToView( node ) && !converter.findCorrespondingViewText( node ) ) {
 					return false;
 				}
 			}

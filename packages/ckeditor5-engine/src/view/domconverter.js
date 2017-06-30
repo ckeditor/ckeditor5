@@ -386,8 +386,8 @@ export default class DomConverter {
 		} else if ( this.isComment( domNode ) ) {
 			return null;
 		} else {
-			if ( this.getCorrespondingView( domNode ) ) {
-				return this.getCorrespondingView( domNode );
+			if ( this.mapDomToView( domNode ) ) {
+				return this.mapDomToView( domNode );
 			}
 
 			let viewElement;
@@ -525,7 +525,8 @@ export default class DomConverter {
 		}
 
 		// If position is somewhere inside UIElement - return position before that element.
-		const viewElement = this.getCorrespondingViewElement( domParent );
+		const viewElement = this.mapDomToView( domParent );
+
 		if ( viewElement && viewElement.is( 'uiElement' ) ) {
 			return ViewPosition.createBefore( viewElement );
 		}
@@ -535,7 +536,7 @@ export default class DomConverter {
 				return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 			}
 
-			const viewParent = this.getCorrespondingViewText( domParent );
+			const viewParent = this.findCorrespondingViewText( domParent );
 			let offset = domOffset;
 
 			if ( !viewParent ) {
@@ -552,13 +553,16 @@ export default class DomConverter {
 		// domParent instanceof HTMLElement.
 		else {
 			if ( domOffset === 0 ) {
-				const viewParent = this.getCorrespondingView( domParent );
+				const viewParent = this.mapDomToView( domParent );
 
 				if ( viewParent ) {
 					return new ViewPosition( viewParent, 0 );
 				}
 			} else {
-				const viewBefore = this.getCorrespondingView( domParent.childNodes[ domOffset - 1 ] );
+				const domBefore = domParent.childNodes[ domOffset - 1 ];
+				const viewBefore = this.isText( domBefore ) ?
+					this.findCorrespondingViewText( domBefore ) :
+					this.mapDomToView( domBefore );
 
 				// TODO #663
 				if ( viewBefore && viewBefore.parent ) {
@@ -583,40 +587,44 @@ export default class DomConverter {
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment.
 	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Corresponding view item.
 	 */
-	getCorrespondingView( domNode ) {
-		if ( this.isElement( domNode ) ) {
-			return this.getCorrespondingViewElement( domNode );
-		} else if ( this.isDocumentFragment( domNode ) ) {
-			return this.getCorrespondingViewDocumentFragment( domNode );
-		} else if ( this.isText( domNode ) ) {
-			return this.getCorrespondingViewText( domNode );
-		}
+	// getCorrespondingView( domNode ) {
+	// 	if ( this.isElement( domNode ) ) {
+	// 		return this.getCorrespondingViewElement( domNode );
+	// 	} else if ( this.isDocumentFragment( domNode ) ) {
+	// 		return this.getCorrespondingViewDocumentFragment( domNode );
+	// 	} else if ( this.isText( domNode ) ) {
+	// 		return this.getCorrespondingViewText( domNode );
+	// 	}
+    //
+	// 	return null;
+	// }
 
-		return null;
-	}
+	// /**
+	//  * Gets corresponding view element. Returns element if an view element was
+	//  * {@link module:engine/view/domconverter~DomConverter#bindElements bound} to the given DOM element or `null` otherwise.
+	//  * For all DOM elements rendered by {@link module:engine/view/uielement~UIElement} that UIElement will be returned.
+	//  *
+	//  * @param {HTMLElement} domElement DOM element.
+	//  * @returns {module:engine/view/element~Element|null} Corresponding element or `null` if no element was bound.
+	//  */
+	// getCorrespondingViewElement( domElement ) {
+	// 	return this.getParentUIElement( domElement ) || this._domToViewMapping.get( domElement );
+	// }
+    //
+	// /**
+	//  * Gets corresponding view document fragment. Returns document fragment if an view element was
+	//  * {@link module:engine/view/domconverter~DomConverter#bindDocumentFragments bound} to the given DOM fragment or `null` otherwise.
+	//  *
+	//  * @param {DocumentFragment} domFragment DOM element.
+	//  * @returns {module:engine/view/documentfragment~DocumentFragment|null} Corresponding document fragment or `null` if none element was
+	//  * bound.
+	//  */
+	// getCorrespondingViewDocumentFragment( domFragment ) {
+	// 	return this._domToViewMapping.get( domFragment );
+	// }
 
-	/**
-	 * Gets corresponding view element. Returns element if an view element was
-	 * {@link module:engine/view/domconverter~DomConverter#bindElements bound} to the given DOM element or `null` otherwise.
-	 * For all DOM elements rendered by {@link module:engine/view/uielement~UIElement} that UIElement will be returned.
-	 *
-	 * @param {HTMLElement} domElement DOM element.
-	 * @returns {module:engine/view/element~Element|null} Corresponding element or `null` if no element was bound.
-	 */
-	getCorrespondingViewElement( domElement ) {
+	mapDomToView( domElement ) {
 		return this.getParentUIElement( domElement ) || this._domToViewMapping.get( domElement );
-	}
-
-	/**
-	 * Gets corresponding view document fragment. Returns document fragment if an view element was
-	 * {@link module:engine/view/domconverter~DomConverter#bindDocumentFragments bound} to the given DOM fragment or `null` otherwise.
-	 *
-	 * @param {DocumentFragment} domFragment DOM element.
-	 * @returns {module:engine/view/documentfragment~DocumentFragment|null} Corresponding document fragment or `null` if none element was
-	 * bound.
-	 */
-	getCorrespondingViewDocumentFragment( domFragment ) {
-		return this._domToViewMapping.get( domFragment );
 	}
 
 	/**
@@ -639,7 +647,7 @@ export default class DomConverter {
 	 * @returns {module:engine/view/text~Text|null} Corresponding view text node or `null`, if it was not possible to find a
 	 * corresponding node.
 	 */
-	getCorrespondingViewText( domText ) {
+	findCorrespondingViewText( domText ) {
 		if ( isInlineFiller( domText ) ) {
 			return null;
 		}
@@ -660,7 +668,7 @@ export default class DomConverter {
 				return null;
 			}
 
-			const viewElement = this.getCorrespondingViewElement( previousSibling );
+			const viewElement = this.mapDomToView( previousSibling );
 
 			if ( viewElement ) {
 				const nextSibling = viewElement.nextSibling;
@@ -675,7 +683,7 @@ export default class DomConverter {
 		}
 		// Try to use parent to find the corresponding text node.
 		else {
-			const viewElement = this.getCorrespondingViewElement( domText.parentNode );
+			const viewElement = this.mapDomToView( domText.parentNode );
 
 			if ( viewElement ) {
 				const firstChild = viewElement.getChild( 0 );
