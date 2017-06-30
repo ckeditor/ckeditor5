@@ -883,8 +883,6 @@ describe( 'LiveSelection', () => {
 			doc.schema.allow( { name: '$inline', inside: 'caption' } );
 			doc.schema.allow( { name: 'caption', inside: 'image' } );
 			doc.schema.allow( { name: '$text', attributes: 'bold', inside: 'caption' } );
-
-			root.removeChildren( 0, root.childCount );
 		} );
 
 		it( 'ignores attributes from nested editable if selection contains an object', () => {
