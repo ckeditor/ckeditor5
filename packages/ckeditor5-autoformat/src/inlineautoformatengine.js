@@ -25,8 +25,8 @@ export default class InlineAutoformatEngine {
 	 * Enables autoformatting mechanism for a given {@link module:core/editor/editor~Editor}.
 	 *
 	 * It formats the matched text by applying the given model attribute or by running the provided formatting callback.
-	 * Each time the data model changes the text from a given node (from the beginning of the current node to the collapsed
-	 * selection location) will be tested.
+	 * On every change applied to the model the autoformatting engine checks the text on the left of the selection
+	 * and executes the provided action if the text matches given criteria (regular expression or callback).
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 * @param {Function|RegExp} testRegexpOrCallback The regular expression or callback to execute on text.
