@@ -46,8 +46,8 @@ describe( 'DomConverter', () => {
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
 			expect( viewP.getChild( 1 ).data ).to.equal( 'foo' );
 
-			expect( converter.getCorrespondingDom( viewP ) ).to.not.equal( domP );
-			expect( converter.getCorrespondingDom( viewP.getChild( 0 ) ) ).to.equal( domImg );
+			expect( converter.mapViewToDom( viewP ) ).to.not.equal( domP );
+			expect( converter.mapViewToDom( viewP.getChild( 0 ) ) ).to.equal( domImg );
 		} );
 
 		it( 'should create tree of view elements from DOM elements and bind elements', () => {
@@ -67,8 +67,8 @@ describe( 'DomConverter', () => {
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
 			expect( viewP.getChild( 1 ).data ).to.equal( 'foo' );
 
-			expect( converter.getCorrespondingDom( viewP ) ).to.equal( domP );
-			expect( converter.getCorrespondingDom( viewP.getChild( 0 ) ) ).to.equal( domP.childNodes[ 0 ] );
+			expect( converter.mapViewToDom( viewP ) ).to.equal( domP );
+			expect( converter.mapViewToDom( viewP.getChild( 0 ) ) ).to.equal( domP.childNodes[ 0 ] );
 		} );
 
 		it( 'should support unicode', () => {
@@ -82,8 +82,8 @@ describe( 'DomConverter', () => {
 			const viewText = viewP.getChild( 0 );
 			expect( viewText.data ).to.equal( 'நிலைக்கு' );
 
-			expect( converter.getCorrespondingDom( viewP ) ).to.equal( domP );
-			expect( converter.getCorrespondingDom( viewP.getChild( 0 ) ) ).to.equal( domP.childNodes[ 0 ] );
+			expect( converter.mapViewToDom( viewP ) ).to.equal( domP );
+			expect( converter.findCorrespondingDomText( viewP.getChild( 0 ) ) ).to.equal( domP.childNodes[ 0 ] );
 		} );
 
 		it( 'should create tree of view elements from DOM element without children', () => {
@@ -104,7 +104,7 @@ describe( 'DomConverter', () => {
 			expect( count( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
 			expect( viewP.childCount ).to.equal( 0 );
-			expect( converter.getCorrespondingDom( viewP ) ).to.not.equal( domP );
+			expect( converter.mapViewToDom( viewP ) ).to.not.equal( domP );
 		} );
 
 		it( 'should create view document fragment from DOM document fragment', () => {
@@ -122,8 +122,8 @@ describe( 'DomConverter', () => {
 			expect( viewFragment.getChild( 0 ).name ).to.equal( 'img' );
 			expect( viewFragment.getChild( 1 ).data ).to.equal( 'foo' );
 
-			expect( converter.getCorrespondingDom( viewFragment ) ).to.equal( domFragment );
-			expect( converter.getCorrespondingDom( viewFragment.getChild( 0 ) ) ).to.equal( domFragment.childNodes[ 0 ] );
+			expect( converter.mapViewToDom( viewFragment ) ).to.equal( domFragment );
+			expect( converter.mapViewToDom( viewFragment.getChild( 0 ) ) ).to.equal( domFragment.childNodes[ 0 ] );
 		} );
 
 		it( 'should create view document fragment from DOM document fragment without children', () => {
@@ -143,7 +143,7 @@ describe( 'DomConverter', () => {
 			expect( viewFragment ).to.be.an.instanceof( ViewDocumentFragment );
 
 			expect( viewFragment.childCount ).to.equal( 0 );
-			expect( converter.getCorrespondingDom( viewFragment ) ).to.not.equal( domFragment );
+			expect( converter.mapViewToDom( viewFragment ) ).to.not.equal( domFragment );
 		} );
 
 		it( 'should return already bind document fragment', () => {

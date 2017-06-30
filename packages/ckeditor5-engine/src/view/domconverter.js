@@ -124,8 +124,8 @@ export default class DomConverter {
 
 	/**
 	 * Binds DOM and View elements, so it will be possible to get corresponding elements using
-	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewElement getCorrespondingViewElement} and
-	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomElement getCorrespondingDomElement}.
+	 * {@link module:engine/view/domconverter~DomConverter#mapDomToView} and
+	 * {@link module:engine/view/domconverter~DomConverter#mapViewToDom}.
 	 *
 	 * @param {HTMLElement} domElement DOM element to bind.
 	 * @param {module:engine/view/element~Element} viewElement View element to bind.
@@ -157,8 +157,8 @@ export default class DomConverter {
 
 	/**
 	 * Binds DOM and View document fragments, so it will be possible to get corresponding document fragments using
-	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment} and
-	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}.
+	 * {@link module:engine/view/domconverter~DomConverter#mapDomToView} and
+	 * {@link module:engine/view/domconverter~DomConverter#mapViewToDom}.
 	 *
 	 * @param {DocumentFragment} domFragment DOM document fragment to bind.
 	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment View document fragment to bind.
@@ -172,8 +172,8 @@ export default class DomConverter {
 	 * Converts view to DOM. For all text nodes, not bound elements and document fragments new items will
 	 * be created. For bound elements and document fragments function will return corresponding items.
 	 *
-	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewNode View node or document fragment to
-	 * transform.
+	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewNode
+	 * View node or document fragment to transform.
 	 * @param {Document} domDocument Document which will be used to create DOM nodes.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
@@ -186,8 +186,8 @@ export default class DomConverter {
 
 			return domDocument.createTextNode( textData );
 		} else {
-			if ( this.getCorrespondingDom( viewNode ) ) {
-				return this.getCorrespondingDom( viewNode );
+			if ( this.mapViewToDom( viewNode ) ) {
+				return this.mapViewToDom( viewNode );
 			}
 
 			let domElement;
@@ -200,8 +200,7 @@ export default class DomConverter {
 					this.bindDocumentFragments( domElement, viewNode );
 				}
 			} else if ( viewNode.is( 'uiElement' ) ) {
-				// UIElement has it's own render() method.
-				// https://github.com/ckeditor/ckeditor5-engine/issues/799
+				// UIElement has its own render() method (see #799).
 				domElement = viewNode.render( domDocument );
 
 				if ( options.bind ) {
@@ -234,8 +233,9 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts children of the view element to DOM using {@link module:engine/view/domconverter~DomConverter#viewToDom} method.
-	 * Additionally this method adds block {@link module:engine/view/filler filler} to the list of children, if needed.
+	 * Converts children of the view element to DOM using the
+	 * {@link module:engine/view/domconverter~DomConverter#viewToDom} method.
+	 * Additionally, this method adds block {@link module:engine/view/filler filler} to the list of children, if needed.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElement Parent view element.
 	 * @param {Document} domDocument Document which will be used to create DOM nodes.
@@ -294,7 +294,7 @@ export default class DomConverter {
 		const viewParent = viewPosition.parent;
 
 		if ( viewParent.is( 'text' ) ) {
-			const domParent = this.getCorrespondingDomText( viewParent );
+			const domParent = this.findCorrespondingDomText( viewParent );
 
 			if ( !domParent ) {
 				// Position is in a view text node that has not been rendered to DOM yet.
@@ -313,7 +313,7 @@ export default class DomConverter {
 			let domParent, domBefore, domAfter;
 
 			if ( viewPosition.offset === 0 ) {
-				domParent = this.getCorrespondingDom( viewPosition.parent );
+				domParent = this.mapViewToDom( viewParent );
 
 				if ( !domParent ) {
 					// Position is in a view element that has not been rendered to DOM yet.
@@ -322,7 +322,11 @@ export default class DomConverter {
 
 				domAfter = domParent.childNodes[ 0 ];
 			} else {
-				domBefore = this.getCorrespondingDom( viewPosition.nodeBefore );
+				const nodeBefore = viewPosition.nodeBefore;
+
+				domBefore = nodeBefore.is( 'text' ) ?
+					this.findCorrespondingDomText( nodeBefore ) :
+					this.mapViewToDom( viewPosition.nodeBefore );
 
 				if ( !domBefore ) {
 					// Position is after a view element that has not been rendered to DOM yet.
@@ -382,8 +386,8 @@ export default class DomConverter {
 		} else if ( this.isComment( domNode ) ) {
 			return null;
 		} else {
-			if ( this.getCorrespondingView( domNode ) ) {
-				return this.getCorrespondingView( domNode );
+			if ( this.mapDomToView( domNode ) ) {
+				return this.mapDomToView( domNode );
 			}
 
 			let viewElement;
@@ -423,7 +427,8 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts children of the DOM element to view nodes using {@link module:engine/view/domconverter~DomConverter#domToView} method.
+	 * Converts children of the DOM element to view nodes using
+	 * the {@link module:engine/view/domconverter~DomConverter#domToView} method.
 	 * Additionally this method omits block {@link module:engine/view/filler filler}, if it exists in the DOM parent.
 	 *
 	 * @param {HTMLElement} domElement Parent DOM element.
@@ -521,7 +526,8 @@ export default class DomConverter {
 		}
 
 		// If position is somewhere inside UIElement - return position before that element.
-		const viewElement = this.getCorrespondingViewElement( domParent );
+		const viewElement = this.mapDomToView( domParent );
+
 		if ( viewElement && viewElement.is( 'uiElement' ) ) {
 			return ViewPosition.createBefore( viewElement );
 		}
@@ -531,7 +537,7 @@ export default class DomConverter {
 				return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 			}
 
-			const viewParent = this.getCorrespondingViewText( domParent );
+			const viewParent = this.findCorrespondingViewText( domParent );
 			let offset = domOffset;
 
 			if ( !viewParent ) {
@@ -548,13 +554,16 @@ export default class DomConverter {
 		// domParent instanceof HTMLElement.
 		else {
 			if ( domOffset === 0 ) {
-				const viewParent = this.getCorrespondingView( domParent );
+				const viewParent = this.mapDomToView( domParent );
 
 				if ( viewParent ) {
 					return new ViewPosition( viewParent, 0 );
 				}
 			} else {
-				const viewBefore = this.getCorrespondingView( domParent.childNodes[ domOffset - 1 ] );
+				const domBefore = domParent.childNodes[ domOffset - 1 ];
+				const viewBefore = this.isText( domBefore ) ?
+					this.findCorrespondingViewText( domBefore ) :
+					this.mapDomToView( domBefore );
 
 				// TODO #663
 				if ( viewBefore && viewBefore.parent ) {
@@ -567,56 +576,22 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Gets corresponding view item. This function use
-	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewElement getCorrespondingViewElement}
-	 * for elements, {@link  module:engine/view/domconverter~DomConverter#getCorrespondingViewText getCorrespondingViewText} for text
-	 * nodes and
-	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment}
-	 * for document fragments.
-	 *
-	 * Note that for the block or inline {@link module:engine/view/filler filler} this method returns `null`.
-	 *
-	 * @param {Node|DocumentFragment} domNode DOM node or document fragment.
-	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Corresponding view item.
-	 */
-	getCorrespondingView( domNode ) {
-		if ( this.isElement( domNode ) ) {
-			return this.getCorrespondingViewElement( domNode );
-		} else if ( this.isDocumentFragment( domNode ) ) {
-			return this.getCorrespondingViewDocumentFragment( domNode );
-		} else if ( this.isText( domNode ) ) {
-			return this.getCorrespondingViewText( domNode );
-		}
-
-		return null;
-	}
-
-	/**
-	 * Gets corresponding view element. Returns element if an view element was
-	 * {@link module:engine/view/domconverter~DomConverter#bindElements bound} to the given DOM element or `null` otherwise.
+	 * Returns corresponding view {@link module:engine/view/element~Element Element} or
+	 * {@link module:engine/view/documentfragment~DocumentFragment} for provided DOM element or
+	 * document fragment. If there is no view item {@link module:engine/view/domconverter~DomConverter#bindElements bound}
+	 * to the given DOM - `undefined` is returned.
 	 * For all DOM elements rendered by {@link module:engine/view/uielement~UIElement} that UIElement will be returned.
 	 *
-	 * @param {HTMLElement} domElement DOM element.
-	 * @returns {module:engine/view/element~Element|null} Corresponding element or `null` if no element was bound.
+	 * @param {DocumentFragment|Element} domElementOrDocumentFragment DOM element or document fragment.
+	 * @returns {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|undefined}
+	 * Corresponding view element, document fragment or `undefined` if no element was bound.
 	 */
-	getCorrespondingViewElement( domElement ) {
-		return this.getParentUIElement( domElement ) || this._domToViewMapping.get( domElement );
+	mapDomToView( domElementOrDocumentFragment ) {
+		return this.getParentUIElement( domElementOrDocumentFragment ) || this._domToViewMapping.get( domElementOrDocumentFragment );
 	}
 
 	/**
-	 * Gets corresponding view document fragment. Returns document fragment if an view element was
-	 * {@link module:engine/view/domconverter~DomConverter#bindDocumentFragments bound} to the given DOM fragment or `null` otherwise.
-	 *
-	 * @param {DocumentFragment} domFragment DOM element.
-	 * @returns {module:engine/view/documentfragment~DocumentFragment|null} Corresponding document fragment or `null` if none element was
-	 * bound.
-	 */
-	getCorrespondingViewDocumentFragment( domFragment ) {
-		return this._domToViewMapping.get( domFragment );
-	}
-
-	/**
-	 * Gets corresponding text node. Text nodes are not {@link module:engine/view/domconverter~DomConverter#bindElements bound},
+	 * Finds corresponding text node. Text nodes are not {@link module:engine/view/domconverter~DomConverter#bindElements bound},
 	 * corresponding text node is returned based on the sibling or parent.
 	 *
 	 * If the directly previous sibling is a {@link module:engine/view/domconverter~DomConverter#bindElements bound} element, it is used
@@ -635,7 +610,7 @@ export default class DomConverter {
 	 * @returns {module:engine/view/text~Text|null} Corresponding view text node or `null`, if it was not possible to find a
 	 * corresponding node.
 	 */
-	getCorrespondingViewText( domText ) {
+	findCorrespondingViewText( domText ) {
 		if ( isInlineFiller( domText ) ) {
 			return null;
 		}
@@ -656,7 +631,7 @@ export default class DomConverter {
 				return null;
 			}
 
-			const viewElement = this.getCorrespondingViewElement( previousSibling );
+			const viewElement = this.mapDomToView( previousSibling );
 
 			if ( viewElement ) {
 				const nextSibling = viewElement.nextSibling;
@@ -671,7 +646,7 @@ export default class DomConverter {
 		}
 		// Try to use parent to find the corresponding text node.
 		else {
-			const viewElement = this.getCorrespondingViewElement( domText.parentNode );
+			const viewElement = this.mapDomToView( domText.parentNode );
 
 			if ( viewElement ) {
 				const firstChild = viewElement.getChild( 0 );
@@ -689,52 +664,21 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Gets corresponding DOM item. This function uses
-	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomElement getCorrespondingDomElement} for
-	 * elements, {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomText getCorrespondingDomText} for text nodes
-	 * and {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}
-	 * for document fragments.
+	 * Returns corresponding DOM item for provided {@link module:engine/view/element~Element Element} or
+	 * {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}.
+	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
+	 * use {@link #findCorrespondingDomText}.
 	 *
-	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewNode View node or document fragment.
-	 * @returns {Node|DocumentFragment|null} Corresponding DOM node or document fragment.
+	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewNode
+	 * View element or document fragment.
+	 * @returns {Node|DocumentFragment|undefined} Corresponding DOM node or document fragment.
 	 */
-	getCorrespondingDom( viewNode ) {
-		if ( viewNode instanceof ViewElement ) {
-			return this.getCorrespondingDomElement( viewNode );
-		} else if ( viewNode instanceof ViewDocumentFragment ) {
-			return this.getCorrespondingDomDocumentFragment( viewNode );
-		} else if ( viewNode instanceof ViewText ) {
-			return this.getCorrespondingDomText( viewNode );
-		}
-
-		return null;
+	mapViewToDom( documentFragmentOrElement ) {
+		return this._viewToDomMapping.get( documentFragmentOrElement );
 	}
 
 	/**
-	 * Gets corresponding DOM element. Returns element if an DOM element was
-	 * {@link module:engine/view/domconverter~DomConverter#bindElements bound} to the given view element or `null` otherwise.
-	 *
-	 * @param {module:engine/view/element~Element} viewElement View element.
-	 * @returns {HTMLElement|null} Corresponding element or `null` if none element was bound.
-	 */
-	getCorrespondingDomElement( viewElement ) {
-		return this._viewToDomMapping.get( viewElement );
-	}
-
-	/**
-	 * Gets corresponding DOM document fragment. Returns document fragment if an DOM element was
-	 * {@link module:engine/view/domconverter~DomConverter#bindDocumentFragments bound} to the given view document fragment or `null`
-	 * otherwise.
-	 *
-	 * @param {module:engine/view/documentfragment~DocumentFragment} viewDocumentFragment View document fragment.
-	 * @returns {DocumentFragment|null} Corresponding document fragment or `null` if no fragment was bound.
-	 */
-	getCorrespondingDomDocumentFragment( viewDocumentFragment ) {
-		return this._viewToDomMapping.get( viewDocumentFragment );
-	}
-
-	/**
-	 * Gets corresponding text node. Text nodes are not {@link module:engine/view/domconverter~DomConverter#bindElements bound},
+	 * Finds corresponding text node. Text nodes are not {@link module:engine/view/domconverter~DomConverter#bindElements bound},
 	 * corresponding text node is returned based on the sibling or parent.
 	 *
 	 * If the directly previous sibling is a {@link module:engine/view/domconverter~DomConverter#bindElements bound} element, it is used
@@ -748,29 +692,29 @@ export default class DomConverter {
 	 * @param {module:engine/view/text~Text} viewText View text node.
 	 * @returns {Text|null} Corresponding DOM text node or `null`, if it was not possible to find a corresponding node.
 	 */
-	getCorrespondingDomText( viewText ) {
+	findCorrespondingDomText( viewText ) {
 		const previousSibling = viewText.previousSibling;
 
 		// Try to use previous sibling to find the corresponding text node.
-		if ( previousSibling && this.getCorrespondingDom( previousSibling ) ) {
-			return this.getCorrespondingDom( previousSibling ).nextSibling;
+		if ( previousSibling && this.mapViewToDom( previousSibling ) ) {
+			return this.mapViewToDom( previousSibling ).nextSibling;
 		}
 
 		// If this is a first node, try to use parent to find the corresponding text node.
-		if ( !previousSibling && viewText.parent && this.getCorrespondingDom( viewText.parent ) ) {
-			return this.getCorrespondingDom( viewText.parent ).childNodes[ 0 ];
+		if ( !previousSibling && viewText.parent && this.mapViewToDom( viewText.parent ) ) {
+			return this.mapViewToDom( viewText.parent ).childNodes[ 0 ];
 		}
 
 		return null;
 	}
 
 	/**
-	 * Focuses DOM editable that is corresponding to provided {@link module:engine/view/editableelement~EditableElement EditableElement}.
+	 * Focuses DOM editable that is corresponding to provided {@link module:engine/view/editableelement~EditableElement}.
 	 *
 	 * @param {module:engine/view/editableelement~EditableElement} viewEditable
 	 */
 	focus( viewEditable ) {
-		const domEditable = this.getCorrespondingDomElement( viewEditable );
+		const domEditable = this.mapViewToDom( viewEditable );
 
 		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
 			// Save the scrollX and scrollY positions before the focus.
@@ -870,7 +814,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Returns parent {@link module:engine/view/uielement~UIElement} for provided DOM node. Returns null if there is no
+	 * Returns parent {@link module:engine/view/uielement~UIElement} for provided DOM node. Returns `null` if there is no
 	 * parent UIElement.
 	 *
 	 * @param {Node} domNode
@@ -898,6 +842,7 @@ export default class DomConverter {
 	 * Takes text data from given {@link module:engine/view/text~Text#data} and processes it so it is correctly displayed in DOM.
 	 *
 	 * Following changes are done:
+	 *
 	 * * multiple spaces are replaced to a chain of spaces and `&nbsp;`,
 	 * * space at the beginning of the text node is changed to `&nbsp;` if it is a first text node in it's container
 	 * element or if previous text node ends by space character,

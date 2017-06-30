@@ -3,9 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, window */
+/* globals document, window, NodeFilter */
 
+import ViewDocument from '../../src/view/document';
 import ViewElement from '../../src/view/element';
+import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewText from '../../src/view/text';
 import ViewRange from '../../src/view/range';
 import ViewPosition from '../../src/view/position';
@@ -13,11 +15,13 @@ import Selection from '../../src/view/selection';
 import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { parse } from '../../src/dev-utils/view';
+import { parse, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import { unwrap, insert, remove } from '../../src/view/writer';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 testUtils.createSinonSandbox();
 
@@ -1260,7 +1264,7 @@ describe( 'Renderer', () => {
 				expect( domRoot.childNodes.length ).to.equal( 2 );
 
 				const container = domRoot.childNodes[ 1 ];
-				expect( domConverter.getCorrespondingViewElement( container ) ).to.be.undefined;
+				expect( domConverter.mapDomToView( container ) ).to.be.undefined;
 				expect( container.childNodes.length ).to.equal( 1 );
 
 				const textNode = container.childNodes[ 0 ];
@@ -1716,6 +1720,154 @@ describe( 'Renderer', () => {
 				expect( logWarnStub.called ).to.true;
 			} );
 		} );
+	} );
+
+	describe( '#922', () => {
+		let viewDoc, viewRoot, domRoot, converter;
+
+		beforeEach( () => {
+			viewDoc = new ViewDocument();
+			domRoot = document.createElement( 'div' );
+			document.body.appendChild( domRoot );
+			viewRoot = viewDoc.createRoot( domRoot );
+			converter = viewDoc.domConverter;
+		} );
+
+		it( 'should properly render unwrapped attributes #1', () => {
+			setViewData( viewDoc,
+				'<container:p>' +
+					'[<attribute:italic>' +
+						'<attribute:strong>f</attribute:strong>' +
+					'</attribute:italic>]' +
+					'<attribute:strong>oo</attribute:strong>' +
+				'</container:p>'
+			);
+
+			// Render it to DOM to create initial DOM <-> view mappings.
+			viewDoc.render();
+
+			// Unwrap italic attribute element.
+			unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+			expect( getViewData( viewDoc ) ).to.equal( '<p>[<strong>foo</strong>]</p>' );
+
+			// Re-render changes in view to DOM.
+			viewDoc.render();
+
+			// Check if DOM is rendered correctly.
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>foo</strong></p>' );
+			expect( checkMappings() ).to.be.true;
+		} );
+
+		it( 'should properly render unwrapped attributes #2', () => {
+			setViewData( viewDoc,
+				'<container:p>' +
+					'[<attribute:italic>' +
+						'<attribute:strong>foo</attribute:strong>' +
+					'</attribute:italic>]' +
+				'</container:p>' );
+
+			// Render it to DOM to create initial DOM <-> view mappings.
+			viewDoc.render();
+
+			// Unwrap italic attribute element and change text inside.
+			unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+			viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ).data = 'bar';
+			expect( getViewData( viewDoc ) ).to.equal( '<p>[<strong>bar</strong>]</p>' );
+
+			// Re-render changes in view to DOM.
+			viewDoc.render();
+
+			// Check if DOM is rendered correctly.
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>bar</strong></p>' );
+			expect( checkMappings() ).to.be.true;
+		} );
+
+		it( 'should properly render if text is changed and element is inserted into same node #1', () => {
+			setViewData( viewDoc,
+				'<container:p>foo</container:p>'
+			);
+
+			// Render it to DOM to create initial DOM <-> view mappings.
+			viewDoc.render();
+
+			// Change text and insert new element into paragraph.
+			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
+			textNode.data = 'foobar';
+			insert( ViewPosition.createAfter( textNode ), new ViewAttributeElement( 'img' ) );
+			expect( getViewData( viewDoc ) ).to.equal( '<p>foobar<img></img></p>' );
+
+			// Re-render changes in view to DOM.
+			viewDoc.render();
+
+			// Check if DOM is rendered correctly.
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>foobar<img></img></p>' );
+			expect( checkMappings() ).to.be.true;
+		} );
+
+		it( 'should properly render if text is changed and element is inserted into same node #2', () => {
+			setViewData( viewDoc,
+				'<container:p>foo</container:p>'
+			);
+
+			// Render it to DOM to create initial DOM <-> view mappings.
+			viewDoc.render();
+
+			// Change text and insert new element into paragraph.
+			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
+			textNode.data = 'foobar';
+			insert( ViewPosition.createBefore( textNode ), new ViewAttributeElement( 'img' ) );
+			expect( getViewData( viewDoc ) ).to.equal( '<p><img></img>foobar</p>' );
+
+			// Re-render changes in view to DOM.
+			viewDoc.render();
+
+			// Check if DOM is rendered correctly.
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><img></img>foobar</p>' );
+			expect( checkMappings() ).to.be.true;
+		} );
+
+		it( 'should not unbind elements that are removed and reinserted to DOM', () => {
+			setViewData( viewDoc,
+				'<container:p>' +
+					'<attribute:b></attribute:b>' +
+					'<attribute:i></attribute:i>' +
+					'<attribute:span></attribute:span>' +
+				'</container:p>'
+			);
+
+			// Render it to DOM to create initial DOM <-> view mappings.
+			viewDoc.render();
+
+			// Remove first element and reinsert it at the end.
+			const container = viewRoot.getChild( 0 );
+			const firstElement = container.getChild( 0 );
+
+			remove( ViewRange.createOn( firstElement ) );
+			insert( new ViewPosition( container, 2 ), firstElement );
+			expect( getViewData( viewDoc ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
+
+			// Re-render changes in view to DOM.
+			viewDoc.render();
+
+			// Check if DOM is rendered correctly.
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
+			expect( checkMappings() ).to.be.true;
+		} );
+
+		// Checks if every node in DOM tree is mapped to the view.
+		function checkMappings() {
+			const domWalker = document.createTreeWalker( domRoot, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT );
+
+			while ( domWalker.nextNode() ) {
+				const node = domWalker.currentNode;
+
+				if ( !converter.mapDomToView( node ) && !converter.findCorrespondingViewText( node ) ) {
+					return false;
+				}
+			}
+
+			return true;
+		}
 	} );
 } );
 

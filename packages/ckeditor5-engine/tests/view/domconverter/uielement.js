@@ -25,7 +25,7 @@ describe( 'DOMConverter UIElement integration', () => {
 		converter = new DomConverter();
 	} );
 
-	describe( 'viewToDom', () => {
+	describe( 'viewToDom()', () => {
 		it( 'should create DOM element from UIElement', () => {
 			const uiElement = new ViewUIElement( 'div' );
 			const domElement = converter.viewToDom( uiElement, document );
@@ -46,13 +46,13 @@ describe( 'DOMConverter UIElement integration', () => {
 			const domElement = converter.viewToDom( myElement, document, { bind: true } );
 			const domSpan = domElement.childNodes[ 0 ];
 
-			expect( converter.getCorrespondingView( domElement ) ).to.equal( myElement );
-			expect( converter.getCorrespondingView( domSpan ) ).to.be.falsy;
-			expect( converter.getCorrespondingView( domSpan.childNodes[ 0 ] ) ).to.be.falsy;
+			expect( converter.mapDomToView( domElement ) ).to.equal( myElement );
+			expect( converter.mapDomToView( domSpan ) ).to.be.falsy;
+			expect( converter.mapDomToView( domSpan.childNodes[ 0 ] ) ).to.be.falsy;
 		} );
 	} );
 
-	describe( 'domToView', () => {
+	describe( 'domToView()', () => {
 		it( 'should return UIElement itself', () => {
 			const uiElement = new MyUIElement( 'div' );
 			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
@@ -74,7 +74,7 @@ describe( 'DOMConverter UIElement integration', () => {
 		} );
 	} );
 
-	describe( 'domPositionToView', () => {
+	describe( 'domPositionToView()', () => {
 		it( 'should convert position inside UIElement to position before it', () => {
 			const uiElement = new MyUIElement( 'h1' );
 			const container = new ViewContainer( 'div', null, [ new ViewContainer( 'div' ), uiElement ] );
@@ -98,32 +98,32 @@ describe( 'DOMConverter UIElement integration', () => {
 		} );
 	} );
 
-	describe( 'getCorrespondingViewElement', () => {
+	describe( 'mapDomToView()', () => {
 		it( 'should return UIElement for DOM elements inside', () => {
 			const myElement = new MyUIElement( 'div' );
 			const domElement = converter.viewToDom( myElement, document, { bind: true } );
 
-			expect( converter.getCorrespondingViewElement( domElement ) ).to.equal( myElement );
+			expect( converter.mapDomToView( domElement ) ).to.equal( myElement );
 
 			const domParagraph = domElement.childNodes[ 0 ];
-			expect( converter.getCorrespondingViewElement( domParagraph ) ).to.equal( myElement );
+			expect( converter.mapDomToView( domParagraph ) ).to.equal( myElement );
 
 			const domSpan = domParagraph.childNodes[ 0 ];
-			expect( converter.getCorrespondingViewElement( domSpan ) ).to.equal( myElement );
+			expect( converter.mapDomToView( domSpan ) ).to.equal( myElement );
 		} );
 	} );
 
-	describe( 'getCorrespondingViewText', () => {
+	describe( 'findCorrespondingViewText()', () => {
 		it( 'should return UIElement for DOM text inside', () => {
 			const myElement = new MyUIElement( 'div' );
 			const domElement = converter.viewToDom( myElement, document, { bind: true } );
 
 			const domText = domElement.querySelector( 'span' ).childNodes[ 0 ];
-			expect( converter.getCorrespondingViewText( domText ) ).to.equal( myElement );
+			expect( converter.findCorrespondingViewText( domText ) ).to.equal( myElement );
 		} );
 	} );
 
-	describe( 'getParentUIElement', () => {
+	describe( 'getParentUIElement()', () => {
 		it( 'should return UIElement for DOM children', () => {
 			const uiElement = new MyUIElement( 'div' );
 			const domElement = converter.viewToDom( uiElement, document, { bind: true } );

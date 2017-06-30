@@ -127,13 +127,13 @@ export default class Renderer {
 	 */
 	markToSync( type, node ) {
 		if ( type === 'text' ) {
-			if ( this.domConverter.getCorrespondingDom( node.parent ) ) {
+			if ( this.domConverter.mapViewToDom( node.parent ) ) {
 				this.markedTexts.add( node );
 			}
 		} else {
 			// If the node has no DOM element it is not rendered yet,
 			// its children/attributes do not need to be marked to be sync.
-			if ( !this.domConverter.getCorrespondingDom( node ) ) {
+			if ( !this.domConverter.mapViewToDom( node ) ) {
 				return;
 			}
 
@@ -165,9 +165,9 @@ export default class Renderer {
 	 * attributes which do not exist in the view element.
 	 *
 	 * For text nodes it updates the text string if it is different. Note that if parent element is marked as an element
-	 * which changed child list, text node update will not be done, because it may not be possible do find a
-	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomText corresponding DOM text}. The change will be handled
-	 * in the parent element.
+	 * which changed child list, text node update will not be done, because it may not be possible to
+	 * {@link module:engine/view/domconverter~DomConverter#findCorrespondingDomText find a corresponding DOM text}.
+	 * The change will be handled in the parent element.
 	 *
 	 * For elements, which child lists have changed, it calculates a {@link module:utils/diff~diff} and adds or removes children which have
 	 * changed.
@@ -190,7 +190,7 @@ export default class Renderer {
 		if ( this._inlineFiller ) {
 			inlineFillerPosition = this._getInlineFillerPosition();
 		}
-		// Othewise, if it's needed, create it at the selection position.
+		// Otherwise, if it's needed, create it at the selection position.
 		else if ( this._needsInlineFillerAtSelection() ) {
 			inlineFillerPosition = this.selection.getFirstPosition();
 
@@ -199,7 +199,7 @@ export default class Renderer {
 		}
 
 		for ( const node of this.markedTexts ) {
-			if ( !this.markedChildren.has( node.parent ) && this.domConverter.getCorrespondingDom( node.parent ) ) {
+			if ( !this.markedChildren.has( node.parent ) && this.domConverter.mapViewToDom( node.parent ) ) {
 				this._updateText( node, { inlineFillerPosition } );
 			}
 		}
@@ -351,7 +351,7 @@ export default class Renderer {
 		const selectionOffset = selectionPosition.offset;
 
 		// If there is no DOM root we do not care about fillers.
-		if ( !this.domConverter.getCorrespondingDomElement( selectionParent.root ) ) {
+		if ( !this.domConverter.mapViewToDom( selectionParent.root ) ) {
 			return false;
 		}
 
@@ -384,7 +384,7 @@ export default class Renderer {
 	 * filler should be rendered.
 	 */
 	_updateText( viewText, options ) {
-		const domText = this.domConverter.getCorrespondingDom( viewText );
+		const domText = this.domConverter.findCorrespondingDomText( viewText );
 		const newDomText = this.domConverter.viewToDom( viewText, domText.ownerDocument );
 
 		const actualText = domText.data;
@@ -408,7 +408,7 @@ export default class Renderer {
 	 * @param {module:engine/view/element~Element} viewElement View element to update.
 	 */
 	_updateAttrs( viewElement ) {
-		const domElement = this.domConverter.getCorrespondingDom( viewElement );
+		const domElement = this.domConverter.mapViewToDom( viewElement );
 		const domAttrKeys = Array.from( domElement.attributes ).map( attr => attr.name );
 		const viewAttrKeys = viewElement.getAttributeKeys();
 
@@ -436,7 +436,7 @@ export default class Renderer {
 	 */
 	_updateChildren( viewElement, options ) {
 		const domConverter = this.domConverter;
-		const domElement = domConverter.getCorrespondingDom( viewElement );
+		const domElement = domConverter.mapViewToDom( viewElement );
 
 		if ( !domElement ) {
 			// If there is no `domElement` it means that it was already removed from DOM.
@@ -445,9 +445,7 @@ export default class Renderer {
 		}
 
 		const domDocument = domElement.ownerDocument;
-
 		const filler = options.inlineFillerPosition;
-
 		const actualDomChildren = domElement.childNodes;
 		const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument, { bind: true } ) );
 
@@ -464,17 +462,26 @@ export default class Renderer {
 		const actions = diff( actualDomChildren, expectedDomChildren, sameNodes );
 
 		let i = 0;
+		const nodesToUnbind = new Set();
 
 		for ( const action of actions ) {
 			if ( action === 'insert' ) {
 				insertAt( domElement, i, expectedDomChildren[ i ] );
 				i++;
 			} else if ( action === 'delete' ) {
-				// Whenever element is removed from DOM, unbind it and all of its children.
-				this.domConverter.unbindDomElement( actualDomChildren[ i ] );
+				nodesToUnbind.add( actualDomChildren[ i ] );
 				remove( actualDomChildren[ i ] );
 			} else { // 'equal'
 				i++;
+			}
+		}
+
+		// Unbind removed nodes. When node does not have a parent it means that it was removed from DOM tree during
+		// comparision with the expected DOM. We don't need to check child nodes, because if child node was reinserted,
+		// it was moved to DOM tree out of the removed node.
+		for ( const node of nodesToUnbind ) {
+			if ( !node.parentNode ) {
+				this.domConverter.unbindDomElement( node );
 			}
 		}
 
@@ -512,7 +519,7 @@ export default class Renderer {
 			return;
 		}
 
-		const domRoot = this.domConverter.getCorrespondingDomElement( this.selection.editableElement );
+		const domRoot = this.domConverter.mapViewToDom( this.selection.editableElement );
 
 		// Do nothing if there is no focus, or there is no DOM element corresponding to selection's editable element.
 		if ( !this.isFocused || !domRoot ) {
@@ -618,7 +625,7 @@ export default class Renderer {
 
 			if ( domSelection.rangeCount ) {
 				const activeDomElement = doc.activeElement;
-				const viewElement = this.domConverter.getCorrespondingViewElement( activeDomElement );
+				const viewElement = this.domConverter.mapDomToView( activeDomElement );
 
 				if ( activeDomElement && viewElement ) {
 					doc.getSelection().removeAllRanges();

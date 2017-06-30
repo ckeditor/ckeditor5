@@ -30,8 +30,8 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domElement, viewElement );
 
-			expect( converter.getCorrespondingView( domElement ) ).to.equal( viewElement );
-			expect( converter.getCorrespondingDom( viewElement ) ).to.equal( domElement );
+			expect( converter.mapDomToView( domElement ) ).to.equal( viewElement );
+			expect( converter.mapViewToDom( viewElement ) ).to.equal( domElement );
 		} );
 	} );
 
@@ -42,33 +42,19 @@ describe( 'DomConverter', () => {
 
 			converter.bindDocumentFragments( domFragment, viewFragment );
 
-			expect( converter.getCorrespondingView( domFragment ) ).to.equal( viewFragment );
-			expect( converter.getCorrespondingDom( viewFragment ) ).to.equal( domFragment );
+			expect( converter.mapDomToView( domFragment ) ).to.equal( viewFragment );
+			expect( converter.mapViewToDom( viewFragment ) ).to.equal( domFragment );
 		} );
 	} );
 
-	describe( 'getCorrespondingView()', () => {
+	describe( 'mapDomToView()', () => {
 		it( 'should return corresponding view element if element is passed', () => {
 			const domElement = document.createElement( 'p' );
 			const viewElement = new ViewElement( 'p' );
 
 			converter.bindElements( domElement, viewElement );
 
-			expect( converter.getCorrespondingView( domElement ) ).to.equal( viewElement );
-		} );
-
-		it( 'should return corresponding view text if text is passed', () => {
-			const domText = document.createTextNode( 'foo' );
-			const domP = document.createElement( 'p' );
-
-			domP.appendChild( domText );
-
-			const viewP = converter.domToView( domP );
-			const viewText = viewP.getChild( 0 );
-
-			converter.bindElements( domP, viewP );
-
-			expect( converter.getCorrespondingView( domText ) ).to.equal( viewText );
+			expect( converter.mapDomToView( domElement ) ).to.equal( viewElement );
 		} );
 
 		it( 'should return corresponding view document fragment', () => {
@@ -77,38 +63,16 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domFragment, viewFragment );
 
-			expect( converter.getCorrespondingView( domFragment ) ).to.equal( viewFragment );
+			expect( converter.mapDomToView( domFragment ) ).to.equal( viewFragment );
 		} );
 
-		it( 'should return null if falsy value was passed', () => {
-			expect( converter.getCorrespondingView( null ) ).to.be.null;
-			expect( converter.getCorrespondingView( undefined ) ).to.be.null;
-		} );
-	} );
-
-	describe( 'getCorrespondingViewElement()', () => {
-		it( 'should return corresponding view element', () => {
-			const domElement = document.createElement( 'p' );
-			const viewElement = new ViewElement( 'p' );
-
-			converter.bindElements( domElement, viewElement );
-
-			expect( converter.getCorrespondingViewElement( domElement ) ).to.equal( viewElement );
+		it( 'should return undefined if falsy value was passed', () => {
+			expect( converter.mapDomToView( null ) ).to.be.undefined;
+			expect( converter.mapDomToView( undefined ) ).to.be.undefined;
 		} );
 	} );
 
-	describe( 'getCorrespondingViewDocumentFragment()', () => {
-		it( 'should return corresponding view document fragment', () => {
-			const domFragment = document.createDocumentFragment();
-			const viewFragment = converter.domToView( domFragment );
-
-			converter.bindElements( domFragment, viewFragment );
-
-			expect( converter.getCorrespondingViewDocumentFragment( domFragment ) ).to.equal( viewFragment );
-		} );
-	} );
-
-	describe( 'getCorrespondingViewText()', () => {
+	describe( 'findCorrespondingViewText()', () => {
 		it( 'should return corresponding view text based on sibling', () => {
 			const domImg = document.createElement( 'img' );
 			const domText = document.createTextNode( 'foo' );
@@ -121,7 +85,7 @@ describe( 'DomConverter', () => {
 			const viewP = converter.domToView( domP );
 			const viewText = viewP.getChild( 1 );
 
-			expect( converter.getCorrespondingViewText( domText ) ).to.equal( viewText );
+			expect( converter.findCorrespondingViewText( domText ) ).to.equal( viewText );
 		} );
 
 		it( 'should return corresponding view text based on parent', () => {
@@ -133,7 +97,7 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorrespondingViewText( domText ) ).to.equal( viewText );
+			expect( converter.findCorrespondingViewText( domText ) ).to.equal( viewText );
 		} );
 
 		it( 'should return null if sibling is not bound', () => {
@@ -145,7 +109,7 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorrespondingViewText( domText ) ).to.be.null;
+			expect( converter.findCorrespondingViewText( domText ) ).to.be.null;
 		} );
 
 		it( 'should return null if sibling is not element', () => {
@@ -157,14 +121,14 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorrespondingViewText( domTextBar ) ).to.be.null;
+			expect( converter.findCorrespondingViewText( domTextBar ) ).to.be.null;
 		} );
 
 		it( 'should return null if parent is not bound', () => {
 			const domText = document.createTextNode( 'foo' );
 			createElement( document, 'p', null, domText );
 
-			expect( converter.getCorrespondingViewText( domText ) ).to.be.null;
+			expect( converter.findCorrespondingViewText( domText ) ).to.be.null;
 		} );
 
 		it( 'should return null for inline filler', () => {
@@ -175,7 +139,7 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorrespondingViewText( domFiller ) ).to.be.null;
+			expect( converter.findCorrespondingViewText( domFiller ) ).to.be.null;
 		} );
 
 		it( 'should return null if there is no text node sibling in view', () => {
@@ -192,7 +156,7 @@ describe( 'DomConverter', () => {
 			converter.bindElements( domI, viewI );
 			converter.bindElements( domB, viewB );
 
-			expect( converter.getCorrespondingViewText( domText ) ).to.be.null;
+			expect( converter.findCorrespondingViewText( domText ) ).to.be.null;
 		} );
 
 		it( 'should return null if there is no child text node in view', () => {
@@ -203,32 +167,18 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorrespondingViewText( domText ) ).to.be.null;
+			expect( converter.findCorrespondingViewText( domText ) ).to.be.null;
 		} );
 	} );
 
-	describe( 'getCorrespondingDom()', () => {
+	describe( 'mapViewToDom()', () => {
 		it( 'should return corresponding DOM element if element was passed', () => {
 			const domElement = document.createElement( 'p' );
 			const viewElement = new ViewElement( 'p' );
 
 			converter.bindElements( domElement, viewElement );
 
-			expect( converter.getCorrespondingDom( viewElement ) ).to.equal( domElement );
-		} );
-
-		it( 'should return corresponding DOM text if text was passed', () => {
-			const domText = document.createTextNode( 'foo' );
-			const domP = document.createElement( 'p' );
-
-			domP.appendChild( domText );
-
-			const viewP = converter.domToView( domP );
-			const viewText = viewP.getChild( 0 );
-
-			converter.bindElements( domP, viewP );
-
-			expect( converter.getCorrespondingDom( viewText ) ).to.equal( domText );
+			expect( converter.mapViewToDom( viewElement ) ).to.equal( domElement );
 		} );
 
 		it( 'should return corresponding DOM document fragment', () => {
@@ -237,37 +187,15 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domFragment, viewFragment );
 
-			expect( converter.getCorrespondingDom( viewFragment ) ).to.equal( domFragment );
+			expect( converter.mapViewToDom( viewFragment ) ).to.equal( domFragment );
 		} );
 
-		it( 'should return null if wrong parameter is passed', () => {
-			expect( converter.getCorrespondingDom( null ) ).to.be.null;
-		} );
-	} );
-
-	describe( 'getCorrespondingDomElement()', () => {
-		it( 'should return corresponding DOM element', () => {
-			const domElement = document.createElement( 'p' );
-			const viewElement = new ViewElement( 'p' );
-
-			converter.bindElements( domElement, viewElement );
-
-			expect( converter.getCorrespondingDomElement( viewElement ) ).to.equal( domElement );
+		it( 'should return undefined if wrong parameter is passed', () => {
+			expect( converter.mapViewToDom( null ) ).to.be.undefined;
 		} );
 	} );
 
-	describe( 'getCorrespondingDomDocumentFragment()', () => {
-		it( 'should return corresponding DOM document fragment', () => {
-			const domFragment = document.createDocumentFragment();
-			const viewFragment = new ViewDocumentFragment();
-
-			converter.bindElements( domFragment, viewFragment );
-
-			expect( converter.getCorrespondingDomDocumentFragment( viewFragment ) ).to.equal( domFragment );
-		} );
-	} );
-
-	describe( 'getCorrespondingDomText', () => {
+	describe( 'findCorrespondingDomText()', () => {
 		it( 'should return corresponding DOM text based on sibling', () => {
 			const domImg = document.createElement( 'img' );
 			const domText = document.createTextNode( 'foo' );
@@ -283,7 +211,7 @@ describe( 'DomConverter', () => {
 			const viewP = converter.domToView( domP );
 			const viewText = viewP.getChild( 1 );
 
-			expect( converter.getCorrespondingDomText( viewText ) ).to.equal( domText );
+			expect( converter.findCorrespondingDomText( viewText ) ).to.equal( domText );
 		} );
 
 		it( 'should return corresponding DOM text based on parent', () => {
@@ -297,7 +225,7 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorrespondingDomText( viewText ) ).to.equal( domText );
+			expect( converter.findCorrespondingDomText( viewText ) ).to.equal( domText );
 		} );
 
 		it( 'should return null if sibling is not bound', () => {
@@ -313,7 +241,7 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorrespondingDomText( viewText ) ).to.be.null;
+			expect( converter.findCorrespondingDomText( viewText ) ).to.be.null;
 		} );
 
 		it( 'should return null if parent is not bound', () => {
@@ -325,14 +253,14 @@ describe( 'DomConverter', () => {
 			const viewP = converter.domToView( domP );
 			const viewText = viewP.getChild( 0 );
 
-			expect( converter.getCorrespondingDomText( viewText ) ).to.be.null;
+			expect( converter.findCorrespondingDomText( viewText ) ).to.be.null;
 		} );
 
 		it( 'should return null if there is no previous sibling and parent', () => {
 			const domText = document.createTextNode( 'foo' );
 			const viewText = converter.domToView( domText );
 
-			expect( converter.getCorrespondingDomText( viewText ) ).to.be.null;
+			expect( converter.findCorrespondingDomText( viewText ) ).to.be.null;
 		} );
 	} );
 
@@ -373,13 +301,13 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domElement, viewElement );
 
-			expect( converter.getCorrespondingView( domElement ) ).to.equal( viewElement );
-			expect( converter.getCorrespondingDom( viewElement ) ).to.equal( domElement );
+			expect( converter.mapDomToView( domElement ) ).to.equal( viewElement );
+			expect( converter.mapViewToDom( viewElement ) ).to.equal( domElement );
 
 			converter.unbindDomElement( domElement );
 
-			expect( converter.getCorrespondingView( domElement ) ).to.be.undefined;
-			expect( converter.getCorrespondingDom( viewElement ) ).to.be.undefined;
+			expect( converter.mapDomToView( domElement ) ).to.be.undefined;
+			expect( converter.mapViewToDom( viewElement ) ).to.be.undefined;
 		} );
 
 		it( 'should unbind element\'s child nodes', () => {
@@ -393,26 +321,26 @@ describe( 'DomConverter', () => {
 			converter.bindElements( domElement, viewElement );
 			converter.bindElements( domChild, viewChild );
 
-			expect( converter.getCorrespondingView( domChild ) ).to.equal( viewChild );
-			expect( converter.getCorrespondingDom( viewChild ) ).to.equal( domChild );
+			expect( converter.mapDomToView( domChild ) ).to.equal( viewChild );
+			expect( converter.mapViewToDom( viewChild ) ).to.equal( domChild );
 
 			converter.unbindDomElement( domElement );
 
-			expect( converter.getCorrespondingView( domChild ) ).to.be.undefined;
-			expect( converter.getCorrespondingDom( viewChild ) ).to.be.undefined;
+			expect( converter.mapDomToView( domChild ) ).to.be.undefined;
+			expect( converter.mapViewToDom( viewChild ) ).to.be.undefined;
 		} );
 
 		it( 'should do nothing if there are no elements bind', () => {
 			const domElement = document.createElement( 'p' );
 			const viewElement = new ViewElement( 'p' );
 
-			expect( converter.getCorrespondingView( domElement ) ).to.be.undefined;
-			expect( converter.getCorrespondingDom( viewElement ) ).to.be.undefined;
+			expect( converter.mapDomToView( domElement ) ).to.be.undefined;
+			expect( converter.mapViewToDom( viewElement ) ).to.be.undefined;
 
 			converter.unbindDomElement( domElement );
 
-			expect( converter.getCorrespondingView( domElement ) ).to.be.undefined;
-			expect( converter.getCorrespondingDom( viewElement ) ).to.be.undefined;
+			expect( converter.mapDomToView( domElement ) ).to.be.undefined;
+			expect( converter.mapViewToDom( viewElement ) ).to.be.undefined;
 		} );
 	} );
 } );
