@@ -672,7 +672,7 @@ describe( 'LiveSelection', () => {
 		} );
 	} );
 
-	describe( 'attributes interface', () => {
+	describe( 'attributes', () => {
 		let fullP, emptyP, rangeInFullP, rangeInEmptyP;
 
 		beforeEach( () => {
@@ -688,7 +688,7 @@ describe( 'LiveSelection', () => {
 			rangeInEmptyP = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) );
 		} );
 
-		describe( 'setAttribute', () => {
+		describe( 'setAttribute()', () => {
 			it( 'should store attribute if the selection is in empty node', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'foo', 'bar' );
@@ -699,7 +699,7 @@ describe( 'LiveSelection', () => {
 			} );
 		} );
 
-		describe( 'setAttributesTo', () => {
+		describe( 'setAttributesTo()', () => {
 			it( 'should fire change:attribute event with correct parameters', done => {
 				selection.setAttributesTo( { foo: 'bar', abc: 'def' } );
 
@@ -737,7 +737,7 @@ describe( 'LiveSelection', () => {
 			} );
 		} );
 
-		describe( 'removeAttribute', () => {
+		describe( 'removeAttribute()', () => {
 			it( 'should remove attribute set on the text fragment', () => {
 				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
@@ -759,7 +759,7 @@ describe( 'LiveSelection', () => {
 			} );
 		} );
 
-		describe( 'clearAttributes', () => {
+		describe( 'clearAttributes()', () => {
 			it( 'should remove all stored attributes if the selection is in empty node', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'foo', 'bar' );
@@ -774,102 +774,166 @@ describe( 'LiveSelection', () => {
 				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
 			} );
 		} );
-	} );
 
-	describe( 'update attributes on direct range change', () => {
-		beforeEach( () => {
-			root.insertChildren( 0, [
-				new Element( 'p', { p: true } ),
-				new Text( 'a', { a: true } ),
-				new Element( 'p', { p: true } ),
-				new Text( 'b', { b: true } ),
-				new Text( 'c', { c: true } ),
-				new Element( 'p', [], [
-					new Text( 'd', { d: true } )
-				] ),
-				new Element( 'p', { p: true } ),
-				new Text( 'e', { e: true } )
-			] );
+		describe( '_getStoredAttributes()', () => {
+			it( 'should return no values if there are no ranges in selection', () => {
+				const values = Array.from( selection._getStoredAttributes() );
+
+				expect( values ).to.deep.equal( [] );
+			} );
 		} );
 
-		it( 'if selection is a range, should find first character in it and copy it\'s attributes', () => {
-			selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
+		describe( 'are updated on a direct range change', () => {
+			beforeEach( () => {
+				root.insertChildren( 0, [
+					new Element( 'p', { p: true } ),
+					new Text( 'a', { a: true } ),
+					new Element( 'p', { p: true } ),
+					new Text( 'b', { b: true } ),
+					new Text( 'c', { c: true } ),
+					new Element( 'p', [], [
+						new Text( 'd', { d: true } )
+					] ),
+					new Element( 'p', { p: true } ),
+					new Text( 'e', { e: true } )
+				] );
+			} );
 
-			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
+			it( 'if selection is a range, should find first character in it and copy it\'s attributes', () => {
+				selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
 
-			// Step into elements when looking for first character:
-			selection.setRanges( [ new Range( new Position( root, [ 5 ] ), new Position( root, [ 7 ] ) ) ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
 
-			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
+				// Step into elements when looking for first character:
+				selection.setRanges( [ new Range( new Position( root, [ 5 ] ), new Position( root, [ 7 ] ) ) ] );
+
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
+			} );
+
+			it( 'if selection is collapsed it should seek a character to copy that character\'s attributes', () => {
+				// Take styles from character before selection.
+				selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
+
+				// If there are none,
+				// Take styles from character after selection.
+				selection.setRanges( [ new Range( new Position( root, [ 3 ] ), new Position( root, [ 3 ] ) ) ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
+
+				// If there are none,
+				// Look from the selection position to the beginning of node looking for character to take attributes from.
+				selection.setRanges( [ new Range( new Position( root, [ 6 ] ), new Position( root, [ 6 ] ) ) ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'c', true ] ] );
+
+				// If there are none,
+				// Look from the selection position to the end of node looking for character to take attributes from.
+				selection.setRanges( [ new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
+
+				// If there are no characters to copy attributes from, use stored attributes.
+				selection.setRanges( [ new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) ) ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [] );
+			} );
+
+			it( 'should overwrite any previously set attributes', () => {
+				selection.collapse( new Position( root, [ 5, 0 ] ) );
+
+				selection.setAttribute( 'x', true );
+				selection.setAttribute( 'y', true );
+
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ], [ 'x', true ], [ 'y', true ] ] );
+
+				selection.collapse( new Position( root, [ 1 ] ) );
+
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
+			} );
+
+			it( 'should fire change:attribute event', () => {
+				const spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'should not fire change:attribute event if attributes did not change', () => {
+				selection.collapse( new Position( root, [ 5, 0 ] ) );
+
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
+
+				const spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.collapse( new Position( root, [ 5, 1 ] ) );
+
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
+				expect( spy.called ).to.be.false;
+			} );
 		} );
 
-		it( 'if selection is collapsed it should seek a character to copy that character\'s attributes', () => {
-			// Take styles from character before selection.
-			selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) ] );
-			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
+		// #986
+		describe( 'are not inherited from the inside of object elements', () => {
+			beforeEach( () => {
+				doc.schema.registerItem( 'image' );
+				doc.schema.allow( { name: 'image', inside: '$root' } );
+				doc.schema.allow( { name: 'image', inside: '$block' } );
+				doc.schema.allow( { name: '$inline', inside: 'image' } );
+				doc.schema.objects.add( 'image' );
 
-			// If there are none,
-			// Take styles from character after selection.
-			selection.setRanges( [ new Range( new Position( root, [ 3 ] ), new Position( root, [ 3 ] ) ) ] );
-			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
+				doc.schema.registerItem( 'caption' );
+				doc.schema.allow( { name: '$inline', inside: 'caption' } );
+				doc.schema.allow( { name: 'caption', inside: 'image' } );
+				doc.schema.allow( { name: '$text', attributes: 'bold', inside: 'caption' } );
+			} );
 
-			// If there are none,
-			// Look from the selection position to the beginning of node looking for character to take attributes from.
-			selection.setRanges( [ new Range( new Position( root, [ 6 ] ), new Position( root, [ 6 ] ) ) ] );
-			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'c', true ] ] );
+			it( 'ignores attributes inside an object if selection contains that object', () => {
+				setData( doc, '<p>[<image><$text bold="true">Caption for the image.</$text></image>]</p>' );
 
-			// If there are none,
-			// Look from the selection position to the end of node looking for character to take attributes from.
-			selection.setRanges( [ new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) ] );
-			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
+				const liveSelection = LiveSelection.createFromSelection( selection );
 
-			// If there are no characters to copy attributes from, use stored attributes.
-			selection.setRanges( [ new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) ) ] );
-			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [] );
-		} );
+				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
 
-		it( 'should overwrite any previously set attributes', () => {
-			selection.collapse( new Position( root, [ 5, 0 ] ) );
+			it( 'ignores attributes inside an object if selection contains that object (deeper structure)', () => {
+				setData( doc, '<p>[<image><caption><$text bold="true">Caption for the image.</$text></caption></image>]</p>' );
 
-			selection.setAttribute( 'x', true );
-			selection.setAttribute( 'y', true );
+				const liveSelection = LiveSelection.createFromSelection( selection );
 
-			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ], [ 'x', true ], [ 'y', true ] ] );
+				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
 
-			selection.collapse( new Position( root, [ 1 ] ) );
+			it( 'ignores attributes inside an object if selection contains that object (block level)', () => {
+				setData( doc, '<p>foo</p>[<image><$text bold="true">Caption for the image.</$text></image>]<p>foo</p>' );
 
-			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
-		} );
+				const liveSelection = LiveSelection.createFromSelection( selection );
 
-		it( 'should fire change:attribute event', () => {
-			const spy = sinon.spy();
-			selection.on( 'change:attribute', spy );
+				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
 
-			selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
+			it( 'reads attributes from text even if the selection contains an object', () => {
+				setData( doc, '<p>x<$text bold="true">[bar</$text><image></image>foo]</p>' );
 
-			expect( spy.calledOnce ).to.be.true;
-		} );
+				const liveSelection = LiveSelection.createFromSelection( selection );
 
-		it( 'should not fire change:attribute event if attributes did not change', () => {
-			selection.collapse( new Position( root, [ 5, 0 ] ) );
+				expect( liveSelection.getAttribute( 'bold' ) ).to.equal( true );
+			} );
 
-			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
+			it( 'reads attributes when the entire selection inside an object', () => {
+				setData( doc, '<p><image><caption><$text bold="true">[bar]</$text></caption></image></p>' );
 
-			const spy = sinon.spy();
-			selection.on( 'change:attribute', spy );
+				const liveSelection = LiveSelection.createFromSelection( selection );
 
-			selection.collapse( new Position( root, [ 5, 1 ] ) );
+				expect( liveSelection.getAttribute( 'bold' ) ).to.equal( true );
+			} );
 
-			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
-			expect( spy.called ).to.be.false;
-		} );
-	} );
+			it( 'stops reading attributes if selection starts with an object', () => {
+				setData( doc, '<p>[<image></image><$text bold="true">bar]</$text></p>' );
 
-	describe( '_getStoredAttributes', () => {
-		it( 'should return no values if there are no ranges in selection', () => {
-			const values = Array.from( selection._getStoredAttributes() );
+				const liveSelection = LiveSelection.createFromSelection( selection );
 
-			expect( values ).to.deep.equal( [] );
+				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
 		} );
 	} );
 } );
