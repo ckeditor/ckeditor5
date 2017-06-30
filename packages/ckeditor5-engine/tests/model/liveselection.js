@@ -875,38 +875,64 @@ describe( 'LiveSelection', () => {
 		// #986
 		describe( 'are not inherited from the inside of object elements', () => {
 			beforeEach( () => {
-				doc.schema.registerItem( 'image', '$inline' );
-				doc.schema.disallow( { name: 'image', attributes: 'bold', inside: '$root' } );
+				doc.schema.registerItem( 'image' );
+				doc.schema.allow( { name: 'image', inside: '$root' } );
+				doc.schema.allow( { name: 'image', inside: '$block' } );
+				doc.schema.allow( { name: '$inline', inside: 'image' } );
 				doc.schema.objects.add( 'image' );
 
-				doc.schema.registerItem( 'caption', '$block' );
+				doc.schema.registerItem( 'caption' );
 				doc.schema.allow( { name: '$inline', inside: 'caption' } );
 				doc.schema.allow( { name: 'caption', inside: 'image' } );
 				doc.schema.allow( { name: '$text', attributes: 'bold', inside: 'caption' } );
 			} );
 
-			it( 'ignores attributes from nested editable if selection contains an object', () => {
-				setData( doc, '<p>[<image><caption>Caption for the image.</caption></image>]</p>' );
+			it( 'ignores attributes inside an object if selection contains that object', () => {
+				setData( doc, '<p>[<image><$text bold="true">Caption for the image.</$text></image>]</p>' );
 
 				const liveSelection = LiveSelection.createFromSelection( selection );
 
 				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
-			it( 'read attributes from text even if the selection contains an object', () => {
-				setData( doc, '<p>x[<$text bold="true">bar</$text><image></image>foo]</p>' );
+			it( 'ignores attributes inside an object if selection contains that object (deeper structure)', () => {
+				setData( doc, '<p>[<image><caption><$text bold="true">Caption for the image.</$text></caption></image>]</p>' );
 
 				const liveSelection = LiveSelection.createFromSelection( selection );
 
-				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( true );
+				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
-			it( 'read attributes from editable if selection contains elements inside the object', () => {
-				setData( doc, '<p><image>[<caption><$text bold="true">bar</$text></caption>]</image></p>' );
+			it( 'ignores attributes inside an object if selection contains that object (block level)', () => {
+				setData( doc, '<p>foo</p>[<image><$text bold="true">Caption for the image.</$text></image>]<p>foo</p>' );
 
 				const liveSelection = LiveSelection.createFromSelection( selection );
 
-				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( true );
+				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
+
+			it( 'reads attributes from text even if the selection contains an object', () => {
+				setData( doc, '<p>x<$text bold="true">[bar</$text><image></image>foo]</p>' );
+
+				const liveSelection = LiveSelection.createFromSelection( selection );
+
+				expect( liveSelection.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'reads attributes when the entire selection inside an object', () => {
+				setData( doc, '<p><image><caption><$text bold="true">[bar]</$text></caption></image></p>' );
+
+				const liveSelection = LiveSelection.createFromSelection( selection );
+
+				expect( liveSelection.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'stops reading attributes if selection starts with an object', () => {
+				setData( doc, '<p>[<image></image><$text bold="true">bar]</$text></p>' );
+
+				const liveSelection = LiveSelection.createFromSelection( selection );
+
+				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 		} );
 	} );
