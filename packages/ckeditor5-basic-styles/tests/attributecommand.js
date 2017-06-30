@@ -67,6 +67,7 @@ describe( 'AttributeCommand', () => {
 			expect( command.value ).to.be.false;
 		} );
 
+		// See https://github.com/ckeditor/ckeditor5-core/issues/73#issuecomment-311572827.
 		it( 'is false when selection contains object with nested editable', () => {
 			doc.schema.registerItem( 'caption', '$block' );
 			doc.schema.allow( { name: '$inline', inside: 'caption' } );
