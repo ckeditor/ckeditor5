@@ -3019,7 +3019,7 @@ describe( 'ListEngine', () => {
 				'<listItem type="bulleted" indent="2">C</listItem>'
 			);
 
-			const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+			const clipboard = editor.plugins.get( 'Clipboard' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
@@ -3040,7 +3040,7 @@ describe( 'ListEngine', () => {
 				'<listItem type="bulleted" indent="2">C</listItem>'
 			);
 
-			const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+			const clipboard = editor.plugins.get( 'Clipboard' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
@@ -3063,7 +3063,7 @@ describe( 'ListEngine', () => {
 				'<listItem type="bulleted" indent="2">C</listItem>'
 			);
 
-			const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+			const clipboard = editor.plugins.get( 'Clipboard' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<p>X</p><ul><li>Y</li></ul>' )
@@ -3084,7 +3084,7 @@ describe( 'ListEngine', () => {
 				'<listItem type="bulleted" indent="2">C</listItem>'
 			);
 
-			const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+			const clipboard = editor.plugins.get( 'Clipboard' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
@@ -3105,7 +3105,7 @@ describe( 'ListEngine', () => {
 				'<listItem type="bulleted" indent="1">B</listItem>'
 			);
 
-			const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+			const clipboard = editor.plugins.get( 'Clipboard' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
@@ -3124,7 +3124,7 @@ describe( 'ListEngine', () => {
 				'<paragraph>B</paragraph>'
 			);
 
-			const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+			const clipboard = editor.plugins.get( 'Clipboard' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
