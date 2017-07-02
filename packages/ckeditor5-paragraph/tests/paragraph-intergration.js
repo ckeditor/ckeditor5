@@ -21,7 +21,7 @@ describe( 'Paragraph feature – integration', () => {
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
-					const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+					const clipboard = editor.plugins.get( 'Clipboard' );
 
 					setModelData( doc, '<paragraph>[]</paragraph>' );
 
@@ -41,7 +41,7 @@ describe( 'Paragraph feature – integration', () => {
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
-					const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+					const clipboard = editor.plugins.get( 'Clipboard' );
 
 					setModelData( doc, '<paragraph>[]</paragraph>' );
 
@@ -60,7 +60,7 @@ describe( 'Paragraph feature – integration', () => {
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
-					const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+					const clipboard = editor.plugins.get( 'Clipboard' );
 
 					setModelData( doc, '<paragraph>[]</paragraph>' );
 
@@ -79,7 +79,7 @@ describe( 'Paragraph feature – integration', () => {
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
-					const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+					const clipboard = editor.plugins.get( 'Clipboard' );
 
 					setModelData( doc, '<paragraph>[]</paragraph>' );
 
@@ -101,7 +101,7 @@ describe( 'Paragraph feature – integration', () => {
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
-					const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+					const clipboard = editor.plugins.get( 'Clipboard' );
 
 					setModelData( doc, '<paragraph>[]</paragraph>' );
 
@@ -123,7 +123,7 @@ describe( 'Paragraph feature – integration', () => {
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
-					const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+					const clipboard = editor.plugins.get( 'Clipboard' );
 
 					setModelData( doc, '<paragraph>[]</paragraph>' );
 
