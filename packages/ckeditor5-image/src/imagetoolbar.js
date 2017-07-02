@@ -25,7 +25,7 @@ export default class ImageToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'image/imagetoolbar';
+		return 'ImageToolbar';
 	}
 
 	/**
