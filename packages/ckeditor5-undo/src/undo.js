@@ -139,7 +139,7 @@ export default class Undo extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'undo/undo';
+		return 'Undo';
 	}
 
 	/**
