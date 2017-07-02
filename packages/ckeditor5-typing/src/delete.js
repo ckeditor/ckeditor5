@@ -21,7 +21,7 @@ export default class Delete extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'typing/delete';
+		return 'Delete';
 	}
 
 	init() {
