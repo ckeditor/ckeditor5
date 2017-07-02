@@ -33,7 +33,7 @@ export default class Widget extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'widget/widget';
+		return 'Widget';
 	}
 
 	/**
