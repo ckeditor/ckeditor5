@@ -31,7 +31,7 @@ export default class Italic extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'basic-styles/italic';
+		return 'Italic';
 	}
 
 	/**
