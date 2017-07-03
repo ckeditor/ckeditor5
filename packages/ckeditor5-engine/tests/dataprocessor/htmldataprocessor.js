@@ -13,7 +13,7 @@ import { stringify, parse } from '../../src/dev-utils/view';
 describe( 'HtmlDataProcessor', () => {
 	const dataProcessor = new HtmlDataProcessor();
 
-	describe( 'toView', () => {
+	describe( 'toView()', () => {
 		it( 'should return empty DocumentFragment when empty string is passed', () => {
 			const fragment = dataProcessor.toView( '' );
 			expect( fragment ).to.be.an.instanceOf( ViewDocumentFragment );
@@ -58,9 +58,37 @@ describe( 'HtmlDataProcessor', () => {
 				}, 10 );
 			} );
 		}
+
+		// Uncomment this test after fixing #404.
+		// describe( 'https://github.com/ckeditor/ckeditor5-clipboard/issues/2#issuecomment-310417731 + #404', () => {
+		// 	it( 'does not lose whitespaces in Chrome\'s paste-like content', () => {
+		// 		const fragment = dataProcessor.toView(
+		// 			'<meta charset=\'utf-8\'>' +
+		// 			'<span>This is the<span>\u00a0</span></span>' +
+		// 			'<a href="url">third developer preview</a>' +
+		// 			'<span><span>\u00a0</span>of<span>\u00a0</span></span>' +
+		// 			'<strong>CKEditor\u00a05</strong>' +
+		// 			'<span>.</span>'
+		// 		);
+
+		// 		expect( stringify( fragment ) ).to.equal(
+		// 			'<span>This is the<span>\u00a0</span></span>' +
+		// 			'<a href="url">third developer preview</a>' +
+		// 			'<span><span>\u00a0</span>of<span>\u00a0</span></span>' +
+		// 			'<strong>CKEditor\u00a05</strong>' +
+		// 			'<span>.</span>'
+		// 		);
+
+		// 		// Just to be sure... stringify() uses conversion and the browser extensively,
+		// 		// so it's not entirely safe.
+		// 		expect( fragment.getChild( 0 ).getChild( 1 ).getChild( 0 ).data ).to.equal( '\u00a0' );
+		// 		expect( fragment.getChild( 2 ).getChild( 0 ).getChild( 0 ).data ).to.equal( '\u00a0' );
+		// 		expect( fragment.getChild( 2 ).getChild( 2 ).getChild( 0 ).data ).to.equal( '\u00a0' );
+		// 	} );
+		// } );
 	} );
 
-	describe( 'toData', () => {
+	describe( 'toData()', () => {
 		it( 'should return empty string when empty DocumentFragment is passed', () => {
 			const fragment = new ViewDocumentFragment();
 

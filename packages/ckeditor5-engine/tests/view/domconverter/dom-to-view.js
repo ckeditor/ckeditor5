@@ -460,6 +460,68 @@ describe( 'DomConverter', () => {
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( '   foo\n   foo  ' );
 			} );
 
+			// https://github.com/ckeditor/ckeditor5-clipboard/issues/2#issuecomment-310417731
+			it( 'not in span between two words (space)', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					document.createTextNode( 'word' ),
+					createElement( document, 'span', {}, [
+						document.createTextNode( ' ' )
+					] ),
+					document.createTextNode( 'word' )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.getChild( 1 ).name ).to.equal( 'span' );
+				expect( viewDiv.getChild( 1 ).childCount ).to.equal( 1 );
+				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( ' ' );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5-clipboard/issues/2#issuecomment-310417731
+			it( 'not in span between two words (nbsp)', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					document.createTextNode( 'word' ),
+					createElement( document, 'span', {}, [
+						document.createTextNode( '\u00a0' )
+					] ),
+					document.createTextNode( 'word' )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.getChild( 1 ).name ).to.equal( 'span' );
+				expect( viewDiv.getChild( 1 ).childCount ).to.equal( 1 );
+				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( '\u00a0' );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5-clipboard/issues/2#issuecomment-310417731
+			it( 'not in a Chrome\'s paste-like content', () => {
+				// Like:
+				// <span style="color: rgb(0, 0, 0); font-family: Times;">This is the<span>\u00a0</span></span>
+				// <a href="url" style="font-family: Times; font-size: medium;">third developer preview</a>
+				const domDiv = createElement( document, 'div', {}, [
+					createElement( document, 'span', {}, [
+						document.createTextNode( 'word' ),
+						createElement( document, 'span', {}, [
+							document.createTextNode( '\u00a0' )
+						] )
+					] ),
+					createElement( document, 'a', {}, [
+						document.createTextNode( 'word' )
+					] )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.getChild( 0 ).name ).to.equal( 'span' );
+				expect( viewDiv.getChild( 0 ).childCount ).to.equal( 2 );
+
+				expect( viewDiv.getChild( 0 ).getChild( 1 ).name ).to.equal( 'span' );
+				expect( viewDiv.getChild( 0 ).getChild( 1 ).childCount ).to.equal( 1 );
+
+				expect( viewDiv.getChild( 0 ).getChild( 1 ).getChild( 0 ).data ).to.equal( '\u00a0' );
+			} );
+
 			//
 			// See also whitespace-handling-integration.js.
 			//
