@@ -5,7 +5,7 @@
 
 import plainTextToHtml from '../../src/utils/plaintexttohtml';
 
-describe( 'plainTextToHtml', () => {
+describe( 'plainTextToHtml()', () => {
 	it( 'encodes < and >', () => {
 		expect( plainTextToHtml( 'x y <z>' ) ).to.equal( 'x y &lt;z&gt;' );
 	} );
