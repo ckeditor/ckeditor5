@@ -43,10 +43,10 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  *
  *		const view = new SampleView( locale );
  *
- *		view.init().then( () => {
- *			// Will append <p class="foo">Hello<b>world</b></p>
- *			document.body.appendChild( view.element );
- *		} );
+ *		view.init();
+ *
+ *		// Will append <p class="foo">Hello<b>world</b></p>
+ *		document.body.appendChild( view.element );
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -190,14 +190,14 @@ export default class View {
 	 *		const view = new SampleView( locale );
 	 *		const anotherView = new AnotherSampleView( locale );
 	 *
-	 *		view.init().then( () => {
-	 *			// Will append <p></p>
-	 *			document.body.appendChild( view.element );
+	 *		view.init();
 	 *
-	 *			// `anotherView` becomes a child of the view, which is reflected in DOM
-	 *			// <p><anotherView#element></p>
-	 *			view.items.add( anotherView );
-	 *		} );
+	 *		// Will append <p></p>
+	 *		document.body.appendChild( view.element );
+	 *
+	 *		// `anotherView` becomes a child of the view, which is reflected in DOM
+	 *		// <p><anotherView#element></p>
+	 *		view.items.add( anotherView );
 	 *
 	 * @returns {module:ui/viewcollection~ViewCollection} A new collection of view instances.
 	 */
@@ -237,10 +237,10 @@ export default class View {
 	 *
 	 *		const view = new SampleView( locale );
 	 *
-	 *		view.init().then( () => {
-	 *			// Will append <p><childA#element><b></b><childB#element></p>
-	 *			document.body.appendChild( view.element );
-	 *		} );
+	 *		view.init();
+	 *
+	 *		// Will append <p><childA#element><b></b><childB#element></p>
+	 *		document.body.appendChild( view.element );
 	 *
 	 * **Note**: There's no need to add child views if they're used in the
 	 * {@link #template} explicitly:
@@ -265,20 +265,17 @@ export default class View {
 	 *		}
 	 *
 	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Children views to be registered.
-	 * @returns {Promise}
 	 */
 	addChildren( children ) {
 		if ( !isIterable( children ) ) {
 			children = [ children ];
 		}
 
-		return Promise.all( children.map( c => this._unboundChildren.add( c ) ) );
+		children.map( c => this._unboundChildren.add( c ) );
 	}
 
 	/**
 	 * Initializes the view and child views located in {@link #_viewCollections}.
-	 *
-	 * @returns {Promise} A Promise resolved when the initialization process is finished.
 	 */
 	init() {
 		if ( this.ready ) {
@@ -290,26 +287,20 @@ export default class View {
 			throw new CKEditorError( 'ui-view-init-reinit: This View has already been initialized.' );
 		}
 
-		return Promise.resolve()
-			// Initialize collections in #_viewCollections.
-			.then( () => {
-				return Promise.all( this._viewCollections.map( c => c.init() ) );
-			} )
-			// Spread the word that this view is ready!
-			.then( () => {
-				this.ready = true;
-			} );
+		// Initialize collections in #_viewCollections.
+		this._viewCollections.map( c => c.init() );
+
+		// Spread the word that this view is ready!
+		this.ready = true;
 	}
 
 	/**
-	 * Destroys the view instance and child views located in {@link #_viewCollections}.
-	 *
-	 * @returns {Promise} A Promise resolved when the destruction process is finished.
+f	 * Destroys the view instance and child views located in {@link #_viewCollections}.
 	 */
 	destroy() {
 		this.stopListening();
 
-		return Promise.all( this._viewCollections.map( c => c.destroy() ) );
+		this._viewCollections.map( c => c.destroy() );
 	}
 
 	/**

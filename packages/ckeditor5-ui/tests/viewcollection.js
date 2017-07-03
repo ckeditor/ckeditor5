@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document, setTimeout */
+/* global document */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -111,79 +111,26 @@ describe( 'ViewCollection', () => {
 				collection.remove( 1 );
 
 				// Finally init the view. Check what's in there.
-				return view.init().then( () => {
-					expect( view.element.childNodes ).to.have.length( 2 );
-					expect( view.element.childNodes[ 0 ] ).to.equal( viewA.element );
-					expect( view.element.childNodes[ 1 ] ).to.equal( viewC.element );
-				} );
+				view.init();
+
+				expect( view.element.childNodes ).to.have.length( 2 );
+				expect( view.element.childNodes[ 0 ] ).to.equal( viewA.element );
+				expect( view.element.childNodes[ 1 ] ).to.equal( viewC.element );
 			} );
 		} );
 	} );
 
 	describe( 'init()', () => {
-		it( 'should return a promise', () => {
-			expect( collection.init() ).to.be.instanceof( Promise );
-		} );
-
-		it( 'should return a composition of child init() promises', () => {
-			const spyA = sinon.spy().named( 'A' );
-			const spyB = sinon.spy().named( 'B' );
-			const spyC = sinon.spy().named( 'C' );
-
-			const childA = {
-				init: () => {
-					return new Promise( resolve => {
-						setTimeout( () => {
-							spyA();
-							resolve();
-						}, 20 );
-					} );
-				}
-			};
-
-			const childB = {
-				init: () => {
-					return new Promise( resolve => {
-						setTimeout( () => {
-							spyB();
-							resolve();
-						}, 10 );
-					} );
-				}
-			};
-
-			const childC = {
-				init: () => {
-					return new Promise( resolve => {
-						setTimeout( () => {
-							spyC();
-							resolve();
-						}, 0 );
-					} );
-				}
-			};
-
-			collection.add( childA );
-			collection.add( childB );
-			collection.add( childC );
-
-			return collection.init()
-				.then( () => {
-					sinon.assert.callOrder( spyC, spyB, spyA );
-				} );
-		} );
-
 		it( 'should throw if already initialized', () => {
-			return collection.init()
-				.then( () => {
-					collection.init();
+			collection.init();
 
-					throw new Error( 'This should not be executed.' );
-				} )
-				.catch( err => {
-					expect( err ).to.be.instanceof( CKEditorError );
-					expect( err.message ).to.match( /ui-viewcollection-init-reinit/ );
-				} );
+			try {
+				collection.init();
+				throw new Error( 'This should not be executed.' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /ui-viewcollection-init-reinit/ );
+			}
 		} );
 
 		it( 'calls #init on all views in the collection', () => {
@@ -201,23 +148,18 @@ describe( 'ViewCollection', () => {
 			collection.add( viewA );
 			collection.add( viewB );
 
-			return collection.init().then( () => {
-				sinon.assert.calledOnce( spyA );
-				sinon.assert.calledOnce( spyB );
-				sinon.assert.callOrder( spyA, spyB );
+			collection.init();
+			sinon.assert.calledOnce( spyA );
+			sinon.assert.calledOnce( spyB );
+			sinon.assert.callOrder( spyA, spyB );
 
-				expect( viewA.element.parentNode ).to.equal( collection._parentElement );
-				expect( viewA.element.nextSibling ).to.equal( viewB.element );
-				expect( collection.ready ).to.be.true;
-			} );
+			expect( viewA.element.parentNode ).to.equal( collection._parentElement );
+			expect( viewA.element.nextSibling ).to.equal( viewB.element );
+			expect( collection.ready ).to.be.true;
 		} );
 	} );
 
 	describe( 'destroy()', () => {
-		it( 'should return a promise', () => {
-			expect( collection.destroy() ).to.be.instanceof( Promise );
-		} );
-
 		it( 'calls #destroy on all views in the collection', () => {
 			const viewA = new View();
 			const viewB = new View();
@@ -228,59 +170,14 @@ describe( 'ViewCollection', () => {
 			collection.add( viewA );
 			collection.add( viewB );
 
-			return collection.destroy().then( () => {
-				sinon.assert.calledOnce( spyA );
-				sinon.assert.calledOnce( spyB );
-				sinon.assert.callOrder( spyA, spyB );
-			} );
-		} );
-
-		// https://github.com/ckeditor/ckeditor5-ui/issues/203
-		it( 'waits for all #add promises to resolve', () => {
-			const spyA = sinon.spy();
-			const spyB = sinon.spy();
-
-			class DelayedInitView extends View {
-				constructor( delay, spy ) {
-					super();
-
-					this.delay = delay;
-					this.spy = spy;
-				}
-
-				init() {
-					return new Promise( resolve => {
-						setTimeout( () => resolve(), this.delay );
-					} )
-						.then( () => super.init() )
-						.then( () => {
-							this.spy();
-						} );
-				}
-			}
-
-			const viewA = new DelayedInitView( 200, spyA );
-			const viewB = new DelayedInitView( 100, spyB );
-
-			return collection.init().then( () => {
-				collection.add( viewA );
-				collection.add( viewB );
-			} )
-				.then( () => {
-					return collection.destroy().then( () => {
-						expect( viewA.ready ).to.be.true;
-						expect( viewB.ready ).to.be.true;
-						sinon.assert.callOrder( spyB, spyA );
-					} );
-				} );
+			collection.destroy();
+			sinon.assert.calledOnce( spyA );
+			sinon.assert.calledOnce( spyB );
+			sinon.assert.callOrder( spyA, spyB );
 		} );
 	} );
 
 	describe( 'add()', () => {
-		it( 'returns a promise', () => {
-			expect( collection.add( {} ) ).to.be.instanceof( Promise );
-		} );
-
 		it( 'initializes the new view in the collection', () => {
 			let view = new View();
 			let spy = testUtils.sinon.spy( view, 'init' );
@@ -288,23 +185,20 @@ describe( 'ViewCollection', () => {
 			expect( collection.ready ).to.be.false;
 			expect( view.ready ).to.be.false;
 
-			return collection.add( view ).then( () => {
-				expect( collection.ready ).to.be.false;
-				expect( view.ready ).to.be.false;
+			collection.add( view );
+			expect( collection.ready ).to.be.false;
+			expect( view.ready ).to.be.false;
 
-				sinon.assert.notCalled( spy );
+			sinon.assert.notCalled( spy );
 
-				view = new View();
-				spy = testUtils.sinon.spy( view, 'init' );
+			view = new View();
+			spy = testUtils.sinon.spy( view, 'init' );
 
-				collection.ready = true;
+			collection.ready = true;
 
-				return collection.add( view ).then( () => {
-					expect( view.ready ).to.be.true;
-
-					sinon.assert.calledOnce( spy );
-				} );
-			} );
+			collection.add( view );
+			expect( view.ready ).to.be.true;
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'works for a view with a Number view#id attribute', () => {
@@ -312,10 +206,9 @@ describe( 'ViewCollection', () => {
 
 			view.set( 'id', 1 );
 
-			return collection.add( view ).then( () => {
-				expect( view.id ).to.equal( 1 );
-				expect( view.viewUid ).to.be.a( 'string' );
-			} );
+			collection.add( view );
+			expect( view.id ).to.equal( 1 );
+			expect( view.viewUid ).to.be.a( 'string' );
 		} );
 	} );
 
