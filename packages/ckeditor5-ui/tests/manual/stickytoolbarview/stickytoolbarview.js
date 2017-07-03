@@ -3,29 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals console:false */
-
 import testUtils from '../../../tests/_utils/utils';
 import StickyToolbarView from '../../../src/toolbar/sticky/stickytoolbarview';
 
 import '@ckeditor/ckeditor5-theme-lark/theme/theme.scss';
 
-testUtils.createTestUIView( {
+const ui = testUtils.createTestUIView( {
 	top: '.ck-editor__top'
-} )
-.then( ui => {
-	createToolbar( ui.top );
-} )
-.catch( err => {
-	console.error( err.stack );
 } );
+
+createToolbar( ui.top );
 
 function createToolbar( collection ) {
 	const toolbar = new StickyToolbarView();
 
 	toolbar.limiterElement = collection._parentElement.parentNode;
 
-	collection.add( toolbar ).then( () => {
-		toolbar.isActive = true;
-	} );
+	collection.add( toolbar );
+	toolbar.isActive = true;
 }

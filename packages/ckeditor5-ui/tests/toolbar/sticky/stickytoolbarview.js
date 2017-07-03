@@ -174,32 +174,23 @@ describe( 'StickyToolbarView', () => {
 	} );
 
 	describe( 'destroy()', () => {
-		it( 'should return a promise', () => {
-			expect( view.destroy() ).to.be.instanceof( Promise );
-		} );
-
-		it( 'can be called multiple times', done => {
+		it( 'can be called multiple times', () => {
 			expect( () => {
-				view.destroy().then( () => {
-					return view.destroy().then( () => {
-						done();
-					} );
-				} );
+				view.destroy();
+				view.destroy();
 			} ).to.not.throw();
 		} );
 
 		it( 'calls destroy on parent class', () => {
 			const spy = testUtils.sinon.spy( ToolbarView.prototype, 'destroy' );
 
-			return view.destroy().then( () => {
-				expect( spy.calledOnce ).to.be.true;
-			} );
+			view.destroy();
+			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'removes view._elementPlaceholder from DOM', () => {
-			return view.destroy().then( () => {
-				expect( view._elementPlaceholder.parentNode ).to.be.null;
-			} );
+			view.destroy();
+			expect( view._elementPlaceholder.parentNode ).to.be.null;
 		} );
 	} );
 
