@@ -45,7 +45,7 @@ describe( 'Rect', () => {
 			const range = document.createRange();
 
 			range.selectNode( document.body );
-			testUtils.sinon.stub( range, 'getBoundingClientRect' ).returns( geometry );
+			testUtils.sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
 
 			assertRect( new Rect( range ), geometry );
 		} );
@@ -71,6 +71,7 @@ describe( 'Rect', () => {
 			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
 
 			const expectedGeometry = Object.assign( {}, geometry );
+			expectedGeometry.right = expectedGeometry.left;
 			expectedGeometry.width = 0;
 
 			assertRect( new Rect( range ), expectedGeometry );
@@ -510,14 +511,14 @@ describe( 'Rect', () => {
 			range.setStart( ancestorA, 0 );
 			range.setEnd( ancestorA, 1 );
 
-			testUtils.sinon.stub( range, 'getBoundingClientRect' ).returns( {
+			testUtils.sinon.stub( range, 'getClientRects' ).returns( [ {
 				top: 0,
 				right: 100,
 				bottom: 100,
 				left: 0,
 				width: 100,
 				height: 100
-			} );
+			} ] );
 
 			testUtils.sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
 				top: 50,
@@ -582,6 +583,53 @@ describe( 'Rect', () => {
 				width: 1000,
 				height: 500
 			} );
+		} );
+	} );
+
+	describe( 'getDomRangeRects() ', () => {
+		it( 'should return rects for a Range (non–collapsed)', () => {
+			const range = document.createRange();
+
+			range.selectNode( document.body );
+			testUtils.sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
+
+			const rects = Rect.getDomRangeRects( range );
+			expect( rects ).to.have.length( 1 );
+			assertRect( rects[ 0 ], geometry );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-utils/issues/153
+		it( 'should return rects for a Range (collapsed)', () => {
+			const range = document.createRange();
+			const secondGeometry = { top: 20, right: 80, bottom: 60, left: 40, width: 40, height: 40 };
+
+			range.collapse();
+			testUtils.sinon.stub( range, 'getClientRects' ).returns( [ geometry, secondGeometry ] );
+
+			const rects = Rect.getDomRangeRects( range );
+			expect( rects ).to.have.length( 2 );
+
+			assertRect( rects[ 0 ], geometry );
+			assertRect( rects[ 1 ], secondGeometry );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-utils/issues/153
+		it( 'should return rects for a Range (collapsed, no Range rects available)', () => {
+			const range = document.createRange();
+			const element = document.createElement( 'div' );
+
+			range.setStart( element, 0 );
+			range.collapse();
+			testUtils.sinon.stub( range, 'getClientRects' ).returns( [] );
+			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+
+			const expectedGeometry = Object.assign( {}, geometry );
+			expectedGeometry.right = expectedGeometry.left;
+			expectedGeometry.width = 0;
+
+			const rects = Rect.getDomRangeRects( range );
+			expect( rects ).to.have.length( 1 );
+			assertRect( rects[ 0 ], expectedGeometry );
 		} );
 	} );
 } );
