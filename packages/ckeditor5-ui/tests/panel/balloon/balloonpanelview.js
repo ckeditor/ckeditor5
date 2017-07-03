@@ -113,9 +113,8 @@ describe( 'BalloonPanelView', () => {
 
 				const button = new ButtonView( { t() {} } );
 
-				return view.content.add( button ).then( () => {
-					expect( view.element.childNodes.length ).to.equal( 1 );
-				} );
+				view.content.add( button );
+				expect( view.element.childNodes.length ).to.equal( 1 );
 			} );
 		} );
 
@@ -565,15 +564,14 @@ describe( 'BalloonPanelView', () => {
 
 				sinon.assert.calledOnce( attachToSpy );
 
-				return view.destroy().then( () => {
-					view = null;
+				view.destroy();
+				view = null;
 
-					window.dispatchEvent( new Event( 'resize' ) );
-					window.dispatchEvent( new Event( 'scroll' ) );
+				window.dispatchEvent( new Event( 'resize' ) );
+				window.dispatchEvent( new Event( 'scroll' ) );
 
-					// Still once.
-					sinon.assert.calledOnce( attachToSpy );
-				} );
+				// Still once.
+				sinon.assert.calledOnce( attachToSpy );
 			} );
 
 			it( 'should set document.body as the default limiter', () => {
