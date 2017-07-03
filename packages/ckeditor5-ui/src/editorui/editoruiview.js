@@ -47,9 +47,8 @@ export default class EditorUIView extends View {
 	 * @inheritDoc
 	 */
 	init() {
-		return Promise.resolve()
-			.then( () => this._renderBodyCollection() )
-			.then( () => super.init() );
+		this._renderBodyCollection();
+		super.init();
 	}
 
 	/**
