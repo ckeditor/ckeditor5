@@ -3,7 +3,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#bbb97b9431e1d2c4ef847be68288cf8e9a4fe2c2",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#75873ffb8abb4b1ea85b7ded8bbe3838cc5c7793",
-    "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#3187afd392537f20090ae0fd81e3de9850921d8b",
+    "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#67bab404291c964afaffc459242bbd52e7b35b9e",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#ca73838bd026223c57f8648e2417f8594d8f4dfa",
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#6d8a2a3730c0ab17d1e55f293772de32bf4275c2",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#14b52d2537e31cb8a2d256370321ef1d24f42d15",
