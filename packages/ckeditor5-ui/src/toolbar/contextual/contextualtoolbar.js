@@ -90,7 +90,7 @@ export default class ContextualToolbar extends Plugin {
 		const config = this.editor.config.get( 'contextualToolbar' );
 		const factory = this.editor.ui.componentFactory;
 
-		return this.toolbarView.fillFromConfig( config, factory );
+		this.toolbarView.fillFromConfig( config, factory );
 	}
 
 	/**
@@ -142,7 +142,6 @@ export default class ContextualToolbar extends Plugin {
 	 * Fires {@link #event:beforeShow} event just before displaying the panel.
 	 *
 	 * @protected
-	 * @return {Promise} A promise resolved when the {@link #toolbarView} {@link module:ui/view~View#init} is done.
 	 */
 	_showPanel() {
 		const editingView = this.editor.editing.view;
@@ -150,47 +149,39 @@ export default class ContextualToolbar extends Plugin {
 
 		// Do not add toolbar to the balloon stack twice.
 		if ( this._balloon.hasView( this.toolbarView ) ) {
-			return Promise.resolve();
+			return;
 		}
 
 		// This implementation assumes that only non–collapsed selections gets the contextual toolbar.
 		if ( !editingView.isFocused || editingView.selection.isCollapsed ) {
-			return Promise.resolve();
+			return;
 		}
 
-		const showPromise = new Promise( resolve => {
-			// If `beforeShow` event is not stopped by any external code then panel will be displayed.
-			this.once( 'beforeShow', () => {
-				if ( isStopped ) {
-					resolve();
+		// If `beforeShow` event is not stopped by any external code then panel will be displayed.
+		this.once( 'beforeShow', () => {
+			if ( isStopped ) {
+				return;
+			}
 
-					return;
-				}
-
-				// Update panel position when selection changes while balloon will be opened
-				// (by an external document changes).
-				this.listenTo( editingView, 'render', () => {
-					this._balloon.updatePosition( this._getBalloonPositionData() );
-				} );
-
-				resolve(
-					// Add panel to the common editor contextual balloon.
-					this._balloon.add( {
-						view: this.toolbarView,
-						position: this._getBalloonPositionData(),
-						balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container'
-					} )
-				);
+			// Update panel position when selection changes while balloon will be opened
+			// (by an external document changes).
+			this.listenTo( editingView, 'render', () => {
+				this._balloon.updatePosition( this._getBalloonPositionData() );
 			} );
-		}, { priority: 'lowest' } );
+
+			// Add panel to the common editor contextual balloon.
+			this._balloon.add( {
+				view: this.toolbarView,
+				position: this._getBalloonPositionData(),
+				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container'
+			} );
+		} );
 
 		// Fire this event to inform that `ContextualToolbar` is going to be shown.
 		// Helper function for preventing the panel from being displayed is passed along with the event.
 		this.fire( 'beforeShow', () => {
 			isStopped = true;
 		} );
-
-		return showPromise;
 	}
 
 	/**
