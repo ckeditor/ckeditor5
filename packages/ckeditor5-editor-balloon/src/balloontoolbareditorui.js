@@ -70,7 +70,13 @@ export default class BalloonToolbarEditorUI {
 				origin: editor.editing.view,
 				originFocusTracker: this.focusTracker,
 				originKeystrokeHandler: editor.keystrokes,
-				toolbar: contextualToolbar.toolbarView
+				toolbar: contextualToolbar.toolbarView,
+				beforeFocus: () => {
+					return contextualToolbar.show();
+				},
+				afterBlur: () => {
+					contextualToolbar.hide();
+				}
 			} );
 		} );
 	}
