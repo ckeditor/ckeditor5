@@ -50,9 +50,9 @@ const utils = {
 
 		const view = new TestUIView();
 
-		return view.init().then( () => {
-			return view;
-		} );
+		view.init();
+
+		return view;
 	}
 };
 
