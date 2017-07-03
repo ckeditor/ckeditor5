@@ -78,8 +78,6 @@ export default class EditableUIView extends View {
 	/**
 	 * Initializes the view by either applying the {@link #template} to the existing
 	 * {@link #editableElement} or assigning {@link #element} as {@link #editableElement}.
-	 *
-	 * @returns {Promise}
 	 */
 	init() {
 		if ( this.externalElement ) {
@@ -88,7 +86,7 @@ export default class EditableUIView extends View {
 			this.editableElement = this.element;
 		}
 
-		return super.init();
+		super.init();
 	}
 
 	/**
@@ -99,6 +97,6 @@ export default class EditableUIView extends View {
 			this.template.revert( this.externalElement );
 		}
 
-		return super.destroy();
+		super.destroy();
 	}
 }

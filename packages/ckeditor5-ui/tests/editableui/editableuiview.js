@@ -32,22 +32,20 @@ describe( 'EditableUIView', () => {
 		it( 'renders element from template when no editableElement', () => {
 			view = new EditableUIView( locale );
 
-			return view.init().then( () => {
-				expect( view.element ).to.equal( view.editableElement );
-				expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
-				expect( view.externalElement ).to.be.undefined;
-			} );
+			view.init();
+			expect( view.element ).to.equal( view.editableElement );
+			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
+			expect( view.externalElement ).to.be.undefined;
 		} );
 
 		it( 'accepts editableElement as an argument', () => {
 			view = new EditableUIView( locale, editableElement );
 
-			return view.init().then( () => {
-				expect( view.element ).to.equal( editableElement );
-				expect( view.element ).to.equal( view.editableElement );
-				expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
-				expect( view.externalElement ).to.equal( editableElement );
-			} );
+			view.init();
+			expect( view.element ).to.equal( editableElement );
+			expect( view.element ).to.equal( view.editableElement );
+			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
+			expect( view.externalElement ).to.equal( editableElement );
 		} );
 	} );
 
@@ -80,18 +78,14 @@ describe( 'EditableUIView', () => {
 		it( 'calls super#destroy()', () => {
 			const spy = testUtils.sinon.spy( View.prototype, 'destroy' );
 
-			return view.destroy().then( () => {
-				sinon.assert.calledOnce( spy );
-			} );
+			view.destroy();
+			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'can be called multiple times', done => {
+		it( 'can be called multiple times', () => {
 			expect( () => {
-				view.destroy().then( () => {
-					return view.destroy().then( () => {
-						done();
-					} );
-				} );
+				view.destroy();
+				view.destroy();
 			} ).to.not.throw();
 		} );
 
@@ -102,14 +96,10 @@ describe( 'EditableUIView', () => {
 
 				view = new EditableUIView( locale, editableElement );
 
-				return view.init()
-					.then( () => {
-						expect( editableElement.contentEditable ).to.equal( 'true' );
-					} )
-					.then( () => view.destroy() )
-					.then( () => {
-						expect( editableElement.contentEditable ).to.equal( 'false' );
-					} );
+				view.init();
+				expect( editableElement.contentEditable ).to.equal( 'true' );
+				view.destroy();
+				expect( editableElement.contentEditable ).to.equal( 'false' );
 			} );
 
 			it( 'reverts contentEditable property of editableElement (was true)', () => {
@@ -118,14 +108,10 @@ describe( 'EditableUIView', () => {
 
 				view = new EditableUIView( locale, editableElement );
 
-				return view.init()
-					.then( () => {
-						expect( editableElement.contentEditable ).to.equal( 'true' );
-					} )
-					.then( () => view.destroy() )
-					.then( () => {
-						expect( editableElement.contentEditable ).to.equal( 'true' );
-					} );
+				view.init();
+				expect( editableElement.contentEditable ).to.equal( 'true' );
+				view.destroy();
+				expect( editableElement.contentEditable ).to.equal( 'true' );
 			} );
 		} );
 	} );
