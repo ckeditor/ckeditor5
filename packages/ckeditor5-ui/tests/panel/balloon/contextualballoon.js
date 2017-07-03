@@ -10,7 +10,7 @@ import View from '../../../src/view';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-/* global document, Event, setTimeout */
+/* global document, Event */
 
 describe( 'ContextualBalloon', () => {
 	let editor, editorElement, balloon, viewA, viewB;
@@ -35,13 +35,12 @@ describe( 'ContextualBalloon', () => {
 			viewB = new View();
 
 			// Add viewA to the pane and init viewB.
-			return Promise.all( [
-				balloon.add( {
-					view: viewA,
-					position: { target: 'fake' }
-				} ),
-				viewB.init(),
-			] );
+			balloon.add( {
+				view: viewA,
+				position: { target: 'fake' }
+			} );
+
+			viewB.init();
 		} );
 	} );
 
@@ -104,33 +103,6 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'add()', () => {
-		it( 'should return promise resolved when view is ready', done => {
-			const clock = sinon.useFakeTimers();
-
-			const view = {
-				init: () => {
-					return new Promise( resolve => {
-						setTimeout( () => {
-							resolve();
-						}, 10 );
-					} );
-				},
-				destroy: () => {}
-			};
-
-			const result = balloon.add( {
-				view,
-				position: { target: 'fake' }
-			} );
-
-			expect( result ).to.instanceof( Promise );
-
-			result.then( done );
-
-			clock.tick( 11 );
-			clock.restore();
-		} );
-
 		it( 'should add view to the stack and display in balloon attached using given position options', () => {
 			expect( balloon.view.content.length ).to.equal( 1 );
 			expect( balloon.view.content.get( 0 ) ).to.deep.equal( viewA );
@@ -162,20 +134,19 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		it( 'should keep balloon at the same position after adding next view', () => {
-			return balloon.add( {
+			balloon.add( {
 				view: viewB,
 				position: { target: 'other' }
-			} )
-			.then( () => {
-				expect( balloon.view.pin.calledTwice ).to.true;
+			} );
 
-				expect( balloon.view.pin.firstCall.args[ 0 ] ).to.deep.equal( {
-					target: 'fake'
-				} );
+			expect( balloon.view.pin.calledTwice ).to.true;
 
-				expect( balloon.view.pin.secondCall.args[ 0 ] ).to.deep.equal( {
-					target: 'fake'
-				} );
+			expect( balloon.view.pin.firstCall.args[ 0 ] ).to.deep.equal( {
+				target: 'fake'
+			} );
+
+			expect( balloon.view.pin.secondCall.args[ 0 ] ).to.deep.equal( {
+				target: 'fake'
 			} );
 		} );
 
@@ -221,10 +192,6 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'remove()', () => {
-		it( 'should return promise', () => {
-			expect( balloon.remove( viewA ) ).to.instanceof( Promise );
-		} );
-
 		it( 'should remove given view and hide balloon when there is no other view to display', () => {
 			balloon.view.isVisible = true;
 
@@ -243,36 +210,6 @@ describe( 'ContextualBalloon', () => {
 			balloon.remove( viewB );
 
 			expect( balloon.visibleView ).to.equal( viewA );
-		} );
-
-		it( 'should wait for init of preceding view when was is not ready', done => {
-			const clock = sinon.useFakeTimers();
-
-			const view = {
-				init: () => {
-					return new Promise( resolve => {
-						setTimeout( () => {
-							resolve();
-						}, 10 );
-					} );
-				},
-				destroy: () => {}
-			};
-
-			balloon.add( {
-				view,
-				position: { target: 'fake' }
-			} );
-
-			balloon.add( {
-				view: viewB,
-				position: { target: 'fake' }
-			} );
-
-			balloon.remove( viewB ).then( done );
-
-			clock.tick( 11 );
-			clock.restore();
 		} );
 
 		it( 'should remove given view from the stack when view is not visible', () => {
