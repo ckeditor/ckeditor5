@@ -225,29 +225,27 @@ describe( 'ButtonView', () => {
 			view = new ButtonView( locale );
 			view.icon = 'foo';
 
-			return view.init().then( () => {
-				expect( view.element.childNodes ).to.have.length( 2 );
-				expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
+			view.init();
+			expect( view.element.childNodes ).to.have.length( 2 );
+			expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
 
-				expect( view.iconView ).to.instanceOf( IconView );
-				expect( view.iconView.content ).to.equal( 'foo' );
+			expect( view.iconView ).to.instanceOf( IconView );
+			expect( view.iconView.content ).to.equal( 'foo' );
 
-				view.icon = 'bar';
-				expect( view.iconView.content ).to.equal( 'bar' );
-			} );
+			view.icon = 'bar';
+			expect( view.iconView.content ).to.equal( 'bar' );
 		} );
 
 		it( 'is destroyed with the view', () => {
 			view = new ButtonView( locale );
 			view.icon = 'foo';
 
-			return view.init().then( () => {
-				const spy = sinon.spy( view.iconView, 'destroy' );
+			view.init();
 
-				return view.destroy().then( () => {
-					sinon.assert.calledOnce( spy );
-				} );
-			} );
+			const spy = sinon.spy( view.iconView, 'destroy' );
+
+			view.destroy();
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
