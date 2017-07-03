@@ -18,7 +18,7 @@ import '../theme/theme.scss';
 /**
  * The block quote plugin.
  *
- * It introduces the `'blockQuote'` button and requires {@link module:block-quote/blockquoteengine~BlockQuoteEngine}
+ * It introduces the `'blockQuote'` button and requires the {@link module:block-quote/blockquoteengine~BlockQuoteEngine}
  * plugin. It also changes <kbd>Enter</kbd> key behavior so it escapes block quotes when pressed in an
  * empty quoted block.
  *
@@ -73,8 +73,8 @@ export default class BlockQuote extends Plugin {
 		const editor = this.editor;
 		const command = editor.commands.get( 'blockQuote' );
 
-		// Overwrite default enter key behavior.
-		// If enter key is pressed with selection collapsed in empty block inside a quote, break the quote.
+		// Overwrite default Enter key behavior.
+		// If Enter key is pressed with selection collapsed in empty block inside a quote, break the quote.
 		// This listener is added in afterInit in order to register it after list's feature listener.
 		// We can't use a priority for this, because 'low' is already used by the enter feature, unless
 		// we'd use numeric priority in this case.

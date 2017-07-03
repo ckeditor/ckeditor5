@@ -7,7 +7,7 @@ CKEditor 5 Block Quote Feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-block-quote/status.svg)](https://david-dm.org/ckeditor/ckeditor5-block-quote)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-block-quote/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-block-quote?type=dev)
 
-The block quote feature for CKEditor 5 project. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5>.
+The block quote feature for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5>.
 
 ## License
 

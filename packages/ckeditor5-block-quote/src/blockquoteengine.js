@@ -17,7 +17,7 @@ import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/build
 /**
  * The block quote engine.
  *
- * Introduces the `'blockQuote'` command and `'blockQuote'` model element.
+ * Introduces the `'blockQuote'` command and the `'blockQuote'` model element.
  *
  * @extends module:core/plugin~Plugin
  */

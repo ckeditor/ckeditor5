@@ -37,14 +37,14 @@ export default class BlockQuoteCommand extends Command {
 	}
 
 	/**
-	 * Executes the command. When the command {@link #value is on}, then all block quotes within
-	 * the selection will be removed. If it's off, then all selected blocks will be wrapped with
+	 * Executes the command. When the command {@link #value is on}, all block quotes within
+	 * the selection will be removed. If it is off, all selected blocks will be wrapped with
 	 * a block quote.
 	 *
 	 * @fires execute
 	 * @param {Object} [options] Options for executed command.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
-	 * New batch will be created if this option is not set.
+	 * A new batch will be created if this option is not set.
 	 */
 	execute( options = {} ) {
 		const doc = this.editor.document;
@@ -104,7 +104,7 @@ export default class BlockQuoteCommand extends Command {
 	}
 
 	/**
-	 * Removes the quote from the given blocks.
+	 * Removes the quote from given blocks.
 	 *
 	 * If blocks which are supposed to be "unquoted" are in the middle of a quote,
 	 * start it or end it, then the quote will be split (if needed) and the blocks
@@ -147,7 +147,7 @@ export default class BlockQuoteCommand extends Command {
 	}
 
 	/**
-	 * Applies the quote to the given blocks.
+	 * Applies the quote to given blocks.
 	 *
 	 * @private
 	 * @param {module:engine/model/batch~Batch} batch
