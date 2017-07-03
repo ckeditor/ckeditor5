@@ -13,7 +13,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 let editor, availablePlugins;
-let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginJ, PluginK, PluginX;
+let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginJ, PluginK, PluginX, PluginFoo, AnotherPluginFoo;
 class TestError extends Error {}
 class ChildPlugin extends Plugin {}
 class GrandPlugin extends ChildPlugin {}
@@ -39,6 +39,8 @@ before( () => {
 			throw new TestError( 'Some error inside a plugin' );
 		}
 	};
+	PluginFoo = createPlugin( 'Foo' );
+	AnotherPluginFoo = createPlugin( 'Foo' );
 
 	PluginC.requires = [ PluginB ];
 	PluginD.requires = [ PluginA, PluginC ];
@@ -67,6 +69,24 @@ describe( 'PluginCollection', () => {
 			PluginK,
 			PluginX
 		];
+
+		PluginFoo.requires = [];
+	} );
+
+	describe( 'constructor()', () => {
+		it( 'logs if passed an array that contains plugins with duplicated names as available plugins', () => {
+			availablePlugins = [ PluginFoo, AnotherPluginFoo ];
+
+			const logSpy = testUtils.sinon.stub( log, 'warn' );
+			const plugins = new PluginCollection( editor, availablePlugins );
+
+			expect( logSpy.firstCall.args[ 0 ] ).to.equal( 'Plugin "Foo" is already defined. Skipping.' );
+
+			expect( plugins._availablePlugins.size ).to.equal( 3 );
+			expect( plugins._availablePlugins.get( 'Foo' ) ).to.equal( PluginFoo );
+			expect( plugins._availablePlugins.get( PluginFoo ) ).to.equal( PluginFoo );
+			expect( plugins._availablePlugins.get( AnotherPluginFoo ) ).to.equal( AnotherPluginFoo );
+		} );
 	} );
 
 	describe( 'load()', () => {
@@ -351,6 +371,70 @@ describe( 'PluginCollection', () => {
 					expect( logSpy.calledTwice ).to.equal( true );
 				} );
 		} );
+
+		it( 'logs if tries to load more than one plugin with the same name', () => {
+			const logSpy = testUtils.sinon.stub( log, 'warn' );
+			const plugins = new PluginCollection( editor );
+
+			return plugins.load( [ PluginFoo, AnotherPluginFoo ] )
+				.then( () => {
+					expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+					expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( PluginFoo );
+					expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
+					expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
+
+					expect( logSpy.calledOnce ).to.equal( true );
+					expect( logSpy.firstCall.args[ 0 ] ).to.equal(
+						'Plugin "Foo" is already loaded. You should not load more than one plugin with the same name.'
+					);
+				} );
+		} );
+
+		it( 'logs if tries to load more than one plugin with the same name (plugin requires plugin with the same name)', () => {
+			PluginFoo.requires = [ AnotherPluginFoo ];
+
+			const logSpy = testUtils.sinon.stub( log, 'warn' );
+			const plugins = new PluginCollection( editor );
+
+			return plugins.load( [ PluginFoo ] )
+				.then( () => {
+					expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+					expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( AnotherPluginFoo );
+					expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
+					expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
+
+					expect( logSpy.calledOnce ).to.equal( true );
+					expect( logSpy.firstCall.args[ 0 ] ).to.equal(
+						'Plugin "Foo" is already loaded. You should not load more than one plugin with the same name.'
+					);
+				} );
+		} );
+
+		it(
+			'logs if tries to load more than one plugin with the same name (plugin with the same name is built-in the PluginCollection)',
+			() => {
+				availablePlugins = [ PluginFoo ];
+
+				const logSpy = testUtils.sinon.stub( log, 'warn' );
+				const plugins = new PluginCollection( editor, availablePlugins );
+
+				return plugins.load( [ 'Foo', AnotherPluginFoo ] )
+					.then( () => {
+						expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+						expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( PluginFoo );
+						expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
+						expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
+
+						expect( logSpy.calledOnce ).to.equal( true );
+						expect( logSpy.firstCall.args[ 0 ] ).to.equal(
+							'Plugin "Foo" is already loaded. You should not load more than one plugin with the same name.'
+						);
+					} );
+			}
+		);
 	} );
 
 	describe( 'get()', () => {
