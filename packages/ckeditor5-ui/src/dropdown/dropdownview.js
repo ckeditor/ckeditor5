@@ -138,7 +138,7 @@ export default class DropdownView extends View {
 		this.keystrokes.set( 'arrowleft', closeDropdown );
 		this.keystrokes.set( 'esc', closeDropdown );
 
-		return super.init();
+		super.init();
 	}
 
 	/**

@@ -14,9 +14,8 @@ import createListDropdown from '../../../src/dropdown/list/createlistdropdown';
 import '@ckeditor/ckeditor5-theme-lark/theme/theme.scss';
 
 function renderInto( selector, view ) {
-	view.init().then( () => {
-		document.querySelector( selector ).appendChild( view.element );
-	} );
+	view.init();
+	document.querySelector( selector ).appendChild( view.element );
 }
 
 function testEmpty() {
