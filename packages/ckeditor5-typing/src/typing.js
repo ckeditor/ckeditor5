@@ -25,6 +25,6 @@ export default class Typing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'typing/typing';
+		return 'Typing';
 	}
 }

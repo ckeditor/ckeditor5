@@ -26,7 +26,7 @@ export default class Input extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'typing/input';
+		return 'Input';
 	}
 
 	/**
