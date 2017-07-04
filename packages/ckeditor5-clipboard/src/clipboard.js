@@ -65,7 +65,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  * At this stage the pasted content can be processed by the features. E.g. a feature which wants to transform
  * a pasted text into a link can be implemented in this way:
  *
- *		this.listenTo( editor.plugins.get( 'clipboard/clipboard' ), 'inputTransformation', ( evt, data ) => {
+ *		this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
  *			if ( data.content.childCount == 1 && isUrlText( data.content.getChild( 0 ) ) ) {
  *				const linkUrl = data.content.getChild( 0 ).data;
  *
