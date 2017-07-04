@@ -28,9 +28,9 @@ describe( 'FileDialogButtonView', () => {
 	} );
 
 	it( 'should remove input view from body after destroy', () => {
-		return view.destroy().then( () => {
-			expect( view.fileInputView.element.parentNode ).to.be.null;
-		} );
+		view.destroy();
+
+		expect( view.fileInputView.element.parentNode ).to.be.null;
 	} );
 
 	it( 'should open file dialog on execute', () => {
