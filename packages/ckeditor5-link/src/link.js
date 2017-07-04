@@ -225,7 +225,6 @@ export default class Link extends Plugin {
 	 *
 	 * @protected
 	 * @param {Boolean} [focusInput=false] When `true`, link form will be focused on panel show.
-	 * @return {Promise} A promise resolved when the {@link #formView} {@link module:ui/view~View#init} is done.
 	 */
 	_showPanel( focusInput ) {
 		const editor = this.editor;
@@ -280,17 +279,15 @@ export default class Link extends Plugin {
 			if ( focusInput && this._balloon.visibleView === this.formView ) {
 				this.formView.urlInputView.select();
 			}
-
-			return Promise.resolve();
 		} else {
-			return this._balloon.add( {
+			this._balloon.add( {
 				view: this.formView,
 				position: this._getBalloonPositionData()
-			} ).then( () => {
-				if ( focusInput ) {
-					this.formView.urlInputView.select();
-				}
 			} );
+
+			if ( focusInput ) {
+				this.formView.urlInputView.select();
+			}
 		}
 	}
 
