@@ -45,25 +45,11 @@ export default class PluginCollection {
 		 */
 		this._plugins = new Map();
 
-		/**
-		 * Set of plugins' names. Used to detect whether tries to load a plugin with the same name.
-		 *
-		 * @protected
-		 * @type {Set} module:core/plugin~PluginCollection#_loadedPluginNames
-		 */
-		this._loadedPluginNames = new Set();
-
 		for ( const PluginConstructor of availablePlugins ) {
 			this._availablePlugins.set( PluginConstructor, PluginConstructor );
 
-			const pluginName = PluginConstructor.pluginName;
-
-			if ( pluginName ) {
-				if ( this._availablePlugins.has( pluginName ) ) {
-					log.warn( `Plugin "${ pluginName }" is already defined. Skipping.` );
-				} else {
-					this._availablePlugins.set( pluginName, PluginConstructor );
-				}
+			if ( PluginConstructor.pluginName ) {
+				this._availablePlugins.set( PluginConstructor.pluginName, PluginConstructor );
 			}
 		}
 	}
@@ -145,12 +131,6 @@ export default class PluginCollection {
 				return;
 			}
 
-			const pluginName = PluginConstructor.pluginName;
-
-			if ( pluginName && that._loadedPluginNames.has( pluginName ) ) {
-				log.warn( `Plugin "${ pluginName }" is already loaded. You should not load more than one plugin with the same name.` );
-			}
-
 			return instantiatePlugin( PluginConstructor )
 				.catch( err => {
 					/**
@@ -168,10 +148,6 @@ export default class PluginCollection {
 		function instantiatePlugin( PluginConstructor ) {
 			return new Promise( resolve => {
 				loading.add( PluginConstructor );
-
-				if ( PluginConstructor.pluginName ) {
-					that._loadedPluginNames.add( PluginConstructor.pluginName );
-				}
 
 				if ( PluginConstructor.requires ) {
 					PluginConstructor.requires.forEach( RequiredPluginConstructorOrName => {
@@ -257,7 +233,13 @@ export default class PluginCollection {
 
 		const pluginName = PluginConstructor.pluginName;
 
-		if ( pluginName && !this._plugins.has( pluginName ) ) {
+		if ( !pluginName ) {
+			return;
+		}
+
+		if ( this._plugins.has( pluginName ) ) {
+			log.warn( `Plugin "${ pluginName }" is already loaded. You should not load more than one plugin with the same name.` );
+		} else {
 			this._plugins.set( pluginName, plugin );
 		}
 	}

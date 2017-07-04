@@ -73,22 +73,6 @@ describe( 'PluginCollection', () => {
 		PluginFoo.requires = [];
 	} );
 
-	describe( 'constructor()', () => {
-		it( 'logs if passed an array that contains plugins with duplicated names as available plugins', () => {
-			availablePlugins = [ PluginFoo, AnotherPluginFoo ];
-
-			const logSpy = testUtils.sinon.stub( log, 'warn' );
-			const plugins = new PluginCollection( editor, availablePlugins );
-
-			expect( logSpy.firstCall.args[ 0 ] ).to.equal( 'Plugin "Foo" is already defined. Skipping.' );
-
-			expect( plugins._availablePlugins.size ).to.equal( 3 );
-			expect( plugins._availablePlugins.get( 'Foo' ) ).to.equal( PluginFoo );
-			expect( plugins._availablePlugins.get( PluginFoo ) ).to.equal( PluginFoo );
-			expect( plugins._availablePlugins.get( AnotherPluginFoo ) ).to.equal( AnotherPluginFoo );
-		} );
-	} );
-
 	describe( 'load()', () => {
 		it( 'should not fail when trying to load 0 plugins (empty array)', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
