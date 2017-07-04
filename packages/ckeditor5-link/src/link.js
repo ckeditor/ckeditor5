@@ -44,7 +44,7 @@ export default class Link extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'link/link';
+		return 'Link';
 	}
 
 	/**
