@@ -108,17 +108,18 @@ mix( Plugin, ObservableMixin );
  * {@link module:core/plugincollection~PluginCollection#get} by its
  * name and its constructor. If not, then only by its constructor.
  *
- * The name should reflect the package name + the plugin module name. E.g. `ckeditor5-image/src/image.js` plugin
- * should be named `image/image`. If plugin is kept deeper in the directory structure, it's recommended to only use the module file name,
- * not the whole path. So, e.g. a plugin defined in `ckeditor5-ui/src/notification/notification.js` file may be named `ui/notification`.
+ * The name should reflect the constructor name.
  *
  * To keep a plugin class definition tight it's recommended to define this property as a static getter:
  *
  *		export default class ImageCaption {
  *			static get pluginName() {
- *				return 'image/imagecaption';
+ *				return 'ImageCaption';
  *			}
  *		}
+ *
+ * Note: The native `Function.name` property could not be used to keep the plugin name because
+ * it will be mangled during code minification.
  *
  * @static
  * @readonly
