@@ -36,7 +36,7 @@ export default class List extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'list/list';
+		return 'List';
 	}
 
 	/**
