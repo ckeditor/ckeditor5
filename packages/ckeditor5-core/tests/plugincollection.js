@@ -369,9 +369,12 @@ describe( 'PluginCollection', () => {
 					expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
 
 					expect( logSpy.calledOnce ).to.equal( true );
-					expect( logSpy.firstCall.args[ 0 ] ).to.equal(
-						'Plugin "Foo" is already loaded. You should not load more than one plugin with the same name.'
-					);
+					expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
+
+					const warnData = logSpy.firstCall.args[ 1 ];
+					expect( warnData.pluginName ).to.equal( 'Foo' );
+					expect( warnData.plugin1 ).to.equal( PluginFoo );
+					expect( warnData.plugin2 ).to.equal( AnotherPluginFoo );
 				} );
 		} );
 
@@ -390,9 +393,7 @@ describe( 'PluginCollection', () => {
 					expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
 
 					expect( logSpy.calledOnce ).to.equal( true );
-					expect( logSpy.firstCall.args[ 0 ] ).to.equal(
-						'Plugin "Foo" is already loaded. You should not load more than one plugin with the same name.'
-					);
+					expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
 				} );
 		} );
 
@@ -413,9 +414,7 @@ describe( 'PluginCollection', () => {
 						expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
 
 						expect( logSpy.calledOnce ).to.equal( true );
-						expect( logSpy.firstCall.args[ 0 ] ).to.equal(
-							'Plugin "Foo" is already loaded. You should not load more than one plugin with the same name.'
-						);
+						expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
 					} );
 			}
 		);
