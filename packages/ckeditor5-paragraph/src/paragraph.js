@@ -27,7 +27,7 @@ export default class Paragraph extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'paragraph/paragraph';
+		return 'Paragraph';
 	}
 
 	/**
