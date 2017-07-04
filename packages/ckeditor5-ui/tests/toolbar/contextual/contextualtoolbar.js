@@ -295,8 +295,8 @@ describe( 'ContextualToolbar', () => {
 		beforeEach( () => {
 			setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
-			showPanelSpy = sandbox.stub( contextualToolbar, '_showPanel', () => {} );
-			hidePanelSpy = sandbox.stub( contextualToolbar, '_hidePanel', () => {} );
+			showPanelSpy = sandbox.spy( contextualToolbar, '_showPanel' );
+			hidePanelSpy = sandbox.spy( contextualToolbar, '_hidePanel' );
 		} );
 
 		it( 'should open when selection stops changing', () => {

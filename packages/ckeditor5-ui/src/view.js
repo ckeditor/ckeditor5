@@ -295,7 +295,7 @@ export default class View {
 	}
 
 	/**
-f	 * Destroys the view instance and child views located in {@link #_viewCollections}.
+	 * Destroys the view instance and child views located in {@link #_viewCollections}.
 	 */
 	destroy() {
 		this.stopListening();
