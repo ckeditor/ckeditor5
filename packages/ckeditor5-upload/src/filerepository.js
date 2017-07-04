@@ -428,7 +428,7 @@ mix( FileLoader, ObservableMixin );
  *
  * Then adapter can be set to be used by {@link module:upload/filerepository~FileRepository FileRepository}:
  *
- *	editor.plugins.get( 'upload/filerepository' ).createAdapter = function( loader ) {
+ *	editor.plugins.get( 'FileRepository' ).createAdapter = function( loader ) {
  *		return new Adapter( loader );
  *	};
  *

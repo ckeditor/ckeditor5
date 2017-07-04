@@ -36,7 +36,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 } )
 .then( editor => {
 	// Register fake adapter.
-	editor.plugins.get( 'upload/filerepository' ).createAdapter = loader => {
+	editor.plugins.get( 'FileRepository' ).createAdapter = loader => {
 		const adapterMock = new AdapterMock( loader );
 		createProgressButton( loader, adapterMock );
 
