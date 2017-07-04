@@ -28,7 +28,7 @@ export default class Notification extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ui/notification';
+		return 'Notification';
 	}
 
 	/**

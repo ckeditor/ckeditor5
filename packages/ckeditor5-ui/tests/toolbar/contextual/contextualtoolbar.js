@@ -109,7 +109,7 @@ describe( 'ContextualToolbar', () => {
 
 	describe( 'pluginName', () => {
 		it( 'should return plugin by its name', () => {
-			expect( editor.plugins.get( 'ui/contextualtoolbar' ) ).to.equal( contextualToolbar );
+			expect( editor.plugins.get( 'ContextualToolbar' ) ).to.equal( contextualToolbar );
 		} );
 	} );
 
