@@ -36,34 +36,21 @@ describe( 'ClassicTestEditorUI', () => {
 	} );
 
 	describe( 'init()', () => {
-		it( 'returns a promise', () => {
-			expect( ui.init() ).to.be.instanceof( Promise );
-		} );
-
 		it( 'initializes the #view', () => {
 			const spy = sinon.spy( view, 'init' );
 
-			return ui.init().then( () => {
-				sinon.assert.calledOnce( spy );
-			} );
+			ui.init();
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
-		it( 'returns a promise', () => {
-			return ui.init().then( () => {
-				expect( ui.destroy() ).to.be.instanceof( Promise );
-			} );
-		} );
-
 		it( 'destroys the #view', () => {
 			const spy = sinon.spy( view, 'destroy' );
 
-			return ui.init()
-				.then( () => ui.destroy() )
-				.then( () => {
-					sinon.assert.calledOnce( spy );
-				} );
+			ui.init();
+			ui.destroy();
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 } );
