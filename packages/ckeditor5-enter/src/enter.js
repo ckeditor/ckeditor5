@@ -21,7 +21,7 @@ export default class Enter extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'enter/enter';
+		return 'Enter';
 	}
 
 	init() {
