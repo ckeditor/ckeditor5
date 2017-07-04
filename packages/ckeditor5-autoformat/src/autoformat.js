@@ -54,7 +54,7 @@ export default class Autoformat extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'autoformat/autoformat';
+		return 'Autoformat';
 	}
 
 	/**
