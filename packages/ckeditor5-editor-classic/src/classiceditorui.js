@@ -62,32 +62,25 @@ export default class ClassicEditorUI {
 
 	/**
 	 * Initializes the UI.
-	 *
-	 * @returns {Promise} A Promise resolved when the initialization process is finished.
 	 */
 	init() {
 		const editor = this.editor;
 
-		return this.view.init()
-			.then( () => {
-				return this.view.toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
-			} )
-			.then( () => {
-				enableToolbarKeyboardFocus( {
-					origin: editor.editing.view,
-					originFocusTracker: this.focusTracker,
-					originKeystrokeHandler: editor.keystrokes,
-					toolbar: this.view.toolbar
-				} );
-			} );
+		this.view.init();
+		this.view.toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
+
+		enableToolbarKeyboardFocus( {
+			origin: editor.editing.view,
+			originFocusTracker: this.focusTracker,
+			originKeystrokeHandler: editor.keystrokes,
+			toolbar: this.view.toolbar
+		} );
 	}
 
 	/**
 	 * Destroys the UI.
-	 *
-	 * @returns {Promise} A Promise resolved when the destruction process is finished.
 	 */
 	destroy() {
-		return this.view.destroy();
+		this.view.destroy();
 	}
 }

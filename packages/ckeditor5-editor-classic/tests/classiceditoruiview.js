@@ -56,11 +56,9 @@ describe( 'ClassicEditorUIView', () => {
 		it( 'returns editable\'s view element', () => {
 			document.body.appendChild( view.element );
 
-			return view.init()
-				.then( () => {
-					expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
-				} )
-				.then( () => view.destroy() );
+			view.init();
+			expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
+			view.destroy();
 		} );
 	} );
 } );

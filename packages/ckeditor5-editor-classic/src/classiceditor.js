@@ -55,9 +55,9 @@ export default class ClassicEditor extends StandardEditor {
 	destroy() {
 		this.updateEditorElement();
 		this._elementReplacer.restore();
+		this.ui.destroy();
 
-		return this.ui.destroy()
-			.then( () => super.destroy() );
+		return super.destroy();
 	}
 
 	/**
@@ -86,8 +86,10 @@ export default class ClassicEditor extends StandardEditor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor._elementReplacer.replace( element, editor.ui.view.element ) )
-					.then( () => editor.ui.init() )
-					.then( () => editor.fire( 'uiReady' ) )
+					.then( () => {
+						editor.ui.init();
+						editor.fire( 'uiReady' );
+					} )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
 					.then( () => editor.loadDataFromEditorElement() )
 					.then( () => {

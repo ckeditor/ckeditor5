@@ -117,51 +117,38 @@ describe( 'ClassicEditorUI', () => {
 
 	describe( 'init()', () => {
 		afterEach( () => {
-			return ui.destroy();
-		} );
-
-		it( 'returns a promise', () => {
-			document.body.appendChild( view.element );
-
-			const promise = ui.init().then( () => {
-				expect( promise ).to.be.instanceof( Promise );
-			} );
-
-			return promise;
+			ui.destroy();
 		} );
 
 		it( 'initializes the #view', () => {
 			const spy = sinon.spy( view, 'init' );
 
-			return ui.init().then( () => {
-				sinon.assert.calledOnce( spy );
-			} );
+			ui.init();
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'fills view.toolbar#items with editor config', () => {
 			const spy = testUtils.sinon.spy( view.toolbar, 'fillFromConfig' );
 
-			return ui.init().then( () => {
-				sinon.assert.calledWithExactly( spy, editor.config.get( 'toolbar' ), ui.componentFactory );
-			} );
+			ui.init();
+			sinon.assert.calledWithExactly( spy, editor.config.get( 'toolbar' ), ui.componentFactory );
 		} );
 
 		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
 			const spy = testUtils.sinon.spy( view.toolbar, 'focus' );
 
-			return ui.init().then( () => {
-				ui.focusTracker.isFocused = true;
-				ui.view.toolbar.focusTracker.isFocused = false;
+			ui.init();
+			ui.focusTracker.isFocused = true;
+			ui.view.toolbar.focusTracker.isFocused = false;
 
-				editor.keystrokes.press( {
-					keyCode: keyCodes.f10,
-					altKey: true,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
-				} );
-
-				sinon.assert.calledOnce( spy );
+			editor.keystrokes.press( {
+				keyCode: keyCodes.f10,
+				altKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
 			} );
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
@@ -170,24 +157,12 @@ describe( 'ClassicEditorUI', () => {
 			document.body.appendChild( view.element );
 		} );
 
-		it( 'returns a promise', () => {
-			return ui.init().then( () => {
-				const promise = ui.destroy().then( () => {
-					expect( promise ).to.be.instanceof( Promise );
-				} );
-
-				return promise;
-			} );
-		} );
-
 		it( 'destroys the #view', () => {
 			const spy = sinon.spy( view, 'destroy' );
 
-			return ui.init()
-				.then( () => ui.destroy() )
-				.then( () => {
-					sinon.assert.calledOnce( spy );
-				} );
+			ui.init();
+			ui.destroy();
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 } );
