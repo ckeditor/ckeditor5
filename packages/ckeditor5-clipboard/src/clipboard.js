@@ -110,7 +110,7 @@ export default class Clipboard extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'clipboard/clipboard';
+		return 'Clipboard';
 	}
 
 	/**
