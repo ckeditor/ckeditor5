@@ -67,11 +67,9 @@ describe( 'InlineEditorUIView', () => {
 			it( 'is registered as a child', () => {
 				const spy = sinon.spy( view.editable, 'destroy' );
 
-				return view.init()
-					.then( () => view.destroy() )
-					.then( () => {
-						sinon.assert.calledOnce( spy );
-					} );
+				view.init();
+				view.destroy();
+				sinon.assert.calledOnce( spy );
 			} );
 		} );
 	} );
@@ -80,21 +78,17 @@ describe( 'InlineEditorUIView', () => {
 		it( 'appends #toolbar to panel#content', () => {
 			expect( view.panel.content ).to.have.length( 0 );
 
-			return view.init()
-				.then( () => {
-					expect( view.panel.content.get( 0 ) ).to.equal( view.toolbar );
-				} )
-				.then( () => view.destroy() );
+			view.init();
+			expect( view.panel.content.get( 0 ) ).to.equal( view.toolbar );
+			view.destroy();
 		} );
 	} );
 
 	describe( 'editableElement', () => {
 		it( 'returns editable\'s view element', () => {
-			return view.init()
-				.then( () => {
-					expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
-				} )
-				.then( () => view.destroy() );
+			view.init();
+			expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
+			view.destroy();
 		} );
 	} );
 
