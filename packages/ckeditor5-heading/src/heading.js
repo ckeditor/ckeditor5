@@ -35,7 +35,7 @@ export default class Heading extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'heading/heading';
+		return 'Heading';
 	}
 
 	/**
