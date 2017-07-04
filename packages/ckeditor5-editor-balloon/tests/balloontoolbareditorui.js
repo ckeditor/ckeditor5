@@ -114,7 +114,7 @@ describe( 'BalloonToolbarEditorUI', () => {
 		} );
 
 		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
-			const toolbar = editor.plugins.get( 'ui/contextualtoolbar' );
+			const toolbar = editor.plugins.get( 'ContextualToolbar' );
 			const spy = testUtils.sinon.spy( toolbar.toolbarView, 'focus' );
 
 			return ui.init().then( () => {

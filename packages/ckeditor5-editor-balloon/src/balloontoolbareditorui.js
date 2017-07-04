@@ -63,7 +63,7 @@ export default class BalloonToolbarEditorUI {
 	 */
 	init() {
 		const editor = this.editor;
-		const contextualToolbar = editor.plugins.get( 'ui/contextualtoolbar' );
+		const contextualToolbar = editor.plugins.get( 'ContextualToolbar' );
 
 		return this.view.init().then( () => {
 			enableToolbarKeyboardFocus( {
