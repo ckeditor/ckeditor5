@@ -56,7 +56,6 @@ export default class ImageToolbar extends Plugin {
 		}
 
 		const panel = this._panel = new ImageBalloonPanel( editor );
-		const promises = [];
 		const toolbar = new ToolbarView();
 
 		// Add CSS class to the toolbar.
@@ -77,13 +76,13 @@ export default class ImageToolbar extends Plugin {
 		} );
 
 		// Add toolbar to balloon panel.
-		promises.push( panel.content.add( toolbar ) );
+		panel.content.add( toolbar );
 
 		// Add buttons to the toolbar.
-		promises.push( toolbar.fillFromConfig( toolbarConfig, editor.ui.componentFactory ) );
+		toolbar.fillFromConfig( toolbarConfig, editor.ui.componentFactory );
 
 		// Add balloon panel to editor's UI.
-		promises.push( editor.ui.view.body.add( panel ) );
+		editor.ui.view.body.add( panel );
 
 		// Show balloon panel each time image widget is selected.
 		this.listenTo( this.editor.editing.view, 'render', () => {
@@ -98,8 +97,6 @@ export default class ImageToolbar extends Plugin {
 				this.show();
 			}
 		} );
-
-		return Promise.all( promises );
 	}
 
 	/**

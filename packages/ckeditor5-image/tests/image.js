@@ -68,25 +68,23 @@ describe( 'Image', () => {
 			// When image is selected along with text.
 			setModelData( newEditor.document, '<paragraph>fo[o</paragraph><image alt="alt text" src="foo.png"></image>]' );
 
-			return contextualToolbar._showPanel()
-				.then( () => {
-					// ContextualToolbar should be visible.
-					expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
+			contextualToolbar._showPanel();
 
-					// When only image is selected.
-					setModelData( newEditor.document, '<paragraph>foo</paragraph>[<image alt="alt text" src="foo.png"></image>]' );
+			// ContextualToolbar should be visible.
+			expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 
-					return contextualToolbar._showPanel()
-						.then( () => {
-							// ContextualToolbar should not be visible.
-							expect( balloon.visibleView ).to.be.null;
+			// When only image is selected.
+			setModelData( newEditor.document, '<paragraph>foo</paragraph>[<image alt="alt text" src="foo.png"></image>]' );
 
-							// Cleaning up.
-							editorElement.remove();
+			contextualToolbar._showPanel();
 
-							return newEditor.destroy();
-						} );
-				} );
+			// ContextualToolbar should not be visible.
+			expect( balloon.visibleView ).to.be.null;
+
+			// Cleaning up.
+			editorElement.remove();
+
+			return newEditor.destroy();
 		} );
 	} );
 

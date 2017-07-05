@@ -45,21 +45,21 @@ export default class ImageTextAlternative extends Plugin {
 	init() {
 		this._createButton();
 
-		return this._createBalloonPanel().then( panel => {
-			/**
-			 * Balloon panel containing text alternative change form.
-			 *
-			 * @member {module:image/image/ui/imageballoonpanel~ImageBalloonPanelView} #baloonPanel
-			 */
-			this.balloonPanel = panel;
+		const panel = this._createBalloonPanel();
 
-			/**
-			 * Form containing textarea and buttons, used to change `alt` text value.
-			 *
-			 * @member {module:image/imagetextalternative/ui/textalternativeformview~TextAlternativeFormView} #form
-			 */
-			this.form = panel.content.get( 0 );
-		} );
+		/**
+		 * Balloon panel containing text alternative change form.
+		 *
+		 * @member {module:image/image/ui/imageballoonpanel~ImageBalloonPanelView} #baloonPanel
+		 */
+		this.balloonPanel = panel;
+
+		/**
+		 * Form containing textarea and buttons, used to change `alt` text value.
+		 *
+		 * @member {module:image/imagetextalternative/ui/textalternativeformview~TextAlternativeFormView} #form
+		 */
+		this.form = panel.content.get( 0 );
 	}
 
 	/**
@@ -94,7 +94,7 @@ export default class ImageTextAlternative extends Plugin {
 	 * Creates balloon panel.
 	 *
 	 * @private
-	 * @return {Promise.<module:image/image/ui/imageballoonpanel~ImageBalloonPanelView>}
+	 * @return {module:image/image/ui/imageballoonpanel~ImageBalloonPanelView}
 	 */
 	_createBalloonPanel() {
 		const editor = this.editor;
@@ -139,10 +139,10 @@ export default class ImageTextAlternative extends Plugin {
 			callback: () => this._hideBalloonPanel()
 		} );
 
-		return Promise.all( [
-			panel.content.add( form ),
-			editor.ui.view.body.add( panel )
-		] ).then( () => panel );
+		panel.content.add( form );
+		editor.ui.view.body.add( panel );
+
+		return panel;
 	}
 
 	/**
