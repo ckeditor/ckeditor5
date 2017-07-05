@@ -471,6 +471,7 @@ export default class Range {
 				// Collapsed range is in merged element.
 				// Without fix, the range would end up in the graveyard, together with removed element.
 				// <p>foo</p><p>[]bar</p> -> <p>foobar</p><p>[]</p> -> <p>foobar</p> -> <p>foo[]bar</p>
+				// <p>foo</p><p>bar[]</p>
 				return [ new Range( targetPosition.getShiftedBy( this.start.offset ) ) ];
 			}
 			//
