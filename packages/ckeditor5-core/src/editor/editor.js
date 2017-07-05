@@ -55,7 +55,7 @@ export default class Editor {
 		 * Commands registered to the editor.
 		 *
 		 * @readonly
-		 * @member {module:core/command/commandcollection~CommandCollection}
+		 * @member {module:core/commandcollection~CommandCollection}
 		 */
 		this.commands = new CommandCollection();
 
