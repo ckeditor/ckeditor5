@@ -86,6 +86,26 @@ describe( 'ListItemView', () => {
 				view.element.dispatchEvent( new Event( 'click' ) );
 				expect( spy.calledOnce ).to.be.true;
 			} );
+
+			// https://github.com/ckeditor/ckeditor5-ui/issues/153
+			it( 'triggers view#execute event when Enter or Space key is pressed', () => {
+				const spy = sinon.spy();
+				const evt = new Event( 'keydown' );
+
+				view.on( 'execute', spy );
+
+				evt.keyCode = 10;
+				view.element.dispatchEvent( evt );
+				expect( spy.calledOnce ).to.be.false;
+
+				evt.keyCode = 13;
+				view.element.dispatchEvent( evt );
+				expect( spy.calledOnce ).to.be.true;
+
+				evt.keyCode = 32;
+				view.element.dispatchEvent( evt );
+				expect( spy.calledTwice ).to.be.true;
+			} );
 		} );
 	} );
 

@@ -53,7 +53,17 @@ export default class ListItemView extends View {
 			],
 
 			on: {
-				click: bind.to( 'execute' )
+				// Execute on mouse click.
+				click: bind.to( 'execute' ),
+
+				// Execute on Enter and Space key press.
+				keydown: bind.to( evt => {
+					const keyCode = evt.keyCode;
+
+					if ( keyCode == 13 || keyCode == 32 ) {
+						this.fire( 'execute' );
+					}
+				} )
 			}
 		} );
 
