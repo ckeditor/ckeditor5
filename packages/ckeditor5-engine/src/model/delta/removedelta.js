@@ -28,7 +28,7 @@ export default class RemoveDelta extends MoveDelta {
 	}
 }
 
-function addRemoveDelta( batch, position, howMany, isPermanent ) {
+function addRemoveDelta( batch, position, howMany ) {
 	const delta = new RemoveDelta();
 	batch.addDelta( delta );
 
@@ -36,7 +36,6 @@ function addRemoveDelta( batch, position, howMany, isPermanent ) {
 	const gyPosition = new Position( graveyard, [ 0 ] );
 
 	const operation = new RemoveOperation( position, howMany, gyPosition, batch.document.version );
-	operation.isPermanent = isPermanent;
 	delta.addOperation( operation );
 	batch.document.applyOperation( operation );
 }
@@ -47,19 +46,17 @@ function addRemoveDelta( batch, position, howMany, isPermanent ) {
  * @chainable
  * @method module:engine/model/batch~Batch#remove
  * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange Model item or range to remove.
- * @param {Boolean} isPermanent If set to `true`, creates
- * {@link module:engine/model/operation/removeoperation~RemoveOperation#isPermanent a permanent RemoveOperation}.
  */
-register( 'remove', function( itemOrRange, isPermanent = false ) {
+register( 'remove', function( itemOrRange ) {
 	if ( itemOrRange instanceof Range ) {
 		// The array is reversed, so the ranges to remove are in correct order and do not have to be updated.
 		const ranges = itemOrRange.getMinimalFlatRanges().reverse();
 
 		for ( const flat of ranges ) {
-			addRemoveDelta( this, flat.start, flat.end.offset - flat.start.offset, isPermanent );
+			addRemoveDelta( this, flat.start, flat.end.offset - flat.start.offset );
 		}
 	} else {
-		addRemoveDelta( this, Position.createBefore( itemOrRange ), 1, isPermanent );
+		addRemoveDelta( this, Position.createBefore( itemOrRange ), 1 );
 	}
 
 	return this;

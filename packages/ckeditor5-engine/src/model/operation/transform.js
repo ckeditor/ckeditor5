@@ -476,13 +476,10 @@ const ot = {
 			// Modifier for default case.
 			// Modifies `context.isStrong` in certain conditions.
 			//
-			// If `b` is a permanent `RemoveOperation`, it is always more important than transformed operation.
-			if ( b instanceof RemoveOperation && b.isPermanent ) {
-				context.isStrong = false;
-			}
 			// If only one of operations is a remove operation, we force remove operation to be the "stronger" one
-			// to provide more expected results.
-			else if ( !context.forceWeakRemove ) {
+			// to provide more expected results. This is done only if `context.forceWeakRemove` is set to `false`.
+			// `context.forceWeakRemove` is set to `true` in certain conditions when transformation takes place during undo.
+			if ( !context.forceWeakRemove ) {
 				if ( a instanceof RemoveOperation && !( b instanceof RemoveOperation ) ) {
 					context.isStrong = true;
 				} else if ( !( a instanceof RemoveOperation ) && b instanceof RemoveOperation ) {

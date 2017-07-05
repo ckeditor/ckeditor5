@@ -5,7 +5,6 @@
 
 import Document from '../../../src/model/document';
 import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
-import NoOperation from '../../../src/model/operation/nooperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
@@ -108,16 +107,6 @@ describe( 'RemoveOperation', () => {
 		expect( reverse.targetPosition.path ).to.deep.equal( [ 3 ] );
 	} );
 
-	it( 'should create NoOperation when reversed if was permanent', () => {
-		const position = new Position( root, [ 0 ] );
-		const operation = new RemoveOperation( position, 2, new Position( doc.graveyard, [ 0 ] ), 0 );
-		operation.isPermanent = true;
-		const reverse = operation.getReversed();
-
-		expect( reverse ).to.be.an.instanceof( NoOperation );
-		expect( reverse.baseVersion ).to.equal( 1 );
-	} );
-
 	it( 'should undo remove set of nodes by applying reverse operation', () => {
 		const position = new Position( root, [ 0 ] );
 		const operation = new RemoveOperation( position, 3, new Position( doc.graveyard, [ 0 ] ), 0 );
@@ -167,7 +156,6 @@ describe( 'RemoveOperation', () => {
 				baseVersion: 0,
 				howMany: 2,
 				isSticky: false,
-				isPermanent: false,
 				sourcePosition: jsonParseStringify( op.sourcePosition ),
 				targetPosition: jsonParseStringify( op.targetPosition )
 			} );

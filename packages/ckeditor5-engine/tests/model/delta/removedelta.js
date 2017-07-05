@@ -73,14 +73,6 @@ describe( 'Batch', () => {
 
 			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 		} );
-
-		it( 'should create permanent RemoveOperation', () => {
-			batch.remove( div, true );
-
-			const operation = batch.deltas[ 0 ].operations[ 0 ];
-
-			expect( operation.isPermanent ).to.be.true;
-		} );
 	} );
 } );
 

@@ -9,34 +9,11 @@
 
 import MoveOperation from './moveoperation';
 import ReinsertOperation from './reinsertoperation';
-import NoOperation from './nooperation';
 
 /**
  * Operation to remove a range of nodes.
  */
 export default class RemoveOperation extends MoveOperation {
-	/**
-	 * Creates a remove operation.
-	 *
-	 * @param {module:engine/model/position~Position} sourcePosition Position before the first
-	 * {@link module:engine/model/item~Item model item} to move.
-	 * @param {Number} howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
-	 * `sourcePosition` with offset shifted by `howMany`.
-	 * @param {module:engine/model/position~Position} targetPosition Position at which moved nodes will be inserted.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which operation can be applied.
-	 */
-	constructor( sourcePosition, howMany, targetPosition, baseVersion ) {
-		super( sourcePosition, howMany, targetPosition, baseVersion );
-
-		/**
-		 * If `RemoveOperation` is permanent (`true`), nodes removed by it cannot be reinserted back to the model. This
-		 * setting affects operational transformation and {@link #getReversed reversing}.
-		 *
-		 * @member {Boolean} module:engine/model/operation/removeoperation~RemoveOperation#isPermanent
-		 */
-		this.isPermanent = false;
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -50,13 +27,9 @@ export default class RemoveOperation extends MoveOperation {
 	 * @returns {module:engine/model/operation/reinsertoperation~ReinsertOperation|module:engine/model/operation/nooperation~NoOperation}
 	 */
 	getReversed() {
-		if ( this.isPermanent ) {
-			return new NoOperation( this.baseVersion + 1 );
-		} else {
-			const newTargetPosition = this.sourcePosition._getTransformedByInsertion( this.targetPosition, this.howMany );
+		const newTargetPosition = this.sourcePosition._getTransformedByInsertion( this.targetPosition, this.howMany );
 
-			return new ReinsertOperation( this.getMovedRangeStart(), this.howMany, newTargetPosition, this.baseVersion + 1 );
-		}
+		return new ReinsertOperation( this.getMovedRangeStart(), this.howMany, newTargetPosition, this.baseVersion + 1 );
 	}
 
 	/**
@@ -67,10 +40,6 @@ export default class RemoveOperation extends MoveOperation {
 	}
 
 	static fromJSON( json, document ) {
-		const op = super.fromJSON( json, document );
-
-		op.isPermanent = json.isPermanent;
-
-		return op;
+		return super.fromJSON( json, document );
 	}
 }
