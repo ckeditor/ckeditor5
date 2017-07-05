@@ -36,7 +36,7 @@ export default class ImageTextAlternative extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'image/imagetextalternative';
+		return 'ImageTextAlternative';
 	}
 
 	/**

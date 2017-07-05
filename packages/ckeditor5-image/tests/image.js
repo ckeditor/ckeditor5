@@ -60,8 +60,8 @@ describe( 'Image', () => {
 			plugins: [ Image, ContextualToolbar, Paragraph ]
 		} )
 		.then( newEditor => {
-			const balloon = newEditor.plugins.get( 'ui/contextualballoon' );
-			const contextualToolbar = newEditor.plugins.get( 'ui/contextualtoolbar' );
+			const balloon = newEditor.plugins.get( 'ContextualBalloon' );
+			const contextualToolbar = newEditor.plugins.get( 'ContextualToolbar' );
 
 			newEditor.editing.view.isFocused = true;
 

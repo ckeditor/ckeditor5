@@ -34,7 +34,7 @@ export default class Image extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'image/image';
+		return 'Image';
 	}
 
 	/**
@@ -42,7 +42,7 @@ export default class Image extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const contextualToolbar = editor.plugins.get( 'ui/contextualtoolbar' );
+		const contextualToolbar = editor.plugins.get( 'ContextualToolbar' );
 
 		// If `ContextualToolbar` plugin is loaded, it should be disabled for images
 		// which have their own toolbar to avoid duplication.
