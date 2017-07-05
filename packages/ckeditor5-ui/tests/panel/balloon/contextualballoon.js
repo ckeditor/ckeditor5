@@ -55,7 +55,7 @@ describe( 'ContextualBalloon', () => {
 
 	describe( 'pluginName', () => {
 		it( 'should return plugin by name', () => {
-			expect( editor.plugins.get( 'ui/contextualballoon' ) ).to.equal( balloon );
+			expect( editor.plugins.get( 'ContextualBalloon' ) ).to.equal( balloon );
 		} );
 	} );
 
