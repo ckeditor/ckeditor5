@@ -13,7 +13,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 let editor, availablePlugins;
-let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginJ, PluginK, PluginX;
+let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginJ, PluginK, PluginX, PluginFoo, AnotherPluginFoo;
 class TestError extends Error {}
 class ChildPlugin extends Plugin {}
 class GrandPlugin extends ChildPlugin {}
@@ -39,6 +39,8 @@ before( () => {
 			throw new TestError( 'Some error inside a plugin' );
 		}
 	};
+	PluginFoo = createPlugin( 'Foo' );
+	AnotherPluginFoo = createPlugin( 'Foo' );
 
 	PluginC.requires = [ PluginB ];
 	PluginD.requires = [ PluginA, PluginC ];
@@ -67,6 +69,8 @@ describe( 'PluginCollection', () => {
 			PluginK,
 			PluginX
 		];
+
+		PluginFoo.requires = [];
 	} );
 
 	describe( 'load()', () => {
@@ -351,6 +355,69 @@ describe( 'PluginCollection', () => {
 					expect( logSpy.calledTwice ).to.equal( true );
 				} );
 		} );
+
+		it( 'logs if tries to load more than one plugin with the same name', () => {
+			const logSpy = testUtils.sinon.stub( log, 'warn' );
+			const plugins = new PluginCollection( editor );
+
+			return plugins.load( [ PluginFoo, AnotherPluginFoo ] )
+				.then( () => {
+					expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+					expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( PluginFoo );
+					expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
+					expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
+
+					expect( logSpy.calledOnce ).to.equal( true );
+					expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
+
+					const warnData = logSpy.firstCall.args[ 1 ];
+					expect( warnData.pluginName ).to.equal( 'Foo' );
+					expect( warnData.plugin1 ).to.equal( PluginFoo );
+					expect( warnData.plugin2 ).to.equal( AnotherPluginFoo );
+				} );
+		} );
+
+		it( 'logs if tries to load more than one plugin with the same name (plugin requires plugin with the same name)', () => {
+			PluginFoo.requires = [ AnotherPluginFoo ];
+
+			const logSpy = testUtils.sinon.stub( log, 'warn' );
+			const plugins = new PluginCollection( editor );
+
+			return plugins.load( [ PluginFoo ] )
+				.then( () => {
+					expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+					expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( AnotherPluginFoo );
+					expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
+					expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
+
+					expect( logSpy.calledOnce ).to.equal( true );
+					expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
+				} );
+		} );
+
+		it(
+			'logs if tries to load more than one plugin with the same name (plugin with the same name is built-in the PluginCollection)',
+			() => {
+				availablePlugins = [ PluginFoo ];
+
+				const logSpy = testUtils.sinon.stub( log, 'warn' );
+				const plugins = new PluginCollection( editor, availablePlugins );
+
+				return plugins.load( [ 'Foo', AnotherPluginFoo ] )
+					.then( () => {
+						expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+						expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( PluginFoo );
+						expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
+						expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
+
+						expect( logSpy.calledOnce ).to.equal( true );
+						expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
+					} );
+			}
+		);
 	} );
 
 	describe( 'get()', () => {

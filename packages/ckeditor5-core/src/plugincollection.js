@@ -231,8 +231,29 @@ export default class PluginCollection {
 	_add( PluginConstructor, plugin ) {
 		this._plugins.set( PluginConstructor, plugin );
 
-		if ( PluginConstructor.pluginName ) {
-			this._plugins.set( PluginConstructor.pluginName, plugin );
+		const pluginName = PluginConstructor.pluginName;
+
+		if ( !pluginName ) {
+			return;
+		}
+
+		if ( this._plugins.has( pluginName ) ) {
+			/**
+			 * Two plugins with the same {@link module:core/plugin~PluginInterface.pluginName} were loaded.
+			 * This may lead to runtime conflicts between these plugins. This usually means that incorrect
+			 * params were passed to {@link module:core/editor/editor~Editor.create}.
+			 *
+			 * @error plugincollection-plugin-name-conflict
+			 * @param {String} pluginName The duplicated plugin name.
+			 * @param {Function} plugin1 The first plugin constructor.
+			 * @param {Function} plugin2 The second plugin constructor.
+			 */
+			log.warn(
+				'plugincollection-plugin-name-conflict: Two plugins with the same name were loaded.',
+				{ pluginName, plugin1: this._plugins.get( pluginName ).constructor, plugin2: PluginConstructor }
+			);
+		} else {
+			this._plugins.set( pluginName, plugin );
 		}
 	}
 }
