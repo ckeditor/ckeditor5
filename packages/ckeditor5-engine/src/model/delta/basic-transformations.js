@@ -17,7 +17,6 @@ import Position from '../position';
 import NoOperation from '../operation/nooperation';
 import AttributeOperation from '../operation/attributeoperation';
 import InsertOperation from '../operation/insertoperation';
-import ReinsertOperation from '../operation/reinsertoperation';
 
 import Delta from './delta';
 import AttributeDelta from './attributedelta';
@@ -179,50 +178,23 @@ addTransformationCase( SplitDelta, SplitDelta, ( a, b, context ) => {
 
 	// The special case is for splits inside the same parent.
 	if ( a.position.root == b.position.root && compareArrays( pathA, pathB ) == 'same' ) {
-		if ( a.position.offset == b.position.offset ) {
-			// We are applying split at the position where split already happened. Additional split is not needed.
-			return [ noDelta() ];
-		} else if ( a.position.offset < b.position.offset ) {
-			// Incoming split delta splits at closer offset. So we simply have to once again split the same node,
-			// but since it was already split (at further offset) there are less child nodes in the split node.
-			// This means that we have to update `howMany` parameter of `MoveOperation` for that delta.
+		const newContext = Object.assign( {}, context );
 
-			const delta = a.clone();
-			delta._moveOperation.howMany = b.position.offset - a.position.offset;
-
-			// If both SplitDeltas are taking their nodes from graveyard, we have to transform their ReinsertOperations.
-			if (
-				a._cloneOperation instanceof ReinsertOperation &&
-				b._cloneOperation instanceof ReinsertOperation &&
-				a._cloneOperation.sourcePosition.offset > b._cloneOperation.sourcePosition.offset
-			) {
-				delta._cloneOperation.sourcePosition.offset--;
-			}
-
-			return [ delta ];
-		} else {
-			// Incoming split delta splits at further offset. We have to simulate that we are not splitting the
-			// original split node but the node after it, which got created by the other split delta.
-			// To do so, we increment offsets so it looks like the split delta was created in the next node.
-
-			const delta = a.clone();
-
-			delta._cloneOperation.position.offset++;
-			delta._moveOperation.sourcePosition.path[ delta._moveOperation.sourcePosition.path.length - 2 ]++;
-			delta._moveOperation.targetPosition.path[ delta._moveOperation.targetPosition.path.length - 2 ]++;
-			delta._moveOperation.sourcePosition.offset = a.position.offset - b.position.offset;
-
-			// If both SplitDeltas are taking their nodes from graveyard, we have to transform their ReinsertOperations.
-			if (
-				a._cloneOperation instanceof ReinsertOperation &&
-				b._cloneOperation instanceof ReinsertOperation &&
-				a._cloneOperation.sourcePosition.offset > b._cloneOperation.sourcePosition.offset
-			) {
-				delta._cloneOperation.sourcePosition.offset--;
-			}
-
-			return [ delta ];
+		// If `a` delta splits in further location, make sure that it will move some nodes by forcing it to be strong.
+		// Similarly, if `a` splits closer, make sure that it is transformed accordingly.
+		if ( a.position.offset != b.position.offset ) {
+			// We need to ensure that incoming operation is strong / weak.
+			newContext.isStrong = a.position.offset > b.position.offset;
 		}
+
+		// Then, default transformation is almost good.
+		// We need to change insert operations offsets, though.
+		// We will use `context.insertBefore` for this (but only if it is not set!)
+		if ( context.insertBefore === undefined ) {
+			newContext.insertBefore = newContext.isStrong;
+		}
+
+		return defaultTransform( a, b, newContext );
 	}
 
 	return defaultTransform( a, b, context );
@@ -416,7 +388,9 @@ addTransformationCase( RemoveDelta, SplitDelta, ( a, b, context ) => {
 
 	// In case if `defaultTransform` returned more than one delta.
 	for ( const delta of deltas ) {
-		for ( const operation of delta.operations ) {
+		// "No delta" may be returned in some cases.
+		if ( delta instanceof RemoveDelta ) {
+			const operation = delta._moveOperation;
 			const rangeEnd = operation.sourcePosition.getShiftedBy( operation.howMany );
 
 			if ( rangeEnd.isEqual( insertPosition ) ) {
@@ -430,16 +404,17 @@ addTransformationCase( RemoveDelta, SplitDelta, ( a, b, context ) => {
 
 // Add special case for SplitDelta x RemoveDelta transformation.
 addTransformationCase( SplitDelta, RemoveDelta, ( a, b, context ) => {
+	// This case is very trickily solved.
+	// Instead of fixing `a` delta, we change `b` delta for a while and fire default transformation with fixed `b` delta.
+	// Thanks to that fixing `a` delta will be differently (correctly) transformed.
 	b = b.clone();
 
 	const insertPosition = a._cloneOperation.position;
+	const operation = b._moveOperation;
+	const rangeEnd = operation.sourcePosition.getShiftedBy( operation.howMany );
 
-	for ( const operation of b.operations ) {
-		const rangeEnd = operation.sourcePosition.getShiftedBy( operation.howMany );
-
-		if ( rangeEnd.isEqual( insertPosition ) ) {
-			operation.howMany += 1;
-		}
+	if ( rangeEnd.isEqual( insertPosition ) ) {
+		operation.howMany += 1;
 	}
 
 	return defaultTransform( a, b, context );
