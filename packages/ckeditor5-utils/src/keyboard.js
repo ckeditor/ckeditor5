@@ -116,6 +116,7 @@ function generateKnownKeyCodes() {
 		backspace: 8,
 		delete: 46,
 		enter: 13,
+		space: 32,
 		esc: 27,
 		tab: 9,
 
