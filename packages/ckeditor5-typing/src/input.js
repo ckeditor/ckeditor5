@@ -42,7 +42,7 @@ export default class Input extends Plugin {
 		editor.commands.add( 'input', inputCommand );
 
 		this.listenTo( editingView, 'keydown', ( evt, data ) => {
-			this._handleKeydown( data, inputCommand.buffer );
+			this._handleKeydown( data, inputCommand );
 		}, { priority: 'lowest' } );
 
 		this.listenTo( editingView, 'mutations', ( evt, mutations, viewSelection ) => {
@@ -64,10 +64,20 @@ export default class Input extends Plugin {
 	 *
 	 * @private
 	 * @param {module:engine/view/observer/keyobserver~KeyEventData} evtData
-	 * @param {module:typing/changebuffer~ChangeBuffer} buffer
+	 * @param {module:typing/inputcommand~InputCommand} inputCommand
 	 */
-	_handleKeydown( evtData, buffer ) {
+	_handleKeydown( evtData, inputCommand ) {
 		const doc = this.editor.document;
+		const buffer = inputCommand.buffer;
+
+		// By relying on the state of the input command we allow disabling the entire input easily
+		// by just disabling the input command. We could’ve used here the delete command but that
+		// would mean requiring the delete feature which would block loading one without the other.
+		// We could also check the editor.isReadOnly property, but that wouldn't allow to block
+		// the input without blocking other features.
+		if ( !inputCommand.isEnabled ) {
+			return;
+		}
 
 		if ( isSafeKeystroke( evtData ) || doc.selection.isCollapsed ) {
 			return;

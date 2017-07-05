@@ -520,6 +520,26 @@ describe( 'Input feature', () => {
 			expect( lockSpy.callCount ).to.be.equal( 0 );
 			expect( unlockSpy.callCount ).to.be.equal( 0 );
 		} );
+
+		it( 'should not modify document when input command is disabled and selection is collapsed', () => {
+			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+			editor.commands.get( 'input' ).isEnabled = false;
+
+			view.fire( 'keydown', { keyCode: getCode( 'b' ) } );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+		} );
+
+		it( 'should not modify document when input command is disabled and selection is non-collapsed', () => {
+			setModelData( model, '<paragraph>fo[ob]ar</paragraph>' );
+
+			editor.commands.get( 'input' ).isEnabled = false;
+
+			view.fire( 'keydown', { keyCode: getCode( 'b' ) } );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
+		} );
 	} );
 } );
 
