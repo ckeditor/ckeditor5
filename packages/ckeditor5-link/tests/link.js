@@ -46,7 +46,7 @@ describe( 'Link', () => {
 			testUtils.sinon.stub( balloon.view, 'attachTo', () => {} );
 			testUtils.sinon.stub( balloon.view, 'pin', () => {} );
 
-			return formView.init();
+			formView.init();
 		} );
 	} );
 
@@ -80,48 +80,36 @@ describe( 'Link', () => {
 			editor.editing.view.isFocused = true;
 		} );
 
-		it( 'should return promise', () => {
-			const returned = linkFeature._showPanel();
-
-			expect( returned ).to.instanceof( Promise );
-
-			return returned;
-		} );
-
 		it( 'should add #formView to the #_balloon and attach the #_balloon to the selection when text fragment is selected', () => {
 			setModelData( editor.document, '<paragraph>f[o]o</paragraph>' );
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
-			return linkFeature._showPanel()
-				.then( () => {
-					expect( balloon.visibleView ).to.equal( formView );
+			linkFeature._showPanel();
 
-					sinon.assert.calledWithExactly( balloonAddSpy, {
-						view: formView,
-						position: {
-							target: selectedRange,
-							limiter: editorElement
-						}
-					} );
-				} );
+			expect( balloon.visibleView ).to.equal( formView );
+			sinon.assert.calledWithExactly( balloonAddSpy, {
+				view: formView,
+				position: {
+					target: selectedRange,
+					limiter: editorElement
+				}
+			} );
 		} );
 
 		it( 'should add #formView to the #_balloon and attach the #_balloon to the selection when selection is collapsed', () => {
 			setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
-			return linkFeature._showPanel()
-				.then( () => {
-					expect( balloon.visibleView ).to.equal( formView );
+			linkFeature._showPanel();
 
-					sinon.assert.calledWithExactly( balloonAddSpy, {
-						view: formView,
-						position: {
-							target: selectedRange,
-							limiter: editorElement
-						}
-					} );
-				} );
+			expect( balloon.visibleView ).to.equal( formView );
+			sinon.assert.calledWithExactly( balloonAddSpy, {
+				view: formView,
+				position: {
+					target: selectedRange,
+					limiter: editorElement
+				}
+			} );
 		} );
 
 		it( 'should add #formView to the #_balloon and attach the #_balloon to the link element when collapsed selection is inside ' +
@@ -130,36 +118,30 @@ describe( 'Link', () => {
 			setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 			const linkElement = editorElement.querySelector( 'a' );
 
-			return linkFeature._showPanel()
-				.then( () => {
-					expect( balloon.visibleView ).to.equal( formView );
+			linkFeature._showPanel();
 
-					sinon.assert.calledWithExactly( balloonAddSpy, {
-						view: formView,
-						position: {
-							target: linkElement,
-							limiter: editorElement
-						}
-					} );
-				} );
+			expect( balloon.visibleView ).to.equal( formView );
+			sinon.assert.calledWithExactly( balloonAddSpy, {
+				view: formView,
+				position: {
+					target: linkElement,
+					limiter: editorElement
+				}
+			} );
 		} );
 
 		it( 'should not focus the #formView at default', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
-			return linkFeature._showPanel()
-				.then( () => {
-					sinon.assert.notCalled( spy );
-				} );
+			linkFeature._showPanel();
+			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should not focus the #formView when called with a `false` parameter', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
-			return linkFeature._showPanel( false )
-				.then( () => {
-					sinon.assert.notCalled( spy );
-				} );
+			linkFeature._showPanel( false );
+			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should not focus the #formView when called with a `true` parameter while the balloon is opened but link ' +
@@ -171,48 +153,39 @@ describe( 'Link', () => {
 				destroy: () => {}
 			};
 
-			return linkFeature._showPanel( false )
-				.then( () => balloon.add( { view: viewMock } ) )
-				.then( () => linkFeature._showPanel( true ) )
-				.then( () => {
-					sinon.assert.notCalled( spy );
-				} );
+			linkFeature._showPanel( false );
+			balloon.add( { view: viewMock } );
+			linkFeature._showPanel( true );
+
+			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should focus the #formView when called with a `true` parameter', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
-			return linkFeature._showPanel( true )
-				.then( () => {
-					sinon.assert.calledOnce( spy );
-				} );
+			linkFeature._showPanel( true );
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should focus the #formView when called with a `true` parameter while the balloon is open and the #formView is visible', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
-			return linkFeature._showPanel( false )
-				.then( () => linkFeature._showPanel( true ) )
-				.then( () => {
-					sinon.assert.calledOnce( spy );
-				} );
+			linkFeature._showPanel( false );
+			linkFeature._showPanel( true );
+			sinon.assert.calledOnce( spy );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/53
 		it( 'should set formView.unlinkButtonView#isVisible depending on the selection in a link or not', () => {
 			setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
 
-			return linkFeature._showPanel()
-				.then( () => {
-					expect( formView.unlinkButtonView.isVisible ).to.be.false;
+			linkFeature._showPanel();
+			expect( formView.unlinkButtonView.isVisible ).to.be.false;
 
-					setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+			setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
-					return linkFeature._showPanel()
-						.then( () => {
-							expect( formView.unlinkButtonView.isVisible ).to.be.true;
-						} );
-				} );
+			linkFeature._showPanel();
+			expect( formView.unlinkButtonView.isVisible ).to.be.true;
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
@@ -222,20 +195,16 @@ describe( 'Link', () => {
 			// Mock some leftover value **in DOM**, e.g. after previous editing.
 			formView.urlInputView.inputView.element.value = 'leftover';
 
-			return linkFeature._showPanel()
-				.then( () => {
-					expect( formView.urlInputView.inputView.element.value ).to.equal( 'url' );
-				} );
+			linkFeature._showPanel();
+			expect( formView.urlInputView.inputView.element.value ).to.equal( 'url' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
 		it( 'should make sure the URL input in the #formView always stays in sync with the value of the command (no link selected)', () => {
 			setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
 
-			return linkFeature._showPanel()
-				.then( () => {
-					expect( formView.urlInputView.inputView.element.value ).to.equal( '' );
-				} );
+			linkFeature._showPanel();
+			expect( formView.urlInputView.inputView.element.value ).to.equal( '' );
 		} );
 
 		describe( 'when the document is rendering', () => {
@@ -246,17 +215,13 @@ describe( 'Link', () => {
 
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
 
-				return linkFeature._showPanel()
-					.then( () => {
-						viewDocument.render();
-						linkFeature._hidePanel();
+				linkFeature._showPanel();
+				viewDocument.render();
+				linkFeature._hidePanel();
 
-						return linkFeature._showPanel()
-							.then( () => {
-								viewDocument.render();
-								sinon.assert.calledTwice( spy );
-							} );
-					} );
+				linkFeature._showPanel();
+				viewDocument.render();
+				sinon.assert.calledTwice( spy );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
@@ -265,20 +230,18 @@ describe( 'Link', () => {
 
 				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
-				return linkFeature._showPanel()
-					.then( () => {
-						const spy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+				linkFeature._showPanel();
+				const spy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
 
-						const root = viewDocument.getRoot();
-						const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
+				const root = viewDocument.getRoot();
+				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
-						// Move selection to foo[].
-						viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
-						viewDocument.render();
+				// Move selection to foo[].
+				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
+				viewDocument.render();
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy );
-					} );
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWithExactly( spy );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
@@ -287,23 +250,21 @@ describe( 'Link', () => {
 
 				setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
 
-				return linkFeature._showPanel()
-					.then( () => {
-						const spy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+				linkFeature._showPanel();
+				const spy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
 
-						// Fires #render.
-						const root = viewDocument.getRoot();
-						const text = root.getChild( 0 ).getChild( 0 );
+				// Fires #render.
+				const root = viewDocument.getRoot();
+				const text = root.getChild( 0 ).getChild( 0 );
 
-						viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
-						viewDocument.render();
+				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
+				viewDocument.render();
 
-						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, {
-							target: editorElement.ownerDocument.getSelection().getRangeAt( 0 ),
-							limiter: editorElement
-						} );
-					} );
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWithExactly( spy, {
+					target: editorElement.ownerDocument.getSelection().getRangeAt( 0 ),
+					limiter: editorElement
+				} );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
@@ -312,21 +273,20 @@ describe( 'Link', () => {
 
 				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text>bar</paragraph>' );
 
-				return linkFeature._showPanel()
-					.then( () => {
-						const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
-						const spyHide = testUtils.sinon.spy( linkFeature, '_hidePanel' );
+				linkFeature._showPanel();
 
-						const root = viewDocument.getRoot();
-						const text = root.getChild( 0 ).getChild( 1 );
+				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+				const spyHide = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 
-						// Move selection to b[]ar.
-						viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
-						viewDocument.render();
+				const root = viewDocument.getRoot();
+				const text = root.getChild( 0 ).getChild( 1 );
 
-						sinon.assert.calledOnce( spyHide );
-						sinon.assert.notCalled( spyUpdate );
-					} );
+				// Move selection to b[]ar.
+				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
+				viewDocument.render();
+
+				sinon.assert.calledOnce( spyHide );
+				sinon.assert.notCalled( spyUpdate );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
@@ -338,21 +298,20 @@ describe( 'Link', () => {
 					'<paragraph><$text linkHref="url">f[]oo</$text>bar<$text linkHref="url">b[]az</$text></paragraph>'
 				);
 
-				return linkFeature._showPanel()
-					.then( () => {
-						const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
-						const spyHide = testUtils.sinon.spy( linkFeature, '_hidePanel' );
+				linkFeature._showPanel();
 
-						const root = viewDocument.getRoot();
-						const text = root.getChild( 0 ).getChild( 2 ).getChild( 0 );
+				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+				const spyHide = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 
-						// Move selection to b[]az.
-						viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
-						viewDocument.render();
+				const root = viewDocument.getRoot();
+				const text = root.getChild( 0 ).getChild( 2 ).getChild( 0 );
 
-						sinon.assert.calledOnce( spyHide );
-						sinon.assert.notCalled( spyUpdate );
-					} );
+				// Move selection to b[]az.
+				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
+				viewDocument.render();
+
+				sinon.assert.calledOnce( spyHide );
+				sinon.assert.notCalled( spyUpdate );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
@@ -361,21 +320,20 @@ describe( 'Link', () => {
 
 				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
-				return linkFeature._showPanel()
-					.then( () => {
-						const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
-						const spyHide = testUtils.sinon.spy( linkFeature, '_hidePanel' );
+				linkFeature._showPanel();
 
-						const root = viewDocument.getRoot();
-						const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
+				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+				const spyHide = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 
-						// Move selection to f[o]o.
-						viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 2 ) ], true );
-						viewDocument.render();
+				const root = viewDocument.getRoot();
+				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
-						sinon.assert.calledOnce( spyHide );
-						sinon.assert.notCalled( spyUpdate );
-					} );
+				// Move selection to f[o]o.
+				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 2 ) ], true );
+				viewDocument.render();
+
+				sinon.assert.calledOnce( spyHide );
+				sinon.assert.notCalled( spyUpdate );
 			} );
 		} );
 	} );
@@ -423,9 +381,7 @@ describe( 'Link', () => {
 			const spy = sinon.spy();
 
 			linkFeature.listenTo( editor.editing.view, 'render', spy );
-
 			linkFeature._hidePanel();
-
 			editor.editing.view.render();
 
 			sinon.assert.notCalled( spy );
@@ -448,11 +404,9 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should show the #_balloon on execute event with the selected #formView', () => {
-			// Method is stubbed because it returns internal promise which can't be returned in test.
 			const spy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
 
 			linkButton.fire( 'execute' );
-
 			sinon.assert.calledWithExactly( spy, true );
 		} );
 	} );
@@ -484,11 +438,9 @@ describe( 'Link', () => {
 
 	describe( 'keyboard support', () => {
 		it( 'should show the #_balloon with selected #formView on `CTRL+K` keystroke', () => {
-			// Method is stubbed because it returns internal promise which can't be returned in test.
 			const spy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
 
 			editor.keystrokes.press( { keyCode: keyCodes.k, ctrlKey: true } );
-
 			sinon.assert.calledWithExactly( spy, true );
 		} );
 
@@ -510,23 +462,21 @@ describe( 'Link', () => {
 			sinon.assert.notCalled( spy );
 
 			// Balloon is visible, form focused.
-			return linkFeature._showPanel( true )
-				.then( () => {
-					formView.focusTracker.isFocused = true;
+			linkFeature._showPanel( true );
+			formView.focusTracker.isFocused = true;
 
-					editor.keystrokes.press( keyEvtData );
-					sinon.assert.notCalled( keyEvtData.preventDefault );
-					sinon.assert.notCalled( keyEvtData.stopPropagation );
-					sinon.assert.notCalled( spy );
+			editor.keystrokes.press( keyEvtData );
+			sinon.assert.notCalled( keyEvtData.preventDefault );
+			sinon.assert.notCalled( keyEvtData.stopPropagation );
+			sinon.assert.notCalled( spy );
 
-					// Balloon is still visible, form not focused.
-					formView.focusTracker.isFocused = false;
+			// Balloon is still visible, form not focused.
+			formView.focusTracker.isFocused = false;
 
-					editor.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
-				} );
+			editor.keystrokes.press( keyEvtData );
+			sinon.assert.calledOnce( keyEvtData.preventDefault );
+			sinon.assert.calledOnce( keyEvtData.stopPropagation );
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should hide the #_balloon after Esc key press (from editor) and not focus the editable', () => {
@@ -538,11 +488,10 @@ describe( 'Link', () => {
 			};
 
 			// Balloon is visible.
-			return linkFeature._showPanel( false ).then( () => {
-				editor.keystrokes.press( keyEvtData );
+			linkFeature._showPanel( false );
+			editor.keystrokes.press( keyEvtData );
 
-				sinon.assert.calledWithExactly( spy );
-			} );
+			sinon.assert.calledWithExactly( spy );
 		} );
 
 		it( 'should not hide #_balloon after Esc key press (from editor) when #_balloon is open but is not visible', () => {
@@ -559,13 +508,11 @@ describe( 'Link', () => {
 				destroy: () => {}
 			};
 
-			return linkFeature._showPanel( false )
-				.then( () => balloon.add( { view: viewMock } ) )
-				.then( () => {
-					editor.keystrokes.press( keyEvtData );
+			linkFeature._showPanel( false );
+			balloon.add( { view: viewMock } );
+			editor.keystrokes.press( keyEvtData );
 
-					sinon.assert.notCalled( spy );
-				} );
+			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should hide the #_balloon after Esc key press (from the form) and focus the editable', () => {
@@ -576,12 +523,10 @@ describe( 'Link', () => {
 				stopPropagation: sinon.spy()
 			};
 
-			return linkFeature._showPanel( true )
-				.then( () => {
-					formView.keystrokes.press( keyEvtData );
+			linkFeature._showPanel( true );
 
-					sinon.assert.calledWithExactly( spy, true );
-				} );
+			formView.keystrokes.press( keyEvtData );
+			sinon.assert.calledWithExactly( spy, true );
 		} );
 	} );
 
@@ -589,23 +534,19 @@ describe( 'Link', () => {
 		it( 'should hide #_balloon and not focus editable on click outside the #_balloon', () => {
 			const spy = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 
-			return linkFeature._showPanel( true )
-				.then( () => {
-					document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+			linkFeature._showPanel( true );
+			document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
-					sinon.assert.calledWithExactly( spy );
-				} );
+			sinon.assert.calledWithExactly( spy );
 		} );
 
 		it( 'should not hide #_balloon on click inside the #_balloon', () => {
 			const spy = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 
-			return linkFeature._showPanel( true )
-				.then( () => {
-					balloon.view.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+			linkFeature._showPanel( true );
+			balloon.view.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
-					sinon.assert.notCalled( spy );
-				} );
+			sinon.assert.notCalled( spy );
 		} );
 
 		describe( 'clicking on editable', () => {
@@ -615,7 +556,6 @@ describe( 'Link', () => {
 				observer = editor.editing.view.getObserver( ClickObserver );
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
 
-				// Method is stubbed because it returns internal promise which can't be returned in test.
 				spy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
 			} );
 
@@ -692,14 +632,11 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should mark the editor ui as focused when the #formView is focused', () => {
-			return linkFeature._showPanel()
-				.then( () => {
-					editor.ui.focusTracker.isFocused = false;
+			linkFeature._showPanel();
+			editor.ui.focusTracker.isFocused = false;
+			formView.element.dispatchEvent( new Event( 'focus' ) );
 
-					formView.element.dispatchEvent( new Event( 'focus' ) );
-
-					expect( editor.ui.focusTracker.isFocused ).to.true;
-				} );
+			expect( editor.ui.focusTracker.isFocused ).to.true;
 		} );
 
 		describe( 'binding', () => {
@@ -726,13 +663,11 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should hide and focus editable on formView#submit event', () => {
-				return linkFeature._showPanel()
-					.then( () => {
-						formView.fire( 'submit' );
+				linkFeature._showPanel();
+				formView.fire( 'submit' );
 
-						expect( balloon.visibleView ).to.null;
-						expect( focusEditableSpy.calledOnce ).to.true;
-					} );
+				expect( balloon.visibleView ).to.null;
+				expect( focusEditableSpy.calledOnce ).to.true;
 			} );
 
 			it( 'should execute unlink command on formView#unlink event', () => {
@@ -745,23 +680,19 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should hide and focus editable on formView#unlink event', () => {
-				return linkFeature._showPanel()
-					.then( () => {
-						formView.fire( 'unlink' );
+				linkFeature._showPanel();
+				formView.fire( 'unlink' );
 
-						expect( balloon.visibleView ).to.null;
-						expect( focusEditableSpy.calledOnce ).to.true;
-					} );
+				expect( balloon.visibleView ).to.null;
+				expect( focusEditableSpy.calledOnce ).to.true;
 			} );
 
 			it( 'should hide and focus editable on formView#cancel event', () => {
-				return linkFeature._showPanel()
-					.then( () => {
-						formView.fire( 'cancel' );
+				linkFeature._showPanel();
+				formView.fire( 'cancel' );
 
-						expect( balloon.visibleView ).to.null;
-						expect( focusEditableSpy.calledOnce ).to.true;
-					} );
+				expect( balloon.visibleView ).to.null;
+				expect( focusEditableSpy.calledOnce ).to.true;
 			} );
 		} );
 	} );
