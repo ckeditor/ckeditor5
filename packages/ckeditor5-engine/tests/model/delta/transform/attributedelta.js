@@ -14,7 +14,9 @@ import Position from '../../../../src/model/position';
 import Range from '../../../../src/model/range';
 
 import AttributeDelta from '../../../../src/model/delta/attributedelta';
+import Delta from '../../../../src/model/delta/delta';
 import AttributeOperation from '../../../../src/model/operation/attributeoperation';
+import NoOperation from '../../../../src/model/operation/nooperation';
 
 import {
 	expectDelta,
@@ -250,6 +252,73 @@ describe( 'transform', () => {
 							oldValue: 'old',
 							newValue: 'bar',
 							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+			} );
+		} );
+
+		describe( 'AttributeDelta', () => {
+			it( 'should be converted to no delta if all operations are NoOperations', () => {
+				const rangeA = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+				const rangeB = new Range( new Position( root, [ 4 ] ), new Position( root, [ 7 ] ) );
+
+				const attrDeltaA = new AttributeDelta();
+				attrDeltaA.addOperation( new AttributeOperation( rangeA, 'key', 'old', 'new', 0 ) );
+				attrDeltaA.addOperation( new AttributeOperation( rangeB, 'key', null, 'new', 1 ) );
+
+				const attrDeltaB = new AttributeDelta();
+				attrDeltaB.addOperation( new AttributeOperation( rangeA, 'key', 'old', 'other', 0 ) );
+				attrDeltaB.addOperation( new AttributeOperation( rangeB, 'key', null, 'other', 1 ) );
+
+				const transformed = transform( attrDeltaA, attrDeltaB, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: Delta,
+					operations: [
+						{
+							type: NoOperation,
+							baseVersion: 2
+						},
+						{
+							type: NoOperation,
+							baseVersion: 3
+						}
+					]
+				} );
+			} );
+
+			it( 'should put AttributeOperation as first operation in the delta', () => {
+				const rangeA = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+				const rangeB = new Range( new Position( root, [ 4 ] ), new Position( root, [ 7 ] ) );
+
+				const attrDeltaA = new AttributeDelta();
+				attrDeltaA.addOperation( new AttributeOperation( rangeA, 'key', 'old', 'new', 0 ) );
+				attrDeltaA.addOperation( new AttributeOperation( rangeB, 'key', null, 'new', 1 ) );
+
+				const attrDeltaB = new AttributeDelta();
+				attrDeltaB.addOperation( new AttributeOperation( rangeA, 'key', 'old', 'other', 0 ) );
+
+				const transformed = transform( attrDeltaA, attrDeltaB, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: AttributeDelta,
+					operations: [
+						{
+							type: AttributeOperation,
+							range: rangeB,
+							key: 'key',
+							oldValue: null,
+							newValue: 'new',
+							baseVersion: 1
+						},
+						{
+							type: NoOperation,
+							baseVersion: 2
 						}
 					]
 				} );

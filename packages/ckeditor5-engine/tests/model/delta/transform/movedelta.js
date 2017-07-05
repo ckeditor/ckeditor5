@@ -109,7 +109,7 @@ describe( 'transform', () => {
 				expect( nodesAndText ).to.equal( 'DIVPabcfoobarxyzPXXXXXabcdXDIV' );
 			} );
 
-			it( 'move range in merged node', () => {
+			it( 'move range in merged node #1', () => {
 				const mergePosition = new Position( root, [ 3, 3 ] );
 				const mergeDelta = getMergeDelta( mergePosition, 1, 4, baseVersion );
 
@@ -127,6 +127,33 @@ describe( 'transform', () => {
 							sourcePosition: new Position( root, [ 3, 2, 4 ] ),
 							howMany: 1,
 							targetPosition: new Position( root, [ 3, 2, 1 ] ),
+							baseVersion
+						}
+					]
+				} );
+			} );
+
+			it( 'move range in merged node #2', () => {
+				moveDelta._moveOperation.sourcePosition.path = [ 3, 3, 1 ];
+				moveDelta._moveOperation.targetPosition.path = [ 3, 3, 4 ];
+
+				const mergePosition = new Position( root, [ 3, 3 ] );
+				const mergeDelta = getMergeDelta( mergePosition, 1, 4, baseVersion );
+
+				const transformed = transform( moveDelta, mergeDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = mergeDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: MoveDelta,
+					operations: [
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 2, 2 ] ),
+							howMany: 1,
+							targetPosition: new Position( root, [ 3, 2, 5 ] ),
 							baseVersion
 						}
 					]

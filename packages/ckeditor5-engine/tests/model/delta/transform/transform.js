@@ -285,7 +285,7 @@ describe( 'transform', () => {
 				const { deltasA, deltasB } = transformDeltaSets( [ moveDelta ], [ removeDelta ] );
 
 				expectDelta( deltasA[ 0 ], {
-					type: MoveDelta,
+					type: Delta,
 					operations: [
 						{
 							type: NoOperation,
@@ -308,9 +308,12 @@ describe( 'transform', () => {
 				} );
 			} );
 
-			it( 'remove delta may be less important if additional context is used', () => {
+			it( 'remove delta may be less important if additional context is used and the delta was undone', () => {
 				const moveDelta = getMoveDelta( new Position( root, [ 0, 4 ] ), 3, new Position( root, [ 1, 0 ] ), baseVersion );
 				const removeDelta = getRemoveDelta( new Position( root, [ 0, 4 ] ), 3, baseVersion );
+
+				// "Fake" delta undoing.
+				doc.history.setDeltaAsUndone( removeDelta, new Delta() );
 
 				const { deltasA, deltasB } = transformDeltaSets( [ moveDelta ], [ removeDelta ], doc );
 
@@ -328,7 +331,7 @@ describe( 'transform', () => {
 				} );
 
 				expectDelta( deltasB[ 0 ], {
-					type: RemoveDelta,
+					type: Delta,
 					operations: [
 						{
 							type: NoOperation,

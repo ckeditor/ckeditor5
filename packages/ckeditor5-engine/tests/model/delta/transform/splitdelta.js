@@ -65,11 +65,16 @@ describe( 'transform', () => {
 				expect( transformed.length ).to.equal( 1 );
 
 				expectDelta( transformed[ 0 ], {
-					type: Delta,
+					type: SplitDelta,
 					operations: [
 						{
-							type: NoOperation,
+							type: InsertOperation,
+							position: new Position( root, [ 3, 3, 4 ] ),
 							baseVersion
+						},
+						{
+							type: NoOperation,
+							baseVersion: baseVersion + 1
 						}
 					]
 				} );
@@ -79,11 +84,42 @@ describe( 'transform', () => {
 				applyDelta( splitDeltaB, doc );
 				applyDelta( transformed[ 0 ], doc );
 
-				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 0 ] ), 5 ) );
+				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 0 ] ), 6 ) );
 
 				// Incoming split delta is discarded. Only one new element is created after applying both split deltas.
 				// There are no empty P elements.
-				expect( nodesAndText ).to.equal( 'XXXXXabcdXPabcPPfoobarxyzP' );
+				expect( nodesAndText ).to.equal( 'XXXXXabcdXPabcPPPPfoobarxyzP' );
+			} );
+
+			it( 'should not change context.insertBefore if it was set', () => {
+				// SplitDelta x SplitDelta transformation case sets `context.insertBefore` on its own if it is not set.
+				// It is to achieve better transformation results from UX point of view.
+				// However, if `context.insertBefore` was already set, it should not be changed. This might be important for undo.
+				const splitDeltaB = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
+				const transformed = transform( splitDelta, splitDeltaB, {
+					isStrong: false,
+					insertBefore: true
+				} );
+
+				baseVersion = splitDeltaB.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							// If `context.insertBefore` would not be set, the offset would be 4. See an example above.
+							position: new Position( root, [ 3, 3, 5 ] ),
+							baseVersion
+						},
+						{
+							type: NoOperation,
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
 			} );
 
 			it( 'split in same parent, incoming delta splits closer', () => {
