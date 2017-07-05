@@ -105,7 +105,10 @@ export default class ListItemView extends View {
 	 * @inheritDoc
 	 */
 	init() {
-		const onKeystrokePress = getKeystrokePressCallback( this );
+		const onKeystrokePress = ( data, cancel ) => {
+			this.fire( 'execute' );
+			cancel();
+		};
 
 		this.keystrokes.listenTo( this.element );
 
@@ -120,16 +123,4 @@ export default class ListItemView extends View {
 	focus() {
 		this.element.focus();
 	}
-}
-
-// Returns the Enter and Space keystroke handler for given ListItemView.
-//
-// @private
-// @param {module:ui/list/listitemview~ListItemView} view
-// @returns {Function} A listener for {@link module:utils/keystrokehandler~KeystrokeHandler}.
-function getKeystrokePressCallback( view ) {
-	return ( data, cancel ) => {
-		view.fire( 'execute' );
-		cancel();
-	};
 }
