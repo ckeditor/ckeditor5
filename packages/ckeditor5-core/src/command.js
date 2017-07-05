@@ -20,6 +20,8 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Instances of registered commands can be retrieved from {@link module:core/editor/editor~Editor#commands}.
  * The easiest way to execute a command is through {@link module:core/editor/editor~Editor#execute}.
  *
+ * By default commands are disabled when editor is in {@link module:core/editor/editor~Editor#readOnly read-only} mode.
+ *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Command {
@@ -73,6 +75,23 @@ export default class Command {
 				evt.stop();
 			}
 		}, { priority: 'high' } );
+
+		// By default commands are disabled when editor switches to read-only mode.
+		this.listenTo( editor, 'change:readOnly', ( evt, name, value ) => {
+			if ( value ) {
+				this.on( 'change:isEnabled', forceDisable, { priority: 'high' } );
+				this.isEnabled = false;
+			} else {
+				this.off( 'change:isEnabled', forceDisable );
+				this.refresh();
+			}
+		} );
+
+		// Forces command#isEnabled value to be false.
+		function forceDisable( evt ) {
+			this.isEnabled = false;
+			evt.stop();
+		}
 	}
 
 	/**
