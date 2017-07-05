@@ -70,8 +70,11 @@ const ot = {
 			// Transformed operations are always new instances, not references to the original operations.
 			const transformed = a.clone();
 
+			// Check whether there is a forced order of nodes or use `context.isStrong` flag for conflict resolving.
+			const insertBefore = context.insertBefore === undefined ? !context.isStrong : context.insertBefore;
+
 			// Transform insert position by the other operation position.
-			transformed.position = transformed.position._getTransformedByInsertion( b.position, b.nodes.maxOffset, !context.isStrong );
+			transformed.position = transformed.position._getTransformedByInsertion( b.position, b.nodes.maxOffset, insertBefore );
 
 			return [ transformed ];
 		},
@@ -89,12 +92,15 @@ const ot = {
 		MoveOperation( a, b, context ) {
 			const transformed = a.clone();
 
+			// Check whether there is a forced order of nodes or use `context.isStrong` flag for conflict resolving.
+			const insertBefore = context.insertBefore === undefined ? !context.isStrong : context.insertBefore;
+
 			// Transform insert position by the other operation parameters.
 			transformed.position = a.position._getTransformedByMove(
 				b.sourcePosition,
 				b.targetPosition,
 				b.howMany,
-				!context.isStrong,
+				insertBefore,
 				b.isSticky && !context.forceNotSticky
 			);
 
@@ -338,10 +344,13 @@ const ot = {
 			let range = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
 			range = range._getTransformedByInsertion( b.position, b.nodes.maxOffset, false, a.isSticky && !context.forceNotSticky )[ 0 ];
 
+			// Check whether there is a forced order of nodes or use `context.isStrong` flag for conflict resolving.
+			const insertBefore = context.insertBefore === undefined ? !context.isStrong : context.insertBefore;
+
 			const result = new a.constructor(
 				range.start,
 				range.end.offset - range.start.offset,
-				a.targetPosition._getTransformedByInsertion( b.position, b.nodes.maxOffset, !context.isStrong ),
+				a.targetPosition._getTransformedByInsertion( b.position, b.nodes.maxOffset, insertBefore ),
 				a.baseVersion
 			);
 

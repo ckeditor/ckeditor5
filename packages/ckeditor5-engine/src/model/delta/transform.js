@@ -411,7 +411,7 @@ function _setInsertBeforeContext( a, b, context ) {
 // Simply saying, if delta is going to be transformed by delta `b`, stickiness should not be taken into consideration
 // if delta `b` was already undone or if delta `b` is an undoing delta.
 //
-// Keep in mind that this problem only affects `MoveOperation` (and operations that derive from it).
+// This affects `MoveOperation` (and its derivatives).
 function _setForceNotSticky( b, context ) {
 	// If `b` delta is undoing or undone delta, stickiness should not be taken into consideration.
 	if ( context.document.history.isUndoingDelta( b ) || context.document.history.isUndoneDelta( b ) ) {

@@ -127,6 +127,33 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
+			it( 'target at same offset and context.insertBefore = true: no position update', () => {
+				const transformBy = new InsertOperation(
+					new Position( root, [ 0, 2, 2 ] ),
+					[ nodeC, nodeD ],
+					baseVersion
+				);
+
+				const transOp = transform( transformBy, { isStrong: false, insertBefore: false } );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'target at same offset and context.insertBefore = false: increment offset', () => {
+				const transformBy = new InsertOperation(
+					new Position( root, [ 0, 2, 2 ] ),
+					[ nodeC, nodeD ],
+					baseVersion
+				);
+
+				const transOp = transform( op, transformBy );
+				expected.position.offset += 2;
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
 			it( 'target at offset after: no position update', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0, 2, 3 ] ),
@@ -299,6 +326,35 @@ describe( 'transform', () => {
 				);
 
 				const transOp = transform( op, transformBy, { isStrong: true } );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'target offset same as insert position offset and context.insertBefore = true: increment offset', () => {
+				const transformBy = new MoveOperation(
+					new Position( root, [ 1, 1 ] ),
+					2,
+					new Position( root, [ 0, 2, 2 ] ),
+					baseVersion
+				);
+
+				const transOp = transform( op, transformBy, { isStrong: true, insertBefore: true } );
+				expected.position.offset += 2;
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'target offset same as insert position offset and context.insertBefore = false: no position update', () => {
+				const transformBy = new MoveOperation(
+					new Position( root, [ 1, 1 ] ),
+					2,
+					new Position( root, [ 0, 2, 2 ] ),
+					baseVersion
+				);
+
+				const transOp = transform( op, transformBy, { isStrong: false, insertBefore: false } );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1767,7 +1823,7 @@ describe( 'transform', () => {
 
 			it( 'target before node from move target position path: increment index on move target position path', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 3, 0 ] ),
+					new Position( root, [ 3, 3 ] ),
 					[ nodeA, nodeB ],
 					baseVersion
 				);
@@ -1821,16 +1877,29 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'target offset same as move target offset: increment target offset', () => {
+			it( 'target offset same as move target offset and context.insertBefore = true: increment target offset', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 3, 3 ] ),
+					new Position( root, [ 3, 3, 3 ] ),
 					[ nodeA, nodeB ],
 					baseVersion
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform( op, transformBy, { isStrong: true, insertBefore: true } );
 
-				expected.targetPosition.path[ 1 ] += 2;
+				expected.targetPosition.offset += 2;
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'target offset same as move target offset and context.insertBefore = false: no operation update', () => {
+				const transformBy = new InsertOperation(
+					new Position( root, [ 3, 3, 3 ] ),
+					[ nodeA, nodeB ],
+					baseVersion
+				);
+
+				const transOp = transform( op, transformBy, { isStrong: false, insertBefore: false } );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
