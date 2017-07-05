@@ -3,6 +3,10 @@
 	"slug": "ckeditor5",
 	"hexo-config": "docs/hexo-custom-config.json",
 	"path": "docs",
+	"scripts": {
+		"snippet-adapter": "../scripts/docs/snippet-adapter/snippetadapter",
+		"import-path": "../scripts/docs/getrealimportpath"
+	},
 	"groups": [
 		{
 			"name": "API",
@@ -94,6 +98,18 @@
 							"order": 200
 						}
 					]
+				}
+			]
+		},
+		{
+			"name": "Samples",
+			"id": "samples",
+			"slug": "samples",
+			"categories": [
+				{
+					"name": "Builds",
+					"id": "samples-builds",
+					"slug": "builds"
 				}
 			]
 		}

@@ -72,7 +72,7 @@ This will install the package and add it to `package.json`. You can also edit `p
 	Due to a non-deterministic way how npm installs packages, it is recommended to run `rm -rf node_modules && npm install` when in doubt. This will prevent some packages from getting installed more than once in `node_modules/` (which might lead to broken builds).
 
 	You can also give [Yarn](https://yarnpkg.com/lang/en/) a try.
-<side-box>
+</side-box>
 
 ### Updating build configuration
 

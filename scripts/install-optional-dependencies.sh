@@ -14,3 +14,7 @@
 set -e
 
 npm i @ckeditor/ckeditor5-dev-env umberto
+
+cd scripts/docs/snippet-adapter
+npm i
+cd ../..
