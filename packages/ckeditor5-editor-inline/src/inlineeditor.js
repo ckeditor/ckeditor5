@@ -47,8 +47,9 @@ export default class InlineEditor extends StandardEditor {
 		// It's safe to assume that the model->view conversion will not work after super.destroy().
 		const data = this.getData();
 
-		return this.ui.destroy()
-			.then( () => super.destroy() )
+		this.ui.destroy();
+
+		return super.destroy()
 			.then( () => setDataInElement( this.element, data ) );
 	}
 
@@ -77,8 +78,10 @@ export default class InlineEditor extends StandardEditor {
 
 			resolve(
 				editor.initPlugins()
-					.then( () => editor.ui.init() )
-					.then( () => editor.fire( 'uiReady' ) )
+					.then( () => {
+						editor.ui.init();
+						editor.fire( 'uiReady' );
+					} )
 					.then( () => editor.loadDataFromEditorElement() )
 					.then( () => {
 						editor.fire( 'dataReady' );

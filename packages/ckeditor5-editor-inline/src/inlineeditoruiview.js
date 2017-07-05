@@ -100,8 +100,9 @@ export default class InlineEditorUIView extends EditorUIView {
 	 * @inheritDoc
 	 */
 	init() {
-		return super.init()
-			.then( () => this.panel.content.add( this.toolbar ) );
+		super.init();
+
+		this.panel.content.add( this.toolbar );
 	}
 
 	/**
