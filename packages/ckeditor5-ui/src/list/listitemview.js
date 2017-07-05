@@ -114,7 +114,7 @@ export default class ListItemView extends View {
 
 		// Execute on Enter and Space key press.
 		this.keystrokes.set( 'Enter', onKeystrokePress );
-		this.keystrokes.set( [ 32 ], onKeystrokePress );
+		this.keystrokes.set( 'Space', onKeystrokePress );
 	}
 
 	/**
