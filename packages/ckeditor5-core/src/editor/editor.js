@@ -90,6 +90,15 @@ export default class Editor {
 		this.data = new DataController( this.document );
 
 		/**
+		 * Defines whether editor is read-only mode. In read-only mode editor {@link module:core/command Commands}
+		 * are disabled and is not possible to set any data to the editor.
+		 *
+		 * @observable
+		 * @member {Boolean} #readOnly
+		 */
+		this.set( 'readOnly', false );
+
+		/**
 		 * Instance of the {@link module:engine/controller/editingcontroller~EditingController editing controller}.
 		 *
 		 * This property is set by more specialized editor classes (such as {@link module:core/editor/standardeditor~StandardEditor}),

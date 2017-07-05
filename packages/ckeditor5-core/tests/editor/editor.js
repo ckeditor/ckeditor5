@@ -158,6 +158,25 @@ describe( 'Editor', () => {
 		} );
 	} );
 
+	describe( 'readOnly', () => {
+		it( 'is false at default', () => {
+			const editor = new Editor();
+
+			expect( editor.readOnly ).to.false;
+		} );
+
+		it( 'is observable', () => {
+			const editor = new Editor();
+			const spy = sinon.spy();
+
+			editor.on( 'change:readOnly', spy );
+
+			editor.readOnly = true;
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
 	describe( 'destroy()', () => {
 		it( 'should fire "destroy"', () => {
 			const editor = new Editor();
