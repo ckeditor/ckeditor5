@@ -38,8 +38,4 @@ export default class RemoveOperation extends MoveOperation {
 	static get className() {
 		return 'engine.model.operation.RemoveOperation';
 	}
-
-	static fromJSON( json, document ) {
-		return super.fromJSON( json, document );
-	}
 }
