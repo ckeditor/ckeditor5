@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals Event */
+/* global Event */
 
 import ListItemView from '../../src/list/listitemview';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 describe( 'ListItemView', () => {
 	let view;
@@ -23,6 +24,48 @@ describe( 'ListItemView', () => {
 	describe( 'constructor()', () => {
 		it( 'creates element from template', () => {
 			expect( view.element.classList.contains( 'ck-list__item' ) ).to.be.true;
+		} );
+
+		it( 'should create #keystrokes instance', () => {
+			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'starts listening for #keystrokes coming from #element', () => {
+			const spy = sinon.spy( view.keystrokes, 'listenTo' );
+
+			view.init();
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, view.element );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-ui/issues/153
+		it( 'triggers view#execute event when Enter or Space key is pressed', () => {
+			const spy = sinon.spy();
+			const evtData = {
+				keyCode: 10,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			view.on( 'execute', spy );
+			view.keystrokes.press( evtData );
+
+			sinon.assert.notCalled( spy );
+			sinon.assert.notCalled( evtData.preventDefault );
+
+			evtData.keyCode = 13;
+			view.keystrokes.press( evtData );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( evtData.preventDefault );
+
+			evtData.keyCode = 32;
+			view.keystrokes.press( evtData );
+
+			sinon.assert.calledTwice( spy );
+			sinon.assert.calledTwice( evtData.preventDefault );
 		} );
 	} );
 
@@ -85,30 +128,6 @@ describe( 'ListItemView', () => {
 
 				view.element.dispatchEvent( new Event( 'click' ) );
 				expect( spy.calledOnce ).to.be.true;
-			} );
-
-			// https://github.com/ckeditor/ckeditor5-ui/issues/153
-			it( 'triggers view#execute event when Enter or Space key is pressed', () => {
-				const spy = sinon.spy();
-				const evt = new Event( 'keydown' );
-				const preventSpy = sinon.spy( evt, 'preventDefault' );
-
-				view.on( 'execute', spy );
-
-				evt.keyCode = 10;
-				view.element.dispatchEvent( evt );
-				expect( spy.calledOnce ).to.be.false;
-				expect( preventSpy.calledOnce ).to.be.false;
-
-				evt.keyCode = 13;
-				view.element.dispatchEvent( evt );
-				expect( spy.calledOnce ).to.be.true;
-				expect( preventSpy.calledOnce ).to.be.true;
-
-				evt.keyCode = 32;
-				view.element.dispatchEvent( evt );
-				expect( spy.calledTwice ).to.be.true;
-				expect( preventSpy.calledTwice ).to.be.true;
 			} );
 		} );
 	} );

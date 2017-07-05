@@ -9,6 +9,7 @@
 
 import View from '../view';
 import Template from '../template';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
  * The list item view class.
@@ -30,6 +31,14 @@ export default class ListItemView extends View {
 		 * @member {String} #tabindex
 		 */
 		this.set( 'tabindex', -1 );
+
+		/**
+		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
 
 		const bind = this.bindTemplate;
 
@@ -53,18 +62,7 @@ export default class ListItemView extends View {
 			],
 
 			on: {
-				// Execute on mouse click.
-				click: bind.to( 'execute' ),
-
-				// Execute on Enter and Space key press.
-				keydown: bind.to( evt => {
-					const keyCode = evt.keyCode;
-
-					if ( keyCode == 13 || keyCode == 32 ) {
-						this.fire( 'execute' );
-						evt.preventDefault();
-					}
-				} )
+				click: bind.to( 'execute' )
 			}
 		} );
 
@@ -104,9 +102,34 @@ export default class ListItemView extends View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const onKeystrokePress = getKeystrokePressCallback( this );
+
+		this.keystrokes.listenTo( this.element );
+
+		// Execute on Enter and Space key press.
+		this.keystrokes.set( 'Enter', onKeystrokePress );
+		this.keystrokes.set( [ 32 ], onKeystrokePress );
+	}
+
+	/**
 	 * Focuses the list item.
 	 */
 	focus() {
 		this.element.focus();
 	}
+}
+
+// Returns the Enter and Space keystroke handler for given ListItemView.
+//
+// @private
+// @param {module:ui/list/listitemview~ListItemView} view
+// @returns {Function} A listener for {@link module:utils/keystrokehandler~KeystrokeHandler}.
+function getKeystrokePressCallback( view ) {
+	return ( data, cancel ) => {
+		view.fire( 'execute' );
+		cancel();
+	};
 }
