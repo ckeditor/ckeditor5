@@ -84,7 +84,7 @@ export default class DeleteCommand extends Command {
 				);
 			} );
 
-			dataController.deleteContent( selection, this._buffer.batch, { merge: true } );
+			dataController.deleteContent( selection, this._buffer.batch );
 			this._buffer.input( changeCount );
 
 			doc.selection.setRanges( selection.getRanges(), selection.isBackward );

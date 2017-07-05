@@ -20,7 +20,7 @@ import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Input feature', () => {
@@ -388,6 +388,15 @@ describe( 'Input feature', () => {
 
 			listenter.listenTo( view, 'keydown', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
+			}, { priority: 'lowest' } );
+		} );
+
+		// #97
+		it( 'should remove contents and merge blocks', () => {
+			setModelData( model, '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
+
+			listenter.listenTo( view, 'keydown', () => {
+				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
 
 				view.fire( 'mutations', [
 					{
@@ -510,6 +519,26 @@ describe( 'Input feature', () => {
 
 			expect( lockSpy.callCount ).to.be.equal( 0 );
 			expect( unlockSpy.callCount ).to.be.equal( 0 );
+		} );
+
+		it( 'should not modify document when input command is disabled and selection is collapsed', () => {
+			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+			editor.commands.get( 'input' ).isEnabled = false;
+
+			view.fire( 'keydown', { keyCode: getCode( 'b' ) } );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+		} );
+
+		it( 'should not modify document when input command is disabled and selection is non-collapsed', () => {
+			setModelData( model, '<paragraph>fo[ob]ar</paragraph>' );
+
+			editor.commands.get( 'input' ).isEnabled = false;
+
+			view.fire( 'keydown', { keyCode: getCode( 'b' ) } );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 	} );
 } );
