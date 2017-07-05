@@ -1,13 +1,6 @@
 {
-  "name": "docs-adapter",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
+  "name": "ckeditor5-snippet-adapter",
+  "private": true,
   "dependencies": {
     "babili-webpack-plugin": "^0.1.2",
     "css-loader": "^0.28.4",
