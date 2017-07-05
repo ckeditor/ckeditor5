@@ -14,6 +14,7 @@ import RenameOperation from './renameoperation';
 import MarkerOperation from './markeroperation';
 import MoveOperation from './moveoperation';
 import RemoveOperation from './removeoperation';
+import ReinsertOperation from './reinsertoperation';
 import NoOperation from './nooperation';
 import Range from '../range';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
@@ -370,6 +371,33 @@ const ot = {
 		// Transforms MoveOperation `a` by MoveOperation `b`. Accepts a flag stating whether `a` is more important
 		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
 		MoveOperation( a, b, context ) {
+			//
+			// Setting and evaluating some variables that will be used in special cases and default algorithm.
+			//
+			// Create ranges from `MoveOperations` properties.
+			const rangeA = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
+			const rangeB = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
+
+			// Whether range moved by operation `b` is includable in operation `a` move range.
+			// For this, `a` operation has to be sticky (so `b` sticks to the range) and context has to allow stickiness.
+			const includeB = a.isSticky && !context.forceNotSticky;
+
+			// Evaluate new target position for transformed operation.
+			// Check whether there is a forced order of nodes or use `context.isStrong` flag for conflict resolving.
+			const insertBefore = context.insertBefore === undefined ? !context.isStrong : context.insertBefore;
+
+			// `a.targetPosition` could be affected by the `b` operation. We will transform it.
+			const newTargetPosition = a.targetPosition._getTransformedByMove(
+				b.sourcePosition,
+				b.targetPosition,
+				b.howMany,
+				insertBefore,
+				b.isSticky && !context.forceNotSticky
+			);
+
+			//
+			// Special case #1 + mirror.
+			//
 			// Special case when both move operations' target positions are inside nodes that are
 			// being moved by the other move operation. So in other words, we move ranges into inside of each other.
 			// This case can't be solved reasonably (on the other hand, it should not happen often).
@@ -378,8 +406,77 @@ const ot = {
 				// So when the results of this "transformation" will be applied, `b` MoveOperation will get reversed.
 				return [ b.getReversed() ];
 			}
+			//
+			// End of special case #1.
+			//
 
-			// If `b` is a permanent RemoveOperation it is always more important than transformed operation.
+			//
+			// Special case #2.
+			//
+			// Check if `b` operation targets inside `rangeA`. Use stickiness if possible.
+			const bTargetsToA = rangeA.containsPosition( b.targetPosition ) ||
+				( rangeA.start.isEqual( b.targetPosition ) && includeB ) ||
+				( rangeA.end.isEqual( b.targetPosition ) && includeB );
+
+			// If `b` targets to `rangeA` and `rangeA` contains `rangeB`, `b` operation has no influence on `a` operation.
+			// You might say that operation `b` is captured inside operation `a`.
+			if ( bTargetsToA && rangeA.containsRange( rangeB, true ) ) {
+				// There is a mini-special case here, where `rangeB` is on other level than `rangeA`. That's why
+				// we need to transform `a` operation anyway.
+				rangeA.start = rangeA.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !includeB );
+				rangeA.end = rangeA.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, includeB );
+
+				return makeMoveOperationsFromRanges( a, [ rangeA ], newTargetPosition );
+			}
+
+			//
+			// Special case #2 mirror.
+			//
+			const aTargetsToB = rangeB.containsPosition( a.targetPosition ) ||
+				( rangeB.start.isEqual( a.targetPosition ) && b.isSticky && !context.forceNotSticky ) ||
+				( rangeB.end.isEqual( a.targetPosition ) && b.isSticky && !context.forceNotSticky );
+
+			if ( aTargetsToB && rangeB.containsRange( rangeA, true ) ) {
+				// `a` operation is "moved together" with `b` operation.
+				// Here, just move `rangeA` "inside" `rangeB`.
+				rangeA.start = rangeA.start._getCombined( b.sourcePosition, b.getMovedRangeStart() );
+				rangeA.end = rangeA.end._getCombined( b.sourcePosition, b.getMovedRangeStart() );
+
+				return makeMoveOperationsFromRanges( a, [ rangeA ], newTargetPosition );
+			}
+			//
+			// End of special case #2.
+			//
+
+			//
+			// Special case #3 + mirror.
+			//
+			// `rangeA` has a node which is an ancestor of `rangeB`. In other words, `rangeB` is inside `rangeA`
+			// but not on the same tree level. In such case ranges have common part but we have to treat it
+			// differently, because in such case those ranges are not really conflicting and should be treated like
+			// two separate ranges. Also we have to discard two difference parts.
+			const aCompB = compareArrays( a.sourcePosition.getParentPath(), b.sourcePosition.getParentPath() );
+
+			if ( aCompB == 'prefix' || aCompB == 'extension' ) {
+				// Transform `rangeA` by `b` operation and make operation out of it, and that's all.
+				// Note that this is a simplified version of default case, but here we treat the common part (whole `rangeA`)
+				// like a one difference part.
+				rangeA.start = rangeA.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !includeB );
+				rangeA.end = rangeA.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, includeB );
+
+				return makeMoveOperationsFromRanges( a, [ rangeA ], newTargetPosition );
+			}
+			//
+			// End of special case #3.
+			//
+
+			//
+			// Default case - ranges are on the same level or are not connected with each other.
+			//
+			// Modifier for default case.
+			// Modifies `context.isStrong` in certain conditions.
+			//
+			// If `b` is a permanent `RemoveOperation`, it is always more important than transformed operation.
 			if ( b instanceof RemoveOperation && b.isPermanent ) {
 				context.isStrong = false;
 			}
@@ -393,107 +490,120 @@ const ot = {
 				}
 			}
 
-			// Create ranges from MoveOperations properties.
-			const rangeA = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
-			const rangeB = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
-
+			// Handle operation's source ranges - check how `rangeA` is affected by `b` operation.
 			// This will aggregate transformed ranges.
-			const ranges = [];
+			let ranges = [];
 
-			// First, get the "difference part" of `a` operation source range.
-			const difference = joinRanges( rangeA.getDifference( rangeB ) );
+			// Get the "difference part" of `a` operation source range.
+			// This is an array with one or two ranges. Two ranges if `rangeB` is inside `rangeA`.
+			const difference = rangeA.getDifference( rangeB );
 
-			if ( difference ) {
-				// `a` operation might be sticky. If it is, we might need to update its source range to include
-				// nodes moved-in by `b` operation. Sometimes however, stickiness should not be applied (`context.forceNotSticky`).
-				const sticky = a.isSticky && !context.forceNotSticky;
+			for ( const range of difference ) {
+				// Transform those ranges by `b` operation. For example if `b` moved range from before those ranges, fix those ranges.
+				range.start = range.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !includeB );
+				range.end = range.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, includeB );
 
-				difference.start = difference.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !sticky );
-				difference.end = difference.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, sticky );
-
-				ranges.push( difference );
+				ranges.push( range );
 			}
 
 			// Then, we have to manage the "common part" of both move ranges.
 			const common = rangeA.getIntersection( rangeB );
 
-			// If MoveOperations has common range it can be one of two:
-			// * on the same tree level - it means that we move the same nodes into different places
-			// * on deeper tree level - it means that we move nodes that are inside moved nodes
-			// The operations are conflicting only if they try to move exactly same nodes, so only in the first case.
-			// That means that we transform common part in two cases:
-			// * `rangeA` is "deeper" than `rangeB` so it does not collide
-			// * `rangeA` is at the same level but is stronger than `rangeB`.
-			const aCompB = compareArrays( a.sourcePosition.getParentPath(), b.sourcePosition.getParentPath() );
+			// // If MoveOperations has common range it can be one of two:
+			// //
+			// // * on the same tree level - it means that we move exactly same nodes into different places (conflict),
+			// // * on deeper tree level - it means that we move nodes that are inside moved nodes (no conflict).
+			// const commonPartConflicts = compareArrays( a.sourcePosition.getParentPath(), b.sourcePosition.getParentPath() ) == 'same';
 
-			// If the `b` MoveOperation points inside the `a` MoveOperation range, the common part will be included in
-			// range(s) that (is) are results of processing `difference`. If that's the case, we cannot include it again.
-			const bTargetsToA = rangeA.containsPosition( b.targetPosition ) ||
-				( rangeA.start.isEqual( b.targetPosition ) && a.isSticky ) ||
-				( rangeA.end.isEqual( b.targetPosition ) && a.isSticky );
-
-			// If the `b` MoveOperation range contains both whole `a` range and target position we do an exception and
-			// transform `a` operation. Normally, when same nodes are moved, we stick with stronger operation's target.
-			// Here it is a move inside larger range so there is no conflict because after all, all nodes from
-			// smaller range will be moved to larger range target. The effect of this transformation feels natural.
-			// Also if we wouldn't do that, we would get different results on both sides of transformation (i.e. in
-			// collaborative editing).
-			const aInside =
-				common && rangeA.isEqual( common ) && !rangeA.isEqual( rangeB ) &&
-				(
-					rangeB.containsPosition( a.targetPosition ) ||
-					rangeB.start.isEqual( a.targetPosition ) ||
-					rangeB.end.isEqual( a.targetPosition )
-				);
-
-			if ( common !== null && ( aCompB === 'extension' || ( aCompB === 'same' && context.isStrong ) || aInside ) && !bTargetsToA ) {
+			// // Handle common part of ranges if ranges have common part and they are conflicting and `a` operation is strong.
+			// // Don't handle common part if operation `b` targets inside `rangeA` - it will be already included in "difference ranges".
+			// if ( common !== null && commonPartConflicts && context.isStrong && !bTargetsToA ) {
+			if ( common !== null && context.isStrong && !bTargetsToA ) {
 				// Calculate the new position of that part of original range.
 				common.start = common.start._getCombined( b.sourcePosition, b.getMovedRangeStart() );
 				common.end = common.end._getCombined( b.sourcePosition, b.getMovedRangeStart() );
 
-				// We have to take care of proper range order. "Farther" ranges should be processed first, so they
-				// won't mess up ranges in following operations. So, for example, if we have to move range
-				// [ 4 ] - [ 6 ] and then [ 0 ] - [ 2 ], we should do it in this order, because if we would
-				// move [ 0 ] - [ 2 ] range first, it would invalidate moving [ 4 ] - [ 6 ] range (it would
-				// have to be updated to [ 2 ] - [ 4 ] range).
-				if ( difference && difference.start.isBefore( common.start ) ) {
+				// Take care of proper range order.
+				//
+				// Put `common` at appropriate place. Keep in mind that we are interested in original order.
+				// Basically there are only three cases: there is zero, one or two difference ranges.
+				//
+				// If there is zero difference ranges, just push `common` in the array.
+				if ( ranges.length === 0 ) {
 					ranges.push( common );
-				} else {
-					ranges.unshift( common );
+				}
+				// If there is one difference range, we need to check whether common part was before it or after it.
+				else if ( ranges.length == 1 ) {
+					if ( rangeB.start.isBefore( rangeA.start ) ) {
+						ranges.unshift( common );
+					} else {
+						ranges.push( common );
+					}
+				}
+				// If there are more ranges (which means two), put common part between them. This is the only scenario
+				// where there could be two difference ranges so we don't have to make any comparisons.
+				else {
+					ranges.splice( 1, 0, common );
 				}
 			}
 
 			if ( ranges.length === 0 ) {
 				// If there are no "source ranges", nothing should be changed.
+				// Note that this can happen only if `context.isStrong == false` and `rangeA.isEqual( rangeB )`.
 				return [ new NoOperation( a.baseVersion ) ];
 			}
 
-			// Check whether there is a forced order of nodes or to use `isStrong` flag for conflict resolving.
-			const insertBefore = context.insertBefore === undefined ? !context.isStrong : context.insertBefore;
+			// At this moment we have some ranges and a target position, to which those ranges should be moved.
+			// Order in `ranges` array is the go-to order of after transformation. We can reverse the `ranges`
+			// array so the last range will be moved first. This will ensure that each transformed `MoveOperation`
+			// can have same `targetPosition` and the order of ranges will be kept.
+			ranges = ranges.reverse();
 
-			// Target position also could be affected by the other MoveOperation. We will transform it.
-			const newTargetPosition = a.targetPosition._getTransformedByMove(
-				b.sourcePosition,
-				b.targetPosition,
-				b.howMany,
-				insertBefore,
-				( b.isSticky && !context.forceNotSticky ) || aInside
-			);
+			// We are almost done. We have `ranges` and `targetPosition` to make operations from.
+			// Unfortunately, those operations may affect each other. Precisely, first operation after move
+			// may affect source range of second and third operation. Same with second operation affecting third.
+			// We need to fix those source ranges once again, before converting `ranges` to operations.
+			// Keep in mind that `targetPosition` is already set in stone thanks to the trick above.
+			for ( let i = 1; i < ranges.length; i++ ) {
+				for ( let j = 0; j < i; j++ ) {
+					const howMany = ranges[ j ].end.offset - ranges[ j ].start.offset;
 
-			// Map transformed range(s) to operations and return them.
-			return ranges.reverse().map( range => {
-				// We want to keep correct operation class.
-				const result = new a.constructor(
-					range.start,
-					range.end.offset - range.start.offset,
-					newTargetPosition,
-					a.baseVersion
-				);
+					// Thankfully, all ranges in `ranges` array are:
+					// * non-intersecting (these are part of original `a` operation source range), and
+					// * `newTargetPosition` does not target into them (opposite would mean that `a` operation targets "inside itself").
+					// This means that the transformation will be "clean" and always return one result.
+					ranges[ i ] = ranges[ i ]._getTransformedByMove( ranges[ j ].start, newTargetPosition, howMany )[ 0 ];
+				}
+			}
 
-				result.isSticky = a.isSticky;
+			return makeMoveOperationsFromRanges( a, ranges, newTargetPosition );
 
-				return result;
-			} );
+			// // Map transformed range(s) to operations and return them.
+			// const transformed = ranges.map( range => {
+			// 	// We want to keep correct operation class.
+			// 	const result = new a.constructor(
+			// 		range.start,
+			// 		range.end.offset - range.start.offset,
+			// 		newTargetPosition,
+			// 		a.baseVersion
+			// 	);
+			//
+			// 	result.isSticky = a.isSticky;
+			//
+			// 	return result;
+			// } );
+			//
+			// // At this moment we have one, two or three operations in `transformed` array.
+			// // Unfortunately, those operations, may affect each other!
+			// // So, each operation has to be transformed by the operations that are before it in the array.
+			// // Thankfully, those operations have non-intersecting ranges and non-conflicting target position.
+			// // This means that each operation will be transformed to exactly one move operation and
+			// // we don't get into some kind of messy situation or infinite loop.
+			// for ( let i = 1; i < transformed.length; i++ ) {
+			// 	for ( let j = 0; j < i; j++ ) {
+			// 		transformed[ i ] = ot.MoveOperation.MoveOperation(  );
+			// 	}
+			// }
 		}
 	}
 };
@@ -574,4 +684,31 @@ function joinRanges( ranges ) {
 
 		return ranges[ 0 ];
 	}
+}
+
+// Map transformed range(s) to operations and return them.
+function makeMoveOperationsFromRanges( a, ranges, targetPosition ) {
+	return ranges.map( range => {
+		// We want to keep correct operation class.
+		let OperationClass;
+
+		if ( targetPosition.root.rootName == '$graveyard' ) {
+			OperationClass = RemoveOperation;
+		} else if ( range.start.root.rootName == '$graveyard' ) {
+			OperationClass = ReinsertOperation;
+		} else {
+			OperationClass = MoveOperation;
+		}
+
+		const result = new OperationClass(
+			range.start,
+			range.end.offset - range.start.offset,
+			targetPosition,
+			0 // Is corrected anyway later.
+		);
+
+		result.isSticky = a.isSticky;
+
+		return result;
+	} );
 }

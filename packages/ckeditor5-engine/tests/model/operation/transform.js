@@ -2708,7 +2708,7 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'range inside transforming range and is important: shrink range', () => {
+			it( 'range inside transforming range and is important: split into two operations', () => {
 				op.howMany = 4;
 
 				const transformBy = new MoveOperation(
@@ -2720,14 +2720,21 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expect( transOp.length ).to.equal( 1 );
+				expect( transOp.length ).to.equal( 2 );
 
-				expected.howMany = 2;
+				expected.howMany = 1;
+				expected.sourcePosition.path = [ 2, 2, 5 ];
 
 				expectOperation( transOp[ 0 ], expected );
+
+				expected.howMany = 1;
+				expected.sourcePosition.path = [ 2, 2, 4 ];
+				expected.baseVersion++;
+
+				expectOperation( transOp[ 1 ], expected );
 			} );
 
-			it( 'range inside transforming range and is less important: split into two operations', () => {
+			it( 'range inside transforming range and is less important: split into three operations', () => {
 				op.howMany = 4;
 
 				const transformBy = new MoveOperation(
@@ -2739,18 +2746,24 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy, { isStrong: true } );
 
-				expect( transOp.length ).to.equal( 2 );
+				expect( transOp.length ).to.equal( 3 );
 
-				expected.sourcePosition.path = [ 4, 1, 0 ];
-				expected.howMany = 2;
+				expected.sourcePosition.path = [ 2, 2, 5 ];
+				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.sourcePosition.path = [ 2, 2, 4 ];
+				expected.sourcePosition.path = [ 4, 1, 0 ];
 				expected.howMany = 2;
 				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
+
+				expected.sourcePosition.path = [ 2, 2, 4 ];
+				expected.howMany = 1;
+				expected.baseVersion++;
+
+				expectOperation( transOp[ 2 ], expected );
 			} );
 
 			it( 'range and target inside transforming range and is important: no operation update', () => {
