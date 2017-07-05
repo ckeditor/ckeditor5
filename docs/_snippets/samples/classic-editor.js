@@ -9,7 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 
 import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
+ClassicEditor.create( document.querySelector( '#snippet-classic-editor' ), {
 	plugins: [ ArticlePreset ],
 	toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 	image: {

@@ -6,4 +6,4 @@ order: 10
 
 Classic editor sample.
 
-{@snippet basic/integration1}
+{@snippet samples/classic-editor}
