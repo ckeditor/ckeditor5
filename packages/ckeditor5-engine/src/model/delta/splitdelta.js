@@ -66,7 +66,7 @@ export default class SplitDelta extends Delta {
 	 * @type {module:engine/model/operation/moveoperation~MoveOperation|null}
 	 */
 	get _moveOperation() {
-		return this.operations[ 1 ] || null;
+		return this.operations[ 1 ] && this.operations[ 1 ] instanceof MoveOperation ? this.operations[ 1 ] : null;
 	}
 
 	/**
