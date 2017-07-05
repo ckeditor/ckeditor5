@@ -10,9 +10,17 @@
 
 import Delta from './delta';
 import MoveDelta from './movedelta';
+import RemoveDelta from './removedelta';
+import MergeDelta from './mergedelta';
+import SplitDelta from './splitdelta';
+import WrapDelta from './wrapdelta';
+import UnwrapDelta from './unwrapdelta';
+import RenameDelta from './renamedelta';
+import AttributeDelta from './attributedelta';
 import operationTransform from '../operation/transform';
 import NoOperation from '../operation/nooperation';
 import MoveOperation from '../operation/moveoperation';
+import RemoveOperation from '../operation/removeoperation';
 import arrayUtils from '@ckeditor/ckeditor5-utils/src/lib/lodash/array';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
@@ -45,19 +53,11 @@ const transform = {
 	 * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation.
 	 */
 	transform( a, b, context ) {
-		if ( context.useAdditionalContext ) {
-			_setContext( a, b, context );
-		}
-
 		const transformAlgorithm = transform.getTransformationCase( a, b ) || transform.defaultTransform;
 
 		// Make new instance of context object, so all changes done during transformation are not saved in original object.
 		const transformed = transformAlgorithm( a, b, Object.assign( {}, context ) );
 		const baseVersion = arrayUtils.last( b.operations ).baseVersion;
-
-		if ( context.useAdditionalContext ) {
-			_updateContext( a, transformed, context );
-		}
 
 		return updateBaseVersion( baseVersion, transformed );
 	},
@@ -71,14 +71,12 @@ const transform = {
 	 * @param {module:engine/model/delta/delta~Delta} a Delta that will be transformed.
 	 * @param {module:engine/model/delta/delta~Delta} b Delta to transform by.
 	 * @param {module:engine/model/delta/transform~transformationContext} context Transformation context object.
-	 * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation, that is an array with single delta instance.
+	 * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation.
 	 */
 	defaultTransform( a, b, context ) {
-		// Create a new delta instance. Make sure that the new delta is of same type as transformed delta.
-		// We will transform operations in that delta but it doesn't mean the delta's "meaning" which is connected to
-		// the delta's type. Since the delta's type is heavily used in transformations and probably other parts
-		// of system it is important to keep proper delta type through all transformation process.
-		const transformed = new a.constructor();
+		// This will hold operations from delta `a` that will be transformed by operations from delta `b`.
+		// Eventually, those operations will be used to create result delta(s).
+		const transformed = [];
 
 		// Array containing operations that we will transform by. At the beginning these are just operations from
 		let byOps = b.operations;
@@ -154,28 +152,14 @@ const transform = {
 			// We add transformed operation from delta A to newly created delta.
 			// Remember that transformed operation from delta A may consist of multiple operations.
 			for ( const op of ops ) {
-				transformed.addOperation( op );
+				transformed.push( op );
 			}
 
 			// In next loop, we will take another operation from delta A and transform it through (transformed) operations
 			// from delta B...
 		}
 
-		// If `MoveDelta` or `RemoveDelta` operation got split, instead of returning one delta with multiple operations,
-		// return multiple deltas with single operation each.
-		if ( transformed instanceof MoveDelta && transformed.operations.length > 1 ) {
-			const result = [];
-
-			for ( const operation of transformed.operations ) {
-				const delta = new a.constructor();
-				delta.addOperation( operation );
-				result.push( delta );
-			}
-
-			return result;
-		} else {
-			return [ transformed ];
-		}
+		return getNormalizedDeltas( a.constructor, transformed );
 	},
 
 	/**
@@ -249,24 +233,17 @@ const transform = {
 		const useAdditionalContext = document !== null;
 
 		const contextAB = {
-			isStrong: true,
-			useAdditionalContext
-		};
-
-		const contextBA = {
-			isStrong: false,
-			useAdditionalContext
+			isStrong: true
 		};
 
 		if ( useAdditionalContext ) {
-			const additionalContext = {
-				forceWeakRemove: true,
-				document
-			};
+			contextAB.wasAffected = new Map();
+			contextAB.originalDelta = new Map();
+			contextAB.document = document;
 
-			// We need two different instances for `wasAffected` property.
-			Object.assign( contextAB, { wasAffected: new Map() }, additionalContext );
-			Object.assign( contextBA, { wasAffected: new Map() }, additionalContext );
+			for ( const delta of transformedDeltasB ) {
+				contextAB.originalDelta.set( delta, delta );
+			}
 		}
 
 		for ( let i = 0; i < transformedDeltasA.length; i++ ) {
@@ -277,8 +254,33 @@ const transform = {
 
 				for ( let k = 0; k < deltaA.length; k++ ) {
 					for ( let l = 0; l < deltaB.length; l++ ) {
-						const resultAB = transform.transform( deltaA[ k ], deltaB[ l ], contextAB );
-						const resultBA = transform.transform( deltaB[ l ], deltaA[ k ], contextBA );
+						if ( useAdditionalContext ) {
+							_setContext( deltaA[ k ], deltaB[ l ], contextAB );
+						}
+
+						const resultAB = transform.transform( deltaA[ k ], deltaB[ l ], {
+							insertBefore: contextAB.insertBefore,
+							forceNotSticky: contextAB.forceNotSticky,
+							isStrong: contextAB.isStrong,
+							forceWeakRemove: contextAB.forceWeakRemove
+						} );
+
+						const resultBA = transform.transform( deltaB[ l ], deltaA[ k ], {
+							insertBefore: !contextAB.insertBefore,
+							forceNotSticky: contextAB.forceNotSticky,
+							isStrong: !contextAB.isStrong,
+							forceWeakRemove: contextAB.forceWeakRemove
+						} );
+
+						if ( useAdditionalContext ) {
+							_updateContext( deltaA[ k ], resultAB, contextAB );
+
+							const originalDelta = contextAB.originalDelta.get( deltaB[ l ] );
+
+							for ( const deltaBA of resultBA ) {
+								contextAB.originalDelta.set( deltaBA, originalDelta );
+							}
+						}
 
 						deltaA.splice( k, 1, ...resultAB );
 						k += resultAB.length - 1;
@@ -350,6 +352,7 @@ function padWithNoOps( deltas, howMany ) {
 function _setContext( a, b, context ) {
 	_setWasAffected( a, b, context );
 	_setInsertBeforeContext( a, b, context );
+	_setForceWeakRemove( b, context );
 	_setForceNotSticky( b, context );
 }
 
@@ -384,12 +387,14 @@ function _setContext( a, b, context ) {
 // `context.isBefore` is `undefined` and other factors will be taken into consideration when resolving the order
 // (this, however, happens in operational transformation algorithms).
 //
-// Keep in mind that this problem only affects `MoveOperation` (and operations that derive from it).
+// This affects both `MoveOperation` (and its derivatives) and `InsertOperation`.
 function _setInsertBeforeContext( a, b, context ) {
 	// If `b` is a delta that undoes other delta...
-	if ( context.document.history.isUndoingDelta( b ) ) {
+	const originalDelta = context.originalDelta.get( b );
+
+	if ( context.document.history.isUndoingDelta( originalDelta ) ) {
 		// Get the undone delta...
-		const undoneDelta = context.document.history.getUndoneDelta( b );
+		const undoneDelta = context.document.history.getUndoneDelta( originalDelta );
 		// Get a map with deltas related to `a` delta...
 		const aWasAffectedBy = context.wasAffected.get( a );
 		// And check if the undone delta is related with delta `a`.
@@ -413,10 +418,36 @@ function _setInsertBeforeContext( a, b, context ) {
 //
 // This affects `MoveOperation` (and its derivatives).
 function _setForceNotSticky( b, context ) {
+	const history = context.document.history;
+	const originalB = context.originalDelta.get( b );
+
 	// If `b` delta is undoing or undone delta, stickiness should not be taken into consideration.
-	if ( context.document.history.isUndoingDelta( b ) || context.document.history.isUndoneDelta( b ) ) {
+	if ( history.isUndoingDelta( originalB ) || history.isUndoneDelta( originalB ) ) {
 		context.forceNotSticky = true;
 	}
+}
+
+// Sets `context.forceWeakRemove` basing on `context.document` history for transformation by `b` delta.
+//
+// When additional context is not used, default `MoveOperation` x `RemoveOperation` transformation
+// always treats `RemoveOperation` as a stronger one, no matter how `context.isStrong` is set. It is like this
+// to provide better results when transformations happen.
+//
+// This is however works fine only when additional context is not used.
+//
+// When additional context is used, we need a better way to decide whether `RemoveOperation` is "dominating" (or in other
+// words, whether nodes removed by given operation should stay in graveyard if other operation wants to move them).
+//
+// The answer to this is easy: if `RemoveOperation` has been already undone, we are not forcing given nodes to stay
+// in graveyard. In such scenario, we set `context.forceWeakRemove` to `true`. However, if the `RemoveOperation` has
+// not been undone, we set `context.forceWeakRemove` to `false` because we want remove to be "dominating".
+function _setForceWeakRemove( b, context ) {
+	const history = context.document.history;
+	const originalB = context.originalDelta.get( b );
+
+	// If `b` delta is a remove delta, that has not been undone yet, forceWeakRemove should be `false`.
+	// It should be `true` in any other case, if additional context is used.
+	context.forceWeakRemove = !( originalB instanceof RemoveDelta && !history.isUndoneDelta( originalB ) );
 }
 
 // Sets `context.wasAffected` which holds context information about how transformed deltas are related. `context.wasAffected`
@@ -427,7 +458,8 @@ function _setWasAffected( a, b, context ) {
 		context.wasAffected.set( a, new Map() );
 	}
 
-	let wasAffected = false;
+	const originalDelta = context.originalDelta.get( b );
+	let wasAffected = !!context.wasAffected.get( a ).get( originalDelta );
 
 	// Cross-check all operations from both deltas...
 	for ( const opA of a.operations ) {
@@ -448,7 +480,7 @@ function _setWasAffected( a, b, context ) {
 		}
 	}
 
-	context.wasAffected.get( a ).set( b, wasAffected );
+	context.wasAffected.get( a ).set( originalDelta, wasAffected );
 }
 
 // Checks whether `opA` is affected by `opB`. It is assumed that both operations are `MoveOperation`.
@@ -477,6 +509,7 @@ function _isOperationAffected( opA, opB ) {
 function _updateContext( oldDelta, newDeltas, context ) {
 	delete context.insertBefore;
 	delete context.forceNotSticky;
+	delete context.forceWeakRemove;
 
 	const wasAffected = context.wasAffected.get( oldDelta );
 
@@ -484,6 +517,131 @@ function _updateContext( oldDelta, newDeltas, context ) {
 
 	for ( const delta of newDeltas ) {
 		context.wasAffected.set( delta, new Map( wasAffected ) );
+	}
+}
+
+// Takes base delta class (`DeltaClass`) and a set of `operations` that are transformation results and creates
+// one or more deltas, acknowledging that the result is a transformation of a delta that is of `DeltaClass`.
+//
+// The normalization ensures that each delta has it's "normal" state, that is, for example, `MoveDelta` has
+// just one `MoveOperation`, `SplitDelta` has just two operations of which first is `InsertOperation` and second
+// is `MoveOperation` or `NoOperation`, etc.
+function getNormalizedDeltas( DeltaClass, operations ) {
+	let deltas = [];
+	let delta = null;
+	let attributeOperationIndex;
+
+	switch ( DeltaClass ) {
+		case MoveDelta:
+		case RemoveDelta:
+			// Normal MoveDelta has just one MoveOperation.
+			// Take all operations and create MoveDelta for each of them.
+			for ( const o of operations ) {
+				if ( o instanceof NoOperation ) {
+					// An operation may be instance of NoOperation and this may be correct.
+					// If that's the case, do not create a MoveDelta with singular NoOperation.
+					// Create "no delta" instead, that is Delta instance with NoOperation.
+					delta = new Delta();
+				} else {
+					if ( o instanceof RemoveOperation ) {
+						delta = new RemoveDelta();
+					} else {
+						delta = new MoveDelta();
+					}
+
+					// Unsticky the operation. Only operations in "special" deltas can be sticky.
+					o.isSticky = false;
+				}
+
+				delta.addOperation( o );
+				deltas.push( delta );
+			}
+
+			// Return all created MoveDeltas.
+			return deltas;
+		case SplitDelta:
+		case WrapDelta:
+			// Normal SplitDelta and WrapDelta have two operations: first is InsertOperation and second is MoveOperation.
+			// The MoveOperation may be split into multiple MoveOperations.
+			// If that's the case, convert additional MoveOperations into MoveDeltas.
+			// First, create normal SplitDelta or WrapDelta, using first two operations.
+			delta = new DeltaClass();
+			delta.addOperation( operations[ 0 ] );
+			delta.addOperation( operations[ 1 ] );
+			// Then, take all but last two operations and use them to create normalized MoveDeltas.
+			deltas = getNormalizedDeltas( MoveDelta, operations.slice( 2 ) );
+
+			// Return all deltas as one array, in proper order.
+			return [ delta ].concat( deltas );
+		case MergeDelta:
+		case UnwrapDelta:
+			// Normal MergeDelta and UnwrapDelta have two operations: first is MoveOperation and second is RemoveOperation.
+			// The MoveOperation may be split into multiple MoveOperations.
+			// If that's the case, convert additional MoveOperations into MoveDeltas.
+			// Take all but last two operations and use them to create normalized MoveDeltas.
+			deltas = getNormalizedDeltas( MoveDelta, operations.slice( 0, -2 ) );
+			// Then, create normal MergeDelta or UnwrapDelta, using last two operations.
+			delta = new DeltaClass();
+			delta.addOperation( operations[ operations.length - 2 ] );
+			delta.addOperation( operations[ operations.length - 1 ] );
+
+			// Return all deltas as one array, in proper order.
+			return deltas.concat( delta );
+		case RenameDelta:
+			// RenameDelta may become a "no delta" if it's only operation is transformed to NoOperation.
+			// This may happen when RenameOperation is transformed by RenameOperation.
+			// Keep in mind that RenameDelta always have just one operation.
+			if ( operations[ 0 ] instanceof NoOperation ) {
+				delta = new Delta();
+			} else {
+				delta = new RenameDelta();
+			}
+
+			delta.addOperation( operations[ 0 ] );
+
+			return [ delta ];
+		case AttributeDelta:
+			// AttributeDelta is allowed to have multiple AttributeOperations and also NoOperations but
+			// the first operation has to be an AttributeOperation as it is used as a reference for deltas properties.
+			// Keep in mind that we cannot simply remove NoOperations cause that would mess up base versions.
+			// Find an index of first operation that is not a NoOperation.
+			for ( attributeOperationIndex = 0; attributeOperationIndex < operations.length; attributeOperationIndex++ ) {
+				if ( !( operations[ attributeOperationIndex ] instanceof NoOperation ) ) {
+					break;
+				}
+			}
+
+			// No AttributeOperations has been found. Convert AttributeDelta to "no delta".
+			if ( attributeOperationIndex == operations.length ) {
+				delta = new Delta();
+			}
+			// AttributeOperation found.
+			else {
+				delta = new AttributeDelta();
+
+				// AttributeOperation wasn't the first operation.
+				if ( attributeOperationIndex != 0 ) {
+					// Move AttributeOperation to the beginning.
+					operations.unshift( operations.splice( attributeOperationIndex, 1 )[ 0 ] );
+					// No need to update base versions - they are updated at the end of transformation algorithm anyway.
+				}
+			}
+
+			// Add all operations to the delta (even if it is just a couple of NoOperations we have to keep them all).
+			for ( const o of operations ) {
+				delta.addOperation( o );
+			}
+
+			return [ delta ];
+		default:
+			// For all other deltas no normalization is needed.
+			delta = new DeltaClass();
+
+			for ( const o of operations ) {
+				delta.addOperation( o );
+			}
+
+			return [ delta ];
 	}
 }
 
