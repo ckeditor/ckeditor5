@@ -58,7 +58,7 @@ export default class ClassicTestEditorUI {
 	 * @returns {Promise} A Promise resolved when the initialization process is finished.
 	 */
 	init() {
-		return this.view.init();
+		this.view.init();
 	}
 
 	/**
@@ -67,6 +67,6 @@ export default class ClassicTestEditorUI {
 	 * @returns {Promise} A Promise resolved when the destruction process is finished.
 	 */
 	destroy() {
-		return this.view.destroy();
+		this.view.destroy();
 	}
 }
