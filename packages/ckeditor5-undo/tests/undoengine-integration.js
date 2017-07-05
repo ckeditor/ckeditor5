@@ -9,6 +9,10 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import UndoEngine from '../src/undoengine';
 
+import DeleteCommand from '@ckeditor/ckeditor5-typing/src/deletecommand';
+import InputCommand from '@ckeditor/ckeditor5-typing/src/inputcommand';
+import EnterCommand from '@ckeditor/ckeditor5-enter/src/entercommand';
+
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'UndoEngine integration', () => {
@@ -18,6 +22,11 @@ describe( 'UndoEngine integration', () => {
 		return ModelTestEditor.create( { plugins: [ UndoEngine ] } )
 			.then( newEditor => {
 				editor = newEditor;
+
+				editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
+				editor.commands.add( 'enter', new EnterCommand( editor ) );
+				editor.commands.add( 'input', new InputCommand( editor, 5 ) );
+
 				doc = editor.document;
 				doc.schema.registerItem( 'p', '$block' );
 				root = doc.getRoot();
@@ -38,6 +47,10 @@ describe( 'UndoEngine integration', () => {
 
 	function undoDisabled() {
 		expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
+	}
+
+	function redoDisabled() {
+		expect( editor.commands.get( 'redo' ).isEnabled ).to.be.false;
 	}
 
 	describe( 'adding and removing content', () => {
@@ -294,6 +307,368 @@ describe( 'UndoEngine integration', () => {
 			output( '<p>foobar[]</p>' );
 
 			undoDisabled();
+		} );
+	} );
+
+	// Restoring selection in those examples may be completely off.
+	describe( 'multiple enters, deletes and typing', () => {
+		function split( path ) {
+			setSelection( path.slice(), path.slice() );
+			editor.execute( 'enter' );
+		}
+
+		function merge( path ) {
+			const selPath = path.slice();
+			selPath.push( 0 );
+			setSelection( selPath, selPath.slice() );
+			editor.execute( 'delete' );
+		}
+
+		function type( path, text ) {
+			setSelection( path.slice(), path.slice() );
+			editor.execute( 'input', { text } );
+		}
+
+		function remove( path ) {
+			setSelection( path.slice(), path.slice() );
+			editor.execute( 'delete' );
+		}
+
+		it( 'split, split, split', () => {
+			input( '<p>12345678</p>' );
+
+			split( [ 0, 3 ] );
+			output( '<p>123</p><p>[]45678</p>' );
+
+			split( [ 1, 4 ] );
+			output( '<p>123</p><p>4567</p><p>[]8</p>' );
+
+			split( [ 1, 2 ] );
+			output( '<p>123</p><p>45</p><p>[]67</p><p>8</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>4567[]</p><p>8</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>45678[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345678[]</p>' );
+
+			undoDisabled();
+
+			editor.execute( 'redo' );
+			output( '<p>123[]</p><p>45678</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>123</p><p>4567[]</p><p>8</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>123</p><p>45[]</p><p>67</p><p>8</p>' );
+
+			redoDisabled();
+		} );
+
+		it( 'merge, merge, merge', () => {
+			input( '<p>123</p><p>45</p><p>67</p><p>8</p>' );
+
+			merge( [ 1 ] );
+			output( '<p>123[]45</p><p>67</p><p>8</p>' );
+
+			merge( [ 2 ] );
+			output( '<p>12345</p><p>67[]8</p>' );
+
+			merge( [ 1 ] );
+			output( '<p>12345[]678</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345</p><p>678[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345</p><p>67</p><p>8[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>45[]</p><p>67</p><p>8</p>' );
+
+			undoDisabled();
+
+			editor.execute( 'redo' );
+			output( '<p>12345[]</p><p>67</p><p>8</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>12345</p><p>678[]</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>1234567[]8</p>' );
+
+			redoDisabled();
+		} );
+
+		it( 'split, merge, split, merge (same position)', () => {
+			input( '<p>12345678</p>' );
+
+			split( [ 0, 3 ] );
+			output( '<p>123</p><p>[]45678</p>' );
+
+			merge( [ 1 ] );
+			output( '<p>123[]45678</p>' );
+
+			split( [ 0, 3 ] );
+			output( '<p>123</p><p>[]45678</p>' );
+
+			merge( [ 1 ] );
+			output( '<p>123[]45678</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>45678[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345678[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>45678[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345678[]</p>' );
+
+			undoDisabled();
+
+			editor.execute( 'redo' );
+			output( '<p>123[]</p><p>45678</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>12345678[]</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>123[]</p><p>45678</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>12345678[]</p>' );
+
+			redoDisabled();
+		} );
+
+		it( 'split, split, split, merge, merge, merge', () => {
+			input( '<p>12345678</p>' );
+
+			split( [ 0, 3 ] );
+			output( '<p>123</p><p>[]45678</p>' );
+
+			split( [ 1, 4 ] );
+			output( '<p>123</p><p>4567</p><p>[]8</p>' );
+
+			split( [ 1, 2 ] );
+			output( '<p>123</p><p>45</p><p>[]67</p><p>8</p>' );
+
+			merge( [ 1 ] );
+			output( '<p>123[]45</p><p>67</p><p>8</p>' );
+
+			merge( [ 2 ] );
+			output( '<p>12345</p><p>67[]8</p>' );
+
+			merge( [ 1 ] );
+			output( '<p>12345[]678</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345</p><p>678[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345</p><p>67</p><p>8[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>45[]</p><p>67</p><p>8</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>4567[]</p><p>8</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>45678[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345678[]</p>' );
+
+			undoDisabled();
+
+			editor.execute( 'redo' );
+			output( '<p>123[]</p><p>45678</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>123</p><p>4567[]</p><p>8</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>123</p><p>45[]</p><p>67</p><p>8</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>12345[]</p><p>67</p><p>8</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>12345</p><p>678[]</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>1234567[]8</p>' );
+
+			redoDisabled();
+		} );
+
+		it( 'split, split, merge, split, merge (different order)', () => {
+			input( '<p>12345678</p>' );
+
+			split( [ 0, 3 ] );
+			output( '<p>123</p><p>[]45678</p>' );
+
+			split( [ 1, 2 ] );
+			output( '<p>123</p><p>45</p><p>[]678</p>' );
+
+			merge( [ 1 ] );
+			output( '<p>123[]45</p><p>678</p>' );
+
+			split( [ 1, 1 ] );
+			output( '<p>12345</p><p>6</p><p>[]78</p>' );
+
+			merge( [ 1 ] );
+			output( '<p>12345[]6</p><p>78</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345</p><p>6[]</p><p>78</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345</p><p>678[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>45[]</p><p>678</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>45678[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345678[]</p>' );
+
+			undoDisabled();
+
+			editor.execute( 'redo' );
+			output( '<p>123[]</p><p>45678</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>123</p><p>45[]</p><p>678</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>12345[]</p><p>678</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>12345</p><p>6[]</p><p>78</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>123456[]</p><p>78</p>' );
+
+			redoDisabled();
+		} );
+
+		it( 'split, remove, split, merge, merge', () => {
+			input( '<p>12345678</p>' );
+
+			split( [ 0, 3 ] );
+			output( '<p>123</p><p>[]45678</p>' );
+
+			remove( [ 1, 4 ] );
+			remove( [ 1, 3 ] );
+			output( '<p>123</p><p>45[]8</p>' );
+
+			split( [ 1, 1 ] );
+			output( '<p>123</p><p>4</p><p>[]58</p>' );
+
+			merge( [ 1 ] );
+			output( '<p>123[]4</p><p>58</p>' );
+
+			merge( [ 1 ] );
+			output( '<p>1234[]58</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>1234</p><p>58[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>4[]</p><p>58</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>458[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>4567[]8</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345678[]</p>' );
+
+			undoDisabled();
+
+			editor.execute( 'redo' );
+			output( '<p>123[]</p><p>45678</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>123</p><p>458[]</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>123</p><p>4[]</p><p>58</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>1234[]</p><p>58</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>12345[]8</p>' );
+
+			redoDisabled();
+		} );
+
+		it( 'split, typing, split, merge, merge', () => {
+			input( '<p>12345678</p>' );
+
+			split( [ 0, 3 ] );
+			output( '<p>123</p><p>[]45678</p>' );
+
+			type( [ 1, 4 ], 'x' );
+			type( [ 1, 5 ], 'y' );
+			output( '<p>123</p><p>4567xy[]8</p>' );
+
+			split( [ 1, 2 ] );
+			output( '<p>123</p><p>45</p><p>[]67xy8</p>' );
+
+			merge( [ 1 ] );
+			output( '<p>123[]45</p><p>67xy8</p>' );
+
+			merge( [ 1 ] );
+			output( '<p>12345[]67xy8</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345</p><p>67xy8[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>45[]</p><p>67xy8</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>4567xy8[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>123</p><p>4567[]8</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>12345678[]</p>' );
+
+			undoDisabled();
+
+			editor.execute( 'redo' );
+			output( '<p>123[]</p><p>45678</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>123</p><p>4567xy8[]</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>123</p><p>45[]</p><p>67xy8</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>12345[]</p><p>67xy8</p>' );
+
+			editor.execute( 'redo' );
+			output( '<p>1234567[]xy8</p>' );
+
+			redoDisabled();
 		} );
 	} );
 

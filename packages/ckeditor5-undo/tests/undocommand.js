@@ -249,12 +249,11 @@ describe( 'UndoCommand', () => {
 					expect( char.hasAttribute( 'key' ) ).to.be.false;
 				}
 
-				// Let's undo wrapping. This will bring back some nodes that were wrapped into the paragraph at the beginning.
+				// Let's undo wrapping. This will remove the P element and leave us with empty root.
 				undo.execute( batch3 );
-				expect( root.maxOffset ).to.equal( 3 );
-				expect( root.getChild( 0 ).data ).to.equal( 'bar' );
+				expect( root.maxOffset ).to.equal( 0 );
 
-				expect( editor.document.selection.getFirstRange().isEqual( r( 0, 3 ) ) ).to.be.true;
+				expect( editor.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
 				expect( editor.document.selection.isBackward ).to.be.false;
 			} );
 		} );
