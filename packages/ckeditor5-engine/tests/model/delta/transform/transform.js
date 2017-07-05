@@ -429,7 +429,8 @@ describe( 'transform', () => {
 					type: MoveDelta,
 					operations: [
 						{
-							type: ReinsertOperation,
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 0 ] ),
 							targetPosition: new Position( root, [ 3 ] ),
 							howMany: 1,
 							baseVersion: 3
