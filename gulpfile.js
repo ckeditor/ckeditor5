@@ -38,12 +38,28 @@ function getTestOptions() {
 // Documentation. -------------------------------------------------------------
 
 gulp.task( 'docs', () => {
-	if ( process.argv[ 3 ] == '--no-api' ) {
-		return runUmberto();
+	const skipLiveSnippets = process.argv.includes( '--skip-snippets' );
+	const skipApi = process.argv.includes( '--skip-api' );
+
+	if ( skipApi ) {
+		const fs = require( 'fs' );
+		const apiJsonPath = './docs/api/output.json';
+
+		if ( fs.existsSync( apiJsonPath ) ) {
+			fs.unlinkSync( apiJsonPath );
+		}
+
+		return runUmberto( {
+			skipLiveSnippets
+		} );
 	}
 
 	return buildApiDocs()
-		.then( runUmberto );
+		.then( () => {
+			return runUmberto( {
+				skipLiveSnippets
+			} );
+		} );
 } );
 
 gulp.task( 'docs:api', buildApiDocs );
@@ -64,13 +80,14 @@ function buildApiDocs() {
 		} );
 }
 
-function runUmberto() {
+function runUmberto( options ) {
 	assertIsInstalled( 'umberto' );
 	const umberto = require( 'umberto' );
 
 	return umberto.buildSingleProject( {
 		configDir: 'docs',
-		clean: true
+		clean: true,
+		skipLiveSnippets: options.skipLiveSnippets
 	} );
 }
 

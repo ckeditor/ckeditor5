@@ -1,0 +1,20 @@
+{
+  "name": "docs-adapter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babili-webpack-plugin": "^0.1.2",
+    "css-loader": "^0.28.4",
+    "node-sass": "^4.5.3",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.0.0"
+  }
+}
