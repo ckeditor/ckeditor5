@@ -287,7 +287,7 @@ function enableLoggingTools() {
 		const range = ModelRange.createFromPositionAndShift( this.sourcePosition, this.howMany );
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`${ range } -> ${ this.targetPosition }`;
+			`${ range } -> ${ this.targetPosition }${ this.isSticky ? ' (sticky)' : '' }`;
 	};
 
 	NoOperation.prototype.toString = function() {

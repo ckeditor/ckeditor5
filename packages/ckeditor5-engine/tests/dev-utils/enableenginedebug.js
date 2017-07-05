@@ -236,6 +236,16 @@ describe( 'debug tools', () => {
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
 			} );
 
+			it( 'MoveOperation sticky', () => {
+				const op = new MoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( modelRoot, 6 ), 0 );
+				op.isSticky = true;
+
+				expect( op.toString() ).to.equal( 'MoveOperation( 0 ): main [ 1 ] - [ 3 ] -> main [ 6 ] (sticky)' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
 			it( 'NoOperation', () => {
 				const op = new NoOperation( 0 );
 
