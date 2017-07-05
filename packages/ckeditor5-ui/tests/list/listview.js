@@ -64,10 +64,9 @@ describe( 'ListView', () => {
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
-			return view.init().then( () => {
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, view.element );
-			} );
+			view.init();
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, view.element );
 		} );
 
 		describe( 'activates keyboard navigation for the list', () => {

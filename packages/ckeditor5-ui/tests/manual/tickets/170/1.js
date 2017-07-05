@@ -25,11 +25,10 @@ ClassicEditor.create( document.querySelector( '#editor-attach' ), {
 
 	editor.ui.view.element.querySelector( '.ck-editor__editable' ).scrollTop = 360;
 
-	panel.init().then( () => {
-		panel.attachTo( {
-			target: editor.ui.view.element.querySelector( '.ck-editor__editable p strong' ),
-			limiter: editor.ui.view.editableElement
-		} );
+	panel.init();
+	panel.attachTo( {
+		target: editor.ui.view.element.querySelector( '.ck-editor__editable p strong' ),
+		limiter: editor.ui.view.editableElement
 	} );
 
 	window.attachEditor = editor;
@@ -51,11 +50,10 @@ ClassicEditor.create( document.querySelector( '#editor-stick' ), {
 
 	editor.ui.view.element.querySelector( '.ck-editor__editable' ).scrollTop = 360;
 
-	panel.init().then( () => {
-		panel.pin( {
-			target: editor.ui.view.element.querySelector( '.ck-editor__editable p strong' ),
-			limiter: editor.ui.view.editableElement
-		} );
+	panel.init();
+	panel.pin( {
+		target: editor.ui.view.element.querySelector( '.ck-editor__editable p strong' ),
+		limiter: editor.ui.view.editableElement
 	} );
 
 	window.stickEditor = editor;

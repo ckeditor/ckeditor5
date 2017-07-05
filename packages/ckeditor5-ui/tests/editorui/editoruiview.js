@@ -47,18 +47,14 @@ describe( 'EditorUIView', () => {
 		it( 'removes the body region container', () => {
 			const el = view._bodyCollectionContainer;
 
-			return view.destroy().then( () => {
-				expect( el.parentNode ).to.be.null;
-			} );
+			view.destroy();
+			expect( el.parentNode ).to.be.null;
 		} );
 
-		it( 'can be called multiple times', done => {
+		it( 'can be called multiple times', () => {
 			expect( () => {
-				view.destroy().then( () => {
-					return view.destroy().then( () => {
-						done();
-					} );
-				} );
+				view.destroy();
+				view.destroy();
 			} ).to.not.throw();
 		} );
 	} );

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document, setTimeout, HTMLElement */
+/* global document, HTMLElement */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import View from '../src/view';
@@ -87,47 +87,21 @@ describe( 'View', () => {
 			setTestViewInstance();
 		} );
 
-		it( 'should return a promise', () => {
-			const spy = sinon.spy();
-			const child = {
-				init: () => {
-					return new Promise( resolve => {
-						setTimeout( () => resolve(), 100 );
-					} )
-					.then( () => spy() );
-				}
-			};
-
-			return view.init()
-				.then( () => {
-					const returned = view.addChildren( child );
-					expect( returned ).to.be.instanceof( Promise );
-
-					return returned.then( () => {
-						sinon.assert.calledOnce( spy );
-					} );
-				} );
-		} );
-
 		it( 'should add a single view to #_unboundChildren', () => {
 			expect( view._unboundChildren ).to.have.length( 0 );
 
 			const child = {};
 
-			return view.addChildren( child )
-				.then( () => {
-					expect( view._unboundChildren ).to.have.length( 1 );
-					expect( view._unboundChildren.get( 0 ) ).to.equal( child );
-				} );
+			view.addChildren( child );
+			expect( view._unboundChildren ).to.have.length( 1 );
+			expect( view._unboundChildren.get( 0 ) ).to.equal( child );
 		} );
 
 		it( 'should support iterables', () => {
 			expect( view._unboundChildren ).to.have.length( 0 );
 
-			return view.addChildren( [ {}, {}, {} ] )
-				.then( () => {
-					expect( view._unboundChildren ).to.have.length( 3 );
-				} );
+			view.addChildren( [ {}, {}, {} ] );
+			expect( view._unboundChildren ).to.have.length( 3 );
 		} );
 	} );
 
@@ -135,28 +109,22 @@ describe( 'View', () => {
 		beforeEach( createViewWithChildren );
 
 		it( 'should throw if already initialized', () => {
-			return view.init()
-				.then( () => {
-					view.init();
+			view.init();
 
-					throw new Error( 'This should not be executed.' );
-				} )
-				.catch( err => {
-					expect( err ).to.be.instanceof( CKEditorError );
-					expect( err.message ).to.match( /ui-view-init-re/ );
-				} );
-		} );
-
-		it( 'returns a promise', () => {
-			expect( view.init() ).to.be.instanceof( Promise );
+			try {
+				view.init();
+				throw new Error( 'This should not be executed.' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /ui-view-init-re/ );
+			}
 		} );
 
 		it( 'should set view#ready', () => {
 			expect( view.ready ).to.be.false;
 
-			return view.init().then( () => {
-				expect( view.ready ).to.be.true;
-			} );
+			view.init();
+			expect( view.ready ).to.be.true;
 		} );
 
 		it( 'calls init() on all view#_viewCollections', () => {
@@ -166,11 +134,10 @@ describe( 'View', () => {
 			const spyA = testUtils.sinon.spy( collectionA, 'init' );
 			const spyB = testUtils.sinon.spy( collectionB, 'init' );
 
-			return view.init().then( () => {
-				sinon.assert.calledOnce( spyA );
-				sinon.assert.calledOnce( spyB );
-				sinon.assert.callOrder( spyA, spyB );
-			} );
+			view.init();
+			sinon.assert.calledOnce( spyA );
+			sinon.assert.calledOnce( spyB );
+			sinon.assert.callOrder( spyA, spyB );
 		} );
 	} );
 
@@ -261,47 +228,32 @@ describe( 'View', () => {
 	describe( 'destroy()', () => {
 		beforeEach( createViewWithChildren );
 
-		it( 'should return a promise', () => {
-			const promise = view.destroy();
-
-			expect( promise ).to.be.instanceof( Promise );
-
-			return promise;
-		} );
-
-		it( 'can be called multiple times', done => {
+		it( 'can be called multiple times', () => {
 			expect( () => {
-				view.destroy().then( () => {
-					return view.destroy().then( () => {
-						done();
-					} );
-				} );
+				view.destroy();
 			} ).to.not.throw();
 		} );
 
 		it( 'should not touch the basic properties', () => {
-			return view.destroy().then( () => {
-				expect( view.element ).to.be.an.instanceof( HTMLElement );
-				expect( view.template ).to.be.an.instanceof( Template );
-				expect( view.locale ).to.be.an( 'object' );
-				expect( view.locale.t ).to.be.a( 'function' );
+			view.destroy();
 
-				expect( view._viewCollections ).to.be.instanceOf( Collection );
-				expect( view._unboundChildren ).to.be.instanceOf( ViewCollection );
-			} );
+			expect( view.element ).to.be.an.instanceof( HTMLElement );
+			expect( view.template ).to.be.an.instanceof( Template );
+			expect( view.locale ).to.be.an( 'object' );
+			expect( view.locale.t ).to.be.a( 'function' );
+
+			expect( view._viewCollections ).to.be.instanceOf( Collection );
+			expect( view._unboundChildren ).to.be.instanceOf( ViewCollection );
 		} );
 
 		it( 'should not clear the #_unboundChildren', () => {
 			const cached = view._unboundChildren;
 
-			return view.addChildren( [ new View(), new View() ] )
-				.then( () => {
-					expect( cached ).to.have.length( 4 );
+			view.addChildren( [ new View(), new View() ] );
+			expect( cached ).to.have.length( 4 );
 
-					return view.destroy().then( () => {
-						expect( cached ).to.have.length( 4 );
-					} );
-				} );
+			view.destroy();
+			expect( cached ).to.have.length( 4 );
 		} );
 
 		it( 'should not clear the #_viewCollections', () => {
@@ -309,9 +261,8 @@ describe( 'View', () => {
 
 			expect( cached ).to.have.length( 1 );
 
-			return view.destroy().then( () => {
-				expect( cached ).to.have.length( 1 );
-			} );
+			view.destroy();
+			expect( cached ).to.have.length( 1 );
 		} );
 
 		it( 'leaves the #element in DOM', () => {
@@ -320,9 +271,8 @@ describe( 'View', () => {
 
 			parentEl.appendChild( view.element );
 
-			return view.destroy().then( () => {
-				expect( elRef.parentNode ).to.equal( parentEl );
-			} );
+			view.destroy();
+			expect( elRef.parentNode ).to.equal( parentEl );
 		} );
 
 		it( 'calls destroy() on all view#_viewCollections', () => {
@@ -332,61 +282,18 @@ describe( 'View', () => {
 			const spyA = testUtils.sinon.spy( collectionA, 'destroy' );
 			const spyB = testUtils.sinon.spy( collectionB, 'destroy' );
 
-			return view.destroy().then( () => {
-				sinon.assert.calledOnce( spyA );
-				sinon.assert.calledOnce( spyB );
-				sinon.assert.callOrder( spyA, spyB );
-			} );
+			view.destroy();
+			sinon.assert.calledOnce( spyA );
+			sinon.assert.calledOnce( spyB );
+			sinon.assert.callOrder( spyA, spyB );
 		} );
 
 		it( 'destroy a template–less view', () => {
-			let promise;
-
 			view = new View();
 
 			expect( () => {
-				promise = view.destroy();
+				view.destroy();
 			} ).to.not.throw();
-
-			return promise;
-		} );
-
-		// https://github.com/ckeditor/ckeditor5-ui/issues/203
-		it( 'waits for all #addChildren promises to resolve', () => {
-			const spyA = sinon.spy();
-			const spyB = sinon.spy();
-
-			class DelayedInitView extends View {
-				constructor( delay, spy ) {
-					super();
-
-					this.delay = delay;
-					this.spy = spy;
-				}
-
-				init() {
-					return new Promise( resolve => {
-						setTimeout( () => resolve(), this.delay );
-					} )
-						.then( () => super.init() )
-						.then( () => {
-							this.spy();
-						} );
-				}
-			}
-
-			const viewA = new DelayedInitView( 200, spyA );
-			const viewB = new DelayedInitView( 100, spyB );
-
-			return view.init().then( () => {
-				view.addChildren( [ viewA, viewB ] );
-
-				return view.destroy().then( () => {
-					expect( viewA.ready ).to.be.true;
-					expect( viewB.ready ).to.be.true;
-					sinon.assert.callOrder( spyB, spyA );
-				} );
-			} );
 		} );
 	} );
 } );
@@ -429,44 +336,8 @@ function createViewWithChildren() {
 		}
 	}
 
-	class ChildViewA extends ChildView {
-		init() {
-			const promise = new Promise( resolve => {
-				setTimeout( resolve, 50 );
-			} );
-
-			return super.init().then( promise );
-		}
-
-		destroy() {
-			const promise = new Promise( resolve => {
-				setTimeout( resolve, 10 );
-			} );
-
-			return super.destroy().then( promise );
-		}
-	}
-
-	class ChildViewB extends ChildView {
-		init() {
-			const promise = new Promise( resolve => {
-				setTimeout( resolve, 10 );
-			} );
-
-			return super.init().then( promise );
-		}
-
-		destroy() {
-			const promise = new Promise( resolve => {
-				setTimeout( resolve, 50 );
-			} );
-
-			return super.destroy().then( promise );
-		}
-	}
-
-	childA = new ChildViewA();
-	childB = new ChildViewB();
+	childA = new ChildView();
+	childB = new ChildView();
 
 	setTestViewClass( {
 		tag: 'p',

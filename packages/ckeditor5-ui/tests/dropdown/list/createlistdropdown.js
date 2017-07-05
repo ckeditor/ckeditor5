@@ -25,9 +25,9 @@ describe( 'createListDropdown', () => {
 			label: 'foo'
 		} );
 
-		return ( view = createListDropdown( model, locale ) ).init().then( () => {
-			document.body.appendChild( view.element );
-		} );
+		view = createListDropdown( model, locale );
+		view.init();
+		document.body.appendChild( view.element );
 	} );
 
 	describe( 'constructor()', () => {

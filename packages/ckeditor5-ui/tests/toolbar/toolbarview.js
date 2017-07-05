@@ -21,8 +21,7 @@ describe( 'ToolbarView', () => {
 	beforeEach( () => {
 		locale = {};
 		view = new ToolbarView( locale );
-
-		return view.init();
+		view.init();
 	} );
 
 	describe( 'constructor()', () => {
@@ -82,10 +81,9 @@ describe( 'ToolbarView', () => {
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
-			return view.init().then( () => {
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, view.element );
-			} );
+			view.init();
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, view.element );
 		} );
 
 		describe( 'activates keyboard navigation for the toolbar', () => {
@@ -232,21 +230,22 @@ describe( 'ToolbarView', () => {
 			factory.add( 'bar', namedFactory( 'bar' ) );
 		} );
 
-		it( 'returns a promise', () => {
-			expect( view.fillFromConfig() ).to.be.instanceOf( Promise );
+		it( 'does not throw when no config is provided', () => {
+			expect( () => {
+				view.fillFromConfig();
+			} ).to.not.throw();
 		} );
 
 		it( 'expands the config into collection', () => {
-			return view.fillFromConfig( [ 'foo', 'bar', '|', 'foo' ], factory )
-				.then( () => {
-					const items = view.items;
+			view.fillFromConfig( [ 'foo', 'bar', '|', 'foo' ], factory );
 
-					expect( items ).to.have.length( 4 );
-					expect( items.get( 0 ).name ).to.equal( 'foo' );
-					expect( items.get( 1 ).name ).to.equal( 'bar' );
-					expect( items.get( 2 ) ).to.be.instanceOf( ToolbarSeparatorView );
-					expect( items.get( 3 ).name ).to.equal( 'foo' );
-				} );
+			const items = view.items;
+
+			expect( items ).to.have.length( 4 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ).name ).to.equal( 'bar' );
+			expect( items.get( 2 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items.get( 3 ).name ).to.equal( 'foo' );
 		} );
 	} );
 } );

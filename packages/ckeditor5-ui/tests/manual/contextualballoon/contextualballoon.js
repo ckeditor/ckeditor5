@@ -153,8 +153,6 @@ class PluginGeneric extends Plugin {
 
 			return toolbar.fillFromConfig( this.buttons, this.editor.ui.componentFactory );
 		}
-
-		return Promise.resolve();
 	}
 
 	_showPanel() {

@@ -98,7 +98,7 @@ export default class ListView extends View {
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
 
-		return super.init();
+		super.init();
 	}
 
 	/**

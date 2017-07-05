@@ -69,23 +69,11 @@ export default class ViewCollection extends Collection {
 		 * @member {HTMLElement}
 		 */
 		this._parentElement = null;
-
-		/**
-		 * A set containing promises created by {@link #add}. If the {@link #destroy} is called
-		 * before the child views' {@link module:ui/view~View#init} are completed,
-		 * {@link #destroy} will wait until all the promises are resolved.
-		 *
-		 * @private
-		 * @member {Set}
-		 */
-		this._addPromises = new Set();
 	}
 
 	/**
 	 * Initializes child views by injecting {@link module:ui/view~View#element} into DOM
 	 * and calling {@link module:ui/view~View#init}.
-	 *
-	 * @returns {Promise} A Promise resolved when the initialization process is finished.
 	 */
 	init() {
 		if ( this.ready ) {
@@ -97,25 +85,16 @@ export default class ViewCollection extends Collection {
 			throw new CKEditorError( 'ui-viewcollection-init-reinit: This ViewCollection has already been initialized.' );
 		}
 
-		return Promise.all( this.map( v => v.init() ) )
-			.then( () => {
-				this.ready = true;
-			} );
+		this.map( v => v.init() );
+
+		this.ready = true;
 	}
 
 	/**
 	 * Destroys the view collection along with child views.
-	 *
-	 * @returns {Promise} A Promise resolved when the destruction process is finished.
 	 */
 	destroy() {
-		// Wait for all #add() promises to resolve before destroying the children.
-		// https://github.com/ckeditor/ckeditor5-ui/issues/203
-		return Promise.all( this._addPromises )
-			// Then begin the process of destroying the children.
-			.then( () => {
-				return Promise.all( this.map( v => v.destroy() ) );
-			} );
+		this.map( v => v.destroy() );
 	}
 
 	/**
@@ -124,27 +103,13 @@ export default class ViewCollection extends Collection {
 	 *
 	 * @param {module:ui/view~View} view A child view.
 	 * @param {Number} [index] Index at which the child will be added to the collection.
-	 * @returns {Promise} A Promise resolved when the child {@link module:ui/view~View#init} is done.
 	 */
 	add( view, index ) {
 		super.add( view, index );
 
-		// {@link module:ui/view~View#init} returns `Promise`.
-		let promise = Promise.resolve();
-
 		if ( this.ready && !view.ready ) {
-			promise = promise
-				.then( () => view.init() )
-				// The view is ready. There's no point in storing the promise any longer.
-				.then( () => this._addPromises.delete( promise ) );
-
-			// Store the promise so it can be respected (and resolved) before #destroy()
-			// starts destroying the child view.
-			// https://github.com/ckeditor/ckeditor5-ui/issues/203
-			this._addPromises.add( promise );
+			view.init();
 		}
-
-		return promise;
 	}
 
 	/**

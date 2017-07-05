@@ -103,7 +103,7 @@ export default class ToolbarView extends View {
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
 
-		return super.init();
+		super.init();
 	}
 
 	/**
@@ -119,18 +119,17 @@ export default class ToolbarView extends View {
 	 *
 	 * @param {Array} config The toolbar config.
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
-	 * @returns {Promise} A promise resolved when created toolbar items are initialized.
 	 */
 	fillFromConfig( config, factory ) {
 		if ( !config ) {
-			return Promise.resolve();
+			return;
 		}
 
-		return Promise.all( config.map( name => {
+		config.map( name => {
 			const component = name == '|' ? new ToolbarSeparatorView() : factory.create( name );
 
-			return this.items.add( component );
-		} ) );
+			this.items.add( component );
+		} );
 	}
 }
 
