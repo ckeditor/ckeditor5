@@ -29,7 +29,7 @@ export default class FileRepository extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'upload/filerepository';
+		return 'FileRepository';
 	}
 
 	/**
@@ -428,7 +428,7 @@ mix( FileLoader, ObservableMixin );
  *
  * Then adapter can be set to be used by {@link module:upload/filerepository~FileRepository FileRepository}:
  *
- *	editor.plugins.get( 'upload/filerepository' ).createAdapter = function( loader ) {
+ *	editor.plugins.get( 'FileRepository' ).createAdapter = function( loader ) {
  *		return new Adapter( loader );
  *	};
  *
