@@ -14,7 +14,7 @@ import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
 import Document from '@ckeditor/ckeditor5-engine/src/model/document';
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
@@ -22,7 +22,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  * See also {@link module:core/editor/standardeditor~StandardEditor}.
  *
- * @mixes module:utils/emittermixin~EmitterMixin
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Editor {
 	/**
@@ -194,7 +194,7 @@ export default class Editor {
 	}
 }
 
-mix( Editor, EmitterMixin );
+mix( Editor, ObservableMixin );
 
 /**
  * Fired after {@link #initPlugins plugins are initialized}.
