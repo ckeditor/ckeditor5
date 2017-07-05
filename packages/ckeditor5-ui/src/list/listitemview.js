@@ -62,6 +62,7 @@ export default class ListItemView extends View {
 
 					if ( keyCode == 13 || keyCode == 32 ) {
 						this.fire( 'execute' );
+						evt.preventDefault();
 					}
 				} )
 			}

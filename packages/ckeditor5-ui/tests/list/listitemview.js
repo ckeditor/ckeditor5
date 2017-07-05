@@ -91,20 +91,24 @@ describe( 'ListItemView', () => {
 			it( 'triggers view#execute event when Enter or Space key is pressed', () => {
 				const spy = sinon.spy();
 				const evt = new Event( 'keydown' );
+				const preventSpy = sinon.spy( evt, 'preventDefault' );
 
 				view.on( 'execute', spy );
 
 				evt.keyCode = 10;
 				view.element.dispatchEvent( evt );
 				expect( spy.calledOnce ).to.be.false;
+				expect( preventSpy.calledOnce ).to.be.false;
 
 				evt.keyCode = 13;
 				view.element.dispatchEvent( evt );
 				expect( spy.calledOnce ).to.be.true;
+				expect( preventSpy.calledOnce ).to.be.true;
 
 				evt.keyCode = 32;
 				view.element.dispatchEvent( evt );
 				expect( spy.calledTwice ).to.be.true;
+				expect( preventSpy.calledTwice ).to.be.true;
 			} );
 		} );
 	} );
