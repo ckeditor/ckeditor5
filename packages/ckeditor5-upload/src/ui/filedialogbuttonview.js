@@ -80,7 +80,7 @@ export default class FileDialogButtonView extends ButtonView {
 	destroy() {
 		document.body.removeChild( this.fileInputView.element );
 
-		return super.destroy();
+		super.destroy();
 	}
 }
 
