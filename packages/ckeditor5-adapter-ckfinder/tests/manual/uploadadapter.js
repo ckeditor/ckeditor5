@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, console */
+/* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -32,6 +32,9 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		// eslint-disable-next-line max-len
 		uploadUrl: 'https://cksource.com/weuy2g4ryt278ywiue/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
 	}
+} )
+.then( editor => {
+	window.editor = editor;
 } )
 .catch( err => {
 	console.error( err.stack );
