@@ -53,7 +53,7 @@ export default class ImageUploadEngine extends Plugin {
 			}
 		} );
 
-		doc.on( 'change', ( evt, type, data, batch ) => {
+		doc.on( 'change', ( evt, type, data ) => {
 			// Listen on document changes and:
 			// * start upload process when image with `uploadId` attribute is inserted,
 			// * abort upload process when image `uploadId` attribute is removed.
@@ -68,7 +68,7 @@ export default class ImageUploadEngine extends Plugin {
 
 							if ( loader ) {
 								if ( type === 'insert' && loader.status == 'idle' ) {
-									this.load( loader, batch, imageElement );
+									this.load( loader, imageElement );
 								}
 
 								if ( type === 'remove' ) {
@@ -88,10 +88,9 @@ export default class ImageUploadEngine extends Plugin {
 	 *
 	 * @protected
 	 * @param {module:upload/filerepository~FileLoader} loader
-	 * @param {module:engine/model/batch~Batch} batch
 	 * @param {module:engine/model/element~Element} imageElement
 	 */
-	load( loader, batch, imageElement ) {
+	load( loader, imageElement ) {
 		const editor = this.editor;
 		const t = editor.locale.t;
 		const doc = editor.document;
@@ -99,7 +98,7 @@ export default class ImageUploadEngine extends Plugin {
 		const notification = editor.plugins.get( Notification );
 
 		doc.enqueueChanges( () => {
-			batch.setAttribute( imageElement, 'uploadStatus', 'reading' );
+			doc.batch( 'transparent' ).setAttribute( imageElement, 'uploadStatus', 'reading' );
 		} );
 
 		loader.read()
@@ -112,15 +111,15 @@ export default class ImageUploadEngine extends Plugin {
 				editor.editing.view.render();
 
 				doc.enqueueChanges( () => {
-					batch.setAttribute( imageElement, 'uploadStatus', 'uploading' );
+					doc.batch( 'transparent' ).setAttribute( imageElement, 'uploadStatus', 'uploading' );
 				} );
 
 				return promise;
 			} )
 			.then( data => {
 				doc.enqueueChanges( () => {
-					batch.setAttribute( imageElement, 'uploadStatus', 'complete' );
-					batch.setAttribute( imageElement, 'src', data.original );
+					doc.batch( 'transparent' ).setAttribute( imageElement, 'uploadStatus', 'complete' );
+					doc.batch( 'transparent' ).setAttribute( imageElement, 'src', data.original );
 
 					// Srcset attribute for responsive images support.
 					const srcsetAttribute = Object.keys( data )
@@ -134,7 +133,7 @@ export default class ImageUploadEngine extends Plugin {
 						.join( ', ' );
 
 					if ( srcsetAttribute != '' ) {
-						batch.setAttribute( imageElement, 'srcset', srcsetAttribute );
+						doc.batch( 'transparent' ).setAttribute( imageElement, 'srcset', srcsetAttribute );
 					}
 				} );
 
@@ -153,14 +152,14 @@ export default class ImageUploadEngine extends Plugin {
 
 				// Permanently remove image from insertion batch.
 				doc.enqueueChanges( () => {
-					batch.remove( imageElement, true );
+					doc.batch( 'transparent' ).remove( imageElement );
 				} );
 			} );
 
 		function clean() {
 			doc.enqueueChanges( () => {
-				batch.removeAttribute( imageElement, 'uploadId' );
-				batch.removeAttribute( imageElement, 'uploadStatus' );
+				doc.batch( 'transparent' ).removeAttribute( imageElement, 'uploadId' );
+				doc.batch( 'transparent' ).removeAttribute( imageElement, 'uploadStatus' );
 			} );
 
 			fileRepository.destroyLoader( loader );

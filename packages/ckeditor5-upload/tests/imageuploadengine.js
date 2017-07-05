@@ -10,6 +10,7 @@ import ImageEngine from '@ckeditor/ckeditor5-image/src/image/imageengine';
 import ImageUploadEngine from '../src/imageuploadengine';
 import ImageUploadCommand from '../src/imageuploadcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
 import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
 import FileRepository from '../src/filerepository';
 import { AdapterMock, createNativeFileMock, NativeFileReaderMock } from './_utils/mocks';
@@ -33,7 +34,7 @@ describe( 'ImageUploadEngine', () => {
 		} );
 
 		return ClassicTestEditor.create( {
-			plugins: [ ImageEngine, ImageUploadEngine, Paragraph ]
+			plugins: [ ImageEngine, ImageUploadEngine, Paragraph, UndoEngine ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -233,6 +234,50 @@ describe( 'ImageUploadEngine', () => {
 
 		expect( loader.status ).to.equal( 'aborted' );
 		sinon.assert.calledOnce( abortSpy );
+	} );
+
+	it( 'image should be permanently removed if it is removed by user during upload', done => {
+		const file = createNativeFileMock();
+		const notification = editor.plugins.get( Notification );
+		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+
+		// Prevent popping up alert window.
+		notification.on( 'show:warning', evt => {
+			evt.stop();
+		}, { priority: 'high' } );
+
+		editor.execute( 'imageUpload', { file } );
+
+		document.once( 'changesDone', () => {
+			// This is called after "manual" remove.
+			document.once( 'changesDone', () => {
+				// This is called after attributes are removed.
+				let undone = false;
+
+				document.once( 'changesDone', () => {
+					if ( !undone ) {
+						undone = true;
+
+						// This is called after abort remove.
+						expect( getModelData( document ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
+
+						editor.execute( 'undo' );
+
+						// Expect that the image has not been brought back.
+						expect( getModelData( document ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
+
+						done();
+					}
+				} );
+			} );
+		} );
+
+		const image = document.getRoot().getChild( 0 );
+		document.enqueueChanges( () => {
+			const batch = document.batch();
+
+			batch.remove( image );
+		} );
 	} );
 
 	it( 'should create responsive image if server return multiple images', done => {
