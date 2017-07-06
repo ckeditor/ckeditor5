@@ -24,6 +24,8 @@ import unlinkIcon from '../theme/icons/unlink.svg';
 
 import '../theme/theme.scss';
 
+const linkKeystroke = 'Ctrl+K';
+
 /**
  * The link plugin. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
  *
@@ -124,7 +126,11 @@ export default class Link extends Plugin {
 		const t = editor.t;
 
 		// Handle `Ctrl+K` keystroke and show the panel.
-		editor.keystrokes.set( 'CTRL+K', () => this._showPanel( true ) );
+		editor.keystrokes.set( linkKeystroke, () => {
+			if ( linkCommand.isEnabled ) {
+				this._showPanel( true );
+			}
+		} );
 
 		editor.ui.componentFactory.add( 'link', locale => {
 			const button = new ButtonView( locale );
@@ -132,7 +138,7 @@ export default class Link extends Plugin {
 			button.isEnabled = true;
 			button.label = t( 'Link' );
 			button.icon = linkIcon;
-			button.keystroke = 'CTRL+K';
+			button.keystroke = linkKeystroke;
 			button.tooltip = true;
 
 			// Bind button to the command.
