@@ -79,6 +79,7 @@ export default class BaseCommand extends Command {
 	 * @protected
 	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to be restored.
 	 * @param {Boolean} isBackward A flag describing whether the restored range was selected forward or backward.
+	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltas Deltas which has been applied since selection has been stored.
 	 */
 	_restoreSelection( ranges, isBackward, deltas ) {
 		const document = this.editor.document;
@@ -109,19 +110,65 @@ export default class BaseCommand extends Command {
 			document.selection.setRanges( selectionRanges, isBackward );
 		}
 	}
+
+	/**
+	 * Undoes a batch by reversing that batch, transforming reversed batch and finally applying it.
+	 * This is a helper method for {@link #execute}.
+	 *
+	 * @protected
+	 * @param {module:engine/model/batch~Batch} batchToUndo The batch to be undone.
+	 */
+	_undo( batchToUndo ) {
+		const document = this.editor.document;
+
+		// All changes done by the command execution will be saved as one batch.
+		const undoingBatch = document.batch();
+		this._createdBatches.add( undoingBatch );
+
+		const deltasToUndo = batchToUndo.deltas.slice();
+		deltasToUndo.reverse();
+
+		// We will process each delta from `batchToUndo`, in reverse order. If there were deltas A, B and C in undone batch,
+		// we need to revert them in reverse order, so first C' (reversed C), then B', then A'.
+		for ( const deltaToUndo of deltasToUndo ) {
+			// Keep in mind that transformation algorithms return arrays. That's because the transformation might result in multiple
+			// deltas, so we need arrays to handle them. To simplify algorithms, it is better to always operate on arrays.
+			const nextBaseVersion = deltaToUndo.baseVersion + deltaToUndo.operations.length;
+
+			// Reverse delta from the history.
+			const historyDeltas = Array.from( document.history.getDeltas( nextBaseVersion ) );
+			const transformedSets = document.transformDeltas( [ deltaToUndo.getReversed() ], historyDeltas, true );
+			const reversedDeltas = transformedSets.deltasA;
+
+			// After reversed delta has been transformed by all history deltas, apply it.
+			for ( const delta of reversedDeltas ) {
+				// Fix base version.
+				delta.baseVersion = document.version;
+
+				// Before applying, add the delta to the `undoingBatch`.
+				undoingBatch.addDelta( delta );
+
+				// Now, apply all operations of the delta.
+				for ( const operation of delta.operations ) {
+					document.applyOperation( operation );
+				}
+
+				document.history.setDeltaAsUndone( deltaToUndo, delta );
+			}
+		}
+
+		return undoingBatch;
+	}
 }
 
-// Transforms given range `range` by deltas from `document` history, starting from a delta with given `baseVersion`.
+// Transforms given range `range` by given `deltas`.
 // Returns an array containing one or more ranges, which are result of the transformation.
 function transformSelectionRange( range, deltas ) {
-	// The range will be transformed by history deltas that happened after the selection got stored.
-	// Note, that at this point, the document history is already updated by undo command execution. We will
-	// not transform the range by deltas that got undone or their reversing counterparts.
 	const transformed = transformRangesByDeltas( [ range ], deltas );
 
 	// After `range` got transformed, we have an array of ranges. Some of those
 	// ranges may be "touching" -- they can be next to each other and could be merged.
-	// First, we have to sort those ranges because they don't have to be in an order.
+	// First, we have to sort those ranges to assure that they are in order.
 	transformed.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
 
 	// Then, we check if two consecutive ranges are touching.
@@ -130,6 +177,7 @@ function transformSelectionRange( range, deltas ) {
 		const b = transformed[ i ];
 
 		if ( a.end.isTouching( b.start ) ) {
+			// And join them together if they are.
 			a.end = b.end;
 			transformed.splice( i, 1 );
 			i--;
