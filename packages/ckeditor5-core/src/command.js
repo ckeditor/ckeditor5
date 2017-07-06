@@ -79,7 +79,9 @@ export default class Command {
 		// By default commands are disabled when editor switches to read-only mode.
 		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
 			if ( value ) {
-				this.on( 'change:isEnabled', forceDisable, { priority: 'high' } );
+				// See ticket about overriding observable properties
+				// https://github.com/ckeditor/ckeditor5-utils/issues/171.
+				this.on( 'change:isEnabled', forceDisable, { priority: 'lowest' } );
 				this.isEnabled = false;
 			} else {
 				this.off( 'change:isEnabled', forceDisable );
@@ -88,9 +90,8 @@ export default class Command {
 		} );
 
 		// Forces command#isEnabled value to be false.
-		function forceDisable( evt ) {
+		function forceDisable() {
 			this.isEnabled = false;
-			evt.stop();
 		}
 	}
 

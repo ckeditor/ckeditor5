@@ -85,6 +85,19 @@ describe( 'Command', () => {
 			// And is back to true.
 			expect( command.isEnabled ).to.true;
 		} );
+
+		it( 'is observable when is overridden', () => {
+			editor.isReadOnly = false;
+			command.isEnabled = true;
+
+			editor.bind( 'something' ).to( command, 'isEnabled' );
+
+			expect( editor.something ).to.true;
+
+			editor.isReadOnly = true;
+
+			expect( editor.something ).to.false;
+		} );
 	} );
 
 	describe( 'execute()', () => {
