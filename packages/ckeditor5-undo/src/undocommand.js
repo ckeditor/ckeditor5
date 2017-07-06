@@ -12,10 +12,9 @@ import BaseCommand from './basecommand';
 /**
  * The undo command stores {@link module:engine/model/batch~Batch batches} applied to the
  * {@link module:engine/model/document~Document document} and is able to undo a batch by reversing it and transforming by
- * other batches from {@link module:engine/model/document~Document#history history} that happened after the reversed batch.
+ * batches from {@link module:engine/model/document~Document#history history} that happened after the reversed batch.
  *
- * The undo command also takes care of restoring the {@link module:engine/model/document~Document#selection document selection}
- * to the state before the undone batch was applied.
+ * The undo command also takes care of restoring the {@link module:engine/model/document~Document#selection document selection}.
  *
  * @extends module:undo/basecommand~BaseCommand
  */

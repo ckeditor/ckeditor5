@@ -12,11 +12,10 @@ import BaseCommand from './basecommand';
 /**
  * The redo command stores {@link module:engine/model/batch~Batch batches} that were used to undo a batch by
  * {@link module:undo/undocommand~UndoCommand}. It is able to redo a previously undone batch by reversing the undoing
- * batches created by `UndoCommand`. The reversed batch is also transformed by batches from
- * {@link module:engine/model/document~Document#history history} that happened after it and are not other redo batches.
+ * batches created by `UndoCommand`. The reversed batch is transformed by all the batches from
+ * {@link module:engine/model/document~Document#history history} that happened after the reversed undo batch.
  *
- * The redo command also takes care of restoring the {@link module:engine/model/document~Document#selection document selection}
- * to the state before an undone batch was applied.
+ * The redo command also takes care of restoring the {@link module:engine/model/document~Document#selection document selection}.
  *
  * @extends module:undo/basecommand~BaseCommand
  */

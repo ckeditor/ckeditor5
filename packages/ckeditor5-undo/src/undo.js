@@ -30,9 +30,9 @@ import redoIcon from '../theme/icons/redo.svg';
  *
  *		  History                           Undo stack
  *		===========             ==================================
- *		[delta A1]              [batch A with selection before A1]
- *		[delta B1]              [batch B with selection before B1]
- *		[delta B2]              [batch C with selection before C1]
+ *		[delta A1]                          [batch A]
+ *		[delta B1]                          [batch B]
+ *		[delta B2]                          [batch C]
  *		[delta C1]
  *		[delta C2]
  *		[delta B3]
@@ -50,80 +50,54 @@ import redoIcon from '../theme/icons/redo.svg';
  * bases on up-to-date document state, so it can be applied to the document.
  *
  *		  History                           Undo stack
- *		===========             ==================================
- *		[delta A1 ]             [batch A with selection before A1]
- *		[delta B1 ]             [batch B with selection before B1]
- *		[delta B2 ]             [   processing undoing batch C   ]
- *		[delta C1 ]
- *		[delta C2 ]
- *		[delta B3 ]
- *		[delta C3 ]
- *		[delta C3r]
+ *		=============             ==================================
+ *		[ delta A1  ]                      [  batch A  ]
+ *		[ delta B1  ]                      [  batch B  ]
+ *		[ delta B2  ]             [   processing undoing batch C   ]
+ *		[ delta C1  ]
+ *		[ delta C2  ]
+ *		[ delta B3  ]
+ *		[ delta C3  ]
+ *		[ delta C3r ]
  *
  * Next is delta `C2`, reversed to `C2r`. `C2r` bases on `C2`, so it bases on the wrong document state. It needs to be
  * transformed by deltas from history that happened after it, so it "knows" about them. Let us assume that `C2' = C2r * B3 * C3 * C3r`,
- * where `*` means "transformed by". As can be seen, `C2r` is transformed by a delta which is undone afterwards anyway.
- * This brings two problems: lower effectiveness (obvious) and incorrect results. Bad results come from the fact that
- * operational transformation algorithms assume there is no connection between two transformed operations when resolving
- * conflicts, which is true for example for collaborative editing, but is not true for the undo algorithm.
+ * where `*` means "transformed by". Rest of deltas from that batch are processed in the same fashion.
  *
- * To prevent both problems, `History` introduces an API to {@link module:engine/model/history~History#removeDelta remove}
- * deltas from history. It is used to remove undone and undoing deltas after they are applied. It feels right &mdash; since when a
- * delta is undone or reversed, it is "removed" and there should be no sign of it in the history (fig. 1).
- *
- * Notes:
- *
- * * `---` symbolizes a removed delta.
- * * `'` symbolizes a reversed delta that was later transformed.
- *
- *		History (fig. 1)            History (fig. 2)            History (fig. 3)
- *		================            ================            ================
- *		   [delta A1]                  [delta A1]                  [delta A1]
- *		   [delta B1]                  [delta B1]                  [delta B1]
- *		   [delta B2]                  [delta B2]                  [delta B2]
- *		   [delta C1]                  [delta C1]                  [---C1---]
- *		   [delta C2]                  [---C2---]                  [---C2---]
- *		   [delta B3]                  [delta B3]                  [delta B3]
- *		   [---C3---]                  [---C3---]                  [---C3---]
- *		   [---C3r--]                  [---C3r--]                  [---C3r--]
- *		                               [---C2'--]                  [---C2'--]
- *		                                                           [---C1'--]
- *
- * `C2r` can now be transformed only by `B3` and both `C2'` and `C2` can be removed (fig. 2). Same with `C1` (fig. 3).
- *
- * But what about that selection? For batch `C`, undo feature remembers the selection just before `C1` was applied. It can be
- * visualized between delta `B2` and `B3` (see fig. 3). As can be seen, some operations were applied to the document since the selection
- * state was remembered. Setting the document selection as it was remembered would be incorrect. It feels natural that
- * the selection state should also be transformed by deltas from history. The same pattern applies as with transforming deltas &mdash;
- * ranges should not be transformed by undone and undoing deltas. Thankfully, those deltas are already removed from history.
- *
- * Unfortunately, a problem appears with delta `B3`. It still remembers the context of deltas `C2` and `C1` on which it bases.
- * It is an obvious error &mdash; transforming by that delta would lead to incorrect results or "repeating" history would
- * produce a different document than the actual one.
- *
- * To prevent this situation, `B3` needs to also be {@link module:engine/model/history~History#updateDelta updated} in history.
- * It should be kept in a state that "does not remember" deltas that were removed from history. It is easily
- * achieved while transforming the reversed delta. For example, when `C2r` is transformed by `B3`, at the same time `B3` is
- * transformed by `C2r`. Transforming `B3` that remembers `C2` by a delta reversing `C2` effectively makes `B3` "forget" about `C2`.
- * By doing these transformations you effectively make `B3` base on `B2` which is the correct state of history (fig. 4).
- *
- *		     History (fig. 4)                         History (fig. 5)
- *		===========================            ===============================
- *		        [delta A1]                               [---A1---]
- *		        [delta B1]                         [delta B1 "without A1"]
- *		        [delta B2]                         [delta B2 "without A1"]
- *		        [---C1---]                               [---C1---]
- *		        [---C2---]                               [---C2---]
- *		[delta B3 "without C2, C1"]            [delta B3 "without C2, C1, A1"]
- *		        [---C3---]                               [---C3---]
- *		        [---C3r--]                               [---C3r--]
- *		        [---C2'--]                               [---C2'--]
- *		        [---C1'--]                               [---C1'--]
- *		                                                 [---A1'--]
+ *		  History                           Undo stack                                     Redo stack
+ *		=============             ==================================             ==================================
+ *		[ delta A1  ]                      [  batch A  ]                                  [ batch Cr ]
+ *		[ delta B1  ]                      [  batch B  ]
+ *		[ delta B2  ]
+ *		[ delta C1  ]
+ *		[ delta C2  ]
+ *		[ delta B3  ]
+ *		[ delta C3  ]
+ *		[ delta C3r ]
+ *		[ delta C2' ]
+ *		[ delta C1' ]
  *
  * Selective undo works on the same basis, however, instead of undoing the last batch in the undo stack, any batch can be undone.
- * The same algorithm applies: deltas from a batch (i.e. `A1`) are reversed and then transformed by deltas stored in history,
- * simultaneously updating them. Then deltas are applied to the document and removed from history (fig. 5).
+ * The same algorithm applies: deltas from a batch (i.e. `A1`) are reversed and then transformed by deltas stored in history.
+ *
+ * Redo also is very similar to undo. It has its own stack that is filled with undoing (reversed batches). Deltas from
+ * batch that is re-done are reversed-back, transformed in proper order and applied to the document.
+ *
+ *		  History                           Undo stack                                     Redo stack
+ *		=============             ==================================             ==================================
+ *		[ delta A1  ]                      [  batch A  ]
+ *		[ delta B1  ]                      [  batch B  ]
+ *		[ delta B2  ]                      [ batch Crr ]
+ *		[ delta C1  ]
+ *		[ delta C2  ]
+ *		[ delta B3  ]
+ *		[ delta C3  ]
+ *		[ delta C3r ]
+ *		[ delta C2' ]
+ *		[ delta C1' ]
+ *		[ delta C1'r]
+ *		[ delta C2'r]
+ *		[ delta C3rr]
  *
  * @extends module:core/plugin~Plugin
  */
