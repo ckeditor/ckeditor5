@@ -53,7 +53,6 @@ import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
  * `a` by `b` and also `b` by `a`. In both transformations the same operation has to be the important one. If we assume
  * that first or the second passed operation is always more important we won't be able to solve this case.
  *
- * @protected
  * @function module:engine/model/operation/transform~transform
  * @param {module:engine/model/operation/operation~Operation} a Operation that will be transformed.
  * @param {module:engine/model/operation/operation~Operation} b Operation to transform by.

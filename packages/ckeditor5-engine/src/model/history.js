@@ -129,7 +129,7 @@ export default class History {
 	}
 
 	/**
-	 * Checks whether given `delta` is undoing any other delta.
+	 * Checks whether given `delta` is undoing by any other delta.
 	 *
 	 * @param {module:engine/model/delta/delta~Delta} delta Delta to check.
 	 * @returns {Boolean} `true` if given `delta` is undoing any other delta, `false` otherwise.

@@ -58,8 +58,8 @@ export default class Range {
 	}
 
 	/**
-	 * Returns whether the range is collapsed, that is if {@link #start start} and
-	 * {@link #end end} positions are equal.
+	 * Returns whether the range is collapsed, that is if {@link #start} and
+	 * {@link #end} positions are equal.
 	 *
 	 * @type {Boolean}
 	 */
@@ -68,8 +68,8 @@ export default class Range {
 	}
 
 	/**
-	 * Returns whether this range is flat, that is if {@link #start start} position and
-	 * {@link #end end} position are in the same {@link module:engine/model/position~Position#parent parent}.
+	 * Returns whether this range is flat, that is if {@link #start} position and
+	 * {@link #end} position are in the same {@link module:engine/model/position~Position#parent}.
 	 *
 	 * @type {Boolean}
 	 */
@@ -118,7 +118,7 @@ export default class Range {
 	}
 
 	/**
-	 * Two ranges are equal if their {@link #start start} and {@link #end end} positions are equal.
+	 * Two ranges are equal if their {@link #start} and {@link #end} positions are equal.
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to compare with.
 	 * @returns {Boolean} `true` if ranges are equal, `false` otherwise.

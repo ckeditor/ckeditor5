@@ -77,7 +77,7 @@ export default class LiveRange extends Range {
 	 */
 
 	/**
-	 * Fired when `LiveRange` instance is changed due to changes on {@link module:engine/model/document~Document}.
+	 * Fired when `LiveRange` instance is changed due to changes in the {@link module:engine/model/document~Document document}.
 	 *
 	 * @event change
 	 * @param {module:engine/model/range~Range} oldRange Range with start and end position equal to start and end position of this live
