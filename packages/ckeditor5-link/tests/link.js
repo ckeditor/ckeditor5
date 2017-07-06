@@ -437,7 +437,7 @@ describe( 'Link', () => {
 	} );
 
 	describe( 'keyboard support', () => {
-		it( 'should show the #_balloon with selected #formView on `CTRL+K` keystroke', () => {
+		it( 'should show the #_balloon with selected #formView on Ctrl+K keystroke', () => {
 			const spy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
 			const command = editor.commands.get( 'link' );
 
