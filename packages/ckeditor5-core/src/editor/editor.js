@@ -94,9 +94,9 @@ export default class Editor {
 		 * are disabled and is not possible to set any data to the editor.
 		 *
 		 * @observable
-		 * @member {Boolean} #readOnly
+		 * @member {Boolean} #isReadOnly
 		 */
-		this.set( 'readOnly', false );
+		this.set( 'isReadOnly', false );
 
 		/**
 		 * Instance of the {@link module:engine/controller/editingcontroller~EditingController editing controller}.

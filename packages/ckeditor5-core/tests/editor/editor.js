@@ -158,20 +158,20 @@ describe( 'Editor', () => {
 		} );
 	} );
 
-	describe( 'readOnly', () => {
+	describe( 'isReadOnly', () => {
 		it( 'is false at default', () => {
 			const editor = new Editor();
 
-			expect( editor.readOnly ).to.false;
+			expect( editor.isReadOnly ).to.false;
 		} );
 
 		it( 'is observable', () => {
 			const editor = new Editor();
 			const spy = sinon.spy();
 
-			editor.on( 'change:readOnly', spy );
+			editor.on( 'change:isReadOnly', spy );
 
-			editor.readOnly = true;
+			editor.isReadOnly = true;
 
 			sinon.assert.calledOnce( spy );
 		} );

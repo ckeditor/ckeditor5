@@ -67,10 +67,10 @@ describe( 'Command', () => {
 		} );
 
 		it( 'is always falsy when the editor is in read-only mode', () => {
-			editor.readOnly = false;
+			editor.isReadOnly = false;
 			command.isEnabled = true;
 
-			editor.readOnly = true;
+			editor.isReadOnly = true;
 
 			// Is false.
 			expect( command.isEnabled ).to.false;
@@ -80,7 +80,7 @@ describe( 'Command', () => {
 			// Still false.
 			expect( command.isEnabled ).to.false;
 
-			editor.readOnly = false;
+			editor.isReadOnly = false;
 
 			// And is back to true.
 			expect( command.isEnabled ).to.true;
