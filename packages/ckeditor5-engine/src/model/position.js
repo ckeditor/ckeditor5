@@ -319,6 +319,30 @@ export default class Position {
 	}
 
 	/**
+	 * Returns a {@link module:engine/model/node~Node} which is a common ancestor for both positions. The {@link #root roots}
+	 * of these two positions must be identical.
+	 *
+	 * @param {module:engine/model/position~Position} position The second position.
+	 * @returns {module:engine/model/node~Node|null} Node that contains both positions.
+	 */
+	getCommonAncestor( position ) {
+		if ( this.root !== position.root ) {
+			return null;
+		}
+
+		const ancestorsA = this.getAncestors();
+		const ancestorsB = position.getAncestors();
+
+		let i = 0;
+
+		while ( ancestorsA[ i ] == ancestorsB[ i ] && ancestorsA[ i ] ) {
+			i++;
+		}
+
+		return i === 0 ? null : ancestorsA[ i - 1 ];
+	}
+
+	/**
 	 * Returns a new instance of `Position`, that has same {@link #parent parent} but it's offset
 	 * is shifted by `shift` value (can be a negative value).
 	 *

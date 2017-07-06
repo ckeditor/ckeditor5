@@ -446,6 +446,15 @@ export default class Range {
 	}
 
 	/**
+	 * Returns a {@link module:engine/model/node~Node} which is a common ancestor for both positions.
+	 *
+	 * @returns {module:engine/model/node~Node|null}
+	 */
+	getCommonAncestor() {
+		return this.start.getCommonAncestor( this.end );
+	}
+
+	/**
 	 * Returns a range that is a result of transforming this range by a change in the model document.
 	 *
 	 * @protected

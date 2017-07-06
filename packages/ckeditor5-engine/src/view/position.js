@@ -176,6 +176,25 @@ export default class Position {
 	}
 
 	/**
+	 * Returns a {@link module:engine/view/node~Node} which is a common ancestor for both positions.
+	 *
+	 * @param {module:engine/view/position~Position} position
+	 * @returns {module:engine/view/node~Node|null}
+	 */
+	getCommonAncestor( position ) {
+		const ancestorsA = this.getAncestors();
+		const ancestorsB = position.getAncestors();
+
+		let i = 0;
+
+		while ( ancestorsA[ i ] == ancestorsB[ i ] && ancestorsA[ i ] ) {
+			i++;
+		}
+
+		return i === 0 ? null : ancestorsA[ i - 1 ];
+	}
+
+	/**
 	 * Checks whether this position equals given position.
 	 *
 	 * @param {module:engine/view/position~Position} otherPosition Position to compare with.

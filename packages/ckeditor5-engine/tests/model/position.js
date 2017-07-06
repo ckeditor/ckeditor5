@@ -844,4 +844,46 @@ describe( 'Position', () => {
 			).to.throw( CKEditorError, /model-position-fromjson-no-root/ );
 		} );
 	} );
+
+	describe( 'getCommonAncestor()', () => {
+		it( 'returns null when roots of the position are not the same', () => {
+			const pos1 = new Position( root, [ 1, 1 ] );
+			const pos2 = new Position( otherRoot, [ 1, 1 ] );
+
+			test( pos1, pos2, null );
+		} );
+
+		it( 'for two the same positions returns the parent element', () => {
+			const fPosition = new Position( root, [ 1, 0, 0 ] );
+
+			test( fPosition, fPosition, li1 );
+		} );
+
+		it( 'for two positions in the same parent returns the parent element', () => {
+			const fPosition = new Position( root, [ 1, 0, 0 ] );
+			const zPosition = new Position( root, [ 1, 0, 2 ] );
+
+			test( fPosition, zPosition, li1 );
+		} );
+
+		it( 'for two different positions returns first element which contains both positions', () => {
+			const zPosition = new Position( root, [ 1, 0, 2 ] );
+			const rPosition = new Position( root, [ 1, 1, 2 ] );
+
+			test( rPosition, zPosition, ul );
+		} );
+
+		it( 'works fine with positions hooked in `DocumentFragment`', () => {
+			const docFrag = new DocumentFragment( [ p, ul ] );
+			const zPosition = new Position( docFrag, [ 1, 0, 2 ] );
+			const rPosition = new Position( docFrag, [ 1, 1, 2 ] );
+
+			test( zPosition, rPosition, ul );
+		} );
+
+		function test( positionA, positionB, lca ) {
+			expect( positionA.getCommonAncestor( positionB ) ).to.equal( lca );
+			expect( positionB.getCommonAncestor( positionA ) ).to.equal( lca );
+		}
+	} );
 } );

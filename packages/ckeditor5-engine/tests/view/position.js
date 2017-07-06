@@ -519,4 +519,43 @@ describe( 'Position', () => {
 			document.destroy();
 		} );
 	} );
+
+	describe( 'getCommonAncestor()', () => {
+		let ul, li1, li2, foz, bar;
+
+		beforeEach( () => {
+			foz = new Text( 'foz' );
+			bar = new Text( 'bar' );
+
+			li1 = new Element( 'li', null, foz );
+			li2 = new Element( 'li', null, bar );
+
+			ul = new Element( 'ul', null, [ li1, li2 ] );
+		} );
+
+		it( 'for two the same positions returns the parent element', () => {
+			const fPosition = new Position( li1, 0 );
+
+			test( fPosition, fPosition, li1 );
+		} );
+
+		it( 'for two positions in the same parent returns the parent element', () => {
+			const fPosition = new Position( li1, 0 );
+			const zPosition = new Position( li1, 2 );
+
+			test( fPosition, zPosition, li1 );
+		} );
+
+		it( 'for two different positions returns first element which contains both positions', () => {
+			const zPosition = new Position( li1, 2 );
+			const bPosition = new Position( li2, 0 );
+
+			test( bPosition, zPosition, ul );
+		} );
+
+		function test( positionA, positionB, lca ) {
+			expect( positionA.getCommonAncestor( positionB ) ).to.equal( lca );
+			expect( positionB.getCommonAncestor( positionA ) ).to.equal( lca );
+		}
+	} );
 } );

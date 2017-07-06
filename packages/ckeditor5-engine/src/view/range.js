@@ -305,6 +305,15 @@ export default class Range {
 	}
 
 	/**
+	 * Returns a {@link module:engine/view/node~Node} which is a common ancestor for both positions.
+	 *
+	 * @returns {module:engine/view/node~Node|null}
+	 */
+	getCommonAncestor() {
+		return this.start.getCommonAncestor( this.end );
+	}
+
+	/**
 	 * Returns an iterator that iterates over all {@link module:engine/view/item~Item view items} that are in this range and returns
 	 * them.
 	 *
