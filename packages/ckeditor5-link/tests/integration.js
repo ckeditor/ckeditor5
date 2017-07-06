@@ -20,8 +20,16 @@ describe( 'Link', () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		linkCommand = editor.commands.get( 'link' );
-		unlinkCommand = editor.commands.get( 'unlink' );
+		return ClassicTestEditor.create( element, {
+			plugins: [ Paragraph, Image, ImageCaption, Link ]
+		} )
+		.then( newEditor => {
+			editor = newEditor;
+			doc = editor.document;
+
+			linkCommand = editor.commands.get( 'link' );
+			unlinkCommand = editor.commands.get( 'unlink' );
+		} );
 	} );
 
 	afterEach( () => {
@@ -32,6 +40,9 @@ describe( 'Link', () => {
 
 	describe( 'compatibility with images', () => {
 		it( 'does not link a caption–less image', () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
 			return ClassicTestEditor.create( element, {
 				plugins: [ Paragraph, Image, Link ]
 			} )
@@ -39,6 +50,9 @@ describe( 'Link', () => {
 				editor = newEditor;
 				doc = editor.document;
 
+				linkCommand = editor.commands.get( 'link' );
+				unlinkCommand = editor.commands.get( 'unlink' );
+
 				setModelData( doc,
 					'<paragraph>fo[o</paragraph>' +
 					'<image src="foo.png"></image>' +
@@ -56,72 +70,84 @@ describe( 'Link', () => {
 				expect( linkCommand.isEnabled ).to.be.true;
 				expect( linkCommand.value ).to.equal( 'url' );
 				expect( unlinkCommand.isEnabled ).to.be.true;
+
+				element.remove();
+
+				return editor.destroy();
 			} );
 		} );
 
 		it( 'links the image caption text if selection contains more than an image', () => {
-			return ClassicTestEditor.create( element, {
-				plugins: [ Paragraph, Image, ImageCaption, Link ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				doc = editor.document;
+			setModelData( doc,
+				'<paragraph>fo[o</paragraph>' +
+				'<image src="foo.png">' +
+					'<caption>abc</caption>' +
+				'</image>' +
+				'<paragraph>baz</paragraph>' +
+				'<image src="bar.png">' +
+					'<caption>abc</caption>' +
+				'</image>' +
+				'<paragraph>b]ar</paragraph>'
+			);
 
-				setModelData( doc,
-					'<paragraph>fo[o</paragraph>' +
-					'<image src="foo.png">' +
-						'<caption>abc</caption>' +
-					'</image>' +
-					'<paragraph>baz</paragraph>' +
-					'<image src="bar.png">' +
-						'<caption>abc</caption>' +
-					'</image>' +
-					'<paragraph>b]ar</paragraph>'
-				);
+			editor.execute( 'link', 'url' );
 
-				editor.execute( 'link', 'url' );
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph>fo[<$text linkHref="url">o</$text></paragraph>' +
+				'<image src="foo.png">' +
+					'<caption><$text linkHref="url">abc</$text></caption>' +
+				'</image>' +
+				'<paragraph><$text linkHref="url">baz</$text></paragraph>' +
+				'<image src="bar.png">' +
+					'<caption><$text linkHref="url">abc</$text></caption>' +
+				'</image>' +
+				'<paragraph><$text linkHref="url">b</$text>]ar</paragraph>'
+			);
 
-				expect( getModelData( doc ) ).to.equal(
-					'<paragraph>fo[<$text linkHref="url">o</$text></paragraph>' +
-					'<image src="foo.png">' +
-						'<caption><$text linkHref="url">abc</$text></caption>' +
-					'</image>' +
-					'<paragraph><$text linkHref="url">baz</$text></paragraph>' +
-					'<image src="bar.png">' +
-						'<caption><$text linkHref="url">abc</$text></caption>' +
-					'</image>' +
-					'<paragraph><$text linkHref="url">b</$text>]ar</paragraph>'
-				);
+			expect( linkCommand.isEnabled ).to.be.true;
+			expect( linkCommand.value ).to.equal( 'url' );
+			expect( unlinkCommand.isEnabled ).to.be.true;
+		} );
 
-				expect( linkCommand.isEnabled ).to.be.true;
-				expect( linkCommand.value ).to.equal( 'url' );
-				expect( unlinkCommand.isEnabled ).to.be.true;
-			} );
+		it( 'links the image caption text if selection is in the image caption', () => {
+			setModelData( doc,
+				'<paragraph>foo</paragraph>' +
+				'<image src="foo.png">' +
+					'<caption>a[b]c</caption>' +
+				'</image>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			editor.execute( 'link', 'url' );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<image src="foo.png">' +
+					'<caption>a[<$text linkHref="url">b</$text>]c</caption>' +
+				'</image>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			expect( linkCommand.isEnabled ).to.be.true;
+			expect( linkCommand.value ).to.equal( 'url' );
+			expect( unlinkCommand.isEnabled ).to.be.true;
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/85
 		it( 'is disabled when only the image is the only selected element', () => {
-			return ClassicTestEditor.create( element, {
-				plugins: [ Paragraph, Image, ImageCaption, Link ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				doc = editor.document;
+			setModelData( doc, '[<image src="foo.png"></image>]' );
+			expect( linkCommand.isEnabled ).to.be.false;
 
-				setModelData( doc, '[<image src="foo.png"></image>]' );
-				expect( linkCommand.isEnabled ).to.be.false;
+			setModelData( doc, '[<image src="foo.png"><caption>abc</caption></image>]' );
+			expect( linkCommand.isEnabled ).to.be.false;
 
-				setModelData( doc, '[<image src="foo.png"><caption>abc</caption></image>]' );
-				expect( linkCommand.isEnabled ).to.be.false;
-
-				setModelData( doc,
-					'[<image src="foo.png">' +
-						'<caption><$text linkHref="url">abc</$text></caption>' +
-					'</image>]'
-				);
-				expect( linkCommand.isEnabled ).to.be.false;
-				expect( unlinkCommand.isEnabled ).to.be.false;
-			} );
+			setModelData( doc,
+				'[<image src="foo.png">' +
+					'<caption><$text linkHref="url">abc</$text></caption>' +
+				'</image>]'
+			);
+			expect( linkCommand.isEnabled ).to.be.false;
+			expect( unlinkCommand.isEnabled ).to.be.false;
 		} );
 	} );
 } );
