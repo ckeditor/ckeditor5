@@ -9,6 +9,7 @@
 
 import View from '../view';
 import Template from '../template';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
  * The list item view class.
@@ -30,6 +31,14 @@ export default class ListItemView extends View {
 		 * @member {String} #tabindex
 		 */
 		this.set( 'tabindex', -1 );
+
+		/**
+		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
 
 		const bind = this.bindTemplate;
 
@@ -90,6 +99,22 @@ export default class ListItemView extends View {
 		 *
 		 * @event #execute
 		 */
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const onKeystrokePress = ( data, cancel ) => {
+			this.fire( 'execute' );
+			cancel();
+		};
+
+		this.keystrokes.listenTo( this.element );
+
+		// Execute on Enter and Space key press.
+		this.keystrokes.set( 'Enter', onKeystrokePress );
+		this.keystrokes.set( 'Space', onKeystrokePress );
 	}
 
 	/**
