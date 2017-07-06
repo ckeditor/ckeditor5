@@ -23,7 +23,28 @@ import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg'
 
 import '../../theme/theme.scss';
 
-testUtils.createTestUIView( {
+class TextView extends View {
+	constructor() {
+		super();
+
+		this.element = document.createTextNode( 'Sample text' );
+	}
+}
+
+class ToolbarNewlineView extends View {
+	constructor() {
+		super();
+
+		this.template = new Template( {
+			tag: 'span',
+			attributes: {
+				class: 'ck-toolbar__newline'
+			}
+		} );
+	}
+}
+
+const ui = testUtils.createTestUIView( {
 	'iconPlain1': '#icon-plain-1',
 	'iconPlain2': '#icon-plain-2',
 	'iconColor1': '#icon-color-1',
@@ -47,14 +68,14 @@ testUtils.createTestUIView( {
 	'toolbarWrap': '#toolbar-wrap',
 	'toolbarSeparator': '#toolbar-separator',
 	'toolbarMultiRow': '#toolbar-multi-row'
-} ).then( ui => {
-	renderIcon( ui );
-	renderButton( ui );
-	renderDropdown( ui );
-	renderToolbar( ui );
 } );
 
-function renderIcon( ui ) {
+renderIcon();
+renderButton();
+renderDropdown();
+renderToolbar();
+
+function renderIcon() {
 	// --- In-text ------------------------------------------------------------
 
 	ui.iconPlain1.add( icon( boldIcon ) );
@@ -63,7 +84,7 @@ function renderIcon( ui ) {
 	ui.iconColor2.add( icon( italicIcon ) );
 }
 
-function renderButton( ui ) {
+function renderButton() {
 	// --- States ------------------------------------------------------------
 
 	ui.buttonStates.add( button( {
@@ -168,7 +189,7 @@ function renderButton( ui ) {
 	}
 }
 
-function renderDropdown( ui ) {
+function renderDropdown() {
 	// --- ListDropdown ------------------------------------------------------------
 
 	const collection = new Collection( { idProperty: 'label' } );
@@ -197,7 +218,7 @@ function renderDropdown( ui ) {
 	} ) );
 }
 
-function renderToolbar( ui ) {
+function renderToolbar() {
 	// --- Text ------------------------------------------------------------
 
 	ui.toolbarText.add( toolbar( [
@@ -280,14 +301,6 @@ function renderToolbar( ui ) {
 	] ) );
 }
 
-const TextView = class extends View {
-	constructor() {
-		super();
-
-		this.element = document.createTextNode( 'Sample text' );
-	}
-};
-
 function text() {
 	return new TextView();
 }
@@ -338,19 +351,6 @@ function dropdown( {
 function toolbarSeparator() {
 	return new ToolbarSeparatorView();
 }
-
-const ToolbarNewlineView = class extends View {
-	constructor() {
-		super();
-
-		this.template = new Template( {
-			tag: 'span',
-			attributes: {
-				class: 'ck-toolbar__newline'
-			}
-		} );
-	}
-};
 
 function toolbarNewLine() {
 	return new ToolbarNewlineView();
