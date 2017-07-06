@@ -26,12 +26,13 @@ import {
 } from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, baseVersion;
+	let doc, root, baseVersion, context;
 
 	beforeEach( () => {
 		doc = getFilledDocument();
 		root = doc.getRoot();
 		baseVersion = doc.version;
+		context = { isStrong: false };
 	} );
 
 	describe( 'AttributeDelta by', () => {
@@ -57,7 +58,7 @@ describe( 'transform', () => {
 				const attrRange = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 3, 3, 9 ] ) );
 				const attrDelta = getAttributeDelta( attrRange, 'key', 'old', 'new', baseVersion );
 
-				const transformed = transform( insertDelta, attrDelta );
+				const transformed = transform( insertDelta, attrDelta, context );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -109,7 +110,7 @@ describe( 'transform', () => {
 				const attrRange = new Range( new Position( root, [ 5 ] ), new Position( root, [ 7 ] ) );
 				const attrDelta = getAttributeDelta( attrRange, 'key', 'old', 'new', baseVersion );
 
-				const transformed = transform( insertDelta, attrDelta );
+				const transformed = transform( insertDelta, attrDelta, context );
 
 				expect( transformed.length ).to.equal( 1 );
 

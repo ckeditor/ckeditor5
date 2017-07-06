@@ -635,6 +635,7 @@ describe( 'LiveSelection', () => {
 					new RemoveOperation(
 						new Position( root, [ 1, 2 ] ),
 						2,
+						new Position( doc.graveyard, [ 0 ] ),
 						doc.version
 					)
 				) );
@@ -649,6 +650,7 @@ describe( 'LiveSelection', () => {
 					new RemoveOperation(
 						new Position( root, [ 1, 2 ] ),
 						2,
+						new Position( doc.graveyard, [ 0 ] ),
 						doc.version
 					)
 				) );
@@ -663,6 +665,7 @@ describe( 'LiveSelection', () => {
 					new RemoveOperation(
 						new Position( root, [ 1 ] ),
 						2,
+						new Position( doc.graveyard, [ 0 ] ),
 						doc.version
 					)
 				) );

@@ -289,22 +289,49 @@ describe( 'EditingController', () => {
 			editing.modelToView.convertMarker.restore();
 		} );
 
-		it( 'should forward add marker event if inserted content has a marker (inserted element from outside of tree)', () => {
-			const element = new ModelElement( new ModelText( 'foo' ) );
-			modelRoot.appendChildren( element );
+		describe( 'should forward add marker event if inserted content has a marker', () => {
+			let element, outerRange;
 
-			const markerRange = ModelRange.createFromParentsAndOffsets( element, 1, element, 2 );
-			const outerRange = ModelRange.createOn( element );
+			beforeEach( () => {
+				element = new ModelElement( new ModelText( 'foo' ) );
+				modelRoot.appendChildren( element );
 
-			model.markers.set( 'name', markerRange );
+				outerRange = ModelRange.createOn( element );
 
-			sinon.spy( editing.modelToView, 'convertMarker' );
+				sinon.spy( editing.modelToView, 'convertMarker' );
+			} );
 
-			editing.modelToView.convertInsertion( outerRange );
+			afterEach( () => {
+				editing.modelToView.convertMarker.restore();
+			} );
 
-			expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', 'name', markerRange ) ).to.be.true;
+			it( 'marker strictly contained', () => {
+				const markerRange = ModelRange.createFromParentsAndOffsets( element, 1, element, 2 );
+				model.markers.set( 'name', markerRange );
+				editing.modelToView.convertInsertion( outerRange );
+				expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', 'name', markerRange ) ).to.be.true;
+			} );
 
-			editing.modelToView.convertMarker.restore();
+			it( 'marker starts at same position', () => {
+				const markerRange = ModelRange.createFromParentsAndOffsets( element, 0, element, 2 );
+				model.markers.set( 'name', markerRange );
+				editing.modelToView.convertInsertion( outerRange );
+				expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', 'name', markerRange ) ).to.be.true;
+			} );
+
+			it( 'marker ends at same position', () => {
+				const markerRange = ModelRange.createFromParentsAndOffsets( element, 1, element, 3 );
+				model.markers.set( 'name', markerRange );
+				editing.modelToView.convertInsertion( outerRange );
+				expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', 'name', markerRange ) ).to.be.true;
+			} );
+
+			it( 'marker is same as range', () => {
+				const markerRange = ModelRange.createFromParentsAndOffsets( element, 0, element, 3 );
+				model.markers.set( 'name', markerRange );
+				editing.modelToView.convertInsertion( outerRange );
+				expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', 'name', markerRange ) ).to.be.true;
+			} );
 		} );
 
 		it( 'should not start marker conversion if content is not inserted into any marker range', () => {

@@ -30,13 +30,16 @@ import {
 } from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, gy, baseVersion;
+	let doc, root, gy, baseVersion, context;
 
 	beforeEach( () => {
 		doc = getFilledDocument();
 		root = doc.getRoot();
 		gy = doc.graveyard;
 		baseVersion = doc.version;
+		context = {
+			isStrong: false
+		};
 	} );
 
 	describe( 'InsertDelta by', () => {
@@ -55,7 +58,7 @@ describe( 'transform', () => {
 				const insertPositionB = new Position( root, [ 3, 1 ] );
 				const insertDeltaB = getInsertDelta( insertPositionB, [ new Element( 'c' ), new Element( 'd' ) ], baseVersion );
 
-				const transformed = transform( insertDelta, insertDeltaB );
+				const transformed = transform( insertDelta, insertDeltaB, context );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -76,7 +79,7 @@ describe( 'transform', () => {
 		describe( 'MergeDelta', () => {
 			it( 'merge in same position as insert', () => {
 				const mergeDelta = getMergeDelta( insertPosition, 4, 12, baseVersion );
-				const transformed = transform( insertDelta, mergeDelta );
+				const transformed = transform( insertDelta, mergeDelta, context );
 
 				baseVersion = mergeDelta.operations.length;
 
@@ -90,7 +93,7 @@ describe( 'transform', () => {
 					operations: [
 						{
 							type: ReinsertOperation,
-							sourcePosition: new Position( gy, [ 0, 0 ] ),
+							sourcePosition: new Position( gy, [ 0 ] ),
 							howMany: 1,
 							targetPosition: new Position( root, [ 3, 3, 3 ] ),
 							baseVersion
@@ -131,7 +134,7 @@ describe( 'transform', () => {
 
 			it( 'merge the node that is parent of insert position (sticky move test)', () => {
 				const mergeDelta = getMergeDelta( new Position( root, [ 3, 3 ] ), 1, 4, baseVersion );
-				const transformed = transform( insertDelta, mergeDelta );
+				const transformed = transform( insertDelta, mergeDelta, context );
 
 				baseVersion = mergeDelta.operations.length;
 
@@ -164,7 +167,7 @@ describe( 'transform', () => {
 
 			it( 'merge at affected position but resolved by default OT', () => {
 				const mergeDelta = getMergeDelta( new Position( root, [ 3 ] ), 1, 4, baseVersion );
-				const transformed = transform( insertDelta, mergeDelta );
+				const transformed = transform( insertDelta, mergeDelta, context );
 
 				baseVersion = mergeDelta.operations.length;
 

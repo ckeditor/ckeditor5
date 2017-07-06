@@ -236,6 +236,16 @@ describe( 'debug tools', () => {
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
 			} );
 
+			it( 'MoveOperation sticky', () => {
+				const op = new MoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( modelRoot, 6 ), 0 );
+				op.isSticky = true;
+
+				expect( op.toString() ).to.equal( 'MoveOperation( 0 ): main [ 1 ] - [ 3 ] -> main [ 6 ] (sticky)' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
 			it( 'NoOperation', () => {
 				const op = new NoOperation( 0 );
 
@@ -324,9 +334,15 @@ describe( 'debug tools', () => {
 
 				otherRoot.appendChildren( [ firstEle, removedEle ] );
 
+				const graveyard = modelDoc.graveyard;
 				const delta = new MergeDelta();
 				const move = new MoveOperation( ModelPosition.createAt( removedEle, 0 ), 3, ModelPosition.createAt( firstEle, 0 ), 0 );
-				const remove = new RemoveOperation( ModelPosition.createBefore( removedEle ), 1, 1 );
+				const remove = new RemoveOperation(
+					ModelPosition.createBefore( removedEle ),
+					1,
+					ModelPosition.createAt( graveyard, 0 ),
+					1
+				);
 
 				delta.addOperation( move );
 				delta.addOperation( remove );
@@ -400,9 +416,10 @@ describe( 'debug tools', () => {
 
 				otherRoot.appendChildren( [ unwrapEle ] );
 
+				const graveyard = modelDoc.graveyard;
 				const delta = new UnwrapDelta();
 				const move = new MoveOperation( ModelPosition.createAt( unwrapEle, 0 ), 3, ModelPosition.createAt( otherRoot, 0 ), 0 );
-				const remove = new RemoveOperation( ModelPosition.createAt( otherRoot, 3 ), 1, 1 );
+				const remove = new RemoveOperation( ModelPosition.createAt( otherRoot, 3 ), 1, ModelPosition.createAt( graveyard, 0 ), 1 );
 
 				delta.addOperation( move );
 				delta.addOperation( remove );
@@ -609,7 +626,8 @@ describe( 'debug tools', () => {
 			const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), 0 );
 			model.applyOperation( wrapInDelta( insert ) );
 
-			const remove = new RemoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, 1 );
+			const graveyard = model.graveyard;
+			const remove = new RemoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( graveyard, 0 ), 1 );
 			model.applyOperation( wrapInDelta( remove ) );
 
 			log.reset();
@@ -631,9 +649,7 @@ describe( 'debug tools', () => {
 			model.log( 2 );
 			expectLog(
 				'<$graveyard>' +
-				'\n\t<$graveyardHolder>' +
-				'\n\t\too' +
-				'\n\t</$graveyardHolder>' +
+				'\n\too' +
 				'\n</$graveyard>' +
 				'\n<main>' +
 				'\n\tfbar' +
@@ -643,9 +659,7 @@ describe( 'debug tools', () => {
 			model.log();
 			expectLog(
 				'<$graveyard>' +
-				'\n\t<$graveyardHolder>' +
-				'\n\t\too' +
-				'\n\t</$graveyardHolder>' +
+				'\n\too' +
 				'\n</$graveyard>' +
 				'\n<main>' +
 				'\n\tfbar' +
@@ -728,8 +742,9 @@ describe( 'debug tools', () => {
 			otherRoot.appendChildren( [ firstEle, removedEle ] );
 
 			const delta = new MergeDelta();
+			const graveyard = modelDoc.graveyard;
 			const move = new MoveOperation( ModelPosition.createAt( removedEle, 0 ), 3, ModelPosition.createAt( firstEle, 0 ), 0 );
-			const remove = new RemoveOperation( ModelPosition.createBefore( removedEle ), 1, 1 );
+			const remove = new RemoveOperation( ModelPosition.createBefore( removedEle ), 1, ModelPosition.createAt( graveyard, 0 ), 1 );
 
 			delta.addOperation( move );
 			delta.addOperation( remove );
@@ -752,8 +767,9 @@ describe( 'debug tools', () => {
 			otherRoot.appendChildren( [ firstEle, removedEle ] );
 
 			const delta = new MergeDelta();
+			const graveyard = modelDoc.graveyard;
 			const move = new MoveOperation( ModelPosition.createAt( removedEle, 0 ), 3, ModelPosition.createAt( firstEle, 0 ), 0 );
-			const remove = new RemoveOperation( ModelPosition.createBefore( removedEle ), 1, 1 );
+			const remove = new RemoveOperation( ModelPosition.createBefore( removedEle ), 1, ModelPosition.createAt( graveyard, 0 ), 1 );
 
 			delta.addOperation( move );
 			delta.addOperation( remove );
@@ -855,7 +871,7 @@ describe( 'debug tools', () => {
 			const opC = new MoveOperation( ModelPosition.createAt( root, 4 ), 2, ModelPosition.createAt( root, 0 ), 1 );
 			deltaC.addOperation( opC );
 
-			let result = deltaTransform.transform( deltaA, deltaB, false );
+			let result = deltaTransform.transform( deltaA, deltaB, { document, wasAffected: new Map() } );
 
 			expect( result[ 0 ].history ).not.to.be.undefined;
 			expect( result[ 0 ].history.length ).to.equal( 1 );
@@ -871,7 +887,7 @@ describe( 'debug tools', () => {
 			const firstResultWithoutHistory = result[ 0 ].clone();
 			delete firstResultWithoutHistory.history;
 
-			result = deltaTransform.transform( result[ 0 ], deltaC, true );
+			result = deltaTransform.transform( result[ 0 ], deltaC, { isStrong: true, document, wasAffected: new Map() } );
 			expect( result[ 0 ].history ).not.to.be.undefined;
 			expect( result[ 0 ].history.length ).to.equal( 2 );
 
@@ -888,7 +904,7 @@ describe( 'debug tools', () => {
 				transformedBy: JSON.stringify( deltaC ),
 				wasImportant: true,
 				resultIndex: 0,
-				resultsTotal: 1
+				resultsTotal: 2
 			} );
 		} );
 
@@ -905,15 +921,15 @@ describe( 'debug tools', () => {
 			const opC = new MoveOperation( ModelPosition.createAt( root, 4 ), 2, ModelPosition.createAt( root, 0 ), 1 );
 			deltaC.addOperation( opC );
 
-			let original = deltaTransform.transform( deltaA, deltaB, false );
-			original = deltaTransform.transform( original[ 0 ], deltaC, true )[ 0 ];
+			let original = deltaTransform.transform( deltaA, deltaB, { document, wasAffected: new Map() } );
+			original = deltaTransform.transform( original[ 0 ], deltaC, { isStrong: true, document, wasAffected: new Map() } )[ 0 ];
 
 			const history = original.history;
 
 			let recreated = deltaTransform.transform(
 				DeltaFactory.fromJSON( JSON.parse( history[ 0 ].before ), document ),
 				DeltaFactory.fromJSON( JSON.parse( history[ 0 ].transformedBy ), document ),
-				history[ 0 ].wasImportant
+				{ isStrong: history[ 0 ].wasImportant, document, wasAffected: new Map() }
 			);
 
 			recreated = recreated[ history[ 0 ].resultIndex ];
@@ -921,7 +937,7 @@ describe( 'debug tools', () => {
 			recreated = deltaTransform.transform(
 				recreated,
 				DeltaFactory.fromJSON( JSON.parse( history[ 1 ].transformedBy ), document ),
-				history[ 1 ].wasImportant
+				{ isStrong: history[ 1 ].wasImportant, document, wasAffected: new Map() }
 			);
 
 			recreated = recreated[ history[ 1 ].resultIndex ];
@@ -946,7 +962,7 @@ describe( 'debug tools', () => {
 					throw new Error();
 				};
 
-				expect( () => deltaTransform.transform( deltaA, deltaB, true ) ).to.throw( Error );
+				expect( () => deltaTransform.transform( deltaA, deltaB, { isStrong: true } ) ).to.throw( Error );
 				expect( error.calledWith( deltaA.toString() + ' (important)' ) ).to.be.true;
 				expect( error.calledWith( deltaB.toString() ) ).to.be.true;
 			} );
@@ -964,7 +980,7 @@ describe( 'debug tools', () => {
 					throw new Error();
 				};
 
-				expect( () => deltaTransform.transform( deltaA, deltaB, false ) ).to.throw( Error );
+				expect( () => deltaTransform.transform( deltaA, deltaB, { isStrong: false } ) ).to.throw( Error );
 				expect( error.calledWith( deltaA.toString() ) ).to.be.true;
 				expect( error.calledWith( deltaB.toString() + ' (important)' ) ).to.be.true;
 			} );

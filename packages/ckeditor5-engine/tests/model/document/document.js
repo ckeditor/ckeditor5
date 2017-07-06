@@ -8,6 +8,8 @@ import Schema from '../../../src/model/schema';
 import RootElement from '../../../src/model/rootelement';
 import Batch from '../../../src/model/batch';
 import Delta from '../../../src/model/delta/delta';
+import NoOperation from '../../../src/model/operation/nooperation';
+import deltaTransform from '../../../src/model/delta/transform';
 import Range from '../../../src/model/range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
@@ -501,6 +503,44 @@ describe( 'Document', () => {
 				}
 			} );
 		}
+	} );
+
+	describe( 'transformDeltas', () => {
+		it( 'should use deltaTransform.transformDeltaSets', () => {
+			sinon.spy( deltaTransform, 'transformDeltaSets' );
+
+			// Prepare some empty-ish deltas so the transformation won't throw an error.
+			const deltasA = [ new Delta() ];
+			deltasA[ 0 ].addOperation( new NoOperation( 0 ) );
+
+			const deltasB = [ new Delta() ];
+			deltasB[ 0 ].addOperation( new NoOperation( 0 ) );
+
+			doc.transformDeltas( deltasA, deltasB );
+
+			expect( deltaTransform.transformDeltaSets.calledOnce ).to.be.true;
+			expect( deltaTransform.transformDeltaSets.calledWith( deltasA, deltasB, null ) ).to.be.true;
+
+			deltaTransform.transformDeltaSets.restore();
+		} );
+
+		it( 'should pass itself to transformDeltaSets if useContext was set to true', () => {
+			sinon.spy( deltaTransform, 'transformDeltaSets' );
+
+			// Prepare some empty-ish deltas so the transformation won't throw an error.
+			const deltasA = [ new Delta() ];
+			deltasA[ 0 ].addOperation( new NoOperation( 0 ) );
+
+			const deltasB = [ new Delta() ];
+			deltasB[ 0 ].addOperation( new NoOperation( 0 ) );
+
+			doc.transformDeltas( deltasA, deltasB, true );
+
+			expect( deltaTransform.transformDeltaSets.calledOnce ).to.be.true;
+			expect( deltaTransform.transformDeltaSets.calledWith( deltasA, deltasB, doc ) ).to.be.true;
+
+			deltaTransform.transformDeltaSets.restore();
+		} );
 	} );
 
 	describe( '_getDefaultRoot()', () => {

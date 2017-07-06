@@ -10,14 +10,7 @@
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * `History` keeps the track of all the deltas applied to the {@link module:engine/model/document~Document document}. Deltas stored in
- * `History` might get updated, split into more deltas or even removed. This is used mostly to compress history, instead
- * of keeping all deltas in a state in which they were applied.
- *
- * **Note:** deltas kept in `History` should be used only to transform deltas. It's not advised to use `History` to get
- * original delta basing on it's {@link module:engine/model/delta/delta~Delta#baseVersion baseVersion}. Also, after transforming a
- * delta by deltas from `History`,
- * fix it's base version accordingly (set it to {@link module:engine/model/document~Document#version document version}).
+ * `History` keeps the track of all the deltas applied to the {@link module:engine/model/document~Document document}.
  */
 export default class History {
 	/**
@@ -40,6 +33,26 @@ export default class History {
 		 * @member {Map} module:engine/model/history~History#_historyPoints
 		 */
 		this._historyPoints = new Map();
+
+		/**
+		 * Holds an information which {@link module:engine/model/delta/delta~Delta delta} undoes which
+		 * {@link module:engine/model/delta/delta~Delta delta}.
+		 *
+		 * Keys of the map are "undoing deltas", that is deltas that undone some other deltas. For each key, the
+		 * value is a delta that has been undone by the "undoing delta".
+		 *
+		 * @private
+		 * @member {Map} module:engine/model/history~History#_undoPairs
+		 */
+		this._undoPairs = new Map();
+
+		/**
+		 * Holds all undone deltas.
+		 *
+		 * @private
+		 * @member {Set.<module:engine/model/delta/delta~Delta>} module:engine/model/history~History#_undoneDeltas
+		 */
+		this._undoneDeltas = new Set();
 	}
 
 	/**
@@ -63,7 +76,7 @@ export default class History {
 	 * that deltas from the first one will be returned.
 	 * @param {Number} [to=Number.POSITIVE_INFINITY] Base version up to which deltas should be returned (exclusive).
 	 * Defaults to `Number.POSITIVE_INFINITY` which means that deltas up to the last one will be returned.
-	 * @returns {Iterator.<module:engine/model/delta/delta~Delta>} Deltas added to the history.
+	 * @returns {Iterator.<module:engine/model/delta/delta~Delta>} Deltas added to the history from given base versions range.
 	 */
 	* getDeltas( from = 0, to = Number.POSITIVE_INFINITY ) {
 		// No deltas added, nothing to yield.
@@ -92,90 +105,58 @@ export default class History {
 	}
 
 	/**
-	 * Returns one or more deltas from history that bases on given `baseVersion`. Most often it will be just
-	 * one delta, but if that delta got updated by multiple deltas, all of those updated deltas will be returned.
+	 * Returns delta from history that bases on given `baseVersion`.
 	 *
-	 * @see module:engine/model/history~History#updateDelta
-	 * @param {Number} baseVersion Base version of the delta to retrieve.
-	 * @returns {Array.<module:engine/model/delta/delta~Delta>|null} Delta with given base version or null if no such delta is in history.
+	 * @param {Number} baseVersion Base version of the delta to get.
+	 * @returns {module:engine/model/delta/delta~Delta|null} Delta with given base version or `null` if there is no such delta in history.
 	 */
 	getDelta( baseVersion ) {
-		let index = this._historyPoints.get( baseVersion );
+		const index = this._historyPoints.get( baseVersion );
 
-		if ( index === undefined ) {
-			return null;
-		}
-
-		const deltas = [];
-
-		for ( index; index < this._deltas.length; index++ ) {
-			const delta = this._deltas[ index ];
-
-			if ( delta.baseVersion != baseVersion ) {
-				break;
-			}
-
-			deltas.push( delta );
-		}
-
-		return deltas.length === 0 ? null : deltas;
+		return index === undefined ? null : this._deltas[ index ];
 	}
 
 	/**
-	 * Removes delta from the history. This happens i.e., when a delta is undone by another delta. Both undone delta and
-	 * undoing delta should be removed so they won't have an impact on transforming other deltas.
+	 * Marks in history that one delta is a delta that is undoing the other delta. By marking deltas this way,
+	 * history is keeping more context information about deltas which helps in operational transformation.
 	 *
-	 * **Note:** using this method does not change the state of {@link module:engine/model/document~Document model}. It just affects
-	 * the state of `History`.
-	 *
-	 * **Note:** when some deltas are removed, deltas between them should probably get updated. See
-	 * {@link module:engine/model/history~History#updateDelta}.
-	 *
-	 * **Note:** if delta with `baseVersion` got {@link module:engine/model/history~History#updateDelta updated} by multiple
-	 * deltas, all updated deltas will be removed.
-	 *
-	 * @param {Number} baseVersion Base version of a delta to be removed.
+	 * @param {module:engine/model/delta/delta~Delta} undoneDelta Delta which is undone by `undoingDelta`.
+	 * @param {module:engine/model/delta/delta~Delta} undoingDelta Delta which undoes `undoneDelta`.
 	 */
-	removeDelta( baseVersion ) {
-		this.updateDelta( baseVersion, [] );
+	setDeltaAsUndone( undoneDelta, undoingDelta ) {
+		this._undoPairs.set( undoingDelta, undoneDelta );
+		this._undoneDeltas.add( undoneDelta );
 	}
 
 	/**
-	 * Substitutes delta in history by one or more given deltas.
+	 * Checks whether given `delta` is undoing by any other delta.
 	 *
-	 * **Note:** if delta with `baseVersion` was already updated by multiple deltas, all updated deltas will be removed
-	 * and new deltas will be inserted at their position.
-	 *
-	 * **Note:** removed delta won't get updated.
-	 *
-	 * @param {Number} baseVersion Base version of a delta to update.
-	 * @param {Iterable.<module:engine/model/delta/delta~Delta>} updatedDeltas Deltas to be inserted in place of updated delta.
+	 * @param {module:engine/model/delta/delta~Delta} delta Delta to check.
+	 * @returns {Boolean} `true` if given `delta` is undoing any other delta, `false` otherwise.
 	 */
-	updateDelta( baseVersion, updatedDeltas ) {
-		const deltas = this.getDelta( baseVersion );
+	isUndoingDelta( delta ) {
+		return this._undoPairs.has( delta );
+	}
 
-		// If there are no deltas, stop executing function as there is nothing to update.
-		if ( deltas === null ) {
-			return;
-		}
+	/**
+	 * Checks whether given `delta` has been undone by any other delta.
+	 *
+	 * @param {module:engine/model/delta/delta~Delta} delta Delta to check.
+	 * @returns {Boolean} `true` if given `delta` has been undone any other delta, `false` otherwise.
+	 */
+	isUndoneDelta( delta ) {
+		return this._undoneDeltas.has( delta );
+	}
 
-		// Make sure that every updated delta has correct `baseVersion`.
-		// This is crucial for algorithms in `History` and algorithms using `History`.
-		for ( const delta of updatedDeltas ) {
-			delta.baseVersion = baseVersion;
-		}
-
-		// Put updated deltas in place of old deltas.
-		this._deltas.splice( this._getIndex( baseVersion ), deltas.length, ...updatedDeltas );
-
-		// Update history points.
-		const changeBy = updatedDeltas.length - deltas.length;
-
-		for ( const key of this._historyPoints.keys() ) {
-			if ( key > baseVersion ) {
-				this._historyPoints.set( key, this._historyPoints.get( key ) + changeBy );
-			}
-		}
+	/**
+	 * For given `undoingDelta`, returns the delta which has been undone by it.
+	 *
+	 * @param {module:engine/model/delta/delta~Delta} undoingDelta
+	 * @returns {module:engine/model/delta/delta~Delta|undefined} Delta that has been undone by given `undoingDelta` or `undefined`
+	 * if given `undoingDelta` is not undoing any other delta.
+	 */
+	getUndoneDelta( undoingDelta ) {
+		return this._undoPairs.get( undoingDelta );
 	}
 
 	/**
@@ -194,7 +175,6 @@ export default class History {
 
 			if ( baseVersion < 0 || baseVersion >= nextBaseVersion ) {
 				// Base version is too high or too low - it's acceptable situation.
-				// Return -1 because `baseVersion` was correct.
 				return -1;
 			}
 

@@ -28,8 +28,14 @@ export default class RemoveDelta extends MoveDelta {
 	}
 }
 
-function addRemoveOperation( batch, delta, position, howMany ) {
-	const operation = new RemoveOperation( position, howMany, batch.document.version );
+function addRemoveDelta( batch, position, howMany ) {
+	const delta = new RemoveDelta();
+	batch.addDelta( delta );
+
+	const graveyard = batch.document.graveyard;
+	const gyPosition = new Position( graveyard, [ 0 ] );
+
+	const operation = new RemoveOperation( position, howMany, gyPosition, batch.document.version );
 	delta.addOperation( operation );
 	batch.document.applyOperation( operation );
 }
@@ -42,18 +48,15 @@ function addRemoveOperation( batch, delta, position, howMany ) {
  * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange Model item or range to remove.
  */
 register( 'remove', function( itemOrRange ) {
-	const delta = new RemoveDelta();
-	this.addDelta( delta );
-
 	if ( itemOrRange instanceof Range ) {
-		// The array is reversed, so the ranges are correct and do not have to be updated.
+		// The array is reversed, so the ranges to remove are in correct order and do not have to be updated.
 		const ranges = itemOrRange.getMinimalFlatRanges().reverse();
 
 		for ( const flat of ranges ) {
-			addRemoveOperation( this, delta, flat.start, flat.end.offset - flat.start.offset );
+			addRemoveDelta( this, flat.start, flat.end.offset - flat.start.offset );
 		}
 	} else {
-		addRemoveOperation( this, delta, Position.createBefore( itemOrRange ), 1 );
+		addRemoveDelta( this, Position.createBefore( itemOrRange ), 1 );
 	}
 
 	return this;

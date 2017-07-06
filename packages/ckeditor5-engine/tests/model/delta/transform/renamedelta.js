@@ -11,7 +11,9 @@ import Element from '../../../../src/model/element';
 import Position from '../../../../src/model/position';
 
 import RenameDelta from '../../../../src/model/delta/renamedelta';
+import Delta from '../../../../src/model/delta/delta';
 import RenameOperation from '../../../../src/model/operation/renameoperation';
+import NoOperation from '../../../../src/model/operation/nooperation';
 
 import {
 	getFilledDocument,
@@ -20,12 +22,13 @@ import {
 } from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, baseVersion;
+	let doc, root, baseVersion, context;
 
 	beforeEach( () => {
 		doc = getFilledDocument();
 		root = doc.getRoot();
 		baseVersion = doc.version;
+		context = { isStrong: false };
 	} );
 
 	describe( 'RenameDelta by', () => {
@@ -42,7 +45,7 @@ describe( 'transform', () => {
 				const splitPosition = new Position( root, [ 3, 3, 3 ] );
 				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 
-				const transformed = transform( renameDelta, splitDelta );
+				const transformed = transform( renameDelta, splitDelta, context );
 
 				baseVersion = splitDelta.length;
 
@@ -85,7 +88,7 @@ describe( 'transform', () => {
 				const splitPosition = new Position( root, [ 3, 2, 1 ] );
 				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 
-				const transformed = transform( renameDelta, splitDelta );
+				const transformed = transform( renameDelta, splitDelta, context );
 
 				baseVersion = splitDelta.length;
 
@@ -99,6 +102,32 @@ describe( 'transform', () => {
 							oldName: 'p',
 							newName: 'li',
 							position: new Position( root, [ 3, 4 ] )
+						}
+					]
+				} );
+			} );
+		} );
+
+		describe( 'RenameDelta', () => {
+			it( 'should be transformed to NoDelta if its operation is transformed to NoOperation', () => {
+				const renameDeltaA = new RenameDelta();
+				const renameDeltaB = new RenameDelta();
+
+				const op = new RenameOperation( new Position( root, [ 3 ] ), 'p', 'li', baseVersion );
+
+				renameDeltaA.addOperation( op );
+				renameDeltaB.addOperation( op.clone() );
+
+				const transformed = transform( renameDeltaA, renameDeltaB, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: Delta,
+					operations: [
+						{
+							type: NoOperation,
+							baseVersion: 1
 						}
 					]
 				} );

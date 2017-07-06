@@ -224,7 +224,7 @@ export default class ModelConversionDispatcher {
 			}
 
 			// Check if inserted content contains a marker.
-			if ( range.containsRange( markerRange ) || range.isEqual( markerRange ) ) {
+			if ( range.containsRange( markerRange, true ) ) {
 				this.convertMarker( 'addMarker', marker.name, markerRange );
 			}
 		}

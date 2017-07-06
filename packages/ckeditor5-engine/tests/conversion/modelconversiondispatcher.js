@@ -13,12 +13,14 @@ import RemoveOperation from '../../src/model/operation/removeoperation';
 import { wrapInDelta } from '../../tests/model/_utils/utils';
 
 describe( 'ModelConversionDispatcher', () => {
-	let dispatcher, doc, root;
+	let dispatcher, doc, root, gyPos;
 
 	beforeEach( () => {
 		doc = new ModelDocument();
 		dispatcher = new ModelConversionDispatcher( doc );
 		root = doc.createRoot();
+
+		gyPos = new ModelPosition( doc.graveyard, [ 0 ] );
 	} );
 
 	describe( 'constructor()', () => {
@@ -69,7 +71,7 @@ describe( 'ModelConversionDispatcher', () => {
 
 			// We will just create reinsert operation by reverting remove operation
 			// because creating reinsert change is tricky and not available through batch API.
-			const removeOperation = new RemoveOperation( imagePos, 1, 0 );
+			const removeOperation = new RemoveOperation( imagePos, 1, gyPos, 0 );
 
 			// Let's apply remove operation so reinsert operation won't break.
 			doc.applyOperation( wrapInDelta( removeOperation ) );
@@ -389,9 +391,6 @@ describe( 'ModelConversionDispatcher', () => {
 
 			expect( loggedEvents ).to.deep.equal( [ 'remove:3:3' ] );
 		} );
-	} );
-
-	describe( 'convertRename', () => {
 	} );
 
 	describe( 'convertAttribute', () => {

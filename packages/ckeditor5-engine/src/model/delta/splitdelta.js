@@ -40,19 +40,6 @@ export default class SplitDelta extends Delta {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	getReversed() {
-		const delta = super.getReversed();
-
-		if ( delta.operations.length > 0 ) {
-			delta.operations[ 0 ].isSticky = true;
-		}
-
-		return delta;
-	}
-
-	/**
 	 * Operation in the delta that adds to model an element into which split nodes will be moved, or `null` if
 	 * there are no operations in the delta.
 	 *
@@ -79,7 +66,7 @@ export default class SplitDelta extends Delta {
 	 * @type {module:engine/model/operation/moveoperation~MoveOperation|null}
 	 */
 	get _moveOperation() {
-		return this.operations[ 1 ] || null;
+		return this.operations[ 1 ] && this.operations[ 1 ] instanceof MoveOperation ? this.operations[ 1 ] : null;
 	}
 
 	/**
@@ -94,13 +81,6 @@ export default class SplitDelta extends Delta {
 	 */
 	static get className() {
 		return 'engine.model.delta.SplitDelta';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get _priority() {
-		return 5;
 	}
 }
 

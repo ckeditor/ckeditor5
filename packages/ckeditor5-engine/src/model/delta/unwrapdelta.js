@@ -61,13 +61,6 @@ export default class UnwrapDelta extends Delta {
 	static get className() {
 		return 'engine.model.delta.UnwrapDelta';
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get _priority() {
-		return 10;
-	}
 }
 
 /**
@@ -106,7 +99,10 @@ register( 'unwrap', function( element ) {
 
 	// Computing new position because we moved some nodes before `element`.
 	// If we would cache `Position.createBefore( element )` we remove wrong node.
-	const remove = new RemoveOperation( Position.createBefore( element ), 1, this.document.version );
+	const graveyard = this.document.graveyard;
+	const gyPosition = new Position( graveyard, [ 0 ] );
+
+	const remove = new RemoveOperation( Position.createBefore( element ), 1, gyPosition, this.document.version );
 	delta.addOperation( remove );
 	this.document.applyOperation( remove );
 

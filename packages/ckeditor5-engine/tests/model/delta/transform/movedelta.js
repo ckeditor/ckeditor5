@@ -27,13 +27,14 @@ import {
 } from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, gy, baseVersion;
+	let doc, root, gy, baseVersion, context;
 
 	beforeEach( () => {
 		doc = getFilledDocument();
 		root = doc.getRoot();
 		gy = doc.graveyard;
 		baseVersion = doc.version;
+		context = { isStrong: false };
 	} );
 
 	describe( 'MoveDelta by', () => {
@@ -52,7 +53,7 @@ describe( 'transform', () => {
 				const mergePosition = new Position( root, [ 3, 3, 3 ] );
 				const mergeDelta = getMergeDelta( mergePosition, 4, 12, baseVersion );
 
-				const transformed = transform( moveDelta, mergeDelta );
+				const transformed = transform( moveDelta, mergeDelta, context );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -68,7 +69,7 @@ describe( 'transform', () => {
 							// is treated in OT as `MoveOperation` and might be converted to it. This is why we have to
 							// check whether the operation type is `MoveOperation`. This is all perfectly valid.
 							type: MoveOperation,
-							sourcePosition: new Position( gy, [ 0, 0 ] ),
+							sourcePosition: new Position( gy, [ 0 ] ),
 							howMany: 1,
 							targetPosition: new Position( root, [ 3, 3, 3 ] ),
 							baseVersion
@@ -108,11 +109,11 @@ describe( 'transform', () => {
 				expect( nodesAndText ).to.equal( 'DIVPabcfoobarxyzPXXXXXabcdXDIV' );
 			} );
 
-			it( 'move range in merged node', () => {
+			it( 'move range in merged node #1', () => {
 				const mergePosition = new Position( root, [ 3, 3 ] );
 				const mergeDelta = getMergeDelta( mergePosition, 1, 4, baseVersion );
 
-				const transformed = transform( moveDelta, mergeDelta );
+				const transformed = transform( moveDelta, mergeDelta, context );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -126,6 +127,33 @@ describe( 'transform', () => {
 							sourcePosition: new Position( root, [ 3, 2, 4 ] ),
 							howMany: 1,
 							targetPosition: new Position( root, [ 3, 2, 1 ] ),
+							baseVersion
+						}
+					]
+				} );
+			} );
+
+			it( 'move range in merged node #2', () => {
+				moveDelta._moveOperation.sourcePosition.path = [ 3, 3, 1 ];
+				moveDelta._moveOperation.targetPosition.path = [ 3, 3, 4 ];
+
+				const mergePosition = new Position( root, [ 3, 3 ] );
+				const mergeDelta = getMergeDelta( mergePosition, 1, 4, baseVersion );
+
+				const transformed = transform( moveDelta, mergeDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = mergeDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: MoveDelta,
+					operations: [
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 2, 2 ] ),
+							howMany: 1,
+							targetPosition: new Position( root, [ 3, 2, 5 ] ),
 							baseVersion
 						}
 					]

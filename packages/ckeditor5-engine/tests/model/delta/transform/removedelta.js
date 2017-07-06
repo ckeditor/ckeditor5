@@ -12,9 +12,11 @@ import Element from '../../../../src/model/element';
 import Position from '../../../../src/model/position';
 import Range from '../../../../src/model/range';
 
+import Delta from '../../../../src/model/delta/delta';
 import RemoveDelta from '../../../../src/model/delta/removedelta';
 import SplitDelta from '../../../../src/model/delta/splitdelta';
 
+import NoOperation from '../../../../src/model/operation/nooperation';
 import MoveOperation from '../../../../src/model/operation/moveoperation';
 import RemoveOperation from '../../../../src/model/operation/removeoperation';
 
@@ -30,13 +32,14 @@ import {
 } from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, gy, baseVersion;
+	let doc, root, gy, baseVersion, context;
 
 	beforeEach( () => {
 		doc = getFilledDocument();
 		root = doc.getRoot();
 		gy = doc.graveyard;
 		baseVersion = doc.version;
+		context = { isStrong: false };
 	} );
 
 	describe( 'RemoveDelta by', () => {
@@ -49,7 +52,7 @@ describe( 'transform', () => {
 				const mergePosition = new Position( root, [ 3, 3, 3 ] );
 				const mergeDelta = getMergeDelta( mergePosition, 4, 12, baseVersion );
 
-				const transformed = transform( removeDelta, mergeDelta );
+				const transformed = transform( removeDelta, mergeDelta, context );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -60,7 +63,7 @@ describe( 'transform', () => {
 					operations: [
 						{
 							type: MoveOperation,
-							sourcePosition: new Position( gy, [ 0, 0 ] ),
+							sourcePosition: new Position( gy, [ 0 ] ),
 							howMany: 1,
 							targetPosition: new Position( root, [ 3, 3, 3 ] ),
 							baseVersion
@@ -108,7 +111,7 @@ describe( 'transform', () => {
 				const nodeCopy = new Element( 'x' );
 				const splitDelta = getSplitDelta( splitPosition, nodeCopy, 2, baseVersion );
 
-				const transformed = transform( removeDelta, splitDelta );
+				const transformed = transform( removeDelta, splitDelta, context );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -127,6 +130,34 @@ describe( 'transform', () => {
 				} );
 			} );
 
+			it( 'removed nodes in split node, after split position, isStrong = false', () => {
+				const sourcePosition = new Position( root, [ 3, 3, 2, 4 ] );
+				const removeDelta = getRemoveDelta( sourcePosition, 3, baseVersion );
+
+				const splitPosition = new Position( root, [ 3, 3, 2, 2 ] );
+				const nodeCopy = new Element( 'x' );
+				const splitDelta = getSplitDelta( splitPosition, nodeCopy, 8, baseVersion );
+
+				const transformed = transform( removeDelta, splitDelta, {
+					isStrong: false,
+					forceWeakRemove: true
+				} );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = splitDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: Delta,
+					operations: [
+						{
+							type: NoOperation,
+							baseVersion
+						}
+					]
+				} );
+			} );
+
 			it( 'last node in the removed range was a node that has been split', () => {
 				const sourcePosition = new Position( root, [ 3, 2 ] );
 				const removeDelta = getRemoveDelta( sourcePosition, 2, baseVersion );
@@ -135,7 +166,7 @@ describe( 'transform', () => {
 				const nodeCopy = new Element( 'div' );
 				const splitDelta = getSplitDelta( splitPosition, nodeCopy, 2, baseVersion );
 
-				const transformed = transform( removeDelta, splitDelta );
+				const transformed = transform( removeDelta, splitDelta, context );
 
 				expect( transformed.length ).to.equal( 1 );
 

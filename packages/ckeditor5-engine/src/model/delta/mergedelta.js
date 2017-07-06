@@ -41,19 +41,6 @@ export default class MergeDelta extends Delta {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	getReversed() {
-		const delta = super.getReversed();
-
-		if ( delta.operations.length > 0 ) {
-			delta.operations[ 1 ].isSticky = false;
-		}
-
-		return delta;
-	}
-
-	/**
 	 * Operation in this delta that removes the node after merge position (which will be empty at that point) or
 	 * `null` if the delta has no operations. Note, that after {@link module:engine/model/delta/transform~transform transformation}
 	 * this might be an instance of {@link module:engine/model/operation/moveoperation~MoveOperation} instead of
@@ -131,7 +118,10 @@ register( 'merge', function( position ) {
 	delta.addOperation( move );
 	this.document.applyOperation( move );
 
-	const remove = new RemoveOperation( position, 1, this.document.version );
+	const graveyard = this.document.graveyard;
+	const gyPosition = new Position( graveyard, [ 0 ] );
+
+	const remove = new RemoveOperation( position, 1, gyPosition, this.document.version );
 	delta.addOperation( remove );
 	this.document.applyOperation( remove );
 

@@ -14,6 +14,7 @@ import SplitDelta from '../../../src/model/delta/splitdelta';
 
 import InsertOperation from '../../../src/model/operation/insertoperation';
 import MoveOperation from '../../../src/model/operation/moveoperation';
+import NoOperation from '../../../src/model/operation/nooperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
@@ -162,12 +163,34 @@ describe( 'SplitDelta', () => {
 
 		it( 'should return the first operation in the delta, which is InsertOperation or ReinsertOperation', () => {
 			const p = new Element( 'p' );
-			splitDelta.operations.push( new InsertOperation( new Position( root, [ 1, 2 ] ), p, 0 ) );
+			const insert = new InsertOperation( new Position( root, [ 1, 2 ] ), p, 0 );
+			splitDelta.operations.push( insert );
 			splitDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1, 4 ] ), 4, new Position( root, [ 1, 2, 0 ] ), 1 ) );
 
-			expect( splitDelta._cloneOperation ).to.be.instanceof( InsertOperation );
-			expect( splitDelta._cloneOperation.nodes.getNode( 0 ) ).to.equal( p );
-			expect( splitDelta._cloneOperation.position.path ).to.deep.equal( [ 1, 2 ] );
+			expect( splitDelta._cloneOperation ).to.equal( insert );
+		} );
+	} );
+
+	describe( '_moveOperation', () => {
+		it( 'should return null if delta has no operations', () => {
+			expect( splitDelta._moveOperation ).to.be.null;
+		} );
+
+		it( 'should return null if second operation is NoOperation', () => {
+			const p = new Element( 'p' );
+			splitDelta.operations.push( new InsertOperation( new Position( root, [ 1, 2 ] ), p, 0 ) );
+			splitDelta.operations.push( new NoOperation( 1 ) );
+
+			expect( splitDelta._moveOperation ).to.be.null;
+		} );
+
+		it( 'should return second operation if it is MoveOperation', () => {
+			const p = new Element( 'p' );
+			const move = new MoveOperation( new Position( root, [ 1, 1, 4 ] ), 4, new Position( root, [ 1, 2, 0 ] ), 1 );
+			splitDelta.operations.push( new InsertOperation( new Position( root, [ 1, 2 ] ), p, 0 ) );
+			splitDelta.operations.push( move );
+
+			expect( splitDelta._moveOperation ).to.equal( move );
 		} );
 	} );
 

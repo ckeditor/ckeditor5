@@ -26,12 +26,13 @@ import {
 } from '../../../model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, baseVersion;
+	let doc, root, baseVersion, context;
 
 	beforeEach( () => {
 		doc = getFilledDocument();
 		root = doc.getRoot();
 		baseVersion = doc.version;
+		context = { isStrong: false };
 	} );
 
 	describe( 'MarkerDelta by', () => {
@@ -47,7 +48,7 @@ describe( 'transform', () => {
 
 			it( 'split inside oldRange', () => {
 				const splitDelta = getSplitDelta( new Position( root, [ 3, 1 ] ), new Element( 'div' ), 3, baseVersion );
-				const transformed = transform( markerDelta, splitDelta );
+				const transformed = transform( markerDelta, splitDelta, context );
 
 				baseVersion = splitDelta.operations.length;
 
@@ -72,7 +73,7 @@ describe( 'transform', () => {
 
 			it( 'split inside newRange', () => {
 				const splitDelta = getSplitDelta( new Position( root, [ 3, 3, 3, 4 ] ), new Element( 'p' ), 8, baseVersion );
-				const transformed = transform( markerDelta, splitDelta );
+				const transformed = transform( markerDelta, splitDelta, context );
 
 				baseVersion = splitDelta.operations.length;
 
@@ -107,7 +108,7 @@ describe( 'transform', () => {
 				// MergeDelta merges the element in which is collapsed marker range with the previous element.
 				const mergeDelta = getMergeDelta( new Position( root, [ 3, 3, 3 ] ), 4, 12, baseVersion );
 
-				const transformed = transform( markerDelta, mergeDelta );
+				const transformed = transform( markerDelta, mergeDelta, context );
 
 				// It is expected, that ranges in MarkerDelta got correctly transformed:
 				// from start of merged element to the place where merged nodes where moved in the previous element,
@@ -143,7 +144,7 @@ describe( 'transform', () => {
 				const wrapRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
 				const wrapDelta = getWrapDelta( wrapRange, wrapElement, baseVersion );
 
-				const transformed = transform( markerDelta, wrapDelta );
+				const transformed = transform( markerDelta, wrapDelta, context );
 
 				// It is expected, that ranges in MarkerDelta got correctly transformed:
 				// `oldRange` end is in wrapped element,
@@ -178,7 +179,7 @@ describe( 'transform', () => {
 				const unwrapPosition = new Position( root, [ 1, 0 ] );
 				const unwrapDelta = getUnwrapDelta( unwrapPosition, 4, baseVersion );
 
-				const transformed = transform( markerDelta, unwrapDelta );
+				const transformed = transform( markerDelta, unwrapDelta, context );
 
 				// It is expected, that ranges in MarkerDelta got correctly transformed.
 				const expectedOldRange = new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1, 2 ] ) );
@@ -209,7 +210,7 @@ describe( 'transform', () => {
 				const unwrapPosition = new Position( root, [ 1 ] );
 				const unwrapDelta = getUnwrapDelta( unwrapPosition, 4, baseVersion );
 
-				const transformed = transform( markerDelta, unwrapDelta );
+				const transformed = transform( markerDelta, unwrapDelta, context );
 
 				// It is expected, that ranges in MarkerDelta got correctly transformed.
 				const expectedOldRange = new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 3 ] ) );
@@ -239,7 +240,7 @@ describe( 'transform', () => {
 		const wrapRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
 		const wrapDelta = getWrapDelta( wrapRange, wrapElement, baseVersion );
 
-		const transformed = transform( markerDelta, wrapDelta );
+		const transformed = transform( markerDelta, wrapDelta, context );
 
 		expect( transformed.length ).to.equal( 1 );
 		expect( transformed[ 0 ].operations.length ).to.equal( 1 );

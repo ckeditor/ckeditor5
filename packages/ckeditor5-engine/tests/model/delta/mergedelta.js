@@ -103,7 +103,7 @@ describe( 'MergeDelta', () => {
 
 		it( 'should be equal to the position between merged nodes', () => {
 			mergeDelta.operations.push( new MoveOperation( new Position( root, [ 1, 2, 0 ] ), 4, new Position( root, [ 1, 1, 4 ] ) ) );
-			mergeDelta.operations.push( new RemoveOperation( new Position( root, [ 1, 2, 0 ] ), 1 ) );
+			mergeDelta.operations.push( new RemoveOperation( new Position( root, [ 1, 2, 0 ] ), 1, new Position( doc.graveyard, [ 0 ] ) ) );
 
 			expect( mergeDelta.position.root ).to.equal( root );
 			expect( mergeDelta.position.path ).to.deep.equal( [ 1, 2, 0 ] );
@@ -120,7 +120,7 @@ describe( 'MergeDelta', () => {
 
 		it( 'should return correct SplitDelta', () => {
 			mergeDelta.operations.push( new MoveOperation( new Position( root, [ 1, 2, 0 ] ), 4, new Position( root, [ 1, 1, 4 ] ) ) );
-			mergeDelta.operations.push( new RemoveOperation( new Position( root, [ 1, 2, 0 ] ), 1 ) );
+			mergeDelta.operations.push( new RemoveOperation( new Position( root, [ 1, 2, 0 ] ), 1, new Position( doc.graveyard, [ 0 ] ) ) );
 
 			const reversed = mergeDelta.getReversed();
 

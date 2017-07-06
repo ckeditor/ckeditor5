@@ -83,7 +83,7 @@ describe( 'Document change event', () => {
 	it( 'should be fired when multiple nodes are removed and reinserted', () => {
 		root.insertChildren( 0, new Text( 'foo' ) );
 
-		const removeOperation = new RemoveOperation( new Position( root, [ 0 ] ), 3, doc.version );
+		const removeOperation = new RemoveOperation( new Position( root, [ 0 ] ), 3, new Position( doc.graveyard, [ 0 ] ), doc.version );
 		doc.applyOperation( wrapInDelta( removeOperation ) );
 
 		const reinsertOperation = removeOperation.getReversed();
@@ -91,15 +91,13 @@ describe( 'Document change event', () => {
 
 		expect( changes ).to.have.length( 2 );
 
-		const holderElement = graveyard.getChild( 0 );
-
 		expect( types[ 0 ] ).to.equal( 'remove' );
-		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( holderElement, 0, holderElement, 3 ) );
+		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( graveyard, 0, graveyard, 3 ) );
 		expect( changes[ 0 ].sourcePosition ).to.deep.equal( Position.createFromParentAndOffset( root, 0 ) );
 
 		expect( types[ 1 ] ).to.equal( 'reinsert' );
 		expect( changes[ 1 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, root, 3 ) );
-		expect( changes[ 1 ].sourcePosition ).to.deep.equal( Position.createFromParentAndOffset( holderElement, 0 ) );
+		expect( changes[ 1 ].sourcePosition ).to.deep.equal( Position.createFromParentAndOffset( graveyard, 0 ) );
 	} );
 
 	it( 'should be fired when attribute is inserted', () => {

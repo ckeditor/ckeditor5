@@ -77,11 +77,16 @@ export default class LiveRange extends Range {
 	 */
 
 	/**
-	 * Fired when `LiveRange` instance is changed due to changes on {@link module:engine/model/document~Document}.
+	 * Fired when `LiveRange` instance is changed due to changes in the {@link module:engine/model/document~Document document}.
 	 *
 	 * @event change
-	 * @param {module:engine/model/range~Range} oldRange
-	 * Range with start and end position equal to start and end position of this live range before it got changed.
+	 * @param {module:engine/model/range~Range} oldRange Range with start and end position equal to start and end position of this live
+	 * range before it got changed.
+	 * @param {Object} data Object with additional information about the change. Those parameters are passed from
+	 * {@link module:engine/model/document~Document#event:change document change event}.
+	 * @param {String} data.type Change type.
+	 * @param {module:engine/model/range~Range} data.range Range containing the result of applied change.
+	 * @param {module:engine/model/position~Position} data.sourcePosition Source position for move, remove and reinsert change types.
 	 */
 }
 
@@ -124,7 +129,7 @@ function transform( changeType, deltaType, targetRange, sourcePosition ) {
 	const howMany = targetRange.end.offset - targetRange.start.offset;
 	let targetPosition = targetRange.start;
 
-	if ( changeType == 'move' ) {
+	if ( changeType == 'move' || changeType == 'remove' || changeType == 'reinsert' ) {
 		// Range._getTransformedByDocumentChange is expecting `targetPosition` to be "before" move
 		// (before transformation). `targetRange.start` is already after the move happened.
 		// We have to revert `targetPosition` to the state before the move.
@@ -137,7 +142,7 @@ function transform( changeType, deltaType, targetRange, sourcePosition ) {
 	//
 	// First, this concerns only `move` change, because insert change includes inserted part always (changeType == 'move').
 	// Second, this is a case only if moved range was intersecting with this range and was inserted into this range (result.length == 3).
-	if ( changeType == 'move' && result.length == 3 ) {
+	if ( ( changeType == 'move' || changeType == 'remove' || changeType == 'reinsert' ) && result.length == 3 ) {
 		// `result[ 2 ]` is a "common part" of this range and moved range. We substitute that common part with the whole
 		// `targetRange` because we want to include whole `targetRange` in this range.
 		result[ 2 ] = targetRange;
@@ -152,7 +157,11 @@ function transform( changeType, deltaType, targetRange, sourcePosition ) {
 		this.start = updated.start;
 		this.end = updated.end;
 
-		this.fire( 'change', oldRange );
+		this.fire( 'change', oldRange, {
+			type: changeType,
+			range: targetRange,
+			sourcePosition
+		} );
 	}
 }
 

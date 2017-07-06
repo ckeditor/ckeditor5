@@ -11,6 +11,7 @@ import Position from '../../../src/model/position';
 import Element from '../../../src/model/element';
 import { default as AttributeDelta, RootAttributeDelta } from '../../../src/model/delta/attributedelta';
 import AttributeOperation from '../../../src/model/operation/attributeoperation';
+import NoOperation from '../../../src/model/operation/nooperation';
 import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'Batch', () => {
@@ -464,6 +465,18 @@ describe( 'AttributeDelta', () => {
 			delta.addOperation( new AttributeOperation( rangeC, 'key', 'oldC', 'new', 2 ) );
 
 			expect( delta.range.start.path ).to.deep.equal( [ 1 ] );
+			expect( delta.range.end.path ).to.deep.equal( [ 6 ] );
+		} );
+
+		it( 'should return correct values when some operations are NoOperations', () => {
+			const rangeA = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+			const rangeB = new Range( new Position( root, [ 5 ] ), new Position( root, [ 6 ] ) );
+
+			delta.addOperation( new AttributeOperation( rangeA, 'key', 'oldA', 'new', 0 ) );
+			delta.addOperation( new NoOperation( 1 ) );
+			delta.addOperation( new AttributeOperation( rangeB, 'key', 'oldC', 'new', 2 ) );
+
+			expect( delta.range.start.path ).to.deep.equal( [ 2 ] );
 			expect( delta.range.end.path ).to.deep.equal( [ 6 ] );
 		} );
 	} );

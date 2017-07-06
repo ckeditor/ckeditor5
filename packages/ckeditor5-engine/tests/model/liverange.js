@@ -88,6 +88,32 @@ describe( 'LiveRange', () => {
 		range.detach();
 	} );
 
+	it( 'should fire change event with proper data when it is changed', () => {
+		const live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
+		const copy = Range.createFromRange( live );
+
+		const spy = sinon.spy();
+		live.on( 'change', spy );
+
+		const moveSource = new Position( root, [ 2 ] );
+		const moveRange = new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 3 ] ) );
+
+		const changes = {
+			range: moveRange,
+			sourcePosition: moveSource
+		};
+		doc.fire( 'change', 'move', changes, null );
+
+		expect( spy.calledOnce ).to.be.true;
+
+		// First parameter available in event should be a range that is equal to the live range before the live range changed.
+		expect( spy.args[ 0 ][ 1 ].isEqual( copy ) ).to.be.true;
+
+		// Second parameter is an object with data about model changes that caused the live range to change.
+		expect( spy.args[ 0 ][ 2 ].range.isEqual( moveRange ) ).to.be.true;
+		expect( spy.args[ 0 ][ 2 ].sourcePosition.isEqual( moveSource ) ).to.be.true;
+	} );
+
 	// Examples may seem weird when you compare them with the tree structure generated at the beginning of tests.
 	// Since change event is fired _after_ operation is executed on tree model, you have to imagine that generated
 	// structure is representing what is _after_ operation is executed. So live LiveRange properties are describing

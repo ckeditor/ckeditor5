@@ -390,6 +390,33 @@ describe( 'Range', () => {
 
 			expect( range.containsPosition( position ) ).to.be.true;
 		} );
+
+		it( 'should return true if ranges are equal and check is not strict', () => {
+			const otherRange = Range.createFromRange( range );
+
+			expect( range.containsRange( otherRange, true ) ).to.be.true;
+		} );
+
+		it( 'should return true if ranges start at the same position and check is not strict', () => {
+			const otherRange = new Range( range.start, new Position( root, [ 2 ] ) );
+
+			expect( range.containsRange( otherRange, true ) ).to.be.true;
+		} );
+
+		it( 'should return true if ranges end at the same position and check is not strict', () => {
+			const otherRange = new Range( new Position( root, [ 2 ] ), range.end );
+
+			expect( range.containsRange( otherRange, true ) ).to.be.true;
+		} );
+
+		it( 'should return false if given range is collapsed and starts or ends at another range boundary', () => {
+			expect( range.containsRange( new Range( range.start, range.start ) ) ).to.be.false;
+			expect( range.containsRange( new Range( range.end, range.end ) ) ).to.be.false;
+
+			// Collapsed range should always be checked in strict mode.
+			expect( range.containsRange( new Range( range.start, range.start ), true ) ).to.be.false;
+			expect( range.containsRange( new Range( range.end, range.end ), true ) ).to.be.false;
+		} );
 	} );
 
 	describe( '_getTransformedByInsertion', () => {

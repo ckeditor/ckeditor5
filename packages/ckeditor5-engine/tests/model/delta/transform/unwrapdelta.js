@@ -28,13 +28,14 @@ import {
 } from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
-	let doc, root, gy, baseVersion;
+	let doc, root, gy, baseVersion, context;
 
 	beforeEach( () => {
 		doc = getFilledDocument();
 		root = doc.getRoot();
 		gy = doc.graveyard;
 		baseVersion = doc.version;
+		context = { isStrong: false };
 	} );
 
 	describe( 'UnwrapDelta by', () => {
@@ -49,7 +50,7 @@ describe( 'transform', () => {
 				const splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
 				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 
-				const transformed = transform( unwrapDelta, splitDelta );
+				const transformed = transform( unwrapDelta, splitDelta, context );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -69,7 +70,7 @@ describe( 'transform', () => {
 							type: MoveOperation,
 							sourcePosition: new Position( root, [ 3, 3, 4 ] ),
 							howMany: 1,
-							targetPosition: new Position( gy, [ 0, 0 ] ),
+							targetPosition: new Position( gy, [ 0 ] ),
 							baseVersion: baseVersion + 1
 						}
 					]
@@ -89,7 +90,7 @@ describe( 'transform', () => {
 							type: MoveOperation,
 							sourcePosition: new Position( root, [ 3, 3, 15 ] ),
 							howMany: 1,
-							targetPosition: new Position( gy, [ 1, 0 ] ),
+							targetPosition: new Position( gy, [ 0 ] ),
 							baseVersion: baseVersion + 3
 						}
 					]
@@ -110,7 +111,7 @@ describe( 'transform', () => {
 				const splitPosition = new Position( root, [ 3, 3, 3 ] );
 				const splitDelta = getSplitDelta( splitPosition, new Element( 'div' ), 1, baseVersion );
 
-				const transformed = transform( unwrapDelta, splitDelta );
+				const transformed = transform( unwrapDelta, splitDelta, context );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -130,7 +131,7 @@ describe( 'transform', () => {
 							type: MoveOperation,
 							sourcePosition: new Position( root, [ 3, 4, 12 ] ),
 							howMany: 1,
-							targetPosition: new Position( gy, [ 0, 0 ] ),
+							targetPosition: new Position( gy, [ 0 ] ),
 							baseVersion: baseVersion + 1
 						}
 					]

@@ -58,8 +58,8 @@ export default class Range {
 	}
 
 	/**
-	 * Returns whether the range is collapsed, that is if {@link #start start} and
-	 * {@link #end end} positions are equal.
+	 * Returns whether the range is collapsed, that is if {@link #start} and
+	 * {@link #end} positions are equal.
 	 *
 	 * @type {Boolean}
 	 */
@@ -68,8 +68,8 @@ export default class Range {
 	}
 
 	/**
-	 * Returns whether this range is flat, that is if {@link #start start} position and
-	 * {@link #end end} position are in the same {@link module:engine/model/position~Position#parent parent}.
+	 * Returns whether this range is flat, that is if {@link #start} position and
+	 * {@link #end} position are in the same {@link module:engine/model/position~Position#parent}.
 	 *
 	 * @type {Boolean}
 	 */
@@ -90,8 +90,8 @@ export default class Range {
 	 * Checks whether this range contains given {@link module:engine/model/position~Position position}.
 	 *
 	 * @param {module:engine/model/position~Position} position Position to check.
-	 * @returns {Boolean} `true` if given {@link module:engine/model/position~Position position} is contained in this range,
-	 * `false` otherwise.
+	 * @returns {Boolean} `true` if given {@link module:engine/model/position~Position position} is contained
+	 * in this range,`false` otherwise.
 	 */
 	containsPosition( position ) {
 		return position.isAfter( this.start ) && position.isBefore( this.end );
@@ -101,15 +101,24 @@ export default class Range {
 	 * Checks whether this range contains given {@link ~Range range}.
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to check.
+	 * @param {Boolean} [loose=false] Whether the check is loose or strict. If the check is strict (`false`), compared range cannot
+	 * start or end at the same position as this range boundaries. If the check is loose (`true`), compared range can start, end or
+	 * even be equal to this range. Note that collapsed ranges are always compared in strict mode.
 	 * @returns {Boolean} `true` if given {@link ~Range range} boundaries are contained by this range, `false` otherwise.
 	 */
-	containsRange( otherRange ) {
-		return this.containsPosition( otherRange.start ) && this.containsPosition( otherRange.end );
+	containsRange( otherRange, loose = false ) {
+		if ( otherRange.isCollapsed ) {
+			loose = false;
+		}
+
+		const containsStart = this.containsPosition( otherRange.start ) || ( loose && this.start.isEqual( otherRange.start ) );
+		const containsEnd = this.containsPosition( otherRange.end ) || ( loose && this.end.isEqual( otherRange.end ) );
+
+		return containsStart && containsEnd;
 	}
 
 	/**
-	 * Two ranges are equal if their {@link #start start} and
-	 * {@link #end end} positions are equal.
+	 * Two ranges are equal if their {@link #start} and {@link #end} positions are equal.
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to compare with.
 	 * @returns {Boolean} `true` if ranges are equal, `false` otherwise.
@@ -418,8 +427,8 @@ export default class Range {
 		}
 
 		// It may happen that a range is split into two, and then the part of second "piece" is moved into first
-		// "piece". In this case we will have incorrect third rage, which should not be included in the result --
-		// because it is already included in first "piece". In this loop we are looking for all such ranges that
+		// "piece". In this case we will have incorrect third range, which should not be included in the result --
+		// because it is already included in the first "piece". In this loop we are looking for all such ranges that
 		// are inside other ranges and we simply remove them.
 		for ( let i = 0; i < ranges.length; i++ ) {
 			const range = ranges[ i ];
@@ -453,6 +462,7 @@ export default class Range {
 		} else {
 			const sourceRange = Range.createFromPositionAndShift( sourcePosition, howMany );
 
+			// Edge case for merge detla.
 			if (
 				deltaType == 'merge' &&
 				this.isCollapsed &&
@@ -461,51 +471,54 @@ export default class Range {
 				// Collapsed range is in merged element.
 				// Without fix, the range would end up in the graveyard, together with removed element.
 				// <p>foo</p><p>[]bar</p> -> <p>foobar</p><p>[]</p> -> <p>foobar</p> -> <p>foo[]bar</p>
+				// <p>foo</p><p>bar[]</p>
 				return [ new Range( targetPosition.getShiftedBy( this.start.offset ) ) ];
-			} else if ( type == 'move' ) {
-				// In all examples `[]` is `this` and `{}` is `sourceRange`, while `^` is move target position.
-				//
-				// Example:
-				// <p>xx</p>^<w>{<p>a[b</p>}</w><p>c]d</p>   -->   <p>xx</p><p>a[b</p><w></w><p>c]d</p>
-				// ^<p>xx</p><w>{<p>a[b</p>}</w><p>c]d</p>   -->   <p>a[b</p><p>xx</p><w></w><p>c]d</p>  // Note <p>xx</p> inclusion.
-				// <w>{<p>a[b</p>}</w>^<p>c]d</p>            -->   <w></w><p>a[b</p><p>c]d</p>
-				if (
-					sourceRange.containsPosition( this.start ) &&
-					this.containsPosition( sourceRange.end ) &&
-					this.end.isAfter( targetPosition )
-				) {
-					const start = this.start._getCombined(
-						sourcePosition,
-						targetPosition._getTransformedByDeletion( sourcePosition, howMany )
-					);
-					const end = this.end._getTransformedByMove( sourcePosition, targetPosition, howMany, false, false );
+			}
+			//
+			// Other edge cases:
+			//
+			// In all examples `[]` is `this` and `{}` is `sourceRange`, while `^` is move target position.
+			//
+			// Example:
+			// <p>xx</p>^<w>{<p>a[b</p>}</w><p>c]d</p>   -->   <p>xx</p><p>a[b</p><w></w><p>c]d</p>
+			// ^<p>xx</p><w>{<p>a[b</p>}</w><p>c]d</p>   -->   <p>a[b</p><p>xx</p><w></w><p>c]d</p>  // Note <p>xx</p> inclusion.
+			// <w>{<p>a[b</p>}</w>^<p>c]d</p>            -->   <w></w><p>a[b</p><p>c]d</p>
+			if (
+				sourceRange.containsPosition( this.start ) &&
+				this.containsPosition( sourceRange.end ) &&
+				this.end.isAfter( targetPosition )
+			) {
+				const start = this.start._getCombined(
+					sourcePosition,
+					targetPosition._getTransformedByDeletion( sourcePosition, howMany )
+				);
+				const end = this.end._getTransformedByMove( sourcePosition, targetPosition, howMany, false, false );
 
-					return [ new Range( start, end ) ];
-				}
+				return [ new Range( start, end ) ];
+			}
 
-				// Example:
-				// <p>c[d</p><w>{<p>a]b</p>}</w>^<p>xx</p>   -->   <p>c[d</p><w></w><p>a]b</p><p>xx</p>
-				// <p>c[d</p><w>{<p>a]b</p>}</w><p>xx</p>^   -->   <p>c[d</p><w></w><p>xx</p><p>a]b</p>  // Note <p>xx</p> inclusion.
-				// <p>c[d</p>^<w>{<p>a]b</p>}</w>            -->   <p>c[d</p><p>a]b</p><w></w>
-				if (
-					sourceRange.containsPosition( this.end ) &&
-					this.containsPosition( sourceRange.start ) &&
-					this.start.isBefore( targetPosition )
-				) {
-					const start = this.start._getTransformedByMove(
-						sourcePosition,
-						targetPosition,
-						howMany,
-						true,
-						false
-					);
-					const end = this.end._getCombined(
-						sourcePosition,
-						targetPosition._getTransformedByDeletion( sourcePosition, howMany )
-					);
+			// Example:
+			// <p>c[d</p><w>{<p>a]b</p>}</w>^<p>xx</p>   -->   <p>c[d</p><w></w><p>a]b</p><p>xx</p>
+			// <p>c[d</p><w>{<p>a]b</p>}</w><p>xx</p>^   -->   <p>c[d</p><w></w><p>xx</p><p>a]b</p>  // Note <p>xx</p> inclusion.
+			// <p>c[d</p>^<w>{<p>a]b</p>}</w>            -->   <p>c[d</p><p>a]b</p><w></w>
+			if (
+				sourceRange.containsPosition( this.end ) &&
+				this.containsPosition( sourceRange.start ) &&
+				this.start.isBefore( targetPosition )
+			) {
+				const start = this.start._getTransformedByMove(
+					sourcePosition,
+					targetPosition,
+					howMany,
+					true,
+					false
+				);
+				const end = this.end._getCombined(
+					sourcePosition,
+					targetPosition._getTransformedByDeletion( sourcePosition, howMany )
+				);
 
-					return [ new Range( start, end ) ];
-				}
+				return [ new Range( start, end ) ];
 			}
 
 			return this._getTransformedByMove( sourcePosition, targetPosition, howMany );

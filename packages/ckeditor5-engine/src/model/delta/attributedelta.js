@@ -12,6 +12,7 @@ import DeltaFactory from './deltafactory';
 import { register } from '../batch';
 import AttributeOperation from '../operation/attributeoperation';
 import RootAttributeOperation from '../operation/rootattributeoperation';
+import NoOperation from '../operation/nooperation';
 import Position from '../position';
 import Range from '../range';
 
@@ -65,6 +66,10 @@ export default class AttributeDelta extends Delta {
 		let end = null;
 
 		for ( const operation of this.operations ) {
+			if ( operation instanceof NoOperation ) {
+				continue;
+			}
+
 			if ( start === null || start.isAfter( operation.range.start ) ) {
 				start = operation.range.start;
 			}
@@ -103,13 +108,6 @@ export default class AttributeDelta extends Delta {
 	 */
 	static get className() {
 		return 'engine.model.delta.AttributeDelta';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get _priority() {
-		return 20;
 	}
 }
 
