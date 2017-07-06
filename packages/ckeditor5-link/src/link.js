@@ -124,7 +124,11 @@ export default class Link extends Plugin {
 		const t = editor.t;
 
 		// Handle `Ctrl+K` keystroke and show the panel.
-		editor.keystrokes.set( 'CTRL+K', () => this._showPanel( true ) );
+		editor.keystrokes.set( 'CTRL+K', () => {
+			if ( linkCommand.isEnabled ) {
+				this._showPanel( true );
+			}
+		} );
 
 		editor.ui.componentFactory.add( 'link', locale => {
 			const button = new ButtonView( locale );
