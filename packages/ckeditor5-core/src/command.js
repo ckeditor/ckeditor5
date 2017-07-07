@@ -20,7 +20,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Instances of registered commands can be retrieved from {@link module:core/editor/editor~Editor#commands}.
  * The easiest way to execute a command is through {@link module:core/editor/editor~Editor#execute}.
  *
- * By default commands are disabled when editor is in {@link module:core/editor/editor~Editor#isReadOnly read-only} mode.
+ * By default commands are disabled when the editor is in {@link module:core/editor/editor~Editor#isReadOnly read-only} mode.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -76,10 +76,10 @@ export default class Command {
 			}
 		}, { priority: 'high' } );
 
-		// By default commands are disabled when editor switches to read-only mode.
+		// By default commands are disabled when the editor is in read-only mode.
 		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
 			if ( value ) {
-				// See ticket about overriding observable properties
+				// See a ticket about overriding observable properties
 				// https://github.com/ckeditor/ckeditor5-utils/issues/171.
 				this.on( 'change:isEnabled', forceDisable, { priority: 'lowest' } );
 				this.isEnabled = false;

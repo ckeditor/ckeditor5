@@ -1,6 +1,6 @@
 ## Read-only
 
-1. Change something in the editor.
+1. Change a content in the editor.
 2. Turn on read-only mode by clicking the button above the editor.
 3. Check if undo/redo (by shortcuts) is disabled.
 4. Check if modifying content is blocked (input, delete, paste) for collapsed and non-collapsed selection.

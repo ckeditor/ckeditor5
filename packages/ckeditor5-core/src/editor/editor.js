@@ -90,9 +90,9 @@ export default class Editor {
 		this.data = new DataController( this.document );
 
 		/**
-		 * Defines whether editor is in read-only mode.
+		 * Defines whether this editor is in read-only mode.
 		 *
-		 * In read-only mode editor {@link module:core/command Commands} are disabled and is not possible
+		 * In read-only mode the editor {@link module:core/command Commands} are disabled and is not possible
 		 * to modify document using it.
 		 *
 		 * @observable
