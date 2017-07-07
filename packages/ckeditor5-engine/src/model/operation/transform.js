@@ -505,15 +505,6 @@ const ot = {
 			// Then, we have to manage the "common part" of both move ranges.
 			const common = rangeA.getIntersection( rangeB );
 
-			// // If MoveOperations has common range it can be one of two:
-			// //
-			// // * on the same tree level - it means that we move exactly same nodes into different places (conflict),
-			// // * on deeper tree level - it means that we move nodes that are inside moved nodes (no conflict).
-			// const commonPartConflicts = compareArrays( a.sourcePosition.getParentPath(), b.sourcePosition.getParentPath() ) == 'same';
-
-			// // Handle common part of ranges if ranges have common part and they are conflicting and `a` operation is strong.
-			// // Don't handle common part if operation `b` targets inside `rangeA` - it will be already included in "difference ranges".
-			// if ( common !== null && commonPartConflicts && context.isStrong && !bTargetsToA ) {
 			if ( common !== null && context.isStrong && !bTargetsToA ) {
 				// Calculate the new position of that part of original range.
 				common.start = common.start._getCombined( b.sourcePosition, b.getMovedRangeStart() );
@@ -573,33 +564,6 @@ const ot = {
 			}
 
 			return makeMoveOperationsFromRanges( a, ranges, newTargetPosition );
-
-			// // Map transformed range(s) to operations and return them.
-			// const transformed = ranges.map( range => {
-			// 	// We want to keep correct operation class.
-			// 	const result = new a.constructor(
-			// 		range.start,
-			// 		range.end.offset - range.start.offset,
-			// 		newTargetPosition,
-			// 		a.baseVersion
-			// 	);
-			//
-			// 	result.isSticky = a.isSticky;
-			//
-			// 	return result;
-			// } );
-			//
-			// // At this moment we have one, two or three operations in `transformed` array.
-			// // Unfortunately, those operations, may affect each other!
-			// // So, each operation has to be transformed by the operations that are before it in the array.
-			// // Thankfully, those operations have non-intersecting ranges and non-conflicting target position.
-			// // This means that each operation will be transformed to exactly one move operation and
-			// // we don't get into some kind of messy situation or infinite loop.
-			// for ( let i = 1; i < transformed.length; i++ ) {
-			// 	for ( let j = 0; j < i; j++ ) {
-			// 		transformed[ i ] = ot.MoveOperation.MoveOperation(  );
-			// 	}
-			// }
 		}
 	}
 };
