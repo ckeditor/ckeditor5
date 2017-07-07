@@ -55,25 +55,7 @@ export default class Rect {
 		if ( isElement( source ) ) {
 			copyRectProperties( this, source.getBoundingClientRect() );
 		} else if ( isRange( source ) ) {
-			// Use getClientRects() when the range is collapsed.
-			// https://github.com/ckeditor/ckeditor5-utils/issues/153
-			if ( source.collapsed ) {
-				const rects = source.getClientRects();
-
-				if ( rects.length ) {
-					copyRectProperties( this, rects[ 0 ] );
-				}
-				// If there's no client rects for the Range, use parent container's bounding
-				// rect instead and adjust rect's width to simulate the actual geometry of such
-				// range.
-				// https://github.com/ckeditor/ckeditor5-utils/issues/153
-				else {
-					copyRectProperties( this, source.startContainer.getBoundingClientRect() );
-					this.width = 0;
-				}
-			} else {
-				copyRectProperties( this, source.getBoundingClientRect() );
-			}
+			copyRectProperties( this, Rect.getDomRangeRects( source )[ 0 ] );
 		} else {
 			copyRectProperties( this, source );
 		}
@@ -267,6 +249,36 @@ export default class Rect {
 			width: innerWidth,
 			height: innerHeight
 		} );
+	}
+
+	/**
+	 * Returns an array of rects of the given native DOM Range.
+	 *
+	 * @param {Range} range A native DOM range.
+	 * @returns {Array.<module:utils/dom/rect~Rect>} DOM Range rects.
+	 */
+	static getDomRangeRects( range ) {
+		const rects = [];
+		// Safari does not iterate over ClientRectList using for...of loop.
+		const clientRects = Array.from( range.getClientRects() );
+
+		if ( clientRects.length ) {
+			for ( const rect of clientRects ) {
+				rects.push( new Rect( rect ) );
+			}
+		}
+		// If there's no client rects for the Range, use parent container's bounding rect
+		// instead and adjust rect's width to simulate the actual geometry of such range.
+		// https://github.com/ckeditor/ckeditor5-utils/issues/153
+		else {
+			const startContainerRect = new Rect( range.startContainer.getBoundingClientRect() );
+			startContainerRect.right = startContainerRect.left;
+			startContainerRect.width = 0;
+
+			rects.push( startContainerRect );
+		}
+
+		return rects;
 	}
 }
 
