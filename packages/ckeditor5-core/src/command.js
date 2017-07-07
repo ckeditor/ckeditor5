@@ -89,7 +89,6 @@ export default class Command {
 			}
 		} );
 
-		// Forces command#isEnabled value to be false.
 		function forceDisable() {
 			this.isEnabled = false;
 		}

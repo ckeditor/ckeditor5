@@ -159,7 +159,7 @@ describe( 'Editor', () => {
 	} );
 
 	describe( 'isReadOnly', () => {
-		it( 'is false at default', () => {
+		it( 'is false initially', () => {
 			const editor = new Editor();
 
 			expect( editor.isReadOnly ).to.false;
