@@ -40,12 +40,35 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 			return new ViewAttributeElement( 'span', { class: 'h-' + color } );
 		} );
 
-	window.document.getElementById( 'add-yellow' ).addEventListener( 'click', () => addHighlight( 'yellow' ) );
-	window.document.getElementById( 'add-red' ).addEventListener( 'click', () => addHighlight( 'red' ) );
-	window.document.getElementById( 'remove-marker' ).addEventListener( 'click', () => removeHighlight() );
-	window.document.getElementById( 'move-to-start' ).addEventListener( 'click', () => moveSelectionToStart() );
-	window.document.getElementById( 'move-left' ).addEventListener( 'click', () => moveSelectionByOffset( -1 ) );
-	window.document.getElementById( 'move-right' ).addEventListener( 'click', () => moveSelectionByOffset( 1 ) );
+	window.document.getElementById( 'add-yellow' ).addEventListener( 'mousedown', e => {
+		e.preventDefault();
+		addHighlight( 'yellow' );
+	} );
+
+	window.document.getElementById( 'add-red' ).addEventListener( 'mousedown', e => {
+		e.preventDefault();
+		addHighlight( 'red' );
+	} );
+
+	window.document.getElementById( 'remove-marker' ).addEventListener( 'mousedown', e => {
+		e.preventDefault();
+		removeHighlight();
+	} );
+
+	window.document.getElementById( 'move-to-start' ).addEventListener( 'mousedown', e => {
+		e.preventDefault();
+		moveSelectionToStart();
+	} );
+
+	window.document.getElementById( 'move-left' ).addEventListener( 'mousedown', e => {
+		e.preventDefault();
+		moveSelectionByOffset( -1 );
+	} );
+
+	window.document.getElementById( 'move-right' ).addEventListener( 'mousedown', e => {
+		e.preventDefault();
+		moveSelectionByOffset( 1 );
+	} );
 
 	model.enqueueChanges( () => {
 		const root = model.getRoot();
