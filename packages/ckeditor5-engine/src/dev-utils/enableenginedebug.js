@@ -274,8 +274,9 @@ function enableLoggingTools() {
 	};
 
 	InsertOperation.prototype.toString = function() {
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`[ ${ this.nodes.length } ] -> ${ this.position }`;
+		const nodeString = this.nodes.length > 1 ? `[ ${ this.nodes.length } ]` : this.nodes.getNode( 0 );
+
+		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ this.position }`;
 	};
 
 	MarkerOperation.prototype.toString = function() {
@@ -367,9 +368,9 @@ function enableLoggingTools() {
 
 	InsertDelta.prototype.toString = function() {
 		const op = this._insertOperation;
+		const nodeString = op.nodes.length > 1 ? `[ ${ op.nodes.length } ]` : op.nodes.getNode( 0 );
 
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`[ ${ op.nodes.length } ] -> ${ op.position }`;
+		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ op.position }`;
 	};
 
 	MarkerDelta.prototype.toString = function() {
