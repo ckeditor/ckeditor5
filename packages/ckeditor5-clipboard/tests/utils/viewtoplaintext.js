@@ -7,7 +7,7 @@ import viewToPlainText from '../../src/utils/viewtoplaintext';
 
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'viewToPlainText', () => {
+describe( 'viewToPlainText()', () => {
 	function test( viewString, expectedText ) {
 		const view = parseView( viewString );
 		const text = viewToPlainText( view );
