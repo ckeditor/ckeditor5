@@ -65,6 +65,39 @@ describe( 'Command', () => {
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
+
+		it( 'is always falsy when the editor is in read-only mode', () => {
+			editor.isReadOnly = false;
+			command.isEnabled = true;
+
+			editor.isReadOnly = true;
+
+			// Is false.
+			expect( command.isEnabled ).to.false;
+
+			command.refresh();
+
+			// Still false.
+			expect( command.isEnabled ).to.false;
+
+			editor.isReadOnly = false;
+
+			// And is back to true.
+			expect( command.isEnabled ).to.true;
+		} );
+
+		it( 'is observable when is overridden', () => {
+			editor.isReadOnly = false;
+			command.isEnabled = true;
+
+			editor.bind( 'something' ).to( command, 'isEnabled' );
+
+			expect( editor.something ).to.true;
+
+			editor.isReadOnly = true;
+
+			expect( editor.something ).to.false;
+		} );
 	} );
 
 	describe( 'execute()', () => {

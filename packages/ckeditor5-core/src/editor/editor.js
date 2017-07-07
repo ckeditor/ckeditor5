@@ -14,7 +14,7 @@ import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
 import Document from '@ckeditor/ckeditor5-engine/src/model/document';
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
@@ -22,7 +22,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  * See also {@link module:core/editor/standardeditor~StandardEditor}.
  *
- * @mixes module:utils/emittermixin~EmitterMixin
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Editor {
 	/**
@@ -55,7 +55,7 @@ export default class Editor {
 		 * Commands registered to the editor.
 		 *
 		 * @readonly
-		 * @member {module:core/command/commandcollection~CommandCollection}
+		 * @member {module:core/commandcollection~CommandCollection}
 		 */
 		this.commands = new CommandCollection();
 
@@ -74,7 +74,18 @@ export default class Editor {
 		this.t = this.locale.t;
 
 		/**
-		 * Tree Model document managed by this editor.
+		 * The editor's model document.
+		 *
+		 * The center of the editor's abstract data model. The document contains
+		 * {@link module:engine/model/document~Document#getRoot all editing roots},
+		 * {@link module:engine/model/document~Document#selection} and allows
+		 * applying changes to through the {@link module:engine/model/document~Document#batch batch interface}.
+		 *
+		 * Besides the model document, the editor usually contains two controllers –
+		 * {@link #data data controller} and {@link #editing editing controller}.
+		 * The former is used e.g. when setting or retrieving editor data and contains a useful
+		 * set of methods for operating on the content. The latter controls user input and rendering
+		 * the content for editing.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/document~Document}
@@ -82,7 +93,7 @@ export default class Editor {
 		this.document = new Document();
 
 		/**
-		 * Instance of the {@link module:engine/controller/datacontroller~DataController data controller}.
+		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
 		 *
 		 * @readonly
 		 * @member {module:engine/controller/datacontroller~DataController}
@@ -90,7 +101,18 @@ export default class Editor {
 		this.data = new DataController( this.document );
 
 		/**
-		 * Instance of the {@link module:engine/controller/editingcontroller~EditingController editing controller}.
+		 * Defines whether this editor is in read-only mode.
+		 *
+		 * In read-only mode the editor {@link #commands commands} are disabled so it is not possible
+		 * to modify document using them.
+		 *
+		 * @observable
+		 * @member {Boolean} #isReadOnly
+		 */
+		this.set( 'isReadOnly', false );
+
+		/**
+		 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.
 		 *
 		 * This property is set by more specialized editor classes (such as {@link module:core/editor/standardeditor~StandardEditor}),
 		 * however, it's required for features to work as their engine-related parts will try to connect converters.
@@ -194,7 +216,7 @@ export default class Editor {
 	}
 }
 
-mix( Editor, EmitterMixin );
+mix( Editor, ObservableMixin );
 
 /**
  * Fired after {@link #initPlugins plugins are initialized}.
