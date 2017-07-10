@@ -332,6 +332,7 @@ export default class Position {
 
 		const node = this.root.getNodeByPath( this.getCommonPath( position ) );
 
+		// Although paths can indicate a text node, text node is not an ancestor of a position.
 		if ( node.is( 'text' ) ) {
 			return node.parent;
 		}
