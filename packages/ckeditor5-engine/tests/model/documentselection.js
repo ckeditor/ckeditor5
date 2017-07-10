@@ -374,10 +374,12 @@ describe( 'DocumentSelection', () => {
 	} );
 
 	describe( 'createFromSelection()', () => {
-		it( 'should return a DocumentSelection instance', () => {
+		it( 'should throw', () => {
 			selection.addRange( range, true );
 
-			expect( DocumentSelection.createFromSelection( selection ) ).to.be.instanceof( DocumentSelection );
+			expect( () => {
+				DocumentSelection.createFromSelection( selection );
+			} ).to.throw( CKEditorError, /^documentselection-cannot-create:/ );
 		} );
 	} );
 
@@ -893,49 +895,37 @@ describe( 'DocumentSelection', () => {
 			it( 'ignores attributes inside an object if selection contains that object', () => {
 				setData( doc, '<p>[<image><$text bold="true">Caption for the image.</$text></image>]</p>' );
 
-				const liveSelection = DocumentSelection.createFromSelection( selection );
-
-				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object (deeper structure)', () => {
 				setData( doc, '<p>[<image><caption><$text bold="true">Caption for the image.</$text></caption></image>]</p>' );
 
-				const liveSelection = DocumentSelection.createFromSelection( selection );
-
-				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object (block level)', () => {
 				setData( doc, '<p>foo</p>[<image><$text bold="true">Caption for the image.</$text></image>]<p>foo</p>' );
 
-				const liveSelection = DocumentSelection.createFromSelection( selection );
-
-				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'reads attributes from text even if the selection contains an object', () => {
 				setData( doc, '<p>x<$text bold="true">[bar</$text><image></image>foo]</p>' );
 
-				const liveSelection = DocumentSelection.createFromSelection( selection );
-
-				expect( liveSelection.getAttribute( 'bold' ) ).to.equal( true );
+				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'reads attributes when the entire selection inside an object', () => {
 				setData( doc, '<p><image><caption><$text bold="true">[bar]</$text></caption></image></p>' );
 
-				const liveSelection = DocumentSelection.createFromSelection( selection );
-
-				expect( liveSelection.getAttribute( 'bold' ) ).to.equal( true );
+				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'stops reading attributes if selection starts with an object', () => {
 				setData( doc, '<p>[<image></image><$text bold="true">bar]</$text></p>' );
 
-				const liveSelection = DocumentSelection.createFromSelection( selection );
-
-				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 		} );
 	} );

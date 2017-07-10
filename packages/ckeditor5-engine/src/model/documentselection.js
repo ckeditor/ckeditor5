@@ -241,17 +241,19 @@ export default class DocumentSelection extends Selection {
 	}
 
 	/**
-	 * Creates and returns an instance of `DocumentSelection` that is a clone of given selection, meaning that it has same
-	 * ranges and same direction as this selection.
-	 *
-	 * @params {module:engine/model/selection~Selection} otherSelection Selection to be cloned.
-	 * @returns {module:engine/model/documentselection~DocumentSelection} `Selection` instance that is a clone of given selection.
+	 * This method is not available in `DocumentSelection`. There can be only one
+	 * `DocumentSelection` per document instance, so creating new `DocumentSelection`s this way
+	 * would be unsafe.
 	 */
-	static createFromSelection( otherSelection ) {
-		const selection = new this( otherSelection._document );
-		selection.setTo( otherSelection );
-
-		return selection;
+	static createFromSelection() {
+		/**
+		 * `DocumentSelection#createFromSelection()` is not available. There can be only one
+		 * `DocumentSelection` per document instance, so creating new `DocumentSelection`s this way
+		 * would be unsafe.
+		 *
+		 * @error documentselection-cannot-create
+		 */
+		throw new CKEditorError( 'documentselection-cannot-create: Cannot create new DocumentSelection instance.' );
 	}
 
 	/**
@@ -671,7 +673,8 @@ export default class DocumentSelection extends Selection {
  * @event change:attribute
  */
 
-// Helper function for {@link module:engine/model/documentselection~DocumentSelection#_updateAttributes}. It takes model item, checks whether
+// Helper function for {@link module:engine/model/documentselection~DocumentSelection#_updateAttributes}.
+// It takes model item, checks whether
 // it is a text node (or text proxy) and if so, returns it's attributes. If not, returns `null`.
 //
 // @param {module:engine/model/item~Item|null}  node
