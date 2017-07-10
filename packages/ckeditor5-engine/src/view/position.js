@@ -176,10 +176,11 @@ export default class Position {
 	}
 
 	/**
-	 * Returns a {@link module:engine/view/node~Node} which is a common ancestor for both positions.
+	 * Returns a {@link module:engine/view/node~Node} or {@link module:engine/view/documentfragment~DocumentFragment}
+	 * which is a common ancestor for both positions.
 	 *
 	 * @param {module:engine/view/position~Position} position
-	 * @returns {module:engine/view/node~Node|null}
+	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null}
 	 */
 	getCommonAncestor( position ) {
 		const ancestorsA = this.getAncestors();
