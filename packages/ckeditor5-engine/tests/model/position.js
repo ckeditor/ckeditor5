@@ -867,7 +867,7 @@ describe( 'Position', () => {
 			test( fPosition, zPosition, li1 );
 		} );
 
-		it( 'for two different positions returns first element which contains both positions', () => {
+		it( 'works when one positions is nested deeper than the other', () => {
 			const zPosition = new Position( root, [ 1, 0, 2 ] );
 			const liPosition = new Position( root, [ 1, 1 ] );
 

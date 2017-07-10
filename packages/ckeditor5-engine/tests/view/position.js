@@ -521,7 +521,7 @@ describe( 'Position', () => {
 	} );
 
 	describe( 'getCommonAncestor()', () => {
-		let div, p, ul, li1, li2, foz, bar, ipsum;
+		let div, section, article, p, ul, li1, li2, foz, bar, lipsum;
 
 		// |- div
 		//   |- ul
@@ -533,25 +533,29 @@ describe( 'Position', () => {
 		//   |     |- b
 		//   |     |- a
 		//   |     |- r
-		//   |- p
-		//     |- i
-		//     |- p
-		//     |- s
-		//     |- u
-		//     |- m
+		//   |- section
+		//     |- article
+		//       |- p
+		//         |- l
+		//         |- i
+		//         |- p
+		//         |- s
+		//         |- u
+		//         |- m
 
 		beforeEach( () => {
 			foz = new Text( 'foz' );
 			bar = new Text( 'bar' );
-			ipsum = new Text( 'ipsum' );
-
 			li1 = new Element( 'li', null, foz );
 			li2 = new Element( 'li', null, bar );
-
-			p = new Element( 'p', null, ipsum );
-
 			ul = new Element( 'ul', null, [ li1, li2 ] );
-			div = new Element( 'div', null, [ ul, p ] );
+
+			lipsum = new Text( 'lipsum' );
+			p = new Element( 'p', null, lipsum );
+			article = new Element( 'article', null, p );
+			section = new Element( 'section', null, article );
+
+			div = new Element( 'div', null, [ ul, section ] );
 		} );
 
 		it( 'for two the same positions returns the parent element', () => {
@@ -568,9 +572,9 @@ describe( 'Position', () => {
 			test( fPosition, zPosition, li1 );
 		} );
 
-		it( 'for two different positions returns first element which contains both positions', () => {
+		it( 'works when one positions is nested deeper than the other', () => {
 			const zPosition = new Position( li1, 2 );
-			const iPosition = Position.createAt( ipsum, 'start' );
+			const iPosition = Position.createAt( lipsum, 'start' );
 
 			test( iPosition, zPosition, div );
 		} );
