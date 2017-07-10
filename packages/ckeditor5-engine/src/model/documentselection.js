@@ -76,30 +76,16 @@ export default class DocumentSelection extends Selection {
 		 */
 		this._attributePriority = new Map();
 
-		// Whenever attribute operation is performed on document, update selection attributes.
-		// This is not the most efficient way to update selection attributes, but should be okay for now.
 		this.listenTo( this._document, 'change', ( evt, type, changes, batch ) => {
+			// Whenever attribute operation is performed on document, update selection attributes.
+			// This is not the most efficient way to update selection attributes, but should be okay for now.
 			if ( attrOpTypes.has( type ) ) {
 				this._updateAttributes( false );
 			}
 
-			if ( batch.type == 'transparent' ) {
-				return;
-			}
-
-			const changeParent = changes.range && changes.range.start.parent;
-
-			// changes.range is not be set in case of rename, root and marker operations.
-			// None of them may lead to becoming non-empty.
-			if ( !changeParent || changeParent.isEmpty ) {
-				return;
-			}
-
-			const storedAttributes = Array.from( changeParent.getAttributeKeys() ).filter( key => key.startsWith( storePrefix ) );
-
-			for ( const key of storedAttributes ) {
-				batch.removeAttribute( changeParent, key );
-			}
+			// Whenever element which had selection's attributes stored in it stops being empty,
+			// the attributes need to be removed.
+			clearAttributesStoredInElement( changes, batch );
 		} );
 	}
 
@@ -198,7 +184,7 @@ export default class DocumentSelection extends Selection {
 	 */
 	setAttribute( key, value ) {
 		// Store attribute in parent element if the selection is collapsed in an empty node.
-		if ( this.isCollapsed && this.anchor.parent.childCount === 0 ) {
+		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
 			this._storeAttribute( key, value );
 		}
 
@@ -214,7 +200,7 @@ export default class DocumentSelection extends Selection {
 	 */
 	removeAttribute( key ) {
 		// Remove stored attribute from parent element if the selection is collapsed in an empty node.
-		if ( this.isCollapsed && this.anchor.parent.childCount === 0 ) {
+		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
 			this._removeStoredAttribute( key );
 		}
 
@@ -231,7 +217,7 @@ export default class DocumentSelection extends Selection {
 	setAttributesTo( attrs ) {
 		attrs = toMap( attrs );
 
-		if ( this.isCollapsed && this.anchor.parent.childCount === 0 ) {
+		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
 			this._setStoredAttributesTo( attrs );
 		}
 
@@ -517,9 +503,9 @@ export default class DocumentSelection extends Selection {
 	* _getStoredAttributes() {
 		const selectionParent = this.getFirstPosition().parent;
 
-		if ( this.isCollapsed && selectionParent.childCount === 0 ) {
+		if ( this.isCollapsed && selectionParent.isEmpty ) {
 			for ( const key of selectionParent.getAttributeKeys() ) {
-				if ( key.indexOf( storePrefix ) === 0 ) {
+				if ( key.startsWith( storePrefix ) ) {
 					const realKey = key.substr( storePrefix.length );
 
 					yield [ realKey, selectionParent.getAttribute( key ) ];
@@ -703,4 +689,25 @@ function getAttrsIfCharacter( node ) {
 	}
 
 	return null;
+}
+
+// Removes selection attributes from element which is not anymore empty.
+function clearAttributesStoredInElement( changes, batch ) {
+	if ( batch.type == 'transparent' ) {
+		return;
+	}
+
+	const changeParent = changes.range && changes.range.start.parent;
+
+	// changes.range is not set in case of rename, root and marker operations.
+	// None of them may lead to the element becoming non-empty.
+	if ( !changeParent || changeParent.isEmpty ) {
+		return;
+	}
+
+	const storedAttributes = Array.from( changeParent.getAttributeKeys() ).filter( key => key.startsWith( storePrefix ) );
+
+	for ( const key of storedAttributes ) {
+		batch.removeAttribute( changeParent, key );
+	}
 }
