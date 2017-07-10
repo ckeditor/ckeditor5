@@ -220,7 +220,7 @@ export default class Link extends Plugin {
 		clickOutsideHandler( {
 			emitter: this.formView,
 			activator: () => this._balloon.hasView( this.formView ),
-			contextElement: this._balloon.view.element,
+			contextElements: [ this._balloon.view.element ],
 			callback: () => this._hidePanel()
 		} );
 	}
