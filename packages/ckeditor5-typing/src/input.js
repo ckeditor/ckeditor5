@@ -14,6 +14,8 @@ import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import diffToChanges from '@ckeditor/ckeditor5-utils/src/difftochanges';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
 import InputCommand from './inputcommand';
 
 /**
@@ -145,6 +147,29 @@ class MutationHandler {
 		if ( this._containerChildrenMutated( mutations ) ) {
 			// We have strange children mutations - we need to convert dom to model and compare it with current model
 			// to see what really has changed.
+
+			debugger;
+			// Get common ancestor of all mutations.
+			const mutationsCommonAncestor = getMutationsCommonAncestor( mutations );
+
+			if ( !mutationsCommonAncestor ) {
+				return;
+			}
+
+			const domConverter = this.editor.editing.view.domConverter;
+
+			// Get common ancestor in DOM.
+			const domMutationCommonAncestor = domConverter.mapViewToDom( mutationsCommonAncestor );
+
+			if ( !domMutationCommonAncestor ) {
+				return;
+			}
+
+			// Create fresh DomConverter so it will not use existing mapping.
+			const freshDomConverter = new DomConverter();
+			const modelFragmentFromCurrentDom = freshDomConverter.domToView( domMutationCommonAncestor );
+
+
 		} else {
 			for ( const mutation of mutations ) {
 				// Fortunately it will never be both.
@@ -155,6 +180,10 @@ class MutationHandler {
 	}
 
 	_containerChildrenMutated( mutations ) {
+		if ( mutations.length == 0 ) {
+			return false;
+		}
+
 		// Check if all mutations are `children` type, and there is no single text node mutation.
 		for ( const mutation of mutations ) {
 			if ( mutation.type !== 'children' || getSingleTextNodeChange( mutation ) ) {
@@ -334,4 +363,41 @@ function getSingleTextNodeChange( mutation ) {
 	}
 
 	return change;
+}
+
+function getMutationsCommonAncestor( mutations ) {
+	// If just 1 mutation present - return mutation node.
+	if ( mutations.length == 1 ) {
+		return mutations[ 0 ].node;
+	}
+
+	// Get array of ancestor lists without root element.
+	const ancestorsLists = mutations
+		.map( mutation => mutation.node.getAncestors( { includeNode: true } ).filter( ancestor => !ancestor.is( 'rootElement' ) ) );
+
+	// Calculate shortest ancestors lists.
+	const shortestListLength = Math.min( ...ancestorsLists.map( list => list.length ) );
+
+	let i = 0;
+
+	// Check if all mutations have common ancestor.
+	while ( i < shortestListLength ) {
+		const ancestor = ancestorsLists[ 0 ][ i ];
+		let same = true;
+
+		for ( let j = 1; j < ancestorsLists.length; j++ ) {
+			if ( ancestorsLists[ j ][ i ] !== ancestor ) {
+				same = false;
+				break;
+			}
+		}
+
+		if ( !same ) {
+			break;
+		}
+
+		i++;
+	}
+
+	return i == 0 ? null : ancestorsLists[ 0 ][ i - 1 ];
 }
