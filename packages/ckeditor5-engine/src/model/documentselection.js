@@ -78,9 +78,27 @@ export default class DocumentSelection extends Selection {
 
 		// Whenever attribute operation is performed on document, update selection attributes.
 		// This is not the most efficient way to update selection attributes, but should be okay for now.
-		this.listenTo( this._document, 'change', ( evt, type ) => {
+		this.listenTo( this._document, 'change', ( evt, type, changes, batch ) => {
 			if ( attrOpTypes.has( type ) ) {
 				this._updateAttributes( false );
+			}
+
+			if ( batch.type == 'transparent' ) {
+				return;
+			}
+
+			const changeParent = changes.range && changes.range.start.parent;
+
+			// changes.range is not be set in case of rename, root and marker operations.
+			// None of them may lead to becoming non-empty.
+			if ( !changeParent || changeParent.isEmpty ) {
+				return;
+			}
+
+			const storedAttributes = Array.from( changeParent.getAttributeKeys() ).filter( key => key.startsWith( storePrefix ) );
+
+			for ( const key of storedAttributes ) {
+				batch.removeAttribute( changeParent, key );
 			}
 		} );
 	}

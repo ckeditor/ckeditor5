@@ -28,6 +28,9 @@ testUtils.createSinonSandbox();
 describe( 'DocumentSelection', () => {
 	let doc, root, selection, liveRange, range;
 
+	const fooStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'foo' );
+	const abcStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'abc' );
+
 	beforeEach( () => {
 		doc = new Document();
 		root = doc.createRoot();
@@ -681,7 +684,8 @@ describe( 'DocumentSelection', () => {
 		let fullP, emptyP, rangeInFullP, rangeInEmptyP;
 
 		beforeEach( () => {
-			root.insertChildren( 0, [
+			root.removeChildren( 0, root.childCount );
+			root.appendChildren( [
 				new Element( 'p', [], new Text( 'foobar' ) ),
 				new Element( 'p', [], [] )
 			] );
@@ -691,6 +695,10 @@ describe( 'DocumentSelection', () => {
 
 			rangeInFullP = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 0, 4 ] ) );
 			rangeInEmptyP = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) );
+
+			// I've lost 30 mins debugging why my tests fail and that was due to the above code reusing
+			// a root which wasn't empty (so the ranges didn't actualy make much sense).
+			expect( root.childCount ).to.equal( 2 );
 		} );
 
 		describe( 'setAttribute()', () => {
@@ -700,7 +708,7 @@ describe( 'DocumentSelection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 
-				expect( emptyP.getAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 			} );
 		} );
 
@@ -737,8 +745,8 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 
-				expect( emptyP.getAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
-				expect( emptyP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
 			} );
 		} );
 
@@ -750,7 +758,7 @@ describe( 'DocumentSelection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 
-				expect( fullP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( fullP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 			} );
 
 			it( 'should remove stored attribute if the selection is in empty node', () => {
@@ -760,7 +768,7 @@ describe( 'DocumentSelection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 
-				expect( emptyP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 			} );
 		} );
 
@@ -775,8 +783,8 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 
-				expect( emptyP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
-				expect( emptyP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
 			} );
 		} );
 
@@ -926,6 +934,116 @@ describe( 'DocumentSelection', () => {
 				setData( doc, '<p>[<image></image><$text bold="true">bar]</$text></p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
+		} );
+
+		describe( 'parent element\'s attributes', () => {
+			it( 'are set using a normal batch', () => {
+				const batchTypes = [];
+				doc.on( 'change', ( event, type, changes, batch ) => {
+					batchTypes.push( batch.type );
+				} );
+
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+
+				expect( batchTypes ).to.deep.equal( [ 'default' ] );
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+			} );
+
+			it( 'are removed when any content is inserted (reuses the same batch)', () => {
+				// Dedupe batches by using a map (multiple change events will be fired).
+				const batchTypes = new Map();
+
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+				selection.setAttribute( 'abc', 'bar' );
+
+				doc.on( 'change', ( event, type, changes, batch ) => {
+					batchTypes.set( batch, batch.type );
+				} );
+
+				doc.batch().insert( rangeInEmptyP.start, 'x' );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
+
+				expect( Array.from( batchTypes.values() ) ).to.deep.equal( [ 'default' ] );
+			} );
+
+			it( 'are removed when any content is moved into', () => {
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+
+				doc.batch().move( fullP.getChild( 0 ), rangeInEmptyP.start );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+			} );
+
+			it( 'are removed when containing element is merged with a non-empty element', () => {
+				const emptyP2 = new Element( 'p', null, 'x' );
+				root.appendChildren( emptyP2 );
+
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
+
+				// <emptyP>{}<emptyP2>
+				doc.batch().merge( Position.createAfter( emptyP ) );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
+			} );
+
+			it( 'are not removed when containing element is merged with another empty element', () => {
+				const emptyP2 = new Element( 'p', null );
+				root.appendChildren( emptyP2 );
+
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
+
+				// <emptyP>{}<emptyP2>
+				doc.batch().merge( Position.createAfter( emptyP ) );
+
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
+			} );
+
+			it( 'are removed even when there is no selection in it', () => {
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+
+				selection.setRanges( [ rangeInFullP ] );
+
+				doc.batch().insert( rangeInEmptyP.start, 'x' );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+			} );
+
+			it( 'are removed only once in case of multi-op deltas', () => {
+				const emptyP2 = new Element( 'p', null, 'x' );
+				root.appendChildren( emptyP2 );
+
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
+
+				const batch = doc.batch();
+				const spy = sinon.spy( batch, 'removeAttribute' );
+
+				// <emptyP>{}<emptyP2>
+				batch.merge( Position.createAfter( emptyP ) );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'are not removed on transparent batches', () => {
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+
+				doc.batch( 'transparent' ).insert( rangeInEmptyP.start, 'x' );
+
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 			} );
 		} );
 	} );
