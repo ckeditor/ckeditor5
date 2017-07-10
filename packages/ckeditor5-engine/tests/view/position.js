@@ -534,14 +534,14 @@ describe( 'Position', () => {
 		//   |     |- a
 		//   |     |- r
 		//   |- section
-		//     |- article
-		//       |- p
-		//         |- l
-		//         |- i
+		//      |- article
 		//         |- p
-		//         |- s
-		//         |- u
-		//         |- m
+		//            |- l
+		//            |- i
+		//            |- p
+		//            |- s
+		//            |- u
+		//            |- m
 
 		beforeEach( () => {
 			foz = new Text( 'foz' );
