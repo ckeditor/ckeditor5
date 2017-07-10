@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/model/liveselection
+ * @module engine/model/documentselection
  */
 
 import Position from './position';
@@ -25,17 +25,20 @@ const attrOpTypes = new Set(
 );
 
 /**
- * `LiveSelection` is a type of {@link module:engine/model/selection~Selection selection} that listens to changes on a
- * {@link module:engine/model/document~Document document} and has it ranges updated accordingly. Internal implementation of this
- * mechanism bases on {@link module:engine/model/liverange~LiveRange live ranges}.
+ * `DocumentSelection` is a special selection which is used as the
+ * {@link module:engine/model/document~Document#selection document's selection}.
+ * There can be only one instance of `DocumentSelection` per document.
  *
- * Differences between {@link module:engine/model/selection~Selection} and `LiveSelection` are:
- * * there is always a range in `LiveSelection` - even if no ranges were added there is a
- * {@link module:engine/model/liveselection~LiveSelection#_getDefaultRange "default range"} present in the selection,
+ * `DocumentSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
+ * to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.
+ *
+ * Differences between {@link module:engine/model/selection~Selection} and `DocumentSelection` are:
+ * * there is always a range in `DocumentSelection` - even if no ranges were added there is a "default range"
+ * present in the selection,
  * * ranges added to this selection updates automatically when the document changes,
- * * attributes of `LiveSelection` are updated automatically according to selection ranges.
+ * * attributes of `DocumentSelection` are updated automatically according to selection ranges.
  *
- * Since `LiveSelection` uses {@link module:engine/model/liverange~LiveRange live ranges}
+ * Since `DocumentSelection` uses {@link module:engine/model/liverange~LiveRange live ranges}
  * and is updated when {@link module:engine/model/document~Document document}
  * changes, it cannot be set on {@link module:engine/model/node~Node nodes}
  * that are inside {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
@@ -44,7 +47,7 @@ const attrOpTypes = new Set(
  *
  * @extends module:engine/model/selection~Selection
  */
-export default class LiveSelection extends Selection {
+export default class DocumentSelection extends Selection {
 	/**
 	 * Creates an empty live selection for given {@link module:engine/model/document~Document}.
 	 *
@@ -57,7 +60,7 @@ export default class LiveSelection extends Selection {
 		 * Document which owns this selection.
 		 *
 		 * @protected
-		 * @member {module:engine/model/document~Document} module:engine/model/liveselection~LiveSelection#_document
+		 * @member {module:engine/model/document~Document} module:engine/model/documentselection~DocumentSelection#_document
 		 */
 		this._document = document;
 
@@ -65,11 +68,11 @@ export default class LiveSelection extends Selection {
 		 * Keeps mapping of attribute name to priority with which the attribute got modified (added/changed/removed)
 		 * last time. Possible values of priority are: `'low'` and `'normal'`.
 		 *
-		 * Priorities are used by internal `LiveSelection` mechanisms. All attributes set using `LiveSelection`
+		 * Priorities are used by internal `DocumentSelection` mechanisms. All attributes set using `DocumentSelection`
 		 * attributes API are set with `'normal'` priority.
 		 *
 		 * @private
-		 * @member {Map} module:engine/model/liveselection~LiveSelection#_attributePriority
+		 * @member {Map} module:engine/model/documentselection~DocumentSelection#_attributePriority
 		 */
 		this._attributePriority = new Map();
 
@@ -238,11 +241,11 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Creates and returns an instance of `LiveSelection` that is a clone of given selection, meaning that it has same
+	 * Creates and returns an instance of `DocumentSelection` that is a clone of given selection, meaning that it has same
 	 * ranges and same direction as this selection.
 	 *
 	 * @params {module:engine/model/selection~Selection} otherSelection Selection to be cloned.
-	 * @returns {module:engine/model/liveselection~LiveSelection} `Selection` instance that is a clone of given selection.
+	 * @returns {module:engine/model/documentselection~DocumentSelection} `Selection` instance that is a clone of given selection.
 	 */
 	static createFromSelection( otherSelection ) {
 		const selection = new this( otherSelection._document );
@@ -383,7 +386,7 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Internal method for setting `LiveSelection` attribute. Supports attribute priorities (through `directChange`
+	 * Internal method for setting `DocumentSelection` attribute. Supports attribute priorities (through `directChange`
 	 * parameter).
 	 *
 	 * @private
@@ -417,7 +420,7 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Internal method for removing `LiveSelection` attribute. Supports attribute priorities (through `directChange`
+	 * Internal method for removing `DocumentSelection` attribute. Supports attribute priorities (through `directChange`
 	 * parameter).
 	 *
 	 * @private
@@ -449,7 +452,7 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Internal method for setting multiple `LiveSelection` attributes. Supports attribute priorities (through
+	 * Internal method for setting multiple `DocumentSelection` attributes. Supports attribute priorities (through
 	 * `directChange` parameter).
 	 *
 	 * @private
@@ -512,7 +515,7 @@ export default class LiveSelection extends Selection {
 	 * @param {String} key Key of attribute to remove.
 	 */
 	_removeStoredAttribute( key ) {
-		const storeKey = LiveSelection._getStoreAttributeKey( key );
+		const storeKey = DocumentSelection._getStoreAttributeKey( key );
 
 		this._document.batch().removeAttribute( this.anchor.parent, storeKey );
 	}
@@ -525,7 +528,7 @@ export default class LiveSelection extends Selection {
 	 * @param {*} value Attribute value.
 	 */
 	_storeAttribute( key, value ) {
-		const storeKey = LiveSelection._getStoreAttributeKey( key );
+		const storeKey = DocumentSelection._getStoreAttributeKey( key );
 
 		this._document.batch().setAttribute( this.anchor.parent, storeKey, value );
 	}
@@ -541,13 +544,13 @@ export default class LiveSelection extends Selection {
 		const batch = this._document.batch();
 
 		for ( const [ oldKey ] of this._getStoredAttributes() ) {
-			const storeKey = LiveSelection._getStoreAttributeKey( oldKey );
+			const storeKey = DocumentSelection._getStoreAttributeKey( oldKey );
 
 			batch.removeAttribute( selectionParent, storeKey );
 		}
 
 		for ( const [ key, value ] of attrs ) {
-			const storeKey = LiveSelection._getStoreAttributeKey( key );
+			const storeKey = DocumentSelection._getStoreAttributeKey( key );
 
 			batch.setAttribute( selectionParent, storeKey, value );
 		}
@@ -668,7 +671,7 @@ export default class LiveSelection extends Selection {
  * @event change:attribute
  */
 
-// Helper function for {@link module:engine/model/liveselection~LiveSelection#_updateAttributes}. It takes model item, checks whether
+// Helper function for {@link module:engine/model/documentselection~DocumentSelection#_updateAttributes}. It takes model item, checks whether
 // it is a text node (or text proxy) and if so, returns it's attributes. If not, returns `null`.
 //
 // @param {module:engine/model/item~Item|null}  node

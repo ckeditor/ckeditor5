@@ -9,7 +9,7 @@ import Text from '../../src/model/text';
 import Range from '../../src/model/range';
 import Position from '../../src/model/position';
 import LiveRange from '../../src/model/liverange';
-import LiveSelection from '../../src/model/liveselection';
+import DocumentSelection from '../../src/model/documentselection';
 import InsertOperation from '../../src/model/operation/insertoperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
 import RemoveOperation from '../../src/model/operation/removeoperation';
@@ -25,7 +25,7 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 
 testUtils.createSinonSandbox();
 
-describe( 'LiveSelection', () => {
+describe( 'DocumentSelection', () => {
 	let doc, root, selection, liveRange, range;
 
 	beforeEach( () => {
@@ -374,14 +374,14 @@ describe( 'LiveSelection', () => {
 	} );
 
 	describe( 'createFromSelection()', () => {
-		it( 'should return a LiveSelection instance', () => {
+		it( 'should return a DocumentSelection instance', () => {
 			selection.addRange( range, true );
 
-			expect( LiveSelection.createFromSelection( selection ) ).to.be.instanceof( LiveSelection );
+			expect( DocumentSelection.createFromSelection( selection ) ).to.be.instanceof( DocumentSelection );
 		} );
 	} );
 
-	// LiveSelection uses LiveRanges so here are only simple test to see if integration is
+	// DocumentSelection uses LiveRanges so here are only simple test to see if integration is
 	// working well, without getting into complicated corner cases.
 	describe( 'after applying an operation should get updated and fire events', () => {
 		let spyRange;
@@ -698,7 +698,7 @@ describe( 'LiveSelection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 
-				expect( emptyP.getAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
+				expect( emptyP.getAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
 			} );
 		} );
 
@@ -735,8 +735,8 @@ describe( 'LiveSelection', () => {
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 
-				expect( emptyP.getAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
-				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+				expect( emptyP.getAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
+				expect( emptyP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
 			} );
 		} );
 
@@ -748,7 +748,7 @@ describe( 'LiveSelection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 
-				expect( fullP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( fullP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
 			} );
 
 			it( 'should remove stored attribute if the selection is in empty node', () => {
@@ -758,7 +758,7 @@ describe( 'LiveSelection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 
-				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( emptyP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
 			} );
 		} );
 
@@ -773,8 +773,8 @@ describe( 'LiveSelection', () => {
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 
-				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
-				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+				expect( emptyP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( emptyP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
 			} );
 		} );
 
@@ -893,7 +893,7 @@ describe( 'LiveSelection', () => {
 			it( 'ignores attributes inside an object if selection contains that object', () => {
 				setData( doc, '<p>[<image><$text bold="true">Caption for the image.</$text></image>]</p>' );
 
-				const liveSelection = LiveSelection.createFromSelection( selection );
+				const liveSelection = DocumentSelection.createFromSelection( selection );
 
 				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
@@ -901,7 +901,7 @@ describe( 'LiveSelection', () => {
 			it( 'ignores attributes inside an object if selection contains that object (deeper structure)', () => {
 				setData( doc, '<p>[<image><caption><$text bold="true">Caption for the image.</$text></caption></image>]</p>' );
 
-				const liveSelection = LiveSelection.createFromSelection( selection );
+				const liveSelection = DocumentSelection.createFromSelection( selection );
 
 				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
@@ -909,7 +909,7 @@ describe( 'LiveSelection', () => {
 			it( 'ignores attributes inside an object if selection contains that object (block level)', () => {
 				setData( doc, '<p>foo</p>[<image><$text bold="true">Caption for the image.</$text></image>]<p>foo</p>' );
 
-				const liveSelection = LiveSelection.createFromSelection( selection );
+				const liveSelection = DocumentSelection.createFromSelection( selection );
 
 				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
@@ -917,7 +917,7 @@ describe( 'LiveSelection', () => {
 			it( 'reads attributes from text even if the selection contains an object', () => {
 				setData( doc, '<p>x<$text bold="true">[bar</$text><image></image>foo]</p>' );
 
-				const liveSelection = LiveSelection.createFromSelection( selection );
+				const liveSelection = DocumentSelection.createFromSelection( selection );
 
 				expect( liveSelection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
@@ -925,7 +925,7 @@ describe( 'LiveSelection', () => {
 			it( 'reads attributes when the entire selection inside an object', () => {
 				setData( doc, '<p><image><caption><$text bold="true">[bar]</$text></caption></image></p>' );
 
-				const liveSelection = LiveSelection.createFromSelection( selection );
+				const liveSelection = DocumentSelection.createFromSelection( selection );
 
 				expect( liveSelection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
@@ -933,7 +933,7 @@ describe( 'LiveSelection', () => {
 			it( 'stops reading attributes if selection starts with an object', () => {
 				setData( doc, '<p>[<image></image><$text bold="true">bar]</$text></p>' );
 
-				const liveSelection = LiveSelection.createFromSelection( selection );
+				const liveSelection = DocumentSelection.createFromSelection( selection );
 
 				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );

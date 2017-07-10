@@ -18,7 +18,7 @@ import Position from './position';
 import RootElement from './rootelement';
 import Batch from './batch';
 import History from './history';
-import LiveSelection from './liveselection';
+import DocumentSelection from './documentselection';
 import Schema from './schema';
 import TreeWalker from './treewalker';
 import MarkerCollection from './markercollection';
@@ -90,9 +90,9 @@ export default class Document {
 		 * Selection done on this document.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/liveselection~LiveSelection}
+		 * @member {module:engine/model/documentselection~DocumentSelection}
 		 */
-		this.selection = new LiveSelection( this );
+		this.selection = new DocumentSelection( this );
 
 		/**
 		 * Array of pending changes. See: {@link #enqueueChanges}.
@@ -368,7 +368,7 @@ export default class Document {
 		const json = clone( this );
 
 		// Due to circular references we need to remove parent reference.
-		json.selection = '[engine.model.LiveSelection]';
+		json.selection = '[engine.model.DocumentSelection]';
 
 		return json;
 	}
