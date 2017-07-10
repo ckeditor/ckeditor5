@@ -330,14 +330,16 @@ export default class Position {
 			return null;
 		}
 
-		const node = this.root.getNodeByPath( this.getCommonPath( position ) );
+		const ancestorsA = this.getAncestors();
+		const ancestorsB = position.getAncestors();
 
-		// Although paths can indicate a text node, text node is not an ancestor of a position.
-		if ( node.is( 'text' ) ) {
-			return node.parent;
+		let i = 0;
+
+		while ( ancestorsA[ i ] == ancestorsB[ i ] && ancestorsA[ i ] ) {
+			i++;
 		}
 
-		return node;
+		return i === 0 ? null : ancestorsA[ i - 1 ];
 	}
 
 	/**

@@ -853,11 +853,24 @@ describe( 'Position', () => {
 			test( pos1, pos2, null );
 		} );
 
-		it( 'for two the same positions returns the parent element', () => {
+		it( 'for two the same positions returns the parent element #1', () => {
 			const fPosition = new Position( root, [ 1, 0, 0 ] );
 			const otherPosition = new Position( root, [ 1, 0, 0 ] );
 
 			test( fPosition, otherPosition, li1 );
+		} );
+
+		it( 'for two the same positions returns the parent element #2', () => {
+			const doc = new Document();
+			const root = doc.createRoot();
+
+			const p = new Element( 'p', null, 'foobar' );
+
+			root.appendChildren( p );
+
+			const postion = new Position( root, [ 0, 3 ] ); // <p>foo^bar</p>
+
+			test( postion, postion, p );
 		} );
 
 		it( 'for two positions in the same element returns the element', () => {
@@ -872,6 +885,19 @@ describe( 'Position', () => {
 			const liPosition = new Position( root, [ 1, 1 ] );
 
 			test( liPosition, zPosition, ul );
+		} );
+
+		it( 'works if position is hooked before an empty element', () => {
+			const doc = new Document();
+			const root = doc.createRoot();
+
+			const p = new Element( 'p', null, new Element( 'a', null, [] ) );
+
+			root.appendChildren( p );
+
+			const postion = new Position( root, [ 0, 0 ] ); // <p>^<a></a></p>
+
+			test( postion, postion, p );
 		} );
 
 		it( 'works fine with positions hooked in `DocumentFragment`', () => {

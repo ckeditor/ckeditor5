@@ -521,62 +521,77 @@ describe( 'Position', () => {
 	} );
 
 	describe( 'getCommonAncestor()', () => {
-		let div, section, article, p, ul, li1, li2, foz, bar, lipsum;
+		let div, ul, liUl1, liUl2, texts, section, article, ol, liOl1, liOl2, p;
 
 		// |- div
 		//   |- ul
 		//   |  |- li
-		//   |  |  |- f
-		//   |  |  |- o
-		//   |  |  |- z
+		//   |  |  |- foz
 		//   |  |- li
-		//   |     |- b
-		//   |     |- a
-		//   |     |- r
+		//   |     |- bar
 		//   |- section
+		//      |- Sed id libero at libero tristique
 		//      |- article
-		//         |- p
-		//            |- l
-		//            |- i
-		//            |- p
-		//            |- s
-		//            |- u
-		//            |- m
+		//      |  |- ol
+		//      |  |  |- li
+		//      |  |  |  |- Lorem ipsum dolor sit amet.
+		//      |  |  |- li
+		//      |  |     |- Mauris tincidunt tincidunt leo ac rutrum.
+		//      |  |- p
+		//      |  |  |- Maecenas accumsan tellus.
 
 		beforeEach( () => {
-			foz = new Text( 'foz' );
-			bar = new Text( 'bar' );
-			li1 = new Element( 'li', null, foz );
-			li2 = new Element( 'li', null, bar );
-			ul = new Element( 'ul', null, [ li1, li2 ] );
+			texts = {
+				foz: new Text( 'foz' ),
+				bar: new Text( 'bar' ),
+				lorem: new Text( 'Lorem ipsum dolor sit amet.' ),
+				mauris: new Text( 'Mauris tincidunt tincidunt leo ac rutrum.' ),
+				maecenas: new Text( 'Maecenas accumsan tellus.' ),
+				sed: new Text( 'Sed id libero at libero tristique.' )
+			};
 
-			lipsum = new Text( 'lipsum' );
-			p = new Element( 'p', null, lipsum );
-			article = new Element( 'article', null, p );
-			section = new Element( 'section', null, article );
+			liUl1 = new Element( 'li', null, texts.foz );
+			liUl2 = new Element( 'li', null, texts.bar );
+			ul = new Element( 'ul', null, [ liUl1, liUl2 ] );
+
+			liOl1 = new Element( 'li', null, texts.lorem );
+			liOl2 = new Element( 'li', null, texts.mauris );
+			ol = new Element( 'ol', null, [ liOl1, liOl2 ] );
+
+			p = new Element( 'p', null, texts.maecenas );
+
+			article = new Element( 'article', null, [ ol, p ] );
+			section = new Element( 'section', null, [ texts.sed, article ] );
 
 			div = new Element( 'div', null, [ ul, section ] );
 		} );
 
 		it( 'for two the same positions returns the parent element', () => {
-			const fPosition = new Position( li1, 0 );
-			const otherPosition = Position.createFromPosition( fPosition );
+			const afterLoremPosition = new Position( liOl1, 5 );
+			const otherPosition = Position.createFromPosition( afterLoremPosition );
 
-			test( fPosition, otherPosition, li1 );
+			test( afterLoremPosition, otherPosition, liOl1 );
 		} );
 
 		it( 'for two positions in the same element returns the element', () => {
-			const fPosition = new Position( li1, 0 );
-			const zPosition = new Position( li1, 2 );
+			const startMaecenasPosition = Position.createAt( liOl2 );
+			const beforeTellusPosition = new Position( liOl2, 18 );
 
-			test( fPosition, zPosition, li1 );
+			test( startMaecenasPosition, beforeTellusPosition, liOl2 );
 		} );
 
-		it( 'works when one positions is nested deeper than the other', () => {
-			const zPosition = new Position( li1, 2 );
-			const iPosition = Position.createAt( lipsum, 'start' );
+		it( 'works when one of the positions is nested deeper than the other #1', () => {
+			const firstPosition = new Position( liUl1, 1 );
+			const secondPosition = new Position( p, 3 );
 
-			test( iPosition, zPosition, div );
+			test( firstPosition, secondPosition, div );
+		} );
+
+		it( 'works when one of the positions is nested deeper than the other #2', () => {
+			const firstPosition = new Position( liOl2, 10 );
+			const secondPosition = new Position( section, 1 );
+
+			test( firstPosition, secondPosition, section );
 		} );
 
 		function test( positionA, positionB, lca ) {
