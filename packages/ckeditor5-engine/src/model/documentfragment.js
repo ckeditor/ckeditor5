@@ -172,6 +172,27 @@ export default class DocumentFragment {
 	}
 
 	/**
+	 * Returns a descendant node by its path relative to this element.
+	 *
+	 *		// <this>a<b>c</b></this>
+	 *		this.getNodeByPath( [ 0 ] );     // -> "a"
+	 *		this.getNodeByPath( [ 1 ] );     // -> <b>
+	 *		this.getNodeByPath( [ 1, 0 ] );  // -> "c"
+	 *
+	 * @param {Array.<Number>} relativePath Path of the node to find, relative to this element.
+	 * @returns {module:engine/model/node~Node|module:engine/model/documentfragment~DocumentFragment}
+	 */
+	getNodeByPath( relativePath ) {
+		let node = this; // eslint-disable-line consistent-this
+
+		for ( const index of relativePath ) {
+			node = node.getChild( index );
+		}
+
+		return node;
+	}
+
+	/**
 	 * Converts offset "position" to index "position".
 	 *
 	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is

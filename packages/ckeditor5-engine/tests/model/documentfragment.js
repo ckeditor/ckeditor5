@@ -300,4 +300,25 @@ describe( 'DocumentFragment', () => {
 			expect( deserialized.getChild( 1 ).parent ).to.equal( deserialized );
 		} );
 	} );
+
+	describe( 'getNodeByPath', () => {
+		it( 'should return the whole document fragment if path is empty', () => {
+			const frag = new DocumentFragment();
+
+			expect( frag.getNodeByPath( [] ) ).to.equal( frag );
+		} );
+
+		it( 'should return a descendant of this node', () => {
+			const image = new Element( 'image' );
+			const element = new Element( 'elem', [], [
+				new Element( 'elem', [], [
+					new Text( 'foo' ),
+					image
+				] )
+			] );
+			const frag = new DocumentFragment( element );
+
+			expect( frag.getNodeByPath( [ 0, 0, 1 ] ) ).to.equal( image );
+		} );
+	} );
 } );
