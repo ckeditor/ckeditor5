@@ -76,7 +76,7 @@ export default class Position {
 		this.root = root;
 
 		/**
-		 * Position of the node it the tree. Path is described through offsets, not indexes.
+		 * Position of the node in the tree. **Path contains offsets, not indexes.**
 		 *
 		 * Position can be placed before, after or in a {@link module:engine/model/node~Node node} if that node has
 		 * {@link module:engine/model/node~Node#offsetSize} greater than `1`. Items in position path are
