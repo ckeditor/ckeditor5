@@ -446,9 +446,10 @@ export default class Range {
 	}
 
 	/**
-	 * Returns a {@link module:engine/model/node~Node} which is a common ancestor for both positions.
+	 * Returns an {@link module:engine/model/element~Element} or {@link module:engine/model/documentfragment~DocumentFragment}
+	 * which is a common ancestor for both positions.
 	 *
-	 * @returns {module:engine/model/node~Node|null}
+	 * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment|null}
 	 */
 	getCommonAncestor() {
 		return this.start.getCommonAncestor( this.end );

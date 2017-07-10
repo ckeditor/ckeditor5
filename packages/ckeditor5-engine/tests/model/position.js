@@ -847,7 +847,7 @@ describe( 'Position', () => {
 
 	describe( 'getCommonAncestor()', () => {
 		it( 'returns null when roots of the position are not the same', () => {
-			const pos1 = new Position( root, [ 1, 1 ] );
+			const pos1 = new Position( root, [ 0 ] );
 			const pos2 = new Position( otherRoot, [ 1, 1 ] );
 
 			test( pos1, pos2, null );
@@ -855,11 +855,12 @@ describe( 'Position', () => {
 
 		it( 'for two the same positions returns the parent element', () => {
 			const fPosition = new Position( root, [ 1, 0, 0 ] );
+			const otherPosition = new Position( root, [ 1, 0, 0 ] );
 
-			test( fPosition, fPosition, li1 );
+			test( fPosition, otherPosition, li1 );
 		} );
 
-		it( 'for two positions in the same parent returns the parent element', () => {
+		it( 'for two positions in the same element returns the element', () => {
 			const fPosition = new Position( root, [ 1, 0, 0 ] );
 			const zPosition = new Position( root, [ 1, 0, 2 ] );
 
@@ -868,17 +869,17 @@ describe( 'Position', () => {
 
 		it( 'for two different positions returns first element which contains both positions', () => {
 			const zPosition = new Position( root, [ 1, 0, 2 ] );
-			const rPosition = new Position( root, [ 1, 1, 2 ] );
+			const liPosition = new Position( root, [ 1, 1 ] );
 
-			test( rPosition, zPosition, ul );
+			test( liPosition, zPosition, ul );
 		} );
 
 		it( 'works fine with positions hooked in `DocumentFragment`', () => {
 			const docFrag = new DocumentFragment( [ p, ul ] );
 			const zPosition = new Position( docFrag, [ 1, 0, 2 ] );
-			const rPosition = new Position( docFrag, [ 1, 1, 2 ] );
+			const afterLiPosition = new Position( docFrag, [ 1, 2 ] );
 
-			test( zPosition, rPosition, ul );
+			test( zPosition, afterLiPosition, ul );
 		} );
 
 		function test( positionA, positionB, lca ) {
