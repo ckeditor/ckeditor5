@@ -24,7 +24,9 @@ export default function enableToolbarKeyboardFocus( {
 	origin,
 	originKeystrokeHandler,
 	originFocusTracker,
-	toolbar
+	toolbar,
+	beforeFocus,
+	afterBlur
 } ) {
 	// Because toolbar items can get focus, the overall state of the toolbar must
 	// also be tracked.
@@ -33,7 +35,12 @@ export default function enableToolbarKeyboardFocus( {
 	// Focus the toolbar on the keystroke, if not already focused.
 	originKeystrokeHandler.set( 'Alt+F10', ( data, cancel ) => {
 		if ( originFocusTracker.isFocused && !toolbar.focusTracker.isFocused ) {
+			if ( beforeFocus ) {
+				beforeFocus();
+			}
+
 			toolbar.focus();
+
 			cancel();
 		}
 	} );
@@ -42,6 +49,11 @@ export default function enableToolbarKeyboardFocus( {
 	toolbar.keystrokes.set( 'Esc', ( data, cancel ) => {
 		if ( toolbar.focusTracker.isFocused ) {
 			origin.focus();
+
+			if ( afterBlur ) {
+				afterBlur();
+			}
+
 			cancel();
 		}
 	} );
