@@ -273,7 +273,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 2, 0 ] );
+				expect( live.end.path ).to.deep.equal( [ 2, 2 ] );
 				expect( spy.calledOnce ).to.be.true;
 			} );
 
