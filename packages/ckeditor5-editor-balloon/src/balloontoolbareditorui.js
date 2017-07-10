@@ -58,35 +58,31 @@ export default class BalloonToolbarEditorUI {
 
 	/**
 	 * Initializes the UI.
-	 *
-	 * @returns {Promise} A Promise resolved when the initialization process is finished.
 	 */
 	init() {
 		const editor = this.editor;
-		const contextualToolbar = editor.plugins.get( 'ui/contextualtoolbar' );
+		const contextualToolbar = editor.plugins.get( 'ContextualToolbar' );
 
-		return this.view.init().then( () => {
-			enableToolbarKeyboardFocus( {
-				origin: editor.editing.view,
-				originFocusTracker: this.focusTracker,
-				originKeystrokeHandler: editor.keystrokes,
-				toolbar: contextualToolbar.toolbarView,
-				beforeFocus: () => {
-					return contextualToolbar.show();
-				},
-				afterBlur: () => {
-					contextualToolbar.hide();
-				}
-			} );
+		this.view.init();
+
+		enableToolbarKeyboardFocus( {
+			origin: editor.editing.view,
+			originFocusTracker: this.focusTracker,
+			originKeystrokeHandler: editor.keystrokes,
+			toolbar: contextualToolbar.toolbarView,
+			beforeFocus: () => {
+				return contextualToolbar.show();
+			},
+			afterBlur: () => {
+				contextualToolbar.hide();
+			}
 		} );
 	}
 
 	/**
 	 * Destroys the UI.
-	 *
-	 * @returns {Promise} A Promise resolved when the destruction process is finished.
 	 */
 	destroy() {
-		return this.view.destroy();
+		this.view.destroy();
 	}
 }
