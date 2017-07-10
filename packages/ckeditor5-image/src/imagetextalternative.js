@@ -135,7 +135,7 @@ export default class ImageTextAlternative extends Plugin {
 		clickOutsideHandler( {
 			emitter: panel,
 			activator: () => panel.isVisible,
-			contextElement: panel.element,
+			contextElements: [ panel.element ],
 			callback: () => this._hideBalloonPanel()
 		} );
 
