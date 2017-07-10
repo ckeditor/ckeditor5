@@ -157,11 +157,6 @@ export default class ContextualToolbar extends Plugin {
 			return;
 		}
 
-		// This implementation assumes that only non–collapsed selections gets the contextual toolbar.
-		if ( !editingView.isFocused || editingView.selection.isCollapsed ) {
-			return;
-		}
-
 		// If `beforeShow` event is not stopped by any external code then panel will be displayed.
 		this.once( 'beforeShow', () => {
 			if ( isStopped ) {
