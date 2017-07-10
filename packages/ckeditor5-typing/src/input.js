@@ -142,11 +142,27 @@ class MutationHandler {
 	 * @param {module:engine/view/selection~Selection|null} viewSelection
 	 */
 	handle( mutations, viewSelection ) {
-		for ( const mutation of mutations ) {
-			// Fortunately it will never be both.
-			this._handleTextMutation( mutation, viewSelection );
-			this._handleTextNodeInsertion( mutation );
+		if ( this._containerChildrenMutated( mutations ) ) {
+			// We have strange children mutations - we need to convert dom to model and compare it with current model
+			// to see what really has changed.
+		} else {
+			for ( const mutation of mutations ) {
+				// Fortunately it will never be both.
+				this._handleTextMutation( mutation, viewSelection );
+				this._handleTextNodeInsertion( mutation );
+			}
 		}
+	}
+
+	_containerChildrenMutated( mutations ) {
+		// Check if all mutations are `children` type, and there is no single text node mutation.
+		for ( const mutation of mutations ) {
+			if ( mutation.type !== 'children' || getSingleTextNodeChange( mutation ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	_handleTextMutation( mutation, viewSelection ) {
@@ -226,24 +242,9 @@ class MutationHandler {
 			return;
 		}
 
-		// One new node.
-		if ( mutation.newChildren.length - mutation.oldChildren.length != 1 ) {
-			return;
-		}
+		const change = getSingleTextNodeChange( mutation );
 
-		// Which is text.
-		const diffResult = diff( mutation.oldChildren, mutation.newChildren, compareChildNodes );
-		const changes = diffToChanges( diffResult, mutation.newChildren );
-
-		// In case of [ delete, insert, insert ] the previous check will not exit.
-		if ( changes.length > 1 ) {
-			return;
-		}
-
-		const change = changes[ 0 ];
-
-		// Which is text.
-		if ( !( change.values[ 0 ] instanceof ViewText ) ) {
+		if ( !change ) {
 			return;
 		}
 
@@ -308,4 +309,29 @@ function compareChildNodes( oldChild, newChild ) {
 	} else {
 		return oldChild === newChild;
 	}
+}
+
+function getSingleTextNodeChange( mutation ) {
+	// One new node.
+	if ( mutation.newChildren.length - mutation.oldChildren.length != 1 ) {
+		return;
+	}
+
+	// Which is text.
+	const diffResult = diff( mutation.oldChildren, mutation.newChildren, compareChildNodes );
+	const changes = diffToChanges( diffResult, mutation.newChildren );
+
+	// In case of [ delete, insert, insert ] the previous check will not exit.
+	if ( changes.length > 1 ) {
+		return;
+	}
+
+	const change = changes[ 0 ];
+
+	// Which is text.
+	if ( !( change.values[ 0 ] instanceof ViewText ) ) {
+		return;
+	}
+
+	return change;
 }
