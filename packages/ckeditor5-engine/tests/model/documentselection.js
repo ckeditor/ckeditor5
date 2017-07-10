@@ -537,6 +537,7 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
+				const batch = doc.batch();
 				const splitDelta = new SplitDelta();
 
 				const insertOperation = new InsertOperation(
@@ -551,6 +552,8 @@ describe( 'DocumentSelection', () => {
 					new Position( root, [ 2, 0 ] ),
 					1
 				);
+
+				batch.addDelta( splitDelta );
 
 				splitDelta.addOperation( insertOperation );
 				splitDelta.addOperation( moveOperation );

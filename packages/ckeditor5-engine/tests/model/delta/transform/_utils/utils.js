@@ -10,6 +10,8 @@ import Text from '../../../../../src/model/text';
 import Position from '../../../../../src/model/position';
 import Range from '../../../../../src/model/range';
 
+import Batch from '../../../../../src/model/batch';
+
 import AttributeDelta from '../../../../../src/model/delta/attributedelta';
 import InsertDelta from '../../../../../src/model/delta/insertdelta';
 import WeakInsertDelta from '../../../../../src/model/delta/weakinsertdelta';
@@ -40,6 +42,8 @@ export function getInsertDelta( position, nodes, version ) {
 	const delta = new InsertDelta();
 	delta.addOperation( new InsertOperation( position, nodes, version ) );
 
+	wrapInBatch( delta );
+
 	return delta;
 }
 
@@ -47,12 +51,16 @@ export function getWeakInsertDelta( position, nodes, version ) {
 	const delta = new WeakInsertDelta();
 	delta.addOperation( new InsertOperation( position, nodes, version ) );
 
+	wrapInBatch( delta );
+
 	return delta;
 }
 
 export function getMarkerDelta( name, oldRange, newRange, version ) {
 	const delta = new MarkerDelta();
 	delta.addOperation( new MarkerOperation( name, oldRange, newRange, version ) );
+
+	wrapInBatch( delta );
 
 	return delta;
 }
@@ -77,6 +85,8 @@ export function getMergeDelta( position, howManyInPrev, howManyInNext, version )
 
 	delta.addOperation( new RemoveOperation( position, 1, gyPos, version + 1 ) );
 
+	wrapInBatch( delta );
+
 	return delta;
 }
 
@@ -85,6 +95,8 @@ export function getMoveDelta( sourcePosition, howMany, targetPosition, baseVersi
 
 	const move = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
 	delta.addOperation( move );
+
+	wrapInBatch( delta );
 
 	return delta;
 }
@@ -98,6 +110,8 @@ export function getRemoveDelta( sourcePosition, howMany, baseVersion ) {
 	const remove = new RemoveOperation( sourcePosition, howMany, gyPos, baseVersion );
 	delta.addOperation( remove );
 
+	wrapInBatch( delta );
+
 	return delta;
 }
 
@@ -106,6 +120,8 @@ export function getRenameDelta( position, oldName, newName, baseVersion ) {
 
 	const rename = new RenameOperation( position, oldName, newName, baseVersion );
 	delta.addOperation( rename );
+
+	wrapInBatch( delta );
 
 	return delta;
 }
@@ -127,6 +143,8 @@ export function getSplitDelta( position, nodeCopy, howManyMove, version ) {
 
 	delta.addOperation( move );
 
+	wrapInBatch( delta );
+
 	return delta;
 }
 
@@ -141,6 +159,8 @@ export function getWrapDelta( range, element, version ) {
 
 	delta.addOperation( insert );
 	delta.addOperation( move );
+
+	wrapInBatch( delta );
 
 	return delta;
 }
@@ -164,6 +184,8 @@ export function getUnwrapDelta( positionBefore, howManyChildren, version ) {
 
 	delta.addOperation( move );
 	delta.addOperation( remove );
+
+	wrapInBatch( delta );
 
 	return delta;
 }
@@ -220,4 +242,12 @@ export function getFilledDocument() {
 	] );
 
 	return doc;
+}
+
+function wrapInBatch( delta ) {
+	// Batch() requires the document but only a few lines of code needs batch in `document#changes`
+	// so we may have an invalid batch instance for some tests.
+	const batch = new Batch();
+
+	batch.addDelta( delta );
 }
