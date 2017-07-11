@@ -14,7 +14,6 @@ import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import diffToChanges from '@ckeditor/ckeditor5-utils/src/difftochanges';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
 import InputCommand from './inputcommand';
 
@@ -145,10 +144,11 @@ class MutationHandler {
 	 */
 	handle( mutations, viewSelection ) {
 		if ( this._containerChildrenMutated( mutations ) ) {
+			// TODO: Describe what is happening in the reported issue.
+
 			// We have strange children mutations - we need to convert dom to model and compare it with current model
 			// to see what really has changed.
 
-			debugger;
 			// Get common ancestor of all mutations.
 			const mutationsCommonAncestor = getMutationsCommonAncestor( mutations );
 
@@ -165,11 +165,83 @@ class MutationHandler {
 				return;
 			}
 
-			// Create fresh DomConverter so it will not use existing mapping.
+			// Create fresh DomConverter so it will not use existing mapping and convert current DOM to model.
+			// This won't be needed if DomConverter will allow to just create fresh view from provided DOM without
+			// checking any mappings.
 			const freshDomConverter = new DomConverter();
-			const modelFragmentFromCurrentDom = freshDomConverter.domToView( domMutationCommonAncestor );
+			const modelFromCurrentDom = this.editor.data.toModel( freshDomConverter.domToView( domMutationCommonAncestor ) ).getChild( 0 );
 
+			// Current model.
+			const currentModel = this.editor.editing.mapper.toModelElement( mutationsCommonAncestor );
 
+			// Get children from both ancestors.
+			const modelFromDomChildren = [ ...modelFromCurrentDom.getChildren() ];
+			const currentModelChildren = [ ...currentModel.getChildren() ];
+
+			// We only fix situations when common ancestor has only text nodes inside.
+			if ( !containsOnlyTextNodes( modelFromDomChildren ) || !containsOnlyTextNodes( currentModelChildren ) ) {
+				return;
+			}
+
+			// TODO: describe why using replace.
+			const newText = modelFromDomChildren.map( item => item.data ).join( '' ).replace( /\u00A0/g, ' ' );
+			const oldText = currentModelChildren.map( item => item.data ).join( '' );
+			const diffResult = diff( oldText, newText );
+
+			// -----------------------------------
+
+			// Index where the first change happens. Used to set the position from which nodes will be removed and where will be inserted.
+			let firstChangeAt = null;
+			// Index where the last change happens. Used to properly count how many characters have to be removed and inserted.
+			let lastChangeAt = null;
+
+			// Get `firstChangeAt` and `lastChangeAt`.
+			for ( let i = 0; i < diffResult.length; i++ ) {
+				const change = diffResult[ i ];
+
+				if ( change != 'equal' ) {
+					firstChangeAt = firstChangeAt === null ? i : firstChangeAt;
+					lastChangeAt = i;
+				}
+			}
+
+			// How many characters, starting from `firstChangeAt`, should be removed.
+			let deletions = 0;
+			// How many characters, starting from `firstChangeAt`, should be inserted (basing on mutation.newText).
+			let insertions = 0;
+
+			for ( let i = firstChangeAt; i <= lastChangeAt; i++ ) {
+				// If there is no change (equal) or delete, the character is existing in `oldText`. We count it for removing.
+				if ( diffResult[ i ] != 'insert' ) {
+					deletions++;
+				}
+
+				// If there is no change (equal) or insert, the character is existing in `newText`. We count it for inserting.
+				if ( diffResult[ i ] != 'delete' ) {
+					insertions++;
+				}
+			}
+
+			// Try setting new model selection according to passed view selection.
+			let modelSelectionRange = null;
+
+			if ( viewSelection ) {
+				modelSelectionRange = this.editing.mapper.toModelRange( viewSelection.getFirstRange() );
+			}
+
+			const insertText = newText.substr( firstChangeAt, insertions );
+			const removeRange = ModelRange.createFromParentsAndOffsets(
+				currentModel,
+				firstChangeAt,
+				currentModel,
+				firstChangeAt + deletions
+			);
+
+			this.editor.execute( 'input', {
+				text: insertText,
+				range: removeRange,
+				resultRange: modelSelectionRange
+			} );
 		} else {
 			for ( const mutation of mutations ) {
 				// Fortunately it will never be both.
@@ -401,3 +473,49 @@ function getMutationsCommonAncestor( mutations ) {
 
 	return i == 0 ? null : ancestorsLists[ 0 ][ i - 1 ];
 }
+
+// Model changes functions.
+// ********************************************************
+
+function containsOnlyTextNodes( children ) {
+	for ( const child of children ) {
+		if ( !child.is( 'text' ) ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+// function compareModelChildNodes( oldChild, newChild ) {
+// 	// Return true if same instance.
+// 	if ( oldChild === newChild ) {
+// 		return true;
+// 	}
+//
+// 	// Return false if both are elements with different name.
+// 	if ( oldChild.is( 'element' ) && newChild.is( 'element' ) && oldChild.name !== newChild.name ) {
+// 		return false;
+// 	}
+//
+// 	// Return false if both are text with different data.
+// 	if ( oldChild.is( 'text' ) && newChild.is( 'text' ) && oldChild.data !== newChild.data ) {
+// 		return false;
+// 	}
+//
+// 	const oldAttrKeys = [ ...oldChild.getAttributeKeys() ];
+// 	const newAttrKeys = [ ...newChild.getAttributeKeys() ];
+//
+// 	// Return false if both have different amount of attributes.
+// 	if ( oldAttrKeys.length !== newAttrKeys.length ) {
+// 		return false;
+// 	}
+//
+// 	for ( const key of oldAttrKeys ) {
+// 		if ( oldChild.getAttribute( key ) !== newChild.getAttribute( key ) ) {
+// 			return false;
+// 		}
+// 	}
+//
+// 	return true;
+// }
