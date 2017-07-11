@@ -93,7 +93,7 @@ export default class Link extends Plugin {
 		formView.urlInputView.bind( 'value' ).to( linkCommand, 'value' );
 
 		// Form elements should be read-only when corresponding commands are disabled.
-		formView.urlInputView.inputView.bind( 'isReadOnly' ).to( linkCommand, 'isEnabled', value => !value );
+		formView.urlInputView.bind( 'isReadOnly' ).to( linkCommand, 'isEnabled', value => !value );
 		formView.saveButtonView.bind( 'isEnabled' ).to( linkCommand );
 		formView.unlinkButtonView.bind( 'isEnabled' ).to( unlinkCommand );
 

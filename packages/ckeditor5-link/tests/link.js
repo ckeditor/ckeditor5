@@ -183,7 +183,7 @@ describe( 'Link', () => {
 			editor.commands.get( 'link' ).isEnabled = true;
 			editor.commands.get( 'unlink' ).isEnabled = true;
 
-			expect( formView.urlInputView.inputView.isReadOnly ).to.false;
+			expect( formView.urlInputView.isReadOnly ).to.false;
 			expect( formView.saveButtonView.isEnabled ).to.true;
 			expect( formView.unlinkButtonView.isEnabled ).to.true;
 			expect( formView.cancelButtonView.isEnabled ).to.true;
@@ -191,7 +191,7 @@ describe( 'Link', () => {
 			editor.commands.get( 'link' ).isEnabled = false;
 			editor.commands.get( 'unlink' ).isEnabled = false;
 
-			expect( formView.urlInputView.inputView.isReadOnly ).to.true;
+			expect( formView.urlInputView.isReadOnly ).to.true;
 			expect( formView.saveButtonView.isEnabled ).to.false;
 			expect( formView.unlinkButtonView.isEnabled ).to.false;
 			expect( formView.cancelButtonView.isEnabled ).to.true;
