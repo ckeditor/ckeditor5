@@ -692,4 +692,20 @@ describe( 'Range', () => {
 			} );
 		} );
 	} );
+
+	describe( 'getCommonAncestor()', () => {
+		it( 'should return common ancestor for positions from Range', () => {
+			const foz = new Text( 'foz' );
+			const bar = new Text( 'bar' );
+
+			const li1 = new Element( 'li', null, foz );
+			const li2 = new Element( 'li', null, bar );
+
+			const ul = new Element( 'ul', null, [ li1, li2 ] );
+
+			const range = new Range( new Position( li1, 0 ), new Position( li2, 2 ) );
+
+			expect( range.getCommonAncestor() ).to.equal( ul );
+		} );
+	} );
 } );

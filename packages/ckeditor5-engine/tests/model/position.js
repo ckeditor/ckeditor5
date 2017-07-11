@@ -844,4 +844,74 @@ describe( 'Position', () => {
 			).to.throw( CKEditorError, /model-position-fromjson-no-root/ );
 		} );
 	} );
+
+	describe( 'getCommonAncestor()', () => {
+		it( 'returns null when roots of both positions are not the same', () => {
+			const pos1 = new Position( root, [ 0 ] );
+			const pos2 = new Position( otherRoot, [ 0 ] );
+
+			test( pos1, pos2, null );
+		} );
+
+		it( 'for two the same positions returns the parent element #1', () => {
+			const fPosition = new Position( root, [ 1, 0, 0 ] );
+			const otherPosition = new Position( root, [ 1, 0, 0 ] );
+
+			test( fPosition, otherPosition, li1 );
+		} );
+
+		it( 'for two the same positions returns the parent element #2', () => {
+			const doc = new Document();
+			const root = doc.createRoot();
+
+			const p = new Element( 'p', null, 'foobar' );
+
+			root.appendChildren( p );
+
+			const postion = new Position( root, [ 0, 3 ] ); // <p>foo^bar</p>
+
+			test( postion, postion, p );
+		} );
+
+		it( 'for two positions in the same element returns the element', () => {
+			const fPosition = new Position( root, [ 1, 0, 0 ] );
+			const zPosition = new Position( root, [ 1, 0, 2 ] );
+
+			test( fPosition, zPosition, li1 );
+		} );
+
+		it( 'works when one positions is nested deeper than the other', () => {
+			const zPosition = new Position( root, [ 1, 0, 2 ] );
+			const liPosition = new Position( root, [ 1, 1 ] );
+
+			test( liPosition, zPosition, ul );
+		} );
+
+		// Checks if by mistake someone didn't use getCommonPath() + getNodeByPath().
+		it( 'works if position is located before an element', () => {
+			const doc = new Document();
+			const root = doc.createRoot();
+
+			const p = new Element( 'p', null, new Element( 'a' ) );
+
+			root.appendChildren( p );
+
+			const postion = new Position( root, [ 0, 0 ] ); // <p>^<a></a></p>
+
+			test( postion, postion, p );
+		} );
+
+		it( 'works fine with positions located in DocumentFragment', () => {
+			const docFrag = new DocumentFragment( [ p, ul ] );
+			const zPosition = new Position( docFrag, [ 1, 0, 2 ] );
+			const afterLiPosition = new Position( docFrag, [ 1, 2 ] );
+
+			test( zPosition, afterLiPosition, ul );
+		} );
+
+		function test( positionA, positionB, lca ) {
+			expect( positionA.getCommonAncestor( positionB ) ).to.equal( lca );
+			expect( positionB.getCommonAncestor( positionA ) ).to.equal( lca );
+		}
+	} );
 } );

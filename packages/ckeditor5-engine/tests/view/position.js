@@ -519,4 +519,84 @@ describe( 'Position', () => {
 			document.destroy();
 		} );
 	} );
+
+	describe( 'getCommonAncestor()', () => {
+		let div, ul, liUl1, liUl2, texts, section, article, ol, liOl1, liOl2, p;
+
+		// |- div
+		//   |- ul
+		//   |  |- li
+		//   |  |  |- foz
+		//   |  |- li
+		//   |     |- bar
+		//   |- section
+		//      |- Sed id libero at libero tristique
+		//      |- article
+		//      |  |- ol
+		//      |  |  |- li
+		//      |  |  |  |- Lorem ipsum dolor sit amet.
+		//      |  |  |- li
+		//      |  |     |- Mauris tincidunt tincidunt leo ac rutrum.
+		//      |  |- p
+		//      |  |  |- Maecenas accumsan tellus.
+
+		beforeEach( () => {
+			texts = {
+				foz: new Text( 'foz' ),
+				bar: new Text( 'bar' ),
+				lorem: new Text( 'Lorem ipsum dolor sit amet.' ),
+				mauris: new Text( 'Mauris tincidunt tincidunt leo ac rutrum.' ),
+				maecenas: new Text( 'Maecenas accumsan tellus.' ),
+				sed: new Text( 'Sed id libero at libero tristique.' )
+			};
+
+			liUl1 = new Element( 'li', null, texts.foz );
+			liUl2 = new Element( 'li', null, texts.bar );
+			ul = new Element( 'ul', null, [ liUl1, liUl2 ] );
+
+			liOl1 = new Element( 'li', null, texts.lorem );
+			liOl2 = new Element( 'li', null, texts.mauris );
+			ol = new Element( 'ol', null, [ liOl1, liOl2 ] );
+
+			p = new Element( 'p', null, texts.maecenas );
+
+			article = new Element( 'article', null, [ ol, p ] );
+			section = new Element( 'section', null, [ texts.sed, article ] );
+
+			div = new Element( 'div', null, [ ul, section ] );
+		} );
+
+		it( 'for two the same positions returns the parent element', () => {
+			const afterLoremPosition = new Position( liOl1, 5 );
+			const otherPosition = Position.createFromPosition( afterLoremPosition );
+
+			test( afterLoremPosition, otherPosition, liOl1 );
+		} );
+
+		it( 'for two positions in the same element returns the element', () => {
+			const startMaecenasPosition = Position.createAt( liOl2 );
+			const beforeTellusPosition = new Position( liOl2, 18 );
+
+			test( startMaecenasPosition, beforeTellusPosition, liOl2 );
+		} );
+
+		it( 'works when one of the positions is nested deeper than the other #1', () => {
+			const firstPosition = new Position( liUl1, 1 );
+			const secondPosition = new Position( p, 3 );
+
+			test( firstPosition, secondPosition, div );
+		} );
+
+		it( 'works when one of the positions is nested deeper than the other #2', () => {
+			const firstPosition = new Position( liOl2, 10 );
+			const secondPosition = new Position( section, 1 );
+
+			test( firstPosition, secondPosition, section );
+		} );
+
+		function test( positionA, positionB, lca ) {
+			expect( positionA.getCommonAncestor( positionB ) ).to.equal( lca );
+			expect( positionB.getCommonAncestor( positionA ) ).to.equal( lca );
+		}
+	} );
 } );

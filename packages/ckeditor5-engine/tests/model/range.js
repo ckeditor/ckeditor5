@@ -1223,6 +1223,12 @@ describe( 'Range', () => {
 		} );
 	} );
 
+	describe( 'getCommonAncestor()', () => {
+		it( 'should return common ancestor for positions from Range', () => {
+			expect( range.getCommonAncestor() ).to.equal( root );
+		} );
+	} );
+
 	function mapNodesToNames( nodes ) {
 		return nodes.map( node => {
 			return ( node instanceof Element ) ? 'E:' + node.name : 'T:' + node.data;
