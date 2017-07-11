@@ -209,10 +209,29 @@ describe( 'debug tools', () => {
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
 			} );
 
-			it( 'InsertOperation', () => {
+			it( 'InsertOperation (text node)', () => {
 				const op = new InsertOperation( ModelPosition.createAt( modelRoot, 3 ), [ new ModelText( 'abc' ) ], 0 );
 
-				expect( op.toString() ).to.equal( 'InsertOperation( 0 ): [ 1 ] -> main [ 3 ]' );
+				expect( op.toString() ).to.equal( 'InsertOperation( 0 ): #abc -> main [ 3 ]' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'InsertOperation (element)', () => {
+				const op = new InsertOperation( ModelPosition.createAt( modelRoot, 3 ), [ new ModelElement( 'paragraph' ) ], 0 );
+
+				expect( op.toString() ).to.equal( 'InsertOperation( 0 ): <paragraph> -> main [ 3 ]' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'InsertOperation (multiple nodes)', () => {
+				const nodes = [ new ModelText( 'x' ), new ModelElement( 'y' ), new ModelText( 'z' ) ];
+				const op = new InsertOperation( ModelPosition.createAt( modelRoot, 3 ), nodes, 0 );
+
+				expect( op.toString() ).to.equal( 'InsertOperation( 0 ): [ 3 ] -> main [ 3 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -301,13 +320,38 @@ describe( 'debug tools', () => {
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
 			} );
 
-			it( 'InsertDelta', () => {
+			it( 'InsertDelta (text node)', () => {
 				const delta = new InsertDelta();
 				const op = new InsertOperation( ModelPosition.createAt( modelRoot, 3 ), [ new ModelText( 'abc' ) ], 0 );
 
 				delta.addOperation( op );
 
-				expect( delta.toString() ).to.equal( 'InsertDelta( 0 ): [ 1 ] -> main [ 3 ]' );
+				expect( delta.toString() ).to.equal( 'InsertDelta( 0 ): #abc -> main [ 3 ]' );
+
+				delta.log();
+				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
+			} );
+
+			it( 'InsertDelta (element)', () => {
+				const delta = new InsertDelta();
+				const op = new InsertOperation( ModelPosition.createAt( modelRoot, 3 ), [ new ModelElement( 'paragraph' ) ], 0 );
+
+				delta.addOperation( op );
+
+				expect( delta.toString() ).to.equal( 'InsertDelta( 0 ): <paragraph> -> main [ 3 ]' );
+
+				delta.log();
+				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
+			} );
+
+			it( 'InsertDelta (multiple nodes)', () => {
+				const delta = new InsertDelta();
+				const nodes = [ new ModelText( 'x' ), new ModelElement( 'y' ), new ModelText( 'z' ) ];
+				const op = new InsertOperation( ModelPosition.createAt( modelRoot, 3 ), nodes, 0 );
+
+				delta.addOperation( op );
+
+				expect( delta.toString() ).to.equal( 'InsertDelta( 0 ): [ 3 ] -> main [ 3 ]' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -453,7 +497,7 @@ describe( 'debug tools', () => {
 
 			modelDoc.applyOperation( op );
 
-			expect( log.calledWithExactly( 'Applying InsertOperation( 0 ): [ 1 ] -> main [ 0 ]' ) ).to.be.true;
+			expect( log.calledWithExactly( 'Applying InsertOperation( 0 ): #foo -> main [ 0 ]' ) ).to.be.true;
 		} );
 	} );
 

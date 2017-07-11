@@ -5,4 +5,5 @@
 	content: attr( data-placeholder );
 	cursor: text;
 	color: #c2c2c2;
+	pointer-events: none; // See ckeditor/ckeditor5#469.
 }
