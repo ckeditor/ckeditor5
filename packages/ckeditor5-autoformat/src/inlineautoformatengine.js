@@ -136,7 +136,11 @@ export default class InlineAutoformatEngine {
 			}
 		} );
 
-		editor.document.on( 'change', ( evt, type ) => {
+		editor.document.on( 'change', ( evt, type, changes, batch ) => {
+			if ( batch.type == 'transparent' ) {
+				return;
+			}
+
 			if ( type !== 'insert' ) {
 				return;
 			}
@@ -182,17 +186,18 @@ export default class InlineAutoformatEngine {
 				return;
 			}
 
-			const batch = editor.document.batch();
-
 			editor.document.enqueueChanges( () => {
+				// Create new batch to separate typing batch from the Autoformat changes.
+				const fixBatch = editor.document.batch();
+
 				const validRanges = editor.document.schema.getValidRanges( rangesToFormat, command );
 
 				// Apply format.
-				formatCallback( batch, validRanges );
+				formatCallback( fixBatch, validRanges );
 
 				// Remove delimiters.
 				for ( const range of rangesToRemove ) {
-					batch.remove( range );
+					fixBatch.remove( range );
 				}
 			} );
 		} );

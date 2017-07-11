@@ -50,6 +50,17 @@ describe( 'InlineAutoformatEngine', () => {
 			expect( getData( doc ) ).to.equal( '<paragraph><$text testAttribute="true">foobar</$text>[]</paragraph>' );
 		} );
 
+		it( 'should not apply an attribute when changes are in transparent batch', () => {
+			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, 'testAttribute' ); // eslint-disable-line no-new
+
+			setData( doc, '<paragraph>*foobar[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				doc.batch( 'transparent' ).insert( doc.selection.getFirstPosition(), '*' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+		} );
+
 		it( 'should stop early if selection is not collapsed', () => {
 			new InlineAutoformatEngine( editor, /(\*)(.+?)\*/g, 'testAttribute' ); // eslint-disable-line no-new
 
@@ -63,6 +74,18 @@ describe( 'InlineAutoformatEngine', () => {
 	} );
 
 	describe( 'Callback', () => {
+		it( 'should not run a callback when changes are in transparent batch', () => {
+			const spy = testUtils.sinon.spy();
+			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, spy ); // eslint-disable-line no-new
+
+			setData( doc, '<paragraph>*foobar[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				doc.batch( 'transparent' ).insert( doc.selection.getFirstPosition(), '*' );
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
 		it( 'should stop when there are no format ranges returned from testCallback', () => {
 			const formatSpy = testUtils.sinon.spy();
 			const testStub = testUtils.sinon.stub().returns( {

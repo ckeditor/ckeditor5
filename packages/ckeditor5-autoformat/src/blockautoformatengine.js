@@ -69,7 +69,11 @@ export default class BlockAutoformatEngine {
 			};
 		}
 
-		editor.document.on( 'change', ( event, type, changes ) => {
+		editor.document.on( 'change', ( event, type, changes, batch ) => {
+			if ( batch.type == 'transparent' ) {
+				return;
+			}
+
 			if ( type != 'insert' ) {
 				return;
 			}
@@ -98,15 +102,15 @@ export default class BlockAutoformatEngine {
 
 			editor.document.enqueueChanges( () => {
 				// Create new batch to separate typing batch from the Autoformat changes.
-				const batch = editor.document.batch();
+				const fixBatch = editor.document.batch();
 
 				// Matched range.
 				const range = Range.createFromParentsAndOffsets( textNode.parent, 0, textNode.parent, match[ 0 ].length );
 
 				// Remove matched text.
-				batch.remove( range );
+				fixBatch.remove( range );
 
-				callback( { batch, match } );
+				callback( { fixBatch, match } );
 			} );
 		} );
 	}

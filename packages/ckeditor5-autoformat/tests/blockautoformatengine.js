@@ -41,6 +41,19 @@ describe( 'BlockAutoformatEngine', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
+		it( 'should not run a command when changes are in transparent batch', () => {
+			const spy = testUtils.sinon.spy();
+			editor.commands.add( 'testCommand', new TestCommand( editor, spy ) );
+			new BlockAutoformatEngine( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
+
+			setData( doc, '<paragraph>*[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				doc.batch( 'transparent' ).insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
 		it( 'should remove found pattern', () => {
 			const spy = testUtils.sinon.spy();
 			editor.commands.add( 'testCommand', new TestCommand( editor, spy ) );
@@ -67,6 +80,18 @@ describe( 'BlockAutoformatEngine', () => {
 			} );
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should not run a callback when changes are in transparent batch', () => {
+			const spy = testUtils.sinon.spy();
+			new BlockAutoformatEngine( editor, /^[*]\s$/, spy ); // eslint-disable-line no-new
+
+			setData( doc, '<paragraph>*[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				doc.batch( 'transparent' ).insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should ignore other delta operations', () => {
