@@ -846,9 +846,9 @@ describe( 'Position', () => {
 	} );
 
 	describe( 'getCommonAncestor()', () => {
-		it( 'returns null when roots of the position are not the same', () => {
+		it( 'returns null when roots of both positions are not the same', () => {
 			const pos1 = new Position( root, [ 0 ] );
-			const pos2 = new Position( otherRoot, [ 1, 1 ] );
+			const pos2 = new Position( otherRoot, [ 0 ] );
 
 			test( pos1, pos2, null );
 		} );
@@ -887,11 +887,12 @@ describe( 'Position', () => {
 			test( liPosition, zPosition, ul );
 		} );
 
-		it( 'works if position is hooked before an empty element', () => {
+		// Checks if by mistake someone didn't use getCommonPath() + getNodeByPath().
+		it( 'works if position is located before an element', () => {
 			const doc = new Document();
 			const root = doc.createRoot();
 
-			const p = new Element( 'p', null, new Element( 'a', null, [] ) );
+			const p = new Element( 'p', null, new Element( 'a' ) );
 
 			root.appendChildren( p );
 
@@ -900,7 +901,7 @@ describe( 'Position', () => {
 			test( postion, postion, p );
 		} );
 
-		it( 'works fine with positions hooked in `DocumentFragment`', () => {
+		it( 'works fine with positions located in DocumentFragment', () => {
 			const docFrag = new DocumentFragment( [ p, ul ] );
 			const zPosition = new Position( docFrag, [ 1, 0, 2 ] );
 			const afterLiPosition = new Position( docFrag, [ 1, 2 ] );

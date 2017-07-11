@@ -320,16 +320,12 @@ export default class Position {
 
 	/**
 	 * Returns an {@link module:engine/model/element~Element} or {@link module:engine/model/documentfragment~DocumentFragment}
-	 * which is a common ancestor for both positions. The {@link #root roots} of these two positions must be identical.
+	 * which is a common ancestor of both positions. The {@link #root roots} of these two positions must be identical.
 	 *
 	 * @param {module:engine/model/position~Position} position The second position.
 	 * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment|null}
 	 */
 	getCommonAncestor( position ) {
-		if ( this.root !== position.root ) {
-			return null;
-		}
-
 		const ancestorsA = this.getAncestors();
 		const ancestorsB = position.getAncestors();
 

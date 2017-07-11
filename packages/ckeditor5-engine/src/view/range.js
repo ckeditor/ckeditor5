@@ -306,7 +306,7 @@ export default class Range {
 
 	/**
 	 * Returns a {@link module:engine/view/node~Node} or {@link module:engine/view/documentfragment~DocumentFragment}
-	 * which is a common ancestor for both positions.
+	 * which is a common ancestor of range's both ends (in which the entire range is contained).
 	 *
 	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null}
 	 */

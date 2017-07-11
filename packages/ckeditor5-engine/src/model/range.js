@@ -447,7 +447,7 @@ export default class Range {
 
 	/**
 	 * Returns an {@link module:engine/model/element~Element} or {@link module:engine/model/documentfragment~DocumentFragment}
-	 * which is a common ancestor for both positions.
+	 * which is a common ancestor of the range's both ends (in which the entire range is contained).
 	 *
 	 * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment|null}
 	 */
