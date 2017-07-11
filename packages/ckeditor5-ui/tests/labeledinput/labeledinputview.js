@@ -58,6 +58,16 @@ describe( 'LabeledInputView', () => {
 
 			expect( view.inputView.value ).to.equal( 'Lorem ipsum' );
 		} );
+
+		it( 'should bind view#isreadOnly to view.inputView#isReadOnly', () => {
+			view.isReadOnly = false;
+
+			expect( view.inputView.isReadOnly ).to.false;
+
+			view.isReadOnly = true;
+
+			expect( view.inputView.isReadOnly ).to.true;
+		} );
 	} );
 
 	describe( 'select()', () => {
