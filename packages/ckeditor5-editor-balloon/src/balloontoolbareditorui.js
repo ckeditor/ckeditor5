@@ -70,10 +70,10 @@ export default class BalloonToolbarEditorUI {
 			originFocusTracker: this.focusTracker,
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar: contextualToolbar.toolbarView,
-			beforeFocus: () => {
+			beforeFocus() {
 				return contextualToolbar.show();
 			},
-			afterBlur: () => {
+			afterBlur() {
 				contextualToolbar.hide();
 			}
 		} );
