@@ -19,6 +19,10 @@
  * for `options.origin`.
  * @param {module:ui/toolbar/toolbarview~ToolbarView} options.toolbar A toolbar which is to gain
  * focus when `Alt+F10` is pressed.
+ * @param {Function} [options.beforeFocus] A callback executed before the `options.toolbar` gains focus
+ * upon the `Alt+F10` keystroke.
+ * @param {Function} [options.afterBlur] A callback executed after `options.toolbar` loses focus upon
+ * `Esc` keystroke but before the focus goes back to `options.origin`.
  */
 export default function enableToolbarKeyboardFocus( {
 	origin,

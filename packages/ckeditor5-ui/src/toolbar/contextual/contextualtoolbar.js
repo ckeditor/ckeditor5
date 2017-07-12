@@ -144,7 +144,7 @@ export default class ContextualToolbar extends Plugin {
 	}
 
 	/**
-	 * Adds panel view to the {@link: #_balloon} and attaches panel to the selection.
+	 * Shows the toolbar and attaches it to the selection.
 	 *
 	 * Fires {@link #event:beforeShow} event just before displaying the panel.
 	 */
@@ -185,7 +185,7 @@ export default class ContextualToolbar extends Plugin {
 	}
 
 	/**
-	 * Removes the toolbar from the {@link: #_balloon} which hides it.
+	 * Hides the toolbar.
 	 */
 	hide() {
 		if ( this._balloon.hasView( this.toolbarView ) ) {
