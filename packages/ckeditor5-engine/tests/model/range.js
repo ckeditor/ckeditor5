@@ -733,7 +733,6 @@ describe( 'Range', () => {
 
 	describe( 'getTransformedByDelta', () => {
 		beforeEach( () => {
-			root.appendChildren( new Text( 'foobar' ) );
 			range = Range.createFromParentsAndOffsets( root, 2, root, 5 );
 		} );
 
@@ -918,14 +917,7 @@ describe( 'Range', () => {
 		} );
 
 		describe( 'by SplitDelta', () => {
-			beforeEach( () => {
-				// Cleaning...
-				root.removeChildren( root.childCount );
-			} );
-
 			it( 'split inside range', () => {
-				root.appendChildren( new Element( 'p', null, new Text( 'foobar' ) ) );
-
 				range.start = new Position( root, [ 0, 2 ] );
 				range.end = new Position( root, [ 0, 4 ] );
 
@@ -939,8 +931,6 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split inside range which end is at the end of split element', () => {
-				root.appendChildren( new Element( 'p', null, new Text( 'foobar' ) ) );
-
 				range.start = new Position( root, [ 0, 3 ] );
 				range.end = new Position( root, [ 0, 6 ] );
 
@@ -956,9 +946,6 @@ describe( 'Range', () => {
 
 		describe( 'by MergeDelta', () => {
 			it( 'merge element with collapsed range', () => {
-				root.removeChildren( root.childCount );
-				root.appendChildren( [ new Element( 'p', null, new Text( 'foo' ) ), new Element( 'p', null, new Text( 'bar' ) ) ] );
-
 				range.start = new Position( root, [ 1, 0 ] );
 				range.end = new Position( root, [ 1, 0 ] );
 
@@ -991,9 +978,6 @@ describe( 'Range', () => {
 
 		describe( 'by WrapDelta', () => {
 			it( 'maintans start position when wrapping element in which the range starts and ends', () => {
-				root.removeChildren( root.childCount );
-				root.appendChildren( [ new Element( 'p', null, new Text( 'foo' ) ), new Element( 'p', null, new Text( 'bar' ) ) ] );
-
 				// <p>f[o]o</p><p>bar</p>
 				range.start = new Position( root, [ 0, 1 ] );
 				range.end = new Position( root, [ 0, 2 ] );
@@ -1011,9 +995,6 @@ describe( 'Range', () => {
 			} );
 
 			it( 'maintans start position when wrapping element in which the range starts but not ends', () => {
-				root.removeChildren( root.childCount );
-				root.appendChildren( [ new Element( 'p', null, new Text( 'foo' ) ), new Element( 'p', null, new Text( 'bar' ) ) ] );
-
 				// <p>f[oo</p><p>b]ar</p>
 				range.start = new Position( root, [ 0, 1 ] );
 				range.end = new Position( root, [ 1, 1 ] );
@@ -1031,9 +1012,6 @@ describe( 'Range', () => {
 			} );
 
 			it( 'maintans end position when wrapping element in which the range ends but not starts', () => {
-				root.removeChildren( root.childCount );
-				root.appendChildren( [ new Element( 'p', null, new Text( 'foo' ) ), new Element( 'p', null, new Text( 'bar' ) ) ] );
-
 				// <p>f[oo</p><p>b]ar</p>
 				range.start = new Position( root, [ 0, 1 ] );
 				range.end = new Position( root, [ 1, 1 ] );
@@ -1053,14 +1031,6 @@ describe( 'Range', () => {
 
 		describe( 'by UnwrapDelta', () => {
 			it( 'maintans start position when wrapping element in which the range starts and ends', () => {
-				root.removeChildren( root.childCount );
-				root.appendChildren( [
-					new Element( 'w', null, [
-						new Element( 'p', null, new Text( 'foo' ) )
-					] ),
-					new Element( 'p', null, new Text( 'bar' ) )
-				] );
-
 				// <w><p>f[o]o</p></w><p>bar</p>
 				range.start = new Position( root, [ 0, 0, 1 ] );
 				range.end = new Position( root, [ 0, 0, 2 ] );
@@ -1077,14 +1047,6 @@ describe( 'Range', () => {
 			} );
 
 			it( 'maintans start position when wrapping element in which the range starts but not ends', () => {
-				root.removeChildren( root.childCount );
-				root.appendChildren( [
-					new Element( 'w', null, [
-						new Element( 'p', null, new Text( 'foo' ) )
-					] ),
-					new Element( 'p', null, new Text( 'bar' ) )
-				] );
-
 				// <w><p>f[oo</p></w><p>b]ar</p>
 				range.start = new Position( root, [ 0, 0, 1 ] );
 				range.end = new Position( root, [ 1, 1 ] );
@@ -1104,14 +1066,6 @@ describe( 'Range', () => {
 			} );
 
 			it( 'maintans end position when wrapping element in which the range ends but not starts', () => {
-				root.removeChildren( root.childCount );
-				root.appendChildren( [
-					new Element( 'p', null, new Text( 'foo' ) ),
-					new Element( 'w', null, [
-						new Element( 'p', null, new Text( 'bar' ) )
-					] )
-				] );
-
 				// <p>f[oo</p><w><p>b]ar</p></w>
 				range.start = new Position( root, [ 0, 1 ] );
 				range.end = new Position( root, [ 1, 0, 1 ] );
