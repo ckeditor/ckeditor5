@@ -693,7 +693,10 @@ function getAttrsIfCharacter( node ) {
 
 // Removes selection attributes from element which is not anymore empty.
 function clearAttributesStoredInElement( changes, batch ) {
-	if ( batch.type == 'transparent' ) {
+	// Batch may not be passed to the document#change event in some tests.
+	// See https://github.com/ckeditor/ckeditor5-engine/issues/1001#issuecomment-314202352
+	// Ignore also transparent batches because they are... transparent.
+	if ( !batch || batch.type == 'transparent' ) {
 		return;
 	}
 

@@ -1048,6 +1048,17 @@ describe( 'DocumentSelection', () => {
 
 				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 			} );
+
+			// Rename and some other deltas don't specify range in doc#change event.
+			// So let's see if there's no crash or something.
+			it( 'are not removed on rename', () => {
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+
+				doc.batch().rename( emptyP, 'pnew' );
+
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+			} );
 		} );
 	} );
 } );
