@@ -167,6 +167,19 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 </tr>
 
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-editor-inline"><code>@ckeditor/ckeditor5-editor-balloon-toolbar</code></a>
+		<br>
+		The editor with balloon toolbar (Medium-like) implementation.
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon-toolbar"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-balloon-toolbar.svg" alt="ckeditor5-editor-balloon-toolbar npm package badge"></a>
+		<a href="https://travis-ci.org/ckeditor/ckeditor5-editor-balloon-toolbar"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-editor-balloon-toolbar/master.svg" alt="build status badge"></a>
+		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-editor-balloon-toolbar/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-editor-balloon-toolbar.svg" alt="ckeditor5-editor-balloon-toolbar coverage badge"></a>
+	</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -180,6 +193,19 @@ Each repository independently handles its issues. However, it's recommended to r
 	</tr>
 </thead>
 <tbody>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-adapter-ckfinder"><code>@ckeditor/ckeditor5-adapter-ckfinder</code></a>
+		<br>
+		Introduces the [CKFinder](https://cksource.com/ckfinder) adapter for features which require the upload capabilities.
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-adapter-ckfinder.svg" alt="ckeditor5-adapter-ckfinder npm package badge"></a>
+		<a href="https://travis-ci.org/ckeditor/ckeditor5-adapter-ckfinder"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-adapter-ckfinder/master.svg" alt="build status badge"></a>
+		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-adapter-ckfinder/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-adapter-ckfinder.svg" alt="ckeditor5-adapter-ckfinder coverage badge"></a>
+	</td>
+</tr>
 
 <tr>
 	<td>
