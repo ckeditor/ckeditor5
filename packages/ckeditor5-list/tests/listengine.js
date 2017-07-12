@@ -2638,8 +2638,8 @@ describe( 'ListEngine', () => {
 	} );
 
 	describe( 'post fixer', () => {
-		it( 'should not trigger if change-to-fix is in transparent batch', () => {
-			// Note that the same example is also tested below in insert suite, however in non-transparent batch.
+		it( 'should not be triggered if change-to-fix is in a transparent batch', () => {
+			// Note that the same example is also tested below in the insert suite, however in a non-transparent batch.
 			const input =
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'[]' +
