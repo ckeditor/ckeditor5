@@ -71,7 +71,7 @@ export default class BalloonToolbarEditorUI {
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar: contextualToolbar.toolbarView,
 			beforeFocus() {
-				return contextualToolbar.show();
+				contextualToolbar.show();
 			},
 			afterBlur() {
 				contextualToolbar.hide();
