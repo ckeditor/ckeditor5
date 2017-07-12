@@ -32,6 +32,12 @@
 			box-shadow: inset 0 2px 2px ck-color( $color, $offset - 25 );
 		}
 	}
+
+	// https://github.com/ckeditor/ckeditor5-theme-lark/issues/98
+	&.ck-disabled {
+		background: ck-color( $color, $offset + 10 );
+		border-color: ck-border-color( $color, $offset + 10 );
+	}
 }
 
 /**
@@ -69,6 +75,11 @@ a.ck-button {
 	// https://github.com/ckeditor/ckeditor5-theme-lark/issues/70
 	&.ck-disabled {
 		@include ck-button-icon {
+			@include ck-disabled;
+		}
+
+		// https://github.com/ckeditor/ckeditor5-theme-lark/issues/98
+		.ck-button__label {
 			@include ck-disabled;
 		}
 	}
