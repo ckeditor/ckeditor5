@@ -198,7 +198,7 @@ Each repository independently handles its issues. However, it's recommended to r
 	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-adapter-ckfinder"><code>@ckeditor/ckeditor5-adapter-ckfinder</code></a>
 		<br>
-		Introduces the [CKFinder](https://cksource.com/ckfinder) adapter for features which require the upload capabilities.
+		Introduces the <a href="https://cksource.com/ckfinder">CKFinder</a> adapter for features which require the upload capabilities.
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-adapter-ckfinder.svg" alt="ckeditor5-adapter-ckfinder npm package badge"></a>
