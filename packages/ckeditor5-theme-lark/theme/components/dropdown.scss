@@ -15,12 +15,8 @@
 		padding-right: 2 * ck-spacing();
 
 		// https://github.com/ckeditor/ckeditor5-theme-lark/issues/70
-		&.ck-disabled {
-			@include ck-button-colors( 'background', 10 );
-
-			.ck-button__label {
-				@include ck-disabled;
-			}
+		&.ck-disabled .ck-button__label {
+			@include ck-disabled;
 		}
 
 		// #23
