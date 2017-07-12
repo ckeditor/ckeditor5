@@ -2638,6 +2638,29 @@ describe( 'ListEngine', () => {
 	} );
 
 	describe( 'post fixer', () => {
+		it( 'should not be triggered if change-to-fix is in a transparent batch', () => {
+			// Note that the same example is also tested below in the insert suite, however in a non-transparent batch.
+			const input =
+				'<listItem indent="0" type="bulleted">a</listItem>' +
+				'[]' +
+				'<listItem indent="1" type="bulleted">b</listItem>';
+
+			const inserted = '<paragraph>x</paragraph>';
+
+			const output =
+				'<listItem indent="0" type="bulleted">a</listItem>' +
+				'<paragraph>x</paragraph>' +
+				'<listItem indent="1" type="bulleted">b</listItem>';
+
+			setModelData( modelDoc, input );
+
+			modelDoc.enqueueChanges( () => {
+				modelDoc.batch( 'transparent' ).insert( modelDoc.selection.getFirstPosition(), parseModel( inserted, modelDoc.schema ) );
+			} );
+
+			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
+		} );
+
 		describe( 'insert', () => {
 			function test( testName, input, inserted, output ) {
 				it( testName, () => {
