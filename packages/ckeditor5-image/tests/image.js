@@ -68,7 +68,7 @@ describe( 'Image', () => {
 			// When image is selected along with text.
 			setModelData( newEditor.document, '<paragraph>fo[o</paragraph><image alt="alt text" src="foo.png"></image>]' );
 
-			contextualToolbar._showPanel();
+			contextualToolbar.show();
 
 			// ContextualToolbar should be visible.
 			expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
@@ -76,7 +76,7 @@ describe( 'Image', () => {
 			// When only image is selected.
 			setModelData( newEditor.document, '<paragraph>foo</paragraph>[<image alt="alt text" src="foo.png"></image>]' );
 
-			contextualToolbar._showPanel();
+			contextualToolbar.show();
 
 			// ContextualToolbar should not be visible.
 			expect( balloon.visibleView ).to.be.null;
