@@ -6,5 +6,9 @@
   ],
   "hoist": true,
   "nohoist": "guppy-pre-commit",
-  "version": "0.0.0"
+  "commands": {
+    "bootstrap": {
+      "concurrency": 1
+    }
+  }
 }
