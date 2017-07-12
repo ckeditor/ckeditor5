@@ -570,6 +570,10 @@ export function viewToModelPosition( evt, data ) {
  */
 export function modelChangePostFixer( document ) {
 	return ( evt, type, changes, batch ) => {
+		if ( batch.type == 'transparent' ) {
+			return;
+		}
+
 		if ( type == 'remove' ) {
 			// Fix list items after the cut-out range.
 			// This fix is needed if items in model after cut-out range have now wrong indents compared to their previous siblings.
