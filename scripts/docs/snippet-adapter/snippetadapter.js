@@ -31,6 +31,7 @@ module.exports = function snippetAdapter( data ) {
 
 function getWebpackConfig( config ) {
 	return {
+
 		devtool: 'source-map',
 
 		entry: config.entry,
@@ -49,6 +50,16 @@ function getWebpackConfig( config ) {
 				raw: true
 			} )
 		],
+
+		// Configure the paths so building CKEditor 5 snippets work even if the script
+		// is triggered from a directory outside ckeditor5 (e.g. multi-project case).
+		resolve: {
+			modules: getModuleResolvePaths()
+		},
+
+		resolveLoader: {
+			modules: getModuleResolvePaths()
+		},
 
 		module: {
 			rules: [
@@ -94,4 +105,11 @@ function generateSnippetHtml( data ) {
 	html += `<script src="${ data.scriptPath }"></script>`;
 
 	return html;
+}
+
+function getModuleResolvePaths() {
+	return [
+		path.resolve( __dirname, '..', '..', '..', 'node_modules' ),
+		'node_modules'
+	];
 }
