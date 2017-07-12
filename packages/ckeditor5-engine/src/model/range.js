@@ -472,13 +472,13 @@ export default class Range {
 		} else {
 			const sourceRange = Range.createFromPositionAndShift( sourcePosition, howMany );
 
-			// Edge case for merge detla.
+			// Edge case for merge delta.
 			if (
 				deltaType == 'merge' &&
 				this.isCollapsed &&
 				( this.start.isEqual( sourceRange.start ) || this.start.isEqual( sourceRange.end ) )
 			) {
-				// Collapsed range is in merged element.
+				// Collapsed range is in merged element, at the beginning or at the end of it.
 				// Without fix, the range would end up in the graveyard, together with removed element.
 				// <p>foo</p><p>[]bar</p> -> <p>foobar</p><p>[]</p> -> <p>foobar</p> -> <p>foo[]bar</p>
 				// <p>foo</p><p>bar[]</p>
@@ -512,7 +512,7 @@ export default class Range {
 			// <p>c[d</p><w>{<p>a]b</p>}</w><p>xx</p>^   -->   <p>c[d</p><w></w><p>xx</p><p>a]b</p>  // Note <p>xx</p> inclusion.
 			// <p>c[d</p>^<w>{<p>a]b</p>}</w>            -->   <p>c[d</p><p>a]b</p><w></w>
 			if (
-				sourceRange.containsPosition( this.end ) &&
+				( sourceRange.containsPosition( this.end ) || sourceRange.end.isEqual( this.end ) ) &&
 				this.containsPosition( sourceRange.start ) &&
 				this.start.isBefore( targetPosition )
 			) {

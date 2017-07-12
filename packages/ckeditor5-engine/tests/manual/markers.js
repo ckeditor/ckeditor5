@@ -17,7 +17,7 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
 import buildModelConverter from '../../src/conversion/buildmodelconverter';
 import Position from '../../src/model/position';
-import LiveRange from '../../src/model/liverange';
+import Range from '../../src/model/range';
 import ViewAttributeElement from '../../src/view/attributeelement';
 
 const markerNames = [];
@@ -72,7 +72,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 	model.enqueueChanges( () => {
 		const root = model.getRoot();
-		const range = new LiveRange( new Position( root, [ 0, 10 ] ), new Position( root, [ 0, 16 ] ) );
+		const range = new Range( new Position( root, [ 0, 10 ] ), new Position( root, [ 0, 16 ] ) );
 		const name = 'highlight:yellow:' + uid();
 
 		markerNames.push( name );
@@ -89,7 +89,7 @@ function uid() {
 
 function addHighlight( color ) {
 	model.enqueueChanges( () => {
-		const range = LiveRange.createFromRange( model.selection.getFirstRange() );
+		const range = Range.createFromRange( model.selection.getFirstRange() );
 		const name = 'highlight:' + color + ':' + uid();
 
 		markerNames.push( name );
