@@ -429,6 +429,8 @@ export default class Document {
 	 * * 'remove' when nodes are removed,
 	 * * 'reinsert' when remove is undone,
 	 * * 'move' when nodes are moved,
+	 * * 'rename' when element is renamed,
+	 * * 'marker' when a marker changes (added, removed or its range is changed),
 	 * * 'addAttribute' when attributes are added,
 	 * * 'removeAttribute' when attributes are removed,
 	 * * 'changeAttribute' when attributes change,
@@ -439,9 +441,9 @@ export default class Document {
 	 * @event change
 	 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attribute'.
 	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/range~Range} data.range Range in model containing changed nodes. Note that the range state is
+	 * @param {module:engine/model/range~Range} [data.range] Range in model containing changed nodes. Note that the range state is
 	 * after changes has been done, i.e. for 'remove' the range will be in the {@link #graveyard graveyard root}.
-	 * This is `undefined` for "...root..." types.
+	 * The range is not defined for root, rename and marker types.
 	 * @param {module:engine/model/position~Position} [data.sourcePosition] Change source position.
 	 * Exists for 'remove', 'reinsert' and 'move'.
 	 * Note that this position state is before changes has been done, i.e. for 'reinsert' the source position will be in the
@@ -451,7 +453,7 @@ export default class Document {
 	 * 'changeRootAttribute' type.
 	 * @param {*} [data.newValue] Only for 'addAttribute', 'addRootAttribute', 'changeAttribute' or
 	 * 'changeRootAttribute' type.
-	 * @param {module:engine/model/rootelement~RootElement} [changeInfo.root] Root element which attributes got changed. This is defined
+	 * @param {module:engine/model/rootelement~RootElement} [data.root] Root element which attributes got changed. This is defined
 	 * only for root types.
 	 * @param {module:engine/model/batch~Batch} batch A {@link module:engine/model/batch~Batch batch}
 	 * of changes which this change is a part of.
