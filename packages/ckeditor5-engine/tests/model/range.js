@@ -932,6 +932,19 @@ describe( 'Range', () => {
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
 			} );
 
+			it( 'split inside range which starts at the beginning of split element', () => {
+				range.start = new Position( root, [ 0, 0 ] );
+				range.end = new Position( root, [ 0, 4 ] );
+
+				const delta = getSplitDelta( new Position( root, [ 0, 3 ] ), new Element( 'p' ), 3, 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 0 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
+			} );
+
 			it( 'split inside range which end is at the end of split element', () => {
 				range.start = new Position( root, [ 0, 3 ] );
 				range.end = new Position( root, [ 0, 6 ] );
