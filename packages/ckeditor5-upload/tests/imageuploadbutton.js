@@ -37,6 +37,19 @@ describe( 'ImageUploadButton', () => {
 		expect( button ).to.be.instanceOf( FileDialogButtonView );
 	} );
 
+	it( 'should be disabled while ImageUploadCommand is disabled', () => {
+		const button = editor.ui.componentFactory.create( 'insertImage' );
+		const command = editor.commands.get( 'imageUpload' );
+
+		command.isEnabled = true;
+
+		expect( button.isEnabled ).to.true;
+
+		command.isEnabled = false;
+
+		expect( button.isEnabled ).to.false;
+	} );
+
 	it( 'should execute imageUpload command', () => {
 		const executeStub = sinon.stub( editor, 'execute' );
 		const button = editor.ui.componentFactory.create( 'insertImage' );
