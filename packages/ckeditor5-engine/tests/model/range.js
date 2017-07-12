@@ -69,7 +69,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'isEqual', () => {
+	describe( 'isEqual()', () => {
 		it( 'should return true if the ranges are the same', () => {
 			const sameStart = Position.createFromPosition( start );
 			const sameEnd = Position.createFromPosition( end );
@@ -109,7 +109,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'isIntersecting', () => {
+	describe( 'isIntersecting()', () => {
 		it( 'should return true if given range is equal', () => {
 			const otherRange = Range.createFromRange( range );
 			expect( range.isIntersecting( otherRange ) ).to.be.true;
@@ -158,7 +158,7 @@ describe( 'Range', () => {
 			root.insertChildren( 0, [ p ] );
 		} );
 
-		describe( 'createIn', () => {
+		describe( 'createIn()', () => {
 			it( 'should return range', () => {
 				const range = Range.createIn( p );
 
@@ -167,7 +167,7 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createOn', () => {
+		describe( 'createOn()', () => {
 			it( 'should return range', () => {
 				const range = Range.createOn( p );
 
@@ -176,7 +176,7 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createFromParentsAndOffsets', () => {
+		describe( 'createFromParentsAndOffsets()', () => {
 			it( 'should return range', () => {
 				const range = Range.createFromParentsAndOffsets( root, 0, p, 2 );
 
@@ -185,7 +185,7 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createFromPositionAndShift', () => {
+		describe( 'createFromPositionAndShift()', () => {
 			it( 'should make range from start position and offset', () => {
 				const position = new Position( root, [ 1, 2, 3 ] );
 				const range = Range.createFromPositionAndShift( position, 4 );
@@ -197,7 +197,7 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createFromRange', () => {
+		describe( 'createFromRange()', () => {
 			it( 'should create a new instance of Range that is equal to passed range', () => {
 				const clone = Range.createFromRange( range );
 
@@ -206,7 +206,7 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createFromRanges', () => {
+		describe( 'createFromRanges()', () => {
 			function makeRanges( root, ...points ) {
 				const ranges = [];
 
@@ -259,7 +259,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getWalker', () => {
+	describe( 'getWalker()', () => {
 		it( 'should be possible to iterate using this method', () => {
 			prepareRichRoot( root );
 
@@ -289,7 +289,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getItems', () => {
+	describe( 'getItems()', () => {
 		it( 'should iterate over all items in the range', () => {
 			prepareRichRoot( root );
 
@@ -328,7 +328,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getPositions', () => {
+	describe( 'getPositions()', () => {
 		beforeEach( () => {
 			prepareRichRoot( root );
 		} );
@@ -368,7 +368,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'containsPosition', () => {
+	describe( 'containsPosition()', () => {
 		beforeEach( () => {
 			range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
 		} );
@@ -419,7 +419,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( '_getTransformedByInsertion', () => {
+	describe( '_getTransformedByInsertion()', () => {
 		it( 'should return an array of Range objects', () => {
 			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 			const transformed = range._getTransformedByInsertion( new Position( root, [ 2 ] ), 2 );
@@ -524,7 +524,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( '_getTransformedByMove', () => {
+	describe( '_getTransformedByMove()', () => {
 		it( 'should return an array of Range objects', () => {
 			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 			const transformed = range._getTransformedByMove( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ), 2 );
@@ -642,7 +642,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getDifference', () => {
+	describe( 'getDifference()', () => {
 		let range;
 
 		beforeEach( () => {
@@ -694,7 +694,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getIntersection', () => {
+	describe( 'getIntersection()', () => {
 		let range;
 
 		beforeEach( () => {
@@ -731,7 +731,9 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getTransformedByDelta', () => {
+	// Note: We don't create model element structure in these tests because this method
+	// is used by OT so it must not check the structure.
+	describe( 'getTransformedByDelta()', () => {
 		beforeEach( () => {
 			range = Range.createFromParentsAndOffsets( root, 2, root, 5 );
 		} );
@@ -1083,7 +1085,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getTransformedByDeltas', () => {
+	describe( 'getTransformedByDeltas()', () => {
 		beforeEach( () => {
 			root.appendChildren( new Text( 'foobar' ) );
 			range = Range.createFromParentsAndOffsets( root, 2, root, 5 );
@@ -1125,7 +1127,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getMinimalFlatRanges', () => {
+	describe( 'getMinimalFlatRanges()', () => {
 		beforeEach( () => {
 			prepareRichRoot( root );
 		} );
@@ -1187,7 +1189,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'fromJSON', () => {
+	describe( 'fromJSON()', () => {
 		it( 'should create range from given JSON object', () => {
 			const serialized = jsonParseStringify( range );
 			const deserialized = Range.fromJSON( serialized, doc );
