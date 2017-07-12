@@ -113,7 +113,7 @@ describe( 'ContextualToolbar', () => {
 		} );
 	} );
 
-	describe( '_showPanel()', () => {
+	describe( 'show()', () => {
 		let balloonAddSpy, forwardSelectionRect, backwardSelectionRect;
 
 		beforeEach( () => {
@@ -127,9 +127,9 @@ describe( 'ContextualToolbar', () => {
 			};
 
 			backwardSelectionRect = {
-				top: 100,
+				top: 200,
 				height: 10,
-				bottom: 110,
+				bottom: 210,
 				left: 200,
 				width: 50,
 				right: 250
@@ -146,13 +146,13 @@ describe( 'ContextualToolbar', () => {
 
 			const defaultPositions = BalloonPanelView.defaultPositions;
 
-			contextualToolbar._showPanel();
+			contextualToolbar.show();
 
-			sinon.assert.calledWithExactly( balloonAddSpy, {
+			sinon.assert.calledWith( balloonAddSpy, {
 				view: contextualToolbar.toolbarView,
 				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
 				position: {
-					target: sinon.match( value => value() == backwardSelectionRect ),
+					target: sinon.match.func,
 					limiter: editor.ui.view.editable.element,
 					positions: [
 						defaultPositions.southEastArrowNorth,
@@ -164,6 +164,8 @@ describe( 'ContextualToolbar', () => {
 					]
 				}
 			} );
+
+			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( backwardSelectionRect );
 		} );
 
 		it( 'should add #toolbarView to the #_balloon and attach the #_balloon to the selection for the backward selection', () => {
@@ -171,13 +173,13 @@ describe( 'ContextualToolbar', () => {
 
 			const defaultPositions = BalloonPanelView.defaultPositions;
 
-			contextualToolbar._showPanel();
+			contextualToolbar.show();
 
 			sinon.assert.calledWithExactly( balloonAddSpy, {
 				view: contextualToolbar.toolbarView,
 				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
 				position: {
-					target: sinon.match( value => value() == forwardSelectionRect ),
+					target: sinon.match.func,
 					limiter: editor.ui.view.editable.element,
 					positions: [
 						defaultPositions.northWestArrowSouth,
@@ -189,6 +191,8 @@ describe( 'ContextualToolbar', () => {
 					]
 				}
 			} );
+
+			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( forwardSelectionRect );
 		} );
 
 		it( 'should update balloon position on ViewDocument#render event while balloon is added to the #_balloon', () => {
@@ -198,7 +202,7 @@ describe( 'ContextualToolbar', () => {
 
 			editor.editing.view.fire( 'render' );
 
-			contextualToolbar._showPanel();
+			contextualToolbar.show();
 			sinon.assert.notCalled( spy );
 
 			editor.editing.view.fire( 'render' );
@@ -208,28 +212,44 @@ describe( 'ContextualToolbar', () => {
 		it( 'should not add #toolbarView to the #_balloon more than once', () => {
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar._showPanel();
-			contextualToolbar._showPanel();
+			contextualToolbar.show();
+			contextualToolbar.show();
 			sinon.assert.calledOnce( balloonAddSpy );
 		} );
 
-		it( 'should not add #toolbarView to the #_balloon when editor is not focused', () => {
-			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
-			editor.editing.view.isFocused = false;
+		describe( 'on #_selectionChangeDebounced event', () => {
+			let showSpy;
 
-			contextualToolbar._showPanel();
-			sinon.assert.notCalled( balloonAddSpy );
-		} );
+			beforeEach( () => {
+				showSpy = sinon.spy( contextualToolbar, 'show' );
+			} );
 
-		it( 'should not add #toolbarView to the #_balloon when selection is collapsed', () => {
-			setData( editor.document, '<paragraph>b[]ar</paragraph>' );
+			it( 'should not be called when the editor is not focused', () => {
+				setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+				editor.editing.view.isFocused = false;
 
-			contextualToolbar._showPanel();
-			sinon.assert.notCalled( balloonAddSpy );
+				contextualToolbar.fire( '_selectionChangeDebounced' );
+				sinon.assert.notCalled( showSpy );
+			} );
+
+			it( 'should not be called when the selection is collapsed', () => {
+				setData( editor.document, '<paragraph>b[]ar</paragraph>' );
+
+				contextualToolbar.fire( '_selectionChangeDebounced' );
+				sinon.assert.notCalled( showSpy );
+			} );
+
+			it( 'should be called when the selection is not collapsed and editor is focused', () => {
+				setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+				editor.editing.view.isFocused = true;
+
+				contextualToolbar.fire( '_selectionChangeDebounced' );
+				sinon.assert.calledOnce( showSpy );
+			} );
 		} );
 	} );
 
-	describe( '_hidePanel()', () => {
+	describe( 'hide()', () => {
 		let removeBalloonSpy;
 
 		beforeEach( () => {
@@ -240,9 +260,9 @@ describe( 'ContextualToolbar', () => {
 		it( 'should remove #toolbarView from the #_balloon', () => {
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar._showPanel();
+			contextualToolbar.show();
 
-			contextualToolbar._hidePanel();
+			contextualToolbar.hide();
 			sinon.assert.calledWithExactly( removeBalloonSpy, contextualToolbar.toolbarView );
 		} );
 
@@ -251,15 +271,15 @@ describe( 'ContextualToolbar', () => {
 
 			const spy = sandbox.spy( balloon, 'updatePosition' );
 
-			contextualToolbar._showPanel();
-			contextualToolbar._hidePanel();
+			contextualToolbar.show();
+			contextualToolbar.hide();
 
 			editor.editing.view.fire( 'render' );
 			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should not remove #ttolbarView when is not added to the #_balloon', () => {
-			contextualToolbar._hidePanel();
+			contextualToolbar.hide();
 
 			sinon.assert.notCalled( removeBalloonSpy );
 		} );
@@ -295,8 +315,8 @@ describe( 'ContextualToolbar', () => {
 		beforeEach( () => {
 			setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
-			showPanelSpy = sandbox.spy( contextualToolbar, '_showPanel' );
-			hidePanelSpy = sandbox.spy( contextualToolbar, '_hidePanel' );
+			showPanelSpy = sandbox.spy( contextualToolbar, 'show' );
+			hidePanelSpy = sandbox.spy( contextualToolbar, 'hide' );
 		} );
 
 		it( 'should open when selection stops changing', () => {
@@ -395,7 +415,7 @@ describe( 'ContextualToolbar', () => {
 			contextualToolbar.on( 'beforeShow', spy );
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar._showPanel();
+			contextualToolbar.show();
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -408,7 +428,7 @@ describe( 'ContextualToolbar', () => {
 				stop();
 			} );
 
-			contextualToolbar._showPanel();
+			contextualToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
 		} );
 	} );
@@ -421,14 +441,8 @@ describe( 'ContextualToolbar', () => {
 		sandbox.stub( editingView.domConverter, 'viewRangeToDom', ( ...args ) => {
 			const domRange = originalViewRangeToDom.apply( editingView.domConverter, args );
 
-			sandbox.stub( domRange, 'getClientRects', () => {
-				return {
-					length: 2,
-					item( id ) {
-						return id === 0 ? forwardSelectionRect : backwardSelectionRect;
-					}
-				};
-			} );
+			sandbox.stub( domRange, 'getClientRects' )
+				.returns( [ forwardSelectionRect, backwardSelectionRect ] );
 
 			return domRange;
 		} );
