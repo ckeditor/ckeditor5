@@ -10,7 +10,7 @@
 /* global document */
 
 /**
- * Handles a DOM `click` event outside of specified element and fires an action.
+ * Handles a DOM `click` event outside of specified elements and fires an action.
  *
  * Note that it is not handled by a `click` event, this is to avoid situation when click on some trigger
  * opens and closes element at the same time.
@@ -18,13 +18,21 @@
  * @param {Object} options Configuration options.
  * @param {module:utils/dom/emittermixin~Emitter} options.emitter The emitter to which this behavior should be added.
  * @param {Function} options.activator Function returning a `Boolean`, to determine whether handler is active.
- * @param {HTMLElement} options.contextElement `HTMLElement` that clicking inside of which will not fire the callback.
- * @param {Function} options.callback Function fired after clicking outside of a specified element.
+ * @param {Array.<HTMLElement>} options.contextElements `HTMLElement`s that clicking inside of any of them will not fire the callback.
+ * @param {Function} options.callback Function fired after clicking outside of specified elements.
  */
-export default function clickOutsideHandler( { emitter, activator, callback, contextElement } ) {
+export default function clickOutsideHandler( { emitter, activator, callback, contextElements } ) {
 	emitter.listenTo( document, 'mouseup', ( evt, { target } ) => {
-		if ( activator() && !contextElement.contains( target ) ) {
-			callback();
+		if ( !activator() ) {
+			return;
 		}
+
+		for ( const contextElement of contextElements ) {
+			if ( contextElement.contains( target ) ) {
+				return;
+			}
+		}
+
+		callback();
 	} );
 }
