@@ -678,8 +678,8 @@ export default class DocumentSelection extends Selection {
  */
 
 // Helper function for {@link module:engine/model/documentselection~DocumentSelection#_updateAttributes}.
-// It takes model item, checks whether
-// it is a text node (or text proxy) and if so, returns it's attributes. If not, returns `null`.
+//
+// It takes model item, checks whether it is a text node (or text proxy) and, if so, returns it's attributes. If not, returns `null`.
 //
 // @param {module:engine/model/item~Item|null}  node
 // @returns {Boolean}
@@ -691,7 +691,7 @@ function getAttrsIfCharacter( node ) {
 	return null;
 }
 
-// Removes selection attributes from element which is not anymore empty.
+// Removes selection attributes from element which is not empty anymore.
 function clearAttributesStoredInElement( changes, batch ) {
 	// Batch may not be passed to the document#change event in some tests.
 	// See https://github.com/ckeditor/ckeditor5-engine/issues/1001#issuecomment-314202352
@@ -702,7 +702,7 @@ function clearAttributesStoredInElement( changes, batch ) {
 
 	const changeParent = changes.range && changes.range.start.parent;
 
-	// changes.range is not set in case of rename, root and marker operations.
+	// `changes.range` is not set in case of rename, root and marker operations.
 	// None of them may lead to the element becoming non-empty.
 	if ( !changeParent || changeParent.isEmpty ) {
 		return;

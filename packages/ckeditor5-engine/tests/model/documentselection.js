@@ -997,14 +997,15 @@ describe( 'DocumentSelection', () => {
 				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
 			} );
 
-			it( 'are not removed when containing element is merged with another empty element', () => {
+			it( 'are not removed or merged when containing element is merged with another empty element', () => {
 				const emptyP2 = new Element( 'p', null );
 				root.appendChildren( emptyP2 );
 
 				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
-				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
+				emptyP2.setAttribute( abcStoreAttrKey, 'bar' );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
+				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
 
 				// <emptyP>{}<emptyP2>
 				doc.batch().merge( Position.createAfter( emptyP ) );
