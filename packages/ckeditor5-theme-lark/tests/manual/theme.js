@@ -17,6 +17,8 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
+import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
+import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
 
 import boldIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
@@ -67,13 +69,17 @@ const ui = testUtils.createTestUIView( {
 	'toolbarRounded': '#toolbar-rounded',
 	'toolbarWrap': '#toolbar-wrap',
 	'toolbarSeparator': '#toolbar-separator',
-	'toolbarMultiRow': '#toolbar-multi-row'
+	'toolbarMultiRow': '#toolbar-multi-row',
+
+	'inputLabeled': '#input-labeled',
+	'inputDisabled': '#input-disabled'
 } );
 
 renderIcon();
 renderButton();
 renderDropdown();
 renderToolbar();
+renderInput();
 
 function renderIcon() {
 	// --- In-text ------------------------------------------------------------
@@ -301,6 +307,15 @@ function renderToolbar() {
 	] ) );
 }
 
+function renderInput() {
+	ui.inputLabeled.add( input() );
+	ui.inputDisabled.add( input( {
+		label: 'A disabled input',
+		isEnabled: false,
+		value: 'Disabled input value'
+	} ) );
+}
+
 function text() {
 	return new TextView();
 }
@@ -354,4 +369,16 @@ function toolbarSeparator() {
 
 function toolbarNewLine() {
 	return new ToolbarNewlineView();
+}
+
+function input( {
+	label = 'Labeled input',
+	isEnabled = true,
+	value = 'The value of the input'
+} = {} ) {
+	const labeledInput = new LabeledInputView( {}, InputTextView );
+
+	labeledInput.set( { isEnabled, label, value } );
+
+	return labeledInput;
 }
