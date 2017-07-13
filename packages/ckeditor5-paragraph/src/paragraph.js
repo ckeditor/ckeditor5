@@ -79,7 +79,13 @@ export default class Paragraph extends Plugin {
 		// Post-fixer which takes care of adding empty paragraph elements to empty roots.
 		// Besides fixing content on #changesDone we also need to handle #dataReady because
 		// if initial data is empty or setData() wasn't even called there will be no #change fired.
-		doc.on( 'change', ( evt, type, changes, batch ) => findEmptyRoots( doc, batch ) );
+		doc.on( 'change', ( evt, type, changes, batch ) => {
+			if ( batch.type == 'transparent' ) {
+				return;
+			}
+
+			findEmptyRoots( doc, batch );
+		} );
 		doc.on( 'changesDone', autoparagraphEmptyRoots, { priority: 'lowest' } );
 		editor.on( 'dataReady', () => {
 			findEmptyRoots( doc, doc.batch( 'transparent' ) );
@@ -285,10 +291,12 @@ function autoparagraphEmptyRoots() {
 		// If paragraph element is allowed in the root, create paragraph element.
 		if ( schema.check( query ) ) {
 			doc.enqueueChanges( () => {
+				// Remove root from `rootsToFix` here, before executing batch, to prevent infinite loops.
+				rootsToFix.delete( root );
+
+				// Fix empty root.
 				batch.insert( ModelPosition.createAt( root ), new ModelElement( 'paragraph' ) );
 			} );
 		}
 	}
-
-	rootsToFix.clear();
 }
