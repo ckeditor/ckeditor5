@@ -14,5 +14,11 @@
 			@include ck-focus-ring();
 			@include ck-box-shadow( $ck-focus-outer-shadow, $ck-inner-shadow );
 		}
+
+		&[readonly] {
+			border: 1px solid ck-border-color( 'foreground', 10 );
+			background: ck-color( 'foreground' );
+			color: ck-color( 'text', 20 );
+		}
 	}
 }
