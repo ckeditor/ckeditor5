@@ -33,7 +33,7 @@ export default class LinkCommand extends Command {
 		const doc = this.editor.document;
 
 		this.value = doc.selection.getAttribute( 'linkHref' );
-		this.isEnabled = this._checkEnabled();
+		this.isEnabled = doc.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
 	}
 
 	/**
@@ -93,23 +93,5 @@ export default class LinkCommand extends Command {
 				}
 			}
 		} );
-	}
-
-	/**
-	 * Checks whether the command can be enabled in the current context.
-	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
-	 */
-	_checkEnabled() {
-		const doc = this.editor.document;
-		const selectedElement = doc.selection.getSelectedElement();
-
-		// https://github.com/ckeditor/ckeditor5-link/issues/85
-		if ( selectedElement && selectedElement.is( 'image' ) ) {
-			return false;
-		}
-
-		return doc.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
 	}
 }
