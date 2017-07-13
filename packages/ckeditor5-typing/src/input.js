@@ -155,21 +155,24 @@ class MutationHandler {
 	}
 
 	/**
-	 * Handles unusual situations when single container's children mutated. This happens when browser is trying to "fix"
-	 * DOM in certain situations. For example, when user starts to typing in `<p><a href=""><i>Link{}</i></a></p>` browsers
-	 * changes order of elements to `<p><i><a href="">Link</a>{}</i></p>`. Similar situation happens when spell checker
+	 * Handles situations when container's children mutated during input. This can happen when
+	 * browser is trying to "fix" DOM in certain situations. For example, when user starts to type
+	 * in `<p><a href=""><i>Link{}</i></a></p>` browser might change order of elements
+	 * to `<p><i><a href="">Link</a>x{}</i></p>`. Similar situation happens when spell checker
 	 * replaces a word wrapped with `<strong>` to a word wrapped with `<b>` element.
 	 *
-	 * To handle such situations, DOM common ancestor of all mutations is converted to the model representation.
-	 * It is then compared with current model to calculate proper text change.
+	 * To handle such situations, DOM common ancestor of all mutations is converted to the model representation
+	 * and then compared with current model to calculate proper text change.
 	 *
-	 * @param mutations
-	 * @param viewSelection
+	 * NOTE: Single text node insertion is handled in {@link #_handleTextNodeInsertion} and text node mutation is handled
+	 * in {@link #_handleTextMutation}).
+	 *
 	 * @private
+	 * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
+	 * module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
+	 * @param {module:engine/view/selection~Selection|null} viewSelection
 	 */
 	_handleContainerChildrenMutations( mutations, viewSelection ) {
-		// TODO: Describe what is happening in the reported issue.
-
 		// Get common ancestor of all mutations.
 		const mutationsCommonAncestor = getMutationsCommonAncestor( mutations );
 
@@ -325,6 +328,7 @@ for ( let code = 112; code <= 135; code++ ) {
 //
 // Note: This implementation is very simple and will need to be refined with time.
 //
+// @private
 // @param {engine.view.observer.keyObserver.KeyEventData} keyData
 // @returns {Boolean}
 function isSafeKeystroke( keyData ) {
@@ -346,6 +350,10 @@ function compareChildNodes( oldChild, newChild ) {
 	}
 }
 
+// Returns change made to a single text node. Returns `undefined` if more than a single text node was changed.
+//
+// @private
+// @param mutation
 function getSingleTextNodeChange( mutation ) {
 	// One new node.
 	if ( mutation.newChildren.length - mutation.oldChildren.length != 1 ) {
@@ -371,6 +379,11 @@ function getSingleTextNodeChange( mutation ) {
 	return change;
 }
 
+// Returns first common ancestor of all mutations.
+//
+// @private
+// @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
+// module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
 function getMutationsCommonAncestor( mutations ) {
 	// If just 1 mutation present - return mutation node.
 	if ( mutations.length == 1 ) {
@@ -408,15 +421,14 @@ function getMutationsCommonAncestor( mutations ) {
 	return i == 0 ? null : ancestorsLists[ 0 ][ i - 1 ];
 }
 
-// Model changes functions.
-// ********************************************************
-
-// Returns true if container children have mutated. Returns true if only children mutations happened and more than a single
-// text node was changed (single text node insertion is handled in
-// {@link module:typing/input~MutationHandler#_handleTextNodeInsertion).
+// Returns true if container children have mutated and more than a single text node was changed. Single text node
+// child insertion is handled in {@link module:typing/input~MutationHandler#_handleTextNodeInsertion} and text
+// mutation is handled in {@link module:typing/input~MutationHandler#_handleTextMutation}.
 //
 // @private
-// @param mutations
+// @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
+// module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
+// @returns {Boolean}
 function containerChildrenMutated( mutations ) {
 	if ( mutations.length == 0 ) {
 		return false;
@@ -446,14 +458,11 @@ function containsOnlyTextNodes( children ) {
 	return true;
 }
 
-// TODO: update docs.
-/**
- * Calculates first change index and number of characters that should be inserted and deleted starting from that index.
- *
- * @private
- * @param diffResult
- * @return {{insertions: number, deletions: number, firstChangeAt: *}}
- */
+// Calculates first change index and number of characters that should be inserted and deleted starting from that index.
+//
+// @private
+// @param diffResult
+// @return {{insertions: number, deletions: number, firstChangeAt: *}}
 function calculateChanges( diffResult ) {
 	// Index where the first change happens. Used to set the position from which nodes will be removed and where will be inserted.
 	let firstChangeAt = null;
