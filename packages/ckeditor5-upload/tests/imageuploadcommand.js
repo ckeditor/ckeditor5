@@ -11,6 +11,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import Image from '@ckeditor/ckeditor5-image/src/image/imageengine';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 
 describe( 'ImageUploadCommand', () => {
 	let editor, command, adapterMock, document, fileRepository;
@@ -76,6 +77,21 @@ describe( 'ImageUploadCommand', () => {
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( document ) ).to.equal( `<image src="image.png"></image>[<image uploadId="${ id }"></image>]` );
+		} );
+
+		it( 'should allow inserting image at some custom position', () => {
+			const file = createNativeFileMock();
+			setModelData( document, '[<paragraph>foo</paragraph>]<paragraph>bar</paragraph>' );
+
+			const selectedElement = document.selection.getSelectedElement();
+			const customPosition = ModelPosition.createBefore( selectedElement );
+
+			command.execute( { file, insertPosition: customPosition } );
+
+			const id = fileRepository.getLoader( file ).id;
+			expect( getModelData( document ) ).to.equal(
+				`[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph><paragraph>bar</paragraph>`
+			);
 		} );
 
 		it( 'should not insert image when proper insert position cannot be found', () => {

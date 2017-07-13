@@ -44,7 +44,7 @@ export default class ImageUploadCommand extends Command {
 		}
 
 		doc.enqueueChanges( () => {
-			const insertPosition = getInsertionPosition( doc );
+			const insertPosition = options.insertPosition || getInsertionPosition( doc );
 
 			// No position to insert.
 			if ( !insertPosition ) {
