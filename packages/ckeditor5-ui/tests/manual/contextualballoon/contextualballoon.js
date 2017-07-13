@@ -137,7 +137,7 @@ class PluginGeneric extends Plugin {
 		clickOutsideHandler( {
 			emitter: this.view,
 			activator: () => this._isVisible,
-			contextElement: this.view.element,
+			contextElements: [ this.view.element ],
 			callback: () => this._hidePanel()
 		} );
 	}

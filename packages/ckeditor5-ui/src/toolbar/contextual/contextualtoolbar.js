@@ -13,6 +13,7 @@ import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView from '../toolbarview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
 import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 /**
  * The contextual toolbar.
@@ -104,7 +105,7 @@ export default class ContextualToolbar extends Plugin {
 		// Hide the panel View when editor loses focus but no the other way around.
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
 			if ( this._balloon.visibleView === this.toolbarView && !isFocused ) {
-				this._hidePanel();
+				this.hide();
 			}
 		} );
 	}
@@ -120,12 +121,13 @@ export default class ContextualToolbar extends Plugin {
 	 */
 	_handleSelectionChange() {
 		const selection = this.editor.document.selection;
+		const editingView = this.editor.editing.view;
 
 		this.listenTo( selection, 'change:range', ( evt, data ) => {
 			// When the selection is not changed by a collaboration and when is not collapsed.
 			if ( data.directChange || selection.isCollapsed ) {
 				// Hide the toolbar when the selection starts changing.
-				this._hidePanel();
+				this.hide();
 			}
 
 			// Fire internal `_selectionChangeDebounced` when the selection stops changing.
@@ -133,27 +135,25 @@ export default class ContextualToolbar extends Plugin {
 		} );
 
 		// Hide the toolbar when the selection stops changing.
-		this.listenTo( this, '_selectionChangeDebounced', () => this._showPanel() );
+		this.listenTo( this, '_selectionChangeDebounced', () => {
+			// This implementation assumes that only non–collapsed selections gets the contextual toolbar.
+			if ( editingView.isFocused && !editingView.selection.isCollapsed ) {
+				this.show();
+			}
+		} );
 	}
 
 	/**
-	 * Adds panel view to the {@link: #_balloon} and attaches panel to the selection.
+	 * Shows the toolbar and attaches it to the selection.
 	 *
 	 * Fires {@link #event:beforeShow} event just before displaying the panel.
-	 *
-	 * @protected
 	 */
-	_showPanel() {
+	show() {
 		const editingView = this.editor.editing.view;
 		let isStopped = false;
 
 		// Do not add toolbar to the balloon stack twice.
 		if ( this._balloon.hasView( this.toolbarView ) ) {
-			return;
-		}
-
-		// This implementation assumes that only non–collapsed selections gets the contextual toolbar.
-		if ( !editingView.isFocused || editingView.selection.isCollapsed ) {
 			return;
 		}
 
@@ -185,11 +185,9 @@ export default class ContextualToolbar extends Plugin {
 	}
 
 	/**
-	 * Removes panel from the {@link: #_balloon}.
-	 *
-	 * @private
+	 * Hides the toolbar.
 	 */
-	_hidePanel() {
+	hide() {
 		if ( this._balloon.hasView( this.toolbarView ) ) {
 			this.stopListening( this.editor.editing.view, 'render' );
 			this._balloon.remove( this.toolbarView );
@@ -215,13 +213,11 @@ export default class ContextualToolbar extends Plugin {
 			// computed and hence, the target is defined as a function instead of a static value.
 			// https://github.com/ckeditor/ckeditor5-ui/issues/195
 			target: () => {
-				// getBoundingClientRect() makes no sense when the selection spans across number
-				// of lines of text. Using getClientRects() allows us to browse micro–ranges
-				// that would normally make up the bounding client rect.
-				const rangeRects = editingView.domConverter.viewRangeToDom( editingView.selection.getFirstRange() ).getClientRects();
+				const range = editingView.selection.getFirstRange();
+				const rangeRects = Rect.getDomRangeRects( editingView.domConverter.viewRangeToDom( range ) );
 
 				// Select the proper range rect depending on the direction of the selection.
-				return isBackward ? rangeRects.item( 0 ) : rangeRects.item( rangeRects.length - 1 );
+				return rangeRects[ isBackward ? 0 : rangeRects.length - 1 ];
 			},
 			limiter: this.editor.ui.view.editable.element,
 			positions: getBalloonPositions( isBackward )

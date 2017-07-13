@@ -28,7 +28,7 @@ describe( 'enableToolbarKeyboardFocus()', () => {
 			toolbar
 		} );
 
-		return toolbar.init();
+		toolbar.init();
 	} );
 
 	it( 'focuses the toolbar on Alt+F10', () => {
@@ -66,7 +66,8 @@ describe( 'enableToolbarKeyboardFocus()', () => {
 	it( 're–foucuses origin on Esc', () => {
 		const spy = origin.focus = sinon.spy();
 		const toolbarFocusTracker = toolbar.focusTracker;
-		const keyEvtData = { keyCode: keyCodes.esc,
+		const keyEvtData = {
+			keyCode: keyCodes.esc,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		};
@@ -83,6 +84,55 @@ describe( 'enableToolbarKeyboardFocus()', () => {
 		sinon.assert.calledOnce( spy );
 		sinon.assert.calledOnce( keyEvtData.preventDefault );
 		sinon.assert.calledOnce( keyEvtData.stopPropagation );
+	} );
+
+	it( 'supports beforeFocus and afterBlur callbacks', () => {
+		const beforeFocus = sinon.spy();
+		const afterBlur = sinon.spy();
+
+		origin = viewCreator();
+		originFocusTracker = new FocusTracker();
+		originKeystrokeHandler = new KeystrokeHandler();
+		toolbar = new ToolbarView();
+
+		const toolbarFocusSpy = sinon.spy( toolbar, 'focus' );
+		const originFocusSpy = origin.focus = sinon.spy();
+		const toolbarFocusTracker = toolbar.focusTracker;
+
+		enableToolbarKeyboardFocus( {
+			origin,
+			originFocusTracker,
+			originKeystrokeHandler,
+			toolbar,
+			beforeFocus,
+			afterBlur
+		} );
+
+		toolbar.init();
+
+		let keyEvtData = {
+			keyCode: keyCodes.f10,
+			altKey: true,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		};
+
+		toolbarFocusTracker.isFocused = false;
+		originFocusTracker.isFocused = true;
+
+		originKeystrokeHandler.press( keyEvtData );
+		sinon.assert.callOrder( beforeFocus, toolbarFocusSpy );
+
+		keyEvtData = {
+			keyCode: keyCodes.esc,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		};
+
+		toolbarFocusTracker.isFocused = true;
+
+		toolbar.keystrokes.press( keyEvtData );
+		sinon.assert.callOrder( originFocusSpy, afterBlur );
 	} );
 } );
 

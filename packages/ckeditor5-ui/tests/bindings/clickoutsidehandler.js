@@ -14,25 +14,28 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 testUtils.createSinonSandbox();
 
 describe( 'clickOutsideHandler', () => {
-	let activator, actionSpy, contextElement;
+	let activator, actionSpy, contextElement1, contextElement2;
 
 	beforeEach( () => {
 		activator = testUtils.sinon.stub().returns( false );
-		contextElement = document.createElement( 'div' );
+		contextElement1 = document.createElement( 'div' );
+		contextElement2 = document.createElement( 'div' );
 		actionSpy = testUtils.sinon.spy();
 
-		document.body.appendChild( contextElement );
+		document.body.appendChild( contextElement1 );
+		document.body.appendChild( contextElement2 );
 
 		clickOutsideHandler( {
 			emitter: Object.create( DomEmitterMixin ),
 			activator,
-			contextElement,
+			contextElements: [ contextElement1, contextElement2 ],
 			callback: actionSpy
 		} );
 	} );
 
 	afterEach( () => {
-		document.body.removeChild( contextElement );
+		document.body.removeChild( contextElement1 );
+		document.body.removeChild( contextElement2 );
 	} );
 
 	it( 'should fired callback after clicking out of context element when listener is active', () => {
@@ -54,16 +57,20 @@ describe( 'clickOutsideHandler', () => {
 	it( 'should not fired callback after clicking on context element when listener is active', () => {
 		activator.returns( true );
 
-		contextElement.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		contextElement1.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		sinon.assert.notCalled( actionSpy );
 
+		contextElement2.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 		sinon.assert.notCalled( actionSpy );
 	} );
 
 	it( 'should not fired callback after clicking on context element when listener is not active', () => {
 		activator.returns( false );
 
-		contextElement.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		contextElement1.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		sinon.assert.notCalled( actionSpy );
 
+		contextElement2.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 		sinon.assert.notCalled( actionSpy );
 	} );
 
@@ -75,7 +82,7 @@ describe( 'clickOutsideHandler', () => {
 		clickOutsideHandler( {
 			emitter: Object.create( DomEmitterMixin ),
 			activator,
-			contextElement,
+			contextElements: [ contextElement1 ],
 			callback: spy
 		} );
 
@@ -92,7 +99,7 @@ describe( 'clickOutsideHandler', () => {
 		clickOutsideHandler( {
 			emitter: Object.create( DomEmitterMixin ),
 			activator,
-			contextElement,
+			contextElements: [ contextElement1 ],
 			callback: spy
 		} );
 
