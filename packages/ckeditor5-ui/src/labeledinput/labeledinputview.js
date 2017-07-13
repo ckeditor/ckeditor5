@@ -68,9 +68,15 @@ export default class LabeledInputView extends View {
 		 */
 		this.inputView = this._createInputView( InputView, id );
 
+		const bind = this.bindTemplate;
+
 		this.template = new Template( {
 			tag: 'div',
-
+			attributes: {
+				class: [
+					bind.if( 'isReadOnly', 'ck-disabled' )
+				]
+			},
 			children: [
 				this.labelView,
 				this.inputView

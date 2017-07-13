@@ -44,6 +44,18 @@ describe( 'LabeledInputView', () => {
 		it( 'should have input view', () => {
 			expect( view.template.children.get( 1 ) ).to.equal( view.inputView );
 		} );
+
+		describe( 'DOM bindings', () => {
+			describe( 'class', () => {
+				it( 'should react on view#isReadOnly', () => {
+					view.isReadOnly = false;
+					expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.false;
+
+					view.isReadOnly = true;
+					expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.true;
+				} );
+			} );
+		} );
 	} );
 
 	describe( 'binding', () => {
