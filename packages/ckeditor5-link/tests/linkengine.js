@@ -71,6 +71,24 @@ describe( 'LinkEngine', () => {
 
 			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/500
+		it( 'should not pick up `<a name="foo">`', () => {
+			editor.setData( '<p><a name="foo">foo</a>bar</p>' );
+
+			expect( getModelData( doc, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>foobar</paragraph>' );
+		} );
+
+		// CKEditor 4 does. And CKEditor 5's balloon allows creating such links.
+		it( 'should pick up `<a href="">`', () => {
+			editor.setData( '<p><a href="">foo</a>bar</p>' );
+
+			expect( getModelData( doc, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text linkHref="">foo</$text>bar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><a href="">foo</a>bar</p>' );
+		} );
 	} );
 
 	describe( 'editing pipeline conversion', () => {
