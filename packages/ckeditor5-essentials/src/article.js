@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import EssentialsPreset from './essentials';
 
+import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
@@ -26,7 +27,12 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 /**
  * Article editor preset. Represents a set of features which enable in the editor
  * all functionalities of a simple article editor.
- * This preset follows [Editor Recommendations](https://github.com/ckeditor/editor-recommendations).
+ *
+ * This preset follows [Editor Recommendations](https://github.com/ckeditor/editor-recommendations) plus
+ * a couple of additions:
+ *
+ * * autoformatting,
+ * * TODO there will be more here soon (upload).
  *
  * @extends module:core/plugin~Plugin
  */
@@ -34,6 +40,7 @@ export default class Article extends Plugin {
 	static get requires() {
 		return [
 			EssentialsPreset,
+			Autoformat,
 			BlockQuote,
 			Bold,
 			Heading,

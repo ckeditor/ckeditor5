@@ -10,6 +10,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 
 import EssentialsPreset from '../src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
@@ -49,6 +50,7 @@ describe( 'Article preset', () => {
 		expect( editor.plugins.get( EssentialsPreset ) ).to.be.instanceOf( EssentialsPreset );
 
 		expect( editor.plugins.get( Paragraph ) ).to.be.instanceOf( Paragraph );
+		expect( editor.plugins.get( Autoformat ) ).to.be.instanceOf( Autoformat );
 		expect( editor.plugins.get( Bold ) ).to.be.instanceOf( Bold );
 		expect( editor.plugins.get( Heading ) ).to.be.instanceOf( Heading );
 		expect( editor.plugins.get( Image ) ).to.be.instanceOf( Image );
