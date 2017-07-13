@@ -9,10 +9,10 @@ Classic build of CKEditor 5. Features the [classic creator](https://github.com/c
 
 ## Bundles
 
-The package contain two bundles of the classic editor:
+The package contains two bundles of the classic editor:
 
-* `build/ckeditor.js` – minified, ES6 version of the bundle,
-* `build/ckeditor.compat.js` – minified, backward-compatible version of the bundle ([babel-preset-env](https://github.com/babel/babel-preset-env) is configured to support `'last 2 versions'`, `'ie >= 11'`).
+* `build/ckeditor.js` &ndash; A minified, ES6 version of the bundle.
+* `build/ckeditor.compat.js` &ndash; A minified, backward-compatible version of the bundle ([babel-preset-env](https://github.com/babel/babel-preset-env) is configured to support `'last 2 versions'`, `'ie >= 11'`).
 
 ## Usage
 
@@ -45,7 +45,7 @@ Or in your JavaScript application:
 ```js
 import { ClassicEditor } from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
 
-// or using CommonJS verion:
+// Or using CommonJS verion:
 // const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic/build/ckeditor' ).ClassicEditor;
 
 ClassicEditor.create( document.querySelector( '#editor' ) )
@@ -57,19 +57,19 @@ ClassicEditor.create( document.querySelector( '#editor' ) )
 	} );
 ```
 
-**Note:** If you're planning to integrate CKEditor 5 deep into your application it's actually more convenient and recommended to install and import the source modules directly (like it happens in `ckeditor.js`).
+**Note:** If you are planning to integrate CKEditor 5 deep into your application it is actually more convenient and recommended to install and import the source modules directly (like it happens in `ckeditor.js`).
 
 ## Rebuilding the bundle
 
 **Note:** This section assumes that you cloned this package repository and execute the commands inside it.
 
-You can modify `build-config.js` or any of the Webpack configs and run:
+You can modify `build-config.js` or any of the webpack configurations and run:
 
 ```
 npm run build
 ```
 
-To rebuild the entry-point (`ckeditor.js`) and both builds (`build/*`).
+to rebuild the entry point (`ckeditor.js`) and both builds (`build/*`).
 
 You can also modify `ckeditor.js` directly and run one of `npm run build-ckeditor` or `npm run build-ckeditor-compat`.
 
