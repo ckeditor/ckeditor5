@@ -20,15 +20,17 @@ import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/document
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 describe( 'Paragraph feature', () => {
-	let editor, doc;
+	let editor, doc, root;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( { plugins: [ Paragraph ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				doc = editor.document;
+				root = doc.getRoot();
 			} );
 	} );
 
@@ -384,15 +386,17 @@ describe( 'Paragraph feature', () => {
 			expect( doc.getRoot().getChild( 0 ).is( 'paragraph' ) ).to.be.true;
 		} );
 
-		it( 'should fix roots if it becomes empty', () => {
+		it( 'should fix root if it becomes empty', () => {
 			editor.setData( '<p>Foobar</p>' );
 
 			// Since `setData` first removes all contents from editor and then sets content during same enqueue
-			// changes block, this checks whether fixing empty roots does not kick too early and does not
+			// changes block, the line below checks whether fixing empty roots does not kick too early and does not
 			// fix root if it is not needed.
 			expect( editor.getData() ).to.equal( '<p>Foobar</p>' );
 
-			editor.setData( '' );
+			doc.enqueueChanges( () => {
+				doc.batch().remove( ModelRange.createIn( root ) );
+			} );
 
 			expect( doc.getRoot().childCount ).to.equal( 1 );
 			expect( doc.getRoot().getChild( 0 ).is( 'paragraph' ) ).to.be.true;
@@ -416,7 +420,9 @@ describe( 'Paragraph feature', () => {
 				}
 			} );
 
-			editor.setData( '' );
+			doc.enqueueChanges( () => {
+				doc.batch().remove( ModelRange.createIn( root ) );
+			} );
 
 			expect( doc.getRoot().childCount ).to.equal( 1 );
 			expect( doc.getRoot().getChild( 0 ).name ).to.equal( 'heading' );
@@ -425,7 +431,18 @@ describe( 'Paragraph feature', () => {
 		it( 'should not fix root which does not allow paragraph', () => {
 			doc.schema.disallow( { name: 'paragraph', inside: '$root' } );
 
-			editor.setData( '' );
+			doc.enqueueChanges( () => {
+				doc.batch().remove( ModelRange.createIn( root ) );
+			} );
+			expect( editor.getData() ).to.equal( '' );
+		} );
+
+		it( 'should not fix root if change was in transparent batch', () => {
+			editor.setData( '<p>Foobar</p>' );
+
+			doc.enqueueChanges( () => {
+				doc.batch( 'transparent' ).remove( ModelRange.createIn( root ) );
+			} );
 
 			expect( editor.getData() ).to.equal( '' );
 		} );
