@@ -186,6 +186,10 @@ class MutationHandler {
 		// Get common ancestor in DOM.
 		const domMutationCommonAncestor = domConverter.mapViewToDom( mutationsCommonAncestor );
 
+		if ( !domMutationCommonAncestor ) {
+			return;
+		}
+
 		// Create fresh DomConverter so it will not use existing mapping and convert current DOM to model.
 		// This wouldn't be needed if DomConverter would allow to create fresh view without checking any mappings.
 		const freshDomConverter = new DomConverter();
@@ -207,6 +211,12 @@ class MutationHandler {
 		// See comment in `_handleTextMutation`.
 		const newText = modelFromDomChildren.map( item => item.data ).join( '' ).replace( /\u00A0/g, ' ' );
 		const oldText = currentModelChildren.map( item => item.data ).join( '' );
+
+		// Do nothing if mutations created same text.
+		if ( oldText === newText ) {
+			return;
+		}
+
 		const diffResult = diff( oldText, newText );
 
 		const { firstChangeAt, insertions, deletions } = calculateChanges( diffResult );

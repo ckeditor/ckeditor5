@@ -14,6 +14,7 @@
     "@ckeditor/ckeditor5-editor-classic": "^0.7.3",
     "@ckeditor/ckeditor5-enter": "^0.9.1",
     "@ckeditor/ckeditor5-heading": "^0.9.1",
+    "@ckeditor/ckeditor5-link": "^0.7.0",
     "@ckeditor/ckeditor5-paragraph": "^0.8.0",
     "@ckeditor/ckeditor5-undo": "^0.8.1",
     "@ckeditor/ckeditor5-presets": "^0.2.2",

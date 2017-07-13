@@ -3,9 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document */
+
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
+import LinkEngine from '@ckeditor/ckeditor5-link/src/linkengine';
 import Input from '../src/input';
 
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
@@ -539,6 +545,76 @@ describe( 'Input feature', () => {
 			view.fire( 'keydown', { keyCode: getCode( 'b' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
+		} );
+	} );
+
+	describe( '#100', () => {
+		let domElement, domRoot;
+
+		beforeEach( () => {
+			domElement = document.createElement( 'div' );
+			document.body.appendChild( domElement );
+
+			return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, Italic, LinkEngine ] } )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.editing.model;
+					modelRoot = model.getRoot();
+					view = editor.editing.view;
+					viewRoot = view.getRoot();
+					domRoot = view.getDomRoot();
+				} );
+		} );
+
+		afterEach( () => {
+			domElement.remove();
+		} );
+
+		it( 'should handle typing when wrapping is switched', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<$text italic="true" linkHref="foo">' +
+						'text[]' +
+					'</$text>' +
+				'</paragraph>'
+			);
+
+			const paragraph = viewRoot.getChild( 0 );
+			const link = paragraph.getChild( 0 );
+			const italic = link.getChild( 0 );
+			const text = italic.getChild( 0 );
+
+			expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>text{}</i></a></p>' );
+
+			// Simulate mutations and DOM change.
+			domRoot.childNodes[ 0 ].innerHTML = '<i><a href="foo">text</a>x</i>';
+			view.fire( 'mutations', [
+				// First mutation - remove all children from link element.
+				{
+					type: 'children',
+					node: link,
+					oldChildren: [ italic ],
+					newChildren: []
+				},
+
+				// Second mutation - remove link from paragraph and put italic there.
+				{
+					type: 'children',
+					node: paragraph,
+					oldChildren: [ link ],
+					newChildren: [ italic ]
+				},
+
+				// Third mutation - italic's new children.
+				{
+					type: 'children',
+					node: italic,
+					oldChildren: [ text ],
+					newChildren: [ new ViewElement( 'a', null, text ), new ViewText( 'x' ) ]
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>textx{}</i></a></p>' );
 		} );
 	} );
 } );
