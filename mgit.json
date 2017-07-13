@@ -19,7 +19,7 @@
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#0779f35",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#de8be3f",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#a171de3",
-    "@ckeditor/ckeditor5-presets": "ckeditor/ckeditor5-presets#a9dffdc",
+    "@ckeditor/ckeditor5-presets": "ckeditor/ckeditor5-presets#cb65328",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#ddf3102",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#3a5e262",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#111a728",
