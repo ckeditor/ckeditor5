@@ -87,8 +87,15 @@ export default class Link extends Plugin {
 	_createForm() {
 		const editor = this.editor;
 		const formView = new LinkFormView( editor.locale );
+		const linkCommand = editor.commands.get( 'link' );
+		const unlinkCommand = editor.commands.get( 'unlink' );
 
-		formView.urlInputView.bind( 'value' ).to( editor.commands.get( 'link' ), 'value' );
+		formView.urlInputView.bind( 'value' ).to( linkCommand, 'value' );
+
+		// Form elements should be read-only when corresponding commands are disabled.
+		formView.urlInputView.bind( 'isReadOnly' ).to( linkCommand, 'isEnabled', value => !value );
+		formView.saveButtonView.bind( 'isEnabled' ).to( linkCommand );
+		formView.unlinkButtonView.bind( 'isEnabled' ).to( unlinkCommand );
 
 		// Execute link command after clicking on formView `Save` button.
 		this.listenTo( formView, 'submit', () => {

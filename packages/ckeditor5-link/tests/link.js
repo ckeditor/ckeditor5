@@ -175,6 +175,28 @@ describe( 'Link', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
+		it( 'should disable #formView elements when link and unlink commands are disabled', () => {
+			setModelData( editor.document, '<paragraph>f[o]o</paragraph>' );
+
+			linkFeature._showPanel();
+
+			editor.commands.get( 'link' ).isEnabled = true;
+			editor.commands.get( 'unlink' ).isEnabled = true;
+
+			expect( formView.urlInputView.isReadOnly ).to.false;
+			expect( formView.saveButtonView.isEnabled ).to.true;
+			expect( formView.unlinkButtonView.isEnabled ).to.true;
+			expect( formView.cancelButtonView.isEnabled ).to.true;
+
+			editor.commands.get( 'link' ).isEnabled = false;
+			editor.commands.get( 'unlink' ).isEnabled = false;
+
+			expect( formView.urlInputView.isReadOnly ).to.true;
+			expect( formView.saveButtonView.isEnabled ).to.false;
+			expect( formView.unlinkButtonView.isEnabled ).to.false;
+			expect( formView.cancelButtonView.isEnabled ).to.true;
+		} );
+
 		// https://github.com/ckeditor/ckeditor5-link/issues/53
 		it( 'should set formView.unlinkButtonView#isVisible depending on the selection in a link or not', () => {
 			setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
