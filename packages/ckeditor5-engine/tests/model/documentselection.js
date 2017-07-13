@@ -9,7 +9,7 @@ import Text from '../../src/model/text';
 import Range from '../../src/model/range';
 import Position from '../../src/model/position';
 import LiveRange from '../../src/model/liverange';
-import LiveSelection from '../../src/model/liveselection';
+import DocumentSelection from '../../src/model/documentselection';
 import InsertOperation from '../../src/model/operation/insertoperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
 import RemoveOperation from '../../src/model/operation/removeoperation';
@@ -25,8 +25,11 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 
 testUtils.createSinonSandbox();
 
-describe( 'LiveSelection', () => {
+describe( 'DocumentSelection', () => {
 	let doc, root, selection, liveRange, range;
+
+	const fooStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'foo' );
+	const abcStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'abc' );
 
 	beforeEach( () => {
 		doc = new Document();
@@ -374,14 +377,16 @@ describe( 'LiveSelection', () => {
 	} );
 
 	describe( 'createFromSelection()', () => {
-		it( 'should return a LiveSelection instance', () => {
+		it( 'should throw', () => {
 			selection.addRange( range, true );
 
-			expect( LiveSelection.createFromSelection( selection ) ).to.be.instanceof( LiveSelection );
+			expect( () => {
+				DocumentSelection.createFromSelection( selection );
+			} ).to.throw( CKEditorError, /^documentselection-cannot-create:/ );
 		} );
 	} );
 
-	// LiveSelection uses LiveRanges so here are only simple test to see if integration is
+	// DocumentSelection uses LiveRanges so here are only simple test to see if integration is
 	// working well, without getting into complicated corner cases.
 	describe( 'after applying an operation should get updated and fire events', () => {
 		let spyRange;
@@ -532,6 +537,7 @@ describe( 'LiveSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
+				const batch = doc.batch();
 				const splitDelta = new SplitDelta();
 
 				const insertOperation = new InsertOperation(
@@ -546,6 +552,8 @@ describe( 'LiveSelection', () => {
 					new Position( root, [ 2, 0 ] ),
 					1
 				);
+
+				batch.addDelta( splitDelta );
 
 				splitDelta.addOperation( insertOperation );
 				splitDelta.addOperation( moveOperation );
@@ -679,7 +687,8 @@ describe( 'LiveSelection', () => {
 		let fullP, emptyP, rangeInFullP, rangeInEmptyP;
 
 		beforeEach( () => {
-			root.insertChildren( 0, [
+			root.removeChildren( 0, root.childCount );
+			root.appendChildren( [
 				new Element( 'p', [], new Text( 'foobar' ) ),
 				new Element( 'p', [], [] )
 			] );
@@ -689,6 +698,10 @@ describe( 'LiveSelection', () => {
 
 			rangeInFullP = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 0, 4 ] ) );
 			rangeInEmptyP = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) );
+
+			// I've lost 30 mins debugging why my tests fail and that was due to the above code reusing
+			// a root which wasn't empty (so the ranges didn't actualy make much sense).
+			expect( root.childCount ).to.equal( 2 );
 		} );
 
 		describe( 'setAttribute()', () => {
@@ -698,7 +711,7 @@ describe( 'LiveSelection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 
-				expect( emptyP.getAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 			} );
 		} );
 
@@ -735,8 +748,8 @@ describe( 'LiveSelection', () => {
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 
-				expect( emptyP.getAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
-				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
 			} );
 		} );
 
@@ -748,7 +761,7 @@ describe( 'LiveSelection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 
-				expect( fullP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( fullP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 			} );
 
 			it( 'should remove stored attribute if the selection is in empty node', () => {
@@ -758,7 +771,7 @@ describe( 'LiveSelection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 
-				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 			} );
 		} );
 
@@ -773,8 +786,8 @@ describe( 'LiveSelection', () => {
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 
-				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
-				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
 			} );
 		} );
 
@@ -893,49 +906,159 @@ describe( 'LiveSelection', () => {
 			it( 'ignores attributes inside an object if selection contains that object', () => {
 				setData( doc, '<p>[<image><$text bold="true">Caption for the image.</$text></image>]</p>' );
 
-				const liveSelection = LiveSelection.createFromSelection( selection );
-
-				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object (deeper structure)', () => {
 				setData( doc, '<p>[<image><caption><$text bold="true">Caption for the image.</$text></caption></image>]</p>' );
 
-				const liveSelection = LiveSelection.createFromSelection( selection );
-
-				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object (block level)', () => {
 				setData( doc, '<p>foo</p>[<image><$text bold="true">Caption for the image.</$text></image>]<p>foo</p>' );
 
-				const liveSelection = LiveSelection.createFromSelection( selection );
-
-				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'reads attributes from text even if the selection contains an object', () => {
 				setData( doc, '<p>x<$text bold="true">[bar</$text><image></image>foo]</p>' );
 
-				const liveSelection = LiveSelection.createFromSelection( selection );
-
-				expect( liveSelection.getAttribute( 'bold' ) ).to.equal( true );
+				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'reads attributes when the entire selection inside an object', () => {
 				setData( doc, '<p><image><caption><$text bold="true">[bar]</$text></caption></image></p>' );
 
-				const liveSelection = LiveSelection.createFromSelection( selection );
-
-				expect( liveSelection.getAttribute( 'bold' ) ).to.equal( true );
+				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'stops reading attributes if selection starts with an object', () => {
 				setData( doc, '<p>[<image></image><$text bold="true">bar]</$text></p>' );
 
-				const liveSelection = LiveSelection.createFromSelection( selection );
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
+		} );
 
-				expect( liveSelection.hasAttribute( 'bold' ) ).to.equal( false );
+		describe( 'parent element\'s attributes', () => {
+			it( 'are set using a normal batch', () => {
+				const batchTypes = [];
+				doc.on( 'change', ( event, type, changes, batch ) => {
+					batchTypes.push( batch.type );
+				} );
+
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+
+				expect( batchTypes ).to.deep.equal( [ 'default' ] );
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+			} );
+
+			it( 'are removed when any content is inserted (reuses the same batch)', () => {
+				// Dedupe batches by using a map (multiple change events will be fired).
+				const batchTypes = new Map();
+
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+				selection.setAttribute( 'abc', 'bar' );
+
+				doc.on( 'change', ( event, type, changes, batch ) => {
+					batchTypes.set( batch, batch.type );
+				} );
+
+				doc.batch().insert( rangeInEmptyP.start, 'x' );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
+
+				expect( Array.from( batchTypes.values() ) ).to.deep.equal( [ 'default' ] );
+			} );
+
+			it( 'are removed when any content is moved into', () => {
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+
+				doc.batch().move( fullP.getChild( 0 ), rangeInEmptyP.start );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+			} );
+
+			it( 'are removed when containing element is merged with a non-empty element', () => {
+				const emptyP2 = new Element( 'p', null, 'x' );
+				root.appendChildren( emptyP2 );
+
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
+
+				// <emptyP>{}<emptyP2>
+				doc.batch().merge( Position.createAfter( emptyP ) );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
+			} );
+
+			it( 'are not removed or merged when containing element is merged with another empty element', () => {
+				const emptyP2 = new Element( 'p', null );
+				root.appendChildren( emptyP2 );
+
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+				emptyP2.setAttribute( abcStoreAttrKey, 'bar' );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
+				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
+
+				// <emptyP>{}<emptyP2>
+				doc.batch().merge( Position.createAfter( emptyP ) );
+
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
+			} );
+
+			it( 'are removed even when there is no selection in it', () => {
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+
+				selection.setRanges( [ rangeInFullP ] );
+
+				doc.batch().insert( rangeInEmptyP.start, 'x' );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+			} );
+
+			it( 'are removed only once in case of multi-op deltas', () => {
+				const emptyP2 = new Element( 'p', null, 'x' );
+				root.appendChildren( emptyP2 );
+
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
+
+				const batch = doc.batch();
+				const spy = sinon.spy( batch, 'removeAttribute' );
+
+				// <emptyP>{}<emptyP2>
+				batch.merge( Position.createAfter( emptyP ) );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'are not removed on transparent batches', () => {
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+
+				doc.batch( 'transparent' ).insert( rangeInEmptyP.start, 'x' );
+
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+			} );
+
+			// Rename and some other deltas don't specify range in doc#change event.
+			// So let's see if there's no crash or something.
+			it( 'are not removed on rename', () => {
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+
+				doc.batch().rename( emptyP, 'pnew' );
+
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 			} );
 		} );
 	} );
