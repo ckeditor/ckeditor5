@@ -28,6 +28,7 @@ export default class ImageUploadCommand extends Command {
 	 * @fires execute
 	 * @param {Object} options Options for executed command.
 	 * @param {File} options.file Image file to upload.
+	 * @param {module:engine/model/position~Position} [options.insertPosition] Position of the inserted image.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
