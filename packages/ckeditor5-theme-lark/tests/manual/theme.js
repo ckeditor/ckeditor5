@@ -72,7 +72,7 @@ const ui = testUtils.createTestUIView( {
 	'toolbarMultiRow': '#toolbar-multi-row',
 
 	'inputLabeled': '#input-labeled',
-	'inputDisabled': '#input-disabled'
+	'inputReadOnly': '#input-read-only'
 } );
 
 renderIcon();
@@ -309,10 +309,10 @@ function renderToolbar() {
 
 function renderInput() {
 	ui.inputLabeled.add( input() );
-	ui.inputDisabled.add( input( {
-		label: 'A disabled input',
-		isEnabled: false,
-		value: 'Disabled input value'
+	ui.inputReadOnly.add( input( {
+		label: 'A read–only input',
+		isReadOnly: true,
+		value: 'Read–only input value'
 	} ) );
 }
 
@@ -373,12 +373,12 @@ function toolbarNewLine() {
 
 function input( {
 	label = 'Labeled input',
-	isEnabled = true,
+	isReadOnly = false,
 	value = 'The value of the input'
 } = {} ) {
 	const labeledInput = new LabeledInputView( {}, InputTextView );
 
-	labeledInput.set( { isEnabled, label, value } );
+	labeledInput.set( { isReadOnly, label, value } );
 
 	return labeledInput;
 }
