@@ -86,7 +86,7 @@ describe( 'ImageUploadCommand', () => {
 			const selectedElement = document.selection.getSelectedElement();
 			const customPosition = ModelPosition.createBefore( selectedElement );
 
-			command.execute( { file, insertPosition: customPosition } );
+			command.execute( { file, insertAt: customPosition } );
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( document ) ).to.equal(

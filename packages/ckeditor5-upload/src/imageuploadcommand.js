@@ -28,7 +28,8 @@ export default class ImageUploadCommand extends Command {
 	 * @fires execute
 	 * @param {Object} options Options for executed command.
 	 * @param {File} options.file Image file to upload.
-	 * @param {module:engine/model/position~Position} [options.insertPosition] Position of the inserted image.
+	 * @param {module:engine/model/position~Position} [options.insertAt] Position of the inserted image.
+	 * If the option won't be provided the position will be calculated by the {@link module:upload/imageuploadcommand~getInsertionPosition}.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
@@ -45,10 +46,10 @@ export default class ImageUploadCommand extends Command {
 		}
 
 		doc.enqueueChanges( () => {
-			const insertPosition = options.insertPosition || getInsertionPosition( doc );
+			const insertAt = options.insertAt || getInsertionPosition( doc );
 
 			// No position to insert.
-			if ( !insertPosition ) {
+			if ( !insertAt ) {
 				return;
 			}
 
@@ -56,7 +57,7 @@ export default class ImageUploadCommand extends Command {
 				uploadId: fileRepository.createLoader( file ).id
 			} );
 			const documentFragment = new ModelDocumentFragment( [ imageElement ] );
-			const range = new ModelRange( insertPosition );
+			const range = new ModelRange( insertAt );
 			const insertSelection = new ModelSelection();
 			insertSelection.setRanges( [ range ] );
 
