@@ -558,7 +558,7 @@ describe( 'Input feature', () => {
 			return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, Italic, LinkEngine ] } )
 				.then( newEditor => {
 					editor = newEditor;
-					model = editor.editing.model;
+					model = editor.document;
 					modelRoot = model.getRoot();
 					view = editor.editing.view;
 					viewRoot = view.getRoot();
@@ -568,9 +568,11 @@ describe( 'Input feature', () => {
 
 		afterEach( () => {
 			domElement.remove();
+			editor.destroy();
 		} );
 
-		it( 'should handle typing when wrapping is switched', () => {
+		// This happens when browser automatically switches parent and child nodes.
+		it( 'should handle mutations switching inner and outer node', () => {
 			setModelData( model,
 				'<paragraph>' +
 					'<$text italic="true" linkHref="foo">' +
@@ -579,12 +581,12 @@ describe( 'Input feature', () => {
 				'</paragraph>'
 			);
 
+			expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>text{}</i></a></p>' );
+
 			const paragraph = viewRoot.getChild( 0 );
 			const link = paragraph.getChild( 0 );
 			const italic = link.getChild( 0 );
 			const text = italic.getChild( 0 );
-
-			expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>text{}</i></a></p>' );
 
 			// Simulate mutations and DOM change.
 			domRoot.childNodes[ 0 ].innerHTML = '<i><a href="foo">text</a>x</i>';
@@ -615,6 +617,44 @@ describe( 'Input feature', () => {
 			] );
 
 			expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>textx{}</i></a></p>' );
+		} );
+
+		// This happens when spell checker is applied on <strong> element and changes it to <b>.
+		it( 'should handle mutations replacing node', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<$text bold="true">' +
+						'text[]' +
+					'</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
+
+			const paragraph = viewRoot.getChild( 0 );
+			const strong = paragraph.getChild( 0 );
+
+			// Simulate mutations and DOM change.
+			domRoot.childNodes[ 0 ].innerHTML = '<b>textx</b>';
+			view.fire( 'mutations', [
+				// Replace `<strong>` with `<b>`.
+				{
+					type: 'children',
+					node: paragraph,
+					oldChildren: [ strong ],
+					newChildren: [ new ViewElement( 'b', null, new ViewText( 'textx' ) ) ]
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>textx{}</strong></p>' );
+		} );
+
+		describe( 'edge cases', () => {
+			it( 'typing', () => {
+				setModelData( model, '<paragraph>xx<$text linkHref="#foo" italic="true">xxx{}</$text></paragraph>' );
+
+				expect( getViewData( view ) ).to.equal( '<p>xx<a href="#foo"><i>xxx{}</i></a></p>' );
+			} );
 		} );
 	} );
 } );
