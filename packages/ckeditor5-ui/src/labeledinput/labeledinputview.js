@@ -47,6 +47,14 @@ export default class LabeledInputView extends View {
 		this.set( 'value' );
 
 		/**
+		 * Controls whether the component is in read-only mode.
+		 *
+		 * @observable
+		 * @member {Boolean} #isReadOnly
+		 */
+		this.set( 'isReadOnly', false );
+
+		/**
 		 * The label view.
 		 *
 		 * @member {module:ui/label/labelview~LabelView} #labelView
@@ -60,9 +68,15 @@ export default class LabeledInputView extends View {
 		 */
 		this.inputView = this._createInputView( InputView, id );
 
+		const bind = this.bindTemplate;
+
 		this.template = new Template( {
 			tag: 'div',
-
+			attributes: {
+				class: [
+					bind.if( 'isReadOnly', 'ck-disabled' )
+				]
+			},
 			children: [
 				this.labelView,
 				this.inputView
@@ -99,6 +113,7 @@ export default class LabeledInputView extends View {
 
 		inputView.id = id;
 		inputView.bind( 'value' ).to( this );
+		inputView.bind( 'isReadOnly' ).to( this );
 
 		return inputView;
 	}

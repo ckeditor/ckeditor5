@@ -46,6 +46,14 @@ export default class InputTextView extends View {
 		 */
 		this.set( 'placeholder' );
 
+		/**
+		 * Controls whether the input view is in read-only mode.
+		 *
+		 * @observable
+		 * @member {Boolean} #isReadOnly
+		 */
+		this.set( 'isReadOnly', false );
+
 		const bind = this.bindTemplate;
 
 		this.template = new Template( {
@@ -57,7 +65,8 @@ export default class InputTextView extends View {
 					'ck-input-text'
 				],
 				id: bind.to( 'id' ),
-				placeholder: bind.to( 'placeholder' )
+				placeholder: bind.to( 'placeholder' ),
+				readonly: bind.to( 'isReadOnly' )
 			}
 		} );
 

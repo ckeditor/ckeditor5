@@ -66,6 +66,16 @@ describe( 'InputTextView', () => {
 				expect( view.element.placeholder ).to.equal( 'baz' );
 			} );
 		} );
+
+		describe( 'isReadOnly', () => {
+			it( 'should react on view#isReadOnly', () => {
+				expect( view.element.readOnly ).to.false;
+
+				view.isReadOnly = true;
+
+				expect( view.element.readOnly ).to.true;
+			} );
+		} );
 	} );
 
 	describe( 'select()', () => {
