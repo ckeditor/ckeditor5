@@ -165,14 +165,14 @@ export default class Clipboard extends Plugin {
 
 		// The clipboard copy/cut pipeline.
 
-		const onCopyCut = ( evt, data ) => {
+		function onCopyCut( evt, data ) {
 			const dataTransfer = data.dataTransfer;
 			const content = editor.data.toView( editor.data.getSelectedContent( doc.selection ) );
 
 			data.preventDefault();
 
 			editingView.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name } );
-		};
+		}
 
 		this.listenTo( editingView, 'copy', onCopyCut, { priority: 'low' } );
 		this.listenTo( editingView, 'cut', onCopyCut, { priority: 'low' } );
