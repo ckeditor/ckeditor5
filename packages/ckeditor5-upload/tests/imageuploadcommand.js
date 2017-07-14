@@ -79,18 +79,18 @@ describe( 'ImageUploadCommand', () => {
 			expect( getModelData( document ) ).to.equal( `<image src="image.png"></image>[<image uploadId="${ id }"></image>]` );
 		} );
 
-		it( 'should allow inserting image at some custom position', () => {
+		it( 'should allow to insert image at some custom position', () => {
 			const file = createNativeFileMock();
 			setModelData( document, '[<paragraph>foo</paragraph>]<paragraph>bar</paragraph>' );
 
 			const selectedElement = document.selection.getSelectedElement();
-			const customPosition = ModelPosition.createBefore( selectedElement );
+			const customPosition = ModelPosition.createAt( selectedElement, 2 );
 
 			command.execute( { file, insertAt: customPosition } );
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( document ) ).to.equal(
-				`[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph><paragraph>bar</paragraph>`
+				`<paragraph>fo</paragraph>[<image uploadId="${ id }"></image>]<paragraph>o</paragraph><paragraph>bar</paragraph>`
 			);
 		} );
 

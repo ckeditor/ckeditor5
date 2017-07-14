@@ -59,8 +59,8 @@ export default class ImageUploadCommand extends Command {
 			const documentFragment = new ModelDocumentFragment( [ imageElement ] );
 			const range = new ModelRange( insertAt );
 			const insertSelection = new ModelSelection();
-			insertSelection.setRanges( [ range ] );
 
+			insertSelection.setRanges( [ range ] );
 			editor.data.insertContent( documentFragment, insertSelection, batch );
 			selection.setRanges( [ ModelRange.createOn( imageElement ) ] );
 		} );
