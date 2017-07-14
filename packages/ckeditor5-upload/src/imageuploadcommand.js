@@ -28,8 +28,8 @@ export default class ImageUploadCommand extends Command {
 	 * @fires execute
 	 * @param {Object} options Options for executed command.
 	 * @param {File} options.file Image file to upload.
-	 * @param {module:engine/model/position~Position} [options.insertAt] Position of the inserted image.
-	 * If the option won't be provided the position will be calculated by the {@link module:upload/imageuploadcommand~getInsertionPosition}.
+	 * @param {module:engine/model/position~Position} [options.insertAt] Position at which the image should be inserted.
+	 * If the position won't be specified the image will be inserted next to the selection.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
@@ -67,12 +67,10 @@ export default class ImageUploadCommand extends Command {
 	}
 }
 
-/**
- * Returns correct image insertion position.
- *
- * @param {module:engine/model/document~Document} doc
- * @returns {module:engine/model/position~Position|undefined}
- */
+// Returns correct image insertion position.
+//
+// @param {module:engine/model/document~Document} doc
+// @returns {module:engine/model/position~Position|undefined}
 function getInsertionPosition( doc ) {
 	const selection = doc.selection;
 	const selectedElement = selection.getSelectedElement();
