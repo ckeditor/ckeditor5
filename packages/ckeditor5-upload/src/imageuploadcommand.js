@@ -28,6 +28,8 @@ export default class ImageUploadCommand extends Command {
 	 * @fires execute
 	 * @param {Object} options Options for executed command.
 	 * @param {File} options.file Image file to upload.
+	 * @param {module:engine/model/position~Position} [options.insertAt] Position at which the image should be inserted.
+	 * If the position won't be specified the image will be inserted next to the selection.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
@@ -44,10 +46,10 @@ export default class ImageUploadCommand extends Command {
 		}
 
 		doc.enqueueChanges( () => {
-			const insertPosition = getInsertionPosition( doc );
+			const insertAt = options.insertAt || getInsertionPosition( doc );
 
 			// No position to insert.
-			if ( !insertPosition ) {
+			if ( !insertAt ) {
 				return;
 			}
 
@@ -55,22 +57,20 @@ export default class ImageUploadCommand extends Command {
 				uploadId: fileRepository.createLoader( file ).id
 			} );
 			const documentFragment = new ModelDocumentFragment( [ imageElement ] );
-			const range = new ModelRange( insertPosition );
+			const range = new ModelRange( insertAt );
 			const insertSelection = new ModelSelection();
-			insertSelection.setRanges( [ range ] );
 
+			insertSelection.setRanges( [ range ] );
 			editor.data.insertContent( documentFragment, insertSelection, batch );
 			selection.setRanges( [ ModelRange.createOn( imageElement ) ] );
 		} );
 	}
 }
 
-/**
- * Returns correct image insertion position.
- *
- * @param {module:engine/model/document~Document} doc
- * @returns {module:engine/model/position~Position|undefined}
- */
+// Returns correct image insertion position.
+//
+// @param {module:engine/model/document~Document} doc
+// @returns {module:engine/model/position~Position|undefined}
 function getInsertionPosition( doc ) {
 	const selection = doc.selection;
 	const selectedElement = selection.getSelectedElement();
