@@ -726,7 +726,9 @@ export function modelIndentPasteFixer( evt, [ content, selection ] ) {
 	// Check whether inserted content starts from a `listItem`. If it does not, it means that there are some other
 	// elements before it and there is no need to fix indents, because even if we insert that content into a list,
 	// that list will be broken.
-	let item = content.getChild( 0 );
+	// Note: we also need to handle singular elements because inserting item with indent 0 into 0,1,[],2
+	// would create incorrect model.
+	let item = content.is( 'documentFragment' ) ? content.getChild( 0 ) : content;
 
 	if ( item.is( 'listItem' ) ) {
 		// Get a reference list item. Inserted list items will be fixed according to that item.
