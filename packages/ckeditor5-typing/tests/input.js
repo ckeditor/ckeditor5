@@ -563,16 +563,26 @@ describe( 'Input feature', () => {
 					view = editor.editing.view;
 					viewRoot = view.getRoot();
 					domRoot = view.getDomRoot();
+
+					// Mock image feature.
+					newEditor.document.schema.registerItem( 'image', '$inline' );
+
+					buildModelConverter().for( newEditor.data.modelToView, newEditor.editing.modelToView )
+						.fromElement( 'image' )
+						.toElement( 'img' );
+
+					buildViewConverter().for( newEditor.data.viewToModel )
+						.fromElement( 'img' )
+						.toElement( 'image' );
 				} );
 		} );
 
 		afterEach( () => {
-			domElement.remove();
-			editor.destroy();
+			return editor.destroy();
 		} );
 
 		// This happens when browser automatically switches parent and child nodes.
-		it( 'should handle mutations switching inner and outer node', () => {
+		it( 'should handle mutations switching inner and outer node when adding new text node after', () => {
 			setModelData( model,
 				'<paragraph>' +
 					'<$text italic="true" linkHref="foo">' +
@@ -619,6 +629,101 @@ describe( 'Input feature', () => {
 			expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>textx{}</i></a></p>' );
 		} );
 
+		it( 'should handle mutations switching inner and outer node when adding new text node before', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<$text italic="true" linkHref="foo">' +
+						'[]text' +
+					'</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>{}text</i></a></p>' );
+
+			const paragraph = viewRoot.getChild( 0 );
+			const link = paragraph.getChild( 0 );
+			const italic = link.getChild( 0 );
+			const text = italic.getChild( 0 );
+
+			// Simulate mutations and DOM change.
+			domRoot.childNodes[ 0 ].innerHTML = '<i>x<a href="foo">text</a></i>';
+			view.fire( 'mutations', [
+				// First mutation - remove all children from link element.
+				{
+					type: 'children',
+					node: link,
+					oldChildren: [ italic ],
+					newChildren: []
+				},
+
+				// Second mutation - remove link from paragraph and put italic there.
+				{
+					type: 'children',
+					node: paragraph,
+					oldChildren: [ link ],
+					newChildren: [ italic ]
+				},
+
+				// Third mutation - italic's new children.
+				{
+					type: 'children',
+					node: italic,
+					oldChildren: [ text ],
+					newChildren: [ new ViewText( 'x' ), new ViewElement( 'a', null, text ) ]
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>x{}text</i></a></p>' );
+		} );
+
+		it( 'should handle mutations switching inner and outer node - with text before', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'xxx<$text italic="true" linkHref="foo">' +
+						'text[]' +
+					'</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal( '<p>xxx<a href="foo"><i>text{}</i></a></p>' );
+
+			const paragraph = viewRoot.getChild( 0 );
+			const textBefore = paragraph.getChild( 0 );
+			const link = paragraph.getChild( 1 );
+			const italic = link.getChild( 0 );
+			const text = italic.getChild( 0 );
+
+			// Simulate mutations and DOM change.
+			domRoot.childNodes[ 0 ].innerHTML = 'xxx<i><a href="foo">text</a>x</i>';
+			view.fire( 'mutations', [
+				// First mutation - remove all children from link element.
+				{
+					type: 'children',
+					node: link,
+					oldChildren: [ italic ],
+					newChildren: []
+				},
+
+				// Second mutation - remove link from paragraph and put italic there.
+				{
+					type: 'children',
+					node: paragraph,
+					oldChildren: [ textBefore, link ],
+					newChildren: [ textBefore, italic ]
+				},
+
+				// Third mutation - italic's new children.
+				{
+					type: 'children',
+					node: italic,
+					oldChildren: [ text ],
+					newChildren: [ new ViewElement( 'a', null, text ), new ViewText( 'x' ) ]
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p>xxx<a href="foo"><i>textx{}</i></a></p>' );
+		} );
+
 		// This happens when spell checker is applied on <strong> element and changes it to <b>.
 		it( 'should handle mutations replacing node', () => {
 			setModelData( model,
@@ -635,6 +740,114 @@ describe( 'Input feature', () => {
 			const strong = paragraph.getChild( 0 );
 
 			// Simulate mutations and DOM change.
+			domRoot.childNodes[ 0 ].innerHTML = '<b>fixed text</b>';
+			view.fire( 'mutations', [
+				// Replace `<strong>` with `<b>`.
+				{
+					type: 'children',
+					node: paragraph,
+					oldChildren: [ strong ],
+					newChildren: [ new ViewElement( 'b', null, new ViewText( 'fixed text' ) ) ]
+				}
+			] );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( '<p><strong>fixed text</strong></p>' );
+		} );
+
+		it( 'should do nothing if elements mutated', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<$text bold="true">' +
+						'text[]' +
+					'</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
+
+			const paragraph = viewRoot.getChild( 0 );
+			const strong = paragraph.getChild( 0 );
+
+			// Simulate mutations and DOM change.
+			domRoot.childNodes[ 0 ].innerHTML = '<strong>text</strong><img />';
+			view.fire( 'mutations', [
+				{
+					type: 'children',
+					node: paragraph,
+					oldChildren: [ strong ],
+					newChildren: [
+						new ViewElement( 'strong', null, new ViewText( 'text' ) ),
+						new ViewElement( 'img' )
+					]
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
+		} );
+
+		it( 'should do nothing if text is not changed', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<$text bold="true">' +
+						'text[]' +
+					'</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
+
+			const paragraph = viewRoot.getChild( 0 );
+			const strong = paragraph.getChild( 0 );
+
+			// Simulate mutations and DOM change.
+			domRoot.childNodes[ 0 ].innerHTML = '<strong>text</strong>';
+			view.fire( 'mutations', [
+				{
+					type: 'children',
+					node: paragraph,
+					oldChildren: [ strong ],
+					newChildren: [ new ViewElement( 'strong', null, new ViewText( 'text' ) ) ]
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
+		} );
+
+		it( 'should do nothing on empty mutations', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<$text bold="true">' +
+						'text[]' +
+					'</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
+
+			// Simulate mutations and DOM change.
+			domRoot.childNodes[ 0 ].innerHTML = '<strong>text</strong>';
+			view.fire( 'mutations', [] );
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
+		} );
+
+		it( 'should handle view selection if one is returned from mutations', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<$text bold="true">' +
+						'text[]' +
+					'</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
+
+			const paragraph = viewRoot.getChild( 0 );
+			const strong = paragraph.getChild( 0 );
+			const viewSelection = new ViewSelection();
+			viewSelection.collapse( paragraph, 0 );
+
+			// Simulate mutations and DOM change.
 			domRoot.childNodes[ 0 ].innerHTML = '<b>textx</b>';
 			view.fire( 'mutations', [
 				// Replace `<strong>` with `<b>`.
@@ -644,17 +857,10 @@ describe( 'Input feature', () => {
 					oldChildren: [ strong ],
 					newChildren: [ new ViewElement( 'b', null, new ViewText( 'textx' ) ) ]
 				}
-			] );
+			], viewSelection );
 
-			expect( getViewData( view ) ).to.equal( '<p><strong>textx{}</strong></p>' );
-		} );
-
-		describe( 'edge cases', () => {
-			it( 'typing', () => {
-				setModelData( model, '<paragraph>xx<$text linkHref="#foo" italic="true">xxx{}</$text></paragraph>' );
-
-				expect( getViewData( view ) ).to.equal( '<p>xx<a href="#foo"><i>xxx{}</i></a></p>' );
-			} );
+			expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">[]textx</$text></paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p><strong>{}textx</strong></p>' );
 		} );
 	} );
 } );

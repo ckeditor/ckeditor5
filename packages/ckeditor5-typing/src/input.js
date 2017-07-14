@@ -389,46 +389,50 @@ function getSingleTextNodeChange( mutation ) {
 	return change;
 }
 
-// Returns first common ancestor of all mutations.
+// Returns first common ancestor of all mutations that is either {@link module:engine/view/containerelement~ContainerElement}
+// or {@link module:engine/view/rootelement~RootElement}.
 //
 // @private
 // @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
 // module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
 function getMutationsCommonAncestor( mutations ) {
-	// If just 1 mutation present - return mutation node.
-	if ( mutations.length == 1 ) {
-		return mutations[ 0 ].node;
-	}
+	let shortestList;
 
-	// Get array of ancestor lists without root element.
+	// Create array of ancestors list, extract the shortest one.
 	const ancestorsLists = mutations
-		.map( mutation => mutation.node.getAncestors( { includeNode: true } ).filter( ancestor => !ancestor.is( 'rootElement' ) ) );
+		.map( mutation => {
+			const ancestors = mutation.node.getAncestors( { includeNode: true, parentFirst: true } );
 
-	// Calculate shortest ancestors lists.
-	const shortestListLength = Math.min( ...ancestorsLists.map( list => list.length ) );
-
-	let i = 0;
-
-	// Check if all mutations have common ancestor.
-	while ( i < shortestListLength ) {
-		const ancestor = ancestorsLists[ 0 ][ i ];
-		let same = true;
-
-		for ( let j = 1; j < ancestorsLists.length; j++ ) {
-			if ( ancestorsLists[ j ][ i ] !== ancestor ) {
-				same = false;
-				break;
+			if ( !shortestList || ancestors.length < shortestList.length ) {
+				shortestList = ancestors;
 			}
-		}
 
-		if ( !same ) {
-			break;
-		}
+			return ancestors;
+		} ).filter( item => item !== shortestList );
 
-		i++;
+	if ( !shortestList ) {
+		return null;
 	}
 
-	return i == 0 ? null : ancestorsLists[ 0 ][ i - 1 ];
+	// Find common ancestor from the lists. Go from the shortest list to the top. If common ancestor is found - return it.
+	for ( const ancestor of shortestList ) {
+		// Check only container and root elements.
+		if ( !ancestor.is( 'containerElement' ) && !ancestor.is( 'rootElement' ) ) {
+			continue;
+		}
+
+		let hasCommonAncestor = true;
+
+		for ( const list of ancestorsLists ) {
+			hasCommonAncestor = list.indexOf( ancestor ) > -1;
+		}
+
+		if ( hasCommonAncestor ) {
+			return ancestor;
+		}
+	}
+
+	return null;
 }
 
 // Returns true if container children have mutated and more than a single text node was changed. Single text node
