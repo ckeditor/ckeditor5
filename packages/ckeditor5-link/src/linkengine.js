@@ -49,7 +49,8 @@ export default class LinkEngine extends Plugin {
 
 		// Build converter from view to model for data pipeline.
 		buildViewConverter().for( data.viewToModel )
-			.fromElement( 'a' )
+			// Convert <a> with href (value doesn't matter).
+			.from( { name: 'a', attribute: { href: /.?/ } } )
 			.toAttribute( viewElement => ( {
 				key: 'linkHref',
 				value: viewElement.getAttribute( 'href' )
