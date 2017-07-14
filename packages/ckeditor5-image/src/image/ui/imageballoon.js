@@ -31,6 +31,14 @@ export default class ImageBalloon extends ContextualBalloon {
 	init() {
 		super.init();
 
+		/**
+		 * Stack of the image package views injected into the balloon.
+		 *
+		 * @private
+		 * @member {Map} #_imageStack
+		 */
+		this._imageStack = new Set();
+
 		// Attach the life cycle actions.
 		this._handleEditingRender();
 		this._handleFocusChange();
@@ -53,6 +61,28 @@ export default class ImageBalloon extends ContextualBalloon {
 		} else {
 			super.add( data );
 		}
+
+		this._imageStack.add( data.view );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	remove( view ) {
+		super.remove( view );
+
+		this._imageStack.delete( view );
+	}
+
+	/**
+	 * Removes all views from the balloon, and also hides it.
+	 */
+	clear() {
+		for ( const view of this._imageStack ) {
+			this.remove( view );
+		}
+
+		this._imageStack.clear();
 	}
 
 	/**

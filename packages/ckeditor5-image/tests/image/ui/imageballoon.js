@@ -86,6 +86,39 @@ describe( 'ImageBalloon', () => {
 		} );
 	} );
 
+	describe( 'remove()', () => {
+		it( 'should remove a view', () => {
+			const spy = testUtils.sinon.stub( ContextualBalloon.prototype, 'remove' );
+			const view = {};
+
+			plugin.remove( view );
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'clear()', () => {
+		it( 'should remove all remaining views', () => {
+			setData( doc, '[<image src=""></image>]' );
+
+			testUtils.sinon.stub( ContextualBalloon.prototype, 'add' );
+			const removeSpy = testUtils.sinon.stub( ContextualBalloon.prototype, 'remove' );
+
+			const positionDataA = { view: {} };
+			const positionDataB = { view: {} };
+			const positionDataC = { view: {} };
+
+			plugin.add( positionDataA );
+			plugin.add( positionDataB );
+			plugin.add( positionDataC );
+
+			plugin.remove( positionDataB.view );
+			plugin.clear();
+			sinon.assert.calledThrice( removeSpy );
+			sinon.assert.calledWithExactly( removeSpy.firstCall, positionDataC.view );
+			sinon.assert.calledWithExactly( removeSpy.secondCall, positionDataA.view );
+		} );
+	} );
+
 	describe( 'editing view #render event handling', () => {
 		let updatePositionSpy;
 
