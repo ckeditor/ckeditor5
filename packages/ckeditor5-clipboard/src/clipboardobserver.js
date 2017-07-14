@@ -30,14 +30,49 @@ export default class ClipboardObserver extends DomEventObserver {
 		function handleInput( evt, data ) {
 			data.preventDefault();
 
-			doc.fire( 'clipboardInput', { dataTransfer: data.dataTransfer } );
+			const targetRanges = data.dropRange ? [ data.dropRange ] : Array.from( doc.selection.getRanges() );
+
+			doc.fire( 'clipboardInput', {
+				dataTransfer: data.dataTransfer,
+				targetRanges
+			} );
 		}
 	}
 
 	onDomEvent( domEvent ) {
-		this.fire( domEvent.type, domEvent, {
+		const evtData = {
 			dataTransfer: new DataTransfer( domEvent.clipboardData ? domEvent.clipboardData : domEvent.dataTransfer )
-		} );
+		};
+
+		if ( domEvent.type == 'drop' ) {
+			evtData.dropRange = getDropViewRange( this.document, domEvent );
+		}
+
+		this.fire( domEvent.type, domEvent, evtData );
+	}
+}
+
+function getDropViewRange( doc, domEvent ) {
+	const domDoc = domEvent.target.ownerDocument;
+	const x = domEvent.clientX;
+	const y = domEvent.clientY;
+	let domRange;
+
+	// Webkit & Blink.
+	if ( domDoc.caretRangeFromPoint && domDoc.caretRangeFromPoint( x, y ) ) {
+		domRange = domDoc.caretRangeFromPoint( x, y );
+	}
+	// FF.
+	else if ( domEvent.rangeParent ) {
+		domRange = domDoc.createRange();
+		domRange.setStart( domEvent.rangeParent, domEvent.rangeOffset );
+		domRange.collapse( true );
+	}
+
+	if ( domRange ) {
+		return doc.domConverter.domRangeToView( domRange );
+	} else {
+		return doc.selection.getFirstRange();
 	}
 }
 
