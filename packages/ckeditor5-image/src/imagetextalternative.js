@@ -113,7 +113,7 @@ export default class ImageTextAlternative extends Plugin {
 		clickOutsideHandler( {
 			emitter: this._form,
 			activator: () => this._isVisible,
-			contextElement: this._form.element,
+			contextElements: [ this._form.element ],
 			callback: () => this._hideForm()
 		} );
 	}
