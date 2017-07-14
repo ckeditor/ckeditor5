@@ -77,16 +77,25 @@ function getDropViewRange( doc, domEvent ) {
 }
 
 /**
- * Fired with a `dataTransfer` which comes from the clipboard (was {@link module:engine/view/document~Document#event:paste pasted}
- * or {@link module:engine/view/document~Document#event:drop dropped}) and
- * should be processed in order to be inserted into the editor.
+ * Fired as a continuation of {@link #event:paste} amd {@link #event:drop} events.
  * It's part of the {@link module:clipboard/clipboard~Clipboard "clipboard pipeline"}.
+ *
+ * Fired with a `dataTransfer` which comes from the clipboard and which content should be processed
+ * and inserted into the editor.
+ *
+ * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/document~Document#addObserver} method.
+ * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
  * @event module:engine/view/document~Document#event:clipboardInput
  * @param {Object} data Event data.
  * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
+ * @param {Array.<module:engine/view/range~Range>} data.targetRanges Ranges which are the target of the operation
+ * (usually – into which the content should be inserted).
+ * If clipboard input was triggered by a paste operation, then these are the selection ranges. If by a drop operation,
+ * then it's the drop position (which can be different than the selection at the moment of drop).
  */
 
 /**
@@ -98,9 +107,10 @@ function getDropViewRange( doc, domEvent ) {
  * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/document~Document#addObserver} method.
  * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
  *
- * @see module:clipboard/clipboardobserver~ClipboardObserver
+ * @see module:engine/view/document~Document#event:clipboardInput
  * @event module:engine/view/document~Document#event:drop
  * @param {module:clipboard/clipboardobserver~ClipboardEventData} data Event data.
+ * @param {module:engine/view/range~Range} dropRange The position into which the content is dropped.
  */
 
 /**
@@ -112,7 +122,7 @@ function getDropViewRange( doc, domEvent ) {
  * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/document~Document#addObserver} method.
  * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
  *
- * @see module:clipboard/clipboardobserver~ClipboardObserver
+ * @see module:engine/view/document~Document#event:clipboardInput
  * @event module:engine/view/document~Document#event:paste
  * @param {module:clipboard/clipboardobserver~ClipboardEventData} data Event data.
  */
