@@ -181,7 +181,15 @@ export default class Clipboard extends Plugin {
 		}
 
 		this.listenTo( editingView, 'copy', onCopyCut, { priority: 'low' } );
-		this.listenTo( editingView, 'cut', onCopyCut, { priority: 'low' } );
+		this.listenTo( editingView, 'cut', ( evt, data ) => {
+			// Cutting is disabled when editor is read-only.
+			// See: https://github.com/ckeditor/ckeditor5-clipboard/issues/26.
+			if ( editor.isReadOnly ) {
+				data.preventDefault();
+			} else {
+				onCopyCut( evt, data );
+			}
+		}, { priority: 'low' } );
 
 		this.listenTo( editingView, 'clipboardOutput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {

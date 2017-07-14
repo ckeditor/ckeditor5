@@ -283,6 +283,25 @@ describe( 'Clipboard feature', () => {
 			} );
 		} );
 
+		it( 'not fires clipboardOutput and preventDefault event for cut when editor is read-only', () => {
+			const dataTransferMock = createDataTransfer();
+			const preventDefaultSpy = sinon.spy();
+			const spy = sinon.spy();
+
+			setModelData( editor.document, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+			editor.isReadOnly = true;
+
+			editingView.on( 'clipboardOutput', spy );
+
+			editingView.fire( 'cut', {
+				dataTransfer: dataTransferMock,
+				preventDefault: preventDefaultSpy
+			} );
+
+			sinon.assert.notCalled( spy );
+			sinon.assert.calledOnce( preventDefaultSpy );
+		} );
+
 		it( 'uses low priority observer for the copy event', () => {
 			const dataTransferMock = createDataTransfer();
 			const spy = sinon.spy();
