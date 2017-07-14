@@ -8,6 +8,8 @@ import ListCommand from '../src/listcommand';
 
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -3034,7 +3036,71 @@ describe( 'ListEngine', () => {
 		} );
 	} );
 
-	describe( 'paste integration', () => {
+	describe( 'paste and insertContent integration', () => {
+		it( 'should be triggered on DataController#insertContent()', () => {
+			setModelData( modelDoc,
+				'<listItem type="bulleted" indent="0">A</listItem>' +
+				'<listItem type="bulleted" indent="1">B[]</listItem>' +
+				'<listItem type="bulleted" indent="2">C</listItem>'
+			);
+
+			editor.data.insertContent(
+				parseModel(
+					'<listItem type="bulleted" indent="0">X</listItem>' +
+					'<listItem type="bulleted" indent="1">Y</listItem>',
+					modelDoc.schema
+				),
+				modelDoc.selection
+			);
+
+			expect( getModelData( modelDoc ) ).to.equal(
+				'<listItem indent="0" type="bulleted">A</listItem>' +
+				'<listItem indent="1" type="bulleted">BX</listItem>' +
+				'<listItem indent="2" type="bulleted">Y[]</listItem>' +
+				'<listItem indent="2" type="bulleted">C</listItem>'
+			);
+		} );
+
+		// Just checking that it doesn't crash. #69
+		it( 'should work if an element is passed to DataController#insertContent()', () => {
+			setModelData( modelDoc,
+				'<listItem type="bulleted" indent="0">A</listItem>' +
+				'<listItem type="bulleted" indent="1">B[]</listItem>' +
+				'<listItem type="bulleted" indent="2">C</listItem>'
+			);
+
+			editor.data.insertContent(
+				new ModelElement( 'listItem', { type: 'bulleted', indent: '0' }, 'X' ),
+				modelDoc.selection
+			);
+
+			expect( getModelData( modelDoc ) ).to.equal(
+				'<listItem indent="0" type="bulleted">A</listItem>' +
+				'<listItem indent="1" type="bulleted">BX[]</listItem>' +
+				'<listItem indent="2" type="bulleted">C</listItem>'
+			);
+		} );
+
+		// Just checking that it doesn't crash. #69
+		it( 'should work if an element is passed to DataController#insertContent()', () => {
+			setModelData( modelDoc,
+				'<listItem type="bulleted" indent="0">A</listItem>' +
+				'<listItem type="bulleted" indent="1">B[]</listItem>' +
+				'<listItem type="bulleted" indent="2">C</listItem>'
+			);
+
+			editor.data.insertContent(
+				new ModelText( 'X' ),
+				modelDoc.selection
+			);
+
+			expect( getModelData( modelDoc ) ).to.equal(
+				'<listItem indent="0" type="bulleted">A</listItem>' +
+				'<listItem indent="1" type="bulleted">BX[]</listItem>' +
+				'<listItem indent="2" type="bulleted">C</listItem>'
+			);
+		} );
+
 		it( 'should fix indents of pasted list items', () => {
 			setModelData( modelDoc,
 				'<listItem type="bulleted" indent="0">A</listItem>' +
