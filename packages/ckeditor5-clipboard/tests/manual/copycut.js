@@ -6,32 +6,12 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Clipboard from '../../src/clipboard';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
 
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		Typing,
-		Paragraph,
-		Undo,
-		Enter,
-		Clipboard,
-		Link,
-		List,
-		Heading,
-		Bold,
-		Italic
-	],
+	plugins: [ ArticlePreset ],
 	toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 } )
 .then( editor => {
