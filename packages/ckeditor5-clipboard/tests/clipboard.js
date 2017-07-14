@@ -174,6 +174,20 @@ describe( 'Clipboard feature', () => {
 			expect( stringifyModel( spy.args[ 0 ][ 0 ] ) ).to.equal( '<paragraph>x</paragraph>' );
 		} );
 
+		it( 'do not insert content when editor is read-only', () => {
+			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
+			const spy = sinon.stub( editor.data, 'insertContent' );
+
+			editor.isReadOnly = true;
+
+			editingView.fire( 'paste', {
+				dataTransfer: dataTransferMock,
+				preventDefault() {}
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
 		it( 'converts content in an "all allowed" context', () => {
 			// It's enough if we check this here with a text node and paragraph because if the conversion was made
 			// in a normal root, then text or paragraph wouldn't be allowed here.
