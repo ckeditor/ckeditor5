@@ -21,6 +21,7 @@ import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildv
 
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -754,6 +755,36 @@ describe( 'Input feature', () => {
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( '<p><strong>fixed text</strong></p>' );
 		} );
 
+		// Spell checker splits text inside attributes to two text nodes.
+		it( 'should handle mutations inside attribute element', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<$text bold="true">' +
+						'this is foo text[]' +
+					'</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>this is foo text{}</strong></p>' );
+
+			const paragraph = viewRoot.getChild( 0 );
+			const strong = paragraph.getChild( 0 );
+			const text = strong.getChild( 0 );
+
+			// Simulate mutations and DOM change.
+			domRoot.childNodes[ 0 ].innerHTML = '<strong>this is bar text</strong>';
+			view.fire( 'mutations', [
+				{
+					type: 'children',
+					node: strong,
+					oldChildren: [ text ],
+					newChildren: [ new ViewText( 'this is bar' ), new ViewText( ' text' ) ]
+				}
+			] );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( '<p><strong>this is bar text</strong></p>' );
+		} );
+
 		it( 'should do nothing if elements mutated', () => {
 			setModelData( model,
 				'<paragraph>' +
@@ -827,6 +858,40 @@ describe( 'Input feature', () => {
 			// Simulate mutations and DOM change.
 			domRoot.childNodes[ 0 ].innerHTML = '<strong>text</strong>';
 			view.fire( 'mutations', [] );
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
+		} );
+
+		it( 'should do nothing if mutations does not have common ancestor', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<$text bold="true">' +
+						'text[]' +
+					'</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
+
+			const paragraph = viewRoot.getChild( 0 );
+			const strong = paragraph.getChild( 0 );
+
+			// Simulate mutations and DOM change.
+			domRoot.childNodes[ 0 ].innerHTML = '<strong>text</strong>';
+			view.fire( 'mutations', [
+				{
+					type: 'children',
+					node: paragraph,
+					oldChildren: [ strong ],
+					newChildren: [ strong ]
+				},
+				{
+					type: 'children',
+					node: new ViewContainerElement( 'div' ),
+					oldChildren: [],
+					newChildren: [ new ViewText( 'foo' ), new ViewText( 'bar' ) ]
+				}
+			] );
 
 			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
 		} );

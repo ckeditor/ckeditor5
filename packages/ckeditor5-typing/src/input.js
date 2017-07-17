@@ -291,11 +291,6 @@ class MutationHandler {
 		}
 
 		const change = getSingleTextNodeChange( mutation );
-
-		if ( !change ) {
-			return;
-		}
-
 		const viewPos = new ViewPosition( mutation.node, change.index );
 		const modelPos = this.editing.mapper.toModelPosition( viewPos );
 		const insertedText = change.values[ 0 ].data;
@@ -410,10 +405,6 @@ function getMutationsCommonAncestor( mutations ) {
 			return ancestors;
 		} ).filter( item => item !== shortestList );
 
-	if ( !shortestList ) {
-		return null;
-	}
-
 	// Find common ancestor from the lists. Go from the shortest list to the top. If common ancestor is found - return it.
 	for ( const ancestor of shortestList ) {
 		// Check only container and root elements.
@@ -448,7 +439,7 @@ function containerChildrenMutated( mutations ) {
 		return false;
 	}
 
-	// Check if all mutations are `children` type, and there is no single text node mutation
+	// Check if all mutations are `children` type, and there is no single text node mutation.
 	for ( const mutation of mutations ) {
 		if ( mutation.type !== 'children' || getSingleTextNodeChange( mutation ) ) {
 			return false;
