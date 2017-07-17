@@ -10,8 +10,9 @@
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import ImageBalloon from './image/ui/imageballoon';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import { isImageWidget } from './image/utils';
+import { repositionContextualBalloon, getBalloonPositionData } from './image/ui/utils';
 
 const balloonClassName = 'ck-toolbar-container ck-editor-toolbar-container';
 
@@ -21,7 +22,7 @@ const balloonClassName = 'ck-toolbar-container ck-editor-toolbar-container';
  * Toolbar components are created using editor's {@link module:ui/componentfactory~ComponentFactory ComponentFactory}
  * based on {@link module:core/editor/editor~Editor#config configuration} stored under `image.toolbar`.
  *
- * The toolbar uses {@link module:image/image/ui/imageballoon~ImageBalloon}.
+ * The toolbar uses {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -30,7 +31,7 @@ export default class ImageToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageBalloon ];
+		return [ ContextualBalloon ];
 	}
 
 	/**
@@ -53,6 +54,14 @@ export default class ImageToolbar extends Plugin {
 		}
 
 		/**
+		 * The contextual balloon plugin instance.
+		 *
+		 * @private
+		 * @member {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
+		 */
+		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
+
+		/**
 		 * A `ToolbarView` instance used to display the buttons specific for image
 		 * editing.
 		 *
@@ -72,39 +81,81 @@ export default class ImageToolbar extends Plugin {
 		this._toolbar.fillFromConfig( toolbarConfig, editor.ui.componentFactory );
 
 		// Show balloon panel each time image widget is selected.
-		this.listenTo( this.editor.editing.view, 'render', () => {
+		this.listenTo( editor.editing.view, 'render', () => {
 			this._checkIsVisible();
 		}, { priority: 'low' } );
 
 		// There is no render method after focus is back in editor, we need to check if balloon panel should be visible.
-		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, is, was ) => {
-			if ( !was && is ) {
-				this._checkIsVisible();
-			}
-		} );
+		this.listenTo( editor.ui.focusTracker, 'change:isFocused', () => {
+			this._checkIsVisible();
+		}, { priority: 'low' } );
 	}
 
 	/**
 	 * Checks whether the toolbar should show up or hide depending on the
 	 * current selection.
 	 *
-	 * @protected
+	 * @private
 	 */
 	_checkIsVisible() {
-		const editingView = this.editor.editing.view;
-		const selectedElement = editingView.selection.getSelectedElement();
-		const balloon = this.editor.plugins.get( 'ImageBalloon' );
-		const toolbar = this._toolbar;
+		const editor = this.editor;
 
-		if ( selectedElement && isImageWidget( selectedElement ) ) {
-			if ( !balloon.hasView( toolbar ) ) {
-				balloon.add( {
-					view: toolbar,
+		if ( !editor.ui.focusTracker.isFocused ) {
+			this._hideToolbar();
+		} else {
+			const editingView = editor.editing.view;
+			const selectedElement = editingView.selection.getSelectedElement();
+
+			if ( selectedElement && isImageWidget( selectedElement ) ) {
+				this._showToolbar();
+			} else {
+				this._hideToolbar();
+			}
+		}
+	}
+
+	/**
+	 * Shows the {@link #_toolbar} in the {@link _balloon}.
+	 *
+	 * @private
+	 */
+	_showToolbar() {
+		const editor = this.editor;
+
+		if ( this._isVisible ) {
+			repositionContextualBalloon( editor );
+		} else {
+			if ( !this._balloon.hasView( this._toolbar ) ) {
+				this._balloon.add( {
+					view: this._toolbar,
+					position: getBalloonPositionData( editor ),
 					balloonClassName
 				} );
 			}
-		} else if ( balloon.hasView( toolbar ) ) {
-			balloon.remove( toolbar );
 		}
+	}
+
+	/**
+	 * Removes the {@link #_toolbar} from the {@link _balloon}.
+	 *
+	 * @private
+	 */
+	_hideToolbar() {
+		if ( !this._isVisible ) {
+			return;
+		}
+
+		this._balloon.remove( this._toolbar );
+	}
+
+	/**
+	 * Returns `true` when the {@link #_toolbar} is the visible view
+	 * in the {@link #_balloon}.
+	 *
+	 * @private
+	 * @type {Boolean}
+	 */
+	get _isVisible() {
+		return this._balloon.visibleView == this._toolbar;
 	}
 }
