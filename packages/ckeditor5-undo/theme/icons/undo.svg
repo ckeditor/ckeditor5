@@ -1,14 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.8.2 (29753) - http://www.bohemiancoding.com/sketch -->
-    <title>undo</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Mockups" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="undo" fill="#454545">
-            <g>
-                <path d="M2,10 L9.99998,15.99998 L9,12.0184937 C12.41666,12.0184937 17.61556,12.88666 19,16 C19,10.01667 12.39888,8.03985596 9,8.03985596 C9.00002,7.18907596 10.00001,4.71945 10,4 L2,10 Z"></path>
-            </g>
-        </g>
-    </g>
-</svg>
+<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>undo</title><path d="M2 10l8 6-1-3.982c3.417 0 8.616.869 10 3.982 0-5.983-6.601-7.96-10-7.96 0-.85 1-3.32 1-4.04l-8 6z" fill="#454545" fill-rule="evenodd"/></svg>
