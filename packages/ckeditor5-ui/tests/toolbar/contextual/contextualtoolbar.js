@@ -409,24 +409,22 @@ describe( 'ContextualToolbar', () => {
 	} );
 
 	describe( 'beforeShow event', () => {
-		it( 'should fire `beforeShow` event just before panel shows', () => {
+		it( 'should fire `show` event just before panel shows', () => {
 			const spy = sinon.spy();
 
-			contextualToolbar.on( 'beforeShow', spy );
+			contextualToolbar.on( 'show', spy );
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
 
 			contextualToolbar.show();
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should not show the panel when `beforeShow` event is stopped', () => {
+		it( 'should not show the panel when `show` event is stopped', () => {
 			const balloonAddSpy = sandbox.spy( balloon, 'add' );
 
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar.on( 'beforeShow', ( evt, stop ) => {
-				stop();
-			} );
+			contextualToolbar.on( 'show', evt => evt.stop() );
 
 			contextualToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
