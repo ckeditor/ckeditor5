@@ -14,7 +14,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 /**
  * Delete observer introduces the {@link module:engine/view/document~Document#event:delete} event.
  *
- * @extends engine.view.observer.Observer
+ * @extends module:engine/view/observer/observer~Observer
  */
 export default class DeleteObserver extends Observer {
 	constructor( document ) {
