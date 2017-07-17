@@ -408,7 +408,7 @@ describe( 'ContextualToolbar', () => {
 		} );
 	} );
 
-	describe( 'beforeShow event', () => {
+	describe( 'show event', () => {
 		it( 'should fire `show` event just before panel shows', () => {
 			const spy = sinon.spy();
 
