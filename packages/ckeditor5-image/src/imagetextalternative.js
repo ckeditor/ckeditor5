@@ -12,15 +12,16 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ImageTextAlternativeEngine from './imagetextalternative/imagetextalternativeengine';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import TextAlternativeFormView from './imagetextalternative/ui/textalternativeformview';
-import ImageBalloon from './image/ui/imageballoon';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import textAlternativeIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
+import { repositionContextualBalloon, getBalloonPositionData } from './image/ui/utils';
 
 import '../theme/imagetextalternative/theme.scss';
 
 /**
  * The image text alternative plugin.
  *
- * The plugin uses {@link module:image/image/ui/imageballoon~ImageBalloon}.
+ * The plugin uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -29,7 +30,7 @@ export default class ImageTextAlternative extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageTextAlternativeEngine, ImageBalloon ];
+		return [ ImageTextAlternativeEngine, ContextualBalloon ];
 	}
 
 	/**
@@ -79,10 +80,19 @@ export default class ImageTextAlternative extends Plugin {
 	 * Creates the {@link module:image/imagetextalternative/ui/textalternativeformview~TextAlternativeFormView}
 	 * form.
 	 *
-	 * @protected
+	 * @private
 	 */
 	_createForm() {
 		const editor = this.editor;
+		const editingView = editor.editing.view;
+
+		/**
+		 * The contextual balloon plugin instance.
+		 *
+		 * @private
+		 * @member {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
+		 */
+		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
 
 		/**
 		 * Form containing textarea and buttons, used to change `alt` text value.
@@ -109,6 +119,20 @@ export default class ImageTextAlternative extends Plugin {
 			cancel();
 		} );
 
+		// Reposition the balloon upon #render.
+		this.listenTo( editingView, 'render', () => {
+			if ( this._isVisible ) {
+				repositionContextualBalloon( editor );
+			}
+		}, { priority: 'low' } );
+
+		// Hide the form when the editor is blurred.
+		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, is ) => {
+			if ( !is ) {
+				this._hideForm();
+			}
+		}, { priority: 'low' } );
+
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( {
 			emitter: this._form,
@@ -119,59 +143,62 @@ export default class ImageTextAlternative extends Plugin {
 	}
 
 	/**
-	 * Shows the form in a balloon.
+	 * Shows the {@link #_form} in the {@link #_balloon}.
 	 *
-	 * @protected
+	 * @private
 	 */
 	_showForm() {
+		if ( this._isVisible ) {
+			return;
+		}
+
 		const editor = this.editor;
-		const balloon = editor.plugins.get( 'ImageBalloon' );
 		const command = editor.commands.get( 'imageTextAlternative' );
 		const labeledInput = this._form.labeledInput;
 
-		if ( !balloon.hasView( this._form ) ) {
-			balloon.add( {
-				view: this._form
+		if ( !this._balloon.hasView( this._form ) ) {
+			this._balloon.add( {
+				view: this._form,
+				position: getBalloonPositionData( editor )
 			} );
-
-			// Make sure that each time the panel shows up, the field remains in sync with the value of
-			// the command. If the user typed in the input, then canceled the balloon (`labeledInput#value`
-			// stays unaltered) and re-opened it without changing the value of the command, they would see the
-			// old value instead of the actual value of the command.
-			// https://github.com/ckeditor/ckeditor5-image/issues/114
-			labeledInput.value = labeledInput.inputView.element.value = command.value || '';
-
-			this._form.labeledInput.select();
 		}
+
+		// Make sure that each time the panel shows up, the field remains in sync with the value of
+		// the command. If the user typed in the input, then canceled the balloon (`labeledInput#value`
+		// stays unaltered) and re-opened it without changing the value of the command, they would see the
+		// old value instead of the actual value of the command.
+		// https://github.com/ckeditor/ckeditor5-image/issues/114
+		labeledInput.value = labeledInput.inputView.element.value = command.value || '';
+
+		this._form.labeledInput.select();
 	}
 
 	/**
-	 * Hides the form in a balloon.
+	 * Removes the {@link #_form} from the {@link #_balloon}.
 	 *
 	 * @param {Boolean} focusEditable Control whether the editing view is focused afterwards.
-	 * @protected
+	 * @private
 	 */
 	_hideForm( focusEditable ) {
-		const editor = this.editor;
-		const balloon = editor.plugins.get( 'ImageBalloon' );
+		if ( !this._isVisible ) {
+			return;
+		}
 
-		if ( balloon.hasView( this._form ) ) {
-			balloon.remove( this._form );
+		this._balloon.remove( this._form );
 
-			if ( focusEditable ) {
-				editor.editing.view.focus();
-			}
+		if ( focusEditable ) {
+			this.editor.editing.view.focus();
 		}
 	}
 
 	/**
-	 * Returns `true` when the {@link _form} is the visible view
-	 * in {@link module:image/ui/imageballoon~ImageBalloon}.
+	 * Returns `true` when the {@link #_form} is the visible view
+	 * in the {@link #_balloon}.
 	 *
-	 * @protected
+	 * @private
 	 * @type {Boolean}
 	 */
 	get _isVisible() {
-		return this.editor.plugins.get( 'ImageBalloon' ).visibleView == this._form;
+		return this._balloon.visibleView == this._form;
 	}
 }

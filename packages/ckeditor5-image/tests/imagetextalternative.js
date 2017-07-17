@@ -3,19 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global Event, document */
+
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '../src/image';
 import ImageTextAlternative from '../src/imagetextalternative';
 import ImageTextAlternativeEngine from '../src/imagetextalternative/imagetextalternativeengine';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import View from '@ckeditor/ckeditor5-ui/src/view';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
-/* global Event */
-
 describe( 'ImageTextAlternative', () => {
-	let editor, doc, plugin, command, form, imageBalloon, editorElement;
+	let editor, editingView, doc, plugin, command, form, balloon, editorElement, button;
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -26,12 +27,14 @@ describe( 'ImageTextAlternative', () => {
 		} )
 		.then( newEditor => {
 			editor = newEditor;
+			editingView = editor.editing.view;
 			doc = editor.document;
 			newEditor.editing.view.attachDomRoot( editorElement );
 			plugin = editor.plugins.get( ImageTextAlternative );
 			command = editor.commands.get( 'imageTextAlternative' );
 			form = plugin._form;
-			imageBalloon = editor.plugins.get( 'ImageBalloon' );
+			balloon = editor.plugins.get( 'ContextualBalloon' );
+			button = editor.ui.componentFactory.create( 'imageTextAlternative' );
 		} );
 	} );
 
@@ -50,12 +53,6 @@ describe( 'ImageTextAlternative', () => {
 	} );
 
 	describe( 'toolbar button', () => {
-		let button;
-
-		beforeEach( () => {
-			button = editor.ui.componentFactory.create( 'imageTextAlternative' );
-		} );
-
 		it( 'should be registered in component factory', () => {
 			expect( button ).to.be.instanceOf( ButtonView );
 		} );
@@ -69,17 +66,17 @@ describe( 'ImageTextAlternative', () => {
 		} );
 
 		it( 'should show balloon panel on execute', () => {
-			expect( imageBalloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).to.be.null;
 
 			setData( doc, '[<image src="" alt="foo bar"></image>]' );
 
 			button.fire( 'execute' );
-			expect( imageBalloon.visibleView ).to.equal( form );
+			expect( balloon.visibleView ).to.equal( form );
 
 			// Make sure successive execute does not throw, e.g. attempting
 			// to display the form twice.
 			button.fire( 'execute' );
-			expect( imageBalloon.visibleView ).to.equal( form );
+			expect( balloon.visibleView ).to.equal( form );
 		} );
 
 		it( 'should set alt attribute value to textarea and select it', () => {
@@ -138,11 +135,52 @@ describe( 'ImageTextAlternative', () => {
 			setData( doc, '[<image src="" alt="foo bar"></image>]' );
 
 			editor.ui.componentFactory.create( 'imageTextAlternative' ).fire( 'execute' );
-			expect( imageBalloon.visibleView ).to.equal( form );
+			expect( balloon.visibleView ).to.equal( form );
 
 			form.fire( 'cancel' );
-			expect( imageBalloon.visibleView ).to.be.null;
+			expect( balloon.visibleView ).to.be.null;
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should not engage when the form is in the balloon yet invisible', () => {
+			setData( doc, '[<image src=""></image>]' );
+			button.fire( 'execute' );
+			expect( balloon.visibleView ).to.equal( form );
+
+			const lastView = new View();
+			lastView.element = document.createElement( 'div' );
+
+			balloon.add( { view: lastView } );
+			expect( balloon.visibleView ).to.equal( lastView );
+
+			button.fire( 'execute' );
+			expect( balloon.visibleView ).to.equal( lastView );
+		} );
+
+		describe( 'integration with the editor selection (#render event)', () => {
+			it( 'should re-position the form', () => {
+				setData( doc, '[<image src=""></image>]' );
+				button.fire( 'execute' );
+
+				const spy = sinon.spy( balloon, 'updatePosition' );
+
+				editingView.fire( 'render' );
+				sinon.assert.calledOnce( spy );
+			} );
+		} );
+
+		describe( 'integration with the editor focus', () => {
+			it( 'should hide the toolbar when the editor loses focus and the image is selected', () => {
+				editor.ui.focusTracker.isFocused = true;
+
+				setData( doc, '[<image src=""></image>]' );
+				button.fire( 'execute' );
+
+				const spy = sinon.spy( balloon, 'remove' );
+
+				editor.ui.focusTracker.isFocused = false;
+				sinon.assert.calledWithExactly( spy, form );
+			} );
 		} );
 
 		describe( 'close listeners', () => {
@@ -152,7 +190,7 @@ describe( 'ImageTextAlternative', () => {
 					const focusSpy = sinon.spy( editor.editing.view, 'focus' );
 
 					setData( doc, '[<image src=""></image>]' );
-					imageBalloon.add( { view: form } );
+					button.fire( 'execute' );
 
 					const keyEvtData = {
 						keyCode: keyCodes.esc,
@@ -173,7 +211,7 @@ describe( 'ImageTextAlternative', () => {
 					const focusSpy = sinon.spy( editor.editing.view, 'focus' );
 
 					setData( doc, '[<image src=""></image>]' );
-					imageBalloon.add( { view: form } );
+					button.fire( 'execute' );
 
 					global.document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 					sinon.assert.called( hideSpy );
@@ -184,7 +222,7 @@ describe( 'ImageTextAlternative', () => {
 					const spy = sinon.spy( plugin, '_hideForm' );
 
 					setData( doc, '[<image src=""></image>]' );
-					imageBalloon.add( { view: form } );
+					button.fire( 'execute' );
 
 					form.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 					sinon.assert.notCalled( spy );
