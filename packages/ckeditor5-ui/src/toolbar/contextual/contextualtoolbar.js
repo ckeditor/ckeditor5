@@ -177,6 +177,12 @@ export default class ContextualToolbar extends Plugin {
 	 * @private
 	 */
 	_show() {
+		// Don not show ContextualToolbar when all components inside are disabled
+		// see https://github.com/ckeditor/ckeditor5-ui/issues/269.
+		if ( Array.from( this.toolbarView.items ).every( item => !item.isEnabled ) ) {
+			return;
+		}
+
 		// Update panel position when selection changes (by external document changes) while balloon is opened.
 		this.listenTo( this.editor.editing.view, 'render', () => {
 			this._balloon.updatePosition( this._getBalloonPositionData() );
