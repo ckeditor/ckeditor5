@@ -80,7 +80,8 @@ export default class ContextualToolbar extends Plugin {
 		this._handleSelectionChange();
 		this._handleFocusChange();
 
-		// ContextualToolbar is displayed using event to make possible to prevent displaying it by stopping this event.
+		// The appearance of the ContextualToolbar method is event–driven.
+		// It is possible to stop the #show event and thus prevent the toolbar from showing up.
 		this.on( 'show', () => this._show(), { priority: 'low' } );
 	}
 
@@ -98,7 +99,7 @@ export default class ContextualToolbar extends Plugin {
 	}
 
 	/**
-	 * Handles editor focus change and hides panel if it's needed.
+	 * Handles the editor focus change and hides the toolbar if it's needed.
 	 *
 	 * @private
 	 */
@@ -149,10 +150,10 @@ export default class ContextualToolbar extends Plugin {
 	/**
 	 * Shows the toolbar and attaches it to the selection.
 	 *
-	 * Fires {@link #event:show} event which can be stopped that prevents toolbar from being displayed.
+	 * Fires {@link #event:show} event which can be stopped, which prevents toolbar from showing up.
 	 */
 	show() {
-		// Do not add toolbar to the balloon stack twice.
+		// Do not add the toolbar to the balloon stack twice.
 		if ( this._balloon.hasView( this.toolbarView ) ) {
 			return;
 		}
@@ -171,24 +172,24 @@ export default class ContextualToolbar extends Plugin {
 	}
 
 	/**
-	 * Executes showing toolbar.
-	 * When {@link #event:show} is not stopped then toolbar will be displayed.
+	 * Shows of the toolbar if the {@link #event:show} has not been stopped.
 	 *
 	 * @private
 	 */
 	_show() {
-		// Don not show ContextualToolbar when all components inside are disabled
+		// Don not show the toolbar when all components inside are disabled
 		// see https://github.com/ckeditor/ckeditor5-ui/issues/269.
 		if ( Array.from( this.toolbarView.items ).every( item => !item.isEnabled ) ) {
 			return;
 		}
 
-		// Update panel position when selection changes (by external document changes) while balloon is opened.
+		// Update the toolbar position upon #render (e.g. external document changes)
+		// while it's visible.
 		this.listenTo( this.editor.editing.view, 'render', () => {
 			this._balloon.updatePosition( this._getBalloonPositionData() );
 		} );
 
-		// Add panel to the common editor contextual balloon.
+		// Add the toolbar to the common editor contextual balloon.
 		this._balloon.add( {
 			view: this.toolbarView,
 			position: this._getBalloonPositionData(),
@@ -236,9 +237,7 @@ export default class ContextualToolbar extends Plugin {
 	}
 
 	/**
-	 * This event is fired just before the toolbar shows.
-	 * Using this event, an external code can prevent ContextualToolbar
-	 * from being displayed by stopping it.
+	 * This event is fired just before the toolbar shows up. Stopping this event will prevent this.
 	 *
 	 * @event show
 	 */
