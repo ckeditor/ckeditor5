@@ -233,12 +233,6 @@ describe( 'DataController', () => {
 				'<heading1>f[]</heading1><paragraph>x</paragraph>'
 			);
 
-			test(
-				'leaves just one element when all selected',
-				'<heading1>[x</heading1><paragraph>foo</paragraph><paragraph>y]</paragraph>',
-				'<heading1>[]</heading1>'
-			);
-
 			it( 'uses remove delta instead of merge delta if merged element is empty', () => {
 				setData( doc, '<paragraph>ab[cd</paragraph><paragraph>efgh]</paragraph>' );
 
@@ -450,6 +444,8 @@ describe( 'DataController', () => {
 
 				const schema = doc.schema;
 
+				schema.limits.add( 'restrictedRoot' );
+
 				schema.registerItem( 'image', '$inline' );
 				schema.registerItem( 'paragraph', '$block' );
 				schema.registerItem( 'heading1', '$block' );
@@ -465,6 +461,8 @@ describe( 'DataController', () => {
 			// See also "in simple scenarios => deletes an element".
 
 			it( 'deletes two inline elements', () => {
+				doc.schema.limits.add( 'paragraph' );
+
 				setData(
 					doc,
 					'x[<image></image><image></image>]z',
@@ -657,6 +655,88 @@ describe( 'DataController', () => {
 				'<blockLimit><paragraph>foo [bar</paragraph></blockLimit><blockLimit><paragraph>baz] qux</paragraph></blockLimit>',
 				'<blockLimit><paragraph>foo []</paragraph></blockLimit><blockLimit><paragraph> qux</paragraph></blockLimit>'
 			);
+		} );
+
+		describe( 'should leave a paragraph if the entire content was selected', () => {
+			beforeEach( () => {
+				doc = new Document();
+				doc.createRoot();
+
+				const schema = doc.schema;
+
+				schema.registerItem( 'div', '$block' );
+				schema.limits.add( 'div' );
+
+				schema.registerItem( 'article', '$block' );
+				schema.limits.add( 'article' );
+
+				schema.registerItem( 'image', '$inline' );
+				schema.objects.add( 'image' );
+
+				schema.registerItem( 'paragraph', '$block' );
+				schema.registerItem( 'heading1', '$block' );
+				schema.registerItem( 'heading2', '$block' );
+
+				schema.allow( { name: '$text', inside: '$root' } );
+
+				schema.allow( { name: 'image', inside: '$root' } );
+				schema.allow( { name: 'image', inside: 'heading1' } );
+				schema.allow( { name: 'heading1', inside: 'div' } );
+				schema.allow( { name: 'paragraph', inside: 'div' } );
+				schema.allow( { name: 'heading1', inside: 'article' } );
+				schema.allow( { name: 'heading2', inside: 'article' } );
+			} );
+
+			test(
+				'but not if only one block was selected',
+				'<heading1>[xx]</heading1>',
+				'<heading1>[]</heading1>'
+			);
+
+			test(
+				'when the entire heading and paragraph were selected',
+				'<heading1>[xx</heading1><paragraph>yy]</paragraph>',
+				'<paragraph>[]</paragraph>'
+			);
+
+			test(
+				'inside the limit element when the entire heading and paragraph were inside',
+				'<div><heading1>[xx</heading1><paragraph>yy]</paragraph></div>',
+				'<div><paragraph>[]</paragraph></div>'
+			);
+
+			test(
+				'but not if schema does not accept paragraph in limit element',
+				'<article><heading1>[xx</heading1><heading2>yy]</heading2></article>',
+				'<article><heading1>[]</heading1></article>'
+			);
+
+			test(
+				'but not if selection is not containing the whole content',
+				'<image></image><heading1>[xx</heading1><paragraph>yy]</paragraph>',
+				'<image></image><heading1>[]</heading1>'
+			);
+
+			test(
+				'but not if only single element is selected',
+				'<heading1>[<image></image>xx]</heading1>',
+				'<heading1>[]</heading1>'
+			);
+
+			it( 'when root element was not added as Schema.limits works fine as well', () => {
+				doc.createRoot( 'paragraph', 'paragraphRoot' );
+
+				setData(
+					doc,
+					'x[<image></image><image></image>]z',
+					{ rootName: 'paragraphRoot' }
+				);
+
+				deleteContent( doc.selection, doc.batch() );
+
+				expect( getData( doc, { rootName: 'paragraphRoot' } ) )
+					.to.equal( 'x[]z' );
+			} );
 		} );
 
 		function test( title, input, output, options ) {

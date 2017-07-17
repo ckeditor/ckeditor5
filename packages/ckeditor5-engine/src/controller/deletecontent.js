@@ -32,8 +32,15 @@ export default function deleteContent( selection, batch, options = {} ) {
 		return;
 	}
 
-	const selRange = selection.getFirstRange();
+	// 0. Replace the entire content with paragraph.
+	// See: https://github.com/ckeditor/ckeditor5-engine/issues/1012#issuecomment-315017594.
+	if ( shouldEntireContentBeReplacedWithParagraph( batch.document.schema, selection ) ) {
+		replaceEntireContentWithParagraph( batch, selection );
 
+		return;
+	}
+
+	const selRange = selection.getFirstRange();
 	const startPos = selRange.start;
 	const endPos = LivePosition.createFromPosition( selRange.end );
 
@@ -59,10 +66,7 @@ export default function deleteContent( selection, batch, options = {} ) {
 	// 3. Autoparagraphing.
 	// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
 	if ( shouldAutoparagraph( batch.document, startPos ) ) {
-		const paragraph = new Element( 'paragraph' );
-		batch.insert( startPos, paragraph );
-
-		selection.collapse( paragraph );
+		insertParagraph( batch, startPos, selection );
 	}
 
 	endPos.detach();
@@ -159,6 +163,63 @@ function checkCanBeMerged( leftPos, rightPos ) {
 		if ( schema.objects.has( value.item.name ) || schema.limits.has( value.item.name ) ) {
 			return false;
 		}
+	}
+
+	return true;
+}
+
+// Returns the lowest limit element defined in `Schema.limits` for passed selection.
+function getLimitElement( schema, selection ) {
+	let element = selection.getFirstRange().getCommonAncestor();
+
+	while ( !schema.limits.has( element.name ) ) {
+		if ( element.parent ) {
+			element = element.parent;
+		} else {
+			break;
+		}
+	}
+
+	return element;
+}
+
+function insertParagraph( batch, position, selection ) {
+	const paragraph = new Element( 'paragraph' );
+	batch.insert( position, paragraph );
+
+	selection.collapse( paragraph );
+}
+
+function replaceEntireContentWithParagraph( batch, selection ) {
+	const limitElement = getLimitElement( batch.document.schema, selection );
+
+	batch.remove( Range.createIn( limitElement ) );
+	insertParagraph( batch, Position.createAt( limitElement ), selection );
+}
+
+// We want to replace the entire content with a paragraph when:
+// * the entire content is selected,
+// * selection contains at least two elements,
+// * whether the paragraph is allowed in schema in the common ancestor.
+function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
+	const limitElement = getLimitElement( schema, selection );
+	const limitStartPosition = Position.createAt( limitElement );
+	const limitEndPosition = Position.createAt( limitElement, 'end' );
+
+	if ( !limitStartPosition.isTouching( selection.getFirstPosition() ) ||
+		!limitEndPosition.isTouching( selection.getLastPosition() )
+	) {
+		return false;
+	}
+
+	const range = selection.getFirstRange();
+
+	if ( range.start.parent == range.end.parent ) {
+		return false;
+	}
+
+	if ( !schema.check( { name: 'paragraph', inside: limitElement.name } ) ) {
+		return false;
 	}
 
 	return true;
