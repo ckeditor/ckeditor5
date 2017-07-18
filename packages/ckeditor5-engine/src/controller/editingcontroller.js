@@ -66,8 +66,7 @@ export default class EditingController {
 		/**
 		 * Defines whether controller is in read-only mode.
 		 *
-		 * When controller is read-ony {module:engine/view/document~Document view document} and all view roots
-		 * are read-only as well.
+		 * When controller is read-ony then {module:engine/view/document~Document view document} is read-only as well.
 		 *
 		 * @observable
 		 * @member {Boolean} #isReadOnly
@@ -156,9 +155,6 @@ export default class EditingController {
 		const modelRoot = this.model.getRoot( name );
 
 		this.mapper.bindElements( modelRoot, viewRoot );
-
-		// When controller is read-only the all view roots are read-only as well.
-		viewRoot.bind( 'isReadOnly' ).to( this );
 
 		return viewRoot;
 	}

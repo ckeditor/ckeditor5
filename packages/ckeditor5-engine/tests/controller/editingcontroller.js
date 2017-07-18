@@ -134,19 +134,6 @@ describe( 'EditingController', () => {
 			expect( editing.mapper.toModelElement( viewRoot ) ).to.equal( modelRoot );
 			expect( editing.mapper.toViewElement( modelRoot ) ).to.equal( viewRoot );
 		} );
-
-		it( 'should bind root#isReadOnly to controller#isReadOnly', () => {
-			const domRoot = createElement( document, 'div', null, createElement( document, 'p' ) );
-			const viewRoot = editing.createRoot( domRoot );
-
-			editing.isReadOnly = false;
-
-			expect( viewRoot.isReadOnly ).to.false;
-
-			editing.isReadOnly = true;
-
-			expect( viewRoot.isReadOnly ).to.true;
-		} );
 	} );
 
 	describe( 'conversion', () => {
