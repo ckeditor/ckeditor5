@@ -22,7 +22,7 @@
     "@ckeditor/ckeditor5-presets": "ckeditor/ckeditor5-presets#cb65328",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#ddf3102",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#3a5e262",
-    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#111a728",
+    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#d83d07d",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#9cb1923",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#ab81012",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#f67aea1",
