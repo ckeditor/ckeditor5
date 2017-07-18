@@ -148,19 +148,6 @@ describe( 'HeadingCommand', () => {
 
 				expect( batch.deltas.length ).to.be.above( 0 );
 			} );
-
-			it( 'should use provided batch (converting to default option)', () => {
-				const batch = editor.document.batch();
-				const command = commands.heading1;
-
-				setData( document, '<heading1>foo[]bar</heading1>' );
-
-				expect( batch.deltas.length ).to.equal( 0 );
-
-				command.execute( { batch } );
-
-				expect( batch.deltas.length ).to.be.above( 0 );
-			} );
 		} );
 
 		describe( 'collapsed selection', () => {
@@ -171,13 +158,13 @@ describe( 'HeadingCommand', () => {
 				convertTo = option;
 			}
 
-			it( 'converts to default option when executed with already applied option', () => {
+			it( 'does nothing when executed with already applied option', () => {
 				const command = commands.heading1;
 
 				setData( document, '<heading1>foo[]bar</heading1>' );
 				command.execute();
 
-				expect( getData( document ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+				expect( getData( document ) ).to.equal( '<heading1>foo[]bar</heading1>' );
 			} );
 
 			it( 'converts topmost blocks', () => {
@@ -217,12 +204,12 @@ describe( 'HeadingCommand', () => {
 				);
 			} );
 
-			it( 'resets to default value all elements with same option', () => {
+			it( 'does nothing to the elements with same option', () => {
 				setData( document, '<heading1>foo[</heading1><heading1>bar</heading1><heading2>baz</heading2>]' );
 				commands.heading1.execute();
 
 				expect( getData( document ) ).to.equal(
-					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><heading2>baz</heading2>]'
+					'<heading1>foo[</heading1><heading1>bar</heading1><heading1>baz</heading1>]'
 				);
 			} );
 
