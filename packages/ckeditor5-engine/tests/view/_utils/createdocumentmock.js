@@ -14,6 +14,7 @@ import Selection from '../../../src/view/selection';
 export default function createDocumentMock() {
 	const doc = Object.create( ObservableMixin );
 	doc.set( 'isFocused', false );
+	doc.set( 'isReadOnly', false );
 	doc.selection = new Selection();
 
 	return doc;
