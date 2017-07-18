@@ -108,7 +108,7 @@ export default class Document {
 		 * @member {module:engine/view/renderer~Renderer} module:engine/view/document~Document#renderer
 		 */
 		this.renderer = new Renderer( this.domConverter, this.selection );
-		this.renderer.bind( 'isFocused' ).to( this, 'isFocused' );
+		this.renderer.bind( 'isFocused' ).to( this );
 
 		/**
 		 * Map of registered {@link module:engine/view/observer/observer~Observer observers}.
