@@ -74,6 +74,8 @@ export default class EditableElement extends ContainerElement {
 
 		this.setCustomProperty( documentSymbol, document );
 
+		this.bind( 'isReadOnly' ).to( document );
+
 		this.bind( 'isFocused' ).to(
 			document,
 			'isFocused',
