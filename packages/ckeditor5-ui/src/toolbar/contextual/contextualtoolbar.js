@@ -150,7 +150,7 @@ export default class ContextualToolbar extends Plugin {
 	/**
 	 * Shows the toolbar and attaches it to the selection.
 	 *
-	 * Fires {@link #event:show} event which can be stopped, which prevents toolbar from showing up.
+	 * Fires {@link #event:show} event which can be stopped to prevent the toolbar from showing up.
 	 */
 	show() {
 		// Do not add the toolbar to the balloon stack twice.
