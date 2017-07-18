@@ -29,27 +29,44 @@ import { getData as getViewData } from '../../src/dev-utils/view';
 
 describe( 'EditingController', () => {
 	describe( 'constructor()', () => {
-		it( 'should create controller with properties', () => {
-			const model = new ModelDocument();
-			const editing = new EditingController( model );
+		let model, editing;
 
+		beforeEach( () => {
+			model = new ModelDocument();
+			editing = new EditingController( model );
+		} );
+
+		afterEach( () => {
+			editing.destroy();
+		} );
+
+		it( 'should create controller with properties', () => {
 			expect( editing ).to.have.property( 'model' ).that.equals( model );
 			expect( editing ).to.have.property( 'view' ).that.is.instanceof( ViewDocument );
 			expect( editing ).to.have.property( 'mapper' ).that.is.instanceof( Mapper );
 			expect( editing ).to.have.property( 'modelToView' ).that.is.instanceof( ModelConversionDispatcher );
+			expect( editing ).to.have.property( 'isReadOnly' ).that.is.false;
 
 			editing.destroy();
 		} );
 
 		it( 'should be observable', () => {
-			const model = new ModelDocument();
-			const editing = new EditingController( model );
 			const spy = sinon.spy();
 
 			editing.on( 'change:foo', spy );
 			editing.set( 'foo', 'bar' );
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should bind view#isReadOnly to controller#isReadOnly', () => {
+			editing.isReadOnly = false;
+
+			expect( editing.view.isReadOnly ).to.false;
+
+			editing.isReadOnly = true;
+
+			expect( editing.view.isReadOnly ).to.true;
 		} );
 	} );
 
@@ -116,6 +133,19 @@ describe( 'EditingController', () => {
 
 			expect( editing.mapper.toModelElement( viewRoot ) ).to.equal( modelRoot );
 			expect( editing.mapper.toViewElement( modelRoot ) ).to.equal( viewRoot );
+		} );
+
+		it( 'should bind root#isReadOnly to controller#isReadOnly', () => {
+			const domRoot = createElement( document, 'div', null, createElement( document, 'p' ) );
+			const viewRoot = editing.createRoot( domRoot );
+
+			editing.isReadOnly = false;
+
+			expect( viewRoot.isReadOnly ).to.false;
+
+			editing.isReadOnly = true;
+
+			expect( viewRoot.isReadOnly ).to.true;
 		} );
 	} );
 
