@@ -179,7 +179,7 @@ export default class ContextualToolbar extends Plugin {
 	_show() {
 		// Don not show ContextualToolbar when all components inside are disabled
 		// see https://github.com/ckeditor/ckeditor5-ui/issues/269.
-		if ( Array.from( this.toolbarView.items ).every( item => !item.isEnabled ) ) {
+		if ( Array.from( this.toolbarView.items ).every( item => item.isEnabled !== undefined && !item.isEnabled ) ) {
 			return;
 		}
 

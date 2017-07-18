@@ -227,6 +227,19 @@ describe( 'ContextualToolbar', () => {
 			sinon.assert.notCalled( balloonAddSpy );
 		} );
 
+		it( 'should add #toolbarView to the #_balloon when at least one component inside does not have #isEnabled interface', () => {
+			Array.from( contextualToolbar.toolbarView.items ).forEach( item => {
+				item.isEnabled = false;
+			} );
+
+			delete contextualToolbar.toolbarView.items.get( 0 ).isEnabled;
+
+			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+
+			contextualToolbar.show();
+			sinon.assert.calledOnce( balloonAddSpy );
+		} );
+
 		describe( 'on #_selectionChangeDebounced event', () => {
 			let showSpy;
 
