@@ -3,38 +3,45 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document */
+
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ImageToolbar from '../src/imagetoolbar';
 import Image from '../src/image';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import ImageBalloonPanel from '../src/image/ui/imageballoonpanelview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import View from '@ckeditor/ckeditor5-ui/src/view';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageToolbar', () => {
-	let editor, editingView, doc, panel, plugin;
+	let editor, doc, editingView, plugin, toolbar, balloon, editorElement;
 
 	beforeEach( () => {
-		const editorElement = global.document.createElement( 'div' );
+		editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
 
 		return ClassicEditor.create( editorElement, {
-			plugins: [ Image, ImageToolbar, FakeButton ],
+			plugins: [ Paragraph, Image, ImageToolbar, FakeButton ],
 			image: {
 				toolbar: [ 'fake_button' ]
 			}
 		} )
 		.then( newEditor => {
 			editor = newEditor;
-			editingView = editor.editing.view;
 			doc = editor.document;
 			plugin = editor.plugins.get( ImageToolbar );
-			panel = plugin._panel;
+			toolbar = plugin._toolbar;
+			editingView = editor.editing.view;
+			balloon = editor.plugins.get( 'ContextualBalloon' );
 		} );
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
+
 		return editor.destroy();
 	} );
 
@@ -49,57 +56,123 @@ describe( 'ImageToolbar', () => {
 		return ClassicEditor.create( editorElement, {
 			plugins: [ ImageToolbar ],
 		} )
-			.then( newEditor => {
-				expect( newEditor.plugins.get( ImageToolbar )._panel ).to.be.undefined;
+			.then( editor => {
+				expect( editor.plugins.get( ImageToolbar )._toolbar ).to.be.undefined;
 
-				newEditor.destroy();
+				editorElement.remove();
+				editor.destroy();
 			} );
 	} );
 
-	it( 'should set css classes', () => {
-		expect( panel.element.classList.contains( 'ck-toolbar-container' ) ).to.be.true;
-		expect( panel.element.classList.contains( 'ck-editor-toolbar-container' ) ).to.be.true;
-		expect( panel.content.get( 0 ).element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
+	describe( 'toolbar', () => {
+		it( 'should use the config.image.toolbar to create items', () => {
+			expect( toolbar.items ).to.have.length( 1 );
+			expect( toolbar.items.get( 0 ).label ).to.equal( 'fake button' );
+		} );
+
+		it( 'should set proper CSS classes', () => {
+			const spy = sinon.spy( balloon, 'add' );
+
+			editor.ui.focusTracker.isFocused = true;
+
+			setData( doc, '[<image src=""></image>]' );
+
+			expect( toolbar.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
+
+			sinon.assert.calledWithMatch( spy, {
+				view: toolbar,
+				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container'
+			} );
+		} );
 	} );
 
-	it( 'should add ImageBalloonPanel to view body', () => {
-		expect( panel ).to.be.instanceOf( ImageBalloonPanel );
+	describe( 'integration with the editor focus', () => {
+		it( 'should show the toolbar when the editor gains focus and the image is selected', () => {
+			editor.ui.focusTracker.isFocused = true;
+
+			setData( doc, '[<image src=""></image>]' );
+
+			editor.ui.focusTracker.isFocused = false;
+			expect( balloon.visibleView ).to.be.null;
+
+			editor.ui.focusTracker.isFocused = true;
+			expect( balloon.visibleView ).to.equal( toolbar );
+		} );
+
+		it( 'should hide the toolbar when the editor loses focus and the image is selected', () => {
+			editor.ui.focusTracker.isFocused = false;
+
+			setData( doc, '[<image src=""></image>]' );
+
+			editor.ui.focusTracker.isFocused = true;
+			expect( balloon.visibleView ).to.equal( toolbar );
+
+			editor.ui.focusTracker.isFocused = false;
+			expect( balloon.visibleView ).to.be.null;
+		} );
 	} );
 
-	it( 'should show the panel when editor gains focus and image is selected', () => {
-		setData( doc, '[<image src=""></image>]' );
+	describe( 'integration with the editor selection (#render event)', () => {
+		beforeEach( () => {
+			editor.ui.focusTracker.isFocused = true;
+		} );
 
-		editor.ui.focusTracker.isFocused = false;
-		const spy = sinon.spy( plugin, 'show' );
-		editor.ui.focusTracker.isFocused = true;
+		it( 'should show the toolbar on render when the image is selected', () => {
+			setData( doc, '<paragraph>[foo]</paragraph><image src=""></image>' );
 
-		sinon.assert.calledOnce( spy );
-	} );
+			expect( balloon.visibleView ).to.be.null;
 
-	it( 'should not show the panel automatically when it is disabled', () => {
-		plugin.isEnabled = false;
-		setData( doc, '[<image src=""></image>]' );
-		editor.ui.focusTracker.isFocused = true;
-		const spy = sinon.spy( plugin, 'show' );
+			editingView.fire( 'render' );
+			expect( balloon.visibleView ).to.be.null;
 
-		editingView.render();
+			doc.enqueueChanges( () => {
+				// Select the [<image></image>]
+				doc.selection.setRanges( [
+					Range.createOn( doc.getRoot().getChild( 1 ) )
+				] );
+			} );
 
-		sinon.assert.notCalled( spy );
-	} );
+			expect( balloon.visibleView ).to.equal( toolbar );
 
-	it( 'should not show the panel when editor looses focus', () => {
-		editor.ui.focusTracker.isFocused = true;
-		const spy = sinon.spy( plugin, 'show' );
-		editor.ui.focusTracker.isFocused = false;
+			// Make sure successive render does not throw, e.g. attempting
+			// to insert the toolbar twice.
+			editingView.fire( 'render' );
+			expect( balloon.visibleView ).to.equal( toolbar );
+		} );
 
-		sinon.assert.notCalled( spy );
-	} );
+		it( 'should not engage when the toolbar is in the balloon yet invisible', () => {
+			setData( doc, '[<image src=""></image>]' );
+			expect( balloon.visibleView ).to.equal( toolbar );
 
-	it( 'should detach panel with hide() method', () => {
-		const spy = sinon.spy( panel, 'detach' );
-		plugin.hide();
+			const lastView = new View();
+			lastView.element = document.createElement( 'div' );
 
-		sinon.assert.calledOnce( spy );
+			balloon.add( { view: lastView } );
+			expect( balloon.visibleView ).to.equal( lastView );
+
+			editingView.fire( 'render' );
+			expect( balloon.visibleView ).to.equal( lastView );
+		} );
+
+		it( 'should hide the toolbar on render if the image is de–selected', () => {
+			setData( doc, '<paragraph>foo</paragraph>[<image src=""></image>]' );
+
+			expect( balloon.visibleView ).to.equal( toolbar );
+
+			doc.enqueueChanges( () => {
+				// Select the <paragraph>[...]</paragraph>
+				doc.selection.setRanges( [
+					Range.createIn( doc.getRoot().getChild( 0 ) )
+				] );
+			} );
+
+			expect( balloon.visibleView ).to.be.null;
+
+			// Make sure successive render does not throw, e.g. attempting
+			// to remove the toolbar twice.
+			editingView.fire( 'render' );
+			expect( balloon.visibleView ).to.be.null;
+		} );
 	} );
 
 	// Plugin that adds fake_button to editor's component factory.

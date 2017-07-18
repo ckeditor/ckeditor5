@@ -7,6 +7,7 @@
 
 import TextAlternativeFormView from '../../../src/imagetextalternative/ui/textalternativeformview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 describe( 'TextAlternativeFormView', () => {
 	let view;
@@ -22,6 +23,10 @@ describe( 'TextAlternativeFormView', () => {
 			expect( view.element.classList.contains( 'cke-text-alternative-form' ) ).to.be.true;
 		} );
 
+		it( 'should create #keystrokes instance', () => {
+			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+		} );
+
 		it( 'should create child views', () => {
 			expect( view.labeledInput ).to.be.instanceOf( View );
 			expect( view.saveButtonView ).to.be.instanceOf( View );
@@ -34,6 +39,18 @@ describe( 'TextAlternativeFormView', () => {
 			view.cancelButtonView.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'starts listening for #keystrokes coming from #element', () => {
+			view = new TextAlternativeFormView( { t: () => {} } );
+
+			const spy = sinon.spy( view.keystrokes, 'listenTo' );
+
+			view.init();
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, view.element );
 		} );
 	} );
 

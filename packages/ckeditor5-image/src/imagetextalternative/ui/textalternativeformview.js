@@ -13,6 +13,7 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
 import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
  * TextAlternativeFormView class.
@@ -27,6 +28,14 @@ export default class TextAlternativeFormView extends View {
 		super( locale );
 
 		const t = this.locale.t;
+
+		/**
+		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
 
 		/**
 		 * Text area with label.
@@ -89,6 +98,15 @@ export default class TextAlternativeFormView extends View {
 		submitHandler( {
 			view: this
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		super.init();
+
+		this.keystrokes.listenTo( this.element );
 	}
 
 	/**
