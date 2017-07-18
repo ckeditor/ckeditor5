@@ -53,7 +53,7 @@ describe( 'EditingController', () => {
 		} );
 	} );
 
-	describe( 'createRoot', () => {
+	describe( 'createRoot()', () => {
 		let model, modelRoot, editing;
 
 		beforeEach( () => {
@@ -388,7 +388,7 @@ describe( 'EditingController', () => {
 		} );
 	} );
 
-	describe( 'destroy', () => {
+	describe( 'destroy()', () => {
 		it( 'should remove listenters', () => {
 			const model = new ModelDocument();
 			model.createRoot();
