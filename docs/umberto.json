@@ -106,13 +106,13 @@
 			]
 		},
 		{
-			"name": "Samples",
-			"id": "samples",
-			"slug": "samples",
+			"name": "Examples",
+			"id": "examples",
+			"slug": "examples",
 			"categories": [
 				{
 					"name": "Builds",
-					"id": "samples-builds",
+					"id": "examples-builds",
 					"slug": "builds"
 				}
 			]
