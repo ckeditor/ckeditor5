@@ -217,6 +217,29 @@ describe( 'ContextualToolbar', () => {
 			sinon.assert.calledOnce( balloonAddSpy );
 		} );
 
+		it( 'should not add #toolbarView to the #_balloon when all components inside #toolbarView are disabled', () => {
+			Array.from( contextualToolbar.toolbarView.items ).forEach( item => {
+				item.isEnabled = false;
+			} );
+			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+
+			contextualToolbar.show();
+			sinon.assert.notCalled( balloonAddSpy );
+		} );
+
+		it( 'should add #toolbarView to the #_balloon when at least one component inside does not have #isEnabled interface', () => {
+			Array.from( contextualToolbar.toolbarView.items ).forEach( item => {
+				item.isEnabled = false;
+			} );
+
+			delete contextualToolbar.toolbarView.items.get( 0 ).isEnabled;
+
+			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+
+			contextualToolbar.show();
+			sinon.assert.calledOnce( balloonAddSpy );
+		} );
+
 		describe( 'on #_selectionChangeDebounced event', () => {
 			let showSpy;
 
@@ -408,25 +431,23 @@ describe( 'ContextualToolbar', () => {
 		} );
 	} );
 
-	describe( 'beforeShow event', () => {
-		it( 'should fire `beforeShow` event just before panel shows', () => {
+	describe( 'show event', () => {
+		it( 'should fire `show` event just before panel shows', () => {
 			const spy = sinon.spy();
 
-			contextualToolbar.on( 'beforeShow', spy );
+			contextualToolbar.on( 'show', spy );
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
 
 			contextualToolbar.show();
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should not show the panel when `beforeShow` event is stopped', () => {
+		it( 'should not show the panel when `show` event is stopped', () => {
 			const balloonAddSpy = sandbox.spy( balloon, 'add' );
 
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar.on( 'beforeShow', ( evt, stop ) => {
-				stop();
-			} );
+			contextualToolbar.on( 'show', evt => evt.stop(), { priority: 'high' } );
 
 			contextualToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
