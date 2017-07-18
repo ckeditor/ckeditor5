@@ -27,7 +27,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		if ( selectionRange.containsRange( blockRange ) || selectionRange.isIntersecting( blockRange ) ) {
 			evt.stop();
 		}
-	} );
+	}, { priority: 'high' } );
 } )
 .catch( err => {
 	console.error( err.stack );

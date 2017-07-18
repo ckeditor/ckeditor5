@@ -447,7 +447,7 @@ describe( 'ContextualToolbar', () => {
 
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar.on( 'show', evt => evt.stop() );
+			contextualToolbar.on( 'show', evt => evt.stop(), { priority: 'high' } );
 
 			contextualToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );

@@ -81,8 +81,8 @@ export default class ContextualToolbar extends Plugin {
 		this._handleFocusChange();
 
 		// The appearance of the ContextualToolbar method is event–driven.
-		// It is possible to stop the #show event and thus prevent the toolbar from showing up.
-		this.on( 'show', () => this._show(), { priority: 'low' } );
+		// It is possible to stop the #show event and this prevent the toolbar from showing up.
+		this.decorate( 'show' );
 	}
 
 	/**
@@ -158,25 +158,6 @@ export default class ContextualToolbar extends Plugin {
 			return;
 		}
 
-		this.fire( 'show' );
-	}
-
-	/**
-	 * Hides the toolbar.
-	 */
-	hide() {
-		if ( this._balloon.hasView( this.toolbarView ) ) {
-			this.stopListening( this.editor.editing.view, 'render' );
-			this._balloon.remove( this.toolbarView );
-		}
-	}
-
-	/**
-	 * Shows of the toolbar if the {@link #event:show} has not been stopped.
-	 *
-	 * @private
-	 */
-	_show() {
 		// Don not show the toolbar when all components inside are disabled
 		// see https://github.com/ckeditor/ckeditor5-ui/issues/269.
 		if ( Array.from( this.toolbarView.items ).every( item => item.isEnabled !== undefined && !item.isEnabled ) ) {
@@ -195,6 +176,16 @@ export default class ContextualToolbar extends Plugin {
 			position: this._getBalloonPositionData(),
 			balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container'
 		} );
+	}
+
+	/**
+	 * Hides the toolbar.
+	 */
+	hide() {
+		if ( this._balloon.hasView( this.toolbarView ) ) {
+			this.stopListening( this.editor.editing.view, 'render' );
+			this._balloon.remove( this.toolbarView );
+		}
 	}
 
 	/**
