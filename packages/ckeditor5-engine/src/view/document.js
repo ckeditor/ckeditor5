@@ -80,6 +80,16 @@ export default class Document {
 		this.roots = new Map();
 
 		/**
+		 * Defines whether document is in read-only mode.
+		 *
+		 * When document is read-ony then all roots are read-only as well and caret placed inside this root is hidden.
+		 *
+		 * @observable
+		 * @member {Boolean} #isReadOnly
+		 */
+		this.set( 'isReadOnly', false );
+
+		/**
 		 * True if document is focused.
 		 *
 		 * This property is updated by the {@link module:engine/view/observer/focusobserver~FocusObserver}.
