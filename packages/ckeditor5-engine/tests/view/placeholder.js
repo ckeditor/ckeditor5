@@ -47,6 +47,16 @@ describe( 'placeholder', () => {
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
+		it( 'if element has only ui elements, set CSS class and data attribute', () => {
+			setData( viewDocument, '<div><ui:span></ui:span><ui:span></ui:span></div><div>{another div}</div>' );
+			const element = viewRoot.getChild( 0 );
+
+			attachPlaceholder( element, 'foo bar baz' );
+
+			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+		} );
+
 		it( 'if element has selection inside set only data attribute', () => {
 			setData( viewDocument, '<div>[]</div><div>another div</div>' );
 			const element = viewRoot.getChild( 0 );
