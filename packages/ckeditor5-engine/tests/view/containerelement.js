@@ -52,8 +52,8 @@ describe( 'ContainerElement', () => {
 			expect( parse( '<container:p></container:p>' ).getFillerOffset() ).to.equals( 0 );
 		} );
 
-		it( 'should return position 0 if element contains only ui elements', () => {
-			expect( parse( '<container:p><ui:span></ui:span></container:p>' ).getFillerOffset() ).to.equals( 0 );
+		it( 'should return offset after all children if element contains only ui elements', () => {
+			expect( parse( '<container:p><ui:span></ui:span><ui:span></ui:span></container:p>' ).getFillerOffset() ).to.equals( 2 );
 		} );
 
 		it( 'should return null if element is not empty', () => {

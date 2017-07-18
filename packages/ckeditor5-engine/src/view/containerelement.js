@@ -78,5 +78,6 @@ export default class ContainerElement extends Element {
 //
 // @returns {Number|null} Block filler offset or `null` if block filler is not needed.
 function getFillerOffset() {
-	return Array.from( this.getChildren() ).some( element => !element.is( 'uiElement' ) ) ? null : 0;
+	// Render block filler at the end of element (after all ui elements).
+	return Array.from( this.getChildren() ).some( element => !element.is( 'uiElement' ) ) ? null : this.childCount;
 }
