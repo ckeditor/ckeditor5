@@ -48,11 +48,11 @@ export default class Image extends Plugin {
 		// which have their own toolbar to avoid duplication.
 		// https://github.com/ckeditor/ckeditor5-image/issues/110
 		if ( contextualToolbar ) {
-			this.listenTo( contextualToolbar, 'beforeShow', ( evt, stop ) => {
+			this.listenTo( contextualToolbar, 'show', evt => {
 				const selectedElement = editor.editing.view.selection.getSelectedElement();
 
 				if ( selectedElement && isImageWidget( selectedElement ) ) {
-					stop();
+					evt.stop();
 				}
 			} );
 		}

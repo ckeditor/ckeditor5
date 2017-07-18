@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global window */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '../src/image';
 import ImageEngine from '../src/image/imageengine';
@@ -15,13 +13,15 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'Image', () => {
 	let editorElement, editor, document, viewDocument;
 
 	beforeEach( () => {
-		editorElement = window.document.createElement( 'div' );
-		window.document.body.appendChild( editorElement );
+		editorElement = global.document.createElement( 'div' );
+		global.document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
 			plugins: [ Image ]
@@ -62,6 +62,13 @@ describe( 'Image', () => {
 		.then( newEditor => {
 			const balloon = newEditor.plugins.get( 'ContextualBalloon' );
 			const contextualToolbar = newEditor.plugins.get( 'ContextualToolbar' );
+			const button = new View();
+
+			button.element = global.document.createElement( 'div' );
+
+			// There must be at least one toolbar items which is not disabled to show it.
+			// https://github.com/ckeditor/ckeditor5-ui/issues/269
+			contextualToolbar.toolbarView.items.add( button );
 
 			newEditor.editing.view.isFocused = true;
 
