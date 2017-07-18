@@ -42,13 +42,12 @@ export function isWidget( element ) {
  * * adds custom property allowing to recognize widget elements by using {@link ~isWidget}.
  *
  * @param {module:engine/view/element~Element} element
- * @param {Object} [options]
+ * @param {Object} [options={}]
  * @param {String|Function} [options.label] Element's label provided to {@link ~setLabel} function. It can be passed as
  * a plain string or a function returning a string.
  * @returns {module:engine/view/element~Element} Returns same element.
  */
-export function toWidget( element, options ) {
-	options = options || {};
+export function toWidget( element, options = {} ) {
 	element.setAttribute( 'contenteditable', false );
 	element.getFillerOffset = getFillerOffset;
 	element.addClass( WIDGET_CLASS_NAME );
@@ -91,16 +90,19 @@ export function getLabel( element ) {
 
 /**
  * Adds functionality to provided {module:engine/view/editableelement~EditableElement} to act as a widget's editable:
- * * sets `contenteditable` attribute to `true`,
  * * adds `ck-editable` CSS class,
+ * * sets `contenteditable` as `true` when {module:engine/view/editableelement~EditableElement#isReadOnly} is `false`,
  * * adds `ck-editable_focused` CSS class when editable is focused and removes it when it's blurred.
  *
  * @param {module:engine/view/editableelement~EditableElement} editable
  * @returns {module:engine/view/editableelement~EditableElement} Returns same element that was provided in `editable` param.
  */
 export function toWidgetEditable( editable ) {
-	editable.setAttribute( 'contenteditable', 'true' );
 	editable.addClass( 'ck-editable' );
+
+	editable.on( 'change:isReadOnly', ( evt, property, is ) => {
+		editable.setAttribute( 'contenteditable', !is );
+	} );
 
 	editable.on( 'change:isFocused', ( evt, property, is ) => {
 		if ( is ) {
