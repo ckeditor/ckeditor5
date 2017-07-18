@@ -110,15 +110,19 @@ function updateSinglePlaceholder( element, checkFunction ) {
 		return;
 	}
 
+	// Element is empty for placeholder purposes when it has no children or only ui elements.
+	// This check is taken from `view.ContainerElement#getFillerOffset`.
+	const isEmptyish = !Array.from( element.getChildren() ).some( element => !element.is( 'uiElement' ) );
+
 	// If element is empty and editor is blurred.
-	if ( !document.isFocused && !element.childCount ) {
+	if ( !document.isFocused && isEmptyish ) {
 		element.addClass( 'ck-placeholder' );
 
 		return;
 	}
 
 	// It there are no child elements and selection is not placed inside element.
-	if ( !element.childCount && anchor && anchor.parent !== element ) {
+	if ( isEmptyish && anchor && anchor.parent !== element ) {
 		element.addClass( 'ck-placeholder' );
 	} else {
 		element.removeClass( 'ck-placeholder' );
