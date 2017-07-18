@@ -40,6 +40,17 @@ describe( 'EditingController', () => {
 
 			editing.destroy();
 		} );
+
+		it( 'should be observable', () => {
+			const model = new ModelDocument();
+			const editing = new EditingController( model );
+			const spy = sinon.spy();
+
+			editing.on( 'change:foo', spy );
+			editing.set( 'foo', 'bar' );
+
+			sinon.assert.calledOnce( spy );
+		} );
 	} );
 
 	describe( 'createRoot', () => {

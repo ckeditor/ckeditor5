@@ -23,11 +23,15 @@ import {
 } from '../conversion/model-selection-to-view-converters';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
  * including selection handling. It also creates {@link ~EditingController#view view document} which build a
  * browser-independent virtualization over the DOM elements. Editing controller also attach default converters.
+ *
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class EditingController {
 	/**
@@ -161,3 +165,5 @@ export default class EditingController {
 		this._listener.stopListening();
 	}
 }
+
+mix( EditingController, ObservableMixin );
