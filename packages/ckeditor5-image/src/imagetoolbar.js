@@ -115,7 +115,7 @@ export default class ImageToolbar extends Plugin {
 	}
 
 	/**
-	 * Shows the {@link #_toolbar} in the {@link _balloon}.
+	 * Shows the {@link #_toolbar} in the {@link #_balloon}.
 	 *
 	 * @private
 	 */
@@ -136,7 +136,7 @@ export default class ImageToolbar extends Plugin {
 	}
 
 	/**
-	 * Removes the {@link #_toolbar} from the {@link _balloon}.
+	 * Removes the {@link #_toolbar} from the {@link #_balloon}.
 	 *
 	 * @private
 	 */
