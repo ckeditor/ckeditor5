@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import FileRepository from './filerepository';
 import { isImageType } from './utils';
@@ -46,22 +44,19 @@ export default class ImageUploadCommand extends Command {
 		}
 
 		doc.enqueueChanges( () => {
-			const insertAt = options.insertAt || getInsertionPosition( doc );
-
-			// No position to insert.
-			if ( !insertAt ) {
-				return;
-			}
-
 			const imageElement = new ModelElement( 'image', {
 				uploadId: fileRepository.createLoader( file ).id
 			} );
-			const documentFragment = new ModelDocumentFragment( [ imageElement ] );
-			const range = new ModelRange( insertAt );
-			const insertSelection = new ModelSelection();
 
-			insertSelection.setRanges( [ range ] );
-			editor.data.insertContent( documentFragment, insertSelection, batch );
+			let insertAtSelection;
+
+			if ( options.insertAt ) {
+				insertAtSelection = new ModelSelection( [ new ModelRange( options.insertAt ) ] );
+			} else {
+				insertAtSelection = doc.selection;
+			}
+
+			editor.data.insertContent( imageElement, insertAtSelection, batch );
 			selection.setRanges( [ ModelRange.createOn( imageElement ) ] );
 		} );
 	}
@@ -71,26 +66,4 @@ export default class ImageUploadCommand extends Command {
 //
 // @param {module:engine/model/document~Document} doc
 // @returns {module:engine/model/position~Position|undefined}
-function getInsertionPosition( doc ) {
-	const selection = doc.selection;
-	const selectedElement = selection.getSelectedElement();
 
-	// If selected element is placed directly in root - return position after that element.
-	if ( selectedElement && selectedElement.parent.is( 'rootElement' ) ) {
-		return ModelPosition.createAfter( selectedElement );
-	}
-
-	const firstBlock = doc.selection.getSelectedBlocks().next().value;
-
-	if ( firstBlock ) {
-		const positionAfter = ModelPosition.createAfter( firstBlock );
-
-		// If selection is at the end of the block - return position after the block.
-		if ( selection.focus.isTouching( positionAfter ) ) {
-			return positionAfter;
-		}
-
-		// Otherwise return position before the block.
-		return ModelPosition.createBefore( firstBlock );
-	}
-}
