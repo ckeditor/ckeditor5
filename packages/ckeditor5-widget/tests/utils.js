@@ -106,11 +106,11 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should add proper contenteditable value when element is read-only', () => {
-			element.isReadOnly = true;
-			expect( element.getAttribute( 'contenteditable' ) ).to.false;
-
 			element.isReadOnly = false;
 			expect( element.getAttribute( 'contenteditable' ) ).to.true;
+
+			element.isReadOnly = true;
+			expect( element.getAttribute( 'contenteditable' ) ).to.false;
 		} );
 
 		it( 'should add proper class when element is focused', () => {
