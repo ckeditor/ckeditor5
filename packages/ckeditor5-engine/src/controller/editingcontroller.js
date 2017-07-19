@@ -64,19 +64,6 @@ export default class EditingController {
 		this.mapper = new Mapper();
 
 		/**
-		 * Defines whether controller is in read-only mode.
-		 *
-		 * When controller is read-ony then {module:engine/view/document~Document view document} is read-only as well.
-		 *
-		 * @observable
-		 * @member {Boolean} #isReadOnly
-		 */
-		this.set( 'isReadOnly', false );
-
-		// When controller is read-only the view document is read-only as well.
-		this.view.bind( 'isReadOnly' ).to( this );
-
-		/**
 		 * Model to view conversion dispatcher, which converts changes from the model to
 		 * {@link #view editing view}.
 		 *
