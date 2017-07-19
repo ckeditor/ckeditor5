@@ -9,6 +9,9 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import Element from '@ckeditor/ckeditor5-engine/src/model/element';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import ChangeBuffer from './changebuffer';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 
@@ -54,8 +57,8 @@ export default class DeleteCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options] The command options.
-	 * @param {'character'} [options.unit='character'] See {@link module:engine/controller/modifyselection~modifySelection}'s
-	 * options.
+	 * @param {'character'} [options.unit='character'] See {@link module:engine/controller/modifyselection~modifySelection}'s options.
+	 * @param {Number} [options.sequence=1] See the {@link module:engine/view/document~Document#event:delete} event data.
 	 */
 	execute( options = {} ) {
 		const doc = this.editor.document;
@@ -73,6 +76,12 @@ export default class DeleteCommand extends Command {
 
 			// If selection is still collapsed, then there's nothing to delete.
 			if ( selection.isCollapsed ) {
+				const sequence = options.sequence || 1;
+
+				if ( this._shouldEntireContentBeReplacedWithParagraph( { sequence } ) ) {
+					this._replaceEntireContentWithParagraph();
+				}
+
 				return;
 			}
 
@@ -92,4 +101,81 @@ export default class DeleteCommand extends Command {
 			this._buffer.unlock();
 		} );
 	}
+
+	/**
+	 * If the user keeps <kbd>Backspace</kbd> or <kbd>Delete</kbd> key, we do nothing because the user can clear
+	 * the whole element without removing them.
+	 *
+	 * But, if the user pressed and released the key, we want to replace the entire content with a paragraph if:
+	 *   - the entire content is selected,
+	 *   - the paragraph is allowed in the common ancestor,
+	 *   - other paragraph does not occur in the editor.
+	 *
+	 * @private
+	 * @param {Object} options
+	 * @param {Number} options.sequence A number that describes which sequence of the same event is fired.
+	 * @returns {Boolean}
+	 */
+	_shouldEntireContentBeReplacedWithParagraph( options ) {
+		// Does nothing if user pressed and held the "Backspace" or "Delete" key.
+		if ( options.sequence > 1 ) {
+			return false;
+		}
+
+		const document = this.editor.document;
+		const selection = document.selection;
+		const limitElement = getLimitElement( document.schema, selection );
+		const limitStartPosition = Position.createAt( limitElement );
+		const limitEndPosition = Position.createAt( limitElement, 'end' );
+
+		if (
+			!limitStartPosition.isTouching( selection.getFirstPosition() ) ||
+			!limitEndPosition.isTouching( selection.getLastPosition() )
+		) {
+			return false;
+		}
+
+		if ( !document.schema.check( { name: 'paragraph', inside: limitElement.name } ) ) {
+			return false;
+		}
+
+		// Does nothing if editor contains an empty paragraph.
+		if ( selection.getFirstRange().getCommonAncestor().name === 'paragraph' ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * The entire content is replaced with the paragraph. Selection is moved inside the paragraph.
+	 *
+	 * @private
+	 */
+	_replaceEntireContentWithParagraph() {
+		const document = this.editor.document;
+		const selection = document.selection;
+		const limitElement = getLimitElement( document.schema, selection );
+		const paragraph = new Element( 'paragraph' );
+
+		this._buffer.batch.remove( Range.createIn( limitElement ) );
+		this._buffer.batch.insert( Position.createAt( limitElement ), paragraph );
+
+		selection.collapse( paragraph );
+	}
+}
+
+// Returns the lowest limit element defined in `Schema.limits` for passed selection.
+function getLimitElement( schema, selection ) {
+	let element = selection.getFirstRange().getCommonAncestor();
+
+	while ( !schema.limits.has( element.name ) ) {
+		if ( element.parent ) {
+			element = element.parent;
+		} else {
+			break;
+		}
+	}
+
+	return element;
 }

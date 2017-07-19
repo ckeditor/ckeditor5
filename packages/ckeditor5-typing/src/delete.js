@@ -34,7 +34,7 @@ export default class Delete extends Plugin {
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( editingView, 'delete', ( evt, data ) => {
-			editor.execute( data.direction == 'forward' ? 'forwardDelete' : 'delete', { unit: data.unit } );
+			editor.execute( data.direction == 'forward' ? 'forwardDelete' : 'delete', { unit: data.unit, sequence: data.sequence } );
 			data.preventDefault();
 		} );
 	}

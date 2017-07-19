@@ -20,6 +20,14 @@ export default class DeleteObserver extends Observer {
 	constructor( document ) {
 		super( document );
 
+		let sequence = 0;
+
+		document.on( 'keyup', ( evt, data ) => {
+			if ( data.keyCode == keyCodes.delete || data.keyCode == keyCodes.backspace ) {
+				sequence = 0;
+			}
+		} );
+
 		document.on( 'keydown', ( evt, data ) => {
 			const deleteData = {};
 
@@ -34,6 +42,7 @@ export default class DeleteObserver extends Observer {
 			}
 
 			deleteData.unit = data.altKey ? 'word' : deleteData.unit;
+			deleteData.sequence = ++sequence;
 
 			document.fire( 'delete', new DomEventData( document, data.domEvent, deleteData ) );
 		} );
@@ -55,4 +64,6 @@ export default class DeleteObserver extends Observer {
  * @param {module:engine/view/observer/domeventdata~DomEventData} data
  * @param {'forward'|'delete'} data.direction The direction in which the deletion should happen.
  * @param {'character'|'word'} data.unit The "amount" of content that should be deleted.
+ * @param {Number} data.sequence A number that describes which sequence of the same event is fired.
+ * It helps detect the key was pressed and held.
  */
