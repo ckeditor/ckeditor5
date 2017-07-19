@@ -32,7 +32,7 @@ export default function deleteContent( selection, batch, options = {} ) {
 		return;
 	}
 
-	// 0. Replace the entire content with paragraph.
+	// 1. Replace the entire content with paragraph.
 	// See: https://github.com/ckeditor/ckeditor5-engine/issues/1012#issuecomment-315017594.
 	if ( shouldEntireContentBeReplacedWithParagraph( batch.document.schema, selection ) ) {
 		replaceEntireContentWithParagraph( batch, selection );
@@ -44,12 +44,12 @@ export default function deleteContent( selection, batch, options = {} ) {
 	const startPos = selRange.start;
 	const endPos = LivePosition.createFromPosition( selRange.end );
 
-	// 1. Remove the content if there is any.
+	// 2. Remove the content if there is any.
 	if ( !selRange.start.isTouching( selRange.end ) ) {
 		batch.remove( selRange );
 	}
 
-	// 2. Merge elements in the right branch to the elements in the left branch.
+	// 3. Merge elements in the right branch to the elements in the left branch.
 	// The only reasonable (in terms of data and selection correctness) case in which we need to do that is:
 	//
 	// <heading type=1>Fo[</heading><paragraph>]ar</paragraph> => <heading type=1>Fo^ar</heading>
@@ -63,7 +63,7 @@ export default function deleteContent( selection, batch, options = {} ) {
 
 	selection.collapse( startPos );
 
-	// 3. Autoparagraphing.
+	// 4. Autoparagraphing.
 	// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
 	if ( shouldAutoparagraph( batch.document, startPos ) ) {
 		insertParagraph( batch, startPos, selection );
