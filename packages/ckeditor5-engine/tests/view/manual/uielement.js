@@ -19,7 +19,7 @@ class MyUIElement extends UIElement {
 
 		root.setAttribute( 'contenteditable', 'false' );
 		root.classList.add( 'ui-element' );
-		root.innerHTML = '<span>END OF PARAGRAPH</span>';
+		root.innerHTML = 'END OF PARAGRAPH';
 
 		return root;
 	}
@@ -33,7 +33,7 @@ class UIElementTestPlugin extends Plugin {
 		// Add some UIElement to each paragraph.
 		editing.modelToView.on( 'insert:paragraph', ( evt, data, consumable, conversionApi ) => {
 			const viewP = conversionApi.mapper.toViewElement( data.item );
-			viewP.appendChildren( new MyUIElement( 'div' ) );
+			viewP.appendChildren( new MyUIElement( 'span' ) );
 		}, { priority: 'lowest' } );
 	}
 }
