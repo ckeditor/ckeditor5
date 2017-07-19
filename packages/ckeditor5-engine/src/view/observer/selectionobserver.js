@@ -133,6 +133,9 @@ export default class SelectionObserver extends Observer {
 	 * @param {Document} domDocument DOM document.
 	 */
 	_handleSelectionChange( domDocument ) {
+		// Selection is handled when document is not focused but is read-only. This is because in read-only
+		// mode contenteditable is set as false and editor won't receive focus but we still need to know
+		// selection position.
 		if ( !this.isEnabled || ( !this.document.isFocused && !this.document.isReadOnly ) ) {
 			return;
 		}
