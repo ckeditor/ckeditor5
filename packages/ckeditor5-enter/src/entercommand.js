@@ -43,14 +43,13 @@ function enterBlock( dataController, batch, selection, schema ) {
 	const startElement = range.start.parent;
 	const endElement = range.end.parent;
 
-	// Do nothing if selection starts or ends inside `limit` elements.
+	// Don't touch the roots and other limit elements.
 	if ( schema.limits.has( startElement.name ) || schema.limits.has( endElement.name ) ) {
-		return;
-	}
-
-	// Don't touch the root.
-	if ( startElement.root == startElement ) {
-		if ( !isSelectionEmpty ) {
+		// Delete the selected content but only if inside a single limit element.
+		// Abort, when crossing limit elements boundary (e.g. <limit1>x[x</limit1>donttouchme<limit2>y]y</limit2>).
+		// This is an edge case and it's hard to tell what should actually happen because such a selection
+		// is not entirely valid.
+		if ( !isSelectionEmpty && startElement == endElement ) {
 			dataController.deleteContent( selection, batch );
 		}
 

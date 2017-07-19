@@ -126,7 +126,7 @@ describe( 'EnterCommand', () => {
 			test(
 				'should not break inline limit elements',
 				'<p><inlineLimit>foo[bar]baz</inlineLimit></p>',
-				'<p><inlineLimit>foo[bar]baz</inlineLimit></p>'
+				'<p><inlineLimit>foo[]baz</inlineLimit></p>'
 			);
 
 			test(
