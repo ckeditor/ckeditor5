@@ -47,9 +47,11 @@ describe( 'StickyToolbarView', () => {
 		it( 'sets view attributes', () => {
 			expect( view.isSticky ).to.be.false;
 			expect( view.limiterElement ).to.be.null;
-			expect( view.limiterOffset ).to.equal( 50 );
+			expect( view.limiterBottomOffset ).to.equal( 50 );
+			expect( view.viewportTopOffset ).to.equal( 0 );
 
 			expect( view._isStickyToTheLimiter ).to.be.false;
+			expect( view._hasViewportTopOffset ).to.be.false;
 			expect( view._marginLeft ).to.be.null;
 		} );
 
@@ -81,6 +83,16 @@ describe( 'StickyToolbarView', () => {
 
 			view._isStickyToTheLimiter = true;
 			expect( element.classList.contains( 'ck-toolbar_sticky_bottom-limit' ) ).to.be.true;
+		} );
+
+		it( 'update the styles.top on view#_hasViewportTopOffset change', () => {
+			view.viewportTopOffset = 100;
+
+			view._hasViewportTopOffset = false;
+			expect( element.style.top ).to.equal( '' );
+
+			view._hasViewportTopOffset = true;
+			expect( element.style.top ).to.equal( '100px' );
 		} );
 
 		it( 'update the styles.width on view#isSticky change', () => {
@@ -236,10 +248,10 @@ describe( 'StickyToolbarView', () => {
 				expect( view.isSticky ).to.be.false;
 			} );
 
-			it( 'is false if view.limiterElement is smaller than the toolbar and view.limiterOffset (toolbar is active)', () => {
+			it( 'is false if view.limiterElement is smaller than the toolbar and view.limiterBottomOffset (toolbar is active)', () => {
 				testUtils.sinon.stub( view.limiterElement, 'getBoundingClientRect' ).returns( { top: -10, height: 60 } );
 				view.isActive = true;
-				view.limiterOffset = 50;
+				view.limiterBottomOffset = 50;
 
 				expect( view.isSticky ).to.be.false;
 
@@ -304,6 +316,71 @@ describe( 'StickyToolbarView', () => {
 				view._checkIfShouldBeSticky();
 				expect( view.isSticky ).to.be.false;
 				expect( view._isStickyToTheLimiter ).to.be.false;
+			} );
+		} );
+
+		describe( 'view._hasViewportTopOffset', () => {
+			it( 'is true if view._isStickyToTheLimiter is false and view.viewportTopOffset has been specified', () => {
+				view.viewportTopOffset = 100;
+
+				testUtils.sinon.stub( view.limiterElement, 'getBoundingClientRect' ).returns( {
+					top: 90,
+					bottom: 190,
+					height: 100
+				} );
+
+				testUtils.sinon.stub( view.element, 'getBoundingClientRect' ).returns( {
+					height: 20
+				} );
+
+				view.isActive = true;
+
+				view._checkIfShouldBeSticky();
+				expect( view.isSticky ).to.be.true;
+				expect( view._isStickyToTheLimiter ).to.be.false;
+				expect( view._hasViewportTopOffset ).to.be.true;
+			} );
+
+			it( 'is false if view._isStickyToTheLimiter is true and view.viewportTopOffset has been specified', () => {
+				view.viewportTopOffset = 100;
+
+				testUtils.sinon.stub( view.limiterElement, 'getBoundingClientRect' ).returns( {
+					top: 10,
+					bottom: 110,
+					height: 100
+				} );
+
+				testUtils.sinon.stub( view.element, 'getBoundingClientRect' ).returns( {
+					height: 20
+				} );
+
+				view.isActive = true;
+
+				view._checkIfShouldBeSticky();
+				expect( view.isSticky ).to.be.true;
+				expect( view._isStickyToTheLimiter ).to.be.true;
+				expect( view._hasViewportTopOffset ).to.be.false;
+			} );
+
+			it( 'is false if view._isStickyToTheLimiter is false and view.viewportTopOffset is 0', () => {
+				view.viewportTopOffset = 100;
+
+				testUtils.sinon.stub( view.limiterElement, 'getBoundingClientRect' ).returns( {
+					top: 90,
+					bottom: 190,
+					height: 100
+				} );
+
+				testUtils.sinon.stub( view.element, 'getBoundingClientRect' ).returns( {
+					height: 20
+				} );
+
+				view.isActive = true;
+
+				view._checkIfShouldBeSticky();
+				expect( view.isSticky ).to.be.true;
+				expect( view._isStickyToTheLimiter ).to.be.false;
+				expect( view._hasViewportTopOffset ).to.be.true;
 			} );
 		} );
 
