@@ -18,8 +18,10 @@ const documentSymbol = Symbol( 'document' );
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}
  * or nested editable area in the editor.
  *
+ * Editable is automatically read-only when its {module:engine/view/document~Document Document} is read-only.
+ *
  * @extends module:engine/view/containerelement~ContainerElement
- * @mixes module:utils/observablemixin~ObservaleMixin
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class EditableElement extends ContainerElement {
 	/**
@@ -73,6 +75,8 @@ export default class EditableElement extends ContainerElement {
 		}
 
 		this.setCustomProperty( documentSymbol, document );
+
+		this.bind( 'isReadOnly' ).to( document );
 
 		this.bind( 'isFocused' ).to(
 			document,

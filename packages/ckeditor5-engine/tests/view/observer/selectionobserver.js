@@ -134,6 +134,26 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
+	it( 'should fired if there is no focus but document is read-only', done => {
+		const spy = sinon.spy();
+
+		viewDocument.isFocused = false;
+		viewDocument.isReadOnly = true;
+
+		// changeDomSelection() may focus the editable element (happens on Chrome)
+		// so cancel this because it sets the isFocused flag.
+		viewDocument.on( 'focus', evt => evt.stop(), { priority: 'highest' } );
+
+		viewDocument.on( 'selectionChange', spy );
+
+		setTimeout( () => {
+			sinon.assert.calledOnce( spy );
+			done();
+		}, 70 );
+
+		changeDomSelection();
+	} );
+
 	it( 'should warn and not enter infinite loop', () => {
 		// Selectionchange event is called twice per `changeDomSelection()` execution.
 		let counter = 35;

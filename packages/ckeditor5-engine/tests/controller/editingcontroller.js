@@ -29,20 +29,48 @@ import { getData as getViewData } from '../../src/dev-utils/view';
 
 describe( 'EditingController', () => {
 	describe( 'constructor()', () => {
-		it( 'should create controller with properties', () => {
-			const model = new ModelDocument();
-			const editing = new EditingController( model );
+		let model, editing;
 
+		beforeEach( () => {
+			model = new ModelDocument();
+			editing = new EditingController( model );
+		} );
+
+		afterEach( () => {
+			editing.destroy();
+		} );
+
+		it( 'should create controller with properties', () => {
 			expect( editing ).to.have.property( 'model' ).that.equals( model );
 			expect( editing ).to.have.property( 'view' ).that.is.instanceof( ViewDocument );
 			expect( editing ).to.have.property( 'mapper' ).that.is.instanceof( Mapper );
 			expect( editing ).to.have.property( 'modelToView' ).that.is.instanceof( ModelConversionDispatcher );
+			expect( editing ).to.have.property( 'isReadOnly' ).that.is.false;
 
 			editing.destroy();
 		} );
+
+		it( 'should be observable', () => {
+			const spy = sinon.spy();
+
+			editing.on( 'change:foo', spy );
+			editing.set( 'foo', 'bar' );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should bind view#isReadOnly to controller#isReadOnly', () => {
+			editing.isReadOnly = false;
+
+			expect( editing.view.isReadOnly ).to.false;
+
+			editing.isReadOnly = true;
+
+			expect( editing.view.isReadOnly ).to.true;
+		} );
 	} );
 
-	describe( 'createRoot', () => {
+	describe( 'createRoot()', () => {
 		let model, modelRoot, editing;
 
 		beforeEach( () => {
@@ -377,7 +405,7 @@ describe( 'EditingController', () => {
 		} );
 	} );
 
-	describe( 'destroy', () => {
+	describe( 'destroy()', () => {
 		it( 'should remove listenters', () => {
 			const model = new ModelDocument();
 			model.createRoot();
