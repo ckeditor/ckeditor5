@@ -160,11 +160,15 @@ describe( 'HeadingCommand', () => {
 
 			it( 'does nothing when executed with already applied option', () => {
 				const command = commands.heading1;
+				const batch = document.batch();
+				const spy = sinon.spy( batch, 'rename' );
 
 				setData( document, '<heading1>foo[]bar</heading1>' );
-				command.execute();
+
+				command.execute( { batch } );
 
 				expect( getData( document ) ).to.equal( '<heading1>foo[]bar</heading1>' );
+				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'converts topmost blocks', () => {
