@@ -1249,6 +1249,10 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			expect( domRoot.innerHTML.indexOf( INLINE_FILLER ) ).not.to.equal( -1 );
+
+			const domSelection = document.getSelection();
+
+			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 7 ); // After inline filler.
 		} );
 
 		it( 'should handle focusing element', () => {

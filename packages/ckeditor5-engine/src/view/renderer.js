@@ -212,13 +212,6 @@ export default class Renderer {
 			this._updateChildren( element, { inlineFillerPosition } );
 		}
 
-		this._updateSelection();
-		this._updateFocus();
-
-		this.markedTexts.clear();
-		this.markedAttributes.clear();
-		this.markedChildren.clear();
-
 		// Check whether inline filler is required and where it really is in DOM. At this point in most cases it should
 		// be in DOM, but not always. For example, if inline filler was deep in created DOM structure, it will not be created.
 		// Similarly, if it was removed at the beginning of this function and then neither text nor children were updated,
@@ -239,6 +232,13 @@ export default class Renderer {
 			// There is no filler needed.
 			this._inlineFiller = null;
 		}
+
+		this._updateSelection();
+		this._updateFocus();
+
+		this.markedTexts.clear();
+		this.markedAttributes.clear();
+		this.markedChildren.clear();
 	}
 
 	/**
