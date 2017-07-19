@@ -45,7 +45,6 @@ describe( 'EditingController', () => {
 			expect( editing ).to.have.property( 'view' ).that.is.instanceof( ViewDocument );
 			expect( editing ).to.have.property( 'mapper' ).that.is.instanceof( Mapper );
 			expect( editing ).to.have.property( 'modelToView' ).that.is.instanceof( ModelConversionDispatcher );
-			expect( editing ).to.have.property( 'isReadOnly' ).that.is.false;
 
 			editing.destroy();
 		} );
@@ -57,16 +56,6 @@ describe( 'EditingController', () => {
 			editing.set( 'foo', 'bar' );
 
 			sinon.assert.calledOnce( spy );
-		} );
-
-		it( 'should bind view#isReadOnly to controller#isReadOnly', () => {
-			editing.isReadOnly = false;
-
-			expect( editing.view.isReadOnly ).to.false;
-
-			editing.isReadOnly = true;
-
-			expect( editing.view.isReadOnly ).to.true;
 		} );
 	} );
 
