@@ -39,7 +39,7 @@ export default class StandardEditor extends Editor {
 
 		// Documented in Editor.
 		this.editing = new EditingController( this.document );
-		this.editing.bind( 'isReadOnly' ).to( this );
+		this.editing.view.bind( 'isReadOnly' ).to( this );
 
 		/**
 		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.

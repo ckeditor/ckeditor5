@@ -31,16 +31,16 @@ describe( 'StandardEditor', () => {
 			expect( editor.keystrokes ).to.be.instanceof( EditingKeystrokeHandler );
 		} );
 
-		it( 'should bind editing#isReadOnly to the editor', () => {
+		it( 'should bind editing.view#isReadOnly to the editor', () => {
 			const editor = new StandardEditor( editorElement, { foo: 1 } );
 
 			editor.isReadOnly = false;
 
-			expect( editor.editing.isReadOnly ).to.false;
+			expect( editor.editing.view.isReadOnly ).to.false;
 
 			editor.isReadOnly = true;
 
-			expect( editor.editing.isReadOnly ).to.true;
+			expect( editor.editing.view.isReadOnly ).to.true;
 		} );
 
 		it( 'activates #keystrokes', () => {
