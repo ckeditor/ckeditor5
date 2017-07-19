@@ -148,15 +148,15 @@ export default class StickyToolbarView extends ToolbarView {
 						return isSticky ? toPx( this._elementPlaceholder.getBoundingClientRect().width ) : null;
 					} ),
 
+					top: bind.to( '_hasViewportTopOffset', _hasViewportTopOffset => {
+						return _hasViewportTopOffset ? toPx( this.viewportTopOffset ) : null;
+					} ),
+
 					bottom: bind.to( '_isStickyToTheLimiter', _isStickyToTheLimiter => {
 						return _isStickyToTheLimiter ? toPx( this.limiterBottomOffset ) : null;
 					} ),
 
-					marginLeft: bind.to( '_marginLeft' ),
-
-					top: bind.to( '_hasViewportTopOffset', _hasViewportTopOffset => {
-						return _hasViewportTopOffset ? toPx( this.viewportTopOffset ) : null;
-					} )
+					marginLeft: bind.to( '_marginLeft' )
 				}
 			}
 		} );
@@ -234,7 +234,8 @@ export default class StickyToolbarView extends ToolbarView {
 		// Stick the toolbar to the top edge of the viewport simulating CSS position:sticky.
 		// TODO: Possibly replaced by CSS in the future http://caniuse.com/#feat=css-sticky
 		if ( this.isSticky ) {
-			this._isStickyToTheLimiter = limiterRect.bottom < toolbarRect.height + this.limiterBottomOffset + this.viewportTopOffset;
+			this._isStickyToTheLimiter =
+				limiterRect.bottom < toolbarRect.height + this.limiterBottomOffset + this.viewportTopOffset;
 			this._hasViewportTopOffset = !this._isStickyToTheLimiter && !!this.viewportTopOffset;
 			this._marginLeft = this._isStickyToTheLimiter ? null : toPx( -global.window.scrollX );
 		}
