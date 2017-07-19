@@ -50,20 +50,26 @@ export default class KeyObserver extends DomEventObserver {
  *
  * @see module:engine/view/observer/keyobserver~KeyObserver
  * @event module:engine/view/document~Document#event:keydown
+ * @param {module:engine/view/observer/keyobserver~KeyEventData} keyEventData
+ */
+
+/**
+ * Fired when a key has been released.
+ *
+ * Introduced by {@link module:engine/view/observer/keyobserver~KeyObserver}.
+ *
+ * Note that because {@link module:engine/view/observer/keyobserver~KeyObserver} is attached by the
+ * {@link module:engine/view/document~Document}
+ * this event is available by default.
+ *
+ * @see module:engine/view/observer/keyobserver~KeyObserver
  * @event module:engine/view/document~Document#event:keyup
  * @param {module:engine/view/observer/keyobserver~KeyEventData} keyEventData
  */
 
 /**
- * The value of the {@link module:engine/view/document~Document#event:keydown} event.
- *
- * @class module:engine/view/observer/keyobserver~KeyEventData
- * @extends module:engine/view/observer/domeventdata~DomEventData
- * @implements module:utils/keyboard~KeystrokeInfo
- */
-
-/**
- * The value of the {@link module:engine/view/document~Document#event:keyup} event.
+ * The value of both events - {@link module:engine/view/document~Document#event:keydown} and
+ * {@link module:engine/view/document~Document#event:keyup}.
  *
  * @class module:engine/view/observer/keyobserver~KeyEventData
  * @extends module:engine/view/observer/domeventdata~DomEventData
