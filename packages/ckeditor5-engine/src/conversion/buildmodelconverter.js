@@ -15,12 +15,12 @@ import {
 	removeUIElement,
 	wrapItem,
 	unwrapItem,
-	wrapRange,
-	unwrapRange
+	eventNameToConsumableType
 } from './model-to-view-converters';
 
 import { convertSelectionAttribute, convertSelectionMarker } from './model-selection-to-view-converters';
 
+import ModelRange from '../model/range';
 import ViewAttributeElement from '../view/attributeelement';
 import ViewContainerElement from '../view/containerelement';
 import ViewUIElement from '../view/uielement';
@@ -243,14 +243,97 @@ class ModelConverterBuilder {
 				dispatcher.on( 'removeAttribute:' + this._from.key, unwrapItem( element ), { priority } );
 
 				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), { priority } );
-			} else {
-				element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
-
-				dispatcher.on( 'addMarker:' + this._from.name, wrapRange( element ), { priority } );
-				dispatcher.on( 'removeMarker:' + this._from.name, unwrapRange( element ), { priority } );
-
-				dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( element ), { priority } );
 			}
+		}
+	}
+
+	toVirtualSelection( selectionInfo ) {
+		const priority = this._from.priority === null ? 'normal' : this._from.priority;
+
+		for ( const dispatcher of this._dispatchers ) {
+			dispatcher.on( 'selectionMarker:' + this._from.name, ( evt, data, consumable, api ) => {
+				const info = selectionInfo( data );
+				const wrapElement = new ViewAttributeElement( 'span', info.attributes );
+
+				if ( info.class ) {
+					wrapElement.addClass( info.class );
+				}
+
+				const wrap = convertSelectionMarker( wrapElement );
+
+				wrap( evt, data, consumable, api );
+			}, { priority } );
+
+			dispatcher.on( 'addMarker:' + this._from.name, ( evt, data, consumable, api ) => {
+				const modelItem = data.item;
+				const info = selectionInfo( data );
+
+				if ( modelItem.is( 'textProxy' ) ) {
+					const wrapElement = new ViewAttributeElement( 'span', info.attributes );
+
+					if ( info.class ) {
+						wrapElement.addClass( info.class );
+					}
+
+					const wrap = wrapItem( wrapElement );
+
+					wrap( evt, data, consumable, api );
+				}
+
+				if ( modelItem.is( 'element' ) ) {
+					const consumableType = eventNameToConsumableType( evt.name );
+					const viewElement = api.mapper.toViewElement( modelItem );
+
+					if ( !consumable.consume( modelItem, consumableType ) ) {
+						return;
+					}
+
+					if ( viewElement && viewElement.setVirtualSelection ) {
+						// Virtual selection will be handled by parent element - consume all children.
+						for ( const value of ModelRange.createIn( modelItem ) ) {
+							consumable.consume( value.item, consumableType );
+						}
+
+						viewElement.setVirtualSelection( info );
+					}
+				}
+			}, { priority } );
+
+			dispatcher.on( 'removeMarker:' + this._from.name, ( evt, data, consumable, api ) => {
+				const modelItem = data.item;
+				const info = selectionInfo( data );
+
+				if ( modelItem.is( 'textProxy' ) ) {
+					const info = selectionInfo( data );
+					const wrapElement = new ViewAttributeElement( 'span', info.attributes );
+
+					if ( info.class ) {
+						wrapElement.addClass( info.class );
+					}
+
+					const unwrap = unwrapItem( wrapElement );
+
+					unwrap( evt, data, consumable, api );
+				}
+
+				if ( modelItem.is( 'element' ) ) {
+					const consumableType = eventNameToConsumableType( evt.name );
+					const viewElement = api.mapper.toViewElement( modelItem );
+
+					if ( !consumable.consume( modelItem, consumableType ) ) {
+						return;
+					}
+
+					if ( viewElement && viewElement.setVirtualSelection ) {
+						// Virtual selection will be handled by parent element - consume all children.
+						for ( const value of ModelRange.createIn( modelItem ) ) {
+							consumable.consume( value.item, consumableType );
+						}
+
+						viewElement.removeVirtualSelection( info );
+					}
+				}
+			}, { priority } );
 		}
 	}
 

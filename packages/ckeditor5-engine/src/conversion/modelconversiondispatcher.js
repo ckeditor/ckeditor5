@@ -399,10 +399,22 @@ export default class ModelConversionDispatcher {
 			return;
 		}
 
-		const consumable = this._createMarkerConsumable( type, range );
-		const data = { name, range };
+		// Create consumable for each item in range.
+		// TODO: better consumable name handling.
+		const consumable = this._createConsumableForRange( range, type + ':' + name.split( ':' )[ 0 ] );
 
-		this.fire( type + ':' + name, data, consumable, this.conversionApi );
+		// Create separate event for each node in the range.
+		for ( const value of range ) {
+			const item = value.item;
+			const itemRange = Range.createFromPositionAndShift( value.previousPosition, value.length );
+			const data = {
+				item,
+				name,
+				range: itemRange
+			};
+
+			this.fire( type + ':' + name, data, consumable, this.conversionApi );
+		}
 	}
 
 	/**
