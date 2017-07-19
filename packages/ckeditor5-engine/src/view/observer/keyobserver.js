@@ -21,11 +21,11 @@ export default class KeyObserver extends DomEventObserver {
 	constructor( document ) {
 		super( document );
 
-		this.domEventType = 'keydown';
+		this.domEventType = [ 'keydown', 'keyup' ];
 	}
 
 	onDomEvent( domEvt ) {
-		this.fire( 'keydown', domEvt, {
+		this.fire( domEvt.type, domEvt, {
 			keyCode: domEvt.keyCode,
 
 			altKey: domEvt.altKey,

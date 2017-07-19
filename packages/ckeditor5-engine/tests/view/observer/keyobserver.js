@@ -22,7 +22,8 @@ describe( 'KeyObserver', () => {
 	} );
 
 	it( 'should define domEventType', () => {
-		expect( observer.domEventType ).to.equal( 'keydown' );
+		expect( observer.domEventType ).to.contains( 'keydown' );
+		expect( observer.domEventType ).to.contains( 'keyup' );
 	} );
 
 	describe( 'onDomEvent', () => {
@@ -31,7 +32,15 @@ describe( 'KeyObserver', () => {
 
 			viewDocument.on( 'keydown', spy );
 
-			observer.onDomEvent( { target: document.body, keyCode: 111, altKey: false, ctrlKey: false, metaKey: false, shiftKey: false } );
+			observer.onDomEvent( {
+				type: 'keydown',
+				target: document.body,
+				keyCode: 111,
+				altKey: false,
+				ctrlKey: false,
+				metaKey: false,
+				shiftKey: false
+			} );
 
 			expect( spy.calledOnce ).to.be.true;
 
@@ -52,7 +61,15 @@ describe( 'KeyObserver', () => {
 
 			viewDocument.on( 'keydown', spy );
 
-			observer.onDomEvent( { target: document.body, keyCode: 111, altKey: true, ctrlKey: true, metaKey: false, shiftKey: true } );
+			observer.onDomEvent( {
+				type: 'keydown',
+				target: document.body,
+				keyCode: 111,
+				altKey: true,
+				ctrlKey: true,
+				metaKey: false,
+				shiftKey: true
+			} );
 
 			const data = spy.args[ 0 ][ 1 ];
 			expect( data ).to.have.property( 'keyCode', 111 );
@@ -70,10 +87,39 @@ describe( 'KeyObserver', () => {
 
 			viewDocument.on( 'keydown', spy );
 
-			observer.onDomEvent( { target: document.body, keyCode: 111, metaKey: true } );
+			observer.onDomEvent( { type: 'keydown', target: document.body, keyCode: 111, metaKey: true } );
 
 			const data = spy.args[ 0 ][ 1 ];
 			expect( data ).to.have.property( 'ctrlKey', true );
+		} );
+
+		it( 'should fire keyup with the target and key info', () => {
+			const spy = sinon.spy();
+
+			viewDocument.on( 'keyup', spy );
+
+			observer.onDomEvent( {
+				type: 'keyup',
+				target: document.body,
+				keyCode: 111,
+				altKey: false,
+				ctrlKey: false,
+				metaKey: false,
+				shiftKey: false
+			} );
+
+			expect( spy.calledOnce ).to.be.true;
+
+			const data = spy.args[ 0 ][ 1 ];
+			expect( data ).to.have.property( 'domTarget', document.body );
+			expect( data ).to.have.property( 'keyCode', 111 );
+			expect( data ).to.have.property( 'altKey', false );
+			expect( data ).to.have.property( 'ctrlKey', false );
+			expect( data ).to.have.property( 'shiftKey', false );
+			expect( data ).to.have.property( 'keystroke', getCode( data ) );
+
+			// Just to be sure.
+			expect( getCode( data ) ).to.equal( 111 );
 		} );
 	} );
 } );
