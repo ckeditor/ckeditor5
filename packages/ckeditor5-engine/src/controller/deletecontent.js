@@ -206,7 +206,8 @@ function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
 	const limitStartPosition = Position.createAt( limitElement );
 	const limitEndPosition = Position.createAt( limitElement, 'end' );
 
-	if ( !limitStartPosition.isTouching( selection.getFirstPosition() ) ||
+	if (
+		!limitStartPosition.isTouching( selection.getFirstPosition() ) ||
 		!limitEndPosition.isTouching( selection.getLastPosition() )
 	) {
 		return false;
