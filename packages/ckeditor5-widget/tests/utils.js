@@ -105,6 +105,14 @@ describe( 'widget utils', () => {
 			expect( element.hasClass( 'ck-editable' ) ).to.be.true;
 		} );
 
+		it( 'should add proper contenteditable value when element is read-only', () => {
+			element.isReadOnly = true;
+			expect( element.getAttribute( 'contenteditable' ) ).to.false;
+
+			element.isReadOnly = false;
+			expect( element.getAttribute( 'contenteditable' ) ).to.true;
+		} );
+
 		it( 'should add proper class when element is focused', () => {
 			element.isFocused = true;
 			expect( element.hasClass( 'ck-editable_focused' ) ).to.be.true;
