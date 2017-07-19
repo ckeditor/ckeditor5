@@ -594,6 +594,14 @@ describe( 'Position', () => {
 			test( firstPosition, secondPosition, section );
 		} );
 
+		it( 'for two positions in different trees returns null', () => {
+			const div = new Element( 'div' );
+			const posInDiv = new Position( div, 0 );
+			const firstPosition = new Position( liOl2, 10 );
+
+			test( posInDiv, firstPosition, null );
+		} );
+
 		function test( positionA, positionB, lca ) {
 			expect( positionA.getCommonAncestor( positionB ) ).to.equal( lca );
 			expect( positionB.getCommonAncestor( positionA ) ).to.equal( lca );
