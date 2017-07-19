@@ -49,7 +49,7 @@ describe( 'Schema', () => {
 			expect( schema.limits ).to.be.instanceOf( Set );
 		} );
 
-		it( 'should have defined the limits elements', () => {
+		it( 'should mark $root as a limit element', () => {
 			expect( schema.limits.has( '$root' ) ).to.be.true;
 		} );
 

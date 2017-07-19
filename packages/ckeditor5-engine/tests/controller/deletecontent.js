@@ -233,6 +233,12 @@ describe( 'DataController', () => {
 				'<heading1>f[]</heading1><paragraph>x</paragraph>'
 			);
 
+			test(
+				'leaves just one element when all selected',
+				'<heading1>[x</heading1><paragraph>foo</paragraph><paragraph>y]bar</paragraph>',
+				'<heading1>[]bar</heading1>'
+			);
+
 			it( 'uses remove delta instead of merge delta if merged element is empty', () => {
 				setData( doc, '<paragraph>ab[cd</paragraph><paragraph>efgh]</paragraph>' );
 
@@ -696,6 +702,12 @@ describe( 'DataController', () => {
 			test(
 				'when the entire heading and paragraph were selected',
 				'<heading1>[xx</heading1><paragraph>yy]</paragraph>',
+				'<paragraph>[]</paragraph>'
+			);
+
+			test(
+				'when the entire content was selected',
+				'<heading1>[x</heading1><paragraph>foo</paragraph><paragraph>y]</paragraph>',
 				'<paragraph>[]</paragraph>'
 			);
 
