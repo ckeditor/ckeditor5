@@ -91,7 +91,8 @@ export function getLabel( element ) {
 /**
  * Adds functionality to provided {module:engine/view/editableelement~EditableElement} to act as a widget's editable:
  * * adds `ck-editable` CSS class,
- * * sets `contenteditable` as `true` when {module:engine/view/editableelement~EditableElement#isReadOnly} is `false`,
+ * * sets `contenteditable` as `true` when {module:engine/view/editableelement~EditableElement#isReadOnly} is `false`
+ * otherwise set `false`,
  * * adds `ck-editable_focused` CSS class when editable is focused and removes it when it's blurred.
  *
  * @param {module:engine/view/editableelement~EditableElement} editable
@@ -100,6 +101,10 @@ export function getLabel( element ) {
 export function toWidgetEditable( editable ) {
 	editable.addClass( 'ck-editable' );
 
+	// Set initial contenteditable value.
+	editable.setAttribute( 'contenteditable', !editable.isReadOnly );
+
+	// Bind contenteditable property to element#isReadOnly.
 	editable.on( 'change:isReadOnly', ( evt, property, is ) => {
 		editable.setAttribute( 'contenteditable', !is );
 	} );
