@@ -31,6 +31,18 @@ describe( 'StandardEditor', () => {
 			expect( editor.keystrokes ).to.be.instanceof( EditingKeystrokeHandler );
 		} );
 
+		it( 'should bind editing#isReadOnly to the editor', () => {
+			const editor = new StandardEditor( editorElement, { foo: 1 } );
+
+			editor.isReadOnly = false;
+
+			expect( editor.editing.isReadOnly ).to.false;
+
+			editor.isReadOnly = true;
+
+			expect( editor.editing.isReadOnly ).to.true;
+		} );
+
 		it( 'activates #keystrokes', () => {
 			const spy = sinon.spy( EditingKeystrokeHandler.prototype, 'listenTo' );
 			const editor = new StandardEditor( editorElement, { foo: 1 } );
