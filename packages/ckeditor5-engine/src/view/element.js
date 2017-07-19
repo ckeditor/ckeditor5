@@ -181,6 +181,8 @@ export default class Element extends Node {
 		cloned._customProperties = new Map( this._customProperties );
 
 		// Clone filler offset method.
+		// We can't define this method in a prototype because it's behavior which
+		// is changed by e.g. toWidget() function from ckeditor5-widget. Perhaps this should be one of custom props.
 		cloned.getFillerOffset = this.getFillerOffset;
 
 		return cloned;
