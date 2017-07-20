@@ -24,7 +24,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * Renderer updates DOM structure and selection, to make them a reflection of the view structure and selection.
  *
  * View nodes which may need to be rendered needs to be {@link module:engine/view/renderer~Renderer#markToSync marked}.
- * Then, on {@link module:engine/view/renderer~Renderer#render render}, renderer compares the view nodes with the DOM nodes
+ * Then, on {@link module:engine/view/renderer~Renderer#render render}, renderer compares view nodes with DOM nodes
  * in order to check which ones really need to be refreshed. Finally, it creates DOM nodes from these view nodes,
  * {@link module:engine/view/domconverter~DomConverter#bindElements binds} them and inserts into the DOM tree.
  *
@@ -81,7 +81,7 @@ export default class Renderer {
 		this.markedTexts = new Set();
 
 		/**
-		 * View selection. Renderer updates DOM Selection to make it match this one.
+		 * View selection. Renderer updates DOM selection based on the view selection.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/selection~Selection}
@@ -97,7 +97,7 @@ export default class Renderer {
 		this._inlineFiller = null;
 
 		/**
-		 * Indicates if view document is focused and selection can be rendered. Selection will not be rendered if
+		 * Indicates if the view document is focused and selection can be rendered. Selection will not be rendered if
 		 * this is set to `false`.
 		 *
 		 * @member {Boolean}
@@ -212,18 +212,19 @@ export default class Renderer {
 			this._updateChildren( element, { inlineFillerPosition } );
 		}
 
-		// Check whether inline filler is required and where it really is in DOM. At this point in most cases it should
-		// be in DOM, but not always. For example, if inline filler was deep in created DOM structure, it will not be created.
+		// Check whether the inline filler is required and where it really is in the DOM.
+		// At this point in most cases it will be in the DOM, but there are exceptions.
+		// For example, if the inline filler was deep in the created DOM structure, it will not be created.
 		// Similarly, if it was removed at the beginning of this function and then neither text nor children were updated,
-		// it will not be present. Fix those and similar scenarios.
+		// it will not be present.
+		// Fix those and similar scenarios.
 		if ( inlineFillerPosition ) {
 			const fillerDomPosition = this.domConverter.viewPositionToDom( inlineFillerPosition );
 			const domDocument = fillerDomPosition.parent.ownerDocument;
 
 			if ( !startsWithFiller( fillerDomPosition.parent ) ) {
 				// Filler has not been created at filler position. Create it now.
-				// Save created filler element in `this._inlineFiller`.
-				this._inlineFiller = this._applyInlineFiller( domDocument, fillerDomPosition.parent, fillerDomPosition.offset );
+				this._inlineFiller = this._addInlineFiller( domDocument, fillerDomPosition.parent, fillerDomPosition.offset );
 			} else {
 				// Filler has been found, save it.
 				this._inlineFiller = fillerDomPosition.parent;
@@ -242,17 +243,18 @@ export default class Renderer {
 	}
 
 	/**
-	 * Applies inline filler at given position.
+	 * Adds inline filler at given position.
 	 *
-	 * The position can be given as array with DOM nodes and offset in that array, or DOM parent element and offset in that element.
+	 * The position can be given as an array of DOM nodes and an offset in that array,
+	 * or a DOM parent element and offset in that element.
 	 *
 	 * @private
 	 * @param {Document} domDocument
-	 * @param {Element|Array} domParentOrArray
+	 * @param {Element|Array.<Node>} domParentOrArray
 	 * @param {Number} offset
 	 * @returns {Text} The DOM text node that contains inline filler.
 	 */
-	_applyInlineFiller( domDocument, domParentOrArray, offset ) {
+	_addInlineFiller( domDocument, domParentOrArray, offset ) {
 		const childNodes = domParentOrArray instanceof Array ? domParentOrArray : domParentOrArray.childNodes;
 		const nodeAfterFiller = childNodes[ offset ];
 
@@ -263,7 +265,7 @@ export default class Renderer {
 		} else {
 			const fillerNode = domDocument.createTextNode( INLINE_FILLER );
 
-			if ( domParentOrArray instanceof Array ) {
+			if ( Array.isArray( domParentOrArray ) ) {
 				childNodes.splice( offset, 0, fillerNode );
 			} else {
 				insertAt( domParentOrArray, offset, fillerNode );
@@ -474,7 +476,7 @@ export default class Renderer {
 		// elements with expected dom elements. We need inline filler in expected dom elements so we won't re-render
 		// text node if it is not necessary.
 		if ( filler && filler.parent == viewElement ) {
-			this._applyInlineFiller( domDocument, expectedDomChildren, filler.offset );
+			this._addInlineFiller( domDocument, expectedDomChildren, filler.offset );
 		}
 
 		const actions = diff( actualDomChildren, expectedDomChildren, sameNodes );
