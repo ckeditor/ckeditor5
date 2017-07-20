@@ -161,14 +161,13 @@ describe( 'HeadingCommand', () => {
 			it( 'does nothing when executed with already applied option', () => {
 				const command = commands.heading1;
 				const batch = document.batch();
-				const spy = sinon.spy( batch, 'rename' );
 
 				setData( document, '<heading1>foo[]bar</heading1>' );
 
 				command.execute( { batch } );
 
 				expect( getData( document ) ).to.equal( '<heading1>foo[]bar</heading1>' );
-				sinon.assert.notCalled( spy );
+				expect( batch.deltas ).to.be.empty;
 			} );
 
 			it( 'converts topmost blocks', () => {
@@ -209,12 +208,23 @@ describe( 'HeadingCommand', () => {
 				);
 			} );
 
-			it( 'does nothing to the elements with same option', () => {
-				setData( document, '<heading1>foo[</heading1><heading1>bar</heading1><heading2>baz</heading2>]' );
+			it( 'does nothing to the elements with same option (#1)', () => {
+				setData( document, '<heading1>[foo</heading1><heading1>bar]</heading1>' );
+				const batch = document.batch();
+				commands.heading1.execute( { batch } );
+
+				expect( getData( document ) ).to.equal(
+					'<heading1>[foo</heading1><heading1>bar]</heading1>'
+				);
+				expect( batch.deltas ).to.be.empty;
+			} );
+
+			it( 'does nothing to the elements with same option (#2)', () => {
+				setData( document, '<heading1>[foo</heading1><heading1>bar</heading1><heading2>baz]</heading2>' );
 				commands.heading1.execute();
 
 				expect( getData( document ) ).to.equal(
-					'<heading1>foo[</heading1><heading1>bar</heading1><heading1>baz</heading1>]'
+					'<heading1>[foo</heading1><heading1>bar</heading1><heading1>baz]</heading1>'
 				);
 			} );
 
