@@ -10,6 +10,7 @@
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
+import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
 
 /**
  * The inline editor UI class.
@@ -44,8 +45,20 @@ export default class InlineEditorUI {
 		 */
 		this.focusTracker = new FocusTracker();
 
+		/**
+		 * A normalized `config.toolbar` object.
+		 *
+		 * @type {Object}
+		 * @private
+		 */
+		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+
 		// Set–up the view#panel.
 		view.panel.bind( 'isVisible' ).to( this.focusTracker, 'isFocused' );
+
+		if ( this._toolbarConfig ) {
+			view.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
+		}
 
 		// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
 		view.listenTo( editor.editing.view, 'render', () => {
@@ -78,7 +91,10 @@ export default class InlineEditorUI {
 		const editor = this.editor;
 
 		this.view.init();
-		this.view.toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
+
+		if ( this._toolbarConfig ) {
+			this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+		}
 
 		enableToolbarKeyboardFocus( {
 			origin: editor.editing.view,
