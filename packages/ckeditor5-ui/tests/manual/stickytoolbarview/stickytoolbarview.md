@@ -1,8 +1,17 @@
 ## Vertical scrolling
 
+### Sticky to the top of the viewport
+
 1. When the page is scrolled vertically, the toolbar should
 	1. stick to the top of the viewport first,
 	1. then disappear beyond the upper edge of the viewport as it touches the red area
+	1. but never cover the red area or go beyond the upper edge of editor mock–up.
+
+### Sticky to the green box
+
+1. When the page is scrolled vertically, the toolbar should
+	1. stick to the bottom of the green box first,
+	1. then disappear beyond the bottom edge of the green box as it touches the red area
 	1. but never cover the red area or go beyond the upper edge of editor mock–up.
 
 ## Horizontal scrolling
