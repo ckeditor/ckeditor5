@@ -256,7 +256,7 @@ export function removeAttribute( attributeCreator ) {
  * be used for wrapping.
  * @returns {Function} Set/change attribute converter.
  */
-export function wrapItem( elementCreator ) {
+export function wrapItem( elementCreator, nameToConsumable = eventNameToConsumableType ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		const viewElement = ( elementCreator instanceof ViewElement ) ?
 			elementCreator.clone( true ) :
@@ -266,7 +266,7 @@ export function wrapItem( elementCreator ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
+		if ( !consumable.consume( data.item, nameToConsumable( evt.name ) ) ) {
 			return;
 		}
 
@@ -306,7 +306,7 @@ export function wrapItem( elementCreator ) {
  * be used for unwrapping.
  * @returns {Function} Remove attribute converter.
  */
-export function unwrapItem( elementCreator ) {
+export function unwrapItem( elementCreator, nameToConsumable = eventNameToConsumableType ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		const viewElement = ( elementCreator instanceof ViewElement ) ?
 			elementCreator.clone( true ) :
@@ -316,7 +316,7 @@ export function unwrapItem( elementCreator ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
+		if ( !consumable.consume( data.item, nameToConsumable( evt.name ) ) ) {
 			return;
 		}
 
@@ -402,7 +402,9 @@ export function markerToVirtualSelection( selectionDescriptor ) {
 
 		if ( modelItem.is( 'textProxy' ) ) {
 			const viewElement = virtualSelectionDescriptorToAttribute( descriptor );
-			const converter = addMarker ? wrapItem( viewElement ) : unwrapItem( viewElement );
+			const converter = addMarker ?
+				wrapItem( viewElement, eventName => eventName ) :
+				unwrapItem( viewElement, eventName => eventName );
 
 			converter( evt, data, consumable, conversionApi );
 		}

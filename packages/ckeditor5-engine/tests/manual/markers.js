@@ -38,8 +38,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 			return {
 				class: 'h-' + color,
-				attributes: { 'data-id': 100 },
-				priority: 1000
+				priority: 1
 			};
 		} );
 
