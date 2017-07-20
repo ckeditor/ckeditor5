@@ -12,6 +12,7 @@
 import Observer from './observer';
 import ViewSelection from '../selection';
 import { startsWithFiller, getDataWithoutFiller } from '../filler';
+import isEqual from '@ckeditor/ckeditor5-utils/src/lib/lodash/isEqual';
 
 /**
  * Mutation observer class observes changes in the DOM, fires {@link module:engine/view/document~Document#event:mutations} event, mark view
@@ -204,16 +205,21 @@ export default class MutationObserver extends Observer {
 
 		for ( const viewElement of mutatedElements ) {
 			const domElement = domConverter.mapViewToDom( viewElement );
-			const viewChildren = viewElement.getChildren();
-			const newViewChildren = domConverter.domChildrenToView( domElement );
+			const viewChildren = Array.from( viewElement.getChildren() );
+			const newViewChildren = Array.from( domConverter.domChildrenToView( domElement ) );
 
-			this.renderer.markToSync( 'children', viewElement );
-			viewMutations.push( {
-				type: 'children',
-				oldChildren: Array.from( viewChildren ),
-				newChildren: Array.from( newViewChildren ),
-				node: viewElement
-			} );
+			// It may happen that as a result of many changes (sth was inserted and then removed),
+			// both elements haven't really changed. #1031
+			if ( !isEqual( viewChildren, newViewChildren ) ) {
+				this.renderer.markToSync( 'children', viewElement );
+
+				viewMutations.push( {
+					type: 'children',
+					oldChildren: viewChildren,
+					newChildren: newViewChildren,
+					node: viewElement
+				} );
+			}
 		}
 
 		// Retrieve `domSelection` using `ownerDocument` of one of mutated nodes.
