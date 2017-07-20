@@ -11,14 +11,9 @@ import BalloonToolbarEditorUI from '../src/balloontoolbareditorui';
 import BalloonToolbarEditorUIView from '../src/balloontoolbareditoruiview';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
-
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-
-testUtils.createSinonSandbox();
 
 describe( 'BalloonToolbarEditorUI', () => {
 	let editorElement, editor, editable, view, ui;
@@ -106,10 +101,15 @@ describe( 'BalloonToolbarEditorUI', () => {
 
 		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
 			const toolbar = editor.plugins.get( 'ContextualToolbar' );
-			const spy = testUtils.sinon.spy( toolbar.toolbarView, 'focus' );
+			const toolbarFocusSpy = sinon.stub( toolbar.toolbarView, 'focus', () => {} );
+			const toolbarShowSpy = sinon.stub( toolbar, 'show', () => {} );
+			const toolbarHideSpy = sinon.stub( toolbar, 'hide', () => {} );
+			const editingFocusSpy = sinon.stub( editor.editing.view, 'focus', () => {} );
 
 			ui.init();
 			ui.focusTracker.isFocused = true;
+
+			// #show and #hide are mocked so mocking the focus as well.
 			toolbar.toolbarView.focusTracker.isFocused = false;
 
 			editor.keystrokes.press( {
@@ -119,7 +119,20 @@ describe( 'BalloonToolbarEditorUI', () => {
 				stopPropagation: sinon.spy()
 			} );
 
-			sinon.assert.calledOnce( spy );
+			sinon.assert.callOrder( toolbarShowSpy, toolbarFocusSpy );
+			sinon.assert.notCalled( toolbarHideSpy );
+			sinon.assert.notCalled( editingFocusSpy );
+
+			// #show and #hide are mocked so mocking the focus as well.
+			toolbar.toolbarView.focusTracker.isFocused = true;
+
+			toolbar.toolbarView.keystrokes.press( {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.callOrder( editingFocusSpy, toolbarHideSpy );
 		} );
 	} );
 
