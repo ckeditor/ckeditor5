@@ -26,8 +26,6 @@ import {
 	removeAttribute,
 	wrapItem,
 	unwrapItem,
-	wrapRange,
-	unwrapRange,
 	remove,
 	removeUIElement
 } from '../../src/conversion/model-to-view-converters';
@@ -457,235 +455,6 @@ describe( 'model-to-view-converters', () => {
 		} );
 	} );
 
-	describe( 'wrapRange/unwrapRange', () => {
-		let modelText, range, modelElement;
-
-		beforeEach( () => {
-			modelText = new ModelText( 'foobar' );
-			modelElement = new ModelElement( 'paragraph', null, modelText );
-			modelRoot.appendChildren( modelElement );
-
-			const viewText = new ViewText( 'foobar' );
-			const viewElement = new ViewContainerElement( 'p', null, viewText );
-			viewRoot.appendChildren( viewElement );
-
-			mapper.bindElements( modelElement, viewElement );
-
-			range = ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 );
-		} );
-
-		it( 'should convert adding/removing of marker into wrapping element in a view', () => {
-			const viewSpan = new ViewAttributeElement( 'span', { class: 'name' } );
-
-			dispatcher.on( 'addMarker:name', wrapRange( viewSpan ) );
-			dispatcher.on( 'removeMarker:name', unwrapRange( viewSpan ) );
-
-			dispatcher.convertMarker( 'addMarker', 'name', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="name">ob</span>ar</p></div>' );
-
-			dispatcher.convertMarker( 'removeMarker', 'name', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'should convert insert/remove of attribute in model with wrapping element generating function as a parameter', () => {
-			const converterCallback = data => {
-				const name = data.name.split( ':' )[ 1 ];
-
-				return new ViewAttributeElement( 'span', { class: name } );
-			};
-
-			dispatcher.on( 'addMarker:name', wrapRange( converterCallback ) );
-			dispatcher.on( 'removeMarker:name', unwrapRange( converterCallback ) );
-
-			dispatcher.convertMarker( 'addMarker', 'name:john', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="john">ob</span>ar</p></div>' );
-
-			dispatcher.convertMarker( 'removeMarker', 'name:john', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'should support non-flat markers', () => {
-			const modelElement2 = new ModelElement( 'paragraph', null, new ModelText( '22' ) );
-			modelRoot.appendChildren( modelElement2 );
-
-			const modelElement3 = new ModelElement( 'paragraph', null, new ModelText( '333' ) );
-			modelRoot.appendChildren( modelElement3 );
-
-			const viewElement2 = new ViewContainerElement( 'p', null, new ViewText( '22' ) );
-			viewRoot.appendChildren( viewElement2 );
-
-			const viewElement3 = new ViewContainerElement( 'p', null, new ViewText( '333' ) );
-			viewRoot.appendChildren( viewElement3 );
-
-			mapper.bindElements( modelElement2, viewElement2 );
-			mapper.bindElements( modelElement3, viewElement3 );
-
-			const range = ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement3, 1 );
-			const viewSpan = new ViewAttributeElement( 'span', { class: 'name' } );
-
-			dispatcher.on( 'addMarker:name', wrapRange( viewSpan ) );
-			dispatcher.on( 'removeMarker:name', unwrapRange( viewSpan ) );
-
-			dispatcher.convertMarker( 'addMarker', 'name', range );
-
-			expect( viewToString( viewRoot ) ).to.equal(
-				'<div><p>fo<span class="name">obar</span></p><p><span class="name">22</span></p><p><span class="name">3</span>33</p></div>'
-			);
-
-			dispatcher.convertMarker( 'removeMarker', 'name', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p><p>22</p><p>333</p></div>' );
-		} );
-
-		it( 'should be possible to override wrapRange', () => {
-			const converterCallback = data => {
-				const name = data.name.split( ':' )[ 1 ];
-
-				return new ViewAttributeElement( 'span', { class: name } );
-			};
-
-			dispatcher.on( 'addMarker:name', wrapRange( converterCallback ) );
-			dispatcher.on( 'addMarker:name:john', ( evt, data, consumable ) => {
-				consumable.consume( data.range, 'addMarker' );
-			}, { priority: 'high' } );
-
-			dispatcher.convertMarker( 'addMarker', 'name:john', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'should be possible to override unwrapRange', () => {
-			const converterCallback = data => {
-				const name = data.name.split( ':' )[ 1 ];
-
-				return new ViewAttributeElement( 'span', { class: name } );
-			};
-
-			dispatcher.on( 'addMarker:name', wrapRange( converterCallback ) );
-			dispatcher.on( 'removeMarker:name', unwrapRange( converterCallback ) );
-			dispatcher.on( 'removeMarker:name:john', ( evt, data, consumable ) => {
-				consumable.consume( data.range, 'removeMarker' );
-			}, { priority: 'high' } );
-
-			dispatcher.convertMarker( 'addMarker', 'name:john', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="john">ob</span>ar</p></div>' );
-
-			dispatcher.convertMarker( 'removeMarker', 'name:john', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="john">ob</span>ar</p></div>' );
-		} );
-
-		it( 'should not convert or consume if view element is not returned by element generating function', () => {
-			const converterCallback = () => null;
-
-			sinon.spy( dispatcher, 'fire' );
-
-			dispatcher.on( 'addMarker:name', wrapRange( converterCallback ) );
-			dispatcher.on( 'addMarker:name', ( evt, data, consumable ) => {
-				// Check whether value was not consumed from `consumable`.
-				expect( consumable.test( data.range, 'addMarker' ) ).to.be.true;
-			} );
-
-			dispatcher.on( 'removeMarker:name', unwrapRange( converterCallback ) );
-			dispatcher.on( 'removeMarker:name', ( evt, data, consumable ) => {
-				// Check whether value was not consumed from `consumable`.
-				expect( consumable.test( data.range, 'removeMarker' ) ).to.be.true;
-			} );
-
-			dispatcher.convertMarker( 'addMarker', 'name', range );
-
-			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.true;
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-
-			dispatcher.convertMarker( 'removeMarker', 'name', range );
-
-			expect( dispatcher.fire.calledWith( 'removeMarker:name' ) ).to.be.true;
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'multiple overlapping non-collapsed markers', () => {
-			const converterCallbackName = data => {
-				const name = data.name.split( ':' )[ 1 ];
-				const element = new ViewAttributeElement( 'span', { class: name } );
-				element.priority = name.charCodeAt( 0 );
-
-				return element;
-			};
-			const converterCallbackSearch = () => new ViewAttributeElement( 'em', { class: 'search' } );
-
-			dispatcher.on( 'addMarker:name', wrapRange( converterCallbackName ) );
-			dispatcher.on( 'removeMarker:name', unwrapRange( converterCallbackName ) );
-			dispatcher.on( 'addMarker:search', wrapRange( converterCallbackSearch ) );
-			dispatcher.on( 'removeMarker:search', unwrapRange( converterCallbackSearch ) );
-
-			dispatcher.convertMarker( 'addMarker', 'name:a', range );
-			dispatcher.convertMarker( 'addMarker', 'name:b', range );
-			dispatcher.convertMarker( 'addMarker', 'search', range );
-
-			expect( viewToString( viewRoot ) ).to.equal(
-				'<div><p>fo<em class="search"><span class="a"><span class="b">ob</span></span></em>ar</p></div>'
-			);
-
-			dispatcher.convertMarker( 'removeMarker', 'name:b', range );
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<em class="search"><span class="a">ob</span></em>ar</p></div>' );
-
-			dispatcher.convertMarker( 'removeMarker', 'search', range );
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="a">ob</span>ar</p></div>' );
-
-			dispatcher.convertMarker( 'removeMarker', 'name:a', range );
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'multiple overlapping non-collapsed markers intersecting with same priority', () => {
-			const converterCallbackSearch = () => new ViewAttributeElement( 'em', { class: 'search' } );
-
-			dispatcher.on( 'addMarker:search', wrapRange( converterCallbackSearch ) );
-			dispatcher.on( 'removeMarker:search', unwrapRange( converterCallbackSearch ) );
-
-			const range1 = ModelRange.createFromParentsAndOffsets( modelElement, 1, modelElement, 3 );
-			const range2 = ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 );
-			const range3 = ModelRange.createFromParentsAndOffsets( modelElement, 4, modelElement, 6 );
-
-			dispatcher.convertMarker( 'addMarker', 'search', range1 );
-			dispatcher.convertMarker( 'addMarker', 'search', range2 );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>f<em class="search">oob</em>ar</p></div>' );
-
-			dispatcher.convertMarker( 'addMarker', 'search', range3 );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>f<em class="search">oobar</em></p></div>' );
-
-			dispatcher.convertMarker( 'removeMarker', 'search', range2 );
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>f<em class="search">o</em>ob<em class="search">ar</em></p></div>' );
-
-			dispatcher.convertMarker( 'removeMarker', 'search', range3 );
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>f<em class="search">o</em>obar</p></div>' );
-
-			dispatcher.convertMarker( 'removeMarker', 'search', range1 );
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'should do nothing when range is collapsed', () => {
-			const viewSpan = new ViewAttributeElement( 'span', { class: 'name' } );
-
-			dispatcher.on( 'addMarker:name', wrapRange( viewSpan ) );
-			dispatcher.on( 'removeMarker:name', unwrapRange( viewSpan ) );
-
-			dispatcher.convertMarker( 'addMarker', 'name', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 ) );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-
-			dispatcher.convertMarker( 'removeMarker', 'name', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-	} );
-
 	describe( 'insertUIElement/removeUIElement', () => {
 		let modelText, range, modelElement;
 
@@ -742,11 +511,11 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
 
 			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-				expect( consumable.test( data.range, 'addMarker' ) ).to.be.true;
+				expect( consumable.test( data.range, 'addMarker:marker' ) ).to.be.true;
 			} );
 
 			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
-				expect( consumable.test( data.range, 'removeMarker' ) ).to.be.true;
+				expect( consumable.test( data.range, 'removeMarker:marker' ) ).to.be.true;
 			} );
 
 			dispatcher.convertMarker( 'addMarker', 'marker', range );
@@ -769,11 +538,11 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
 
 			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-				consumable.consume( data.range, 'addMarker' );
+				consumable.consume( data.range, 'addMarker:marker' );
 			}, { priority: 'high' } );
 
 			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
-				consumable.consume( data.range, 'removeMarker' );
+				consumable.consume( data.range, 'removeMarker:marker' );
 			}, { priority: 'high' } );
 
 			dispatcher.convertMarker( 'addMarker', 'marker', range );
@@ -796,11 +565,11 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
 
 			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-				expect( consumable.test( data.range, 'addMarker' ) ).to.be.true;
+				expect( consumable.test( data.range, 'addMarker:marker' ) ).to.be.true;
 			} );
 
 			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
-				expect( consumable.test( data.range, 'removeMarker' ) ).to.be.true;
+				expect( consumable.test( data.range, 'removeMarker:marker' ) ).to.be.true;
 			} );
 
 			dispatcher.convertMarker( 'addMarker', 'marker', range );
@@ -823,11 +592,11 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
 
 			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-				consumable.consume( data.range, 'addMarker' );
+				consumable.consume( data.range, 'addMarker:marker' );
 			}, { priority: 'high' } );
 
 			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
-				consumable.consume( data.range, 'removeMarker' );
+				consumable.consume( data.range, 'removeMarker:marker' );
 			}, { priority: 'high' } );
 
 			dispatcher.convertMarker( 'addMarker', 'marker', range );

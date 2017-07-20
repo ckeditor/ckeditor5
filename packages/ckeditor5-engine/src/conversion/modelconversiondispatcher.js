@@ -399,8 +399,20 @@ export default class ModelConversionDispatcher {
 			return;
 		}
 
+		// In markers case, event name == consumable name.
+		const eventName = type + ':' + name;
+
+		// Fire event for whole marker. This can be used to convert whole marker to element.
+		const markerConsumable = this._createMarkerConsumable( eventName, range );
+		this.fire( eventName, { name, range }, markerConsumable, this.conversionApi );
+
+		// Return if whole marker was consumed - do not perform conversion of each node in marker's range.
+		if ( !markerConsumable.test( range, eventName ) ) {
+			return;
+		}
+
 		// Create consumable for each item in range.
-		const consumable = this._createConsumableForRange( range, type + ':' + name.split( ':' )[ 0 ] );
+		const consumable = this._createConsumableForRange( range, eventName );
 
 		// Create separate event for each node in the range.
 		for ( const value of range ) {
@@ -412,7 +424,7 @@ export default class ModelConversionDispatcher {
 				range: itemRange
 			};
 
-			this.fire( type + ':' + name, data, consumable, this.conversionApi );
+			this.fire( eventName, data, consumable, this.conversionApi );
 		}
 	}
 
@@ -479,6 +491,22 @@ export default class ModelConversionDispatcher {
 		for ( const key of selection.getAttributeKeys() ) {
 			consumable.add( selection, 'selectionAttribute:' + key );
 		}
+
+		return consumable;
+	}
+
+	/**
+	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} for adding or removing marker on given `range`.
+	 *
+	 * @private
+	 * @param {'addMarker'|'removeMarker'} type Change type.
+	 * @param {module:engine/model/range~Range} range Range on which marker was added or removed.
+	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
+	 */
+	_createMarkerConsumable( type, range ) {
+		const consumable = new Consumable();
+
+		consumable.add( range, type );
 
 		return consumable;
 	}

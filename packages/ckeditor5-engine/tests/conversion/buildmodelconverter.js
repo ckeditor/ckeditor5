@@ -343,7 +343,7 @@ describe( 'Model converter builder', () => {
 		} );
 	} );
 
-	describe( 'model marker to view element conversion', () => {
+	describe( 'model marker to virtual selection converter', () => {
 		let modelText, modelElement;
 
 		beforeEach( () => {
@@ -358,57 +358,51 @@ describe( 'Model converter builder', () => {
 			mapper.bindElements( modelElement, viewElement );
 		} );
 
-		it( 'using passed view element name', () => {
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'strong' );
-
-			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<strong>ob</strong>ar</p></div>' );
-
-			dispatcher.convertMarker(
-				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
-			);
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'using passed view element', () => {
-			const viewElement = new ViewAttributeElement( 'span', { class: 'search' } );
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( viewElement );
-
-			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search">ob</span>ar</p></div>' );
-
-			dispatcher.convertMarker(
-				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
-			);
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'using passed creator function', () => {
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( data => {
-				const className = 'search search-color-' + data.name.split( ':' )[ 1 ];
-
-				return new ViewAttributeElement( 'span', { class: className } );
+		it( 'using passed virtual selection descriptor object', () => {
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( {
+				class: 'virtual-selection',
+				priority: 1,
+				attributes: { title: 'marker' }
 			} );
 
+			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal(
+				'<div>' +
+					'<p>' +
+						'fo' +
+						'<span class="virtual-selection" title="marker">ob</span>' +
+						'ar' +
+					'</p>' +
+				'</div>' );
+
 			dispatcher.convertMarker(
-				'addMarker', 'search:red', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
+				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
 			);
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search search-color-red">ob</span>ar</p></div>' );
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
+		it( 'using passed virtual selection descriptor object creator', () => {
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( () => ( {
+				class: 'virtual-selection',
+				priority: 12,
+				attributes: { title: 'marker' }
+			} ) );
+
+			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal(
+				'<div>' +
+					'<p>' +
+						'fo' +
+						'<span class="virtual-selection" title="marker">ob</span>' +
+						'ar' +
+					'</p>' +
+				'</div>' );
 
 			dispatcher.convertMarker(
-				'removeMarker', 'search:blue', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
-			);
-
-			// Nothing should change as we remove a marker with different name, which should generate different view attribute element.
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search search-color-red">ob</span>ar</p></div>' );
-
-			dispatcher.convertMarker(
-				'removeMarker', 'search:red', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
+				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
 			);
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );

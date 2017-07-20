@@ -180,6 +180,10 @@ export function convertSelectionMarker( selectionDescriptor ) {
 			selectionDescriptor( data, consumable, conversionApi ) :
 			selectionDescriptor;
 
+		if ( !descriptor ) {
+			return;
+		}
+
 		const viewElement = virtualSelectionDescriptorToAttribute( descriptor );
 		const consumableName = 'selectionMarker:' + data.name;
 

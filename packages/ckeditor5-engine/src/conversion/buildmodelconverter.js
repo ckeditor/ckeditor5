@@ -15,7 +15,7 @@ import {
 	removeUIElement,
 	wrapItem,
 	unwrapItem,
-	virtualSelectionConverter
+	markerToVirtualSelection
 } from './model-to-view-converters';
 
 import { convertSelectionAttribute, convertSelectionMarker } from './model-selection-to-view-converters';
@@ -250,8 +250,8 @@ class ModelConverterBuilder {
 		const priority = this._from.priority === null ? 'normal' : this._from.priority;
 
 		for ( const dispatcher of this._dispatchers ) {
-			dispatcher.on( 'addMarker:' + this._from.name, virtualSelectionConverter( selectionDescriptor ), { priority } );
-			dispatcher.on( 'removeMarker:' + this._from.name, virtualSelectionConverter( selectionDescriptor, false ), { priority } );
+			dispatcher.on( 'addMarker:' + this._from.name, markerToVirtualSelection( selectionDescriptor ), { priority } );
+			dispatcher.on( 'removeMarker:' + this._from.name, markerToVirtualSelection( selectionDescriptor ), { priority } );
 			dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( selectionDescriptor ), { priority } );
 		}
 	}

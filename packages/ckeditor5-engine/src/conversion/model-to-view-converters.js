@@ -122,7 +122,7 @@ export function insertUIElement( elementCreator ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.range, 'addMarker' ) ) {
+		if ( !consumable.consume( data.range, evt.name ) ) {
 			return;
 		}
 
@@ -327,105 +327,6 @@ export function unwrapItem( elementCreator ) {
 }
 
 /**
- * Function factory, creates a converter that wraps model range.
- *
- * In contrary to {@link module:engine/conversion/model-to-view-converters~wrapItem}, this converter's input is a
- * {@link module:engine/model/range~Range model range} (not changed model item). The model range is mapped
- * to {@link module:engine/view/range~Range view range} and then, view items within that view range are wrapped in a
- * {@link module:engine/view/attributeelement~AttributeElement view attribute element}. Note, that `elementCreator`
- * function of this converter takes different parameters that `elementCreator` of `wrapItem`.
- *
- * Let's assume following model and view. `{}` represents a range that is added as a marker with `searchResult` name.
- * The range represents a result of search `ab` string in the model document. The range has to be visualized in view.
- *
- *		[paragraph]              MODEL ====> VIEW        <p>
- *			|- {a                                         |- <span class="searchResult">
- *			|-  b}                                        |   |- ab
- *			|-  c                                         |- c
- *
- * The wrapping node depends on passed parameter. If {@link module:engine/view/attributeelement~AttributeElement} was passed, it
- * will be cloned and the copy will become the wrapping element. If `Function` is provided, it is passed all the parameters of the
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker addMarker event}. It's expected
- * that the function returns a {@link module:engine/view/attributeelement~AttributeElement}. The result of the function will be the
- * wrapping element. When provided `Function` does not return element, then will be no conversion.
- *
- * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}).
- *
- *		modelDispatcher.on( 'addMarker:searchResult', wrapRange( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
- *
- * @param {module:engine/view/attributeelement~AttributeElement|Function} elementCreator View attribute element, or function returning
- * a view attribute element, which will be used for wrapping.
- * @returns {Function} Wrap range converter.
- */
-export function wrapRange( elementCreator ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		const viewElement = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
-
-		if ( !viewElement ) {
-			return;
-		}
-
-		if ( !consumable.consume( data.range, 'addMarker' ) ) {
-			return;
-		}
-
-		const viewRange = conversionApi.mapper.toViewRange( data.range );
-		const flatViewRanges = viewWriter.breakViewRangePerContainer( viewRange );
-
-		for ( const range of flatViewRanges ) {
-			viewWriter.wrap( range, viewElement );
-		}
-	};
-}
-
-/**
- * Function factory, creates a converter that converts removing of a model marker to view attribute element.
- * This converter will unwrap view nodes from corresponding view range.
- *
- * The view element that will be unwrapped depends on passed parameter. If {@link module:engine/view/attributeelement~AttributeElement}
- * was passed, it will be used to look for similar element in the view for unwrapping. If `Function` is provided, it is passed all
- * the parameters of the
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:removeMarker removeMarker event}.
- * It's expected that the function returns a {@link module:engine/view/attributeelement~AttributeElement}. The result of
- * the function will be used to look for similar element in the view for unwrapping.
- *
- * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}) and bind model and view elements.
- *
- *		modelDispatcher.on( 'removeMarker:searchResult', unwrapRange( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
- *
- * @see module:engine/conversion/model-to-view-converters~wrapRange
- * @param {module:engine/view/attributeelement~AttributeElement|Function} elementCreator View attribute element, or function returning
- * a view attribute element, which will be used for unwrapping.
- * @returns {Function} Unwrap range converter.
- */
-export function unwrapRange( elementCreator ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		const viewElement = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
-
-		if ( !viewElement ) {
-			return;
-		}
-
-		if ( !consumable.consume( data.range, 'removeMarker' ) ) {
-			return;
-		}
-
-		const viewRange = conversionApi.mapper.toViewRange( data.range );
-		const flatViewRanges = viewWriter.breakViewRangePerContainer( viewRange );
-
-		for ( const range of flatViewRanges ) {
-			viewWriter.unwrap( range, viewElement );
-		}
-	};
-}
-
-/**
  * Function factory, creates a default model-to-view converter for node remove changes.
  *
  *		modelDispatcher.on( 'remove', remove() );
@@ -480,12 +381,24 @@ export function remove() {
 	};
 }
 
-export function virtualSelectionConverter( selectionDescriptor, addMarker = true ) {
+export function markerToVirtualSelection( selectionDescriptor ) {
 	return ( evt, data, consumable, conversionApi ) =>	{
-		const modelItem = data.item;
 		const descriptor = typeof selectionDescriptor == 'function' ?
 			selectionDescriptor( data, consumable, conversionApi ) :
 			selectionDescriptor;
+
+		if ( !descriptor ) {
+			return;
+		}
+
+		const addMarker = evt.name.split( ':' )[ 0 ] == 'addMarker';
+		const modelItem = data.item;
+
+		// Return if model item is not present. This happens when whole marker conversion is fired before converting
+		// children of marker's range.
+		if ( !modelItem ) {
+			return;
+		}
 
 		if ( modelItem.is( 'textProxy' ) ) {
 			const viewElement = virtualSelectionDescriptorToAttribute( descriptor );
@@ -495,7 +408,7 @@ export function virtualSelectionConverter( selectionDescriptor, addMarker = true
 		}
 
 		if ( modelItem.is( 'element' ) ) {
-			const consumableType = eventNameToConsumableType( evt.name );
+			const consumableType = evt.name;
 			const viewElement = conversionApi.mapper.toViewElement( modelItem );
 
 			if ( !consumable.consume( modelItem, consumableType ) ) {
@@ -563,7 +476,7 @@ export function removeUIElement( elementCreator ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.range, 'removeMarker' ) ) {
+		if ( !consumable.consume( data.range, evt.name ) ) {
 			return;
 		}
 
@@ -592,11 +505,15 @@ export function eventNameToConsumableType( evtName ) {
 }
 
 export function virtualSelectionDescriptorToAttribute( descriptor ) {
-	const attribute = new ViewAttributeElement( 'span', descriptor.attributes );
+	const attributeElement = new ViewAttributeElement( 'span', descriptor.attributes );
 
 	if ( descriptor.class ) {
-		attribute.addClass( descriptor.class );
+		attributeElement.addClass( descriptor.class );
 	}
 
-	return attribute;
+	if ( descriptor.priority ) {
+		attributeElement.priority = descriptor.priority;
+	}
+
+	return attributeElement;
 }

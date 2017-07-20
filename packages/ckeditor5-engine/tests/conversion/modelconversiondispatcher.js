@@ -550,7 +550,10 @@ describe( 'ModelConversionDispatcher', () => {
 		let range;
 
 		beforeEach( () => {
-			range = ModelRange.createFromParentsAndOffsets( root, 0, root, 4 );
+			const element = new ModelElement( 'paragraph', null, [ new ModelText( 'foo bar baz' ) ] );
+			root.appendChildren( [ element ] );
+
+			range = ModelRange.createFromParentsAndOffsets( element, 0, element, 4 );
 		} );
 
 		it( 'should fire event based on passed parameters', () => {
@@ -594,11 +597,19 @@ describe( 'ModelConversionDispatcher', () => {
 
 		it( 'should prepare consumable values', () => {
 			dispatcher.on( 'addMarker:name', ( evt, data, consumable ) => {
-				expect( consumable.test( data.range, 'addMarker' ) ).to.be.true;
+				if ( data.item ) {
+					expect( consumable.test( data.item, 'addMarker:name' ) ).to.be.true;
+				} else {
+					expect( consumable.test( data.range, 'addMarker:name' ) ).to.be.true;
+				}
 			} );
 
 			dispatcher.on( 'removeMarker:name', ( evt, data, consumable ) => {
-				expect( consumable.test( data.range, 'removeMarker' ) ).to.be.true;
+				if ( data.item ) {
+					expect( consumable.test( data.item, 'removeMarker:name' ) ).to.be.true;
+				} else {
+					expect( consumable.test( data.range, 'removeMarker:name' ) ).to.be.true;
+				}
 			} );
 
 			dispatcher.convertMarker( 'addMarker', 'name', range );
