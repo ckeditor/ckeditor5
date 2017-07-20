@@ -241,14 +241,15 @@ export default class Link extends Plugin {
 	 */
 	_showPanel( focusInput ) {
 		const editor = this.editor;
-		const command = editor.commands.get( 'link' );
+		const linkCommand = editor.commands.get( 'link' );
+		const unlinkCommand = editor.commands.get( 'unlink' );
 		const editing = editor.editing;
 		const showViewDocument = editing.view;
 		const showIsCollapsed = showViewDocument.selection.isCollapsed;
 		const showSelectedLink = this._getSelectedLinkElement();
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/53
-		this.formView.unlinkButtonView.isVisible = !!showSelectedLink;
+		this.formView.unlinkButtonView.isVisible = unlinkCommand.isEnabled;
 
 		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 		// the command. If the user typed in the input, then canceled the balloon (`urlInputView#value` stays
@@ -256,7 +257,7 @@ export default class Link extends Plugin {
 		// clicked the same link), they would see the old value instead of the actual value of the command.
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
-		this.formView.urlInputView.inputView.element.value = command.value || '';
+		this.formView.urlInputView.inputView.element.value = linkCommand.value || '';
 
 		this.listenTo( showViewDocument, 'render', () => {
 			const renderSelectedLink = this._getSelectedLinkElement();
