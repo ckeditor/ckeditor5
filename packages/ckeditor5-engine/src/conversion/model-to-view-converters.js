@@ -4,10 +4,12 @@
  */
 
 import ViewElement from '../view/element';
+import ViewAttributeElement from '../view/attributeelement';
 import ViewText from '../view/text';
 import ViewRange from '../view/range';
 import ViewTreeWalker from '../view/treewalker';
 import viewWriter from '../view/writer';
+import ModelRange from '../model/range';
 
 /**
  * Contains {@link module:engine/model/model model} to {@link module:engine/view/view view} converters for
@@ -478,6 +480,42 @@ export function remove() {
 	};
 }
 
+export function virtualSelectionConverter( selectionDescriptor, addMarker = true ) {
+	return ( evt, data, consumable, conversionApi ) =>	{
+		const modelItem = data.item;
+		const descriptor = typeof selectionDescriptor == 'function' ?
+			selectionDescriptor( data, consumable, conversionApi ) :
+			selectionDescriptor;
+
+		if ( modelItem.is( 'textProxy' ) ) {
+			const viewElement = virtualSelectionDescriptorToAttribute( descriptor );
+			const converter = addMarker ? wrapItem( viewElement ) : unwrapItem( viewElement );
+
+			converter( evt, data, consumable, conversionApi );
+		}
+
+		if ( modelItem.is( 'element' ) ) {
+			const consumableType = eventNameToConsumableType( evt.name );
+			const viewElement = conversionApi.mapper.toViewElement( modelItem );
+
+			if ( !consumable.consume( modelItem, consumableType ) ) {
+				return;
+			}
+
+			const selectionHandlingMethod = addMarker ? 'setVirtualSelection' : 'removeVirtualSelection';
+
+			if ( viewElement && viewElement[ selectionHandlingMethod ] ) {
+				// Virtual selection will be handled by parent element - consume all children.
+				for ( const value of ModelRange.createIn( modelItem ) ) {
+					consumable.consume( value.item, consumableType );
+				}
+
+				viewElement[ selectionHandlingMethod ]( descriptor );
+			}
+		}
+	};
+}
+
 // Helper function that shifts given view `position` in a way that returned position is after `howMany` characters compared
 // to the original `position`.
 // Because in view there might be view ui elements splitting text nodes, we cannot simply use `ViewPosition#getShiftedBy()`.
@@ -551,4 +589,14 @@ export function eventNameToConsumableType( evtName ) {
 	const parts = evtName.split( ':' );
 
 	return parts[ 0 ] + ':' + parts[ 1 ];
+}
+
+export function virtualSelectionDescriptorToAttribute( descriptor ) {
+	const attribute = new ViewAttributeElement( 'span', descriptor.attributes );
+
+	if ( descriptor.class ) {
+		attribute.addClass( descriptor.class );
+	}
+
+	return attribute;
 }

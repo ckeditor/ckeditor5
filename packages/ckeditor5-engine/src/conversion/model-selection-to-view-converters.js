@@ -6,6 +6,7 @@
 import ViewElement from '../view/element';
 import ViewRange from '../view/range';
 import viewWriter from '../view/writer';
+import { virtualSelectionDescriptorToAttribute } from './model-to-view-converters';
 
 /**
  * Contains {@link module:engine/model/selection~Selection model selection} to
@@ -173,16 +174,13 @@ export function convertSelectionAttribute( elementCreator ) {
  * or function returning a view element, which will be used for wrapping.
  * @returns {Function} Selection converter.
  */
-export function convertSelectionMarker( elementCreator ) {
+export function convertSelectionMarker( selectionDescriptor ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const viewElement = elementCreator instanceof ViewElement ?
-			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
+		const descriptor = typeof selectionDescriptor == 'function' ?
+			selectionDescriptor( data, consumable, conversionApi ) :
+			selectionDescriptor;
 
-		if ( !viewElement ) {
-			return;
-		}
-
+		const viewElement = virtualSelectionDescriptorToAttribute( descriptor );
 		const consumableName = 'selectionMarker:' + data.name;
 
 		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
