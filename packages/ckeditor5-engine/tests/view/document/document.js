@@ -71,9 +71,10 @@ describe( 'Document', () => {
 		it( 'should create Document with all properties', () => {
 			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
 			expect( count( viewDocument.roots ) ).to.equal( 0 );
-			expect( viewDocument ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
-			expect( viewDocument ).to.have.property( 'domConverter' ).that.is.instanceOf( DomConverter );
-			expect( viewDocument ).to.have.property( 'isFocused' ).that.is.false;
+			expect( viewDocument ).to.have.property( 'renderer' ).to.instanceOf( Renderer );
+			expect( viewDocument ).to.have.property( 'domConverter' ).to.instanceOf( DomConverter );
+			expect( viewDocument ).to.have.property( 'isReadOnly' ).to.false;
+			expect( viewDocument ).to.have.property( 'isFocused' ).to.false;
 		} );
 
 		it( 'should add default observers', () => {
