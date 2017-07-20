@@ -10,6 +10,7 @@
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
+import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
 
 /**
  * The classic editor UI class.
@@ -44,6 +45,14 @@ export default class ClassicEditorUI {
 		 */
 		this.focusTracker = new FocusTracker();
 
+		/**
+		 * A normalized `config.toolbar` object.
+		 *
+		 * @type {Object}
+		 * @private
+		 */
+		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+
 		// Set–up the view.
 		view.set( 'width', editor.config.get( 'ui.width' ) );
 		view.set( 'height', editor.config.get( 'ui.height' ) );
@@ -51,6 +60,10 @@ export default class ClassicEditorUI {
 		// Set–up the toolbar.
 		view.toolbar.bind( 'isActive' ).to( this.focusTracker, 'isFocused' );
 		view.toolbar.limiterElement = view.element;
+
+		if ( this._toolbarConfig ) {
+			view.toolbar.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
+		}
 
 		// Setup the editable.
 		const editingRoot = editor.editing.createRoot( 'div' );
@@ -67,7 +80,10 @@ export default class ClassicEditorUI {
 		const editor = this.editor;
 
 		this.view.init();
-		this.view.toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
+
+		if ( this._toolbarConfig ) {
+			this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+		}
 
 		enableToolbarKeyboardFocus( {
 			origin: editor.editing.view,
