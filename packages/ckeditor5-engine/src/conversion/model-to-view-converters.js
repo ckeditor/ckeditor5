@@ -254,6 +254,8 @@ export function removeAttribute( attributeCreator ) {
  *
  * @param {module:engine/view/element~Element|Function} elementCreator View element, or function returning a view element, which will
  * be used for wrapping.
+ * @param {Function} [nameToConsumable] Optional function used to map conversion event name to consumable name. By default it
+ * uses {engine/conversion/model-to-view-converters~eventNameToConsumableType} function.
  * @returns {Function} Set/change attribute converter.
  */
 export function wrapItem( elementCreator, nameToConsumable = eventNameToConsumableType ) {
@@ -304,6 +306,8 @@ export function wrapItem( elementCreator, nameToConsumable = eventNameToConsumab
  * @see module:engine/conversion/model-to-view-converters~wrapItem
  * @param {module:engine/view/element~Element|Function} elementCreator View element, or function returning a view element, which will
  * be used for unwrapping.
+ * @param {Function} [nameToConsumable] Optional function used to map conversion event name to consumable name. By default it
+ * uses {engine/conversion/model-to-view-converters~eventNameToConsumableType} function.
  * @returns {Function} Remove attribute converter.
  */
 export function unwrapItem( elementCreator, nameToConsumable = eventNameToConsumableType ) {
