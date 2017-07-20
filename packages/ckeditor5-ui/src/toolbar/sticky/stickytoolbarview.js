@@ -192,6 +192,9 @@ export default class StickyToolbarView extends ToolbarView {
 
 		this.element.parentNode.insertBefore( this._elementPlaceholder, this.element );
 
+		// Check if the toolbar should go into the sticky state immediately.
+		this._checkIfShouldBeSticky();
+
 		// Update sticky state of the toolbar as the window is being scrolled.
 		this.listenTo( global.window, 'scroll', () => {
 			this._checkIfShouldBeSticky();

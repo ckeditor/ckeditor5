@@ -163,13 +163,21 @@ describe( 'StickyToolbarView', () => {
 			expect( element.previousSibling ).to.equal( view._elementPlaceholder );
 		} );
 
+		it( 'checks if the toolbar should be sticky', () => {
+			const spy = testUtils.sinon.spy( view, '_checkIfShouldBeSticky' );
+			expect( spy.notCalled ).to.be.true;
+
+			view.init();
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
 		it( 'listens to window#scroll event and calls view._checkIfShouldBeSticky', () => {
 			const spy = testUtils.sinon.spy( view, '_checkIfShouldBeSticky' );
+			expect( spy.notCalled ).to.be.true;
 
 			view.init();
 			global.window.fire( 'scroll' );
-
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy.calledTwice ).to.be.true;
 		} );
 
 		it( 'listens to view.isActive and calls view._checkIfShouldBeSticky', () => {
@@ -178,10 +186,10 @@ describe( 'StickyToolbarView', () => {
 
 			view.init();
 			view.isActive = true;
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy.calledTwice ).to.be.true;
 
 			view.isActive = false;
-			expect( spy.calledTwice ).to.be.true;
+			expect( spy.calledThrice ).to.be.true;
 		} );
 	} );
 
