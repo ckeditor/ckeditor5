@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import normalizeToolbarConfig from '../../src/toolbar/normalizeToolbarConfig';
+import normalizeToolbarConfig from '../../src/toolbar/normalizetoolbarconfig';
 
 describe( 'normalizeToolbarConfig()', () => {
 	it( 'normalizes the config specified as an Array', () => {
