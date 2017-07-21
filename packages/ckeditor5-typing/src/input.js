@@ -199,11 +199,11 @@ class MutationHandler {
 		const currentModel = this.editor.editing.mapper.toModelElement( mutationsCommonAncestor );
 
 		// Get children from both ancestors.
-		const modelFromDomChildren = [ ...modelFromCurrentDom.getChildren() ];
-		const currentModelChildren = [ ...currentModel.getChildren() ];
+		const modelFromDomChildren = Array.from( modelFromCurrentDom.getChildren() );
+		const currentModelChildren = Array.from( currentModel.getChildren() );
 
-		// Fix situations when common ancestor has only text nodes inside.
-		if ( !containsOnlyTextNodes( modelFromDomChildren ) || !containsOnlyTextNodes( currentModelChildren ) ) {
+		// Skip situations when common ancestor has any elements (cause they are too hard).
+		if ( !hasOnlyTextNodes( modelFromDomChildren ) || !hasOnlyTextNodes( currentModelChildren ) ) {
 			return;
 		}
 
@@ -451,16 +451,10 @@ function containerChildrenMutated( mutations ) {
 
 // Returns true if provided array contains only {@link module:engine/model/text~Text model text nodes}.
 //
-// @param {Array<module:engine/model/node~Node>} children
+// @param {Array.<module:engine/model/node~Node>} children
 // @returns {Boolean}
-function containsOnlyTextNodes( children ) {
-	for ( const child of children ) {
-		if ( !child.is( 'text' ) ) {
-			return false;
-		}
-	}
-
-	return true;
+function hasOnlyTextNodes( children ) {
+	return children.every( child => child.is( 'text' ) );
 }
 
 // Calculates first change index and number of characters that should be inserted and deleted starting from that index.
