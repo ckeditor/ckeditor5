@@ -23,6 +23,7 @@ import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
+import MutationObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mutationobserver';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -549,6 +550,14 @@ describe( 'Input feature', () => {
 		} );
 	} );
 
+	// NOTE: In all these tests we need to simulate the mutations. However, it's really tricky to tell what
+	// should be in "newChildren" because we don't have yet access to these nodes. We pass new instances,
+	// but this means that DomConverter which is used somewhere internally may return a different instance
+	// (which wouldn't happen in practice because it'd cache it). Besides, it's really hard to tell if the
+	// browser will keep the instances of the old elements when modifying the tree when the user is typing
+	// or if it will create new instances itself too.
+	// However, the code handling these mutations doesn't really care what's inside new/old children. It
+	// just needs the mutations common ancestor to understand how big fragment of the tree has changed.
 	describe( '#100', () => {
 		let domElement, domRoot;
 
@@ -575,10 +584,18 @@ describe( 'Input feature', () => {
 					buildViewConverter().for( newEditor.data.viewToModel )
 						.fromElement( 'img' )
 						.toElement( 'image' );
+
+					// Disable MO completely and in a way it won't be reenabled on some Document#render() call.
+					const mutationObserver = view.getObserver( MutationObserver );
+
+					mutationObserver.disable();
+					mutationObserver.enable = () => {};
 				} );
 		} );
 
 		afterEach( () => {
+			domElement.remove();
+
 			return editor.destroy();
 		} );
 
@@ -615,7 +632,7 @@ describe( 'Input feature', () => {
 					type: 'children',
 					node: paragraph,
 					oldChildren: [ link ],
-					newChildren: [ italic ]
+					newChildren: [ new ViewElement( 'i' ) ]
 				},
 
 				// Third mutation - italic's new children.
@@ -662,7 +679,7 @@ describe( 'Input feature', () => {
 					type: 'children',
 					node: paragraph,
 					oldChildren: [ link ],
-					newChildren: [ italic ]
+					newChildren: [ new ViewElement( 'i' ) ]
 				},
 
 				// Third mutation - italic's new children.
@@ -670,7 +687,7 @@ describe( 'Input feature', () => {
 					type: 'children',
 					node: italic,
 					oldChildren: [ text ],
-					newChildren: [ new ViewText( 'x' ), new ViewElement( 'a', null, text ) ]
+					newChildren: [ new ViewText( 'x' ), new ViewElement( 'a', null, 'text' ) ]
 				}
 			] );
 
@@ -710,7 +727,7 @@ describe( 'Input feature', () => {
 					type: 'children',
 					node: paragraph,
 					oldChildren: [ textBefore, link ],
-					newChildren: [ textBefore, italic ]
+					newChildren: [ new ViewText( 'xxx' ), new ViewElement( 'i' ) ]
 				},
 
 				// Third mutation - italic's new children.
@@ -718,7 +735,7 @@ describe( 'Input feature', () => {
 					type: 'children',
 					node: italic,
 					oldChildren: [ text ],
-					newChildren: [ new ViewElement( 'a', null, text ), new ViewText( 'x' ) ]
+					newChildren: [ new ViewElement( 'a', null, 'text' ), new ViewText( 'x' ) ]
 				}
 			] );
 
@@ -748,7 +765,7 @@ describe( 'Input feature', () => {
 					type: 'children',
 					node: paragraph,
 					oldChildren: [ strong ],
-					newChildren: [ new ViewElement( 'b', null, new ViewText( 'fixed text' ) ) ]
+					newChildren: [ new ViewElement( 'b', null, 'fixed text' ) ]
 				}
 			] );
 
@@ -772,7 +789,7 @@ describe( 'Input feature', () => {
 			const text = strong.getChild( 0 );
 
 			// Simulate mutations and DOM change.
-			domRoot.childNodes[ 0 ].innerHTML = '<strong>this is bar text</strong>';
+			domRoot.childNodes[ 0 ].childNodes[ 0 ].innerHTML = 'this is bar text';
 			view.fire( 'mutations', [
 				{
 					type: 'children',

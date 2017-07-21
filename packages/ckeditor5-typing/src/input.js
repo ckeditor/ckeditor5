@@ -174,7 +174,7 @@ class MutationHandler {
 	 */
 	_handleContainerChildrenMutations( mutations, viewSelection ) {
 		// Get common ancestor of all mutations.
-		const mutationsCommonAncestor = getMutationsCommonAncestor( mutations );
+		const mutationsCommonAncestor = getMutationsContainer( mutations );
 
 		// Quit if there is no common ancestor.
 		if ( !mutationsCommonAncestor ) {
@@ -390,40 +390,22 @@ function getSingleTextNodeChange( mutation ) {
 // @private
 // @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
 // module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
-function getMutationsCommonAncestor( mutations ) {
-	let shortestList;
+// @returns {module:engine/view/containerelement~ContainerElement|engine/view/rootelement~RootElement|undefined}
+function getMutationsContainer( mutations ) {
+	const lca = mutations
+		.map( mutation => mutation.node )
+		.reduce( ( commonAncestor, node ) => {
+			return commonAncestor.getCommonAncestor( node, { includeSelf: true } );
+		} );
 
-	// Create array of ancestors list, extract the shortest one.
-	const ancestorsLists = mutations
-		.map( mutation => {
-			const ancestors = mutation.node.getAncestors( { includeNode: true, parentFirst: true } );
-
-			if ( !shortestList || ancestors.length < shortestList.length ) {
-				shortestList = ancestors;
-			}
-
-			return ancestors;
-		} ).filter( item => item !== shortestList );
-
-	// Find common ancestor from the lists. Go from the shortest list to the top. If common ancestor is found - return it.
-	for ( const ancestor of shortestList ) {
-		// Check only container and root elements.
-		if ( !ancestor.is( 'containerElement' ) && !ancestor.is( 'rootElement' ) ) {
-			continue;
-		}
-
-		let hasCommonAncestor = true;
-
-		for ( const list of ancestorsLists ) {
-			hasCommonAncestor = list.indexOf( ancestor ) > -1;
-		}
-
-		if ( hasCommonAncestor ) {
-			return ancestor;
-		}
+	if ( !lca ) {
+		return;
 	}
 
-	return null;
+	// We need to look for container and root elements only, so check all LCA's
+	// ancestors (starting from itself).
+	return lca.getAncestors( { includeSelf: true, parentFirst: true } )
+		.find( element => element.is( 'containerElement' ) || element.is( 'rootElement' ) );
 }
 
 // Returns true if container children have mutated and more than a single text node was changed. Single text node
