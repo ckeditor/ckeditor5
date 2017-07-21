@@ -450,7 +450,7 @@ describe( 'Model converter builder', () => {
 		} );
 	} );
 
-	describe( 'model marker to view stamp conversion', () => {
+	describe( 'model marker to view element conversion', () => {
 		let modelText, modelElement, range;
 
 		beforeEach( () => {
@@ -471,7 +471,7 @@ describe( 'Model converter builder', () => {
 			} );
 
 			it( 'using passed view element name', () => {
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( 'span' );
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'span' );
 
 				dispatcher.convertMarker( 'addMarker', 'search', range );
 
@@ -484,7 +484,7 @@ describe( 'Model converter builder', () => {
 
 			it( 'using passed view element', () => {
 				const viewElement = new ViewUIElement( 'span', { class: 'search' } );
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( viewElement );
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( viewElement );
 
 				dispatcher.convertMarker( 'addMarker', 'search', range );
 
@@ -496,7 +496,7 @@ describe( 'Model converter builder', () => {
 			} );
 
 			it( 'using passed creator function', () => {
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( data => {
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( data => {
 					const className = 'search search-color-' + data.name.split( ':' )[ 1 ];
 
 					return new ViewUIElement( 'span', { class: className } );
@@ -518,7 +518,7 @@ describe( 'Model converter builder', () => {
 			} );
 
 			it( 'using passed view element name', () => {
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( 'span' );
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'span' );
 
 				dispatcher.convertMarker( 'addMarker', 'search', range );
 
@@ -531,7 +531,7 @@ describe( 'Model converter builder', () => {
 
 			it( 'using passed view element', () => {
 				const viewElement = new ViewUIElement( 'span', { class: 'search' } );
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( viewElement );
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( viewElement );
 
 				dispatcher.convertMarker( 'addMarker', 'search', range );
 
@@ -545,7 +545,7 @@ describe( 'Model converter builder', () => {
 			} );
 
 			it( 'using passed creator function', () => {
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( data => {
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( data => {
 					const className = 'search search-color-' + data.name.split( ':' )[ 1 ];
 
 					return new ViewUIElement( 'span', { class: className } );
@@ -566,8 +566,8 @@ describe( 'Model converter builder', () => {
 		it( 'should overwrite default priority', () => {
 			range = ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 );
 
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( 'normal' );
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toStamp( 'high' );
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'normal' );
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toElement( 'high' );
 
 			dispatcher.convertMarker( 'addMarker', 'search', range );
 
@@ -593,17 +593,5 @@ describe( 'Model converter builder', () => {
 		expect( () => {
 			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toAttribute( 'paragraph', true );
 		} ).to.throw( CKEditorError, /^build-model-converter-non-attribute-to-attribute/ );
-	} );
-
-	it( 'should throw when trying to build model element to view stamp converter', () => {
-		expect( () => {
-			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toStamp( 'span' );
-		} ).to.throw( CKEditorError, /^build-model-converter-non-marker-to-stamp/ );
-	} );
-
-	it( 'should throw when trying to build model attribute to view stamp converter', () => {
-		expect( () => {
-			buildModelConverter().for( dispatcher ).fromAttribute( 'class' ).toStamp( 'span' );
-		} ).to.throw( CKEditorError, /^build-model-converter-non-marker-to-stamp/ );
 	} );
 } );

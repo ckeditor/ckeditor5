@@ -242,6 +242,13 @@ class ModelConverterBuilder {
 				dispatcher.on( 'removeAttribute:' + this._from.key, unwrapItem( element ), { priority } );
 
 				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), { priority } );
+			} else { // From marker to element.
+				const priority = this._from.priority === null ? 'normal' : this._from.priority;
+
+				element = typeof element == 'string' ? new ViewUIElement( element ) : element;
+
+				dispatcher.on( 'addMarker:' + this._from.name, insertUIElement( element ), { priority } );
+				dispatcher.on( 'removeMarker:' + this._from.name, removeUIElement( element ), { priority } );
 			}
 		}
 	}
@@ -297,27 +304,27 @@ class ModelConverterBuilder {
 	 * @param {String|module:engine/view/uielement~UIElement|Function} element UIElement created by converter or
 	 * a function that returns view element.
 	 */
-	toStamp( element ) {
-		for ( const dispatcher of this._dispatchers ) {
-			if ( this._from.type != 'marker' ) {
-				/**
-				 * To-stamp conversion is supported only for model markers.
-				 *
-				 * @error build-model-converter-element-to-stamp
-				 */
-				throw new CKEditorError(
-					'build-model-converter-non-marker-to-stamp: To-stamp conversion is supported only from model markers.'
-				);
-			}
-
-			const priority = this._from.priority === null ? 'normal' : this._from.priority;
-
-			element = typeof element == 'string' ? new ViewUIElement( element ) : element;
-
-			dispatcher.on( 'addMarker:' + this._from.name, insertUIElement( element ), { priority } );
-			dispatcher.on( 'removeMarker:' + this._from.name, removeUIElement( element ), { priority } );
-		}
-	}
+	// toStamp( element ) {
+	// 	for ( const dispatcher of this._dispatchers ) {
+	// 		if ( this._from.type != 'marker' ) {
+	// 			/**
+	// 			 * To-stamp conversion is supported only for model markers.
+	// 			 *
+	// 			 * @error build-model-converter-element-to-stamp
+	// 			 */
+	// 			throw new CKEditorError(
+	// 				'build-model-converter-non-marker-to-stamp: To-stamp conversion is supported only from model markers.'
+	// 			);
+	// 		}
+    //
+	// 		const priority = this._from.priority === null ? 'normal' : this._from.priority;
+    //
+	// 		element = typeof element == 'string' ? new ViewUIElement( element ) : element;
+    //
+	// 		dispatcher.on( 'addMarker:' + this._from.name, insertUIElement( element ), { priority } );
+	// 		dispatcher.on( 'removeMarker:' + this._from.name, removeUIElement( element ), { priority } );
+	// 	}
+	// }
 
 	/**
 	 * Registers what view attribute will be created by converter. Keep in mind, that only model attribute to
