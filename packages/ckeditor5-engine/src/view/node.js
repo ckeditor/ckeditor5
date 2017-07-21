@@ -121,14 +121,14 @@ export default class Node {
 	 * Returns ancestors array of this node.
 	 *
 	 * @param {Object} options Options object.
-	 * @param {Boolean} [options.includeNode=false] When set to `true` this node will be also included in parent's array.
+	 * @param {Boolean} [options.includeSelf=false] When set to `true` this node will be also included in parent's array.
 	 * @param {Boolean} [options.parentFirst=false] When set to `true`, array will be sorted from node's parent to root element,
 	 * otherwise root element will be the first item in the array.
 	 * @returns {Array} Array with ancestors.
 	 */
-	getAncestors( options = { includeNode: false, parentFirst: false } ) {
+	getAncestors( options = { includeSelf: false, parentFirst: false } ) {
 		const ancestors = [];
-		let parent = options.includeNode ? this : this.parent;
+		let parent = options.includeSelf ? this : this.parent;
 
 		while ( parent ) {
 			ancestors[ options.parentFirst ? 'push' : 'unshift' ]( parent );
@@ -149,8 +149,8 @@ export default class Node {
 	 * @returns {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|null}
 	 */
 	getCommonAncestor( node, options = {} ) {
-		const ancestorsA = this.getAncestors( { includeNode: options.includeSelf } );
-		const ancestorsB = node.getAncestors( { includeNode: options.includeSelf } );
+		const ancestorsA = this.getAncestors( options );
+		const ancestorsB = node.getAncestors( options );
 
 		let i = 0;
 

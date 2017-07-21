@@ -129,8 +129,8 @@ describe( 'TextProxy', () => {
 			expect( result[ 1 ] ).to.equal( wrapper );
 		} );
 
-		it( 'should return array including node itself `includeNode`', () => {
-			const result = textProxy.getAncestors( { includeNode: true } );
+		it( 'should return array including node itself `includeSelf`', () => {
+			const result = textProxy.getAncestors( { includeSelf: true } );
 
 			expect( result ).to.be.an( 'array' );
 			expect( result ).to.length( 3 );
@@ -139,8 +139,8 @@ describe( 'TextProxy', () => {
 			expect( result[ 2 ] ).to.equal( text );
 		} );
 
-		it( 'should return array of ancestors including node itself `includeNode` starting from parent `parentFirst`', () => {
-			const result = textProxy.getAncestors( { includeNode: true, parentFirst: true } );
+		it( 'should return array of ancestors including node itself `includeSelf` starting from parent `parentFirst`', () => {
+			const result = textProxy.getAncestors( { includeSelf: true, parentFirst: true } );
 
 			expect( result.length ).to.equal( 3 );
 			expect( result[ 0 ] ).to.equal( text );
