@@ -654,6 +654,10 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.convertMarker( 'removeMarker', 'name', range );
 		} );
 
+		it( 'should fire conversion for each item in the range', () => {
+			expect( true ).to.be.false;
+		} );
+
 		it( 'should not fire conversion for each item in marker\'s range if whole marker conversion was performed', () => {
 			const spy = sinon.spy( ( evt, data, consumable ) => {
 				if ( !data.item ) {

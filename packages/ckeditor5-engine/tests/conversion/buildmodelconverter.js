@@ -361,7 +361,7 @@ describe( 'Model converter builder', () => {
 		it( 'using passed virtual selection descriptor object', () => {
 			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( {
 				class: 'virtual-selection',
-				priority: 1,
+				priority: 3,
 				attributes: { title: 'marker' }
 			} );
 
@@ -375,6 +375,8 @@ describe( 'Model converter builder', () => {
 						'ar' +
 					'</p>' +
 				'</div>' );
+
+			expect( viewRoot.getChild( 0 ).getChild( 1 ).priority ).to.equal( 3 );
 
 			dispatcher.convertMarker(
 				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
@@ -401,6 +403,8 @@ describe( 'Model converter builder', () => {
 					'</p>' +
 				'</div>' );
 
+			expect( viewRoot.getChild( 0 ).getChild( 1 ).priority ).to.equal( 12 );
+
 			dispatcher.convertMarker(
 				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
 			);
@@ -409,7 +413,9 @@ describe( 'Model converter builder', () => {
 		} );
 
 		it( 'should do nothing when marker range is collapsed', () => {
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'strong' );
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( {
+				class: 'virtual-selection'
+			} );
 
 			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 ) );
 
@@ -420,6 +426,27 @@ describe( 'Model converter builder', () => {
 			);
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
+		it( 'should create converters with provided priority', () => {
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( {
+				class: 'virtual-selection'
+			} );
+
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toVirtualSelection( {
+				class: 'override'
+			} );
+
+			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal(
+				'<div>' +
+					'<p>' +
+						'fo' +
+						'<span class="override">ob</span>' +
+						'ar' +
+					'</p>' +
+				'</div>' );
 		} );
 	} );
 

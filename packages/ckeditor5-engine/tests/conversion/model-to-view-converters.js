@@ -27,7 +27,9 @@ import {
 	wrapItem,
 	unwrapItem,
 	remove,
-	removeUIElement
+	removeUIElement,
+	markerToVirtualSelection,
+	virtualSelectionDescriptorToAttribute
 } from '../../src/conversion/model-to-view-converters';
 
 import { createRangeOnElementOnly } from '../../tests/model/_utils/utils';
@@ -78,6 +80,145 @@ describe( 'model-to-view-converters', () => {
 
 		return result;
 	}
+
+	describe( 'markerToVirtualSelection()', () => {
+		let modelElement1, modelElement2, markerRange;
+		const virtualSelectionDescriptor = {
+			class: 'marker-class',
+			priority: 7,
+			attributes: { title: 'title' }
+		};
+
+		beforeEach( () => {
+			const modelText1 = new ModelText( 'foo' );
+			modelElement1 = new ModelElement( 'paragraph', null, modelText1 );
+			const modelText2 = new ModelText( 'bar' );
+			modelElement2 = new ModelElement( 'paragraph', null, modelText2 );
+
+			modelRoot.appendChildren( modelElement1 );
+			modelRoot.appendChildren( modelElement2 );
+			dispatcher.on( 'insert:paragraph', insertElement( () => new ViewContainerElement( 'p' ) ) );
+			dispatcher.on( 'insert:$text', insertText() );
+
+			markerRange = ModelRange.createIn( modelRoot );
+		} );
+
+		it( 'should wrap and unwrap text nodes', () => {
+			dispatcher.on( 'addMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
+			dispatcher.on( 'removeMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
+			dispatcher.convertInsertion( markerRange );
+
+			modelDoc.markers.set( 'marker', markerRange );
+			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
+
+			expect( viewToString( viewRoot ) ).to.equal(
+				'<div>' +
+					'<p>' +
+						'<span class="marker-class" title="title">foo</span>' +
+					'</p>' +
+					'<p>' +
+						'<span class="marker-class" title="title">bar</span>' +
+					'</p>' +
+				'</div>'
+			);
+
+			dispatcher.convertMarker( 'removeMarker', 'marker', markerRange );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+		} );
+
+		it( 'should use setVirtualSelection and removeVirtualSelection on elements and not convert children nodes', () => {
+			dispatcher.on( 'addMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
+			dispatcher.on( 'removeMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
+			dispatcher.on( 'insert:paragraph', insertElement( () => {
+				const element = new ViewContainerElement( 'p' );
+
+				element.setVirtualSelection = descriptor => {
+					element.addClass( 'virtual-selection-own-class' );
+
+					expect( descriptor ).to.equal( virtualSelectionDescriptor );
+				};
+
+				element.removeVirtualSelection = descriptor => {
+					element.removeClass( 'virtual-selection-own-class' );
+
+					expect( descriptor ).to.equal( virtualSelectionDescriptor );
+				};
+
+				return element;
+			} ), { priority: 'high' } );
+
+			dispatcher.convertInsertion( markerRange );
+			modelDoc.markers.set( 'marker', markerRange );
+			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
+
+			expect( viewToString( viewRoot ) ).to.equal(
+				'<div>' +
+					'<p class="virtual-selection-own-class">' +
+						'foo' +
+					'</p>' +
+					'<p class="virtual-selection-own-class">' +
+						'bar' +
+					'</p>' +
+				'</div>'
+			);
+
+			dispatcher.convertMarker( 'removeMarker', 'marker', markerRange );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+		} );
+
+		it( 'should not convert marker on elements already consumed', () => {
+			const newDescriptor = { class: 'override-class' };
+
+			dispatcher.on( 'addMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
+			dispatcher.on( 'removeMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
+
+			dispatcher.on( 'addMarker:marker', markerToVirtualSelection( newDescriptor ), { priority: 'high' } );
+			dispatcher.on( 'removeMarker:marker', markerToVirtualSelection( newDescriptor ), { priority: 'high' } );
+
+			dispatcher.on( 'insert:paragraph', insertElement( () => {
+				const element = new ViewContainerElement( 'p' );
+				element.setVirtualSelection = data => element.addClass( data.class );
+				element.removeVirtualSelection = data => element.removeClass( data.class );
+
+				return element;
+			} ), { priority: 'high' } );
+
+			dispatcher.convertInsertion( markerRange );
+			modelDoc.markers.set( 'marker', markerRange );
+			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
+
+			expect( viewToString( viewRoot ) ).to.equal(
+				'<div>' +
+					'<p class="override-class">' +
+						'foo' +
+					'</p>' +
+					'<p class="override-class">' +
+						'bar' +
+					'</p>' +
+				'</div>'
+			);
+
+			dispatcher.convertMarker( 'removeMarker', 'marker', markerRange );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+		} );
+
+		it( 'should do nothing if descriptor is not provided', () => {
+			dispatcher.on( 'addMarker:marker', markerToVirtualSelection( () => null ) );
+			dispatcher.on( 'removeMarker:marker', markerToVirtualSelection( () => null ) );
+
+			dispatcher.convertInsertion( markerRange );
+
+			modelDoc.markers.set( 'marker', markerRange );
+			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+			dispatcher.convertMarker( 'removeMarker', 'marker', markerRange );
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+		} );
+	} );
 
 	describe( 'insertText', () => {
 		it( 'should convert text insertion in model to view text', () => {
@@ -893,6 +1034,72 @@ describe( 'model-to-view-converters', () => {
 
 			expect( mapper.toModelElement( viewWElement ) ).to.be.undefined;
 			expect( mapper.toViewElement( modelWElement ) ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'virtualSelectionDescriptorToAttribute()', () => {
+		it( 'should return attribute element from descriptor object', () => {
+			const descriptor = {
+				class: 'foo-class',
+				attributes: { one: 1, two: 2 },
+				priority: 7,
+			};
+			const element = virtualSelectionDescriptorToAttribute( descriptor );
+
+			expect( element.is( 'attributeElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'span' );
+			expect( element.priority ).to.equal( 7 );
+			expect( element.hasClass( 'foo-class' ) ).to.be.true;
+
+			for ( const key of Object.keys( descriptor.attributes ) ) {
+				expect( element.getAttribute( key ) ).to.equal( descriptor.attributes[ key ] );
+			}
+		} );
+
+		it( 'should create element without class', () => {
+			const descriptor = {
+				attributes: { one: 1, two: 2 },
+				priority: 7,
+			};
+			const element = virtualSelectionDescriptorToAttribute( descriptor );
+
+			expect( element.is( 'attributeElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'span' );
+			expect( element.priority ).to.equal( 7 );
+
+			for ( const key of Object.keys( descriptor.attributes ) ) {
+				expect( element.getAttribute( key ) ).to.equal( descriptor.attributes[ key ] );
+			}
+		} );
+
+		it( 'should create element without priority', () => {
+			const descriptor = {
+				class: 'foo-class',
+				attributes: { one: 1, two: 2 },
+			};
+			const element = virtualSelectionDescriptorToAttribute( descriptor );
+
+			expect( element.is( 'attributeElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'span' );
+			expect( element.priority ).to.equal( 10 );
+			expect( element.hasClass( 'foo-class' ) ).to.be.true;
+
+			for ( const key of Object.keys( descriptor.attributes ) ) {
+				expect( element.getAttribute( key ) ).to.equal( descriptor.attributes[ key ] );
+			}
+		} );
+
+		it( 'should create element without attributes', () => {
+			const descriptor = {
+				class: 'foo-class',
+				priority: 7
+			};
+			const element = virtualSelectionDescriptorToAttribute( descriptor );
+
+			expect( element.is( 'attributeElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'span' );
+			expect( element.priority ).to.equal( 7 );
+			expect( element.hasClass( 'foo-class' ) ).to.be.true;
 		} );
 	} );
 } );
