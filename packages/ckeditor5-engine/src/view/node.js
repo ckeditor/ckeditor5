@@ -139,6 +139,26 @@ export default class Node {
 	}
 
 	/**
+	 * Returns a {@link module:engine/view/element~Element} or {@link module:engine/view/documentfragment~DocumentFragment}
+	 * which is a common ancestor of both nodes.
+	 *
+	 * @param {module:engine/view/node~Node} node The second node.
+	 * @returns {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|null}
+	 */
+	getCommonAncestor( node ) {
+		const ancestorsA = this.getAncestors();
+		const ancestorsB = node.getAncestors();
+
+		let i = 0;
+
+		while ( ancestorsA[ i ] == ancestorsB[ i ] && ancestorsA[ i ] ) {
+			i++;
+		}
+
+		return i === 0 ? null : ancestorsA[ i - 1 ];
+	}
+
+	/**
 	 * Removes node from parent.
 	 */
 	remove() {
