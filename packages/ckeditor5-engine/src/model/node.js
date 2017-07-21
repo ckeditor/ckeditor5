@@ -274,11 +274,14 @@ export default class Node {
 	 * which is a common ancestor of both nodes.
 	 *
 	 * @param {module:engine/model/node~Node} node The second node.
+	 * @param {Object} options Options object.
+	 * @param {Boolean} [options.includeSelf=false] When set to `true` both nodes will be considered "ancestors" too.
+	 * Which means that if e.g. node A is inside B, then their common ancestor will be B.
 	 * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment|null}
 	 */
-	getCommonAncestor( node ) {
-		const ancestorsA = this.getAncestors();
-		const ancestorsB = node.getAncestors();
+	getCommonAncestor( node, options = {} ) {
+		const ancestorsA = this.getAncestors( { includeNode: options.includeSelf } );
+		const ancestorsB = node.getAncestors( { includeNode: options.includeSelf } );
 
 		let i = 0;
 
