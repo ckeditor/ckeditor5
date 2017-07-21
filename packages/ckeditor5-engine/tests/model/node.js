@@ -225,20 +225,20 @@ describe( 'Node', () => {
 			expect( textBA.getAncestors() ).to.deep.equal( [ root, two ] );
 		} );
 
-		it( 'should include itself if includeNode option is set to true', () => {
-			expect( root.getAncestors( { includeNode: true } ) ).to.deep.equal( [ root ] );
-			expect( two.getAncestors( { includeNode: true } ) ).to.deep.equal( [ root, two ] );
-			expect( textBA.getAncestors( { includeNode: true } ) ).to.deep.equal( [ root, two, textBA ] );
-			expect( img.getAncestors( { includeNode: true } ) ).to.deep.equal( [ root, two, img ] );
-			expect( textR.getAncestors( { includeNode: true } ) ).to.deep.equal( [ root, two, textR ] );
+		it( 'should include itself if includeSelf option is set to true', () => {
+			expect( root.getAncestors( { includeSelf: true } ) ).to.deep.equal( [ root ] );
+			expect( two.getAncestors( { includeSelf: true } ) ).to.deep.equal( [ root, two ] );
+			expect( textBA.getAncestors( { includeSelf: true } ) ).to.deep.equal( [ root, two, textBA ] );
+			expect( img.getAncestors( { includeSelf: true } ) ).to.deep.equal( [ root, two, img ] );
+			expect( textR.getAncestors( { includeSelf: true } ) ).to.deep.equal( [ root, two, textR ] );
 		} );
 
 		it( 'should reverse order if parentFirst option is set to true', () => {
-			expect( root.getAncestors( { includeNode: true, parentFirst: true } ) ).to.deep.equal( [ root ] );
-			expect( two.getAncestors( { includeNode: true, parentFirst: true } ) ).to.deep.equal( [ two, root ] );
-			expect( textBA.getAncestors( { includeNode: true, parentFirst: true } ) ).to.deep.equal( [ textBA, two, root ] );
-			expect( img.getAncestors( { includeNode: true, parentFirst: true } ) ).to.deep.equal( [ img, two, root ] );
-			expect( textR.getAncestors( { includeNode: true, parentFirst: true } ) ).to.deep.equal( [ textR, two, root ] );
+			expect( root.getAncestors( { includeSelf: true, parentFirst: true } ) ).to.deep.equal( [ root ] );
+			expect( two.getAncestors( { includeSelf: true, parentFirst: true } ) ).to.deep.equal( [ two, root ] );
+			expect( textBA.getAncestors( { includeSelf: true, parentFirst: true } ) ).to.deep.equal( [ textBA, two, root ] );
+			expect( img.getAncestors( { includeSelf: true, parentFirst: true } ) ).to.deep.equal( [ img, two, root ] );
+			expect( textR.getAncestors( { includeSelf: true, parentFirst: true } ) ).to.deep.equal( [ textR, two, root ] );
 		} );
 	} );
 
@@ -247,11 +247,18 @@ describe( 'Node', () => {
 			expect( img.getCommonAncestor( img ) ).to.equal( two );
 		} );
 
+		it( 'should return the given node for the same node if includeSelf is used', () => {
+			expect( img.getCommonAncestor( img, { includeSelf: true } ) ).to.equal( img );
+		} );
+
 		it( 'should return null for detached subtrees', () => {
 			const detached = new Element( 'foo' );
 
 			expect( img.getCommonAncestor( detached ) ).to.be.null;
 			expect( detached.getCommonAncestor( img ) ).to.be.null;
+
+			expect( img.getCommonAncestor( detached, { includeSelf: true } ) ).to.be.null;
+			expect( detached.getCommonAncestor( img, { includeSelf: true } ) ).to.be.null;
 		} );
 
 		it( 'should return null when one of the nodes is a tree root itself', () => {
@@ -260,9 +267,18 @@ describe( 'Node', () => {
 			expect( root.getCommonAncestor( root ) ).to.be.null;
 		} );
 
+		it( 'should return root when one of the nodes is a tree root itself and includeSelf is used', () => {
+			expect( root.getCommonAncestor( img, { includeSelf: true } ) ).to.equal( root );
+			expect( img.getCommonAncestor( root, { includeSelf: true } ) ).to.equal( root );
+			expect( root.getCommonAncestor( root, { includeSelf: true } ) ).to.equal( root );
+		} );
+
 		it( 'should return parent of the nodes at the same level', () => {
-			expect( img.getCommonAncestor( textBA ) ).to.equal( two );
-			expect( textR.getCommonAncestor( textBA ) ).to.equal( two );
+			expect( img.getCommonAncestor( textBA ), 1 ).to.equal( two );
+			expect( textR.getCommonAncestor( textBA ), 2 ).to.equal( two );
+
+			expect( img.getCommonAncestor( textBA, { includeSelf: true } ), 3 ).to.equal( two );
+			expect( textR.getCommonAncestor( textBA, { includeSelf: true } ), 4 ).to.equal( two );
 		} );
 
 		it( 'should return proper element for nodes in different branches and on different levels', () => {
@@ -282,6 +298,14 @@ describe( 'Node', () => {
 			expect( c.getCommonAncestor( b ), 3 ).to.equal( a );
 			expect( bom.getCommonAncestor( d ), 4 ).to.equal( a );
 			expect( b.getCommonAncestor( bom ), 5 ).to.equal( a );
+			expect( b.getCommonAncestor( bar ), 6 ).to.equal( a );
+
+			expect( bar.getCommonAncestor( foo, { includeSelf: true } ), 11 ).to.equal( c );
+			expect( foo.getCommonAncestor( d, { includeSelf: true } ), 12 ).to.equal( c );
+			expect( c.getCommonAncestor( b, { includeSelf: true } ), 13 ).to.equal( b );
+			expect( bom.getCommonAncestor( d, { includeSelf: true } ), 14 ).to.equal( a );
+			expect( b.getCommonAncestor( bom, { includeSelf: true } ), 15 ).to.equal( a );
+			expect( b.getCommonAncestor( bar, { includeSelf: true } ), 16 ).to.equal( b );
 		} );
 
 		it( 'should return document fragment', () => {

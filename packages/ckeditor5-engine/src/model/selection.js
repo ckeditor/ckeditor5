@@ -742,7 +742,7 @@ function isUnvisitedBlockContainer( element, visited ) {
 // Finds the lowest element in position's ancestors which is a block.
 // Marks all ancestors as already visited to not include any of them later on.
 function getParentBlock( position, visited ) {
-	const ancestors = position.parent.getAncestors( { parentFirst: true, includeNode: true } );
+	const ancestors = position.parent.getAncestors( { parentFirst: true, includeSelf: true } );
 	const block = ancestors.find( element => isUnvisitedBlockContainer( element, visited ) );
 
 	// Mark all ancestors of this position's parent, because find() might've stopped early and

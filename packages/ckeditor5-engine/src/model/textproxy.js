@@ -204,14 +204,14 @@ export default class TextProxy {
 	 * Returns ancestors array of this text proxy.
 	 *
 	 * @param {Object} options Options object.
-	 * @param {Boolean} [options.includeNode=false] When set to `true` this text proxy will be also included in parent's array.
+	 * @param {Boolean} [options.includeSelf=false] When set to `true` this text proxy will be also included in parent's array.
 	 * @param {Boolean} [options.parentFirst=false] When set to `true`, array will be sorted from text proxy parent to root element,
 	 * otherwise root element will be the first item in the array.
 	 * @returns {Array} Array with ancestors.
 	 */
-	getAncestors( options = { includeNode: false, parentFirst: false } ) {
+	getAncestors( options = { includeSelf: false, parentFirst: false } ) {
 		const ancestors = [];
-		let parent = options.includeNode ? this : this.parent;
+		let parent = options.includeSelf ? this : this.parent;
 
 		while ( parent ) {
 			ancestors[ options.parentFirst ? 'push' : 'unshift' ]( parent );

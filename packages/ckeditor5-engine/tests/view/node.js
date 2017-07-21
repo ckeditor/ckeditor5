@@ -65,7 +65,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return array including node itself if requested', () => {
-			const result = root.getAncestors( { includeNode: true } );
+			const result = root.getAncestors( { includeSelf: true } );
 			expect( result ).to.be.an( 'array' );
 			expect( result.length ).to.equal( 1 );
 			expect( result[ 0 ] ).to.equal( root );
@@ -77,7 +77,7 @@ describe( 'Node', () => {
 			expect( result[ 0 ] ).to.equal( root );
 			expect( result[ 1 ] ).to.equal( two );
 
-			const result2 = charR.getAncestors( { includeNode: true } );
+			const result2 = charR.getAncestors( { includeSelf: true } );
 			expect( result2.length ).to.equal( 3 );
 			expect( result2[ 0 ] ).to.equal( root );
 			expect( result2[ 1 ] ).to.equal( two );
@@ -90,7 +90,7 @@ describe( 'Node', () => {
 			expect( result[ 0 ] ).to.equal( two );
 			expect( result[ 1 ] ).to.equal( root );
 
-			const result2 = charR.getAncestors( { includeNode: true, parentFirst: true } );
+			const result2 = charR.getAncestors( { includeSelf: true, parentFirst: true } );
 			expect( result2.length ).to.equal( 3 );
 			expect( result2[ 2 ] ).to.equal( root );
 			expect( result2[ 1 ] ).to.equal( two );
@@ -114,11 +114,18 @@ describe( 'Node', () => {
 			expect( img.getCommonAncestor( img ) ).to.equal( two );
 		} );
 
+		it( 'should return the given node for the same node if includeSelf is used', () => {
+			expect( img.getCommonAncestor( img, { includeSelf: true } ) ).to.equal( img );
+		} );
+
 		it( 'should return null for detached subtrees', () => {
 			const detached = new Element( 'foo' );
 
 			expect( img.getCommonAncestor( detached ) ).to.be.null;
 			expect( detached.getCommonAncestor( img ) ).to.be.null;
+
+			expect( img.getCommonAncestor( detached, { includeSelf: true } ) ).to.be.null;
+			expect( detached.getCommonAncestor( img, { includeSelf: true } ) ).to.be.null;
 		} );
 
 		it( 'should return null when one of the nodes is a tree root itself', () => {
@@ -127,9 +134,18 @@ describe( 'Node', () => {
 			expect( root.getCommonAncestor( root ) ).to.be.null;
 		} );
 
+		it( 'should return root when one of the nodes is a tree root itself and includeSelf is used', () => {
+			expect( root.getCommonAncestor( img, { includeSelf: true } ) ).to.equal( root );
+			expect( img.getCommonAncestor( root, { includeSelf: true } ) ).to.equal( root );
+			expect( root.getCommonAncestor( root, { includeSelf: true } ) ).to.equal( root );
+		} );
+
 		it( 'should return parent of the nodes at the same level', () => {
-			expect( img.getCommonAncestor( charA ) ).to.equal( two );
-			expect( charB.getCommonAncestor( charA ) ).to.equal( two );
+			expect( img.getCommonAncestor( charA ), 1 ).to.equal( two );
+			expect( charB.getCommonAncestor( charA ), 2 ).to.equal( two );
+
+			expect( img.getCommonAncestor( charA, { includeSelf: true } ), 3 ).to.equal( two );
+			expect( charB.getCommonAncestor( charA, { includeSelf: true } ), 4 ).to.equal( two );
 		} );
 
 		it( 'should return proper element for nodes in different branches and on different levels', () => {
@@ -149,6 +165,14 @@ describe( 'Node', () => {
 			expect( c.getCommonAncestor( b ), 3 ).to.equal( a );
 			expect( bom.getCommonAncestor( d ), 4 ).to.equal( a );
 			expect( b.getCommonAncestor( bom ), 5 ).to.equal( a );
+			expect( b.getCommonAncestor( bar ), 6 ).to.equal( a );
+
+			expect( bar.getCommonAncestor( foo, { includeSelf: true } ), 11 ).to.equal( c );
+			expect( foo.getCommonAncestor( d, { includeSelf: true } ), 12 ).to.equal( c );
+			expect( c.getCommonAncestor( b, { includeSelf: true } ), 13 ).to.equal( b );
+			expect( bom.getCommonAncestor( d, { includeSelf: true } ), 14 ).to.equal( a );
+			expect( b.getCommonAncestor( bom, { includeSelf: true } ), 15 ).to.equal( a );
+			expect( b.getCommonAncestor( bar, { includeSelf: true } ), 16 ).to.equal( b );
 		} );
 
 		it( 'should return document fragment', () => {

@@ -125,12 +125,12 @@ describe( 'TextProxy', () => {
 			expect( textProxy.getAncestors() ).to.deep.equal( [ root, element ] );
 		} );
 
-		it( 'should include itself if includeNode option is set to true', () => {
-			expect( textProxy.getAncestors( { includeNode: true } ) ).to.deep.equal( [ root, element, textProxy ] );
+		it( 'should include itself if includeSelf option is set to true', () => {
+			expect( textProxy.getAncestors( { includeSelf: true } ) ).to.deep.equal( [ root, element, textProxy ] );
 		} );
 
 		it( 'should reverse order if parentFirst option is set to true', () => {
-			expect( textProxy.getAncestors( { includeNode: true, parentFirst: true } ) ).to.deep.equal( [ textProxy, element, root ] );
+			expect( textProxy.getAncestors( { includeSelf: true, parentFirst: true } ) ).to.deep.equal( [ textProxy, element, root ] );
 		} );
 	} );
 
