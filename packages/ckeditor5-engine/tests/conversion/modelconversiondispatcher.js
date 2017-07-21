@@ -288,6 +288,44 @@ describe( 'ModelConversionDispatcher', () => {
 			expect( dispatcher.fire.calledWith( 'addAttribute:bold:image' ) ).to.be.false;
 			expect( dispatcher.fire.calledWith( 'insert:caption' ) ).to.be.false;
 		} );
+
+		it( 'should fire marker converter if content is inserted into marker', () => {
+			const convertMarkerSpy = sinon.spy( dispatcher, 'convertMarker' );
+			const paragraph1 = new ModelElement( 'paragraph', null, new ModelText( 'foo' ) );
+			const paragraph2 = new ModelElement( 'paragraph', null, new ModelText( 'bar' ) );
+			root.appendChildren( [ paragraph1, paragraph2 ] );
+
+			const markerRange = ModelRange.createFromParentsAndOffsets( root, 0, root, 2 );
+			doc.markers.set( 'marker', markerRange );
+
+			const insertionRange = ModelRange.createOn( paragraph2 );
+			dispatcher.convertInsertion( insertionRange );
+
+			sinon.assert.calledOnce( convertMarkerSpy );
+			const callArgs = convertMarkerSpy.args[ 0 ];
+			expect( callArgs[ 0 ] ).to.equal( 'addMarker' );
+			expect( callArgs[ 1 ] ).to.equal( 'marker' );
+			expect( callArgs[ 2 ].isEqual( markerRange.getIntersection( insertionRange ) ) ).to.be.true;
+		} );
+
+		it( 'should fire marker converter if content has marker', () => {
+			const convertMarkerSpy = sinon.spy( dispatcher, 'convertMarker' );
+			const paragraph1 = new ModelElement( 'paragraph', null, new ModelText( 'foo' ) );
+			const paragraph2 = new ModelElement( 'paragraph', null, new ModelText( 'bar' ) );
+			root.appendChildren( [ paragraph1, paragraph2 ] );
+
+			const markerRange = ModelRange.createIn( paragraph2 );
+			doc.markers.set( 'marker', markerRange );
+
+			const insertionRange = ModelRange.createOn( paragraph2 );
+			dispatcher.convertInsertion( insertionRange );
+
+			sinon.assert.calledOnce( convertMarkerSpy );
+			const callArgs = convertMarkerSpy.args[ 0 ];
+			expect( callArgs[ 0 ] ).to.equal( 'addMarker' );
+			expect( callArgs[ 1 ] ).to.equal( 'marker' );
+			expect( callArgs[ 2 ].isEqual( markerRange ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'convertMove', () => {
@@ -614,6 +652,19 @@ describe( 'ModelConversionDispatcher', () => {
 
 			dispatcher.convertMarker( 'addMarker', 'name', range );
 			dispatcher.convertMarker( 'removeMarker', 'name', range );
+		} );
+
+		it( 'should not fire conversion for each item in marker\'s range if whole marker conversion was performed', () => {
+			const spy = sinon.spy( ( evt, data, consumable ) => {
+				if ( !data.item ) {
+					expect( consumable.consume( data.range, 'addMarker:name' ) ).to.be.true;
+				}
+			} );
+
+			dispatcher.on( 'addMarker:name', spy );
+
+			dispatcher.convertMarker( 'addMarker', 'name', range );
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 } );
