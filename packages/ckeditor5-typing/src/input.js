@@ -14,6 +14,7 @@ import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import diffToChanges from '@ckeditor/ckeditor5-utils/src/difftochanges';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
 import InputCommand from './inputcommand';
 
 /**
@@ -142,11 +143,104 @@ class MutationHandler {
 	 * @param {module:engine/view/selection~Selection|null} viewSelection
 	 */
 	handle( mutations, viewSelection ) {
-		for ( const mutation of mutations ) {
-			// Fortunately it will never be both.
-			this._handleTextMutation( mutation, viewSelection );
-			this._handleTextNodeInsertion( mutation );
+		if ( containerChildrenMutated( mutations ) ) {
+			this._handleContainerChildrenMutations( mutations, viewSelection );
+		} else {
+			for ( const mutation of mutations ) {
+				// Fortunately it will never be both.
+				this._handleTextMutation( mutation, viewSelection );
+				this._handleTextNodeInsertion( mutation );
+			}
 		}
+	}
+
+	/**
+	 * Handles situations when container's children mutated during input. This can happen when
+	 * browser is trying to "fix" DOM in certain situations. For example, when user starts to type
+	 * in `<p><a href=""><i>Link{}</i></a></p>` browser might change order of elements
+	 * to `<p><i><a href="">Link</a>x{}</i></p>`. Similar situation happens when spell checker
+	 * replaces a word wrapped with `<strong>` to a word wrapped with `<b>` element.
+	 *
+	 * To handle such situations, DOM common ancestor of all mutations is converted to the model representation
+	 * and then compared with current model to calculate proper text change.
+	 *
+	 * NOTE: Single text node insertion is handled in {@link #_handleTextNodeInsertion} and text node mutation is handled
+	 * in {@link #_handleTextMutation}).
+	 *
+	 * @private
+	 * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
+	 * module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
+	 * @param {module:engine/view/selection~Selection|null} viewSelection
+	 */
+	_handleContainerChildrenMutations( mutations, viewSelection ) {
+		// Get common ancestor of all mutations.
+		const mutationsCommonAncestor = getMutationsContainer( mutations );
+
+		// Quit if there is no common ancestor.
+		if ( !mutationsCommonAncestor ) {
+			return;
+		}
+
+		const domConverter = this.editor.editing.view.domConverter;
+
+		// Get common ancestor in DOM.
+		const domMutationCommonAncestor = domConverter.mapViewToDom( mutationsCommonAncestor );
+
+		if ( !domMutationCommonAncestor ) {
+			return;
+		}
+
+		// Create fresh DomConverter so it will not use existing mapping and convert current DOM to model.
+		// This wouldn't be needed if DomConverter would allow to create fresh view without checking any mappings.
+		const freshDomConverter = new DomConverter();
+		const modelFromCurrentDom = this.editor.data.toModel( freshDomConverter.domToView( domMutationCommonAncestor ) ).getChild( 0 );
+
+		// Current model.
+		const currentModel = this.editor.editing.mapper.toModelElement( mutationsCommonAncestor );
+
+		// Get children from both ancestors.
+		const modelFromDomChildren = Array.from( modelFromCurrentDom.getChildren() );
+		const currentModelChildren = Array.from( currentModel.getChildren() );
+
+		// Skip situations when common ancestor has any elements (cause they are too hard).
+		if ( !hasOnlyTextNodes( modelFromDomChildren ) || !hasOnlyTextNodes( currentModelChildren ) ) {
+			return;
+		}
+
+		// Replace &nbsp; inserted by the browser with normal space.
+		// See comment in `_handleTextMutation`.
+		const newText = modelFromDomChildren.map( item => item.data ).join( '' ).replace( /\u00A0/g, ' ' );
+		const oldText = currentModelChildren.map( item => item.data ).join( '' );
+
+		// Do nothing if mutations created same text.
+		if ( oldText === newText ) {
+			return;
+		}
+
+		const diffResult = diff( oldText, newText );
+
+		const { firstChangeAt, insertions, deletions } = calculateChanges( diffResult );
+
+		// Try setting new model selection according to passed view selection.
+		let modelSelectionRange = null;
+
+		if ( viewSelection ) {
+			modelSelectionRange = this.editing.mapper.toModelRange( viewSelection.getFirstRange() );
+		}
+
+		const insertText = newText.substr( firstChangeAt, insertions );
+		const removeRange = ModelRange.createFromParentsAndOffsets(
+			currentModel,
+			firstChangeAt,
+			currentModel,
+			firstChangeAt + deletions
+		);
+
+		this.editor.execute( 'input', {
+			text: insertText,
+			range: removeRange,
+			resultRange: modelSelectionRange
+		} );
 	}
 
 	_handleTextMutation( mutation, viewSelection ) {
@@ -169,37 +263,7 @@ class MutationHandler {
 
 		const diffResult = diff( oldText, newText );
 
-		// Index where the first change happens. Used to set the position from which nodes will be removed and where will be inserted.
-		let firstChangeAt = null;
-		// Index where the last change happens. Used to properly count how many characters have to be removed and inserted.
-		let lastChangeAt = null;
-
-		// Get `firstChangeAt` and `lastChangeAt`.
-		for ( let i = 0; i < diffResult.length; i++ ) {
-			const change = diffResult[ i ];
-
-			if ( change != 'equal' ) {
-				firstChangeAt = firstChangeAt === null ? i : firstChangeAt;
-				lastChangeAt = i;
-			}
-		}
-
-		// How many characters, starting from `firstChangeAt`, should be removed.
-		let deletions = 0;
-		// How many characters, starting from `firstChangeAt`, should be inserted (basing on mutation.newText).
-		let insertions = 0;
-
-		for ( let i = firstChangeAt; i <= lastChangeAt; i++ ) {
-			// If there is no change (equal) or delete, the character is existing in `oldText`. We count it for removing.
-			if ( diffResult[ i ] != 'insert' ) {
-				deletions++;
-			}
-
-			// If there is no change (equal) or insert, the character is existing in `newText`. We count it for inserting.
-			if ( diffResult[ i ] != 'delete' ) {
-				insertions++;
-			}
-		}
+		const { firstChangeAt, insertions, deletions } = calculateChanges( diffResult );
 
 		// Try setting new model selection according to passed view selection.
 		let modelSelectionRange = null;
@@ -226,27 +290,7 @@ class MutationHandler {
 			return;
 		}
 
-		// One new node.
-		if ( mutation.newChildren.length - mutation.oldChildren.length != 1 ) {
-			return;
-		}
-
-		// Which is text.
-		const diffResult = diff( mutation.oldChildren, mutation.newChildren, compareChildNodes );
-		const changes = diffToChanges( diffResult, mutation.newChildren );
-
-		// In case of [ delete, insert, insert ] the previous check will not exit.
-		if ( changes.length > 1 ) {
-			return;
-		}
-
-		const change = changes[ 0 ];
-
-		// Which is text.
-		if ( !( change.values[ 0 ] instanceof ViewText ) ) {
-			return;
-		}
-
+		const change = getSingleTextNodeChange( mutation );
 		const viewPos = new ViewPosition( mutation.node, change.index );
 		const modelPos = this.editing.mapper.toModelPosition( viewPos );
 		const insertedText = change.values[ 0 ].data;
@@ -289,6 +333,7 @@ for ( let code = 112; code <= 135; code++ ) {
 //
 // Note: This implementation is very simple and will need to be refined with time.
 //
+// @private
 // @param {engine.view.observer.keyObserver.KeyEventData} keyData
 // @returns {Boolean}
 function isSafeKeystroke( keyData ) {
@@ -308,4 +353,129 @@ function compareChildNodes( oldChild, newChild ) {
 	} else {
 		return oldChild === newChild;
 	}
+}
+
+// Returns change made to a single text node. Returns `undefined` if more than a single text node was changed.
+//
+// @private
+// @param mutation
+function getSingleTextNodeChange( mutation ) {
+	// One new node.
+	if ( mutation.newChildren.length - mutation.oldChildren.length != 1 ) {
+		return;
+	}
+
+	// Which is text.
+	const diffResult = diff( mutation.oldChildren, mutation.newChildren, compareChildNodes );
+	const changes = diffToChanges( diffResult, mutation.newChildren );
+
+	// In case of [ delete, insert, insert ] the previous check will not exit.
+	if ( changes.length > 1 ) {
+		return;
+	}
+
+	const change = changes[ 0 ];
+
+	// Which is text.
+	if ( !( change.values[ 0 ] instanceof ViewText ) ) {
+		return;
+	}
+
+	return change;
+}
+
+// Returns first common ancestor of all mutations that is either {@link module:engine/view/containerelement~ContainerElement}
+// or {@link module:engine/view/rootelement~RootElement}.
+//
+// @private
+// @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
+// module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
+// @returns {module:engine/view/containerelement~ContainerElement|engine/view/rootelement~RootElement|undefined}
+function getMutationsContainer( mutations ) {
+	const lca = mutations
+		.map( mutation => mutation.node )
+		.reduce( ( commonAncestor, node ) => {
+			return commonAncestor.getCommonAncestor( node, { includeSelf: true } );
+		} );
+
+	if ( !lca ) {
+		return;
+	}
+
+	// We need to look for container and root elements only, so check all LCA's
+	// ancestors (starting from itself).
+	return lca.getAncestors( { includeSelf: true, parentFirst: true } )
+		.find( element => element.is( 'containerElement' ) || element.is( 'rootElement' ) );
+}
+
+// Returns true if container children have mutated and more than a single text node was changed. Single text node
+// child insertion is handled in {@link module:typing/input~MutationHandler#_handleTextNodeInsertion} and text
+// mutation is handled in {@link module:typing/input~MutationHandler#_handleTextMutation}.
+//
+// @private
+// @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
+// module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
+// @returns {Boolean}
+function containerChildrenMutated( mutations ) {
+	if ( mutations.length == 0 ) {
+		return false;
+	}
+
+	// Check if all mutations are `children` type, and there is no single text node mutation.
+	for ( const mutation of mutations ) {
+		if ( mutation.type !== 'children' || getSingleTextNodeChange( mutation ) ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+// Returns true if provided array contains only {@link module:engine/model/text~Text model text nodes}.
+//
+// @param {Array.<module:engine/model/node~Node>} children
+// @returns {Boolean}
+function hasOnlyTextNodes( children ) {
+	return children.every( child => child.is( 'text' ) );
+}
+
+// Calculates first change index and number of characters that should be inserted and deleted starting from that index.
+//
+// @private
+// @param diffResult
+// @return {{insertions: number, deletions: number, firstChangeAt: *}}
+function calculateChanges( diffResult ) {
+	// Index where the first change happens. Used to set the position from which nodes will be removed and where will be inserted.
+	let firstChangeAt = null;
+	// Index where the last change happens. Used to properly count how many characters have to be removed and inserted.
+	let lastChangeAt = null;
+
+	// Get `firstChangeAt` and `lastChangeAt`.
+	for ( let i = 0; i < diffResult.length; i++ ) {
+		const change = diffResult[ i ];
+
+		if ( change != 'equal' ) {
+			firstChangeAt = firstChangeAt === null ? i : firstChangeAt;
+			lastChangeAt = i;
+		}
+	}
+
+	// How many characters, starting from `firstChangeAt`, should be removed.
+	let deletions = 0;
+	// How many characters, starting from `firstChangeAt`, should be inserted.
+	let insertions = 0;
+
+	for ( let i = firstChangeAt; i <= lastChangeAt; i++ ) {
+		// If there is no change (equal) or delete, the character is existing in `oldText`. We count it for removing.
+		if ( diffResult[ i ] != 'insert' ) {
+			deletions++;
+		}
+
+		// If there is no change (equal) or insert, the character is existing in `newText`. We count it for inserting.
+		if ( diffResult[ i ] != 'delete' ) {
+			insertions++;
+		}
+	}
+
+	return { insertions, deletions, firstChangeAt };
 }
