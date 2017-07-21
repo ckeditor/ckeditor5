@@ -3,7 +3,8 @@
 Check:
 
 * normal typing,
-* typing into non-collapsed selection.
+* typing into non-collapsed selection,
+* typing when the entire content is selected - new content should be wrapped in a paragraph. 
 
 ### IME
 
