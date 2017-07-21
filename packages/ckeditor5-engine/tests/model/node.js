@@ -108,7 +108,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getIndex', () => {
+	describe( 'getIndex()', () => {
 		it( 'should return null if the parent is null', () => {
 			expect( root.index ).to.be.null;
 		} );
@@ -134,7 +134,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'clone', () => {
+	describe( 'clone()', () => {
 		it( 'should return a copy of cloned node', () => {
 			const node = new Node( { foo: 'bar' } );
 			const copy = node.clone();
@@ -144,7 +144,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'remove', () => {
+	describe( 'remove()', () => {
 		it( 'should remove node from it\'s parent', () => {
 			const element = new Element( 'p' );
 			element.appendChildren( node );
@@ -204,7 +204,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getPath', () => {
+	describe( 'getPath()', () => {
 		it( 'should return proper path', () => {
 			expect( root.getPath() ).to.deep.equal( [] );
 
@@ -218,7 +218,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getAncestors', () => {
+	describe( 'getAncestors()', () => {
 		it( 'should return proper array of ancestor nodes', () => {
 			expect( root.getAncestors() ).to.deep.equal( [] );
 			expect( two.getAncestors() ).to.deep.equal( [ root ] );
