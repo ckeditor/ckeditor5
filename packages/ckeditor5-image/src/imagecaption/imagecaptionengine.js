@@ -235,7 +235,7 @@ function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper 
  * @returns {module:engine/model/element~Element|null}
  */
 function getParentCaption( node ) {
-	const ancestors = node.getAncestors( { includeNode: true } );
+	const ancestors = node.getAncestors( { includeSelf: true } );
 	const caption = ancestors.find( ancestor => ancestor.name == 'caption' );
 
 	if ( caption && caption.parent && caption.parent.name == 'image' ) {
