@@ -29,7 +29,7 @@ describe( 'Node', () => {
 		root = new Element( null, null, [ one, two, three ] );
 	} );
 
-	describe( 'getNextSibling/getPreviousSibling', () => {
+	describe( 'getNextSibling/getPreviousSibling()', () => {
 		it( 'should return next sibling', () => {
 			expect( root.nextSibling ).to.be.null;
 
@@ -57,7 +57,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getAncestors', () => {
+	describe( 'getAncestors()', () => {
 		it( 'should return empty array for node without ancestors', () => {
 			const result = root.getAncestors();
 			expect( result ).to.be.an( 'array' );
@@ -109,7 +109,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getIndex', () => {
+	describe( 'getIndex()', () => {
 		it( 'should return null if the parent is null', () => {
 			expect( root.index ).to.be.null;
 		} );
@@ -139,7 +139,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getDocument', () => {
+	describe( 'getDocument()', () => {
 		it( 'should return null if any parent has not set Document', () => {
 			expect( charA.document ).to.be.null;
 		} );
@@ -164,7 +164,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getRoot', () => {
+	describe( 'getRoot()', () => {
 		it( 'should return this element if it has no parent', () => {
 			const child = new Element( 'p' );
 
@@ -183,7 +183,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'remove', () => {
+	describe( 'remove()', () => {
 		it( 'should remove node from its parent', () => {
 			const char = new Text( 'a' );
 			const parent = new Element( 'p', null, [ char ] );
@@ -246,7 +246,7 @@ describe( 'Node', () => {
 			sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 		} );
 
-		describe( 'setAttribute', () => {
+		describe( 'setAttribute()', () => {
 			it( 'should fire change event', () => {
 				img.setAttribute( 'width', 100 );
 
@@ -255,7 +255,7 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( 'removeAttribute', () => {
+		describe( 'removeAttribute()', () => {
 			it( 'should fire change event', () => {
 				img.removeAttribute( 'src' );
 
@@ -264,7 +264,7 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( 'insertChildren', () => {
+		describe( 'insertChildren()', () => {
 			it( 'should fire change event', () => {
 				root.insertChildren( 1, new Element( 'img' ) );
 
@@ -273,7 +273,7 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( 'appendChildren', () => {
+		describe( 'appendChildren()', () => {
 			it( 'should fire change event', () => {
 				root.appendChildren( new Element( 'img' ) );
 
@@ -282,7 +282,7 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( 'removeChildren', () => {
+		describe( 'removeChildren()', () => {
 			it( 'should fire change event', () => {
 				root.removeChildren( 1, 1 );
 
@@ -291,7 +291,7 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( 'removeChildren', () => {
+		describe( 'removeChildren()', () => {
 			it( 'should fire change event', () => {
 				text.data = 'bar';
 
