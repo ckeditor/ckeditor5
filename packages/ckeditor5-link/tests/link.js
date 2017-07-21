@@ -208,6 +208,11 @@ describe( 'Link', () => {
 
 			linkFeature._showPanel();
 			expect( formView.unlinkButtonView.isVisible ).to.be.true;
+
+			setModelData( editor.document, '<paragraph><$text linkHref="url">[fo]o</$text></paragraph>' );
+
+			linkFeature._showPanel();
+			expect( formView.unlinkButtonView.isVisible ).to.be.true;
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
