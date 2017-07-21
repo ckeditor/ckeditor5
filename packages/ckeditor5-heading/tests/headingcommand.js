@@ -159,15 +159,10 @@ describe( 'HeadingCommand', () => {
 			}
 
 			it( 'does nothing when executed with already applied option', () => {
-				const command = commands.heading1;
-				const batch = document.batch();
-
 				setData( document, '<heading1>foo[]bar</heading1>' );
 
-				command.execute( { batch } );
-
+				commands.heading1.execute();
 				expect( getData( document ) ).to.equal( '<heading1>foo[]bar</heading1>' );
-				expect( batch.deltas ).to.be.empty;
 			} );
 
 			it( 'converts topmost blocks', () => {
@@ -210,13 +205,11 @@ describe( 'HeadingCommand', () => {
 
 			it( 'does nothing to the elements with same option (#1)', () => {
 				setData( document, '<heading1>[foo</heading1><heading1>bar]</heading1>' );
-				const batch = document.batch();
-				commands.heading1.execute( { batch } );
+				commands.heading1.execute();
 
 				expect( getData( document ) ).to.equal(
 					'<heading1>[foo</heading1><heading1>bar]</heading1>'
 				);
-				expect( batch.deltas ).to.be.empty;
 			} );
 
 			it( 'does nothing to the elements with same option (#2)', () => {
