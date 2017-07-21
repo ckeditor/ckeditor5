@@ -242,6 +242,57 @@ describe( 'Node', () => {
 		} );
 	} );
 
+	describe( 'getCommonAncestor()', () => {
+		it( 'should return the parent element for the same node', () => {
+			expect( img.getCommonAncestor( img ) ).to.equal( two );
+		} );
+
+		it( 'should return null for detached subtrees', () => {
+			const detached = new Element( 'foo' );
+
+			expect( img.getCommonAncestor( detached ) ).to.be.null;
+			expect( detached.getCommonAncestor( img ) ).to.be.null;
+		} );
+
+		it( 'should return null when one of the nodes is a tree root itself', () => {
+			expect( root.getCommonAncestor( img ) ).to.be.null;
+			expect( img.getCommonAncestor( root ) ).to.be.null;
+			expect( root.getCommonAncestor( root ) ).to.be.null;
+		} );
+
+		it( 'should return parent of the nodes at the same level', () => {
+			expect( img.getCommonAncestor( textBA ) ).to.equal( two );
+			expect( textR.getCommonAncestor( textBA ) ).to.equal( two );
+		} );
+
+		it( 'should return proper element for nodes in different branches and on different levels', () => {
+			const foo = new Text( 'foo' );
+			const bar = new Text( 'bar' );
+			const bom = new Text( 'bom' );
+			const d = new Element( 'd', null, [ bar ] );
+			const c = new Element( 'c', null, [ foo, d ] );
+			const b = new Element( 'b', null, [ c ] );
+			const e = new Element( 'e', null, [ bom ] );
+			const a = new Element( 'a', null, [ b, e ] );
+
+			// <a><b><c>foo<d>bar</d></c></b><e>bom</e></a>
+
+			expect( bar.getCommonAncestor( foo ), 1 ).to.equal( c );
+			expect( foo.getCommonAncestor( d ), 2 ).to.equal( c );
+			expect( c.getCommonAncestor( b ), 3 ).to.equal( a );
+			expect( bom.getCommonAncestor( d ), 4 ).to.equal( a );
+			expect( b.getCommonAncestor( bom ), 5 ).to.equal( a );
+		} );
+
+		it( 'should return document fragment', () => {
+			const foo = new Text( 'foo' );
+			const bar = new Text( 'bar' );
+			const df = new DocumentFragment( [ foo, bar ] );
+
+			expect( foo.getCommonAncestor( bar ) ).to.equal( df );
+		} );
+	} );
+
 	describe( 'attributes interface', () => {
 		const node = new Node( { foo: 'bar' } );
 
