@@ -29,7 +29,7 @@ describe( 'Node', () => {
 		root = new Element( null, null, [ one, two, three ] );
 	} );
 
-	describe( 'getNextSibling/getPreviousSibling', () => {
+	describe( 'getNextSibling/getPreviousSibling()', () => {
 		it( 'should return next sibling', () => {
 			expect( root.nextSibling ).to.be.null;
 
@@ -57,7 +57,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getAncestors', () => {
+	describe( 'getAncestors()', () => {
 		it( 'should return empty array for node without ancestors', () => {
 			const result = root.getAncestors();
 			expect( result ).to.be.an( 'array' );
@@ -65,7 +65,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return array including node itself if requested', () => {
-			const result = root.getAncestors( { includeNode: true } );
+			const result = root.getAncestors( { includeSelf: true } );
 			expect( result ).to.be.an( 'array' );
 			expect( result.length ).to.equal( 1 );
 			expect( result[ 0 ] ).to.equal( root );
@@ -77,7 +77,7 @@ describe( 'Node', () => {
 			expect( result[ 0 ] ).to.equal( root );
 			expect( result[ 1 ] ).to.equal( two );
 
-			const result2 = charR.getAncestors( { includeNode: true } );
+			const result2 = charR.getAncestors( { includeSelf: true } );
 			expect( result2.length ).to.equal( 3 );
 			expect( result2[ 0 ] ).to.equal( root );
 			expect( result2[ 1 ] ).to.equal( two );
@@ -90,7 +90,7 @@ describe( 'Node', () => {
 			expect( result[ 0 ] ).to.equal( two );
 			expect( result[ 1 ] ).to.equal( root );
 
-			const result2 = charR.getAncestors( { includeNode: true, parentFirst: true } );
+			const result2 = charR.getAncestors( { includeSelf: true, parentFirst: true } );
 			expect( result2.length ).to.equal( 3 );
 			expect( result2[ 2 ] ).to.equal( root );
 			expect( result2[ 1 ] ).to.equal( two );
@@ -109,7 +109,82 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getIndex', () => {
+	describe( 'getCommonAncestor()', () => {
+		it( 'should return the parent element for the same node', () => {
+			expect( img.getCommonAncestor( img ) ).to.equal( two );
+		} );
+
+		it( 'should return the given node for the same node if includeSelf is used', () => {
+			expect( img.getCommonAncestor( img, { includeSelf: true } ) ).to.equal( img );
+		} );
+
+		it( 'should return null for detached subtrees', () => {
+			const detached = new Element( 'foo' );
+
+			expect( img.getCommonAncestor( detached ) ).to.be.null;
+			expect( detached.getCommonAncestor( img ) ).to.be.null;
+
+			expect( img.getCommonAncestor( detached, { includeSelf: true } ) ).to.be.null;
+			expect( detached.getCommonAncestor( img, { includeSelf: true } ) ).to.be.null;
+		} );
+
+		it( 'should return null when one of the nodes is a tree root itself', () => {
+			expect( root.getCommonAncestor( img ) ).to.be.null;
+			expect( img.getCommonAncestor( root ) ).to.be.null;
+			expect( root.getCommonAncestor( root ) ).to.be.null;
+		} );
+
+		it( 'should return root when one of the nodes is a tree root itself and includeSelf is used', () => {
+			expect( root.getCommonAncestor( img, { includeSelf: true } ) ).to.equal( root );
+			expect( img.getCommonAncestor( root, { includeSelf: true } ) ).to.equal( root );
+			expect( root.getCommonAncestor( root, { includeSelf: true } ) ).to.equal( root );
+		} );
+
+		it( 'should return parent of the nodes at the same level', () => {
+			expect( img.getCommonAncestor( charA ), 1 ).to.equal( two );
+			expect( charB.getCommonAncestor( charA ), 2 ).to.equal( two );
+
+			expect( img.getCommonAncestor( charA, { includeSelf: true } ), 3 ).to.equal( two );
+			expect( charB.getCommonAncestor( charA, { includeSelf: true } ), 4 ).to.equal( two );
+		} );
+
+		it( 'should return proper element for nodes in different branches and on different levels', () => {
+			const foo = new Text( 'foo' );
+			const bar = new Text( 'bar' );
+			const bom = new Text( 'bom' );
+			const d = new Element( 'd', null, [ bar ] );
+			const c = new Element( 'c', null, [ foo, d ] );
+			const b = new Element( 'b', null, [ c ] );
+			const e = new Element( 'e', null, [ bom ] );
+			const a = new Element( 'a', null, [ b, e ] );
+
+			// <a><b><c>foo<d>bar</d></c></b><e>bom</e></a>
+
+			expect( bar.getCommonAncestor( foo ), 1 ).to.equal( c );
+			expect( foo.getCommonAncestor( d ), 2 ).to.equal( c );
+			expect( c.getCommonAncestor( b ), 3 ).to.equal( a );
+			expect( bom.getCommonAncestor( d ), 4 ).to.equal( a );
+			expect( b.getCommonAncestor( bom ), 5 ).to.equal( a );
+			expect( b.getCommonAncestor( bar ), 6 ).to.equal( a );
+
+			expect( bar.getCommonAncestor( foo, { includeSelf: true } ), 11 ).to.equal( c );
+			expect( foo.getCommonAncestor( d, { includeSelf: true } ), 12 ).to.equal( c );
+			expect( c.getCommonAncestor( b, { includeSelf: true } ), 13 ).to.equal( b );
+			expect( bom.getCommonAncestor( d, { includeSelf: true } ), 14 ).to.equal( a );
+			expect( b.getCommonAncestor( bom, { includeSelf: true } ), 15 ).to.equal( a );
+			expect( b.getCommonAncestor( bar, { includeSelf: true } ), 16 ).to.equal( b );
+		} );
+
+		it( 'should return document fragment', () => {
+			const foo = new Text( 'foo' );
+			const bar = new Text( 'bar' );
+			const df = new DocumentFragment( [ foo, bar ] );
+
+			expect( foo.getCommonAncestor( bar ) ).to.equal( df );
+		} );
+	} );
+
+	describe( 'getIndex()', () => {
 		it( 'should return null if the parent is null', () => {
 			expect( root.index ).to.be.null;
 		} );
@@ -139,7 +214,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getDocument', () => {
+	describe( 'getDocument()', () => {
 		it( 'should return null if any parent has not set Document', () => {
 			expect( charA.document ).to.be.null;
 		} );
@@ -164,7 +239,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getRoot', () => {
+	describe( 'getRoot()', () => {
 		it( 'should return this element if it has no parent', () => {
 			const child = new Element( 'p' );
 
@@ -183,7 +258,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'remove', () => {
+	describe( 'remove()', () => {
 		it( 'should remove node from its parent', () => {
 			const char = new Text( 'a' );
 			const parent = new Element( 'p', null, [ char ] );
@@ -246,7 +321,7 @@ describe( 'Node', () => {
 			sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 		} );
 
-		describe( 'setAttribute', () => {
+		describe( 'setAttribute()', () => {
 			it( 'should fire change event', () => {
 				img.setAttribute( 'width', 100 );
 
@@ -255,7 +330,7 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( 'removeAttribute', () => {
+		describe( 'removeAttribute()', () => {
 			it( 'should fire change event', () => {
 				img.removeAttribute( 'src' );
 
@@ -264,7 +339,7 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( 'insertChildren', () => {
+		describe( 'insertChildren()', () => {
 			it( 'should fire change event', () => {
 				root.insertChildren( 1, new Element( 'img' ) );
 
@@ -273,7 +348,7 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( 'appendChildren', () => {
+		describe( 'appendChildren()', () => {
 			it( 'should fire change event', () => {
 				root.appendChildren( new Element( 'img' ) );
 
@@ -282,7 +357,7 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( 'removeChildren', () => {
+		describe( 'removeChildren()', () => {
 			it( 'should fire change event', () => {
 				root.removeChildren( 1, 1 );
 
@@ -291,7 +366,7 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( 'removeChildren', () => {
+		describe( 'removeChildren()', () => {
 			it( 'should fire change event', () => {
 				text.data = 'bar';
 

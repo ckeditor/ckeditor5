@@ -7,6 +7,7 @@
 
 import ViewDocument from '../../src/view/document';
 import ViewElement from '../../src/view/element';
+import ViewContainerElement from '../../src/view/containerelement';
 import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewText from '../../src/view/text';
 import ViewRange from '../../src/view/range';
@@ -1214,6 +1215,44 @@ describe( 'Renderer', () => {
 			expect( () => {
 				renderer.render();
 			} ).to.throw( CKEditorError, /^view-renderer-filler-was-lost/ );
+		} );
+
+		// #1014.
+		it( 'should create inline filler in newly created dom nodes', () => {
+			// 1. Create the view structure which needs inline filler.
+			const inputView =
+				'<container:ul>' +
+					'<container:li>Foobar.</container:li>' +
+					'<container:li>[]<container:div></container:div></container:li>' +
+				'</container:ul>';
+
+			const { view: view, selection: newSelection } = parse( inputView );
+
+			viewRoot.appendChildren( view );
+			selection.setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			// 2. Check if filler element has been (correctly) created.
+			expect( domRoot.innerHTML.indexOf( INLINE_FILLER ) ).not.to.equal( -1 );
+
+			// 3. Move the inline filler parent to a newly created element.
+			const viewLi = view.getChild( 0 );
+			const viewLiIndented = view.removeChildren( 1, 1 ); // Array with one element.
+			const viewUl = new ViewContainerElement( 'ul', null, viewLiIndented );
+			viewLi.appendChildren( viewUl );
+
+			// 4. Mark changed items and render the view.
+			renderer.markToSync( 'children', view );
+			renderer.markToSync( 'children', viewLi );
+			renderer.render();
+
+			expect( domRoot.innerHTML.indexOf( INLINE_FILLER ) ).not.to.equal( -1 );
+
+			const domSelection = document.getSelection();
+
+			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 7 ); // After inline filler.
 		} );
 
 		it( 'should handle focusing element', () => {

@@ -151,6 +151,19 @@ describe( 'EditableElement', () => {
 
 			expect( isReadOnlySpy.calledOnce ).to.be.true;
 		} );
+
+		it( 'should be bound to the document#isReadOnly', () => {
+			const root = new RootEditableElement( 'div' );
+			root.document = createDocumentMock();
+
+			root.document.isReadOnly = false;
+
+			expect( root.isReadOnly ).to.false;
+
+			root.document.isReadOnly = true;
+
+			expect( root.isReadOnly ).to.true;
+		} );
 	} );
 
 	describe( 'getDocument', () => {

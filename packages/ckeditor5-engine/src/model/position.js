@@ -294,7 +294,7 @@ export default class Position {
 		if ( this.parent.is( 'documentFragment' ) ) {
 			return [ this.parent ];
 		} else {
-			return this.parent.getAncestors( { includeNode: true } );
+			return this.parent.getAncestors( { includeSelf: true } );
 		}
 	}
 

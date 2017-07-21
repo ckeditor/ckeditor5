@@ -22,12 +22,15 @@ import {
 	clearFakeSelection
 } from '../conversion/model-selection-to-view-converters';
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
  * including selection handling. It also creates {@link ~EditingController#view view document} which build a
  * browser-independent virtualization over the DOM elements. Editing controller also attach default converters.
+ *
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class EditingController {
 	/**
@@ -80,22 +83,13 @@ export default class EditingController {
 			viewSelection: this.view.selection
 		} );
 
-		/**
-		 * Property keeping all listenters attached by controller on other objects, so it can
-		 * stop listening on {@link #destroy}.
-		 *
-		 * @private
-		 * @member {utils.EmitterMixin} #_listener
-		 */
-		this._listener = Object.create( EmitterMixin );
-
 		// Convert changes in model to view.
-		this._listener.listenTo( this.model, 'change', ( evt, type, changes ) => {
+		this.listenTo( this.model, 'change', ( evt, type, changes ) => {
 			this.modelToView.convertChange( type, changes );
 		}, { priority: 'low' } );
 
 		// Convert model selection to view.
-		this._listener.listenTo( this.model, 'changesDone', () => {
+		this.listenTo( this.model, 'changesDone', () => {
 			const selection = this.model.selection;
 
 			this.modelToView.convertSelection( selection );
@@ -103,16 +97,16 @@ export default class EditingController {
 		}, { priority: 'low' } );
 
 		// Convert model markers changes.
-		this._listener.listenTo( this.model.markers, 'add', ( evt, marker ) => {
+		this.listenTo( this.model.markers, 'add', ( evt, marker ) => {
 			this.modelToView.convertMarker( 'addMarker', marker.name, marker.getRange() );
 		} );
 
-		this._listener.listenTo( this.model.markers, 'remove', ( evt, marker ) => {
+		this.listenTo( this.model.markers, 'remove', ( evt, marker ) => {
 			this.modelToView.convertMarker( 'removeMarker', marker.name, marker.getRange() );
 		} );
 
 		// Convert view selection to model.
-		this._listener.listenTo( this.view, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
+		this.listenTo( this.view, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
 		// Attach default content converters.
 		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
@@ -158,6 +152,8 @@ export default class EditingController {
 	 */
 	destroy() {
 		this.view.destroy();
-		this._listener.stopListening();
+		this.stopListening();
 	}
 }
+
+mix( EditingController, ObservableMixin );

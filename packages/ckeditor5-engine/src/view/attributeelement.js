@@ -120,7 +120,8 @@ function getFillerOffset() {
 		return null;
 	}
 
-	return 0;
+	// Render block filler at the end of element (after all ui elements).
+	return this.childCount;
 }
 
 // Returns total count of children that are not {@link module:engine/view/uielement~UIElement UIElements}.
