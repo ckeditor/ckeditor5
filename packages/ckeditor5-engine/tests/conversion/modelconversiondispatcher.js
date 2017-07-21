@@ -654,8 +654,47 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.convertMarker( 'removeMarker', 'name', range );
 		} );
 
-		it( 'should fire conversion for each item in the range', () => {
-			expect( true ).to.be.false;
+		it( 'should fire conversion for whole range and each item in the range', () => {
+			const element = new ModelElement( 'paragraph', null, [ new ModelText( 'foo bar baz' ) ] );
+			root.appendChildren( [ element ] );
+			range = ModelRange.createIn( root );
+
+			const addMarkerItems = [];
+			const removeMarkerItems = [];
+
+			dispatcher.on( 'addMarker:name', ( evt, data ) => {
+				// Called for whole marker.
+				if ( !data.item ) {
+					expect( data.range.isEqual( range ) ).to.be.true;
+				} else {
+					addMarkerItems.push( data.item );
+				}
+			} );
+			dispatcher.on( 'removeMarker:name', ( evt, data ) => {
+				// Called for whole marker.
+				if ( !data.item ) {
+					expect( data.range.isEqual( range ) ).to.be.true;
+				} else {
+					removeMarkerItems.push( data.item );
+				}
+			} );
+
+			dispatcher.convertMarker( 'addMarker', 'name', range );
+			dispatcher.convertMarker( 'removeMarker', 'name', range );
+
+			let i = 0;
+			for ( const val of range ) {
+				const item = val.item;
+
+				if ( item.is( 'textProxy' ) ) {
+					expect( item.data ).to.equal( addMarkerItems[ i ].data );
+					expect( item.data ).to.equal( removeMarkerItems[ i ].data );
+				} else {
+					expect( removeMarkerItems[ i ] ).to.equal( item );
+				}
+
+				i++;
+			}
 		} );
 
 		it( 'should not fire conversion for each item in marker\'s range if whole marker conversion was performed', () => {
