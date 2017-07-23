@@ -8,9 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
@@ -70,9 +67,6 @@ export default class HeadingCommand extends Command {
 		const editor = this.editor;
 		const document = editor.document;
 
-		// If current option is same as new option - toggle already applied option back to default one.
-		const shouldRemove = this.value;
-
 		document.enqueueChanges( () => {
 			const batch = options.batch || document.batch();
 			const blocks = Array.from( document.selection.getSelectedBlocks() )
@@ -81,20 +75,7 @@ export default class HeadingCommand extends Command {
 				} );
 
 			for ( const block of blocks ) {
-				// When removing applied option.
-				if ( shouldRemove ) {
-					if ( block.is( this.modelElement ) ) {
-						// Apply paragraph to the selection withing that particular block only instead
-						// of working on the entire document selection.
-						const selection = new Selection();
-						selection.addRange( Range.createIn( block ) );
-
-						// Share the batch with the paragraph command.
-						editor.execute( 'paragraph', { selection, batch } );
-					}
-				}
-				// When applying new option.
-				else if ( !block.is( this.modelElement ) ) {
+				if ( !block.is( this.modelElement ) ) {
 					batch.rename( block, this.modelElement );
 				}
 			}
