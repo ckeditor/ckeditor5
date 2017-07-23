@@ -57,17 +57,21 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  *		buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( 'strong' );
  *
- * 4. Model marker to view element converter. This is a converter that converts markers from given group to view attribute element.
- * Markers, basically, are {@link module:engine/model/liverange~LiveRange} instances, that are named. In this conversion, model range is
- * converted to view range, then that view range is wrapped (or unwrapped, if range is removed) in a view attribute element.
- * To learn more about markers, see {@link module:engine/model/markercollection~MarkerCollection}.
+ * 4. Model marker to virtual selection converter. This is a converter that converts model markers to virtual
+ * selection described by {@link engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} object passed to
+ * {@link #toVirtualSelection} method.
  *
- *		const viewSpanSearchResult = new ViewAttributeElement( 'span', { class: 'search-result' } );
- *		buildModelConverter().for( dispatcher ).fromMarker( 'searchResult' ).toElement( viewSpanSearchResult );
+ *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( descriptor );
+ *
+ * 5. Model marker to element converter. This is a converter that takes model marker and creates separate elements at
+ * the beginning and at the end of the marker's range. For more information see {@link #toElement} method.
+ *
+ *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( 'span' );
  *
  * It is possible to provide various different parameters for
- * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toElement}
- * and {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toAttribute} methods.
+ * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toElement},
+ * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toAttribute} and
+ * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toVirtualSelection} methods.
  * See their descriptions to learn more.
  *
  * It is also possible to {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#withPriority change default priority}
@@ -197,7 +201,13 @@ class ModelConverterBuilder {
 	 * `string`, view element instance which will be cloned and used, or creator function which returns view element that
 	 * will be used. Keep in mind that when you view element instance or creator function, it has to be/return a
 	 * proper type of view element: {@link module:engine/view/containerelement~ContainerElement ViewContainerElement} if you convert
-	 * from element or {@link module:engine/view/attributeelement~AttributeElement ViewAttributeElement} if you convert from attribute.
+	 * from element, {@link module:engine/view/attributeelement~AttributeElement ViewAttributeElement} if you convert
+	 * from attribute and {@link module:engine/view/uielement~UIelement ViewUIElement} if you convert from marker.
+	 *
+	 * NOTE: When converting from model's marker, separate elements will be created at the beginning and at the end of the
+	 * marker's range. If range is collapsed then only one element will be created. See how markers
+	 * {module:engine/model/buildviewconverter~ViewConverterBuilder#toMarker view -> model serialization}
+	 * works to find out what view element format is the best for you.
 	 *
 	 *		buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
 	 *
@@ -209,12 +219,17 @@ class ModelConverterBuilder {
 	 *
 	 *		buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( new ViewAttributeElement( 'strong' ) );
 	 *
+	 *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'span' );
+	 *
+	 *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( new ViewUIElement( 'span' ) );
+	 *
 	 * Creator function will be passed different values depending whether conversion is from element or from attribute:
 	 *
 	 * * from element: dispatcher's
 	 * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert insert event}
 	 * parameters will be passed,
-	 * * from attribute: there is one parameter and it is attribute value.
+	 * * from attribute: there is one parameter and it is attribute value,
+	 * * from marker: {@link module:engine/conversion/buildmodelconverter~MarkerViewElementCreatorData}.
 	 *
 	 * This method also registers model selection to view selection converter, if conversion is from attribute.
 	 *
@@ -253,8 +268,52 @@ class ModelConverterBuilder {
 		}
 	}
 
+	/**
+	 * Registers that marker should be converted to virtual selection. Markers, basically,
+	 * are {@link module:engine/model/liverange~LiveRange} instances, that are named. Virtual selection is
+	 * a representation of the model marker in the view:
+	 * * each {@link module:engine/view/text~Text view text node} in the marker's range will be wrapped with `span`
+	 * {@link module:engine/view/attributeelement~AttributeElement},
+	 * * each {@link module:engine/view/element~Element view element} in the marker's range can handle the virtual
+	 * selection individually by providing `setVirtualSelection` and `removeVirtualSelection` methods.
+	 *
+	 * {@link module:engine/convresion/buildmodelconverter~VirtualSelectionDescriptor Descriptor} will be used to create
+	 * spans over text nodes and also will be provided to `setVirtualSelection` and `removeVirtualSelection` methods
+	 * each time virtual selection should be set or removed from view elements.
+	 * NOTE: When `setVirtualSelection` and `removeVirtualSelection` methods are present, converter assumes that element
+	 * is taking care of presenting virtual selection on its child nodes, so it won't convert virtual selection on them.
+	 *
+	 * Virtual selection descriptor can be provided as plain object:
+	 *
+	 *		buildModelConverter.for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( { class: 'search-mark' } );
+ 	 *
+	 * Also, descriptor creator function can be provided:
+	 *
+	 *		buildModelConverter.for( dispatcher ).fromMarker( 'search:blue' ).toVirtualSelection( data => {
+	 *			const color = data.name.split( ':' )[ 1 ];
+	 *
+	 *			return { class: 'search-' + color };
+	 *		} );
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
+	 * `build-model-converter-non-marker-to-virtual-selection` when trying to convert not from marker.
+	 *
+	 * @param {function|module:engine/convresion/buildmodelconverter~VirtualSelectionDescriptor} selectionDescriptor
+	 */
 	toVirtualSelection( selectionDescriptor ) {
 		const priority = this._from.priority === null ? 'normal' : this._from.priority;
+
+		if ( this._from.type != 'marker' ) {
+			/**
+			 * To virtual selection conversion is supported only for model markers.
+			 *
+			 * @error build-model-converter-non-marker-to-virtual-selection
+			 */
+			throw new CKEditorError(
+				'build-model-converter-non-marker-to-virtual-selection: Conversion to virtual selection is supported ' +
+				'only from model markers.'
+			);
+		}
 
 		for ( const dispatcher of this._dispatchers ) {
 			dispatcher.on( 'addMarker:' + this._from.name, markerToVirtualSelection( selectionDescriptor ), { priority } );
@@ -262,69 +321,6 @@ class ModelConverterBuilder {
 			dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( selectionDescriptor ), { priority } );
 		}
 	}
-
-	/**
-	 * Registers what view stamp will be created by converter to mark marker range bounds. Separate elements will be
-	 * created at the beginning and at the end of the range. If range is collapsed then only one element will be created.
-	 *
-	 * Method accepts various ways of providing how the view element will be created. You can pass view element name as
-	 * `string`, view element instance which will be cloned and used, or creator function which returns view element that
-	 * will be used. Keep in mind that when you provide view element instance or creator function, it has to be/return a
-	 * proper type of view element: {@link module:engine/view/uielement~UIElement UIElement}.
-	 *
-	 *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( 'span' );
-	 *
-	 *		buildModelConverter().for( dispatcher )
-	 *			.fromMarker( 'search' )
-	 *			.toStamp( new UIElement( 'span', { 'data-name': 'search' } ) );
-	 *
-	 *		buildModelConverter().for( dispatcher )
-	 *			.fromMarker( 'search' )
-	 *			.toStamp( ( data ) => new UIElement( 'span', { 'data-name': data.name ) );
-	 *
-	 * Creator function provides additional `data.isOpening` parameter which defined if currently converted element is
-	 * a beginning or end of the marker range. This makes possible to create different opening and closing stamp.
-	 *
-	 *		buildModelConverter().for( dispatcher )
-	 *			.fromMarker( 'search' )
-	 *			.toStamp( ( data ) => {
-	 *				if ( data.isOpening ) {
-	 *					return new UIElement( 'span', { 'data-name': data.name, 'data-start': true ) );
-	 *				}
-	 *
-	 *				return new UIElement( 'span', { 'data-name': data.name, 'data-end': true ) );
-	 *			}
-	 *
-	 * Creator function provides
-	 * {@link module:engine/conversion/buildmodelconverter~StampCreatorData} parameters.
-	 *
-	 * See how markers {module:engine/model/buildviewconverter~ViewConverterBuilder#toMarker view -> model serialization}
-	 * works to find out what view element format is the best for you.
-	 *
-	 * @param {String|module:engine/view/uielement~UIElement|Function} element UIElement created by converter or
-	 * a function that returns view element.
-	 */
-	// toStamp( element ) {
-	// 	for ( const dispatcher of this._dispatchers ) {
-	// 		if ( this._from.type != 'marker' ) {
-	// 			/**
-	// 			 * To-stamp conversion is supported only for model markers.
-	// 			 *
-	// 			 * @error build-model-converter-element-to-stamp
-	// 			 */
-	// 			throw new CKEditorError(
-	// 				'build-model-converter-non-marker-to-stamp: To-stamp conversion is supported only from model markers.'
-	// 			);
-	// 		}
-    //
-	// 		const priority = this._from.priority === null ? 'normal' : this._from.priority;
-    //
-	// 		element = typeof element == 'string' ? new ViewUIElement( element ) : element;
-    //
-	// 		dispatcher.on( 'addMarker:' + this._from.name, insertUIElement( element ), { priority } );
-	// 		dispatcher.on( 'removeMarker:' + this._from.name, removeUIElement( element ), { priority } );
-	// 	}
-	// }
 
 	/**
 	 * Registers what view attribute will be created by converter. Keep in mind, that only model attribute to
@@ -413,11 +409,25 @@ export default function buildModelConverter() {
 }
 
 /**
- * @typedef StampCreatorData
+ * @typedef MarkerViewElementCreatorData
  * @param {Object} data Additional information about the change.
  * @param {String} data.name Marker name.
  * @param {module:engine/model/range~Range} data.range Marker range.
  * @param {Boolean} data.isOpening Defines if currently converted element is a beginning or end of the marker range.
  * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+ */
+
+/**
+ * @typedef VirtualSelectionDescriptor
+ * Object describing how virtual selection should be created in the view. Each text node in virtual selection
+ * will be wrapped with `span` element with CSS class, attributes and priority described by this object. Each element
+ * can handle virtual selection separately by providing `setVirtualSelection` and `removeVirtualSelection` methods.
+ *
+ * @property {String} [class] CSS class that will be added to `span`
+ * {@link module:engine/view/attributeelement~AttributeElement} wrapping each text node in the virtual selection.
+ * @property {Object} [attributes] Attributes that will be added to `span`
+ * {@link module:engine/view/attributeelement~AttributeElement} wrapping each text node it the virtual selection.
+ * @property {Number} [priority] {@link module:engine/view/attributeelement~AttributeElement#priority} of the `span`
+ * wrapping each text node in the virtual selection.
  */

@@ -387,6 +387,11 @@ export default class ModelConversionDispatcher {
 	 * Fires {@link ~#event:addMarker addMarker event} or {@link ~#event:removeMarker removeMarker event} based on
 	 * given `type` with data based on passed parameters.
 	 *
+	 * Marker conversion is performed in two steps. In the first step, event containing marker's whole range is fired. If
+	 * consumable passed with that event is consumed - no further events are dispatched. In the second step, event for each
+	 * item in the marker's range is fired. This way marker can be converted as a whole or each item in the marker's
+	 * range can be converted separately.
+	 *
 	 * @fires addMarker
 	 * @fires removeMarker
 	 * @param {'addMarker'|'removeMarker'} type Change type.

@@ -448,6 +448,18 @@ describe( 'Model converter builder', () => {
 					'</p>' +
 				'</div>' );
 		} );
+
+		it( 'should throw if trying to convert from attribute', () => {
+			expect( () => {
+				buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toVirtualSelection( { class: 'foo' } );
+			} ).to.throw( CKEditorError, /^build-model-converter-non-marker-to-virtual-selection/ );
+		} );
+
+		it( 'should throw if trying to convert from element', () => {
+			expect( () => {
+				buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toVirtualSelection( { class: 'foo' } );
+			} ).to.throw( CKEditorError, /^build-model-converter-non-marker-to-virtual-selection/ );
+		} );
 	} );
 
 	describe( 'model marker to view element conversion', () => {
