@@ -164,14 +164,11 @@ export function convertSelectionAttribute( elementCreator ) {
  * Performs similar conversion as {@link ~convertSelectionAttribute}, but depends on a marker name of a marker in which
  * collapsed selection is placed.
  *
- *		modelDispatcher.on( 'selectionMarker:searchResult', wrapRange( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
- *
- * **Note:** You can use the same `elementCreator` function for this converter factory
- * and {@link module:engine/conversion/model-to-view-converters~wrapRange}.
+ *		modelDispatcher.on( 'selectionMarker:searchResult', convertSelectionMarker( { class: 'search' } ) );
  *
  * @see module:engine/conversion/model-selection-to-view-converters~convertSelectionAttribute
- * @param {module:engine/view/attributeelement~AttributeElement|Function} elementCreator View element,
- * or function returning a view element, which will be used for wrapping.
+ * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor|Function} selectionDescriptor Virtual
+ * selection descriptor object or function returning a descriptor object.
  * @returns {Function} Selection converter.
  */
 export function convertSelectionMarker( selectionDescriptor ) {

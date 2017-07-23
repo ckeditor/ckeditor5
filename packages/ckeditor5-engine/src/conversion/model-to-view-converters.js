@@ -385,6 +385,13 @@ export function remove() {
 	};
 }
 
+/**
+ * Function factory, crates marker to virtual selection converter.
+ * For more information see {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toVirtualSelection}.
+ *
+ * @param {module:engine/conversion/modelconversiondispatcher~VirtualSelectionDescriptor|Function} selectionDescriptor
+ * @return {Function} Marker to virtual selection converter.
+ */
 export function markerToVirtualSelection( selectionDescriptor ) {
 	return ( evt, data, consumable, conversionApi ) =>	{
 		const descriptor = typeof selectionDescriptor == 'function' ?
@@ -510,6 +517,13 @@ export function eventNameToConsumableType( evtName ) {
 	return parts[ 0 ] + ':' + parts[ 1 ];
 }
 
+/**
+ * Creates `span` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from information
+ * provided by {@link module:engine/conversion/modelconversiondispatcher~VirtualSelectionDescriptor} object.
+ *
+ * @param {module:engine/conversion/modelconversiondispatcher~VirtualSelectionDescriptor }descriptor
+ * @return {module:engine/view/attributeelement~AttributeElement}
+ */
 export function virtualSelectionDescriptorToAttribute( descriptor ) {
 	const attributeElement = new ViewAttributeElement( 'span', descriptor.attributes );
 
