@@ -113,11 +113,6 @@ export function convertCollapsedSelection() {
  *			}
  *		}
  *		modelDispatcher.on( 'selectionAttribute:style', convertSelectionAttribute( styleCreator ) );
- *
- * **Note:** You can use the same `elementCreator` function for this converter factory
- * and {@link module:engine/conversion/model-to-view-converters~wrapRange}
- * model to view converter, as long as the `elementCreator` function uses only the first parameter (attribute value).
- *
  *		modelDispatcher.on( 'selection', convertCollapsedSelection() );
  *		modelDispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
  *		modelDispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'strong' ) ) );

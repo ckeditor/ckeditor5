@@ -58,15 +58,16 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *		buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( 'strong' );
  *
  * 4. Model marker to virtual selection converter. This is a converter that converts model markers to virtual
- * selection described by {@link engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} object passed to
- * {@link #toVirtualSelection} method.
+ * selection described by {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} object passed to
+ * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toVirtualSelection} method.
  *
  *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( descriptor );
  *
  * 5. Model marker to element converter. This is a converter that takes model marker and creates separate elements at
- * the beginning and at the end of the marker's range. For more information see {@link #toElement} method.
+ * the beginning and at the end of the marker's range. For more information see
+ * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toElement} method.
  *
- *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( 'span' );
+ *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'span' );
  *
  * It is possible to provide various different parameters for
  * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toElement},
@@ -202,7 +203,7 @@ class ModelConverterBuilder {
 	 * will be used. Keep in mind that when you view element instance or creator function, it has to be/return a
 	 * proper type of view element: {@link module:engine/view/containerelement~ContainerElement ViewContainerElement} if you convert
 	 * from element, {@link module:engine/view/attributeelement~AttributeElement ViewAttributeElement} if you convert
-	 * from attribute and {@link module:engine/view/uielement~UIelement ViewUIElement} if you convert from marker.
+	 * from attribute and {@link module:engine/view/uielement~UIElement ViewUIElement} if you convert from marker.
 	 *
 	 * NOTE: When converting from model's marker, separate elements will be created at the beginning and at the end of the
 	 * marker's range. If range is collapsed then only one element will be created. See how markers
@@ -274,10 +275,10 @@ class ModelConverterBuilder {
 	 * a representation of the model marker in the view:
 	 * * each {@link module:engine/view/text~Text view text node} in the marker's range will be wrapped with `span`
 	 * {@link module:engine/view/attributeelement~AttributeElement},
-	 * * each {@link module:engine/view/element~Element view element} in the marker's range can handle the virtual
-	 * selection individually by providing `setVirtualSelection` and `removeVirtualSelection` methods.
+	 * * each {@link module:engine/view/containerelement~ContainerElement container view element} in the marker's
+	 * range can handle the virtual selection individually by providing `setVirtualSelection` and `removeVirtualSelection` methods.
 	 *
-	 * {@link module:engine/convresion/buildmodelconverter~VirtualSelectionDescriptor Descriptor} will be used to create
+	 * {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor Descriptor} will be used to create
 	 * spans over text nodes and also will be provided to `setVirtualSelection` and `removeVirtualSelection` methods
 	 * each time virtual selection should be set or removed from view elements.
 	 * NOTE: When `setVirtualSelection` and `removeVirtualSelection` methods are present, converter assumes that element
@@ -298,7 +299,7 @@ class ModelConverterBuilder {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
 	 * `build-model-converter-non-marker-to-virtual-selection` when trying to convert not from marker.
 	 *
-	 * @param {function|module:engine/convresion/buildmodelconverter~VirtualSelectionDescriptor} selectionDescriptor
+	 * @param {function|module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} selectionDescriptor
 	 */
 	toVirtualSelection( selectionDescriptor ) {
 		const priority = this._from.priority === null ? 'normal' : this._from.priority;
