@@ -12,7 +12,7 @@
 import Observer from './observer';
 import ViewSelection from '../selection';
 import { startsWithFiller, getDataWithoutFiller } from '../filler';
-import isEqual from '@ckeditor/ckeditor5-utils/src/lib/lodash/isEqual';
+import isEqualWith from '@ckeditor/ckeditor5-utils/src/lib/lodash/isEqualWith';
 
 /**
  * Mutation observer class observes changes in the DOM, fires {@link module:engine/view/document~Document#event:mutations} event, mark view
@@ -210,7 +210,7 @@ export default class MutationObserver extends Observer {
 
 			// It may happen that as a result of many changes (sth was inserted and then removed),
 			// both elements haven't really changed. #1031
-			if ( !isEqual( viewChildren, newViewChildren ) ) {
+			if ( !isEqualWith( viewChildren, newViewChildren, sameNodes ) ) {
 				this.renderer.markToSync( 'children', viewElement );
 
 				viewMutations.push( {
@@ -250,6 +250,25 @@ export default class MutationObserver extends Observer {
 		// If nothing changes on `mutations` event, at this point we have "dirty DOM" (changed) and de-synched
 		// view (which has not been changed). In order to "reset DOM" we render the view again.
 		this.document.render();
+
+		function sameNodes( child1, child2 ) {
+			// First level of comparison (array of children vs array of children) – use the Lodash's default behavior.
+			if ( Array.isArray( child1 ) ) {
+				return;
+			}
+
+			// Elements.
+			if ( child1 === child2 ) {
+				return true;
+			}
+			// Texts.
+			else if ( child1.is( 'text' ) && child2.is( 'text' ) ) {
+				return child1.data === child2.data;
+			}
+
+			// Not matching types.
+			return false;
+		}
 	}
 
 	/**
