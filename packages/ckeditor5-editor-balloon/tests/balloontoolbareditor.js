@@ -101,6 +101,32 @@ describe( 'BalloonToolbarEditor', () => {
 		it( 'loads data from the editor element', () => {
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
 		} );
+
+		// ckeditor/ckeditor5-editor-classic#53
+		it( 'creates an instance of a BalloonToolbarEditor child class', () => {
+			// Fun fact: Remove the next 3 lines and you'll get a lovely inf loop due to two
+			// editor being initialized on one element.
+			const editorElement = document.createElement( 'div' );
+			editorElement.innerHTML = '<p><strong>foo</strong> bar</p>';
+
+			document.body.appendChild( editorElement );
+
+			class CustomBalloonToolbarEditor extends BalloonToolbarEditor {}
+
+			return CustomBalloonToolbarEditor.create( editorElement, {
+				plugins: [ Paragraph, Bold ]
+			} )
+			.then( newEditor => {
+				expect( newEditor ).to.be.instanceof( CustomBalloonToolbarEditor );
+				expect( newEditor ).to.be.instanceof( BalloonToolbarEditor );
+
+				expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+
+				editorElement.remove();
+
+				return newEditor.destroy();
+			} );
+		} );
 	} );
 
 	describe( 'create - events', () => {
