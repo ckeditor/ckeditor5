@@ -156,10 +156,8 @@ export default class InlineEditorUIView extends EditorUIView {
 	 * Determines panel top position of the {@link #panel} in {@link #panelPositions}.
 	 *
 	 * @private
-	 * @param {module:utils/dom/rect~Rect} editableRect Rect of the
-	 * {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#editableElement}.
-	 * @param {module:utils/dom/rect~Rect} panelRect Rect of the
-	 * {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#panel}.
+	 * @param {module:utils/dom/rect~Rect} editableRect Rect of the {@link #editableElement}.
+	 * @param {module:utils/dom/rect~Rect} panelRect Rect of the {@link #panel}.
 	 */
 	_getPanelPositionTop( editableRect, panelRect ) {
 		let top;
@@ -179,7 +177,7 @@ export default class InlineEditorUIView extends EditorUIView {
 	 * Returns the positions for {@link #panelPositions}.
 	 *
 	 * @private
-	 * @returns module:utils/dom/position~Options#positions
+	 * @returns {module:utils/dom/position~Options#positions}
 	 */
 	_getPanelPositions() {
 		return [
