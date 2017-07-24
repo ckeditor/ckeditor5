@@ -78,7 +78,7 @@ export default class DeleteCommand extends Command {
 			if ( selection.isCollapsed ) {
 				const sequence = options.sequence || 1;
 
-				if ( this._shouldEntireContentBeReplacedWithParagraph( { sequence } ) ) {
+				if ( this._shouldEntireContentBeReplacedWithParagraph( sequence ) ) {
 					this._replaceEntireContentWithParagraph();
 				}
 
@@ -115,9 +115,9 @@ export default class DeleteCommand extends Command {
 	 * @param {Number} sequence A number describing which subsequent delete event it is without the key being released.
 	 * @returns {Boolean}
 	 */
-	_shouldEntireContentBeReplacedWithParagraph( options ) {
+	_shouldEntireContentBeReplacedWithParagraph( sequence ) {
 		// Does nothing if user pressed and held the "Backspace" or "Delete" key.
-		if ( options.sequence > 1 ) {
+		if ( sequence > 1 ) {
 			return false;
 		}
 
