@@ -25,7 +25,7 @@
  * @returns {Object} A normalized toolbar config object.
  */
 export default function normalizeToolbarConfig( config ) {
-	if ( config instanceof Array ) {
+	if ( Array.isArray( config ) ) {
 		config = {
 			items: config
 		};
