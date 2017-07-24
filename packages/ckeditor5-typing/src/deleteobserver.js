@@ -64,6 +64,6 @@ export default class DeleteObserver extends Observer {
  * @param {module:engine/view/observer/domeventdata~DomEventData} data
  * @param {'forward'|'delete'} data.direction The direction in which the deletion should happen.
  * @param {'character'|'word'} data.unit The "amount" of content that should be deleted.
- * @param {Number} data.sequence A number that describes which sequence of the same event is fired.
- * It helps detect the key was pressed and held.
+ * @param {Number} data.sequence A number describing which subsequent delete event it is without the key being released.
+ * If it's 2 or more it means that the key was pressed and hold.
  */

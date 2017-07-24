@@ -112,8 +112,7 @@ export default class DeleteCommand extends Command {
 	 *   - other paragraph does not occur in the editor.
 	 *
 	 * @private
-	 * @param {Object} options
-	 * @param {Number} options.sequence A number that describes which sequence of the same event is fired.
+	 * @param {Number} sequence A number describing which subsequent delete event it is without the key being released.
 	 * @returns {Boolean}
 	 */
 	_shouldEntireContentBeReplacedWithParagraph( options ) {
