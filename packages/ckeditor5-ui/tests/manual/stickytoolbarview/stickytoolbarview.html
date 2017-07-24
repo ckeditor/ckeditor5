@@ -1,31 +1,70 @@
-<div class="ck-reset ck-editor">
-	<div class="ck-reset_all ck-editor__top">
+<div id="columns">
+	<div class="column">
+		<h2>Sticky to the top of the viewport</h2>
+
+		<div class="ck-reset ck-editor ck-sticky_to-the-top">
+			<div class="ck-reset_all ck-editor__top"></div>
+			<p class="ck-reset">
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+			</p>
+			<div class="ck-reset_all offset-visualizer"></div>
+		</div>
 	</div>
-	<p class="ck-reset">
-		An editable content mock–up.
-		An editable content mock–up.
-		An editable content mock–up.
-		An editable content mock–up.
-		An editable content mock–up.
-		An editable content mock–up.
-		An editable content mock–up.
-		An editable content mock–up.
-	</p>
-	<div class="ck-reset_all offset-visualizer">
+	<div class="column">
+		<h2>Sticky to the green box</h2>
+
+		<div class="ck-reset ck-editor ck-sticky_to-the-box">
+			<div class="ck-reset_all ck-editor__top "></div>
+			<p class="ck-reset">
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+			</p>
+			<div class="ck-reset_all offset-visualizer"></div>
+		</div>
+
+		<div id="fixed">The toolbar should stick to me instead of the viewport.</div>
 	</div>
 </div>
 
 <style>
+	body {
+		width: 3000px;
+		height: 3000px;
+		padding-top: 150px;
+	}
+
+	#columns {
+		overflow: hidden;
+	}
+
+	.column {
+		float: left;
+		width: 350px;
+		padding: 1em;
+	}
+
 	.ck-editor {
 		height: 200px;
-		max-width: 400px;
-		margin: 5em;
 		background: #ccc;
 		position: relative;
 	}
 
 	.ck-toolbar {
-		background: #fff !important;
+		background: yellow !important;
+		padding: 1em;
 	}
 
 	.ck-toolbar:after {
@@ -45,8 +84,16 @@
 		content: "An offset mock–up. Toolbar should *never* cover the red area.";
 	}
 
-	body {
-		width: 3000px;
-		height: 3000px;
+	#fixed {
+		height: 100px;
+		width: 350px;
+		position: fixed;
+		top: 0;
+		z-index: 9999;
+		background: green;
+		opacity: .8;
+		color: #fff;
+		box-sizing: border-box;
+		padding: 30px;
 	}
 </style>

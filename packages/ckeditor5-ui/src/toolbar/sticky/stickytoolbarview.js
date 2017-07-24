@@ -68,9 +68,25 @@ export default class StickyToolbarView extends ToolbarView {
 		 * @readonly
 		 * @observable
 		 * @default 50
-		 * @member {Number} #limiterOffset
+		 * @member {Number} #limiterBottomOffset
 		 */
-		this.set( 'limiterOffset', 50 );
+		this.set( 'limiterBottomOffset', 50 );
+
+		/**
+		 * The offset from the top edge of the web browser's viewport which makes the
+		 * toolbar become sticky. The default value is `0`, which means the toolbar becomes
+		 * sticky when it's upper edge touches the top of the page viewport.
+		 *
+		 * This attribute is useful when the web page has UI elements positioned to the top
+		 * either using `position: fixed` or `position: sticky`, which would cover the
+		 * sticky toolbar or vice–versa (depending on the `z-index` hierarchy).
+		 *
+		 * @readonly
+		 * @observable
+		 * @default 0
+		 * @member {Number} #viewportTopOffset
+		 */
+		this.set( 'viewportTopOffset', 0 );
 
 		/**
 		 * Controls the `margin-left` CSS style of the toolbar.
@@ -92,6 +108,18 @@ export default class StickyToolbarView extends ToolbarView {
 		 * @member {Boolean} #_isStickyToTheLimiter
 		 */
 		this.set( '_isStickyToTheLimiter', false );
+
+		/**
+		 * Set `true` if the sticky toolbar uses the {@link #viewportTopOffset},
+		 * i.e. not {@link #_isStickyToTheLimiter} and the {@link #viewportTopOffset}
+		 * is not `0`.
+		 *
+		 * @protected
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #_hasViewportTopOffset
+		 */
+		this.set( '_hasViewportTopOffset', false );
 
 		/**
 		 * The DOM bounding client rect of the {@link module:ui/view~View#element} of the toolbar.
@@ -120,8 +148,12 @@ export default class StickyToolbarView extends ToolbarView {
 						return isSticky ? toPx( this._elementPlaceholder.getBoundingClientRect().width ) : null;
 					} ),
 
+					top: bind.to( '_hasViewportTopOffset', _hasViewportTopOffset => {
+						return _hasViewportTopOffset ? toPx( this.viewportTopOffset ) : null;
+					} ),
+
 					bottom: bind.to( '_isStickyToTheLimiter', _isStickyToTheLimiter => {
-						return _isStickyToTheLimiter ? toPx( this.limiterOffset ) : null;
+						return _isStickyToTheLimiter ? toPx( this.limiterBottomOffset ) : null;
 					} ),
 
 					marginLeft: bind.to( '_marginLeft' )
@@ -160,6 +192,9 @@ export default class StickyToolbarView extends ToolbarView {
 
 		this.element.parentNode.insertBefore( this._elementPlaceholder, this.element );
 
+		// Check if the toolbar should go into the sticky state immediately.
+		this._checkIfShouldBeSticky();
+
 		// Update sticky state of the toolbar as the window is being scrolled.
 		this.listenTo( global.window, 'scroll', () => {
 			this._checkIfShouldBeSticky();
@@ -191,23 +226,26 @@ export default class StickyToolbarView extends ToolbarView {
 
 		// The toolbar must be active to become sticky.
 		this.isSticky = this.isActive &&
-			// The limiter's top edge must be beyond the upper edge of the visible viewport.
-			limiterRect.top < 0 &&
-			// The model#limiterElement's height mustn't be smaller than the toolbar's height and model#limiterOffset.
+			// The limiter's top edge must be beyond the upper edge of the visible viewport (+the viewportTopOffset).
+			limiterRect.top < this.viewportTopOffset &&
+			// The model#limiterElement's height mustn't be smaller than the toolbar's height and model#limiterBottomOffset.
 			// There's no point in entering the sticky mode if the model#limiterElement is very, very small, because
-			// it would immediately set model#_isStickyToTheLimiter true and, given model#limiterOffset, the toolbar
+			// it would immediately set model#_isStickyToTheLimiter true and, given model#limiterBottomOffset, the toolbar
 			// would be positioned before the model#limiterElement.
-			this._toolbarRect.height + this.limiterOffset < limiterRect.height;
+			this._toolbarRect.height + this.limiterBottomOffset < limiterRect.height;
 
 		// Stick the toolbar to the top edge of the viewport simulating CSS position:sticky.
 		// TODO: Possibly replaced by CSS in the future http://caniuse.com/#feat=css-sticky
 		if ( this.isSticky ) {
-			this._isStickyToTheLimiter = limiterRect.bottom < toolbarRect.height + this.limiterOffset;
+			this._isStickyToTheLimiter =
+				limiterRect.bottom < toolbarRect.height + this.limiterBottomOffset + this.viewportTopOffset;
+			this._hasViewportTopOffset = !this._isStickyToTheLimiter && !!this.viewportTopOffset;
 			this._marginLeft = this._isStickyToTheLimiter ? null : toPx( -global.window.scrollX );
 		}
 		// Detach the toolbar from the top edge of the viewport.
 		else {
 			this._isStickyToTheLimiter = false;
+			this._hasViewportTopOffset = false;
 			this._marginLeft = null;
 		}
 	}
