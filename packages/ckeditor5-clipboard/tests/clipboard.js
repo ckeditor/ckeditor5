@@ -174,6 +174,20 @@ describe( 'Clipboard feature', () => {
 			expect( stringifyModel( spy.args[ 0 ][ 0 ] ) ).to.equal( '<paragraph>x</paragraph>' );
 		} );
 
+		it( 'do not insert content when editor is read-only', () => {
+			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
+			const spy = sinon.stub( editor.data, 'insertContent' );
+
+			editor.isReadOnly = true;
+
+			editingView.fire( 'paste', {
+				dataTransfer: dataTransferMock,
+				preventDefault() {}
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
 		it( 'converts content in an "all allowed" context', () => {
 			// It's enough if we check this here with a text node and paragraph because if the conversion was made
 			// in a normal root, then text or paragraph wouldn't be allowed here.
@@ -267,6 +281,25 @@ describe( 'Clipboard feature', () => {
 				dataTransfer: dataTransferMock,
 				preventDefault: preventDefaultSpy
 			} );
+		} );
+
+		it( 'not fires clipboardOutput and preventDefault event for cut when editor is read-only', () => {
+			const dataTransferMock = createDataTransfer();
+			const preventDefaultSpy = sinon.spy();
+			const spy = sinon.spy();
+
+			setModelData( editor.document, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+			editor.isReadOnly = true;
+
+			editingView.on( 'clipboardOutput', spy );
+
+			editingView.fire( 'cut', {
+				dataTransfer: dataTransferMock,
+				preventDefault: preventDefaultSpy
+			} );
+
+			sinon.assert.notCalled( spy );
+			sinon.assert.calledOnce( preventDefaultSpy );
 		} );
 
 		it( 'uses low priority observer for the copy event', () => {

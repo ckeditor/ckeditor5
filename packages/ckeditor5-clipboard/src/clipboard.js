@@ -134,6 +134,12 @@ export default class Clipboard extends Plugin {
 		// The clipboard paste pipeline.
 
 		this.listenTo( editingView, 'clipboardInput', ( evt, data ) => {
+			// Pasting and dropping is disabled when editor is read-only.
+			// See: https://github.com/ckeditor/ckeditor5-clipboard/issues/26.
+			if ( editor.isReadOnly ) {
+				return;
+			}
+
 			const dataTransfer = data.dataTransfer;
 			let content = '';
 
@@ -165,17 +171,25 @@ export default class Clipboard extends Plugin {
 
 		// The clipboard copy/cut pipeline.
 
-		const onCopyCut = ( evt, data ) => {
+		function onCopyCut( evt, data ) {
 			const dataTransfer = data.dataTransfer;
 			const content = editor.data.toView( editor.data.getSelectedContent( doc.selection ) );
 
 			data.preventDefault();
 
 			editingView.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name } );
-		};
+		}
 
 		this.listenTo( editingView, 'copy', onCopyCut, { priority: 'low' } );
-		this.listenTo( editingView, 'cut', onCopyCut, { priority: 'low' } );
+		this.listenTo( editingView, 'cut', ( evt, data ) => {
+			// Cutting is disabled when editor is read-only.
+			// See: https://github.com/ckeditor/ckeditor5-clipboard/issues/26.
+			if ( editor.isReadOnly ) {
+				data.preventDefault();
+			} else {
+				onCopyCut( evt, data );
+			}
+		}, { priority: 'low' } );
 
 		this.listenTo( editingView, 'clipboardOutput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
