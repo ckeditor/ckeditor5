@@ -41,7 +41,7 @@ describe( 'clickOutsideHandler', () => {
 	it( 'should fired callback after clicking out of context element when listener is active', () => {
 		activator.returns( true );
 
-		document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 		sinon.assert.calledOnce( actionSpy );
 	} );
@@ -49,7 +49,7 @@ describe( 'clickOutsideHandler', () => {
 	it( 'should not fired callback after clicking out of context element when listener is not active', () => {
 		activator.returns( false );
 
-		document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 		sinon.assert.notCalled( actionSpy );
 	} );
@@ -86,7 +86,7 @@ describe( 'clickOutsideHandler', () => {
 			callback: spy
 		} );
 
-		document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 		sinon.assert.calledOnce( spy );
 	} );
@@ -103,7 +103,7 @@ describe( 'clickOutsideHandler', () => {
 			callback: spy
 		} );
 
-		document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 		sinon.assert.notCalled( spy );
 	} );
@@ -111,20 +111,20 @@ describe( 'clickOutsideHandler', () => {
 	it( 'should react on model `ifActive` property change', () => {
 		activator.returns( true );
 
-		document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 		sinon.assert.calledOnce( actionSpy );
 
 		activator.returns( false );
 
-		document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 		// Still called once, was not called second time.
 		sinon.assert.calledOnce( actionSpy );
 
 		activator.returns( true );
 
-		document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 		// Called one more time.
 		sinon.assert.calledTwice( actionSpy );
