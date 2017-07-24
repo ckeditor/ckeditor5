@@ -9,8 +9,6 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
-import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import ChangeBuffer from './changebuffer';
 import count from '@ckeditor/ckeditor5-utils/src/count';
@@ -107,9 +105,12 @@ export default class DeleteCommand extends Command {
 	 * the whole element without removing them.
 	 *
 	 * But, if the user pressed and released the key, we want to replace the entire content with a paragraph if:
-	 *   - the entire content is selected,
-	 *   - the paragraph is allowed in the common ancestor,
-	 *   - other paragraph does not occur in the editor.
+	 *
+	 *  * the entire content is selected,
+	 *  * the paragraph is allowed in the common ancestor,
+	 *  * other paragraph does not occur in the editor.
+	 *
+	 *  Rest of the checks are done in {@link module:engine/controller/datacontroller~DataController#deleteContent} method.
 	 *
 	 * @private
 	 * @param {Number} sequence A number describing which subsequent delete event it is without the key being released.
@@ -123,23 +124,10 @@ export default class DeleteCommand extends Command {
 
 		const document = this.editor.document;
 		const selection = document.selection;
-		const limitElement = getLimitElement( document.schema, selection );
-		const limitStartPosition = Position.createAt( limitElement );
-		const limitEndPosition = Position.createAt( limitElement, 'end' );
+		const commonAncestor = selection.getFirstRange().getCommonAncestor();
 
-		if (
-			!limitStartPosition.isTouching( selection.getFirstPosition() ) ||
-			!limitEndPosition.isTouching( selection.getLastPosition() )
-		) {
-			return false;
-		}
-
-		if ( !document.schema.check( { name: 'paragraph', inside: limitElement.name } ) ) {
-			return false;
-		}
-
-		// Does nothing if editor contains an empty paragraph.
-		if ( selection.getFirstRange().getCommonAncestor().name === 'paragraph' ) {
+		// Does nothing if editor already contains an empty paragraph.
+		if ( commonAncestor.name === 'paragraph' ) {
 			return false;
 		}
 
@@ -152,15 +140,13 @@ export default class DeleteCommand extends Command {
 	 * @private
 	 */
 	_replaceEntireContentWithParagraph() {
-		const document = this.editor.document;
+		const editor = this.editor;
+		const document = editor.document;
 		const selection = document.selection;
 		const limitElement = getLimitElement( document.schema, selection );
-		const paragraph = new Element( 'paragraph' );
 
-		this._buffer.batch.remove( Range.createIn( limitElement ) );
-		this._buffer.batch.insert( Position.createAt( limitElement ), paragraph );
-
-		selection.collapse( paragraph );
+		selection.setRanges( [ Range.createIn( limitElement ) ], selection.isBackward );
+		editor.data.deleteContent( selection, this._buffer.batch, { skipParentsCheck: true } );
 	}
 }
 
