@@ -568,7 +568,7 @@ describe( 'Link', () => {
 			const spy = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 
 			linkFeature._showPanel( true );
-			document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 			sinon.assert.calledWithExactly( spy );
 		} );
@@ -577,7 +577,7 @@ describe( 'Link', () => {
 			const spy = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 
 			linkFeature._showPanel( true );
-			balloon.view.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+			balloon.view.element.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 			sinon.assert.notCalled( spy );
 		} );
