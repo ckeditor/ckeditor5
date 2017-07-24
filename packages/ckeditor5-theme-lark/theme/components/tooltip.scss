@@ -15,6 +15,7 @@ $ck-tooltip-arrow-size: 5px;
 		background: ck-color( 'text' );
 		position: relative;
 		left: -50%;
+		line-height: 1.5;
 
 		&::after {
 			border-style: solid;
@@ -32,7 +33,7 @@ $ck-tooltip-arrow-size: 5px;
 	 *     +-----------+
 	 */
 	&.ck-tooltip_s {
-		top: calc( 100% - #{ $ck-tooltip-arrow-size + 1 } );
+		bottom: - $ck-tooltip-arrow-size;
 		transform: translateY( 100% );
 
 		.ck-tooltip__text::after {
@@ -54,7 +55,7 @@ $ck-tooltip-arrow-size: 5px;
 	 *       [element]
 	 */
 	&.ck-tooltip_n {
-		top: -$ck-tooltip-arrow-size + 1;
+		top: -$ck-tooltip-arrow-size;
 		transform: translateY( -100% );
 
 		.ck-tooltip__text::after {
