@@ -61,7 +61,7 @@ export default class ClassicEditorUI {
 		view.toolbar.bind( 'isActive' ).to( this.focusTracker, 'isFocused' );
 		view.toolbar.limiterElement = view.element;
 
-		if ( this._toolbarConfig ) {
+		if ( this._toolbarConfig && this._toolbarConfig.viewportTopOffset ) {
 			view.toolbar.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
 		}
 

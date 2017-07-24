@@ -87,7 +87,11 @@ describe( 'ClassicEditorUI', () => {
 				expect( view.toolbar.limiterElement ).to.equal( view.element );
 			} );
 
-			it( 'sets view.toolbar#viewportTopOffset', () => {
+			it( 'doesn\'t set view.toolbar#viewportTopOffset, if not specified in the config', () => {
+				expect( view.toolbar.viewportTopOffset ).to.equal( 0 );
+			} );
+
+			it( 'sets view.toolbar#viewportTopOffset, when specified in the config', () => {
 				editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
 
