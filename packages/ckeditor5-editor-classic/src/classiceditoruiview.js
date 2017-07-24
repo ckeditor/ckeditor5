@@ -13,7 +13,7 @@ import StickyToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/sticky/stickyt
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 /**
- * Classic editor UI view. Uses inline editable and sticky toolbar, all
+ * Classic editor UI view. Uses an inline editable and a sticky toolbar, all
  * enclosed in a boxed UI view.
  *
  * @extends module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView

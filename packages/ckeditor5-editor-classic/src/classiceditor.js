@@ -16,7 +16,7 @@ import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import '../theme/theme.scss';
 
 /**
- * Classic editor. Uses inline editable and sticky toolbar, all
+ * Classic editor. Uses an inline editable and a sticky toolbar, all
  * enclosed in a boxed UI.
  *
  * @extends module:core/editor/standardeditor~StandardEditor
