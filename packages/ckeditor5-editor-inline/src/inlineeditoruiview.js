@@ -14,7 +14,7 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 /**
- * Inline editor UI view. Uses inline editable and floating toolbar.
+ * Inline editor UI view. Uses an nline editable and a floating toolbar.
  *
  * @extends module:ui/editorui/editoruiview~EditorUIView
  */
@@ -37,8 +37,8 @@ export default class InlineEditorUIView extends EditorUIView {
 
 		/**
 		 * The offset from the top edge of the web browser's viewport which makes the
-		 * UI become sticky. The default value is `0`, which means the UI becomes
-		 * sticky when it's upper edge touches the top of the page viewport.
+		 * UI become sticky. The default value is `0`, which means that the UI becomes
+		 * sticky when its upper edge touches the top of the page viewport.
 		 *
 		 * This attribute is useful when the web page has UI elements positioned to the top
 		 * either using `position: fixed` or `position: sticky`, which would cover the
@@ -153,7 +153,7 @@ export default class InlineEditorUIView extends EditorUIView {
 	}
 
 	/**
-	 * Determines panel top position of the {@link #panel} in {@link #panelPositions}.
+	 * Determines the panel top position of the {@link #panel} in {@link #panelPositions}.
 	 *
 	 * @private
 	 * @param {module:utils/dom/rect~Rect} editableRect Rect of the {@link #editableElement}.
