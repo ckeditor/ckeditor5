@@ -88,6 +88,7 @@ describe( 'ClassicEditor', () => {
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
 		} );
 
+		// #53
 		it( 'creates an instance of a ClassicEditor child class', () => {
 			class CustomClassicEditor extends ClassicEditor {}
 
@@ -95,12 +96,12 @@ describe( 'ClassicEditor', () => {
 				plugins: [ Paragraph, Bold ]
 			} )
 			.then( newEditor => {
-				editor = newEditor;
-
 				expect( newEditor ).to.be.instanceof( CustomClassicEditor );
 				expect( newEditor ).to.be.instanceof( ClassicEditor );
 
 				expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+
+				return newEditor.destroy();
 			} );
 		} );
 	} );
