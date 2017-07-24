@@ -31,6 +31,10 @@ describe( 'InlineEditorUIView', () => {
 				expect( view.toolbar.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
 				expect( view.toolbar.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
 			} );
+
+			it( 'sets the default value of the #viewportTopOffset attribute', () => {
+				expect( view.viewportTopOffset ).to.equal( 0 );
+			} );
 		} );
 
 		describe( '#panel', () => {

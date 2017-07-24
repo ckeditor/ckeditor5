@@ -73,7 +73,11 @@ describe( 'InlineEditorUI', () => {
 				expect( view.panel.isVisible ).to.be.true;
 			} );
 
-			it( 'sets view#viewportTopOffset', () => {
+			it( 'doesn\'t set the view#viewportTopOffset, if not specified in the config', () => {
+				expect( view.viewportTopOffset ).to.equal( 0 );
+			} );
+
+			it( 'sets view#viewportTopOffset, if specified', () => {
 				editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
 

@@ -56,7 +56,7 @@ export default class InlineEditorUI {
 		// Set–up the view#panel.
 		view.panel.bind( 'isVisible' ).to( this.focusTracker, 'isFocused' );
 
-		if ( this._toolbarConfig ) {
+		if ( this._toolbarConfig && this._toolbarConfig.viewportTopOffset ) {
 			view.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
 		}
 
