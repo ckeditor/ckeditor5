@@ -200,4 +200,3 @@ export default class InlineEditorUIView extends EditorUIView {
 		];
 	}
 }
-
