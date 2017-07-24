@@ -21,7 +21,7 @@ export default class BalloonToolbarEditorUI {
 	 * Creates an instance of the balloon toolbar editor UI class.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:ui/editorui/editoruiview~EditorUIView} view View of the ui.
+	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
 	 */
 	constructor( editor, view ) {
 		/**
