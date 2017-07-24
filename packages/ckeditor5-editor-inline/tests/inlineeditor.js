@@ -89,6 +89,32 @@ describe( 'InlineEditor', () => {
 		it( 'loads data from the editor element', () => {
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
 		} );
+
+		// #25
+		it( 'creates an instance of a InlineEditor child class', () => {
+			// Fun fact: Remove the next 3 lines and you'll get a lovely inf loop due to two
+			// editor being initialized on one element.
+			const editorElement = document.createElement( 'div' );
+			editorElement.innerHTML = '<p><strong>foo</strong> bar</p>';
+
+			document.body.appendChild( editorElement );
+
+			class CustomInlineEditor extends InlineEditor {}
+
+			return CustomInlineEditor.create( editorElement, {
+				plugins: [ Paragraph, Bold ]
+			} )
+			.then( newEditor => {
+				expect( newEditor ).to.be.instanceof( CustomInlineEditor );
+				expect( newEditor ).to.be.instanceof( InlineEditor );
+
+				expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+
+				editorElement.remove();
+
+				return newEditor.destroy();
+			} );
+		} );
 	} );
 
 	describe( 'create - events', () => {

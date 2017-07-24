@@ -74,7 +74,7 @@ export default class InlineEditor extends StandardEditor {
 	 */
 	static create( element, config ) {
 		return new Promise( resolve => {
-			const editor = new InlineEditor( element, config );
+			const editor = new this( element, config );
 
 			resolve(
 				editor.initPlugins()
