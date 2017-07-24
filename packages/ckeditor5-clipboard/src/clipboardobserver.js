@@ -77,7 +77,7 @@ function getDropViewRange( doc, domEvent ) {
 }
 
 /**
- * Fired as a continuation of {@link #event:paste} amd {@link #event:drop} events.
+ * Fired as a continuation of {@link #event:paste} and {@link #event:drop} events.
  * It's part of the {@link module:clipboard/clipboard~Clipboard "clipboard pipeline"}.
  *
  * Fired with a `dataTransfer` which comes from the clipboard and which content should be processed
