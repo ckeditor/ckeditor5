@@ -51,6 +51,10 @@
 	z-index: ck-z( 'modal' );
 }
 
+.ck-tooltip__text {
+	display: inline-block;
+}
+
 .ck-tooltip__text::after {
 	content: "";
 	width: 0;
