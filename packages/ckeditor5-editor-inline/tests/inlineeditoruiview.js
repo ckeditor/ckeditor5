@@ -31,6 +31,10 @@ describe( 'InlineEditorUIView', () => {
 				expect( view.toolbar.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
 				expect( view.toolbar.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
 			} );
+
+			it( 'sets the default value of the #viewportTopOffset attribute', () => {
+				expect( view.viewportTopOffset ).to.equal( 0 );
+			} );
 		} );
 
 		describe( '#panel', () => {
@@ -225,6 +229,54 @@ describe( 'InlineEditorUIView', () => {
 
 				expect( top ).to.equal( 150 );
 				expect( left ).to.equal( expectedLeft );
+			} );
+
+			describe( 'view#viewportTopOffset', () => {
+				it( 'sticks the panel to the offset when there\'s not enough space above', () => {
+					view.viewportTopOffset = 50;
+
+					const position = view.panelPositions[ positionIndex ];
+					const editableRect = {
+						top: 0, // !
+						bottom: 200,
+						left: 100,
+						right: 100,
+						width: 100,
+						height: 200
+					};
+					const panelRect = {
+						width: 50,
+						height: 50
+					};
+
+					const { top, left } = position( editableRect, panelRect );
+
+					expect( top ).to.equal( 50 );
+					expect( left ).to.equal( expectedLeft );
+				} );
+
+				it( 'positions the panel below the editable when there\'s not enough space above/over', () => {
+					view.viewportTopOffset = 50;
+
+					const position = view.panelPositions[ positionIndex ];
+					const editableRect = {
+						top: 100,
+						bottom: 150,
+						left: 100,
+						right: 100,
+						width: 100,
+						height: 50
+					};
+					const panelRect = {
+						width: 50,
+						height: 80
+					};
+
+					const { top, left } = position( editableRect, panelRect );
+
+					expect( top ).to.equal( 150 );
+					expect( left ).to.equal( expectedLeft );
+				} );
 			} );
 		}
 	} );

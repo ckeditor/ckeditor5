@@ -13,28 +13,6 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
-// A set of positioning functions used by the
-// {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#panel}.
-//
-// @private
-// @type {module:utils/dom/position~Options#positions}
-const panelPositions = [
-	( editableRect, panelRect ) => {
-		return {
-			top: getPanelPositionTop( editableRect, panelRect ),
-			left: editableRect.left,
-			name: 'toolbar_west'
-		};
-	},
-	( editableRect, panelRect ) => {
-		return {
-			top: getPanelPositionTop( editableRect, panelRect ),
-			left: editableRect.left + editableRect.width - panelRect.width,
-			name: 'toolbar_east'
-		};
-	}
-];
-
 /**
  * Inline editor UI view. Uses inline editable and floating toolbar.
  *
@@ -57,6 +35,21 @@ export default class InlineEditorUIView extends EditorUIView {
 		 */
 		this.toolbar = new ToolbarView( locale );
 
+		/**
+		 * The offset from the top edge of the web browser's viewport which makes the
+		 * UI become sticky. The default value is `0`, which means the UI becomes
+		 * sticky when it's upper edge touches the top of the page viewport.
+		 *
+		 * This attribute is useful when the web page has UI elements positioned to the top
+		 * either using `position: fixed` or `position: sticky`, which would cover the
+		 * UI or vice–versa (depending on the `z-index` hierarchy).
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Number} #viewportTopOffset
+		 */
+		this.set( 'viewportTopOffset', 0 );
+
 		Template.extend( this.toolbar.template, {
 			attributes: {
 				class: [
@@ -77,6 +70,53 @@ export default class InlineEditorUIView extends EditorUIView {
 		this.panel = new BalloonPanelView( locale );
 
 		this.panel.withArrow = false;
+
+		/**
+		 * A set of positioning functions used by the {@link #panel} to float around
+		 * {@link #editableElement}.
+		 *
+		 * The positioning functions are as follows:
+		 *
+		 * * West:
+		 *
+		 *		[ Panel ]
+		 *		+------------------+
+		 *		| #editableElement |
+		 *		+------------------+
+		 *
+		 *		+------------------+
+		 *		| #editableElement |
+		 *		|[ Panel ]         |
+		 *		|                  |
+		 *		+------------------+
+		 *
+		 *		+------------------+
+		 *		| #editableElement |
+		 *		+------------------+
+		 *		[ Panel ]
+		 *
+		 * * East:
+		 *
+		 *		           [ Panel ]
+		 *		+------------------+
+		 *		| #editableElement |
+		 *		+------------------+
+		 *
+		 *		+------------------+
+		 *		| #editableElement |
+		 *		|         [ Panel ]|
+		 *		|                  |
+		 *		+------------------+
+		 *
+		 *		+------------------+
+		 *		| #editableElement |
+		 *		+------------------+
+		 *		           [ Panel ]
+		 *
+		 * @readonly
+		 * @type {module:utils/dom/position~Options#positions}
+		 */
+		this.panelPositions = this._getPanelPositions();
 
 		Template.extend( this.panel.template, {
 			attributes: {
@@ -113,73 +153,50 @@ export default class InlineEditorUIView extends EditorUIView {
 	}
 
 	/**
-	 * A set of positioning functions used by the {@link #panel} to float around
-	 * {@link #editableElement}.
+	 * Determines panel top position of the {@link #panel} in {@link #panelPositions}.
 	 *
-	 * The positioning functions are as follows:
-	 *
-	 * * West:
-	 *
-	 *		[ Panel ]
-	 *		+------------------+
-	 *		| #editableElement |
-	 *		+------------------+
-	 *
-	 *  	+------------------+
-	 *		| #editableElement |
-	 *		|[ Panel ]         |
-	 *		|                  |
-	 *		+------------------+
-	 *
-	 *		+------------------+
-	 *		| #editableElement |
-	 *		+------------------+
-	 *		[ Panel ]
-	 *
-	 * * East:
-	 *
-	 *		           [ Panel ]
-	 *		+------------------+
-	 *		| #editableElement |
-	 *		+------------------+
-	 *
-	 *  	+------------------+
-	 *		| #editableElement |
-	 *		|         [ Panel ]|
-	 *		|                  |
-	 *		+------------------+
-	 *
-	 *		+------------------+
-	 *		| #editableElement |
-	 *		+------------------+
-	 *		           [ Panel ]
-	 *
-	 * @readonly
-	 * @type {module:utils/dom/position~Options#positions}
+	 * @private
+	 * @param {module:utils/dom/rect~Rect} editableRect Rect of the
+	 * {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#editableElement}.
+	 * @param {module:utils/dom/rect~Rect} panelRect Rect of the
+	 * {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#panel}.
 	 */
-	get panelPositions() {
-		return panelPositions;
-	}
-}
+	_getPanelPositionTop( editableRect, panelRect ) {
+		let top;
 
-// Determines panel top position for
-// {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#panelPositions}
-//
-// @private
-// @param {module:utils/dom/rect~Rect} editableRect Rect of the
-// {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#editableElement}.
-// @param {module:utils/dom/rect~Rect} panelRect Rect of the
-// {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#panel}.
-function getPanelPositionTop( editableRect, panelRect ) {
-	let top;
+		if ( editableRect.top > panelRect.height + this.viewportTopOffset ) {
+			top = editableRect.top - panelRect.height;
+		} else if ( editableRect.bottom > panelRect.height + this.viewportTopOffset + 50 ) {
+			top = this.viewportTopOffset;
+		} else {
+			top = editableRect.bottom;
+		}
 
-	if ( editableRect.top > panelRect.height ) {
-		top = editableRect.top - panelRect.height;
-	} else if ( editableRect.bottom > panelRect.height + 50 ) {
-		top = 0;
-	} else {
-		top = editableRect.bottom;
+		return top;
 	}
 
-	return top;
+	/**
+	 * Returns the positions for {@link #panelPositions}.
+	 *
+	 * @private
+	 * @returns module:utils/dom/position~Options#positions
+	 */
+	_getPanelPositions() {
+		return [
+			( editableRect, panelRect ) => {
+				return {
+					top: this._getPanelPositionTop( editableRect, panelRect ),
+					left: editableRect.left,
+					name: 'toolbar_west'
+				};
+			},
+			( editableRect, panelRect ) => {
+				return {
+					top: this._getPanelPositionTop( editableRect, panelRect ),
+					left: editableRect.left + editableRect.width - panelRect.width,
+					name: 'toolbar_east'
+				};
+			}
+		];
+	}
 }
