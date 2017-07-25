@@ -11,6 +11,7 @@ import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+import ViewUIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
@@ -3302,6 +3303,46 @@ describe( 'ListEngine', () => {
 			}, { priority: 'lowest' } );
 
 			editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
+		} );
+
+		// This test tests the fix in `injectViewList` helper.
+		it( 'ul and ol should not be inserted before ui element - injectViewList()', () => {
+			editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
+
+			const uiElement = new ViewUIElement( 'span' );
+
+			// Append ui element at the end of first <li>.
+			viewDoc.getRoot().getChild( 0 ).getChild( 0 ).appendChildren( [ uiElement ] );
+
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+				.to.equal( '<ul><li>Foo<span></span></li><li>Bar</li></ul>' );
+
+			// Change indent of the second list item.
+			modelDoc.batch().setAttribute( modelRoot.getChild( 1 ), 'indent', 1 );
+
+			// Check if the new <ul> was added at correct position.
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+				.to.equal( '<ul><li>Foo<span></span><ul><li>Bar</li></ul></li></ul>' );
+		} );
+
+		// This test tests the fix in `hoistNestedLists` helper.
+		it( 'ul and ol should not be inserted before ui element - hoistNestedLists()', () => {
+			editor.setData( '<ul><li>Foo</li><li>Bar<ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
+
+			const uiElement = new ViewUIElement( 'span' );
+
+			// Append ui element at the end of first <li>.
+			viewRoot.getChild( 0 ).getChild( 0 ).appendChildren( [ uiElement ] );
+
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+				.to.equal( '<ul><li>Foo<span></span></li><li>Bar<ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
+
+			// Remove second list item. Expect that its sub-list will be moved to first list item.
+			modelDoc.batch().remove( modelRoot.getChild( 1 ) );
+
+			// Check if the <ul> was added at correct position.
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+				.to.equal( '<ul><li>Foo<span></span><ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
 		} );
 	} );
 
