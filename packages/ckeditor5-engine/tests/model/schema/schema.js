@@ -641,4 +641,40 @@ describe( 'Schema', () => {
 			expect( result[ 1 ].end.path ).to.members( [ 1 ] );
 		} );
 	} );
+
+	describe( 'getLimitElement()', () => {
+		let doc, root;
+
+		beforeEach( () => {
+			doc = new Document();
+			schema = doc.schema;
+			root = doc.createRoot();
+
+			schema.registerItem( 'div', '$block' );
+			schema.registerItem( 'article', '$block' );
+			schema.registerItem( 'section', '$block' );
+			schema.registerItem( 'paragraph', '$block' );
+			schema.allow( { name: 'paragraph', inside: 'article' } );
+			schema.allow( { name: 'article', inside: 'section' } );
+			schema.allow( { name: 'section', inside: 'div' } );
+		} );
+
+		it( 'always returns $root element if any other limit was not defined', () => {
+			schema.limits.delete( '$root' );
+
+			setData( doc, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
+			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
+		} );
+
+		it( 'returns the limit element which is the closest element to common ancestor', () => {
+			schema.limits.add( 'article' );
+			schema.limits.add( 'section' );
+
+			setData( doc, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
+
+			const article = root.getNodeByPath( [ 0, 0, 0 ] );
+
+			expect( schema.getLimitElement( doc.selection ) ).to.equal( article );
+		} );
+	} );
 } );

@@ -383,6 +383,26 @@ export default class Schema {
 	}
 
 	/**
+	 * Returns the lowest limit element defined in {@link module:engine/model/schema~Schema#limits} for passed selection.
+	 *
+	 * @param {module:engine/model/selection~Selection} selection Selection which will be checked.
+	 * @returns {module:engine/model/element~Element}
+	 */
+	getLimitElement( selection ) {
+		let element = selection.getFirstRange().getCommonAncestor();
+
+		while ( !this.limits.has( element.name ) ) {
+			if ( element.parent ) {
+				element = element.parent;
+			} else {
+				break;
+			}
+		}
+
+		return element;
+	}
+
+	/**
 	 * Returns {@link module:engine/model/schema~SchemaItem schema item} that was registered in the schema under given name.
 	 * If item has not been found, throws error.
 	 *
