@@ -185,7 +185,7 @@ describe( 'DeleteCommand', () => {
 			expect( element ).is.equal( doc.selection.getFirstRange().getCommonAncestor() );
 		} );
 
-		xit( 'does not replace an element if a paragraph is not allowed in current position', () => {
+		it( 'does not replace an element if a paragraph is not allowed in current position', () => {
 			doc.schema.disallow( { name: 'paragraph', inside: '$root' } );
 
 			setData( doc, '<heading1>[]</heading1>' );
