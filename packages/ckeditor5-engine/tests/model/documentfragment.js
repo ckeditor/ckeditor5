@@ -309,16 +309,50 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should return a descendant of this node', () => {
+			const foo = new Text( 'foo' );
 			const image = new Element( 'image' );
 			const element = new Element( 'elem', [], [
 				new Element( 'elem', [], [
-					new Text( 'foo' ),
+					foo,
 					image
 				] )
 			] );
 			const frag = new DocumentFragment( element );
 
-			expect( frag.getNodeByPath( [ 0, 0, 1 ] ) ).to.equal( image );
+			expect( frag.getNodeByPath( [ 0, 0, 0 ] ) ).to.equal( foo );
+			expect( frag.getNodeByPath( [ 0, 0, 1 ] ) ).to.equal( foo );
+			expect( frag.getNodeByPath( [ 0, 0, 2 ] ) ).to.equal( foo );
+			expect( frag.getNodeByPath( [ 0, 0, 3 ] ) ).to.equal( image );
+		} );
+
+		it( 'works fine with offsets', () => {
+			const bar = new Text( 'bar' );
+			const foo = new Text( 'foo' );
+			const bom = new Text( 'bom' );
+			const bold = new Element( 'b', [], [
+				bar
+			] );
+			const paragraph = new Element( 'paragraph', [], [
+				foo,
+				bold,
+				bom
+			] );
+			const frag = new DocumentFragment( paragraph );
+
+			// <paragraph>foo<bold>bar</bold>bom</paragraph>
+
+			expect( frag.getNodeByPath( [ 0, 0 ] ) ).to.equal( foo );
+			expect( frag.getNodeByPath( [ 0, 1 ] ) ).to.equal( foo );
+			expect( frag.getNodeByPath( [ 0, 2 ] ) ).to.equal( foo );
+			expect( frag.getNodeByPath( [ 0, 3 ] ) ).to.equal( bold );
+			expect( frag.getNodeByPath( [ 0, 3, 0 ] ) ).to.equal( bar );
+			expect( frag.getNodeByPath( [ 0, 3, 1 ] ) ).to.equal( bar );
+			expect( frag.getNodeByPath( [ 0, 3, 2 ] ) ).to.equal( bar );
+			expect( frag.getNodeByPath( [ 0, 3, 3 ] ) ).to.equal( null );
+			expect( frag.getNodeByPath( [ 0, 4 ] ) ).to.equal( bom );
+			expect( frag.getNodeByPath( [ 0, 5 ] ) ).to.equal( bom );
+			expect( frag.getNodeByPath( [ 0, 6 ] ) ).to.equal( bom );
+			expect( frag.getNodeByPath( [ 0, 7 ] ) ).to.equal( null );
 		} );
 	} );
 } );
