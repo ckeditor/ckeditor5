@@ -389,7 +389,15 @@ export default class Schema {
 	 * @returns {module:engine/model/element~Element}
 	 */
 	getLimitElement( selection ) {
-		let element = selection.getFirstRange().getCommonAncestor();
+		// Find the common ancestor for all selection's ranges.
+		let element = Array.from( selection.getRanges() )
+			.reduce( ( node, range ) => {
+				if ( !node ) {
+					return range.getCommonAncestor();
+				}
+
+				return node.getCommonAncestor( range.getCommonAncestor() );
+			}, null );
 
 		while ( !this.limits.has( element.name ) ) {
 			if ( element.parent ) {
