@@ -203,17 +203,13 @@ function renderButton() {
 		tooltip: 'The content of the tooltip',
 	} ) );
 
-	const northTooltipButton = button( {
+	ui.buttonTooltip.add( button( {
 		label: 'This one too – north',
 		withText: true,
 		keystroke: 'Ctrl+N',
 		tooltip: true,
-	} );
-
-	northTooltipButton.init();
-	northTooltipButton.tooltipView.position = 'n';
-
-	ui.buttonTooltip.add( northTooltipButton );
+		tooltipPosition: 'n'
+	} ) );
 }
 
 function renderDropdown() {
@@ -355,11 +351,12 @@ function button( {
 	withText = true,
 	keystroke = null,
 	tooltip,
+	tooltipPosition = 's',
 	icon
 } = {} ) {
 	const button = new ButtonView();
 
-	button.set( { label, isEnabled, isOn, withText, icon, keystroke, tooltip } );
+	button.set( { label, isEnabled, isOn, withText, icon, keystroke, tooltip, tooltipPosition } );
 
 	return button;
 }
