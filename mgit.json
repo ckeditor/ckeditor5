@@ -9,7 +9,7 @@
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#86daed9",
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#67bd511",
     "@ckeditor/ckeditor5-editor-balloon-toolbar": "ckeditor/ckeditor5-editor-balloon-toolbar#f7e4951",
-    "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#63f1834",
+    "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#511d28f",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#1da0563",
     "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#9f7e0a2",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#5c63ac3",
