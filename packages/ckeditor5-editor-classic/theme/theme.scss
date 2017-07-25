@@ -16,6 +16,9 @@
 			border-top: 0;
 			border-left: 0;
 			border-right: 0;
+
+			// https://github.com/ckeditor/ckeditor5-editor-classic/issues/62
+			z-index: ck-z( 'modal' );
 		}
 	}
 
