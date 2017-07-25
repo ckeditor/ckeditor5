@@ -680,6 +680,29 @@ describe( 'DocumentSelection', () => {
 
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 6 ] );
 			} );
+
+			it( 'fix selection range if it ends up in graveyard #4 - whole content removed', () => {
+				doc.applyOperation( wrapInDelta(
+					new RemoveOperation(
+						new Position( root, [ 0 ] ),
+						3,
+						new Position( doc.graveyard, [ 0 ] ),
+						doc.version
+					)
+				) );
+
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0 ] );
+
+				doc.applyOperation( wrapInDelta(
+					new InsertOperation(
+						new Position( root, [ 0 ] ),
+						new Element( 'p' ),
+						doc.version
+					)
+				) );
+
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 0 ] );
+			} );
 		} );
 	} );
 
