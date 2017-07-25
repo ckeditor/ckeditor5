@@ -291,6 +291,40 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].newText ).to.equal( 'foo ' );
 	} );
 
+	it( 'should ignore child mutations which resulted in no changes – when element contains elements', () => {
+		viewRoot.appendChildren( parse( '<container:p><container:x></container:x></container:p>' ) );
+
+		viewDocument.render();
+
+		const domP = domEditor.childNodes[ 2 ];
+		const domY = document.createElement( 'y' );
+		domP.appendChild( domY );
+		domY.remove();
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 0 );
+	} );
+
+	// This case is more tricky than the previous one because DOMConverter will return a different
+	// instances of view text nodes every time it converts a DOM text node.
+	it( 'should ignore child mutations which resulted in no changes – when element contains text nodes', () => {
+		const domP = domEditor.childNodes[ 0 ];
+		const domText = document.createTextNode( 'x' );
+		domP.appendChild( domText );
+		domText.remove();
+
+		const domP2 = domEditor.childNodes[ 1 ];
+		domP2.appendChild( document.createTextNode( 'x' ) );
+
+		mutationObserver.flush();
+
+		// There was onlu P2 change. P1 must be ignored.
+		const viewP2 = viewRoot.getChild( 1 );
+		expect( lastMutations.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].node ).to.equal( viewP2 );
+	} );
+
 	it( 'should not ignore mutation with br inserted not on the end of the paragraph', () => {
 		viewRoot.appendChildren( parse( '<container:p>foo</container:p>' ) );
 
