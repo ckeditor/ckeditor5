@@ -649,12 +649,7 @@ export default class DocumentSelection extends Selection {
 		const positionCandidate = Position.createFromPosition( removedRange.start );
 
 		// Find a range that is a correct selection range and is closest to the start of removed range.
-		let selectionRange = this._document.getNearestSelectionRange( positionCandidate );
-
-		// If nearest valid selection range cannot be found - use one created at the beginning of the root.
-		if ( !selectionRange ) {
-			selectionRange = new Range( new Position( positionCandidate.root, [ 0 ] ) );
-		}
+		const selectionRange = this._document.getNearestSelectionRange( positionCandidate );
 
 		// Remove the old selection range before preparing and adding new selection range. This order is important,
 		// because new range, in some cases, may intersect with old range (it depends on `getNearestSelectionRange()` result).
@@ -662,11 +657,15 @@ export default class DocumentSelection extends Selection {
 		this._ranges.splice( index, 1 );
 		liveRange.detach();
 
-		// Check the range, convert it to live range, bind events, etc.
-		const newRange = this._prepareRange( selectionRange );
+		// If nearest valid selection range has been found - add it in the place of old range.
+		if ( selectionRange ) {
+			// Check the range, convert it to live range, bind events, etc.
+			const newRange = this._prepareRange( selectionRange );
 
-		// Add new range in the place of old range.
-		this._ranges.splice( index, 0, newRange );
+			// Add new range in the place of old range.
+			this._ranges.splice( index, 0, newRange );
+		}
+		// If nearest valid selection range cannot be found - just removing the old range is fine.
 
 		// Fire an event informing about selection change.
 		this.fire( 'change:range', { directChange: false } );
