@@ -13,6 +13,9 @@
 	text-decoration: none;
 	vertical-align: middle;
 	transition: none;
+
+	// https://github.com/ckeditor/ckeditor5-theme-lark/issues/105
+	word-wrap: break-word;
 }
 
 /**
