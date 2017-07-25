@@ -885,6 +885,8 @@ function injectViewList( modelItem, injectedItem, mapper, removePosition ) {
 		}
 	}
 
+	insertPosition = positionAfterUiElements( insertPosition );
+
 	// Insert the view item.
 	viewWriter.insert( insertPosition, injectedList );
 
@@ -1001,6 +1003,8 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 		insertPosition = mapper.toViewPosition( modelPosition );
 	}
 
+	insertPosition = positionAfterUiElements( insertPosition );
+
 	// Handle multiple lists. This happens if list item has nested numbered and bulleted lists. Following lists
 	// are inserted after the first list (no need to recalculate insertion position for them).
 	for ( const child of [ ...viewRemovedItem.getChildren() ] ) {
@@ -1029,4 +1033,13 @@ function _getBoundaryItemOfSameList( item, getFirst ) {
 	}
 
 	return result;
+}
+
+// Helper function that for given `view.Position`, returns a `view.Position` that is after all `view.UIElement`s that
+// are after given position.
+// For example:
+// <container:p>foo^<ui:span></ui:span><ui:span></ui:span>bar</contain:p>
+// For position ^, a position before "bar" will be returned.
+function positionAfterUiElements( viewPosition ) {
+	return viewPosition.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
 }
