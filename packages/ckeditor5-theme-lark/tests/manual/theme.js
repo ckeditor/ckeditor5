@@ -61,6 +61,7 @@ const ui = testUtils.createTestUIView( {
 	'buttonResponsive1': '#button-responsive-1',
 	'buttonResponsive2': '#button-responsive-2',
 	'buttonResponsive3': '#button-responsive-3',
+	'buttonTooltip': '#button-tooltip',
 
 	dropdown: '#dropdown',
 
@@ -193,6 +194,26 @@ function renderButton() {
 
 		ui[ `buttonResponsive${ i }` ].add( notextButton );
 	}
+
+	// --- Tooltip ------------------------------------------------------------
+
+	ui.buttonTooltip.add( button( {
+		label: 'This button has a tooltip (south)',
+		withText: true,
+		tooltip: 'The content of the tooltip',
+	} ) );
+
+	const northTooltipButton = button( {
+		label: 'This one too – north',
+		withText: true,
+		keystroke: 'Ctrl+N',
+		tooltip: true,
+	} );
+
+	northTooltipButton.init();
+	northTooltipButton.tooltipView.position = 'n';
+
+	ui.buttonTooltip.add( northTooltipButton );
 }
 
 function renderDropdown() {
@@ -332,12 +353,13 @@ function button( {
 	isEnabled = true,
 	isOn = false,
 	withText = true,
+	keystroke = null,
 	tooltip,
 	icon
 } = {} ) {
 	const button = new ButtonView();
 
-	button.set( { label, isEnabled, isOn, withText, icon, tooltip } );
+	button.set( { label, isEnabled, isOn, withText, icon, keystroke, tooltip } );
 
 	return button;
 }
