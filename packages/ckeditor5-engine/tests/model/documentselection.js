@@ -701,6 +701,7 @@ describe( 'DocumentSelection', () => {
 					)
 				) );
 
+				// Now it's clear that it's the default range.
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 0 ] );
 			} );
 		} );
