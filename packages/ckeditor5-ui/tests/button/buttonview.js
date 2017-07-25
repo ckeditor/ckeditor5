@@ -116,6 +116,7 @@ describe( 'ButtonView', () => {
 				expect( view.element.childNodes ).to.have.length( 3 );
 				expect( view.element.childNodes[ 2 ] ).to.equal( view.tooltipView.element );
 				expect( view.tooltipView ).to.instanceOf( TooltipView );
+				expect( view.tooltipView.position ).to.equal( 's' );
 			} );
 
 			it( 'when set, is destroyed along with the view', () => {
@@ -126,6 +127,18 @@ describe( 'ButtonView', () => {
 
 				view.destroy();
 				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'when set, reacts to #tooltipPosition attribute', () => {
+				view.tooltip = 'foo';
+				view.icon = 'bar';
+				view.init();
+
+				expect( view.tooltipPosition ).to.equal( 's' );
+				expect( view.tooltipView.position ).to.equal( 's' );
+
+				view.tooltipPosition = 'n';
+				expect( view.tooltipView.position ).to.equal( 'n' );
 			} );
 
 			describe( 'defined as a Boolean', () => {

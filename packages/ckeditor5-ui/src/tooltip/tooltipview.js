@@ -31,7 +31,7 @@ export default class TooltipView extends View {
 		this.set( 'text' );
 
 		/**
-		 * The direction of the tooltip (south or north).
+		 * The position of the tooltip (south or north).
 		 *
 		 *		+-----------+
 		 *		|   north   |

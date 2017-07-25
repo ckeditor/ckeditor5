@@ -61,6 +61,18 @@ export default class ButtonView extends View {
 		this.set( 'tooltip' );
 
 		/**
+		 * The position of the tooltip. See {@link ui/tooltip/tooltipview~TooltipView#position}
+		 * to learn more about the available position values.
+		 *
+		 * **Note:** It makes sense only when the {@link #tooltip} is active.
+		 *
+		 * @observable
+		 * @default 's'
+		 * @member {'s'|'n'} #position
+		 */
+		this.set( 'tooltipPosition', 's' );
+
+		/**
 		 * The HTML type of the button. Default `button`.
 		 *
 		 * @observable
@@ -225,6 +237,7 @@ export default class ButtonView extends View {
 			const tooltipView = this.tooltipView = new TooltipView();
 
 			tooltipView.bind( 'text' ).to( this, '_tooltipString' );
+			tooltipView.bind( 'position' ).to( this, 'tooltipPosition' );
 			this.element.appendChild( tooltipView.element );
 
 			// Make sure the tooltip will be destroyed along with the button.
