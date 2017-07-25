@@ -660,7 +660,7 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'always returns $root element if any other limit was not defined', () => {
-			schema.limits.delete( '$root' );
+			schema.limits.clear();
 
 			setData( doc, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
 			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
