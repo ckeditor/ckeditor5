@@ -383,6 +383,35 @@ export default class Schema {
 	}
 
 	/**
+	 * Returns the lowest {@link module:engine/model/schema~Schema#limits limit element} containing the entire
+	 * selection or the root otherwise.
+	 *
+	 * @param {module:engine/model/selection~Selection} selection Selection which returns the common ancestor.
+	 * @returns {module:engine/model/element~Element}
+	 */
+	getLimitElement( selection ) {
+		// Find the common ancestor for all selection's ranges.
+		let element = Array.from( selection.getRanges() )
+			.reduce( ( node, range ) => {
+				if ( !node ) {
+					return range.getCommonAncestor();
+				}
+
+				return node.getCommonAncestor( range.getCommonAncestor() );
+			}, null );
+
+		while ( !this.limits.has( element.name ) ) {
+			if ( element.parent ) {
+				element = element.parent;
+			} else {
+				break;
+			}
+		}
+
+		return element;
+	}
+
+	/**
 	 * Returns {@link module:engine/model/schema~SchemaItem schema item} that was registered in the schema under given name.
 	 * If item has not been found, throws error.
 	 *
