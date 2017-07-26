@@ -7,7 +7,6 @@ import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import FileRepository from './filerepository';
-import { isImageType } from './utils';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
@@ -39,10 +38,6 @@ export default class ImageUploadCommand extends Command {
 		const selection = doc.selection;
 		const fileRepository = editor.plugins.get( FileRepository );
 
-		if ( !isImageType( file ) ) {
-			return;
-		}
-
 		doc.enqueueChanges( () => {
 			const imageElement = new ModelElement( 'image', {
 				uploadId: fileRepository.createLoader( file ).id
@@ -57,7 +52,11 @@ export default class ImageUploadCommand extends Command {
 			}
 
 			editor.data.insertContent( imageElement, insertAtSelection, batch );
-			selection.setRanges( [ ModelRange.createOn( imageElement ) ] );
+
+			// Inserting an image might've failed due to schema regulations.
+			if ( imageElement.parent ) {
+				selection.setRanges( [ ModelRange.createOn( imageElement ) ] );
+			}
 		} );
 	}
 }
