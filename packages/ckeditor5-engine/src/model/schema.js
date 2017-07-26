@@ -383,7 +383,8 @@ export default class Schema {
 	}
 
 	/**
-	 * Returns the lowest limit element defined in {@link module:engine/model/schema~Schema#limits} for passed selection.
+	 * Returns the lowest {@link module:engine/model/schema~Schema#limits limit element} containing the entire
+	 * selection or the root otherwise.
 	 *
 	 * @param {module:engine/model/selection~Selection} selection Selection which returns the common ancestor.
 	 * @returns {module:engine/model/element~Element}

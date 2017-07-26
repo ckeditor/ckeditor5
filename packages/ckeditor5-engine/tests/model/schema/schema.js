@@ -654,9 +654,15 @@ describe( 'Schema', () => {
 			schema.registerItem( 'article', '$block' );
 			schema.registerItem( 'section', '$block' );
 			schema.registerItem( 'paragraph', '$block' );
+			schema.registerItem( 'widget', '$block' );
+			schema.registerItem( 'image', '$block' );
+			schema.registerItem( 'caption', '$block' );
+			schema.allow( { name: 'image', inside: 'widget' } );
+			schema.allow( { name: 'caption', inside: 'image' } );
 			schema.allow( { name: 'paragraph', inside: 'article' } );
 			schema.allow( { name: 'article', inside: 'section' } );
 			schema.allow( { name: 'section', inside: 'div' } );
+			schema.allow( { name: 'widget', inside: 'div' } );
 		} );
 
 		it( 'always returns $root element if any other limit was not defined', () => {
@@ -678,6 +684,7 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'returns the limit element which is the closest element to common ancestor for non-collapsed selection', () => {
+			schema.limits.add( 'article' );
 			schema.limits.add( 'section' );
 
 			setData( doc, '<div><section><article><paragraph>fo[o</paragraph></article>b]ar</section></div>' );
@@ -688,6 +695,8 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'works fine with multi-range selections', () => {
+			schema.limits.add( 'article' );
+			schema.limits.add( 'widget' );
 			schema.limits.add( 'div' );
 
 			setData(
@@ -698,7 +707,11 @@ describe( 'Schema', () => {
 							'<paragraph>[foo]</paragraph>' +
 						'</article>' +
 					'</section>' +
-					'<section>b[]ar</section>' +
+					'<widget>' +
+						'<image>' +
+							'<caption>b[a]r</caption>' +
+						'</image>' +
+					'</widget>' +
 				'</div>'
 			);
 
