@@ -20,7 +20,10 @@ describe( 'DeleteCommand integration', () => {
 				const command = new DeleteCommand( editor, 'backward' );
 				editor.commands.add( 'delete', command );
 
-				doc.schema.registerItem( 'p', '$block' );
+				// Mock paragraph feature.
+				doc.schema.registerItem( 'paragraph', '$block' );
+				doc.schema.allow( { name: 'paragraph', inside: '$block' } );
+
 				doc.schema.registerItem( 'img', '$inline' );
 				doc.schema.allow( { name: '$text', inside: 'img' } );
 
@@ -36,9 +39,9 @@ describe( 'DeleteCommand integration', () => {
 		expect( getData( doc ) ).to.equal( output );
 	}
 
-	describe( 'DeleteCommand integration', () => {
+	describe( 'with undo', () => {
 		it( 'deletes characters (and group changes in batches) and rollbacks', () => {
-			setData( doc, '<p>123456789[]</p>' );
+			setData( doc, '<paragraph>123456789[]</paragraph>' );
 
 			for ( let i = 0; i < 3; ++i ) {
 				editor.execute( 'delete' );
@@ -46,11 +49,11 @@ describe( 'DeleteCommand integration', () => {
 
 			editor.execute( 'undo' );
 
-			assertOutput( '<p>123456789[]</p>' );
+			assertOutput( '<paragraph>123456789[]</paragraph>' );
 		} );
 
 		it( 'deletes characters (and group changes in batches) and rollbacks - test step', () => {
-			setData( doc, '<p>123456789[]</p>' );
+			setData( doc, '<paragraph>123456789[]</paragraph>' );
 
 			for ( let i = 0; i < 6; ++i ) {
 				editor.execute( 'delete' );
@@ -58,15 +61,15 @@ describe( 'DeleteCommand integration', () => {
 
 			editor.execute( 'undo' );
 
-			assertOutput( '<p>123456[]</p>' );
+			assertOutput( '<paragraph>123456[]</paragraph>' );
 
 			editor.execute( 'undo' );
 
-			assertOutput( '<p>123456789[]</p>' );
+			assertOutput( '<paragraph>123456789[]</paragraph>' );
 		} );
 
 		it( 'deletes elements (and group changes in batches) and rollbacks', () => {
-			setData( doc, '<p><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img>[]</p>' );
+			setData( doc, '<paragraph><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img>[]</paragraph>' );
 
 			for ( let i = 0; i < 3; ++i ) {
 				editor.execute( 'delete' );
@@ -74,11 +77,11 @@ describe( 'DeleteCommand integration', () => {
 
 			editor.execute( 'undo' );
 
-			assertOutput( '<p><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img>[]</p>' );
+			assertOutput( '<paragraph><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img>[]</paragraph>' );
 		} );
 
 		it( 'merges elements (and group changes in batches) and rollbacks', () => {
-			setData( doc, '<p>123456</p><p>[]78</p>' );
+			setData( doc, '<paragraph>123456</paragraph><paragraph>[]78</paragraph>' );
 
 			for ( let i = 0; i < 6; ++i ) {
 				editor.execute( 'delete' );
@@ -86,19 +89,19 @@ describe( 'DeleteCommand integration', () => {
 
 			editor.execute( 'undo' );
 
-			// Deleted 6,5,4, <P> does not count.
+			// Deleted 6,5,4, <paragraph> does not count.
 			// It's not the most elegant solution, but is the best if we don't want to make complicated algorithm.
-			assertOutput( '<p>123[]78</p>' );
+			assertOutput( '<paragraph>123[]78</paragraph>' );
 
 			editor.execute( 'undo' );
 
 			// Selection restoing in undo is not 100% correct so slight miss-settings are expected as long as
 			// the selection makes any sense and is near the correct position.
-			assertOutput( '<p>123456</p><p>78[]</p>' );
+			assertOutput( '<paragraph>123456</paragraph><paragraph>78[]</paragraph>' );
 		} );
 
 		it( 'merges elements (and group changes in batches) and rollbacks - non-collapsed selection', () => {
-			setData( doc, '<p>12345[6</p><p>7]8</p>' );
+			setData( doc, '<paragraph>12345[6</paragraph><paragraph>7]8</paragraph>' );
 
 			editor.execute( 'delete' );
 			editor.execute( 'delete' );
@@ -106,11 +109,41 @@ describe( 'DeleteCommand integration', () => {
 
 			editor.execute( 'undo' );
 
-			assertOutput( '<p>1234[]8</p>' );
+			assertOutput( '<paragraph>1234[]8</paragraph>' );
 
 			editor.execute( 'undo' );
 
-			assertOutput( '<p>12345[6</p><p>7]8</p>' );
+			assertOutput( '<paragraph>12345[6</paragraph><paragraph>7]8</paragraph>' );
+		} );
+	} );
+
+	describe( 'with DataController.deleteContent', () => {
+		beforeEach( () => {
+			doc.schema.registerItem( 'h1', '$block' );
+		} );
+
+		it( 'should replace content with paragraph - if whole content is selected', () => {
+			setData( doc, '<h1>[foo</h1><paragraph>bar]</paragraph>' );
+
+			editor.execute( 'delete' );
+
+			assertOutput( '<paragraph>[]</paragraph>' );
+		} );
+
+		it( 'should not replace content with paragraph - if not whole content is selected', () => {
+			setData( doc, '<h1>f[oo</h1><paragraph>bar]</paragraph>' );
+
+			editor.execute( 'delete' );
+
+			assertOutput( '<h1>f[]</h1>' );
+		} );
+
+		it( 'should not replace content with paragraph - if selection was collapsed', () => {
+			setData( doc, '<h1></h1><paragraph>[]</paragraph>' );
+
+			editor.execute( 'delete' );
+
+			assertOutput( '<h1>[]</h1>' );
 		} );
 	} );
 } );
