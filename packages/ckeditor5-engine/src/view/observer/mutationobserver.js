@@ -12,6 +12,7 @@
 import Observer from './observer';
 import ViewSelection from '../selection';
 import { startsWithFiller, getDataWithoutFiller } from '../filler';
+import isEqualWith from '@ckeditor/ckeditor5-utils/src/lib/lodash/isEqualWith';
 
 /**
  * Mutation observer class observes changes in the DOM, fires {@link module:engine/view/document~Document#event:mutations} event, mark view
@@ -204,16 +205,21 @@ export default class MutationObserver extends Observer {
 
 		for ( const viewElement of mutatedElements ) {
 			const domElement = domConverter.mapViewToDom( viewElement );
-			const viewChildren = viewElement.getChildren();
-			const newViewChildren = domConverter.domChildrenToView( domElement );
+			const viewChildren = Array.from( viewElement.getChildren() );
+			const newViewChildren = Array.from( domConverter.domChildrenToView( domElement ) );
 
-			this.renderer.markToSync( 'children', viewElement );
-			viewMutations.push( {
-				type: 'children',
-				oldChildren: Array.from( viewChildren ),
-				newChildren: Array.from( newViewChildren ),
-				node: viewElement
-			} );
+			// It may happen that as a result of many changes (sth was inserted and then removed),
+			// both elements haven't really changed. #1031
+			if ( !isEqualWith( viewChildren, newViewChildren, sameNodes ) ) {
+				this.renderer.markToSync( 'children', viewElement );
+
+				viewMutations.push( {
+					type: 'children',
+					oldChildren: viewChildren,
+					newChildren: newViewChildren,
+					node: viewElement
+				} );
+			}
 		}
 
 		// Retrieve `domSelection` using `ownerDocument` of one of mutated nodes.
@@ -244,6 +250,25 @@ export default class MutationObserver extends Observer {
 		// If nothing changes on `mutations` event, at this point we have "dirty DOM" (changed) and de-synched
 		// view (which has not been changed). In order to "reset DOM" we render the view again.
 		this.document.render();
+
+		function sameNodes( child1, child2 ) {
+			// First level of comparison (array of children vs array of children) – use the Lodash's default behavior.
+			if ( Array.isArray( child1 ) ) {
+				return;
+			}
+
+			// Elements.
+			if ( child1 === child2 ) {
+				return true;
+			}
+			// Texts.
+			else if ( child1.is( 'text' ) && child2.is( 'text' ) ) {
+				return child1.data === child2.data;
+			}
+
+			// Not matching types.
+			return false;
+		}
 	}
 
 	/**

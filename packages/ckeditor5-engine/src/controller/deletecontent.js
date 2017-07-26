@@ -168,21 +168,6 @@ function checkCanBeMerged( leftPos, rightPos ) {
 	return true;
 }
 
-// Returns the lowest limit element defined in `Schema.limits` for passed selection.
-function getLimitElement( schema, selection ) {
-	let element = selection.getFirstRange().getCommonAncestor();
-
-	while ( !schema.limits.has( element.name ) ) {
-		if ( element.parent ) {
-			element = element.parent;
-		} else {
-			break;
-		}
-	}
-
-	return element;
-}
-
 function insertParagraph( batch, position, selection ) {
 	const paragraph = new Element( 'paragraph' );
 	batch.insert( position, paragraph );
@@ -191,7 +176,7 @@ function insertParagraph( batch, position, selection ) {
 }
 
 function replaceEntireContentWithParagraph( batch, selection ) {
-	const limitElement = getLimitElement( batch.document.schema, selection );
+	const limitElement = batch.document.schema.getLimitElement( selection );
 
 	batch.remove( Range.createIn( limitElement ) );
 	insertParagraph( batch, Position.createAt( limitElement ), selection );
@@ -202,7 +187,7 @@ function replaceEntireContentWithParagraph( batch, selection ) {
 // * selection contains at least two elements,
 // * whether the paragraph is allowed in schema in the common ancestor.
 function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
-	const limitElement = getLimitElement( schema, selection );
+	const limitElement = schema.getLimitElement( selection );
 	const limitStartPosition = Position.createAt( limitElement );
 	const limitEndPosition = Position.createAt( limitElement, 'end' );
 
