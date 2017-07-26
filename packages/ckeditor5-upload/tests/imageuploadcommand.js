@@ -39,15 +39,15 @@ describe( 'ImageUploadCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should insert image at selection position', () => {
+		it( 'should insert image at selection position (includes deleting selected content)', () => {
 			const file = createNativeFileMock();
-			setModelData( doc, '<paragraph>f[]oo</paragraph>' );
+			setModelData( doc, '<paragraph>f[o]o</paragraph>' );
 
 			command.execute( { file } );
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( doc ) )
-				.to.equal( `<paragraph>f</paragraph>[<image uploadId="${ id }"></image>]<paragraph>oo</paragraph>` );
+				.to.equal( `<paragraph>f</paragraph>[<image uploadId="${ id }"></image>]<paragraph>o</paragraph>` );
 		} );
 
 		it( 'should insert directly at specified position (options.insertAt)', () => {

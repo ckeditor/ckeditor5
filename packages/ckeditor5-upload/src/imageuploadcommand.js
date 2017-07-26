@@ -26,7 +26,9 @@ export default class ImageUploadCommand extends Command {
 	 * @param {Object} options Options for executed command.
 	 * @param {File} options.file Image file to upload.
 	 * @param {module:engine/model/position~Position} [options.insertAt] Position at which the image should be inserted.
-	 * If the position won't be specified the image will be inserted next to the selection.
+	 * If the position is not specified the image will be inserted into the current selection.
+	 * Note: You can use the {@link module:upload/utils~findOptimalInsertionPosition} function to calculate
+	 * (e.g. based on the current selection) a position which is more optimal from UX perspective.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
