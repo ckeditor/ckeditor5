@@ -10,6 +10,7 @@
 import View from '../view';
 import Template from '../template';
 import IconView from '../icon/iconview';
+import TooltipView from '../tooltip/tooltipview';
 
 import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -58,6 +59,18 @@ export default class ButtonView extends View {
 		 * @member {Boolean|String|Function} #tooltip
 		 */
 		this.set( 'tooltip' );
+
+		/**
+		 * The position of the tooltip. See {@link ui/tooltip/tooltipview~TooltipView#position}
+		 * to learn more about the available position values.
+		 *
+		 * **Note:** It makes sense only when the {@link #tooltip} is active.
+		 *
+		 * @observable
+		 * @default 's'
+		 * @member {'s'|'n'} #position
+		 */
+		this.set( 'tooltipPosition', 's' );
 
 		/**
 		 * The HTML type of the button. Default `button`.
@@ -140,6 +153,13 @@ export default class ButtonView extends View {
 		 * @member {module:ui/icon/iconview~IconView} #iconView
 		 */
 
+		/**
+		 * Tooltip of the button view.
+		 *
+		 * @readonly
+		 * @member {module:ui/tooltip/tooltipview~TooltipView} #tooltipView
+		 */
+
 		const bind = this.bindTemplate;
 
 		this.template = new Template( {
@@ -148,16 +168,12 @@ export default class ButtonView extends View {
 			attributes: {
 				class: [
 					'ck-button',
-					bind.if( '_tooltipString', 'ck-tooltip_s' ),
 					bind.to( 'isEnabled', value => value ? 'ck-enabled' : 'ck-disabled' ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value ),
 					bind.to( 'isOn', value => value ? 'ck-on' : 'ck-off' ),
 					bind.if( 'withText', 'ck-button_with-text' )
 				],
 				type: bind.to( 'type', value => value ? value : 'button' ),
-				'data-ck-tooltip': [
-					bind.to( '_tooltipString' )
-				],
 				tabindex: bind.to( 'tabindex' )
 			},
 
@@ -207,15 +223,25 @@ export default class ButtonView extends View {
 	 * @inheritDoc
 	 */
 	init() {
-		if ( this.icon && !this.iconView ) {
+		if ( this.icon ) {
 			const iconView = this.iconView = new IconView();
 
 			iconView.bind( 'content' ).to( this, 'icon' );
-
 			this.element.insertBefore( iconView.element, this.element.firstChild );
 
-			// Make sure the icon view will be destroyed along with button.
+			// Make sure the icon will be destroyed along with the button.
 			this.addChildren( iconView );
+		}
+
+		if ( this.tooltip ) {
+			const tooltipView = this.tooltipView = new TooltipView();
+
+			tooltipView.bind( 'text' ).to( this, '_tooltipString' );
+			tooltipView.bind( 'position' ).to( this, 'tooltipPosition' );
+			this.element.appendChild( tooltipView.element );
+
+			// Make sure the tooltip will be destroyed along with the button.
+			this.addChildren( tooltipView );
 		}
 
 		super.init();
@@ -229,7 +255,7 @@ export default class ButtonView extends View {
 	}
 
 	/**
-	 * Gets value for the `data-ck-tooltip` attribute from the combination of
+	 * Gets the text for the {@link #tooltipView} from the combination of
 	 * {@link #tooltip}, {@link #label} and {@link #keystroke} attributes.
 	 *
 	 * @private
