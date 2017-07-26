@@ -84,6 +84,22 @@ describe( 'ImageUploadButton', () => {
 		expect( executeStub.firstCall.args[ 1 ].file ).to.equal( files[ 0 ] );
 	} );
 
+	it( 'should optimize the insertion position', () => {
+		const button = editor.ui.componentFactory.create( 'insertImage' );
+		const files = [ createNativeFileMock() ];
+
+		setModelData( doc, '<paragraph>f[]oo</paragraph>' );
+
+		button.fire( 'done', files );
+
+		const id = fileRepository.getLoader( files[ 0 ] ).id;
+
+		expect( getModelData( doc ) ).to.equal(
+			`[<image uploadId="${ id }" uploadStatus="reading"></image>]` +
+			'<paragraph>foo</paragraph>'
+		);
+	} );
+
 	it( 'should correctly insert multiple files', () => {
 		const button = editor.ui.componentFactory.create( 'insertImage' );
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
@@ -101,6 +117,18 @@ describe( 'ImageUploadButton', () => {
 			`[<image uploadId="${ id2 }" uploadStatus="reading"></image>]` +
 			'<paragraph>bar</paragraph>'
 		);
+	} );
+
+	it( 'should not execute imageUpload if the file is not an image', () => {
+		const executeStub = sinon.stub( editor, 'execute' );
+		const button = editor.ui.componentFactory.create( 'insertImage' );
+		const file = {
+			type: 'media/mp3',
+			size: 1024
+		};
+
+		button.fire( 'done', [ file ] );
+		sinon.assert.notCalled( executeStub );
 	} );
 } );
 
