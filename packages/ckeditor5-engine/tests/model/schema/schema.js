@@ -687,7 +687,7 @@ describe( 'Schema', () => {
 			schema.limits.add( 'article' );
 			schema.limits.add( 'section' );
 
-			setData( doc, '<div><section><article>[foo></article><article>bar]></article></section></div>' );
+			setData( doc, '<div><section><article>[foo</article><article>bar]</article></section></div>' );
 
 			const section = root.getNodeByPath( [ 0, 0 ] );
 
