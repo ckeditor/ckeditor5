@@ -751,11 +751,11 @@ describe( 'DataController', () => {
 			} );
 
 			test(
-				'but not if the flag "preventReplacingWithParagraph" is set on true',
+				'but not if the flag "doNotResetEntireContent" is set to true',
 				'<heading1>[</heading1><paragraph>]</paragraph>',
 				'<heading1>[]</heading1>',
 				{
-					preventReplacingWithParagraph: true
+					doNotResetEntireContent: true
 				}
 			);
 		} );

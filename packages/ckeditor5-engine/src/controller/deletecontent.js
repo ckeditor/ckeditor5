@@ -19,14 +19,22 @@ import Element from '../model/element';
  * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
  * @param {Object} [options]
  * @param {Boolean} [options.leaveUnmerged=false] Whether to merge elements after removing the content of the selection.
- * @param {Boolean} [options.preventReplacingWithParagraph=false] Whether the entire content shouldn't be replaced with the paragraph.
  *
- * For example `<h>x[x</h><p>y]y</p>` will become:
- * * `<h>x^y</h>` with the option disabled (`leaveUnmerged == false`)
- * * `<h>x^</h><p>y</p>` with enabled (`leaveUnmerged == true`).
+ * For example `<heading>x[x</heading><paragraph>y]y</paragraph>` will become:
+ *
+ * * `<heading>x^y</heading>` with the option disabled (`leaveUnmerged == false`)
+ * * `<heading>x^</heading><paragraph>y</paragraph>` with enabled (`leaveUnmerged == true`).
  *
  * Note: {@link module:engine/model/schema~Schema#objects object} and {@link module:engine/model/schema~Schema#limits limit}
  * elements will not be merged.
+ *
+ * @param {Boolean} [options.doNotResetEntireContent=false] Whether to skip replacing the entire content with a
+ * paragraph when the entire content was selected.
+ *
+ * For example `<heading>[x</heading><paragraph>y]</paragraph> will become:
+ *
+ * * `<paragraph>^</paragraph>` with the option disabled (`doNotResetEntireContent == false`)
+ * * `<heading>^</heading>` with enabled (`doNotResetEntireContent == true`).
  */
 export default function deleteContent( selection, batch, options = {} ) {
 	if ( selection.isCollapsed ) {
@@ -35,7 +43,7 @@ export default function deleteContent( selection, batch, options = {} ) {
 
 	// 1. Replace the entire content with paragraph.
 	// See: https://github.com/ckeditor/ckeditor5-engine/issues/1012#issuecomment-315017594.
-	if ( !options.preventReplacingWithParagraph && shouldEntireContentBeReplacedWithParagraph( batch.document.schema, selection ) ) {
+	if ( !options.doNotResetEntireContent && shouldEntireContentBeReplacedWithParagraph( batch.document.schema, selection ) ) {
 		replaceEntireContentWithParagraph( batch, selection );
 
 		return;
