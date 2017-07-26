@@ -104,6 +104,30 @@ describe( 'ImageUploadEngine', () => {
 		);
 	} );
 
+	it( 'should execute imageUpload command when multiple files image are pasted', () => {
+		const spy = sinon.spy( editor, 'execute' );
+		const files = [ createNativeFileMock(), createNativeFileMock() ];
+		const dataTransfer = new DataTransfer( { files } );
+		setModelData( doc, '<paragraph>[]foo</paragraph>' );
+
+		const targetRange = Range.createFromParentsAndOffsets( doc.getRoot(), 1, doc.getRoot(), 1 );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		sinon.assert.calledTwice( spy );
+		sinon.assert.calledWith( spy, 'imageUpload' );
+
+		const id1 = fileRepository.getLoader( files[ 0 ] ).id;
+		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
+
+		expect( getModelData( doc ) ).to.equal(
+			'<paragraph>foo</paragraph>' +
+			`<image uploadId="${ id1 }" uploadStatus="reading"></image>` +
+			`[<image uploadId="${ id2 }" uploadStatus="reading"></image>]`
+		);
+	} );
+
 	it( 'should not execute imageUpload command when file is not an image', () => {
 		const spy = sinon.spy( editor, 'execute' );
 		const viewDocument = editor.editing.view;

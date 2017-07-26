@@ -46,17 +46,21 @@ export default class ImageUploadEngine extends Plugin {
 
 		// Execute imageUpload command when image is dropped or pasted.
 		editor.editing.view.on( 'clipboardInput', ( evt, data ) => {
-			const targetModelSelection = new ModelSelection(
+			let targetModelSelection = new ModelSelection(
 				data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) )
 			);
 
-			const insertAt = findOptimalInsertionPosition( targetModelSelection );
-
 			for ( const file of data.dataTransfer.files ) {
+				const insertAt = findOptimalInsertionPosition( targetModelSelection );
+
 				if ( isImageType( file ) ) {
 					editor.execute( 'imageUpload', { file, insertAt } );
 					evt.stop();
 				}
+
+				// Use target ranges only for the first image. Then, use that image position
+				// so we keep adding the next ones after the previous one.
+				targetModelSelection = doc.selection;
 			}
 		} );
 
