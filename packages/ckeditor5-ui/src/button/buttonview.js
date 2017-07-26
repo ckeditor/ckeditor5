@@ -61,7 +61,7 @@ export default class ButtonView extends View {
 		this.set( 'tooltip' );
 
 		/**
-		 * The position of the tooltip. See {@link ui/tooltip/tooltipview~TooltipView#position}
+		 * The position of the tooltip. See {@link module:ui/tooltip/tooltipview~TooltipView#position}
 		 * to learn more about the available position values.
 		 *
 		 * **Note:** It makes sense only when the {@link #tooltip} is active.
