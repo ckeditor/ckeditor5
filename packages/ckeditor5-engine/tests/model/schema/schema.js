@@ -672,7 +672,7 @@ describe( 'Schema', () => {
 			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
 		} );
 
-		it( 'returns the limit element which is the closest element to common ancestor', () => {
+		it( 'returns the limit element which is the closest element to common ancestor for collapsed selection', () => {
 			schema.limits.add( 'article' );
 			schema.limits.add( 'section' );
 
@@ -687,7 +687,7 @@ describe( 'Schema', () => {
 			schema.limits.add( 'article' );
 			schema.limits.add( 'section' );
 
-			setData( doc, '<div><section><article><paragraph>fo[o</paragraph></article>b]ar</section></div>' );
+			setData( doc, '<div><section><article>[foo></article><article>bar]></article></section></div>' );
 
 			const section = root.getNodeByPath( [ 0, 0 ] );
 
