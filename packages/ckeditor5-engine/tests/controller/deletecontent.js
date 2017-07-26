@@ -749,6 +749,15 @@ describe( 'DataController', () => {
 				expect( getData( doc, { rootName: 'paragraphRoot' } ) )
 					.to.equal( 'x[]z' );
 			} );
+
+			test(
+				'but not if the flag "preventReplacingWithParagraph" is set on true',
+				'<heading1>[</heading1><paragraph>]</paragraph>',
+				'<heading1>[]</heading1>',
+				{
+					preventReplacingWithParagraph: true
+				}
+			);
 		} );
 
 		function test( title, input, output, options ) {

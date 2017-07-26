@@ -19,6 +19,7 @@ import Element from '../model/element';
  * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
  * @param {Object} [options]
  * @param {Boolean} [options.leaveUnmerged=false] Whether to merge elements after removing the content of the selection.
+ * @param {Boolean} [options.preventReplacingWithParagraph=false] Whether the entire content shouldn't be replaced with the paragraph.
  *
  * For example `<h>x[x</h><p>y]y</p>` will become:
  * * `<h>x^y</h>` with the option disabled (`leaveUnmerged == false`)
@@ -34,7 +35,7 @@ export default function deleteContent( selection, batch, options = {} ) {
 
 	// 1. Replace the entire content with paragraph.
 	// See: https://github.com/ckeditor/ckeditor5-engine/issues/1012#issuecomment-315017594.
-	if ( shouldEntireContentBeReplacedWithParagraph( batch.document.schema, selection ) ) {
+	if ( !options.preventReplacingWithParagraph && shouldEntireContentBeReplacedWithParagraph( batch.document.schema, selection ) ) {
 		replaceEntireContentWithParagraph( batch, selection );
 
 		return;
