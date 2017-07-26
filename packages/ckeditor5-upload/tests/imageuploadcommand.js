@@ -14,7 +14,7 @@ import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/build
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 
 describe( 'ImageUploadCommand', () => {
-	let editor, command, adapterMock, doc, fileRepository;
+	let editor, command, doc, fileRepository;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
@@ -25,9 +25,7 @@ describe( 'ImageUploadCommand', () => {
 			command = new ImageUploadCommand( editor );
 			fileRepository = editor.plugins.get( FileRepository );
 			fileRepository.createAdapter = loader => {
-				adapterMock = new AdapterMock( loader );
-
-				return adapterMock;
+				return new AdapterMock( loader );
 			};
 
 			doc = editor.document;
@@ -36,6 +34,10 @@ describe( 'ImageUploadCommand', () => {
 			schema.allow( { name: 'image', attributes: [ 'uploadId' ], inside: '$root' } );
 			schema.requireAttributes( 'image', [ 'uploadId' ] );
 		} );
+	} );
+
+	afterEach( () => {
+		return editor.destroy();
 	} );
 
 	describe( 'execute()', () => {

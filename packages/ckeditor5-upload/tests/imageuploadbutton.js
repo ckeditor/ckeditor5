@@ -6,25 +6,48 @@
 /* globals document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import FileDialogButtonView from '../src/ui/filedialogbuttonview';
+import FileRepository from '../src/filerepository';
 import ImageUploadButton from '../src/imageuploadbutton';
 import ImageUploadEngine from '../src/imageuploadengine';
-import { createNativeFileMock } from './_utils/mocks';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+
+import { createNativeFileMock, AdapterMock } from './_utils/mocks';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageUploadButton', () => {
-	let editor;
+	let editor, doc, editorElement, fileRepository;
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicEditor.create( editorElement, {
-			plugins: [ Image, ImageUploadButton ]
-		} )
+		return ClassicEditor
+			.create( editorElement, {
+				plugins: [ Paragraph, Image, ImageUploadButton, FileRepository ]
+			} )
 			.then( newEditor => {
 				editor = newEditor;
+				doc = editor.document;
+
+				fileRepository = editor.plugins.get( FileRepository );
+				fileRepository.createAdapter = loader => {
+					return new AdapterMock( loader );
+				};
+
+				// Hide all notifications (prevent alert() calls).
+				const notification = editor.plugins.get( Notification );
+				notification.on( 'show', evt => evt.stop() );
 			} );
+	} );
+
+	afterEach( () => {
+		editorElement.remove();
+
+		return editor.destroy();
 	} );
 
 	it( 'should include ImageUploadEngine', () => {
@@ -59,6 +82,25 @@ describe( 'ImageUploadButton', () => {
 		sinon.assert.calledOnce( executeStub );
 		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
 		expect( executeStub.firstCall.args[ 1 ].file ).to.equal( files[ 0 ] );
+	} );
+
+	it( 'should correctly insert multiple files', () => {
+		const button = editor.ui.componentFactory.create( 'insertImage' );
+		const files = [ createNativeFileMock(), createNativeFileMock() ];
+
+		setModelData( doc, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+
+		button.fire( 'done', files );
+
+		const id1 = fileRepository.getLoader( files[ 0 ] ).id;
+		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
+
+		expect( getModelData( doc ) ).to.equal(
+			'<paragraph>foo</paragraph>' +
+			`<image uploadId="${ id1 }" uploadStatus="reading"></image>` +
+			`[<image uploadId="${ id2 }" uploadStatus="reading"></image>]` +
+			'<paragraph>bar</paragraph>'
+		);
 	} );
 } );
 
