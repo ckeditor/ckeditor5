@@ -3,71 +3,75 @@
 
 $ck-tooltip-arrow-size: 5px;
 
-[data-ck-tooltip] {
-	@include ck-tooltip__elements {
-		left: 50%;
+.ck-tooltip {
+	left: 50%;
 
-		// For the transition to work, the tooltip must be controlled
-		// using visibility+opacity. A delay prevents a "tooltip avalanche"
-		// i.e. when scanning the toolbar with mouse cursor.
-		transition: opacity .2s ease-in-out .2s;
-	}
+	&__text {
+		@include ck-rounded-corners();
 
-	@include ck-tooltip__main {
-		border-radius: $ck-border-radius;
 		color: ck-color( 'background' );
 		font-size: ck-font-size( -2 );
-		background: ck-color( 'text' );
 		padding: ck-spacing( 'small' ) ck-spacing( 'medium' );
+		background: ck-color( 'text' );
+		position: relative;
+		left: -50%;
+		line-height: 1.5;
+
+		&::after {
+			border-style: solid;
+			left: 50%;
+		}
 	}
 
-	@include ck-tooltip__arrow {
-		border-style: solid;
+	/**
+	 * A class once applied displays the tooltip south of the element.
+	 *
+	 *       [element]
+	 *           ^
+	 *     +-----------+
+	 *     |  Tooltip  |
+	 *     +-----------+
+	 */
+	&.ck-tooltip_s {
+		bottom: - $ck-tooltip-arrow-size;
+		transform: translateY( 100% );
+
+		.ck-tooltip__text::after {
+			top: -$ck-tooltip-arrow-size;
+			transform: translateX( -50% );
+			border-color: transparent transparent ck-color( 'text' ) transparent;
+			border-width: 0 $ck-tooltip-arrow-size $ck-tooltip-arrow-size $ck-tooltip-arrow-size;
+
+		}
+	}
+
+	/**
+	 * A class once applied displays the tooltip north of the element.
+	 *
+	 *     +-----------+
+	 *     |  Tooltip  |
+	 *     +-----------+
+	 *           V
+	 *       [element]
+	 */
+	&.ck-tooltip_n {
+		top: -$ck-tooltip-arrow-size;
+		transform: translateY( -100% );
+
+		.ck-tooltip__text::after {
+			bottom: -$ck-tooltip-arrow-size;
+			transform: translateX( -50% );
+			border-color: ck-color( 'text' ) transparent transparent transparent;
+			border-width: $ck-tooltip-arrow-size $ck-tooltip-arrow-size 0 $ck-tooltip-arrow-size;
+		}
 	}
 }
 
-/**
- * A class once applied displays the tooltip south of the element.
- *
- *       [element]
- *           ^
- *     +-----------+
- *     |  Tooltip  |
- *     +-----------+
- */
-.ck-tooltip_s {
-	@include ck-tooltip__main {
-		bottom: -$ck-tooltip-arrow-size + 1;
-		transform: translate( -50%, 100% );
-	}
-
-	@include ck-tooltip__arrow {
-		bottom: 0;
-		transform: translate( -50%, 100% );
-		border-color: transparent transparent ck-color( 'text' ) transparent;
-		border-width: 0 $ck-tooltip-arrow-size $ck-tooltip-arrow-size $ck-tooltip-arrow-size;
-	}
+.ck-tooltip,
+.ck-tooltip__text::after {
+	// For the transition to work, the tooltip must be controlled
+	// using visibility+opacity. A delay prevents a "tooltip avalanche"
+	// i.e. when scanning the toolbar with mouse cursor.
+	transition: opacity .2s ease-in-out .2s;
 }
 
-/**
- * A class once applied displays the tooltip north of the element.
- *
- *     +-----------+
- *     |  Tooltip  |
- *     +-----------+
- *           V
- *       [element]
- */
-.ck-tooltip_n {
-	@include ck-tooltip__main {
-		top: -$ck-tooltip-arrow-size + 1;
-		transform: translate( -50%, -100% );
-	}
-
-	@include ck-tooltip__arrow {
-		top: 0;
-		transform: translate( -50%, -100% );
-		border-color: ck-color( 'text' ) transparent transparent transparent;
-		border-width: $ck-tooltip-arrow-size $ck-tooltip-arrow-size 0 $ck-tooltip-arrow-size;
-	}
-}
