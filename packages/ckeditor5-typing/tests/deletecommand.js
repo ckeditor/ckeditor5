@@ -112,5 +112,33 @@ describe( 'DeleteCommand', () => {
 			expect( modifyOpts ).to.have.property( 'direction', 'forward' );
 			expect( modifyOpts ).to.have.property( 'unit', 'word' );
 		} );
+
+		it( 'passes options to deleteContent #1', () => {
+			const spy = sinon.spy();
+
+			editor.data.on( 'deleteContent', spy );
+			setData( doc, '<p>foo[]bar</p>' );
+
+			editor.execute( 'delete' );
+
+			expect( spy.callCount ).to.equal( 1 );
+
+			const deleteOpts = spy.args[ 0 ][ 1 ][ 2 ];
+			expect( deleteOpts ).to.have.property( 'doNotResetEntireContent', true );
+		} );
+
+		it( 'passes options to deleteContent #2', () => {
+			const spy = sinon.spy();
+
+			editor.data.on( 'deleteContent', spy );
+			setData( doc, '<p>[foobar]</p>' );
+
+			editor.execute( 'delete' );
+
+			expect( spy.callCount ).to.equal( 1 );
+
+			const deleteOpts = spy.args[ 0 ][ 1 ][ 2 ];
+			expect( deleteOpts ).to.have.property( 'doNotResetEntireContent', false );
+		} );
 	} );
 } );
