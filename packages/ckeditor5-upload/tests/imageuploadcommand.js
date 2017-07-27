@@ -14,7 +14,7 @@ import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/build
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 
 describe( 'ImageUploadCommand', () => {
-	let editor, command, adapterMock, doc, fileRepository;
+	let editor, command, doc, fileRepository;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
@@ -25,9 +25,7 @@ describe( 'ImageUploadCommand', () => {
 			command = new ImageUploadCommand( editor );
 			fileRepository = editor.plugins.get( FileRepository );
 			fileRepository.createAdapter = loader => {
-				adapterMock = new AdapterMock( loader );
-
-				return adapterMock;
+				return new AdapterMock( loader );
 			};
 
 			doc = editor.document;
@@ -38,88 +36,36 @@ describe( 'ImageUploadCommand', () => {
 		} );
 	} );
 
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	describe( 'execute()', () => {
-		it( 'should insert image', () => {
+		it( 'should insert image at selection position (includes deleting selected content)', () => {
 			const file = createNativeFileMock();
-			setModelData( doc, '<paragraph>[]foo</paragraph>' );
+			setModelData( doc, '<paragraph>f[o]o</paragraph>' );
 
 			command.execute( { file } );
 
 			const id = fileRepository.getLoader( file ).id;
-			expect( getModelData( doc ) ).to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
+			expect( getModelData( doc ) )
+				.to.equal( `<paragraph>f</paragraph>[<image uploadId="${ id }"></image>]<paragraph>o</paragraph>` );
 		} );
 
-		it( 'should insert image after block if selection is at its end', () => {
+		it( 'should insert directly at specified position (options.insertAt)', () => {
 			const file = createNativeFileMock();
-			setModelData( doc, '<paragraph>foo[]</paragraph>' );
+			setModelData( doc, '<paragraph>f[]oo</paragraph>' );
 
-			command.execute( { file } );
+			const insertAt = new ModelPosition( doc.getRoot(), [ 0, 2 ] ); // fo[]o
+
+			command.execute( { file, insertAt } );
 
 			const id = fileRepository.getLoader( file ).id;
-			expect( getModelData( doc ) ).to.equal( `<paragraph>foo</paragraph>[<image uploadId="${ id }"></image>]` );
+			expect( getModelData( doc ) )
+				.to.equal( `<paragraph>fo</paragraph>[<image uploadId="${ id }"></image>]<paragraph>o</paragraph>` );
 		} );
 
-		it( 'should insert image before block if selection is in the middle', () => {
-			const file = createNativeFileMock();
-			setModelData( doc, '<paragraph>f{}oo</paragraph>' );
-
-			command.execute( { file } );
-
-			const id = fileRepository.getLoader( file ).id;
-			expect( getModelData( doc ) ).to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
-		} );
-
-		it( 'should insert image after other image', () => {
-			const file = createNativeFileMock();
-			setModelData( doc, '[<image src="image.png"></image>]' );
-
-			command.execute( { file } );
-
-			const id = fileRepository.getLoader( file ).id;
-			expect( getModelData( doc ) ).to.equal( `<image src="image.png"></image>[<image uploadId="${ id }"></image>]` );
-		} );
-
-		it( 'should allow to insert image at some custom position (options.insertAt)', () => {
-			const file = createNativeFileMock();
-			setModelData( doc, '<paragraph>[foo]</paragraph><paragraph>bar</paragraph><paragraph>bom</paragraph>' );
-
-			const customPosition = new ModelPosition( doc.getRoot(), [ 2 ] ); // <p>foo</p><p>bar</p>^<p>bom</p>
-
-			command.execute( { file, insertAt: customPosition } );
-
-			const id = fileRepository.getLoader( file ).id;
-			expect( getModelData( doc ) ).to.equal(
-				'<paragraph>foo</paragraph><paragraph>bar</paragraph>' +
-				`[<image uploadId="${ id }"></image>]` +
-				'<paragraph>bom</paragraph>'
-			);
-		} );
-
-		it( 'should not insert image when proper insert position cannot be found', () => {
-			const file = createNativeFileMock();
-			doc.schema.registerItem( 'other' );
-			doc.schema.allow( { name: 'other', inside: '$root' } );
-			buildModelConverter().for( editor.editing.modelToView )
-				.fromElement( 'other' )
-				.toElement( 'span' );
-
-			setModelData( doc, '<other>[]</other>' );
-
-			command.execute( { file } );
-
-			expect( getModelData( doc ) ).to.equal( '<other>[]</other>' );
-		} );
-
-		it( 'should not insert non-image', () => {
-			const file = createNativeFileMock();
-			file.type = 'audio/mpeg3';
-			setModelData( doc, '<paragraph>foo[]</paragraph>' );
-			command.execute( { file } );
-
-			expect( getModelData( doc ) ).to.equal( '<paragraph>foo[]</paragraph>' );
-		} );
-
-		it( 'should allow to provide batch instance', () => {
+		it( 'should allow to provide batch instance (options.batch)', () => {
 			const batch = doc.batch();
 			const file = createNativeFileMock();
 			const spy = sinon.spy( batch, 'insert' );
@@ -131,6 +77,23 @@ describe( 'ImageUploadCommand', () => {
 
 			expect( getModelData( doc ) ).to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should not insert image nor crash when image could not be inserted', () => {
+			const file = createNativeFileMock();
+			doc.schema.registerItem( 'other' );
+			doc.schema.allow( { name: '$text', inside: 'other' } );
+			doc.schema.allow( { name: 'other', inside: '$root' } );
+			doc.schema.limits.add( 'other' );
+			buildModelConverter().for( editor.editing.modelToView )
+				.fromElement( 'other' )
+				.toElement( 'p' );
+
+			setModelData( doc, '<other>[]</other>' );
+
+			command.execute( { file } );
+
+			expect( getModelData( doc ) ).to.equal( '<other>[]</other>' );
 		} );
 	} );
 } );

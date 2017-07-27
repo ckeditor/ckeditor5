@@ -12,18 +12,22 @@ import ImageUploadCommand from '../src/imageuploadcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
 import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
+
 import FileRepository from '../src/filerepository';
 import { AdapterMock, createNativeFileMock, NativeFileReaderMock } from './_utils/mocks';
+
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
 describe( 'ImageUploadEngine', () => {
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
-	let editor, document, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
+	let editor, doc, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
@@ -38,7 +42,7 @@ describe( 'ImageUploadEngine', () => {
 		} )
 		.then( newEditor => {
 			editor = newEditor;
-			document = editor.document;
+			doc = editor.document;
 			viewDocument = editor.editing.view;
 
 			fileRepository = editor.plugins.get( FileRepository );
@@ -52,7 +56,7 @@ describe( 'ImageUploadEngine', () => {
 	} );
 
 	it( 'should register proper schema rules', () => {
-		expect( document.schema.check( { name: 'image', attributes: [ 'uploadId' ], inside: '$root' } ) ).to.be.true;
+		expect( doc.schema.check( { name: 'image', attributes: [ 'uploadId' ], inside: '$root' } ) ).to.be.true;
 	} );
 
 	it( 'should register imageUpload command', () => {
@@ -63,16 +67,64 @@ describe( 'ImageUploadEngine', () => {
 		const spy = sinon.spy( editor, 'execute' );
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new DataTransfer( { files: [ fileMock ] } );
-		setModelData( document, '<paragraph>[]foo bar baz</paragraph>' );
+		setModelData( doc, '<paragraph>[]foo</paragraph>' );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer } );
+		const targetRange = Range.createFromParentsAndOffsets( doc.getRoot(), 1, doc.getRoot(), 1 );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		sinon.assert.calledOnce( spy );
 		sinon.assert.calledWith( spy, 'imageUpload' );
 
 		const id = fileRepository.getLoader( fileMock ).id;
-		expect( getModelData( document ) ).to.equal(
-			`[<image uploadId="${ id }" uploadStatus="reading"></image>]<paragraph>foo bar baz</paragraph>`
+		expect( getModelData( doc ) ).to.equal(
+			`<paragraph>foo</paragraph>[<image uploadId="${ id }" uploadStatus="reading"></image>]`
+		);
+	} );
+
+	it( 'should execute imageUpload command with an optimized position when image is pasted', () => {
+		const spy = sinon.spy( editor, 'execute' );
+		const fileMock = createNativeFileMock();
+		const dataTransfer = new DataTransfer( { files: [ fileMock ] } );
+		setModelData( doc, '<paragraph>[]foo</paragraph>' );
+
+		const paragraph = doc.getRoot().getChild( 0 );
+		const targetRange = Range.createFromParentsAndOffsets( paragraph, 1, paragraph, 1 ); // f[]oo
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		sinon.assert.calledOnce( spy );
+		sinon.assert.calledWith( spy, 'imageUpload' );
+
+		const id = fileRepository.getLoader( fileMock ).id;
+		expect( getModelData( doc ) ).to.equal(
+			`[<image uploadId="${ id }" uploadStatus="reading"></image>]<paragraph>foo</paragraph>`
+		);
+	} );
+
+	it( 'should execute imageUpload command when multiple files image are pasted', () => {
+		const spy = sinon.spy( editor, 'execute' );
+		const files = [ createNativeFileMock(), createNativeFileMock() ];
+		const dataTransfer = new DataTransfer( { files } );
+		setModelData( doc, '<paragraph>[]foo</paragraph>' );
+
+		const targetRange = Range.createFromParentsAndOffsets( doc.getRoot(), 1, doc.getRoot(), 1 );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		sinon.assert.calledTwice( spy );
+		sinon.assert.calledWith( spy, 'imageUpload' );
+
+		const id1 = fileRepository.getLoader( files[ 0 ] ).id;
+		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
+
+		expect( getModelData( doc ) ).to.equal(
+			'<paragraph>foo</paragraph>' +
+			`<image uploadId="${ id1 }" uploadStatus="reading"></image>` +
+			`[<image uploadId="${ id2 }" uploadStatus="reading"></image>]`
 		);
 	} );
 
@@ -84,9 +136,13 @@ describe( 'ImageUploadEngine', () => {
 			size: 1024
 		};
 		const dataTransfer = new DataTransfer( { files: [ fileMock ] } );
-		setModelData( document, '<paragraph>foo bar baz[]</paragraph>' );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer } );
+		setModelData( doc, '<paragraph>foo[]</paragraph>' );
+
+		const targetRange = Range.createFromParentsAndOffsets( doc.getRoot(), 1, doc.getRoot(), 1 );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		sinon.assert.notCalled( spy );
 	} );
@@ -96,7 +152,7 @@ describe( 'ImageUploadEngine', () => {
 			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 		}, { priority: 'high' } );
 
-		setModelData( document, '<image uploadId="1234"></image>' );
+		setModelData( doc, '<image uploadId="1234"></image>' );
 
 		expect( getViewData( viewDocument ) ).to.equal(
 			'[<figure class="image ck-widget" contenteditable="false">' +
@@ -106,10 +162,10 @@ describe( 'ImageUploadEngine', () => {
 
 	it( 'should use read data once it is present', done => {
 		const file = createNativeFileMock();
-		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		setModelData( doc, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		document.once( 'changesDone', () => {
+		doc.once( 'changesDone', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[<figure class="image ck-widget" contenteditable="false">' +
 				`<img src="${ base64Sample }"></img>` +
@@ -126,11 +182,11 @@ describe( 'ImageUploadEngine', () => {
 
 	it( 'should replace read data with server response once it is present', done => {
 		const file = createNativeFileMock();
-		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		setModelData( doc, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		document.once( 'changesDone', () => {
-			document.once( 'changesDone', () => {
+		doc.once( 'changesDone', () => {
+			doc.once( 'changesDone', () => {
 				expect( getViewData( viewDocument ) ).to.equal(
 					'[<figure class="image ck-widget" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
 				);
@@ -157,7 +213,7 @@ describe( 'ImageUploadEngine', () => {
 			done();
 		}, { priority: 'high' } );
 
-		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		setModelData( doc, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
 		nativeReaderMock.mockError( 'Reading error.' );
@@ -173,7 +229,7 @@ describe( 'ImageUploadEngine', () => {
 			evt.stop();
 		}, { priority: 'high' } );
 
-		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		setModelData( doc, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 		nativeReaderMock.abort();
 
@@ -184,7 +240,7 @@ describe( 'ImageUploadEngine', () => {
 	} );
 
 	it( 'should do nothing if image does not have uploadId', () => {
-		setModelData( document, '<image src="image.png"></image>' );
+		setModelData( doc, '<image src="image.png"></image>' );
 
 		expect( getViewData( viewDocument ) ).to.equal(
 			'[<figure class="image ck-widget" contenteditable="false"><img src="image.png"></img></figure>]'
@@ -195,7 +251,7 @@ describe( 'ImageUploadEngine', () => {
 		const file = createNativeFileMock();
 		const spy = testUtils.sinon.spy();
 		const notification = editor.plugins.get( Notification );
-		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		setModelData( doc, '<paragraph>{}foo bar</paragraph>' );
 
 		notification.on( 'show:warning', evt => {
 			spy();
@@ -204,9 +260,9 @@ describe( 'ImageUploadEngine', () => {
 
 		editor.execute( 'imageUpload', { file } );
 
-		document.once( 'changesDone', () => {
-			document.once( 'changesDone', () => {
-				expect( getModelData( document ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
+		doc.once( 'changesDone', () => {
+			doc.once( 'changesDone', () => {
+				expect( getModelData( doc ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
 				sinon.assert.calledOnce( spy );
 
 				done();
@@ -218,16 +274,16 @@ describe( 'ImageUploadEngine', () => {
 
 	it( 'should abort upload if image is removed', () => {
 		const file = createNativeFileMock();
-		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		setModelData( doc, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 		const abortSpy = testUtils.sinon.spy( loader, 'abort' );
 
 		expect( loader.status ).to.equal( 'reading' );
 		nativeReaderMock.mockSuccess( base64Sample );
 
-		const image = document.getRoot().getChild( 0 );
-		document.enqueueChanges( () => {
-			const batch = document.batch();
+		const image = doc.getRoot().getChild( 0 );
+		doc.enqueueChanges( () => {
+			const batch = doc.batch();
 
 			batch.remove( image );
 		} );
@@ -239,7 +295,7 @@ describe( 'ImageUploadEngine', () => {
 	it( 'image should be permanently removed if it is removed by user during upload', done => {
 		const file = createNativeFileMock();
 		const notification = editor.plugins.get( Notification );
-		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		setModelData( doc, '<paragraph>{}foo bar</paragraph>' );
 
 		// Prevent popping up alert window.
 		notification.on( 'show:warning', evt => {
@@ -248,23 +304,23 @@ describe( 'ImageUploadEngine', () => {
 
 		editor.execute( 'imageUpload', { file } );
 
-		document.once( 'changesDone', () => {
+		doc.once( 'changesDone', () => {
 			// This is called after "manual" remove.
-			document.once( 'changesDone', () => {
+			doc.once( 'changesDone', () => {
 				// This is called after attributes are removed.
 				let undone = false;
 
-				document.once( 'changesDone', () => {
+				doc.once( 'changesDone', () => {
 					if ( !undone ) {
 						undone = true;
 
 						// This is called after abort remove.
-						expect( getModelData( document ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
+						expect( getModelData( doc ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
 
 						editor.execute( 'undo' );
 
 						// Expect that the image has not been brought back.
-						expect( getModelData( document ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
+						expect( getModelData( doc ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
 
 						done();
 					}
@@ -272,9 +328,9 @@ describe( 'ImageUploadEngine', () => {
 			} );
 		} );
 
-		const image = document.getRoot().getChild( 0 );
-		document.enqueueChanges( () => {
-			const batch = document.batch();
+		const image = doc.getRoot().getChild( 0 );
+		doc.enqueueChanges( () => {
+			const batch = doc.batch();
 
 			batch.remove( image );
 		} );
@@ -282,11 +338,11 @@ describe( 'ImageUploadEngine', () => {
 
 	it( 'should create responsive image if server return multiple images', done => {
 		const file = createNativeFileMock();
-		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		setModelData( doc, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		document.once( 'changesDone', () => {
-			document.once( 'changesDone', () => {
+		doc.once( 'changesDone', () => {
+			doc.once( 'changesDone', () => {
 				expect( getViewData( viewDocument ) ).to.equal(
 					'[<figure class="image ck-widget" contenteditable="false">' +
 						'<img sizes="100vw" src="image.png" srcset="image-500.png 500w, image-800.png 800w"></img>' +

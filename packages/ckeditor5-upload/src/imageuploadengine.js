@@ -11,7 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from './filerepository';
 import ImageUploadCommand from './imageuploadcommand';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import { isImageType } from './utils';
+import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import { isImageType, findOptimalInsertionPosition } from './utils';
 
 /**
  * Image upload engine plugin.
@@ -45,11 +46,21 @@ export default class ImageUploadEngine extends Plugin {
 
 		// Execute imageUpload command when image is dropped or pasted.
 		editor.editing.view.on( 'clipboardInput', ( evt, data ) => {
+			let targetModelSelection = new ModelSelection(
+				data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) )
+			);
+
 			for ( const file of data.dataTransfer.files ) {
+				const insertAt = findOptimalInsertionPosition( targetModelSelection );
+
 				if ( isImageType( file ) ) {
-					editor.execute( 'imageUpload', { file } );
+					editor.execute( 'imageUpload', { file, insertAt } );
 					evt.stop();
 				}
+
+				// Use target ranges only for the first image. Then, use that image position
+				// so we keep adding the next ones after the previous one.
+				targetModelSelection = doc.selection;
 			}
 		} );
 

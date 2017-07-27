@@ -3,13 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import FileRepository from './filerepository';
-import { isImageType } from './utils';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
@@ -29,7 +26,9 @@ export default class ImageUploadCommand extends Command {
 	 * @param {Object} options Options for executed command.
 	 * @param {File} options.file Image file to upload.
 	 * @param {module:engine/model/position~Position} [options.insertAt] Position at which the image should be inserted.
-	 * If the position won't be specified the image will be inserted next to the selection.
+	 * If the position is not specified the image will be inserted into the current selection.
+	 * Note: You can use the {@link module:upload/utils~findOptimalInsertionPosition} function to calculate
+	 * (e.g. based on the current selection) a position which is more optimal from UX perspective.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
@@ -41,28 +40,25 @@ export default class ImageUploadCommand extends Command {
 		const selection = doc.selection;
 		const fileRepository = editor.plugins.get( FileRepository );
 
-		if ( !isImageType( file ) ) {
-			return;
-		}
-
 		doc.enqueueChanges( () => {
-			const insertAt = options.insertAt || getInsertionPosition( doc );
-
-			// No position to insert.
-			if ( !insertAt ) {
-				return;
-			}
-
 			const imageElement = new ModelElement( 'image', {
 				uploadId: fileRepository.createLoader( file ).id
 			} );
-			const documentFragment = new ModelDocumentFragment( [ imageElement ] );
-			const range = new ModelRange( insertAt );
-			const insertSelection = new ModelSelection();
 
-			insertSelection.setRanges( [ range ] );
-			editor.data.insertContent( documentFragment, insertSelection, batch );
-			selection.setRanges( [ ModelRange.createOn( imageElement ) ] );
+			let insertAtSelection;
+
+			if ( options.insertAt ) {
+				insertAtSelection = new ModelSelection( [ new ModelRange( options.insertAt ) ] );
+			} else {
+				insertAtSelection = doc.selection;
+			}
+
+			editor.data.insertContent( imageElement, insertAtSelection, batch );
+
+			// Inserting an image might've failed due to schema regulations.
+			if ( imageElement.parent ) {
+				selection.setRanges( [ ModelRange.createOn( imageElement ) ] );
+			}
 		} );
 	}
 }
@@ -71,26 +67,4 @@ export default class ImageUploadCommand extends Command {
 //
 // @param {module:engine/model/document~Document} doc
 // @returns {module:engine/model/position~Position|undefined}
-function getInsertionPosition( doc ) {
-	const selection = doc.selection;
-	const selectedElement = selection.getSelectedElement();
 
-	// If selected element is placed directly in root - return position after that element.
-	if ( selectedElement && selectedElement.parent.is( 'rootElement' ) ) {
-		return ModelPosition.createAfter( selectedElement );
-	}
-
-	const firstBlock = doc.selection.getSelectedBlocks().next().value;
-
-	if ( firstBlock ) {
-		const positionAfter = ModelPosition.createAfter( firstBlock );
-
-		// If selection is at the end of the block - return position after the block.
-		if ( selection.focus.isTouching( positionAfter ) ) {
-			return positionAfter;
-		}
-
-		// Otherwise return position before the block.
-		return ModelPosition.createBefore( firstBlock );
-	}
-}
