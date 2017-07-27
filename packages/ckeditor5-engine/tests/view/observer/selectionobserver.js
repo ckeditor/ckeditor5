@@ -34,7 +34,7 @@ describe( 'SelectionObserver', () => {
 		viewRoot = viewDocument.getRoot();
 
 		viewRoot.appendChildren( parse(
-			'<container:p>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</container:p>' +
+			'<container:p>xxx<ui:span></ui:span></container:p>' +
 			'<container:p>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</container:p>' ) );
 
 		viewDocument.render();
@@ -67,7 +67,7 @@ describe( 'SelectionObserver', () => {
 			expect( data.newSelection.rangeCount ).to.equal( 1 );
 
 			const newViewRange = data.newSelection.getFirstRange();
-			const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+			const viewFoo = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 
 			expect( newViewRange.start.parent ).to.equal( viewFoo );
 			expect( newViewRange.start.offset ).to.equal( 2 );
@@ -264,7 +264,7 @@ describe( 'SelectionObserver', () => {
 				expect( data.newSelection.rangeCount ).to.equal( 1 );
 
 				const newViewRange = data.newSelection.getFirstRange();
-				const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+				const viewFoo = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 
 				expect( newViewRange.start.parent ).to.equal( viewFoo );
 				expect( newViewRange.start.offset ).to.equal( 3 );
@@ -301,9 +301,46 @@ describe( 'SelectionObserver', () => {
 		}, 100 );
 	} );
 
+	it( 'should fire selectionChange event even if selections are similar if DOM selection is in incorrect place', done => {
+		const sel = domDocument.getSelection();
+
+		// Add rendering on selectionChange event to check this feature.
+		viewDocument.on( 'selectionChange', () => {
+			// Manually set selection because no handlers are set for selectionChange event in this test.
+			// Normally this is handled by view -> model -> view selection converters chain.
+			const viewSel = viewDocument.selection;
+
+			const viewAnchor = viewDocument.domConverter.domPositionToView( sel.anchorNode, sel.anchorOffset );
+			const viewFocus = viewDocument.domConverter.domPositionToView( sel.focusNode, sel.focusOffset );
+
+			viewSel.collapse( viewAnchor );
+			viewSel.setFocus( viewFocus );
+
+			viewDocument.render();
+		} );
+
+		viewDocument.once( 'selectionChange', () => {
+			viewDocument.once( 'selectionChange', ( evt, data ) => {
+				// 3. Selection change event was correctly fired.
+				// Check whether new and old view selection were in fact equal.
+				expect( data.oldSelection.isEqual( data.newSelection ) ).to.be.true;
+
+				done();
+			}, { priority: 'lowest' } );
+
+			// 2. Selection change has been handled and proper event has been fired.
+			// Now, collapse selection in similar position, but in UI element.
+			// Current and new selection position are same in view.
+			sel.collapse( domMain.childNodes[ 0 ].childNodes[ 1 ], 0 );
+		}, { priority: 'lowest' } );
+
+		// 1. Collapse before ui element and wait for async selectionchange to fire selection change handling.
+		sel.collapse( domMain.childNodes[ 0 ], 1 );
+	} );
+
 	function changeDomSelection() {
 		const domSelection = domDocument.getSelection();
-		const domFoo = domMain.childNodes[ 0 ].childNodes[ 0 ];
+		const domFoo = domMain.childNodes[ 1 ].childNodes[ 0 ];
 		const offset = domSelection.anchorOffset;
 
 		domSelection.removeAllRanges();

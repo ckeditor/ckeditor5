@@ -109,7 +109,8 @@ describe( 'convertSelectionChange', () => {
 		expect( model.selection.isBackward ).to.true;
 	} );
 
-	it( 'should not enqueue changes if selection has not changed', () => {
+	it( 'should re-convert selection even if it has not changed in model', () => {
+		// Selection might not have changed in model but it needs to be reconverted because it ended up in incorrect place in DOM.
 		const viewSelection = new ViewSelection();
 		viewSelection.addRange( ViewRange.createFromParentsAndOffsets(
 			viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 1 ) );
@@ -122,6 +123,6 @@ describe( 'convertSelectionChange', () => {
 
 		convertSelection( null, { newSelection: viewSelection } );
 
-		expect( spy.called ).to.be.false;
+		expect( spy.called ).to.be.true;
 	} );
 } );

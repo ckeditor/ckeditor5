@@ -839,6 +839,50 @@ export default class DomConverter {
 	}
 
 	/**
+	 * Checks if given {Selection DOM Selection} boundaries are in correct places.
+	 *
+	 * Incorrect places for selection are:
+	 * * before or in the middle of inline filler sequence,
+	 * * inside DOM element that represents {@link module:engine/view/uielement~UIElement view ui element}.
+	 *
+	 * @param {Selection} domSelection DOM Selection object to be checked.
+	 * @returns {Boolean} `true` if given selection is at correct place, `false` otherwise.
+	 */
+	isCorrectDomSelection( domSelection ) {
+		return this._isCorrectDomSelectionPosition( domSelection.anchorNode, domSelection.anchorOffset ) &&
+			this._isCorrectDomSelectionPosition( domSelection.focusNode, domSelection.focusOffset );
+	}
+
+	/**
+	 * Checks if given DOM position is a correct place for selection boundary. See {@link ~isCorrectDomSelection}.
+	 *
+	 * @private
+	 * @param {Node} domParent Position parent.
+	 * @param {Number} offset Position offset.
+	 * @returns {Boolean} `true` if given position is correct place for selection boundary, `false` otherwise.
+	 */
+	_isCorrectDomSelectionPosition( domParent, offset ) {
+		// If selection is before or in the middle of inline filler string, it is incorrect.
+		if ( this.isText( domParent ) && startsWithFiller( domParent ) && offset < INLINE_FILLER_LENGTH ) {
+			// Selection in a text node, at wrong position (before or in the middle of filler).
+			return false;
+		} else if ( this.isElement( domParent ) && startsWithFiller( domParent.childNodes[ offset ] ) ) {
+			// Selection in an element node, before filler text node.
+			return false;
+		}
+
+		const viewParent = this.mapDomToView( domParent );
+
+		// If selection is in `view.UIElement`, it is incorrect. Note that `mapDomToView()` returns `view.UIElement`
+		// also for any dom element that is inside the view ui element (so we don't need to perform any additional checks).
+		if ( viewParent && viewParent.is( 'uiElement' ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Takes text data from given {@link module:engine/view/text~Text#data} and processes it so it is correctly displayed in DOM.
 	 *
 	 * Following changes are done:
