@@ -22,7 +22,7 @@ export function isImageType( file ) {
 }
 
 /**
- * Returns a model position which is optimal (in terms of UX) for inserting and image.
+ * Returns a model position which is optimal (in terms of UX) for inserting an image.
  *
  * For instance, if a selection is in a middle of a paragraph, position before this paragraph
  * will be returned, so that it's not split. If the selection is at the end of a paragraph,
