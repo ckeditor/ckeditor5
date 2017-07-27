@@ -17,7 +17,6 @@ class MyUIElement extends UIElement {
 	render( domDocument ) {
 		const root = super.render( domDocument );
 
-		root.setAttribute( 'contenteditable', 'false' );
 		root.classList.add( 'ui-element' );
 		root.innerHTML = 'END OF PARAGRAPH';
 
