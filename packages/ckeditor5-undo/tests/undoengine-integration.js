@@ -29,6 +29,8 @@ describe( 'UndoEngine integration', () => {
 
 				doc = editor.document;
 				doc.schema.registerItem( 'p', '$block' );
+				doc.schema.registerItem( 'h1', '$block' );
+				doc.schema.registerItem( 'h2', '$block' );
 				root = doc.getRoot();
 			} );
 	} );
@@ -669,6 +671,65 @@ describe( 'UndoEngine integration', () => {
 			output( '<p>1234567[]xy8</p>' );
 
 			redoDisabled();
+		} );
+	} );
+
+	describe( 'other reported cases', () => {
+		// ckeditor5-engine#t/1051
+		it( 'rename leaks to other elements on undo #1', () => {
+			input( '<h1>[]Foo</h1><p>Bar</p>' );
+
+			doc.batch().rename( root.getChild( 0 ), 'p' );
+			output( '<p>[]Foo</p><p>Bar</p>' );
+
+			doc.batch().split( Position.createAt( root.getChild( 0 ), 1 ) );
+			output( '<p>[]F</p><p>oo</p><p>Bar</p>' );
+
+			doc.batch().merge( Position.createAt( root, 2 ) );
+			output( '<p>[]F</p><p>ooBar</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>[]F</p><p>oo</p><p>Bar</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>[]Foo</p><p>Bar</p>' );
+
+			editor.execute( 'undo' );
+			output( '<h1>[]Foo</h1><p>Bar</p>' );
+		} );
+
+		// Similar issue that bases on the same error as above, however here we first merge (above we first split).
+		it( 'rename leaks to other elements on undo #2', () => {
+			input( '<h1>[]Foo</h1><p>Bar</p>' );
+
+			doc.batch().rename( root.getChild( 0 ), 'h2' );
+			output( '<h2>[]Foo</h2><p>Bar</p>' );
+
+			doc.batch().merge( Position.createAt( root, 1 ) );
+			output( '<h2>[]FooBar</h2>' );
+
+			editor.execute( 'undo' );
+			output( '<h2>[]Foo</h2><p>Bar</p>' );
+
+			editor.execute( 'undo' );
+			output( '<h1>[]Foo</h1><p>Bar</p>' );
+		} );
+
+		// Reverse issue, this time first operation is merge and then rename.
+		it( 'merge, rename, undo, undo is correct', () => {
+			input( '<h1>[]Foo</h1><p>Bar</p>' );
+
+			doc.batch().merge( Position.createAt( root, 1 ) );
+			output( '<h1>[]FooBar</h1>' );
+
+			doc.batch().rename( root.getChild( 0 ), 'h2' );
+			output( '<h2>[]FooBar</h2>' );
+
+			editor.execute( 'undo' );
+			output( '<h1>[]FooBar</h1>' );
+
+			editor.execute( 'undo' );
+			output( '<h1>[]Foo</h1><p>Bar</p>' );
 		} );
 	} );
 
