@@ -18,7 +18,7 @@ import ViewEmptyElement from '@ckeditor/ckeditor5-engine/src/view/emptyelement';
 
 /**
  * The image engine plugin.
- * Registers `image` as a block element in document's schema and allows it to have two attributes: `src` and `alt`.
+ * Registers `<image>` as a block element in the document schema and allows it to have two attributes: `src` and `alt`.
  * Registers converters for editing and data pipelines.
  *
  * @extends module:core/plugin~Plugin
@@ -91,11 +91,11 @@ export default class ImageEngine extends Plugin {
 	}
 }
 
-// Creates view element representing the image.
+// Creates a view element representing the image.
 //
 //		<figure class="image"><img></img></figure>
 //
-// Note that `alt` and `src` attributes are converted separately, so they're not included.
+// Note that `alt` and `src` attributes are converted separately, so they are not included.
 //
 // @private
 // @return {module:engine/view/containerelement~ContainerElement}

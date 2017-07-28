@@ -13,9 +13,9 @@ import { isImageWidget } from '../utils';
 /**
  * A helper utility which positions the
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon} instance
- * with respect to the image in the editor's content, if one is selected.
+ * with respect to the image in the editor content, if one is selected.
  *
- * @param {module:core/editor/editor~Editor} editor Editor instance.
+ * @param {module:core/editor/editor~Editor} editor The editor instance.
  */
 export function repositionContextualBalloon( editor ) {
 	const editingView = editor.editing.view;
@@ -34,7 +34,7 @@ export function repositionContextualBalloon( editor ) {
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}, with respect
  * to the selected element in the editor content.
  *
- * @param {module:core/editor/editor~Editor} editor Editor instance.
+ * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @returns {module:utils/dom/position~Options}
  */
 export function getBalloonPositionData( editor ) {

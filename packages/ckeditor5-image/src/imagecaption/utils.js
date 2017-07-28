@@ -15,10 +15,10 @@ import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 const captionSymbol = Symbol( 'imageCaption' );
 
 /**
- * Returns a function that creates caption editable element for the given {@link module:engine/view/document~Document}.
+ * Returns a function that creates a caption editable element for the given {@link module:engine/view/document~Document}.
  *
  * @param {module:engine/view/document~Document} viewDocument
- * @param {String} placeholderText Text to be displayed when caption is empty.
+ * @param {String} placeholderText The text to be displayed when the caption is empty.
  * @return {Function}
  */
 export function captionElementCreator( viewDocument, placeholderText ) {
@@ -33,7 +33,7 @@ export function captionElementCreator( viewDocument, placeholderText ) {
 }
 
 /**
- * Returns `true` if given view element is image's caption editable.
+ * Returns `true` if a given view element is the image caption editable.
  *
  * @param {module:engine/view/element~Element} viewElement
  * @return {Boolean}
@@ -43,7 +43,7 @@ export function isCaption( viewElement ) {
 }
 
 /**
- * Returns caption model element from given image element. Returns `null` if no caption is found.
+ * Returns the caption model element from a given image element. Returns `null` if no caption is found.
  *
  * @param {module:engine/model/element~Element} imageModelElement
  * @return {module:engine/model/element~Element|null}
@@ -59,11 +59,11 @@ export function getCaptionFromImage( imageModelElement ) {
 }
 
 /**
- * {@link module:engine/view/matcher~Matcher} pattern. Checks if given element is `figcaption` element and is placed
- * inside image `figure` element.
+ * {@link module:engine/view/matcher~Matcher} pattern. Checks if a given element is a `<figcaption>` element that is placed
+ * inside the image `<figure>` element.
  *
  * @param {module:engine/view/element~Element} element
- * @returns {Object|null} Returns object accepted by {@link module:engine/view/matcher~Matcher} or `null` if element
+ * @returns {Object|null} Returns the object accepted by {@link module:engine/view/matcher~Matcher} or `null` if the element
  * cannot be matched.
  */
 export function matchImageCaption( element ) {

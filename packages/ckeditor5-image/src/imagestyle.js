@@ -14,7 +14,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 /**
  * The image style plugin.
  *
- * Uses {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine}.
+ * Uses the {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -45,7 +45,7 @@ export default class ImageStyle extends Plugin {
 	}
 
 	/**
-	 * Creates button for each style and stores it in editor's {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
+	 * Creates a button for each style and stores it in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
 	 *
 	 * @private
 	 * @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style

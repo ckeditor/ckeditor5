@@ -12,15 +12,15 @@ import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/document
 import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
 
 /**
- * Returns function that converts image view representation:
+ * Returns a function that converts the image view representation:
  *
  *		<figure class="image"><img src="..." alt="..."></img></figure>
  *
- * to model representation:
+ * to the model representation:
  *
  *		<image src="..." alt="..."></image>
  *
- * The entire contents of `<figure>` except the first `<img>` is being converted as children
+ * The entire content of the `<figure>` element except the first `<img>` is being converted as children
  * of the `<image>` model element.
  *
  * @returns {Function}
@@ -65,12 +65,12 @@ export function viewFigureToModel() {
 }
 
 /**
- * Creates image attribute converter for provided model conversion dispatchers.
+ * Creates the image attribute converter for provided model conversion dispatchers.
  *
  * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
  * @param {String} attributeName
- * @param {function} [conversionCallback] Function that will be called each time given attribute conversion is performed.
- * It will be called with two params: a view image element and type of the conversion: 'addAttribute`, `changeAttribute` or
+ * @param {function} [conversionCallback] The function that will be called each time given attribute conversion is performed.
+ * It will be called with two parameters: a view image element and the type of the conversion: 'addAttribute`, `changeAttribute` or
  * `removeAttribute`. This callback can be used to perform additional processing on view image element.
  */
 export function createImageAttributeConverter( dispatchers, attributeName, conversionCallback ) {
@@ -114,10 +114,10 @@ function modelToViewAttributeConverter( conversionCallback ) {
 const autohoistedImages = new WeakSet();
 
 /**
- * Converter which converts `<img>` {@link module:engine/view/element~Element view elements} that can be hoisted.
+ * A converter which converts `<img>` {@link module:engine/view/element~Element view elements} that can be hoisted.
  *
  * If an `<img>` view element has not been converted, this converter checks if that element could be converted in any
- * context "above". If it could, the converter converts the `<img>` element even though it is not allowed in current
+ * context "above". If it could, the converter converts the `<img>` element even though it is not allowed in the current
  * context and marks it to be autohoisted. Then {@link module:image/image/converters~hoistImageThroughElement another converter}
  * moves the converted element to the correct location.
  */
@@ -187,19 +187,19 @@ function _findAllowedContext( modelData, context, schema ) {
 }
 
 /**
- * Converter which hoists `image` {@link module:engine/model/element~Element model elements} to allowed context.
+ * A converter which hoists `<image>` {@link module:engine/model/element~Element model elements} to allowed context.
  *
- * Looks through all children of converted {@link module:engine/view/element~Element view element} if it
- * has been converted to model element. Breaks model element if `image` to-be-hoisted is found.
+ * It looks through all children of the converted {@link module:engine/view/element~Element view element} if it
+ * was converted to a model element. It breaks the model element if an `<image>` to-be-hoisted is found.
  *
  *		<div><paragraph>x<image src="foo.jpg"></image>x</paragraph></div> ->
  *		<div><paragraph>x</paragraph></div><image src="foo.jpg"></image><div><paragraph>x</paragraph></div>
  *
- * This works deeply, as shown in the example. This converter added for `paragraph` element will break `paragraph` element and
- * pass {@link module:engine/model/documentfragment~DocumentFragment document fragment} in `data.output`. Then,
- * `div` will be handled by this converter and will be once again broken to hoist `image` up to the root.
+ * This works deeply, as shown in the example. This converter added for the `<paragraph>` element will break the `<paragraph>`
+ *  element and pass the {@link module:engine/model/documentfragment~DocumentFragment document fragment} in `data.output`.
+ *  Then, the `<div>` will be handled by this converter and will be once again broken to hoist the `<image>` up to the root.
  *
- * **Note:** This converter should be executed only after the view element has been already converted, meaning that
+ * **Note:** This converter should be executed only after the view element has already been converted, which means that
  * `data.output` for that view element should be already generated when this converter is fired.
  */
 export function hoistImageThroughElement( evt, data ) {

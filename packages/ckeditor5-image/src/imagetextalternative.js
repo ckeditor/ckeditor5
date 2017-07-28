@@ -49,8 +49,8 @@ export default class ImageTextAlternative extends Plugin {
 	}
 
 	/**
-	 * Creates button showing text alternative change balloon panel and registers it in
-	 * editor's {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
+	 * Creates a button showing the balloon panel for changing the image text alternative and
+	 * registers it in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
 	 *
 	 * @private
 	 */
@@ -95,7 +95,7 @@ export default class ImageTextAlternative extends Plugin {
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
 
 		/**
-		 * Form containing textarea and buttons, used to change `alt` text value.
+		 * A form containing a textarea and buttons, used to change the `alt` text value.
 		 *
 		 * @member {module:image/imagetextalternative/ui/textalternativeformview~TextAlternativeFormView} #form
 		 */
@@ -176,7 +176,7 @@ export default class ImageTextAlternative extends Plugin {
 	/**
 	 * Removes the {@link #_form} from the {@link #_balloon}.
 	 *
-	 * @param {Boolean} focusEditable Control whether the editing view is focused afterwards.
+	 * @param {Boolean} focusEditable Controls whether the editing view is focused afterwards.
 	 * @private
 	 */
 	_hideForm( focusEditable ) {

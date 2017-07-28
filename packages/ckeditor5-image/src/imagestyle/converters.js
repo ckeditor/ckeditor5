@@ -10,11 +10,11 @@
 import { isImage } from '../image/utils';
 
 /**
- * Returns converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
+ * Returns a converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
  *
- * @param {Object} styles Object containing available styles. See {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat}
+ * @param {Object} styles An object containing available styles. See {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat}
  * for more details.
- * @returns {Function} Model to view attribute converter.
+ * @returns {Function} A model-to-view attribute converter.
  */
 export function modelToViewStyleAttribute( styles ) {
 	return ( evt, data, consumable, conversionApi ) => {
@@ -37,10 +37,10 @@ export function modelToViewStyleAttribute( styles ) {
 }
 
 /**
- * Returns view to model converter converting image CSS classes to proper value in the model.
+ * Returns a view-to-model converter converting image CSS classes to a proper value in the model.
  *
- * @param {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>} styles Styles for which converter is created.
- * @returns {Function} View to model converter.
+ * @param {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>} styles Styles for which the converter is created.
+ * @returns {Function} A view-to-model converter.
  */
 export function viewToModelStyleAttribute( styles ) {
 	// Convert only styles without `null` value.

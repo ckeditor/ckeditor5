@@ -17,16 +17,16 @@ import { isImage } from '../image/utils';
  */
 export default class ImageStyleCommand extends Command {
 	/**
-	 * Creates instance of the image style command. Each command instance is handling one style.
+	 * Creates an instance of the image style command. Each command instance is handling one style.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} styles Style to apply by this command.
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} styles A style to be applied by this command.
 	 */
 	constructor( editor, style ) {
 		super( editor );
 
 		/**
-		 * The value of the command - `true` if style handled by the command is applied on currently selected image,
+		 * The value of the command &mdash; `true` if a style handled by the command is applied on a currently selected image,
 		 * `false` otherwise.
 		 *
 		 * @readonly
@@ -35,7 +35,7 @@ export default class ImageStyleCommand extends Command {
 		 */
 
 		/**
-		 * Style handled by this command.
+		 * A style handled by this command.
 		 *
 		 * @readonly
 		 * @member {module:image/imagestyle/imagestyleengine~ImageStyleFormat} #style
@@ -61,11 +61,11 @@ export default class ImageStyleCommand extends Command {
 	}
 
 	/**
-	 * Executes command.
+	 * Executes the command.
 	 *
 	 * @fires execute
 	 * @param {Object} options
-	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps. New batch will be
+	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps. A new batch will be
 	 * created if this option is not set.
 	 */
 	execute( options = {} ) {

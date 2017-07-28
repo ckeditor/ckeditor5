@@ -27,7 +27,8 @@ import {
 /**
  * The image caption engine plugin.
  *
- * Registers proper converters. Takes care of adding caption element if image without it is inserted to model document.
+ * It registers proper converters. It takes care of adding a caption element if the image without it is inserted
+ * to the model document.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -46,14 +47,14 @@ export default class ImageCaptionEngine extends Plugin {
 
 		/**
 		 * Last selected caption editable.
-		 * It is used for hiding editable when is empty and image widget is no longer selected.
+		 * It is used for hiding the editable when it is empty and the image widget is no longer selected.
 		 *
 		 * @private
 		 * @member {module:engine/view/editableelement~EditableElement} #_lastSelectedCaption
 		 */
 
 		/**
-		 * Function used to create editable caption element in the editing view.
+		 * A function used to create the editable caption element in the editing view.
 		 *
 		 * @private
 		 * @member {Function}
@@ -92,7 +93,7 @@ export default class ImageCaptionEngine extends Plugin {
 	}
 
 	/**
-	 * Updates view before each rendering, making sure that empty captions (so unnecessary ones) are hidden
+	 * Updates the view before each rendering, making sure that empty captions (so unnecessary ones) are hidden
 	 * and then visible when the image is selected.
 	 *
 	 * @private
@@ -127,8 +128,8 @@ export default class ImageCaptionEngine extends Plugin {
 	}
 
 	/**
-	 * Fixes caption visibility during model to view conversion.
-	 * Checks if changed node is placed inside caption element and fixes it's visibility in the view.
+	 * Fixes caption visibility during the model-to-view conversion.
+	 * Checks if the changed node is placed inside the caption element and fixes its visibility in the view.
 	 *
 	 * @private
 	 * @param {module:engine/model/node~Node} node
@@ -229,7 +230,7 @@ function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper 
 }
 
 /**
- * Checks if provided node or one of its ancestors is caption element and returns it.
+ * Checks if the provided node or one of its ancestors is a caption element, and returns it.
  *
  * @param {module:engine/model/node~Node} node
  * @returns {module:engine/model/element~Element|null}

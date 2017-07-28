@@ -16,7 +16,7 @@ import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
- * TextAlternativeFormView class.
+ * The TextAlternativeFormView class.
  *
  * @extends module:ui/view~View
  */
@@ -30,7 +30,7 @@ export default class TextAlternativeFormView extends View {
 		const t = this.locale.t;
 
 		/**
-		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 		 *
 		 * @readonly
 		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
@@ -38,14 +38,14 @@ export default class TextAlternativeFormView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
-		 * Text area with label.
+		 * A textarea with a label.
 		 *
 		 * @member {module:ui/labeledinput/labeledinputview~LabeledInputView} #labeledTextarea
 		 */
 		this.labeledInput = this._createLabeledInputView();
 
 		/**
-		 * Button used to submit the form.
+		 * A button used to submit the form.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView} #saveButtonView
 		 */
@@ -53,7 +53,7 @@ export default class TextAlternativeFormView extends View {
 		this.saveButtonView.type = 'submit';
 
 		/**
-		 * Button used to cancel the form.
+		 * A button used to cancel the form.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView} #cancelButtonView
 		 */
@@ -110,12 +110,12 @@ export default class TextAlternativeFormView extends View {
 	}
 
 	/**
-	 * Creates button view.
+	 * Creates the button view.
 	 *
 	 * @private
-	 * @param {String} label Button label
-	 * @param {String} [eventName] Event name which ButtonView#execute event will be delegated to.
-	 * @returns {module:ui/button/buttonview~ButtonView} Button view instance.
+	 * @param {String} label The button label
+	 * @param {String} [eventName] The event name that the ButtonView#execute event will be delegated to.
+	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
 	 */
 	_createButton( label, eventName ) {
 		const button = new ButtonView( this.locale );
@@ -131,7 +131,7 @@ export default class TextAlternativeFormView extends View {
 	}
 
 	/**
-	 * Creates input with label.
+	 * Creates an input with a label.
 	 *
 	 * @private
 	 * @return {module:ui/labeledinput/labeledinputview~LabeledInputView}

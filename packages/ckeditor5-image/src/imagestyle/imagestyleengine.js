@@ -15,7 +15,7 @@ import fullSizeIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg
 import sideIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
 
 /**
- * The image style engine plugin. Sets default configuration, creates converters and registers
+ * The image style engine plugin. It sets the default configuration, creates converters and registers
  * {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand ImageStyleCommand}.
  *
  * @extends {module:core/plugin~Plugin}
@@ -88,12 +88,12 @@ export default class ImageStyleEngine extends Plugin {
  *	}
  *
  * @typedef {Object} module:image/imagestyle/imagestyleengine~ImageStyleFormat
- * @property {String} name Name of the style. It will be used to:
- * * register {@link module:core/command~Command command} which will apply this style,
- * * store style's button in editor's {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
- * @property {String} value Value used to store this style in model attribute.
- * When value is `null` style will be used as default one. Default style does not apply any CSS class to the view element.
- * @property {String} icon SVG icon representation to use when creating style's button.
- * @property {String} title Style's title.
- * @property {String} className CSS class used to represent style in view.
+ * @property {String} name The name of the style. It will be used to:
+ * * register the {@link module:core/command~Command command} which will apply this style,
+ * * store the style's button in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
+ * @property {String} value A value used to store this style in the model attribute.
+ * When the value is `null`, the style will be used as the default one. A default style does not apply any CSS class to the view element.
+ * @property {String} icon An SVG icon representation to use when creating the style's button.
+ * @property {String} title The style's title.
+ * @property {String} className The CSS class used to represent the style in view.
  */

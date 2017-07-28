@@ -17,12 +17,12 @@ import { repositionContextualBalloon, getBalloonPositionData } from './image/ui/
 const balloonClassName = 'ck-toolbar-container ck-editor-toolbar-container';
 
 /**
- * The image toolbar class. Creates an image toolbar that shows up when image widget is selected.
+ * The image toolbar class. Creates an image toolbar that shows up when the image widget is selected.
  *
- * Toolbar components are created using editor's {@link module:ui/componentfactory~ComponentFactory ComponentFactory}
- * based on {@link module:core/editor/editor~Editor#config configuration} stored under `image.toolbar`.
+ * Toolbar components are created using the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}
+ * based on the {@link module:core/editor/editor~Editor#config configuration} stored under `image.toolbar`.
  *
- * The toolbar uses {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
+ * The toolbar uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
  *
  * @extends module:core/plugin~Plugin
  */

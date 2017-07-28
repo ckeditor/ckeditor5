@@ -18,7 +18,7 @@ import '../theme/theme.scss';
 /**
  * The image plugin.
  *
- * Uses {@link module:image/image/imageengine~ImageEngine}.
+ * Uses the {@link module:image/image/imageengine~ImageEngine}.
  *
  * @extends module:core/plugin~Plugin
  */
