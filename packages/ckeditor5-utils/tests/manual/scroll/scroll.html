@@ -1,0 +1,107 @@
+<p>
+	<button id="scrollToBlue">Go to blue</button>
+</p>
+
+<div id="target-blue" class="test-box">
+	<div class="test-box">
+		<div class="test-box">
+			<div class="target">
+				<button>Go to red</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="target-red" class="test-box">
+	<div class="test-box">
+		<div class="test-box">
+			<div class="target">
+				<button>Go to green</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="target-green" class="test-box">
+	<div class="test-box">
+		<div class="test-box">
+			<div class="target">
+				<button>Go to blue</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	body {
+		height: 2000px;
+		width: 2000px;
+	}
+
+	body > .test-box {
+		position: absolute;
+	}
+
+	.test-box {
+		background: #fff;
+		padding: 15px;
+		border: 25px solid #eee;
+		overflow: scroll;
+		position: relative;
+	}
+
+	.test-box > .test-box {
+		margin-top: 1000px;
+		margin-bottom: 1000px;
+		height: 400px;
+		width: 400px;
+	}
+
+	.test-box > .test-box > .test-box {
+		height: 800px;
+		width: 800px;
+	}
+
+	.target {
+		width: 80px;
+		height: 80px;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		color: #fff;
+	}
+
+	#target-blue .target {
+		background: blue;
+	}
+
+	#target-red .target {
+		background: red;
+	}
+
+	#target-green .target {
+		background: green;
+	}
+
+	#target-blue,
+	#target-red,
+	#target-green {
+		width: 100px;
+		height: 100px;
+	}
+
+	#target-blue {
+		left: 1500px;
+		top: 1500px;
+	}
+
+	#target-red {
+		left: 1200px;
+		top: 100px;
+	}
+
+	#target-green {
+		left: 500px;
+		top: 1300px;
+	}
+</style>
