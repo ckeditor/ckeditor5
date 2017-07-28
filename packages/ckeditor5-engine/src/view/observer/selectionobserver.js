@@ -169,20 +169,26 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		const data = {
-			oldSelection: this.selection,
-			newSelection: newViewSelection,
-			domSelection
-		};
+		if ( this.selection.isEqual( newViewSelection ) ) {
+			// If selection was equal and we are at this point of algorithm, it means that it was incorrect.
+			// Just re-render it, no need to fire any events, etc.
+			this.document.render();
+		} else {
+			const data = {
+				oldSelection: this.selection,
+				newSelection: newViewSelection,
+				domSelection
+			};
 
-		// Should be fired only when selection change was the only document change.
-		this.document.fire( 'selectionChange', data );
+			// Prepare data for new selection and fire appropriate events.
+			this.document.fire( 'selectionChange', data );
 
-		// Call` #_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
-		// This function is debounced what means that `selectionChangeDone` event will be fired only when
-		// defined int the function time will elapse since the last time the function was called.
-		// So `selectionChangeDone` will be fired when selection will stop changing.
-		this._fireSelectionChangeDoneDebounced( data );
+			// Call` #_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
+			// This function is debounced what means that `selectionChangeDone` event will be fired only when
+			// defined int the function time will elapse since the last time the function was called.
+			// So `selectionChangeDone` will be fired when selection will stop changing.
+			this._fireSelectionChangeDoneDebounced( data );
+		}
 	}
 
 	/**

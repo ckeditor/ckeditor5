@@ -39,8 +39,10 @@ export function convertSelectionChange( modelDocument, mapper ) {
 
 		modelSelection.setRanges( ranges, viewSelection.isBackward );
 
-		modelDocument.enqueueChanges( () => {
-			modelDocument.selection.setTo( modelSelection );
-		} );
+		if ( !modelSelection.isEqual( modelDocument.selection ) ) {
+			modelDocument.enqueueChanges( () => {
+				modelDocument.selection.setTo( modelSelection );
+			} );
+		}
 	};
 }

@@ -301,7 +301,7 @@ describe( 'SelectionObserver', () => {
 		}, 100 );
 	} );
 
-	it( 'should fire selectionChange event even if selections are similar if DOM selection is in incorrect place', done => {
+	it( 'should re-render view if selections are similar if DOM selection is in incorrect place', done => {
 		const sel = domDocument.getSelection();
 
 		// Add rendering on selectionChange event to check this feature.
@@ -320,18 +320,21 @@ describe( 'SelectionObserver', () => {
 		} );
 
 		viewDocument.once( 'selectionChange', () => {
-			viewDocument.once( 'selectionChange', ( evt, data ) => {
-				// 3. Selection change event was correctly fired.
-				// Check whether new and old view selection were in fact equal.
-				expect( data.oldSelection.isEqual( data.newSelection ) ).to.be.true;
+			// 2. Selection change has been handled and proper event has been fired.
+
+			// 3. Now add listener for `domDocument` because `selectionChange` event will not be fired.
+			selectionObserver.listenTo( domDocument, 'selectionchange', () => {
+				// 5. Check if view was re-rendered.
+				expect( viewDocument.render.called ).to.be.true;
 
 				done();
 			}, { priority: 'lowest' } );
 
-			// 2. Selection change has been handled and proper event has been fired.
-			// Now, collapse selection in similar position, but in UI element.
+			// 4. Now, collapse selection in similar position, but in UI element.
 			// Current and new selection position are same in view.
+			// Also add a spy to `viewDocument#render` to see if view will be re-rendered.
 			sel.collapse( domMain.childNodes[ 0 ].childNodes[ 1 ], 0 );
+			sinon.spy( viewDocument, 'render' );
 		}, { priority: 'lowest' } );
 
 		// 1. Collapse before ui element and wait for async selectionchange to fire selection change handling.
