@@ -41,6 +41,43 @@ describe( 'Rect', () => {
 			assertRect( new Rect( element ), geometry );
 		} );
 
+		it( 'should accept HTMLElement (excludeScrollbarsAndBorders)', () => {
+			const element = document.createElement( 'div' );
+
+			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+			testUtils.sinon.stub( global.window, 'getComputedStyle' ).returns( {
+				borderTopWidth: '5px',
+				borderRightWidth: '10px',
+				borderLeftWidth: '5px',
+				borderBottomWidth: '10px'
+			} );
+
+			// Simulate 5px srollbars.
+			Object.defineProperties( element, {
+				offsetWidth: {
+					value: 20
+				},
+				offsetHeight: {
+					value: 20
+				},
+				clientWidth: {
+					value: 10
+				},
+				clientHeight: {
+					value: 10
+				}
+			} );
+
+			assertRect( new Rect( element, { excludeScrollbarsAndBorders: true } ), {
+				top: 15,
+				right: 35,
+				bottom: 25,
+				left: 25,
+				width: 10,
+				height: 10
+			} );
+		} );
+
 		it( 'should accept Range (non–collapsed)', () => {
 			const range = document.createRange();
 
@@ -562,6 +599,150 @@ describe( 'Rect', () => {
 		} );
 	} );
 
+	describe( 'isEqual()', () => {
+		it( 'returns `true` when rects are equal', () => {
+			const rectA = new Rect( {
+				top: 10,
+				right: 20,
+				bottom: 30,
+				left: 40,
+				width: 10,
+				height: 20
+			} );
+
+			const rectB = new Rect( {
+				top: 10,
+				right: 20,
+				bottom: 30,
+				left: 40,
+				width: 10,
+				height: 20
+			} );
+
+			expect( rectA.isEqual( rectB ) ).to.be.true;
+			expect( rectB.isEqual( rectA ) ).to.be.true;
+			expect( rectA.isEqual( rectA ) ).to.be.true;
+		} );
+
+		it( 'returns `false` when rects are different', () => {
+			const rectA = new Rect( {
+				top: 10,
+				right: 20,
+				bottom: 30,
+				left: 40,
+				width: 10,
+				height: 20
+			} );
+
+			const rectB = new Rect( {
+				top: 10,
+				right: 20,
+				bottom: 30,
+				left: 40,
+				width: 10,
+				height: 30 // !
+			} );
+
+			expect( rectA.isEqual( rectB ) ).to.be.false;
+			expect( rectB.isEqual( rectA ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'contains()', () => {
+		it( 'should return true if rects are the same', () => {
+			const rectA = new Rect( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			const rectB = new Rect( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			expect( rectA.isEqual( rectB ) ).to.be.true;
+			expect( rectA.contains( rectB ) ).to.be.true;
+			expect( rectB.contains( rectA ) ).to.be.true;
+		} );
+
+		it( 'should return true if rect is within', () => {
+			const rectA = new Rect( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			const rectB = new Rect( {
+				top: 10,
+				right: 90,
+				bottom: 90,
+				left: 10,
+				width: 80,
+				height: 80
+			} );
+
+			expect( rectA.contains( rectB ) ).to.be.true;
+			expect( rectB.contains( rectA ) ).to.be.false;
+		} );
+
+		it( 'should return false if rect extends beyond the boundaries', () => {
+			const rectA = new Rect( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			const rectB = new Rect( {
+				top: 10,
+				right: 100,
+				bottom: 110,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			expect( rectA.contains( rectB ) ).to.be.false;
+			expect( rectB.contains( rectA ) ).to.be.false;
+		} );
+
+		it( 'should return false if rect is completely beyond the boundaries', () => {
+			const rectA = new Rect( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			const rectB = new Rect( {
+				top: 110,
+				right: 100,
+				bottom: 210,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			expect( rectA.contains( rectB ) ).to.be.false;
+			expect( rectB.contains( rectA ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'getViewportRect()', () => {
 		it( 'should reaturn a rect', () => {
 			expect( Rect.getViewportRect() ).to.be.instanceOf( Rect );
@@ -582,6 +763,33 @@ describe( 'Rect', () => {
 				left: 0,
 				width: 1000,
 				height: 500
+			} );
+		} );
+
+		describe( 'excludeScrollbars', () => {
+			it( 'should exclude scrollbars from viewport\'s rect', () => {
+				testUtils.sinon.stub( global, 'window', {
+					innerWidth: 1000,
+					innerHeight: 500,
+					scrollX: 100,
+					scrollY: 200
+				} );
+
+				testUtils.sinon.stub( global, 'document', {
+					documentElement: {
+						clientWidth: 990,
+						clientHeight: 490
+					}
+				} );
+
+				assertRect( Rect.getViewportRect( { excludeScrollbars: true } ), {
+					top: 0,
+					right: 990,
+					bottom: 490,
+					left: 0,
+					width: 990,
+					height: 490
+				} );
 			} );
 		} );
 	} );
