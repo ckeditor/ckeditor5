@@ -9,6 +9,7 @@ import DomConverter from '../../../src/view/domconverter';
 import ViewEditable from '../../../src/view/editableelement';
 import ViewDocument from '../../../src/view/document';
 import ViewUIElement from '../../../src/view/uielement';
+import ViewContainerElement from '../../../src/view/containerelement';
 import { BR_FILLER, NBSP_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -202,7 +203,7 @@ describe( 'DomConverter', () => {
 			return sel;
 		}
 
-		let domP, domFillerTextNode, domUiSpan;
+		let domP, domFillerTextNode, domUiSpan, domUiDeepSpan;
 
 		beforeEach( () => {
 			// <p>INLINE_FILLERfoo<span></span></p>.
@@ -210,12 +211,17 @@ describe( 'DomConverter', () => {
 			domFillerTextNode = document.createTextNode( INLINE_FILLER + 'foo' );
 			domUiSpan = document.createElement( 'span' );
 
+			domUiDeepSpan = document.createElement( 'span' );
+			domUiSpan.appendChild( domUiDeepSpan );
+
 			const viewUiSpan = new ViewUIElement( 'span' );
+			const viewElementSpan = new ViewContainerElement( 'span' );
 
 			domP.appendChild( domFillerTextNode );
 			domP.appendChild( domUiSpan );
 
 			converter.bindElements( domUiSpan, viewUiSpan );
+			converter.bindElements( domUiDeepSpan, viewElementSpan );
 
 			document.body.appendChild( domP );
 		} );
@@ -237,7 +243,7 @@ describe( 'DomConverter', () => {
 		describe( 'should return false', () => {
 			it( 'if anchor or focus is before filler node', () => {
 				// Tests forward and backward selection.
-				// <p>[INLINE_FILLERfoo]<span></span></p>.
+				// <p>[INLINE_FILLERfoo]<span-ui><span-container></span></span></p>.
 				const sel1 = domSelection( domP, 0, domP, 1 );
 				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
@@ -247,7 +253,7 @@ describe( 'DomConverter', () => {
 
 			it( 'if anchor or focus is before filler sequence', () => {
 				// Tests forward and backward selection.
-				// <p>{INLINE_FILLERfoo}<span></span></p>.
+				// <p>{INLINE_FILLERfoo}<span-ui><span-container></span></span></p>.
 				const sel1 = domSelection( domFillerTextNode, 0, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
 				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
@@ -257,7 +263,7 @@ describe( 'DomConverter', () => {
 
 			it( 'if anchor or focus is in the middle of filler sequence', () => {
 				// Tests forward and backward selection.
-				// <p>I{NLINE_FILLERfoo}<span></span></p>.
+				// <p>I{NLINE_FILLERfoo}<span-ui><span-container></span></span></p>.
 				const sel1 = domSelection( domFillerTextNode, 1, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
 				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
@@ -265,13 +271,23 @@ describe( 'DomConverter', () => {
 				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
 			} );
 
-			it( 'if anchor or focus is inside dom element that represents view ui element', () => {
+			it( 'if anchor or focus is directly inside dom element that represents view ui element', () => {
 				// Tests forward and backward selection.
-				// <p>INLINE_FILLER{foo<span>]</span></p>.
+				// <p>INLINE_FILLER{foo<span-ui>]<span-container></span></span></p>.
 				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH + 3, domUiSpan, 0 );
 				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
 				const sel2 = domSelection( domUiSpan, 0, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
+				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
+			} );
+
+			it( 'if anchor or focus is inside deep ui element structure (not directly in ui element)', () => {
+				// Tests forward and backward selection.
+				// <p>INLINE_FILLER{foo<span-ui><span-container>]</span></span></p>.
+				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH + 3, domUiDeepSpan, 0 );
+				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
+
+				const sel2 = domSelection( domUiDeepSpan, 0, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
 				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
 			} );
 		} );
