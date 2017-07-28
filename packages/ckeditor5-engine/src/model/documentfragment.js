@@ -186,7 +186,7 @@ export default class DocumentFragment {
 		let node = this; // eslint-disable-line consistent-this
 
 		for ( const index of relativePath ) {
-			node = node.getChild( index );
+			node = node.getChild( node.offsetToIndex( index ) );
 		}
 
 		return node;
