@@ -12,6 +12,7 @@ import Renderer from './renderer';
 import DomConverter from './domconverter';
 import RootEditableElement from './rooteditableelement';
 import { injectQuirksHandling } from './filler';
+import { injectUiElementHandling } from './uielement';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import MutationObserver from './observer/mutationobserver';
 import SelectionObserver from './observer/selectionobserver';
@@ -20,7 +21,6 @@ import KeyObserver from './observer/keyobserver';
 import FakeSelectionObserver from './observer/fakeselectionobserver';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * Document class creates an abstract layer over the content editable area.
@@ -127,8 +127,7 @@ export default class Document {
 		this.addObserver( FakeSelectionObserver );
 
 		injectQuirksHandling( this );
-
-		this.on( 'keydown', ( evt, data ) => _jumpOverUiElement( evt, data, this.domConverter ) );
+		injectUiElementHandling( this );
 
 		this.decorate( 'render' );
 	}
@@ -350,29 +349,3 @@ mix( Document, ObservableMixin );
  *
  * @event render
  */
-
-// Selection cannot be placed in a `UIElement`. Whenever it is placed there, it is moved before it. This
-// causes a situation when it is impossible to jump over `UIElement` using right arrow key, because the selection
-// ends up in ui element (in DOM) and is moved back to the left. This handler fixes this situation.
-function _jumpOverUiElement( evt, data, domConverter ) {
-	if ( data.keyCode == keyCodes.arrowright ) {
-		const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
-
-		if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
-			const domParent = domSelection.getRangeAt( 0 ).startContainer;
-			const domOffset = domSelection.getRangeAt( 0 ).startOffset;
-
-			const viewPosition = domConverter.domPositionToView( domParent, domOffset );
-			// Skip all following ui elements.
-			const nextViewPosition = viewPosition.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
-
-			// If anything has been skipped, fix position.
-			// This `if` could be possibly omitted but maybe it is better not to mess with DOM selection if not needed.
-			if ( !viewPosition.isEqual( nextViewPosition ) ) {
-				const newDomPosition = domConverter.viewPositionToDom( nextViewPosition );
-
-				domSelection.collapse( newDomPosition.parent, newDomPosition.offset );
-			}
-		}
-	}
-}

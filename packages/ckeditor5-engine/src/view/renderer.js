@@ -603,12 +603,12 @@ export default class Renderer {
 	_updateDomSelection( domRoot ) {
 		const domSelection = domRoot.ownerDocument.defaultView.getSelection();
 
-		// Below we will check whether DOM Selection needs updating at all.
-		// We need to update DOM Selection if either:
+		// Below we will check whether DOM selection needs updating at all.
+		// We need to update DOM selection if either:
 		// * it is at incorrect position, or
 		// * it has changed (when compared to view selection).
-		if ( this.domConverter.isCorrectDomSelection( domSelection ) ) {
-			// DOM Selection is at correct position. Check whether it has changed.
+		if ( this.domConverter.isDomSelectionCorrect( domSelection ) ) {
+			// DOM selection is at correct position. Check whether it has changed.
 			const viewSelectionFromDom = this.domConverter.domSelectionToView( domSelection );
 
 			// Compare view selection assumed from dom with current view selection.

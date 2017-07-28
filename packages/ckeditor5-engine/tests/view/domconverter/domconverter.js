@@ -192,7 +192,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'isCorrectDomSelection', () => {
+	describe( 'isDomSelectionCorrect()', () => {
 		function domSelection( anchorParent, anchorOffset, focusParent, focusOffset ) {
 			const sel = document.getSelection();
 
@@ -223,15 +223,15 @@ describe( 'DomConverter', () => {
 		it( 'should return true for correct dom selection', () => {
 			// <p>INLINE_FILLER{foo}<span></span></p>.
 			const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
-			expect( converter.isCorrectDomSelection( sel1 ) ).to.be.true;
+			expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.true;
 
 			// <p>INLINE_FILLERfoo[]<span></span></p>.
 			const sel2 = domSelection( domP, 1, domP, 1 );
-			expect( converter.isCorrectDomSelection( sel2 ) ).to.be.true;
+			expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.true;
 
 			// <p>INLINE_FILLERfoo<span></span>[]</p>.
 			const sel3 = domSelection( domP, 2, domP, 2 );
-			expect( converter.isCorrectDomSelection( sel3 ) ).to.be.true;
+			expect( converter.isDomSelectionCorrect( sel3 ) ).to.be.true;
 		} );
 
 		describe( 'should return false', () => {
@@ -239,40 +239,40 @@ describe( 'DomConverter', () => {
 				// Tests forward and backward selection.
 				// <p>[INLINE_FILLERfoo]<span></span></p>.
 				const sel1 = domSelection( domP, 0, domP, 1 );
-				expect( converter.isCorrectDomSelection( sel1 ) ).to.be.false;
+				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
 				const sel2 = domSelection( domP, 1, domP, 0 );
-				expect( converter.isCorrectDomSelection( sel2 ) ).to.be.false;
+				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
 			} );
 
 			it( 'if anchor or focus is before filler sequence', () => {
 				// Tests forward and backward selection.
 				// <p>{INLINE_FILLERfoo}<span></span></p>.
 				const sel1 = domSelection( domFillerTextNode, 0, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
-				expect( converter.isCorrectDomSelection( sel1 ) ).to.be.false;
+				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
 				const sel2 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH + 3, domFillerTextNode, 0 );
-				expect( converter.isCorrectDomSelection( sel2 ) ).to.be.false;
+				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
 			} );
 
 			it( 'if anchor or focus is in the middle of filler sequence', () => {
 				// Tests forward and backward selection.
 				// <p>I{NLINE_FILLERfoo}<span></span></p>.
 				const sel1 = domSelection( domFillerTextNode, 1, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
-				expect( converter.isCorrectDomSelection( sel1 ) ).to.be.false;
+				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
 				const sel2 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH + 3, domFillerTextNode, 1 );
-				expect( converter.isCorrectDomSelection( sel2 ) ).to.be.false;
+				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
 			} );
 
 			it( 'if anchor or focus is inside dom element that represents view ui element', () => {
 				// Tests forward and backward selection.
 				// <p>INLINE_FILLER{foo<span>]</span></p>.
 				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH + 3, domUiSpan, 0 );
-				expect( converter.isCorrectDomSelection( sel1 ) ).to.be.false;
+				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
 				const sel2 = domSelection( domUiSpan, 0, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
-				expect( converter.isCorrectDomSelection( sel2 ) ).to.be.false;
+				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
 			} );
 		} );
 	} );

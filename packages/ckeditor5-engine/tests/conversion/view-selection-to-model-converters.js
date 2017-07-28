@@ -110,7 +110,8 @@ describe( 'convertSelectionChange', () => {
 	} );
 
 	it( 'should re-convert selection even if it has not changed in model', () => {
-		// Selection might not have changed in model but it needs to be reconverted because it ended up in incorrect place in DOM.
+		// Selection might have not changed in the model but it needs to be reconverted because
+		// it ended up at an incorrect place in the DOM.
 		const viewSelection = new ViewSelection();
 		viewSelection.addRange( ViewRange.createFromParentsAndOffsets(
 			viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 1 ) );

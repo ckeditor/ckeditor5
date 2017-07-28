@@ -10,6 +10,7 @@
 import Element from './element';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Node from './node';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * UIElement class. It is used to represent UI not a content of the document.
@@ -82,9 +83,45 @@ export default class UIElement extends Element {
 	}
 }
 
+/**
+ * Assign key observer which will move cursor over a ui element if right arrow key is pressed and selection is before
+ * ui element.
+ *
+ * @param {module:engine/view/document~Document} document Document instance we should inject quirks handling on.
+ */
+export function injectUiElementHandling( document ) {
+	document.on( 'keydown', ( evt, data ) => jumpOverUiElement( evt, data, document.domConverter ) );
+}
+
 // Returns `null` because block filler is not needed for UIElements.
 //
 // @returns {null}
 function getFillerOffset() {
 	return null;
+}
+
+// Selection cannot be placed in a `UIElement`. Whenever it is placed there, it is moved before it. This
+// causes a situation when it is impossible to jump over `UIElement` using right arrow key, because the selection
+// ends up in ui element (in DOM) and is moved back to the left. This handler fixes this situation.
+function jumpOverUiElement( evt, data, domConverter ) {
+	if ( data.keyCode == keyCodes.arrowright ) {
+		const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+
+		if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
+			const domParent = domSelection.getRangeAt( 0 ).startContainer;
+			const domOffset = domSelection.getRangeAt( 0 ).startOffset;
+
+			const viewPosition = domConverter.domPositionToView( domParent, domOffset );
+			// Skip all following ui elements.
+			const nextViewPosition = viewPosition.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
+
+			// If anything has been skipped, fix position.
+			// This `if` could be possibly omitted but maybe it is better not to mess with DOM selection if not needed.
+			if ( !viewPosition.isEqual( nextViewPosition ) ) {
+				const newDomPosition = domConverter.viewPositionToDom( nextViewPosition );
+
+				domSelection.collapse( newDomPosition.parent, newDomPosition.offset );
+			}
+		}
+	}
 }

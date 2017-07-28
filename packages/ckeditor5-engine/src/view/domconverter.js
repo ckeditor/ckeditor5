@@ -839,34 +839,36 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Checks if given {Selection DOM Selection} boundaries are in correct places.
+	 * Checks if given selection's boundaries are at correct places.
 	 *
-	 * Incorrect places for selection are:
-	 * * before or in the middle of inline filler sequence,
-	 * * inside DOM element that represents {@link module:engine/view/uielement~UIElement view ui element}.
+	 * The following places are considered as incorrect for selection boundaries:
+	 * * before or in the middle of the inline filler sequence,
+	 * * inside the DOM element which represents {@link module:engine/view/uielement~UIElement a view ui element}.
 	 *
 	 * @param {Selection} domSelection DOM Selection object to be checked.
-	 * @returns {Boolean} `true` if given selection is at correct place, `false` otherwise.
+	 * @returns {Boolean} `true` if the given selection is at a correct place, `false` otherwise.
 	 */
-	isCorrectDomSelection( domSelection ) {
-		return this._isCorrectDomSelectionPosition( domSelection.anchorNode, domSelection.anchorOffset ) &&
-			this._isCorrectDomSelectionPosition( domSelection.focusNode, domSelection.focusOffset );
+	isDomSelectionCorrect( domSelection ) {
+		return this._isDomSelectionPositionCorrect( domSelection.anchorNode, domSelection.anchorOffset ) &&
+			this._isDomSelectionPositionCorrect( domSelection.focusNode, domSelection.focusOffset );
 	}
 
 	/**
-	 * Checks if given DOM position is a correct place for selection boundary. See {@link ~isCorrectDomSelection}.
+	 * Checks if the given DOM position is a correct place for selection boundary. See {@link ~isDomSelectionCorrect}.
 	 *
 	 * @private
-	 * @param {Node} domParent Position parent.
+	 * @param {Element} domParent Position parent.
 	 * @param {Number} offset Position offset.
-	 * @returns {Boolean} `true` if given position is correct place for selection boundary, `false` otherwise.
+	 * @returns {Boolean} `true` if given position is at a correct place for selection boundary, `false` otherwise.
 	 */
-	_isCorrectDomSelectionPosition( domParent, offset ) {
+	_isDomSelectionPositionCorrect( domParent, offset ) {
 		// If selection is before or in the middle of inline filler string, it is incorrect.
 		if ( this.isText( domParent ) && startsWithFiller( domParent ) && offset < INLINE_FILLER_LENGTH ) {
 			// Selection in a text node, at wrong position (before or in the middle of filler).
 			return false;
-		} else if ( this.isElement( domParent ) && startsWithFiller( domParent.childNodes[ offset ] ) ) {
+		}
+
+		if ( this.isElement( domParent ) && startsWithFiller( domParent.childNodes[ offset ] ) ) {
 			// Selection in an element node, before filler text node.
 			return false;
 		}
