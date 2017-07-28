@@ -114,6 +114,34 @@ describe( 'DeleteCommand', () => {
 			expect( modifyOpts ).to.have.property( 'unit', 'word' );
 		} );
 
+		it( 'passes options to deleteContent #1', () => {
+			const spy = sinon.spy();
+
+			editor.data.on( 'deleteContent', spy );
+			setData( doc, '<paragraph>foo[]bar</paragraph>' );
+
+			editor.execute( 'delete' );
+
+			expect( spy.callCount ).to.equal( 1 );
+
+			const deleteOpts = spy.args[ 0 ][ 1 ][ 2 ];
+			expect( deleteOpts ).to.have.property( 'doNotResetEntireContent', true );
+		} );
+
+		it( 'passes options to deleteContent #2', () => {
+			const spy = sinon.spy();
+
+			editor.data.on( 'deleteContent', spy );
+			setData( doc, '<paragraph>[foobar]</paragraph>' );
+
+			editor.execute( 'delete' );
+
+			expect( spy.callCount ).to.equal( 1 );
+
+			const deleteOpts = spy.args[ 0 ][ 1 ][ 2 ];
+			expect( deleteOpts ).to.have.property( 'doNotResetEntireContent', false );
+		} );
+
 		it( 'leaves an empty paragraph after removing the whole content from editor', () => {
 			setData( doc, '<heading1>[Header 1</heading1><paragraph>Some text.]</paragraph>' );
 
@@ -130,8 +158,8 @@ describe( 'DeleteCommand', () => {
 			setData( doc,
 				'<heading1>Foo</heading1>' +
 				'<section>' +
-					'<heading1>[Header 1</heading1>' +
-					'<paragraph>Some text.]</paragraph>' +
+				'<heading1>[Header 1</heading1>' +
+				'<paragraph>Some text.]</paragraph>' +
 				'</section>' +
 				'<paragraph>Bar.</paragraph>'
 			);
@@ -141,7 +169,7 @@ describe( 'DeleteCommand', () => {
 			expect( getData( doc, { selection: true } ) ).to.equal(
 				'<heading1>Foo</heading1>' +
 				'<section>' +
-					'<paragraph>[]</paragraph>' +
+				'<paragraph>[]</paragraph>' +
 				'</section>' +
 				'<paragraph>Bar.</paragraph>'
 			);

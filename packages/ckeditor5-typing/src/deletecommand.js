@@ -69,6 +69,13 @@ export default class DeleteCommand extends Command {
 
 			const selection = Selection.createFromSelection( doc.selection );
 
+			// Do not replace the whole selected content if selection was collapsed.
+			// This prevents such situation:
+			//
+			// <h1></h1><p>[]</p>	-->  <h1>[</h1><p>]</p> 		-->  <p></p>
+			// starting content		-->   after `modifySelection`	-->  after `deleteContent`.
+			const doNotResetEntireContent = selection.isCollapsed;
+
 			// Try to extend the selection in the specified direction.
 			if ( selection.isCollapsed ) {
 				dataController.modifySelection( selection, { direction: this.direction, unit: options.unit } );
@@ -93,7 +100,7 @@ export default class DeleteCommand extends Command {
 				);
 			} );
 
-			dataController.deleteContent( selection, this._buffer.batch );
+			dataController.deleteContent( selection, this._buffer.batch, { doNotResetEntireContent } );
 			this._buffer.input( changeCount );
 
 			doc.selection.setRanges( selection.getRanges(), selection.isBackward );
