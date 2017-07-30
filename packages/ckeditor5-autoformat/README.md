@@ -1,6 +1,7 @@
-ckeditor5-autoformat
+CKEditor 5 autoformat feature
 ========================================
 
+[![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-autoformat.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat)
 [![Build Status](https://travis-ci.org/ckeditor/ckeditor5-autoformat.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-autoformat)
 [![Test Coverage](https://codeclimate.com/github/ckeditor/ckeditor5-autoformat/badges/coverage.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-autoformat/coverage)
