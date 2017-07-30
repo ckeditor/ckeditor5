@@ -1,6 +1,7 @@
-CKEditor 5 Editing Engine
+CKEditor 5 editing engine
 ========================================
 
+[![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-engine.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)
 [![Build Status](https://travis-ci.org/ckeditor/ckeditor5-engine.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-engine)
 [![Test Coverage](https://codeclimate.com/github/ckeditor/ckeditor5-engine/badges/coverage.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-engine/coverage)
