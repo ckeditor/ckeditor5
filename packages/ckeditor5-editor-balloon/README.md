@@ -1,6 +1,7 @@
-Balloon Toolbar Editor
-========================================
+CKEditor 5 balloon toolbar editor creator
+=========================================
 
+[![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-balloon-toolbar.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon-toolbar)
 [![Build Status](https://travis-ci.org/ckeditor/ckeditor5-editor-balloon-toolbar.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-editor-balloon-toolbar)
 [![Test Coverage](https://codeclimate.com/github/ckeditor/ckeditor5-editor-balloon-toolbar/badges/coverage.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-editor-balloon-toolbar/coverage)
