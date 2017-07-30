@@ -1,6 +1,7 @@
-CKEditor 5 Image Feature
+CKEditor 5 image feature
 ========================================
 
+[![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-image.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)
 [![Build Status](https://travis-ci.org/ckeditor/ckeditor5-image.svg)](https://travis-ci.org/ckeditor/ckeditor5-image)
 [![Test Coverage](https://codeclimate.com/github/ckeditor/ckeditor5-image/badges/coverage.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-image/coverage)
