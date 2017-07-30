@@ -222,7 +222,7 @@ export default class Node {
  * Change event is bubbled – it is fired on all ancestors.
  *
  * @event change:children
- * @param {module:engine/view/node~Node} Changed node.
+ * @param {module:engine/view/node~Node} changedNode
  */
 
 /**
@@ -231,7 +231,7 @@ export default class Node {
  * Change event is bubbled – it is fired on all ancestors.
  *
  * @event change:attributes
- * @param {module:engine/view/node~Node} Changed node.
+ * @param {module:engine/view/node~Node} changedNode
  */
 
 /**
@@ -240,7 +240,7 @@ export default class Node {
  * Change event is bubbled – it is fired on all ancestors.
  *
  * @event change:text
- * @param {module:engine/view/node~Node} Changed node.
+ * @param {module:engine/view/node~Node} changedNode
  */
 
 /**
