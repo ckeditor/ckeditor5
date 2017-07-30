@@ -37,6 +37,8 @@ The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository is the place t
 
 Each repository independently handles its issues. However, it's recommended to report issues in [this repository](https://github.com/ckeditor/ckeditor5/issues) unless you know to which specific repository the issue belongs.
 
+Read more in the [Support](https://github.com/ckeditor/ckeditor5/wiki/Support) wiki page.
+
 ## Packages
 
 ### Editing framework
