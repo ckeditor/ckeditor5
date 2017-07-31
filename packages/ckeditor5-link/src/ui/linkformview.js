@@ -45,7 +45,7 @@ export default class LinkFormView extends View {
 		this.focusTracker = new FocusTracker();
 
 		/**
-		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 		 *
 		 * @readonly
 		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
@@ -53,14 +53,14 @@ export default class LinkFormView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
-		 * The url input view.
+		 * The URL input view.
 		 *
 		 * @member {module:ui/labeledinput/labeledinputview~LabeledInputView}
 		 */
 		this.urlInputView = this._createUrlInput();
 
 		/**
-		 * The save button view.
+		 * The Save button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -68,14 +68,14 @@ export default class LinkFormView extends View {
 		this.saveButtonView.type = 'submit';
 
 		/**
-		 * The cancel button view.
+		 * The Cancel button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), 'cancel' );
 
 		/**
-		 * The unlink button view.
+		 * The Unlink button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
@@ -102,10 +102,10 @@ export default class LinkFormView extends View {
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
-				// Navigate form fields backwards using the shift + tab keystroke.
+				// Navigate form fields backwards using the Shift + Tab keystroke.
 				focusPrevious: 'shift + tab',
 
-				// Navigate form fields forwards using the tab key.
+				// Navigate form fields forwards using the Tab key.
 				focusNext: 'tab'
 			}
 		} );
@@ -188,7 +188,7 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Create labeled input view.
+	 * Creates a labeled input view.
 	 *
 	 * @private
 	 * @returns {module:ui/labeledinput/labeledinputview~LabeledInputView} Labeled input view instance.
@@ -205,12 +205,12 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Creates button View.
+	 * Creates a button view.
 	 *
 	 * @private
-	 * @param {String} label Button label
-	 * @param {String} [eventName] Event name which ButtonView#execute event will be delegated to.
-	 * @returns {module:ui/button/buttonview~ButtonView} Button view instance.
+	 * @param {String} label The button label
+	 * @param {String} [eventName] An event name that the `ButtonView#execute` event will be delegated to.
+	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
 	 */
 	_createButton( label, eventName ) {
 		const button = new ButtonView( this.locale );
@@ -227,8 +227,8 @@ export default class LinkFormView extends View {
 }
 
 /**
- * Fired when the form view is submitted (when one of the child triggered submit event).
- * E.g. click on {@link #saveButtonView}.
+ * Fired when the form view is submitted (when one of the children triggered the submit event),
+ * e.g. click on {@link #saveButtonView}.
  *
  * @event submit
  */

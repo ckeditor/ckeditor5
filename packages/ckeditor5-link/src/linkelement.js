@@ -10,8 +10,8 @@
 import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
 
 /**
- * This class is to mark specific {@link module:engine/view/node~Node} as {@link module:link/linkelement~LinkElement}.
- * E.g. There could be a situation when different features will create nodes with the same names,
+ * This class is to mark a specific {@link module:engine/view/node~Node} as a {@link module:link/linkelement~LinkElement}.
+ * For example, there could be a situation when different features will create nodes with the same names,
  * and hence they must be identified somehow.
  *
  * @extends module:engine/view/attributelement~AttributeElement

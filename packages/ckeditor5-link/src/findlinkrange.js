@@ -11,24 +11,24 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
- * Walk backward and forward from start position, node by node as long as they have the same `linkHref` attribute value and return
- * {@link module:engine/model/range~Range Range} with found link.
+ * Walks backward and forward from the start position, node by node, as long as they have the same `linkHref` attribute value and return
+ * a {@link module:engine/model/range~Range Range} with the found link.
  *
- * @param {module:engine/model/position~Position} position Start position.
- * @param {String} value `linkHref` attribute value.
- * @returns {module:engine/model/range~Range} Link range.
+ * @param {module:engine/model/position~Position} position The start position.
+ * @param {String} value The `linkHref` attribute value.
+ * @returns {module:engine/model/range~Range} The link range.
  */
 export default function findLinkRange( position, value ) {
 	return new Range( _findBound( position, value, true ), _findBound( position, value, false ) );
 }
 
-// Walk forward or backward (depends on `lookBack` flag), node by node as long as they have the same `linkHref` attribute value
-// and return position just before or after (depends on `lookBack` flag) last matched node.
+// Walks forward or backward (depends on the `lookBack` flag), node by node, as long as they have the same `linkHref` attribute value
+// and returns a position just before or after (depends on the `lookBack` flag) the last matched node.
 //
-// @param {module:engine/model/position~Position} position Start position.
-// @param {String} value `linkHref` attribute value.
-// @param {Boolean} lookBack Whether walk direction is forward `false` or backward `true`.
-// @returns {module:engine/model/position~Position} Position just before last matched node.
+// @param {module:engine/model/position~Position} position The start position.
+// @param {String} value The `linkHref` attribute value.
+// @param {Boolean} lookBack Whether the walk direction is forward (`false`) or backward (`true`).
+// @returns {module:engine/model/position~Position} The position just before the last matched node.
 function _findBound( position, value, lookBack ) {
 	// Get node before or after position (depends on `lookBack` flag).
 	// When position is inside text node then start searching from text node.

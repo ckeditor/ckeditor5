@@ -56,7 +56,7 @@ export default class Link extends Plugin {
 		this.editor.editing.view.addObserver( ClickObserver );
 
 		/**
-		 * The form view displayed inside of the balloon.
+		 * The form view displayed inside the balloon.
 		 *
 		 * @member {module:link/ui/linkformview~LinkFormView}
 		 */
@@ -82,7 +82,7 @@ export default class Link extends Plugin {
 	 * Creates the {@link module:link/ui/linkformview~LinkFormView} instance.
 	 *
 	 * @private
-	 * @returns {module:link/ui/linkformview~LinkFormView} Link form instance.
+	 * @returns {module:link/ui/linkformview~LinkFormView} The link form instance.
 	 */
 	_createForm() {
 		const editor = this.editor;
@@ -122,8 +122,8 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Creates a toolbar link button. Clicking this button will show
-	 * {@link #_balloon} attached to the selection.
+	 * Creates a toolbar Link button. Clicking this button will show
+	 * a {@link #_balloon} attached to the selection.
 	 *
 	 * @private
 	 */
@@ -132,7 +132,7 @@ export default class Link extends Plugin {
 		const linkCommand = editor.commands.get( 'link' );
 		const t = editor.t;
 
-		// Handle `Ctrl+K` keystroke and show the panel.
+		// Handle the `Ctrl+K` keystroke and show the panel.
 		editor.keystrokes.set( linkKeystroke, () => {
 			if ( linkCommand.isEnabled ) {
 				this._showPanel( true );
@@ -159,7 +159,7 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Creates a toolbar unlink button. Clicking this button will unlink
+	 * Creates a toolbar Unlink button. Clicking this button will unlink
 	 * the selected link.
 	 *
 	 * @private
@@ -188,7 +188,7 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Attaches actions which control whether the balloon panel containing the
+	 * Attaches actions that control whether the balloon panel containing the
 	 * {@link #formView} is visible or not.
 	 *
 	 * @private
@@ -234,10 +234,9 @@ export default class Link extends Plugin {
 
 	/**
 	 * Adds the {@link #formView} to the {@link #_balloon}.
-	 * When view is already added then try to focus it `focusInput` parameter is set as true.
 	 *
 	 * @protected
-	 * @param {Boolean} [focusInput=false] When `true`, link form will be focused on panel show.
+	 * @param {Boolean} [focusInput=false] When `true`, the link form will be focused on panel show.
 	 */
 	_showPanel( focusInput ) {
 		const editor = this.editor;
@@ -329,10 +328,10 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Returns positioning options for the {@link #_balloon}. They control the way balloon is attached
+	 * Returns positioning options for the {@link #_balloon}. They control the way the balloon is attached
 	 * to the target element or selection.
 	 *
-	 * If the selection is collapsed and inside a link element, then the panel will be attached to the
+	 * If the selection is collapsed and inside a link element, the panel will be attached to the
 	 * entire link element. Otherwise, it will be attached to the selection.
 	 *
 	 * @private
@@ -356,10 +355,10 @@ export default class Link extends Plugin {
 
 	/**
 	 * Returns the {@link module:link/linkelement~LinkElement} under
-	 * {@link module:engine/view/document~Document editing view's} selection or `null`
-	 * if there's none.
+	 * the {@link module:engine/view/document~Document editing view's} selection or `null`
+	 * if there is none.
 	 *
-	 * **Note**: For non–collapsed selection the `LinkElement` is only returned when **fully**
+	 * **Note**: For a non–collapsed selection the `LinkElement` is only returned when **fully**
 	 * selected and the **only** element within the selection boundaries.
 	 *
 	 * @private

@@ -8,7 +8,7 @@ CKEditor 5 link feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-link/status.svg)](https://david-dm.org/ckeditor/ckeditor5-link)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-link/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-link?type=dev)
 
-Link feature for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-link>.
+The link feature for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-link>.
 
 ## License
 

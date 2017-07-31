@@ -19,7 +19,7 @@ import findLinkRange from './findlinkrange';
  */
 export default class LinkCommand extends Command {
 	/**
-	 * The value of `'linkHref'` attribute if the start of a selection is located in a node with this attribute.
+	 * The value of the `'linkHref'` attribute if the start of the selection is located in a node with this attribute.
 	 *
 	 * @observable
 	 * @readonly
@@ -39,15 +39,15 @@ export default class LinkCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * When selection is non-collapsed, then `linkHref` attribute will be applied to nodes inside selection, but only to
-	 * those nodes where `linkHref` attribute is allowed (disallowed nodes will be omitted).
+	 * When the selection is non-collapsed, the `linkHref` attribute will be applied to nodes inside the selection, but only to
+	 * those nodes where the `linkHref` attribute is allowed (disallowed nodes will be omitted).
 	 *
-	 * When selection is collapsed and is not inside text with `linkHref` attribute, then
-	 * new {@link module:engine/model/text~Text Text node} with `linkHref` attribute will be inserted in place of caret, but only if such
-	 * an element is allowed in this place. `_data` of the inserted text will equal `href` parameter. Selection will be updated to
-	 * wrap just inserted text node.
+	 * When the selection is collapsed and is not inside the text with the `linkHref` attribute, the
+	 * new {@link module:engine/model/text~Text Text node} with the `linkHref` attribute will be inserted in place of caret, but
+	 * only if such element is allowed in this place. The `_data` of the inserted text will equal the `href` parameter.
+	 * The selection will be updated to wrap the just inserted text node.
 	 *
-	 * When selection is collapsed and inside text with `linkHref` attribute, the attribute value will be updated.
+	 * When the selection is collapsed and inside the text with the `linkHref` attribute, the attribute value will be updated.
 	 *
 	 * @fires execute
 	 * @param {String} href Link destination.
