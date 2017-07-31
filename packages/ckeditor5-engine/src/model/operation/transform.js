@@ -377,13 +377,17 @@ const ot = {
 			const rangeA = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
 			const rangeB = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
 
+			// Assign `context.isStrong` to a different variable, because the value may change during execution of
+			// this algorithm and we do not want to override original `context.isStrong` that will be used in later transformations.
+			let isStrong = context.isStrong;
+
 			// Whether range moved by operation `b` is includable in operation `a` move range.
 			// For this, `a` operation has to be sticky (so `b` sticks to the range) and context has to allow stickiness.
 			const includeB = a.isSticky && !context.forceNotSticky;
 
 			// Evaluate new target position for transformed operation.
-			// Check whether there is a forced order of nodes or use `context.isStrong` flag for conflict resolving.
-			const insertBefore = context.insertBefore === undefined ? !context.isStrong : context.insertBefore;
+			// Check whether there is a forced order of nodes or use `isStrong` flag for conflict resolving.
+			const insertBefore = context.insertBefore === undefined ? !isStrong : context.insertBefore;
 
 			// `a.targetPosition` could be affected by the `b` operation. We will transform it.
 			const newTargetPosition = a.targetPosition._getTransformedByMove(
@@ -473,16 +477,16 @@ const ot = {
 			// Default case - ranges are on the same level or are not connected with each other.
 			//
 			// Modifier for default case.
-			// Modifies `context.isStrong` in certain conditions.
+			// Modifies `isStrong` flag in certain conditions.
 			//
 			// If only one of operations is a remove operation, we force remove operation to be the "stronger" one
 			// to provide more expected results. This is done only if `context.forceWeakRemove` is set to `false`.
 			// `context.forceWeakRemove` is set to `true` in certain conditions when transformation takes place during undo.
 			if ( !context.forceWeakRemove ) {
 				if ( a instanceof RemoveOperation && !( b instanceof RemoveOperation ) ) {
-					context.isStrong = true;
+					isStrong = true;
 				} else if ( !( a instanceof RemoveOperation ) && b instanceof RemoveOperation ) {
-					context.isStrong = false;
+					isStrong = false;
 				}
 			}
 
@@ -505,7 +509,7 @@ const ot = {
 			// Then, we have to manage the "common part" of both move ranges.
 			const common = rangeA.getIntersection( rangeB );
 
-			if ( common !== null && context.isStrong && !bTargetsToA ) {
+			if ( common !== null && isStrong && !bTargetsToA ) {
 				// Calculate the new position of that part of original range.
 				common.start = common.start._getCombined( b.sourcePosition, b.getMovedRangeStart() );
 				common.end = common.end._getCombined( b.sourcePosition, b.getMovedRangeStart() );
@@ -536,7 +540,7 @@ const ot = {
 
 			if ( ranges.length === 0 ) {
 				// If there are no "source ranges", nothing should be changed.
-				// Note that this can happen only if `context.isStrong == false` and `rangeA.isEqual( rangeB )`.
+				// Note that this can happen only if `isStrong == false` and `rangeA.isEqual( rangeB )`.
 				return [ new NoOperation( a.baseVersion ) ];
 			}
 
