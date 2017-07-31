@@ -131,7 +131,7 @@ export default class DeleteCommand extends Command {
 
 		const document = this.editor.document;
 		const selection = document.selection;
-		const limitElement = getLimitElement( document.schema, selection );
+		const limitElement = document.schema.getLimitElement( selection );
 		const limitStartPosition = Position.createAt( limitElement );
 		const limitEndPosition = Position.createAt( limitElement, 'end' );
 
@@ -162,7 +162,7 @@ export default class DeleteCommand extends Command {
 	_replaceEntireContentWithParagraph() {
 		const document = this.editor.document;
 		const selection = document.selection;
-		const limitElement = getLimitElement( document.schema, selection );
+		const limitElement = document.schema.getLimitElement( selection );
 		const paragraph = new Element( 'paragraph' );
 
 		this._buffer.batch.remove( Range.createIn( limitElement ) );
@@ -170,19 +170,4 @@ export default class DeleteCommand extends Command {
 
 		selection.collapse( paragraph );
 	}
-}
-
-// Returns the lowest limit element defined in `Schema.limits` for passed selection.
-function getLimitElement( schema, selection ) {
-	let element = selection.getFirstRange().getCommonAncestor();
-
-	while ( !schema.limits.has( element.name ) ) {
-		if ( element.parent ) {
-			element = element.parent;
-		} else {
-			break;
-		}
-	}
-
-	return element;
 }
