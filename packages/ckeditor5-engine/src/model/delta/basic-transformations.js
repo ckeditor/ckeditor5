@@ -50,33 +50,36 @@ addTransformationCase( AttributeDelta, WeakInsertDelta, ( a, b, context ) => {
 
 // Add special case for AttributeDelta x SplitDelta transformation.
 addTransformationCase( AttributeDelta, SplitDelta, ( a, b, context ) => {
+	const undoMode = context.aWasUndone || context.bWasUndone;
 	const splitPosition = new Position( b.position.root, b.position.path.slice( 0, -1 ) );
 
 	const deltas = defaultTransform( a, b, context );
 
-	for ( const operation of a.operations ) {
-		// If a node that has been split has it's attribute updated, we should also update attribute of
-		// the node created during splitting.
-		if ( operation.range.containsPosition( splitPosition ) || operation.range.start.isEqual( splitPosition ) ) {
-			const additionalAttributeDelta = new AttributeDelta();
+	if ( !undoMode ) {
+		for ( const operation of a.operations ) {
+			// If a node that has been split has it's attribute updated, we should also update attribute of
+			// the node created during splitting.
+			if ( operation.range.containsPosition( splitPosition ) || operation.range.start.isEqual( splitPosition ) ) {
+				const additionalAttributeDelta = new AttributeDelta();
 
-			const rangeStart = splitPosition.getShiftedBy( 1 );
-			const rangeEnd = Position.createFromPosition( rangeStart );
-			rangeEnd.path.push( 0 );
+				const rangeStart = splitPosition.getShiftedBy( 1 );
+				const rangeEnd = Position.createFromPosition( rangeStart );
+				rangeEnd.path.push( 0 );
 
-			const oldValue = b._cloneOperation.nodes.getNode( 0 ).getAttribute( operation.key );
+				const oldValue = b._cloneOperation.nodes.getNode( 0 ).getAttribute( operation.key );
 
-			additionalAttributeDelta.addOperation( new AttributeOperation(
-				new Range( rangeStart, rangeEnd ),
-				operation.key,
-				oldValue === undefined ? null : oldValue,
-				operation.newValue,
-				0
-			) );
+				additionalAttributeDelta.addOperation( new AttributeOperation(
+					new Range( rangeStart, rangeEnd ),
+					operation.key,
+					oldValue === undefined ? null : oldValue,
+					operation.newValue,
+					0
+				) );
 
-			deltas.push( additionalAttributeDelta );
+				deltas.push( additionalAttributeDelta );
 
-			break;
+				break;
+			}
 		}
 	}
 
@@ -264,12 +267,13 @@ addTransformationCase( SplitDelta, WrapDelta, ( a, b, context ) => {
 } );
 
 // Add special case for SplitDelta x WrapDelta transformation.
-addTransformationCase( SplitDelta, AttributeDelta, ( a, b ) => {
+addTransformationCase( SplitDelta, AttributeDelta, ( a, b, context ) => {
 	a = a.clone();
 
+	const undoMode = context.aWasUndone || context.bWasUndone;
 	const splitPosition = new Position( a.position.root, a.position.path.slice( 0, -1 ) );
 
-	if ( a._cloneOperation instanceof InsertOperation ) {
+	if ( !undoMode && a._cloneOperation instanceof InsertOperation ) {
 		// If element to split had it's attribute changed, we have to reflect this change in an element
 		// that is in SplitDelta's InsertOperation.
 		for ( const operation of b.operations ) {

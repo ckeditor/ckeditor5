@@ -15,7 +15,10 @@ import Range from '../../../../src/model/range';
 
 import AttributeDelta from '../../../../src/model/delta/attributedelta';
 import Delta from '../../../../src/model/delta/delta';
+import SplitDelta from '../../../../src/model/delta/splitdelta';
 import AttributeOperation from '../../../../src/model/operation/attributeoperation';
+import MoveOperation from '../../../../src/model/operation/moveoperation';
+import ReinsertOperation from '../../../../src/model/operation/reinsertoperation';
 import NoOperation from '../../../../src/model/operation/nooperation';
 
 import {
@@ -252,6 +255,54 @@ describe( 'transform', () => {
 							oldValue: 'old',
 							newValue: 'bar',
 							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+			} );
+
+			it( 'change attribute of split element that reinserts from graveyard', () => {
+				const gy = doc.graveyard;
+				const splitDelta = new SplitDelta();
+
+				splitDelta.operations[ 0 ] = new ReinsertOperation(
+					new Position( gy, [ 1 ] ),
+					1,
+					new Position( root, [ 2 ] ),
+					baseVersion
+				);
+
+				splitDelta.operations[ 1 ] = new MoveOperation(
+					new Position( root, [ 1, 4 ] ),
+					4,
+					new Position( root, [ 2, 0 ] ),
+					baseVersion
+				);
+
+				const attributeDelta = new AttributeDelta();
+
+				const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 1, 0 ] ) );
+
+				attributeDelta.addOperation( new AttributeOperation( range, 'key', 'oldValue', 'newValue', baseVersion ) );
+
+				// The split delta was undone.
+				context.bWasUndone = true;
+
+				const transformed = transform( attributeDelta, splitDelta, context );
+
+				baseVersion = attributeDelta.operations.length;
+				// We expect only one delta. Split delta should not affect attribute delta transformation. It was undone.
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: AttributeDelta,
+					operations: [
+						{
+							type: AttributeOperation,
+							range,
+							key: 'key',
+							oldValue: 'oldValue',
+							newValue: 'newValue',
+							baseVersion
 						}
 					]
 				} );
