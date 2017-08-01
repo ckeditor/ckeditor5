@@ -23,7 +23,7 @@ import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfr
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 
 describe( 'Clipboard feature', () => {
-	let editor, editingView, clipboardPlugin;
+	let editor, editingView, clipboardPlugin, scrollSpy;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
@@ -33,6 +33,10 @@ describe( 'Clipboard feature', () => {
 			editor = newEditor;
 			editingView = editor.editing.view;
 			clipboardPlugin = editor.plugins.get( 'Clipboard' );
+
+			// VirtualTestEditor has no DOM, so this method must be stubbed for all tests.
+			// Otherwise it will throw as it accesses the DOM to do its job.
+			scrollSpy = sinon.stub( editingView, 'scrollToTheSelection', () => {} );
 		} );
 	} );
 
@@ -213,6 +217,21 @@ describe( 'Clipboard feature', () => {
 			} );
 
 			expect( spy.callCount ).to.equal( 0 );
+		} );
+
+		it( 'scrolls the editing document to the selection after the pasted content is inserted', () => {
+			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
+			const inputTransformationSpy = sinon.spy();
+
+			clipboardPlugin.on( 'inputTransformation', inputTransformationSpy );
+
+			editingView.fire( 'clipboardInput', {
+				dataTransfer: dataTransferMock,
+				content: new ViewDocumentFragment()
+			} );
+
+			sinon.assert.calledOnce( scrollSpy );
+			sinon.assert.callOrder( inputTransformationSpy, scrollSpy );
 		} );
 
 		it( 'uses low priority observer for the clipboardInput event', () => {
