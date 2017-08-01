@@ -33,6 +33,14 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 		secondAncestor.appendChild( firstAncestor );
 		firstAncestor.appendChild( element );
 
+		// Make the element immune to the border-width-* styles in the test environment.
+		testUtils.sinon.stub( global.window, 'getComputedStyle', () => ( {
+			borderTopWidth: '0px',
+			borderRightWidth: '0px',
+			borderBottomWidth: '0px',
+			borderLeftWidth: '0px'
+		} ) );
+
 		stubRect( firstAncestor, {
 			top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
 		}, {
@@ -382,6 +390,22 @@ function stubRect( target, geometryStub, scrollStub ) {
 		testUtils.sinon.stub( target, 'getClientRects' ).returns( [ geometryStub ] );
 	} else {
 		testUtils.sinon.stub( target, 'getBoundingClientRect' ).returns( geometryStub );
+
+		// Make the element immune to the border-width-* styles in the test environment.
+		Object.defineProperties( target, {
+			offsetWidth: {
+				value: geometryStub.width
+			},
+			clientWidth: {
+				value: geometryStub.width
+			},
+			offsetHeight: {
+				value: geometryStub.height
+			},
+			clientHeight: {
+				value: geometryStub.height
+			}
+		} );
 	}
 
 	if ( scrollStub ) {
