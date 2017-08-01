@@ -307,10 +307,12 @@ export default class Document {
 	scrollToTheSelection() {
 		const range = this.selection.getFirstRange();
 
-		scrollUtils.scrollViewportToShowTarget( {
-			target: this.domConverter.viewRangeToDom( range ),
-			viewportOffset: 20
-		} );
+		if ( range ) {
+			scrollUtils.scrollViewportToShowTarget( {
+				target: this.domConverter.viewRangeToDom( range ),
+				viewportOffset: 20
+			} );
+		}
 	}
 
 	/**
