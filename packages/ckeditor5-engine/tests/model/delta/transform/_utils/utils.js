@@ -202,14 +202,14 @@ export function expectDelta( delta, expected ) {
 export function expectOperation( op, params ) {
 	for ( const i in params ) {
 		if ( i == 'type' ) {
-			expect( op ).to.be.instanceof( params[ i ] );
+			expect( op, 'operation type' ).to.be.instanceof( params[ i ] );
 		}
 		else if ( i == 'nodes' ) {
-			expect( Array.from( op.nodes ) ).to.deep.equal( params[ i ] );
+			expect( Array.from( op.nodes ), 'nodes' ).to.deep.equal( params[ i ] );
 		} else if ( params[ i ] instanceof Position || params[ i ] instanceof Range ) {
-			expect( op[ i ].isEqual( params[ i ] ) ).to.be.true;
+			expect( op[ i ].isEqual( params[ i ] ), 'property ' + i ).to.be.true;
 		} else {
-			expect( op[ i ] ).to.equal( params[ i ] );
+			expect( op[ i ], 'property ' + 1 ).to.equal( params[ i ] );
 		}
 	}
 }
