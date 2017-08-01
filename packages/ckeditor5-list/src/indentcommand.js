@@ -19,15 +19,15 @@ export default class IndentCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {'forward'|'backward'} indentDirection Direction of indent. If it is equal to `backward`, the command
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {'forward'|'backward'} indentDirection The direction of indent. If it is equal to `backward`, the command
 	 * will outdent a list item.
 	 */
 	constructor( editor, indentDirection ) {
 		super( editor );
 
 		/**
-		 * By how much the command will change list item's indent attribute.
+		 * Determines by how much the command will change the list item's indent attribute.
 		 *
 		 * @readonly
 		 * @private
@@ -44,7 +44,7 @@ export default class IndentCommand extends Command {
 	}
 
 	/**
-	 * Indents or outdents (depends on {@link #constructor}'s `indentDirection` parameter) selected list items.
+	 * Indents or outdents (depends on the {@link #constructor}'s `indentDirection` parameter) selected list items.
 	 *
 	 * @fires execute
 	 */

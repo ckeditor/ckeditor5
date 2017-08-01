@@ -17,8 +17,8 @@ import { parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 /**
- * The lists feature. It introduces the `numberedList` and `bulletedList` buttons which
- * allows to convert paragraphs to/from list items and indent/outdent them.
+ * The list feature. It introduces the `numberedList` and `bulletedList` buttons that
+ * allow to convert paragraphs to and from list items and indent or outdent them.
  *
  * See also {@link module:list/listengine~ListEngine}.
  *
@@ -48,8 +48,8 @@ export default class List extends Plugin {
 		this._addButton( 'numberedList', t( 'Numbered List' ), numberedListIcon );
 		this._addButton( 'bulletedList', t( 'Bulleted List' ), bulletedListIcon );
 
-		// Overwrite default enter key behavior.
-		// If enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
+		// Overwrite default Enter key behavior.
+		// If Enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
 		this.listenTo( this.editor.editing.view, 'enter', ( evt, data ) => {
 			const doc = this.editor.document;
 			const positionParent = doc.selection.getLastPosition().parent;
@@ -62,9 +62,9 @@ export default class List extends Plugin {
 			}
 		} );
 
-		// Add tab key support.
-		// When in list item, pressing tab should indent list item, if possible.
-		// Pressing Shift+Tab shout outdent list item.
+		// Add Tab key support.
+		// When in list item, pressing Tab should indent list item, if possible.
+		// Pressing Shift+Tab should outdent list item.
 		this.listenTo( this.editor.editing.view, 'keydown', ( evt, data ) => {
 			let commandName;
 
@@ -91,9 +91,9 @@ export default class List extends Plugin {
 	 * Helper method for initializing a button and linking it with an appropriate command.
 	 *
 	 * @private
-	 * @param {String} commandName Name of the command.
-	 * @param {Object} label Button label.
-	 * @param {String} icon Source of the icon.
+	 * @param {String} commandName The name of the command.
+	 * @param {Object} label The button label.
+	 * @param {String} icon The source of the icon.
 	 */
 	_addButton( commandName, label, icon ) {
 		const editor = this.editor;

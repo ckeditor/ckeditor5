@@ -20,14 +20,14 @@ export default class ListCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor instance.
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 * @param {'numbered'|'bulleted'} type List type that will be handled by this command.
 	 */
 	constructor( editor, type ) {
 		super( editor );
 
 		/**
-		 * The type of list created by the command.
+		 * The type of the list created by the command.
 		 *
 		 * @readonly
 		 * @member {'numbered'|'bulleted'}
@@ -35,7 +35,7 @@ export default class ListCommand extends Command {
 		this.type = type == 'bulleted' ? 'bulleted' : 'numbered';
 
 		/**
-		 * Flag indicating whether the command is active, which means that selection starts in a list of the same type.
+		 * A flag indicating whether the command is active, which means that the selection starts in a list of the same type.
 		 *
 		 * @observable
 		 * @readonly
@@ -52,12 +52,12 @@ export default class ListCommand extends Command {
 	}
 
 	/**
-	 * Executes command.
+	 * Executes the command.
 	 *
 	 * @protected
-	 * @param {Object} [options] Options for executed command.
-	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
-	 * New batch will be created if this option is not set.
+	 * @param {Object} [options] Options for the executed command.
+	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps.
+	 * A new batch will be created if this option is not set.
 	 */
 	execute( options = {} ) {
 		const document = this.editor.document;

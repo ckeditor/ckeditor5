@@ -10,7 +10,7 @@
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 
 /**
- * View element class representing list item (`<li>`). It extends {@link module:engine/view/containerelement~ContainerElement}
+ * View element class representing a list item (`<li>`). It extends {@link module:engine/view/containerelement~ContainerElement}
  * and overwrites {@link module:list/viewlistitemelement~ViewListItemElement#getFillerOffset evaluating whether filler offset}
  * is needed.
  *
@@ -18,11 +18,11 @@ import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containere
  */
 export default class ViewListItemElement extends ViewContainerElement {
 	/**
-	 * Creates `<li>` view item.
+	 * Creates a `<li>` view item.
 	 *
-	 * @param {Object|Iterable} [attrs] Collection of attributes.
-	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children] List of nodes to be inserted
-	 * into created element.
+	 * @param {Object|Iterable} [attrs] A collection of attributes.
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children] The list of nodes to be inserted
+	 * into the created element.
 	 */
 	constructor( attrs, children ) {
 		super( 'li', attrs, children );
