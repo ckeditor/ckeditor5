@@ -309,6 +309,26 @@ describe( 'Delete utils', () => {
 				expect( content )
 					.to.equal( '<quote><heading1>bc</heading1></quote><heading1>x</heading1><quote><heading1>de</heading1></quote>' );
 			} );
+
+			// See: https://github.com/ckeditor/ckeditor5-engine/pull/1043#issuecomment-318012286
+			it( 'ensures that elements are retrieved by indexes instead of offsets', () => {
+				doc.schema.allow( { name: '$text', inside: '$root' } );
+				doc.schema.allow( { name: '$text', inside: 'quote' } );
+
+				setData( doc,
+					'foo' +
+					'<quote>' +
+						'<paragraph>' +
+							'b[ar' +
+						'</paragraph>' +
+						'bo]m' +
+					'</quote>'
+				);
+
+				const content = stringify( getSelectedContent( doc.selection ) );
+				expect( content )
+					.to.equal( '<paragraph>ar</paragraph>bo' );
+			} );
 		} );
 	} );
 } );

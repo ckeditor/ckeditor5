@@ -176,15 +176,48 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should return a descendant of this node', () => {
+			const foo = new Text( 'foo' );
 			const image = new Element( 'image' );
 			const element = new Element( 'elem', [], [
 				new Element( 'elem', [], [
-					new Text( 'foo' ),
+					foo,
 					image
 				] )
 			] );
 
-			expect( element.getNodeByPath( [ 0, 1 ] ) ).to.equal( image );
+			expect( element.getNodeByPath( [ 0, 0 ] ) ).to.equal( foo );
+			expect( element.getNodeByPath( [ 0, 1 ] ) ).to.equal( foo );
+			expect( element.getNodeByPath( [ 0, 2 ] ) ).to.equal( foo );
+			expect( element.getNodeByPath( [ 0, 3 ] ) ).to.equal( image );
+		} );
+
+		it( 'works fine with offsets', () => {
+			const bar = new Text( 'bar' );
+			const foo = new Text( 'foo' );
+			const bom = new Text( 'bom' );
+			const bold = new Element( 'b', [], [
+				bar
+			] );
+			const paragraph = new Element( 'paragraph', [], [
+				foo,
+				bold,
+				bom
+			] );
+
+			// <paragraph>foo<bold>bar</bold>bom</paragraph>
+
+			expect( paragraph.getNodeByPath( [ 0 ] ) ).to.equal( foo );
+			expect( paragraph.getNodeByPath( [ 1 ] ) ).to.equal( foo );
+			expect( paragraph.getNodeByPath( [ 2 ] ) ).to.equal( foo );
+			expect( paragraph.getNodeByPath( [ 3 ] ) ).to.equal( bold );
+			expect( paragraph.getNodeByPath( [ 3, 0 ] ) ).to.equal( bar );
+			expect( paragraph.getNodeByPath( [ 3, 1 ] ) ).to.equal( bar );
+			expect( paragraph.getNodeByPath( [ 3, 2 ] ) ).to.equal( bar );
+			expect( paragraph.getNodeByPath( [ 3, 3 ] ) ).to.equal( null );
+			expect( paragraph.getNodeByPath( [ 4 ] ) ).to.equal( bom );
+			expect( paragraph.getNodeByPath( [ 5 ] ) ).to.equal( bom );
+			expect( paragraph.getNodeByPath( [ 6 ] ) ).to.equal( bom );
+			expect( paragraph.getNodeByPath( [ 7 ] ) ).to.equal( null );
 		} );
 	} );
 

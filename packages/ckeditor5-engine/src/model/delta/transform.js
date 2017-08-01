@@ -262,14 +262,18 @@ const transform = {
 							insertBefore: contextAB.insertBefore,
 							forceNotSticky: contextAB.forceNotSticky,
 							isStrong: contextAB.isStrong,
-							forceWeakRemove: contextAB.forceWeakRemove
+							forceWeakRemove: contextAB.forceWeakRemove,
+							aWasUndone: false,
+							bWasUndone: contextAB.bWasUndone
 						} );
 
 						const resultBA = transform.transform( deltaB[ l ], deltaA[ k ], {
 							insertBefore: !contextAB.insertBefore,
 							forceNotSticky: contextAB.forceNotSticky,
 							isStrong: !contextAB.isStrong,
-							forceWeakRemove: contextAB.forceWeakRemove
+							forceWeakRemove: contextAB.forceWeakRemove,
+							aWasUndone: contextAB.bWasUndone,
+							bWasUndone: false
 						} );
 
 						if ( useAdditionalContext ) {
@@ -350,10 +354,21 @@ function padWithNoOps( deltas, howMany ) {
 // Using data given in `context` object, sets `context.insertBefore` and `context.forceNotSticky` flags.
 // Also updates `context.wasAffected`.
 function _setContext( a, b, context ) {
+	_setBWasUndone( b, context );
 	_setWasAffected( a, b, context );
 	_setInsertBeforeContext( a, b, context );
 	_setForceWeakRemove( b, context );
-	_setForceNotSticky( b, context );
+	_setForceNotSticky( context );
+}
+
+// Sets `context.bWasUndone` basing on `context.document` history for `b` delta.
+//
+// `context.bWasUndone` is set to `true` if the (originally transformed) `b` delta was undone or was undoing delta.
+function _setBWasUndone( b, context ) {
+	const originalDelta = context.originalDelta.get( b );
+	const history = context.document.history;
+
+	context.bWasUndone = history.isUndoneDelta( originalDelta ) || history.isUndoingDelta( originalDelta );
 }
 
 // Sets `context.insertBefore` basing on `context.document` history for `a` by `b` transformation.
@@ -417,12 +432,8 @@ function _setInsertBeforeContext( a, b, context ) {
 // if delta `b` was already undone or if delta `b` is an undoing delta.
 //
 // This affects `MoveOperation` (and its derivatives).
-function _setForceNotSticky( b, context ) {
-	const history = context.document.history;
-	const originalB = context.originalDelta.get( b );
-
-	// If `b` delta is undoing or undone delta, stickiness should not be taken into consideration.
-	if ( history.isUndoingDelta( originalB ) || history.isUndoneDelta( originalB ) ) {
+function _setForceNotSticky( context ) {
+	if ( context.bWasUndone ) {
 		context.forceNotSticky = true;
 	}
 }

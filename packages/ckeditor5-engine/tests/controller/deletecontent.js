@@ -749,6 +749,15 @@ describe( 'DataController', () => {
 				expect( getData( doc, { rootName: 'paragraphRoot' } ) )
 					.to.equal( 'x[]z' );
 			} );
+
+			test(
+				'but not if the flag "doNotResetEntireContent" is set to true',
+				'<heading1>[</heading1><paragraph>]</paragraph>',
+				'<heading1>[]</heading1>',
+				{
+					doNotResetEntireContent: true
+				}
+			);
 		} );
 
 		function test( title, input, output, options ) {
