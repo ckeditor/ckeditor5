@@ -250,7 +250,7 @@ export default class Rect {
 	 * Checks if all properties ({@link #top}, {@link #left}, {@link #right},
 	 * {@link #bottom}, {@link #width} and {@link #height}) are the same as in the other `Rect`.
 	 *
-	 * @param {Rect} rect A `Rect` instance to compare with.
+	 * @param {module:utils/dom/rect~Rect} rect A `Rect` instance to compare with.
 	 * @returns {Boolean} `true` when Rects are equal. `false` otherwise.
 	 */
 	isEqual( anotherRect ) {
@@ -340,7 +340,8 @@ export default class Rect {
 	 * Excludes scrollbars and CSS borders from the `Rect`.
 	 *
 	 * * Borders are removed when {@link #_source} is `HTMLElement`.
-	 * * Scrollbars are excluded from `HTMLElements` and {@link #getViewportRect viewport rects}.
+	 * * Scrollbars are excluded from `HTMLElements` and
+	 * {@link module:utils/dom/rect~Rect.getViewportRect viewport rects}.
 	 *
 	 * @private
 	 */
