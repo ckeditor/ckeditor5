@@ -19,6 +19,7 @@ import DomConverter from '../../../src/view/domconverter';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import scrollUtils from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 
 testUtils.createSinonSandbox();
 
@@ -320,6 +321,22 @@ describe( 'Document', () => {
 			const getObserverMock = viewDocument.getObserver( ObserverMock );
 
 			expect( getObserverMock ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'scrollToTheSelection()', () => {
+		it( 'scrolls to the first range in selection with an offset', () => {
+			const stub = testUtils.sinon.stub( scrollUtils, 'scrollViewportToShowTarget', () => {} );
+			const root = viewDocument.createRoot( document.createElement( 'div' ) );
+			const range = ViewRange.createIn( root );
+
+			viewDocument.selection.addRange( range );
+
+			viewDocument.scrollToTheSelection();
+			sinon.assert.calledWithMatch( stub, {
+				target: viewDocument.domConverter.viewRangeToDom( range ),
+				viewportOffset: 20
+			} );
 		} );
 	} );
 
