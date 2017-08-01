@@ -51,6 +51,19 @@ describe( 'Delete feature', () => {
 		expect( spy.calledWithMatch( 'delete', { unit: 'character' } ) ).to.be.true;
 	} );
 
+	it( 'scrolls the editing document to the selection after executing the command', () => {
+		const scrollSpy = sinon.stub( editingView, 'scrollToTheSelection', () => {} );
+		const executeSpy = editor.execute = sinon.spy();
+
+		editingView.fire( 'delete', new DomEventData( editingView, getDomEvent(), {
+			direction: 'backward',
+			unit: 'character'
+		} ) );
+
+		sinon.assert.calledOnce( scrollSpy );
+		sinon.assert.callOrder( executeSpy, scrollSpy );
+	} );
+
 	function getDomEvent() {
 		return {
 			preventDefault: sinon.spy()
