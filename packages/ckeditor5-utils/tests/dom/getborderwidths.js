@@ -14,8 +14,8 @@ describe( 'getBorderWidths()', () => {
 		testUtils.sinon.stub( global.window, 'getComputedStyle' ).returns( {
 			borderTopWidth: '10px',
 			borderRightWidth: '20px',
-			borderLeftWidth: '30px',
-			borderBottomWidth: '40px'
+			borderBottomWidth: '30px',
+			borderLeftWidth: '40px'
 		} );
 
 		const elementMock = {};
