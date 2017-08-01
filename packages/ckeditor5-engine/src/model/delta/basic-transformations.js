@@ -409,6 +409,13 @@ addTransformationCase( RemoveDelta, SplitDelta, ( a, b, context ) => {
 	const deltas = defaultTransform( a, b, context );
 	const insertPosition = b._cloneOperation.position;
 
+	const undoMode = context.aWasUndone || context.bWasUndone;
+
+	// Special case applies only if undo is not a context.
+	if ( undoMode ) {
+		return deltas;
+	}
+
 	// In case if `defaultTransform` returned more than one delta.
 	for ( const delta of deltas ) {
 		// "No delta" may be returned in some cases.
@@ -427,6 +434,13 @@ addTransformationCase( RemoveDelta, SplitDelta, ( a, b, context ) => {
 
 // Add special case for SplitDelta x RemoveDelta transformation.
 addTransformationCase( SplitDelta, RemoveDelta, ( a, b, context ) => {
+	const undoMode = context.aWasUndone || context.bWasUndone;
+
+	// Special case applies only if undo is not a context.
+	if ( undoMode ) {
+		return defaultTransform( a, b, context );
+	}
+
 	// This case is very trickily solved.
 	// Instead of fixing `a` delta, we change `b` delta for a while and fire default transformation with fixed `b` delta.
 	// Thanks to that fixing `a` delta will be differently (correctly) transformed.
