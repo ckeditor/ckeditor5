@@ -24,7 +24,7 @@ import Rect from './rect';
  * by keeping the `target` some distance from the edge of the viewport and thus making it easier to
  * read or edit by the user.
  */
-export function scrollViewportToShowTarget( { target, viewportOffset = 0 } ) {
+function scrollViewportToShowTarget( { target, viewportOffset = 0 } ) {
 	// Scroll the ancestors of the target to reveal it first, then focus on scrolling
 	// the viewport, when the position of the target is fixed.
 	scrollAncestorsToShowTarget( target );
@@ -72,7 +72,7 @@ export function scrollViewportToShowTarget( { target, viewportOffset = 0 } ) {
  *
  * @param {HTMLElement|Range} target A target, which supposed to become visible to the user.
  */
-export function scrollAncestorsToShowTarget( target ) {
+function scrollAncestorsToShowTarget( target ) {
 	let parent, parentRect, targetRect;
 
 	if ( isRange( target ) ) {
@@ -101,6 +101,11 @@ export function scrollAncestorsToShowTarget( target ) {
 		}
 	} while ( ( parent = parent.parentNode ) );
 }
+
+export default {
+	scrollViewportToShowTarget,
+	scrollAncestorsToShowTarget
+};
 
 // Makes any page `HTMLElement` or `Range` (target) visible within its parent.
 //

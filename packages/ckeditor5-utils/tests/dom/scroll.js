@@ -8,10 +8,12 @@
 import global from '../../src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import isRange from '../../src/dom/isrange';
-import {
+import scrollUtils from '../../src/dom/scroll';
+
+const {
 	scrollViewportToShowTarget,
 	scrollAncestorsToShowTarget
-} from '../../src/dom/scroll';
+} = scrollUtils;
 
 testUtils.createSinonSandbox();
 
