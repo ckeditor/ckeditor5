@@ -54,7 +54,7 @@ export default class Image extends Plugin {
 				if ( selectedElement && isImageWidget( selectedElement ) ) {
 					evt.stop();
 				}
-			} );
+			}, { priority: 'high' } );
 		}
 	}
 }
