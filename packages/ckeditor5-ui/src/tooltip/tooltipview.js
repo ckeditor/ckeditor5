@@ -28,7 +28,7 @@ export default class TooltipView extends View {
 		 * @observable
 		 * @member {String} #text
 		 */
-		this.set( 'text' );
+		this.set( 'text', '' );
 
 		/**
 		 * The position of the tooltip (south or north).
@@ -59,7 +59,7 @@ export default class TooltipView extends View {
 				class: [
 					'ck-tooltip',
 					bind.to( 'position', position => 'ck-tooltip_' + position ),
-					bind.to( 'text', value => !value ? 'ck-hidden' : '' )
+					bind.if( 'text', 'ck-hidden', value => !value.trim() )
 				]
 			},
 			children: [
