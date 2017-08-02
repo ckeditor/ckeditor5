@@ -249,7 +249,7 @@ export default class ButtonView extends View {
 	 * Creates TooltipView instance and bind with button properties.
 	 *
 	 * @private
-	 * @returns {TooltipView}
+	 * @returns {module:ui/tooltip/tooltipview~TooltipView}
 	 */
 	_createTooltipView() {
 		const tooltipView = new TooltipView();
