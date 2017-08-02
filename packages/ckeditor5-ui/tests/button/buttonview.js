@@ -107,7 +107,7 @@ describe( 'ButtonView', () => {
 					expect( view.tooltipView.text ).to.equal( 'bar (A)' );
 				} );
 
-				it( 'not render tooltip #tooltip value is false', () => {
+				it( 'not render tooltip text when #tooltip value is false', () => {
 					view.tooltip = false;
 					view.label = 'bar';
 					view.keystroke = 'A';
