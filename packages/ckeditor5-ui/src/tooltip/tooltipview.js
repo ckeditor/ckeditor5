@@ -58,7 +58,8 @@ export default class TooltipView extends View {
 			attributes: {
 				class: [
 					'ck-tooltip',
-					bind.to( 'position', position => 'ck-tooltip_' + position )
+					bind.to( 'position', position => 'ck-tooltip_' + position ),
+					bind.to( 'text', value => !value ? 'ck-hidden' : '' )
 				]
 			},
 			children: [

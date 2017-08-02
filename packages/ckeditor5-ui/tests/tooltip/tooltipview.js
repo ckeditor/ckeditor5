@@ -44,6 +44,14 @@ describe( 'TooltipView', () => {
 		} );
 
 		describe( 'class', () => {
+			it( 'should react on view#text', () => {
+				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+
+				view.text = '';
+
+				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+			} );
+
 			it( 'should react on view#position', () => {
 				expect( view.element.classList.contains( 'ck-tooltip_n' ) ).to.be.false;
 				expect( view.element.classList.contains( 'ck-tooltip_s' ) ).to.be.true;
