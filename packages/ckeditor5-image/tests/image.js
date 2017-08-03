@@ -103,17 +103,20 @@ describe( 'Image', () => {
 
 		it( 'should listen to ContextualToolbar#show event with high priority', () => {
 			const highestPrioritySpy = sinon.spy();
+			const highPrioritySpy = sinon.spy();
 			const normalPrioritySpy = sinon.spy();
 
 			// Select an image
 			setModelData( newEditor.document, '<paragraph>foo</paragraph>[<image alt="alt text" src="foo.png"></image>]' );
 
 			newEditor.listenTo( contextualToolbar, 'show', highestPrioritySpy, { priority: 'highest' } );
+			newEditor.listenTo( contextualToolbar, 'show', highPrioritySpy, { priority: 'high' } );
 			newEditor.listenTo( contextualToolbar, 'show', normalPrioritySpy, { priority: 'normal' } );
 
 			contextualToolbar.show();
 
 			sinon.assert.calledOnce( highestPrioritySpy );
+			sinon.assert.notCalled( highPrioritySpy );
 			sinon.assert.notCalled( normalPrioritySpy );
 		} );
 	} );
