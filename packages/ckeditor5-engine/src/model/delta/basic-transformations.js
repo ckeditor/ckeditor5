@@ -348,15 +348,16 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, context ) => {
 
 // Add special case for RenameDelta x SplitDelta transformation.
 addTransformationCase( RenameDelta, SplitDelta, ( a, b, context ) => {
-	const splitPosition = new Position( b.position.root, b.position.path.slice( 0, -1 ) );
+	const undoMode = context.aWasUndone || context.bWasUndone;
+	const posBeforeSplitParent = new Position( b.position.root, b.position.path.slice( 0, -1 ) );
 
 	const deltas = defaultTransform( a, b, context );
 
-	if ( a.operations[ 0 ].position.isEqual( splitPosition ) ) {
+	if ( !undoMode && a.operations[ 0 ].position.isEqual( posBeforeSplitParent ) ) {
 		// If a node that has been split has it's name changed, we should also change name of
 		// the node created during splitting.
 		const additionalRenameDelta = a.clone();
-		additionalRenameDelta.operations[ 0 ].position = a.operations[ 0 ].position.getShiftedBy( 1 );
+		additionalRenameDelta.operations[ 0 ].position = posBeforeSplitParent.getShiftedBy( 1 );
 
 		deltas.push( additionalRenameDelta );
 	}
@@ -365,20 +366,25 @@ addTransformationCase( RenameDelta, SplitDelta, ( a, b, context ) => {
 } );
 
 // Add special case for SplitDelta x RenameDelta transformation.
-addTransformationCase( SplitDelta, RenameDelta, ( a, b ) => {
-	a = a.clone();
+addTransformationCase( SplitDelta, RenameDelta, ( a, b, context ) => {
+	const undoMode = context.aWasUndone || context.bWasUndone;
+	const posBeforeSplitParent = new Position( a.position.root, a.position.path.slice( 0, -1 ) );
 
-	const splitPosition = new Position( a.position.root, a.position.path.slice( 0, -1 ) );
+	// If element to split had it's name changed, we have to reflect this by creating additional rename operation.
+	if ( !undoMode && b.operations[ 0 ].position.isEqual( posBeforeSplitParent ) ) {
+		const additionalRenameDelta = b.clone();
+		additionalRenameDelta.operations[ 0 ].position = posBeforeSplitParent.getShiftedBy( 1 );
 
-	if ( a._cloneOperation instanceof InsertOperation ) {
-		// If element to split had it's name changed, we have to reflect this change in an element
-		// that is in SplitDelta's InsertOperation.
-		if ( b.operations[ 0 ].position.isEqual( splitPosition ) ) {
-			a._cloneOperation.nodes.getNode( 0 ).name = b.operations[ 0 ].newName;
-		}
+		// `nodes` is a property that is available only if `SplitDelta` `a` has `InsertOperation`.
+		// `SplitDelta` may have `ReinsertOperation` instead of `InsertOperation`.
+		// However, such delta is only created when `MergeDelta` is reversed.
+		// So if this is not undo mode, it means that `SplitDelta` has `InsertOperation`.
+		additionalRenameDelta.operations[ 0 ].oldName = a._cloneOperation.nodes.getNode( 0 ).name;
+
+		return [ a.clone(), additionalRenameDelta ];
 	}
 
-	return [ a ];
+	return [ a.clone() ];
 } );
 
 // Add special case for RemoveDelta x SplitDelta transformation.

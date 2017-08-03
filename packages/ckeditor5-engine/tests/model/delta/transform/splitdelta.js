@@ -625,14 +625,14 @@ describe( 'transform', () => {
 			it( 'renamed split element', () => {
 				const renameDelta = new RenameDelta();
 				renameDelta.addOperation( new RenameOperation(
-					new Position( root, [ 3, 3, 3 ] ), 'p', 'li', baseVersion
+					new Position( root, [ 3, 3, 3 ] ), 'h2', 'li', baseVersion
 				) );
 
 				const transformed = transform( splitDelta, renameDelta, context );
 
 				baseVersion = renameDelta.operations.length;
 
-				expect( transformed.length ).to.equal( 1 );
+				expect( transformed.length ).to.equal( 2 );
 
 				expectDelta( transformed[ 0 ], {
 					type: SplitDelta,
@@ -652,7 +652,18 @@ describe( 'transform', () => {
 					]
 				} );
 
-				expect( transformed[ 0 ].operations[ 0 ].nodes.getNode( 0 ).name ).to.equal( 'li' );
+				expectDelta( transformed[ 1 ], {
+					type: RenameDelta,
+					operations: [
+						{
+							type: RenameOperation,
+							position: new Position( root, [ 3, 3, 4 ] ),
+							oldName: 'p', // `oldName` taken from SplitDelta.
+							newName: 'li',
+							baseVersion: baseVersion + 2
+						}
+					]
+				} );
 			} );
 
 			it( 'split element is different than renamed element', () => {
@@ -699,6 +710,7 @@ describe( 'transform', () => {
 					new Position( root, [ 3, 3, 3 ] ), 'p', 'li', baseVersion
 				) );
 
+				context.aWasUndone = true;
 				const transformed = transform( splitDelta, renameDelta, context );
 
 				baseVersion = renameDelta.operations.length;
