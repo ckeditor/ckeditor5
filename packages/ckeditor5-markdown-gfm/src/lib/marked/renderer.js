@@ -5,9 +5,9 @@
 
 /**
  * Original marked.js library renderer with fixes:
- * - no formatting for output HTML string - all newlines between tags are removed to create clean output,
- * - changed long string concatenations to ES5 template strings,
- * - changed code style.
+ * - No formatting for output HTML string &mdash; all newlines between tags are removed to create clean output.
+ * - Changed long string concatenations to ES5 template strings.
+ * - Changed code style.
  *
  * @see {@link https://github.com/chjj/marked#renderer} Methods description.
  * @param options

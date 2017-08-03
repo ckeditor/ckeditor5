@@ -14,14 +14,14 @@ import GFMRenderer from './lib/marked/renderer';
 import converters from './lib/to-markdown/converters';
 
 /**
- * This data processor implementation uses GitHub flavored markdown as input/output data.
+ * This data processor implementation uses GitHub Flavored Markdown as input/output data.
  *
  * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
 export default class GFMDataProcessor {
 	constructor() {
 		/**
-		 * HTML data processor used to process HTML produced by the Markdown to HTML converter and the other way.
+		 * HTML data processor used to process HTML produced by the Markdown-to-HTML converter and the other way.
 		 *
 		 * @private
 		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}
@@ -30,10 +30,10 @@ export default class GFMDataProcessor {
 	}
 
 	/**
-	 * Converts provided markdown string to view tree.
+	 * Converts the provided Markdown string to view tree.
 	 *
-	 * @param {String} data Markdown string.
-	 * @returns {module:engine/view/documentfragment~DocumentFragment} Converted view element.
+	 * @param {String} data A Markdown string.
+	 * @returns {module:engine/view/documentfragment~DocumentFragment} The converted view element.
 	 */
 	toView( data ) {
 		const html = marked.parse( data, {
@@ -48,7 +48,8 @@ export default class GFMDataProcessor {
 	}
 
 	/**
-	 * Converts provided {@link module:engine/view/documentfragment~DocumentFragment} to data format - in this case markdown string.
+	 * Converts the provided {@link module:engine/view/documentfragment~DocumentFragment} to data format &mdash; in this
+	 * case to a Markdown string.
 	 *
 	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment
 	 * @returns {String} Markdown string.
