@@ -56,15 +56,15 @@ export default class InputCommand extends Command {
 
 	/**
 	 * Executes the input command. It replaces the content within the given range with the given text.
-	 * Replacing is a two step process, first content within the range is removed and then new text is inserted
-	 * on the beginning of the range (which after removal is a collapsed range).
+	 * Replacing is a two step process, first the content within the range is removed and then the new text is inserted
+	 * at the beginning of the range (which after the removal is a collapsed range).
 	 *
 	 * @fires execute
 	 * @param {Object} [options] The command options.
-	 * @param {String} [options.text=''] Text to be inserted.
-	 * @param {module:engine/model/range~Range} [options.range] Range in which the text is inserted. Defaults
+	 * @param {String} [options.text=''] The text to be inserted.
+	 * @param {module:engine/model/range~Range} [options.range] The range in which the text is inserted. Defaults
 	 * to the first range in the current selection.
-	 * @param {module:engine/model/range~Range} [options.resultRange] Range at which the selection
+	 * @param {module:engine/model/range~Range} [options.resultRange] The range where the selection
 	 * should be placed after the insertion. If not specified, the selection will be placed right after
 	 * the inserted text.
 	 */

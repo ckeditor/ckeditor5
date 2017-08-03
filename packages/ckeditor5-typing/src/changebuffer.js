@@ -61,7 +61,7 @@ export default class ChangeBuffer {
 		this.limit = limit;
 
 		/**
-		 * Whether the buffer is locked. The locked buffer cannot be reset unless it gets unlocked.
+		 * Whether the buffer is locked. A locked buffer cannot be reset unless it gets unlocked.
 		 *
 		 * @readonly
 		 * @member {Boolean} #isLocked
@@ -97,7 +97,7 @@ export default class ChangeBuffer {
 		 */
 
 		/**
-		 * The callback to document selection change:attribute and change:range events which resets the buffer.
+		 * The callback to document selection `change:attribute` and `change:range` events which resets the buffer.
 		 *
 		 * @private
 		 * @member #_selectionChangeCallback

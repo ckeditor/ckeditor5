@@ -156,15 +156,15 @@ class MutationHandler {
 
 	/**
 	 * Handles situations when container's children mutated during input. This can happen when
-	 * browser is trying to "fix" DOM in certain situations. For example, when user starts to type
-	 * in `<p><a href=""><i>Link{}</i></a></p>` browser might change order of elements
-	 * to `<p><i><a href="">Link</a>x{}</i></p>`. Similar situation happens when spell checker
-	 * replaces a word wrapped with `<strong>` to a word wrapped with `<b>` element.
+	 * the browser is trying to "fix" DOM in certain situations. For example, when the user starts to type
+	 * in `<p><a href=""><i>Link{}</i></a></p>`, the browser might change the order of elements
+	 * to `<p><i><a href="">Link</a>x{}</i></p>`. A similar situation happens when the spell checker
+	 * replaces a word wrapped with `<strong>` with a word wrapped with a `<b>` element.
 	 *
-	 * To handle such situations, DOM common ancestor of all mutations is converted to the model representation
-	 * and then compared with current model to calculate proper text change.
+	 * To handle such situations, the common DOM ancestor of all mutations is converted to the model representation
+	 * and then compared with the current model to calculate the proper text change.
 	 *
-	 * NOTE: Single text node insertion is handled in {@link #_handleTextNodeInsertion} and text node mutation is handled
+	 * Note: Single text node insertion is handled in {@link #_handleTextNodeInsertion} and text node mutation is handled
 	 * in {@link #_handleTextMutation}).
 	 *
 	 * @private

@@ -12,7 +12,7 @@ import Input from './input';
 import Delete from './delete';
 
 /**
- * The typing feature. Handles typing.
+ * The typing feature. It handles typing.
  *
  * @extends module:core/plugin~Plugin
  */
