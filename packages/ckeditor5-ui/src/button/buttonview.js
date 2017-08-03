@@ -147,17 +147,18 @@ export default class ButtonView extends View {
 		);
 
 		/**
-		 * Icon of the button view.
-		 *
-		 * @readonly
-		 * @member {module:ui/icon/iconview~IconView} #iconView
-		 */
-
-		/**
 		 * Tooltip of the button view.
 		 *
 		 * @readonly
 		 * @member {module:ui/tooltip/tooltipview~TooltipView} #tooltipView
+		 */
+		this.tooltipView = this._createTooltipView();
+
+		/**
+		 * Icon of the button view.
+		 *
+		 * @readonly
+		 * @member {module:ui/icon/iconview~IconView} #iconView
 		 */
 
 		const bind = this.bindTemplate;
@@ -190,7 +191,8 @@ export default class ButtonView extends View {
 							text: bind.to( 'label' )
 						}
 					]
-				}
+				},
+				this.tooltipView
 			],
 
 			on: {
@@ -233,17 +235,6 @@ export default class ButtonView extends View {
 			this.addChildren( iconView );
 		}
 
-		if ( this.tooltip ) {
-			const tooltipView = this.tooltipView = new TooltipView();
-
-			tooltipView.bind( 'text' ).to( this, '_tooltipString' );
-			tooltipView.bind( 'position' ).to( this, 'tooltipPosition' );
-			this.element.appendChild( tooltipView.element );
-
-			// Make sure the tooltip will be destroyed along with the button.
-			this.addChildren( tooltipView );
-		}
-
 		super.init();
 	}
 
@@ -252,6 +243,21 @@ export default class ButtonView extends View {
 	 */
 	focus() {
 		this.element.focus();
+	}
+
+	/**
+	 * Creates TooltipView instance and bind with button properties.
+	 *
+	 * @private
+	 * @returns {module:ui/tooltip/tooltipview~TooltipView}
+	 */
+	_createTooltipView() {
+		const tooltipView = new TooltipView();
+
+		tooltipView.bind( 'text' ).to( this, '_tooltipString' );
+		tooltipView.bind( 'position' ).to( this, 'tooltipPosition' );
+
+		return tooltipView;
 	}
 
 	/**
@@ -277,12 +283,12 @@ export default class ButtonView extends View {
 
 				if ( tooltip instanceof Function ) {
 					return tooltip( label, keystroke );
-				} else if ( tooltip === true ) {
+				} else {
 					return `${ label }${ keystroke ? ` (${ keystroke })` : '' }`;
 				}
 			}
 		}
 
-		return false;
+		return '';
 	}
 }

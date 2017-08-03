@@ -80,56 +80,12 @@ describe( 'ButtonView', () => {
 				view = new ButtonView( locale );
 			} );
 
-			it( 'is not initially set', () => {
-				expect( view.tooltipView ).to.be.undefined;
-				expect( view.element.childNodes ).to.have.length( 1 );
+			it( 'is initially set', () => {
+				expect( view.tooltipView ).to.be.instanceof( TooltipView );
+				expect( Array.from( view.template.children ) ).to.include( view.tooltipView );
 			} );
 
-			it( 'is not initially set (despite #label and #keystroke)', () => {
-				view.label = 'foo';
-				view.keystroke = 'A';
-				view.init();
-
-				expect( view.tooltipView ).to.be.undefined;
-			} );
-
-			it( 'is not set if neither `true`, String or Function', () => {
-				view.label = 'foo';
-				view.keystroke = 'A';
-				view.tooltip = false;
-				view.init();
-
-				expect( view.tooltipView ).to.be.undefined;
-
-				view.tooltip = 3;
-				expect( view.tooltipView ).to.be.undefined;
-
-				view.tooltip = new Date();
-				expect( view.tooltipView ).to.be.undefined;
-			} );
-
-			it( 'when set, is added to the DOM', () => {
-				view.tooltip = 'foo';
-				view.icon = 'bar';
-				view.init();
-
-				expect( view.element.childNodes ).to.have.length( 3 );
-				expect( view.element.childNodes[ 2 ] ).to.equal( view.tooltipView.element );
-				expect( view.tooltipView ).to.instanceOf( TooltipView );
-				expect( view.tooltipView.position ).to.equal( 's' );
-			} );
-
-			it( 'when set, is destroyed along with the view', () => {
-				view.tooltip = 'foo';
-				view.init();
-
-				const spy = sinon.spy( view.tooltipView, 'destroy' );
-
-				view.destroy();
-				sinon.assert.calledOnce( spy );
-			} );
-
-			it( 'when set, reacts to #tooltipPosition attribute', () => {
+			it( 'it reacts to #tooltipPosition attribute', () => {
 				view.tooltip = 'foo';
 				view.icon = 'bar';
 				view.init();
@@ -149,6 +105,15 @@ describe( 'ButtonView', () => {
 					view.init();
 
 					expect( view.tooltipView.text ).to.equal( 'bar (A)' );
+				} );
+
+				it( 'not render tooltip text when #tooltip value is false', () => {
+					view.tooltip = false;
+					view.label = 'bar';
+					view.keystroke = 'A';
+					view.init();
+
+					expect( view.tooltipView.text ).to.equal( '' );
 				} );
 
 				it( 'reacts to changes in #label and #keystroke', () => {
@@ -265,7 +230,7 @@ describe( 'ButtonView', () => {
 
 	describe( 'icon', () => {
 		it( 'is not initially set', () => {
-			expect( view.element.childNodes ).to.have.length( 1 );
+			expect( view.element.childNodes ).to.have.length( 2 );
 			expect( view.iconView ).to.be.undefined;
 		} );
 
@@ -274,7 +239,7 @@ describe( 'ButtonView', () => {
 			view.icon = 'foo';
 
 			view.init();
-			expect( view.element.childNodes ).to.have.length( 2 );
+			expect( view.element.childNodes ).to.have.length( 3 );
 			expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
 
 			expect( view.iconView ).to.instanceOf( IconView );
