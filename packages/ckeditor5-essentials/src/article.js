@@ -25,8 +25,8 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 /**
- * Article editor preset. Represents a set of features which enable in the editor
- * all functionalities of a simple article editor.
+ * Article editor preset. Represents a set of features that enables all functionalities
+ * of a simple article editor.
  *
  * This preset follows [Editor Recommendations](https://github.com/ckeditor/editor-recommendations) plus
  * a couple of additions:

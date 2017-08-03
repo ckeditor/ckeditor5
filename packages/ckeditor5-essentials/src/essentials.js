@@ -15,11 +15,15 @@ import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
 /**
- * Essential editing features preset. Represents a set of features which enable in the editor
- * similar functionalities to a `<textarea>`.
+ * Essential editing features preset. Represents a set of features that enables similar functionalities
+ * to a `<textarea>` element.
  *
- * It includes: {@link module:clipboard/clipboard~Clipboard}, {@link module:enter/enter~Enter},
- * {@link module:typing/typing~Typing}, {@link module:undo/undo~Undo}.
+ * It includes:
+ *
+ * * {@link module:clipboard/clipboard~Clipboard},
+ * * {@link module:enter/enter~Enter},
+ * * {@link module:typing/typing~Typing},
+ * * {@link module:undo/undo~Undo}.
  *
  * This preset does not define any block-level containers (such as {@link module:paragraph/paragraph~Paragraph}).
  * If your editor is supposed to handle block content, make sure to include it. You can also inlcude
