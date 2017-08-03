@@ -18,7 +18,7 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
  */
 export default class ParagraphCommand extends Command {
 	/**
-	 * The value of the command. Indicates whether the selection's start is placed in a paragraph.
+	 * The value of the command. Indicates whether the selection start is placed in a paragraph.
 	 *
 	 * @readonly
 	 * @observable
@@ -41,11 +41,11 @@ export default class ParagraphCommand extends Command {
 	 * will be turned to paragraphs.
 	 *
 	 * @fires execute
-	 * @param {Object} [options] Options for executed command.
-	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
-	 * New batch will be created if this option is not set.
-	 * @param {module:engine/model/selection~Selection} [options.selection] Selection the command should be applied to.
-	 * By default, if not provided, the command is applied to {@link module:engine/model/document~Document#selection}.
+	 * @param {Object} [options] Options for the executed command.
+	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps.
+	 * A new batch will be created if this option is not set.
+	 * @param {module:engine/model/selection~Selection} [options.selection] The selection that the command should be applied to.
+	 * By default, if not provided, the command is applied to the {@link module:engine/model/document~Document#selection}.
 	 */
 	execute( options = {} ) {
 		const document = this.editor.document;

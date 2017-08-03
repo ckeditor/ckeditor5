@@ -18,7 +18,7 @@ import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildv
 
 /**
  * The paragraph feature for the editor.
- * Introduces the `<paragraph>` element in the model which renders as a `<p>` element in the DOM and data.
+ * It introduces the `<paragraph>` element in the model which renders as a `<p>` element in the DOM and data.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -95,7 +95,7 @@ export default class Paragraph extends Plugin {
 }
 
 /**
- * List of element names which should be treated by the autoparagraphing algorithms as
+ * A list of element names which should be treated by the autoparagraphing algorithms as
  * paragraph-like. This means that e.g. the following content:
  *
  *		<h1>Foo</h1>
@@ -111,8 +111,8 @@ export default class Paragraph extends Plugin {
  *			</tr>
  *		</table>
  *
- * Contains five paragraph-like elements – `<h1>` and two `<td>` and two `<li>`.
- * Hence, if none of the features is going to convert  those elements the above content will be automatically handled
+ * contains five paragraph-like elements: `<h1>`, two `<td>`s and two `<li>`s.
+ * Hence, if none of the features is going to convert those elements the above content will be automatically handled
  * by the paragraph feature and converted to:
  *
  *		<p>Foo</p>
@@ -120,8 +120,8 @@ export default class Paragraph extends Plugin {
  *		<p>Y</p>
  *		<p>Z</p>
  *
- * Note: The `<td>` containing two `<li>` elements was ignored – the inner-most paragraph-like elements
- * have priority upon conversion.
+ * Note: The `<td>` containing two `<li>` elements was ignored as the innermost paragraph-like elements
+ * have a priority upon conversion.
  *
  * @member {Set.<String>} module:paragraph/paragraph~Paragraph.paragraphLikeElements
  */
