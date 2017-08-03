@@ -8,6 +8,7 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ButtonView from '../../src/button/buttonview';
 import IconView from '../../src/icon/iconview';
+import TooltipView from '../../src/tooltip/tooltipview';
 
 testUtils.createSinonSandbox();
 
@@ -75,29 +76,25 @@ describe( 'ButtonView', () => {
 		} );
 
 		describe( 'tooltip', () => {
-			it( 'is not initially set', () => {
-				expect( view.element.dataset.ckTooltip ).to.undefined;
+			beforeEach( () => {
+				view = new ButtonView( locale );
 			} );
 
-			it( 'is not initially set (despite #label and #keystroke)', () => {
-				view.label = 'foo';
-				view.keystroke = 'A';
-
-				expect( view.element.dataset.ckTooltip ).to.undefined;
+			it( 'is initially set', () => {
+				expect( view.tooltipView ).to.be.instanceof( TooltipView );
+				expect( Array.from( view.template.children ) ).to.include( view.tooltipView );
 			} );
 
-			it( 'is not set if neither `true`, String or Function', () => {
-				view.label = 'foo';
-				view.keystroke = 'A';
-				view.tooltip = false;
+			it( 'it reacts to #tooltipPosition attribute', () => {
+				view.tooltip = 'foo';
+				view.icon = 'bar';
+				view.init();
 
-				expect( view.element.dataset.ckTooltip ).to.undefined;
+				expect( view.tooltipPosition ).to.equal( 's' );
+				expect( view.tooltipView.position ).to.equal( 's' );
 
-				view.tooltip = 3;
-				expect( view.element.dataset.ckTooltip ).to.undefined;
-
-				view.tooltip = new Date();
-				expect( view.element.dataset.ckTooltip ).to.undefined;
+				view.tooltipPosition = 'n';
+				expect( view.tooltipView.position ).to.equal( 'n' );
 			} );
 
 			describe( 'defined as a Boolean', () => {
@@ -105,21 +102,32 @@ describe( 'ButtonView', () => {
 					view.tooltip = true;
 					view.label = 'bar';
 					view.keystroke = 'A';
+					view.init();
 
-					expect( view.element.dataset.ckTooltip ).to.equal( 'bar (A)' );
+					expect( view.tooltipView.text ).to.equal( 'bar (A)' );
+				} );
+
+				it( 'not render tooltip text when #tooltip value is false', () => {
+					view.tooltip = false;
+					view.label = 'bar';
+					view.keystroke = 'A';
+					view.init();
+
+					expect( view.tooltipView.text ).to.equal( '' );
 				} );
 
 				it( 'reacts to changes in #label and #keystroke', () => {
 					view.tooltip = true;
 					view.label = 'foo';
 					view.keystroke = 'B';
+					view.init();
 
-					expect( view.element.dataset.ckTooltip ).to.equal( 'foo (B)' );
+					expect( view.tooltipView.text ).to.equal( 'foo (B)' );
 
 					view.label = 'baz';
 					view.keystroke = false;
 
-					expect( view.element.dataset.ckTooltip ).to.equal( 'baz' );
+					expect( view.tooltipView.text ).to.equal( 'baz' );
 				} );
 			} );
 
@@ -128,16 +136,19 @@ describe( 'ButtonView', () => {
 					view.tooltip = 'bar';
 					view.label = 'foo';
 					view.keystroke = 'A';
+					view.init();
 
-					expect( view.element.dataset.ckTooltip ).to.equal( 'bar' );
+					expect( view.tooltipView.text ).to.equal( 'bar' );
 				} );
 
 				it( 'reacts to changes of #tooltip', () => {
 					view.tooltip = 'bar';
-					expect( view.element.dataset.ckTooltip ).to.equal( 'bar' );
+					view.init();
+
+					expect( view.tooltipView.text ).to.equal( 'bar' );
 
 					view.tooltip = 'foo';
-					expect( view.element.dataset.ckTooltip ).to.equal( 'foo' );
+					expect( view.tooltipView.text ).to.equal( 'foo' );
 				} );
 			} );
 
@@ -146,21 +157,23 @@ describe( 'ButtonView', () => {
 					view.tooltip = ( l, k ) => `${ l } - ${ k }`;
 					view.label = 'foo';
 					view.keystroke = 'A';
+					view.init();
 
-					expect( view.element.dataset.ckTooltip ).to.equal( 'foo - A' );
+					expect( view.tooltipView.text ).to.equal( 'foo - A' );
 				} );
 
 				it( 'reacts to changes of #label and #keystroke', () => {
 					view.tooltip = ( l, k ) => `${ l } - ${ k }`;
 					view.label = 'foo';
 					view.keystroke = 'A';
+					view.init();
 
-					expect( view.element.dataset.ckTooltip ).to.equal( 'foo - A' );
+					expect( view.tooltipView.text ).to.equal( 'foo - A' );
 
 					view.label = 'bar';
 					view.keystroke = 'B';
 
-					expect( view.element.dataset.ckTooltip ).to.equal( 'bar - B' );
+					expect( view.tooltipView.text ).to.equal( 'bar - B' );
 				} );
 			} );
 		} );
@@ -217,8 +230,8 @@ describe( 'ButtonView', () => {
 
 	describe( 'icon', () => {
 		it( 'is not initially set', () => {
-			expect( view.element.childNodes ).to.have.length( 1 );
-			expect( view.iconView ).to.undefined;
+			expect( view.element.childNodes ).to.have.length( 2 );
+			expect( view.iconView ).to.be.undefined;
 		} );
 
 		it( 'is set when view#icon is defined', () => {
@@ -226,7 +239,7 @@ describe( 'ButtonView', () => {
 			view.icon = 'foo';
 
 			view.init();
-			expect( view.element.childNodes ).to.have.length( 2 );
+			expect( view.element.childNodes ).to.have.length( 3 );
 			expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
 
 			expect( view.iconView ).to.instanceOf( IconView );
