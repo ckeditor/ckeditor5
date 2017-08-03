@@ -55,23 +55,35 @@ describe( 'Image', () => {
 		expect( editor.plugins.get( ImageTextAlternative ) ).to.instanceOf( ImageTextAlternative );
 	} );
 
-	it( 'should prevent the ContextualToolbar from being displayed when an image is selected', () => {
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Image, ContextualToolbar, Paragraph ]
-		} )
-		.then( newEditor => {
-			const balloon = newEditor.plugins.get( 'ContextualBalloon' );
-			const contextualToolbar = newEditor.plugins.get( 'ContextualToolbar' );
-			const button = new View();
+	describe( 'ContextualToolbar integration', () => {
+		let balloon, contextualToolbar, newEditor;
 
-			button.element = global.document.createElement( 'div' );
+		beforeEach( () => {
+			return ClassicTestEditor.create( editorElement, {
+				plugins: [ Image, ContextualToolbar, Paragraph ]
+			} )
+				.then( editor => {
+					newEditor = editor;
+					balloon = newEditor.plugins.get( 'ContextualBalloon' );
+					contextualToolbar = newEditor.plugins.get( 'ContextualToolbar' );
+					const button = new View();
 
-			// There must be at least one toolbar items which is not disabled to show it.
-			// https://github.com/ckeditor/ckeditor5-ui/issues/269
-			contextualToolbar.toolbarView.items.add( button );
+					button.element = global.document.createElement( 'div' );
 
-			newEditor.editing.view.isFocused = true;
+					// There must be at least one toolbar items which is not disabled to show it.
+					// https://github.com/ckeditor/ckeditor5-ui/issues/269
+					contextualToolbar.toolbarView.items.add( button );
 
+					newEditor.editing.view.isFocused = true;
+				} );
+		} );
+
+		afterEach( () => {
+			editorElement.remove();
+			return newEditor.destroy();
+		} );
+
+		it( 'should prevent the ContextualToolbar from being displayed when an image is selected', () => {
 			// When image is selected along with text.
 			setModelData( newEditor.document, '<paragraph>fo[o</paragraph><image alt="alt text" src="foo.png"></image>]' );
 
@@ -87,11 +99,22 @@ describe( 'Image', () => {
 
 			// ContextualToolbar should not be visible.
 			expect( balloon.visibleView ).to.be.null;
+		} );
 
-			// Cleaning up.
-			editorElement.remove();
+		it( 'should listen to ContextualToolbar#show event with high priority', () => {
+			const highestPrioritySpy = sinon.spy();
+			const normalPrioritySpy = sinon.spy();
 
-			return newEditor.destroy();
+			// Select an image
+			setModelData( newEditor.document, '<paragraph>foo</paragraph>[<image alt="alt text" src="foo.png"></image>]' );
+
+			newEditor.listenTo( contextualToolbar, 'show', highestPrioritySpy, { priority: 'highest' } );
+			newEditor.listenTo( contextualToolbar, 'show', normalPrioritySpy, { priority: 'normal' } );
+
+			contextualToolbar.show();
+
+			sinon.assert.calledOnce( highestPrioritySpy );
+			sinon.assert.notCalled( normalPrioritySpy );
 		} );
 	} );
 
