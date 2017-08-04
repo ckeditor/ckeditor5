@@ -87,5 +87,15 @@ describe( 'Document', () => {
 			expect( domSelection.anchorOffset ).to.equal( 2 );
 			expect( domSelection.isCollapsed ).to.be.true;
 		} );
+
+		it( 'should do nothing if dom position cannot be converted to view position', () => {
+			const newDiv = document.createElement( 'div' );
+			const domSelection = document.getSelection();
+
+			document.body.appendChild( newDiv );
+			domSelection.collapse( newDiv, 0 );
+
+			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: viewDocument.domRoots.get( 'main' ) } );
+		} );
 	} );
 } );

@@ -112,6 +112,12 @@ function jumpOverUiElement( evt, data, domConverter ) {
 			const domOffset = domSelection.getRangeAt( 0 ).startOffset;
 
 			const viewPosition = domConverter.domPositionToView( domParent, domOffset );
+
+			// In case if dom element is not converted to view or is not mapped or something. Happens for example in some tests.
+			if ( viewPosition === null ) {
+				return;
+			}
+
 			// Skip all following ui elements.
 			const nextViewPosition = viewPosition.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
 
