@@ -279,6 +279,21 @@ describe( 'Node', () => {
 		} );
 	} );
 
+	describe( 'toJSON()', () => {
+		it( 'should prevent circular reference when stringifying a node', () => {
+			const char = new Text( 'a' );
+			const parent = new Element( 'p', null );
+			parent.appendChildren( char );
+
+			const json = JSON.stringify( char );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				_data: 'a'
+			} );
+		} );
+	} );
+
 	describe( 'change event', () => {
 		let root, text, img, rootChangeSpy;
 

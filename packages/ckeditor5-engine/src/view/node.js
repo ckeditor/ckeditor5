@@ -10,6 +10,7 @@
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 
 /**
  * Abstract tree view node class.
@@ -179,6 +180,15 @@ export default class Node {
 		if ( this.parent ) {
 			this.parent._fireChange( type, node );
 		}
+	}
+
+	toJSON() {
+		const json = clone( this );
+
+		// Due to circular references we need to remove parent reference.
+		delete json.parent;
+
+		return json;
 	}
 
 	/**
