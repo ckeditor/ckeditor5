@@ -172,6 +172,16 @@ describe( 'Range', () => {
 				.to.equal( '<p>foo<b>[<img></img>]</b>bom</p>' );
 		} );
 
+		it( 'case8', () => {
+			expect( trim( '<p>[<b></b>]</p>' ) )
+				.to.equal( '<p><b></b>[]</p>' );
+		} );
+
+		it( 'case9', () => {
+			expect( trim( '<p><b></b>[<b></b>]<b></b></p>' ) )
+				.to.equal( '<p><b></b><b></b>[]<b></b></p>' );
+		} );
+
 		function trim( data ) {
 			data = data
 				.replace( /<p>/g, '<container:p>' )
