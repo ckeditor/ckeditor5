@@ -9,7 +9,6 @@
 
 import ViewText from './text';
 import ViewPosition from './position';
-import Selection from './selection';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller, isBlockFiller } from './filler';
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -615,7 +614,7 @@ export default class Renderer {
 			if ( this.selection.isCollapsed && this.selection.isEqual( viewSelectionFromDom ) ) {
 				// Selection did not changed and is correct, do not update.
 				return;
-			} else if ( areSimilarSelections( viewSelectionFromDom, this.selection ) ) {
+			} else if ( !this.selection.isCollapsed && this.selection.isSimilar( viewSelectionFromDom ) ) {
 				const data = {
 					oldSelection: viewSelectionFromDom,
 					currentSelection: this.selection
@@ -693,35 +692,3 @@ export default class Renderer {
 }
 
 mix( Renderer, ObservableMixin );
-
-// Checks if two given selections are similar. Selections are considered similar if they are non-collapsed
-// and their trimmed (see {@link #_trimSelection}) representations are equal.
-//
-// @private
-// @param {module:engine/view/selection~Selection} selection1
-// @param {module:engine/view/selection~Selection} selection2
-// @returns {Boolean}
-function areSimilarSelections( selection1, selection2 ) {
-	return !selection1.isCollapsed && trimSelection( selection1 ).isEqual( trimSelection( selection2 ) );
-}
-
-// Creates a copy of a given selection with all of its ranges
-// trimmed (see {@link module:engine/view/range~Range#getTrimmed getTrimmed}).
-//
-// @private
-// @param {module:engine/view/selection~Selection} selection
-// @returns {module:engine/view/selection~Selection} Selection copy with all ranges trimmed.
-function trimSelection( selection ) {
-	const newSelection = Selection.createFromSelection( selection );
-	const ranges = newSelection.getRanges();
-
-	const trimmedRanges = [];
-
-	for ( const range of ranges ) {
-		trimmedRanges.push( range.getTrimmed() );
-	}
-
-	newSelection.setRanges( trimmedRanges, newSelection.isBackward );
-
-	return newSelection;
-}

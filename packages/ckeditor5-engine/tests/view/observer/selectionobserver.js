@@ -320,25 +320,24 @@ describe( 'SelectionObserver', () => {
 		} );
 
 		viewDocument.once( 'selectionChange', () => {
-			// 2. Selection change has been handled and proper event has been fired.
+			// 2. Selection change has been handled.
 
-			// 3. Now add listener for `domDocument` because `selectionChange` event will not be fired.
 			selectionObserver.listenTo( domDocument, 'selectionchange', () => {
-				// 5. Check if view was re-rendered.
+				// 4. Check if view was re-rendered.
 				expect( viewDocument.render.called ).to.be.true;
 
 				done();
 			}, { priority: 'lowest' } );
 
-			// 4. Now, collapse selection in similar position, but in UI element.
-			// Current and new selection position are same in view.
+			// 3. Now, collapse selection in similar position, but in UI element.
+			// Current and new selection position are similar in view (but not equal!).
 			// Also add a spy to `viewDocument#render` to see if view will be re-rendered.
 			sel.collapse( domMain.childNodes[ 0 ].childNodes[ 1 ], 0 );
 			sinon.spy( viewDocument, 'render' );
 		}, { priority: 'lowest' } );
 
-		// 1. Collapse before ui element and wait for async selectionchange to fire selection change handling.
-		sel.collapse( domMain.childNodes[ 0 ], 1 );
+		// 1. Collapse in a text node, before ui element, and wait for async selectionchange to fire selection change handling.
+		sel.collapse( domMain.childNodes[ 0 ].childNodes[ 0 ], 3 );
 	} );
 
 	function changeDomSelection() {

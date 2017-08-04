@@ -169,7 +169,7 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		if ( this.selection.isEqual( newViewSelection ) ) {
+		if ( this.selection.isSimilar( newViewSelection ) ) {
 			// If selection was equal and we are at this point of algorithm, it means that it was incorrect.
 			// Just re-render it, no need to fire any events, etc.
 			this.document.render();
