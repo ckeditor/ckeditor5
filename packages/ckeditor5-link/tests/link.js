@@ -268,7 +268,10 @@ describe( 'Link', () => {
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy );
+				sinon.assert.calledWithExactly( spy, {
+					target: viewDocument.domConverter.mapViewToDom( root.getChild( 0 ).getChild( 0 ) ),
+					limiter: editorElement
+				} );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
@@ -484,6 +487,11 @@ describe( 'Link', () => {
 				stopPropagation: sinon.spy()
 			};
 
+			const normalPriorityTabCallbackSpy = sinon.spy();
+			const highestPriorityTabCallbackSpy = sinon.spy();
+			editor.keystrokes.set( 'Tab', normalPriorityTabCallbackSpy );
+			editor.keystrokes.set( 'Tab', highestPriorityTabCallbackSpy, { priority: 'highest' } );
+
 			// Balloon is invisible, form not focused.
 			formView.focusTracker.isFocused = false;
 
@@ -493,6 +501,8 @@ describe( 'Link', () => {
 			sinon.assert.notCalled( keyEvtData.preventDefault );
 			sinon.assert.notCalled( keyEvtData.stopPropagation );
 			sinon.assert.notCalled( spy );
+			sinon.assert.calledOnce( normalPriorityTabCallbackSpy );
+			sinon.assert.calledOnce( highestPriorityTabCallbackSpy );
 
 			// Balloon is visible, form focused.
 			linkFeature._showPanel( true );
@@ -502,6 +512,8 @@ describe( 'Link', () => {
 			sinon.assert.notCalled( keyEvtData.preventDefault );
 			sinon.assert.notCalled( keyEvtData.stopPropagation );
 			sinon.assert.notCalled( spy );
+			sinon.assert.calledTwice( normalPriorityTabCallbackSpy );
+			sinon.assert.calledTwice( highestPriorityTabCallbackSpy );
 
 			// Balloon is still visible, form not focused.
 			formView.focusTracker.isFocused = false;
@@ -510,6 +522,8 @@ describe( 'Link', () => {
 			sinon.assert.calledOnce( keyEvtData.preventDefault );
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 			sinon.assert.calledOnce( spy );
+			sinon.assert.calledTwice( normalPriorityTabCallbackSpy );
+			sinon.assert.calledThrice( highestPriorityTabCallbackSpy );
 		} );
 
 		it( 'should hide the #_balloon after Esc key press (from editor) and not focus the editable', () => {

@@ -213,7 +213,7 @@ export default class Link extends Plugin {
 				this.formView.focus();
 				cancel();
 			}
-		} );
+		}, { priority: 'high' } );
 
 		// Close the panel on the Esc key press when the editable has focus and the balloon is visible.
 		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {

@@ -136,7 +136,7 @@ describe( 'LinkFormView', () => {
 		} );
 
 		describe( 'activates keyboard navigation for the toolbar', () => {
-			it( 'so "tab" the next focusable item', () => {
+			it( 'so "tab" focuses the next focusable item', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
 					preventDefault: sinon.spy(),
