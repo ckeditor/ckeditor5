@@ -38,7 +38,7 @@ describe( 'clickOutsideHandler', () => {
 		document.body.removeChild( contextElement2 );
 	} );
 
-	it( 'should fired callback after clicking out of context element when listener is active', () => {
+	it( 'should execute upon #mousedown outside of the contextElements (activator is active)', () => {
 		activator.returns( true );
 
 		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
@@ -46,7 +46,7 @@ describe( 'clickOutsideHandler', () => {
 		sinon.assert.calledOnce( actionSpy );
 	} );
 
-	it( 'should not fired callback after clicking out of context element when listener is not active', () => {
+	it( 'should not execute upon #mousedown outside of the contextElements (activator is inactive)', () => {
 		activator.returns( false );
 
 		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
@@ -54,7 +54,7 @@ describe( 'clickOutsideHandler', () => {
 		sinon.assert.notCalled( actionSpy );
 	} );
 
-	it( 'should not fired callback after clicking on context element when listener is active', () => {
+	it( 'should not execute upon #mousedown from one of the contextElements (activator is active)', () => {
 		activator.returns( true );
 
 		contextElement1.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
@@ -64,7 +64,7 @@ describe( 'clickOutsideHandler', () => {
 		sinon.assert.notCalled( actionSpy );
 	} );
 
-	it( 'should not fired callback after clicking on context element when listener is not active', () => {
+	it( 'should not execute upon #mousedown from one of the contextElements (activator is inactive)', () => {
 		activator.returns( false );
 
 		contextElement1.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
@@ -74,7 +74,7 @@ describe( 'clickOutsideHandler', () => {
 		sinon.assert.notCalled( actionSpy );
 	} );
 
-	it( 'should listen when model initial `ifActive` value was `true`', () => {
+	it( 'should execute if the activator function returns `true`', () => {
 		const spy = testUtils.sinon.spy();
 
 		activator.returns( true );
@@ -91,7 +91,7 @@ describe( 'clickOutsideHandler', () => {
 		sinon.assert.calledOnce( spy );
 	} );
 
-	it( 'should not listen when model initial `ifActive` value was `false`', () => {
+	it( 'should not execute if the activator function returns `false`', () => {
 		const spy = testUtils.sinon.spy();
 
 		activator.returns( false );
@@ -108,7 +108,7 @@ describe( 'clickOutsideHandler', () => {
 		sinon.assert.notCalled( spy );
 	} );
 
-	it( 'should react on model `ifActive` property change', () => {
+	it( 'should react to the activator\'s return value change', () => {
 		activator.returns( true );
 
 		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
@@ -130,7 +130,7 @@ describe( 'clickOutsideHandler', () => {
 		sinon.assert.calledTwice( actionSpy );
 	} );
 
-	it( 'should not execute the callback if one of #contextElements contains the DOM event target', () => {
+	it( 'should not execute if one of contextElements contains the DOM event target', () => {
 		const target = document.createElement( 'div' );
 		activator.returns( true );
 
