@@ -13,7 +13,6 @@ import numberedListIcon from '../theme/icons/numberedlist.svg';
 import bulletedListIcon from '../theme/icons/bulletedlist.svg';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 /**
@@ -62,29 +61,20 @@ export default class List extends Plugin {
 			}
 		} );
 
-		// Add Tab key support.
-		// When in list item, pressing Tab should indent list item, if possible.
-		// Pressing Shift+Tab should outdent list item.
-		this.listenTo( this.editor.editing.view, 'keydown', ( evt, data ) => {
-			let commandName;
-
-			if ( data.keystroke == parseKeystroke( 'Tab' ) ) {
-				commandName = 'indentList';
-			} else if ( data.keystroke == parseKeystroke( 'Shift+Tab' ) ) {
-				commandName = 'outdentList';
-			}
-
-			if ( commandName ) {
+		const getCommandExecuter = commandName => {
+			return ( data, cancel ) => {
 				const command = this.editor.commands.get( commandName );
 
 				if ( command.isEnabled ) {
 					this.editor.execute( commandName );
-
-					data.preventDefault();
-					evt.stop();
 				}
-			}
-		} );
+
+				cancel();
+			};
+		};
+
+		this.editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentList' ) );
+		this.editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentList' ) );
 	}
 
 	/**
