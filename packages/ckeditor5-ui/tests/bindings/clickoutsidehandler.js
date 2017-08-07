@@ -129,4 +129,14 @@ describe( 'clickOutsideHandler', () => {
 		// Called one more time.
 		sinon.assert.calledTwice( actionSpy );
 	} );
+
+	it( 'should not execute the callback if one of #contextElements contains the DOM event target', () => {
+		const target = document.createElement( 'div' );
+		activator.returns( true );
+
+		contextElement2.appendChild( target );
+		target.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+
+		sinon.assert.notCalled( actionSpy );
+	} );
 } );
