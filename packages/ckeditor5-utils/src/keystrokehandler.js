@@ -45,6 +45,15 @@ export default class KeystrokeHandler {
 	 * @param {module:utils/emittermixin~Emitter} emitter
 	 */
 	listenTo( emitter ) {
+		// The #_listener works here as a kind of dispatcher. It groups the events coming from the same
+		// keystroke so the listeners can be attached to them with different priorities.
+		//
+		// E.g. all the keystrokes with the `keyCode` of 42 coming from the `emitter` are propagated
+		// as a `_keydown:42` event by the `_listener`. If there's a callback created by the `set`
+		// method for this 42 keystroke, it listens to the `_listener#_keydown:42` event only and interacts
+		// only with other listeners of this particular event, thus making it possible to prioritize
+		// the listeners and safely cancel execution, when needed. Instead of duplicating the Emitter logic,
+		// the KeystrokeHandler re–uses it to do its job.
 		this._listener.listenTo( emitter, 'keydown', ( evt, keyEvtData ) => {
 			this._listener.fire( '_keydown:' + getCode( keyEvtData ), keyEvtData );
 		} );
