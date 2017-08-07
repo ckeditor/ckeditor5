@@ -309,16 +309,64 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should return a descendant of this node', () => {
+			const foo = new Text( 'foo' );
 			const image = new Element( 'image' );
 			const element = new Element( 'elem', [], [
 				new Element( 'elem', [], [
-					new Text( 'foo' ),
+					foo,
 					image
 				] )
 			] );
 			const frag = new DocumentFragment( element );
 
-			expect( frag.getNodeByPath( [ 0, 0, 1 ] ) ).to.equal( image );
+			expect( frag.getNodeByPath( [ 0, 0, 0 ] ) ).to.equal( foo );
+			expect( frag.getNodeByPath( [ 0, 0, 1 ] ) ).to.equal( foo );
+			expect( frag.getNodeByPath( [ 0, 0, 2 ] ) ).to.equal( foo );
+			expect( frag.getNodeByPath( [ 0, 0, 3 ] ) ).to.equal( image );
+		} );
+
+		it( 'works fine with offsets', () => {
+			const abc = new Text( 'abc' );
+			const xyz = new Text( 'xyz' );
+			const bar = new Text( 'bar' );
+			const foo = new Text( 'foo' );
+			const bom = new Text( 'bom' );
+			const bold = new Element( 'b', [], [
+				bar
+			] );
+			const paragraph = new Element( 'paragraph', [], [
+				foo,
+				bold,
+				bom
+			] );
+			const frag = new DocumentFragment( [
+				abc,
+				paragraph,
+				xyz
+			] );
+
+			// abc<paragraph>foo<bold>bar</bold>bom</paragraph>xyz
+
+			expect( frag.getNodeByPath( [ 0 ] ), 1 ).to.equal( abc );
+			expect( frag.getNodeByPath( [ 1 ] ), 2 ).to.equal( abc );
+			expect( frag.getNodeByPath( [ 2 ] ), 3 ).to.equal( abc );
+			expect( frag.getNodeByPath( [ 3 ] ), 4 ).to.equal( paragraph );
+			expect( frag.getNodeByPath( [ 3, 0 ] ), 5 ).to.equal( foo );
+			expect( frag.getNodeByPath( [ 3, 1 ] ), 6 ).to.equal( foo );
+			expect( frag.getNodeByPath( [ 3, 2 ] ), 7 ).to.equal( foo );
+			expect( frag.getNodeByPath( [ 3, 3 ] ), 8 ).to.equal( bold );
+			expect( frag.getNodeByPath( [ 3, 3, 0 ] ), 9 ).to.equal( bar );
+			expect( frag.getNodeByPath( [ 3, 3, 1 ] ), 10 ).to.equal( bar );
+			expect( frag.getNodeByPath( [ 3, 3, 2 ] ), 11 ).to.equal( bar );
+			expect( frag.getNodeByPath( [ 3, 3, 3 ] ), 12 ).to.equal( null );
+			expect( frag.getNodeByPath( [ 3, 4 ] ), 13 ).to.equal( bom );
+			expect( frag.getNodeByPath( [ 3, 5 ] ), 14 ).to.equal( bom );
+			expect( frag.getNodeByPath( [ 3, 6 ] ), 15 ).to.equal( bom );
+			expect( frag.getNodeByPath( [ 3, 7 ] ), 16 ).to.equal( null );
+			expect( frag.getNodeByPath( [ 4 ] ), 17 ).to.equal( xyz );
+			expect( frag.getNodeByPath( [ 5 ] ), 18 ).to.equal( xyz );
+			expect( frag.getNodeByPath( [ 6 ] ), 19 ).to.equal( xyz );
+			expect( frag.getNodeByPath( [ 7 ] ), 20 ).to.equal( null );
 		} );
 	} );
 } );
