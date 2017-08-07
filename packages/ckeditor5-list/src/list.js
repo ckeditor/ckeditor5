@@ -67,9 +67,8 @@ export default class List extends Plugin {
 
 				if ( command.isEnabled ) {
 					this.editor.execute( commandName );
+					cancel();
 				}
-
-				cancel();
 			};
 		};
 
