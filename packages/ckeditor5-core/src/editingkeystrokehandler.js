@@ -53,7 +53,7 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 	 * {@link module:engine/view/observer/keyobserver~KeyEventData key event data} object and
 	 * a `cancel()` helper to both `preventDefault()` and `stopPropagation()` of the event.
 	 */
-	set( keystroke, callback ) {
+	set( keystroke, callback, options = {} ) {
 		if ( typeof callback == 'string' ) {
 			const commandName = callback;
 
@@ -63,6 +63,6 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 			};
 		}
 
-		super.set( keystroke, callback );
+		super.set( keystroke, callback, options );
 	}
 }
