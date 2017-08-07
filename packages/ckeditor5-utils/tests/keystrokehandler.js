@@ -19,31 +19,14 @@ describe( 'KeystrokeHandler', () => {
 
 	describe( 'listenTo()', () => {
 		it( 'activates the listening on the emitter', () => {
-			emitter = Object.create( EmitterMixin );
-			keystrokes = new KeystrokeHandler();
+			const spy = sinon.spy();
+			const keyEvtData = getCtrlA();
 
-			const spy = sinon.spy( keystrokes, 'press' );
-			const keyEvtData = { keyCode: 1 };
-
-			emitter.fire( 'keydown', keyEvtData );
-
-			expect( spy.notCalled ).to.be.true;
-
-			keystrokes.listenTo( emitter );
+			keystrokes.set( 'ctrl + A', spy );
 			emitter.fire( 'keydown', keyEvtData );
 
 			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, keyEvtData );
-		} );
-
-		it( 'triggers #press on #keydown', () => {
-			const spy = sinon.spy( keystrokes, 'press' );
-			const keyEvtData = { keyCode: 1 };
-
-			emitter.fire( 'keydown', keyEvtData );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, keyEvtData );
+			sinon.assert.calledWithExactly( spy, keyEvtData, sinon.match.func );
 		} );
 	} );
 

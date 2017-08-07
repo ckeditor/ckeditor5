@@ -9,6 +9,7 @@
 
 import DomEmitterMixin from './dom/emittermixin';
 import { getCode, parseKeystroke } from './keyboard';
+import priorities from './priorities';
 
 /**
  * Keystroke handler registers keystrokes so the callbacks associated
@@ -19,7 +20,7 @@ import { getCode, parseKeystroke } from './keyboard';
  *
  *		handler.listenTo( emitter );
  *
- *		handler.set( 'ctrl + a', ( keyEventData, cancel ) => {
+ *		handler.set( 'ctrl + a', ( keyEvtData, cancel ) => {
  *			console.log( 'ctrl + a has been pressed' );
  *			cancel();
  *		} );
@@ -36,14 +37,6 @@ export default class KeystrokeHandler {
 		 * @member {module:utils/dom/emittermixin~Emitter}
 		 */
 		this._listener = Object.create( DomEmitterMixin );
-
-		/**
-		 * Map of the defined keystrokes. Keystroke codes are the keys.
-		 *
-		 * @private
-		 * @member {Map}
-		 */
-		this._keystrokes = new Map();
 	}
 
 	/**
@@ -52,8 +45,8 @@ export default class KeystrokeHandler {
 	 * @param {module:utils/emittermixin~Emitter} emitter
 	 */
 	listenTo( emitter ) {
-		this._listener.listenTo( emitter, 'keydown', ( evt, data ) => {
-			this.press( data );
+		this._listener.listenTo( emitter, 'keydown', ( evt, keyEvtData ) => {
+			this._listener.fire( '_keydown:' + getCode( keyEvtData ), keyEvtData );
 		} );
 	}
 
@@ -65,47 +58,59 @@ export default class KeystrokeHandler {
 	 * @param {Function} callback A function called with the
 	 * {@link module:engine/view/observer/keyobserver~KeyEventData key event data} object and
 	 * a helper to both `preventDefault` and `stopPropagation` of the event.
+	 * @param {Object} [options={}] Additional options.
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of the keystroke
+	 * callback. The higher the priority value the sooner the callback will be executed. Keystrokes having the same priority
+	 * are called in the order they were added.
 	 */
-	set( keystroke, callback ) {
+	set( keystroke, callback, options = {} ) {
 		const keyCode = parseKeystroke( keystroke );
-		const callbacks = this._keystrokes.get( keyCode );
+		const priority = priorities.get( options.priority );
 
-		if ( callbacks ) {
-			callbacks.push( callback );
-		} else {
-			this._keystrokes.set( keyCode, [ callback ] );
-		}
+		// Execute the passed callback on KeystrokeHandler#_keydown.
+		// TODO: https://github.com/ckeditor/ckeditor5-utils/issues/144
+		this._listener.listenTo( this._listener, '_keydown:' + keyCode, ( evt, keyEvtData ) => {
+			callback( keyEvtData, () => {
+				// Stop the event in the DOM: no listener in the web page
+				// will be triggered by this event.
+				keyEvtData.preventDefault();
+				keyEvtData.stopPropagation();
+
+				// Stop the event in the KeystrokeHandler: no more callbacks
+				// will be executed for this keystroke.
+				evt.stop();
+			} );
+
+			// Mark this keystroke as handled by the callback. See: #press.
+			evt.return = true;
+		}, { priority } );
 	}
 
 	/**
 	 * Triggers a keystroke handler for a specified key combination, if such a keystroke was {@link #set defined}.
 	 *
-	 * @param {module:engine/view/observer/keyobserver~KeyEventData} keyEventData Key event data.
+	 * @param {module:engine/view/observer/keyobserver~KeyEventData} keyEvtData Key event data.
 	 * @returns {Boolean} Whether the keystroke was handled.
 	 */
-	press( keyEventData ) {
-		const keyCode = getCode( keyEventData );
-		const callbacks = this._keystrokes.get( keyCode );
-
-		if ( !callbacks ) {
-			return false;
-		}
-
-		for ( const callback of callbacks ) {
-			callback( keyEventData, () => {
-				keyEventData.preventDefault();
-				keyEventData.stopPropagation();
-			} );
-		}
-
-		return true;
+	press( keyEvtData ) {
+		return !!this._listener.fire( '_keydown:' + getCode( keyEvtData ), keyEvtData );
 	}
 
 	/**
 	 * Destroys the keystroke handler.
 	 */
 	destroy() {
-		this._keystrokes = new Map();
 		this._listener.stopListening();
 	}
+
+	/**
+	 * This is internal plugin event which is fired when an associated
+	 * {@link module:utils/emittermixin~Emitter} fires the `keydown` event.
+	 *
+	 * It is used to aggregate specific keystrokes coming from an `Emitter`
+	 * and execute callbacks in the priority order.
+	 *
+	 * @private
+	 * @event _listener#_keydown
+	 */
 }
