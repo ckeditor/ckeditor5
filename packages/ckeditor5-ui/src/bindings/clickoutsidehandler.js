@@ -22,7 +22,7 @@
  * @param {Function} options.callback Function fired after clicking outside of specified elements.
  */
 export default function clickOutsideHandler( { emitter, activator, callback, contextElements } ) {
-	emitter.listenTo( document, 'mouseup', ( evt, { target } ) => {
+	emitter.listenTo( document, 'mousedown', ( evt, { target } ) => {
 		if ( !activator() ) {
 			return;
 		}
