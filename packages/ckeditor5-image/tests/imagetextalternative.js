@@ -213,7 +213,7 @@ describe( 'ImageTextAlternative', () => {
 					setData( doc, '[<image src=""></image>]' );
 					button.fire( 'execute' );
 
-					global.document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+					global.document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 					sinon.assert.called( hideSpy );
 					sinon.assert.notCalled( focusSpy );
 				} );
@@ -224,7 +224,7 @@ describe( 'ImageTextAlternative', () => {
 					setData( doc, '[<image src=""></image>]' );
 					button.fire( 'execute' );
 
-					form.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+					form.element.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 					sinon.assert.notCalled( spy );
 				} );
 			} );
