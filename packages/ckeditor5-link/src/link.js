@@ -276,14 +276,9 @@ export default class Link extends Plugin {
 			//  * there was no link element in the first place, i.e. creating a new link
 			else {
 				// If still in a link element, simply update the position of the balloon.
-				if ( renderSelectedLink ) {
-					this._balloon.updatePosition();
-				}
 				// If there was no link, upon #render, the balloon must be moved
 				// to the new position in the editing view (a new native DOM range).
-				else {
-					this._balloon.updatePosition( this._getBalloonPositionData() );
-				}
+				this._balloon.updatePosition( this._getBalloonPositionData() );
 			}
 		} );
 
