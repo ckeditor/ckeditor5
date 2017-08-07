@@ -52,6 +52,10 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 	 * If a function, then it will be called with the
 	 * {@link module:engine/view/observer/keyobserver~KeyEventData key event data} object and
 	 * a `cancel()` helper to both `preventDefault()` and `stopPropagation()` of the event.
+	 * @param {Object} [options={}] Additional options.
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of the keystroke
+	 * callback. The higher the priority value the sooner the callback will be executed. Keystrokes having the same priority
+	 * are called in the order they were added.
 	 */
 	set( keystroke, callback, options = {} ) {
 		if ( typeof callback == 'string' ) {
