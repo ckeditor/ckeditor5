@@ -172,7 +172,7 @@ describe( 'ViewConversionDispatcher', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'should extract temporary markers stamps from converter element and create static markers list', () => {
+		it( 'should extract temporary markers elements from converter element and create static markers list', () => {
 			const viewFragment = new ViewDocumentFragment();
 
 			dispatcher.on( 'documentFragment', ( evt, data ) => {

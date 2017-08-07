@@ -36,7 +36,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * {@link module:engine/conversion/model-to-view-converters}, {@link module:engine/conversion/modelconsumable~ModelConsumable},
  * {@link module:engine/conversion/mapper~Mapper}.
  *
- * Using this API it is possible to create four kinds of converters:
+ * Using this API it is possible to create five kinds of converters:
  *
  * 1. Model element to view element converter. This is a converter that takes the model element and represents it
  * in the view.

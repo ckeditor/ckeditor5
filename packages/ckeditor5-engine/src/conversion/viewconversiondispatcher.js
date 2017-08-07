@@ -137,7 +137,7 @@ export default class ViewConversionDispatcher {
 	 * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
 	 * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model data that is a result of the conversion process
-	 * wrapped in `DocumentFragment`. Converted marker stamps will be set as that document fragment's
+	 * wrapped in `DocumentFragment`. Converted marker elements will be set as that document fragment's
 	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 */
 	convert( viewItem, additionalData = {} ) {
@@ -157,7 +157,7 @@ export default class ViewConversionDispatcher {
 			conversionResult = new ModelDocumentFragment( [ conversionResult ] );
 		}
 
-		// Extract temporary markers stamp from model and set as static markers collection.
+		// Extract temporary markers elements from model and set as static markers collection.
 		conversionResult.markers = extractMarkersFromModelFragment( conversionResult );
 
 		return conversionResult;
@@ -279,7 +279,7 @@ mix( ViewConversionDispatcher, EmitterMixin );
 // @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/node~Node} modelItem Fragment of model.
 // @returns {Map<String, module:engine/model/range~Range>} List of static markers.
 function extractMarkersFromModelFragment( modelItem ) {
-	const markerStamps = new Set();
+	const markerElements = new Set();
 	const markers = new Map();
 
 	// Create ModelTreeWalker.
@@ -290,16 +290,16 @@ function extractMarkersFromModelFragment( modelItem ) {
 
 	// Walk through DocumentFragment and collect marker elements.
 	for ( const value of walker ) {
-		// Check if current element is a marker stamp.
+		// Check if current element is a marker.
 		if ( value.item.name == '$marker' ) {
-			markerStamps.add( value.item );
+			markerElements.add( value.item );
 		}
 	}
 
 	// Walk through collected marker elements store its path and remove its from the DocumentFragment.
-	for ( const stamp of markerStamps ) {
-		const markerName = stamp.getAttribute( 'data-name' );
-		const currentPosition = ModelPosition.createBefore( stamp );
+	for ( const markerElement of markerElements ) {
+		const markerName = markerElement.getAttribute( 'data-name' );
+		const currentPosition = ModelPosition.createBefore( markerElement );
 
 		// When marker of given name is not stored it means that we have found the beginning of the range.
 		if ( !markers.has( markerName ) ) {
@@ -309,8 +309,8 @@ function extractMarkersFromModelFragment( modelItem ) {
 			markers.get( markerName ).end = ModelPosition.createFromPosition( currentPosition );
 		}
 
-		// Remove marker stamp element from DocumentFragment.
-		remove( ModelRange.createOn( stamp ) );
+		// Remove marker element from DocumentFragment.
+		remove( ModelRange.createOn( markerElement ) );
 	}
 
 	return markers;
