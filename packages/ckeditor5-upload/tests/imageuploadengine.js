@@ -31,7 +31,7 @@ describe( 'ImageUploadEngine', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		testUtils.sinon.stub( window, 'FileReader', () => {
+		testUtils.sinon.stub( window, 'FileReader' ).callsFake( () => {
 			nativeReaderMock = new NativeFileReaderMock();
 
 			return nativeReaderMock;

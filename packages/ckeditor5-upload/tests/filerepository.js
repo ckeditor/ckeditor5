@@ -152,7 +152,7 @@ describe( 'FileRepository', () => {
 		let loader, file, nativeReaderMock;
 
 		beforeEach( () => {
-			testUtils.sinon.stub( window, 'FileReader', () => {
+			testUtils.sinon.stub( window, 'FileReader' ).callsFake( () => {
 				nativeReaderMock = new NativeFileReaderMock();
 
 				return nativeReaderMock;
@@ -164,7 +164,7 @@ describe( 'FileRepository', () => {
 
 		describe( 'constructor', () => {
 			it( 'should initialize id', () => {
-				expect( loader.id ).to.be.number;
+				expect( loader.id ).to.be.a( 'string' );
 			} );
 
 			it( 'should initialize file', () => {
