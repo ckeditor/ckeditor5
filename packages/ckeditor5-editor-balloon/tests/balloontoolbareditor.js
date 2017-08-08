@@ -74,12 +74,13 @@ describe( 'BalloonToolbarEditor', () => {
 
 	describe( 'create()', () => {
 		beforeEach( function() {
-			return BalloonToolbarEditor.create( editorElement, {
-				plugins: [ Paragraph, Bold ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-			} );
+			return BalloonToolbarEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
 		} );
 
 		afterEach( () => {
@@ -113,19 +114,20 @@ describe( 'BalloonToolbarEditor', () => {
 
 			class CustomBalloonToolbarEditor extends BalloonToolbarEditor {}
 
-			return CustomBalloonToolbarEditor.create( editorElement, {
-				plugins: [ Paragraph, Bold ]
-			} )
-			.then( newEditor => {
-				expect( newEditor ).to.be.instanceof( CustomBalloonToolbarEditor );
-				expect( newEditor ).to.be.instanceof( BalloonToolbarEditor );
+			return CustomBalloonToolbarEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor ).to.be.instanceof( CustomBalloonToolbarEditor );
+					expect( newEditor ).to.be.instanceof( BalloonToolbarEditor );
 
-				expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+					expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
 
-				editorElement.remove();
+					editorElement.remove();
 
-				return newEditor.destroy();
-			} );
+					return newEditor.destroy();
+				} );
 		} );
 	} );
 
@@ -150,14 +152,15 @@ describe( 'BalloonToolbarEditor', () => {
 				}
 			}
 
-			return BalloonToolbarEditor.create( editorElement, {
-				plugins: [ EventWatcher ]
-			} )
-			.then( newEditor => {
-				expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+			return BalloonToolbarEditor
+				.create( editorElement, {
+					plugins: [ EventWatcher ]
+				} )
+				.then( newEditor => {
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
 
-				editor = newEditor;
-			} );
+					editor = newEditor;
+				} );
 		} );
 
 		it( 'fires dataReady once data is loaded', () => {
@@ -171,14 +174,15 @@ describe( 'BalloonToolbarEditor', () => {
 				}
 			}
 
-			return BalloonToolbarEditor.create( editorElement, {
-				plugins: [ EventWatcher, Paragraph, Bold ]
-			} )
-			.then( newEditor => {
-				expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
+			return BalloonToolbarEditor
+				.create( editorElement, {
+					plugins: [ EventWatcher, Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
 
-				editor = newEditor;
-			} );
+					editor = newEditor;
+				} );
 		} );
 
 		it( 'fires uiReady once UI is ready', () => {
@@ -192,20 +196,22 @@ describe( 'BalloonToolbarEditor', () => {
 				}
 			}
 
-			return BalloonToolbarEditor.create( editorElement, {
-				plugins: [ EventWatcher ]
-			} )
-			.then( newEditor => {
-				expect( isReady ).to.be.true;
+			return BalloonToolbarEditor
+				.create( editorElement, {
+					plugins: [ EventWatcher ]
+				} )
+				.then( newEditor => {
+					expect( isReady ).to.be.true;
 
-				editor = newEditor;
-			} );
+					editor = newEditor;
+				} );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		beforeEach( function() {
-			return BalloonToolbarEditor.create( editorElement, { plugins: [ Paragraph ] } )
+			return BalloonToolbarEditor
+				.create( editorElement, { plugins: [ Paragraph ] } )
 				.then( newEditor => {
 					editor = newEditor;
 
