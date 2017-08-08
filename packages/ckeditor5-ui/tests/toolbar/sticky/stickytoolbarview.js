@@ -34,7 +34,7 @@ describe( 'StickyToolbarView', () => {
 			scrollY: 0
 		} );
 
-		testUtils.sinon.stub( global, 'window', windowStub );
+		testUtils.sinon.stub( global, 'window' ).value( windowStub );
 
 		document.body.appendChild( element );
 	} );

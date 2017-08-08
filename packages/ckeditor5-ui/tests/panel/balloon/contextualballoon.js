@@ -28,8 +28,8 @@ describe( 'ContextualBalloon', () => {
 
 			// We don't need to execute BalloonPanel pin and attachTo methods
 			// it's enough to check if was called with the proper data.
-			sinon.stub( balloon.view, 'attachTo', () => {} );
-			sinon.stub( balloon.view, 'pin', () => {} );
+			sinon.stub( balloon.view, 'attachTo' ).returns( {} );
+			sinon.stub( balloon.view, 'pin' ).returns( {} );
 
 			viewA = new View();
 			viewB = new View();

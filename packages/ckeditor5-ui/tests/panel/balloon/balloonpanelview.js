@@ -186,7 +186,7 @@ describe( 'BalloonPanelView', () => {
 				}
 			};
 
-			testUtils.sinon.stub( global, 'window', windowStub );
+			testUtils.sinon.stub( global, 'window' ).value( windowStub );
 		} );
 
 		it( 'should use default options', () => {
