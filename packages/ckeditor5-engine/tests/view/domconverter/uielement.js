@@ -47,8 +47,8 @@ describe( 'DOMConverter UIElement integration', () => {
 			const domSpan = domElement.childNodes[ 0 ];
 
 			expect( converter.mapDomToView( domElement ) ).to.equal( myElement );
-			expect( converter.mapDomToView( domSpan ) ).to.be.falsy;
-			expect( converter.mapDomToView( domSpan.childNodes[ 0 ] ) ).to.be.falsy;
+			expect( converter.mapDomToView( domSpan ) ).to.be.false;
+			expect( converter.mapDomToView( domSpan.childNodes[ 0 ] ) ).to.be.false;
 		} );
 	} );
 

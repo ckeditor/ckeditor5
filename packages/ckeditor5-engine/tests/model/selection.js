@@ -468,7 +468,7 @@ describe( 'Selection', () => {
 			const startPos = Position.createAt( root, 1 );
 			const endPos = Position.createAt( root, 2 );
 			const newEndPos = Position.createAt( root, 4 );
-			const spy = testUtils.sinon.stub( Position, 'createAt', () => newEndPos );
+			const spy = testUtils.sinon.stub( Position, 'createAt' ).returns( newEndPos );
 
 			selection.addRange( new Range( startPos, endPos ) );
 

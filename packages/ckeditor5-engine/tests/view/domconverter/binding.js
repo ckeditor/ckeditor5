@@ -277,7 +277,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should bind DOM element to selection', () => {
 			const bindSelection = converter.fakeSelectionToView( domEl );
-			expect( bindSelection ).to.be.defined;
+			expect( bindSelection ).to.not.be.undefined;
 			expect( bindSelection.isEqual( selection ) ).to.be.true;
 		} );
 
@@ -287,7 +287,6 @@ describe( 'DomConverter', () => {
 			selection.addRange( ViewRange.createIn( new ViewElement() ), true );
 			const bindSelection = converter.fakeSelectionToView( domEl );
 
-			expect( bindSelection ).to.be.defined;
 			expect( bindSelection ).to.not.equal( selection );
 			expect( bindSelection.isEqual( selection ) ).to.be.false;
 			expect( bindSelection.isEqual( selectionCopy ) ).to.be.true;
