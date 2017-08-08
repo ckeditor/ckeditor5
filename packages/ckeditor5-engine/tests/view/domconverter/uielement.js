@@ -41,14 +41,14 @@ describe( 'DOMConverter UIElement integration', () => {
 			expect( domElement.innerHTML ).to.equal( '<p><span>foo</span> bar</p>' );
 		} );
 
-		it( 'should bind only UIElement not child elements', () => {
+		it( 'should create DOM structure that all is mapped to single UIElement', () => {
 			const myElement = new MyUIElement( 'div' );
 			const domElement = converter.viewToDom( myElement, document, { bind: true } );
-			const domSpan = domElement.childNodes[ 0 ];
+			const domParagraph = domElement.childNodes[ 0 ];
 
 			expect( converter.mapDomToView( domElement ) ).to.equal( myElement );
-			expect( converter.mapDomToView( domSpan ) ).to.be.false;
-			expect( converter.mapDomToView( domSpan.childNodes[ 0 ] ) ).to.be.false;
+			expect( converter.mapDomToView( domParagraph ) ).to.equal( myElement );
+			expect( converter.mapDomToView( domParagraph.childNodes[ 0 ] ) ).to.equal( myElement );
 		} );
 	} );
 
