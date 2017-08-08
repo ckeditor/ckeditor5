@@ -131,21 +131,21 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'addMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
 			dispatcher.on( 'removeMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
 			dispatcher.on( 'insert:paragraph', insertElement( () => {
-				const element = new ViewContainerElement( 'p' );
+				const viewContainer = new ViewContainerElement( 'p' );
 
-				element.setVirtualSelection = descriptor => {
+				viewContainer.setCustomProperty( 'setVirtualSelection', ( element, descriptor ) => {
 					element.addClass( 'virtual-selection-own-class' );
 
 					expect( descriptor ).to.equal( virtualSelectionDescriptor );
-				};
+				} );
 
-				element.removeVirtualSelection = descriptor => {
+				viewContainer.setCustomProperty( 'removeVirtualSelection', ( element, descriptor ) => {
 					element.removeClass( 'virtual-selection-own-class' );
 
 					expect( descriptor ).to.equal( virtualSelectionDescriptor );
-				};
+				} );
 
-				return element;
+				return viewContainer;
 			} ), { priority: 'high' } );
 
 			dispatcher.convertInsertion( markerRange );
@@ -179,8 +179,8 @@ describe( 'model-to-view-converters', () => {
 
 			dispatcher.on( 'insert:paragraph', insertElement( () => {
 				const element = new ViewContainerElement( 'p' );
-				element.setVirtualSelection = data => element.addClass( data.class );
-				element.removeVirtualSelection = data => element.removeClass( data.class );
+				element.setCustomProperty( 'setVirtualSelection', ( element, data ) => element.addClass( data.class ) );
+				element.setCustomProperty( 'removeVirtualSelection', ( element, data ) => element.removeClass( data.class ) );
 
 				return element;
 			} ), { priority: 'high' } );

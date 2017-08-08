@@ -430,13 +430,13 @@ export function markerToVirtualSelection( selectionDescriptor ) {
 
 			const selectionHandlingMethod = addMarker ? 'setVirtualSelection' : 'removeVirtualSelection';
 
-			if ( viewElement && viewElement[ selectionHandlingMethod ] ) {
+			if ( viewElement && viewElement.getCustomProperty( selectionHandlingMethod ) ) {
 				// Virtual selection will be handled by parent element - consume all children.
 				for ( const value of ModelRange.createIn( modelItem ) ) {
 					consumable.consume( value.item, consumableType );
 				}
 
-				viewElement[ selectionHandlingMethod ]( descriptor );
+				viewElement.getCustomProperty( selectionHandlingMethod )( viewElement, descriptor );
 			}
 		}
 	};

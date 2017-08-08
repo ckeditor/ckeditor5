@@ -276,13 +276,18 @@ class ModelConverterBuilder {
 	 * * each {@link module:engine/view/text~Text view text node} in the marker's range will be wrapped with `span`
 	 * {@link module:engine/view/attributeelement~AttributeElement},
 	 * * each {@link module:engine/view/containerelement~ContainerElement container view element} in the marker's
-	 * range can handle the virtual selection individually by providing `setVirtualSelection` and `removeVirtualSelection` methods.
+	 * range can handle the virtual selection individually by providing `setVirtualSelection` and `removeVirtualSelection`
+	 * custom properties:
+	 *
+	 *		viewElement.setCustomProperty( 'setVirtualSelection', ( element, descriptor ) => {} );
+	 *		viewElement.setCustomProperty( 'removeVirtualSelection', ( element, descriptor ) => {} );
 	 *
 	 * {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor Descriptor} will be used to create
 	 * spans over text nodes and also will be provided to `setVirtualSelection` and `removeVirtualSelection` methods
 	 * each time virtual selection should be set or removed from view elements.
-	 * NOTE: When `setVirtualSelection` and `removeVirtualSelection` methods are present, converter assumes that element
-	 * is taking care of presenting virtual selection on its child nodes, so it won't convert virtual selection on them.
+	 * NOTE: When `setVirtualSelection` and `removeVirtualSelection` custom properties are present, converter assumes
+	 * that element itself is taking care of presenting virtual selection on its child nodes, so it won't convert virtual
+	 * selection on them.
 	 *
 	 * Virtual selection descriptor can be provided as plain object:
 	 *
@@ -423,7 +428,8 @@ export default function buildModelConverter() {
  * @typedef VirtualSelectionDescriptor
  * Object describing how virtual selection should be created in the view. Each text node in virtual selection
  * will be wrapped with `span` element with CSS class, attributes and priority described by this object. Each element
- * can handle virtual selection separately by providing `setVirtualSelection` and `removeVirtualSelection` methods.
+ * can handle virtual selection separately by providing `setVirtualSelection` and `removeVirtualSelection` custom
+ * properties.
  *
  * @property {String} [class] CSS class that will be added to `span`
  * {@link module:engine/view/attributeelement~AttributeElement} wrapping each text node in the virtual selection.

@@ -43,20 +43,19 @@ class FancyWidget extends Plugin {
 		buildModelConverter().for( editing.modelToView )
 			.fromElement( 'fancywidget' )
 			.toElement( () => {
-				const text = new ViewText( 'widget' );
-				const fancyView = new ViewContainerElement( 'figure', { class: 'fancy-widget' }, text );
+				const widgetElement = new ViewContainerElement( 'figure', { class: 'fancy-widget' }, new ViewText( 'widget' ) );
 
-				fancyView.setVirtualSelection = data => {
-					text.data = 'widget - with virtual selection';
-					fancyView.addClass( data.class );
-				};
+				widgetElement.setCustomProperty( 'setVirtualSelection', ( element, data ) => {
+					element.getChild( 0 ).data = 'widget - with virtual selection';
+					element.addClass( data.class );
+				} );
 
-				fancyView.removeVirtualSelection = data => {
-					text.data = 'widget';
-					fancyView.removeClass( data.class );
-				};
+				widgetElement.setCustomProperty( 'removeVirtualSelection', ( element, data ) => {
+					element.getChild( 0 ).data = 'widget';
+					element.removeClass( data.class );
+				} );
 
-				return toWidget( fancyView );
+				return toWidget( widgetElement );
 			} );
 
 		// Build converter from view element to model element for data pipeline.
