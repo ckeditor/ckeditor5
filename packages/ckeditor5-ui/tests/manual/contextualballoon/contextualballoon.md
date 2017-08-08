@@ -1,5 +1,4 @@
-1. Select some of text and play with the plugins.
-2. Keep opening panels inside the same balloon.
-3. Check if `Cancel` button closes plugins one by one.
-4. Check if `Esc` press closes plugins one by one (only when plugin or editable is focused).
-5. Check if panels stay opened in the same position as initial when more panels are open in the same balloon.
+1. Select some text in the middle of the content - contextual toolbar should show up.
+2. Click link icon in the contextual toolbar - link balloon should open at the position as contextual toolbar.
+3. Close link balloon (Esc press or Cancel button) - contextual toolbar should show up.
+4. Repeat this for backward selection.

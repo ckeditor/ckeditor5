@@ -267,18 +267,36 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
 		} );
 
-		it( 'should attach balloon to the target using new position options', () => {
+		it( 'should set given position to the currently visible view and use position from the first view in the stack #1', () => {
 			balloon.view.attachTo.reset();
 
 			balloon.updatePosition( { target: 'new' } );
 
 			expect( balloon.view.attachTo.calledOnce );
 			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'new' } );
+		} );
+
+		it( 'should set given position to the currently visible view and use position from the first view in the stack #2', () => {
+			balloon.add( {
+				view: viewB,
+				position: {
+					target: 'other'
+				}
+			} );
+
+			balloon.view.attachTo.reset();
+
+			balloon.updatePosition( { target: 'new' } );
+
+			expect( balloon.view.attachTo.calledOnce );
+			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
+
+			balloon.remove( viewA );
 
 			balloon.updatePosition();
 
 			expect( balloon.view.attachTo.calledTwice );
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'new' } );
+			expect( balloon.view.attachTo.secondCall.args[ 0 ] ).to.deep.equal( { target: 'new' } );
 		} );
 
 		it( 'should throw an error when there is no given view in the stack', () => {
