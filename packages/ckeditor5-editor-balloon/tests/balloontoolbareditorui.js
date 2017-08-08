@@ -101,10 +101,10 @@ describe( 'BalloonToolbarEditorUI', () => {
 
 		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
 			const toolbar = editor.plugins.get( 'ContextualToolbar' );
-			const toolbarFocusSpy = sinon.stub( toolbar.toolbarView, 'focus', () => {} );
-			const toolbarShowSpy = sinon.stub( toolbar, 'show', () => {} );
-			const toolbarHideSpy = sinon.stub( toolbar, 'hide', () => {} );
-			const editingFocusSpy = sinon.stub( editor.editing.view, 'focus', () => {} );
+			const toolbarFocusSpy = sinon.stub( toolbar.toolbarView, 'focus' ).returns( {} );
+			const toolbarShowSpy = sinon.stub( toolbar, 'show' ).returns( {} );
+			const toolbarHideSpy = sinon.stub( toolbar, 'hide' ).returns( {} );
+			const editingFocusSpy = sinon.stub( editor.editing.view, 'focus' ).returns( {} );
 
 			ui.init();
 			ui.focusTracker.isFocused = true;
