@@ -21,7 +21,7 @@ describe( 'CKFinderUploadAdapter', () => {
 		const editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		sinonXHR = testUtils.sinon.useFakeXMLHttpRequest();
+		sinonXHR = testUtils.sinon.useFakeServer();
 
 		return ClassicTestEditor.create( editorElement, {
 			plugins: [ Image, ImageUpload, CKFinderUploadAdapter ],
@@ -54,9 +54,9 @@ describe( 'CKFinderUploadAdapter', () => {
 		} );
 
 		it( 'crateAdapter method should be registered and have upload and abort methods', () => {
-			expect( adapter ).to.be.defined;
-			expect( adapter.upload ).to.be.function;
-			expect( adapter.abort ).to.be.function;
+			expect( adapter ).to.not.be.undefined;
+			expect( adapter.upload ).to.be.a( 'function' );
+			expect( adapter.abort ).to.be.a( 'function' );
 		} );
 
 		it( 'should log warning when there is no configuration', () => {
