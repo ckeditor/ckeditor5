@@ -15,12 +15,13 @@ describe( 'FileDialogButtonView', () => {
 		const editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicEditor.create( editorElement )
-		.then( newEditor => {
-			editor = newEditor;
+		return ClassicEditor
+			.create( editorElement )
+			.then( newEditor => {
+				editor = newEditor;
 
-			view = new FileDialogButtonView( editor.locale );
-		} );
+				view = new FileDialogButtonView( editor.locale );
+			} );
 	} );
 
 	it( 'should append input view to document body', () => {

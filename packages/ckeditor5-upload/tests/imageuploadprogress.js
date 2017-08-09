@@ -31,22 +31,23 @@ describe( 'ImageUploadProgress', () => {
 			return nativeReaderMock;
 		} );
 
-		return ClassicTestEditor.create( {
-			plugins: [ ImageEngine, Paragraph, ImageUploadProgress ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			document = editor.document;
-			viewDocument = editor.editing.view;
+		return ClassicTestEditor
+			.create( {
+				plugins: [ ImageEngine, Paragraph, ImageUploadProgress ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				document = editor.document;
+				viewDocument = editor.editing.view;
 
-			fileRepository = editor.plugins.get( FileRepository );
-			fileRepository.createAdapter = newLoader => {
-				loader = newLoader;
-				adapterMock = new AdapterMock( loader );
+				fileRepository = editor.plugins.get( FileRepository );
+				fileRepository.createAdapter = newLoader => {
+					loader = newLoader;
+					adapterMock = new AdapterMock( loader );
 
-				return adapterMock;
-			};
-		} );
+					return adapterMock;
+				};
+			} );
 	} );
 
 	it( 'should include ImageUploadEngine', () => {

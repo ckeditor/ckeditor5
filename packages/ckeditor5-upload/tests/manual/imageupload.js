@@ -24,28 +24,29 @@ import { AdapterMock } from '../_utils/mocks';
 
 const buttonContainer = document.getElementById( 'button-container' );
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		Enter, Typing, Paragraph, Heading, Undo, Bold, Italic, Heading, List, Image, ImageToolbar, Clipboard,
-		ImageCaption, ImageStyle, ImageUpload
-	],
-	toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'insertImage' ],
-	image: {
-		toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
-	}
-} )
-.then( editor => {
-	// Register fake adapter.
-	editor.plugins.get( 'FileRepository' ).createAdapter = loader => {
-		const adapterMock = new AdapterMock( loader );
-		createProgressButton( loader, adapterMock );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			Enter, Typing, Paragraph, Heading, Undo, Bold, Italic, Heading, List, Image, ImageToolbar, Clipboard,
+			ImageCaption, ImageStyle, ImageUpload
+		],
+		toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'insertImage' ],
+		image: {
+			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+		}
+	} )
+	.then( editor => {
+		// Register fake adapter.
+		editor.plugins.get( 'FileRepository' ).createAdapter = loader => {
+			const adapterMock = new AdapterMock( loader );
+			createProgressButton( loader, adapterMock );
 
-		return adapterMock;
-	};
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+			return adapterMock;
+		};
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 
 function createProgressButton( loader, adapterMock ) {
 	const fileName = loader.file.name;

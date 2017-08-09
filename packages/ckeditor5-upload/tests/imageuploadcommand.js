@@ -17,23 +17,24 @@ describe( 'ImageUploadCommand', () => {
 	let editor, command, doc, fileRepository;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ FileRepository, Image, Paragraph ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			command = new ImageUploadCommand( editor );
-			fileRepository = editor.plugins.get( FileRepository );
-			fileRepository.createAdapter = loader => {
-				return new AdapterMock( loader );
-			};
+		return VirtualTestEditor
+			.create( {
+				plugins: [ FileRepository, Image, Paragraph ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				command = new ImageUploadCommand( editor );
+				fileRepository = editor.plugins.get( FileRepository );
+				fileRepository.createAdapter = loader => {
+					return new AdapterMock( loader );
+				};
 
-			doc = editor.document;
+				doc = editor.document;
 
-			const schema = doc.schema;
-			schema.allow( { name: 'image', attributes: [ 'uploadId' ], inside: '$root' } );
-			schema.requireAttributes( 'image', [ 'uploadId' ] );
-		} );
+				const schema = doc.schema;
+				schema.allow( { name: 'image', attributes: [ 'uploadId' ], inside: '$root' } );
+				schema.requireAttributes( 'image', [ 'uploadId' ] );
+			} );
 	} );
 
 	afterEach( () => {

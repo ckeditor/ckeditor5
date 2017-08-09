@@ -18,12 +18,13 @@ describe( 'ImageUpload', () => {
 		const editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicEditor.create( editorElement, {
-			plugins: [ Image, ImageUpload ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-		} );
+		return ClassicEditor
+			.create( editorElement, {
+				plugins: [ Image, ImageUpload ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+			} );
 	} );
 
 	it( 'should include ImageUploadProgress', () => {
