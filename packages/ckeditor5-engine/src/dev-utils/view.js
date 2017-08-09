@@ -355,7 +355,6 @@ export function parse( data, options = {} ) {
  * @private
  */
 class RangeParser {
-
 	/**
 	 * Create RangeParser instance.
 	 *

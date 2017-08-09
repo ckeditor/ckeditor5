@@ -12,25 +12,26 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Enter, Typing, Paragraph, Bold, Italic ],
-	toolbar: [ 'bold', 'italic' ]
-} )
-.then( editor => {
-	window.editor = editor;
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Enter, Typing, Paragraph, Bold, Italic ],
+		toolbar: [ 'bold', 'italic' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
 
-	setInterval( () => {
-		console.clear();
+		setInterval( () => {
+			console.clear();
 
-		const domSelection = document.getSelection();
-		const selectionExists = domSelection && domSelection.anchorNode;
+			const domSelection = document.getSelection();
+			const selectionExists = domSelection && domSelection.anchorNode;
 
-		console.log( editor.editing.view.getDomRoot().innerHTML.replace( /\u200b/g, '@' ) );
-		console.log( 'selection.hasAttribute( italic ):', editor.document.selection.hasAttribute( 'italic' ) );
-		console.log( 'selection.hasAttribute( bold ):', editor.document.selection.hasAttribute( 'bold' ) );
-		console.log( 'selection anchor\'s parentNode:', selectionExists ? domSelection.anchorNode.parentNode : 'no DOM selection' );
-	}, 2000 );
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+			console.log( editor.editing.view.getDomRoot().innerHTML.replace( /\u200b/g, '@' ) );
+			console.log( 'selection.hasAttribute( italic ):', editor.document.selection.hasAttribute( 'italic' ) );
+			console.log( 'selection.hasAttribute( bold ):', editor.document.selection.hasAttribute( 'bold' ) );
+			console.log( 'selection anchor\'s parentNode:', selectionExists ? domSelection.anchorNode.parentNode : 'no DOM selection' );
+		}, 2000 );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

@@ -162,14 +162,34 @@ describe( 'Range', () => {
 				.to.equal( '<p><b>f</b>{oo}<b><span></span>bar</b></p>' );
 		} );
 
-		it( 'case6', () => {
+		it( 'case 6', () => {
 			expect( trim( '<p>foo[</p><p>bar</p><p>]bom</p>' ) )
 				.to.equal( '<p>foo[</p><p>bar</p><p>]bom</p>' );
 		} );
 
-		it( 'case7', () => {
+		it( 'case 7', () => {
 			expect( trim( '<p>foo[<b><img></img></b>]bom</p>' ) )
 				.to.equal( '<p>foo<b>[<img></img>]</b>bom</p>' );
+		} );
+
+		// Other results may theoretically be correct too. It is not decided whether the trimmed range should
+		// be collapsed in attribute element, at its start or its end. This is one of possible correct results
+		// and we won't know for sure unless we have more cases. See #1058.
+		it( 'case 8', () => {
+			expect( trim( '<p>[<b></b>]</p>' ) )
+				.to.equal( '<p><b></b>[]</p>' );
+		} );
+
+		// As above.
+		it( 'case 9', () => {
+			expect( trim( '<p><b></b>[<b></b>]<b></b></p>' ) )
+				.to.equal( '<p><b></b><b></b>[]<b></b></p>' );
+		} );
+
+		// As above.
+		it( 'case 10', () => {
+			expect( trim( '<p>[<b></b><b></b>]</p>' ) )
+				.to.equal( '<p><b></b><b></b>[]</p>' );
 		} );
 
 		function trim( data ) {

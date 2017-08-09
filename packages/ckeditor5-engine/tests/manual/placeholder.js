@@ -14,19 +14,20 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { attachPlaceholder } from '../../src/view/placeholder';
 
-ClassicEditor.create( global.document.querySelector( '#editor' ), {
-	plugins: [ Enter, Typing, Paragraph, Undo, Heading ],
-	toolbar: [ 'headings', 'undo', 'redo' ]
-} )
-.then( editor => {
-	const viewDoc = editor.editing.view;
-	const header = viewDoc.getRoot().getChild( 0 );
-	const paragraph = viewDoc.getRoot().getChild( 1 );
+ClassicEditor
+	.create( global.document.querySelector( '#editor' ), {
+		plugins: [ Enter, Typing, Paragraph, Undo, Heading ],
+		toolbar: [ 'headings', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		const viewDoc = editor.editing.view;
+		const header = viewDoc.getRoot().getChild( 0 );
+		const paragraph = viewDoc.getRoot().getChild( 1 );
 
-	attachPlaceholder( header, 'Type some header text...' );
-	attachPlaceholder( paragraph, 'Type some paragraph text...' );
-	viewDoc.render();
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+		attachPlaceholder( header, 'Type some header text...' );
+		attachPlaceholder( paragraph, 'Type some paragraph text...' );
+		viewDoc.render();
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
