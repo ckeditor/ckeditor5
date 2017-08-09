@@ -98,8 +98,8 @@ export default class Range {
 	 * @returns {module:engine/view/range~Range} Enlarged range.
 	 */
 	getEnlarged() {
-		let start = this.start.getLastMatchingPosition( enlargeShrinkSkip, { direction: 'backward' } );
-		let end = this.end.getLastMatchingPosition( enlargeShrinkSkip );
+		let start = this.start.getLastMatchingPosition( enlargeTrimSkip, { direction: 'backward' } );
+		let end = this.end.getLastMatchingPosition( enlargeTrimSkip );
 
 		// Fix positions, in case if they are in Text node.
 		if ( start.parent.is( 'text' ) && start.isAtStart ) {
@@ -130,8 +130,8 @@ export default class Range {
 	 * @returns {module:engine/view/range~Range} Shrink range.
 	 */
 	getTrimmed() {
-		let start = this.start.getLastMatchingPosition( enlargeShrinkSkip );
-		let end = this.end.getLastMatchingPosition( enlargeShrinkSkip, { direction: 'backward' } );
+		let start = this.start.getLastMatchingPosition( enlargeTrimSkip, { boundaries: new Range( this.start, this.end ) } );
+		let end = this.end.getLastMatchingPosition( enlargeTrimSkip, { boundaries: new Range( start, this.end ), direction: 'backward' } );
 		const nodeAfterStart = start.nodeAfter;
 		const nodeBeforeEnd = end.nodeBefore;
 
@@ -438,7 +438,7 @@ export default class Range {
 }
 
 // Function used by getEnlagred and getShrinked methods.
-function enlargeShrinkSkip( value ) {
+function enlargeTrimSkip( value ) {
 	if ( value.item.is( 'attributeElement' ) || value.item.is( 'uiElement' ) ) {
 		return true;
 	}
