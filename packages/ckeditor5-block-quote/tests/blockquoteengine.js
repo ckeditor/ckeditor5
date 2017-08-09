@@ -16,14 +16,15 @@ describe( 'BlockQuoteEngine', () => {
 	let editor, doc;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ BlockQuoteEngine, Paragraph ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
+		return VirtualTestEditor
+			.create( {
+				plugins: [ BlockQuoteEngine, Paragraph ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
 
-			doc = editor.document;
-		} );
+				doc = editor.document;
+			} );
 	} );
 
 	afterEach( () => {
@@ -59,13 +60,14 @@ describe( 'BlockQuoteEngine', () => {
 	} );
 
 	it( 'allows list items inside blockQuote', () => {
-		return VirtualTestEditor.create( {
-			plugins: [ BlockQuoteEngine, Paragraph, ListEngine ]
-		} )
-		.then( editor => {
-			editor.setData( '<blockquote><ul><li>xx</li></ul></blockquote>' );
+		return VirtualTestEditor
+			.create( {
+				plugins: [ BlockQuoteEngine, Paragraph, ListEngine ]
+			} )
+			.then( editor => {
+				editor.setData( '<blockquote><ul><li>xx</li></ul></blockquote>' );
 
-			expect( editor.getData() ).to.equal( '<blockquote><ul><li>xx</li></ul></blockquote>' );
-		} );
+				expect( editor.getData() ).to.equal( '<blockquote><ul><li>xx</li></ul></blockquote>' );
+			} );
 	} );
 } );

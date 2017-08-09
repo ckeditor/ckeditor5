@@ -23,13 +23,14 @@ describe( 'BlockQuote', () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		return ClassicTestEditor.create( element, {
-			plugins: [ BlockQuote, Paragraph, Image, ImageCaption, List, Enter, Delete ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			doc = editor.document;
-		} );
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ BlockQuote, Paragraph, Image, ImageCaption, List, Enter, Delete ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				doc = editor.document;
+			} );
 	} );
 
 	afterEach( () => {
@@ -298,9 +299,10 @@ describe( 'BlockQuote', () => {
 			document.body.appendChild( element );
 
 			// We can't load ImageCaption in this test because it adds <caption> to all images automatically.
-			return ClassicTestEditor.create( element, {
-				plugins: [ BlockQuote, Paragraph, Image ]
-			} )
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ BlockQuote, Paragraph, Image ]
+				} )
 				.then( editor => {
 					setModelData( editor.document,
 						'<paragraph>fo[o</paragraph>' +

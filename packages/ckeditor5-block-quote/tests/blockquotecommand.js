@@ -18,37 +18,38 @@ describe( 'BlockQuoteCommand', () => {
 	let editor, doc, command;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ BlockQuoteEngine ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
+		return VirtualTestEditor
+			.create( {
+				plugins: [ BlockQuoteEngine ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
 
-			doc = editor.document;
+				doc = editor.document;
 
-			doc.schema.registerItem( 'paragraph', '$block' );
-			doc.schema.registerItem( 'heading', '$block' );
-			doc.schema.registerItem( 'widget' );
+				doc.schema.registerItem( 'paragraph', '$block' );
+				doc.schema.registerItem( 'heading', '$block' );
+				doc.schema.registerItem( 'widget' );
 
-			doc.schema.allow( { name: 'widget', inside: '$root' } );
-			doc.schema.allow( { name: '$text', inside: 'widget' } );
+				doc.schema.allow( { name: 'widget', inside: '$root' } );
+				doc.schema.allow( { name: '$text', inside: 'widget' } );
 
-			doc.schema.limits.add( 'widget' );
+				doc.schema.limits.add( 'widget' );
 
-			buildModelConverter().for( editor.editing.modelToView )
-				.fromElement( 'paragraph' )
-				.toElement( 'p' );
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'paragraph' )
+					.toElement( 'p' );
 
-			buildModelConverter().for( editor.editing.modelToView )
-				.fromElement( 'heading' )
-				.toElement( 'h' );
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'heading' )
+					.toElement( 'h' );
 
-			buildModelConverter().for( editor.editing.modelToView )
-				.fromElement( 'widget' )
-				.toElement( 'widget' );
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'widget' )
+					.toElement( 'widget' );
 
-			command = editor.commands.get( 'blockQuote' );
-		} );
+				command = editor.commands.get( 'blockQuote' );
+			} );
 	} );
 
 	afterEach( () => {

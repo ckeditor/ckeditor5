@@ -17,13 +17,14 @@ describe( 'BlockQuote', () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		return ClassicTestEditor.create( element, {
-			plugins: [ BlockQuote ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			command = editor.commands.get( 'blockQuote' );
-		} );
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ BlockQuote ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				command = editor.commands.get( 'blockQuote' );
+			} );
 	} );
 
 	afterEach( () => {
