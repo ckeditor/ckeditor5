@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
- /**
-  * @module engine/view/item
-  */
+/**
+ * @module engine/view/item
+ */
 
 /**
  * Item is a {@link module:engine/view/node~Node Node} or {module:engine/view/textproxy~TextProxy TextProxy}.
