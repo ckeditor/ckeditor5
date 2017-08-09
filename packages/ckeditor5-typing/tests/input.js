@@ -39,7 +39,10 @@ describe( 'Input feature', () => {
 	before( () => {
 		listenter = Object.create( EmitterMixin );
 
-		return VirtualTestEditor.create( { plugins: [ Input, Paragraph ] } )
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Input, Paragraph ]
+			} )
 			.then( newEditor => {
 				// Mock image feature.
 				newEditor.document.schema.registerItem( 'image', '$inline' );
