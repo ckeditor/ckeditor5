@@ -6,7 +6,7 @@
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#e74bed9",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#284c43a",
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#399fb50",
-    "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#9ea8b13",
+    "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#cdb55c4",
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#f35bd98",
     "@ckeditor/ckeditor5-editor-balloon-toolbar": "ckeditor/ckeditor5-editor-balloon-toolbar#557c66d",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#24380cd",
