@@ -311,7 +311,7 @@ const safeKeycodes = [
 	getCode( 'arrowRight' ),
 	getCode( 'arrowDown' ),
 	getCode( 'arrowLeft' ),
-	9,  // Tab
+	9, // Tab
 	16, // Shift
 	17, // Ctrl
 	18, // Alt
