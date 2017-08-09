@@ -49,7 +49,7 @@ export default class Range {
 	 *
 	 * @returns {Iterable.<module:engine/view/treewalker~TreeWalkerValue>}
 	 */
-	*[ Symbol.iterator ]() {
+	* [ Symbol.iterator ]() {
 		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
 	}
 
@@ -130,8 +130,13 @@ export default class Range {
 	 * @returns {module:engine/view/range~Range} Shrink range.
 	 */
 	getTrimmed() {
-		let start = this.start.getLastMatchingPosition( enlargeTrimSkip, { boundaries: new Range( this.start, this.end ) } );
-		let end = this.end.getLastMatchingPosition( enlargeTrimSkip, { boundaries: new Range( start, this.end ), direction: 'backward' } );
+		let start = this.start.getLastMatchingPosition( enlargeTrimSkip );
+
+		if ( start.isAfter( this.end ) || start.isEqual( this.end ) ) {
+			return new Range( start, start );
+		}
+
+		let end = this.end.getLastMatchingPosition( enlargeTrimSkip, { direction: 'backward' } );
 		const nodeAfterStart = start.nodeAfter;
 		const nodeBeforeEnd = end.nodeBefore;
 
@@ -328,7 +333,7 @@ export default class Range {
 	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
 	 * @returns {Iterable.<module:engine/view/item~Item>}
 	 */
-	*getItems( options = {} ) {
+	* getItems( options = {} ) {
 		options.boundaries = this;
 		options.ignoreElementEnd = true;
 
@@ -352,7 +357,7 @@ export default class Range {
 	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
 	 * @returns {Iterable.<module:engine/view/position~Position>}
 	 */
-	*getPositions( options = {} ) {
+	* getPositions( options = {} ) {
 		options.boundaries = this;
 
 		const treeWalker = new TreeWalker( options );
@@ -437,7 +442,7 @@ export default class Range {
 	}
 }
 
-// Function used by getEnlagred and getShrinked methods.
+// Function used by getEnlagred and getTrimmed methods.
 function enlargeTrimSkip( value ) {
 	if ( value.item.is( 'attributeElement' ) || value.item.is( 'uiElement' ) ) {
 		return true;
