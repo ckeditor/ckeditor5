@@ -16,14 +16,15 @@ describe( 'ItalicEngine', () => {
 	let editor, doc;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ Paragraph, ItalicEngine ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Paragraph, ItalicEngine ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
 
-			doc = editor.document;
-		} );
+				doc = editor.document;
+			} );
 	} );
 
 	afterEach( () => {

@@ -16,14 +16,15 @@ describe( 'BoldEngine', () => {
 	let editor, doc;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ Paragraph, BoldEngine ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Paragraph, BoldEngine ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
 
-			doc = editor.document;
-		} );
+				doc = editor.document;
+			} );
 	} );
 
 	afterEach( () => {

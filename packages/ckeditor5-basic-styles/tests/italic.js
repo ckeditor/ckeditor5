@@ -21,14 +21,15 @@ describe( 'Italic', () => {
 		const editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Italic ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Italic ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
 
-			italicView = editor.ui.componentFactory.create( 'italic' );
-		} );
+				italicView = editor.ui.componentFactory.create( 'italic' );
+			} );
 	} );
 
 	afterEach( () => {
