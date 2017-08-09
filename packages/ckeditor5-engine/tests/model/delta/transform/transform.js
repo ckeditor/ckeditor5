@@ -115,7 +115,7 @@ describe( 'transform', () => {
 				operations: [
 					{
 						type: RemoveOperation,
-						sourcePosition: new Position( root, [ 1, 0 ] ),
+						sourcePosition: new Position( root, [ 0, 2 ] ),
 						howMany: 1,
 						baseVersion: 3
 					}
@@ -127,7 +127,7 @@ describe( 'transform', () => {
 				operations: [
 					{
 						type: RemoveOperation,
-						sourcePosition: new Position( root, [ 0, 2 ] ),
+						sourcePosition: new Position( root, [ 1, 0 ] ),
 						howMany: 1,
 						baseVersion: 4
 					}
@@ -163,7 +163,7 @@ describe( 'transform', () => {
 				operations: [
 					{
 						type: RemoveOperation,
-						sourcePosition: new Position( root, [ 1, 0 ] ),
+						sourcePosition: new Position( root, [ 0, 2 ] ),
 						howMany: 1,
 						baseVersion: 3
 					}
@@ -175,7 +175,7 @@ describe( 'transform', () => {
 				operations: [
 					{
 						type: RemoveOperation,
-						sourcePosition: new Position( root, [ 0, 2 ] ),
+						sourcePosition: new Position( root, [ 1, 0 ] ),
 						howMany: 1,
 						baseVersion: 4
 					}

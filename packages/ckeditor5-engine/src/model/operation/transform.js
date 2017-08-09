@@ -429,7 +429,7 @@ const ot = {
 				rangeA.start = rangeA.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !includeB );
 				rangeA.end = rangeA.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, includeB );
 
-				return makeMoveOperationsFromRanges( a, [ rangeA ], newTargetPosition );
+				return makeMoveOperationsFromRanges( [ rangeA ], newTargetPosition, a );
 			}
 
 			//
@@ -445,7 +445,7 @@ const ot = {
 				rangeA.start = rangeA.start._getCombined( b.sourcePosition, b.getMovedRangeStart() );
 				rangeA.end = rangeA.end._getCombined( b.sourcePosition, b.getMovedRangeStart() );
 
-				return makeMoveOperationsFromRanges( a, [ rangeA ], newTargetPosition );
+				return makeMoveOperationsFromRanges( [ rangeA ], newTargetPosition, a );
 			}
 			//
 			// End of special case #2.
@@ -467,7 +467,7 @@ const ot = {
 				rangeA.start = rangeA.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !includeB );
 				rangeA.end = rangeA.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, includeB );
 
-				return makeMoveOperationsFromRanges( a, [ rangeA ], newTargetPosition );
+				return makeMoveOperationsFromRanges( [ rangeA ], newTargetPosition, a );
 			}
 			//
 			// End of special case #3.
@@ -492,7 +492,7 @@ const ot = {
 
 			// Handle operation's source ranges - check how `rangeA` is affected by `b` operation.
 			// This will aggregate transformed ranges.
-			let ranges = [];
+			const ranges = [];
 
 			// Get the "difference part" of `a` operation source range.
 			// This is an array with one or two ranges. Two ranges if `rangeB` is inside `rangeA`.
@@ -500,10 +500,14 @@ const ot = {
 
 			for ( const range of difference ) {
 				// Transform those ranges by `b` operation. For example if `b` moved range from before those ranges, fix those ranges.
-				range.start = range.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !includeB );
-				range.end = range.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, includeB );
+				range.start = range.start._getTransformedByDeletion( b.sourcePosition, b.howMany );
+				range.end = range.end._getTransformedByDeletion( b.sourcePosition, b.howMany );
 
-				ranges.push( range );
+				// If `b` operation targets into `rangeA` on the same level, spread `rangeA` into two ranges.
+				const shouldSpread = compareArrays( range.start.getParentPath(), b.getMovedRangeStart().getParentPath() ) == 'same';
+				const newRanges = range._getTransformedByInsertion( b.getMovedRangeStart(), b.howMany, shouldSpread, includeB );
+
+				ranges.push( ...newRanges );
 			}
 
 			// Then, we have to manage the "common part" of both move ranges.
@@ -525,7 +529,7 @@ const ot = {
 				}
 				// If there is one difference range, we need to check whether common part was before it or after it.
 				else if ( ranges.length == 1 ) {
-					if ( rangeB.start.isBefore( rangeA.start ) ) {
+					if ( rangeB.start.isBefore( rangeA.start ) || rangeB.start.isEqual( rangeA.start ) ) {
 						ranges.unshift( common );
 					} else {
 						ranges.push( common );
@@ -544,30 +548,7 @@ const ot = {
 				return [ new NoOperation( a.baseVersion ) ];
 			}
 
-			// At this moment we have some ranges and a target position, to which those ranges should be moved.
-			// Order in `ranges` array is the go-to order of after transformation. We can reverse the `ranges`
-			// array so the last range will be moved first. This will ensure that each transformed `MoveOperation`
-			// can have same `targetPosition` and the order of ranges will be kept.
-			ranges = ranges.reverse();
-
-			// We are almost done. We have `ranges` and `targetPosition` to make operations from.
-			// Unfortunately, those operations may affect each other. Precisely, first operation after move
-			// may affect source range of second and third operation. Same with second operation affecting third.
-			// We need to fix those source ranges once again, before converting `ranges` to operations.
-			// Keep in mind that `targetPosition` is already set in stone thanks to the trick above.
-			for ( let i = 1; i < ranges.length; i++ ) {
-				for ( let j = 0; j < i; j++ ) {
-					const howMany = ranges[ j ].end.offset - ranges[ j ].start.offset;
-
-					// Thankfully, all ranges in `ranges` array are:
-					// * non-intersecting (these are part of original `a` operation source range), and
-					// * `newTargetPosition` does not target into them (opposite would mean that `a` operation targets "inside itself").
-					// This means that the transformation will be "clean" and always return one result.
-					ranges[ i ] = ranges[ i ]._getTransformedByMove( ranges[ j ].start, newTargetPosition, howMany )[ 0 ];
-				}
-			}
-
-			return makeMoveOperationsFromRanges( a, ranges, newTargetPosition );
+			return makeMoveOperationsFromRanges( ranges, newTargetPosition, a );
 		}
 	}
 };
@@ -650,29 +631,66 @@ function joinRanges( ranges ) {
 	}
 }
 
-// Map transformed range(s) to operations and return them.
-function makeMoveOperationsFromRanges( a, ranges, targetPosition ) {
-	return ranges.map( range => {
-		// We want to keep correct operation class.
-		let OperationClass;
+// Helper function for `MoveOperation` x `MoveOperation` transformation.
+// Convert given ranges and target position to move operations and return them.
+// Ranges and target position will be transformed on-the-fly when generating operations.
+// Given `ranges` should be in the order of how they were in the original transformed operation.
+// Given `targetPosition` is the target position of the first range from `ranges`.
+function makeMoveOperationsFromRanges( ranges, targetPosition, a ) {
+	// At this moment we have some ranges and a target position, to which those ranges should be moved.
+	// Order in `ranges` array is the go-to order of after transformation.
+	//
+	// We are almost done. We have `ranges` and `targetPosition` to make operations from.
+	// Unfortunately, those operations may affect each other. Precisely, first operation after move
+	// may affect source range and target position of second and third operation. Same with second
+	// operation affecting third.
+	//
+	// We need to fix those source ranges and target positions once again, before converting `ranges` to operations.
+	const operations = [];
 
-		if ( targetPosition.root.rootName == '$graveyard' ) {
-			OperationClass = RemoveOperation;
-		} else if ( range.start.root.rootName == '$graveyard' ) {
-			OperationClass = ReinsertOperation;
-		} else {
-			OperationClass = MoveOperation;
+	// Keep in mind that nothing will be transformed if there is just one range in `ranges`.
+	for ( let i = 0; i < ranges.length; i++ ) {
+		// Create new operation out of a range and target position.
+		const op = makeMoveOperation( ranges[ i ], targetPosition, a.isSticky );
+
+		operations.push( op );
+
+		// Transform other ranges by the generated operation.
+		for ( let j = i + 1; j < ranges.length; j++ ) {
+			// All ranges in `ranges` array should be:
+			// * non-intersecting (these are part of original operation source range), and
+			// * `targetPosition` does not target into them (opposite would mean that transformed operation targets "inside itself").
+			//
+			// This means that the transformation will be "clean" and always return one result.
+			ranges[ j ] = ranges[ j ]._getTransformedByMove( op.sourcePosition, op.targetPosition, op.howMany )[ 0 ];
 		}
 
-		const result = new OperationClass(
-			range.start,
-			range.end.offset - range.start.offset,
-			targetPosition,
-			0 // Is corrected anyway later.
-		);
+		targetPosition = targetPosition._getTransformedByMove( op.sourcePosition, op.targetPosition, op.howMany, true, false );
+	}
 
-		result.isSticky = a.isSticky;
+	return operations;
+}
 
-		return result;
-	} );
+function makeMoveOperation( range, targetPosition, isSticky ) {
+	// We want to keep correct operation class.
+	let OperationClass;
+
+	if ( targetPosition.root.rootName == '$graveyard' ) {
+		OperationClass = RemoveOperation;
+	} else if ( range.start.root.rootName == '$graveyard' ) {
+		OperationClass = ReinsertOperation;
+	} else {
+		OperationClass = MoveOperation;
+	}
+
+	const result = new OperationClass(
+		range.start,
+		range.end.offset - range.start.offset,
+		targetPosition,
+		0 // Is corrected anyway later.
+	);
+
+	result.isSticky = isSticky;
+
+	return result;
 }
