@@ -604,16 +604,6 @@ export default class Renderer {
 
 		// Let's check whether DOM selection needs updating at all.
 		if ( !this._domSelectionNeedsUpdate( domSelection ) ) {
-			const data = {
-				oldSelection: this.domConverter.domSelectionToView( domSelection ),
-				currentSelection: this.selection
-			};
-
-			log.warn(
-				'renderer-skipped-selection-rendering: The selection was not rendered due to its similarity to the current one.',
-				data
-			);
-
 			return;
 		}
 
@@ -642,15 +632,24 @@ export default class Renderer {
 			return true;
 		}
 
-		const viewSelectionFromDom = this.domConverter.domSelectionToView( domSelection );
+		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
 
-		// If selection is collapsed, it does not need to be updated only if selection from view is equal.
-		if ( this.selection.isCollapsed && this.selection.isEqual( viewSelectionFromDom ) ) {
+		if ( oldViewSelection && this.selection.isEqual( oldViewSelection ) ) {
 			return false;
 		}
 
 		// If selection is not collapsed, it does not need to be updated if it is similar.
-		if ( !this.selection.isCollapsed && this.selection.isSimilar( viewSelectionFromDom ) ) {
+		if ( !this.selection.isCollapsed && this.selection.isSimilar( oldViewSelection ) ) {
+			const data = {
+				oldSelection: oldViewSelection,
+				currentSelection: this.selection
+			};
+
+			log.warn(
+				'renderer-skipped-selection-rendering: The selection was not rendered due to its similarity to the current one.',
+				data
+			);
+
 			// Selection did not changed and is correct, do not update.
 			return false;
 		}
