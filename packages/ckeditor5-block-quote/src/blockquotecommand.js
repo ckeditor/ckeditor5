@@ -47,8 +47,7 @@ export default class BlockQuoteCommand extends Command {
 	 * A new batch will be created if this option is not set.
 	 */
 	execute( options = {} ) {
-		const editor = this.editor;
-		const doc = editor.document;
+		const doc = this.editor.document;
 		const schema = doc.schema;
 		const batch = options.batch || doc.batch();
 		const blocks = Array.from( doc.selection.getSelectedBlocks() );
@@ -65,8 +64,6 @@ export default class BlockQuoteCommand extends Command {
 
 				this._applyQuote( batch, blocksToQuote );
 			}
-
-			editor.editing.view.scrollToTheSelection();
 		} );
 	}
 
