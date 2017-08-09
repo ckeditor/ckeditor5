@@ -326,14 +326,14 @@ describe( 'Document', () => {
 
 	describe( 'scrollToTheSelection()', () => {
 		it( 'does nothing when there are no ranges in the selection', () => {
-			const stub = testUtils.sinon.stub( scrollUtils, 'scrollViewportToShowTarget', () => {} );
+			const stub = testUtils.sinon.stub( scrollUtils, 'scrollViewportToShowTarget' ).callsFake( () => {} );
 
 			viewDocument.scrollToTheSelection();
 			sinon.assert.notCalled( stub );
 		} );
 
 		it( 'scrolls to the first range in selection with an offset', () => {
-			const stub = testUtils.sinon.stub( scrollUtils, 'scrollViewportToShowTarget', () => {} );
+			const stub = testUtils.sinon.stub( scrollUtils, 'scrollViewportToShowTarget' ).callsFake( () => {} );
 			const root = viewDocument.createRoot( document.createElement( 'div' ) );
 			const range = ViewRange.createIn( root );
 
