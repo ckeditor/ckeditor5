@@ -23,13 +23,14 @@ describe( 'Heading integration', () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		return ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, Heading, Enter, Image, ImageCaption, Undo ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			doc = editor.document;
-		} );
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ Paragraph, Heading, Enter, Image, ImageCaption, Undo ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				doc = editor.document;
+			} );
 	} );
 
 	afterEach( () => {

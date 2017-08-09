@@ -30,17 +30,18 @@ describe( 'Heading', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Heading ],
-			toolbar: [ 'heading' ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			dropdown = editor.ui.componentFactory.create( 'headings' );
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Heading ],
+				toolbar: [ 'heading' ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				dropdown = editor.ui.componentFactory.create( 'headings' );
 
-			// Set data so the commands will be enabled.
-			setData( editor.document, '<paragraph>f{}oo</paragraph>' );
-		} );
+				// Set data so the commands will be enabled.
+				setData( editor.document, '<paragraph>f{}oo</paragraph>' );
+			} );
 	} );
 
 	afterEach( () => {
@@ -204,27 +205,28 @@ describe( 'Heading', () => {
 				const editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
 
-				return ClassicTestEditor.create( editorElement, {
-					plugins: [ Heading ],
-					toolbar: [ 'heading' ],
-					lang: 'pl',
-					heading: {
-						options
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					dropdown = editor.ui.componentFactory.create( 'headings' );
-					commands = {};
+				return ClassicTestEditor
+					.create( editorElement, {
+						plugins: [ Heading ],
+						toolbar: [ 'heading' ],
+						lang: 'pl',
+						heading: {
+							options
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						dropdown = editor.ui.componentFactory.create( 'headings' );
+						commands = {};
 
-					editor.config.get( 'heading.options' ).forEach( ( { modelElement } ) => {
-						commands[ modelElement ] = editor.commands.get( modelElement );
+						editor.config.get( 'heading.options' ).forEach( ( { modelElement } ) => {
+							commands[ modelElement ] = editor.commands.get( modelElement );
+						} );
+
+						editorElement.remove();
+
+						return editor.destroy();
 					} );
-
-					editorElement.remove();
-
-					return editor.destroy();
-				} );
 			}
 		} );
 
