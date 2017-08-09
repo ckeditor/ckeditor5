@@ -36,14 +36,14 @@
     "@ckeditor/ckeditor5-widget": "^0.1.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-docs": "^7.2.0",
-    "@ckeditor/ckeditor5-dev-lint": "^3.1.0",
-    "@ckeditor/ckeditor5-dev-tests": "^7.3.0",
+    "@ckeditor/ckeditor5-dev-docs": "^7.2.3",
+    "@ckeditor/ckeditor5-dev-lint": "^3.1.1",
+    "@ckeditor/ckeditor5-dev-tests": "^8.0.0",
     "eslint-config-ckeditor5": "^1.0.5",
     "gulp": "^3.9.1",
     "guppy-pre-commit": "^0.4.0",
-    "lerna": "^2.0.0-rc.1",
-    "mgit2": "^0.5.1"
+    "lerna": "^2.0.0",
+    "mgit2": "^0.6.0"
   },
   "engines": {
     "node": ">=6.0.0",
