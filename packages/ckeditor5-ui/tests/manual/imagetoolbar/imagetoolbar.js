@@ -19,18 +19,19 @@ import Template from '../../../src/template';
 import ToolbarView from '../../../src/toolbar/toolbarview';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Image ],
-	toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
-} )
-.then( editor => {
-	createImageToolbar( editor );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Image ],
+		toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		createImageToolbar( editor );
 
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 
 function createImageToolbar( editor ) {
 	// Create a plain toolbar instance.

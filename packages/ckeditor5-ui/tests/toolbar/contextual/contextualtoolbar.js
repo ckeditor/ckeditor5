@@ -25,26 +25,27 @@ describe( 'ContextualToolbar', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, Bold, Italic, ContextualToolbar ],
-			contextualToolbar: [ 'bold', 'italic' ]
-		} )
-		.then( newEditor => {
-			newEditor.editing.view.attachDomRoot( editorElement );
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Paragraph, Bold, Italic, ContextualToolbar ],
+				contextualToolbar: [ 'bold', 'italic' ]
+			} )
+			.then( newEditor => {
+				newEditor.editing.view.attachDomRoot( editorElement );
 
-			editor = newEditor;
-			contextualToolbar = editor.plugins.get( ContextualToolbar );
-			balloon = editor.plugins.get( ContextualBalloon );
+				editor = newEditor;
+				contextualToolbar = editor.plugins.get( ContextualToolbar );
+				balloon = editor.plugins.get( ContextualBalloon );
 
-			// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
-			sandbox.stub( balloon.view, 'attachTo' ).returns( {} );
-			sandbox.stub( balloon.view, 'pin' ).returns( {} );
+				// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
+				sandbox.stub( balloon.view, 'attachTo' ).returns( {} );
+				sandbox.stub( balloon.view, 'pin' ).returns( {} );
 
-			// Focus the engine.
-			editor.editing.view.isFocused = true;
+				// Focus the engine.
+				editor.editing.view.isFocused = true;
 
-			contextualToolbar.toolbarView.init();
-		} );
+				contextualToolbar.toolbarView.init();
+			} );
 	} );
 
 	afterEach( () => {

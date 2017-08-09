@@ -41,8 +41,8 @@ const utils = {
 
 					regionCollection.setParent(
 						typeof callbackOrSelector == 'string' ?
-								document.querySelector( callbackOrSelector )							:
-								callbackOrSelector( this.element )
+							document.querySelector( callbackOrSelector ) :
+							callbackOrSelector( this.element )
 					);
 				}
 			}
