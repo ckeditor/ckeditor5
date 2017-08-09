@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module ui/dropdown/list/listdropdownmodel
+ */
+
+/**
  * The list dropdown model interface.
  *
  * @implements module:ui/dropdown/dropdownmodel~DropdownModel
