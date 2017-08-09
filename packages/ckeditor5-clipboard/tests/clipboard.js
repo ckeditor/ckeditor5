@@ -26,18 +26,19 @@ describe( 'Clipboard feature', () => {
 	let editor, editingView, clipboardPlugin, scrollSpy;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ Clipboard, Paragraph ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			editingView = editor.editing.view;
-			clipboardPlugin = editor.plugins.get( 'Clipboard' );
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Clipboard, Paragraph ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				editingView = editor.editing.view;
+				clipboardPlugin = editor.plugins.get( 'Clipboard' );
 
-			// VirtualTestEditor has no DOM, so this method must be stubbed for all tests.
-			// Otherwise it will throw as it accesses the DOM to do its job.
-			scrollSpy = sinon.stub( editingView, 'scrollToTheSelection', () => {} );
-		} );
+				// VirtualTestEditor has no DOM, so this method must be stubbed for all tests.
+				// Otherwise it will throw as it accesses the DOM to do its job.
+				scrollSpy = sinon.stub( editingView, 'scrollToTheSelection', () => {} );
+			} );
 	} );
 
 	describe( 'constructor()', () => {
