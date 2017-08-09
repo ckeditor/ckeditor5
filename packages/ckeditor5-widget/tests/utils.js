@@ -29,7 +29,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should define getFillerOffset method', () => {
-			expect( element.getFillerOffset ).to.be.function;
+			expect( element.getFillerOffset ).to.be.a( 'function' );
 			expect( element.getFillerOffset() ).to.be.null;
 		} );
 
