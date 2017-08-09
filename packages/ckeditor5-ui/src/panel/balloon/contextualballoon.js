@@ -159,14 +159,14 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Updates the position of the balloon panel according to the given position data
-	 * or position data of the first view in the stack.
+	 * Updates the position of the balloon using position data of the first visible view in the stack.
+	 * When new position data is given then position data of currently visible panel will be updated.
 	 *
 	 * @param {module:utils/dom/position~Options} [position] position options.
 	 */
 	updatePosition( position ) {
 		if ( position ) {
-			this._stack.values().next().value.position = position;
+			this._stack.get( this.visibleView ).position = position;
 		}
 
 		this.view.attachTo( this._getBalloonPosition() );
