@@ -27,19 +27,20 @@ describe( 'InlineEditorUI', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			toolbar: [ 'foo', 'bar' ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
+		return ClassicTestEditor
+			.create( editorElement, {
+				toolbar: [ 'foo', 'bar' ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
 
-			view = new InlineEditorUIView( editor.locale );
-			ui = new InlineEditorUI( editor, view );
-			editable = editor.editing.view.getRoot();
+				view = new InlineEditorUIView( editor.locale );
+				ui = new InlineEditorUI( editor, view );
+				editable = editor.editing.view.getRoot();
 
-			ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
-			ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
-		} );
+				ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
+				ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
+			} );
 	} );
 
 	afterEach( () => {
@@ -81,25 +82,26 @@ describe( 'InlineEditorUI', () => {
 				editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
 
-				return ClassicTestEditor.create( editorElement, {
-					toolbar: {
-						items: [ 'foo', 'bar' ],
-						viewportTopOffset: 100
-					}
-				} )
-				.then( editor => {
-					view = new InlineEditorUIView( editor.locale );
-					ui = new InlineEditorUI( editor, view );
-					editable = editor.editing.view.getRoot();
+				return ClassicTestEditor
+					.create( editorElement, {
+						toolbar: {
+							items: [ 'foo', 'bar' ],
+							viewportTopOffset: 100
+						}
+					} )
+					.then( editor => {
+						view = new InlineEditorUIView( editor.locale );
+						ui = new InlineEditorUI( editor, view );
+						editable = editor.editing.view.getRoot();
 
-					ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
-					ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
+						ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
+						ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
 
-					expect( view.viewportTopOffset ).to.equal( 100 );
+						expect( view.viewportTopOffset ).to.equal( 100 );
 
-					editorElement.remove();
-					return editor.destroy();
-				} );
+						editorElement.remove();
+						return editor.destroy();
+					} );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
@@ -182,27 +184,28 @@ describe( 'InlineEditorUI', () => {
 				editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
 
-				return ClassicTestEditor.create( editorElement, {
-					toolbar: {
-						items: [ 'foo', 'bar' ],
-						viewportTopOffset: 100
-					}
-				} )
-				.then( editor => {
-					view = new InlineEditorUIView( editor.locale );
-					ui = new InlineEditorUI( editor, view );
+				return ClassicTestEditor
+					.create( editorElement, {
+						toolbar: {
+							items: [ 'foo', 'bar' ],
+							viewportTopOffset: 100
+						}
+					} )
+					.then( editor => {
+						view = new InlineEditorUIView( editor.locale );
+						ui = new InlineEditorUI( editor, view );
 
-					ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
-					ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
+						ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
+						ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
 
-					const spy = testUtils.sinon.spy( view.toolbar, 'fillFromConfig' );
+						const spy = testUtils.sinon.spy( view.toolbar, 'fillFromConfig' );
 
-					ui.init();
-					sinon.assert.calledWithExactly( spy,
-						editor.config.get( 'toolbar.items' ),
-						ui.componentFactory
-					);
-				} );
+						ui.init();
+						sinon.assert.calledWithExactly( spy,
+							editor.config.get( 'toolbar.items' ),
+							ui.componentFactory
+						);
+					} );
 			} );
 		} );
 

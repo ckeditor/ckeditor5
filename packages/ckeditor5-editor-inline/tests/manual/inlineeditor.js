@@ -18,30 +18,31 @@ function initEditors() {
 	init( '#editor-2' );
 
 	function init( selector ) {
-		InlineEditor.create( document.querySelector( selector ), {
-			plugins: [ ArticlePreset ],
-			toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
-		} )
-		.then( editor => {
-			console.log( `${ selector } has been initialized`, editor );
-			console.log( 'It has been added to global `editors` and `editables`.' );
+		InlineEditor
+			.create( document.querySelector( selector ), {
+				plugins: [ ArticlePreset ],
+				toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+			} )
+			.then( editor => {
+				console.log( `${ selector } has been initialized`, editor );
+				console.log( 'It has been added to global `editors` and `editables`.' );
 
-			window.editors[ selector ] = editor;
-			window.editables.push( editor.editing.view.getRoot() );
+				window.editors[ selector ] = editor;
+				window.editables.push( editor.editing.view.getRoot() );
 
-			const observer = testUtils.createObserver();
+				const observer = testUtils.createObserver();
 
-			observer.observe(
-				`${ selector }.ui.focusTracker`,
-				editor.ui.focusTracker,
-				[ 'isFocused' ]
-			);
+				observer.observe(
+					`${ selector }.ui.focusTracker`,
+					editor.ui.focusTracker,
+					[ 'isFocused' ]
+				);
 
-			window._observers.push( observer );
-		} )
-		.catch( err => {
-			console.error( err.stack );
-		} );
+				window._observers.push( observer );
+			} )
+			.catch( err => {
+				console.error( err.stack );
+			} );
 	}
 }
 

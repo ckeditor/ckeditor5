@@ -62,12 +62,13 @@ describe( 'InlineEditor', () => {
 
 	describe( 'create()', () => {
 		beforeEach( function() {
-			return InlineEditor.create( editorElement, {
-				plugins: [ Paragraph, Bold ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-			} );
+			return InlineEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
 		} );
 
 		afterEach( () => {
@@ -101,19 +102,20 @@ describe( 'InlineEditor', () => {
 
 			class CustomInlineEditor extends InlineEditor {}
 
-			return CustomInlineEditor.create( editorElement, {
-				plugins: [ Paragraph, Bold ]
-			} )
-			.then( newEditor => {
-				expect( newEditor ).to.be.instanceof( CustomInlineEditor );
-				expect( newEditor ).to.be.instanceof( InlineEditor );
+			return CustomInlineEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor ).to.be.instanceof( CustomInlineEditor );
+					expect( newEditor ).to.be.instanceof( InlineEditor );
 
-				expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+					expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
 
-				editorElement.remove();
+					editorElement.remove();
 
-				return newEditor.destroy();
-			} );
+					return newEditor.destroy();
+				} );
 		} );
 	} );
 
@@ -138,14 +140,15 @@ describe( 'InlineEditor', () => {
 				}
 			}
 
-			return InlineEditor.create( editorElement, {
-				plugins: [ EventWatcher ]
-			} )
-			.then( newEditor => {
-				expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+			return InlineEditor
+				.create( editorElement, {
+					plugins: [ EventWatcher ]
+				} )
+				.then( newEditor => {
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
 
-				editor = newEditor;
-			} );
+					editor = newEditor;
+				} );
 		} );
 
 		it( 'fires dataReady once data is loaded', () => {
@@ -159,14 +162,15 @@ describe( 'InlineEditor', () => {
 				}
 			}
 
-			return InlineEditor.create( editorElement, {
-				plugins: [ EventWatcher, Paragraph, Bold ]
-			} )
-			.then( newEditor => {
-				expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
+			return InlineEditor
+				.create( editorElement, {
+					plugins: [ EventWatcher, Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
 
-				editor = newEditor;
-			} );
+					editor = newEditor;
+				} );
 		} );
 
 		it( 'fires uiReady once UI is ready', () => {
@@ -180,20 +184,22 @@ describe( 'InlineEditor', () => {
 				}
 			}
 
-			return InlineEditor.create( editorElement, {
-				plugins: [ EventWatcher ]
-			} )
-			.then( newEditor => {
-				expect( isReady ).to.be.true;
+			return InlineEditor
+				.create( editorElement, {
+					plugins: [ EventWatcher ]
+				} )
+				.then( newEditor => {
+					expect( isReady ).to.be.true;
 
-				editor = newEditor;
-			} );
+					editor = newEditor;
+				} );
 		} );
 	} );
 
 	describe( 'destroy', () => {
 		beforeEach( function() {
-			return InlineEditor.create( editorElement, { plugins: [ Paragraph ] } )
+			return InlineEditor
+				.create( editorElement, { plugins: [ Paragraph ] } )
 				.then( newEditor => {
 					editor = newEditor;
 
