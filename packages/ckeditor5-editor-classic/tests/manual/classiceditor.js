@@ -18,23 +18,24 @@ import testUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 let editor, editable, observer;
 
 function initEditor() {
-	ClassicEditor.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
-		toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
-	} )
-	.then( newEditor => {
-		console.log( 'Editor was initialized', newEditor );
-		console.log( 'You can now play with it using global `editor` and `editable` variables.' );
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
+			toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
+		} )
+		.then( newEditor => {
+			console.log( 'Editor was initialized', newEditor );
+			console.log( 'You can now play with it using global `editor` and `editable` variables.' );
 
-		window.editor = editor = newEditor;
-		window.editable = editable = editor.editing.view.getRoot();
+			window.editor = editor = newEditor;
+			window.editable = editable = editor.editing.view.getRoot();
 
-		observer = testUtils.createObserver();
-		observer.observe( 'Editable', editable, [ 'isFocused' ] );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+			observer = testUtils.createObserver();
+			observer.observe( 'Editable', editable, [ 'isFocused' ] );
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
 }
 
 function destroyEditor() {

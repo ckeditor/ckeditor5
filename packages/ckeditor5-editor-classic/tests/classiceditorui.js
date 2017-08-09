@@ -27,23 +27,24 @@ describe( 'ClassicEditorUI', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			toolbar: [ 'foo', 'bar' ],
-			ui: {
-				width: 100,
-				height: 200
-			}
-		} )
-		.then( newEditor => {
-			editor = newEditor;
+		return ClassicTestEditor
+			.create( editorElement, {
+				toolbar: [ 'foo', 'bar' ],
+				ui: {
+					width: 100,
+					height: 200
+				}
+			} )
+			.then( newEditor => {
+				editor = newEditor;
 
-			view = new ClassicEditorUIView( editor.locale );
-			ui = new ClassicEditorUI( editor, view );
-			editable = editor.editing.view.getRoot();
+				view = new ClassicEditorUIView( editor.locale );
+				ui = new ClassicEditorUI( editor, view );
+				editable = editor.editing.view.getRoot();
 
-			ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
-			ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
-		} );
+				ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
+				ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
+			} );
 	} );
 
 	afterEach( () => {
@@ -95,25 +96,26 @@ describe( 'ClassicEditorUI', () => {
 				editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
 
-				return ClassicTestEditor.create( editorElement, {
-					toolbar: {
-						items: [ 'foo', 'bar' ],
-						viewportTopOffset: 100
-					}
-				} )
-				.then( editor => {
-					view = new ClassicEditorUIView( editor.locale );
-					ui = new ClassicEditorUI( editor, view );
-					editable = editor.editing.view.getRoot();
+				return ClassicTestEditor
+					.create( editorElement, {
+						toolbar: {
+							items: [ 'foo', 'bar' ],
+							viewportTopOffset: 100
+						}
+					} )
+					.then( editor => {
+						view = new ClassicEditorUIView( editor.locale );
+						ui = new ClassicEditorUI( editor, view );
+						editable = editor.editing.view.getRoot();
 
-					ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
-					ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
+						ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
+						ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
 
-					expect( view.toolbar.viewportTopOffset ).to.equal( 100 );
+						expect( view.toolbar.viewportTopOffset ).to.equal( 100 );
 
-					editorElement.remove();
-					return editor.destroy();
-				} );
+						editorElement.remove();
+						return editor.destroy();
+					} );
 			} );
 		} );
 
@@ -177,27 +179,28 @@ describe( 'ClassicEditorUI', () => {
 				editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
 
-				return ClassicTestEditor.create( editorElement, {
-					toolbar: {
-						items: [ 'foo', 'bar' ],
-						viewportTopOffset: 100
-					}
-				} )
-				.then( editor => {
-					view = new ClassicEditorUIView( editor.locale );
-					ui = new ClassicEditorUI( editor, view );
+				return ClassicTestEditor
+					.create( editorElement, {
+						toolbar: {
+							items: [ 'foo', 'bar' ],
+							viewportTopOffset: 100
+						}
+					} )
+					.then( editor => {
+						view = new ClassicEditorUIView( editor.locale );
+						ui = new ClassicEditorUI( editor, view );
 
-					ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
-					ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
+						ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
+						ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
 
-					const spy = testUtils.sinon.spy( view.toolbar, 'fillFromConfig' );
+						const spy = testUtils.sinon.spy( view.toolbar, 'fillFromConfig' );
 
-					ui.init();
-					sinon.assert.calledWithExactly( spy,
-						editor.config.get( 'toolbar.items' ),
-						ui.componentFactory
-					);
-				} );
+						ui.init();
+						sinon.assert.calledWithExactly( spy,
+							editor.config.get( 'toolbar.items' ),
+							ui.componentFactory
+						);
+					} );
 			} );
 		} );
 
