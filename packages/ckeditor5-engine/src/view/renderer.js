@@ -602,32 +602,19 @@ export default class Renderer {
 	_updateDomSelection( domRoot ) {
 		const domSelection = domRoot.ownerDocument.defaultView.getSelection();
 
-		// Below we will check whether DOM selection needs updating at all.
-		// We need to update DOM selection if either:
-		// * it is at incorrect position, or
-		// * it has changed (when compared to view selection).
-		if ( this.domConverter.isDomSelectionCorrect( domSelection ) ) {
-			// DOM selection is at correct position. Check whether it has changed.
-			const viewSelectionFromDom = this.domConverter.domSelectionToView( domSelection );
+		// Let's check whether DOM selection needs updating at all.
+		if ( !this._domSelectionNeedsUpdate( domSelection ) ) {
+			const data = {
+				oldSelection: this.domConverter.domSelectionToView( domSelection ),
+				currentSelection: this.selection
+			};
 
-			// Compare view selection assumed from dom with current view selection.
-			if ( this.selection.isCollapsed && this.selection.isEqual( viewSelectionFromDom ) ) {
-				// Selection did not changed and is correct, do not update.
-				return;
-			} else if ( !this.selection.isCollapsed && this.selection.isSimilar( viewSelectionFromDom ) ) {
-				const data = {
-					oldSelection: viewSelectionFromDom,
-					currentSelection: this.selection
-				};
+			log.warn(
+				'renderer-skipped-selection-rendering: The selection was not rendered due to its similarity to the current one.',
+				data
+			);
 
-				log.warn(
-					'renderer-skipped-selection-rendering: The selection was not rendered due to its similarity to the current one.',
-					data
-				);
-
-				// Selection did not changed and is correct, do not update.
-				return;
-			}
+			return;
 		}
 
 		// Multi-range selection is not available in most browsers, and, at least in Chrome, trying to
@@ -640,6 +627,36 @@ export default class Renderer {
 
 		domSelection.collapse( anchor.parent, anchor.offset );
 		domSelection.extend( focus.parent, focus.offset );
+	}
+
+	/**
+	 * Checks whether given DOM selection needs to be updated.
+	 *
+	 * @private
+	 * @param {Selection} domSelection DOM selection to check.
+	 * @returns {Boolean}
+	 */
+	_domSelectionNeedsUpdate( domSelection ) {
+		if ( !this.domConverter.isDomSelectionCorrect( domSelection ) ) {
+			// Current DOM selection is in incorrect position. We need to update it.
+			return true;
+		}
+
+		const viewSelectionFromDom = this.domConverter.domSelectionToView( domSelection );
+
+		// If selection is collapsed, it does not need to be updated only if selection from view is equal.
+		if ( this.selection.isCollapsed && this.selection.isEqual( viewSelectionFromDom ) ) {
+			return false;
+		}
+
+		// If selection is not collapsed, it does not need to be updated if it is similar.
+		if ( !this.selection.isCollapsed && this.selection.isSimilar( viewSelectionFromDom ) ) {
+			// Selection did not changed and is correct, do not update.
+			return false;
+		}
+
+		// Selections are not similar.
+		return true;
 	}
 
 	/**
