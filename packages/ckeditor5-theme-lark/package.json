@@ -10,7 +10,7 @@
     "@ckeditor/ckeditor5-basic-styles": "^0.8.1",
     "@ckeditor/ckeditor5-dev-lint": "^3.1.0",
     "@ckeditor/ckeditor5-utils": "^0.9.1",
-    "eslint-config-ckeditor5": "^1.0.0",
+    "eslint-config-ckeditor5": "^1.0.5",
     "gulp": "^3.9.1",
     "guppy-pre-commit": "^0.4.0"
   },
