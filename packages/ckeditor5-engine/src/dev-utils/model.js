@@ -428,7 +428,7 @@ function stringifyAttributeValue( data ) {
 }
 
 // Loop trough attributes map and converts each value by passed converter.
-function *convertAttributes( attributes, converter ) {
+function* convertAttributes( attributes, converter ) {
 	for ( const [ key, value ] of attributes ) {
 		yield [ key, converter( value ) ];
 	}

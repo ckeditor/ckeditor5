@@ -96,7 +96,7 @@ export default class Batch {
 	 *
 	 * @returns {Iterable.<module:engine/model/operation/operation~Operation>}
 	 */
-	*getOperations() {
+	* getOperations() {
 		for ( const delta of this.deltas ) {
 			yield* delta.operations;
 		}
