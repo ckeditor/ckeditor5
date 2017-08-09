@@ -15,22 +15,23 @@ import Link from '@ckeditor/ckeditor5-link/src/link';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		Typing,
-		Paragraph,
-		Undo,
-		Enter,
-		Clipboard,
-		Link,
-		Bold,
-		Italic
-	],
-	toolbar: [ 'bold', 'italic', 'link', 'undo', 'redo' ]
-} )
-.then( editor => {
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			Typing,
+			Paragraph,
+			Undo,
+			Enter,
+			Clipboard,
+			Link,
+			Bold,
+			Italic
+		],
+		toolbar: [ 'bold', 'italic', 'link', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
