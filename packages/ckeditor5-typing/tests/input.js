@@ -428,7 +428,7 @@ describe( 'Input feature', () => {
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
 			} );
 
-			view.fire( 'keydown', { keyCode: getCode( 'arrowright' ) } );
+			view.fire( 'keydown', { keyCode: getCode( 'arrowdown' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
