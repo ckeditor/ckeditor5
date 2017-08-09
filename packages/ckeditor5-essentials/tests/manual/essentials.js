@@ -11,13 +11,14 @@ import EssentialsPreset from '../../src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 // Note: We need to load paragraph because we don't have inline editors yet.
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ EssentialsPreset, Paragraph ],
-	toolbar: [ 'undo', 'redo' ]
-} )
-.then( editor => {
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ EssentialsPreset, Paragraph ],
+		toolbar: [ 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
