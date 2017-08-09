@@ -31,6 +31,7 @@ describe( 'UndoEngine integration', () => {
 				doc.schema.registerItem( 'p', '$block' );
 				doc.schema.registerItem( 'h1', '$block' );
 				doc.schema.registerItem( 'h2', '$block' );
+				doc.schema.registerItem( 'div', '$block' );
 				root = doc.getRoot();
 			} );
 	} );
@@ -401,7 +402,7 @@ describe( 'UndoEngine integration', () => {
 			output( '<p>12345</p><p>678[]</p>' );
 
 			editor.execute( 'redo' );
-			output( '<p>1234567[]8</p>' );
+			output( '<p>12345678[]</p>' );
 
 			redoDisabled();
 		} );
@@ -507,7 +508,7 @@ describe( 'UndoEngine integration', () => {
 			output( '<p>12345</p><p>678[]</p>' );
 
 			editor.execute( 'redo' );
-			output( '<p>1234567[]8</p>' );
+			output( '<p>12345678[]</p>' );
 
 			redoDisabled();
 		} );
@@ -614,7 +615,7 @@ describe( 'UndoEngine integration', () => {
 			output( '<p>1234[]</p><p>58</p>' );
 
 			editor.execute( 'redo' );
-			output( '<p>12345[]8</p>' );
+			output( '<p>123458[]</p>' );
 
 			redoDisabled();
 		} );
@@ -668,7 +669,7 @@ describe( 'UndoEngine integration', () => {
 			output( '<p>12345[]</p><p>67xy8</p>' );
 
 			editor.execute( 'redo' );
-			output( '<p>1234567[]xy8</p>' );
+			output( '<p>1234567xy8[]</p>' );
 
 			redoDisabled();
 		} );
@@ -730,6 +731,23 @@ describe( 'UndoEngine integration', () => {
 
 			editor.execute( 'undo' );
 			output( '<h1>[]Foo</h1><p>Bar</p>' );
+		} );
+
+		// ckeditor5-engine#t/1053
+		it( 'wrap, split, undo, undo is correct', () => {
+			input( '<p>[]Foo</p><p>Bar</p>' );
+
+			doc.batch().wrap( Range.createIn( root ), 'div' );
+			output( '<div><p>[]Foo</p><p>Bar</p></div>' );
+
+			doc.batch().split( new Position( root, [ 0, 0, 1 ] ) );
+			output( '<div><p>[]F</p><p>oo</p><p>Bar</p></div>' );
+
+			editor.execute( 'undo' );
+			output( '<div><p>[]Foo</p><p>Bar</p></div>' );
+
+			editor.execute( 'undo' );
+			output( '<p>[]Foo</p><p>Bar</p>' );
 		} );
 	} );
 
