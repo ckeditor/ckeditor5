@@ -444,21 +444,21 @@ function _setForceNotSticky( context ) {
 // always treats `RemoveOperation` as a stronger one, no matter how `context.isStrong` is set. It is like this
 // to provide better results when transformations happen.
 //
-// This is however works fine only when additional context is not used.
+// This, however, works fine only when additional context is not used.
 //
 // When additional context is used, we need a better way to decide whether `RemoveOperation` is "dominating" (or in other
 // words, whether nodes removed by given operation should stay in graveyard if other operation wants to move them).
 //
 // The answer to this is easy: if `RemoveOperation` has been already undone, we are not forcing given nodes to stay
 // in graveyard. In such scenario, we set `context.forceWeakRemove` to `true`. However, if the `RemoveOperation` has
-// not been undone, we set `context.forceWeakRemove` to `false` because we want remove to be "dominating".
+// not been undone, we set `context.forceWeakRemove` to `false` because we want the operation to be "dominating".
 function _setForceWeakRemove( b, context ) {
 	const history = context.document.history;
 	const originalB = context.originalDelta.get( b );
 
-	// If `b` delta is a remove delta, that has not been undone yet, forceWeakRemove should be `false`.
-	// It should be `true` in any other case, if additional context is used.
-	context.forceWeakRemove = !( originalB instanceof RemoveDelta && !history.isUndoneDelta( originalB ) );
+	// If `b` delta has not been undone yet, forceWeakRemove should be `false`.
+	// It should be `true`, in any other case, if additional context is used.
+	context.forceWeakRemove = history.isUndoneDelta( originalB );
 }
 
 // Sets `context.wasAffected` which holds context information about how transformed deltas are related. `context.wasAffected`
