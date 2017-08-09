@@ -84,10 +84,13 @@ export default class UIElement extends Element {
 }
 
 /**
- * Assign key observer which will move cursor over a ui element if right arrow key is pressed and selection is before
- * ui element.
+ * This function injects UI element handling to the given {@link module:engine/view/document~Document document}.
  *
- * @param {module:engine/view/document~Document} document Document instance we should inject quirks handling on.
+ * A callback is added to {@link module:engine/view/document~Document#event:keydown document keydown event}.
+ * The callback handles the situation when right arrow key is pressed and selection is collapsed before a UI element.
+ * Without this handler, it would be impossible to "jump over" UI element using right arrow key.
+ *
+ * @param {module:engine/view/document~Document} document Document to which the quirks handling will be injected.
  */
 export function injectUiElementHandling( document ) {
 	document.on( 'keydown', ( evt, data ) => jumpOverUiElement( evt, data, document.domConverter ) );

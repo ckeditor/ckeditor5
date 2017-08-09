@@ -182,6 +182,11 @@ export default class Node {
 		}
 	}
 
+	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @returns {Object} Clone of this object with the parent property removed.
+	 */
 	toJSON() {
 		const json = clone( this );
 
