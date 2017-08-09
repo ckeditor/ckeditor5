@@ -316,7 +316,6 @@ export default class ViewConsumable {
  * @private
  */
 class ViewElementConsumables {
-
 	/**
 	 * Creates ViewElementConsumables instance.
 	 */

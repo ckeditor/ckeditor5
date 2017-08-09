@@ -212,7 +212,6 @@ export default class Matcher {
 
 		return ( typeof pattern != 'function' && name && !( name instanceof RegExp ) ) ? name : null;
 	}
-
 }
 
 // Returns match information if {@link module:engine/view/element~Element element} is matching provided pattern.

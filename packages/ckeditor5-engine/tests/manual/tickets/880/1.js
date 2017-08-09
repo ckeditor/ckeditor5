@@ -10,18 +10,20 @@ import EssentialsPreset from '@ckeditor/ckeditor5-presets/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ EssentialsPreset, Paragraph, Bold ],
-	toolbar: [ 'undo', 'redo' ]
-} )
-.then( editor => {
-	window.editor = editor;
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ EssentialsPreset, Paragraph, Bold ],
+		toolbar: [ 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
 
-	editor.editing.view.on( 'selectionChange', () => {
-		editor.document.enqueueChanges( () => {} );
-		console.log( 'selectionChange', ( new Date() ).getTime() );
+		editor.editing.view.on( 'selectionChange', () => {
+			editor.document.enqueueChanges( () => {
+			} );
+			console.log( 'selectionChange', ( new Date() ).getTime() );
+		} );
+	} )
+	.catch( err => {
+		console.error( err.stack );
 	} );
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
