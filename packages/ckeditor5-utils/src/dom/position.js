@@ -82,6 +82,12 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		target = target();
 	}
 
+	// If the {@link module:utils/dom/position~Options#limiter} is a function, use what it returns.
+	// https://github.com/ckeditor/ckeditor5-ui/issues/260
+	if ( typeof limiter == 'function' ) {
+		limiter = limiter();
+	}
+
 	const positionedElementAncestor = getPositionedAncestor( element.parentElement );
 	const elementRect = new Rect( element );
 	const targetRect = new Rect( target );
@@ -261,7 +267,7 @@ function getAbsoluteRectCoordinates( { left, top } ) {
 /**
  * Target with respect to which the `element` is to be positioned.
  *
- * @member {HTMLElement|Range|ClientRect|Function} #target
+ * @member {HTMLElement|Range|ClientRect|Rect|Function} #target
  */
 
 /**
@@ -275,7 +281,7 @@ function getAbsoluteRectCoordinates( { left, top } ) {
  * When set, the algorithm will chose position which fits the most in the
  * limiter's bounding rect.
  *
- * @member {HTMLElement|Range|ClientRect} #limiter
+ * @member {HTMLElement|Range|ClientRect|Rect|Function} #limiter
  */
 
 /**
