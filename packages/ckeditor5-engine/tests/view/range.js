@@ -162,24 +162,29 @@ describe( 'Range', () => {
 				.to.equal( '<p><b>f</b>{oo}<b><span></span>bar</b></p>' );
 		} );
 
-		it( 'case6', () => {
+		it( 'case 6', () => {
 			expect( trim( '<p>foo[</p><p>bar</p><p>]bom</p>' ) )
 				.to.equal( '<p>foo[</p><p>bar</p><p>]bom</p>' );
 		} );
 
-		it( 'case7', () => {
+		it( 'case 7', () => {
 			expect( trim( '<p>foo[<b><img></img></b>]bom</p>' ) )
 				.to.equal( '<p>foo<b>[<img></img>]</b>bom</p>' );
 		} );
 
-		it( 'case8', () => {
+		it( 'case 8', () => {
 			expect( trim( '<p>[<b></b>]</p>' ) )
 				.to.equal( '<p><b></b>[]</p>' );
 		} );
 
-		it( 'case9', () => {
+		it( 'case 9', () => {
 			expect( trim( '<p><b></b>[<b></b>]<b></b></p>' ) )
 				.to.equal( '<p><b></b><b></b>[]<b></b></p>' );
+		} );
+
+		it( 'case 10', () => {
+			expect( trim( '<p>[<b></b><b></b>]</p>' ) )
+				.to.equal( '<p><b></b><b></b>[]</p>' );
 		} );
 
 		function trim( data ) {
