@@ -17,6 +17,7 @@ import InsertDelta from '../../../../src/model/delta/insertdelta';
 import RemoveDelta from '../../../../src/model/delta/removedelta';
 import MoveDelta from '../../../../src/model/delta/movedelta';
 import SplitDelta from '../../../../src/model/delta/splitdelta';
+import UnwrapDelta from '../../../../src/model/delta/unwrapdelta';
 
 import NoOperation from '../../../../src/model/operation/nooperation';
 import MoveOperation from '../../../../src/model/operation/moveoperation';
@@ -30,7 +31,8 @@ import {
 	getSplitDelta,
 	getRemoveDelta,
 	getMoveDelta,
-	getMergeDelta
+	getMergeDelta,
+	getUnwrapDelta
 } from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
@@ -336,6 +338,51 @@ describe( 'transform', () => {
 						{
 							type: NoOperation,
 							baseVersion: 1
+						}
+					]
+				} );
+			} );
+
+			// #1053.
+			it( 'remove operation importance should be set correctly also for deltas other than remove delta', () => {
+				const unwrapDelta = getUnwrapDelta( new Position( root, [ 0 ] ), 2, baseVersion );
+
+				const nodeCopy = new Element( 'p' );
+				const splitDelta = getSplitDelta( new Position( root, [ 0, 0, 1 ] ), nodeCopy, 1, baseVersion );
+				const mergeDelta = splitDelta.getReversed();
+
+				const { deltasA } = transformDeltaSets( [ unwrapDelta ], [ splitDelta, mergeDelta ], doc );
+
+				expect( deltasA.length ).to.equal( 2 );
+
+				expectDelta( deltasA[ 0 ], {
+					type: MoveDelta,
+					operations: [
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 0, 0 ] ),
+							howMany: 1,
+							targetPosition: new Position( root, [ 0 ] ),
+							baseVersion: baseVersion + 4
+						}
+					]
+				} );
+
+				expectDelta( deltasA[ 1 ], {
+					type: UnwrapDelta,
+					operations: [
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 1, 0 ] ),
+							howMany: 1,
+							targetPosition: new Position( root, [ 1 ] ),
+							baseVersion: baseVersion + 5
+						},
+						{
+							type: RemoveOperation,
+							sourcePosition: new Position( root, [ 2 ] ),
+							howMany: 1,
+							baseVersion: baseVersion + 6
 						}
 					]
 				} );
