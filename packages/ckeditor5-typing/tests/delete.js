@@ -11,7 +11,8 @@ describe( 'Delete feature', () => {
 	let editor, editingView;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( { plugins: [ Delete ] } )
+		return VirtualTestEditor
+			.create( { plugins: [ Delete ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				editingView = editor.editing.view;

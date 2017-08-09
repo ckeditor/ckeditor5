@@ -10,13 +10,14 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '../../../src/typing';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Enter, Typing, Heading ],
-	toolbar: [ 'headings' ]
-} )
-.then( editor => {
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Enter, Typing, Heading ],
+		toolbar: [ 'headings' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

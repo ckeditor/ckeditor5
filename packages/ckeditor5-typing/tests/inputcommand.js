@@ -52,12 +52,13 @@ describe( 'InputCommand', () => {
 		} );
 
 		it( 'has a buffer configured to config.typing.undoStep', () => {
-			return VirtualTestEditor.create( {
-				plugins: [ Input ],
-				typing: {
-					undoStep: 5
-				}
-			} )
+			return VirtualTestEditor
+				.create( {
+					plugins: [ Input ],
+					typing: {
+						undoStep: 5
+					}
+				} )
 				.then( editor => {
 					expect( editor.commands.get( 'input' )._buffer ).to.have.property( 'limit', 5 );
 				} );

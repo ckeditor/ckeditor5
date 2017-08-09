@@ -27,18 +27,19 @@ describe( 'InputCommand integration', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Typing, Paragraph, Undo, Bold, Italic, Enter ],
-			typing: { undoStep: 3 }
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			doc = editor.document;
-			viewDocument = editor.editing.view;
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Typing, Paragraph, Undo, Bold, Italic, Enter ],
+				typing: { undoStep: 3 }
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				doc = editor.document;
+				viewDocument = editor.editing.view;
 
-			boldView = editor.ui.componentFactory.create( 'bold' );
-			italicView = editor.ui.componentFactory.create( 'italic' );
-		} );
+				boldView = editor.ui.componentFactory.create( 'bold' );
+				italicView = editor.ui.componentFactory.create( 'italic' );
+			} );
 	} );
 
 	afterEach( () => {

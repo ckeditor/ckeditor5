@@ -85,22 +85,24 @@ window.setInterval( function() {
 	}
 }, 3000 );
 
-ClassicEditor.create( document.querySelector( '#editor1' ), config )
-.then( editor => {
-	window.editor1 = editor;
+ClassicEditor
+	.create( document.querySelector( '#editor1' ), config )
+	.then( editor => {
+		window.editor1 = editor;
 
-	// Editable doesn't automatically get this attribute right now.
-	// https://github.com/ckeditor/ckeditor5-editor-classic/issues/32
-	editor.editing.view.getDomRoot().setAttribute( 'dir', 'rtl' );
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+		// Editable doesn't automatically get this attribute right now.
+		// https://github.com/ckeditor/ckeditor5-editor-classic/issues/32
+		editor.editing.view.getDomRoot().setAttribute( 'dir', 'rtl' );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 
-ClassicEditor.create( document.querySelector( '#editor2' ), config )
-.then( editor => {
-	window.editor2 = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor2' ), config )
+	.then( editor => {
+		window.editor2 = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

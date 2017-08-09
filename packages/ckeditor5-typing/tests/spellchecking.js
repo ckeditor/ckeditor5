@@ -26,12 +26,13 @@ describe( 'Spellchecking integration', () => {
 		container = document.createElement( 'div' );
 		document.body.appendChild( container );
 
-		return ClassicEditor.create( container, {
-			plugins: [ Enter, Typing, Paragraph, Bold, Undo ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-		} );
+		return ClassicEditor
+			.create( container, {
+				plugins: [ Enter, Typing, Paragraph, Bold, Undo ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+			} );
 	} );
 
 	after( () => {
