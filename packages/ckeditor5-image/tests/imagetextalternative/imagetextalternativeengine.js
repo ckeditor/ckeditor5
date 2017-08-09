@@ -10,12 +10,13 @@ import ImageTextAlternativeCommand from '../../src/imagetextalternative/imagetex
 describe( 'ImageTextAlternativeEngine', () => {
 	let editor;
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ ImageTextAlternativeEngine ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-		} );
+		return VirtualTestEditor
+			.create( {
+				plugins: [ ImageTextAlternativeEngine ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+			} );
 	} );
 
 	it( 'should register ImageAlteranteTextCommand', () => {

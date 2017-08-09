@@ -14,16 +14,17 @@ describe( 'ImageStyleEngine', () => {
 	let editor, document, viewDocument;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ ImageStyleEngine ],
-			image: {
-				styles: [
-					{ name: 'fullStyle', title: 'foo', icon: 'object-center', value: null },
-					{ name: 'sideStyle', title: 'bar', icon: 'object-right', value: 'side', className: 'side-class' },
-					{ name: 'dummyStyle', title: 'baz', icon: 'object-dummy', value: 'dummy', className: 'dummy-class' }
-				]
-			}
-		} )
+		return VirtualTestEditor
+			.create( {
+				plugins: [ ImageStyleEngine ],
+				image: {
+					styles: [
+						{ name: 'fullStyle', title: 'foo', icon: 'object-center', value: null },
+						{ name: 'sideStyle', title: 'bar', icon: 'object-right', value: 'side', className: 'side-class' },
+						{ name: 'dummyStyle', title: 'baz', icon: 'object-dummy', value: 'dummy', className: 'dummy-class' }
+					]
+				}
+			} )
 			.then( newEditor => {
 				editor = newEditor;
 				document = editor.document;

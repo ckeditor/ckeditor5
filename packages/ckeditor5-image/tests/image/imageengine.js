@@ -15,14 +15,15 @@ describe( 'ImageEngine', () => {
 	let editor, document, viewDocument;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ ImageEngine ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			document = editor.document;
-			viewDocument = editor.editing.view;
-		} );
+		return VirtualTestEditor
+			.create( {
+				plugins: [ ImageEngine ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				document = editor.document;
+				viewDocument = editor.editing.view;
+			} );
 	} );
 
 	it( 'should be loaded', () => {
