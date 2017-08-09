@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document */
+/* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -37,7 +37,15 @@ class UIElementTestPlugin extends Plugin {
 	}
 }
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Enter, Typing, Paragraph, Undo, UIElementTestPlugin ],
-	toolbar: [ 'undo', 'redo' ]
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Enter, Typing, Paragraph, Undo, UIElementTestPlugin ],
+		toolbar: [ 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
