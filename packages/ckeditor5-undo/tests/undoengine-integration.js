@@ -402,7 +402,7 @@ describe( 'UndoEngine integration', () => {
 			output( '<p>12345</p><p>678[]</p>' );
 
 			editor.execute( 'redo' );
-			output( '<p>1234567[]8</p>' );
+			output( '<p>12345678[]</p>' );
 
 			redoDisabled();
 		} );
@@ -508,7 +508,7 @@ describe( 'UndoEngine integration', () => {
 			output( '<p>12345</p><p>678[]</p>' );
 
 			editor.execute( 'redo' );
-			output( '<p>1234567[]8</p>' );
+			output( '<p>12345678[]</p>' );
 
 			redoDisabled();
 		} );
@@ -615,7 +615,7 @@ describe( 'UndoEngine integration', () => {
 			output( '<p>1234[]</p><p>58</p>' );
 
 			editor.execute( 'redo' );
-			output( '<p>12345[]8</p>' );
+			output( '<p>123458[]</p>' );
 
 			redoDisabled();
 		} );
@@ -669,7 +669,7 @@ describe( 'UndoEngine integration', () => {
 			output( '<p>12345[]</p><p>67xy8</p>' );
 
 			editor.execute( 'redo' );
-			output( '<p>1234567[]xy8</p>' );
+			output( '<p>1234567xy8[]</p>' );
 
 			redoDisabled();
 		} );
