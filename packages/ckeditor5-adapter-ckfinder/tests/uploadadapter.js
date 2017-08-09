@@ -23,15 +23,16 @@ describe( 'CKFinderUploadAdapter', () => {
 
 		sinonXHR = testUtils.sinon.useFakeServer();
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Image, ImageUpload, CKFinderUploadAdapter ],
-			ckfinder: {
-				uploadUrl: 'http://example.com'
-			}
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-		} );
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Image, ImageUpload, CKFinderUploadAdapter ],
+				ckfinder: {
+					uploadUrl: 'http://example.com'
+				}
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+			} );
 	} );
 
 	afterEach( () => {
@@ -64,16 +65,17 @@ describe( 'CKFinderUploadAdapter', () => {
 			document.body.appendChild( editorElement );
 			const warnSub = testUtils.sinon.stub( log, 'warn' );
 
-			return ClassicTestEditor.create( editorElement, {
-				plugins: [ Image, ImageUpload, CKFinderUploadAdapter ],
-			} )
-			.then( () => {
-				sinon.assert.calledOnce( warnSub );
-				sinon.assert.calledWithExactly(
-					warnSub,
-					'ckfinder-upload-adapter-no-config: Please provide "ckfinder.uploadUrl" config option.'
-				);
-			} );
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Image, ImageUpload, CKFinderUploadAdapter ],
+				} )
+				.then( () => {
+					sinon.assert.calledOnce( warnSub );
+					sinon.assert.calledWithExactly(
+						warnSub,
+						'ckfinder-upload-adapter-no-config: Please provide "ckfinder.uploadUrl" config option.'
+					);
+				} );
 		} );
 
 		describe( 'upload', () => {
