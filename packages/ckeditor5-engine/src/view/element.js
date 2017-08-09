@@ -673,6 +673,13 @@ export default class Element extends Node {
 		yield* this._customProperties.entries();
 	}
 
+	getIdentity() {
+		const attributes = Array.from( this._attrs ).map( i => i[ 0 ] + '=' + i[ 1 ] ).sort();
+		const styles = Array.from( this._styles ).map( i => i[ 0 ] + '=' + i[ 1 ] ).sort();
+
+		return [ this.name, ...attributes, ...styles ].join( '|' );
+	}
+
 	/**
 	 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
 	 *

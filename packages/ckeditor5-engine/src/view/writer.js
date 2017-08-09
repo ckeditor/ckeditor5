@@ -933,7 +933,7 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 		const isUI = child.is( 'uiElement' );
 
 		// Wrap text, empty elements, ui elements or attributes with higher or equal priority.
-		if ( isText || isEmpty || isUI || ( isAttribute && attribute.priority <= child.priority ) ) {
+		if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( attribute, child ) ) ) {
 			// Clone attribute.
 			const newAttribute = attribute.clone();
 
@@ -973,6 +973,18 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 	}
 
 	return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+}
+
+function shouldABeOutsideB( a, b ) {
+	if ( a.priority < b.priority ) {
+		return true;
+	} else if ( a.priority > b.priority ) {
+		return false;
+	}
+
+	// When priorities are equal.
+	console.log( a.getIdentity() );
+	return a.getIdentity() < b.getIdentity();
 }
 
 // Returns new position that is moved to near text node. Returns same position if there is no text node before of after

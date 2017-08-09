@@ -981,4 +981,30 @@ describe( 'Element', () => {
 			expect( properties[ 2 ][ 1 ] ).to.equal( 3 );
 		} );
 	} );
+
+	describe( 'getIdentity()', () => {
+		it( 'should return only name if no other attributes are present', () => {
+			const el = new Element( 'foo' );
+
+			expect( el.getIdentity() ).to.equal( 'foo' );
+		} );
+
+		it( 'should return attributes in sorted order', () => {
+			const el = new Element( 'foo', {
+				a: 1,
+				d: 4,
+				b: 3
+			} );
+
+			expect( el.getIdentity() ).to.equal( 'foo|a=1|b=3|d=4' );
+		} );
+
+		it( 'should return styles in sorted order', () => {
+			const el = new Element( 'foo', {
+				style: 'border: 1px solid red; background-color: red'
+			} );
+
+			expect( el.getIdentity() ).to.equal( 'foo|background-color=red|border=1px solid red' );
+		} );
+	} );
 } );
