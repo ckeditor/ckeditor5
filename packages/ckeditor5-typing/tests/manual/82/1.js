@@ -15,13 +15,14 @@ window.setInterval( function() {
 	console.log( getData( window.editor.document ) );
 }, 3000 );
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ EssentialsPreset, Paragraph, Heading ],
-	toolbar: [ 'headings', 'undo', 'redo' ]
-} )
-.then( editor => {
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ EssentialsPreset, Paragraph, Heading ],
+		toolbar: [ 'headings', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
