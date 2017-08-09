@@ -14,13 +14,14 @@ describe( 'HeadingEngine', () => {
 	let editor, document;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ HeadingEngine ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			document = editor.document;
-		} );
+		return VirtualTestEditor
+			.create( {
+				plugins: [ HeadingEngine ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				document = editor.document;
+			} );
 	} );
 
 	it( 'should be loaded', () => {
@@ -75,9 +76,10 @@ describe( 'HeadingEngine', () => {
 	} );
 
 	it( 'should not blow up if there\'s no enter command in the editor', () => {
-		return VirtualTestEditor.create( {
-			plugins: [ HeadingEngine ]
-		} );
+		return VirtualTestEditor
+			.create( {
+				plugins: [ HeadingEngine ]
+			} );
 	} );
 
 	describe( 'config', () => {
@@ -99,25 +101,26 @@ describe( 'HeadingEngine', () => {
 					{ modelElement: 'h4', viewElement: 'h4', title: 'H4' }
 				];
 
-				return VirtualTestEditor.create( {
-					plugins: [ HeadingEngine ],
-					heading: {
-						options
-					}
-				} )
-				.then( editor => {
-					document = editor.document;
+				return VirtualTestEditor
+					.create( {
+						plugins: [ HeadingEngine ],
+						heading: {
+							options
+						}
+					} )
+					.then( editor => {
+						document = editor.document;
 
-					expect( editor.commands.get( 'h4' ) ).to.be.instanceOf( HeadingCommand );
-					expect( editor.commands.get( 'paragraph' ) ).to.be.instanceOf( ParagraphCommand );
+						expect( editor.commands.get( 'h4' ) ).to.be.instanceOf( HeadingCommand );
+						expect( editor.commands.get( 'paragraph' ) ).to.be.instanceOf( ParagraphCommand );
 
-					expect( document.schema.hasItem( 'paragraph' ) ).to.be.true;
-					expect( document.schema.hasItem( 'h4' ) ).to.be.true;
+						expect( document.schema.hasItem( 'paragraph' ) ).to.be.true;
+						expect( document.schema.hasItem( 'h4' ) ).to.be.true;
 
-					expect( document.schema.hasItem( 'heading1' ) ).to.be.false;
-					expect( document.schema.hasItem( 'heading2' ) ).to.be.false;
-					expect( document.schema.hasItem( 'heading3' ) ).to.be.false;
-				} );
+						expect( document.schema.hasItem( 'heading1' ) ).to.be.false;
+						expect( document.schema.hasItem( 'heading2' ) ).to.be.false;
+						expect( document.schema.hasItem( 'heading3' ) ).to.be.false;
+					} );
 			} );
 		} );
 	} );

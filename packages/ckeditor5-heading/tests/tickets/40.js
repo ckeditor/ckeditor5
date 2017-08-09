@@ -16,32 +16,34 @@ describe( 'Bug ckeditor5-heading#40', () => {
 	} );
 
 	it( 'enter at the end of a heading creates a paragraph, when heading was loaded before enter', () => {
-		return VirtualTestEditor.create( {
-			plugins: [ HeadingEngine, Enter ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
+		return VirtualTestEditor
+			.create( {
+				plugins: [ HeadingEngine, Enter ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
 
-			setData( editor.document, '<heading1>foo[]</heading1>' );
+				setData( editor.document, '<heading1>foo[]</heading1>' );
 
-			editor.execute( 'enter' );
+				editor.execute( 'enter' );
 
-			expect( getData( editor.document ) ).to.equal( '<heading1>foo</heading1><paragraph>[]</paragraph>' );
-		} );
+				expect( getData( editor.document ) ).to.equal( '<heading1>foo</heading1><paragraph>[]</paragraph>' );
+			} );
 	} );
 
 	it( 'enter at the end of a heading creates a paragraph, when enter was loaded before heading', () => {
-		return VirtualTestEditor.create( {
-			plugins: [ Enter, HeadingEngine ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Enter, HeadingEngine ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
 
-			setData( editor.document, '<heading1>foo[]</heading1>' );
+				setData( editor.document, '<heading1>foo[]</heading1>' );
 
-			editor.execute( 'enter' );
+				editor.execute( 'enter' );
 
-			expect( getData( editor.document ) ).to.equal( '<heading1>foo</heading1><paragraph>[]</paragraph>' );
-		} );
+				expect( getData( editor.document ) ).to.equal( '<heading1>foo</heading1><paragraph>[]</paragraph>' );
+			} );
 	} );
 } );
