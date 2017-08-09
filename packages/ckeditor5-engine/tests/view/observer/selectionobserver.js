@@ -162,7 +162,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 
 		return new Promise( ( resolve, reject ) => {
-			testUtils.sinon.stub( log, 'warn', msg => {
+			testUtils.sinon.stub( log, 'warn' ).callsFake( msg => {
 				expect( msg ).to.match( /^selectionchange-infinite-loop/ );
 
 				resolve();
@@ -197,7 +197,9 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should not be treated as an infinite loop if changes are not often', () => {
-		const clock = testUtils.sinon.useFakeTimers( 'setInterval', 'clearInterval' );
+		const clock = testUtils.sinon.useFakeTimers( {
+			toFake: [ 'setInterval', 'clearInterval' ]
+		} );
 		const stub = testUtils.sinon.stub( log, 'warn' );
 
 		// We need to recreate SelectionObserver, so it will use mocked setInterval.
