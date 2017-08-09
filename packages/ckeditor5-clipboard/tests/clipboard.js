@@ -26,14 +26,15 @@ describe( 'Clipboard feature', () => {
 	let editor, editingView, clipboardPlugin;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ Clipboard, Paragraph ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			editingView = editor.editing.view;
-			clipboardPlugin = editor.plugins.get( 'Clipboard' );
-		} );
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Clipboard, Paragraph ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				editingView = editor.editing.view;
+				clipboardPlugin = editor.plugins.get( 'Clipboard' );
+			} );
 	} );
 
 	describe( 'constructor()', () => {
