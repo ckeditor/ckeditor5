@@ -53,7 +53,9 @@ export default class Link extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		this.editor.editing.view.addObserver( ClickObserver );
+		const editor = this.editor;
+
+		editor.editing.view.addObserver( ClickObserver );
 
 		/**
 		 * The form view displayed inside the balloon.
@@ -68,7 +70,7 @@ export default class Link extends Plugin {
 		 * @private
 		 * @member {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
 		 */
-		this._balloon = this.editor.plugins.get( ContextualBalloon );
+		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		// Create toolbar buttons.
 		this._createToolbarLinkButton();
@@ -338,7 +340,8 @@ export default class Link extends Plugin {
 	 * @returns {module:utils/dom/position~Options}
 	 */
 	_getBalloonPositionData() {
-		const viewDocument = this.editor.editing.view;
+		const editor = this.editor;
+		const viewDocument = editor.editing.view;
 		const targetLink = this._getSelectedLinkElement();
 
 		const target = targetLink ?
@@ -349,7 +352,7 @@ export default class Link extends Plugin {
 
 		return {
 			target,
-			limiter: viewDocument.domConverter.mapViewToDom( viewDocument.selection.editableElement )
+			limiter: editor.config.get( 'ui.balloonLimiter' )
 		};
 	}
 
