@@ -318,5 +318,27 @@ describe( 'writer', () => {
 				wrap( range, new AttributeElement( 'b' ) );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 		} );
+
+		it( 'should keep stable hierarchy when wrapping with attribute with same priority', () => {
+			test(
+				'<container:p>[<attribute:span>foo</attribute:span>]</container:p>',
+				'<attribute:b></attribute:b>',
+				'<container:p>' +
+					'[<attribute:b view-priority="10">' +
+						'<attribute:span view-priority="10">foo</attribute:span>' +
+					'</attribute:b>]' +
+				'</container:p>'
+			);
+
+			test(
+				'<container:p>[<attribute:b>foo</attribute:b>]</container:p>',
+				'<attribute:span></attribute:span>',
+				'<container:p>' +
+					'[<attribute:b view-priority="10">' +
+						'<attribute:span view-priority="10">foo</attribute:span>' +
+					'</attribute:b>]' +
+				'</container:p>'
+			);
+		} );
 	} );
 } );

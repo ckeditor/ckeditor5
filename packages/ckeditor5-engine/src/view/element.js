@@ -673,11 +673,35 @@ export default class Element extends Node {
 		yield* this._customProperties.entries();
 	}
 
+	/**
+	 * Returns identity string based on element's name, styles, classes and other attributes.
+	 * Two elements that {@link #isSimilar are similar} will have same identity string.
+	 * It has following format:
+	 *
+	 *		"name|classes(class1,class2,class3)|styles(style1=val1,style2=val2)|attributes(attr1=val1,attr2=val2)"
+ 	 *
+	 * For example:
+	 *
+	 *		const element = new ViewElement( 'foo' );
+	 *		element.setAttribute( 'banana', '10' );
+	 *		element.setAttribute( 'apple', '20' );
+	 *		element.setStyle( 'color', 'red' );
+	 *		element.setStyle( 'border-color', 'white' );
+	 *		element.addClass( 'baz' );
+	 *
+	 *		// returns "foo|classes(baz)|styles(border-color=white,color=red)|attributes(apple=20,banana=10)"
+	 *		element.getIdentity();
+	 *
+	 * NOTE: Classes, styles and other attributes are sorted alphabetically.
+	 *
+	 * @returns {String}
+	 */
 	getIdentity() {
-		const attributes = Array.from( this._attrs ).map( i => i[ 0 ] + '=' + i[ 1 ] ).sort();
-		const styles = Array.from( this._styles ).map( i => i[ 0 ] + '=' + i[ 1 ] ).sort();
+		const classes = Array.from( this._classes ).sort().join( ',' );
+		const attributes = mapToSortedString( this._attrs );
+		const styles = mapToSortedString( this._styles );
 
-		return [ this.name, ...attributes, ...styles ].join( '|' );
+		return `${ this.name }|classes(${ classes })|styles(${ styles })|attributes(${ attributes })`;
 	}
 
 	/**
@@ -794,4 +818,15 @@ function normalize( nodes ) {
 		.map( node => {
 			return typeof node == 'string' ? new Text( node ) : node;
 		} );
+}
+
+// Returns string representation of povided map in following format:
+//
+//		"mapKey1=value1,mapKey2=value2,mapKey3=value3"
+//
+// NOTE: All map keys should be strings. Key-value pairs will be sorted.
+//
+// @returns {String}
+function mapToSortedString( map ) {
+	return Array.from( map ).map( i => i[ 0 ] + '=' + i[ 1 ] ).sort().join( ',' );
 }
