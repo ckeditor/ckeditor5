@@ -28,26 +28,27 @@ describe( 'Link', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Link, Paragraph ]
-		} )
-		.then( newEditor => {
-			newEditor.editing.view.attachDomRoot( editorElement );
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Link, Paragraph ]
+			} )
+			.then( newEditor => {
+				newEditor.editing.view.attachDomRoot( editorElement );
 
-			editor = newEditor;
+				editor = newEditor;
 
-			linkFeature = editor.plugins.get( Link );
-			linkButton = editor.ui.componentFactory.create( 'link' );
-			unlinkButton = editor.ui.componentFactory.create( 'unlink' );
-			balloon = editor.plugins.get( ContextualBalloon );
-			formView = linkFeature.formView;
+				linkFeature = editor.plugins.get( Link );
+				linkButton = editor.ui.componentFactory.create( 'link' );
+				unlinkButton = editor.ui.componentFactory.create( 'unlink' );
+				balloon = editor.plugins.get( ContextualBalloon );
+				formView = linkFeature.formView;
 
-			// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
-			testUtils.sinon.stub( balloon.view, 'attachTo' ).returns( {} );
-			testUtils.sinon.stub( balloon.view, 'pin' ).returns( {} );
+				// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
+				testUtils.sinon.stub( balloon.view, 'attachTo' ).returns( {} );
+				testUtils.sinon.stub( balloon.view, 'pin' ).returns( {} );
 
-			formView.init();
-		} );
+				formView.init();
+			} );
 	} );
 
 	afterEach( () => {
