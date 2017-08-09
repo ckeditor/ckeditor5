@@ -26,7 +26,8 @@ describe( 'Paragraph feature', () => {
 	let editor, doc, root;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( { plugins: [ Paragraph ] } )
+		return VirtualTestEditor
+			.create( { plugins: [ Paragraph ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				doc = editor.document;
