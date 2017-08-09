@@ -26,14 +26,15 @@ describe( 'Autoformat', () => {
 	let editor, doc, batch;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ Enter, Paragraph, Autoformat, ListEngine, HeadingEngine, BoldEngine, ItalicEngine, BlockQuoteEngine ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			doc = editor.document;
-			batch = doc.batch();
-		} );
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Enter, Paragraph, Autoformat, ListEngine, HeadingEngine, BoldEngine, ItalicEngine, BlockQuoteEngine ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				doc = editor.document;
+				batch = doc.batch();
+			} );
 	} );
 
 	afterEach( () => {
@@ -243,9 +244,10 @@ describe( 'Autoformat', () => {
 
 	describe( 'without commands', () => {
 		beforeEach( () => {
-			return VirtualTestEditor.create( {
-				plugins: [ Enter, Paragraph, Autoformat ]
-			} )
+			return VirtualTestEditor
+				.create( {
+					plugins: [ Enter, Paragraph, Autoformat ]
+				} )
 				.then( newEditor => {
 					editor = newEditor;
 					doc = editor.document;
@@ -326,26 +328,27 @@ describe( 'Autoformat', () => {
 		} );
 
 		it( 'should use only configured headings', () => {
-			return VirtualTestEditor.create( {
-				plugins: [ Enter, Paragraph, Autoformat, ListEngine, HeadingEngine ],
-				heading: {
-					options: [
-						{ modelElement: 'paragraph' },
-						{ modelElement: 'heading1', viewElement: 'h2' }
-					]
-				}
-			} )
-			.then( editor => {
-				doc = editor.document;
-				batch = doc.batch();
+			return VirtualTestEditor
+				.create( {
+					plugins: [ Enter, Paragraph, Autoformat, ListEngine, HeadingEngine ],
+					heading: {
+						options: [
+							{ modelElement: 'paragraph' },
+							{ modelElement: 'heading1', viewElement: 'h2' }
+						]
+					}
+				} )
+				.then( editor => {
+					doc = editor.document;
+					batch = doc.batch();
 
-				setData( doc, '<paragraph>##[]</paragraph>' );
-				doc.enqueueChanges( () => {
-					batch.insert( doc.selection.getFirstPosition(), ' ' );
+					setData( doc, '<paragraph>##[]</paragraph>' );
+					doc.enqueueChanges( () => {
+						batch.insert( doc.selection.getFirstPosition(), ' ' );
+					} );
+
+					expect( getData( doc ) ).to.equal( '<paragraph>## []</paragraph>' );
 				} );
-
-				expect( getData( doc ) ).to.equal( '<paragraph>## []</paragraph>' );
-			} );
 		} );
 	} );
 } );

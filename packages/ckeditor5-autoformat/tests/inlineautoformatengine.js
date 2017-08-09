@@ -16,15 +16,16 @@ describe( 'InlineAutoformatEngine', () => {
 	let editor, doc, batch;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ Enter, Paragraph ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			doc = editor.document;
-			batch = doc.batch();
-			doc.schema.allow( { name: '$inline', attributes: [ 'testAttribute' ] } );
-		} );
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Enter, Paragraph ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				doc = editor.document;
+				batch = doc.batch();
+				doc.schema.allow( { name: '$inline', attributes: [ 'testAttribute' ] } );
+			} );
 	} );
 
 	describe( 'attribute', () => {

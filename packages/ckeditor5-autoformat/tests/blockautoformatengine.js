@@ -17,14 +17,15 @@ describe( 'BlockAutoformatEngine', () => {
 	let editor, doc, batch;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ Enter, Paragraph ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			doc = editor.document;
-			batch = doc.batch();
-		} );
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Enter, Paragraph ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				doc = editor.document;
+				batch = doc.batch();
+			} );
 	} );
 
 	describe( 'Command name', () => {
