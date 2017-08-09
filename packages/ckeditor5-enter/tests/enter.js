@@ -12,13 +12,14 @@ describe( 'Enter feature', () => {
 	let editor, editingView;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ Enter ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			editingView = editor.editing.view;
-		} );
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Enter ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				editingView = editor.editing.view;
+			} );
 	} );
 
 	it( 'creates the commands', () => {
