@@ -109,10 +109,12 @@ function getFillerOffset() {
 function jumpOverUiElement( evt, data, domConverter ) {
 	if ( data.keyCode == keyCodes.arrowright ) {
 		const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+		const domSelectionCollapsed = domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed;
 
-		if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
-			const domParent = domSelection.getRangeAt( 0 ).startContainer;
-			const domOffset = domSelection.getRangeAt( 0 ).startOffset;
+		// Jump over UI element if selection is collapsed or shift key is pressed. These are the cases when selection would extend.
+		if ( domSelectionCollapsed || data.shiftKey ) {
+			const domParent = domSelection.focusNode;
+			const domOffset = domSelection.focusOffset;
 
 			const viewPosition = domConverter.domPositionToView( domParent, domOffset );
 
@@ -129,7 +131,13 @@ function jumpOverUiElement( evt, data, domConverter ) {
 			if ( !viewPosition.isEqual( nextViewPosition ) ) {
 				const newDomPosition = domConverter.viewPositionToDom( nextViewPosition );
 
-				domSelection.collapse( newDomPosition.parent, newDomPosition.offset );
+				if ( domSelectionCollapsed ) {
+					// Selection was collapsed, so collapse it at further position.
+					domSelection.collapse( newDomPosition.parent, newDomPosition.offset );
+				} else {
+					// Selection was not collapse, so extend it instead of collapsing.
+					domSelection.extend( newDomPosition.parent, newDomPosition.offset );
+				}
 			}
 		}
 	}
