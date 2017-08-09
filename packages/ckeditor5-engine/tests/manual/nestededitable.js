@@ -69,20 +69,21 @@ class NestedEditable extends Plugin {
 	}
 }
 
-ClassicEditor.create( global.document.querySelector( '#editor' ), {
-	plugins: [ Enter, Typing, Paragraph, NestedEditable, Undo ],
-	toolbar: [ 'undo', 'redo' ]
-} )
-.then( editor => {
-	editor.document.on( 'changesDone', () => {
-		printModelContents( editor );
-	} );
+ClassicEditor
+	.create( global.document.querySelector( '#editor' ), {
+		plugins: [ Enter, Typing, Paragraph, NestedEditable, Undo ],
+		toolbar: [ 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		editor.document.on( 'changesDone', () => {
+			printModelContents( editor );
+		} );
 
-	printModelContents( editor );
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+		printModelContents( editor );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 
 const modelDiv = global.document.querySelector( '#model' );
 function printModelContents( editor ) {

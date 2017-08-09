@@ -234,7 +234,7 @@ export default class Element extends Node {
 	 *
 	 * @returns {Iterator.<String>} Keys for attributes.
 	 */
-	* getAttributeKeys() {
+	*getAttributeKeys() {
 		if ( this._classes.size > 0 ) {
 			yield 'class';
 		}
@@ -258,7 +258,7 @@ export default class Element extends Node {
 	 *
 	 * @returns {Iterable.<*>}
 	 */
-	* getAttributes() {
+	*getAttributes() {
 		yield* this._attrs.entries();
 
 		if ( this._classes.size > 0 ) {
@@ -669,7 +669,7 @@ export default class Element extends Node {
 	 *
 	 * @returns {Iterable.<*>}
 	 */
-	* getCustomProperties() {
+	*getCustomProperties() {
 		yield* this._customProperties.entries();
 	}
 

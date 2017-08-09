@@ -212,9 +212,9 @@ function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 	// Currently position in the scanning range. Because we need value after the position, it is not a current
 	// position of the iterator but the previous one (we need to iterate one more time to get the value after).
 	let position,
-	// Value before the currently position.
+		// Value before the currently position.
 		attributeValueBefore,
-	// Value after the currently position.
+		// Value after the currently position.
 		attributeValueAfter;
 
 	for ( const value of range ) {

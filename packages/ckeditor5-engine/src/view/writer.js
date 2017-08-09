@@ -933,7 +933,6 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 		const isUI = child.is( 'uiElement' );
 
 		// Wrap text, empty elements, ui elements or attributes with higher or equal priority.
-		// if ( isText || isEmpty || isUI || ( isAttribute && attribute.priority <= child.priority ) ) {
 		if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( attribute, child ) ) ) {
 			// Clone attribute.
 			const newAttribute = attribute.clone();

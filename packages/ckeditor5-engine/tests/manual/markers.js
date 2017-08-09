@@ -24,64 +24,65 @@ const markerNames = [];
 let model = null;
 let _uid = 1;
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Enter, Typing, Paragraph, Bold, Italic, List, Heading, Undo ],
-	toolbar: [ 'headings', 'bold', 'italic', 'bulletedList', 'numberedList', 'undo', 'redo' ]
-} )
-.then( editor => {
-	window.editor = editor;
-	model = window.editor.editing.model;
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Enter, Typing, Paragraph, Bold, Italic, List, Heading, Undo ],
+		toolbar: [ 'headings', 'bold', 'italic', 'bulletedList', 'numberedList', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+		model = window.editor.editing.model;
 
-	buildModelConverter().for( editor.editing.modelToView )
-		.fromMarker( 'highlight' )
-		.toElement( data => {
-			const color = data.name.split( ':' )[ 1 ];
+		buildModelConverter().for( editor.editing.modelToView )
+			.fromMarker( 'highlight' )
+			.toElement( data => {
+				const color = data.name.split( ':' )[ 1 ];
 
-			return new ViewAttributeElement( 'span', { class: 'h-' + color } );
+				return new ViewAttributeElement( 'span', { class: 'h-' + color } );
+			} );
+
+		window.document.getElementById( 'add-yellow' ).addEventListener( 'mousedown', e => {
+			e.preventDefault();
+			addHighlight( 'yellow' );
 		} );
 
-	window.document.getElementById( 'add-yellow' ).addEventListener( 'mousedown', e => {
-		e.preventDefault();
-		addHighlight( 'yellow' );
-	} );
+		window.document.getElementById( 'add-red' ).addEventListener( 'mousedown', e => {
+			e.preventDefault();
+			addHighlight( 'red' );
+		} );
 
-	window.document.getElementById( 'add-red' ).addEventListener( 'mousedown', e => {
-		e.preventDefault();
-		addHighlight( 'red' );
-	} );
+		window.document.getElementById( 'remove-marker' ).addEventListener( 'mousedown', e => {
+			e.preventDefault();
+			removeHighlight();
+		} );
 
-	window.document.getElementById( 'remove-marker' ).addEventListener( 'mousedown', e => {
-		e.preventDefault();
-		removeHighlight();
-	} );
+		window.document.getElementById( 'move-to-start' ).addEventListener( 'mousedown', e => {
+			e.preventDefault();
+			moveSelectionToStart();
+		} );
 
-	window.document.getElementById( 'move-to-start' ).addEventListener( 'mousedown', e => {
-		e.preventDefault();
-		moveSelectionToStart();
-	} );
+		window.document.getElementById( 'move-left' ).addEventListener( 'mousedown', e => {
+			e.preventDefault();
+			moveSelectionByOffset( -1 );
+		} );
 
-	window.document.getElementById( 'move-left' ).addEventListener( 'mousedown', e => {
-		e.preventDefault();
-		moveSelectionByOffset( -1 );
-	} );
+		window.document.getElementById( 'move-right' ).addEventListener( 'mousedown', e => {
+			e.preventDefault();
+			moveSelectionByOffset( 1 );
+		} );
 
-	window.document.getElementById( 'move-right' ).addEventListener( 'mousedown', e => {
-		e.preventDefault();
-		moveSelectionByOffset( 1 );
-	} );
+		model.enqueueChanges( () => {
+			const root = model.getRoot();
+			const range = new Range( new Position( root, [ 0, 10 ] ), new Position( root, [ 0, 16 ] ) );
+			const name = 'highlight:yellow:' + uid();
 
-	model.enqueueChanges( () => {
-		const root = model.getRoot();
-		const range = new Range( new Position( root, [ 0, 10 ] ), new Position( root, [ 0, 16 ] ) );
-		const name = 'highlight:yellow:' + uid();
-
-		markerNames.push( name );
-		model.markers.set( name, range );
+			markerNames.push( name );
+			model.markers.set( name, range );
+		} );
+	} )
+	.catch( err => {
+		console.error( err.stack );
 	} );
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
 
 function uid() {
 	return _uid++;

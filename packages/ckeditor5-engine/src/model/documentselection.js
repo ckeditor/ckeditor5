@@ -133,7 +133,7 @@ export default class DocumentSelection extends Selection {
 	/**
 	 * @inheritDoc
 	 */
-	* getRanges() {
+	*getRanges() {
 		if ( this._ranges.length ) {
 			yield* super.getRanges();
 		} else {
@@ -500,7 +500,7 @@ export default class DocumentSelection extends Selection {
 	 * @private
 	 * @returns {Iterable.<*>}
 	 */
-	* _getStoredAttributes() {
+	*_getStoredAttributes() {
 		const selectionParent = this.getFirstPosition().parent;
 
 		if ( this.isCollapsed && selectionParent.isEmpty ) {
