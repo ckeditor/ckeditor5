@@ -444,9 +444,7 @@ describe( 'Collection', () => {
 
 	describe( 'map()', () => {
 		it( 'uses native map', () => {
-			const spy = testUtils.sinon.stub( Array.prototype, 'map', () => {
-				return [ 'foo' ];
-			} );
+			const spy = testUtils.sinon.stub( Array.prototype, 'map' ).returns( [ 'foo' ] );
 			const ctx = {};
 
 			const ret = collection.map( callback, ctx );
@@ -462,9 +460,7 @@ describe( 'Collection', () => {
 		it( 'uses native find', () => {
 			const needl = getItem( 'foo' );
 
-			const spy = testUtils.sinon.stub( Array.prototype, 'find', () => {
-				return needl;
-			} );
+			const spy = testUtils.sinon.stub( Array.prototype, 'find' ).returns( needl );
 			const ctx = {};
 
 			const ret = collection.find( callback, ctx );
@@ -480,9 +476,8 @@ describe( 'Collection', () => {
 		it( 'uses native filter', () => {
 			const needl = getItem( 'foo' );
 
-			const spy = testUtils.sinon.stub( Array.prototype, 'filter', () => {
-				return [ needl ];
-			} );
+			// See: https://github.com/sinonjs/sinon/issues/1521
+			const spy = testUtils.sinon.stub( collection._items, 'filter' ).returns( [ needl ] );
 			const ctx = {};
 
 			const ret = collection.filter( callback, ctx );
@@ -891,7 +886,7 @@ describe( 'Collection', () => {
 				assertItems( collectionA, [ 4, 6, 8 ] );
 				assertItems( collectionB, [ 4, 6, 8 ] );
 
-				expect( collectionA ).to.deep.equal( collectionB );
+				expect( [ ...collectionA ] ).to.deep.equal( [ ...collectionB ] );
 
 				sinon.assert.callCount( spyA, 3 );
 				sinon.assert.callCount( spyB, 3 );
