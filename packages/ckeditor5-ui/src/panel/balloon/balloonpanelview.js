@@ -253,15 +253,8 @@ export default class BalloonPanelView extends View {
 	_startPinning( options ) {
 		this.attachTo( options );
 
-		const limiter = options.limiter || defaultLimiterElement;
-		let targetElement = null;
-
-		// We need to take HTMLElement related to the target if it is possible.
-		if ( isElement( options.target ) ) {
-			targetElement = options.target;
-		} else if ( isRange( options.target ) ) {
-			targetElement = options.target.commonAncestorContainer;
-		}
+		const targetElement = getDomElement( options.target );
+		const limiterElement = getDomElement( options.limiter ) || defaultLimiterElement;
 
 		// Then we need to listen on scroll event of eny element in the document.
 		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
@@ -271,10 +264,11 @@ export default class BalloonPanelView extends View {
 			const isWithinScrollTarget = targetElement && scrollTarget.contains( targetElement );
 
 			// The position needs to be updated if the positioning limiter is within the scrolled element.
-			const isLimiterWithinScrollTarget = scrollTarget.contains( limiter );
+			const isLimiterWithinScrollTarget = limiterElement && scrollTarget.contains( limiterElement );
 
-			// The positioning target can be a Rect, object etc.. There's no way to optimize the listener then.
-			if ( isWithinScrollTarget || isLimiterWithinScrollTarget || !targetElement ) {
+			// The positioning target and/or limiter can be a Rect, object etc..
+			// There's no way to optimize the listener then.
+			if ( isWithinScrollTarget || isLimiterWithinScrollTarget || !targetElement || !limiterElement ) {
 				this.attachTo( options );
 			}
 		}, { useCapture: true } );
@@ -294,6 +288,28 @@ export default class BalloonPanelView extends View {
 		this.stopListening( global.document, 'scroll' );
 		this.stopListening( global.window, 'resize' );
 	}
+}
+
+// Returns the DOM element for given object or null, if there's none,
+// e.g. when passed object is a Rect instance or so.
+//
+// @private
+// @param {*} object
+// @returns {HTMLElement|null}
+function getDomElement( object ) {
+	if ( isElement( object ) ) {
+		return object;
+	}
+
+	if ( isRange( object ) ) {
+		return object.commonAncestorContainer;
+	}
+
+	if ( typeof object == 'function' ) {
+		return getDomElement( object() );
+	}
+
+	return null;
 }
 
 /**

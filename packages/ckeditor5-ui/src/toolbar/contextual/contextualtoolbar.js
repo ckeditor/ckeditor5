@@ -41,12 +41,14 @@ export default class ContextualToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const editor = this.editor;
+
 		/**
 		 * The toolbar view displayed in the balloon.
 		 *
 		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
-		this.toolbarView = new ToolbarView( this.editor.locale );
+		this.toolbarView = new ToolbarView( editor.locale );
 
 		Template.extend( this.toolbarView.template, {
 			attributes: {
@@ -63,7 +65,7 @@ export default class ContextualToolbar extends Plugin {
 		 * @private
 		 * @member {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
 		 */
-		this._balloon = this.editor.plugins.get( ContextualBalloon );
+		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		/**
 		 * Fires {@link #event:_selectionChangeDebounced} event using `lodash#debounce`.
@@ -196,7 +198,8 @@ export default class ContextualToolbar extends Plugin {
 	 * @returns {module:utils/dom/position~Options}
 	 */
 	_getBalloonPositionData() {
-		const editingView = this.editor.editing.view;
+		const editor = this.editor;
+		const editingView = editor.editing.view;
 
 		// Get direction of the selection.
 		const isBackward = editingView.selection.isBackward;
@@ -213,7 +216,7 @@ export default class ContextualToolbar extends Plugin {
 				// Select the proper range rect depending on the direction of the selection.
 				return rangeRects[ isBackward ? 0 : rangeRects.length - 1 ];
 			},
-			limiter: this.editor.ui.view.editable.element,
+			limiter: editor.config.get( 'ui.balloonLimiter' ),
 			positions: getBalloonPositions( isBackward )
 		};
 	}
