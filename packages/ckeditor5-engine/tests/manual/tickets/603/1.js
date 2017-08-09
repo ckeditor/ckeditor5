@@ -13,20 +13,21 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Enter, Typing, Paragraph, Heading, Bold, Italic ],
-	toolbar: [ 'headings', 'bold', 'italic' ]
-} )
-.then( editor => {
-	window.editor = editor;
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Italic ],
+		toolbar: [ 'headings', 'bold', 'italic' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
 
-	const sel = editor.document.selection;
+		const sel = editor.document.selection;
 
-	sel.on( 'change', ( evt, data ) => {
-		const date = new Date();
-		console.log( `${ date.getSeconds() }s${ String( date.getMilliseconds() ).slice( 0, 2 ) }ms`, evt.name, data );
+		sel.on( 'change', ( evt, data ) => {
+			const date = new Date();
+			console.log( `${ date.getSeconds() }s${ String( date.getMilliseconds() ).slice( 0, 2 ) }ms`, evt.name, data );
+		} );
+	} )
+	.catch( err => {
+		console.error( err.stack );
 	} );
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
