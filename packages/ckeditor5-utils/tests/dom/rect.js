@@ -749,7 +749,7 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should return the viewport\'s rect', () => {
-			testUtils.sinon.stub( global, 'window', {
+			testUtils.sinon.stub( global, 'window' ).value( {
 				innerWidth: 1000,
 				innerHeight: 500,
 				scrollX: 100,
