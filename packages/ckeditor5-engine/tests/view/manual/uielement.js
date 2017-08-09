@@ -6,11 +6,13 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import UIElement from '../../../src/view/uielement';
 
 class MyUIElement extends UIElement {
@@ -39,8 +41,8 @@ class UIElementTestPlugin extends Plugin {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Undo, UIElementTestPlugin ],
-		toolbar: [ 'undo', 'redo' ]
+		plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, UIElementTestPlugin ],
+		toolbar: [ 'undo', 'redo', 'bold', 'italic' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
