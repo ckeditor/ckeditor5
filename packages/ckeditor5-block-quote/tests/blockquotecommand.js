@@ -141,6 +141,14 @@ describe( 'BlockQuoteCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
+		let scrollToTheSelectionStub;
+
+		beforeEach( () => {
+			// VirtualTestEditor has no DOM, so this method must be stubbed for all tests.
+			// Otherwise it will throw as it accesses the DOM to do its job.
+			scrollToTheSelectionStub = sinon.stub( editor.editing.view, 'scrollToTheSelection', () => {} );
+		} );
+
 		describe( 'applying quote', () => {
 			it( 'should wrap a single block', () => {
 				setModelData(
@@ -431,6 +439,23 @@ describe( 'BlockQuoteCommand', () => {
 					'</blockQuote>'
 				);
 			} );
+
+			it( 'should scroll the viewport to the selection', () => {
+				setModelData( doc, '<widget>[xx]</widget>' );
+
+				editor.execute( 'blockQuote' );
+				sinon.assert.notCalled( scrollToTheSelectionStub );
+
+				setModelData(
+					doc,
+					'<paragraph>abc</paragraph>' +
+					'<paragraph>x[]x</paragraph>' +
+					'<paragraph>def</paragraph>'
+				);
+
+				editor.execute( 'blockQuote' );
+				sinon.assert.calledOnce( scrollToTheSelectionStub );
+			} );
 		} );
 
 		describe( 'removing quote', () => {
@@ -590,6 +615,23 @@ describe( 'BlockQuoteCommand', () => {
 					'<p>de}f</p>' +
 					'<blockquote><p>ghi</p></blockquote>'
 				);
+			} );
+
+			it( 'should scroll the viewport to the selections', () => {
+				setModelData( doc, '<widget>[xx]</widget>' );
+
+				editor.execute( 'blockQuote' );
+				sinon.assert.notCalled( scrollToTheSelectionStub );
+
+				setModelData(
+					doc,
+					'<paragraph>abc</paragraph>' +
+					'<blockQuote><paragraph>x[]x</paragraph></blockQuote>' +
+					'<paragraph>def</paragraph>'
+				);
+
+				editor.execute( 'blockQuote' );
+				sinon.assert.calledOnce( scrollToTheSelectionStub );
 			} );
 		} );
 	} );
