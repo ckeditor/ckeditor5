@@ -22,14 +22,15 @@ describe( 'Bogus BR integration', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Typing, Paragraph, Bold ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			domRoot = editor.editing.view.getDomRoot();
-			mutationObserver = editor.editing.view.getObserver( MutationObserver );
-		} );
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Typing, Paragraph, Bold ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				domRoot = editor.editing.view.getDomRoot();
+				mutationObserver = editor.editing.view.getObserver( MutationObserver );
+			} );
 	} );
 
 	afterEach( () => {

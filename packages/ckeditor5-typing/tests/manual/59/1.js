@@ -10,13 +10,14 @@ import Typing from '../../../src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Typing, Paragraph, Bold ],
-	toolbar: [ 'bold' ]
-} )
-.then( editor => {
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Typing, Paragraph, Bold ],
+		toolbar: [ 'bold' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

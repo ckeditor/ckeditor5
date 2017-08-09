@@ -19,12 +19,13 @@ describe( 'Bug ckeditor5-typing#59', () => {
 		container = document.createElement( 'div' );
 		document.body.appendChild( container );
 
-		return ClassicEditor.create( container, {
-			plugins: [ Typing, Paragraph, Bold ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-		} );
+		return ClassicEditor
+			.create( container, {
+				plugins: [ Typing, Paragraph, Bold ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+			} );
 	} );
 
 	afterEach( () => {
