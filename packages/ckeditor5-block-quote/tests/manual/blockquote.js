@@ -10,18 +10,19 @@ import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		ArticlePreset
-	],
-	toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
-} )
-.then( editor => {
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			ArticlePreset
+		],
+		toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 
 window.setInterval( function() {
 	console.log( getData( window.editor.document ) );
