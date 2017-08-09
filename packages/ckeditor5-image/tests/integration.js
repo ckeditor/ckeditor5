@@ -19,23 +19,24 @@ describe( 'Image integration', () => {
 			editorElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( editorElement );
 
-			return ClassicTestEditor.create( editorElement, {
-				plugins: [ Image, ContextualToolbar, Paragraph ]
-			} )
-			.then( editor => {
-				newEditor = editor;
-				balloon = newEditor.plugins.get( 'ContextualBalloon' );
-				contextualToolbar = newEditor.plugins.get( 'ContextualToolbar' );
-				const button = new View();
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Image, ContextualToolbar, Paragraph ]
+				} )
+				.then( editor => {
+					newEditor = editor;
+					balloon = newEditor.plugins.get( 'ContextualBalloon' );
+					contextualToolbar = newEditor.plugins.get( 'ContextualToolbar' );
+					const button = new View();
 
-				button.element = global.document.createElement( 'div' );
+					button.element = global.document.createElement( 'div' );
 
-				// There must be at least one toolbar items which is not disabled to show it.
-				// https://github.com/ckeditor/ckeditor5-ui/issues/269
-				contextualToolbar.toolbarView.items.add( button );
+					// There must be at least one toolbar items which is not disabled to show it.
+					// https://github.com/ckeditor/ckeditor5-ui/issues/269
+					contextualToolbar.toolbarView.items.add( button );
 
-				newEditor.editing.view.isFocused = true;
-			} );
+					newEditor.editing.view.isFocused = true;
+				} );
 		} );
 
 		afterEach( () => {

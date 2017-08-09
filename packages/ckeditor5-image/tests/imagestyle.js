@@ -21,15 +21,16 @@ describe( 'ImageStyle', () => {
 		const editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ ImageStyle ],
-			image: {
-				styles
-			}
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-		} );
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ ImageStyle ],
+				image: {
+					styles
+				}
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+			} );
 	} );
 
 	afterEach( () => {
@@ -71,16 +72,17 @@ describe( 'ImageStyle', () => {
 		const editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ ImageStyle ],
-			image: {
-				styles,
-				toolbar: [ 'foo', 'bar' ]
-			}
-		} )
-		.then( newEditor => {
-			expect( newEditor.config.get( 'image.toolbar' ) ).to.eql( [ 'foo', 'bar' ] );
-			newEditor.destroy();
-		} );
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ ImageStyle ],
+				image: {
+					styles,
+					toolbar: [ 'foo', 'bar' ]
+				}
+			} )
+			.then( newEditor => {
+				expect( newEditor.config.get( 'image.toolbar' ) ).to.eql( [ 'foo', 'bar' ] );
+				newEditor.destroy();
+			} );
 	} );
 } );

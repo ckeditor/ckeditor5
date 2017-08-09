@@ -16,12 +16,13 @@ describe( 'ImageCaption', () => {
 		const editorElement = window.document.createElement( 'div' );
 		window.document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ ImageCaption ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-		} );
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ ImageCaption ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+			} );
 	} );
 
 	it( 'should be loaded', () => {

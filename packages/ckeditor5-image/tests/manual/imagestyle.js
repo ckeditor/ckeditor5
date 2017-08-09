@@ -16,26 +16,27 @@ import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ImageStyle from '../../src/imagestyle';
 import ImageToolbar from '../../src/imagetoolbar';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		ImageToolbar,
-		EnterPlugin,
-		TypingPlugin,
-		ParagraphPlugin,
-		HeadingPlugin,
-		ImagePlugin,
-		UndoPlugin,
-		ClipboardPlugin,
-		ImageStyle
-	],
-	toolbar: [ 'headings', 'undo', 'redo' ],
-	image: {
-		toolbar: [ 'imageStyleFull', 'imageStyleSide' ]
-	}
-} )
-.then( editor => {
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			ImageToolbar,
+			EnterPlugin,
+			TypingPlugin,
+			ParagraphPlugin,
+			HeadingPlugin,
+			ImagePlugin,
+			UndoPlugin,
+			ClipboardPlugin,
+			ImageStyle
+		],
+		toolbar: [ 'headings', 'undo', 'redo' ],
+		image: {
+			toolbar: [ 'imageStyleFull', 'imageStyleSide' ]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

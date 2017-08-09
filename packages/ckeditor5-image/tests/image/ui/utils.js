@@ -20,15 +20,16 @@ describe( 'Utils', () => {
 		editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
 
-		return ClassicEditor.create( editorElement, {
-			plugins: [ Image, Paragraph, ContextualBalloon ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			doc = editor.document;
-			editingView = editor.editing.view;
-			balloon = editor.plugins.get( 'ContextualBalloon' );
-		} );
+		return ClassicEditor
+			.create( editorElement, {
+				plugins: [ Image, Paragraph, ContextualBalloon ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				doc = editor.document;
+				editingView = editor.editing.view;
+				balloon = editor.plugins.get( 'ContextualBalloon' );
+			} );
 	} );
 
 	afterEach( () => {

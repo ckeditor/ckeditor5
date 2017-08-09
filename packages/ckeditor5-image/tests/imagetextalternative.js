@@ -22,20 +22,21 @@ describe( 'ImageTextAlternative', () => {
 		editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ ImageTextAlternative, Image ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			editingView = editor.editing.view;
-			doc = editor.document;
-			newEditor.editing.view.attachDomRoot( editorElement );
-			plugin = editor.plugins.get( ImageTextAlternative );
-			command = editor.commands.get( 'imageTextAlternative' );
-			form = plugin._form;
-			balloon = editor.plugins.get( 'ContextualBalloon' );
-			button = editor.ui.componentFactory.create( 'imageTextAlternative' );
-		} );
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ ImageTextAlternative, Image ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				editingView = editor.editing.view;
+				doc = editor.document;
+				newEditor.editing.view.attachDomRoot( editorElement );
+				plugin = editor.plugins.get( ImageTextAlternative );
+				command = editor.commands.get( 'imageTextAlternative' );
+				form = plugin._form;
+				balloon = editor.plugins.get( 'ContextualBalloon' );
+				button = editor.ui.componentFactory.create( 'imageTextAlternative' );
+			} );
 	} );
 
 	afterEach( () => {

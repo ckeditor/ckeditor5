@@ -14,13 +14,14 @@ import ImagePlugin from '../../src/image';
 import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin ],
-	toolbar: [ 'headings', 'undo', 'redo' ]
-} )
-.then( editor => {
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin ],
+		toolbar: [ 'headings', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

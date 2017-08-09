@@ -20,14 +20,15 @@ describe( 'Image', () => {
 		editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Image ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			document = editor.document;
-			viewDocument = editor.editing.view;
-		} );
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Image ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				document = editor.document;
+				viewDocument = editor.editing.view;
+			} );
 	} );
 
 	afterEach( () => {

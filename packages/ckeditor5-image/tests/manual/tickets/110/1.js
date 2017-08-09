@@ -15,16 +15,17 @@ import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
 import ImageToolbar from '../../../../src/imagetoolbar';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ImageToolbar, ContextualToolbar ],
-	contextualToolbar: [ 'headings', 'undo', 'redo' ],
-	image: {
-		toolbar: [ 'imageTextAlternative' ]
-	}
-} )
-.then( editor => {
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ImageToolbar, ContextualToolbar ],
+		contextualToolbar: [ 'headings', 'undo', 'redo' ],
+		image: {
+			toolbar: [ 'imageTextAlternative' ]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

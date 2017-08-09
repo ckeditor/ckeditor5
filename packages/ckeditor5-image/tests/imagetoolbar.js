@@ -23,20 +23,21 @@ describe( 'ImageToolbar', () => {
 		editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
 
-		return ClassicEditor.create( editorElement, {
-			plugins: [ Paragraph, Image, ImageToolbar, FakeButton ],
-			image: {
-				toolbar: [ 'fake_button' ]
-			}
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			doc = editor.document;
-			plugin = editor.plugins.get( ImageToolbar );
-			toolbar = plugin._toolbar;
-			editingView = editor.editing.view;
-			balloon = editor.plugins.get( 'ContextualBalloon' );
-		} );
+		return ClassicEditor
+			.create( editorElement, {
+				plugins: [ Paragraph, Image, ImageToolbar, FakeButton ],
+				image: {
+					toolbar: [ 'fake_button' ]
+				}
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				doc = editor.document;
+				plugin = editor.plugins.get( ImageToolbar );
+				toolbar = plugin._toolbar;
+				editingView = editor.editing.view;
+				balloon = editor.plugins.get( 'ContextualBalloon' );
+			} );
 	} );
 
 	afterEach( () => {

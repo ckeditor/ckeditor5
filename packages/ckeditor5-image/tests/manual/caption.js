@@ -20,19 +20,20 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		Enter, Typing, Paragraph, Heading, Image, ImageToolbar,
-		Undo, Clipboard, ImageCaption, ImageStyle, Bold, Italic, Heading, List
-	],
-	toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ],
-	image: {
-		toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
-	}
-} )
-.then( editor => {
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			Enter, Typing, Paragraph, Heading, Image, ImageToolbar,
+			Undo, Clipboard, ImageCaption, ImageStyle, Bold, Italic, Heading, List
+		],
+		toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ],
+		image: {
+			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
