@@ -241,7 +241,7 @@ describe( 'Selection', () => {
 			const endPos = Position.createAt( el, 2 );
 			const newEndPos = Position.createAt( el, 4 );
 
-			const spy = sinon.stub( Position, 'createAt', () => newEndPos );
+			const spy = sinon.stub( Position, 'createAt' ).returns( newEndPos );
 
 			selection.addRange( new Range( startPos, endPos ) );
 			selection.setFocus( el, 'end' );

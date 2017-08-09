@@ -1438,7 +1438,7 @@ describe( 'Renderer', () => {
 				const container = domRoot.childNodes[ 1 ];
 
 				const bindSelection = renderer.domConverter.fakeSelectionToView( container );
-				expect( bindSelection ).to.be.defined;
+				expect( bindSelection ).to.not.be.undefined;
 				expect( bindSelection.isEqual( selection ) ).to.be.true;
 			} );
 
