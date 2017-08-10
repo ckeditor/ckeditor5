@@ -10,7 +10,7 @@ category: builds-guides
 order: 10
 ---
 
-CKEditor 5 Builds are comprised of a set of ready to use rich-text editors, so called "builds", with different configurations. Our goal is to provide easy to use solutions that can satisfy a good part of the editing use cases out there.
+CKEditor 5 Builds are a set of ready to use rich-text editors. Every "build" provides a single type of editor with a set of features and a default configuration. Our goal is to provide easy to use solutions that can satisfy a good part of the editing use cases out there.
 
 ## Builds
 
@@ -26,19 +26,27 @@ The edited content remains a part of the page, with a floating toolbar attached:
 
 [ TODO: Inline editor screenshot ]
 
+### Editor with balloon toolbar
+
+The edited content remains a part of the page (like in the inline editor). The toolbar appears in a balloon next to the selection (when the selection is not empty):
+
+[ TODO: Ballon toolbar editor screenshot ]
+
 ## How builds are designed
 
 Each build was designed to satisfy as many use cases as possible. They differ in their UI, UX and features, and are based on the following approach:
 
-* Include the set of features proposed by the {@link TODO Editor Recommendations} project.
+* Include the set of features proposed by the [Editor Recommendations project](https://ckeditor.github.io/editor-recommendations/).
 * Include features that contribute to creating quality content. In other words, features like fonts, colors and alignment are excluded.
 * Provide setups as generic as possible, based on research and community feedback.
 
 ### Build customization
 
-Although the default builds try to fit many cases, they may still not be perfect in some integrations. They may have either too many or too few features. They may not have your preferred theme or UI implementation. Customization is required then.
+Every build comes with a default set of features and a default configuration of them. Although the builds try to fit many cases, they may still need to be adjusted in some integrations.
 
-Check {@link TODO Custom builds} for details on how to change the default builds to match your preferences.
+You can override the default configuration of features when creating an instance of the editor. It's also possible to remove some of built-in features through the configuration (if the build comes with too many of them). Read more in the {@link TODO Configuration guide}.
+
+If a build doesn't provide all the necessary features or you want create a highly optimized build of editor which will contain only the necessary features, then you need to customize the build or create a brand new one. Check {@link TODO Custom builds} for details on how to change the default builds to match your preferences.
 
 ## Use cases
 
