@@ -13,6 +13,11 @@ import global from './global';
 import isRange from './isrange';
 import Rect from './rect';
 
+const utils = {
+	scrollViewportToShowTarget,
+	scrollAncestorsToShowTarget
+};
+
 /**
  * Makes any page `HTMLElement` or `Range` (`target`) visible inside the browser viewport.
  * This helper will scroll all `target` ancestors and the web browser viewport to reveal the target to
@@ -24,10 +29,10 @@ import Rect from './rect';
  * by keeping the `target` some distance from the edge of the viewport and thus making it easier to
  * read or edit by the user.
  */
-function scrollViewportToShowTarget( { target, viewportOffset = 0 } ) {
+export function scrollViewportToShowTarget( { target, viewportOffset = 0 } ) {
 	// Scroll the ancestors of the target to reveal it first, then focus on scrolling
 	// the viewport, when the position of the target is fixed.
-	scrollAncestorsToShowTarget( target );
+	utils.scrollAncestorsToShowTarget( target );
 
 	const targetRect = new Rect( target );
 	const targetShiftedDownRect = targetRect.clone().moveBy( 0, viewportOffset );
@@ -70,7 +75,7 @@ function scrollViewportToShowTarget( { target, viewportOffset = 0 } ) {
  *
  * @param {HTMLElement|Range} target A target, which supposed to become visible to the user.
  */
-function scrollAncestorsToShowTarget( target ) {
+export function scrollAncestorsToShowTarget( target ) {
 	let parent, parentRect, targetRect;
 
 	if ( isRange( target ) ) {
@@ -98,10 +103,8 @@ function scrollAncestorsToShowTarget( target ) {
 	} while ( ( parent = parent.parentNode ) );
 }
 
-export default {
-	scrollViewportToShowTarget,
-	scrollAncestorsToShowTarget
-};
+// For testing purposes (easy helper stubbing).
+export { utils as _test };
 
 // Makes any page `HTMLElement` or `Range` (target) visible within its parent.
 //
