@@ -32,9 +32,7 @@ function scrollViewportToShowTarget( { target, viewportOffset = 0 } ) {
 	const targetRect = new Rect( target );
 	const targetShiftedDownRect = targetRect.clone().moveBy( 0, viewportOffset );
 	const targetShiftedUpRect = targetRect.clone().moveBy( 0, -viewportOffset );
-	const viewportRect = Rect.getViewportRect( {
-		excludeScrollbars: true
-	} );
+	const viewportRect = new Rect( global.window ).excludeScrollbarsAndBorders();
 
 	// Avoid the situation where the caret is still in the viewport, but totally
 	// at the edge. If it moved beyond the viewport in the next action e.g. due to enter,
@@ -92,9 +90,7 @@ function scrollAncestorsToShowTarget( target ) {
 		}
 
 		targetRect = new Rect( target );
-		parentRect = new Rect( parent, {
-			excludeScrollbarsAndBorders: true
-		} );
+		parentRect = new Rect( parent ).excludeScrollbarsAndBorders();
 
 		if ( !parentRect.contains( targetRect ) ) {
 			scrollAncestorToShowTarget( { targetRect, parent, parentRect } );
