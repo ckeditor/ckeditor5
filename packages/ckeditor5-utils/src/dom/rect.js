@@ -27,32 +27,31 @@ export default class Rect {
 	 *		// Rect of a DOM Range.
 	 *		const rectB = new Rect( document.getSelection().getRangeAt( 0 ) );
 	 *
+	 *		// Rect of a window (web browser viewport).
+	 *		const rectC = new Rect( window );
+	 *
 	 *		// Rect out of an object.
-	 *		const rectC = new Rect( { top: 0, right: 10, bottom: 10, left: 0, width: 10, height: 10 } );
+	 *		const rectD = new Rect( { top: 0, right: 10, bottom: 10, left: 0, width: 10, height: 10 } );
 	 *
 	 *		// Rect out of another Rect instance.
-	 *		const rectD = new Rect( rectC );
+	 *		const rectE = new Rect( rectD );
 	 *
 	 *		// Rect out of a ClientRect.
-	 *		const rectE = new Rect( document.body.getClientRects().item( 0 ) );
+	 *		const rectF = new Rect( document.body.getClientRects().item( 0 ) );
 	 *
-	 * **Note**: By default a rect of `HTMLElement` includes its CSS borders and scrollbars (if any).
-	 * Use `options.excludeScrollbarsAndBorders` to obtain an "inner rect".
+	 * **Note**: By default a rect of an HTML element includes its CSS borders and scrollbars (if any)
+	 * ant the rect of a `window` includes scrollbars too. Use {@link #excludeScrollbarsAndBorders}
+	 * to get the inner part of the rect.
 	 *
-	 *		// Rect of an HTMLElement, scrollbars excluded.
-	 *		const rectF = new Rect( document.body, { excludeScrollbarsAndBorders: true } );
-	 *
-	 * @param {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} source A source object to create the rect.
-	 * @param {Boolean} [options.excludeScrollbarsAndBorders] When set `true` the rect will not include
-	 * CSS borders and scrollbars. The option is valid for `HTMLElement` passed as a `source` only.
+	 * @param {HTMLElement|Range|Window|ClientRect|module:utils/dom/rect~Rect|Object} source A source object to create the rect.
 	 */
-	constructor( source, options = {} ) {
+	constructor( source ) {
 		/**
 		 * The object this rect is for.
 		 *
 		 * @protected
 		 * @readonly
-		 * @member {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} #_source
+		 * @member {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|object} #_source
 		 */
 		Object.defineProperty( this, '_source', {
 			// If the source is a Rect instance, copy it's #_source.
@@ -63,12 +62,19 @@ export default class Rect {
 
 		if ( isElement( source ) ) {
 			copyRectProperties( this, source.getBoundingClientRect() );
-
-			if ( options.excludeScrollbarsAndBorders ) {
-				this._excludeScrollbarsAndBorders();
-			}
 		} else if ( isRange( source ) ) {
 			copyRectProperties( this, Rect.getDomRangeRects( source )[ 0 ] );
+		} else if ( source === global.window ) {
+			const { innerWidth, innerHeight } = global.window;
+
+			copyRectProperties( this, {
+				top: 0,
+				right: innerWidth,
+				bottom: innerHeight,
+				left: 0,
+				width: innerWidth,
+				height: innerHeight
+			} );
 		} else {
 			copyRectProperties( this, source );
 		}
@@ -277,30 +283,37 @@ export default class Rect {
 	}
 
 	/**
-	 * Returns a rect of the web browser viewport.
+	 * Excludes scrollbars and CSS borders from the rect.
 	 *
-	 * @returns {module:utils/dom/rect~Rect} A viewport rect.
-	 * @param {Boolean} [options.excludeScrollbars] When set `true` the rect will not include
-	 * the scrollbars of the viewport.
+	 * * Borders are removed when {@link #_source} is an HTML element.
+	 * * Scrollbars are excluded from HTML elements and the `window`.
+	 *
+	 * @returns {module:utils/dom/rect~Rect} A rect which has been updated.
 	 */
-	static getViewportRect( options = {} ) {
-		const { innerWidth, innerHeight } = global.window;
-		const rect = new Rect( {
-			top: 0,
-			right: innerWidth,
-			bottom: innerHeight,
-			left: 0,
-			width: innerWidth,
-			height: innerHeight
-		} );
+	excludeScrollbarsAndBorders() {
+		const source = this._source;
+		let scrollBarWidth, scrollBarHeight;
 
-		rect._source = global.window;
+		if ( source === global.window ) {
+			scrollBarWidth = global.window.innerWidth - global.document.documentElement.clientWidth;
+			scrollBarHeight = global.window.innerHeight - global.document.documentElement.clientHeight;
+		} else {
+			const borderWidths = getBorderWidths( this._source );
 
-		if ( options.excludeScrollbars ) {
-			rect._excludeScrollbarsAndBorders();
+			scrollBarWidth = source.offsetWidth - source.clientWidth;
+			scrollBarHeight = source.offsetHeight - source.clientHeight;
+
+			this.moveBy( borderWidths.left, borderWidths.top );
 		}
 
-		return rect;
+		// Assuming LTR scrollbars. TODO: RTL.
+		this.width -= scrollBarWidth;
+		this.right -= scrollBarWidth;
+
+		this.height -= scrollBarHeight;
+		this.bottom -= scrollBarHeight;
+
+		return this;
 	}
 
 	/**
@@ -331,39 +344,6 @@ export default class Rect {
 		}
 
 		return rects;
-	}
-
-	/**
-	 * Excludes scrollbars and CSS borders from the rect.
-	 *
-	 * * Borders are removed when {@link #_source} is `HTMLElement`.
-	 * * Scrollbars are excluded from `HTMLElements` and
-	 * {@link module:utils/dom/rect~Rect.getViewportRect viewport rects}.
-	 *
-	 * @private
-	 */
-	_excludeScrollbarsAndBorders() {
-		const source = this._source;
-		let scrollBarWidth, scrollBarHeight;
-
-		if ( source === global.window ) {
-			scrollBarWidth = global.window.innerWidth - global.document.documentElement.clientWidth;
-			scrollBarHeight = global.window.innerHeight - global.document.documentElement.clientHeight;
-		} else {
-			const borderWidths = getBorderWidths( this._source );
-
-			scrollBarWidth = source.offsetWidth - source.clientWidth;
-			scrollBarHeight = source.offsetHeight - source.clientHeight;
-
-			this.moveBy( borderWidths.left, borderWidths.top );
-		}
-
-		// Assuming LTR scrollbars. TODO: RTL.
-		this.width -= scrollBarWidth;
-		this.right -= scrollBarWidth;
-
-		this.height -= scrollBarHeight;
-		this.bottom -= scrollBarHeight;
 	}
 }
 

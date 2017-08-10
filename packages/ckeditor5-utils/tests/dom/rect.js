@@ -41,43 +41,6 @@ describe( 'Rect', () => {
 			assertRect( new Rect( element ), geometry );
 		} );
 
-		it( 'should accept HTMLElement (excludeScrollbarsAndBorders)', () => {
-			const element = document.createElement( 'div' );
-
-			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
-			testUtils.sinon.stub( global.window, 'getComputedStyle' ).returns( {
-				borderTopWidth: '5px',
-				borderRightWidth: '10px',
-				borderLeftWidth: '5px',
-				borderBottomWidth: '10px'
-			} );
-
-			// Simulate 5px srollbars.
-			Object.defineProperties( element, {
-				offsetWidth: {
-					value: 20
-				},
-				offsetHeight: {
-					value: 20
-				},
-				clientWidth: {
-					value: 10
-				},
-				clientHeight: {
-					value: 10
-				}
-			} );
-
-			assertRect( new Rect( element, { excludeScrollbarsAndBorders: true } ), {
-				top: 15,
-				right: 35,
-				bottom: 25,
-				left: 25,
-				width: 10,
-				height: 10
-			} );
-		} );
-
 		it( 'should accept Range (non–collapsed)', () => {
 			const range = document.createRange();
 
@@ -112,6 +75,24 @@ describe( 'Rect', () => {
 			expectedGeometry.width = 0;
 
 			assertRect( new Rect( range ), expectedGeometry );
+		} );
+
+		it( 'should accept the window (viewport)', () => {
+			testUtils.sinon.stub( global, 'window' ).value( {
+				innerWidth: 1000,
+				innerHeight: 500,
+				scrollX: 100,
+				scrollY: 200
+			} );
+
+			assertRect( new Rect( global.window ), {
+				top: 0,
+				right: 1000,
+				bottom: 500,
+				left: 0,
+				width: 1000,
+				height: 500
+			} );
 		} );
 
 		it( 'should accept Rect', () => {
@@ -743,12 +724,45 @@ describe( 'Rect', () => {
 		} );
 	} );
 
-	describe( 'getViewportRect()', () => {
-		it( 'should reaturn a rect', () => {
-			expect( Rect.getViewportRect() ).to.be.instanceOf( Rect );
+	describe( 'excludeScrollbarsAndBorders()', () => {
+		it( 'should exclude scrollbars and borders of a HTMLElement', () => {
+			const element = document.createElement( 'div' );
+
+			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+			testUtils.sinon.stub( global.window, 'getComputedStyle' ).returns( {
+				borderTopWidth: '5px',
+				borderRightWidth: '10px',
+				borderLeftWidth: '5px',
+				borderBottomWidth: '10px'
+			} );
+
+			// Simulate 5px srollbars.
+			Object.defineProperties( element, {
+				offsetWidth: {
+					value: 20
+				},
+				offsetHeight: {
+					value: 20
+				},
+				clientWidth: {
+					value: 10
+				},
+				clientHeight: {
+					value: 10
+				}
+			} );
+
+			assertRect( new Rect( element ).excludeScrollbarsAndBorders(), {
+				top: 15,
+				right: 35,
+				bottom: 25,
+				left: 25,
+				width: 10,
+				height: 10
+			} );
 		} );
 
-		it( 'should return the viewport\'s rect', () => {
+		it( 'should exclude scrollbars from viewport\'s rect', () => {
 			testUtils.sinon.stub( global, 'window' ).value( {
 				innerWidth: 1000,
 				innerHeight: 500,
@@ -756,40 +770,20 @@ describe( 'Rect', () => {
 				scrollY: 200
 			} );
 
-			assertRect( Rect.getViewportRect(), {
-				top: 0,
-				right: 1000,
-				bottom: 500,
-				left: 0,
-				width: 1000,
-				height: 500
+			testUtils.sinon.stub( global, 'document' ).value( {
+				documentElement: {
+					clientWidth: 990,
+					clientHeight: 490
+				}
 			} );
-		} );
 
-		describe( 'excludeScrollbars', () => {
-			it( 'should exclude scrollbars from viewport\'s rect', () => {
-				testUtils.sinon.stub( global, 'window' ).value( {
-					innerWidth: 1000,
-					innerHeight: 500,
-					scrollX: 100,
-					scrollY: 200
-				} );
-
-				testUtils.sinon.stub( global, 'document' ).value( {
-					documentElement: {
-						clientWidth: 990,
-						clientHeight: 490
-					}
-				} );
-
-				assertRect( Rect.getViewportRect( { excludeScrollbars: true } ), {
-					top: 0,
-					right: 990,
-					bottom: 490,
-					left: 0,
-					width: 990,
-					height: 490
-				} );
+			assertRect( new Rect( global.window ).excludeScrollbarsAndBorders(), {
+				top: 0,
+				right: 990,
+				bottom: 490,
+				left: 0,
+				width: 990,
+				height: 490
 			} );
 		} );
 	} );
