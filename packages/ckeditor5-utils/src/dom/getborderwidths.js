@@ -10,24 +10,19 @@
 import global from './global';
 
 /**
- * Returns an object containing CSS border withs of a specified `HTMLElement`.
+ * Returns an object containing CSS border widths of a specified HTML element.
  *
  * @param {HTMLElement} element An element which has CSS borders.
  * @param {Object} An object containing `top`, `left`, `right` and `bottom` properties
  * with numerical values of the `border-[top,left,right,bottom]-width` CSS styles.
  */
 export default function getBorderWidths( element ) {
-	const computedStyles = global.window.getComputedStyle( element );
-	const borderWidths = {
-		top: computedStyles.borderTopWidth,
-		right: computedStyles.borderRightWidth,
-		bottom: computedStyles.borderBottomWidth,
-		left: computedStyles.borderLeftWidth
+	const style = global.window.getComputedStyle( element );
+
+	return {
+		top: parseInt( style.borderTopWidth, 10 ),
+		right: parseInt( style.borderRightWidth, 10 ),
+		bottom: parseInt( style.borderBottomWidth, 10 ),
+		left: parseInt( style.borderLeftWidth, 10 )
 	};
-
-	for ( const width in borderWidths ) {
-		borderWidths[ width ] = parseInt( borderWidths[ width ], 10 );
-	}
-
-	return borderWidths;
 }
