@@ -15,7 +15,7 @@ import getBorderWidths from './getborderwidths';
 /**
  * A helper class representing a `ClientRect` object, e.g. value returned by
  * the native `object.getBoundingClientRect()` method. Provides a set of methods
- * to manipulate the rect and compare it against other `Rect` instances.
+ * to manipulate the rect and compare it against other rect instances.
  */
 export default class Rect {
 	/**
@@ -36,14 +36,14 @@ export default class Rect {
 	 *		// Rect out of a ClientRect.
 	 *		const rectE = new Rect( document.body.getClientRects().item( 0 ) );
 	 *
-	 * **Note**: By default `Rect` of `HTMLElement` includes its CSS borders and scrollbars (if any).
+	 * **Note**: By default a rect of `HTMLElement` includes its CSS borders and scrollbars (if any).
 	 * Use `options.excludeScrollbarsAndBorders` to obtain an "inner rect".
 	 *
 	 *		// Rect of an HTMLElement, scrollbars excluded.
 	 *		const rectF = new Rect( document.body, { excludeScrollbarsAndBorders: true } );
 	 *
 	 * @param {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} source A source object to create the rect.
-	 * @param {Boolean} [options.excludeScrollbarsAndBorders] When set `true` the `Rect` will not include
+	 * @param {Boolean} [options.excludeScrollbarsAndBorders] When set `true` the rect will not include
 	 * CSS borders and scrollbars. The option is valid for `HTMLElement` passed as a `source` only.
 	 */
 	constructor( source, options = {} ) {
@@ -247,10 +247,11 @@ export default class Rect {
 	}
 
 	/**
-	 * Checks if all properties ({@link #top}, {@link #left}, {@link #right},
-	 * {@link #bottom}, {@link #width} and {@link #height}) are the same as in the other `Rect`.
+	 * Checks if all property values ({@link #top}, {@link #left}, {@link #right},
+	 * {@link #bottom}, {@link #width} and {@link #height}) are the equal in both rect
+	 * instances.
 	 *
-	 * @param {module:utils/dom/rect~Rect} rect A `Rect` instance to compare with.
+	 * @param {module:utils/dom/rect~Rect} rect A rect instance to compare with.
 	 * @returns {Boolean} `true` when Rects are equal. `false` otherwise.
 	 */
 	isEqual( anotherRect ) {
@@ -264,7 +265,7 @@ export default class Rect {
 	}
 
 	/**
-	 * Checks whether a `Rect` fully contains another `Rect` instance.
+	 * Checks whether a rect fully contains another rect instance.
 	 *
 	 * @param {module:utils/dom/rect~Rect} anotherRect
 	 * @returns {Boolean} `true` if contains, `false` otherwise.
@@ -272,18 +273,14 @@ export default class Rect {
 	contains( anotherRect ) {
 		const intersectRect = this.getIntersection( anotherRect );
 
-		if ( !intersectRect || !intersectRect.isEqual( anotherRect ) ) {
-			return false;
-		}
-
-		return true;
+		return !!( intersectRect && intersectRect.isEqual( anotherRect ) );
 	}
 
 	/**
 	 * Returns a rect of the web browser viewport.
 	 *
 	 * @returns {module:utils/dom/rect~Rect} A viewport rect.
-	 * @param {Boolean} [options.excludeScrollbars] When set `true` the `Rect` will not include
+	 * @param {Boolean} [options.excludeScrollbars] When set `true` the rect will not include
 	 * the scrollbars of the viewport.
 	 */
 	static getViewportRect( options = {} ) {
@@ -337,7 +334,7 @@ export default class Rect {
 	}
 
 	/**
-	 * Excludes scrollbars and CSS borders from the `Rect`.
+	 * Excludes scrollbars and CSS borders from the rect.
 	 *
 	 * * Borders are removed when {@link #_source} is `HTMLElement`.
 	 * * Scrollbars are excluded from `HTMLElements` and
