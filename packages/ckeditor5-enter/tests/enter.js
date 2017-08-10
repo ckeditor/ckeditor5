@@ -43,7 +43,7 @@ describe( 'Enter feature', () => {
 		const view = editor.editing.view;
 		const domEvt = getDomEvent();
 		const executeSpy = editor.execute = sinon.spy();
-		const scrollSpy = sinon.stub( view, 'scrollToTheSelection', () => {} );
+		const scrollSpy = sinon.stub( view, 'scrollToTheSelection' );
 
 		view.fire( 'enter', new DomEventData( editingView, domEvt ) );
 
