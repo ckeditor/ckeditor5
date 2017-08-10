@@ -10,8 +10,8 @@ const fs = require( 'fs' );
 const webpack = require( 'webpack' );
 const { bundler } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
-
-// const BabiliPlugin = require( 'babili-webpack-plugin' );
+const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
+const BabelMinifyPlugin = require( 'babel-minify-webpack-plugin' );
 
 module.exports = function snippetAdapter( data ) {
 	const snippetConfig = readSnippetConfig( data.snippetSource.js );
@@ -20,22 +20,47 @@ module.exports = function snippetAdapter( data ) {
 		entry: data.snippetSource.js,
 		outputPath: path.join( data.outputPath, data.snippetPath ),
 		language: snippetConfig.language
+		// minify: data.options.production
 	} );
 
 	return runWebpack( webpackConfig )
 		.then( () => {
 			return {
-				html: generateSnippetHtml( {
-					htmlPath: data.snippetSource.html,
-					scriptPath: path.join( data.relativeOutputPath, data.snippetPath, 'snippet.js' )
-				} )
+				html: fs.readFileSync( data.snippetSource.html ),
+				assets: {
+					js: [
+						path.join( data.relativeOutputPath, data.snippetPath, 'snippet.js' )
+					],
+					css: [
+						path.join( data.relativeOutputPath, data.snippetPath, 'snippet.css' ),
+						path.join( data.basePath, 'assets', 'snippet-styles.css' )
+					]
+				}
 			};
 		} );
 };
 
 function getWebpackConfig( config ) {
-	return {
+	const plugins = [
+		new ExtractTextPlugin( 'snippet.css' ),
+		new CKEditorWebpackPlugin( {
+			languages: [ config.language || 'en' ]
+		} ),
+		new webpack.BannerPlugin( {
+			banner: bundler.getLicenseBanner(),
+			raw: true
+		} )
+	];
 
+	if ( config.minify ) {
+		plugins.push(
+			new BabelMinifyPlugin( null, {
+				comments: false
+			} )
+		);
+	}
+
+	return {
 		devtool: 'source-map',
 
 		entry: config.entry,
@@ -45,18 +70,7 @@ function getWebpackConfig( config ) {
 			filename: 'snippet.js'
 		},
 
-		plugins: [
-			new CKEditorWebpackPlugin( {
-				languages: [ config.language || 'en' ]
-			} ),
-			// new BabiliPlugin( null, {
-			// 	comments: false
-			// } ),
-			new webpack.BannerPlugin( {
-				banner: bundler.getLicenseBanner(),
-				raw: true
-			} )
-		],
+		plugins,
 
 		// Configure the paths so building CKEditor 5 snippets work even if the script
 		// is triggered from a directory outside ckeditor5 (e.g. multi-project case).
@@ -76,16 +90,18 @@ function getWebpackConfig( config ) {
 				},
 				{
 					test: /\.scss$/,
-					use: [
-						'style-loader',
-						{
-							loader: 'css-loader',
-							options: {
-								minimize: true
-							}
-						},
-						'sass-loader'
-					]
+					use: ExtractTextPlugin.extract( {
+						fallback: 'style-loader',
+						use: [
+							{
+								loader: 'css-loader',
+								options: {
+									minimize: config.minify
+								}
+							},
+							'sass-loader'
+						]
+					} )
 				}
 			]
 		}
@@ -104,14 +120,6 @@ function runWebpack( webpackConfig ) {
 			}
 		} );
 	} );
-}
-
-function generateSnippetHtml( data ) {
-	let html = fs.readFileSync( data.htmlPath );
-
-	html += `<script src="${ data.scriptPath }"></script>`;
-
-	return html;
 }
 
 function getModuleResolvePaths() {

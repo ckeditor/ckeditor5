@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ */
+
+.ck-editor .ck-editor__editable {
+	padding: 1em;
+}
+
+.ck-editor .ck-editor__editable > :first-child {
+	margin-top: 0;
+}
+
+.ck-editor .ck-editor__editable > :last-child {
+	margin-bottom: 0;
+}
+
+.ck-reset.ck-list {
+	/* See https://github.com/ckeditor/ckeditor5/issues/494 */
+	margin-left: 0;
+}
