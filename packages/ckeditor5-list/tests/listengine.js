@@ -26,18 +26,19 @@ describe( 'ListEngine', () => {
 	let editor, modelDoc, modelRoot, viewDoc, viewRoot;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ Clipboard, BoldEngine, Paragraph, ListEngine, UndoEngine ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Clipboard, BoldEngine, Paragraph, ListEngine, UndoEngine ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
 
-			modelDoc = editor.document;
-			modelRoot = modelDoc.getRoot();
+				modelDoc = editor.document;
+				modelRoot = modelDoc.getRoot();
 
-			viewDoc = editor.editing.view;
-			viewRoot = viewDoc.getRoot();
-		} );
+				viewDoc = editor.editing.view;
+				viewRoot = viewDoc.getRoot();
+			} );
 	} );
 
 	it( 'should be loaded', () => {

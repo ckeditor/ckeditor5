@@ -14,13 +14,14 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import List from '../../src/list';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Enter, Typing, Heading, Paragraph, Undo, List, Clipboard ],
-	toolbar: [ 'headings', 'bulletedList', 'numberedList', 'undo', 'redo' ]
-} )
-.then( editor => {
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Enter, Typing, Heading, Paragraph, Undo, List, Clipboard ],
+		toolbar: [ 'headings', 'bulletedList', 'numberedList', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
