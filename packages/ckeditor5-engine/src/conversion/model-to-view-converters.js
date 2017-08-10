@@ -122,16 +122,27 @@ export function insertUIElement( elementCreator ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.range, evt.name ) ) {
+		const markerRange = data.markerRange;
+		const eventName = evt.name;
+
+		// If marker's range is collapsed - check if it can be consumed.
+		if ( markerRange.isCollapsed && !consumable.consume( markerRange, eventName ) ) {
 			return;
+		}
+
+		// if marker's range is not collapsed - consume all items inside.
+		for ( const value of markerRange ) {
+			if ( !consumable.consume( value.item, eventName ) ) {
+				return;
+			}
 		}
 
 		const mapper = conversionApi.mapper;
 
-		viewWriter.insert( mapper.toViewPosition( data.range.start ), viewStartElement );
+		viewWriter.insert( mapper.toViewPosition( markerRange.start ), viewStartElement );
 
-		if ( !data.range.isCollapsed ) {
-			viewWriter.insert( mapper.toViewPosition( data.range.end ), viewEndElement );
+		if ( !markerRange.isCollapsed ) {
+			viewWriter.insert( mapper.toViewPosition( markerRange.end ), viewEndElement );
 		}
 	};
 }
@@ -489,11 +500,22 @@ export function removeUIElement( elementCreator ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.range, evt.name ) ) {
+		const markerRange = data.markerRange;
+		const eventName = evt.name;
+
+		// If marker's range is collapsed - check if it can be consumed.
+		if ( markerRange.isCollapsed && !consumable.consume( markerRange, eventName ) ) {
 			return;
 		}
 
-		const viewRange = conversionApi.mapper.toViewRange( data.range );
+		// Check if all items in the range can be consumed, and consume them.
+		for ( const value of markerRange ) {
+			if ( !consumable.consume( value.item, eventName ) ) {
+				return;
+			}
+		}
+
+		const viewRange = conversionApi.mapper.toViewRange( markerRange );
 
 		// First remove closing element.
 		viewWriter.clear( viewRange.getEnlarged(), viewEndElement );

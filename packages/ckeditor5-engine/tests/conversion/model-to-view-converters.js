@@ -629,7 +629,7 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should insert and remove ui element - function as a creator', () => {
-			const viewUi = data => new ViewUIElement( 'span', { 'class': data.name } );
+			const viewUi = data => new ViewUIElement( 'span', { 'class': data.markerName } );
 
 			dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
 			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
@@ -652,11 +652,11 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
 
 			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-				expect( consumable.test( data.range, 'addMarker:marker' ) ).to.be.true;
+				expect( consumable.test( data.markerRange, 'addMarker:marker' ) ).to.be.true;
 			} );
 
 			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
-				expect( consumable.test( data.range, 'removeMarker:marker' ) ).to.be.true;
+				expect( consumable.test( data.markerRange, 'removeMarker:marker' ) ).to.be.true;
 			} );
 
 			dispatcher.convertMarker( 'addMarker', 'marker', range );
@@ -679,11 +679,11 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
 
 			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-				consumable.consume( data.range, 'addMarker:marker' );
+				consumable.consume( data.markerRange, 'addMarker:marker' );
 			}, { priority: 'high' } );
 
 			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
-				consumable.consume( data.range, 'removeMarker:marker' );
+				consumable.consume( data.markerRange, 'removeMarker:marker' );
 			}, { priority: 'high' } );
 
 			dispatcher.convertMarker( 'addMarker', 'marker', range );
@@ -706,11 +706,11 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
 
 			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-				expect( consumable.test( data.range, 'addMarker:marker' ) ).to.be.true;
+				expect( consumable.test( data.markerRange, 'addMarker:marker' ) ).to.be.true;
 			} );
 
 			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
-				expect( consumable.test( data.range, 'removeMarker:marker' ) ).to.be.true;
+				expect( consumable.test( data.markerRange, 'removeMarker:marker' ) ).to.be.true;
 			} );
 
 			dispatcher.convertMarker( 'addMarker', 'marker', range );
@@ -733,11 +733,11 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
 
 			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-				consumable.consume( data.range, 'addMarker:marker' );
+				consumable.consume( data.markerRange, 'addMarker:marker' );
 			}, { priority: 'high' } );
 
 			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
-				consumable.consume( data.range, 'removeMarker:marker' );
+				consumable.consume( data.markerRange, 'removeMarker:marker' );
 			}, { priority: 'high' } );
 
 			dispatcher.convertMarker( 'addMarker', 'marker', range );
@@ -773,7 +773,7 @@ describe( 'model-to-view-converters', () => {
 			} );
 
 			it( 'should insert and remove ui element - function as a creator', () => {
-				const viewUi = data => new ViewUIElement( 'span', { 'class': data.name } );
+				const viewUi = data => new ViewUIElement( 'span', { 'class': data.markerName } );
 
 				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
 				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
@@ -791,10 +791,10 @@ describe( 'model-to-view-converters', () => {
 			it( 'should insert and remove different opening and ending element', () => {
 				function creator( data ) {
 					if ( data.isOpening ) {
-						return new ViewUIElement( 'span', { 'class': data.name, 'data-start': true } );
+						return new ViewUIElement( 'span', { 'class': data.markerName, 'data-start': true } );
 					}
 
-					return new ViewUIElement( 'span', { 'class': data.name, 'data-end': true } );
+					return new ViewUIElement( 'span', { 'class': data.markerName, 'data-end': true } );
 				}
 
 				dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );

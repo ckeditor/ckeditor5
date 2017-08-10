@@ -382,15 +382,10 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
-	 * Starts marker-conversion.
+	 * Starts marker conversion.
 	 *
-	 * Fires {@link ~#event:addMarker addMarker event} or {@link ~#event:removeMarker removeMarker event} based on
-	 * given `type` with data based on passed parameters.
-	 *
-	 * Marker conversion is performed in two steps. In the first step, event containing marker's whole range is fired. If
-	 * consumable passed with that event is consumed - no further events are dispatched. In the second step, event for each
-	 * item in the marker's range is fired. This way marker can be converted as a whole or each item in the marker's
-	 * range can be converted separately.
+	 * Fires {@link ~#event:addMarker addMarker} or {@link ~#event:removeMarker removeMarker} events for each item
+	 * in marker's range. If range is collapsed single event is dispatched. See events description for more details.
 	 *
 	 * @fires addMarker
 	 * @fires removeMarker
@@ -407,12 +402,16 @@ export default class ModelConversionDispatcher {
 		// In markers case, event name == consumable name.
 		const eventName = type + ':' + name;
 
-		// Fire event for whole marker. This can be used to convert whole marker to element.
-		const markerConsumable = this._createMarkerConsumable( eventName, range );
-		this.fire( eventName, { name, range }, markerConsumable, this.conversionApi );
+		// When range is collapsed - fire single event with collapsed range in consumable.
+		if ( range.isCollapsed ) {
+			const consumable = new Consumable();
+			consumable.add( range, eventName );
 
-		// Return if whole marker was consumed - do not perform conversion of each node in marker's range.
-		if ( !markerConsumable.test( range, eventName ) ) {
+			this.fire( eventName, {
+				markerName: name,
+				markerRange: range
+			}, consumable, this.conversionApi );
+
 			return;
 		}
 
@@ -422,11 +421,17 @@ export default class ModelConversionDispatcher {
 		// Create separate event for each node in the range.
 		for ( const value of range ) {
 			const item = value.item;
-			const itemRange = Range.createFromPositionAndShift( value.previousPosition, value.length );
+
+			// Do not fire event for already consumed items.
+			if ( !consumable.test( item, eventName ) ) {
+				continue;
+			}
+
 			const data = {
 				item,
-				name,
-				range: itemRange
+				range: Range.createFromPositionAndShift( value.previousPosition, value.length ),
+				markerName: name,
+				markerRange: range
 			};
 
 			this.fire( eventName, data, consumable, this.conversionApi );
@@ -496,22 +501,6 @@ export default class ModelConversionDispatcher {
 		for ( const key of selection.getAttributeKeys() ) {
 			consumable.add( selection, 'selectionAttribute:' + key );
 		}
-
-		return consumable;
-	}
-
-	/**
-	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} for adding or removing marker on given `range`.
-	 *
-	 * @private
-	 * @param {'addMarker'|'removeMarker'} type Change type.
-	 * @param {module:engine/model/range~Range} range Range on which marker was added or removed.
-	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
-	 */
-	_createMarkerConsumable( type, range ) {
-		const consumable = new Consumable();
-
-		consumable.add( range, type );
 
 		return consumable;
 	}
@@ -667,6 +656,9 @@ export default class ModelConversionDispatcher {
 
 	/**
 	 * Fired when a new marker is added to the model.
+	 * * If marker's range is not collapsed then event is fired separately for each item contained in that range. Consumable
+	 * contains all items from that range.
+	 * * If marker's range is collapsed then single event is fired. Consumable contains collapsed range.
 	 *
 	 * `addMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `addMarker:<markerName>`. By specifying certain marker names, you can make the events even more gradual. For example,
@@ -675,14 +667,23 @@ export default class ModelConversionDispatcher {
 	 *
 	 * @event addMarker
 	 * @param {Object} data Additional information about the change.
-	 * @param {String} data.name Marker name.
-	 * @param {module:engine/model/range~Range} data.range Marker range.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
+	 * @param {module:engine/model/item~Item} [data.item] Item contained in marker's range. Not present if collapsed range
+	 * is being converted.
+	 * @param {module:engine/model/range~Range} [data.range] Range spanning over item. Not present if collapsed range
+	 * is being converted.
+	 * @param {String} data.markerName Name of the marker.
+	 * @param {module:engine/model/range~Range} data.markerRange Whole marker's range.
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume. When non-collapsed
+	 * marker is being converted then consumable contains all items in marker's range. For collapsed markers it contains
+	 * only marker's range to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 
 	/**
 	 * Fired when marker is removed from the model.
+	 * * If marker's range is not collapsed then event is fired separately for each item contained in that range. Consumable
+	 * contains all items from that range.
+	 * * If marker's range is collapsed then single event is fired. Consumable contains collapsed range.
 	 *
 	 * `removeMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `removeMarker:<markerName>`. By specifying certain marker names, you can make the events even more gradual. For example,
@@ -691,9 +692,15 @@ export default class ModelConversionDispatcher {
 	 *
 	 * @event removeMarker
 	 * @param {Object} data Additional information about the change.
-	 * @param {String} data.name Marker name.
-	 * @param {module:engine/model/range~Range} data.range Marker range.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
+	 * @param {module:engine/model/item~Item} [data.item] Item contained in marker's range. Not present if collapsed range
+	 * is being converted.
+	 * @param {module:engine/model/range~Range} [data.range] Range spanning over item. Not present if collapsed range
+	 * is being converted.
+	 * @param {String} data.markerName Name of the marker.
+	 * @param {module:engine/model/range~Range} data.markerRange Whole marker's range.
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume. When non-collapsed
+	 * marker is being converted then consumable contains all items in marker's range. For collapsed markers it contains
+	 * only marker's range to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 }

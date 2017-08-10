@@ -635,79 +635,107 @@ describe( 'ModelConversionDispatcher', () => {
 
 		it( 'should prepare consumable values', () => {
 			dispatcher.on( 'addMarker:name', ( evt, data, consumable ) => {
-				if ( data.item ) {
-					expect( consumable.test( data.item, 'addMarker:name' ) ).to.be.true;
-				} else {
-					expect( consumable.test( data.range, 'addMarker:name' ) ).to.be.true;
-				}
+				expect( consumable.test( data.item, 'addMarker:name' ) ).to.be.true;
 			} );
 
 			dispatcher.on( 'removeMarker:name', ( evt, data, consumable ) => {
-				if ( data.item ) {
-					expect( consumable.test( data.item, 'removeMarker:name' ) ).to.be.true;
-				} else {
-					expect( consumable.test( data.range, 'removeMarker:name' ) ).to.be.true;
-				}
+				expect( consumable.test( data.item, 'removeMarker:name' ) ).to.be.true;
 			} );
 
 			dispatcher.convertMarker( 'addMarker', 'name', range );
 			dispatcher.convertMarker( 'removeMarker', 'name', range );
 		} );
 
-		it( 'should fire conversion for whole range and each item in the range', () => {
+		it( 'should fire conversion for each item in the range', () => {
 			const element = new ModelElement( 'paragraph', null, [ new ModelText( 'foo bar baz' ) ] );
 			root.appendChildren( [ element ] );
 			range = ModelRange.createIn( root );
 
-			const addMarkerItems = [];
-			const removeMarkerItems = [];
+			const addMarkerData = [];
+			const removeMarkerData = [];
 
-			dispatcher.on( 'addMarker:name', ( evt, data ) => {
-				// Called for whole marker.
-				if ( !data.item ) {
-					expect( data.range.isEqual( range ) ).to.be.true;
-				} else {
-					addMarkerItems.push( data.item );
-				}
-			} );
-			dispatcher.on( 'removeMarker:name', ( evt, data ) => {
-				// Called for whole marker.
-				if ( !data.item ) {
-					expect( data.range.isEqual( range ) ).to.be.true;
-				} else {
-					removeMarkerItems.push( data.item );
-				}
-			} );
+			dispatcher.on( 'addMarker:name', ( evt, data ) => addMarkerData.push( data ) );
+			dispatcher.on( 'removeMarker:name', ( evt, data ) => removeMarkerData.push( data ) );
 
 			dispatcher.convertMarker( 'addMarker', 'name', range );
 			dispatcher.convertMarker( 'removeMarker', 'name', range );
 
+			// Check if events for all elements were fired.
 			let i = 0;
 			for ( const val of range ) {
-				const item = val.item;
+				const nodeInRange = val.item;
+				const addData = addMarkerData[ i ];
+				const removeData = removeMarkerData[ i ];
 
-				if ( item.is( 'textProxy' ) ) {
-					expect( item.data ).to.equal( addMarkerItems[ i ].data );
-					expect( item.data ).to.equal( removeMarkerItems[ i ].data );
+				expect( addData.markerName ).to.equal( 'name' );
+				expect( addData.markerRange ).to.equal( range );
+				expect( addData.range.isEqual( ModelRange.createOn( nodeInRange ) ) );
+
+				expect( removeData.markerName ).to.equal( 'name' );
+				expect( removeData.markerRange ).to.equal( range );
+				expect( removeData.range.isEqual( ModelRange.createOn( nodeInRange ) ) );
+
+				if ( nodeInRange.is( 'textProxy' ) ) {
+					expect( nodeInRange.data ).to.equal( addData.item.data );
+					expect( nodeInRange.data ).to.equal( removeData.item.data );
 				} else {
-					expect( removeMarkerItems[ i ] ).to.equal( item );
+					expect( nodeInRange ).to.equal( addData.item );
+					expect( nodeInRange ).to.equal( removeData.item );
 				}
 
 				i++;
 			}
 		} );
 
-		it( 'should not fire conversion for each item in marker\'s range if whole marker conversion was performed', () => {
-			const spy = sinon.spy( ( evt, data, consumable ) => {
-				if ( !data.item ) {
-					expect( consumable.consume( data.range, 'addMarker:name' ) ).to.be.true;
+		it( 'should not fire events for already consumed items', () => {
+			const element = new ModelElement( 'paragraph', null, [ new ModelText( 'foo bar baz' ) ] );
+			root.appendChildren( [ element ] );
+			const range = ModelRange.createIn( root );
+			const addMarkerSpy = sinon.spy( ( evt, data, consumable ) => {
+				// Consume all items in marker range.
+				for ( const value of data.markerRange ) {
+					consumable.consume( value.item, 'addMarker:marker' );
 				}
 			} );
 
-			dispatcher.on( 'addMarker:name', spy );
+			const removeMarkerSpy = sinon.spy( ( evt, data, consumable ) => {
+				// Consume all items in marker range.
+				for ( const value of data.markerRange ) {
+					consumable.consume( value.item, 'removeMarker:marker' );
+				}
+			} );
 
-			dispatcher.convertMarker( 'addMarker', 'name', range );
-			sinon.assert.calledOnce( spy );
+			dispatcher.on( 'addMarker:marker', addMarkerSpy );
+			dispatcher.on( 'addMarker:marker', removeMarkerSpy );
+
+			dispatcher.convertMarker( 'addMarker', 'marker', range );
+			dispatcher.convertMarker( 'removeMarker', 'marker', range );
+
+			sinon.assert.calledOnce( addMarkerSpy );
+			sinon.assert.calledOnce( removeMarkerSpy );
+		} );
+
+		it( 'should fire event for collapsed marker', () => {
+			const range = ModelRange.createFromParentsAndOffsets( root, 1, root, 1 );
+			const addMarkerSpy = sinon.spy( ( evt, data, consumable ) => {
+				expect( data.markerRange ).to.equal( range );
+				expect( data.markerName ).to.equal( 'marker' );
+				expect( consumable.test( data.markerRange, evt.name ) ).to.be.true;
+			} );
+			const removeMarkerSpy = sinon.spy( ( evt, data, consumable ) => {
+				expect( data.markerRange ).to.equal( range );
+				expect( data.markerName ).to.equal( 'marker' );
+				expect( consumable.test( data.markerRange, evt.name ) ).to.be.true;
+			} );
+
+			dispatcher.on( 'addMarker:marker', addMarkerSpy );
+			dispatcher.on( 'addMarker:marker', removeMarkerSpy );
+
+			dispatcher.convertMarker( 'addMarker', 'marker', range );
+			dispatcher.convertMarker( 'removeMarker', 'marker', range );
+
+			sinon.assert.calledOnce( addMarkerSpy );
+			sinon.assert.calledOnce( removeMarkerSpy );
 		} );
 	} );
 } );

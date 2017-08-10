@@ -509,7 +509,7 @@ describe( 'Model converter builder', () => {
 
 			it( 'using passed creator function', () => {
 				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( data => {
-					const className = 'search search-color-' + data.name.split( ':' )[ 1 ];
+					const className = 'search search-color-' + data.markerName.split( ':' )[ 1 ];
 
 					return new ViewUIElement( 'span', { class: className } );
 				} );
@@ -558,7 +558,7 @@ describe( 'Model converter builder', () => {
 
 			it( 'using passed creator function', () => {
 				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( data => {
-					const className = 'search search-color-' + data.name.split( ':' )[ 1 ];
+					const className = 'search search-color-' + data.markerName.split( ':' )[ 1 ];
 
 					return new ViewUIElement( 'span', { class: className } );
 				} );
