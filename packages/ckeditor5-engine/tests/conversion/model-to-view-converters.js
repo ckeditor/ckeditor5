@@ -29,7 +29,7 @@ import {
 	remove,
 	removeUIElement,
 	markerToVirtualSelection,
-	virtualSelectionDescriptorToAttribute
+	virtualSelectionDescriptorToAttributeElement
 } from '../../src/conversion/model-to-view-converters';
 
 import { createRangeOnElementOnly } from '../../tests/model/_utils/utils';
@@ -1037,14 +1037,14 @@ describe( 'model-to-view-converters', () => {
 		} );
 	} );
 
-	describe( 'virtualSelectionDescriptorToAttribute()', () => {
+	describe( 'virtualSelectionDescriptorToAttributeElement()', () => {
 		it( 'should return attribute element from descriptor object', () => {
 			const descriptor = {
 				class: 'foo-class',
 				attributes: { one: 1, two: 2 },
 				priority: 7,
 			};
-			const element = virtualSelectionDescriptorToAttribute( descriptor );
+			const element = virtualSelectionDescriptorToAttributeElement( descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
@@ -1061,7 +1061,7 @@ describe( 'model-to-view-converters', () => {
 				attributes: { one: 1, two: 2 },
 				priority: 7,
 			};
-			const element = virtualSelectionDescriptorToAttribute( descriptor );
+			const element = virtualSelectionDescriptorToAttributeElement( descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
@@ -1077,7 +1077,7 @@ describe( 'model-to-view-converters', () => {
 				class: 'foo-class',
 				attributes: { one: 1, two: 2 },
 			};
-			const element = virtualSelectionDescriptorToAttribute( descriptor );
+			const element = virtualSelectionDescriptorToAttributeElement( descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
@@ -1094,7 +1094,7 @@ describe( 'model-to-view-converters', () => {
 				class: 'foo-class',
 				priority: 7
 			};
-			const element = virtualSelectionDescriptorToAttribute( descriptor );
+			const element = virtualSelectionDescriptorToAttributeElement( descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );

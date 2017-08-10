@@ -6,7 +6,7 @@
 import ViewElement from '../view/element';
 import ViewRange from '../view/range';
 import viewWriter from '../view/writer';
-import { virtualSelectionDescriptorToAttribute } from './model-to-view-converters';
+import { virtualSelectionDescriptorToAttributeElement } from './model-to-view-converters';
 
 /**
  * Contains {@link module:engine/model/selection~Selection model selection} to
@@ -176,7 +176,7 @@ export function convertSelectionMarker( selectionDescriptor ) {
 			return;
 		}
 
-		const viewElement = virtualSelectionDescriptorToAttribute( descriptor );
+		const viewElement = virtualSelectionDescriptorToAttributeElement( descriptor );
 		const consumableName = 'selectionMarker:' + data.name;
 
 		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );

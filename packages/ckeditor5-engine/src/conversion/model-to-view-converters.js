@@ -412,7 +412,7 @@ export function markerToVirtualSelection( selectionDescriptor ) {
 		}
 
 		if ( modelItem.is( 'textProxy' ) ) {
-			const viewElement = virtualSelectionDescriptorToAttribute( descriptor );
+			const viewElement = virtualSelectionDescriptorToAttributeElement( descriptor );
 			const converter = addMarker ?
 				wrapItem( viewElement, eventName => eventName ) :
 				unwrapItem( viewElement, eventName => eventName );
@@ -524,7 +524,7 @@ export function eventNameToConsumableType( evtName ) {
  * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor }descriptor
  * @return {module:engine/view/attributeelement~AttributeElement}
  */
-export function virtualSelectionDescriptorToAttribute( descriptor ) {
+export function virtualSelectionDescriptorToAttributeElement( descriptor ) {
 	const attributeElement = new ViewAttributeElement( 'span', descriptor.attributes );
 
 	if ( descriptor.class ) {
