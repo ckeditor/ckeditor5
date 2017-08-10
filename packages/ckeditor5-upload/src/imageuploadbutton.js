@@ -50,7 +50,7 @@ export default class ImageUploadButton extends Plugin {
 			view.bind( 'isEnabled' ).to( command );
 
 			view.on( 'done', ( evt, files ) => {
-				for ( const file of files ) {
+				for ( const file of Array.from( files ) ) {
 					const insertAt = findOptimalInsertionPosition( editor.document.selection );
 
 					if ( isImageType( file ) ) {

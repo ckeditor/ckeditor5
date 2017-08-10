@@ -130,5 +130,19 @@ describe( 'ImageUploadButton', () => {
 		button.fire( 'done', [ file ] );
 		sinon.assert.notCalled( executeStub );
 	} );
+
+	it( 'should work even if the FileList does not support iterators', () => {
+		const executeStub = sinon.stub( editor, 'execute' );
+		const button = editor.ui.componentFactory.create( 'insertImage' );
+		const files = {
+			0: createNativeFileMock(),
+			length: 1
+		};
+
+		button.fire( 'done', files );
+		sinon.assert.calledOnce( executeStub );
+		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
+		expect( executeStub.firstCall.args[ 1 ].file ).to.equal( files[ 0 ] );
+	} );
 } );
 
