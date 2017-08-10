@@ -37,7 +37,7 @@ describe( 'Clipboard feature', () => {
 
 				// VirtualTestEditor has no DOM, so this method must be stubbed for all tests.
 				// Otherwise it will throw as it accesses the DOM to do its job.
-				scrollSpy = sinon.stub( editingView, 'scrollToTheSelection', () => {} );
+				scrollSpy = sinon.stub( editingView, 'scrollToTheSelection' );
 			} );
 	} );
 
