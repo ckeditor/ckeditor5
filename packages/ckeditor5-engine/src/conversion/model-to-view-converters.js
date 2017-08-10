@@ -413,14 +413,13 @@ export function markerToVirtualSelection( selectionDescriptor ) {
 			return;
 		}
 
-		const addMarker = evt.name.split( ':' )[ 0 ] == 'addMarker';
-		const modelItem = data.item;
-
-		// Return if model item is not present. This happens when whole marker conversion is fired before converting
-		// children of marker's range.
-		if ( !modelItem ) {
+		// Do not convert if marker's range is collapsed.
+		if ( data.markerRange.isCollapsed ) {
 			return;
 		}
+
+		const addMarker = evt.name.split( ':' )[ 0 ] == 'addMarker';
+		const modelItem = data.item;
 
 		if ( modelItem.is( 'textProxy' ) ) {
 			const viewElement = virtualSelectionDescriptorToAttributeElement( descriptor );
