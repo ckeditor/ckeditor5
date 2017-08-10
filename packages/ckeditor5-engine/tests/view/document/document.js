@@ -19,7 +19,7 @@ import DomConverter from '../../../src/view/domconverter';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import log from '@ckeditor/ckeditor5-utils/src/log';
-import scrollUtils from '@ckeditor/ckeditor5-utils/src/dom/scroll';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 testUtils.createSinonSandbox();
 
@@ -326,24 +326,21 @@ describe( 'Document', () => {
 
 	describe( 'scrollToTheSelection()', () => {
 		it( 'does nothing when there are no ranges in the selection', () => {
-			const stub = testUtils.sinon.stub( scrollUtils, 'scrollViewportToShowTarget' );
+			const stub = testUtils.sinon.stub( global.window, 'scrollTo' );
 
 			viewDocument.scrollToTheSelection();
 			sinon.assert.notCalled( stub );
 		} );
 
 		it( 'scrolls to the first range in selection with an offset', () => {
-			const stub = testUtils.sinon.stub( scrollUtils, 'scrollViewportToShowTarget' );
+			const stub = testUtils.sinon.stub( global.window, 'scrollTo' );
 			const root = viewDocument.createRoot( document.createElement( 'div' ) );
 			const range = ViewRange.createIn( root );
 
 			viewDocument.selection.addRange( range );
 
 			viewDocument.scrollToTheSelection();
-			sinon.assert.calledWithMatch( stub, {
-				target: viewDocument.domConverter.viewRangeToDom( range ),
-				viewportOffset: 20
-			} );
+			sinon.assert.calledWithMatch( stub, sinon.match.number, sinon.match.number );
 		} );
 	} );
 

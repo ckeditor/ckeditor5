@@ -20,7 +20,7 @@ import KeyObserver from './observer/keyobserver';
 import FakeSelectionObserver from './observer/fakeselectionobserver';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import scrollUtils from '@ckeditor/ckeditor5-utils/src/dom/scroll';
+import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 
 /**
  * Document class creates an abstract layer over the content editable area.
@@ -308,7 +308,7 @@ export default class Document {
 		const range = this.selection.getFirstRange();
 
 		if ( range ) {
-			scrollUtils.scrollViewportToShowTarget( {
+			scrollViewportToShowTarget( {
 				target: this.domConverter.viewRangeToDom( range ),
 				viewportOffset: 20
 			} );
