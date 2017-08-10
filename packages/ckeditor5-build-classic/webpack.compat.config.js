@@ -8,8 +8,9 @@
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 const { bundler } = require( '@ckeditor/ckeditor5-dev-utils' );
-
+const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 const BabiliPlugin = require( 'babili-webpack-plugin' );
+const buildConfig = require( './build-config' );
 
 module.exports = {
 	devtool: 'source-map',
@@ -26,6 +27,9 @@ module.exports = {
 	},
 
 	plugins: [
+		new CKEditorWebpackPlugin( {
+			languages: [ buildConfig.language ]
+		} ),
 		new BabiliPlugin( null, {
 			comments: false
 		} ),

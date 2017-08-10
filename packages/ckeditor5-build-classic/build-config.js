@@ -24,6 +24,7 @@ module.exports = {
 		'@ckeditor/ckeditor5-list/src/list',
 		'@ckeditor/ckeditor5-paragraph/src/paragraph',
 	],
+	language: 'en',
 	config: {
 		toolbar: [
 			'headings',
