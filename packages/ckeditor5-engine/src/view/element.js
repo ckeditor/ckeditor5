@@ -676,7 +676,7 @@ export default class Element extends Node {
 	/**
 	 * Returns identity string based on element's name, styles, classes and other attributes.
 	 * Two elements that {@link #isSimilar are similar} will have same identity string.
-	 * It has following format:
+	 * It has the following format:
 	 *
 	 *		"name|classes(class1,class2,class3)|styles(style1=val1,style2=val2)|attributes(attr1=val1,attr2=val2)"
  	 *

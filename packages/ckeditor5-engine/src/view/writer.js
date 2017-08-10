@@ -990,11 +990,13 @@ function shouldABeOutsideB( a, b ) {
 		return false;
 	}
 
+	// Two attribute elements with same priority and name will be merged into one element so there is no need to preserve
+	// order in such situations.
 	if ( a.name == b.name ) {
 		return true;
 	}
 
-	// When priorities are equal use identities.
+	// When priorities are equal and names are different - use identities.
 	return a.getIdentity() < b.getIdentity();
 }
 
