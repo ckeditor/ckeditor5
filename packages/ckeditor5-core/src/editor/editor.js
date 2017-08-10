@@ -197,7 +197,7 @@ export default class Editor {
 	 * Creates a basic editor instance.
 	 *
 	 * @param {Object} config The editor config. You can find the list of config options in
-	 * {@link module:core/editor/configoptions~ConfigOptions}.
+	 * {@link module:core/editor/editorconfig~EditorConfig}.
 	 * @returns {Promise} Promise resolved once editor is ready.
 	 * @returns {module:core/editor/editor~Editor} return.editor The editor instance.
 	 */

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module core/editor/configoptions
+ * @module core/editor/editorconfig
  */
 
 /**
@@ -24,13 +24,13 @@
  *			.then( ... )
  *			.catch( ... );
  *
- * @interface ConfigOptions
+ * @interface EditorConfig
  */
 
 /**
  * The list of plugins to load.
  *
- * If you use an {@link builds/guides/overview editor build} you can define the list of plugins to load
+ * If you use an {@linkTODO builds/guides/overview editor build} you can define the list of plugins to load
  * using names of plugins which are available:
  *
  *		const config = {
@@ -54,17 +54,17 @@
  *			plugins: [ EssentialsPreset, Bold ]
  *		};
  *
- * @member {Array.<String|Function>} module:core/editor/configoptions~ConfigOptions#plugins
+ * @member {Array.<String|Function>} module:core/editor/editorconfig~EditorConfig#plugins
  */
 
 /**
- * The list of plugins which should not be loaded despite being available in an {@link builds/guides/overview editor build}.
+ * The list of plugins which should not be loaded despite being available in an {@linkTODO builds/guides/overview editor build}.
  *
  *		const config = {
  *			removePlugins: [ 'Bold', 'Italic' ]
  *		};
  *
- * @member {Array.<String>} module:core/editor/configoptions~ConfigOptions#removePlugins
+ * @member {Array.<String>} module:core/editor/editorconfig~EditorConfig#removePlugins
  */
 
 /**
@@ -97,5 +97,5 @@
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
  * (e.g. the top menu). Thanks to setting the toolbar offset the toolbar won't be positioned underneath or above the page's UI.
  *
- * @member {Object} module:core/editor/configoptions~ConfigOptions#toolbar
+ * @member {Object} module:core/editor/editorconfig~EditorConfig#toolbar
  */
