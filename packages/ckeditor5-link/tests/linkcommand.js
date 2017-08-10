@@ -151,8 +151,8 @@ describe( 'LinkCommand', () => {
 				expect( command.value ).to.equal( 'url' );
 			} );
 
-			it(
-				'should overwrite `linkHref` attribute of selected text only, when selection start inside text with `linkHref` attribute',
+			it( 'should overwrite `linkHref` attribute of selected text only, ' +
+				'when selection start inside text with `linkHref` attribute',
 			() => {
 				setData( document, 'f<$text linkHref="other url">o[o</$text>ba]r' );
 

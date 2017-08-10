@@ -140,9 +140,8 @@ describe( 'UnlinkCommand', () => {
 					);
 			} );
 
-			it(
-				'should remove `linkHref` attribute from selection siblings with the same attribute value and do nothing with other ' +
-				'attributes',
+			it( 'should remove `linkHref` attribute from selection siblings with the same attribute value ' +
+				'and do nothing with other attributes',
 			() => {
 				setData(
 					document,

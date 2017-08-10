@@ -28,26 +28,27 @@ describe( 'Link', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Link, Paragraph ]
-		} )
-		.then( newEditor => {
-			newEditor.editing.view.attachDomRoot( editorElement );
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Link, Paragraph ]
+			} )
+			.then( newEditor => {
+				newEditor.editing.view.attachDomRoot( editorElement );
 
-			editor = newEditor;
+				editor = newEditor;
 
-			linkFeature = editor.plugins.get( Link );
-			linkButton = editor.ui.componentFactory.create( 'link' );
-			unlinkButton = editor.ui.componentFactory.create( 'unlink' );
-			balloon = editor.plugins.get( ContextualBalloon );
-			formView = linkFeature.formView;
+				linkFeature = editor.plugins.get( Link );
+				linkButton = editor.ui.componentFactory.create( 'link' );
+				unlinkButton = editor.ui.componentFactory.create( 'unlink' );
+				balloon = editor.plugins.get( ContextualBalloon );
+				formView = linkFeature.formView;
 
-			// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
-			testUtils.sinon.stub( balloon.view, 'attachTo', () => {} );
-			testUtils.sinon.stub( balloon.view, 'pin', () => {} );
+				// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
+				testUtils.sinon.stub( balloon.view, 'attachTo' ).returns( {} );
+				testUtils.sinon.stub( balloon.view, 'pin' ).returns( {} );
 
-			formView.init();
-		} );
+				formView.init();
+			} );
 	} );
 
 	afterEach( () => {
@@ -240,7 +241,7 @@ describe( 'Link', () => {
 
 				setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
 
-				const spy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
 				linkFeature._showPanel();
 				viewDocument.render();
@@ -258,7 +259,7 @@ describe( 'Link', () => {
 				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 				linkFeature._showPanel();
-				const spy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
 				const root = viewDocument.getRoot();
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
@@ -281,7 +282,7 @@ describe( 'Link', () => {
 				setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
 
 				linkFeature._showPanel();
-				const spy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
 				// Fires #render.
 				const root = viewDocument.getRoot();
@@ -305,7 +306,7 @@ describe( 'Link', () => {
 
 				linkFeature._showPanel();
 
-				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 				const spyHide = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 
 				const root = viewDocument.getRoot();
@@ -330,7 +331,7 @@ describe( 'Link', () => {
 
 				linkFeature._showPanel();
 
-				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 				const spyHide = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 
 				const root = viewDocument.getRoot();
@@ -352,7 +353,7 @@ describe( 'Link', () => {
 
 				linkFeature._showPanel();
 
-				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 				const spyHide = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 
 				const root = viewDocument.getRoot();
@@ -434,7 +435,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should show the #_balloon on execute event with the selected #formView', () => {
-			const spy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
+			const spy = testUtils.sinon.stub( linkFeature, '_showPanel' ).returns( {} );
 
 			linkButton.fire( 'execute' );
 			sinon.assert.calledWithExactly( spy, true );
@@ -468,7 +469,7 @@ describe( 'Link', () => {
 
 	describe( 'keyboard support', () => {
 		it( 'should show the #_balloon with selected #formView on Ctrl+K keystroke', () => {
-			const spy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
+			const spy = testUtils.sinon.stub( linkFeature, '_showPanel' ).returns( {} );
 			const command = editor.commands.get( 'link' );
 
 			command.isEnabled = false;
@@ -603,7 +604,7 @@ describe( 'Link', () => {
 				observer = editor.editing.view.getObserver( ClickObserver );
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
 
-				spy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
+				spy = testUtils.sinon.stub( linkFeature, '_showPanel' ).returns( {} );
 			} );
 
 			it( 'should open with not selected formView when collapsed selection is inside link element', () => {
