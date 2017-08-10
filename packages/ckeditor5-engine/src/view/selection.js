@@ -13,6 +13,7 @@ import Position from './position';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import Element from './element';
+import count from '@ckeditor/ckeditor5-utils/src/count';
 
 /**
  * Class representing selection in tree view.
@@ -207,6 +208,7 @@ export default class Selection {
 	 *
 	 * @fires change
 	 * @param {module:engine/view/range~Range} range
+	 * @param {Boolean} isBackward
 	 */
 	addRange( range, isBackward ) {
 		if ( !( range instanceof Range ) ) {
@@ -335,6 +337,59 @@ export default class Selection {
 			}
 		}
 
+		return true;
+	}
+
+	/**
+	 * Checks whether this selection is similar to given selection. Selections are similar if they have same directions, same
+	 * number of ranges, and all {@link module:engine/view/range~Range#getTrimmed trimmed} ranges from one selection are
+	 * "touching" any trimmed range from other selection.
+	 *
+	 * Ranges touch if their start positions and end positions {@link module:engine/view/position~Position#isTouching are touching}.
+	 *
+	 * @param {module:engine/view/selection~Selection} otherSelection Selection to compare with.
+	 * @returns {Boolean} `true` if selections are similar, `false` otherwise.
+	 */
+	isSimilar( otherSelection ) {
+		if ( this.isBackward != otherSelection.isBackward ) {
+			return false;
+		}
+
+		const numOfRangesA = count( this.getRanges() );
+		const numOfRangesB = count( otherSelection.getRanges() );
+
+		// If selections have different number of ranges, they cannot be similar.
+		if ( numOfRangesA != numOfRangesB ) {
+			return false;
+		}
+
+		// If both selections have no ranges, they are similar.
+		if ( numOfRangesA == 0 ) {
+			return true;
+		}
+
+		// Check if each range in one selection has a similar range in other selection.
+		for ( let rangeA of this.getRanges() ) {
+			rangeA = rangeA.getTrimmed();
+
+			let found = false;
+
+			for ( let rangeB of otherSelection.getRanges() ) {
+				rangeB = rangeB.getTrimmed();
+
+				if ( rangeA.start.isEqual( rangeB.start ) && rangeA.end.isEqual( rangeB.end ) ) {
+					found = true;
+					break;
+				}
+			}
+
+			// For `rangeA`, neither range in `otherSelection` was similar. So selections are not similar.
+			if ( !found ) {
+				return false;
+			}
+		}
+
+		// There were no ranges that weren't matched. Selections are similar.
 		return true;
 	}
 

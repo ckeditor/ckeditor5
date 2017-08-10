@@ -130,8 +130,13 @@ export default class Range {
 	 * @returns {module:engine/view/range~Range} Shrink range.
 	 */
 	getTrimmed() {
-		let start = this.start.getLastMatchingPosition( enlargeTrimSkip, { boundaries: new Range( this.start, this.end ) } );
-		let end = this.end.getLastMatchingPosition( enlargeTrimSkip, { boundaries: new Range( start, this.end ), direction: 'backward' } );
+		let start = this.start.getLastMatchingPosition( enlargeTrimSkip );
+
+		if ( start.isAfter( this.end ) || start.isEqual( this.end ) ) {
+			return new Range( start, start );
+		}
+
+		let end = this.end.getLastMatchingPosition( enlargeTrimSkip, { direction: 'backward' } );
 		const nodeAfterStart = start.nodeAfter;
 		const nodeBeforeEnd = end.nodeBefore;
 
@@ -437,7 +442,7 @@ export default class Range {
 	}
 }
 
-// Function used by getEnlagred and getShrinked methods.
+// Function used by getEnlagred and getTrimmed methods.
 function enlargeTrimSkip( value ) {
 	if ( value.item.is( 'attributeElement' ) || value.item.is( 'uiElement' ) ) {
 		return true;

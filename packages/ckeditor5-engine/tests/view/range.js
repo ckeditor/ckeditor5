@@ -183,13 +183,19 @@ describe( 'Range', () => {
 		// As above.
 		it( 'case 9', () => {
 			expect( trim( '<p><b></b>[<b></b>]<b></b></p>' ) )
-				.to.equal( '<p><b></b><b></b>[]<b></b></p>' );
+				.to.equal( '<p><b></b><b></b><b></b>[]</p>' );
 		} );
 
 		// As above.
 		it( 'case 10', () => {
 			expect( trim( '<p>[<b></b><b></b>]</p>' ) )
 				.to.equal( '<p><b></b><b></b>[]</p>' );
+		} );
+
+		// As above.
+		it( 'case 11', () => {
+			expect( trim( '<p><b></b><b>[]</b><b></b></p>' ) )
+				.to.equal( '<p><b></b><b></b><b></b>[]</p>' );
 		} );
 
 		function trim( data ) {

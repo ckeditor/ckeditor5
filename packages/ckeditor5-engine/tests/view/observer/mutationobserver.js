@@ -91,6 +91,40 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].oldChildren[ 0 ].data ).to.equal( 'foo' );
 	} );
 
+	it( 'should handle unbold', () => {
+		viewRoot.removeChildren( 0, viewRoot.childCount );
+		viewRoot.appendChildren( parse( '<container:p><attribute:b>foo</attribute:b></container:p>' ) );
+		viewDocument.render();
+
+		const domP = domEditor.childNodes[ 0 ];
+		const domB = domP.childNodes[ 0 ];
+		domP.removeChild( domB );
+		domP.appendChild( document.createTextNode( 'foo' ) );
+
+		mutationObserver.flush();
+
+		// "expectDomEditorNotToChange()".
+		expect( domEditor.childNodes.length ).to.equal( 1 );
+		expect( domEditor.childNodes[ 0 ].tagName ).to.equal( 'P' );
+
+		expect( domEditor.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
+		expect( domEditor.childNodes[ 0 ].childNodes[ 0 ].tagName ).to.equal( 'B' );
+
+		expect( domEditor.childNodes[ 0 ].childNodes[ 0 ].childNodes.length ).to.equal( 1 );
+		expect( domEditor.childNodes[ 0 ].childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
+
+		// Check mutations.
+		expect( lastMutations.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
+		expect( lastMutations[ 0 ].node ).to.equal( viewRoot.getChild( 0 ) );
+
+		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].newChildren[ 0 ].data ).to.equal( 'foo' );
+
+		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].oldChildren[ 0 ].name ).to.equal( 'b' );
+	} );
+
 	it( 'should deduplicate text changes', () => {
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foox';
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'fooxy';

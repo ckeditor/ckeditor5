@@ -8,7 +8,9 @@
 import DomConverter from '../../../src/view/domconverter';
 import ViewEditable from '../../../src/view/editableelement';
 import ViewDocument from '../../../src/view/document';
-import { BR_FILLER, NBSP_FILLER } from '../../../src/view/filler';
+import ViewUIElement from '../../../src/view/uielement';
+import ViewContainerElement from '../../../src/view/containerelement';
+import { BR_FILLER, NBSP_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -187,6 +189,106 @@ describe( 'DomConverter', () => {
 				expect( converter.isComment( element ) ).to.be.false;
 				expect( converter.isComment( documentFragment ) ).to.be.false;
 				expect( converter.isComment( {} ) ).to.be.false;
+			} );
+		} );
+	} );
+
+	describe( 'isDomSelectionCorrect()', () => {
+		function domSelection( anchorParent, anchorOffset, focusParent, focusOffset ) {
+			const sel = document.getSelection();
+
+			sel.collapse( anchorParent, anchorOffset );
+			sel.extend( focusParent, focusOffset );
+
+			return sel;
+		}
+
+		let domP, domFillerTextNode, domUiSpan, domUiDeepSpan;
+
+		beforeEach( () => {
+			// <p>INLINE_FILLERfoo<span></span></p>.
+			domP = document.createElement( 'p' );
+			domFillerTextNode = document.createTextNode( INLINE_FILLER + 'foo' );
+			domUiSpan = document.createElement( 'span' );
+
+			domUiDeepSpan = document.createElement( 'span' );
+			domUiSpan.appendChild( domUiDeepSpan );
+
+			const viewUiSpan = new ViewUIElement( 'span' );
+			const viewElementSpan = new ViewContainerElement( 'span' );
+
+			domP.appendChild( domFillerTextNode );
+			domP.appendChild( domUiSpan );
+
+			converter.bindElements( domUiSpan, viewUiSpan );
+			converter.bindElements( domUiDeepSpan, viewElementSpan );
+
+			document.body.appendChild( domP );
+		} );
+
+		it( 'should return true for correct dom selection', () => {
+			// <p>INLINE_FILLER{foo}<span></span></p>.
+			const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
+			expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.true;
+
+			// <p>INLINE_FILLERfoo[]<span></span></p>.
+			const sel2 = domSelection( domP, 1, domP, 1 );
+			expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.true;
+
+			// <p>INLINE_FILLERfoo<span></span>[]</p>.
+			const sel3 = domSelection( domP, 2, domP, 2 );
+			expect( converter.isDomSelectionCorrect( sel3 ) ).to.be.true;
+		} );
+
+		describe( 'should return false', () => {
+			it( 'if anchor or focus is before filler node', () => {
+				// Tests forward and backward selection.
+				// <p>[INLINE_FILLERfoo]<span-ui><span-container></span></span></p>.
+				const sel1 = domSelection( domP, 0, domP, 1 );
+				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
+
+				const sel2 = domSelection( domP, 1, domP, 0 );
+				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
+			} );
+
+			it( 'if anchor or focus is before filler sequence', () => {
+				// Tests forward and backward selection.
+				// <p>{INLINE_FILLERfoo}<span-ui><span-container></span></span></p>.
+				const sel1 = domSelection( domFillerTextNode, 0, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
+				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
+
+				const sel2 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH + 3, domFillerTextNode, 0 );
+				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
+			} );
+
+			it( 'if anchor or focus is in the middle of filler sequence', () => {
+				// Tests forward and backward selection.
+				// <p>I{NLINE_FILLERfoo}<span-ui><span-container></span></span></p>.
+				const sel1 = domSelection( domFillerTextNode, 1, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
+				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
+
+				const sel2 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH + 3, domFillerTextNode, 1 );
+				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
+			} );
+
+			it( 'if anchor or focus is directly inside dom element that represents view ui element', () => {
+				// Tests forward and backward selection.
+				// <p>INLINE_FILLER{foo<span-ui>]<span-container></span></span></p>.
+				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH + 3, domUiSpan, 0 );
+				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
+
+				const sel2 = domSelection( domUiSpan, 0, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
+				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
+			} );
+
+			it( 'if anchor or focus is inside deep ui element structure (not directly in ui element)', () => {
+				// Tests forward and backward selection.
+				// <p>INLINE_FILLER{foo<span-ui><span-container>]</span></span></p>.
+				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH + 3, domUiDeepSpan, 0 );
+				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
+
+				const sel2 = domSelection( domUiDeepSpan, 0, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
+				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
 			} );
 		} );
 	} );
