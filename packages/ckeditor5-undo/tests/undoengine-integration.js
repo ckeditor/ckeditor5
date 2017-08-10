@@ -777,6 +777,40 @@ describe( 'UndoEngine integration', () => {
 		} );
 	} );
 
+	describe( 'pasting', () => {
+		function pasteHtml( editor, html ) {
+			editor.editing.view.fire( 'paste', {
+				dataTransfer: createDataTransfer( { 'text/html': html } ),
+				preventDefault() {}
+			} );
+		}
+
+		function createDataTransfer( data ) {
+			return {
+				getData( type ) {
+					return data[ type ];
+				}
+			};
+		}
+
+		// ckeditor5-engine#t/1065
+		it( 'undo paste into non empty element should not throw and be correct', () => {
+			input( '<paragraph>Foo[]</paragraph>' );
+
+			pasteHtml( editor, '<p>a</p><p>b</p>' );
+			output( '<paragraph>Fooa</paragraph><paragraph>b[]</paragraph>' );
+
+			pasteHtml( editor, '<p>c</p><p>d</p>' );
+			output( '<paragraph>Fooa</paragraph><paragraph>bc</paragraph><paragraph>d[]</paragraph>' );
+
+			editor.execute( 'undo' );
+			output( '<paragraph>Fooa</paragraph><paragraph>b[]</paragraph>' );
+
+			editor.execute( 'undo' );
+			output( '<paragraph>Foo[]</paragraph>' );
+		} );
+	} );
+
 	describe( 'other edge cases', () => {
 		it( 'deleteContent between two nodes', () => {
 			input( '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
