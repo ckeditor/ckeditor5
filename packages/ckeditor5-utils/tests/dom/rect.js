@@ -768,14 +768,14 @@ describe( 'Rect', () => {
 
 		describe( 'excludeScrollbars', () => {
 			it( 'should exclude scrollbars from viewport\'s rect', () => {
-				testUtils.sinon.stub( global, 'window', {
+				testUtils.sinon.stub( global, 'window' ).value( {
 					innerWidth: 1000,
 					innerHeight: 500,
 					scrollX: 100,
 					scrollY: 200
 				} );
 
-				testUtils.sinon.stub( global, 'document', {
+				testUtils.sinon.stub( global, 'document' ).value( {
 					documentElement: {
 						clientWidth: 990,
 						clientHeight: 490

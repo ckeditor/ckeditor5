@@ -26,7 +26,7 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 		secondAncestor = document.createElement( 'div' );
 		body = document.createElement( 'div' );
 
-		testUtils.sinon.stub( global, 'document', { body } );
+		testUtils.sinon.stub( global, 'document' ).value( { body } );
 
 		document.body.appendChild( body );
 		body.appendChild( secondAncestor );
@@ -34,12 +34,12 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 		firstAncestor.appendChild( element );
 
 		// Make the element immune to the border-width-* styles in the test environment.
-		testUtils.sinon.stub( global.window, 'getComputedStyle', () => ( {
+		testUtils.sinon.stub( global.window, 'getComputedStyle' ).returns( {
 			borderTopWidth: '0px',
 			borderRightWidth: '0px',
 			borderBottomWidth: '0px',
 			borderLeftWidth: '0px'
-		} ) );
+		} );
 
 		stubRect( firstAncestor, {
 			top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
@@ -168,7 +168,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 			scrollLeft: 100, scrollTop: 100
 		} );
 
-		testUtils.sinon.stub( global, 'window', {
+		testUtils.sinon.stub( global, 'window' ).value( {
 			innerWidth: 1000,
 			innerHeight: 500,
 			scrollX: 100,
@@ -183,7 +183,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		// Assuming 20px v- and h-scrollbars here.
-		testUtils.sinon.stub( global, 'document', {
+		testUtils.sinon.stub( global, 'document' ).value( {
 			body: document.body,
 			documentElement: {
 				clientWidth: 980,
