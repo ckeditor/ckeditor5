@@ -18,7 +18,7 @@ describe( 'global', () => {
 			} );
 
 			it( 'stubs', () => {
-				testUtils.sinon.stub( global, 'window', {
+				testUtils.sinon.stub( global, 'window' ).value( {
 					scrollX: 100
 				} );
 
@@ -34,7 +34,7 @@ describe( 'global', () => {
 			} );
 
 			it( 'stubs', () => {
-				testUtils.sinon.stub( global, 'document', {
+				testUtils.sinon.stub( global, 'document' ).value( {
 					foo: 'abc'
 				} );
 
