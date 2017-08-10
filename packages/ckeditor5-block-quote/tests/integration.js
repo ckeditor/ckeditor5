@@ -195,7 +195,7 @@ describe( 'BlockQuote', () => {
 		it( 'scrolls the view document to the selection after the command is executed', () => {
 			const data = fakeEventData();
 			const execSpy = sinon.spy( editor, 'execute' );
-			const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection', () => {} );
+			const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 
 			setModelData( doc,
 				'<paragraph>x</paragraph>' +
