@@ -132,13 +132,8 @@ export default class DeleteCommand extends Command {
 		const document = this.editor.document;
 		const selection = document.selection;
 		const limitElement = document.schema.getLimitElement( selection );
-		const limitStartPosition = Position.createAt( limitElement );
-		const limitEndPosition = Position.createAt( limitElement, 'end' );
 
-		if (
-			!limitStartPosition.isTouching( selection.getFirstPosition() ) ||
-			!limitEndPosition.isTouching( selection.getLastPosition() )
-		) {
+		if ( !selection.isEntireContentSelected( limitElement ) ) {
 			return false;
 		}
 
