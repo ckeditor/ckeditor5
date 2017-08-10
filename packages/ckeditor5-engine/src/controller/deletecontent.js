@@ -197,13 +197,8 @@ function replaceEntireContentWithParagraph( batch, selection ) {
 // * whether the paragraph is allowed in schema in the common ancestor.
 function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
 	const limitElement = schema.getLimitElement( selection );
-	const limitStartPosition = Position.createAt( limitElement );
-	const limitEndPosition = Position.createAt( limitElement, 'end' );
 
-	if (
-		!limitStartPosition.isTouching( selection.getFirstPosition() ) ||
-		!limitEndPosition.isTouching( selection.getLastPosition() )
-	) {
+	if ( !selection.isEntireContentSelected( limitElement ) ) {
 		return false;
 	}
 

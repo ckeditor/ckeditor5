@@ -625,6 +625,20 @@ export default class Selection {
 	}
 
 	/**
+	 * Checks whether the entire content in specified element is selected.
+	 *
+	 * @param {module:engine/model/element~Element} element
+	 * @returns {Boolean}
+	 */
+	isEntireContentSelected( element ) {
+		const limitStartPosition = Position.createAt( element );
+		const limitEndPosition = Position.createAt( element, 'end' );
+
+		return limitStartPosition.isTouching( this.getFirstPosition() ) &&
+			limitEndPosition.isTouching( this.getLastPosition() );
+	}
+
+	/**
 	 * Creates and returns an instance of `Selection` that is a clone of given selection, meaning that it has same
 	 * ranges and same direction as this selection.
 	 *
