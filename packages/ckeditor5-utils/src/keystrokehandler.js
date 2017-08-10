@@ -20,8 +20,8 @@ import priorities from './priorities';
  *
  *		handler.listenTo( emitter );
  *
- *		handler.set( 'ctrl + a', ( keyEvtData, cancel ) => {
- *			console.log( 'ctrl + a has been pressed' );
+ *		handler.set( 'Ctrl+A', ( keyEvtData, cancel ) => {
+ *			console.log( 'Ctrl+A has been pressed' );
  *			cancel();
  *		} );
  */
@@ -111,15 +111,4 @@ export default class KeystrokeHandler {
 	destroy() {
 		this._listener.stopListening();
 	}
-
-	/**
-	 * This is internal plugin event which is fired when an associated
-	 * {@link module:utils/emittermixin~Emitter} fires the `keydown` event.
-	 *
-	 * It is used to aggregate specific keystrokes coming from an `Emitter`
-	 * and execute callbacks in the priority order.
-	 *
-	 * @private
-	 * @event _listener#_keydown
-	 */
 }
