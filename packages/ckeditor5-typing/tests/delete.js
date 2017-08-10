@@ -53,7 +53,7 @@ describe( 'Delete feature', () => {
 	} );
 
 	it( 'scrolls the editing document to the selection after executing the command', () => {
-		const scrollSpy = sinon.stub( editingView, 'scrollToTheSelection', () => {} );
+		const scrollSpy = sinon.stub( editingView, 'scrollToTheSelection' );
 		const executeSpy = editor.execute = sinon.spy();
 
 		editingView.fire( 'delete', new DomEventData( editingView, getDomEvent(), {
