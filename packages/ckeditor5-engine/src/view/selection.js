@@ -343,9 +343,7 @@ export default class Selection {
 	/**
 	 * Checks whether this selection is similar to given selection. Selections are similar if they have same directions, same
 	 * number of ranges, and all {@link module:engine/view/range~Range#getTrimmed trimmed} ranges from one selection are
-	 * "touching" any trimmed range from other selection.
-	 *
-	 * Ranges touch if their start positions and end positions {@link module:engine/view/position~Position#isTouching are touching}.
+	 * equal to any trimmed range from other selection.
 	 *
 	 * @param {module:engine/view/selection~Selection} otherSelection Selection to compare with.
 	 * @returns {Boolean} `true` if selections are similar, `false` otherwise.

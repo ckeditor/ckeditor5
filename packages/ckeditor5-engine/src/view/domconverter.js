@@ -854,7 +854,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Checks if the given DOM position is a correct place for selection boundary. See {@link ~isDomSelectionCorrect}.
+	 * Checks if the given DOM position is a correct place for selection boundary. See {@link #isDomSelectionCorrect}.
 	 *
 	 * @private
 	 * @param {Element} domParent Position parent.
