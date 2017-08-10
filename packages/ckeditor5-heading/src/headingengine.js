@@ -19,7 +19,7 @@ const defaultModelElement = 'paragraph';
  * The headings engine feature. It handles switching between block formats &ndash; headings and paragraph.
  * This class represents the engine part of the heading feature. See also {@link module:heading/heading~Heading}.
  *
- * @extends modules:core/plugin~Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class HeadingEngine extends Plugin {
 	/**
