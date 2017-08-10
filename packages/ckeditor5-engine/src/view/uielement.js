@@ -124,11 +124,26 @@ function jumpOverUiElement( evt, data, domConverter ) {
 			}
 
 			// Skip all following ui elements.
-			const nextViewPosition = viewPosition.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
+			let jumpedOverAnyUiElement = false;
+
+			const nextViewPosition = viewPosition.getLastMatchingPosition( value => {
+				if ( value.item.is( 'uiElement' ) ) {
+					// Remember that there was at least one ui element.
+					jumpedOverAnyUiElement = true;
+				}
+
+				// Jump over ui elements, jump over empty attribute elements, move up from inside of attribute element.
+				if ( value.item.is( 'uiElement' ) || value.item.is( 'attributeElement' ) ) {
+					return true;
+				}
+
+				// Don't jump over text or don't get out of container element.
+				return false;
+			} );
 
 			// If anything has been skipped, fix position.
 			// This `if` could be possibly omitted but maybe it is better not to mess with DOM selection if not needed.
-			if ( !viewPosition.isEqual( nextViewPosition ) ) {
+			if ( jumpedOverAnyUiElement ) {
 				const newDomPosition = domConverter.viewPositionToDom( nextViewPosition );
 
 				if ( domSelectionCollapsed ) {

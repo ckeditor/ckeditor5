@@ -92,6 +92,22 @@ describe( 'Document', () => {
 			expect( domSelection.focusOffset ).to.equal( 2 );
 		} );
 
+		it( 'jump over ui element if selection is in attribute element', () => {
+			setData( viewDocument, '<container:p><attribute:b>foo{}</attribute:b><ui:span></ui:span>bar</container:p>' );
+			viewDocument.render();
+
+			viewDocument.fire(
+				'keydown',
+				{ keyCode: keyCodes.arrowright, shiftKey: true, domTarget: viewDocument.domRoots.get( 'main' ) }
+			);
+
+			const domSelection = document.getSelection();
+
+			expect( domSelection.anchorNode.nodeName.toUpperCase() ).to.equal( 'P' );
+			expect( domSelection.anchorOffset ).to.equal( 2 );
+			expect( domSelection.isCollapsed ).to.be.true;
+		} );
+
 		it( 'should do nothing if caret is not directly before ui element', () => {
 			setData( viewDocument, '<container:p>fo{}o<ui:span></ui:span>bar</container:p>' );
 			viewDocument.render();
