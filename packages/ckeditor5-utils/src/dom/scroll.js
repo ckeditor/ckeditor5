@@ -13,10 +13,7 @@ import global from './global';
 import isRange from './isrange';
 import Rect from './rect';
 
-const utils = {
-	scrollViewportToShowTarget,
-	scrollAncestorsToShowTarget
-};
+const utils = {};
 
 /**
  * Makes any page `HTMLElement` or `Range` (`target`) visible inside the browser viewport.
@@ -102,6 +99,13 @@ export function scrollAncestorsToShowTarget( target ) {
 		}
 	} while ( ( parent = parent.parentNode ) );
 }
+
+// TODO: Using a property value shorthand in the top of the file
+// causes JSDoc to throw errors. See https://github.com/cksource/docs-builder/issues/75.
+Object.assign( utils, {
+	scrollViewportToShowTarget,
+	scrollAncestorsToShowTarget
+} );
 
 // For testing purposes (easy helper stubbing).
 export { utils as _test };
