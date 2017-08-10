@@ -625,12 +625,14 @@ export default class Selection {
 	}
 
 	/**
-	 * Checks whether the entire content in specified element is selected.
+	 * Checks whether the selection contains the entire content of the given element. This means that selection must start
+	 * at a position {@link module:engine/model/position~Position#isTouching touching} the element's start and ends at position
+	 * touching the element's end.
 	 *
-	 * @param {module:engine/model/element~Element} element
+	 * @param {module:engine/model/element~Element} [element=this.anchor.root]
 	 * @returns {Boolean}
 	 */
-	isEntireContentSelected( element ) {
+	isEntireContentSelected( element = this.anchor.root ) {
 		const limitStartPosition = Position.createAt( element );
 		const limitEndPosition = Position.createAt( element, 'end' );
 
