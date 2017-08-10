@@ -66,7 +66,7 @@ describe( 'CommandCollection', () => {
 		it( 'returns iterator', () => {
 			const names = collection.names();
 
-			expect( names.next ).to.be.a.function;
+			expect( names.next ).to.be.a( 'function' );
 		} );
 
 		it( 'returns iterator of command names', () => {
@@ -81,7 +81,7 @@ describe( 'CommandCollection', () => {
 		it( 'returns iterator', () => {
 			const commands = collection.commands();
 
-			expect( commands.next ).to.be.a.function;
+			expect( commands.next ).to.be.a( 'function' );
 		} );
 
 		it( 'returns iterator of commands', () => {
