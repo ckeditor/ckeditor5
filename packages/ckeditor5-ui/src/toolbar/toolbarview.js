@@ -117,7 +117,7 @@ export default class ToolbarView extends View {
 	 * A utility which expands a plain toolbar configuration into
 	 * {@link module:ui/toolbar/toolbarview~ToolbarView#items} using a given component factory.
 	 *
-	 * @param {Array} config The toolbar config.
+	 * @param {Array.<String>} config The toolbar items config.
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
 	 */
 	fillFromConfig( config, factory ) {

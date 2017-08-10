@@ -43,6 +43,15 @@ export default class ComponentFactory {
 	}
 
 	/**
+	 * Returns iterator of component names.
+	 *
+	 * @returns {Iterator.<String>}
+	 */
+	* names() {
+		yield* this._components.keys();
+	}
+
+	/**
 	 * Registers a component factory.
 	 *
 	 * @param {String} name The name of the component.

@@ -8,11 +8,11 @@
  */
 
 /**
- * Normalizes the toolbar configuration (`config.toolbar`), which may be defined as an `Array`
+ * Normalizes the toolbar configuration (`config.toolbar`), which may be defined as an `Array`:
  *
  * 		toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', ... ]
  *
- * or an `Object`
+ * or an `Object`:
  *
  *		toolbar: {
  *			items: [ 'headings', 'bold', 'italic', 'link', 'unlink', ... ],

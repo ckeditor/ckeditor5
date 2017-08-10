@@ -21,7 +21,22 @@ describe( 'ComponentFactory', () => {
 		} );
 	} );
 
-	describe( 'add', () => {
+	describe( 'names()', () => {
+		it( 'returns iterator', () => {
+			const names = factory.names();
+
+			expect( names.next ).to.be.a( 'function' );
+		} );
+
+		it( 'returns iterator of command names', () => {
+			factory.add( 'foo', () => {} );
+			factory.add( 'bar', () => {} );
+
+			expect( Array.from( factory.names() ) ).to.have.members( [ 'foo', 'bar' ] );
+		} );
+	} );
+
+	describe( 'add()', () => {
 		it( 'throws when trying to override already registered component', () => {
 			factory.add( 'foo', () => {} );
 
@@ -31,7 +46,7 @@ describe( 'ComponentFactory', () => {
 		} );
 	} );
 
-	describe( 'create', () => {
+	describe( 'create()', () => {
 		it( 'throws when trying to create a component which has not been registered', () => {
 			expect( () => {
 				factory.create( 'foo' );
