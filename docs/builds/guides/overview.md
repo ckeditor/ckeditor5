@@ -44,9 +44,9 @@ Each build was designed to satisfy as many use cases as possible. They differ in
 
 Every build comes with a default set of features and a default configuration of them. Although the builds try to fit many cases, they may still need to be adjusted in some integrations.
 
-You can override the default configuration of features when creating an instance of the editor. It's also possible to remove some of built-in features through the configuration (if the build comes with too many of them). Read more in the {@link TODO Configuration guide}.
+You can override the default configuration of features when creating an instance of the editor. It's also possible to remove some of built-in features through the configuration (if the build comes with too many of them). Read more in the {@linkTODO Configuration guide}.
 
-If a build doesn't provide all the necessary features or you want create a highly optimized build of editor which will contain only the necessary features, then you need to customize the build or create a brand new one. Check {@link TODO Custom builds} for details on how to change the default builds to match your preferences.
+If a build doesn't provide all the necessary features or you want create a highly optimized build of editor which will contain only the necessary features, then you need to customize the build or create a brand new one. Check {@linkTODO Custom builds} for details on how to change the default builds to match your preferences.
 
 ## Use cases
 
