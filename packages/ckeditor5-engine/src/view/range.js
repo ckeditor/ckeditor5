@@ -440,6 +440,13 @@ export default class Range {
 	static createOn( item ) {
 		return this.createFromPositionAndShift( Position.createBefore( item ), 1 );
 	}
+
+	static createCollapsedAt( itemOrPosition, offset ) {
+		const start = Position.createAt( itemOrPosition, offset );
+		const end = Position.createFromPosition( start );
+
+		return new Range( start, end );
+	}
 }
 
 // Function used by getEnlagred and getTrimmed methods.

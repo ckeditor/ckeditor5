@@ -716,6 +716,13 @@ export default class Range {
 		return this.createFromPositionAndShift( Position.createBefore( item ), item.offsetSize );
 	}
 
+	static createCollapsedAt( itemOrPosition, offset ) {
+		const start = Position.createAt( itemOrPosition, offset );
+		const end = Position.createFromPosition( start );
+
+		return new Range( start, end );
+	}
+
 	/**
 	 * Combines all ranges from the passed array into a one range. At least one range has to be passed.
 	 * Passed ranges must not have common parts.
