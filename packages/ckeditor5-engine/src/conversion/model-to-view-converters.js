@@ -431,7 +431,10 @@ export function convertTextsInsideMarker( selectionDescriptor ) {
  * Function factory, creates converter that converts all elements inside marker's range. Converter checks if element has
  * functions stored under `setVirtualSelection` and `removeVirtualSelection` custom properties and calls them passing
  * {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor. In such case converter will consume
- * all element's children, assuming that they were handled by element itself.
+ * all element's children, assuming that they were handled by element itself. If selection descriptor will not provide
+ * priority, priority 10 will be used as default, to be compliant with
+ * {@link module:engine/conversion/model-to-view-converters~convertTextsInsideMarker} method which uses default priority of
+ * {@link module:engine/view/attributeelement~AttributeElement}.
  *
  * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor|Function} selectionDescriptor
  * @return {Function}
@@ -450,6 +453,10 @@ export function convertElementsInsideMarker( selectionDescriptor ) {
 
 		if ( !consumable.consume( data.item, evt.name ) ) {
 			return;
+		}
+
+		if ( !descriptor.priority ) {
+			descriptor.priority = 10;
 		}
 
 		const viewElement = conversionApi.mapper.toViewElement( modelItem );
@@ -535,9 +542,10 @@ export function eventNameToConsumableType( evtName ) {
 
 /**
  * Creates `span` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from information
- * provided by {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} object.
+ * provided by {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} object. If priority
+ * is not provided in selection descriptor - default priority will be used.
  *
- * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor }descriptor
+ * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor } descriptor
  * @return {module:engine/view/attributeelement~AttributeElement}
  */
 export function virtualSelectionDescriptorToAttributeElement( descriptor ) {
