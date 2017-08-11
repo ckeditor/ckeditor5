@@ -69,24 +69,24 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	plugins: [ Enter, Typing, Paragraph, Undo, Heading, FancyWidget ],
 	toolbar: [ 'headings', 'undo', 'redo' ]
 } )
-.then( editor => {
-	window.editor = editor;
-	const model = editor.document;
+	.then( editor => {
+		window.editor = editor;
+		const model = editor.document;
 
-	buildModelConverter()
-		.for( editor.editing.modelToView )
-		.fromMarker( 'marker' )
-		.toVirtualSelection( { class: 'virtual-selection' } );
+		buildModelConverter()
+			.for( editor.editing.modelToView )
+			.fromMarker( 'marker' )
+			.toVirtualSelection( { class: 'virtual-selection' } );
 
-	document.getElementById( 'add-marker' ).addEventListener( 'mousedown', evt => {
-		editor.document.enqueueChanges( () => {
-			const range = ModelRange.createFromRange( model.selection.getFirstRange() );
-			model.markers.set( 'marker', range );
+		document.getElementById( 'add-marker' ).addEventListener( 'mousedown', evt => {
+			editor.document.enqueueChanges( () => {
+				const range = ModelRange.createFromRange( model.selection.getFirstRange() );
+				model.markers.set( 'marker', range );
+			} );
+
+			evt.preventDefault();
 		} );
-
-		evt.preventDefault();
+	} )
+	.catch( err => {
+		console.error( err.stack );
 	} );
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
