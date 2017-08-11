@@ -77,23 +77,23 @@ export default class ImageStyleEngine extends Plugin {
 /**
  * Image style format descriptor.
  *
- *	import fullIcon from 'path/to/icon.svg`;
+ *		import fullIcon from 'path/to/icon.svg`;
  *
- *	const imageStyleFormat = {
- *		name: 'fullSizeImage',
- *		value: 'full',
- *		icon: fullIcon,
- *		title: `Full size image`,
- *		class: `image-full-size`
- *	}
+ *		const imageStyleFormat = {
+ *			name: 'fullSizeImage',
+ *			value: 'full',
+ *			icon: fullIcon,
+ *			title: 'Full size image',
+ *			class: 'image-full-size'
+ *		}
  *
  * @typedef {Object} module:image/imagestyle/imagestyleengine~ImageStyleFormat
  * @property {String} name The name of the style. It will be used to:
  * * register the {@link module:core/command~Command command} which will apply this style,
- * * store the style's button in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
+ * * store the style's button in the editor {@link module:ui/componentfactory~ComponentFactory}.
  * @property {String} value A value used to store this style in the model attribute.
  * When the value is `null`, the style will be used as the default one. A default style does not apply any CSS class to the view element.
- * @property {String} icon An SVG icon representation to use when creating the style's button.
+ * @property {String} icon An SVG icon source (as XML string) to use when creating the style's button.
  * @property {String} title The style's title.
  * @property {String} className The CSS class used to represent the style in view.
  */

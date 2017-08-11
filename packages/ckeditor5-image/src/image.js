@@ -58,3 +58,26 @@ export default class Image extends Plugin {
 		}
 	}
 }
+
+/**
+ * The configuration of the image features. Used by the image features in `@ckeditor/ckeditor5-image` package.
+ *
+ * Read more in {@link module:image/image~ImageConfig}.
+ *
+ * @member {module:image/image~ImageConfig} module:core/editor/editorconfig~EditorConfig#image
+ */
+
+/**
+ * The configuration of the image features. Used by the image features in `@ckeditor/ckeditor5-image` package.
+ *
+ *		ClassicEditor
+ *			.create( {
+ * 				image: ... // Image feature options.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface ImageConfig
+ */

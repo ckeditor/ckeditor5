@@ -159,3 +159,27 @@ export default class ImageToolbar extends Plugin {
 		return this._balloon.visibleView == this._toolbar;
 	}
 }
+
+/**
+ * Items to be placed in the image toolbar.
+ * The option is used by the {@link module:image/imagetoolbar~ImageToolbar} feature.
+ *
+ * Assuming that you use the following features:
+ *
+ * * {@link module:image/imagestyle~ImageStyle} (with a default configuration),
+ * * {@link module:image/imagetextalternative~ImageTextAlternative}.
+ *
+ * Three toolbar items will be available in {@link module:ui/componentfactory~ComponentFactory}:
+ * `'imageStyleFull'`, `'imageStyleSide'`, and `'imageTextAlternative'` so you can configure the toolbar like this:
+ *
+ *		const imageConfig = {
+ *			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+ *		};
+ *
+ * Of course, the same buttons can also be used in the
+ * {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.
+ *
+ * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+ *
+ * @member {Array.<String>} module:image/image~ImageConfig#toolbar
+ */

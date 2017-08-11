@@ -72,3 +72,43 @@ export default class ImageStyle extends Plugin {
 		} );
 	}
 }
+
+/**
+ * Available image styles.
+ * The option is used by the {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine} feature.
+ *
+ * The default value is:
+ *
+ *		import fullSizeIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
+ *		import sideIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
+ *
+ *		// ...
+ *
+ *		const imageConfig = {
+ *			styles: [
+ *				// Option which defines a style which doesn't apply any class.
+ *				// The style is titled "full" because such images are often styled to take 100% width of the content.
+ *				{ name: 'imageStyleFull', title: t( 'Full size image' ), icon: fullSizeIcon, value: null },
+ *
+ *				// Option which represents a side image.
+ *				{ name: 'imageStyleSide', title: t( 'Side image' ), icon: sideIcon, value: 'side', className: 'image-style-side' }
+ *			]
+ *		};
+ *
+ * Read more about styling images in the {@linkTODO Image styles guide}.
+ *
+ * The feature creates commands based on defined styles, so you can change the style of a selected image by executing
+ * the following command:
+ *
+ *		editor.execute( 'imageStyleSide' );
+ *
+ * The features creates also buttons which execute the commands, so assuming that you use the
+ * default image styles setting you can {@link module:image/image~ImageConfig#toolbar configure the image toolbar}
+ * to contain these options:
+ *
+ *		const imageConfig = {
+ *			toolbar: [ 'imageStyleFull', 'imageStyleSide' ]
+ *		};
+ *
+ * @member {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>} module:image/image~ImageConfig#styles
+ */
