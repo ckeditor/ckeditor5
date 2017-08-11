@@ -84,4 +84,8 @@ ClassicEditor
 	The above is a strict UI-related configuration. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to remove their relative plugins. Check [Enabling features](#Enabling-features) above for more information.
 </side-box>
 
-<!-- TODO Add section about other configuration options. -->
+## Other configuration options
+
+See {@link module:core/editor/editor~EditorConfig} to learn about all available configuration options.
+
+Some of the options may require loading plugins which are not available in the build you use. Read more about {@linkTODO builds/guides/development/custom-builds.md customizing builds}.
