@@ -200,10 +200,32 @@ function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElem
 	}
 
 	let viewPosition = viewSelection.getFirstPosition();
+
+	// This hack is supposed to place attribute element *after* all ui elements if the attribute element would be
+	// the only non-ui child and thus receive a block filler.
+	if ( shouldPushAttributeElement( viewPosition.parent ) ) {
+		viewPosition = viewPosition.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
+	}
+	// End of hack.
+
 	viewPosition = viewWriter.wrapPosition( viewPosition, viewElement );
 
 	viewSelection.removeAllRanges();
 	viewSelection.addRange( new ViewRange( viewPosition, viewPosition ) );
+}
+
+function shouldPushAttributeElement( parent ) {
+	if ( !parent.is( 'element' ) ) {
+		return false;
+	}
+
+	for ( const child of parent.getChildren() ) {
+		if ( !child.is( 'uiElement' ) ) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 /**
