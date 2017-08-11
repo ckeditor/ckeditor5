@@ -14,6 +14,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import Element from './element';
 import count from '@ckeditor/ckeditor5-utils/src/count';
+import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
  * Class representing selection in tree view.
@@ -431,13 +432,39 @@ export default class Selection {
 	/**
 	 * Sets this selection's ranges and direction to the ranges and direction of the given selection.
 	 *
-	 * @param {module:engine/view/selection~Selection} otherSelection
+	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position
+	 * |Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range} selectable
 	 */
-	setTo( otherSelection ) {
-		this._isFake = otherSelection._isFake;
-		this._fakeSelectionLabel = otherSelection._fakeSelectionLabel;
+	setTo( selectable ) {
+		if ( selectable instanceof Selection ) {
+			this._isFake = selectable._isFake;
+			this._fakeSelectionLabel = selectable._fakeSelectionLabel;
+			this.setRanges( selectable.getRanges(), selectable.isBackward );
+		} else if ( selectable instanceof Range ) {
+			this.setRanges( [ selectable ] );
+		} else if ( isIterable( selectable ) ) {
+			this.setRanges( selectable );
+		} else {
+			this.setRanges( [ new Range( selectable ) ] );
+		}
+	}
 
-		this.setRanges( otherSelection.getRanges(), otherSelection.isBackward );
+	/**
+	 * Sets this selection in the provided element.
+	 *
+	 * @param {module:engine/view/element~Element} element
+	 */
+	setIn( element ) {
+		return Range.createIn( element );
+	}
+
+	/**
+	 * Sets this selection on the provided item.
+	 *
+	 * @param {module:engine/view/item~Item} item
+	 */
+	setOn( item ) {
+		return Range.createOn( item );
 	}
 
 	/**
