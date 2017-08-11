@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imagelaternatetext/imagetextalternativecommand
+ * @module image/imagetextalternative/imagetextalternativecommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
