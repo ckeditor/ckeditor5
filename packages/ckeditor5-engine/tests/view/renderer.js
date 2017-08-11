@@ -1438,7 +1438,7 @@ describe( 'Renderer', () => {
 				const container = domRoot.childNodes[ 1 ];
 
 				const bindSelection = renderer.domConverter.fakeSelectionToView( container );
-				expect( bindSelection ).to.be.defined;
+				expect( bindSelection ).to.not.be.undefined;
 				expect( bindSelection.isEqual( selection ) ).to.be.true;
 			} );
 
@@ -1602,6 +1602,35 @@ describe( 'Renderer', () => {
 				expect( selectionExtendSpy.calledOnce ).to.true;
 				expect( selectionExtendSpy.calledWith( domB.childNodes[ 0 ], 1 ) ).to.true;
 				expect( logWarnStub.notCalled ).to.true;
+			} );
+
+			it( 'should always render selection (even if it is same in view) if current dom selection is in incorrect place', () => {
+				const domSelection = document.getSelection();
+
+				const { view: viewP, selection: newSelection } = parse( '<container:p>foo[]<ui:span></ui:span></container:p>' );
+
+				viewRoot.appendChildren( viewP );
+				selection.setTo( newSelection );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				// In DOM, set position to: <p>foo<span>[]</span></p>. This is incorrect DOM selection (it is in view ui element).
+				// Do not change view selection.
+				// When renderer will check if the DOM selection changed, it will convert DOM selection to a view selection.
+				// Selections (current view selection and view-from-dom selection) will be equal but we will still expect re-render
+				// because DOM selection is in incorrect place.
+				const domP = domRoot.childNodes[ 0 ];
+				const domSpan = domP.childNodes[ 1 ];
+				domSelection.collapse( domSpan, 0 );
+
+				renderer.render();
+
+				// Expect that after calling `renderer.render()` the DOM selection was re-rendered (and set at correct position).
+				expect( domSelection.anchorNode ).to.equal( domP );
+				expect( domSelection.anchorOffset ).to.equal( 1 );
+				expect( domSelection.focusNode ).to.equal( domP );
+				expect( domSelection.focusOffset ).to.equal( 1 );
 			} );
 
 			it( 'should not render non-collapsed selection it is similar (element start)', () => {

@@ -23,10 +23,11 @@ const markerNames = [];
 let model = null;
 let _uid = 1;
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Enter, Typing, Paragraph, Bold, Italic, List, Heading, Undo ],
-	toolbar: [ 'headings', 'bold', 'italic', 'bulletedList', 'numberedList', 'undo', 'redo' ]
-} )
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Enter, Typing, Paragraph, Bold, Italic, List, Heading, Undo ],
+		toolbar: [ 'headings', 'bold', 'italic', 'bulletedList', 'numberedList', 'undo', 'redo' ]
+	} )
 	.then( editor => {
 		window.editor = editor;
 		model = window.editor.editing.model;
@@ -74,7 +75,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 		model.enqueueChanges( () => {
 			const root = model.getRoot();
-			const range = new Range( new Position( root, [ 0, 10 ] ), new Position( root, [ 1, 5 ] ) );
+			const range = new Range( new Position( root, [ 0, 10 ] ), new Position( root, [ 0, 16 ] ) );
 			const name = 'highlight:yellow:' + uid();
 
 			markerNames.push( name );

@@ -34,7 +34,7 @@ describe( 'SelectionObserver', () => {
 		viewRoot = viewDocument.getRoot();
 
 		viewRoot.appendChildren( parse(
-			'<container:p>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</container:p>' +
+			'<container:p>xxx<ui:span></ui:span></container:p>' +
 			'<container:p>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</container:p>' ) );
 
 		viewDocument.render();
@@ -67,7 +67,7 @@ describe( 'SelectionObserver', () => {
 			expect( data.newSelection.rangeCount ).to.equal( 1 );
 
 			const newViewRange = data.newSelection.getFirstRange();
-			const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+			const viewFoo = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 
 			expect( newViewRange.start.parent ).to.equal( viewFoo );
 			expect( newViewRange.start.offset ).to.equal( 2 );
@@ -162,7 +162,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 
 		return new Promise( ( resolve, reject ) => {
-			testUtils.sinon.stub( log, 'warn', msg => {
+			testUtils.sinon.stub( log, 'warn' ).callsFake( msg => {
 				expect( msg ).to.match( /^selectionchange-infinite-loop/ );
 
 				resolve();
@@ -197,7 +197,9 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should not be treated as an infinite loop if changes are not often', () => {
-		const clock = testUtils.sinon.useFakeTimers( 'setInterval', 'clearInterval' );
+		const clock = testUtils.sinon.useFakeTimers( {
+			toFake: [ 'setInterval', 'clearInterval' ]
+		} );
 		const stub = testUtils.sinon.stub( log, 'warn' );
 
 		// We need to recreate SelectionObserver, so it will use mocked setInterval.
@@ -264,7 +266,7 @@ describe( 'SelectionObserver', () => {
 				expect( data.newSelection.rangeCount ).to.equal( 1 );
 
 				const newViewRange = data.newSelection.getFirstRange();
-				const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+				const viewFoo = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 
 				expect( newViewRange.start.parent ).to.equal( viewFoo );
 				expect( newViewRange.start.offset ).to.equal( 3 );
@@ -301,9 +303,48 @@ describe( 'SelectionObserver', () => {
 		}, 100 );
 	} );
 
+	it( 'should re-render view if selections are similar if DOM selection is in incorrect place', done => {
+		const sel = domDocument.getSelection();
+
+		// Add rendering on selectionChange event to check this feature.
+		viewDocument.on( 'selectionChange', () => {
+			// Manually set selection because no handlers are set for selectionChange event in this test.
+			// Normally this is handled by view -> model -> view selection converters chain.
+			const viewSel = viewDocument.selection;
+
+			const viewAnchor = viewDocument.domConverter.domPositionToView( sel.anchorNode, sel.anchorOffset );
+			const viewFocus = viewDocument.domConverter.domPositionToView( sel.focusNode, sel.focusOffset );
+
+			viewSel.collapse( viewAnchor );
+			viewSel.setFocus( viewFocus );
+
+			viewDocument.render();
+		} );
+
+		viewDocument.once( 'selectionChange', () => {
+			// 2. Selection change has been handled.
+
+			selectionObserver.listenTo( domDocument, 'selectionchange', () => {
+				// 4. Check if view was re-rendered.
+				expect( viewDocument.render.called ).to.be.true;
+
+				done();
+			}, { priority: 'lowest' } );
+
+			// 3. Now, collapse selection in similar position, but in UI element.
+			// Current and new selection position are similar in view (but not equal!).
+			// Also add a spy to `viewDocument#render` to see if view will be re-rendered.
+			sel.collapse( domMain.childNodes[ 0 ].childNodes[ 1 ], 0 );
+			sinon.spy( viewDocument, 'render' );
+		}, { priority: 'lowest' } );
+
+		// 1. Collapse in a text node, before ui element, and wait for async selectionchange to fire selection change handling.
+		sel.collapse( domMain.childNodes[ 0 ].childNodes[ 0 ], 3 );
+	} );
+
 	function changeDomSelection() {
 		const domSelection = domDocument.getSelection();
-		const domFoo = domMain.childNodes[ 0 ].childNodes[ 0 ];
+		const domFoo = domMain.childNodes[ 1 ].childNodes[ 0 ];
 		const offset = domSelection.anchorOffset;
 
 		domSelection.removeAllRanges();

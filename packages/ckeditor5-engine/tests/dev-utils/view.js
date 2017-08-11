@@ -611,9 +611,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should throw when wrong type is provided', () => {
-			sinon.stub( XmlDataProcessor.prototype, 'toView', () => {
-				return new ContainerElement( 'invalidType:b' );
-			} );
+			sinon.stub( XmlDataProcessor.prototype, 'toView' ).returns( new ContainerElement( 'invalidType:b' ) );
 
 			expect( () => {
 				parse( 'sth' );

@@ -12,6 +12,7 @@ import Renderer from './renderer';
 import DomConverter from './domconverter';
 import RootEditableElement from './rooteditableelement';
 import { injectQuirksHandling } from './filler';
+import { injectUiElementHandling } from './uielement';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import MutationObserver from './observer/mutationobserver';
 import SelectionObserver from './observer/selectionobserver';
@@ -126,6 +127,7 @@ export default class Document {
 		this.addObserver( FakeSelectionObserver );
 
 		injectQuirksHandling( this );
+		injectUiElementHandling( this );
 
 		this.decorate( 'render' );
 	}

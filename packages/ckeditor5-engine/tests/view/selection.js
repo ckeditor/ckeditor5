@@ -17,11 +17,14 @@ describe( 'Selection', () => {
 	let selection, el, range1, range2, range3;
 
 	beforeEach( () => {
+		const text = new Text( 'xxxxxxxxxxxxxxxxxxxx' );
+		el = new Element( 'p', null, text );
+
 		selection = new Selection();
-		el = new Element( 'p' );
-		range1 = Range.createFromParentsAndOffsets( el, 5, el, 10 );
-		range2 = Range.createFromParentsAndOffsets( el, 1, el, 2 );
-		range3 = Range.createFromParentsAndOffsets( el, 12, el, 14 );
+
+		range1 = Range.createFromParentsAndOffsets( text, 5, text, 10 );
+		range2 = Range.createFromParentsAndOffsets( text, 1, text, 2 );
+		range3 = Range.createFromParentsAndOffsets( text, 12, text, 14 );
 	} );
 
 	describe( 'constructor()', () => {
@@ -241,7 +244,7 @@ describe( 'Selection', () => {
 			const endPos = Position.createAt( el, 2 );
 			const newEndPos = Position.createAt( el, 4 );
 
-			const spy = sinon.stub( Position, 'createAt', () => newEndPos );
+			const spy = sinon.stub( Position, 'createAt' ).returns( newEndPos );
 
 			selection.addRange( new Range( startPos, endPos ) );
 			selection.setFocus( el, 'end' );
@@ -335,7 +338,8 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should throw when range is intersecting with already added range', () => {
-			const range2 = Range.createFromParentsAndOffsets( el, 7, el, 15 );
+			const text = el.getChild( 0 );
+			const range2 = Range.createFromParentsAndOffsets( text, 7, text, 15 );
 			selection.addRange( range1 );
 			expect( () => {
 				selection.addRange( range2 );
@@ -513,6 +517,86 @@ describe( 'Selection', () => {
 			const otherSelection = new Selection();
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'isSimilar', () => {
+		it( 'should return true if selections equal', () => {
+			selection.addRange( range1 );
+			selection.addRange( range2 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+			otherSelection.addRange( range2 );
+
+			expect( selection.isSimilar( otherSelection ) ).to.be.true;
+		} );
+
+		it( 'should return false if ranges count does not equal', () => {
+			selection.addRange( range1 );
+			selection.addRange( range2 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+
+			expect( selection.isSimilar( otherSelection ) ).to.be.false;
+		} );
+
+		it( 'should return false if trimmed ranges (other than the last added one) are not equal', () => {
+			selection.addRange( range1 );
+			selection.addRange( range3 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range2 );
+			otherSelection.addRange( range3 );
+
+			expect( selection.isSimilar( otherSelection ) ).to.be.false;
+		} );
+
+		it( 'should return false if directions are not equal', () => {
+			selection.addRange( range1 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1, true );
+
+			expect( selection.isSimilar( otherSelection ) ).to.be.false;
+		} );
+
+		it( 'should return true if both selections are empty', () => {
+			const otherSelection = new Selection();
+
+			expect( selection.isSimilar( otherSelection ) ).to.be.true;
+		} );
+
+		it( 'should return true if all ranges trimmed from both selections are equal', () => {
+			const view = parse(
+				'<container:p><attribute:span></attribute:span></container:p>' +
+				'<container:p><attribute:span>xx</attribute:span></container:p>'
+			);
+
+			const p1 = view.getChild( 0 );
+			const p2 = view.getChild( 1 );
+			const span1 = p1.getChild( 0 );
+			const span2 = p2.getChild( 0 );
+
+			// <p>[<span>{]</span>}</p><p>[<span>{xx}</span>]</p>
+			const rangeA1 = Range.createFromParentsAndOffsets( p1, 0, span1, 0 );
+			const rangeB1 = Range.createFromParentsAndOffsets( span1, 0, p1, 1 );
+			const rangeA2 = Range.createFromParentsAndOffsets( p2, 0, p2, 1 );
+			const rangeB2 = Range.createFromParentsAndOffsets( span2, 0, span2, 1 );
+
+			selection.addRange( rangeA1 );
+			selection.addRange( rangeA2 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( rangeB2 );
+			otherSelection.addRange( rangeB1 );
+
+			expect( selection.isSimilar( otherSelection ) ).to.be.true;
+			expect( otherSelection.isSimilar( selection ) ).to.be.true;
+
+			expect( selection.isEqual( otherSelection ) ).to.be.false;
+			expect( otherSelection.isEqual( selection ) ).to.be.false;
 		} );
 	} );
 
