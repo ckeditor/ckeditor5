@@ -358,7 +358,7 @@ export default class Selection {
 	 * @param {module:engine/model/element~Element} element
 	 */
 	setIn( element ) {
-		return Range.createIn( element );
+		this.setRanges( [ Range.createIn( element ) ] );
 	}
 
 	/**
@@ -367,7 +367,7 @@ export default class Selection {
 	 * @param {module:engine/model/item~Item} item
 	 */
 	setOn( item ) {
-		return Range.createOn( item );
+		this.setRanges( [ Range.createOn( item ) ] );
 	}
 
 	/**

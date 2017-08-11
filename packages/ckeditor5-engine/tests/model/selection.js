@@ -234,6 +234,39 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'setIn()', () => {
+		it( 'should set selection inside an element', () => {
+			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
+
+			selection.setIn( element );
+
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.parent ).to.equal( element );
+			expect( ranges[ 0 ].start.offset ).to.deep.equal( 0 );
+			expect( ranges[ 0 ].end.parent ).to.equal( element );
+			expect( ranges[ 0 ].end.offset ).to.deep.equal( 6 );
+		} );
+	} );
+
+	describe( 'setOn()', () => {
+		it( 'should set selection on an item', () => {
+			const textNode1 = new Text( 'foo' );
+			const textNode2 = new Text( 'bar' );
+			const textNode3 = new Text( 'baz' );
+			const element = new Element( 'p', null, [ textNode1, textNode2, textNode3 ] );
+
+			selection.setOn( textNode2 );
+
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.parent ).to.equal( element );
+			expect( ranges[ 0 ].start.offset ).to.deep.equal( 3 );
+			expect( ranges[ 0 ].end.parent ).to.equal( element );
+			expect( ranges[ 0 ].end.offset ).to.deep.equal( 6 );
+		} );
+	} );
+
 	describe( 'setCollapsedAt()', () => {
 		it( 'fires change:range', () => {
 			const spy = sinon.spy();

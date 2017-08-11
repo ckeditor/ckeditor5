@@ -600,7 +600,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'removeAllRanges', () => {
+	describe( 'removeAllRanges()', () => {
 		it( 'should remove all ranges and fire change event', done => {
 			selection.addRange( range1 );
 			selection.addRange( range2 );
@@ -622,7 +622,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setRanges', () => {
+	describe( 'setRanges()', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.setRanges( [ { invalid: 'range' } ] );
@@ -645,7 +645,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setTo', () => {
+	describe( 'setTo()', () => {
 		it( 'should set selection ranges from the given selection', () => {
 			selection.addRange( range1 );
 
@@ -712,7 +712,40 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'collapse', () => {
+	describe( 'setIn()', () => {
+		it( 'should set selection inside an element', () => {
+			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
+
+			selection.setIn( element );
+
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.parent ).to.equal( element );
+			expect( ranges[ 0 ].start.offset ).to.deep.equal( 0 );
+			expect( ranges[ 0 ].end.parent ).to.equal( element );
+			expect( ranges[ 0 ].end.offset ).to.deep.equal( 2 );
+		} );
+	} );
+
+	describe( 'setOn()', () => {
+		it( 'should set selection on an item', () => {
+			const textNode1 = new Text( 'foo' );
+			const textNode2 = new Text( 'bar' );
+			const textNode3 = new Text( 'baz' );
+			const element = new Element( 'p', null, [ textNode1, textNode2, textNode3 ] );
+
+			selection.setOn( textNode2 );
+
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.parent ).to.equal( element );
+			expect( ranges[ 0 ].start.offset ).to.deep.equal( 1 );
+			expect( ranges[ 0 ].end.parent ).to.equal( element );
+			expect( ranges[ 0 ].end.offset ).to.deep.equal( 2 );
+		} );
+	} );
+
+	describe( 'setCollapsedAt()', () => {
 		beforeEach( () => {
 			selection.setRanges( [ range1, range2 ] );
 		} );
@@ -774,7 +807,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'collapseToStart', () => {
+	describe( 'collapseToStart()', () => {
 		it( 'should collapse to start position and fire change event', done => {
 			selection.setRanges( [ range1, range2, range3 ] );
 			selection.once( 'change', () => {
@@ -797,7 +830,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'collapseToEnd', () => {
+	describe( 'collapseToEnd()', () => {
 		it( 'should collapse to end position and fire change event', done => {
 			selection.setRanges( [ range1, range2, range3 ] );
 			selection.once( 'change', () => {
