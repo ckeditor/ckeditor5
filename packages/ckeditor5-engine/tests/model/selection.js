@@ -588,6 +588,42 @@ describe( 'Selection', () => {
 			expect( selection.setRanges.calledOnce ).to.be.true;
 			spy.restore();
 		} );
+
+		it( 'should set selection on the given Range using setRanges method', () => {
+			const spy = sinon.spy( selection, 'setRanges' );
+
+			selection.setTo( range1 );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
+			expect( selection.isBackward ).to.be.false;
+			expect( selection.setRanges.calledOnce ).to.be.true;
+			spy.restore();
+		} );
+
+		it( 'should set selection on the given iterable of Ranges using setRanges method', () => {
+			const spy = sinon.spy( selection, 'setRanges' );
+
+			selection.setTo( new Set( [ range1, range2 ] ) );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
+			expect( selection.isBackward ).to.be.false;
+			expect( selection.setRanges.calledOnce ).to.be.true;
+			spy.restore();
+		} );
+
+		it( 'should set collapsed selection on the given Position using setRanges method', () => {
+			const spy = sinon.spy( selection, 'setRanges' );
+			const position = new Position( root, [ 4 ] );
+
+			selection.setTo( position );
+
+			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
+			expect( Array.from( selection.getRanges() )[ 0 ].start ).to.deep.equal( position );
+			expect( selection.isBackward ).to.be.false;
+			expect( selection.isCollapsed ).to.be.true;
+			expect( selection.setRanges.calledOnce ).to.be.true;
+			spy.restore();
+		} );
 	} );
 
 	describe( 'getFirstRange()', () => {

@@ -646,7 +646,7 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'setTo', () => {
-		it( 'should return true if selections equal', () => {
+		it( 'should set selection ranges from the given selection', () => {
 			selection.addRange( range1 );
 
 			const otherSelection = new Selection();
@@ -662,6 +662,30 @@ describe( 'Selection', () => {
 			expect( selection._ranges[ 1 ] ).is.not.equal( range3 );
 
 			expect( selection.anchor.isEqual( range3.end ) ).to.be.true;
+		} );
+
+		it( 'should set selection on the given iterable of Ranges using setRanges method', () => {
+			const spy = sinon.spy( selection, 'setRanges' );
+
+			selection.setTo( new Set( [ range1, range2 ] ) );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
+			expect( selection.isBackward ).to.be.false;
+			expect( selection.setRanges.calledOnce ).to.be.true;
+			spy.restore();
+		} );
+
+		it( 'should set collapsed selection on the given Position using setRanges method', () => {
+			const spy = sinon.spy( selection, 'setRanges' );
+
+			selection.setTo( range1.start );
+
+			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
+			expect( Array.from( selection.getRanges() )[ 0 ].start ).to.deep.equal( range1.start );
+			expect( selection.isBackward ).to.be.false;
+			expect( selection.isCollapsed ).to.be.true;
+			expect( selection.setRanges.calledOnce ).to.be.true;
+			spy.restore();
 		} );
 
 		it( 'should fire change event', done => {
