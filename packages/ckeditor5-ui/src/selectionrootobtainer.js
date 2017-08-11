@@ -18,7 +18,12 @@
 export default function selectionRootObtainer( editor ) {
 	return () => {
 		const view = editor.editing.view;
+		const editableElement = view.selection.editableElement;
 
-		return view.domConverter.mapViewToDom( view.selection.editableElement.root );
+		if ( editableElement ) {
+			return view.domConverter.mapViewToDom( editableElement.root );
+		}
+
+		return null;
 	};
 }

@@ -46,6 +46,13 @@ describe( 'selectionRootObtainer()', () => {
 		expect( obtainer() ).to.equal( viewDocument.domConverter.mapViewToDom( root ) );
 	} );
 
+	it( 'does not fail if selection has no #editableElement', () => {
+		const obtainer = selectionRootObtainer( editor );
+
+		sinon.stub( viewDocument.selection, 'editableElement' ).value( null );
+		expect( obtainer() ).to.equal( null );
+	} );
+
 	it( 'obtains the farthest root of the selection (nested editable)', () => {
 		doc.schema.registerItem( 'widget' );
 		doc.schema.registerItem( 'nestededitable' );
