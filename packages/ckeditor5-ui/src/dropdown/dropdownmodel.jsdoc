@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module ui/dropdown/dropdownmodel
+ */
+
+/**
  * The basic dropdown model interface.
  *
  * @interface module:ui/dropdown/dropdownmodel~DropdownModel

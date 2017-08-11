@@ -15,13 +15,14 @@ describe( 'Notification', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ Notification ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			notification = editor.plugins.get( Notification );
-		} );
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Notification ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				notification = editor.plugins.get( Notification );
+			} );
 	} );
 
 	describe( 'init()', () => {

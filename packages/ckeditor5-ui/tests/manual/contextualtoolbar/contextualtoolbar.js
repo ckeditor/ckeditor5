@@ -10,25 +10,26 @@ import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
 import ContextualToolbar from '../../../src/toolbar/contextual/contextualtoolbar';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ ArticlePresets, ContextualToolbar ],
-	toolbar: [ 'bold', 'italic', 'link', 'undo', 'redo' ],
-	contextualToolbar: [ 'bold', 'italic', 'link' ]
-} )
-.then( editor => {
-	window.editor = editor;
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ ArticlePresets, ContextualToolbar ],
+		toolbar: [ 'bold', 'italic', 'link', 'undo', 'redo' ],
+		contextualToolbar: [ 'bold', 'italic', 'link' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
 
-	const contextualToolbar = editor.plugins.get( 'ContextualToolbar' );
+		const contextualToolbar = editor.plugins.get( 'ContextualToolbar' );
 
-	contextualToolbar.on( 'show', evt => {
-		const selectionRange = editor.document.selection.getFirstRange();
-		const blockRange = Range.createOn( editor.document.getRoot().getChild( 0 ) );
+		contextualToolbar.on( 'show', evt => {
+			const selectionRange = editor.document.selection.getFirstRange();
+			const blockRange = Range.createOn( editor.document.getRoot().getChild( 0 ) );
 
-		if ( selectionRange.containsRange( blockRange ) || selectionRange.isIntersecting( blockRange ) ) {
-			evt.stop();
-		}
-	}, { priority: 'high' } );
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+			if ( selectionRange.containsRange( blockRange ) || selectionRange.isIntersecting( blockRange ) ) {
+				evt.stop();
+			}
+		}, { priority: 'high' } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

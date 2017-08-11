@@ -269,3 +269,22 @@ function getBalloonPositions( isBackward ) {
 		defaultPositions.northEastArrowSouthWest
 	];
 }
+
+/**
+ * Contextual toolbar configuration. Used by the {@link module:ui/toolbar/contextual/contextualtoolbar~ContextualToolbar}
+ * feature.
+ *
+ *		const config = {
+ *			contextualToolbar: [ 'bold', 'italic', 'undo', 'redo' ]
+ *		};
+ *
+ * You can also use `'|'` to create a separator between groups of items:
+ *
+ *		const config = {
+ *			contextualToolbar: [ 'bold', 'italic', | 'undo', 'redo' ]
+ *		};
+ *
+ * Read also about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+ *
+ * @member {Array.<String>} module:core/editor/editorconfig~EditorConfig#contextualToolbar
+ */

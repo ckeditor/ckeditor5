@@ -8,8 +8,9 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ ArticlePresets ],
-	toolbar: [ 'headings' ],
-} )
-.catch( err => console.error( err.stack ) );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ ArticlePresets ],
+		toolbar: [ 'headings' ],
+	} )
+	.catch( err => console.error( err.stack ) );

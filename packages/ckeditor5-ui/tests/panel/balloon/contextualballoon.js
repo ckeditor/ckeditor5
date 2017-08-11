@@ -19,29 +19,30 @@ describe( 'ContextualBalloon', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ ContextualBalloon ]
-		} )
-		.then( newEditor => {
-			editor = newEditor;
-			balloon = editor.plugins.get( ContextualBalloon );
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ ContextualBalloon ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				balloon = editor.plugins.get( ContextualBalloon );
 
-			// We don't need to execute BalloonPanel pin and attachTo methods
-			// it's enough to check if was called with the proper data.
-			sinon.stub( balloon.view, 'attachTo', () => {} );
-			sinon.stub( balloon.view, 'pin', () => {} );
+				// We don't need to execute BalloonPanel pin and attachTo methods
+				// it's enough to check if was called with the proper data.
+				sinon.stub( balloon.view, 'attachTo' ).returns( {} );
+				sinon.stub( balloon.view, 'pin' ).returns( {} );
 
-			viewA = new View();
-			viewB = new View();
+				viewA = new View();
+				viewB = new View();
 
-			// Add viewA to the pane and init viewB.
-			balloon.add( {
-				view: viewA,
-				position: { target: 'fake' }
+				// Add viewA to the pane and init viewB.
+				balloon.add( {
+					view: viewA,
+					position: { target: 'fake' }
+				} );
+
+				viewB.init();
 			} );
-
-			viewB.init();
-		} );
 	} );
 
 	afterEach( () => {

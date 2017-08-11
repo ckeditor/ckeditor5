@@ -15,27 +15,29 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 // Editor for the external insert.
-ClassicEditor.create( document.querySelector( '#editor-insert' ), {
-	plugins: [ ArticlePresets, ContextualToolbar ],
-	toolbar: [ 'bold', 'link' ],
-	contextualToolbar: [ 'bold', 'link' ]
-} )
-.then( editor => {
-	const element = document.querySelector( '#button-insert' );
+ClassicEditor
+	.create( document.querySelector( '#editor-insert' ), {
+		plugins: [ ArticlePresets, ContextualToolbar ],
+		toolbar: [ 'bold', 'link' ],
+		contextualToolbar: [ 'bold', 'link' ]
+	} )
+	.then( editor => {
+		const element = document.querySelector( '#button-insert' );
 
-	element.addEventListener( 'click', () => {
-		element.disabled = true;
-		startExternalInsert( editor );
-	} );
-} )
-.catch( err => console.error( err.stack ) );
+		element.addEventListener( 'click', () => {
+			element.disabled = true;
+			startExternalInsert( editor );
+		} );
+	} )
+	.catch( err => console.error( err.stack ) );
 
 // Editor for the external delete.
-ClassicEditor.create( document.querySelector( '#editor-delete' ), {
-	plugins: [ ArticlePresets, ContextualToolbar ],
-	toolbar: [ 'bold', 'link' ],
-	contextualToolbar: [ 'bold', 'link' ]
-} )
+ClassicEditor
+	.create( document.querySelector( '#editor-delete' ), {
+		plugins: [ ArticlePresets, ContextualToolbar ],
+		toolbar: [ 'bold', 'link' ],
+		contextualToolbar: [ 'bold', 'link' ]
+	} )
 	.then( editor => {
 		const element = document.querySelector( '#button-delete' );
 

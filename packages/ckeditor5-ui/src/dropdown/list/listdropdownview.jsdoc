@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module ui/dropdown/list/createlistdropdown
+ */
+
+/**
  * The list dropdown view.
  *
  * See {@link module:ui/dropdown/list/createlistdropdown~createListDropdown}.
