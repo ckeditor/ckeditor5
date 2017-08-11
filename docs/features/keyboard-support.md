@@ -1,7 +1,6 @@
 ---
 title: Keyboard support
 category: features
-order: 10
 ---
 
 List of the most important keystrokes supported by CKEditor 5 and its features:
