@@ -6,7 +6,7 @@
 
 title: Reporting issues
 category: builds-guides
-order: 320
+order: 330
 ---
 
 If you feel you found an issue in CKEditor, we will be grateful for letting us know. Before you create a bug report, however, please read our guidelines on how to do it properly and most efficiently.

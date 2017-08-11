@@ -52,9 +52,9 @@ ClassicEditor
 	} );
 ```
 
-<side-box tip>
+<info-box hint>
 	If a build contains too many or too few features, the best approach is to create a custom build instead of simply using configurations.
-</side-box>
+</info-box>
 
 ### List of plugins
 
@@ -80,9 +80,9 @@ ClassicEditor
 	} );
 ```
 
-<side-box tip>
+<info-box hint>
 	The above is a strict UI-related configuration. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to remove their relative plugins. Check [Enabling features](#Enabling-features) above for more information.
-</side-box>
+</info-box>
 
 ## Other configuration options
 

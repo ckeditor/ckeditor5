@@ -35,9 +35,9 @@ To make updating easier you may optionally add the original build repository to 
 git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
 ```
 
-<side-box tip>
+<info-box hint>
 	If you do not want to fork the official build, you can just clone it. However, you will not be able to commit and push your customizations back to [GitHub](https://github.com).
-</side-box>
+</info-box>
 
 ## Build anatomy
 
@@ -68,11 +68,11 @@ npm install --save <package-name>
 
 This will install the package and add it to `package.json`. You can also edit `package.json` manually.
 
-<side-box tip>
+<info-box hint>
 	Due to a non-deterministic way how npm installs packages, it is recommended to run `rm -rf node_modules && npm install` when in doubt. This will prevent some packages from getting installed more than once in `node_modules/` (which might lead to broken builds).
 
 	You can also give [Yarn](https://yarnpkg.com/lang/en/) a try.
-</side-box>
+</info-box>
 
 ### Updating build configuration
 
@@ -136,9 +136,9 @@ git merge upstream/master
 
 You should handle eventual conflicts and verify the merged changes. After that, just follow the previous instructions for creating your build and test it.
 
-<side-box tip>
+<info-box hint>
 	It is recommended to run `rm -rf node_modules && npm install` after you fetched changes from the upstream or updated versions of dependencies in `package.json` manually. This will prevent npm from installing packages more than once (which may lead to broken builds).
-</side-box>
+</info-box>
 
 ## Publishing your builds
 

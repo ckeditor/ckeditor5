@@ -9,7 +9,7 @@ order: 20
 
 ## Creators
 
-Each CKEditor 5 build provides a class that handles the creation of editor instances inside a page. For this reason they are called "creators". Every creator comes with a static `create()` method.
+Each CKEditor 5 build provides a class that handles the creation of editor instances ininfo a page. For this reason they are called "creators". Every creator comes with a static `create()` method.
 
 The following are creator class names for each build:
 
@@ -65,11 +65,11 @@ ClassicEditor.create( document.querySelector( '#text-editor' ) )
 
 In the above case, the `<textarea>` element is hidden and replaced with an editor. The `<textarea>` data is used to initialize the editor content. A `<div>` element can be used in the same fashion.
 
-<side-box info>
+<info-box info>
 	Every creator may accept different parameters and handle initialization differently. For instance, the classic editor will replace a given element with an editor, while the inline editor will use the given element to initialize the editor on it. See each editor's documentation to learn the details.
 
 	The interface of the editor class is not enforced either. Since different implementations of editors may vary heavily in terms of functionality, the editor class implementers have full freedom regarding the API. Therefore, the examples in this guide may not work with some editor classes.
-</side-box>
+</info-box>
 
 ## Interacting with the editor
 
