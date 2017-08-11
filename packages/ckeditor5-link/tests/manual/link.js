@@ -12,13 +12,14 @@ import Link from '../../src/link';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Link, Typing, Paragraph, Undo, Enter ],
-	toolbar: [ 'link', 'unlink', 'undo', 'redo' ]
-} )
-.then( editor => {
-	window.editor = editor;
-} )
-.catch( err => {
-	console.error( err.stack );
-} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Link, Typing, Paragraph, Undo, Enter ],
+		toolbar: [ 'link', 'unlink', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

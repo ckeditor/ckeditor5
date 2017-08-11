@@ -101,7 +101,7 @@ describe( 'LinkFormView', () => {
 
 		describe( 'url input view', () => {
 			it( 'has placeholder', () => {
-				expect( view.urlInputView.inputView.placeholder ).to.equal( 'http://example.com' );
+				expect( view.urlInputView.inputView.placeholder ).to.equal( 'https://example.com' );
 			} );
 		} );
 
