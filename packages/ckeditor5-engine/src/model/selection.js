@@ -15,6 +15,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import mapsEqual from '@ckeditor/ckeditor5-utils/src/mapsequal';
+import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
  * `Selection` is a group of {@link module:engine/model/range~Range ranges} which has a direction specified by
@@ -334,12 +335,39 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets this selection's ranges and direction to the ranges and direction of the given selection.
+	 * Sets this selection's ranges and direction to the ranges from Selection, Position, Range or an iterable of Ranges.
 	 *
-	 * @param {module:engine/model/selection~Selection} otherSelection
+	 * @param {module:engine/model/selection~Selection|module:engine/model/position~Position
+	 * |Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range} selectable
 	 */
-	setTo( otherSelection ) {
-		this.setRanges( otherSelection.getRanges(), otherSelection.isBackward );
+	setTo( selectable ) {
+		if ( selectable instanceof Selection ) {
+			this.setRanges( selectable.getRanges(), selectable.isBackward );
+		} else if ( selectable instanceof Range ) {
+			this.setRanges( [ selectable ] );
+		} else if ( isIterable( selectable ) ) {
+			this.setRanges( selectable );
+		} else {
+			this.setRanges( [ new Range( selectable ) ] );
+		}
+	}
+
+	/**
+	 * Sets this selection in the provided element.
+	 *
+	 * @param {module:engine/model/element~Element} element
+	 */
+	setIn( element ) {
+		return Range.createIn( element );
+	}
+
+	/**
+	 * Sets this selection on the provided item.
+	 *
+	 * @param {module:engine/model/item~Item} item
+	 */
+	setOn( item ) {
+		return Range.createOn( item );
 	}
 
 	/**
@@ -352,7 +380,7 @@ export default class Selection {
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
-	collapse( itemOrPosition, offset ) {
+	setCollapsedAt( itemOrPosition, offset ) {
 		const pos = Position.createAt( itemOrPosition, offset );
 		const range = new Range( pos, pos );
 

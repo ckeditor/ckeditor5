@@ -240,7 +240,7 @@ export default class MutationObserver extends Observer {
 			// Anchor and focus has to be properly mapped to view.
 			if ( viewSelectionAnchor && viewSelectionFocus ) {
 				viewSelection = new ViewSelection();
-				viewSelection.collapse( viewSelectionAnchor );
+				viewSelection.setCollapsedAt( viewSelectionAnchor );
 				viewSelection.setFocus( viewSelectionFocus );
 			}
 		}

@@ -126,7 +126,7 @@ describe( 'Selection', () => {
 			const startPos = Position.createAt( el, 1 );
 			const endPos = Position.createAt( el, 2 );
 
-			selection.collapse( startPos );
+			selection.setCollapsedAt( startPos );
 
 			selection.setFocus( endPos );
 
@@ -138,7 +138,7 @@ describe( 'Selection', () => {
 			const startPos = Position.createAt( el, 1 );
 			const endPos = Position.createAt( el, 0 );
 
-			selection.collapse( startPos );
+			selection.setCollapsedAt( startPos );
 
 			selection.setFocus( endPos );
 
@@ -696,7 +696,7 @@ describe( 'Selection', () => {
 		it( 'should collapse selection at position', () => {
 			const position = new Position( el, 4 );
 
-			selection.collapse( position );
+			selection.setCollapsedAt( position );
 			const range = selection.getFirstRange();
 
 			expect( range.start.parent ).to.equal( el );
@@ -708,14 +708,14 @@ describe( 'Selection', () => {
 			const foo = new Text( 'foo' );
 			const p = new Element( 'p', null, foo );
 
-			selection.collapse( foo );
+			selection.setCollapsedAt( foo );
 			let range = selection.getFirstRange();
 
 			expect( range.start.parent ).to.equal( foo );
 			expect( range.start.offset ).to.equal( 0 );
 			expect( range.start.isEqual( range.end ) ).to.be.true;
 
-			selection.collapse( p, 1 );
+			selection.setCollapsedAt( p, 1 );
 			range = selection.getFirstRange();
 
 			expect( range.start.parent ).to.equal( p );
@@ -727,21 +727,21 @@ describe( 'Selection', () => {
 			const foo = new Text( 'foo' );
 			const p = new Element( 'p', null, foo );
 
-			selection.collapse( foo, 'end' );
+			selection.setCollapsedAt( foo, 'end' );
 			let range = selection.getFirstRange();
 
 			expect( range.start.parent ).to.equal( foo );
 			expect( range.start.offset ).to.equal( 3 );
 			expect( range.start.isEqual( range.end ) ).to.be.true;
 
-			selection.collapse( foo, 'before' );
+			selection.setCollapsedAt( foo, 'before' );
 			range = selection.getFirstRange();
 
 			expect( range.start.parent ).to.equal( p );
 			expect( range.start.offset ).to.equal( 0 );
 			expect( range.start.isEqual( range.end ) ).to.be.true;
 
-			selection.collapse( foo, 'after' );
+			selection.setCollapsedAt( foo, 'after' );
 			range = selection.getFirstRange();
 
 			expect( range.start.parent ).to.equal( p );

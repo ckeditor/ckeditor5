@@ -315,7 +315,7 @@ describe( 'SelectionObserver', () => {
 			const viewAnchor = viewDocument.domConverter.domPositionToView( sel.anchorNode, sel.anchorOffset );
 			const viewFocus = viewDocument.domConverter.domPositionToView( sel.focusNode, sel.focusOffset );
 
-			viewSel.collapse( viewAnchor );
+			viewSel.setCollapsedAt( viewAnchor );
 			viewSel.setFocus( viewFocus );
 
 			viewDocument.render();

@@ -234,19 +234,19 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'collapse()', () => {
+	describe( 'setCollapsedAt()', () => {
 		it( 'fires change:range', () => {
 			const spy = sinon.spy();
 
 			selection.on( 'change:range', spy );
 
-			selection.collapse( root );
+			selection.setCollapsedAt( root );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'sets selection at the 0 offset if second parameter not passed', () => {
-			selection.collapse( root );
+			selection.setCollapsedAt( root );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -256,7 +256,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'sets selection at given offset in given parent', () => {
-			selection.collapse( root, 3 );
+			selection.setCollapsedAt( root, 3 );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -266,7 +266,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'sets selection at the end of the given parent', () => {
-			selection.collapse( root, 'end' );
+			selection.setCollapsedAt( root, 'end' );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -276,7 +276,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'sets selection before the specified element', () => {
-			selection.collapse( root.getChild( 1 ), 'before' );
+			selection.setCollapsedAt( root.getChild( 1 ), 'before' );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -286,7 +286,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'sets selection after the specified element', () => {
-			selection.collapse( root.getChild( 1 ), 'after' );
+			selection.setCollapsedAt( root.getChild( 1 ), 'after' );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -298,7 +298,7 @@ describe( 'Selection', () => {
 		it( 'sets selection at the specified position', () => {
 			const pos = Position.createFromParentAndOffset( root, 3 );
 
-			selection.collapse( pos );
+			selection.setCollapsedAt( pos );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -345,7 +345,7 @@ describe( 'Selection', () => {
 			const startPos = Position.createAt( root, 1 );
 			const endPos = Position.createAt( root, 2 );
 
-			selection.collapse( startPos );
+			selection.setCollapsedAt( startPos );
 
 			selection.setFocus( endPos );
 
@@ -357,7 +357,7 @@ describe( 'Selection', () => {
 			const startPos = Position.createAt( root, 1 );
 			const endPos = Position.createAt( root, 0 );
 
-			selection.collapse( startPos );
+			selection.setCollapsedAt( startPos );
 
 			selection.setFocus( endPos );
 
@@ -740,7 +740,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should do nothing if selection was already collapsed', () => {
-			selection.collapse( range1.start );
+			selection.setCollapsedAt( range1.start );
 
 			const spy = sinon.spy( selection, 'fire' );
 
@@ -776,7 +776,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should do nothing if selection was already collapsed', () => {
-			selection.collapse( range1.start );
+			selection.setCollapsedAt( range1.start );
 
 			const spy = sinon.spy( selection, 'fire' );
 

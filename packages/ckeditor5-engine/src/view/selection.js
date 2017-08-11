@@ -450,7 +450,7 @@ export default class Selection {
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	collapse( itemOrPosition, offset ) {
+	setCollapsedAt( itemOrPosition, offset ) {
 		const pos = Position.createAt( itemOrPosition, offset );
 		const range = new Range( pos, pos );
 
