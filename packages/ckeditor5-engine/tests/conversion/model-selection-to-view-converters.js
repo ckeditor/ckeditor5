@@ -269,7 +269,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 			it( 'in marker - using virtual selection descriptor creator', () => {
 				dispatcher.on( 'selectionMarker:marker2', convertSelectionMarker(
-					data => ( { 'class': data.name } )
+					data => ( { 'class': data.markerName } )
 				) );
 
 				setModelData( modelDoc, 'foobar' );

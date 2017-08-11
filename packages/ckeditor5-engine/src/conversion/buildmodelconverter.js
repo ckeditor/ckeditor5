@@ -297,7 +297,7 @@ class ModelConverterBuilder {
 	 * Also, descriptor creator function can be provided:
 	 *
 	 *		buildModelConverter.for( dispatcher ).fromMarker( 'search:blue' ).toVirtualSelection( data => {
-	 *			const color = data.name.split( ':' )[ 1 ];
+	 *			const color = data.markerName.split( ':' )[ 1 ];
 	 *
 	 *			return { class: 'search-' + color };
 	 *		} );
@@ -423,8 +423,8 @@ export default function buildModelConverter() {
 /**
  * @typedef MarkerViewElementCreatorData
  * @param {Object} data Additional information about the change.
- * @param {String} data.name Marker name.
- * @param {module:engine/model/range~Range} data.range Marker range.
+ * @param {String} data.markerName Marker name.
+ * @param {module:engine/model/range~Range} data.markerRange Marker range.
  * @param {Boolean} data.isOpening Defines if currently converted element is a beginning or end of the marker range.
  * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.

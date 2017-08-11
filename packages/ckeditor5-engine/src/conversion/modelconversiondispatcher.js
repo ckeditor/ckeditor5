@@ -359,7 +359,8 @@ export default class ModelConversionDispatcher {
 		for ( const marker of markers ) {
 			const data = {
 				selection,
-				name: marker.name
+				markerName: marker.name,
+				markerRange: marker.getRange()
 			};
 
 			if ( consumable.test( selection, 'selectionMarker:' + marker.name ) ) {

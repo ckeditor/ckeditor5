@@ -177,7 +177,7 @@ export function convertSelectionMarker( selectionDescriptor ) {
 		}
 
 		const viewElement = virtualSelectionDescriptorToAttributeElement( descriptor );
-		const consumableName = 'selectionMarker:' + data.name;
+		const consumableName = 'selectionMarker:' + data.markerName;
 
 		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
 	};
