@@ -28,13 +28,6 @@ export default class HeadingEngine extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		/**
-		 * The configuration of the heading feature. Introduced by the {@link module:heading/headingengine~HeadingEngine} feature.
-		 *
-		 * Read more in {@link module:heading/headingengine~HeadingConfig}.
-		 *
-		 * @member {module:heading/headingengine~HeadingConfig} module:core/editor/editorconfig~EditorConfig#heading
-		 */
 		editor.config.define( 'heading', {
 			options: [
 				{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
@@ -106,49 +99,3 @@ export default class HeadingEngine extends Plugin {
 		}
 	}
 }
-
-/**
- * The configuration of the heading feature. Introduced by the {@link module:heading/headingengine~HeadingEngine} feature.
- *
- *		ClassicEditor.create( {
- * 			heading: ... // Heading feature options.
- *		} )
- *
- *
- * @interface HeadingConfig
- */
-
-/**
- * The available heading options.
- *
- * The default value:
- *
- *		options: [
- *			{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
- *			{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
- *			{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
- *			{ modelElement: 'heading3', viewElement: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
- *		]
- *
- * It defines 3 levels of headings. In the editor model they will use `heading1`, `heading2`, and `heading3` elements.
- * Their respective view elements (so the elements output by the editor) will be: `h2`, `h3`, and `h4`. This means that
- * if you choose "Heading 1" in the headings dropdown the editor will turn the current block to `<heading1>` in the model
- * which will result in rendering (and outputting to data) the `<h2>` element.
- *
- * The `title` and `class` properties will be used by the `headings` dropdown to render available options.
- * Usually, the first option in the headings dropdown is the "Paragraph" option, hence it's also defined on the list.
- * However, you don't need to define its view representation because it's handled by
- * the {@link module:paragraph/paragraph~Paragraph} feature (which is required by
- * the {@link module:heading/headingengine~HeadingEngine} feature).
- *
- * Note: In the model you should always start from `heading1`, regardless of how the headings are represented in the view.
- * That's assumption is used by features like {@link module:autoformat/autoformat~Autoformat} to know which element
- * they should use when applying the first level heading.
- *
- * The defined headings are also available in {@link module:core/commandcollection~CommandCollection} under their model names.
- * For example, the below code will apply `<heading1>` to the current selection:
- *
- *		editor.execute( 'heading1' );
- *
- * @member {Array} module:heading/headingengine~HeadingConfig#options
- */
