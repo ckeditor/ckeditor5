@@ -254,7 +254,7 @@ export default class BalloonPanelView extends View {
 		this.attachTo( options );
 
 		const targetElement = getDomElement( options.target );
-		const limiterElement = getDomElement( options.limiter ) || defaultLimiterElement;
+		const limiterElement = options.limiter ? getDomElement( options.limiter ) : defaultLimiterElement;
 
 		// Then we need to listen on scroll event of eny element in the document.
 		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {

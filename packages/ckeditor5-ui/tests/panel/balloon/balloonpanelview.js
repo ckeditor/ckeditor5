@@ -624,6 +624,17 @@ describe( 'BalloonPanelView', () => {
 				notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
 				sinon.assert.calledTwice( attachToSpy );
 			} );
+
+			// https://github.com/ckeditor/ckeditor5-ui/issues/260
+			it( 'should react to #scroll from anywhere when the limiter is not an HTMLElement or Range', () => {
+				const rect = {};
+
+				view.pin( { target, limiter: rect } );
+				sinon.assert.calledOnce( attachToSpy );
+
+				notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
+				sinon.assert.calledTwice( attachToSpy );
+			} );
 		} );
 
 		describe( 'unpin()', () => {
