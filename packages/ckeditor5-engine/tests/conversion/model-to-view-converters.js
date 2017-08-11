@@ -28,7 +28,8 @@ import {
 	unwrapItem,
 	remove,
 	removeUIElement,
-	markerToVirtualSelection,
+	convertTextsInsideMarker,
+	convertElementsInsideMarker,
 	virtualSelectionDescriptorToAttributeElement
 } from '../../src/conversion/model-to-view-converters';
 
@@ -81,7 +82,7 @@ describe( 'model-to-view-converters', () => {
 		return result;
 	}
 
-	describe( 'markerToVirtualSelection()', () => {
+	describe( 'convertTextsInsideMarker()', () => {
 		let modelElement1, modelElement2, markerRange;
 		const virtualSelectionDescriptor = {
 			class: 'marker-class',
@@ -104,8 +105,8 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should wrap and unwrap text nodes', () => {
-			dispatcher.on( 'addMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
-			dispatcher.on( 'removeMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
+			dispatcher.on( 'addMarker:marker', convertTextsInsideMarker( virtualSelectionDescriptor ) );
+			dispatcher.on( 'removeMarker:marker', convertTextsInsideMarker( virtualSelectionDescriptor ) );
 			dispatcher.convertInsertion( markerRange );
 
 			modelDoc.markers.set( 'marker', markerRange );
@@ -127,10 +128,80 @@ describe( 'model-to-view-converters', () => {
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
 		} );
 
+		it( 'should not convert marker on elements already consumed', () => {
+			const newDescriptor = { class: 'override-class' };
+
+			dispatcher.on( 'addMarker:marker', convertTextsInsideMarker( virtualSelectionDescriptor ) );
+			dispatcher.on( 'addMarker:marker', convertTextsInsideMarker( newDescriptor ), { priority: 'high' } );
+			dispatcher.on( 'removeMarker:marker', convertTextsInsideMarker( virtualSelectionDescriptor ) );
+			dispatcher.on( 'removeMarker:marker', convertTextsInsideMarker( newDescriptor ), { priority: 'high' } );
+			dispatcher.convertInsertion( markerRange );
+
+			modelDoc.markers.set( 'marker', markerRange );
+			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
+
+			expect( viewToString( viewRoot ) ).to.equal(
+				'<div>' +
+					'<p>' +
+						'<span class="override-class">foo</span>' +
+					'</p>' +
+					'<p>' +
+						'<span class="override-class">bar</span>' +
+					'</p>' +
+				'</div>'
+			);
+
+			dispatcher.convertMarker( 'removeMarker', 'marker', markerRange );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+		} );
+
+		it( 'should do nothing if descriptor is not provided', () => {
+			dispatcher.on( 'addMarker:marker', convertTextsInsideMarker( () => null ) );
+			dispatcher.on( 'removeMarker:marker', convertTextsInsideMarker( () => null ) );
+
+			dispatcher.convertInsertion( markerRange );
+
+			modelDoc.markers.set( 'marker', markerRange );
+			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+			dispatcher.convertMarker( 'removeMarker', 'marker', markerRange );
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+		} );
+	} );
+
+	describe( 'convertElementsInsideMarker()', () => {
+		let modelElement1, modelElement2, markerRange;
+		const virtualSelectionDescriptor = {
+			class: 'marker-class',
+			priority: 7,
+			attributes: { title: 'title' }
+		};
+
+		beforeEach( () => {
+			const modelText1 = new ModelText( 'foo' );
+			modelElement1 = new ModelElement( 'paragraph', null, modelText1 );
+			const modelText2 = new ModelText( 'bar' );
+			modelElement2 = new ModelElement( 'paragraph', null, modelText2 );
+
+			modelRoot.appendChildren( modelElement1 );
+			modelRoot.appendChildren( modelElement2 );
+			dispatcher.on( 'insert:paragraph', insertElement( () => new ViewContainerElement( 'p' ) ) );
+			dispatcher.on( 'insert:$text', insertText() );
+
+			markerRange = ModelRange.createIn( modelRoot );
+		} );
+
 		it( 'should use setVirtualSelection and removeVirtualSelection on elements and not convert children nodes', () => {
-			dispatcher.on( 'addMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
-			dispatcher.on( 'removeMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
-			dispatcher.on( 'insert:paragraph', insertElement( () => {
+			dispatcher.on( 'addMarker:marker', convertElementsInsideMarker( virtualSelectionDescriptor ) );
+			dispatcher.on( 'removeMarker:marker', convertElementsInsideMarker( virtualSelectionDescriptor ) );
+			dispatcher.on( 'insert:paragraph', insertElement( data => {
+				// Use special converter only for first paragraph.
+				if ( data.item == modelElement2 ) {
+					return;
+				}
+
 				const viewContainer = new ViewContainerElement( 'p' );
 
 				viewContainer.setCustomProperty( 'setVirtualSelection', ( element, descriptor ) => {
@@ -157,7 +228,7 @@ describe( 'model-to-view-converters', () => {
 					'<p class="virtual-selection-own-class">' +
 						'foo' +
 					'</p>' +
-					'<p class="virtual-selection-own-class">' +
+					'<p>' +
 						'bar' +
 					'</p>' +
 				'</div>'
@@ -171,11 +242,11 @@ describe( 'model-to-view-converters', () => {
 		it( 'should not convert marker on elements already consumed', () => {
 			const newDescriptor = { class: 'override-class' };
 
-			dispatcher.on( 'addMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
-			dispatcher.on( 'removeMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
+			dispatcher.on( 'addMarker:marker', convertElementsInsideMarker( virtualSelectionDescriptor ) );
+			dispatcher.on( 'removeMarker:marker', convertElementsInsideMarker( virtualSelectionDescriptor ) );
 
-			dispatcher.on( 'addMarker:marker', markerToVirtualSelection( newDescriptor ), { priority: 'high' } );
-			dispatcher.on( 'removeMarker:marker', markerToVirtualSelection( newDescriptor ), { priority: 'high' } );
+			dispatcher.on( 'addMarker:marker', convertElementsInsideMarker( newDescriptor ), { priority: 'high' } );
+			dispatcher.on( 'removeMarker:marker', convertElementsInsideMarker( newDescriptor ), { priority: 'high' } );
 
 			dispatcher.on( 'insert:paragraph', insertElement( () => {
 				const element = new ViewContainerElement( 'p' );
@@ -206,8 +277,8 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should do nothing if descriptor is not provided', () => {
-			dispatcher.on( 'addMarker:marker', markerToVirtualSelection( () => null ) );
-			dispatcher.on( 'removeMarker:marker', markerToVirtualSelection( () => null ) );
+			dispatcher.on( 'addMarker:marker', convertElementsInsideMarker( () => null ) );
+			dispatcher.on( 'removeMarker:marker', convertElementsInsideMarker( () => null ) );
 
 			dispatcher.convertInsertion( markerRange );
 
@@ -809,6 +880,33 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.convertMarker( 'removeMarker', 'marker', range );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			} );
+
+			it( 'should be possible to overwrite', () => {
+				const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
+
+				sinon.spy( dispatcher, 'fire' );
+
+				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
+				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
+
+				dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
+					consumable.consume( data.item, 'addMarker:marker' );
+				}, { priority: 'high' } );
+
+				dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
+					consumable.consume( data.item, 'removeMarker:marker' );
+				}, { priority: 'high' } );
+
+				dispatcher.convertMarker( 'addMarker', 'marker', range );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+				expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
+
+				dispatcher.convertMarker( 'removeMarker', 'marker', range );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+				expect( dispatcher.fire.calledWith( 'removeMarker:marker' ) );
 			} );
 		} );
 	} );

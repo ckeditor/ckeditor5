@@ -28,7 +28,8 @@ import {
 	insertElement,
 	insertText,
 	wrapItem,
-	markerToVirtualSelection
+	convertTextsInsideMarker,
+	convertElementsInsideMarker
 } from '../../src/conversion/model-to-view-converters';
 
 import { stringify as stringifyView } from '../../src/dev-utils/view';
@@ -58,8 +59,10 @@ describe( 'model-selection-to-view-converters', () => {
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
 
-		dispatcher.on( 'addMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
-		dispatcher.on( 'removeMarker:marker', markerToVirtualSelection( virtualSelectionDescriptor ) );
+		dispatcher.on( 'addMarker:marker', convertTextsInsideMarker( virtualSelectionDescriptor ) );
+		dispatcher.on( 'addMarker:marker', convertElementsInsideMarker( virtualSelectionDescriptor ) );
+		dispatcher.on( 'removeMarker:marker', convertTextsInsideMarker( virtualSelectionDescriptor ) );
+		dispatcher.on( 'removeMarker:marker', convertElementsInsideMarker( virtualSelectionDescriptor ) );
 
 		// Default selection converters.
 		dispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
@@ -228,7 +231,7 @@ describe( 'model-selection-to-view-converters', () => {
 				// Convert model to view.
 				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
-                //
+
 				const markers = Array.from( modelDoc.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
 				dispatcher.convertSelection( modelSelection, markers );
 

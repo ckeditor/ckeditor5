@@ -15,7 +15,8 @@ import {
 	removeUIElement,
 	wrapItem,
 	unwrapItem,
-	markerToVirtualSelection
+	convertTextsInsideMarker,
+	convertElementsInsideMarker
 } from './model-to-view-converters';
 
 import { convertSelectionAttribute, convertSelectionMarker } from './model-selection-to-view-converters';
@@ -322,8 +323,13 @@ class ModelConverterBuilder {
 		}
 
 		for ( const dispatcher of this._dispatchers ) {
-			dispatcher.on( 'addMarker:' + this._from.name, markerToVirtualSelection( selectionDescriptor ), { priority } );
-			dispatcher.on( 'removeMarker:' + this._from.name, markerToVirtualSelection( selectionDescriptor ), { priority } );
+			// Separate converters for converting texts and elements inside marker's range.
+			dispatcher.on( 'addMarker:' + this._from.name, convertTextsInsideMarker( selectionDescriptor ), { priority } );
+			dispatcher.on( 'addMarker:' + this._from.name, convertElementsInsideMarker( selectionDescriptor ), { priority } );
+
+			dispatcher.on( 'removeMarker:' + this._from.name, convertTextsInsideMarker( selectionDescriptor ), { priority } );
+			dispatcher.on( 'removeMarker:' + this._from.name, convertElementsInsideMarker( selectionDescriptor ), { priority } );
+
 			dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( selectionDescriptor ), { priority } );
 		}
 	}

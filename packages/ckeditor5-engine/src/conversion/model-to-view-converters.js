@@ -265,11 +265,9 @@ export function removeAttribute( attributeCreator ) {
  *
  * @param {module:engine/view/element~Element|Function} elementCreator View element, or function returning a view element, which will
  * be used for wrapping.
- * @param {Function} [nameToConsumable] Optional function used to map conversion event name to consumable name. By default it
- * uses {engine/conversion/model-to-view-converters~eventNameToConsumableType} function.
  * @returns {Function} Set/change attribute converter.
  */
-export function wrapItem( elementCreator, nameToConsumable = eventNameToConsumableType ) {
+export function wrapItem( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		const viewElement = ( elementCreator instanceof ViewElement ) ?
 			elementCreator.clone( true ) :
@@ -279,7 +277,7 @@ export function wrapItem( elementCreator, nameToConsumable = eventNameToConsumab
 			return;
 		}
 
-		if ( !consumable.consume( data.item, nameToConsumable( evt.name ) ) ) {
+		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
 			return;
 		}
 
@@ -317,11 +315,9 @@ export function wrapItem( elementCreator, nameToConsumable = eventNameToConsumab
  * @see module:engine/conversion/model-to-view-converters~wrapItem
  * @param {module:engine/view/element~Element|Function} elementCreator View element, or function returning a view element, which will
  * be used for unwrapping.
- * @param {Function} [nameToConsumable] Optional function used to map conversion event name to consumable name. By default it
- * uses {engine/conversion/model-to-view-converters~eventNameToConsumableType} function.
  * @returns {Function} Remove attribute converter.
  */
-export function unwrapItem( elementCreator, nameToConsumable = eventNameToConsumableType ) {
+export function unwrapItem( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		const viewElement = ( elementCreator instanceof ViewElement ) ?
 			elementCreator.clone( true ) :
@@ -331,7 +327,7 @@ export function unwrapItem( elementCreator, nameToConsumable = eventNameToConsum
 			return;
 		}
 
-		if ( !consumable.consume( data.item, nameToConsumable( evt.name ) ) ) {
+		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
 			return;
 		}
 
@@ -397,79 +393,78 @@ export function remove() {
 }
 
 /**
- * Function factory, crates marker to virtual selection converter.
- * For more information see {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toVirtualSelection}.
+ * Function factory, creates converter that converts all texts inside marker's range. Converter wraps each text with
+ * {@link module:engine/view/attributeelement~AttributeElement} created from provided descriptor.
+ * See {@link engine/conversion/model-to-view-converters~virtualSelectionDescriptorToAttributeElement}.
  *
  * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor|Function} selectionDescriptor
- * @return {Function} Marker to virtual selection converter.
+ * @return {Function}
  */
-export function markerToVirtualSelection( selectionDescriptor ) {
-	return ( evt, data, consumable, conversionApi ) =>	{
+export function convertTextsInsideMarker( selectionDescriptor ) {
+	return ( evt, data, consumable, conversionApi ) => {
 		const descriptor = typeof selectionDescriptor == 'function' ?
 			selectionDescriptor( data, consumable, conversionApi ) :
 			selectionDescriptor;
 
-		if ( !descriptor ) {
-			return;
-		}
-
-		// Do not convert if marker's range is collapsed.
-		if ( data.markerRange.isCollapsed ) {
-			return;
-		}
-
-		const addMarker = evt.name.split( ':' )[ 0 ] == 'addMarker';
 		const modelItem = data.item;
 
-		if ( modelItem.is( 'textProxy' ) ) {
-			const viewElement = virtualSelectionDescriptorToAttributeElement( descriptor );
-			const converter = addMarker ?
-				wrapItem( viewElement, eventName => eventName ) :
-				unwrapItem( viewElement, eventName => eventName );
-
-			converter( evt, data, consumable, conversionApi );
+		if ( !descriptor || data.markerRange.isCollapsed || !modelItem.is( 'textProxy' ) ) {
+			return;
 		}
 
-		if ( modelItem.is( 'element' ) ) {
-			const consumableType = evt.name;
-			const viewElement = conversionApi.mapper.toViewElement( modelItem );
+		if ( !consumable.consume( modelItem, evt.name ) ) {
+			return;
+		}
 
-			if ( !consumable.consume( modelItem, consumableType ) ) {
-				return;
-			}
+		const viewElement = virtualSelectionDescriptorToAttributeElement( descriptor );
+		const viewRange = conversionApi.mapper.toViewRange( data.range );
 
-			const selectionHandlingMethod = addMarker ? 'setVirtualSelection' : 'removeVirtualSelection';
-
-			if ( viewElement && viewElement.getCustomProperty( selectionHandlingMethod ) ) {
-				// Virtual selection will be handled by parent element - consume all children.
-				for ( const value of ModelRange.createIn( modelItem ) ) {
-					consumable.consume( value.item, consumableType );
-				}
-
-				viewElement.getCustomProperty( selectionHandlingMethod )( viewElement, descriptor );
-			}
+		if ( evt.name.split( ':' )[ 0 ] == 'addMarker' ) {
+			viewWriter.wrap( viewRange, viewElement );
+		} else {
+			viewWriter.unwrap( viewRange, viewElement );
 		}
 	};
 }
 
-// Helper function that shifts given view `position` in a way that returned position is after `howMany` characters compared
-// to the original `position`.
-// Because in view there might be view ui elements splitting text nodes, we cannot simply use `ViewPosition#getShiftedBy()`.
-function _shiftViewPositionByCharacters( position, howMany ) {
-	// Create a walker that will walk the view tree starting from given position and walking characters one-by-one.
-	const walker = new ViewTreeWalker( { startPosition: position, singleCharacters: true } );
-	// We will count visited characters and return the position after `howMany` characters.
-	let charactersFound = 0;
+/**
+ * Function factory, creates converter that converts all elements inside marker's range. Converter checks if element has
+ * functions stored under `setVirtualSelection` and `removeVirtualSelection` custom properties and calls them passing
+ * {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor. In such case converter will consume
+ * all element's children, assuming that they were handled by element itself.
+ *
+ * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor|Function} selectionDescriptor
+ * @return {Function}
+ */
+export function convertElementsInsideMarker( selectionDescriptor ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		const descriptor = typeof selectionDescriptor == 'function' ?
+			selectionDescriptor( data, consumable, conversionApi ) :
+			selectionDescriptor;
 
-	for ( const value of walker ) {
-		if ( value.type == 'text' ) {
-			charactersFound++;
+		const modelItem = data.item;
 
-			if ( charactersFound == howMany ) {
-				return walker.position;
-			}
+		if ( !descriptor || data.markerRange.isCollapsed || !modelItem.is( 'element' ) ) {
+			return;
 		}
-	}
+
+		if ( !consumable.consume( data.item, evt.name ) ) {
+			return;
+		}
+
+		const viewElement = conversionApi.mapper.toViewElement( modelItem );
+		const addMarker = evt.name.split( ':' )[ 0 ] == 'addMarker';
+		const selectionHandlingMethod = addMarker ? 'setVirtualSelection' : 'removeVirtualSelection';
+
+		if ( viewElement && viewElement.getCustomProperty( selectionHandlingMethod ) ) {
+			// Virtual selection will be handled by parent element - consume all children.
+			for ( const value of ModelRange.createIn( modelItem ) ) {
+				consumable.consume( value.item, evt.name );
+			}
+
+			viewElement.getCustomProperty( selectionHandlingMethod )( viewElement, descriptor );
+		}
+	};
 }
 
 /**
@@ -557,4 +552,24 @@ export function virtualSelectionDescriptorToAttributeElement( descriptor ) {
 	}
 
 	return attributeElement;
+}
+
+// Helper function that shifts given view `position` in a way that returned position is after `howMany` characters compared
+// to the original `position`.
+// Because in view there might be view ui elements splitting text nodes, we cannot simply use `ViewPosition#getShiftedBy()`.
+function _shiftViewPositionByCharacters( position, howMany ) {
+	// Create a walker that will walk the view tree starting from given position and walking characters one-by-one.
+	const walker = new ViewTreeWalker( { startPosition: position, singleCharacters: true } );
+	// We will count visited characters and return the position after `howMany` characters.
+	let charactersFound = 0;
+
+	for ( const value of walker ) {
+		if ( value.type == 'text' ) {
+			charactersFound++;
+
+			if ( charactersFound == howMany ) {
+				return walker.position;
+			}
+		}
+	}
 }
