@@ -92,7 +92,7 @@ describe( 'Link', () => {
 				view: formView,
 				position: {
 					target: selectedRange,
-					limiter: editorElement
+					limiter: editor.config.get( 'ui.balloonLimiter' )
 				}
 			} );
 		} );
@@ -108,7 +108,7 @@ describe( 'Link', () => {
 				view: formView,
 				position: {
 					target: selectedRange,
-					limiter: editorElement
+					limiter: editor.config.get( 'ui.balloonLimiter' )
 				}
 			} );
 		} );
@@ -126,7 +126,7 @@ describe( 'Link', () => {
 				view: formView,
 				position: {
 					target: linkElement,
-					limiter: editorElement
+					limiter: editor.config.get( 'ui.balloonLimiter' )
 				}
 			} );
 		} );
@@ -291,7 +291,7 @@ describe( 'Link', () => {
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
 					target: editorElement.ownerDocument.getSelection().getRangeAt( 0 ),
-					limiter: editorElement
+					limiter: editor.config.get( 'ui.balloonLimiter' )
 				} );
 			} );
 
