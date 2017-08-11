@@ -86,6 +86,6 @@ ClassicEditor
 
 ## Other configuration options
 
-See {@link module:core/editor/editor~EditorConfig} to learn about all available configuration options.
+See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options.
 
 Some of the options may require loading plugins which are not available in the build you use. Read more about {@linkTODO builds/guides/development/custom-builds.md customizing builds}.
