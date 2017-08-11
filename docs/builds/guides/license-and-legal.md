@@ -4,7 +4,7 @@
 
 title: License and legal
 category: builds-guides
-order: 310
+order: 320
 ---
 
 The following legal notices apply to CKEditor 5 Builds and all software from the CKEditor 5 Ecosystem included with it.
