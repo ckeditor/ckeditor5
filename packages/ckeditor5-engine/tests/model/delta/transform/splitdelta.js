@@ -814,6 +814,35 @@ describe( 'transform', () => {
 					]
 				} );
 			} );
+
+			it( 'should not throw if clone operation is NoOperation and use default transformation in that case', () => {
+				const noOpSplitDelta = new SplitDelta();
+				noOpSplitDelta.addOperation( new NoOperation( 0 ) );
+				noOpSplitDelta.addOperation( new MoveOperation( new Position( root, [ 1, 2 ] ), 3, new Position( root, [ 2, 0 ] ), 1 ) );
+
+				const removeDelta = getRemoveDelta( new Position( root, [ 0 ] ), 1, 0 );
+
+				const transformed = transform( noOpSplitDelta, removeDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: NoOperation,
+							baseVersion: 1
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 0, 2 ] ),
+							howMany: 3,
+							targetPosition: new Position( root, [ 1, 0 ] ),
+							baseVersion: 2
+						}
+					]
+				} );
+			} );
 		} );
 	} );
 } );
