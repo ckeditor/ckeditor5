@@ -716,6 +716,14 @@ export default class Range {
 		return this.createFromPositionAndShift( Position.createBefore( item ), item.offsetSize );
 	}
 
+	/**
+	 * Creates a collapsed range at given {@link module:engine/model/position~Position position}
+	 * or on the given {@link module:engine/model/item~Item item}.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 */
 	static createCollapsedAt( itemOrPosition, offset ) {
 		const start = Position.createAt( itemOrPosition, offset );
 		const end = Position.createFromPosition( start );
