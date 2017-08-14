@@ -64,7 +64,7 @@ export default function modifySelection( dataController, selection, options = {}
 		const position = tryExtendingTo( data, next.value );
 
 		if ( position ) {
-			selection.setFocus( position );
+			selection.moveFocusTo( position );
 
 			return;
 		}

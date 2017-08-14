@@ -244,12 +244,12 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'setFocus()', () => {
+	describe( 'moveFocusTo()', () => {
 		it( 'modifies default range', () => {
 			const startPos = selection.getFirstPosition();
 			const endPos = Position.createAt( root, 'end' );
 
-			selection.setFocus( endPos );
+			selection.moveFocusTo( endPos );
 
 			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'same' );
 			expect( selection.focus.compareWith( endPos ) ).to.equal( 'same' );
@@ -263,7 +263,7 @@ describe( 'DocumentSelection', () => {
 
 			selection.addRange( new Range( startPos, endPos ) );
 
-			selection.setFocus( newEndPos );
+			selection.moveFocusTo( newEndPos );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );

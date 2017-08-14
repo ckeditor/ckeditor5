@@ -418,7 +418,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets {@link module:engine/model/selection~Selection#focus} to the specified location.
+	 * Moves {@link module:engine/model/selection~Selection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
 	 *
@@ -427,15 +427,15 @@ export default class Selection {
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
-	setFocus( itemOrPosition, offset ) {
+	moveFocusTo( itemOrPosition, offset ) {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
 			 *
-			 * @error model-selection-setFocus-no-ranges
+			 * @error model-selection-moveFocusTo-no-ranges
 			 */
 			throw new CKEditorError(
-				'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.'
+				'model-selection-moveFocusTo-no-ranges: Cannot set selection focus if there are no ranges in selection.'
 			);
 		}
 

@@ -316,7 +316,7 @@ describe( 'SelectionObserver', () => {
 			const viewFocus = viewDocument.domConverter.domPositionToView( sel.focusNode, sel.focusOffset );
 
 			viewSel.setCollapsedAt( viewAnchor );
-			viewSel.setFocus( viewFocus );
+			viewSel.moveFocusTo( viewFocus );
 
 			viewDocument.render();
 		} );
