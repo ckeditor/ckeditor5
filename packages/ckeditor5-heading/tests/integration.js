@@ -42,7 +42,7 @@ describe( 'Heading integration', () => {
 	describe( 'with the enter key', () => {
 		it( 'should make the "enter" command insert a default heading block if the selection ended at the end of a heading block', () => {
 			editor.setData( '<h2>foobar</h2>' );
-			doc.selection.collapse( doc.getRoot().getChild( 0 ), 'end' );
+			doc.selection.setCollapsedAt( doc.getRoot().getChild( 0 ), 'end' );
 
 			editor.execute( 'enter' );
 
@@ -52,7 +52,7 @@ describe( 'Heading integration', () => {
 		it( 'should not alter the "enter" command if selection not ended at the end of a heading block', () => {
 			// This test is to fill code coverage.
 			editor.setData( '<h2>foobar</h2>' );
-			doc.selection.collapse( doc.getRoot().getChild( 0 ), 3 );
+			doc.selection.setCollapsedAt( doc.getRoot().getChild( 0 ), 3 );
 
 			editor.execute( 'enter' );
 
