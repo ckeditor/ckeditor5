@@ -66,7 +66,7 @@ ClassicEditor
 
 If you are using editor build see how to {@linkTODO customize builds}.
 
-### Common API
+## Common API
 
 The {@link module:heading/heading~Heading} plugin registers:
 
