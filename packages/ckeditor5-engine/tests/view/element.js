@@ -981,4 +981,51 @@ describe( 'Element', () => {
 			expect( properties[ 2 ][ 1 ] ).to.equal( 3 );
 		} );
 	} );
+
+	describe( 'getIdentity()', () => {
+		it( 'should return only name if no other attributes are present', () => {
+			const el = new Element( 'foo' );
+
+			expect( el.getIdentity() ).to.equal( 'foo|classes()|styles()|attributes()' );
+		} );
+
+		it( 'should return classes in sorted order', () => {
+			const el = new Element( 'fruit' );
+			el.addClass( 'banana', 'lemon', 'apple' );
+
+			expect( el.getIdentity() ).to.equal( 'fruit|classes(apple,banana,lemon)|styles()|attributes()' );
+		} );
+
+		it( 'should return styles in sorted order', () => {
+			const el = new Element( 'foo', {
+				style: 'border: 1px solid red; background-color: red'
+			} );
+
+			expect( el.getIdentity() ).to.equal( 'foo|classes()|styles(background-color=red,border=1px solid red)|attributes()' );
+		} );
+
+		it( 'should return attributes in sorted order', () => {
+			const el = new Element( 'foo', {
+				a: 1,
+				d: 4,
+				b: 3
+			} );
+
+			expect( el.getIdentity() ).to.equal( 'foo|classes()|styles()|attributes(a=1,b=3,d=4)' );
+		} );
+
+		it( 'should return classes, styles and attributes', () => {
+			const el = new Element( 'baz', {
+				foo: 'one',
+				bar: 'two',
+				style: 'text-align:center;border-radius:10px'
+			} );
+
+			el.addClass( 'three', 'two', 'one' );
+
+			expect( el.getIdentity() ).to.equal(
+				'baz|classes(one,three,two)|styles(border-radius=10px,text-align=center)|attributes(bar=two,foo=one)'
+			);
+		} );
+	} );
 } );
