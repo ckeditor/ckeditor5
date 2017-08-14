@@ -58,7 +58,7 @@ If you are using editor build see how to {@linkTODO customize builds}.
 
 The {@link module:autoformat/autoformat~Auformat} feature bases on {@link module:autoformat/blockautoformatengine~BlockAuformatEngine} and {@link module:autoformat/inlineautoformatengine~InlineAuformatEngine} tools to create the autoformatters mentioned above.
 
-You can use these tools to create your own autoformatters. Check the [`Autformat` feature's code](https://github.com/ckeditor/ckeditor5-autoformat/blob/master/src/autoformat.js) as an example.
+You can use these tools to create your own autoformatters. Check the [`Autoformat` feature's code](https://github.com/ckeditor/ckeditor5-autoformat/blob/master/src/autoformat.js) as an example.
 
 ## Contribute
 
