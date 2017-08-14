@@ -19,7 +19,7 @@ By default this feature is configured to support `<h2>`, `<h3>` and `<h4>` eleme
 
 ### Configuring heading levels
 
-It is possible, of course, to configure which heading levels the editor should support and how should they be named in the Headings dropdown. Use the {@link module:heading/heading~HeadingConfig#options `heading.options`} config option to do so.
+It is, of course, possible to configure which heading levels the editor should support and how they should be named in the Headings dropdown. Use the {@link module:heading/heading~HeadingConfig#options `heading.options`} config option to do so.
 
 The following editor will support only two levels of headings – `<h1>` and `<h2>`:
 
