@@ -335,7 +335,9 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets this selection's ranges and direction to the ranges from Selection, Position, Range or an iterable of Ranges.
+	 * Sets this selection's ranges and direction to the specified location based on the given
+	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/range~Range range} or an iterable of {@link module:engine/model/range~Range ranges}.
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/position~Position
 	 * |Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range} selectable
@@ -371,7 +373,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets collapsed selection in the specified location.
+	 * Sets collapsed selection at the specified location.
 	 *
 	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
 	 *
