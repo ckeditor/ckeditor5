@@ -61,24 +61,26 @@ export function toWidget( element, options = {} ) {
 		setLabel( element, options.label );
 	}
 
-	if ( options.setVirtualSelection && options.removeVirtualSelection ) {
-		const stack = new VirtualSelectionStack();
-
-		stack.on( 'change:top', ( evt, data ) => {
-			if ( data.oldDescriptor ) {
-				options.removeVirtualSelection( data.oldDescriptor );
-			}
-
-			if ( data.newDescriptor ) {
-				options.setVirtualSelection( data.newDescriptor );
-			}
-		} );
-
-		element.setCustomProperty( 'setVirtualSelection', descriptor => stack.add( descriptor ) );
-		element.setCustomProperty( 'removeVirtualSelection', descriptor => stack.remove( descriptor ) );
-	}
+	setVirtualSelectionHandling( element, options.addVritualSelection, options.removeVirtualSelection );
 
 	return element;
+}
+
+export function setVirtualSelectionHandling( element, add, remove ) {
+	const stack = new VirtualSelectionStack();
+
+	stack.on( 'change:top', ( evt, data ) => {
+		if ( data.oldDescriptor ) {
+			remove( data.oldDescriptor );
+		}
+
+		if ( data.newDescriptor ) {
+			add( data.newDescriptor );
+		}
+	} );
+
+	element.setCustomProperty( 'setVirtualSelection', descriptor => stack.add( descriptor ) );
+	element.setCustomProperty( 'removeVirtualSelection', descriptor => stack.remove( descriptor ) );
 }
 
 /**
