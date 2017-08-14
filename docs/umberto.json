@@ -127,6 +127,10 @@
 		{
 			"path": "packages/ckeditor5-autoformat",
 			"prefix": "autoformat"
+		},
+		{
+			"path": "packages/ckeditor5-heading",
+			"prefix": "heading"
 		}
 	]
 }
