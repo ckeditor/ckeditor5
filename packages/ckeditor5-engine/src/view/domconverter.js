@@ -242,7 +242,7 @@ export default class DomConverter {
 	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#viewToDom} options parameter.
 	 * @returns {Iterable.<Node>} DOM nodes.
 	 */
-	*viewChildrenToDom( viewElement, domDocument, options = {} ) {
+	* viewChildrenToDom( viewElement, domDocument, options = {} ) {
 		const fillerPositionOffset = viewElement.getFillerOffset && viewElement.getFillerOffset();
 		let offset = 0;
 
@@ -435,7 +435,7 @@ export default class DomConverter {
 	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
 	 * @returns {Iterable.<module:engine/view/node~Node>} View nodes.
 	 */
-	*domChildrenToView( domElement, options = {} ) {
+	* domChildrenToView( domElement, options = {} ) {
 		for ( let i = 0; i < domElement.childNodes.length; i++ ) {
 			const domChild = domElement.childNodes[ i ];
 			const viewChild = this.domToView( domChild, options );
@@ -836,6 +836,52 @@ export default class DomConverter {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Checks if given selection's boundaries are at correct places.
+	 *
+	 * The following places are considered as incorrect for selection boundaries:
+	 * * before or in the middle of the inline filler sequence,
+	 * * inside the DOM element which represents {@link module:engine/view/uielement~UIElement a view ui element}.
+	 *
+	 * @param {Selection} domSelection DOM Selection object to be checked.
+	 * @returns {Boolean} `true` if the given selection is at a correct place, `false` otherwise.
+	 */
+	isDomSelectionCorrect( domSelection ) {
+		return this._isDomSelectionPositionCorrect( domSelection.anchorNode, domSelection.anchorOffset ) &&
+			this._isDomSelectionPositionCorrect( domSelection.focusNode, domSelection.focusOffset );
+	}
+
+	/**
+	 * Checks if the given DOM position is a correct place for selection boundary. See {@link #isDomSelectionCorrect}.
+	 *
+	 * @private
+	 * @param {Element} domParent Position parent.
+	 * @param {Number} offset Position offset.
+	 * @returns {Boolean} `true` if given position is at a correct place for selection boundary, `false` otherwise.
+	 */
+	_isDomSelectionPositionCorrect( domParent, offset ) {
+		// If selection is before or in the middle of inline filler string, it is incorrect.
+		if ( this.isText( domParent ) && startsWithFiller( domParent ) && offset < INLINE_FILLER_LENGTH ) {
+			// Selection in a text node, at wrong position (before or in the middle of filler).
+			return false;
+		}
+
+		if ( this.isElement( domParent ) && startsWithFiller( domParent.childNodes[ offset ] ) ) {
+			// Selection in an element node, before filler text node.
+			return false;
+		}
+
+		const viewParent = this.mapDomToView( domParent );
+
+		// If selection is in `view.UIElement`, it is incorrect. Note that `mapDomToView()` returns `view.UIElement`
+		// also for any dom element that is inside the view ui element (so we don't need to perform any additional checks).
+		if ( viewParent && viewParent.is( 'uiElement' ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**

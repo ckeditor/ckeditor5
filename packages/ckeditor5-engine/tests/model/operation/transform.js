@@ -37,18 +37,18 @@ describe( 'transform', () => {
 		for ( const i in params ) {
 			if ( params.hasOwnProperty( i ) ) {
 				if ( i == 'type' ) {
-					expect( op ).to.be.instanceof( params[ i ] );
+					expect( op, 'type' ).to.be.instanceof( params[ i ] );
 				}
 				else if ( params[ i ] instanceof Array ) {
-					expect( op[ i ].length ).to.equal( params[ i ].length );
+					expect( op[ i ].length, i ).to.equal( params[ i ].length );
 
 					for ( let j = 0; j < params[ i ].length; j++ ) {
 						expect( op[ i ][ j ] ).to.equal( params[ i ][ j ] );
 					}
 				} else if ( params[ i ] instanceof Position || params[ i ] instanceof Range ) {
-					expect( op[ i ].isEqual( params[ i ] ) ).to.be.true;
+					expect( op[ i ].isEqual( params[ i ] ), i ).to.be.true;
 				} else {
-					expect( op[ i ] ).to.equal( params[ i ] );
+					expect( op[ i ], i ).to.equal( params[ i ] );
 				}
 			}
 		}
@@ -2241,7 +2241,7 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'target inside transforming move range: expand move range', () => {
+			it( 'target inside transforming move range: split into two operations', () => {
 				const transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
@@ -2251,11 +2251,15 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expect( transOp.length ).to.equal( 1 );
+				expect( transOp.length ).to.equal( 2 );
 
-				expected.howMany = 4;
-
+				expected.howMany = 1;
 				expectOperation( transOp[ 0 ], expected );
+
+				expected.sourcePosition.path = [ 2, 2, 6 ];
+				expected.targetPosition = targetPosition.getShiftedBy( 1 );
+				expected.baseVersion++;
+				expectOperation( transOp[ 1 ], expected );
 			} );
 
 			it( 'target at start boundary of transforming move range: increment source offset', () => {
@@ -2530,12 +2534,13 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 2 );
 
-				expected.sourcePosition.path = [ 2, 2, 3 ];
-				expected.howMany = 1;
-
-				expectOperation( transOp[ 0 ], expected );
-
 				expected.sourcePosition = new Position( otherRoot, [ 4, 1, 1 ] );
+				expected.howMany = 1;
+
+				expectOperation( transOp[ 0 ], expected );
+
+				expected.sourcePosition = new Position( root, [ 2, 2, 3 ] );
+				expected.targetPosition = targetPosition.getShiftedBy( 1 );
 				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
@@ -2569,18 +2574,19 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 2 );
 
-				expected.sourcePosition.path = [ 4, 1, 0 ];
+				expected.sourcePosition = sourcePosition;
 				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.sourcePosition.path = op.sourcePosition.path;
+				expected.sourcePosition = new Position( root, [ 4, 1, 0 ] );
+				expected.targetPosition = targetPosition.getShiftedBy( 1 );
 				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
 			} );
 
-			it( 'range intersects on left side, target inside transforming range and is important: expand move range', () => {
+			it( 'range intersects on left side, target inside transforming range and is important: split into two operations', () => {
 				op.howMany = 4;
 
 				const transformBy = new MoveOperation(
@@ -2592,15 +2598,22 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expect( transOp.length ).to.equal( 1 );
+				expect( transOp.length ).to.equal( 2 );
 
 				expected.sourcePosition.path = [ 2, 2, 3 ];
-				expected.howMany = 5;
+				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
+
+				expected.sourcePosition.path = [ 2, 2, 5 ];
+				expected.howMany = 2;
+				expected.targetPosition = targetPosition.getShiftedBy( 1 );
+				expected.baseVersion++;
+
+				expectOperation( transOp[ 1 ], expected );
 			} );
 
-			it( 'range intersects on left side, target inside transforming range and is less important: expand move range', () => {
+			it( 'range intersects on left side, target inside transforming range and is less important: split into two operations', () => {
 				op.howMany = 4;
 
 				const transformBy = new MoveOperation(
@@ -2612,12 +2625,19 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy, { isStrong: true } );
 
-				expect( transOp.length ).to.equal( 1 );
+				expect( transOp.length ).to.equal( 2 );
 
 				expected.sourcePosition.path = [ 2, 2, 3 ];
-				expected.howMany = 5;
+				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
+
+				expected.sourcePosition.path = [ 2, 2, 5 ];
+				expected.howMany = 2;
+				expected.targetPosition = targetPosition.getShiftedBy( 1 );
+				expected.baseVersion++;
+
+				expectOperation( transOp[ 1 ], expected );
 			} );
 
 			it( 'range intersects on right side of transforming range and is important: shrink range', () => {
@@ -2648,12 +2668,13 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 2 );
 
-				expected.sourcePosition.path = [ 4, 1, 0 ];
+				expected.sourcePosition = sourcePosition;
 				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.sourcePosition.path = op.sourcePosition.path;
+				expected.sourcePosition = new Position( root, [ 4, 1, 0 ] );
+				expected.targetPosition = targetPosition.getShiftedBy( 1 );
 				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
@@ -2673,15 +2694,14 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 2 );
 
-				expected.sourcePosition.path = [ 4, 1, 0 ];
+				expected.sourcePosition.path = [ 2, 2, 4 ];
 				expected.targetPosition.path = [ 4, 1, 2 ];
 				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.sourcePosition.path = [ 2, 2, 4 ];
-				expected.targetPosition.path = [ 4, 1, 2 ];
-				expected.howMany = 1;
+				expected.sourcePosition.path = [ 4, 1, 0 ];
+				expected.targetPosition.path = [ 4, 1, 3 ];
 				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
@@ -2722,13 +2742,12 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 2 );
 
+				expected.sourcePosition.path = [ 2, 2, 4 ];
 				expected.howMany = 1;
-				expected.sourcePosition.path = [ 2, 2, 5 ];
 
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.howMany = 1;
-				expected.sourcePosition.path = [ 2, 2, 4 ];
+				expected.targetPosition = targetPosition.getShiftedBy( 1 );
 				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
@@ -2748,18 +2767,20 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 3 );
 
-				expected.sourcePosition.path = [ 2, 2, 5 ];
+				expected.sourcePosition.path = [ 2, 2, 4 ];
 				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
 
 				expected.sourcePosition.path = [ 4, 1, 0 ];
+				expected.targetPosition = targetPosition.getShiftedBy( 1 );
 				expected.howMany = 2;
 				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
 
 				expected.sourcePosition.path = [ 2, 2, 4 ];
+				expected.targetPosition = targetPosition.getShiftedBy( 3 );
 				expected.howMany = 1;
 				expected.baseVersion++;
 
