@@ -90,7 +90,7 @@ export default class InputCommand extends Command {
 				this.editor.data.model.selection.setRanges( [ resultRange ] );
 			} else if ( isCollapsedRange ) {
 				// If range was collapsed just shift the selection by the number of inserted characters.
-				this.editor.data.model.selection.collapse( range.start.getShiftedBy( textInsertions ) );
+				this.editor.data.model.selection.setCollapsedAt( range.start.getShiftedBy( textInsertions ) );
 			}
 
 			this._buffer.unlock();
