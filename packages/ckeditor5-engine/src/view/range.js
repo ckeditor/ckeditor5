@@ -449,7 +449,7 @@ export default class Range {
 	}
 }
 
-// Function used by getEnlagred and getTrimmed methods.
+// Function used by getEnlarged and getTrimmed methods.
 function enlargeTrimSkip( value ) {
 	if ( value.item.is( 'attributeElement' ) || value.item.is( 'uiElement' ) ) {
 		return true;
