@@ -625,6 +625,25 @@ export default class Selection {
 	}
 
 	/**
+	 * Checks whether the selection contains the entire content of the given element. This means that selection must start
+	 * at a position {@link module:engine/model/position~Position#isTouching touching} the element's start and ends at position
+	 * touching the element's end.
+	 *
+	 * By default, this method will check whether the entire content of the selection's current root is selected.
+	 * Useful to check if e.g. the user has just pressed <kbd>Ctrl</kbd> + <kbd>A</kbd>.
+	 *
+	 * @param {module:engine/model/element~Element} [element=this.anchor.root]
+	 * @returns {Boolean}
+	 */
+	isEntireContentSelected( element = this.anchor.root ) {
+		const limitStartPosition = Position.createAt( element );
+		const limitEndPosition = Position.createAt( element, 'end' );
+
+		return limitStartPosition.isTouching( this.getFirstPosition() ) &&
+			limitEndPosition.isTouching( this.getLastPosition() );
+	}
+
+	/**
 	 * Creates and returns an instance of `Selection` that is a clone of given selection, meaning that it has same
 	 * ranges and same direction as this selection.
 	 *

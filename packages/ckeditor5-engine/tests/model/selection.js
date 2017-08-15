@@ -1237,4 +1237,62 @@ describe( 'Selection', () => {
 			} );
 		} );
 	} );
+
+	describe( 'isEntireContentSelected()', () => {
+		beforeEach( () => {
+			doc.schema.registerItem( 'p', '$block' );
+			doc.schema.allow( { name: 'p', inside: '$root' } );
+		} );
+
+		it( 'returns true if the entire content in $root is selected', () => {
+			setData( doc, '<p>[Foo</p><p>Bom</p><p>Bar]</p>' );
+
+			expect( doc.selection.isEntireContentSelected() ).to.equal( true );
+		} );
+
+		it( 'returns false when only a fragment of the content in $root is selected', () => {
+			setData( doc, '<p>Fo[o</p><p>Bom</p><p>Bar]</p>' );
+
+			expect( doc.selection.isEntireContentSelected() ).to.equal( false );
+		} );
+
+		it( 'returns true if the entire content in specified element is selected', () => {
+			setData( doc, '<p>Foo</p><p>[Bom]</p><p>Bar</p>' );
+
+			const root = doc.getRoot();
+			const secondParagraph = root.getNodeByPath( [ 1 ] );
+
+			expect( doc.selection.isEntireContentSelected( secondParagraph ) ).to.equal( true );
+		} );
+
+		it( 'returns false if the entire content in specified element is not selected', () => {
+			setData( doc, '<p>Foo</p><p>[Bom</p><p>B]ar</p>' );
+
+			const root = doc.getRoot();
+			const secondParagraph = root.getNodeByPath( [ 1 ] );
+
+			expect( doc.selection.isEntireContentSelected( secondParagraph ) ).to.equal( false );
+		} );
+
+		it( 'returns false when the entire content except an empty element is selected', () => {
+			doc.schema.registerItem( 'img', '$inline' );
+			doc.schema.allow( { name: 'img', inside: 'p' } );
+
+			setData( doc, '<p><img></img>[Foo]</p>' );
+
+			expect( doc.selection.isEntireContentSelected() ).to.equal( false );
+		} );
+
+		it( 'returns true if the content is empty', () => {
+			setData( doc, '[]' );
+
+			expect( doc.selection.isEntireContentSelected() ).to.equal( true );
+		} );
+
+		it( 'returns false if empty selection is at the end of non-empty content', () => {
+			setData( doc, '<p>Foo bar bom.</p>[]' );
+
+			expect( doc.selection.isEntireContentSelected() ).to.equal( false );
+		} );
+	} );
 } );

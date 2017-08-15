@@ -1028,8 +1028,8 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should not unbind element that has not been moved to graveyard', () => {
-			const modelElement = new ModelElement( 'a' );
-			const viewElement = new ViewElement( 'a' );
+			const modelElement = new ModelElement( 'paragraph' );
+			const viewElement = new ViewContainerElement( 'p' );
 
 			modelRoot.appendChildren( [ modelElement, new ModelText( 'b' ) ] );
 			viewRoot.appendChildren( [ viewElement, new ViewText( 'b' ) ] );
@@ -1056,8 +1056,8 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should unbind elements if model element was moved to graveyard', () => {
-			const modelElement = new ModelElement( 'a' );
-			const viewElement = new ViewElement( 'a' );
+			const modelElement = new ModelElement( 'paragraph' );
+			const viewElement = new ViewContainerElement( 'p' );
 
 			modelRoot.appendChildren( [ modelElement, new ModelText( 'b' ) ] );
 			viewRoot.appendChildren( [ viewElement, new ViewText( 'b' ) ] );
@@ -1124,6 +1124,63 @@ describe( 'model-to-view-converters', () => {
 
 			expect( mapper.toModelElement( viewWElement ) ).to.be.undefined;
 			expect( mapper.toViewElement( modelWElement ) ).to.be.undefined;
+		} );
+
+		it( 'should work correctly if container element after ui element is removed', () => {
+			const modelP1 = new ModelElement( 'paragraph' );
+			const modelP2 = new ModelElement( 'paragraph' );
+
+			const viewP1 = new ViewContainerElement( 'p' );
+			const viewUi1 = new ViewUIElement( 'span' );
+			const viewUi2 = new ViewUIElement( 'span' );
+			const viewP2 = new ViewContainerElement( 'p' );
+
+			modelRoot.appendChildren( [ modelP1, modelP2 ] );
+			viewRoot.appendChildren( [ viewP1, viewUi1, viewUi2, viewP2 ] );
+
+			mapper.bindElements( modelP1, viewP1 );
+			mapper.bindElements( modelP2, viewP2 );
+
+			dispatcher.on( 'remove', remove() );
+
+			modelWriter.move(
+				ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 ),
+				ModelPosition.createAt( modelDoc.graveyard, 'end' )
+			);
+
+			dispatcher.convertRemove(
+				ModelPosition.createFromParentAndOffset( modelRoot, 1 ),
+				ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 1 )
+			);
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p></p><span></span><span></span></div>' );
+		} );
+
+		it( 'should work correctly if container element after text node is removed', () => {
+			const modelText = new ModelText( 'foo' );
+			const modelP = new ModelElement( 'paragraph' );
+
+			const viewText = new ViewText( 'foo' );
+			const viewP = new ViewContainerElement( 'p' );
+
+			modelRoot.appendChildren( [ modelText, modelP ] );
+			viewRoot.appendChildren( [ viewText, viewP ] );
+
+			mapper.bindElements( modelP, viewP );
+
+			dispatcher.on( 'remove', remove() );
+
+			modelWriter.move(
+				ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ),
+				ModelPosition.createAt( modelDoc.graveyard, 'end' )
+			);
+
+			dispatcher.convertRemove(
+				ModelPosition.createFromParentAndOffset( modelRoot, 3 ),
+				ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 1 )
+			);
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div>foo</div>' );
 		} );
 	} );
 } );
