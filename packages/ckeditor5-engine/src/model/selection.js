@@ -629,6 +629,9 @@ export default class Selection {
 	 * at a position {@link module:engine/model/position~Position#isTouching touching} the element's start and ends at position
 	 * touching the element's end.
 	 *
+	 * By default, this method will check whether the entire content of the selection's current root is selected.
+	 * Useful to check if e.g. the user has just pressed <kbd>Ctrl</kbd> + <kbd>A</kbd>.
+	 *
 	 * @param {module:engine/model/element~Element} [element=this.anchor.root]
 	 * @returns {Boolean}
 	 */
