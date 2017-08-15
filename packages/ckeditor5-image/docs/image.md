@@ -60,7 +60,7 @@ ClassicEditor
 
 The {@link module:image/imagecaption~ImageCaption} feature adds support for image captions:
 
-```js
+```html
 <figure class="image">
 	<img src="..." alt="...">
 	<figcaption>Caption goes here...</figcaption>
