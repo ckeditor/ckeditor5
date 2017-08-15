@@ -84,8 +84,13 @@ Either way, every plugin that you want to include in the bundle should be includ
 'use strict';
 
 module.exports = {
-	editor: '@ckeditor/ckeditor5-editor-classic/src/classic',
+	// The editor creator to use.
+	editor: '@ckeditor/ckeditor5-editor-classic/src/classiceditor',
+
+	// The name under which the editor will be exported.
 	moduleName: 'ClassicEditor',
+
+	// Plugins to include in the build.
 	plugins: [
 		'@ckeditor/ckeditor5-presets/src/essentials',
 
@@ -100,6 +105,11 @@ module.exports = {
 		'ckeditor5-custom-package/src/customplugin',
 		'../relative/path/to/some/othercustomplugin'
 	],
+
+	// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
+	language: 'en',
+
+	// Editor config.
 	config: {
 		toolbar: [ 'headings', 'bold', 'italic', 'custombutton' ]
 	}
