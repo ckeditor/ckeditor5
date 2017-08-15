@@ -152,6 +152,8 @@ export default class Clipboard extends Plugin {
 			content = this._htmlDataProcessor.toView( content );
 
 			this.fire( 'inputTransformation', { content } );
+
+			editingView.scrollToTheSelection();
 		}, { priority: 'low' } );
 
 		this.listenTo( this, 'inputTransformation', ( evt, data ) => {
