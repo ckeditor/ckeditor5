@@ -2,6 +2,7 @@
   "name": "ckeditor5-snippet-adapter",
   "private": true,
   "dependencies": {
+    "@ckeditor/ckeditor5-dev-webpack-plugin": "^2.0.11",
     "babili-webpack-plugin": "^0.1.2",
     "css-loader": "^0.28.4",
     "node-sass": "^4.5.3",
