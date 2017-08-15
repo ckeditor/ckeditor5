@@ -203,6 +203,8 @@ function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElem
 
 	// This hack is supposed to place attribute element *after* all ui elements if the attribute element would be
 	// the only non-ui child and thus receive a block filler.
+	// This is needed to properly render ui elements. Block filler is a <br /> element. If it is placed before
+	// UI element, the ui element will most probably be incorrectly rendered (in next line). #1072.
 	if ( shouldPushAttributeElement( viewPosition.parent ) ) {
 		viewPosition = viewPosition.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
 	}
