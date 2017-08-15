@@ -36,6 +36,7 @@ export default class Enter extends Plugin {
 		this.listenTo( editingView, 'enter', ( evt, data ) => {
 			editor.execute( 'enter' );
 			data.preventDefault();
+			editingView.scrollToTheSelection();
 		}, { priority: 'low' } );
 	}
 }

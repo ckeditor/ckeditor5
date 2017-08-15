@@ -39,6 +39,18 @@ describe( 'Enter feature', () => {
 		expect( domEvt.preventDefault.calledOnce ).to.be.true;
 	} );
 
+	it( 'scrolls the editing document to the selection after executing the command', () => {
+		const view = editor.editing.view;
+		const domEvt = getDomEvent();
+		const executeSpy = editor.execute = sinon.spy();
+		const scrollSpy = sinon.stub( view, 'scrollToTheSelection' );
+
+		view.fire( 'enter', new DomEventData( editingView, domEvt ) );
+
+		sinon.assert.calledOnce( scrollSpy );
+		sinon.assert.callOrder( executeSpy, scrollSpy );
+	} );
+
 	function getDomEvent() {
 		return {
 			preventDefault: sinon.spy()
