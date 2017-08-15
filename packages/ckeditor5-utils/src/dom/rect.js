@@ -51,7 +51,7 @@ export default class Rect {
 		 *
 		 * @protected
 		 * @readonly
-		 * @member {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|object} #_source
+		 * @member {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} #_source
 		 */
 		Object.defineProperty( this, '_source', {
 			// If the source is a Rect instance, copy it's #_source.
