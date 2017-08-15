@@ -5,12 +5,14 @@
 
 /* globals console, window, document */
 
+/* config { "language": "de" } */
+
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-classic-editor' ), {
+	.create( document.querySelector( '#snippet-ui-language' ), {
 		plugins: [ ArticlePreset ],
 		toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {

@@ -9,13 +9,17 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const webpack = require( 'webpack' );
 const { bundler } = require( '@ckeditor/ckeditor5-dev-utils' );
+const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 
 // const BabiliPlugin = require( 'babili-webpack-plugin' );
 
 module.exports = function snippetAdapter( data ) {
+	const snippetConfig = readSnippetConfig( data.snippetSource.js );
+
 	const webpackConfig = getWebpackConfig( {
 		entry: data.snippetSource.js,
-		outputPath: path.join( data.outputPath, data.snippetPath )
+		outputPath: path.join( data.outputPath, data.snippetPath ),
+		language: snippetConfig.language
 	} );
 
 	return runWebpack( webpackConfig )
@@ -42,6 +46,9 @@ function getWebpackConfig( config ) {
 		},
 
 		plugins: [
+			new CKEditorWebpackPlugin( {
+				languages: [ config.language || 'en' ]
+			} ),
 			// new BabiliPlugin( null, {
 			// 	comments: false
 			// } ),
@@ -112,4 +119,16 @@ function getModuleResolvePaths() {
 		path.resolve( __dirname, '..', '..', '..', 'node_modules' ),
 		'node_modules'
 	];
+}
+
+function readSnippetConfig( snippetSourcePath ) {
+	const snippetSource = fs.readFileSync( snippetSourcePath ).toString();
+
+	const configSourceMatch = snippetSource.match( /\n\/\* config ([\s\S]+?)\*\// );
+
+	if ( !configSourceMatch ) {
+		return {};
+	}
+
+	return JSON.parse( configSourceMatch[ 1 ] );
 }

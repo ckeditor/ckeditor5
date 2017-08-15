@@ -49,7 +49,7 @@ The following are the main files available in all build distributions:
 
 * `build/ckeditor.js` &ndash; The main UMD distribution script, containing the editor core and all plugins. Compatible with ECMAScript 6 enabled browsers. A smaller download.
 * `build/ckeditor.compat.js` &ndash; The same as the above, for browsers not compatible with ES6.
-* `ckeditor.js`: &ndash; The source entry point of the build. It can be used for complex bundling and development.
+* `ckeditor.js` &ndash; The source entry point of the build. It can be used for complex bundling and development.
 
 ## Loading the API
 

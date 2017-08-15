@@ -13,9 +13,9 @@ Each CKEditor 5 build provides a class that handles the creation of editor insta
 
 The following are creator class names for each build:
 
-* Classic Editor &ndash; {@link module:editor-classic/classiceditor~ClassicEditor}
-* Inline Editor &ndash; {@link module:editor-inline/inlineeditor~InlineEditor}
-* Medium-like Editor &ndash; {@link module:editor-medium-like/mediumlikeeditor~MediumLikeEditor}
+* Classic editor – {@link module:editor-classic/classiceditor~ClassicEditor}
+* Inline editor – {@link module:editor-inline/inlineeditor~InlineEditor}
+* Editor with balloon toolbar (Medium-like) – {@link module:editor-balloon-toolbar/balloontoolbareditor~BalloonToolbarEditor}
 
 Most of the examples in the documentation use the `ClassicEditor` class, but things should work in a similar way with other creator classes.
 
@@ -54,7 +54,8 @@ In the HTML code:
 In the script:
 
 ```js
-ClassicEditor.create( document.querySelector( '#text-editor' ) )
+ClassicEditor
+	.create( document.querySelector( '#text-editor' ) )
 	.then( editor => {
 		console.log( editor );
 	} )

@@ -131,6 +131,10 @@
 		{
 			"path": "packages/ckeditor5-heading",
 			"prefix": "heading"
+		},
+		{
+			"path": "packages/ckeditor5-image",
+			"prefix": "image"
 		}
 	]
 }
