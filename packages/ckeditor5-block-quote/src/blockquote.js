@@ -84,6 +84,7 @@ export default class BlockQuote extends Plugin {
 
 			if ( doc.selection.isCollapsed && positionParent.isEmpty && command.value ) {
 				this.editor.execute( 'blockQuote' );
+				this.editor.editing.view.scrollToTheSelection();
 
 				data.preventDefault();
 				evt.stop();

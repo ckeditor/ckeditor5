@@ -191,6 +191,23 @@ describe( 'BlockQuote', () => {
 				'<paragraph>x</paragraph>'
 			);
 		} );
+
+		it( 'scrolls the view document to the selection after the command is executed', () => {
+			const data = fakeEventData();
+			const execSpy = sinon.spy( editor, 'execute' );
+			const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+
+			setModelData( doc,
+				'<paragraph>x</paragraph>' +
+				'<blockQuote><paragraph>a</paragraph><paragraph>[]</paragraph></blockQuote>' +
+				'<paragraph>x</paragraph>'
+			);
+
+			editor.editing.view.fire( 'enter', data );
+
+			sinon.assert.calledOnce( scrollSpy );
+			sinon.assert.callOrder( execSpy, scrollSpy );
+		} );
 	} );
 
 	describe( 'backspace key support', () => {
