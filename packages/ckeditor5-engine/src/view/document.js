@@ -21,6 +21,7 @@ import KeyObserver from './observer/keyobserver';
 import FakeSelectionObserver from './observer/fakeselectionobserver';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 
 /**
  * Document class creates an abstract layer over the content editable area.
@@ -298,6 +299,21 @@ export default class Document {
 				 */
 				log.warn( 'view-focus-no-selection: There is no selection in any editable to focus.' );
 			}
+		}
+	}
+
+	/**
+	 * Scrolls the page viewport and {@link #domRoots} with their ancestors to reveal the
+	 * caret, if not already visible to the user.
+	 */
+	scrollToTheSelection() {
+		const range = this.selection.getFirstRange();
+
+		if ( range ) {
+			scrollViewportToShowTarget( {
+				target: this.domConverter.viewRangeToDom( range ),
+				viewportOffset: 20
+			} );
 		}
 	}
 
