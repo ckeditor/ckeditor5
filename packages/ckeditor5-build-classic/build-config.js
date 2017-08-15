@@ -6,8 +6,13 @@
 'use strict';
 
 module.exports = {
+	// The editor creator to use.
 	editor: '@ckeditor/ckeditor5-editor-classic/src/classiceditor',
+
+	// The name under which the editor will be exported.
 	moduleName: 'ClassicEditor',
+
+	// Plugins to include in the build.
 	plugins: [
 		'@ckeditor/ckeditor5-presets/src/essentials',
 
@@ -24,7 +29,11 @@ module.exports = {
 		'@ckeditor/ckeditor5-list/src/list',
 		'@ckeditor/ckeditor5-paragraph/src/paragraph',
 	],
+
+	// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
 	language: 'en',
+
+	// Editor config.
 	config: {
 		toolbar: [
 			'headings',
