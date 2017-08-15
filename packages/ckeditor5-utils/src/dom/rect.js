@@ -10,11 +10,12 @@
 import global from './global';
 import isRange from './isrange';
 import isElement from '../lib/lodash/isElement';
+import getBorderWidths from './getborderwidths';
 
 /**
  * A helper class representing a `ClientRect` object, e.g. value returned by
  * the native `object.getBoundingClientRect()` method. Provides a set of methods
- * to manipulate the rect and compare it against other `Rect` instances.
+ * to manipulate the rect and compare it against other rect instances.
  */
 export default class Rect {
 	/**
@@ -26,16 +27,23 @@ export default class Rect {
 	 *		// Rect of a DOM Range.
 	 *		const rectB = new Rect( document.getSelection().getRangeAt( 0 ) );
 	 *
+	 *		// Rect of a window (web browser viewport).
+	 *		const rectC = new Rect( window );
+	 *
 	 *		// Rect out of an object.
-	 *		const rectC = new Rect( { top: 0, right: 10, bottom: 10, left: 0, width: 10, height: 10 } );
+	 *		const rectD = new Rect( { top: 0, right: 10, bottom: 10, left: 0, width: 10, height: 10 } );
 	 *
 	 *		// Rect out of another Rect instance.
-	 *		const rectD = new Rect( rectC );
+	 *		const rectE = new Rect( rectD );
 	 *
 	 *		// Rect out of a ClientRect.
-	 *		const rectE = new Rect( document.body.getClientRects().item( 0 ) );
+	 *		const rectF = new Rect( document.body.getClientRects().item( 0 ) );
 	 *
-	 * @param {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} source A source object to create the rect.
+	 * **Note**: By default a rect of an HTML element includes its CSS borders and scrollbars (if any)
+	 * ant the rect of a `window` includes scrollbars too. Use {@link #excludeScrollbarsAndBorders}
+	 * to get the inner part of the rect.
+	 *
+	 * @param {HTMLElement|Range|Window|ClientRect|module:utils/dom/rect~Rect|Object} source A source object to create the rect.
 	 */
 	constructor( source ) {
 		/**
@@ -46,9 +54,9 @@ export default class Rect {
 		 * @member {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} #_source
 		 */
 		Object.defineProperty( this, '_source', {
-			// source._source if already the Rect instance
+			// If the source is a Rect instance, copy it's #_source.
 			value: source._source || source,
-			writable: false,
+			writable: true,
 			enumerable: false
 		} );
 
@@ -56,6 +64,17 @@ export default class Rect {
 			copyRectProperties( this, source.getBoundingClientRect() );
 		} else if ( isRange( source ) ) {
 			copyRectProperties( this, Rect.getDomRangeRects( source )[ 0 ] );
+		} else if ( source === global.window ) {
+			const { innerWidth, innerHeight } = global.window;
+
+			copyRectProperties( this, {
+				top: 0,
+				right: innerWidth,
+				bottom: innerHeight,
+				left: 0,
+				width: innerWidth,
+				height: innerHeight
+			} );
 		} else {
 			copyRectProperties( this, source );
 		}
@@ -234,21 +253,67 @@ export default class Rect {
 	}
 
 	/**
-	 * Returns a rect of the web browser viewport.
+	 * Checks if all property values ({@link #top}, {@link #left}, {@link #right},
+	 * {@link #bottom}, {@link #width} and {@link #height}) are the equal in both rect
+	 * instances.
 	 *
-	 * @returns {module:utils/dom/rect~Rect} A viewport rect.
+	 * @param {module:utils/dom/rect~Rect} rect A rect instance to compare with.
+	 * @returns {Boolean} `true` when Rects are equal. `false` otherwise.
 	 */
-	static getViewportRect() {
-		const { innerWidth, innerHeight } = global.window;
+	isEqual( anotherRect ) {
+		for ( const prop of rectProperties ) {
+			if ( this[ prop ] !== anotherRect[ prop ] ) {
+				return false;
+			}
+		}
 
-		return new Rect( {
-			top: 0,
-			right: innerWidth,
-			bottom: innerHeight,
-			left: 0,
-			width: innerWidth,
-			height: innerHeight
-		} );
+		return true;
+	}
+
+	/**
+	 * Checks whether a rect fully contains another rect instance.
+	 *
+	 * @param {module:utils/dom/rect~Rect} anotherRect
+	 * @returns {Boolean} `true` if contains, `false` otherwise.
+	 */
+	contains( anotherRect ) {
+		const intersectRect = this.getIntersection( anotherRect );
+
+		return !!( intersectRect && intersectRect.isEqual( anotherRect ) );
+	}
+
+	/**
+	 * Excludes scrollbars and CSS borders from the rect.
+	 *
+	 * * Borders are removed when {@link #_source} is an HTML element.
+	 * * Scrollbars are excluded from HTML elements and the `window`.
+	 *
+	 * @returns {module:utils/dom/rect~Rect} A rect which has been updated.
+	 */
+	excludeScrollbarsAndBorders() {
+		const source = this._source;
+		let scrollBarWidth, scrollBarHeight;
+
+		if ( source === global.window ) {
+			scrollBarWidth = global.window.innerWidth - global.document.documentElement.clientWidth;
+			scrollBarHeight = global.window.innerHeight - global.document.documentElement.clientHeight;
+		} else {
+			const borderWidths = getBorderWidths( this._source );
+
+			scrollBarWidth = source.offsetWidth - source.clientWidth;
+			scrollBarHeight = source.offsetHeight - source.clientHeight;
+
+			this.moveBy( borderWidths.left, borderWidths.top );
+		}
+
+		// Assuming LTR scrollbars. TODO: RTL.
+		this.width -= scrollBarWidth;
+		this.right -= scrollBarWidth;
+
+		this.height -= scrollBarHeight;
+		this.bottom -= scrollBarHeight;
+
+		return this;
 	}
 
 	/**
