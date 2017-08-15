@@ -5,9 +5,7 @@
 
 /* global document */
 
-import scrollUtils from '@ckeditor/ckeditor5-utils/src/dom/scroll';
-
-const { scrollViewportToShowTarget } = scrollUtils;
+import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 
 document.getElementById( 'scrollToBlue' ).addEventListener( 'click', () => {
 	const target = document.querySelector( '#target-blue .target' );
