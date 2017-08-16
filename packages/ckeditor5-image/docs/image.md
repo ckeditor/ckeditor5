@@ -124,7 +124,7 @@ ClassicEditor
 				{ name: 'imageStyleFull', title: 'Full size image', icon: fullSizeIcon, value: null },
 
 				// This represents image aligned to left.
-				{ name: 'imageStyleLeft', title: 'Right aligned image', icon: alignLeftIcon, value: 'left', className: 'image-style-left' },
+				{ name: 'imageStyleLeft', title: 'Left aligned image', icon: alignLeftIcon, value: 'left', className: 'image-style-left' },
 
 				// This represents image aligned to right.
 				{ name: 'imageStyleRight', title: 'Right aligned image', icon: alignRightIcon, value: 'right', className: 'image-style-right' }
