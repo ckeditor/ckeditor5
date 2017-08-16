@@ -25,13 +25,13 @@ Some of the reasons for creating custom builds are:
 
 Start with [forking](https://help.github.com/articles/fork-a-repo/) one of the official builds (it will serve as the starting point for your custom one) and then clone your fork:
 
-```
+```bash
 git clone https://github.com/<your-username>/ckeditor5-build-classic.git
 ```
 
 To make updating easier you may optionally add the original build repository to your Git remotes:
 
-```
+```bash
 git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
 ```
 
@@ -62,7 +62,7 @@ In order to customize a build you need to:
 
 The easiest way to install missing dependencies is by typing:
 
-```
+```bash
 npm install --save <package-name>
 ```
 
@@ -80,7 +80,7 @@ If you added or removed dependencies, you will also need to modify the `build-co
 
 Either way, every plugin that you want to include in the bundle should be included at this stage. You can also change the editor creator and specify the default editor configuration. For instance, your build configuration might look like this:
 
-```
+```js
 'use strict';
 
 module.exports = {
@@ -122,7 +122,7 @@ After you changed the build configuration or updated some dependencies, it is ti
 
 If you wish to create the bundles based on the build configuration (`build-config.js`) run:
 
-```
+```bash
 npm run build
 ```
 
@@ -130,7 +130,7 @@ This command will update the entry file (`ckeditor.js`) and create two bundles â
 
 If you want to skip updating the entry file (in case you modified it manually) run:
 
-```
+```bash
 npm run build-ckeditor
 npm run build-ckeditor-compat
 ```
@@ -139,7 +139,7 @@ npm run build-ckeditor-compat
 
 You may decide to update your build at any time. Since it is a fork of the official build, you can simply merge the changes that happened meanwhile in that build, using Git commands:
 
-```
+```bash
 git fetch upstream
 git merge upstream/master
 ```
