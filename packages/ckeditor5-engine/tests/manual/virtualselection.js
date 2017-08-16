@@ -81,6 +81,33 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 			addMarker( editor, 'red' );
 			evt.preventDefault();
 		} );
+
+		document.getElementById( 'remove-marker-yellow' ).addEventListener( 'mousedown', evt => {
+			removeMarker( editor, 'yellow' );
+			evt.preventDefault();
+		} );
+
+		document.getElementById( 'remove-marker-blue' ).addEventListener( 'mousedown', evt => {
+			removeMarker( editor, 'blue' );
+			evt.preventDefault();
+		} );
+
+		document.getElementById( 'remove-marker-red' ).addEventListener( 'mousedown', evt => {
+			removeMarker( editor, 'red' );
+			evt.preventDefault();
+		} );
+
+		document.getElementById( 'remove-markers' ).addEventListener( 'mousedown', evt => {
+			const markers = editor.document.markers;
+
+			editor.document.enqueueChanges( () => {
+				for ( const marker of markers ) {
+					markers.remove( marker );
+				}
+			} );
+
+			evt.preventDefault();
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -92,5 +119,13 @@ function addMarker( editor, color ) {
 	editor.document.enqueueChanges( () => {
 		const range = ModelRange.createFromRange( model.selection.getFirstRange() );
 		model.markers.set( 'marker:' + color, range );
+	} );
+}
+
+function removeMarker( editor, color ) {
+	const model = editor.document;
+
+	editor.document.enqueueChanges( () => {
+		model.markers.remove( 'marker:' + color );
 	} );
 }
