@@ -957,12 +957,6 @@ function shouldABeOutsideB( a, b ) {
 		return false;
 	}
 
-	// Two attribute elements with same priority and name will be merged into one element so there is no need to preserve
-	// order in such situations.
-	if ( a.name == b.name ) {
-		return true;
-	}
-
 	// When priorities are equal and names are different - use identities.
 	return a.getIdentity() < b.getIdentity();
 }
@@ -1038,7 +1032,6 @@ function mergeTextNodes( t1, t2 ) {
 }
 
 // Wraps one {@link module:engine/view/attributeelement~AttributeElement AttributeElement} into another by merging them if possible.
-// Two AttributeElements can be merged when there is no attribute or style conflicts between them.
 // When merging is possible - all attributes, styles and classes are moved from wrapper element to element being
 // wrapped.
 //
