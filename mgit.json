@@ -2,7 +2,7 @@
   "packages": "packages/",
   "packagesPrefix": "@ckeditor/ckeditor5-",
   "dependencies": {
-    "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#0d7781c",
+    "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#eb456ac",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#b27dc45",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#8f22f2e",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#09dc740",
@@ -25,7 +25,7 @@
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#69b480b",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#b2d9002",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#2f7ee06",
-    "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#f4efd9b",
+    "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#d8d61f3",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#b143e9c",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#2630383"
   }
