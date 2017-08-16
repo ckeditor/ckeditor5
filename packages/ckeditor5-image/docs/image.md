@@ -19,7 +19,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 
 The {@link module:image/image~Image} feature adds support for plain images with just the `alt` attribute set. That translates to the following HTML:
 
-```js
+```html
 <figure class="image">
 	<img src="..." alt="...">
 </figure>
