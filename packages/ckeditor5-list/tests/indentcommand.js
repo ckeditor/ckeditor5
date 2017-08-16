@@ -53,7 +53,7 @@ describe( 'IndentCommand', () => {
 		describe( 'isEnabled', () => {
 			it( 'should be true if selection starts in list item', () => {
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( root.getChild( 5 ) );
+					doc.selection.setCollapsedAt( root.getChild( 5 ) );
 				} );
 
 				expect( command.isEnabled ).to.be.true;
@@ -61,7 +61,7 @@ describe( 'IndentCommand', () => {
 
 			it( 'should be false if selection starts in first list item', () => {
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( root.getChild( 0 ) );
+					doc.selection.setCollapsedAt( root.getChild( 0 ) );
 				} );
 
 				expect( command.isEnabled ).to.be.false;
@@ -107,7 +107,7 @@ describe( 'IndentCommand', () => {
 
 			it( 'should be false if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( root.getChild( 2 ) );
+					doc.selection.setCollapsedAt( root.getChild( 2 ) );
 				} );
 
 				expect( command.isEnabled ).to.be.false;
@@ -127,7 +127,7 @@ describe( 'IndentCommand', () => {
 		describe( 'execute()', () => {
 			it( 'should increment indent attribute by 1', () => {
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( root.getChild( 5 ) );
+					doc.selection.setCollapsedAt( root.getChild( 5 ) );
 				} );
 
 				command.execute();
@@ -145,7 +145,7 @@ describe( 'IndentCommand', () => {
 
 			it( 'should increment indent of all sub-items of indented item', () => {
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( root.getChild( 1 ) );
+					doc.selection.setCollapsedAt( root.getChild( 1 ) );
 				} );
 
 				command.execute();
@@ -241,7 +241,7 @@ describe( 'IndentCommand', () => {
 		describe( 'isEnabled', () => {
 			it( 'should be true if selection starts in list item', () => {
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( root.getChild( 5 ) );
+					doc.selection.setCollapsedAt( root.getChild( 5 ) );
 				} );
 
 				expect( command.isEnabled ).to.be.true;
@@ -250,7 +250,7 @@ describe( 'IndentCommand', () => {
 			it( 'should be true if selection starts in first list item', () => {
 				// This is in contrary to forward indent command.
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( root.getChild( 0 ) );
+					doc.selection.setCollapsedAt( root.getChild( 0 ) );
 				} );
 
 				expect( command.isEnabled ).to.be.true;
@@ -259,7 +259,7 @@ describe( 'IndentCommand', () => {
 			it( 'should be true if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
 				// This is in contrary to forward indent command.
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( root.getChild( 2 ) );
+					doc.selection.setCollapsedAt( root.getChild( 2 ) );
 				} );
 
 				expect( command.isEnabled ).to.be.true;
@@ -269,7 +269,7 @@ describe( 'IndentCommand', () => {
 		describe( 'execute()', () => {
 			it( 'should decrement indent attribute by 1 (if it is bigger than 0)', () => {
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( root.getChild( 5 ) );
+					doc.selection.setCollapsedAt( root.getChild( 5 ) );
 				} );
 
 				command.execute();
@@ -287,7 +287,7 @@ describe( 'IndentCommand', () => {
 
 			it( 'should rename listItem to paragraph (if indent is equal to 0)', () => {
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( root.getChild( 0 ) );
+					doc.selection.setCollapsedAt( root.getChild( 0 ) );
 				} );
 
 				command.execute();
@@ -305,7 +305,7 @@ describe( 'IndentCommand', () => {
 
 			it( 'should decrement indent of all sub-items of outdented item', () => {
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( root.getChild( 1 ) );
+					doc.selection.setCollapsedAt( root.getChild( 1 ) );
 				} );
 
 				command.execute();
