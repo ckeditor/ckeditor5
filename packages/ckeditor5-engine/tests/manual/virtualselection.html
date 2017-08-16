@@ -1,6 +1,14 @@
 <style>
-	span.virtual-selection {
+	span.virtual-selection-yellow {
 		background-color: yellow;
+	}
+
+	span.virtual-selection-blue {
+		background-color: blue;
+	}
+
+	span.virtual-selection-red {
+		background-color: red;
 	}
 
 	.ck-widget.fancy-widget {
@@ -11,8 +19,18 @@
 		line-height: 40px;
 	}
 
-	.ck-widget.fancy-widget.virtual-selection {
+	.ck-widget.fancy-widget.virtual-selection-yellow {
 		background-color: yellow;
+		color: black;
+	}
+
+	.ck-widget.fancy-widget.virtual-selection-blue {
+		background-color: blue;
+		color: black;
+	}
+
+	.ck-widget.fancy-widget.virtual-selection-red {
+		background-color: red;
 		color: black;
 	}
 </style>
@@ -22,4 +40,6 @@
 	<figure></figure>
 	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at diam quis justo imperdiet posuere non eu tortor. Mauris vel magna eu sem hendrerit varius. Ut imperdiet velit ut ante interdum convallis. Vestibulum vitae lacinia mi. </p>
 </div>
-<button id="add-marker">Set marker</button>
+<button id="add-marker-yellow">Set yellow marker</button>
+<button id="add-marker-blue">Set blue marker</button>
+<button id="add-marker-red">Set red marker</button>

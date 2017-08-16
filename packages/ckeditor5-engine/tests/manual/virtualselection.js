@@ -45,16 +45,6 @@ class FancyWidget extends Plugin {
 			.toElement( () => {
 				const widgetElement = new ViewContainerElement( 'figure', { class: 'fancy-widget' }, new ViewText( 'widget' ) );
 
-				widgetElement.setCustomProperty( 'setVirtualSelection', ( element, data ) => {
-					element.getChild( 0 ).data = 'widget - with virtual selection';
-					element.addClass( data.class );
-				} );
-
-				widgetElement.setCustomProperty( 'removeVirtualSelection', ( element, data ) => {
-					element.getChild( 0 ).data = 'widget';
-					element.removeClass( data.class );
-				} );
-
 				return toWidget( widgetElement );
 			} );
 
@@ -71,22 +61,36 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 } )
 	.then( editor => {
 		window.editor = editor;
-		const model = editor.document;
 
 		buildModelConverter()
 			.for( editor.editing.modelToView )
 			.fromMarker( 'marker' )
-			.toVirtualSelection( { class: 'virtual-selection' } );
+			.toVirtualSelection( data => ( { class: 'virtual-selection-' + data.markerName.split( ':' )[ 1 ] } ) );
 
-		document.getElementById( 'add-marker' ).addEventListener( 'mousedown', evt => {
-			editor.document.enqueueChanges( () => {
-				const range = ModelRange.createFromRange( model.selection.getFirstRange() );
-				model.markers.set( 'marker', range );
-			} );
+		document.getElementById( 'add-marker-yellow' ).addEventListener( 'mousedown', evt => {
+			addMarker( editor, 'yellow' );
+			evt.preventDefault();
+		} );
 
+		document.getElementById( 'add-marker-blue' ).addEventListener( 'mousedown', evt => {
+			addMarker( editor, 'blue' );
+			evt.preventDefault();
+		} );
+
+		document.getElementById( 'add-marker-red' ).addEventListener( 'mousedown', evt => {
+			addMarker( editor, 'red' );
 			evt.preventDefault();
 		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+function addMarker( editor, color ) {
+	const model = editor.document;
+
+	editor.document.enqueueChanges( () => {
+		const range = ModelRange.createFromRange( model.selection.getFirstRange() );
+		model.markers.set( 'marker:' + color, range );
+	} );
+}
