@@ -61,7 +61,11 @@ export function toWidget( element, options = {} ) {
 		setLabel( element, options.label );
 	}
 
-	setVirtualSelectionHandling( element, options.addVritualSelection, options.removeVirtualSelection );
+	setVirtualSelectionHandling(
+		element,
+		options.setVirtualSelection || setVirtualSelection,
+		options.removeVirtualSelection || removeVirtualSelection
+	);
 
 	return element;
 }
@@ -71,16 +75,16 @@ export function setVirtualSelectionHandling( element, add, remove ) {
 
 	stack.on( 'change:top', ( evt, data ) => {
 		if ( data.oldDescriptor ) {
-			remove( data.oldDescriptor );
+			remove( element, data.oldDescriptor );
 		}
 
 		if ( data.newDescriptor ) {
-			add( data.newDescriptor );
+			add( element, data.newDescriptor );
 		}
 	} );
 
-	element.setCustomProperty( 'setVirtualSelection', descriptor => stack.add( descriptor ) );
-	element.setCustomProperty( 'removeVirtualSelection', descriptor => stack.remove( descriptor ) );
+	element.setCustomProperty( 'setVirtualSelection', ( element, descriptor ) => stack.add( descriptor ) );
+	element.setCustomProperty( 'removeVirtualSelection', ( element, descriptor ) => stack.remove( descriptor ) );
 }
 
 /**
@@ -148,4 +152,12 @@ export function toWidgetEditable( editable ) {
 // @returns {null}
 function getFillerOffset() {
 	return null;
+}
+
+function setVirtualSelection( element, descriptor ) {
+	element.addClass( descriptor.class );
+}
+
+function removeVirtualSelection( element, descriptor ) {
+	element.removeClass( descriptor.class );
 }
