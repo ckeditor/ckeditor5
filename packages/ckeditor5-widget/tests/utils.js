@@ -12,6 +12,7 @@ import {
 	setLabel,
 	getLabel,
 	toWidgetEditable,
+	setVirtualSelectionHandling,
 	WIDGET_CLASS_NAME
 } from '../src/utils';
 
@@ -38,17 +39,54 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should add element\'s label if one is provided', () => {
-			element = new ViewElement( 'div' );
 			toWidget( element, { label: 'foo bar baz label' } );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
 		} );
 
 		it( 'should add element\'s label if one is provided as function', () => {
-			element = new ViewElement( 'div' );
 			toWidget( element, { label: () => 'foo bar baz label' } );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
+		} );
+
+		it( 'should set default virtual selection methods', () => {
+			toWidget( element );
+
+			const set = element.getCustomProperty( 'setVirtualSelection' );
+			const remove = element.getCustomProperty( 'removeVirtualSelection' );
+
+			expect( typeof set ).to.equal( 'function' );
+			expect( typeof remove ).to.equal( 'function' );
+
+			set( element, { priority: 1, class: 'virtual-selection' } );
+			expect( element.hasClass( 'virtual-selection' ) ).to.be.true;
+
+			remove( element, { priority: 1, class: 'virtual-selection' } );
+			expect( element.hasClass( 'virtual-selection' ) ).to.be.false;
+		} );
+
+		it( 'should use provided virtual selection methods', () => {
+			const setSpy = sinon.spy();
+			const removeSpy = sinon.spy();
+			const descriptor = { priority: 1, class: 'virtual-selection' };
+			toWidget( element, { setVirtualSelection: setSpy, removeVirtualSelection: removeSpy } );
+
+			const set = element.getCustomProperty( 'setVirtualSelection' );
+			const remove = element.getCustomProperty( 'removeVirtualSelection' );
+
+			expect( typeof set ).to.equal( 'function' );
+			expect( typeof remove ).to.equal( 'function' );
+
+			set( element, descriptor );
+
+			sinon.assert.calledOnce( setSpy );
+			sinon.assert.calledWithExactly( setSpy, element, descriptor );
+
+			remove( element, descriptor );
+
+			sinon.assert.calledOnce( removeSpy );
+			sinon.assert.calledWithExactly( removeSpy, element, descriptor );
 		} );
 	} );
 
@@ -119,6 +157,93 @@ describe( 'widget utils', () => {
 
 			element.isFocused = false;
 			expect( element.hasClass( 'ck-editable_focused' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'setVirtualSelectionHandling()', () => {
+		let element, addSpy, removeSpy, set, remove;
+
+		beforeEach( () => {
+			element = new ViewElement( 'p' );
+			addSpy = sinon.spy();
+			removeSpy = sinon.spy();
+
+			setVirtualSelectionHandling( element, addSpy, removeSpy );
+			set = element.getCustomProperty( 'setVirtualSelection' );
+			remove = element.getCustomProperty( 'removeVirtualSelection' );
+		} );
+
+		it( 'should set virtual selection methods', () => {
+			expect( typeof set ).to.equal( 'function' );
+			expect( typeof remove ).to.equal( 'function' );
+		} );
+
+		it( 'should call virtual selection methods when descriptor is added and removed', () => {
+			const descriptor = { priority: 10, class: 'virtual-selection' };
+
+			set( element, descriptor );
+			remove( element, descriptor );
+
+			sinon.assert.calledOnce( addSpy );
+			sinon.assert.calledWithExactly( addSpy, element, descriptor );
+
+			sinon.assert.calledOnce( removeSpy );
+			sinon.assert.calledWithExactly( removeSpy, element, descriptor );
+		} );
+
+		it( 'should call virtual selection methods when next descriptor is added', () => {
+			const descriptor = { priority: 10, class: 'virtual-selection' };
+			const secondDescriptor = { priority: 11, class: 'virtual-selection' };
+
+			set( element, descriptor );
+			set( element, secondDescriptor );
+
+			sinon.assert.calledTwice( addSpy );
+			expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+			expect( addSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
+		} );
+
+		it( 'should not call virtual selection methods when descriptor with lower priority is added', () => {
+			const descriptor = { priority: 10, class: 'virtual-selection' };
+			const secondDescriptor = { priority: 9, class: 'virtual-selection' };
+
+			set( element, descriptor );
+			set( element, secondDescriptor );
+
+			sinon.assert.calledOnce( addSpy );
+			expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+		} );
+
+		it( 'should call virtual selection methods when descriptor is removed changing active descriptor', () => {
+			const descriptor = { priority: 10, class: 'virtual-selection' };
+			const secondDescriptor = { priority: 11, class: 'virtual-selection' };
+
+			set( element, descriptor );
+			set( element, secondDescriptor );
+			remove( element, secondDescriptor );
+
+			sinon.assert.calledThrice( addSpy );
+			expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+			expect( addSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
+			expect( addSpy.thirdCall.args[ 1 ] ).to.equal( descriptor );
+
+			sinon.assert.calledTwice( removeSpy );
+			expect( removeSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+			expect( removeSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
+		} );
+
+		it( 'should call virtual selection methods when descriptor is removed not changing active descriptor', () => {
+			const descriptor = { priority: 10, class: 'virtual-selection' };
+			const secondDescriptor = { priority: 9, class: 'virtual-selection' };
+
+			set( element, descriptor );
+			set( element, secondDescriptor );
+			remove( element, secondDescriptor );
+
+			sinon.assert.calledOnce( addSpy );
+			expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+
+			sinon.assert.notCalled( removeSpy );
 		} );
 	} );
 } );
