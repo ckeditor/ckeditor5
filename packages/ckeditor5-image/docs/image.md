@@ -96,7 +96,7 @@ Side image:
 ```
 
 <info-box>
-	The actual styling of the images is the goal of the developer. The editor comes with some default styles, but they will only be applied to images inside the editor. The developer needs to style them on the target pages.
+	The actual styling of the images is the developer's job. The editor comes with some default styles, but they will only be applied to images inside the editor. The developer needs to style them on the target pages.
 
 	Here you can find the source of the default styles applied by the editor: [`ckeditor5-image/theme/theme.scss`](https://github.com/ckeditor/ckeditor5-image/blob/master/theme/theme.scss).
 </info-box>
