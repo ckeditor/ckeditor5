@@ -75,7 +75,7 @@ function enterBlock( dataController, batch, selection, schema ) {
 			//
 			// <h>x[x</h><p>y]y<p>	-> <h>x^</h><p>y</p>	-> <h>x</h><p>^y</p>
 			else {
-				selection.collapse( endElement );
+				selection.setCollapsedAt( endElement );
 			}
 		}
 	}
@@ -94,5 +94,5 @@ function splitBlock( batch, selection, splitPos ) {
 		batch.split( splitPos );
 	}
 
-	selection.collapse( splitPos.parent.nextSibling );
+	selection.setCollapsedAt( splitPos.parent.nextSibling );
 }
