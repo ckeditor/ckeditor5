@@ -102,7 +102,9 @@ describe( 'LiveRange', () => {
 			range: moveRange,
 			sourcePosition: moveSource
 		};
-		doc.fire( 'change', 'move', changes, null );
+		const batch = {};
+
+		doc.fire( 'change', 'move', changes, batch );
 
 		expect( spy.calledOnce ).to.be.true;
 
@@ -110,6 +112,8 @@ describe( 'LiveRange', () => {
 		expect( spy.args[ 0 ][ 1 ].isEqual( copy ) ).to.be.true;
 
 		// Second parameter is an object with data about model changes that caused the live range to change.
+		expect( spy.args[ 0 ][ 2 ].type ).to.equal( 'move' );
+		expect( spy.args[ 0 ][ 2 ].batch ).to.equal( batch );
 		expect( spy.args[ 0 ][ 2 ].range.isEqual( moveRange ) ).to.be.true;
 		expect( spy.args[ 0 ][ 2 ].sourcePosition.isEqual( moveSource ) ).to.be.true;
 	} );
