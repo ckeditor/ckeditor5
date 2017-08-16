@@ -118,7 +118,7 @@ describe( 'ImageUploadProgress', () => {
 				done();
 			} );
 
-			adapterMock.mockSuccess( { original: 'image.png' } );
+			adapterMock.mockSuccess( { default: 'image.png' } );
 		} );
 
 		nativeReaderMock.mockSuccess( base64Sample );

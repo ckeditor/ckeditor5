@@ -130,7 +130,7 @@ export default class ImageUploadEngine extends Plugin {
 			.then( data => {
 				doc.enqueueChanges( () => {
 					doc.batch( 'transparent' ).setAttribute( imageElement, 'uploadStatus', 'complete' );
-					doc.batch( 'transparent' ).setAttribute( imageElement, 'src', data.original );
+					doc.batch( 'transparent' ).setAttribute( imageElement, 'src', data.default );
 
 					// Srcset attribute for responsive images support.
 					const srcsetAttribute = Object.keys( data )
