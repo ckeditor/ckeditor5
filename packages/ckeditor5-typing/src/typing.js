@@ -28,3 +28,33 @@ export default class Typing extends Plugin {
 		return 'Typing';
 	}
 }
+
+/**
+ * The configuration of the typing features. Used by the features from the `@ckeditor/ckeditor5-typing` package.
+ *
+ * Read more in {@link module:typing/typing~TypingConfig}.
+ *
+ * @member {module:typing/typing~TypingConfig} module:core/editor/editorconfig~EditorConfig#typing
+ */
+
+/**
+ * The configuration of the typing features. Used by the typing features in `@ckeditor/ckeditor5-typing` package.
+ *
+ *		ClassicEditor
+ *			.create( {
+ * 				typing: ... // Typing feature options.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface TypingConfig
+ */
+
+/**
+ * The granularity of undo/redo for typing and deleting. The value `20` means (more or less) that a new undo step
+ * is created every 20 characters are inserted or deleted.
+ *
+ * @member {Number} [module:typing/typing~TypingConfig#undoStep=20]
+ */
