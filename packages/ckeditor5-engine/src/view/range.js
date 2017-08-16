@@ -440,9 +440,24 @@ export default class Range {
 	static createOn( item ) {
 		return this.createFromPositionAndShift( Position.createBefore( item ), 1 );
 	}
+
+	/**
+	 * Creates a collapsed range at given {@link module:engine/view/position~Position position}
+	 * or on the given {@link module:engine/view/item~Item item}.
+	 *
+	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/view/item~Item view item}.
+	 */
+	static createCollapsedAt( itemOrPosition, offset ) {
+		const start = Position.createAt( itemOrPosition, offset );
+		const end = Position.createFromPosition( start );
+
+		return new Range( start, end );
+	}
 }
 
-// Function used by getEnlagred and getTrimmed methods.
+// Function used by getEnlarged and getTrimmed methods.
 function enlargeTrimSkip( value ) {
 	if ( value.item.is( 'attributeElement' ) || value.item.is( 'uiElement' ) ) {
 		return true;

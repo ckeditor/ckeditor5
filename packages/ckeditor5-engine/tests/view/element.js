@@ -986,14 +986,14 @@ describe( 'Element', () => {
 		it( 'should return only name if no other attributes are present', () => {
 			const el = new Element( 'foo' );
 
-			expect( el.getIdentity() ).to.equal( 'foo class="" style=""' );
+			expect( el.getIdentity() ).to.equal( 'foo' );
 		} );
 
 		it( 'should return classes in sorted order', () => {
 			const el = new Element( 'fruit' );
 			el.addClass( 'banana', 'lemon', 'apple' );
 
-			expect( el.getIdentity() ).to.equal( 'fruit class="apple,banana,lemon" style=""' );
+			expect( el.getIdentity() ).to.equal( 'fruit class="apple,banana,lemon"' );
 		} );
 
 		it( 'should return styles in sorted order', () => {
@@ -1001,7 +1001,7 @@ describe( 'Element', () => {
 				style: 'border: 1px solid red; background-color: red'
 			} );
 
-			expect( el.getIdentity() ).to.equal( 'foo class="" style="background-color:red;border:1px solid red"' );
+			expect( el.getIdentity() ).to.equal( 'foo style="background-color:red;border:1px solid red"' );
 		} );
 
 		it( 'should return attributes in sorted order', () => {
@@ -1011,7 +1011,7 @@ describe( 'Element', () => {
 				b: 3
 			} );
 
-			expect( el.getIdentity() ).to.equal( 'foo class="" style="" a="1" b="3" d="4"' );
+			expect( el.getIdentity() ).to.equal( 'foo a="1" b="3" d="4"' );
 		} );
 
 		it( 'should return classes, styles and attributes', () => {

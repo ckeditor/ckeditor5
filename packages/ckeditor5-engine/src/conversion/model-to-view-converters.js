@@ -7,6 +7,7 @@ import ViewElement from '../view/element';
 import ViewAttributeElement from '../view/attributeelement';
 import ViewText from '../view/text';
 import ViewRange from '../view/range';
+import ViewPosition from '../view/position';
 import ViewTreeWalker from '../view/treewalker';
 import viewWriter from '../view/writer';
 import ModelRange from '../model/range';
@@ -355,13 +356,22 @@ export function remove() {
 		// end of that range is incorrect.
 		// Instead we will use `data.sourcePosition` as this is the last correct model position and
 		// it is a position before the removed item. Then, we will calculate view range to remove "manually".
-		const viewPosition = conversionApi.mapper.toViewPosition( data.sourcePosition );
+		let viewPosition = conversionApi.mapper.toViewPosition( data.sourcePosition );
 		let viewRange;
 
 		if ( data.item.is( 'element' ) ) {
 			// Note: in remove conversion we cannot use model-to-view element mapping because `data.item` may be
 			// already mapped to another element (this happens when move change is converted).
 			// In this case however, `viewPosition` is the position before view element that corresponds to removed model element.
+			//
+			// First, fix the position. Traverse the tree forward until the container element is found. The `viewPosition`
+			// may be before a ui element, before attribute element or at the end of text element.
+			viewPosition = viewPosition.getLastMatchingPosition( value => !value.item.is( 'containerElement' ) );
+
+			if ( viewPosition.parent.is( 'text' ) && viewPosition.isAtEnd ) {
+				viewPosition = ViewPosition.createAfter( viewPosition.parent );
+			}
+
 			viewRange = ViewRange.createOn( viewPosition.nodeAfter );
 		} else {
 			// If removed item is a text node, we need to traverse view tree to find the view range to remove.

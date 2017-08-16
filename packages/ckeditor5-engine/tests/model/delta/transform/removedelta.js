@@ -184,6 +184,30 @@ describe( 'transform', () => {
 					]
 				} );
 			} );
+
+			it( 'should not throw if clone operation is NoOperation and use default transformation in that case', () => {
+				const noOpSplitDelta = new SplitDelta();
+				noOpSplitDelta.addOperation( new NoOperation( 0 ) );
+				noOpSplitDelta.addOperation( new MoveOperation( new Position( root, [ 1, 2 ] ), 3, new Position( root, [ 2, 0 ] ), 1 ) );
+
+				const removeDelta = getRemoveDelta( new Position( root, [ 3 ] ), 1, 0 );
+
+				const transformed = transform( removeDelta, noOpSplitDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: RemoveDelta,
+					operations: [
+						{
+							type: RemoveOperation,
+							sourcePosition: new Position( root, [ 3 ] ),
+							howMany: 1,
+							baseVersion: 2
+						}
+					]
+				} );
+			} );
 		} );
 	} );
 } );

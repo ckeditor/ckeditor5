@@ -15,6 +15,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import mapsEqual from '@ckeditor/ckeditor5-utils/src/mapsequal';
+import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
  * `Selection` is a group of {@link module:engine/model/range~Range ranges} which has a direction specified by
@@ -334,16 +335,47 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets this selection's ranges and direction to the ranges and direction of the given selection.
+	 * Sets this selection's ranges and direction to the specified location based on the given
+	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/range~Range range} or an iterable of {@link module:engine/model/range~Range ranges}.
 	 *
-	 * @param {module:engine/model/selection~Selection} otherSelection
+	 * @param {module:engine/model/selection~Selection|module:engine/model/position~Position|
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range} selectable
 	 */
-	setTo( otherSelection ) {
-		this.setRanges( otherSelection.getRanges(), otherSelection.isBackward );
+	setTo( selectable ) {
+		if ( selectable instanceof Selection ) {
+			this.setRanges( selectable.getRanges(), selectable.isBackward );
+		} else if ( selectable instanceof Range ) {
+			this.setRanges( [ selectable ] );
+		} else if ( isIterable( selectable ) ) {
+			// We assume that the selectable is an iterable of ranges.
+			this.setRanges( selectable );
+		} else {
+			// We assume that the selectable is a position.
+			this.setRanges( [ new Range( selectable ) ] );
+		}
 	}
 
 	/**
-	 * Sets collapsed selection in the specified location.
+	 * Sets this selection in the provided element.
+	 *
+	 * @param {module:engine/model/element~Element} element
+	 */
+	setIn( element ) {
+		this.setRanges( [ Range.createIn( element ) ] );
+	}
+
+	/**
+	 * Sets this selection on the provided item.
+	 *
+	 * @param {module:engine/model/item~Item} item
+	 */
+	setOn( item ) {
+		this.setRanges( [ Range.createOn( item ) ] );
+	}
+
+	/**
+	 * Sets collapsed selection at the specified location.
 	 *
 	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
 	 *
@@ -352,7 +384,7 @@ export default class Selection {
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
-	collapse( itemOrPosition, offset ) {
+	setCollapsedAt( itemOrPosition, offset ) {
 		const pos = Position.createAt( itemOrPosition, offset );
 		const range = new Range( pos, pos );
 
@@ -390,7 +422,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets {@link module:engine/model/selection~Selection#focus} to the specified location.
+	 * Moves {@link module:engine/model/selection~Selection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
 	 *
@@ -399,15 +431,15 @@ export default class Selection {
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
-	setFocus( itemOrPosition, offset ) {
+	moveFocusTo( itemOrPosition, offset ) {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
 			 *
-			 * @error model-selection-setFocus-no-ranges
+			 * @error model-selection-moveFocusTo-no-ranges
 			 */
 			throw new CKEditorError(
-				'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.'
+				'model-selection-moveFocusTo-no-ranges: Cannot set selection focus if there are no ranges in selection.'
 			);
 		}
 
@@ -622,6 +654,25 @@ export default class Selection {
 				yield endBlock;
 			}
 		}
+	}
+
+	/**
+	 * Checks whether the selection contains the entire content of the given element. This means that selection must start
+	 * at a position {@link module:engine/model/position~Position#isTouching touching} the element's start and ends at position
+	 * touching the element's end.
+	 *
+	 * By default, this method will check whether the entire content of the selection's current root is selected.
+	 * Useful to check if e.g. the user has just pressed <kbd>Ctrl</kbd> + <kbd>A</kbd>.
+	 *
+	 * @param {module:engine/model/element~Element} [element=this.anchor.root]
+	 * @returns {Boolean}
+	 */
+	isEntireContentSelected( element = this.anchor.root ) {
+		const limitStartPosition = Position.createAt( element );
+		const limitEndPosition = Position.createAt( element, 'end' );
+
+		return limitStartPosition.isTouching( this.getFirstPosition() ) &&
+			limitEndPosition.isTouching( this.getLastPosition() );
 	}
 
 	/**

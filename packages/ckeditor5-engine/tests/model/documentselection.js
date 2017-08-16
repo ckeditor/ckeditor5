@@ -212,13 +212,13 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'collapse()', () => {
+	describe( 'setCollapsedAt()', () => {
 		it( 'detaches all existing ranges', () => {
 			selection.addRange( range );
 			selection.addRange( liveRange );
 
 			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
-			selection.collapse( root );
+			selection.setCollapsedAt( root );
 
 			expect( spy.calledTwice ).to.be.true;
 		} );
@@ -244,12 +244,12 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'setFocus()', () => {
+	describe( 'moveFocusTo()', () => {
 		it( 'modifies default range', () => {
 			const startPos = selection.getFirstPosition();
 			const endPos = Position.createAt( root, 'end' );
 
-			selection.setFocus( endPos );
+			selection.moveFocusTo( endPos );
 
 			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'same' );
 			expect( selection.focus.compareWith( endPos ) ).to.equal( 'same' );
@@ -263,7 +263,7 @@ describe( 'DocumentSelection', () => {
 
 			selection.addRange( new Range( startPos, endPos ) );
 
-			selection.setFocus( newEndPos );
+			selection.moveFocusTo( newEndPos );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
@@ -637,7 +637,7 @@ describe( 'DocumentSelection', () => {
 
 		describe( 'RemoveOperation', () => {
 			it( 'fix selection range if it ends up in graveyard #1', () => {
-				selection.collapse( new Position( root, [ 1, 3 ] ) );
+				selection.setCollapsedAt( new Position( root, [ 1, 3 ] ) );
 
 				doc.applyOperation( wrapInDelta(
 					new RemoveOperation(
@@ -876,14 +876,14 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'should overwrite any previously set attributes', () => {
-				selection.collapse( new Position( root, [ 5, 0 ] ) );
+				selection.setCollapsedAt( new Position( root, [ 5, 0 ] ) );
 
 				selection.setAttribute( 'x', true );
 				selection.setAttribute( 'y', true );
 
 				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ], [ 'x', true ], [ 'y', true ] ] );
 
-				selection.collapse( new Position( root, [ 1 ] ) );
+				selection.setCollapsedAt( new Position( root, [ 1 ] ) );
 
 				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
 			} );
@@ -898,14 +898,14 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'should not fire change:attribute event if attributes did not change', () => {
-				selection.collapse( new Position( root, [ 5, 0 ] ) );
+				selection.setCollapsedAt( new Position( root, [ 5, 0 ] ) );
 
 				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
 
 				const spy = sinon.spy();
 				selection.on( 'change:attribute', spy );
 
-				selection.collapse( new Position( root, [ 5, 1 ] ) );
+				selection.setCollapsedAt( new Position( root, [ 5, 1 ] ) );
 
 				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
 				expect( spy.called ).to.be.false;
