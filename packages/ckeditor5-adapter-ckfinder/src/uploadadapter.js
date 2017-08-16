@@ -153,7 +153,7 @@ class Adapter {
 			}
 
 			resolve( {
-				original: response.url
+				default: response.url
 			} );
 		} );
 
