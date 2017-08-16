@@ -206,7 +206,7 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 
 			const viewSelection = new ViewSelection();
-			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
+			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
 			view.fire( 'mutations',
 				[ {
@@ -226,7 +226,7 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 
 			const viewSelection = new ViewSelection();
-			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
+			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
 			testUtils.sinon.spy( Batch.prototype, 'weakInsert' );
 			testUtils.sinon.spy( Batch.prototype, 'remove' );
@@ -250,7 +250,7 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Foo hous a</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
 			view.fire( 'mutations',
 				[ {
@@ -271,7 +271,7 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Bar athat foo</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
+			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
 
 			view.fire( 'mutations',
 				[ {
@@ -292,7 +292,7 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Foo hous e</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
 			view.fire( 'mutations',
 				[ {
@@ -312,8 +312,8 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Foo house</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
-			viewSelection.setFocus( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
+			viewSelection.moveFocusTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
 			view.fire( 'mutations',
 				[ {
@@ -930,7 +930,7 @@ describe( 'Input feature', () => {
 			const paragraph = viewRoot.getChild( 0 );
 			const strong = paragraph.getChild( 0 );
 			const viewSelection = new ViewSelection();
-			viewSelection.collapse( paragraph, 0 );
+			viewSelection.setCollapsedAt( paragraph, 0 );
 
 			// Simulate mutations and DOM change.
 			domRoot.childNodes[ 0 ].innerHTML = '<b>textx</b>';
