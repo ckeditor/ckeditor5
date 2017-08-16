@@ -111,6 +111,22 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="foo.png"></figure>' );
+
+		// https://github.com/ckeditor/ckeditor5-image/issues/132
+		expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			'<figure class="image ck-widget side-class" contenteditable="false"><img src="foo.png"></img></figure>'
+		);
+
+		document.enqueueChanges( () => {
+			batch.setAttribute( image, 'imageStyle', 'dummy' );
+		} );
+
+		expect( editor.getData() ).to.equal( '<figure class="image dummy-class"><img src="foo.png"></figure>' );
+
+		// https://github.com/ckeditor/ckeditor5-image/issues/132
+		expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			'<figure class="image ck-widget dummy-class" contenteditable="false"><img src="foo.png"></img></figure>'
+		);
 	} );
 
 	it( 'should not convert from model to view if already consumed: adding attribute', () => {
