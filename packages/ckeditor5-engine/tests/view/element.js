@@ -986,14 +986,14 @@ describe( 'Element', () => {
 		it( 'should return only name if no other attributes are present', () => {
 			const el = new Element( 'foo' );
 
-			expect( el.getIdentity() ).to.equal( 'foo|classes()|styles()|attributes()' );
+			expect( el.getIdentity() ).to.equal( 'foo class="" style=""' );
 		} );
 
 		it( 'should return classes in sorted order', () => {
 			const el = new Element( 'fruit' );
 			el.addClass( 'banana', 'lemon', 'apple' );
 
-			expect( el.getIdentity() ).to.equal( 'fruit|classes(apple,banana,lemon)|styles()|attributes()' );
+			expect( el.getIdentity() ).to.equal( 'fruit class="apple,banana,lemon" style=""' );
 		} );
 
 		it( 'should return styles in sorted order', () => {
@@ -1001,7 +1001,7 @@ describe( 'Element', () => {
 				style: 'border: 1px solid red; background-color: red'
 			} );
 
-			expect( el.getIdentity() ).to.equal( 'foo|classes()|styles(background-color=red,border=1px solid red)|attributes()' );
+			expect( el.getIdentity() ).to.equal( 'foo class="" style="background-color:red;border:1px solid red"' );
 		} );
 
 		it( 'should return attributes in sorted order', () => {
@@ -1011,7 +1011,7 @@ describe( 'Element', () => {
 				b: 3
 			} );
 
-			expect( el.getIdentity() ).to.equal( 'foo|classes()|styles()|attributes(a=1,b=3,d=4)' );
+			expect( el.getIdentity() ).to.equal( 'foo class="" style="" a="1" b="3" d="4"' );
 		} );
 
 		it( 'should return classes, styles and attributes', () => {
@@ -1024,7 +1024,7 @@ describe( 'Element', () => {
 			el.addClass( 'three', 'two', 'one' );
 
 			expect( el.getIdentity() ).to.equal(
-				'baz|classes(one,three,two)|styles(border-radius=10px,text-align=center)|attributes(bar=two,foo=one)'
+				'baz class="one,three,two" style="border-radius:10px;text-align:center" bar="two" foo="one"'
 			);
 		} );
 	} );
