@@ -1,5 +1,6 @@
 {
   "packages": "packages/",
+  "packagesPrefix": "@ckeditor/ckeditor5-",
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat",
