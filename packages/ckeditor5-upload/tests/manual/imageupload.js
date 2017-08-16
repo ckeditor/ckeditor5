@@ -75,7 +75,7 @@ function createProgressButton( loader, adapterMock ) {
 
 		if ( progress == total ) {
 			disableButtons();
-			adapterMock.mockSuccess( { original: './sample.jpg' } );
+			adapterMock.mockSuccess( { default: './sample.jpg' } );
 		}
 
 		progressInfo.innerHTML = `File: ${ fileName }. Progress: ${ loader.uploadedPercent }%.`;

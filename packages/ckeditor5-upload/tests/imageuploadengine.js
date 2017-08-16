@@ -196,7 +196,7 @@ describe( 'ImageUploadEngine', () => {
 				done();
 			} );
 
-			adapterMock.mockSuccess( { original: 'image.png' } );
+			adapterMock.mockSuccess( { default: 'image.png' } );
 		} );
 
 		nativeReaderMock.mockSuccess( base64Sample );
@@ -354,7 +354,7 @@ describe( 'ImageUploadEngine', () => {
 				done();
 			} );
 
-			adapterMock.mockSuccess( { original: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } );
+			adapterMock.mockSuccess( { default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } );
 		} );
 
 		nativeReaderMock.mockSuccess( base64Sample );

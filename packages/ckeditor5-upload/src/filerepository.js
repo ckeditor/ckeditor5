@@ -441,13 +441,13 @@ mix( FileLoader, ObservableMixin );
  * resolved with an object containing information about uploaded file:
  *
  *	{
- *		original: 'http://server/orginal-size.image.png'
+ *		default: 'http://server/default-size.image.png'
  *	}
  *
  * Additionally, other image sizes can be provided:
  *
  *	{
- *		original: 'http://server/orginal-size.image.png',
+ *		default: 'http://server/default-size.image.png',
  *		'160': 'http://server/size-160.image.png',
  *		'500': 'http://server/size-500.image.png',
  *		'1000': 'http://server/size-1000.image.png'
