@@ -106,10 +106,10 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setFocus', () => {
+	describe( 'moveFocusTo', () => {
 		it( 'keeps all existing ranges when no modifications needed', () => {
 			selection.addRange( range1 );
-			selection.setFocus( selection.focus );
+			selection.moveFocusTo( selection.focus );
 
 			expect( count( selection.getRanges() ) ).to.equal( 1 );
 		} );
@@ -118,17 +118,17 @@ describe( 'Selection', () => {
 			const endPos = Position.createAt( el, 'end' );
 
 			expect( () => {
-				selection.setFocus( endPos );
-			} ).to.throw( CKEditorError, /view-selection-setFocus-no-ranges/ );
+				selection.moveFocusTo( endPos );
+			} ).to.throw( CKEditorError, /view-selection-moveFocusTo-no-ranges/ );
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
 			const startPos = Position.createAt( el, 1 );
 			const endPos = Position.createAt( el, 2 );
 
-			selection.collapse( startPos );
+			selection.setCollapsedAt( startPos );
 
-			selection.setFocus( endPos );
+			selection.moveFocusTo( endPos );
 
 			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'same' );
 			expect( selection.focus.compareWith( endPos ) ).to.equal( 'same' );
@@ -138,9 +138,9 @@ describe( 'Selection', () => {
 			const startPos = Position.createAt( el, 1 );
 			const endPos = Position.createAt( el, 0 );
 
-			selection.collapse( startPos );
+			selection.setCollapsedAt( startPos );
 
-			selection.setFocus( endPos );
+			selection.moveFocusTo( endPos );
 
 			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'same' );
 			expect( selection.focus.compareWith( endPos ) ).to.equal( 'same' );
@@ -154,7 +154,7 @@ describe( 'Selection', () => {
 
 			selection.addRange( new Range( startPos, endPos ) );
 
-			selection.setFocus( newEndPos );
+			selection.moveFocusTo( newEndPos );
 
 			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'same' );
 			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
@@ -167,7 +167,7 @@ describe( 'Selection', () => {
 
 			selection.addRange( new Range( startPos, endPos ) );
 
-			selection.setFocus( newEndPos );
+			selection.moveFocusTo( newEndPos );
 
 			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'same' );
 			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
@@ -181,7 +181,7 @@ describe( 'Selection', () => {
 
 			selection.addRange( new Range( startPos, endPos ), true );
 
-			selection.setFocus( newEndPos );
+			selection.moveFocusTo( newEndPos );
 
 			expect( selection.anchor.compareWith( endPos ) ).to.equal( 'same' );
 			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
@@ -195,7 +195,7 @@ describe( 'Selection', () => {
 
 			selection.addRange( new Range( startPos, endPos ), true );
 
-			selection.setFocus( newEndPos );
+			selection.moveFocusTo( newEndPos );
 
 			expect( selection.anchor.compareWith( endPos ) ).to.equal( 'same' );
 			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
@@ -214,7 +214,7 @@ describe( 'Selection', () => {
 			selection.addRange( new Range( startPos1, endPos1 ) );
 			selection.addRange( new Range( startPos2, endPos2 ) );
 
-			selection.setFocus( newEndPos );
+			selection.moveFocusTo( newEndPos );
 
 			const ranges = Array.from( selection.getRanges() );
 
@@ -233,7 +233,7 @@ describe( 'Selection', () => {
 
 			selection.addRange( new Range( startPos, endPos ) );
 
-			selection.setFocus( startPos );
+			selection.moveFocusTo( startPos );
 
 			expect( selection.focus.compareWith( startPos ) ).to.equal( 'same' );
 			expect( selection.isCollapsed ).to.be.true;
@@ -247,7 +247,7 @@ describe( 'Selection', () => {
 			const spy = sinon.stub( Position, 'createAt' ).returns( newEndPos );
 
 			selection.addRange( new Range( startPos, endPos ) );
-			selection.setFocus( el, 'end' );
+			selection.moveFocusTo( el, 'end' );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
@@ -600,7 +600,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'removeAllRanges', () => {
+	describe( 'removeAllRanges()', () => {
 		it( 'should remove all ranges and fire change event', done => {
 			selection.addRange( range1 );
 			selection.addRange( range2 );
@@ -622,7 +622,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setRanges', () => {
+	describe( 'setRanges()', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.setRanges( [ { invalid: 'range' } ] );
@@ -645,8 +645,8 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setTo', () => {
-		it( 'should return true if selections equal', () => {
+	describe( 'setTo()', () => {
+		it( 'should set selection ranges from the given selection', () => {
 			selection.addRange( range1 );
 
 			const otherSelection = new Selection();
@@ -662,6 +662,41 @@ describe( 'Selection', () => {
 			expect( selection._ranges[ 1 ] ).is.not.equal( range3 );
 
 			expect( selection.anchor.isEqual( range3.end ) ).to.be.true;
+		} );
+
+		it( 'should set selection on the given Range using setRanges method', () => {
+			const spy = sinon.spy( selection, 'setRanges' );
+
+			selection.setTo( range1 );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
+			expect( selection.isBackward ).to.be.false;
+			expect( selection.setRanges.calledOnce ).to.be.true;
+			spy.restore();
+		} );
+
+		it( 'should set selection on the given iterable of Ranges using setRanges method', () => {
+			const spy = sinon.spy( selection, 'setRanges' );
+
+			selection.setTo( new Set( [ range1, range2 ] ) );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
+			expect( selection.isBackward ).to.be.false;
+			expect( selection.setRanges.calledOnce ).to.be.true;
+			spy.restore();
+		} );
+
+		it( 'should set collapsed selection on the given Position using setRanges method', () => {
+			const spy = sinon.spy( selection, 'setRanges' );
+
+			selection.setTo( range1.start );
+
+			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
+			expect( Array.from( selection.getRanges() )[ 0 ].start ).to.deep.equal( range1.start );
+			expect( selection.isBackward ).to.be.false;
+			expect( selection.isCollapsed ).to.be.true;
+			expect( selection.setRanges.calledOnce ).to.be.true;
+			spy.restore();
 		} );
 
 		it( 'should fire change event', done => {
@@ -688,7 +723,40 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'collapse', () => {
+	describe( 'setIn()', () => {
+		it( 'should set selection inside an element', () => {
+			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
+
+			selection.setIn( element );
+
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.parent ).to.equal( element );
+			expect( ranges[ 0 ].start.offset ).to.deep.equal( 0 );
+			expect( ranges[ 0 ].end.parent ).to.equal( element );
+			expect( ranges[ 0 ].end.offset ).to.deep.equal( 2 );
+		} );
+	} );
+
+	describe( 'setOn()', () => {
+		it( 'should set selection on an item', () => {
+			const textNode1 = new Text( 'foo' );
+			const textNode2 = new Text( 'bar' );
+			const textNode3 = new Text( 'baz' );
+			const element = new Element( 'p', null, [ textNode1, textNode2, textNode3 ] );
+
+			selection.setOn( textNode2 );
+
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.parent ).to.equal( element );
+			expect( ranges[ 0 ].start.offset ).to.deep.equal( 1 );
+			expect( ranges[ 0 ].end.parent ).to.equal( element );
+			expect( ranges[ 0 ].end.offset ).to.deep.equal( 2 );
+		} );
+	} );
+
+	describe( 'setCollapsedAt()', () => {
 		beforeEach( () => {
 			selection.setRanges( [ range1, range2 ] );
 		} );
@@ -696,7 +764,7 @@ describe( 'Selection', () => {
 		it( 'should collapse selection at position', () => {
 			const position = new Position( el, 4 );
 
-			selection.collapse( position );
+			selection.setCollapsedAt( position );
 			const range = selection.getFirstRange();
 
 			expect( range.start.parent ).to.equal( el );
@@ -708,14 +776,14 @@ describe( 'Selection', () => {
 			const foo = new Text( 'foo' );
 			const p = new Element( 'p', null, foo );
 
-			selection.collapse( foo );
+			selection.setCollapsedAt( foo );
 			let range = selection.getFirstRange();
 
 			expect( range.start.parent ).to.equal( foo );
 			expect( range.start.offset ).to.equal( 0 );
 			expect( range.start.isEqual( range.end ) ).to.be.true;
 
-			selection.collapse( p, 1 );
+			selection.setCollapsedAt( p, 1 );
 			range = selection.getFirstRange();
 
 			expect( range.start.parent ).to.equal( p );
@@ -727,21 +795,21 @@ describe( 'Selection', () => {
 			const foo = new Text( 'foo' );
 			const p = new Element( 'p', null, foo );
 
-			selection.collapse( foo, 'end' );
+			selection.setCollapsedAt( foo, 'end' );
 			let range = selection.getFirstRange();
 
 			expect( range.start.parent ).to.equal( foo );
 			expect( range.start.offset ).to.equal( 3 );
 			expect( range.start.isEqual( range.end ) ).to.be.true;
 
-			selection.collapse( foo, 'before' );
+			selection.setCollapsedAt( foo, 'before' );
 			range = selection.getFirstRange();
 
 			expect( range.start.parent ).to.equal( p );
 			expect( range.start.offset ).to.equal( 0 );
 			expect( range.start.isEqual( range.end ) ).to.be.true;
 
-			selection.collapse( foo, 'after' );
+			selection.setCollapsedAt( foo, 'after' );
 			range = selection.getFirstRange();
 
 			expect( range.start.parent ).to.equal( p );
@@ -750,7 +818,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'collapseToStart', () => {
+	describe( 'collapseToStart()', () => {
 		it( 'should collapse to start position and fire change event', done => {
 			selection.setRanges( [ range1, range2, range3 ] );
 			selection.once( 'change', () => {
@@ -773,7 +841,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'collapseToEnd', () => {
+	describe( 'collapseToEnd()', () => {
 		it( 'should collapse to end position and fire change event', done => {
 			selection.setRanges( [ range1, range2, range3 ] );
 			selection.once( 'change', () => {

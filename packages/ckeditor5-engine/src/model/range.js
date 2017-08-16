@@ -717,6 +717,21 @@ export default class Range {
 	}
 
 	/**
+	 * Creates a collapsed range at given {@link module:engine/model/position~Position position}
+	 * or on the given {@link module:engine/model/item~Item item}.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 */
+	static createCollapsedAt( itemOrPosition, offset ) {
+		const start = Position.createAt( itemOrPosition, offset );
+		const end = Position.createFromPosition( start );
+
+		return new Range( start, end );
+	}
+
+	/**
 	 * Combines all ranges from the passed array into a one range. At least one range has to be passed.
 	 * Passed ranges must not have common parts.
 	 *

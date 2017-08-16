@@ -272,7 +272,7 @@ describe( 'model test utils', () => {
 
 			it( 'writes selection in an empty root', () => {
 				const root = document.createRoot( '$root', 'empty' );
-				selection.collapse( root );
+				selection.setCollapsedAt( root );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'[]'
@@ -280,7 +280,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed in an element', () => {
-				selection.collapse( root );
+				selection.setCollapsedAt( root );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'[]<a></a>foo<$text bold="true">bar</$text><b></b>'
@@ -288,7 +288,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed in a text', () => {
-				selection.collapse( root, 3 );
+				selection.setCollapsedAt( root, 3 );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>fo[]o<$text bold="true">bar</$text><b></b>'
@@ -296,7 +296,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed at the text left boundary', () => {
-				selection.collapse( elA, 'after' );
+				selection.setCollapsedAt( elA, 'after' );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>[]foo<$text bold="true">bar</$text><b></b>'
@@ -304,7 +304,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed at the text right boundary', () => {
-				selection.collapse( elB, 'before' );
+				selection.setCollapsedAt( elB, 'before' );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">bar[]</$text><b></b>'
@@ -312,7 +312,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed at the end of the root', () => {
-				selection.collapse( root, 'end' );
+				selection.setCollapsedAt( root, 'end' );
 
 				// Needed due to https://github.com/ckeditor/ckeditor5-engine/issues/320.
 				selection.clearAttributes();
@@ -323,7 +323,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed selection in a text with attributes', () => {
-				selection.collapse( root, 5 );
+				selection.setCollapsedAt( root, 5 );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">b[]ar</$text><b></b>'
