@@ -678,7 +678,7 @@ export default class Element extends Node {
 	 * Two elements that {@link #isSimilar are similar} will have same identity string.
 	 * It has the following format:
 	 *
-	 *		"name|classes(class1,class2,class3)|styles(style1=val1,style2=val2)|attributes(attr1=val1,attr2=val2)"
+	 *		'name class="class1,class2" style="style1:value1;style2:value2" attr1="val1" attr2="val2"'
  	 *
 	 * For example:
 	 *
@@ -689,7 +689,7 @@ export default class Element extends Node {
 	 *		element.setStyle( 'border-color', 'white' );
 	 *		element.addClass( 'baz' );
 	 *
-	 *		// returns "foo|classes(baz)|styles(border-color=white,color=red)|attributes(apple=20,banana=10)"
+	 *		// returns 'foo class="baz" style="border-color:white;color:red" apple="20" banana="10"'
 	 *		element.getIdentity();
 	 *
 	 * NOTE: Classes, styles and other attributes are sorted alphabetically.
@@ -698,10 +698,10 @@ export default class Element extends Node {
 	 */
 	getIdentity() {
 		const classes = Array.from( this._classes ).sort().join( ',' );
-		const attributes = mapToSortedString( this._attrs );
-		const styles = mapToSortedString( this._styles );
+		const styles = Array.from( this._styles ).map( i => `${ i[ 0 ] }:${ i[ 1 ] }` ).sort().join( ';' );
+		const attributes = Array.from( this._attrs ).map( i => `${ i[ 0 ] }="${ i[ 1 ] }"` ).sort().join( ' ' );
 
-		return `${ this.name }|classes(${ classes })|styles(${ styles })|attributes(${ attributes })`;
+		return `${ this.name } class="${ classes }" style="${ styles }"${ attributes == '' ? '' : ' ' + attributes }`;
 	}
 
 	/**
@@ -818,15 +818,4 @@ function normalize( nodes ) {
 		.map( node => {
 			return typeof node == 'string' ? new Text( node ) : node;
 		} );
-}
-
-// Returns string representation of povided map in following format:
-//
-//		"mapKey1=value1,mapKey2=value2,mapKey3=value3"
-//
-// NOTE: All map keys should be strings. Key-value pairs will be sorted.
-//
-// @returns {String}
-function mapToSortedString( map ) {
-	return Array.from( map ).map( i => i[ 0 ] + '=' + i[ 1 ] ).sort().join( ',' );
 }
