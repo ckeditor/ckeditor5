@@ -701,7 +701,10 @@ export default class Element extends Node {
 		const styles = Array.from( this._styles ).map( i => `${ i[ 0 ] }:${ i[ 1 ] }` ).sort().join( ';' );
 		const attributes = Array.from( this._attrs ).map( i => `${ i[ 0 ] }="${ i[ 1 ] }"` ).sort().join( ' ' );
 
-		return `${ this.name } class="${ classes }" style="${ styles }"${ attributes == '' ? '' : ' ' + attributes }`;
+		return this.name +
+			( classes == '' ? '' : ` class="${ classes }"` ) +
+			( styles == '' ? '' : ` style="${ styles }"` ) +
+			( attributes == '' ? '' : ` ${ attributes }` );
 	}
 
 	/**
