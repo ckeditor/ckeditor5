@@ -37,7 +37,7 @@ All builds are released on npm. The following search shows all build packages av
 
 Installing a build with npm is as simple as calling the following inside your website or application:
 
-```
+```bash
 npm install --save @ckeditor/ckeditor5-build-classic
 ```
 
@@ -55,7 +55,7 @@ The following are the main files available in all build distributions:
 
 Once downloaded and installed in your application, it is time to make the API available in your pages. For that purpose, it is enough to load the API entry point script:
 
-```
+```html
 <script src="/ckeditor/build/ckeditor.js"></script>
 ```
 
