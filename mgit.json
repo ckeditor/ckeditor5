@@ -1,5 +1,6 @@
 {
   "packages": "packages/",
+  "packagesPrefix": "@ckeditor/ckeditor5-",
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#0d7781c",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#b27dc45",
@@ -14,7 +15,7 @@
     "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#4479c40",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#17f815e",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#461149c",
-    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#5b23fb2",
+    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#3df7acd",
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#92241a1",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#9a332bf",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#8abf954",
