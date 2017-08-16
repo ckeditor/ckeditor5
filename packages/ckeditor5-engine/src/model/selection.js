@@ -339,8 +339,8 @@ export default class Selection {
 	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range} or an iterable of {@link module:engine/model/range~Range ranges}.
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/position~Position
-	 * |Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range} selectable
+	 * @param {module:engine/model/selection~Selection|module:engine/model/position~Position|
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range} selectable
 	 */
 	setTo( selectable ) {
 		if ( selectable instanceof Selection ) {
@@ -348,8 +348,10 @@ export default class Selection {
 		} else if ( selectable instanceof Range ) {
 			this.setRanges( [ selectable ] );
 		} else if ( isIterable( selectable ) ) {
+			// We assume that the selectable is an iterable of ranges.
 			this.setRanges( selectable );
 		} else {
+			// We assume that the selectable is a position.
 			this.setRanges( [ new Range( selectable ) ] );
 		}
 	}
