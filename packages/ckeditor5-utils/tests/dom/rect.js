@@ -77,6 +77,24 @@ describe( 'Rect', () => {
 			assertRect( new Rect( range ), expectedGeometry );
 		} );
 
+		it( 'should accept the window (viewport)', () => {
+			testUtils.sinon.stub( global, 'window' ).value( {
+				innerWidth: 1000,
+				innerHeight: 500,
+				scrollX: 100,
+				scrollY: 200
+			} );
+
+			assertRect( new Rect( global.window ), {
+				top: 0,
+				right: 1000,
+				bottom: 500,
+				left: 0,
+				width: 1000,
+				height: 500
+			} );
+		} );
+
 		it( 'should accept Rect', () => {
 			const sourceRect = new Rect( geometry );
 			const rect = new Rect( sourceRect );
@@ -562,12 +580,189 @@ describe( 'Rect', () => {
 		} );
 	} );
 
-	describe( 'getViewportRect()', () => {
-		it( 'should reaturn a rect', () => {
-			expect( Rect.getViewportRect() ).to.be.instanceOf( Rect );
+	describe( 'isEqual()', () => {
+		it( 'returns `true` when rects are equal', () => {
+			const rectA = new Rect( {
+				top: 10,
+				right: 20,
+				bottom: 30,
+				left: 40,
+				width: 10,
+				height: 20
+			} );
+
+			const rectB = new Rect( {
+				top: 10,
+				right: 20,
+				bottom: 30,
+				left: 40,
+				width: 10,
+				height: 20
+			} );
+
+			expect( rectA.isEqual( rectB ) ).to.be.true;
+			expect( rectB.isEqual( rectA ) ).to.be.true;
+			expect( rectA.isEqual( rectA ) ).to.be.true;
 		} );
 
-		it( 'should return the viewport\'s rect', () => {
+		it( 'returns `false` when rects are different', () => {
+			const rectA = new Rect( {
+				top: 10,
+				right: 20,
+				bottom: 30,
+				left: 40,
+				width: 10,
+				height: 20
+			} );
+
+			const rectB = new Rect( {
+				top: 10,
+				right: 20,
+				bottom: 30,
+				left: 40,
+				width: 10,
+				height: 30 // !
+			} );
+
+			expect( rectA.isEqual( rectB ) ).to.be.false;
+			expect( rectB.isEqual( rectA ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'contains()', () => {
+		it( 'should return true if rects are the same', () => {
+			const rectA = new Rect( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			const rectB = new Rect( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			expect( rectA.isEqual( rectB ) ).to.be.true;
+			expect( rectA.contains( rectB ) ).to.be.true;
+			expect( rectB.contains( rectA ) ).to.be.true;
+		} );
+
+		it( 'should return true if rect is within', () => {
+			const rectA = new Rect( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			const rectB = new Rect( {
+				top: 10,
+				right: 90,
+				bottom: 90,
+				left: 10,
+				width: 80,
+				height: 80
+			} );
+
+			expect( rectA.contains( rectB ) ).to.be.true;
+			expect( rectB.contains( rectA ) ).to.be.false;
+		} );
+
+		it( 'should return false if rect extends beyond the boundaries', () => {
+			const rectA = new Rect( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			const rectB = new Rect( {
+				top: 10,
+				right: 100,
+				bottom: 110,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			expect( rectA.contains( rectB ) ).to.be.false;
+			expect( rectB.contains( rectA ) ).to.be.false;
+		} );
+
+		it( 'should return false if rect is completely beyond the boundaries', () => {
+			const rectA = new Rect( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			const rectB = new Rect( {
+				top: 110,
+				right: 100,
+				bottom: 210,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			expect( rectA.contains( rectB ) ).to.be.false;
+			expect( rectB.contains( rectA ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'excludeScrollbarsAndBorders()', () => {
+		it( 'should exclude scrollbars and borders of a HTMLElement', () => {
+			const element = document.createElement( 'div' );
+
+			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+			testUtils.sinon.stub( global.window, 'getComputedStyle' ).returns( {
+				borderTopWidth: '5px',
+				borderRightWidth: '10px',
+				borderLeftWidth: '5px',
+				borderBottomWidth: '10px'
+			} );
+
+			// Simulate 5px srollbars.
+			Object.defineProperties( element, {
+				offsetWidth: {
+					value: 20
+				},
+				offsetHeight: {
+					value: 20
+				},
+				clientWidth: {
+					value: 10
+				},
+				clientHeight: {
+					value: 10
+				}
+			} );
+
+			assertRect( new Rect( element ).excludeScrollbarsAndBorders(), {
+				top: 15,
+				right: 35,
+				bottom: 25,
+				left: 25,
+				width: 10,
+				height: 10
+			} );
+		} );
+
+		it( 'should exclude scrollbars from viewport\'s rect', () => {
 			testUtils.sinon.stub( global, 'window' ).value( {
 				innerWidth: 1000,
 				innerHeight: 500,
@@ -575,13 +770,20 @@ describe( 'Rect', () => {
 				scrollY: 200
 			} );
 
-			assertRect( Rect.getViewportRect(), {
+			testUtils.sinon.stub( global, 'document' ).value( {
+				documentElement: {
+					clientWidth: 990,
+					clientHeight: 490
+				}
+			} );
+
+			assertRect( new Rect( global.window ).excludeScrollbarsAndBorders(), {
 				top: 0,
-				right: 1000,
-				bottom: 500,
+				right: 990,
+				bottom: 490,
 				left: 0,
-				width: 1000,
-				height: 500
+				width: 990,
+				height: 490
 			} );
 		} );
 	} );

@@ -10,6 +10,7 @@
 import global from './global';
 import Rect from './rect';
 import getPositionedAncestor from './getpositionedancestor';
+import getBorderWidths from './getborderwidths';
 
 /**
  * Calculates the `position: absolute` coordinates of a given element so it can be positioned with respect to the
@@ -100,7 +101,7 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		[ name, bestPosition ] = getPosition( positions[ 0 ], targetRect, elementRect );
 	} else {
 		const limiterRect = limiter && new Rect( limiter ).getVisible();
-		const viewportRect = fitInViewport && Rect.getViewportRect();
+		const viewportRect = fitInViewport && new Rect( global.window );
 
 		[ name, bestPosition ] =
 			getBestPosition( positions, targetRect, elementRect, limiterRect, viewportRect ) ||
@@ -113,7 +114,7 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 
 	if ( positionedElementAncestor ) {
 		const ancestorPosition = getAbsoluteRectCoordinates( new Rect( positionedElementAncestor ) );
-		const ancestorComputedStyles = global.window.getComputedStyle( positionedElementAncestor );
+		const ancestorBorderWidths = getBorderWidths( positionedElementAncestor );
 
 		// (https://github.com/ckeditor/ckeditor5-ui-default/issues/126)
 		// If there's some positioned ancestor of the panel, then its `Rect` must be taken into
@@ -135,8 +136,8 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		// while `position: absolute` positioning does not consider it.
 		// E.g. `{ position: absolute, top: 0, left: 0 }` means upper left corner of the element,
 		// not upper-left corner of its border.
-		left -= parseInt( ancestorComputedStyles.borderLeftWidth, 10 );
-		top -= parseInt( ancestorComputedStyles.borderTopWidth, 10 );
+		left -= ancestorBorderWidths.left;
+		top -= ancestorBorderWidths.top;
 	}
 
 	return { left, top, name };
