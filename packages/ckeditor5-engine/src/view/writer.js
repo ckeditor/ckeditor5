@@ -933,7 +933,7 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 		const isUI = child.is( 'uiElement' );
 
 		// Wrap text, empty elements, ui elements or attributes with higher or equal priority.
-		if ( isText || isEmpty || isUI || ( isAttribute && attribute.priority <= child.priority ) ) {
+		if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( attribute, child ) ) ) {
 			// Clone attribute.
 			const newAttribute = attribute.clone();
 
@@ -973,6 +973,25 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 	}
 
 	return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+}
+
+// Checks if first {@link module:engine/view/attributeelement~AttributeElement AttributeElement} provided to the function
+// can be wrapped otuside second element. It is done by comparing elements'
+// {@link module:engine/view/attributeelement~AttributeElement#priority priorities}, if both have same priority
+// {@link module:engine/view/element~Element#getIdentity identities} are compared.
+//
+// @param {module:engine/view/attributeelement~AttributeElement} a
+// @param {module:engine/view/attributeelement~AttributeElement} b
+// @returns {Boolean}
+function shouldABeOutsideB( a, b ) {
+	if ( a.priority < b.priority ) {
+		return true;
+	} else if ( a.priority > b.priority ) {
+		return false;
+	}
+
+	// When priorities are equal and names are different - use identities.
+	return a.getIdentity() < b.getIdentity();
 }
 
 // Returns new position that is moved to near text node. Returns same position if there is no text node before of after
@@ -1046,7 +1065,6 @@ function mergeTextNodes( t1, t2 ) {
 }
 
 // Wraps one {@link module:engine/view/attributeelement~AttributeElement AttributeElement} into another by merging them if possible.
-// Two AttributeElements can be merged when there is no attribute or style conflicts between them.
 // When merging is possible - all attributes, styles and classes are moved from wrapper element to element being
 // wrapped.
 //

@@ -244,7 +244,7 @@ describe( 'model test utils', () => {
 
 			expect( stringify( root ) ).to.equal(
 				// Because of https://github.com/ckeditor/ckeditor5-engine/issues/562 attributes are not merged
-				'<$text bold="true">foo</$text>bar<$text italic="true"><$text bold="true">bom</$text></$text>' +
+				'<$text bold="true">foo</$text>bar<$text bold="true"><$text italic="true">bom</$text></$text>' +
 				'<a><$text bold="true" underline="true">pom</$text></a>'
 			);
 		} );
