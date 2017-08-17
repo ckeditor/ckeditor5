@@ -172,6 +172,6 @@ export default class DeleteCommand extends Command {
 		this._buffer.batch.remove( Range.createIn( limitElement ) );
 		this._buffer.batch.insert( Position.createAt( limitElement ), paragraph );
 
-		selection.collapse( paragraph );
+		selection.setCollapsedAt( paragraph );
 	}
 }
