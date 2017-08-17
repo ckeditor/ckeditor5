@@ -61,7 +61,11 @@ export function toWidget( element, options = {} ) {
 		setLabel( element, options.label );
 	}
 
-	setVirtualSelectionHandling( element, setVirtualSelection, removeVirtualSelection );
+	setVirtualSelectionHandling(
+		element,
+		( element, descriptor ) => element.addClass( descriptor.class ),
+		( element, descriptor ) => element.removeClass( descriptor.class )
+	);
 
 	return element;
 }
@@ -156,20 +160,4 @@ export function toWidgetEditable( editable ) {
 // @returns {null}
 function getFillerOffset() {
 	return null;
-}
-
-// Used as default function for setting virtual selection on widgets.
-//
-// @param {module:engine/view/element~Element} element
-// @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} descriptor
-function setVirtualSelection( element, descriptor ) {
-	element.addClass( descriptor.class );
-}
-
-// Used as default function for removing virtual selection from widgets.
-//
-// @param {module:engine/view/element~Element} element
-// @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} descriptor
-function removeVirtualSelection( element, descriptor ) {
-	element.removeClass( descriptor.class );
 }
