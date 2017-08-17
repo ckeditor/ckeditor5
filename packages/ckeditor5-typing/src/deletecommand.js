@@ -82,14 +82,15 @@ export default class DeleteCommand extends Command {
 				dataController.modifySelection( selection, { direction: this.direction, unit: options.unit } );
 			}
 
+			// Check if deleting in an empty editor. See #61.
+			if ( this._shouldEntireContentBeReplacedWithParagraph( options.sequence || 1 ) ) {
+				this._replaceEntireContentWithParagraph();
+
+				return;
+			}
+
 			// If selection is still collapsed, then there's nothing to delete.
 			if ( selection.isCollapsed ) {
-				const sequence = options.sequence || 1;
-
-				if ( this._shouldEntireContentBeReplacedWithParagraph( sequence ) ) {
-					this._replaceEntireContentWithParagraph();
-				}
-
 				return;
 			}
 
@@ -115,9 +116,10 @@ export default class DeleteCommand extends Command {
 	 * editable will be cleared. However, this will not yet lead to resetting the remaining block to a paragraph
 	 * (which happens e.g. when the user does <kbd>Ctrl</kbd> + <kbd>A</kbd>, <kbd>Backspace</kbd>).
 	 *
-	 * But, if the user pressed the key again, we want to replace the entire content with a paragraph if:
+	 * But, if the user pressed the key in an empty editable for the first time,
+	 * we want to replace the entire content with a paragraph if:
 	 *
-	 * * the entire content is selected,
+	 * * the current limit element is empty,
 	 * * the paragraph is allowed in the common ancestor,
 	 * * other paragraph does not occur in the editor.
 	 *
@@ -136,8 +138,11 @@ export default class DeleteCommand extends Command {
 		const document = this.editor.document;
 		const selection = document.selection;
 		const limitElement = document.schema.getLimitElement( selection );
+		// If a collapsed selection contains the whole content it means that the content is empty
+		// (from the user perspective).
+		const limitElementIsEmpty = selection.isCollapsed && selection.isEntireContentSelected( limitElement );
 
-		if ( !selection.isEntireContentSelected( limitElement ) ) {
+		if ( !limitElementIsEmpty ) {
 			return false;
 		}
 
