@@ -405,7 +405,7 @@ export function remove() {
 /**
  * Function factory, creates converter that converts all texts inside marker's range. Converter wraps each text with
  * {@link module:engine/view/attributeelement~AttributeElement} created from provided descriptor.
- * See {@link engine/conversion/model-to-view-converters~virtualSelectionDescriptorToAttributeElement}.
+ * See {link module:engine/conversion/model-to-view-converters~virtualSelectionDescriptorToAttributeElement}.
  *
  * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor|Function} selectionDescriptor
  * @return {Function}
