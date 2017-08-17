@@ -30,7 +30,11 @@ export function modelToViewStyleAttribute( styles ) {
 		const oldStyle = getStyleByValue( data.attributeOldValue, styles );
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-		if ( handleRemoval( eventType, oldStyle, viewElement ) || handleAddition( eventType, newStyle, viewElement ) ) {
+		const isRemovalHandled = handleRemoval( eventType, oldStyle, viewElement );
+		const isAdditionHandled = handleAddition( eventType, newStyle, viewElement );
+
+		// https://github.com/ckeditor/ckeditor5-image/issues/132
+		if ( isRemovalHandled || isAdditionHandled ) {
 			consumable.consume( data.item, consumableType );
 		}
 	};
