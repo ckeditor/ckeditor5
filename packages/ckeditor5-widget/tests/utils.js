@@ -65,29 +65,6 @@ describe( 'widget utils', () => {
 			remove( element, { priority: 1, class: 'virtual-selection' } );
 			expect( element.hasClass( 'virtual-selection' ) ).to.be.false;
 		} );
-
-		it( 'should use provided virtual selection methods', () => {
-			const setSpy = sinon.spy();
-			const removeSpy = sinon.spy();
-			const descriptor = { priority: 1, class: 'virtual-selection' };
-			toWidget( element, { setVirtualSelection: setSpy, removeVirtualSelection: removeSpy } );
-
-			const set = element.getCustomProperty( 'setVirtualSelection' );
-			const remove = element.getCustomProperty( 'removeVirtualSelection' );
-
-			expect( typeof set ).to.equal( 'function' );
-			expect( typeof remove ).to.equal( 'function' );
-
-			set( element, descriptor );
-
-			sinon.assert.calledOnce( setSpy );
-			sinon.assert.calledWithExactly( setSpy, element, descriptor );
-
-			remove( element, descriptor );
-
-			sinon.assert.calledOnce( removeSpy );
-			sinon.assert.calledWithExactly( removeSpy, element, descriptor );
-		} );
 	} );
 
 	describe( 'isWidget()', () => {

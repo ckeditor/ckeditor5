@@ -49,12 +49,6 @@ export function isWidget( element ) {
  * @param {Object} [options={}]
  * @param {String|Function} [options.label] Element's label provided to {@link ~setLabel} function. It can be passed as
  * a plain string or a function returning a string.
- * @param {Function} [setVirtualSelection] Function that will apply virtual selection on widget's element. When not
- * provided, default behaviour will be used: adding CSS class from
- * {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor}.
- * @param {Function} [removeVirtualSelection] Function that will remove virtual selection on widget's element. When not
- * provided, default behaviour will be used: removing CSS class from
- * {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor}.
  * @returns {module:engine/view/element~Element} Returns same element.
  */
 export function toWidget( element, options = {} ) {
@@ -67,11 +61,7 @@ export function toWidget( element, options = {} ) {
 		setLabel( element, options.label );
 	}
 
-	setVirtualSelectionHandling(
-		element,
-		options.setVirtualSelection || setVirtualSelection,
-		options.removeVirtualSelection || removeVirtualSelection
-	);
+	setVirtualSelectionHandling( element, setVirtualSelection, removeVirtualSelection );
 
 	return element;
 }
