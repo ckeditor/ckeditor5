@@ -58,7 +58,8 @@ export default class DeleteCommand extends Command {
 	 * @fires execute
 	 * @param {Object} [options] The command options.
 	 * @param {'character'} [options.unit='character'] See {@link module:engine/controller/modifyselection~modifySelection}'s options.
-	 * @param {Number} [options.sequence=1] See the {@link module:engine/view/document~Document#event:delete} event data.
+	 * @param {Number} [options.sequence=1] A number describing which subsequent delete event it is without the key being released.
+	 * See the {@link module:engine/view/document~Document#event:delete} event data.
 	 */
 	execute( options = {} ) {
 		const doc = this.editor.document;
@@ -110,14 +111,17 @@ export default class DeleteCommand extends Command {
 	}
 
 	/**
-	 * If the user keeps <kbd>Backspace</kbd> or <kbd>Delete</kbd> key, we do nothing because the user can clear
-	 * the whole element without removing them.
+	 * If the user keeps <kbd>Backspace</kbd> or <kbd>Delete</kbd> key pressed, the content of the current
+	 * editable will be cleared. However, this will not yet lead to resetting the remaining block to a paragraph
+	 * (which happens e.g. when the user does <kbd>Ctrl</kbd> + <kbd>A</kbd>, <kbd>Backspace</kbd>).
 	 *
-	 * But, if the user pressed and released the key, we want to replace the entire content with a paragraph if:
+	 * But, if the user pressed the key again, we want to replace the entire content with a paragraph if:
 	 *
 	 * * the entire content is selected,
 	 * * the paragraph is allowed in the common ancestor,
 	 * * other paragraph does not occur in the editor.
+	 *
+	 * See https://github.com/ckeditor/ckeditor5-typing/issues/61.
 	 *
 	 * @private
 	 * @param {Number} sequence A number describing which subsequent delete event it is without the key being released.
