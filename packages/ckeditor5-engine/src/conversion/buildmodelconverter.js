@@ -437,10 +437,10 @@ export default function buildModelConverter() {
  * can handle virtual selection separately by providing `setVirtualSelection` and `removeVirtualSelection` custom
  * properties.
  *
- * @property {Number} priority {@link module:engine/view/attributeelement~AttributeElement#priority} of the `span`
- * wrapping each text node in the virtual selection.
  * @property {String} class CSS class that will be added to `span`
  * {@link module:engine/view/attributeelement~AttributeElement} wrapping each text node in the virtual selection.
+ * @property {Number} [priority] {@link module:engine/view/attributeelement~AttributeElement#priority} of the `span`
+ * wrapping each text node in the virtual selection. If not provided, default 10 priority will be used.
  * @property {Object} [attributes] Attributes that will be added to `span`
  * {@link module:engine/view/attributeelement~AttributeElement} wrapping each text node it the virtual selection.
  */
