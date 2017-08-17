@@ -11,6 +11,9 @@ import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import List from '@ckeditor/ckeditor5-list/src/list';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import buildModelConverter from '../../src/conversion/buildmodelconverter';
 import buildViewConverter from '../../src/conversion/buildviewconverter';
@@ -56,8 +59,8 @@ class FancyWidget extends Plugin {
 }
 
 ClassicEditor.create( global.document.querySelector( '#editor' ), {
-	plugins: [ Enter, Typing, Paragraph, Undo, Heading, FancyWidget ],
-	toolbar: [ 'headings', 'undo', 'redo' ]
+	plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic, List, FancyWidget ],
+	toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ]
 } )
 	.then( editor => {
 		window.editor = editor;

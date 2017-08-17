@@ -657,9 +657,9 @@ export default class ModelConversionDispatcher {
 
 	/**
 	 * Fired when a new marker is added to the model.
-	 * * If marker's range is not collapsed then event is fired separately for each item contained in that range. Consumable
-	 * contains all items from that range.
-	 * * If marker's range is collapsed then single event is fired. Consumable contains collapsed range.
+	 * * If marker's range is not collapsed, event is fired separately for each item contained in that range. In this
+	 * situation, consumable contains all items from that range.
+	 * * If marker's range is collapsed, single event is fired. In this situation, consumable contains only the collapsed range.
 	 *
 	 * `addMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `addMarker:<markerName>`. By specifying certain marker names, you can make the events even more gradual. For example,
@@ -673,7 +673,7 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/range~Range} [data.range] Range spanning over item. Not present if collapsed range
 	 * is being converted.
 	 * @param {String} data.markerName Name of the marker.
-	 * @param {module:engine/model/range~Range} data.markerRange Whole marker's range.
+	 * @param {module:engine/model/range~Range} data.markerRange Marker's range spanning on all items.
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume. When non-collapsed
 	 * marker is being converted then consumable contains all items in marker's range. For collapsed markers it contains
 	 * only marker's range to consume.
@@ -682,9 +682,9 @@ export default class ModelConversionDispatcher {
 
 	/**
 	 * Fired when marker is removed from the model.
-	 * * If marker's range is not collapsed then event is fired separately for each item contained in that range. Consumable
-	 * contains all items from that range.
-	 * * If marker's range is collapsed then single event is fired. Consumable contains collapsed range.
+	 * * If marker's range is not collapsed, event is fired separately for each item contained in that range. In this
+	 * situation, consumable contains all items from that range.
+	 * * If marker's range is collapsed, single event is fired. In this situation, consumable contains only the collapsed range.
 	 *
 	 * `removeMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `removeMarker:<markerName>`. By specifying certain marker names, you can make the events even more gradual. For example,
