@@ -10,11 +10,29 @@
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
+/**
+ * Class used to handle correct order of
+ * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toVirtualSelection virtual selections} on
+ * elements. When different virtual selections are applied to same element correct order should be preserved:
+ * * virtual selection with highest priority should be applied,
+ * * if two virtual selections have same priority - sort by CSS class provided in
+ * {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor}.
+ * This way, virtual selection will be applied with the same rules it is applied on texts.
+ */
 export default class VirtualSelectionStack {
+	/**
+	 * Creates class instance.
+	 */
 	constructor() {
 		this._stack = [];
 	}
 
+	/**
+	 * Adds virtual selection descriptor to the stack.
+	 *
+	 * @fires change:top
+	 * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} descriptor
+	 */
 	add( descriptor ) {
 		const stack = this._stack;
 		let i = 0;
@@ -48,6 +66,12 @@ export default class VirtualSelectionStack {
 		}
 	}
 
+	/**
+	 * Removes virtual selection descriptor from the stack.
+	 *
+	 * @fires change:top
+	 * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} descriptor
+	 */
 	remove( descriptor ) {
 		const stack = this._stack;
 		const length = stack.length;
@@ -94,10 +118,21 @@ export default class VirtualSelectionStack {
 
 mix( VirtualSelectionStack, EmitterMixin );
 
+// Compares two virtual selection descriptors by priority and CSS class names. Returns `true` when both descriptors are
+// considered equal.
+//
+// @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} descriptorA
+// @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} descriptorB
+// @returns {Boolean}
 function compareDescriptors( descriptorA, descriptorB ) {
 	return descriptorA.priority == descriptorB.priority && descriptorA.class == descriptorB.class;
 }
 
+// Checks whenever first descriptor should be placed in the stack before second one.
+//
+// @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} a
+// @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} b
+// @returns {Boolean}
 function shouldABeBeforeB( a, b ) {
 	if ( a.priority > b.priority ) {
 		return true;
@@ -106,6 +141,16 @@ function shouldABeBeforeB( a, b ) {
 	}
 
 	// When priorities are equal and names are different - use classes to compare.
-	// TODO: class should be required.
 	return a.class > b.class;
 }
+
+/**
+ * Fired when top element on {@link module:widget/virtualselectionstack~VirtualSelectionStack} has been changed
+ *
+ * @event change:top
+ * @param {Object} data Additional information about the change.
+ * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} [newDescriptor] New virtual selection
+ * descriptor. It will be `undefined` when last descriptor is removed from the stack.
+ * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} [oldDescriptor] Old virtual selection
+ * descriptor. It will be `undefined` when first descriptor is added to the stack.
+ */
