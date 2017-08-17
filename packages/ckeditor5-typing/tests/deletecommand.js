@@ -147,7 +147,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( getData( doc, { selection: true } ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( getData( doc ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'leaves an empty paragraph after removing the whole content inside limit element', () => {
@@ -157,22 +157,38 @@ describe( 'DeleteCommand', () => {
 
 			setData( doc,
 				'<heading1>Foo</heading1>' +
-				'<section>' +
-				'<heading1>[Header 1</heading1>' +
-				'<paragraph>Some text.]</paragraph>' +
-				'</section>' +
+					'<section>' +
+						'<heading1>[Header 1</heading1>' +
+						'<paragraph>Some text.]</paragraph>' +
+					'</section>' +
 				'<paragraph>Bar.</paragraph>'
 			);
 
 			editor.execute( 'delete' );
 
-			expect( getData( doc, { selection: true } ) ).to.equal(
+			expect( getData( doc ) ).to.equal(
 				'<heading1>Foo</heading1>' +
 				'<section>' +
-				'<paragraph>[]</paragraph>' +
+					'<paragraph>[]</paragraph>' +
 				'</section>' +
 				'<paragraph>Bar.</paragraph>'
 			);
+		} );
+
+		it( 'leaves an empty paragraph after removing another paragraph from block element', () => {
+			doc.schema.registerItem( 'section', '$block' );
+			doc.schema.registerItem( 'blockQuote', '$block' );
+			doc.schema.limits.add( 'section' );
+			doc.schema.allow( { name: 'section', inside: '$root' } );
+			doc.schema.allow( { name: 'paragraph', inside: 'section' } );
+			doc.schema.allow( { name: 'blockQuote', inside: 'section' } );
+			doc.schema.allow( { name: 'paragraph', inside: 'blockQuote' } );
+
+			setData( doc, '<section><blockQuote><paragraph>[]</paragraph></blockQuote></section>' );
+
+			editor.execute( 'delete' );
+
+			expect( getData( doc ) ).to.equal( '<section><paragraph>[]</paragraph></section>' );
 		} );
 
 		it( 'leaves an empty paragraph after removing the whole content when root element was not added as Schema.limits', () => {
@@ -190,7 +206,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( getData( doc, { selection: true } ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( getData( doc ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'does not replace an element when Backspace or Delete key is held', () => {
@@ -200,17 +216,17 @@ describe( 'DeleteCommand', () => {
 				editor.execute( 'delete', { sequence } );
 			}
 
-			expect( getData( doc, { selection: true } ) ).to.equal( '<heading1>[]</heading1>' );
+			expect( getData( doc ) ).to.equal( '<heading1>[]</heading1>' );
 		} );
 
-		it( 'does not replace an element if a paragraph is a common ancestor', () => {
+		it( 'does not replace with paragraph in another paragraph already occurs in limit element', () => {
 			setData( doc, '<paragraph>[]</paragraph>' );
 
-			const element = doc.selection.getFirstRange().getCommonAncestor();
+			const element = doc.getRoot().getNodeByPath( [ 0 ] );
 
 			editor.execute( 'delete' );
 
-			expect( element ).is.equal( doc.selection.getFirstRange().getCommonAncestor() );
+			expect( element ).is.equal( doc.getRoot().getNodeByPath( [ 0 ] ) );
 		} );
 
 		it( 'does not replace an element if a paragraph is not allowed in current position', () => {
@@ -221,7 +237,7 @@ describe( 'DeleteCommand', () => {
 			editor.execute( 'delete' );
 
 			// Returned data: '[]' instead of the heading element.
-			expect( getData( doc, { selection: true } ) ).to.equal( '<heading1>[]</heading1>' );
+			expect( getData( doc ) ).to.equal( '<heading1>[]</heading1>' );
 		} );
 	} );
 } );

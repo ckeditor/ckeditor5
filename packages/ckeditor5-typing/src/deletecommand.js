@@ -120,8 +120,8 @@ export default class DeleteCommand extends Command {
 	 * we want to replace the entire content with a paragraph if:
 	 *
 	 * * the current limit element is empty,
-	 * * the paragraph is allowed in the common ancestor,
-	 * * other paragraph does not occur in the editor.
+	 * * the paragraph is allowed in the limit element,
+	 * * other empty paragraph does not occur in the limit element.
 	 *
 	 * See https://github.com/ckeditor/ckeditor5-typing/issues/61.
 	 *
@@ -138,9 +138,10 @@ export default class DeleteCommand extends Command {
 		const document = this.editor.document;
 		const selection = document.selection;
 		const limitElement = document.schema.getLimitElement( selection );
+
 		// If a collapsed selection contains the whole content it means that the content is empty
 		// (from the user perspective).
-		const limitElementIsEmpty = selection.isCollapsed && selection.isEntireContentSelected( limitElement );
+		const limitElementIsEmpty = selection.isCollapsed && selection.containsEntireContent( limitElement );
 
 		if ( !limitElementIsEmpty ) {
 			return false;
@@ -150,8 +151,10 @@ export default class DeleteCommand extends Command {
 			return false;
 		}
 
-		// Does nothing if editor already contains an empty paragraph.
-		if ( selection.getFirstRange().getCommonAncestor().name === 'paragraph' ) {
+		const limitElementFirstChild = limitElement.getChild( 0 );
+
+		// Does nothing if limit element already contains an empty paragraph.
+		if ( limitElementFirstChild && limitElementFirstChild.name === 'paragraph' ) {
 			return false;
 		}
 
