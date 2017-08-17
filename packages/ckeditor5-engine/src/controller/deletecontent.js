@@ -198,7 +198,7 @@ function replaceEntireContentWithParagraph( batch, selection ) {
 function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
 	const limitElement = schema.getLimitElement( selection );
 
-	if ( !selection.isEntireContentSelected( limitElement ) ) {
+	if ( !selection.containsEntireContent( limitElement ) ) {
 		return false;
 	}
 
