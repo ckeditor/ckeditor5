@@ -149,8 +149,8 @@ function shouldABeBeforeB( a, b ) {
  *
  * @event change:top
  * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} [newDescriptor] New virtual selection
+ * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} [data.newDescriptor] New virtual selection
  * descriptor. It will be `undefined` when last descriptor is removed from the stack.
- * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} [oldDescriptor] Old virtual selection
+ * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} [data.oldDescriptor] Old virtual selection
  * descriptor. It will be `undefined` when first descriptor is added to the stack.
  */
