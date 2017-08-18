@@ -24,6 +24,8 @@ describe( 'Rect', () => {
 			width: 20,
 			height: 20
 		};
+
+		testUtils.sinon.stub( log, 'warn' );
 	} );
 
 	describe( 'constructor()', () => {
@@ -144,7 +146,6 @@ describe( 'Rect', () => {
 		it( 'should warn if the source does not belong to rendered DOM tree (HTML element)', () => {
 			const element = document.createElement( 'div' );
 
-			testUtils.sinon.stub( log, 'warn' );
 			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
 
 			const rect = new Rect( element );
@@ -156,7 +157,6 @@ describe( 'Rect', () => {
 		it( 'should warn if the source does not belong to rendered DOM tree (DOM Range)', () => {
 			const range = document.createRange();
 
-			testUtils.sinon.stub( log, 'warn' );
 			range.collapse();
 			testUtils.sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
 
