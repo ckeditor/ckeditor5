@@ -62,7 +62,10 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * selection described by {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} object passed to
  * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toVirtualSelection} method.
  *
- *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( descriptor );
+ *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( {
+ *			class: 'search',
+ *			priority: 20
+ *		} );
  *
  * 5. Model marker to element converter. This is a converter that takes model marker and creates separate elements at
  * the beginning and at the end of the marker's range. For more information see
