@@ -166,7 +166,7 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.view.content.length ).to.equal( 1 );
 			expect( balloon.view.content.get( 0 ) ).to.deep.equal( viewA );
 			expect( balloon.view.pin.calledOnce ).to.true;
-			expect( balloon.view.pin.firstCall.args[ 0 ] ).to.deep.equal( {
+			sinon.assert.calledWithMatch( balloon.view.pin.firstCall, {
 				target: 'fake',
 				limiter: balloon.positionLimiter
 			} );
@@ -264,12 +264,12 @@ describe( 'ContextualBalloon', () => {
 
 			expect( balloon.view.pin.calledTwice ).to.true;
 
-			expect( balloon.view.pin.firstCall.args[ 0 ] ).to.deep.equal( {
+			sinon.assert.calledWithMatch( balloon.view.pin.firstCall, {
 				target: 'fake',
 				limiter: balloon.positionLimiter
 			} );
 
-			expect( balloon.view.pin.secondCall.args[ 0 ] ).to.deep.equal( {
+			sinon.assert.calledWithMatch( balloon.view.pin.secondCall, {
 				target: 'fake',
 				limiter: balloon.positionLimiter
 			} );
@@ -410,7 +410,7 @@ describe( 'ContextualBalloon', () => {
 			balloon.updatePosition();
 
 			expect( balloon.view.attachTo.calledOnce );
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( {
+			sinon.assert.calledWithMatch( balloon.view.attachTo.firstCall, {
 				target: 'fake',
 				limiter: balloon.positionLimiter
 			} );
@@ -422,7 +422,7 @@ describe( 'ContextualBalloon', () => {
 			balloon.updatePosition( { target: 'new' } );
 
 			expect( balloon.view.attachTo.calledOnce );
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( {
+			sinon.assert.calledWithMatch( balloon.view.attachTo.firstCall, {
 				target: 'new',
 				limiter: balloon.positionLimiter
 			} );
@@ -441,7 +441,7 @@ describe( 'ContextualBalloon', () => {
 			balloon.updatePosition( { target: 'new' } );
 
 			expect( balloon.view.attachTo.calledOnce );
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( {
+			sinon.assert.calledWithMatch( balloon.view.attachTo.firstCall, {
 				target: 'fake',
 				limiter: balloon.positionLimiter
 			} );
@@ -451,7 +451,7 @@ describe( 'ContextualBalloon', () => {
 			balloon.updatePosition();
 
 			expect( balloon.view.attachTo.calledTwice );
-			expect( balloon.view.attachTo.secondCall.args[ 0 ] ).to.deep.equal( {
+			sinon.assert.calledWithMatch( balloon.view.attachTo.secondCall, {
 				target: 'new',
 				limiter: balloon.positionLimiter
 			} );
@@ -466,7 +466,7 @@ describe( 'ContextualBalloon', () => {
 			} );
 
 			expect( balloon.view.attachTo.calledOnce );
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( {
+			sinon.assert.calledWithMatch( balloon.view.attachTo.firstCall, {
 				target: 'new',
 				limiter: 'customLimiter'
 			} );
