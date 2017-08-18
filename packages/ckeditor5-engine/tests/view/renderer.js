@@ -214,18 +214,29 @@ describe( 'Renderer', () => {
 			expect( renderer.markedTexts.size ).to.equal( 0 );
 		} );
 
-		it( 'should not update text parent child list changed', () => {
-			const viewImg = new ViewElement( 'img' );
+		it( 'should update next touching text nodes of updated text node', () => {
 			const viewText = new ViewText( 'foo' );
-			viewRoot.appendChildren( [ viewImg, viewText ] );
+
+			viewRoot.appendChildren( [
+				viewText,
+				new ViewAttributeElement( 'strong', null, new ViewText( ' bar' ) )
+			] );
 
 			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 2 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo' );
+			expect( domRoot.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( ' bar' );
+
+			viewText.data = 'foo ';
+
 			renderer.markToSync( 'text', viewText );
 			renderer.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 2 );
-			expect( domRoot.childNodes[ 0 ].tagName ).to.equal( 'IMG' );
-			expect( domRoot.childNodes[ 1 ].data ).to.equal( 'foo' );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo ' );
+			expect( domRoot.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( '\u00A0bar' );
 		} );
 
 		it( 'should not change text if it is the same during text rendering', () => {

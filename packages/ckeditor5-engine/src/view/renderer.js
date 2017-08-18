@@ -10,6 +10,7 @@
 import ViewText from './text';
 import ViewPosition from './position';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller, isBlockFiller } from './filler';
+import { getTouchingTextNode } from './utils';
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
@@ -198,9 +199,7 @@ export default class Renderer {
 		}
 
 		for ( const node of this.markedTexts ) {
-			if ( !this.markedChildren.has( node.parent ) && this.domConverter.mapViewToDom( node.parent ) ) {
-				this._updateText( node, { inlineFillerPosition } );
-			}
+			this._updateText( node, { inlineFillerPosition } );
 		}
 
 		for ( const element of this.markedAttributes ) {
@@ -407,6 +406,12 @@ export default class Renderer {
 	 */
 	_updateText( viewText, options ) {
 		const domText = this.domConverter.findCorrespondingDomText( viewText );
+
+		// If this is a new text node and it is not in DOM, it will be created and handled in `_updateChildren`.
+		if ( !domText ) {
+			return;
+		}
+
 		const newDomText = this.domConverter.viewToDom( viewText, domText.ownerDocument );
 
 		const actualText = domText.data;
@@ -420,6 +425,12 @@ export default class Renderer {
 
 		if ( actualText != expectedText ) {
 			domText.data = expectedText;
+
+			const nextTouchingTextNode = getTouchingTextNode( viewText, true );
+
+			if ( nextTouchingTextNode ) {
+				this.markedTexts.add( nextTouchingTextNode );
+			}
 		}
 	}
 
