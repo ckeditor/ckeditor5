@@ -269,7 +269,7 @@ describe( 'DomConverter', () => {
 			// At the end.
 			test( 'x ', 'x_' );
 			test( 'x  ', 'x _' );
-			test( 'x   ', 'x_ _' );
+			test( 'x   ', 'x __' );
 			test( 'x    ', 'x _ _' );
 
 			// In the middle.
@@ -282,11 +282,19 @@ describe( 'DomConverter', () => {
 			test( ' x ', '_x_' );
 			test( '  x  x  ', '_ x _x _' );
 			test( '   x x  ', '_ _x x _' );
-			test( '   x x   ', '_ _x x_ _' );
+			test( '   x x   ', '_ _x x __' );
 			test( '   x    x ', '_ _x _ _x_' );
+
+			// Only spaces.
 			test( ' ', '_' );
+			test( '  ', '__' );
+			test( '   ', '_ _' );
+			test( '    ', '_ __' );
+			test( '     ', '_ _ _' );
+			test( '      ', '_ _ __' );
 
 			// With hard &nbsp;
+			// It should be treated like a normal sign.
 			test( '_x', '_x' );
 			test( ' _x', '__x' );
 			test( '  _x', '_ _x' );
@@ -323,33 +331,80 @@ describe( 'DomConverter', () => {
 
 			test( [ 'x', ' y' ], 'x y' );
 			test( [ 'x ', ' y' ], 'x _y' );
-			test( [ 'x  ', ' y' ], 'x_ _y' );
+			test( [ 'x  ', ' y' ], 'x _ y' );
 			test( [ 'x   ', ' y' ], 'x _ _y' );
-			test( [ 'x    ', ' y' ], 'x_ _ _y' );
+			test( [ 'x    ', ' y' ], 'x _ _ y' );
 
 			test( [ 'x', '_y' ], 'x_y' );
 			test( [ 'x ', '_y' ], 'x _y' );
-			test( [ 'x  ', '_y' ], 'x_ _y' );
+			test( [ 'x  ', '_y' ], 'x __y' );
 			test( [ 'x   ', '_y' ], 'x _ _y' );
-			test( [ 'x    ', '_y' ], 'x_ _ _y' );
+			test( [ 'x    ', '_y' ], 'x _ __y' );
 
 			test( [ 'x', '  y' ], 'x _y' );
 			test( [ 'x ', '  y' ], 'x _ y' );
-			test( [ 'x  ', '  y' ], 'x_ _ y' );
+			test( [ 'x  ', '  y' ], 'x _ _y' );
 			test( [ 'x   ', '  y' ], 'x _ _ y' );
-			test( [ 'x    ', '  y' ], 'x_ _ _ y' );
+			test( [ 'x    ', '  y' ], 'x _ _ _y' );
 
 			test( [ 'x', '   y' ], 'x _ y' );
 			test( [ 'x ', '   y' ], 'x _ _y' );
-			test( [ 'x  ', '   y' ], 'x_ _ _y' );
+			test( [ 'x  ', '   y' ], 'x _ _ y' );
 			test( [ 'x   ', '   y' ], 'x _ _ _y' );
-			test( [ 'x    ', '   y' ], 'x_ _ _ _y' );
+			test( [ 'x    ', '   y' ], 'x _ _ _ y' );
+
+			// "Non-empty" + "empty" text nodes.
+			test( [ 'x',	' '		], 'x_' );
+			test( [ 'x',	'  '	], 'x _' );
+			test( [ 'x',	'   '	], 'x __' );
+			test( [ 'x ',	' '		], 'x _' );
+			test( [ 'x ',	'  '	], 'x __' );
+			test( [ 'x ',	'   '	], 'x _ _' );
+			test( [ 'x  ',	' '		], 'x __' );
+			test( [ 'x  ',	'  '	], 'x _ _' );
+			test( [ 'x  ',	'   '	], 'x _ __' );
+			test( [ 'x   ',	' '		], 'x _ _' );
+			test( [ 'x   ',	'  '	], 'x _ __' );
+			test( [ 'x   ',	'   '	], 'x _ _ _' );
+
+			test( [ 'x',	' ',		'x'		],	'x x' );
+			test( [ 'x',	' ',		' x'	],	'x _x' );
+			test( [ 'x',	'  ',		' x'	],	'x _ x' );
+			test( [ 'x',	'   ',		'  x'	],	'x _ _ x' );
+			test( [ 'x ',	' ',		' x'	],	'x _ x' );
+			test( [ 'x ',	'  ',		' x'	],	'x _ _x' );
+			test( [ 'x ',	'   ',		'  x'	],	'x _ _ _x' );
+			test( [ 'x  ',	' ',		' x'	],	'x _ _x' );
+			test( [ 'x  ',	'  ',		' x'	],	'x _ _ x' );
+			test( [ 'x  ',	'   ',		'  x'	],	'x _ _ _ x' );
+			test( [ 'x   ',	' ',		' x'	],	'x _ _ x' );
+			test( [ 'x   ',	'  ',		' x'	],	'x _ _ _x' );
+			test( [ 'x   ',	'   ',		'  x'	],	'x _ _ _ _x' );
+
+			// "Empty" + "empty" text nodes.
+			test( [ ' ', ' ' ], '__' );
+			test( [ '  ', ' ' ], '_ _' );
+			test( [ '   ', ' ' ], '_ __' );
+			test( [ ' ', '  ' ], '_ _' );
+			test( [ ' ', '   ' ], '_ __' );
+			test( [ '  ', '  ' ], '_ __' );
+			test( [ '  ', '   ' ], '_ _ _' );
+			test( [ '   ', '  ' ], '_ _ _' );
+			test( [ '   ', '   ' ], '_ _ __' );
 
 			it( 'not in preformatted blocks', () => {
-				const viewDiv = new ViewContainerElement( 'pre', null, new ViewText( '   foo   ' ) );
+				const viewDiv = new ViewContainerElement( 'pre', null, [ new ViewText( '   foo   ' ), new ViewText( ' bar ' ) ] );
 				const domDiv = converter.viewToDom( viewDiv, document );
 
-				expect( domDiv.innerHTML ).to.equal( '   foo   ' );
+				expect( domDiv.innerHTML ).to.equal( '   foo    bar ' );
+			} );
+
+			it( 'text node before in a preformatted node', () => {
+				const viewCode = new ViewAttributeElement( 'code', null, new ViewText( 'foo   ' ) );
+				const viewDiv = new ViewContainerElement( 'div', null, [ viewCode, new ViewText( ' bar' ) ] );
+				const domDiv = converter.viewToDom( viewDiv, document );
+
+				expect( domDiv.innerHTML ).to.equal( '<code>foo   </code> bar' );
 			} );
 		} );
 	} );
