@@ -3,21 +3,21 @@ title: Images
 category: features
 ---
 
-The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins which implements various image-related features:
+The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins that implement various image-related features:
 
 * {@link module:image/image~Image} implements basic support for images,
-* {@link module:image/imagetoolbar~ImageToolbar} adds image feature's contextual toolbar,
+* {@link module:image/imagetoolbar~ImageToolbar} adds the image feature's contextual toolbar,
 * {@link module:image/imagecaption~ImageCaption} adds support for captions,
 * {@link module:image/imagestyle~ImageStyle} adds support for image styles,
-* {@link module:upload/imageupload~ImageUpload} adds support for uploading dropped or pasted images (note: it's currently located in the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package but it will be moved to the `@ckeditor/ckeditor5-image` package).
+* {@link module:upload/imageupload~ImageUpload} adds support for uploading dropped or pasted images (note: it is currently located in the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package but will be moved to the `@ckeditor/ckeditor5-image` package).
 
 <info-box info>
-	The first 4 features (so all except the upload support) are enabled by default in all builds. They are also included in the {@link module:presets/article~Article Article preset}.
+	The first four features listed above (so all except upload support) are enabled by default in all builds. They are also included in the {@link module:presets/article~Article Article preset}.
 </info-box>
 
 ## Base image support
 
-The {@link module:image/image~Image} feature adds support for plain images with just the `alt` attribute set. That translates to the following HTML:
+The {@link module:image/image~Image} feature adds support for plain images with just the `alt` attribute set. This translates to the following HTML:
 
 ```html
 <figure class="image">
@@ -34,12 +34,12 @@ You can see the demo of an editor with the base image feature enabled below:
 {@snippetTODO image}
 
 <info-box hint>
-	The base image feature, unlike in CKEditor 4, does not support any user interface for inserting or managing images. Its sole purpose is to lay ground for other plugins (mentioned above) to build the target user experience. This pattern (composition of atomic features) is common for CKEditor 5 and allows developer to build their own customized experience by implementing specific subfeatures differently.
+	The base image feature, unlike in CKEditor 4, does not support any user interface for inserting or managing images. Its sole purpose is to lay ground for other plugins (mentioned above) to build the target user experience. This pattern (composition of atomic features) is common for CKEditor 5 and allows the developers to build their own customized experience by implementing specific subfeatures differently.
 </info-box>
 
 ## Image contextual toolbar
 
-The {@link module:image/imagetoolbar~ImageToobar} introduces contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options such as the text alternative (which is introduced by the base image plugin) button and [image styles buttons](#image-styles).
+The {@link module:image/imagetoolbar~ImageToobar} plugin introduces contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options such as the text alternative (which is introduced by the base image plugin) button and [image styles buttons](#image-styles).
 
 See a demo of an editor with the contextual toolbar enabled:
 
@@ -58,7 +58,7 @@ ClassicEditor
 
 ## Image captions
 
-The {@link module:image/imagecaption~ImageCaption} feature adds support for image captions:
+The {@link module:image/imagecaption~ImageCaption} plugin adds support for image captions:
 
 ```html
 <figure class="image">
@@ -67,29 +67,29 @@ The {@link module:image/imagecaption~ImageCaption} feature adds support for imag
 </figure>
 ```
 
-By default, if image's caption is empty, the `<figcaption>` element is not visible to the user. You can click the image to reveal the caption. See the demo below:
+By default, if the image caption is empty, the `<figcaption>` element is not visible to the user. You can click the image to reveal the caption. See the demo below:
 
 {@snippetTODO image-caption}
 
 ## Image styles
 
-In simple integrations it's enough to let the user insert images, set their text alternative and the editor's job is done. An example of such a simple solution are e.g. [GitHub](https://github.com) comments. The styling of the images (e.g. their maximum width and margins) is controlled by GitHub through stylesheets.
+In simple integrations it is enough to let the user insert images, set their text alternative and the editor's job is done. An example of such a simple solution are e.g. [GitHub](https://github.com) comments. The styling of the images (e.g. their maximum width and margins) is controlled by GitHub through stylesheets.
 
-In more advanced scenarios, the user may need to be able to decide whether the image should take the whole width (e.g. if it's the article's main photo) or it should take e.g. 50% of the width and be pulled out of the content (so called pulled images). Various integration scenarios require different types of images to be used.
+In more advanced scenarios, the user may need to be able to decide whether the image should take the whole width (e.g. if it is the article's main photo) or it should take e.g. 50% of the width and be pulled out of the content (so called "pulled images"). Various integration scenarios require different types of images to be used.
 
 This is what the {@link module:image/imagestyle~ImageStyle} feature is designed for.
 
-However, unlike in CKEditor 4, the user does not set the border, alignment, margins, width, etc. separately. Instead, the user can pick one of the styles defined by the developer who prepared the editor's integration. This gives the developer a control over how the users style images and makes the user's life easier by setting multiple properties at once.
+However, unlike in CKEditor 4, the user does not set the border, alignment, margins, width, etc. separately. Instead, the user can pick one of the styles defined by the developer who prepared the editor integration. This gives the developer control over how the users style images and makes the user's life easier by setting multiple properties at once.
 
-A style is applied to the image in form of a class. By default, the editor is configured to support two styles – "full width" (which doesn't apply any class – it's the default style) and "side image" (which applies the `image-style-side` class).
+A style is applied to the image in form of a class. By default, the editor is configured to support two styles: "full width" (which does not apply any class &mdash; it is the default style) and "side image" (which applies the `image-style-side` class).
 
-Normal (full width) image:
+A normal (full width) image:
 
 ```html
 <figure class="image"><img src="..." alt="..."></figure>
 ```
 
-Side image:
+A side image:
 
 ```html
 <figure class="image image-style-side"><img src="..." alt="..."></figure>
@@ -101,7 +101,7 @@ Side image:
 	Here you can find the source of the default styles applied by the editor: [`ckeditor5-image/theme/theme.scss`](https://github.com/ckeditor/ckeditor5-image/blob/master/theme/theme.scss).
 </info-box>
 
-Below you can see a demo of the editor with the image styles feature enabled. The default configuration is used. You can change styles of images through the image's contextual toolbar.
+Below you can see a demo of the editor with the image styles feature enabled. The default configuration is used. You can change the styles of images through the image's contextual toolbar.
 
 {@snippetTODO image-style}
 
@@ -109,7 +109,7 @@ Below you can see a demo of the editor with the image styles feature enabled. Th
 
 The available image styles can be configured using the {@link module:image/image~ImageConfig#styles `image.styles`} option.
 
-The following editor supports default style plus left and right aligned images:
+The following editor supports the default style plus left- and right-aligned images:
 
 ```js
 import fullSizeIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
@@ -120,13 +120,13 @@ ClassicEditor
 	.create( {
 		image: {
 			styles: [
-				// This option is equal to situation when no style is applied.
+				// This option is equal to a situation where no style is applied.
 				{ name: 'imageStyleFull', title: 'Full size image', icon: fullSizeIcon, value: null },
 
-				// This represents image aligned to left.
+				// This represents an image aligned to left.
 				{ name: 'imageStyleLeft', title: 'Left aligned image', icon: alignLeftIcon, value: 'left', className: 'image-style-left' },
 
-				// This represents image aligned to right.
+				// This represents an image aligned to right.
 				{ name: 'imageStyleRight', title: 'Right aligned image', icon: alignRightIcon, value: 'right', className: 'image-style-right' }
 			],
 
@@ -152,7 +152,7 @@ ClassicEditor
 {@snippetTODO image-style-custom}
 
 <info-box hint>
-	In the example above we use options which represent a simple "align left" and "align right" styles. Most text editors support left, center, right alignments, however, try not to think about CKEditor 5's image styles in this way. Try to understand what use cases the system needs to support and define semantically options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low-resolutions.
+	In the example above the options used represent simple "align left" and "align right" styles. Most text editors support left, center, right alignments, however, try not to think about CKEditor 5's image styles in this way. Try to understand what use cases the system needs to support and define semantical options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens.
 </info-box>
 
 ## Image upload
@@ -194,18 +194,18 @@ ClassicEditor
 	.catch( ... );
 ```
 
-If you are using editor build see how to {@linkTODO customize builds}.
+If you are using an editor build, see how to {@linkTODO customize builds}.
 
 ## Common API
 
 The {@link module:image/image~Image} plugin registers:
 
-* the `'imageTextAlternative'` button.
+* The `'imageTextAlternative'` button.
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
-* command for each defined style (based on the {@link module:image/image~ImageConfig#styles `image.styles`} config option) – e.g. `'imageStyleFull'` and `'imageStyleSide'`,
-* button for each defined style – e.g. `'imageStyleFull'` and `'imageStyleSide'`.
+* A command for each defined style (based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option) &mdash; e.g. `'imageStyleFull'` and `'imageStyleSide'`,
+* A button for each defined style &mdash; e.g. `'imageStyleFull'` and `'imageStyleSide'`.
 
 ## Contribute
 
