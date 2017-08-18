@@ -102,8 +102,10 @@ export function modelViewRemove( evt, data, consumable, conversionApi ) {
 		return;
 	}
 
-	const viewPosition = conversionApi.mapper.toViewPosition( data.sourcePosition );
-	const viewItem = viewPosition.nodeAfter.is( 'li' ) ? viewPosition.nodeAfter : viewPosition.nodeAfter.getChild( 0 );
+	let viewPosition = conversionApi.mapper.toViewPosition( data.sourcePosition );
+	viewPosition = viewPosition.getLastMatchingPosition( value => !value.item.is( 'li' ) );
+
+	const viewItem = viewPosition.nodeAfter;
 
 	// 1. Break the container after and before the list item.
 	// This will create a view list with one view list item -- the one that changed type.
