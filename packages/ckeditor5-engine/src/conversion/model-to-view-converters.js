@@ -442,11 +442,13 @@ export function convertTextsInsideMarker( selectionDescriptor ) {
 /**
  * Function factory, creates converter that converts all elements inside marker's range. Converter checks if element has
  * functions stored under `setVirtualSelection` and `removeVirtualSelection` custom properties and calls them passing
- * {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor. In such case converter will consume
+ * {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor}. In such case converter will consume
  * all element's children, assuming that they were handled by element itself. If selection descriptor will not provide
  * priority, priority 10 will be used as default, to be compliant with
  * {@link module:engine/conversion/model-to-view-converters~convertTextsInsideMarker} method which uses default priority of
  * {@link module:engine/view/attributeelement~AttributeElement}.
+ * When `setVirtualSelection` and `removeVirtualSelection` custom properties are not present, element is not converted
+ * in any special way. This means that converters will proceed to convert element's child nodes.
  *
  * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor|Function} selectionDescriptor
  * @return {Function}
@@ -463,7 +465,7 @@ export function convertElementsInsideMarker( selectionDescriptor ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.item, evt.name ) ) {
+		if ( !consumable.test( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -476,7 +478,10 @@ export function convertElementsInsideMarker( selectionDescriptor ) {
 		const selectionHandlingMethod = addMarker ? 'setVirtualSelection' : 'removeVirtualSelection';
 
 		if ( viewElement && viewElement.getCustomProperty( selectionHandlingMethod ) ) {
-			// Virtual selection will be handled by parent element - consume all children.
+			// Consume element itself.
+			consumable.consume( data.item, evt.name );
+
+			// Consume all children nodes.
 			for ( const value of ModelRange.createIn( modelItem ) ) {
 				consumable.consume( value.item, evt.name );
 			}
