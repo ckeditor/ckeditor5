@@ -14,6 +14,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import Element from './element';
 import count from '@ckeditor/ckeditor5-utils/src/count';
+import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
  * Class representing selection in tree view.
@@ -429,19 +430,49 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets this selection's ranges and direction to the ranges and direction of the given selection.
+	 * Sets this selection's ranges and direction to the specified location based on the given
+	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
+	 * {@link module:engine/view/range~Range range} or an iterable of {@link module:engine/view/range~Range ranges}.
 	 *
-	 * @param {module:engine/view/selection~Selection} otherSelection
+	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
+	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range} selectable
 	 */
-	setTo( otherSelection ) {
-		this._isFake = otherSelection._isFake;
-		this._fakeSelectionLabel = otherSelection._fakeSelectionLabel;
-
-		this.setRanges( otherSelection.getRanges(), otherSelection.isBackward );
+	setTo( selectable ) {
+		if ( selectable instanceof Selection ) {
+			this._isFake = selectable._isFake;
+			this._fakeSelectionLabel = selectable._fakeSelectionLabel;
+			this.setRanges( selectable.getRanges(), selectable.isBackward );
+		} else if ( selectable instanceof Range ) {
+			this.setRanges( [ selectable ] );
+		} else if ( isIterable( selectable ) ) {
+			// We assume that the selectable is an iterable of ranges.
+			this.setRanges( selectable );
+		} else {
+			// We assume that the selectable is a position.
+			this.setRanges( [ new Range( selectable ) ] );
+		}
 	}
 
 	/**
-	 * Sets collapsed selection in the specified location.
+	 * Sets this selection in the provided element.
+	 *
+	 * @param {module:engine/view/element~Element} element
+	 */
+	setIn( element ) {
+		this.setRanges( [ Range.createIn( element ) ] );
+	}
+
+	/**
+	 * Sets this selection on the provided item.
+	 *
+	 * @param {module:engine/view/item~Item} item
+	 */
+	setOn( item ) {
+		this.setRanges( [ Range.createOn( item ) ] );
+	}
+
+	/**
+	 * Sets collapsed selection at the specified location.
 	 *
 	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
 	 *
@@ -450,7 +481,7 @@ export default class Selection {
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	collapse( itemOrPosition, offset ) {
+	setCollapsedAt( itemOrPosition, offset ) {
 		const pos = Position.createAt( itemOrPosition, offset );
 		const range = new Range( pos, pos );
 
@@ -488,7 +519,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets {@link #focus} to the specified location.
+	 * Moves {@link #focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
 	 *
@@ -497,14 +528,16 @@ export default class Selection {
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	setFocus( itemOrPosition, offset ) {
+	moveFocusTo( itemOrPosition, offset ) {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
 			 *
-			 * @error view-selection-setFocus-no-ranges
+			 * @error view-selection-moveFocusTo-no-ranges
 			 */
-			throw new CKEditorError( 'view-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.' );
+			throw new CKEditorError(
+				'view-selection-moveFocusTo-no-ranges: Cannot set selection focus if there are no ranges in selection.'
+			);
 		}
 
 		const newFocus = Position.createAt( itemOrPosition, offset );

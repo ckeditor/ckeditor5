@@ -674,6 +674,40 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * Returns identity string based on element's name, styles, classes and other attributes.
+	 * Two elements that {@link #isSimilar are similar} will have same identity string.
+	 * It has the following format:
+	 *
+	 *		'name class="class1,class2" style="style1:value1;style2:value2" attr1="val1" attr2="val2"'
+ 	 *
+	 * For example:
+	 *
+	 *		const element = new ViewElement( 'foo' );
+	 *		element.setAttribute( 'banana', '10' );
+	 *		element.setAttribute( 'apple', '20' );
+	 *		element.setStyle( 'color', 'red' );
+	 *		element.setStyle( 'border-color', 'white' );
+	 *		element.addClass( 'baz' );
+	 *
+	 *		// returns 'foo class="baz" style="border-color:white;color:red" apple="20" banana="10"'
+	 *		element.getIdentity();
+	 *
+	 * NOTE: Classes, styles and other attributes are sorted alphabetically.
+	 *
+	 * @returns {String}
+	 */
+	getIdentity() {
+		const classes = Array.from( this._classes ).sort().join( ',' );
+		const styles = Array.from( this._styles ).map( i => `${ i[ 0 ] }:${ i[ 1 ] }` ).sort().join( ';' );
+		const attributes = Array.from( this._attrs ).map( i => `${ i[ 0 ] }="${ i[ 1 ] }"` ).sort().join( ' ' );
+
+		return this.name +
+			( classes == '' ? '' : ` class="${ classes }"` ) +
+			( styles == '' ? '' : ` style="${ styles }"` ) +
+			( attributes == '' ? '' : ` ${ attributes }` );
+	}
+
+	/**
 	 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
 	 *
 	 * @abstract

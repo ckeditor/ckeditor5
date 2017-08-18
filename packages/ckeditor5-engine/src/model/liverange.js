@@ -85,6 +85,7 @@ export default class LiveRange extends Range {
 	 * @param {Object} data Object with additional information about the change. Those parameters are passed from
 	 * {@link module:engine/model/document~Document#event:change document change event}.
 	 * @param {String} data.type Change type.
+	 * @param {module:engine/model/batch~Batch} data.batch Batch which changed the live range.
 	 * @param {module:engine/model/range~Range} data.range Range containing the result of applied change.
 	 * @param {module:engine/model/position~Position} data.sourcePosition Source position for move, remove and reinsert change types.
 	 */
@@ -107,7 +108,7 @@ function bindWithDocument() {
 		'change',
 		( event, type, changes, batch, deltaType ) => {
 			if ( supportedTypes.has( type ) ) {
-				transform.call( this, type, deltaType, changes.range, changes.sourcePosition );
+				transform.call( this, type, deltaType, batch, changes.range, changes.sourcePosition );
 			}
 		},
 		{ priority: 'high' }
@@ -122,10 +123,11 @@ function bindWithDocument() {
  * @method transform
  * @param {String} [changeType] Type of change applied to the model document.
  * @param {String} [deltaType] Type of delta which introduced the change.
+ * @param {module:engine/model/batch~Batch} batch Batch which changes the live range.
  * @param {module:engine/model/range~Range} targetRange Range containing the result of applied change.
  * @param {module:engine/model/position~Position} [sourcePosition] Source position for move, remove and reinsert change types.
  */
-function transform( changeType, deltaType, targetRange, sourcePosition ) {
+function transform( changeType, deltaType, batch, targetRange, sourcePosition ) {
 	const howMany = targetRange.end.offset - targetRange.start.offset;
 	let targetPosition = targetRange.start;
 
@@ -159,6 +161,7 @@ function transform( changeType, deltaType, targetRange, sourcePosition ) {
 
 		this.fire( 'change', oldRange, {
 			type: changeType,
+			batch,
 			range: targetRange,
 			sourcePosition
 		} );

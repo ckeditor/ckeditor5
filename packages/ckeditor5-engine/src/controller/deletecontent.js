@@ -70,7 +70,7 @@ export default function deleteContent( selection, batch, options = {} ) {
 		mergeBranches( batch, startPos, endPos );
 	}
 
-	selection.collapse( startPos );
+	selection.setCollapsedAt( startPos );
 
 	// 4. Autoparagraphing.
 	// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
@@ -181,7 +181,7 @@ function insertParagraph( batch, position, selection ) {
 	const paragraph = new Element( 'paragraph' );
 	batch.insert( position, paragraph );
 
-	selection.collapse( paragraph );
+	selection.setCollapsedAt( paragraph );
 }
 
 function replaceEntireContentWithParagraph( batch, selection ) {
@@ -198,7 +198,7 @@ function replaceEntireContentWithParagraph( batch, selection ) {
 function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
 	const limitElement = schema.getLimitElement( selection );
 
-	if ( !selection.isEntireContentSelected( limitElement ) ) {
+	if ( !selection.containsEntireContent( limitElement ) ) {
 		return false;
 	}
 

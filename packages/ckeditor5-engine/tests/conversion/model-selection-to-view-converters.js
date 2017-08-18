@@ -11,6 +11,7 @@ import ModelPosition from '../../src/model/position';
 import ViewDocument from '../../src/view/document';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewAttributeElement from '../../src/view/attributeelement';
+import ViewUIElement from '../../src/view/uielement';
 import { mergeAttributes } from '../../src/view/writer';
 
 import Mapper from '../../src/conversion/mapper';
@@ -312,6 +313,69 @@ describe( 'model-selection-to-view-converters', () => {
 				// Stringify view and check if it is same as expected.
 				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
 					.to.equal( '<div>foo{}bar</div>' );
+			} );
+
+			// #1072 - if the container has only ui elements, collapsed selection attribute should be rendered after those ui elements.
+			it( 'selection with attribute before ui element - no non-ui children', () => {
+				setModelData( modelDoc, '' );
+
+				// Add two ui elements to view.
+				viewRoot.appendChildren( [
+					new ViewUIElement( 'span' ),
+					new ViewUIElement( 'span' )
+				] );
+
+				modelSelection.setRanges( [ new ModelRange( new ModelPosition( modelRoot, [ 0 ] ) ) ] );
+				modelSelection.setAttribute( 'bold', true );
+
+				// Convert model to view.
+				dispatcher.convertSelection( modelSelection, [] );
+
+				// Stringify view and check if it is same as expected.
+				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+					.to.equal( '<div><span></span><span></span><strong>[]</strong></div>' );
+			} );
+
+			// #1072.
+			it( 'selection with attribute before ui element - has non-ui children #1', () => {
+				setModelData( modelDoc, 'x' );
+
+				modelSelection.setRanges( [ new ModelRange( new ModelPosition( modelRoot, [ 1 ] ) ) ] );
+				modelSelection.setAttribute( 'bold', true );
+
+				// Convert model to view.
+				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+
+				// Add ui element to view.
+				const uiElement = new ViewUIElement( 'span' );
+				viewRoot.insertChildren( 1, uiElement );
+
+				dispatcher.convertSelection( modelSelection, [] );
+
+				// Stringify view and check if it is same as expected.
+				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+					.to.equal( '<div>x<strong>[]</strong><span></span></div>' );
+			} );
+
+			// #1072.
+			it( 'selection with attribute before ui element - has non-ui children #2', () => {
+				setModelData( modelDoc, '<$text bold="true">x</$text>y' );
+
+				modelSelection.setRanges( [ new ModelRange( new ModelPosition( modelRoot, [ 1 ] ) ) ] );
+				modelSelection.setAttribute( 'bold', true );
+
+				// Convert model to view.
+				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+
+				// Add ui element to view.
+				const uiElement = new ViewUIElement( 'span' );
+				viewRoot.insertChildren( 1, uiElement );
+
+				dispatcher.convertSelection( modelSelection, [] );
+
+				// Stringify view and check if it is same as expected.
+				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+					.to.equal( '<div><strong>x{}</strong><span></span>y</div>' );
 			} );
 
 			it( 'consumes consumable values properly', () => {
