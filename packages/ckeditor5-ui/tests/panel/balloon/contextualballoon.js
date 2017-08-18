@@ -9,6 +9,11 @@ import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import View from '../../../src/view';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
+import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
+import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 /* global document, Event */
 
@@ -21,7 +26,7 @@ describe( 'ContextualBalloon', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ ContextualBalloon ]
+				plugins: [ Paragraph, ContextualBalloon ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -38,7 +43,9 @@ describe( 'ContextualBalloon', () => {
 				// Add viewA to the pane and init viewB.
 				balloon.add( {
 					view: viewA,
-					position: { target: 'fake' }
+					position: {
+						target: 'fake'
+					}
 				} );
 
 				viewB.init();
@@ -65,6 +72,51 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.view ).to.instanceof( BalloonPanelView );
 		} );
 
+		describe( 'positionLimiter', () => {
+			let doc, viewDocument, root;
+
+			beforeEach( () => {
+				doc = editor.document;
+				viewDocument = editor.editing.view;
+				root = viewDocument.getRoot();
+			} );
+
+			it( 'obtains the root of the selection', () => {
+				setModelData( doc, '<paragraph>[]bar</paragraph>' );
+
+				expect( balloon.positionLimiter() ).to.equal( viewDocument.domConverter.mapViewToDom( root ) );
+			} );
+
+			it( 'does not fail if selection has no #editableElement', () => {
+				sinon.stub( viewDocument.selection, 'editableElement' ).value( null );
+
+				expect( balloon.positionLimiter() ).to.equal( null );
+			} );
+
+			it( 'obtains the farthest root of the selection (nested editable)', () => {
+				doc.schema.registerItem( 'widget' );
+				doc.schema.registerItem( 'nestededitable' );
+
+				doc.schema.objects.add( 'widget' );
+
+				doc.schema.allow( { name: 'widget', inside: '$root' } );
+				doc.schema.allow( { name: 'nestededitable', inside: 'widget' } );
+				doc.schema.allow( { name: '$inline', inside: 'nestededitable' } );
+
+				buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView )
+					.fromElement( 'widget' )
+					.toElement( () => new ViewContainerElement( 'figure', { contenteditable: 'false' } ) );
+
+				buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView )
+					.fromElement( 'nestededitable' )
+					.toElement( () => new ViewEditableElement( 'figcaption', { contenteditable: 'true' } ) );
+
+				setModelData( doc, '<widget><nestededitable>[]foo</nestededitable></widget>' );
+
+				expect( balloon.positionLimiter() ).to.equal( viewDocument.domConverter.mapViewToDom( root ) );
+			} );
+		} );
+
 		it( 'should add balloon panel view to editor `body` collection', () => {
 			expect( editor.ui.view.body.getIndex( balloon.view ) ).to.above( -1 );
 		} );
@@ -74,7 +126,10 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.add( {
 				view: viewB,
-				position: { target: 'fake' }
+				position: {
+					target: 'fake',
+					limiter: balloon.positionLimiter
+				}
 			} );
 
 			balloon.view.element.dispatchEvent( new Event( 'focus' ) );
@@ -91,7 +146,10 @@ describe( 'ContextualBalloon', () => {
 		it( 'should return true when given view is in stack but is not visible', () => {
 			balloon.add( {
 				view: viewB,
-				position: { target: 'fake' }
+				position: {
+					target: 'fake',
+					limiter: balloon.positionLimiter
+				}
 			} );
 
 			expect( balloon.visibleView ).to.equal( viewB );
@@ -108,7 +166,65 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.view.content.length ).to.equal( 1 );
 			expect( balloon.view.content.get( 0 ) ).to.deep.equal( viewA );
 			expect( balloon.view.pin.calledOnce ).to.true;
-			expect( balloon.view.pin.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
+			sinon.assert.calledWithMatch( balloon.view.pin.firstCall, {
+				target: 'fake',
+				limiter: balloon.positionLimiter
+			} );
+		} );
+
+		it( 'should use a provided limiter instead of #positionLimiter', () => {
+			balloon.remove( viewA );
+			balloon.view.pin.resetHistory();
+
+			balloon.add( {
+				view: viewB,
+				position: {
+					target: 'foo',
+					limiter: 'customLimiter'
+				}
+			} );
+
+			sinon.assert.calledWithMatch( balloon.view.pin, {
+				target: 'foo',
+				limiter: 'customLimiter'
+			} );
+		} );
+
+		it( 'should use a custom #positionLimiter', () => {
+			balloon.remove( viewA );
+			balloon.view.pin.resetHistory();
+			balloon.positionLimiter = 'customLimiter';
+
+			balloon.add( {
+				view: viewB,
+				position: {
+					target: 'foo',
+				}
+			} );
+
+			sinon.assert.calledWithMatch( balloon.view.pin, {
+				target: 'foo',
+				limiter: 'customLimiter'
+			} );
+		} );
+
+		it( 'should not alter the view data if no limiter is provided and the #positionLimiter is used', () => {
+			const data = {
+				view: viewB,
+				position: {
+					target: 'foo',
+				}
+			};
+
+			balloon.remove( viewA );
+			balloon.add( data );
+
+			expect( data ).to.deep.equal( {
+				view: viewB,
+				position: {
+					target: 'foo'
+				}
+			} );
 		} );
 
 		it( 'should pin balloon to the target element', () => {
@@ -119,7 +235,10 @@ describe( 'ContextualBalloon', () => {
 			expect( () => {
 				balloon.add( {
 					view: viewA,
-					position: { target: 'fake' }
+					position: {
+						target: 'fake',
+						limiter: balloon.positionLimiter
+					}
 				} );
 			} ).to.throw( CKEditorError, /^contextualballoon-add-view-exist/ );
 		} );
@@ -127,7 +246,10 @@ describe( 'ContextualBalloon', () => {
 		it( 'should add multiple views to he stack and display last one', () => {
 			balloon.add( {
 				view: viewB,
-				position: { target: 'fake' }
+				position: {
+					target: 'fake',
+					limiter: balloon.positionLimiter
+				}
 			} );
 
 			expect( balloon.view.content.length ).to.equal( 1 );
@@ -142,12 +264,14 @@ describe( 'ContextualBalloon', () => {
 
 			expect( balloon.view.pin.calledTwice ).to.true;
 
-			expect( balloon.view.pin.firstCall.args[ 0 ] ).to.deep.equal( {
-				target: 'fake'
+			sinon.assert.calledWithMatch( balloon.view.pin.firstCall, {
+				target: 'fake',
+				limiter: balloon.positionLimiter
 			} );
 
-			expect( balloon.view.pin.secondCall.args[ 0 ] ).to.deep.equal( {
-				target: 'fake'
+			sinon.assert.calledWithMatch( balloon.view.pin.secondCall, {
+				target: 'fake',
+				limiter: balloon.positionLimiter
 			} );
 		} );
 
@@ -156,7 +280,10 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.add( {
 				view,
-				position: { target: 'fake' },
+				position: {
+					target: 'fake',
+					limiter: balloon.positionLimiter
+				},
 				balloonClassName: 'foo'
 			} );
 
@@ -164,7 +291,10 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.add( {
 				view: viewB,
-				position: { target: 'fake' },
+				position: {
+					target: 'fake',
+					limiter: balloon.positionLimiter
+				},
 				balloonClassName: 'bar'
 			} );
 
@@ -180,7 +310,10 @@ describe( 'ContextualBalloon', () => {
 		it( 'should return data of currently visible view when there is more than one in the stack', () => {
 			balloon.add( {
 				view: viewB,
-				position: { target: 'fake' }
+				position: {
+					target: 'fake',
+					limiter: balloon.positionLimiter
+				}
 			} );
 
 			expect( balloon.visibleView ).to.equal( viewB );
@@ -205,7 +338,10 @@ describe( 'ContextualBalloon', () => {
 		it( 'should remove given view and set preceding in the stack as visible when removed view was visible', () => {
 			balloon.add( {
 				view: viewB,
-				position: { target: 'fake' }
+				position: {
+					target: 'fake',
+					limiter: balloon.positionLimiter
+				}
 			} );
 
 			balloon.remove( viewB );
@@ -216,7 +352,10 @@ describe( 'ContextualBalloon', () => {
 		it( 'should remove given view from the stack when view is not visible', () => {
 			balloon.add( {
 				view: viewB,
-				position: { target: 'fake' }
+				position: {
+					target: 'fake',
+					limiter: balloon.positionLimiter
+				}
 			} );
 
 			balloon.remove( viewA );
@@ -235,13 +374,19 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.add( {
 				view,
-				position: { target: 'fake' },
+				position: {
+					target: 'fake',
+					limiter: balloon.positionLimiter
+				},
 				balloonClassName: 'foo'
 			} );
 
 			balloon.add( {
 				view: viewB,
-				position: { target: 'fake' },
+				position: {
+					target: 'fake',
+					limiter: balloon.positionLimiter
+				},
 				balloonClassName: 'bar'
 			} );
 
@@ -265,7 +410,10 @@ describe( 'ContextualBalloon', () => {
 			balloon.updatePosition();
 
 			expect( balloon.view.attachTo.calledOnce );
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
+			sinon.assert.calledWithMatch( balloon.view.attachTo.firstCall, {
+				target: 'fake',
+				limiter: balloon.positionLimiter
+			} );
 		} );
 
 		it( 'should set given position to the currently visible view and use position from the first view in the stack #1', () => {
@@ -274,7 +422,10 @@ describe( 'ContextualBalloon', () => {
 			balloon.updatePosition( { target: 'new' } );
 
 			expect( balloon.view.attachTo.calledOnce );
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'new' } );
+			sinon.assert.calledWithMatch( balloon.view.attachTo.firstCall, {
+				target: 'new',
+				limiter: balloon.positionLimiter
+			} );
 		} );
 
 		it( 'should set given position to the currently visible view and use position from the first view in the stack #2', () => {
@@ -290,14 +441,35 @@ describe( 'ContextualBalloon', () => {
 			balloon.updatePosition( { target: 'new' } );
 
 			expect( balloon.view.attachTo.calledOnce );
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
+			sinon.assert.calledWithMatch( balloon.view.attachTo.firstCall, {
+				target: 'fake',
+				limiter: balloon.positionLimiter
+			} );
 
 			balloon.remove( viewA );
 
 			balloon.updatePosition();
 
 			expect( balloon.view.attachTo.calledTwice );
-			expect( balloon.view.attachTo.secondCall.args[ 0 ] ).to.deep.equal( { target: 'new' } );
+			sinon.assert.calledWithMatch( balloon.view.attachTo.secondCall, {
+				target: 'new',
+				limiter: balloon.positionLimiter
+			} );
+		} );
+
+		it( 'should use a given position limiter instead of the default one', () => {
+			balloon.view.attachTo.reset();
+
+			balloon.updatePosition( {
+				target: 'new',
+				limiter: 'customLimiter'
+			} );
+
+			expect( balloon.view.attachTo.calledOnce );
+			sinon.assert.calledWithMatch( balloon.view.attachTo.firstCall, {
+				target: 'new',
+				limiter: 'customLimiter'
+			} );
 		} );
 
 		it( 'should throw an error when there is no given view in the stack', () => {

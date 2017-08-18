@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BalloonPanelView from './balloonpanelview';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * Provides the common contextual balloon panel for the editor.
@@ -46,6 +47,28 @@ export default class ContextualBalloon extends Plugin {
 		 * @member {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} #view
 		 */
 		this.view = new BalloonPanelView();
+
+		/**
+		 * The {@link module:utils/dom/position~Options#limiter position limiter}
+		 * for the {@link #view}, used when no `limiter` has been passed into {@link #add}
+		 * or {@link #updatePosition}.
+		 *
+		 * By default, a function, which obtains the farthest DOM
+		 * {@link module:engine/view/rooteditableelement~RootEditableElement}
+		 * of the {@link module:engine/view/document~Document#selection}.
+		 *
+		 * @member {module:utils/dom/position~Options#limiter} #positionLimiter
+		 */
+		this.positionLimiter = () => {
+			const view = this.editor.editing.view;
+			const editableElement = view.selection.editableElement;
+
+			if ( editableElement ) {
+				return view.domConverter.mapViewToDom( editableElement.root );
+			}
+
+			return null;
+		};
 
 		/**
 		 * Stack of the views injected into the balloon. Last one in the stack is displayed
@@ -196,6 +219,16 @@ export default class ContextualBalloon extends Plugin {
 	 * @returns {module:utils/dom/position~Options}
 	 */
 	_getBalloonPosition() {
-		return this._stack.values().next().value.position;
+		let position = first( this._stack.values() ).position;
+
+		// Use the default limiter if none has been specified.
+		if ( position && !position.limiter ) {
+			// Don't modify the original options object.
+			position = Object.assign( {}, position, {
+				limiter: this.positionLimiter
+			} );
+		}
+
+		return position;
 	}
 }
