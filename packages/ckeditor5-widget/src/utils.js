@@ -7,6 +7,8 @@
  * @module widget/utils
  */
 
+import VirtualSelectionStack from './virtualselectionstack';
+
 const widgetSymbol = Symbol( 'isWidget' );
 const labelSymbol = Symbol( 'label' );
 
@@ -39,7 +41,9 @@ export function isWidget( element ) {
  * * sets `contenteditable` attribute to `true`,
  * * adds custom `getFillerOffset` method returning `null`,
  * * adds `ck-widget` CSS class,
- * * adds custom property allowing to recognize widget elements by using {@link ~isWidget}.
+ * * adds custom property allowing to recognize widget elements by using {@link ~isWidget},
+ * * implements `setVirtualSelection` and `removeVirtualSelection` custom properties to handle virtual selection
+ * on widgets.
  *
  * @param {module:engine/view/element~Element} element
  * @param {Object} [options={}]
@@ -57,7 +61,38 @@ export function toWidget( element, options = {} ) {
 		setLabel( element, options.label );
 	}
 
+	setVirtualSelectionHandling(
+		element,
+		( element, descriptor ) => element.addClass( descriptor.class ),
+		( element, descriptor ) => element.removeClass( descriptor.class )
+	);
+
 	return element;
+}
+
+/**
+ * Sets virtual selection handling methods. Uses {@link module:widget/virtualselectionstack~VirtualSelectionStack} to
+ * properly determine which virtual selection should be used at given time.
+ *
+ * @param {module:engine/view/element~Element} element
+ * @param {Function} add
+ * @param {Function} remove
+ */
+export function setVirtualSelectionHandling( element, add, remove ) {
+	const stack = new VirtualSelectionStack();
+
+	stack.on( 'change:top', ( evt, data ) => {
+		if ( data.oldDescriptor ) {
+			remove( element, data.oldDescriptor );
+		}
+
+		if ( data.newDescriptor ) {
+			add( element, data.newDescriptor );
+		}
+	} );
+
+	element.setCustomProperty( 'setVirtualSelection', ( element, descriptor ) => stack.add( descriptor ) );
+	element.setCustomProperty( 'removeVirtualSelection', ( element, descriptor ) => stack.remove( descriptor ) );
 }
 
 /**
