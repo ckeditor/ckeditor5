@@ -310,7 +310,7 @@ describe( 'EditingController', () => {
 			let element, outerRange;
 
 			beforeEach( () => {
-				element = new ModelElement( new ModelText( 'foo' ) );
+				element = new ModelElement( 'paragraph', null, new ModelText( 'foo' ) );
 				modelRoot.appendChildren( element );
 
 				outerRange = ModelRange.createOn( element );
@@ -325,6 +325,7 @@ describe( 'EditingController', () => {
 			it( 'marker strictly contained', () => {
 				const markerRange = ModelRange.createFromParentsAndOffsets( element, 1, element, 2 );
 				model.markers.set( 'name', markerRange );
+
 				editing.modelToView.convertInsertion( outerRange );
 				expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', 'name', markerRange ) ).to.be.true;
 			} );

@@ -29,15 +29,14 @@ import {
 	insertElement,
 	insertText,
 	wrapItem,
-	wrapRange,
-	unwrapRange
+	convertTextsInsideMarker,
+	convertElementsInsideMarker
 } from '../../src/conversion/model-to-view-converters';
 
 import { stringify as stringifyView } from '../../src/dev-utils/view';
 import { setData as setModelData } from '../../src/dev-utils/model';
 
-const spanViewElementForMarker = new ViewAttributeElement( 'span' );
-spanViewElementForMarker.priority = 1;
+const virtualSelectionDescriptor = { class: 'marker', priority: 1 };
 
 describe( 'model-selection-to-view-converters', () => {
 	let dispatcher, mapper, modelDoc, modelRoot, modelSelection, viewDoc, viewRoot, viewSelection;
@@ -60,8 +59,11 @@ describe( 'model-selection-to-view-converters', () => {
 
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
-		dispatcher.on( 'addMarker:marker', wrapRange( spanViewElementForMarker ) );
-		dispatcher.on( 'removeMarker:marker', unwrapRange( spanViewElementForMarker ) );
+
+		dispatcher.on( 'addMarker:marker', convertTextsInsideMarker( virtualSelectionDescriptor ) );
+		dispatcher.on( 'addMarker:marker', convertElementsInsideMarker( virtualSelectionDescriptor ) );
+		dispatcher.on( 'removeMarker:marker', convertTextsInsideMarker( virtualSelectionDescriptor ) );
+		dispatcher.on( 'removeMarker:marker', convertElementsInsideMarker( virtualSelectionDescriptor ) );
 
 		// Default selection converters.
 		dispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
@@ -78,7 +80,7 @@ describe( 'model-selection-to-view-converters', () => {
 			// Selection converters for selection attributes.
 			dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'strong' ) ) );
 			dispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
-			dispatcher.on( 'selectionMarker:marker', convertSelectionMarker( spanViewElementForMarker ) );
+			dispatcher.on( 'selectionMarker:marker', convertSelectionMarker( virtualSelectionDescriptor ) );
 		} );
 
 		describe( 'range selection', () => {
@@ -235,8 +237,9 @@ describe( 'model-selection-to-view-converters', () => {
 				dispatcher.convertSelection( modelSelection, markers );
 
 				// Stringify view and check if it is same as expected.
-				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
-					.to.equal( '<div>f<span>o<strong>o{}b</strong>a</span>r</div>' );
+				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) ).to.equal(
+					'<div>f<span class="marker">o<strong>o{}b</strong>a</span>r</div>'
+				);
 			} );
 
 			it( 'in attribute and marker - no attribute', () => {
@@ -262,12 +265,12 @@ describe( 'model-selection-to-view-converters', () => {
 
 				// Stringify view and check if it is same as expected.
 				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
-					.to.equal( '<div>f<span>o<strong>o</strong>[]<strong>b</strong>a</span>r</div>' );
+					.to.equal( '<div>f<span class="marker">o<strong>o</strong>[]<strong>b</strong>a</span>r</div>' );
 			} );
 
-			it( 'in marker - using view element as element creator function for selection marker conversion', () => {
+			it( 'in marker - using virtual selection descriptor creator', () => {
 				dispatcher.on( 'selectionMarker:marker2', convertSelectionMarker(
-					data => new ViewAttributeElement( 'span', { 'class': data.name } )
+					data => ( { 'class': data.markerName } )
 				) );
 
 				setModelData( modelDoc, 'foobar' );

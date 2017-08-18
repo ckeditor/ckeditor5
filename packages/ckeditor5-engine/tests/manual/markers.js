@@ -18,7 +18,6 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import buildModelConverter from '../../src/conversion/buildmodelconverter';
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';
-import ViewAttributeElement from '../../src/view/attributeelement';
 
 const markerNames = [];
 let model = null;
@@ -35,10 +34,13 @@ ClassicEditor
 
 		buildModelConverter().for( editor.editing.modelToView )
 			.fromMarker( 'highlight' )
-			.toElement( data => {
-				const color = data.name.split( ':' )[ 1 ];
+			.toVirtualSelection( data => {
+				const color = data.markerName.split( ':' )[ 1 ];
 
-				return new ViewAttributeElement( 'span', { class: 'h-' + color } );
+				return {
+					class: 'h-' + color,
+					priority: 1
+				};
 			} );
 
 		window.document.getElementById( 'add-yellow' ).addEventListener( 'mousedown', e => {
