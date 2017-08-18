@@ -340,8 +340,7 @@ export default class Link extends Plugin {
 	 * @returns {module:utils/dom/position~Options}
 	 */
 	_getBalloonPositionData() {
-		const editor = this.editor;
-		const viewDocument = editor.editing.view;
+		const viewDocument = this.editor.editing.view;
 		const targetLink = this._getSelectedLinkElement();
 
 		const target = targetLink ?
