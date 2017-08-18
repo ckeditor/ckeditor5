@@ -66,7 +66,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( getData( doc, { selection: true } ) ).to.equal( '<paragraph>fo[]bar</paragraph>' );
+			expect( getData( doc ) ).to.equal( '<paragraph>fo[]bar</paragraph>' );
 		} );
 
 		it( 'deletes selection contents', () => {
@@ -74,7 +74,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( getData( doc, { selection: true } ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
+			expect( getData( doc ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
 		} );
 
 		it( 'merges elements', () => {
@@ -82,7 +82,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( getData( doc, { selection: true } ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+			expect( getData( doc ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 		} );
 
 		it( 'does not try to delete when selection is at the boundary', () => {
@@ -93,7 +93,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( getData( doc, { selection: true } ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+			expect( getData( doc ) ).to.equal( '<paragraph>[]foo</paragraph>' );
 			expect( spy.callCount ).to.equal( 0 );
 		} );
 
