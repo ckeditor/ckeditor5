@@ -126,12 +126,14 @@ export function insertUIElement( elementCreator ) {
 		const markerRange = data.markerRange;
 		const eventName = evt.name;
 
+		// Marker that is collapsed has consumable build differently that non-collapsed one.
+		// For more information see `addMarker` and `removeMarker` events description.
 		// If marker's range is collapsed - check if it can be consumed.
 		if ( markerRange.isCollapsed && !consumable.consume( markerRange, eventName ) ) {
 			return;
 		}
 
-		// if marker's range is not collapsed - consume all items inside.
+		// If marker's range is not collapsed - consume all items inside.
 		for ( const value of markerRange ) {
 			if ( !consumable.consume( value.item, eventName ) ) {
 				return;
