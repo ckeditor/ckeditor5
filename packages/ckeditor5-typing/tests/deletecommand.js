@@ -236,7 +236,6 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			// Returned data: '[]' instead of the heading element.
 			expect( getData( doc ) ).to.equal( '<heading1>[]</heading1>' );
 		} );
 	} );
