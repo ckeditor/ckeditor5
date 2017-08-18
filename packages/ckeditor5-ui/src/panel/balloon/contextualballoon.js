@@ -50,7 +50,7 @@ export default class ContextualBalloon extends Plugin {
 
 		/**
 		 * The {@link module:utils/dom/position~Options#limiter position limiter}
-		 * for the {@link view}, used when no `limiter` has been passed into {@link #add}
+		 * for the {@link #view}, used when no `limiter` has been passed into {@link #add}
 		 * or {@link #updatePosition}.
 		 *
 		 * By default, a function, which obtains the farthest DOM
