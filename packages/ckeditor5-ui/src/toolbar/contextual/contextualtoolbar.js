@@ -216,7 +216,6 @@ export default class ContextualToolbar extends Plugin {
 				// Select the proper range rect depending on the direction of the selection.
 				return rangeRects[ isBackward ? 0 : rangeRects.length - 1 ];
 			},
-			limiter: editor.config.get( 'ui.balloonLimiter' ),
 			positions: getBalloonPositions( isBackward )
 		};
 	}

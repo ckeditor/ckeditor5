@@ -154,7 +154,6 @@ describe( 'ContextualToolbar', () => {
 				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
 				position: {
 					target: sinon.match.func,
-					limiter: editor.config.get( 'ui.balloonLimiter' ),
 					positions: [
 						defaultPositions.southEastArrowNorth,
 						defaultPositions.southEastArrowNorthEast,
@@ -181,7 +180,6 @@ describe( 'ContextualToolbar', () => {
 				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
 				position: {
 					target: sinon.match.func,
-					limiter: editor.config.get( 'ui.balloonLimiter' ),
 					positions: [
 						defaultPositions.northWestArrowSouth,
 						defaultPositions.northWestArrowSouthWest,
