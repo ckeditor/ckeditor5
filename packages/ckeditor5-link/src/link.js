@@ -350,10 +350,7 @@ export default class Link extends Plugin {
 			// Otherwise attach panel to the selection.
 			viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
 
-		return {
-			target,
-			limiter: editor.config.get( 'ui.balloonLimiter' )
-		};
+		return { target };
 	}
 
 	/**
