@@ -91,8 +91,7 @@ describe( 'Link', () => {
 			sinon.assert.calledWithExactly( balloonAddSpy, {
 				view: formView,
 				position: {
-					target: selectedRange,
-					limiter: editorElement
+					target: selectedRange
 				}
 			} );
 		} );
@@ -107,8 +106,7 @@ describe( 'Link', () => {
 			sinon.assert.calledWithExactly( balloonAddSpy, {
 				view: formView,
 				position: {
-					target: selectedRange,
-					limiter: editorElement
+					target: selectedRange
 				}
 			} );
 		} );
@@ -125,8 +123,7 @@ describe( 'Link', () => {
 			sinon.assert.calledWithExactly( balloonAddSpy, {
 				view: formView,
 				position: {
-					target: linkElement,
-					limiter: editorElement
+					target: linkElement
 				}
 			} );
 		} );
@@ -293,8 +290,7 @@ describe( 'Link', () => {
 
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
-					target: editorElement.ownerDocument.getSelection().getRangeAt( 0 ),
-					limiter: editorElement
+					target: editorElement.ownerDocument.getSelection().getRangeAt( 0 )
 				} );
 			} );
 
