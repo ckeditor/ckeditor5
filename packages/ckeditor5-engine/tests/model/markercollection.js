@@ -253,4 +253,21 @@ describe( 'Marker', () => {
 			marker.getEnd();
 		} ).to.throw( CKEditorError, /^marker-destroyed/ );
 	} );
+
+	it( 'should delegate events from live range', () => {
+		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const marker = doc.markers.set( 'name', range );
+
+		const eventRange = sinon.spy();
+		const eventContent = sinon.spy();
+
+		marker.on( 'change:range', eventRange );
+		marker.on( 'change:content', eventContent );
+
+		marker._liveRange.fire( 'change:range', null, {} );
+		marker._liveRange.fire( 'change:content', null, {} );
+
+		expect( eventRange.calledOnce ).to.be.true;
+		expect( eventContent.calledOnce ).to.be.true;
+	} );
 } );
