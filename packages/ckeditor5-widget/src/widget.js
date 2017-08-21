@@ -15,9 +15,11 @@ import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import RootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
 import { isWidget, WIDGET_SELECTED_CLASS_NAME, getLabel } from './utils';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { keyCodes, getCode, parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import '../theme/theme.scss';
+
+const selectAllKeystrokeCode = parseKeystroke( 'Ctrl+A' );
 
 /**
  * The widget plugin.
@@ -126,10 +128,13 @@ export default class Widget extends Plugin {
 		const keyCode = domEventData.keyCode;
 		const isForward = keyCode == keyCodes.delete || keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright;
 
-		// Checks if delete/backspace or arrow keys were handled and then prevents default event behaviour and stops
-		// event propagation.
-		if ( ( isDeleteKeyCode( keyCode ) && this._handleDelete( isForward ) ) ||
-			( isArrowKeyCode( keyCode ) && this._handleArrowKeys( isForward ) ) ) {
+		// Checks if the keys were handled and then prevents the default event behaviour and stops
+		// the propagation.
+		if (
+			( isDeleteKeyCode( keyCode ) && this._handleDelete( isForward ) ) ||
+			( isArrowKeyCode( keyCode ) && this._handleArrowKeys( isForward ) ) ||
+			( isSelectAllKeyCode( domEventData ) && this._selectAllNestedEditableContent() )
+		) {
 			domEventData.preventDefault();
 			eventInfo.stop();
 		}
@@ -214,6 +219,31 @@ export default class Widget extends Plugin {
 	}
 
 	/**
+	 * Extends the {@link module:engine/model/selection~Selection document's selection} to span the entire
+	 * content of the nested editable if already anchored in one.
+	 *
+	 * See: {@link module:engine/model/schema~Schema#getLimitElement}.
+	 *
+	 * @private
+	 */
+	_selectAllNestedEditableContent() {
+		const modelDocument = this.editor.document;
+		const modelSelection = modelDocument.selection;
+		const schema = modelDocument.schema;
+		const limitElement = schema.getLimitElement( modelSelection );
+
+		if ( modelSelection.getFirstRange().root == limitElement ) {
+			return false;
+		}
+
+		modelDocument.enqueueChanges( () => {
+			modelSelection.setIn( limitElement );
+		} );
+
+		return true;
+	}
+
+	/**
 	 * Sets {@link module:engine/model/selection~Selection document's selection} over given element.
 	 *
 	 * @private
@@ -269,6 +299,14 @@ function isArrowKeyCode( keyCode ) {
 // @returns {Boolean}
 function isDeleteKeyCode( keyCode ) {
 	return keyCode == keyCodes.delete || keyCode == keyCodes.backspace;
+}
+
+// Returns 'true' if provided (DOM) key event data corresponds with the Ctrl+A keystroke.
+//
+// @param {module:engine/view/observer/keyobserver~KeyEventData} domEventData
+// @returns {Boolean}
+function isSelectAllKeyCode( domEventData ) {
+	return getCode( domEventData ) == selectAllKeystrokeCode;
 }
 
 // Returns `true` when element is a nested editable or is placed inside one.
