@@ -885,14 +885,17 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Takes text data from given {@link module:engine/view/text~Text#data} and processes it so it is correctly displayed in DOM.
+	 * Takes text data from a given {@link module:engine/view/text~Text#data} and processes it so
+	 * it is correctly displayed in the DOM.
 	 *
 	 * Following changes are done:
 	 *
-	 * * multiple spaces are replaced to a chain of spaces and `&nbsp;`,
-	 * * space at the beginning and at the end of the text node is changed to `&nbsp;` if it is a first text node in it's container
-	 * element or if previous text node ends with space character,
-	 * * space at the end of the text node is changed to `&nbsp;` if it is a last text node in it's container.
+	 * * a space at the beginning is changed to `&nbsp;` if this is the first text node in its container
+	 * element or if a previous text node ends with a space character,
+	 * * space at the end of the text node is changed to `&nbsp;` if this is the last text node in its container,
+	 * * remaining spaces are replaced to a chain of spaces and `&nbsp;` (e.g. `'x   x'` becomes `'x &nbsp; x'`).
+	 *
+	 * Content of {@link #preElements} is not processed.
 	 *
 	 * @private
 	 * @param {module:engine/view/text~Text} node View text node to process.
@@ -907,7 +910,8 @@ export default class DomConverter {
 			return data;
 		}
 
-		// 1. Replace first space with nbsp if previous node ends with space or there is no previous node (container element boundary).
+		// 1. Replace the first space with a nbsp if the previous node ends with a space or there is no previous node
+		// (container element boundary).
 		if ( data.charAt( 0 ) == ' ' ) {
 			const prevNode = getTouchingTextNode( node, false );
 			const prevEndsWithSpace = prevNode && this._nodeEndsWithSpace( prevNode );
@@ -917,7 +921,7 @@ export default class DomConverter {
 			}
 		}
 
-		// 2. Replace last space with nbsp if it is the last text node (container element boundary).
+		// 2. Replace the last space with a nbsp if this is the last text node (container element boundary).
 		if ( data.charAt( data.length - 1 ) == ' ' ) {
 			const nextNode = getTouchingTextNode( node, true );
 
@@ -926,7 +930,7 @@ export default class DomConverter {
 			}
 		}
 
-		return data.replace( / {2}/gi, ' \u00A0' );
+		return data.replace( / {2}/g, ' \u00A0' );
 	}
 
 	/**
