@@ -64,6 +64,11 @@ export default class ImageUploadEngine extends Plugin {
 			}
 		} );
 
+		// Prevents from browser redirecting to drag-end-dropped image.
+		editor.editing.view.on( 'dragover', ( evt, data ) => {
+			data.preventDefault();
+		} );
+
 		doc.on( 'change', ( evt, type, data ) => {
 			// Listen on document changes and:
 			// * start upload process when image with `uploadId` attribute is inserted,

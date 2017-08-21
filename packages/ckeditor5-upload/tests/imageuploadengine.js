@@ -359,4 +359,14 @@ describe( 'ImageUploadEngine', () => {
 
 		nativeReaderMock.mockSuccess( base64Sample );
 	} );
+
+	it( 'should prevent from browser redirecting when an image is dropped on another image', () => {
+		const spy = testUtils.sinon.spy();
+
+		editor.editing.view.fire( 'dragover', {
+			preventDefault: spy
+		} );
+
+		expect( spy.calledOnce ).to.equal( true );
+	} );
 } );
