@@ -990,11 +990,7 @@ describe( 'DocumentSelection', () => {
 					batchTypes.set( batch, batch.type );
 				} );
 
-				sinon.spy( doc, 'enqueueChanges' );
-
 				doc.batch().insert( rangeInEmptyP.start, 'x' );
-
-				expect( doc.enqueueChanges.calledOnce ).to.be.true;
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
@@ -1006,11 +1002,8 @@ describe( 'DocumentSelection', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
-				sinon.spy( doc, 'enqueueChanges' );
-
 				doc.batch().move( fullP.getChild( 0 ), rangeInEmptyP.start );
 
-				expect( doc.enqueueChanges.calledOnce ).to.be.true;
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 			} );
 
@@ -1021,35 +1014,10 @@ describe( 'DocumentSelection', () => {
 				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
 				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
 
-				sinon.spy( doc, 'enqueueChanges' );
-
 				// <emptyP>{}<emptyP2>
 				doc.batch().merge( Position.createAfter( emptyP ) );
-
-				expect( doc.enqueueChanges.calledOnce ).to.be.true;
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
-				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
-			} );
-
-			it( 'are not removed or merged when containing element is merged with another empty element', () => {
-				const emptyP2 = new Element( 'p', null );
-				root.appendChildren( emptyP2 );
-
-				sinon.spy( doc, 'enqueueChanges' );
-
-				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
-				emptyP2.setAttribute( abcStoreAttrKey, 'bar' );
-
-				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
-				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
-
-				// <emptyP>{}<emptyP2>
-				doc.batch().merge( Position.createAfter( emptyP ) );
-
-				expect( doc.enqueueChanges.called ).to.be.false;
-
-				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
 			} );
 
@@ -1058,11 +1026,8 @@ describe( 'DocumentSelection', () => {
 
 				selection.setRanges( [ rangeInFullP ] );
 
-				sinon.spy( doc, 'enqueueChanges' );
-
 				doc.batch().insert( rangeInEmptyP.start, 'x' );
 
-				expect( doc.enqueueChanges.calledOnce ).to.be.true;
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 			} );
 
@@ -1076,15 +1041,44 @@ describe( 'DocumentSelection', () => {
 				const batch = doc.batch();
 				const spy = sinon.spy( batch, 'removeAttribute' );
 
-				sinon.spy( doc, 'enqueueChanges' );
-
 				// <emptyP>{}<emptyP2>
 				batch.merge( Position.createAfter( emptyP ) );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 
-				expect( doc.enqueueChanges.calledOnce ).to.be.true;
 				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'uses document enqueue changes to clear attributes', () => {
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+
+				doc.enqueueChanges( () => {
+					doc.batch().insert( rangeInEmptyP.start, 'x' );
+
+					// `emptyP` still has the attribute, because attribute clearing is in enqueued block.
+					expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
+				} );
+
+				// When the dust settles, `emptyP` should not have the attribute.
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+			} );
+
+			it( 'are not removed or merged when containing element is merged with another empty element', () => {
+				const emptyP2 = new Element( 'p', null );
+				root.appendChildren( emptyP2 );
+
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+				emptyP2.setAttribute( abcStoreAttrKey, 'bar' );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
+				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
+
+				// <emptyP>{}<emptyP2>
+				doc.batch().merge( Position.createAfter( emptyP ) );
+
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
 			} );
 
 			it( 'are not removed on transparent batches', () => {

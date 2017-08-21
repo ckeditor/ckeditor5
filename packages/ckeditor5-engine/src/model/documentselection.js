@@ -707,15 +707,11 @@ function clearAttributesStoredInElement( changes, batch, document ) {
 		return;
 	}
 
-	const anyStoredAttributes = Array.from( changeParent.getAttributeKeys() ).some( key => key.startsWith( storePrefix ) );
+	document.enqueueChanges( () => {
+		const storedAttributes = Array.from( changeParent.getAttributeKeys() ).filter( key => key.startsWith( storePrefix ) );
 
-	if ( anyStoredAttributes ) {
-		document.enqueueChanges( () => {
-			const storedAttributes = Array.from( changeParent.getAttributeKeys() ).filter( key => key.startsWith( storePrefix ) );
-
-			for ( const key of storedAttributes ) {
-				batch.removeAttribute( changeParent, key );
-			}
-		} );
-	}
+		for ( const key of storedAttributes ) {
+			batch.removeAttribute( changeParent, key );
+		}
+	} );
 }
