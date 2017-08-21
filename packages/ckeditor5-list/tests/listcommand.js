@@ -42,7 +42,7 @@ describe( 'ListCommand', () => {
 			'</widget>'
 		);
 
-		doc.selection.collapse( doc.getRoot().getChild( 0 ) );
+		doc.selection.setCollapsedAt( doc.getRoot().getChild( 0 ) );
 	} );
 
 	afterEach( () => {
@@ -63,7 +63,7 @@ describe( 'ListCommand', () => {
 		describe( 'value', () => {
 			it( 'should be false if first position in selection is not in a list item', () => {
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( doc.getRoot().getChild( 3 ) );
+					doc.selection.setCollapsedAt( doc.getRoot().getChild( 3 ) );
 				} );
 
 				expect( command.value ).to.be.false;
@@ -71,7 +71,7 @@ describe( 'ListCommand', () => {
 
 			it( 'should be false if first position in selection is in a list item of different type', () => {
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( doc.getRoot().getChild( 2 ) );
+					doc.selection.setCollapsedAt( doc.getRoot().getChild( 2 ) );
 				} );
 
 				expect( command.value ).to.be.false;
@@ -79,7 +79,7 @@ describe( 'ListCommand', () => {
 
 			it( 'should be true if first position in selection is in a list item of same type', () => {
 				doc.enqueueChanges( () => {
-					doc.selection.collapse( doc.getRoot().getChild( 1 ) );
+					doc.selection.setCollapsedAt( doc.getRoot().getChild( 1 ) );
 				} );
 
 				expect( command.value ).to.be.true;
