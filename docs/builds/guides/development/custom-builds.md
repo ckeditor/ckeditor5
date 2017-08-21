@@ -16,7 +16,7 @@ Some of the reasons for creating custom builds are:
 
 * Adding features which are not included in the existing builds, either from a third party or custom developed.
 * Removing unnecessary features present in a build.
-* Changing the {@link TODO builds/guides/integration/basic-api.html#Creators editor creator}.
+* Changing the {@link builds/guides/integration/basic-api#Creators editor creator}.
 * Changing the editor theme.
 * Changing the localization language of the editor.
 * Enabling bug fixes which are still not a part of any public release.
