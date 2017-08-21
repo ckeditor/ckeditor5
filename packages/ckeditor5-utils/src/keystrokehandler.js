@@ -9,7 +9,6 @@
 
 import DomEmitterMixin from './dom/emittermixin';
 import { getCode, parseKeystroke } from './keyboard';
-import priorities from './priorities';
 
 /**
  * Keystroke handler registers keystrokes so the callbacks associated
@@ -74,7 +73,7 @@ export default class KeystrokeHandler {
 	 */
 	set( keystroke, callback, options = {} ) {
 		const keyCode = parseKeystroke( keystroke );
-		const priority = priorities.get( options.priority );
+		const priority = options.priority;
 
 		// Execute the passed callback on KeystrokeHandler#_keydown.
 		// TODO: https://github.com/ckeditor/ckeditor5-utils/issues/144
