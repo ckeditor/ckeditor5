@@ -1,0 +1,105 @@
+/**
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module core/editor/editorconfig
+ */
+
+/**
+ * The {@link module:core/editor/editor~Editor editor}'s configuration options.
+ *
+ * The object defining editor configuration can be passed when initializing the editor:
+ *
+ *		EditorClass
+ *			.create( {
+ * 				toolbar: [ 'bold', 'italic' ],
+ *				image: {
+ *					styles: [
+ *						...
+ *					]
+ *				}
+ * 			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @interface EditorConfig
+ */
+
+/**
+ * The list of plugins to load.
+ *
+ * If you use an {@linkTODO builds/guides/overview editor build} you can define the list of plugins to load
+ * using names of plugins which are available:
+ *
+ *		const config = {
+ *			plugins: [ 'Bold', 'Italic', 'Typing', 'Enter', ... ]
+ *		};
+ *
+ * You can check the list of plugins available in a build using this snippet:
+ *
+ *		ClassicEditor.build.plugins.map( plugin => plugin.pluginName );
+ *
+ * If you use an editor creator directly (imported from a package like `@ckeditor/ckeditor5-editor-classic`) or you
+ * want to load additional plugins which were not included in a build you use, then you need to specify
+ * the plugins using their constructors:
+ *
+ *		// A preset of plugins is a plugin as well.
+ *		import EssentialsPreset from '@ckeditor/ckeditor5-presets/src/essentials';
+ *		// The bold plugin.
+ *		import Bold from '@ckeditor/ckeditor5-editor-basic-styles/src/bold';
+ *
+ *		const config = {
+ *			plugins: [ EssentialsPreset, Bold ]
+ *		};
+ *
+ * @member {Array.<String|Function>} module:core/editor/editorconfig~EditorConfig#plugins
+ */
+
+/**
+ * The list of plugins which should not be loaded despite being available in an {@linkTODO builds/guides/overview editor build}.
+ *
+ *		const config = {
+ *			removePlugins: [ 'Bold', 'Italic' ]
+ *		};
+ *
+ * @member {Array.<String>} module:core/editor/editorconfig~EditorConfig#removePlugins
+ */
+
+/**
+ * Editor toolbar configuration.
+ *
+ * Simple format (specifies only toolbar items):
+ *
+ *		const config = {
+ *			toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
+ *		};
+ *
+ * Advanced format:
+ *
+ *		const config = {
+ *			toolbar: {
+ *				items: [ 'bold', 'italic', 'undo', 'redo' ],
+ *
+ *				viewportTopOffset: 30
+ *			}
+ *		};
+ *
+ * Options which can be set using the advanced format:
+ *
+ * * `items` – Array of toolbar items names. The components (buttons, dropdowns, etc.) which can be used as toolbar items
+ * are defined in `editor.ui.componentFactory` and can be listed using the following snippet:
+ *
+ *		Array.from( editor.ui.componentFactory.names );
+ *
+ *	You can also use `'|'` to create a separator between groups of items:
+ *
+ *		toolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
+ *
+ * * `viewportTopOffset` – The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
+ * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
+ * (e.g. the top menu). Thanks to setting the toolbar offset the toolbar won't be positioned underneath or above the page's UI.
+ *
+ * @member {Object} module:core/editor/editorconfig~EditorConfig#toolbar
+ */

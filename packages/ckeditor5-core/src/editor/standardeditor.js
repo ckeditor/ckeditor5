@@ -107,7 +107,8 @@ export default class StandardEditor extends Editor {
 	 * Creates a standard editor instance.
 	 *
 	 * @param {HTMLElement} element See {@link module:core/editor/standardeditor~StandardEditor}'s param.
-	 * @param {Object} config See {@link module:core/editor/standardeditor~StandardEditor}'s param.
+	 * @param {Object} config The editor config. You can find the list of config options in
+	 * {@link module:core/editor/editorconfig~EditorConfig}.
 	 * @returns {Promise} Promise resolved once editor is ready.
 	 * @returns {module:core/editor/standardeditor~StandardEditor} return.editor The editor instance.
 	 */
