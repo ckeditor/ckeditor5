@@ -325,6 +325,11 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'scrollToTheSelection()', () => {
+		beforeEach( () => {
+			// Silence the Rect warnings.
+			testUtils.sinon.stub( log, 'warn' );
+		} );
+
 		it( 'does nothing when there are no ranges in the selection', () => {
 			const stub = testUtils.sinon.stub( global.window, 'scrollTo' );
 
