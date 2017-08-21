@@ -407,16 +407,16 @@ export function remove() {
 /**
  * Function factory, creates converter that converts all texts inside marker's range. Converter wraps each text with
  * {@link module:engine/view/attributeelement~AttributeElement} created from provided descriptor.
- * See {link module:engine/conversion/model-to-view-converters~virtualSelectionDescriptorToAttributeElement}.
+ * See {link module:engine/conversion/model-to-view-converters~highlightDescriptorToAttributeElement}.
  *
- * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor|Function} selectionDescriptor
+ * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
  */
-export function convertTextsInsideMarker( selectionDescriptor ) {
+export function convertTextsInsideMarker( highlightDescriptor ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const descriptor = typeof selectionDescriptor == 'function' ?
-			selectionDescriptor( data, consumable, conversionApi ) :
-			selectionDescriptor;
+		const descriptor = typeof highlightDescriptor == 'function' ?
+			highlightDescriptor( data, consumable, conversionApi ) :
+			highlightDescriptor;
 
 		const modelItem = data.item;
 
@@ -428,7 +428,7 @@ export function convertTextsInsideMarker( selectionDescriptor ) {
 			return;
 		}
 
-		const viewElement = virtualSelectionDescriptorToAttributeElement( descriptor );
+		const viewElement = highlightDescriptorToAttributeElement( descriptor );
 		const viewRange = conversionApi.mapper.toViewRange( data.range );
 
 		if ( evt.name.split( ':' )[ 0 ] == 'addMarker' ) {
@@ -441,23 +441,23 @@ export function convertTextsInsideMarker( selectionDescriptor ) {
 
 /**
  * Function factory, creates converter that converts all elements inside marker's range. Converter checks if element has
- * functions stored under `setVirtualSelection` and `removeVirtualSelection` custom properties and calls them passing
- * {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor}. In such case converter will consume
- * all element's children, assuming that they were handled by element itself. If selection descriptor will not provide
+ * functions stored under `setHighlight` and `removeHighlight` custom properties and calls them passing
+ * {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor}. In such case converter will consume
+ * all element's children, assuming that they were handled by element itself. If highlight descriptor will not provide
  * priority, priority 10 will be used as default, to be compliant with
  * {@link module:engine/conversion/model-to-view-converters~convertTextsInsideMarker} method which uses default priority of
  * {@link module:engine/view/attributeelement~AttributeElement}.
- * When `setVirtualSelection` and `removeVirtualSelection` custom properties are not present, element is not converted
+ * When `setHighlight` and `removeHighlight` custom properties are not present, element is not converted
  * in any special way. This means that converters will proceed to convert element's child nodes.
  *
- * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor|Function} selectionDescriptor
+ * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
  */
-export function convertElementsInsideMarker( selectionDescriptor ) {
+export function convertElementsInsideMarker( highlightDescriptor ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const descriptor = typeof selectionDescriptor == 'function' ?
-			selectionDescriptor( data, consumable, conversionApi ) :
-			selectionDescriptor;
+		const descriptor = typeof highlightDescriptor == 'function' ?
+			highlightDescriptor( data, consumable, conversionApi ) :
+			highlightDescriptor;
 
 		const modelItem = data.item;
 
@@ -475,9 +475,9 @@ export function convertElementsInsideMarker( selectionDescriptor ) {
 
 		const viewElement = conversionApi.mapper.toViewElement( modelItem );
 		const addMarker = evt.name.split( ':' )[ 0 ] == 'addMarker';
-		const selectionHandlingMethod = addMarker ? 'setVirtualSelection' : 'removeVirtualSelection';
+		const highlightHandlingMethod = addMarker ? 'setHighlight' : 'removeHighlight';
 
-		if ( viewElement && viewElement.getCustomProperty( selectionHandlingMethod ) ) {
+		if ( viewElement && viewElement.getCustomProperty( highlightHandlingMethod ) ) {
 			// Consume element itself.
 			consumable.consume( data.item, evt.name );
 
@@ -486,7 +486,7 @@ export function convertElementsInsideMarker( selectionDescriptor ) {
 				consumable.consume( value.item, evt.name );
 			}
 
-			viewElement.getCustomProperty( selectionHandlingMethod )( viewElement, descriptor );
+			viewElement.getCustomProperty( highlightHandlingMethod )( viewElement, descriptor );
 		}
 	};
 }
@@ -559,13 +559,13 @@ export function eventNameToConsumableType( evtName ) {
 
 /**
  * Creates `span` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from information
- * provided by {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} object. If priority
- * is not provided in selection descriptor - default priority will be used.
+ * provided by {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor} object. If priority
+ * is not provided in descriptor - default priority will be used.
  *
- * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor } descriptor
+ * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor } descriptor
  * @return {module:engine/view/attributeelement~AttributeElement}
  */
-export function virtualSelectionDescriptorToAttributeElement( descriptor ) {
+export function highlightDescriptorToAttributeElement( descriptor ) {
 	const attributeElement = new ViewAttributeElement( 'span', descriptor.attributes );
 
 	if ( descriptor.class ) {

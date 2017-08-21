@@ -58,11 +58,11 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  *		buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( 'strong' );
  *
- * 4. Model marker to virtual selection converter. This is a converter that converts model markers to virtual
- * selection described by {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} object passed to
- * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toVirtualSelection} method.
+ * 4. Model marker to view highlight converter. This is a converter that converts model markers to view highlight
+ * described by {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor} object passed to
+ * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toHighlight} method.
  *
- *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( {
+ *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toHighlight( {
  *			class: 'search',
  *			priority: 20
  *		} );
@@ -76,7 +76,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * It is possible to provide various different parameters for
  * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toElement},
  * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toAttribute} and
- * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toVirtualSelection} methods.
+ * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toHighlight} methods.
  * See their descriptions to learn more.
  *
  * It is also possible to {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#withPriority change default priority}
@@ -274,66 +274,65 @@ class ModelConverterBuilder {
 	}
 
 	/**
-	 * Registers that marker should be converted to virtual selection. Markers, basically,
-	 * are {@link module:engine/model/liverange~LiveRange} instances, that are named. Virtual selection is
+	 * Registers that marker should be converted to view highlight. Markers, basically,
+	 * are {@link module:engine/model/liverange~LiveRange} instances, that are named. View highlight is
 	 * a representation of the model marker in the view:
 	 * * each {@link module:engine/view/text~Text view text node} in the marker's range will be wrapped with `span`
 	 * {@link module:engine/view/attributeelement~AttributeElement},
 	 * * each {@link module:engine/view/containerelement~ContainerElement container view element} in the marker's
-	 * range can handle the virtual selection individually by providing `setVirtualSelection` and `removeVirtualSelection`
+	 * range can handle highlighting individually by providing `setHighlight` and `removeHighlight`
 	 * custom properties:
 	 *
-	 *		viewElement.setCustomProperty( 'setVirtualSelection', ( element, descriptor ) => {} );
-	 *		viewElement.setCustomProperty( 'removeVirtualSelection', ( element, descriptor ) => {} );
+	 *		viewElement.setCustomProperty( 'setHighlight', ( element, descriptor ) => {} );
+	 *		viewElement.setCustomProperty( 'removeHighlight', ( element, descriptor ) => {} );
 	 *
-	 * {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor Descriptor} will be used to create
-	 * spans over text nodes and also will be provided to `setVirtualSelection` and `removeVirtualSelection` methods
-	 * each time virtual selection should be set or removed from view elements.
-	 * NOTE: When `setVirtualSelection` and `removeVirtualSelection` custom properties are present, converter assumes
-	 * that element itself is taking care of presenting virtual selection on its child nodes, so it won't convert virtual
-	 * selection on them.
+	 * {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor} will be used to create
+	 * spans over text nodes and also will be provided to `setHighlight` and `removeHighlight` methods
+	 * each time highlight should be set or removed from view elements.
+	 * NOTE: When `setHighlight` and `removeHighlight` custom properties are present, converter assumes
+	 * that element itself is taking care of presenting highlight on its child nodes, so it won't convert them.
 	 *
-	 * Virtual selection descriptor can be provided as plain object:
+	 * Highlight descriptor can be provided as plain object:
 	 *
-	 *		buildModelConverter.for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( { class: 'search-mark' } );
+	 *		buildModelConverter.for( dispatcher ).fromMarker( 'search' ).toHighlight( { class: 'search-highlight' } );
  	 *
 	 * Also, descriptor creator function can be provided:
 	 *
-	 *		buildModelConverter.for( dispatcher ).fromMarker( 'search:blue' ).toVirtualSelection( data => {
+	 *		buildModelConverter.for( dispatcher ).fromMarker( 'search:blue' ).toHighlight( data => {
 	 *			const color = data.markerName.split( ':' )[ 1 ];
 	 *
 	 *			return { class: 'search-' + color };
 	 *		} );
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
-	 * `build-model-converter-non-marker-to-virtual-selection` when trying to convert not from marker.
+	 * `build-model-converter-non-marker-to-highlight` when trying to convert not from marker.
 	 *
-	 * @param {function|module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} selectionDescriptor
+	 * @param {function|module:engine/conversion/buildmodelconverter~HighlightDescriptor} highlightDescriptor
 	 */
-	toVirtualSelection( selectionDescriptor ) {
+	toHighlight( highlightDescriptor ) {
 		const priority = this._from.priority === null ? 'normal' : this._from.priority;
 
 		if ( this._from.type != 'marker' ) {
 			/**
-			 * To virtual selection conversion is supported only for model markers.
+			 * To highlight conversion is supported only for model markers.
 			 *
-			 * @error build-model-converter-non-marker-to-virtual-selection
+			 * @error build-model-converter-non-marker-to-highlight
 			 */
 			throw new CKEditorError(
-				'build-model-converter-non-marker-to-virtual-selection: Conversion to virtual selection is supported ' +
+				'build-model-converter-non-marker-to-highlight: Conversion to highlight is supported ' +
 				'only from model markers.'
 			);
 		}
 
 		for ( const dispatcher of this._dispatchers ) {
 			// Separate converters for converting texts and elements inside marker's range.
-			dispatcher.on( 'addMarker:' + this._from.name, convertTextsInsideMarker( selectionDescriptor ), { priority } );
-			dispatcher.on( 'addMarker:' + this._from.name, convertElementsInsideMarker( selectionDescriptor ), { priority } );
+			dispatcher.on( 'addMarker:' + this._from.name, convertTextsInsideMarker( highlightDescriptor ), { priority } );
+			dispatcher.on( 'addMarker:' + this._from.name, convertElementsInsideMarker( highlightDescriptor ), { priority } );
 
-			dispatcher.on( 'removeMarker:' + this._from.name, convertTextsInsideMarker( selectionDescriptor ), { priority } );
-			dispatcher.on( 'removeMarker:' + this._from.name, convertElementsInsideMarker( selectionDescriptor ), { priority } );
+			dispatcher.on( 'removeMarker:' + this._from.name, convertTextsInsideMarker( highlightDescriptor ), { priority } );
+			dispatcher.on( 'removeMarker:' + this._from.name, convertElementsInsideMarker( highlightDescriptor ), { priority } );
 
-			dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( selectionDescriptor ), { priority } );
+			dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( highlightDescriptor ), { priority } );
 		}
 	}
 
@@ -434,16 +433,16 @@ export default function buildModelConverter() {
  */
 
 /**
- * @typedef VirtualSelectionDescriptor
- * Object describing how virtual selection should be created in the view. Each text node in virtual selection
+ * @typedef HighlightDescriptor
+ * Object describing how content highlight should be created in the view. Each text node contained in highlight
  * will be wrapped with `span` element with CSS class, attributes and priority described by this object. Each element
- * can handle virtual selection separately by providing `setVirtualSelection` and `removeVirtualSelection` custom
+ * can handle displaying highlight separately by providing `setHighlight` and `removeHighlight` custom
  * properties.
  *
  * @property {String} class CSS class that will be added to `span`
- * {@link module:engine/view/attributeelement~AttributeElement} wrapping each text node in the virtual selection.
+ * {@link module:engine/view/attributeelement~AttributeElement} wrapping each text node in the highlighted content.
  * @property {Number} [priority] {@link module:engine/view/attributeelement~AttributeElement#priority} of the `span`
- * wrapping each text node in the virtual selection. If not provided, default 10 priority will be used.
+ * wrapping each text node in the highlighted content. If not provided, default 10 priority will be used.
  * @property {Object} [attributes] Attributes that will be added to `span`
- * {@link module:engine/view/attributeelement~AttributeElement} wrapping each text node it the virtual selection.
+ * {@link module:engine/view/attributeelement~AttributeElement} wrapping each text node it the highlighted content.
  */

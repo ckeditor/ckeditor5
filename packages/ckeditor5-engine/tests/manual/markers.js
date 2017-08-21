@@ -34,7 +34,7 @@ ClassicEditor
 
 		buildModelConverter().for( editor.editing.modelToView )
 			.fromMarker( 'highlight' )
-			.toVirtualSelection( data => {
+			.toHighlight( data => {
 				const color = data.markerName.split( ':' )[ 1 ];
 
 				return {
