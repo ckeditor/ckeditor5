@@ -13,13 +13,13 @@ When compared to its previous versions, CKEditor 5 should be considered a totall
 
 There is no "drop in" solution for migrating. In this guide we hope to summarize the most important aspects to be taken into consideration before you proceed with installing CKEditor 5.
 
-Before starting, be sure that migrating is your best choice. Check {@link TODO When NOT to use CKEditor 5 Builds}?
+Before starting, be sure that migrating is your best choice. Check {@linkTODO When NOT to use CKEditor 5 Builds}?
 
 ## Installation and integration
 
-The very first aspect that changed with CKEditor 5 is its installation procedure. It became much more modern with introduction of modular patterns, UMD, npm, etc. Check {@link TODO Installation} for more details.
+The very first aspect that changed with CKEditor 5 is its installation procedure. It became much more modern with introduction of modular patterns, UMD, npm, etc. Check {@link builds/guides/integration/installation Installation} for more details.
 
-Once installed, the API for integrating CKEditor with your pages also changed. It is worth checking {@link TODO Basic API} for an introduction.
+Once installed, the API for integrating CKEditor with your pages also changed. It is worth checking {@link builds/guides/integration/basic-api Basic API} for an introduction.
 
 ## Features
 
@@ -40,13 +40,13 @@ The trickiest migration challenge to be faced may be related to custom plugins y
 
 The same may apply for third party plugins which may not have been ported to CKEditor 5 yet.
 
-Check the {@link TODO Plugins guide} for more information on the development of plugins.
+Check the {@linkTODO Plugins guide} for more information on the development of plugins.
 
 ## Themes (skins)
 
 In CKEditor 5, the previous concept of "skins" was reviewed and is now called "themes".
 
-If you have custom skins for CKEditor 4, these skins need to be recreated for CKEditor 5. Fortunately custom theming in CKEditor 5 is much more powerful and simpler than before. For more information, check how to {@link TODO create new themes in the CKEditor 5 Framework documentation}.
+If you have custom skins for CKEditor 4, these skins need to be recreated for CKEditor 5. Fortunately custom theming in CKEditor 5 is much more powerful and simpler than before. For more information, check how to {@linkTODO create new themes in the CKEditor 5 Framework documentation}.
 
 ## Existing data
 

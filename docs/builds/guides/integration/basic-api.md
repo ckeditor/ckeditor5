@@ -107,4 +107,4 @@ Once destroyed, resources used by the editor instance are released and the origi
 
 ## What’s more?
 
-CKEditor offers a rich API to interact with editors. Check out the {@link TODO API documentation} for more.
+CKEditor offers a rich API to interact with editors. Check out the {@link api/index API documentation} for more.

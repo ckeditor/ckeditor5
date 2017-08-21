@@ -71,7 +71,7 @@ The editor is much more lightweight and fast. It brings a fantastic user experie
 
 ## Highly customizable
 
-CKEditor 5 Builds are based on the {@link TODO CKEditor 5 Framework}, which gives powerful customizability and extensibility possibilities.
+CKEditor 5 Builds are based on the {@linkTODO CKEditor 5 Framework}, which gives powerful customizability and extensibility possibilities.
 
 ## Custom data model
 
@@ -79,7 +79,7 @@ A much more efficient data model was designed for CKEditor 5. This makes the dev
 
 ## Collaborative editing
 
-Another important benefit of the custom data model is that it enables the possibility of real-time collaborative editing inside CKEditor by introducing the concepts of "operations" and "operational transformations". Read more about {@link TODO collaboration in the CKEditor 5 Framework documentation}.
+Another important benefit of the custom data model is that it enables the possibility of real-time collaborative editing inside CKEditor by introducing the concepts of "operations" and "operational transformations". Read more about {@linkTODO collaboration in the CKEditor 5 Framework documentation}.
 
 <!-- TODO 3 -->
 

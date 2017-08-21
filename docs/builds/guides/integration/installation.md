@@ -15,7 +15,7 @@ The goal of installing any of the CKEditor 5 builds is to enable you to use its 
 * [CDN](#CDN)
 * [npm](#npm)
 
-Each of the builds has independent release packages. Before starting, you must define which one you are interested in. Check the {@link TODO Overview} page for the list of available builds.
+Each of the builds has independent release packages. Before starting, you must define which one you are interested in. Check the {@link builds/guides/overview Overview} page for the list of available builds.
 
 ### Zip download
 
@@ -29,7 +29,7 @@ The main entry point script will then be available at `<your-path>/ckeditor/buil
 
 Builds can be loaded inside pages directly from our CDN, which is optimized for worldwide super fast download.
 
-Check out the {@link TODO CKEditor 5 Builds CDN website} for a list of URL entry points for the builds API.
+Check out the {@linkTODO CKEditor 5 Builds CDN website} for a list of URL entry points for the builds API.
 
 ### npm
 
@@ -59,7 +59,7 @@ Once downloaded and installed in your application, it is time to make the API av
 <script src="/ckeditor/build/ckeditor.js"></script>
 ```
 
-For a more advanced setup, you may wish to bundle the CKEditor script with other scripts used by your application. See {@link TODO Bundling} for more information about it.
+For a more advanced setup, you may wish to bundle the CKEditor script with other scripts used by your application. See {@linkTODO Bundling} for more information about it.
 
-Once the CKEditor script is loaded, you can {@link TODO use the API} to create editors in your page.
+Once the CKEditor script is loaded, you can {@link builds/guides/integration/basic-api use the API} to create editors in your page.
 
