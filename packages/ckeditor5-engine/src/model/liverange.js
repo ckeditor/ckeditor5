@@ -152,14 +152,26 @@ function transform( changeType, deltaType, batch, targetRange, sourcePosition ) 
 
 	const updated = Range.createFromRanges( result );
 
+	const boundariesChanged = !updated.isEqual( this );
+	const contentChanged = updated.containsPosition( targetPosition ) || ( sourcePosition && updated.containsPosition( sourcePosition ) );
+
 	// If anything changed, update the range and fire an event.
-	if ( !updated.isEqual( this ) ) {
+	if ( boundariesChanged || contentChanged ) {
 		const oldRange = Range.createFromRange( this );
 
-		this.start = updated.start;
-		this.end = updated.end;
+		let eventName;
 
-		this.fire( 'change', oldRange, {
+		if ( boundariesChanged ) {
+			this.start = updated.start;
+			this.end = updated.end;
+
+			eventName = 'change:range';
+		} else {
+			// `if contentChanged == true`.
+			eventName = 'change:content';
+		}
+
+		this.fire( eventName, oldRange, {
 			type: changeType,
 			batch,
 			range: targetRange,
