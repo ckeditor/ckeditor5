@@ -20,11 +20,15 @@ describe( 'BalloonPanelView', () => {
 	beforeEach( () => {
 		view = new BalloonPanelView();
 
+		global.document.body.appendChild( view.element );
+
 		return view.init();
 	} );
 
 	afterEach( () => {
 		if ( view ) {
+			view.element.remove();
+
 			return view.destroy();
 		}
 	} );
@@ -167,6 +171,9 @@ describe( 'BalloonPanelView', () => {
 			limiter = document.createElement( 'div' );
 			target = document.createElement( 'div' );
 
+			global.document.body.appendChild( limiter );
+			global.document.body.appendChild( target );
+
 			// Mock balloon panel element dimensions.
 			mockBoundingBox( view.element, {
 				top: 0,
@@ -187,6 +194,11 @@ describe( 'BalloonPanelView', () => {
 			};
 
 			testUtils.sinon.stub( global, 'window' ).value( windowStub );
+		} );
+
+		afterEach( () => {
+			limiter.remove();
+			target.remove();
 		} );
 
 		it( 'should use default options', () => {
