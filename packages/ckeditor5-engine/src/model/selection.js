@@ -667,7 +667,7 @@ export default class Selection {
 	 * @param {module:engine/model/element~Element} [element=this.anchor.root]
 	 * @returns {Boolean}
 	 */
-	isEntireContentSelected( element = this.anchor.root ) {
+	containsEntireContent( element = this.anchor.root ) {
 		const limitStartPosition = Position.createAt( element );
 		const limitEndPosition = Position.createAt( element, 'end' );
 

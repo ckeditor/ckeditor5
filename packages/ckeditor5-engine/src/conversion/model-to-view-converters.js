@@ -4,11 +4,13 @@
  */
 
 import ViewElement from '../view/element';
+import ViewAttributeElement from '../view/attributeelement';
 import ViewText from '../view/text';
 import ViewRange from '../view/range';
 import ViewPosition from '../view/position';
 import ViewTreeWalker from '../view/treewalker';
 import viewWriter from '../view/writer';
+import ModelRange from '../model/range';
 
 /**
  * Contains {@link module:engine/model/model model} to {@link module:engine/view/view view} converters for
@@ -121,16 +123,29 @@ export function insertUIElement( elementCreator ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.range, 'addMarker' ) ) {
+		const markerRange = data.markerRange;
+		const eventName = evt.name;
+
+		// Marker that is collapsed has consumable build differently that non-collapsed one.
+		// For more information see `addMarker` and `removeMarker` events description.
+		// If marker's range is collapsed - check if it can be consumed.
+		if ( markerRange.isCollapsed && !consumable.consume( markerRange, eventName ) ) {
 			return;
+		}
+
+		// If marker's range is not collapsed - consume all items inside.
+		for ( const value of markerRange ) {
+			if ( !consumable.consume( value.item, eventName ) ) {
+				return;
+			}
 		}
 
 		const mapper = conversionApi.mapper;
 
-		viewWriter.insert( mapper.toViewPosition( data.range.start ), viewStartElement );
+		viewWriter.insert( mapper.toViewPosition( markerRange.start ), viewStartElement );
 
-		if ( !data.range.isCollapsed ) {
-			viewWriter.insert( mapper.toViewPosition( data.range.end ), viewEndElement );
+		if ( !markerRange.isCollapsed ) {
+			viewWriter.insert( mapper.toViewPosition( markerRange.end ), viewEndElement );
 		}
 	};
 }
@@ -326,105 +341,6 @@ export function unwrapItem( elementCreator ) {
 }
 
 /**
- * Function factory, creates a converter that wraps model range.
- *
- * In contrary to {@link module:engine/conversion/model-to-view-converters~wrapItem}, this converter's input is a
- * {@link module:engine/model/range~Range model range} (not changed model item). The model range is mapped
- * to {@link module:engine/view/range~Range view range} and then, view items within that view range are wrapped in a
- * {@link module:engine/view/attributeelement~AttributeElement view attribute element}. Note, that `elementCreator`
- * function of this converter takes different parameters that `elementCreator` of `wrapItem`.
- *
- * Let's assume following model and view. `{}` represents a range that is added as a marker with `searchResult` name.
- * The range represents a result of search `ab` string in the model document. The range has to be visualized in view.
- *
- *		[paragraph]              MODEL ====> VIEW        <p>
- *			|- {a                                         |- <span class="searchResult">
- *			|-  b}                                        |   |- ab
- *			|-  c                                         |- c
- *
- * The wrapping node depends on passed parameter. If {@link module:engine/view/attributeelement~AttributeElement} was passed, it
- * will be cloned and the copy will become the wrapping element. If `Function` is provided, it is passed all the parameters of the
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker addMarker event}. It's expected
- * that the function returns a {@link module:engine/view/attributeelement~AttributeElement}. The result of the function will be the
- * wrapping element. When provided `Function` does not return element, then will be no conversion.
- *
- * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}).
- *
- *		modelDispatcher.on( 'addMarker:searchResult', wrapRange( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
- *
- * @param {module:engine/view/attributeelement~AttributeElement|Function} elementCreator View attribute element, or function returning
- * a view attribute element, which will be used for wrapping.
- * @returns {Function} Wrap range converter.
- */
-export function wrapRange( elementCreator ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		const viewElement = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
-
-		if ( !viewElement ) {
-			return;
-		}
-
-		if ( !consumable.consume( data.range, 'addMarker' ) ) {
-			return;
-		}
-
-		const viewRange = conversionApi.mapper.toViewRange( data.range );
-		const flatViewRanges = viewWriter.breakViewRangePerContainer( viewRange );
-
-		for ( const range of flatViewRanges ) {
-			viewWriter.wrap( range, viewElement );
-		}
-	};
-}
-
-/**
- * Function factory, creates a converter that converts removing of a model marker to view attribute element.
- * This converter will unwrap view nodes from corresponding view range.
- *
- * The view element that will be unwrapped depends on passed parameter. If {@link module:engine/view/attributeelement~AttributeElement}
- * was passed, it will be used to look for similar element in the view for unwrapping. If `Function` is provided, it is passed all
- * the parameters of the
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:removeMarker removeMarker event}.
- * It's expected that the function returns a {@link module:engine/view/attributeelement~AttributeElement}. The result of
- * the function will be used to look for similar element in the view for unwrapping.
- *
- * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}) and bind model and view elements.
- *
- *		modelDispatcher.on( 'removeMarker:searchResult', unwrapRange( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
- *
- * @see module:engine/conversion/model-to-view-converters~wrapRange
- * @param {module:engine/view/attributeelement~AttributeElement|Function} elementCreator View attribute element, or function returning
- * a view attribute element, which will be used for unwrapping.
- * @returns {Function} Unwrap range converter.
- */
-export function unwrapRange( elementCreator ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		const viewElement = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
-
-		if ( !viewElement ) {
-			return;
-		}
-
-		if ( !consumable.consume( data.range, 'removeMarker' ) ) {
-			return;
-		}
-
-		const viewRange = conversionApi.mapper.toViewRange( data.range );
-		const flatViewRanges = viewWriter.breakViewRangePerContainer( viewRange );
-
-		for ( const range of flatViewRanges ) {
-			viewWriter.unwrap( range, viewElement );
-		}
-	};
-}
-
-/**
  * Function factory, creates a default model-to-view converter for node remove changes.
  *
  *		modelDispatcher.on( 'remove', remove() );
@@ -488,24 +404,91 @@ export function remove() {
 	};
 }
 
-// Helper function that shifts given view `position` in a way that returned position is after `howMany` characters compared
-// to the original `position`.
-// Because in view there might be view ui elements splitting text nodes, we cannot simply use `ViewPosition#getShiftedBy()`.
-function _shiftViewPositionByCharacters( position, howMany ) {
-	// Create a walker that will walk the view tree starting from given position and walking characters one-by-one.
-	const walker = new ViewTreeWalker( { startPosition: position, singleCharacters: true } );
-	// We will count visited characters and return the position after `howMany` characters.
-	let charactersFound = 0;
+/**
+ * Function factory, creates converter that converts all texts inside marker's range. Converter wraps each text with
+ * {@link module:engine/view/attributeelement~AttributeElement} created from provided descriptor.
+ * See {link module:engine/conversion/model-to-view-converters~virtualSelectionDescriptorToAttributeElement}.
+ *
+ * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor|Function} selectionDescriptor
+ * @return {Function}
+ */
+export function convertTextsInsideMarker( selectionDescriptor ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		const descriptor = typeof selectionDescriptor == 'function' ?
+			selectionDescriptor( data, consumable, conversionApi ) :
+			selectionDescriptor;
 
-	for ( const value of walker ) {
-		if ( value.type == 'text' ) {
-			charactersFound++;
+		const modelItem = data.item;
 
-			if ( charactersFound == howMany ) {
-				return walker.position;
-			}
+		if ( !descriptor || data.markerRange.isCollapsed || !modelItem.is( 'textProxy' ) ) {
+			return;
 		}
-	}
+
+		if ( !consumable.consume( modelItem, evt.name ) ) {
+			return;
+		}
+
+		const viewElement = virtualSelectionDescriptorToAttributeElement( descriptor );
+		const viewRange = conversionApi.mapper.toViewRange( data.range );
+
+		if ( evt.name.split( ':' )[ 0 ] == 'addMarker' ) {
+			viewWriter.wrap( viewRange, viewElement );
+		} else {
+			viewWriter.unwrap( viewRange, viewElement );
+		}
+	};
+}
+
+/**
+ * Function factory, creates converter that converts all elements inside marker's range. Converter checks if element has
+ * functions stored under `setVirtualSelection` and `removeVirtualSelection` custom properties and calls them passing
+ * {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor}. In such case converter will consume
+ * all element's children, assuming that they were handled by element itself. If selection descriptor will not provide
+ * priority, priority 10 will be used as default, to be compliant with
+ * {@link module:engine/conversion/model-to-view-converters~convertTextsInsideMarker} method which uses default priority of
+ * {@link module:engine/view/attributeelement~AttributeElement}.
+ * When `setVirtualSelection` and `removeVirtualSelection` custom properties are not present, element is not converted
+ * in any special way. This means that converters will proceed to convert element's child nodes.
+ *
+ * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor|Function} selectionDescriptor
+ * @return {Function}
+ */
+export function convertElementsInsideMarker( selectionDescriptor ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		const descriptor = typeof selectionDescriptor == 'function' ?
+			selectionDescriptor( data, consumable, conversionApi ) :
+			selectionDescriptor;
+
+		const modelItem = data.item;
+
+		if ( !descriptor || data.markerRange.isCollapsed || !modelItem.is( 'element' ) ) {
+			return;
+		}
+
+		if ( !consumable.test( data.item, evt.name ) ) {
+			return;
+		}
+
+		if ( !descriptor.priority ) {
+			descriptor.priority = 10;
+		}
+
+		const viewElement = conversionApi.mapper.toViewElement( modelItem );
+		const addMarker = evt.name.split( ':' )[ 0 ] == 'addMarker';
+		const selectionHandlingMethod = addMarker ? 'setVirtualSelection' : 'removeVirtualSelection';
+
+		if ( viewElement && viewElement.getCustomProperty( selectionHandlingMethod ) ) {
+			// Consume element itself.
+			consumable.consume( data.item, evt.name );
+
+			// Consume all children nodes.
+			for ( const value of ModelRange.createIn( modelItem ) ) {
+				consumable.consume( value.item, evt.name );
+			}
+
+			viewElement.getCustomProperty( selectionHandlingMethod )( viewElement, descriptor );
+		}
+	};
 }
 
 /**
@@ -535,11 +518,22 @@ export function removeUIElement( elementCreator ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.range, 'removeMarker' ) ) {
+		const markerRange = data.markerRange;
+		const eventName = evt.name;
+
+		// If marker's range is collapsed - check if it can be consumed.
+		if ( markerRange.isCollapsed && !consumable.consume( markerRange, eventName ) ) {
 			return;
 		}
 
-		const viewRange = conversionApi.mapper.toViewRange( data.range );
+		// Check if all items in the range can be consumed, and consume them.
+		for ( const value of markerRange ) {
+			if ( !consumable.consume( value.item, eventName ) ) {
+				return;
+			}
+		}
+
+		const viewRange = conversionApi.mapper.toViewRange( markerRange );
 
 		// First remove closing element.
 		viewWriter.clear( viewRange.getEnlarged(), viewEndElement );
@@ -561,4 +555,46 @@ export function eventNameToConsumableType( evtName ) {
 	const parts = evtName.split( ':' );
 
 	return parts[ 0 ] + ':' + parts[ 1 ];
+}
+
+/**
+ * Creates `span` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from information
+ * provided by {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} object. If priority
+ * is not provided in selection descriptor - default priority will be used.
+ *
+ * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor } descriptor
+ * @return {module:engine/view/attributeelement~AttributeElement}
+ */
+export function virtualSelectionDescriptorToAttributeElement( descriptor ) {
+	const attributeElement = new ViewAttributeElement( 'span', descriptor.attributes );
+
+	if ( descriptor.class ) {
+		attributeElement.addClass( descriptor.class );
+	}
+
+	if ( descriptor.priority ) {
+		attributeElement.priority = descriptor.priority;
+	}
+
+	return attributeElement;
+}
+
+// Helper function that shifts given view `position` in a way that returned position is after `howMany` characters compared
+// to the original `position`.
+// Because in view there might be view ui elements splitting text nodes, we cannot simply use `ViewPosition#getShiftedBy()`.
+function _shiftViewPositionByCharacters( position, howMany ) {
+	// Create a walker that will walk the view tree starting from given position and walking characters one-by-one.
+	const walker = new ViewTreeWalker( { startPosition: position, singleCharacters: true } );
+	// We will count visited characters and return the position after `howMany` characters.
+	let charactersFound = 0;
+
+	for ( const value of walker ) {
+		if ( value.type == 'text' ) {
+			charactersFound++;
+
+			if ( charactersFound == howMany ) {
+				return walker.position;
+			}
+		}
+	}
 }

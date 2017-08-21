@@ -215,10 +215,10 @@ describe( 'writer', () => {
 
 		it( 'should not merge attributes when they differ', () => {
 			test(
-				'<container:p>[<attribute:b view-priority="1" foo="bar"></attribute:b>]</container:p>',
+				'<container:p>[<attribute:b view-priority="1" foo="bar">text</attribute:b>]</container:p>',
 				'<attribute:b view-priority="1" foo="baz"></attribute:b>',
 				'<container:p>' +
-					'[<attribute:b view-priority="1" foo="baz"><attribute:b view-priority="1" foo="bar"></attribute:b></attribute:b>]' +
+					'[<attribute:b view-priority="1" foo="bar"><attribute:b view-priority="1" foo="baz">text</attribute:b></attribute:b>]' +
 				'</container:p>'
 			);
 		} );
@@ -317,6 +317,50 @@ describe( 'writer', () => {
 			expect( () => {
 				wrap( range, new AttributeElement( 'b' ) );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
+		} );
+
+		it( 'should keep stable hierarchy when wrapping with attribute with same priority', () => {
+			test(
+				'<container:p>[<attribute:span>foo</attribute:span>]</container:p>',
+				'<attribute:b></attribute:b>',
+				'<container:p>' +
+					'[<attribute:b view-priority="10">' +
+						'<attribute:span view-priority="10">foo</attribute:span>' +
+					'</attribute:b>]' +
+				'</container:p>'
+			);
+
+			test(
+				'<container:p>[<attribute:b>foo</attribute:b>]</container:p>',
+				'<attribute:span></attribute:span>',
+				'<container:p>' +
+					'[<attribute:b view-priority="10">' +
+						'<attribute:span view-priority="10">foo</attribute:span>' +
+					'</attribute:b>]' +
+				'</container:p>'
+			);
+		} );
+
+		it( 'should keep stable hierarchy when wrapping with attribute with same priority that can\'t be merged', () => {
+			test(
+				'<container:p>[<attribute:span name="foo">foo</attribute:span>]</container:p>',
+				'<attribute:span name="bar"></attribute:span>',
+				'<container:p>' +
+					'[<attribute:span view-priority="10" name="bar">' +
+						'<attribute:span view-priority="10" name="foo">foo</attribute:span>' +
+					'</attribute:span>]' +
+				'</container:p>'
+			);
+
+			test(
+				'<container:p>[<attribute:span name="bar">foo</attribute:span>]</container:p>',
+				'<attribute:span name="foo"></attribute:span>',
+				'<container:p>' +
+					'[<attribute:span view-priority="10" name="bar">' +
+						'<attribute:span view-priority="10" name="foo">foo</attribute:span>' +
+					'</attribute:span>]' +
+				'</container:p>'
+			);
 		} );
 	} );
 } );

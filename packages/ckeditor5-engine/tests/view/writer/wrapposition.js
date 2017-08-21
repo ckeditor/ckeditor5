@@ -101,9 +101,11 @@ describe( 'wrapPosition', () => {
 			'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
 			'<attribute:u view-priority="1"></attribute:u>',
 			'<container:p>' +
-				'<attribute:b view-priority="1">foo</attribute:b>' +
-				'<attribute:u view-priority="1"><attribute:b view-priority="1">[]</attribute:b></attribute:u>' +
-				'<attribute:b view-priority="1">bar</attribute:b>' +
+				'<attribute:b view-priority="1">' +
+					'foo' +
+					'<attribute:u view-priority="1">[]</attribute:u>' +
+					'bar' +
+				'</attribute:b>' +
 			'</container:p>'
 		);
 	} );
