@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualSelectionStack from '../src/virtualselectionstack';
+import HighlightStack from '../src/highlightstack';
 
-describe( 'VirtualSelectionStack', () => {
+describe( 'HighlightStack', () => {
 	let stack;
 
 	beforeEach( () => {
-		stack = new VirtualSelectionStack();
+		stack = new HighlightStack();
 	} );
 
 	it( 'should fire event when new descriptor is provided to an empty stack', () => {

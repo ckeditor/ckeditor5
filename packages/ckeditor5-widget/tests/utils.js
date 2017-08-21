@@ -12,7 +12,7 @@ import {
 	setLabel,
 	getLabel,
 	toWidgetEditable,
-	setVirtualSelectionHandling,
+	setHighlightHandling,
 	WIDGET_CLASS_NAME
 } from '../src/utils';
 
@@ -50,20 +50,20 @@ describe( 'widget utils', () => {
 			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
 		} );
 
-		it( 'should set default virtual selection methods', () => {
+		it( 'should set default highlight handling methods', () => {
 			toWidget( element );
 
-			const set = element.getCustomProperty( 'setVirtualSelection' );
-			const remove = element.getCustomProperty( 'removeVirtualSelection' );
+			const set = element.getCustomProperty( 'setHighlight' );
+			const remove = element.getCustomProperty( 'removeHighlight' );
 
 			expect( typeof set ).to.equal( 'function' );
 			expect( typeof remove ).to.equal( 'function' );
 
-			set( element, { priority: 1, class: 'virtual-selection' } );
-			expect( element.hasClass( 'virtual-selection' ) ).to.be.true;
+			set( element, { priority: 1, class: 'highlight' } );
+			expect( element.hasClass( 'highlight' ) ).to.be.true;
 
-			remove( element, { priority: 1, class: 'virtual-selection' } );
-			expect( element.hasClass( 'virtual-selection' ) ).to.be.false;
+			remove( element, { priority: 1, class: 'highlight' } );
+			expect( element.hasClass( 'highlight' ) ).to.be.false;
 		} );
 	} );
 
@@ -137,7 +137,7 @@ describe( 'widget utils', () => {
 		} );
 	} );
 
-	describe( 'setVirtualSelectionHandling()', () => {
+	describe( 'setHighlightHandling()', () => {
 		let element, addSpy, removeSpy, set, remove;
 
 		beforeEach( () => {
@@ -145,18 +145,18 @@ describe( 'widget utils', () => {
 			addSpy = sinon.spy();
 			removeSpy = sinon.spy();
 
-			setVirtualSelectionHandling( element, addSpy, removeSpy );
-			set = element.getCustomProperty( 'setVirtualSelection' );
-			remove = element.getCustomProperty( 'removeVirtualSelection' );
+			setHighlightHandling( element, addSpy, removeSpy );
+			set = element.getCustomProperty( 'setHighlight' );
+			remove = element.getCustomProperty( 'removeHighlight' );
 		} );
 
-		it( 'should set virtual selection methods', () => {
+		it( 'should set highlight handling methods', () => {
 			expect( typeof set ).to.equal( 'function' );
 			expect( typeof remove ).to.equal( 'function' );
 		} );
 
-		it( 'should call virtual selection methods when descriptor is added and removed', () => {
-			const descriptor = { priority: 10, class: 'virtual-selection' };
+		it( 'should call highlight methods when descriptor is added and removed', () => {
+			const descriptor = { priority: 10, class: 'highlight' };
 
 			set( element, descriptor );
 			remove( element, descriptor );
@@ -168,9 +168,9 @@ describe( 'widget utils', () => {
 			sinon.assert.calledWithExactly( removeSpy, element, descriptor );
 		} );
 
-		it( 'should call virtual selection methods when next descriptor is added', () => {
-			const descriptor = { priority: 10, class: 'virtual-selection' };
-			const secondDescriptor = { priority: 11, class: 'virtual-selection' };
+		it( 'should call highlight methods when next descriptor is added', () => {
+			const descriptor = { priority: 10, class: 'highlight' };
+			const secondDescriptor = { priority: 11, class: 'highlight' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
@@ -180,9 +180,9 @@ describe( 'widget utils', () => {
 			expect( addSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
 		} );
 
-		it( 'should not call virtual selection methods when descriptor with lower priority is added', () => {
-			const descriptor = { priority: 10, class: 'virtual-selection' };
-			const secondDescriptor = { priority: 9, class: 'virtual-selection' };
+		it( 'should not call highlight methods when descriptor with lower priority is added', () => {
+			const descriptor = { priority: 10, class: 'highlight' };
+			const secondDescriptor = { priority: 9, class: 'highlight' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
@@ -191,9 +191,9 @@ describe( 'widget utils', () => {
 			expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
 		} );
 
-		it( 'should call virtual selection methods when descriptor is removed changing active descriptor', () => {
-			const descriptor = { priority: 10, class: 'virtual-selection' };
-			const secondDescriptor = { priority: 11, class: 'virtual-selection' };
+		it( 'should call highlight methods when descriptor is removed changing active descriptor', () => {
+			const descriptor = { priority: 10, class: 'highlight' };
+			const secondDescriptor = { priority: 11, class: 'highlight' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
@@ -209,9 +209,9 @@ describe( 'widget utils', () => {
 			expect( removeSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
 		} );
 
-		it( 'should call virtual selection methods when descriptor is removed not changing active descriptor', () => {
-			const descriptor = { priority: 10, class: 'virtual-selection' };
-			const secondDescriptor = { priority: 9, class: 'virtual-selection' };
+		it( 'should call highlight methods when descriptor is removed not changing active descriptor', () => {
+			const descriptor = { priority: 10, class: 'highlight' };
+			const secondDescriptor = { priority: 9, class: 'highlight' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
