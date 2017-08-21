@@ -322,6 +322,61 @@ describe( 'transform', () => {
 				// DIV and P elements are correctly split.
 				expect( nodesAndText ).to.equal( 'DIVXXXXXabcdXDIVDIVPabcPPfoobarxyzPDIV' );
 			} );
+
+			it( 'should use default algorithm and not throw if transformed split delta has NoOperation', () => {
+				splitDelta.operations[ 1 ] = new NoOperation( 1 );
+				const splitDeltaB = getSplitDelta( new Position( root, [ 3, 3, 3, 1 ] ), new Element( 'p' ), 11, baseVersion );
+
+				const transformed = transform( splitDelta, splitDeltaB, context );
+
+				baseVersion = splitDeltaB.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: new Position( root, [ 3, 3, 5 ] ),
+							baseVersion
+						},
+						{
+							type: NoOperation,
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+			} );
+
+			it( 'should use default algorithm and not throw if split delta to transform by has NoOperation', () => {
+				const splitDeltaB = getSplitDelta( new Position( root, [ 3, 3, 3, 1 ] ), new Element( 'p' ), 11, baseVersion );
+				splitDeltaB.operations[ 1 ] = new NoOperation( 1 );
+
+				const transformed = transform( splitDelta, splitDeltaB, context );
+
+				baseVersion = splitDeltaB.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: new Position( root, [ 3, 3, 5 ] ),
+							baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 3, 3 ] ),
+							howMany: 9,
+							targetPosition: new Position( root, [ 3, 3, 5, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+			} );
 		} );
 
 		describe( 'UnwrapDelta', () => {
@@ -388,6 +443,33 @@ describe( 'transform', () => {
 
 				// UnwrapDelta and SplitDelta are correctly applied.
 				expect( nodesAndText ).to.equal( 'DIVXXXXXaXXXXXXabcdXPabcPPfoobarxyzPDIV' );
+			} );
+
+			it( 'should use default algorithm and not throw if split delta has NoOperation', () => {
+				splitDelta.operations[ 1 ] = new NoOperation( 1 );
+
+				const unwrapDelta = getUnwrapDelta( new Position( root, [ 3, 3 ] ), 4, baseVersion );
+
+				const transformed = transform( splitDelta, unwrapDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = unwrapDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: new Position( root, [ 3, 7 ] ),
+							baseVersion
+						},
+						{
+							type: NoOperation,
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
 			} );
 		} );
 
@@ -499,6 +581,35 @@ describe( 'transform', () => {
 
 				// WrapDelta and SplitDelta are correctly applied.
 				expect( nodesAndText ).to.equal( 'EXabcdXPabcPPfoobarxyzPE' );
+			} );
+
+			it( 'should use default algorithm and not throw if split delta has NoOperation', () => {
+				splitDelta.operations[ 1 ] = new NoOperation( 1 );
+
+				const wrapRange = new Range( new Position( root, [ 3, 3, 2 ] ), new Position( root, [ 3, 3, 4 ] ) );
+				const wrapElement = new Element( 'E' );
+				const wrapDelta = getWrapDelta( wrapRange, wrapElement, baseVersion );
+
+				const transformed = transform( splitDelta, wrapDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = wrapDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: new Position( root, [ 3, 3, 3 ] ),
+							baseVersion
+						},
+						{
+							type: NoOperation,
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
 			} );
 		} );
 
@@ -619,6 +730,35 @@ describe( 'transform', () => {
 					]
 				} );
 			} );
+
+			it( 'should use default algorithm and not throw if split delta has NoOperation', () => {
+				splitDelta.operations[ 1 ] = new NoOperation( 1 );
+
+				const attributeDelta = new AttributeDelta();
+				attributeDelta.addOperation( new AttributeOperation(
+					Range.createFromParentsAndOffsets( root, 0, root, 4 ), 'key', 'oldValue', 'newValue', baseVersion
+				) );
+
+				const transformed = transform( splitDelta, attributeDelta, context );
+
+				baseVersion = attributeDelta.operations.length;
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: new Position( root, [ 3, 3, 4 ] ),
+							baseVersion
+						},
+						{
+							type: NoOperation,
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+			} );
 		} );
 
 		describe( 'RenameDelta', () => {
@@ -733,6 +873,41 @@ describe( 'transform', () => {
 							howMany: 9,
 							targetPosition: new Position( root, [ 3, 3, 4, 0 ] ),
 							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+			} );
+
+			it( 'should not throw if clone operation is NoOperation and use default transformation in that case', () => {
+				const noOpSplitDelta = new SplitDelta();
+				noOpSplitDelta.addOperation( new NoOperation( 0 ) );
+				noOpSplitDelta.addOperation( new MoveOperation( new Position( root, [ 1, 2 ] ), 3, new Position( root, [ 2, 0 ] ), 1 ) );
+
+				const renameDelta = new RenameDelta();
+				renameDelta.addOperation( new RenameOperation(
+					new Position( root, [ 1 ] ),
+					'p',
+					'li',
+					baseVersion
+				) );
+
+				const transformed = transform( noOpSplitDelta, renameDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: NoOperation,
+							baseVersion: 1
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 1, 2 ] ),
+							howMany: 3,
+							targetPosition: new Position( root, [ 2, 0 ] ),
+							baseVersion: 2
 						}
 					]
 				} );

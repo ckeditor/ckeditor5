@@ -256,6 +256,33 @@ describe( 'transform', () => {
 					]
 				} );
 			} );
+
+			it( 'should use default algorithm and not throw if split delta has NoOperation', () => {
+				const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 3 ] ) );
+				const attrDelta = getAttributeDelta( range, 'foo', null, 'bar', 0 );
+				const splitDelta = getSplitDelta( new Position( root, [ 0, 2 ] ), new Element( 'paragraph' ), 3, 0 );
+				splitDelta.operations[ 1 ] = new NoOperation( 1 );
+
+				const transformed = transform( attrDelta, splitDelta, context );
+
+				baseVersion = splitDelta.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: AttributeDelta,
+					operations: [
+						{
+							type: AttributeOperation,
+							range: new Range( new Position( root, [ 2 ] ), new Position( root, [ 3, 3 ] ) ),
+							key: 'foo',
+							oldValue: null,
+							newValue: 'bar',
+							baseVersion
+						}
+					]
+				} );
+			} );
 		} );
 
 		describe( 'AttributeDelta', () => {

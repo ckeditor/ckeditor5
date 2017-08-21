@@ -13,6 +13,8 @@ import Position from '../../../../src/model/position';
 import Range from '../../../../src/model/range';
 
 import MoveOperation from '../../../../src/model/operation/moveoperation';
+import RemoveOperation from '../../../../src/model/operation/removeoperation';
+import NoOperation from '../../../../src/model/operation/nooperation';
 
 import MergeDelta from '../../../../src/model/delta/mergedelta';
 import UnwrapDelta from '../../../../src/model/delta/unwrapdelta';
@@ -145,6 +147,38 @@ describe( 'transform', () => {
 
 				// UnwrapDelta and SplitDelta are applied.
 				expect( nodesAndText ).to.equal( 'DIVXXXXXabcdXDIVDIVabcfoobarxyzDIV' );
+			} );
+
+			it( 'should use default algorithm and not throw if split delta has NoOperation', () => {
+				const splitPosition = new Position( root, [ 3, 3, 2, 1 ] );
+				const splitDelta = getSplitDelta( splitPosition, new Element( 'div' ), 1, baseVersion );
+				splitDelta.operations[ 1 ] = new NoOperation( 1 );
+
+				const transformed = transform( unwrapDelta, splitDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = splitDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: UnwrapDelta,
+					operations: [
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 4, 0 ] ),
+							howMany: 12,
+							targetPosition: new Position( root, [ 3, 3, 4 ] ),
+							baseVersion
+						},
+						{
+							type: RemoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 16 ] ),
+							howMany: 1,
+							targetPosition: new Position( gy, [ 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
 			} );
 		} );
 	} );

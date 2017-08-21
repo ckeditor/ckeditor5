@@ -50,6 +50,11 @@ addTransformationCase( AttributeDelta, WeakInsertDelta, ( a, b, context ) => {
 
 // Add special case for AttributeDelta x SplitDelta transformation.
 addTransformationCase( AttributeDelta, SplitDelta, ( a, b, context ) => {
+	// Do not apply special transformation case if `SplitDelta` has `NoOperation` as the second operation.
+	if ( !b.position ) {
+		return defaultTransform( a, b, context );
+	}
+
 	const splitPosition = new Position( b.position.root, b.position.path.slice( 0, -1 ) );
 
 	const deltas = defaultTransform( a, b, context );
@@ -173,6 +178,11 @@ addTransformationCase( MergeDelta, MoveDelta, ( a, b, context ) => {
 
 // Add special case for SplitDelta x SplitDelta transformation.
 addTransformationCase( SplitDelta, SplitDelta, ( a, b, context ) => {
+	// Do not apply special transformation case if `SplitDelta` has `NoOperation` as the second operation.
+	if ( !a.position || !b.position ) {
+		return defaultTransform( a, b, context );
+	}
+
 	const pathA = a.position.getParentPath();
 	const pathB = b.position.getParentPath();
 
@@ -202,6 +212,11 @@ addTransformationCase( SplitDelta, SplitDelta, ( a, b, context ) => {
 
 // Add special case for SplitDelta x UnwrapDelta transformation.
 addTransformationCase( SplitDelta, UnwrapDelta, ( a, b, context ) => {
+	// Do not apply special transformation case if `SplitDelta` has `NoOperation` as the second operation.
+	if ( !a.position ) {
+		return defaultTransform( a, b, context );
+	}
+
 	// If incoming split delta tries to split a node that just got unwrapped, there is actually nothing to split,
 	// so we discard that delta.
 	if ( a.position.root == b.position.root && compareArrays( b.position.path, a.position.getParentPath() ) === 'same' ) {
@@ -213,6 +228,11 @@ addTransformationCase( SplitDelta, UnwrapDelta, ( a, b, context ) => {
 
 // Add special case for SplitDelta x WrapDelta transformation.
 addTransformationCase( SplitDelta, WrapDelta, ( a, b, context ) => {
+	// Do not apply special transformation case if `SplitDelta` has `NoOperation` as the second operation.
+	if ( !a.position ) {
+		return defaultTransform( a, b, context );
+	}
+
 	// If split is applied at the position between wrapped nodes, we cancel the split as it's results may be unexpected and
 	// very weird. Even if we do some "magic" we don't know what really are users' expectations.
 
@@ -264,7 +284,12 @@ addTransformationCase( SplitDelta, WrapDelta, ( a, b, context ) => {
 } );
 
 // Add special case for SplitDelta x WrapDelta transformation.
-addTransformationCase( SplitDelta, AttributeDelta, ( a, b ) => {
+addTransformationCase( SplitDelta, AttributeDelta, ( a, b, context ) => {
+	// Do not apply special transformation case if `SplitDelta` has `NoOperation` as the second operation.
+	if ( !a.position ) {
+		return defaultTransform( a, b, context );
+	}
+
 	a = a.clone();
 
 	const splitPosition = new Position( a.position.root, a.position.path.slice( 0, -1 ) );
@@ -290,6 +315,11 @@ addTransformationCase( SplitDelta, AttributeDelta, ( a, b ) => {
 
 // Add special case for UnwrapDelta x SplitDelta transformation.
 addTransformationCase( UnwrapDelta, SplitDelta, ( a, b, context ) => {
+	// Do not apply special transformation case if `SplitDelta` has `NoOperation` as the second operation.
+	if ( !b.position ) {
+		return defaultTransform( a, b, context );
+	}
+
 	// If incoming unwrap delta tries to unwrap node that got split we should unwrap the original node and the split copy.
 	// This can be achieved either by reverting split and applying unwrap to singular node, or creating additional unwrap delta.
 	if ( a.position.root == b.position.root && compareArrays( a.position.path, b.position.getParentPath() ) === 'same' ) {
@@ -316,9 +346,13 @@ addTransformationCase( WeakInsertDelta, AttributeDelta, ( a, b ) => {
 
 // Add special case for WrapDelta x SplitDelta transformation.
 addTransformationCase( WrapDelta, SplitDelta, ( a, b, context ) => {
+	// Do not apply special transformation case if `SplitDelta` has `NoOperation` as the second operation.
+	if ( !b.position ) {
+		return defaultTransform( a, b, context );
+	}
+
 	// If incoming wrap delta tries to wrap range that contains split position, we have to cancel the split and apply
 	// the wrap. Since split was already applied, we have to revert it.
-
 	const sameRoot = a.range.start.root == b.position.root;
 	const operateInSameParent = sameRoot && compareArrays( a.range.start.getParentPath(), b.position.getParentPath() ) === 'same';
 	const splitInsideWrapRange = a.range.start.offset < b.position.offset && a.range.end.offset >= b.position.offset;
@@ -349,15 +383,22 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, context ) => {
 // Add special case for RenameDelta x SplitDelta transformation.
 addTransformationCase( RenameDelta, SplitDelta, ( a, b, context ) => {
 	const undoMode = context.aWasUndone || context.bWasUndone;
-	const posBeforeSplitParent = new Position( b.position.root, b.position.path.slice( 0, -1 ) );
+
+	// The "clone operation" may be `InsertOperation`, `ReinsertOperation`, `MoveOperation` or `NoOperation`.
+	// `MoveOperation` has `targetPosition` which we want to use. `NoOperation` has no `position` and we don't use special case then.
+	let insertPosition = b._cloneOperation.position || b._cloneOperation.targetPosition;
+
+	if ( insertPosition ) {
+		insertPosition = insertPosition.getShiftedBy( -1 );
+	}
 
 	const deltas = defaultTransform( a, b, context );
 
-	if ( !undoMode && a.operations[ 0 ].position.isEqual( posBeforeSplitParent ) ) {
+	if ( insertPosition && !undoMode && a.operations[ 0 ].position.isEqual( insertPosition ) ) {
 		// If a node that has been split has it's name changed, we should also change name of
 		// the node created during splitting.
 		const additionalRenameDelta = a.clone();
-		additionalRenameDelta.operations[ 0 ].position = posBeforeSplitParent.getShiftedBy( 1 );
+		additionalRenameDelta.operations[ 0 ].position = insertPosition.getShiftedBy( 1 );
 
 		deltas.push( additionalRenameDelta );
 	}
@@ -368,12 +409,19 @@ addTransformationCase( RenameDelta, SplitDelta, ( a, b, context ) => {
 // Add special case for SplitDelta x RenameDelta transformation.
 addTransformationCase( SplitDelta, RenameDelta, ( a, b, context ) => {
 	const undoMode = context.aWasUndone || context.bWasUndone;
-	const posBeforeSplitParent = new Position( a.position.root, a.position.path.slice( 0, -1 ) );
+
+	// The "clone operation" may be `InsertOperation`, `ReinsertOperation`, `MoveOperation` or `NoOperation`.
+	// `MoveOperation` has `targetPosition` which we want to use. `NoOperation` has no `position` and we don't use special case then.
+	let insertPosition = a._cloneOperation.position || a._cloneOperation.targetPosition;
+
+	if ( insertPosition ) {
+		insertPosition = insertPosition.getShiftedBy( -1 );
+	}
 
 	// If element to split had it's name changed, we have to reflect this by creating additional rename operation.
-	if ( !undoMode && b.operations[ 0 ].position.isEqual( posBeforeSplitParent ) ) {
+	if ( insertPosition && !undoMode && b.operations[ 0 ].position.isEqual( insertPosition ) ) {
 		const additionalRenameDelta = b.clone();
-		additionalRenameDelta.operations[ 0 ].position = posBeforeSplitParent.getShiftedBy( 1 );
+		additionalRenameDelta.operations[ 0 ].position = insertPosition.getShiftedBy( 1 );
 
 		// `nodes` is a property that is available only if `SplitDelta` `a` has `InsertOperation`.
 		// `SplitDelta` may have `ReinsertOperation` instead of `InsertOperation`.
