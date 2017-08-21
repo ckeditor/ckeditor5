@@ -153,7 +153,10 @@ function transform( changeType, deltaType, batch, targetRange, sourcePosition ) 
 	const updated = Range.createFromRanges( result );
 
 	const boundariesChanged = !updated.isEqual( this );
-	const contentChanged = updated.containsPosition( targetPosition ) || ( sourcePosition && updated.containsPosition( sourcePosition ) );
+
+	const rangeExpanded = this.containsPosition( targetPosition );
+	const rangeShrunk = sourcePosition && ( this.containsPosition( sourcePosition ) || this.start.isEqual( sourcePosition ) );
+	const contentChanged = rangeExpanded || rangeShrunk;
 
 	// If anything changed, update the range and fire an event.
 	if ( boundariesChanged || contentChanged ) {

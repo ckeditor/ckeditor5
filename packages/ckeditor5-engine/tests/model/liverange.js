@@ -641,6 +641,20 @@ describe( 'LiveRange', () => {
 				expect( spy.calledOnce ).to.be.true;
 			} );
 
+			it( 'from the beginning of range', () => {
+				const moveSource = new Position( root, [ 0, 1, 4 ] );
+				const moveRange = new Range( new Position( root, [ 4, 0 ] ), new Position( root, [ 4, 3 ] ) );
+
+				const changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
+
+				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
 			it( 'from the range to the range', () => {
 				live.end.path = [ 0, 1, 12 ];
 
