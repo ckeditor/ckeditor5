@@ -10,12 +10,12 @@
 /**
  * Normalizes the toolbar configuration (`config.toolbar`), which may be defined as an `Array`:
  *
- * 		toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', ... ]
+ * 		toolbar: [ 'headings', 'bold', 'italic', 'link', ... ]
  *
  * or an `Object`:
  *
  *		toolbar: {
- *			items: [ 'headings', 'bold', 'italic', 'link', 'unlink', ... ],
+ *			items: [ 'headings', 'bold', 'italic', 'link', ... ],
  *			...
  *		}
  *
