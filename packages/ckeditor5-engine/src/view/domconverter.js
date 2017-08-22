@@ -65,7 +65,7 @@ export default class DomConverter {
 		 *
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#preElements
 		 */
-		this.preElements = [ 'pre' ];
+		this.preElements = [ 'pre', 'code' ];
 
 		/**
 		 * Tag names of DOM `Element`s which are considered block elements.
@@ -177,7 +177,7 @@ export default class DomConverter {
 	 * @param {Document} domDocument Document which will be used to create DOM nodes.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
-	 * @param {Boolean} [options.withChildren=true] If true node's and document fragment's children  will be converted too.
+	 * @param {Boolean} [options.withChildren=true] If `true`, node's and document fragment's children will be converted too.
 	 * @returns {Node|DocumentFragment} Converted node or DocumentFragment.
 	 */
 	viewToDom( viewNode, domDocument, options = {} ) {
@@ -885,21 +885,24 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Takes text data from given {@link module:engine/view/text~Text#data} and processes it so it is correctly displayed in DOM.
+	 * Takes text data from a given {@link module:engine/view/text~Text#data} and processes it so
+	 * it is correctly displayed in the DOM.
 	 *
 	 * Following changes are done:
 	 *
-	 * * multiple spaces are replaced to a chain of spaces and `&nbsp;`,
-	 * * space at the beginning of the text node is changed to `&nbsp;` if it is a first text node in it's container
-	 * element or if previous text node ends by space character,
-	 * * space at the end of the text node is changed to `&nbsp;` if it is a last text node in it's container.
+	 * * a space at the beginning is changed to `&nbsp;` if this is the first text node in its container
+	 * element or if a previous text node ends with a space character,
+	 * * space at the end of the text node is changed to `&nbsp;` if this is the last text node in its container,
+	 * * remaining spaces are replaced to a chain of spaces and `&nbsp;` (e.g. `'x   x'` becomes `'x &nbsp; x'`).
+	 *
+	 * Content of {@link #preElements} is not processed.
 	 *
 	 * @private
 	 * @param {module:engine/view/text~Text} node View text node to process.
 	 * @returns {String} Processed text data.
 	 */
 	_processDataFromViewText( node ) {
-		const data = node.data;
+		let data = node.data;
 
 		// If any of node ancestors has a name which is in `preElements` array, then currently processed
 		// view text node is (will be) in preformatted element. We should not change whitespaces then.
@@ -907,105 +910,44 @@ export default class DomConverter {
 			return data;
 		}
 
-		const prevNode = this._getTouchingViewTextNode( node, false );
-		const nextNode = this._getTouchingViewTextNode( node, true );
+		// 1. Replace the first space with a nbsp if the previous node ends with a space or there is no previous node
+		// (container element boundary).
+		if ( data.charAt( 0 ) == ' ' ) {
+			const prevNode = this._getTouchingViewTextNode( node, false );
+			const prevEndsWithSpace = prevNode && this._nodeEndsWithSpace( prevNode );
 
-		// Second part of text data, from the space after the last non-space character to the end.
-		// We separate `textEnd` and `textStart` because `textEnd` needs some special handling.
-		let textEnd = data.match( / *$/ )[ 0 ];
-		// First part of data, between first and last part of data.
-		let textStart = data.substr( 0, data.length - textEnd.length );
-
-		// If previous text node does not exist or it ends by space character, replace space character at the beginning of text.
-		// ` x`			-> `_x`
-		// `  x`		-> `_ x`
-		// `   x`		-> `_  x`
-		if ( !prevNode || prevNode.data.charAt( prevNode.data.length - 1 ) == ' ' ) {
-			textStart = textStart.replace( /^ /, '\u00A0' );
+			if ( prevEndsWithSpace || !prevNode ) {
+				data = '\u00A0' + data.substr( 1 );
+			}
 		}
 
-		// Multiple consecutive spaces. Change them to ` &nbsp;` pairs.
-		// `_x  x`		-> `_x _x`
-		// `_ x  x`		-> `_ x _x`
-		// `_  x  x`	-> `_ _x _x`
-		// `_  x   x`	-> `_ _x _ x`
-		// `_  x    x`	-> `_ _x _ _x`
-		// `_   x    x` -> `_ _ x _ _x`
-		textStart = textStart.replace( / {2}/g, ' \u00A0' );
-
-		// Process `textEnd` only if there is anything to process.
-		if ( textEnd.length > 0 ) {
-			// (1) We need special treatment for the last part of text node, it has to end on `&nbsp;`, not space:
-			// `x `		-> `x_`
-			// `x  `	-> `x _`
-			// `x   `	-> `x_ _`
-			// `x    `	-> `x _ _`
-			// (2) Different case when there is a node after:
-			// `x <b>b</b>`		-> `x <b>b</b>`
-			// `x  <b>b</b>`	-> `x _<b>b</b>`
-			// `x   <b>b</b>`	-> `x _ <b>b</b>`
-			// `x    <b>b</b>`	-> `x _ _<b>b</b>`
-			// (3) But different, when that node starts by &nbsp; (or space that will be converted to &nbsp;):
-			// `x <b>_b</b>`	-> `x <b>_b</b>`
-			// `x  <b>_b</b>`	-> `x_ <b>_b</b>`
-			// `x   <b>_b</b>`	-> `x _ <b>_b</b>`
-			// `x    <b>_b</b>`	-> `x_ _ <b>_b</b>`
-			// Let's assume that starting from space is normal behavior, because starting from &nbsp; is a less frequent case.
-			let textEndStartsFromNbsp = false;
+		// 2. Replace the last space with a nbsp if this is the last text node (container element boundary).
+		if ( data.charAt( data.length - 1 ) == ' ' ) {
+			const nextNode = this._getTouchingViewTextNode( node, true );
 
 			if ( !nextNode ) {
-				// (1)
-				if ( textEnd.length % 2 ) {
-					textEndStartsFromNbsp = true;
-				}
-			} else if ( nextNode.data.charAt( 0 ) == ' ' || nextNode.data.charAt( 0 ) == '\u00A0' ) {
-				// (3)
-				if ( textEnd.length % 2 === 0 ) {
-					textEndStartsFromNbsp = true;
-				}
+				data = data.substr( 0, data.length - 1 ) + '\u00A0';
 			}
-
-			if ( textEndStartsFromNbsp ) {
-				textEnd = '\u00A0' + textEnd.substr( 0, textEnd.length - 1 );
-			}
-
-			textEnd = textEnd.replace( / {2}/g, ' \u00A0' );
 		}
 
-		return textStart + textEnd;
+		return data.replace( / {2}/g, ' \u00A0' );
 	}
 
 	/**
-	 * Helper function. For given {@link module:engine/view/text~Text view text node}, it finds previous or next sibling that is contained
-	 * in the same block element. If there is no such sibling, `null` is returned.
+	 * Checks whether given node ends with a space character after changing appropriate space characters to `&nbsp;`s.
 	 *
 	 * @private
-	 * @param {module:engine/view/text~Text} node
-	 * @param {Boolean} getNext
-	 * @returns {module:engine/view/text~Text}
+	 * @param {module:engine/view/text~Text} node Node to check.
+	 * @returns {Boolean} `true` if given `node` ends with space, `false` otherwise.
 	 */
-	_getTouchingViewTextNode( node, getNext ) {
-		if ( !node.parent ) {
-			return null;
+	_nodeEndsWithSpace( node ) {
+		if ( node.getAncestors().some( parent => this.preElements.includes( parent.name ) ) ) {
+			return false;
 		}
 
-		const treeWalker = new ViewTreeWalker( {
-			startPosition: getNext ? ViewPosition.createAfter( node ) : ViewPosition.createBefore( node ),
-			direction: getNext ? 'forward' : 'backward'
-		} );
+		const data = this._processDataFromViewText( node );
 
-		for ( const value of treeWalker ) {
-			if ( value.item.is( 'containerElement' ) ) {
-				// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
-				// text node in it's container element.
-				return null;
-			} else if ( value.item.is( 'text' ) ) {
-				// Found a text node in the same container element.
-				return value.item;
-			}
-		}
-
-		return null;
+		return data.charAt( data.length - 1 ) == ' ';
 	}
 
 	/**
@@ -1073,6 +1015,34 @@ export default class DomConverter {
 		// At this point, all whitespaces should be removed and all &nbsp; created for rendering reasons should be
 		// changed to normal space. All left &nbsp; are &nbsp; inserted intentionally.
 		return data;
+	}
+
+	/**
+	 * Helper function. For given {@link module:engine/view/text~Text view text node}, it finds previous or next sibling
+	 * that is contained in the same container element. If there is no such sibling, `null` is returned.
+	 *
+	 * @param {module:engine/view/text~Text} node Reference node.
+	 * @param {Boolean} getNext
+	 * @returns {module:engine/view/text~Text|null} Touching text node or `null` if there is no next or previous touching text node.
+	 */
+	_getTouchingViewTextNode( node, getNext ) {
+		const treeWalker = new ViewTreeWalker( {
+			startPosition: getNext ? ViewPosition.createAfter( node ) : ViewPosition.createBefore( node ),
+			direction: getNext ? 'forward' : 'backward'
+		} );
+
+		for ( const value of treeWalker ) {
+			if ( value.item.is( 'containerElement' ) ) {
+				// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
+				// text node in its container element.
+				return null;
+			} else if ( value.item.is( 'text' ) ) {
+				// Found a text node in the same container element.
+				return value.item;
+			}
+		}
+
+		return null;
 	}
 
 	/**
