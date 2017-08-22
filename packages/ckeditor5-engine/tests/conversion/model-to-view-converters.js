@@ -193,7 +193,7 @@ describe( 'model-to-view-converters', () => {
 			markerRange = ModelRange.createIn( modelRoot );
 		} );
 
-		it( 'should use setHighlight and removeHighlight on elements and not convert children nodes', () => {
+		it( 'should use addHighlight and removeHighlight on elements and not convert children nodes', () => {
 			dispatcher.on( 'addMarker:marker', convertElementsInsideMarker( highlightDescriptor ) );
 			dispatcher.on( 'removeMarker:marker', convertElementsInsideMarker( highlightDescriptor ) );
 			dispatcher.on( 'insert:paragraph', insertElement( data => {
@@ -204,7 +204,7 @@ describe( 'model-to-view-converters', () => {
 
 				const viewContainer = new ViewContainerElement( 'p' );
 
-				viewContainer.setCustomProperty( 'setHighlight', ( element, descriptor ) => {
+				viewContainer.setCustomProperty( 'addHighlight', ( element, descriptor ) => {
 					element.addClass( 'highlight-own-class' );
 
 					expect( descriptor ).to.equal( highlightDescriptor );
@@ -250,7 +250,7 @@ describe( 'model-to-view-converters', () => {
 
 			dispatcher.on( 'insert:paragraph', insertElement( () => {
 				const element = new ViewContainerElement( 'p' );
-				element.setCustomProperty( 'setHighlight', ( element, data ) => element.addClass( data.class ) );
+				element.setCustomProperty( 'addHighlight', ( element, data ) => element.addClass( data.class ) );
 				element.setCustomProperty( 'removeHighlight', ( element, data ) => element.removeClass( data.class ) );
 
 				return element;

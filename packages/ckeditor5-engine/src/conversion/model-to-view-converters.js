@@ -441,13 +441,13 @@ export function convertTextsInsideMarker( highlightDescriptor ) {
 
 /**
  * Function factory, creates converter that converts all elements inside marker's range. Converter checks if element has
- * functions stored under `setHighlight` and `removeHighlight` custom properties and calls them passing
+ * functions stored under `addHighlight` and `removeHighlight` custom properties and calls them passing
  * {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor}. In such case converter will consume
  * all element's children, assuming that they were handled by element itself. If highlight descriptor will not provide
  * priority, priority 10 will be used as default, to be compliant with
  * {@link module:engine/conversion/model-to-view-converters~convertTextsInsideMarker} method which uses default priority of
  * {@link module:engine/view/attributeelement~AttributeElement}.
- * When `setHighlight` and `removeHighlight` custom properties are not present, element is not converted
+ * When `addHighlight` and `removeHighlight` custom properties are not present, element is not converted
  * in any special way. This means that converters will proceed to convert element's child nodes.
  *
  * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor|Function} highlightDescriptor
@@ -475,7 +475,7 @@ export function convertElementsInsideMarker( highlightDescriptor ) {
 
 		const viewElement = conversionApi.mapper.toViewElement( modelItem );
 		const addMarker = evt.name.split( ':' )[ 0 ] == 'addMarker';
-		const highlightHandlingMethod = addMarker ? 'setHighlight' : 'removeHighlight';
+		const highlightHandlingMethod = addMarker ? 'addHighlight' : 'removeHighlight';
 
 		if ( viewElement && viewElement.getCustomProperty( highlightHandlingMethod ) ) {
 			// Consume element itself.

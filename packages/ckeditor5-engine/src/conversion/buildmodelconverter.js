@@ -280,16 +280,16 @@ class ModelConverterBuilder {
 	 * * each {@link module:engine/view/text~Text view text node} in the marker's range will be wrapped with `span`
 	 * {@link module:engine/view/attributeelement~AttributeElement},
 	 * * each {@link module:engine/view/containerelement~ContainerElement container view element} in the marker's
-	 * range can handle highlighting individually by providing `setHighlight` and `removeHighlight`
+	 * range can handle highlighting individually by providing `addHighlight` and `removeHighlight`
 	 * custom properties:
 	 *
-	 *		viewElement.setCustomProperty( 'setHighlight', ( element, descriptor ) => {} );
+	 *		viewElement.setCustomProperty( 'addHighlight', ( element, descriptor ) => {} );
 	 *		viewElement.setCustomProperty( 'removeHighlight', ( element, descriptor ) => {} );
 	 *
 	 * {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor} will be used to create
-	 * spans over text nodes and also will be provided to `setHighlight` and `removeHighlight` methods
+	 * spans over text nodes and also will be provided to `addHighlight` and `removeHighlight` methods
 	 * each time highlight should be set or removed from view elements.
-	 * NOTE: When `setHighlight` and `removeHighlight` custom properties are present, converter assumes
+	 * NOTE: When `addHighlight` and `removeHighlight` custom properties are present, converter assumes
 	 * that element itself is taking care of presenting highlight on its child nodes, so it won't convert them.
 	 *
 	 * Highlight descriptor can be provided as plain object:
@@ -436,7 +436,7 @@ export default function buildModelConverter() {
  * @typedef HighlightDescriptor
  * Object describing how content highlight should be created in the view. Each text node contained in highlight
  * will be wrapped with `span` element with CSS class, attributes and priority described by this object. Each element
- * can handle displaying highlight separately by providing `setHighlight` and `removeHighlight` custom
+ * can handle displaying highlight separately by providing `addHighlight` and `removeHighlight` custom
  * properties.
  *
  * @property {String} class CSS class that will be added to `span`
