@@ -569,7 +569,8 @@ export function highlightDescriptorToAttributeElement( descriptor ) {
 	const attributeElement = new ViewAttributeElement( 'span', descriptor.attributes );
 
 	if ( descriptor.class ) {
-		attributeElement.addClass( descriptor.class );
+		const cssClasses = Array.isArray( descriptor.class ) ? descriptor.class : [ descriptor.class ];
+		attributeElement.addClass( ...cssClasses );
 	}
 
 	if ( descriptor.priority ) {
