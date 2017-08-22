@@ -215,6 +215,11 @@ export default class Link extends Plugin {
 				this.formView.focus();
 				cancel();
 			}
+		}, {
+			// Use the high priority because the link UI navigation is more important
+			// than other feature's actions, e.g. list indentation.
+			// https://github.com/ckeditor/ckeditor5-link/issues/146
+			priority: 'high'
 		} );
 
 		// Close the panel on the Esc key press when the editable has focus and the balloon is visible.
@@ -278,14 +283,9 @@ export default class Link extends Plugin {
 			//  * there was no link element in the first place, i.e. creating a new link
 			else {
 				// If still in a link element, simply update the position of the balloon.
-				if ( renderSelectedLink ) {
-					this._balloon.updatePosition();
-				}
 				// If there was no link, upon #render, the balloon must be moved
 				// to the new position in the editing view (a new native DOM range).
-				else {
-					this._balloon.updatePosition( this._getBalloonPositionData() );
-				}
+				this._balloon.updatePosition( this._getBalloonPositionData() );
 			}
 		} );
 
