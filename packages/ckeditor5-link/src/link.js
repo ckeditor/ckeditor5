@@ -20,8 +20,6 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import LinkFormView from './ui/linkformview';
 
 import linkIcon from '../theme/icons/link.svg';
-import unlinkIcon from '../theme/icons/unlink.svg';
-
 import '../theme/theme.scss';
 
 const linkKeystroke = 'Ctrl+K';
@@ -74,7 +72,6 @@ export default class Link extends Plugin {
 
 		// Create toolbar buttons.
 		this._createToolbarLinkButton();
-		this._createToolbarUnlinkButton();
 
 		// Attach lifecycle actions to the the balloon.
 		this._attachActions();
@@ -155,35 +152,6 @@ export default class Link extends Plugin {
 
 			// Show the panel on button click.
 			this.listenTo( button, 'execute', () => this._showPanel( true ) );
-
-			return button;
-		} );
-	}
-
-	/**
-	 * Creates a toolbar Unlink button. Clicking this button will unlink
-	 * the selected link.
-	 *
-	 * @private
-	 */
-	_createToolbarUnlinkButton() {
-		const editor = this.editor;
-		const t = editor.t;
-		const unlinkCommand = editor.commands.get( 'unlink' );
-
-		editor.ui.componentFactory.add( 'unlink', locale => {
-			const button = new ButtonView( locale );
-
-			button.isEnabled = false;
-			button.label = t( 'Unlink' );
-			button.icon = unlinkIcon;
-			button.tooltip = true;
-
-			// Bind button to the command.
-			button.bind( 'isEnabled' ).to( unlinkCommand, 'isEnabled' );
-
-			// Execute unlink command and hide panel, if open on button click.
-			this.listenTo( button, 'execute', () => editor.execute( 'unlink' ) );
 
 			return button;
 		} );

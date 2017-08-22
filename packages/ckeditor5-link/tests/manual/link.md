@@ -33,8 +33,9 @@
 ### Unlink link fragment
 
 1. Select link fragment.
-2. Click toolbar unlink button.
-3. Check if selected text has been converted into a regular text.
+2. Click the toolbar link button.
+3. Click the "Unlink" button.
+4. Check if selected text has been converted into a regular text.
 
 ### Unlink whole link
 
