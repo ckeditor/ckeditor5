@@ -412,7 +412,7 @@ export function remove() {
  * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
  */
-export function convertTextsInsideMarker( highlightDescriptor ) {
+export function highlightTexts( highlightDescriptor ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		const descriptor = typeof highlightDescriptor == 'function' ?
 			highlightDescriptor( data, consumable, conversionApi ) :
@@ -445,7 +445,7 @@ export function convertTextsInsideMarker( highlightDescriptor ) {
  * {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor}. In such case converter will consume
  * all element's children, assuming that they were handled by element itself. If highlight descriptor will not provide
  * priority, priority 10 will be used as default, to be compliant with
- * {@link module:engine/conversion/model-to-view-converters~convertTextsInsideMarker} method which uses default priority of
+ * {@link module:engine/conversion/model-to-view-converters~highlightTexts} method which uses default priority of
  * {@link module:engine/view/attributeelement~AttributeElement}.
  * When `addHighlight` and `removeHighlight` custom properties are not present, element is not converted
  * in any special way. This means that converters will proceed to convert element's child nodes.
@@ -453,7 +453,7 @@ export function convertTextsInsideMarker( highlightDescriptor ) {
  * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
  */
-export function convertElementsInsideMarker( highlightDescriptor ) {
+export function highlightElements( highlightDescriptor ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		const descriptor = typeof highlightDescriptor == 'function' ?
 			highlightDescriptor( data, consumable, conversionApi ) :

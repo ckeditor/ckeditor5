@@ -15,8 +15,8 @@ import {
 	removeUIElement,
 	wrapItem,
 	unwrapItem,
-	convertTextsInsideMarker,
-	convertElementsInsideMarker
+	highlightTexts,
+	highlightElements
 } from './model-to-view-converters';
 
 import { convertSelectionAttribute, convertSelectionMarker } from './model-selection-to-view-converters';
@@ -326,11 +326,11 @@ class ModelConverterBuilder {
 
 		for ( const dispatcher of this._dispatchers ) {
 			// Separate converters for converting texts and elements inside marker's range.
-			dispatcher.on( 'addMarker:' + this._from.name, convertTextsInsideMarker( highlightDescriptor ), { priority } );
-			dispatcher.on( 'addMarker:' + this._from.name, convertElementsInsideMarker( highlightDescriptor ), { priority } );
+			dispatcher.on( 'addMarker:' + this._from.name, highlightTexts( highlightDescriptor ), { priority } );
+			dispatcher.on( 'addMarker:' + this._from.name, highlightElements( highlightDescriptor ), { priority } );
 
-			dispatcher.on( 'removeMarker:' + this._from.name, convertTextsInsideMarker( highlightDescriptor ), { priority } );
-			dispatcher.on( 'removeMarker:' + this._from.name, convertElementsInsideMarker( highlightDescriptor ), { priority } );
+			dispatcher.on( 'removeMarker:' + this._from.name, highlightTexts( highlightDescriptor ), { priority } );
+			dispatcher.on( 'removeMarker:' + this._from.name, highlightElements( highlightDescriptor ), { priority } );
 
 			dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( highlightDescriptor ), { priority } );
 		}
