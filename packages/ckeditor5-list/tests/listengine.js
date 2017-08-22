@@ -3351,6 +3351,48 @@ describe( 'ListEngine', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<ul><li>Foo<span></span><ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
 		} );
+
+		describe( 'remove converter should properly handle ui elements', () => {
+			let uiElement, liFoo, liBar;
+
+			beforeEach( () => {
+				editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
+				liFoo = modelRoot.getChild( 0 );
+				liBar = modelRoot.getChild( 1 );
+
+				uiElement = new ViewUIElement( 'span' );
+			} );
+
+			it( 'ui element before <ul>', () => {
+				// Append ui element before <ul>.
+				viewRoot.insertChildren( 0, [ uiElement ] );
+
+				modelDoc.batch().remove( liFoo );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+					.to.equal( '<span></span><ul><li>Bar</li></ul>' );
+			} );
+
+			it( 'ui element before first <li>', () => {
+				// Append ui element before <ul>.
+				viewRoot.getChild( 0 ).insertChildren( 0, [ uiElement ] );
+
+				modelDoc.batch().remove( liFoo );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+					.to.equal( '<ul><span></span><li>Bar</li></ul>' );
+			} );
+
+			it( 'ui element in the middle of list', () => {
+				// Append ui element before <ul>.
+				viewRoot.getChild( 0 ).insertChildren( 1, [ uiElement ] );
+
+				modelDoc.batch().remove( liBar );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+					.to.equal( '<ul><li>Foo</li><span></span></ul>' );
+			} );
+		} );
 	} );
 
 	function getViewPosition( root, path ) {
