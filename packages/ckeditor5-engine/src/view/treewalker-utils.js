@@ -17,19 +17,20 @@ import ViewTreeWalker from './treewalker';
  * in the same container element. If there is no such sibling, `null` is returned.
  *
  * @param {module:engine/view/text~Text} node Reference node.
- * @param {Boolean} getNext If `true` next touching sibling will be returned. If `false` previous touching sibling will be returned.
+ * @param {'forward'|'backward'} [direction='forward'] If set to `'forward'`, next touching sibling will be returned.
+ * If set to `'backward'` previous touching sibling will be returned.
  * @returns {module:engine/view/text~Text|null} Touching text node or `null` if there is no next or previous touching text node.
  */
-export function getTouchingTextNode( node, getNext ) {
+export function getTouchingTextNode( node, direction = 'forward' ) {
 	const treeWalker = new ViewTreeWalker( {
-		startPosition: getNext ? ViewPosition.createAfter( node ) : ViewPosition.createBefore( node ),
-		direction: getNext ? 'forward' : 'backward'
+		startPosition: direction == 'forward' ? ViewPosition.createAfter( node ) : ViewPosition.createBefore( node ),
+		direction
 	} );
 
 	for ( const value of treeWalker ) {
 		if ( value.item.is( 'containerElement' ) ) {
 			// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
-			// text node in it's container element.
+			// text node in its container element.
 			return null;
 		} else if ( value.item.is( 'text' ) ) {
 			// Found a text node in the same container element.

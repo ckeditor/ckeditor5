@@ -16,7 +16,7 @@ import ViewRange from './range';
 import ViewSelection from './selection';
 import ViewDocumentFragment from './documentfragment';
 import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler';
-import { getTouchingTextNode } from './utils';
+import { getTouchingTextNode as getTouchingViewTextNode } from './treewalker-utils';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
@@ -177,7 +177,7 @@ export default class DomConverter {
 	 * @param {Document} domDocument Document which will be used to create DOM nodes.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
-	 * @param {Boolean} [options.withChildren=true] If true node's and document fragment's children  will be converted too.
+	 * @param {Boolean} [options.withChildren=true] If `true`, node's and document fragment's children will be converted too.
 	 * @returns {Node|DocumentFragment} Converted node or DocumentFragment.
 	 */
 	viewToDom( viewNode, domDocument, options = {} ) {
@@ -913,7 +913,7 @@ export default class DomConverter {
 		// 1. Replace the first space with a nbsp if the previous node ends with a space or there is no previous node
 		// (container element boundary).
 		if ( data.charAt( 0 ) == ' ' ) {
-			const prevNode = getTouchingTextNode( node, false );
+			const prevNode = getTouchingViewTextNode( node, 'backward' );
 			const prevEndsWithSpace = prevNode && this._nodeEndsWithSpace( prevNode );
 
 			if ( prevEndsWithSpace || !prevNode ) {
@@ -923,7 +923,7 @@ export default class DomConverter {
 
 		// 2. Replace the last space with a nbsp if this is the last text node (container element boundary).
 		if ( data.charAt( data.length - 1 ) == ' ' ) {
-			const nextNode = getTouchingTextNode( node, true );
+			const nextNode = getTouchingViewTextNode( node, 'forward' );
 
 			if ( !nextNode ) {
 				data = data.substr( 0, data.length - 1 ) + '\u00A0';
