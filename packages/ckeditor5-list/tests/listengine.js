@@ -3046,14 +3046,16 @@ describe( 'ListEngine', () => {
 				'<listItem type="bulleted" indent="2">C</listItem>'
 			);
 
-			editor.data.insertContent(
-				parseModel(
-					'<listItem type="bulleted" indent="0">X</listItem>' +
-					'<listItem type="bulleted" indent="1">Y</listItem>',
-					modelDoc.schema
-				),
-				modelDoc.selection
-			);
+			modelDoc.enqueueChanges( () => {
+				editor.data.insertContent(
+					parseModel(
+						'<listItem type="bulleted" indent="0">X</listItem>' +
+						'<listItem type="bulleted" indent="1">Y</listItem>',
+						modelDoc.schema
+					),
+					modelDoc.selection
+				);
+			} );
 
 			expect( getModelData( modelDoc ) ).to.equal(
 				'<listItem indent="0" type="bulleted">A</listItem>' +
@@ -3071,10 +3073,12 @@ describe( 'ListEngine', () => {
 				'<listItem type="bulleted" indent="2">C</listItem>'
 			);
 
-			editor.data.insertContent(
-				new ModelElement( 'listItem', { type: 'bulleted', indent: '0' }, 'X' ),
-				modelDoc.selection
-			);
+			modelDoc.enqueueChanges( () => {
+				editor.data.insertContent(
+					new ModelElement( 'listItem', { type: 'bulleted', indent: '0' }, 'X' ),
+					modelDoc.selection
+				);
+			} );
 
 			expect( getModelData( modelDoc ) ).to.equal(
 				'<listItem indent="0" type="bulleted">A</listItem>' +
@@ -3091,10 +3095,12 @@ describe( 'ListEngine', () => {
 				'<listItem type="bulleted" indent="2">C</listItem>'
 			);
 
-			editor.data.insertContent(
-				new ModelText( 'X' ),
-				modelDoc.selection
-			);
+			modelDoc.enqueueChanges( () => {
+				editor.data.insertContent(
+					new ModelText( 'X' ),
+					modelDoc.selection
+				);
+			} );
 
 			expect( getModelData( modelDoc ) ).to.equal(
 				'<listItem indent="0" type="bulleted">A</listItem>' +
