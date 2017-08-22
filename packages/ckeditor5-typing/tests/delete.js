@@ -35,21 +35,23 @@ describe( 'Delete feature', () => {
 
 		view.fire( 'delete', new DomEventData( editingView, domEvt, {
 			direction: 'forward',
-			unit: 'character'
+			unit: 'character',
+			sequence: 1
 		} ) );
 
 		expect( spy.calledOnce ).to.be.true;
-		expect( spy.calledWithMatch( 'forwardDelete', { unit: 'character' } ) ).to.be.true;
+		expect( spy.calledWithMatch( 'forwardDelete', { unit: 'character', sequence: 1 } ) ).to.be.true;
 
 		expect( domEvt.preventDefault.calledOnce ).to.be.true;
 
 		view.fire( 'delete', new DomEventData( editingView, getDomEvent(), {
 			direction: 'backward',
-			unit: 'character'
+			unit: 'character',
+			sequence: 5
 		} ) );
 
 		expect( spy.calledTwice ).to.be.true;
-		expect( spy.calledWithMatch( 'delete', { unit: 'character' } ) ).to.be.true;
+		expect( spy.calledWithMatch( 'delete', { unit: 'character', sequence: 5 } ) ).to.be.true;
 	} );
 
 	it( 'scrolls the editing document to the selection after executing the command', () => {
