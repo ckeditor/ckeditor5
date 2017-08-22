@@ -127,14 +127,19 @@ export default class Widget extends Plugin {
 	_onKeydown( eventInfo, domEventData ) {
 		const keyCode = domEventData.keyCode;
 		const isForward = keyCode == keyCodes.delete || keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright;
+		let wasHandled = false;
 
 		// Checks if the keys were handled and then prevents the default event behaviour and stops
 		// the propagation.
-		if (
-			( isDeleteKeyCode( keyCode ) && this._handleDelete( isForward ) ) ||
-			( isArrowKeyCode( keyCode ) && this._handleArrowKeys( isForward ) ) ||
-			( isSelectAllKeyCode( domEventData ) && this._selectAllNestedEditableContent() )
-		) {
+		if ( isDeleteKeyCode( keyCode ) ) {
+			wasHandled = this._handleDelete( isForward );
+		} else if ( isArrowKeyCode( keyCode ) ) {
+			wasHandled = this._handleArrowKeys( isForward );
+		} else if ( isSelectAllKeyCode( domEventData ) ) {
+			wasHandled = this._selectAllNestedEditableContent();
+		}
+
+		if ( wasHandled ) {
 			domEventData.preventDefault();
 			eventInfo.stop();
 		}
