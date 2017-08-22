@@ -10,7 +10,6 @@
 import ViewText from './text';
 import ViewPosition from './position';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller, isBlockFiller } from './filler';
-import { getTouchingTextNode } from './treewalker-utils';
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
@@ -199,7 +198,9 @@ export default class Renderer {
 		}
 
 		for ( const node of this.markedTexts ) {
-			this._updateText( node, { inlineFillerPosition } );
+			if ( !this.markedChildren.has( node.parent ) && this.domConverter.mapViewToDom( node.parent ) ) {
+				this._updateText( node, { inlineFillerPosition } );
+			}
 		}
 
 		for ( const element of this.markedAttributes ) {
@@ -406,12 +407,6 @@ export default class Renderer {
 	 */
 	_updateText( viewText, options ) {
 		const domText = this.domConverter.findCorrespondingDomText( viewText );
-
-		// If this is a new text node and it is not in DOM, it will be created and handled in `_updateChildren`.
-		if ( !domText ) {
-			return;
-		}
-
 		const newDomText = this.domConverter.viewToDom( viewText, domText.ownerDocument );
 
 		const actualText = domText.data;
@@ -425,21 +420,6 @@ export default class Renderer {
 
 		if ( actualText != expectedText ) {
 			domText.data = expectedText;
-
-			// If we changed text node's data, we might need to re-render one or more following text nodes.
-			// This is because of space handling. If the text node starts with a space, that space might be
-			// changed to `&nbsp;`. Whether it will be changed, depends on the previous text node's data.
-			// So when we change a text node, we need to refresh all following text nodes.
-			//
-			// Example:
-			// 1. Initial state:             <p>foo<em> bar</em></p>
-			// 2. Space is typed after foo:  <p>foo <em> bar</em></p>
-			// 3. After refresh:             <p>foo <em>&nbsp;bar</em><p>
-			const nextTouchingTextNode = getTouchingTextNode( viewText );
-
-			if ( nextTouchingTextNode ) {
-				this.markedTexts.add( nextTouchingTextNode );
-			}
 		}
 	}
 

@@ -15,8 +15,8 @@ import ViewPosition from './position';
 import ViewRange from './range';
 import ViewSelection from './selection';
 import ViewDocumentFragment from './documentfragment';
+import ViewTreeWalker from './treewalker';
 import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler';
-import { getTouchingTextNode as getTouchingViewTextNode } from './treewalker-utils';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
@@ -913,7 +913,7 @@ export default class DomConverter {
 		// 1. Replace the first space with a nbsp if the previous node ends with a space or there is no previous node
 		// (container element boundary).
 		if ( data.charAt( 0 ) == ' ' ) {
-			const prevNode = getTouchingViewTextNode( node, 'backward' );
+			const prevNode = this._getTouchingViewTextNode( node, false );
 			const prevEndsWithSpace = prevNode && this._nodeEndsWithSpace( prevNode );
 
 			if ( prevEndsWithSpace || !prevNode ) {
@@ -923,7 +923,7 @@ export default class DomConverter {
 
 		// 2. Replace the last space with a nbsp if this is the last text node (container element boundary).
 		if ( data.charAt( data.length - 1 ) == ' ' ) {
-			const nextNode = getTouchingViewTextNode( node, 'forward' );
+			const nextNode = this._getTouchingViewTextNode( node, true );
 
 			if ( !nextNode ) {
 				data = data.substr( 0, data.length - 1 ) + '\u00A0';
@@ -1015,6 +1015,34 @@ export default class DomConverter {
 		// At this point, all whitespaces should be removed and all &nbsp; created for rendering reasons should be
 		// changed to normal space. All left &nbsp; are &nbsp; inserted intentionally.
 		return data;
+	}
+
+	/**
+	 * Helper function. For given {@link module:engine/view/text~Text view text node}, it finds previous or next sibling
+	 * that is contained in the same container element. If there is no such sibling, `null` is returned.
+	 *
+	 * @param {module:engine/view/text~Text} node Reference node.
+	 * @param {Boolean} getNext
+	 * @returns {module:engine/view/text~Text|null} Touching text node or `null` if there is no next or previous touching text node.
+	 */
+	_getTouchingViewTextNode( node, getNext ) {
+		const treeWalker = new ViewTreeWalker( {
+			startPosition: getNext ? ViewPosition.createAfter( node ) : ViewPosition.createBefore( node ),
+			direction: getNext ? 'forward' : 'backward'
+		} );
+
+		for ( const value of treeWalker ) {
+			if ( value.item.is( 'containerElement' ) ) {
+				// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
+				// text node in its container element.
+				return null;
+			} else if ( value.item.is( 'text' ) ) {
+				// Found a text node in the same container element.
+				return value.item;
+			}
+		}
+
+		return null;
 	}
 
 	/**
