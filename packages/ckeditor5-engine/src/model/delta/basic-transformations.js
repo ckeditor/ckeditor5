@@ -55,9 +55,15 @@ addTransformationCase( AttributeDelta, SplitDelta, ( a, b, context ) => {
 		return defaultTransform( a, b, context );
 	}
 
+	const undoMode = context.aWasUndone || context.bWasUndone;
 	const splitPosition = new Position( b.position.root, b.position.path.slice( 0, -1 ) );
 
 	const deltas = defaultTransform( a, b, context );
+
+	// Special case applies only if undo is not a context and only if `SplitDelta` has `InsertOperation` (not `ReinsertOperation`).
+	if ( undoMode || !( b._cloneOperation instanceof InsertOperation ) ) {
+		return deltas;
+	}
 
 	for ( const operation of a.operations ) {
 		// If a node that has been split has it's attribute updated, we should also update attribute of
@@ -292,21 +298,25 @@ addTransformationCase( SplitDelta, AttributeDelta, ( a, b, context ) => {
 
 	a = a.clone();
 
+	const undoMode = context.aWasUndone || context.bWasUndone;
 	const splitPosition = new Position( a.position.root, a.position.path.slice( 0, -1 ) );
 
-	if ( a._cloneOperation instanceof InsertOperation ) {
-		// If element to split had it's attribute changed, we have to reflect this change in an element
-		// that is in SplitDelta's InsertOperation.
-		for ( const operation of b.operations ) {
-			if ( operation.range.containsPosition( splitPosition ) || operation.range.start.isEqual( splitPosition ) ) {
-				if ( operation.newValue !== null ) {
-					a._cloneOperation.nodes.getNode( 0 ).setAttribute( operation.key, operation.newValue );
-				} else {
-					a._cloneOperation.nodes.getNode( 0 ).removeAttribute( operation.key );
-				}
+	// Special case applies only if undo is not a context and only if `SplitDelta` has `InsertOperation` (not `ReinsertOperation`).
+	if ( undoMode || !( a._cloneOperation instanceof InsertOperation ) ) {
+		return [ a ];
+	}
 
-				break;
+	// If element to split had it's attribute changed, we have to reflect this change in an element
+	// that is in SplitDelta's InsertOperation.
+	for ( const operation of b.operations ) {
+		if ( operation.range.containsPosition( splitPosition ) || operation.range.start.isEqual( splitPosition ) ) {
+			if ( operation.newValue !== null ) {
+				a._cloneOperation.nodes.getNode( 0 ).setAttribute( operation.key, operation.newValue );
+			} else {
+				a._cloneOperation.nodes.getNode( 0 ).removeAttribute( operation.key );
 			}
+
+			break;
 		}
 	}
 
@@ -383,18 +393,16 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, context ) => {
 // Add special case for RenameDelta x SplitDelta transformation.
 addTransformationCase( RenameDelta, SplitDelta, ( a, b, context ) => {
 	const undoMode = context.aWasUndone || context.bWasUndone;
-
-	// The "clone operation" may be `InsertOperation`, `ReinsertOperation`, `MoveOperation` or `NoOperation`.
-	// `MoveOperation` has `targetPosition` which we want to use. `NoOperation` has no `position` and we don't use special case then.
-	let insertPosition = b._cloneOperation.position || b._cloneOperation.targetPosition;
-
-	if ( insertPosition ) {
-		insertPosition = insertPosition.getShiftedBy( -1 );
-	}
-
 	const deltas = defaultTransform( a, b, context );
 
-	if ( insertPosition && !undoMode && a.operations[ 0 ].position.isEqual( insertPosition ) ) {
+	// Special case applies only if undo is not a context and only if `SplitDelta` has `InsertOperation` (not `ReinsertOperation`).
+	if ( undoMode || !( b._cloneOperation instanceof InsertOperation ) ) {
+		return deltas;
+	}
+
+	const insertPosition = b._cloneOperation.position.getShiftedBy( -1 );
+
+	if ( insertPosition && a.operations[ 0 ].position.isEqual( insertPosition ) ) {
 		// If a node that has been split has it's name changed, we should also change name of
 		// the node created during splitting.
 		const additionalRenameDelta = a.clone();
@@ -408,31 +416,27 @@ addTransformationCase( RenameDelta, SplitDelta, ( a, b, context ) => {
 
 // Add special case for SplitDelta x RenameDelta transformation.
 addTransformationCase( SplitDelta, RenameDelta, ( a, b, context ) => {
+	a = a.clone();
+
 	const undoMode = context.aWasUndone || context.bWasUndone;
 
-	// The "clone operation" may be `InsertOperation`, `ReinsertOperation`, `MoveOperation` or `NoOperation`.
-	// `MoveOperation` has `targetPosition` which we want to use. `NoOperation` has no `position` and we don't use special case then.
-	let insertPosition = a._cloneOperation.position || a._cloneOperation.targetPosition;
-
-	if ( insertPosition ) {
-		insertPosition = insertPosition.getShiftedBy( -1 );
+	// Special case applies only if undo is not a context and only if `SplitDelta` has `InsertOperation` (not `ReinsertOperation`).
+	if ( undoMode || !( a._cloneOperation instanceof InsertOperation ) ) {
+		return [ a ];
 	}
+
+	const insertPosition = a._cloneOperation.position.getShiftedBy( -1 );
 
 	// If element to split had it's name changed, we have to reflect this by creating additional rename operation.
 	if ( insertPosition && !undoMode && b.operations[ 0 ].position.isEqual( insertPosition ) ) {
 		const additionalRenameDelta = b.clone();
 		additionalRenameDelta.operations[ 0 ].position = insertPosition.getShiftedBy( 1 );
-
-		// `nodes` is a property that is available only if `SplitDelta` `a` has `InsertOperation`.
-		// `SplitDelta` may have `ReinsertOperation` instead of `InsertOperation`.
-		// However, such delta is only created when `MergeDelta` is reversed.
-		// So if this is not undo mode, it means that `SplitDelta` has `InsertOperation`.
 		additionalRenameDelta.operations[ 0 ].oldName = a._cloneOperation.nodes.getNode( 0 ).name;
 
-		return [ a.clone(), additionalRenameDelta ];
+		return [ a, additionalRenameDelta ];
 	}
 
-	return [ a.clone() ];
+	return [ a ];
 } );
 
 // Add special case for RemoveDelta x SplitDelta transformation.
@@ -444,6 +448,13 @@ addTransformationCase( RemoveDelta, SplitDelta, ( a, b, context ) => {
 	// NoOperation.
 	if ( !insertPosition ) {
 		return defaultTransform( a, b, context );
+	}
+
+	const undoMode = context.aWasUndone || context.bWasUndone;
+
+	// Special case applies only if undo is not a context.
+	if ( undoMode ) {
+		return deltas;
 	}
 
 	// In case if `defaultTransform` returned more than one delta.
@@ -464,6 +475,13 @@ addTransformationCase( RemoveDelta, SplitDelta, ( a, b, context ) => {
 
 // Add special case for SplitDelta x RemoveDelta transformation.
 addTransformationCase( SplitDelta, RemoveDelta, ( a, b, context ) => {
+	const undoMode = context.aWasUndone || context.bWasUndone;
+
+	// Special case applies only if undo is not a context.
+	if ( undoMode ) {
+		return defaultTransform( a, b, context );
+	}
+
 	// This case is very trickily solved.
 	// Instead of fixing `a` delta, we change `b` delta for a while and fire default transformation with fixed `b` delta.
 	// Thanks to that fixing `a` delta will be differently (correctly) transformed.

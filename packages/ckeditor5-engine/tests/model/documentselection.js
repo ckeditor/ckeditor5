@@ -1021,23 +1021,6 @@ describe( 'DocumentSelection', () => {
 				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
 			} );
 
-			it( 'are not removed or merged when containing element is merged with another empty element', () => {
-				const emptyP2 = new Element( 'p', null );
-				root.appendChildren( emptyP2 );
-
-				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
-				emptyP2.setAttribute( abcStoreAttrKey, 'bar' );
-
-				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
-				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
-
-				// <emptyP>{}<emptyP2>
-				doc.batch().merge( Position.createAfter( emptyP ) );
-
-				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
-				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
-			} );
-
 			it( 'are removed even when there is no selection in it', () => {
 				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
 
@@ -1062,15 +1045,51 @@ describe( 'DocumentSelection', () => {
 				batch.merge( Position.createAfter( emptyP ) );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+
 				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'uses document enqueue changes to clear attributes', () => {
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+
+				doc.enqueueChanges( () => {
+					doc.batch().insert( rangeInEmptyP.start, 'x' );
+
+					// `emptyP` still has the attribute, because attribute clearing is in enqueued block.
+					expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
+				} );
+
+				// When the dust settles, `emptyP` should not have the attribute.
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+			} );
+
+			it( 'are not removed or merged when containing element is merged with another empty element', () => {
+				const emptyP2 = new Element( 'p', null );
+				root.appendChildren( emptyP2 );
+
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+				emptyP2.setAttribute( abcStoreAttrKey, 'bar' );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
+				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
+
+				// <emptyP>{}<emptyP2>
+				doc.batch().merge( Position.createAfter( emptyP ) );
+
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
 			} );
 
 			it( 'are not removed on transparent batches', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
+				sinon.spy( doc, 'enqueueChanges' );
+
 				doc.batch( 'transparent' ).insert( rangeInEmptyP.start, 'x' );
 
+				expect( doc.enqueueChanges.called ).to.be.false;
 				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 			} );
 
@@ -1080,8 +1099,11 @@ describe( 'DocumentSelection', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
+				sinon.spy( doc, 'enqueueChanges' );
+
 				doc.batch().rename( emptyP, 'pnew' );
 
+				expect( doc.enqueueChanges.called ).to.be.false;
 				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 			} );
 		} );

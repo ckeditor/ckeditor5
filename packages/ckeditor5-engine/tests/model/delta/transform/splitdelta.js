@@ -990,6 +990,37 @@ describe( 'transform', () => {
 				} );
 			} );
 
+			it( 'split node has been removed - undo context', () => {
+				const removePosition = new Position( root, [ 3, 3, 3 ] );
+				const removeDelta = getRemoveDelta( removePosition, 1, baseVersion );
+
+				context.bWasUndone = true;
+
+				const transformed = transform( splitDelta, removeDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = removeDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: splitDelta.operations[ 0 ].position.getShiftedBy( -1 ),
+							baseVersion
+						},
+						{
+							type: ReinsertOperation,
+							sourcePosition: new Position( gy, [ 0, 3 ] ),
+							howMany: splitDelta.operations[ 1 ].howMany,
+							targetPosition: new Position( root, [ 3, 3, 3, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+			} );
+
 			it( 'should not throw if clone operation is NoOperation and use default transformation in that case', () => {
 				const noOpSplitDelta = new SplitDelta();
 				noOpSplitDelta.addOperation( new NoOperation( 0 ) );

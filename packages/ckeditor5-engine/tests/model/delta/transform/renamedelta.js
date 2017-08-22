@@ -78,6 +78,39 @@ describe( 'transform', () => {
 				} );
 			} );
 
+			it( 'split element is renamed but split delta was undone', () => {
+				const renameDelta = new RenameDelta();
+				renameDelta.addOperation( new RenameOperation(
+					new Position( root, [ 3, 3 ] ),
+					'p',
+					'li',
+					baseVersion
+				) );
+
+				const splitPosition = new Position( root, [ 3, 3, 3 ] );
+				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
+
+				context.bWasUndone = true;
+
+				const transformed = transform( renameDelta, splitDelta, context );
+
+				baseVersion = splitDelta.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: RenameDelta,
+					operations: [
+						{
+							type: RenameOperation,
+							oldName: 'p',
+							newName: 'li',
+							position: new Position( root, [ 3, 3 ] )
+						}
+					]
+				} );
+			} );
+
 			it( 'split element is different than renamed element', () => {
 				const renameDelta = new RenameDelta();
 				renameDelta.addOperation( new RenameOperation(

@@ -185,6 +185,35 @@ describe( 'transform', () => {
 				} );
 			} );
 
+			it( 'removed node has been split - undo context', () => {
+				const sourcePosition = new Position( root, [ 3, 3, 1 ] );
+				const removeDelta = getRemoveDelta( sourcePosition, 1, baseVersion );
+
+				const splitPosition = new Position( root, [ 3, 3, 1, 2 ] );
+				const nodeCopy = new Element( 'x' );
+				const splitDelta = getSplitDelta( splitPosition, nodeCopy, 2, baseVersion );
+
+				context.bWasUndone = true;
+
+				const transformed = transform( removeDelta, splitDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = splitDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: RemoveDelta,
+					operations: [
+						{
+							type: RemoveOperation,
+							sourcePosition,
+							howMany: 1,
+							baseVersion
+						}
+					]
+				} );
+			} );
+
 			it( 'should not throw if clone operation is NoOperation and use default transformation in that case', () => {
 				const noOpSplitDelta = new SplitDelta();
 				noOpSplitDelta.addOperation( new NoOperation( 0 ) );
