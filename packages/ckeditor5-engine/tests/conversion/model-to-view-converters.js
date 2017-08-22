@@ -1211,6 +1211,25 @@ describe( 'model-to-view-converters', () => {
 			}
 		} );
 
+		it( 'should return attribute element from descriptor object - array with classes', () => {
+			const descriptor = {
+				class: [ 'foo-class', 'bar-class' ],
+				attributes: { one: 1, two: 2 },
+				priority: 7,
+			};
+			const element = highlightDescriptorToAttributeElement( descriptor );
+
+			expect( element.is( 'attributeElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'span' );
+			expect( element.priority ).to.equal( 7 );
+			expect( element.hasClass( 'foo-class' ) ).to.be.true;
+			expect( element.hasClass( 'bar-class' ) ).to.be.true;
+
+			for ( const key of Object.keys( descriptor.attributes ) ) {
+				expect( element.getAttribute( key ) ).to.equal( descriptor.attributes[ key ] );
+			}
+		} );
+
 		it( 'should create element without class', () => {
 			const descriptor = {
 				attributes: { one: 1, two: 2 },
