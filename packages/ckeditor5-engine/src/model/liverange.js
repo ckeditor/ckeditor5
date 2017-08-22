@@ -77,11 +77,27 @@ export default class LiveRange extends Range {
 	 */
 
 	/**
-	 * Fired when `LiveRange` instance is changed due to changes in the {@link module:engine/model/document~Document document}.
+	 * Fired when `LiveRange` instance boundaries have changed due to changes in the
+	 * {@link module:engine/model/document~Document document}.
 	 *
-	 * @event change
+	 * @event change:range
 	 * @param {module:engine/model/range~Range} oldRange Range with start and end position equal to start and end position of this live
 	 * range before it got changed.
+	 * @param {Object} data Object with additional information about the change. Those parameters are passed from
+	 * {@link module:engine/model/document~Document#event:change document change event}.
+	 * @param {String} data.type Change type.
+	 * @param {module:engine/model/batch~Batch} data.batch Batch which changed the live range.
+	 * @param {module:engine/model/range~Range} data.range Range containing the result of applied change.
+	 * @param {module:engine/model/position~Position} data.sourcePosition Source position for move, remove and reinsert change types.
+	 */
+
+	/**
+	 * Fired when `LiveRange` instance boundaries have not changed after a change in {@link module:engine/model/document~Document document}
+	 * but the change took place inside the range, effectively changing its content.
+	 *
+	 * @event change:content
+	 * @param {module:engine/model/range~Range} range Range with start and end position equal to start and end position of
+	 * change range.
 	 * @param {Object} data Object with additional information about the change. Those parameters are passed from
 	 * {@link module:engine/model/document~Document#event:change document change event}.
 	 * @param {String} data.type Change type.
@@ -158,23 +174,22 @@ function transform( changeType, deltaType, batch, targetRange, sourcePosition ) 
 	const rangeShrunk = sourcePosition && ( this.containsPosition( sourcePosition ) || this.start.isEqual( sourcePosition ) );
 	const contentChanged = rangeExpanded || rangeShrunk;
 
-	// If anything changed, update the range and fire an event.
-	if ( boundariesChanged || contentChanged ) {
+	if ( boundariesChanged ) {
+		// If range boundaries have changed, fire `change:range` event.
 		const oldRange = Range.createFromRange( this );
 
-		let eventName;
+		this.start = updated.start;
+		this.end = updated.end;
 
-		if ( boundariesChanged ) {
-			this.start = updated.start;
-			this.end = updated.end;
-
-			eventName = 'change:range';
-		} else {
-			// `if contentChanged == true`.
-			eventName = 'change:content';
-		}
-
-		this.fire( eventName, oldRange, {
+		this.fire( 'change:range', oldRange, {
+			type: changeType,
+			batch,
+			range: targetRange,
+			sourcePosition
+		} );
+	} else if ( contentChanged ) {
+		// If range boundaries have not changed, but there was change inside the range, fire `change:content` event.
+		this.fire( 'change:content', Range.createFromRange( this ), {
 			type: changeType,
 			batch,
 			range: targetRange,
