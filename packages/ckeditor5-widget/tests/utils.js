@@ -65,6 +65,24 @@ describe( 'widget utils', () => {
 			remove( element, { priority: 1, class: 'highlight' } );
 			expect( element.hasClass( 'highlight' ) ).to.be.false;
 		} );
+
+		it( 'should set default highlight handling methods - CSS classes array', () => {
+			toWidget( element );
+
+			const set = element.getCustomProperty( 'addHighlight' );
+			const remove = element.getCustomProperty( 'removeHighlight' );
+
+			expect( typeof set ).to.equal( 'function' );
+			expect( typeof remove ).to.equal( 'function' );
+
+			set( element, { priority: 1, class: [ 'highlight', 'foo' ] } );
+			expect( element.hasClass( 'highlight' ) ).to.be.true;
+			expect( element.hasClass( 'foo' ) ).to.be.true;
+
+			remove( element, { priority: 1, class: [ 'foo', 'highlight' ] } );
+			expect( element.hasClass( 'highlight' ) ).to.be.false;
+			expect( element.hasClass( 'foo' ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'isWidget()', () => {
@@ -221,6 +239,18 @@ describe( 'widget utils', () => {
 			expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
 
 			sinon.assert.notCalled( removeSpy );
+		} );
+
+		it( 'should call highlight methods - CSS class array', () => {
+			const descriptor = { priority: 10, class: [ 'highlight', 'a' ] };
+			const secondDescriptor = { priority: 10, class: [ 'highlight', 'b' ] };
+
+			set( element, descriptor );
+			set( element, secondDescriptor );
+
+			sinon.assert.calledTwice( addSpy );
+			expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+			expect( addSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
 		} );
 	} );
 } );

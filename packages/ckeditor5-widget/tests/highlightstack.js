@@ -164,4 +164,26 @@ describe( 'HighlightStack', () => {
 		expect( spy.secondCall.args[ 1 ].newDescriptor ).to.equal( descriptorC );
 		expect( spy.secondCall.args[ 1 ].oldDescriptor ).to.equal( descriptorB );
 	} );
+
+	it( 'should sort by class when priorities are the same - array of CSS classes', () => {
+		const spy = sinon.spy();
+		const descriptorA = { priority: 10, class: [ 'css-a', 'css-z' ] };
+		const descriptorB = { priority: 10, class: [ 'css-a', 'css-y' ] };
+		const descriptorC = { priority: 10, class: 'css-c' };
+
+		stack.on( 'change:top', spy );
+		stack.add( descriptorB );
+		stack.add( descriptorA );
+		stack.add( descriptorC );
+
+		sinon.assert.calledThrice( spy );
+		expect( spy.firstCall.args[ 1 ].newDescriptor ).to.equal( descriptorB );
+		expect( spy.firstCall.args[ 1 ].oldDescriptor ).to.be.undefined;
+
+		expect( spy.secondCall.args[ 1 ].newDescriptor ).to.equal( descriptorA );
+		expect( spy.secondCall.args[ 1 ].oldDescriptor ).to.equal( descriptorB );
+
+		expect( spy.thirdCall.args[ 1 ].newDescriptor ).to.equal( descriptorC );
+		expect( spy.thirdCall.args[ 1 ].oldDescriptor ).to.equal( descriptorA );
+	} );
 } );

@@ -62,11 +62,16 @@ export function toWidget( element, options = {} ) {
 
 	setHighlightHandling(
 		element,
-		( element, descriptor ) => element.addClass( descriptor.class ),
-		( element, descriptor ) => element.removeClass( descriptor.class )
+		( element, descriptor ) => element.addClass( ...normalizeToArray( descriptor.class ) ),
+		( element, descriptor ) => element.removeClass( ...normalizeToArray( descriptor.class ) )
 	);
 
 	return element;
+
+	// Normalizes CSS class in descriptor that can be provided in form of an array or a string.
+	function normalizeToArray( classes ) {
+		return Array.isArray( classes ) ? classes : [ classes ];
+	}
 }
 
 /**

@@ -125,7 +125,8 @@ mix( HighlightStack, EmitterMixin );
 // @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} descriptorB
 // @returns {Boolean}
 function compareDescriptors( descriptorA, descriptorB ) {
-	return descriptorA.priority == descriptorB.priority && descriptorA.class == descriptorB.class;
+	return descriptorA.priority == descriptorB.priority &&
+		classesToString( descriptorA.class ) == classesToString( descriptorB.class );
 }
 
 // Checks whenever first descriptor should be placed in the stack before second one.
@@ -141,7 +142,16 @@ function shouldABeBeforeB( a, b ) {
 	}
 
 	// When priorities are equal and names are different - use classes to compare.
-	return a.class > b.class;
+	return classesToString( a.class ) > classesToString( b.class );
+}
+
+// Converts CSS classes passed with {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor} to
+// sorted string.
+//
+// @param {String|Array<String>} descriptor
+// @returns {String}
+function classesToString( classes ) {
+	return Array.isArray( classes ) ? classes.sort().join( ',' ) : classes;
 }
 
 /**
