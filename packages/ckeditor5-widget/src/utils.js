@@ -42,7 +42,7 @@ export function isWidget( element ) {
  * * adds custom `getFillerOffset` method returning `null`,
  * * adds `ck-widget` CSS class,
  * * adds custom property allowing to recognize widget elements by using {@link ~isWidget},
- * * implements `setHighlight` and `removeHighlight` custom properties to handle view highlight on widgets.
+ * * implements `addHighlight` and `removeHighlight` custom properties to handle view highlight on widgets.
  *
  * @param {module:engine/view/element~Element} element
  * @param {Object} [options={}]
@@ -90,7 +90,7 @@ export function setHighlightHandling( element, add, remove ) {
 		}
 	} );
 
-	element.setCustomProperty( 'setHighlight', ( element, descriptor ) => stack.add( descriptor ) );
+	element.setCustomProperty( 'addHighlight', ( element, descriptor ) => stack.add( descriptor ) );
 	element.setCustomProperty( 'removeHighlight', ( element, descriptor ) => stack.remove( descriptor ) );
 }
 

@@ -53,7 +53,7 @@ describe( 'widget utils', () => {
 		it( 'should set default highlight handling methods', () => {
 			toWidget( element );
 
-			const set = element.getCustomProperty( 'setHighlight' );
+			const set = element.getCustomProperty( 'addHighlight' );
 			const remove = element.getCustomProperty( 'removeHighlight' );
 
 			expect( typeof set ).to.equal( 'function' );
@@ -137,7 +137,7 @@ describe( 'widget utils', () => {
 		} );
 	} );
 
-	describe( 'setHighlightHandling()', () => {
+	describe( 'addHighlightHandling()', () => {
 		let element, addSpy, removeSpy, set, remove;
 
 		beforeEach( () => {
@@ -146,7 +146,7 @@ describe( 'widget utils', () => {
 			removeSpy = sinon.spy();
 
 			setHighlightHandling( element, addSpy, removeSpy );
-			set = element.getCustomProperty( 'setHighlight' );
+			set = element.getCustomProperty( 'addHighlight' );
 			remove = element.getCustomProperty( 'removeHighlight' );
 		} );
 
