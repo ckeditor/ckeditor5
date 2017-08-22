@@ -324,16 +324,30 @@ class Marker {
 
 	/**
 	 * Fired whenever {@link ~Marker#_liveRange marker range} is changed due to changes on {@link module:engine/model/document~Document}.
-	 * This is actually a delegated {@link module:engine/model/liverange~LiveRange#event:change LiveRange change event}.
+	 * This is a delegated {@link module:engine/model/liverange~LiveRange#event:change:range LiveRange change:range event}.
 	 *
 	 * When marker is removed from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection},
 	 * all event listeners listening to it should be removed. It is best to do it on
 	 * {@link module:engine/model/markercollection~MarkerCollection#event:remove MarkerCollection remove event}.
 	 *
-	 * @see module:engine/model/liverange~LiveRange#event:change
-	 * @event change
-	 * @param {module:engine/model/range~Range} oldRange Range with start and end position equal to start and end position of
-	 * this marker range before it got changed.
+	 * @see module:engine/model/liverange~LiveRange#event:change:range
+	 * @event change:range
+	 * @param {module:engine/model/range~Range} oldRange
+	 * @param {Object} data
+	 */
+
+	/**
+	 * Fired whenever change on {@link module:engine/model/document~Document} is done inside {@link ~Marker#_liveRange marker range}.
+	 * This is a delegated {@link module:engine/model/liverange~LiveRange#event:change:content LiveRange change:content event}.
+	 *
+	 * When marker is removed from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection},
+	 * all event listeners listening to it should be removed. It is best to do it on
+	 * {@link module:engine/model/markercollection~MarkerCollection#event:remove MarkerCollection remove event}.
+	 *
+	 * @see module:engine/model/liverange~LiveRange#event:change:content
+	 * @event change:content
+	 * @param {module:engine/model/range~Range} oldRange
+	 * @param {Object} data
 	 */
 }
 
