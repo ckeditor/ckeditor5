@@ -7,6 +7,7 @@
 
 import global from '../../src/dom/global';
 import Rect from '../../src/dom/rect';
+import log from '../../src/log';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
@@ -23,6 +24,8 @@ describe( 'Rect', () => {
 			width: 20,
 			height: 20
 		};
+
+		testUtils.sinon.stub( log, 'warn' );
 	} );
 
 	describe( 'constructor()', () => {
@@ -138,6 +141,29 @@ describe( 'Rect', () => {
 			rect.width = 200;
 
 			assertRect( geometry, sourceGeometry );
+		} );
+
+		it( 'should warn if the source does not belong to rendered DOM tree (HTML element)', () => {
+			const element = document.createElement( 'div' );
+
+			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+
+			const rect = new Rect( element );
+			sinon.assert.calledOnce( log.warn );
+			sinon.assert.calledWithExactly( log.warn, sinon.match( /^rect-source-not-in-dom/ ), { source: element } );
+			assertRect( rect, geometry );
+		} );
+
+		it( 'should warn if the source does not belong to rendered DOM tree (DOM Range)', () => {
+			const range = document.createRange();
+
+			range.collapse();
+			testUtils.sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
+
+			const rect = new Rect( range );
+			sinon.assert.calledOnce( log.warn );
+			sinon.assert.calledWithExactly( log.warn, sinon.match( /^rect-source-not-in-dom/ ), { source: range } );
+			assertRect( rect, geometry );
 		} );
 	} );
 

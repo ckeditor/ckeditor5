@@ -11,6 +11,7 @@ import global from './global';
 import isRange from './isrange';
 import isElement from '../lib/lodash/isElement';
 import getBorderWidths from './getborderwidths';
+import log from '../log';
 
 /**
  * A helper class representing a `ClientRect` object, e.g. value returned by
@@ -46,6 +47,8 @@ export default class Rect {
 	 * @param {HTMLElement|Range|Window|ClientRect|module:utils/dom/rect~Rect|Object} source A source object to create the rect.
 	 */
 	constructor( source ) {
+		const isSourceRange = isRange( source );
+
 		/**
 		 * The object this rect is for.
 		 *
@@ -60,10 +63,33 @@ export default class Rect {
 			enumerable: false
 		} );
 
-		if ( isElement( source ) ) {
-			copyRectProperties( this, source.getBoundingClientRect() );
-		} else if ( isRange( source ) ) {
-			copyRectProperties( this, Rect.getDomRangeRects( source )[ 0 ] );
+		if ( isElement( source ) || isSourceRange ) {
+			const sourceNode = isSourceRange ? source.startContainer : source;
+
+			if ( !sourceNode.ownerDocument || !sourceNode.ownerDocument.body.contains( sourceNode ) ) {
+				/**
+				 * The `Rect` class depends on `getBoundingClientRect` and `getClientRects` DOM methods.
+				 * If the {@link #constructor source} of a rect in an HTML element or a DOM range but it does
+				 * not belong to any rendered DOM tree, these methods will fail to obtain the geometry and
+				 * the rect instance makes little sense to the features using it.
+				 *
+				 * To get rid of this warning make sure the source passed to the constructor
+				 * is a descendant of `window.document.body`.
+				 *
+				 * @error rect-source-not-in-dom
+				 * @param {String} source The source of the Rect instance.
+				 */
+				log.warn(
+					'rect-source-not-in-dom: The source of this rect does not belong to any rendered DOM tree.',
+					{ source }
+				);
+			}
+
+			if ( isSourceRange ) {
+				copyRectProperties( this, Rect.getDomRangeRects( source )[ 0 ] );
+			} else {
+				copyRectProperties( this, source.getBoundingClientRect() );
+			}
 		} else if ( source === global.window ) {
 			const { innerWidth, innerHeight } = global.window;
 
