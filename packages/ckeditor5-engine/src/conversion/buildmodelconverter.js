@@ -439,7 +439,7 @@ export default function buildModelConverter() {
  * can handle displaying highlight separately by providing `addHighlight` and `removeHighlight` custom
  * properties.
  *
- * @property {String|Array<String>} class CSS class or array of classes that will be added to `span`
+ * @property {String|Array.<String>} class CSS class or array of classes that will be added to `span`
  * {@link module:engine/view/attributeelement~AttributeElement} wrapping each text node in the highlighted content.
  * @property {Number} [priority] {@link module:engine/view/attributeelement~AttributeElement#priority} of the `span`
  * wrapping each text node in the highlighted content. If not provided, default 10 priority will be used.
