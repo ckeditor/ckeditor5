@@ -343,7 +343,7 @@ describe( 'Model converter builder', () => {
 		} );
 	} );
 
-	describe( 'model marker to virtual selection converter', () => {
+	describe( 'model marker to highlight converter', () => {
 		let modelText, modelElement;
 
 		beforeEach( () => {
@@ -358,11 +358,11 @@ describe( 'Model converter builder', () => {
 			mapper.bindElements( modelElement, viewElement );
 		} );
 
-		it( 'using passed virtual selection descriptor object', () => {
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( {
-				class: 'virtual-selection',
+		it( 'using passed highlight descriptor object', () => {
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toHighlight( {
+				class: 'highlight',
 				priority: 3,
-				attributes: { title: 'marker' }
+				attributes: { title: 'highlight title' }
 			} );
 
 			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
@@ -371,7 +371,7 @@ describe( 'Model converter builder', () => {
 				'<div>' +
 					'<p>' +
 						'fo' +
-						'<span class="virtual-selection" title="marker">ob</span>' +
+						'<span class="highlight" title="highlight title">ob</span>' +
 						'ar' +
 					'</p>' +
 				'</div>' );
@@ -385,11 +385,11 @@ describe( 'Model converter builder', () => {
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
 
-		it( 'using passed virtual selection descriptor object creator', () => {
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( () => ( {
-				class: 'virtual-selection',
+		it( 'using passed highlight descriptor object creator', () => {
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toHighlight( () => ( {
+				class: 'highlight',
 				priority: 12,
-				attributes: { title: 'marker' }
+				attributes: { title: 'highlight title' }
 			} ) );
 
 			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
@@ -398,7 +398,7 @@ describe( 'Model converter builder', () => {
 				'<div>' +
 					'<p>' +
 						'fo' +
-						'<span class="virtual-selection" title="marker">ob</span>' +
+						'<span class="highlight" title="highlight title">ob</span>' +
 						'ar' +
 					'</p>' +
 				'</div>' );
@@ -413,8 +413,8 @@ describe( 'Model converter builder', () => {
 		} );
 
 		it( 'should do nothing when marker range is collapsed', () => {
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( {
-				class: 'virtual-selection'
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toHighlight( {
+				class: 'highlight'
 			} );
 
 			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 ) );
@@ -429,11 +429,11 @@ describe( 'Model converter builder', () => {
 		} );
 
 		it( 'should create converters with provided priority', () => {
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( {
-				class: 'virtual-selection'
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toHighlight( {
+				class: 'highlight'
 			} );
 
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toVirtualSelection( {
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toHighlight( {
 				class: 'override'
 			} );
 
@@ -451,14 +451,14 @@ describe( 'Model converter builder', () => {
 
 		it( 'should throw if trying to convert from attribute', () => {
 			expect( () => {
-				buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toVirtualSelection( { class: 'foo' } );
-			} ).to.throw( CKEditorError, /^build-model-converter-non-marker-to-virtual-selection/ );
+				buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toHighlight( { class: 'foo' } );
+			} ).to.throw( CKEditorError, /^build-model-converter-non-marker-to-highlight/ );
 		} );
 
 		it( 'should throw if trying to convert from element', () => {
 			expect( () => {
-				buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toVirtualSelection( { class: 'foo' } );
-			} ).to.throw( CKEditorError, /^build-model-converter-non-marker-to-virtual-selection/ );
+				buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toHighlight( { class: 'foo' } );
+			} ).to.throw( CKEditorError, /^build-model-converter-non-marker-to-highlight/ );
 		} );
 	} );
 

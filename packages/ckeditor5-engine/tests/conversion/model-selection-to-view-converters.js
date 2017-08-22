@@ -29,14 +29,14 @@ import {
 	insertElement,
 	insertText,
 	wrapItem,
-	convertTextsInsideMarker,
-	convertElementsInsideMarker
+	highlightText,
+	highlightElement
 } from '../../src/conversion/model-to-view-converters';
 
 import { stringify as stringifyView } from '../../src/dev-utils/view';
 import { setData as setModelData } from '../../src/dev-utils/model';
 
-const virtualSelectionDescriptor = { class: 'marker', priority: 1 };
+const highlightDescriptor = { class: 'marker', priority: 1 };
 
 describe( 'model-selection-to-view-converters', () => {
 	let dispatcher, mapper, modelDoc, modelRoot, modelSelection, viewDoc, viewRoot, viewSelection;
@@ -60,10 +60,10 @@ describe( 'model-selection-to-view-converters', () => {
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
 
-		dispatcher.on( 'addMarker:marker', convertTextsInsideMarker( virtualSelectionDescriptor ) );
-		dispatcher.on( 'addMarker:marker', convertElementsInsideMarker( virtualSelectionDescriptor ) );
-		dispatcher.on( 'removeMarker:marker', convertTextsInsideMarker( virtualSelectionDescriptor ) );
-		dispatcher.on( 'removeMarker:marker', convertElementsInsideMarker( virtualSelectionDescriptor ) );
+		dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
+		dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
+		dispatcher.on( 'removeMarker:marker', highlightText( highlightDescriptor ) );
+		dispatcher.on( 'removeMarker:marker', highlightElement( highlightDescriptor ) );
 
 		// Default selection converters.
 		dispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
@@ -80,7 +80,7 @@ describe( 'model-selection-to-view-converters', () => {
 			// Selection converters for selection attributes.
 			dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'strong' ) ) );
 			dispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
-			dispatcher.on( 'selectionMarker:marker', convertSelectionMarker( virtualSelectionDescriptor ) );
+			dispatcher.on( 'selectionMarker:marker', convertSelectionMarker( highlightDescriptor ) );
 		} );
 
 		describe( 'range selection', () => {
@@ -268,7 +268,7 @@ describe( 'model-selection-to-view-converters', () => {
 					.to.equal( '<div>f<span class="marker">o<strong>o</strong>[]<strong>b</strong>a</span>r</div>' );
 			} );
 
-			it( 'in marker - using virtual selection descriptor creator', () => {
+			it( 'in marker - using highlight descriptor creator', () => {
 				dispatcher.on( 'selectionMarker:marker2', convertSelectionMarker(
 					data => ( { 'class': data.markerName } )
 				) );
