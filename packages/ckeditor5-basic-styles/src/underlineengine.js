@@ -4,7 +4,7 @@
  */
 
 /**
- * @module basic-styles/underline
+ * @module basic-styles/underlineengine
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
