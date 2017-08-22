@@ -11,17 +11,17 @@ The {@link module:heading/heading~Heading} feature enables support for headings.
 
 ## Heading levels
 
-By default this feature is configured to support `<h2>`, `<h3>` and `<h4>` elements which are named accordingly "Heading 1", "Heading 2" and "Heading 3". The rationale behind starting from `<h2>` is that `<h1>` should be reserved for page's main title and the page's content will usually start from `<h2>`.
+By default this feature is configured to support `<h2>`, `<h3>` and `<h4>` elements which are named: "Heading 1", "Heading 2" and "Heading 3", respectively. The rationale behind starting from `<h2>` is that `<h1>` should be reserved for the page's main title and the page content will usually start from `<h2>`.
 
 <info-box hint>
-	You can read more about why the editor should not create `<h1>` elements in [Headings page of Editor Recommendations](http://ckeditor.github.io/editor-recommendations/features/headings.html).
+	You can read more about why the editor should not create `<h1>` elements in the [Headings section of Editor Recommendations](http://ckeditor.github.io/editor-recommendations/features/headings.html).
 </info-box>
 
 ### Configuring heading levels
 
-It is, of course, possible to configure which heading levels the editor should support and how they should be named in the Headings dropdown. Use the {@link module:heading/heading~HeadingConfig#options `heading.options`} config option to do so.
+It is, of course, possible to configure which heading levels the editor should support and how they should be named in the Headings dropdown. Use the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option to do so.
 
-The following editor will support only two levels of headings – `<h1>` and `<h2>`:
+The following editor will support only two levels of headings &mdash; `<h1>` and `<h2>`:
 
 ```js
 ClassicEditor
@@ -40,7 +40,7 @@ ClassicEditor
 
 {@snippetTODO custom-heading-levels}
 
-Read more about the `heading.options` format in {@link module:heading/heading~HeadingConfig#options the option's API documentation}.
+Read more about the `heading.options` format in {@link module:heading/heading~HeadingConfig#options the API documentation}.
 
 ## Installation
 
@@ -64,14 +64,14 @@ ClassicEditor
 	.catch( ... );
 ```
 
-If you are using editor build see how to {@linkTODO customize builds}.
+If you are using an editor build, see how to {@linkTODO customize builds}.
 
 ## Common API
 
 The {@link module:heading/heading~Heading} plugin registers:
 
-* the `'headings'` dropdown.
-* `'heading1'`, `'heading2'`, ..., `'headingN'` commands based on the {@link module:heading/heading~HeadingConfig#options `heading.options`} config option.
+* The `'headings'` dropdown.
+* The `'heading1'`, `'heading2'`, ..., `'headingN'` commands based on the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option.
 
 	You can turn the currently selected block(s) to headings by executing one of these commands:
 
