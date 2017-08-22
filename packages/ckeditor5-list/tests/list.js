@@ -121,8 +121,9 @@ describe( 'List', () => {
 
 		beforeEach( () => {
 			domEvtDataStub = {
-				keystroke: getCode( 'Tab' ),
-				preventDefault() {}
+				keyCode: getCode( 'Tab' ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
 			};
 
 			sinon.spy( editor, 'execute' );
@@ -143,10 +144,12 @@ describe( 'List', () => {
 
 			expect( editor.execute.calledOnce ).to.be.true;
 			expect( editor.execute.calledWithExactly( 'indentList' ) ).to.be.true;
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );
 
 		it( 'should execute outdentList command on Shift+Tab keystroke', () => {
-			domEvtDataStub.keystroke += getCode( 'Shift' );
+			domEvtDataStub.keyCode += getCode( 'Shift' );
 
 			setData(
 				doc,
@@ -158,6 +161,8 @@ describe( 'List', () => {
 
 			expect( editor.execute.calledOnce ).to.be.true;
 			expect( editor.execute.calledWithExactly( 'outdentList' ) ).to.be.true;
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );
 
 		it( 'should not indent if command is disabled', () => {
@@ -166,10 +171,12 @@ describe( 'List', () => {
 			editor.editing.view.fire( 'keydown', domEvtDataStub );
 
 			expect( editor.execute.called ).to.be.false;
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 		} );
 
 		it( 'should not indent or outdent if alt+tab is pressed', () => {
-			domEvtDataStub.keystroke += getCode( 'alt' );
+			domEvtDataStub.keyCode += getCode( 'alt' );
 
 			setData(
 				doc,
@@ -180,6 +187,8 @@ describe( 'List', () => {
 			editor.editing.view.fire( 'keydown', domEvtDataStub );
 
 			expect( editor.execute.called ).to.be.false;
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 		} );
 	} );
 } );
