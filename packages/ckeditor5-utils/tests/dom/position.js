@@ -5,6 +5,7 @@
 
 import global from '../../src/dom/global';
 import { getOptimalPosition } from '../../src/dom/position';
+import Rect from '../../src/dom/rect';
 
 let element, target, limiter;
 
@@ -64,6 +65,20 @@ describe( 'getOptimalPosition()', () => {
 		assertPosition( {
 			element,
 			target: () => target,
+			positions: [ attachLeft ]
+		}, {
+			top: 100,
+			left: 80,
+			name: 'left'
+		} );
+	} );
+
+	it( 'should work when the target is a Rect', () => {
+		setElementTargetPlayground();
+
+		assertPosition( {
+			element,
+			target: new Rect( target ),
 			positions: [ attachLeft ]
 		}, {
 			top: 100,
@@ -191,6 +206,30 @@ describe( 'getOptimalPosition()', () => {
 
 	describe( 'with a limiter', () => {
 		beforeEach( setElementTargetLimiterPlayground );
+
+		it( 'should work when the limiter is a Function', () => {
+			assertPosition( {
+				element, target,
+				limiter: () => limiter,
+				positions: [ attachLeft, attachRight ]
+			}, {
+				top: 100,
+				left: -20,
+				name: 'left'
+			} );
+		} );
+
+		it( 'should work when the limiter is a Rect', () => {
+			assertPosition( {
+				element, target,
+				limiter: new Rect( limiter ),
+				positions: [ attachLeft, attachRight ]
+			}, {
+				top: 100,
+				left: -20,
+				name: 'left'
+			} );
+		} );
 
 		it( 'should return coordinates (#1)', () => {
 			assertPosition( {

@@ -19,31 +19,14 @@ describe( 'KeystrokeHandler', () => {
 
 	describe( 'listenTo()', () => {
 		it( 'activates the listening on the emitter', () => {
-			emitter = Object.create( EmitterMixin );
-			keystrokes = new KeystrokeHandler();
+			const spy = sinon.spy();
+			const keyEvtData = getCtrlA();
 
-			const spy = sinon.spy( keystrokes, 'press' );
-			const keyEvtData = { keyCode: 1 };
-
-			emitter.fire( 'keydown', keyEvtData );
-
-			expect( spy.notCalled ).to.be.true;
-
-			keystrokes.listenTo( emitter );
+			keystrokes.set( 'Ctrl+A', spy );
 			emitter.fire( 'keydown', keyEvtData );
 
 			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, keyEvtData );
-		} );
-
-		it( 'triggers #press on #keydown', () => {
-			const spy = sinon.spy( keystrokes, 'press' );
-			const keyEvtData = { keyCode: 1 };
-
-			emitter.fire( 'keydown', keyEvtData );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, keyEvtData );
+			sinon.assert.calledWithExactly( spy, keyEvtData, sinon.match.func );
 		} );
 	} );
 
@@ -52,7 +35,7 @@ describe( 'KeystrokeHandler', () => {
 			const spy = sinon.spy();
 			const keyEvtData = getCtrlA();
 
-			keystrokes.set( 'ctrl + A', spy );
+			keystrokes.set( 'Ctrl+A', spy );
 
 			const wasHandled = keystrokes.press( keyEvtData );
 
@@ -61,15 +44,57 @@ describe( 'KeystrokeHandler', () => {
 			expect( wasHandled ).to.be.true;
 		} );
 
-		it( 'provides a callback which both preventDefault and stopPropagation', done => {
+		it( 'returns false when no handler', () => {
 			const keyEvtData = getCtrlA();
 
-			Object.assign( keyEvtData, {
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
+			const wasHandled = keystrokes.press( keyEvtData );
 
-			keystrokes.set( 'ctrl + A', ( data, cancel ) => {
+			expect( wasHandled ).to.be.false;
+		} );
+	} );
+
+	describe( 'set()', () => {
+		it( 'handles array format', () => {
+			const spy = sinon.spy();
+
+			keystrokes.set( [ 'Ctrl', 'A' ], spy );
+
+			expect( keystrokes.press( getCtrlA() ) ).to.be.true;
+		} );
+
+		it( 'aggregates multiple callbacks for the same keystroke', () => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+
+			keystrokes.set( [ 'Ctrl', 'A' ], spy1 );
+			keystrokes.set( [ 'Ctrl', 'A' ], spy2 );
+
+			keystrokes.press( getCtrlA() );
+
+			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledOnce( spy2 );
+		} );
+
+		it( 'supports priorities', () => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+			const spy3 = sinon.spy();
+			const spy4 = sinon.spy();
+
+			keystrokes.set( [ 'Ctrl', 'A' ], spy1 );
+			keystrokes.set( [ 'Ctrl', 'A' ], spy2, { priority: 'high' } );
+			keystrokes.set( [ 'Ctrl', 'A' ], spy3, { priority: 'low' } );
+			keystrokes.set( [ 'Ctrl', 'A' ], spy4 );
+
+			keystrokes.press( getCtrlA() );
+
+			sinon.assert.callOrder( spy2, spy1, spy4, spy3 );
+		} );
+
+		it( 'provides a callback which causes preventDefault and stopPropagation in the DOM', done => {
+			const keyEvtData = getCtrlA();
+
+			keystrokes.set( 'Ctrl+A', ( data, cancel ) => {
 				expect( data ).to.equal( keyEvtData );
 
 				sinon.assert.notCalled( keyEvtData.preventDefault );
@@ -86,35 +111,24 @@ describe( 'KeystrokeHandler', () => {
 			emitter.fire( 'keydown', keyEvtData );
 		} );
 
-		it( 'returns false when no handler', () => {
-			const keyEvtData = getCtrlA();
-
-			const wasHandled = keystrokes.press( keyEvtData );
-
-			expect( wasHandled ).to.be.false;
-		} );
-	} );
-
-	describe( 'set()', () => {
-		it( 'handles array format', () => {
-			const spy = sinon.spy();
-
-			keystrokes.set( [ 'ctrl', 'A' ], spy );
-
-			expect( keystrokes.press( getCtrlA() ) ).to.be.true;
-		} );
-
-		it( 'aggregates multiple callbacks for the same keystroke', () => {
+		it( 'provides a callback which stops the event and remaining callbacks in the keystroke handler', () => {
 			const spy1 = sinon.spy();
 			const spy2 = sinon.spy();
+			const spy3 = sinon.spy();
+			const spy4 = sinon.spy();
 
-			keystrokes.set( [ 'ctrl', 'A' ], spy1 );
-			keystrokes.set( [ 'ctrl', 'A' ], spy2 );
+			keystrokes.set( [ 'Ctrl', 'A' ], spy1 );
+			keystrokes.set( [ 'Ctrl', 'A' ], spy2, { priority: 'high' } );
+			keystrokes.set( [ 'Ctrl', 'A' ], spy3, { priority: 'low' } );
+			keystrokes.set( [ 'Ctrl', 'A' ], ( keyEvtData, cancel ) => {
+				spy4();
+				cancel();
+			} );
 
 			keystrokes.press( getCtrlA() );
 
-			sinon.assert.calledOnce( spy1 );
-			sinon.assert.calledOnce( spy2 );
+			sinon.assert.callOrder( spy2, spy1, spy4 );
+			sinon.assert.notCalled( spy3 );
 		} );
 	} );
 
@@ -133,7 +147,7 @@ describe( 'KeystrokeHandler', () => {
 			const spy = sinon.spy();
 			const keystrokeHandler = keystrokes;
 
-			keystrokeHandler.set( 'ctrl + A', spy );
+			keystrokeHandler.set( 'Ctrl+A', spy );
 
 			keystrokeHandler.destroy();
 
@@ -146,5 +160,10 @@ describe( 'KeystrokeHandler', () => {
 } );
 
 function getCtrlA() {
-	return { keyCode: keyCodes.a, ctrlKey: true };
+	return {
+		keyCode: keyCodes.a,
+		ctrlKey: true,
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
+	};
 }
