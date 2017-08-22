@@ -215,7 +215,12 @@ export default class Link extends Plugin {
 				this.formView.focus();
 				cancel();
 			}
-		}, { priority: 'high' } );
+		}, {
+			// Use the high priority because the link UI navigation is more important
+			// than other feature's actions, e.g. list indentation.
+			// https://github.com/ckeditor/ckeditor5-link/issues/146
+			priority: 'high'
+		} );
 
 		// Close the panel on the Esc key press when the editable has focus and the balloon is visible.
 		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
