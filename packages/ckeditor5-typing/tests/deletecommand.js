@@ -46,11 +46,11 @@ describe( 'DeleteCommand', () => {
 
 				// We expect that command is executed in enqueue changes block. Since we are already in
 				// an enqueued block, the command execution will be postponed. Hence, no changes.
-				expect( getData( doc ) ).to.equal( '<p>foo[]bar</p>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
 			// After all enqueued changes are done, the command execution is reflected.
-			expect( getData( doc ) ).to.equal( '<p>fo[]bar</p>' );
+			expect( getData( doc ) ).to.equal( '<paragraph>fo[]bar</paragraph>' );
 		} );
 
 		it( 'locks buffer when executing', () => {
