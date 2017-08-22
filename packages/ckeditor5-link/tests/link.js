@@ -22,7 +22,7 @@ import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobs
 testUtils.createSinonSandbox();
 
 describe( 'Link', () => {
-	let editor, linkFeature, linkButton, unlinkButton, balloon, formView, editorElement;
+	let editor, linkFeature, linkButton, balloon, formView, editorElement;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -39,7 +39,6 @@ describe( 'Link', () => {
 
 				linkFeature = editor.plugins.get( Link );
 				linkButton = editor.ui.componentFactory.create( 'link' );
-				unlinkButton = editor.ui.componentFactory.create( 'unlink' );
 				balloon = editor.plugins.get( ContextualBalloon );
 				formView = linkFeature.formView;
 
@@ -434,31 +433,6 @@ describe( 'Link', () => {
 
 			linkButton.fire( 'execute' );
 			sinon.assert.calledWithExactly( spy, true );
-		} );
-	} );
-
-	describe( 'unlink toolbar button', () => {
-		it( 'should register unlink button', () => {
-			expect( unlinkButton ).to.instanceOf( ButtonView );
-		} );
-
-		it( 'should bind unlinkButtonView to unlink command', () => {
-			const command = editor.commands.get( 'unlink' );
-
-			command.isEnabled = true;
-			expect( unlinkButton.isEnabled ).to.be.true;
-
-			command.isEnabled = false;
-			expect( unlinkButton.isEnabled ).to.be.false;
-		} );
-
-		it( 'should execute unlink command on unlinkButtonView execute event', () => {
-			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-
-			unlinkButton.fire( 'execute' );
-
-			expect( executeSpy.calledOnce ).to.true;
-			expect( executeSpy.calledWithExactly( 'unlink' ) ).to.true;
 		} );
 	} );
 
