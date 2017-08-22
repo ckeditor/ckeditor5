@@ -85,7 +85,7 @@ export default class DocumentSelection extends Selection {
 
 			// Whenever element which had selection's attributes stored in it stops being empty,
 			// the attributes need to be removed.
-			clearAttributesStoredInElement( changes, batch );
+			clearAttributesStoredInElement( changes, batch, this._document );
 		} );
 	}
 
@@ -312,7 +312,7 @@ export default class DocumentSelection extends Selection {
 
 		const liveRange = LiveRange.createFromRange( range );
 
-		this.listenTo( liveRange, 'change', ( evt, oldRange, data ) => {
+		this.listenTo( liveRange, 'change:range', ( evt, oldRange, data ) => {
 			// If `LiveRange` is in whole moved to the graveyard, fix that range.
 			if ( liveRange.root == this._document.graveyard ) {
 				const sourceStart = data.sourcePosition;
@@ -691,7 +691,7 @@ function getAttrsIfCharacter( node ) {
 }
 
 // Removes selection attributes from element which is not empty anymore.
-function clearAttributesStoredInElement( changes, batch ) {
+function clearAttributesStoredInElement( changes, batch, document ) {
 	// Batch may not be passed to the document#change event in some tests.
 	// See https://github.com/ckeditor/ckeditor5-engine/issues/1001#issuecomment-314202352
 	// Ignore also transparent batches because they are... transparent.
@@ -707,9 +707,11 @@ function clearAttributesStoredInElement( changes, batch ) {
 		return;
 	}
 
-	const storedAttributes = Array.from( changeParent.getAttributeKeys() ).filter( key => key.startsWith( storePrefix ) );
+	document.enqueueChanges( () => {
+		const storedAttributes = Array.from( changeParent.getAttributeKeys() ).filter( key => key.startsWith( storePrefix ) );
 
-	for ( const key of storedAttributes ) {
-		batch.removeAttribute( changeParent, key );
-	}
+		for ( const key of storedAttributes ) {
+			batch.removeAttribute( changeParent, key );
+		}
+	} );
 }
