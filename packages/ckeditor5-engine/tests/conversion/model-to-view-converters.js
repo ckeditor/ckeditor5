@@ -28,8 +28,8 @@ import {
 	unwrapItem,
 	remove,
 	removeUIElement,
-	highlightTexts,
-	highlightElements,
+	highlightText,
+	highlightElement,
 	highlightDescriptorToAttributeElement
 } from '../../src/conversion/model-to-view-converters';
 
@@ -82,7 +82,7 @@ describe( 'model-to-view-converters', () => {
 		return result;
 	}
 
-	describe( 'highlightTexts()', () => {
+	describe( 'highlightText()', () => {
 		let modelElement1, modelElement2, markerRange;
 		const highlightDescriptor = {
 			class: 'highlight-class',
@@ -105,8 +105,8 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should wrap and unwrap text nodes', () => {
-			dispatcher.on( 'addMarker:marker', highlightTexts( highlightDescriptor ) );
-			dispatcher.on( 'removeMarker:marker', highlightTexts( highlightDescriptor ) );
+			dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
+			dispatcher.on( 'removeMarker:marker', highlightText( highlightDescriptor ) );
 			dispatcher.convertInsertion( markerRange );
 
 			modelDoc.markers.set( 'marker', markerRange );
@@ -131,10 +131,10 @@ describe( 'model-to-view-converters', () => {
 		it( 'should not convert marker on elements already consumed', () => {
 			const newDescriptor = { class: 'override-class' };
 
-			dispatcher.on( 'addMarker:marker', highlightTexts( highlightDescriptor ) );
-			dispatcher.on( 'addMarker:marker', highlightTexts( newDescriptor ), { priority: 'high' } );
-			dispatcher.on( 'removeMarker:marker', highlightTexts( highlightDescriptor ) );
-			dispatcher.on( 'removeMarker:marker', highlightTexts( newDescriptor ), { priority: 'high' } );
+			dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
+			dispatcher.on( 'addMarker:marker', highlightText( newDescriptor ), { priority: 'high' } );
+			dispatcher.on( 'removeMarker:marker', highlightText( highlightDescriptor ) );
+			dispatcher.on( 'removeMarker:marker', highlightText( newDescriptor ), { priority: 'high' } );
 			dispatcher.convertInsertion( markerRange );
 
 			modelDoc.markers.set( 'marker', markerRange );
@@ -157,8 +157,8 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should do nothing if descriptor is not provided', () => {
-			dispatcher.on( 'addMarker:marker', highlightTexts( () => null ) );
-			dispatcher.on( 'removeMarker:marker', highlightTexts( () => null ) );
+			dispatcher.on( 'addMarker:marker', highlightText( () => null ) );
+			dispatcher.on( 'removeMarker:marker', highlightText( () => null ) );
 
 			dispatcher.convertInsertion( markerRange );
 
@@ -171,7 +171,7 @@ describe( 'model-to-view-converters', () => {
 		} );
 	} );
 
-	describe( 'highlightElements()', () => {
+	describe( 'highlightElement()', () => {
 		let modelElement1, modelElement2, markerRange;
 		const highlightDescriptor = {
 			class: 'highlight-class',
@@ -194,8 +194,8 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should use addHighlight and removeHighlight on elements and not convert children nodes', () => {
-			dispatcher.on( 'addMarker:marker', highlightElements( highlightDescriptor ) );
-			dispatcher.on( 'removeMarker:marker', highlightElements( highlightDescriptor ) );
+			dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
+			dispatcher.on( 'removeMarker:marker', highlightElement( highlightDescriptor ) );
 			dispatcher.on( 'insert:paragraph', insertElement( data => {
 				// Use special converter only for first paragraph.
 				if ( data.item == modelElement2 ) {
@@ -242,11 +242,11 @@ describe( 'model-to-view-converters', () => {
 		it( 'should not convert marker on elements already consumed', () => {
 			const newDescriptor = { class: 'override-class' };
 
-			dispatcher.on( 'addMarker:marker', highlightElements( highlightDescriptor ) );
-			dispatcher.on( 'removeMarker:marker', highlightElements( highlightDescriptor ) );
+			dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
+			dispatcher.on( 'removeMarker:marker', highlightElement( highlightDescriptor ) );
 
-			dispatcher.on( 'addMarker:marker', highlightElements( newDescriptor ), { priority: 'high' } );
-			dispatcher.on( 'removeMarker:marker', highlightElements( newDescriptor ), { priority: 'high' } );
+			dispatcher.on( 'addMarker:marker', highlightElement( newDescriptor ), { priority: 'high' } );
+			dispatcher.on( 'removeMarker:marker', highlightElement( newDescriptor ), { priority: 'high' } );
 
 			dispatcher.on( 'insert:paragraph', insertElement( () => {
 				const element = new ViewContainerElement( 'p' );
@@ -277,8 +277,8 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should do nothing if descriptor is not provided', () => {
-			dispatcher.on( 'addMarker:marker', highlightElements( () => null ) );
-			dispatcher.on( 'removeMarker:marker', highlightElements( () => null ) );
+			dispatcher.on( 'addMarker:marker', highlightElement( () => null ) );
+			dispatcher.on( 'removeMarker:marker', highlightElement( () => null ) );
 
 			dispatcher.convertInsertion( markerRange );
 

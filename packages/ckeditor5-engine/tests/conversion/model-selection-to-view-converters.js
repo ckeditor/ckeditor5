@@ -29,8 +29,8 @@ import {
 	insertElement,
 	insertText,
 	wrapItem,
-	highlightTexts,
-	highlightElements
+	highlightText,
+	highlightElement
 } from '../../src/conversion/model-to-view-converters';
 
 import { stringify as stringifyView } from '../../src/dev-utils/view';
@@ -60,10 +60,10 @@ describe( 'model-selection-to-view-converters', () => {
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
 
-		dispatcher.on( 'addMarker:marker', highlightTexts( highlightDescriptor ) );
-		dispatcher.on( 'addMarker:marker', highlightElements( highlightDescriptor ) );
-		dispatcher.on( 'removeMarker:marker', highlightTexts( highlightDescriptor ) );
-		dispatcher.on( 'removeMarker:marker', highlightElements( highlightDescriptor ) );
+		dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
+		dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
+		dispatcher.on( 'removeMarker:marker', highlightText( highlightDescriptor ) );
+		dispatcher.on( 'removeMarker:marker', highlightElement( highlightDescriptor ) );
 
 		// Default selection converters.
 		dispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
