@@ -12,6 +12,7 @@ import UndoEngine from '../src/undoengine';
 import DeleteCommand from '@ckeditor/ckeditor5-typing/src/deletecommand';
 import InputCommand from '@ckeditor/ckeditor5-typing/src/inputcommand';
 import EnterCommand from '@ckeditor/ckeditor5-enter/src/entercommand';
+import AttributeCommand from '@ckeditor/ckeditor5-basic-styles/src/attributecommand';
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -24,13 +25,18 @@ describe( 'UndoEngine integration', () => {
 				editor = newEditor;
 
 				editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
+				editor.commands.add( 'forwardDelete', new DeleteCommand( editor, 'forward' ) );
 				editor.commands.add( 'enter', new EnterCommand( editor ) );
 				editor.commands.add( 'input', new InputCommand( editor, 5 ) );
+				editor.commands.add( 'bold', new AttributeCommand( editor, 'bold' ) );
 
 				doc = editor.document;
+
 				doc.schema.registerItem( 'p', '$block' );
 				doc.schema.registerItem( 'h1', '$block' );
 				doc.schema.registerItem( 'h2', '$block' );
+				doc.schema.allow( { name: '$inline', attributes: 'bold', inside: '$block' } );
+
 				doc.schema.registerItem( 'div', '$block' );
 				root = doc.getRoot();
 			} );
@@ -748,6 +754,29 @@ describe( 'UndoEngine integration', () => {
 
 			editor.execute( 'undo' );
 			output( '<p>[]Foo</p><p>Bar</p>' );
+		} );
+
+		// ckeditor5-engine#t/1055
+		it( 'selection attribute setting: split, bold, merge, undo, undo, undo', () => {
+			input( '<p>Foo[]</p><p>Bar</p>' );
+
+			editor.execute( 'enter' );
+			output( '<p>Foo</p><p>[]</p><p>Bar</p>' );
+
+			editor.execute( 'bold' );
+			output( '<p>Foo</p><p selection:bold="true"><$text bold="true">[]</$text></p><p>Bar</p>' );
+
+			editor.execute( 'forwardDelete' );
+			output( '<p>Foo</p><p>[]Bar</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>Foo</p><p selection:bold="true"><$text bold="true">[]</$text></p><p>Bar</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>Foo</p><p>[]</p><p>Bar</p>' );
+
+			editor.execute( 'undo' );
+			output( '<p>Foo[]</p><p>Bar</p>' );
 		} );
 	} );
 
