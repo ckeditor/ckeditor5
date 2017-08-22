@@ -3,7 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+/* global document */
+
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import UndoEngine from '../src/undoengine';
@@ -21,10 +24,13 @@ import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildv
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'UndoEngine integration', () => {
-	let editor, doc, root;
+	let editor, doc, root, div;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( { plugins: [ Paragraph, HeadingEngine, Typing, Enter, Clipboard, BoldEngine, UndoEngine ] } )
+		div = document.createElement( 'div' );
+		document.body.appendChild( div );
+
+		return ClassicEditor.create( div, { plugins: [ Paragraph, HeadingEngine, Typing, Enter, Clipboard, BoldEngine, UndoEngine ] } )
 			.then( newEditor => {
 				editor = newEditor;
 
@@ -795,12 +801,20 @@ describe( 'UndoEngine integration', () => {
 
 		// ckeditor5-engine#t/1065
 		it( 'undo paste into non empty element should not throw and be correct', () => {
-			input( '<paragraph>Foo[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				input( '<paragraph>Foo[]</paragraph>' );
+			} );
 
-			pasteHtml( editor, '<p>a</p><p>b</p>' );
+			doc.enqueueChanges( () => {
+				pasteHtml( editor, '<p>a</p><p>b</p>' );
+			} );
+
 			output( '<paragraph>Fooa</paragraph><paragraph>b[]</paragraph>' );
 
-			pasteHtml( editor, '<p>c</p><p>d</p>' );
+			doc.enqueueChanges( () => {
+				pasteHtml( editor, '<p>c</p><p>d</p>' );
+			} );
+
 			output( '<paragraph>Fooa</paragraph><paragraph>bc</paragraph><paragraph>d[]</paragraph>' );
 
 			editor.execute( 'undo' );
