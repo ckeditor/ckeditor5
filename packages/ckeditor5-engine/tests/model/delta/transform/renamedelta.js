@@ -11,8 +11,10 @@ import Element from '../../../../src/model/element';
 import Position from '../../../../src/model/position';
 
 import RenameDelta from '../../../../src/model/delta/renamedelta';
+import SplitDelta from '../../../../src/model/delta/splitdelta';
 import Delta from '../../../../src/model/delta/delta';
 import RenameOperation from '../../../../src/model/operation/renameoperation';
+import MoveOperation from '../../../../src/model/operation/moveoperation';
 import NoOperation from '../../../../src/model/operation/nooperation';
 
 import {
@@ -135,6 +137,37 @@ describe( 'transform', () => {
 							oldName: 'p',
 							newName: 'li',
 							position: new Position( root, [ 3, 4 ] )
+						}
+					]
+				} );
+			} );
+
+			it( 'should not throw if clone operation is NoOperation and use default transformation in that case', () => {
+				const noOpSplitDelta = new SplitDelta();
+				noOpSplitDelta.addOperation( new NoOperation( 0 ) );
+				noOpSplitDelta.addOperation( new MoveOperation( new Position( root, [ 1, 2 ] ), 3, new Position( root, [ 2, 0 ] ), 1 ) );
+
+				const renameDelta = new RenameDelta();
+				renameDelta.addOperation( new RenameOperation(
+					new Position( root, [ 1 ] ),
+					'p',
+					'li',
+					baseVersion
+				) );
+
+				const transformed = transform( renameDelta, noOpSplitDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: RenameDelta,
+					operations: [
+						{
+							type: RenameOperation,
+							position: new Position( root, [ 1 ] ),
+							oldName: 'p',
+							newName: 'li',
+							baseVersion: 2
 						}
 					]
 				} );

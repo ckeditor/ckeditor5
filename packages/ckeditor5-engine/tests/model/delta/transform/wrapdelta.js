@@ -14,6 +14,7 @@ import Range from '../../../../src/model/range';
 
 import MoveOperation from '../../../../src/model/operation/moveoperation';
 import InsertOperation from '../../../../src/model/operation/insertoperation';
+import NoOperation from '../../../../src/model/operation/nooperation';
 
 import MergeDelta from '../../../../src/model/delta/mergedelta';
 import WrapDelta from '../../../../src/model/delta/wrapdelta';
@@ -189,6 +190,36 @@ describe( 'transform', () => {
 
 				// WrapDelta and SplitDelta are correctly applied.
 				expect( nodesAndText ).to.equal( 'EXabcdXPabcPPfoobarxyzPE' );
+			} );
+
+			it( 'should use default algorithm and not throw if split delta has NoOperation', () => {
+				const splitPosition = new Position( root, [ 3, 3, 2, 1 ] );
+				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 11, baseVersion );
+				splitDelta.operations[ 1 ] = new NoOperation( 1 );
+
+				const transformed = transform( wrapDelta, splitDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = wrapDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: WrapDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: new Position( root, [ 3, 3, 4, 5 ] ),
+							baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 4, 1 ] ),
+							howMany: 4,
+							targetPosition: new Position( root, [ 3, 3, 4, 5, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
 			} );
 		} );
 	} );

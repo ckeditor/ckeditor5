@@ -414,7 +414,10 @@ function enableLoggingTools() {
 
 	SplitDelta.prototype.toString = function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			this.position.toString();
+			( this.position ?
+				this.position.toString() :
+				`(clone to ${ this._cloneOperation.position || this._cloneOperation.targetPosition })`
+			);
 	};
 
 	UnwrapDelta.prototype.toString = function() {

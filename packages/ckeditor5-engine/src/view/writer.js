@@ -14,7 +14,6 @@ import EmptyElement from './emptyelement';
 import UIElement from './uielement';
 import Text from './text';
 import Range from './range';
-import TreeWalker from './treewalker';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
@@ -37,8 +36,7 @@ const writer = {
 	wrap,
 	wrapPosition,
 	unwrap,
-	rename,
-	breakViewRangePerContainer
+	rename
 };
 
 export default writer;
@@ -265,37 +263,6 @@ export function mergeContainers( position ) {
 	remove( Range.createOn( next ) );
 
 	return newPosition;
-}
-
-/**
- * Breaks given `range` on a set of {@link module:engine/view/range~Range ranges}, that each are contained within a
- * {@link module:engine/view/containerelement~ContainerElement container element}. After `range` is broken, it's "pieces" can
- * be used by other {@link module:engine/view/writer~writer} methods (which expect that passed ranges are contained within
- * one container element).
- *
- * @function module:engine/view/writer~writer.breakViewRangePerContainer
- * @param {module:engine/view/range~Range} range Range to break.
- * @returns {Array.<module:engine/view/range~Range>} Ranges that combine into passed `viewRange`.
- */
-export function breakViewRangePerContainer( range ) {
-	const ranges = [];
-	const walker = new TreeWalker( { boundaries: range } );
-
-	let start = range.start;
-
-	for ( const value of walker ) {
-		if ( value.item.is( 'containerElement' ) ) {
-			if ( !start.isEqual( value.previousPosition ) ) {
-				ranges.push( new Range( start, value.previousPosition ) );
-			}
-
-			start = value.nextPosition;
-		}
-	}
-
-	ranges.push( new Range( start, range.end ) );
-
-	return ranges;
 }
 
 /**

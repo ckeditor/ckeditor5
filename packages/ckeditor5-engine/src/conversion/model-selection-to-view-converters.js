@@ -6,6 +6,7 @@
 import ViewElement from '../view/element';
 import ViewRange from '../view/range';
 import viewWriter from '../view/writer';
+import { virtualSelectionDescriptorToAttributeElement } from './model-to-view-converters';
 
 /**
  * Contains {@link module:engine/model/selection~Selection model selection} to
@@ -112,11 +113,6 @@ export function convertCollapsedSelection() {
  *			}
  *		}
  *		modelDispatcher.on( 'selectionAttribute:style', convertSelectionAttribute( styleCreator ) );
- *
- * **Note:** You can use the same `elementCreator` function for this converter factory
- * and {@link module:engine/conversion/model-to-view-converters~wrapRange}
- * model to view converter, as long as the `elementCreator` function uses only the first parameter (attribute value).
- *
  *		modelDispatcher.on( 'selection', convertCollapsedSelection() );
  *		modelDispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
  *		modelDispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'strong' ) ) );
@@ -163,27 +159,25 @@ export function convertSelectionAttribute( elementCreator ) {
  * Performs similar conversion as {@link ~convertSelectionAttribute}, but depends on a marker name of a marker in which
  * collapsed selection is placed.
  *
- *		modelDispatcher.on( 'selectionMarker:searchResult', wrapRange( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
- *
- * **Note:** You can use the same `elementCreator` function for this converter factory
- * and {@link module:engine/conversion/model-to-view-converters~wrapRange}.
+ *		modelDispatcher.on( 'selectionMarker:searchResult', convertSelectionMarker( { class: 'search' } ) );
  *
  * @see module:engine/conversion/model-selection-to-view-converters~convertSelectionAttribute
- * @param {module:engine/view/attributeelement~AttributeElement|Function} elementCreator View element,
- * or function returning a view element, which will be used for wrapping.
+ * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor|Function} selectionDescriptor Virtual
+ * selection descriptor object or function returning a descriptor object.
  * @returns {Function} Selection converter.
  */
-export function convertSelectionMarker( elementCreator ) {
+export function convertSelectionMarker( selectionDescriptor ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const viewElement = elementCreator instanceof ViewElement ?
-			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
+		const descriptor = typeof selectionDescriptor == 'function' ?
+			selectionDescriptor( data, consumable, conversionApi ) :
+			selectionDescriptor;
 
-		if ( !viewElement ) {
+		if ( !descriptor ) {
 			return;
 		}
 
-		const consumableName = 'selectionMarker:' + data.name;
+		const viewElement = virtualSelectionDescriptorToAttributeElement( descriptor );
+		const consumableName = 'selectionMarker:' + data.markerName;
 
 		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
 	};

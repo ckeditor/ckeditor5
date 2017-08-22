@@ -343,7 +343,7 @@ describe( 'Model converter builder', () => {
 		} );
 	} );
 
-	describe( 'model marker to view element conversion', () => {
+	describe( 'model marker to virtual selection converter', () => {
 		let modelText, modelElement;
 
 		beforeEach( () => {
@@ -358,64 +358,64 @@ describe( 'Model converter builder', () => {
 			mapper.bindElements( modelElement, viewElement );
 		} );
 
-		it( 'using passed view element name', () => {
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'strong' );
-
-			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<strong>ob</strong>ar</p></div>' );
-
-			dispatcher.convertMarker(
-				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
-			);
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'using passed view element', () => {
-			const viewElement = new ViewAttributeElement( 'span', { class: 'search' } );
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( viewElement );
-
-			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search">ob</span>ar</p></div>' );
-
-			dispatcher.convertMarker(
-				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
-			);
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'using passed creator function', () => {
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( data => {
-				const className = 'search search-color-' + data.name.split( ':' )[ 1 ];
-
-				return new ViewAttributeElement( 'span', { class: className } );
+		it( 'using passed virtual selection descriptor object', () => {
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( {
+				class: 'virtual-selection',
+				priority: 3,
+				attributes: { title: 'marker' }
 			} );
 
+			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal(
+				'<div>' +
+					'<p>' +
+						'fo' +
+						'<span class="virtual-selection" title="marker">ob</span>' +
+						'ar' +
+					'</p>' +
+				'</div>' );
+
+			expect( viewRoot.getChild( 0 ).getChild( 1 ).priority ).to.equal( 3 );
+
 			dispatcher.convertMarker(
-				'addMarker', 'search:red', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
+				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
 			);
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search search-color-red">ob</span>ar</p></div>' );
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
+		it( 'using passed virtual selection descriptor object creator', () => {
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( () => ( {
+				class: 'virtual-selection',
+				priority: 12,
+				attributes: { title: 'marker' }
+			} ) );
+
+			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal(
+				'<div>' +
+					'<p>' +
+						'fo' +
+						'<span class="virtual-selection" title="marker">ob</span>' +
+						'ar' +
+					'</p>' +
+				'</div>' );
+
+			expect( viewRoot.getChild( 0 ).getChild( 1 ).priority ).to.equal( 12 );
 
 			dispatcher.convertMarker(
-				'removeMarker', 'search:blue', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
-			);
-
-			// Nothing should change as we remove a marker with different name, which should generate different view attribute element.
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search search-color-red">ob</span>ar</p></div>' );
-
-			dispatcher.convertMarker(
-				'removeMarker', 'search:red', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
+				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
 			);
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
 
 		it( 'should do nothing when marker range is collapsed', () => {
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'strong' );
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( {
+				class: 'virtual-selection'
+			} );
 
 			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 ) );
 
@@ -427,9 +427,42 @@ describe( 'Model converter builder', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
+
+		it( 'should create converters with provided priority', () => {
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toVirtualSelection( {
+				class: 'virtual-selection'
+			} );
+
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toVirtualSelection( {
+				class: 'override'
+			} );
+
+			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal(
+				'<div>' +
+					'<p>' +
+						'fo' +
+						'<span class="override">ob</span>' +
+						'ar' +
+					'</p>' +
+				'</div>' );
+		} );
+
+		it( 'should throw if trying to convert from attribute', () => {
+			expect( () => {
+				buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toVirtualSelection( { class: 'foo' } );
+			} ).to.throw( CKEditorError, /^build-model-converter-non-marker-to-virtual-selection/ );
+		} );
+
+		it( 'should throw if trying to convert from element', () => {
+			expect( () => {
+				buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toVirtualSelection( { class: 'foo' } );
+			} ).to.throw( CKEditorError, /^build-model-converter-non-marker-to-virtual-selection/ );
+		} );
 	} );
 
-	describe( 'model marker to view stamp conversion', () => {
+	describe( 'model marker to view element conversion', () => {
 		let modelText, modelElement, range;
 
 		beforeEach( () => {
@@ -450,7 +483,7 @@ describe( 'Model converter builder', () => {
 			} );
 
 			it( 'using passed view element name', () => {
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( 'span' );
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'span' );
 
 				dispatcher.convertMarker( 'addMarker', 'search', range );
 
@@ -463,7 +496,7 @@ describe( 'Model converter builder', () => {
 
 			it( 'using passed view element', () => {
 				const viewElement = new ViewUIElement( 'span', { class: 'search' } );
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( viewElement );
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( viewElement );
 
 				dispatcher.convertMarker( 'addMarker', 'search', range );
 
@@ -475,8 +508,8 @@ describe( 'Model converter builder', () => {
 			} );
 
 			it( 'using passed creator function', () => {
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( data => {
-					const className = 'search search-color-' + data.name.split( ':' )[ 1 ];
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( data => {
+					const className = 'search search-color-' + data.markerName.split( ':' )[ 1 ];
 
 					return new ViewUIElement( 'span', { class: className } );
 				} );
@@ -497,7 +530,7 @@ describe( 'Model converter builder', () => {
 			} );
 
 			it( 'using passed view element name', () => {
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( 'span' );
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'span' );
 
 				dispatcher.convertMarker( 'addMarker', 'search', range );
 
@@ -510,7 +543,7 @@ describe( 'Model converter builder', () => {
 
 			it( 'using passed view element', () => {
 				const viewElement = new ViewUIElement( 'span', { class: 'search' } );
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( viewElement );
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( viewElement );
 
 				dispatcher.convertMarker( 'addMarker', 'search', range );
 
@@ -524,8 +557,8 @@ describe( 'Model converter builder', () => {
 			} );
 
 			it( 'using passed creator function', () => {
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( data => {
-					const className = 'search search-color-' + data.name.split( ':' )[ 1 ];
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( data => {
+					const className = 'search search-color-' + data.markerName.split( ':' )[ 1 ];
 
 					return new ViewUIElement( 'span', { class: className } );
 				} );
@@ -545,8 +578,8 @@ describe( 'Model converter builder', () => {
 		it( 'should overwrite default priority', () => {
 			range = ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 );
 
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( 'normal' );
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toStamp( 'high' );
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'normal' );
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toElement( 'high' );
 
 			dispatcher.convertMarker( 'addMarker', 'search', range );
 
@@ -572,17 +605,5 @@ describe( 'Model converter builder', () => {
 		expect( () => {
 			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toAttribute( 'paragraph', true );
 		} ).to.throw( CKEditorError, /^build-model-converter-non-attribute-to-attribute/ );
-	} );
-
-	it( 'should throw when trying to build model element to view stamp converter', () => {
-		expect( () => {
-			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toStamp( 'span' );
-		} ).to.throw( CKEditorError, /^build-model-converter-non-marker-to-stamp/ );
-	} );
-
-	it( 'should throw when trying to build model attribute to view stamp converter', () => {
-		expect( () => {
-			buildModelConverter().for( dispatcher ).fromAttribute( 'class' ).toStamp( 'span' );
-		} ).to.throw( CKEditorError, /^build-model-converter-non-marker-to-stamp/ );
 	} );
 } );
