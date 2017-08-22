@@ -256,7 +256,9 @@ class Marker {
 		 */
 		this._liveRange = liveRange;
 
-		this._liveRange.delegate( 'change' ).to( this );
+		// Delegating does not work with namespaces. Alternatively, we could delegate all events (using `*`).
+		this._liveRange.delegate( 'change:range' ).to( this );
+		this._liveRange.delegate( 'change:content' ).to( this );
 	}
 
 	/**

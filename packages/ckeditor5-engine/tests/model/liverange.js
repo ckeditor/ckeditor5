@@ -88,12 +88,12 @@ describe( 'LiveRange', () => {
 		range.detach();
 	} );
 
-	it( 'should fire change event with proper data when it is changed', () => {
+	it( 'should fire change:range event with proper data when its boundaries are changed', () => {
 		const live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
 		const copy = Range.createFromRange( live );
 
 		const spy = sinon.spy();
-		live.on( 'change', spy );
+		live.on( 'change:range', spy );
 
 		const moveSource = new Position( root, [ 2 ] );
 		const moveRange = new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 3 ] ) );
@@ -118,18 +118,48 @@ describe( 'LiveRange', () => {
 		expect( spy.args[ 0 ][ 2 ].sourcePosition.isEqual( moveSource ) ).to.be.true;
 	} );
 
+	it( 'should fire change:content event with proper data when content inside the range has changed', () => {
+		const live = new LiveRange( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+
+		const spy = sinon.spy();
+		live.on( 'change:content', spy );
+
+		const moveSource = new Position( root, [ 2, 0 ] );
+		const moveRange = new Range( new Position( root, [ 4, 0 ] ), new Position( root, [ 4, 2 ] ) );
+
+		const changes = {
+			range: moveRange,
+			sourcePosition: moveSource
+		};
+		const batch = {};
+
+		doc.fire( 'change', 'move', changes, batch );
+
+		expect( spy.calledOnce ).to.be.true;
+
+		// First parameter available in event should be a range that is equal to the live range before the live range changed.
+		// We compare to the `live` range, because boundaries should not have changed.
+		expect( spy.args[ 0 ][ 1 ].isEqual( live ) ).to.be.true;
+
+		// Second parameter is an object with data about model changes that caused the live range to change.
+		expect( spy.args[ 0 ][ 2 ].type ).to.equal( 'move' );
+		expect( spy.args[ 0 ][ 2 ].batch ).to.equal( batch );
+		expect( spy.args[ 0 ][ 2 ].range.isEqual( moveRange ) ).to.be.true;
+		expect( spy.args[ 0 ][ 2 ].sourcePosition.isEqual( moveSource ) ).to.be.true;
+	} );
+
 	// Examples may seem weird when you compare them with the tree structure generated at the beginning of tests.
 	// Since change event is fired _after_ operation is executed on tree model, you have to imagine that generated
 	// structure is representing what is _after_ operation is executed. So live LiveRange properties are describing
 	// virtual tree that is not existing anymore and event ranges are operating on the tree generated above.
-	describe( 'should get transformed if', () => {
+	describe( 'should get transformed and fire change:range if', () => {
 		let live, spy;
 
 		beforeEach( () => {
 			live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
 
 			spy = sinon.spy();
-			live.on( 'change', spy );
+			live.on( 'change:range', spy );
 		} );
 
 		afterEach( () => {
@@ -556,7 +586,95 @@ describe( 'LiveRange', () => {
 		} );
 	} );
 
-	describe( 'should not get transformed if', () => {
+	describe( 'should not get transformed but fire change:content', () => {
+		let spy, live, clone;
+
+		beforeEach( () => {
+			live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
+			clone = Range.createFromRange( live );
+
+			spy = sinon.spy();
+			live.on( 'change:content', spy );
+		} );
+
+		afterEach( () => {
+			live.detach();
+		} );
+
+		describe( 'insertion', () => {
+			it( 'inside the range', () => {
+				const insertRange = new Range( new Position( root, [ 0, 1, 7 ] ), new Position( root, [ 0, 1, 9 ] ) );
+
+				doc.fire( 'change', 'insert', { range: insertRange }, null );
+
+				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.calledOnce ).to.be.true;
+			} );
+		} );
+
+		describe( 'range move', () => {
+			it( 'inside the range', () => {
+				const moveSource = new Position( root, [ 4 ] );
+				const moveRange = new Range( new Position( root, [ 0, 1, 7 ] ), new Position( root, [ 0, 1, 9 ] ) );
+
+				const changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
+
+				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'from the range', () => {
+				const moveSource = new Position( root, [ 0, 1, 6 ] );
+				const moveRange = new Range( new Position( root, [ 4, 0 ] ), new Position( root, [ 4, 3 ] ) );
+
+				const changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
+
+				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'from the beginning of range', () => {
+				const moveSource = new Position( root, [ 0, 1, 4 ] );
+				const moveRange = new Range( new Position( root, [ 4, 0 ] ), new Position( root, [ 4, 3 ] ) );
+
+				const changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
+
+				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'from the range to the range', () => {
+				live.end.path = [ 0, 1, 12 ];
+
+				const moveSource = new Position( root, [ 0, 1, 6 ] );
+				const moveRange = new Range( new Position( root, [ 0, 1, 8 ] ), new Position( root, [ 0, 1, 10 ] ) );
+
+				const changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
+
+				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
+				expect( live.end.path ).to.deep.equal( [ 0, 1, 12 ] );
+				expect( spy.calledOnce ).to.be.true;
+			} );
+		} );
+	} );
+
+	describe( 'should not get transformed and not fire change event if', () => {
 		let otherRoot, spy, live, clone;
 
 		before( () => {
@@ -576,15 +694,6 @@ describe( 'LiveRange', () => {
 		} );
 
 		describe( 'insertion', () => {
-			it( 'is in the same parent as range start and after it', () => {
-				const insertRange = new Range( new Position( root, [ 0, 1, 7 ] ), new Position( root, [ 0, 1, 9 ] ) );
-
-				doc.fire( 'change', 'insert', { range: insertRange }, null );
-
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.called ).to.be.false;
-			} );
-
 			it( 'is in the same parent as range end and after it', () => {
 				const insertRange = new Range( new Position( root, [ 0, 2, 7 ] ), new Position( root, [ 0, 2, 9 ] ) );
 
@@ -614,20 +723,6 @@ describe( 'LiveRange', () => {
 		} );
 
 		describe( 'range move', () => {
-			it( 'is to the same parent as range start and after it', () => {
-				const moveSource = new Position( root, [ 4 ] );
-				const moveRange = new Range( new Position( root, [ 0, 1, 7 ] ), new Position( root, [ 0, 1, 9 ] ) );
-
-				const changes = {
-					range: moveRange,
-					sourcePosition: moveSource
-				};
-				doc.fire( 'change', 'move', changes, null );
-
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.called ).to.be.false;
-			} );
-
 			it( 'is to the same parent as range end and after it', () => {
 				const moveSource = new Position( root, [ 4 ] );
 				const moveRange = new Range( new Position( root, [ 0, 2, 3 ] ), new Position( root, [ 0, 2, 5 ] ) );
@@ -645,20 +740,6 @@ describe( 'LiveRange', () => {
 			it( 'is to a position after a node from range end path', () => {
 				const moveSource = new Position( root, [ 4 ] );
 				const moveRange = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 5 ] ) );
-
-				const changes = {
-					range: moveRange,
-					sourcePosition: moveSource
-				};
-				doc.fire( 'change', 'move', changes, null );
-
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.called ).to.be.false;
-			} );
-
-			it( 'is from the same parent as range start and after it', () => {
-				const moveSource = new Position( root, [ 0, 1, 6 ] );
-				const moveRange = new Range( new Position( root, [ 4, 0 ] ), new Position( root, [ 4, 3 ] ) );
 
 				const changes = {
 					range: moveRange,
@@ -724,23 +805,6 @@ describe( 'LiveRange', () => {
 
 				expect( live.isEqual( clone ) ).to.be.true;
 				expect( spy.called ).to.be.false;
-			} );
-
-			it( 'is inside live range and points to live range', () => {
-				live.end.path = [ 0, 1, 12 ];
-
-				const moveSource = new Position( root, [ 0, 1, 6 ] );
-				const moveRange = new Range( new Position( root, [ 0, 1, 8 ] ), new Position( root, [ 0, 1, 10 ] ) );
-
-				const changes = {
-					range: moveRange,
-					sourcePosition: moveSource
-				};
-				doc.fire( 'change', 'move', changes, null );
-
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 1, 12 ] );
-				expect( spy.calledOnce ).to.be.false;
 			} );
 		} );
 	} );

@@ -312,7 +312,7 @@ export default class DocumentSelection extends Selection {
 
 		const liveRange = LiveRange.createFromRange( range );
 
-		this.listenTo( liveRange, 'change', ( evt, oldRange, data ) => {
+		this.listenTo( liveRange, 'change:range', ( evt, oldRange, data ) => {
 			// If `LiveRange` is in whole moved to the graveyard, fix that range.
 			if ( liveRange.root == this._document.graveyard ) {
 				const sourceStart = data.sourcePosition;
