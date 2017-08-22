@@ -121,7 +121,7 @@ export default class DeleteCommand extends Command {
 	 *
 	 * * the current limit element is empty,
 	 * * the paragraph is allowed in the limit element,
-	 * * other empty paragraph does not occur in the limit element.
+	 * * the limit doesn't already have a paragraph inside.
 	 *
 	 * See https://github.com/ckeditor/ckeditor5-typing/issues/61.
 	 *
@@ -153,7 +153,9 @@ export default class DeleteCommand extends Command {
 
 		const limitElementFirstChild = limitElement.getChild( 0 );
 
-		// Does nothing if limit element already contains an empty paragraph.
+		// Does nothing if the limit element already contains only a paragraph.
+		// We ignore the case when paragraph might have some inline elements (<p><inlineWidget>[]</inlineWidget></p>)
+		// because we don't support such cases yet and it's unclear whether inlineWidget shouldn't be a limit itself.
 		if ( limitElementFirstChild && limitElementFirstChild.name === 'paragraph' ) {
 			return false;
 		}
