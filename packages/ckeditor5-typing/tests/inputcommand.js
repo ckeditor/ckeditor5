@@ -18,7 +18,7 @@ describe( 'InputCommand', () => {
 
 	testUtils.createSinonSandbox();
 
-	before( () => {
+	beforeEach( () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
@@ -28,18 +28,15 @@ describe( 'InputCommand', () => {
 				editor.commands.add( 'input', inputCommand );
 
 				buffer = inputCommand.buffer;
+				buffer.size = 0;
 
 				doc.schema.registerItem( 'p', '$block' );
 				doc.schema.registerItem( 'h1', '$block' );
 			} );
 	} );
 
-	after( () => {
+	afterEach( () => {
 		return editor.destroy();
-	} );
-
-	beforeEach( () => {
-		buffer.size = 0;
 	} );
 
 	describe( 'buffer', () => {
@@ -69,13 +66,16 @@ describe( 'InputCommand', () => {
 		it( 'uses enqueueChanges', () => {
 			setData( doc, '<p>foo[]bar</p>' );
 
-			const spy = testUtils.sinon.spy( doc, 'enqueueChanges' );
+			doc.enqueueChanges( () => {
+				editor.execute( 'input', { text: 'x' } );
 
-			editor.execute( 'input', {
-				text: ''
+				// We expect that command is executed in enqueue changes block. Since we are already in
+				// an enqueued block, the command execution will be postponed. Hence, no changes.
+				expect( getData( doc ) ).to.be.equal( '<p>foo[]bar</p>' );
 			} );
 
-			expect( spy.calledOnce ).to.be.true;
+			// After all enqueued changes are done, the command execution is reflected.
+			expect( getData( doc ) ).to.be.equal( '<p>foox[]bar</p>' );
 		} );
 
 		it( 'should lock and unlock buffer', () => {
@@ -202,11 +202,8 @@ describe( 'InputCommand', () => {
 		it( 'only removes content when no text given (with default non-collapsed range)', () => {
 			setData( doc, '<p>[fo]obar</p>' );
 
-			const spy = testUtils.sinon.spy( doc, 'enqueueChanges' );
-
 			editor.execute( 'input' );
 
-			expect( spy.callCount ).to.be.equal( 1 );
 			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>[]obar</p>' );
 			expect( buffer.size ).to.be.equal( 0 );
 		} );
@@ -214,11 +211,8 @@ describe( 'InputCommand', () => {
 		it( 'does not change selection and content when no text given (with default collapsed range)', () => {
 			setData( doc, '<p>fo[]obar</p>' );
 
-			const spy = testUtils.sinon.spy( doc, 'enqueueChanges' );
-
 			editor.execute( 'input' );
 
-			expect( spy.callCount ).to.be.equal( 1 );
 			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>fo[]obar</p>' );
 			expect( buffer.size ).to.be.equal( 0 );
 		} );

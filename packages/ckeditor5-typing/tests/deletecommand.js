@@ -40,11 +40,16 @@ describe( 'DeleteCommand', () => {
 		it( 'uses enqueueChanges', () => {
 			setData( doc, '<p>foo[]bar</p>' );
 
-			const spy = testUtils.sinon.spy( doc, 'enqueueChanges' );
+			doc.enqueueChanges( () => {
+				editor.execute( 'delete' );
 
-			editor.execute( 'delete' );
+				// We expect that command is executed in enqueue changes block. Since we are already in
+				// an enqueued block, the command execution will be postponed. Hence, no changes.
+				expect( getData( doc ) ).to.equal( '<p>foo[]bar</p>' );
+			} );
 
-			expect( spy.calledOnce ).to.be.true;
+			// After all enqueued changes are done, the command execution is reflected.
+			expect( getData( doc ) ).to.equal( '<p>fo[]bar</p>' );
 		} );
 
 		it( 'locks buffer when executing', () => {
