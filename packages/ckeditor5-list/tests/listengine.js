@@ -3347,10 +3347,13 @@ describe( 'ListEngine', () => {
 		} );
 
 		describe( 'remove converter should properly handle ui elements', () => {
-			let uiElement;
+			let uiElement, liFoo, liBar;
 
 			beforeEach( () => {
 				editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
+				liFoo = modelRoot.getChild( 0 );
+				liBar = modelRoot.getChild( 1 );
+
 				uiElement = new ViewUIElement( 'span' );
 			} );
 
@@ -3358,7 +3361,7 @@ describe( 'ListEngine', () => {
 				// Append ui element before <ul>.
 				viewRoot.insertChildren( 0, [ uiElement ] );
 
-				modelDoc.batch().remove( modelRoot.getChild( 0 ) );
+				modelDoc.batch().remove( liFoo );
 
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 					.to.equal( '<span></span><ul><li>Bar</li></ul>' );
@@ -3368,7 +3371,7 @@ describe( 'ListEngine', () => {
 				// Append ui element before <ul>.
 				viewRoot.getChild( 0 ).insertChildren( 0, [ uiElement ] );
 
-				modelDoc.batch().remove( modelRoot.getChild( 0 ) );
+				modelDoc.batch().remove( liFoo );
 
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 					.to.equal( '<ul><span></span><li>Bar</li></ul>' );
@@ -3378,7 +3381,7 @@ describe( 'ListEngine', () => {
 				// Append ui element before <ul>.
 				viewRoot.getChild( 0 ).insertChildren( 1, [ uiElement ] );
 
-				modelDoc.batch().remove( modelRoot.getChild( 1 ) );
+				modelDoc.batch().remove( liBar );
 
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 					.to.equal( '<ul><li>Foo</li><span></span></ul>' );
