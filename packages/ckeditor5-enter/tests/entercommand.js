@@ -44,12 +44,16 @@ describe( 'EnterCommand', () => {
 		it( 'enters a block using enqueueChanges', () => {
 			setData( doc, '<p>foo[]</p>' );
 
-			const spy = sinon.spy( doc, 'enqueueChanges' );
+			doc.enqueueChanges( () => {
+				editor.execute( 'enter' );
 
-			editor.execute( 'enter' );
+				// We expect that command is executed in enqueue changes block. Since we are already in
+				// an enqueued block, the command execution will be postponed. Hence, no changes.
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal( '<p>foo</p>' );
+			} );
 
+			// After all enqueued changes are done, the command execution is reflected.
 			expect( getData( doc, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p></p>' );
-			expect( spy.calledOnce ).to.be.true;
 		} );
 	} );
 
