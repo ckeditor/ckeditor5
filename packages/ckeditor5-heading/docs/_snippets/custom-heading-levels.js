@@ -12,7 +12,7 @@ import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
 ClassicEditor
 	.create( document.querySelector( '#snippet-custom-heading-levels' ), {
 		plugins: [ ArticlePreset ],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
 		},
