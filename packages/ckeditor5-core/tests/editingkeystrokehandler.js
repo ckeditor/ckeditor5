@@ -41,6 +41,25 @@ describe( 'EditingKeystrokeHandler', () => {
 				sinon.assert.notCalled( keyEvtData.preventDefault );
 				sinon.assert.notCalled( keyEvtData.stopPropagation );
 			} );
+
+			it( 'provides a callback which stops the event and remaining callbacks in the keystroke handler', () => {
+				const spy1 = sinon.spy();
+				const spy2 = sinon.spy();
+				const spy3 = sinon.spy();
+
+				keystrokes.set( [ 'ctrl', 'A' ], spy1 );
+				keystrokes.set( [ 'ctrl', 'A' ], spy2, { priority: 'high' } );
+				keystrokes.set( [ 'ctrl', 'A' ], 'foo', { priority: 'low' } );
+				keystrokes.set( [ 'ctrl', 'A' ], ( keyEvtData, cancel ) => {
+					spy3();
+					cancel();
+				} );
+
+				keystrokes.press( getCtrlA() );
+
+				sinon.assert.callOrder( spy2, spy1, spy3 );
+				sinon.assert.notCalled( executeSpy );
+			} );
 		} );
 
 		describe( 'with a callback', () => {
@@ -55,6 +74,21 @@ describe( 'EditingKeystrokeHandler', () => {
 				sinon.assert.notCalled( keyEvtData.preventDefault );
 				sinon.assert.notCalled( keyEvtData.stopPropagation );
 			} );
+		} );
+
+		it( 'supports priorities', () => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+			const spy3 = sinon.spy();
+
+			keystrokes.set( [ 'ctrl', 'A' ], spy1 );
+			keystrokes.set( [ 'ctrl', 'A' ], spy2, { priority: 'high' } );
+			keystrokes.set( [ 'ctrl', 'A' ], 'foo', { priority: 'low' } );
+			keystrokes.set( [ 'ctrl', 'A' ], spy3 );
+
+			keystrokes.press( getCtrlA() );
+
+			sinon.assert.callOrder( spy2, spy1, spy3, executeSpy );
 		} );
 	} );
 
