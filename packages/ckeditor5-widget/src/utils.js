@@ -7,7 +7,7 @@
  * @module widget/utils
  */
 
-import VirtualSelectionStack from './virtualselectionstack';
+import HighlightStack from './highlightstack';
 
 const widgetSymbol = Symbol( 'isWidget' );
 const labelSymbol = Symbol( 'label' );
@@ -42,8 +42,7 @@ export function isWidget( element ) {
  * * adds custom `getFillerOffset` method returning `null`,
  * * adds `ck-widget` CSS class,
  * * adds custom property allowing to recognize widget elements by using {@link ~isWidget},
- * * implements `setVirtualSelection` and `removeVirtualSelection` custom properties to handle virtual selection
- * on widgets.
+ * * implements `addHighlight` and `removeHighlight` custom properties to handle view highlight on widgets.
  *
  * @param {module:engine/view/element~Element} element
  * @param {Object} [options={}]
@@ -61,25 +60,30 @@ export function toWidget( element, options = {} ) {
 		setLabel( element, options.label );
 	}
 
-	setVirtualSelectionHandling(
+	setHighlightHandling(
 		element,
-		( element, descriptor ) => element.addClass( descriptor.class ),
-		( element, descriptor ) => element.removeClass( descriptor.class )
+		( element, descriptor ) => element.addClass( ...normalizeToArray( descriptor.class ) ),
+		( element, descriptor ) => element.removeClass( ...normalizeToArray( descriptor.class ) )
 	);
 
 	return element;
+
+	// Normalizes CSS class in descriptor that can be provided in form of an array or a string.
+	function normalizeToArray( classes ) {
+		return Array.isArray( classes ) ? classes : [ classes ];
+	}
 }
 
 /**
- * Sets virtual selection handling methods. Uses {@link module:widget/virtualselectionstack~VirtualSelectionStack} to
- * properly determine which virtual selection should be used at given time.
+ * Sets highlight handling methods. Uses {@link module:widget/highlightstack~HighlightStack} to
+ * properly determine which highlight descriptor should be used at given time.
  *
  * @param {module:engine/view/element~Element} element
  * @param {Function} add
  * @param {Function} remove
  */
-export function setVirtualSelectionHandling( element, add, remove ) {
-	const stack = new VirtualSelectionStack();
+export function setHighlightHandling( element, add, remove ) {
+	const stack = new HighlightStack();
 
 	stack.on( 'change:top', ( evt, data ) => {
 		if ( data.oldDescriptor ) {
@@ -91,8 +95,8 @@ export function setVirtualSelectionHandling( element, add, remove ) {
 		}
 	} );
 
-	element.setCustomProperty( 'setVirtualSelection', ( element, descriptor ) => stack.add( descriptor ) );
-	element.setCustomProperty( 'removeVirtualSelection', ( element, descriptor ) => stack.remove( descriptor ) );
+	element.setCustomProperty( 'addHighlight', ( element, descriptor ) => stack.add( descriptor ) );
+	element.setCustomProperty( 'removeHighlight', ( element, descriptor ) => stack.remove( descriptor ) );
 }
 
 /**

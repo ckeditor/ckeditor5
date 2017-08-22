@@ -4,7 +4,7 @@
  */
 
 /**
- * @module widget/virtualselectionstack
+ * @module widget/highlightstack
  */
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -12,14 +12,14 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Class used to handle correct order of
- * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toVirtualSelection virtual selections} on
- * elements. When different virtual selections are applied to same element correct order should be preserved:
- * * virtual selection with highest priority should be applied,
- * * if two virtual selections have same priority - sort by CSS class provided in
- * {@link module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor}.
- * This way, virtual selection will be applied with the same rules it is applied on texts.
+ * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toHighlight highlights} on
+ * elements. When different highlights are applied to same element correct order should be preserved:
+ * * highlight with highest priority should be applied,
+ * * if two highlights have same priority - sort by CSS class provided in
+ * {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor}.
+ * This way, highlight will be applied with the same rules it is applied on texts.
  */
-export default class VirtualSelectionStack {
+export default class HighlightStack {
 	/**
 	 * Creates class instance.
 	 */
@@ -28,10 +28,10 @@ export default class VirtualSelectionStack {
 	}
 
 	/**
-	 * Adds virtual selection descriptor to the stack.
+	 * Adds highlight descriptor to the stack.
 	 *
 	 * @fires change:top
-	 * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} descriptor
+	 * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} descriptor
 	 */
 	add( descriptor ) {
 		const stack = this._stack;
@@ -67,10 +67,10 @@ export default class VirtualSelectionStack {
 	}
 
 	/**
-	 * Removes virtual selection descriptor from the stack.
+	 * Removes highlight descriptor from the stack.
 	 *
 	 * @fires change:top
-	 * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} descriptor
+	 * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} descriptor
 	 */
 	remove( descriptor ) {
 		const stack = this._stack;
@@ -94,7 +94,7 @@ export default class VirtualSelectionStack {
 		stack.splice( i, 1 );
 
 		// Element from stack top was removed - fire `change:top` event with new first element. It might be `undefined`
-		// which informs that no selection is currently at the top.
+		// which informs that no descriptor is currently at the top.
 		if ( i === 0 ) {
 			const data = {
 				oldDescriptor: descriptor
@@ -116,22 +116,23 @@ export default class VirtualSelectionStack {
 	}
 }
 
-mix( VirtualSelectionStack, EmitterMixin );
+mix( HighlightStack, EmitterMixin );
 
-// Compares two virtual selection descriptors by priority and CSS class names. Returns `true` when both descriptors are
+// Compares two highlight descriptors by priority and CSS class names. Returns `true` when both descriptors are
 // considered equal.
 //
-// @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} descriptorA
-// @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} descriptorB
+// @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} descriptorA
+// @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} descriptorB
 // @returns {Boolean}
 function compareDescriptors( descriptorA, descriptorB ) {
-	return descriptorA.priority == descriptorB.priority && descriptorA.class == descriptorB.class;
+	return descriptorA.priority == descriptorB.priority &&
+		classesToString( descriptorA.class ) == classesToString( descriptorB.class );
 }
 
 // Checks whenever first descriptor should be placed in the stack before second one.
 //
-// @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} a
-// @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} b
+// @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} a
+// @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} b
 // @returns {Boolean}
 function shouldABeBeforeB( a, b ) {
 	if ( a.priority > b.priority ) {
@@ -141,16 +142,25 @@ function shouldABeBeforeB( a, b ) {
 	}
 
 	// When priorities are equal and names are different - use classes to compare.
-	return a.class > b.class;
+	return classesToString( a.class ) > classesToString( b.class );
+}
+
+// Converts CSS classes passed with {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor} to
+// sorted string.
+//
+// @param {String|Array<String>} descriptor
+// @returns {String}
+function classesToString( classes ) {
+	return Array.isArray( classes ) ? classes.sort().join( ',' ) : classes;
 }
 
 /**
- * Fired when top element on {@link module:widget/virtualselectionstack~VirtualSelectionStack} has been changed
+ * Fired when top element on {@link module:widget/highlightstack~HighlightStack} has been changed
  *
  * @event change:top
  * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} [data.newDescriptor] New virtual selection
+ * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} [data.newDescriptor] New highlight
  * descriptor. It will be `undefined` when last descriptor is removed from the stack.
- * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor} [data.oldDescriptor] Old virtual selection
+ * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} [data.oldDescriptor] Old highlight
  * descriptor. It will be `undefined` when first descriptor is added to the stack.
  */
