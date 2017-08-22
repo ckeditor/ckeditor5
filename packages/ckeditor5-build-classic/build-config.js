@@ -40,7 +40,6 @@ module.exports = {
 			'bold',
 			'italic',
 			'link',
-			'unlink',
 			'bulletedList',
 			'numberedList',
 			'blockQuote',

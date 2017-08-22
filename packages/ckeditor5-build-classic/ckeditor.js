@@ -42,7 +42,6 @@ ClassicEditor.build = {
 			'bold',
 			'italic',
 			'link',
-			'unlink',
 			'bulletedList',
 			'numberedList',
 			'blockQuote',

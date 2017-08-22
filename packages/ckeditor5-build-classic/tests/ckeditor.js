@@ -55,7 +55,7 @@ describe( 'ClassicEditor', () => {
 	} );
 
 	describe( 'destroy()', () => {
-		beforeEach( function () {
+		beforeEach( () => {
 			return ClassicEditor.create( editorElement )
 				.then( newEditor => {
 					editor = newEditor;
@@ -152,5 +152,5 @@ describe( 'ClassicEditor', () => {
 			editor.setData( data );
 			expect( editor.getData() ).to.equal( data );
 		} );
-	} )
+	} );
 } );
