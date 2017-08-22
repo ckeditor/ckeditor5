@@ -454,6 +454,41 @@ describe( 'debug tools', () => {
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
 			} );
 
+			it( 'SplitDelta - NoOperation as second operation', () => {
+				const otherRoot = modelDoc.createRoot( 'main', 'otherRoot' );
+				const splitEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
+
+				otherRoot.appendChildren( [ splitEle ] );
+
+				const delta = new SplitDelta();
+				const insert = new InsertOperation( ModelPosition.createAt( otherRoot, 1 ), [ new ModelElement( 'paragraph' ) ], 0 );
+				const move = new NoOperation( 1 );
+
+				delta.addOperation( insert );
+				delta.addOperation( move );
+
+				expect( delta.toString() ).to.equal( 'SplitDelta( 0 ): (clone to otherRoot [ 1 ])' );
+
+				delta.log();
+				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
+			} );
+
+			it( 'SplitDelta - NoOperation as second operation, MoveOperation as first operation', () => {
+				const otherRoot = modelDoc.createRoot( 'main', 'otherRoot' );
+
+				const delta = new SplitDelta();
+				const insert = new MoveOperation( ModelPosition.createAt( modelRoot, 1 ), 1, ModelPosition.createAt( otherRoot, 1 ), 0 );
+				const move = new NoOperation( 1 );
+
+				delta.addOperation( insert );
+				delta.addOperation( move );
+
+				expect( delta.toString() ).to.equal( 'SplitDelta( 0 ): (clone to otherRoot [ 1 ])' );
+
+				delta.log();
+				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
+			} );
+
 			it( 'UnwrapDelta', () => {
 				const otherRoot = modelDoc.createRoot( 'main', 'otherRoot' );
 				const unwrapEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );

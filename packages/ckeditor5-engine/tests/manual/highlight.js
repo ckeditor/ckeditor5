@@ -68,7 +68,7 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 		buildModelConverter()
 			.for( editor.editing.modelToView )
 			.fromMarker( 'marker' )
-			.toVirtualSelection( data => ( { class: 'virtual-selection-' + data.markerName.split( ':' )[ 1 ] } ) );
+			.toHighlight( data => ( { class: 'highlight-' + data.markerName.split( ':' )[ 1 ] } ) );
 
 		document.getElementById( 'add-marker-yellow' ).addEventListener( 'mousedown', evt => {
 			addMarker( editor, 'yellow' );

@@ -6,7 +6,7 @@
 import ViewElement from '../view/element';
 import ViewRange from '../view/range';
 import viewWriter from '../view/writer';
-import { virtualSelectionDescriptorToAttributeElement } from './model-to-view-converters';
+import { highlightDescriptorToAttributeElement } from './model-to-view-converters';
 
 /**
  * Contains {@link module:engine/model/selection~Selection model selection} to
@@ -162,21 +162,21 @@ export function convertSelectionAttribute( elementCreator ) {
  *		modelDispatcher.on( 'selectionMarker:searchResult', convertSelectionMarker( { class: 'search' } ) );
  *
  * @see module:engine/conversion/model-selection-to-view-converters~convertSelectionAttribute
- * @param {module:engine/conversion/buildmodelconverter~VirtualSelectionDescriptor|Function} selectionDescriptor Virtual
- * selection descriptor object or function returning a descriptor object.
+ * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor|Function} highlightDescriptor Highlight
+ * descriptor object or function returning a descriptor object.
  * @returns {Function} Selection converter.
  */
-export function convertSelectionMarker( selectionDescriptor ) {
+export function convertSelectionMarker( highlightDescriptor ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const descriptor = typeof selectionDescriptor == 'function' ?
-			selectionDescriptor( data, consumable, conversionApi ) :
-			selectionDescriptor;
+		const descriptor = typeof highlightDescriptor == 'function' ?
+			highlightDescriptor( data, consumable, conversionApi ) :
+			highlightDescriptor;
 
 		if ( !descriptor ) {
 			return;
 		}
 
-		const viewElement = virtualSelectionDescriptorToAttributeElement( descriptor );
+		const viewElement = highlightDescriptorToAttributeElement( descriptor );
 		const consumableName = 'selectionMarker:' + data.markerName;
 
 		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
