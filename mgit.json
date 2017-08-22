@@ -12,7 +12,7 @@
     "@ckeditor/ckeditor5-editor-balloon-toolbar": "ckeditor/ckeditor5-editor-balloon-toolbar#447f04d",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#8dab9ad",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#464f377",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#1c3510a",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#07bcc70",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#e5eb4be",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#ccdca0e",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#1bae351",
@@ -27,6 +27,6 @@
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#2cfd595",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#d8d61f3",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#678781d",
-    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#74af57a"
+    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#6982e42"
   }
 }
