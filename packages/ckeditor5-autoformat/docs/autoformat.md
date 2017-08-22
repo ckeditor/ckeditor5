@@ -3,7 +3,7 @@ title: Autoformatting
 category: features
 ---
 
-The {@link module:autoformat/autoformat~Auformat} feature allows you to quickly apply formatting to the content you're writing.
+The {@link module:autoformat/autoformat~Auformat} feature allows you to quickly apply formatting to the content you are writing.
 
 <info-box info>
 	This feature is enabled by default in all builds. It is also included in the {@link module:presets/article~Article Article preset}.
@@ -11,21 +11,25 @@ The {@link module:autoformat/autoformat~Auformat} feature allows you to quickly 
 
 ## Block formatting
 
-* Start a line with `*` or `-` followed by a space to create a bulleted list.
-* Start a line with `1.` or `1)` followed by a space to create a numbered list.
-* Start a line with `#` or `##` or `###` followed by a space to create a heading 1, heading 2 or heading 3 (up to heading 6 if {@link module:heading/heading~HeadingConfig#options} defines more headings).
-* Start a line with `>` followed by a space to create a block quote.
+The following block formatting options are available:
+
+* Bulleted list &ndash; Start a line with `*` or `-` followed by a space.
+* Numbered list &ndash; Start a line with `1.` or `1)` followed by a space.
+* Headings &ndash; Start a line with `#` or `##` or `###` followed by a space to create a heading 1, heading 2 or heading 3 (up to heading 6 if {@link module:heading/heading~HeadingConfig#options} defines more headings).
+* Block quote &ndash; Start a line with `>` followed by a space.
 
 ## Inline formatting
 
-* Type `**text**` or `__text__` to make "text" bold.
-* Type `*text*` or `_text_` to make "text" italic.
+The following inline formatting options are available:
 
-## Test here
+* Bold &ndash; Type `**text**` or `__text__`.
+* Italic &ndash; Type `*text*` or `_text_`.
+
+## Autoformatting sample
 
 Example:
 
-1. Delete all content.
+1. Delete all editor content.
 2. Press <kbd>#</kbd> and then <kbd>Space</kbd>.
 3. The current line will be turned into a heading.
 
@@ -52,9 +56,9 @@ ClassicEditor
 	.catch( ... );
 ```
 
-If you are using editor build see how to {@linkTODO customize builds}.
+If you are using an editor build, see how to {@linkTODO customize builds}.
 
-## Create your own autoformatters
+## Create custom autoformatters
 
 The {@link module:autoformat/autoformat~Auformat} feature bases on {@link module:autoformat/blockautoformatengine~BlockAuformatEngine} and {@link module:autoformat/inlineautoformatengine~InlineAuformatEngine} tools to create the autoformatters mentioned above.
 
