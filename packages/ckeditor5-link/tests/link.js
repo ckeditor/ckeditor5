@@ -267,8 +267,7 @@ describe( 'Link', () => {
 
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
-					target: viewDocument.domConverter.mapViewToDom( root.getChild( 0 ).getChild( 0 ) ),
-					limiter: editorElement
+					target: viewDocument.domConverter.mapViewToDom( root.getChild( 0 ).getChild( 0 ) )
 				} );
 			} );
 
