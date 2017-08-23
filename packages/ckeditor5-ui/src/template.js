@@ -12,7 +12,6 @@
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import View from './view';
 import ViewCollection from './viewcollection';
 import cloneDeepWith from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeepWith';
@@ -1081,7 +1080,7 @@ function normalize( def ) {
 			normalizeAttributes( def.attributes );
 		}
 
-		const children = new Collection();
+		const children = new ViewCollection();
 
 		if ( def.children ) {
 			if ( isViewCollection( def.children ) ) {

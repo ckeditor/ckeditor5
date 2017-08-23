@@ -570,6 +570,24 @@ describe( 'Template', () => {
 					'<p><a></a><b></b><i>foo</i></p>'
 				);
 			} );
+
+			// https://github.com/ckeditor/ckeditor5-ui/issues/289
+			it( 'does not throw when child does not have an "id" property', () => {
+				const strongView = getView( {
+					tag: 'strong'
+				} );
+
+				strongView.set( 'id' );
+
+				expect( () => {
+					getView( {
+						tag: 'div',
+						children: [
+							strongView
+						]
+					} );
+				} ).to.not.throw();
+			} );
 		} );
 
 		describe( 'bindings', () => {
