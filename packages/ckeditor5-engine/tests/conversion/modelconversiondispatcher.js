@@ -10,6 +10,9 @@ import ModelElement from '../../src/model/element';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 import RemoveOperation from '../../src/model/operation/removeoperation';
+import NoOperation from '../../src/model/operation/nooperation';
+import RenameOperation from '../../src/model/operation/renameoperation';
+import AttributeOperation from '../../src/model/operation/attributeoperation';
 import { wrapInDelta } from '../../tests/model/_utils/utils';
 
 describe( 'ModelConversionDispatcher', () => {
@@ -202,6 +205,37 @@ describe( 'ModelConversionDispatcher', () => {
 			doc.graveyard.appendChildren( gyNode );
 
 			doc.batch().rename( gyNode, 'p' );
+
+			expect( dispatcher.fire.called ).to.be.false;
+		} );
+
+		it( 'should not fire any event after NoOperation is applied', () => {
+			sinon.spy( dispatcher, 'fire' );
+
+			doc.applyOperation( wrapInDelta( new NoOperation( 0 ) ) );
+
+			expect( dispatcher.fire.called ).to.be.false;
+		} );
+
+		it( 'should not fire any event after RenameOperation with same old and new value is applied', () => {
+			sinon.spy( dispatcher, 'fire' );
+
+			root.removeChildren( 0, root.childCount );
+			root.appendChildren( [ new ModelElement( 'paragraph' ) ] );
+
+			doc.applyOperation( wrapInDelta( new RenameOperation( new ModelPosition( root, [ 0 ] ), 'paragraph', 'paragraph', 0 ) ) );
+
+			expect( dispatcher.fire.called ).to.be.false;
+		} );
+
+		it( 'should not fire any event after AttributeOperation with same old an new value is applied', () => {
+			sinon.spy( dispatcher, 'fire' );
+
+			root.removeChildren( 0, root.childCount );
+			root.appendChildren( [ new ModelElement( 'paragraph', { foo: 'bar' } ) ] );
+
+			const range = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 0, 0 ] ) );
+			doc.applyOperation( wrapInDelta( new AttributeOperation( range, 'foo', 'bar', 'bar', 0 ) ) );
 
 			expect( dispatcher.fire.called ).to.be.false;
 		} );

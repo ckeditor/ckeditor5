@@ -19,6 +19,10 @@ describe( 'NoOperation', () => {
 		expect( () => doc.applyOperation( wrapInDelta( noop ) ) ).to.not.throw( Error );
 	} );
 
+	it( 'should return empty object when executed', () => {
+		expect( noop._execute() ).to.deep.equal( {} );
+	} );
+
 	it( 'should create a NoOperation as a reverse', () => {
 		const reverse = noop.getReversed();
 
@@ -26,7 +30,7 @@ describe( 'NoOperation', () => {
 		expect( reverse.baseVersion ).to.equal( 1 );
 	} );
 
-	it( 'should create a do-nothing operation having same parameters when cloned', () => {
+	it( 'should create NoOperation having same parameters when cloned', () => {
 		const clone = noop.clone();
 
 		expect( clone ).to.be.an.instanceof( NoOperation );

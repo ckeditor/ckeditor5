@@ -293,6 +293,11 @@ export default class ModelConversionDispatcher {
 	 * @param {*} newValue New attribute value or `null` if attribute has been removed.
 	 */
 	convertAttribute( type, range, key, oldValue, newValue ) {
+		if ( oldValue == newValue ) {
+			// Do not convert if the attribute did not change.
+			return;
+		}
+
 		// Create a list with attributes to consume.
 		const consumable = this._createConsumableForRange( range, type + ':' + key );
 
@@ -323,6 +328,11 @@ export default class ModelConversionDispatcher {
 	 * @param {String} oldName Name of the renamed element before it was renamed.
 	 */
 	convertRename( element, oldName ) {
+		if ( element.name == oldName ) {
+			// Do not convert if the name did not change.
+			return;
+		}
+
 		// Create fake element that will be used to fire remove event. The fake element will have the old element name.
 		const fakeElement = element.clone( true );
 		fakeElement.name = oldName;
