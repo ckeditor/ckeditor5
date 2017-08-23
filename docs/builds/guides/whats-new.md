@@ -20,7 +20,7 @@ Inserting images into the content is now very intuitive, with all technical aspe
 
 [ TODO Animated GIF of DnD ]
 
-The outdated concept of image "alignment" was dropped in favor of image "styles":
+The outdated concept of image "alignment" was dropped in favor of {@link features/image#Image-styles image styles}:
 
 [ TODO Animated GIF of styles ]
 
@@ -32,10 +32,9 @@ No more complex dialogs for links.
 
 [ TODO Screenshot of a link with the edit balloon on it ]
 
-### Auto formatting
+### Autoformatting
 
-Start lists, headings and even bold text by typing, without the need to
-use toolbar buttons.
+Start lists, headings and even bold text by typing, without the need to use toolbar buttons. See {@link features/autoformat Autoformatting feature} for more details.
 
 [ TODO Animated GIF with auto formatting in action ]
 
@@ -71,7 +70,7 @@ The editor is much more lightweight and fast. It brings a fantastic user experie
 
 ## Highly customizable
 
-CKEditor 5 Builds are based on the {@linkTODO CKEditor 5 Framework}, which gives powerful customizability and extensibility possibilities.
+CKEditor 5 Builds are based on the {@link framework/index CKEditor 5 Framework}, which gives powerful customizability and extensibility possibilities.
 
 ## Custom data model
 
@@ -79,10 +78,14 @@ A much more efficient data model was designed for CKEditor 5. This makes the dev
 
 ## Collaborative editing
 
-Another important benefit of the custom data model is that it enables the possibility of real-time collaborative editing inside CKEditor by introducing the concepts of "operations" and "operational transformations". Read more about {@linkTODO collaboration in the CKEditor 5 Framework documentation}.
+Another important benefit of the custom data model is that it enables the possibility of real-time collaborative editing inside CKEditor by introducing the concepts of "operations" and "operational transformations".
+
+<!--
+ Read more about {@linkTODO collaboration in the CKEditor 5 Framework documentation}.
+ -->
 
 <!-- TODO 3 -->
 
 ## Modern
 
-CKEditor 5 has been totally rewritten in ES6, using the power of modules. It provides all the necessary tools to easily integrate it with modern applications and technologies like Angular, React, Node.js, npm, etc.
+CKEditor 5 has been totally rewritten in ES6, using the power of modules. It provides all the necessary tools to easily integrate it with modern applications and technologies.

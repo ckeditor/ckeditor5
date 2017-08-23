@@ -15,11 +15,11 @@ The goal of installing any of the CKEditor 5 builds is to enable you to use its 
 * [CDN](#CDN)
 * [npm](#npm)
 
-Each of the builds has independent release packages. Before starting, you must define which one you are interested in. Check the {@link builds/guides/overview Overview} page for the list of available builds.
+Each of the builds has independent release packages. Check the {@link builds/guides/overview#Builds Overview} page for the list of available builds.
 
 ### Zip download
 
-Go to http://ckeditor.com/ckeditor5-builds/download and download your preferred build. For example, you may download the `ckeditor5-build.classic-1.0.0.zip` file for the Classic Editor build.
+Go to https://ckeditor.com/ckeditor5-builds/download and download your preferred build. For example, you may download the `ckeditor5-build.classic-1.0.0.zip` file for the Classic editor build.
 
 Extract the above `.zip` file into a dedicated directory inside your website or application.
 
@@ -33,9 +33,9 @@ Check out the {@linkTODO CKEditor 5 Builds CDN website} for a list of URL entry 
 
 ### npm
 
-All builds are released on npm. The following search shows all build packages available there: https://www.npmjs.com/search?q=%40ckeditor%2Fckeditor5-build
+All builds are released on npm. [Use this search link](https://www.npmjs.com/search?q=%40ckeditor%2Fckeditor5-build) to view all build packages available in npm.
 
-Installing a build with npm is as simple as calling the following inside your website or application:
+Installing a classic build with npm is as simple as calling the following inside your website or application:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-classic
