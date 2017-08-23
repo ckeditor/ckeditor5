@@ -23,9 +23,18 @@ It is, of course, possible to configure which heading levels the editor should s
 
 The following editor will support only two levels of headings &mdash; `<h1>` and `<h2>`:
 
+
+```html
+<div id="editor">
+	<h1>Heading 1</h1>
+	<h2>Heading 2</h2>
+	<p>This is <a href="https://ckeditor5.github.io">CKEditor&nbsp;5</a>.</p>
+</div>
+```
+
 ```js
 ClassicEditor
-	.create( {
+	.create( document.querySelector( '#editor' ), {
 		heading: {
 			options: [
 				{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
@@ -38,7 +47,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-{@snippetTODO custom-heading-levels}
+{@snippet features/custom-heading-levels}
 
 Read more about the `heading.options` format in {@link module:heading/heading~HeadingConfig#options the API documentation}.
 
