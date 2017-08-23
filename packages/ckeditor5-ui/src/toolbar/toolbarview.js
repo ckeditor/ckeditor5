@@ -14,6 +14,7 @@ import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
 import preventDefault from '../bindings/preventdefault.js';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * The toolbar view class.
@@ -126,9 +127,29 @@ export default class ToolbarView extends View {
 		}
 
 		config.map( name => {
-			const component = name == '|' ? new ToolbarSeparatorView() : factory.create( name );
-
-			this.items.add( component );
+			if ( name == '|' ) {
+				this.items.add( new ToolbarSeparatorView() );
+			} else if ( factory.has( name ) ) {
+				this.items.add( factory.create( name ) );
+			} else {
+				/**
+				 * There was a problem with expanding the toolbar configuration into toolbar items.
+				 * The provided factory does not provide a component of such a name and because of that
+				 * it has not been added to the {@link #items}.
+				 *
+				 * This warning usually shows up when the plugin that is supposed to register the toolbar
+				 * component in the factory has not been loaded or there's a typo in the configuration
+				 * of the toolbar.
+				 *
+				 * @error toolbarview-missing-component
+				 * @param {String} name The name of the component.
+				 * @param {module:ui/componentfactory~ComponentFactory} factory The factory that is missing the component.
+				 */
+				log.warn(
+					'toolbarview-missing-component: There is no such component in the factory.',
+					{ name, factory }
+				);
+			}
 		} );
 	}
 }

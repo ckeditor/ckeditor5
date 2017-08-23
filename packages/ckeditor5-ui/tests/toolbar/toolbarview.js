@@ -13,10 +13,14 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../../src/focuscycler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ViewCollection from '../../src/viewcollection';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 import View from '../../src/view';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ToolbarView', () => {
 	let locale, view;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = {};
@@ -246,6 +250,23 @@ describe( 'ToolbarView', () => {
 			expect( items.get( 1 ).name ).to.equal( 'bar' );
 			expect( items.get( 2 ) ).to.be.instanceOf( ToolbarSeparatorView );
 			expect( items.get( 3 ).name ).to.equal( 'foo' );
+		} );
+
+		it( 'warns if there is no such component in the factory', () => {
+			const items = view.items;
+			testUtils.sinon.stub( log, 'warn' );
+
+			view.fillFromConfig( [ 'foo', 'bar', 'baz' ], factory );
+
+			expect( items ).to.have.length( 2 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ).name ).to.equal( 'bar' );
+
+			sinon.assert.calledOnce( log.warn );
+			sinon.assert.calledWithExactly( log.warn,
+				sinon.match( /^toolbarview-missing-component/ ),
+				{ name: 'baz', factory }
+			);
 		} );
 	} );
 } );
