@@ -40,6 +40,7 @@ function getTestOptions() {
 gulp.task( 'docs', () => {
 	const skipLiveSnippets = process.argv.includes( '--skip-snippets' );
 	const skipApi = process.argv.includes( '--skip-api' );
+	const production = process.argv.includes( '--production' );
 
 	if ( skipApi ) {
 		const fs = require( 'fs' );
@@ -50,14 +51,16 @@ gulp.task( 'docs', () => {
 		}
 
 		return runUmberto( {
-			skipLiveSnippets
+			skipLiveSnippets,
+			production
 		} );
 	}
 
 	return buildApiDocs()
 		.then( () => {
 			return runUmberto( {
-				skipLiveSnippets
+				skipLiveSnippets,
+				production
 			} );
 		} );
 } );
@@ -87,7 +90,10 @@ function runUmberto( options ) {
 	return umberto.buildSingleProject( {
 		configDir: 'docs',
 		clean: true,
-		skipLiveSnippets: options.skipLiveSnippets
+		skipLiveSnippets: options.skipLiveSnippets,
+		snippetOptions: {
+			production: options.production
+		}
 	} );
 }
 
