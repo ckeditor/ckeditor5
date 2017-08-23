@@ -132,6 +132,30 @@ describe( 'transform', () => {
 				expect( nodesAndText ).to.equal( 'XXXXXabcdXAABBPabcfoobarxyzP' );
 			} );
 
+			it( 'merge in same position as insert - undo mode', () => {
+				// In undo mode, default transformation algorithm should be used.
+				const mergeDelta = getMergeDelta( insertPosition, 4, 12, baseVersion );
+
+				context.bWasUndone = true;
+				const transformed = transform( insertDelta, mergeDelta, context );
+
+				baseVersion = mergeDelta.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: InsertDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: Position.createFromPosition( insertPosition ),
+							nodes: [ nodeA, nodeB ],
+							baseVersion
+						}
+					]
+				} );
+			} );
+
 			it( 'merge the node that is parent of insert position (sticky move test)', () => {
 				const mergeDelta = getMergeDelta( new Position( root, [ 3, 3 ] ), 1, 4, baseVersion );
 				const transformed = transform( insertDelta, mergeDelta, context );
