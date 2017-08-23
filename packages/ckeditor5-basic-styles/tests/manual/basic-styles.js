@@ -12,11 +12,12 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Bold from '../../src/bold';
 import Italic from '../../src/italic';
+import Code from '../../src/code';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic ],
-		toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
+		plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Code ],
+		toolbar: [ 'bold', 'italic', 'code', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

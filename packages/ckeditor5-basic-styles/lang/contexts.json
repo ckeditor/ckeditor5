@@ -1,4 +1,5 @@
 {
 	"Bold": "Toolbar button tooltip for the Bold feature.",
-	"Italic": "Toolbar button tooltip for the Italic feature."
+	"Italic": "Toolbar button tooltip for the Italic feature.",
+	"Code": "Toolbar button tooltip for the Code feature."
 }
