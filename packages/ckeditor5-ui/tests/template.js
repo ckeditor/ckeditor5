@@ -571,15 +571,15 @@ describe( 'Template', () => {
 				);
 			} );
 
-			// #289
+			// https://github.com/ckeditor/ckeditor5-ui/issues/289
 			it( 'does not throw when child does not have an "id" property', () => {
+				const strongView = getView( {
+					tag: 'strong'
+				} );
+
+				strongView.set( 'id' );
+
 				expect( () => {
-					const strongView = getView( {
-						tag: 'strong'
-					} );
-
-					strongView.set( 'id' );
-
 					getView( {
 						tag: 'div',
 						children: [
