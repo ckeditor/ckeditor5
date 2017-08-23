@@ -36,16 +36,17 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
  * * `## ` &ndash; will create Heading 2,
  * * `### ` &ndash; will create Heading 3.
  *
- * ## Bold and italic
+ * ## Bold, italic and code
  *
- * You can apply bold or italic to a text by typing Markdown formatting:
+ * You can apply bold, italic and code to a text by typing Markdown formatting:
  *
- * * `**foo bar**` or `__foo bar__` &ndash; will bold the text.
- * * `*foo bar*` or `_foo bar_` &ndash; will italicize the text.
+ * * `**foo bar**` or `__foo bar__` &ndash; will bold the text,
+ * * `*foo bar*` or `_foo bar_` &ndash; will italicize the text,
+ * * ``` `foo bar` ``` &ndash; will mark the text as code.
  *
  * NOTE: Remember to add proper features to the editor configuration. Autoformatting will be enabled only for the
  * commands that are included in the actual configuration. For example: `bold` autoformatting will not work if there is no
- * `bold` command registered in the editor.
+ * `Bold` command registered in the editor.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -91,14 +92,15 @@ export default class Autoformat extends Plugin {
 	}
 
 	/**
-	 * Adds autoformatting related to the {@link module:basic-styles/bold~Bold} and
-	 * {@link module:basic-styles/italic~Italic}.
+	 * Adds autoformatting related to the {@link module:basic-styles/bold~Bold},
+	 * {@link module:basic-styles/italic~Italic} and {@link module:basic-styles/code~Code}.
 	 *
 	 * When typed:
-	 * - `**foobar**` &ndash; `**` characters are removed and `foobar` is set to bold.
-	 * - `__foobar__` &ndash; `__` characters are removed and `foobar` is set to bold.
-	 * - `*foobar*` &ndash; `*` characters are removed and `foobar` is set to italic.
-	 * - `_foobar_` &ndash; `_` characters are removed and `foobar` is set to italic.
+	 * - `**foobar**` &ndash; `**` characters are removed and `foobar` is set to bold,
+	 * - `__foobar__` &ndash; `__` characters are removed and `foobar` is set to bold,
+	 * - `*foobar*` &ndash; `*` characters are removed and `foobar` is set to italic,
+	 * - `_foobar_` &ndash; `_` characters are removed and `foobar` is set to italic,
+	 * - ``` `foobar` &ndash; ``` ` ``` characters are removed and `foobar` is set to code.
 	 *
 	 * @private
 	 */
@@ -119,6 +121,12 @@ export default class Autoformat extends Plugin {
 			/* eslint-disable no-new */
 			new InlineAutoformatEngine( this.editor, /(?:^|[^*])(\*)([^*_]+)(\*)$/g, 'italic' );
 			new InlineAutoformatEngine( this.editor, /(?:^|[^_])(_)([^_]+)(_)$/g, 'italic' );
+			/* eslint-enable no-new */
+		}
+
+		if ( commands.get( 'code' ) ) {
+			/* eslint-disable no-new */
+			new InlineAutoformatEngine( this.editor, /(`)([^`]+)(`)$/g, 'code' );
 			/* eslint-enable no-new */
 		}
 	}
