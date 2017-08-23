@@ -9,7 +9,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { default as Template, TemplateToBinding, TemplateIfBinding } from '../src/template';
 import View from '../src/view';
 import ViewCollection from '../src/viewcollection';
-import InputTextView from '../src/inputtext/inputtextview';
 import Model from '../src/model';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -121,23 +120,6 @@ describe( 'Template', () => {
 
 			expect( tpl.attributes.a[ 0 ] ).to.equal( 'foo' );
 			expect( tpl.children.get( 0 ).tag ).to.equal( 'span' );
-		} );
-
-		it( 'does not throw when child does not have an "id" property', () => {
-			class DivView extends View {
-				constructor( locale ) {
-					super( locale );
-
-					this.template = new Template( {
-						tag: 'div',
-						children: [
-							new InputTextView( locale )
-						]
-					} );
-				}
-			}
-
-			expect( () => new DivView( {} ) ).to.not.throw( CKEditorError );
 		} );
 	} );
 
@@ -587,6 +569,24 @@ describe( 'Template', () => {
 				expect( normalizeHtml( tpl.render().outerHTML ) ).to.equal(
 					'<p><a></a><b></b><i>foo</i></p>'
 				);
+			} );
+
+			// #289
+			it( 'does not throw when child does not have an "id" property', () => {
+				expect( () => {
+					const strongView = getView( {
+						tag: 'strong'
+					} );
+
+					strongView.set( 'id' );
+
+					getView( {
+						tag: 'div',
+						children: [
+							strongView
+						]
+					} );
+				} ).to.not.throw();
 			} );
 		} );
 
