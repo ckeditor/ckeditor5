@@ -70,4 +70,15 @@ describe( 'ComponentFactory', () => {
 			expect( instance.locale ).to.equal( locale );
 		} );
 	} );
+
+	describe( 'has()', () => {
+		it( 'checks if the factory contains a component of a given name', () => {
+			factory.add( 'foo', () => {} );
+			factory.add( 'bar', () => {} );
+
+			expect( factory.has( 'foo' ) ).to.be.true;
+			expect( factory.has( 'bar' ) ).to.be.true;
+			expect( factory.has( 'baz' ) ).to.be.false;
+		} );
+	} );
 } );
