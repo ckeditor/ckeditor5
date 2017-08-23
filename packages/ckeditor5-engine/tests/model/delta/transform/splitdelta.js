@@ -56,7 +56,7 @@ describe( 'transform', () => {
 		} );
 
 		describe( 'SplitDelta', () => {
-			it( 'split in same parent and offset', () => {
+			it( 'split in same parent and offset - isStrong = false', () => {
 				const splitDeltaB = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 				const transformed = transform( splitDelta, splitDeltaB, context );
 
@@ -86,8 +86,41 @@ describe( 'transform', () => {
 
 				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 0 ] ), 6 ) );
 
-				// Incoming split delta is discarded. Only one new element is created after applying both split deltas.
-				// There are no empty P elements.
+				expect( nodesAndText ).to.equal( 'XXXXXabcdXPabcPPPPfoobarxyzP' );
+			} );
+
+			it( 'split in same parent and offset - isStrong = true', () => {
+				const splitDeltaB = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
+
+				context.isStrong = true;
+				const transformed = transform( splitDelta, splitDeltaB, context );
+
+				baseVersion = splitDeltaB.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: new Position( root, [ 3, 3, 4 ] ),
+							baseVersion
+						},
+						{
+							type: NoOperation,
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+
+				// Test if deltas do what they should after applying transformed delta.
+
+				applyDelta( splitDeltaB, doc );
+				applyDelta( transformed[ 0 ], doc );
+
+				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 0 ] ), 6 ) );
+
 				expect( nodesAndText ).to.equal( 'XXXXXabcdXPabcPPPPfoobarxyzP' );
 			} );
 
@@ -98,7 +131,8 @@ describe( 'transform', () => {
 				const splitDeltaB = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 				const transformed = transform( splitDelta, splitDeltaB, {
 					isStrong: false,
-					insertBefore: true
+					insertBefore: true,
+					bWasUndone: true // If `insertBefore` was set it means that delta `b` had to be undone.
 				} );
 
 				baseVersion = splitDeltaB.operations.length;

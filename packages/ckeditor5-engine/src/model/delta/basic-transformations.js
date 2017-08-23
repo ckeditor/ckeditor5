@@ -17,6 +17,7 @@ import Position from '../position';
 import NoOperation from '../operation/nooperation';
 import AttributeOperation from '../operation/attributeoperation';
 import InsertOperation from '../operation/insertoperation';
+import ReinsertOperation from '../operation/reinsertoperation';
 
 import Delta from './delta';
 import AttributeDelta from './attributedelta';
@@ -96,10 +97,12 @@ addTransformationCase( AttributeDelta, SplitDelta, ( a, b, context ) => {
 
 // Add special case for InsertDelta x MergeDelta transformation.
 addTransformationCase( InsertDelta, MergeDelta, ( a, b, context ) => {
+	const undoMode = context.aWasUndone || context.bWasUndone;
+
 	// If insert is applied at the same position where merge happened, we reverse the merge (we treat it like it
 	// didn't happen) and then apply the original insert operation. This is "mirrored" in MergeDelta x InsertDelta
 	// transformation below, where we simply do not apply MergeDelta.
-	if ( a.position.isEqual( b.position ) ) {
+	if ( !undoMode && a.position.isEqual( b.position ) ) {
 		return [
 			b.getReversed(),
 			a.clone()
@@ -155,9 +158,11 @@ addTransformationCase( MoveDelta, MergeDelta, ( a, b, context ) => {
 
 // Add special case for MergeDelta x InsertDelta transformation.
 addTransformationCase( MergeDelta, InsertDelta, ( a, b, context ) => {
+	const undoMode = context.aWasUndone || context.bWasUndone;
+
 	// If merge is applied at the same position where we inserted a range of nodes we cancel the merge as it's results
 	// may be unexpected and very weird. Even if we do some "magic" we don't know what really are users' expectations.
-	if ( a.position.isEqual( b.position ) ) {
+	if ( !undoMode && a.position.isEqual( b.position ) ) {
 		return [ noDelta() ];
 	}
 
@@ -182,8 +187,14 @@ addTransformationCase( MergeDelta, MoveDelta, ( a, b, context ) => {
 	return defaultTransform( a, b, context );
 } );
 
-// Add special case for SplitDelta x SplitDelta transformation.
 addTransformationCase( SplitDelta, SplitDelta, ( a, b, context ) => {
+	const undoMode = context.aWasUndone || context.bWasUndone;
+
+	// Do not apply special transformation case if transformation is in undo mode.
+	if ( undoMode ) {
+		return defaultTransform( a, b, context );
+	}
+
 	// Do not apply special transformation case if `SplitDelta` has `NoOperation` as the second operation.
 	if ( !a.position || !b.position ) {
 		return defaultTransform( a, b, context );
@@ -194,23 +205,48 @@ addTransformationCase( SplitDelta, SplitDelta, ( a, b, context ) => {
 
 	// The special case is for splits inside the same parent.
 	if ( a.position.root == b.position.root && compareArrays( pathA, pathB ) == 'same' ) {
-		const newContext = Object.assign( {}, context );
+		a = a.clone();
 
-		// If `a` delta splits in further location, make sure that it will move some nodes by forcing it to be strong.
-		// Similarly, if `a` splits closer, make sure that it is transformed accordingly.
-		if ( a.position.offset != b.position.offset ) {
-			// We need to ensure that incoming operation is strong / weak.
-			newContext.isStrong = a.position.offset > b.position.offset;
+		if ( a.position.offset <= b.position.offset ) {
+			// If both first operations are `ReinsertOperation`s, we might need to transform `a._cloneOperation`,
+			// so it will take correct node from graveyard.
+			if (
+				a._cloneOperation instanceof ReinsertOperation && b._cloneOperation instanceof ReinsertOperation &&
+				a._cloneOperation.sourcePosition.offset > b._cloneOperation.sourcePosition.offset
+			) {
+				a._cloneOperation.sourcePosition.offset--;
+			}
+
+			// `a` splits closer or at same offset.
+			// Change how many nodes are moved. Do not move nodes that were moved by delta `b`.
+			const aRange = Range.createFromPositionAndShift( a.position, a._moveOperation.howMany );
+			const bRange = Range.createFromPositionAndShift( b.position, b._moveOperation.howMany );
+
+			const diff = aRange.getDifference( bRange );
+
+			let newHowMany = 0;
+
+			for ( const range of diff ) {
+				newHowMany += range.end.offset - range.start.offset;
+			}
+
+			if ( newHowMany === 0 ) {
+				a.operations.pop(); // Remove last operation (`MoveOperation`).
+				a.addOperation( new NoOperation( a.operations[ 0 ].baseVersion + 1 ) ); // Add `NoOperation` instead.
+			} else {
+				a.operations[ 1 ].howMany = newHowMany;
+			}
+
+			return [ a ];
+		} else {
+			// `a` splits further.
+			// This is more complicated case, thankfully we can solve it using default transformation and setting proper context.
+			const newContext = Object.assign( {}, context );
+			newContext.isStrong = true;
+			newContext.insertBefore = true;
+
+			return defaultTransform( a, b, newContext );
 		}
-
-		// Then, default transformation is almost good.
-		// We need to change insert operations offsets, though.
-		// We will use `context.insertBefore` for this (but only if it is not set!)
-		if ( context.insertBefore === undefined ) {
-			newContext.insertBefore = newContext.isStrong;
-		}
-
-		return defaultTransform( a, b, newContext );
 	}
 
 	return defaultTransform( a, b, context );
