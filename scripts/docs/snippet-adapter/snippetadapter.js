@@ -19,8 +19,8 @@ module.exports = function snippetAdapter( data ) {
 	const webpackConfig = getWebpackConfig( {
 		entry: data.snippetSource.js,
 		outputPath: path.join( data.outputPath, data.snippetPath ),
-		language: snippetConfig.language
-		// minify: data.options.production
+		language: snippetConfig.language,
+		minify: data.options.production
 	} );
 
 	return runWebpack( webpackConfig )
