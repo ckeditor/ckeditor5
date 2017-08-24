@@ -3,6 +3,8 @@ title: Images
 category: features
 ---
 
+{@snippet build-classic-source}
+
 The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins that implement various image-related features:
 
 * {@link module:image/image~Image} implements basic support for images,
@@ -31,7 +33,7 @@ The {@link module:image/image~Image} feature adds support for plain images with 
 
 You can see the demo of an editor with the base image feature enabled below:
 
-{@snippetTODO image}
+{@snippet features/image}
 
 <info-box hint>
 	The base image feature, unlike in CKEditor 4, does not support any user interface for inserting or managing images. Its sole purpose is to lay ground for other plugins (mentioned above) to build the target user experience. This pattern (composition of atomic features) is common for CKEditor 5 and allows the developers to build their own customized experience by implementing specific subfeatures differently.
@@ -43,7 +45,7 @@ The {@link module:image/imagetoolbar~ImageToobar} plugin introduces contextual t
 
 See a demo of an editor with the contextual toolbar enabled:
 
-{@snippetTODO image-toolbar}
+{@snippet features/image-toolbar}
 
 The image toolbar is configured to contain the image text alternative button:
 
@@ -69,7 +71,7 @@ The {@link module:image/imagecaption~ImageCaption} plugin adds support for image
 
 By default, if the image caption is empty, the `<figcaption>` element is not visible to the user. You can click the image to reveal the caption. See the demo below:
 
-{@snippetTODO image-caption}
+{@snippet features/image-caption}
 
 ## Image styles
 
@@ -194,7 +196,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-If you are using an editor build, see how to {@linkTODO customize builds}.
+If you are using an editor build, see how to {@link builds/guides/development/custom-builds customize builds}.
 
 ## Common API
 
