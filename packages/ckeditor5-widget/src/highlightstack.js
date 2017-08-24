@@ -35,34 +35,18 @@ export default class HighlightStack {
 	 */
 	add( descriptor ) {
 		const stack = this._stack;
-		let i = 0;
 
-		// Find correct place to insert descriptor in the stack.
-		while ( stack[ i ] && shouldABeBeforeB( stack[ i ], descriptor ) ) {
-			i++;
-		}
+		// Save top descriptor and insert new one. If top is changed - fire event.
+		const oldTop = stack[ 0 ];
+		this._insertDescriptor( descriptor );
+		const newTop = stack[ 0 ];
 
-		stack.splice( i, 0, descriptor );
-
-		// New element at the stack top.
-		if ( i === 0 ) {
-			const data = {
-				newDescriptor: descriptor
-			};
-
-			// If old descriptor is present it was pushed down the stack.
-			if ( stack[ 1 ] ) {
-				const oldDescriptor = stack[ 1 ];
-
-				// New descriptor on the top is same as previous one - do not fire any event.
-				if ( compareDescriptors( descriptor, oldDescriptor ) ) {
-					return;
-				}
-
-				data.oldDescriptor = oldDescriptor;
-			}
-
-			this.fire( 'change:top', data );
+		// When new object is at the top and stores different information.
+		if ( oldTop !== newTop && !cmp( oldTop, newTop ) ) {
+			this.fire( 'change:top', {
+				oldDescriptor: oldTop,
+				newDescriptor: newTop
+			} );
 		}
 	}
 
@@ -102,21 +86,39 @@ export default class HighlightStack {
 
 			if ( stack[ 0 ] ) {
 				const newDescriptor = stack[ 0 ];
-
-				// New descriptor on the top is same as removed one - do not fire any event.
-				if ( compareDescriptors( descriptor, newDescriptor ) ) {
-					return;
-				}
-
 				data.newDescriptor = newDescriptor;
 			}
 
 			this.fire( 'change:top', data );
 		}
 	}
+
+	_insertDescriptor( descriptor ) {
+		const stack = this._stack;
+		const index = stack.findIndex( item => item.id === descriptor.id );
+
+		// If descriptor with same id is on the list - remove it.
+		if ( index > -1 ) {
+			stack.splice( index, 1 );
+		}
+
+		// Find correct place to insert descriptor in the stack.
+		let i = 0;
+
+		while ( stack[ i ] && shouldABeBeforeB( stack[ i ], descriptor ) ) {
+			i++;
+		}
+
+		stack.splice( i, 0, descriptor );
+	}
+
 }
 
 mix( HighlightStack, EmitterMixin );
+
+function cmp( a, b ) {
+	return a && b && a.id == b.id && classesToString( a.class ) == classesToString( b.class ) && a.priority == b.priority;
+}
 
 // Compares two highlight descriptors by priority and CSS class names. Returns `true` when both descriptors are
 // considered equal.
@@ -125,9 +127,9 @@ mix( HighlightStack, EmitterMixin );
 // @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} descriptorB
 // @returns {Boolean}
 function compareDescriptors( descriptorA, descriptorB ) {
-	return descriptorA.priority == descriptorB.priority &&
-		classesToString( descriptorA.class ) == classesToString( descriptorB.class );
+	return descriptorA.id == descriptorB.id;
 }
+
 
 // Checks whenever first descriptor should be placed in the stack before second one.
 //
