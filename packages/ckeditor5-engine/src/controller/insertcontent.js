@@ -431,7 +431,7 @@ class Insertion {
 	}
 
 	/**
-	 * Removes disallowed by schema attributes from given node.
+	 * Removes disallowed by schema attributes.
 	 *
 	 * @private
 	 * @param {module:engine/model/node~Node} node
