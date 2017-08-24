@@ -82,14 +82,19 @@ function enterBlock( dataController, batch, selection, schema ) {
 }
 
 function splitBlock( batch, selection, splitPos ) {
+	const oldElement = splitPos.parent;
+	const newElement = new oldElement.constructor( oldElement.name, oldElement.getAttributes() );
+
 	if ( splitPos.isAtEnd ) {
 		// If the split is at the end of element, instead of splitting, just create a clone of position's parent
-		// element and insert it after cloned element. The result is the same but less operations are taken
+		// element and insert it after split element. The result is the same but less operations are done
 		// and it's more semantically correct (when it comes to operational transformation).
-		const oldElement = splitPos.parent;
-		const newElement = new oldElement.constructor( oldElement.name, oldElement.getAttributes() );
-
 		batch.insert( Position.createAfter( splitPos.parent ), newElement );
+	} else if ( splitPos.isAtStart ) {
+		// If the split is at the start of element, instead of splitting, just create a clone of position's parent
+		// element and insert it before split element. The result is the same but less operations are done
+		// and it's more semantically correct (when it comes to operational transformation).
+		batch.insert( Position.createBefore( splitPos.parent ), newElement );
 	} else {
 		batch.split( splitPos );
 	}
