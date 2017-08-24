@@ -229,7 +229,7 @@ class Insertion {
 		// When disallowed node is a text but text is allowed in current parent it means that our node
 		// contains disallowed attributes and we have to remove them.
 		else if ( node.is( 'text' ) && this.schema.check( { name: '$text', inside: [ this.position.parent ] } ) ) {
-			this._stripsDisallowedAttributes( node );
+			this._stripDisallowedAttributes( node );
 			this._handleNode( node, context );
 		}
 		// Try autoparagraphing.
@@ -335,7 +335,7 @@ class Insertion {
 			// When node is a text and is disallowed by schema it means that contains disallowed attributes
 			// and we need to remove them.
 			if ( node.is( 'text' ) && !this._checkIsAllowed( node, [ paragraph ] ) ) {
-				this._stripsDisallowedAttributes( node, [ paragraph ] );
+				this._stripDisallowedAttributes( node, [ paragraph ] );
 			}
 
 			if ( this._checkIsAllowed( node, [ paragraph ] ) ) {
@@ -437,7 +437,7 @@ class Insertion {
 	 * @param {module:engine/model/node~Node} node
 	 * @param {module:engine/model/schema~SchemaPath} path
 	 */
-	_stripsDisallowedAttributes( node, path = [ this.position.parent ] ) {
+	_stripDisallowedAttributes( node, path = [ this.position.parent ] ) {
 		for ( const attribute of node.getAttributeKeys() ) {
 			if ( !this.schema.check( { name: '$text', attributes: attribute, inside: [ path ] } ) ) {
 				node.removeAttribute( attribute );
