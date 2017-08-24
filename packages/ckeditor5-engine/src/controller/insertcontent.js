@@ -228,7 +228,7 @@ class Insertion {
 		}
 		// When disallowed node is a text but text is allowed in current parent it means that our node
 		// contains disallowed attributes and we have to remove them.
-		else if ( node.is( 'text' ) && this.schema.check( { name: '$text', inside: [ this.position.parent ] } ) ) {
+		else if ( node.is( 'text' ) && this.schema.check( { name: '$text', inside: this.position } ) ) {
 			this._stripDisallowedAttributes( node );
 			this._handleNode( node, context );
 		}
@@ -243,7 +243,7 @@ class Insertion {
 	 */
 	_insert( node ) {
 		/* istanbul ignore if */
-		if ( !this._checkIsAllowed( node, [ this.position.parent ] ) ) {
+		if ( !this._checkIsAllowed( node, this.position ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 			// Note that it would often be a silent issue if we insert node in a place where it's not allowed.
 			log.error(
@@ -262,7 +262,7 @@ class Insertion {
 		livePos.detach();
 
 		// The last inserted object should be selected because we can't put a collapsed selection after it.
-		if ( this._checkIsObject( node ) && !this.schema.check( { name: '$text', inside: [ this.position.parent ] } ) ) {
+		if ( this._checkIsObject( node ) && !this.schema.check( { name: '$text', inside: this.position } ) ) {
 			this.nodeToSelect = node;
 		} else {
 			this.nodeToSelect = null;
@@ -437,7 +437,7 @@ class Insertion {
 	 * @param {module:engine/model/node~Node} node
 	 * @param {module:engine/model/schema~SchemaPath} path
 	 */
-	_stripDisallowedAttributes( node, path = [ this.position.parent ] ) {
+	_stripDisallowedAttributes( node, path = this.position ) {
 		for ( const attribute of node.getAttributeKeys() ) {
 			if ( !this.schema.check( { name: '$text', attributes: attribute, inside: path } ) ) {
 				node.removeAttribute( attribute );
