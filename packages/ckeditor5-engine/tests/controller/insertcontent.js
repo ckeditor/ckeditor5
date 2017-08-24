@@ -591,6 +591,8 @@ describe( 'DataController', () => {
 				schema.allow( { name: 'disallowedWidget', inside: '$clipboardHolder' } );
 				schema.allow( { name: '$text', inside: 'disallowedWidget' } );
 				schema.objects.add( 'disallowedWidget' );
+
+				schema.allow( { name: '$text', attributes: 'b', inside: 'paragraph' } );
 			} );
 
 			it( 'filters out disallowed elements and leaves out the text', () => {
@@ -609,6 +611,12 @@ describe( 'DataController', () => {
 				setData( doc, '<paragraph>f[]oo</paragraph>' );
 				insertHelper( '<disallowedWidget>xxx</disallowedWidget>' );
 				expect( getData( doc ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
+			} );
+
+			it( 'filters out disallowed attributes', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( '<table><td>x<$text a="1" b="1">x</$text>x</td><td>y<$text a="1">y</$text>y</td></table>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
 			} );
 		} );
 	} );

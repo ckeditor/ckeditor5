@@ -226,6 +226,17 @@ class Insertion {
 		if ( node.is( 'element' ) ) {
 			this.handleNodes( node.getChildren(), context );
 		}
+		// When disallowed node is a text but text is allowed in current parent it means that our node
+		// contains disallowed attributes and we have to remove them.
+		else if ( node.is( 'text' ) && this.schema.check( { name: '$text', inside: [ this.position.parent ] } ) ) {
+			for ( const attribute of node.getAttributeKeys() ) {
+				if ( !this.schema.check( { name: '$text', attributes: attribute, inside: [ this.position.parent ] } ) ) {
+					node.removeAttribute( attribute );
+				}
+			}
+
+			this._handleNode( node, context );
+		}
 		// Try autoparagraphing.
 		else {
 			this._tryAutoparagraphing( node, context );
