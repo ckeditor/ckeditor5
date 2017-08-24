@@ -229,12 +229,7 @@ class Insertion {
 		// When disallowed node is a text but text is allowed in current parent it means that our node
 		// contains disallowed attributes and we have to remove them.
 		else if ( node.is( 'text' ) && this.schema.check( { name: '$text', inside: [ this.position.parent ] } ) ) {
-			for ( const attribute of node.getAttributeKeys() ) {
-				if ( !this.schema.check( { name: '$text', attributes: attribute, inside: [ this.position.parent ] } ) ) {
-					node.removeAttribute( attribute );
-				}
-			}
-
+			this._stripsDisallowedAttributes( node );
 			this._handleNode( node, context );
 		}
 		// Try autoparagraphing.
@@ -336,10 +331,17 @@ class Insertion {
 		// Do not autoparagraph if the paragraph won't be allowed there,
 		// cause that would lead to an infinite loop. The paragraph would be rejected in
 		// the next _handleNode() call and we'd be here again.
-		if ( this._getAllowedIn( paragraph, this.position.parent ) && this._checkIsAllowed( node, [ paragraph ] ) ) {
-			paragraph.appendChildren( node );
+		if ( this._getAllowedIn( paragraph, this.position.parent ) ) {
+			// When node is a text and is disallowed by schema it means that contains disallowed attributes
+			// and we need to remove them.
+			if ( node.is( 'text' ) && !this._checkIsAllowed( node, [ paragraph ] ) ) {
+				this._stripsDisallowedAttributes( node, [ paragraph ] );
+			}
 
-			this._handleNode( paragraph, context );
+			if ( this._checkIsAllowed( node, [ paragraph ] ) ) {
+				paragraph.appendChildren( node );
+				this._handleNode( paragraph, context );
+			}
 		}
 	}
 
@@ -420,12 +422,27 @@ class Insertion {
 	}
 
 	/**
-	 * Checks wether according to the schema this is an object type element.
+	 * Checks whether according to the schema this is an object type element.
 	 *
 	 * @param {module:engine/model/node~Node} node The node to check.
 	 */
 	_checkIsObject( node ) {
 		return this.schema.objects.has( this._getNodeSchemaName( node ) );
+	}
+
+	/**
+	 * Removes disallowed by schema attributes from given node.
+	 *
+	 * @private
+	 * @param {module:engine/model/node~Node} node
+	 * @param {module:engine/model/schema~SchemaPath} path
+	 */
+	_stripsDisallowedAttributes( node, path = [ this.position.parent ] ) {
+		for ( const attribute of node.getAttributeKeys() ) {
+			if ( !this.schema.check( { name: '$text', attributes: attribute, inside: [ path ] } ) ) {
+				node.removeAttribute( attribute );
+			}
+		}
 	}
 
 	/**

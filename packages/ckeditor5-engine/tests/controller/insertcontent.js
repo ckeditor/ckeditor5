@@ -618,6 +618,12 @@ describe( 'DataController', () => {
 				insertHelper( '<table><td>x<$text a="1" b="1">x</$text>x</td><td>y<$text a="1">y</$text>y</td></table>' );
 				expect( getData( doc ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
 			} );
+
+			it( 'filters out disallowed attributes when autoparagraphing', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( '<paragraph>xxx</paragraph><$text a="1" b="1">yyy</$text>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fxxx</paragraph><paragraph><$text b="1">yyy[]</$text>oo</paragraph>' );
+			} );
 		} );
 	} );
 
