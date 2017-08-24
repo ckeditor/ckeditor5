@@ -439,7 +439,7 @@ class Insertion {
 	 */
 	_stripDisallowedAttributes( node, path = [ this.position.parent ] ) {
 		for ( const attribute of node.getAttributeKeys() ) {
-			if ( !this.schema.check( { name: '$text', attributes: attribute, inside: [ path ] } ) ) {
+			if ( !this.schema.check( { name: '$text', attributes: attribute, inside: path } ) ) {
 				node.removeAttribute( attribute );
 			}
 		}
