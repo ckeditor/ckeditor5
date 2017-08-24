@@ -441,6 +441,8 @@ export default function buildModelConverter() {
  *
  * @property {String|Array.<String>} class CSS class or array of classes that will be added to `span`
  * {@link module:engine/view/attributeelement~AttributeElement} wrapping each text node in the highlighted content.
+ * @property {String} [id] Descriptor identifier. If not provided, marker's name from which given highlight is created
+ * will be used.
  * @property {Number} [priority] {@link module:engine/view/attributeelement~AttributeElement#priority} of the `span`
  * wrapping each text node in the highlighted content. If not provided, default 10 priority will be used.
  * @property {Object} [attributes] Attributes that will be added to `span`

@@ -176,7 +176,8 @@ describe( 'model-to-view-converters', () => {
 		const highlightDescriptor = {
 			class: 'highlight-class',
 			priority: 7,
-			attributes: { title: 'title' }
+			attributes: { title: 'title' },
+			id: 'customId'
 		};
 
 		beforeEach( () => {
@@ -274,6 +275,37 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.convertMarker( 'removeMarker', 'marker', markerRange );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+		} );
+
+		it( 'should use provide default priority and id if not provided', () => {
+			const highlightDescriptor = { class: 'highlight-class' };
+
+			dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
+			dispatcher.on( 'removeMarker:marker', highlightElement( highlightDescriptor ) );
+			dispatcher.on( 'insert:paragraph', insertElement( data => {
+				// Use special converter only for first paragraph.
+				if ( data.item == modelElement2 ) {
+					return;
+				}
+
+				const viewContainer = new ViewContainerElement( 'p' );
+
+				viewContainer.setCustomProperty( 'addHighlight', ( element, descriptor ) => {
+					expect( descriptor.priority ).to.equal( 10 );
+					expect( descriptor.id ).to.equal( 'marker:foo-bar-baz' );
+				} );
+
+				viewContainer.setCustomProperty( 'removeHighlight', ( element, descriptor ) => {
+					expect( descriptor.priority ).to.equal( 10 );
+					expect( descriptor.id ).to.equal( 'marker:foo-bar-baz' );
+				} );
+
+				return viewContainer;
+			} ), { priority: 'high' } );
+
+			dispatcher.convertInsertion( markerRange );
+			modelDoc.markers.set( 'marker', markerRange );
+			dispatcher.convertMarker( 'addMarker', 'marker:foo-bar-baz', markerRange );
 		} );
 
 		it( 'should do nothing if descriptor is not provided', () => {
