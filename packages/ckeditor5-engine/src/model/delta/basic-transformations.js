@@ -97,6 +97,11 @@ addTransformationCase( AttributeDelta, SplitDelta, ( a, b, context ) => {
 
 // Add special case for InsertDelta x MergeDelta transformation.
 addTransformationCase( InsertDelta, MergeDelta, ( a, b, context ) => {
+	// Do not apply special transformation case if `MergeDelta` has `NoOperation` as the second operation.
+	if ( !b.position ) {
+		return defaultTransform( a, b, context );
+	}
+
 	const undoMode = context.aWasUndone || context.bWasUndone;
 
 	// If insert is applied at the same position where merge happened, we reverse the merge (we treat it like it
@@ -136,10 +141,14 @@ addTransformationCase( MarkerDelta, RenameDelta, transformMarkerDelta );
 
 // Add special case for MoveDelta x MergeDelta transformation.
 addTransformationCase( MoveDelta, MergeDelta, ( a, b, context ) => {
+	// Do not apply special transformation case if `MergeDelta` has `NoOperation` as the second operation.
+	if ( !b.position ) {
+		return defaultTransform( a, b, context );
+	}
+
 	// If move delta is supposed to move a node that has been merged, we reverse the merge (we treat it like it
 	// didn't happen) and then apply the original move operation. This is "mirrored" in MergeDelta x MoveDelta
 	// transformation below, where we simply do not apply MergeDelta.
-
 	const operateInSameParent =
 		a.sourcePosition.root == b.position.root &&
 		compareArrays( a.sourcePosition.getParentPath(), b.position.getParentPath() ) === 'same';
@@ -158,6 +167,11 @@ addTransformationCase( MoveDelta, MergeDelta, ( a, b, context ) => {
 
 // Add special case for MergeDelta x InsertDelta transformation.
 addTransformationCase( MergeDelta, InsertDelta, ( a, b, context ) => {
+	// Do not apply special transformation case if `MergeDelta` has `NoOperation` as the second operation.
+	if ( !a.position ) {
+		return defaultTransform( a, b, context );
+	}
+
 	const undoMode = context.aWasUndone || context.bWasUndone;
 
 	// If merge is applied at the same position where we inserted a range of nodes we cancel the merge as it's results
@@ -171,9 +185,13 @@ addTransformationCase( MergeDelta, InsertDelta, ( a, b, context ) => {
 
 // Add special case for MergeDelta x MoveDelta transformation.
 addTransformationCase( MergeDelta, MoveDelta, ( a, b, context ) => {
+	// Do not apply special transformation case if `MergeDelta` has `NoOperation` as the second operation.
+	if ( !a.position ) {
+		return defaultTransform( a, b, context );
+	}
+
 	// If merge is applied at the position between moved nodes we cancel the merge as it's results may be unexpected and
 	// very weird. Even if we do some "magic" we don't know what really are users' expectations.
-
 	const operateInSameParent =
 		a.position.root == b.sourcePosition.root &&
 		compareArrays( a.position.getParentPath(), b.sourcePosition.getParentPath() ) === 'same';
