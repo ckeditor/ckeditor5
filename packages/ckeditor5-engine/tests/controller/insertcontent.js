@@ -613,7 +613,13 @@ describe( 'DataController', () => {
 				expect( getData( doc ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
 			} );
 
-			it( 'filters out disallowed attributes', () => {
+			it( 'filters out disallowed attributes when inserting text', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( 'x<$text a="1" b="1">x</$text>xy<$text a="1">y</$text>y' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
+			} );
+
+			it( 'filters out disallowed attributes when inserting text in disallowed elements', () => {
 				setData( doc, '<paragraph>f[]oo</paragraph>' );
 				insertHelper( '<table><td>x<$text a="1" b="1">x</$text>x</td><td>y<$text a="1">y</$text>y</td></table>' );
 				expect( getData( doc ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
