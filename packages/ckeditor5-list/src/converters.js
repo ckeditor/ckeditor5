@@ -577,17 +577,23 @@ export function modelChangePostFixer( document ) {
 		}
 
 		if ( type == 'remove' ) {
+			const howMany = changes.range.end.offset - changes.range.start.offset;
+			const sourcePos = changes.sourcePosition._getTransformedByInsertion( changes.range.start, howMany, true );
+
 			// Fix list items after the cut-out range.
 			// This fix is needed if items in model after cut-out range have now wrong indents compared to their previous siblings.
-			_fixItemsIndent( changes.sourcePosition, document, batch );
+			_fixItemsIndent( sourcePos, document, batch );
 			// This fix is needed if two different nested lists got merged, change types of list items "below".
-			_fixItemsType( changes.sourcePosition, false, document, batch );
+			_fixItemsType( sourcePos, false, document, batch );
 		} else if ( type == 'move' ) {
+			const howMany = changes.range.end.offset - changes.range.start.offset;
+			const sourcePos = changes.sourcePosition._getTransformedByInsertion( changes.range.start, howMany, true );
+
 			// Fix list items after the cut-out range.
 			// This fix is needed if items in model after cut-out range have now wrong indents compared to their previous siblings.
-			_fixItemsIndent( changes.sourcePosition, document, batch );
+			_fixItemsIndent( sourcePos, document, batch );
 			// This fix is needed if two different nested lists got merged, change types of list items "below".
-			_fixItemsType( changes.sourcePosition, false, document, batch );
+			_fixItemsType( sourcePos, false, document, batch );
 
 			// Fix items in moved range.
 			// This fix is needed if inserted items are too deeply intended.

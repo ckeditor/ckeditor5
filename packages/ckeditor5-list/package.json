@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^0.8.1",
+	"@ckeditor/ckeditor5-block-quote": "^0.1.1",
     "@ckeditor/ckeditor5-clipboard": "^0.6.0",
     "@ckeditor/ckeditor5-dev-lint": "^3.1.0",
     "@ckeditor/ckeditor5-editor-classic": "^0.7.3",

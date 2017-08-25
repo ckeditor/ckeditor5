@@ -17,6 +17,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
 import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import BlockQuoteEngine from '@ckeditor/ckeditor5-block-quote/src/blockquoteengine';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -28,7 +29,7 @@ describe( 'ListEngine', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Clipboard, BoldEngine, Paragraph, ListEngine, UndoEngine ]
+				plugins: [ Clipboard, BoldEngine, Paragraph, ListEngine, UndoEngine, BlockQuoteEngine ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -2998,6 +2999,29 @@ describe( 'ListEngine', () => {
 				'<listItem indent="0" type="bulleted">d</listItem>' +
 				'<listItem indent="1" type="bulleted">e</listItem>' +
 				'<listItem indent="1" type="bulleted">i</listItem>'
+			);
+
+			// #78.
+			test(
+				'move out of container',
+
+				'<blockQuote>' +
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem indent="1" type="bulleted">c</listItem>' +
+					'<listItem indent="1" type="bulleted">d</listItem>' +
+					'[<listItem indent="2" type="bulleted">e</listItem>]' +
+				'</blockQuote>',
+
+				0,
+
+				'<listItem indent="0" type="bulleted">e</listItem>' +
+				'<blockQuote>' +
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem indent="1" type="bulleted">c</listItem>' +
+					'<listItem indent="1" type="bulleted">d</listItem>' +
+				'</blockQuote>'
 			);
 		} );
 
