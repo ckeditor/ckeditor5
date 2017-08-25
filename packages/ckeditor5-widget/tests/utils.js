@@ -59,10 +59,10 @@ describe( 'widget utils', () => {
 			expect( typeof set ).to.equal( 'function' );
 			expect( typeof remove ).to.equal( 'function' );
 
-			set( element, { priority: 1, class: 'highlight' } );
+			set( element, { priority: 1, class: 'highlight', id: 'highlight' } );
 			expect( element.hasClass( 'highlight' ) ).to.be.true;
 
-			remove( element, { priority: 1, class: 'highlight' } );
+			remove( element, { priority: 1, class: 'highlight', id: 'highlight' } );
 			expect( element.hasClass( 'highlight' ) ).to.be.false;
 		} );
 
@@ -75,11 +75,11 @@ describe( 'widget utils', () => {
 			expect( typeof set ).to.equal( 'function' );
 			expect( typeof remove ).to.equal( 'function' );
 
-			set( element, { priority: 1, class: [ 'highlight', 'foo' ] } );
+			set( element, { priority: 1, class: [ 'highlight', 'foo' ], id: 'highlight' } );
 			expect( element.hasClass( 'highlight' ) ).to.be.true;
 			expect( element.hasClass( 'foo' ) ).to.be.true;
 
-			remove( element, { priority: 1, class: [ 'foo', 'highlight' ] } );
+			remove( element, { priority: 1, class: [ 'foo', 'highlight' ], id: 'highlight' } );
 			expect( element.hasClass( 'highlight' ) ).to.be.false;
 			expect( element.hasClass( 'foo' ) ).to.be.false;
 		} );
@@ -174,7 +174,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should call highlight methods when descriptor is added and removed', () => {
-			const descriptor = { priority: 10, class: 'highlight' };
+			const descriptor = { priority: 10, class: 'highlight', id: 'highlight' };
 
 			set( element, descriptor );
 			remove( element, descriptor );
@@ -187,8 +187,8 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should call highlight methods when next descriptor is added', () => {
-			const descriptor = { priority: 10, class: 'highlight' };
-			const secondDescriptor = { priority: 11, class: 'highlight' };
+			const descriptor = { priority: 10, class: 'highlight', id: 'highlight-1' };
+			const secondDescriptor = { priority: 11, class: 'highlight', id: 'highlight-2' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
@@ -199,8 +199,8 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should not call highlight methods when descriptor with lower priority is added', () => {
-			const descriptor = { priority: 10, class: 'highlight' };
-			const secondDescriptor = { priority: 9, class: 'highlight' };
+			const descriptor = { priority: 10, class: 'highlight', id: 'highlight-1' };
+			const secondDescriptor = { priority: 9, class: 'highlight', id: 'highlight-2' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
@@ -210,8 +210,8 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should call highlight methods when descriptor is removed changing active descriptor', () => {
-			const descriptor = { priority: 10, class: 'highlight' };
-			const secondDescriptor = { priority: 11, class: 'highlight' };
+			const descriptor = { priority: 10, class: 'highlight', id: 'highlight-1' };
+			const secondDescriptor = { priority: 11, class: 'highlight', id: 'highlight-2' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
@@ -228,8 +228,8 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should call highlight methods when descriptor is removed not changing active descriptor', () => {
-			const descriptor = { priority: 10, class: 'highlight' };
-			const secondDescriptor = { priority: 9, class: 'highlight' };
+			const descriptor = { priority: 10, class: 'highlight', id: 'highlight-1' };
+			const secondDescriptor = { priority: 9, class: 'highlight', id: 'highlight-2' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
@@ -242,8 +242,8 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should call highlight methods - CSS class array', () => {
-			const descriptor = { priority: 10, class: [ 'highlight', 'a' ] };
-			const secondDescriptor = { priority: 10, class: [ 'highlight', 'b' ] };
+			const descriptor = { priority: 10, class: [ 'highlight', 'a' ], id: 'highlight-1' };
+			const secondDescriptor = { priority: 10, class: [ 'highlight', 'b' ], id: 'highlight-2' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
