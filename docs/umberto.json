@@ -135,6 +135,10 @@
 		{
 			"path": "packages/ckeditor5-image",
 			"prefix": "image"
+		},
+		{
+			"path": "packages/ckeditor5-markdown-gfm",
+			"prefix": "markdown-gfm"
 		}
 	]
 }
