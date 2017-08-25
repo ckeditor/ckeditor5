@@ -447,6 +447,7 @@ export function highlightText( highlightDescriptor ) {
  * priority, priority 10 will be used as default, to be compliant with
  * {@link module:engine/conversion/model-to-view-converters~highlightText} method which uses default priority of
  * {@link module:engine/view/attributeelement~AttributeElement}.
+ * If highlight descriptor will not provide id property, name of the marker will be used.
  * When `addHighlight` and `removeHighlight` custom properties are not present, element is not converted
  * in any special way. This means that converters will proceed to convert element's child nodes.
  *
@@ -471,6 +472,10 @@ export function highlightElement( highlightDescriptor ) {
 
 		if ( !descriptor.priority ) {
 			descriptor.priority = 10;
+		}
+
+		if ( !descriptor.id ) {
+			descriptor.id = data.markerName;
 		}
 
 		const viewElement = conversionApi.mapper.toViewElement( modelItem );
