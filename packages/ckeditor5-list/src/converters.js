@@ -574,20 +574,19 @@ export function modelChangePostFixer( document ) {
 			return;
 		}
 
-		let sourcePos;
-
-		if ( changes.sourcePosition ) {
-			const howMany = changes.range.end.offset - changes.range.start.offset;
-			sourcePos = changes.sourcePosition._getTransformedByInsertion( changes.range.start, howMany, true );
-		}
-
 		if ( type == 'remove' ) {
+			const howMany = changes.range.end.offset - changes.range.start.offset;
+			const sourcePos = changes.sourcePosition._getTransformedByInsertion( changes.range.start, howMany, true );
+
 			// Fix list items after the cut-out range.
 			// This fix is needed if items in model after cut-out range have now wrong indents compared to their previous siblings.
 			_fixItemsIndent( sourcePos, document, batch );
 			// This fix is needed if two different nested lists got merged, change types of list items "below".
 			_fixItemsType( sourcePos, false, document, batch );
 		} else if ( type == 'move' ) {
+			const howMany = changes.range.end.offset - changes.range.start.offset;
+			const sourcePos = changes.sourcePosition._getTransformedByInsertion( changes.range.start, howMany, true );
+
 			// Fix list items after the cut-out range.
 			// This fix is needed if items in model after cut-out range have now wrong indents compared to their previous siblings.
 			_fixItemsIndent( sourcePos, document, batch );
