@@ -13,6 +13,8 @@ const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' 
 const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
 const BabelMinifyPlugin = require( 'babel-minify-webpack-plugin' );
 
+const webpackProcesses = new Map();
+
 module.exports = function snippetAdapter( data ) {
 	const snippetConfig = readSnippetConfig( data.snippetSource.js );
 	const outputPath = path.join( data.outputPath, data.snippetPath );
@@ -24,7 +26,17 @@ module.exports = function snippetAdapter( data ) {
 		minify: data.options.production
 	} );
 
-	return runWebpack( webpackConfig )
+	let promise;
+
+	// See #530.
+	if ( webpackProcesses.has( outputPath ) ) {
+		promise = webpackProcesses.get( outputPath );
+	} else {
+		promise = runWebpack( webpackConfig );
+		webpackProcesses.set( outputPath, promise );
+	}
+
+	return promise
 		.then( () => {
 			const wasCSSGenerated = fs.existsSync( path.join( outputPath, 'snippet.css' ) );
 			const cssFiles = [
