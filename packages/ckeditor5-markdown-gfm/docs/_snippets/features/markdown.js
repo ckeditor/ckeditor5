@@ -1,0 +1,42 @@
+/**
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/* globals console, window, document, setTimeout */
+
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+
+import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
+
+import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
+
+function Markdown( editor ) {
+	editor.data.processor = new GFMDataProcessor();
+}
+
+ClassicEditor
+	.create( document.querySelector( '#snippet-markdown' ), {
+		plugins: [ ArticlePreset, Markdown ],
+		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+		image: {
+			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+
+		const outputElement = document.querySelector( '#snippet-markdown-output' );
+
+		editor.document.on( 'changesDone', () => {
+			outputElement.innerText = editor.getData();
+		} );
+
+		// Set the initial data with delay so hightlight.js doesn't catch them.
+		setTimeout( () => {
+			outputElement.innerText = editor.getData();
+		}, 500 );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
