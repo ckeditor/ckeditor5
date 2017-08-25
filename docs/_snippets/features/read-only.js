@@ -3,20 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals console, window, document */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
-import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
+/* globals ClassicEditor, console, window, document */
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-read-only' ), {
-		plugins: [ ArticlePreset ],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
-		image: {
-			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
-		}
-	} )
+	.create( document.querySelector( '#snippet-read-only' ) )
 	.then( editor => {
 		window.editor = editor;
 
