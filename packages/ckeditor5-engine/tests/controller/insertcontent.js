@@ -281,6 +281,17 @@ describe( 'DataController', () => {
 				expect( getData( doc ) ).to.equal( '<heading1>foxyz[]ar</heading1>' );
 			} );
 
+			it( 'not inserts autoparagraph when paragraph is disallowed at the current position', () => {
+				doc.schema.disallow( { name: 'paragraph', inside: '$root' } );
+				doc.schema.disallow( { name: 'heading2', inside: '$root' } );
+
+				const content = new Element( 'heading2', [], [ new Text( 'bar' ) ] );
+
+				setData( doc, '[<heading1>foo</heading1>]' );
+				insertContent( dataController, content, doc.selection );
+				expect( getData( doc ) ).to.equal( '[]' );
+			} );
+
 			describe( 'block to block handling', () => {
 				it( 'inserts one paragraph', () => {
 					setData( doc, '<paragraph>f[]oo</paragraph>' );
