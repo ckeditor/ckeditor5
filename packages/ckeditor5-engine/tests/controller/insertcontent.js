@@ -300,6 +300,12 @@ describe( 'DataController', () => {
 					expect( getData( doc ) ).to.equal( '<paragraph>xyz[]</paragraph>' );
 				} );
 
+				it( 'inserts one empty paragraph', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( '<paragraph></paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
+				} );
+
 				it( 'inserts one block into a fully selected content', () => {
 					setData( doc, '<heading1>[foo</heading1><paragraph>bar]</paragraph>' );
 					insertHelper( '<heading2>xyz</heading2>' );
@@ -623,6 +629,24 @@ describe( 'DataController', () => {
 				setData( doc, '<paragraph>f[]oo</paragraph>' );
 				insertHelper( '<table><td>x<$text a="1" b="1">x</$text>x</td><td>y<$text a="1">y</$text>y</td></table>' );
 				expect( getData( doc ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
+			} );
+
+			it( 'filters out disallowed attributes when merging #1', () => {
+				setData( doc, '<paragraph>[]foo</paragraph>' );
+				insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>x<$text b="1">x</$text>x[]foo</paragraph>' );
+			} );
+
+			it( 'filters out disallowed attributes when merging #2', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>x[]oo</paragraph>' );
+			} );
+
+			it( 'filters out disallowed attributes when merging #3', () => {
+				setData( doc, '<paragraph>foo[]</paragraph>' );
+				insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>foox<$text b="1">x</$text>x[]</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes when autoparagraphing', () => {
