@@ -27,6 +27,6 @@
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#2cfd595",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#d8d61f3",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#678781d",
-    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#6e96e6b"
+    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#35a8aff"
   }
 }
