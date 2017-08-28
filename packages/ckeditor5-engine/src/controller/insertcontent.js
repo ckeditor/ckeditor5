@@ -292,7 +292,7 @@ class Insertion {
 			// When Text is a direct child of node which is going to be merged
 			// we need to strip it from the disallowed attributes according to the new parent.
 			if ( children.some( child => child instanceof Text ) ) {
-				removeDisallowedAttributes( children, mergePosLeft.nodeBefore, this.schema );
+				removeDisallowedAttributes( children, [ mergePosLeft.nodeBefore ], this.schema );
 			}
 
 			this.batch.merge( mergePosLeft );
@@ -323,7 +323,7 @@ class Insertion {
 			// When Text is a direct child of node which is going to be merged
 			// we need to strip it from the disallowed attributes according to the new parent.
 			if ( children.some( child => child instanceof Text ) ) {
-				removeDisallowedAttributes( children, mergePosLeft.nodeAfter, this.schema );
+				removeDisallowedAttributes( children, [ mergePosLeft.nodeAfter ], this.schema );
 			}
 
 			this.batch.merge( mergePosRight );
