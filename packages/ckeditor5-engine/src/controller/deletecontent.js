@@ -11,7 +11,6 @@ import LivePosition from '../model/liveposition';
 import Position from '../model/position';
 import Range from '../model/range';
 import Element from '../model/element';
-import { removeDisallowedAttributes } from '../model/utils';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
@@ -139,7 +138,7 @@ function mergeBranches( batch, startPos, endPos ) {
 		//
 		// e.g. bold is disallowed for <H1>
 		// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
-		removeDisallowedAttributes( Array.from( startParent.getChildren() ), [ startParent ], batch.document.schema );
+		removeDisallowedAttributes( batch, Array.from( startParent.getChildren() ), [ startParent ] );
 	}
 
 	// Removes empty end ancestors:
@@ -217,4 +216,29 @@ function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
 	}
 
 	return schema.check( { name: 'paragraph', inside: limitElement.name } );
+}
+
+// Gets a name under which we should check this node in the schema.
+//
+// @param {module:engine/model/node~Node} node The node.
+// @returns {String} node name.
+function getNodeSchemaName( node ) {
+	return node.is( 'text' ) ? '$text' : node.name;
+}
+
+// Adds deltas with `removeAttributes` operation for disallowed by schema attributes on given nodes.
+//
+// @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
+// @param {module:engine/model/node~Node|Array<module:engine/model/node~Node>} nodes List of nodes or a single node to filter.
+// @param {module:engine/model/schema~SchemaPath} schemaPath
+function removeDisallowedAttributes( batch, nodes, schemaPath ) {
+	const schema = batch.document.schema;
+
+	for ( const node of nodes ) {
+		for ( const attribute of node.getAttributeKeys() ) {
+			if ( !schema.check( { name: getNodeSchemaName( node ), attributes: attribute, inside: schemaPath } ) ) {
+				batch.removeAttribute( node, attribute );
+			}
+		}
+	}
 }

@@ -155,9 +155,9 @@ describe( 'DataController', () => {
 
 				schema.registerItem( 'paragraph', '$block' );
 				schema.registerItem( 'heading1', '$block' );
+				schema.registerItem( 'image', '$inline' );
 				schema.registerItem( 'pchild' );
 				schema.registerItem( 'pparent' );
-				schema.registerItem( 'image', '$inline' );
 
 				schema.allow( { name: 'pchild', inside: 'paragraph' } );
 				schema.allow( { name: '$text', inside: 'pchild' } );
@@ -167,12 +167,11 @@ describe( 'DataController', () => {
 				schema.allow( { name: '$text', inside: 'pparent' } );
 
 				schema.allow( { name: 'paragraph', attributes: [ 'align' ] } );
-				schema.allow( { name: '$text', attributes: 'a', inside: 'paragraph' } );
-				schema.allow( { name: '$text', attributes: 'b', inside: 'paragraph' } );
-				schema.allow( { name: '$text', attributes: 'c', inside: 'paragraph' } );
-				schema.allow( { name: '$text', attributes: 'b', inside: 'heading1' } );
-				schema.allow( { name: '$text', attributes: 'c', inside: 'pchild' } );
-				schema.allow( { name: '$text', attributes: 'd', inside: 'pchild' } );
+				schema.allow( { name: 'image', attributes: [ 'a', 'b' ], inside: 'paragraph' } );
+				schema.allow( { name: 'image', attributes: [ 'b' ], inside: 'heading1' } );
+				schema.allow( { name: '$text', attributes: [ 'a', 'b', 'c' ], inside: 'paragraph' } );
+				schema.allow( { name: '$text', attributes: [ 'b' ], inside: 'heading1' } );
+				schema.allow( { name: '$text', attributes: [ 'c', 'd' ], inside: 'pchild' } );
 			} );
 
 			test(
@@ -271,8 +270,8 @@ describe( 'DataController', () => {
 
 			test(
 				'filters out disallowed attributes after merge',
-				'<heading1>fo[o</heading1><paragraph>b]a<$text a="true" b="true">r</$text></paragraph>',
-				'<heading1>fo[]a<$text b="true">r</$text></heading1>'
+				'<heading1>fo[o</heading1><paragraph>b]a<$text a="1" b="1">r</$text><image a="1" b="1"></image></paragraph>',
+				'<heading1>fo[]a<$text b="1">r</$text><image b="1"></image></heading1>'
 			);
 
 			// Note: in all these cases we ignore the direction of merge.
@@ -414,13 +413,13 @@ describe( 'DataController', () => {
 				} );
 
 				test(
-					'filters out disallowed attributes after merge when left',
+					'filters out disallowed attributes after left merge',
 					'<paragraph>x<pchild>fo[o</pchild></paragraph><paragraph>y]<$text b="true" c="true">z</$text></paragraph>',
 					'<paragraph>x<pchild>fo[]<$text c="true">z</$text></pchild></paragraph>'
 				);
 
 				test(
-					'filters out disallowed attributes after merge when right',
+					'filters out disallowed attributes after right merge',
 					'<paragraph>fo[o</paragraph><paragraph><pchild>x<$text c="true" d="true">y]z</$text></pchild></paragraph>',
 					'<paragraph>fo[]<$text c="true">z</$text></paragraph>'
 				);

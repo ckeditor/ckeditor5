@@ -593,6 +593,7 @@ describe( 'DataController', () => {
 				const schema = doc.schema;
 
 				schema.registerItem( 'paragraph', '$block' );
+				schema.registerItem( 'heading1', '$block' );
 
 				// Let's use table as an example of content which needs to be filtered out.
 				schema.registerItem( 'table' );

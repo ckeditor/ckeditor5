@@ -12,7 +12,6 @@ import LivePosition from '../model/liveposition';
 import Element from '../model/element';
 import Range from '../model/range';
 import log from '@ckeditor/ckeditor5-utils/src/log';
-import { getNodeSchemaName, removeDisallowedAttributes } from '../model/utils';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste
@@ -227,10 +226,10 @@ class Insertion {
 		if ( node.is( 'element' ) ) {
 			this.handleNodes( node.getChildren(), context );
 		}
-		// When disallowed node is a text but text is allowed in current parent it means that our node
+		// When disallowed node is a text but text is allowed in current position it means that our node
 		// contains disallowed attributes and we have to remove them.
 		else if ( node.is( 'text' ) && this.schema.check( { name: '$text', inside: this.position } ) ) {
-			removeDisallowedAttributes( node, this.position, this.schema );
+			removeDisallowedAttributes( this.schema, node, this.position );
 			this._handleNode( node, context );
 		}
 		// Try autoparagraphing.
@@ -287,9 +286,9 @@ class Insertion {
 		if ( mergeLeft ) {
 			const position = LivePosition.createFromPosition( this.position );
 
-			// When need to check a direct child of node that is going to be merged
+			// When need to check a children of node that is going to be merged
 			// and strip it from the disallowed attributes according to the new parent.
-			removeDisallowedAttributes( Array.from( node.getChildren() ), [ mergePosLeft.nodeBefore ], this.schema );
+			removeDisallowedAttributes( this.schema, Array.from( node.getChildren() ), [ mergePosLeft.nodeBefore ] );
 
 			this.batch.merge( mergePosLeft );
 
@@ -314,9 +313,9 @@ class Insertion {
 			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
 			const position = new LivePosition( this.position.root, this.position.path, 'sticksToPrevious' );
 
-			// When need to check a direct child of node that is going to be merged
+			// When need to check a children of node that is going to be merged
 			// and strip it from the disallowed attributes according to the new parent.
-			removeDisallowedAttributes( Array.from( node.getChildren() ), [ mergePosLeft.nodeAfter ], this.schema );
+			removeDisallowedAttributes( this.schema, Array.from( node.getChildren() ), [ mergePosRight.nodeAfter ] );
 
 			this.batch.merge( mergePosRight );
 
@@ -344,7 +343,7 @@ class Insertion {
 			// When node is a text and is disallowed by schema it means that contains disallowed attributes
 			// and we need to remove them.
 			if ( node.is( 'text' ) && !this._checkIsAllowed( node, [ paragraph ] ) ) {
-				removeDisallowedAttributes( node, [ paragraph ], this.schema );
+				removeDisallowedAttributes( this.schema, node, [ paragraph ] );
 			}
 
 			if ( this._checkIsAllowed( node, [ paragraph ] ) ) {
@@ -437,5 +436,32 @@ class Insertion {
 	 */
 	_checkIsObject( node ) {
 		return this.schema.objects.has( getNodeSchemaName( node ) );
+	}
+}
+
+// Gets a name under which we should check this node in the schema.
+//
+// @param {module:engine/model/node~Node} node The node.
+// @returns {String} node name.
+function getNodeSchemaName( node ) {
+	return node.is( 'text' ) ? '$text' : node.name;
+}
+
+// Removes disallowed by schema attributes from given nodes.
+//
+// @param {module:engine/model/schema~Schema} schema
+// @param {module:engine/model/node~Node|Array<module:engine/model/node~Node>} nodes List of nodes or a single node to filter.
+// @param {module:engine/model/schema~SchemaPath} schemaPath
+export function removeDisallowedAttributes( schema, nodes, schemaPath ) {
+	if ( !Array.isArray( nodes ) ) {
+		nodes = [ nodes ];
+	}
+
+	for ( const node of nodes ) {
+		for ( const attribute of node.getAttributeKeys() ) {
+			if ( !schema.check( { name: getNodeSchemaName( node ), attributes: attribute, inside: schemaPath } ) ) {
+				node.removeAttribute( attribute );
+			}
+		}
 	}
 }
