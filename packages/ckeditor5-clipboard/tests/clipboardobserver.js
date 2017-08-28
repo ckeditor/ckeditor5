@@ -36,7 +36,7 @@ describe( 'ClipboardObserver', () => {
 	} );
 
 	it( 'should define domEventType', () => {
-		expect( observer.domEventType ).to.deep.equal( [ 'paste', 'copy', 'cut', 'drop' ] );
+		expect( observer.domEventType ).to.deep.equal( [ 'paste', 'copy', 'cut', 'drop', 'dragover' ] );
 	} );
 
 	describe( 'paste event', () => {
@@ -222,6 +222,30 @@ describe( 'ClipboardObserver', () => {
 			expect( data.targetRanges[ 0 ].isEqual( range ) ).to.be.true;
 
 			expect( sinon.assert.callOrder( normalPrioritySpy, eventSpy ) );
+		} );
+	} );
+
+	describe( 'dragover event', () => {
+		it( 'should fire when a file is dragging over the document', () => {
+			const targetElement = mockDomTargetElement( {} );
+			const dataTransfer = mockDomDataTransfer();
+
+			doc.on( 'dragover', eventSpy );
+
+			observer.onDomEvent( {
+				type: 'dragover',
+				target: targetElement,
+				dataTransfer
+			} );
+
+			expect( eventSpy.calledOnce ).to.equal( true );
+
+			const data = eventSpy.args[ 0 ][ 1 ];
+
+			expect( data.document ).to.equal( doc );
+			expect( data.domTarget ).to.equal( targetElement );
+			expect( data.domEvent.type ).to.equal( 'dragover' );
+			expect( data.dataTransfer.files ).to.deep.equal( dataTransfer.files );
 		} );
 	} );
 } );

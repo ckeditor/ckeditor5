@@ -22,7 +22,7 @@ export default class ClipboardObserver extends DomEventObserver {
 	constructor( doc ) {
 		super( doc );
 
-		this.domEventType = [ 'paste', 'copy', 'cut', 'drop' ];
+		this.domEventType = [ 'paste', 'copy', 'cut', 'drop', 'dragover' ];
 
 		this.listenTo( doc, 'paste', handleInput, { priority: 'low' } );
 		this.listenTo( doc, 'drop', handleInput, { priority: 'low' } );
@@ -96,6 +96,20 @@ function getDropViewRange( doc, domEvent ) {
  * (usually – into which the content should be inserted).
  * If clipboard input was triggered by a paste operation, then these are the selection ranges. If by a drop operation,
  * then it's the drop position (which can be different than the selection at the moment of drop).
+ */
+
+/**
+ * Fired when user drags content over one of the editables.
+ *
+ * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
+ *
+ * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/document~Document#addObserver} method.
+ * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
+ *
+ * @see module:engine/view/document~Document#event:clipboardInput
+ * @event module:engine/view/document~Document#event:dragover
+ * @param {module:clipboard/clipboardobserver~ClipboardEventData} data Event data.
  */
 
 /**
