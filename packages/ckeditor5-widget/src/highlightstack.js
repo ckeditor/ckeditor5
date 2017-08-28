@@ -16,7 +16,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * elements. When different highlights are applied to same element correct order should be preserved:
  * * highlight with highest priority should be applied,
  * * if two highlights have same priority - sort by CSS class provided in
- * {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor}.
+ * {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor}.
  * This way, highlight will be applied with the same rules it is applied on texts.
  */
 export default class HighlightStack {
@@ -31,7 +31,7 @@ export default class HighlightStack {
 	 * Adds highlight descriptor to the stack.
 	 *
 	 * @fires change:top
-	 * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} descriptor
+	 * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} descriptor
 	 */
 	add( descriptor ) {
 		const stack = this._stack;
@@ -54,7 +54,7 @@ export default class HighlightStack {
 	 * Removes highlight descriptor from the stack.
 	 *
 	 * @fires change:top
-	 * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} descriptor
+	 * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} descriptor
 	 */
 	remove( descriptor ) {
 		const stack = this._stack;
@@ -77,7 +77,7 @@ export default class HighlightStack {
 	 * descriptor with same id is already present.
 	 *
 	 * @private
-	 * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} descriptor
+	 * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} descriptor
 	 */
 	_insertDescriptor( descriptor ) {
 		const stack = this._stack;
@@ -108,7 +108,7 @@ export default class HighlightStack {
 	 * Removes descriptor with given id from the stack.
 	 *
 	 * @private
-	 * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} descriptor
+	 * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} descriptor
 	 */
 	_removeDescriptor( descriptor ) {
 		const stack = this._stack;
@@ -125,8 +125,8 @@ mix( HighlightStack, EmitterMixin );
 
 // Compares two descriptors by checking their priority and class list.
 //
-// @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} a
-// @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} b
+// @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} a
+// @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} b
 // @returns {Boolean} Returns true if both descriptors are defined and have same priority and classes.
 function compareDescriptors( a, b ) {
 	return a && b && a.priority == b.priority && classesToString( a.class ) == classesToString( b.class );
@@ -134,8 +134,8 @@ function compareDescriptors( a, b ) {
 
 // Checks whenever first descriptor should be placed in the stack before second one.
 //
-// @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} a
-// @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} b
+// @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} a
+// @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} b
 // @returns {Boolean}
 function shouldABeBeforeB( a, b ) {
 	if ( a.priority > b.priority ) {
@@ -148,7 +148,7 @@ function shouldABeBeforeB( a, b ) {
 	return classesToString( a.class ) > classesToString( b.class );
 }
 
-// Converts CSS classes passed with {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor} to
+// Converts CSS classes passed with {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor} to
 // sorted string.
 //
 // @param {String|Array<String>} descriptor
@@ -162,8 +162,8 @@ function classesToString( classes ) {
  *
  * @event change:top
  * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} [data.newDescriptor] New highlight
+ * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} [data.newDescriptor] New highlight
  * descriptor. It will be `undefined` when last descriptor is removed from the stack.
- * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor} [data.oldDescriptor] Old highlight
+ * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} [data.oldDescriptor] Old highlight
  * descriptor. It will be `undefined` when first descriptor is added to the stack.
  */
