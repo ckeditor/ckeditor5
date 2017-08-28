@@ -7,7 +7,7 @@ import { getNodeSchemaName, removeDisallowedAttributes } from '../../src/model/u
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import Document from '../../src/model/document';
-import { setData, getData } from '../../src/dev-utils/model';
+import { stringify } from '../../src/dev-utils/model';
 
 describe( 'model utils', () => {
 	describe( 'getNodeSchemaName()', () => {
@@ -34,31 +34,35 @@ describe( 'model utils', () => {
 			const schema = doc.schema;
 
 			schema.registerItem( 'paragraph', '$block' );
+			schema.registerItem( 'el', '$inline' );
 
 			schema.allow( { name: '$text', attributes: 'a', inside: 'paragraph' } );
 			schema.allow( { name: '$text', attributes: 'c', inside: 'paragraph' } );
+			schema.allow( { name: 'el', attributes: 'b' } );
 		} );
 
 		it( 'should remove disallowed by schema attributes from list of nodes', () => {
-			setData( doc, '<paragraph>f<$text a="1" b="1">o</$text>ob<$text b="1" c="1">a</$text>r</paragraph>' );
+			const paragraph = new Element( 'paragraph' );
+			const el = new Element( 'el', { a: 1, b: 1, c: 1 } );
+			const foo = new Text( 'foo', { a: 1, b: 1 } );
+			const bar = new Text( 'bar' );
+			const biz = new Text( 'biz', { b: 1, c: 1 } );
 
-			const paragraph = doc.getRoot().getChild( 0 );
+			paragraph.appendChildren( [ el, foo, bar, biz ] );
 
 			removeDisallowedAttributes( Array.from( paragraph.getChildren() ), [ paragraph ], doc.schema );
 
-			expect( getData( doc, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>f<$text a="1">o</$text>ob<$text c="1">a</$text>r</paragraph>' );
+			expect( stringify( paragraph ) )
+				.to.equal( '<paragraph><el b="1"></el><$text a="1">foo</$text>bar<$text c="1">biz</$text></paragraph>' );
 		} );
 
 		it( 'should remove disallowed by schema attributes from a single node', () => {
-			setData( doc, '<paragraph><$text a="1" b="1">foo</$text></paragraph>' );
+			const paragraph = new Element( 'paragraph' );
+			const foo = new Text( 'foo', { a: 1, b: 1 } );
 
-			const paragraph = doc.getRoot().getChild( 0 );
+			removeDisallowedAttributes( foo, [ paragraph ], doc.schema );
 
-			removeDisallowedAttributes( paragraph.getChild( 0 ), [ paragraph ], doc.schema );
-
-			expect( getData( doc, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text a="1">foo</$text></paragraph>' );
+			expect( stringify( foo ) ).to.equal( '<$text a="1">foo</$text>' );
 		} );
 	} );
 } );
