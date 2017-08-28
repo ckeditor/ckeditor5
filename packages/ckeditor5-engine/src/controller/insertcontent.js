@@ -10,7 +10,6 @@
 import Position from '../model/position';
 import LivePosition from '../model/liveposition';
 import Element from '../model/element';
-import Text from '../model/text';
 import Range from '../model/range';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
@@ -287,13 +286,9 @@ class Insertion {
 		if ( mergeLeft ) {
 			const position = LivePosition.createFromPosition( this.position );
 
-			const children = Array.from( node.getChildren() );
-
-			// When Text is a direct child of node which is going to be merged
-			// we need to strip it from the disallowed attributes according to the new parent.
-			if ( children.some( child => child instanceof Text ) ) {
-				removeDisallowedAttributes( children, [ mergePosLeft.nodeBefore ], this.schema );
-			}
+			// When need to check a direct child of node that is going to be merged
+			// and strip it from the disallowed attributes according to the new parent.
+			removeDisallowedAttributes( Array.from( node.getChildren() ), [ mergePosLeft.nodeBefore ], this.schema );
 
 			this.batch.merge( mergePosLeft );
 
@@ -318,13 +313,9 @@ class Insertion {
 			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
 			const position = new LivePosition( this.position.root, this.position.path, 'sticksToPrevious' );
 
-			const children = Array.from( node.getChildren() );
-
-			// When Text is a direct child of node which is going to be merged
-			// we need to strip it from the disallowed attributes according to the new parent.
-			if ( children.some( child => child instanceof Text ) ) {
-				removeDisallowedAttributes( children, [ mergePosLeft.nodeAfter ], this.schema );
-			}
+			// When need to check a direct child of node that is going to be merged
+			// and strip it from the disallowed attributes according to the new parent.
+			removeDisallowedAttributes( Array.from( node.getChildren() ), [ mergePosLeft.nodeAfter ], this.schema );
 
 			this.batch.merge( mergePosRight );
 
