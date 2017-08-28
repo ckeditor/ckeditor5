@@ -189,12 +189,6 @@ describe( 'DataController', () => {
 			);
 
 			test(
-				'merges second element into the first one (same name)',
-				'<paragraph>x</paragraph><paragraph>fo[o</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
-				'<paragraph>x</paragraph><paragraph>fo[]ar</paragraph><paragraph>y</paragraph>'
-			);
-
-			test(
 				'merges second element into the first one (different name)',
 				'<paragraph>x</paragraph><heading1>fo[o</heading1><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
 				'<paragraph>x</paragraph><heading1>fo[]ar</heading1><paragraph>y</paragraph>'
