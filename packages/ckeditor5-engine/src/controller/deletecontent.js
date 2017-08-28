@@ -132,6 +132,13 @@ function mergeBranches( batch, startPos, endPos ) {
 		// To then become:
 		// <a><b>xy</b>[]</a><c>{}</c>
 		batch.merge( startPos );
+
+		// We need to check and strip disallowed attributes in direct children because after merge
+		// some attributes could end up in a parent where are disallowed.
+		//
+		// e.g. bold is disallowed for <H1>
+		// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
+		removeDisallowedAttributes( Array.from( startParent.getChildren() ), [ startParent ], batch.document.schema );
 	}
 
 	// Removes empty end ancestors:
@@ -209,4 +216,36 @@ function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
 	}
 
 	return schema.check( { name: 'paragraph', inside: limitElement.name } );
+}
+
+// Gets a name under which we should check this node in the schema.
+//
+// @private
+// @param {module:engine/model/node~Node} node The node.
+function getNodeSchemaName( node ) {
+	if ( node.is( 'text' ) ) {
+		return '$text';
+	}
+
+	return node.name;
+}
+
+// Removes disallowed by schema attributes from given text nodes.
+//
+// @private
+// @param {module:engine/model/node~Node|Array<module:engine/model/node~Node>} nodes
+// @param {module:engine/model/schema~SchemaPath} schemaPath
+// @param {module:engine/model/schema~Schema} schema
+function removeDisallowedAttributes( nodes, schemaPath, schema ) {
+	if ( !Array.isArray( nodes ) ) {
+		nodes = [ nodes ];
+	}
+
+	for ( const node of nodes ) {
+		for ( const attribute of node.getAttributeKeys() ) {
+			if ( !schema.check( { name: getNodeSchemaName( node ), attributes: attribute, inside: schemaPath } ) ) {
+				node.removeAttribute( attribute );
+			}
+		}
+	}
 }

@@ -167,6 +167,12 @@ describe( 'DataController', () => {
 				schema.allow( { name: '$text', inside: 'pparent' } );
 
 				schema.allow( { name: 'paragraph', attributes: [ 'align' ] } );
+				schema.allow( { name: '$text', attributes: 'a', inside: 'paragraph' } );
+				schema.allow( { name: '$text', attributes: 'b', inside: 'paragraph' } );
+				schema.allow( { name: '$text', attributes: 'c', inside: 'paragraph' } );
+				schema.allow( { name: '$text', attributes: 'b', inside: 'heading1' } );
+				schema.allow( { name: '$text', attributes: 'c', inside: 'pchild' } );
+				schema.allow( { name: '$text', attributes: 'd', inside: 'pchild' } );
 			} );
 
 			test(
@@ -262,6 +268,12 @@ describe( 'DataController', () => {
 				expect( spyMove.called ).to.be.false;
 				expect( spyMerge.called ).to.be.true;
 			} );
+
+			test(
+				'filters out disallowed attributes after merge',
+				'<heading1>fo[o</heading1><paragraph>b]a<$text a="true" b="true">r</$text></paragraph>',
+				'<heading1>fo[]a<$text b="true">r</$text></heading1>'
+			);
 
 			// Note: in all these cases we ignore the direction of merge.
 			// If https://github.com/ckeditor/ckeditor5-engine/issues/470 was fixed we could differently treat
@@ -400,6 +412,18 @@ describe( 'DataController', () => {
 					expect( getData( doc ) )
 						.to.equal( '<paragraph>fo[]</paragraph>' );
 				} );
+
+				test(
+					'filters out disallowed attributes after merge when left',
+					'<paragraph>x<pchild>fo[o</pchild></paragraph><paragraph>y]<$text b="true" c="true">z</$text></paragraph>',
+					'<paragraph>x<pchild>fo[]<$text c="true">z</$text></pchild></paragraph>'
+				);
+
+				test(
+					'filters out disallowed attributes after merge when right',
+					'<paragraph>fo[o</paragraph><paragraph><pchild>x<$text c="true" d="true">y]z</$text></pchild></paragraph>',
+					'<paragraph>fo[]<$text c="true">z</$text></paragraph>'
+				);
 			} );
 
 			describe( 'with object elements', () => {
