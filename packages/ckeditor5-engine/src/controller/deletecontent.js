@@ -11,6 +11,7 @@ import LivePosition from '../model/liveposition';
 import Position from '../model/position';
 import Range from '../model/range';
 import Element from '../model/element';
+import { removeDisallowedAttributes } from '../model/utils';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
@@ -216,36 +217,4 @@ function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
 	}
 
 	return schema.check( { name: 'paragraph', inside: limitElement.name } );
-}
-
-// Gets a name under which we should check this node in the schema.
-//
-// @private
-// @param {module:engine/model/node~Node} node The node.
-function getNodeSchemaName( node ) {
-	if ( node.is( 'text' ) ) {
-		return '$text';
-	}
-
-	return node.name;
-}
-
-// Removes disallowed by schema attributes from given text nodes.
-//
-// @private
-// @param {module:engine/model/node~Node|Array<module:engine/model/node~Node>} nodes
-// @param {module:engine/model/schema~SchemaPath} schemaPath
-// @param {module:engine/model/schema~Schema} schema
-function removeDisallowedAttributes( nodes, schemaPath, schema ) {
-	if ( !Array.isArray( nodes ) ) {
-		nodes = [ nodes ];
-	}
-
-	for ( const node of nodes ) {
-		for ( const attribute of node.getAttributeKeys() ) {
-			if ( !schema.check( { name: getNodeSchemaName( node ), attributes: attribute, inside: schemaPath } ) ) {
-				node.removeAttribute( attribute );
-			}
-		}
-	}
 }

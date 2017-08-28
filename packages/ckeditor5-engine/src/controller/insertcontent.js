@@ -12,6 +12,7 @@ import LivePosition from '../model/liveposition';
 import Element from '../model/element';
 import Range from '../model/range';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import { getNodeSchemaName, removeDisallowedAttributes } from '../model/utils';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste
@@ -436,37 +437,5 @@ class Insertion {
 	 */
 	_checkIsObject( node ) {
 		return this.schema.objects.has( getNodeSchemaName( node ) );
-	}
-}
-
-// Gets a name under which we should check this node in the schema.
-//
-// @private
-// @param {module:engine/model/node~Node} node The node.
-function getNodeSchemaName( node ) {
-	if ( node.is( 'text' ) ) {
-		return '$text';
-	}
-
-	return node.name;
-}
-
-// Removes disallowed by schema attributes from given text nodes.
-//
-// @private
-// @param {module:engine/model/node~Node|Array<module:engine/model/node~Node>} nodes
-// @param {module:engine/model/schema~SchemaPath} schemaPath
-// @param {module:engine/model/schema~Schema} schema
-function removeDisallowedAttributes( nodes, schemaPath, schema ) {
-	if ( !Array.isArray( nodes ) ) {
-		nodes = [ nodes ];
-	}
-
-	for ( const node of nodes ) {
-		for ( const attribute of node.getAttributeKeys() ) {
-			if ( !schema.check( { name: getNodeSchemaName( node ), attributes: attribute, inside: schemaPath } ) ) {
-				node.removeAttribute( attribute );
-			}
-		}
 	}
 }
