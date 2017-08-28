@@ -230,7 +230,7 @@ class Insertion {
 		// When disallowed node is a text but text is allowed in current parent it means that our node
 		// contains disallowed attributes and we have to remove them.
 		else if ( node.is( 'text' ) && this.schema.check( { name: '$text', inside: this.position } ) ) {
-			this._stripDisallowedAttributes( node );
+			removeDisallowedAttributes( node, this.position, this.schema );
 			this._handleNode( node, context );
 		}
 		// Try autoparagraphing.
@@ -292,7 +292,7 @@ class Insertion {
 			// When Text is a direct child of node which is going to be merged
 			// we need to strip it from the disallowed attributes according to the new parent.
 			if ( children.some( child => child instanceof Text ) ) {
-				this._stripDisallowedAttributes( children, mergePosLeft.nodeBefore );
+				removeDisallowedAttributes( children, mergePosLeft.nodeBefore, this.schema );
 			}
 
 			this.batch.merge( mergePosLeft );
@@ -323,7 +323,7 @@ class Insertion {
 			// When Text is a direct child of node which is going to be merged
 			// we need to strip it from the disallowed attributes according to the new parent.
 			if ( children.some( child => child instanceof Text ) ) {
-				this._stripDisallowedAttributes( children, mergePosLeft.nodeAfter );
+				removeDisallowedAttributes( children, mergePosLeft.nodeAfter, this.schema );
 			}
 
 			this.batch.merge( mergePosRight );
@@ -352,7 +352,7 @@ class Insertion {
 			// When node is a text and is disallowed by schema it means that contains disallowed attributes
 			// and we need to remove them.
 			if ( node.is( 'text' ) && !this._checkIsAllowed( node, [ paragraph ] ) ) {
-				this._stripDisallowedAttributes( node, [ paragraph ] );
+				removeDisallowedAttributes( node, [ paragraph ], this.schema );
 			}
 
 			if ( this._checkIsAllowed( node, [ paragraph ] ) ) {
@@ -432,7 +432,7 @@ class Insertion {
 	 */
 	_checkIsAllowed( node, path ) {
 		return this.schema.check( {
-			name: this._getNodeSchemaName( node ),
+			name: getNodeSchemaName( node ),
 			attributes: Array.from( node.getAttributeKeys() ),
 			inside: path
 		} );
@@ -444,40 +444,38 @@ class Insertion {
 	 * @param {module:engine/model/node~Node} node The node to check.
 	 */
 	_checkIsObject( node ) {
-		return this.schema.objects.has( this._getNodeSchemaName( node ) );
+		return this.schema.objects.has( getNodeSchemaName( node ) );
+	}
+}
+
+// Gets a name under which we should check this node in the schema.
+//
+// @private
+// @param {module:engine/model/node~Node} node The node.
+function getNodeSchemaName( node ) {
+	if ( node.is( 'text' ) ) {
+		return '$text';
 	}
 
-	/**
-	 * Removes disallowed by schema attributes from given nodes.
-	 *
-	 * @private
-	 * @param {module:engine/model/node~Node|Array<module:engine/model/node~Node>} nodes
-	 * @param {module:engine/model/schema~SchemaPath} path
-	 */
-	_stripDisallowedAttributes( nodes, path = this.position ) {
-		if ( !Array.isArray( nodes ) ) {
-			nodes = [ nodes ];
-		}
+	return node.name;
+}
 
-		for ( const node of nodes ) {
-			for ( const attribute of node.getAttributeKeys() ) {
-				if ( !this.schema.check( { name: '$text', attributes: attribute, inside: path } ) ) {
-					node.removeAttribute( attribute );
-				}
+// Removes disallowed by schema attributes from given text nodes.
+//
+// @private
+// @param {module:engine/model/node~Node|Array<module:engine/model/node~Node>} nodes
+// @param {module:engine/model/schema~SchemaPath} schemaPath
+// @param {module:engine/model/schema~Schema} schema
+function removeDisallowedAttributes( nodes, schemaPath, schema ) {
+	if ( !Array.isArray( nodes ) ) {
+		nodes = [ nodes ];
+	}
+
+	for ( const node of nodes ) {
+		for ( const attribute of node.getAttributeKeys() ) {
+			if ( !schema.check( { name: getNodeSchemaName( node ), attributes: attribute, inside: schemaPath } ) ) {
+				node.removeAttribute( attribute );
 			}
 		}
-	}
-
-	/**
-	 * Gets a name under which we should check this node in the schema.
-	 *
-	 * @param {module:engine/model/node~Node} node The node.
-	 */
-	_getNodeSchemaName( node ) {
-		if ( node.is( 'text' ) ) {
-			return '$text';
-		}
-
-		return node.name;
 	}
 }
