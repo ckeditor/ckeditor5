@@ -151,11 +151,29 @@ describe( 'ImageUploadProgress', () => {
 		);
 	} );
 
-	it( 'should not process attribute change if there is wrong uploadId', () => {
-		setModelData( document, '<image uploadId="123" uploadStatus="reading"></image><paragraph>foo{}</paragraph>' );
+	it( 'should not show progress bar if there is no loader with given uploadId', () => {
+		setModelData( document, '<image uploadId="123" uploadStatus="reading"></image>' );
+
+		const image = document.getRoot().getChild( 0 );
+
+		document.enqueueChanges( () => {
+			document.batch().setAttribute( image, 'uploadStatus', 'uploading' );
+		} );
 
 		expect( getViewData( viewDocument ) ).to.equal(
-			'<figure class="image ck-widget" contenteditable="false"><img></img></figure><p>foo{}</p>'
+			'[<figure class="image ck-widget ck-appear ck-infinite-progress" contenteditable="false">' +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+			'</figure>]'
+		);
+
+		document.enqueueChanges( () => {
+			document.batch().setAttribute( image, 'uploadStatus', 'complete' );
+		} );
+
+		expect( getViewData( viewDocument ) ).to.equal(
+			'[<figure class="image ck-widget" contenteditable="false">' +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+			'</figure>]'
 		);
 	} );
 } );
