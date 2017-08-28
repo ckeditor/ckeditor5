@@ -208,9 +208,5 @@ function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
 		return false;
 	}
 
-	if ( !schema.check( { name: 'paragraph', inside: limitElement.name } ) ) {
-		return false;
-	}
-
-	return true;
+	return schema.check( { name: 'paragraph', inside: limitElement.name } );
 }
