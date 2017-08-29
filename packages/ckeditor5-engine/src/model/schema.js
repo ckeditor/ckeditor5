@@ -332,7 +332,11 @@ export default class Schema {
 					// If returned item does not have name property, it is a TextFragment.
 					const name = value.item.name || '$text';
 
-					if ( this.check( { name, inside: value.previousPosition, attributes: attribute } ) ) {
+					// Attribute should be checked together with existing attributes.
+					// See https://github.com/ckeditor/ckeditor5-engine/issues/1110.
+					const attributes = Array.from( value.item.getAttributeKeys() ).concat( attribute );
+
+					if ( this.check( { name, inside: value.previousPosition, attributes } ) ) {
 						// If we found a node that is allowed to have the attribute, return true.
 						return true;
 					}

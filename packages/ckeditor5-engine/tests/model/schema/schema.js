@@ -492,6 +492,7 @@ describe( 'Schema', () => {
 			schema.registerItem( 'p', '$block' );
 			schema.registerItem( 'h1', '$block' );
 			schema.registerItem( 'img', '$inline' );
+			schema.registerItem( 'figure' );
 
 			// Bold text is allowed only in P.
 			schema.allow( { name: '$text', attributes: 'bold', inside: 'p' } );
@@ -499,6 +500,10 @@ describe( 'Schema', () => {
 
 			// Disallow bold on image.
 			schema.disallow( { name: 'img', attributes: 'bold', inside: '$root' } );
+
+			// Figure must have name attribute and optional title attribute.
+			schema.requireAttributes( 'figure', [ 'name' ] );
+			schema.allow( { name: 'figure', attributes: [ 'title', 'name' ], inside: '$root' } );
 		} );
 
 		describe( 'when selection is collapsed', () => {
@@ -543,6 +548,16 @@ describe( 'Schema', () => {
 				// Selection on two images which can't be bold.
 				setData( doc, '<p>foo[<img /><img />]bar</p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
+			} );
+
+			it( 'should return true when checking element with required attribute', () => {
+				setData( doc, '[<figure name="figure"></figure>]' );
+				expect( schema.checkAttributeInSelection( doc.selection, 'title' ) ).to.be.true;
+			} );
+
+			it( 'should return true when checking element when attribute is already present', () => {
+				setData( doc, '[<figure name="figure" title="title"></figure>]' );
+				expect( schema.checkAttributeInSelection( doc.selection, 'title' ) ).to.be.true;
 			} );
 		} );
 	} );
