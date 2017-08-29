@@ -68,6 +68,13 @@ export default function deleteContent( selection, batch, options = {} ) {
 	// want to override that behavior anyway.
 	if ( !options.leaveUnmerged ) {
 		mergeBranches( batch, startPos, endPos );
+
+		// We need to check and strip disallowed attributes in all nested nodes because after merge
+		// some attributes could end up in a path where are disallowed.
+		//
+		// e.g. bold is disallowed for <H1>
+		// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
+		removeDisallowedAttributes( batch, Array.from( startPos.parent.getChildren() ), startPos );
 	}
 
 	selection.setCollapsedAt( startPos );
@@ -111,8 +118,8 @@ function mergeBranches( batch, startPos, endPos ) {
 	// <a><b>x[]</b></a><c><d>{}y</d></c>
 	// will become:
 	// <a><b>xy</b>[]</a><c>{}</c>
-	const nextStartPos = Position.createAfter( startParent );
-	let nextEndPos = Position.createBefore( endParent );
+	startPos = Position.createAfter( startParent );
+	endPos = Position.createBefore( endParent );
 
 	if ( endParent.isEmpty ) {
 		batch.remove( endParent );
@@ -125,20 +132,13 @@ function mergeBranches( batch, startPos, endPos ) {
 
 		// Move the end parent only if needed.
 		// E.g. not in this case: <p>ab</p>[]{}<p>cd</p>
-		if ( !nextEndPos.isEqual( nextStartPos ) ) {
-			batch.move( endParent, nextStartPos );
+		if ( !endPos.isEqual( startPos ) ) {
+			batch.move( endParent, startPos );
 		}
 
 		// To then become:
 		// <a><b>xy</b>[]</a><c>{}</c>
-		batch.merge( nextStartPos );
-
-		// We need to check and strip disallowed attributes in direct children because after merge
-		// some attributes could end up in a parent where are disallowed.
-		//
-		// e.g. bold is disallowed for <H1>
-		// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
-		removeDisallowedAttributes( batch, Array.from( startParent.getChildren() ), startPos );
+		batch.merge( startPos );
 	}
 
 	// Removes empty end ancestors:
@@ -146,16 +146,16 @@ function mergeBranches( batch, startPos, endPos ) {
 	// becomes:
 	// <a>fo[]</a><b><a>{}</a></b>
 	// So we can remove <a> and <b>.
-	while ( nextEndPos.parent.isEmpty ) {
-		const parentToRemove = nextEndPos.parent;
+	while ( endPos.parent.isEmpty ) {
+		const parentToRemove = endPos.parent;
 
-		nextEndPos = Position.createBefore( parentToRemove );
+		endPos = Position.createBefore( parentToRemove );
 
 		batch.remove( parentToRemove );
 	}
 
 	// Continue merging next level.
-	mergeBranches( batch, nextStartPos, nextEndPos );
+	mergeBranches( batch, startPos, endPos );
 }
 
 function shouldAutoparagraph( doc, position ) {
@@ -226,7 +226,7 @@ function getNodeSchemaName( node ) {
 	return node.is( 'text' ) ? '$text' : node.name;
 }
 
-// Adds deltas with `removeAttributes` operation for disallowed by schema attributes on given nodes.
+// Adds deltas with `removeAttributes` operation for disallowed by schema attributes on given nodes and its children.
 //
 // @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
 // @param {module:engine/model/node~Node|Array<module:engine/model/node~Node>} nodes List of nodes or a single node to filter.
@@ -239,6 +239,10 @@ function removeDisallowedAttributes( batch, nodes, schemaPath ) {
 			if ( !schema.check( { name: getNodeSchemaName( node ), attributes: attribute, inside: schemaPath } ) ) {
 				batch.removeAttribute( node, attribute );
 			}
+		}
+
+		if ( node.is( 'element' ) ) {
+			removeDisallowedAttributes( batch, Array.from( node.getChildren() ), Position.createAt( node ) );
 		}
 	}
 }

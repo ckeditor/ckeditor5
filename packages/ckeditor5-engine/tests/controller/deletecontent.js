@@ -167,11 +167,6 @@ describe( 'DataController', () => {
 				schema.allow( { name: '$text', inside: 'pparent' } );
 
 				schema.allow( { name: 'paragraph', attributes: [ 'align' ] } );
-				schema.allow( { name: 'image', attributes: [ 'a', 'b' ], inside: 'paragraph' } );
-				schema.allow( { name: 'image', attributes: [ 'b' ], inside: 'heading1' } );
-				schema.allow( { name: '$text', attributes: [ 'a', 'b', 'c' ], inside: 'paragraph' } );
-				schema.allow( { name: '$text', attributes: [ 'b' ], inside: 'heading1' } );
-				schema.allow( { name: '$text', attributes: [ 'c', 'd' ], inside: 'pchild' } );
 			} );
 
 			test(
@@ -267,12 +262,6 @@ describe( 'DataController', () => {
 				expect( spyMove.called ).to.be.false;
 				expect( spyMerge.called ).to.be.true;
 			} );
-
-			test(
-				'filters out disallowed attributes after merge',
-				'<heading1>fo[o</heading1><paragraph>b]a<$text a="1" b="1">r</$text><image a="1" b="1"></image></paragraph>',
-				'<heading1>fo[]a<$text b="1">r</$text><image b="1"></image></heading1>'
-			);
 
 			// Note: in all these cases we ignore the direction of merge.
 			// If https://github.com/ckeditor/ckeditor5-engine/issues/470 was fixed we could differently treat
@@ -411,18 +400,6 @@ describe( 'DataController', () => {
 					expect( getData( doc ) )
 						.to.equal( '<paragraph>fo[]</paragraph>' );
 				} );
-
-				test(
-					'filters out disallowed attributes after left merge',
-					'<paragraph>x<pchild>fo[o</pchild></paragraph><paragraph>y]<$text b="true" c="true">z</$text></paragraph>',
-					'<paragraph>x<pchild>fo[]<$text c="true">z</$text></pchild></paragraph>'
-				);
-
-				test(
-					'filters out disallowed attributes after right merge',
-					'<paragraph>fo[o</paragraph><paragraph><pchild>x<$text c="true" d="true">y]z</$text></pchild></paragraph>',
-					'<paragraph>fo[]<$text c="true">z</$text></paragraph>'
-				);
 			} );
 
 			describe( 'with object elements', () => {
@@ -451,6 +428,51 @@ describe( 'DataController', () => {
 					'does not merge an object element (if it is second)',
 					'<paragraph>ba[r</paragraph><blockWidget><nestedEditable>f]oo</nestedEditable></blockWidget>',
 					'<paragraph>ba[]</paragraph><blockWidget><nestedEditable>oo</nestedEditable></blockWidget>'
+				);
+			} );
+
+			describe( 'filtering out', () => {
+				beforeEach( () => {
+					const schema = doc.schema;
+
+					schema.allow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'paragraph' } );
+					schema.allow( { name: '$text', attributes: [ 'b', 'c' ], inside: 'pchild' } );
+					schema.allow( { name: 'pchild', inside: 'pchild' } );
+					schema.disallow( { name: '$text', attributes: [ 'c' ], inside: 'pchild pchild' } );
+				} );
+
+				test(
+					'filters out disallowed attributes after left merge',
+					'<paragraph>x<pchild>fo[o</pchild></paragraph><paragraph>y]<$text a="1" b="1">z</$text></paragraph>',
+					'<paragraph>x<pchild>fo[]<$text b="1">z</$text></pchild></paragraph>'
+				);
+
+				test(
+					'filters out disallowed attributes from nested nodes after left merge',
+					'<paragraph>' +
+						'x' +
+						'<pchild>fo[o</pchild>' +
+					'</paragraph>' +
+					'<paragraph>' +
+						'b]a<$text a="1" b="1">r</$text>' +
+						'<pchild>b<$text b="1" c="1">i</$text>z</pchild>' +
+						'y' +
+					'</paragraph>',
+
+					'<paragraph>' +
+						'x' +
+						'<pchild>' +
+							'fo[]a<$text b="1">r</$text>' +
+							'<pchild>b<$text b="1">i</$text>z</pchild>' +
+							'y' +
+						'</pchild>' +
+					'</paragraph>'
+				);
+
+				test(
+					'filters out disallowed attributes after right merge',
+					'<paragraph>fo[o</paragraph><paragraph><pchild>x<$text b="1" c="1">y]z</$text></pchild></paragraph>',
+					'<paragraph>fo[]<$text b="1">z</$text></paragraph>'
 				);
 			} );
 		} );
