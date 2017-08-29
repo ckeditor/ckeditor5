@@ -11,5 +11,5 @@ ClassicEditor
 		window.editor = editor;
 	} )
 	.catch( err => {
-		console.error( err.stack );
+		console.error( err );
 	} );

@@ -1,9 +1,9 @@
 ---
-title: Inline editor example
+title: Inline editor
 category: examples-builds
-order: 10
+order: 20
 ---
 
-Inline editor example.
+{@link builds/guides/overview#Inline-editor Inline editor} example.
 
 {@snippet examples/inline-editor}

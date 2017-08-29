@@ -18,3 +18,89 @@
 	/* See https://github.com/ckeditor/ckeditor5/issues/494 */
 	margin-left: 0;
 }
+
+/* examples/builds/inline-editor.html */
+.live-snippet .image-style-left, .live-snippet .image-style-right {
+	float: left;
+	height: auto;
+	width: 50%;
+	margin-top: .5rem;
+	margin-right: 2.5rem;
+}
+
+.live-snippet .image-style-right {
+	float: right;
+	margin-right: 0;
+	margin-left: 2.5rem;
+}
+
+.live-snippet .image img {
+	margin: 0 auto;
+}
+
+.live-snippet blockquote p:first-of-type {
+	margin-bottom: 1.5rem;
+}
+
+#snippet-inline-editor .ck-editor__editable {
+	margin-bottom: 1rem;
+	padding: 2rem;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+}
+#snippet-inline-editor h2, #snippet-inline-editor h3 {
+	margin-top: 0;
+	padding-top: 0;
+	border-bottom: 0;
+}
+#snippet-inline-editor header {
+	text-align: center;
+}
+#snippet-inline-editor header h2 {
+	margin-bottom: 0;
+	font-size: 2.1rem;
+}
+#snippet-inline-editor header h3 {
+	color: rgba(5, 22, 42, 0.59);
+	font-weight: 600;
+	font-size: 1.6rem;
+}
+
+.demo-row {
+	width: 100%;
+	display: -ms-flexbox;
+	display: flex;
+}
+
+.demo-row__half {
+	width: 50%;
+}
+
+.demo-row__half:first-of-type {
+	padding-right: .5rem;
+}
+
+.demo-row__half:last-of-type {
+	padding-left: .5rem;
+}
+
+.demo-row__third {
+	width: 33.3333%;
+}
+
+.demo-row__third > div {
+	padding: 2.5rem;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.demo-row__third:nth-of-type(2) {
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
+.demo-row h3 {
+	margin: 0;
+}
+
+.demo-row p {
+	margin-bottom: 0;
+}
