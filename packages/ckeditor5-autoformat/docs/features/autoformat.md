@@ -5,7 +5,7 @@ category: features
 
 {@snippet build-classic-source}
 
-The {@link module:autoformat/autoformat~Auformat} feature allows you to quickly apply formatting to the content you are writing.
+The {@link module:autoformat/autoformat~Autoformat} feature allows you to quickly apply formatting to the content you are writing.
 
 <info-box info>
 	This feature is enabled by default in all builds.
