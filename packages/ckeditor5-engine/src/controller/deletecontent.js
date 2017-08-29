@@ -111,8 +111,8 @@ function mergeBranches( batch, startPos, endPos ) {
 	// <a><b>x[]</b></a><c><d>{}y</d></c>
 	// will become:
 	// <a><b>xy</b>[]</a><c>{}</c>
-	startPos = Position.createAfter( startParent );
-	endPos = Position.createBefore( endParent );
+	const nextStartPos = Position.createAfter( startParent );
+	let nextEndPos = Position.createBefore( endParent );
 
 	if ( endParent.isEmpty ) {
 		batch.remove( endParent );
@@ -125,20 +125,20 @@ function mergeBranches( batch, startPos, endPos ) {
 
 		// Move the end parent only if needed.
 		// E.g. not in this case: <p>ab</p>[]{}<p>cd</p>
-		if ( !endPos.isEqual( startPos ) ) {
-			batch.move( endParent, startPos );
+		if ( !nextEndPos.isEqual( nextStartPos ) ) {
+			batch.move( endParent, nextStartPos );
 		}
 
 		// To then become:
 		// <a><b>xy</b>[]</a><c>{}</c>
-		batch.merge( startPos );
+		batch.merge( nextStartPos );
 
 		// We need to check and strip disallowed attributes in direct children because after merge
 		// some attributes could end up in a parent where are disallowed.
 		//
 		// e.g. bold is disallowed for <H1>
 		// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
-		removeDisallowedAttributes( batch, Array.from( startParent.getChildren() ), [ startParent ] );
+		removeDisallowedAttributes( batch, Array.from( startParent.getChildren() ), startPos );
 	}
 
 	// Removes empty end ancestors:
@@ -146,16 +146,16 @@ function mergeBranches( batch, startPos, endPos ) {
 	// becomes:
 	// <a>fo[]</a><b><a>{}</a></b>
 	// So we can remove <a> and <b>.
-	while ( endPos.parent.isEmpty ) {
-		const parentToRemove = endPos.parent;
+	while ( nextEndPos.parent.isEmpty ) {
+		const parentToRemove = nextEndPos.parent;
 
-		endPos = Position.createBefore( parentToRemove );
+		nextEndPos = Position.createBefore( parentToRemove );
 
 		batch.remove( parentToRemove );
 	}
 
 	// Continue merging next level.
-	mergeBranches( batch, startPos, endPos );
+	mergeBranches( batch, nextStartPos, nextEndPos );
 }
 
 function shouldAutoparagraph( doc, position ) {
