@@ -412,6 +412,12 @@ describe( 'Range', () => {
 
 			expect( range.containsPosition( position ) ).to.be.true;
 		} );
+	} );
+
+	describe( 'containsRange()', () => {
+		beforeEach( () => {
+			range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+		} );
 
 		it( 'should return true if ranges are equal and check is not strict', () => {
 			const otherRange = Range.createFromRange( range );
@@ -438,6 +444,32 @@ describe( 'Range', () => {
 			// Collapsed range should always be checked in strict mode.
 			expect( range.containsRange( new Range( range.start, range.start ), true ) ).to.be.false;
 			expect( range.containsRange( new Range( range.end, range.end ), true ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'containsItem()', () => {
+		let a, b, c, d, xxx;
+
+		beforeEach( () => {
+			a = new Element( 'a' );
+			b = new Element( 'b' );
+			c = new Element( 'c' );
+			d = new Element( 'd' );
+
+			xxx = new Text( 'xxx' );
+			b.appendChildren( xxx );
+
+			root.appendChildren( [ a, b, c, d ] );
+		} );
+
+		it( 'should return true if element is inside range and false when it is not inside range', () => {
+			const range = Range.createFromParentsAndOffsets( root, 1, root, 3 ); // Range over `b` and `c`.
+
+			expect( range.containsItem( a ) ).to.be.false;
+			expect( range.containsItem( b ) ).to.be.true;
+			expect( range.containsItem( xxx ) ).to.be.true;
+			expect( range.containsItem( c ) ).to.be.true;
+			expect( range.containsItem( d ) ).to.be.false;
 		} );
 	} );
 

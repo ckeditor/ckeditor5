@@ -118,6 +118,17 @@ export default class Range {
 	}
 
 	/**
+	 * Checks whether given {@link module:engine/model/item~Item} is inside this range.
+	 *
+	 * @param {module:engine/model/item~Item} item Model item to check.
+	 */
+	containsItem( item ) {
+		const pos = Position.createBefore( item );
+
+		return this.containsPosition( pos ) || this.start.isEqual( pos );
+	}
+
+	/**
 	 * Two ranges are equal if their {@link #start} and {@link #end} positions are equal.
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to compare with.
