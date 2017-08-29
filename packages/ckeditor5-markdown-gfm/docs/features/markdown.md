@@ -3,7 +3,7 @@ title: Markdown output
 category: features
 ---
 
-The {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} class implements a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} which changes CKEditor's output from HTML to Markdown. This means that you can {@link module:core/editor/editor~StandardEditor#setData set} or {@link module:core/editor/editor~StandardEditor#getData get} data from the editor in the Markdown format:
+The {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} class implements a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} which changes CKEditor output from HTML to Markdown. This means that you can {@link module:core/editor/editor~StandardEditor#setData set} or {@link module:core/editor/editor~StandardEditor#getData get} data from the editor in the Markdown format:
 
 ```js
 editor.getData(); // -> 'This is [CKEditor 5](https://ckeditor5.github.io).'
@@ -12,7 +12,7 @@ editor.setData( 'This is **bold**.' );
 ```
 
 <info-box info>
-	"GFM" stands for "GitHub Flavored Markdown" – a Markdown dialect used by [GitHub](https://github.com). Markdown, not having any formal specification, has many dialects often incompatible with each other. When converting the output produced by this data processor make sure to use a compatible Markdown to HTML converter (e.g. the [marked](https://www.npmjs.com/package/marked) library).
+	"GFM" stands for "GitHub Flavored Markdown" &mdash; a Markdown dialect used by [GitHub](https://github.com). Markdown lacks any formal specification and has many dialects, often incompatible with each other. When converting the output produced by this data processor make sure to use a compatible Markdown to HTML converter (e.g. the [marked](https://www.npmjs.com/package/marked) library).
 </info-box>
 
 ## Installation
