@@ -222,17 +222,17 @@ class Insertion {
 	 * @param {Object} context
 	 */
 	_handleDisallowedNode( node, context ) {
-		// Try inserting its children (strip the parent).
+		// If the node is an element, try inserting its children (strip the parent).
 		if ( node.is( 'element' ) ) {
 			this.handleNodes( node.getChildren(), context );
 		}
-		// When disallowed node is a text but text is allowed in current position it means that our node
+		// If the node is a text and bare text is allowed in current position it means that the node
 		// contains disallowed attributes and we have to remove them.
-		else if ( node.is( 'text' ) && this.schema.check( { name: '$text', inside: this.position } ) ) {
+		else if ( this.schema.check( { name: '$text', inside: this.position } ) ) {
 			removeDisallowedAttributes( this.schema, node, this.position );
 			this._handleNode( node, context );
 		}
-		// Try autoparagraphing.
+		// If text is not allowed, try autoparagraphing.
 		else {
 			this._tryAutoparagraphing( node, context );
 		}
@@ -286,7 +286,7 @@ class Insertion {
 		if ( mergeLeft ) {
 			const position = LivePosition.createFromPosition( this.position );
 
-			// When need to check a children of node that is going to be merged
+			// We need to check a children of node that is going to be merged
 			// and strip it from the disallowed attributes according to the new parent.
 			removeDisallowedAttributes( this.schema, Array.from( node.getChildren() ), [ mergePosLeft.nodeBefore ] );
 
@@ -313,7 +313,7 @@ class Insertion {
 			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
 			const position = new LivePosition( this.position.root, this.position.path, 'sticksToPrevious' );
 
-			// When need to check a children of node that is going to be merged
+			// We need to check a children of node that is going to be merged
 			// and strip it from the disallowed attributes according to the new parent.
 			removeDisallowedAttributes( this.schema, Array.from( node.getChildren() ), [ mergePosRight.nodeAfter ] );
 
