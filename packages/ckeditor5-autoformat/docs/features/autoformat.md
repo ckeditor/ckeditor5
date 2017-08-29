@@ -3,10 +3,12 @@ title: Autoformatting
 category: features
 ---
 
+{@snippet build-classic-source}
+
 The {@link module:autoformat/autoformat~Auformat} feature allows you to quickly apply formatting to the content you are writing.
 
 <info-box info>
-	This feature is enabled by default in all builds. It is also included in the {@link module:presets/article~Article Article preset}.
+	This feature is enabled by default in all builds.
 </info-box>
 
 ## Block formatting
@@ -33,9 +35,13 @@ Example:
 2. Press <kbd>#</kbd> and then <kbd>Space</kbd>.
 3. The current line will be turned into a heading.
 
-{@snippet examples/classic-editor}
+{@snippet examples/classic-editor-short}
 
 ## Installation
+
+<info-box info>
+	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
+</info-box>
 
 To add this feature to your editor install the [`@ckeditor/ckeditor5-autoformat`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat) package:
 
@@ -49,18 +55,22 @@ And add it to your plugin list:
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 
 ClassicEditor
-	.create( {
-		plugins: [ Autoformat, ... ]
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Autoformat, ... ],
+		toolbar: [ ... ]
 	} )
 	.then( ... )
 	.catch( ... );
 ```
 
-If you are using an editor build, see how to {@linkTODO customize builds}.
+<info-box hint>
 
-## Create custom autoformatters
+Remember to add proper features to the editor configuration. Autoformatting will be enabled only for the commands that are included in the actual configuration. For example: `bold` autoformatting will not work if there is no `bold` command registered in the editor.
+</info-box>
 
-The {@link module:autoformat/autoformat~Auformat} feature bases on {@link module:autoformat/blockautoformatengine~BlockAuformatEngine} and {@link module:autoformat/inlineautoformatengine~InlineAuformatEngine} tools to create the autoformatters mentioned above.
+## Creating custom autoformatters
+
+The {@link module:autoformat/autoformat~Autoformat} feature bases on {@link module:autoformat/blockautoformatengine~BlockAutoformatEngine} and {@link module:autoformat/inlineautoformatengine~InlineAutoformatEngine} tools to create the autoformatters mentioned above.
 
 You can use these tools to create your own autoformatters. Check the [`Autoformat` feature's code](https://github.com/ckeditor/ckeditor5-autoformat/blob/master/src/autoformat.js) as an example.
 
