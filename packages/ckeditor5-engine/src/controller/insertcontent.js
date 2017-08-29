@@ -229,7 +229,7 @@ class Insertion {
 		// If the node is a text and bare text is allowed in current position it means that the node
 		// contains disallowed attributes and we have to remove them.
 		else if ( this.schema.check( { name: '$text', inside: this.position } ) ) {
-			removeDisallowedAttributes( this.schema, node, this.position );
+			removeDisallowedAttributes( this.schema, [ node ], this.position );
 			this._handleNode( node, context );
 		}
 		// If text is not allowed, try autoparagraphing.
@@ -343,7 +343,7 @@ class Insertion {
 			// When node is a text and is disallowed by schema it means that contains disallowed attributes
 			// and we need to remove them.
 			if ( node.is( 'text' ) && !this._checkIsAllowed( node, [ paragraph ] ) ) {
-				removeDisallowedAttributes( this.schema, node, [ paragraph ] );
+				removeDisallowedAttributes( this.schema, [ node ], [ paragraph ] );
 			}
 
 			if ( this._checkIsAllowed( node, [ paragraph ] ) ) {
@@ -442,7 +442,7 @@ class Insertion {
 // Gets a name under which we should check this node in the schema.
 //
 // @param {module:engine/model/node~Node} node The node.
-// @returns {String} node name.
+// @returns {String} Node name.
 function getNodeSchemaName( node ) {
 	return node.is( 'text' ) ? '$text' : node.name;
 }
@@ -450,13 +450,9 @@ function getNodeSchemaName( node ) {
 // Removes disallowed by schema attributes from given nodes.
 //
 // @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/model/node~Node|Array<module:engine/model/node~Node>} nodes List of nodes or a single node to filter.
+// @param {Array<module:engine/model/node~Node>} nodes List of nodes to filter.
 // @param {module:engine/model/schema~SchemaPath} schemaPath
-export function removeDisallowedAttributes( schema, nodes, schemaPath ) {
-	if ( !Array.isArray( nodes ) ) {
-		nodes = [ nodes ];
-	}
-
+function removeDisallowedAttributes( schema, nodes, schemaPath ) {
 	for ( const node of nodes ) {
 		for ( const attribute of node.getAttributeKeys() ) {
 			if ( !schema.check( { name: getNodeSchemaName( node ), attributes: attribute, inside: schemaPath } ) ) {
