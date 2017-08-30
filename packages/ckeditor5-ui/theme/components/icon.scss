@@ -1,14 +1,18 @@
 // Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_fonts';
+
 /**
- * Default width/height of an icon.
+ * Default width/height of an icon. Note that it equals the default
+ * height of the line of text, so e.g. it matches the height of the
+ * button's label.
  */
-$ck-icon-size: 20px;
+$ck-icon-min-size: round( $ck-font-size-base * $ck-line-height-base );
 
 svg.ck-icon {
-	min-width: $ck-icon-size;
-	min-height: $ck-icon-size;
+	min-width: $ck-icon-min-size;
+	min-height: $ck-icon-min-size;
 
 	font-size: 1em;
 	vertical-align: middle;

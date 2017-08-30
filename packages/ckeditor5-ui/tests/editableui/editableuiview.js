@@ -35,6 +35,7 @@ describe( 'EditableUIView', () => {
 			view.init();
 			expect( view.element ).to.equal( view.editableElement );
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
 			expect( view.externalElement ).to.be.undefined;
 		} );
 
@@ -45,6 +46,7 @@ describe( 'EditableUIView', () => {
 			expect( view.element ).to.equal( editableElement );
 			expect( view.element ).to.equal( view.editableElement );
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
 			expect( view.externalElement ).to.equal( editableElement );
 		} );
 	} );
