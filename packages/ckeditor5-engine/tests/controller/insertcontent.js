@@ -675,7 +675,7 @@ describe( 'DataController', () => {
 				expect( getData( doc ) ).to.equal( '<paragraph>foox<$text b="1">x</$text>x[]</paragraph>' );
 			} );
 
-			it( 'filters out disallowed attributes from nested nodes after merge', () => {
+			it( 'filters out disallowed attributes from nested nodes when merging', () => {
 				setData( doc, '<paragraph>f[]oo</paragraph>' );
 				insertHelper( '<heading1>x<element>b<$text a="1" b="1">a</$text>r</element>x</heading1>' );
 				expect( getData( doc ) ).to.equal( '<paragraph>fx<element>b<$text b="1">a</$text>r</element>x[]oo</paragraph>' );
