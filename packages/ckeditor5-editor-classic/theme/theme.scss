@@ -3,52 +3,48 @@
 
 @import '~@ckeditor/ckeditor5-theme-lark/theme/theme.scss';
 
-@include ck-editor {
-	@include ck-rounded-corners();
-
+.ck-editor {
 	// All the elements within `.ck-editor` are positioned relatively to it.
 	// If any element needs to be positioned with respect to the <body>, etc.,
 	// it must land outside of the `.ck-editor` in DOM.
 	position: relative;
+}
 
-	.ck-editor__top {
-		.ck-toolbar {
-			border-top: 0;
-			border-left: 0;
-			border-right: 0;
+.ck-editor__top .ck-toolbar {
+	@include ck-rounded-corners {
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
 
-			// https://github.com/ckeditor/ckeditor5-editor-classic/issues/62
-			z-index: ck-z( 'modal' );
+		&.ck-toolbar_sticky {
+			border-radius: 0;
 		}
 	}
 
-	.ck-editor__main {
-		background: ck-color();
-	}
+	// https://github.com/ckeditor/ckeditor5-editor-classic/issues/62
+	z-index: ck-z( 'modal' );
+	background: ck-color( 'editor-toolbar-background' );
+	border-bottom-width: 0;
 
-	.ck-editor__bottom {
-		border-bottom: 0;
-		border-left: 0;
-		border-right: 0;
-
-		padding: ck-spacing();
-	}
-
-	.ck-editor__editable {
-		&.ck-focused {
-			@include ck-focus-ring( 'outline' );
-			@include ck-box-shadow( $ck-inner-shadow );
-		}
-
-		&_inline {
-			overflow: auto;
-			padding: 0 ck-spacing();
-		}
+	&.ck-toolbar_sticky {
+		border-bottom-width: 1px;
 	}
 }
 
-.ck-editor,
-.ck-editor-bottom {
-	background: ck-color( 'foreground' );
-	border: 1px solid ck-border-color( 'foreground' );
+.ck-editor__editable {
+	@include ck-rounded-corners {
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	};
+
+	border: 1px solid ck-color( 'editor-border' );
+
+	&.ck-focused {
+		@include ck-focus-ring();
+		@include ck-box-shadow( $ck-inner-shadow );
+	}
+
+	&_inline {
+		overflow: auto;
+		padding: 0 ck-spacing();
+	}
 }
