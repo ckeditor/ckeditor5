@@ -30,7 +30,7 @@ import {
 	removeUIElement,
 	highlightText,
 	highlightElement,
-	highlightDescriptorToAttributeElement
+	createViewElementFromHighlightDescriptor
 } from '../../src/conversion/model-to-view-converters';
 
 import { createRangeOnElementOnly } from '../../tests/model/_utils/utils';
@@ -1224,14 +1224,14 @@ describe( 'model-to-view-converters', () => {
 		} );
 	} );
 
-	describe( 'highlightDescriptorToAttributeElement()', () => {
+	describe( 'createViewElementFromHighlightDescriptor()', () => {
 		it( 'should return attribute element from descriptor object', () => {
 			const descriptor = {
 				class: 'foo-class',
 				attributes: { one: 1, two: 2 },
 				priority: 7,
 			};
-			const element = highlightDescriptorToAttributeElement( descriptor );
+			const element = createViewElementFromHighlightDescriptor( descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
@@ -1249,7 +1249,7 @@ describe( 'model-to-view-converters', () => {
 				attributes: { one: 1, two: 2 },
 				priority: 7,
 			};
-			const element = highlightDescriptorToAttributeElement( descriptor );
+			const element = createViewElementFromHighlightDescriptor( descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
@@ -1267,7 +1267,7 @@ describe( 'model-to-view-converters', () => {
 				attributes: { one: 1, two: 2 },
 				priority: 7,
 			};
-			const element = highlightDescriptorToAttributeElement( descriptor );
+			const element = createViewElementFromHighlightDescriptor( descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
@@ -1283,7 +1283,7 @@ describe( 'model-to-view-converters', () => {
 				class: 'foo-class',
 				attributes: { one: 1, two: 2 },
 			};
-			const element = highlightDescriptorToAttributeElement( descriptor );
+			const element = createViewElementFromHighlightDescriptor( descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
@@ -1300,12 +1300,44 @@ describe( 'model-to-view-converters', () => {
 				class: 'foo-class',
 				priority: 7
 			};
-			const element = highlightDescriptorToAttributeElement( descriptor );
+			const element = createViewElementFromHighlightDescriptor( descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
 			expect( element.priority ).to.equal( 7 );
 			expect( element.hasClass( 'foo-class' ) ).to.be.true;
+		} );
+
+		it( 'should create similar elements if they are created using same descriptor id', () => {
+			const a = createViewElementFromHighlightDescriptor( {
+				id: 'id',
+				class: 'classA',
+				priority: 1
+			} );
+
+			const b = createViewElementFromHighlightDescriptor( {
+				id: 'id',
+				class: 'classB',
+				priority: 2
+			} );
+
+			expect( a.isSimilar( b ) ).to.be.true;
+		} );
+
+		it( 'should create non-similar elements if they have different descriptor id', () => {
+			const a = createViewElementFromHighlightDescriptor( {
+				id: 'a',
+				class: 'foo',
+				priority: 1
+			} );
+
+			const b = createViewElementFromHighlightDescriptor( {
+				id: 'b',
+				class: 'foo',
+				priority: 1
+			} );
+
+			expect( a.isSimilar( b ) ).to.be.false;
 		} );
 	} );
 } );
