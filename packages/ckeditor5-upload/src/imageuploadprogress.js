@@ -71,12 +71,6 @@ export default class ImageUploadProgress extends Plugin {
 		const status = data.attributeNewValue;
 		const viewFigure = editor.editing.mapper.toViewElement( modelImage );
 
-		const loader = fileRepository.loaders.get( uploadId );
-
-		if ( !loader ) {
-			return;
-		}
-
 		// Show placeholder with infinite progress bar on the top while image is read from disk.
 		if ( status == 'reading' ) {
 			viewFigure.addClass( 'ck-appear', 'ck-infinite-progress' );
@@ -88,15 +82,20 @@ export default class ImageUploadProgress extends Plugin {
 
 		// Show progress bar on the top of the image when image is uploading.
 		if ( status == 'uploading' ) {
-			viewFigure.removeClass( 'ck-infinite-progress' );
-			const progressBar = createProgressBar();
-			viewFigure.appendChildren( progressBar );
+			const loader = fileRepository.loaders.get( uploadId );
 
-			// Update progress bar width when uploadedPercent is changed.
-			loader.on( 'change:uploadedPercent', ( evt, name, value ) => {
-				progressBar.setStyle( 'width', value + '%' );
-				editor.editing.view.render();
-			} );
+			if ( loader ) {
+				const progressBar = createProgressBar();
+
+				viewFigure.removeClass( 'ck-infinite-progress' );
+				viewFigure.appendChildren( progressBar );
+
+				// Update progress bar width when uploadedPercent is changed.
+				loader.on( 'change:uploadedPercent', ( evt, name, value ) => {
+					progressBar.setStyle( 'width', value + '%' );
+					editor.editing.view.render();
+				} );
+			}
 
 			return;
 		}
@@ -104,10 +103,13 @@ export default class ImageUploadProgress extends Plugin {
 		// Hide progress bar and clean up classes.
 		const progressBar = getProgressBar( viewFigure );
 
-		viewFigure.removeClass( 'ck-appear' );
-		progressBar.remove();
+		if ( progressBar ) {
+			progressBar.remove();
+		} else {
+			viewFigure.removeClass( 'ck-infinite-progress' );
+		}
 
-		editor.editing.view.render();
+		viewFigure.removeClass( 'ck-appear' );
 	}
 }
 
