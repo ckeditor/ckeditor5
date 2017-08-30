@@ -6,7 +6,7 @@
 /* globals ClassicEditor, console, window, document */
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-classic-editor' ) )
+	.create( document.querySelector( '#snippet-classic-editor-short' ) )
 	.then( editor => {
 		window.editor = editor;
 	} )

@@ -16,7 +16,13 @@ CKEditor 5 Builds are a set of ready to use rich-text editors. Every "build" pro
 
 ### Classic editor
 
-The classic "boxed" editing interface, with a toolbar at the top:
+Classic editor is what most users traditionally learnt to associate with a rich text editor — a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
+
+In CKEditor 5 the concept of the "boxed" editor was reinvented:
+
+ * The toolbar is now always visible when user scrolls the page down.
+ * The editor content is now placed inline in the page (without surrounding `<iframe>` element) — it is now much easier to style it.
+ * The editor now grows automatically with the content by default.
 
 [ TODO: Classic editor screenshot or sample ]
 
