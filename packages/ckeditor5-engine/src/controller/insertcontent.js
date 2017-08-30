@@ -326,6 +326,12 @@ class Insertion {
 
 		mergePosLeft.detach();
 		mergePosRight.detach();
+
+		// When there was no merge we need to check and strip disallowed attributes in all nested nodes of
+		// just inserted node because some attributes could end up in a place where are disallowed.
+		if ( !mergeLeft && !mergeRight ) {
+			removeDisallowedAttributes( Array.from( node.getChildren() ), Position.createAt( node ), this.schema, this.batch );
+		}
 	}
 
 	/**
