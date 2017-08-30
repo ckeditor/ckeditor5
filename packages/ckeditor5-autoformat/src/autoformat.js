@@ -12,41 +12,8 @@ import InlineAutoformatEngine from './inlineautoformatengine';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 /**
- * Includes a set of predefined autoformatting actions.
- *
- * ## Bulleted list
- *
- * You can create a bulleted list by starting a line with:
- *
- * * `* `
- * * `- `
- *
- * ## Numbered list
- *
- * You can create a numbered list by starting a line with:
- *
- * * `1. `
- * * `1) `
- *
- * ## Headings
- *
- * You can create a heading by starting a line with:
- *
- * * `# ` &ndash; will create Heading 1,
- * * `## ` &ndash; will create Heading 2,
- * * `### ` &ndash; will create Heading 3.
- *
- * ## Bold, italic and code
- *
- * You can apply bold, italic and code to a text by typing Markdown formatting:
- *
- * * `**foo bar**` or `__foo bar__` &ndash; will bold the text,
- * * `*foo bar*` or `_foo bar_` &ndash; will italicize the text,
- * * ``` `foo bar` ``` &ndash; will mark the text as code.
- *
- * NOTE: Remember to add proper features to the editor configuration. Autoformatting will be enabled only for the
- * commands that are included in the actual configuration. For example: `bold` autoformatting will not work if there is no
- * `Bold` command registered in the editor.
+ * Includes a set of predefined autoformatting actions. For a detailed overview, check
+ * the {@linkTODO features/autoformat Autoformatting feature documentation}.
  *
  * @extends module:core/plugin~Plugin
  */
