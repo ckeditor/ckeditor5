@@ -15,6 +15,8 @@ import RenameOperation from '../../src/model/operation/renameoperation';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
 import { wrapInDelta } from '../../tests/model/_utils/utils';
 
+import ViewContainerElement from '../../src/view/containerelement';
+
 describe( 'ModelConversionDispatcher', () => {
 	let dispatcher, doc, root, gyPos;
 
@@ -360,6 +362,78 @@ describe( 'ModelConversionDispatcher', () => {
 			expect( callArgs[ 1 ] ).to.equal( 'marker' );
 			expect( callArgs[ 2 ].isEqual( markerRange ) ).to.be.true;
 		} );
+
+		it( 'should not fire marker conversion if content is inserted into element with custom highlight handling', () => {
+			sinon.spy( dispatcher, 'convertMarker' );
+
+			const text = new ModelText( 'abc' );
+			const caption = new ModelElement( 'caption', null, text );
+			const image = new ModelElement( 'image', null, caption );
+			root.appendChildren( [ image ] );
+
+			// Create view elements that will be "mapped" to model elements.
+			const viewCaption = new ViewContainerElement( 'caption' );
+			const viewFigure = new ViewContainerElement( 'figure', null, viewCaption );
+
+			// Create custom highlight handler mock.
+			viewFigure.setCustomProperty( 'addHighlight', () => {} );
+			viewFigure.setCustomProperty( 'removeHighlight', () => {} );
+
+			// Create mapper mock.
+			dispatcher.conversionApi.mapper = {
+				toViewElement( modelElement ) {
+					if ( modelElement == image ) {
+						return viewFigure;
+					} else if ( modelElement == caption ) {
+						return viewCaption;
+					}
+				}
+			};
+
+			const markerRange = ModelRange.createFromParentsAndOffsets( root, 0, root, 1 );
+			doc.markers.set( 'marker', markerRange );
+
+			const insertionRange = ModelRange.createFromParentsAndOffsets( caption, 1, caption, 2 );
+			dispatcher.convertInsertion( insertionRange );
+
+			expect( dispatcher.convertMarker.called ).to.be.false;
+		} );
+
+		it( 'should fire marker conversion if inserted into element with highlight handling but element is not in marker range', () => {
+			sinon.spy( dispatcher, 'convertMarker' );
+
+			const text = new ModelText( 'abc' );
+			const caption = new ModelElement( 'caption', null, text );
+			const image = new ModelElement( 'image', null, caption );
+			root.appendChildren( [ image ] );
+
+			// Create view elements that will be "mapped" to model elements.
+			const viewCaption = new ViewContainerElement( 'caption' );
+			const viewFigure = new ViewContainerElement( 'figure', null, viewCaption );
+
+			// Create custom highlight handler mock.
+			viewFigure.setCustomProperty( 'addHighlight', () => {} );
+			viewFigure.setCustomProperty( 'removeHighlight', () => {} );
+
+			// Create mapper mock.
+			dispatcher.conversionApi.mapper = {
+				toViewElement( modelElement ) {
+					if ( modelElement == image ) {
+						return viewFigure;
+					} else if ( modelElement == caption ) {
+						return viewCaption;
+					}
+				}
+			};
+
+			const markerRange = ModelRange.createFromParentsAndOffsets( caption, 0, caption, 3 );
+			doc.markers.set( 'marker', markerRange );
+
+			const insertionRange = ModelRange.createFromParentsAndOffsets( caption, 2, caption, 3 );
+			dispatcher.convertInsertion( insertionRange );
+
+			expect( dispatcher.convertMarker.called ).to.be.true;
+		} );
 	} );
 
 	describe( 'convertMove', () => {
@@ -598,6 +672,46 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.convertSelection( doc.selection, markers );
 
 			expect( dispatcher.fire.calledWith( 'selectionMarker:name' ) ).to.be.true;
+		} );
+
+		it( 'should not fire event for marker if selection is in a element with custom highlight handling', () => {
+			// Clear after `beforeEach`.
+			root.removeChildren( 0, root.childCount );
+
+			const text = new ModelText( 'abc' );
+			const caption = new ModelElement( 'caption', null, text );
+			const image = new ModelElement( 'image', null, caption );
+			root.appendChildren( [ image ] );
+
+			// Create view elements that will be "mapped" to model elements.
+			const viewCaption = new ViewContainerElement( 'caption' );
+			const viewFigure = new ViewContainerElement( 'figure', null, viewCaption );
+
+			// Create custom highlight handler mock.
+			viewFigure.setCustomProperty( 'addHighlight', () => {} );
+			viewFigure.setCustomProperty( 'removeHighlight', () => {} );
+
+			// Create mapper mock.
+			dispatcher.conversionApi.mapper = {
+				toViewElement( modelElement ) {
+					if ( modelElement == image ) {
+						return viewFigure;
+					} else if ( modelElement == caption ) {
+						return viewCaption;
+					}
+				}
+			};
+
+			doc.markers.set( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 1 ) );
+			doc.selection.setRanges( [ ModelRange.createFromParentsAndOffsets( caption, 1, caption, 1 ) ] );
+
+			sinon.spy( dispatcher, 'fire' );
+
+			const markers = Array.from( doc.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
+
+			dispatcher.convertSelection( doc.selection, markers );
+
+			expect( dispatcher.fire.calledWith( 'selectionMarker:name' ) ).to.be.false;
 		} );
 
 		it( 'should not fire events if information about marker has been consumed', () => {

@@ -217,15 +217,11 @@ export default class ModelConversionDispatcher {
 
 		for ( const marker of this._modelDocument.markers ) {
 			const markerRange = marker.getRange();
+			const intersection = markerRange.getIntersection( range );
 
 			// Check if inserted content is inserted into a marker.
-			if ( markerRange.containsPosition( range.start ) ) {
-				this.convertMarker( 'addMarker', marker.name, markerRange.getIntersection( range ) );
-			}
-
-			// Check if inserted content contains a marker.
-			if ( range.containsRange( markerRange, true ) ) {
-				this.convertMarker( 'addMarker', marker.name, markerRange );
+			if ( intersection && shouldMarkerChangeBeConverted( range.start, marker, this.conversionApi.mapper ) ) {
+				this.convertMarker( 'addMarker', marker.name, intersection );
 			}
 		}
 	}
@@ -367,10 +363,16 @@ export default class ModelConversionDispatcher {
 		this.fire( 'selection', { selection }, consumable, this.conversionApi );
 
 		for ( const marker of markers ) {
+			const markerRange = marker.getRange();
+
+			if ( !shouldMarkerChangeBeConverted( selection.getFirstPosition(), marker, this.conversionApi.mapper ) ) {
+				continue;
+			}
+
 			const data = {
 				selection,
 				markerName: marker.name,
-				markerRange: marker.getRange()
+				markerRange
 			};
 
 			if ( consumable.test( selection, 'selectionMarker:' + marker.name ) ) {
@@ -717,3 +719,27 @@ export default class ModelConversionDispatcher {
 }
 
 mix( ModelConversionDispatcher, EmitterMixin );
+
+// Helper function, checks whether change of `marker` at `modelPosition` should be converted. Marker changes are not
+// converted if they happen inside an element with custom conversion method.
+//
+// @param {module:engine/model/position~Position} modelPosition
+// @param {module:engine/model/markercollection~Marker} marker
+// @param {module:engine/conversion/mapper~Mapper} mapper
+// @returns {Boolean}
+function shouldMarkerChangeBeConverted( modelPosition, marker, mapper ) {
+	const range = marker.getRange();
+	const ancestors = Array.from( modelPosition.getAncestors() );
+	ancestors.shift(); // Remove root element. It cannot be passed to `model.Range#containsItem`.
+	ancestors.reverse();
+
+	const hasCustomHandling = ancestors.some( element => {
+		if ( range.containsItem( element ) ) {
+			const viewElement = mapper.toViewElement( element );
+
+			return !!viewElement.getCustomProperty( 'addHighlight' );
+		}
+	} );
+
+	return !hasCustomHandling;
+}
