@@ -11,8 +11,8 @@ $ck-balloon-arrow-half-width: 10px;
 
 	min-height: 15px;
 
-	background: ck-color( 'background' );
-	border: 1px solid ck-border-color( 'foreground' );
+	background: ck-color( 'panel-background' );
+	border: 1px solid ck-color( 'panel-border' );
 
 	&.ck-balloon-panel_with-arrow {
 		&:before,
@@ -33,11 +33,11 @@ $ck-balloon-arrow-half-width: 10px;
 			}
 
 			&:before {
-				border-color: transparent transparent ck-border-color( 'foreground' ) transparent;
+				border-color: transparent transparent ck-color( 'panel-border' ) transparent;
 			}
 
 			&:after {
-				border-color: transparent transparent ck-color( 'background' ) transparent;
+				border-color: transparent transparent ck-color( 'panel-background' ) transparent;
 				margin-top: $ck-balloon-arrow-offset;
 			}
 		}
@@ -51,11 +51,11 @@ $ck-balloon-arrow-half-width: 10px;
 			}
 
 			&:before {
-				border-color: ck-border-color( 'foreground' ) transparent  transparent;
+				border-color: ck-color( 'panel-border' ) transparent  transparent;
 			}
 
 			&:after {
-				border-color: ck-color( 'background' ) transparent transparent transparent;
+				border-color: ck-color( 'panel-background' ) transparent transparent transparent;
 				margin-bottom: $ck-balloon-arrow-offset;
 			}
 		}

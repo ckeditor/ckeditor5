@@ -2,9 +2,8 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 .ck-toolbar {
-	line-height: 1;
 	padding: ck-spacing( 'small' );
-	border: 1px solid ck-border-color();
+	border: 1px solid ck-color( 'toolbar-border' );
 
 	// Allow wrapping toolbar items to the new line.
 	white-space: initial;
@@ -23,7 +22,7 @@
 		width: 1px;
 		height: calc( 1em + 2 * #{ck-spacing( 'medium' )} );
 		vertical-align: middle;
-		background: ck-border-color();
+		background: ck-color( 'toolbar-border' );
 	}
 
 	&__newline {

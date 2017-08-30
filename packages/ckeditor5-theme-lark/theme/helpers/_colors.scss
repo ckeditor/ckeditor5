@@ -1,6 +1,14 @@
 // Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
+$ck-color-foreground: 							#f7f7f7 !default;
+$ck-color-background: 							#fff !default;
+$ck-color-border: 								scale-color( $ck-color-background, $lightness: -25 ) !default;
+$ck-color-action: 								#61B145 !default;
+$ck-color-focus: 								#6ab5f9 !default;
+$ck-color-text: 								#333 !default;
+$ck-color-active: 								#1A8BF1 !default;
+
 /**
  * Colors configured by the user.
  *
@@ -18,13 +26,47 @@ $ck-colors: () !default;
  * @see ck-color-add
  */
 $_ck-colors: (
-	'action': #61B145,
-	'background': #fff,
-	'focus': #6ab5f9,
-	'foreground': #f7f7f7,
-	'text': #333,
-	'active': #1A8BF1,
-	'shadow': rgba(0,0,0,.2)
+	'border-focus': 							#48a3f5,
+	'text': 									$ck-color-text,
+	'shadow-drop': 								rgba( 0, 0, 0, .2 ),
+	'shadow-inner': 							rgba( 0, 0, 0, .1 ),
+
+	// ------------------------------------------------------------
+
+	'button-default-background': 				$ck-color-background,
+	'button-default-border': 					$ck-color-border,
+	'button-on-background': 					$ck-color-foreground,
+	'button-on-border': 						scale-color( $ck-color-foreground, $lightness: -25 ),
+	'button-action-background': 				$ck-color-action,
+	'button-action-border': 					scale-color( $ck-color-action, $lightness: -20 ),
+	'button-action-text': 						$ck-color-background,
+
+	'dropdown-panel-background': 				$ck-color-background,
+	'dropdown-panel-border': 					$ck-color-border,
+	'dropdown-symbol': 							#707070,
+
+	'input-background': 						$ck-color-background,
+	'input-border': 							$ck-color-border,
+	'input-text': 								$ck-color-text,
+
+	'list-background': 							$ck-color-background,
+	'list-item-background-hover': 				$ck-color-foreground,
+	'list-item-background-active': 				$ck-color-active,
+	'list-item-text-active':					$ck-color-background,
+
+	'panel-background': 						$ck-color-background,
+	'panel-border': 							$ck-color-border,
+
+	'toolbar-background': 						$ck-color-background,
+	'toolbar-border': 							$ck-color-border,
+
+	'tooltip-background': 						$ck-color-text,
+	'tooltip-text': 							$ck-color-background,
+
+	'editor-border': 							$ck-color-border,
+	'editor-toolbar-background': 				$ck-color-foreground,
+	'editor-toolbar-button-background': 		$ck-color-foreground,
+	'editor-dropdown-background': 				$ck-color-background,
 );
 
 /**
@@ -39,18 +81,6 @@ $_ck-colors: (
 	$colors: map-merge( $_ck-colors, $ck-colors );
 
 	@return scale-color( map-get( $colors, $name ), $lightness: $offset );
-}
-
-/**
- * Returns a border–color for a given name and lightness offset.
- *
- * @param {String} $name [ 'background' ] - Name of the color.
- * @param {Number} $offset [ 0 ] - Offset of the lightness.
- * @return {String}
- * @see $ck-color
- */
-@function ck-border-color( $name: 'background', $offset: 0 ) {
-	@return ck-color( $name, $offset - 25 );
 }
 
 /**

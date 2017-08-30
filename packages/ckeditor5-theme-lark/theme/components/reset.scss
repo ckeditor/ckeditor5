@@ -25,7 +25,7 @@
 	&, *, a, textarea {
 		// These are rule inherited by all children elements.
 		border-collapse: collapse;
-		font: normal normal normal $ck-font-size-base $ck-font-face;
+		font: normal normal normal #{$ck-font-size-base}/#{$ck-line-height-base} $ck-font-face;
 		color: ck-color( 'text' );
 		text-align: left;
 		white-space: nowrap;

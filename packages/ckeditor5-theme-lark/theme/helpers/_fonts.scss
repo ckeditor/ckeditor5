@@ -9,6 +9,11 @@
 $ck-font-size-base: 12px !default;
 
 /**
+ * Base line height.
+ */
+$ck-line-height-base: 1.67 !default;
+
+/**
  * Base font face.
  *
  */
@@ -20,11 +25,11 @@ $ck-font-face: Helvetica, Arial, Tahoma, Verdana, Sans-Serif !default;
  * @see ck-font-size
  */
 $ck-font-sizes: (
-	-2: 0.7rem,
-	-1: 0.75rem,
-	 0: 1rem,
-	 1: 1.4rem,
-	 2: 1.8rem
+	-2: 0.7em,
+	-1: 0.75em,
+	 0: 1em,
+	 1: 1.4em,
+	 2: 1.8em
 );
 
 /**

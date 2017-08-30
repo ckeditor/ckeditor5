@@ -5,8 +5,10 @@
 	@include ck-rounded-corners();
 	@include ck-unselectable();
 
+	// Crop the the items when the list has huge border-radius.
+	overflow: hidden;
 	list-style-type: none;
-	background: ck-color( 'background' );
+	background: ck-color( 'list-background' );
 
 	&__item {
 		padding: ck-spacing( 'medium' );
@@ -15,27 +17,24 @@
 
 		&:hover,
 		&:focus {
-			background: ck-color( 'foreground' );
+			background: ck-color( 'list-item-background-hover' );
 		}
 
 		&:focus {
 			@include ck-box-shadow( $ck-focus-outer-shadow );
+
 			position: relative;
 			z-index: ck-z();
 			outline: none;
 		}
 
-		&:last-of-type {
-			border: none;
-		}
-
 		&_active {
-			background: ck-color( 'active' );
-			color: ck-color( 'background' );
+			background: ck-color( 'list-item-background-active' );
+			color: ck-color( 'list-item-text-active' );
 
 			&:hover,
 			&:focus {
-				background: ck-color( 'active', -10 );
+				background: ck-color( 'list-item-background-active', -10 );
 			}
 		}
 	}

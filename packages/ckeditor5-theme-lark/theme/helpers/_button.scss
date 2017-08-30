@@ -1,0 +1,43 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+/**
+ * Implements a button of given background color.
+ *
+ * @param {String} $background - Background color of the button.
+ * @param {String} $border - Border color of the button.
+ */
+@mixin ck-button-colors( $background, $border, $offset: 0 ) {
+	background: ck-color( $background, $offset );
+	border-color: ck-color( $border, $offset );
+
+	&:not(.ck-disabled) {
+		&:hover,
+		&:focus {
+			background: ck-color( $background, $offset - 10 );
+			border-color: ck-color( $border, $offset - 10 );
+		}
+
+		&:active {
+			background: ck-color( $background, $offset - 15 );
+			border-color: ck-color( $border, $offset - 15 );
+			box-shadow: inset 0 2px 2px ck-color( $background, $offset - 25 );
+		}
+	}
+
+	// https://github.com/ckeditor/ckeditor5-theme-lark/issues/98
+	&.ck-disabled {
+		background: ck-color( $background, $offset + 10 );
+		border-color: ck-color( $border, $offset + 10 );
+	}
+}
+
+/**
+ * A helper to define button–specific icon styles.
+ *
+ */
+@mixin ck-button-icon {
+	.ck-icon {
+		@content;
+	}
+}

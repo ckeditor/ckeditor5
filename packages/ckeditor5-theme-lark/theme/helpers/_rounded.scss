@@ -16,5 +16,6 @@ $ck-border-radius: 2px !default;
 	&.ck-rounded-corners,
 	.ck-rounded-corners & {
 		border-radius: $ck-border-radius;
+		@content;
 	}
 }

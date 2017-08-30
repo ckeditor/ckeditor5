@@ -4,12 +4,12 @@
 /**
  * A visual style of focused element's outer shadow.
  */
-$ck-focus-outer-shadow: 0 0 3px 2px lighten( ck-color( 'focus' ), 10% );
+$ck-focus-outer-shadow: 0 0 3px 2px lighten( ck-color( 'border-focus' ), 10% );
 
 /**
  * A visual style of focused element's border or outline.
  */
-$ck-focus-ring: 1px solid ck-color( 'focus' );
+$ck-focus-ring: 1px solid ck-color( 'border-focus' );
 
 /**
  * An opacity value of disabled UI item.
@@ -24,17 +24,12 @@ $ck-disabled-opacity: .5;
 }
 
 /**
- * A visual style of focused element's border or outline.
+ * A visual style of focused element's border.
  */
-@mixin ck-focus-ring( $borderOrOutline: 'border' ) {
-	@if $borderOrOutline == 'outline' {
-		outline: $ck-focus-ring;
-	}
-	@else {
-		// Disable native outline.
-		outline: none;
-		border: $ck-focus-ring;
-	}
+@mixin ck-focus-ring() {
+	// Disable native outline.
+	outline: none;
+	border: $ck-focus-ring;
 }
 
 /**
