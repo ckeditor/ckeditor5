@@ -594,6 +594,7 @@ describe( 'DataController', () => {
 
 				schema.registerItem( 'paragraph', '$block' );
 				schema.registerItem( 'heading1', '$block' );
+				schema.registerItem( 'child', '$block' );
 
 				// Let's use table as an example of content which needs to be filtered out.
 				schema.registerItem( 'table' );
@@ -610,7 +611,11 @@ describe( 'DataController', () => {
 				schema.allow( { name: '$text', inside: 'disallowedWidget' } );
 				schema.objects.add( 'disallowedWidget' );
 
+				schema.allow( { name: 'child', inside: 'paragraph' } );
+				schema.allow( { name: 'child', inside: 'heading1' } );
 				schema.allow( { name: '$text', attributes: 'b', inside: 'paragraph' } );
+				schema.allow( { name: '$text', attributes: [ 'b' ], inside: 'paragraph child' } );
+				schema.allow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'heading1 child' } );
 			} );
 
 			it( 'filters out disallowed elements and leaves out the text', () => {
@@ -659,6 +664,12 @@ describe( 'DataController', () => {
 				setData( doc, '<paragraph>foo[]</paragraph>' );
 				insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
 				expect( getData( doc ) ).to.equal( '<paragraph>foox<$text b="1">x</$text>x[]</paragraph>' );
+			} );
+
+			it( 'filters out disallowed attributes from nested child when merging', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( '<heading1>x<child>b<$text a="1" b="1">a</$text>r</child>x</heading1>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fx<child>b<$text b="1">a</$text>r</child>x[]oo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes when autoparagraphing', () => {

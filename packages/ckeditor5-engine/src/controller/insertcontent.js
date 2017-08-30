@@ -286,11 +286,11 @@ class Insertion {
 		if ( mergeLeft ) {
 			const position = LivePosition.createFromPosition( this.position );
 
-			// We need to check a children of node that is going to be merged
-			// and strip it from the disallowed attributes according to the new parent.
-			removeDisallowedAttributes( this.schema, Array.from( node.getChildren() ), [ mergePosLeft.nodeBefore ] );
-
 			this.batch.merge( mergePosLeft );
+
+			// We need to check and strip disallowed attributes in all nested nodes because after merge
+			// some attributes could end up in a path where are disallowed.
+			removeDisallowedAttributesOnBatch( this.batch, Array.from( this.position.parent.getChildren() ), position );
 
 			this.position = Position.createFromPosition( position );
 			position.detach();
@@ -313,11 +313,11 @@ class Insertion {
 			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
 			const position = new LivePosition( this.position.root, this.position.path, 'sticksToPrevious' );
 
-			// We need to check a children of node that is going to be merged
-			// and strip it from the disallowed attributes according to the new parent.
-			removeDisallowedAttributes( this.schema, Array.from( node.getChildren() ), [ mergePosRight.nodeAfter ] );
-
 			this.batch.merge( mergePosRight );
+
+			// We need to check and strip disallowed attributes in all nested nodes because after merge
+			// some attributes could end up in a place where are disallowed.
+			removeDisallowedAttributesOnBatch( this.batch, Array.from( this.position.parent.getChildren() ), position );
 
 			this.position = Position.createFromPosition( position );
 			position.detach();
@@ -458,6 +458,27 @@ function removeDisallowedAttributes( schema, nodes, schemaPath ) {
 			if ( !schema.check( { name: getNodeSchemaName( node ), attributes: attribute, inside: schemaPath } ) ) {
 				node.removeAttribute( attribute );
 			}
+		}
+	}
+}
+
+// Adds deltas with `removeAttributes` operation for disallowed by schema attributes on given nodes and its children.
+//
+// @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
+// @param {module:engine/model/node~Node|Array<module:engine/model/node~Node>} nodes List of nodes or a single node to filter.
+// @param {module:engine/model/schema~SchemaPath} schemaPath
+function removeDisallowedAttributesOnBatch( batch, nodes, schemaPath ) {
+	const schema = batch.document.schema;
+
+	for ( const node of nodes ) {
+		for ( const attribute of node.getAttributeKeys() ) {
+			if ( !schema.check( { name: getNodeSchemaName( node ), attributes: attribute, inside: schemaPath } ) ) {
+				batch.removeAttribute( node, attribute );
+			}
+		}
+
+		if ( node.is( 'element' ) ) {
+			removeDisallowedAttributesOnBatch( batch, Array.from( node.getChildren() ), Position.createAt( node ) );
 		}
 	}
 }
