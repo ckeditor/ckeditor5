@@ -5,8 +5,10 @@
 
 // TODO move to make a common style with editor-classic.
 .ck-editor__editable {
+	@include ck-rounded-corners();
+
 	&.ck-focused {
-		@include ck-focus-ring( 'outline' );
+		@include ck-focus-ring();
 		@include ck-box-shadow( $ck-inner-shadow );
 	}
 
