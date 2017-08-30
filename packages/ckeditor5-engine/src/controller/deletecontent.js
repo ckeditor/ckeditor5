@@ -74,7 +74,7 @@ export default function deleteContent( selection, batch, options = {} ) {
 		//
 		// e.g. bold is disallowed for <H1>
 		// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
-		removeDisallowedAttributes( batch, Array.from( startPos.parent.getChildren() ), startPos );
+		removeDisallowedAttributes( Array.from( startPos.parent.getChildren() ), startPos, batch );
 	}
 
 	selection.setCollapsedAt( startPos );
@@ -228,21 +228,28 @@ function getNodeSchemaName( node ) {
 
 // Adds deltas with `removeAttributes` operation for disallowed by schema attributes on given nodes and its children.
 //
-// @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
-// @param {module:engine/model/node~Node|Array<module:engine/model/node~Node>} nodes List of nodes or a single node to filter.
+// @param {module:engine/model/node~Node|Array<module:engine/model/node~Node>} nodes
 // @param {module:engine/model/schema~SchemaPath} schemaPath
-function removeDisallowedAttributes( batch, nodes, schemaPath ) {
+// @param {module:engine/model/batch~Batch} batch
+function removeDisallowedAttributes( nodes, schemaPath, batch ) {
 	const schema = batch.document.schema;
 
 	for ( const node of nodes ) {
-		for ( const attribute of node.getAttributeKeys() ) {
-			if ( !schema.check( { name: getNodeSchemaName( node ), attributes: attribute, inside: schemaPath } ) ) {
-				batch.removeAttribute( node, attribute );
+		const name = getNodeSchemaName( node );
+
+		// When node with attributes is not allowed in current position.
+		if ( !schema.check( { name, inside: schemaPath, attributes: Array.from( node.getAttributeKeys() ) } ) ) {
+			// Let's remove attributes one by one.
+			// This should be improved to check all combination of attributes.
+			for ( const attribute of node.getAttributeKeys() ) {
+				if ( !schema.check( { name, attributes: attribute, inside: schemaPath } ) ) {
+					batch.removeAttribute( node, attribute );
+				}
 			}
 		}
 
 		if ( node.is( 'element' ) ) {
-			removeDisallowedAttributes( batch, Array.from( node.getChildren() ), Position.createAt( node ) );
+			removeDisallowedAttributes( Array.from( node.getChildren() ), Position.createAt( node ), batch );
 		}
 	}
 }

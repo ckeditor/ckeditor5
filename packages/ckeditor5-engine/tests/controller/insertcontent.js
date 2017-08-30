@@ -604,6 +604,7 @@ describe( 'DataController', () => {
 				schema.allow( { name: 'table', inside: '$clipboardHolder' } );
 				schema.allow( { name: 'td', inside: '$clipboardHolder' } );
 				schema.allow( { name: 'td', inside: 'table' } );
+				schema.allow( { name: 'child', inside: 'td' } );
 				schema.allow( { name: '$block', inside: 'td' } );
 				schema.allow( { name: '$text', inside: 'td' } );
 
@@ -616,6 +617,7 @@ describe( 'DataController', () => {
 				schema.allow( { name: '$text', attributes: 'b', inside: 'paragraph' } );
 				schema.allow( { name: '$text', attributes: [ 'b' ], inside: 'paragraph child' } );
 				schema.allow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'heading1 child' } );
+				schema.allow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'td child' } );
 			} );
 
 			it( 'filters out disallowed elements and leaves out the text', () => {
@@ -648,25 +650,25 @@ describe( 'DataController', () => {
 				expect( getData( doc ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
 			} );
 
-			it( 'filters out disallowed attributes when merging #1', () => {
+			it( 'filters out disallowed attributes after merge #1', () => {
 				setData( doc, '<paragraph>[]foo</paragraph>' );
 				insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
 				expect( getData( doc ) ).to.equal( '<paragraph>x<$text b="1">x</$text>x[]foo</paragraph>' );
 			} );
 
-			it( 'filters out disallowed attributes when merging #2', () => {
+			it( 'filters out disallowed attributes after merge #2', () => {
 				setData( doc, '<paragraph>f[]oo</paragraph>' );
 				insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
 				expect( getData( doc ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>x[]oo</paragraph>' );
 			} );
 
-			it( 'filters out disallowed attributes when merging #3', () => {
+			it( 'filters out disallowed attributes after merge #3', () => {
 				setData( doc, '<paragraph>foo[]</paragraph>' );
 				insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
 				expect( getData( doc ) ).to.equal( '<paragraph>foox<$text b="1">x</$text>x[]</paragraph>' );
 			} );
 
-			it( 'filters out disallowed attributes from nested child when merging', () => {
+			it( 'filters out disallowed attributes from nested elements after merge', () => {
 				setData( doc, '<paragraph>f[]oo</paragraph>' );
 				insertHelper( '<heading1>x<child>b<$text a="1" b="1">a</$text>r</child>x</heading1>' );
 				expect( getData( doc ) ).to.equal( '<paragraph>fx<child>b<$text b="1">a</$text>r</child>x[]oo</paragraph>' );
