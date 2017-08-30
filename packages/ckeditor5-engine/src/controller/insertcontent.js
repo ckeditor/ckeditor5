@@ -290,7 +290,8 @@ class Insertion {
 
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
 			// some attributes could end up in a path where are disallowed.
-			removeDisallowedAttributes( Array.from( position.parent.getChildren() ), position, this.schema, this.batch );
+			const parent = position.nodeBefore;
+			removeDisallowedAttributes( Array.from( parent.getChildren() ), Position.createAt( parent ), this.schema, this.batch );
 
 			this.position = Position.createFromPosition( position );
 			position.detach();
