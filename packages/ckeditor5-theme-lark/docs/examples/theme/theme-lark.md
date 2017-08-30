@@ -1,6 +1,6 @@
 ---
-title: Theme Lark customization
-category: examples-themes
+title: Theme customization
+category: examples-framework
 order: 20
 ---
 
