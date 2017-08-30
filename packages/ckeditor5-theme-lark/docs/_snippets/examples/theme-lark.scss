@@ -1,0 +1,19 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_shadow.scss';
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_colors.scss';
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_button.scss';
+
+$shadow-color: ck-color( 'editor-toolbar-background', 10 );
+
+.ck-editor-toolbar {
+	.ck-button {
+		&.ck-dropdown__button {
+			@include ck-box-shadow(
+				0 0 0 1px $shadow-color inset,
+				0 0 5px $shadow-color inset
+			);
+		}
+	}
+}

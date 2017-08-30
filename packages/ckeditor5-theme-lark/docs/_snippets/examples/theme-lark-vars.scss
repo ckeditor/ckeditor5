@@ -1,0 +1,59 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+$ck-border-radius: 4px;
+$ck-font-size-base: 14px;
+
+$custom-background: #4A494B;
+$custom-foreground: #3a393d;
+$custom-border: #383738;
+$custom-white: #fff;
+
+$ck-colors: (
+	'border-focus': #48a3f5,
+	'text': #fafafa,
+	'shadow-drop': rgba( 0, 0, 0, .2 ),
+	'shadow-inner': rgba( 0, 0, 0, .1 ),
+
+	'button-default-background': 				$custom-background,
+	'button-default-border': 					$custom-border,
+	'button-on-background': 					$custom-foreground,
+	'button-on-border': 						$custom-border,
+	'button-action-background': 				#1ABC9C,
+	'button-action-border': 					#49d2b7,
+	'button-action-text': 						$custom-white,
+
+	'dropdown-panel-background': 				$custom-background,
+	'dropdown-panel-border': 					$custom-foreground,
+	'dropdown-symbol': 							#f1f1f1,
+
+	'input-background': 						$custom-foreground,
+	'input-border': 							#6b6970,
+	'input-text': 								#fafafa,
+
+	'list-background': 							$custom-background,
+	'list-item-background-hover': 				$custom-foreground,
+	'list-item-background-active': 				#1A8BF1,
+	'list-item-text-active': 					$custom-white,
+
+	'panel-background': 						$custom-background,
+	'panel-border': 							$custom-border,
+
+	'toolbar-background': 						$custom-foreground,
+	'toolbar-border': 							$custom-border,
+
+	'tooltip-background': 						#212025,
+	'tooltip-text': 							#eee,
+
+	'editor-border': 							$custom-background,
+	'editor-toolbar-background': 				$custom-background,
+	'editor-toolbar-button-background': 		$custom-background,
+	'editor-dropdown-background': 				#535254,
+
+	'image-caption-background': 				#f7f7f7,
+	'image-caption-text': 						#333,
+
+	'widget-border-blurred': 					#ddd,
+	'widget-border-hover': 						#FFD25C,
+	'widget-editable-focused-background': 		$custom-white
+);
