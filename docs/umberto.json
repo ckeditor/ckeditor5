@@ -119,6 +119,11 @@
 					"name": "Builds",
 					"id": "examples-builds",
 					"slug": "builds"
+				},
+				{
+					"name": "UI Framework",
+					"id": "examples-framework",
+					"slug": "framework"
 				}
 			]
 		}
@@ -135,6 +140,10 @@
 		{
 			"path": "packages/ckeditor5-image",
 			"prefix": "image"
+		},
+		{
+			"path": "packages/ckeditor5-theme-lark",
+			"prefix": "theme-lark"
 		}
 	]
 }
