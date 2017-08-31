@@ -6,17 +6,15 @@
 /* globals console:false, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import EssentialsPreset from '@ckeditor/ckeditor5-presets/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Bold from '../../src/bold';
 import Italic from '../../src/italic';
 import Underline from '../../src/underline';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Underline ],
+		plugins: [ EssentialsPreset, Paragraph, Bold, Italic, Underline ],
 		toolbar: [ 'bold', 'italic', 'underline', 'undo', 'redo' ]
 	} )
 	.then( editor => {
