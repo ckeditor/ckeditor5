@@ -3,19 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals console, window, document */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
-import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
+/* globals ClassicEditor, console, window, document */
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-custom-heading-levels' ), {
-		plugins: [ ArticlePreset ],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
-		image: {
-			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
-		},
 		heading: {
 			options: [
 				{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },

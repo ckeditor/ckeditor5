@@ -3,6 +3,8 @@ title: Headings
 category: features
 ---
 
+{@snippet build-classic-source}
+
 The {@link module:heading/heading~Heading} feature enables support for headings.
 
 <info-box info>
