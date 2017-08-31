@@ -1,0 +1,27 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_colors.scss';
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_rounded.scss';
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_spacing.scss';
+
+// It's a darker shade of u-color( 'background-hue' ) so it looks good in info-boxes.
+@include ck-color-add( ( 'code': rgba( 202, 205, 207, 0.3 ) ) );
+
+code {
+	background-color: ck-color( 'code' );
+	padding: ck-spacing( 'tiny' );
+	border-radius: $ck-border-radius;
+
+	&:before,
+	&:after {
+		// To reduce the width of that space to 0px.
+		letter-spacing: -1 * ck-spacing();
+		content: "\00a0";
+	}
+
+	// To remove an empty line when `code` is empty.
+	& > br[data-cke-filler] {
+		display: none;
+	}
+}

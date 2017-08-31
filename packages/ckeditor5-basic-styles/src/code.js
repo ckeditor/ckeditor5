@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import CodeEngine from './codeengine';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import codeIcon from '../theme/icons/code.svg';
+import '../theme/theme.scss';
 
 /**
  * The code feature. It introduces the Code button.
