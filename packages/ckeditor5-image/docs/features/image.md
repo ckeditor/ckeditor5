@@ -41,7 +41,7 @@ You can see the demo of an editor with the base image feature enabled below:
 
 ## Image contextual toolbar
 
-The {@link module:image/imagetoolbar~ImageToobar} plugin introduces contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options such as the text alternative (which is introduced by the base image plugin) button and [image styles buttons](#image-styles).
+The {@link module:image/imagetoolbar~ImageToolbar} plugin introduces contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options such as the text alternative (which is introduced by the base image plugin) button and [image styles buttons](#image-styles).
 
 See a demo of an editor with the contextual toolbar enabled:
 
