@@ -1,17 +1,17 @@
 # Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: pt\n"
-"Language-Team: Portuguese (https://www.transifex.com/ckeditor/teams/11143/pt/)\n"
+"Language: gl\n"
+"Language-Team: Galician (https://www.transifex.com/ckeditor/teams/11143/gl/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Toolbar button tooltip for the Bold feature."
 msgid "Bold"
-msgstr "Negrito"
+msgstr "Negra"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
-msgstr "Itálico"
+msgstr "Itálica"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
