@@ -1,0 +1,10 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: nb\n"
+"Language-Team: Norwegian Bokmål (https://www.transifex.com/ckeditor/teams/11143/nb/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt ""
+msgid "Cannot upload file:"
+msgstr "Kan ikke laste opp fil:"
