@@ -1,0 +1,14 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: ja\n"
+"Language-Team: Japanese (https://www.transifex.com/ckeditor/teams/11143/ja/)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Toolbar button tooltip for the Undo feature."
+msgid "Undo"
+msgstr "元に戻す"
+
+msgctxt "Toolbar button tooltip for the Redo feature."
+msgid "Redo"
+msgstr "やり直し"
