@@ -1,14 +1,14 @@
 # Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: hr\n"
-"Language-Team: Croatian (https://www.transifex.com/ckeditor/teams/11143/hr/)\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Language: sv\n"
+"Language-Team: Swedish (https://www.transifex.com/ckeditor/teams/11143/sv/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Label for the insert image toolbar button."
 msgid "Insert image"
-msgstr "Umetni sliku"
+msgstr "Infoga bild"
 
 msgctxt "Title of the notification displayed when upload fails."
 msgid "Upload failed"
-msgstr "Slanje nije uspjelo"
+msgstr ""

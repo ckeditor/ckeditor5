@@ -8,3 +8,7 @@ msgstr ""
 msgctxt "Label for the insert image toolbar button."
 msgid "Insert image"
 msgstr "Bild einfügen"
+
+msgctxt "Title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr ""
