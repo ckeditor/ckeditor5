@@ -1,30 +1,30 @@
 # Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: zh_CN\n"
-"Language-Team: Chinese (China) (https://www.transifex.com/ckeditor/teams/11143/zh_CN/)\n"
+"Language: zh_TW\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/ckeditor/teams/11143/zh_TW/)\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Label for the image widget."
 msgid "image widget"
-msgstr "图像小部件"
+msgstr "圖片小工具"
 
 msgctxt "Label for the Side image option."
 msgid "Side image"
-msgstr ""
+msgstr "側邊圖片"
 
 msgctxt "Label for the Full size image option."
 msgid "Full size image"
-msgstr "全尺寸图像"
+msgstr "完整大小圖片"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr "更改图像替换文本"
+msgstr "變更圖片的文字替代"
 
 msgctxt "Label for the image text alternative input."
 msgid "Text alternative"
-msgstr "替换文本"
+msgstr "文字替代"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
-msgstr "输入图像标题"
+msgstr "輸入圖片說明"
