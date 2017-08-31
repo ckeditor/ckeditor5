@@ -33,7 +33,7 @@ Check out the {@linkTODO CKEditor 5 Builds CDN website} for a list of URL entry 
 
 ### npm
 
-All builds are released on npm. [Use this search link](https://www.npmjs.com/search?q=%40ckeditor%2Fckeditor5-build) to view all build packages available in npm.
+All builds are released on npm. [Use this search link](https://www.npmjs.com/search?q=keywords:ckeditor5-build&page=1&ranking=optimal) to view all build packages available in npm.
 
 Installing a classic build with npm is as simple as calling the following inside your website or application:
 
