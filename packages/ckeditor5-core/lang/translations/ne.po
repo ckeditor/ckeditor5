@@ -1,0 +1,14 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: ne_NP\n"
+"Language-Team: Nepali (Nepal) (https://www.transifex.com/ckeditor/teams/11143/ne_NP/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "सुरक्षित गर्नुहोस्"
+
+msgctxt "Label for the Cancel button."
+msgid "Cancel"
+msgstr "रद्द गर्नुहोस्"

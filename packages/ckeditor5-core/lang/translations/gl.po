@@ -1,0 +1,14 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: gl\n"
+"Language-Team: Galician (https://www.transifex.com/ckeditor/teams/11143/gl/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "Gardar"
+
+msgctxt "Label for the Cancel button."
+msgid "Cancel"
+msgstr "Cancelar"

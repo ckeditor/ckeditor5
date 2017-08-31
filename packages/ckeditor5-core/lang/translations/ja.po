@@ -1,0 +1,14 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: ja\n"
+"Language-Team: Japanese (https://www.transifex.com/ckeditor/teams/11143/ja/)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "保存"
+
+msgctxt "Label for the Cancel button."
+msgid "Cancel"
+msgstr "キャンセル"
