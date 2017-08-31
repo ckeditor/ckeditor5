@@ -21,7 +21,7 @@ Most of the examples in the documentation use the `ClassicEditor` class, but thi
 
 Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), these classes can be retrieved:
 
-* by a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (e.g. [Webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
+* by a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (e.g. [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
 * by [RequireJS](http://requirejs.org/) (or any other AMD library),
 * from the global namespace if none of the above loaders is available.
 
@@ -39,6 +39,10 @@ require( '/(ckeditor path)/build/ckeditor.js', ClassicEditor => {
 
 // As a global.
 ClassicEditor.create; // [Function]
+
+// As an ES6 module (if using webpack or Rollup).
+import { ClassicEditor } from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+ClassicEditor.create; // [Function]
 ```
 
 Depending on which build you are using, creating an editor in the page is then a breeze:
@@ -46,7 +50,7 @@ Depending on which build you are using, creating an editor in the page is then a
 In the HTML code:
 
 ```html
-<textarea id="text-editor">
+<textarea id="editor">
 	&lt;p&gt;Here goes the initial content of the editor.&lt;/p&gt;
 </textarea>
 ```
@@ -55,7 +59,7 @@ In the script:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#text-editor' ) )
+	.create( document.querySelector( '#editor' ) )
 	.then( editor => {
 		console.log( editor );
 	} )
