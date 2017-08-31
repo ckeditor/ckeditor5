@@ -2,7 +2,12 @@
   "name": "@ckeditor/ckeditor5-build-classic",
   "version": "0.2.0",
   "description": "CKEditor 5 classic build.",
-  "keywords": [],
+  "keywords": [
+    "ckeditor5-build",
+    "text editor",
+    "WYSIWYG",
+    "rich-text editor"
+  ],
   "main": "./build/ckeditor.js",
   "dependencies": {
     "@ckeditor/ckeditor5-editor-classic": "^0.7.3",
@@ -19,14 +24,10 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-utils": "^3.0.0",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^2.0.11",
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-preset-env": "^1.6.0",
     "babel-minify-webpack-plugin": "^0.2.0",
     "css-loader": "^0.28.5",
     "node-sass": "^4.5.3",
     "raw-loader": "^0.5.1",
-    "regenerator-runtime": "^0.11.0",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
     "webpack": "^3.5.5"
@@ -44,9 +45,8 @@
     "url": "https://github.com/ckeditor/ckeditor5-build-classic.git"
   },
   "scripts": {
-    "build": "npm run create-entry-file && npm run build-ckeditor && npm run build-ckeditor-compat",
+    "build": "npm run create-entry-file && npm run build-ckeditor",
     "create-entry-file": "./bin/create-entry-file.js",
-    "build-ckeditor": "./bin/build-ckeditor.sh",
-    "build-ckeditor-compat": "./bin/build-ckeditor-compat.sh"
+    "build-ckeditor": "./bin/build-ckeditor.sh"
   }
 }

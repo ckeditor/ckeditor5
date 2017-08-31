@@ -6,16 +6,18 @@ CKEditor 5 classic build
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-build-classic/status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-classic)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-build-classic/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-classic?type=dev)
 
-Classic build of CKEditor 5. Features the [classic creator](https://github.com/ckeditor/ckeditor5-editor-classic) and the standard set of article features.
+Classic build of CKEditor 5. Read more in the [classic editor](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/overview.html#Classic-editor) and see the [demo](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/builds/classic-editor.html).
 
-## Bundles
+## Documentation
 
-The package contains two bundles of the classic editor:
+See:
 
-* `build/ckeditor.js` &ndash; A minified, ES6 version of the bundle.
-* `build/ckeditor.compat.js` &ndash; A minified, backward-compatible version of the bundle ([babel-preset-env](https://github.com/babel/babel-preset-env) is configured to support `'last 2 versions'`, `'ie >= 11'`).
+* [Installation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/integration/installation.html) for how to install this package and what it contains.
+* [Basic API](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/integration/installation.html) for how to create an editor and interact with it.
+* [Configuration](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/integration/configuration.html) for how to configure the editor.
+* [Creating custom builds](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/development/custom-builds.html) for how to customize the build (configure and rebuild the editor bundle).
 
-## Usage
+## Quick start
 
 First, install the build from npm:
 
@@ -31,13 +33,14 @@ And use it in your website:
 </div>
 <script src="./node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
 <script>
-ClassicEditor.create( document.querySelector( '#editor' ) )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+	ClassicEditor
+		.create( document.querySelector( '#editor' ) )
+		.then( editor => {
+			window.editor = editor;
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
 </script>
 ```
 
@@ -49,7 +52,8 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-build-classic/build/ckeditor'
 // Or using CommonJS verion:
 // const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic/build/ckeditor' ).ClassicEditor;
 
-ClassicEditor.create( document.querySelector( '#editor' ) )
+ClassicEditor
+	.create( document.querySelector( '#editor' ) )
 	.then( editor => {
 		window.editor = editor;
 	} )
@@ -58,21 +62,7 @@ ClassicEditor.create( document.querySelector( '#editor' ) )
 	} );
 ```
 
-**Note:** If you are planning to integrate CKEditor 5 deep into your application it is actually more convenient and recommended to install and import the source modules directly (like it happens in `ckeditor.js`).
-
-## Rebuilding the bundle
-
-**Note:** This section assumes that you cloned this package repository and execute the commands inside it.
-
-You can modify `build-config.js` or any of the webpack configurations and run:
-
-```
-npm run build
-```
-
-to rebuild the entry point (`ckeditor.js`) and both builds (`build/*`).
-
-You can also modify `ckeditor.js` directly and run one of `npm run build-ckeditor` or `npm run build-ckeditor-compat`.
+**Note:** If you are planning to integrate CKEditor 5 deep into your application it is actually more convenient and recommended to install and import the source modules directly (like it happens in `ckeditor.js`). Read more in the [Bundling guide](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/integration/bundling.html).
 
 ## License
 
