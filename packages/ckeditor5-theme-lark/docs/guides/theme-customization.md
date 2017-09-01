@@ -1,6 +1,6 @@
 ---
 title: Theme customization
-category: framework-guides-ui
+category: ui
 order: 10
 ---
 
