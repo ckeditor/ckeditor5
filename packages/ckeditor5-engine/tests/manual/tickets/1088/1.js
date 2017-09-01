@@ -6,23 +6,26 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
+import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePreset ],
-		toolbar: [ 'headings', 'undo', 'redo' ]
+		plugins: [ ArticlePresets ],
+		toolbar: [ 'headings', 'undo', 'redo' ],
+		image: {
+			toolbar: [ 'imageTextAlternative' ]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
 
 		const schema = editor.document.schema;
 
-		schema.disallow( { name: '$text', attributes: [ 'linkHref' ], inside: 'heading1' } );
+		schema.disallow( { name: '$text', attributes: [ 'linkHref', 'italic' ], inside: 'heading1' } );
 		schema.disallow( { name: '$text', attributes: [ 'italic' ], inside: 'heading2' } );
-		schema.disallow( { name: '$text', attributes: [ 'italic', 'linkHref' ], inside: 'heading3' } );
+		schema.disallow( { name: '$text', attributes: [ 'linkHref' ], inside: 'blockQuote listItem' } );
 		schema.disallow( { name: '$text', attributes: [ 'bold' ], inside: 'paragraph' } );
-		schema.disallow( { name: '$text', attributes: [ 'bold', 'linkHref' ], inside: 'blockQuote listItem' } );
+		schema.disallow( { name: 'heading3', inside: '$root' } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
