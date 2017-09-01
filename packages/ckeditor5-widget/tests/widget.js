@@ -42,6 +42,22 @@ describe( 'Widget', () => {
 				doc.schema.allow( { name: 'editable', inside: 'widget' } );
 				doc.schema.allow( { name: 'editable', inside: '$root' } );
 
+				// Image feature.
+				doc.schema.registerItem( 'image' );
+				doc.schema.allow( { name: 'image', inside: '$root' } );
+				doc.schema.objects.add( 'image' );
+
+				// Block-quote feature.
+				doc.schema.registerItem( 'blockQuote' );
+				doc.schema.allow( { name: 'blockQuote', inside: '$root' } );
+				doc.schema.allow( { name: '$block', inside: 'blockQuote' } );
+
+				// Div element which helps nesting elements.
+				doc.schema.registerItem( 'div' );
+				doc.schema.allow( { name: 'div', inside: 'blockQuote' } );
+				doc.schema.allow( { name: 'div', inside: 'div' } );
+				doc.schema.allow( { name: 'paragraph', inside: 'div' } );
+
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'paragraph' )
 					.toElement( 'p' );
@@ -66,6 +82,18 @@ describe( 'Widget', () => {
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'editable' )
 					.toElement( () => new ViewEditable( 'figcaption', { contenteditable: true } ) );
+
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'image' )
+					.toElement( 'img' );
+
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'blockQuote' )
+					.toElement( 'blockquote' );
+
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'div' )
+					.toElement( 'div' );
 			} );
 	} );
 
@@ -450,6 +478,103 @@ describe( 'Widget', () => {
 				sinon.assert.calledOnce( domEventDataMock.preventDefault );
 				sinon.assert.notCalled( keydownHandler );
 			} );
+
+			test(
+				'should remove the entire empty element if it is next to a widget',
+
+				'<paragraph>foo</paragraph>' +
+				'<image></image>' +
+				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
+				'<paragraph>foo</paragraph>',
+
+				keyCodes.backspace,
+
+				'<paragraph>foo</paragraph>[<image></image>]<paragraph>foo</paragraph>'
+			);
+
+			test(
+				'should remove the entire empty element (deeper structure) if it is next to a widget',
+
+				'<paragraph>foo</paragraph>' +
+				'<image></image>' +
+				'<blockQuote><div><div><paragraph>[]</paragraph></div></div></blockQuote>' +
+				'<paragraph>foo</paragraph>',
+
+				keyCodes.backspace,
+
+				'<paragraph>foo</paragraph>' +
+				'[<image></image>]' +
+				'<paragraph>foo</paragraph>'
+			);
+
+			test(
+				'should not remove the entire element which is not empty and the element is next to a widget',
+
+				'<paragraph>foo</paragraph>' +
+				'<image></image>' +
+				'<blockQuote><paragraph>[]</paragraph><paragraph></paragraph></blockQuote>' +
+				'<paragraph>foo</paragraph>',
+
+				keyCodes.backspace,
+
+				'<paragraph>foo</paragraph>' +
+				'[<image></image>]' +
+				'<blockQuote><paragraph></paragraph></blockQuote>' +
+				'<paragraph>foo</paragraph>'
+			);
+
+			test(
+				'should not remove the entire element (deeper structure) which is not empty and the element is next to a widget',
+
+				'<paragraph>foo</paragraph>' +
+				'<image></image>' +
+				'<blockQuote>' +
+					'<div>' +
+						'<div>' +
+							'<paragraph>[]</paragraph>' +
+						'</div>' +
+					'</div>' +
+					'<paragraph></paragraph>' +
+				'</blockQuote>' +
+				'<paragraph>foo</paragraph>',
+
+				keyCodes.backspace,
+
+				'<paragraph>foo</paragraph>' +
+				'[<image></image>]' +
+				'<blockQuote>' +
+					'<paragraph></paragraph>' +
+				'</blockQuote>' +
+				'<paragraph>foo</paragraph>'
+			);
+
+			test(
+				'should do nothing if the nested element is not empty and the element is next to a widget',
+
+				'<paragraph>foo</paragraph>' +
+				'<image></image>' +
+				'<blockQuote>' +
+					'<div>' +
+						'<div>' +
+							'<paragraph>Foo[]</paragraph>' +
+						'</div>' +
+					'</div>' +
+				'</blockQuote>' +
+				'<paragraph>foo</paragraph>',
+
+				keyCodes.backspace,
+
+				'<paragraph>foo</paragraph>' +
+				'<image></image>' +
+				'<blockQuote>' +
+					'<div>' +
+						'<div>' +
+							'<paragraph>Foo[]</paragraph>' +
+						'</div>' +
+					'</div>' +
+				'</blockQuote>' +
+				'<paragraph>foo</paragraph>'
+			);
 		} );
 
 		describe( 'arrows', () => {
@@ -742,6 +867,62 @@ describe( 'Widget', () => {
 				'<paragraph>[foo]</paragraph><widget></widget><paragraph>[bar]</paragraph>',
 				keyCodes.arrowright,
 				'<paragraph>[foo]</paragraph><widget></widget><paragraph>[bar]</paragraph>'
+			);
+
+			test(
+				'should work if selection is in nested element (left arrow)',
+
+				'<paragraph>foo</paragraph>' +
+				'<image></image>' +
+				'<blockQuote>' +
+					'<div>' +
+						'<div>' +
+							'<paragraph>[]</paragraph>' +
+						'</div>' +
+					'</div>' +
+				'</blockQuote>' +
+				'<paragraph>foo</paragraph>',
+
+				keyCodes.arrowleft,
+
+				'<paragraph>foo</paragraph>' +
+				'[<image></image>]' +
+				'<blockQuote>' +
+					'<div>' +
+						'<div>' +
+							'<paragraph></paragraph>' +
+						'</div>' +
+					'</div>' +
+				'</blockQuote>' +
+				'<paragraph>foo</paragraph>'
+			);
+
+			test(
+				'should work if selection is in nested element (up arrow)',
+
+				'<paragraph>foo</paragraph>' +
+				'<image></image>' +
+				'<blockQuote>' +
+					'<div>' +
+						'<div>' +
+							'<paragraph>[]</paragraph>' +
+						'</div>' +
+					'</div>' +
+				'</blockQuote>' +
+				'<paragraph>foo</paragraph>',
+
+				keyCodes.arrowup,
+
+				'<paragraph>foo</paragraph>' +
+				'[<image></image>]' +
+				'<blockQuote>' +
+					'<div>' +
+						'<div>' +
+							'<paragraph></paragraph>' +
+						'</div>' +
+					'</div>' +
+				'</blockQuote>' +
+				'<paragraph>foo</paragraph>'
 			);
 		} );
 
