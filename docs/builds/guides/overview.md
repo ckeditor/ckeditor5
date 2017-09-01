@@ -53,7 +53,7 @@ Each build was designed to satisfy as many use cases as possible. They differ in
 * Provide setups as generic as possible, based on research and community feedback.
 
 <info-box>
-Features like fonts, colors and alignment will be introduced in the future, when the new types of builds will be introduced with the purpose of satisfying document editing scenarios.  
+	Features like fonts, colors and alignment will be introduced in the future, when the new types of builds will be introduced with the purpose of satisfying document editing scenarios.
 </info-box>
 
 ### Build customization
@@ -61,9 +61,9 @@ Features like fonts, colors and alignment will be introduced in the future, when
 Every build comes with a default set of features and a default configuration of them. Although the builds try to fit many cases, they may still need to be adjusted in some integrations. The following modifications are possible:
 
  * You can override the default **configuration of features** (e.g. define different image styles or heading levels).
- * You can change the default **toolbar configuration** (e.g. remove undo/redo buttons). 
+ * You can change the default **toolbar configuration** (e.g. remove undo/redo buttons).
  * You can also **remove features** (plugins).
- 
+
 Read more in the {@link builds/guides/integration/configuration Configuration guide}.
 
 If a build doesn't provide all the necessary features or you want create a highly optimized build of editor which will contain only the necessary features, then you need to customize the build or create a brand new one. Check {@link builds/guides/development/custom-builds Custom builds} for details on how to change the default builds to match your preferences.

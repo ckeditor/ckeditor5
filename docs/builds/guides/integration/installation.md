@@ -19,7 +19,7 @@ Each of the builds has independent release packages. Check the {@link builds/gui
 
 ### Zip download
 
-Go to https://ckeditor.com/ckeditor5-builds/download and download your preferred build. For example, you may download the `ckeditor5-build.classic-1.0.0.zip` file for the Classic editor build.
+Go to https://ckeditor.com/ckeditor5-builds/download and download your preferred build. For example, you may download the `ckeditor5-build-classic-1.0.0.zip` file for the Classic editor build.
 
 Extract the above `.zip` file into a dedicated directory inside your website or application.
 
