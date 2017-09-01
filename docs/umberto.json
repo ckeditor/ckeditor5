@@ -50,6 +50,11 @@
 							"name": "Plugins",
 							"id": "plugins",
 							"slug": "plugins"
+						},
+						{
+							"name": "User interface",
+							"id": "ui",
+							"slug": "ui"
 						}
 					]
 				},
@@ -121,7 +126,7 @@
 					"slug": "builds"
 				},
 				{
-					"name": "UI Framework",
+					"name": "Framework",
 					"id": "examples-framework",
 					"slug": "framework"
 				}
