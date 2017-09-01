@@ -30,7 +30,7 @@ The outdated concept of image "alignment" was dropped in favor of {@link feature
 
 No more complex dialogs for links.
 
-[ TODO Screenshot of a link with the edit balloon on it ]
+{@img assets/img/feature-link.png 503 Simplified link dialog.}
 
 ### Autoformatting
 
@@ -62,7 +62,7 @@ We feel that in previous editor versions we had way too many features and config
 
 In CKEditor 5 misleading formatting tools were removed, dialogs were stripped out or simplified in favor of well designed features that require no configuration.
 
-[ TODO Screenshot of the toolbar ]
+{@img assets/img/feature-toolbar.png 610 Simplified toolbar with features designed for writing quality content.}
 
 ## Lightweight
 

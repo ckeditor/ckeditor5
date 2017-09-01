@@ -24,19 +24,25 @@ In CKEditor 5 the concept of the "boxed" editor was reinvented:
  * The editor content is now placed inline in the page (without surrounding `<iframe>` element) — it is now much easier to style it.
  * The editor now grows automatically with the content by default.
 
-[ TODO: Classic editor screenshot or sample ]
+{@img assets/img/editor-classic.png 772 Screenshot of a classic editor.}
+
+To try it out, check the {@link examples/builds/classic-editor classic editor example}.
 
 ### Inline editor
 
 The edited content remains a part of the page, with a floating toolbar attached:
 
-[ TODO: Inline editor screenshot ]
+{@img assets/img/editor-inline.png 774 Screenshot of an inline editor.}
+
+To try it out, check the {@link examples/builds/inline-editor inline editor example}.
 
 ### Editor with balloon toolbar
 
 The edited content remains a part of the page (like in the inline editor). The toolbar appears in a balloon next to the selection (when the selection is not empty):
 
-[ TODO: Ballon toolbar editor screenshot ]
+{@img assets/img/editor-balloon-toolbar.png 779 Screenshot of a baloon toolbar editor.}
+
+To try it out, check the {@link examples/builds/balloon-toolbar-editor balloon toolbar editor example}.
 
 ## How builds are designed
 
