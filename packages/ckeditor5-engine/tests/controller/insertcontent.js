@@ -281,6 +281,17 @@ describe( 'DataController', () => {
 				expect( getData( doc ) ).to.equal( '<heading1>foxyz[]ar</heading1>' );
 			} );
 
+			it( 'not inserts autoparagraph when paragraph is disallowed at the current position', () => {
+				doc.schema.disallow( { name: 'paragraph', inside: '$root' } );
+				doc.schema.disallow( { name: 'heading2', inside: '$root' } );
+
+				const content = new Element( 'heading2', [], [ new Text( 'bar' ) ] );
+
+				setData( doc, '[<heading1>foo</heading1>]' );
+				insertContent( dataController, content, doc.selection );
+				expect( getData( doc ) ).to.equal( '[]' );
+			} );
+
 			describe( 'block to block handling', () => {
 				it( 'inserts one paragraph', () => {
 					setData( doc, '<paragraph>f[]oo</paragraph>' );
@@ -298,6 +309,12 @@ describe( 'DataController', () => {
 					setData( doc, '<paragraph>[]</paragraph>' );
 					insertHelper( '<paragraph>xyz</paragraph>' );
 					expect( getData( doc ) ).to.equal( '<paragraph>xyz[]</paragraph>' );
+				} );
+
+				it( 'inserts one empty paragraph', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( '<paragraph></paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
 				} );
 
 				it( 'inserts one block into a fully selected content', () => {
@@ -576,8 +593,9 @@ describe( 'DataController', () => {
 				const schema = doc.schema;
 
 				schema.registerItem( 'paragraph', '$block' );
+				schema.registerItem( 'heading1', '$block' );
+				schema.registerItem( 'element', '$block' );
 
-				// Let's use table as an example of content which needs to be filtered out.
 				schema.registerItem( 'table' );
 				schema.registerItem( 'td' );
 				schema.registerItem( 'disallowedWidget' );
@@ -585,12 +603,22 @@ describe( 'DataController', () => {
 				schema.allow( { name: 'table', inside: '$clipboardHolder' } );
 				schema.allow( { name: 'td', inside: '$clipboardHolder' } );
 				schema.allow( { name: 'td', inside: 'table' } );
+				schema.allow( { name: 'element', inside: 'td' } );
 				schema.allow( { name: '$block', inside: 'td' } );
 				schema.allow( { name: '$text', inside: 'td' } );
+				schema.allow( { name: 'table', inside: 'element' } );
 
 				schema.allow( { name: 'disallowedWidget', inside: '$clipboardHolder' } );
 				schema.allow( { name: '$text', inside: 'disallowedWidget' } );
 				schema.objects.add( 'disallowedWidget' );
+
+				schema.allow( { name: 'element', inside: 'paragraph' } );
+				schema.allow( { name: 'element', inside: 'heading1' } );
+				schema.allow( { name: '$text', attributes: 'b', inside: 'paragraph' } );
+				schema.allow( { name: '$text', attributes: [ 'b' ], inside: 'paragraph element' } );
+				schema.allow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'heading1 element' } );
+				schema.allow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'td element' } );
+				schema.allow( { name: '$text', attributes: [ 'b' ], inside: 'element table td' } );
 			} );
 
 			it( 'filters out disallowed elements and leaves out the text', () => {
@@ -609,6 +637,54 @@ describe( 'DataController', () => {
 				setData( doc, '<paragraph>f[]oo</paragraph>' );
 				insertHelper( '<disallowedWidget>xxx</disallowedWidget>' );
 				expect( getData( doc ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
+			} );
+
+			it( 'filters out disallowed attributes when inserting text', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( 'x<$text a="1" b="1">x</$text>xy<$text a="1">y</$text>y' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
+			} );
+
+			it( 'filters out disallowed attributes when inserting nested elements', () => {
+				setData( doc, '<element>[]</element>' );
+				insertHelper( '<table><td>f<$text a="1" b="1" c="1">o</$text>o</td></table>' );
+				expect( getData( doc ) ).to.equal( '<element><table><td>f<$text b="1">o</$text>o</td></table>[]</element>' );
+			} );
+
+			it( 'filters out disallowed attributes when inserting text in disallowed elements', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( '<table><td>x<$text a="1" b="1">x</$text>x</td><td>y<$text a="1">y</$text>y</td></table>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
+			} );
+
+			it( 'filters out disallowed attributes when merging #1', () => {
+				setData( doc, '<paragraph>[]foo</paragraph>' );
+				insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>x<$text b="1">x</$text>x[]foo</paragraph>' );
+			} );
+
+			it( 'filters out disallowed attributes when merging #2', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>x[]oo</paragraph>' );
+			} );
+
+			it( 'filters out disallowed attributes when merging #3', () => {
+				setData( doc, '<paragraph>foo[]</paragraph>' );
+				insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>foox<$text b="1">x</$text>x[]</paragraph>' );
+			} );
+
+			it( 'filters out disallowed attributes from nested nodes when merging', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( '<heading1>x<element>b<$text a="1" b="1">a</$text>r</element>x</heading1>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fx<element>b<$text b="1">a</$text>r</element>x[]oo</paragraph>' );
+			} );
+
+			it( 'filters out disallowed attributes when autoparagraphing', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( '<paragraph>xxx</paragraph><$text a="1" b="1">yyy</$text>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fxxx</paragraph><paragraph><$text b="1">yyy[]</$text>oo</paragraph>' );
 			} );
 		} );
 	} );

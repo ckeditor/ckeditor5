@@ -155,9 +155,9 @@ describe( 'DataController', () => {
 
 				schema.registerItem( 'paragraph', '$block' );
 				schema.registerItem( 'heading1', '$block' );
+				schema.registerItem( 'image', '$inline' );
 				schema.registerItem( 'pchild' );
 				schema.registerItem( 'pparent' );
-				schema.registerItem( 'image', '$inline' );
 
 				schema.allow( { name: 'pchild', inside: 'paragraph' } );
 				schema.allow( { name: '$text', inside: 'pchild' } );
@@ -186,12 +186,6 @@ describe( 'DataController', () => {
 				'<paragraph>x</paragraph><paragraph>fo[o</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
 				'<paragraph>x</paragraph><paragraph>fo[]</paragraph><paragraph>ar</paragraph><paragraph>y</paragraph>',
 				{ leaveUnmerged: true }
-			);
-
-			test(
-				'merges second element into the first one (same name)',
-				'<paragraph>x</paragraph><paragraph>fo[o</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
-				'<paragraph>x</paragraph><paragraph>fo[]ar</paragraph><paragraph>y</paragraph>'
 			);
 
 			test(
@@ -434,6 +428,51 @@ describe( 'DataController', () => {
 					'does not merge an object element (if it is second)',
 					'<paragraph>ba[r</paragraph><blockWidget><nestedEditable>f]oo</nestedEditable></blockWidget>',
 					'<paragraph>ba[]</paragraph><blockWidget><nestedEditable>oo</nestedEditable></blockWidget>'
+				);
+			} );
+
+			describe( 'filtering out', () => {
+				beforeEach( () => {
+					const schema = doc.schema;
+
+					schema.allow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'paragraph' } );
+					schema.allow( { name: '$text', attributes: [ 'b', 'c' ], inside: 'pchild' } );
+					schema.allow( { name: 'pchild', inside: 'pchild' } );
+					schema.disallow( { name: '$text', attributes: [ 'c' ], inside: 'pchild pchild' } );
+				} );
+
+				test(
+					'filters out disallowed attributes after left merge',
+					'<paragraph>x<pchild>fo[o</pchild></paragraph><paragraph>y]<$text a="1" b="1">z</$text></paragraph>',
+					'<paragraph>x<pchild>fo[]<$text b="1">z</$text></pchild></paragraph>'
+				);
+
+				test(
+					'filters out disallowed attributes from nested nodes after left merge',
+					'<paragraph>' +
+						'x' +
+						'<pchild>fo[o</pchild>' +
+					'</paragraph>' +
+					'<paragraph>' +
+						'b]a<$text a="1" b="1">r</$text>' +
+						'<pchild>b<$text b="1" c="1">i</$text>z</pchild>' +
+						'y' +
+					'</paragraph>',
+
+					'<paragraph>' +
+						'x' +
+						'<pchild>' +
+							'fo[]a<$text b="1">r</$text>' +
+							'<pchild>b<$text b="1">i</$text>z</pchild>' +
+							'y' +
+						'</pchild>' +
+					'</paragraph>'
+				);
+
+				test(
+					'filters out disallowed attributes after right merge',
+					'<paragraph>fo[o</paragraph><paragraph><pchild>x<$text b="1" c="1">y]z</$text></pchild></paragraph>',
+					'<paragraph>fo[]<$text b="1">z</$text></paragraph>'
 				);
 			} );
 		} );

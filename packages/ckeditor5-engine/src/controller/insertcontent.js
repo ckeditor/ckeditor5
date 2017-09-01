@@ -222,11 +222,17 @@ class Insertion {
 	 * @param {Object} context
 	 */
 	_handleDisallowedNode( node, context ) {
-		// Try inserting its children (strip the parent).
+		// If the node is an element, try inserting its children (strip the parent).
 		if ( node.is( 'element' ) ) {
 			this.handleNodes( node.getChildren(), context );
 		}
-		// Try autoparagraphing.
+		// If the node is a text and bare text is allowed in current position it means that the node
+		// contains disallowed attributes and we have to remove them.
+		else if ( this.schema.check( { name: '$text', inside: this.position } ) ) {
+			removeDisallowedAttributes( [ node ], this.position, this.schema );
+			this._handleNode( node, context );
+		}
+		// If text is not allowed, try autoparagraphing.
 		else {
 			this._tryAutoparagraphing( node, context );
 		}
@@ -237,7 +243,7 @@ class Insertion {
 	 */
 	_insert( node ) {
 		/* istanbul ignore if */
-		if ( !this._checkIsAllowed( node, [ this.position.parent ] ) ) {
+		if ( !this._checkIsAllowed( node, this.position ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 			// Note that it would often be a silent issue if we insert node in a place where it's not allowed.
 			log.error(
@@ -256,7 +262,7 @@ class Insertion {
 		livePos.detach();
 
 		// The last inserted object should be selected because we can't put a collapsed selection after it.
-		if ( this._checkIsObject( node ) && !this.schema.check( { name: '$text', inside: [ this.position.parent ] } ) ) {
+		if ( this._checkIsObject( node ) && !this.schema.check( { name: '$text', inside: this.position } ) ) {
 			this.nodeToSelect = node;
 		} else {
 			this.nodeToSelect = null;
@@ -282,6 +288,11 @@ class Insertion {
 
 			this.batch.merge( mergePosLeft );
 
+			// We need to check and strip disallowed attributes in all nested nodes because after merge
+			// some attributes could end up in a path where are disallowed.
+			const parent = position.nodeBefore;
+			removeDisallowedAttributes( parent.getChildren(), Position.createAt( parent ), this.schema, this.batch );
+
 			this.position = Position.createFromPosition( position );
 			position.detach();
 		}
@@ -305,12 +316,22 @@ class Insertion {
 
 			this.batch.merge( mergePosRight );
 
+			// We need to check and strip disallowed attributes in all nested nodes because after merge
+			// some attributes could end up in a place where are disallowed.
+			removeDisallowedAttributes( position.parent.getChildren(), position, this.schema, this.batch );
+
 			this.position = Position.createFromPosition( position );
 			position.detach();
 		}
 
 		mergePosLeft.detach();
 		mergePosRight.detach();
+
+		// When there was no merge we need to check and strip disallowed attributes in all nested nodes of
+		// just inserted node because some attributes could end up in a place where are disallowed.
+		if ( !mergeLeft && !mergeRight ) {
+			removeDisallowedAttributes( node.getChildren(), Position.createAt( node ), this.schema, this.batch );
+		}
 	}
 
 	/**
@@ -325,10 +346,17 @@ class Insertion {
 		// Do not autoparagraph if the paragraph won't be allowed there,
 		// cause that would lead to an infinite loop. The paragraph would be rejected in
 		// the next _handleNode() call and we'd be here again.
-		if ( this._getAllowedIn( paragraph, this.position.parent ) && this._checkIsAllowed( node, [ paragraph ] ) ) {
-			paragraph.appendChildren( node );
+		if ( this._getAllowedIn( paragraph, this.position.parent ) ) {
+			// When node is a text and is disallowed by schema it means that contains disallowed attributes
+			// and we need to remove them.
+			if ( node.is( 'text' ) && !this._checkIsAllowed( node, [ paragraph ] ) ) {
+				removeDisallowedAttributes( [ node ], [ paragraph ], this.schema );
+			}
 
-			this._handleNode( paragraph, context );
+			if ( this._checkIsAllowed( node, [ paragraph ] ) ) {
+				paragraph.appendChildren( node );
+				this._handleNode( paragraph, context );
+			}
 		}
 	}
 
@@ -402,31 +430,59 @@ class Insertion {
 	 */
 	_checkIsAllowed( node, path ) {
 		return this.schema.check( {
-			name: this._getNodeSchemaName( node ),
+			name: getNodeSchemaName( node ),
 			attributes: Array.from( node.getAttributeKeys() ),
 			inside: path
 		} );
 	}
 
 	/**
-	 * Checks wether according to the schema this is an object type element.
+	 * Checks whether according to the schema this is an object type element.
 	 *
 	 * @param {module:engine/model/node~Node} node The node to check.
 	 */
 	_checkIsObject( node ) {
-		return this.schema.objects.has( this._getNodeSchemaName( node ) );
+		return this.schema.objects.has( getNodeSchemaName( node ) );
 	}
+}
 
-	/**
-	 * Gets a name under which we should check this node in the schema.
-	 *
-	 * @param {module:engine/model/node~Node} node The node.
-	 */
-	_getNodeSchemaName( node ) {
-		if ( node.is( 'text' ) ) {
-			return '$text';
+// Gets a name under which we should check this node in the schema.
+//
+// @param {module:engine/model/node~Node} node The node.
+// @returns {String} Node name.
+function getNodeSchemaName( node ) {
+	return node.is( 'text' ) ? '$text' : node.name;
+}
+
+// Removes disallowed by schema attributes from given nodes. When batch parameter is provided then
+// attributes will be removed by creating AttributeDeltas otherwise attributes will be removed
+// directly from provided nodes.
+//
+// @param {Array<module:engine/model/node~Node>} nodes Nodes that will be filtered.
+// @param {module:engine/model/schema~SchemaPath} inside Path inside which schema will be checked.
+// @param {module:engine/model/schema~Schema} schema Schema instance uses for element validation.
+// @param {module:engine/model/batch~Batch} [batch] Batch to which the deltas will be added.
+function removeDisallowedAttributes( nodes, inside, schema, batch ) {
+	for ( const node of nodes ) {
+		const name = getNodeSchemaName( node );
+
+		// When node with attributes is not allowed in current position.
+		if ( !schema.check( { name, inside, attributes: Array.from( node.getAttributeKeys() ) } ) ) {
+			// Let's remove attributes one by one.
+			// This should be improved to check all combination of attributes.
+			for ( const attribute of node.getAttributeKeys() ) {
+				if ( !schema.check( { name, inside, attributes: attribute } ) ) {
+					if ( batch ) {
+						batch.removeAttribute( node, attribute );
+					} else {
+						node.removeAttribute( attribute );
+					}
+				}
+			}
 		}
 
-		return node.name;
+		if ( node.is( 'element' ) ) {
+			removeDisallowedAttributes( node.getChildren(), Position.createAt( node ), schema, batch );
+		}
 	}
 }
