@@ -8,7 +8,7 @@ category: features
 The {@link module:heading/heading~Heading} feature enables support for headings.
 
 <info-box info>
-	This feature is enabled by default in all builds. It is also included in the {@link module:presets/article~Article Article preset}.
+	This feature is enabled by default in all builds.
 </info-box>
 
 ## Heading levels
@@ -23,14 +23,14 @@ By default this feature is configured to support `<h2>`, `<h3>` and `<h4>` eleme
 
 It is, of course, possible to configure which heading levels the editor should support and how they should be named in the Headings dropdown. Use the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option to do so.
 
-The following editor will support only two levels of headings &mdash; `<h1>` and `<h2>`:
+For example, the following editor will support only two levels of headings &mdash; `<h1>` and `<h2>`:
 
 
 ```html
 <div id="editor">
 	<h1>Heading 1</h1>
 	<h2>Heading 2</h2>
-	<p>This is <a href="https://ckeditor5.github.io">CKEditor&nbsp;5</a>.</p>
+	<p>This is <a href="https://ckeditor5.github.io">CKEditor 5</a>.</p>
 </div>
 ```
 
@@ -51,9 +51,11 @@ ClassicEditor
 
 {@snippet features/custom-heading-levels}
 
-Read more about the `heading.options` format in {@link module:heading/heading~HeadingConfig#options the API documentation}.
-
 ## Installation
+
+<info-box info>
+	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
+</info-box>
 
 To add this feature to your editor install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:
 
@@ -74,8 +76,6 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
-
-If you are using an editor build, see how to {@linkTODO customize builds}.
 
 ## Common API
 
