@@ -455,23 +455,23 @@ function getNodeSchemaName( node ) {
 }
 
 // Removes disallowed by schema attributes from given nodes. When batch parameter is provided then
-// attributes will be removed by adding deltas with `removeAttributes` operation to this batch
-// otherwise attributes will be removed directly from provided nodes.
+// attributes will be removed by creating AttributeDeltas otherwise attributes will be removed
+// directly from provided nodes.
 //
-// @param {Array<module:engine/model/node~Node>} nodes
-// @param {module:engine/model/schema~SchemaPath} schemaPath
-// @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/model/batch~Batch} [batch]
-function removeDisallowedAttributes( nodes, schemaPath, schema, batch ) {
+// @param {Array<module:engine/model/node~Node>} nodes Nodes that will be filtered.
+// @param {module:engine/model/schema~SchemaPath} inside Path inside which schema will be checked.
+// @param {module:engine/model/schema~Schema} schema Schema instance uses for element validation.
+// @param {module:engine/model/batch~Batch} [batch] Batch to which the deltas will be added.
+function removeDisallowedAttributes( nodes, inside, schema, batch ) {
 	for ( const node of nodes ) {
 		const name = getNodeSchemaName( node );
 
 		// When node with attributes is not allowed in current position.
-		if ( !schema.check( { name, inside: schemaPath, attributes: Array.from( node.getAttributeKeys() ) } ) ) {
+		if ( !schema.check( { name, inside, attributes: Array.from( node.getAttributeKeys() ) } ) ) {
 			// Let's remove attributes one by one.
 			// This should be improved to check all combination of attributes.
 			for ( const attribute of node.getAttributeKeys() ) {
-				if ( !schema.check( { name, inside: schemaPath, attributes: attribute } ) ) {
+				if ( !schema.check( { name, inside, attributes: attribute } ) ) {
 					if ( batch ) {
 						batch.removeAttribute( node, attribute );
 					} else {

@@ -226,23 +226,23 @@ function getNodeSchemaName( node ) {
 	return node.is( 'text' ) ? '$text' : node.name;
 }
 
-// Adds deltas with `removeAttributes` operation for disallowed by schema attributes on given nodes and its children.
+// Creates AttributeDeltas that removes attributes that are disallowed by schema on given node and its children.
 //
-// @param {module:engine/model/node~Node|Array<module:engine/model/node~Node>} nodes
-// @param {module:engine/model/schema~SchemaPath} schemaPath
-// @param {module:engine/model/batch~Batch} batch
-function removeDisallowedAttributes( nodes, schemaPath, batch ) {
+// @param {Array<module:engine/model/node~Node>} nodes Nodes that will be filtered.
+// @param {module:engine/model/schema~SchemaPath} inside Path inside which schema will be checked.
+// @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
+function removeDisallowedAttributes( nodes, inside, batch ) {
 	const schema = batch.document.schema;
 
 	for ( const node of nodes ) {
 		const name = getNodeSchemaName( node );
 
 		// When node with attributes is not allowed in current position.
-		if ( !schema.check( { name, inside: schemaPath, attributes: Array.from( node.getAttributeKeys() ) } ) ) {
+		if ( !schema.check( { name, inside, attributes: Array.from( node.getAttributeKeys() ) } ) ) {
 			// Let's remove attributes one by one.
 			// This should be improved to check all combination of attributes.
 			for ( const attribute of node.getAttributeKeys() ) {
-				if ( !schema.check( { name, attributes: attribute, inside: schemaPath } ) ) {
+				if ( !schema.check( { name, inside, attributes: attribute } ) ) {
 					batch.removeAttribute( node, attribute );
 				}
 			}
