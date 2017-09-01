@@ -291,7 +291,7 @@ class Insertion {
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
 			// some attributes could end up in a path where are disallowed.
 			const parent = position.nodeBefore;
-			removeDisallowedAttributes( Array.from( parent.getChildren() ), Position.createAt( parent ), this.schema, this.batch );
+			removeDisallowedAttributes( parent.getChildren(), Position.createAt( parent ), this.schema, this.batch );
 
 			this.position = Position.createFromPosition( position );
 			position.detach();
@@ -318,7 +318,7 @@ class Insertion {
 
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
 			// some attributes could end up in a place where are disallowed.
-			removeDisallowedAttributes( Array.from( position.parent.getChildren() ), position, this.schema, this.batch );
+			removeDisallowedAttributes( position.parent.getChildren(), position, this.schema, this.batch );
 
 			this.position = Position.createFromPosition( position );
 			position.detach();
@@ -330,7 +330,7 @@ class Insertion {
 		// When there was no merge we need to check and strip disallowed attributes in all nested nodes of
 		// just inserted node because some attributes could end up in a place where are disallowed.
 		if ( !mergeLeft && !mergeRight ) {
-			removeDisallowedAttributes( Array.from( node.getChildren() ), Position.createAt( node ), this.schema, this.batch );
+			removeDisallowedAttributes( node.getChildren(), Position.createAt( node ), this.schema, this.batch );
 		}
 	}
 
@@ -482,7 +482,7 @@ function removeDisallowedAttributes( nodes, schemaPath, schema, batch ) {
 		}
 
 		if ( node.is( 'element' ) ) {
-			removeDisallowedAttributes( Array.from( node.getChildren() ), Position.createAt( node ), schema, batch );
+			removeDisallowedAttributes( node.getChildren(), Position.createAt( node ), schema, batch );
 		}
 	}
 }

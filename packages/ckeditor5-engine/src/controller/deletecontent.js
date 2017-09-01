@@ -74,7 +74,7 @@ export default function deleteContent( selection, batch, options = {} ) {
 		//
 		// e.g. bold is disallowed for <H1>
 		// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
-		removeDisallowedAttributes( Array.from( startPos.parent.getChildren() ), startPos, batch );
+		removeDisallowedAttributes( startPos.parent.getChildren(), startPos, batch );
 	}
 
 	selection.setCollapsedAt( startPos );
@@ -249,7 +249,7 @@ function removeDisallowedAttributes( nodes, schemaPath, batch ) {
 		}
 
 		if ( node.is( 'element' ) ) {
-			removeDisallowedAttributes( Array.from( node.getChildren() ), Position.createAt( node ), batch );
+			removeDisallowedAttributes( node.getChildren(), Position.createAt( node ), batch );
 		}
 	}
 }
