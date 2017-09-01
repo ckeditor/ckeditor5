@@ -5,11 +5,11 @@
 
 /* globals console, window, document */
 
-/* config { "sassImportPath": "./theme-lark-vars.scss" } */
+/* config { "sassImportPath": "./custom.scss" } */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
-import './theme-lark.scss';
+import './extras.scss';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {
