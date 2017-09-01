@@ -176,6 +176,10 @@ export function convertSelectionMarker( highlightDescriptor ) {
 			return;
 		}
 
+		if ( !descriptor.id ) {
+			descriptor.id = data.markerName;
+		}
+
 		const viewElement = createViewElementFromHighlightDescriptor( descriptor );
 		const consumableName = 'selectionMarker:' + data.markerName;
 
