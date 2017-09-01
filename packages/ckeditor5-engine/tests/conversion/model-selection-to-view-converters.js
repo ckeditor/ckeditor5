@@ -36,10 +36,8 @@ import {
 import { stringify as stringifyView } from '../../src/dev-utils/view';
 import { setData as setModelData } from '../../src/dev-utils/model';
 
-const highlightDescriptor = { class: 'marker', priority: 1 };
-
 describe( 'model-selection-to-view-converters', () => {
-	let dispatcher, mapper, modelDoc, modelRoot, modelSelection, viewDoc, viewRoot, viewSelection;
+	let dispatcher, mapper, modelDoc, modelRoot, modelSelection, viewDoc, viewRoot, viewSelection, highlightDescriptor;
 
 	beforeEach( () => {
 		modelDoc = new ModelDocument();
@@ -54,6 +52,8 @@ describe( 'model-selection-to-view-converters', () => {
 
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
+
+		highlightDescriptor = { class: 'marker', priority: 1 };
 
 		dispatcher = new ModelConversionDispatcher( modelDoc, { mapper, viewSelection } );
 
@@ -291,6 +291,30 @@ describe( 'model-selection-to-view-converters', () => {
 				// Stringify view and check if it is same as expected.
 				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
 					.to.equal( '<div>foo<span class="marker2">[]</span>bar</div>' );
+			} );
+
+			it( 'in marker - should merge with the rest of attribute elements', () => {
+				dispatcher.on( 'addMarker:marker2', highlightText( data => ( { 'class': data.markerName } ) ) );
+				dispatcher.on( 'selectionMarker:marker2', convertSelectionMarker( data => ( { 'class': data.markerName } ) ) );
+
+				setModelData( modelDoc, 'foobar' );
+				const marker = modelDoc.markers.set( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+
+				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
+
+				// Remove view children manually (without firing additional conversion).
+				viewRoot.removeChildren( 0, viewRoot.childCount );
+
+				// Convert model to view.
+				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
+
+				const markers = Array.from( modelDoc.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
+				dispatcher.convertSelection( modelSelection, markers );
+
+				// Stringify view and check if it is same as expected.
+				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+					.to.equal( '<div>f<span class="marker2">oo{}ba</span>r</div>' );
 			} );
 
 			it( 'should do nothing if creator return null', () => {

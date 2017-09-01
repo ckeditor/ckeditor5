@@ -6,7 +6,7 @@
 import ViewElement from '../view/element';
 import ViewRange from '../view/range';
 import viewWriter from '../view/writer';
-import { highlightDescriptorToAttributeElement } from './model-to-view-converters';
+import { createViewElementFromHighlightDescriptor } from './model-to-view-converters';
 
 /**
  * Contains {@link module:engine/model/selection~Selection model selection} to
@@ -162,7 +162,7 @@ export function convertSelectionAttribute( elementCreator ) {
  *		modelDispatcher.on( 'selectionMarker:searchResult', convertSelectionMarker( { class: 'search' } ) );
  *
  * @see module:engine/conversion/model-selection-to-view-converters~convertSelectionAttribute
- * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor|Function} highlightDescriptor Highlight
+ * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor|Function} highlightDescriptor Highlight
  * descriptor object or function returning a descriptor object.
  * @returns {Function} Selection converter.
  */
@@ -176,7 +176,11 @@ export function convertSelectionMarker( highlightDescriptor ) {
 			return;
 		}
 
-		const viewElement = highlightDescriptorToAttributeElement( descriptor );
+		if ( !descriptor.id ) {
+			descriptor.id = data.markerName;
+		}
+
+		const viewElement = createViewElementFromHighlightDescriptor( descriptor );
 		const consumableName = 'selectionMarker:' + data.markerName;
 
 		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
