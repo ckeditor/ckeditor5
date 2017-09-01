@@ -12,6 +12,7 @@ import buildModelConverter from '../../src/conversion/buildmodelconverter';
 
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelText from '../../src/model/text';
+import ModelRange from '../../src/model/range';
 import ModelSelection from '../../src/model/selection';
 
 import ViewDocumentFragment from '../../src/view/documentfragment';
@@ -437,6 +438,89 @@ describe( 'DataController', () => {
 			const content = data.getSelectedContent( modelDocument.selection );
 
 			expect( stringify( content ) ).to.equal( 'ob' );
+		} );
+	} );
+
+	describe( 'hasContent', () => {
+		let root;
+
+		beforeEach( () => {
+			schema.registerItem( 'paragraph', '$block' );
+			schema.registerItem( 'div', '$block' );
+			schema.allow( { name: '$block', inside: 'div' } );
+			schema.registerItem( 'image' );
+			schema.allow( { name: 'image', inside: 'div' } );
+			schema.objects.add( 'image' );
+
+			setData(
+				modelDocument,
+
+				'<div>' +
+					'<paragraph></paragraph>' +
+				'</div>' +
+				'<paragraph>foo</paragraph>' +
+				'<div>' +
+					'<image></image>' +
+				'</div>'
+			);
+
+			root = modelDocument.getRoot();
+		} );
+
+		it( 'should return true if given element has text node', () => {
+			const pFoo = root.getChild( 1 );
+
+			expect( data.hasContent( pFoo ) ).to.be.true;
+		} );
+
+		it( 'should return true if given element has element that is an object', () => {
+			const divImg = root.getChild( 2 );
+
+			expect( data.hasContent( divImg ) ).to.be.true;
+		} );
+
+		it( 'should return false if given element has no elements', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
+
+			expect( data.hasContent( pEmpty ) ).to.be.false;
+		} );
+
+		it( 'should return false if given element has only elements that are not objects', () => {
+			const divP = root.getChild( 0 );
+
+			expect( data.hasContent( divP ) ).to.be.false;
+		} );
+
+		it( 'should return true if there is a text node in given range', () => {
+			const range = ModelRange.createFromParentsAndOffsets( root, 1, root, 2 );
+
+			expect( data.hasContent( range ) ).to.be.true;
+		} );
+
+		it( 'should return true if there is a part of text node in given range', () => {
+			const pFoo = root.getChild( 1 );
+			const range = ModelRange.createFromParentsAndOffsets( pFoo, 1, pFoo, 2 );
+
+			expect( data.hasContent( range ) ).to.be.true;
+		} );
+
+		it( 'should return true if there is element that is an object in given range', () => {
+			const divImg = root.getChild( 2 );
+			const range = ModelRange.createFromParentsAndOffsets( divImg, 0, divImg, 1 );
+
+			expect( data.hasContent( range ) ).to.be.true;
+		} );
+
+		it( 'should return false if range is collapsed', () => {
+			const range = ModelRange.createFromParentsAndOffsets( root, 1, root, 1 );
+
+			expect( data.hasContent( range ) ).to.be.false;
+		} );
+
+		it( 'should return false if range has only elements that are not objects', () => {
+			const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 1 );
+
+			expect( data.hasContent( range ) ).to.be.false;
 		} );
 	} );
 } );
