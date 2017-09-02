@@ -69,7 +69,7 @@ And add it to your plugin list and toolbar configuration:
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 
 ClassicEditor
-	.create( {
+	.create( document.querySelector( '#editor' ), {
 		plugins: [ Heading, ... ],
 		toolbar: [ 'headings', ... ]
 	} )
