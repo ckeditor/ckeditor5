@@ -1,0 +1,5 @@
+# These files will be ignored by Git and by our linting tools:
+#	gulp lint
+#	gulp lint-staged
+
+node_modules/
