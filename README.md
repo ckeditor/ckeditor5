@@ -174,7 +174,7 @@ Read more in the [Support](https://github.com/ckeditor/ckeditor5/wiki/Support) w
 
 <tr>
 	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-editor-inline"><code>@ckeditor/ckeditor5-editor-balloon-toolbar</code></a>
+		<a href="https://github.com/ckeditor/ckeditor5-editor-balloon-toolbar"><code>@ckeditor/ckeditor5-editor-balloon-toolbar</code></a>
 		<br>
 		The editor with balloon toolbar (Medium-like) implementation.
 	</td>
