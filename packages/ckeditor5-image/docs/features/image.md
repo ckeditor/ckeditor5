@@ -51,7 +51,7 @@ The image toolbar is configured to contain the image text alternative button:
 
 ```js
 ClassicEditor
-	.create( {
+	.create( document.querySelector( '#editor' ), {
 		image: {
 			toolbar: [ 'imageTextAlternative' ]
 		}
@@ -119,7 +119,7 @@ import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg'
 import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
 
 ClassicEditor
-	.create( {
+	.create( document.querySelector( '#editor' ), {
 		image: {
 			styles: [
 				// This option is equal to a situation where no style is applied.
@@ -206,7 +206,7 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 
 ClassicEditor
-	.create( {
+	.create( document.querySelector( '#editor' ), {
 		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle ],
 		image: {
 			toolbar: [ 'imageTextAlternative', '|', 'imageStyleFull', 'imageStyleSide' ]
