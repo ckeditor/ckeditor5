@@ -8,7 +8,7 @@ CKEditor 5 balloon toolbar editor creator
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-balloon-toolbar/status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-balloon-toolbar)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-balloon-toolbar/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-balloon-toolbar?type=dev)
 
-Balloon Toolbar Editor for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-editor-balloon-toolbar>.
+The editor with a balloon toolbar (Medium-like) implementation. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-editor-balloon-toolbar>.
 
 ## License
 
