@@ -6,7 +6,7 @@ CKEditor 5 editor with a balloon toolbar build
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-build-balloon-toolbar/status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-balloon-toolbar)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-build-balloon-toolbar/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-balloon-toolbar?type=dev)
 
-The editor with a balloon toolbar build. Read more in the [classic editor](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/overview.html#Classic-editor) and see the [demo](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/builds/classic-editor.html).
+The editor with a balloon toolbar build. Read more in the [editor with a balloon toolbar](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/overview.html#Editor-with-balloon-toolbar) and see the [demo](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/builds/balloon-toolbar-editor.html).
 
 ## Documentation
 
