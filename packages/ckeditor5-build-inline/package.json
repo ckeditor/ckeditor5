@@ -1,0 +1,52 @@
+{
+  "name": "@ckeditor/ckeditor5-build-inline",
+  "version": "0.0.1",
+  "description": "CKEditor 5 inline editor build.",
+  "keywords": [
+    "ckeditor5-build",
+    "text editor",
+    "WYSIWYG",
+    "rich-text editor"
+  ],
+  "main": "./build/ckeditor.js",
+  "dependencies": {
+    "@ckeditor/ckeditor5-editor-inline": "*",
+    "@ckeditor/ckeditor5-presets": "^0.2.2",
+    "@ckeditor/ckeditor5-autoformat": "^0.5.1",
+    "@ckeditor/ckeditor5-basic-styles": "^0.8.1",
+    "@ckeditor/ckeditor5-block-quote": "^0.1.1",
+    "@ckeditor/ckeditor5-heading": "^0.9.1",
+    "@ckeditor/ckeditor5-image": "^0.6.0",
+    "@ckeditor/ckeditor5-link": "^0.7.0",
+    "@ckeditor/ckeditor5-list": "^0.6.1",
+    "@ckeditor/ckeditor5-paragraph": "^0.8.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-dev-utils": "^3.0.0",
+    "@ckeditor/ckeditor5-dev-webpack-plugin": "^2.0.11",
+    "babel-minify-webpack-plugin": "^0.2.0",
+    "css-loader": "^0.28.5",
+    "node-sass": "^4.5.3",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.5.5"
+  },
+  "engines": {
+    "node": ">=6.0.0",
+    "npm": ">=3.0.0"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
+  "homepage": "https://ckeditor5.github.io",
+  "bugs": "https://github.com/ckeditor/ckeditor5-build-inline/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5-build-inline.git"
+  },
+  "scripts": {
+    "build": "npm run create-entry-file && npm run build-ckeditor",
+    "create-entry-file": "./bin/create-entry-file.js",
+    "build-ckeditor": "./bin/build-ckeditor.sh"
+  }
+}
