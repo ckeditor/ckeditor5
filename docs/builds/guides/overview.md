@@ -91,7 +91,7 @@ The following are **some** common use cases:
 	* Social messaging and content sharing.
 	* Creation of ads in recruitment software.
 
-### When NOT to use CKEditor 5 Builds?
+### When NOT to use CKEditor 5 builds?
 
 The {@link framework/index CKEditor 5 Framework} should be used, instead of builds, in the following cases:
 
