@@ -15,13 +15,13 @@ Changelog
 * `Editor#destroy()` will destroy all loaded plugins. Closes [#86](https://github.com/ckeditor/ckeditor5-core/issues/86). ([77e5217](https://github.com/ckeditor/ckeditor5-core/commit/77e5217))
 
   Added default implementation for `Plugin#destroy()`. Introduced `PluginCollection#destroy()` method which calls `Plugin#destroy()` for every loaded plugin.
-* `PluginCollection` will warning if the user wants to load two or more plugins with the same name. Closes [#85](https://github.com/ckeditor/ckeditor5-core/issues/85). ([e00a282](https://github.com/ckeditor/ckeditor5-core/commit/e00a282))
+* `PluginCollection` will warn if the user wants to load two or more plugins with the same name. Closes [#85](https://github.com/ckeditor/ckeditor5-core/issues/85). ([e00a282](https://github.com/ckeditor/ckeditor5-core/commit/e00a282))
 * Introduced `Editor#isReadOnly` property which disables all commands and prevents from modifying the document. Closes [#96](https://github.com/ckeditor/ckeditor5-core/issues/96). Closes https://github.com/ckeditor/ckeditor5/issues/492. ([1ca5608](https://github.com/ckeditor/ckeditor5-core/commit/1ca5608))
 
 ### Other changes
 
-* Bound EditingController#isReadOnly to the editor. Closes [#98](https://github.com/ckeditor/ckeditor5-core/issues/98). ([ec02906](https://github.com/ckeditor/ckeditor5-core/commit/ec02906))
-* Cleaning up svg icons. ([ffac7e7](https://github.com/ckeditor/ckeditor5-core/commit/ffac7e7))
+* Bound `EditingController#isReadOnly` to the editor. Closes [#98](https://github.com/ckeditor/ckeditor5-core/issues/98). ([ec02906](https://github.com/ckeditor/ckeditor5-core/commit/ec02906))
+* Cleaned up SVG icons. ([ffac7e7](https://github.com/ckeditor/ckeditor5-core/commit/ffac7e7))
 * Introduced `PluginInterface`. A plugin doesn't need to inherit directly from the `Plugin` class, as long as it implements some minimal interface. See [#78](https://github.com/ckeditor/ckeditor5-core/issues/78). ([f476f34](https://github.com/ckeditor/ckeditor5-core/commit/f476f34))
 * Removed `ToggleAttributeCommand` class as well as other helpers from the `core/command` namespace. Closes [#14](https://github.com/ckeditor/ckeditor5-core/issues/14). ([7c68581](https://github.com/ckeditor/ckeditor5-core/commit/7c68581))
 * The command API has been redesigned. The `Command` methods are now public and consistent. Commands can be used in a standalone mode (without the editor). The `CommandCollection` was introduced and replaced the `Map` of commands used in `editor.commands`. Closes [#88](https://github.com/ckeditor/ckeditor5-core/issues/88). ([b76983b](https://github.com/ckeditor/ckeditor5-core/commit/b76983b))
