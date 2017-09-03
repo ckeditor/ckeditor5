@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [0.7.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v0.6.0...v0.7.0) (2017-09-03)
+
+### Bug fixes
+
+* Whitespaces around inline elements will not be lost upon pasting. Closes [#24](https://github.com/ckeditor/ckeditor5-clipboard/issues/24). ([5888743](https://github.com/ckeditor/ckeditor5-clipboard/commit/5888743))
+
+### Features
+
+* Added 'dragover' event to ClipboardObserver. ([00c7567](https://github.com/ckeditor/ckeditor5-clipboard/commit/00c7567))
+* Added dropRange to the drop event and targetRanges to the clipboardInput event. Closes [#29](https://github.com/ckeditor/ckeditor5-clipboard/issues/29). ([86daed9](https://github.com/ckeditor/ckeditor5-clipboard/commit/86daed9))
+* Disable pasting and cutting when an editor is read-only. Closes [#26](https://github.com/ckeditor/ckeditor5-clipboard/issues/26). ([0ba74d5](https://github.com/ckeditor/ckeditor5-clipboard/commit/0ba74d5))
+
+
 ## [0.6.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v0.5.0...v0.6.0) (2017-05-07)
 
 ### Bug fixes
