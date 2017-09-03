@@ -1,6 +1,29 @@
 Changelog
 =========
 
+## [0.7.0](https://github.com/ckeditor/ckeditor5-list/compare/v0.6.1...v0.7.0) (2017-09-03)
+
+### Bug fixes
+
+* `ListCommand` should check whether it can be applied to the selection. Closes [#62](https://github.com/ckeditor/ckeditor5-list/issues/62). ([12b77ae](https://github.com/ckeditor/ckeditor5-list/commit/12b77ae))
+* `view.UIElement` will no longer be incorrectly removed instead of `<li>` element if it was before `<li>` element to remove. Closes [#74](https://github.com/ckeditor/ckeditor5-list/issues/74). ([aa7855c](https://github.com/ckeditor/ckeditor5-list/commit/aa7855c))
+* Fixed a bug when editor sometimes crashed when list item was moved outside and before a container in which it was. Closes [#78](https://github.com/ckeditor/ckeditor5-list/issues/78). ([3d8814e](https://github.com/ckeditor/ckeditor5-list/commit/3d8814e))
+* List model fixer will not be triggered if a change-to-fix is in a `transparent` batch. ([0779f35](https://github.com/ckeditor/ckeditor5-list/commit/0779f35))
+
+### Features
+
+* List feature should use `EditingKeystrokeHandler` instead of direct event listeners. Closes [#76](https://github.com/ckeditor/ckeditor5-list/issues/76). ([aaf362c](https://github.com/ckeditor/ckeditor5-list/commit/aaf362c))
+
+### Other changes
+
+* Aligned the implementation to the new Command API (see https://github.com/ckeditor/ckeditor5-core/issues/88). ([9a7d596](https://github.com/ckeditor/ckeditor5-list/commit/9a7d596))
+* Cleaning up svg icons. ([2d423db](https://github.com/ckeditor/ckeditor5-list/commit/2d423db))
+
+### BREAKING CHANGES
+
+* The command API has been changed.
+
+
 ## [0.6.1](https://github.com/ckeditor/ckeditor5-list/compare/v0.6.0...v0.6.1) (2017-05-07)
 
 ### Bug fixes
