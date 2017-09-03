@@ -5,11 +5,12 @@ Changelog
 
 ### Bug fixes
 
-* The Autoformat should not require other features. Closes [#5](https://github.com/ckeditor/ckeditor5-autoformat/issues/5) [#17](https://github.com/ckeditor/ckeditor5-autoformat/issues/17). ([d22c5b6](https://github.com/ckeditor/ckeditor5-autoformat/commit/d22c5b6))
+* The `Autoformat` plugin should not require other features. Closes [#5](https://github.com/ckeditor/ckeditor5-autoformat/issues/5) and [#17](https://github.com/ckeditor/ckeditor5-autoformat/issues/17). ([d22c5b6](https://github.com/ckeditor/ckeditor5-autoformat/commit/d22c5b6))
+* Autoformatting will not be triggered if the batch with changes is `transparent` (e.g. it represents other user's changes). ([f1131bc](https://github.com/ckeditor/ckeditor5-autoformat/commit/f1131bc))
 
 ### Features
 
-* Block quote support. Closes [#26](https://github.com/ckeditor/ckeditor5-autoformat/issues/26). ([4c1e83e](https://github.com/ckeditor/ckeditor5-autoformat/commit/4c1e83e))
+* Added support for block quotes. Closes [#26](https://github.com/ckeditor/ckeditor5-autoformat/issues/26). ([4c1e83e](https://github.com/ckeditor/ckeditor5-autoformat/commit/4c1e83e))
 
 ### Other changes
 
