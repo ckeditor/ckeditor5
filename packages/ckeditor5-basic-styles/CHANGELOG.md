@@ -5,17 +5,17 @@ Changelog
 
 ### Bug fixes
 
-* It will be possible to paste basic styles. See https://github.com/ckeditor/ckeditor5/issues/477. ([d2db7fe](https://github.com/ckeditor/ckeditor5-basic-styles/commit/d2db7fe))
+* It should be possible to paste basic styles. See https://github.com/ckeditor/ckeditor5/issues/477. ([d2db7fe](https://github.com/ckeditor/ckeditor5-basic-styles/commit/d2db7fe))
 
 ### Features
 
-* Introduced `AttributeCommand`. It was moved from `[@ckeditor](https://github.com/ckeditor)/ckeditor5-core/src/command/toggleattributecommand`. Closes [#47](https://github.com/ckeditor/ckeditor5-basic-styles/issues/47). ([0301d4a](https://github.com/ckeditor/ckeditor5-basic-styles/commit/0301d4a))
+* Introduced `AttributeCommand`. It was moved from `@ckeditor/ckeditor5-core/src/command/toggleattributecommand`. Closes [#47](https://github.com/ckeditor/ckeditor5-basic-styles/issues/47). ([0301d4a](https://github.com/ckeditor/ckeditor5-basic-styles/commit/0301d4a))
 * Introduced the `Underline` plugin. Closes [#51](https://github.com/ckeditor/ckeditor5-basic-styles/issues/51). ([f724ae0](https://github.com/ckeditor/ckeditor5-basic-styles/commit/f724ae0))
 
 ### Other changes
 
 * Aligned the implementation to the new Command API (see https://github.com/ckeditor/ckeditor5-core/issues/88). ([36a976e](https://github.com/ckeditor/ckeditor5-basic-styles/commit/36a976e))
-* Cleaning up svg icons. ([da10131](https://github.com/ckeditor/ckeditor5-basic-styles/commit/da10131))
+* Cleaned up SVG icons. ([da10131](https://github.com/ckeditor/ckeditor5-basic-styles/commit/da10131))
 * Italic feature will use `<i>` instead of `<em>`. Closes [#28](https://github.com/ckeditor/ckeditor5-basic-styles/issues/28). ([9d1d5e2](https://github.com/ckeditor/ckeditor5-basic-styles/commit/9d1d5e2))
 
   Read more in [Editor Recommendations](http://ckeditor.github.io/editor-recommendations/features/italic.html).
