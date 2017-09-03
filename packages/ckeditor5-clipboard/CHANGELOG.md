@@ -9,9 +9,10 @@ Changelog
 
 ### Features
 
-* Added 'dragover' event to ClipboardObserver. ([00c7567](https://github.com/ckeditor/ckeditor5-clipboard/commit/00c7567))
-* Added dropRange to the drop event and targetRanges to the clipboardInput event. Closes [#29](https://github.com/ckeditor/ckeditor5-clipboard/issues/29). ([86daed9](https://github.com/ckeditor/ckeditor5-clipboard/commit/86daed9))
-* Disable pasting and cutting when an editor is read-only. Closes [#26](https://github.com/ckeditor/ckeditor5-clipboard/issues/26). ([0ba74d5](https://github.com/ckeditor/ckeditor5-clipboard/commit/0ba74d5))
+* Added the `'dragover'` event to ClipboardObserver. ([00c7567](https://github.com/ckeditor/ckeditor5-clipboard/commit/00c7567))
+* Added `dropRange` to the `drop` event and `targetRanges` to the `clipboardInput` event. Closes [#29](https://github.com/ckeditor/ckeditor5-clipboard/issues/29). ([86daed9](https://github.com/ckeditor/ckeditor5-clipboard/commit/86daed9))
+* Disable pasting and cutting when the editor is read-only. Closes [#26](https://github.com/ckeditor/ckeditor5-clipboard/issues/26). ([0ba74d5](https://github.com/ckeditor/ckeditor5-clipboard/commit/0ba74d5))
+* The viewport will be scrolled to the selection on paste. See ckeditor/ckeditor5-engine#660. ([9a0e20f](https://github.com/ckeditor/ckeditor5-clipboard/commit/9a0e20f))
 
 
 ## [0.6.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v0.5.0...v0.6.0) (2017-05-07)
