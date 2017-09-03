@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [0.3.0](https://github.com/ckeditor/ckeditor5-presets/compare/v0.2.2...v0.3.0) (2017-09-03)
+
+### Features
+
+* Added the autoformat feature to the article preset. ([cb65328](https://github.com/ckeditor/ckeditor5-presets/commit/cb65328))
+
+
 ## [0.2.2](https://github.com/ckeditor/ckeditor5-presets/compare/v0.2.1...v0.2.2) (2017-05-07)
 
 Internal changes only (updated dependencies, documentation, etc.).
