@@ -1,6 +1,26 @@
 Changelog
 =========
 
+## [0.10.0](https://github.com/ckeditor/ckeditor5-typing/compare/v0.9.1...v0.10.0) (2017-09-03)
+
+### Bug fixes
+
+* Fixed a range of issues when typing or using a spellchecker on styled words leads to errors. Closes [#100](https://github.com/ckeditor/ckeditor5-typing/issues/100). Closes ckeditor/ckeditor5[#491](https://github.com/ckeditor/ckeditor5-typing/issues/491). ([c30dbf8](https://github.com/ckeditor/ckeditor5-typing/commit/c30dbf8))
+* Prevent from modifying document by `Input` feature when `InputCommand` is disabled. Closes [#107](https://github.com/ckeditor/ckeditor5-typing/issues/107). ([f935d66](https://github.com/ckeditor/ckeditor5-typing/commit/f935d66))
+
+### Features
+
+* Pressing <kbd>Backspace</kbd> or <kbd>Delete</kbd> in an empty content will reset the current block to a paragraph. Closes [#61](https://github.com/ckeditor/ckeditor5-typing/issues/61). ([bb07bc6](https://github.com/ckeditor/ckeditor5-typing/commit/bb07bc6))
+
+### Other changes
+
+* Aligned the implementation to the new Command API (see https://github.com/ckeditor/ckeditor5-core/issues/88). ([b241ac6](https://github.com/ckeditor/ckeditor5-typing/commit/b241ac6))
+
+### BREAKING CHANGES
+
+* The command API has been changed.
+
+
 ## [0.9.1](https://github.com/ckeditor/ckeditor5-typing/compare/v0.9.0...v0.9.1) (2017-05-07)
 
 Internal changes only (updated dependencies, documentation, etc.).
