@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-build-balloon-toolbar",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "CKEditor 5 editor with a balloon toolbar build.",
   "keywords": [
     "ckeditor5-build",
