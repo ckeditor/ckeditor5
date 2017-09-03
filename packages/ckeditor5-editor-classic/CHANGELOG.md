@@ -13,7 +13,7 @@ Changelog
 
 ### Other changes
 
-* Renamed the ClassicEditor file to "classiceditor.js" to match the naming convention. Closes [#41](https://github.com/ckeditor/ckeditor5-editor-classic/issues/41). ([c5714ba](https://github.com/ckeditor/ckeditor5-editor-classic/commit/c5714ba))
+* Renamed the `classic.js` file to `classiceditor.js` to match the naming convention. Closes [#41](https://github.com/ckeditor/ckeditor5-editor-classic/issues/41). ([c5714ba](https://github.com/ckeditor/ckeditor5-editor-classic/commit/c5714ba))
 
 ### BREAKING CHANGES
 
