@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [0.4.4](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v0.4.3...v0.4.4) (2017-09-03)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [0.4.3](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v0.4.2...v0.4.3) (2017-05-07)
 
 Internal changes only (updated dependencies, documentation, etc.).
