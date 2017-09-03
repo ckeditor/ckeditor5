@@ -9,6 +9,8 @@ Changelog
 * `view.UIElement` will no longer be incorrectly removed instead of `<li>` element if it was before `<li>` element to remove. Closes [#74](https://github.com/ckeditor/ckeditor5-list/issues/74). ([aa7855c](https://github.com/ckeditor/ckeditor5-list/commit/aa7855c))
 * Fixed a bug when editor sometimes crashed when list item was moved outside and before a container in which it was. Closes [#78](https://github.com/ckeditor/ckeditor5-list/issues/78). ([3d8814e](https://github.com/ckeditor/ckeditor5-list/commit/3d8814e))
 * List model fixer will not be triggered if a change-to-fix is in a `transparent` batch. ([0779f35](https://github.com/ckeditor/ckeditor5-list/commit/0779f35))
+* `<ul>` and `<ol>` view elements will now be inserted after view UI elements. Closes [#71](https://github.com/ckeditor/ckeditor5-list/issues/71). ([0e85b2f](https://github.com/ckeditor/ckeditor5-list/commit/0e85b2f))
+* The `ListEngine` plugin will not crash editor when using `DataController#insertContent()` with model items (it worked with data fragments only). Closes [#69](https://github.com/ckeditor/ckeditor5-list/issues/69). ([e0216a8](https://github.com/ckeditor/ckeditor5-list/commit/e0216a8))
 
 ### Features
 
