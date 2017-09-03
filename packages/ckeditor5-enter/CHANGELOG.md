@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [0.10.0](https://github.com/ckeditor/ckeditor5-enter/compare/v0.9.1...v0.10.0) (2017-09-03)
+
+### Other changes
+
+* Aligned the implementation to the new Command API (see https://github.com/ckeditor/ckeditor5-core/issues/88). ([d75b448](https://github.com/ckeditor/ckeditor5-enter/commit/d75b448))
+
+### BREAKING CHANGES
+
+* The command API has been changed.
+
+
 ## [0.9.1](https://github.com/ckeditor/ckeditor5-enter/compare/v0.9.0...v0.9.1) (2017-05-07)
 
 Internal changes only (updated dependencies, documentation, etc.).
