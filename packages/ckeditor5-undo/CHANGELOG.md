@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [0.9.0](https://github.com/ckeditor/ckeditor5-undo/compare/v0.8.1...v0.9.0) (2017-09-03)
+
+### Other changes
+
+* Aligned the implementation to the new Command API (see https://github.com/ckeditor/ckeditor5-core/issues/88). ([a94dd46](https://github.com/ckeditor/ckeditor5-undo/commit/a94dd46))
+* Cleaning up svg icons. ([9cb1923](https://github.com/ckeditor/ckeditor5-undo/commit/9cb1923))
+
+### BREAKING CHANGES
+
+* The command API has been changed.
+
+
 ## [0.8.1](https://github.com/ckeditor/ckeditor5-undo/compare/v0.8.0...v0.8.1) (2017-05-07)
 
 ### Other changes
