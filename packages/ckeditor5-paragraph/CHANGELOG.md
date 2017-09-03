@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## [0.9.0](https://github.com/ckeditor/ckeditor5-paragraph/compare/v0.8.0...v0.9.0) (2017-09-03)
+
+### Bug fixes
+
+* `ParagraphCommand` should check whether it can be applied to the selection. Closes [#24](https://github.com/ckeditor/ckeditor5-paragraph/issues/24). ([07b37af](https://github.com/ckeditor/ckeditor5-paragraph/commit/07b37af))
+* Autoparagraphing empty roots will not be triggered if the change-to-fix was in a `transparent` batch. Closes [#26](https://github.com/ckeditor/ckeditor5-paragraph/issues/26). ([a171de3](https://github.com/ckeditor/ckeditor5-paragraph/commit/a171de3))
+
+### Other changes
+
+* Aligned the implementation to the new Command API (see https://github.com/ckeditor/ckeditor5-core/issues/88). ([c2a1559](https://github.com/ckeditor/ckeditor5-paragraph/commit/c2a1559))
+
+### BREAKING CHANGES
+
+* The command API has been changed.
+
+
 ## [0.8.0](https://github.com/ckeditor/ckeditor5-paragraph/compare/v0.7.0...v0.8.0) (2017-05-07)
 
 ### Bug fixes
