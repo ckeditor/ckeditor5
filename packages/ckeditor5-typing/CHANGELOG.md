@@ -11,6 +11,7 @@ Changelog
 ### Features
 
 * Pressing <kbd>Backspace</kbd> or <kbd>Delete</kbd> in an empty content will reset the current block to a paragraph. Closes [#61](https://github.com/ckeditor/ckeditor5-typing/issues/61). ([bb07bc6](https://github.com/ckeditor/ckeditor5-typing/commit/bb07bc6))
+* The viewport will be scrolled to the selection upon user input. See ckeditor/ckeditor5-engine#660. ([2cdf02f](https://github.com/ckeditor/ckeditor5-typing/commit/2cdf02f))
 
 ### Other changes
 
