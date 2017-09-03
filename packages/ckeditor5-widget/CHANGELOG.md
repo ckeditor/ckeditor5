@@ -9,13 +9,12 @@ Changelog
 
 ### Features
 
-* Ctrl+A in a nested editable should select nested editable's content. Closes [#13](https://github.com/ckeditor/ckeditor5-widget/issues/13). ([35a8aff](https://github.com/ckeditor/ckeditor5-widget/commit/35a8aff))
-* Virtual selection support for widgets. Closes [#11](https://github.com/ckeditor/ckeditor5-widget/issues/11). ([0bd3d66](https://github.com/ckeditor/ckeditor5-widget/commit/0bd3d66))
+* <kbd>Ctrl</kbd>+<kbd>A</kbd> in a nested editable should select nested editable's content. Closes [#13](https://github.com/ckeditor/ckeditor5-widget/issues/13). ([35a8aff](https://github.com/ckeditor/ckeditor5-widget/commit/35a8aff))
 
 ### Other changes
 
 * Adjusted widget to the editor read-only mode. Closes [#7](https://github.com/ckeditor/ckeditor5-widget/issues/7). ([2726873](https://github.com/ckeditor/ckeditor5-widget/commit/2726873))
-* HighlightDescriptor can contain an array of CSS classes. Closes [#1092](https://github.com/ckeditor/ckeditor5-widget/issues/1092). ([6982e42](https://github.com/ckeditor/ckeditor5-widget/commit/6982e42))
+* Introduced highlights support for widgets. Closes [#11](https://github.com/ckeditor/ckeditor5-widget/issues/11). ([0bd3d66](https://github.com/ckeditor/ckeditor5-widget/commit/0bd3d66))
 
 
 ## [0.1.1](https://github.com/ckeditor/ckeditor5-widget/compare/v0.1.0...v0.1.1) (2017-05-07)
