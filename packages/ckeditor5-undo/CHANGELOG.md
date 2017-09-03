@@ -6,7 +6,7 @@ Changelog
 ### Other changes
 
 * Aligned the implementation to the new Command API (see https://github.com/ckeditor/ckeditor5-core/issues/88). ([a94dd46](https://github.com/ckeditor/ckeditor5-undo/commit/a94dd46))
-* Cleaning up svg icons. ([9cb1923](https://github.com/ckeditor/ckeditor5-undo/commit/9cb1923))
+* Cleaned up SVG icons. ([9cb1923](https://github.com/ckeditor/ckeditor5-undo/commit/9cb1923))
 
 ### BREAKING CHANGES
 
