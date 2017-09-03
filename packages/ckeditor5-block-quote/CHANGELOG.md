@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [0.2.0](https://github.com/ckeditor/ckeditor5-block-quote/compare/v0.1.1...v0.2.0) (2017-09-03)
+
+### Other changes
+
+* Aligned the implementation to the new Command API (see https://github.com/ckeditor/ckeditor5-core/issues/88). ([627510a](https://github.com/ckeditor/ckeditor5-block-quote/commit/627510a))
+
+### BREAKING CHANGES
+
+* The command API has been changed.
+
+
 ## [0.1.1](https://github.com/ckeditor/ckeditor5-block-quote/compare/v0.1.0...v0.1.1) (2017-05-07)
 
 ### Bug fixes
