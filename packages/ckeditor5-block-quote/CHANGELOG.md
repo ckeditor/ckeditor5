@@ -3,6 +3,10 @@ Changelog
 
 ## [0.2.0](https://github.com/ckeditor/ckeditor5-block-quote/compare/v0.1.1...v0.2.0) (2017-09-03)
 
+### Features
+
+* <kbd>Enter</kbd> in the block quote will scroll the viewport to the selection. See ckeditor/ckeditor5-engine#660. ([09dc740](https://github.com/ckeditor/ckeditor5-block-quote/commit/09dc740))
+
 ### Other changes
 
 * Aligned the implementation to the new Command API (see https://github.com/ckeditor/ckeditor5-core/issues/88). ([627510a](https://github.com/ckeditor/ckeditor5-block-quote/commit/627510a))
