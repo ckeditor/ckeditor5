@@ -1,6 +1,28 @@
 Changelog
 =========
 
+## [0.10.0](https://github.com/ckeditor/ckeditor5-heading/compare/v0.9.1...v0.10.0) (2017-09-03)
+
+### Bug fixes
+
+* It should not be possible to apply a heading to an image. Closes [#73](https://github.com/ckeditor/ckeditor5-heading/issues/73). ([02f66a0](https://github.com/ckeditor/ckeditor5-heading/commit/02f66a0))
+
+### Other changes
+
+* Aligned the implementation to the new Command API (see https://github.com/ckeditor/ckeditor5-core/issues/88). ([63b6c1c](https://github.com/ckeditor/ckeditor5-heading/commit/63b6c1c))
+* Heading dropdown items should never revert the state, apply only. Closes [#83](https://github.com/ckeditor/ckeditor5-heading/issues/83). ([3f25a21](https://github.com/ckeditor/ckeditor5-heading/commit/3f25a21))
+* Removed `HeadingCommand`'s properties which were exposed unnecessarily. Closes [#78](https://github.com/ckeditor/ckeditor5-heading/issues/78). ([c80e691](https://github.com/ckeditor/ckeditor5-heading/commit/c80e691))
+
+### BREAKING CHANGES
+
+* The command API has been changed.
+* The `HeadingCommand` constructor's second parameter was changed from the options object to the `modelElement` alone.
+
+### NOTE
+
+* The `HeadingOption` interface was moved to the `heading/heading` module.
+
+
 ## [0.9.1](https://github.com/ckeditor/ckeditor5-heading/compare/v0.9.0...v0.9.1) (2017-05-07)
 
 ### Other changes
