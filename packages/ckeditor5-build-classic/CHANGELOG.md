@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [0.3.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v0.2.0...v0.3.0) (2017-09-03)
+
+### Features
+
+* Support for building the editor in another language than `en`. Closes [#11](https://github.com/ckeditor/ckeditor5-build-classic/issues/11). ([f4233a5](https://github.com/ckeditor/ckeditor5-build-classic/commit/f4233a5))
+
+### Other changes
+
+* Removed the compat-type of build. Closes [#20](https://github.com/ckeditor/ckeditor5-build-classic/issues/20). ([529a319](https://github.com/ckeditor/ckeditor5-build-classic/commit/529a319))
+
+
 ## [0.2.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v0.1.1...v0.2.0) (2017-05-07)
 
 ### Bug fixes
