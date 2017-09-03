@@ -3,6 +3,10 @@ Changelog
 
 ## [0.10.0](https://github.com/ckeditor/ckeditor5-enter/compare/v0.9.1...v0.10.0) (2017-09-03)
 
+### Features
+
+* The viewport will be scrolled to the selection when <kbd>Enter</kbd> is pressed. See ckeditor/ckeditor5-engine#660. ([17f815e](https://github.com/ckeditor/ckeditor5-enter/commit/17f815e))
+
 ### Other changes
 
 * Aligned the implementation to the new Command API (see https://github.com/ckeditor/ckeditor5-core/issues/88). ([d75b448](https://github.com/ckeditor/ckeditor5-enter/commit/d75b448))
