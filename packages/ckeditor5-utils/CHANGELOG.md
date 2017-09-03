@@ -5,18 +5,18 @@ Changelog
 
 ### Bug fixes
 
-* `FocusTracker` should remain in sync when multiple 'blur' events are followed by the 'focus'. Closes [#159](https://github.com/ckeditor/ckeditor5-utils/issues/159). ([0ff1b34](https://github.com/ckeditor/ckeditor5-utils/commit/0ff1b34))
+* `FocusTracker` should remain in sync when multiple `blur` events are followed by the `focus` event. Closes [#159](https://github.com/ckeditor/ckeditor5-utils/issues/159). ([0ff1b34](https://github.com/ckeditor/ckeditor5-utils/commit/0ff1b34))
 
 ### Features
 
 * `KeystrokeHandler` should support priorities and proper keystroke cancelling. Closes [#180](https://github.com/ckeditor/ckeditor5-utils/issues/180). ([14af24c](https://github.com/ckeditor/ckeditor5-utils/commit/14af24c))
 * Added support for `'space'` key code in the `parseKeystroke()` helper. Closes [#169](https://github.com/ckeditor/ckeditor5-utils/issues/169). ([f86b1ad](https://github.com/ckeditor/ckeditor5-utils/commit/f86b1ad))
 * Introduced `ObservableMixin#decorate()` and support for setting `EmitterMixin#fire()`'s return value by listeners. Closes [#162](https://github.com/ckeditor/ckeditor5-utils/issues/162). ([377c875](https://github.com/ckeditor/ckeditor5-utils/commit/377c875))
-* Introduced a static `Rect#getDomRangeRects` method for external usage. Closes [#168](https://github.com/ckeditor/ckeditor5-utils/issues/168). ([f67aea1](https://github.com/ckeditor/ckeditor5-utils/commit/f67aea1))
+* Introduced a static `Rect.getDomRangeRects()` method for external usage. Closes [#168](https://github.com/ckeditor/ckeditor5-utils/issues/168). ([f67aea1](https://github.com/ckeditor/ckeditor5-utils/commit/f67aea1))
 
 ### Other changes
 
-* `getOptimalPosition` utility should accept the target option defined as a function. Closes [#157](https://github.com/ckeditor/ckeditor5-utils/issues/157). ([d63abae](https://github.com/ckeditor/ckeditor5-utils/commit/d63abae))
+* The `getOptimalPosition()` utility should accept the target option defined as a function. Closes [#157](https://github.com/ckeditor/ckeditor5-utils/issues/157). ([d63abae](https://github.com/ckeditor/ckeditor5-utils/commit/d63abae))
 
 
 ## [0.9.1](https://github.com/ckeditor/ckeditor5-utils/compare/v0.9.0...v0.9.1) (2017-05-07)
