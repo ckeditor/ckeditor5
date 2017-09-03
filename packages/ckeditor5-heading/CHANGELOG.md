@@ -16,7 +16,7 @@ Changelog
 ### BREAKING CHANGES
 
 * The command API has been changed.
-* The `HeadingCommand` constructor's second parameter was changed from the options object to the `modelElement` alone.
+* The `HeadingCommand` constructor's second parameter was changed from the `options` object to the `modelElement` alone.
 
 ### NOTE
 
