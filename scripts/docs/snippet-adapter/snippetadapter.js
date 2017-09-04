@@ -16,6 +16,10 @@ const BabelMinifyPlugin = require( 'babel-minify-webpack-plugin' );
 const webpackProcesses = new Map();
 
 module.exports = function snippetAdapter( data ) {
+	if ( !data.snippetSource.js ) {
+		throw new Error( `Missing snippet source for "${ data.snippetPath }".` );
+	}
+
 	const snippetConfig = readSnippetConfig( data.snippetSource.js );
 	const outputPath = path.join( data.outputPath, data.snippetPath );
 
