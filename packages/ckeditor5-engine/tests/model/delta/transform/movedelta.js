@@ -15,6 +15,7 @@ import MoveDelta from '../../../../src/model/delta/movedelta';
 import SplitDelta from '../../../../src/model/delta/splitdelta';
 
 import MoveOperation from '../../../../src/model/operation/moveoperation';
+import NoOperation from '../../../../src/model/operation/nooperation';
 
 import { getNodesAndText } from '../../../../tests/model/_utils/utils';
 
@@ -154,6 +155,32 @@ describe( 'transform', () => {
 							sourcePosition: new Position( root, [ 3, 2, 2 ] ),
 							howMany: 1,
 							targetPosition: new Position( root, [ 3, 2, 5 ] ),
+							baseVersion
+						}
+					]
+				} );
+			} );
+
+			it( 'node on the right side of merge was moved - second merge operation is NoOperation', () => {
+				// If second MergeDelta operation is NoOperation default algorithm should be used.
+				const mergePosition = new Position( root, [ 3, 3, 3 ] );
+				const mergeDelta = getMergeDelta( mergePosition, 4, 12, baseVersion );
+				mergeDelta.operations[ 1 ] = new NoOperation( 1 );
+
+				const transformed = transform( moveDelta, mergeDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = mergeDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: MoveDelta,
+					operations: [
+						{
+							type: MoveOperation,
+							sourcePosition: moveDelta._moveOperation.sourcePosition,
+							howMany: moveDelta._moveOperation.howMany,
+							targetPosition: moveDelta._moveOperation.targetPosition,
 							baseVersion
 						}
 					]

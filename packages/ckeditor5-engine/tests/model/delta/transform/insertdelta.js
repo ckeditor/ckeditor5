@@ -18,6 +18,7 @@ import SplitDelta from '../../../../src/model/delta/splitdelta';
 import InsertOperation from '../../../../src/model/operation/insertoperation';
 import MoveOperation from '../../../../src/model/operation/moveoperation';
 import ReinsertOperation from '../../../../src/model/operation/reinsertoperation';
+import NoOperation from '../../../../src/model/operation/nooperation';
 
 import { getNodesAndText } from '../../../../tests/model/_utils/utils';
 
@@ -137,6 +138,30 @@ describe( 'transform', () => {
 				const mergeDelta = getMergeDelta( insertPosition, 4, 12, baseVersion );
 
 				context.bWasUndone = true;
+				const transformed = transform( insertDelta, mergeDelta, context );
+
+				baseVersion = mergeDelta.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: InsertDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: Position.createFromPosition( insertPosition ),
+							nodes: [ nodeA, nodeB ],
+							baseVersion
+						}
+					]
+				} );
+			} );
+
+			it( 'merge in same position as insert - undo mode', () => {
+				// If MergeDelta second operation is NoOperation, default transformation algorithm should be used.
+				const mergeDelta = getMergeDelta( insertPosition, 4, 12, baseVersion );
+				mergeDelta.operations[ 1 ] = new NoOperation( 1 );
+
 				const transformed = transform( insertDelta, mergeDelta, context );
 
 				baseVersion = mergeDelta.operations.length;
