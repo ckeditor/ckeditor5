@@ -147,6 +147,10 @@
 			"prefix": "image"
 		},
 		{
+			"path": "packages/ckeditor5-markdown-gfm",
+			"prefix": "markdown-gfm"
+		},
+		{
 			"path": "packages/ckeditor5-theme-lark",
 			"prefix": "theme-lark"
 		}

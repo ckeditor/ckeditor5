@@ -16,21 +16,33 @@ CKEditor 5 Builds are a set of ready to use rich-text editors. Every "build" pro
 
 ### Classic editor
 
-The classic "boxed" editing interface, with a toolbar at the top:
+Classic editor is what most users traditionally learnt to associate with a rich text editor — a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
 
-[ TODO: Classic editor screenshot or sample ]
+In CKEditor 5 the concept of the "boxed" editor was reinvented:
+
+ * The toolbar is now always visible when user scrolls the page down.
+ * The editor content is now placed inline in the page (without surrounding `<iframe>` element) — it is now much easier to style it.
+ * The editor now grows automatically with the content by default.
+
+{@img assets/img/editor-classic.png 772 Screenshot of a classic editor.}
+
+To try it out, check the {@link examples/builds/classic-editor classic editor example}.
 
 ### Inline editor
 
 The edited content remains a part of the page, with a floating toolbar attached:
 
-[ TODO: Inline editor screenshot ]
+{@img assets/img/editor-inline.png 774 Screenshot of an inline editor.}
+
+To try it out, check the {@link examples/builds/inline-editor inline editor example}.
 
 ### Editor with balloon toolbar
 
 The edited content remains a part of the page (like in the inline editor). The toolbar appears in a balloon next to the selection (when the selection is not empty):
 
-[ TODO: Ballon toolbar editor screenshot ]
+{@img assets/img/editor-balloon-toolbar.png 779 Screenshot of a baloon toolbar editor.}
+
+To try it out, check the {@link examples/builds/balloon-toolbar-editor balloon toolbar editor example}.
 
 ## How builds are designed
 
@@ -41,7 +53,7 @@ Each build was designed to satisfy as many use cases as possible. They differ in
 * Provide setups as generic as possible, based on research and community feedback.
 
 <info-box>
-Features like fonts, colors and alignment will be introduced in the future, when the new types of builds will be introduced with the purpose of satisfying document editing scenarios.  
+	Features like fonts, colors and alignment will be introduced in the future, when the new types of builds will be introduced with the purpose of satisfying document editing scenarios.
 </info-box>
 
 ### Build customization
@@ -49,9 +61,9 @@ Features like fonts, colors and alignment will be introduced in the future, when
 Every build comes with a default set of features and a default configuration of them. Although the builds try to fit many cases, they may still need to be adjusted in some integrations. The following modifications are possible:
 
  * You can override the default **configuration of features** (e.g. define different image styles or heading levels).
- * You can change the default **toolbar configuration** (e.g. remove undo/redo buttons). 
+ * You can change the default **toolbar configuration** (e.g. remove undo/redo buttons).
  * You can also **remove features** (plugins).
- 
+
 Read more in the {@link builds/guides/integration/configuration Configuration guide}.
 
 If a build doesn't provide all the necessary features or you want create a highly optimized build of editor which will contain only the necessary features, then you need to customize the build or create a brand new one. Check {@link builds/guides/development/custom-builds Custom builds} for details on how to change the default builds to match your preferences.
@@ -79,7 +91,7 @@ The following are **some** common use cases:
 	* Social messaging and content sharing.
 	* Creation of ads in recruitment software.
 
-### When NOT to use CKEditor 5 Builds?
+### When NOT to use CKEditor 5 builds?
 
 The {@link framework/index CKEditor 5 Framework} should be used, instead of builds, in the following cases:
 
