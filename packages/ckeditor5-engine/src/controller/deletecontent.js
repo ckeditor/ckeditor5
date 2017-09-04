@@ -74,7 +74,7 @@ export default function deleteContent( selection, batch, options = {} ) {
 		//
 		// e.g. bold is disallowed for <H1>
 		// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
-		removeDisallowedAttributes( startPos.parent.getChildren(), startPos, batch );
+		batch.document.schema.removeDisallowedAttributes( startPos.parent.getChildren(), startPos, batch );
 	}
 
 	selection.setCollapsedAt( startPos );
@@ -216,40 +216,4 @@ function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
 	}
 
 	return schema.check( { name: 'paragraph', inside: limitElement.name } );
-}
-
-// Gets a name under which we should check this node in the schema.
-//
-// @param {module:engine/model/node~Node} node The node.
-// @returns {String} node name.
-function getNodeSchemaName( node ) {
-	return node.is( 'text' ) ? '$text' : node.name;
-}
-
-// Creates AttributeDeltas that removes attributes that are disallowed by schema on given node and its children.
-//
-// @param {Array<module:engine/model/node~Node>} nodes Nodes that will be filtered.
-// @param {module:engine/model/schema~SchemaPath} inside Path inside which schema will be checked.
-// @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
-function removeDisallowedAttributes( nodes, inside, batch ) {
-	const schema = batch.document.schema;
-
-	for ( const node of nodes ) {
-		const name = getNodeSchemaName( node );
-
-		// When node with attributes is not allowed in current position.
-		if ( !schema.check( { name, inside, attributes: Array.from( node.getAttributeKeys() ) } ) ) {
-			// Let's remove attributes one by one.
-			// This should be improved to check all combination of attributes.
-			for ( const attribute of node.getAttributeKeys() ) {
-				if ( !schema.check( { name, inside, attributes: attribute } ) ) {
-					batch.removeAttribute( node, attribute );
-				}
-			}
-		}
-
-		if ( node.is( 'element' ) ) {
-			removeDisallowedAttributes( node.getChildren(), Position.createAt( node ), batch );
-		}
-	}
 }

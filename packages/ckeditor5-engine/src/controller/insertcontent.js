@@ -229,7 +229,7 @@ class Insertion {
 		// If the node is a text and bare text is allowed in current position it means that the node
 		// contains disallowed attributes and we have to remove them.
 		else if ( this.schema.check( { name: '$text', inside: this.position } ) ) {
-			removeDisallowedAttributes( [ node ], this.position, this.schema );
+			this.schema.removeDisallowedAttributes( [ node ], this.position );
 			this._handleNode( node, context );
 		}
 		// If text is not allowed, try autoparagraphing.
@@ -291,7 +291,7 @@ class Insertion {
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
 			// some attributes could end up in a path where are disallowed.
 			const parent = position.nodeBefore;
-			removeDisallowedAttributes( parent.getChildren(), Position.createAt( parent ), this.schema, this.batch );
+			this.schema.removeDisallowedAttributes( parent.getChildren(), Position.createAt( parent ), this.batch );
 
 			this.position = Position.createFromPosition( position );
 			position.detach();
@@ -318,7 +318,7 @@ class Insertion {
 
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
 			// some attributes could end up in a place where are disallowed.
-			removeDisallowedAttributes( position.parent.getChildren(), position, this.schema, this.batch );
+			this.schema.removeDisallowedAttributes( position.parent.getChildren(), position, this.batch );
 
 			this.position = Position.createFromPosition( position );
 			position.detach();
@@ -330,7 +330,7 @@ class Insertion {
 		// When there was no merge we need to check and strip disallowed attributes in all nested nodes of
 		// just inserted node because some attributes could end up in a place where are disallowed.
 		if ( !mergeLeft && !mergeRight ) {
-			removeDisallowedAttributes( node.getChildren(), Position.createAt( node ), this.schema, this.batch );
+			this.schema.removeDisallowedAttributes( node.getChildren(), Position.createAt( node ), this.batch );
 		}
 	}
 
@@ -350,7 +350,7 @@ class Insertion {
 			// When node is a text and is disallowed by schema it means that contains disallowed attributes
 			// and we need to remove them.
 			if ( node.is( 'text' ) && !this._checkIsAllowed( node, [ paragraph ] ) ) {
-				removeDisallowedAttributes( [ node ], [ paragraph ], this.schema );
+				this.schema.removeDisallowedAttributes( [ node ], [ paragraph ] );
 			}
 
 			if ( this._checkIsAllowed( node, [ paragraph ] ) ) {
@@ -452,37 +452,4 @@ class Insertion {
 // @returns {String} Node name.
 function getNodeSchemaName( node ) {
 	return node.is( 'text' ) ? '$text' : node.name;
-}
-
-// Removes disallowed by schema attributes from given nodes. When batch parameter is provided then
-// attributes will be removed by creating AttributeDeltas otherwise attributes will be removed
-// directly from provided nodes.
-//
-// @param {Array<module:engine/model/node~Node>} nodes Nodes that will be filtered.
-// @param {module:engine/model/schema~SchemaPath} inside Path inside which schema will be checked.
-// @param {module:engine/model/schema~Schema} schema Schema instance uses for element validation.
-// @param {module:engine/model/batch~Batch} [batch] Batch to which the deltas will be added.
-function removeDisallowedAttributes( nodes, inside, schema, batch ) {
-	for ( const node of nodes ) {
-		const name = getNodeSchemaName( node );
-
-		// When node with attributes is not allowed in current position.
-		if ( !schema.check( { name, inside, attributes: Array.from( node.getAttributeKeys() ) } ) ) {
-			// Let's remove attributes one by one.
-			// This should be improved to check all combination of attributes.
-			for ( const attribute of node.getAttributeKeys() ) {
-				if ( !schema.check( { name, inside, attributes: attribute } ) ) {
-					if ( batch ) {
-						batch.removeAttribute( node, attribute );
-					} else {
-						node.removeAttribute( attribute );
-					}
-				}
-			}
-		}
-
-		if ( node.is( 'element' ) ) {
-			removeDisallowedAttributes( node.getChildren(), Position.createAt( node ), schema, batch );
-		}
-	}
 }
