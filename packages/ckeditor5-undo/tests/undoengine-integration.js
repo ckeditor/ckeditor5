@@ -69,7 +69,9 @@ describe( 'UndoEngine integration', () => {
 		it( 'add and undo', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			doc.enqueueChanges( () => {
+				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			} );
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
 			editor.execute( 'undo' );
@@ -81,13 +83,19 @@ describe( 'UndoEngine integration', () => {
 		it( 'multiple adding and undo', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch()
-				.insert( doc.selection.getFirstPosition(), 'zzz' )
-				.insert( new Position( root, [ 1, 0 ] ), 'xxx' );
+			doc.enqueueChanges( () => {
+				doc.batch()
+					.insert( doc.selection.getFirstPosition(), 'zzz' )
+					.insert( new Position( root, [ 1, 0 ] ), 'xxx' );
+			} );
+
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>xxxbar</paragraph>' );
 
-			setSelection( [ 1, 0 ], [ 1, 0 ] );
-			doc.batch().insert( doc.selection.getFirstPosition(), 'yyy' );
+			doc.enqueueChanges( () => {
+				setSelection( [ 1, 0 ], [ 1, 0 ] );
+				doc.batch().insert( doc.selection.getFirstPosition(), 'yyy' );
+			} );
+
 			output( '<paragraph>fozzzo</paragraph><paragraph>yyy[]xxxbar</paragraph>' );
 
 			editor.execute( 'undo' );
@@ -102,18 +110,25 @@ describe( 'UndoEngine integration', () => {
 		it( 'multiple adding mixed with undo', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			doc.enqueueChanges( () => {
+				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			} );
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
-			setSelection( [ 1, 0 ], [ 1, 0 ] );
-			doc.batch().insert( doc.selection.getFirstPosition(), 'yyy' );
+			doc.enqueueChanges( () => {
+				setSelection( [ 1, 0 ], [ 1, 0 ] );
+				doc.batch().insert( doc.selection.getFirstPosition(), 'yyy' );
+			} );
+
 			output( '<paragraph>fozzzo</paragraph><paragraph>yyy[]bar</paragraph>' );
 
 			editor.execute( 'undo' );
 			output( '<paragraph>fozzzo</paragraph><paragraph>[]bar</paragraph>' );
 
-			setSelection( [ 0, 0 ], [ 0, 0 ] );
-			doc.batch().insert( doc.selection.getFirstPosition(), 'xxx' );
+			doc.enqueueChanges( () => {
+				setSelection( [ 0, 0 ], [ 0, 0 ] );
+				doc.batch().insert( doc.selection.getFirstPosition(), 'xxx' );
+			} );
 			output( '<paragraph>xxx[]fozzzo</paragraph><paragraph>bar</paragraph>' );
 
 			editor.execute( 'undo' );
@@ -128,11 +143,15 @@ describe( 'UndoEngine integration', () => {
 		it( 'multiple remove and undo', () => {
 			input( '<paragraph>[]foo</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
+			doc.enqueueChanges( () => {
+				doc.batch().remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
+			} );
 			output( '<paragraph>[]o</paragraph><paragraph>bar</paragraph>' );
 
-			setSelection( [ 1, 1 ], [ 1, 1 ] );
-			doc.batch().remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
+			doc.enqueueChanges( () => {
+				setSelection( [ 1, 1 ], [ 1, 1 ] );
+				doc.batch().remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
+			} );
 			output( '<paragraph>o</paragraph><paragraph>b[]</paragraph>' );
 
 			editor.execute( 'undo' );
@@ -149,11 +168,15 @@ describe( 'UndoEngine integration', () => {
 		it( 'add and remove different parts and undo', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			doc.enqueueChanges( () => {
+				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			} );
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
-			setSelection( [ 1, 2 ], [ 1, 2 ] );
-			doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 1, 1 ] ), 1 ) );
+			doc.enqueueChanges( () => {
+				setSelection( [ 1, 2 ], [ 1, 2 ] );
+				doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 1, 1 ] ), 1 ) );
+			} );
 			output( '<paragraph>fozzzo</paragraph><paragraph>b[]r</paragraph>' );
 
 			editor.execute( 'undo' );
@@ -168,10 +191,14 @@ describe( 'UndoEngine integration', () => {
 		it( 'add and remove same part and undo', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			doc.enqueueChanges( () => {
+				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			} );
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 0, 2 ] ), 3 ) );
+			doc.enqueueChanges( () => {
+				doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 0, 2 ] ), 3 ) );
+			} );
 			output( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
 			editor.execute( 'undo' );
@@ -188,10 +215,14 @@ describe( 'UndoEngine integration', () => {
 		it( 'move same content twice then undo', () => {
 			input( '<paragraph>f[o]z</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
+			doc.enqueueChanges( () => {
+				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
+			} );
 			output( '<paragraph>fz</paragraph><paragraph>[o]bar</paragraph>' );
 
-			doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0, 2 ] ) );
+			doc.enqueueChanges( () => {
+				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0, 2 ] ) );
+			} );
 			output( '<paragraph>fz[o]</paragraph><paragraph>bar</paragraph>' );
 
 			editor.execute( 'undo' );
@@ -206,11 +237,15 @@ describe( 'UndoEngine integration', () => {
 		it( 'move content and new parent then undo', () => {
 			input( '<paragraph>f[o]z</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
+			doc.enqueueChanges( () => {
+				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
+			} );
 			output( '<paragraph>fz</paragraph><paragraph>[o]bar</paragraph>' );
 
-			setSelection( [ 1 ], [ 2 ] );
-			doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
+			doc.enqueueChanges( () => {
+				setSelection( [ 1 ], [ 2 ] );
+				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
+			} );
 			output( '[<paragraph>obar</paragraph>]<paragraph>fz</paragraph>' );
 
 			editor.execute( 'undo' );
@@ -227,11 +262,15 @@ describe( 'UndoEngine integration', () => {
 		it( 'attributes then insert inside then undo', () => {
 			input( '<paragraph>fo[ob]ar</paragraph>' );
 
-			doc.batch().setAttribute( doc.selection.getFirstRange(), 'bold', true );
+			doc.enqueueChanges( () => {
+				doc.batch().setAttribute( doc.selection.getFirstRange(), 'bold', true );
+			} );
 			output( '<paragraph>fo[<$text bold="true">ob</$text>]ar</paragraph>' );
 
-			setSelection( [ 0, 3 ], [ 0, 3 ] );
-			doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			doc.enqueueChanges( () => {
+				setSelection( [ 0, 3 ], [ 0, 3 ] );
+				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			} );
 			output( '<paragraph>fo<$text bold="true">o</$text>zzz<$text bold="true">[]b</$text>ar</paragraph>' );
 			expect( doc.selection.getAttribute( 'bold' ) ).to.true;
 
@@ -251,7 +290,9 @@ describe( 'UndoEngine integration', () => {
 			doc.schema.allow( { name: '$text', inside: '$root' } );
 			input( 'fo[zb]ar' );
 
-			doc.batch().wrap( doc.selection.getFirstRange(), 'paragraph' );
+			doc.enqueueChanges( () => {
+				doc.batch().wrap( doc.selection.getFirstRange(), 'paragraph' );
+			} );
 			output( 'fo<paragraph>[zb]</paragraph>ar' );
 
 			editor.execute( 'undo' );
@@ -264,12 +305,16 @@ describe( 'UndoEngine integration', () => {
 			doc.schema.allow( { name: '$text', inside: '$root' } );
 			input( 'fo[zb]ar' );
 
-			doc.batch().wrap( doc.selection.getFirstRange(), 'paragraph' );
+			doc.enqueueChanges( () => {
+				doc.batch().wrap( doc.selection.getFirstRange(), 'paragraph' );
+			} );
 			// Would be better if selection was inside P.
 			output( 'fo<paragraph>[zb]</paragraph>ar' );
 
-			setSelection( [ 2, 0 ], [ 2, 1 ] );
-			doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
+			doc.enqueueChanges( () => {
+				setSelection( [ 2, 0 ], [ 2, 1 ] );
+				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
+			} );
 			output( '[z]fo<paragraph>b</paragraph>ar' );
 
 			editor.execute( 'undo' );
@@ -284,7 +329,9 @@ describe( 'UndoEngine integration', () => {
 		it( 'unwrap and undo', () => {
 			input( '<paragraph>foo[]bar</paragraph>' );
 
-			doc.batch().unwrap( doc.selection.getFirstPosition().parent );
+			doc.enqueueChanges( () => {
+				doc.batch().unwrap( doc.selection.getFirstPosition().parent );
+			} );
 			output( 'foo[]bar' );
 
 			editor.execute( 'undo' );
@@ -296,9 +343,11 @@ describe( 'UndoEngine integration', () => {
 		it( 'merge and undo', () => {
 			input( '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
 
-			doc.batch().merge( new Position( root, [ 1 ] ) );
-			// Because selection is stuck with <paragraph> it ends up in graveyard. We have to manually move it to correct node.
-			setSelection( [ 0, 3 ], [ 0, 3 ] );
+			doc.enqueueChanges( () => {
+				doc.batch().merge( new Position( root, [ 1 ] ) );
+				// Because selection is stuck with <paragraph> it ends up in graveyard. We have to manually move it to correct node.
+				setSelection( [ 0, 3 ], [ 0, 3 ] );
+			} );
 			output( '<paragraph>foo[]bar</paragraph>' );
 
 			editor.execute( 'undo' );
@@ -310,9 +359,11 @@ describe( 'UndoEngine integration', () => {
 		it( 'split and undo', () => {
 			input( '<paragraph>foo[]bar</paragraph>' );
 
-			doc.batch().split( doc.selection.getFirstPosition() );
-			// Because selection is stuck with <paragraph> it ends up in wrong node. We have to manually move it to correct node.
-			setSelection( [ 1, 0 ], [ 1, 0 ] );
+			doc.enqueueChanges( () => {
+				doc.batch().split( doc.selection.getFirstPosition() );
+				// Because selection is stuck with <paragraph> it ends up in wrong node. We have to manually move it to correct node.
+				setSelection( [ 1, 0 ], [ 1, 0 ] );
+			} );
 			output( '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
 
 			editor.execute( 'undo' );
@@ -761,25 +812,33 @@ describe( 'UndoEngine integration', () => {
 
 		// ckeditor5-engine#t/1055
 		it( 'selection attribute setting: split, bold, merge, undo, undo, undo', () => {
-			input( '<p>Foo[]</p><p>Bar</p>' );
+			input( '<paragraph>Foo[]</paragraph><paragraph>Bar</paragraph>' );
 
 			editor.execute( 'enter' );
-			output( '<p>Foo</p><p>[]</p><p>Bar</p>' );
+			output( '<paragraph>Foo</paragraph><paragraph>[]</paragraph><paragraph>Bar</paragraph>' );
 
 			editor.execute( 'bold' );
-			output( '<p>Foo</p><p selection:bold="true"><$text bold="true">[]</$text></p><p>Bar</p>' );
+			output(
+				'<paragraph>Foo</paragraph>' +
+				'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>' +
+				'<paragraph>Bar</paragraph>'
+			);
 
 			editor.execute( 'forwardDelete' );
-			output( '<p>Foo</p><p>[]Bar</p>' );
+			output( '<paragraph>Foo</paragraph><paragraph>[]Bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>Foo</p><p selection:bold="true"><$text bold="true">[]</$text></p><p>Bar</p>' );
+			output(
+				'<paragraph>Foo</paragraph>' +
+				'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>' +
+				'<paragraph>Bar</paragraph>'
+			);
 
 			editor.execute( 'undo' );
-			output( '<p>Foo</p><p>[]</p><p>Bar</p>' );
+			output( '<paragraph>Foo</paragraph><paragraph>[]</paragraph><paragraph>Bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>Foo[]</p><p>Bar</p>' );
+			output( '<paragraph>Foo[]</paragraph><paragraph>Bar</paragraph>' );
 		} );
 	} );
 
@@ -829,7 +888,9 @@ describe( 'UndoEngine integration', () => {
 		it( 'deleteContent between two nodes', () => {
 			input( '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
 
-			editor.data.deleteContent( doc.selection, doc.batch() );
+			doc.enqueueChanges( () => {
+				editor.data.deleteContent( doc.selection, doc.batch() );
+			} );
 			output( '<paragraph>fo[]ar</paragraph>' );
 
 			editor.execute( 'undo' );
