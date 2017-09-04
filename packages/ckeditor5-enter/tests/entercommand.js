@@ -5,6 +5,7 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import EnterCommand from '../src/entercommand';
+import InsertDelta from '@ckeditor/ckeditor5-engine/src/model/delta/insertdelta';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'EnterCommand', () => {
@@ -54,6 +55,26 @@ describe( 'EnterCommand', () => {
 
 			// After all enqueued changes are done, the command execution is reflected.
 			expect( getData( doc, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p></p>' );
+		} );
+
+		it( 'creates InsertDelta if enter is at the beginning of block', () => {
+			setData( doc, '<p>[]foo</p>' );
+
+			editor.execute( 'enter' );
+
+			const deltas = Array.from( doc.history.getDeltas() );
+
+			expect( deltas[ deltas.length - 1 ] ).to.be.instanceof( InsertDelta );
+		} );
+
+		it( 'creates InsertDelta if enter is at the end of block', () => {
+			setData( doc, '<p>foo[]</p>' );
+
+			editor.execute( 'enter' );
+
+			const deltas = Array.from( doc.history.getDeltas() );
+
+			expect( deltas[ deltas.length - 1 ] ).to.be.instanceof( InsertDelta );
 		} );
 	} );
 
