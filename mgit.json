@@ -14,7 +14,7 @@
     "@ckeditor/ckeditor5-editor-balloon-toolbar": "ckeditor/ckeditor5-editor-balloon-toolbar#bfbaacf",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#8aab690",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#68352da",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#32016a6",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#d776c71",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#86516e8",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#8a3e7de",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#a0a6a6f",
