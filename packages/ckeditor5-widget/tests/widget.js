@@ -34,6 +34,7 @@ describe( 'Widget', () => {
 				doc.schema.registerItem( 'inline', '$inline' );
 				doc.schema.objects.add( 'inline' );
 				doc.schema.registerItem( 'nested' );
+				doc.schema.limits.add( 'nested' );
 				doc.schema.allow( { name: '$inline', inside: 'nested' } );
 				doc.schema.allow( { name: 'nested', inside: 'widget' } );
 				doc.schema.registerItem( 'editable' );
@@ -741,6 +742,22 @@ describe( 'Widget', () => {
 				'<paragraph>[foo]</paragraph><widget></widget><paragraph>[bar]</paragraph>',
 				keyCodes.arrowright,
 				'<paragraph>[foo]</paragraph><widget></widget><paragraph>[bar]</paragraph>'
+			);
+		} );
+
+		describe( 'Ctrl+A', () => {
+			test(
+				'should select the entire content of the nested editable',
+				'<widget><nested>foo[]</nested></widget><paragraph>bar</paragraph>',
+				{ keyCode: keyCodes.a, ctrlKey: true },
+				'<widget><nested>[foo]</nested></widget><paragraph>bar</paragraph>'
+			);
+
+			test(
+				'should not change the selection if outside of the nested editable',
+				'<widget><nested>foo</nested></widget><paragraph>[]bar</paragraph>',
+				{ keyCode: keyCodes.a, ctrlKey: true },
+				'<widget><nested>foo</nested></widget><paragraph>[]bar</paragraph>'
 			);
 		} );
 
