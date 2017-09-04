@@ -418,8 +418,8 @@ export default class Schema {
 	/**
 	 * Removes disallowed by {@link module:engine/model/schema~Schema schema} attributes from given nodes.
 	 * When {@link module:engine/model/batch~Batch batch} parameter is provided then attributes will be removed
-	 * by creating {@link module:engine/model/delta/attributedelta~AttributeDelta attributeDeltas} otherwise
-	 * attributes will be removed directly from provided nodes using {@link module:engine/model/node~Node node} API.
+	 * using that batch, by creating {@link module:engine/model/delta/attributedelta~AttributeDelta attribute deltas}.
+	 * Otherwise, attributes will be removed directly from provided nodes using {@link module:engine/model/node~Node node} API.
 	 *
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes that will be filtered.
 	 * @param {module:engine/model/schema~SchemaPath} inside Path inside which schema will be checked.
@@ -429,13 +429,12 @@ export default class Schema {
 		for ( const node of nodes ) {
 			const name = node.is( 'text' ) ? '$text' : node.name;
 			const attributes = Array.from( node.getAttributeKeys() );
-			const normalizedQueryPath = Schema._normalizeQueryPath( inside );
-			const queryPath = normalizedQueryPath.join( ' ' );
+			const queryPath = Schema._normalizeQueryPath( inside );
 
 			// When node with attributes is not allowed in current position.
 			if ( !this.check( { name, attributes, inside: queryPath } ) ) {
 				// Let's remove attributes one by one.
-				// This should be improved to check all combination of attributes.
+				// TODO: this should be improved to check all combination of attributes.
 				for ( const attribute of node.getAttributeKeys() ) {
 					if ( !this.check( { name, attributes: attribute, inside: queryPath } ) ) {
 						if ( batch ) {
@@ -448,8 +447,7 @@ export default class Schema {
 			}
 
 			if ( node.is( 'element' ) ) {
-				const newQueryPath = normalizedQueryPath.concat( [ node.name ] );
-				this.removeDisallowedAttributes( node.getChildren(), newQueryPath, batch );
+				this.removeDisallowedAttributes( node.getChildren(), queryPath.concat( node.name ), batch );
 			}
 		}
 	}

@@ -41,9 +41,11 @@ export default function deleteContent( selection, batch, options = {} ) {
 		return;
 	}
 
+	const schema = batch.document.schema;
+
 	// 1. Replace the entire content with paragraph.
 	// See: https://github.com/ckeditor/ckeditor5-engine/issues/1012#issuecomment-315017594.
-	if ( !options.doNotResetEntireContent && shouldEntireContentBeReplacedWithParagraph( batch.document.schema, selection ) ) {
+	if ( !options.doNotResetEntireContent && shouldEntireContentBeReplacedWithParagraph( schema, selection ) ) {
 		replaceEntireContentWithParagraph( batch, selection );
 
 		return;
@@ -74,14 +76,14 @@ export default function deleteContent( selection, batch, options = {} ) {
 		//
 		// e.g. bold is disallowed for <H1>
 		// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
-		batch.document.schema.removeDisallowedAttributes( startPos.parent.getChildren(), startPos, batch );
+		schema.removeDisallowedAttributes( startPos.parent.getChildren(), startPos, batch );
 	}
 
 	selection.setCollapsedAt( startPos );
 
 	// 4. Autoparagraphing.
 	// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
-	if ( shouldAutoparagraph( batch.document, startPos ) ) {
+	if ( shouldAutoparagraph( schema, startPos ) ) {
 		insertParagraph( batch, startPos, selection );
 	}
 
@@ -158,9 +160,9 @@ function mergeBranches( batch, startPos, endPos ) {
 	mergeBranches( batch, startPos, endPos );
 }
 
-function shouldAutoparagraph( doc, position ) {
-	const isTextAllowed = doc.schema.check( { name: '$text', inside: position } );
-	const isParagraphAllowed = doc.schema.check( { name: 'paragraph', inside: position } );
+function shouldAutoparagraph( schema, position ) {
+	const isTextAllowed = schema.check( { name: '$text', inside: position } );
+	const isParagraphAllowed = schema.check( { name: 'paragraph', inside: position } );
 
 	return !isTextAllowed && isParagraphAllowed;
 }
