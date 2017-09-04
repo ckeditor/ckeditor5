@@ -22,6 +22,7 @@ import ViewDocumentFragment from '../view/documentfragment';
 
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
+import ModelElement from '../model/element';
 
 import insertContent from './insertcontent';
 import deleteContent from './deletecontent';
@@ -296,6 +297,34 @@ export default class DataController {
 	 */
 	getSelectedContent( selection ) {
 		return getSelectedContent( selection );
+	}
+
+	/**
+	 * Checks whether given {@link module:engine/model/range~Range range} or {@link module:engine/model/element~Element element}
+	 * has any content.
+	 *
+	 * Content is any text node or element which is registered in {@link module:engine/model/schema~Schema schema}.
+	 *
+	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
+	 * @returns {Boolean}
+	 */
+	hasContent( rangeOrElement ) {
+		if ( rangeOrElement instanceof ModelElement ) {
+			rangeOrElement = ModelRange.createIn( rangeOrElement );
+		}
+
+		if ( rangeOrElement.isCollapsed ) {
+			return false;
+		}
+
+		for ( const item of rangeOrElement.getItems() ) {
+			// Remember, `TreeWalker` returns always `textProxy` nodes.
+			if ( item.is( 'textProxy' ) || this.model.schema.objects.has( item.name ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 

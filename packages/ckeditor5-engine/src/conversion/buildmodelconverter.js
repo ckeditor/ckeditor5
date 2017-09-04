@@ -59,7 +59,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *		buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( 'strong' );
  *
  * 4. Model marker to view highlight converter. This is a converter that converts model markers to view highlight
- * described by {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor} object passed to
+ * described by {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor} object passed to
  * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toHighlight} method.
  *
  *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toHighlight( {
@@ -209,9 +209,9 @@ class ModelConverterBuilder {
 	 * from element, {@link module:engine/view/attributeelement~AttributeElement ViewAttributeElement} if you convert
 	 * from attribute and {@link module:engine/view/uielement~UIElement ViewUIElement} if you convert from marker.
 	 *
-	 * NOTE: When converting from model's marker, separate elements will be created at the beginning and at the end of the
+	 * **Note:** When converting from model's marker, separate elements will be created at the beginning and at the end of the
 	 * marker's range. If range is collapsed then only one element will be created. See how markers
-	 * {module:engine/model/buildviewconverter~ViewConverterBuilder#toMarker view -> model serialization}
+	 * {module:engine/model/buildviewconverter~ViewConverterBuilder#toMarker serialization from view to model}
 	 * works to find out what view element format is the best for you.
 	 *
 	 *		buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
@@ -286,10 +286,11 @@ class ModelConverterBuilder {
 	 *		viewElement.setCustomProperty( 'addHighlight', ( element, descriptor ) => {} );
 	 *		viewElement.setCustomProperty( 'removeHighlight', ( element, descriptor ) => {} );
 	 *
-	 * {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor} will be used to create
+	 * {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor} will be used to create
 	 * spans over text nodes and also will be provided to `addHighlight` and `removeHighlight` methods
 	 * each time highlight should be set or removed from view elements.
-	 * NOTE: When `addHighlight` and `removeHighlight` custom properties are present, converter assumes
+	 *
+	 * **Note:** When `addHighlight` and `removeHighlight` custom properties are present, converter assumes
 	 * that element itself is taking care of presenting highlight on its child nodes, so it won't convert them.
 	 *
 	 * Highlight descriptor can be provided as plain object:
@@ -307,7 +308,7 @@ class ModelConverterBuilder {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
 	 * `build-model-converter-non-marker-to-highlight` when trying to convert not from marker.
 	 *
-	 * @param {function|module:engine/conversion/buildmodelconverter~HighlightDescriptor} highlightDescriptor
+	 * @param {function|module:engine/conversion/model-to-view-converters~HighlightDescriptor} highlightDescriptor
 	 */
 	toHighlight( highlightDescriptor ) {
 		const priority = this._from.priority === null ? 'normal' : this._from.priority;
@@ -423,26 +424,9 @@ export default function buildModelConverter() {
 }
 
 /**
- * @typedef MarkerViewElementCreatorData
- * @param {Object} data Additional information about the change.
- * @param {String} data.markerName Marker name.
- * @param {module:engine/model/range~Range} data.markerRange Marker range.
- * @param {Boolean} data.isOpening Defines if currently converted element is a beginning or end of the marker range.
- * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
- * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
- */
-
-/**
- * @typedef HighlightDescriptor
- * Object describing how content highlight should be created in the view. Each text node contained in highlight
- * will be wrapped with `span` element with CSS class, attributes and priority described by this object. Each element
- * can handle displaying highlight separately by providing `addHighlight` and `removeHighlight` custom
- * properties.
+ * @typedef {Object} module:engine/conversion/buildmodelconverter~MarkerViewElementCreatorData
  *
- * @property {String|Array.<String>} class CSS class or array of classes that will be added to `span`
- * {@link module:engine/view/attributeelement~AttributeElement} wrapping each text node in the highlighted content.
- * @property {Number} [priority] {@link module:engine/view/attributeelement~AttributeElement#priority} of the `span`
- * wrapping each text node in the highlighted content. If not provided, default 10 priority will be used.
- * @property {Object} [attributes] Attributes that will be added to `span`
- * {@link module:engine/view/attributeelement~AttributeElement} wrapping each text node it the highlighted content.
+ * @param {String} markerName Marker name.
+ * @param {module:engine/model/range~Range} markerRange Marker range.
+ * @param {Boolean} isOpening Defines if currently converted element is a beginning or end of the marker range.
  */

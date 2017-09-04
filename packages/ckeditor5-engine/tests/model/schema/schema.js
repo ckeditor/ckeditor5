@@ -6,12 +6,15 @@
 import { default as Schema, SchemaItem } from '../../../src/model/schema';
 import Document from '../../../src/model/document';
 import Element from '../../../src/model/element';
+import Text from '../../../src/model/text';
+import DocumentFragment from '../../../src/model/documentfragment';
 import Position from '../../../src/model/position';
 import Range from '../../../src/model/range';
 import Selection from '../../../src/model/selection';
+import AttributeDelta from '../../../src/model/delta/attributedelta';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData, stringify } from '../../../src/dev-utils/model';
+import { setData, getData, stringify } from '../../../src/dev-utils/model';
 
 testUtils.createSinonSandbox();
 
@@ -492,6 +495,7 @@ describe( 'Schema', () => {
 			schema.registerItem( 'p', '$block' );
 			schema.registerItem( 'h1', '$block' );
 			schema.registerItem( 'img', '$inline' );
+			schema.registerItem( 'figure' );
 
 			// Bold text is allowed only in P.
 			schema.allow( { name: '$text', attributes: 'bold', inside: 'p' } );
@@ -499,6 +503,10 @@ describe( 'Schema', () => {
 
 			// Disallow bold on image.
 			schema.disallow( { name: 'img', attributes: 'bold', inside: '$root' } );
+
+			// Figure must have name attribute and optional title attribute.
+			schema.requireAttributes( 'figure', [ 'name' ] );
+			schema.allow( { name: 'figure', attributes: [ 'title', 'name' ], inside: '$root' } );
 		} );
 
 		describe( 'when selection is collapsed', () => {
@@ -543,6 +551,16 @@ describe( 'Schema', () => {
 				// Selection on two images which can't be bold.
 				setData( doc, '<p>foo[<img /><img />]bar</p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
+			} );
+
+			it( 'should return true when checking element with required attribute', () => {
+				setData( doc, '[<figure name="figure"></figure>]' );
+				expect( schema.checkAttributeInSelection( doc.selection, 'title' ) ).to.be.true;
+			} );
+
+			it( 'should return true when checking element when attribute is already present', () => {
+				setData( doc, '[<figure name="figure" title="title"></figure>]' );
+				expect( schema.checkAttributeInSelection( doc.selection, 'title' ) ).to.be.true;
 			} );
 		} );
 	} );
@@ -735,6 +753,166 @@ describe( 'Schema', () => {
 			);
 
 			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
+		} );
+	} );
+
+	describe( 'removeDisallowedAttributes()', () => {
+		let doc, root;
+
+		beforeEach( () => {
+			doc = new Document();
+			root = doc.createRoot();
+			schema = doc.schema;
+
+			schema.registerItem( 'paragraph', '$block' );
+			schema.registerItem( 'div', '$block' );
+			schema.registerItem( 'image' );
+			schema.objects.add( 'image' );
+			schema.allow( { name: '$block', inside: 'div' } );
+		} );
+
+		describe( 'filtering attributes from nodes', () => {
+			let text, image;
+
+			beforeEach( () => {
+				schema.allow( { name: '$text', attributes: [ 'a' ], inside: '$root' } );
+				schema.allow( { name: 'image', attributes: [ 'b' ], inside: '$root' } );
+
+				text = new Text( 'foo', { a: 1, b: 1 } );
+				image = new Element( 'image', { a: 1, b: 1 } );
+			} );
+
+			it( 'should filter out disallowed attributes from given nodes', () => {
+				schema.removeDisallowedAttributes( [ text, image ], '$root' );
+
+				expect( Array.from( text.getAttributeKeys() ) ).to.deep.equal( [ 'a' ] );
+				expect( Array.from( image.getAttributeKeys() ) ).to.deep.equal( [ 'b' ] );
+			} );
+
+			it( 'should filter out disallowed attributes from given nodes (batch)', () => {
+				const root = doc.getRoot();
+				const batch = doc.batch();
+
+				root.appendChildren( [ text, image ] );
+
+				schema.removeDisallowedAttributes( [ text, image ], '$root', batch );
+
+				expect( Array.from( text.getAttributeKeys() ) ).to.deep.equal( [ 'a' ] );
+				expect( Array.from( image.getAttributeKeys() ) ).to.deep.equal( [ 'b' ] );
+
+				expect( batch.deltas ).to.length( 2 );
+				expect( batch.deltas[ 0 ] ).to.instanceof( AttributeDelta );
+				expect( batch.deltas[ 1 ] ).to.instanceof( AttributeDelta );
+			} );
+		} );
+
+		describe( 'filtering attributes from child nodes', () => {
+			let div;
+
+			beforeEach( () => {
+				schema.allow( { name: '$text', attributes: [ 'a' ], inside: 'div' } );
+				schema.allow( { name: '$text', attributes: [ 'b' ], inside: 'div paragraph' } );
+				schema.allow( { name: 'image', attributes: [ 'a' ], inside: 'div' } );
+				schema.allow( { name: 'image', attributes: [ 'b' ], inside: 'div paragraph' } );
+
+				const foo = new Text( 'foo', { a: 1, b: 1 } );
+				const bar = new Text( 'bar', { a: 1, b: 1 } );
+				const imageInDiv = new Element( 'image', { a: 1, b: 1 } );
+				const imageInParagraph = new Element( 'image', { a: 1, b: 1 } );
+				const paragraph = new Element( 'paragraph', [], [ foo, imageInParagraph ] );
+
+				div = new Element( 'div', [], [ paragraph, bar, imageInDiv ] );
+			} );
+
+			it( 'should filter out disallowed attributes from child nodes', () => {
+				schema.removeDisallowedAttributes( [ div ], '$root' );
+
+				expect( stringify( div ) )
+					.to.equal(
+						'<div>' +
+							'<paragraph>' +
+								'<$text b="1">foo</$text>' +
+								'<image b="1"></image>' +
+							'</paragraph>' +
+							'<$text a="1">bar</$text>' +
+							'<image a="1"></image>' +
+						'</div>'
+					);
+			} );
+
+			it( 'should filter out disallowed attributes from child nodes (batch)', () => {
+				const root = doc.getRoot();
+				const batch = doc.batch();
+
+				root.appendChildren( [ div ] );
+
+				schema.removeDisallowedAttributes( [ div ], '$root', batch );
+
+				expect( batch.deltas ).to.length( 4 );
+				expect( batch.deltas[ 0 ] ).to.instanceof( AttributeDelta );
+				expect( batch.deltas[ 1 ] ).to.instanceof( AttributeDelta );
+				expect( batch.deltas[ 2 ] ).to.instanceof( AttributeDelta );
+				expect( batch.deltas[ 3 ] ).to.instanceof( AttributeDelta );
+
+				expect( getData( doc, { withoutSelection: true } ) )
+					.to.equal(
+						'<div>' +
+							'<paragraph>' +
+								'<$text b="1">foo</$text>' +
+								'<image b="1"></image>' +
+							'</paragraph>' +
+							'<$text a="1">bar</$text>' +
+							'<image a="1"></image>' +
+						'</div>'
+					);
+			} );
+		} );
+
+		describe( 'allowed parameters', () => {
+			let frag;
+
+			beforeEach( () => {
+				schema.allow( { name: '$text', attributes: [ 'a' ], inside: '$root' } );
+				schema.allow( { name: '$text', attributes: [ 'b' ], inside: 'paragraph' } );
+
+				frag = new DocumentFragment( [
+					new Text( 'foo', { a: 1 } ),
+					new Element( 'paragraph', [], [ new Text( 'bar', { a: 1, b: 1 } ) ] ),
+					new Text( 'biz', { b: 1 } )
+				] );
+			} );
+
+			it( 'should accept iterable as nodes', () => {
+				schema.removeDisallowedAttributes( frag.getChildren(), '$root' );
+
+				expect( stringify( frag ) )
+					.to.equal( '<$text a="1">foo</$text><paragraph><$text b="1">bar</$text></paragraph>biz' );
+			} );
+
+			it( 'should accept Position as inside', () => {
+				schema.removeDisallowedAttributes( frag.getChildren(), Position.createAt( root ) );
+
+				expect( stringify( frag ) )
+					.to.equal( '<$text a="1">foo</$text><paragraph><$text b="1">bar</$text></paragraph>biz' );
+			} );
+
+			it( 'should accept Node as inside', () => {
+				schema.removeDisallowedAttributes( frag.getChildren(), [ root ] );
+
+				expect( stringify( frag ) )
+					.to.equal( '<$text a="1">foo</$text><paragraph><$text b="1">bar</$text></paragraph>biz' );
+			} );
+		} );
+
+		it( 'should not filter out allowed combination of attributes', () => {
+			schema.allow( { name: 'image', attributes: [ 'a', 'b' ] } );
+			schema.requireAttributes( 'image', [ 'a', 'b' ] );
+
+			const image = new Element( 'image', { a: 1, b: 1 } );
+
+			schema.removeDisallowedAttributes( [ image ], '$root' );
+
+			expect( Array.from( image.getAttributeKeys() ) ).to.deep.equal( [ 'a', 'b' ] );
 		} );
 	} );
 } );

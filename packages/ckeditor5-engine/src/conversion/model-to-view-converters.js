@@ -409,7 +409,7 @@ export function remove() {
  * {@link module:engine/view/attributeelement~AttributeElement} created from provided descriptor.
  * See {link module:engine/conversion/model-to-view-converters~highlightDescriptorToAttributeElement}.
  *
- * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor|Function} highlightDescriptor
+ * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
  */
 export function highlightText( highlightDescriptor ) {
@@ -428,7 +428,11 @@ export function highlightText( highlightDescriptor ) {
 			return;
 		}
 
-		const viewElement = highlightDescriptorToAttributeElement( descriptor );
+		if ( !descriptor.id ) {
+			descriptor.id = data.markerName;
+		}
+
+		const viewElement = createViewElementFromHighlightDescriptor( descriptor );
 		const viewRange = conversionApi.mapper.toViewRange( data.range );
 
 		if ( evt.name.split( ':' )[ 0 ] == 'addMarker' ) {
@@ -442,15 +446,17 @@ export function highlightText( highlightDescriptor ) {
 /**
  * Function factory, creates converter that converts all elements inside marker's range. Converter checks if element has
  * functions stored under `addHighlight` and `removeHighlight` custom properties and calls them passing
- * {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor}. In such case converter will consume
+ * {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor}. In such case converter will consume
  * all element's children, assuming that they were handled by element itself. If highlight descriptor will not provide
- * priority, priority 10 will be used as default, to be compliant with
+ * priority, priority `10` will be used as default, to be compliant with
  * {@link module:engine/conversion/model-to-view-converters~highlightText} method which uses default priority of
  * {@link module:engine/view/attributeelement~AttributeElement}.
+ *
+ * If highlight descriptor will not provide `id` property, name of the marker will be used.
  * When `addHighlight` and `removeHighlight` custom properties are not present, element is not converted
  * in any special way. This means that converters will proceed to convert element's child nodes.
  *
- * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor|Function} highlightDescriptor
+ * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
  */
 export function highlightElement( highlightDescriptor ) {
@@ -471,6 +477,10 @@ export function highlightElement( highlightDescriptor ) {
 
 		if ( !descriptor.priority ) {
 			descriptor.priority = 10;
+		}
+
+		if ( !descriptor.id ) {
+			descriptor.id = data.markerName;
 		}
 
 		const viewElement = conversionApi.mapper.toViewElement( modelItem );
@@ -557,29 +567,6 @@ export function eventNameToConsumableType( evtName ) {
 	return parts[ 0 ] + ':' + parts[ 1 ];
 }
 
-/**
- * Creates `span` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from information
- * provided by {@link module:engine/conversion/buildmodelconverter~HighlightDescriptor} object. If priority
- * is not provided in descriptor - default priority will be used.
- *
- * @param {module:engine/conversion/buildmodelconverter~HighlightDescriptor } descriptor
- * @return {module:engine/view/attributeelement~AttributeElement}
- */
-export function highlightDescriptorToAttributeElement( descriptor ) {
-	const attributeElement = new ViewAttributeElement( 'span', descriptor.attributes );
-
-	if ( descriptor.class ) {
-		const cssClasses = Array.isArray( descriptor.class ) ? descriptor.class : [ descriptor.class ];
-		attributeElement.addClass( ...cssClasses );
-	}
-
-	if ( descriptor.priority ) {
-		attributeElement.priority = descriptor.priority;
-	}
-
-	return attributeElement;
-}
-
 // Helper function that shifts given view `position` in a way that returned position is after `howMany` characters compared
 // to the original `position`.
 // Because in view there might be view ui elements splitting text nodes, we cannot simply use `ViewPosition#getShiftedBy()`.
@@ -599,3 +586,79 @@ function _shiftViewPositionByCharacters( position, howMany ) {
 		}
 	}
 }
+
+/**
+ * Creates `span` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from information
+ * provided by {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor} object. If priority
+ * is not provided in descriptor - default priority will be used.
+ *
+ * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} descriptor
+ * @return {module:engine/conversion/model-to-view-converters~HighlightAttributeElement}
+ */
+export function createViewElementFromHighlightDescriptor( descriptor ) {
+	const viewElement = new HighlightAttributeElement( 'span', descriptor.attributes );
+
+	if ( descriptor.class ) {
+		const cssClasses = Array.isArray( descriptor.class ) ? descriptor.class : [ descriptor.class ];
+		viewElement.addClass( ...cssClasses );
+	}
+
+	if ( descriptor.priority ) {
+		viewElement.priority = descriptor.priority;
+	}
+
+	viewElement.setCustomProperty( 'highlightDescriptorId', descriptor.id );
+
+	return viewElement;
+}
+
+/**
+ * Special kind of {@link module:engine/view/attributeelement~AttributeElement} that is created and used in
+ * marker-to-highlight conversion.
+ *
+ * The difference between `HighlightAttributeElement` and {@link module:engine/view/attributeelement~AttributeElement}
+ * is {@link module:engine/view/attributeelement~AttributeElement#isSimilar} method.
+ *
+ * For `HighlightAttributeElement` it checks just `highlightDescriptorId` custom property, that is set during marker-to-highlight
+ * conversion basing on {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor} object.
+ * `HighlightAttributeElement`s with same `highlightDescriptorId` property are considered similar.
+ */
+class HighlightAttributeElement extends ViewAttributeElement {
+	isSimilar( otherElement ) {
+		if ( otherElement.is( 'attributeElement' ) ) {
+			return this.getCustomProperty( 'highlightDescriptorId' ) === otherElement.getCustomProperty( 'highlightDescriptorId' );
+		}
+
+		return false;
+	}
+}
+
+/**
+ * Object describing how content highlight should be created in the view.
+ *
+ * Each text node contained in highlight will be wrapped with `span` element with CSS class(es), attributes and priority
+ * described by this object.
+ *
+ * Each element can handle displaying highlight separately by providing `addHighlight` and `removeHighlight` custom
+ * properties. Those properties are passed `HighlightDescriptor` object upon conversion and should use it to
+ * change the element.
+ *
+ * @typedef {Object} module:engine/conversion/model-to-view-converters~HighlightDescriptor
+ *
+ * @property {String|Array.<String>} class CSS class or array of classes to set. If descriptor is used to
+ * create {@link module:engine/view/attributeelement~AttributeElement} over text nodes, those classes will be set
+ * on that {@link module:engine/view/attributeelement~AttributeElement}. If descriptor is applied to an element,
+ * usually those class will be set on that element, however this depends on how the element converts the descriptor.
+ *
+ * @property {String} [id] Descriptor identifier. If not provided, defaults to converted marker's name.
+ *
+ * @property {Number} [priority] Descriptor priority. If not provided, defaults to `10`. If descriptor is used to create
+ * {@link module:engine/view/attributeelement~AttributeElement}, it will be that element's
+ * {@link module:engine/view/attributeelement~AttributeElement#priority}. If descriptor is applied to an element,
+ * the priority will be used to determine which descriptor is more important.
+ *
+ * @property {Object} [attributes] Attributes to set. If descriptor is used to create
+ * {@link module:engine/view/attributeelement~AttributeElement} over text nodes, those attributes will be set on that
+ * {@link module:engine/view/attributeelement~AttributeElement}. If descriptor is applied to an element, usually those
+ * attributes will be set on that element, however this depends on how the element converts the descriptor.
+ */

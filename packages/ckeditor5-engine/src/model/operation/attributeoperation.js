@@ -141,18 +141,13 @@ export default class AttributeOperation extends Operation {
 					{ node: item, key: this.key }
 				);
 			}
-
-			// If value to set is same as old value, don't do anything.
-			// By returning `undefined`, this operation will be seen as `NoOperation` - that means
-			// that it won't generate any events, etc. `AttributeOperation` with such parameters may be
-			// a result of operational transformation.
-			if ( isEqual( this.oldValue, this.newValue ) ) {
-				return;
-			}
 		}
 
-		// Execution.
-		writer.setAttribute( this.range, this.key, this.newValue );
+		// If value to set is same as old value, don't do anything.
+		if ( !isEqual( this.oldValue, this.newValue ) ) {
+			// Execution.
+			writer.setAttribute( this.range, this.key, this.newValue );
+		}
 
 		return { range: this.range, key: this.key, oldValue: this.oldValue, newValue: this.newValue };
 	}

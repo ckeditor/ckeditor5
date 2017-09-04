@@ -120,6 +120,34 @@ describe( 'transform', () => {
 				} );
 			} );
 
+			it( 'insert at same position as merge - merge second operation is NoOperation', () => {
+				// If MergeDelta second operation is NoOperation, default transformation algorithm should be used.
+				mergeDelta.operations[ 1 ] = new NoOperation( 1 );
+				const insertDelta = getInsertDelta( mergePosition, [ nodeA, nodeB ], baseVersion );
+				const transformed = transform( mergeDelta, insertDelta, context );
+
+				baseVersion = insertDelta.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: MergeDelta,
+					operations: [
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 5, 0 ] ),
+							howMany: mergeDelta.operations[ 0 ].howMany,
+							targetPosition: mergeDelta.operations[ 0 ].targetPosition,
+							baseVersion
+						},
+						{
+							type: NoOperation,
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+			} );
+
 			it( 'insert inside merged node (sticky move test)', () => {
 				const insertDelta = getInsertDelta( new Position( root, [ 3, 3, 3, 12 ] ), [ nodeA, nodeB ], baseVersion );
 				const transformed = transform( mergeDelta, insertDelta, context );
@@ -226,6 +254,35 @@ describe( 'transform', () => {
 
 				// MoveDelta is applied. MergeDelta is discarded.
 				expect( nodesAndText ).to.equal( 'DIVXabcdabcfoobarxyzXXXXXDIV' );
+			} );
+
+			it( 'node on the left side of merge was moved - second merge operation is NoOperation', () => {
+				// If second MergeDelta operation is NoOperation default algorithm should be used.
+				mergeDelta.operations[ 1 ] = new NoOperation( 1 );
+
+				const moveDelta = getMoveDelta( new Position( root, [ 3, 3, 2 ] ), 1, new Position( root, [ 3, 3, 0 ] ), baseVersion );
+				const transformed = transform( mergeDelta, moveDelta, context );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = moveDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: MergeDelta,
+					operations: [
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 3, 0 ] ),
+							howMany: 12,
+							targetPosition: new Position( root, [ 3, 3, 0, 4 ] ),
+							baseVersion
+						},
+						{
+							type: NoOperation,
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
 			} );
 		} );
 

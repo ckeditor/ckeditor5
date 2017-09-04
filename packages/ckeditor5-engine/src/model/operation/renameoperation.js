@@ -106,14 +106,10 @@ export default class RenameOperation extends Operation {
 		}
 
 		// If value to set is same as old value, don't do anything.
-		// By not returning `undefined`, this operation will be seen as `NoOperation` - that means
-		// that it won't generate any events, etc. `RenameOperation` with such parameters may be
-		// a result of Operational Transformation.
-		if ( this.oldName == this.newName ) {
-			return;
+		if ( element.name != this.newName ) {
+			// Execution.
+			element.name = this.newName;
 		}
-
-		element.name = this.newName;
 
 		return { element, oldName: this.oldName };
 	}

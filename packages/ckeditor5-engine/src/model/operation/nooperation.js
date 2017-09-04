@@ -20,6 +20,10 @@ import Operation from './operation';
  * @extends module:engine/model/operation/operation~Operation
  */
 export default class NoOperation extends Operation {
+	get type() {
+		return 'noop';
+	}
+
 	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
@@ -42,7 +46,7 @@ export default class NoOperation extends Operation {
 	 * @inheritDoc
 	 */
 	_execute() {
-		// Do nothing.
+		return {};
 	}
 
 	/**
