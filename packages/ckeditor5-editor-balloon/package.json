@@ -1,34 +1,34 @@
 {
-	"name": "@ckeditor/ckeditor5-editor-balloon-toolbar",
-	"version": "0.0.1",
-	"description": "Balloon toolbar editor for CKEditor 5.",
-	"keywords": [],
-	"dependencies": {
-		"@ckeditor/ckeditor5-core": "^0.8.1",
-		"@ckeditor/ckeditor5-engine": "^0.10.0",
-		"@ckeditor/ckeditor5-theme-lark": "^0.8.0",
-		"@ckeditor/ckeditor5-ui": "^0.9.0",
-		"@ckeditor/ckeditor5-utils": "^0.9.1"
-	},
-	"devDependencies": {
-		"@ckeditor/ckeditor5-dev-lint": "^3.1.0",
-		"@ckeditor/ckeditor5-basic-styles": "^0.8.1",
-		"@ckeditor/ckeditor5-paragraph": "^0.8.0",
-		"@ckeditor/ckeditor5-presets": "^0.2.2",
-		"eslint-config-ckeditor5": "^1.0.5",
-		"gulp": "^3.9.1",
-		"guppy-pre-commit": "^0.4.0"
-	},
-	"engines": {
-		"node": ">=6.0.0",
-		"npm": ">=3.0.0"
-	},
-	"author": "CKSource (http://cksource.com/)",
-	"license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
-	"homepage": "https://ckeditor5.github.io",
-	"bugs": "https://github.com/ckeditor/ckeditor5-editor-balloon-toolbar/issues",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/ckeditor/ckeditor5-editor-balloon-toolbar.git"
-	}
+  "name": "@ckeditor/ckeditor5-editor-balloon-toolbar",
+  "version": "0.1.0",
+  "description": "Balloon toolbar editor for CKEditor 5.",
+  "keywords": [],
+  "dependencies": {
+    "@ckeditor/ckeditor5-core": "^0.9.0",
+    "@ckeditor/ckeditor5-engine": "^0.11.0",
+    "@ckeditor/ckeditor5-theme-lark": "^0.9.0",
+    "@ckeditor/ckeditor5-ui": "^0.10.0",
+    "@ckeditor/ckeditor5-utils": "^0.10.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-dev-lint": "^3.1.0",
+    "@ckeditor/ckeditor5-basic-styles": "^0.9.0",
+    "@ckeditor/ckeditor5-paragraph": "^0.9.0",
+    "@ckeditor/ckeditor5-presets": "^0.3.0",
+    "eslint-config-ckeditor5": "^1.0.5",
+    "gulp": "^3.9.1",
+    "guppy-pre-commit": "^0.4.0"
+  },
+  "engines": {
+    "node": ">=6.0.0",
+    "npm": ">=3.0.0"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
+  "homepage": "https://ckeditor5.github.io",
+  "bugs": "https://github.com/ckeditor/ckeditor5-editor-balloon-toolbar/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5-editor-balloon-toolbar.git"
+  }
 }
