@@ -8,7 +8,7 @@ CKEditor 5 inline editor creator
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-inline/status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-inline)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-inline/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-inline?type=dev)
 
-Inline Editor for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-editor-inline>.
+The inline editor implementation. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-editor-inline>.
 
 ## License
 
