@@ -1,6 +1,28 @@
 Changelog
 =========
 
+## [0.7.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.6.0...v0.7.0) (2017-09-03)
+
+### Bug fixes
+
+* `ImageStyleCommand` should switch properly between any two non-null styles. Closes [#132](https://github.com/ckeditor/ckeditor5-image/issues/132). ([d6c847d](https://github.com/ckeditor/ckeditor5-image/commit/d6c847d))
+* Text alternative input should synchronize its value when the balloon shows up. Closes [#114](https://github.com/ckeditor/ckeditor5-image/issues/114). ([9b105ed](https://github.com/ckeditor/ckeditor5-image/commit/9b105ed))
+* The arrow of the toolbar's balloon should inherit the background color. Closes [#109](https://github.com/ckeditor/ckeditor5-image/issues/109). ([4322b04](https://github.com/ckeditor/ckeditor5-image/commit/4322b04))
+* The image toolbar should not be doubled when the `ContextualToolbar` plugin is in use. Closes [#110](https://github.com/ckeditor/ckeditor5-image/issues/110). ([5ace9a0](https://github.com/ckeditor/ckeditor5-image/commit/5ace9a0))
+
+### Features
+
+* Introduced support for responsive image's `srcset` attribute. Closes [#2](https://github.com/ckeditor/ckeditor5-image/issues/2). ([5b433d2](https://github.com/ckeditor/ckeditor5-image/commit/5b433d2))
+
+### Other changes
+
+* Aligned the implementation to the new Command API (see https://github.com/ckeditor/ckeditor5-core/issues/88). ([2c0044c](https://github.com/ckeditor/ckeditor5-image/commit/2c0044c))
+
+### BREAKING CHANGES
+
+* The command API has been changed.
+
+
 ## [0.6.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.5.0...v0.6.0) (2017-05-07)
 
 ### Bug fixes

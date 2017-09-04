@@ -41,7 +41,7 @@ You can see the demo of an editor with the base image feature enabled below:
 
 ## Image contextual toolbar
 
-The {@link module:image/imagetoolbar~ImageToobar} plugin introduces contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options such as the text alternative (which is introduced by the base image plugin) button and [image styles buttons](#image-styles).
+The {@link module:image/imagetoolbar~ImageToolbar} plugin introduces contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options such as the text alternative (which is introduced by the base image plugin) button and [image styles buttons](#image-styles).
 
 See a demo of an editor with the contextual toolbar enabled:
 
@@ -51,7 +51,7 @@ The image toolbar is configured to contain the image text alternative button:
 
 ```js
 ClassicEditor
-	.create( {
+	.create( document.querySelector( '#editor' ), {
 		image: {
 			toolbar: [ 'imageTextAlternative' ]
 		}
@@ -105,7 +105,7 @@ A side image:
 
 Below you can see a demo of the editor with the image styles feature enabled. The default configuration is used. You can change the styles of images through the image's contextual toolbar.
 
-{@snippetTODO image-style}
+{@snippet features/image-style}
 
 ### Configuring image styles
 
@@ -119,20 +119,37 @@ import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg'
 import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
 
 ClassicEditor
-	.create( {
+	.create( document.querySelector( '#editor' ), {
 		image: {
 			styles: [
 				// This option is equal to a situation where no style is applied.
-				{ name: 'imageStyleFull', title: 'Full size image', icon: fullSizeIcon, value: null },
+				{
+					name: 'imageStyleFull',
+					title: 'Full size image',
+					icon: fullSizeIcon,
+					value: null
+				},
 
 				// This represents an image aligned to left.
-				{ name: 'imageStyleLeft', title: 'Left aligned image', icon: alignLeftIcon, value: 'left', className: 'image-style-left' },
+				{
+					name: 'imageStyleLeft',
+					title: 'Left aligned image',
+					icon: alignLeftIcon,
+					value: 'left',
+					className: 'image-style-left'
+				},
 
 				// This represents an image aligned to right.
-				{ name: 'imageStyleRight', title: 'Right aligned image', icon: alignRightIcon, value: 'right', className: 'image-style-right' }
+				{
+					name: 'imageStyleRight',
+					title: 'Right aligned image',
+					icon: alignRightIcon,
+					value: 'right',
+					className: 'image-style-right'
+				}
 			],
 
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyleFull', 'imageStyleLeft', 'imageStyleRight' ]
+			toolbar: [ 'imageTextAlternative', '|', 'imageStyleLeft', 'imageStyleFull', 'imageStyleRight' ]
 		}
 	} )
 	.then( ... )
@@ -141,17 +158,20 @@ ClassicEditor
 
 ```css
 .image-style-left {
-	float: left;
-	width: 50%;
+    float: left;
+    width: 50%;
+    margin: 1em 1em 1em 0;
 }
 
 .image-style-right {
-	float: right;
-	width: 50%;
+    float: right;
+    width: 50%;
+    margin: 1em 0 1em 1em;
 }
+
 ```
 
-{@snippetTODO image-style-custom}
+{@snippet features/image-style-custom}
 
 <info-box hint>
 	In the example above the options used represent simple "align left" and "align right" styles. Most text editors support left, center, right alignments, however, try not to think about CKEditor 5's image styles in this way. Try to understand what use cases the system needs to support and define semantical options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens.
@@ -186,7 +206,7 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 
 ClassicEditor
-	.create( {
+	.create( document.querySelector( '#editor' ), {
 		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle ],
 		image: {
 			toolbar: [ 'imageTextAlternative', '|', 'imageStyleFull', 'imageStyleSide' ]

@@ -27,4 +27,4 @@ msgstr "Alternativa teksto"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
-msgstr ""
+msgstr "Skribu klarigon pri la bildo"
