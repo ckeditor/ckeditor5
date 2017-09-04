@@ -1,18 +1,18 @@
 # Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: fr\n"
-"Language-Team: French (https://www.transifex.com/ckeditor/teams/11143/fr/)\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: ja\n"
+"Language-Team: Japanese (https://www.transifex.com/ckeditor/teams/11143/ja/)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Toolbar button tooltip for the Unlink feature."
 msgid "Unlink"
-msgstr "Supprimer le lien"
+msgstr "リンク解除"
 
 msgctxt "Toolbar button tooltip for the Link feature."
 msgid "Link"
-msgstr "Lien"
+msgstr "リンク"
 
 msgctxt "Label for the URL input in the Link dialog."
 msgid "Link URL"
-msgstr ""
+msgstr "リンクURL"

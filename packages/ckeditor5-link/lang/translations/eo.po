@@ -13,6 +13,6 @@ msgctxt "Toolbar button tooltip for the Link feature."
 msgid "Link"
 msgstr "Ligilo"
 
-msgctxt "Label for the url input in the Link dialog."
+msgctxt "Label for the URL input in the Link dialog."
 msgid "Link URL"
-msgstr "URL de la ligilo"
+msgstr ""
