@@ -10,7 +10,7 @@ category: builds-guides
 order: 10
 ---
 
-CKEditor 5 Builds are a set of ready to use rich-text editors. Every "build" provides a single type of editor with a set of features and a default configuration. Our goal is to provide easy to use solutions that can satisfy a good part of the editing use cases out there.
+CKEditor 5 Builds are a set of ready to use rich text editors. Every "build" provides a single type of editor with a set of features and a default configuration. Our goal is to provide easy to use solutions that can satisfy a good part of the editing use cases out there.
 
 ## Builds
 
