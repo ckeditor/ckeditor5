@@ -2,18 +2,3 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 @import '~@ckeditor/ckeditor5-theme-lark/theme/theme.scss';
-
-// TODO move to make a common style with editor-classic.
-.ck-editor__editable {
-	@include ck-rounded-corners();
-
-	&.ck-focused {
-		@include ck-focus-ring();
-		@include ck-box-shadow( $ck-inner-shadow );
-	}
-
-	&_inline {
-		overflow: auto;
-		padding: 0 ck-spacing();
-	}
-}
