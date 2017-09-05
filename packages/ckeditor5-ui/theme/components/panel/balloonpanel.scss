@@ -2,8 +2,6 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 .ck-balloon-panel {
-	@include ck-unselectable();
-
 	display: none;
 	position: absolute;
 
