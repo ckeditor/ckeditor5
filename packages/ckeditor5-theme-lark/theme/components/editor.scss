@@ -3,6 +3,22 @@
 
 @import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_button.scss';
 
+.ck-editor__editable {
+	@include ck-rounded-corners();
+
+	&.ck-focused {
+		@include ck-focus-ring();
+		@include ck-box-shadow( $ck-inner-shadow );
+	}
+
+	&_inline {
+		overflow: auto;
+		padding: 0 ck-spacing();
+		border: 1px solid transparent;
+	}
+}
+
+
 .ck-editor-toolbar {
 	.ck-button {
 		border-width: 0;
