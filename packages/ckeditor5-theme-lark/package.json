@@ -21,9 +21,9 @@
   "author": "CKSource (http://cksource.com/)",
   "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
   "homepage": "https://ckeditor5.github.io",
-  "bugs": "https://github.com/ckeditor/ckeditor5-theme/issues",
+  "bugs": "https://github.com/ckeditor/ckeditor5-theme-lark/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5-theme.git"
+    "url": "https://github.com/ckeditor/ckeditor5-theme-lark.git"
   }
 }
