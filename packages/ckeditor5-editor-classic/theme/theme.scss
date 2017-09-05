@@ -37,14 +37,4 @@
 	};
 
 	border: 1px solid ck-color( 'editor-border' );
-
-	&.ck-focused {
-		@include ck-focus-ring();
-		@include ck-box-shadow( $ck-inner-shadow );
-	}
-
-	&_inline {
-		overflow: auto;
-		padding: 0 ck-spacing();
-	}
 }
