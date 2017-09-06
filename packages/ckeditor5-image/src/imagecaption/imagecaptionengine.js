@@ -16,10 +16,9 @@ import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import { isImage, isImageWidget } from '../image/utils';
+import { isImage } from '../image/utils';
 import {
 	captionElementCreator,
-	isCaption,
 	getCaptionFromImage,
 	matchImageCaption
 } from './utils';
@@ -100,8 +99,6 @@ export default class ImageCaptionEngine extends Plugin {
 	 */
 	_updateCaptionVisibility() {
 		const mapper = this.editor.editing.mapper;
-		const viewSelection = this.editor.editing.view.selection;
-		const selectedElement = viewSelection.getSelectedElement();
 		let viewCaption;
 
 		// Hide last selected caption if have no child elements.
@@ -109,16 +106,21 @@ export default class ImageCaptionEngine extends Plugin {
 			this._lastSelectedCaption.addClass( 'ck-hidden' );
 		}
 
-		// If whole image widget is selected.
-		if ( selectedElement && isImageWidget( selectedElement ) ) {
-			const modelImage = mapper.toModelElement( selectedElement );
-			const modelCaption = getCaptionFromImage( modelImage );
+		// If whole image is selected.
+		const modelSelection = this.editor.document.selection;
+		const selectedElement = modelSelection.getSelectedElement();
+
+		if ( selectedElement && selectedElement.is( 'image' ) ) {
+			const modelCaption = getCaptionFromImage( selectedElement );
 			viewCaption = mapper.toViewElement( modelCaption );
 		}
 
 		// If selection is placed inside caption.
-		if ( isCaption( viewSelection.editableElement ) ) {
-			viewCaption = viewSelection.editableElement;
+		const position = modelSelection.getFirstPosition();
+		const modelCaption = getParentCaption( position.parent );
+
+		if ( modelCaption ) {
+			viewCaption = mapper.toViewElement( modelCaption );
 		}
 
 		if ( viewCaption ) {

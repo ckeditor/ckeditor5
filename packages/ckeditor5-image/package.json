@@ -12,6 +12,7 @@
     "@ckeditor/ckeditor5-widget": "^0.2.0"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "^0.9.0",
     "@ckeditor/ckeditor5-clipboard": "^0.7.0",
     "@ckeditor/ckeditor5-dev-lint": "^3.1.0",
     "@ckeditor/ckeditor5-editor-classic": "^0.8.0",
