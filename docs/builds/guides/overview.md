@@ -34,7 +34,7 @@ In CKEditor 5 the concept of the "boxed" editor was reinvented:
 
 {@img assets/img/editor-classic.png 772 Screenshot of a classic editor.}
 
-To try it out, check the {@link examples/builds/classic-editor classic editor example}.
+To try it out online, check the {@link examples/builds/classic-editor classic editor example}. Jump to {@link builds/guides/quick-start#Classic-editor quick start} to start using it.
 
 ### Inline editor
 
@@ -44,7 +44,7 @@ A common scenario for using inline editor is offering users the possibility to e
 
 {@img assets/img/editor-inline.png 774 Screenshot of an inline editor.}
 
-To try it out, check the {@link examples/builds/inline-editor inline editor example}.
+To try it out online, check the {@link examples/builds/inline-editor inline editor example}. Jump to {@link builds/guides/quick-start#Inline-editor quick start} to start using it.
 
 ### Balloon toolbar editor
 
@@ -52,7 +52,7 @@ Balloon toolbar editor is very similar to the inline editor. The difference betw
 
 {@img assets/img/editor-balloon-toolbar.png 779 Screenshot of a baloon toolbar editor.}
 
-To try it out, check the {@link examples/builds/balloon-toolbar-editor balloon toolbar editor example}.
+To try it out online, check the {@link examples/builds/balloon-toolbar-editor balloon toolbar editor example}. Jump to {@link builds/guides/quick-start#Balloon-toolbar-editor quick start} to start using it.
 
 ## Builds customization
 
