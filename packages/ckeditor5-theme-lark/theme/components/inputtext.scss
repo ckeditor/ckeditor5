@@ -6,9 +6,10 @@
 		@include ck-rounded-corners();
 		@include ck-box-shadow( $ck-inner-shadow );
 
-		border: 1px solid ck-border-color( 'foreground' );
-		padding: ck-spacing( 'medium' );
-		min-width: 250px;
+		background: ck-color( 'input-background' );
+		border: 1px solid ck-color( 'input-border' );
+		padding: ck-spacing( 'small' ) ck-spacing( 'medium' );
+		min-width: 21em;
 
 		&:focus {
 			@include ck-focus-ring();
@@ -16,9 +17,9 @@
 		}
 
 		&[readonly] {
-			border: 1px solid ck-border-color( 'foreground', 10 );
-			background: ck-color( 'foreground' );
-			color: ck-color( 'text', 20 );
+			border: 1px solid ck-color( 'input-border', 10 );
+			background: ck-color( 'input-background', -5 );
+			color: ck-color( 'input-text', 20 );
 		}
 	}
 }

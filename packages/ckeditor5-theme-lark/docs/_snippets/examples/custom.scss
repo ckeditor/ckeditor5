@@ -1,0 +1,79 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+// Overrides the border-radius setting in the theme.
+$ck-border-radius: 4px;
+
+// Overrides the default font size in the theme.
+$ck-font-size-base: 14px;
+
+// Helper variables to avoid duplication in $ck-colors.
+$custom-background: #4A494B;
+$custom-foreground: #3a393d;
+$custom-border: #383738;
+$custom-white: #fff;
+
+// Colors used by the ck-color() mixin across the theme.
+$ck-colors: (
+	// Overrides the default focus color used by the ck-focus-ring() mixin.
+	'border-focus': #48a3f5,
+
+	// Overrides the default text color in the theme.
+	'text': #fafafa,
+
+	// Overrides the default shadow colors in the theme.
+	'shadow-drop': rgba( 0, 0, 0, .2 ),
+	'shadow-inner': rgba( 0, 0, 0, .1 ),
+
+	// Overrides the default .ck-button class colors.
+	'button-default-background': $custom-background,
+	'button-default-border': $custom-border,
+	'button-on-background': $custom-foreground,
+	'button-on-border': $custom-border,
+	'button-action-background': #1ABC9C,
+	'button-action-border': #49d2b7,
+	'button-action-text': $custom-white,
+
+	// Overrides the default .ck-dropdown class colors.
+	'dropdown-panel-background': $custom-background,
+	'dropdown-panel-border': $custom-foreground,
+	'dropdown-symbol': #f1f1f1,
+
+	// Overrides the default .ck-input class colors.
+	'input-background': $custom-foreground,
+	'input-border': #6b6970,
+	'input-text': #fafafa,
+
+	// Overrides the default .ck-list class colors.
+	'list-background': $custom-background,
+	'list-item-background-hover': $custom-foreground,
+	'list-item-background-active': #1A8BF1,
+	'list-item-text-active': $custom-white,
+
+	// Overrides the default .ck-balloon-panel class colors.
+	'panel-background': $custom-background,
+	'panel-border': $custom-border,
+
+	// Overrides the default .ck-toolbar class colors.
+	'toolbar-background': $custom-foreground,
+	'toolbar-border': $custom-border,
+
+	// Overrides the default .ck-tooltip class colors.
+	'tooltip-background': #212025,
+	'tooltip-text': #eee,
+
+	// Overrides the default colors used by the editor.
+	'editor-border': $custom-background,
+	'editor-toolbar-background': $custom-background,
+	'editor-toolbar-button-background': $custom-background,
+	'editor-dropdown-background': #535254,
+
+	// Overrides the default colors used by ckeditor5-image package.
+	'image-caption-background': #f7f7f7,
+	'image-caption-text': #333,
+
+	// Overrides the default colors used by ckeditor5-widget package.
+	'widget-border-blurred': #ddd,
+	'widget-border-hover': #FFD25C,
+	'widget-editable-focused-background': $custom-white
+);

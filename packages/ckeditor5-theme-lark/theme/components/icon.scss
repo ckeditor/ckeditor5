@@ -2,6 +2,6 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 svg.ck-icon {
-	width: #{ $ck-icon-size / $ck-font-size-base }em;
-	height: #{ $ck-icon-size / $ck-font-size-base }em;
+	width: #{ $ck-line-height-base }em;
+	height: #{ $ck-line-height-base }em;
 }

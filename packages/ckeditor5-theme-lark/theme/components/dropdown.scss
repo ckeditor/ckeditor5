@@ -2,11 +2,14 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 .ck-dropdown {
+	// Enable font size inheritance, which allows fluid UI scaling.
+	font-size: inherit;
+
 	// A triangle displayed to indicate this is actually a dropdown.
 	&::after {
 		border-style: solid;
 		border-width: .4em .4em 0 .4em;
-		border-color: ck-color( 'text', 30 ) transparent;
+		border-color: ck-color( 'dropdown-symbol' ) transparent;
 		right: ck-spacing();
 	}
 
@@ -29,11 +32,11 @@
 }
 
 .ck-dropdown__panel {
-	border: 1px solid ck-border-color( 'foreground' );
+	background: ck-color( 'dropdown-panel-background' );
+	border: 1px solid ck-color( 'dropdown-panel-border' );
 
 	// Compensate double border from button and from box when positioned below the button.
 	bottom: 1px;
-	background: ck-color( 'background' );
 
 	@include ck-rounded-corners();
 	@include ck-drop-shadow();

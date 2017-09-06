@@ -1,0 +1,21 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+// Allow using Lark's ck-box-shadow() mixin.
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_shadow.scss';
+
+// Allow using colors defined in Lark and the ck-color() mixin.
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_colors.scss';
+
+// The shadow should be 10% brighter than the toolbar background.
+$shadow-color: ck-color( 'editor-toolbar-background', 10 );
+
+.ck-editor-toolbar {
+	.ck-button.ck-dropdown__button {
+		// Apply a dedicated inner box-shadow to the dropdown button.
+		@include ck-box-shadow(
+			0 0 0 1px $shadow-color inset,
+			0 0 5px $shadow-color inset
+		);
+	}
+}

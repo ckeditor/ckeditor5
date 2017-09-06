@@ -9,13 +9,13 @@ $ck-tooltip-arrow-size: 5px;
 	&__text {
 		@include ck-rounded-corners();
 
-		color: ck-color( 'background' );
-		font-size: ck-font-size( -2 );
+		font-size: .9em;
+		line-height: 1.5;
+		color: ck-color( 'tooltip-text' );
 		padding: ck-spacing( 'small' ) ck-spacing( 'medium' );
-		background: ck-color( 'text' );
+		background: ck-color( 'tooltip-background' );
 		position: relative;
 		left: -50%;
-		line-height: 1.5;
 
 		&::after {
 			border-style: solid;
@@ -39,7 +39,7 @@ $ck-tooltip-arrow-size: 5px;
 		.ck-tooltip__text::after {
 			top: -$ck-tooltip-arrow-size;
 			transform: translateX( -50% );
-			border-color: transparent transparent ck-color( 'text' ) transparent;
+			border-color: transparent transparent ck-color( 'tooltip-background' ) transparent;
 			border-width: 0 $ck-tooltip-arrow-size $ck-tooltip-arrow-size $ck-tooltip-arrow-size;
 
 		}
@@ -61,7 +61,7 @@ $ck-tooltip-arrow-size: 5px;
 		.ck-tooltip__text::after {
 			bottom: -$ck-tooltip-arrow-size;
 			transform: translateX( -50% );
-			border-color: ck-color( 'text' ) transparent transparent transparent;
+			border-color: ck-color( 'tooltip-background' ) transparent transparent transparent;
 			border-width: $ck-tooltip-arrow-size $ck-tooltip-arrow-size 0 $ck-tooltip-arrow-size;
 		}
 	}
