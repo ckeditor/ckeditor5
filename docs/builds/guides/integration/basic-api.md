@@ -7,47 +7,21 @@ category: builds-integration
 order: 20
 ---
 
-## Creators
-
-Each CKEditor 5 build provides a class that handles the creation of editor instances ininfo a page. For this reason they are called "creators". Every creator comes with a static `create()` method.
-
-The following are creator class names for each build:
+Each CKEditor 5 build provides a different class that handles the creation of editor instances:
 
 * Classic editor – {@link module:editor-classic/classiceditor~ClassicEditor}
 * Inline editor – {@link module:editor-inline/inlineeditor~InlineEditor}
-* Editor with balloon toolbar (Medium-like) – {@link module:editor-balloon-toolbar/balloontoolbareditor~BalloonToolbarEditor}
+* Balloon toolbar editor – {@link module:editor-balloon-toolbar/balloontoolbareditor~BalloonToolbarEditor}
 
-Most of the examples in the documentation use the `ClassicEditor` class, but things should work in a similar way with other creator classes.
+Most of the examples in the documentation use the `ClassicEditor` class, but things should work in a similar way with other builds.
 
-Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), these classes can be retrieved:
+## Creating an editor
 
-* by a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (e.g. [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
-* by [RequireJS](http://requirejs.org/) (or any other AMD library),
-* from the global namespace if none of the above loaders is available.
+Regardless of chosen build, creating an editor is done using a static `create()` method.
 
-For example:
+### Example - Classic editor
 
-```js
-// In CommonJS environment.
-const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic/build/ckeditor.js' );
-ClassicEditor.create; // [Function]
-
-// If AMD is present, you can do this.
-require( '/(ckeditor path)/build/ckeditor.js', ClassicEditor => {
-	ClassicEditor.create; // [Function]
-} );
-
-// As a global.
-ClassicEditor.create; // [Function]
-
-// As an ES6 module (if using webpack or Rollup).
-import { ClassicEditor } from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
-ClassicEditor.create; // [Function]
-```
-
-Depending on which build you are using, creating an editor in the page is then a breeze:
-
-In the HTML code:
+In your HTML page add an element that CKEditor should replace:
 
 ```html
 <textarea id="editor">
@@ -55,7 +29,7 @@ In the HTML code:
 </textarea>
 ```
 
-In the script:
+Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to replace `<textarea>` with a {@link builds/guides/overview#Classic-editor Classic editor}:
 
 ```js
 ClassicEditor
@@ -70,8 +44,31 @@ ClassicEditor
 
 In the above case, the `<textarea>` element is hidden and replaced with an editor. The `<textarea>` data is used to initialize the editor content. A `<div>` element can be used in the same fashion.
 
+### Example - Inline editor
+
+Similarly to the previous example, add an element where CKEditor should initialize:
+
+```html
+<div id="editor">
+	&lt;p&gt;Here goes the initial content of the editor.&lt;/p&gt;
+</div>
+```
+
+Then call {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} to attach {@link builds/guides/overview#Inline-editor Inline editor} to a `<div>` element:
+
+```js
+InlineEditor
+	.create( document.querySelector( '#editor' ) )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
+```
+
 <info-box tip>
-	Every creator may accept different parameters and handle initialization differently. For instance, the classic editor will replace a given element with an editor, while the inline editor will use the given element to initialize the editor on it. See each editor's documentation to learn the details.
+	Every editor class may accept different parameters in the `create()` method and may handle initialization differently. For instance, the classic editor will replace a given element with an editor, while the inline editor will use the given element to initialize the editor on it. See each editor's documentation to learn the details.
 
 	The interface of the editor class is not enforced either. Since different implementations of editors may vary heavily in terms of functionality, the editor class implementers have full freedom regarding the API. Therefore, the examples in this guide may not work with some editor classes.
 </info-box>
@@ -108,6 +105,34 @@ editor.destroy()
 ```
 
 Once destroyed, resources used by the editor instance are released and the original element used to create the editor is automatically displayed and updated to reflect the final editor data.
+
+## UMD support 
+
+Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), it is worth noting that editor classes can be retrieved in various ways:
+
+* by a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (e.g. [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
+* by [RequireJS](http://requirejs.org/) (or any other AMD library),
+* from the global namespace if none of the above loaders is available.
+
+For example:
+
+```js
+// In CommonJS environment.
+const ClassicEditor = require( '[ckeditor path]/build/ckeditor' );
+ClassicEditor.create(...); // [Function]
+
+// If AMD is present, you can do this.
+require( '/[ckeditor path]/build/ckeditor', ClassicEditor => {
+	ClassicEditor.create(...); // [Function]
+} );
+
+// As a global variable.
+ClassicEditor.create(...); // [Function]
+
+// As an ES6 module (if using webpack or Rollup).
+import { ClassicEditor } from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+ClassicEditor.create(...); // [Function]
+```
 
 ## What’s more?
 
