@@ -12,3 +12,7 @@ msgstr "Удебелен"
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
 msgstr "Курсив"
+
+msgctxt "Toolbar button tooltip for the Underline feature."
+msgid "Underline"
+msgstr ""

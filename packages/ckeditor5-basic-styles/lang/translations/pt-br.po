@@ -12,3 +12,7 @@ msgstr "Negrito"
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
 msgstr "Itálico"
+
+msgctxt "Toolbar button tooltip for the Underline feature."
+msgid "Underline"
+msgstr ""

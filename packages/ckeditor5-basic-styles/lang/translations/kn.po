@@ -12,3 +12,7 @@ msgstr "‍‍ದಪ್ಪ"
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
 msgstr "‍ಇಟಾಲಿಕ್"
+
+msgctxt "Toolbar button tooltip for the Underline feature."
+msgid "Underline"
+msgstr ""

@@ -12,3 +12,7 @@ msgstr "加粗"
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
 msgstr "倾斜"
+
+msgctxt "Toolbar button tooltip for the Underline feature."
+msgid "Underline"
+msgstr ""
