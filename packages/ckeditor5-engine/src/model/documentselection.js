@@ -392,14 +392,14 @@ export default class DocumentSelection extends Selection {
 	}
 
 	/**
-	 * Checks whether given attribute key is an attribute stored on an element.
+	 * Checks whether the given attribute key is an attribute stored on an element.
 	 *
 	 * @protected
 	 * @param {String} key
 	 * @returns {Boolean}
 	 */
 	static _isStoreAttributeKey( key ) {
-		return key.indexOf( storePrefix ) == 0;
+		return key.startsWith( storePrefix );
 	}
 
 	/**
