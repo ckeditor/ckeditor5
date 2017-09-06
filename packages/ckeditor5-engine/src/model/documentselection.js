@@ -392,6 +392,17 @@ export default class DocumentSelection extends Selection {
 	}
 
 	/**
+	 * Checks whether the given attribute key is an attribute stored on an element.
+	 *
+	 * @protected
+	 * @param {String} key
+	 * @returns {Boolean}
+	 */
+	static _isStoreAttributeKey( key ) {
+		return key.startsWith( storePrefix );
+	}
+
+	/**
 	 * Internal method for setting `DocumentSelection` attribute. Supports attribute priorities (through `directChange`
 	 * parameter).
 	 *

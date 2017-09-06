@@ -10,6 +10,7 @@
 import Position from './position';
 import Element from './element';
 import Range from './range';
+import DocumentSelection from './documentselection';
 import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import isArray from '@ckeditor/ckeditor5-utils/src/lib/lodash/isArray';
 import isString from '@ckeditor/ckeditor5-utils/src/lib/lodash/isString';
@@ -217,6 +218,13 @@ export default class Schema {
 		// Keep in mind that if the query has no attributes, query.attribute was converted to an array
 		// with a single `undefined` value. This fits the algorithm well.
 		for ( const attribute of query.attributes ) {
+			// Skip all attributes that are stored in elements.
+			// This isn't perfect solution but we have to deal with it for now.
+			// `attribute` may have `undefined` value.
+			if ( attribute && DocumentSelection._isStoreAttributeKey( attribute ) ) {
+				continue;
+			}
+
 			let matched = false;
 
 			for ( const schemaItem of schemaItems ) {
