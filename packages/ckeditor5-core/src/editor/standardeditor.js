@@ -10,6 +10,7 @@
 import Editor from './editor';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
 import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
+import isFunction from '@ckeditor/ckeditor5-utils/src/lib/lodash/isFunction';
 
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
@@ -61,6 +62,8 @@ export default class StandardEditor extends Editor {
 		 */
 
 		this.keystrokes.listenTo( this.editing.view );
+
+		this._attachToForm();
 	}
 
 	/**
@@ -101,6 +104,40 @@ export default class StandardEditor extends Editor {
 	 */
 	loadDataFromEditorElement() {
 		this.setData( getDataFromElement( this.element ) );
+	}
+
+	_attachToForm() {
+		const element = this.element;
+
+		// When replacing textarea which is inside form element.
+		if ( element.tagName.toLowerCase() === 'textarea' && element.form ) {
+			let originalSubmit;
+			const form = element.form;
+			const onSubmit = () => this.updateEditorElement();
+
+			// Replace original submit() method on a form to call our submit function before.
+			// Check if it is a function because it might contain an input with "submit" name.
+			if ( isFunction( form.submit ) ) {
+				originalSubmit = form.submit;
+
+				form.submit = () => {
+					onSubmit();
+					originalSubmit.apply( form );
+				};
+			}
+
+			// Update replaced textarea with data before each submit.
+			form.addEventListener( 'submit', onSubmit );
+
+			// Remove submit listener, and reset original submit method on editor destroy.
+			this.on( 'destroy', () => {
+				form.removeEventListener( 'submit', onSubmit );
+
+				if ( originalSubmit ) {
+					form.submit = originalSubmit;
+				}
+			} );
+		}
 	}
 
 	/**
