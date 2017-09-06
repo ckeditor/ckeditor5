@@ -13,7 +13,7 @@ When compared to its previous versions, CKEditor 5 should be considered **a tota
 
 There is no "drop in" solution for migrating. In this guide we hope to summarize the most important aspects to be taken into consideration before you proceed with installing CKEditor 5.
 
-Before starting, be sure that migrating is your best choice. Check {@link builds/guides/overview#When-NOT-to-use-CKEditor-5-Builds When NOT to use CKEditor 5 Builds?}
+Before starting, be sure that migrating is your best choice. Check {@link builds/guides/overview#When-NOT-to-use-builds When NOT to use CKEditor 5 Builds?}
 
 ## Installation and integration
 
@@ -44,7 +44,7 @@ The trickiest migration challenge to be faced may be related to custom plugins y
 
 The same may apply for third party plugins which may not have been ported to CKEditor 5 yet.
 
-Check the {@link builds/guides/integration/plugins#Creating-plugins Creating plugins guide} for more information on the development of plugins.
+Check the {@link builds/guides/development/plugins#Creating-plugins Creating plugins guide} for more information on the development of plugins.
 
 ## Themes (skins)
 

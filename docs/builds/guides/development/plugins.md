@@ -5,7 +5,7 @@
 # * Point to resources to learn plugins development.
 
 title: Plugins
-category: builds-integration
+category: builds-development
 order: 40
 ---
 
