@@ -52,6 +52,7 @@ gulp.task( 'docs', () => {
 
 		return runUmberto( {
 			skipLiveSnippets,
+			skipApi,
 			production
 		} );
 	}
@@ -93,7 +94,8 @@ function runUmberto( options ) {
 		skipLiveSnippets: options.skipLiveSnippets,
 		snippetOptions: {
 			production: options.production
-		}
+		},
+		skipApi: options.skipApi
 	} );
 }
 

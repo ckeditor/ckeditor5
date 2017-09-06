@@ -10,13 +10,21 @@ category: builds-guides
 order: 10
 ---
 
-CKEditor 5 Builds are a set of ready to use rich-text editors. Every "build" provides a single type of editor with a set of features and a default configuration. Our goal is to provide easy to use solutions that can satisfy a good part of the editing use cases out there.
+CKEditor 5 Builds are a set of ready to use rich text editors. Every "build" provides a single type of editor with a set of features and a default configuration. They provide easy to use solutions that can be installed with no effort and that satisfy the most common editing use cases.
 
-## Builds
+## Available builds
+
+The following CKEditor 5 Builds are currently available:
+
+ * [Classic editor](#Classic-editor)
+ * [Inline editor](#Inline-editor)
+ * [Balloon toolbar editor](#Balloon-toolbar-editor)
 
 ### Classic editor
 
 Classic editor is what most users traditionally learnt to associate with a rich text editor — a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
+
+The editor during initialisation hides given element on a page and renders "instead" of it, that's why it's usually used to replace `<textarea>` elements.
 
 In CKEditor 5 the concept of the "boxed" editor was reinvented:
 
@@ -30,33 +38,23 @@ To try it out, check the {@link examples/builds/classic-editor classic editor ex
 
 ### Inline editor
 
-The edited content remains a part of the page, with a floating toolbar attached:
+Inline editor comes with a floating toolbar, which becomes visible when the editor is focused (e.g. by clicking on it). Unlike classic editor, inline editor does not render "instead" of a given element, it simply makes it editable. As a consequence the styles of the edited content will be exactly the same before and after the editor is created.
+
+A common scenario for using inline editor is offering users the possibility to edit content in its real location in a web page, instead of doing it in a separate administration section.  
 
 {@img assets/img/editor-inline.png 774 Screenshot of an inline editor.}
 
 To try it out, check the {@link examples/builds/inline-editor inline editor example}.
 
-### Editor with balloon toolbar
+### Balloon toolbar editor
 
-The edited content remains a part of the page (like in the inline editor). The toolbar appears in a balloon next to the selection (when the selection is not empty):
+Balloon toolbar editor is very similar to the inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty):
 
 {@img assets/img/editor-balloon-toolbar.png 779 Screenshot of a baloon toolbar editor.}
 
 To try it out, check the {@link examples/builds/balloon-toolbar-editor balloon toolbar editor example}.
 
-## How builds are designed
-
-Each build was designed to satisfy as many use cases as possible. They differ in their UI, UX and features, and are based on the following approach:
-
-* Include the set of features proposed by the [Editor Recommendations project](https://ckeditor.github.io/editor-recommendations/).
-* Include features that contribute to creating quality content.
-* Provide setups as generic as possible, based on research and community feedback.
-
-<info-box>
-	Features like fonts, colors and alignment will be introduced in the future, when the new types of builds will be introduced with the purpose of satisfying document editing scenarios.
-</info-box>
-
-### Build customization
+## Builds customization
 
 Every build comes with a default set of features and a default configuration of them. Although the builds try to fit many cases, they may still need to be adjusted in some integrations. The following modifications are possible:
 
@@ -68,7 +66,21 @@ Read more in the {@link builds/guides/integration/configuration Configuration gu
 
 If a build doesn't provide all the necessary features or you want create a highly optimized build of editor which will contain only the necessary features, then you need to customize the build or create a brand new one. Check {@link builds/guides/development/custom-builds Custom builds} for details on how to change the default builds to match your preferences.
 
-## Use cases
+## Additional information
+
+### How builds were designed
+
+Each build was designed to satisfy as many use cases as possible. They differ in their UI, UX and features, and are based on the following approach:
+
+* Include the set of features proposed by the [Editor Recommendations project](https://ckeditor.github.io/editor-recommendations/).
+* Include features that contribute to creating quality content.
+* Provide setups as generic as possible, based on research and community feedback.
+
+<info-box>
+	Features like fonts, colors and alignment will be introduced in the future, when the new types of builds will be introduced with the purpose of satisfying document editing scenarios.
+</info-box>
+
+### Use cases
 
 Each of the builds fits several different use cases. Just think about any possible use for writing rich-text in applications.
 
@@ -91,7 +103,7 @@ The following are **some** common use cases:
 	* Social messaging and content sharing.
 	* Creation of ads in recruitment software.
 
-### When NOT to use CKEditor 5 builds?
+### When NOT to use builds?
 
 The {@link framework/index CKEditor 5 Framework} should be used, instead of builds, in the following cases:
 
