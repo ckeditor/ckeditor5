@@ -242,6 +242,16 @@ describe( 'Schema', () => {
 			it( 'should omit path elements that are added to schema', () => {
 				expect( schema.check( { name: '$inline', inside: '$block new $block' } ) ).to.be.true;
 			} );
+
+			it( 'should ignore attributes stored in elements by document selection', () => {
+				expect( schema.check( { name: '$block', attributes: 'selection:foo', inside: '$root' } ) ).to.be.true;
+			} );
+
+			it( 'should disallow attribute stored in an element if that attribute was explicitly disallowed', () => {
+				schema.disallow( { name: '$block', attributes: [ 'selection:foo' ], inside: '$root' } );
+
+				expect( schema.check( { name: '$block', attributes: [ 'selection:foo' ], inside: '$root' } ) ).to.be.false;
+			} );
 		} );
 
 		describe( 'array of elements as inside', () => {

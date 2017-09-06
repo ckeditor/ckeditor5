@@ -386,6 +386,16 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
+	describe( '_isStoreAttributeKey', () => {
+		it( 'should return true if given key is a key of an attribute stored in element by DocumentSelection', () => {
+			expect( DocumentSelection._isStoreAttributeKey( fooStoreAttrKey ) ).to.be.true;
+		} );
+
+		it( 'should return false if given key is not a key of an attribute stored in element by DocumentSelection', () => {
+			expect( DocumentSelection._isStoreAttributeKey( 'foo' ) ).to.be.false;
+		} );
+	} );
+
 	// DocumentSelection uses LiveRanges so here are only simple test to see if integration is
 	// working well, without getting into complicated corner cases.
 	describe( 'after applying an operation should get updated and fire events', () => {
