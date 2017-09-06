@@ -9,27 +9,17 @@ order: 10
 
 ## Download options
 
-The goal of installing any of the CKEditor 5 builds is to enable you to use its API when integrating it inside your application. For that purpose, several options are available:
+There are several options to download CKEditor 5 builds:
 
-* [Zip download](#Zip-download)
 * [CDN](#CDN)
 * [npm](#npm)
+* [Zip download](#Zip-download)
 
-Each of the builds has independent release packages. Check the {@link builds/guides/overview#Builds Overview} page for the list of available builds.
-
-### Zip download
-
-Go to https://ckeditor.com/ckeditor5-builds/download and download your preferred build. For example, you may download the `ckeditor5-build-classic-1.0.0.zip` file for the Classic editor build.
-
-Extract the above `.zip` file into a dedicated directory inside your website or application.
-
-The main entry point script will then be available at `<your-path>/ckeditor/build/ckeditor.js`.
+For the list of available builds check the {@link builds/guides/overview#Available-builds Overview} page. Once you download the editor jump to the {@link builds/guides/integration/basic-api Basic API guide} to see how to create editors. 
 
 ### CDN
 
-Builds can be loaded inside pages directly from our CDN, which is optimized for worldwide super fast download.
-
-Check out the {@linkTODO CKEditor 5 Builds CDN website} for a list of URL entry points for the builds API.
+Builds can be loaded inside pages directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super fast content delivery. When using CDN no download is actually needed.
 
 ### npm
 
@@ -41,7 +31,19 @@ Installing a classic build with npm is as simple as calling the following inside
 npm install --save @ckeditor/ckeditor5-build-classic
 ```
 
-The script entry point for the build class will then be found at `node_modules/ckeditor5-build-classic/build/ckeditor.js`.
+CKEditor will then be available at `node_modules/ckeditor5-build-classic/build/ckeditor.js`.
+
+### Zip download
+
+<info-box warning>
+This download method is not available yet.
+</info-box>
+
+Go to [CKEditor 5 builds download page](https://ckeditor.com/ckeditor5-builds/download) and download your preferred build. For example, you may download the `ckeditor5-build-classic-1.0.0.zip` file for the Classic editor build.
+
+Extract the above `.zip` file into a dedicated directory inside your website or application.
+
+CKEditor will then be available at `<your-path>/ckeditor/build/ckeditor.js`.
 
 ## Included files
 
@@ -59,11 +61,12 @@ Once downloaded and installed in your application, it is time to make the API av
 <script src="/ckeditor/build/ckeditor.js"></script>
 ```
 
+Once the CKEditor script is loaded, you can {@link builds/guides/integration/basic-api use the API} to create editors in your page.
+
 <info-box>
 	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it to your application if you use CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link builds/guides/integration/basic-api Basic API guide}.
 
 	Also, for a more advanced setup, you may wish to bundle the CKEditor script with other scripts used by your application. See {@linkTODO Bundling} for more information about it.
 </info-box>
 
-Once the CKEditor script is loaded, you can {@link builds/guides/integration/basic-api use the API} to create editors in your page.
 
