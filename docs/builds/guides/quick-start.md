@@ -21,10 +21,10 @@ In your HTML page add an element that CKEditor should replace:
 
 Load CKEditor 5, the classic editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 ```
-<script src="https://cdn.ckeditor.com/ckeditor5-build-classic/0.11.0/build/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5-build-classic/{@var ckeditor5-version}/build/ckeditor.js"></script>
 ```
 
-Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor#create`} method.
+Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method.
 ```
 <script>
 	ClassicEditor.create( document.querySelector( '#text-editor' ) );
@@ -39,7 +39,7 @@ Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `Classi
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 - Classic editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5-build-classic/0.11.0/build/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5-build-classic/{@var ckeditor5-version}/build/ckeditor.js"></script>
 </head>
 <body>
 <h1>Classic editor</h1>
@@ -55,15 +55,15 @@ Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `Classi
 
 In your HTML page add an element that CKEditor should make editable:
 ```
-<div id="text-editor"></textarea>
+<div id="text-editor"></div>
 ```
 
 Load CKEditor 5, the inline editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 ```
-<script src="https://cdn.ckeditor.com/ckeditor5-build-inline/0.11.0/build/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5-build-inline/{@var ckeditor5-version}/build/ckeditor.js"></script>
 ```
 
-Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor#create`} method.
+Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} method.
 ```
 <script>
 	InlineEditor.create( document.querySelector( '#text-editor' ) );
@@ -78,7 +78,7 @@ Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEdi
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 - Inline editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5-build-inline/0.11.0/build/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5-build-inline/{@var ckeditor5-version}/build/ckeditor.js"></script>
 </head>
 <body>
 <h1>Inline editor</h1>
@@ -93,15 +93,15 @@ Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEdi
 
 In your HTML page add an element that CKEditor should make editable:
 ```
-<div id="text-editor"></textarea>
+<div id="text-editor"></div>
 ```
 
 Load CKEditor 5, the balloon toolbar editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 ```
-<script src="https://cdn.ckeditor.com/ckeditor5-build-balloon-toolbar/0.11.0/build/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5-build-balloon-toolbar/{@var ckeditor5-version}/build/ckeditor.js"></script>
 ```
 
-Call the {@link module:editor-balloon-toolbar/balloontoolbareditor~BalloonToolbarEditor#create `BalloonToolbarEditor#create`} method.
+Call the {@link module:editor-balloon-toolbar/balloontoolbareditor~BalloonToolbarEditor#create `BalloonToolbarEditor.create()`} method.
 ```
 <script>
 	BalloonToolbarEditor.create( document.querySelector( '#text-editor' ) );
@@ -116,7 +116,7 @@ Call the {@link module:editor-balloon-toolbar/balloontoolbareditor~BalloonToolba
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 - Balloon toolbar editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5-build-balloon-toolbar/0.11.0/build/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5-build-balloon-toolbar/{@var ckeditor5-version}/build/ckeditor.js"></script>
 </head>
 <body>
 <h1>Balloon toolbar editor</h1>
