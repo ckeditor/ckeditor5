@@ -14,7 +14,7 @@ figure {
 		outline: none;
 
 		&.focused {
-			@include ck-focus-ring( 'outline' );
+			@include ck-focus-ring();
 			@include ck-box-shadow( $ck-inner-shadow );
 		}
 	}
