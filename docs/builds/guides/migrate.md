@@ -4,9 +4,9 @@
 # * Underline that migrating is a complex and important task.
 # * List and clarify the things that need attention when migrating.
 
-title: Migration
+title: Migration from CKEditor 4
 category: builds-guides
-order: 30
+order: 260
 ---
 
 When compared to its previous versions, CKEditor 5 should be considered **a totally new editor**. Every single aspect of it was redesigned, from installation, to integration, to features, to its data model, and finally to its API. Therefore, moving applications using a previous version to version 5 cannot be simply called an "upgrade". It is something bigger, so the "migration" term fits better.

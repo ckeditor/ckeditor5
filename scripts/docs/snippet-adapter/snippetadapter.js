@@ -16,6 +16,10 @@ const BabelMinifyPlugin = require( 'babel-minify-webpack-plugin' );
 const webpackProcesses = new Map();
 
 module.exports = function snippetAdapter( data ) {
+	if ( !data.snippetSource.js ) {
+		throw new Error( `Missing snippet source for "${ data.snippetPath }".` );
+	}
+
 	const snippetConfig = readSnippetConfig( data.snippetSource.js );
 	const outputPath = path.join( data.outputPath, data.snippetPath );
 	let sassImportPath;
@@ -80,9 +84,15 @@ function getWebpackConfig( config ) {
 
 	if ( config.minify ) {
 		plugins.push(
-			new BabelMinifyPlugin( null, {
-				comments: false
-			} )
+			new BabelMinifyPlugin(
+				{
+					// Temporary workaround for https://github.com/ckeditor/ckeditor5/issues/542.
+					mangle: false
+				},
+				{
+					comments: false
+				}
+			)
 		);
 	}
 
