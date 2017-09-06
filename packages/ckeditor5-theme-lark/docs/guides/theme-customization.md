@@ -26,41 +26,42 @@ The entire process of building and managing the styles boils down to three steps
 
 1. **Collecting**: Each JavaScript file in the project can import multiple `.scss` files using the ES6 [`import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) directive. Imported files are handled by the [CSS Loader](https://www.npmjs.com/package/css-loader).
 
-   ```js
-   import '../theme/theme.scss';
+	```js
+	import '../theme/theme.scss';
 
-   class AnyEditorClass {
-   	...
-   }
-   ```
+	class AnyEditorClass {
+		...
+	}
+	```
 
-   ```scss
-   // Contents of theme.scss.
-   $color: red;
+	```scss
+	// Contents of theme.scss.
+	$color: red;
 
-   .ck-editor {
-   	color: $color;
-   }
-   ```
+	.ck-editor {
+		color: $color;
+	}
+	```
 
 2. **Compiling**: The [SASS Loader](https://www.npmjs.com/package/sass-loader) compiles `.scss` files from SASS to CSS. Each file is compiled asynchronously, in a separate SASS thread.
 
-   ```scss
-   .ck-editor {
-   	color: $color; --> color: red;
-   }
-   ```
+	```scss
+	.ck-editor {
+		color: $color; // -> color: red;
+	}
+	```
 
 3. **Loading**: Finally the [Style loader](https://www.npmjs.com/package/style-loader) loads the output CSS along with the `ckeditor.js` file into a `<style>` element in the `<head>` section of the web page.
-   ```html
-   <head>
-   	<style type="text/css">
-   		.ck-editor {
-   			color: red;
-   		}
-   	</style>
-   </head>
-   ```
+
+	```html
+	<head>
+		<style type="text/css">
+			.ck-editor {
+				color: red;
+			}
+		</style>
+	</head>
+	```
 
 ## Customization with SASS variables
 
