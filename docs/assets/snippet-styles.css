@@ -45,8 +45,12 @@
 #snippet-inline-editor .ck-editor__editable {
 	margin-bottom: 1rem;
 	padding: 2rem;
+}
+
+#snippet-inline-editor .ck-editor__editable:not(.ck-focused) {
 	border: 1px solid rgba(0, 0, 0, 0.15);
 }
+
 #snippet-inline-editor h2, #snippet-inline-editor h3 {
 	margin-top: 0;
 	padding-top: 0;

@@ -22,12 +22,18 @@ module.exports = function snippetAdapter( data ) {
 
 	const snippetConfig = readSnippetConfig( data.snippetSource.js );
 	const outputPath = path.join( data.outputPath, data.snippetPath );
+	let sassImportPath;
+
+	if ( snippetConfig.sassImportPath ) {
+		sassImportPath = path.join( path.dirname( data.snippetSource.js ), snippetConfig.sassImportPath );
+	}
 
 	const webpackConfig = getWebpackConfig( {
 		entry: data.snippetSource.js,
 		outputPath,
 		language: snippetConfig.language,
-		minify: data.options.production
+		minify: data.options.production,
+		sassImportPath
 	} );
 
 	let promise;
@@ -129,7 +135,12 @@ function getWebpackConfig( config ) {
 									minimize: config.minify
 								}
 							},
-							'sass-loader'
+							{
+								loader: 'sass-loader',
+								options: {
+									data: config.sassImportPath ? `@import '${ config.sassImportPath }';` : ''
+								}
+							}
 						]
 					} )
 				}
