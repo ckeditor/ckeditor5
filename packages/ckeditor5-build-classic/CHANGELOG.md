@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [0.4.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v0.3.0...v0.4.0) (2017-09-07)
+
+### Other changes
+
+* The build now defines the editor as its default export. This makes requiring the build easier when using AMD, CJS or ES6 modules. See [ckeditor/ckeditor5#545](https://github.com/ckeditor/ckeditor5/issues/545). ([e5c7511](https://github.com/ckeditor/ckeditor5-build-classic/commit/e5c7511))
+
+### BREAKING CHANGES
+
+* The build now defines a default export instead of named export. See [ckeditor/ckeditor5#545](https://github.com/ckeditor/ckeditor5/issues/545).
+
+
 ## [0.3.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v0.2.0...v0.3.0) (2017-09-03)
 
 ### Features
