@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { InlineEditor } from '../../build/ckeditor';
+import InlineEditor from '../../build/ckeditor';
 
 InlineEditor.create( document.querySelector( '#editor' ) )
 	.then( editor => {

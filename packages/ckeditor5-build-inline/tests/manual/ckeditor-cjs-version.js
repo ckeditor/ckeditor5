@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-const InlineEditor = require( '../../build/ckeditor' ).InlineEditor;
+const InlineEditor = require( '../../build/ckeditor' );
 
 InlineEditor.create( document.querySelector( '#editor' ) )
 	.then( editor => {
