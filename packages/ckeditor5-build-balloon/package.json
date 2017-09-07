@@ -1,7 +1,7 @@
 {
-  "name": "@ckeditor/ckeditor5-build-balloon-toolbar",
+  "name": "@ckeditor/ckeditor5-build-balloon",
   "version": "0.1.0",
-  "description": "CKEditor 5 editor with a balloon toolbar build.",
+  "description": "CKEditor 5 balloon editor build.",
   "keywords": [
     "ckeditor5-build",
     "text editor",
@@ -10,7 +10,7 @@
   ],
   "main": "./build/ckeditor.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-editor-balloon-toolbar": "^0.1.0",
+    "@ckeditor/ckeditor5-editor-balloon": "^0.1.0",
     "@ckeditor/ckeditor5-presets": "^0.3.0",
     "@ckeditor/ckeditor5-autoformat": "^0.6.0",
     "@ckeditor/ckeditor5-basic-styles": "^0.9.0",
@@ -39,10 +39,10 @@
   "author": "CKSource (http://cksource.com/)",
   "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
   "homepage": "https://ckeditor5.github.io",
-  "bugs": "https://github.com/ckeditor/ckeditor5-build-balloon-toolbar/issues",
+  "bugs": "https://github.com/ckeditor/ckeditor5-build-balloon/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5-build-balloon-toolbar.git"
+    "url": "https://github.com/ckeditor/ckeditor5-build-balloon.git"
   },
   "scripts": {
     "build": "npm run create-entry-file && npm run build-ckeditor",

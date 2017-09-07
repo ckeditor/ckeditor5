@@ -7,10 +7,10 @@
 
 module.exports = {
 	// The editor creator to use.
-	editor: '@ckeditor/ckeditor5-editor-balloon-toolbar/src/balloontoolbareditor',
+	editor: '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor',
 
 	// The name under which the editor will be exported.
-	moduleName: 'BalloonToolbarEditor',
+	moduleName: 'BalloonEditor',
 
 	// Plugins to include in the build.
 	plugins: [

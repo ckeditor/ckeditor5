@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor 5 editor with a balloon toolbar build** – https://github.com/ckeditor/ckeditor5-build-balloon-toolbar <br>
+**CKEditor 5 balloon editor build** – https://github.com/ckeditor/ckeditor5-build-balloon <br>
 Copyright (c) 2003-2017, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of any of the following licenses at your choice:

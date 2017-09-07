@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-const BalloonToolbarEditor = require( '../../build/ckeditor' );
+const BalloonEditor = require( '../../build/ckeditor' );
 
-BalloonToolbarEditor.create( document.querySelector( '#editor' ) )
+BalloonEditor.create( document.querySelector( '#editor' ) )
 	.then( editor => {
 		window.editor = editor;
 	} )

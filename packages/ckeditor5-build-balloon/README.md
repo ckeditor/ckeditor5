@@ -1,12 +1,12 @@
-CKEditor 5 editor with a balloon toolbar build
+CKEditor 5 balloon editor build
 ==============================================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-build-balloon-toolbar.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon-toolbar)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-build-balloon-toolbar/status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-balloon-toolbar)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-build-balloon-toolbar/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-balloon-toolbar?type=dev)
+[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-build-balloon.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon)
+[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-build-balloon/status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-balloon)
+[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-build-balloon/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-balloon?type=dev)
 
-The editor with a balloon toolbar build. Read more in the [editor with a balloon toolbar](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/overview.html#Editor-with-balloon-toolbar) and see the [demo](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/builds/balloon-toolbar-editor.html).
+The balloon editor build. Read more in the [balloon editor](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/overview.html#Balloon-editor) and see the [demo](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/builds/balloon-editor.html).
 
 ## Documentation
 
@@ -22,7 +22,7 @@ See:
 First, install the build from npm:
 
 ```
-npm install --save @ckeditor/ckeditor5-build-balloon-toolbar
+npm install --save @ckeditor/ckeditor5-build-balloon
 ```
 
 And use it in your website:
@@ -31,9 +31,9 @@ And use it in your website:
 <div id="editor">
 	<p>This is the editor content.</p>
 </div>
-<script src="./node_modules/@ckeditor/ckeditor5-build-balloon-toolbar/build/ckeditor.js"></script>
+<script src="./node_modules/@ckeditor/ckeditor5-build-balloon/build/ckeditor.js"></script>
 <script>
-	BalloonToolbarEditor
+	BalloonEditor
 		.create( document.querySelector( '#editor' ) )
 		.then( editor => {
 			window.editor = editor;
@@ -47,12 +47,12 @@ And use it in your website:
 Or in your JavaScript application:
 
 ```js
-import BalloonToolbarEditor from '@ckeditor/ckeditor5-build-balloon-toolbar/build/ckeditor';
+import BalloonEditor from '@ckeditor/ckeditor5-build-balloon/build/ckeditor';
 
 // Or using CommonJS verion:
-// const BalloonToolbarEditor = require( '@ckeditor/ckeditor5-build-balloon-toolbar/build/ckeditor' );
+// const BalloonEditor = require( '@ckeditor/ckeditor5-build-balloon/build/ckeditor' );
 
-BalloonToolbarEditor
+BalloonEditor
 	.create( document.querySelector( '#editor' ) )
 	.then( editor => {
 		window.editor = editor;

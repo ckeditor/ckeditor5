@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import BalloonToolbarEditorBase from '@ckeditor/ckeditor5-editor-balloon-toolbar/src/balloontoolbareditor';
+import BalloonEditorBase from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 import EssentialsPlugin from '@ckeditor/ckeditor5-presets/src/essentials';
 import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
@@ -18,9 +18,9 @@ import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-export default class BalloonToolbarEditor extends BalloonToolbarEditorBase {}
+export default class BalloonEditor extends BalloonEditorBase {}
 
-BalloonToolbarEditor.build = {
+BalloonEditor.build = {
 	plugins: [
 		EssentialsPlugin,
 		AutoformatPlugin,

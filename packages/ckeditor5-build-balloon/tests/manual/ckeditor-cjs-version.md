@@ -1,4 +1,4 @@
-# CKEditor 5 editor with a balloon toolbar build – standard version (CommonJS `require()`)
+# CKEditor 5 balloon editor build – standard version (CommonJS `require()`)
 
 Just play with it.
 

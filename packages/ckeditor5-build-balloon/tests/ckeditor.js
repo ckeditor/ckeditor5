@@ -5,10 +5,10 @@
 
 /* globals document */
 
-import BalloonToolbarEditor from '../ckeditor';
-import BaseBalloonToolbarEditor from '@ckeditor/ckeditor5-editor-balloon-toolbar/src/balloontoolbareditor';
+import BalloonEditor from '../ckeditor';
+import BaseBalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 
-describe( 'BalloonToolbarEditor build', () => {
+describe( 'BalloonEditor build', () => {
 	let editor, editorElement;
 
 	beforeEach( () => {
@@ -24,17 +24,17 @@ describe( 'BalloonToolbarEditor build', () => {
 
 	describe( 'buid', () => {
 		it( 'contains plugins', () => {
-			expect( BalloonToolbarEditor.build.plugins ).to.not.be.empty;
+			expect( BalloonEditor.build.plugins ).to.not.be.empty;
 		} );
 
 		it( 'contains config', () => {
-			expect( BalloonToolbarEditor.build.config.toolbar ).to.not.be.empty;
+			expect( BalloonEditor.build.config.toolbar ).to.not.be.empty;
 		} );
 	} );
 
 	describe( 'create()', () => {
 		beforeEach( () => {
-			return BalloonToolbarEditor.create( editorElement )
+			return BalloonEditor.create( editorElement )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -44,9 +44,9 @@ describe( 'BalloonToolbarEditor build', () => {
 			return editor.destroy();
 		} );
 
-		it( 'creates an instance which inherits from the BalloonToolbarEditor', () => {
-			expect( editor ).to.be.instanceof( BalloonToolbarEditor );
-			expect( editor ).to.be.instanceof( BaseBalloonToolbarEditor );
+		it( 'creates an instance which inherits from the BalloonEditor', () => {
+			expect( editor ).to.be.instanceof( BalloonEditor );
+			expect( editor ).to.be.instanceof( BaseBalloonEditor );
 		} );
 
 		it( 'loads data from the editor element', () => {
@@ -56,7 +56,7 @@ describe( 'BalloonToolbarEditor build', () => {
 
 	describe( 'destroy()', () => {
 		beforeEach( () => {
-			return BalloonToolbarEditor.create( editorElement )
+			return BalloonEditor.create( editorElement )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
