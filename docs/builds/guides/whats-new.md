@@ -15,13 +15,13 @@ CKEditor 5 strives to provide a truly seamless, distraction-free editing experie
 
 ### Better images
 
-Inserting images into the content is now very intuitive, with all technical aspects (uploading, resizing) hidden from the user experience. No more complex dialogs.
+Inserting images into the content is now very intuitive, with all technical aspects (uploading, resizing) hidden from the user experience. No more complex dialogs!
 
 [ TODO Animated GIF of pasting ]
 
 [ TODO Animated GIF of DnD ]
 
-The outdated concept of image "alignment" was dropped in favor of {@link features/image#Image-styles image styles}:
+The outdated concept of image alignment was dropped in favor of {@link features/image#Image-styles image styles}:
 
 [ TODO Animated GIF of styles ]
 
@@ -55,13 +55,13 @@ The editor content is now placed inline in the page &mdash; it is now much easie
 
 [ TODO Animated GIF of the editor growing when typing ]
 
-## Less features == better content
+## Fewer features == better content
 
 We focused on creating a tool for writing quality content. At the same time, we simplified the integration of the editor into your system.
 
-We feel that in previous editor versions we had way too many features and configurations. This was confusing developers and at the same time negatively impacting the end-user experience.
+We feel that in previous editor versions we had way too many features and configurations. This was confusing developers and at the same time negatively impacting the end user experience.
 
-In CKEditor 5 misleading formatting tools were removed, dialogs were stripped out or simplified in favor of well designed features that require no configuration.
+In CKEditor 5 misleading formatting tools were removed, dialogs were stripped out or simplified in favor of well-designed features that require no configuration.
 
 {@img assets/img/feature-toolbar.png 610 Simplified toolbar with features designed for writing quality content.}
 
@@ -71,7 +71,7 @@ The editor is much more lightweight and fast. It brings a fantastic user experie
 
 ## Highly customizable
 
-CKEditor 5 Builds are based on the {@link framework/index CKEditor 5 Framework}, which gives powerful customizability and extensibility possibilities.
+CKEditor 5 Builds are based on the {@link framework/index CKEditor 5 Framework}, which gives powerful customizability and extensibility.
 
 ## Custom data model
 

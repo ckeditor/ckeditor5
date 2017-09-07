@@ -19,12 +19,12 @@ Most of the examples in the documentation use the `ClassicEditor` class, but thi
 
 Regardless of chosen build, creating an editor is done using a static `create()` method.
 
-### Example - Classic editor
+### Example – Classic editor
 
 In your HTML page add an element that CKEditor should replace:
 
 ```html
-<textarea id="editor">
+<textarea name="content" id="editor">
 	&lt;p&gt;Here goes the initial content of the editor.&lt;/p&gt;
 </textarea>
 ```
@@ -44,7 +44,7 @@ ClassicEditor
 
 In the above case, the `<textarea>` element is hidden and replaced with an editor. The `<textarea>` data is used to initialize the editor content. A `<div>` element can be used in the same fashion.
 
-### Example - Inline editor
+### Example – Inline editor
 
 Similarly to the previous example, add an element where CKEditor should initialize:
 
@@ -106,7 +106,7 @@ editor.destroy()
 
 Once destroyed, resources used by the editor instance are released and the original element used to create the editor is automatically displayed and updated to reflect the final editor data.
 
-## UMD support 
+## UMD support
 
 Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), it is worth noting that editor classes can be retrieved in various ways:
 
@@ -118,22 +118,22 @@ For example:
 
 ```js
 // In CommonJS environment.
-const ClassicEditor = require( '[ckeditor path]/build/ckeditor' );
-ClassicEditor.create(...); // [Function]
+const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic/build/ckeditor' );
+ClassicEditor.create( ... ); // [Function]
 
 // If AMD is present, you can do this.
-require( '/[ckeditor path]/build/ckeditor', ClassicEditor => {
-	ClassicEditor.create(...); // [Function]
+require( [ 'path/to/ckeditor5-build-classic/build/ckeditor' ], ClassicEditor => {
+	ClassicEditor.create( ... ); // [Function]
 } );
 
 // As a global variable.
-ClassicEditor.create(...); // [Function]
+ClassicEditor.create( ... ); // [Function]
 
 // As an ES6 module (if using webpack or Rollup).
-import { ClassicEditor } from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
-ClassicEditor.create(...); // [Function]
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+ClassicEditor.create( ... ); // [Function]
 ```
 
-## What’s more?
+## What's more?
 
 CKEditor offers a rich API to interact with editors. Check out the {@link api/index API documentation} for more.

@@ -33,7 +33,7 @@ Therefore, it is worth spending some time analyzing required features.
 CKEditor 5 was designed with focus on creating quality content. There are thus good reasons for it to not support some old features. You should take this chance to rethink the features available in your application and in turn perhaps switch the approach towards a more modern reasoning.
 
 <info-box>
-Features like fonts, colors and alignment will be introduced in the future, when the new types of builds will be introduced with the purpose of satisfying document editing scenarios.  
+Features like fonts, colors and alignment will be introduced in the future, when the new types of builds will be introduced with the purpose of satisfying document editing scenarios.
 </info-box>
 
 <!-- TODO 4 -->
@@ -50,7 +50,8 @@ Check the {@link builds/guides/development/plugins#Creating-plugins Creating plu
 
 In CKEditor 5, the previous concept of "skins" was reviewed and is now called "themes".
 
-If you have custom skins for CKEditor 4, these skins need to be recreated for CKEditor 5. Fortunately custom theming in CKEditor 5 is much more powerful and simpler than before. 
+If you have custom skins for CKEditor 4, these skins need to be recreated for CKEditor 5. Fortunately custom theming in CKEditor 5 is much more powerful and simpler than before.
+
 <!--
 For more information, check how to {@linkTODO create new themes in the CKEditor 5 Framework documentation}.
 -->
@@ -59,4 +60,4 @@ For more information, check how to {@linkTODO create new themes in the CKEditor 
 
 An extremely important aspect to be remembered is that &mdash; because of the difference in features &mdash; the data produced with CKEditor 4 may not be compatible with CKEditor 5.
 
-Extensive analysis, data verification and tests should be performed on existing data. If necessary, conversion procedures should be developed to avoid data loss. A relatively simple yet efficient strategy of adopting CKEditor 5 into existing systems might be using CKEditor 5 for creating new content and the old editor for editing legacy content. 
+Extensive analysis, data verification and tests should be performed on existing data. If necessary, conversion procedures should be developed to avoid data loss. A relatively simple yet efficient strategy of adopting CKEditor 5 into existing systems might be using CKEditor 5 for creating new content and the old editor for editing legacy content.
