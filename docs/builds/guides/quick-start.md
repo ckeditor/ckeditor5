@@ -17,7 +17,7 @@ Creating an editor using a CKEditor 5 build is very simple and can be described 
 In your HTML page add an element that CKEditor should replace:
 
 ```html
-<textarea name="editor1" id="editor"></textarea>
+<textarea name="content" id="editor"></textarea>
 ```
 
 Load CKEditor 5, the classic editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
@@ -50,7 +50,9 @@ Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `Classi
 </head>
 <body>
 	<h1>Classic editor</h1>
-	<textarea name="editor1" id="editor">&lt;p&gt;This is some sample content.&lt;/p&gt;</textarea>
+	<textarea name="content" id="editor">
+		&lt;p&gt;This is some sample content.&lt;/p&gt;
+	</textarea>
 	<script>
 		ClassicEditor
 			.create( document.querySelector( '#editor' ) )
@@ -100,7 +102,9 @@ Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEdi
 </head>
 <body>
 	<h1>Inline editor</h1>
-	<div id="editor"><p>This is some sample content.</p></div>
+	<div id="editor">
+		<p>This is some sample content.</p>
+	</div>
 	<script>
 		InlineEditor
 			.create( document.querySelector( '#editor' ) )
@@ -150,7 +154,9 @@ Call the {@link module:editor-balloon-toolbar/balloontoolbareditor~BalloonToolba
 </head>
 <body>
 	<h1>Balloon toolbar editor</h1>
-	<div id="editor"><p>This is some sample content.</p></div>
+	<div id="editor">
+		<p>This is some sample content.</p>
+	</div>
 	<script>
 		BalloonToolbarEditor
 			.create( document.querySelector( '#editor' ) )

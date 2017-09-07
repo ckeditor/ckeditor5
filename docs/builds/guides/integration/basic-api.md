@@ -24,7 +24,7 @@ Regardless of chosen build, creating an editor is done using a static `create()`
 In your HTML page add an element that CKEditor should replace:
 
 ```html
-<textarea id="editor">
+<textarea name="content" id="editor">
 	&lt;p&gt;Here goes the initial content of the editor.&lt;/p&gt;
 </textarea>
 ```
