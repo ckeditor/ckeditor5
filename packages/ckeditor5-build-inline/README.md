@@ -47,10 +47,10 @@ And use it in your website:
 Or in your JavaScript application:
 
 ```js
-import { InlineEditor } from '@ckeditor/ckeditor5-build-inline/build/ckeditor';
+import InlineEditor from '@ckeditor/ckeditor5-build-inline/build/ckeditor';
 
 // Or using CommonJS verion:
-// const InlineEditor = require( '@ckeditor/ckeditor5-build-inline/build/ckeditor' ).InlineEditor;
+// const InlineEditor = require( '@ckeditor/ckeditor5-build-inline/build/ckeditor' );
 
 InlineEditor
 	.create( document.querySelector( '#editor' ) )
