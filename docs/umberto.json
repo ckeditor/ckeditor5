@@ -119,6 +119,11 @@
 					"name": "Builds",
 					"id": "examples-builds",
 					"slug": "builds"
+				},
+				{
+				  "name": "Framework",
+				  "id": "examples-framework",
+				  "slug": "framework"
 				}
 			]
 		}

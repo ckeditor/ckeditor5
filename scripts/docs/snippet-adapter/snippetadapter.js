@@ -12,6 +12,7 @@ const { bundler } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
 const BabelMinifyPlugin = require( 'babel-minify-webpack-plugin' );
+const cheerio = require( 'cheerio' );
 
 const webpackProcesses = new Map();
 
@@ -48,6 +49,19 @@ module.exports = function snippetAdapter( data ) {
 				cssFiles.unshift( path.join( data.relativeOutputPath, data.snippetPath, 'snippet.css' ) );
 			}
 
+			// If the snippet is a dependency of a parent snippet, append JS and CSS to HTML.
+			if ( data.isDependency ) {
+				const htmlFile = fs.readFileSync( data.snippetSource.html ).toString();
+				const $ = cheerio.load( htmlFile );
+				$( 'body' ).append( '<script src="snippet.js"></script>' );
+
+				if ( wasCSSGenerated ) {
+					$( 'head' ).append( '<link rel="stylesheet" href="snippet.css" type="text/css">' );
+				}
+
+				fs.writeFileSync( path.join( outputPath, 'snippet.html' ), $.html() );
+			}
+
 			return {
 				html: fs.readFileSync( data.snippetSource.html ),
 				assets: {
@@ -55,7 +69,8 @@ module.exports = function snippetAdapter( data ) {
 						path.join( data.relativeOutputPath, data.snippetPath, 'snippet.js' )
 					],
 					css: cssFiles
-				}
+				},
+				dependencies: snippetConfig.dependencies
 			};
 		} );
 };
