@@ -106,6 +106,12 @@ export default class StandardEditor extends Editor {
 		this.setData( getDataFromElement( this.element ) );
 	}
 
+	/**
+	 * Checks if editor is initialized on textarea element that belongs to a form. If yes - updates editor's element
+	 * contents before submitting the form.
+	 *
+	 * @private
+	 */
 	_attachToForm() {
 		const element = this.element;
 
