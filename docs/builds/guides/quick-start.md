@@ -12,6 +12,10 @@ Creating an editor using a CKEditor 5 build is very simple and can be described 
 1. Load the desired editor via the `<script>` tag.
 2. Call the static `create()` method to create the editor.
 
+<info-box>
+	There are other installation and integration methods available. For more information check {@link builds/guides/integration/installation Installation} and {@link builds/guides/integration/basic-api Basic API} guides.
+</info-box>
+
 ## Classic editor
 
 In your HTML page add an element that CKEditor should replace:
@@ -23,7 +27,7 @@ In your HTML page add an element that CKEditor should replace:
 Load CKEditor 5, the classic editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5-build-classic/{@var ckeditor5-version}/build/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
 ```
 
 Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method.
@@ -46,7 +50,7 @@ Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `Classi
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 - Classic editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5-build-classic/{@var ckeditor5-version}/build/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
 </head>
 <body>
 	<h1>Classic editor</h1>
@@ -75,7 +79,7 @@ In your HTML page add an element that CKEditor should make editable:
 Load CKEditor 5, the inline editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5-build-inline/{@var ckeditor5-version}/build/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/inline/ckeditor.js"></script>
 ```
 
 Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} method.
@@ -98,7 +102,7 @@ Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEdi
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 - Inline editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5-build-inline/{@var ckeditor5-version}/build/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/inline/ckeditor.js"></script>
 </head>
 <body>
 	<h1>Inline editor</h1>
@@ -127,7 +131,7 @@ In your HTML page add an element that CKEditor should make editable:
 Load CKEditor 5, the balloon editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5-build-balloon/{@var ckeditor5-version}/build/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon/ckeditor.js"></script>
 ```
 
 Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
@@ -150,7 +154,7 @@ Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `Balloo
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 – Balloon editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5-build-balloon/{@var ckeditor5-version}/build/ckeditor.js"></script>
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon/ckeditor.js"></script>
 </head>
 <body>
 	<h1>Balloon editor</h1>
