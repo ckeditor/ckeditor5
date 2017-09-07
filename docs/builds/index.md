@@ -17,4 +17,4 @@ CKEditor 5 Builds are the fastest and easiest way to use CKEditor 5 in your appl
 
 ## Contribute
 
-CKEditor is an Open Source project and your contribution is most welcome. Feel free to {@link builds/guides/reporting-issues report bugs} or improve the code on [GitHub](https://github.com/ckeditor/ckeditor5). Since CKEditor is localized, you can also help [translating it](https://www.transifex.com/ckeditor/ckeditor5/). You do not need to be a programmer to contribute to the project!
+CKEditor is an Open Source project and your contribution is most welcome. Feel free to {@link builds/guides/reporting-issues report bugs} or improve the code on [GitHub](https://github.com/ckeditor/ckeditor5). Since CKEditor is localized, you can also help [to translate it](https://www.transifex.com/ckeditor/ckeditor5/). You do not need to be a programmer to contribute to the project!

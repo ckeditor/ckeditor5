@@ -7,9 +7,9 @@ category: builds-guides
 order: 30
 ---
 
-Creating an editor using CKEditor 5 build is very simple and in short can be described in two steps:
+Creating an editor using a CKEditor 5 build is very simple and can be described in two steps:
  
-1. Load the desired editor via `<script>` tag.
+1. Load the desired editor via the `<script>` tag.
 2. Call the static `create` method to create the editor.
 
 ## Classic editor
@@ -89,6 +89,7 @@ Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEdi
 </body>
 </html>
 ```
+
 ## Balloon toolbar editor
 
 In your HTML page add an element that CKEditor should make editable:
