@@ -18,7 +18,7 @@ import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-export class BalloonToolbarEditor extends BalloonToolbarEditorBase {}
+export default class BalloonToolbarEditor extends BalloonToolbarEditorBase {}
 
 BalloonToolbarEditor.build = {
 	plugins: [

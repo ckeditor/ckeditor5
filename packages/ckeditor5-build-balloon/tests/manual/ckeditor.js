@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { BalloonToolbarEditor } from '../../build/ckeditor';
+import BalloonToolbarEditor from '../../build/ckeditor';
 
 BalloonToolbarEditor.create( document.querySelector( '#editor' ) )
 	.then( editor => {
