@@ -12,7 +12,6 @@ const { bundler } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
 const BabelMinifyPlugin = require( 'babel-minify-webpack-plugin' );
-const cheerio = require( 'cheerio' );
 
 const webpackProcesses = new Map();
 
@@ -51,15 +50,14 @@ module.exports = function snippetAdapter( data ) {
 
 			// If the snippet is a dependency of a parent snippet, append JS and CSS to HTML.
 			if ( data.isDependency ) {
-				const htmlFile = fs.readFileSync( data.snippetSource.html ).toString();
-				const $ = cheerio.load( htmlFile );
-				$( 'body' ).append( '<script src="snippet.js"></script>' );
-
+				let htmlFile = fs.readFileSync( data.snippetSource.html ).toString();
 				if ( wasCSSGenerated ) {
-					$( 'head' ).append( '<link rel="stylesheet" href="snippet.css" type="text/css">' );
+					htmlFile += '<link rel="stylesheet" href="snippet.css" type="text/css">';
 				}
 
-				fs.writeFileSync( path.join( outputPath, 'snippet.html' ), $.html() );
+				htmlFile += '<script src="snippet.js"></script>';
+
+				fs.writeFileSync( path.join( outputPath, 'snippet.html' ), htmlFile );
 			}
 
 			return {
