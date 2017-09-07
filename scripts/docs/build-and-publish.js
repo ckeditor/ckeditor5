@@ -1,0 +1,57 @@
+#!/usr/bin/env node
+
+/**
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/* eslint-env node */
+
+'use strict';
+
+const path = require( 'path' );
+const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
+
+const mainRepoUrl = 'https://github.com/CKEditor5/ckeditor5.github.io';
+
+// The assumption here is that the script is called from ckeditor5/.
+const projectVersion = require( path.join( process.cwd(), 'package.json' ) ).version;
+
+console.log( 'Updating your ckeditor5.github.io clone...' );
+exec( 'cd ../ckeditor5.github.io && git pull && cd -' );
+
+console.log( 'Building documentation...' );
+exec( 'gulp docs --production' );
+
+console.log( 'Copying files...' );
+
+// Remove existing documentation.
+exec( `rm -rf ../ckeditor5.github.io/docs/nightly/ckeditor5/${ projectVersion }` );
+exec( 'rm -rf ../ckeditor5.github.io/docs/nightly/ckeditor5/latest' );
+
+// Copy built documentation to the new destination.
+exec( 'cp -R build/docs/* ../ckeditor5.github.io/docs/nightly/' );
+
+// Copy the versioned documentation to latest/.
+exec( 'mkdir ../ckeditor5.github.io/docs/nightly/ckeditor5/latest' );
+exec( `cp -R ../ckeditor5.github.io/docs/nightly/ckeditor5/${ projectVersion }/* ../ckeditor5.github.io/docs/nightly/ckeditor5/latest` );
+
+process.chdir( path.join( process.cwd(), '..', 'ckeditor5.github.io' ) );
+
+// Commit the documentation.
+if ( exec( 'git diff --name-only docs/' ).trim().length ) {
+	exec( 'git add docs/' );
+	exec( 'git commit -m "Documentation build."' );
+	exec( 'git push origin master --quiet' );
+
+	const lastCommit = exec( 'git log -1 --format="%h"' );
+	console.log( `Successfully published the documentation under ${ mainRepoUrl }/commit/${ lastCommit }` );
+} else {
+	console.log( 'Nothing to commit. Documentation is up to date.' );
+}
+
+process.chdir( path.join( process.cwd(), '..', 'ckeditor5' ) );
+
+function exec( command ) {
+	return tools.shExec( command, { verbosity: 'error' } );
+}
