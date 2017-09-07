@@ -5,10 +5,10 @@
 
 /* globals document */
 
-import { ClassicEditor } from '../ckeditor';
+import ClassicEditor from '../ckeditor';
 import BaseClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
-describe( 'ClassicEditor', () => {
+describe( 'ClassicEditor build', () => {
 	let editor, editorElement;
 
 	beforeEach( () => {
