@@ -22,7 +22,9 @@ module.exports = {
 	output: {
 		path: path.resolve( __dirname, 'build' ),
 		filename: 'ckeditor.js',
-		libraryTarget: 'umd'
+		libraryTarget: 'umd',
+		libraryExport: 'default',
+		library: buildConfig.moduleName
 	},
 
 	plugins: [

@@ -47,10 +47,10 @@ And use it in your website:
 Or in your JavaScript application:
 
 ```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
 
 // Or using CommonJS verion:
-// const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic/build/ckeditor' ).ClassicEditor;
+// const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic/build/ckeditor' );
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ) )
