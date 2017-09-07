@@ -174,14 +174,14 @@ Read more in the [Support](https://github.com/ckeditor/ckeditor5/wiki/Support) w
 
 <tr>
 	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-editor-balloon-toolbar"><code>@ckeditor/ckeditor5-editor-balloon-toolbar</code></a>
+		<a href="https://github.com/ckeditor/ckeditor5-editor-balloon"><code>@ckeditor/ckeditor5-editor-balloon</code></a>
 		<br>
-		The editor with a balloon toolbar (Medium-like) implementation.
+		The balloon editor (Medium-like) implementation.
 	</td>
 	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon-toolbar"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-balloon-toolbar.svg" alt="ckeditor5-editor-balloon-toolbar npm package badge"></a>
-		<a href="https://travis-ci.org/ckeditor/ckeditor5-editor-balloon-toolbar"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-editor-balloon-toolbar/master.svg" alt="build status badge"></a>
-		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-editor-balloon-toolbar/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-editor-balloon-toolbar.svg" alt="ckeditor5-editor-balloon-toolbar coverage badge"></a>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-balloon.svg" alt="ckeditor5-editor-balloon npm package badge"></a>
+		<a href="https://travis-ci.org/ckeditor/ckeditor5-editor-balloon"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-editor-balloon/master.svg" alt="build status badge"></a>
+		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-editor-balloon/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-editor-balloon.svg" alt="ckeditor5-editor-balloon coverage badge"></a>
 	</td>
 </tr>
 
@@ -450,14 +450,14 @@ Read more in the [Support](https://github.com/ckeditor/ckeditor5/wiki/Support) w
 
 <tr>
 	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-build-balloon-toolbar"><code>@ckeditor/ckeditor5-build-balloon-toolbar</code></a>
+		<a href="https://github.com/ckeditor/ckeditor5-build-balloon"><code>@ckeditor/ckeditor5-build-balloon</code></a>
 		<br>
-		The editor with a balloon toolbar (Medium-like) build.
+		The balloon editor (Medium-like) build.
 	</td>
 	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon-toolbar"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-balloon-toolbar.svg" alt="ckeditor5-build-balloon-toolbar npm package badge"></a>
-		<a href="https://travis-ci.org/ckeditor/ckeditor5-build-balloon-toolbar"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-build-balloon-toolbar/master.svg" alt="build status badge"></a>
-		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-build-balloon-toolbar/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-build-balloon-toolbar.svg" alt="ckeditor5-build-balloon-toolbar coverage badge"></a>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-balloon.svg" alt="ckeditor5-build-balloon npm package badge"></a>
+		<a href="https://travis-ci.org/ckeditor/ckeditor5-build-balloon"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-build-balloon/master.svg" alt="build status badge"></a>
+		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-build-balloon/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-build-balloon.svg" alt="ckeditor5-build-balloon coverage badge"></a>
 	</td>
 </tr>
 

@@ -11,7 +11,7 @@ Each CKEditor 5 build provides a different class that handles the creation of ed
 
 * Classic editor – {@link module:editor-classic/classiceditor~ClassicEditor}
 * Inline editor – {@link module:editor-inline/inlineeditor~InlineEditor}
-* Balloon toolbar editor – {@link module:editor-balloon-toolbar/balloontoolbareditor~BalloonToolbarEditor}
+* Balloon editor – {@link module:editor-balloon/ballooneditor~BalloonEditor}
 
 Most of the examples in the documentation use the `ClassicEditor` class, but things should work in a similar way with other builds.
 

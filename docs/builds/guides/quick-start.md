@@ -116,7 +116,7 @@ Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEdi
 </html>
 ```
 
-## Balloon toolbar editor
+## Balloon editor
 
 In your HTML page add an element that CKEditor should make editable:
 
@@ -124,17 +124,17 @@ In your HTML page add an element that CKEditor should make editable:
 <div id="editor"></div>
 ```
 
-Load CKEditor 5, the balloon toolbar editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+Load CKEditor 5, the balloon editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5-build-balloon-toolbar/{@var ckeditor5-version}/build/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5-build-balloon/{@var ckeditor5-version}/build/ckeditor.js"></script>
 ```
 
-Call the {@link module:editor-balloon-toolbar/balloontoolbareditor~BalloonToolbarEditor#create `BalloonToolbarEditor.create()`} method.
+Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
 
 ```html
 <script>
-	BalloonToolbarEditor
+	BalloonEditor
 		.create( document.querySelector( '#editor' ) )
 		.catch( error => {
 			console.error( error );
@@ -149,16 +149,16 @@ Call the {@link module:editor-balloon-toolbar/balloontoolbareditor~BalloonToolba
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor 5 – Balloon toolbar editor</title>
-	<script src="https://cdn.ckeditor.com/ckeditor5-build-balloon-toolbar/{@var ckeditor5-version}/build/ckeditor.js"></script>
+	<title>CKEditor 5 – Balloon editor</title>
+	<script src="https://cdn.ckeditor.com/ckeditor5-build-balloon/{@var ckeditor5-version}/build/ckeditor.js"></script>
 </head>
 <body>
-	<h1>Balloon toolbar editor</h1>
+	<h1>Balloon editor</h1>
 	<div id="editor">
 		<p>This is some sample content.</p>
 	</div>
 	<script>
-		BalloonToolbarEditor
+		BalloonEditor
 			.create( document.querySelector( '#editor' ) )
 			.catch( error => {
 				console.error( error );

@@ -5,12 +5,12 @@
 
 /* globals console, window, document */
 
-import BalloonToolbarEditor from '@ckeditor/ckeditor5-editor-balloon-toolbar/src/balloontoolbareditor';
+import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 
 import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
 
-BalloonToolbarEditor
-	.create( document.querySelector( '#snippet-balloon-toolbar-editor' ), {
+BalloonEditor
+	.create( document.querySelector( '#snippet-balloon-editor' ), {
 		plugins: [ ArticlePreset ],
 		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {
