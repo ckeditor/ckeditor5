@@ -22,7 +22,7 @@
     "@ckeditor/ckeditor5-paragraph": "^0.9.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^3.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^4.0.0",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^2.0.11",
     "babel-minify-webpack-plugin": "^0.2.0",
     "css-loader": "^0.28.5",

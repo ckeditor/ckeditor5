@@ -5,10 +5,10 @@
 
 /* globals document */
 
-import { BalloonToolbarEditor } from '../ckeditor';
+import BalloonToolbarEditor from '../ckeditor';
 import BaseBalloonToolbarEditor from '@ckeditor/ckeditor5-editor-balloon-toolbar/src/balloontoolbareditor';
 
-describe( 'BalloonToolbarEditor', () => {
+describe( 'BalloonToolbarEditor build', () => {
 	let editor, editorElement;
 
 	beforeEach( () => {

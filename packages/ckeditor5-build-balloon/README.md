@@ -47,10 +47,10 @@ And use it in your website:
 Or in your JavaScript application:
 
 ```js
-import { BalloonToolbarEditor } from '@ckeditor/ckeditor5-build-balloon-toolbar/build/ckeditor';
+import BalloonToolbarEditor from '@ckeditor/ckeditor5-build-balloon-toolbar/build/ckeditor';
 
 // Or using CommonJS verion:
-// const BalloonToolbarEditor = require( '@ckeditor/ckeditor5-build-balloon-toolbar/build/ckeditor' ).BalloonToolbarEditor;
+// const BalloonToolbarEditor = require( '@ckeditor/ckeditor5-build-balloon-toolbar/build/ckeditor' );
 
 BalloonToolbarEditor
 	.create( document.querySelector( '#editor' ) )
