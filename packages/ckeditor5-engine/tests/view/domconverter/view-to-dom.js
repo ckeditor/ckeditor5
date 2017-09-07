@@ -413,11 +413,11 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'text node before in a preformatted node', () => {
-				const viewCode = new ViewAttributeElement( 'code', null, new ViewText( 'foo   ' ) );
+				const viewCode = new ViewAttributeElement( 'pre', null, new ViewText( 'foo   ' ) );
 				const viewDiv = new ViewContainerElement( 'div', null, [ viewCode, new ViewText( ' bar' ) ] );
 				const domDiv = converter.viewToDom( viewDiv, document );
 
-				expect( domDiv.innerHTML ).to.equal( '<code>foo   </code> bar' );
+				expect( domDiv.innerHTML ).to.equal( '<pre>foo   </pre> bar' );
 			} );
 		} );
 	} );
