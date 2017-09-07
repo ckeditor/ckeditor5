@@ -15,7 +15,7 @@ There are several options to download CKEditor 5 builds:
 * [npm](#npm)
 * [Zip download](#Zip-download)
 
-For the list of available builds check the {@link builds/guides/overview#Available-builds Overview} page. Once you download the editor jump to the {@link builds/guides/integration/basic-api Basic API guide} to see how to create editors. 
+For the list of available builds check the {@link builds/guides/overview#Available-builds Overview} page. Once you download the editor jump to the {@link builds/guides/integration/basic-api Basic API guide} to see how to create editors.
 
 ### CDN
 
@@ -25,13 +25,17 @@ Builds can be loaded inside pages directly from [CKEditor CDN](https://cdn.ckedi
 
 All builds are released on npm. [Use this search link](https://www.npmjs.com/search?q=keywords:ckeditor5-build&page=1&ranking=optimal) to view all build packages available in npm.
 
-Installing a classic build with npm is as simple as calling the following inside your website or application:
+Installing a build with npm is as simple as calling one of the following commands in your project:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-classic
+# Or:
+npm install --save @ckeditor/ckeditor5-build-inline
+# Or:
+npm install --save @ckeditor/ckeditor5-build-balloon
 ```
 
-CKEditor will then be available at `node_modules/ckeditor5-build-classic/build/ckeditor.js`.
+CKEditor will then be available at `node_modules/ckeditor5-build-[name]/build/ckeditor.js`.
 
 ### Zip download
 
@@ -58,7 +62,7 @@ The following are the main files available in all build distributions:
 Once downloaded and installed in your application, it is time to make the API available in your pages. For that purpose, it is enough to load the API entry point script:
 
 ```html
-<script src="[ckeditor path]/build/ckeditor.js"></script>
+<script src="path/to/ckeditor5-build-[name]/build/ckeditor.js"></script>
 ```
 
 Once the CKEditor script is loaded, you can {@link builds/guides/integration/basic-api use the API} to create editors in your page.
