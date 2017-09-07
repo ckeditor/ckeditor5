@@ -116,7 +116,7 @@ export default class StandardEditor extends Editor {
 		const element = this.element;
 
 		// When replacing textarea which is inside form element.
-		if ( element.tagName.toLowerCase() === 'textarea' && element.form ) {
+		if ( element && element.tagName.toLowerCase() === 'textarea' && element.form ) {
 			let originalSubmit;
 			const form = element.form;
 			const onSubmit = () => this.updateEditorElement();
