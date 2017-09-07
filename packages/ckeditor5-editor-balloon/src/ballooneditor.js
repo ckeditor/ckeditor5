@@ -4,27 +4,27 @@
  */
 
 /**
- * @module editor-balloon-toolbar/balloontoolbareditor
+ * @module editor-balloon/ballooneditor
  */
 
 import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
-import BalloonToolbarEditorUI from './balloontoolbareditorui';
-import BalloonToolbarEditorUIView from './balloontoolbareditoruiview';
+import BalloonEditorUI from './ballooneditorui';
+import BalloonEditorUIView from './ballooneditoruiview';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
 import '../theme/theme.scss';
 
 /**
- * The balloon toolbar editor. Uses an inline editable and a toolbar based
+ * The balloon editor. Uses an inline editable and a toolbar based
  * on the {@link module:ui/toolbar/contextual/contextualtoolbar~ContextualToolbar}.
  *
  * @extends module:core/editor/standardeditor~StandardEditor
  */
-export default class BalloonToolbarEditor extends StandardEditor {
+export default class BalloonEditor extends StandardEditor {
 	/**
-	 * Creates an instance of the balloon toolbar editor.
+	 * Creates an instance of the balloon editor.
 	 *
 	 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
 	 * @param {Object} config The editor configuration.
@@ -37,7 +37,7 @@ export default class BalloonToolbarEditor extends StandardEditor {
 
 		this.document.createRoot();
 		this.data.processor = new HtmlDataProcessor();
-		this.ui = new BalloonToolbarEditorUI( this, new BalloonToolbarEditorUIView( this.locale, element ) );
+		this.ui = new BalloonEditorUI( this, new BalloonEditorUIView( this.locale, element ) );
 	}
 
 	/**
@@ -59,9 +59,9 @@ export default class BalloonToolbarEditor extends StandardEditor {
 	}
 
 	/**
-	 * Creates a balloon toolbar editor instance.
+	 * Creates a balloon editor instance.
 	 *
-	 *		BalloonToolbarEditor.create( document.querySelector( '#editor' ), {
+	 *		BalloonEditor.create( document.querySelector( '#editor' ), {
 	 *			plugins: [ Delete, Enter, Typing, Paragraph, Undo, Bold, Italic ],
 	 *			toolbar: [ 'bold', 'italic' ]
 	 *		} )

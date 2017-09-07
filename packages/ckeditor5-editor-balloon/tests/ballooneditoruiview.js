@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-import BalloonToolbarEditorUIView from '../src/balloontoolbareditoruiview';
+import BalloonEditorUIView from '../src/ballooneditoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
-describe( 'BalloonToolbarEditorUIView', () => {
+describe( 'BalloonEditorUIView', () => {
 	let locale, view;
 
 	beforeEach( () => {
 		locale = new Locale( 'en' );
-		view = new BalloonToolbarEditorUIView( locale );
+		view = new BalloonEditorUIView( locale );
 	} );
 
 	describe( 'constructor()', () => {

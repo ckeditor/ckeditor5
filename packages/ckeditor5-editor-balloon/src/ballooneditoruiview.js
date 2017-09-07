@@ -4,7 +4,7 @@
  */
 
 /**
- * @module editor-balloon-toolbar/balloontoolbareditoruiview
+ * @module editor-balloon/ballooneditoruiview
  */
 
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
@@ -15,9 +15,9 @@ import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/i
  *
  * @extends module:ui/editorui/editoruiview~EditorUIView
  */
-export default class BalloonToolbarEditorUIView extends EditorUIView {
+export default class BalloonEditorUIView extends EditorUIView {
 	/**
-	 * Creates an instance of the balloon toolbar editor UI view.
+	 * Creates an instance of the balloon editor UI view.
 	 *
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
 	 */

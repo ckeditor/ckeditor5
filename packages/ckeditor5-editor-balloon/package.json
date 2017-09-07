@@ -1,7 +1,7 @@
 {
-  "name": "@ckeditor/ckeditor5-editor-balloon-toolbar",
+  "name": "@ckeditor/ckeditor5-editor-balloon",
   "version": "0.1.0",
-  "description": "Balloon toolbar editor for CKEditor 5.",
+  "description": "Balloon editor for CKEditor 5.",
   "keywords": [],
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^0.9.0",
@@ -26,9 +26,9 @@
   "author": "CKSource (http://cksource.com/)",
   "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
   "homepage": "https://ckeditor5.github.io",
-  "bugs": "https://github.com/ckeditor/ckeditor5-editor-balloon-toolbar/issues",
+  "bugs": "https://github.com/ckeditor/ckeditor5-editor-balloon/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5-editor-balloon-toolbar.git"
+    "url": "https://github.com/ckeditor/ckeditor5-editor-balloon.git"
   }
 }

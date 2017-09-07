@@ -7,15 +7,15 @@
 
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 
-import BalloonToolbarEditorUI from '../src/balloontoolbareditorui';
-import BalloonToolbarEditorUIView from '../src/balloontoolbareditoruiview';
+import BalloonEditorUI from '../src/ballooneditorui';
+import BalloonEditorUIView from '../src/ballooneditoruiview';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-describe( 'BalloonToolbarEditorUI', () => {
+describe( 'BalloonEditorUI', () => {
 	let editorElement, editor, editable, view, ui;
 
 	beforeEach( () => {
@@ -28,8 +28,8 @@ describe( 'BalloonToolbarEditorUI', () => {
 
 		return editor.initPlugins()
 			.then( () => {
-				view = new BalloonToolbarEditorUIView( editor.locale );
-				ui = new BalloonToolbarEditorUI( editor, view );
+				view = new BalloonEditorUIView( editor.locale );
+				ui = new BalloonEditorUI( editor, view );
 				editable = editor.editing.view.getRoot();
 			} );
 	} );

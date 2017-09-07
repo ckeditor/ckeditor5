@@ -5,14 +5,14 @@
 
 /* globals document */
 
-import BalloonToolbarEditorUI from '../src/balloontoolbareditorui';
-import BalloonToolbarEditorUIView from '../src/balloontoolbareditoruiview';
+import BalloonEditorUI from '../src/ballooneditorui';
+import BalloonEditorUIView from '../src/ballooneditoruiview';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 
-import BalloonToolbarEditor from '../src/balloontoolbareditor';
+import BalloonEditor from '../src/ballooneditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
@@ -23,7 +23,7 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 
 testUtils.createSinonSandbox();
 
-describe( 'BalloonToolbarEditor', () => {
+describe( 'BalloonEditor', () => {
 	let editor, editorElement;
 
 	beforeEach( () => {
@@ -39,7 +39,7 @@ describe( 'BalloonToolbarEditor', () => {
 
 	describe( 'constructor()', () => {
 		beforeEach( () => {
-			editor = new BalloonToolbarEditor( editorElement, {
+			editor = new BalloonEditor( editorElement, {
 				plugins: [ Bold ],
 				toolbar: [ 'Bold' ]
 			} );
@@ -66,15 +66,15 @@ describe( 'BalloonToolbarEditor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 
-		it( 'creates the UI using BalloonToolbarEditorUI classes', () => {
-			expect( editor.ui ).to.be.instanceof( BalloonToolbarEditorUI );
-			expect( editor.ui.view ).to.be.instanceof( BalloonToolbarEditorUIView );
+		it( 'creates the UI using BalloonEditorUI classes', () => {
+			expect( editor.ui ).to.be.instanceof( BalloonEditorUI );
+			expect( editor.ui.view ).to.be.instanceof( BalloonEditorUIView );
 		} );
 	} );
 
 	describe( 'create()', () => {
 		beforeEach( function() {
-			return BalloonToolbarEditor
+			return BalloonEditor
 				.create( editorElement, {
 					plugins: [ Paragraph, Bold ]
 				} )
@@ -87,8 +87,8 @@ describe( 'BalloonToolbarEditor', () => {
 			return editor.destroy();
 		} );
 
-		it( 'creates an instance which inherits from the BalloonToolbarEditor', () => {
-			expect( editor ).to.be.instanceof( BalloonToolbarEditor );
+		it( 'creates an instance which inherits from the BalloonEditor', () => {
+			expect( editor ).to.be.instanceof( BalloonEditor );
 		} );
 
 		it( 'creates element–less UI view', () => {
@@ -104,7 +104,7 @@ describe( 'BalloonToolbarEditor', () => {
 		} );
 
 		// ckeditor/ckeditor5-editor-classic#53
-		it( 'creates an instance of a BalloonToolbarEditor child class', () => {
+		it( 'creates an instance of a BalloonEditor child class', () => {
 			// Fun fact: Remove the next 3 lines and you'll get a lovely inf loop due to two
 			// editor being initialized on one element.
 			const editorElement = document.createElement( 'div' );
@@ -112,15 +112,15 @@ describe( 'BalloonToolbarEditor', () => {
 
 			document.body.appendChild( editorElement );
 
-			class CustomBalloonToolbarEditor extends BalloonToolbarEditor {}
+			class CustomBalloonEditor extends BalloonEditor {}
 
-			return CustomBalloonToolbarEditor
+			return CustomBalloonEditor
 				.create( editorElement, {
 					plugins: [ Paragraph, Bold ]
 				} )
 				.then( newEditor => {
-					expect( newEditor ).to.be.instanceof( CustomBalloonToolbarEditor );
-					expect( newEditor ).to.be.instanceof( BalloonToolbarEditor );
+					expect( newEditor ).to.be.instanceof( CustomBalloonEditor );
+					expect( newEditor ).to.be.instanceof( BalloonEditor );
 
 					expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
 
@@ -152,7 +152,7 @@ describe( 'BalloonToolbarEditor', () => {
 				}
 			}
 
-			return BalloonToolbarEditor
+			return BalloonEditor
 				.create( editorElement, {
 					plugins: [ EventWatcher ]
 				} )
@@ -174,7 +174,7 @@ describe( 'BalloonToolbarEditor', () => {
 				}
 			}
 
-			return BalloonToolbarEditor
+			return BalloonEditor
 				.create( editorElement, {
 					plugins: [ EventWatcher, Paragraph, Bold ]
 				} )
@@ -196,7 +196,7 @@ describe( 'BalloonToolbarEditor', () => {
 				}
 			}
 
-			return BalloonToolbarEditor
+			return BalloonEditor
 				.create( editorElement, {
 					plugins: [ EventWatcher ]
 				} )
@@ -210,7 +210,7 @@ describe( 'BalloonToolbarEditor', () => {
 
 	describe( 'destroy()', () => {
 		beforeEach( function() {
-			return BalloonToolbarEditor
+			return BalloonEditor
 				.create( editorElement, { plugins: [ Paragraph ] } )
 				.then( newEditor => {
 					editor = newEditor;

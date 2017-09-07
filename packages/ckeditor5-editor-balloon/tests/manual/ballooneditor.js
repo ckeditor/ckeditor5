@@ -5,7 +5,7 @@
 
 /* globals console:false, document, window */
 
-import BalloonToolbarEditor from '../../src/balloontoolbareditor';
+import BalloonEditor from '../../src/ballooneditor';
 import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
 import testUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
@@ -18,7 +18,7 @@ function initEditors() {
 	init( '#editor-2' );
 
 	function init( selector ) {
-		BalloonToolbarEditor
+		BalloonEditor
 			.create( document.querySelector( selector ), {
 				plugins: [ ArticlePreset ],
 				toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
