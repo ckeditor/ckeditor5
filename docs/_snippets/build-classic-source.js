@@ -5,6 +5,6 @@
 
 /* globals window */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-build-classic/ckeditor';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/ckeditor';
 
 window.ClassicEditor = ClassicEditor;
