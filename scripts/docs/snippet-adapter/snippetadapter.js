@@ -58,6 +58,19 @@ module.exports = function snippetAdapter( data ) {
 				cssFiles.unshift( path.join( data.relativeOutputPath, data.snippetPath, 'snippet.css' ) );
 			}
 
+			// If the snippet is a dependency of a parent snippet, append JS and CSS to HTML.
+			if ( data.isDependency ) {
+				let htmlFile = fs.readFileSync( data.snippetSource.html ).toString();
+
+				if ( wasCSSGenerated ) {
+					htmlFile += '<link rel="stylesheet" href="snippet.css" type="text/css">';
+				}
+
+				htmlFile += '<script src="snippet.js"></script>';
+
+				fs.writeFileSync( path.join( outputPath, 'snippet.html' ), htmlFile );
+			}
+
 			return {
 				html: fs.readFileSync( data.snippetSource.html ),
 				assets: {
@@ -65,7 +78,8 @@ module.exports = function snippetAdapter( data ) {
 						path.join( data.relativeOutputPath, data.snippetPath, 'snippet.js' )
 					],
 					css: cssFiles
-				}
+				},
+				dependencies: snippetConfig.dependencies
 			};
 		} );
 };
