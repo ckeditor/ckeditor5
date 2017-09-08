@@ -6,7 +6,8 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^0.9.0",
     "@ckeditor/ckeditor5-engine": "^0.11.0",
-    "@ckeditor/ckeditor5-ui": "^0.10.0"
+    "@ckeditor/ckeditor5-ui": "^0.10.0",
+    "@ckeditor/ckeditor5-theme-lark": "^0.9.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^3.1.0",
