@@ -18,7 +18,7 @@
     "@ckeditor/ckeditor5-image": "^0.7.0",
     "@ckeditor/ckeditor5-list": "^0.7.0",
     "@ckeditor/ckeditor5-paragraph": "^0.9.0",
-    "@ckeditor/ckeditor5-presets": "^0.3.0",
+    "@ckeditor/ckeditor5-essentials": "^0.3.0",
     "@ckeditor/ckeditor5-typing": "^0.10.0",
     "eslint-config-ckeditor5": "^1.0.5",
     "gulp": "^3.9.1",
