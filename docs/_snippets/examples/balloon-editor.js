@@ -7,11 +7,11 @@
 
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 
-import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 BalloonEditor
 	.create( document.querySelector( '#snippet-balloon-editor' ), {
-		plugins: [ ArticlePreset ],
+		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]

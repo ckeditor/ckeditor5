@@ -10,13 +10,13 @@ import fullSizeIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg
 import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
 import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
 
-import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor [data-inline-inject]' );
 
 Array.prototype.map.call( inlineInjectElements, inlineElement => {
 	const config = {
-		plugins: [ ArticlePreset ],
+		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {
 			toolbar: [ 'imageTextAlternative', '|', 'imageStyleLeft', 'imageStyleFull', 'imageStyleRight' ],
