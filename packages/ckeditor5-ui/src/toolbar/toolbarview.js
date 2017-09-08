@@ -133,20 +133,22 @@ export default class ToolbarView extends View {
 				this.items.add( factory.create( name ) );
 			} else {
 				/**
-				 * There was a problem with expanding the toolbar configuration into toolbar items.
-				 * The provided factory does not provide a component of such a name and because of that
-				 * it has not been added to the {@link #items}.
+				 * There was a problem processing the configuration of the toolbar. The item with the given
+				 * name does not exist and it was omitted when adding toolbar items in DOM.
 				 *
-				 * This warning usually shows up when the plugin that is supposed to register the toolbar
-				 * component in the factory has not been loaded or there's a typo in the configuration
-				 * of the toolbar.
+				 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
+				 * to provide a toolbar item has not been loaded or there is a typo in the configuration.
 				 *
-				 * @error toolbarview-missing-component
+				 * Make sure the plugin responsible for this toolbar item is loaded and the toolbar configuration
+				 * configuration is correct, e.g. {@link module:basic-styles/bold~Bold} is loaded for the `'bold'`
+				 * toolbar item.
+				 *
+				 * @error toolbarview-item-unavailable
 				 * @param {String} name The name of the component.
 				 * @param {module:ui/componentfactory~ComponentFactory} factory The factory that is missing the component.
 				 */
 				log.warn(
-					'toolbarview-missing-component: There is no such component in the factory.',
+					'toolbarview-item-unavailable: The requested toolbar item is unavailable.',
 					{ name, factory }
 				);
 			}
