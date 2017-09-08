@@ -28,7 +28,10 @@ Then, you can enable this data processor by creating a simple plugin which will 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
-import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+// ...
 
 import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
 
@@ -39,7 +42,14 @@ function Markdown( editor ) {
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
-		plugins: [ ArticlePreset, Markdown ],
+		plugins: [
+			Markdown,
+
+			Essentials,
+			Bold,
+			Italic,
+			// ...
+		],
 		// ...
 	} )
 	.then( ... )
