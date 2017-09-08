@@ -13,6 +13,11 @@
 			outline: none;
 		}
 
+		.ck-input-text {
+			// https://github.com/ckeditor/ckeditor5-link/issues/145
+			width: 100%;
+		}
+
 		.ck-label {
 			margin-bottom: ck-spacing( 'tiny' );
 		}
@@ -24,12 +29,17 @@
 			.ck-button {
 				float: right;
 
+				// "Save" and "Cancel" buttons.
 				& + .ck-button {
 					margin-right: ck-spacing( 'medium' );
+				}
 
-					& + .ck-button {
-						float: left;
-					}
+				// The "Unlink" button.
+				&:last-child {
+					float: left;
+
+					// https://github.com/ckeditor/ckeditor5-link/issues/145
+					margin-right: 4 * ck-spacing( 'medium' );
 				}
 			}
 		}
