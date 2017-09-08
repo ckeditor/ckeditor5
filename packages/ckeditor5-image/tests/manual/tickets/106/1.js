@@ -6,7 +6,7 @@
 /* globals console:false, document, setTimeout */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import Text from '@ckeditor/ckeditor5-engine/src/model/text';
@@ -14,7 +14,7 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 const config = {
-	plugins: [ ArticlePresets ],
+	plugins: [ ArticlePluginSet ],
 	toolbar: [ 'undo', 'redo', 'link' ],
 	image: {
 		toolbar: [ 'imageTextAlternative' ]
