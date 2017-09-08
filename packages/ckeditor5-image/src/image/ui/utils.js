@@ -8,7 +8,7 @@
  */
 
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-import { isImageWidget } from '../utils';
+import { isImageWidgetSelected } from '../utils';
 
 /**
  * A helper utility which positions the
@@ -18,11 +18,9 @@ import { isImageWidget } from '../utils';
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  */
 export function repositionContextualBalloon( editor ) {
-	const editingView = editor.editing.view;
 	const balloon = editor.plugins.get( 'ContextualBalloon' );
-	const selectedElement = editingView.selection.getSelectedElement();
 
-	if ( selectedElement && isImageWidget( selectedElement ) ) {
+	if ( isImageWidgetSelected( editor.editing.view.selection ) ) {
 		const position = getBalloonPositionData( editor );
 
 		balloon.updatePosition( position );
