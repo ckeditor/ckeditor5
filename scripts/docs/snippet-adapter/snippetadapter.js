@@ -58,7 +58,7 @@ module.exports = function snippetAdapter( data ) {
 				cssFiles.unshift( path.join( data.relativeOutputPath, data.snippetPath, 'snippet.css' ) );
 			}
 
-			// If the snippet is a dependency of a parent snippet, append JS and CSS to HTML.
+			// If the snippet is a dependency of a parent snippet, append JS and CSS to HTML and save to disk.
 			if ( data.isDependency ) {
 				let htmlFile = fs.readFileSync( data.snippetSource.html ).toString();
 
