@@ -1,6 +1,53 @@
 Changelog
 =========
 
+## [0.10.0](https://github.com/ckeditor/ckeditor5-ui/compare/v0.9.0...v0.10.0) (2017-09-03)
+
+### Bug fixes
+
+* `ContextualToolbar` should have proper editor toolbar styling. Closes [#230](https://github.com/ckeditor/ckeditor5-ui/issues/230). ([4e2ee36](https://github.com/ckeditor/ckeditor5-ui/commit/4e2ee36))
+* BalloonPanelView should prevent native #selectstart event. Closes [#243](https://github.com/ckeditor/ckeditor5-ui/issues/243). ([cba3fb1](https://github.com/ckeditor/ckeditor5-ui/commit/cba3fb1))
+* Button tooltip should not look blurry on low-DPI screens. Closes [#142](https://github.com/ckeditor/ckeditor5-ui/issues/142). Closes [#133](https://github.com/ckeditor/ckeditor5-ui/issues/133). ([a497aff](https://github.com/ckeditor/ckeditor5-ui/commit/a497aff))
+* Clicking and dragging in a drop-down panel should not break the selection. Closes [#228](https://github.com/ckeditor/ckeditor5-ui/issues/228). ([6066a09](https://github.com/ckeditor/ckeditor5-ui/commit/6066a09))
+* Contextual toolbar should re–position correctly on window scroll. Closes [#227](https://github.com/ckeditor/ckeditor5-ui/issues/227). ([e5ea25f](https://github.com/ckeditor/ckeditor5-ui/commit/e5ea25f))
+* `DropdownView` should open upon arrow down key press. Closes [#249](https://github.com/ckeditor/ckeditor5-ui/issues/249). ([c1e6afc](https://github.com/ckeditor/ckeditor5-ui/commit/c1e6afc))
+* List items should handle Enter and Space key press when focused. Closes [#153](https://github.com/ckeditor/ckeditor5-ui/issues/153). ([403b64a](https://github.com/ckeditor/ckeditor5-ui/commit/403b64a))
+* The `clickOutsideHandler` helper should use `mousedown` instead of `mouseup` event. Closes [#281](https://github.com/ckeditor/ckeditor5-ui/issues/281). ([6b980b6](https://github.com/ckeditor/ckeditor5-ui/commit/6b980b6))
+* The `Template` class should not throw an error when a child view in the definition has an `id` attribute set without a value. Closes [#289](https://github.com/ckeditor/ckeditor5-ui/issues/289). ([d7072ba](https://github.com/ckeditor/ckeditor5-ui/commit/d7072ba))
+* The `TooltipView` should hide when the `TooltipView#text` is empty. The `ButtonView's` ability to get a tooltip should not be restricted after `View` initialization. Closes [#283](https://github.com/ckeditor/ckeditor5-ui/issues/283). ([1588c82](https://github.com/ckeditor/ckeditor5-ui/commit/1588c82))
+* The dropdown menu should not open using the keyboard when disabled. Closes [#238](https://github.com/ckeditor/ckeditor5-ui/issues/238). ([fc524b8](https://github.com/ckeditor/ckeditor5-ui/commit/fc524b8))
+
+### Features
+
+* `StickyToolbarView` now supports a configurable vertical offset from the top of the page. Closes [#277](https://github.com/ckeditor/ckeditor5-ui/issues/277). ([245f0fa](https://github.com/ckeditor/ckeditor5-ui/commit/245f0fa))
+
+  Also implemented the `normalizeToolbarConfig()` utility.
+* Added `TextInputView#isReadOnly` and `LabeledInputView#isReadOnly`  states. Closes [#266](https://github.com/ckeditor/ckeditor5-ui/issues/266). Closes [#268](https://github.com/ckeditor/ckeditor5-ui/issues/268). ([111a728](https://github.com/ckeditor/ckeditor5-ui/commit/111a728))
+* Added optional notification title. Closes [#241](https://github.com/ckeditor/ckeditor5-ui/issues/241). ([abbb68f](https://github.com/ckeditor/ckeditor5-ui/commit/abbb68f))
+* Allowed `BalloonPanelView` position limiter defined as a function. Made `ContextualBalloon` position limiter configurable via `#positionLimiter` property. Closes [#260](https://github.com/ckeditor/ckeditor5-ui/issues/260). ([322563e](https://github.com/ckeditor/ckeditor5-ui/commit/322563e))
+* Implemented placeholder in `InputTextView`. Closes [#220](https://github.com/ckeditor/ckeditor5-ui/issues/220). ([5d91d18](https://github.com/ckeditor/ckeditor5-ui/commit/5d91d18))
+* Introduced `CommandFactory#names()`. Closes [#287](https://github.com/ckeditor/ckeditor5-ui/issues/287). ([4038da2](https://github.com/ckeditor/ckeditor5-ui/commit/4038da2))
+
+### Other changes
+
+* Add support for multiple context elements in the `clickOutsideHandler` helper. Closes [#261](https://github.com/ckeditor/ckeditor5-ui/issues/261). ([9da5bf7](https://github.com/ckeditor/ckeditor5-ui/commit/9da5bf7))
+* Added the `beforeShow` event to the `ContextualToolbar` plugin. Closes [#222](https://github.com/ckeditor/ckeditor5-ui/issues/222). ([835d0ac](https://github.com/ckeditor/ckeditor5-ui/commit/835d0ac))
+* Implemented public `show()` and `hide()` methods in the `ContextualToolbar` plugin. Closes [#263](https://github.com/ckeditor/ckeditor5-ui/issues/263). ([eb4caab](https://github.com/ckeditor/ckeditor5-ui/commit/eb4caab))
+* Improvements in the `BalloonPanelView`–based components for the balloon toolbar editor. Closes [#236](https://github.com/ckeditor/ckeditor5-ui/issues/236). Closes [#234](https://github.com/ckeditor/ckeditor5-ui/issues/234). Closes [#224](https://github.com/ckeditor/ckeditor5-ui/issues/224). ([737b55f](https://github.com/ckeditor/ckeditor5-ui/commit/737b55f))
+* Made the UI component initialization and destruction processes synchronous. Closes [#225](https://github.com/ckeditor/ckeditor5-ui/issues/225). ([07e1502](https://github.com/ckeditor/ckeditor5-ui/commit/07e1502))
+* Made the UI destruction a fail–safe, repeatable process. Closes [#248](https://github.com/ckeditor/ckeditor5-ui/issues/248). ([6f5ec0d](https://github.com/ckeditor/ckeditor5-ui/commit/6f5ec0d))
+* The `ContextualToolbar` should not show up when all child items are disabled. The `ContextualToolbar#beforeShow` event has been replaced by `ContextualToolbar#show`. Closes [#269](https://github.com/ckeditor/ckeditor5-ui/issues/269). Closes [#232](https://github.com/ckeditor/ckeditor5-ui/issues/232). ([d83d07d](https://github.com/ckeditor/ckeditor5-ui/commit/d83d07d))
+
+### BREAKING CHANGES
+
+* `StickyToolbarView#limiterOffset` has been renamed to `StickyToolbarView#limiterBottomOffset`.
+* `ContextualToolbar#beforeShow` is no longer available. Please refer to `ContextualToolbar#show` instead.
+* The `clickOutsideHandler` helper's `contextElement` config option is now an `Array` named `contextElements`.
+* `View#init()`, `View#destroy()` (also `ViewCollection#init()`, `ViewCollection#destroy()` and `ViewCollection#add()`) no longer return `Promise`. It may require updates in UI components which inherit from `View` and rely on the value returned by these methods.
+* Various UI components switched to synchronous `init()` and `destroy()` (no longer returning `Promise`), which means that features using these components may need some updates to work properly.
+* The position names in `BalloonPanelView.defaultPositions` and their results have changed. Please refer to the latest API documentation to learn more.
+
+
 ## [0.9.0](https://github.com/ckeditor/ckeditor5-ui/compare/v0.8.0...v0.9.0) (2017-05-07)
 
 ### Bug fixes

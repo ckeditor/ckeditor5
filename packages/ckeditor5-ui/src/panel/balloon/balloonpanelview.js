@@ -13,7 +13,6 @@ import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
 import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange';
 import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
-import preventDefault from '../../bindings/preventdefault.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 const toPx = toUnit( 'px' );
@@ -130,15 +129,7 @@ export default class BalloonPanelView extends View {
 				}
 			},
 
-			children: this.content,
-
-			on: {
-				// https://github.com/ckeditor/ckeditor5-ui/issues/206
-				mousedown: preventDefault( this ),
-
-				// https://github.com/ckeditor/ckeditor5-ui/issues/243
-				selectstart: bind.to( evt => evt.preventDefault() )
-			}
+			children: this.content
 		} );
 	}
 

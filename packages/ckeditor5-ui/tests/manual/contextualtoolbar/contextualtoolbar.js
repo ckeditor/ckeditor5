@@ -6,13 +6,13 @@
 /* globals window, document, console:false */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import ContextualToolbar from '../../../src/toolbar/contextual/contextualtoolbar';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePresets, ContextualToolbar ],
+		plugins: [ ArticlePluginSet, ContextualToolbar ],
 		toolbar: [ 'bold', 'italic', 'link', 'undo', 'redo' ],
 		contextualToolbar: [ 'bold', 'italic', 'link' ]
 	} )
