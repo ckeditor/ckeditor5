@@ -10,7 +10,7 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import EssentialsPreset from '@ckeditor/ckeditor5-presets/src/essentials';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 window.setInterval( function() {
@@ -18,7 +18,7 @@ window.setInterval( function() {
 }, 3000 );
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ EssentialsPreset, Paragraph, Bold, Italic, Heading ],
+	plugins: [ Essentials, Paragraph, Bold, Italic, Heading ],
 	toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
 } )
 	.then( editor => {

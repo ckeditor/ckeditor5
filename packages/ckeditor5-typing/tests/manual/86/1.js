@@ -6,7 +6,7 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EssentialsPreset from '@ckeditor/ckeditor5-presets/src/essentials';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -16,7 +16,7 @@ window.setInterval( function() {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ EssentialsPreset, Paragraph ],
+		plugins: [ Essentials, Paragraph ],
 		toolbar: [ 'undo', 'redo' ]
 	} )
 	.then( editor => {
