@@ -45,7 +45,7 @@ export function isImageWidget( viewElement ) {
 }
 
 /**
- * Checks image widget is a selected element.
+ * Checks if an image widget is the only selected element.
  *
  * @param {module:engine/view/selection~Selection} viewSelection
  * @returns {Boolean}

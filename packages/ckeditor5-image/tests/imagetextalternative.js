@@ -169,7 +169,7 @@ describe( 'ImageTextAlternative', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
-			it( 'should hide the form when image widget is no longer selected', () => {
+			it( 'should hide the form when image widget has been removed by external change', () => {
 				setData( doc, '[<image src=""></image>]' );
 				button.fire( 'execute' );
 
