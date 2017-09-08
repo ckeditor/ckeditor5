@@ -8,7 +8,7 @@
 import ArticlePluginSet from '../_utils/articlepluginset';
 import ClassicTestEditor from '../_utils/classictesteditor';
 
-import EssentialsPreset from '@ckeditor/ckeditor5-presets/src/essentials';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
@@ -47,7 +47,7 @@ describe( 'ArticlePluginSet', () => {
 	} );
 
 	it( 'should load all its dependencies', () => {
-		expect( editor.plugins.get( EssentialsPreset ) ).to.be.instanceOf( EssentialsPreset );
+		expect( editor.plugins.get( Essentials ) ).to.be.instanceOf( Essentials );
 
 		expect( editor.plugins.get( Paragraph ) ).to.be.instanceOf( Paragraph );
 		expect( editor.plugins.get( Autoformat ) ).to.be.instanceOf( Autoformat );

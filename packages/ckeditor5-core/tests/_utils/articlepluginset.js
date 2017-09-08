@@ -9,7 +9,7 @@
 
 import Plugin from '../../src/plugin';
 
-import EssentialsPreset from '@ckeditor/ckeditor5-presets/src/essentials';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
@@ -37,7 +37,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 export default class ArticlePluginSet extends Plugin {
 	static get requires() {
 		return [
-			EssentialsPreset,
+			Essentials,
 			Autoformat,
 			BlockQuote,
 			Bold,
