@@ -9,51 +9,48 @@ category: builds-integration
 order: 30
 ---
 
-When creating an editor in your page, it is possible to set up configurations that change many of its aspects. For example:
+When creating an editor in your page, it is possible to set up {@link module:core/editor/editorconfig~EditorConfig configurations} that change many of its aspects. For example:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#text-editor' ), {
-		toolbar: [ 'bold', 'link' ],
-		removePlugins: [ 'ImageToolbar', 'ImageStyle' ]
+	.create( document.querySelector( '#editor' ), {
+		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+		heading: {
+			options: [
+				{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+				{ modelElement: 'heading1', viewElement: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+				{ modelElement: 'heading2', viewElement: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+			]
+		}
 	} )
 	.catch( error => {
 		console.log( error );
 	} );
 ```
 
-As you can see, configurations are set by a simple JavaScript object passed to the editor creator class. It works in the same way when the `create()` method is used instead.
+As you can see, configurations are set by a simple JavaScript object passed to the `create()` method.
 
-## Enabling features
+## Removing features
 
 Builds come with all features included in the distribution package enabled by default. They are defined as plugins for CKEditor.
 
-In some cases, you may need to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in an editor at runtime. The following are a few examples:
+In some cases, you may need to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in an editor at runtime.
+
+In the example below `Heading` and `Link` plugins are removed:
 
 ```js
 // Remove a few plugins from the default setup.
 ClassicEditor
-	.create( document.querySelector( '#text-editor' ), {
-		removePlugins: [ 'Heading', 'Link' ]
+	.create( document.querySelector( '#editor' ), {
+		removePlugins: [ 'Heading', 'Link' ],
+		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
 	} )
 	.catch( error => {
 		console.log( error );
 	} );
 ```
-
-```js
-// Define the full list of plugins to enable.
-ClassicEditor
-	.create( document.querySelector( '#text-editor' ), {
-		plugins: [ 'Paragraph', 'Heading', 'Bold', 'Link' ]
-	} )
-	.catch( error => {
-		console.log( error );
-	} );
-```
-
-<info-box hint>
-	If a build contains too many or too few features, the best approach is to create a custom build instead of simply using configurations.
+<info-box>
+Be careful when removing plugins using `config.removePlugins` from CKEditor builds. If removed plugins were providing toolbar buttons then the default toolbar configuration included in a build will become invalid. In such case provide the updated toolbar configuration as in the example above.
 </info-box>
 
 ### List of plugins
@@ -64,15 +61,19 @@ Each build has a number of plugins available. You can easily list all plugins av
 ClassicEditor.build.plugins.map( plugin => plugin.pluginName );
 ```
 
+## Adding features
+
+As CKEditor builds come with all features enabled, the only way to add more features to them is to {@link builds/guides/development/custom-builds create a custom build}.
+
 ## Toolbar setup
 
 In builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration.
 
-Each creator may have a different toolbar configuration scheme, so it is recommended to check the creator API documentation. In any case, the following example may give you a general idea:
+Each editor may have a different toolbar configuration scheme, so it is recommended to check its documentation. In any case, the following example may give you a general idea:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#text-editor' ), {
+	.create( document.querySelector( '#editor' ), {
 		toolbar: [ 'bold', 'italic', 'link' ]
 	} )
 	.catch( error => {
@@ -81,7 +82,7 @@ ClassicEditor
 ```
 
 <info-box hint>
-	The above is a strict UI-related configuration. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to remove their relative plugins. Check [Enabling features](#Enabling-features) above for more information.
+	The above is a strict UI-related configuration. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their relative plugins. Check [Removing features](#Removing-features) above for more information.
 </info-box>
 
 ## Other configuration options

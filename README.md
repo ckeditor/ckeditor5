@@ -6,15 +6,13 @@ CKEditor 5 – development repository
 [![Dependency Status](https://img.shields.io/david/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5)
 [![devDependency Status](https://img.shields.io/david/dev/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5?type=dev)
 
-## Project Status (August 2017)
+## Project Status (September 2017)
 
-Version 0.10.0 was released on May 7, 2017. This is the 10th developer preview of the new CKEditor 5.
+Version 0.11.0 was released on September 3, 2017. This is the 11th developer preview of the new CKEditor 5.
 
-Read more in the [CKEditor 5 v0.10.0 release blog post](https://github.com/ckeditor/ckeditor5-design/issues/177) and check the [CKEditor 5 sample](https://ckeditor5.github.io/).
+Read more in the [CKEditor 5 v0.11.0 release blog post](https://github.com/ckeditor/ckeditor5-design/issues/180) and check the [CKEditor 5 sample](https://ckeditor5.github.io/).
 
-See also [the lastest issue of News and Updates (July 31, 2017)](https://github.com/ckeditor/ckeditor5-design/issues/178).
-
-**It is not production ready** and will be followed by several releases before it reaches its first stable 1.0.0 version. See the [roadmap to 1.0.0 and beyond](https://github.com/ckeditor/ckeditor5-design/issues/172).
+**Version 0.11.0 is the last release before v1.0.0-alpha**. The alpha version will be followed by a several releases before it reaches v1.0.0. See the [roadmap to 1.0.0 and beyond](https://github.com/ckeditor/ckeditor5-design/issues/172).
 
 ### Follow us!
 
@@ -174,14 +172,14 @@ Read more in the [Support](https://github.com/ckeditor/ckeditor5/wiki/Support) w
 
 <tr>
 	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-editor-balloon-toolbar"><code>@ckeditor/ckeditor5-editor-balloon-toolbar</code></a>
+		<a href="https://github.com/ckeditor/ckeditor5-editor-balloon"><code>@ckeditor/ckeditor5-editor-balloon</code></a>
 		<br>
-		The editor with a balloon toolbar (Medium-like) implementation.
+		The balloon editor (Medium-like) implementation.
 	</td>
 	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon-toolbar"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-balloon-toolbar.svg" alt="ckeditor5-editor-balloon-toolbar npm package badge"></a>
-		<a href="https://travis-ci.org/ckeditor/ckeditor5-editor-balloon-toolbar"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-editor-balloon-toolbar/master.svg" alt="build status badge"></a>
-		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-editor-balloon-toolbar/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-editor-balloon-toolbar.svg" alt="ckeditor5-editor-balloon-toolbar coverage badge"></a>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-balloon.svg" alt="ckeditor5-editor-balloon npm package badge"></a>
+		<a href="https://travis-ci.org/ckeditor/ckeditor5-editor-balloon"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-editor-balloon/master.svg" alt="build status badge"></a>
+		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-editor-balloon/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-editor-balloon.svg" alt="ckeditor5-editor-balloon coverage badge"></a>
 	</td>
 </tr>
 
@@ -450,14 +448,14 @@ Read more in the [Support](https://github.com/ckeditor/ckeditor5/wiki/Support) w
 
 <tr>
 	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-build-balloon-toolbar"><code>@ckeditor/ckeditor5-build-balloon-toolbar</code></a>
+		<a href="https://github.com/ckeditor/ckeditor5-build-balloon"><code>@ckeditor/ckeditor5-build-balloon</code></a>
 		<br>
-		The editor with a balloon toolbar (Medium-like) build.
+		The balloon editor (Medium-like) build.
 	</td>
 	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon-toolbar"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-balloon-toolbar.svg" alt="ckeditor5-build-balloon-toolbar npm package badge"></a>
-		<a href="https://travis-ci.org/ckeditor/ckeditor5-build-balloon-toolbar"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-build-balloon-toolbar/master.svg" alt="build status badge"></a>
-		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-build-balloon-toolbar/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-build-balloon-toolbar.svg" alt="ckeditor5-build-balloon-toolbar coverage badge"></a>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-balloon.svg" alt="ckeditor5-build-balloon npm package badge"></a>
+		<a href="https://travis-ci.org/ckeditor/ckeditor5-build-balloon"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-build-balloon/master.svg" alt="build status badge"></a>
+		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-build-balloon/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-build-balloon.svg" alt="ckeditor5-build-balloon coverage badge"></a>
 	</td>
 </tr>
 
