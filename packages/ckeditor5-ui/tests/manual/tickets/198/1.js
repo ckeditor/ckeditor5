@@ -6,7 +6,7 @@
 /* globals console:false, document, setTimeout */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import ContextualToolbar from '../../../../src/toolbar/contextual/contextualtoolbar';
 
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
@@ -17,7 +17,7 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 // Editor for the external insert.
 ClassicEditor
 	.create( document.querySelector( '#editor-insert' ), {
-		plugins: [ ArticlePresets, ContextualToolbar ],
+		plugins: [ ArticlePluginSet, ContextualToolbar ],
 		toolbar: [ 'undo', 'redo' ],
 		contextualToolbar: [ 'bold', 'italic' ]
 	} )
@@ -34,7 +34,7 @@ ClassicEditor
 // Editor for the external delete.
 ClassicEditor
 	.create( document.querySelector( '#editor-delete' ), {
-		plugins: [ ArticlePresets, ContextualToolbar ],
+		plugins: [ ArticlePluginSet, ContextualToolbar ],
 		toolbar: [ 'undo', 'redo' ],
 		contextualToolbar: [ 'bold', 'italic' ]
 	} )

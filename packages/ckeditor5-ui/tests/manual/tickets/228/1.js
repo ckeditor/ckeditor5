@@ -6,11 +6,11 @@
 /* globals document, console:false */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePresets ],
+		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'headings' ],
 	} )
 	.catch( err => console.error( err.stack ) );
