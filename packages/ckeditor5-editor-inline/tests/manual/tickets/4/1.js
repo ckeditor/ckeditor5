@@ -6,11 +6,11 @@
 /* globals console:false, document, window */
 
 import InlineEditor from '../../../../src/inlineeditor';
-import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 InlineEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePreset ],
+		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
 	} )
 	.then( editor => {
