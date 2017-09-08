@@ -6,7 +6,7 @@
 /* globals console:false, document, setTimeout */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import Text from '@ckeditor/ckeditor5-engine/src/model/text';
@@ -16,7 +16,7 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 // Editor for the external insert.
 ClassicEditor
 	.create( document.querySelector( '#editor-insert' ), {
-		plugins: [ ArticlePresets ],
+		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'undo', 'redo', 'link' ]
 	} )
 	.then( editor => {
@@ -32,7 +32,7 @@ ClassicEditor
 // Editor for the external delete.
 ClassicEditor
 	.create( document.querySelector( '#editor-delete' ), {
-		plugins: [ ArticlePresets ],
+		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'undo', 'redo', 'link' ]
 	} )
 	.then( editor => {
