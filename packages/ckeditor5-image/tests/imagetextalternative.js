@@ -168,6 +168,20 @@ describe( 'ImageTextAlternative', () => {
 				editingView.fire( 'render' );
 				sinon.assert.calledOnce( spy );
 			} );
+
+			it( 'should hide the form when image widget is no longer selected', () => {
+				setData( doc, '[<image src=""></image>]' );
+				button.fire( 'execute' );
+
+				const spy = sinon.spy( balloon, 'remove' );
+
+				// EnqueueChanges automatically calls #render event.
+				doc.enqueueChanges( () => {
+					doc.batch( 'transparent' ).remove( doc.selection.getFirstRange() );
+				} );
+
+				sinon.assert.calledWithExactly( spy, form );
+			} );
 		} );
 
 		describe( 'integration with the editor focus', () => {
