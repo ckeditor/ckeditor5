@@ -6,7 +6,7 @@
 /* globals console:false, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EssentialsPreset from '@ckeditor/ckeditor5-presets/src/essentials';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '../../src/bold';
 import Italic from '../../src/italic';
@@ -14,7 +14,7 @@ import Underline from '../../src/underline';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ EssentialsPreset, Paragraph, Bold, Italic, Underline ],
+		plugins: [ Essentials, Paragraph, Bold, Italic, Underline ],
 		toolbar: [ 'bold', 'italic', 'underline', 'undo', 'redo' ]
 	} )
 	.then( editor => {
