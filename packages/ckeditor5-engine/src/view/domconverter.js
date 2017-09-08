@@ -65,7 +65,7 @@ export default class DomConverter {
 		 *
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#preElements
 		 */
-		this.preElements = [ 'pre', 'code' ];
+		this.preElements = [ 'pre' ];
 
 		/**
 		 * Tag names of DOM `Element`s which are considered block elements.
