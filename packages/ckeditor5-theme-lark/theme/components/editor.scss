@@ -1,7 +1,7 @@
 // Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
-@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_button.scss';
+@import '../helpers/_button.scss';
 
 .ck-editor__editable {
 	@include ck-rounded-corners();
