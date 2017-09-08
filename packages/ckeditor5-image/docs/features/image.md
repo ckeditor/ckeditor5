@@ -121,6 +121,9 @@ import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.sv
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		image: {
+			// You need to configure the image toolbar too, so it uses the new style buttons.
+			toolbar: [ 'imageTextAlternative', '|', 'imageStyleLeft', 'imageStyleFull', 'imageStyleRight' ],
+
 			styles: [
 				// This option is equal to a situation where no style is applied.
 				{
@@ -147,9 +150,7 @@ ClassicEditor
 					value: 'right',
 					className: 'image-style-right'
 				}
-			],
-
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyleLeft', 'imageStyleFull', 'imageStyleRight' ]
+			]
 		}
 	} )
 	.then( ... )
