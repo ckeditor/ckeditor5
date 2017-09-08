@@ -11,7 +11,7 @@
   "main": "./build/ckeditor.js",
   "dependencies": {
     "@ckeditor/ckeditor5-editor-inline": "^0.2.0",
-    "@ckeditor/ckeditor5-presets": "^0.3.0",
+    "@ckeditor/ckeditor5-essentials": "^0.3.0",
     "@ckeditor/ckeditor5-autoformat": "^0.6.0",
     "@ckeditor/ckeditor5-basic-styles": "^0.9.0",
     "@ckeditor/ckeditor5-block-quote": "^0.2.0",
