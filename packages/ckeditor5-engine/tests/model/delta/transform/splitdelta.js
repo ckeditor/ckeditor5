@@ -69,11 +69,14 @@ describe( 'transform', () => {
 					operations: [
 						{
 							type: InsertOperation,
-							position: new Position( root, [ 3, 3, 4 ] ),
+							position: new Position( root, [ 3, 3, 5 ] ),
 							baseVersion
 						},
 						{
-							type: NoOperation,
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 4, 0 ] ),
+							howMany: 9,
+							targetPosition: new Position( root, [ 3, 3, 5, 0 ] ),
 							baseVersion: baseVersion + 1
 						}
 					]

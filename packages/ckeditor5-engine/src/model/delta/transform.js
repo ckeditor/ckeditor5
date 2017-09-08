@@ -559,9 +559,6 @@ function getNormalizedDeltas( DeltaClass, operations ) {
 					} else {
 						delta = new MoveDelta();
 					}
-
-					// Unsticky the operation. Only operations in "special" deltas can be sticky.
-					o.isSticky = false;
 				}
 
 				delta.addOperation( o );

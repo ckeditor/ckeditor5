@@ -225,7 +225,7 @@ addTransformationCase( SplitDelta, SplitDelta, ( a, b, context ) => {
 	if ( a.position.root == b.position.root && compareArrays( pathA, pathB ) == 'same' ) {
 		a = a.clone();
 
-		if ( a.position.offset <= b.position.offset ) {
+		if ( a.position.offset < b.position.offset || ( a.position.offset == b.position.offset && context.isStrong ) ) {
 			// If both first operations are `ReinsertOperation`s, we might need to transform `a._cloneOperation`,
 			// so it will take correct node from graveyard.
 			if (
