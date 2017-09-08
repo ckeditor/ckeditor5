@@ -6,7 +6,7 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
@@ -15,7 +15,7 @@ import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePreset ],
+		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 	} )
 	.then( editor => {
