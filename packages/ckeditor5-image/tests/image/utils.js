@@ -4,8 +4,11 @@
  */
 
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
+import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
+import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import { toImageWidget, isImageWidget, isImage } from '../../src/image/utils';
+import { toImageWidget, isImageWidget, isImageWidgetSelected, isImage } from '../../src/image/utils';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
 
 describe( 'image widget utils', () => {
@@ -46,6 +49,40 @@ describe( 'image widget utils', () => {
 
 		it( 'should return false for non-widgetized elements', () => {
 			expect( isImageWidget( new ViewElement( 'p' ) ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isImageWidgetSelected()', () => {
+		let frag;
+
+		it( 'should return true when image widget is the only element in the selection', () => {
+			// We need to create a container for the element to be able to create a Range on this element.
+			frag = new ViewDocumentFragment( [ element ] );
+
+			const selection = new ViewSelection( [ ViewRange.createOn( element ) ] );
+
+			expect( isImageWidgetSelected( selection ) ).to.be.true;
+		} );
+
+		it( 'should return false when non-widgetized elements is the only element in the selection', () => {
+			const notWidgetizedElement = new ViewElement( 'p' );
+
+			// We need to create a container for the element to be able to create a Range on this element.
+			frag = new ViewDocumentFragment( [ notWidgetizedElement ] );
+
+			const selection = new ViewSelection( [ ViewRange.createOn( notWidgetizedElement ) ] );
+
+			expect( isImageWidgetSelected( selection ) ).to.be.false;
+		} );
+
+		it( 'should return false when widget element is not the only element in the selection', () => {
+			const notWidgetizedElement = new ViewElement( 'p' );
+
+			frag = new ViewDocumentFragment( [ notWidgetizedElement, notWidgetizedElement ] );
+
+			const selection = new ViewSelection( [ ViewRange.createIn( frag ) ] );
+
+			expect( isImageWidgetSelected( selection ) ).to.be.false;
 		} );
 	} );
 

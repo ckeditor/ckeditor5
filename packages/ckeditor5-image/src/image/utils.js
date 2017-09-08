@@ -45,6 +45,18 @@ export function isImageWidget( viewElement ) {
 }
 
 /**
+ * Checks image widget is a selected element.
+ *
+ * @param {module:engine/view/selection~Selection} viewSelection
+ * @returns {Boolean}
+ */
+export function isImageWidgetSelected( viewSelection ) {
+	const viewElement = viewSelection.getSelectedElement();
+
+	return viewElement && isImageWidget( viewElement );
+}
+
+/**
  * Checks if the provided model element is an instance of {@link module:engine/model/element~Element Element} and its name
  * is `image`.
  *
