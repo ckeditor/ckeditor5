@@ -9,6 +9,9 @@ import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import Document from '../../src/model/document';
 import TreeWalker from '../../src/model/treewalker';
+import MergeDelta from '../../src/model/delta/mergedelta';
+import MoveOperation from '../../src/model/operation/moveoperation';
+import RemoveOperation from '../../src/model/operation/removeoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { jsonParseStringify } from '../../tests/model/_utils/utils';
 
@@ -1055,6 +1058,22 @@ describe( 'Range', () => {
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 0, 1 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 1, 1 ] );
+			} );
+
+			// #1132
+			it( 'merge delta has move operation that does not start from offset 0', () => {
+				const range = new Range( new Position( root, [ 1, 10 ] ), new Position( root, [ 1, 20 ] ) );
+
+				// Such unusual delta may be a result of transformation.
+				const delta = new MergeDelta();
+				delta.addOperation( new MoveOperation( new Position( root, [ 1, 10 ] ), 10, new Position( root, [ 0, 10 ] ), 0 ) );
+				delta.addOperation( new RemoveOperation( new Position( root, [ 1 ] ), 1, new Position( doc.graveyard, [ 0 ] ), 1 ) );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 10 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 20 ] );
 			} );
 		} );
 
