@@ -6,13 +6,13 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EssentialsPreset from '@ckeditor/ckeditor5-presets/src/essentials';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ EssentialsPreset, Paragraph, Bold ],
+		plugins: [ Essentials, Paragraph, Bold ],
 		toolbar: [ 'undo', 'redo' ]
 	} )
 	.then( editor => {
