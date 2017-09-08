@@ -5,7 +5,7 @@
 
 /* global document */
 
-import EssentialsPreset from '../src/essentials';
+import Essentials from '../src/essentials';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
@@ -20,7 +20,7 @@ describe( 'Essentials preset', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, { plugins: [ EssentialsPreset ] } )
+		return ClassicTestEditor.create( editorElement, { plugins: [ Essentials ] } )
 			.then( newEditor => {
 				editor = newEditor;
 			} );
@@ -33,7 +33,7 @@ describe( 'Essentials preset', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( EssentialsPreset ) ).to.be.instanceOf( EssentialsPreset );
+		expect( editor.plugins.get( Essentials ) ).to.be.instanceOf( Essentials );
 	} );
 
 	it( 'should load all its dependencies', () => {

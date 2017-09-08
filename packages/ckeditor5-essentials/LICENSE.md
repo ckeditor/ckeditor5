@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor 5 Plugin Presets** – https://github.com/ckeditor/ckeditor5-presets <br>
+**CKEditor 5 essentials plugin** – https://github.com/ckeditor/ckeditor5-essentials <br>
 Copyright (c) 2003-2017, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of any of the following licenses at your choice:

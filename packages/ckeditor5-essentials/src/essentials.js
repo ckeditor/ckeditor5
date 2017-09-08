@@ -4,7 +4,7 @@
  */
 
 /**
- * @module presets/essentials
+ * @module essentials/essentials
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -15,7 +15,7 @@ import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
 /**
- * Essential editing features preset. Represents a set of features that enables similar functionalities
+ * A plugin including all essential editing features. It represents a set of features that enables similar functionalities
  * to a `<textarea>` element.
  *
  * It includes:
@@ -25,9 +25,8 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
  * * {@link module:typing/typing~Typing},
  * * {@link module:undo/undo~Undo}.
  *
- * This preset does not define any block-level containers (such as {@link module:paragraph/paragraph~Paragraph}).
- * If your editor is supposed to handle block content, make sure to include it. You can also inlcude
- * the {@link module:presets/article~Article article preset}.
+ * This plugin set does not define any block-level containers (such as {@link module:paragraph/paragraph~Paragraph}).
+ * If your editor is supposed to handle block content, make sure to include it.
  *
  * @extends module:core/plugin~Plugin
  */

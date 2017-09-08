@@ -1,7 +1,7 @@
 {
-  "name": "@ckeditor/ckeditor5-presets",
+  "name": "@ckeditor/ckeditor5-essentials",
   "version": "0.3.0",
-  "description": "The presets of plugins for CKEditor 5.",
+  "description": "Essential editing features for CKEditor 5.",
   "keywords": [],
   "dependencies": {
     "@ckeditor/ckeditor5-autoformat": "^0.6.0",
@@ -33,9 +33,9 @@
   "author": "CKSource (http://cksource.com/)",
   "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
   "homepage": "https://ckeditor5.github.io",
-  "bugs": "https://github.com/ckeditor/ckeditor5-presets/issues",
+  "bugs": "https://github.com/ckeditor/ckeditor5-essentials/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5-presets.git"
+    "url": "https://github.com/ckeditor/ckeditor5-essentials.git"
   }
 }

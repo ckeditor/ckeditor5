@@ -7,13 +7,13 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
-import EssentialsPreset from '../../src/essentials';
+import Essentials from '../../src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 // Note: We need to load paragraph because we don't have inline editors yet.
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ EssentialsPreset, Paragraph ],
+		plugins: [ Essentials, Paragraph ],
 		toolbar: [ 'undo', 'redo' ]
 	} )
 	.then( editor => {
