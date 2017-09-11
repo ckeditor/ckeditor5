@@ -8,7 +8,7 @@
  */
 
 /**
- * The {@link module:core/editor/editor~Editor editor}'s configuration options.
+ * CKEditor configuration options.
  *
  * The object defining editor configuration can be passed when initializing the editor:
  *
@@ -23,6 +23,9 @@
  * 			} )
  *			.then( ... )
  *			.catch( ... );
+ *
+ * Check the {@glink builds/guides/integration/configuration Configuration guide} for more information
+ * about setting configuration options.
  *
  * @interface EditorConfig
  */
