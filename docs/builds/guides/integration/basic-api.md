@@ -29,7 +29,7 @@ In your HTML page add an element that CKEditor should replace:
 </textarea>
 ```
 
-Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to replace `<textarea>` with a {@link builds/guides/overview#Classic-editor Classic editor}:
+Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** `<textarea>` with a {@link builds/guides/overview#Classic-editor Classic editor}:
 
 ```js
 ClassicEditor
@@ -54,10 +54,35 @@ Similarly to the previous example, add an element where CKEditor should initiali
 </div>
 ```
 
-Then call {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} to attach {@link builds/guides/overview#Inline-editor Inline editor} to a `<div>` element:
+Then call {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} to **attach** {@link builds/guides/overview#Inline-editor Inline editor} to a `<div>` element:
 
 ```js
 InlineEditor
+	.create( document.querySelector( '#editor' ) )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
+```
+
+### Example – Balloon editor
+
+The procedure is the same as for Inline editor, the only difference is that we will use {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`}.
+
+Add an element where CKEditor should initialize (as with ):
+
+```html
+<div id="editor">
+	&lt;p&gt;Here goes the initial content of the editor.&lt;/p&gt;
+</div>
+```
+
+Then call {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} to **attach** {@link builds/guides/overview#Balloon-editor Balloon editor} to a `<div>` element:
+
+```js
+BalloonEditor
 	.create( document.querySelector( '#editor' ) )
 	.then( editor => {
 		console.log( editor );
