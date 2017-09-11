@@ -6,21 +6,18 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
 import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
-import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
 
 // Replace original submit method to prevent page reload.
 document.getElementById( 'form' ).submit = () => {};
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePreset, ContextualToolbar ],
+		plugins: [ ArticlePreset ],
 		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ],
-		},
-		contextualToolbar: [ 'bold', 'italic', 'link' ]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
