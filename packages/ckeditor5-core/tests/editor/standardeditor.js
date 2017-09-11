@@ -351,6 +351,7 @@ describe( 'StandardEditor', () => {
 				} )
 				.then( () => {
 					expect( form.submit ).to.equal( input );
+					input.remove();
 				} );
 		} );
 
