@@ -181,6 +181,18 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
+	describe( 'hasOwnRange', () => {
+		it( 'should return true if selection has any ranges set', () => {
+			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+
+			expect( selection.hasOwnRange ).to.be.true;
+		} );
+
+		it( 'should return false if selection has a default range', () => {
+			expect( selection.hasOwnRange ).to.be.false;
+		} );
+	} );
+
 	describe( 'addRange()', () => {
 		it( 'should convert added Range to LiveRange', () => {
 			selection.addRange( range );
