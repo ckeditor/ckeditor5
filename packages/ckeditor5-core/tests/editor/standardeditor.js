@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
+/* globals document, Event */
 
 import Editor from '../../src/editor/editor';
 import StandardEditor from '../../src/editor/standardeditor';
@@ -215,5 +215,154 @@ describe( 'StandardEditor', () => {
 
 			expect( editor.data.set.calledWithExactly( '<p>foo</p>' ) ).to.be.true;
 		} );
+	} );
+
+	describe( 'attaching to a form', () => {
+		let editor, form, textarea, submitStub;
+
+		beforeEach( () => {
+			form = document.createElement( 'form' );
+			textarea = document.createElement( 'textarea' );
+			form.appendChild( textarea );
+			document.body.appendChild( form );
+			submitStub = sinon.stub( form, 'submit' );
+		} );
+
+		afterEach( () => {
+			submitStub.restore();
+			form.remove();
+		} );
+
+		it( 'should update editor#element after calling the submit() method', () => {
+			return createEditor( textarea )
+				.then( editor => {
+					expect( textarea.value ).to.equal( '' );
+
+					// Submit method is replaced by our implementation.
+					expect( form.submit ).to.not.equal( submitStub );
+					form.submit();
+
+					expect( textarea.value ).to.equal( '<p>foo</p>' );
+					sinon.assert.calledOnce( submitStub );
+
+					// Check if original function was called in correct context.
+					sinon.assert.calledOn( submitStub, form );
+
+					return editor.destroy();
+				} );
+		} );
+
+		it( 'should update editor#element after the "submit" event', () => {
+			return createEditor( textarea )
+				.then( editor => {
+					expect( textarea.value ).to.equal( '' );
+
+					form.dispatchEvent( new Event( 'submit' ) );
+
+					expect( textarea.value ).to.equal( '<p>foo</p>' );
+
+					return editor.destroy();
+				} );
+		} );
+
+		it( 'should not update editor#element if it is not a textarea in a form', () => {
+			const element = document.createElement( 'div' );
+			form.appendChild( element );
+
+			return createEditor( element )
+				.then( editor => {
+					expect( textarea.value ).to.equal( '' );
+
+					// Submit method is not replaced by our implementation.
+					expect( form.submit ).to.equal( submitStub );
+					form.submit();
+
+					expect( textarea.value ).to.equal( '' );
+
+					return editor.destroy();
+				} )
+				.then( () => {
+					element.remove();
+				} );
+		} );
+
+		it( 'should not update editor#element not belonging to a form', () => {
+			const textarea = document.createElement( 'textarea' );
+			document.body.appendChild( textarea );
+
+			return createEditor( textarea )
+				.then( editor => {
+					expect( textarea.value ).to.equal( '' );
+
+					// Submit method is not replaced by our implementation.
+					expect( form.submit ).to.equal( submitStub );
+					form.submit();
+
+					expect( textarea.value ).to.equal( '' );
+
+					return editor.destroy();
+				} )
+				.then( () => {
+					textarea.remove();
+				} );
+		} );
+
+		it( 'should not update editor#element after destruction of the editor - form.submit()', () => {
+			return createEditor( textarea )
+				.then( editor => editor.destroy() )
+				.then( () => {
+					expect( textarea.value ).to.equal( '' );
+
+					// Submit method is no longer replaced by our implementation.
+					expect( form.submit ).to.equal( submitStub );
+					form.submit();
+
+					expect( textarea.value ).to.equal( '' );
+				} );
+		} );
+
+		it( 'should not update the editor#element after destruction of the editor - "submit" event', () => {
+			return createEditor( textarea )
+				.then( editor => editor.destroy() )
+				.then( () => {
+					expect( textarea.value ).to.equal( '' );
+
+					form.dispatchEvent( new Event( 'submit' ) );
+
+					expect( textarea.value ).to.equal( '' );
+				} );
+		} );
+
+		it( 'should not replace submit() method when one of the elements in a form is named "submit"', () => {
+			const input = document.createElement( 'input' );
+			input.setAttribute( 'name', 'submit' );
+			form.appendChild( input );
+
+			return createEditor( textarea )
+				.then( () => {
+					expect( form.submit ).to.equal( input );
+					expect( textarea.value ).to.equal( '' );
+
+					form.dispatchEvent( new Event( 'submit' ) );
+
+					expect( textarea.value ).to.equal( '<p>foo</p>' );
+
+					return editor.destroy();
+				} )
+				.then( () => {
+					expect( form.submit ).to.equal( input );
+					input.remove();
+				} );
+		} );
+
+		function createEditor( element ) {
+			return StandardEditor.create( element )
+				.then( newEditor => {
+					editor = newEditor;
+					editor.data.get = () => '<p>foo</p>';
+
+					return editor;
+				} );
+		}
 	} );
 } );

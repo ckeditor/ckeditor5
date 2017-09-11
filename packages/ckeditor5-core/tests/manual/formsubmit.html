@@ -1,0 +1,16 @@
+<style>
+	textarea#editor {
+		display: block !important;
+		width: 100%;
+		height: 100px;
+		margin-bottom: 20px;
+	}
+</style>
+
+<form id="form" action="http://localhost/" method="post">
+	<p>Editor textarea element (normally hidden): </p>
+	<textarea name="editor" id="editor"><p>foo bar baz</p></textarea>
+	<button type="submit">Submit form</button>
+</form>
+<br />
+<button id="submit-with-js">Submit by calling form.submit()</button>

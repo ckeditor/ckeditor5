@@ -10,6 +10,7 @@
 import Editor from './editor';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
 import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
+import isFunction from '@ckeditor/ckeditor5-utils/src/lib/lodash/isFunction';
 
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
@@ -61,6 +62,8 @@ export default class StandardEditor extends Editor {
 		 */
 
 		this.keystrokes.listenTo( this.editing.view );
+
+		this._attachToForm();
 	}
 
 	/**
@@ -101,6 +104,47 @@ export default class StandardEditor extends Editor {
 	 */
 	loadDataFromEditorElement() {
 		this.setData( getDataFromElement( this.element ) );
+	}
+
+	/**
+	 * Checks if editor is initialized on textarea element that belongs to a form. If yes - updates editor's element
+	 * contents before submitting the form.
+	 *
+	 * @private
+	 */
+	_attachToForm() {
+		const element = this.element;
+
+		// Only when replacing a textarea which is inside of a form element.
+		if ( element && element.tagName.toLowerCase() === 'textarea' && element.form ) {
+			let originalSubmit;
+			const form = element.form;
+			const onSubmit = () => this.updateEditorElement();
+
+			// Replace the original form#submit() to call a custom submit function first.
+			// Check if #submit is a function because the form might have an input named "submit".
+			if ( isFunction( form.submit ) ) {
+				originalSubmit = form.submit;
+
+				form.submit = () => {
+					onSubmit();
+					originalSubmit.apply( form );
+				};
+			}
+
+			// Update the replaced textarea with data before each form#submit event.
+			form.addEventListener( 'submit', onSubmit );
+
+			// Remove the submit listener and revert the original submit method on
+			// editor#destroy.
+			this.on( 'destroy', () => {
+				form.removeEventListener( 'submit', onSubmit );
+
+				if ( originalSubmit ) {
+					form.submit = originalSubmit;
+				}
+			} );
+		}
 	}
 
 	/**
