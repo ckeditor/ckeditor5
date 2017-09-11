@@ -46,12 +46,12 @@
  * the plugins using their constructors:
  *
  *		// A preset of plugins is a plugin as well.
- *		import EssentialsPreset from '@ckeditor/ckeditor5-presets/src/essentials';
+ *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
  *		// The bold plugin.
  *		import Bold from '@ckeditor/ckeditor5-editor-basic-styles/src/bold';
  *
  *		const config = {
- *			plugins: [ EssentialsPreset, Bold ]
+ *			plugins: [ Essentials, Bold ]
  *		};
  *
  * @member {Array.<String|Function>} module:core/editor/editorconfig~EditorConfig#plugins
