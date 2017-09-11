@@ -18,6 +18,8 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
 /**
  * Class representing a typical browser-based editor. It handles a single source element and
  * uses {@link module:engine/controller/editingcontroller~EditingController}.
+ *
+ * @extends module:core/editor/editor~Editor
  */
 export default class StandardEditor extends Editor {
 	/**
