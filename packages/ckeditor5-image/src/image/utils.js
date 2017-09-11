@@ -53,7 +53,7 @@ export function isImageWidget( viewElement ) {
 export function isImageWidgetSelected( viewSelection ) {
 	const viewElement = viewSelection.getSelectedElement();
 
-	return viewElement && isImageWidget( viewElement );
+	return !!( viewElement && isImageWidget( viewElement ) );
 }
 
 /**

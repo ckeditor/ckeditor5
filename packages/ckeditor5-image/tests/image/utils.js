@@ -78,7 +78,7 @@ describe( 'image widget utils', () => {
 		it( 'should return false when widget element is not the only element in the selection', () => {
 			const notWidgetizedElement = new ViewElement( 'p' );
 
-			frag = new ViewDocumentFragment( [ notWidgetizedElement, notWidgetizedElement ] );
+			frag = new ViewDocumentFragment( [ element, notWidgetizedElement ] );
 
 			const selection = new ViewSelection( [ ViewRange.createIn( frag ) ] );
 
