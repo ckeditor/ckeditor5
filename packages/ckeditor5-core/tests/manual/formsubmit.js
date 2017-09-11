@@ -14,16 +14,15 @@ document.getElementById( 'form' ).submit = () => {};
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePreset ],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
-		image: {
-			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ],
-		}
+		toolbar: [ 'bold', 'italic', 'undo', 'redo' ],
 	} )
 	.then( editor => {
 		window.editor = editor;
 		const form = document.getElementById( 'form' );
 
-		document.getElementById( 'submit-with-js' ).addEventListener( 'click', () => form.submit() );
+		document.getElementById( 'submit-with-js' ).addEventListener( 'click', () => {
+			form.submit();
+		} );
 
 		form.addEventListener( 'submit', evt => {
 			evt.preventDefault();
