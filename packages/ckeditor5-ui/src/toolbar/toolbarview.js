@@ -140,8 +140,7 @@ export default class ToolbarView extends View {
 				 * to provide a toolbar item has not been loaded or there is a typo in the configuration.
 				 *
 				 * Make sure the plugin responsible for this toolbar item is loaded and the toolbar configuration
-				 * configuration is correct, e.g. {@link module:basic-styles/bold~Bold} is loaded for the `'bold'`
-				 * toolbar item.
+				 * is correct, e.g. {@link module:basic-styles/bold~Bold} is loaded for the `'bold'` toolbar item.
 				 *
 				 * @error toolbarview-item-unavailable
 				 * @param {String} name The name of the component.
