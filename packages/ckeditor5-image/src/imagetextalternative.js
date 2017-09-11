@@ -126,13 +126,6 @@ export default class ImageTextAlternative extends Plugin {
 			}
 		}, { priority: 'low' } );
 
-		// Hide the form when the editor is blurred.
-		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, is ) => {
-			if ( !is ) {
-				this._hideForm();
-			}
-		}, { priority: 'low' } );
-
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( {
 			emitter: this._form,
