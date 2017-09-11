@@ -179,6 +179,48 @@ describe( 'UndoEngine integration', () => {
 
 			undoDisabled();
 		} );
+
+		it( 'undo remove all content', () => {
+			input( '<p>foo[]</p>' );
+
+			doc.batch().remove( Range.createIn( root ) );
+			output( '[]' );
+
+			editor.execute( 'undo' );
+			output( '<p>foo[]</p>' );
+
+			undoDisabled();
+		} );
+
+		it( 'undo insert first content', () => {
+			input( '' );
+
+			doc.batch().insert( doc.selection.getFirstPosition(), new Element( 'p' ) );
+			output( '<p>[]</p>' );
+
+			editor.execute( 'undo' );
+			output( '[]' );
+
+			undoDisabled();
+		} );
+
+		// #72.
+		it( 'undo paste multiple elements simulation', () => {
+			input( '<p></p>' );
+
+			const p = root.getChild( 0 );
+			const pos = new Position( root, [ 0 ] );
+
+			doc.batch().remove( p ).insert( pos, new Element( 'p' ) ).insert( pos.getShiftedBy( 1 ), new Element( 'p' ) );
+
+			output( '<p>[]</p><p></p>' );
+
+			editor.execute( 'undo' );
+
+			output( '<p>[]</p>' );
+
+			undoDisabled();
+		} );
 	} );
 
 	describe( 'moving', () => {
