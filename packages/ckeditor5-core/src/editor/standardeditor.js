@@ -115,14 +115,14 @@ export default class StandardEditor extends Editor {
 	_attachToForm() {
 		const element = this.element;
 
-		// When replacing textarea which is inside form element.
+		// Only when replacing a textarea which is inside of a form element.
 		if ( element && element.tagName.toLowerCase() === 'textarea' && element.form ) {
 			let originalSubmit;
 			const form = element.form;
 			const onSubmit = () => this.updateEditorElement();
 
-			// Replace original submit() method on a form to call our submit function before.
-			// Check if it is a function because it might contain an input with "submit" name.
+			// Replace the original form#submit() to call a custom submit function first.
+			// Check if #submit is a function because the form might have an input named "submit".
 			if ( isFunction( form.submit ) ) {
 				originalSubmit = form.submit;
 
@@ -132,10 +132,11 @@ export default class StandardEditor extends Editor {
 				};
 			}
 
-			// Update replaced textarea with data before each submit.
+			// Update the replaced textarea with data before each form#submit event.
 			form.addEventListener( 'submit', onSubmit );
 
-			// Remove submit listener, and reset original submit method on editor destroy.
+			// Remove the submit listener and revert the original submit method on
+			// editor#destroy.
 			this.on( 'destroy', () => {
 				form.removeEventListener( 'submit', onSubmit );
 

@@ -233,7 +233,7 @@ describe( 'StandardEditor', () => {
 			form.remove();
 		} );
 
-		it( 'should update editor element contents after calling submit() method', () => {
+		it( 'should update editor#element after calling the submit() method', () => {
 			return createEditor( textarea )
 				.then( editor => {
 					expect( textarea.value ).to.equal( '' );
@@ -246,13 +246,13 @@ describe( 'StandardEditor', () => {
 					sinon.assert.calledOnce( submitStub );
 
 					// Check if original function was called in correct context.
-					expect( submitStub.firstCall.thisValue ).to.equal( form );
+					sinon.assert.calledOn( submitStub, form );
 
 					return editor.destroy();
 				} );
 		} );
 
-		it( 'should update editor element contents after "submit" event', () => {
+		it( 'should update editor#element after the "submit" event', () => {
 			return createEditor( textarea )
 				.then( editor => {
 					expect( textarea.value ).to.equal( '' );
@@ -265,7 +265,7 @@ describe( 'StandardEditor', () => {
 				} );
 		} );
 
-		it( 'should not update element in form which is not a textarea', () => {
+		it( 'should not update editor#element if it is not a textarea in a form', () => {
 			const element = document.createElement( 'div' );
 			form.appendChild( element );
 
@@ -286,7 +286,7 @@ describe( 'StandardEditor', () => {
 				} );
 		} );
 
-		it( 'should not update textarea which is outside a form', () => {
+		it( 'should not update editor#element not belonging to a form', () => {
 			const textarea = document.createElement( 'textarea' );
 			document.body.appendChild( textarea );
 
@@ -307,7 +307,7 @@ describe( 'StandardEditor', () => {
 				} );
 		} );
 
-		it( 'should not update element after destroying the editor - form.submit()', () => {
+		it( 'should not update editor#element after destruction of the editor - form.submit()', () => {
 			return createEditor( textarea )
 				.then( editor => editor.destroy() )
 				.then( () => {
@@ -321,7 +321,7 @@ describe( 'StandardEditor', () => {
 				} );
 		} );
 
-		it( 'should not update element after destroying the editor - "submit" event', () => {
+		it( 'should not update the editor#element after destruction of the editor - "submit" event', () => {
 			return createEditor( textarea )
 				.then( editor => editor.destroy() )
 				.then( () => {
@@ -333,7 +333,7 @@ describe( 'StandardEditor', () => {
 				} );
 		} );
 
-		it( 'should not replace submit() method when one of the elements in form has "submit" name', () => {
+		it( 'should not replace submit() method when one of the elements in a form is named "submit"', () => {
 			const input = document.createElement( 'input' );
 			input.setAttribute( 'name', 'submit' );
 			form.appendChild( input );
