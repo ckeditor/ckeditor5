@@ -75,31 +75,30 @@ describe( 'ClassicEditorUI', () => {
 			expect( view.height ).to.equal( 200 );
 		} );
 
-		describe( 'toolbar', () => {
-			it( 'binds view.toolbar#isFocused to editor#focusTracker', () => {
+		describe( 'stickyPanel', () => {
+			it( 'binds view.stickyToolbar#isActive to editor.focusTracker#isFocused', () => {
 				ui.focusTracker.isFocused = false;
-				expect( view.toolbar.isActive ).to.be.false;
+				expect( view.stickyPanel.isActive ).to.be.false;
 
 				ui.focusTracker.isFocused = true;
-				expect( view.toolbar.isActive ).to.be.true;
+				expect( view.stickyPanel.isActive ).to.be.true;
 			} );
 
-			it( 'sets view.toolbar#limiterElement', () => {
-				expect( view.toolbar.limiterElement ).to.equal( view.element );
+			it( 'sets view.stickyToolbar#limiterElement', () => {
+				expect( view.stickyPanel.limiterElement ).to.equal( view.element );
 			} );
 
-			it( 'doesn\'t set view.toolbar#viewportTopOffset, if not specified in the config', () => {
-				expect( view.toolbar.viewportTopOffset ).to.equal( 0 );
+			it( 'doesn\'t set view.stickyToolbar#viewportTopOffset, if not specified in the config', () => {
+				expect( view.stickyPanel.viewportTopOffset ).to.equal( 0 );
 			} );
 
-			it( 'sets view.toolbar#viewportTopOffset, when specified in the config', () => {
+			it( 'sets view.stickyPanel#viewportTopOffset, when specified in the config', () => {
 				editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
 
 				return ClassicTestEditor
 					.create( editorElement, {
 						toolbar: {
-							items: [ 'foo', 'bar' ],
 							viewportTopOffset: 100
 						}
 					} )
@@ -108,10 +107,7 @@ describe( 'ClassicEditorUI', () => {
 						ui = new ClassicEditorUI( editor, view );
 						editable = editor.editing.view.getRoot();
 
-						ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
-						ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
-
-						expect( view.toolbar.viewportTopOffset ).to.equal( 100 );
+						expect( view.stickyPanel.viewportTopOffset ).to.equal( 100 );
 
 						editorElement.remove();
 						return editor.destroy();
