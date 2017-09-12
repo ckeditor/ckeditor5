@@ -7,6 +7,7 @@ BREAKING CHANGES:
 
 * `@ckeditor/ckeditor5-build-balloon-toolbar` was renamed to `@ckeditor/ckeditor5-build-balloon`.
 * `@ckeditor/ckeditor5-editor-balloon-toolbar` was renamed to `@ckeditor/ckeditor5-editor-balloon`.
+* `@ckeditor/ckeditor5-presets` was renamed to `@ckeditor/ckeditor5-essentials` and the `Article` preset plugin was made a development util. See [ckeditor/ckeditor5-essentials#1](https://github.com/ckeditor/ckeditor5-presets/issues/1).
 
 
 ## [0.11.0](https://github.com/ckeditor/ckeditor5/compare/v0.10.0...v0.11.0) (2017-09-03)
