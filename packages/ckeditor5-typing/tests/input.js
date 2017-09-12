@@ -643,7 +643,7 @@ describe( 'Input feature', () => {
 					type: 'children',
 					node: italic,
 					oldChildren: [ text ],
-					newChildren: [ new ViewElement( 'a', null, text ), new ViewText( 'x' ) ]
+					newChildren: [ new ViewElement( 'a', null, text.clone() ), new ViewText( 'x' ) ]
 				}
 			] );
 
