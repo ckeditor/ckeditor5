@@ -169,18 +169,20 @@ describe( 'ImageTextAlternative', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
-			it( 'should hide the form when image widget has been removed by external change', () => {
+			it( 'should hide the form and focus editable when image widget has been removed by external change', () => {
 				setData( doc, '[<image src=""></image>]' );
 				button.fire( 'execute' );
 
-				const spy = sinon.spy( balloon, 'remove' );
+				const remveSpy = sinon.spy( balloon, 'remove' );
+				const focusSpy = sinon.spy( editor.editing.view, 'focus' );
 
-				// EnqueueChanges automatically calls #render event.
+				// EnqueueChanges automatically fires #render event.
 				doc.enqueueChanges( () => {
 					doc.batch( 'transparent' ).remove( doc.selection.getFirstRange() );
 				} );
 
-				sinon.assert.calledWithExactly( spy, form );
+				sinon.assert.calledWithExactly( remveSpy, form );
+				sinon.assert.calledOnce( focusSpy );
 			} );
 		} );
 
