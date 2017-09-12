@@ -165,12 +165,15 @@ export default class Widget extends Plugin {
 
 		if ( objectElement ) {
 			modelDocument.enqueueChanges( () => {
-				// Remove previous element if empty.
-				const previousNode = modelSelection.anchor.parent;
+				const batch = modelDocument.batch();
+				let previousNode = modelSelection.anchor.parent;
 
-				if ( previousNode.isEmpty ) {
-					const batch = modelDocument.batch();
-					batch.remove( previousNode );
+				// Remove previous element if empty.
+				while ( previousNode.isEmpty ) {
+					const nodeToRemove = previousNode;
+					previousNode = nodeToRemove.parent;
+
+					batch.remove( nodeToRemove );
 				}
 
 				this._setSelectionOverElement( objectElement );
