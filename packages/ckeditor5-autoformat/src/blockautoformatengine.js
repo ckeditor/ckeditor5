@@ -12,7 +12,7 @@ import TextProxy from '@ckeditor/ckeditor5-engine/src/model/textproxy';
 
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,
- * it can be configured to turn a paragraph starting with "* " into a list item.
+ * it can be configured to turn a paragraph starting with `*` and followed by a space into a list item.
  *
  * The autoformatting operation is integrated with the undo manager,
  * so the autoformatting step can be undone if the user's intention was not to format the text.

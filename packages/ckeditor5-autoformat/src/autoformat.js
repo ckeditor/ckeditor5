@@ -13,7 +13,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 /**
  * Includes a set of predefined autoformatting actions. For a detailed overview, check
- * the {@linkTODO features/autoformat Autoformatting feature documentation}.
+ * the {@glink features/autoformat Autoformatting feature documentation}.
  *
  * @extends module:core/plugin~Plugin
  */
