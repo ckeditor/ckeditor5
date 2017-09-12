@@ -9,6 +9,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ListEngine from '@ckeditor/ckeditor5-list/src/listengine';
 import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
 import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
+import CodeEngine from '@ckeditor/ckeditor5-basic-styles/src/codeengine';
 import ItalicEngine from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
 import BlockQuoteEngine from '@ckeditor/ckeditor5-block-quote/src/blockquoteengine';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -28,7 +29,17 @@ describe( 'Autoformat', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Enter, Paragraph, Autoformat, ListEngine, HeadingEngine, BoldEngine, ItalicEngine, BlockQuoteEngine ]
+				plugins: [
+					Enter,
+					Paragraph,
+					Autoformat,
+					ListEngine,
+					HeadingEngine,
+					BoldEngine,
+					ItalicEngine,
+					CodeEngine,
+					BlockQuoteEngine
+				]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -205,7 +216,7 @@ describe( 'Autoformat', () => {
 	} );
 
 	describe( 'Inline autoformat', () => {
-		it( 'should replace both `**` with bold', () => {
+		it( 'should replace both "**" with bold', () => {
 			setData( doc, '<paragraph>**foobar*[]</paragraph>' );
 			doc.enqueueChanges( () => {
 				batch.insert( doc.selection.getFirstPosition(), '*' );
@@ -214,7 +225,7 @@ describe( 'Autoformat', () => {
 			expect( getData( doc ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
 		} );
 
-		it( 'should replace both `*` with italic', () => {
+		it( 'should replace both "*" with italic', () => {
 			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
 				batch.insert( doc.selection.getFirstPosition(), '*' );
@@ -223,7 +234,16 @@ describe( 'Autoformat', () => {
 			expect( getData( doc ) ).to.equal( '<paragraph><$text italic="true">foobar</$text>[]</paragraph>' );
 		} );
 
-		it( 'nothing should be replaces when typing `*`', () => {
+		it( 'should replace both "`" with code', () => {
+			setData( doc, '<paragraph>`foobar[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), '`' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph><$text code="true">foobar</$text>[]</paragraph>' );
+		} );
+
+		it( 'nothing should be replaces when typing "*"', () => {
 			setData( doc, '<paragraph>foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
 				batch.insert( doc.selection.getFirstPosition(), '*' );
@@ -300,7 +320,7 @@ describe( 'Autoformat', () => {
 			expect( getData( doc ) ).to.equal( '<paragraph>## []</paragraph>' );
 		} );
 
-		it( 'should not replace both `**` with bold', () => {
+		it( 'should not replace both "**" with bold', () => {
 			setData( doc, '<paragraph>**foobar*[]</paragraph>' );
 			doc.enqueueChanges( () => {
 				batch.insert( doc.selection.getFirstPosition(), '*' );
@@ -309,7 +329,7 @@ describe( 'Autoformat', () => {
 			expect( getData( doc ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
 		} );
 
-		it( 'should not replace both `*` with italic', () => {
+		it( 'should not replace both "*" with italic', () => {
 			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
 				batch.insert( doc.selection.getFirstPosition(), '*' );
@@ -318,7 +338,16 @@ describe( 'Autoformat', () => {
 			expect( getData( doc ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
 		} );
 
-		it( 'should not replace `>` with block quote', () => {
+		it( 'should not replace both "`" with code', () => {
+			setData( doc, '<paragraph>`foobar[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), '`' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>`foobar`[]</paragraph>' );
+		} );
+
+		it( 'should not replace ">" with block quote', () => {
 			setData( doc, '<paragraph>>[]</paragraph>' );
 			doc.enqueueChanges( () => {
 				batch.insert( doc.selection.getFirstPosition(), ' ' );

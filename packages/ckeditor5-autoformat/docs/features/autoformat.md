@@ -24,8 +24,9 @@ The following block formatting options are available:
 
 The following inline formatting options are available:
 
-* Bold &ndash; Type `**text**` or `__text__`.
-* Italic &ndash; Type `*text*` or `_text_`.
+* Bold &ndash; Type `**text**` or `__text__`,
+* Italic &ndash; Type `*text*` or `_text_`,
+* Code &ndash; Type ``` `text` ```.
 
 ## Autoformatting sample
 
