@@ -6,7 +6,7 @@
 /* globals window, document, console:false */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview';
 
 // Set initial scroll for the outer container element.
@@ -15,7 +15,7 @@ document.querySelector( '.container-outer' ).scrollTop = 450;
 // Init editor with balloon attached to the target element.
 ClassicEditor
 	.create( document.querySelector( '#editor-attach' ), {
-		plugins: [ ArticlePresets ],
+		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
 	} )
 	.then( editor => {
@@ -41,7 +41,7 @@ ClassicEditor
 // Init editor with balloon sticked to the target element.
 ClassicEditor
 	.create( document.querySelector( '#editor-stick' ), {
-		plugins: [ ArticlePresets ],
+		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
 	} )
 	.then( editor => {
