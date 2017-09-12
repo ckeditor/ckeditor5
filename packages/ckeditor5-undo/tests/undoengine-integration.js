@@ -3,41 +3,44 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+/* global document */
+
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import UndoEngine from '../src/undoengine';
 
-import DeleteCommand from '@ckeditor/ckeditor5-typing/src/deletecommand';
-import InputCommand from '@ckeditor/ckeditor5-typing/src/inputcommand';
-import EnterCommand from '@ckeditor/ckeditor5-enter/src/entercommand';
-import AttributeCommand from '@ckeditor/ckeditor5-basic-styles/src/attributecommand';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
+
+import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'UndoEngine integration', () => {
-	let editor, doc, root;
+	let editor, doc, root, div;
 
 	beforeEach( () => {
-		return ModelTestEditor.create( { plugins: [ UndoEngine ] } )
+		div = document.createElement( 'div' );
+		document.body.appendChild( div );
+
+		return ClassicEditor.create( div, { plugins: [ Paragraph, HeadingEngine, Typing, Enter, Clipboard, BoldEngine, UndoEngine ] } )
 			.then( newEditor => {
 				editor = newEditor;
 
-				editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
-				editor.commands.add( 'forwardDelete', new DeleteCommand( editor, 'forward' ) );
-				editor.commands.add( 'enter', new EnterCommand( editor ) );
-				editor.commands.add( 'input', new InputCommand( editor, 5 ) );
-				editor.commands.add( 'bold', new AttributeCommand( editor, 'bold' ) );
-
 				doc = editor.document;
 
-				doc.schema.registerItem( 'p', '$block' );
-				doc.schema.registerItem( 'h1', '$block' );
-				doc.schema.registerItem( 'h2', '$block' );
-				doc.schema.allow( { name: '$inline', attributes: 'bold', inside: '$block' } );
-
+				// Add "div feature".
 				doc.schema.registerItem( 'div', '$block' );
+				buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
+				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+
 				root = doc.getRoot();
 			} );
 	} );
@@ -64,118 +67,145 @@ describe( 'UndoEngine integration', () => {
 
 	describe( 'adding and removing content', () => {
 		it( 'add and undo', () => {
-			input( '<p>fo[]o</p><p>bar</p>' );
+			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
-			output( '<p>fozzz[]o</p><p>bar</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			} );
+			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>fo[]o</p><p>bar</p>' );
+			output( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
 			undoDisabled();
 		} );
 
 		it( 'multiple adding and undo', () => {
-			input( '<p>fo[]o</p><p>bar</p>' );
+			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch()
-				.insert( doc.selection.getFirstPosition(), 'zzz' )
-				.insert( new Position( root, [ 1, 0 ] ), 'xxx' );
-			output( '<p>fozzz[]o</p><p>xxxbar</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch()
+					.insert( doc.selection.getFirstPosition(), 'zzz' )
+					.insert( new Position( root, [ 1, 0 ] ), 'xxx' );
+			} );
 
-			setSelection( [ 1, 0 ], [ 1, 0 ] );
-			doc.batch().insert( doc.selection.getFirstPosition(), 'yyy' );
-			output( '<p>fozzzo</p><p>yyy[]xxxbar</p>' );
+			output( '<paragraph>fozzz[]o</paragraph><paragraph>xxxbar</paragraph>' );
+
+			doc.enqueueChanges( () => {
+				setSelection( [ 1, 0 ], [ 1, 0 ] );
+				doc.batch().insert( doc.selection.getFirstPosition(), 'yyy' );
+			} );
+
+			output( '<paragraph>fozzzo</paragraph><paragraph>yyy[]xxxbar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>fozzzo</p><p>[]xxxbar</p>' );
+			output( '<paragraph>fozzzo</paragraph><paragraph>[]xxxbar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>fo[]o</p><p>bar</p>' );
+			output( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
 			undoDisabled();
 		} );
 
 		it( 'multiple adding mixed with undo', () => {
-			input( '<p>fo[]o</p><p>bar</p>' );
+			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
-			output( '<p>fozzz[]o</p><p>bar</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			} );
+			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
-			setSelection( [ 1, 0 ], [ 1, 0 ] );
-			doc.batch().insert( doc.selection.getFirstPosition(), 'yyy' );
-			output( '<p>fozzzo</p><p>yyy[]bar</p>' );
+			doc.enqueueChanges( () => {
+				setSelection( [ 1, 0 ], [ 1, 0 ] );
+				doc.batch().insert( doc.selection.getFirstPosition(), 'yyy' );
+			} );
 
-			editor.execute( 'undo' );
-			output( '<p>fozzzo</p><p>[]bar</p>' );
-
-			setSelection( [ 0, 0 ], [ 0, 0 ] );
-			doc.batch().insert( doc.selection.getFirstPosition(), 'xxx' );
-			output( '<p>xxx[]fozzzo</p><p>bar</p>' );
+			output( '<paragraph>fozzzo</paragraph><paragraph>yyy[]bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>[]fozzzo</p><p>bar</p>' );
+			output( '<paragraph>fozzzo</paragraph><paragraph>[]bar</paragraph>' );
+
+			doc.enqueueChanges( () => {
+				setSelection( [ 0, 0 ], [ 0, 0 ] );
+				doc.batch().insert( doc.selection.getFirstPosition(), 'xxx' );
+			} );
+			output( '<paragraph>xxx[]fozzzo</paragraph><paragraph>bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>fo[]o</p><p>bar</p>' );
+			output( '<paragraph>[]fozzzo</paragraph><paragraph>bar</paragraph>' );
+
+			editor.execute( 'undo' );
+			output( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
 			undoDisabled();
 		} );
 
 		it( 'multiple remove and undo', () => {
-			input( '<p>[]foo</p><p>bar</p>' );
+			input( '<paragraph>[]foo</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
-			output( '<p>[]o</p><p>bar</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch().remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
+			} );
+			output( '<paragraph>[]o</paragraph><paragraph>bar</paragraph>' );
 
-			setSelection( [ 1, 1 ], [ 1, 1 ] );
-			doc.batch().remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
-			output( '<p>o</p><p>b[]</p>' );
+			doc.enqueueChanges( () => {
+				setSelection( [ 1, 1 ], [ 1, 1 ] );
+				doc.batch().remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
+			} );
+			output( '<paragraph>o</paragraph><paragraph>b[]</paragraph>' );
 
 			editor.execute( 'undo' );
 			// Here is an edge case that selection could be before or after `ar`.
-			output( '<p>o</p><p>bar[]</p>' );
+			output( '<paragraph>o</paragraph><paragraph>bar[]</paragraph>' );
 
 			editor.execute( 'undo' );
 			// As above.
-			output( '<p>fo[]o</p><p>bar</p>' );
+			output( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
 			undoDisabled();
 		} );
 
 		it( 'add and remove different parts and undo', () => {
-			input( '<p>fo[]o</p><p>bar</p>' );
+			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
-			output( '<p>fozzz[]o</p><p>bar</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			} );
+			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
-			setSelection( [ 1, 2 ], [ 1, 2 ] );
-			doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 1, 1 ] ), 1 ) );
-			output( '<p>fozzzo</p><p>b[]r</p>' );
+			doc.enqueueChanges( () => {
+				setSelection( [ 1, 2 ], [ 1, 2 ] );
+				doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 1, 1 ] ), 1 ) );
+			} );
+			output( '<paragraph>fozzzo</paragraph><paragraph>b[]r</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>fozzzo</p><p>ba[]r</p>' );
+			output( '<paragraph>fozzzo</paragraph><paragraph>ba[]r</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>fo[]o</p><p>bar</p>' );
+			output( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
 			undoDisabled();
 		} );
 
 		it( 'add and remove same part and undo', () => {
-			input( '<p>fo[]o</p><p>bar</p>' );
+			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
-			output( '<p>fozzz[]o</p><p>bar</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			} );
+			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 0, 2 ] ), 3 ) );
-			output( '<p>fo[]o</p><p>bar</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 0, 2 ] ), 3 ) );
+			} );
+			output( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>fozzz[]o</p><p>bar</p>' );
+			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>fo[]o</p><p>bar</p>' );
+			output( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
 			undoDisabled();
 		} );
@@ -225,38 +255,46 @@ describe( 'UndoEngine integration', () => {
 
 	describe( 'moving', () => {
 		it( 'move same content twice then undo', () => {
-			input( '<p>f[o]z</p><p>bar</p>' );
+			input( '<paragraph>f[o]z</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
-			output( '<p>fz</p><p>[o]bar</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
+			} );
+			output( '<paragraph>fz</paragraph><paragraph>[o]bar</paragraph>' );
 
-			doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0, 2 ] ) );
-			output( '<p>fz[o]</p><p>bar</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0, 2 ] ) );
+			} );
+			output( '<paragraph>fz[o]</paragraph><paragraph>bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>fz</p><p>[o]bar</p>' );
+			output( '<paragraph>fz</paragraph><paragraph>[o]bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>f[o]z</p><p>bar</p>' );
+			output( '<paragraph>f[o]z</paragraph><paragraph>bar</paragraph>' );
 
 			undoDisabled();
 		} );
 
 		it( 'move content and new parent then undo', () => {
-			input( '<p>f[o]z</p><p>bar</p>' );
+			input( '<paragraph>f[o]z</paragraph><paragraph>bar</paragraph>' );
 
-			doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
-			output( '<p>fz</p><p>[o]bar</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
+			} );
+			output( '<paragraph>fz</paragraph><paragraph>[o]bar</paragraph>' );
 
-			setSelection( [ 1 ], [ 2 ] );
-			doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
-			output( '[<p>obar</p>]<p>fz</p>' );
+			doc.enqueueChanges( () => {
+				setSelection( [ 1 ], [ 2 ] );
+				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
+			} );
+			output( '[<paragraph>obar</paragraph>]<paragraph>fz</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>fz</p>[<p>obar</p>]' );
+			output( '<paragraph>fz</paragraph>[<paragraph>obar</paragraph>]' );
 
 			editor.execute( 'undo' );
-			output( '<p>f[o]z</p><p>bar</p>' );
+			output( '<paragraph>f[o]z</paragraph><paragraph>bar</paragraph>' );
 
 			undoDisabled();
 		} );
@@ -264,22 +302,26 @@ describe( 'UndoEngine integration', () => {
 
 	describe( 'attributes with other', () => {
 		it( 'attributes then insert inside then undo', () => {
-			input( '<p>fo[ob]ar</p>' );
+			input( '<paragraph>fo[ob]ar</paragraph>' );
 
-			doc.batch().setAttribute( doc.selection.getFirstRange(), 'bold', true );
-			output( '<p>fo[<$text bold="true">ob</$text>]ar</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch().setAttribute( doc.selection.getFirstRange(), 'bold', true );
+			} );
+			output( '<paragraph>fo[<$text bold="true">ob</$text>]ar</paragraph>' );
 
-			setSelection( [ 0, 3 ], [ 0, 3 ] );
-			doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
-			output( '<p>fo<$text bold="true">o</$text>zzz<$text bold="true">[]b</$text>ar</p>' );
+			doc.enqueueChanges( () => {
+				setSelection( [ 0, 3 ], [ 0, 3 ] );
+				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+			} );
+			output( '<paragraph>fo<$text bold="true">o</$text>zzz<$text bold="true">[]b</$text>ar</paragraph>' );
 			expect( doc.selection.getAttribute( 'bold' ) ).to.true;
 
 			editor.execute( 'undo' );
-			output( '<p>fo<$text bold="true">o[]b</$text>ar</p>' );
+			output( '<paragraph>fo<$text bold="true">o[]b</$text>ar</paragraph>' );
 			expect( doc.selection.getAttribute( 'bold' ) ).to.true;
 
 			editor.execute( 'undo' );
-			output( '<p>fo[ob]ar</p>' );
+			output( '<paragraph>fo[ob]ar</paragraph>' );
 
 			undoDisabled();
 		} );
@@ -290,8 +332,10 @@ describe( 'UndoEngine integration', () => {
 			doc.schema.allow( { name: '$text', inside: '$root' } );
 			input( 'fo[zb]ar' );
 
-			doc.batch().wrap( doc.selection.getFirstRange(), 'p' );
-			output( 'fo<p>[zb]</p>ar' );
+			doc.enqueueChanges( () => {
+				doc.batch().wrap( doc.selection.getFirstRange(), 'paragraph' );
+			} );
+			output( 'fo<paragraph>[zb]</paragraph>ar' );
 
 			editor.execute( 'undo' );
 			output( 'fo[zb]ar' );
@@ -303,16 +347,20 @@ describe( 'UndoEngine integration', () => {
 			doc.schema.allow( { name: '$text', inside: '$root' } );
 			input( 'fo[zb]ar' );
 
-			doc.batch().wrap( doc.selection.getFirstRange(), 'p' );
+			doc.enqueueChanges( () => {
+				doc.batch().wrap( doc.selection.getFirstRange(), 'paragraph' );
+			} );
 			// Would be better if selection was inside P.
-			output( 'fo<p>[zb]</p>ar' );
+			output( 'fo<paragraph>[zb]</paragraph>ar' );
 
-			setSelection( [ 2, 0 ], [ 2, 1 ] );
-			doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
-			output( '[z]fo<p>b</p>ar' );
+			doc.enqueueChanges( () => {
+				setSelection( [ 2, 0 ], [ 2, 1 ] );
+				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
+			} );
+			output( '[z]fo<paragraph>b</paragraph>ar' );
 
 			editor.execute( 'undo' );
-			output( 'fo<p>[z]b</p>ar' );
+			output( 'fo<paragraph>[z]b</paragraph>ar' );
 
 			editor.execute( 'undo' );
 			output( 'fo[zb]ar' );
@@ -321,41 +369,47 @@ describe( 'UndoEngine integration', () => {
 		} );
 
 		it( 'unwrap and undo', () => {
-			input( '<p>foo[]bar</p>' );
+			input( '<paragraph>foo[]bar</paragraph>' );
 
-			doc.batch().unwrap( doc.selection.getFirstPosition().parent );
+			doc.enqueueChanges( () => {
+				doc.batch().unwrap( doc.selection.getFirstPosition().parent );
+			} );
 			output( 'foo[]bar' );
 
 			editor.execute( 'undo' );
-			output( '<p>foo[]bar</p>' );
+			output( '<paragraph>foo[]bar</paragraph>' );
 
 			undoDisabled();
 		} );
 
 		it( 'merge and undo', () => {
-			input( '<p>foo</p><p>[]bar</p>' );
+			input( '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
 
-			doc.batch().merge( new Position( root, [ 1 ] ) );
-			// Because selection is stuck with <p> it ends up in graveyard. We have to manually move it to correct node.
-			setSelection( [ 0, 3 ], [ 0, 3 ] );
-			output( '<p>foo[]bar</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch().merge( new Position( root, [ 1 ] ) );
+				// Because selection is stuck with <paragraph> it ends up in graveyard. We have to manually move it to correct node.
+				setSelection( [ 0, 3 ], [ 0, 3 ] );
+			} );
+			output( '<paragraph>foo[]bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>foo</p><p>bar[]</p>' );
+			output( '<paragraph>foo</paragraph><paragraph>bar[]</paragraph>' );
 
 			undoDisabled();
 		} );
 
 		it( 'split and undo', () => {
-			input( '<p>foo[]bar</p>' );
+			input( '<paragraph>foo[]bar</paragraph>' );
 
-			doc.batch().split( doc.selection.getFirstPosition() );
-			// Because selection is stuck with <p> it ends up in wrong node. We have to manually move it to correct node.
-			setSelection( [ 1, 0 ], [ 1, 0 ] );
-			output( '<p>foo</p><p>[]bar</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch().split( doc.selection.getFirstPosition() );
+				// Because selection is stuck with <paragraph> it ends up in wrong node. We have to manually move it to correct node.
+				setSelection( [ 1, 0 ], [ 1, 0 ] );
+			} );
+			output( '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>foobar[]</p>' );
+			output( '<paragraph>foobar[]</paragraph>' );
 
 			undoDisabled();
 		} );
@@ -386,338 +440,338 @@ describe( 'UndoEngine integration', () => {
 		}
 
 		it( 'split, split, split', () => {
-			input( '<p>12345678</p>' );
+			input( '<paragraph>12345678</paragraph>' );
 
 			split( [ 0, 3 ] );
-			output( '<p>123</p><p>[]45678</p>' );
+			output( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
 
 			split( [ 1, 4 ] );
-			output( '<p>123</p><p>4567</p><p>[]8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4567</paragraph><paragraph>[]8</paragraph>' );
 
 			split( [ 1, 2 ] );
-			output( '<p>123</p><p>45</p><p>[]67</p><p>8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45</paragraph><paragraph>[]67</paragraph><paragraph>8</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>4567[]</p><p>8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4567[]</paragraph><paragraph>8</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>45678[]</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45678[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345678[]</p>' );
+			output( '<paragraph>12345678[]</paragraph>' );
 
 			undoDisabled();
 
 			editor.execute( 'redo' );
-			output( '<p>123[]</p><p>45678</p>' );
+			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>123</p><p>4567[]</p><p>8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4567[]</paragraph><paragraph>8</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>123</p><p>45[]</p><p>67</p><p>8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45[]</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
 
 			redoDisabled();
 		} );
 
 		it( 'merge, merge, merge', () => {
-			input( '<p>123</p><p>45</p><p>67</p><p>8</p>' );
+			input( '<paragraph>123</paragraph><paragraph>45</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
 
 			merge( [ 1 ] );
-			output( '<p>123[]45</p><p>67</p><p>8</p>' );
+			output( '<paragraph>123[]45</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
 
 			merge( [ 2 ] );
-			output( '<p>12345</p><p>67[]8</p>' );
+			output( '<paragraph>12345</paragraph><paragraph>67[]8</paragraph>' );
 
 			merge( [ 1 ] );
-			output( '<p>12345[]678</p>' );
+			output( '<paragraph>12345[]678</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345</p><p>678[]</p>' );
+			output( '<paragraph>12345</paragraph><paragraph>678[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345</p><p>67</p><p>8[]</p>' );
+			output( '<paragraph>12345</paragraph><paragraph>67</paragraph><paragraph>8[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>45[]</p><p>67</p><p>8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45[]</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
 
 			undoDisabled();
 
 			editor.execute( 'redo' );
-			output( '<p>12345[]</p><p>67</p><p>8</p>' );
+			output( '<paragraph>12345[]</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>12345</p><p>678[]</p>' );
+			output( '<paragraph>12345</paragraph><paragraph>678[]</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>12345678[]</p>' );
+			output( '<paragraph>12345678[]</paragraph>' );
 
 			redoDisabled();
 		} );
 
 		it( 'split, merge, split, merge (same position)', () => {
-			input( '<p>12345678</p>' );
+			input( '<paragraph>12345678</paragraph>' );
 
 			split( [ 0, 3 ] );
-			output( '<p>123</p><p>[]45678</p>' );
+			output( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
 
 			merge( [ 1 ] );
-			output( '<p>123[]45678</p>' );
+			output( '<paragraph>123[]45678</paragraph>' );
 
 			split( [ 0, 3 ] );
-			output( '<p>123</p><p>[]45678</p>' );
+			output( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
 
 			merge( [ 1 ] );
-			output( '<p>123[]45678</p>' );
+			output( '<paragraph>123[]45678</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>45678[]</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45678[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345678[]</p>' );
+			output( '<paragraph>12345678[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>45678[]</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45678[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345678[]</p>' );
+			output( '<paragraph>12345678[]</paragraph>' );
 
 			undoDisabled();
 
 			editor.execute( 'redo' );
-			output( '<p>123[]</p><p>45678</p>' );
+			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>12345678[]</p>' );
+			output( '<paragraph>12345678[]</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>123[]</p><p>45678</p>' );
+			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>12345678[]</p>' );
+			output( '<paragraph>12345678[]</paragraph>' );
 
 			redoDisabled();
 		} );
 
 		it( 'split, split, split, merge, merge, merge', () => {
-			input( '<p>12345678</p>' );
+			input( '<paragraph>12345678</paragraph>' );
 
 			split( [ 0, 3 ] );
-			output( '<p>123</p><p>[]45678</p>' );
+			output( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
 
 			split( [ 1, 4 ] );
-			output( '<p>123</p><p>4567</p><p>[]8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4567</paragraph><paragraph>[]8</paragraph>' );
 
 			split( [ 1, 2 ] );
-			output( '<p>123</p><p>45</p><p>[]67</p><p>8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45</paragraph><paragraph>[]67</paragraph><paragraph>8</paragraph>' );
 
 			merge( [ 1 ] );
-			output( '<p>123[]45</p><p>67</p><p>8</p>' );
+			output( '<paragraph>123[]45</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
 
 			merge( [ 2 ] );
-			output( '<p>12345</p><p>67[]8</p>' );
+			output( '<paragraph>12345</paragraph><paragraph>67[]8</paragraph>' );
 
 			merge( [ 1 ] );
-			output( '<p>12345[]678</p>' );
+			output( '<paragraph>12345[]678</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345</p><p>678[]</p>' );
+			output( '<paragraph>12345</paragraph><paragraph>678[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345</p><p>67</p><p>8[]</p>' );
+			output( '<paragraph>12345</paragraph><paragraph>67</paragraph><paragraph>8[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>45[]</p><p>67</p><p>8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45[]</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>4567[]</p><p>8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4567[]</paragraph><paragraph>8</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>45678[]</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45678[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345678[]</p>' );
+			output( '<paragraph>12345678[]</paragraph>' );
 
 			undoDisabled();
 
 			editor.execute( 'redo' );
-			output( '<p>123[]</p><p>45678</p>' );
+			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>123</p><p>4567[]</p><p>8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4567[]</paragraph><paragraph>8</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>123</p><p>45[]</p><p>67</p><p>8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45[]</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>12345[]</p><p>67</p><p>8</p>' );
+			output( '<paragraph>12345[]</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>12345</p><p>678[]</p>' );
+			output( '<paragraph>12345</paragraph><paragraph>678[]</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>12345678[]</p>' );
+			output( '<paragraph>12345678[]</paragraph>' );
 
 			redoDisabled();
 		} );
 
 		it( 'split, split, merge, split, merge (different order)', () => {
-			input( '<p>12345678</p>' );
+			input( '<paragraph>12345678</paragraph>' );
 
 			split( [ 0, 3 ] );
-			output( '<p>123</p><p>[]45678</p>' );
+			output( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
 
 			split( [ 1, 2 ] );
-			output( '<p>123</p><p>45</p><p>[]678</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45</paragraph><paragraph>[]678</paragraph>' );
 
 			merge( [ 1 ] );
-			output( '<p>123[]45</p><p>678</p>' );
+			output( '<paragraph>123[]45</paragraph><paragraph>678</paragraph>' );
 
 			split( [ 1, 1 ] );
-			output( '<p>12345</p><p>6</p><p>[]78</p>' );
+			output( '<paragraph>12345</paragraph><paragraph>6</paragraph><paragraph>[]78</paragraph>' );
 
 			merge( [ 1 ] );
-			output( '<p>12345[]6</p><p>78</p>' );
+			output( '<paragraph>12345[]6</paragraph><paragraph>78</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345</p><p>6[]</p><p>78</p>' );
+			output( '<paragraph>12345</paragraph><paragraph>6[]</paragraph><paragraph>78</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345</p><p>678[]</p>' );
+			output( '<paragraph>12345</paragraph><paragraph>678[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>45[]</p><p>678</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45[]</paragraph><paragraph>678</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>45678[]</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45678[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345678[]</p>' );
+			output( '<paragraph>12345678[]</paragraph>' );
 
 			undoDisabled();
 
 			editor.execute( 'redo' );
-			output( '<p>123[]</p><p>45678</p>' );
+			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>123</p><p>45[]</p><p>678</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45[]</paragraph><paragraph>678</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>12345[]</p><p>678</p>' );
+			output( '<paragraph>12345[]</paragraph><paragraph>678</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>12345</p><p>6[]</p><p>78</p>' );
+			output( '<paragraph>12345</paragraph><paragraph>6[]</paragraph><paragraph>78</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>123456[]</p><p>78</p>' );
+			output( '<paragraph>123456[]</paragraph><paragraph>78</paragraph>' );
 
 			redoDisabled();
 		} );
 
 		it( 'split, remove, split, merge, merge', () => {
-			input( '<p>12345678</p>' );
+			input( '<paragraph>12345678</paragraph>' );
 
 			split( [ 0, 3 ] );
-			output( '<p>123</p><p>[]45678</p>' );
+			output( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
 
 			remove( [ 1, 4 ] );
 			remove( [ 1, 3 ] );
-			output( '<p>123</p><p>45[]8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45[]8</paragraph>' );
 
 			split( [ 1, 1 ] );
-			output( '<p>123</p><p>4</p><p>[]58</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4</paragraph><paragraph>[]58</paragraph>' );
 
 			merge( [ 1 ] );
-			output( '<p>123[]4</p><p>58</p>' );
+			output( '<paragraph>123[]4</paragraph><paragraph>58</paragraph>' );
 
 			merge( [ 1 ] );
-			output( '<p>1234[]58</p>' );
+			output( '<paragraph>1234[]58</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>1234</p><p>58[]</p>' );
+			output( '<paragraph>1234</paragraph><paragraph>58[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>4[]</p><p>58</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4[]</paragraph><paragraph>58</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>458[]</p>' );
+			output( '<paragraph>123</paragraph><paragraph>458[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>4567[]8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4567[]8</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345678[]</p>' );
+			output( '<paragraph>12345678[]</paragraph>' );
 
 			undoDisabled();
 
 			editor.execute( 'redo' );
-			output( '<p>123[]</p><p>45678</p>' );
+			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>123</p><p>458[]</p>' );
+			output( '<paragraph>123</paragraph><paragraph>458[]</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>123</p><p>4[]</p><p>58</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4[]</paragraph><paragraph>58</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>1234[]</p><p>58</p>' );
+			output( '<paragraph>1234[]</paragraph><paragraph>58</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>123458[]</p>' );
+			output( '<paragraph>123458[]</paragraph>' );
 
 			redoDisabled();
 		} );
 
 		it( 'split, typing, split, merge, merge', () => {
-			input( '<p>12345678</p>' );
+			input( '<paragraph>12345678</paragraph>' );
 
 			split( [ 0, 3 ] );
-			output( '<p>123</p><p>[]45678</p>' );
+			output( '<paragraph>123</paragraph><paragraph>[]45678</paragraph>' );
 
 			type( [ 1, 4 ], 'x' );
 			type( [ 1, 5 ], 'y' );
-			output( '<p>123</p><p>4567xy[]8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4567xy[]8</paragraph>' );
 
 			split( [ 1, 2 ] );
-			output( '<p>123</p><p>45</p><p>[]67xy8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45</paragraph><paragraph>[]67xy8</paragraph>' );
 
 			merge( [ 1 ] );
-			output( '<p>123[]45</p><p>67xy8</p>' );
+			output( '<paragraph>123[]45</paragraph><paragraph>67xy8</paragraph>' );
 
 			merge( [ 1 ] );
-			output( '<p>12345[]67xy8</p>' );
+			output( '<paragraph>12345[]67xy8</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345</p><p>67xy8[]</p>' );
+			output( '<paragraph>12345</paragraph><paragraph>67xy8[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>45[]</p><p>67xy8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45[]</paragraph><paragraph>67xy8</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>4567xy8[]</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4567xy8[]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>123</p><p>4567[]8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4567[]8</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>12345678[]</p>' );
+			output( '<paragraph>12345678[]</paragraph>' );
 
 			undoDisabled();
 
 			editor.execute( 'redo' );
-			output( '<p>123[]</p><p>45678</p>' );
+			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>123</p><p>4567xy8[]</p>' );
+			output( '<paragraph>123</paragraph><paragraph>4567xy8[]</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>123</p><p>45[]</p><p>67xy8</p>' );
+			output( '<paragraph>123</paragraph><paragraph>45[]</paragraph><paragraph>67xy8</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>12345[]</p><p>67xy8</p>' );
+			output( '<paragraph>12345[]</paragraph><paragraph>67xy8</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<p>1234567xy8[]</p>' );
+			output( '<paragraph>1234567xy8[]</paragraph>' );
 
 			redoDisabled();
 		} );
@@ -726,149 +780,182 @@ describe( 'UndoEngine integration', () => {
 	describe( 'other reported cases', () => {
 		// ckeditor5-engine#t/1051
 		it( 'rename leaks to other elements on undo #1', () => {
-			input( '<h1>[]Foo</h1><p>Bar</p>' );
+			input( '<heading1>[]Foo</heading1><paragraph>Bar</paragraph>' );
 
-			doc.batch().rename( root.getChild( 0 ), 'p' );
-			output( '<p>[]Foo</p><p>Bar</p>' );
+			doc.batch().rename( root.getChild( 0 ), 'paragraph' );
+			output( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			doc.batch().split( Position.createAt( root.getChild( 0 ), 1 ) );
-			output( '<p>[]F</p><p>oo</p><p>Bar</p>' );
+			output( '<paragraph>[]F</paragraph><paragraph>oo</paragraph><paragraph>Bar</paragraph>' );
 
 			doc.batch().merge( Position.createAt( root, 2 ) );
-			output( '<p>[]F</p><p>ooBar</p>' );
+			output( '<paragraph>[]F</paragraph><paragraph>ooBar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>[]F</p><p>oo</p><p>Bar</p>' );
+			output( '<paragraph>[]F</paragraph><paragraph>oo</paragraph><paragraph>Bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>[]Foo</p><p>Bar</p>' );
+			output( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<h1>[]Foo</h1><p>Bar</p>' );
+			output( '<heading1>[]Foo</heading1><paragraph>Bar</paragraph>' );
 		} );
 
 		// Similar issue that bases on the same error as above, however here we first merge (above we first split).
 		it( 'rename leaks to other elements on undo #2', () => {
-			input( '<h1>[]Foo</h1><p>Bar</p>' );
+			input( '<heading1>[]Foo</heading1><paragraph>Bar</paragraph>' );
 
-			doc.batch().rename( root.getChild( 0 ), 'h2' );
-			output( '<h2>[]Foo</h2><p>Bar</p>' );
+			doc.batch().rename( root.getChild( 0 ), 'heading2' );
+			output( '<heading2>[]Foo</heading2><paragraph>Bar</paragraph>' );
 
 			doc.batch().merge( Position.createAt( root, 1 ) );
-			output( '<h2>[]FooBar</h2>' );
+			output( '<heading2>[]FooBar</heading2>' );
 
 			editor.execute( 'undo' );
-			output( '<h2>[]Foo</h2><p>Bar</p>' );
+			output( '<heading2>[]Foo</heading2><paragraph>Bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<h1>[]Foo</h1><p>Bar</p>' );
+			output( '<heading1>[]Foo</heading1><paragraph>Bar</paragraph>' );
 		} );
 
 		// Reverse issue, this time first operation is merge and then rename.
 		it( 'merge, rename, undo, undo is correct', () => {
-			input( '<h1>[]Foo</h1><p>Bar</p>' );
+			input( '<heading1>[]Foo</heading1><paragraph>Bar</paragraph>' );
 
 			doc.batch().merge( Position.createAt( root, 1 ) );
-			output( '<h1>[]FooBar</h1>' );
+			output( '<heading1>[]FooBar</heading1>' );
 
-			doc.batch().rename( root.getChild( 0 ), 'h2' );
-			output( '<h2>[]FooBar</h2>' );
-
-			editor.execute( 'undo' );
-			output( '<h1>[]FooBar</h1>' );
+			doc.batch().rename( root.getChild( 0 ), 'heading2' );
+			output( '<heading2>[]FooBar</heading2>' );
 
 			editor.execute( 'undo' );
-			output( '<h1>[]Foo</h1><p>Bar</p>' );
+			output( '<heading1>[]FooBar</heading1>' );
+
+			editor.execute( 'undo' );
+			output( '<heading1>[]Foo</heading1><paragraph>Bar</paragraph>' );
 		} );
 
 		// ckeditor5-engine#t/1053
 		it( 'wrap, split, undo, undo is correct', () => {
-			input( '<p>[]Foo</p><p>Bar</p>' );
+			input( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			doc.batch().wrap( Range.createIn( root ), 'div' );
-			output( '<div><p>[]Foo</p><p>Bar</p></div>' );
+			output( '<div><paragraph>[]Foo</paragraph><paragraph>Bar</paragraph></div>' );
 
 			doc.batch().split( new Position( root, [ 0, 0, 1 ] ) );
-			output( '<div><p>[]F</p><p>oo</p><p>Bar</p></div>' );
+			output( '<div><paragraph>[]F</paragraph><paragraph>oo</paragraph><paragraph>Bar</paragraph></div>' );
 
 			editor.execute( 'undo' );
-			output( '<div><p>[]Foo</p><p>Bar</p></div>' );
+			output( '<div><paragraph>[]Foo</paragraph><paragraph>Bar</paragraph></div>' );
 
 			editor.execute( 'undo' );
-			output( '<p>[]Foo</p><p>Bar</p>' );
+			output( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 		} );
 
 		// ckeditor5-engine#t/1055
 		it( 'selection attribute setting: split, bold, merge, undo, undo, undo', () => {
-			input( '<p>Foo[]</p><p>Bar</p>' );
+			input( '<paragraph>Foo[]</paragraph><paragraph>Bar</paragraph>' );
 
 			editor.execute( 'enter' );
-			output( '<p>Foo</p><p>[]</p><p>Bar</p>' );
+			output( '<paragraph>Foo</paragraph><paragraph>[]</paragraph><paragraph>Bar</paragraph>' );
 
 			editor.execute( 'bold' );
-			output( '<p>Foo</p><p selection:bold="true"><$text bold="true">[]</$text></p><p>Bar</p>' );
+			output(
+				'<paragraph>Foo</paragraph>' +
+				'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>' +
+				'<paragraph>Bar</paragraph>'
+			);
 
 			editor.execute( 'forwardDelete' );
-			output( '<p>Foo</p><p>[]Bar</p>' );
+			output( '<paragraph>Foo</paragraph><paragraph>[]Bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>Foo</p><p selection:bold="true"><$text bold="true">[]</$text></p><p>Bar</p>' );
+			output(
+				'<paragraph>Foo</paragraph>' +
+				'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>' +
+				'<paragraph>Bar</paragraph>'
+			);
 
 			editor.execute( 'undo' );
-			output( '<p>Foo</p><p>[]</p><p>Bar</p>' );
+			output( '<paragraph>Foo</paragraph><paragraph>[]</paragraph><paragraph>Bar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>Foo[]</p><p>Bar</p>' );
+			output( '<paragraph>Foo[]</paragraph><paragraph>Bar</paragraph>' );
+		} );
+	} );
+
+	describe( 'pasting', () => {
+		function pasteHtml( editor, html ) {
+			editor.editing.view.fire( 'paste', {
+				dataTransfer: createDataTransfer( { 'text/html': html } ),
+				preventDefault() {}
+			} );
+		}
+
+		function createDataTransfer( data ) {
+			return {
+				getData( type ) {
+					return data[ type ];
+				}
+			};
+		}
+
+		// ckeditor5-engine#t/1065
+		it( 'undo paste into non empty element should not throw and be correct', () => {
+			doc.enqueueChanges( () => {
+				input( '<paragraph>Foo[]</paragraph>' );
+			} );
+
+			doc.enqueueChanges( () => {
+				pasteHtml( editor, '<p>a</p><p>b</p>' );
+			} );
+
+			output( '<paragraph>Fooa</paragraph><paragraph>b[]</paragraph>' );
+
+			doc.enqueueChanges( () => {
+				pasteHtml( editor, '<p>c</p><p>d</p>' );
+			} );
+
+			output( '<paragraph>Fooa</paragraph><paragraph>bc</paragraph><paragraph>d[]</paragraph>' );
+
+			editor.execute( 'undo' );
+			output( '<paragraph>Fooa</paragraph><paragraph>b[]</paragraph>' );
+
+			editor.execute( 'undo' );
+			output( '<paragraph>Foo[]</paragraph>' );
 		} );
 	} );
 
 	describe( 'other edge cases', () => {
 		it( 'deleteContent between two nodes', () => {
-			input( '<p>fo[o</p><p>b]ar</p>' );
+			input( '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
 
-			editor.data.deleteContent( doc.selection, doc.batch() );
-			output( '<p>fo[]ar</p>' );
+			doc.enqueueChanges( () => {
+				editor.data.deleteContent( doc.selection, doc.batch() );
+			} );
+			output( '<paragraph>fo[]ar</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<p>fo[o</p><p>b]ar</p>' );
+			output( '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
 		} );
 
 		// Related to ckeditor5-engine#891 and ckeditor5-list#51.
 		it( 'change attribute of removed node then undo and redo', () => {
+			input( '<paragraph></paragraph>' );
+
 			const gy = doc.graveyard;
-			const batch = doc.batch();
-			const p = new Element( 'p' );
+			const p = doc.getRoot().getChild( 0 );
 
-			root.appendChildren( p );
-
-			batch.remove( p );
-			batch.setAttribute( p, 'bold', true );
+			doc.enqueueChanges( () => {
+				doc.batch().remove( p );
+				doc.batch().setAttribute( p, 'bold', true );
+			} );
 
 			editor.execute( 'undo' );
 			editor.execute( 'redo' );
 
 			expect( p.root ).to.equal( gy );
 			expect( p.getAttribute( 'bold' ) ).to.be.true;
-		} );
-
-		// Related to ckeditor5-engine#891.
-		it( 'change attribute of removed node then undo and redo', () => {
-			const gy = doc.graveyard;
-			const batch = doc.batch();
-			const p1 = new Element( 'p' );
-			const p2 = new Element( 'p' );
-			const p3 = new Element( 'p' );
-
-			root.appendChildren( [ p1, p2 ] );
-
-			batch.remove( p1 ).remove( p2 ).insert( new Position( root, [ 0 ] ), p3 );
-
-			editor.execute( 'undo' );
-			editor.execute( 'redo' );
-
-			expect( p1.root ).to.equal( gy );
-			expect( p2.root ).to.equal( gy );
-			expect( p3.root ).to.equal( root );
 		} );
 	} );
 } );
