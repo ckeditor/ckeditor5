@@ -3,7 +3,7 @@
   "packagesPrefix": "@ckeditor/ckeditor5-",
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#637b812",
-    "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#b9df37f",
+    "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#3e93bf6",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#d720cb9",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#ba80eb6",
     "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon#71eef99",
