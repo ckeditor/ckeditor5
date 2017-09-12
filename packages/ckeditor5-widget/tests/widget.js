@@ -508,6 +508,21 @@ describe( 'Widget', () => {
 			);
 
 			test(
+				'should remove the entire empty element (deeper structure) if it is next to a widget (forward delete)',
+
+				'<paragraph>foo</paragraph>' +
+				'<blockQuote><div><div><paragraph>[]</paragraph></div></div></blockQuote>' +
+				'<image></image>' +
+				'<paragraph>foo</paragraph>',
+
+				keyCodes.delete,
+
+				'<paragraph>foo</paragraph>' +
+				'[<image></image>]' +
+				'<paragraph>foo</paragraph>'
+			);
+
+			test(
 				'should not remove the entire element which is not empty and the element is next to a widget',
 
 				'<paragraph>foo</paragraph>' +
@@ -520,6 +535,22 @@ describe( 'Widget', () => {
 				'<paragraph>foo</paragraph>' +
 				'[<image></image>]' +
 				'<blockQuote><paragraph></paragraph></blockQuote>' +
+				'<paragraph>foo</paragraph>'
+			);
+
+			test(
+				'should not remove the entire element which is not empty and the element is next to a widget (forward delete)',
+
+				'<paragraph>foo</paragraph>' +
+				'<blockQuote><paragraph>Foo</paragraph><paragraph>[]</paragraph></blockQuote>' +
+				'<image></image>' +
+				'<paragraph>foo</paragraph>',
+
+				keyCodes.delete,
+
+				'<paragraph>foo</paragraph>' +
+				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+				'[<image></image>]' +
 				'<paragraph>foo</paragraph>'
 			);
 
