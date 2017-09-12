@@ -852,7 +852,7 @@ function _convertViewElements( rootNode ) {
 		const convertedElement = rootNode.is( 'documentFragment' ) ? new ViewDocumentFragment() : _convertElement( rootNode );
 
 		// Convert all child nodes.
-		for ( const child of rootNode.getChildren() ) {
+		for ( const child of [ ...rootNode.getChildren() ] ) {
 			if ( convertedElement.is( 'emptyElement' ) ) {
 				throw new Error( 'Parse error - cannot parse inside EmptyElement.' );
 			}

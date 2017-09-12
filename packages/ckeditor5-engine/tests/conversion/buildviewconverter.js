@@ -7,7 +7,6 @@ import buildViewConverter from '../../src/conversion/buildviewconverter';
 
 import ModelSchema from '../../src/model/schema';
 import ModelDocumentFragment from '../../src/model/documentfragment';
-import ModelDocument from '../../src/model/document';
 import ModelElement from '../../src/model/element';
 import ModelTextProxy from '../../src/model/textproxy';
 import ModelRange from '../../src/model/range';
@@ -64,7 +63,7 @@ const textAttributes = [ undefined, 'linkHref', 'linkTitle', 'bold', 'italic', '
 const pAttributes = [ undefined, 'class', 'important', 'theme', 'decorated', 'size' ];
 
 describe( 'View converter builder', () => {
-	let dispatcher, modelDoc, modelRoot, schema, objWithContext;
+	let dispatcher, schema, objWithContext;
 
 	beforeEach( () => {
 		// `additionalData` parameter for `.convert` calls.
@@ -91,16 +90,12 @@ describe( 'View converter builder', () => {
 
 		dispatcher = new ViewConversionDispatcher( { schema } );
 		dispatcher.on( 'text', convertText() );
-
-		modelDoc = new ModelDocument();
-		modelRoot = modelDoc.createRoot();
 	} );
 
 	it( 'should convert from view element to model element', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
 		const conversionResult = dispatcher.convert( new ViewContainerElement( 'p', null, new ViewText( 'foo' ) ), objWithContext );
-		modelRoot.appendChildren( conversionResult );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
 	} );
@@ -111,7 +106,6 @@ describe( 'View converter builder', () => {
 			.toElement( viewElement => new ModelElement( 'image', { src: viewElement.getAttribute( 'src' ) } ) );
 
 		const conversionResult = dispatcher.convert( new ViewContainerElement( 'img', { src: 'foo.jpg' } ), objWithContext );
-		modelRoot.appendChildren( conversionResult );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<image src="foo.jpg"></image>' );
 	} );
@@ -122,10 +116,9 @@ describe( 'View converter builder', () => {
 		const conversionResult = dispatcher.convert(
 			new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), objWithContext
 		);
-		modelRoot.appendChildren( conversionResult );
 
 		// Have to check root because result is a ModelText.
-		expect( modelToString( modelRoot ) ).to.equal( '<$root><$text bold="true">foo</$text></$root>' );
+		expect( modelToString( conversionResult ) ).to.equal( '<$text bold="true">foo</$text>' );
 	} );
 
 	it( 'should convert from view element to model attributes using creator function', () => {
@@ -136,10 +129,9 @@ describe( 'View converter builder', () => {
 		const conversionResult = dispatcher.convert(
 			new ViewAttributeElement( 'a', { href: 'foo.html' }, new ViewText( 'foo' ) ), objWithContext
 		);
-		modelRoot.appendChildren( conversionResult );
 
 		// Have to check root because result is a ModelText.
-		expect( modelToString( modelRoot ) ).to.equal( '<$root><$text linkHref="foo.html">foo</$text></$root>' );
+		expect( modelToString( conversionResult ) ).to.equal( '<$text linkHref="foo.html">foo</$text>' );
 	} );
 
 	it( 'should convert from view attribute to model attribute', () => {
@@ -152,7 +144,6 @@ describe( 'View converter builder', () => {
 		const conversionResult = dispatcher.convert(
 			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), objWithContext
 		);
-		modelRoot.appendChildren( conversionResult );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph class="myClass">foo</paragraph>' );
 	} );
@@ -200,7 +191,6 @@ describe( 'View converter builder', () => {
 		] );
 
 		const conversionResult = dispatcher.convert( viewElement, objWithContext );
-		modelRoot.appendChildren( conversionResult );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph><$text bold="true">aaabbbcccddd</$text></paragraph>' );
 	} );
@@ -337,7 +327,7 @@ describe( 'View converter builder', () => {
 		result = dispatcher.convert(
 			new ViewContainerElement( 'span', { class: 'megatron' }, new ViewText( 'foo' ) ), objWithContext
 		);
-		modelRoot.appendChildren( result );
+
 		expect( modelToString( result ) ).to.equal( '<span>foo</span>' );
 
 		// Almost a megatron. Missing a head.
@@ -346,7 +336,6 @@ describe( 'View converter builder', () => {
 			objWithContext
 		);
 
-		modelRoot.appendChildren( result );
 		expect( modelToString( result ) ).to.equal( '<span>foo</span>' );
 
 		// This would be a megatron but is a paragraph.
@@ -359,7 +348,6 @@ describe( 'View converter builder', () => {
 			objWithContext
 		);
 
-		modelRoot.appendChildren( result );
 		expect( modelToString( result ) ).to.equal( '<paragraph>foo</paragraph>' );
 
 		// At last we have a megatron!
@@ -372,7 +360,6 @@ describe( 'View converter builder', () => {
 			objWithContext
 		);
 
-		modelRoot.appendChildren( result );
 		expect( modelToString( result ) ).to.equal( '<MEGATRON>foo</MEGATRON>' );
 	} );
 
@@ -392,7 +379,6 @@ describe( 'View converter builder', () => {
 
 		const conversionResult = dispatcher.convert( viewElement, objWithContext );
 
-		modelRoot.appendChildren( conversionResult );
 		expect( modelToString( conversionResult ) ).to.equal( '<span transformer="megatron">foo</span>' );
 	} );
 
@@ -415,7 +401,6 @@ describe( 'View converter builder', () => {
 		const conversionResult = dispatcher.convert(
 			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), objWithContext
 		);
-		modelRoot.appendChildren( conversionResult );
 
 		// Element converter was fired first even though attribute converter was added first.
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph class="myClass">foo</paragraph>' );
@@ -432,7 +417,7 @@ describe( 'View converter builder', () => {
 		result = dispatcher.convert(
 			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), objWithContext
 		);
-		modelRoot.appendChildren( result );
+
 		expect( modelToString( result ) ).to.equal( '<paragraph class="myClass">foo</paragraph>' );
 
 		buildViewConverter().for( dispatcher )
@@ -442,7 +427,7 @@ describe( 'View converter builder', () => {
 		result = dispatcher.convert(
 			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), objWithContext
 		);
-		modelRoot.appendChildren( result );
+
 		expect( modelToString( result ) ).to.equal( '<customP>foo</customP>' );
 	} );
 
@@ -461,9 +446,7 @@ describe( 'View converter builder', () => {
 			.toAttribute( 'size', 'small' );
 
 		const viewElement = new ViewContainerElement( 'p', { class: 'decorated small' }, new ViewText( 'foo' ) );
-
 		const conversionResult = dispatcher.convert( viewElement, objWithContext );
-		modelRoot.appendChildren( conversionResult );
 
 		// P element and it's children got converted by the converter (1) and the converter (1) got fired
 		// because P name was not consumed in converter (2). Converter (3) could consume class="small" because
@@ -487,7 +470,6 @@ describe( 'View converter builder', () => {
 		] );
 
 		const conversionResult = dispatcher.convert( viewStructure, objWithContext );
-		modelRoot.appendChildren( conversionResult );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<div class="myClass"><abcd>foo</abcd></div>' );
 	} );
