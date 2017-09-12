@@ -955,6 +955,62 @@ describe( 'Widget', () => {
 				'</blockQuote>' +
 				'<paragraph>foo</paragraph>'
 			);
+
+			test(
+				'should work if selection is in nested element (right arrow)',
+
+				'<paragraph>foo</paragraph>' +
+				'<blockQuote>' +
+					'<div>' +
+						'<div>' +
+							'<paragraph>[]</paragraph>' +
+						'</div>' +
+					'</div>' +
+				'</blockQuote>' +
+				'<image></image>' +
+				'<paragraph>foo</paragraph>',
+
+				keyCodes.arrowright,
+
+				'<paragraph>foo</paragraph>' +
+				'<blockQuote>' +
+					'<div>' +
+						'<div>' +
+							'<paragraph></paragraph>' +
+						'</div>' +
+					'</div>' +
+				'</blockQuote>' +
+				'[<image></image>]' +
+				'<paragraph>foo</paragraph>'
+			);
+
+			test(
+				'should work if selection is in nested element (down arrow)',
+
+				'<paragraph>foo</paragraph>' +
+				'<blockQuote>' +
+					'<div>' +
+						'<div>' +
+							'<paragraph>[]</paragraph>' +
+						'</div>' +
+					'</div>' +
+				'</blockQuote>' +
+				'<image></image>' +
+				'<paragraph>foo</paragraph>',
+
+				keyCodes.arrowdown,
+
+				'<paragraph>foo</paragraph>' +
+				'<blockQuote>' +
+					'<div>' +
+						'<div>' +
+							'<paragraph></paragraph>' +
+						'</div>' +
+					'</div>' +
+				'</blockQuote>' +
+				'[<image></image>]' +
+				'<paragraph>foo</paragraph>'
+			);
 		} );
 
 		describe( 'Ctrl+A', () => {
