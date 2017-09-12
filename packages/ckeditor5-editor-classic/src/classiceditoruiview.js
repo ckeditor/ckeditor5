@@ -41,7 +41,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		 * Toolbar view instance.
 		 *
 		 * @readonly
-		 * @member {module:ui/toolbar/sticky/stickytoolbarview~StickyToolbarView}
+		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
 		this.toolbar = new ToolbarView( locale );
 
