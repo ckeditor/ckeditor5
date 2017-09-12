@@ -14,6 +14,7 @@ import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
 import preventDefault from '../bindings/preventdefault.js';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * The toolbar view class.
@@ -126,9 +127,29 @@ export default class ToolbarView extends View {
 		}
 
 		config.map( name => {
-			const component = name == '|' ? new ToolbarSeparatorView() : factory.create( name );
-
-			this.items.add( component );
+			if ( name == '|' ) {
+				this.items.add( new ToolbarSeparatorView() );
+			} else if ( factory.has( name ) ) {
+				this.items.add( factory.create( name ) );
+			} else {
+				/**
+				 * There was a problem processing the configuration of the toolbar. The item with the given
+				 * name does not exist so it was omitted when rendering the toolbar.
+				 *
+				 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
+				 * to provide a toolbar item has not been loaded or there is a typo in the configuration.
+				 *
+				 * Make sure the plugin responsible for this toolbar item is loaded and the toolbar configuration
+				 * is correct, e.g. {@link module:basic-styles/bold~Bold} is loaded for the `'bold'` toolbar item.
+				 *
+				 * @error toolbarview-item-unavailable
+				 * @param {String} name The name of the component.
+				 */
+				log.warn(
+					'toolbarview-item-unavailable: The requested toolbar item is unavailable.',
+					{ name }
+				);
+			}
 		} );
 	}
 }

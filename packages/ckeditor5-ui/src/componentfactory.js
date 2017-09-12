@@ -61,7 +61,7 @@ export default class ComponentFactory {
 	 * i.e. to set attribute values, create attribute bindings, etc.
 	 */
 	add( name, callback ) {
-		if ( this._components.get( name ) ) {
+		if ( this.has( name ) ) {
 			/**
 			 * The item already exists in the component factory.
 			 *
@@ -83,9 +83,7 @@ export default class ComponentFactory {
 	 * @returns {module:ui/view~View} The instantiated component view.
 	 */
 	create( name ) {
-		const component = this._components.get( name );
-
-		if ( !component ) {
+		if ( !this.has( name ) ) {
 			/**
 			 * There is no such UI component in the factory.
 			 *
@@ -97,6 +95,16 @@ export default class ComponentFactory {
 			);
 		}
 
-		return component( this.editor.locale );
+		return this._components.get( name )( this.editor.locale );
+	}
+
+	/**
+	 * Checks if a component of a given name is registered in the factory.
+	 *
+	 * @param {String} name The name of the component.
+	 * @returns {Boolean}
+	 */
+	has( name ) {
+		return this._components.has( name );
 	}
 }
