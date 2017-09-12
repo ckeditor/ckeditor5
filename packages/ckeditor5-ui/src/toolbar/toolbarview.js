@@ -134,7 +134,7 @@ export default class ToolbarView extends View {
 			} else {
 				/**
 				 * There was a problem processing the configuration of the toolbar. The item with the given
-				 * name does not exist and it was omitted when adding toolbar items in DOM.
+				 * name does not exist so it was omitted when rendering the toolbar.
 				 *
 				 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
 				 * to provide a toolbar item has not been loaded or there is a typo in the configuration.
@@ -144,11 +144,10 @@ export default class ToolbarView extends View {
 				 *
 				 * @error toolbarview-item-unavailable
 				 * @param {String} name The name of the component.
-				 * @param {module:ui/componentfactory~ComponentFactory} factory The factory that is missing the component.
 				 */
 				log.warn(
 					'toolbarview-item-unavailable: The requested toolbar item is unavailable.',
-					{ name, factory }
+					{ name }
 				);
 			}
 		} );

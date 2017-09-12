@@ -265,7 +265,7 @@ describe( 'ToolbarView', () => {
 			sinon.assert.calledOnce( log.warn );
 			sinon.assert.calledWithExactly( log.warn,
 				sinon.match( /^toolbarview-item-unavailable/ ),
-				{ name: 'baz', factory }
+				{ name: 'baz' }
 			);
 		} );
 	} );
