@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/panel/balloon/stickypanelview
+ * @module ui/panel/sticky/stickypanelview
  */
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
