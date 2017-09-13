@@ -6,7 +6,7 @@
 /* globals console:false, document, setTimeout */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
+import ContextualToolbar from '../../../src/toolbar/contextual/contextualtoolbar';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
