@@ -153,6 +153,10 @@
 		{
 			"path": "packages/ckeditor5-theme-lark",
 			"prefix": "theme-lark"
+		},
+		{
+			"path": "packages/ckeditor5-ui",
+			"prefix": "ui"
 		}
 	]
 }
