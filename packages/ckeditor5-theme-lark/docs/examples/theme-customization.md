@@ -1,5 +1,5 @@
 ---
-title: Customized theme
+title: Theme customization
 category: examples-framework
 order: 10
 ---
