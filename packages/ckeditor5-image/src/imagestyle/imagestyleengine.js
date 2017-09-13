@@ -11,8 +11,11 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageStyleCommand from './imagestylecommand';
 import ImageEngine from '../image/imageengine';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
-import fullSizeIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
-import sideIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
+import log from '@ckeditor/ckeditor5-utils/src/log';
+
+import leftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
+import centerIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
+import rightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
 
 /**
  * The image style engine plugin. It sets the default configuration, creates converters and registers
@@ -33,23 +36,16 @@ export default class ImageStyleEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const t = editor.t;
 		const doc = editor.document;
 		const schema = doc.schema;
 		const data = editor.data;
 		const editing = editor.editing;
 
 		// Define default configuration.
-		editor.config.define( 'image.styles', [
-			// This option is equal to situation when no style is applied.
-			{ name: 'imageStyleFull', title: t( 'Full size image' ), icon: fullSizeIcon, value: null },
-
-			// This represents side image.
-			{ name: 'imageStyleSide', title: t( 'Side image' ), icon: sideIcon, value: 'side', className: 'image-style-side' }
-		] );
+		editor.config.define( 'image.styles', [ 'imageStyleFull', 'imageStyleSide' ] );
 
 		// Get configuration.
-		const styles = editor.config.get( 'image.styles' );
+		const styles = this.imageStyles;
 
 		// Allow imageStyle attribute in image.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
@@ -72,6 +68,194 @@ export default class ImageStyleEngine extends Plugin {
 			editor.commands.add( style.name, new ImageStyleCommand( editor, style ) );
 		}
 	}
+
+	/**
+	 * Returns {@link module:image/image~ImageConfig#styles} array with items normalized in the
+	 * {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat} format, translated
+	 * `title` and a complete `icon` markup for each style.
+	 *
+	 * @readonly
+	 * @type {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>}
+	 */
+	get imageStyles() {
+		// Return cached value if there is one to improve the performance.
+		if ( this._cachedImageStyles ) {
+			return this._cachedImageStyles;
+		}
+
+		const styles = [];
+		const editor = this.editor;
+		const titles = this._localizedStyleTitles;
+		const configuredStyles = editor.config.get( 'image.styles' );
+
+		for ( let style of configuredStyles ) {
+			style = normalizeStyle( style );
+
+			// Localize the titles of the styles, if a title corresponds with
+			// a localized default provided by the plugin.
+			if ( titles[ style.title ] ) {
+				style.title = titles[ style.title ];
+			}
+
+			// Don't override the user-defined styles array, clone it instead.
+			styles.push( style );
+		}
+
+		return ( this._cachedImageStyles = styles );
+	}
+
+	/**
+	 * Returns the default localized style titles provided by the plugin e.g. ready to
+	 * use in the {@link #imageStyles}.
+	 *
+	 * @readonly
+	 * @private
+	 * @type {Object.<String,String>}
+	 */
+	get _localizedStyleTitles() {
+		const t = this.editor.t;
+
+		return {
+			'Full size image': t( 'Full size image' ),
+			'Side image': t( 'Side image' ),
+			'Left aligned image': t( 'Left aligned image' ),
+			'Centered image': t( 'Centered image' ),
+			'Right aligned image': t( 'Right aligned image' ),
+		};
+	}
+}
+
+/**
+ * Default image styles provided by the plugin, which can be referred in the
+ * {@link module:image/image~ImageConfig#styles} config.
+ *
+ * Among them, 2 default semantic content styles are available:
+ *
+ * * `imageStyleFull` is a full–width image without any CSS class,
+ * * `imageStyleSide` is a side image styled with the `image-style-side` CSS class
+ *
+ * There are also 3 styles focused on formatting:
+ *
+ * * `imageStyleLeft` aligns the image to the left using the `image-style-align-left` class,
+ * * `imageStyleCenter` centers the image to the left using the `image-style-align-center` class,
+ * * `imageStyleRight` aligns the image to the right using the `image-style-align-right` class,
+ *
+ * @member {Object.<String,Object>}
+ */
+ImageStyleEngine.defaultStyles = {
+	// This option is equal to situation when no style is applied.
+	imageStyleFull: {
+		name: 'imageStyleFull',
+		title: 'Full size image',
+		icon: centerIcon,
+		value: null
+	},
+
+	// This represents side image.
+	imageStyleSide: {
+		name: 'imageStyleSide',
+		title: 'Side image',
+		icon: rightIcon,
+		value: 'side',
+		className: 'image-style-side'
+	},
+
+	// This style represents an imaged aligned to the left.
+	imageStyleLeft: {
+		name: 'imageStyleLeft',
+		title: 'Left aligned image',
+		icon: leftIcon,
+		value: 'left',
+		className: 'image-style-align-left'
+	},
+
+	// This style represents a centered imaged.
+	imageStyleCenter: {
+		name: 'imageStyleCenter',
+		title: 'Centered image',
+		icon: centerIcon,
+		value: 'side',
+		className: 'image-style-align-center'
+	},
+
+	// This style represents an imaged aligned to the right.
+	imageStyleRight: {
+		name: 'imageStyleRight',
+		title: 'Right aligned image',
+		icon: rightIcon,
+		value: 'right',
+		className: 'image-style-align-right'
+	}
+};
+
+/**
+ * Default image style icons provided by the plugin, which can be referred in the
+ * {@link module:image/image~ImageConfig#styles} config.
+ *
+ * There are 3 icons available: `'left'`, `'center'` and `'right'`.
+ *
+ * @member {Object.<String, String>}
+ */
+ImageStyleEngine.defaultIcons = {
+	left: leftIcon,
+	right: rightIcon,
+	center: centerIcon,
+};
+
+// Normalizes an image style provided in the {@link module:image/image~ImageConfig#styles}
+// and returns it in a {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat}.
+//
+// @private
+// @param {Object} style
+// @returns {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat}
+function normalizeStyle( style ) {
+	const defaultStyles = ImageStyleEngine.defaultStyles;
+	const defaultIcons = ImageStyleEngine.defaultIcons;
+
+	// Just the name of the style has been passed.
+	if ( typeof style == 'string' ) {
+		// If it's one of the defaults, just use it.
+		// Clone the style to avoid overriding defaults.
+		if ( defaultStyles[ style ] ) {
+			style = Object.assign( {}, defaultStyles[ style ] );
+		}
+		// If it's just a name but non of the defaults, warn because probably it's a mistake.
+		// A which has just a name makes a little sense for the plugin.
+		else {
+			log.warn(
+				'image-style-not-found: There is no such image style of given name.',
+				{ name: style } );
+
+			// Normalize the style anyway to prevent errors.
+			style = {
+				name: style
+			};
+		}
+	}
+
+	// If an object style has been passed and if the name matches one of the defaults,
+	// extend it with defaults – the user wants to customize a default style.
+	// Note: Don't override the user–defined style object, clone it instead.
+	else if ( defaultStyles[ style.name ] ) {
+		const defaultStyle = defaultStyles[ style.name ];
+		const extendedStyle = Object.assign( {}, style );
+
+		for ( const prop in defaultStyle ) {
+			if ( !style.hasOwnProperty( prop ) ) {
+				extendedStyle[ prop ] = defaultStyle[ prop ];
+			}
+		}
+
+		style = extendedStyle;
+	}
+
+	// If an icon is defined as a string and correspond with a name
+	// in default icons, use the default icon provided by the plugin.
+	if ( typeof style.icon == 'string' && defaultIcons[ style.icon ] ) {
+		style.icon = defaultIcons[ style.icon ];
+	}
+
+	return style;
 }
 
 /**
@@ -93,7 +277,9 @@ export default class ImageStyleEngine extends Plugin {
  * * store the style's button in the editor {@link module:ui/componentfactory~ComponentFactory}.
  * @property {String} value A value used to store this style in the model attribute.
  * When the value is `null`, the style will be used as the default one. A default style does not apply any CSS class to the view element.
- * @property {String} icon An SVG icon source (as XML string) to use when creating the style's button.
+ * @property {String} icon One of the following to be used when creating the style's button:
+ *  * An SVG icon source (as an XML string),
+ *  * One of {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultIcons} to use a default icon provided by the plugin.
  * @property {String} title The style's title.
  * @property {String} className The CSS class used to represent the style in view.
  */

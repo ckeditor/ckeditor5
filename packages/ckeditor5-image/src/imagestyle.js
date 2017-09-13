@@ -37,7 +37,8 @@ export default class ImageStyle extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const styles = this.editor.config.get( 'image.styles' );
+		const editor = this.editor;
+		const styles = editor.plugins.get( ImageStyleEngine ).imageStyles;
 
 		for ( const style of styles ) {
 			this._createButton( style );
