@@ -120,6 +120,17 @@ export default class DocumentSelection extends Selection {
 	}
 
 	/**
+	 * Describes whether `DocumentSelection` has own range(s) set, or if it is defaulted to
+	 * {@link module:engine/model/document~Document#_getDefaultRange document's default range}.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
+	get hasOwnRange() {
+		return this._ranges.length > 0;
+	}
+
+	/**
 	 * Unbinds all events previously bound by document selection.
 	 */
 	destroy() {
