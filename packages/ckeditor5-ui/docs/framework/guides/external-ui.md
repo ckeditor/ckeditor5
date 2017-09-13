@@ -40,6 +40,8 @@ import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
 	Note that instead of {@link module:basic-styles/bold~Bold}, which is required for any editor with the default UI to work, just the {@link module:basic-styles/bold~BoldEngine} is imported. It provides the [engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) features associated with editing any bold text but does not come with the actual UI.
 
 	Respectively, `ItalicEngine`, `UnderlineEngine`, `HeadingEngine` and `UndoEngine` are also imported.
+
+	This split between the engine and UI part of features is not perfect yet. At the current stage, the UI part introduces some vital functionality, such as keystroke definitions (e.g. <kbd>Ctrl</kbd>+<kbd>B</kbd> to "bold"). This means that by dropping the UI part of fetures you lose also keystrokes. We [plan to improve](https://github.com/ckeditor/ckeditor5/issues/488) this situation.
 </info-box>
 
 Having imported the very basic editor components, we can define the custom `BootstrapEditor` class that extends the {@link module:core/editor/standardeditor~StandardEditor `StandardEditor`}:
