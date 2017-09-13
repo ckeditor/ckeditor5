@@ -111,45 +111,24 @@ Below you can see a demo of the editor with the image styles feature enabled. Th
 
 The available image styles can be configured using the {@link module:image/image~ImageConfig#styles `image.styles`} option.
 
-The following editor supports the default style plus left- and right-aligned images:
+The following editor supports the default full style plus left- and right-aligned images:
 
 ```js
-import fullSizeIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
-import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
-import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		image: {
 			// You need to configure the image toolbar too, so it uses the new style buttons.
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyleLeft', 'imageStyleFull', 'imageStyleRight' ],
+			toolbar: [ 'imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight' ],
 
 			styles: [
 				// This option is equal to a situation where no style is applied.
-				{
-					name: 'imageStyleFull',
-					title: 'Full size image',
-					icon: fullSizeIcon,
-					value: null
-				},
+				'imageStyleFull',
 
 				// This represents an image aligned to left.
-				{
-					name: 'imageStyleLeft',
-					title: 'Left aligned image',
-					icon: alignLeftIcon,
-					value: 'left',
-					className: 'image-style-left'
-				},
+				'imageStyleAlignLeft',
 
 				// This represents an image aligned to right.
-				{
-					name: 'imageStyleRight',
-					title: 'Right aligned image',
-					icon: alignRightIcon,
-					value: 'right',
-					className: 'image-style-right'
-				}
+				'imageStyleAlignRight'
 			]
 		}
 	} )
@@ -158,13 +137,13 @@ ClassicEditor
 ```
 
 ```css
-.image-style-left {
+.image-style-align-left {
     float: left;
     width: 50%;
     margin: 1em 1em 1em 0;
 }
 
-.image-style-right {
+.image-style-align-right {
     float: right;
     width: 50%;
     margin: 1em 0 1em 1em;
