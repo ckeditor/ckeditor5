@@ -11,7 +11,7 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import { isImageWidget } from './image/utils';
+import { isImageWidgetSelected } from './image/utils';
 import { repositionContextualBalloon, getBalloonPositionData } from './image/ui/utils';
 
 const balloonClassName = 'ck-toolbar-container ck-editor-toolbar-container';
@@ -103,10 +103,7 @@ export default class ImageToolbar extends Plugin {
 		if ( !editor.ui.focusTracker.isFocused ) {
 			this._hideToolbar();
 		} else {
-			const editingView = editor.editing.view;
-			const selectedElement = editingView.selection.getSelectedElement();
-
-			if ( selectedElement && isImageWidget( selectedElement ) ) {
+			if ( isImageWidgetSelected( editor.editing.view.selection ) ) {
 				this._showToolbar();
 			} else {
 				this._hideToolbar();

@@ -108,9 +108,14 @@ function startExternalDelete( editor ) {
 	const document = editor.document;
 	const bath = document.batch( 'transparent' );
 
-	wait( 3000 ).then( () => {
+	function removeSecondBlock() {
 		document.enqueueChanges( () => {
 			bath.remove( Range.createFromPositionAndShift( new Position( document.getRoot(), [ 1 ] ), 1 ) );
 		} );
-	} );
+	}
+
+	wait( 3000 )
+		.then( () => removeSecondBlock() )
+		.then( () => wait( 3000 ) )
+		.then( () => removeSecondBlock() );
 }
