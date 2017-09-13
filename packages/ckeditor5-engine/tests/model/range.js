@@ -1024,6 +1024,19 @@ describe( 'Range', () => {
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 3 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 2 ] );
 			} );
+
+			it( 'split element which has collapsed range at the end', () => {
+				range.start = new Position( root, [ 0, 6 ] );
+				range.end = new Position( root, [ 0, 6 ] );
+
+				const delta = getSplitDelta( new Position( root, [ 0, 3 ] ), new Element( 'p' ), 3, 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 1, 3 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 3 ] );
+			} );
 		} );
 
 		describe( 'by MergeDelta', () => {
