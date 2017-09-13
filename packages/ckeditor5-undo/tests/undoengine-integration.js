@@ -9,6 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import UndoEngine from '../src/undoengine';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -206,6 +207,57 @@ describe( 'UndoEngine integration', () => {
 
 			editor.execute( 'undo' );
 			output( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
+
+			undoDisabled();
+		} );
+
+		it( 'undo remove all content', () => {
+			input( '<paragraph>foo[]</paragraph>' );
+
+			doc.enqueueChanges( () => {
+				doc.batch().remove( Range.createIn( root ) );
+			} );
+			output( '<paragraph>[]</paragraph>' ); // All hail our king and savior, autoparagraphing!
+
+			editor.execute( 'undo' );
+			output( '<paragraph>foo[]</paragraph>' );
+
+			undoDisabled();
+		} );
+
+		it( 'undo insert first content', () => {
+			input( '' );
+
+			doc.enqueueChanges( () => {
+				doc.batch().insert( doc.selection.getFirstPosition(), new Element( 'heading1' ) );
+			} );
+			output( '<heading1>[]</heading1>' );
+
+			editor.execute( 'undo' );
+			output( '<paragraph>[]</paragraph>' ); // All hail our king and savior, autoparagraphing!
+
+			undoDisabled();
+		} );
+
+		// #72.
+		it( 'undo paste multiple elements simulation', () => {
+			input( '<paragraph></paragraph>' );
+
+			const p = root.getChild( 0 );
+			const pos = new Position( root, [ 0 ] );
+
+			doc.enqueueChanges( () => {
+				doc.batch()
+					.remove( p )
+					.insert( pos, new Element( 'heading1' ) )
+					.insert( pos.getShiftedBy( 1 ), new Element( 'heading2' ) );
+			} );
+
+			output( '<heading1>[]</heading1><heading2></heading2>' );
+
+			editor.execute( 'undo' );
+
+			output( '<paragraph>[]</paragraph>' );
 
 			undoDisabled();
 		} );

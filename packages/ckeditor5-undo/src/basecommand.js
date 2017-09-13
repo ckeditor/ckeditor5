@@ -56,9 +56,11 @@ export default class BaseCommand extends Command {
 	 * @param {module:engine/model/batch~Batch} batch The batch to add.
 	 */
 	addBatch( batch ) {
+		const docSelection = this.editor.document.selection;
+
 		const selection = {
-			ranges: Array.from( this.editor.document.selection.getRanges() ),
-			isBackward: this.editor.document.selection.isBackward
+			ranges: docSelection.hasOwnRange ? Array.from( docSelection.getRanges() ) : [],
+			isBackward: docSelection.isBackward
 		};
 
 		this._stack.push( { batch, selection } );
