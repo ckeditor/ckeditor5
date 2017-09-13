@@ -1060,20 +1060,33 @@ describe( 'Range', () => {
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 1, 1 ] );
 			} );
 
-			// #1132
+			// #1132.
 			it( 'merge delta has move operation that does not start from offset 0', () => {
-				const range = new Range( new Position( root, [ 1, 10 ] ), new Position( root, [ 1, 20 ] ) );
+				// This scenario is a test for a rare situation, that after some OT, a move operation in
+				// merge delta does not start from 0 offset.
+				//
+				// It happens that move operation in merge delta becomes "do nothing move operation", something like:
+				//
+				// move range [ a, x ] - [ a, y ] to [ a, x ]
+				// for example: move [ 0, 3 ] - [ 0, 6 ] -> [ 0, 3 ]
+				//
+				// This is a result of valid transformation and we need to check if range is properly transformed
+				// when such unusual delta is generated.
+				// For more see: https://github.com/ckeditor/ckeditor5-engine/pull/1133#issuecomment-329080668.
+				//
+				// For this test scenario assume: <p>foobar[]</p>, "bar" is moved between "o" and "b".
+				// Expect state after transformation is that nothing has changed.
+				const range = new Range( new Position( root, [ 0, 6 ] ), new Position( root, [ 0, 6 ] ) );
 
-				// Such unusual delta may be a result of transformation.
 				const delta = new MergeDelta();
-				delta.addOperation( new MoveOperation( new Position( root, [ 1, 10 ] ), 10, new Position( root, [ 0, 10 ] ), 0 ) );
+				delta.addOperation( new MoveOperation( new Position( root, [ 0, 3 ] ), 3, new Position( root, [ 0, 3 ] ), 0 ) );
 				delta.addOperation( new RemoveOperation( new Position( root, [ 1 ] ), 1, new Position( doc.graveyard, [ 0 ] ), 1 ) );
 
 				const transformed = range.getTransformedByDelta( delta );
 
 				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 10 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 20 ] );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 6 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 6 ] );
 			} );
 		} );
 
