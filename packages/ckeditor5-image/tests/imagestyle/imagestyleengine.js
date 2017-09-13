@@ -479,22 +479,22 @@ describe( 'ImageStyleEngine', () => {
 					value: 'side',
 					className: 'image-style-side'
 				},
-				imageStyleLeft: {
-					name: 'imageStyleLeft',
+				imageStyleAlignLeft: {
+					name: 'imageStyleAlignLeft',
 					title: 'Left aligned image',
 					icon: leftIcon,
 					value: 'left',
 					className: 'image-style-align-left'
 				},
-				imageStyleCenter: {
-					name: 'imageStyleCenter',
+				imageStyleAlignCenter: {
+					name: 'imageStyleAlignCenter',
 					title: 'Centered image',
 					icon: centerIcon,
 					value: 'side',
 					className: 'image-style-align-center'
 				},
-				imageStyleRight: {
-					name: 'imageStyleRight',
+				imageStyleAlignRight: {
+					name: 'imageStyleAlignRight',
 					title: 'Right aligned image',
 					icon: rightIcon,
 					value: 'right',

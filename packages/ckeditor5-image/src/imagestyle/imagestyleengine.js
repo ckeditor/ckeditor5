@@ -144,9 +144,9 @@ export default class ImageStyleEngine extends Plugin {
  *
  * There are also 3 styles focused on formatting:
  *
- * * `imageStyleLeft` aligns the image to the left using the `image-style-align-left` class,
- * * `imageStyleCenter` centers the image to the left using the `image-style-align-center` class,
- * * `imageStyleRight` aligns the image to the right using the `image-style-align-right` class,
+ * * `imageStyleAlignLeft` aligns the image to the left using the `image-style-align-left` class,
+ * * `imageStyleAlignCenter` centers the image to the left using the `image-style-align-center` class,
+ * * `imageStyleAlignRight` aligns the image to the right using the `image-style-align-right` class,
  *
  * @member {Object.<String,Object>}
  */
@@ -169,8 +169,8 @@ ImageStyleEngine.defaultStyles = {
 	},
 
 	// This style represents an imaged aligned to the left.
-	imageStyleLeft: {
-		name: 'imageStyleLeft',
+	imageStyleAlignLeft: {
+		name: 'imageStyleAlignLeft',
 		title: 'Left aligned image',
 		icon: leftIcon,
 		value: 'left',
@@ -178,8 +178,8 @@ ImageStyleEngine.defaultStyles = {
 	},
 
 	// This style represents a centered imaged.
-	imageStyleCenter: {
-		name: 'imageStyleCenter',
+	imageStyleAlignCenter: {
+		name: 'imageStyleAlignCenter',
 		title: 'Centered image',
 		icon: centerIcon,
 		value: 'side',
@@ -187,8 +187,8 @@ ImageStyleEngine.defaultStyles = {
 	},
 
 	// This style represents an imaged aligned to the right.
-	imageStyleRight: {
-		name: 'imageStyleRight',
+	imageStyleAlignRight: {
+		name: 'imageStyleAlignRight',
 		title: 'Right aligned image',
 		icon: rightIcon,
 		value: 'right',
