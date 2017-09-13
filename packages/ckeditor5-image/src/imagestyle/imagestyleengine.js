@@ -108,6 +108,15 @@ export default class ImageStyleEngine extends Plugin {
 	 * Returns the default localized style titles provided by the plugin e.g. ready to
 	 * use in the {@link #imageStyles}.
 	 *
+	 * The following localized titles corresponding with
+	 * {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultStyles} are available:
+	 *
+	 * * `'Full size image'`,
+	 * * `'Side image'`,
+	 * * `'Left aligned image'`,
+	 * * `'Centered image'`,
+	 * * `'Right aligned image'`
+	 *
 	 * @readonly
 	 * @type {Object.<String,String>}
 	 */
