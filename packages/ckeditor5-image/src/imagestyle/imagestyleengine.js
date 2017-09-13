@@ -85,7 +85,7 @@ export default class ImageStyleEngine extends Plugin {
 
 		const styles = [];
 		const editor = this.editor;
-		const titles = this._localizedStyleTitles;
+		const titles = this.localizedDefaultStylesTitles;
 		const configuredStyles = editor.config.get( 'image.styles' );
 
 		for ( let style of configuredStyles ) {
@@ -109,10 +109,9 @@ export default class ImageStyleEngine extends Plugin {
 	 * use in the {@link #imageStyles}.
 	 *
 	 * @readonly
-	 * @private
 	 * @type {Object.<String,String>}
 	 */
-	get _localizedStyleTitles() {
+	get localizedDefaultStylesTitles() {
 		const t = this.editor.t;
 
 		return {

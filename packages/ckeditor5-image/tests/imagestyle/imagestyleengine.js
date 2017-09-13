@@ -69,6 +69,8 @@ describe( 'ImageStyleEngine', () => {
 					plugins: [ ImageStyleEngine ]
 				} )
 				.then( newEditor => {
+					editor = newEditor;
+
 					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'imageStyleFull', 'imageStyleSide' ] );
 				} );
 		} );
@@ -286,6 +288,8 @@ describe( 'ImageStyleEngine', () => {
 					plugins: [ ImageStyleEngine ]
 				} )
 				.then( newEditor => {
+					editor = newEditor;
+
 					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'imageStyleFull', 'imageStyleSide' ] );
 				} );
 		} );
@@ -301,6 +305,8 @@ describe( 'ImageStyleEngine', () => {
 					}
 				} )
 				.then( newEditor => {
+					editor = newEditor;
+
 					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'imageStyleSide' ] );
 				} );
 		} );
@@ -316,6 +322,8 @@ describe( 'ImageStyleEngine', () => {
 					}
 				} )
 				.then( newEditor => {
+					editor = newEditor;
+
 					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ { name: 'imageStyleSide' } ] );
 				} );
 		} );
@@ -431,6 +439,27 @@ describe( 'ImageStyleEngine', () => {
 						);
 					} );
 			} );
+		} );
+	} );
+
+	describe( 'localizedDefaultStylesTitles()', () => {
+		it( 'should return localized titles of default styles', () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ ImageStyleEngine ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					plugin = editor.plugins.get( ImageStyleEngine );
+
+					expect( plugin.localizedDefaultStylesTitles ).to.deep.equal( {
+						'Full size image': 'Full size image',
+						'Side image': 'Side image',
+						'Left aligned image': 'Left aligned image',
+						'Centered image': 'Centered image',
+						'Right aligned image': 'Right aligned image'
+					} );
+				} );
 		} );
 	} );
 
