@@ -12,6 +12,7 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
+import fullWidthIcon from '@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg';
 import leftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
 import centerIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import rightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
@@ -469,7 +470,7 @@ describe( 'ImageStyleEngine', () => {
 				imageStyleFull: {
 					name: 'imageStyleFull',
 					title: 'Full size image',
-					icon: centerIcon,
+					icon: fullWidthIcon,
 					value: null
 				},
 				imageStyleSide: {
@@ -507,6 +508,7 @@ describe( 'ImageStyleEngine', () => {
 	describe( 'defaultIcons', () => {
 		it( 'should be defined', () => {
 			expect( ImageStyleEngine.defaultIcons ).to.deep.equal( {
+				full: fullWidthIcon,
 				left: leftIcon,
 				right: rightIcon,
 				center: centerIcon,
