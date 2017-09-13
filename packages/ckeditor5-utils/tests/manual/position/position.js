@@ -5,7 +5,7 @@
 
 /* global document, setTimeout */
 
-import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
+import { getOptimalPosition } from '../../../src/dom/position';
 
 const boxes = document.querySelectorAll( '.test-box' );
 const sources = document.querySelectorAll( '.source' );
