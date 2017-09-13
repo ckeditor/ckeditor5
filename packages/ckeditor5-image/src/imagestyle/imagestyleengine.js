@@ -13,6 +13,7 @@ import ImageEngine from '../image/imageengine';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
+import fullWidthIcon from '@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg';
 import leftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
 import centerIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import rightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
@@ -155,7 +156,7 @@ ImageStyleEngine.defaultStyles = {
 	imageStyleFull: {
 		name: 'imageStyleFull',
 		title: 'Full size image',
-		icon: centerIcon,
+		icon: fullWidthIcon,
 		value: null
 	},
 
@@ -200,11 +201,12 @@ ImageStyleEngine.defaultStyles = {
  * Default image style icons provided by the plugin, which can be referred in the
  * {@link module:image/image~ImageConfig#styles} config.
  *
- * There are 3 icons available: `'left'`, `'center'` and `'right'`.
+ * There are 3 icons available: `'full'`, `'left'`, `'center'` and `'right'`.
  *
  * @member {Object.<String, String>}
  */
 ImageStyleEngine.defaultIcons = {
+	full: fullWidthIcon,
 	left: leftIcon,
 	right: rightIcon,
 	center: centerIcon,
@@ -269,12 +271,12 @@ function normalizeStyle( style ) {
 /**
  * Image style format descriptor.
  *
- *		import fullIcon from 'path/to/icon.svg`;
+ *		import fullWidthIcon from 'path/to/icon.svg`;
  *
  *		const imageStyleFormat = {
  *			name: 'fullSizeImage',
  *			value: 'full',
- *			icon: fullIcon,
+ *			icon: fullWidthIcon,
  *			title: 'Full size image',
  *			class: 'image-full-size'
  *		}
