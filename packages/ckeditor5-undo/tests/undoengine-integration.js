@@ -9,6 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import UndoEngine from '../src/undoengine';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -211,13 +212,15 @@ describe( 'UndoEngine integration', () => {
 		} );
 
 		it( 'undo remove all content', () => {
-			input( '<p>foo[]</p>' );
+			input( '<paragraph>foo[]</paragraph>' );
 
-			doc.batch().remove( Range.createIn( root ) );
-			output( '[]' );
+			doc.enqueueChanges( () => {
+				doc.batch().remove( Range.createIn( root ) );
+			} );
+			output( '<paragraph>[]</paragraph>' ); // All hail our king and savior, autoparagraphing!
 
 			editor.execute( 'undo' );
-			output( '<p>foo[]</p>' );
+			output( '<paragraph>foo[]</paragraph>' );
 
 			undoDisabled();
 		} );
@@ -225,29 +228,36 @@ describe( 'UndoEngine integration', () => {
 		it( 'undo insert first content', () => {
 			input( '' );
 
-			doc.batch().insert( doc.selection.getFirstPosition(), new Element( 'p' ) );
-			output( '<p>[]</p>' );
+			doc.enqueueChanges( () => {
+				doc.batch().insert( doc.selection.getFirstPosition(), new Element( 'heading1' ) );
+			} );
+			output( '<heading1>[]</heading1>' );
 
 			editor.execute( 'undo' );
-			output( '[]' );
+			output( '<paragraph>[]</paragraph>' ); // All hail our king and savior, autoparagraphing!
 
 			undoDisabled();
 		} );
 
 		// #72.
 		it( 'undo paste multiple elements simulation', () => {
-			input( '<p></p>' );
+			input( '<paragraph></paragraph>' );
 
 			const p = root.getChild( 0 );
 			const pos = new Position( root, [ 0 ] );
 
-			doc.batch().remove( p ).insert( pos, new Element( 'p' ) ).insert( pos.getShiftedBy( 1 ), new Element( 'p' ) );
+			doc.enqueueChanges( () => {
+				doc.batch()
+					.remove( p )
+					.insert( pos, new Element( 'heading1' ) )
+					.insert( pos.getShiftedBy( 1 ), new Element( 'heading2' ) );
+			} );
 
-			output( '<p>[]</p><p></p>' );
+			output( '<heading1>[]</heading1><heading2></heading2>' );
 
 			editor.execute( 'undo' );
 
-			output( '<p>[]</p>' );
+			output( '<paragraph>[]</paragraph>' );
 
 			undoDisabled();
 		} );
