@@ -45,9 +45,10 @@
     "url": "https://github.com/ckeditor/ckeditor5-build-classic.git"
   },
   "scripts": {
-    "preversion": "npm run build; if [ -n \"$(git status ckeditor.js build/ --porcelain)\" ]; then git add -u ckeditor.js build/ && git commit -m 'Internal: Build.'; fi",
     "build": "npm run create-entry-file && npm run build-ckeditor",
     "create-entry-file": "./bin/create-entry-file.js",
-    "build-ckeditor": "./bin/build-ckeditor.sh"
+    "build-ckeditor": "./bin/build-ckeditor.sh",
+
+    "preversion": "npm run build; if [ -n \"$(git status ckeditor.js build/ --porcelain)\" ]; then git add -u ckeditor.js build/ && git commit -m 'Internal: Build.'; fi"
   }
 }
