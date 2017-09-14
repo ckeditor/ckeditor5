@@ -2,8 +2,8 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 @include ck-editor {
-	.ck-toolbar {
-		&.ck-toolbar_sticky {
+	.ck-sticky-panel {
+		&.ck-sticky-panel_sticky {
 			@include ck-drop-shadow();
 
 			border-width: 0 1px 1px;
