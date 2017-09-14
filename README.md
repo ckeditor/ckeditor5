@@ -19,6 +19,16 @@ Read more in the [CKEditor 5 v0.11.0 release blog post](https://github.com/ckedi
 * [Periodic news and updates](https://github.com/ckeditor/ckeditor5-design/labels/announcement) about the project.
 * [Roadmap to 1.0.0 and beyond](https://github.com/ckeditor/ckeditor5-design/issues/172).
 
+## Documentation
+
+* [API documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/index.html)
+* [CKEditor 5 Framework](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/framework/index.html)
+* [CKEditor 5 Builds](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/index.html)
+* [CKEditor 5 Features](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/features/index.html)
+* [Examples](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/index.html)
+
+The documentation is far from being complete and will be constantly evolving (as will the editor) until it is ready for v1.0.0.
+
 ## Project Organization
 
 ### Design and discussions
@@ -31,13 +41,13 @@ Read more in the [CKEditor 5 v0.11.0 release blog post](https://github.com/ckedi
 
 CKEditor 5 is a modular, multi-package, multi-repository project. It consists of a several packages which create the editing framework, based on which the feature packages are implemented.
 
-The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository is the place that centralizes the development of CKEditor 5. It bundles different packages into a single place, adding the necessary helper tools for the development workflow, like the builder and the test runner. [Basic information on how to set up the development environment](https://github.com/ckeditor/ckeditor5/wiki/Development-Environment) can be found in the wiki pages.
+The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository is the place that centralizes the development of CKEditor 5. It bundles different packages into a single place, adding the necessary helper tools for the development workflow, like the builder and the test runner. [Basic information on how to set up the development environment](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/framework/guides/contributing/development-environment.html) can be found in the documentation.
 
 ### Reporting issues and feature requests
 
 Each repository independently handles its issues. However, it's recommended to report issues in [this repository](https://github.com/ckeditor/ckeditor5/issues) unless you know to which specific repository the issue belongs.
 
-Read more in the [Support](https://github.com/ckeditor/ckeditor5/wiki/Support) wiki page.
+Read more in the [Support](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/framework/guides/support.html) page.
 
 ## Packages
 
@@ -402,7 +412,6 @@ Read more in the [Support](https://github.com/ckeditor/ckeditor5/wiki/Support) w
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-theme-lark.svg" alt="ckeditor5-theme-lark npm package badge"></a>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-theme-lark"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-theme-lark/master.svg" alt="build status badge"></a>
-		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-theme-lark/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-theme-lark.svg" alt="ckeditor5-theme-lark coverage badge"></a>
 	</td>
 </tr>
 
@@ -428,8 +437,6 @@ Read more in the [Support](https://github.com/ckeditor/ckeditor5/wiki/Support) w
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-classic.svg" alt="ckeditor5-build-classic npm package badge"></a>
-		<a href="https://travis-ci.org/ckeditor/ckeditor5-build-classic"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-build-classic/master.svg" alt="build status badge"></a>
-		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-build-classic/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-build-classic.svg" alt="ckeditor5-build-classic coverage badge"></a>
 	</td>
 </tr>
 
@@ -441,8 +448,6 @@ Read more in the [Support](https://github.com/ckeditor/ckeditor5/wiki/Support) w
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-inline.svg" alt="ckeditor5-build-inline npm package badge"></a>
-		<a href="https://travis-ci.org/ckeditor/ckeditor5-build-inline"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-build-inline/master.svg" alt="build status badge"></a>
-		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-build-inline/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-build-inline.svg" alt="ckeditor5-build-inline coverage badge"></a>
 	</td>
 </tr>
 
@@ -454,8 +459,6 @@ Read more in the [Support](https://github.com/ckeditor/ckeditor5/wiki/Support) w
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-balloon.svg" alt="ckeditor5-build-balloon npm package badge"></a>
-		<a href="https://travis-ci.org/ckeditor/ckeditor5-build-balloon"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-build-balloon/master.svg" alt="build status badge"></a>
-		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-build-balloon/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-build-balloon.svg" alt="ckeditor5-build-balloon coverage badge"></a>
 	</td>
 </tr>
 
