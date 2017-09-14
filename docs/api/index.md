@@ -7,15 +7,15 @@ Use the navigation tree on the left to navigate through CKEditor API.
 
 ## Popular API pages
 
- * {@link module:core/editor/editorconfig~EditorConfig Configuration Reference} - CKEditor configuration settings explained.
- * {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`} - The entry point for the Classic editor integration.
- * {@link module:editor-inline/inlineeditor~InlineEditor `InlineEditor`} - The entry point for the Inline editor integration.
- * {@link module:editor-balloon/ballooneditor~BalloonEditor `BalloonEditor`} - The entry point for the Balloon editor integration.
+ * {@link module:core/editor/editorconfig~EditorConfig Configuration Reference} &ndash; CKEditor configuration settings explained.
+ * {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`} &ndash; The entry point for the Classic editor integration.
+ * {@link module:editor-inline/inlineeditor~InlineEditor `InlineEditor`} &ndash; The entry point for the Inline editor integration.
+ * {@link module:editor-balloon/ballooneditor~BalloonEditor `BalloonEditor`} &ndash; The entry point for the Balloon editor integration.
  
 ## Documentation 
 
  * {@link framework/index CKEditor 5 Framework} &ndash; Learn how to develop with CKEditor 5 Framework, customize it and create plugins.
- * {@link builds/guides/overview CKEditor 5 Builds} &ndash; Learn how to install, integrate and configure CKEditor 5 Builds. More complex aspects, like creating custom builds are explained here, too.
+ * {@link builds/guides/overview CKEditor 5 Builds} &ndash; Learn how to install, integrate and configure CKEditor 5 Builds. More complex aspects, like creating custom builds, are explained here, too.
  * {@link features/index Features} &ndash; Learn about some of the features included in CKEditor 5 Builds.
 
 ## Contribute
