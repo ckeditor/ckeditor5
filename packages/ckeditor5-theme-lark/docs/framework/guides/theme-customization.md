@@ -1,8 +1,9 @@
 ---
-title: Theme customization
-category: ui
+category: framework-ui
 order: 10
 ---
+
+# Theme customization
 
 The [`@ckeditor/ckeditor5-theme-lark`](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark) is the default theme of CKEditor 5. Lark is modular, [BEM–friendly](https://en.bem.info/methodology/css/) and built in [SASS](http://sass-lang.com).
 
