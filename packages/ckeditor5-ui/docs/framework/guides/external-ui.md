@@ -1,8 +1,9 @@
 ---
-title: Third–party UI
-category: ui
+category: framework-ui
 order: 20
 ---
+
+# Third–party UI
 
 CKEditor 5 is a modular editing framework and allows various flexible configurations. That includes the usage of a third–party user interface on top of the basic editor classes.
 
