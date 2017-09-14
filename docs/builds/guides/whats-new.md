@@ -3,11 +3,12 @@
 # * Highlight new things when compared to CKEditor 4.
 # * Emphasize cool new stuff we are bringing, for those learning about CKEditor 5.
 
-title: What's new in CKEditor 5?
 menu-title: What's new?
 category: builds-guides
 order: 20
 ---
+
+# What's new in CKEditor 5?
 
 ## Enhanced UX
 

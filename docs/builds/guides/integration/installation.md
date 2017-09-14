@@ -2,10 +2,11 @@
 # Scope:
 # - Guidance on all possible installation options.
 
-title: Installation
 category: builds-integration
 order: 10
 ---
+
+# Installation
 
 ## Download options
 

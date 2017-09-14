@@ -4,10 +4,11 @@
 # * Exemplify use cases.
 # * Point to resources to learn plugins development.
 
-title: Plugins
 category: builds-development
 order: 40
 ---
+
+# Plugins
 
 Features in CKEditor are introduced by plugins. In fact, without plugins CKEditor is an empty API with no use. The builds provided with CKEditor 5 are actually predefined collections of plugins, put together to satisfy specific needs.
 

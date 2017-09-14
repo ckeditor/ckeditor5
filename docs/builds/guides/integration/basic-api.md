@@ -2,10 +2,11 @@
 # Scope:
 # * Guide developers through the basic API to achieve their very first results with CKEditor.
 
-title: Basic API
 category: builds-integration
 order: 20
 ---
+
+# Basic API
 
 Each CKEditor 5 build provides a different class that handles the creation of editor instances:
 
