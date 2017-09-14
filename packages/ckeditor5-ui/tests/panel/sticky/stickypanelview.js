@@ -6,21 +6,23 @@
 /* globals document */
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import StickyPanelView from '../../../src/panel/sticky/stickypanelview';
+import View from '../../../src/view';
+import LabelView from '../../../src/label/labelview';
+import ViewCollection from '../../../src/viewcollection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import StickyToolbarView from '../../../src/toolbar/sticky/stickytoolbarview';
-import ToolbarView from '../../../src/toolbar/toolbarview';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 
 testUtils.createSinonSandbox();
 
-describe( 'StickyToolbarView', () => {
+describe( 'StickyPanelView', () => {
 	let view, element, limiterElement, locale, windowStub;
 
 	beforeEach( () => {
 		locale = {};
 		limiterElement = document.createElement( 'div' );
 
-		view = new StickyToolbarView( locale );
+		view = new StickyPanelView( locale );
 		element = view.element;
 
 		// Dummy values just to let non–geometrical tests pass without reference errors.
@@ -40,8 +42,13 @@ describe( 'StickyToolbarView', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'inherits from ToolbarView', () => {
-			expect( view ).to.be.instanceof( ToolbarView );
+		it( 'inherits from View', () => {
+			expect( view ).to.be.instanceof( View );
+		} );
+
+		it( 'should create element from template', () => {
+			expect( view.element.tagName ).to.equal( 'DIV' );
+			expect( view.element.classList.contains( 'ck-sticky-panel' ) ).to.true;
 		} );
 
 		it( 'sets view attributes', () => {
@@ -59,30 +66,35 @@ describe( 'StickyToolbarView', () => {
 			expect( view.locale ).to.equal( locale );
 		} );
 
+		it( 'creates view#content collection', () => {
+			expect( view.content ).to.be.instanceOf( ViewCollection );
+		} );
+
 		it( 'creates the _elementPlaceholder', () => {
-			expect( view._elementPlaceholder.classList.contains( 'ck-toolbar__placeholder' ) ).to.be.true;
+			expect( view._elementPlaceholder.classList.contains( 'ck-sticky-panel__placeholder' ) ).to.be.true;
 		} );
 	} );
 
 	describe( 'element view bindings', () => {
 		beforeEach( () => {
 			view.limiterElement = limiterElement;
+			view.init();
 		} );
 
 		it( 'update the class on view#isSticky change', () => {
 			view.isSticky = false;
-			expect( element.classList.contains( 'ck-toolbar_sticky' ) ).to.be.false;
+			expect( element.classList.contains( 'ck-sticky-panel_sticky' ) ).to.be.false;
 
 			view.isSticky = true;
-			expect( element.classList.contains( 'ck-toolbar_sticky' ) ).to.be.true;
+			expect( element.classList.contains( 'ck-sticky-panel_sticky' ) ).to.be.true;
 		} );
 
 		it( 'update the class on view#_isStickyToTheLimiter change', () => {
 			view._isStickyToTheLimiter = false;
-			expect( element.classList.contains( 'ck-toolbar_sticky_bottom-limit' ) ).to.be.false;
+			expect( element.classList.contains( 'ck-sticky-panel_sticky_bottom-limit' ) ).to.be.false;
 
 			view._isStickyToTheLimiter = true;
-			expect( element.classList.contains( 'ck-toolbar_sticky_bottom-limit' ) ).to.be.true;
+			expect( element.classList.contains( 'ck-sticky-panel_sticky_bottom-limit' ) ).to.be.true;
 		} );
 
 		it( 'update the styles.top on view#_hasViewportTopOffset change', () => {
@@ -123,6 +135,11 @@ describe( 'StickyToolbarView', () => {
 	} );
 
 	describe( '_elementPlaceholder view bindings', () => {
+		beforeEach( () => {
+			view.limiterElement = limiterElement;
+			view.init();
+		} );
+
 		it( 'update the styles.display on view#isSticky change', () => {
 			view.isSticky = false;
 			expect( view._elementPlaceholder.style.display ).to.equal( 'none' );
@@ -132,13 +149,24 @@ describe( 'StickyToolbarView', () => {
 		} );
 
 		it( 'update the styles.height on view#isSticky change', () => {
-			view._toolbarRect = { height: 50 };
+			view._panelRect = { height: 50 };
 
 			view.isSticky = false;
 			expect( view._elementPlaceholder.style.height ).to.equal( '' );
 
 			view.isSticky = true;
 			expect( view._elementPlaceholder.style.height ).to.equal( '50px' );
+		} );
+	} );
+
+	describe( 'children', () => {
+		it( 'should react on view#content', () => {
+			expect( view.element.childNodes.length ).to.equal( 0 );
+
+			const label = new LabelView( { t() {} } );
+
+			view.content.add( label );
+			expect( view.element.childNodes.length ).to.equal( 1 );
 		} );
 	} );
 
@@ -152,7 +180,7 @@ describe( 'StickyToolbarView', () => {
 		} );
 
 		it( 'calls init on parent class', () => {
-			const spy = testUtils.sinon.spy( ToolbarView.prototype, 'init' );
+			const spy = testUtils.sinon.spy( View.prototype, 'init' );
 
 			view.init();
 			expect( spy.calledOnce ).to.be.true;
@@ -163,7 +191,7 @@ describe( 'StickyToolbarView', () => {
 			expect( element.previousSibling ).to.equal( view._elementPlaceholder );
 		} );
 
-		it( 'checks if the toolbar should be sticky', () => {
+		it( 'checks if the panel should be sticky', () => {
 			const spy = testUtils.sinon.spy( view, '_checkIfShouldBeSticky' );
 			expect( spy.notCalled ).to.be.true;
 
@@ -202,7 +230,7 @@ describe( 'StickyToolbarView', () => {
 		} );
 
 		it( 'calls destroy on parent class', () => {
-			const spy = testUtils.sinon.spy( ToolbarView.prototype, 'destroy' );
+			const spy = testUtils.sinon.spy( View.prototype, 'destroy' );
 
 			view.destroy();
 			expect( spy.calledOnce ).to.be.true;
@@ -226,7 +254,7 @@ describe( 'StickyToolbarView', () => {
 				} );
 			} );
 
-			it( 'is true if beyond the top of the viewport (toolbar is active)', () => {
+			it( 'is true if beyond the top of the viewport (panel is active)', () => {
 				testUtils.sinon.stub( view.limiterElement, 'getBoundingClientRect' ).returns( { top: -10, height: 100 } );
 				view.isActive = true;
 
@@ -236,7 +264,7 @@ describe( 'StickyToolbarView', () => {
 				expect( view.isSticky ).to.be.true;
 			} );
 
-			it( 'is false if beyond the top of the viewport (toolbar is inactive)', () => {
+			it( 'is false if beyond the top of the viewport (panel is inactive)', () => {
 				testUtils.sinon.stub( view.limiterElement, 'getBoundingClientRect' ).returns( { top: -10, height: 100 } );
 				view.isActive = false;
 
@@ -246,7 +274,7 @@ describe( 'StickyToolbarView', () => {
 				expect( view.isSticky ).to.be.false;
 			} );
 
-			it( 'is false if in the viewport (toolbar is active)', () => {
+			it( 'is false if in the viewport (panel is active)', () => {
 				testUtils.sinon.stub( view.limiterElement, 'getBoundingClientRect' ).returns( { top: 10, height: 100 } );
 				view.isActive = true;
 
@@ -256,7 +284,7 @@ describe( 'StickyToolbarView', () => {
 				expect( view.isSticky ).to.be.false;
 			} );
 
-			it( 'is false if view.limiterElement is smaller than the toolbar and view.limiterBottomOffset (toolbar is active)', () => {
+			it( 'is false if view.limiterElement is smaller than the panel and view.limiterBottomOffset (panel is active)', () => {
 				testUtils.sinon.stub( view.limiterElement, 'getBoundingClientRect' ).returns( { top: -10, height: 60 } );
 				view.isActive = true;
 				view.limiterBottomOffset = 50;
