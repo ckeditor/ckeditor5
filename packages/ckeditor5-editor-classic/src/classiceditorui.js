@@ -57,12 +57,12 @@ export default class ClassicEditorUI {
 		view.set( 'width', editor.config.get( 'ui.width' ) );
 		view.set( 'height', editor.config.get( 'ui.height' ) );
 
-		// Set–up the toolbar.
-		view.toolbar.bind( 'isActive' ).to( this.focusTracker, 'isFocused' );
-		view.toolbar.limiterElement = view.element;
+		// Set–up the sticky panel with toolbar.
+		view.stickyPanel.bind( 'isActive' ).to( this.focusTracker, 'isFocused' );
+		view.stickyPanel.limiterElement = view.element;
 
 		if ( this._toolbarConfig && this._toolbarConfig.viewportTopOffset ) {
-			view.toolbar.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
+			view.stickyPanel.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
 		}
 
 		// Setup the editable.

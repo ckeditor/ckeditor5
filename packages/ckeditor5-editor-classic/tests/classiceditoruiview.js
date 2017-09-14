@@ -6,7 +6,8 @@
 /* globals document */
 
 import ClassicEditorUIView from '../src/classiceditoruiview';
-import StickyToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/sticky/stickytoolbarview';
+import StickyPanelView from '@ckeditor/ckeditor5-ui/src/panel/sticky/stickypanelview';
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
@@ -19,9 +20,23 @@ describe( 'ClassicEditorUIView', () => {
 	} );
 
 	describe( 'constructor()', () => {
+		describe( '#stickyPanel', () => {
+			it( 'is created', () => {
+				expect( view.stickyPanel ).to.be.instanceof( StickyPanelView );
+			} );
+
+			it( 'is given a locate object', () => {
+				expect( view.stickyPanel.locale ).to.equal( locale );
+			} );
+
+			it( 'is put into the "top" collection', () => {
+				expect( view.top.get( 0 ) ).to.equal( view.stickyPanel );
+			} );
+		} );
+
 		describe( '#toolbar', () => {
 			it( 'is created', () => {
-				expect( view.toolbar ).to.be.instanceof( StickyToolbarView );
+				expect( view.toolbar ).to.be.instanceof( ToolbarView );
 			} );
 
 			it( 'is given the right CSS class', () => {
@@ -32,8 +47,8 @@ describe( 'ClassicEditorUIView', () => {
 				expect( view.toolbar.locale ).to.equal( locale );
 			} );
 
-			it( 'is put into the "top" collection', () => {
-				expect( view.top.get( 0 ) ).to.equal( view.toolbar );
+			it( 'is put into the "stickyPanel.content" collection', () => {
+				expect( view.stickyPanel.content.get( 0 ) ).to.equal( view.toolbar );
 			} );
 		} );
 
@@ -56,7 +71,7 @@ describe( 'ClassicEditorUIView', () => {
 		it( 'returns editable\'s view element', () => {
 			document.body.appendChild( view.element );
 
-			view.toolbar.limiterElement = view.element;
+			view.stickyPanel.limiterElement = view.element;
 			view.init();
 
 			expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
