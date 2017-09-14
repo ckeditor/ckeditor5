@@ -43,12 +43,10 @@ git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
 
 Every build contains the following files:
 
-* `package.json` &ndash; The definition of the npm package. It specifies the package name, version, dependencies, license, etc.
-* `build-config.js` &ndash; The configuration of this particular CKEditor 5 build.
-* `ckeditor.js` &ndash; The bundler's "entry file". A CommonJS module which tells the bundler (like [webpack](https://webpack.js.org)) which CKEditor modules should be included in the bundle and what should that bundle export). By default, it is created based on the build configuration but you may also modify it manually.
-* `build/*` &ndash; The directory with ready-to-use bundles. There are two bundles:
-	* The most optimized, ES6 one, in: `build/ckeditor.js`.
-	* The ES5 one in: `build/ckeditor.compat.js`.
+* `build/ckeditor.js` &ndash; The ready-to-use editor bundle, containing the editor and all plugins.
+* `src/ckeditor.js` &ndash; The source entry point of the build. It can be used for complex bundling and development. Based on it the `build/ckeditor.js` is created (by [webpack](https://webpack.js.org)).
+* `build-config.js` &ndash; The configuration of this particular CKEditor 5 build, based on which the `src/ckeditor.js` file is created.
+* `webpack-config.js` &ndash; Webpack configuration used to build the editor.
 
 ## Customizing a build
 
@@ -56,7 +54,7 @@ In order to customize a build you need to:
 
 * Install missing dependencies.
 * Update the `build-config.js`.
-* Update the builds (which includes updating `ckeditor.js` and editor bundles in `build/*`).
+* Update the builds (which includes updating `src/ckeditor.js` and editor bundle in `build/`).
 
 ### Installing dependencies
 
@@ -76,7 +74,7 @@ This will install the package and add it to `package.json`. You can also edit `p
 
 ### Updating build configuration
 
-If you added or removed dependencies, you will also need to modify the `build-config.js` file. Based on it the bundler entry file (`ckeditor.js`) will be created. You can also opt out from automatically creating the entry file and modify `ckeditor.js` manually, which can be useful in some non-standard cases.
+If you added or removed dependencies, you will also need to modify the `build-config.js` file. Based on it the bundler entry file (`src/ckeditor.js`) will be created. You can also opt out from automatically creating the entry file and modify `src/ckeditor.js` manually, which can be useful in some non-standard cases.
 
 Either way, every plugin that you want to include in the bundle should be included at this stage. You can also change the editor creator and specify the default editor configuration. For instance, your build configuration might look like this:
 
@@ -118,21 +116,20 @@ module.exports = {
 
 ### Rebuilding the bundle
 
-After you changed the build configuration or updated some dependencies, it is time to rebuild the bundle. This will run a bundler (webpack) with a proper configuration (see `webpack.config.js` and `webpack.compat.config.js`).
+After you changed the build configuration or updated some dependencies, it is time to rebuild the bundle. This will run a bundler (webpack) with a proper configuration (see `webpack.config.js`).
 
-If you wish to create the bundles based on the build configuration (`build-config.js`) run:
+If you wish to create the bundle based on the build configuration (`build-config.js`) run:
 
 ```bash
 npm run build
 ```
 
-This command will update the entry file (`ckeditor.js`) and create two bundles – `build/ckeditor.js` and `build/ckeditor.compat.js`.
+This command will update the entry file (`src/ckeditor.js`) and create the bundle – `build/ckeditor.js`.
 
 If you want to skip updating the entry file (in case you modified it manually) run:
 
 ```bash
 npm run build-ckeditor
-npm run build-ckeditor-compat
 ```
 
 ## Updating the build
@@ -152,6 +149,6 @@ You should handle eventual conflicts and verify the merged changes. After that, 
 
 ## Publishing your builds
 
-If you think that your custom builds can be useful to others, it is a great idea to publish them on GitHub and npm. When doing so, just be sure to give them meaningful names that would fit the `ckeditor5-build-(the name)` pattern, making them easy to find. To avoid conflicts with other existing builds you can use [scoped packages](https://docs.npmjs.com/misc/scope).
+If you think that your custom builds can be useful to others, it is a great idea to publish them on GitHub and npm. When doing so, just be sure to give them meaningful names that would fit the `ckeditor5-build-(the name)` pattern, making them easy to find. To avoid conflicts with other existing builds you can use [scoped packages](https://docs.npmjs.com/misc/scope). We also recommend using the "ckeditor5-build" [keyword](https://docs.npmjs.com/files/package.json#keywords) to make your build [easier to find](https://www.npmjs.com/search?q=keywords:ckeditor5-build&page=1&ranking=optimal).
 
 After your build is out, [ping us on Twitter](https://twitter.com/ckeditor)!

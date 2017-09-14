@@ -36,16 +36,7 @@ npm install --save @ckeditor/ckeditor5-build-inline
 npm install --save @ckeditor/ckeditor5-build-balloon
 ```
 
-CKEditor will then be available at `node_modules/ckeditor5-build-[name]/build/ckeditor.js`.
-
-#### Included files
-
-The following are the main files available in all build distributions:
-
-* `build/ckeditor.js` &ndash; The editor bundle, containing the editor and all plugins.
-* `src/ckeditor.js` &ndash; The source entry point of the build. It can be used for complex bundling and development. Based on it the `build/ckeditor.js` is created (by [webpack](https://webpack.js.org)).
-* `build-config.js` &ndash; The build configuration, based on which the `ckeditor.js` file is created.
-* `webpack-config.js` &ndash; Webpack configuration used to build the editor.
+CKEditor will then be available at `node_modules/ckeditor5-build-[name]/ckeditor.js`.
 
 ### Zip download
 
@@ -55,7 +46,11 @@ This download method is not available yet.
 
 Go to [CKEditor 5 builds download page](https://ckeditor.com/ckeditor5-builds/download) and download your preferred build. For example, you may download the `ckeditor5-build-classic-1.0.0.zip` file for the Classic editor build.
 
-Extract the above `.zip` file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once the new version of CKEditor is installed.
+Extract the above `.zip` file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor is installed.
+
+## Included files
+
+TODO
 
 ## Loading the API
 
