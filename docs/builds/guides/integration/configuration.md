@@ -4,10 +4,11 @@
 # * Introduction to the top and must-know configurations.
 # * Point where to find the list of configuration options.
 
-title: Configuration
 category: builds-integration
 order: 30
 ---
+
+# Configuration
 
 When creating an editor in your page, it is possible to set up {@link module:core/editor/editorconfig~EditorConfig configurations} that change many of its aspects. For example:
 

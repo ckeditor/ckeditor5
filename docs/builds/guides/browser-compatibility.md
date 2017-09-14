@@ -1,8 +1,9 @@
 ---
-title: Browser compatibility
 category: builds-guides
 order: 310
 ---
+
+# Browser compatibility
 
 ## Desktop environment
 

@@ -2,10 +2,11 @@
 # Scope:
 # * TL;DR I want to run CKEditor 5.
 
-title: Quick start
 category: builds-guides
 order: 30
 ---
+
+# Quick start
 
 Creating an editor using a CKEditor 5 build is very simple and can be described in two steps:
 

@@ -3,7 +3,7 @@
 # * Introduction to custom builds and why one would create them.
 # * Step-by-step instructions on creating a custom build.
 
-title: Custom builds
+menu-title: Custom builds
 category: builds-development
 order: 10
 ---
