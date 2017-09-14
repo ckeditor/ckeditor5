@@ -37,7 +37,7 @@ import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
 ```
 
 <info-box info>
-	Note that instead of {@link module:basic-styles/bold~Bold}, which is required for any editor with the default UI to work, just the {@link module:basic-styles/bold~BoldEngine} is imported. It provides the [engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) features associated with editing any bold text but does not come with the actual UI.
+	Note that instead of {@link module:basic-styles/bold~Bold}, which is required for any editor with the default UI to work, just the {@link module:basic-styles/boldengine~BoldEngine} is imported. It provides the [engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) features associated with editing any bold text but does not come with the actual UI.
 
 	Respectively, `ItalicEngine`, `UnderlineEngine`, `HeadingEngine` and `UndoEngine` are also imported.
 
