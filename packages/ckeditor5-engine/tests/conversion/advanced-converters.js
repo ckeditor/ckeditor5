@@ -287,8 +287,6 @@ describe( 'advanced-converters', () => {
 		it( 'should convert view image to model', () => {
 			const viewElement = new ViewContainerElement( 'img', { src: 'bar.jpg', title: 'bar' } );
 			const modelElement = viewDispatcher.convert( viewElement );
-			// Attaching to tree so tree walker works fine in `modelToString`.
-			modelRoot.appendChildren( modelElement );
 
 			expect( modelToString( modelElement ) ).to.equal( '<image src="bar.jpg" title="bar"></image>' );
 		} );
@@ -303,8 +301,6 @@ describe( 'advanced-converters', () => {
 				]
 			);
 			const modelElement = viewDispatcher.convert( viewElement );
-			// Attaching to tree so tree walker works fine in `modelToString`.
-			modelRoot.appendChildren( modelElement );
 
 			expect( modelToString( modelElement ) ).to.equal( '<image src="bar.jpg" title="bar"><caption>foobar</caption></image>' );
 		} );
@@ -595,7 +591,6 @@ describe( 'advanced-converters', () => {
 			);
 
 			const modelElement = viewDispatcher.convert( viewElement );
-			modelRoot.appendChildren( modelElement );
 
 			expect( modelToString( modelElement ) ).to.equal( '<quote linkHref="foo.html" linkTitle="Foo source">foo</quote>' );
 		} );
@@ -761,7 +756,6 @@ describe( 'advanced-converters', () => {
 			] );
 
 			const modelElement = viewDispatcher.convert( viewElement );
-			modelRoot.appendChildren( modelElement );
 
 			expect( modelToString( modelElement ) ).to.equal(
 				'<table cellpadding="5" cellspacing="5">' +

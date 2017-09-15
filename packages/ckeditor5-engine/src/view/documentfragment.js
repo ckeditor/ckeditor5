@@ -150,6 +150,11 @@ export default class DocumentFragment {
 		nodes = normalize( nodes );
 
 		for ( const node of nodes ) {
+			// If node that is being added to this element is already inside another element, first remove it from the old parent.
+			if ( node.parent !== null ) {
+				node.remove();
+			}
+
 			node.parent = this;
 
 			this._children.splice( index, 0, node );
