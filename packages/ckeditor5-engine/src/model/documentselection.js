@@ -326,11 +326,7 @@ export default class DocumentSelection extends Selection {
 		this.listenTo( liveRange, 'change:range', ( evt, oldRange, data ) => {
 			// If `LiveRange` is in whole moved to the graveyard, fix that range.
 			if ( liveRange.root == this._document.graveyard ) {
-				const sourceStart = data.sourcePosition;
-				const howMany = data.range.end.offset - data.range.start.offset;
-				const sourceRange = Range.createFromPositionAndShift( sourceStart, howMany );
-
-				this._fixGraveyardSelection( liveRange, sourceRange );
+				this._fixGraveyardSelection( liveRange, data.sourcePosition );
 			}
 
 			// Whenever a live range from selection changes, fire an event informing about that change.
@@ -663,12 +659,12 @@ export default class DocumentSelection extends Selection {
 	 *
 	 * @private
 	 * @param {module:engine/model/liverange~LiveRange} liveRange The range from selection, that ended up in the graveyard root.
-	 * @param {module:engine/model/range~Range} removedRange Range which removing had caused moving `liveRange` to the graveyard root.
+	 * @param {module:engine/model/position~Position} removedRangeStart Start position of a range which was removed.
 	 */
-	_fixGraveyardSelection( liveRange, removedRange ) {
+	_fixGraveyardSelection( liveRange, removedRangeStart ) {
 		// The start of the removed range is the closest position to the `liveRange` - the original selection range.
 		// This is a good candidate for a fixed selection range.
-		const positionCandidate = Position.createFromPosition( removedRange.start );
+		const positionCandidate = Position.createFromPosition( removedRangeStart );
 
 		// Find a range that is a correct selection range and is closest to the start of removed range.
 		const selectionRange = this._document.getNearestSelectionRange( positionCandidate );
