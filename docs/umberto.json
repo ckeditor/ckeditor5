@@ -30,55 +30,22 @@
 					"slug": "guides",
 					"categories": [
 						{
-							"name": "Getting started",
-							"id": "getting-started",
-							"slug": "getting-started",
-							"categories": [
-								{
-									"name": "Inserting CKEditor",
-									"id": "inserting-ckeditor",
-									"slug": "inserting-ckeditor"
-								},
-								{
-									"name": "End User Features",
-									"id": "end-user-features",
-									"slug": "end-user-features"
-								}
-							]
-						},
-						{
-							"name": "Plugins",
-							"id": "plugins",
-							"slug": "plugins"
+							"name": "Editing engine",
+							"id": "framework-engine",
+							"slug": "engine",
+							"order": 100
 						},
 						{
 							"name": "User interface",
-							"id": "ui",
-							"slug": "ui"
-						}
-					]
-				},
-				{
-					"name": "Tutorials",
-					"id": "tutorials",
-					"slug": "tutorials",
-					"categories": [
-						{
-							"name": "How to",
-							"id": "how-to",
-							"slug": "how-to",
-							"categories": [
-								{
-									"name": "Step by step",
-									"id": "step-by-step",
-									"slug": "step-by-step"
-								}
-							]
+							"id": "framework-ui",
+							"slug": "ui",
+							"order": 200
 						},
 						{
-							"name": "Advanced tutorials",
-							"id": "advanced-tutorials",
-							"slug": "advanced-tutorials"
+							"name": "Contributing",
+							"id": "framework-contributing",
+							"slug": "contributing",
+							"order": 300
 						}
 					]
 				}
