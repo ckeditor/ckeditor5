@@ -9,6 +9,9 @@ import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import Document from '../../src/model/document';
 import TreeWalker from '../../src/model/treewalker';
+import MergeDelta from '../../src/model/delta/mergedelta';
+import MoveOperation from '../../src/model/operation/moveoperation';
+import RemoveOperation from '../../src/model/operation/removeoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { jsonParseStringify } from '../../tests/model/_utils/utils';
 
@@ -1024,6 +1027,19 @@ describe( 'Range', () => {
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 3 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 2 ] );
 			} );
+
+			it( 'split element which has collapsed range at the end', () => {
+				range.start = new Position( root, [ 0, 6 ] );
+				range.end = new Position( root, [ 0, 6 ] );
+
+				const delta = getSplitDelta( new Position( root, [ 0, 3 ] ), new Element( 'p' ), 3, 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 1, 3 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 3 ] );
+			} );
 		} );
 
 		describe( 'by MergeDelta', () => {
@@ -1055,6 +1071,35 @@ describe( 'Range', () => {
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 0, 1 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 1, 1 ] );
+			} );
+
+			// #1132.
+			it( 'merge delta has move operation that does not start from offset 0', () => {
+				// This scenario is a test for a rare situation, that after some OT, a move operation in
+				// merge delta does not start from 0 offset.
+				//
+				// It happens that move operation in merge delta becomes "do nothing move operation", something like:
+				//
+				// move range [ a, x ] - [ a, y ] to [ a, x ]
+				// for example: move [ 0, 3 ] - [ 0, 6 ] -> [ 0, 3 ]
+				//
+				// This is a result of valid transformation and we need to check if range is properly transformed
+				// when such unusual delta is generated.
+				// For more see: https://github.com/ckeditor/ckeditor5-engine/pull/1133#issuecomment-329080668.
+				//
+				// For this test scenario assume: <p>foobar[]</p>, "bar" is moved between "o" and "b".
+				// Expect state after transformation is that nothing has changed.
+				const range = new Range( new Position( root, [ 0, 6 ] ), new Position( root, [ 0, 6 ] ) );
+
+				const delta = new MergeDelta();
+				delta.addOperation( new MoveOperation( new Position( root, [ 0, 3 ] ), 3, new Position( root, [ 0, 3 ] ), 0 ) );
+				delta.addOperation( new RemoveOperation( new Position( root, [ 1 ] ), 1, new Position( doc.graveyard, [ 0 ] ), 1 ) );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 6 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 6 ] );
 			} );
 		} );
 

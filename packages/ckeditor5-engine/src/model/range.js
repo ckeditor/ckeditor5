@@ -492,8 +492,26 @@ export default class Range {
 				// Collapsed range is in merged element, at the beginning or at the end of it.
 				// Without fix, the range would end up in the graveyard, together with removed element.
 				// <p>foo</p><p>[]bar</p> -> <p>foobar</p><p>[]</p> -> <p>foobar</p> -> <p>foo[]bar</p>
-				// <p>foo</p><p>bar[]</p>
-				return [ new Range( targetPosition.getShiftedBy( this.start.offset ) ) ];
+				// <p>foo</p><p>bar[]</p> -> <p>foobar</p><p>[]</p> -> <p>foobar</p> -> <p>foobar[]</p>
+				//
+				// In most cases, `sourceRange.start.offset` for merge delta's move operation would be 0,
+				// so this formula might look overcomplicated.
+				// However in some scenarios, after operational transformation, move operation might not
+				// in fact start from 0 and we need to properly count new offset.
+				// https://github.com/ckeditor/ckeditor5-engine/pull/1133#issuecomment-329080668.
+				const offset = this.start.offset - sourceRange.start.offset;
+
+				return [ new Range( targetPosition.getShiftedBy( offset ) ) ];
+			}
+			//
+			// Edge case for split delta.
+			//
+			if ( deltaType == 'split' && this.isCollapsed && this.end.isEqual( sourceRange.end ) ) {
+				// Collapsed range is at the end of split element.
+				// Without fix, the range would end up at the end of split (old) element instead of at the end of new element.
+				// That would happen because this range is not technically inside moved range. Last step below shows the fix.
+				// <p>foobar[]</p> -> <p>foobar[]</p><p></p> -> <p>foo[]</p><p>bar</p> -> <p>foo</p><p>bar[]</p>
+				return [ new Range( targetPosition.getShiftedBy( howMany ) ) ];
 			}
 			//
 			// Other edge cases:
