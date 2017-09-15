@@ -504,6 +504,16 @@ export default class Range {
 				return [ new Range( targetPosition.getShiftedBy( offset ) ) ];
 			}
 			//
+			// Edge case for split delta.
+			//
+			if ( deltaType == 'split' && this.isCollapsed && this.end.isEqual( sourceRange.end ) ) {
+				// Collapsed range is at the end of split element.
+				// Without fix, the range would end up at the end of split (old) element instead of at the end of new element.
+				// That would happen because this range is not technically inside moved range. Last step below shows the fix.
+				// <p>foobar[]</p> -> <p>foobar[]</p><p></p> -> <p>foo[]</p><p>bar</p> -> <p>foo</p><p>bar[]</p>
+				return [ new Range( targetPosition.getShiftedBy( howMany ) ) ];
+			}
+			//
 			// Other edge cases:
 			//
 			// In all examples `[]` is `this` and `{}` is `sourceRange`, while `^` is move target position.
