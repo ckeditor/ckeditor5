@@ -10,7 +10,7 @@
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ViewCollection from './viewcollection';
 import Template from './template';
-import DomEmmiterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -326,5 +326,5 @@ export default class View {
 	}
 }
 
-mix( View, DomEmmiterMixin );
+mix( View, DomEmitterMixin );
 mix( View, ObservableMixin );
