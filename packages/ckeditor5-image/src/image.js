@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEngine from './image/imageengine';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import ImageTextAlternative from './imagetextalternative';
-import { isImageWidget } from './image/utils';
+import { isImageWidgetSelected } from './image/utils';
 
 import '../theme/theme.scss';
 
@@ -49,9 +49,7 @@ export default class Image extends Plugin {
 		// https://github.com/ckeditor/ckeditor5-image/issues/110
 		if ( contextualToolbar ) {
 			this.listenTo( contextualToolbar, 'show', evt => {
-				const selectedElement = editor.editing.view.selection.getSelectedElement();
-
-				if ( selectedElement && isImageWidget( selectedElement ) ) {
+				if ( isImageWidgetSelected( editor.editing.view.selection ) ) {
 					evt.stop();
 				}
 			}, { priority: 'high' } );
