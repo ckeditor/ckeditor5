@@ -20,7 +20,7 @@ You can find all the official packages listed in [CKEditor 5 development reposit
 In order to start developing CKEditor 5 you will require:
 
 * [Node.js](https://nodejs.org/en/) >= 6.0.0
-* npm 4.x (**note:** [using npm 5 causes problems](https://github.com/lerna/lerna/issues/938))
+* npm 4.x (**note:** using npm 5 [causes](https://github.com/lerna/lerna/issues/938) [problems](https://github.com/npm/npm/issues/16991))
 * [Git](https://git-scm.com/)
 
 ## Setting up CKEditor development environment
