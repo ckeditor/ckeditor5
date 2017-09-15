@@ -6,7 +6,7 @@
     "CKEditor"
   ],
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-lint": "^3.1.0",
+    "@ckeditor/ckeditor5-dev-lint": "^3.1.1",
     "@ckeditor/ckeditor5-core": "^0.9.0",
     "@ckeditor/ckeditor5-engine": "^0.11.0",
     "del": "^2.2.0",
