@@ -473,13 +473,13 @@ describe( 'UndoEngine integration', () => {
 			undoDisabled();
 
 			editor.execute( 'redo' );
-			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
+			output( '<paragraph>123</paragraph><paragraph>45678[]</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<paragraph>123</paragraph><paragraph>4567[]</paragraph><paragraph>8</paragraph>' );
+			output( '<paragraph>123</paragraph><paragraph>4567</paragraph><paragraph>8[]</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<paragraph>123</paragraph><paragraph>45[]</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
+			output( '<paragraph>123</paragraph><paragraph>45</paragraph><paragraph>67[]</paragraph><paragraph>8</paragraph>' );
 
 			redoDisabled();
 		} );
@@ -549,13 +549,13 @@ describe( 'UndoEngine integration', () => {
 			undoDisabled();
 
 			editor.execute( 'redo' );
-			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
+			output( '<paragraph>123</paragraph><paragraph>45678[]</paragraph>' );
 
 			editor.execute( 'redo' );
 			output( '<paragraph>12345678[]</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
+			output( '<paragraph>123</paragraph><paragraph>45678[]</paragraph>' );
 
 			editor.execute( 'redo' );
 			output( '<paragraph>12345678[]</paragraph>' );
@@ -605,13 +605,13 @@ describe( 'UndoEngine integration', () => {
 			undoDisabled();
 
 			editor.execute( 'redo' );
-			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
+			output( '<paragraph>123</paragraph><paragraph>45678[]</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<paragraph>123</paragraph><paragraph>4567[]</paragraph><paragraph>8</paragraph>' );
+			output( '<paragraph>123</paragraph><paragraph>4567</paragraph><paragraph>8[]</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<paragraph>123</paragraph><paragraph>45[]</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
+			output( '<paragraph>123</paragraph><paragraph>45</paragraph><paragraph>67[]</paragraph><paragraph>8</paragraph>' );
 
 			editor.execute( 'redo' );
 			output( '<paragraph>12345[]</paragraph><paragraph>67</paragraph><paragraph>8</paragraph>' );
@@ -661,16 +661,16 @@ describe( 'UndoEngine integration', () => {
 			undoDisabled();
 
 			editor.execute( 'redo' );
-			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
+			output( '<paragraph>123</paragraph><paragraph>45678[]</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<paragraph>123</paragraph><paragraph>45[]</paragraph><paragraph>678</paragraph>' );
+			output( '<paragraph>123</paragraph><paragraph>45</paragraph><paragraph>678[]</paragraph>' );
 
 			editor.execute( 'redo' );
 			output( '<paragraph>12345[]</paragraph><paragraph>678</paragraph>' );
 
 			editor.execute( 'redo' );
-			output( '<paragraph>12345</paragraph><paragraph>6[]</paragraph><paragraph>78</paragraph>' );
+			output( '<paragraph>12345</paragraph><paragraph>6</paragraph><paragraph>78[]</paragraph>' );
 
 			editor.execute( 'redo' );
 			output( '<paragraph>123456[]</paragraph><paragraph>78</paragraph>' );
@@ -715,7 +715,7 @@ describe( 'UndoEngine integration', () => {
 			undoDisabled();
 
 			editor.execute( 'redo' );
-			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
+			output( '<paragraph>123</paragraph><paragraph>45678[]</paragraph>' );
 
 			editor.execute( 'redo' );
 			output( '<paragraph>123</paragraph><paragraph>458[]</paragraph>' );
@@ -769,7 +769,7 @@ describe( 'UndoEngine integration', () => {
 			undoDisabled();
 
 			editor.execute( 'redo' );
-			output( '<paragraph>123[]</paragraph><paragraph>45678</paragraph>' );
+			output( '<paragraph>123</paragraph><paragraph>45678[]</paragraph>' );
 
 			editor.execute( 'redo' );
 			output( '<paragraph>123</paragraph><paragraph>4567xy8[]</paragraph>' );
