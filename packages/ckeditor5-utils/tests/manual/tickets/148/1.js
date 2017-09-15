@@ -5,7 +5,7 @@
 
 /* global document */
 
-import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
+import { getOptimalPosition } from '../../../../src/dom/position';
 
 const source = document.querySelector( '.source' );
 const target = document.querySelector( '.target' );
