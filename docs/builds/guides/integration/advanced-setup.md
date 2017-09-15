@@ -11,11 +11,11 @@ In this guide, we would like to show you ways to closer integrate CKEditor with 
 
 ## Bundler
 
-CKEditor 5 is currently built using [webpack](https://webpack.js.org) (>=2.x.x). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/) but those setups are not officially supported yet. Also, the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin), which allows localizing the editor, is available only for webpack. More work on this subject will be done after v1.0.0.
+CKEditor 5 is currently built using [webpack](https://webpack.js.org) (>=2.x.x). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/) but these setups are not officially supported yet. Also, the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows to localize the editor is only available for webpack. More work on this subject will be done after v1.0.0.
 
-Therefore, **the prerequisite to this guide is that you are using webpack as your build tool**.
+Therefore, **a prerequisite to this guide is that you are using webpack as your build tool**.
 
-## Scenario 1. Integrating existing builds
+## Scenario 1: Integrating existing builds
 
 This is the simplest scenario. It assumes that you want to use {@link builds/guides/overview#Available-builds one of the existing builds} "as-is" (you can, of course, still {@link builds/guides/integration/configuration configure the editor}). It also gives the fastest build times.
 
@@ -29,7 +29,7 @@ First, install the build of your choice {@link builds/guides/integration/install
 npm install --save @ckeditor/ckeditor5-build-classic
 ```
 
-Now, simply import the editor build into your code:
+Now, import the editor build into your code:
 
 ```js
 // Using ES6 imports:
@@ -52,17 +52,17 @@ ClassicEditor
 	} );
 ```
 
-Since you are using an already built editor (so a result of passing CKEditor 5's source through webpack), you don't need any additional webpack configuration. In this case CKEditor works as a ready-to-use library.
+Since you are using an already built editor (so a result of passing CKEditor 5's source through webpack), you do not need any additional webpack configuration. In this case CKEditor works as a ready-to-use library.
 
-## Scenario 2. Building from source
+## Scenario 2: Building from source
 
-This scenario allows you to fully control the building process of CKEditor. This means that you will not actually use the builds anymore, but instead build CKEditor from source directly into your project. Such an integration method gives you the full control of which features will be included and how webpack will be configured.
+This scenario allows you to fully control the building process of CKEditor. This means that you will not actually use the builds anymore, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
 
 <info-box>
-	Similar results to what this method allows can be achieved by {@link builds/guides/development/custom-builds customizing an existing build} and integrating your custom build like in scenario 1. That method will give faster build times (since CKEditor will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository in your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
+	Similar results to what this method allows can be achieved by {@link builds/guides/development/custom-builds customizing an existing build} and integrating your custom build like in scenario 1. This will give faster build times (since CKEditor will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
 </info-box>
 
-First of all, you need to install source packages that you will use. If you base your integration on one of the existing builds you can take them from that build's `package.json` (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5-build-classic/tree/master/package.json)). At this moment you can choose the editor creator and features you want.
+First of all, you need to install source packages that you will use. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5-build-classic/tree/master/package.json)). At this moment you can choose the editor creator and features you want.
 
 Copy these dependencies to your `package.json` and call `npm install` to install them. The `dependencies` (or `devDependencies`) section of `package.json` should look more or less like this:
 
@@ -85,7 +85,7 @@ Copy these dependencies to your `package.json` and call `npm install` to install
 }
 ```
 
-The second step is install dependencies needed to build the editor. The list may differ if you want to customize how the webpack config, but this is the typical setup:
+The second step is to install dependencies needed to build the editor. The list may differ if you want to customize the webpack configuration, but this is a typical setup:
 
 ```js
 npm install --save \
@@ -102,13 +102,13 @@ You may also want to install [`babel-minify-webpack-plugin`](https://github.com/
 
 ### Webpack configuration
 
-Now, you can configure webpack. There are couple of things which you need to take care of when building CKEditor:
+Now, you can configure webpack. There are a couple of things which you need to take care of when building CKEditor:
 
-* Handling SASS files of CKEditor's theme. They are included in the CKEditor source using `import 'path/to/theme.sass'` statements, so you need a [proper loaders](https://webpack.js.org/loaders/).
+* Handling SASS files of CKEditor's theme. They are included in the CKEditor source using `import 'path/to/theme.sass'` statements, so you need [proper loaders](https://webpack.js.org/loaders/).
 * Similarly, you need to handle bundling SVG icons, which are also imported directly into the source. For that you need the [`raw-loader`](https://webpack.js.org/loaders/raw-loader/).
 * Finally, to localize the editor you need to use the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) webpack plugin.
 
-The minimal config, assuming that you use the same methods of handling assets as CKEditor builds, will look like this:
+The minimal configuration, assuming that you use the same methods of handling assets as CKEditor builds, will look like this:
 
 ```js
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
@@ -153,9 +153,9 @@ module.exports = {
 };
 ```
 
-### Running the editor – method 1.
+### Running the editor – method 1
 
-Now, you can import all the needed plugins and the creator directly to your code and use it there. The easiest way to do so is to copy it from the `src/ckeditor.js` file available in every build repository.
+You can now import all the needed plugins and the creator directly into your code and use it there. The easiest way to do so is to copy it from the `src/ckeditor.js` file available in every build repository.
 
 ```js
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -215,9 +215,9 @@ ClassicEditor.build = {
 };
 ```
 
-Such a module will export an editor creator class which has all the plugins and configuration that you need already built in. To use such editor, simply import that class and call the static `.create()` method like in all {@link builds/guides/integration/basic-api#Creating-an-editor examples}.
+This module will export an editor creator class which has all the plugins and configuration that you need already built-in. To use such editor, simply import that class and call the static `.create()` method like in all {@link builds/guides/integration/basic-api#Creating-an-editor examples}.
 
-### Running the editor – method 2.
+### Running the editor – method 2
 
 The second variant how to run the editor is to use the creator class directly, without creating an intermediary subclass. The above code would translate to:
 
@@ -256,7 +256,7 @@ ClassicEditor
 			ParagraphPlugin
 		],
 
-		// So is the rest of the default config.
+		// So is the rest of the default configuration.
 		toolbar: [
 			'headings',
 			'bold',
@@ -287,17 +287,17 @@ ClassicEditor
 
 ### Building
 
-Finally, you can build your app. Simply run webpack on your project and the editor will be a part of it.
+Finally, you can build your application. Run webpack on your project and the editor will be a part of it.
 
-### Option – extracting CSS
+### Option: Extracting CSS
 
-One of the most common requirements is to extract CKEditor's CSS to a separate file (it is included in the output JS file by default). To do that, you can use the [`extract-text-webpack-plugin`](https://www.npmjs.com/package/extract-text-webpack-plugin) plugin:
+One of the most common requirements is to extract CKEditor's CSS to a separate file (by default it is included in the output JavaScript file). To do that, you can use the [`extract-text-webpack-plugin`](https://www.npmjs.com/package/extract-text-webpack-plugin) plugin:
 
 ```bash
 npm install --save extract-text-webpack-plugin
 ```
 
-And add it to your webpack config:
+And add it to your webpack configuration:
 
 ```js
 const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
@@ -337,4 +337,4 @@ module.exports = {
 };
 ```
 
-Webpack will now create a separate file called `styles.css` which you will need to load manually in your HTML (using the `<link rel="stylesheet">` tag).
+Webpack will now create a separate file called `styles.css` which you will need to load manually into your HTML (using the `<link rel="stylesheet">` tag).

@@ -10,19 +10,19 @@ order: 20
 
 Each CKEditor 5 build provides a different class that handles the creation of editor instances:
 
-* Classic editor – {@link module:editor-classic/classiceditor~ClassicEditor}
-* Inline editor – {@link module:editor-inline/inlineeditor~InlineEditor}
-* Balloon editor – {@link module:editor-balloon/ballooneditor~BalloonEditor}
+* Classic editor &ndash; {@link module:editor-classic/classiceditor~ClassicEditor}
+* Inline editor &ndash; {@link module:editor-inline/inlineeditor~InlineEditor}
+* Balloon editor &ndash; {@link module:editor-balloon/ballooneditor~BalloonEditor}
 
 Most of the examples in the documentation use the `ClassicEditor` class, but things should work in a similar way with other builds.
 
 ## Creating an editor
 
-Regardless of chosen build, creating an editor is done using a static `create()` method.
+Regardless of the chosen build, creating an editor is done using the static `create()` method.
 
 ### Example – Classic editor
 
-In your HTML page add an element that CKEditor should replace:
+Add an element that CKEditor should replace to your HTML page:
 
 ```html
 <textarea name="content" id="editor">
@@ -30,7 +30,7 @@ In your HTML page add an element that CKEditor should replace:
 </textarea>
 ```
 
-Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** `<textarea>` with a {@link builds/guides/overview#Classic-editor Classic editor}:
+Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<textarea>` element with a {@link builds/guides/overview#Classic-editor Classic editor}:
 
 ```js
 ClassicEditor
@@ -43,11 +43,11 @@ ClassicEditor
 	} );
 ```
 
-In the above case, the `<textarea>` element is hidden and replaced with an editor. The `<textarea>` data is used to initialize the editor content. A `<div>` element can be used in the same fashion.
+In this case the `<textarea>` element is hidden and replaced with an editor. The `<textarea>` data is used to initialize the editor content. A `<div>` element can be used in the same way.
 
 ### Example – Inline editor
 
-Similarly to the previous example, add an element where CKEditor should initialize:
+Similarly to the previous example, add an element where CKEditor should initialize to your page:
 
 ```html
 <div id="editor">
@@ -55,7 +55,7 @@ Similarly to the previous example, add an element where CKEditor should initiali
 </div>
 ```
 
-Then call {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} to **attach** {@link builds/guides/overview#Inline-editor Inline editor} to a `<div>` element:
+Then call {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} to **attach** {@link builds/guides/overview#Inline-editor Inline editor} to the `<div>` element:
 
 ```js
 InlineEditor
@@ -70,9 +70,9 @@ InlineEditor
 
 ### Example – Balloon editor
 
-The procedure is the same as for Inline editor, the only difference is that we will use {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`}.
+The procedure is the same as for Inline editor &mdash; the only difference is that you need to use the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
 
-Add an element where CKEditor should initialize (as with ):
+Add an element where CKEditor should initialize to your page:
 
 ```html
 <div id="editor">
@@ -80,7 +80,7 @@ Add an element where CKEditor should initialize (as with ):
 </div>
 ```
 
-Then call {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} to **attach** {@link builds/guides/overview#Balloon-editor Balloon editor} to a `<div>` element:
+Then call {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} to **attach** {@link builds/guides/overview#Balloon-editor Balloon editor} to the `<div>` element:
 
 ```js
 BalloonEditor
@@ -94,7 +94,7 @@ BalloonEditor
 ```
 
 <info-box tip>
-	Every editor class may accept different parameters in the `create()` method and may handle initialization differently. For instance, the classic editor will replace a given element with an editor, while the inline editor will use the given element to initialize the editor on it. See each editor's documentation to learn the details.
+	Every editor class may accept different parameters in the `create()` method and may handle the initialization differently. For instance, the classic editor will replace a given element with an editor, while the inline editor will use the given element to initialize the editor on it. See each editor's documentation to learn the details.
 
 	The interface of the editor class is not enforced either. Since different implementations of editors may vary heavily in terms of functionality, the editor class implementers have full freedom regarding the API. Therefore, the examples in this guide may not work with some editor classes.
 </info-box>
@@ -105,7 +105,7 @@ Once the editor is created, it is possible to interact with it through its API. 
 
 ### Setting the editor data
 
-To replace the editor content with new data, just use the `setData` method:
+To replace the editor content with new data, use the `setData()` method:
 
 ```js
 editor.setData( '<p>Some text.</p>' );
@@ -113,7 +113,7 @@ editor.setData( '<p>Some text.</p>' );
 
 ### Getting the editor data
 
-If the editor content needs to be retrieved for any reason, like for sending it to the server through an Ajax call, simply use the `getData` method:
+If the editor content needs to be retrieved for any reason, like for sending it to the server through an Ajax call, use the `getData()` method:
 
 ```js
 const data = editor.getData();
@@ -121,7 +121,7 @@ const data = editor.getData();
 
 ### Destroying the editor
 
-In modern applications, it is common to create and remove elements from the page interactively through JavaScript. CKEditor instances should be destroyed in such cases by using the `destroy()` method:
+In modern applications, it is common to create and remove elements from the page interactively through JavaScript. In such cases CKEditor instances should be destroyed by using the `destroy()` method:
 
 ```js
 editor.destroy()
@@ -134,7 +134,7 @@ Once destroyed, resources used by the editor instance are released and the origi
 
 ## UMD support
 
-Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), it is worth noting that editor classes can be retrieved in various ways:
+Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), editor classes can be retrieved in various ways:
 
 * by a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (e.g. [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
 * by [RequireJS](http://requirejs.org/) (or any other AMD library),

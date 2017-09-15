@@ -1,6 +1,6 @@
 ---
 # Scope:
-# * Introduction on how to set configurations.
+# * Introduction to setting configurations.
 # * Introduction to the top and must-know configurations.
 # * Point where to find the list of configuration options.
 
@@ -35,7 +35,7 @@ As you can see, configurations are set by a simple JavaScript object passed to t
 
 Builds come with all features included in the distribution package enabled by default. They are defined as plugins for CKEditor.
 
-In some cases, you may need to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in an editor at runtime.
+In some cases, you may need to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in the editor at runtime.
 
 In the example below `Heading` and `Link` plugins are removed:
 
@@ -51,7 +51,7 @@ ClassicEditor
 	} );
 ```
 <info-box>
-Be careful when removing plugins using `config.removePlugins` from CKEditor builds. If removed plugins were providing toolbar buttons then the default toolbar configuration included in a build will become invalid. In such case provide the updated toolbar configuration as in the example above.
+Be careful when removing plugins using `config.removePlugins` from CKEditor builds. If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build will become invalid. In such case you need to provide the updated toolbar configuration as in the example above.
 </info-box>
 
 ### List of plugins
