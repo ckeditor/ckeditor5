@@ -16,7 +16,7 @@ describe( 'Node', () => {
 		one, two, three,
 		textBA, textR, img;
 
-	before( () => {
+	beforeEach( () => {
 		node = new Node();
 
 		one = new Element( 'one' );

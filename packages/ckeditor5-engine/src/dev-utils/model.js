@@ -126,22 +126,8 @@ export function setData( document, data, options = {} ) {
 			const ranges = [];
 
 			for ( const range of selection.getRanges() ) {
-				let start, end;
-
-				// Each range returned from `parse()` method has its root placed in DocumentFragment.
-				// Here we convert each range to have its root re-calculated properly and be placed inside
-				// model document root.
-				if ( range.start.parent.is( 'documentFragment' ) ) {
-					start = ModelPosition.createFromParentAndOffset( modelRoot, range.start.offset );
-				} else {
-					start = ModelPosition.createFromParentAndOffset( range.start.parent, range.start.offset );
-				}
-
-				if ( range.end.parent.is( 'documentFragment' ) ) {
-					end = ModelPosition.createFromParentAndOffset( modelRoot, range.end.offset );
-				} else {
-					end = ModelPosition.createFromParentAndOffset( range.end.parent, range.end.offset );
-				}
+				const start = new ModelPosition( modelRoot, range.start.path );
+				const end = new ModelPosition( modelRoot, range.end.path );
 
 				ranges.push( new ModelRange( start, end ) );
 			}

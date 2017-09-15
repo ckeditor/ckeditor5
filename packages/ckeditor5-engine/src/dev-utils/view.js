@@ -852,7 +852,9 @@ function _convertViewElements( rootNode ) {
 		const convertedElement = rootNode.is( 'documentFragment' ) ? new ViewDocumentFragment() : _convertElement( rootNode );
 
 		// Convert all child nodes.
-		for ( const child of rootNode.getChildren() ) {
+		// Cache the nodes in array. Otherwise, we would skip some nodes because during iteration we move nodes
+		// from `rootNode` to `convertedElement`. This would interfere with iteration.
+		for ( const child of [ ...rootNode.getChildren() ] ) {
 			if ( convertedElement.is( 'emptyElement' ) ) {
 				throw new Error( 'Parse error - cannot parse inside EmptyElement.' );
 			}
