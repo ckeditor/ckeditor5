@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-editor-balloon",
   "version": "0.1.0",
-  "description": "Balloon editor for CKEditor 5.",
+  "description": "The balloon editor implementation for CKEditor 5.",
   "keywords": [],
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^0.9.0",

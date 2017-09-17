@@ -1,4 +1,4 @@
-CKEditor 5 balloon editor creator
+CKEditor 5 balloon editor implementation
 =========================================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -8,7 +8,11 @@ CKEditor 5 balloon editor creator
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-balloon/status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-balloon)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-balloon/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-balloon?type=dev)
 
-The balloon editor (Medium-like) implementation. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-editor-balloon>.
+The balloon editor implementation (Medium-like editor).
+
+This package exposes the [`BallonEditor`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_editor-balloon_ballooneditor-BallonEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
+
+This package contains the source version of the balloon editor. This editor implementation is also available in the [balloon build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon). Read more about [CKEditor 5 Builds](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/index.html).
 
 ## License
 
