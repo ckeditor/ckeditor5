@@ -15,7 +15,7 @@ See the demo of the editor in German:
 
 Currently, it is only possible to change the UI language at the build stage. A single build of the editor supports only the language which was defined in the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin)'s configuration.
 
-If you use one of the {@link builds/index predefined editor builds}, refer to {@linkTODO builds/guides/development/custom-builds.md Creating custom builds} to learn how to change the language of your build.
+If you use one of the {@link builds/index predefined editor builds}, refer to {@link builds/guides/development/custom-builds Creating custom builds} to learn how to change the language of your build.
 
 If you build CKEditor from scratch or integrate it directly into your application, then all you need to do is to:
 
