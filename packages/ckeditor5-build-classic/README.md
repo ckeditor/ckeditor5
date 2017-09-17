@@ -6,7 +6,7 @@ CKEditor 5 classic editor build
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-build-classic/status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-classic)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-build-classic/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-classic?type=dev)
 
-The classic editor build. Read more in the [classic editor](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/overview.html#Classic-editor) and see the [demo](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/builds/classic-editor.html).
+The classic editor build. Read more about the [classic editor build](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/overview.html#Classic-editor) and see the [demo](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/builds/classic-editor.html).
 
 ## Documentation
 
@@ -47,10 +47,10 @@ And use it in your website:
 Or in your JavaScript application:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 // Or using CommonJS verion:
-// const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic/build/ckeditor' );
+// const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic' );
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ) )
@@ -62,7 +62,7 @@ ClassicEditor
 	} );
 ```
 
-**Note:** If you are planning to integrate CKEditor 5 deep into your application it is actually more convenient and recommended to install and import the source modules directly (like it happens in `ckeditor.js`). Read more in the [Bundling guide](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/integration/bundling.html).
+**Note:** If you are planning to integrate CKEditor 5 deep into your application it is actually more convenient and recommended to install and import the source modules directly (like it happens in `ckeditor.js`). Read more in the [Advanced setup guide](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/integration/advanced-setup.html).
 
 ## License
 
