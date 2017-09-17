@@ -8,7 +8,11 @@ CKEditor 5 inline editor creator
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-inline/status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-inline)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-inline/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-inline?type=dev)
 
-The inline editor implementation. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-editor-inline>.
+The inline editor implementation.
+
+This package exposes the [`InlineEditor`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_editor-inline_inlineeditor-InlineEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
+
+This package contains the source version of the inline editor. This editor implementation is also available in the [inline build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline). Read more about [CKEditor 5 Builds](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/index.html).
 
 ## License
 

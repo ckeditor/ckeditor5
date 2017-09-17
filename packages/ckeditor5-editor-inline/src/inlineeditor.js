@@ -16,10 +16,26 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
 import '../theme/theme.scss';
 
 /**
- * {@glink builds/guides/overview#Inline-editor Inline editor} - uses an inline editable and a floating toolbar.
+ * The {@glink builds/guides/overview#Inline-editor inline editor} implementation.
+ * It uses an inline editable and a floating toolbar.
+ * See the {@glink examples/builds/inline-editor demo}.
  *
- *  In order to create an Inline editor, use the
- * {@link module:editor-inline/inlineeditor~InlineEditor#create InlineEditor.create()} method.
+ * In order to create a inline editor instance, use the static
+ * {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} method.
+ *
+ * # Inline editor and inline build
+ *
+ * The inline editor can be used directly from source (if you installed the
+ * [`@ckeditor/ckeditor5-editor-inline`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline) package)
+ * but it is also available in the {@glink builds/guides/overview#Inline-editor inline build}.
+ *
+ * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
+ * source you need to take care of loading all plugins by yourself
+ * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
+ * Using the editor from source gives much better flexibility and allows easier customization.
+ *
+ * Read more about initializing the editor from source or as a build in
+ * {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`}.
  *
  * @extends module:core/editor/standardeditor~StandardEditor
  */
@@ -27,11 +43,13 @@ export default class InlineEditor extends StandardEditor {
 	/**
 	 * Creates an instance of the inline editor.
 	 *
-	 * <strong>Note:</strong> do not use the constructor to create editor instances. Use static
+	 * **Note:** do not use the constructor to create editor instances. Use the static
 	 * {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} method instead.
 	 *
-	 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
-	 * @param {Object} config The editor configuration.
+	 * @protected
+	 * @param {HTMLElement} element The DOM element that will be the source for the created editor
+	 * (on which the editor will be initialized).
+	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
 	constructor( element, config ) {
 		super( element, config );
@@ -60,7 +78,7 @@ export default class InlineEditor extends StandardEditor {
 	}
 
 	/**
-	 * Creates an inline editor instance.
+	 * Creates a inline editor instance.
 	 *
 	 * Creating instance when using {@glink builds/index CKEditor build}:
 	 *
@@ -93,10 +111,11 @@ export default class InlineEditor extends StandardEditor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * @param {HTMLElement} element See {@link module:editor-inline/inlineeditor~InlineEditor#constructor}'s parameters.
-	 * @param {Object} config See {@link module:editor-inline/inlineeditor~InlineEditor#constructor}'s parameters.
+	 * @param {HTMLElement} element The DOM element that will be the source for the created editor
+	 * (on which the editor will be initialized).
+	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
-	 * @returns {module:core/editor/standardeditor~StandardEditor} return.editor The editor instance.
+	 * The promise returns the created {@link module:editor-inline/inlineeditor~InlineEditor} instance.
 	 */
 	static create( element, config ) {
 		return new Promise( resolve => {
