@@ -1,4 +1,4 @@
-CKEditor 5 classic editor creator
+CKEditor 5 classic editor implementation
 ========================================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -8,7 +8,11 @@ CKEditor 5 classic editor creator
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-classic/status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-classic)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-classic/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-classic?type=dev)
 
-The classic editor implementation. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-editor-classic>.
+The classic editor implementation.
+
+This package exposes the [`ClassicEditor`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_editor-classic_classiceditor-ClassicEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
+
+This package contains the source version of the classic editor. This editor implementation is also available in the [classic build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic). Read more about [CKEditor 5 Builds](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/index.html).
 
 ## License
 

@@ -16,11 +16,26 @@ import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import '../theme/theme.scss';
 
 /**
- * {@glink builds/guides/overview#Classic-editor Classic editor} - uses an inline editable and a sticky toolbar, all
- * enclosed in a boxed UI.
+ * The {@glink builds/guides/overview#Classic-editor classic editor} implementation.
+ * It uses an inline editable and a sticky toolbar, all enclosed in a boxed UI.
+ * See the {@glink examples/builds/classic-editor demo}.
  *
- * In order to create a Classic editor, use the
- * {@link module:editor-classic/classiceditor~ClassicEditor#create ClassicEditor.create()} method.
+ * In order to create a classic editor instance, use the static
+ * {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method.
+ *
+ * # Classic editor and classic build
+ *
+ * The classic editor can be used directly from source (if you installed the
+ * [`@ckeditor/ckeditor5-editor-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic) package)
+ * but it is also available in the {@glink builds/guides/overview#Classic-editor classic build}.
+ *
+ * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
+ * source you need to take care of loading all plugins by yourself
+ * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
+ * Using the editor from source gives much better flexibility and allows easier customization.
+ *
+ * Read more about initializing the editor from source or as a build in
+ * {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`}.
  *
  * @extends module:core/editor/standardeditor~StandardEditor
  */
@@ -28,12 +43,13 @@ export default class ClassicEditor extends StandardEditor {
 	/**
 	 * Creates an instance of the classic editor.
 	 *
-	 * <strong>Note:</strong> do not use the constructor to create editor instances. Use static
+	 * **Note:** do not use the constructor to create editor instances. Use the static
 	 * {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method instead.
 	 *
+	 * @protected
 	 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
 	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
-	 * @param {Object} config The editor configuration.
+	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
 	constructor( element, config ) {
 		super( element, config );
@@ -100,10 +116,11 @@ export default class ClassicEditor extends StandardEditor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * @param {HTMLElement} element See {@link module:editor-classic/classiceditor~ClassicEditor#constructor}'s parameters.
-	 * @param {Object} config See {@link module:editor-classic/classiceditor~ClassicEditor#constructor}'s parameters.
+	 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
+	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
+	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
-	 * @returns {module:core/editor/standardeditor~StandardEditor} return.editor The editor instance.
+	 * The promise returns the created {@link module:editor-classic/classiceditor~ClassicEditor} instance.
 	 */
 	static create( element, config ) {
 		return new Promise( resolve => {
