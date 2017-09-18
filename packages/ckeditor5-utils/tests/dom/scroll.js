@@ -207,6 +207,89 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 	} );
 
+	describe( 'in an iframe', () => {
+		let iframe, iframeWindow, iframeAncestor, target, targetAncestor;
+
+		beforeEach( done => {
+			iframe = document.createElement( 'iframe' );
+			iframeAncestor = document.createElement( 'div' );
+
+			iframe.addEventListener( 'load', () => {
+				iframeWindow = iframe.contentWindow;
+
+				testUtils.sinon.stub( iframeWindow, 'innerWidth' ).value( 1000 );
+				testUtils.sinon.stub( iframeWindow, 'innerHeight' ).value( 500 );
+				testUtils.sinon.stub( iframeWindow, 'scrollX' ).value( 100 );
+				testUtils.sinon.stub( iframeWindow, 'scrollY' ).value( 100 );
+				testUtils.sinon.stub( iframeWindow, 'scrollTo' );
+				testUtils.sinon.stub( iframeWindow, 'getComputedStyle' ).returns( {
+					borderTopWidth: '0px',
+					borderRightWidth: '0px',
+					borderBottomWidth: '0px',
+					borderLeftWidth: '0px'
+				} );
+
+				// Assuming 20px v- and h-scrollbars here.
+				testUtils.sinon.stub( iframeWindow.document, 'documentElement' ).value( {
+					clientWidth: 980,
+					clientHeight: 480
+				} );
+
+				target = iframeWindow.document.createElement( 'p' );
+				targetAncestor = iframeWindow.document.createElement( 'div' );
+				iframeWindow.document.body.appendChild( targetAncestor );
+				targetAncestor.appendChild( target );
+
+				done();
+			} );
+
+			iframeAncestor.appendChild( iframe );
+			document.body.appendChild( iframeAncestor );
+		} );
+
+		afterEach( () => {
+			iframeAncestor.remove();
+		} );
+
+		it( 'does not scroll the viewport when the target is fully visible', () => {
+			stubRect( target,
+				{ top: 100, right: 200, bottom: 200, left: 100, width: 100, height: 100 } );
+			stubRect( targetAncestor,
+				{ top: 100, right: 300, bottom: 400, left: 0, width: 300, height: 300 },
+				{ scrollLeft: 200, scrollTop: -100 } );
+			stubRect( iframe,
+				{ top: 200, right: 400, bottom: 400, left: 200, width: 200, height: 200 } );
+			stubRect( iframeAncestor,
+				{ top: 0, right: 400, bottom: 400, left: 0, width: 400, height: 400 },
+				{ scrollLeft: 100, scrollTop: 100 } );
+
+			scrollViewportToShowTarget( { target } );
+			assertScrollPosition( targetAncestor, { scrollLeft: 200, scrollTop: -100 } );
+			assertScrollPosition( iframeAncestor, { scrollTop: 100, scrollLeft: 100 } );
+			sinon.assert.notCalled( iframeWindow.scrollTo );
+			sinon.assert.notCalled( window.scrollTo );
+		} );
+
+		it( 'scrolls the viewport to show the target (above)', () => {
+			stubRect( target,
+				{ top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+			stubRect( targetAncestor,
+				{ top: 200, right: 300, bottom: 400, left: 0, width: 300, height: 100 },
+				{ scrollLeft: 200, scrollTop: -100 } );
+			stubRect( iframe,
+				{ top: 2000, right: 2000, bottom: 2500, left: 2500, width: 500, height: 500 } );
+			stubRect( iframeAncestor,
+				{ top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100 },
+				{ scrollLeft: 100, scrollTop: 100 } );
+
+			scrollViewportToShowTarget( { target } );
+			assertScrollPosition( targetAncestor, { scrollTop: -500, scrollLeft: 200 } );
+			assertScrollPosition( iframeAncestor, { scrollTop: 1900, scrollLeft: 2700 } );
+			sinon.assert.calledWithExactly( iframeWindow.scrollTo, 100, -100 );
+			sinon.assert.calledWithExactly( window.scrollTo, 1820, 1520 );
+		} );
+	} );
+
 	// Note: Because everything is a mock, scrolling the firstAncestor doesn't really change
 	// the getBoundingClientRect geometry of the target. That's why scrolling the viewport
 	// works like the target remained in the original position. It's tricky but much faster
