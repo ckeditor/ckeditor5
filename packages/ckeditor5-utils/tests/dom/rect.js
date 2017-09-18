@@ -3,9 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document */
+/* global window, document */
 
-import global from '../../src/dom/global';
 import Rect from '../../src/dom/rect';
 import log from '../../src/log';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -81,14 +80,12 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should accept the window (viewport)', () => {
-			testUtils.sinon.stub( global, 'window' ).value( {
-				innerWidth: 1000,
-				innerHeight: 500,
-				scrollX: 100,
-				scrollY: 200
-			} );
+			testUtils.sinon.stub( window, 'innerWidth' ).value( 1000 );
+			testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
+			testUtils.sinon.stub( window, 'scrollX' ).value( 100 );
+			testUtils.sinon.stub( window, 'scrollY' ).value( 200 );
 
-			assertRect( new Rect( global.window ), {
+			assertRect( new Rect( window ), {
 				top: 0,
 				right: 1000,
 				bottom: 500,
@@ -426,7 +423,7 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should return a new rect', () => {
-			const rect = new Rect( {} );
+			const rect = new Rect( element );
 			const visible = rect.getVisible();
 
 			expect( visible ).to.not.equal( rect );
@@ -755,7 +752,7 @@ describe( 'Rect', () => {
 			const element = document.createElement( 'div' );
 
 			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
-			testUtils.sinon.stub( global.window, 'getComputedStyle' ).returns( {
+			testUtils.sinon.stub( window, 'getComputedStyle' ).returns( {
 				borderTopWidth: '5px',
 				borderRightWidth: '10px',
 				borderLeftWidth: '5px',
@@ -789,21 +786,17 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should exclude scrollbars from viewport\'s rect', () => {
-			testUtils.sinon.stub( global, 'window' ).value( {
-				innerWidth: 1000,
-				innerHeight: 500,
-				scrollX: 100,
-				scrollY: 200
+			testUtils.sinon.stub( window, 'innerWidth' ).value( 1000 );
+			testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
+			testUtils.sinon.stub( window, 'scrollX' ).value( 100 );
+			testUtils.sinon.stub( window, 'scrollY' ).value( 200 );
+
+			testUtils.sinon.stub( document, 'documentElement' ).value( {
+				clientWidth: 990,
+				clientHeight: 490
 			} );
 
-			testUtils.sinon.stub( global, 'document' ).value( {
-				documentElement: {
-					clientWidth: 990,
-					clientHeight: 490
-				}
-			} );
-
-			assertRect( new Rect( global.window ).excludeScrollbarsAndBorders(), {
+			assertRect( new Rect( window ).excludeScrollbarsAndBorders(), {
 				top: 0,
 				right: 990,
 				bottom: 490,
