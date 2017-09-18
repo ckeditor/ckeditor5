@@ -7,7 +7,7 @@
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import isRange from '../../src/dom/isrange';
-import { scrollViewportToShowTarget, scrollAncestorsToShowTarget, _test } from '../../src/dom/scroll';
+import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll';
 
 testUtils.createSinonSandbox();
 
@@ -215,16 +215,6 @@ describe( 'scrollViewportToShowTarget()', () => {
 	// Note: Negative scrollTo arguments make no sense in reality, but in mocks with arbitrary
 	// initial geometry and scroll position they give the right, relative picture of what's going on.
 	function testNoOffset() {
-		it( 'calls scrollAncestorsToShowTarget first', () => {
-			const spy = testUtils.sinon.stub( _test, 'scrollAncestorsToShowTarget' );
-
-			stubRect( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
-
-			scrollViewportToShowTarget( { target } );
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, target );
-		} );
-
 		it( 'does not scroll the viewport when the target is fully visible', () => {
 			stubRect( target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
@@ -306,16 +296,6 @@ describe( 'scrollViewportToShowTarget()', () => {
 	// Note: Negative scrollTo arguments make no sense in reality, but in mocks with arbitrary
 	// initial geometry and scroll position they give the right, relative picture of what's going on.
 	function testWithOffset() {
-		it( 'calls scrollAncestorsToShowTarget first', () => {
-			const spy = testUtils.sinon.stub( _test, 'scrollAncestorsToShowTarget' );
-
-			stubRect( target, { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
-
-			scrollViewportToShowTarget( { target, viewportOffset } );
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, target );
-		} );
-
 		it( 'does not scroll the viewport when the target is fully visible', () => {
 			stubRect( target, { top: 50, right: 200, bottom: 150, left: 100, width: 100, height: 100 } );
 
