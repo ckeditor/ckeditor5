@@ -3,9 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import global from '../../src/dom/global';
+/* global document, window */
+
 import { getOptimalPosition } from '../../src/dom/position';
 import Rect from '../../src/dom/rect';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+testUtils.createSinonSandbox();
 
 let element, target, limiter;
 
@@ -51,6 +55,8 @@ const attachTop = ( targetRect, elementRect ) => ( {
 
 describe( 'getOptimalPosition()', () => {
 	beforeEach( () => {
+		testUtils.sinon.stub( window, 'getComputedStyle' );
+
 		stubWindow( {
 			innerWidth: 10000,
 			innerHeight: 10000,
@@ -422,7 +428,8 @@ function getElement( properties = {}, styles = {} ) {
 	const element = {
 		tagName: 'div',
 		scrollLeft: 0,
-		scrollTop: 0
+		scrollTop: 0,
+		ownerDocument: document
 	};
 
 	Object.assign( element, properties );
@@ -435,7 +442,7 @@ function getElement( properties = {}, styles = {} ) {
 		styles.borderTopWidth = '0px';
 	}
 
-	global.window.getComputedStyle.withArgs( element ).returns( styles );
+	window.getComputedStyle.withArgs( element ).returns( styles );
 
 	return element;
 }
@@ -445,9 +452,9 @@ function getElement( properties = {}, styles = {} ) {
 // @private
 // @param {Object} properties A set of properties the window should have.
 function stubWindow( properties ) {
-	global.window = Object.assign( {
-		getComputedStyle: sinon.stub()
-	}, properties );
+	for ( const p in properties ) {
+		testUtils.sinon.stub( window, p ).value( properties[ p ] );
+	}
 }
 
 //        <-- 100px ->
