@@ -7,8 +7,6 @@
  * @module utils/dom/getborderwidths
  */
 
-import global from './global';
-
 /**
  * Returns an object containing CSS border widths of a specified HTML element.
  *
@@ -17,7 +15,8 @@ import global from './global';
  * with numerical values of the `border-[top,left,right,bottom]-width` CSS styles.
  */
 export default function getBorderWidths( element ) {
-	const style = global.window.getComputedStyle( element );
+	// Call getComputedStyle on the window the element document belongs to.
+	const style = element.ownerDocument.defaultView.getComputedStyle( element );
 
 	return {
 		top: parseInt( style.borderTopWidth, 10 ),
