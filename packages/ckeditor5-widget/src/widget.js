@@ -153,6 +153,11 @@ export default class Widget extends Plugin {
 	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
 	 */
 	_handleDelete( isForward ) {
+		// Do nothing when the read only mode is enabled.
+		if ( this.editor.isReadOnly ) {
+			return;
+		}
+
 		const modelDocument = this.editor.document;
 		const modelSelection = modelDocument.selection;
 

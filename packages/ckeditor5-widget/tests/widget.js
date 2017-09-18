@@ -606,6 +606,54 @@ describe( 'Widget', () => {
 				'</blockQuote>' +
 				'<paragraph>foo</paragraph>'
 			);
+
+			it( 'does nothing when editor when read only mode is enabled (delete)', () => {
+				setModelData( doc,
+					'<paragraph>foo</paragraph>' +
+					'<image></image>' +
+					'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
+					'<paragraph>foo</paragraph>'
+				);
+
+				editor.isReadOnly = true;
+
+				viewDocument.fire( 'keydown', new DomEventData(
+					viewDocument,
+					{ target: document.createElement( 'div' ), preventDefault: () => {} },
+					{ keyCode: keyCodes.backspace }
+				) );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<image></image>' +
+					'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
+					'<paragraph>foo</paragraph>'
+				);
+			} );
+
+			it( 'does nothing when editor when read only mode is enabled (forward delete)', () => {
+				setModelData( doc,
+					'<paragraph>foo</paragraph>' +
+					'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
+					'<image></image>' +
+					'<paragraph>foo</paragraph>'
+				);
+
+				editor.isReadOnly = true;
+
+				viewDocument.fire( 'keydown', new DomEventData(
+					viewDocument,
+					{ target: document.createElement( 'div' ), preventDefault: () => {} },
+					{ keyCode: keyCodes.delete }
+				) );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
+					'<image></image>' +
+					'<paragraph>foo</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'arrows', () => {
