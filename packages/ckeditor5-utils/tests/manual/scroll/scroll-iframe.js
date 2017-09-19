@@ -5,7 +5,7 @@
 
 /* global window, document */
 
-import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
+import { scrollViewportToShowTarget } from '../../../src/dom/scroll';
 
 document.getElementById( 'scroll' ).addEventListener( 'click', () => {
 	const target = window.frames[ 0 ].document.querySelector( '#target' );
