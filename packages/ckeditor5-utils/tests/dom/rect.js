@@ -115,6 +115,28 @@ describe( 'Rect', () => {
 			assertRect( new Rect( geometry ), geometry );
 		} );
 
+		it( 'should accept objects from another window\'s scope', done => {
+			const iframe = document.createElement( 'iframe' );
+
+			iframe.addEventListener( 'load', () => {
+				const iframeWindow = iframe.contentWindow;
+				const element = iframeWindow.document.createElement( 'p' );
+				const range = document.createRange();
+				range.selectNode( iframeWindow.document.body );
+
+				testUtils.sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
+				assertRect( new Rect( range ), geometry );
+
+				testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+				assertRect( new Rect( element ), geometry );
+
+				iframe.remove();
+				done();
+			} );
+
+			document.body.appendChild( iframe );
+		} );
+
 		it( 'should copy the properties (Rect)', () => {
 			const sourceGeometry = Object.assign( {}, geometry );
 			const sourceRect = new Rect( geometry );
@@ -447,6 +469,51 @@ describe( 'Rect', () => {
 				width: 100,
 				height: 100
 			} );
+		} );
+
+		it( 'should not fail when the rect is for an object in another window\'s scope', done => {
+			const iframe = document.createElement( 'iframe' );
+
+			iframe.addEventListener( 'load', () => {
+				const iframeWindow = iframe.contentWindow;
+				const element = iframeWindow.document.createElement( 'p' );
+				const ancestor = iframeWindow.document.createElement( 'p' );
+
+				ancestor.appendChild( element );
+				iframeWindow.document.body.appendChild( ancestor );
+
+				testUtils.sinon.stub( ancestor, 'getBoundingClientRect' ).returns( {
+					top: 0,
+					right: 50,
+					bottom: 50,
+					left: 0,
+					width: 50,
+					height: 50
+				} );
+
+				testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
+					top: 0,
+					right: 100,
+					bottom: 100,
+					left: 0,
+					width: 100,
+					height: 100
+				} );
+
+				assertRect( new Rect( element ).getVisible(), {
+					top: 0,
+					right: 50,
+					bottom: 50,
+					left: 0,
+					width: 50,
+					height: 50
+				} );
+
+				iframe.remove();
+				done();
+			} );
+
+			document.body.appendChild( iframe );
 		} );
 
 		it( 'should return the visible rect (HTMLElement), partially cropped', () => {
@@ -804,6 +871,49 @@ describe( 'Rect', () => {
 				width: 990,
 				height: 490
 			} );
+		} );
+
+		it( 'should work for a window in an iframe', done => {
+			const iframe = document.createElement( 'iframe' );
+
+			// Mock the properties of the top window. Then make sure the ones
+			// from the child are used.
+			testUtils.sinon.stub( window, 'innerWidth' ).value( 1000 );
+			testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
+			testUtils.sinon.stub( window, 'scrollX' ).value( 100 );
+			testUtils.sinon.stub( window, 'scrollY' ).value( 200 );
+			testUtils.sinon.stub( document, 'documentElement' ).value( {
+				clientWidth: 990,
+				clientHeight: 490
+			} );
+
+			iframe.addEventListener( 'load', () => {
+				const iframeWindow = iframe.contentWindow;
+
+				testUtils.sinon.stub( iframeWindow, 'innerWidth' ).value( 500 );
+				testUtils.sinon.stub( iframeWindow, 'innerHeight' ).value( 250 );
+				testUtils.sinon.stub( iframeWindow, 'scrollX' ).value( 50 );
+				testUtils.sinon.stub( iframeWindow, 'scrollY' ).value( 100 );
+
+				testUtils.sinon.stub( iframeWindow.document, 'documentElement' ).value( {
+					clientWidth: 480,
+					clientHeight: 230
+				} );
+
+				assertRect( new Rect( iframeWindow ).excludeScrollbarsAndBorders(), {
+					top: 0,
+					right: 480,
+					bottom: 230,
+					left: 0,
+					width: 480,
+					height: 230
+				} );
+
+				iframe.remove();
+				done();
+			} );
+
+			document.body.appendChild( iframe );
 		} );
 	} );
 
