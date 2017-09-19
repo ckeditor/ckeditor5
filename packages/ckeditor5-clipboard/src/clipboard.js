@@ -165,6 +165,10 @@ export default class Clipboard extends Plugin {
 				// we use the $clipboardHolder item.
 				const modelFragment = dataController.toModel( data.content, '$clipboardHolder' );
 
+				if ( modelFragment.childCount == 0 ) {
+					return;
+				}
+
 				doc.enqueueChanges( () => {
 					dataController.insertContent( modelFragment, doc.selection );
 				} );

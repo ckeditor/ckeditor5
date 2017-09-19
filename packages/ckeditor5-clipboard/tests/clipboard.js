@@ -193,6 +193,20 @@ describe( 'Clipboard feature', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
+		it( 'do not insert content if whole content was invalid', () => {
+			// Whole content is invalid. Even though there is "view" content, the "model" content would be empty.
+			// Do not insert content in this case.
+			const dataTransferMock = createDataTransfer( { 'text/html': '<unknownTag></unknownTag>', 'text/plain': '' } );
+			const spy = sinon.stub( editor.data, 'insertContent' );
+
+			editingView.fire( 'paste', {
+				dataTransfer: dataTransferMock,
+				preventDefault() {}
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
 		it( 'converts content in an "all allowed" context', () => {
 			// It's enough if we check this here with a text node and paragraph because if the conversion was made
 			// in a normal root, then text or paragraph wouldn't be allowed here.
