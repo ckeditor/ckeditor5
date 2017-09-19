@@ -30,9 +30,9 @@
 					"slug": "guides",
 					"categories": [
 						{
-							"name": "Editing engine",
-							"id": "framework-engine",
-							"slug": "engine",
+							"name": "Architecture",
+							"id": "framework-architecture",
+							"slug": "architecture",
 							"order": 100
 						},
 						{
