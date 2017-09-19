@@ -3,7 +3,7 @@
 
 @import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_spacing';
 
-$ck-image-spacing: ck-spacing( 'standard' );
+$ck-image-spacing: 5 * ck-spacing( 'small' );
 $ck-image-max-width: 50%;
 
 .ck-editor__editable {
