@@ -35,6 +35,13 @@ export default class ImageStyleEngine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'ImageStyleEngine';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const doc = editor.document;
@@ -278,7 +285,7 @@ function normalizeStyle( style ) {
  *			value: 'full',
  *			icon: fullWidthIcon,
  *			title: 'Full size image',
- *			class: 'image-full-size'
+ *			className: 'image-full-size'
  *		}
  *
  * @typedef {Object} module:image/imagestyle/imagestyleengine~ImageStyleFormat
