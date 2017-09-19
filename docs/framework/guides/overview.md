@@ -23,17 +23,15 @@ So, the answer is simple – you need to start using the framework as soon as ex
 
 The framework was designed to be a highly flexible and unopinionated platform for creating custom rich-text editing solutions. At the same time it meets several goals making implementing features as easy task as possible.
 
-* Plugin-based architecture. Everything is a plugin.
-* Unopinionated core.
-* Change based, collaboration ready editing engine. The editing engine implements Operational Transformation algorithms which, accompanied with additional mechanisms, allows implementing real-time collaboration.
-* Custom data model. The editing engine implements a custom data model, designed to best fit multiple goals such as real-time collaboration and complex editing features.
-* Virtual DOM. Special, editing oriented virtual DOM implementation, targeting hiding browser quirks from your sight.
-* Clean core / features separation.
-* Quality. 100% CC.
-* Extensible. Orthogonality of plugins. Event based architecture.
-* API-first, modular design.
-* Granular, reusable features. Features are implemented in a granular way which allows reusing and recomposing them which, in turn, makes it possible to customize and extend existing plugins.
-* Minimal configuration.
+* **Plugin-based architecture.** Everything is a plugin – even such crucial features as support for typing or `<p>` elements. You can remove them or replace with your own implementations to achieve fully customized results.
+* **Unopinionated core.** The core does minimal assumptions and can be controlled through the schema. This leaves maximum decisiveness to plugins and hence to you.
+* **Collaboration ready editing engine.** The editing engine implements [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) algorithms which, accompanied with additional mechanisms, allows implementing real-time collaboration.
+* **Custom data model.** The editing engine implements a custom data model, designed to best fit multiple requirements such as enabling real-time collaboration and complex editing features.
+* **Virtual DOM.** The editing engine features a custom, editing oriented virtual DOM implementation, targeting hiding browser quirks from your sight.
+* **Granular, reusable features.** Features are implemented in a granular way which allows reusing and recomposing them which, in turn, makes it possible to customize and extend the editor. For instance, the {@link features/image image feature} consists of over 10 plugins at the moment.
+* **Extensibility.** The entire editor architecture was designed for maximum flexibility. The code is event-based and highly decoupled allowing you to plug in or replace pieces that you want to change. Features know minimum about themselves and communicate in standardized ways.
+* **Quality.** All the official packages have extensive tests suites (100% code coverage is merely a stop to that). All the code have {@link api/index API docs}.
+* **Minimal configuration.** To avoid bloat, features have minimal configuration. Deeper changes in their behavior can be done by recomposing them with custom features.
 
 ## Framework structure
 
