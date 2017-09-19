@@ -47,7 +47,7 @@ export default class Editor {
 		 * The plugins loaded and in use by this editor instance.
 		 *
 		 * @readonly
-		 * @member {module:core/plugin~PluginCollection}
+		 * @member {module:core/plugincollection~PluginCollection}
 		 */
 		this.plugins = new PluginCollection( this, availablePlugins );
 
