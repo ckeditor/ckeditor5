@@ -92,7 +92,7 @@ npm install --save \
 Based on this packages we can create a simple app.
 
 <info-box>
-	We are using here [ES6 modules](http://exploringjs.com/es6/ch_modules.html) syntax.
+	We are using here ES6 modules syntax. If you are not familiar with it, check out this [article](http://exploringjs.com/es6/ch_modules.html).
 </info-box>
 
 ```js
@@ -248,7 +248,7 @@ class InsertImage extends Plugin {
 And add your new plugin to the `config.plugins` array. After rebuilding the application and refreshing the page you should see "InsertImage was initialized" logged on the console.
 
 <info-box hint>
-	We said that your `InsertImage` plugin relies on the image feature represented here by the `Image` plugin. We could add the `Image` plugin as a {@link module:core/plugin~PluginInterface#requires dependency} of your `InsertImage` plugin. This would make the editor initializing `Image` automatically before initializing `InsertImage`, so you would be able to remove `Image` from `config.plugins`.
+	We said that your `InsertImage` plugin relies on the image feature represented here by the `Image` plugin. We could add the `Image` plugin as a {@link module:core/plugin~PluginInterface#requires dependency} of your `InsertImage` plugin. This would make the editor initialize `Image` automatically before initializing `InsertImage`, so you would be able to remove `Image` from `config.plugins`.
 
 	However, this means that your plugin would be coupled with the `Image` plugin. This is unnecessary. They do not need to know about each other. And while it does not change anything in this simple example, it is a good practice to keep plugins as decoupled as possible.
 </info-box>
