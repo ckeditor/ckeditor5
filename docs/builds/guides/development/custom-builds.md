@@ -17,8 +17,8 @@ Some of the reasons for creating custom builds are:
 * Adding features which are not included in the existing builds, either from a third party or custom developed.
 * Removing unnecessary features present in a build.
 * Changing the {@link builds/guides/integration/basic-api#Creators editor creator}.
-* Changing the editor theme.
-* Changing the localization language of the editor.
+* Changing the {@link framework/guides/theme-customization editor theme}.
+* Changing the {@link features/ui-language localization language} of the editor.
 * Enabling bug fixes which are still not a part of any public release.
 
 ## Forking an existing build
@@ -36,7 +36,7 @@ git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
 ```
 
 <info-box hint>
-	If you do not want to fork the official build, you can just clone it. However, you will not be able to commit and push your customizations back to [GitHub](https://github.com).
+	If you do not want to fork the official build, you can just clone it. However, you will not be able to commit and push your customizations back to GitHub.
 </info-box>
 
 ## Build anatomy
@@ -44,17 +44,17 @@ git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
 Every build contains the following files:
 
 * `build/ckeditor.js` &ndash; The ready-to-use editor bundle, containing the editor and all plugins.
-* `src/ckeditor.js` &ndash; The source entry point of the build. It can be used for complex bundling and development. Based on it the `build/ckeditor.js` is created (by [webpack](https://webpack.js.org)).
+* `src/ckeditor.js` &ndash; The source entry point of the build. It can be used for complex bundling and development. Based on it the `build/ckeditor.js` file is created by [webpack](https://webpack.js.org).
 * `build-config.js` &ndash; The configuration of this particular CKEditor 5 build, based on which the `src/ckeditor.js` file is created.
-* `webpack-config.js` &ndash; Webpack configuration used to build the editor.
+* `webpack-config.js` &ndash; webpack configuration used to build the editor.
 
 ## Customizing a build
 
 In order to customize a build you need to:
 
 * Install missing dependencies.
-* Update the `build-config.js`.
-* Update the builds (which includes updating `src/ckeditor.js` and editor bundle in `build/`).
+* Update the `build-config.js` file.
+* Update the builds (which includes updating `src/ckeditor.js` and the editor bundle in `build/`).
 
 ### Installing dependencies
 
@@ -107,7 +107,7 @@ module.exports = {
 	// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
 	language: 'en',
 
-	// Editor config.
+	// Editor configuration.
 	config: {
 		toolbar: [ 'headings', 'bold', 'italic', 'custombutton' ]
 	}
@@ -118,15 +118,15 @@ module.exports = {
 
 After you changed the build configuration or updated some dependencies, it is time to rebuild the bundle. This will run a bundler (webpack) with a proper configuration (see `webpack.config.js`).
 
-If you wish to create the bundle based on the build configuration (`build-config.js`) run:
+If you wish to create a bundle based on the build configuration (`build-config.js`), run:
 
 ```bash
 npm run build
 ```
 
-This command will update the entry file (`src/ckeditor.js`) and create the bundle – `build/ckeditor.js`.
+This command will update the entry file (`src/ckeditor.js`) and create the bundle &mdash; `build/ckeditor.js`.
 
-If you want to skip updating the entry file (in case you modified it manually) run:
+If you want to skip updating the entry file (in case you modified it manually), run:
 
 ```bash
 npm run build-ckeditor

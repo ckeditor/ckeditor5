@@ -51,7 +51,7 @@ Read more in the [Support](https://ckeditor5.github.io/docs/nightly/ckeditor5/la
 
 ## Packages
 
-### Editing framework
+### Core libraries
 
 <table>
 <thead>
