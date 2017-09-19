@@ -52,7 +52,7 @@ export default class AttributeCommand extends Command {
 	}
 
 	/**
-	 * Updates the command's {@link #value} based on the current selection.
+	 * Updates the command's {@link #value} and {@link #isEnabled} based on the current selection.
 	 */
 	refresh() {
 		const doc = this.editor.document;
