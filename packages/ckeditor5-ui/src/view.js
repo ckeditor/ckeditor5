@@ -280,7 +280,7 @@ export default class View {
 	 * becoming a child of another parent view.
 	 *
 	 * @see #addChildren
-	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Children views to be registered.
+	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Child views to be removed.
 	 */
 	removeChildren( children ) {
 		if ( !isIterable( children ) ) {
