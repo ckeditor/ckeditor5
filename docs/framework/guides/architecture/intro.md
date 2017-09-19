@@ -41,7 +41,7 @@ Besides that, the editor exposes a couple of methods:
 
 * {@link module:core/editor/editor~Editor.create `create()`} – the static `create()` method. Editor constructors are protected and you should create editors using this static method. It allows the initialization process to be asynchronous.
 * {@link module:core/editor/editor~Editor#destroy `destroy()`} – destroys the editor.
-* {@link module:core/editor/editor~Editor#setData `setData()`} and {@link module:core/editor/editor~Editor#getData `getData()`} – a way to retrieve data from the editor and set data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data processor} and it does not need to be a string (can be e.g. JSON if you would implement such a {@link module:engine/dataprocessor~DataProcessor data processor}). See e.g. how to {@link features/markdown produce Markdown output}.
+* {@link module:core/editor/editor~Editor#setData `setData()`} and {@link module:core/editor/editor~Editor#getData `getData()`} – a way to retrieve data from the editor and set data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (can be e.g. JSON if you would implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See e.g. how to {@link features/markdown produce Markdown output}.
 * {@link module:core/editor/editor~Editor#execute `execute()`} – executes the given command.
 
 The editor classes are a base to implement your own editors. CKEditor 5 Framework comes with a couple of editor types (e.g. {@link module:editor-classic/classiceditor~ClassicEditor classic}, {@link module:editor-inline/inlineeditor~InlineEditor inline} and {@link module:editor-balloon/ballooneditor~BalloonEditor balloon}) but you can freely implement editors which work and look completely differently. The only requirement is that you implement the {@link module:core/editor/editor~Editor} and {@link module:core/editor/standardeditor~StandardEditor} interfaces.
@@ -235,6 +235,7 @@ target.foo; // -> 1
 
 // Or:
 target.bind( 'foo' ).to( source, 'bar' );
+
 source.bar = 1;
 target.foo; // -> 1
 ```
