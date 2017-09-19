@@ -105,6 +105,39 @@ describe( 'View', () => {
 		} );
 	} );
 
+	describe( 'removeChildren()', () => {
+		beforeEach( () => {
+			setTestViewClass();
+			setTestViewInstance();
+		} );
+
+		it( 'should remove a single view from #_unboundChildren', () => {
+			const child1 = {};
+			const child2 = {};
+
+			view.addChildren( child1 );
+			view.addChildren( child2 );
+			expect( view._unboundChildren ).to.have.length( 2 );
+
+			view.removeChildren( child2 );
+			expect( view._unboundChildren ).to.have.length( 1 );
+			expect( view._unboundChildren.get( 0 ) ).to.equal( child1 );
+		} );
+
+		it( 'should support iterables', () => {
+			const child1 = {};
+			const child2 = {};
+			const child3 = {};
+
+			view.addChildren( [ child1, child2, child3 ] );
+			expect( view._unboundChildren ).to.have.length( 3 );
+
+			view.removeChildren( [ child2, child3 ] );
+			expect( view._unboundChildren ).to.have.length( 1 );
+			expect( view._unboundChildren.get( 0 ) ).to.equal( child1 );
+		} );
+	} );
+
 	describe( 'init()', () => {
 		beforeEach( createViewWithChildren );
 

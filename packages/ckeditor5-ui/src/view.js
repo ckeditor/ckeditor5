@@ -275,6 +275,22 @@ export default class View {
 	}
 
 	/**
+	 * The opposite of {@link #addChildren}. Removes a child view from this view instance.
+	 * Once removed, the child is no longer managed by its parent, e.g. it can be safely used elsewhere,
+	 * becoming a child of another parent view.
+	 *
+	 * @see #addChildren
+	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Children views to be registered.
+	 */
+	removeChildren( children ) {
+		if ( !isIterable( children ) ) {
+			children = [ children ];
+		}
+
+		children.map( c => this._unboundChildren.remove( c ) );
+	}
+
+	/**
 	 * Initializes the view and child views located in {@link #_viewCollections}.
 	 */
 	init() {
