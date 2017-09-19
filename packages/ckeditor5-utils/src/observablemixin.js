@@ -715,6 +715,14 @@ extend( ObservableMixin, EmitterMixin );
 /**
  * Fired when an attribute changed value.
  *
+ *		observable.set( 'prop', 1 );
+ *
+ *		observable.on( 'change:prop', ( evt, propertyName, newValue, oldValue ) => {
+ *			console.log( `${ propertyName } has changed from ${ oldValue } to ${ newValue }` );
+ *		} )
+ *
+ *		observable.prop = 2; // -> 'prop has changed from 1 to 2'
+ *
  * @event module:utils/observablemixin~ObservableMixin#change:{attribute}
  * @param {String} name The attribute name.
  * @param {*} value The new attribute value.
