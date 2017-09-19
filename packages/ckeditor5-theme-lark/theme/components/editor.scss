@@ -46,7 +46,8 @@
 	}
 }
 
-.ck-editor-toolbar-container.ck-balloon-panel_arrow {
+// https://github.com/ckeditor/ckeditor5-theme-lark/issues/111
+.ck-toolbar-container.ck-editor-toolbar-container.ck-balloon-panel_arrow {
 	&_n,
 	&_ne,
 	&_nw {
