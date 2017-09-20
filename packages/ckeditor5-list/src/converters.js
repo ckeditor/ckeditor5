@@ -738,7 +738,7 @@ export function modelIndentPasteFixer( evt, [ content, selection ] ) {
 	// would create incorrect model.
 	let item = content.is( 'documentFragment' ) ? content.getChild( 0 ) : content;
 
-	if ( item.is( 'listItem' ) ) {
+	if ( item && item.is( 'listItem' ) ) {
 		// Get a reference list item. Inserted list items will be fixed according to that item.
 		const pos = selection.getFirstPosition();
 		let refItem = null;

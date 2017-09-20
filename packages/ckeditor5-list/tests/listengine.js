@@ -3257,6 +3257,14 @@ describe( 'ListEngine', () => {
 				'<paragraph>B</paragraph>'
 			);
 		} );
+
+		it( 'should not crash when "empty content" is inserted', () => {
+			setModelData( modelDoc, '<paragraph>[]</paragraph>' );
+
+			expect( () => {
+				editor.data.insertContent( new ModelDocumentFragment(), modelDoc.selection );
+			} ).not.to.throw();
+		} );
 	} );
 
 	describe( 'other', () => {
