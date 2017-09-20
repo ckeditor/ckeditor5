@@ -15,6 +15,7 @@ import TextAlternativeFormView from './imagetextalternative/ui/textalternativefo
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import textAlternativeIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 import { repositionContextualBalloon, getBalloonPositionData } from './image/ui/utils';
+import { isImageWidgetSelected } from './image/utils';
 
 import '../theme/imagetextalternative/theme.scss';
 
@@ -119,9 +120,11 @@ export default class ImageTextAlternative extends Plugin {
 			cancel();
 		} );
 
-		// Reposition the balloon upon #render.
+		// Reposition the balloon or hide the form if an image widget is no longer selected.
 		this.listenTo( editingView, 'render', () => {
-			if ( this._isVisible ) {
+			if ( !isImageWidgetSelected( editingView.selection ) ) {
+				this._hideForm( true );
+			} else if ( this._isVisible ) {
 				repositionContextualBalloon( editor );
 			}
 		}, { priority: 'low' } );
@@ -169,7 +172,7 @@ export default class ImageTextAlternative extends Plugin {
 	/**
 	 * Removes the {@link #_form} from the {@link #_balloon}.
 	 *
-	 * @param {Boolean} focusEditable Controls whether the editing view is focused afterwards.
+	 * @param {Boolean} [focusEditable=false] Controls whether the editing view is focused afterwards.
 	 * @private
 	 */
 	_hideForm( focusEditable ) {

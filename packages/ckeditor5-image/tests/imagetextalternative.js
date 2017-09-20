@@ -168,6 +168,22 @@ describe( 'ImageTextAlternative', () => {
 				editingView.fire( 'render' );
 				sinon.assert.calledOnce( spy );
 			} );
+
+			it( 'should hide the form and focus editable when image widget has been removed by external change', () => {
+				setData( doc, '[<image src=""></image>]' );
+				button.fire( 'execute' );
+
+				const remveSpy = sinon.spy( balloon, 'remove' );
+				const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+
+				// EnqueueChanges automatically fires #render event.
+				doc.enqueueChanges( () => {
+					doc.batch( 'transparent' ).remove( doc.selection.getFirstRange() );
+				} );
+
+				sinon.assert.calledWithExactly( remveSpy, form );
+				sinon.assert.calledOnce( focusSpy );
+			} );
 		} );
 
 		describe( 'close listeners', () => {
