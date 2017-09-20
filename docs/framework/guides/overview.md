@@ -49,8 +49,8 @@ There are a couple of groups of packages:
 
 ## What's next?
 
-To start using the framework read the:
+To start using the framework see the:
 
 * {@link framework/guides/quick-start Quick start} guide.
+* {@link framework/guides/architecture/intro Introduction to the framework's architecture} guide.
 * {@linkTODO framework/guides/creating-plugin Creating a plugin} guide.
-* {@linkTODO framework/guides/architecture/index Architecture} guide.
