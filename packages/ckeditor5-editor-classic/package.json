@@ -33,5 +33,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5-editor-classic.git"
-  }
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme"
+  ]
 }
