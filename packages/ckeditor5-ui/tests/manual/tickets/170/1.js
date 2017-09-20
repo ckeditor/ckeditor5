@@ -26,7 +26,6 @@ ClassicEditor
 
 		editor.ui.view.element.querySelector( '.ck-editor__editable' ).scrollTop = 360;
 
-		panel.init();
 		panel.attachTo( {
 			target: editor.ui.view.element.querySelector( '.ck-editor__editable p strong' ),
 			limiter: editor.ui.view.editableElement
@@ -52,7 +51,6 @@ ClassicEditor
 
 		editor.ui.view.element.querySelector( '.ck-editor__editable' ).scrollTop = 360;
 
-		panel.init();
 		panel.pin( {
 			target: editor.ui.view.element.querySelector( '.ck-editor__editable p strong' ),
 			limiter: editor.ui.view.editableElement
