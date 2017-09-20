@@ -33,5 +33,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5-undo.git"
-  }
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme"
+  ]
 }
