@@ -47,7 +47,7 @@ export function modelToViewStyleAttribute( styles ) {
  * @returns {Function} A view-to-model converter.
  */
 export function viewToModelStyleAttribute( styles ) {
-	// Convert only styles without `null` value.
+	// Convert only non–default styles.
 	const filteredStyles = styles.filter( style => !style.isDefault );
 
 	return ( evt, data, consumable, conversionApi ) => {
