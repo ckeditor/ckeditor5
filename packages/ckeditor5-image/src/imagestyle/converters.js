@@ -26,8 +26,8 @@ export function modelToViewStyleAttribute( styles ) {
 		}
 
 		// Check if there is class name associated with given value.
-		const newStyle = getStyleByValue( data.attributeNewValue, styles );
-		const oldStyle = getStyleByValue( data.attributeOldValue, styles );
+		const newStyle = getStyleByName( data.attributeNewValue, styles );
+		const oldStyle = getStyleByName( data.attributeOldValue, styles );
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 
 		const isRemovalHandled = handleRemoval( eventType, oldStyle, viewElement );
@@ -48,7 +48,7 @@ export function modelToViewStyleAttribute( styles ) {
  */
 export function viewToModelStyleAttribute( styles ) {
 	// Convert only styles without `null` value.
-	const filteredStyles = styles.filter( style => style.value !== null );
+	const filteredStyles = styles.filter( style => !style.isDefault );
 
 	return ( evt, data, consumable, conversionApi ) => {
 		for ( const style of filteredStyles ) {
@@ -88,17 +88,17 @@ function viewToModelImageStyle( style, data, consumable, conversionApi ) {
 
 	// *** Step2: Convert to model.
 	consumable.consume( viewFigureElement, { class: style.className } );
-	modelImageElement.setAttribute( 'imageStyle', style.value );
+	modelImageElement.setAttribute( 'imageStyle', style.name );
 }
 
-// Returns style with given `value` from array of styles.
+// Returns style with given `name` from array of styles.
 //
-// @param {String} value
+// @param {String} name
 // @param {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat> } styles
 // @return {module:image/imagestyle/imagestyleengine~ImageStyleFormat|undefined}
-function getStyleByValue( value, styles ) {
+function getStyleByName( name, styles ) {
 	for ( const style of styles ) {
-		if ( style.value === value ) {
+		if ( style.name === name ) {
 			return style;
 		}
 	}

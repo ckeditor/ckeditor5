@@ -51,9 +51,9 @@ describe( 'ImageStyleEngine', () => {
 					plugins: [ ImageStyleEngine ],
 					image: {
 						styles: [
-							{ name: 'fullStyle', title: 'foo', icon: 'object-center', value: null },
-							{ name: 'sideStyle', title: 'bar', icon: 'object-right', value: 'side', className: 'side-class' },
-							{ name: 'dummyStyle', title: 'baz', icon: 'object-dummy', value: 'dummy', className: 'dummy-class' },
+							{ name: 'fullStyle', title: 'foo', icon: 'object-center', isDefault: true },
+							{ name: 'sideStyle', title: 'bar', icon: 'object-right', className: 'side-class' },
+							{ name: 'dummyStyle', title: 'baz', icon: 'object-dummy', className: 'dummy-class' },
 						]
 					}
 				} )
@@ -91,7 +91,8 @@ describe( 'ImageStyleEngine', () => {
 		it( 'should convert from view to model', () => {
 			editor.setData( '<figure class="image side-class"><img src="foo.png" /></figure>' );
 
-			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image imageStyle="side" src="foo.png"></image>' );
+			expect( getModelData( document, { withoutSelection: true } ) )
+				.to.equal( '<image imageStyle="sideStyle" src="foo.png"></image>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="image ck-widget side-class" contenteditable="false">' +
 					'<img src="foo.png"></img>' +
@@ -130,7 +131,7 @@ describe( 'ImageStyleEngine', () => {
 			const batch = document.batch();
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', 'side' );
+				batch.setAttribute( image, 'imageStyle', 'sideStyle' );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="foo.png"></figure>' );
@@ -140,7 +141,7 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		it( 'should convert model to view: removing attribute', () => {
-			setModelData( document, '<image src="foo.png" imageStyle="side"></image>' );
+			setModelData( document, '<image src="foo.png" imageStyle="imageStyleSide"></image>' );
 			const image = document.getRoot().getChild( 0 );
 			const batch = document.batch();
 
@@ -160,7 +161,7 @@ describe( 'ImageStyleEngine', () => {
 			const batch = document.batch();
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', 'side' );
+				batch.setAttribute( image, 'imageStyle', 'sideStyle' );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="foo.png"></figure>' );
@@ -171,7 +172,7 @@ describe( 'ImageStyleEngine', () => {
 			);
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', 'dummy' );
+				batch.setAttribute( image, 'imageStyle', 'dummyStyle' );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image dummy-class"><img src="foo.png"></figure>' );
@@ -192,7 +193,7 @@ describe( 'ImageStyleEngine', () => {
 			const batch = document.batch();
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', 'side' );
+				batch.setAttribute( image, 'imageStyle', 'sideStyle' );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -205,7 +206,7 @@ describe( 'ImageStyleEngine', () => {
 				consumable.consume( data.item, 'removeAttribute:imageStyle' );
 			}, { priority: 'high' } );
 
-			setModelData( document, '<image src="foo.png" imageStyle="side"></image>' );
+			setModelData( document, '<image src="foo.png" imageStyle="sideStyle"></image>' );
 			const image = document.getRoot().getChild( 0 );
 			const batch = document.batch();
 
@@ -223,12 +224,12 @@ describe( 'ImageStyleEngine', () => {
 				consumable.consume( data.item, 'changeAttribute:imageStyle' );
 			}, { priority: 'high' } );
 
-			setModelData( document, '<image src="foo.png" imageStyle="dummy"></image>' );
+			setModelData( document, '<image src="foo.png" imageStyle="dummyStyle"></image>' );
 			const image = document.getRoot().getChild( 0 );
 			const batch = document.batch();
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', 'side' );
+				batch.setAttribute( image, 'imageStyle', 'sideStyle' );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -356,9 +357,9 @@ describe( 'ImageStyleEngine', () => {
 						image: {
 							styles: [
 								// Custom user styles.
-								{ name: 'foo', title: 'foo', icon: 'custom', value: null, className: 'foo-class' },
-								{ name: 'bar', title: 'bar', icon: 'right', value: 'bar', className: 'bar-class' },
-								{ name: 'baz', title: 'Side image', icon: 'custom', value: 'baz', className: 'baz-class' },
+								{ name: 'foo', title: 'foo', icon: 'custom', isDefault: true, className: 'foo-class' },
+								{ name: 'bar', title: 'bar', icon: 'right', className: 'bar-class' },
+								{ name: 'baz', title: 'Side image', icon: 'custom', className: 'baz-class' },
 
 								// Customized default styles.
 								{ name: 'imageStyleFull', icon: 'left', title: 'Custom title' }
@@ -376,7 +377,7 @@ describe( 'ImageStyleEngine', () => {
 					name: 'foo',
 					title: 'foo',
 					icon: 'custom',
-					value: null,
+					isDefault: true,
 					className: 'foo-class'
 				} );
 			} );
@@ -394,7 +395,7 @@ describe( 'ImageStyleEngine', () => {
 					name: 'imageStyleFull',
 					title: 'Custom title',
 					icon: ImageStyleEngine.defaultIcons.left,
-					value: null
+					isDefault: true
 				} );
 			} );
 		} );
@@ -471,34 +472,30 @@ describe( 'ImageStyleEngine', () => {
 					name: 'imageStyleFull',
 					title: 'Full size image',
 					icon: fullWidthIcon,
-					value: null
+					isDefault: true
 				},
 				imageStyleSide: {
 					name: 'imageStyleSide',
 					title: 'Side image',
 					icon: rightIcon,
-					value: 'side',
 					className: 'image-style-side'
 				},
 				imageStyleAlignLeft: {
 					name: 'imageStyleAlignLeft',
 					title: 'Left aligned image',
 					icon: leftIcon,
-					value: 'left',
 					className: 'image-style-align-left'
 				},
 				imageStyleAlignCenter: {
 					name: 'imageStyleAlignCenter',
 					title: 'Centered image',
 					icon: centerIcon,
-					value: 'side',
 					className: 'image-style-align-center'
 				},
 				imageStyleAlignRight: {
 					name: 'imageStyleAlignRight',
 					title: 'Right aligned image',
 					icon: rightIcon,
-					value: 'right',
 					className: 'image-style-align-right'
 				}
 			} );

@@ -8,8 +8,8 @@ import ImageStyleCommand from '../../src/imagestyle/imagestylecommand';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageStyleCommand', () => {
-	const defaultStyle = { name: 'defaultStyle', title: 'foo bar', icon: 'icon-1', value: null };
-	const otherStyle = { name: 'otherStyle', title: 'baz', icon: 'icon-2', value: 'other', className: 'other-class-name' };
+	const defaultStyle = { name: 'defaultStyle', title: 'foo bar', icon: 'icon-1', isDefault: true };
+	const otherStyle = { name: 'otherStyle', title: 'baz', icon: 'icon-2', className: 'other-class-name' };
 
 	let document, defaultStyleCommand, otherStyleCommand;
 
@@ -44,7 +44,7 @@ describe( 'ImageStyleCommand', () => {
 	} );
 
 	it( 'proper command should have true value when imageStyle attribute is present', () => {
-		setData( document, '[<image imageStyle="other"></image>]' );
+		setData( document, '[<image imageStyle="otherStyle"></image>]' );
 
 		expect( defaultStyleCommand.value ).to.be.false;
 		expect( otherStyleCommand.value ).to.be.true;
@@ -62,15 +62,15 @@ describe( 'ImageStyleCommand', () => {
 
 		otherStyleCommand.execute();
 
-		expect( getData( document ) ).to.equal( '[<image imageStyle="other"></image>]' );
+		expect( getData( document ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
 	} );
 
 	it( 'should do nothing when attribute already present', () => {
-		setData( document, '[<image imageStyle="other"></image>]' );
+		setData( document, '[<image imageStyle="otherStyle"></image>]' );
 
 		otherStyleCommand.execute();
 
-		expect( getData( document ) ).to.equal( '[<image imageStyle="other"></image>]' );
+		expect( getData( document ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
 	} );
 
 	it( 'should allow to provide batch instance', () => {
@@ -81,7 +81,7 @@ describe( 'ImageStyleCommand', () => {
 
 		otherStyleCommand.execute( { batch } );
 
-		expect( getData( document ) ).to.equal( '[<image imageStyle="other"></image>]' );
+		expect( getData( document ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
 		sinon.assert.calledOnce( spy );
 	} );
 

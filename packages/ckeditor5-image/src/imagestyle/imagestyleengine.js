@@ -164,7 +164,7 @@ ImageStyleEngine.defaultStyles = {
 		name: 'imageStyleFull',
 		title: 'Full size image',
 		icon: fullWidthIcon,
-		value: null
+		isDefault: true
 	},
 
 	// This represents side image.
@@ -172,7 +172,6 @@ ImageStyleEngine.defaultStyles = {
 		name: 'imageStyleSide',
 		title: 'Side image',
 		icon: rightIcon,
-		value: 'side',
 		className: 'image-style-side'
 	},
 
@@ -181,7 +180,6 @@ ImageStyleEngine.defaultStyles = {
 		name: 'imageStyleAlignLeft',
 		title: 'Left aligned image',
 		icon: leftIcon,
-		value: 'left',
 		className: 'image-style-align-left'
 	},
 
@@ -190,7 +188,6 @@ ImageStyleEngine.defaultStyles = {
 		name: 'imageStyleAlignCenter',
 		title: 'Centered image',
 		icon: centerIcon,
-		value: 'side',
 		className: 'image-style-align-center'
 	},
 
@@ -199,7 +196,6 @@ ImageStyleEngine.defaultStyles = {
 		name: 'imageStyleAlignRight',
 		title: 'Right aligned image',
 		icon: rightIcon,
-		value: 'right',
 		className: 'image-style-align-right'
 	}
 };
@@ -282,18 +278,18 @@ function normalizeStyle( style ) {
  *
  *		const imageStyleFormat = {
  *			name: 'fullSizeImage',
- *			value: 'full',
  *			icon: fullWidthIcon,
  *			title: 'Full size image',
  *			className: 'image-full-size'
  *		}
  *
  * @typedef {Object} module:image/imagestyle/imagestyleengine~ImageStyleFormat
- * @property {String} name The name of the style. It will be used to:
+ * @property {String} name The unique name of the style. It will be used to:
  * * register the {@link module:core/command~Command command} which will apply this style,
- * * store the style's button in the editor {@link module:ui/componentfactory~ComponentFactory}.
- * @property {String} value A value used to store this style in the model attribute.
- * When the value is `null`, the style will be used as the default one. A default style does not apply any CSS class to the view element.
+ * * store the style's button in the editor {@link module:ui/componentfactory~ComponentFactory},
+ * * store the style in the `imageStyle` model attribute.
+ * @property {Boolean} [isDefault] When set, the style will be used as the default one.
+ * A default style does not apply any CSS class to the view element.
  * @property {String} icon One of the following to be used when creating the style's button:
  *  * An SVG icon source (as an XML string),
  *  * One of {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultIcons} to use a default icon provided by the plugin.

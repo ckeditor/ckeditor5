@@ -120,10 +120,10 @@ export default class ImageStyle extends Plugin {
  *
  *		const imageConfig = {
  *			styles: [
- *				// A completely custom full size style with no class.
- *				{ name: 'fullSize', title: 'Full size', icon: fullSizeIcon, value: null },
+ *				// A completely custom full size style with no class, used as a default.
+ *				{ name: 'fullSize', title: 'Full size', icon: fullSizeIcon, isDefault: true },
  *
- *				{ name: 'side', title: 'To the side', icon: sideIcon, value: 'side', className: 'side-image' }
+ *				{ name: 'side', title: 'To the side', icon: sideIcon, className: 'side-image' }
  *			]
  *		};
  *
