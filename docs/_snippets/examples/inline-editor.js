@@ -25,20 +25,18 @@ Array.prototype.map.call( inlineInjectElements, inlineElement => {
 					name: 'imageStyleFull',
 					title: 'Full size image',
 					icon: fullSizeIcon,
-					value: null
+					isDefault: true
 				},
 				{
 					name: 'imageStyleLeft',
 					title: 'Left aligned image',
 					icon: alignLeftIcon,
-					value: 'left',
 					className: 'image-style-left'
 				},
 				{
 					name: 'imageStyleRight',
 					title: 'Right aligned image',
 					icon: alignRightIcon,
-					value: 'right',
 					className: 'image-style-right'
 				}
 			]
