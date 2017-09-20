@@ -405,24 +405,24 @@ describe( 'ContextualBalloon', () => {
 				}
 			} );
 
-			balloon.view.attachTo.reset();
+			balloon.view.pin.reset();
 
 			balloon.updatePosition();
 
-			expect( balloon.view.attachTo.calledOnce );
-			sinon.assert.calledWithMatch( balloon.view.attachTo.firstCall, {
+			expect( balloon.view.pin.calledOnce );
+			sinon.assert.calledWithMatch( balloon.view.pin.firstCall, {
 				target: 'fake',
 				limiter: balloon.positionLimiter
 			} );
 		} );
 
 		it( 'should set given position to the currently visible view and use position from the first view in the stack #1', () => {
-			balloon.view.attachTo.reset();
+			balloon.view.pin.reset();
 
 			balloon.updatePosition( { target: 'new' } );
 
-			expect( balloon.view.attachTo.calledOnce );
-			sinon.assert.calledWithMatch( balloon.view.attachTo.firstCall, {
+			expect( balloon.view.pin.calledOnce );
+			sinon.assert.calledWithMatch( balloon.view.pin.firstCall, {
 				target: 'new',
 				limiter: balloon.positionLimiter
 			} );
@@ -436,12 +436,12 @@ describe( 'ContextualBalloon', () => {
 				}
 			} );
 
-			balloon.view.attachTo.reset();
+			balloon.view.pin.reset();
 
 			balloon.updatePosition( { target: 'new' } );
 
-			expect( balloon.view.attachTo.calledOnce );
-			sinon.assert.calledWithMatch( balloon.view.attachTo.firstCall, {
+			expect( balloon.view.pin.calledOnce );
+			sinon.assert.calledWithMatch( balloon.view.pin.firstCall, {
 				target: 'fake',
 				limiter: balloon.positionLimiter
 			} );
@@ -450,23 +450,23 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.updatePosition();
 
-			expect( balloon.view.attachTo.calledTwice );
-			sinon.assert.calledWithMatch( balloon.view.attachTo.secondCall, {
+			expect( balloon.view.pin.calledTwice );
+			sinon.assert.calledWithMatch( balloon.view.pin.secondCall, {
 				target: 'new',
 				limiter: balloon.positionLimiter
 			} );
 		} );
 
 		it( 'should use a given position limiter instead of the default one', () => {
-			balloon.view.attachTo.reset();
+			balloon.view.pin.reset();
 
 			balloon.updatePosition( {
 				target: 'new',
 				limiter: 'customLimiter'
 			} );
 
-			expect( balloon.view.attachTo.calledOnce );
-			sinon.assert.calledWithMatch( balloon.view.attachTo.firstCall, {
+			expect( balloon.view.pin.calledOnce );
+			sinon.assert.calledWithMatch( balloon.view.pin.firstCall, {
 				target: 'new',
 				limiter: 'customLimiter'
 			} );

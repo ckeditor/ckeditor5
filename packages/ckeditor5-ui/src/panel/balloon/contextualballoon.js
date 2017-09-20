@@ -192,7 +192,7 @@ export default class ContextualBalloon extends Plugin {
 			this._stack.get( this.visibleView ).position = position;
 		}
 
-		this.view.attachTo( this._getBalloonPosition() );
+		this.view.pin( this._getBalloonPosition() );
 	}
 
 	/**
