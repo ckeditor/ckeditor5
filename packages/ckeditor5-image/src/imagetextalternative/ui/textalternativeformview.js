@@ -8,12 +8,17 @@
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
+
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
+
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 
 /**
  * The TextAlternativeFormView class.
@@ -28,6 +33,14 @@ export default class TextAlternativeFormView extends View {
 		super( locale );
 
 		const t = this.locale.t;
+
+		/**
+		 * Tracks information about DOM focus in the form.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
 
 		/**
 		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
@@ -59,6 +72,35 @@ export default class TextAlternativeFormView extends View {
 		 */
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), 'cancel' );
 
+		/**
+		 * A collection of views which can be focused in the form.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
+		this._focusables = new ViewCollection();
+
+		/**
+		 * Helps cycling over {@link #_focusables} in the form.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/focuscycler~FocusCycler}
+		 */
+		this._focusCycler = new FocusCycler( {
+			focusables: this._focusables,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
+			actions: {
+				// Navigate form fields backwards using the Shift + Tab keystroke.
+				focusPrevious: 'shift + tab',
+
+				// Navigate form fields forwards using the Tab key.
+				focusNext: 'tab'
+			}
+		} );
+
 		Template.extend( this.saveButtonView.template, {
 			attributes: {
 				class: [
@@ -73,7 +115,10 @@ export default class TextAlternativeFormView extends View {
 			attributes: {
 				class: [
 					'cke-text-alternative-form',
-				]
+				],
+
+				// https://github.com/ckeditor/ckeditor5-image/issues/40
+				tabindex: '-1'
 			},
 
 			children: [
@@ -98,6 +143,15 @@ export default class TextAlternativeFormView extends View {
 		submitHandler( {
 			view: this
 		} );
+
+		[ this.labeledInput, this.saveButtonView, this.cancelButtonView ]
+			.forEach( v => {
+				// Register the view as focusable.
+				this._focusables.add( v );
+
+				// Register the view in the focus tracker.
+				this.focusTracker.add( v.element );
+			} );
 	}
 
 	/**
