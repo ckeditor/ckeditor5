@@ -28,6 +28,7 @@ describe( 'TextAlternativeFormView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'cke-text-alternative-form' ) ).to.be.true;
+			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
 		it( 'should create #focusTracker instance', () => {

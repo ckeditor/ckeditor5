@@ -115,7 +115,10 @@ export default class TextAlternativeFormView extends View {
 			attributes: {
 				class: [
 					'cke-text-alternative-form',
-				]
+				],
+
+				// https://github.com/ckeditor/ckeditor5-image/issues/40
+				tabindex: '-1'
 			},
 
 			children: [
