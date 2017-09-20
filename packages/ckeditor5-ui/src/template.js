@@ -275,7 +275,7 @@ export default class Template {
 	 *			}
 	 *		} );
 	 *
-	 * the `instance.render().outerHTML` is
+	 * the `instance.render().outerHTML` is:
 	 *
 	 *		<p class="a b" data-x="{ observable.foo } { observable.bar }">
 	 *			<span class="b c d">Span</span>
@@ -288,7 +288,7 @@ export default class Template {
 		if ( template._isRendered ) {
 			/**
 			 * Extending a template after rendering may not work as expected. To make sure
-			 * the {@link #extend extending} works for the rendered element, perform it
+			 * the {@link module:ui/template~Template.extend extending} works for the rendered element, perform it
 			 * before {@link #render} is called.
 			 *
 			 * @error template-extend-render
