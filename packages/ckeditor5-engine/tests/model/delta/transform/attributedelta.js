@@ -285,7 +285,7 @@ describe( 'transform', () => {
 				attributeDelta.addOperation( new AttributeOperation( range, 'key', 'oldValue', 'newValue', baseVersion ) );
 
 				// The split delta was undone.
-				context.bWasUndone = true;
+				context.undoMode = true;
 
 				const transformed = transform( attributeDelta, splitDelta, context );
 

@@ -193,7 +193,7 @@ describe( 'transform', () => {
 				const nodeCopy = new Element( 'x' );
 				const splitDelta = getSplitDelta( splitPosition, nodeCopy, 2, baseVersion );
 
-				context.bWasUndone = true;
+				context.undoMode = true;
 
 				const transformed = transform( removeDelta, splitDelta, context );
 
