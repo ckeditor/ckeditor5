@@ -5,7 +5,6 @@
 
 /* global window, document, Event */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ViewCollection from '../../../src/viewcollection';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import ButtonView from '../../../src/button/buttonview';
@@ -15,12 +14,12 @@ import * as positionUtils from '@ckeditor/ckeditor5-utils/src/dom/position';
 testUtils.createSinonSandbox();
 
 describe( 'BalloonPanelView', () => {
-	let view, windowStub;
+	let view;
 
 	beforeEach( () => {
 		view = new BalloonPanelView();
 
-		global.document.body.appendChild( view.element );
+		document.body.appendChild( view.element );
 
 		return view.init();
 	} );
@@ -150,8 +149,8 @@ describe( 'BalloonPanelView', () => {
 			limiter = document.createElement( 'div' );
 			target = document.createElement( 'div' );
 
-			global.document.body.appendChild( limiter );
-			global.document.body.appendChild( target );
+			document.body.appendChild( limiter );
+			document.body.appendChild( target );
 
 			// Mock balloon panel element dimensions.
 			mockBoundingBox( view.element, {
@@ -162,17 +161,10 @@ describe( 'BalloonPanelView', () => {
 			} );
 
 			// Mock window dimensions.
-			windowStub = {
-				innerWidth: 500,
-				innerHeight: 500,
-				scrollX: 0,
-				scrollY: 0,
-				getComputedStyle: el => {
-					return window.getComputedStyle( el );
-				}
-			};
-
-			testUtils.sinon.stub( global, 'window' ).value( windowStub );
+			testUtils.sinon.stub( window, 'innerWidth' ).value( 500 );
+			testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
+			testUtils.sinon.stub( window, 'scrollX' ).value( 0 );
+			testUtils.sinon.stub( window, 'scrollY' ).value( 0 );
 		} );
 
 		afterEach( () => {
@@ -308,6 +300,8 @@ describe( 'BalloonPanelView', () => {
 
 				expect( view.top ).to.equal( 15 );
 				expect( view.left ).to.equal( -80 );
+
+				positionedAncestor.remove();
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-ui-default/issues/126
@@ -331,6 +325,8 @@ describe( 'BalloonPanelView', () => {
 
 				expect( view.top ).to.equal( 115 );
 				expect( view.left ).to.equal( 20 );
+
+				positionedAncestor.remove();
 			} );
 		} );
 
@@ -350,9 +346,8 @@ describe( 'BalloonPanelView', () => {
 					height: 50
 				} );
 
-				Object.assign( windowStub, {
-					innerWidth: 275
-				} );
+				// Note: No sandboxing here. Otherwise, it would restore to the previously stubbed value.
+				sinon.stub( window, 'innerWidth' ).value( 275 );
 
 				view.attachTo( { target, limiter } );
 
@@ -394,9 +389,8 @@ describe( 'BalloonPanelView', () => {
 					height: 50
 				} );
 
-				Object.assign( windowStub, {
-					innerHeight: 275
-				} );
+				// Note: No sandboxing here. Otherwise, it would restore to the previously stubbed value.
+				sinon.stub( window, 'innerHeight' ).value( 275 );
 
 				view.attachTo( { target, limiter } );
 
@@ -556,6 +550,7 @@ describe( 'BalloonPanelView', () => {
 				sinon.assert.calledOnce( attachToSpy );
 
 				view.destroy();
+				view.element.remove();
 				view = null;
 
 				window.dispatchEvent( new Event( 'resize' ) );
@@ -590,6 +585,8 @@ describe( 'BalloonPanelView', () => {
 				element.dispatchEvent( new Event( 'scroll' ) );
 
 				sinon.assert.calledTwice( attachToSpy );
+
+				element.remove();
 			} );
 
 			it( 'should work for a Rect as a target', () => {
