@@ -9,6 +9,8 @@
  * @module utils/log
  */
 
+const DOCUMENTATION_URL = 'https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/framework/guides/error-codes.html';
+
 /**
  * The logging module.
  *
@@ -53,7 +55,7 @@ const log = {
 	 * @param {Object} [data] Additional data describing the error.
 	 */
 	error( message, data ) {
-		console.error( message, data );
+		console.error( attachLinkToDocumentation( message ), data );
 	},
 
 	/**
@@ -67,8 +69,22 @@ const log = {
 	 * @param {Object} [data] Additional data describing the warning.
 	 */
 	warn( message, data ) {
-		console.warn( message, data );
+		console.warn( attachLinkToDocumentation( message ), data );
 	}
 };
 
 export default log;
+
+// Attaches link to the documentation at the end of the log message.
+//
+// @param {String} message
+// @returns {String}
+function attachLinkToDocumentation( message ) {
+	const matchedErrorName = message.match( /^([^:]+):/ );
+
+	if ( !matchedErrorName ) {
+		return message;
+	}
+
+	return message + ` Read more: ${ DOCUMENTATION_URL }#${ matchedErrorName[ 1 ] }.\n`;
+}
