@@ -17,7 +17,7 @@ import ImageStyle from '../../src/imagestyle';
 import ImageToolbar from '../../src/imagetoolbar';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( document.querySelector( '#editor-semantic' ), {
 		plugins: [
 			ImageToolbar,
 			EnterPlugin,
@@ -35,7 +35,33 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		window.editor = editor;
+		window.editorSemantic = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor-formatting' ), {
+		plugins: [
+			ImageToolbar,
+			EnterPlugin,
+			TypingPlugin,
+			ParagraphPlugin,
+			HeadingPlugin,
+			ImagePlugin,
+			UndoPlugin,
+			ClipboardPlugin,
+			ImageStyle
+		],
+		toolbar: [ 'headings', 'undo', 'redo' ],
+		image: {
+			styles: [ 'imageStyleAlignLeft', 'imageStyleAlignCenter', 'imageStyleAlignRight' ],
+			toolbar: [ 'imageStyleAlignLeft', 'imageStyleAlignCenter', 'imageStyleAlignRight' ]
+		}
+	} )
+	.then( editor => {
+		window.editorFormatting = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );

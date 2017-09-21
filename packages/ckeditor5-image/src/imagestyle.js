@@ -37,7 +37,8 @@ export default class ImageStyle extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const styles = this.editor.config.get( 'image.styles' );
+		const editor = this.editor;
+		const styles = editor.plugins.get( ImageStyleEngine ).imageStyles;
 
 		for ( const style of styles ) {
 			this._createButton( style );
@@ -79,6 +80,39 @@ export default class ImageStyle extends Plugin {
  *
  * The default value is:
  *
+ * 		const imageConfig = {
+ *			styles: [ 'imageStyleFull', 'imageStyleSide' ]
+ *		};
+ *
+ * which configures two default styles:
+ *
+ *  * the "full" style which doesn't apply any class, e.g. for images styled to span 100% width of the content,
+ *  * the "side" style with the `.image-style-side` CSS class.
+ *
+ * See {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultStyles} to learn more about default
+ * styles provided by the image feature.
+ *
+ * The {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultStyles default styles} can be customized,
+ * e.g. to change the icon, title or CSS class of the style. The feature also provides several
+ * {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultIcons default icons} to chose from.
+ *
+ *		import customIcon from 'custom-icon.svg';
+ *
+ *		// ...
+ *
+ *		const imageConfig = {
+ *			styles: [
+ *				// This will only customize the icon of the "full" style.
+ *				// Note: 'right' is one of default icons provided by the feature.
+ *				{ name: 'imageStyleFull', icon: 'right' },
+ *
+ *				// This will customize the icon, title and CSS class of the default "side" style.
+ *				{ name: 'imageStyleSide', icon: customIcon, title: 'My side style', class: 'custom-side-image' }
+ *			]
+ *		};
+ *
+ * If none of the default styles is good enough, it is possible to define independent custom styles too:
+ *
  *		import fullSizeIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
  *		import sideIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
  *
@@ -86,14 +120,15 @@ export default class ImageStyle extends Plugin {
  *
  *		const imageConfig = {
  *			styles: [
- *				// Option which defines a style which doesn't apply any class.
- *				// The style is titled "full" because such images are often styled to take 100% width of the content.
- *				{ name: 'imageStyleFull', title: t( 'Full size image' ), icon: fullSizeIcon, value: null },
+ *				// A completely custom full size style with no class, used as a default.
+ *				{ name: 'fullSize', title: 'Full size', icon: fullSizeIcon, isDefault: true },
  *
- *				// Option which represents a side image.
- *				{ name: 'imageStyleSide', title: t( 'Side image' ), icon: sideIcon, value: 'side', className: 'image-style-side' }
+ *				{ name: 'side', title: 'To the side', icon: sideIcon, className: 'side-image' }
  *			]
  *		};
+ *
+ * Note: Setting `title` to one of {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine#localizedDefaultStylesTitles}
+ * will automatically translate it to the language of the editor.
  *
  * Read more about styling images in the {@linkTODO Image styles guide}.
  *

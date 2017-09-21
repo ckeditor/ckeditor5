@@ -7,42 +7,21 @@
 
 import './image-style-custom.scss';
 
-import fullSizeIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
-import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
-import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
-
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-style-custom' ), {
 		image: {
 			styles: [
 				// This option is equal to a situation where no style is applied.
-				{
-					name: 'imageStyleFull',
-					title: 'Full size image',
-					icon: fullSizeIcon,
-					value: null
-				},
+				'imageStyleFull',
 
 				// This represents an image aligned to left.
-				{
-					name: 'imageStyleLeft',
-					title: 'Left aligned image',
-					icon: alignLeftIcon,
-					value: 'left',
-					className: 'image-style-left'
-				},
+				'imageStyleAlignLeft',
 
 				// This represents an image aligned to right.
-				{
-					name: 'imageStyleRight',
-					title: 'Right aligned image',
-					icon: alignRightIcon,
-					value: 'right',
-					className: 'image-style-right'
-				}
+				'imageStyleAlignRight'
 			],
 
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyleLeft', 'imageStyleFull', 'imageStyleRight' ]
+			toolbar: [ 'imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight' ]
 		}
 	} )
 	.then( editor => {

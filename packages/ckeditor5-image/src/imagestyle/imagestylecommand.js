@@ -53,10 +53,10 @@ export default class ImageStyleCommand extends Command {
 
 		if ( !element ) {
 			this.value = false;
-		} else if ( this.style.value === null ) {
+		} else if ( this.style.isDefault ) {
 			this.value = !element.hasAttribute( 'imageStyle' );
 		} else {
-			this.value = ( element.getAttribute( 'imageStyle' ) == this.style.value );
+			this.value = ( element.getAttribute( 'imageStyle' ) == this.style.name );
 		}
 	}
 
@@ -79,7 +79,7 @@ export default class ImageStyleCommand extends Command {
 		doc.enqueueChanges( () => {
 			const batch = options.batch || doc.batch();
 
-			batch.setAttribute( imageElement, 'imageStyle', this.style.value );
+			batch.setAttribute( imageElement, 'imageStyle', this.style.name );
 		} );
 	}
 }

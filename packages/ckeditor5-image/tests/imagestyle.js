@@ -12,9 +12,9 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 describe( 'ImageStyle', () => {
 	let editor;
 	const styles = [
-		{ name: 'style 1', title: 'Style 1 title', icon: 'style1-icon', value: null },
-		{ name: 'style 2', title: 'Style 2 title', icon: 'style2-icon', value: 'style2', cssClass: 'style2-class' },
-		{ name: 'style 3', title: 'Style 3 title', icon: 'style3-icon', value: 'style3', cssClass: 'style3-class' }
+		{ name: 'style 1', title: 'Style 1 title', icon: 'style1-icon', isDefault: true },
+		{ name: 'style 2', title: 'Style 2 title', icon: 'style2-icon', cssClass: 'style2-class' },
+		{ name: 'style 3', title: 'Style 3 title', icon: 'style3-icon', cssClass: 'style3-class' }
 	];
 
 	beforeEach( () => {
