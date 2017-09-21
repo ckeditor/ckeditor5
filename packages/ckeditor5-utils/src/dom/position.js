@@ -11,6 +11,7 @@ import global from './global';
 import Rect from './rect';
 import getPositionedAncestor from './getpositionedancestor';
 import getBorderWidths from './getborderwidths';
+import isFunction from '../lib/lodash/isFunction';
 
 /**
  * Calculates the `position: absolute` coordinates of a given element so it can be positioned with respect to the
@@ -79,13 +80,13 @@ import getBorderWidths from './getborderwidths';
 export function getOptimalPosition( { element, target, positions, limiter, fitInViewport } ) {
 	// If the {@link module:utils/dom/position~Options#target} is a function, use what it returns.
 	// https://github.com/ckeditor/ckeditor5-utils/issues/157
-	if ( typeof target == 'function' ) {
+	if ( isFunction( target ) ) {
 		target = target();
 	}
 
 	// If the {@link module:utils/dom/position~Options#limiter} is a function, use what it returns.
 	// https://github.com/ckeditor/ckeditor5-ui/issues/260
-	if ( typeof limiter == 'function' ) {
+	if ( isFunction( limiter ) ) {
 		limiter = limiter();
 	}
 

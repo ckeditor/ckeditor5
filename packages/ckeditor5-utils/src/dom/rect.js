@@ -7,8 +7,8 @@
  * @module utils/dom/rect
  */
 
-import global from './global';
 import isRange from './isrange';
+import isWindow from './iswindow';
 import isElement from '../lib/lodash/isElement';
 import getBorderWidths from './getborderwidths';
 import log from '../log';
@@ -90,8 +90,8 @@ export default class Rect {
 			} else {
 				copyRectProperties( this, source.getBoundingClientRect() );
 			}
-		} else if ( source === global.window ) {
-			const { innerWidth, innerHeight } = global.window;
+		} else if ( isWindow( source ) ) {
+			const { innerWidth, innerHeight } = source;
 
 			copyRectProperties( this, {
 				top: 0,
@@ -253,11 +253,11 @@ export default class Rect {
 		let visibleRect = this.clone();
 
 		// There's no ancestor to crop <body> with the overflow.
-		if ( source != global.document.body ) {
+		if ( !isBody( source ) ) {
 			let parent = source.parentNode || source.commonAncestorContainer;
 
 			// Check the ancestors all the way up to the <body>.
-			while ( parent && parent != global.document.body ) {
+			while ( parent && !isBody( parent ) ) {
 				const parentRect = new Rect( parent );
 				const intersectionRect = visibleRect.getIntersection( parentRect );
 
@@ -320,9 +320,9 @@ export default class Rect {
 		const source = this._source;
 		let scrollBarWidth, scrollBarHeight;
 
-		if ( source === global.window ) {
-			scrollBarWidth = global.window.innerWidth - global.document.documentElement.clientWidth;
-			scrollBarHeight = global.window.innerHeight - global.document.documentElement.clientHeight;
+		if ( isWindow( source ) ) {
+			scrollBarWidth = source.innerWidth - source.document.documentElement.clientWidth;
+			scrollBarHeight = source.innerHeight - source.document.documentElement.clientHeight;
 		} else {
 			const borderWidths = getBorderWidths( this._source );
 
@@ -384,4 +384,17 @@ function copyRectProperties( rect, source ) {
 	for ( const p of rectProperties ) {
 		rect[ p ] = source[ p ];
 	}
+}
+
+// Checks if provided object is a <body> HTML element.
+//
+// @private
+// @param {HTMLElement|Range} elementOrRange
+// @returns {Boolean}
+function isBody( elementOrRange ) {
+	if ( !isElement( elementOrRange ) ) {
+		return false;
+	}
+
+	return elementOrRange === elementOrRange.ownerDocument.body;
 }

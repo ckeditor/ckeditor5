@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import global from '../../src/dom/global';
 import getBorderWidths from '../../src/dom/getborderwidths';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -11,14 +10,20 @@ testUtils.createSinonSandbox();
 
 describe( 'getBorderWidths()', () => {
 	it( 'returns CSS border widths', () => {
-		testUtils.sinon.stub( global.window, 'getComputedStyle' ).returns( {
-			borderTopWidth: '10px',
-			borderRightWidth: '20px',
-			borderBottomWidth: '30px',
-			borderLeftWidth: '40px'
-		} );
-
-		const elementMock = {};
+		const elementMock = {
+			ownerDocument: {
+				defaultView: {
+					getComputedStyle: () => {
+						return {
+							borderTopWidth: '10px',
+							borderRightWidth: '20px',
+							borderBottomWidth: '30px',
+							borderLeftWidth: '40px'
+						};
+					}
+				}
+			}
+		};
 
 		expect( getBorderWidths( elementMock ) ).to.deep.equal( {
 			top: 10,

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Child frame</title>
+	</head>
+	<body>
+		<div id="target">Yay, you can see me!</div>
+		<div id="info">
+			There is nothing to do here as it is just a sub-component of another test.
+			<br/>
+			<a href="../scroll-iframe.html">Click here to continue testing</a>.
+		</div>
+	</body>
+	<style>
+		.manual-test-container {
+			padding: 50px;
+			width: 3000px;
+			height: 3000px;
+		}
+
+		.manual-test-sidebar {
+			display: none;
+		}
+
+		#target {
+			background: red;
+			width: 200px;
+			height: 200px;
+			margin-top: 1000px;
+			margin-left: 2000px;
+			border: 10px solid green;
+		}
+
+		#info {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translateX( -50% );
+			display: none;
+		}
+	</style>
+</html>
