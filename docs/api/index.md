@@ -3,7 +3,9 @@ title: API documentation
 category: api-reference
 ---
 
-Use the navigation tree on the left to navigate through CKEditor API.
+<info-box>
+Use the **navigation tree on the left** to navigate through CKEditor API.
+</info-box>
 
 ## Popular API pages
 
