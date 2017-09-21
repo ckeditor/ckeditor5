@@ -339,7 +339,7 @@ describe( 'Document', () => {
 
 		it( 'scrolls to the first range in selection with an offset', () => {
 			const stub = testUtils.sinon.stub( global.window, 'scrollTo' );
-			const root = viewDocument.createRoot( document.createElement( 'div' ) );
+			const root = viewDocument.createRoot( domRoot );
 			const range = ViewRange.createIn( root );
 
 			viewDocument.selection.addRange( range );
