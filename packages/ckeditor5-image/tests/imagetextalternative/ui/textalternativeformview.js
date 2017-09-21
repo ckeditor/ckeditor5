@@ -5,9 +5,16 @@
 
 /* global Event */
 
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import TextAlternativeFormView from '../../../src/imagetextalternative/ui/textalternativeformview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+testUtils.createSinonSandbox();
 
 describe( 'TextAlternativeFormView', () => {
 	let view;
@@ -21,6 +28,11 @@ describe( 'TextAlternativeFormView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'cke-text-alternative-form' ) ).to.be.true;
+			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+		} );
+
+		it( 'should create #focusTracker instance', () => {
+			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
 
 		it( 'should create #keystrokes instance', () => {
@@ -39,6 +51,75 @@ describe( 'TextAlternativeFormView', () => {
 			view.cancelButtonView.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		describe( 'focus cycling and management', () => {
+			it( 'should create #_focusCycler instance', () => {
+				expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
+			} );
+
+			it( 'should create #_focusables view collection', () => {
+				expect( view._focusables ).to.be.instanceOf( ViewCollection );
+			} );
+
+			it( 'should register child views in #_focusables', () => {
+				expect( view._focusables.map( f => f ) ).to.have.members( [
+					view.labeledInput,
+					view.saveButtonView,
+					view.cancelButtonView
+				] );
+			} );
+
+			it( 'should register child views\' #element in #focusTracker', () => {
+				const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
+
+				view = new TextAlternativeFormView( { t: () => {} } );
+
+				sinon.assert.calledWithExactly( spy.getCall( 0 ), view.labeledInput.element );
+				sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
+				sinon.assert.calledWithExactly( spy.getCall( 2 ), view.cancelButtonView.element );
+			} );
+
+			describe( 'activates keyboard navigation in the form', () => {
+				it( 'so "tab" focuses the next focusable item', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.tab,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					// Mock the url input is focused.
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.labeledInput.element;
+
+					const spy = sinon.spy( view.saveButtonView, 'focus' );
+
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'so "shift + tab" focuses the previous focusable item', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.tab,
+						shiftKey: true,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					// Mock the cancel button is focused.
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.cancelButtonView.element;
+
+					const spy = sinon.spy( view.saveButtonView, 'focus' );
+
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
+			} );
 		} );
 	} );
 

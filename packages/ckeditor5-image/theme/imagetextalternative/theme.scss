@@ -8,6 +8,11 @@
 		padding: ck-spacing( 'large' );
 		overflow: hidden;
 
+		&:focus {
+			// https://github.com/ckeditor/ckeditor5-image/issues/40
+			outline: none;
+		}
+
 		.ck-label {
 			margin-bottom: ck-spacing( 'small' );
 		}

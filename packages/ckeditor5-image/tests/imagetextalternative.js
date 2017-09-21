@@ -186,20 +186,6 @@ describe( 'ImageTextAlternative', () => {
 			} );
 		} );
 
-		describe( 'integration with the editor focus', () => {
-			it( 'should hide the toolbar when the editor loses focus and the image is selected', () => {
-				editor.ui.focusTracker.isFocused = true;
-
-				setData( doc, '[<image src=""></image>]' );
-				button.fire( 'execute' );
-
-				const spy = sinon.spy( balloon, 'remove' );
-
-				editor.ui.focusTracker.isFocused = false;
-				sinon.assert.calledWithExactly( spy, form );
-			} );
-		} );
-
 		describe( 'close listeners', () => {
 			describe( 'keyboard', () => {
 				it( 'should close upon Esc key press and focus the editing view', () => {
