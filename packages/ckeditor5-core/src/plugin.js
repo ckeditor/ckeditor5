@@ -121,6 +121,9 @@ mix( Plugin, ObservableMixin );
  * Note: The native `Function.name` property could not be used to keep the plugin name because
  * it will be mangled during code minification.
  *
+ * Naming a plugin is necessary to enable removing it through the
+ * {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`} option.
+ *
  * @static
  * @readonly
  * @member {String|undefined} module:core/plugin~PluginInterface.pluginName
