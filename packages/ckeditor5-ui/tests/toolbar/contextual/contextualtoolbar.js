@@ -115,10 +115,10 @@ describe( 'ContextualToolbar', () => {
 	} );
 
 	describe( 'show()', () => {
-		let balloonAddSpy, forwardSelectionRect, backwardSelectionRect;
+		let balloonAddSpy, backwardSelectionRect, forwardSelectionRect;
 
 		beforeEach( () => {
-			forwardSelectionRect = {
+			backwardSelectionRect = {
 				top: 100,
 				height: 10,
 				bottom: 110,
@@ -127,7 +127,7 @@ describe( 'ContextualToolbar', () => {
 				right: 250
 			};
 
-			backwardSelectionRect = {
+			forwardSelectionRect = {
 				top: 200,
 				height: 10,
 				bottom: 210,
@@ -136,7 +136,10 @@ describe( 'ContextualToolbar', () => {
 				right: 250
 			};
 
-			stubSelectionRect( forwardSelectionRect, backwardSelectionRect );
+			stubSelectionRects( [
+				backwardSelectionRect,
+				forwardSelectionRect
+			] );
 
 			balloonAddSpy = sandbox.spy( balloon, 'add' );
 			editor.editing.view.isFocused = true;
@@ -165,7 +168,24 @@ describe( 'ContextualToolbar', () => {
 				}
 			} );
 
-			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( backwardSelectionRect );
+			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( forwardSelectionRect );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-ui/issues/308
+		it( 'should ignore the zero-width orphan rect if there another one preceding it for the forward selection', () => {
+			// Restore previous stubSelectionRects() call.
+			editor.editing.view.domConverter.viewRangeToDom.restore();
+
+			// Simulate an "orphan" rect preceded by a "correct" one.
+			stubSelectionRects( [
+				forwardSelectionRect,
+				{ width: 0 }
+			] );
+
+			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+
+			contextualToolbar.show();
+			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( forwardSelectionRect );
 		} );
 
 		it( 'should add #toolbarView to the #_balloon and attach the #_balloon to the selection for the backward selection', () => {
@@ -191,7 +211,7 @@ describe( 'ContextualToolbar', () => {
 				}
 			} );
 
-			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( forwardSelectionRect );
+			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( backwardSelectionRect );
 		} );
 
 		it( 'should update balloon position on ViewDocument#render event while balloon is added to the #_balloon', () => {
@@ -451,7 +471,7 @@ describe( 'ContextualToolbar', () => {
 		} );
 	} );
 
-	function stubSelectionRect( forwardSelectionRect, backwardSelectionRect ) {
+	function stubSelectionRects( rects ) {
 		const editingView = editor.editing.view;
 		const originalViewRangeToDom = editingView.domConverter.viewRangeToDom;
 
@@ -460,7 +480,7 @@ describe( 'ContextualToolbar', () => {
 			const domRange = originalViewRangeToDom.apply( editingView.domConverter, args );
 
 			sandbox.stub( domRange, 'getClientRects' )
-				.returns( [ forwardSelectionRect, backwardSelectionRect ] );
+				.returns( rects );
 
 			return domRange;
 		} );
