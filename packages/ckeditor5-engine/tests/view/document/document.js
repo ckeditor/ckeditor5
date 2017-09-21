@@ -342,6 +342,13 @@ describe( 'Document', () => {
 			const root = viewDocument.createRoot( domRoot );
 			const range = ViewRange.createIn( root );
 
+			// Make sure the window will have to scroll to the domRoot.
+			Object.assign( domRoot.style, {
+				position: 'absolute',
+				top: '-1000px',
+				left: '-1000px'
+			} );
+
 			viewDocument.selection.addRange( range );
 
 			viewDocument.scrollToTheSelection();
