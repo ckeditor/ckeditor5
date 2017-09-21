@@ -214,7 +214,18 @@ export default class ContextualToolbar extends Plugin {
 				const rangeRects = Rect.getDomRangeRects( editingView.domConverter.viewRangeToDom( range ) );
 
 				// Select the proper range rect depending on the direction of the selection.
-				return rangeRects[ isBackward ? 0 : rangeRects.length - 1 ];
+				if ( isBackward ) {
+					return rangeRects[ 0 ];
+				} else {
+					// Ditch the zero-width "orphan" rect in the next line for the forward selection if there's
+					// another one preceding it. It is not rendered as a selection by the web browser anyway.
+					// https://github.com/ckeditor/ckeditor5-ui/issues/308
+					if ( rangeRects.length > 1 && rangeRects[ rangeRects.length - 1 ].width === 0 ) {
+						rangeRects.pop();
+					}
+
+					return rangeRects[ rangeRects.length - 1 ];
+				}
 			},
 			positions: getBalloonPositions( isBackward )
 		};
