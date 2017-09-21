@@ -232,8 +232,7 @@ function normalizeStyle( style ) {
 		if ( defaultStyles[ style ] ) {
 			style = Object.assign( {}, defaultStyles[ style ] );
 		}
-		// If it's just a name but non of the defaults, warn because probably it's a mistake.
-		// A which has just a name makes a little sense for the plugin.
+		// If it's just a name but none of the defaults, warn because probably it's a mistake.
 		else {
 			log.warn(
 				'image-style-not-found: There is no such image style of given name.',
