@@ -9,7 +9,7 @@
  * @module utils/log
  */
 
-const DOCUMENTATION_URL = 'https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/framework/guides/error-codes.html';
+import { attachLinkToDocumentation } from './ckeditorerror';
 
 /**
  * The logging module.
@@ -74,17 +74,3 @@ const log = {
 };
 
 export default log;
-
-// Attaches link to the documentation at the end of the log message.
-//
-// @param {String} message
-// @returns {String}
-function attachLinkToDocumentation( message ) {
-	const matchedErrorName = message.match( /^([^:]+):/ );
-
-	if ( !matchedErrorName ) {
-		return message;
-	}
-
-	return message + ` Read more: ${ DOCUMENTATION_URL }#${ matchedErrorName[ 1 ] }.\n`;
-}

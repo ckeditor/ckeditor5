@@ -6,6 +6,7 @@
 /* globals console */
 
 import log from '../src/log';
+import { DOCUMENTATION_URL } from '../src/ckeditorerror';
 
 describe( 'log', () => {
 	let spy;
@@ -36,10 +37,8 @@ describe( 'log', () => {
 
 			log.warn( 'model-schema-no-item: Specified item cannot be found.' );
 
-			/* eslint-disable max-len */
 			const logMessage = 'model-schema-no-item: Specified item cannot be found. ' +
-				'Read more: https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/framework/guides/error-codes.html#model-schema-no-item.\n';
-			/* eslint-enable max-len */
+				`Read more: ${ DOCUMENTATION_URL }#model-schema-no-item.\n`;
 
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWith( spy, logMessage );
@@ -66,10 +65,8 @@ describe( 'log', () => {
 
 			log.error( 'model-schema-no-item: Specified item cannot be found.' );
 
-			/* eslint-disable max-len */
 			const logMessage = 'model-schema-no-item: Specified item cannot be found. ' +
-				'Read more: https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/framework/guides/error-codes.html#model-schema-no-item.\n';
-			/* eslint-enable max-len */
+				`Read more: ${ DOCUMENTATION_URL }#model-schema-no-item.\n`;
 
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWith( spy, logMessage );
