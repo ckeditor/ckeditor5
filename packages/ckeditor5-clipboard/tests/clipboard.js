@@ -179,11 +179,25 @@ describe( 'Clipboard feature', () => {
 			expect( stringifyModel( spy.args[ 0 ][ 0 ] ) ).to.equal( '<paragraph>x</paragraph>' );
 		} );
 
-		it( 'do not insert content when editor is read-only', () => {
+		it( 'does not insert content when editor is read-only', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
 			const spy = sinon.stub( editor.data, 'insertContent' );
 
 			editor.isReadOnly = true;
+
+			editingView.fire( 'paste', {
+				dataTransfer: dataTransferMock,
+				preventDefault() {}
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'does not insert content if the whole content was invalid', () => {
+			// Whole content is invalid. Even though there is "view" content, the "model" content would be empty.
+			// Do not insert content in this case.
+			const dataTransferMock = createDataTransfer( { 'text/html': '<unknownTag></unknownTag>', 'text/plain': '' } );
+			const spy = sinon.stub( editor.data, 'insertContent' );
 
 			editingView.fire( 'paste', {
 				dataTransfer: dataTransferMock,
