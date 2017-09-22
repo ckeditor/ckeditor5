@@ -65,17 +65,23 @@ describe( 'DomEmitterMixin', () => {
 		} );
 
 		// #187
-		it( 'should work for DOM Nodes belonging to another window', () => {
+		it( 'should work for DOM Nodes belonging to another window', done => {
 			const spy = testUtils.sinon.spy();
 			const iframe = document.createElement( 'iframe' );
 
+			iframe.addEventListener( 'load', () => {
+				const iframeNode = iframe.contentWindow.document.createElement( 'div' );
+
+				domEmitter.listenTo( iframeNode, 'test', spy );
+				iframeNode.dispatchEvent( new Event( 'test' ) );
+
+				sinon.assert.calledOnce( spy );
+
+				iframe.remove();
+				done();
+			} );
+
 			document.body.appendChild( iframe );
-			const iframeNode = iframe.contentWindow.document.createElement( 'div' );
-
-			domEmitter.listenTo( iframeNode, 'test', spy );
-			iframeNode.dispatchEvent( new Event( 'test' ) );
-
-			sinon.assert.calledOnce( spy );
 		} );
 
 		describe( 'event capturing', () => {
@@ -452,20 +458,26 @@ describe( 'DomEmitterMixin', () => {
 		} );
 
 		// #187
-		it( 'should work for DOM Nodes belonging to another window', () => {
+		it( 'should work for DOM Nodes belonging to another window', done => {
 			const spy = testUtils.sinon.spy();
 			const iframe = document.createElement( 'iframe' );
 
+			iframe.addEventListener( 'load', () => {
+				const iframeNode = iframe.contentWindow.document.createElement( 'div' );
+
+				domEmitter.listenTo( iframeNode, 'test', spy );
+
+				iframeNode.dispatchEvent( new Event( 'test' ) );
+				domEmitter.stopListening( iframeNode );
+				iframeNode.dispatchEvent( new Event( 'test' ) );
+
+				sinon.assert.calledOnce( spy );
+
+				iframe.remove();
+				done();
+			} );
+
 			document.body.appendChild( iframe );
-			const iframeNode = iframe.contentWindow.document.createElement( 'div' );
-
-			domEmitter.listenTo( iframeNode, 'test', spy );
-
-			iframeNode.dispatchEvent( new Event( 'test' ) );
-			domEmitter.stopListening( iframeNode );
-			iframeNode.dispatchEvent( new Event( 'test' ) );
-
-			sinon.assert.calledOnce( spy );
 		} );
 
 		describe( 'event capturing', () => {
