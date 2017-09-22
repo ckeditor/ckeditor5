@@ -26,5 +26,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5-theme-lark.git"
-  }
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme"
+  ]
 }
