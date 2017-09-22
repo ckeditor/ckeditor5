@@ -9,6 +9,8 @@
  * @module utils/log
  */
 
+import { attachLinkToDocumentation } from './ckeditorerror';
+
 /**
  * The logging module.
  *
@@ -53,7 +55,7 @@ const log = {
 	 * @param {Object} [data] Additional data describing the error.
 	 */
 	error( message, data ) {
-		console.error( message, data );
+		console.error( attachLinkToDocumentation( message ), data );
 	},
 
 	/**
@@ -67,7 +69,7 @@ const log = {
 	 * @param {Object} [data] Additional data describing the warning.
 	 */
 	warn( message, data ) {
-		console.warn( message, data );
+		console.warn( attachLinkToDocumentation( message ), data );
 	}
 };
 

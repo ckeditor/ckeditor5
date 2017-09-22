@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import CKEditorError from '../src/ckeditorerror';
+import { default as CKEditorError, DOCUMENTATION_URL } from '../src/ckeditorerror';
 
 describe( 'CKEditorError', () => {
 	it( 'inherits from Error', () => {
@@ -50,6 +50,25 @@ describe( 'CKEditorError', () => {
 
 		expect( error ).to.have.property( 'message', 'foo {"bar":"a","bom":{"x":1},"bim":10}' );
 		expect( error ).to.have.property( 'data', data );
+	} );
+
+	it( 'contains a link which leads to the documentation', () => {
+		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.' );
+
+		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
+			`Read more: ${ DOCUMENTATION_URL }#model-schema-no-item.\n`;
+
+		expect( error ).to.have.property( 'message', errorMessage );
+	} );
+
+	it( 'link to documentation is added before the additional data message', () => {
+		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.', { foo: 1, bar: 2 } );
+
+		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
+			`Read more: ${ DOCUMENTATION_URL }#model-schema-no-item.\n ` +
+			'{"foo":1,"bar":2}';
+
+		expect( error ).to.have.property( 'message', errorMessage );
 	} );
 
 	describe( 'isCKEditorError', () => {
