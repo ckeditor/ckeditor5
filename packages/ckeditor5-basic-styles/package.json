@@ -30,5 +30,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5-basic-styles.git"
-  }
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme"
+  ]
 }
