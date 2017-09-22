@@ -1,6 +1,7 @@
 ---
 title: CKEditor 5 documentation
 toc: false
+sitenav: false
 ---
 
 <dl><dt>{@link builds/guides/overview CKEditor 5 Builds documentation}</dt><dd>Learn how to install, integrate and configure CKEditor 5 Builds. More complex aspects, like creating custom builds, are explained here, too.</dd>
@@ -12,23 +13,3 @@ toc: false
 ## Contribute
 
 CKEditor is an Open Source project and your contribution is most welcome. Feel free to {@link builds/guides/reporting-issues report bugs} or improve the code on [GitHub](https://github.com/ckeditor/ckeditor5). Since CKEditor is localized, you can also help [to translate it](https://www.transifex.com/ckeditor/ckeditor5/). You do not need to be a programmer to contribute to the project! 
-
-<style>
-/* Temporary hack until Umberto supports this internally. */
-dl {
-  margin-top:1em;
-}
-.main .side-navigation {
-  display:none;
-}
-.main .main__content {
-  padding-right:0;
-}
-.main .main__content-inner {
-  width: auto;
-  max-width: 860px;
-  margin: auto;
-  padding-left: 50px;
-  padding-right: 50px;
-}
-</style>
