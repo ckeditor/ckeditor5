@@ -268,11 +268,6 @@ class Marker {
 	 */
 	getStart() {
 		if ( !this._liveRange ) {
-			/**
-			 * Operating on destroyed marker instance.
-			 *
-			 * @error marker-destroyed
-			 */
 			throw new CKEditorError( 'marker-destroyed: Operating on destroyed marker instance.' );
 		}
 
@@ -286,11 +281,6 @@ class Marker {
 	 */
 	getEnd() {
 		if ( !this._liveRange ) {
-			/**
-			 * Operating on destroyed marker instance.
-			 *
-			 * @error marker-destroyed
-			 */
 			throw new CKEditorError( 'marker-destroyed: Operating on destroyed marker instance.' );
 		}
 
@@ -311,11 +301,6 @@ class Marker {
 	 */
 	getRange() {
 		if ( !this._liveRange ) {
-			/**
-			 * Operating on destroyed marker instance.
-			 *
-			 * @error marker-destroyed
-			 */
 			throw new CKEditorError( 'marker-destroyed: Operating on destroyed marker instance.' );
 		}
 
@@ -352,3 +337,9 @@ class Marker {
 }
 
 mix( Marker, EmitterMixin );
+
+/**
+ * Operating on destroyed marker instance.
+ *
+ * @error marker-destroyed
+ */

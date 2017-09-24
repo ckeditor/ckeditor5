@@ -47,7 +47,7 @@ export default class Position {
 			/**
 			 * Position root invalid.
 			 *
-			 * @error position-root-invalid.
+			 * @error model-position-root-invalid.
 			 */
 			throw new CKEditorError( 'model-position-root-invalid: Position root invalid.' );
 		}
@@ -56,7 +56,7 @@ export default class Position {
 			/**
 			 * Position path must be an Array with at least one item.
 			 *
-			 * @error position-path-incorrect
+			 * @error model-position-path-incorrect
 			 * @param path
 			 */
 			throw new CKEditorError( 'model-position-path-incorrect: Position path must be an Array with at least one item.', { path } );
@@ -688,10 +688,10 @@ export default class Position {
 			/**
 			 * You can not make position after root.
 			 *
-			 * @error position-after-root
+			 * @error model-position-after-root
 			 * @param {module:engine/model/item~Item} root
 			 */
-			throw new CKEditorError( 'model-position-after-root: You can not make position after root.', { root: item } );
+			throw new CKEditorError( 'model-position-after-root: You cannot make a position after root.', { root: item } );
 		}
 
 		return this.createFromParentAndOffset( item.parent, item.endOffset );
@@ -708,10 +708,10 @@ export default class Position {
 			/**
 			 * You can not make position before root.
 			 *
-			 * @error position-before-root
+			 * @error model-position-before-root
 			 * @param {module:engine/model/item~Item} root
 			 */
-			throw new CKEditorError( 'model-position-before-root: You can not make position before root.', { root: item } );
+			throw new CKEditorError( 'model-position-before-root: You cannot make a position before root.', { root: item } );
 		}
 
 		return this.createFromParentAndOffset( item.parent, item.startOffset );
@@ -729,7 +729,7 @@ export default class Position {
 			/**
 			 * Position parent have to be a model element or model document fragment.
 			 *
-			 * @error position-parent-incorrect
+			 * @error model-position-parent-incorrect
 			 */
 			throw new CKEditorError( 'model-position-parent-incorrect: Position parent have to be a element or document fragment.' );
 		}
@@ -766,7 +766,7 @@ export default class Position {
 			/**
 			 * Cannot create position for document. Root with specified name does not exist.
 			 *
-			 * @error position-fromjson-no-root
+			 * @error model-position-fromjson-no-root
 			 * @param {String} rootName
 			 */
 			throw new CKEditorError(

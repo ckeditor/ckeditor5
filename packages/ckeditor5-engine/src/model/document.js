@@ -195,7 +195,7 @@ export default class Document {
 			/**
 			 * Root with specified name already exists.
 			 *
-			 * @error document-createRoot-name-exists
+			 * @error model-document-createRoot-name-exists
 			 * @param {module:engine/model/document~Document} doc
 			 * @param {String} name
 			 */
@@ -254,7 +254,7 @@ export default class Document {
 			/**
 			 * Root with specified name does not exist.
 			 *
-			 * @error document-getRoot-root-not-exist
+			 * @error model-document-getRoot-root-not-exist
 			 * @param {String} name
 			 */
 			throw new CKEditorError(
