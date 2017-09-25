@@ -8,10 +8,25 @@
  */
 
 /**
- * Returns a {module:ui/template~TemplateToBinding} resulting in a native `event#preventDefault`
- * for the DOM event if `event#target` equals {@link module:ui/view~View#element}.
+ * A helper which executes a native `Event.preventDefault()` if the target of an event equals the
+ * {@link module:ui/view~View#element element of the view}. It shortens the definition of a
+ * {@link module:ui/view~View#template template}.
  *
- * @param {module:ui/view~View} view View instance that uses the template.
+ *		// In a class extending View.
+ *		import preventDefault from '@ckeditor/ckeditor5-ui/src/bindings/preventdefault';
+ *
+ *		// ...
+ *
+ *		this.template = new Template( {
+ *			tag: 'div',
+ *
+ *			on: {
+ *				// Prevent the default mousedown action on this view.
+ *				mousedown: preventDefault( this )
+ *			}
+ *		} );
+ *
+ * @param {module:ui/view~View} view View instance that defines the template.
  * @returns {module:ui/template~TemplateToBinding}
  */
 export default function preventDefault( view ) {
