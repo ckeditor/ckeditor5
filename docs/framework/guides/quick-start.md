@@ -5,7 +5,7 @@ order: 20
 
 # Quick start
 
-In this guide we will quickly show you how to initialize the editor from source and how to create a simple plugin.
+This guide we show you how to initialize the editor from source and how to create a simple plugin.
 
 ## How to install the framework?
 
@@ -14,13 +14,13 @@ The framework is made of several [npm packages](https://npmjs.com). To install i
 * [Node.js](https://nodejs.org/en/) >= 6.0.0
 * npm 4.x (**note:** using npm 5 [is not recommended](https://github.com/npm/npm/issues/16991))
 
-Besides Node.js and npm you also need [webpack](https://webpack.js.org) (>=2.0.0) with a couple of additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@linkTODO framework/guides/bundling Bundling} guide.
+Besides Node.js and npm you also need [webpack](https://webpack.js.org) (>=2.0.0) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@linkTODO framework/guides/bundling Bundling} guide.
 
 ## Let's start!
 
-We assume that your familiar with npm and your project uses npm already. If not, see [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
+This guide assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
 
-First, let's install packages needed to build CKEditor 5.
+First, install packages needed to build CKEditor 5.
 
 ```bash
 npm install --save \
@@ -32,7 +32,7 @@ npm install --save \
 	webpack
 ```
 
-The minimal webpack config needed to enable building CKEditor 5 is:
+The minimal webpack configuration needed to enable building CKEditor 5 is:
 
 ```js
 // webpack.config.js
@@ -79,7 +79,7 @@ module.exports = {
 };
 ```
 
-Now, we can install some of the CKEditor 5 Framework packages which will allow us initialize a simple editor. We will use the {@link examples/builds/classic-editor classic editor} with a small set of features.
+Now, you can install some of the CKEditor 5 Framework packages which will allow you initialize a simple editor. You can start with the {@link examples/builds/classic-editor classic editor} with a small set of features.
 
 ```bash
 npm install --save \
@@ -89,10 +89,10 @@ npm install --save \
 	@ckeditor/ckeditor5-basic-styles
 ```
 
-Based on this packages we can create a simple app.
+Based on these packages you can create a simple application.
 
 <info-box>
-	We are using here ES6 modules syntax. If you are not familiar with it, check out this [article](http://exploringjs.com/es6/ch_modules.html).
+	This guide is using the ES6 modules syntax. If you are not familiar with it, check out this [article](http://exploringjs.com/es6/ch_modules.html).
 </info-box>
 
 ```js
@@ -117,14 +117,14 @@ ClassicEditor
 	} );
 ```
 
-Now, we can run webpack to build the app. To do that, just call the `webpack` executable:
+You can now run webpack to build the application. To do that, call the `webpack` executable:
 
 ```bash
 ./node_modules/.bin/webpack
 ```
 
 <info-box>
-	You can also install webpack globally (using `npm install -g`) and run it via globally available `webpack`.
+	You can also install webpack globally (using `npm install -g`) and run it via a globally available `webpack`.
 
 	Alternatively, you can add it as an [npm script](https://docs.npmjs.com/misc/scripts):
 
@@ -163,13 +163,13 @@ Finally, it is time to create an HTML page:
 
 ```html
 <div id="editor">
-	<p>Editor contents goes here.</p>
+	<p>Editor content goes here.</p>
 </div>
 
 <script src="dist/bundle.js"></script>
 ```
 
-Open this page in your browser and you should see the editor up and running. Make sure to check the browser's console in case anything seems wrong.
+Open this page in your browser and you should see the editor up and running. Make sure to check the browser console in case anything seems wrong.
 
 {@img assets/img/framework-quick-start-classic-editor.png 837 Screenshot of a classic editor with bold and italic features.}
 
@@ -177,24 +177,24 @@ Open this page in your browser and you should see the editor up and running. Mak
 
 After you initilized the editor from source, you are ready to create your first CKEditor 5 plugin.
 
-CKEditor plugins need to implement the {@link module:core/plugin~PluginInterface}. The easiest way to do that is to inherit from {@link module:core/plugin~Plugin base `Plugin` class}, however, you can also write simple constructor functions. We will use the former method.
+CKEditor plugins need to implement the {@link module:core/plugin~PluginInterface}. The easiest way to do that is to inherit from the {@link module:core/plugin~Plugin base `Plugin` class}, however, you can also write simple constructor functions. This guide uses the former method.
 
-The plugin which we will write will use part of the {@link features/image image feature} and will add a simple UI to it – an "Insert image" button, which clicked will open a prompt window asking for image URL. Submitting the URL will result in inserting the image into the content and selecting it.
+The plugin that you will write will use a part of the {@link features/image image feature} and will add a simple UI to it &mdash; an "Insert image" button, which will open a prompt window asking for the image URL when clicked. Submitting the URL will result in inserting the image into the content and selecting it.
 
 ### Step 1. Installing dependencies
 
-Let's start from installing necessary dependencies:
+Start from installing necessary dependencies:
 
-* the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package which contains the image feature (on which our plugin will rely),
-* the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package which contains the {@link module:core/plugin~Plugin} and {@link module:core/command~Command} classes.
-* the [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) package which contains the editing engine.
-* the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package which contains the UI library and framework.
+* The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package that contains the image feature (on which the plugin will rely).
+* The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package which contains the {@link module:core/plugin~Plugin} and {@link module:core/command~Command} classes.
+* The [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) package which contains the editing engine.
+* The [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package which contains the UI library and framework.
 
 ```bash
 npm install --save @ckeditor/ckeditor5-image @ckeditor/ckeditor5-core @ckeditor/ckeditor5-engine
 ```
 
-Now, open the `app.js` file and let's start adding code there. Usually, when implementing more complex features you will want to split the code to multiple files (modules) – but to make this guide simpler we will keep the entire code in `app.js`.
+Now, open the `app.js` file and start adding code there. Usually, when implementing more complex features you will want to split the code into multiple files (modules). However, to make this guide simpler the entire code will be kept in `app.js`.
 
 First thing to do will be to load the core of the image feature:
 
@@ -213,7 +213,7 @@ ClassicEditor
 	// ...
 ```
 
-Save the file and run webpack. Refresh the page in your browser (**remember about the cache**) and... you should not see any changes. Right! The core of the image feature does not come with any UI, nor have we added any image to the initial HTML. Let's change this:
+Save the file and run webpack. Refresh the page in your browser (**remember about the cache**) and... you should not see any changes. Right! The core of the image feature does not come with any UI, nor have you added any image to the initial HTML. Change this now:
 
 ```html
 <div id="editor">
@@ -233,7 +233,7 @@ Save the file and run webpack. Refresh the page in your browser (**remember abou
 
 ### Step 2. Creating a plugin
 
-Now, we can start implementing our new plugin. Let's create `InsertImage` plugin:
+You can now start implementing your new plugin. Create the `InsertImage` plugin:
 
 ```js
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -245,17 +245,17 @@ class InsertImage extends Plugin {
 }
 ```
 
-And add your new plugin to the `config.plugins` array. After rebuilding the application and refreshing the page you should see "InsertImage was initialized" logged on the console.
+And add your new plugin to the `config.plugins` array. After rebuilding the application and refreshing the page you should see "InsertImage was initialized" logged to the console.
 
 <info-box hint>
-	We said that your `InsertImage` plugin relies on the image feature represented here by the `Image` plugin. We could add the `Image` plugin as a {@link module:core/plugin~PluginInterface#requires dependency} of your `InsertImage` plugin. This would make the editor initialize `Image` automatically before initializing `InsertImage`, so you would be able to remove `Image` from `config.plugins`.
+	It was said that your `InsertImage` plugin relies on the image feature represented here by the `Image` plugin. You could add the `Image` plugin as a {@link module:core/plugin~PluginInterface#requires dependency} of your `InsertImage` plugin. This would make the editor initialize `Image` automatically before initializing `InsertImage`, so you would be able to remove `Image` from `config.plugins`.
 
-	However, this means that your plugin would be coupled with the `Image` plugin. This is unnecessary. They do not need to know about each other. And while it does not change anything in this simple example, it is a good practice to keep plugins as decoupled as possible.
+	However, this means that your plugin would be coupled with the `Image` plugin. This is unnecessary &mdash; they do not need to know about each other. And while it does not change anything in this simple example, it is a good practice to keep plugins as decoupled as possible.
 </info-box>
 
 ### Step 3. Registering a button
 
-Now, let's create a button:
+Create a button now:
 
 ```js
 // This SVG file import will be handled by webpack's raw-text loader.
@@ -300,7 +300,7 @@ ClassicEditor
 	// ...
 ```
 
-Rebuild the app and refresh the page. You should see a new button in the toolbar. Clicking the button should open a prompt window asking you for image URL.
+Rebuild the application and refresh the page. You should see a new button in the toolbar. Clicking the button should open a prompt window asking you for the image URL.
 
 ### Step 4. Inserting a new image
 
@@ -323,16 +323,16 @@ view.on( 'execute', () => {
 } );
 ```
 
-If you refresh the page you should now be able to insert new images into the content:
+If you refresh the page, you should now be able to insert new images into the content:
 
 {@img assets/img/framework-quick-start-classic-editor-insert-image.gif 640 Screencast of inserting a new image.}
 
-The image is fully functional, you can undo inserting it by pressing <kbd>Ctrl</kbd>+<kbd>U</kbd> and the image is always inserted as a block element (paragraph in which you have the selection is automatically split). This is all handled by the CKEditor 5 engine.
+The image is fully functional, you can undo inserting by pressing <kbd>Ctrl</kbd>+<kbd>Z</kbd> and the image is always inserted as a block element (the paragraph that contains the selection is automatically split). This is all handled by the CKEditor 5 engine.
 
 <info-box>
-	As you can see, by clicking the button we are inserting a `<image src="...">` element into the model. The image feature is represented in the model as `<image>` while, in the view (i.e. our virtual DOM) and in the real DOM, it is rendered as `<figure class="image"><img src="..."></figure>`.
+	As you can see, by clicking the button you are inserting an `<image src="...">` element into the model. The image feature is represented in the model as `<image>`, while in the view (i.e. the virtual DOM) and in the real DOM it is rendered as `<figure class="image"><img src="..."></figure>`.
 
-	The `<image>` to `<figure><img></figure>` transformation is called "conversion" and it requires a separate guide. However, as you can see in this example, it is a powerful mechanism because it allows non 1:1 mappings.
+	The `<image>` to `<figure><img></figure>` transformation is called "conversion" and it requires a separate guide. However, as you can see in this example, it is a powerful mechanism because it allows non-1:1 mappings.
 </info-box>
 
 Congratulations! You have just created your first CKEditor 5 plugin!
