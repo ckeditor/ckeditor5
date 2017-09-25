@@ -15,6 +15,25 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 /**
  * The dropdown view class.
  *
+ *		const button = new ButtonView( locale );
+ *		const panel = new DropdownPanelView( locale );
+ *		const dropdown = new DropdownView( locale, button, panel );
+ *
+ *		panel.element.textContent = 'Content of the panel';
+ *		button.set( {
+ *			label: 'A dropdown',
+ *			withText: true
+ *		} );
+ *
+ *		dropdown.init();
+ *
+ *		// Will render a dropdown with a panel containing a "Content of the panel" text.
+ *		document.body.appendChild( dropdown.element );
+ *
+ * Also see {@link module:ui/dropdown/createdropdown~createDropdown} and
+ * {@link module:ui/dropdown/list/createlistdropdown~createListDropdown} to learn about different
+ * dropdown creation helpers.
+ *
  * @extends module:ui/view~View
  */
 export default class DropdownView extends View {
@@ -36,15 +55,23 @@ export default class DropdownView extends View {
 		} );
 
 		/**
-		 * Button of this dropdown view.
+		 * Button of the dropdown view. Clicking the button opens the {@link #panelView}.
 		 *
 		 * @readonly
-		 * @member {ui.button.ButtonView} #buttonView
+		 * @member {module:ui/button/buttonview~ButtonView} #buttonView
 		 */
 		this.buttonView = buttonView;
 
 		/**
-		 * Panel of this dropdown view.
+		 * Panel of the dropdown. It opens when the {@link #buttonView} is
+		 * {@link module:ui/button/buttonview~ButtonView#event:execute executed} (i.e. clicked).
+		 *
+		 * Child views can be added to the panel's `children` collection:
+		 *
+		 *		dropdown.panelView.children.add( childView );
+		 *
+		 * See {@link module:ui/dropdown/dropdownpanelview~DropdownPanelView#children} and
+		 * {@link module:ui/viewcollection~ViewCollection#add}.
 		 *
 		 * @readonly
 		 * @member {module:ui/dropdown/dropdownpanelview~DropdownPanelView} #panelView
@@ -52,8 +79,7 @@ export default class DropdownView extends View {
 		this.panelView = panelView;
 
 		/**
-		 * Controls whether the dropdown view is open, which also means its
-		 * {@link #panelView panel} is visible.
+		 * Controls whether the dropdown view is open, i.e. shows or hides the {@link #panelView panel}.
 		 *
 		 * @observable
 		 * @member {Boolean} #isOpen
@@ -61,7 +87,7 @@ export default class DropdownView extends View {
 		this.set( 'isOpen', false );
 
 		/**
-		 * Tracks information about DOM focus in the list.
+		 * Tracks information about DOM focus in the dropdown.
 		 *
 		 * @readonly
 		 * @member {module:utils/focustracker~FocusTracker}
@@ -69,7 +95,11 @@ export default class DropdownView extends View {
 		this.focusTracker = new FocusTracker();
 
 		/**
-		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}. It manages
+		 * keystrokes of the dropdown:
+		 *
+		 * * <kbd>▼</kbd> opens the dropdown,
+		 * * <kbd>◀</kbd> and <kbd>Esc</kbd> closes the dropdown.
 		 *
 		 * @readonly
 		 * @member {module:utils/keystrokehandler~KeystrokeHandler}

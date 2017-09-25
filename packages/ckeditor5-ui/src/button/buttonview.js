@@ -17,6 +17,19 @@ import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils/src/keyboard';
 /**
  * The button view class.
  *
+ *		const view = new ButtonView();
+ *
+ *		view.set( {
+ *			label: 'A button',
+ *			keystroke: 'Ctrl+B',
+ *			tooltip: true,
+ *			withText: true
+ *		} );
+ *
+ *		view.init();
+ *
+ *		document.body.append( view.element );
+ *
  * @extends module:ui/view~View
  */
 export default class ButtonView extends View {
@@ -27,7 +40,8 @@ export default class ButtonView extends View {
 		super( locale );
 
 		/**
-		 * The label of the button view visible to the user.
+		 * The label of the button view visible to the user when {@link #withText} is `true`.
+		 * It can also be used to create a {@link #tooltip}.
 		 *
 		 * @observable
 		 * @member {String} #label
@@ -61,10 +75,10 @@ export default class ButtonView extends View {
 		this.set( 'tooltip' );
 
 		/**
-		 * The position of the tooltip. See {@link module:ui/tooltip/tooltipview~TooltipView#position}
+		 * (Optional) The position of the tooltip. See {@link module:ui/tooltip/tooltipview~TooltipView#position}
 		 * to learn more about the available position values.
 		 *
-		 * **Note:** It makes sense only when the {@link #tooltip} is active.
+		 * **Note:** It makes sense only when the {@link #tooltip `tooltip` attribute} is defined.
 		 *
 		 * @observable
 		 * @default 's'
@@ -81,8 +95,10 @@ export default class ButtonView extends View {
 		this.set( 'type', 'button' );
 
 		/**
-		 * Controls whether the button view is "on", e.g. some feature which it represents
-		 * is currently enabled.
+		 * Controls whether the button view is "on". It makes sense when a feature it represents
+		 * is currently active, e.g. a bold button is "on" when the selection is in the bold text.
+		 *
+		 * To disable the button, use {@link #isEnabled} instead.
 		 *
 		 * @observable
 		 * @member {Boolean} #isOn
@@ -90,7 +106,9 @@ export default class ButtonView extends View {
 		this.set( 'isOn', false );
 
 		/**
-		 * Controls whether the button view is enabled (can be clicked).
+		 * Controls whether the button view is enabled, i.e. it can be clicked and execute an action.
+		 *
+		 * To change the "on" state of the button, use {@link #isOn} instead.
 		 *
 		 * @observable
 		 * @member {Boolean} #isEnabled
@@ -98,7 +116,8 @@ export default class ButtonView extends View {
 		this.set( 'isEnabled', true );
 
 		/**
-		 * Controls whether the button view is visible.
+		 * Controls whether the button view is visible. Visible by default, buttons are hidden
+		 * using a CSS class.
 		 *
 		 * @observable
 		 * @member {Boolean} #isVisible
@@ -106,7 +125,7 @@ export default class ButtonView extends View {
 		this.set( 'isVisible', true );
 
 		/**
-		 * (Optional) Whether the label of the button is hidden (e.g. button with icon only).
+		 * (Optional) Controls whether the label of the button is hidden (e.g. an icon–only button).
 		 *
 		 * @observable
 		 * @member {Boolean} #withText
@@ -114,7 +133,8 @@ export default class ButtonView extends View {
 		this.set( 'withText', false );
 
 		/**
-		 * (Optional) Source of the icon. See {@link module:ui/icon/iconview~IconView#content}.
+		 * (Optional) An XML {@link module:ui/icon/iconview~IconView#content content} of the icon.
+		 * When defined, an {@link #iconView} will be added to the button.
 		 *
 		 * @observable
 		 * @member {String} #icon
@@ -122,7 +142,8 @@ export default class ButtonView extends View {
 		this.set( 'icon' );
 
 		/**
-		 * Controls the `tabindex` attribute of the button.
+		 * (Optional) Controls the `tabindex` HTML attribute of the button. By default, the button is focusable
+		 * but does not included in the <kbd>Tab</kbd> order.
 		 *
 		 * @observable
 		 * @default -1
@@ -147,7 +168,7 @@ export default class ButtonView extends View {
 		);
 
 		/**
-		 * Tooltip of the button view.
+		 * Tooltip of the button view. It is configurable using the {@link #tooltip tooltip attribute}.
 		 *
 		 * @readonly
 		 * @member {module:ui/tooltip/tooltipview~TooltipView} #tooltipView
@@ -155,7 +176,7 @@ export default class ButtonView extends View {
 		this.tooltipView = this._createTooltipView();
 
 		/**
-		 * Icon of the button view.
+		 * (Optional) The icon view of the button. Only present when the {@link #icon icon attribute} is defined.
 		 *
 		 * @readonly
 		 * @member {module:ui/icon/iconview~IconView} #iconView
@@ -215,9 +236,10 @@ export default class ButtonView extends View {
 		} );
 
 		/**
-		 * Fired when the button view is clicked. It won't be fired when the button is disabled.
+		 * Fired when the button view is clicked. It won't be fired when the button {@link #isEnabled}
+		 * is `false`.
 		 *
-		 * @event #execute
+		 * @event execute
 		 */
 	}
 
@@ -239,14 +261,15 @@ export default class ButtonView extends View {
 	}
 
 	/**
-	 * Focuses the button.
+	 * Focuses the {@link #element} of the button.
 	 */
 	focus() {
 		this.element.focus();
 	}
 
 	/**
-	 * Creates TooltipView instance and bind with button properties.
+	 * Creates a {@link module:ui/tooltip/tooltipview~TooltipView} instance and binds it with button
+	 * attributes.
 	 *
 	 * @private
 	 * @returns {module:ui/tooltip/tooltipview~TooltipView}

@@ -15,16 +15,19 @@
  */
 
 /**
- * A {@link module:utils/collection~Collection} of {@link module:utils/observablemixin~Observable} used to populate
- * the inner {@link module:ui/list/listview~ListView} instance.
+ * A {@link module:utils/collection~Collection} of {@link module:utils/observablemixin~Observable}
+ * that the inner dropdown {@link module:ui/list/listview~ListView} children are created from.
+ *
+ * Usually, it is a collection of {@link module:ui/model~Model models}.
  *
  * @observable
- * @member {Boolean} #items
+ * @member {module:utils/collection~Collection.<module:utils/observablemixin~Observable>} #items
  */
 
 /**
- * Fired when the list dropdown should be executed, usually when
- * one of the list items in {@link #items} has been executed.
+ * Fired when the list dropdown is executed. It fires when one of the list items in
+ * {@link #items the collection} has been
+ * {@link module:ui/list/listitemview~ListItemView#event:execute executed}.
  *
  * @event #execute
  */

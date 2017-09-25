@@ -97,7 +97,7 @@ export default class ListItemView extends View {
 		/**
 		 * Fired when the list item has been clicked.
 		 *
-		 * @event #execute
+		 * @event execute
 		 */
 	}
 

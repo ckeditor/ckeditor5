@@ -13,6 +13,8 @@ import Template from '../template';
 /**
  * The dropdown panel view class.
  *
+ * See {@link module:ui/dropdown/dropdownview~DropdownView} to learn about the common usage.
+ *
  * @extends module:ui/view~View
  */
 export default class DropdownPanelView extends View {
@@ -33,7 +35,11 @@ export default class DropdownPanelView extends View {
 		this.set( 'isVisible', false );
 
 		/**
-		 * Collection of the child views.
+		 * Collection of the child views in this panel.
+		 *
+		 * A common child type is the {@link module:list/list~List}. See
+		 * {@link module:ui/dropdown/list/createlistdropdown~createListDropdown} to learn more
+		 * about list dropdowns.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
