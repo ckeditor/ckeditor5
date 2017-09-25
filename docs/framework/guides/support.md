@@ -20,7 +20,7 @@ Make sure to tag your questions with ["ckeditor"](https://stackoverflow.com/ques
 
 ## Gitter
 
-[CKEditor 5's Gitter channel](https://gitter.im/ckeditor/ckeditor5) is the place where you can discuss all matters which do not fit GitHub and Stack Overflow.
+[CKEditor 5 Gitter channel](https://gitter.im/ckeditor/ckeditor5) is the place where you can discuss all matters which do not fit GitHub and Stack Overflow.
 
 Gitter is convenient for asking quick questions, however, it is not the best place for more complex topics which might interest other developers (Gitter logs are indexed via Google but rather poorly). Therefore, try to avoid lengthy discussions on topics which would make sense to be reported either on GitHub or Stack Overflow.
 
@@ -33,7 +33,7 @@ DOs:
 
 DON'Ts:
 
-* How to extend the selection to the end of block?
+* How to extend the selection to the end of the block?
 * Could you implement support for XYZ?
 * I can't make X and Y work together in my app. I developed this plugin and...
 * The editor crashes if I press Enter. Please help.
