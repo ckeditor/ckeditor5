@@ -31,6 +31,6 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 	text-align: right;
 }
 .keyboard-shortcuts td:nth-of-type(2), .keyboard-shortcuts td:nth-of-type(3) {
-	width: 25%;
+	width: 30%;
 }
 </style>

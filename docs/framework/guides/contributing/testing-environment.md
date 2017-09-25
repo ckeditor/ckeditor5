@@ -5,17 +5,17 @@ order: 20
 
 # Testing environment
 
-Before reading this article we recommend reading about the {@link framework/guides/contributing/development-environment Development environment}.
+Before reading this article we recommend getting familiar with the CKEditor 5 {@link framework/guides/contributing/development-environment development environment}.
 
 ## Introduction
 
-The CKEditor 5 testing environment uses a pretty popular setup with [Karma](https://karma-runner.github.io), [Webpack](https://webpack.github.io/), [babel-loader](https://github.com/babel/babel-loader) and [Istanbul](https://github.com/gotwarlost/istanbul). We created a bunch of [gulp](https://github.com/gulpjs/gulp) tasks which glue all these pieces and special requirements for CKEditor together.
+The CKEditor 5 testing environment uses a popular setup with [Karma](https://karma-runner.github.io), [webpack](https://webpack.github.io/), [babel-loader](https://github.com/babel/babel-loader) and [Istanbul](https://github.com/gotwarlost/istanbul). We created some [gulp](https://github.com/gulpjs/gulp) tasks which glue all these pieces and special requirements for CKEditor together.
 
 <info-box>
 	We are [considering dropping gulp and switching to npm scripts](https://github.com/ckeditor/ckeditor5/issues/473), so please do not be surprised that both methods are in use now.
 </info-box>
 
-Each CKEditor package has its own tests suite (see e.g. the [engine's tests](https://github.com/ckeditor/ckeditor5-engine/tree/master/tests)), however, the test runner is available in the [`ckeditor5`](https://github.com/ckeditor/ckeditor5) package, which is a central development environment. The actual code of the test runner is implemented in [`@ckeditor/ckeditor5-dev-tests`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-tests) package and can be easily reused outside `ckeditor5`.
+Each CKEditor package has its own tests suite (see for example the [engine's tests](https://github.com/ckeditor/ckeditor5-engine/tree/master/tests)), however, the test runner is available in the [`ckeditor5`](https://github.com/ckeditor/ckeditor5) package which is the central development environment. The actual code of the test runner is implemented in the [`@ckeditor/ckeditor5-dev-tests`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-tests) package and can be easily reused outside of `ckeditor5`.
 
 ## Running automated tests
 
@@ -23,16 +23,16 @@ In order to run the automated tests use the `gulp test` task.
 
 It accepts the following arguments:
 
-* `--watch` (alias `-w`) – Whether to watch the files and execute tests whenever any file changes.
-* `--source-map` (alias `-s`) – Whether to generate the source maps.
-* `--coverage` (alias `-c`) – Whether to generate code coverage.
-* `--verbose` (alias `-v`) – Allows switching on Webpack's logs.
-* `--files` – Specify tests files to run. Accepts a package name or a glob. Read more about the [rules for converting `--files` option to glob pattern](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-tests#rules-for-converting---files-option-to-glob-pattern).
-* `--browsers` – Browsers which will be used to run the tests. Defaults to `Chrome`.
+* `--watch` (alias `-w`) &ndash; Whether to watch the files and execute tests whenever any file changes.
+* `--source-map` (alias `-s`) &ndash; Whether to generate the source maps.
+* `--coverage` (alias `-c`) &ndash; Whether to generate code coverage.
+* `--verbose` (alias `-v`) &ndash; Allows switching on webpack logs.
+* `--files` &ndash; Specifies tests files to run. Accepts a package name or a glob. Read more about the [rules for converting the `--files` option to a glob pattern](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-tests#rules-for-converting---files-option-to-glob-pattern).
+* `--browsers` &ndash; Browsers which will be used to run the tests. Defaults to `Chrome`.
 
 ### Examples
 
-Run all tests with code coverage check of the [`ckeditor5-core`](https://github.com/ckeditor/ckeditor5-core) package:
+Run all tests with the code coverage check of the [`ckeditor5-core`](https://github.com/ckeditor/ckeditor5-core) package:
 
 ```
 gulp test -c --files=core
@@ -52,9 +52,9 @@ gulp test -cw --files=basic-styles/bold*.js
 
 ## Running manual tests
 
-In order to start a manual tests server use the `gulp test:manual` task.
+In order to start the manual tests server use the `gulp test:manual` task.
 
-It accepts `--source-map` (alias `-s`) option.
+The task accepts the `--source-map` (alias `-s`) option.
 
 It starts a server available at http://localhost:8125.
 
@@ -63,8 +63,8 @@ It starts a server available at http://localhost:8125.
 A manual test consists of 3 files:
 
 * A `<name>.md` file with the test description.
-* A `<name>.js` file with the JS part of the test (e.g. code initializing an editor).
-* A `<name>.html` file with the HTML part of the test. It doesn't need to be an entire HTML page (with the doctype, etc.), it can be just these HTML elements which you want to define.
+* A `<name>.js` file with the JavaScript part of the test (e.g. the code initializing an editor).
+* A `<name>.html` file with the HTML part of the test. It does not need to be an entire HTML page (with the doctype, etc.), it can be just these HTML elements which you want to define.
 
 All 3 files are combined together and create a single manual test.
 
