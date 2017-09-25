@@ -47,7 +47,7 @@ export default class Position {
 			/**
 			 * Position root invalid.
 			 *
-			 * @error model-position-root-invalid.
+			 * @error model-position-root-invalid
 			 */
 			throw new CKEditorError( 'model-position-root-invalid: Position root invalid.' );
 		}
