@@ -2,6 +2,10 @@
  * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  */
 
+.ck-editor {
+	margin: 1.5em 0;
+}
+
 .ck-editor .ck-editor__editable {
 	padding: 1em;
 }
