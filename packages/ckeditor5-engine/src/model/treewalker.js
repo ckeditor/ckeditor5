@@ -38,7 +38,7 @@ export default class TreeWalker {
 	constructor( options = {} ) {
 		if ( !options.boundaries && !options.startPosition ) {
 			/**
-			 * Neither boundaries nor starting position have been defined.
+			 * Neither boundaries nor starting position of a `TreeWalker` have been defined.
 			 *
 			 * @error model-tree-walker-no-start-position
 			 */

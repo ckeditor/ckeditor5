@@ -60,7 +60,7 @@ export default class TextProxy {
 
 		if ( offsetInText < 0 || offsetInText > textNode.offsetSize ) {
 			/**
-			 * Given offsetInText value is incorrect.
+			 * Given `offsetInText` value is incorrect.
 			 *
 			 * @error model-textproxy-wrong-offsetintext
 			 */
@@ -69,7 +69,7 @@ export default class TextProxy {
 
 		if ( length < 0 || offsetInText + length > textNode.offsetSize ) {
 			/**
-			 * Given length value is incorrect.
+			 * Given `length` value is incorrect.
 			 *
 			 * @error model-textproxy-wrong-length
 			 */

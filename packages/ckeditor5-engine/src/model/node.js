@@ -405,5 +405,7 @@ export default class Node {
 /**
  * The node's parent does not contain this node.
  *
+ * This error may be thrown from corrupted trees.
+ *
  * @error model-node-not-found-in-parent
  */

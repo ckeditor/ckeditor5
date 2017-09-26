@@ -142,7 +142,7 @@ export default class MarkerCollection {
 	}
 
 	/**
-	 * Destroys markers collection.
+	 * Destroys marker collection and all markers inside it.
 	 */
 	destroy() {
 		for ( const marker of this._markers.values() ) {
@@ -176,7 +176,7 @@ export default class MarkerCollection {
 	}
 
 	/**
-	 * Destroys marker.
+	 * Destroys the marker.
 	 *
 	 * @private
 	 * @param {module:engine/model/markercollection~Marker} marker Marker to destroy.
@@ -241,7 +241,7 @@ class Marker {
 	 */
 	constructor( name, liveRange ) {
 		/**
-		 * Marker name.
+		 * Marker's name.
 		 *
 		 * @readonly
 		 * @member {String} #name
@@ -268,7 +268,7 @@ class Marker {
 	 */
 	getStart() {
 		if ( !this._liveRange ) {
-			throw new CKEditorError( 'marker-destroyed: Operating on destroyed marker instance.' );
+			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
 		}
 
 		return Position.createFromPosition( this._liveRange.start );
@@ -281,7 +281,7 @@ class Marker {
 	 */
 	getEnd() {
 		if ( !this._liveRange ) {
-			throw new CKEditorError( 'marker-destroyed: Operating on destroyed marker instance.' );
+			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
 		}
 
 		return Position.createFromPosition( this._liveRange.end );
@@ -301,7 +301,7 @@ class Marker {
 	 */
 	getRange() {
 		if ( !this._liveRange ) {
-			throw new CKEditorError( 'marker-destroyed: Operating on destroyed marker instance.' );
+			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
 		}
 
 		return Range.createFromRange( this._liveRange );
@@ -339,7 +339,7 @@ class Marker {
 mix( Marker, EmitterMixin );
 
 /**
- * Operating on destroyed marker instance.
+ * Cannot use a {@link module:engine/model/markercollection~MarkerCollection#destroy destroyed marker} instance.
  *
  * @error marker-destroyed
  */

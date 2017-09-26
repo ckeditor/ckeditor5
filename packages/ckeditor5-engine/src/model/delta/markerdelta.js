@@ -103,11 +103,11 @@ register( 'removeMarker', function( markerOrName ) {
 
 	if ( !this.document.markers.has( name ) ) {
 		/**
-		 * Trying to remove marker that does not exist.
+		 * Trying to remove marker which does not exist.
 		 *
 		 * @error batch-removeMarker-no-marker
 		 */
-		throw new CKEditorError( 'batch-removeMarker-no-marker: Trying to remove marker that does not exist.' );
+		throw new CKEditorError( 'batch-removeMarker-no-marker: Trying to remove marker which does not exist.' );
 	}
 
 	const oldRange = this.document.markers.get( name ).getRange();

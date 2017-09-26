@@ -262,13 +262,15 @@ export default class DocumentSelection extends Selection {
 	 */
 	static createFromSelection() {
 		/**
+		 * Cannot create a new `DocumentSelection` instance.
+		 *
 		 * `DocumentSelection#createFromSelection()` is not available. There can be only one
 		 * `DocumentSelection` per document instance, so creating new `DocumentSelection`s this way
 		 * would be unsafe.
 		 *
 		 * @error documentselection-cannot-create
 		 */
-		throw new CKEditorError( 'documentselection-cannot-create: Cannot create new DocumentSelection instance.' );
+		throw new CKEditorError( 'documentselection-cannot-create: Cannot create a new DocumentSelection instance.' );
 	}
 
 	/**

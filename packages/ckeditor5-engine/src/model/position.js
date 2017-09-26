@@ -45,7 +45,9 @@ export default class Position {
 	constructor( root, path ) {
 		if ( !root.is( 'element' ) && !root.is( 'documentFragment' ) ) {
 			/**
-			 * Position root invalid.
+			 * Position root is invalid.
+			 *
+			 * Positions can only be anchored in elements or document fragments.
 			 *
 			 * @error model-position-root-invalid
 			 */
@@ -54,12 +56,12 @@ export default class Position {
 
 		if ( !( path instanceof Array ) || path.length === 0 ) {
 			/**
-			 * Position path must be an Array with at least one item.
+			 * Position path must be an array with at least one item.
 			 *
 			 * @error model-position-path-incorrect
 			 * @param path
 			 */
-			throw new CKEditorError( 'model-position-path-incorrect: Position path must be an Array with at least one item.', { path } );
+			throw new CKEditorError( 'model-position-path-incorrect: Position path must be an array with at least one item.', { path } );
 		}
 
 		// Normalize the root and path (if element was passed).
@@ -686,7 +688,7 @@ export default class Position {
 	static createAfter( item ) {
 		if ( !item.parent ) {
 			/**
-			 * You can not make position after root.
+			 * You can not make a position after a root element.
 			 *
 			 * @error model-position-after-root
 			 * @param {module:engine/model/item~Item} root
@@ -706,7 +708,7 @@ export default class Position {
 	static createBefore( item ) {
 		if ( !item.parent ) {
 			/**
-			 * You can not make position before root.
+			 * You can not make a position before a root element.
 			 *
 			 * @error model-position-before-root
 			 * @param {module:engine/model/item~Item} root

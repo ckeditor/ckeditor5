@@ -116,7 +116,8 @@ export default class Document {
 			for ( const range of this.selection.getRanges() ) {
 				if ( !this._validateSelectionRange( range ) ) {
 					/**
-					 * Range from document selection starts or ends at incorrect position.
+					 * Range from {@link module:engine/model/documentselection~DocumentSelection document selection}
+					 * starts or ends at incorrect position.
 					 *
 					 * @error document-selection-wrong-position
 					 * @param {module:engine/model/range~Range} range
