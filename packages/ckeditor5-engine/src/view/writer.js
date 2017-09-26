@@ -470,11 +470,6 @@ export function move( sourceRange, targetPosition ) {
  */
 export function wrap( range, attribute ) {
 	if ( !( attribute instanceof AttributeElement ) ) {
-		/**
-		 * Attribute element need to be instance of attribute element.
-		 *
-		 * @error view-writer-wrap-invalid-attribute
-		 */
 		throw new CKEditorError( 'view-writer-wrap-invalid-attribute' );
 	}
 
@@ -537,11 +532,6 @@ export function wrap( range, attribute ) {
  */
 export function wrapPosition( position, attribute ) {
 	if ( !( attribute instanceof AttributeElement ) ) {
-		/**
-		 * Attribute element need to be instance of attribute element.
-		 *
-		 * @error view-writer-wrap-invalid-attribute
-		 */
 		throw new CKEditorError( 'view-writer-wrap-invalid-attribute' );
 	}
 
@@ -664,6 +654,12 @@ export function rename( viewElement, newName ) {
 
 	return newElement;
 }
+
+/**
+ * Attribute element need to be instance of attribute element.
+ *
+ * @error view-writer-wrap-invalid-attribute
+ */
 
 // Returns first parent container of specified {@link module:engine/view/position~Position Position}.
 // Position's parent node is checked as first, then next parents are checked.

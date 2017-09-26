@@ -184,14 +184,14 @@ export default class ViewConversionDispatcher {
 		// Handle incorrect `data.output`.
 		if ( data.output && !( data.output instanceof ModelNode || data.output instanceof ModelDocumentFragment ) ) {
 			/**
-			 * Dropped incorrect conversion result.
+			 * Incorrect conversion result was dropped.
 			 *
 			 * Item may be converted to either {@link module:engine/model/node~Node model node} or
 			 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
 			 *
 			 * @error view-conversion-dispatcher-incorrect-result
 			 */
-			log.warn( 'view-conversion-dispatcher-incorrect-result: Dropped incorrect conversion result.', [ input, data.output ] );
+			log.warn( 'view-conversion-dispatcher-incorrect-result: Incorrect conversion result was dropped.', [ input, data.output ] );
 
 			return null;
 		}

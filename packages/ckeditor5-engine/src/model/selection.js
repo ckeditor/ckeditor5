@@ -717,7 +717,7 @@ export default class Selection {
 				/**
 				 * Trying to add a range that intersects with another range from selection.
 				 *
-				 * @error selection-range-intersects
+				 * @error model-selection-range-intersects
 				 * @param {module:engine/model/range~Range} addedRange Range that was added to the selection.
 				 * @param {module:engine/model/range~Range} intersectingRange Range from selection that intersects with `addedRange`.
 				 */
