@@ -132,6 +132,8 @@ If you want to skip updating the entry file (in case you modified it manually), 
 npm run build-ckeditor
 ```
 
+You can validate whether your new build works by opening the `sample/index.html` file in a browser (via HTTPS, not as a local file). Make sure to **clear the cache**.
+
 ## Updating the build
 
 You may decide to update your build at any time. Since it is a fork of the official build, you can simply merge the changes that happened meanwhile in that build, using Git commands:
