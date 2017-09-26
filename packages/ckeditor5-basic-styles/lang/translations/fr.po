@@ -16,3 +16,7 @@ msgstr "Italique"
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
 msgstr ""
+
+msgctxt "Toolbar button tooltip for the Code feature."
+msgid "Code"
+msgstr ""
