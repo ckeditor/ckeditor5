@@ -15,4 +15,4 @@ msgstr "Ligar"
 
 msgctxt "Label for the URL input in the Link dialog."
 msgid "Link URL"
-msgstr ""
+msgstr "URL de ligazón"
