@@ -1,0 +1,30 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: km\n"
+"Language-Team: Khmer (https://www.transifex.com/ckeditor/teams/11143/km/)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Drop-down option label for the paragraph format."
+msgid "Paragraph"
+msgstr "កថាខណ្ឌ"
+
+msgctxt "Tooltip for the heading drop-down."
+msgid "Heading"
+msgstr "ក្បាលអត្ថបទ"
+
+msgctxt "Default label for the heading drop-down."
+msgid "Choose heading"
+msgstr "ជ្រើសរើស​ក្បាលអត្ថបទ"
+
+msgctxt "Drop-down option label for the heading level 1 format."
+msgid "Heading 1"
+msgstr "ក្បាលអត្ថបទ 1"
+
+msgctxt "Drop-down option label for the heading level 2 format."
+msgid "Heading 2"
+msgstr "ក្បាលអត្ថបទ 2"
+
+msgctxt "Drop-down option label for the heading level 3 format."
+msgid "Heading 3"
+msgstr "ក្បាលអត្ថបទ 3"

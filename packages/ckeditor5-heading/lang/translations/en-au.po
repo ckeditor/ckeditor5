@@ -1,0 +1,30 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: en_AU\n"
+"Language-Team: English (Australia) (https://www.transifex.com/ckeditor/teams/11143/en_AU/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Drop-down option label for the paragraph format."
+msgid "Paragraph"
+msgstr "Paragraph"
+
+msgctxt "Tooltip for the heading drop-down."
+msgid "Heading"
+msgstr "Heading"
+
+msgctxt "Default label for the heading drop-down."
+msgid "Choose heading"
+msgstr "Choose heading"
+
+msgctxt "Drop-down option label for the heading level 1 format."
+msgid "Heading 1"
+msgstr "Heading 1"
+
+msgctxt "Drop-down option label for the heading level 2 format."
+msgid "Heading 2"
+msgstr "Heading 2"
+
+msgctxt "Drop-down option label for the heading level 3 format."
+msgid "Heading 3"
+msgstr "Heading 3"
