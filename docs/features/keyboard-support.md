@@ -1,8 +1,9 @@
 ---
-title: Keyboard support
 category: features
 classes: keyboard-shortcuts
 ---
+
+# Keyboard support
 
 Below is a list of the most important keystrokes supported by CKEditor 5 and its features:
 

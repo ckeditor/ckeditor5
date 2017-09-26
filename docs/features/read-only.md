@@ -1,7 +1,8 @@
 ---
-title: Read-only support
 category: features
 ---
+
+# Read-only support
 
 {@snippet build-classic-source}
 

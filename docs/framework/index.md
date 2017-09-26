@@ -1,5 +1,4 @@
 ---
-title: Framework
 category: framework
 order: 10
 toc: false
@@ -19,7 +18,7 @@ Use the **navigation tree on the left** to navigate through CKEditor 5 Framework
  * {@link examples/index Examples} &ndash; Try live demos of all available builds. View some of the possible customizations of CKEditor.
 
 <info-box>
-The CKEditor 5 Framework documentation is still in progress, so it may be lacking many things. Feel free to [suggest documentation enhancements](https://github.com/ckeditor/ckeditor5/labels/type%3Adocs) and share your feedback about the framework. 
+The CKEditor 5 Framework documentation is still in progress, so it may be lacking many things. Feel free to [suggest documentation enhancements](https://github.com/ckeditor/ckeditor5/labels/type%3Adocs) and share your feedback about the framework.
 
 If the documentation is insufficient, please do not be afraid of looking into the source code of [CKEditor 5 packages](https://github.com/ckeditor?utf8=%E2%9C%93&q=ckeditor5&type=public). For example if you plan to create a new feature, check if a similar feature already exists and try to take inspiration from its source code.
 </info-box>

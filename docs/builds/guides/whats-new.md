@@ -83,8 +83,8 @@ A much more efficient data model was designed for CKEditor 5. This makes the dev
 Another important benefit of the custom data model is that it enables the possibility of real-time collaborative editing inside CKEditor by introducing the concepts of "operations" and "operational transformations".
 
 <!--
- Read more about {@linkTODO collaboration in the CKEditor 5 Framework documentation}.
- -->
+Read more about {@linkTODO collaboration in the CKEditor 5 Framework documentation}.
+-->
 
 <!-- TODO 3 -->
 

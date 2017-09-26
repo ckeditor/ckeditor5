@@ -1,7 +1,8 @@
 ---
-title: Setting the editor UI language
 category: features
 ---
+
+# Setting the UI language
 
 The UI of the editor can be localized. CKEditor 5 currently supports around 20 languages and the number is growing.
 
@@ -21,7 +22,7 @@ If you build CKEditor from scratch or integrate it directly into your applicatio
 
 1. Install the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) package:
 
-	```
+	```bash
 	npm install --save @ckeditor/ckeditor5-dev-webpack-plugin
 	```
 
