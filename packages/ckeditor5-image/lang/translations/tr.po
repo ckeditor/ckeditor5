@@ -17,6 +17,18 @@ msgctxt "Label for the Full size image option."
 msgid "Full size image"
 msgstr "Tam Boyut Görsel"
 
+msgctxt "Label for the Left aligned image option"
+msgid "Left aligned image"
+msgstr ""
+
+msgctxt "Label for the Centered image option"
+msgid "Centered image"
+msgstr ""
+
+msgctxt "Label for the Right aligned image option"
+msgid "Right aligned image"
+msgstr ""
+
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
 msgstr "Görsel alternatif yazısını değiştir"
