@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 1.0.0 (draft)
+## 1.0.0 alpha (draft)
 
 BREAKING CHANGES:
 

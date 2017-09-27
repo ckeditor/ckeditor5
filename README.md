@@ -287,6 +287,19 @@ Read more in the [Support](https://ckeditor5.github.io/docs/nightly/ckeditor5/la
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-easy-image"><code>@ckeditor/ckeditor5-easy-image</code></a>
+		<br>
+		Introduces Easy Image with Cloud Services feature.
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-easy-image.svg" alt="ckeditor5-easy-image npm package badge"></a>
+		<a href="https://travis-ci.org/ckeditor/ckeditor5-easy-image"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-easy-image/master.svg" alt="build status badge"></a>
+		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-easy-image/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-easy-image.svg" alt="ckeditor5-easy-image coverage badge"></a>
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-heading"><code>@ckeditor/ckeditor5-heading</code></a>
 		<br>
 		Introduces the heading feature.
