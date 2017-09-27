@@ -2,7 +2,10 @@
   "name": "@ckeditor/ckeditor5-basic-styles",
   "version": "0.9.0",
   "description": "Basic styles feature for CKEditor 5.",
-  "keywords": [],
+  "keywords": [
+    "ckeditor5",
+    "ckeditor5-feature"
+  ],
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^0.9.0",
     "@ckeditor/ckeditor5-engine": "^0.11.0",
