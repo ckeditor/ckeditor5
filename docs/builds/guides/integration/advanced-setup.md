@@ -384,3 +384,7 @@ entry: [
 <info-box>
 	The above setup ensures that the source code is transpiled to ES5. However, it does not ensure that all ES6 polyfills are loaded. Therefore, if you would like to, for example, give [bringing IE11 compatibility](https://github.com/ckeditor/ckeditor5/issues/330) a try make sure to also load [`babel-polyfill`](https://babeljs.io/docs/usage/polyfill/).
 </info-box>
+
+<info-box>
+	The [`babel-preset-env`](https://github.com/babel/babel-preset-env) package let's you to choose environment which you want to support and transpiles ES6+ features to match that environment's capabilities. If not configured, it will produce ES5 builds.
+</info-box>
