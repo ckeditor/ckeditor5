@@ -4,8 +4,8 @@
 # * Document known compatibility issues and missing features.
 # * Discuss support for mobile environments.
 
-category: builds-guides
-order: 310
+category: builds-support
+order: 10
 ---
 
 # Browser compatibility

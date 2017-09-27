@@ -1,7 +1,7 @@
 ---
-category: framework-guides
-order: 410
-menu-title: Support
+category: framework-support
+order: 30
+menu-title: Getting support
 ---
 
 # Getting support
@@ -11,6 +11,8 @@ menu-title: Support
 You can report issues and feature requests on [GitHub](https://github.com/ckeditor/ckeditor5). This is also a good place to discuss architecture decisions and things which are not yet covered by the documentation.
 
 [Each CKEditor 5 repository](https://github.com/ckeditor?utf8=%E2%9C%93&q=ckeditor5&type=&language=) handles its issues independently. Unless you are sure where your ticket belongs, it is best to report it in the [main repository](https://github.com/ckeditor/ckeditor5).
+
+Refer to {@link framework/guides/support/reporting-issues Reporting issues} guide for more details.
 
 ## Stack Overflow
 

@@ -1,6 +1,6 @@
 ---
-category: framework-guides
-order: 420
+category: framework-support
+order: 50
 ---
 
 # Error codes

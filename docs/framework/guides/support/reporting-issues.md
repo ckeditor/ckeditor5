@@ -4,8 +4,8 @@
 # * Drive the user to other parts of documentation.
 # * Bring knowledge for topics not covered in other parts of the documentation.
 
-category: builds-guides
-order: 330
+category: framework-support
+order: 40
 ---
 
 # Reporting issues

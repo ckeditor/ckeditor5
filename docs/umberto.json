@@ -33,6 +33,12 @@
 							"id": "builds-development",
 							"slug": "development",
 							"order": 200
+						},
+						{
+							"name": "Support",
+							"id": "builds-support",
+							"slug": "support",
+							"order": 300
 						}
 					]
 				}
@@ -65,6 +71,12 @@
 							"id": "framework-contributing",
 							"slug": "contributing",
 							"order": 300
+						},
+						{
+							"name": "Support",
+							"id": "framework-support",
+							"slug": "support",
+							"order": 400
 						}
 					]
 				}

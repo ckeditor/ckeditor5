@@ -2,8 +2,8 @@
 # Scope:
 # * Clarify copyright and license conditions.
 
-category: builds-guides
-order: 320
+category: builds-support
+order: 20
 ---
 
 # License and legal
