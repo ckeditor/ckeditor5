@@ -21,7 +21,7 @@
     "@ckeditor/ckeditor5-paragraph": "^0.9.0",
     "@ckeditor/ckeditor5-undo": "^0.9.0",
     "@ckeditor/ckeditor5-typing": "^0.10.0",
-    "eslint-config-ckeditor5": "^1.0.5",
+    "eslint-config-ckeditor5": "^1.0.6",
     "gulp": "^3.9.1",
     "guppy-pre-commit": "^0.4.0"
   },
