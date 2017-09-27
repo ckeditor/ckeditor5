@@ -341,7 +341,7 @@ Webpack will now create a separate file called `styles.css` which you will need 
 
 ### Option: Building to ES5 target
 
-CKEditor 5 is written in ECMAScript 2015 (also called ES6). All browsers on which CKEditor 5 is {@link builds/guides/browser-compatibility currently supported} have sufficient ES6 support to run CKEditor 5. Thanks to that, CKEditor 5 Builds are also published in the original ES6 format.
+CKEditor 5 is written in ECMAScript 2015 (also called ES6). All browsers on which CKEditor 5 is {@link builds/guides/support/browser-compatibility currently supported} have sufficient ES6 support to run CKEditor 5. Thanks to that, CKEditor 5 Builds are also published in the original ES6 format.
 
 However, it may happen that your environment requires ES5. For instance, if you use tools like [UglifyJS](https://github.com/mishoo/UglifyJS) which do not support ES6+ yet, you may need to transpile CKEditor 5's source to ES5. This will create ~80% bigger builds but will ensure that your environment can process CKEditor 5's code.
 
