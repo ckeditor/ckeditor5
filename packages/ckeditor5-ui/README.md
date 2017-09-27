@@ -1,4 +1,4 @@
-CKEditor 5 UI framework and default library
+CKEditor 5 UI framework
 ===========================================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -8,7 +8,7 @@ CKEditor 5 UI framework and default library
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-ui/status.svg)](https://david-dm.org/ckeditor/ckeditor5-ui)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-ui/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-ui?type=dev)
 
-The UI framework of CKEditor 5. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5>.
+The UI framework and standard library of CKEditor 5. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5>.
 
 ## License
 
