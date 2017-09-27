@@ -1,9 +1,10 @@
 {
   "name": "@ckeditor/ckeditor5-engine",
   "version": "0.11.0",
-  "description": "CKEditor 5 Editing Engine",
+  "description": "CKEditor 5 editing engine.",
   "keywords": [
-    "CKEditor"
+    "ckeditor5",
+    "ckeditor5-lib"
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-utils": "^0.10.0"
