@@ -20,7 +20,7 @@ The examples are always running the latest editor version. Please note that if t
 
 Most of the issues are reproducible on the demo. If you have a different case though, no problem. Go ahead with the next steps.
 
-## Reporting Issues
+## Reporting issues
 
 All issues should be reported in the [CKEditor 5 repositories](https://github.com/ckeditor?q=ckeditor5) on GitHub.
 
