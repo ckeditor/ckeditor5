@@ -1,9 +1,10 @@
 {
   "name": "@ckeditor/ckeditor5-utils",
   "version": "0.10.0",
-  "description": "CKEditor 5 Utils",
+  "description": "Miscellaneous utils used by CKEditor 5.",
   "keywords": [
-    "CKEditor"
+    "ckeditor5",
+    "ckeditor5-lib"
   ],
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^3.1.1",
