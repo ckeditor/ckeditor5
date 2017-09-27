@@ -3,7 +3,8 @@
   "version": "0.2.0",
   "description": "Block quote feature for CKEditor 5.",
   "keywords": [
-    "CKEditor"
+    "ckeditor5",
+    "ckeditor5-feature"
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^0.9.0",
