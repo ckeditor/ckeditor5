@@ -11,6 +11,7 @@
     "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard",
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core",
+    "@ckeditor/ckeditor5-easy-image": "ckeditor/ckeditor5-easy-image",
     "@ckeditor/ckeditor5-editor-balloon": "ckeditor/ckeditor5-editor-balloon",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline",
