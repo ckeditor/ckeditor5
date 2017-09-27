@@ -1,11 +1,16 @@
 {
   "name": "ckeditor5",
   "version": "0.11.0",
-  "description": "The development version of CKEditor; the best browser-based WYSIWYG editor.",
+  "description": "The development environment of CKEditor 5.",
   "keywords": [
     "CKEditor",
-    "Editor",
-    "WYSIWYG"
+    "ckeditor5",
+    "editor",
+    "WYSIWYG",
+    "text editor",
+    "rich-text editor",
+    "contentEditable",
+    "editing framework"
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "^0.1.1",

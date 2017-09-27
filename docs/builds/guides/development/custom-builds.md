@@ -37,6 +37,8 @@ git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
 
 <info-box hint>
 	If you do not want to fork the official build, you can just clone it. However, you will not be able to commit and push your customizations back to GitHub.
+
+	Alternatively, instead of creating a custom build you can {@link builds/guides/integration/advanced-setup#Scenario-2-Building-from-source integrate CKEditor 5 directly from source}. This option allows even greater flexibility and requires less overhead (you will not need to fork the official build).
 </info-box>
 
 ## Build anatomy
@@ -132,7 +134,7 @@ If you want to skip updating the entry file (in case you modified it manually), 
 npm run build-ckeditor
 ```
 
-You can validate whether your new build works by opening the `sample/index.html` file in a browser (via HTTPS, not as a local file). Make sure to **clear the cache**.
+You can validate whether your new build works by opening the `sample/index.html` file in a browser (via HTTP, not as a local file). Make sure to **clear the cache**.
 
 ## Updating the build
 
@@ -151,6 +153,6 @@ You should handle eventual conflicts and verify the merged changes. After that, 
 
 ## Publishing your builds
 
-If you think that your custom builds can be useful to others, it is a great idea to publish them on GitHub and npm. When doing so, just be sure to give them meaningful names that would fit the `ckeditor5-build-(the name)` pattern, making them easy to find. To avoid conflicts with other existing builds you can use [scoped packages](https://docs.npmjs.com/misc/scope). We also recommend using the "ckeditor5-build" [keyword](https://docs.npmjs.com/files/package.json#keywords) to make your build [easier to find](https://www.npmjs.com/search?q=keywords:ckeditor5-build&page=1&ranking=optimal).
+If you think that your custom builds can be useful to others, it is a great idea to publish them on GitHub and npm. When doing so, just be sure to give them meaningful names that would fit the `ckeditor5-build-(the name)` pattern, making them easy to find. To avoid conflicts with other existing builds you can use [scoped packages](https://docs.npmjs.com/misc/scope). We also recommend using the "ckeditor5" and "ckeditor5-build" [keywords](https://docs.npmjs.com/files/package.json#keywords) to make your build [easier to find](https://www.npmjs.com/search?q=keywords:ckeditor5-build&page=1&ranking=optimal).
 
 After your build is out, [ping us on Twitter](https://twitter.com/ckeditor)!

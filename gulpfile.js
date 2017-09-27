@@ -57,6 +57,8 @@ gulp.task( 'docs', () => {
 		} );
 	}
 
+	// Simple way to reuse existing api/output.json:
+	// return Promise.resolve()
 	return buildApiDocs()
 		.then( () => {
 			return runUmberto( {
