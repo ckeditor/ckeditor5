@@ -372,12 +372,13 @@ module: {
 }
 ```
 
-And load [`regenerator-runtime`](https://www.npmjs.com/package/regenerator-runtime) (needed to make ES6 generators work after transpilation) by adding it as the second [entry point](https://webpack.js.org/configuration/entry-context/#entry):
+And load [`regenerator-runtime`](https://www.npmjs.com/package/regenerator-runtime) (needed to make ES6 generators work after transpilation) by adding it as the first [entry point](https://webpack.js.org/configuration/entry-context/#entry):
 
 ```js
 entry: [
 	require.resolve( 'regenerator-runtime/runtime.js' ),
-	path.resolve( __dirname, 'src', 'ckeditor.js' )
+
+	// your entries...
 ]
 ```
 
