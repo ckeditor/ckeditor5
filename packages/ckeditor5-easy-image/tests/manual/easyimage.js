@@ -17,8 +17,8 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid';
 // If you would like to try the Easy Image service, please wait until the official launch of Easy Image and sign up for a free trial.
 // Images uploaded during the free trial will not be deleted for the whole trial period and additionally the trial service can be converted
 // into a subscription at any moment, allowing you to preserve all uploaded images.
-const CLOUD_SERVICE_TOKEN_URL = 'https://demo-cs.cksource.com/testing/token';
-const CLOUD_SERVICE_UPLOAD_URL = 'https://upload-cs.cksource.com/';
+const CLOUD_SERVICE_TOKEN_URL = 'https://j2sns7jmy0.execute-api.eu-central-1.amazonaws.com/prod/token';
+const CLOUD_SERVICE_UPLOAD_URL = 'https://files.cke-cs.com/upload/';
 
 getToken( { id: uid() } )
 	.then( token => {
