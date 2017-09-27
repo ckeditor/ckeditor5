@@ -2,7 +2,10 @@
   "name": "@ckeditor/ckeditor5-theme-lark",
   "version": "0.9.0",
   "description": "A bright theme for CKEditor 5.",
-  "keywords": [],
+  "keywords": [
+    "ckeditor5",
+    "ckeditor5-theme"
+  ],
   "dependencies": {
     "@ckeditor/ckeditor5-ui": "^0.10.0"
   },
