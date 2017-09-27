@@ -1,8 +1,9 @@
 ---
-title: Classic editor
 category: examples-builds
 order: 10
 ---
+
+# Classic editor
 
 {@snippet build-classic-source}
 

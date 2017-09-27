@@ -14,7 +14,7 @@ order: 310
 
 CKEditor 5 is currently supported on the following desktop browsers:
 
-* Close to full support (see [notes below](#notes)):
+* Full support (see [notes below](#notes)):
 	* Chrome (latest stable release).
 	* Firefox (latest stable release).
 	* Safari (latest stable release).
@@ -32,7 +32,7 @@ Not supported yet:
 
 Features known to not be fully supported yet:
 
-* Text composition. Input Method Engine (IME) is a mechanism that allows the users to input text in languages such as Japanese and Chinese. This mechanism is not fully supported yet and we will be polishing that feature after 1.0.0.
+* Text composition. Input Method Engine (IME) is a mechanism that allows the users to input text in languages such as Japanese and Chinese. This mechanism is not fully supported yet and we will be polishing that feature in a close future.
 * Drag and drop inside the editor does not work yet. It is possible to drop images from your system if the {@link module:upload/imageupload~ImageUpload} feature is enabled.
 
 ## Mobile environment
