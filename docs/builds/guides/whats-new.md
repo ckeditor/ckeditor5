@@ -90,4 +90,4 @@ Read more about {@linkTODO collaboration in the CKEditor 5 Framework documentati
 
 ## Modern
 
-CKEditor 5 has been totally rewritten in ES6, using the power of modules. It provides all the necessary tools to easily integrate it with modern applications and technologies.
+CKEditor 5 has been totally rewritten in ECMAScript 2015 (also called ES6), using the power of modules. It provides all the necessary tools to easily integrate it with modern applications and technologies.

@@ -338,3 +338,54 @@ module.exports = {
 ```
 
 Webpack will now create a separate file called `styles.css` which you will need to load manually into your HTML (using the `<link rel="stylesheet">` tag).
+
+### Option: Building to ES5 target
+
+CKEditor 5 is written in ECMAScript 2015 (also called ES6). All browsers on which CKEditor 5 is {@link builds/guides/browser-compatibility currently supported} have sufficient ES6 support to run CKEditor 5. Thanks to that, CKEditor 5 Builds are also published in the original ES6 format.
+
+However, it may happen that your environment requires ES5. For instance, if you use tools like [UglifyJS](https://github.com/mishoo/UglifyJS) which do not support ES6+ yet, you may need to transpile CKEditor 5's source to ES5. This will create ~80% bigger builds but will ensure that your environment can process CKEditor 5's code.
+
+In order to create an ES5 build of CKEditor 5 you can use [Babel](https://babeljs.io/):
+
+```bash
+npm install --save babel-loader babel-core babel-preset-env regenerator-runtime
+```
+
+Then, add this item to webpack's [`module.rules`](https://webpack.js.org/configuration/module/#module-rules) section:
+
+```js
+module: {
+	rules: [
+		{
+			test: /\.js$/,
+			use: [
+				{
+					loader: 'babel-loader',
+					options: {
+						presets: [ require( 'babel-preset-env' ) ]
+					}
+				}
+			]
+		},
+		...
+	]
+}
+```
+
+And load [`regenerator-runtime`](https://www.npmjs.com/package/regenerator-runtime) (needed to make ES6 generators work after transpilation) by adding it as the first [entry point](https://webpack.js.org/configuration/entry-context/#entry):
+
+```js
+entry: [
+	require.resolve( 'regenerator-runtime/runtime.js' ),
+
+	// your entries...
+]
+```
+
+<info-box>
+	The above setup ensures that the source code is transpiled to ES5. However, it does not ensure that all ES6 polyfills are loaded. Therefore, if you would like to, for example, give [bringing IE11 compatibility](https://github.com/ckeditor/ckeditor5/issues/330) a try make sure to also load [`babel-polyfill`](https://babeljs.io/docs/usage/polyfill/).
+</info-box>
+
+<info-box>
+	The [`babel-preset-env`](https://github.com/babel/babel-preset-env) package let's you to choose environment which you want to support and transpiles ES6+ features to match that environment's capabilities. If not configured, it will produce ES5 builds.
+</info-box>

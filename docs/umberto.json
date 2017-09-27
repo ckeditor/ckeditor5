@@ -118,6 +118,14 @@
 			"prefix": "autoformat"
 		},
 		{
+			"path": "packages/ckeditor5-core",
+			"prefix": "core"
+		},
+		{
+			"path": "packages/ckeditor5-engine",
+			"prefix": "engine"
+		},
+		{
 			"path": "packages/ckeditor5-heading",
 			"prefix": "heading"
 		},
