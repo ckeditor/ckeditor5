@@ -21,9 +21,13 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 
 /**
- * A basic Template class. It renders DOM HTMLElement or Text from {@link module:ui/template~TemplateDefinition} and supports
- * element attributes, children, bindings to {@link module:utils/observablemixin~ObservableMixin} instances and DOM events
- * propagation. For example:
+ * A basic Template class. It renders a DOM HTML element or text from a
+ * {@link module:ui/template~TemplateDefinition definition} and supports element attributes, children,
+ * bindings to {@link module:utils/observablemixin~Observable observables} and DOM event propagation.
+ *
+ * A simple template can look like this:
+ *
+ *		const bind = Template.bind( observable, emitter );
  *
  *		new Template( {
  *			tag: 'p',
@@ -33,16 +37,22 @@ const xhtmlNs = 'http://www.w3.org/1999/xhtml';
  *					backgroundColor: 'yellow'
  *				}
  *			},
+ *			on: {
+ *				click: bind.to( 'clicked' )
+ *			}
  *			children: [
  *				'A paragraph.'
  *			]
  *		} ).render();
  *
- * will render the following HTMLElement:
+ * and it will render the following HTML element:
  *
  *		<p class="foo" style="background-color: yellow;">A paragraph.</p>
  *
- * See {@link module:ui/template~TemplateDefinition} to know more about templates and complex template definitions.
+ * Additionally, the `observable` will always fire `clicked` upon clicking `<p>` in DOM.
+ *
+ * See {@link module:ui/template~TemplateDefinition} to know more about templates and complex
+ * template definitions.
  *
 * @mixes module:utils/emittermixin~EmitterMixin
  */
@@ -66,45 +76,44 @@ export default class Template {
 		this._isRendered = false;
 
 		/**
-		 * Tag of this template, i.e. `div`, indicating that the instance will render
-		 * to an HTMLElement.
+		 * The tag (`tagName`) of this template, e.g. `div`. It also indicates that the template
+		 * renders to an HTML element.
 		 *
 		 * @member {String} #tag
 		 */
 
 		/**
-		 * Text of this template, indicating that the instance will render to a DOM Text.
+		 * Text of the template. It also indicates that the template renders to a DOM text node.
 		 *
 		 * @member {Array.<String|module:ui/template~TemplateValueSchema>} #text
 		 */
 
 		/**
-		 * Attributes of this template, i.e. `{ id: [ 'ck-id' ] }`, corresponding with
-		 * HTML attributes on HTMLElement.
+		 * Attributes of the template, e.g. `{ id: [ 'ck-id' ] }`, corresponding with
+		 * attributes of an HTML element.
 		 *
-		 * Note: Only when {@link #tag} is defined.
+		 * **Note**: This property only makes sense when {@link #tag} is defined.
 		 *
 		 * @member {Object} #attributes
 		 */
 
 		/**
-		 * Children of this template; sub–templates. Each one is an independent
+		 * Children of the template, sub–templates. Each one is an independent
 		 * instance of {@link ~Template}.
 		 *
-		 * Note: Only when {@link #tag} is defined.
+		 * **Note**: This property only makes sense when {@link #tag} is defined.
 		 *
 		 * @member {module:utils/collection~Collection.<module:ui/template~Template>} #children
 		 */
 
 		/**
-		 * DOM event listeners of this template.
+		 * DOM event listeners of the template.
 		 *
 		 * @member {Object} #eventListeners
 		 */
 
 		/**
-		 * Data used by {@link #revert} method to restore a node
-		 * to its original state.
+		 * Data used by the {@link #revert} method to restore a node to its original state.
 		 *
 		 * See: {@link #apply}.
 		 *
@@ -116,9 +125,11 @@ export default class Template {
 	}
 
 	/**
-	 * Renders a DOM Node (`HTMLElement` or `Text`) out of the template.
+	 * Renders a DOM Node (an HTML element or text) out of the template.
 	 *
-	 * @see #apply
+	 *		const domNode = new Template( { ... } ).render();
+	 *
+	 * See: {@link #apply}.
 	 *
 	 * @returns {HTMLElement|Text}
 	 */
@@ -133,19 +144,20 @@ export default class Template {
 	}
 
 	/**
-	 * Applies the template to an existing DOM Node, either `HTMLElement` or `Text`.
+	 * Applies the template to an existing DOM Node, either HTML element or text.
 	 *
-	 * **Note:** No new DOM nodes (HTMLElement or Text) will be created. Applying extends attributes
-	 * ({@link module:ui/template~TemplateDefinition attributes}) and listeners ({@link module:ui/template~TemplateDefinition on}) only.
+	 * **Note:** No new DOM nodes will be created. Applying extends
+	 * {@link module:ui/template~TemplateDefinition attributes} and
+	 * {@link module:ui/template~TemplateDefinition event listeners} only.
 	 *
-	 * **Note:** Existing "class" and "style" attributes are extended when a template
-	 * is applied to a Node, while other attributes and `textContent` are overridden.
+	 * **Note:** Existing `class` and `style` attributes are extended when a template
+	 * is applied to an HTML element, while other attributes and `textContent` are overridden.
 	 *
 	 * **Note:** The process of applying a template can be easily reverted using
 	 * {@link module:ui/template~Template#revert} method.
 	 *
 	 *		const element = document.createElement( 'div' );
-	 *		const bind = Template.bind( observableInstance, emitterInstance );
+	 *		const bind = Template.bind( observable, emitter );
 	 *
 	 *		new Template( {
 	 *			attrs: {
@@ -153,7 +165,7 @@ export default class Template {
 	 *				class: bind.to( 'divClass' )
 	 *			},
 	 *			on: {
-	 *				click: bind( 'elementClicked' ) // Will be fired by the observableInstance.
+	 *				click: bind( 'elementClicked' ) // Will be fired by the observable.
 	 *			}
 	 *			children: [
 	 *				'Div text.'
@@ -179,10 +191,10 @@ export default class Template {
 	}
 
 	/**
-	 * Reverts a template {@link module:ui/template~Template#apply applied} to a DOM Node.
+	 * Reverts a template {@link module:ui/template~Template#apply applied} to a DOM node.
 	 *
-	 * @param {Node} node Root node for the template to revert. In most cases, it's the same node
-	 * that {@link module:ui/template~Template#apply} has used.
+	 * @param {Node} node Root node for the template to revert. In most of the cases, it is the
+	 * same node used by {@link module:ui/template~Template#apply}.
 	 */
 	revert( node ) {
 		if ( !this._revertData ) {
@@ -198,18 +210,40 @@ export default class Template {
 	}
 
 	/**
-	 * An entry point to the interface which allows binding DOM nodes to {@link module:utils/observablemixin~ObservableMixin}.
+	 * An entry point to the interface which binds DOM nodes to
+	 * {@link module:utils/observablemixin~Observable observables}.
 	 * There are two types of bindings:
 	 *
-	 * * `HTMLElement` attributes or Text Node `textContent` can be synchronized with {@link module:utils/observablemixin~ObservableMixin}
-	 * instance attributes. See {@link module:ui/template~BindChain#to} and {@link module:ui/template~BindChain#if}.
+	 * * HTML element attributes or text `textContent` synchronized with attributes of an
+	 * {@link module:utils/observablemixin~Observable}. Learn more about {@link module:ui/template~BindChain#to}
+	 * and {@link module:ui/template~BindChain#if}.
 	 *
-	 * * DOM events fired on `HTMLElement` can be propagated through {@link module:utils/observablemixin~ObservableMixin}.
-	 * See {@link module:ui/template~BindChain#to}.
+	 *		const bind = Template.bind( observable, emitter );
 	 *
-	 * @param {module:utils/observablemixin~ObservableMixin} observable An instance of ObservableMixin class.
-	 * @param {module:utils/emittermixin~EmitterMixin} emitter An instance of `Emitter` class. It listens
-	 * to `observable` attribute changes and DOM Events, depending on the binding. Usually {@link module:ui/view~View} instance.
+	 *		new Template( {
+	 *			attrs: {
+	 *				// Binds element's "class" attribute to observable#classAttribute.
+	 *				class: bind.to( 'classAttribute' )
+	 *			}
+	 *		} ).render();
+	 *
+	 * * DOM events fired on HTML element propagated through
+	 * {@link module:utils/observablemixin~Observable}. Learn more about {@link module:ui/template~BindChain#to}.
+	 *
+	 *		const bind = Template.bind( observable, emitter );
+	 *
+	 *		new Template( {
+	 *			on: {
+	 *				// Will be fired by the observable.
+	 *				click: bind( 'elementClicked' )
+	 *			}
+	 *		} ).render();
+	 *
+	 * Also see {@link module:ui/view~View#bindTemplate}.
+	 *
+	 * @param {module:utils/observablemixin~Observable} observable An observable which provides boundable attributes.
+	 * @param {module:utils/emittermixin~Emitter} emitter An emitter that listens to observable attribute
+	 * changes or DOM Events (depending on the kind of the binding). Usually, a {@link module:ui/view~View} instance.
 	 * @returns {module:ui/template~BindChain}
 	 */
 	static bind( observable, emitter ) {
@@ -231,10 +265,12 @@ export default class Template {
 	}
 
 	/**
-	 * Extends {@link module:ui/template~Template} instance with additional content from {@link module:ui/template~TemplateDefinition}.
+	 * Extends an existing {@link module:ui/template~Template} instance with some additional content
+	 * from another {@link module:ui/template~TemplateDefinition}.
 	 *
-	 *		const bind = Template.bind( observable, emitterInstance );
-	 *		const instance = new Template( {
+	 *		const bind = Template.bind( observable, emitter );
+	 *
+	 *		const template = new Template( {
 	 *			tag: 'p',
 	 *			attributes: {
 	 *				class: 'a',
@@ -254,7 +290,7 @@ export default class Template {
 	 *		 } );
 	 *
 	 *		// Instance-level extension.
-	 *		Template.extend( instance, {
+	 *		Template.extend( template, {
 	 *			attributes: {
 	 *				class: 'b',
 	 *				data-x: bind.to( 'bar' )
@@ -269,27 +305,27 @@ export default class Template {
 	 *		} );
 	 *
 	 *		// Child extension.
-	 *		Template.extend( instance.children.get( 0 ), {
+	 *		Template.extend( template.children.get( 0 ), {
 	 *			attributes: {
 	 *				class: 'd'
 	 *			}
 	 *		} );
 	 *
-	 * the `instance.render().outerHTML` is:
+	 * the `outerHTML` of `template.render()` is:
 	 *
 	 *		<p class="a b" data-x="{ observable.foo } { observable.bar }">
 	 *			<span class="b c d">Span</span>
 	 *		</p>
 	 *
-	 * @param {module:ui/template~Template} template Existing Template instance to be extended.
-	 * @param {module:ui/template~TemplateDefinition} def An extension to existing an template instance.
+	 * @param {module:ui/template~Template} template An existing template instance to be extended.
+	 * @param {module:ui/template~TemplateDefinition} def Additional definition to be applied to a template.
 	 */
 	static extend( template, def ) {
 		if ( template._isRendered ) {
 			/**
 			 * Extending a template after rendering may not work as expected. To make sure
-			 * the {@link module:ui/template~Template.extend extending} works for the rendered element, perform it
-			 * before {@link #render} is called.
+			 * the {@link module:ui/template~Template.extend extending} works for an element,
+			 * make sure it happens before {@link #render} is called.
 			 *
 			 * @error template-extend-render
 			 */
@@ -300,7 +336,7 @@ export default class Template {
 	}
 
 	/**
-	 * Renders a DOM Node (either `HTMLElement` or `Text`) out of the template.
+	 * Renders a DOM Node (either an HTML element or text) out of the template.
 	 *
 	 * @protected
 	 * @param {module:ui/template~RenderData} data Rendering data.
@@ -336,7 +372,7 @@ export default class Template {
 	}
 
 	/**
-	 * Renders an `HTMLElement` out of the template.
+	 * Renders an HTML element out of the template.
 	 *
 	 * @protected
 	 * @param {module:ui/template~RenderData} data Rendering data.
@@ -356,7 +392,7 @@ export default class Template {
 	}
 
 	/**
-	 * Renders a `Text` node out of {@link module:ui/template~Template#text}.
+	 * Renders a text node out of {@link module:ui/template~Template#text}.
 	 *
 	 * @protected
 	 * @param {module:ui/template~RenderData} data Rendering data.
@@ -402,7 +438,7 @@ export default class Template {
 	}
 
 	/**
-	 * Renders an `HTMLElement` attributes out of {@link module:ui/template~Template#attributes}.
+	 * Renders an HTML element attributes out of {@link module:ui/template~Template#attributes}.
 	 *
 	 * @protected
 	 * @param {module:ui/template~RenderData} data Rendering data.
@@ -533,7 +569,8 @@ export default class Template {
 	}
 
 	/**
-	 * Renders `style` attribute of an `HTMLElement` based on {@link module:ui/template~Template#attributes}.
+	 * Renders the `style` attribute of an HTML element based on
+	 * {@link module:ui/template~Template#attributes}.
 	 *
 	 * Style attribute is an {Object} with static values:
 	 *
@@ -591,7 +628,7 @@ export default class Template {
 	}
 
 	/**
-	 * Recursively renders `HTMLElement` children from {@link module:ui/template~Template#children}.
+	 * Recursively renders HTML element's children from {@link module:ui/template~Template#children}.
 	 *
 	 * @protected
 	 * @param {module:ui/template~RenderData} data Rendering data.
@@ -639,8 +676,8 @@ export default class Template {
 	}
 
 	/**
-	 * Activates `on` listeners in the {@link module:ui/template~TemplateDefinition}
-	 * on a passed `HTMLElement`.
+	 * Activates `on` event listeners from the {@link module:ui/template~TemplateDefinition}
+	 * on an HTML element.
 	 *
 	 * @protected
 	 * @param {module:ui/template~RenderData} data Rendering data.
@@ -664,10 +701,11 @@ export default class Template {
 	}
 
 	/**
-	 * For given {@link module:ui/template~TemplateValueSchema} containing {@link module:ui/template~TemplateBinding} it activates the
-	 * binding and sets its initial value.
+	 * For a given {@link module:ui/template~TemplateValueSchema} containing {@link module:ui/template~TemplateBinding}
+	 * activates the binding and sets its initial value.
 	 *
-	 * Note: {@link module:ui/template~TemplateValueSchema} can be for HTMLElement attributes or Text Node `textContent`.
+	 * Note: {@link module:ui/template~TemplateValueSchema} can be for an HTML element attributes or
+	 * text node `textContent`.
 	 *
 	 * @protected
 	 * @param {Object} options Binding options.
@@ -762,38 +800,40 @@ export class TemplateBinding {
 		Object.assign( this, def );
 
 		/**
-		 * An observable instance of the binding. It provides the attribute
-		 * with the value or passes the event when a corresponding DOM event is fired.
+		 * An observable instance of the binding. It either:
+		 *
+		 * * provides the attribute with the value
+		 * * or passes the event when a corresponding DOM event is fired.
 		 *
 		 * @member {module:utils/observablemixin~ObservableMixin} module:ui/template~TemplateBinding#observable
 		 */
 
 		/**
-		 * An {@link module:utils/emittermixin~EmitterMixin} instance used by the binding
-		 * to (either):
+		 * An {@link module:utils/emittermixin~Emitter} used by the binding to:
 		 *
 		 * * listen to the attribute change in the {@link module:ui/template~TemplateBinding#observable},
-		 * * listen to the event in the DOM.
+		 * * or listen to the event in the DOM.
 		 *
 		 * @member {module:utils/emittermixin~EmitterMixin} module:ui/template~TemplateBinding#emitter
 		 */
 
 		/**
-		 * The name of the attribute of {@link module:ui/template~TemplateBinding#observable} which is observed.
+		 * The name of the {@link module:ui/template~TemplateBinding#observable observed attribute}.
 		 *
 		 * @member {String} module:ui/template~TemplateBinding#attribute
 		 */
 
 		/**
-		 * A custom function to process the value of {@link module:ui/template~TemplateBinding#attribute}.
+		 * A custom function to process the value of the {@link module:ui/template~TemplateBinding#attribute}.
 		 *
 		 * @member {Function} [module:ui/template~TemplateBinding#callback]
 		 */
 	}
 
 	/**
-	 * Returns the value of the binding, which is the value of {@link module:ui/template~TemplateBinding#attribute} in
-	 * {@link module:ui/template~TemplateBinding#observable}.
+	 * Returns the value of the binding. It is the value of the {@link module:ui/template~TemplateBinding#attribute} in
+	 * {@link module:ui/template~TemplateBinding#observable}. The value may be processed by the
+	 * {@link module:ui/template~TemplateBinding#callback}, if such has been passed to the binding.
 	 *
 	 * @param {Node} [node] A native DOM node, passed to the custom {@link module:ui/template~TemplateBinding#callback}.
 	 * @returns {*} The value of {@link module:ui/template~TemplateBinding#attribute} in
@@ -806,12 +846,9 @@ export class TemplateBinding {
 	}
 
 	/**
-	 * Activates the listener for the changes of {@link module:ui/template~TemplateBinding#attribute} in
-	 * {@link module:ui/template~TemplateBinding#observable}, which then updates the DOM with the aggregated
+	 * Activates the listener which waits for changes of the {@link module:ui/template~TemplateBinding#attribute} in
+	 * {@link module:ui/template~TemplateBinding#observable}, then updates the DOM with the aggregated
 	 * value of {@link module:ui/template~TemplateValueSchema}.
-	 *
-	 * For instance, the `class` attribute of the `Template` element can be be bound to
-	 * the observable `foo` attribute in `ObservableMixin` instance.
 	 *
 	 * @param {module:ui/template~TemplateValueSchema} schema A full schema to generate an attribute or text in DOM.
 	 * @param {Function} updater A DOM updater function used to update native DOM attribute or text.
@@ -833,10 +870,10 @@ export class TemplateBinding {
 /**
  * Describes either:
  *
- * * a binding to {@link module:utils/observablemixin~ObservableMixin}
- * * or a native DOM event binding
+ * * a binding to an {@link module:utils/observablemixin~Observable},
+ * * or a native DOM event binding.
  *
- * created by {@link module:ui/template~BindChain#to} method.
+ * It is created by the {@link module:ui/template~BindChain#to} method.
  *
  * @protected
  */
@@ -1359,8 +1396,15 @@ function shouldExtend( attrName ) {
 }
 
 /**
- * A definition of {@link module:ui/template~Template}.
- * See: {@link module:ui/template~TemplateValueSchema}.
+ * A definition of the {@link module:ui/template~Template}. It describes what kind of
+ * node a template will render (HTML element or text), attributes of an element, DOM event
+ * listeners and children.
+ *
+ * Also see:
+ * * {@link module:ui/template~TemplateValueSchema} to learn about HTML element attributes,
+ * * {@link module:ui/template~TemplateListenerSchema} to learn about DOM event listeners.
+ *
+ * A sample definition on an HTML element can look like this:
  *
  *		new Template( {
  *			tag: 'p',
@@ -1369,76 +1413,122 @@ function shouldExtend( attrName ) {
  *					tag: 'span',
  *					attributes: { ... },
  *					children: [ ... ],
- *					...
  *				},
  *				{
  *					text: 'static–text'
  *				},
  *				'also-static–text',
- *				<{@link module:ui/view~View} instance>
- *				<{@link module:ui/template~Template} instance>
- *				...
  *			],
  *			attributes: {
  *				class: {@link module:ui/template~TemplateValueSchema},
  *				id: {@link module:ui/template~TemplateValueSchema},
  *				style: {@link module:ui/template~TemplateValueSchema}
- *				...
+ *
+ *				// ...
  *			},
  *			on: {
  *				'click': {@link module:ui/template~TemplateListenerSchema}
- *				'keyup@.some-class': {@link module:ui/template~TemplateListenerSchema},
- *				...
+ *
+ *				// Document.querySelector format is also accepted.
+ *				'keyup@a.some-class': {@link module:ui/template~TemplateListenerSchema}
+ *
+ *				// ...
  *			}
  *		} );
  *
- *		// An entire view collection can be used as a child in the definition.
+ * A {@link module:ui/view~View} or another {@link module:ui/template~Template} can also become a child
+ * of a template. In case of a view {@link module:ui/view~View#element} is used:
+ *
+ *		const view = new SomeView();
+ *		const childTemplate = new Template( { ... } );
+ *
  *		new Template( {
  *			tag: 'p',
- *			children: <{@link module:ui/viewcollection~ViewCollection} instance>
+ *
+ *			children: [
+ *				// view#element will be added as a child of this <p>.
+ *				view,
+ *
+ * 				// The output of childTemplate.render() will be added here.
+ *				childTemplate
+ *			]
+ *		} );
+ *
+ * An entire {@link module:ui/viewcollection~ViewCollection} can be used as a child in the definition:
+ *
+ *		const collection = new ViewCollection();
+ *		collection.add( someView );
+ *
+ *		new Template( {
+ *			tag: 'p',
+ *
+ *			children: collection
  *		} );
  *
  * @typedef module:ui/template~TemplateDefinition
  * @type Object
- * @property {String} tag
+ *
+ * @property {String} tag See template {@link module:ui/template~Template#tag} property.
+ *
  * @property {Array.<module:ui/template~TemplateDefinition>} [children]
- * @property {Object.<String,module:ui/template~TemplateValueSchema>} [attributes]
+ * See template {@link module:ui/template~Template#children} property.
+ *
+ * @property {Object.<String, module:ui/template~TemplateValueSchema>} [attributes]
+ * See template {@link module:ui/template~Template#attributes} property.
+ *
  * @property {String|module:ui/template~TemplateValueSchema|Array.<String|module:ui/template~TemplateValueSchema>} [text]
- * @property {Object.<String,module:ui/template~TemplateListenerSchema>} [on]
+ * See template {@link module:ui/template~Template#text} property.
+ *
+ * @property {Object.<String, module:ui/template~TemplateListenerSchema>} [on]
+ * See template {@link module:ui/template~Template#eventListeners} property.
  */
 
 /**
- * Describes a value of HTMLElement attribute or `textContent`. See:
- *  * {@link module:ui/template~TemplateDefinition},
- *  * {@link module:ui/template~Template.bind},
+ * Describes a value of an HTML element attribute or `textContent`. It allows combining multiple
+ * data sources like static values and {@link module:utils/observablemixin~Observable} attributes.
  *
- *		const bind = Template.bind( observableInstance, emitterInstance );
+ * Also see:
+ * * {@link module:ui/template~TemplateDefinition} to learn where to use it,
+ * * {@link module:ui/template~Template.bind} to learn how to configure
+ * {@link module:utils/observablemixin~Observable} attribute bindings,
+ * * {@link module:ui/template~Template#render} to learn how to render a template,
+ * * {@link module:ui/template~BindChain#to `to()`} and {@link module:ui/template~BindChain#if `if()`}
+ * methods to learn more about bindings.
+ *
+ * Attribute values can be described in many different ways:
+ *
+ *		// Bind helper will create bindings to attributes of the observable.
+ *		const bind = Template.bind( observable, emitter );
  *
  *		new Template( {
  *			tag: 'p',
  *			attributes: {
- *				// Plain String schema.
- *				class: 'static-text'
+ *				// A plain string schema.
+ *				'class': 'static-text',
  *
- *				// Object schema, an `ObservableMixin` binding.
- *				class: bind.to( 'foo' )
+ *				// An object schema, binds to the "foo" attribute of the
+ *				// observable and follows its value.
+ *				'class': bind.to( 'foo' ),
  *
- *				// Array schema, combines the above.
- *				class: [
+ *				// An array schema, combines the above.
+ *				'class': [
  *					'static-text',
- *					bind.to( 'bar', () => { ... } )
+ *					bind.to( 'bar', () => { ... } ),
+ *
+ * 					// Bindings can also be conditional.
+ *					bind.if( 'baz', 'class-when-baz-is-true' )
  *				],
  *
- *				// Array schema, with custom namespace.
- *				class: {
+ *				// An array schema, with a custom namespace, e.g. useful for creating SVGs.
+ *				'class': {
  *					ns: 'http://ns.url',
  *					value: [
- *						bind.if( 'baz', 'value-when-true' )
+ *						bind.if( 'baz', 'value-when-true' ),
  *						'static-text'
  *					]
  *				},
  *
- *				// Object literal schema, specific for styles.
+ *				// An object schema, specific for styles.
  *				style: {
  *					color: 'red',
  *					backgroundColor: bind.to( 'qux', () => { ... } )
@@ -1446,34 +1536,63 @@ function shouldExtend( attrName ) {
  *			}
  *		} );
  *
+ * Text nodes can also be have complex values:
+ *
+ *		const bind = Template.bind( observable, emitter );
+ *
+ *		// Will render a "foo" text node.
+ *		new Template( {
+ *			text: 'foo'
+ *		} );
+ *
+ *		// Will render a "static text: {observable.foo}" text node.
+ *		// The text of the node will be updated as the "foo" attribute changes.
+ *		new Template( {
+ *			text: [
+ *				'static text: ',
+ *				bind.to( 'foo', () => { ... } )
+ *			]
+ *		} );
+ *
  * @typedef module:ui/template~TemplateValueSchema
  * @type {Object|String|Array}
  */
 
 /**
- * Describes a listener attached to HTMLElement. See: {@link module:ui/template~TemplateDefinition}.
+ * Describes an event listener attached to an HTML element. Such listener can propagate DOM events
+ * through an {@link module:utils/observablemixin~Observable} instance, execute custom callbacks
+ * or both, if necessary.
+ *
+ * Also see:
+ * * {@link module:ui/template~TemplateDefinition} to learn more about template definitions,
+ * * {@link module:ui/template~BindChain#to `to()`} method, to learn more about bindings.
+ *
+ * Check out different ways of attaching event listeners below:
+ *
+ *		// Bind helper will propagate events through the observable.
+ *		const bind = Template.bind( observable, emitter );
  *
  *		new Template( {
  *			tag: 'p',
  *			on: {
- *				// Plain String schema.
- *				click: 'clicked'
+ *				// An object schema. The observable will fire 'clicked' event upon DOM 'click'.
+ *				click: bind.to( 'clicked' )
  *
- *				// Object schema, an `ObservableMixin` binding.
- *				click: {@link module:ui/template~TemplateBinding}
+ *				// An object schema. It will work for "click" event on "a.foo" children only.
+ *				'click@a.foo': bind.to( 'clicked' )
  *
- *				// Array schema, combines the above.
+ *				// An array schema, makes the observable propagate multiple events.
  *				click: [
- *					'clicked',
- *					{@link module:ui/template~TemplateBinding}
+ *					bind.to( 'clicked' ),
+ *					bind.to( 'executed' )
  *				],
  *
- *				// Array schema, with custom callback.
- *				// Note: It will work for "click" event on class=".foo" children only.
- *				'click@.foo': {
- *					'clicked',
- *					{@link module:ui/template~TemplateBinding},
- *					() => { ... }
+ *				// An array schema with a custom callback.
+ *				'click@a.foo': {
+ *					bind.to( 'clicked' ),
+ *					bind.to( evt => {
+ *						console.log( `${ evt.target } has been clicked!` );
+ *					} }
  *				}
  *			}
  *		} );
@@ -1483,35 +1602,41 @@ function shouldExtend( attrName ) {
  */
 
 /**
- * The type of {@link ~Template.bind}'s return value.
+ * The return value of {@link ~Template.bind `Template.bind()`}. It provides `to()` and `if()`
+ * methods to create {@link module:utils/observablemixin~Observable observable} attribute and event bindings.
  *
  * @interface module:ui/template~BindChain
  */
 
 /**
- * Binds {@link module:utils/observablemixin~ObservableMixin} instance to:
+ * Binds an {@link module:utils/observablemixin~Observable observable} to either:
  *
- * * HTMLElement attribute or Text Node `textContent` so remains in sync with the Observable when it changes:
- * * HTMLElement DOM event, so the DOM events are propagated through Observable.
+ * * an HTML element attribute or a text node `textContent` so remains in sync with the observable
+ * attribute as it changes,
+ * * or an HTML element DOM event, so the DOM events are propagated through an observable.
  *
- *		const bind = Template.bind( observableInstance, emitterInstance );
+ * Some common use–cases of `to()` bindings are presented below:
+ *
+ *		const bind = Template.bind( observable, emitter );
  *
  *		new Template( {
  *			tag: 'p',
  *			attributes: {
- *				// class="..." attribute gets bound to `observableInstance#a`
- *				'class': bind.to( 'a' )
+ *				// class="..." attribute gets bound to `observable#a`
+ *				class: bind.to( 'a' )
  *			},
  *			children: [
- *				// <p>...</p> gets bound to `observableInstance#b`; always `toUpperCase()`.
- *				{ text: bind.to( 'b', ( value, node ) => value.toUpperCase() ) }
+ *				// <p>...</p> gets bound to observable#b; always `toUpperCase()`.
+ *				{
+ *					text: bind.to( 'b', ( value, node ) => value.toUpperCase() )
+ *				}
  *			],
  *			on: {
  *				click: [
- *					// "clicked" event will be fired on `observableInstance` when "click" fires in DOM.
+ *					// an observable will fire "clicked" upon "click" in DOM.
  *					bind.to( 'clicked' ),
  *
- *					// A custom callback function will be executed when "click" fires in DOM.
+ *					// A custom callback will be executed upon "click" in DOM.
  *					bind.to( () => {
  *						...
  *					} )
@@ -1519,47 +1644,47 @@ function shouldExtend( attrName ) {
  *			}
  *		} ).render();
  *
- *		const bind = Template.bind( observableInstance, emitterInstance );
- *
- *		new Template( {
- *			tag: 'p',
- *		} ).render();
+ * Learn more about using `to()` in the {@link module:ui/template~TemplateValueSchema} and
+ * {@link module:ui/template~TemplateListenerSchema}.
  *
  * @method #to
  * @param {String|Function} eventNameOrFunctionOrAttribute An attribute name of
- * {@link module:utils/observablemixin~ObservableMixin} or a DOM event name or an event callback.
+ * {@link module:utils/observablemixin~Observable} or a DOM event name or an event callback.
  * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
  * @return {module:ui/template~TemplateBinding}
  */
 
 /**
- * Binds {@link module:utils/observablemixin~ObservableMixin} to HTMLElement attribute or Text Node `textContent`
- * so remains in sync with the Model when it changes. Unlike {@link module:ui/template~BindChain#to},
- * it controls the presence of the attribute/`textContent` depending on the "falseness" of
- * {@link module:utils/observablemixin~ObservableMixin} attribute.
+ * Binds an {@link module:utils/observablemixin~Observable observable} to an HTML element attribute or a text
+ * node `textContent` so remains in sync with the observable attribute as it changes.
  *
- *		const bind = Template.bind( observableInstance, emitterInstance );
+ * Unlike {@link module:ui/template~BindChain#to}, it controls the presence of the attribute/`textContent`
+ * depending on the "falseness" of an {@link module:utils/observablemixin~Observable} attribute.
+ *
+ *		const bind = Template.bind( observable, emitter );
  *
  *		new Template( {
  *			tag: 'input',
  *			attributes: {
- *				// <input checked> when `observableInstance#a` is not undefined/null/false/''
- *				// <input> when `observableInstance#a` is undefined/null/false
+ *				// <input checked> when `observable#a` is not undefined/null/false/''
+ *				// <input> when `observable#a` is undefined/null/false
  *				checked: bind.if( 'a' )
  *			},
  *			children: [
  *				{
- *					// <input>"b-is-not-set"</input> when `observableInstance#b` is undefined/null/false/''
- *					// <input></input> when `observableInstance#b` is not "falsy"
+ *					// <input>"b-is-not-set"</input> when `observable#b` is undefined/null/false/''
+ *					// <input></input> when `observable#b` is not "falsy"
  *					text: bind.if( 'b', 'b-is-not-set', ( value, node ) => !value )
  *				}
  *			]
  *		} ).render();
  *
+ * Learn more about using `if()` in the {@link module:ui/template~TemplateValueSchema}.
+ *
  * @method #if
- * @param {String} attribute An attribute name of {@link module:utils/observablemixin~ObservableMixin} used in the binding.
- * @param {String} [valueIfTrue] Value set when {@link module:utils/observablemixin~ObservableMixin} attribute is not
- * undefined/null/false/''.
+ * @param {String} attribute An attribute name of {@link module:utils/observablemixin~Observable} used in the binding.
+ * @param {String} [valueIfTrue] Value set when {@link module:utils/observablemixin~Observable} attribute is not
+ * undefined/null/false/'' (empty string).
  * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
  * @return {module:ui/template~TemplateBinding}
  */
