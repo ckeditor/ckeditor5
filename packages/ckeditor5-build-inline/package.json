@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "description": "CKEditor 5 inline editor build.",
   "keywords": [
+    "ckeditor5",
     "ckeditor5-build",
     "text editor",
     "WYSIWYG",
