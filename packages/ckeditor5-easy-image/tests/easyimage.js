@@ -27,14 +27,18 @@ describe( 'EasyImage', () => {
 		const div = window.document.createElement( 'div' );
 		window.document.body.appendChild( div );
 
-		return ClassicTestEditor.create( div, {
-			plugins: [ EasyImage ]
-		} ).then( editor => {
-			const easyImage = editor.plugins.get( EasyImage );
-			expect( easyImage ).to.be.an.instanceOf( EasyImage );
+		return ClassicTestEditor
+			.create( div, {
+				plugins: [ EasyImage ]
+			} )
+			.then( editor => {
+				const easyImage = editor.plugins.get( EasyImage );
+				expect( easyImage ).to.be.an.instanceOf( EasyImage );
 
-			window.document.body.removeChild( div );
-		} );
+				window.document.body.removeChild( div );
+
+				return editor.destroy();
+			} );
 	} );
 
 	describe( 'integration tests', () => {
@@ -52,6 +56,7 @@ describe( 'EasyImage', () => {
 						reader.onload();
 					}
 				};
+
 				return reader;
 			} );
 		} );
@@ -72,37 +77,39 @@ describe( 'EasyImage', () => {
 		} );
 
 		it( 'should enable easy image uploading', () => {
-			return ClassicTestEditor.create( div, {
-				plugins: [
-					Paragraph, EasyImage
-				],
-				cloudServices: {
-					token: 'abc',
-					uploadUrl: 'http://upload.mock.url/'
-				}
-			} ).then( editor => {
-				const notification = editor.plugins.get( 'Notification' );
-				const upload = editor.plugins.get( CloudServicesUploadAdapter );
+			return ClassicTestEditor
+				.create( div, {
+					plugins: [
+						Paragraph, EasyImage
+					],
+					cloudServices: {
+						token: 'abc',
+						uploadUrl: 'http://upload.mock.url/'
+					}
+				} )
+				.then( editor => {
+					const notification = editor.plugins.get( 'Notification' );
+					const upload = editor.plugins.get( CloudServicesUploadAdapter );
 
-				return new Promise( ( resolve, reject ) => {
-					notification.on( 'show:warning', ( evt, data ) => {
-						reject( new Error( data.title ) );
-					} );
+					return new Promise( ( resolve, reject ) => {
+						notification.on( 'show:warning', ( evt, data ) => {
+							reject( new Error( data.title ) );
+						} );
 
-					editor.document.on( 'change', () => {
-						// Check whether the image is uploaded and the image's src is replaced correctly.
-						if ( editor.getData() === '<figure class="image"><img src="http://image.mock.url/"></figure>' ) {
-							resolve();
-						}
-					} );
+						editor.document.on( 'change', () => {
+							// Check whether the image is uploaded and the image's src is replaced correctly.
+							if ( editor.getData() === '<figure class="image"><img src="http://image.mock.url/"></figure>' ) {
+								editor.destroy().then( resolve );
+							}
+						} );
 
-					editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+						editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
-					setTimeout( () => {
-						upload._uploadGateway.resolveLastUpload();
+						setTimeout( () => {
+							upload._uploadGateway.resolveLastUpload();
+						} );
 					} );
 				} );
-			} );
 		} );
 	} );
 } );

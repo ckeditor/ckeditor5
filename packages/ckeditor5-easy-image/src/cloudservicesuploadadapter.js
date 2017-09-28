@@ -36,6 +36,8 @@ export default class CloudServicesUploadAdapter extends Plugin {
 		const editor = this.editor;
 		const config = editor.config;
 
+		config.define( 'cloudServices.uploadUrl', 'https://files.cke-cs.com/upload/' );
+
 		const token = config.get( 'cloudServices.token' );
 		const uploadUrl = config.get( 'cloudServices.uploadUrl' );
 
