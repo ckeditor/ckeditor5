@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import InlineEditor from '../ckeditor';
+import InlineEditor from '../src/ckeditor';
 import BaseInlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 
 describe( 'InlineEditor build', () => {
