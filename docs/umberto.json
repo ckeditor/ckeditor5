@@ -11,6 +11,13 @@
 		"apiKey": "fc463c26455365ad403d5ec51796cd73",
 		"indexName": "ckeditor_nightly"
 	},
+	"googleanalytics": {
+		"domains": [ "ckeditor5.github.io" ],
+		"config": {
+			"trackingId": "UA-271067-19",
+			"cookieDomain": "ckeditor5.github.io"
+		}
+	},
 	"groups": [
 		{
 			"name": "Builds",
