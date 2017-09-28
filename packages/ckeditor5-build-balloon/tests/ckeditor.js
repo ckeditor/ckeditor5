@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import BalloonEditor from '../ckeditor';
+import BalloonEditor from '../src/ckeditor';
 import BaseBalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 
 describe( 'BalloonEditor build', () => {
