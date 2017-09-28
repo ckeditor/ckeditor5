@@ -5,9 +5,17 @@
 
 /* global document */
 
-import placeholder from '../../theme/icons/image_placeholder.svg';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ImageEngine from '@ckeditor/ckeditor5-image/src/image/imageengine';
+import ImageUploadEngine from '../../src/imageuploadengine';
+import ImageUploadProgress from '../../src/imageuploadprogress';
 
-const img = document.createElement( 'img' );
-img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent( placeholder );
+ClassicTestEditor.create( { plugins: [ ImageEngine, ImageUploadEngine, ImageUploadProgress ] } )
+	.then( editor => {
+		const imageUploadProgress = editor.plugins.get( ImageUploadProgress );
+		const img = document.createElement( 'img' );
 
-document.getElementById( 'container' ).appendChild( img );
+		img.src = imageUploadProgress.placeholder;
+		document.getElementById( 'container' ).appendChild( img );
+	} );
+
