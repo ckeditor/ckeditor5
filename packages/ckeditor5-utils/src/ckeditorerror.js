@@ -10,7 +10,8 @@
 /**
  * URL to the documentation with error codes.
  */
-export const DOCUMENTATION_URL = 'https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/framework/guides/error-codes.html';
+export const DOCUMENTATION_URL =
+	'https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/framework/guides/support/error-codes.html';
 
 /**
  * The CKEditor error class.
