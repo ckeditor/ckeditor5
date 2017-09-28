@@ -12,7 +12,7 @@ order: 10
 
 ## Desktop environment
 
-CKEditor 5 is currently supported on the following desktop browsers:
+CKEditor 5 is currently supported in the following desktop browsers:
 
 * Full support (see [notes below](#notes)):
 	* Chrome (latest stable release).
@@ -37,7 +37,7 @@ Features known to not be fully supported yet:
 
 ## Mobile environment
 
-Although CKEditor 5 works on Safari for iOS and Chrome for Android, it has not been fully tested yet and there are known bugs and inconveniences. Full support for mobile browsers will be our goal after releasing 1.0.0.
+Although CKEditor 5 works in Safari for iOS and Chrome for Android, it has not been fully tested yet and there are known bugs and inconveniences. Full support for mobile browsers will be our goal after releasing 1.0.0.
 
 When working on mobile support we need to consider two complex aspects:
 
