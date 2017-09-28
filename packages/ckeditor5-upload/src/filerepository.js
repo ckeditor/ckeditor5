@@ -121,7 +121,7 @@ export default class FileRepository extends Plugin {
 			 *
 			 *		ClassicEditor
 			 *			.create( document.querySelector( '#editor' ), {
-			 * 				removePlugins: [ 'EasyImage', 'CKFinderUploadAdapter' ]
+			 * 				removePlugins: [ 'EasyImage', 'CKFinderUploadAdapter', 'ImageUpload' ]
 			 *			} )
 			 *			.then( ... )
 			 *			.catch( ... );
