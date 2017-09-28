@@ -11,7 +11,6 @@ import CKFinderUploadAdapter from '../src/uploadadapter';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 describe( 'CKFinderUploadAdapter', () => {
 	let editor, sinonXHR;
@@ -60,21 +59,22 @@ describe( 'CKFinderUploadAdapter', () => {
 			expect( adapter.abort ).to.be.a( 'function' );
 		} );
 
-		it( 'should log warning when there is no configuration', () => {
+		it( 'should not set the FileRepository.createAdapter factory if not configured', () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
-			const warnSub = testUtils.sinon.stub( log, 'warn' );
 
 			return ClassicTestEditor
 				.create( editorElement, {
 					plugins: [ Image, ImageUpload, CKFinderUploadAdapter ],
 				} )
-				.then( () => {
-					sinon.assert.calledOnce( warnSub );
-					sinon.assert.calledWithExactly(
-						warnSub,
-						'ckfinder-upload-adapter-no-config: Please provide "ckfinder.uploadUrl" config option.'
-					);
+				.then( editor => {
+					const fileRepository = editor.plugins.get( FileRepository );
+
+					expect( fileRepository ).to.not.have.property( 'createAdapter' );
+
+					editorElement.remove();
+
+					return editor.destroy();
 				} );
 		} );
 
