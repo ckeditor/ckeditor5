@@ -41,7 +41,7 @@ export default class Typing extends Plugin {
  * The configuration of the typing features. Used by the typing features in `@ckeditor/ckeditor5-typing` package.
  *
  *		ClassicEditor
- *			.create( {
+ *			.create( editorElement, {
  * 				typing: ... // Typing feature options.
  *			} )
  *			.then( ... )
