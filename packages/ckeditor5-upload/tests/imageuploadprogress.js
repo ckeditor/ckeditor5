@@ -16,9 +16,10 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import imagePlaceholder from '../theme/icons/image_placeholder.svg';
+import svgPlaceholder from '../theme/icons/image_placeholder.svg';
 
 describe( 'ImageUploadProgress', () => {
+	const imagePlaceholder = encodeURIComponent( svgPlaceholder );
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 	let editor, document, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
