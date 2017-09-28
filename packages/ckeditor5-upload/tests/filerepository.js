@@ -6,7 +6,10 @@
 /* globals window */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '../src/filerepository';
+
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import { createNativeFileMock, AdapterMock, NativeFileReaderMock } from './_utils/mocks';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -15,28 +18,40 @@ import FileReader from '../src/filereader';
 
 describe( 'FileRepository', () => {
 	let editor, fileRepository, adapterMock;
+
 	testUtils.createSinonSandbox();
 
+	class UploadAdapterPluginMock extends Plugin {
+		init() {
+			fileRepository = this.editor.plugins.get( 'FileRepository' );
+
+			fileRepository.createAdapter = loader => {
+				adapterMock = new AdapterMock( loader );
+
+				return adapterMock;
+			};
+		}
+	}
+
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ FileRepository ]
-		} )
+		return VirtualTestEditor
+			.create( {
+				plugins: [ FileRepository, UploadAdapterPluginMock ]
+			} )
 			.then( newEditor => {
 				editor = newEditor;
-				fileRepository = editor.plugins.get( 'FileRepository' );
-				fileRepository.createAdapter = loader => {
-					adapterMock = new AdapterMock( loader );
-
-					return adapterMock;
-				};
 			} );
+	} );
+
+	afterEach( () => {
+		return editor.destroy();
 	} );
 
 	it( 'should be initialized', () => {
 		expect( fileRepository ).to.be.instanceOf( FileRepository );
 	} );
 
-	describe( 'init', () => {
+	describe( 'init()', () => {
 		it( 'should create loaders collection', () => {
 			expect( fileRepository.loaders ).to.be.instanceOf( Collection );
 		} );
@@ -76,16 +91,39 @@ describe( 'FileRepository', () => {
 		} );
 	} );
 
-	describe( 'createLoader', () => {
-		it( 'should show warning if adapter is not present', () => {
+	describe( 'afterInit()', () => {
+		it( 'logs a warning if no adapter was defined', () => {
 			const stub = testUtils.sinon.stub( log, 'warn' );
+
+			return VirtualTestEditor
+				.create()
+				.then( editor => {
+					const fileRepository = new FileRepository( editor );
+
+					fileRepository.init();
+					fileRepository.afterInit();
+
+					sinon.assert.calledOnce( stub );
+					sinon.assert.calledWithExactly(
+						stub,
+						'filerepository-no-adapter: Upload adapter is not defined.'
+					);
+				} );
+		} );
+	} );
+
+	describe( 'createLoader()', () => {
+		it( 'should return null if adapter is not present', () => {
+			const stub = testUtils.sinon.stub( log, 'error' );
+
 			fileRepository.createAdapter = undefined;
-			fileRepository.createLoader( createNativeFileMock() );
+
+			expect( fileRepository.createLoader( createNativeFileMock() ) ).to.be.null;
 
 			sinon.assert.calledOnce( stub );
 			sinon.assert.calledWithExactly(
 				stub,
-				'FileRepository: no createAdapter method found. Please define it before creating a loader.'
+				'filerepository-no-adapter: Upload adapter is not defined.'
 			);
 		} );
 
@@ -107,7 +145,7 @@ describe( 'FileRepository', () => {
 		} );
 	} );
 
-	describe( 'getLoader', () => {
+	describe( 'getLoader()', () => {
 		it( 'should return null if loader does not exists', () => {
 			const file1 = createNativeFileMock();
 			const file2 = createNativeFileMock();
@@ -124,7 +162,7 @@ describe( 'FileRepository', () => {
 		} );
 	} );
 
-	describe( 'destroyLoader', () => {
+	describe( 'destroyLoader()', () => {
 		let file, loader, destroySpy;
 
 		beforeEach( () => {
@@ -162,7 +200,7 @@ describe( 'FileRepository', () => {
 			loader = fileRepository.createLoader( file );
 		} );
 
-		describe( 'constructor', () => {
+		describe( 'constructor()', () => {
 			it( 'should initialize id', () => {
 				expect( loader.id ).to.be.a( 'string' );
 			} );
@@ -238,7 +276,7 @@ describe( 'FileRepository', () => {
 			} );
 		} );
 
-		describe( 'read', () => {
+		describe( 'read()', () => {
 			it( 'should throw error when status is defferent than idle', () => {
 				loader.status = 'uploading';
 
@@ -292,7 +330,7 @@ describe( 'FileRepository', () => {
 			} );
 		} );
 
-		describe( 'upload', () => {
+		describe( 'upload()', () => {
 			it( 'should throw error when status is defferent than idle', () => {
 				loader.status = 'reading';
 

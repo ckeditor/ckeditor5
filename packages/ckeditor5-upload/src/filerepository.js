@@ -20,7 +20,17 @@ import FileReader from './filereader.js';
 import uid from '@ckeditor/ckeditor5-utils/src/uid.js';
 
 /**
- * FileRepository plugin.
+ * File repository plugin. A central point for managing file upload.
+ *
+ * To use it, first you need an upload adapter. Upload adapter's job is to handle communication with the server
+ * (sending the file and handling server's response). You can use one of the existing plugins introducing upload adapters
+ * (e.g. {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter} or
+ * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}) or write your own one
+ * (which boils down to setting the {@link ~FileRepository#createAdapter} factory function – see
+ * {@link ~Adapter `Adapter` interface} documentation).
+ *
+ * Then, you can use {@link ~FileRepository#createLoader `createLoader()`} and the returned {@link ~FileLoader} instance to
+ * load and upload files.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -44,15 +54,15 @@ export default class FileRepository extends Plugin {
 		this.loaders = new Collection();
 
 		/**
-		 * Function that should be defined before using FileRepository. It should return new instance of
-		 * {@link module:upload/filerepository~Adapter Adapter} that will be used to upload files.
-		 * {@link module:upload/filerepository~FileLoader FileLoader} instance associated with the adapter
-		 * will be passed to that function.
-		 * For more information and example see {@link module:upload/filerepository~Adapter Adapter}.
+		 * A factory function which should be defined before using `FileRepository`.
 		 *
-		 * @abstract
-		 * @function
-		 * @name #createAdapter
+		 * It should return a new instance of {@link module:upload/filerepository~Adapter} that will be used to upload files.
+		 * {@link module:upload/filerepository~FileLoader} instance associated with the adapter
+		 * will be passed to that function.
+		 *
+		 * For more information and example see {@link module:upload/filerepository~Adapter}.
+		 *
+		 * @member {Function} #createAdapter
 		 */
 
 		/**
@@ -66,6 +76,7 @@ export default class FileRepository extends Plugin {
 
 		/**
 		 * Number of total bytes to upload.
+		 *
 		 * It might be different than the file size because of headers and additional data.
 		 * It contains `null` if value is not available yet, so it's better to use {@link #uploadedPercent} to monitor
 		 * the progress.
@@ -88,11 +99,49 @@ export default class FileRepository extends Plugin {
 		} );
 	}
 
+	afterInit() {
+		if ( !this.createAdapter ) {
+			/**
+			 * You need to enable an upload adapter in order to be able to upload files.
+			 *
+			 * This warning shows up when {@link module:upload/filerepository~FileRepository} is being used
+			 * without {@link #createAdapter definining an upload adapter}.
+			 *
+			 * If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}
+			 * it means that you did not configure any of the upload adapters available by default in those builds.
+			 * See:
+			 *
+			 * * {@link module:core/editor/editorconfig~EditorConfig#cloudServices `config.cloudServices`} for
+			 * Easy Image with Cloud Services integration,
+			 * * {@link module:core/editor/editorconfig~EditorConfig#ckfinder `config.ckfinder`} for CKFinder
+			 * file upload integration.
+			 *
+			 * If you do not need file upload functionality at all and you use one of the builds, you can disable the built-in
+			 * upload adapters to hide this warning:
+			 *
+			 *		ClassicEditor
+			 *			.create( document.querySelector( '#editor' ), {
+			 * 				removePlugins: [ 'EasyImage', 'CKFinderUploadAdapter' ]
+			 *			} )
+			 *			.then( ... )
+			 *			.catch( ... );
+			 *
+			 * If you wish to implement your own upload adapter refer to the {@link ~Adapter `Adapter` interface} documentation.
+			 *
+			 * @error filerepository-no-adapter
+			 */
+			log.warn( 'filerepository-no-adapter: Upload adapter is not defined.' );
+
+			return null;
+		}
+	}
+
 	/**
 	 * Returns the loader associated with specified file.
+	 *
 	 * To get loader by id use `fileRepository.loaders.get( id )`.
 	 *
-	 * @param {File} file Native File object.
+	 * @param {File} file Native file handle.
 	 * @returns {module:upload/filerepository~FileLoader|null}
 	 */
 	getLoader( file ) {
@@ -106,15 +155,16 @@ export default class FileRepository extends Plugin {
 	}
 
 	/**
-	 * Creates loader for specified file.
-	 * Shows console warning and returns `null` if {@link #createAdapter} method is not defined.
+	 * Creates a loader instance for the given file.
+	 *
+	 * Requires {@link #createAdapter} factory to be defined.
 	 *
 	 * @param {File} file Native File object.
 	 * @returns {module:upload/filerepository~FileLoader|null}
 	 */
 	createLoader( file ) {
 		if ( !this.createAdapter ) {
-			log.warn( 'FileRepository: no createAdapter method found. Please define it before creating a loader.' );
+			log.error( 'filerepository-no-adapter: Upload adapter is not defined.' );
 
 			return null;
 		}
@@ -150,7 +200,7 @@ export default class FileRepository extends Plugin {
 	}
 
 	/**
-	 * Destroys loader.
+	 * Destroys the given loader.
 	 *
 	 * @param {File|module:upload/filerepository~FileLoader} fileOrLoader File associated with that loader or loader
 	 * itself.
@@ -172,9 +222,9 @@ mix( FileRepository, ObservableMixin );
  */
 class FileLoader {
 	/**
-	 * Creates instance of FileLoader.
+	 * Creates a new instance of `FileLoader`.
 	 *
-	 * @param {File} file
+	 * @param {File} file A native file instance.
 	 * @param {module:upload/filerepository~Adapter} adapter
 	 */
 	constructor( file, adapter ) {
@@ -187,7 +237,7 @@ class FileLoader {
 		this.id = uid();
 
 		/**
-		 * File instance associated with FileLoader.
+		 * A `File` instance associated with this file loader.
 		 *
 		 * @readonly
 		 * @member {File}
@@ -195,7 +245,7 @@ class FileLoader {
 		this.file = file;
 
 		/**
-		 * Adapter instance associated with FileLoader.
+		 * Adapter instance associated with this file loader.
 		 *
 		 * @private
 		 * @member {module:upload/filerepository~Adapter}
@@ -212,6 +262,7 @@ class FileLoader {
 
 		/**
 		 * Current status of FileLoader. It can be one of the following:
+		 *
 		 * * 'idle',
 		 * * 'reading',
 		 * * 'uploading',
@@ -219,11 +270,13 @@ class FileLoader {
 		 * * 'error'.
 		 *
 		 * When reading status can change in a following way:
+		 *
 		 * `idle` -> `reading` -> `idle`
 		 * `idle` -> `reading -> `aborted`
 		 * `idle` -> `reading -> `error`
 		 *
 		 * When uploading status can change in a following way:
+		 *
 		 * `idle` -> `uploading` -> `idle`
 		 * `idle` -> `uploading` -> `aborted`
 		 * `idle` -> `uploading` -> `error`
@@ -275,17 +328,19 @@ class FileLoader {
 
 	/**
 	 * Reads file using {@link module:upload/filereader~FileReader}.
+	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `filerepository-read-wrong-status` when status
 	 * is different than `idle`.
+	 *
 	 * Example usage:
 	 *
 	 *	fileLoader.read()
 	 *		.then( data => { ... } )
-	 *		.catch( e => {
-	 *			if ( e === 'aborted' ) {
+	 *		.catch( err => {
+	 *			if ( err === 'aborted' ) {
 	 *				console.log( 'Reading aborted.' );
 	 *			} else {
-	 *				console.log( 'Reading error.', e );
+	 *				console.log( 'Reading error.', err );
 	 *			}
 	 *		} );
 	 *
@@ -317,7 +372,8 @@ class FileLoader {
 	}
 
 	/**
-	 * Reads file using provided {@link module:upload/filerepository~Adapter}.
+	 * Reads file using the provided {@link module:upload/filerepository~Adapter}.
+	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `filerepository-upload-wrong-status` when status
 	 * is different than `idle`.
 	 * Example usage:
@@ -398,39 +454,40 @@ mix( FileLoader, ObservableMixin );
  * handles file uploads. It should contain logic necessary to initiate upload process and monitor its progress.
  *
  * It should implement two methods:
- * * {@link module:upload/filerepository~Adapter#upload upload()},
- * * {@link module:upload/filerepository~Adapter#abort abort()}.
+ *
+ * * {@link module:upload/filerepository~Adapter#upload `upload()`},
+ * * {@link module:upload/filerepository~Adapter#abort `abort()`}.
  *
  * Example adapter implementation:
  *
- *	class Adapter {
- *		constructor( loader ) {
- *			// Save Loader instance to update upload progress.
- *			this.loader = loader;
- *		}
+ *		class Adapter {
+ *			constructor( loader ) {
+ *				// Save Loader instance to update upload progress.
+ *				this.loader = loader;
+ *			}
  *
- *		upload() {
- *			// Update loader's progress.
- *			server.onUploadProgress( data => {
- *				loader.uploadTotal = data.total;
- *				loader.uploaded = data.uploaded;
- *			} ):
+ *			upload() {
+ *				// Update loader's progress.
+ *				server.onUploadProgress( data => {
+ *					loader.uploadTotal = data.total;
+ *					loader.uploaded = data.uploaded;
+ *				} ):
  *
- *			// Return promise that will be resolved when file is uploaded.
- *			return server.upload( loader.file );
- *		}
+ *				// Return promise that will be resolved when file is uploaded.
+ *				return server.upload( loader.file );
+ *			}
  *
- *		abort() {
- *			// Reject promise returned from upload() method.
- *			server.abortUpload();
+ *			abort() {
+ *				// Reject promise returned from upload() method.
+ *				server.abortUpload();
+ *			}
  *		}
- *	}
  *
  * Then adapter can be set to be used by {@link module:upload/filerepository~FileRepository FileRepository}:
  *
- *	editor.plugins.get( 'FileRepository' ).createAdapter = function( loader ) {
- *		return new Adapter( loader );
- *	};
+ *		editor.plugins.get( 'FileRepository' ).createAdapter = function( loader ) {
+ *			return new Adapter( loader );
+ *		};
  *
  * @interface Adapter
  */
@@ -440,18 +497,18 @@ mix( FileLoader, ObservableMixin );
  * This method should return a promise that will resolve when data will be uploaded to server. Promise should be
  * resolved with an object containing information about uploaded file:
  *
- *	{
- *		default: 'http://server/default-size.image.png'
- *	}
+ *		{
+ *			default: 'http://server/default-size.image.png'
+ *		}
  *
  * Additionally, other image sizes can be provided:
  *
- *	{
- *		default: 'http://server/default-size.image.png',
- *		'160': 'http://server/size-160.image.png',
- *		'500': 'http://server/size-500.image.png',
- *		'1000': 'http://server/size-1000.image.png'
- *	}
+ *		{
+ *			default: 'http://server/default-size.image.png',
+ *			'160': 'http://server/size-160.image.png',
+ *			'500': 'http://server/size-500.image.png',
+ *			'1000': 'http://server/size-1000.image.png'
+ *		}
  *
  * Take a look at {@link module:upload/filerepository~Adapter example Adapter implementation} and
  * {@link module:upload/filerepository~FileRepository#createAdapter createAdapter method}.

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
 /**
  * Returns object that mocks native File object.
  */
@@ -117,3 +119,10 @@ export class NativeFileReaderMock {
 	}
 }
 
+export class UploadAdapterPluginMock extends Plugin {
+	init() {
+		const fileRepository = this.editor.plugins.get( 'FileRepository' );
+
+		fileRepository.createAdapter = () => {};
+	}
+}

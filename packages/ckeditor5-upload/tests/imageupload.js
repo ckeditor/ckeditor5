@@ -11,20 +11,28 @@ import ImageUpload from '../src/imageupload';
 import ImageUploadProgress from '../src/imageuploadprogress';
 import ImageUploadButton from '../src/imageuploadbutton';
 
+import { UploadAdapterPluginMock } from './_utils/mocks';
+
 describe( 'ImageUpload', () => {
-	let editor;
+	let editor, editorElement;
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Image, ImageUpload ]
+				plugins: [ Image, ImageUpload, UploadAdapterPluginMock ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 			} );
+	} );
+
+	afterEach( () => {
+		editorElement.remove();
+
+		return editor.destroy();
 	} );
 
 	it( 'should include ImageUploadProgress', () => {

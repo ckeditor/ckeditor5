@@ -6,11 +6,14 @@
 /* globals window */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEngine from '@ckeditor/ckeditor5-image/src/image/imageengine';
 import ImageUploadEngine from '../src/imageuploadengine';
 import ImageUploadProgress from '../src/imageuploadprogress';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import FileRepository from '../src/filerepository';
+
 import { AdapterMock, createNativeFileMock, NativeFileReaderMock } from './_utils/mocks';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -20,9 +23,23 @@ import svgPlaceholder from '../theme/icons/image_placeholder.svg';
 
 describe( 'ImageUploadProgress', () => {
 	const imagePlaceholder = encodeURIComponent( svgPlaceholder );
+
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 	let editor, document, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
+
+	class UploadAdapterPluginMock extends Plugin {
+		init() {
+			fileRepository = this.editor.plugins.get( FileRepository );
+			fileRepository.createAdapter = newLoader => {
+				loader = newLoader;
+				adapterMock = new AdapterMock( loader );
+
+				return adapterMock;
+			};
+		}
+	}
+
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
@@ -34,7 +51,7 @@ describe( 'ImageUploadProgress', () => {
 
 		return ClassicTestEditor
 			.create( {
-				plugins: [ ImageEngine, Paragraph, ImageUploadProgress ]
+				plugins: [ ImageEngine, Paragraph, ImageUploadProgress, UploadAdapterPluginMock ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
