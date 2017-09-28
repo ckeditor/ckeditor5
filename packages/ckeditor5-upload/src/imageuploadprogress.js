@@ -39,7 +39,7 @@ export default class ImageUploadProgress extends Plugin {
 		 * @protected
 		 * @member {String} #placeholder
 		 */
-		this.placeholder = 'data:image/svg+xml;utf8,' + uploadingPlaceholder;
+		this.placeholder = 'data:image/svg+xml;utf8,' + encodeURIComponent( uploadingPlaceholder );
 	}
 
 	init() {
