@@ -423,12 +423,12 @@ function containerChildrenMutated( mutations ) {
 
 	// Check if all mutations are `children` type, and there is no single text node mutation.
 	for ( const mutation of mutations ) {
-		if ( mutation.type !== 'children' || getSingleTextNodeChange( mutation ) ) {
-			return false;
+		if ( mutation.type === 'children' && !getSingleTextNodeChange( mutation ) ) {
+			return true;
 		}
 	}
 
-	return true;
+	return false;
 }
 
 // Returns true if provided array contains only {@link module:engine/model/text~Text model text nodes}.

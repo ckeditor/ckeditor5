@@ -947,6 +947,36 @@ describe( 'Input feature', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">[]textx</$text></paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p><strong>{}textx</strong></p>' );
 		} );
+
+		// #117.
+		it( 'should handle mixed mutations', () => {
+			setModelData( model, '<paragraph><$text bold="true">Foo bar aple</$text></paragraph>' );
+
+			const paragraph = viewRoot.getChild( 0 );
+			const strong = paragraph.getChild( 0 );
+			const viewSelection = new ViewSelection();
+			viewSelection.setCollapsedAt( paragraph, 0 );
+
+			// Simulate mutations and DOM change.
+			domRoot.childNodes[ 0 ].innerHTML = '<strong>Foo bar </strong><b>apple</b>';
+			view.fire( 'mutations', [
+				{
+					type: 'text',
+					oldText: 'Foo bar aple',
+					newText: 'Foo bar ',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				},
+				{
+					type: 'children',
+					oldChildren: [ strong ],
+					newChildren: [ strong, new ViewElement( 'b', null, new ViewText( 'apple' ) ) ],
+					node: paragraph
+				}
+			], viewSelection );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">[]Foo bar apple</$text></paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p><strong>{}Foo bar apple</strong></p>' );
+		} );
 	} );
 } );
 
