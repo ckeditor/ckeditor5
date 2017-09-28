@@ -16,14 +16,21 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * A plugin that enables CKFinder uploads in CKEditor 5.
- * Configure proper upload URL under the `ckfinder.uploadUrl` key, for example:
  *
- *	Editor.create( editorElement, {
- *		plugins: [ ... ],
- *		ckfinder: {
- *			uploadUrl: 'http://example.com/upload'
- *		}
- *	} );
+ * Configure the upload URL in
+ * {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl `ckfinder.uploadUrl`}.
+ *
+ * For example:
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				plugins: [ ... ],
+ *				ckfinder: {
+ *					uploadUrl: 'http://example.com/upload'
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
  *
  * @extends module:core/plugin~Plugin
  */
@@ -184,3 +191,34 @@ class Adapter {
 		this.xhr.send( data );
 	}
 }
+
+/**
+ * The configuration of the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}.
+ *
+ * Read more in {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig}.
+ *
+ * @member {module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig} module:core/editor/editorconfig~EditorConfig#ckfinder
+ */
+
+/**
+ * The configuration of the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ * 				ckfinder: {
+ *					uploadUrl: 'http://example.com/upload'
+ * 				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface CKFinderAdapterConfig
+ */
+
+/**
+ * The URL to which files should be uploaded.
+ *
+ * @member {String} module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl
+ */
