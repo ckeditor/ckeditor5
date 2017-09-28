@@ -18,9 +18,10 @@ describe( 'FileRepository', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ FileRepository ]
-		} )
+		return VirtualTestEditor
+			.create( {
+				plugins: [ FileRepository ]
+			} )
 			.then( newEditor => {
 				editor = newEditor;
 				fileRepository = editor.plugins.get( 'FileRepository' );
@@ -32,11 +33,15 @@ describe( 'FileRepository', () => {
 			} );
 	} );
 
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	it( 'should be initialized', () => {
 		expect( fileRepository ).to.be.instanceOf( FileRepository );
 	} );
 
-	describe( 'init', () => {
+	describe( 'init()', () => {
 		it( 'should create loaders collection', () => {
 			expect( fileRepository.loaders ).to.be.instanceOf( Collection );
 		} );
@@ -76,16 +81,16 @@ describe( 'FileRepository', () => {
 		} );
 	} );
 
-	describe( 'createLoader', () => {
-		it( 'should show warning if adapter is not present', () => {
-			const stub = testUtils.sinon.stub( log, 'warn' );
+	describe( 'createLoader()', () => {
+		it( 'should show error if adapter is not present', () => {
+			const stub = testUtils.sinon.stub( log, 'error' );
 			fileRepository.createAdapter = undefined;
 			fileRepository.createLoader( createNativeFileMock() );
 
 			sinon.assert.calledOnce( stub );
 			sinon.assert.calledWithExactly(
 				stub,
-				'FileRepository: no createAdapter method found. Please define it before creating a loader.'
+				'filerepository-no-adapter: Upload adapter was not defined.'
 			);
 		} );
 
@@ -107,7 +112,7 @@ describe( 'FileRepository', () => {
 		} );
 	} );
 
-	describe( 'getLoader', () => {
+	describe( 'getLoader()', () => {
 		it( 'should return null if loader does not exists', () => {
 			const file1 = createNativeFileMock();
 			const file2 = createNativeFileMock();
@@ -124,7 +129,7 @@ describe( 'FileRepository', () => {
 		} );
 	} );
 
-	describe( 'destroyLoader', () => {
+	describe( 'destroyLoader()', () => {
 		let file, loader, destroySpy;
 
 		beforeEach( () => {
@@ -162,7 +167,7 @@ describe( 'FileRepository', () => {
 			loader = fileRepository.createLoader( file );
 		} );
 
-		describe( 'constructor', () => {
+		describe( 'constructor()', () => {
 			it( 'should initialize id', () => {
 				expect( loader.id ).to.be.a( 'string' );
 			} );
@@ -238,7 +243,7 @@ describe( 'FileRepository', () => {
 			} );
 		} );
 
-		describe( 'read', () => {
+		describe( 'read()', () => {
 			it( 'should throw error when status is defferent than idle', () => {
 				loader.status = 'uploading';
 
@@ -292,7 +297,7 @@ describe( 'FileRepository', () => {
 			} );
 		} );
 
-		describe( 'upload', () => {
+		describe( 'upload()', () => {
 			it( 'should throw error when status is defferent than idle', () => {
 				loader.status = 'reading';
 
