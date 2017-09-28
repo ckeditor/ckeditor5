@@ -7,6 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import FileDialogButtonView from '../src/ui/filedialogbuttonview';
 import FileRepository from '../src/filerepository';
@@ -21,22 +22,26 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 describe( 'ImageUploadButton', () => {
 	let editor, doc, editorElement, fileRepository;
 
+	class UploadAdapterPluginMock extends Plugin {
+		init() {
+			fileRepository = this.editor.plugins.get( FileRepository );
+			fileRepository.createAdapter = loader => {
+				return new AdapterMock( loader );
+			};
+		}
+	}
+
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Image, ImageUploadButton, FileRepository ]
+				plugins: [ Paragraph, Image, ImageUploadButton, FileRepository, UploadAdapterPluginMock ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				doc = editor.document;
-
-				fileRepository = editor.plugins.get( FileRepository );
-				fileRepository.createAdapter = loader => {
-					return new AdapterMock( loader );
-				};
 
 				// Hide all notifications (prevent alert() calls).
 				const notification = editor.plugins.get( Notification );

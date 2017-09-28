@@ -6,6 +6,8 @@
 /* globals window, setTimeout */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEngine from '@ckeditor/ckeditor5-image/src/image/imageengine';
 import ImageUploadEngine from '../src/imageuploadengine';
 import ImageUploadCommand from '../src/imageuploadcommand';
@@ -28,7 +30,20 @@ describe( 'ImageUploadEngine', () => {
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 	let editor, doc, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
+
 	testUtils.createSinonSandbox();
+
+	class UploadAdapterPluginMock extends Plugin {
+		init() {
+			fileRepository = this.editor.plugins.get( FileRepository );
+			fileRepository.createAdapter = newLoader => {
+				loader = newLoader;
+				adapterMock = new AdapterMock( loader );
+
+				return adapterMock;
+			};
+		}
+	}
 
 	beforeEach( () => {
 		testUtils.sinon.stub( window, 'FileReader' ).callsFake( () => {
@@ -39,20 +54,12 @@ describe( 'ImageUploadEngine', () => {
 
 		return ClassicTestEditor
 			.create( {
-				plugins: [ ImageEngine, ImageUploadEngine, Paragraph, UndoEngine ]
+				plugins: [ ImageEngine, ImageUploadEngine, Paragraph, UndoEngine, UploadAdapterPluginMock ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				doc = editor.document;
 				viewDocument = editor.editing.view;
-
-				fileRepository = editor.plugins.get( FileRepository );
-				fileRepository.createAdapter = newLoader => {
-					loader = newLoader;
-					adapterMock = new AdapterMock( loader );
-
-					return adapterMock;
-				};
 			} );
 	} );
 

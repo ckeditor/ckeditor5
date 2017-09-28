@@ -26,7 +26,8 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid.js';
  * (sending the file and handling server's response). You can use one of the existing plugins introducing upload adapters
  * (e.g. {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter} or
  * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}) or write your own one
- * (which boils down to setting the {@link ~FileRepository#createAdapter} factory function).
+ * (which boils down to setting the {@link ~FileRepository#createAdapter} factory function – see
+ * {@link ~Adapter `Adapter` interface} documentation).
  *
  * Then, you can use {@link ~FileRepository#createLoader `createLoader()`} and the returned {@link ~FileLoader} instance to
  * load and upload files.
@@ -98,6 +99,43 @@ export default class FileRepository extends Plugin {
 		} );
 	}
 
+	afterInit() {
+		if ( !this.createAdapter ) {
+			/**
+			 * You need to enable an upload adapter in order to be able to upload files.
+			 *
+			 * This warning shows up when {@link module:upload/filerepository~FileRepository} is being used
+			 * without {@link #createAdapter definining an upload adapter}.
+			 *
+			 * If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}
+			 * it means that you did not configure any of the upload adapters available by default in those builds.
+			 * See:
+			 *
+			 * * {@link module:core/editor/editorconfig~EditorConfig#cloudServices `config.cloudServices`} for
+			 * Easy Image with Cloud Services integration,
+			 * * {@link module:core/editor/editorconfig~EditorConfig#ckfinder `config.ckfinder`} for CKFinder
+			 * file upload integration.
+			 *
+			 * If you do not need file upload functionality at all and you use one of the builds, you can disable the built-in
+			 * upload adapters to hide this warning:
+			 *
+			 *		ClassicEditor
+			 *			.create( document.querySelector( '#editor' ), {
+			 * 				removePlugins: [ 'EasyImage', 'CKFinderUploadAdapter' ]
+			 *			} )
+			 *			.then( ... )
+			 *			.catch( ... );
+			 *
+			 * If you wish to implement your own upload adapter refer to the {@link ~Adapter `Adapter` interface} documentation.
+			 *
+			 * @error filerepository-no-adapter
+			 */
+			log.warn( 'filerepository-no-adapter: Upload adapter is not defined.' );
+
+			return null;
+		}
+	}
+
 	/**
 	 * Returns the loader associated with specified file.
 	 *
@@ -126,15 +164,7 @@ export default class FileRepository extends Plugin {
 	 */
 	createLoader( file ) {
 		if ( !this.createAdapter ) {
-			/**
-			 * Upload adapter was not defined. Please define it before creating a loader.
-			 *
-			 * This error is thrown when {@link module:upload/filerepository~FileRepository} is being used
-			 * without {@link #createAdapter definining an upload adapter}.
-			 *
-			 * @error filerepository-no-adapter
-			 */
-			log.error( 'filerepository-no-adapter: Upload adapter was not defined.' );
+			log.error( 'filerepository-no-adapter: Upload adapter is not defined.' );
 
 			return null;
 		}

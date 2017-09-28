@@ -6,7 +6,10 @@
 /* globals window */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '../src/filerepository';
+
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import { createNativeFileMock, AdapterMock, NativeFileReaderMock } from './_utils/mocks';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -15,21 +18,28 @@ import FileReader from '../src/filereader';
 
 describe( 'FileRepository', () => {
 	let editor, fileRepository, adapterMock;
+
 	testUtils.createSinonSandbox();
+
+	class UploadAdapterPluginMock extends Plugin {
+		init() {
+			fileRepository = this.editor.plugins.get( 'FileRepository' );
+
+			fileRepository.createAdapter = loader => {
+				adapterMock = new AdapterMock( loader );
+
+				return adapterMock;
+			};
+		}
+	}
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ FileRepository ]
+				plugins: [ FileRepository, UploadAdapterPluginMock ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				fileRepository = editor.plugins.get( 'FileRepository' );
-				fileRepository.createAdapter = loader => {
-					adapterMock = new AdapterMock( loader );
-
-					return adapterMock;
-				};
 			} );
 	} );
 
@@ -81,16 +91,39 @@ describe( 'FileRepository', () => {
 		} );
 	} );
 
+	describe( 'afterInit()', () => {
+		it( 'logs a warning if no adapter was defined', () => {
+			const stub = testUtils.sinon.stub( log, 'warn' );
+
+			return VirtualTestEditor
+				.create()
+				.then( editor => {
+					const fileRepository = new FileRepository( editor );
+
+					fileRepository.init();
+					fileRepository.afterInit();
+
+					sinon.assert.calledOnce( stub );
+					sinon.assert.calledWithExactly(
+						stub,
+						'filerepository-no-adapter: Upload adapter is not defined.'
+					);
+				} );
+		} );
+	} );
+
 	describe( 'createLoader()', () => {
-		it( 'should show error if adapter is not present', () => {
+		it( 'should return null if adapter is not present', () => {
 			const stub = testUtils.sinon.stub( log, 'error' );
+
 			fileRepository.createAdapter = undefined;
-			fileRepository.createLoader( createNativeFileMock() );
+
+			expect( fileRepository.createLoader( createNativeFileMock() ) ).to.be.null;
 
 			sinon.assert.calledOnce( stub );
 			sinon.assert.calledWithExactly(
 				stub,
-				'filerepository-no-adapter: Upload adapter was not defined.'
+				'filerepository-no-adapter: Upload adapter is not defined.'
 			);
 		} );
 

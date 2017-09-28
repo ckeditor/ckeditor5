@@ -4,8 +4,12 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
 import ImageUploadCommand from '../src/imageuploadcommand';
 import FileRepository from '../src/filerepository';
+
 import { createNativeFileMock, AdapterMock } from './_utils/mocks';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Image from '@ckeditor/ckeditor5-image/src/image/imageengine';
@@ -16,18 +20,23 @@ import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 describe( 'ImageUploadCommand', () => {
 	let editor, command, doc, fileRepository;
 
+	class UploadAdapterPluginMock extends Plugin {
+		init() {
+			fileRepository = this.editor.plugins.get( FileRepository );
+			fileRepository.createAdapter = loader => {
+				return new AdapterMock( loader );
+			};
+		}
+	}
+
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ FileRepository, Image, Paragraph ]
+				plugins: [ FileRepository, Image, Paragraph, UploadAdapterPluginMock ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				command = new ImageUploadCommand( editor );
-				fileRepository = editor.plugins.get( FileRepository );
-				fileRepository.createAdapter = loader => {
-					return new AdapterMock( loader );
-				};
 
 				doc = editor.document;
 
