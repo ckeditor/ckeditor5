@@ -15,12 +15,46 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 /**
  * Collects {@link module:ui/view~View} instances.
  *
+ *		const parentView = new ParentView( locale );
+ *		const collection = new ViewCollection( locale );
+ *
+ *		collection.setParent( parentView.element );
+ *
+ *		const viewA = new ChildView( locale );
+ *		const viewB = new ChildView( locale );
+ *
+ * View collection manages view {@link module:ui/view~View#element elements}:
+ *
+ *		// parentView.element.children == [ viewA.element, vievB.element ]
+ *		collection.add( viewA );
+ *		collection.add( viewB );
+ *
+ * It handles initialization of the children:
+ *
+ *		// viewA.ready == viewB.ready == true;
+ *		collection.init();
+ *
+ * It {@link module:ui/viewcollection~ViewCollection#delegate propagates} DOM events too:
+ *
+ *		// Delegate #click and #keydown events from viewA and viewB to the parentView.
+ *		collection.delegate( 'click' ).to( parentView );
+ *
+ *		parentView.on( 'click', ( evt ) => {
+ *			console.log( `${ evt.source } has been clicked.` );
+ *		} );
+ *
+ *		// This event will be delegated to the parentView.
+ *		viewB.fire( 'click' );
+ *
+ * **Note**: A view collection can be used directly in the {@link module:ui/template~TemplateDefinition definition}
+ * of a {@link module:ui/template~Template template}.
+ *
  * @extends module:utils/collection~Collection
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class ViewCollection extends Collection {
 	/**
-	 * Creates a new {@link module:ui/viewcollection~ViewCollection} instance.
+	 * Creates a new instance of the {@link module:ui/viewcollection~ViewCollection}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The {@link module:core/editor~Editor editor's locale} instance.
 	 */
@@ -46,15 +80,16 @@ export default class ViewCollection extends Collection {
 		} );
 
 		/**
-		 * The {@link module:core/editor/editor~Editor editor's locale} instance.
+		 * The {@link module:core/editor/editor~Editor#locale editor's locale} instance.
+		 * See the view {@link module:ui/view~View#locale locale} property.
 		 *
 		 * @member {module:utils/locale~Locale}
 		 */
 		this.locale = locale;
 
 		/**
-		 * Set to `true` once the parent's {@link module:ui/view~View#ready} is true, which means
-		 * that all the views in the collection are also ready (which can be asynchronous).
+		 * Set `true` when all views in the collection are {@link module:ui/view~View#ready}.
+		 * See the view {@link module:ui/view~View#init init} method.
 		 *
 		 * @readonly
 		 * @observable
@@ -72,8 +107,10 @@ export default class ViewCollection extends Collection {
 	}
 
 	/**
-	 * Initializes child views by injecting {@link module:ui/view~View#element} into DOM
-	 * and calling {@link module:ui/view~View#init}.
+	 * Initializes all child views in the collection by calling view {@link module:ui/view~View#init}
+	 * method.
+	 *
+	 * Once finished, sets {@link #ready} `true`.
 	 */
 	init() {
 		if ( this.ready ) {
@@ -92,14 +129,33 @@ export default class ViewCollection extends Collection {
 
 	/**
 	 * Destroys the view collection along with child views.
+	 * See the view {@link module:ui/view~View#destroy} method.
 	 */
 	destroy() {
 		this.map( v => v.destroy() );
 	}
 
 	/**
-	 * Adds a child view to the collection. If {@link module:ui/viewcollection~ViewCollection#ready}, the child view
-	 * is also initialized when added.
+	 * Adds a new child view to the collection. If the collection is
+	 * {@link module:ui/viewcollection~ViewCollection#ready}, the child view is also
+	 * {@link module:ui/view~View#init initialized} when added.
+	 *
+	 * Additionally, if the {@link #setParent parent element} of the collection has been set, the
+	 * {@link module:ui/view~View#element element} of the view is also added in DOM,
+	 * reflecting the order of the collection.
+	 *
+	 *		const collection = new ViewCollection();
+	 *		const parentElement = document.querySelector( '#container' );
+	 *		collection.setParent( parentElement );
+	 *
+	 *		const viewA = new View();
+	 *		const viewB = new View();
+	 *
+	 *		// parentElement.children == [ viewA.element, vievB.element ]
+	 *		collection.add( viewA );
+	 *		collection.add( viewB );
+	 *
+	 * See the {@link #remove} method.
 	 *
 	 * @param {module:ui/view~View} view A child view.
 	 * @param {Number} [index] Index at which the child will be added to the collection.
@@ -113,18 +169,21 @@ export default class ViewCollection extends Collection {
 	}
 
 	/**
-	 * Sets {@link #_parentElement} of this collection.
+	 * Sets the parent HTML element of this collection. When parent is set, {@link #add adding} and
+	 * {@link #remove removing} views in the collection synchronizes their
+	 * {@link module:ui/view~View#element elements} in the parent element.
 	 *
-	 * @param {HTMLElement} element A new parent.
+	 * @param {HTMLElement} element A new parent element.
 	 */
 	setParent( elementOrDocFragment ) {
 		this._parentElement = elementOrDocFragment;
 	}
 
 	/**
-	 * Delegates selected events coming from within the collection to desired {@link module:utils/emittermixin~EmitterMixin}.
+	 * Delegates selected events coming from within views in the collection to any
+	 * {@link module:utils/emittermixin~Emitter}.
 	 *
-	 * For instance:
+	 * For the following views and collection:
 	 *
 	 *		const viewA = new View();
 	 *		const viewB = new View();
@@ -137,7 +196,7 @@ export default class ViewCollection extends Collection {
 	 *
 	 *		views.add( viewA );
 	 *
-	 * then `eventX` is delegated (fired by) `viewB` and `viewC` along with `customData`:
+	 * the `eventX` is delegated (fired by) `viewB` and `viewC` along with `customData`:
 	 *
 	 *		viewA.fire( 'eventX', customData );
 	 *
@@ -148,8 +207,10 @@ export default class ViewCollection extends Collection {
 	 * See {@link module:utils/emittermixin~EmitterMixin#delegate}.
 	 *
 	 * @param {...String} events {@link module:ui/view~View} event names to be delegated to another
-	 * {@link module:utils/emittermixin~EmitterMixin}.
-	 * @returns {module:ui/viewcollection~ViewCollection#delegate.to}
+	 * {@link module:utils/emittermixin~Emitter}.
+	 * @returns {Object}
+	 * @returns {Function} return.to A function which accepts the destination of
+	 * {@link module:utils/emittermixin~EmitterMixin#delegate delegated} events.
 	 */
 	delegate( ...events ) {
 		if ( !events.length || !isStringArray( events ) ) {
@@ -194,6 +255,18 @@ export default class ViewCollection extends Collection {
 			}
 		};
 	}
+
+	/**
+	 * Removes a child view from the collection. If the {@link #setParent parent element} of the
+	 * collection has been set, the {@link module:ui/view~View#element element} of the view is also removed
+	 * in DOM, reflecting the order of the collection.
+	 *
+	 * See the {@link #add} method.
+	 *
+	 * @method #remove
+	 * @param {module:ui/view~View|Number|String} subject The view to remove, its id or index in the collection.
+	 * @returns {Object} The removed view.
+	 */
 }
 
 mix( Collection, ObservableMixin );
