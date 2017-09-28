@@ -144,7 +144,7 @@ For example:
 
 ```js
 // In CommonJS environment.
-const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic/build/ckeditor' );
+const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic' );
 ClassicEditor.create( ... ); // [Function]
 
 // If AMD is present, you can do this.
@@ -156,7 +156,7 @@ require( [ 'path/to/ckeditor5-build-classic/build/ckeditor' ], ClassicEditor => 
 ClassicEditor.create( ... ); // [Function]
 
 // As an ES6 module (if using webpack or Rollup).
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 ClassicEditor.create( ... ); // [Function]
 ```
 
