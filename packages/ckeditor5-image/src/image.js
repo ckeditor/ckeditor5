@@ -69,7 +69,7 @@ export default class Image extends Plugin {
  * The configuration of the image features. Used by the image features in `@ckeditor/ckeditor5-image` package.
  *
  *		ClassicEditor
- *			.create( {
+ *			.create( editorElement, {
  * 				image: ... // Image feature options.
  *			} )
  *			.then( ... )
