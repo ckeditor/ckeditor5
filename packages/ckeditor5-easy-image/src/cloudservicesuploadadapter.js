@@ -17,7 +17,7 @@ import UploadGateway from '@ckeditor/ckeditor-cloudservices-core/src/uploadgatew
  * Used mainly by the {@link module:easy-image/easyimage~EasyImage} feature.
  *
  * After enabling this adapter you need to configure the Cloud Services integration through
- * {@link module:easy-image/cloudservicesuploadadapter~CloudServiesAdapterConfig `config.cloudServices`}.
+ * {@link module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig `config.cloudServices`}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -86,9 +86,9 @@ CloudServicesUploadAdapter._UploadGateway = UploadGateway;
  *
  * Used mainly by the {@link module:easy-image/easyimage~EasyImage} feature.
  *
- * Read more in {@link module:easy-image/cloudservicesuploadadapter~CloudServiesAdapterConfig}.
+ * Read more in {@link module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig}.
  *
- * @member {module:easy-image/cloudservicesuploadadapter~CloudServiesAdapterConfig}
+ * @member {module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig}
  *         module:core/editor/editorconfig~EditorConfig#cloudServices
  */
 
@@ -109,17 +109,17 @@ CloudServicesUploadAdapter._UploadGateway = UploadGateway;
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
- * @interface CloudServiesAdapterConfig
+ * @interface CloudServicesAdapterConfig
  */
 
 /**
  * The URL to which files should be uploaded.
  *
- * @member {String} module:easy-image/cloudservicesuploadadapter~CloudServiesAdapterConfig#uploadUrl
+ * @member {String} module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig#uploadUrl
  */
 
 /**
  * The token to the Cloud Services application. You can obtain it from the token service.
  *
- * @member {String} module:easy-image/cloudservicesuploadadapter~CloudServiesAdapterConfig#token
+ * @member {String} module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig#token
  */

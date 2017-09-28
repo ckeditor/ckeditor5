@@ -22,7 +22,7 @@ import ImageUpload from '@ckeditor/ckeditor5-upload/src/imageupload';
  * * {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter}.
  *
  * After enabling the Easy Image plugin you need to configure the Cloud Services integration through
- * {@link module:easy-image/cloudservicesuploadadapter~CloudServiesAdapterConfig `config.cloudServices`}.
+ * {@link module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig `config.cloudServices`}.
  *
  * @extends module:core/plugin~Plugin
  */
