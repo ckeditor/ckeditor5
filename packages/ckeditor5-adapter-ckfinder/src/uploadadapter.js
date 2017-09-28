@@ -44,6 +44,13 @@ export default class CKFinderUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'CKFinderUploadAdapter';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const url = this.editor.config.get( 'ckfinder.uploadUrl' );
 
