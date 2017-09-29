@@ -870,6 +870,29 @@ describe( 'UndoEngine integration', () => {
 			editor.execute( 'undo' );
 			output( '<paragraph>Foo[]</paragraph><paragraph>Bar</paragraph>' );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5-undo/issues/65#issuecomment-323682195
+		it( 'undoing split after the element created by split has been removed', () => {
+			input( '<paragraph>Foo[]bar</paragraph>' );
+
+			editor.execute( 'enter' );
+
+			doc.enqueueChanges( () => {
+				const range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 1, 3 ] ) );
+
+				doc.selection.setRanges( [ range ] );
+
+				editor.execute( 'delete' );
+			} );
+
+			editor.execute( 'undo' );
+
+			output( '<paragraph>Foo[</paragraph><paragraph>bar]</paragraph>' );
+
+			editor.execute( 'undo' );
+
+			output( '<paragraph>Foobar[]</paragraph>' );
+		} );
 	} );
 
 	describe( 'pasting', () => {
