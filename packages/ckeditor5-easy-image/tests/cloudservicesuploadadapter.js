@@ -11,17 +11,11 @@ import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import UploadGatewayMock from './_utils/uploadgatewaymock';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-
-import log from '@ckeditor/ckeditor5-utils/src/log';
-
 // Store original uploader.
 const CSUploader = CloudServicesUploadAdapter._UploadGateway;
 
 describe( 'CloudServicesUploadAdapter', () => {
 	let div;
-
-	testUtils.createSinonSandbox();
 
 	before( () => {
 		// Mock uploader.
@@ -39,7 +33,7 @@ describe( 'CloudServicesUploadAdapter', () => {
 	} );
 
 	afterEach( () => {
-		div.remove();
+		window.document.body.removeChild( div );
 	} );
 
 	describe( 'init()', () => {
@@ -65,16 +59,12 @@ describe( 'CloudServicesUploadAdapter', () => {
 		it( 'should not set loader if there is no token', () => {
 			UploadGatewayMock.lastToken = undefined;
 
-			// FileRepository will complain.
-			const warnStub = testUtils.sinon.stub( log, 'warn' );
-
 			return ClassicTestEditor
 				.create( div, {
 					plugins: [ CloudServicesUploadAdapter ]
 				} )
 				.then( editor => {
 					expect( UploadGatewayMock.lastToken ).to.be.an( 'undefined' );
-					expect( warnStub.calledOnce ).to.be.true;
 
 					return editor.destroy();
 				} );

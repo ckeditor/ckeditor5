@@ -29,10 +29,7 @@ describe( 'EasyImage', () => {
 
 		return ClassicTestEditor
 			.create( div, {
-				plugins: [ EasyImage ],
-				cloudServices: {
-					token: 'foo'
-				}
+				plugins: [ EasyImage ]
 			} )
 			.then( editor => {
 				const easyImage = editor.plugins.get( EasyImage );
