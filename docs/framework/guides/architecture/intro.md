@@ -5,69 +5,69 @@ order: 10
 
 # Introduction
 
-In this guide we will try to introduce all the most important parts of CKEditor 5's architecture. We assume that you have read the {@link framework/guides/overview Framework's overview} and saw some code in the {@link framework/guides/quick-start Quick start} guide. This should help you going through this one.
+This guide introduces the most important parts of the CKEditor 5 architecture. It is assumed that you have read the {@link framework/guides/overview Framework's overview} and saw some code in the {@link framework/guides/quick-start Quick start} guide. This should help you going through this one.
 
 <info-box>
-	CKEditor 5 reached its first alpha version. This means that it is feature complete and that we consider it stable enough for first production integrations. However, this means that **we are going to introduce many breaking changes** before the final 1.0.0 release. Many code refactorings were scheduled for after 1.0.0 alpha so a lot of API, including critical pieces, will still change. The goal is, in most cases, to simplify the API, so please excuse us some more cumbersome pieces. We will also avoid going too deep into details and creating many code samples, maintaining which would be a nightmare during upcoming code changes.
+	CKEditor 5 reached its first alpha version. This means that it is feature complete and that we consider it stable enough for first production integrations. However, this means that **we are going to introduce many breaking changes** before the final 1.0.0 release. Many code refactorings were scheduled for after 1.0.0 alpha so a lot of API, including critical pieces, will still change. The goal is, in most cases, to simplify the API, so please excuse us some more cumbersome pieces. We will thus avoid going too deep into details and creating many code samples, as maintaining them would be a nightmare during the upcoming code changes.
 </info-box>
 
 When implementing features you will usually work with these three CKEditor 5 packages:
 
-* [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) – the core editor architecture – a couple of core classes and interfaces which glue all the things together.
-* [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) – the editing engine. The biggest and by far most complex package, implementing the custom data model, the view layer, conversion mechanisms, rendering engine responsible for [taming `contentEditable`](https://medium.com/content-uneditable/contenteditable-the-good-the-bad-and-the-ugly-261a38555e9c) and a lot more.
-* [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) – the standard UI library. Simple MVC implementation which main goal is to best fit CKEditor 5's needs.
+* [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) &ndash; The core editor architecture. A couple of core classes and interfaces that glue everything together.
+* [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) &ndash; The editing engine. The biggest and by far most complex package, implementing the custom data model, the view layer, conversion mechanisms, rendering engine responsible for [taming `contentEditable`](https://medium.com/content-uneditable/contenteditable-the-good-the-bad-and-the-ugly-261a38555e9c) and a lot more.
+* [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) &ndash; The standard UI library. Simple MVC implementation whose main goal is to best fit CKEditor 5 needs.
 
 <!-- TODO link to package pages once https://github.com/cksource/umberto/issues/303 is resolved -->
 
-So, let's tackle one by one.
+These packages will be explained one by one.
 
 ## Core editor architecture
 
-The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package is relatively simple. It comes with just a handful of classes. We present here the ones you need to know.
+The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package is relatively simple. It comes with just a handful of classes. The ones you need to know are presented below.
 
 ### Editor classes
 
-The {@link module:core/editor/editor~Editor} and {@link module:core/editor/standardeditor~StandardEditor} are, respectively, the base editor class and its more typical implementation.
+{@link module:core/editor/editor~Editor} and {@link module:core/editor/standardeditor~StandardEditor} are, respectively, the base editor class and its more typical implementation.
 
-The editor is a root object, gluing all the other components. It holds a couple of properties that you need to know:
+The editor is a root object, gluing all other components. It holds a couple of properties that you need to know:
 
-* {@link module:core/editor/editor~Editor#config} – the config object,
-* {@link module:core/editor/editor~Editor#plugins} and {@link module:core/editor/editor~Editor#commands} – the collection of loaded plugins and commands,
-* {@link module:core/editor/editor~Editor#document} – the document – the editing engine's entry point,
-* {@link module:core/editor/editor~Editor#data} – the data controller (there's also the {@link module:core/editor/editor~Editor#editing editing controller} but [we plan to merge it](https://github.com/ckeditor/ckeditor5-engine/issues/678) into the data controller) – a set of high-level utils to work on the document,
-* {@link module:core/editor/editor~Editor#keystrokes} – the keystroke handler – allows binding keystrokes to actions.
+* {@link module:core/editor/editor~Editor#config} &ndash; The configuration object.
+* {@link module:core/editor/editor~Editor#plugins} and {@link module:core/editor/editor~Editor#commands} &ndash; The collection of loaded plugins and commands.
+* {@link module:core/editor/editor~Editor#document} &ndash; The document. It is the editing engine's entry point.
+* {@link module:core/editor/editor~Editor#data} &ndash; The data controller (there is also the {@link module:core/editor/editor~Editor#editing editing controller} but [we plan to merge it](https://github.com/ckeditor/ckeditor5-engine/issues/678) into the data controller). It is a set of high-level utilities to work on the document,
+* {@link module:core/editor/editor~Editor#keystrokes} &ndash; The keystroke handler. It allows to bind keystrokes to actions.
 
-Besides that, the editor exposes a couple of methods:
+Besides that, the editor exposes a few of methods:
 
-* {@link module:core/editor/editor~Editor.create `create()`} – the static `create()` method. Editor constructors are protected and you should create editors using this static method. It allows the initialization process to be asynchronous.
-* {@link module:core/editor/editor~Editor#destroy `destroy()`} – destroys the editor.
-* {@link module:core/editor/editor~Editor#setData `setData()`} and {@link module:core/editor/editor~Editor#getData `getData()`} – a way to retrieve data from the editor and set data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (can be e.g. JSON if you would implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See e.g. how to {@link features/markdown produce Markdown output}.
-* {@link module:core/editor/editor~Editor#execute `execute()`} – executes the given command.
+* {@link module:core/editor/editor~Editor.create `create()`} &ndash; The static `create()` method. Editor constructors are protected and you should create editors using this static method. It allows the initialization process to be asynchronous.
+* {@link module:core/editor/editor~Editor#destroy `destroy()`} &ndash; Destroys the editor.
+* {@link module:core/editor/editor~Editor#setData `setData()`} and {@link module:core/editor/editor~Editor#getData `getData()`} &ndash; A way to retrieve data from the editor and set data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (it can be e.g. JSON if you implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See, for example, how to {@link features/markdown produce Markdown output}.
+* {@link module:core/editor/editor~Editor#execute `execute()`} &ndash; Executes the given command.
 
-The editor classes are a base to implement your own editors. CKEditor 5 Framework comes with a couple of editor types (e.g. {@link module:editor-classic/classiceditor~ClassicEditor classic}, {@link module:editor-inline/inlineeditor~InlineEditor inline} and {@link module:editor-balloon/ballooneditor~BalloonEditor balloon}) but you can freely implement editors which work and look completely differently. The only requirement is that you implement the {@link module:core/editor/editor~Editor} and {@link module:core/editor/standardeditor~StandardEditor} interfaces.
+The editor classes are a base to implement your own editors. CKEditor 5 Framework comes with a few editor types (for example, {@link module:editor-classic/classiceditor~ClassicEditor classic}, {@link module:editor-inline/inlineeditor~InlineEditor inline} and {@link module:editor-balloon/ballooneditor~BalloonEditor balloon}) but you can freely implement editors which work and look completely different. The only requirement is that you implement the {@link module:core/editor/editor~Editor} and {@link module:core/editor/standardeditor~StandardEditor} interfaces.
 
 <info-box>
-	You are right – mentioned editors are classes, not interfaces. This is a part of API [needs to be improved](https://github.com/ckeditor/ckeditor5/issues/327). Less inheritance, more interfaces and composition. It should also be clear which interfaces feature require to work (at the moment it is half of the `StandardEditor`).
+	You are right &mdash; the editors mentioned above are classes, not interfaces. This is a part of API that [needs to be improved](https://github.com/ckeditor/ckeditor5/issues/327). Less inheritance, more interfaces and composition. It should also be clear which interfaces a feature requires to work (at the moment it is half of the `StandardEditor`).
 </info-box>
 
 ### Plugins
 
-Plugins are the way to introduce editor features. In CKEditor 5 even {@link module:typing/typing~Typing typing} is a plugin. What's more – the {@link module:typing/typing~Typing} plugin requires {@link module:typing/input~Input} and {@link module:typing/delete~Delete} plugins which are responsible for handling, respectively, methods of inserting text and deleting content. At the same time, a couple of other plugins need to customize <kbd>Backspace</kbd> behavior in certain cases, which is handled by themselves. This leaves the base plugins free of any non-generic knowledge.
+Plugins are a way to introduce editor features. In CKEditor 5 even {@link module:typing/typing~Typing typing} is a plugin. What is more, the {@link module:typing/typing~Typing} plugin requires {@link module:typing/input~Input} and {@link module:typing/delete~Delete} plugins which are responsible for handling, methods of inserting text and deleting content, respectively. At the same time, a couple of other plugins need to customize <kbd>Backspace</kbd> behavior in certain cases, which is handled by themselves. This leaves the base plugins free of any non-generic knowledge.
 
-Another important aspect of how existing CKEditor 5 plugins are implemented is the split into engine and UI parts. E.g. the {@link module:basic-styles/boldengine~BoldEngine} plugin introduces schema definition, mechanisms rendering `<strong>` tags, commands to apply and remove bold from text, while the {@link module:basic-styles/bold~Bold} plugin adds UI of the feature (i.e. a button). This feature split is meant to allow for greater reuse (one can take the engine part and implement their own UI for a feature) as well as for running CKEditor 5 on the server side. The feature split, though, [is not yet perfect and will be improved](https://github.com/ckeditor/ckeditor5/issues/488).
+Another important aspect of how existing CKEditor 5 plugins are implemented is the split into engine and UI parts. For example, the {@link module:basic-styles/boldengine~BoldEngine} plugin introduces schema definition, mechanisms rendering `<strong>` tags, commands to apply and remove bold from text, while the {@link module:basic-styles/bold~Bold} plugin adds the UI of the feature (i.e. a button). This feature split is meant to allow for greater reuse (one can take the engine part and implement their own UI for a feature) as well as for running CKEditor 5 on the server side. At the same time, the feature split [is not perfect yet and will be improved](https://github.com/ckeditor/ckeditor5/issues/488).
 
 The tl;dr of this is that:
 
-* every feature is implemented or at least enabled by a plugin,
-* plugins are highly granular,
-* plugins know everything about the editor,
-* plugins should know as little about other plugins as possible.
+* Every feature is implemented or at least enabled by a plugin.
+* Plugins are highly granular.
+* Plugins know everything about the editor.
+* Plugins should know as little about other plugins as possible.
 
 These are the rules based on which the official plugins were implemented. When implementing your own plugins, if you do not plan to publish them, you can reduce this list to the first point.
 
-After this lengthy introduction (which aimed at making it easier for you to digest the existing plugins), let's talk about the plugin API.
+After this lengthy introduction (which is aimed at making it easier for you to digest the existing plugins), the plugin API can be explained.
 
-All plugins needs to implement the {@link module:core/plugin~PluginInterface}. The easiest way to do so is by inheriting from the {@link module:core/plugin~Plugin} class. The plugin initialization code should be located in the {@link module:core/plugin~PluginInterface#init `init()`} method (which can return a promise). If some piece of code needs to be executed after other plugins are initialized, you can put it in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} method. The dependencies between plugins are implemented using the static {@link module:core/plugin~PluginInterface.requires} property.
+All plugins need to implement the {@link module:core/plugin~PluginInterface}. The easiest way to do so is by inheriting from the {@link module:core/plugin~Plugin} class. The plugin initialization code should be located in the {@link module:core/plugin~PluginInterface#init `init()`} method (which can return a promise). If some piece of code needs to be executed after other plugins are initialized, you can put it in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} method. The dependencies between plugins are implemented using the static {@link module:core/plugin~PluginInterface.requires} property.
 
 ```js
 import MyDependency from 'some/other/plugin';
@@ -89,11 +89,11 @@ You can see how to implement a simple plugin in the {@link framework/guides/quic
 
 ### Commands
 
-A command is combination of an action (a callback) and a state (a set of properties). For instance, the `bold` command applies or removes bold attribute from the selected text. If the text in which the selection is placed has bold applied already, the value of the command is `true`, `false` otherwise. If the `bold` command can be executed on the current selection, it is enabled. If not (because e.g. bold is not allowed in this place), it is disabled.
+A command is a combination of an action (a callback) and a state (a set of properties). For instance, the `bold` command applies or removes bold attribute from the selected text. If the text in which the selection is placed has bold applied already, the value of the command is `true`, `false` otherwise. If the `bold` command can be executed on the current selection, it is enabled. If not (because, for example, bold is not allowed in this place), it is disabled.
 
-All commands need to inherit from the {@link module:core/command~Command} class. Commands need to be added to editor's {@link module:core/editor/editor~Editor#commands command collection} so they can be executed by using the {@link module:core/editor/editor~Editor#execute `Editor#execute()`} method.
+All commands need to inherit from the {@link module:core/command~Command} class. Commands need to be added to the editor's {@link module:core/editor/editor~Editor#commands command collection} so they can be executed by using the {@link module:core/editor/editor~Editor#execute `Editor#execute()`} method.
 
-Let's see an example:
+Take this example:
 
 ```js
 class MyCommand extends Command {
@@ -111,9 +111,9 @@ class MyPlugin extends Plugin {
 }
 ```
 
-Now, calling `editor.execute( 'myCommand', 'Foo!' )` will log `Foo!` on the console.
+Calling `editor.execute( 'myCommand', 'Foo!' )` will log `Foo!` to the console.
 
-To see how a state management of a typical command like `bold` is implemented, let's see pieces of the {@link module:basic-styles/attributecommand~AttributeCommand} class on which `bold` is based.
+To see how state management of a typical command like `bold` is implemented, have a look at some pieces of the {@link module:basic-styles/attributecommand~AttributeCommand} class on which `bold` is based.
 
 First thing to notice is the {@link module:core/command~Command#refresh `refresh()`} method:
 
@@ -128,11 +128,11 @@ refresh() {
 }
 ```
 
-This method is automatically called (by the command itself) when {@link module:engine/model/document~Document#event:changesDone any changes are applied to the model}. This means that command automatically refreshes its own state when anything changes in the editor.
+This method is automatically called (by the command itself) when {@link module:engine/model/document~Document#event:changesDone any changes are applied to the model}. This means that the command automatically refreshes its own state when anything changes in the editor.
 
 The important thing about commands is that every change in their state as well as calling the `execute()` method fires an event (e.g. {@link module:core/command~Command#event:change:{attribute} `change:value`} or {@link module:core/command~Command#event:execute `execute`}).
 
-Those events make it possible to control the command from outside. For instance, if you want to disable specific commands when some condition is true (let's say – according to your application's logic, they should be temporarily disabled) and there is no other, cleaner mean to do that, you can block the command manually:
+These events make it possible to control the command from the outside. For instance, if you want to disable specific commands when some condition is true (for example, according to your application's logic, they should be temporarily disabled) and there is no other, cleaner way to do that, you can block the command manually:
 
 ```js
 const command = editor.commands.get( 'someCommand' );
@@ -145,13 +145,13 @@ function forceDisabled() {
 }
 ```
 
-Now, the command will be disabled as long as you won't {@link module:utils/emittermixin~EmitterMixin#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
+The command will now be disabled as long as you will not {@link module:utils/emittermixin~EmitterMixin#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
 
 ### Event system and observables
 
-CKEditor 5 has an event-based architecture so you can find {@link module:utils/emittermixin~EmitterMixin} and {@link module:utils/observablemixin~ObservableMixin} mixed all over the place. Both mechanisms allow decoupling the code and make it extensible.
+CKEditor 5 has an event-based architecture so you can find {@link module:utils/emittermixin~EmitterMixin} and {@link module:utils/observablemixin~ObservableMixin} mixed all over the place. Both mechanisms allow for decoupling the code and make it extensible.
 
-Most of the classes which we already mentioned are either emitters or observables (observable is an emitter too). Emitter can emit (fire events) as well as listen to ones.
+Most of the classes which were already mentioned are either emitters or observables (observable is an emitter too). Emitter can emit (fire events) as well as listen to them.
 
 ```js
 class MyPlugin extends Plugin {
@@ -162,7 +162,7 @@ class MyPlugin extends Plugin {
 		} );
 
 		// Make MyPlugin listen to someOtherCommand#execute and block it.
-		// We listen with high priority to block the event before
+		// You listen with high priority to block the event before
 		// someOtherCommand's execute() method is called.
 		this.listenTo( someOtherCommand, 'execute', ( evt ) => {
 			evt.stop();
@@ -177,7 +177,7 @@ class MyPlugin extends Plugin {
 }
 ```
 
-The second listener to `'execute'` shows one of the very common practice in CKEditor 5's code. Basically, the default action of `execute` (which is calling the `execute()` method) is registered as a listener of that event with a default priority. Thanks to that, by listening to the event using `'low'` or `'high'` priorities we can execute some code before or after `execute()` is really called. If we stop the event, then the `execute()` method will not be called at all. In this particular case, the {@link module:core/command~Command#execute `Command#execute()`} method was decorated with the event using the {@link module:utils/observablemixin~ObservableMixin#decorate `ObservableMixin#decorate()`} function:
+The second listener to `'execute'` shows one of the very common practices in CKEditor 5 code. Basically, the default action of `'execute'` (which is calling the `execute()` method) is registered as a listener to that event with a default priority. Thanks to that, by listening to the event using `'low'` or `'high'` priorities you can execute some code before or after `execute()` is really called. If you stop the event, then the `execute()` method will not be called at all. In this particular case, the {@link module:core/command~Command#execute `Command#execute()`} method was decorated with the event using the {@link module:utils/observablemixin~ObservableMixin#decorate `ObservableMixin#decorate()`} function:
 
 ```js
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -196,7 +196,7 @@ class Command {
 mix( Command, ObservableMixin );
 ```
 
-Besides decorating methods with events, the observables allow to observe their chosen properties. For instance, the `Command` class makes its `#value` and `#isEnabled` observable by calling {@link module:utils/observablemixin~ObservableMixin#set `set()`}:
+Besides decorating methods with events, observables allow to observe their chosen properties. For instance, the `Command` class makes its `#value` and `#isEnabled` observable by calling {@link module:utils/observablemixin~ObservableMixin#set `set()`}:
 
 ```js
 class Command {
@@ -220,10 +220,10 @@ command.value = true; // -> 'value has changed from undefined to true'
 ```
 
 <info-box>
-	Observable properties are marked in API doc strings with `@observable` keyword but we do not mark them in {@link api/index API docs} ([yet](https://github.com/ckeditor/ckeditor5-dev/issues/285)).
+	Observable properties are marked in API documentation strings with the `@observable` keyword but we do not mark them in {@link api/index API documentation} ([yet](https://github.com/ckeditor/ckeditor5-dev/issues/285)).
 </info-box>
 
-Observables have one more feature which is widely used by the editor (especially in the UI library) – this is the ability to bind value of one object's property to the value of some other property or properties (of one or more objects). This, of course, can also be processed by callbacks.
+Observables have one more feature which is widely used by the editor (especially in the UI library) &mdash; the ability to bind the value of one object's property to the value of some other property or properties (of one or more objects). This, of course, can also be processed by callbacks.
 
 Assuming that `target` and `source` are observables and that used properties are observable:
 
@@ -244,15 +244,15 @@ You can find more about bindings in the [UI library](#ui-library) section.
 
 ## Editing engine
 
-The [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) package is by far the biggest package of all. Therefore, we will only scratch here the surface by introducing the main architecture layers and concepts. More detailed guides will follow.
+The [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) package is by far the biggest package of all. Therefore, this guide will only scratch the surface here by introducing the main architecture layers and concepts. More detailed guides will follow.
 
 ### Overview
 
 The editing engine implements an MVC architecture. The shape of it is not enforced by the engine itself but in most implementations it will create this structure:
 
-[{@img assets/img/framework-architecture-engine-diagram.png Diagram of engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
+[{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
-What you can see are three layers – **model**, **controller** and **view**. There is one **model document** which is **converted** to two views – **editing view** and **data view**. These two views represent, respectively, the content that the user is editing (DOM structure that you see in the browser) and the editor input and output data (in a format which the plugged data processor understands). Both views feature virtual DOM structures (custom, DOM-like structures) on which converters and features work and which are then **rendered** to the DOM.
+What you can see are three layers: **model**, **controller** and **view**. There is one **model document** which is **converted** to two views &mdash; the **editing view** and the **data view**. These two views represent, respectively, the content that the user is editing (the DOM structure that you see in the browser) and the editor input and output data (in a format which the plugged data processor understands). Both views feature virtual DOM structures (custom, DOM-like structures) on which converters and features work and which are then **rendered** to the DOM.
 
 The green blocks are the code introduced by editor features (plugins). So features control what changes are done to the model, how they are converted to the view and how the model needs to be changed based on fired events (view's and model's ones).
 
@@ -262,25 +262,25 @@ Let's now talk about each layer separately.
 
 The model is implemented by a DOM-like tree structure of {@link module:engine/model/element~Element elements} and {@link module:engine/model/text~Text text nodes}. Like in the DOM, its central point is a {@link module:engine/model/document~Document document} which contains {@link module:engine/model/document~Document#roots root elements} (the model, as well as the view, may have multiple roots). The document also holds its {@link module:engine/model/documentselection~DocumentSelection selection}, {@link module:engine/model/history~History history of changes} and {@link module:engine/model/schema~Schema schema}.
 
-All changes made to the document's structure are done by applying {@link module:engine/model/operation/operation~Operation operations}. The concept of operations comes from [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) (in short: OT), a technology enabling collaboration functionalities. Since OT requires that a system is able to transform every operation by every other one (to figure out the result of concurrently applied operations), the set of operations needs to be small. CKEditor 5 features a non-linear model (normally, OT implementations use flat, array-like models while CKEditor 5 uses a tree structure) hence, the set of potential semantic changes is more complex. To handle that, the editing engine implements a small set of operations (6 to be precise) and a bigger set of {@link module:engine/model/delta/delta~Delta "deltas"} – groups of operations with additional semantics attached (there are 11 deltas and the number will grow). Finally, deltas are grouped in {@link module:engine/model/batch~Batch batches}. A batch can be understood as a single undo step.
+All changes made to the document structure are done by applying {@link module:engine/model/operation/operation~Operation operations}. The concept of operations comes from [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) (in short: OT), a technology enabling collaboration functionality. Since OT requires that a system is able to transform every operation by every other one (to figure out the result of concurrently applied operations), the set of operations needs to be small. CKEditor 5 features a non-linear model (normally, OT implementations use flat, array-like models while CKEditor 5 uses a tree structure), hence the set of potential semantic changes is more complex. To handle that, the editing engine implements a small set of operations (six to be precise) and a bigger set of {@link module:engine/model/delta/delta~Delta "deltas"} &mdash; groups of operations with additional semantics attached (there are eleven deltas and the number will grow). Finally, deltas are grouped in {@link module:engine/model/batch~Batch batches}. A batch can be understood as a single undo step.
 
 <info-box>
 	<!-- TODO review this with Szymon -->
 
 	The technology implemented by CKEditor 5 is experimental. The subject of applying Operational Transformation to tree structures is not yet well researched and, in early 2015 when we started designing and implementing our own system, we were aware of just one existing and proven implementation (of which there was little information).
 
-	During the last 3 years we changed our approach and reworked implementation multiple times. In fact, we are still learning about new types of issues and constantly align and improve the engine. One of the most important things that we learned was that implementing OT is just part of the job on your way to real-time collaborative editing. We needed to create additional mechanisms and change the whole architecture to enable concurrent editing by multiple users with features like undo and ability to display selections of other users.
+	During the last 3 years we changed our approach and reworked the implementation multiple times. In fact, we are still learning about new types of issues and constantly align and improve the engine. One of the most important things that we learned was that implementing OT is just a part of the job on your way to real-time collaborative editing. We needed to create additional mechanisms and change the whole architecture to enable concurrent editing by multiple users with features like undo and ability to display selections of other users.
 
 	As a result of all this, the API and some important concepts are constantly changing. We have the implementation well tested already, but the engine still requires [a lot of cleaning and some implementation tweaks](https://github.com/ckeditor/ckeditor5-engine/issues/1008).
 
 	This means that information from this guide may be a bit confusing when confronted with the existing APIs. For instance, you may find that [model elements and text nodes can be modified directly](https://github.com/ckeditor/ckeditor5-engine/issues/858) (without applying operations). Please keep that in mind, and when in doubt, [report issues](https://github.com/ckeditor/ckeditor5-engine/issues/new).
 </info-box>
 
-As we mentioned earlier, going into details would make an awfully long article, so here we will only mention a few more notable facts.
+As mentioned earlier, going into details would make an awfully long article, so only a few more notable facts will be explained here.
 
 #### Text attributes
 
-The text styles such as "bold" and "italic" are not kept in the model as elements but as text attributes (think – like element attributes). The following DOM structure:
+Text styles such as "bold" and "italic" are not kept in the model as elements but as text attributes (think &mdash; like element attributes). The following DOM structure:
 
 ```html
 <p>
@@ -291,7 +291,7 @@ The text styles such as "bold" and "italic" are not kept in the model as element
 </p>
 ```
 
-would translate to such a model structure:
+would translate to the following model structure:
 
 ```html
 <paragraph>
@@ -300,7 +300,7 @@ would translate to such a model structure:
 </paragraph>
 ```
 
-Such representation of inline text styling allows significantly reducing the complexity of algorithms operating on the model. For instance, if you have the following DOM structure:
+Such representation of inline text styling allows to significantly reduce the complexity of algorithms operating on the model. For instance, if you have the following DOM structure:
 
 ```html
 <p>
@@ -311,21 +311,21 @@ Such representation of inline text styling allows significantly reducing the com
 </p>
 ```
 
-and you have a selection before the letter `"b"` (`"Foo ^bar"`), is this position inside or outside `<strong>`? If you use [native DOM Selection](https://developer.mozilla.org/en-US/docs/Web/API/Selection) you may get both positions – one anchored in `<p>` and second anchored in `<strong>`. In CKEditor 5 this position translates exactly to `"Foo ^bar"`.
+and you have a selection before the letter `"b"` (`"Foo ^bar"`), is this position inside or outside `<strong>`? If you use [native DOM Selection](https://developer.mozilla.org/en-US/docs/Web/API/Selection), you may get both positions &mdash; one anchored in `<p>` and the other anchored in `<strong>`. In CKEditor 5 this position translates exactly to `"Foo ^bar"`.
 
 #### Selection attributes
 
-OK, but how to let CKEditor 5 know that I want the selection to "be bold" in the case described above? This is an important information because it affects whether typed text will be bold too or not.
+OK, but how to let CKEditor 5 know that I want the selection to "be bold" in the case described above? This is important information because it affects whether or not the typed text will be bold, too.
 
-To handle that, selection {@link module:engine/model/selection~Selection#setAttribute has attributes} too. If the selection is placed in `"Foo ^bar"` and it has the attribute `bold=true` you know that the user will type bold text.
+To handle that, selection also {@link module:engine/model/selection~Selection#setAttribute has attributes}. If the selection is placed in `"Foo ^bar"` and it has the attribute `bold=true`, you know that the user will type bold text.
 
 #### Positions
 
-However, we have just said that inside `<paragraph>` there are two text nodes – `"Foo "` and `"bar"`. So, if you know how [native DOM Ranges](https://developer.mozilla.org/en-US/docs/Web/API/Range) work you might ask – "but if the selection is at the boundary of two text nodes, is it anchored in the left one, the right one or in the containing element?"
+However, it has just been said that inside `<paragraph>` there are two text nodes: `"Foo "` and `"bar"`. If you know how [native DOM Ranges](https://developer.mozilla.org/en-US/docs/Web/API/Range) work you might thus ask: "But if the selection is at the boundary of two text nodes, is it anchored in the left one, the right one, or in the containing element?"
 
-This is, indeed, another problem with DOM APIs – not only can positions outside and inside some element be identical visually but also, they can be anchored inside or outside a text node (if the position is at a text node boundary). This all creates extreme complications when implementing editing algorithms.
+This is, indeed, another problem with DOM APIs. Not only can positions outside and inside some element be identical visually but also they can be anchored inside or outside a text node (if the position is at a text node boundary). This all creates extreme complications when implementing editing algorithms.
 
-To avoid such troubles, and to make collaborative editing possible for real, in CKEditor 5 we use concepts of **indexes** and **offsets**. Indexes relate to nodes (elements and text nodes) while offsets to positions. For example, in the following structure:
+To avoid such troubles, and to make collaborative editing possible for real, CKEditor 5 uses the concepts of **indexes** and **offsets**. Indexes relate to nodes (elements and text nodes) while offsets relate to positions. For example, in the following structure:
 
 ```html
 <paragraph>
@@ -346,11 +346,11 @@ On the other hand, offset `x` in `<paragraph>` translates to:
 | `4`    | `<paragraph>Foo ^<image></image>bar</paragraph>` | `<image>` |
 | `6`    | `<paragraph>Foo <image></image>b^ar</paragraph>` | `"bar"`   |
 
-The engine defines also 3 main classes which operates on offsets:
+The engine also defines three main classes which operate on offsets:
 
-* A {@link module:engine/model/position~Position} instance contains an {@link module:engine/model/position~Position#path array of offsets} (which is called a "path"). See the examples in {@link module:engine/model/position~Position#path `Position#path` API docs} to better understand how paths work.
-* {@link module:engine/model/range~Range} contains two positions – {@link module:engine/model/range~Range#start start} and {@link module:engine/model/range~Range#end end} ones.
-* finally, there is {@link module:engine/model/selection~Selection} which contains one or more ranges and attributes.
+* A {@link module:engine/model/position~Position} instance contains an {@link module:engine/model/position~Position#path array of offsets} (which is called a "path"). See the examples in {@link module:engine/model/position~Position#path `Position#path` API documentation} to better understand how paths work.
+* {@link module:engine/model/range~Range} contains two positions: {@link module:engine/model/range~Range#start start} and {@link module:engine/model/range~Range#end end} ones.
+* Finally, there is {@link module:engine/model/selection~Selection} which contains one or more ranges and attributes.
 
 ### View
 
