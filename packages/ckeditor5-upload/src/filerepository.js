@@ -142,7 +142,15 @@ export default class FileRepository extends Plugin {
 			 * * {@link module:core/editor/editorconfig~EditorConfig#ckfinder `config.ckfinder`} for CKFinder
 			 * file upload integration.
 			 *
-			 * If you wish to implement your own upload adapter refer to the {@link ~Adapter `Adapter` interface} documentation.
+			 * If you see this warning when using a custom build there is a chance that you enabled
+			 * a feature like {@link module:upload/imageupload~ImageUpload},
+			 * or {@link module:upload/imageuploadbutton~ImageUploadButton} but you did not enable any upload adapter.
+			 * You can choose one of the existing upload adapters:
+			 *
+			 * * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}
+			 * * {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter}
+			 *
+			 * Or, if you wish to implement your own, upload adapter refer to the {@link ~Adapter `Adapter` interface} documentation.
 			 *
 			 * @error filerepository-no-adapter
 			 */
