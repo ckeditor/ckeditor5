@@ -356,10 +356,11 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
 
 		// 2. Handle `listItem` model element attributes.
 		data.indent = data.indent ? data.indent : 0;
-
-		const type = data.input.parent.name == 'ul' ? 'bulleted' : 'numbered';
-		listItem.setAttribute( 'type', type );
 		listItem.setAttribute( 'indent', data.indent );
+
+		// Set 'bulleted' as default. If this item is pasted into a context,
+		const type = data.input.parent && data.input.parent.name == 'ol' ? 'numbered' : 'bulleted';
+		listItem.setAttribute( 'type', type );
 
 		// 3. Handle `<li>` children.
 		data.context.push( listItem );
