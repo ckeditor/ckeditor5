@@ -141,7 +141,7 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		it( 'should convert model to view: removing attribute', () => {
-			setModelData( document, '<image src="foo.png" imageStyle="imageStyleSide"></image>' );
+			setModelData( document, '<image src="foo.png" imageStyle="sideStyle"></image>' );
 			const image = document.getRoot().getChild( 0 );
 			const batch = document.batch();
 
