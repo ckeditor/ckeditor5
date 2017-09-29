@@ -158,8 +158,8 @@ export default class ImageUploadEngine extends Plugin {
 						.join( ', ' );
 
 					if ( srcsetAttribute != '' ) {
-						doc.batch( 'transparent' ).setAttribute( imageElement, 'responsive', {
-							srcset: srcsetAttribute,
+						doc.batch( 'transparent' ).setAttribute( imageElement, 'srcset', {
+							data: srcsetAttribute,
 							width: maxWidth
 						} );
 					}
