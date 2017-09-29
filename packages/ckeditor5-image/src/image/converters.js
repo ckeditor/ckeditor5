@@ -69,32 +69,77 @@ export function viewFigureToModel() {
  *
  * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
  * @param {String} attributeName
- * @param {function} [conversionCallback] The function that will be called each time given attribute conversion is performed.
- * It will be called with two parameters: a view image element and the type of the conversion: 'addAttribute`, `changeAttribute` or
- * `removeAttribute`. This callback can be used to perform additional processing on view image element.
+ * @param {Function} [converter] Custom converter for the attribute - default one converts attribute from model `image` element
+ * to the same attribute in `img` in the view.
  */
-export function createImageAttributeConverter( dispatchers, attributeName, conversionCallback ) {
+export function createImageAttributeConverter( dispatchers, attributeName, converter = modelToViewAttributeConverter ) {
 	for ( const dispatcher of dispatchers ) {
-		dispatcher.on( `addAttribute:${ attributeName }:image`, modelToViewAttributeConverter( conversionCallback ) );
-		dispatcher.on( `changeAttribute:${ attributeName }:image`, modelToViewAttributeConverter( conversionCallback ) );
-		dispatcher.on( `removeAttribute:${ attributeName }:image`, modelToViewAttributeConverter( conversionCallback ) );
+		dispatcher.on( `addAttribute:${ attributeName }:image`, converter() );
+		dispatcher.on( `changeAttribute:${ attributeName }:image`, converter() );
+		dispatcher.on( `removeAttribute:${ attributeName }:image`, converter() );
 	}
 }
 
-// Returns model to view image converter converting given attribute, and adding it to `img` element nested inside `figure` element.
-// Allows to provide `conversionCallback` called each time conversion is made.
-//
-// @private
-function modelToViewAttributeConverter( conversionCallback ) {
+/**
+ * Converter used to convert `responsive` image's attribute to `srcset`, `sizes` and `width` attributes in the view.
+ *
+ * @return {Function}
+ */
+export function responsiveAttributeConverter() {
 	return ( evt, data, consumable, conversionApi ) => {
 		const parts = evt.name.split( ':' );
 		const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
+		const modelImage = data.item;
 
-		if ( !consumable.consume( data.item, consumableType ) ) {
+		if ( !consumable.consume( modelImage, consumableType ) ) {
 			return;
 		}
 
-		const figure = conversionApi.mapper.toViewElement( data.item );
+		const figure = conversionApi.mapper.toViewElement( modelImage );
+		const img = figure.getChild( 0 );
+		const type = parts[ 0 ];
+
+		if ( type == 'removeAttribute' ) {
+			const oldData = data.attributeOldValue;
+
+			if ( oldData.srcset ) {
+				img.removeAttribute( 'srcset' );
+				img.removeAttribute( 'sizes' );
+
+				if ( oldData.width ) {
+					img.removeAttribute( 'width' );
+				}
+			}
+		} else {
+			const newData = data.attributeNewValue;
+
+			if ( newData.srcset ) {
+				img.setAttribute( 'srcset', newData.srcset );
+				// Always outputting `100vw`. See https://github.com/ckeditor/ckeditor5-image/issues/2.
+				img.setAttribute( 'sizes', '100vw' );
+
+				if ( newData.width ) {
+					img.setAttribute( 'width', newData.width );
+				}
+			}
+		}
+	};
+}
+
+// Returns model to view image converter converting given attribute, and adding it to `img` element nested inside `figure` element.
+//
+// @private
+function modelToViewAttributeConverter() {
+	return ( evt, data, consumable, conversionApi ) => {
+		const parts = evt.name.split( ':' );
+		const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
+		const modelImage = data.item;
+
+		if ( !consumable.consume( modelImage, consumableType ) ) {
+			return;
+		}
+
+		const figure = conversionApi.mapper.toViewElement( modelImage );
 		const img = figure.getChild( 0 );
 		const type = parts[ 0 ];
 
@@ -102,10 +147,6 @@ function modelToViewAttributeConverter( conversionCallback ) {
 			img.removeAttribute( data.attributeKey );
 		} else {
 			img.setAttribute( data.attributeKey, data.attributeNewValue );
-		}
-
-		if ( conversionCallback ) {
-			conversionCallback( img, type );
 		}
 	};
 }
