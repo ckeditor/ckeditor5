@@ -69,8 +69,8 @@ export function viewFigureToModel() {
  *
  * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
  * @param {String} attributeName
- * @param {Function} [converter] Custom converter for attribute - default one converts attribute from model to the same
- * attribute in the view.
+ * @param {Function} [converter] Custom converter for the attribute - default one converts attribute from model `image` element
+ * to the same attribute in `img` in the view.
  */
 export function createImageAttributeConverter( dispatchers, attributeName, converter = modelToViewAttributeConverter ) {
 	for ( const dispatcher of dispatchers ) {
@@ -127,7 +127,6 @@ export function responsiveAttributeConverter() {
 }
 
 // Returns model to view image converter converting given attribute, and adding it to `img` element nested inside `figure` element.
-// Allows to provide `customConverter` function which if provided will replace 1 to 1 attribute conversion with custom one.
 //
 // @private
 function modelToViewAttributeConverter() {
