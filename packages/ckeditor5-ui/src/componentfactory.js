@@ -10,23 +10,33 @@
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Class implementing the UI component factory.
+ * A helper class implementing the UI component ({@link module:ui/view~View view}) factory.
  *
- * Factories of specific UI components can be registered under their unique names. Registered
- * components can be later instantiated by providing the name of the component.
+ * It allows functions producing specific UI components to be registered under their unique names
+ * in the factory. A registered component can be then instantiated by providing its name.
  *
- * The main use case for the component factory is the {@link module:core/editor/editorui~EditorUI#componentFactory} factory.
+ *		// Editor provides localization tools for the factory.
+ *		const factory = new ComponentFactory( editor );
+ *
+ *		factory.add( 'foo', locale => new FooView( locale ) );
+ *		factory.add( 'bar', locale => new BarView( locale ) );
+ *
+ *		// An instance of FooView.
+ *		const fooInstance = factory.create( 'foo' );
+ *
+ * The {@link module:core/editor/editor~Editor#locale editor locale} is passed to the factory
+ * function when {@link module:ui/componentfactory~ComponentFactory#create} is called.
  */
 export default class ComponentFactory {
 	/**
-	 * Creates ComponentFactory instance.
+	 * Creates an instance of the factory.
 	 *
 	 * @constructor
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 */
 	constructor( editor ) {
 		/**
-		 * The editor instance.
+		 * The editor instance the factory belongs to.
 		 *
 		 * @readonly
 		 * @member {module:core/editor/editor~Editor}
@@ -43,7 +53,7 @@ export default class ComponentFactory {
 	}
 
 	/**
-	 * Returns iterator of component names.
+	 * Returns an iterator of registered component names.
 	 *
 	 * @returns {Iterator.<String>}
 	 */
@@ -52,13 +62,13 @@ export default class ComponentFactory {
 	}
 
 	/**
-	 * Registers a component factory.
+	 * Registers a component factory function that will be used by the
+	 * {@link #create create} method and called with the
+	 * {@link module:core/editor/editor~Editor#locale editor locale} as an argument,
+	 * allowing localization of the {@link module:ui/view~View view}.
 	 *
 	 * @param {String} name The name of the component.
-	 * @param {Function} ControllerClass The component controller constructor.
-	 * @param {Function} ViewClass The component view constructor.
-	 * @param {Function} [callback] The callback to process the view instance,
-	 * i.e. to set attribute values, create attribute bindings, etc.
+	 * @param {Function} callback The callback that returns the component.
 	 */
 	add( name, callback ) {
 		if ( this.has( name ) ) {
@@ -77,7 +87,11 @@ export default class ComponentFactory {
 	}
 
 	/**
-	 * Creates a component view instance.
+	 * Creates an instance of a component registered in the factory under a specific name.
+	 *
+	 * When called, the {@link module:core/editor/editor~Editor#locale editor locale} is passed to
+	 * the previously {@link #add added} factory function, allowing localization of the
+	 * {@link module:ui/view~View view}.
 	 *
 	 * @param {String} name The name of the component.
 	 * @returns {module:ui/view~View} The instantiated component view.
@@ -85,13 +99,15 @@ export default class ComponentFactory {
 	create( name ) {
 		if ( !this.has( name ) ) {
 			/**
-			 * There is no such UI component in the factory.
+			 * The required component is not registered in the component factory. Please make sure
+			 * the provided name is correct and the component has been correctly
+			 * {@link #add added} to the factory.
 			 *
 			 * @error componentfactory-item-missing
 			 * @param {String} name The name of the missing component.
 			 */
 			throw new CKEditorError(
-				'componentfactory-item-missing: There is no such UI component in the factory.', { name }
+				'componentfactory-item-missing: The required component is not registered in the factory.', { name }
 			);
 		}
 
