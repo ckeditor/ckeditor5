@@ -84,11 +84,6 @@ export default class Node {
 		}
 
 		if ( ( pos = this.parent.getChildIndex( this ) ) === null ) {
-			/**
-			 * The node's parent does not contain this node.
-			 *
-			 * @error node-not-found-in-parent
-			 */
 			throw new CKEditorError( 'model-node-not-found-in-parent: The node\'s parent does not contain this node.' );
 		}
 
@@ -113,11 +108,6 @@ export default class Node {
 		}
 
 		if ( ( pos = this.parent.getChildStartOffset( this ) ) === null ) {
-			/**
-			 * The node's parent does not contain this node.
-			 *
-			 * @error node-not-found-in-parent
-			 */
 			throw new CKEditorError( 'model-node-not-found-in-parent: The node\'s parent does not contain this node.' );
 		}
 
@@ -411,3 +401,11 @@ export default class Node {
 	 * @returns {Boolean}
 	 */
 }
+
+/**
+ * The node's parent does not contain this node.
+ *
+ * This error may be thrown from corrupted trees.
+ *
+ * @error model-node-not-found-in-parent
+ */

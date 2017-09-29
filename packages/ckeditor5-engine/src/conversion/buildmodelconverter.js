@@ -315,12 +315,12 @@ class ModelConverterBuilder {
 
 		if ( this._from.type != 'marker' ) {
 			/**
-			 * To highlight conversion is supported only for model markers.
+			 * Conversion to a highlight is supported only from model markers.
 			 *
 			 * @error build-model-converter-non-marker-to-highlight
 			 */
 			throw new CKEditorError(
-				'build-model-converter-non-marker-to-highlight: Conversion to highlight is supported ' +
+				'build-model-converter-non-marker-to-highlight: Conversion to a highlight is supported ' +
 				'only from model markers.'
 			);
 		}

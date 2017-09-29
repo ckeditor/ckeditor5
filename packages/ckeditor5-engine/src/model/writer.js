@@ -82,12 +82,12 @@ export function insert( position, nodes ) {
 export function remove( range ) {
 	if ( !range.isFlat ) {
 		/**
-		 * Trying to remove a range that starts and ends in different element.
+		 * Trying to remove a range which starts and ends in different element.
 		 *
 		 * @error model-writer-remove-range-not-flat
 		 */
 		throw new CKEditorError( 'model-writer-remove-range-not-flat: ' +
-			'Trying to remove a range that starts and ends in different element.' );
+			'Trying to remove a range which starts and ends in different element.' );
 	}
 
 	const parent = range.start.parent;
@@ -116,12 +116,12 @@ export function remove( range ) {
 export function move( sourceRange, targetPosition ) {
 	if ( !sourceRange.isFlat ) {
 		/**
-		 * Trying to move a range that starts and ends in different element.
+		 * Trying to move a range which starts and ends in different element.
 		 *
 		 * @error model-writer-move-range-not-flat
 		 */
 		throw new CKEditorError( 'model-writer-move-range-not-flat: ' +
-			'Trying to move a range that starts and ends in different element.' );
+			'Trying to move a range which starts and ends in different element.' );
 	}
 
 	const nodes = this.remove( sourceRange );

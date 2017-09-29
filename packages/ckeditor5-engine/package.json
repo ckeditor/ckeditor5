@@ -1,9 +1,10 @@
 {
   "name": "@ckeditor/ckeditor5-engine",
   "version": "0.11.0",
-  "description": "CKEditor 5 Editing Engine",
+  "description": "CKEditor 5 editing engine.",
   "keywords": [
-    "CKEditor"
+    "ckeditor5",
+    "ckeditor5-lib"
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-utils": "^0.10.0"
@@ -14,13 +15,14 @@
     "@ckeditor/ckeditor5-core": "^0.9.0",
     "@ckeditor/ckeditor5-editor-classic": "^0.8.0",
     "@ckeditor/ckeditor5-enter": "^0.10.0",
+    "@ckeditor/ckeditor5-essentials": "^0.3.0",
     "@ckeditor/ckeditor5-heading": "^0.10.0",
     "@ckeditor/ckeditor5-list": "^0.7.0",
     "@ckeditor/ckeditor5-paragraph": "^0.9.0",
     "@ckeditor/ckeditor5-typing": "^0.10.0",
     "@ckeditor/ckeditor5-undo": "^0.9.0",
     "@ckeditor/ckeditor5-widget": "^0.2.0",
-    "eslint-config-ckeditor5": "^1.0.5",
+    "eslint-config-ckeditor5": "^1.0.6",
     "gulp": "^3.9.1",
     "guppy-pre-commit": "^0.4.0"
   },
@@ -35,5 +37,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5-engine.git"
-  }
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme"
+  ]
 }

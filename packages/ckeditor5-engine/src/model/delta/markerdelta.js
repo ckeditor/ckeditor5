@@ -14,10 +14,11 @@ import MarkerOperation from '../operation/markeroperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * @classdesc
  * To provide specific OT behavior and better collisions solving, the {@link module:engine/model/batch~Batch#setMarker Batch#setMarker}
  * and {@link module:engine/model/batch~Batch#removeMarker Batch#removeMarker} methods use the `MarkerDelta` class which inherits
  * from the `Delta` class and may overwrite some methods.
+ *
+ * @extends module:engine/model/delta/delta~Delta
  */
 export default class MarkerDelta extends Delta {
 	/**
@@ -102,11 +103,11 @@ register( 'removeMarker', function( markerOrName ) {
 
 	if ( !this.document.markers.has( name ) ) {
 		/**
-		 * Trying to remove marker that does not exist.
+		 * Trying to remove marker which does not exist.
 		 *
 		 * @error batch-removeMarker-no-marker
 		 */
-		throw new CKEditorError( 'batch-removeMarker-no-marker: Trying to remove marker that does not exist.' );
+		throw new CKEditorError( 'batch-removeMarker-no-marker: Trying to remove marker which does not exist.' );
 	}
 
 	const oldRange = this.document.markers.get( name ).getRange();

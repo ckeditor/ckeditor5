@@ -274,11 +274,6 @@ export default class Schema {
 		}
 
 		if ( !!isExtending && !this.hasItem( isExtending ) ) {
-			/**
-			 * Item with specified name does not exist in schema.
-			 *
-			 * @error model-schema-no-item
-			 */
 			throw new CKEditorError( 'model-schema-no-item: Item with specified name does not exist in schema.' );
 		}
 
@@ -303,11 +298,6 @@ export default class Schema {
 	 */
 	itemExtends( childItemName, parentItemName ) {
 		if ( !this.hasItem( childItemName ) || !this.hasItem( parentItemName ) ) {
-			/**
-			 * Item with specified name does not exist in schema.
-			 *
-			 * @error model-schema-no-item
-			 */
 			throw new CKEditorError( 'model-schema-no-item: Item with specified name does not exist in schema.' );
 		}
 
@@ -470,11 +460,6 @@ export default class Schema {
 	 */
 	_getItem( itemName ) {
 		if ( !this.hasItem( itemName ) ) {
-			/**
-			 * Item with specified name does not exist in schema.
-			 *
-			 * @error model-schema-no-item
-			 */
 			throw new CKEditorError( 'model-schema-no-item: Item with specified name does not exist in schema.' );
 		}
 
@@ -759,3 +744,9 @@ function matchPaths( schema, pathToCheck, registeredPath ) {
 
 	return true;
 }
+
+/**
+ * Item with specified name does not exist in schema.
+ *
+ * @error model-schema-no-item
+ */

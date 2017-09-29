@@ -490,7 +490,16 @@ class ViewElementConsumables {
 		for ( const name of items ) {
 			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
 				/**
-				 * Class and style attributes should be handled separately.
+				 * Class and style attributes should be handled separately in
+				 * {@link module:engine/conversion/viewconsumable~ViewConsumable#add `ViewConsumable#add()`}.
+				 *
+				 * What you have done is trying to use:
+				 *
+				 *		consumables.add( { attribute: [ 'class', 'style' ] } );
+				 *
+				 * While each class and style should be registered separately:
+				 *
+				 *		consumables.add( { class: 'some-class', style: 'font-weight' } );
 				 *
 				 * @error viewconsumable-invalid-attribute
 				 */

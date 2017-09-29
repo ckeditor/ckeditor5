@@ -116,7 +116,8 @@ export default class Document {
 			for ( const range of this.selection.getRanges() ) {
 				if ( !this._validateSelectionRange( range ) ) {
 					/**
-					 * Range from document selection starts or ends at incorrect position.
+					 * Range from {@link module:engine/model/documentselection~DocumentSelection document selection}
+					 * starts or ends at incorrect position.
 					 *
 					 * @error document-selection-wrong-position
 					 * @param {module:engine/model/range~Range} range
@@ -195,7 +196,7 @@ export default class Document {
 			/**
 			 * Root with specified name already exists.
 			 *
-			 * @error document-createRoot-name-exists
+			 * @error model-document-createRoot-name-exists
 			 * @param {module:engine/model/document~Document} doc
 			 * @param {String} name
 			 */
@@ -254,7 +255,7 @@ export default class Document {
 			/**
 			 * Root with specified name does not exist.
 			 *
-			 * @error document-getRoot-root-not-exist
+			 * @error model-document-getRoot-root-not-exist
 			 * @param {String} name
 			 */
 			throw new CKEditorError(
