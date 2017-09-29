@@ -41,8 +41,15 @@ export default class ImageUploadCommand extends Command {
 		const fileRepository = editor.plugins.get( FileRepository );
 
 		doc.enqueueChanges( () => {
+			const loader = fileRepository.createLoader( file );
+
+			// Do not throw when upload adapter is not set. FileRepository will log an error anyway.
+			if ( !loader ) {
+				return;
+			}
+
 			const imageElement = new ModelElement( 'image', {
-				uploadId: fileRepository.createLoader( file ).id
+				uploadId: loader.id
 			} );
 
 			let insertAtSelection;

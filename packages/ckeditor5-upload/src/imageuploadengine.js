@@ -64,7 +64,7 @@ export default class ImageUploadEngine extends Plugin {
 			}
 		} );
 
-		// Prevents from browser redirecting to drag-end-dropped image.
+		// Prevents from browser redirecting to the dropped image.
 		editor.editing.view.on( 'dragover', ( evt, data ) => {
 			data.preventDefault();
 		} );

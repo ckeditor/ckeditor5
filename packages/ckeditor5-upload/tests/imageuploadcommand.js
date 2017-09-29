@@ -17,8 +17,14 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 
+import log from '@ckeditor/ckeditor5-utils/src/log';
+
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 describe( 'ImageUploadCommand', () => {
 	let editor, command, doc, fileRepository;
+
+	testUtils.createSinonSandbox();
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -104,6 +110,23 @@ describe( 'ImageUploadCommand', () => {
 			command.execute( { file } );
 
 			expect( getModelData( doc ) ).to.equal( '<other>[]</other>' );
+		} );
+
+		it( 'should not throw when upload adapter is not set (FileRepository will log an error anyway)', () => {
+			const file = createNativeFileMock();
+
+			fileRepository.createAdapter = undefined;
+
+			const logStub = testUtils.sinon.stub( log, 'error' );
+
+			setModelData( doc, '<paragraph>fo[]o</paragraph>' );
+
+			expect( () => {
+				command.execute( { file } );
+			} ).to.not.throw();
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
+			expect( logStub.calledOnce ).to.be.true;
 		} );
 	} );
 } );
