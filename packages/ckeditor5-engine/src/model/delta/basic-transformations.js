@@ -141,8 +141,10 @@ addTransformationCase( MarkerDelta, RenameDelta, transformMarkerDelta );
 
 // Add special case for MoveDelta x MergeDelta transformation.
 addTransformationCase( MoveDelta, MergeDelta, ( a, b, context ) => {
-	// Do not apply special transformation case if `MergeDelta` has `NoOperation` as the second operation.
-	if ( !b.position ) {
+	const undoMode = context.aWasUndone || context.bWasUndone;
+
+	// Do not apply special transformation case in undo mode or if `MergeDelta` has `NoOperation` as the second operation.
+	if ( undoMode || !b.position ) {
 		return defaultTransform( a, b, context );
 	}
 
@@ -185,8 +187,10 @@ addTransformationCase( MergeDelta, InsertDelta, ( a, b, context ) => {
 
 // Add special case for MergeDelta x MoveDelta transformation.
 addTransformationCase( MergeDelta, MoveDelta, ( a, b, context ) => {
-	// Do not apply special transformation case if `MergeDelta` has `NoOperation` as the second operation.
-	if ( !a.position ) {
+	const undoMode = context.aWasUndone || context.bWasUndone;
+
+	// Do not apply special transformation case in undo mode or if `MergeDelta` has `NoOperation` as the second operation.
+	if ( undoMode || !a.position ) {
 		return defaultTransform( a, b, context );
 	}
 
