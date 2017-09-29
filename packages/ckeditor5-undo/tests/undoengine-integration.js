@@ -427,28 +427,6 @@ describe( 'UndoEngine integration', () => {
 
 	// Restoring selection in those examples may be completely off.
 	describe( 'multiple enters, deletes and typing', () => {
-		function split( path ) {
-			setSelection( path.slice(), path.slice() );
-			editor.execute( 'enter' );
-		}
-
-		function merge( path ) {
-			const selPath = path.slice();
-			selPath.push( 0 );
-			setSelection( selPath, selPath.slice() );
-			editor.execute( 'delete' );
-		}
-
-		function type( path, text ) {
-			setSelection( path.slice(), path.slice() );
-			editor.execute( 'input', { text } );
-		}
-
-		function remove( path ) {
-			setSelection( path.slice(), path.slice() );
-			editor.execute( 'delete' );
-		}
-
 		it( 'split, split, split', () => {
 			input( '<paragraph>12345678</paragraph>' );
 
@@ -990,5 +968,56 @@ describe( 'UndoEngine integration', () => {
 			expect( p.root ).to.equal( gy );
 			expect( p.getAttribute( 'bold' ) ).to.be.true;
 		} );
+
+		it( 'undoing merge after it was already "undone" through transforming by insert delta', () => {
+			// This is a tricky case that happens during collaborative editing.
+			// When merge happens at the same place where insert, the merge is automatically undone.
+			// Then, when the merge is actually undone, the problem occurs.
+			input( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			// Remove children from graveyard because they are inserted there after `input` call.
+			doc.graveyard.removeChildren( 0, doc.graveyard.childCount );
+
+			const batchWithMerge = doc.batch();
+
+			doc.enqueueChanges( () => {
+				batchWithMerge.merge( new Position( root, [ 1 ] ) );
+
+				const split = batchWithMerge.deltas[ 0 ].getReversed();
+				const batch = doc.batch();
+				batch.addDelta( split );
+
+				doc.applyOperation( split.operations[ 0 ] );
+				doc.applyOperation( split.operations[ 1 ] );
+			} );
+
+			output( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			editor.execute( 'undo', batchWithMerge );
+
+			output( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
+		} );
 	} );
+
+	function split( path ) {
+		setSelection( path.slice(), path.slice() );
+		editor.execute( 'enter' );
+	}
+
+	function merge( path ) {
+		const selPath = path.slice();
+		selPath.push( 0 );
+		setSelection( selPath, selPath.slice() );
+		editor.execute( 'delete' );
+	}
+
+	function type( path, text ) {
+		setSelection( path.slice(), path.slice() );
+		editor.execute( 'input', { text } );
+	}
+
+	function remove( path ) {
+		setSelection( path.slice(), path.slice() );
+		editor.execute( 'delete' );
+	}
 } );
