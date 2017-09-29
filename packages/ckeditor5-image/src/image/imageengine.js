@@ -15,7 +15,7 @@ import {
 	createImageAttributeConverter,
 	convertHoistableImage,
 	hoistImageThroughElement,
-	responsiveAttributeConverter
+	srcsetAttributeConverter
 } from './converters';
 import { toImageWidget } from './utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
@@ -24,7 +24,7 @@ import ViewEmptyElement from '@ckeditor/ckeditor5-engine/src/view/emptyelement';
 
 /**
  * The image engine plugin.
- * Registers `<image>` as a block element in the document schema, and allows `alt`, `src` and `responsive` attributes.
+ * Registers `<image>` as a block element in the document schema, and allows `alt`, `src` and `srcset` attributes.
  * Registers converters for editing and data pipelines.
  *
  * @extends module:core/plugin~Plugin
@@ -44,7 +44,7 @@ export default class ImageEngine extends Plugin {
 		// Configure schema.
 		schema.registerItem( 'image' );
 		schema.requireAttributes( 'image', [ 'src' ] );
-		schema.allow( { name: 'image', attributes: [ 'alt', 'src', 'responsive' ], inside: '$root' } );
+		schema.allow( { name: 'image', attributes: [ 'alt', 'src', 'srcset' ], inside: '$root' } );
 		schema.objects.add( 'image' );
 
 		// Build converter from model to view for data pipeline.
@@ -61,7 +61,7 @@ export default class ImageEngine extends Plugin {
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'alt' );
 
 		// Convert `srcset` attribute changes and add or remove `sizes` attribute when necessary.
-		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'responsive', responsiveAttributeConverter );
+		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'srcset', srcsetAttributeConverter );
 
 		// Build converter for view img element to model image element.
 		buildViewConverter().for( data.viewToModel )
@@ -85,7 +85,7 @@ export default class ImageEngine extends Plugin {
 			.consuming( { attribute: [ 'srcset' ] } )
 			.toAttribute( viewImage => {
 				const value = {
-					srcset: viewImage.getAttribute( 'srcset' )
+					data: viewImage.getAttribute( 'srcset' )
 				};
 
 				if ( viewImage.hasAttribute( 'width' ) ) {
@@ -93,7 +93,7 @@ export default class ImageEngine extends Plugin {
 				}
 
 				return {
-					key: 'responsive',
+					key: 'srcset',
 					value
 				};
 			} );

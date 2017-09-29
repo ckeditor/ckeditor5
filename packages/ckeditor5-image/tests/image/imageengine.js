@@ -49,9 +49,9 @@ describe( 'ImageEngine', () => {
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
 			} );
 
-			it( 'should convert responsive attribute to srcset and sizes attribute', () => {
+			it( 'should convert srcset attribute to srcset and sizes attribute', () => {
 				setModelData( document,
-					'<image src="foo.png" alt="alt text" responsive=\'{ "srcset": "small.png 148w, big.png 1024w" }\'></image>'
+					'<image src="foo.png" alt="alt text" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></image>'
 				);
 
 				expect( editor.getData() ).to.equal(
@@ -61,12 +61,12 @@ describe( 'ImageEngine', () => {
 				);
 			} );
 
-			it( 'should convert responsive attribute to width, srcset and add sizes attribute', () => {
+			it( 'should convert srcset attribute to width, srcset and add sizes attribute', () => {
 				setModelData( document,
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +
-						'responsive=\'{ "srcset": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
 					'</image>'
 				);
 
@@ -77,8 +77,8 @@ describe( 'ImageEngine', () => {
 				);
 			} );
 
-			it( 'should not convert responsive attribute if is already consumed', () => {
-				editor.data.modelToView.on( 'addAttribute:responsive:image', ( evt, data, consumable ) => {
+			it( 'should not convert srcset attribute if is already consumed', () => {
+				editor.data.modelToView.on( 'addAttribute:srcset:image', ( evt, data, consumable ) => {
 					const parts = evt.name.split( ':' );
 					const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
 					const modelImage = data.item;
@@ -90,7 +90,7 @@ describe( 'ImageEngine', () => {
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +
-						'responsive=\'{ "srcset": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
 					'</image>'
 				);
 
@@ -101,19 +101,19 @@ describe( 'ImageEngine', () => {
 				);
 			} );
 
-			it( 'should not convert responsive attribute if has wrong data', () => {
+			it( 'should not convert srcset attribute if has wrong data', () => {
 				setModelData( document,
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +
-						'responsive=\'{ "foo":"bar" }\'>' +
+						'srcset=\'{ "foo":"bar" }\'>' +
 					'</image>' );
 
 				const image = document.getRoot().getChild( 0 );
 				document.enqueueChanges( () => {
 					const batch = document.batch();
 
-					batch.removeAttribute( image, 'responsive' );
+					batch.removeAttribute( image, 'srcset' );
 				} );
 
 				expect( editor.getData() ).to.equal(
@@ -257,7 +257,7 @@ describe( 'ImageEngine', () => {
 				);
 
 				expect( getModelData( document, { withoutSelection: true } ) )
-					.to.equal( '<image alt="alt text" responsive="{"srcset":"small.png 148w, big.png 1024w"}" src="foo.png"></image>' );
+					.to.equal( '<image alt="alt text" src="foo.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>' );
 			} );
 
 			it( 'should convert image with srcset and width attributes', () => {
@@ -268,7 +268,7 @@ describe( 'ImageEngine', () => {
 				);
 
 				expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
-					'<image alt="alt text" responsive="{"srcset":"small.png 148w, big.png 1024w","width":"1024"}" src="foo.png"></image>' );
+					'<image alt="alt text" src="foo.png" srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}"></image>' );
 			} );
 
 			it( 'should ignore sizes attribute', () => {
@@ -279,7 +279,7 @@ describe( 'ImageEngine', () => {
 				);
 
 				expect( getModelData( document, { withoutSelection: true } ) )
-					.to.equal( '<image alt="alt text" responsive="{"srcset":"small.png 148w, big.png 1024w"}" src="foo.png"></image>' );
+					.to.equal( '<image alt="alt text" src="foo.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>' );
 			} );
 
 			describe( 'should autohoist images', () => {
@@ -460,12 +460,12 @@ describe( 'ImageEngine', () => {
 				);
 			} );
 
-			it( 'should convert responsive attribute to srcset and sizes', () => {
+			it( 'should convert srcset attribute to srcset and sizes', () => {
 				setModelData( document,
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +
-						'responsive=\'{ "srcset":"small.png 148w, big.png 1024w" }\'>' +
+						'srcset=\'{ "data":"small.png 148w, big.png 1024w" }\'>' +
 					'</image>' );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -475,19 +475,19 @@ describe( 'ImageEngine', () => {
 				);
 			} );
 
-			it( 'should not convert responsive attribute if has wrong data', () => {
+			it( 'should not convert srcset attribute if has wrong data', () => {
 				setModelData( document,
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +
-						'responsive=\'{ "foo":"bar" }\'>' +
+						'srcset=\'{ "foo":"bar" }\'>' +
 					'</image>' );
 
 				const image = document.getRoot().getChild( 0 );
 				document.enqueueChanges( () => {
 					const batch = document.batch();
 
-					batch.removeAttribute( image, 'responsive' );
+					batch.removeAttribute( image, 'srcset' );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -497,12 +497,12 @@ describe( 'ImageEngine', () => {
 				);
 			} );
 
-			it( 'should convert responsive attribute to srcset, width and sizes', () => {
+			it( 'should convert srcset attribute to srcset, width and sizes', () => {
 				setModelData( document,
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +
-						'responsive=\'{ "srcset":"small.png 148w, big.png 1024w", "width":"1024" }\'>' +
+						'srcset=\'{ "data":"small.png 148w, big.png 1024w", "width":"1024" }\'>' +
 					'</image>' );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -512,14 +512,14 @@ describe( 'ImageEngine', () => {
 				);
 			} );
 
-			it( 'should remove sizes and srcsset attribute when responsive attribute is removed', () => {
-				setModelData( document, '<image src="foo.png" responsive=\'{ "srcset": "small.png 148w, big.png 1024w" }\'></image>' );
+			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {
+				setModelData( document, '<image src="foo.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></image>' );
 				const image = document.getRoot().getChild( 0 );
 
 				document.enqueueChanges( () => {
 					const batch = document.batch();
 
-					batch.removeAttribute( image, 'responsive' );
+					batch.removeAttribute( image, 'srcset' );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -529,11 +529,11 @@ describe( 'ImageEngine', () => {
 				);
 			} );
 
-			it( 'should remove width, sizes and srcsset attribute when responsive attribute is removed', () => {
+			it( 'should remove width, sizes and srcsset attribute when srcset attribute is removed from model', () => {
 				setModelData( document,
 					'<image ' +
 						'src="foo.png" ' +
-						'responsive=\'{ "srcset": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
 					'</image>'
 				);
 				const image = document.getRoot().getChild( 0 );
@@ -541,7 +541,7 @@ describe( 'ImageEngine', () => {
 				document.enqueueChanges( () => {
 					const batch = document.batch();
 
-					batch.removeAttribute( image, 'responsive' );
+					batch.removeAttribute( image, 'srcset' );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -551,8 +551,8 @@ describe( 'ImageEngine', () => {
 				);
 			} );
 
-			it( 'should not convert responsive attribute if is already consumed', () => {
-				editor.editing.modelToView.on( 'addAttribute:responsive:image', ( evt, data, consumable ) => {
+			it( 'should not convert srcset attribute if is already consumed', () => {
+				editor.editing.modelToView.on( 'addAttribute:srcset:image', ( evt, data, consumable ) => {
 					const parts = evt.name.split( ':' );
 					const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
 					const modelImage = data.item;
@@ -564,7 +564,7 @@ describe( 'ImageEngine', () => {
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +
-						'responsive=\'{ "srcset": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
 					'</image>'
 				);
 

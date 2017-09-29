@@ -81,11 +81,11 @@ export function createImageAttributeConverter( dispatchers, attributeName, conve
 }
 
 /**
- * Converter used to convert `responsive` image's attribute to `srcset`, `sizes` and `width` attributes in the view.
+ * Converter used to convert `srcset` model image's attribute to `srcset`, `sizes` and `width` attributes in the view.
  *
  * @return {Function}
  */
-export function responsiveAttributeConverter() {
+export function srcsetAttributeConverter() {
 	return ( evt, data, consumable, conversionApi ) => {
 		const parts = evt.name.split( ':' );
 		const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
@@ -100,26 +100,26 @@ export function responsiveAttributeConverter() {
 		const type = parts[ 0 ];
 
 		if ( type == 'removeAttribute' ) {
-			const oldData = data.attributeOldValue;
+			const srcset = data.attributeOldValue;
 
-			if ( oldData.srcset ) {
+			if ( srcset.data ) {
 				img.removeAttribute( 'srcset' );
 				img.removeAttribute( 'sizes' );
 
-				if ( oldData.width ) {
+				if ( srcset.width ) {
 					img.removeAttribute( 'width' );
 				}
 			}
 		} else {
-			const newData = data.attributeNewValue;
+			const srcset = data.attributeNewValue;
 
-			if ( newData.srcset ) {
-				img.setAttribute( 'srcset', newData.srcset );
+			if ( srcset.data ) {
+				img.setAttribute( 'srcset', srcset.data );
 				// Always outputting `100vw`. See https://github.com/ckeditor/ckeditor5-image/issues/2.
 				img.setAttribute( 'sizes', '100vw' );
 
-				if ( newData.width ) {
-					img.setAttribute( 'width', newData.width );
+				if ( srcset.width ) {
+					img.setAttribute( 'width', srcset.width );
 				}
 			}
 		}
