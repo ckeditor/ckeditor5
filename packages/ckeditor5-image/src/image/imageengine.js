@@ -10,7 +10,13 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import { viewFigureToModel, createImageAttributeConverter, convertHoistableImage, hoistImageThroughElement } from './converters';
+import {
+	viewFigureToModel,
+	createImageAttributeConverter,
+	convertHoistableImage,
+	hoistImageThroughElement,
+	responsiveAttributeConverter
+} from './converters';
 import { toImageWidget } from './utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
@@ -38,7 +44,7 @@ export default class ImageEngine extends Plugin {
 		// Configure schema.
 		schema.registerItem( 'image' );
 		schema.requireAttributes( 'image', [ 'src' ] );
-		schema.allow( { name: 'image', attributes: [ 'alt', 'src', 'srcset' ], inside: '$root' } );
+		schema.allow( { name: 'image', attributes: [ 'alt', 'src', 'responsive' ], inside: '$root' } );
 		schema.objects.add( 'image' );
 
 		// Build converter from model to view for data pipeline.
@@ -55,14 +61,7 @@ export default class ImageEngine extends Plugin {
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'alt' );
 
 		// Convert `srcset` attribute changes and add or remove `sizes` attribute when necessary.
-		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'srcset', ( viewImg, type ) => {
-			if ( type == 'removeAttribute' ) {
-				viewImg.removeAttribute( 'sizes' );
-			} else {
-				// Always outputting `100vw`. See https://github.com/ckeditor/ckeditor5-image/issues/2.
-				viewImg.setAttribute( 'sizes', '100vw' );
-			}
-		} );
+		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'responsive', responsiveAttributeConverter );
 
 		// Build converter for view img element to model image element.
 		buildViewConverter().for( data.viewToModel )
@@ -84,7 +83,20 @@ export default class ImageEngine extends Plugin {
 		buildViewConverter().for( data.viewToModel )
 			.from( { name: 'img', attribute: { srcset: /./ } } )
 			.consuming( { attribute: [ 'srcset' ] } )
-			.toAttribute( viewImage => ( { key: 'srcset', value: viewImage.getAttribute( 'srcset' ) } ) );
+			.toAttribute( viewImage => {
+				const value = {
+					srcset: viewImage.getAttribute( 'srcset' )
+				};
+
+				if ( viewImage.hasAttribute( 'width' ) ) {
+					value.width = viewImage.getAttribute( 'width' );
+				}
+
+				return {
+					key: 'responsive',
+					value
+				};
+			} );
 
 		// Converter for figure element from view to model.
 		data.viewToModel.on( 'element:figure', viewFigureToModel() );
