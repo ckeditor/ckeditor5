@@ -353,7 +353,7 @@ describe( 'ImageUploadEngine', () => {
 			doc.once( 'changesDone', () => {
 				expect( getViewData( viewDocument ) ).to.equal(
 					'[<figure class="image ck-widget" contenteditable="false">' +
-						'<img sizes="100vw" src="image.png" srcset="image-500.png 500w, image-800.png 800w"></img>' +
+						'<img sizes="100vw" src="image.png" srcset="image-500.png 500w, image-800.png 800w" width="800"></img>' +
 					'</figure>]<p>foo bar</p>'
 				);
 				expect( loader.status ).to.equal( 'idle' );

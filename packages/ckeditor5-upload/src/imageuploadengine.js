@@ -138,9 +138,18 @@ export default class ImageUploadEngine extends Plugin {
 					doc.batch( 'transparent' ).setAttribute( imageElement, 'src', data.default );
 
 					// Srcset attribute for responsive images support.
+					let maxWidth = 0;
 					const srcsetAttribute = Object.keys( data )
 						// Filter out keys that are not integers.
-						.filter( key => !isNaN( parseInt( key, 10 ) ) )
+						.filter( key => {
+							const width = parseInt( key, 10 );
+
+							if ( !isNaN( width ) ) {
+								maxWidth = Math.max( maxWidth, width );
+
+								return true;
+							}
+						} )
 
 						// Convert each key to srcset entry.
 						.map( key => `${ data[ key ] } ${ key }w` )
@@ -149,7 +158,10 @@ export default class ImageUploadEngine extends Plugin {
 						.join( ', ' );
 
 					if ( srcsetAttribute != '' ) {
-						doc.batch( 'transparent' ).setAttribute( imageElement, 'srcset', srcsetAttribute );
+						doc.batch( 'transparent' ).setAttribute( imageElement, 'responsive', {
+							srcset: srcsetAttribute,
+							width: maxWidth
+						} );
 					}
 				} );
 
