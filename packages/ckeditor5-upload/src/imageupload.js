@@ -23,6 +23,13 @@ export default class ImageUpload extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'ImageUpload';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ ImageUploadButton, ImageUploadProgress ];
 	}
