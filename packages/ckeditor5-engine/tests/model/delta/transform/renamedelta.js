@@ -90,7 +90,7 @@ describe( 'transform', () => {
 				const splitPosition = new Position( root, [ 3, 3, 3 ] );
 				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 
-				context.bWasUndone = true;
+				context.undoMode = true;
 
 				const transformed = transform( renameDelta, splitDelta, context );
 

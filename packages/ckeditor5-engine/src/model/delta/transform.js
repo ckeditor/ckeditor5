@@ -217,7 +217,7 @@ const transform = {
 	 * deltas are considered more important (than `deltasB`) when resolving conflicts.
 	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltasB Array with the second set of deltas to transform. These
 	 * deltas are considered less important (than `deltasA`) when resolving conflicts.
-	 * @param {module:engine/model/document~Document} [document=null] If set, deltas will be transformed in "context mode"
+	 * @param {module:engine/model/document~Document} [document=null] If set, deltas will be transformed in "undo mode"
 	 * and given `document` will be used to determine relations between deltas. If not set (default), deltas will be
 	 * transforming without additional context information.
 	 * @returns {Object}
@@ -240,6 +240,7 @@ const transform = {
 			contextAB.wasAffected = new Map();
 			contextAB.originalDelta = new Map();
 			contextAB.document = document;
+			contextAB.undoMode = true;
 
 			for ( const delta of transformedDeltasB ) {
 				contextAB.originalDelta.set( delta, delta );
@@ -263,8 +264,7 @@ const transform = {
 							forceNotSticky: contextAB.forceNotSticky,
 							isStrong: contextAB.isStrong,
 							forceWeakRemove: contextAB.forceWeakRemove,
-							aWasUndone: false,
-							bWasUndone: contextAB.bWasUndone
+							undoMode: contextAB.undoMode
 						} );
 
 						const resultBA = transform.transform( deltaB[ l ], deltaA[ k ], {
@@ -272,8 +272,7 @@ const transform = {
 							forceNotSticky: contextAB.forceNotSticky,
 							isStrong: !contextAB.isStrong,
 							forceWeakRemove: contextAB.forceWeakRemove,
-							aWasUndone: contextAB.bWasUndone,
-							bWasUndone: false
+							undoMode: contextAB.undoMode
 						} );
 
 						if ( useAdditionalContext ) {
@@ -354,21 +353,10 @@ function padWithNoOps( deltas, howMany ) {
 // Using data given in `context` object, sets `context.insertBefore` and `context.forceNotSticky` flags.
 // Also updates `context.wasAffected`.
 function _setContext( a, b, context ) {
-	_setBWasUndone( b, context );
 	_setWasAffected( a, b, context );
 	_setInsertBeforeContext( a, b, context );
 	_setForceWeakRemove( b, context );
-	_setForceNotSticky( context );
-}
-
-// Sets `context.bWasUndone` basing on `context.document` history for `b` delta.
-//
-// `context.bWasUndone` is set to `true` if the (originally transformed) `b` delta was undone or was undoing delta.
-function _setBWasUndone( b, context ) {
-	const originalDelta = context.originalDelta.get( b );
-	const history = context.document.history;
-
-	context.bWasUndone = history.isUndoneDelta( originalDelta ) || history.isUndoingDelta( originalDelta );
+	_setForceNotSticky( b, context );
 }
 
 // Sets `context.insertBefore` basing on `context.document` history for `a` by `b` transformation.
@@ -432,10 +420,11 @@ function _setInsertBeforeContext( a, b, context ) {
 // if delta `b` was already undone or if delta `b` is an undoing delta.
 //
 // This affects `MoveOperation` (and its derivatives).
-function _setForceNotSticky( context ) {
-	if ( context.bWasUndone ) {
-		context.forceNotSticky = true;
-	}
+function _setForceNotSticky( b, context ) {
+	const originalDelta = context.originalDelta.get( b );
+	const history = context.document.history;
+
+	context.forceNotSticky = history.isUndoneDelta( originalDelta ) || history.isUndoingDelta( originalDelta );
 }
 
 // Sets `context.forceWeakRemove` basing on `context.document` history for transformation by `b` delta.

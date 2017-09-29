@@ -545,6 +545,23 @@ describe( 'transform', () => {
 					]
 				} );
 			} );
+
+			it( 'should set `context.undoMode` in undo mode (when document is passed)', () => {
+				const deltaA = new Delta();
+				deltaA.addOperation( new NoOperation( 0 ) );
+				const deltaB = new Delta();
+				deltaB.addOperation( new NoOperation( 0 ) );
+
+				sinon.spy( deltaTransform, 'transform' );
+
+				transformDeltaSets( [ deltaA ], [ deltaB ], doc );
+
+				const contextAB = deltaTransform.transform.args[ 0 ][ 2 ];
+				const contextBA = deltaTransform.transform.args[ 1 ][ 2 ];
+
+				expect( contextAB.undoMode ).to.be.true;
+				expect( contextBA.undoMode ).to.be.true;
+			} );
 		} );
 	} );
 } );

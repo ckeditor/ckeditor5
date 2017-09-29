@@ -92,7 +92,7 @@ describe( 'transform', () => {
 				// In undo mode, default transformation algorithm should be used.
 				const insertDelta = getInsertDelta( mergePosition, [ nodeA, nodeB ], baseVersion );
 
-				context.bWasUndone = true;
+				context.undoMode = true;
 				const transformed = transform( mergeDelta, insertDelta, context );
 
 				baseVersion = insertDelta.operations.length;

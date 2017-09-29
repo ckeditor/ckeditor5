@@ -135,7 +135,7 @@ describe( 'transform', () => {
 				const transformed = transform( splitDelta, splitDeltaB, {
 					isStrong: false,
 					insertBefore: true,
-					bWasUndone: true // If `insertBefore` was set it means that delta `b` had to be undone.
+					undoMode: true // If `insertBefore` was set it means that delta `b` had to be undone.
 				} );
 
 				baseVersion = splitDeltaB.operations.length;
@@ -887,7 +887,7 @@ describe( 'transform', () => {
 					new Position( root, [ 3, 3, 3 ] ), 'p', 'li', baseVersion
 				) );
 
-				context.aWasUndone = true;
+				context.undoMode = true;
 				const transformed = transform( splitDelta, renameDelta, context );
 
 				baseVersion = renameDelta.operations.length;
@@ -1031,7 +1031,7 @@ describe( 'transform', () => {
 				const removePosition = new Position( root, [ 3, 3, 3 ] );
 				const removeDelta = getRemoveDelta( removePosition, 1, baseVersion );
 
-				context.bWasUndone = true;
+				context.undoMode = true;
 
 				const transformed = transform( splitDelta, removeDelta, context );
 

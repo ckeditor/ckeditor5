@@ -56,7 +56,7 @@ addTransformationCase( AttributeDelta, SplitDelta, ( a, b, context ) => {
 		return defaultTransform( a, b, context );
 	}
 
-	const undoMode = context.aWasUndone || context.bWasUndone;
+	const undoMode = context.undoMode;
 	const splitPosition = new Position( b.position.root, b.position.path.slice( 0, -1 ) );
 
 	const deltas = defaultTransform( a, b, context );
@@ -102,7 +102,7 @@ addTransformationCase( InsertDelta, MergeDelta, ( a, b, context ) => {
 		return defaultTransform( a, b, context );
 	}
 
-	const undoMode = context.aWasUndone || context.bWasUndone;
+	const undoMode = context.undoMode;
 
 	// If insert is applied at the same position where merge happened, we reverse the merge (we treat it like it
 	// didn't happen) and then apply the original insert operation. This is "mirrored" in MergeDelta x InsertDelta
@@ -141,7 +141,7 @@ addTransformationCase( MarkerDelta, RenameDelta, transformMarkerDelta );
 
 // Add special case for MoveDelta x MergeDelta transformation.
 addTransformationCase( MoveDelta, MergeDelta, ( a, b, context ) => {
-	const undoMode = context.aWasUndone || context.bWasUndone;
+	const undoMode = context.undoMode;
 
 	// Do not apply special transformation case in undo mode or if `MergeDelta` has `NoOperation` as the second operation.
 	if ( undoMode || !b.position ) {
@@ -174,7 +174,7 @@ addTransformationCase( MergeDelta, InsertDelta, ( a, b, context ) => {
 		return defaultTransform( a, b, context );
 	}
 
-	const undoMode = context.aWasUndone || context.bWasUndone;
+	const undoMode = context.undoMode;
 
 	// If merge is applied at the same position where we inserted a range of nodes we cancel the merge as it's results
 	// may be unexpected and very weird. Even if we do some "magic" we don't know what really are users' expectations.
@@ -187,7 +187,7 @@ addTransformationCase( MergeDelta, InsertDelta, ( a, b, context ) => {
 
 // Add special case for MergeDelta x MoveDelta transformation.
 addTransformationCase( MergeDelta, MoveDelta, ( a, b, context ) => {
-	const undoMode = context.aWasUndone || context.bWasUndone;
+	const undoMode = context.undoMode;
 
 	// Do not apply special transformation case in undo mode or if `MergeDelta` has `NoOperation` as the second operation.
 	if ( undoMode || !a.position ) {
@@ -210,7 +210,7 @@ addTransformationCase( MergeDelta, MoveDelta, ( a, b, context ) => {
 } );
 
 addTransformationCase( SplitDelta, SplitDelta, ( a, b, context ) => {
-	const undoMode = context.aWasUndone || context.bWasUndone;
+	const undoMode = context.undoMode;
 
 	// Do not apply special transformation case if transformation is in undo mode.
 	if ( undoMode ) {
@@ -356,7 +356,7 @@ addTransformationCase( SplitDelta, AttributeDelta, ( a, b, context ) => {
 
 	a = a.clone();
 
-	const undoMode = context.aWasUndone || context.bWasUndone;
+	const undoMode = context.undoMode;
 	const splitPosition = new Position( a.position.root, a.position.path.slice( 0, -1 ) );
 
 	// Special case applies only if undo is not a context and only if `SplitDelta` has `InsertOperation` (not `ReinsertOperation`).
@@ -450,7 +450,7 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, context ) => {
 
 // Add special case for RenameDelta x SplitDelta transformation.
 addTransformationCase( RenameDelta, SplitDelta, ( a, b, context ) => {
-	const undoMode = context.aWasUndone || context.bWasUndone;
+	const undoMode = context.undoMode;
 	const deltas = defaultTransform( a, b, context );
 
 	// Special case applies only if undo is not a context and only if `SplitDelta` has `InsertOperation` (not `ReinsertOperation`).
@@ -476,7 +476,7 @@ addTransformationCase( RenameDelta, SplitDelta, ( a, b, context ) => {
 addTransformationCase( SplitDelta, RenameDelta, ( a, b, context ) => {
 	a = a.clone();
 
-	const undoMode = context.aWasUndone || context.bWasUndone;
+	const undoMode = context.undoMode;
 
 	// Special case applies only if undo is not a context and only if `SplitDelta` has `InsertOperation` (not `ReinsertOperation`).
 	if ( undoMode || !( a._cloneOperation instanceof InsertOperation ) ) {
@@ -508,7 +508,7 @@ addTransformationCase( RemoveDelta, SplitDelta, ( a, b, context ) => {
 		return defaultTransform( a, b, context );
 	}
 
-	const undoMode = context.aWasUndone || context.bWasUndone;
+	const undoMode = context.undoMode;
 
 	// Special case applies only if undo is not a context.
 	if ( undoMode ) {
@@ -533,7 +533,7 @@ addTransformationCase( RemoveDelta, SplitDelta, ( a, b, context ) => {
 
 // Add special case for SplitDelta x RemoveDelta transformation.
 addTransformationCase( SplitDelta, RemoveDelta, ( a, b, context ) => {
-	const undoMode = context.aWasUndone || context.bWasUndone;
+	const undoMode = context.undoMode;
 
 	// Special case applies only if undo is not a context.
 	if ( undoMode ) {
