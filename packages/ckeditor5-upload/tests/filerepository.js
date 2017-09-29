@@ -91,27 +91,6 @@ describe( 'FileRepository', () => {
 		} );
 	} );
 
-	describe( 'afterInit()', () => {
-		it( 'logs a warning if no adapter was defined', () => {
-			const stub = testUtils.sinon.stub( log, 'warn' );
-
-			return VirtualTestEditor
-				.create()
-				.then( editor => {
-					const fileRepository = new FileRepository( editor );
-
-					fileRepository.init();
-					fileRepository.afterInit();
-
-					sinon.assert.calledOnce( stub );
-					sinon.assert.calledWithExactly(
-						stub,
-						'filerepository-no-adapter: Upload adapter is not defined.'
-					);
-				} );
-		} );
-	} );
-
 	describe( 'createLoader()', () => {
 		it( 'should return null if adapter is not present', () => {
 			const stub = testUtils.sinon.stub( log, 'error' );
