@@ -24,7 +24,7 @@ import ViewEmptyElement from '@ckeditor/ckeditor5-engine/src/view/emptyelement';
 
 /**
  * The image engine plugin.
- * Registers `<image>` as a block element in the document schema and allows it to have two attributes: `src` and `alt`.
+ * Registers `<image>` as a block element in the document schema, and allows `alt`, `src` and `responsive` attributes.
  * Registers converters for editing and data pipelines.
  *
  * @extends module:core/plugin~Plugin

@@ -80,6 +80,11 @@ export function createImageAttributeConverter( dispatchers, attributeName, conve
 	}
 }
 
+/**
+ * Converter used to convert `responsive` image's attribute to `srcset`, `sizes` and `width` attributes in the view.
+ *
+ * @return {Function}
+ */
 export function responsiveAttributeConverter() {
 	return ( evt, data, consumable, conversionApi ) => {
 		const parts = evt.name.split( ':' );
