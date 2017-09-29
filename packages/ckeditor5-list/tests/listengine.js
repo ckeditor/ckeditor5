@@ -3265,6 +3265,55 @@ describe( 'ListEngine', () => {
 				editor.data.insertContent( new ModelDocumentFragment(), modelDoc.selection );
 			} ).not.to.throw();
 		} );
+
+		it( 'should correctly handle item that is pasted without its parent', () => {
+			setModelData( modelDoc,
+				'<paragraph>Foo</paragraph>' +
+				'<listItem type="numbered" indent="0">A</listItem>' +
+				'<listItem type="numbered" indent="1">B</listItem>' +
+				'[]' +
+				'<paragraph>Bar</paragraph>'
+			);
+
+			const clipboard = editor.plugins.get( 'Clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<li>X</li>' )
+			} );
+
+			expect( getModelData( modelDoc ) ).to.equal(
+				'<paragraph>Foo</paragraph>' +
+				'<listItem indent="0" type="numbered">A</listItem>' +
+				'<listItem indent="1" type="numbered">B</listItem>' +
+				'<listItem indent="1" type="numbered">X[]</listItem>' +
+				'<paragraph>Bar</paragraph>'
+			);
+		} );
+
+		it( 'should correctly handle item that is pasted without its parent #2', () => {
+			setModelData( modelDoc,
+				'<paragraph>Foo</paragraph>' +
+				'<listItem type="numbered" indent="0">A</listItem>' +
+				'<listItem type="numbered" indent="1">B</listItem>' +
+				'[]' +
+				'<paragraph>Bar</paragraph>'
+			);
+
+			const clipboard = editor.plugins.get( 'Clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<li>X<ul><li>Y</li></ul></li>' )
+			} );
+
+			expect( getModelData( modelDoc ) ).to.equal(
+				'<paragraph>Foo</paragraph>' +
+				'<listItem indent="0" type="numbered">A</listItem>' +
+				'<listItem indent="1" type="numbered">B</listItem>' +
+				'<listItem indent="1" type="numbered">X</listItem>' +
+				'<listItem indent="2" type="bulleted">Y[]</listItem>' +
+				'<paragraph>Bar</paragraph>'
+			);
+		} );
 	} );
 
 	describe( 'other', () => {
