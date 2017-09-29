@@ -21,6 +21,40 @@ const defaultLimiterElement = global.document.body;
 /**
  * The balloon panel view class.
  *
+ * A floating container which can
+ * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#pin pin} to any
+ * {@link module:utils/dom/position~Options#target target} in DOM and remain in that position
+ * e.g. when the web page is scrolled.
+ *
+ * The balloon panel can be used to display contextual, non-blocking UI like forms, toolbars and
+ * the like in its {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#content} view
+ * collection.
+ *
+ * There is a number of {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}
+ * that the balloon can use, automatically switching from one to another when the viewport space becomes
+ * scarce to keep the balloon visible to the user as long as it is possible. The balloon will also
+ * accept any custom position set provided by the user compatible with the
+ * {@link module:utils/dom/position~Options options}.
+ *
+ *		const panel = new BalloonPanelView( locale );
+ *		const childView = new ChildView();
+ *		const positions = BalloonPanelView.defaultPositions;
+ *
+ *		panel.init();
+ *
+ *		// Add a child view to the panel's content collection.
+ *		panel.content.add( childView );
+ *
+ *		// Start pinning the panel to an element with the "target" id DOM.
+ *		// The balloon will remain pinned until unpin() is called.
+ *		panel.pin( {
+ *			target: document.querySelector( '#target' ),
+ *			positions: [
+ *				positions.northArrowSouth,
+ *				positions.southArrowNorth
+ *			]
+ *		} );
+ *
  * @extends module:ui/view~View
  */
 export default class BalloonPanelView extends View {
@@ -54,14 +88,12 @@ export default class BalloonPanelView extends View {
 		 * Balloon panel's current position. The position name is reflected in the CSS class set
 		 * to the balloon, i.e. `.ck-balloon-panel_arrow_nw` for "arrow_nw" position. The class
 		 * controls the minor aspects of the balloon's visual appearance like placement
-		 * of the "arrow". To support a new position, an additional CSS must be created.
+		 * of an {@link #withArrow arrow}. To support a new position, an additional CSS must be created.
 		 *
 		 * Default position names correspond with
 		 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 		 *
-		 * See {@link #attachTo} to learn about custom balloon positions.
-		 *
-		 * See {@link #withArrow}.
+		 * See the {@link #attachTo} and {@link #pin} methods to learn about custom balloon positions.
 		 *
 		 * @observable
 		 * @default 'arrow_nw'
@@ -89,7 +121,7 @@ export default class BalloonPanelView extends View {
 		this.set( 'withArrow', true );
 
 		/**
-		 * Additional css class added to the {#element}.
+		 * An additional CSS class added to the {@link #element}.
 		 *
 		 * @observable
 		 * @member {String} #className
@@ -134,7 +166,7 @@ export default class BalloonPanelView extends View {
 	}
 
 	/**
-	 * Shows the balloon panel.
+	 * Shows the panel.
 	 *
 	 * See {@link #isVisible}.
 	 */
@@ -143,7 +175,7 @@ export default class BalloonPanelView extends View {
 	}
 
 	/**
-	 * Hides the balloon panel.
+	 * Hides the panel.
 	 *
 	 * See {@link #isVisible}.
 	 */
@@ -152,11 +184,31 @@ export default class BalloonPanelView extends View {
 	}
 
 	/**
-	 * Attaches the balloon panel to a specified DOM element or range with a smart heuristics.
+	 * Attaches the panel to a specified {@link module:utils/dom/position~Options#target} with a
+	 * smart positioning heuristics that choses from available positions to make sure the panel
+	 * is visible to the user i.e. within the limits of the viewport.
 	 *
-	 * See {@link @link module:utils/dom/position~getOptimalPosition}.
+	 * This method accepts configuration {@link module:utils/dom/position~Options options}
+	 * to set the `target`, optional `limiter` and `positions` the balloon should chose from.
 	 *
-	 * TODO: More docs and examples.
+	 *		const panel = new BalloonPanelView( locale );
+	 *		const positions = BalloonPanelView.defaultPositions;
+	 *
+	 *		panel.init();
+	 *
+	 *		// Attach the panel to an element with the "target" id DOM.
+	 *		panel.attachTo( {
+	 *			target: document.querySelector( '#target' ),
+	 *			positions: [
+	 *				positions.northArrowSouth,
+	 *				positions.southArrowNorth
+	 *			]
+	 *		} );
+	 *
+	 * **Note**: Attaching the panel will also automatically {@link #show} it.
+	 *
+	 * **Note**: An attached panel will not follow its target when the window is scrolled or resized.
+	 * See the {@link #pin} method for more permanent positioning strategy.
 	 *
 	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
 	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
@@ -184,14 +236,33 @@ export default class BalloonPanelView extends View {
 	}
 
 	/**
-	 * Works the same way as {module:ui/panel/balloon/balloonpanelview~BalloonPanelView.attachTo}
-	 * except that the position of the panel is continuously updated when any ancestor of the
-	 * {@link module:utils/dom/position~Options#target} or {@link module:utils/dom/position~Options#limiter}
-	 * is being scrolled or when the browser window is being resized.
+	 * Works the same way as the {@link #attachTo} method except that the position of the panel is
+	 * continuously updated when:
 	 *
-	 * Thanks to this, the panel always sticks to the {@link module:utils/dom/position~Options#target}.
+	 * * any ancestor of the {@link module:utils/dom/position~Options#target}
+	 * or {@link module:utils/dom/position~Options#limiter} is scrolled,
+	 * * the browser window gets resized or scrolled.
 	 *
-	 * See: {@link #unpin}.
+	 * Thanks to that, the panel always sticks to the {@link module:utils/dom/position~Options#target},
+	 * immune to the changing environment.
+	 *
+	 *		const panel = new BalloonPanelView( locale );
+	 *		const positions = BalloonPanelView.defaultPositions;
+	 *
+	 *		panel.init();
+	 *
+	 *		// Pin the panel to an element with the "target" id DOM.
+	 *		panel.pin( {
+	 *			target: document.querySelector( '#target' ),
+	 *			positions: [
+	 *				positions.northArrowSouth,
+	 *				positions.southArrowNorth
+	 *			]
+	 *		} );
+	 *
+	 * To leave the pinned state, use the {@link #unpin} method.
+	 *
+	 * **Note**: Pinning the panel will also automatically {@link #show} it.
 	 *
 	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
 	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
