@@ -9,15 +9,11 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageUpload from '@ckeditor/ckeditor5-upload/src/imageupload';
 import CKFinderUploadAdapter from '../src/uploadadapter';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import log from '@ckeditor/ckeditor5-utils/src/log';
-
 describe( 'CKFinderUploadAdapter', () => {
 	let editor, sinonXHR;
-
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
@@ -67,9 +63,6 @@ describe( 'CKFinderUploadAdapter', () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
-			// FileRepository will complain.
-			const warnStub = testUtils.sinon.stub( log, 'warn' );
-
 			return ClassicTestEditor
 				.create( editorElement, {
 					plugins: [ Image, ImageUpload, CKFinderUploadAdapter ],
@@ -78,7 +71,6 @@ describe( 'CKFinderUploadAdapter', () => {
 					const fileRepository = editor.plugins.get( FileRepository );
 
 					expect( fileRepository ).to.not.have.property( 'createAdapter' );
-					expect( warnStub.calledOnce ).to.be.true;
 
 					editorElement.remove();
 
