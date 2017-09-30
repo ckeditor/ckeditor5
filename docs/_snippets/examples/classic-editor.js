@@ -11,7 +11,10 @@ getToken()
 	.then( token => {
 		return ClassicEditor
 			.create( document.querySelector( '#snippet-classic-editor' ), {
-				cloudServices: { token }
+				cloudServices: { token },
+				toolbar: {
+					viewportTopOffset: 60
+				}
 			} )
 			.then( editor => {
 				window.editor = editor;

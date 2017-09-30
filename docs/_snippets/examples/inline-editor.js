@@ -15,12 +15,15 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 		image: {
 			toolbar: [ 'imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight' ],
 			styles: [ 'imageStyleFull', 'imageStyleAlignLeft', 'imageStyleAlignRight' ]
+		},
+		toolbar: {
+			viewportTopOffset: 60
 		}
 	};
 
 	if ( inlineElement.tagName.toLowerCase() == 'header' ) {
 		config.removePlugins = [ 'Blockquote', 'Image', 'ImageToolbar', 'List', 'EasyImage', 'ImageUpload', 'CKFinderUploadAdapter' ];
-		config.toolbar = [ 'headings', 'bold', 'italic', 'link' ];
+		config.toolbar.items = [ 'headings', 'bold', 'italic', 'link' ];
 	}
 
 	getToken()
