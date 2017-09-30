@@ -5,20 +5,18 @@
 
 /* globals console, window, document */
 
-import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+import BalloonEditor from '@ckeditor/ckeditor5-build-balloon/src/ckeditor';
+import getToken from '@ckeditor/ckeditor5-easy-image/tests/_utils/gettoken';
 
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-
-BalloonEditor
-	.create( document.querySelector( '#snippet-balloon-editor' ), {
-		plugins: [ ArticlePluginSet ],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
-		image: {
-			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
-		}
-	} )
-	.then( editor => {
-		window.editor = editor;
+getToken()
+	.then( token => {
+		return BalloonEditor
+			.create( document.querySelector( '#snippet-balloon-editor' ), {
+				cloudServices: { token }
+			} )
+			.then( editor => {
+				window.editor = editor;
+			} );
 	} )
 	.catch( err => {
 		console.error( err );

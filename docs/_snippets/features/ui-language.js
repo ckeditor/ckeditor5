@@ -7,16 +7,12 @@
 
 /* config { "language": "de" } */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-ui-language' ), {
-		plugins: [ ArticlePluginSet ],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
-		image: {
-			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+		toolbar: {
+			viewportTopOffset: 60
 		}
 	} )
 	.then( editor => {
