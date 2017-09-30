@@ -20,6 +20,7 @@ describe( 'ClassicEditor build', () => {
 
 	afterEach( () => {
 		editorElement.remove();
+		editor = null;
 	} );
 
 	describe( 'buid', () => {
@@ -82,6 +83,17 @@ describe( 'ClassicEditor build', () => {
 	} );
 
 	describe( 'plugins', () => {
+		beforeEach( () => {
+			return ClassicEditor.create( editorElement )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
 		it( 'paragraph works', () => {
 			const data = '<p>Some text inside a paragraph.</p>';
 
@@ -151,6 +163,41 @@ describe( 'ClassicEditor build', () => {
 
 			editor.setData( data );
 			expect( editor.getData() ).to.equal( data );
+		} );
+	} );
+
+	describe( 'config', () => {
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/572
+		it( 'allows configure toolbar items through config.toolbar', () => {
+			return ClassicEditor
+				.create( editorElement, {
+					toolbar: [ 'bold' ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					expect( editor.ui.view.toolbar.items.length ).to.equal( 1 );
+				} );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/572
+		it( 'allows configure toolbar offset without overriding toolbar items', () => {
+			return ClassicEditor
+				.create( editorElement, {
+					toolbar: {
+						viewportTopOffset: 42
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					expect( editor.ui.view.toolbar.items.length ).to.equal( 9 );
+					expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 42 );
+				} );
 		} );
 	} );
 } );
