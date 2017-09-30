@@ -5,8 +5,6 @@
 
 /* globals ClassicEditor, console, window, document */
 
-import './image-style-custom.scss';
-
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-style-custom' ), {
 		image: {
