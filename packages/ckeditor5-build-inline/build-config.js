@@ -38,17 +38,19 @@ module.exports = {
 
 	// Editor config.
 	config: {
-		toolbar: [
-			'headings',
-			'bold',
-			'italic',
-			'link',
-			'bulletedList',
-			'numberedList',
-			'blockQuote',
-			'undo',
-			'redo'
-		],
+		toolbar: {
+			items: [
+				'headings',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'blockQuote',
+				'undo',
+				'redo'
+			]
+		},
 
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]

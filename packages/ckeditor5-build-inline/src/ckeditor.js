@@ -43,17 +43,19 @@ InlineEditor.build = {
 		ImageuploadPlugin
 	],
 	config: {
-		toolbar: [
-			'headings',
-			'bold',
-			'italic',
-			'link',
-			'bulletedList',
-			'numberedList',
-			'blockQuote',
-			'undo',
-			'redo'
-		],
+		toolbar: {
+			items: [
+				'headings',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'blockQuote',
+				'undo',
+				'redo'
+			]
+		},
 		image: {
 			toolbar: [
 				'imageStyleFull',
