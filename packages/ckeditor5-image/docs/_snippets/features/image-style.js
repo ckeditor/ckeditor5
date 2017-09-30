@@ -6,7 +6,11 @@
 /* globals ClassicEditor, console, window, document */
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-image-style' ) )
+	.create( document.querySelector( '#snippet-image-style' ), {
+		toolbar: {
+			viewportTopOffset: 60
+		}
+	} )
 	.then( editor => {
 		window.editorStyle = editor;
 	} )

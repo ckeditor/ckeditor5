@@ -7,7 +7,10 @@
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image' ), {
-		removePlugins: [ 'ImageToolbar', 'ImageCaption', 'ImageStyle' ]
+		removePlugins: [ 'ImageToolbar', 'ImageCaption', 'ImageStyle' ],
+		toolbar: {
+			viewportTopOffset: 60
+		}
 	} )
 	.then( editor => {
 		window.editorBasic = editor;

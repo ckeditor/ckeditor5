@@ -10,6 +10,9 @@ ClassicEditor
 		removePlugins: [ 'ImageCaption', 'ImageStyle' ],
 		image: {
 			toolbar: [ 'imageTextAlternative' ]
+		},
+		toolbar: {
+			viewportTopOffset: 60
 		}
 	} )
 	.then( editor => {

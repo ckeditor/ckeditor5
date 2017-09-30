@@ -22,6 +22,9 @@ ClassicEditor
 			],
 
 			toolbar: [ 'imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight' ]
+		},
+		toolbar: {
+			viewportTopOffset: 60
 		}
 	} )
 	.then( editor => {
