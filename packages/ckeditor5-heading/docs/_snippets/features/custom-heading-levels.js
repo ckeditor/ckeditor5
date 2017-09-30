@@ -13,6 +13,9 @@ ClassicEditor
 				{ modelElement: 'heading1', viewElement: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
 				{ modelElement: 'heading2', viewElement: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
 			]
+		},
+		toolbar: {
+			viewportTopOffset: 60
 		}
 	} )
 	.then( editor => {
