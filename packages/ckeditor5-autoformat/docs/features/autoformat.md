@@ -65,8 +65,7 @@ ClassicEditor
 ```
 
 <info-box hint>
-
-Remember to add proper features to the editor configuration. Autoformatting will be enabled only for the commands that are included in the actual configuration. For example: `bold` autoformatting will not work if there is no `bold` command registered in the editor.
+	Remember to add proper features to the editor configuration. Autoformatting will be enabled only for the commands that are included in the actual configuration. For example: `bold` autoformatting will not work if there is no `bold` command registered in the editor.
 </info-box>
 
 ## Creating custom autoformatters
