@@ -11,7 +11,7 @@ describe( 'normalizeToolbarConfig()', () => {
 		const normalized = normalizeToolbarConfig( cfg );
 
 		expect( normalized ).to.be.an( 'object' );
-		expect( normalized.items ).to.equal( cfg );
+		expect( normalized.items ).to.deep.equal( cfg );
 	} );
 
 	it( 'passes through an already normalized config', () => {
@@ -21,8 +21,27 @@ describe( 'normalizeToolbarConfig()', () => {
 		};
 		const normalized = normalizeToolbarConfig( cfg );
 
-		expect( normalized ).to.equal( cfg );
-		expect( normalized.items ).to.equal( cfg.items );
-		expect( normalized.foo ).to.equal( cfg.foo );
+		expect( normalized ).to.deep.equal( cfg );
+	} );
+
+	it( 'adds missing items property', () => {
+		const cfg = {
+			foo: 'bar'
+		};
+
+		const normalized = normalizeToolbarConfig( cfg );
+
+		expect( normalized ).to.deep.equal( {
+			items: [],
+			foo: 'bar'
+		} );
+		expect( normalized ).to.not.equal( cfg ); // Make sure we don't modify an existing obj.
+	} );
+
+	it( 'returns an empty config if config is not defined', () => {
+		const normalized = normalizeToolbarConfig();
+
+		expect( normalized ).to.be.an( 'object' );
+		expect( normalized.items ).to.be.an( 'array' ).of.length( 0 );
 	} );
 } );

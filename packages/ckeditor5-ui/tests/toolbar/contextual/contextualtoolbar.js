@@ -10,6 +10,7 @@ import ToolbarView from '../../../src/toolbar/toolbarview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -69,6 +70,28 @@ describe( 'ContextualToolbar', () => {
 
 	it( 'should create components from config', () => {
 		expect( contextualToolbar.toolbarView.items ).to.length( 2 );
+	} );
+
+	it( 'should accept the extended format of the toolbar config', () => {
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Paragraph, Bold, Italic, Underline, ContextualToolbar ],
+				contextualToolbar: {
+					items: [ 'bold', 'italic', 'underline' ]
+				}
+			} )
+			.then( editor => {
+				const contextualToolbar = editor.plugins.get( ContextualToolbar );
+
+				expect( contextualToolbar.toolbarView.items ).to.length( 3 );
+
+				editorElement.remove();
+
+				return editor.destroy();
+			} );
 	} );
 
 	it( 'should fire internal `_selectionChangeDebounced` event 200 ms after last selection change', done => {

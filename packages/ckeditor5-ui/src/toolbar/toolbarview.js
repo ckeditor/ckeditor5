@@ -122,10 +122,6 @@ export default class ToolbarView extends View {
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
 	 */
 	fillFromConfig( config, factory ) {
-		if ( !config ) {
-			return;
-		}
-
 		config.map( name => {
 			if ( name == '|' ) {
 				this.items.add( new ToolbarSeparatorView() );

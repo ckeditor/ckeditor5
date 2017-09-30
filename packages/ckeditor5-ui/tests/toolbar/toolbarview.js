@@ -234,12 +234,6 @@ describe( 'ToolbarView', () => {
 			factory.add( 'bar', namedFactory( 'bar' ) );
 		} );
 
-		it( 'does not throw when no config is provided', () => {
-			expect( () => {
-				view.fillFromConfig();
-			} ).to.not.throw();
-		} );
-
 		it( 'expands the config into collection', () => {
 			view.fillFromConfig( [ 'foo', 'bar', '|', 'foo' ], factory );
 
