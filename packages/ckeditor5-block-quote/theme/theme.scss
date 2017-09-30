@@ -6,4 +6,6 @@ blockquote {
 	padding-left: 20px;
 	margin-left: 0;
 	font-style: italic;
+	// See #12.
+	overflow: hidden;
 }
