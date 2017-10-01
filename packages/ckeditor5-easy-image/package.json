@@ -13,7 +13,7 @@
     "@ckeditor/ckeditor5-upload": "^0.2.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-lint": "^3.1.1",
+    "@ckeditor/ckeditor5-dev-lint": "^3.1.4",
     "@ckeditor/ckeditor5-editor-classic": "^0.8.0",
     "@ckeditor/ckeditor5-paragraph": "^0.9.0",
     "@ckeditor/ckeditor5-utils": "^0.10.0",
