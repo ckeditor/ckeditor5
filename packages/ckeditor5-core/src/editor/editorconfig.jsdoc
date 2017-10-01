@@ -76,23 +76,23 @@
  * Simple format (specifies only toolbar items):
  *
  *		const config = {
- *			toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
+ *			toolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
  *		};
  *
- * Advanced format:
+ * Extended format:
  *
  *		const config = {
  *			toolbar: {
- *				items: [ 'bold', 'italic', 'undo', 'redo' ],
+ *				items: [ 'bold', 'italic', '|', 'undo', 'redo' ],
  *
  *				viewportTopOffset: 30
  *			}
  *		};
  *
- * Options which can be set using the advanced format:
+ * Options which can be set using the extended format:
  *
- * * `items` – Array of toolbar items names. The components (buttons, dropdowns, etc.) which can be used as toolbar items
- * are defined in `editor.ui.componentFactory` and can be listed using the following snippet:
+ * * **`toolbar.items`** – Array of toolbar items names. The components (buttons, dropdowns, etc.) which can be used
+ * as toolbar items are defined in `editor.ui.componentFactory` and can be listed using the following snippet:
  *
  *		Array.from( editor.ui.componentFactory.names );
  *
@@ -100,9 +100,9 @@
  *
  *		toolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
  *
- * * `viewportTopOffset` – The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
+ * * **`toolbar.viewportTopOffset`** – The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
  * (e.g. the top menu). Thanks to setting the toolbar offset the toolbar won't be positioned underneath or above the page's UI.
  *
- * @member {Object} module:core/editor/editorconfig~EditorConfig#toolbar
+ * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#toolbar
  */
