@@ -1,5 +1,6 @@
 ---
 category: features
+toc: false
 ---
 
 # Setting the UI language
