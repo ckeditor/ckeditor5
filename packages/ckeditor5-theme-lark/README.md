@@ -1,4 +1,4 @@
-CKEditor 5 lark theme
+CKEditor 5 Lark theme
 ========================================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -8,7 +8,7 @@ CKEditor 5 lark theme
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-theme-lark/status.svg)](https://david-dm.org/ckeditor/ckeditor5-theme-lark)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-theme-lark/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-theme-lark?type=dev)
 
-A bright theme for CKEditor 5. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5-theme-lark>.
+The default theme for CKEditor 5. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5-theme-lark>.
 
 ## License
 
