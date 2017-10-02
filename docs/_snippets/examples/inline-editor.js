@@ -22,7 +22,17 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 	};
 
 	if ( inlineElement.tagName.toLowerCase() == 'header' ) {
-		config.removePlugins = [ 'Blockquote', 'Image', 'ImageToolbar', 'List', 'EasyImage', 'ImageUpload', 'CKFinderUploadAdapter' ];
+		config.removePlugins = [
+			'Blockquote',
+			'Image',
+			'ImageCaption',
+			'ImageStyle',
+			'ImageToolbar',
+			'ImageUpload',
+			'List',
+			'EasyImage',
+			'CKFinderUploadAdapter'
+		];
 		config.toolbar.items = [ 'headings', 'bold', 'italic', 'link' ];
 	}
 
