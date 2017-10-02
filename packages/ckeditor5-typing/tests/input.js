@@ -41,7 +41,7 @@ describe( 'Input feature', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Input, Paragraph ]
+				plugins: [ Input, Paragraph, Bold ]
 			} )
 			.then( newEditor => {
 				// Mock image feature.
@@ -124,6 +124,28 @@ describe( 'Input feature', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>x[]</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>x{}</p>' );
+		} );
+
+		it( 'should handle multiple text mutations', () => {
+			editor.setData( '<p>foo<strong>bar</strong></p>' );
+
+			view.fire( 'mutations', [
+				{
+					type: 'text',
+					oldText: 'foo',
+					newText: 'foob',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				},
+				{
+					type: 'text',
+					oldText: 'bar',
+					newText: 'ar',
+					node: viewRoot.getChild( 0 ).getChild( 1 ).getChild( 0 )
+				}
+			] );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foob[]<$text bold="true">ar</$text></paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>foob{}<strong>ar</strong></p>' );
 		} );
 
 		it( 'should do nothing when two nodes were inserted', () => {
