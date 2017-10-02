@@ -73,7 +73,7 @@ export default class ImageUploadProgress extends Plugin {
 
 		// Show placeholder with infinite progress bar on the top while image is read from disk.
 		if ( status == 'reading' ) {
-			viewFigure.addClass( 'ck-appear', 'ck-infinite-progress' );
+			viewFigure.addClass( 'ck-appear', 'ck-infinite-progress', 'ck-image-upload-placeholder' );
 			const viewImg = viewFigure.getChild( 0 );
 			viewImg.setAttribute( 'src', placeholder );
 
@@ -87,7 +87,7 @@ export default class ImageUploadProgress extends Plugin {
 			if ( loader ) {
 				const progressBar = createProgressBar();
 
-				viewFigure.removeClass( 'ck-infinite-progress' );
+				viewFigure.removeClass( 'ck-infinite-progress', 'ck-image-upload-placeholder' );
 				viewFigure.appendChildren( progressBar );
 
 				// Update progress bar width when uploadedPercent is changed.
@@ -109,7 +109,7 @@ export default class ImageUploadProgress extends Plugin {
 			viewFigure.removeClass( 'ck-infinite-progress' );
 		}
 
-		viewFigure.removeClass( 'ck-appear' );
+		viewFigure.removeClass( 'ck-appear', 'ck-image-upload-placeholder' );
 	}
 }
 
