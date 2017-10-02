@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 250">
-  <g fill="none" fill-rule="evenodd">
-    <rect width="700" height="250" fill="#F7F7F7" rx="4"/>
-    <text fill="#A1B0C2" font-family="Roboto-Regular, Roboto" font-size="24">
-      <tspan x="252.1" y="135">Uploading image…</tspan>
-    </text>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 250"><g fill="none" fill-rule="evenodd"><rect width="700" height="250" fill="#F7F7F7" rx="4"/><text fill="#A1B0C2" font-family="Roboto-Regular, Roboto" font-size="24"><tspan x="252.1" y="135">Uploading image…</tspan></text></g></svg>
