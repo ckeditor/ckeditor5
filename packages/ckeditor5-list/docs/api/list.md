@@ -1,0 +1,30 @@
+---
+category: api-reference
+---
+
+# CKEditor 5 list feature
+
+[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-list.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)
+
+This package implements the list feature (bulleted and numbered).
+
+## Documentation
+
+See the {@link module:list/list~List} plugin documentation.
+
+## Installation
+
+```bash
+npm install --save @ckeditor/ckeditor5-list
+```
+
+## Contribute
+
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-list.
+
+## External links
+
+* [`@ckeditor/ckeditor5-list` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)
+* [`ckeditor/ckeditor5-list` on GitHub](https://github.com/ckeditor/ckeditor5-list)
+* [Issue tracker](https://github.com/ckeditor/ckeditor5-list/issues)
+* [Changelog](https://github.com/ckeditor/ckeditor5-list/blob/master/CHANGELOG.md)
