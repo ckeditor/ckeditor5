@@ -18,9 +18,10 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
 import '../theme/theme.scss';
 
 /**
- * The headings feature. It introduces the `headings` drop-down list and the `heading` command which allow
- * to convert paragraphs into headings. For a detailed overview, check the
- * {@glink features/headings Headings feature documentation}.
+ * The headings feature. It introduces the `headings` drop-down and the `heading1`-`headingN` commands which allow
+ * to convert paragraphs into headings.
+ *
+ * For a detailed overview, check the {@glink features/headings Headings feature documentation}.
  *
  * @extends module:core/plugin~Plugin
  */
