@@ -41,7 +41,7 @@ describe( 'Input feature', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Input, Paragraph ]
+				plugins: [ Input, Paragraph, Bold ]
 			} )
 			.then( newEditor => {
 				// Mock image feature.
@@ -124,6 +124,50 @@ describe( 'Input feature', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>x[]</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>x{}</p>' );
+		} );
+
+		it( 'should handle multiple text mutations', () => {
+			editor.setData( '<p>foo<strong>bar</strong></p>' );
+
+			view.fire( 'mutations', [
+				{
+					type: 'text',
+					oldText: 'foo',
+					newText: 'foob',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				},
+				{
+					type: 'text',
+					oldText: 'bar',
+					newText: 'ar',
+					node: viewRoot.getChild( 0 ).getChild( 1 ).getChild( 0 )
+				}
+			] );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foob[]<$text bold="true">ar</$text></paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>foob{}<strong>ar</strong></p>' );
+		} );
+
+		it( 'should handle multiple text node insertion', () => {
+			editor.setData( '<p></p><p></p>' );
+
+			view.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [],
+					newChildren: [ new ViewText( 'x' ) ],
+					node: viewRoot.getChild( 0 )
+				},
+				{
+					type: 'children',
+					oldChildren: [],
+					newChildren: [ new ViewText( 'y' ) ],
+					node: viewRoot.getChild( 1 )
+				}
+			] );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>x</paragraph><paragraph>y[]</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>x</p><p>y{}</p>' );
 		} );
 
 		it( 'should do nothing when two nodes were inserted', () => {
@@ -946,6 +990,36 @@ describe( 'Input feature', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">[]textx</$text></paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p><strong>{}textx</strong></p>' );
+		} );
+
+		// #117.
+		it( 'should handle mixed mutations', () => {
+			setModelData( model, '<paragraph><$text bold="true">Foo bar aple</$text></paragraph>' );
+
+			const paragraph = viewRoot.getChild( 0 );
+			const strong = paragraph.getChild( 0 );
+			const viewSelection = new ViewSelection();
+			viewSelection.setCollapsedAt( paragraph, 0 );
+
+			// Simulate mutations and DOM change.
+			domRoot.childNodes[ 0 ].innerHTML = '<strong>Foo bar </strong><b>apple</b>';
+			view.fire( 'mutations', [
+				{
+					type: 'text',
+					oldText: 'Foo bar aple',
+					newText: 'Foo bar ',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				},
+				{
+					type: 'children',
+					oldChildren: [ strong ],
+					newChildren: [ strong, new ViewElement( 'b', null, new ViewText( 'apple' ) ) ],
+					node: paragraph
+				}
+			], viewSelection );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">[]Foo bar apple</$text></paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p><strong>{}Foo bar apple</strong></p>' );
 		} );
 	} );
 } );

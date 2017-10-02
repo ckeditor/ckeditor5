@@ -408,9 +408,10 @@ function getMutationsContainer( mutations ) {
 		.find( element => element.is( 'containerElement' ) || element.is( 'rootElement' ) );
 }
 
-// Returns true if container children have mutated and more than a single text node was changed. Single text node
-// child insertion is handled in {@link module:typing/input~MutationHandler#_handleTextNodeInsertion} and text
-// mutation is handled in {@link module:typing/input~MutationHandler#_handleTextMutation}.
+// Returns true if container children have mutated or more than a single text node was changed.
+//
+// Single text node child insertion is handled in {@link module:typing/input~MutationHandler#_handleTextNodeInsertion}
+// while text mutation is handled in {@link module:typing/input~MutationHandler#_handleTextMutation}.
 //
 // @private
 // @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
@@ -421,14 +422,14 @@ function containerChildrenMutated( mutations ) {
 		return false;
 	}
 
-	// Check if all mutations are `children` type, and there is no single text node mutation.
+	// Check if there is any mutation of `children` type or any mutation that changes more than one text node.
 	for ( const mutation of mutations ) {
-		if ( mutation.type !== 'children' || getSingleTextNodeChange( mutation ) ) {
-			return false;
+		if ( mutation.type === 'children' && !getSingleTextNodeChange( mutation ) ) {
+			return true;
 		}
 	}
 
-	return true;
+	return false;
 }
 
 // Returns true if provided array contains only {@link module:engine/model/text~Text model text nodes}.
