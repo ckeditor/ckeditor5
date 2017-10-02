@@ -442,12 +442,37 @@ describe( 'Link', () => {
 			const command = editor.commands.get( 'link' );
 
 			command.isEnabled = false;
-			editor.keystrokes.press( { keyCode: keyCodes.k, ctrlKey: true } );
+			editor.keystrokes.press( {
+				keyCode: keyCodes.k,
+				ctrlKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
 			sinon.assert.notCalled( spy );
 
 			command.isEnabled = true;
-			editor.keystrokes.press( { keyCode: keyCodes.k, ctrlKey: true } );
+			editor.keystrokes.press( {
+				keyCode: keyCodes.k,
+				ctrlKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
 			sinon.assert.calledWithExactly( spy, true );
+		} );
+
+		it( 'should show prevent default actions on Ctrl+K keystroke', () => {
+			const preventDefaultSpy = sinon.spy();
+			const stopPropagationSpy = sinon.spy();
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.k,
+				ctrlKey: true,
+				preventDefault: preventDefaultSpy,
+				stopPropagation: stopPropagationSpy
+			} );
+
+			sinon.assert.calledOnce( preventDefaultSpy );
+			sinon.assert.calledOnce( stopPropagationSpy );
 		} );
 
 		it( 'should focus the the #formView on `Tab` key press when the #_balloon is open', () => {
