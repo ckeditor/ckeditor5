@@ -6,13 +6,13 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-clipboard.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)
 
-This package implements a clipboard (copy, cut, paste) support for CKEditor 5.
+This package implements the clipboard (copy, cut, paste) support for CKEditor 5.
 
 ## Documentation
 
 See the {@link module:clipboard/clipboard~Clipboard} plugin documentation.
 
-This plugin is usually enabled by the {@link module:essentials/essentials~Essentials} plugin from the {@link api/essentials `@ckeditor/ckeditor5-essentials`} package (which also enables other essential editing features).
+This plugin is normally enabled by the {@link module:essentials/essentials~Essentials} plugin from the {@link api/essentials `@ckeditor/ckeditor5-essentials`} package (which also enables other essential editing features).
 
 ## Installation
 
