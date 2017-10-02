@@ -460,7 +460,7 @@ describe( 'Link', () => {
 			sinon.assert.calledWithExactly( spy, true );
 		} );
 
-		it( 'should show prevent default actions on Ctrl+K keystroke', () => {
+		it( 'should prevent default action on Ctrl+K keystroke', () => {
 			const preventDefaultSpy = sinon.spy();
 			const stopPropagationSpy = sinon.spy();
 
