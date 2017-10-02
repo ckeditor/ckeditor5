@@ -14,7 +14,7 @@ import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editing
 import EditingKeystrokeHandler from '../../src/editingkeystrokehandler';
 import Plugin from '../../src/plugin';
 
-describe( 'StandardEditor', () => {
+describe.only( 'StandardEditor', () => {
 	let editorElement;
 
 	beforeEach( () => {
@@ -226,6 +226,11 @@ describe( 'StandardEditor', () => {
 			form.appendChild( textarea );
 			document.body.appendChild( form );
 			submitStub = sinon.stub( form, 'submit' );
+
+			// Prevents page realods in Firefox ;|
+			form.addEventListener( 'submit', evt => {
+				evt.preventDefault();
+			} );
 		} );
 
 		afterEach( () => {
@@ -257,7 +262,10 @@ describe( 'StandardEditor', () => {
 				.then( editor => {
 					expect( textarea.value ).to.equal( '' );
 
-					form.dispatchEvent( new Event( 'submit' ) );
+					form.dispatchEvent( new Event( 'submit', {
+						// We need to be able to do preventDefault() to prevent page reloads in Firefox.
+						cancelable: true
+					} ) );
 
 					expect( textarea.value ).to.equal( '<p>foo</p>' );
 
@@ -327,7 +335,10 @@ describe( 'StandardEditor', () => {
 				.then( () => {
 					expect( textarea.value ).to.equal( '' );
 
-					form.dispatchEvent( new Event( 'submit' ) );
+					form.dispatchEvent( new Event( 'submit', {
+						// We need to be able to do preventDefault() to prevent page reloads in Firefox.
+						cancelable: true
+					} ) );
 
 					expect( textarea.value ).to.equal( '' );
 				} );
@@ -343,7 +354,10 @@ describe( 'StandardEditor', () => {
 					expect( form.submit ).to.equal( input );
 					expect( textarea.value ).to.equal( '' );
 
-					form.dispatchEvent( new Event( 'submit' ) );
+					form.dispatchEvent( new Event( 'submit', {
+						// We need to be able to do preventDefault() to prevent page reloads in Firefox.
+						cancelable: true
+					} ) );
 
 					expect( textarea.value ).to.equal( '<p>foo</p>' );
 
