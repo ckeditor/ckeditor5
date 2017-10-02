@@ -84,7 +84,9 @@ export default class InputCommand extends Command {
 				this._buffer.batch.remove( range );
 			}
 
-			this._buffer.batch.weakInsert( range.start, text );
+			if ( text ) {
+				this._buffer.batch.weakInsert( range.start, text );
+			}
 
 			if ( resultRange ) {
 				this.editor.data.model.selection.setRanges( [ resultRange ] );
