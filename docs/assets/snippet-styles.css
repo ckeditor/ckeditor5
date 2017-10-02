@@ -18,6 +18,12 @@
 	margin-bottom: 0;
 }
 
+/* Reset h1's styling – https://github.com/ckeditor/ckeditor5-heading/issues/86 */
+.ck-editor .ck-editor__editable h1 {
+	display: block;
+	margin-bottom: .5em;
+}
+
 .ck-reset.ck-list {
 	/* See https://github.com/ckeditor/ckeditor5/issues/494 */
 	margin-left: 0;
