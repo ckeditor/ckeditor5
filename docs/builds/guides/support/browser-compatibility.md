@@ -23,7 +23,7 @@ CKEditor 5 is currently supported in the following desktop browsers:
 	* Edge (latest stable release). Known issues:
 		* Minor issues with selection: [1](https://github.com/ckeditor/ckeditor5-engine/issues/974), [2](https://github.com/ckeditor/ckeditor5-engine/issues/928).
 		* The editor becomes unstable when F12 developer tools are enabled.
-		* Clipboard integration is broken due to [Edge's bugs](https://github.com/ckeditor/ckeditor5-clipboard/issues/20).
+		* Clipboard integration is broken due to [Edge bugs](https://github.com/ckeditor/ckeditor5-clipboard/issues/20).
 
 Not supported yet:
 
