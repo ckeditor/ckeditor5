@@ -132,7 +132,11 @@ export default class Link extends Plugin {
 		const t = editor.t;
 
 		// Handle the `Ctrl+K` keystroke and show the panel.
-		editor.keystrokes.set( linkKeystroke, () => {
+		editor.keystrokes.set( linkKeystroke, ( keyEvtData, stop ) => {
+			// Stop the event in the DOM to prevent default browser action.
+			// See https://github.com/ckeditor/ckeditor5-link/issues/153.
+			stop();
+
 			if ( linkCommand.isEnabled ) {
 				this._showPanel( true );
 			}
