@@ -14,7 +14,7 @@ import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editing
 import EditingKeystrokeHandler from '../../src/editingkeystrokehandler';
 import Plugin from '../../src/plugin';
 
-describe.only( 'StandardEditor', () => {
+describe( 'StandardEditor', () => {
 	let editorElement;
 
 	beforeEach( () => {
