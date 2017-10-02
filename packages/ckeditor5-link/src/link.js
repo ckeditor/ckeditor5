@@ -133,8 +133,8 @@ export default class Link extends Plugin {
 
 		// Handle the `Ctrl+K` keystroke and show the panel.
 		editor.keystrokes.set( linkKeystroke, ( keyEvtData, cancel ) => {
-			// Stop the event in the DOM to prevent default browser action.
-			// See https://github.com/ckeditor/ckeditor5-link/issues/153.
+			// Prevent focusing the search bar in FF. #153.
+			// Prevent opening new tab in Edge. #154.
 			cancel();
 
 			if ( linkCommand.isEnabled ) {
