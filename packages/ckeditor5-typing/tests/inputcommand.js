@@ -216,6 +216,16 @@ describe( 'InputCommand', () => {
 			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>fo[]obar</p>' );
 			expect( buffer.size ).to.be.equal( 0 );
 		} );
+
+		it( 'does not create insert delta when no text given', () => {
+			setData( doc, '<p>foo[]bar</p>' );
+
+			const version = doc.version;
+
+			editor.execute( 'input' );
+
+			expect( doc.version ).to.equal( version );
+		} );
 	} );
 
 	describe( 'destroy', () => {
