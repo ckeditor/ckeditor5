@@ -1,42 +1,42 @@
 # Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: it\n"
-"Language-Team: Italian (https://www.transifex.com/ckeditor/teams/11143/it/)\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: ro\n"
+"Language-Team: Romanian (https://www.transifex.com/ckeditor/teams/11143/ro/)\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
 msgctxt "Label for the image widget."
 msgid "image widget"
-msgstr "Widget immagine"
+msgstr "widget imagine"
 
 msgctxt "Label for the Side image option."
 msgid "Side image"
-msgstr "Immagine laterale"
+msgstr "Imagine laterală"
 
 msgctxt "Label for the Full size image option."
 msgid "Full size image"
-msgstr "Immagine a dimensione intera"
+msgstr "Imagine mărime completă"
 
 msgctxt "Label for the Left aligned image option"
 msgid "Left aligned image"
-msgstr "Immagine allineata a sinistra"
+msgstr "Imagine aliniată stângă"
 
 msgctxt "Label for the Centered image option"
 msgid "Centered image"
-msgstr "Immagine centrata"
+msgstr "Imagine aliniată pe centru"
 
 msgctxt "Label for the Right aligned image option"
 msgid "Right aligned image"
-msgstr "Immagine allineata a destra"
+msgstr "Imagine aliniată dreapta"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr "Cambia testo alternativo dell'immagine"
+msgstr "Schimbă textul alternativ al imaginii"
 
 msgctxt "Label for the image text alternative input."
 msgid "Text alternative"
-msgstr "Testo alternativo"
+msgstr "Text alternativ"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
-msgstr "inserire didascalia dell'immagine"
+msgstr "Introdu titlul descriptiv al imaginii"
