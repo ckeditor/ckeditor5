@@ -132,7 +132,10 @@ export default class Link extends Plugin {
 		const t = editor.t;
 
 		// Handle the `Ctrl+K` keystroke and show the panel.
-		editor.keystrokes.set( linkKeystroke, () => {
+		editor.keystrokes.set( linkKeystroke, ( keyEvtData, cancel ) => {
+			// Prevent focusing the search bar in FF and opening new tab in Edge. #153, #154.
+			cancel();
+
 			if ( linkCommand.isEnabled ) {
 				this._showPanel( true );
 			}
