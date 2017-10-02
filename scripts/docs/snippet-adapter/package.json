@@ -2,14 +2,14 @@
   "name": "ckeditor5-snippet-adapter",
   "private": true,
   "dependencies": {
-    "@ckeditor/ckeditor5-dev-webpack-plugin": "^2.0.11",
+    "@ckeditor/ckeditor5-dev-webpack-plugin": "^2.0.18",
     "babel-minify-webpack-plugin": "^0.2.0",
-    "css-loader": "^0.28.4",
+    "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^3.0.0",
     "node-sass": "^4.5.3",
     "raw-loader": "^0.5.1",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
-    "webpack": "^3.5.0"
+    "webpack": "^3.6.0"
   }
 }

@@ -98,15 +98,9 @@ function getWebpackConfig( config ) {
 
 	if ( config.minify ) {
 		plugins.push(
-			new BabelMinifyPlugin(
-				{
-					// Temporary workaround for https://github.com/ckeditor/ckeditor5/issues/542.
-					mangle: false
-				},
-				{
-					comments: false
-				}
-			)
+			new BabelMinifyPlugin( null, {
+				comments: false
+			} )
 		);
 	}
 
