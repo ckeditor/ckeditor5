@@ -148,6 +148,28 @@ describe( 'Input feature', () => {
 			expect( getViewData( view ) ).to.equal( '<p>foob{}<strong>ar</strong></p>' );
 		} );
 
+		it( 'should handle multiple text node insertion', () => {
+			editor.setData( '<p></p><p></p>' );
+
+			view.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [],
+					newChildren: [ new ViewText( 'x' ) ],
+					node: viewRoot.getChild( 0 )
+				},
+				{
+					type: 'children',
+					oldChildren: [],
+					newChildren: [ new ViewText( 'y' ) ],
+					node: viewRoot.getChild( 1 )
+				}
+			] );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>x</paragraph><paragraph>y[]</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>x</p><p>y{}</p>' );
+		} );
+
 		it( 'should do nothing when two nodes were inserted', () => {
 			editor.setData( '<p></p>' );
 
