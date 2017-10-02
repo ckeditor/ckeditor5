@@ -6,11 +6,15 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-engine.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)
 
-Editing engine is the heart of CKEditor 5. It is a framework for implementing editing features.
+The CKEditor 5's editing engine implements a flexible MVC-based architecture for creating rich-text editing features.
+
+Together with the {@link api/core core editor architecture} and the {@link api/ui standard UI library} they create a platform for implementing rich-text editors.
 
 ## Documentation
 
-See the introduction to the {@link framework/guides/architecture/intro#Editing-engine editing engine architecture}.
+See the introduction to the {@link framework/guides/architecture/intro#Editing-engine editing engine's architecture}.
+
+You can also browse the API documentation of this package by using the module tree on the left.
 
 ## Installation
 
