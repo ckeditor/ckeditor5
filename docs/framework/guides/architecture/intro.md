@@ -248,7 +248,7 @@ The [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckedi
 
 ### Overview
 
-The editing engine implements an MVC architecture. The shape of it is not enforced by the engine itself but in most implementations it will create this structure:
+The editing engine implements an MVC architecture. The shape of it is not enforced by the engine itself but in most implementations it can be described by this diagram:
 
 [{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
