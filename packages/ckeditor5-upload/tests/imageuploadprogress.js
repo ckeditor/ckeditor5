@@ -77,7 +77,7 @@ describe( 'ImageUploadProgress', () => {
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		expect( getViewData( viewDocument ) ).to.equal(
-			'[<figure class="image ck-widget ck-appear ck-infinite-progress" contenteditable="false">' +
+			'[<figure class="image ck-widget ck-appear ck-infinite-progress ck-placeholder" contenteditable="false">' +
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]<p>foo</p>'
 		);
@@ -150,7 +150,7 @@ describe( 'ImageUploadProgress', () => {
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		expect( getViewData( viewDocument ) ).to.equal(
-			'[<figure class="image ck-widget ck-appear ck-infinite-progress" contenteditable="false">' +
+			'[<figure class="image ck-widget ck-appear ck-infinite-progress ck-placeholder" contenteditable="false">' +
 				`<img src="${ base64Sample }"></img>` +
 			'</figure>]<p>foo</p>'
 		);
@@ -179,7 +179,7 @@ describe( 'ImageUploadProgress', () => {
 		} );
 
 		expect( getViewData( viewDocument ) ).to.equal(
-			'[<figure class="image ck-widget ck-appear ck-infinite-progress" contenteditable="false">' +
+			'[<figure class="image ck-widget ck-appear ck-infinite-progress ck-placeholder" contenteditable="false">' +
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
 		);
