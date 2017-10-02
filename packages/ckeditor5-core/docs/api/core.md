@@ -8,9 +8,13 @@ category: api-reference
 
 This package implements the core editor architecture – a set of classes and interfaces which glue all the things together.
 
+Together with the {@link api/engine editing engine} and the {@link api/ui standard UI library} they create a platform for implementing rich-text editors.
+
 ## Documentation
 
-See the introduction to the {@link framework/guides/architecture/intro#Core-editor-architecture core editor architecture}.
+See the introduction to the {@link framework/guides/architecture/intro#Core-editor-architecture core editor's architecture}.
+
+You can also browse the API documentation of this package by using the module tree on the left.
 
 ## Installation
 
