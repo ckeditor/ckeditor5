@@ -28,6 +28,10 @@ figure.image {
 		transition-timing-function: linear;
 	}
 
+	&.ck-placeholder > img {
+		width: 100%;
+	}
+
 	// Upload progress bar.
 	.ck-progress-bar {
 		height: 2px;
