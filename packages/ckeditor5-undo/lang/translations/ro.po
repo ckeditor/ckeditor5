@@ -1,0 +1,14 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: ro\n"
+"Language-Team: Romanian (https://www.transifex.com/ckeditor/teams/11143/ro/)\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+msgctxt "Toolbar button tooltip for the Undo feature."
+msgid "Undo"
+msgstr "Anulează"
+
+msgctxt "Toolbar button tooltip for the Redo feature."
+msgid "Redo"
+msgstr "Revenire"
