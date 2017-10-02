@@ -12,7 +12,7 @@ Essential editing features for CKEditor 5.
 
 The [`Essentials`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_essentials_essentials-Essentials.html) plugin includes all essential editing features:
 
-* [Clipboard](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_clipboard_clipboard-Clipboard.html)
+* [`Clipboard`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_clipboard_clipboard-Clipboard.html)
 * [`Enter`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_enter_enter-Enter.html)
 * [`Typing`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_typing_typing-Typing.html)
 * [`Undo`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_undo_undo-Undo.html)
