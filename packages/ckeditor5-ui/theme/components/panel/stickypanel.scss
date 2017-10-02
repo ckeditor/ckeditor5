@@ -4,7 +4,7 @@
 @include ck-editor {
 	.ck-sticky-panel {
 		&.ck-sticky-panel_sticky {
-			z-index: ck-z( 'modal' );
+			z-index: ck-z( 'modal' ); // #315
 			position: fixed;
 			top: 0;
 
