@@ -8,7 +8,7 @@ CKEditor 5 enter feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-enter/status.svg)](https://david-dm.org/ckeditor/ckeditor5-enter)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-enter/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-enter?type=dev)
 
-The Enter feature for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-enter>.
+The <kbd>Enter</kbd> support for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-enter>.
 
 ## License
 
