@@ -14,21 +14,21 @@
     "build"
   ],
   "devDependencies": {
-    "@ckeditor/ckeditor5-adapter-ckfinder": "*",
-    "@ckeditor/ckeditor5-autoformat": "^0.6.0",
-    "@ckeditor/ckeditor5-basic-styles": "^0.9.0",
-    "@ckeditor/ckeditor5-block-quote": "^0.2.0",
+    "@ckeditor/ckeditor5-adapter-ckfinder": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-autoformat": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-basic-styles": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-block-quote": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-dev-utils": "^4.0.1",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^2.0.18",
-    "@ckeditor/ckeditor5-easy-image": "*",
-    "@ckeditor/ckeditor5-editor-inline": "^0.2.0",
-    "@ckeditor/ckeditor5-essentials": "^0.3.0",
-    "@ckeditor/ckeditor5-heading": "^0.10.0",
-    "@ckeditor/ckeditor5-image": "^0.7.0",
-    "@ckeditor/ckeditor5-link": "^0.8.0",
-    "@ckeditor/ckeditor5-list": "^0.7.0",
-    "@ckeditor/ckeditor5-paragraph": "^0.9.0",
-    "@ckeditor/ckeditor5-upload": "*",
+    "@ckeditor/ckeditor5-easy-image": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-editor-inline": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-essentials": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-heading": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-image": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-link": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-list": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-paragraph": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-upload": "^1.0.0-alpha.1",
     "babel-minify-webpack-plugin": "^0.2.0",
     "css-loader": "^0.28.7",
     "node-sass": "^4.5.3",
@@ -53,7 +53,6 @@
     "build": "npm run create-entry-file && npm run build-ckeditor",
     "create-entry-file": "./bin/create-entry-file.js",
     "build-ckeditor": "./bin/build-ckeditor.sh",
-
     "preversion": "npm run build; if [ -n \"$(git status src/ckeditor.js build/ --porcelain)\" ]; then git add -u src/ckeditor.js build/ && git commit -m 'Internal: Build.'; fi"
   }
 }
