@@ -9,7 +9,7 @@ Changelog
 
 ### Other changes
 
-* `CKEditorError.message`, `log.error()` and `log.warn()` will contain a link to the error documentation. Closes [#185](https://github.com/ckeditor/ckeditor5-utils/issues/185). ([b7a00c9](https://github.com/ckeditor/ckeditor5-utils/commit/b7a00c9))
+* `CKEditorError#message`, `log.error()` and `log.warn()` will contain a link to the error documentation. Closes [#185](https://github.com/ckeditor/ckeditor5-utils/issues/185). ([b7a00c9](https://github.com/ckeditor/ckeditor5-utils/commit/b7a00c9))
 
 
 ## [0.10.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.9.1...v0.10.0) (2017-09-03)
