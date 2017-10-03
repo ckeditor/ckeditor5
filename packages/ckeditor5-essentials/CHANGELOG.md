@@ -6,7 +6,7 @@ Changelog
 ### Other changes
 
 * The `Article` plugin became a `@ckeditor/ckeditor5-core`'s test util. See [#1](https://github.com/ckeditor/ckeditor5-essentials/issues/1). ([c0bbd28](https://github.com/ckeditor/ckeditor5-essentials/commit/c0bbd28))
-* This package was renamed from `@ckeditor/ckeditor-presets` to `@ckeditor/ckeditor5-essentials`. The `Article` preset was removed. Caloses [#1](https://github.com/ckeditor/ckeditor5-essentials/issues/1). ([7e5e82b](https://github.com/ckeditor/ckeditor5-essentials/commit/7e5e82b))
+* This package was renamed from `@ckeditor/ckeditor-presets` to `@ckeditor/ckeditor5-essentials`. The `Article` preset was removed. Closes [#1](https://github.com/ckeditor/ckeditor5-essentials/issues/1). ([7e5e82b](https://github.com/ckeditor/ckeditor5-essentials/commit/7e5e82b))
 
 ### BREAKING CHANGES
 
