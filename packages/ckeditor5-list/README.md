@@ -8,7 +8,11 @@ CKEditor 5 lists feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-list/status.svg)](https://david-dm.org/ckeditor/ckeditor5-list)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-list/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-list?type=dev)
 
-Introduces ordered (numbered) and unordered (bulleted) lists feature to CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-list>.
+This package implements bulleted and numbered lists feature for CKEditor 5.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-list` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/list.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
