@@ -8,7 +8,7 @@ CKEditor 5 block quote feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-block-quote/status.svg)](https://david-dm.org/ckeditor/ckeditor5-block-quote)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-block-quote/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-block-quote?type=dev)
 
-This package implements block quotes support for CKEditor 5.
+This package implements block quote support for CKEditor 5.
 
 ## Documentation
 
