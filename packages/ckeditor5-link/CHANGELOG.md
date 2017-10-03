@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-link/compare/v0.8.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Bug fixes
+
+* Prevented default browser actions on <kbd>Ctrl</kbd>+<kbd>K</kbd> (which should move focus to "URL" input in the link balloon. Closes [#153](https://github.com/ckeditor/ckeditor5-link/issues/153). Closes [#154](https://github.com/ckeditor/ckeditor5-link/issues/154). ([5360fce](https://github.com/ckeditor/ckeditor5-link/commit/5360fce))
+* The URL input should span the width of the balloon. Closes [#145](https://github.com/ckeditor/ckeditor5-link/issues/145). ([05b3bf4](https://github.com/ckeditor/ckeditor5-link/commit/05b3bf4))
+
+
 ## [0.8.0](https://github.com/ckeditor/ckeditor5-link/compare/v0.7.0...v0.8.0) (2017-09-03)
 
 ### Bug fixes
