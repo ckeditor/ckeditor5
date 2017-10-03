@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-build-classic/compare/v0.4.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Bug fixes
+
+* It will be possible to configure toolbar offset without overriding preconfigured toolbar items. See [ckeditor/ckeditor5#572](https://github.com/ckeditor/ckeditor5/issues/572). ([e7fbda9](https://github.com/ckeditor/ckeditor5-build-classic/commit/e7fbda9))
+
+### Features
+
+* Added Easy Image with Cloud Services and CKFinder adapter. See [ckeditor/ckeditor5#567](https://github.com/ckeditor/ckeditor5/issues/567). ([668691f](https://github.com/ckeditor/ckeditor5-build-classic/commit/668691f))
+
+
 ## [0.4.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v0.3.0...v0.4.0) (2017-09-07)
 
 ### Other changes
