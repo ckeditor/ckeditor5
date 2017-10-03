@@ -1,6 +1,26 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v0.9.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Bug fixes
+
+* Contextual toolbar container's arrow should have the same color as the toolbar. Closes [#111](https://github.com/ckeditor/ckeditor5-theme-lark/issues/111). ([e0ff0e9](https://github.com/ckeditor/ckeditor5-theme-lark/commit/e0ff0e9))
+
+### Features
+
+* The `StickyToolbar` component has become `StickyPanel` (see [ckeditor/ckeditor5-ui#297](https://github.com/ckeditor/ckeditor5-ui/issues/297)). ([023a879](https://github.com/ckeditor/ckeditor5-theme-lark/commit/023a879))
+
+### Other changes
+
+* Refactored the theme so it allows for easy customization with SASS variables. Closes [#107](https://github.com/ckeditor/ckeditor5-theme-lark/issues/107). ([03475ea](https://github.com/ckeditor/ckeditor5-theme-lark/commit/03475ea))
+
+### BREAKING CHANGES
+
+* The former `.ck-toolbar_sticky` class styles are available under `.ck-sticky-panel`.
+* The theme has been basically rewritten. Consider it a new implementation.
+
+
 ## [0.9.0](https://github.com/ckeditor/ckeditor5-theme/compare/v0.8.0...v0.9.0) (2017-09-03)
 
 ### Bug fixes
