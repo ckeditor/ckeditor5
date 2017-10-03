@@ -12,7 +12,7 @@ This package implements undo support for CKEditor 5.
 
 See the {@link module:undo/undo~Undo} plugin documentation.
 
-This plugin is normally enabled by the {@link module:essentials/essentials~Essentials} plugin from the {@link api/essentials `@ckeditor/ckeditor5-essentials`} package (which also enables other essential editing features).
+This plugin is usually enabled by the {@link module:essentials/essentials~Essentials} plugin from the {@link api/essentials `@ckeditor/ckeditor5-essentials`} package (which also enables other fundamental editing features).
 
 ## Installation
 
