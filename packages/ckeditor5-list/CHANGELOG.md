@@ -5,7 +5,7 @@ Changelog
 
 ### Bug fixes
 
-* Editor should not crash in certain cases during pasting when pasted content could not be converted at all. Closes [#80](https://github.com/ckeditor/ckeditor5-list/issues/80). ([40d0bf5](https://github.com/ckeditor/ckeditor5-list/commit/40d0bf5))
+* Editor will no longer crash in certain cases during pasting when pasted content could not be converted at all. Closes [#80](https://github.com/ckeditor/ckeditor5-list/issues/80). ([40d0bf5](https://github.com/ckeditor/ckeditor5-list/commit/40d0bf5))
 * Editor will no longer crash when spellchecker corrects a word inside list item in a certain scenario. Closes [#70](https://github.com/ckeditor/ckeditor5-list/issues/70). ([f0b8b44](https://github.com/ckeditor/ckeditor5-list/commit/f0b8b44))
 
 
