@@ -1,4 +1,4 @@
-CKEditor 5 utils
+CKEditor 5 utilities
 ========================================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -8,7 +8,7 @@ CKEditor 5 utils
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-utils/status.svg)](https://david-dm.org/ckeditor/ckeditor5-utils)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-utils/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-utils?type=dev)
 
-The various utils used by CKEditor 5 and its features. Kind of CKEditor 5's standard library.
+Various utilities used by CKEditor 5 and its features. This is a sort of  CKEditor 5's standard library.
 
 ## Documentation
 

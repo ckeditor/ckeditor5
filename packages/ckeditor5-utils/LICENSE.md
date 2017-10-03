@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor 5 Utils** – https://github.com/ckeditor/ckeditor5-utils <br>
+**CKEditor 5 Utilities** – https://github.com/ckeditor/ckeditor5-utils <br>
 Copyright (c) 2003-2017, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of any of the following licenses at your choice:
