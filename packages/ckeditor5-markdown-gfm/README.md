@@ -8,7 +8,11 @@ GitHub Flavored Markdown support for CKEditor 5
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-markdown-gfm/status.svg)](https://david-dm.org/ckeditor/ckeditor5-markdown-gfm)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-markdown-gfm/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-markdown-gfm?type=dev)
 
-GitHub Flavored Markdown support for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-markdown-gfm>.
+This package implements the GitHub Flavored Markdown data processor for CKEditor 5.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-markdown-gfm` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/markdown-gfm.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
