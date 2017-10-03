@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-typing/compare/v0.10.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Bug fixes
+
+* Fixed a bug where using spellchecker sometimes caused creating incorrect deltas, which caused bugs in undo. Closes [#123](https://github.com/ckeditor/ckeditor5-typing/issues/123). Closes [ckeditor/ckeditor5-engine#1152](https://github.com/ckeditor/ckeditor5-engine/issues/1152). ([9a5e22b](https://github.com/ckeditor/ckeditor5-typing/commit/9a5e22b))
+* Fixed an error where using spellchecker on a word with a style applied sometimes resulted in that word being removed. Closes [#117](https://github.com/ckeditor/ckeditor5-typing/issues/117). ([1e8d02b](https://github.com/ckeditor/ckeditor5-typing/commit/1e8d02b))
+
+
 ## [0.10.0](https://github.com/ckeditor/ckeditor5-typing/compare/v0.9.1...v0.10.0) (2017-09-03)
 
 ### Bug fixes
