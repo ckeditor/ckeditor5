@@ -358,7 +358,146 @@ The engine also defines three main classes which operate on offsets:
 
 ## UI library
 
-The standard UI library of CKEditor 5 is [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui). It provides base classes and helpers that that allow building a modular UI that seamlessly integrates with other components of the ecosystem.
+The standard UI library of CKEditor 5 is [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui). It provides base classes and helpers that allow building a modular UI that seamlessly integrates with other components of the ecosystem.
+
+### Views
+
+Views use [templates](#Templates) to build the UI. They also provide observable interfaces that other features (e.g. [plugins](#Plugins), [commands](#Commands), etc.) can use to change the DOM without any actual interaction with the native API.
+
+#### Definition
+
+A simple input view class can be defined as follows:
+
+```js
+class SampleInputView extends View {
+	constructor( locale ) {
+		super( locale );
+
+		// An entry point to binding observables with DOM attributes,
+		// events and text nodes.
+		const bind = this.bindTemplate;
+
+		// Views define their interface (state) using observable attributes.
+		this.set( {
+			isEnabled: false,
+			placeholder: ''
+		} );
+
+		this.template = new Template( {
+			tag: 'input',
+			attributes: {
+				class: [
+					'foo',
+					// The value of view#isEnabled will control the presence
+					// of the class.
+					bind.if( 'isEnabled', 'ck-enabled' ),
+				],
+
+				// The HTML "placeholder" attribute is also controlled by the observable.
+				placeholder: bind.to( 'placeholder' ),
+				type: 'text'
+			},
+			on: {
+				// DOM keydown events will fire view#input event.
+				keydown: bind.to( 'input' )
+			}
+		} );
+	}
+
+	setValue( newValue ) {
+		this.element.value = newValue;
+	}
+}
+```
+
+Note that views encapsulate the DOM they render. Because the UI is organized according to the *view-per-tree* rule, it is clear which view is responsible for which part of the UI so it is unlikely that a collision occurs between two features writing to the same DOM node.
+
+More often than not, views become children of other views (collections), nodes in the [UI view tree](#View-collections-and-the-UI-tree):
+
+```js
+class ParentView extends View {
+	constructor( locale ) {
+		super( locale );
+
+		const childA = new SampleInputView( locale );
+		const childB = new SampleInputView( locale );
+
+		this.template = new Template( {
+			tag: 'div',
+			children: [
+				childA
+				childB
+			]
+		} );
+	}
+}
+
+const parent = new ParentView( locale );
+
+parent.init();
+
+// Will insert <div><input .. /><input .. /></div>.
+document.body.appendChild( parent.element );
+```
+
+It is also possible to create standalone views, which don't belong to any collection. They must be {@link module:ui/view~View#init initialized} before  injection into DOM:
+
+```js
+const view = new SampleInputView( locale );
+
+view.init();
+
+// Will insert <input class="foo" type="text" placeholder="" />
+document.body.appendChild( view.element );
+```
+
+#### Interaction
+
+Features can interact with the state of the DOM via the attributes of the view so the following:
+
+```js
+view.isEnabled = true;
+view.placeholder = 'Type some text';
+```
+
+will result in:
+
+```html
+<input class="foo ck-enabled" type="text" placeholder="Type some text" />
+```
+
+Alternatively, they can [bind](#Event-system-and-observables) them directly to their own observable attributes:
+
+```js
+view.bind( 'placeholder', 'isEnabled' ).to( observable, 'placeholderText', 'isEnabled' );
+
+// The following will be automatically reflected in the view#placeholder and
+// view.element#placeholder HTML attribute in DOM.
+observable.placeholderText = 'Some placeholder';
+```
+
+Also, since views propagate the DOM events, features can now react to the user actions:
+
+```js
+// Each "keydown" event in the input will execute a command.
+view.on( 'input', () => {
+	editor.execute( 'myCommand' );
+} );
+```
+
+#### Best practices
+
+A complete view should provide an interface for the features, encapsulating DOM nodes and attributes. Features should not touch the DOM of the view using the native API. Any kind of interaction must be handled by the view that owns an {@link module:ui/view~View#element} to avoid collisions:
+
+```js
+// Will change the value of the input.
+view.setValue( 'A new value of the input.' );
+
+// WRONG! This is **NOT** the right way to interact with DOM because it collides
+// with an observable binding to the #placeholderText. The value will be
+// permanently overridden when the state of the observable changes.
+view.element.placeholder = 'A new placeholder';
+```
 
 ### Templates
 
@@ -371,8 +510,6 @@ The standard UI library of CKEditor 5 is [`@ckeditor/ckeditor5-ui`](https://www.
 Templates support [observable attribute](#Event-system-and-observables) bindings and handle native DOM events. A very simple template can look like this:
 
 ```js
-const bind = Template.bind( observable, emitter );
-
 new Template( {
 	tag: 'p',
 	attributes: {
@@ -399,104 +536,9 @@ and renders to an HTML element:
 <p class="foo bar" style="background-color: yellow;">A paragraph.</p>
 ```
 
-when `observable#className` is `"bar"`. The `observable` in the example above can be a [view](#Views) or any object which is {@link module:utils/observablemixin~Observable observable}. When the value of the `className` attribute changes, the template updates the `class` in attribute in DOM – from now on the element is permanently bound to the state of an application.
+when `observable#className` is `"bar"`. The `observable` in the example above can be a [view](#Views) or any object which is {@link module:utils/observablemixin~Observable observable}. When the value of the `className` attribute changes, the template updates the `class` attribute in DOM – from now on the element is permanently bound to the state of an application.
 
 Similarly, when rendered, the template also takes care of DOM events. A binding to the `click` event in the definition makes the `observable` always fire the `clicked` event upon an action in DOM. This way the `observable` provides an event interface of the DOM element and all the communication should pass through it.
-
-### Views
-
-Views use [templates](#Templates) to build the UI. They provide observable interfaces that other features (e.g. [plugins](#Plugins), [commands](#Commands), etc.) can use to change the DOM without an any actual interaction with the native API.
-
-Additionally, views encapsulate the DOM they render. Because the UI is organized according to the *view-per-tree* rule, it is clear which view is responsible for which part of the UI so it is unlikely that a collision occurs between two features writing to the same DOM node.
-
-A simple input view could look like this:
-
-```js
-class SampleInputView extends View {
-	constructor( locale ) {
-		super( locale );
-
-		// A shorthand for Template.bind( this, this ).
-		const bind = this.bindTemplate;
-
-		// Views define their interface (state) using observable attributes.
-		this.set( {
-			isEnabled: false,
-			placeholder: ''
-		} );
-
-		this.template = new Template( {
-			tag: 'input',
-			attributes: {
-				class: [
-					'foo',
-					bind.if( 'isEnabled', 'ck-enabled' ),
-				],
-				placeholder: bind.to( 'placeholder' ),
-				type: 'text'
-			},
-			on: {
-				keydown: bind.to( 'input' )
-			}
-		} );
-	}
-
-	setValue( newValue ) {
-		this.element.value = newValue;
-	}
-}
-```
-
-Parent–less views must be {@link module:ui/view~View#init initialized} before they can be injected into DOM. They may also become a children of another view, nodes in the [UI view tree](#View-collections-and-the-UI-tree):
-
-```js
-const view = new SampleInputView( locale );
-
-view.init();
-
-document.body.appendChild( view.element );
-```
-
-Features can interact with the state of the DOM via the attributes of the view:
-
-```js
-// Will append "ck-enabled" to the HTML "class" attribute.
-view.isEnabled = true;
-
-// Will change the HTML "placeholder" attribute.
-view.placeholder = 'Type some text';
-```
-
-or they can [bind](#Event-system-and-observables) them directly to their own observable attributes:
-
-```js
-view.bind( 'placeholder', 'isEnabled' ).to( observable, 'placeholderText', 'isEnabled' );
-
-// The following will be automatically reflected in the view#placeholder and
-// view.element#placeholder attribute.
-observable.placeholderText = 'Some placeholder';
-```
-
-Also since views propagate the DOM events, features can now react to the user actions:
-
-```js
-// Each "keydown" event in the input will execute a command.
-view.on( 'input', () => {
-	editor.execute( 'myCommand' );
-} );
-```
-
-A complete view should provide an interface for the features, encapsulating DOM nodes and attributes. Features should not touch the DOM of the view using the native API. Any kind of interaction must be handled by the view that owns an {@link module:ui/view~View#element} to avoid collisions:
-
-```js
-// Will change the value of the input.
-view.setValue( 'A new value of the input.' );
-
-// WRONG! This is **NOT** the right way to interact with DOM because it collides
-// with an observable binding to the #placeholderText. The value will be
-// permanently overridden when the state of the observable changes.
-view.element.placeholder = 'A new placeholder';
-```
 
 ### View collections and the UI tree
 
@@ -547,5 +589,7 @@ EditorUIView
 		 │		└── ...
 		 └── ...
 ```
+
+### Using the existing components
 
 ### Keystrokes and focus management
