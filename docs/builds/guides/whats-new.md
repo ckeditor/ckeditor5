@@ -26,7 +26,9 @@ The outdated concept of image alignment was dropped in favor of {@link features/
 
 [ TODO Animated GIF of styles ]
 
-<!-- TODO 2 -->
+When integrated with {@link features/image#Image-upload EasyImage}, uploading, resizing and producing different images sizes for responsive design is all automated.
+
+[ TODO Animated GIF of image being inserted and how it looks like in a smartphone and desktop ]
 
 ### Simple linking
 
@@ -86,7 +88,11 @@ Another important benefit of the custom data model is that it enables the possib
 Read more about {@linkTODO collaboration in the CKEditor 5 Framework documentation}.
 -->
 
-<!-- TODO 3 -->
+With the [collaboration services provided by the CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/), it is now extremely easy to bring collaboration features inside your application.
+
+[Letters](https://ckeditor.com/letters/) is an example of an application using the power of CKEditor 5 for collaboration.
+
+[ TODO Animated GIF of Letters and collaboration ]
 
 ## Modern
 
