@@ -130,7 +130,7 @@ export default class ImageStyle extends Plugin {
  * Note: Setting `title` to one of {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine#localizedDefaultStylesTitles}
  * will automatically translate it to the language of the editor.
  *
- * Read more about styling images in the {@linkTODO Image styles guide}.
+ * Read more about styling images in the {@glink features/image#Image-styles Image styles guide}.
  *
  * The feature creates commands based on defined styles, so you can change the style of a selected image by executing
  * the following command:

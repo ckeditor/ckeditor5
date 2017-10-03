@@ -166,15 +166,13 @@ TODO (example)...
 
 ## Image upload
 
-TODO...
-
-<!-- TODO 6 -->
+See the {@link features/image-upload Image upload} guide.
 
 ## Responsive images
 
 TODO...
 
-<!-- TODO 6 -->
+<!-- TODO 6  when finished, link here from the image-upload guide. -->
 
 ## Installation
 
