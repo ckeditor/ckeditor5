@@ -7,7 +7,7 @@
     "ckeditor5-feature"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-engine": "^0.11.0"
+    "@ckeditor/ckeditor5-engine": "^1.0.0-alpha.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^3.1.4",
