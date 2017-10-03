@@ -8,7 +8,11 @@ CKEditor 5 typing feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-typing/status.svg)](https://david-dm.org/ckeditor/ckeditor5-typing)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-typing/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-typing?type=dev)
 
-The typing feature for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-typing>.
+This package implements support for typing (inputting and deleting text) in CKEditor 5.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-typing` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/typing.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
