@@ -6,7 +6,7 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-inline.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline)
 
-The inline editor implementation. See the {@link examples/builds/inline-editor demo}.
+The inline editor implementation for CKEditor 5. See the {@link examples/builds/inline-editor demo}.
 
 ## Documentation
 
