@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-clipboard/compare/v0.7.0...v1.0.0-alpha.1) (2017-10-03)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [0.7.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v0.6.0...v0.7.0) (2017-09-03)
 
 ### Bug fixes
