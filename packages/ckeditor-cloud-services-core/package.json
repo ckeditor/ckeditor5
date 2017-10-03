@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor-cloudservices-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CKEditor Cloud Services Core API",
   "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
   "repository": {
