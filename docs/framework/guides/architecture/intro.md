@@ -358,15 +358,17 @@ The engine also defines three main classes which operate on offsets:
 
 ## UI library
 
-The standard UI library of CKEditor 5 is [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui). It provide sbase classes and helpers that that allow building a modular UI that seamlessly integrates with other components of the ecosystem.
+The standard UI library of CKEditor 5 is [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui). It provides base classes and helpers that that allow building a modular UI that seamlessly integrates with other components of the ecosystem.
 
 ### Templates
 
 {@link module:ui/template~Template Templates} render DOM elements and text nodes in the UI library. Used primarily by [views](#Views), they're the lowest layer of the UI connecting the application to the web page.
 
-Templates are built from the {@link module:ui/template~TemplateDefinition definitions}, they support [observable attribute](#Event-system-and-observables) bindings and handle native DOM events.
+<info-box>
+	Check out the {@link module:ui/template~TemplateDefinition} to learn more about the template syntax and other advanced concepts.
+</info-box>
 
-A very simple template can look like this
+Templates support [observable attribute](#Event-system-and-observables) bindings and handle native DOM events. A very simple template can look like this:
 
 ```js
 const bind = Template.bind( observable, emitter );
@@ -391,7 +393,7 @@ new Template( {
 } ).render();
 ```
 
-and renders to an HTML element
+and renders to an HTML element:
 
 ```html
 <p class="foo bar" style="background-color: yellow;">A paragraph.</p>
@@ -445,7 +447,7 @@ class SampleInputView extends View {
 }
 ```
 
-Views must be {@link module:ui/view~View#init initialized} before they work properly. Then, they can be injected into DOM directly or become a child of another view, a node in the [UI view tree](#View-collections-and-the-UI-tree):
+Parent–less views must be {@link module:ui/view~View#init initialized} before they can be injected into DOM. They may also become a children of another view, nodes in the [UI view tree](#View-collections-and-the-UI-tree):
 
 ```js
 const view = new SampleInputView( locale );
@@ -490,12 +492,60 @@ A complete view should provide an interface for the features, encapsulating DOM 
 // Will change the value of the input.
 view.setValue( 'A new value of the input.' );
 
-// This is **NOT** the right way to interact with DOM because it collides
+// WRONG! This is **NOT** the right way to interact with DOM because it collides
 // with an observable binding to the #placeholderText. The value will be
 // permanently overridden when the state of the observable changes.
 view.element.placeholder = 'A new placeholder';
 ```
 
 ### View collections and the UI tree
+
+Views are organized into {@link module:ui/viewcollection~ViewCollection collections}, which manage their elements and propagate DOM events even further. Adding or removing a view in a collection moves the {@link module:ui/view~View#element view's element} in DOM to reflect the position.
+
+Each editor UI has a {@link module:core/editor/editorui~EditorUI#view root view}, which can be found under `editor.ui.view`. Such view usually defines the container element of the editor and undermost view collections that other features can populate.
+
+For instance, the `BoxedEditorUiView` class defines two collections:
+* {@link module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView#top} – a collection that hosts the toolbar,
+* {@link module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView#main} – a collection that contains the editable area of the editor.
+
+It also inherits the {@link module:ui/editorui/editoruiview~EditorUIView#body} collection, which resides directly in the `<body>` of the web page and stores floating elements like {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon panels}.
+
+Plugins can populate the root view collections with their children. Such child views become a part of the UI tree and will be managed by the editor, e.g. they will be initialized and destroyed along with the editor.
+
+```js
+class MyPlugin extends Plugin {
+	init() {
+		const editor = this.editor;
+		const view = new MyPluginView();
+
+		editor.ui.top.add( view );
+	}
+}
+```
+
+`MyPluginView` can {@link module:ui/view~View#createCollection create own view collections} and populate them during the life cycle of the editor. There is no limit to the depth of the UI tree, which usually looks like this:
+
+```
+EditorUIView
+	├── "top" collection
+	│	└── ToolbarView
+	│		└── "items" collection
+	│			├── DropdownView
+	│			│	├── ButtonView
+	│			│	└── PanelView
+	│			├── ButtonViewA
+	│			├── ButtonViewB
+	│			└── ...
+	├── "main" collection
+	│	└── InlineEditableUIView
+	└── "body" collection
+		 ├── BalloonPanelView
+		 │	└── "content" collection
+		 │		└── ToolbarView
+		 ├── BalloonPanelView
+		 │	└── "content" collection
+		 │		└── ...
+		 └── ...
+```
 
 ### Keystrokes and focus management
