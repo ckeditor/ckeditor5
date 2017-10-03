@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-build-balloon/compare/v0.2.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Bug fixes
+
+* It will be possible to configure toolbar offset without overriding preconfigured toolbar items. See [ckeditor/ckeditor5#572](https://github.com/ckeditor/ckeditor5/issues/572). ([c2485d6](https://github.com/ckeditor/ckeditor5-build-balloon/commit/c2485d6))
+
+### Features
+
+* Added Easy Image with Cloud Services and CKFinder adapter. See [ckeditor/ckeditor5#567](https://github.com/ckeditor/ckeditor5/issues/567). ([e74806e](https://github.com/ckeditor/ckeditor5-build-balloon/commit/e74806e))
+
+
 ## [0.2.0](https://github.com/ckeditor/ckeditor5-build-balloon/compare/v0.1.0...v0.2.0) (2017-09-07)
 
 ### Other changes
