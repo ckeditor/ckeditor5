@@ -1,4 +1,4 @@
-CKEditor 5 lists feature
+CKEditor 5 list feature
 ========================================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -8,7 +8,7 @@ CKEditor 5 lists feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-list/status.svg)](https://david-dm.org/ckeditor/ckeditor5-list)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-list/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-list?type=dev)
 
-This package implements bulleted and numbered lists feature for CKEditor 5.
+This package implements bulleted and numbered list feature for CKEditor 5.
 
 ## Documentation
 
