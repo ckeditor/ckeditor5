@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-utils/compare/v0.10.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Features
+
+* Scrolling DOM utilities should support multi-window scenarios. Closes [#175](https://github.com/ckeditor/ckeditor5-utils/issues/175). ([a5c27ea](https://github.com/ckeditor/ckeditor5-utils/commit/a5c27ea))
+
+### Other changes
+
+* `CKEditorError#message`, `log.error()` and `log.warn()` will contain a link to the error documentation. Closes [#185](https://github.com/ckeditor/ckeditor5-utils/issues/185). ([b7a00c9](https://github.com/ckeditor/ckeditor5-utils/commit/b7a00c9))
+
+
 ## [0.10.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.9.1...v0.10.0) (2017-09-03)
 
 ### Bug fixes
