@@ -204,7 +204,7 @@ ImageStyleEngine.defaultStyles = {
  * Default image style icons provided by the plugin, which can be referred in the
  * {@link module:image/image~ImageConfig#styles} config.
  *
- * There are 3 icons available: `'full'`, `'left'`, `'center'` and `'right'`.
+ * There are 4 icons available: `'full'`, `'left'`, `'center'` and `'right'`.
  *
  * @member {Object.<String, String>}
  */
@@ -236,7 +236,8 @@ function normalizeStyle( style ) {
 		else {
 			log.warn(
 				'image-style-not-found: There is no such image style of given name.',
-				{ name: style } );
+				{ name: style }
+			);
 
 			// Normalize the style anyway to prevent errors.
 			style = {

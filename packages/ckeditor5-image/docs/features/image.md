@@ -136,26 +136,33 @@ ClassicEditor
 	.catch( ... );
 ```
 
-```css
-.image-style-align-left {
-    float: left;
-    width: 50%;
-    margin: 1em 1em 1em 0;
-}
+In the code sample above we used predefined image styles – `'imageStyleFull'`, `'imageStyleAlignLeft'` and `'imageStyleAlignRight'`. The latter two apply, respectively, `.image-style-align-left` and  `.image-style-align-right` classes to the `<figure>` element.
 
-.image-style-align-right {
-    float: right;
-    width: 50%;
-    margin: 1em 0 1em 1em;
-}
-
-```
+See the result below:
 
 {@snippet features/image-style-custom}
 
 <info-box hint>
 	In the example above the options used represent simple "align left" and "align right" styles. Most text editors support left, center, right alignments, however, try not to think about CKEditor 5's image styles in this way. Try to understand what use cases the system needs to support and define semantical options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens.
 </info-box>
+
+### Defining custom styles
+
+Besides using the {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultStyles 5 predefined styles}:
+
+* `'imageStyleFull'`,
+* `'imageStyleSide'`,
+* `'imageStyleAlignLeft'`,
+* `'imageStyleAlignCenter'`,
+* `'imageStyleAlignRight'`
+
+you can also define your own styles or modify the existing ones.
+
+<info-box>
+	Reusing (or modifying) predefined styles has this advantage that CKEditor 5 will use its official translations for the defined button titles.
+</info-box>
+
+TODO (example)...
 
 ## Image upload
 

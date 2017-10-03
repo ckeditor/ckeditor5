@@ -5,19 +5,25 @@
 
 /* globals ClassicEditor, console, window, document */
 
-ClassicEditor
-	.create( document.querySelector( '#snippet-image-toolbar' ), {
-		removePlugins: [ 'ImageCaption', 'ImageStyle' ],
-		image: {
-			toolbar: [ 'imageTextAlternative' ]
-		},
-		toolbar: {
-			viewportTopOffset: 60
-		}
-	} )
-	.then( editor => {
-		window.editorToolbar = editor;
+import getToken from '@ckeditor/ckeditor5-easy-image/tests/_utils/gettoken';
+
+getToken()
+	.then( token => {
+		ClassicEditor
+			.create( document.querySelector( '#snippet-image-toolbar' ), {
+				removePlugins: [ 'ImageCaption', 'ImageStyle' ],
+				image: {
+					toolbar: [ 'imageTextAlternative' ]
+				},
+				toolbar: {
+					viewportTopOffset: 60
+				},
+				cloudServices: { token }
+			} )
+			.then( editor => {
+				window.editorToolbar = editor;
+			} );
 	} )
 	.catch( err => {
-		console.error( err.stack );
+		console.error( err );
 	} );

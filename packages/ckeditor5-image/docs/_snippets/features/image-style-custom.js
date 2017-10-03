@@ -5,29 +5,35 @@
 
 /* globals ClassicEditor, console, window, document */
 
-ClassicEditor
-	.create( document.querySelector( '#snippet-image-style-custom' ), {
-		image: {
-			styles: [
-				// This option is equal to a situation where no style is applied.
-				'imageStyleFull',
+import getToken from '@ckeditor/ckeditor5-easy-image/tests/_utils/gettoken';
 
-				// This represents an image aligned to left.
-				'imageStyleAlignLeft',
+getToken()
+	.then( token => {
+		ClassicEditor
+			.create( document.querySelector( '#snippet-image-style-custom' ), {
+				image: {
+					styles: [
+						// This option is equal to a situation where no style is applied.
+						'imageStyleFull',
 
-				// This represents an image aligned to right.
-				'imageStyleAlignRight'
-			],
+						// This represents an image aligned to left.
+						'imageStyleAlignLeft',
 
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight' ]
-		},
-		toolbar: {
-			viewportTopOffset: 60
-		}
-	} )
-	.then( editor => {
-		window.editorStyleCustom = editor;
+						// This represents an image aligned to right.
+						'imageStyleAlignRight'
+					],
+
+					toolbar: [ 'imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight' ]
+				},
+				toolbar: {
+					viewportTopOffset: 60
+				},
+				cloudServices: { token }
+			} )
+			.then( editor => {
+				window.editorStyleCustom = editor;
+			} );
 	} )
 	.catch( err => {
-		console.error( err.stack );
+		console.error( err );
 	} );
