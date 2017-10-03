@@ -8,7 +8,11 @@ CKEditor 5 editing engine
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-engine/status.svg)](https://david-dm.org/ckeditor/ckeditor5-engine)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-engine/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-engine?type=dev)
 
-The editing engine of CKEditor 5 project. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5>.
+The CKEditor 5's editing engine implements a flexible MVC-based architecture for creating rich-text editing features.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-engine` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/engine.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
