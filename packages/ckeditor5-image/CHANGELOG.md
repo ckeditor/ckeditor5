@@ -5,20 +5,19 @@ Changelog
 
 ### Bug fixes
 
-* Fixed a bug causing editor with `ImageCaption` plugin enabled threw an error after view got rendered. Closes [#127](https://github.com/ckeditor/ckeditor5-image/issues/127). ([6147fee](https://github.com/ckeditor/ckeditor5-image/commit/6147fee))
-* The `ImageTextAlternative` UI should hide when the edited image element has been removed by an external change. Closes [#137](https://github.com/ckeditor/ckeditor5-image/issues/137). ([6ab8c40](https://github.com/ckeditor/ckeditor5-image/commit/6ab8c40))
+* Fixed a bug causing the editor with `ImageCaption` plugin enabled to throw an error after the view got rendered. Closes [#127](https://github.com/ckeditor/ckeditor5-image/issues/127). ([6147fee](https://github.com/ckeditor/ckeditor5-image/commit/6147fee))
+* The `ImageTextAlternative`'s UI should be hidden when the edited image element has been removed by an external change. Closes [#137](https://github.com/ckeditor/ckeditor5-image/issues/137). ([6ab8c40](https://github.com/ckeditor/ckeditor5-image/commit/6ab8c40))
 
 ### Features
 
-* Allowed customization of default image styles. Defined formatting–oriented styles. Simplified `config.image.styles` syntax. Closes [#134](https://github.com/ckeditor/ckeditor5-image/issues/134). Closes [#135](https://github.com/ckeditor/ckeditor5-image/issues/135). ([eab98ef](https://github.com/ckeditor/ckeditor5-image/commit/eab98ef))
-* Keyboard navigation should work in the `TextAlternativeFormView`. Closes [#40](https://github.com/ckeditor/ckeditor5-image/issues/40). Closes [ckeditor/ckeditor5#490](https://github.com/ckeditor/ckeditor5/issues/490). ([fa92de6](https://github.com/ckeditor/ckeditor5-image/commit/fa92de6))
-* Replaced srcset attribute in the model by responsive attribute which is now converted to three attributes in the view: srcset, sizes and width. Closes [#145](https://github.com/ckeditor/ckeditor5-image/issues/145). Closes [ckeditor/ckeditor5-easy-image#4](https://github.com/ckeditor/ckeditor5-easy-image/issues/4). ([9ca651e](https://github.com/ckeditor/ckeditor5-image/commit/9ca651e))
+* Allowed customization of the default image styles. Defined formatting–oriented styles. Simplified `config.image.styles` syntax. Closes [#134](https://github.com/ckeditor/ckeditor5-image/issues/134). Closes [#135](https://github.com/ckeditor/ckeditor5-image/issues/135). ([eab98ef](https://github.com/ckeditor/ckeditor5-image/commit/eab98ef))
+* Keyboard navigation will now work in the `TextAlternativeFormView`. Closes [#40](https://github.com/ckeditor/ckeditor5-image/issues/40). Closes [ckeditor/ckeditor5#490](https://github.com/ckeditor/ckeditor5/issues/490). ([fa92de6](https://github.com/ckeditor/ckeditor5-image/commit/fa92de6))
+* The `srcset` attribute in the model will now be converted to three attributes in the view: `srcset`, `sizes` and `width`. Closes [#145](https://github.com/ckeditor/ckeditor5-image/issues/145). Closes [ckeditor/ckeditor5-easy-image#4](https://github.com/ckeditor/ckeditor5-easy-image/issues/4). ([9ca651e](https://github.com/ckeditor/ckeditor5-image/commit/9ca651e))
 
 ### BREAKING CHANGES
 
-* The srcset attribute is now replaced by responsive attribute in the model.
+* The format of the `srcset` attribute has been changed.
 * From now on, the `imageStyleFull` uses `object-full-width.svg` icon.
- 
 
 
 ## [0.7.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.6.0...v0.7.0) (2017-09-03)
