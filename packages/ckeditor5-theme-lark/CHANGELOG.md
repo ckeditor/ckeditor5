@@ -18,7 +18,7 @@ Changelog
 ### BREAKING CHANGES
 
 * The former `.ck-toolbar_sticky` class styles are available under `.ck-sticky-panel`.
-* The theme has been basically rewritten. Consider it a new implementation.
+* The theme has been, basically, rewritten. Consider it a new implementation.
 
 
 ## [0.9.0](https://github.com/ckeditor/ckeditor5-theme/compare/v0.8.0...v0.9.0) (2017-09-03)
