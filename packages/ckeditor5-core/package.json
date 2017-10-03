@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-core",
-  "version": "0.9.0",
+  "version": "1.0.0-alpha.1",
   "description": "CKEditor 5 core editor architecture.",
   "keywords": [
     "ckeditor5",
