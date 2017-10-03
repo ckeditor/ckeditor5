@@ -14,6 +14,10 @@ This package exposes the [`InlineEditor`](https://ckeditor5.github.io/docs/night
 
 This package contains the source version of the inline editor. This editor implementation is also available in the [inline build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline). Read more about [CKEditor 5 Builds](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/index.html).
 
+## Documentation
+
+See the [`@ckeditor/ckeditor5-editor-inline` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/editor-inline.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
+
 ## License
 
 Licensed under the GPL, LGPL and MPL licenses, at your choice. For full details about the license, please check the `LICENSE.md` file.
