@@ -124,7 +124,7 @@ gulp.task( 'translations:download', () => {
 
 // Releasing. -----------------------------------------------------------------
 
-gulp.task( 'changelog:dependencies', () => {
+gulp.task( 'changelog', () => {
 	assertIsInstalled( '@ckeditor/ckeditor5-dev-env' );
 
 	const devEnv = require( '@ckeditor/ckeditor5-dev-env' );
