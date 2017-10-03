@@ -8,7 +8,7 @@ CKEditor 5 classic editor implementation
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-classic/status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-classic)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-classic/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-classic?type=dev)
 
-The classic editor implementation.
+The classic editor implementation for CKEditor 5.
 
 This package contains the [`ClassicEditor`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_editor-classic_classiceditor-ClassicEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
 
