@@ -39,11 +39,18 @@ npm install -g gulp lerna mgit2
 
 Note: You may need to use `sudo` on Linux and macOS.
 
-Then clone the [main repository](https://github.com/ckeditor/ckeditor5) and install its dependencies:
+Then clone the [main repository](https://github.com/ckeditor/ckeditor5):
 
 ```bash
 git clone https://github.com/ckeditor/ckeditor5.git
 cd ckeditor5
+```
+
+And install all CKEditor 5 packages from the [npm registry](http://npmjs.com/).
+
+**Note:** If you plan to use the developement version of CKEditor 5 packages (see the [next section](#Switching-to-development-version-of-packages)), you can skip this step to save time.
+
+```bash
 npm install
 ```
 
@@ -51,7 +58,7 @@ This may take a [while](https://github.com/npm/npm/issues/10380)...
 
 ### Switching to development version of packages
 
-The above steps should install all the packages from the [npm registry](http://npmjs.com/), which means that you will have the latest releases of all of them. They are available in `node_modules/@ckeditor/` (we are using [scoped packages](https://docs.npmjs.com/misc/scope), hence the unusual directory).
+The above steps should install all the packages from npm, which means that you will have the latest releases of all of them. They are available in `node_modules/@ckeditor/` (we are using [scoped packages](https://docs.npmjs.com/misc/scope), hence the unusual directory).
 
 In order to work with development versions of all the official packages, it is recommended to use mgit and Lerna. The former will clone all package repositories and the latter will be able to symlink them, so they create a correct directory structure, understandable by Node.js-compliant tools (like webpack or Browserify).
 
@@ -79,7 +86,7 @@ Finally, link them:
 lerna bootstrap
 ```
 
-Running Lerna may take a while because it installs all package dependencies. It will be improved soon thanks to [dependency hoisting](https://github.com/lerna/lerna/pull/507).
+Running Lerna may take a while because it installs all package dependencies.
 
 Now, all CKEditor packages (except the [dev tools](https://github.com/ckeditor/ckeditor5-dev)) should be cross-symlinked:
 
