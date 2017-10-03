@@ -1,4 +1,4 @@
-CKEditor 5 file upload utils
+CKEditor 5 file upload utilities
 ========================================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -8,7 +8,7 @@ CKEditor 5 file upload utils
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-upload/status.svg)](https://david-dm.org/ckeditor/ckeditor5-upload)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-upload/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-upload?type=dev)
 
-This package implements various file upload utils for CKEditor 5.
+This package implements various file upload utilities for CKEditor 5.
 
 ## Documentation
 
