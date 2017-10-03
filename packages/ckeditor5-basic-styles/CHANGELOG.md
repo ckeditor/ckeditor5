@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v0.9.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Features
+
+* Introduced the `Code` plugin. Closes [#52](https://github.com/ckeditor/ckeditor5-basic-styles/issues/52). ([d720cb9](https://github.com/ckeditor/ckeditor5-basic-styles/commit/d720cb9))
+
+
 ## [0.9.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v0.8.1...v0.9.0) (2017-09-03)
 
 ### Bug fixes
