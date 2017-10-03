@@ -8,7 +8,7 @@ category: api-reference
 
 This package implements a simple UI framework and CKEditor 5's standard UI library.
 
-Together with the {@link api/engine editing engine} and the {@link api/core core editor architecture} they create a platform for implementing rich-text editors.
+Together with the {@link api/engine editing engine} and the {@link api/core core editor architecture} they create a platform for implementing rich text editors.
 
 ## Documentation
 
