@@ -34,14 +34,14 @@ Therefore, it is worth spending some time analyzing required features.
 CKEditor 5 was designed with focus on creating quality content. There are thus good reasons for it to not support some old features. You should take this chance to rethink the features available in your application and in turn perhaps switch the approach towards a more modern reasoning.
 
 <info-box>
-Features like fonts, colors and alignment will be added in the future, when new types of builds will be introduced with the purpose of satisfying document editing scenarios.
+	Features like fonts, colors and alignment will be added in the future, when new types of builds will be introduced with the purpose of satisfying document editing scenarios.
 </info-box>
 
 ## Image upload
 
 Image upload is handled differently with CKEditor 5, bringing a much better user experience. Solutions used with CKEditor 4 may not be compatible any more and therefore another solution needs to be found.
 
-CKEditor 5 Builds come with {@link features/image#Image-upload Easy Image} available out of the box. It is a super simple to {@linkTODO enable image upload with it}.
+CKEditor 5 Builds come with {@link features/image-upload#Easy-Image Easy Image} available out of the box. It is a super simple to {@link features/image-upload#Easy-Image enable image upload with it}.
 
 ## Plugins
 

@@ -26,7 +26,7 @@ The outdated concept of image alignment was dropped in favor of {@link features/
 
 [ TODO Animated GIF of styles ]
 
-When integrated with {@link features/image#Image-upload EasyImage}, uploading, resizing and producing different images sizes for responsive design is all automated.
+When integrated with {@link features/image-upload#Easy-Image Easy Image}, uploading, resizing and producing different images sizes for responsive design is all automated.
 
 [ TODO Animated GIF of image being inserted and how it looks like in a smartphone and desktop ]
 

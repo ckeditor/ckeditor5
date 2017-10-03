@@ -53,4 +53,5 @@ To start using the framework refer to:
 
 * The {@link framework/guides/quick-start Quick start} guide.
 * The {@link framework/guides/architecture/intro Introduction to the framework architecture} guide.
-* The {@linkTODO framework/guides/creating-plugin Creating a plugin} guide.
+
+<!-- * The {@linkTODO framework/guides/creating-plugin Creating a plugin} guide. -->
