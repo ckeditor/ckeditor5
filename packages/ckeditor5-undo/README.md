@@ -8,7 +8,11 @@ CKEditor 5 undo feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-undo/status.svg)](https://david-dm.org/ckeditor/ckeditor5-undo)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-undo/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-undo?type=dev)
 
-Undo manager for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-undo>.
+This package implements undo support for CKEditor 5.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-undo` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/undo.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
