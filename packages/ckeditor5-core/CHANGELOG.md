@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-core/compare/v0.9.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Features
+
+* The `StandardEditor` should automatically update the contents of its source textarea upon submission of the form. Closes https://github.com/ckeditor/ckeditor5/issues/544. ([ce46fde](https://github.com/ckeditor/ckeditor5-core/commit/ce46fde))
+
+
 ## [0.9.0](https://github.com/ckeditor/ckeditor5-core/compare/v0.8.1...v0.9.0) (2017-09-03)
 
 ### Bug fixes
