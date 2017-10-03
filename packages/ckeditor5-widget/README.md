@@ -8,7 +8,7 @@ CKEditor 5 widget API
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-widget/status.svg)](https://david-dm.org/ckeditor/ckeditor5-widget)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-widget/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-widget?type=dev)
 
-This package implements widget API for CKEditor 5.
+This package implements the widget API for CKEditor 5.
 
 ## Documentation
 
