@@ -6,7 +6,7 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-autoformat.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat)
 
-This package implements the autoformatting feature – it allows styling text by typing sequences like `**bold this**`.
+This package implements the autoformatting feature. It allows styling text by typing sequences like `**bold this**`.
 
 ## Documentation
 

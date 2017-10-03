@@ -8,7 +8,11 @@ CKEditor 5 autoformat feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-autoformat/status.svg)](https://david-dm.org/ckeditor/ckeditor5-autoformat)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-autoformat/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-autoformat?type=dev)
 
-Replaces predefined characters with corresponding structures. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-autoformat>.
+This package implements the autoformatting feature for CKEditor 5. It allows styling text by typing sequences like `**bold this**`.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-autoformat` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/autoformat.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
