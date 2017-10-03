@@ -2,7 +2,7 @@
 category: api-reference
 ---
 
-# CKEditor 5 enter feature
+# CKEditor 5 Enter feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-enter.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter)
 
@@ -12,7 +12,7 @@ This package implements the <kbd>Enter</kbd> key support for CKEditor 5.
 
 See the {@link module:enter/enter~Enter} plugin documentation.
 
-This plugin is normally enabled by the {@link module:essentials/essentials~Essentials} plugin from the {@link api/essentials `@ckeditor/ckeditor5-essentials`} package (which also enables other essential editing features).
+This plugin is usually enabled by the {@link module:essentials/essentials~Essentials} plugin from the {@link api/essentials `@ckeditor/ckeditor5-essentials`} package (which also enables other fundamental editing features).
 
 ## Installation
 
