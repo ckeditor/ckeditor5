@@ -8,7 +8,7 @@ CKEditor 5 essentials plugin
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-essentials/status.svg)](https://david-dm.org/ckeditor/ckeditor5-essentials)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-essentials/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-essentials?type=dev)
 
-Essential editing features for CKEditor 5.
+Essential editing features for CKEditor 5 wrapped in one plugin.
 
 The [`Essentials`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_essentials_essentials-Essentials.html) plugin includes all essential editing features:
 
@@ -17,7 +17,9 @@ The [`Essentials`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api
 * [`Typing`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_typing_typing-Typing.html)
 * [`Undo`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_undo_undo-Undo.html)
 
-More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-essentials>.
+## Documentation
+
+See the [`@ckeditor/ckeditor5-essentials` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/essentials.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
