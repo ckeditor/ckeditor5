@@ -8,7 +8,11 @@ CKEditor 5 enter feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-enter/status.svg)](https://david-dm.org/ckeditor/ckeditor5-enter)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-enter/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-enter?type=dev)
 
-The <kbd>Enter</kbd> support for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-enter>.
+This package implements the <kbd>Enter</kbd> key support for CKEditor 5.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-enter` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/enter.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
