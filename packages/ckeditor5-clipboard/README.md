@@ -8,7 +8,11 @@ CKEditor 5 clipboard feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-clipboard/status.svg)](https://david-dm.org/ckeditor/ckeditor5-clipboard)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-clipboard/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-clipboard?type=dev)
 
-Clipboard (copy, cut, paste) support for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-clipboard>.
+This package implements the clipboard (copy, cut, paste) support for CKEditor 5.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-clipboard` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/clipboard.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
