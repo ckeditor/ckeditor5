@@ -6,7 +6,7 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-balloon.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon)
 
-The balloon editor implementation (Medium-like editor). See the {@link examples/builds/balloon-editor demo}.
+The balloon editor implementation (Medium-like editor) for CKEditor 5. See the {@link examples/builds/balloon-editor demo}.
 
 ## Documentation
 

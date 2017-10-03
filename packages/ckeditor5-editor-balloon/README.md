@@ -8,7 +8,7 @@ CKEditor 5 balloon editor implementation
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-balloon/status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-balloon)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-balloon/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-balloon?type=dev)
 
-The balloon editor implementation (Medium-like editor).
+The balloon editor implementation (Medium-like editor) for CKEditor 5.
 
 This package contains the [`BallonEditor`](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/module_editor-balloon_ballooneditor-BallonEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
 
