@@ -6,11 +6,11 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-image.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)
 
-This package implements the image feature. The feature is introduced in a grannular form implemented by a couple of plugins.
+This package implements the image feature. The feature is introduced in a granular form implemented by a couple of plugins.
 
 ## Documentation
 
-See the {@link features/image Image feature} guide and the following plugins documentation:
+See the {@link features/image Image feature} guide and the documentation for the following plugins:
 
 * {@link module:image/image~Image}
 * {@link module:image/imagetoolbar~ImageToolbar}

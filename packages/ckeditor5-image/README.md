@@ -8,7 +8,7 @@ CKEditor 5 image feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-image/status.svg)](https://david-dm.org/ckeditor/ckeditor5-image)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-image/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-image?type=dev)
 
-This package implements the image feature for CKEditor 5. The feature is introduced in a grannular form implemented by a couple of plugins.
+This package implements the image feature for CKEditor 5. The feature is introduced in a granular form implemented by a couple of plugins.
 
 ## Documentation
 
