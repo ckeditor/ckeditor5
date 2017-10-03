@@ -1,6 +1,28 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-engine/compare/v0.11.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Bug fixes
+
+* `model.Range` now will be correctly transformed if it was at the end of the split element. Instead of sticking to the old element, it will be moved to the end of the new element. Closes [#1142](https://github.com/ckeditor/ckeditor5-engine/issues/1142). ([1be7ed1](https://github.com/ckeditor/ckeditor5-engine/commit/1be7ed1))
+* Fixed a bug in `Range#getTransformedByDelta()` that caused editor to crash after some `MergeDelta`s were transformed. Closes [#1132](https://github.com/ckeditor/ckeditor5-engine/issues/1132). ([97a4f4b](https://github.com/ckeditor/ckeditor5-engine/commit/97a4f4b))
+* Fixed a bug when a block quote could not be applied to an empty paragraph with a basic style (bold, etc.) active in it. Closes [#1127](https://github.com/ckeditor/ckeditor5-engine/issues/1127). ([6d33b9f](https://github.com/ckeditor/ckeditor5-engine/commit/6d33b9f))
+* Fixed a bug when editor crashed during MergeDelta transformation in a specific case. Closes [#1103](https://github.com/ckeditor/ckeditor5-engine/issues/1103). ([ef1b07e](https://github.com/ckeditor/ckeditor5-engine/commit/ef1b07e))
+* Spaces inside `<code>` will be rendered in a normal way (previously `DomConverter` tried to treat `<code>` like a preformatted block which is not what HTML requires). Closes [#1126](https://github.com/ckeditor/ckeditor5-engine/issues/1126). ([88630b7](https://github.com/ckeditor/ckeditor5-engine/commit/88630b7))
+* Undo did no changes instead of merging elements, in a scenario when an element was split and then the "new" element was removed. See https://github.com/ckeditor/ckeditor5-undo/issues/65#issuecomment-323682195. ([60024c0](https://github.com/ckeditor/ckeditor5-engine/commit/60024c0))
+* View and model nodes will now be removed from their old parents when they are added to a new parent to prevent having same node on multiple elements' children lists. Closes [#1139](https://github.com/ckeditor/ckeditor5-engine/issues/1139). ([dec9c28](https://github.com/ckeditor/ckeditor5-engine/commit/dec9c28))
+
+### Features
+
+* Introduced `model.DocumentSelection#hasOwnRange` property. Closes [#1137](https://github.com/ckeditor/ckeditor5-engine/issues/1137). ([4feb678](https://github.com/ckeditor/ckeditor5-engine/commit/4feb678))
+* Introduced `Schema#removeDisallowedAttributes` method to filter out disallowed by schema attributes from given nodes. Closes [#1120](https://github.com/ckeditor/ckeditor5-engine/issues/1120). ([d776c71](https://github.com/ckeditor/ckeditor5-engine/commit/d776c71))
+
+### BREAKING CHANGES
+
+* View and model nodes are now automatically removed from their old parents when they are inserted into new elements. This is important e.g. if you iterate through element's children and they are moved during that iteration. In that case, it's safest to cache the element's children in an array.
+
+
 ## [0.11.0](https://github.com/ckeditor/ckeditor5-engine/compare/v0.10.0...v0.11.0) (2017-09-03)
 
 ### Bug fixes
