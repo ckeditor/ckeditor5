@@ -8,7 +8,11 @@ CKFinder adapter for CKEditor 5
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-adapter-ckfinder/status.svg)](https://david-dm.org/ckeditor/ckeditor5-adapter-ckfinder)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-adapter-ckfinder/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-adapter-ckfinder?type=dev)
 
-CKFinder adapter for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-adapter-ckfinder>.
+This package implements an upload adapter to [CKFinder](https://cksource.com/ckfinder)'s backend.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-adapter-ckfinder` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/adapter-ckfinder.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
