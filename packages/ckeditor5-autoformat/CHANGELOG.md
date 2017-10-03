@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-autoformat/compare/v0.6.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Features
+
+* Added support for backticks which apply `<code>` to the wrapped fragment of text. Closes [#35](https://github.com/ckeditor/ckeditor5-autoformat/issues/35). ([3e93bf6](https://github.com/ckeditor/ckeditor5-autoformat/commit/3e93bf6))
+
+
 ## [0.6.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v0.5.1...v0.6.0) (2017-09-03)
 
 ### Bug fixes
