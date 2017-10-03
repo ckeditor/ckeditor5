@@ -14,6 +14,10 @@ This package contains the [`BallonEditor`](https://ckeditor5.github.io/docs/nigh
 
 This package contains the source version of the balloon editor. This editor implementation is also available in the [balloon build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon). Read more about [CKEditor 5 Builds](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/index.html).
 
+## Documentation
+
+See the [`@ckeditor/ckeditor5-editor-balloon` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/editor-balloon.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
+
 ## License
 
 Licensed under the GPL, LGPL and MPL licenses, at your choice. For full details about the license, please check the `LICENSE.md` file.
