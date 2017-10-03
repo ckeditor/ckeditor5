@@ -8,7 +8,11 @@ CKEditor 5 headings feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-heading/status.svg)](https://david-dm.org/ckeditor/ckeditor5-heading)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-heading/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-heading?type=dev)
 
-The headings feature for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-heading>.
+This package implements headings feature for CKEditor 5.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-heading` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/heading.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
