@@ -6,7 +6,7 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-adapter-ckfinder.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder)
 
-This package implements an upload adapter to [CKFinder](https://cksource.com/ckfinder)'s backend.
+This package implements an upload adapter to [CKFinder](https://cksource.com/ckfinder)'s backend for CKEditor 5.
 
 ## Documentation
 
