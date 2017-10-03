@@ -1,6 +1,34 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-ui/compare/v0.10.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Bug fixes
+
+* `ContextualBalloon` should remember position passed to `#updatePosition`. Closes [#305](https://github.com/ckeditor/ckeditor5-ui/issues/305). Closes [ckeditor/ckeditor5-image#141](https://github.com/ckeditor/ckeditor5-image/issues/141). ([c787c0d](https://github.com/ckeditor/ckeditor5-ui/commit/c787c0d))
+* `ContextualToolbar` should not be positioned to a zero–width DOM rect when invoked for a multi-line forward selection. Closes [#308](https://github.com/ckeditor/ckeditor5-ui/issues/308). ([00b701b](https://github.com/ckeditor/ckeditor5-ui/commit/00b701b))
+* `ContextualToolbar` will accept the object format of `config.contextualToolbar`. Closes [#316](https://github.com/ckeditor/ckeditor5-ui/issues/316). ([d71cad8](https://github.com/ckeditor/ckeditor5-ui/commit/d71cad8))
+* Fixed sticky panel `z-index` so it's correctly rendered above images (or other relatively positioned elements). Closes [#315](https://github.com/ckeditor/ckeditor5-ui/issues/315). ([00f2add](https://github.com/ckeditor/ckeditor5-ui/commit/00f2add))
+* The content of the `BalloonPanelView` should be selectable. Closes [#294](https://github.com/ckeditor/ckeditor5-ui/issues/294). Closes https://github.com/ckeditor/ckeditor5/issues/498. ([e5315df](https://github.com/ckeditor/ckeditor5-ui/commit/e5315df))
+
+### Features
+
+* Implemented `View#removeChildren`, the opposite of `View#addChildren`. Closes [#303](https://github.com/ckeditor/ckeditor5-ui/issues/303). ([0f1ea5a](https://github.com/ckeditor/ckeditor5-ui/commit/0f1ea5a))
+* Replaced `StickyToolbarView` with a generic `StickyPanelView`. Closes [#297](https://github.com/ckeditor/ckeditor5-ui/issues/297). ([b10b43c](https://github.com/ckeditor/ckeditor5-ui/commit/b10b43c))
+
+### Other changes
+
+* `ToolbarView#fillFromConfig()` will warn when the factory does not provide a component. Closes [#291](https://github.com/ckeditor/ckeditor5-ui/issues/291). Closes [ckeditor/ckeditor5#526](https://github.com/ckeditor/ckeditor5/issues/526). ([2e63e70](https://github.com/ckeditor/ckeditor5-ui/commit/2e63e70))
+* The `escPressHandler` function should be replaced by the `KeystrokeHandler`. Closes [#150](https://github.com/ckeditor/ckeditor5-ui/issues/150). ([b322744](https://github.com/ckeditor/ckeditor5-ui/commit/b322744))
+
+### BREAKING CHANGES
+
+* `Toolbar#fillFromConfig()` cannot be now called with an `undefined`. Make sure to use `normalizeToolbarConfig()` to get a reliable object.
+* The `escPressHandler` is no longer available. Please
+refer to the `KeystrokeHandler` helper to learn more.
+* The `StickyToolbarView` and corresponding CSS `.ck-sticky-panel` classes are no longer available. `StickyPanelView` + `ToolbarView` combo should be used instead.
+
+
 ## [0.10.0](https://github.com/ckeditor/ckeditor5-ui/compare/v0.9.0...v0.10.0) (2017-09-03)
 
 ### Bug fixes
