@@ -8,7 +8,7 @@ CKEditor 5 editing engine
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-engine/status.svg)](https://david-dm.org/ckeditor/ckeditor5-engine)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-engine/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-engine?type=dev)
 
-The CKEditor 5's editing engine implements a flexible MVC-based architecture for creating rich-text editing features.
+The CKEditor 5 editing engine implements a flexible MVC-based architecture for creating rich text editing features.
 
 ## Documentation
 
