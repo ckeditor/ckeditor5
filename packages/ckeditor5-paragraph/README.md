@@ -8,7 +8,11 @@ CKEditor 5 paragraph feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-paragraph/status.svg)](https://david-dm.org/ckeditor/ckeditor5-paragraph)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-paragraph/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-paragraph?type=dev)
 
-The paragraph feature for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-paragraph>.
+This package implements paragraph support for CKEditor 5.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-paragraph` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/paragraph.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
