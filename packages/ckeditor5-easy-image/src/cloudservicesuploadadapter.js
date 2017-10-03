@@ -14,7 +14,7 @@ import UploadGateway from '@ckeditor/ckeditor-cloudservices-core/src/uploadgatew
 /**
  * A plugin which enables upload to Cloud Services.
  *
- * Used mainly by the {@link module:easy-image/easyimage~EasyImage} feature.
+ * It is mainly used by the {@link module:easy-image/easyimage~EasyImage} feature.
  *
  * After enabling this adapter you need to configure the Cloud Services integration through
  * {@link module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig `config.cloudServices`}.
@@ -86,7 +86,7 @@ CloudServicesUploadAdapter._UploadGateway = UploadGateway;
 /**
  * The configuration of the {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter Cloud Services upload adapter}.
  *
- * Used mainly by the {@link module:easy-image/easyimage~EasyImage} feature.
+ * It is used mainly by the {@link module:easy-image/easyimage~EasyImage} feature.
  *
  * Read more in {@link module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig}.
  *
@@ -97,7 +97,7 @@ CloudServicesUploadAdapter._UploadGateway = UploadGateway;
 /**
  * The configuration of the {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter Cloud Services upload adapter}.
  *
- * Used mainly by the {@link module:easy-image/easyimage~EasyImage} feature.
+ * It is used mainly by the {@link module:easy-image/easyimage~EasyImage} feature.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -115,7 +115,7 @@ CloudServicesUploadAdapter._UploadGateway = UploadGateway;
  */
 
 /**
- * The URL to which files should be uploaded.
+ * The URL to which the files should be uploaded.
  *
  * @member {String} module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig#uploadUrl
  */
