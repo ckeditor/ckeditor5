@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-paragraph",
-  "version": "0.9.0",
+  "version": "1.0.0-alpha.1",
   "description": "Paragraph feature for CKEditor 5.",
   "keywords": [
     "ckeditor5",
