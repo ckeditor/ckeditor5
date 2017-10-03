@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v0.2.0...v1.0.0-alpha.1) (2017-10-03)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [0.2.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v0.1.1...v0.2.0) (2017-09-03)
 
 ### Bug fixes
