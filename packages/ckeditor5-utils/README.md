@@ -8,7 +8,11 @@ CKEditor 5 utils
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-utils/status.svg)](https://david-dm.org/ckeditor/ckeditor5-utils)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-utils/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-utils?type=dev)
 
-The utils for CKEditor 5 and its features. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5>.
+The various utils used by CKEditor 5 and its features. Kind of CKEditor 5's standard library.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-utils` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/utils.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
