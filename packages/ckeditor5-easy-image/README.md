@@ -8,11 +8,13 @@ CKEditor 5 Easy Image with Cloud Services
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-easy-image/status.svg)](https://david-dm.org/ckeditor/ckeditor5-easy-image)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-easy-image/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-easy-image?type=dev)
 
-Easy Image feature for CKEditor 5.
+This package implements the [Easy Image](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/features/image.html#Image-upload) feature for CKEditor 5.
 
-Easy Image plugin which lets you easily insert images into the editor and integrates automatically with CKEditor Cloud Services.
+Easy Image lets you easily insert images into the editor and integrates automatically with [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/).
 
-More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-easy-image>.
+## Documentation
+
+See the [`@ckeditor/ckeditor5-easy-image` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/easy-image.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
