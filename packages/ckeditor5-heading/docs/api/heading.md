@@ -6,7 +6,7 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-heading.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading)
 
-This package implements headings feature.
+This package implements the headings feature for CKEditor 5.
 
 ## Documentation
 
