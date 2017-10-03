@@ -5,13 +5,13 @@ Changelog
 
 ### Bug fixes
 
-* Placeholder is now correctly displayed on Firefox and Edge. Closes [#56](https://github.com/ckeditor/ckeditor5-upload/issues/56). ([785e88b](https://github.com/ckeditor/ckeditor5-upload/commit/785e88b))
+* Image placeholder is now correctly displayed on Firefox and Edge. Closes [#56](https://github.com/ckeditor/ckeditor5-upload/issues/56). ([785e88b](https://github.com/ckeditor/ckeditor5-upload/commit/785e88b))
 * Upload command should not crash when upload adapter is not specified (instead, FileRepository logs an error). Closes [#59](https://github.com/ckeditor/ckeditor5-upload/issues/59). ([14b738b](https://github.com/ckeditor/ckeditor5-upload/commit/14b738b))
 
 ### Other changes
 
 * `FileRepository` will automatically warn when it's initialized but no upload adapter was enabled. Closes [#58](https://github.com/ckeditor/ckeditor5-upload/issues/58). ([29aa315](https://github.com/ckeditor/ckeditor5-upload/commit/29aa315))
-* Placeholder image looks better on wider editors. Closes [#63](https://github.com/ckeditor/ckeditor5-upload/issues/63). ([edb5e81](https://github.com/ckeditor/ckeditor5-upload/commit/edb5e81))
+* Placeholder image will now look better on wider editors. Closes [#63](https://github.com/ckeditor/ckeditor5-upload/issues/63). ([edb5e81](https://github.com/ckeditor/ckeditor5-upload/commit/edb5e81))
 
 
 ## [0.2.0](https://github.com/ckeditor/ckeditor5-upload/compare/v0.1.0...v0.2.0) (2017-09-03)
