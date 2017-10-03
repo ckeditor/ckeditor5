@@ -8,7 +8,11 @@ CKEditor 5 core editor architecture
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-core/status.svg)](https://david-dm.org/ckeditor/ckeditor5-core)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-core/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-core?type=dev)
 
- More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-core>.
+This package implements CKEditor 5's core editor architecture – a set of classes and interfaces which glue all the things together.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-core` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/core.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
