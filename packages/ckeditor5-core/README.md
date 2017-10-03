@@ -8,7 +8,7 @@ CKEditor 5 core editor architecture
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-core/status.svg)](https://david-dm.org/ckeditor/ckeditor5-core)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-core/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-core?type=dev)
 
-This package implements CKEditor 5's core editor architecture – a set of classes and interfaces which glue all the things together.
+This package implements CKEditor 5's core editor architecture &mdash; a set of classes and interfaces which glue everything together.
 
 ## Documentation
 
