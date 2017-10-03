@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-widget/compare/v0.2.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Bug fixes
+
+* <kbd>Backspace</kbd> and <kbd>Delete</kbd> should not delete a widget when the editor is in the read-only mode. Closes [#6](https://github.com/ckeditor/ckeditor5-widget/issues/6). ([5f64125](https://github.com/ckeditor/ckeditor5-widget/commit/5f64125))
+* Nested element structures next to widgets will be correctly removed when pressing <kbd>Backspace</kbd> or <kbd>Delete</kbd>. Closes [#19](https://github.com/ckeditor/ckeditor5-widget/issues/19). ([27ee848](https://github.com/ckeditor/ckeditor5-widget/commit/27ee848))
+
+
 ## [0.2.0](https://github.com/ckeditor/ckeditor5-widget/compare/v0.1.1...v0.2.0) (2017-09-03)
 
 ### Bug fixes
