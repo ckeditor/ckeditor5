@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-widget",
-  "version": "0.2.0",
+  "version": "1.0.0-alpha.1",
   "description": "Widget API for CKEditor 5.",
   "keywords": [
     "ckeditor5",
