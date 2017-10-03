@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v0.8.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Features
+
+* The `StickyToolbarView` has been replaced by the `StickyPanelView` with a child `ToolbarView` (see [ckeditor/ckeditor5-ui#297](https://github.com/ckeditor/ckeditor5-ui/issues/297)). ([e4f591f](https://github.com/ckeditor/ckeditor5-editor-classic/commit/e4f591f))
+
+### BREAKING CHANGES
+
+* The former attributes controling the position of the toolbar provided by the `StickyToolbarView` are now available under `ClassicEditorUIView#stickyPanel` (`editor.ui.view.stickyPanel`).
+
+
 ## [0.8.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v0.7.3...v0.8.0) (2017-09-03)
 
 ### Bug fixes
