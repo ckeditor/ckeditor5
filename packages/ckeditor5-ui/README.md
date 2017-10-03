@@ -8,7 +8,11 @@ CKEditor 5 UI framework
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-ui/status.svg)](https://david-dm.org/ckeditor/ckeditor5-ui)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-ui/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-ui?type=dev)
 
-The UI framework and standard library of CKEditor 5. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5>.
+This package implements a simple UI framework and CKEditor 5's standard UI library.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-ui` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/ui.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
