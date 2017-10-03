@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-block-quote/compare/v0.2.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Other changes
+
+* Improved default blockquote styling so it does not overlap with floated images. Closes [#12](https://github.com/ckeditor/ckeditor5-block-quote/issues/12). ([fb09418](https://github.com/ckeditor/ckeditor5-block-quote/commit/fb09418))
+
+
 ## [0.2.0](https://github.com/ckeditor/ckeditor5-block-quote/compare/v0.1.1...v0.2.0) (2017-09-03)
 
 ### Features
