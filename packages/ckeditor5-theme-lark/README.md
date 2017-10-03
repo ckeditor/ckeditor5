@@ -8,7 +8,7 @@ CKEditor 5 Lark theme
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-theme-lark/status.svg)](https://david-dm.org/ckeditor/ckeditor5-theme-lark)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-theme-lark/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-theme-lark?type=dev)
 
-This package implements the Lark theme – the default CKEditor 5 theme.
+This package implements Lark theme &mdash; the default CKEditor 5 theme.
 
 ## Documentation
 

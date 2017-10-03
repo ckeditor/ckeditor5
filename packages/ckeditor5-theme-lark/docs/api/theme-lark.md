@@ -6,7 +6,7 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-theme-lark.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)
 
-This package implements the Lark theme – the default CKEditor 5 theme.
+This package implements Lark theme &mdash; the default CKEditor 5 theme.
 
 ## Documentation
 
