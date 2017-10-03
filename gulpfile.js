@@ -127,11 +127,26 @@ gulp.task( 'translations:download', () => {
 gulp.task( 'changelog:dependencies', () => {
 	assertIsInstalled( '@ckeditor/ckeditor5-dev-env' );
 
-	return require( '@ckeditor/ckeditor5-dev-env' )
-		.generateChangelogForSubRepositories( {
-			cwd: process.cwd(),
-			packages: 'packages'
-		} );
+	const devEnv = require( '@ckeditor/ckeditor5-dev-env' );
+	const commonOptions = {
+		cwd: process.cwd(),
+		packages: 'packages'
+	};
+
+	const optionsForDependencies = Object.assign( {}, commonOptions, {
+		skipPackages: [
+			'@ckeditor/ckeditor5-build-inline',
+			'@ckeditor/ckeditor5-build-classic',
+			'@ckeditor/ckeditor5-build-balloon'
+		]
+	} );
+	const optionsForBuilds = Object.assign( {}, commonOptions, {
+		scope: /-build-/
+	} );
+
+	return Promise.resolve()
+		.then( () => devEnv.generateChangelogForSubRepositories( optionsForDependencies ) )
+		.then( () => devEnv.generateSummaryChangelog( optionsForBuilds ) );
 } );
 
 gulp.task( 'release:dependencies', () => {
