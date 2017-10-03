@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-undo/compare/v0.9.0...v1.0.0-alpha.1) (2017-10-03)
+
+### Bug fixes
+
+* Selection should be correctly restored when undoing after all editor content was replaced or removed. Closes [#72](https://github.com/ckeditor/ckeditor5-undo/issues/72). ([58f953f](https://github.com/ckeditor/ckeditor5-undo/commit/58f953f))
+
+
 ## [0.9.0](https://github.com/ckeditor/ckeditor5-undo/compare/v0.8.1...v0.9.0) (2017-09-03)
 
 ### Other changes
