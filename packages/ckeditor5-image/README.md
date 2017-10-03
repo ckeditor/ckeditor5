@@ -8,7 +8,11 @@ CKEditor 5 image feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-image/status.svg)](https://david-dm.org/ckeditor/ckeditor5-image)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-image/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-image?type=dev)
 
-The image feature for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-image>.
+This package implements the image feature for CKEditor 5. The feature is introduced in a grannular form implemented by a couple of plugins.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-image` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/image.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
 
 ## License
 
