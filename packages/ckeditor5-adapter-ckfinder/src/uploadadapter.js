@@ -19,18 +19,6 @@ import { getCsrfToken } from './utils';
  * Configure the upload URL in
  * {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl `ckfinder.uploadUrl`}.
  *
- * For example:
- *
- *		ClassicEditor
- *			.create( editorElement, {
- *				plugins: [ ... ],
- *				ckfinder: {
- *					uploadUrl: 'http://example.com/upload'
- *				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
  * @extends module:core/plugin~Plugin
  */
 export default class CKFinderUploadAdapter extends Plugin {
@@ -207,7 +195,7 @@ class Adapter {
  *		ClassicEditor
  *			.create( editorElement, {
  * 				ckfinder: {
- *					uploadUrl: 'http://example.com/upload'
+ *					uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files'
  * 				}
  *			} )
  *			.then( ... )
