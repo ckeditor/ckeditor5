@@ -39,7 +39,7 @@ CKEditor 5 was designed with focus on creating quality content. There are thus g
 
 ## Image upload
 
-Image upload is handled differently with CKEditor 5, bringing a much better user experience. Solutions used with CKEditor 4 may not be compatible any more and therefore another solution needs to be found.
+Image upload is handled differently with CKEditor 5, bringing a much better user experience. Solutions used with CKEditor 4 may not be compatible anymore and therefore a new approach is needed.
 
 CKEditor 5 Builds come with {@link features/image-upload#Easy-Image Easy Image} available out of the box. It is a super simple to {@link features/image-upload#Easy-Image enable image upload with it}.
 

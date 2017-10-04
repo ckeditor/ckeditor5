@@ -117,9 +117,9 @@ In the following cases [CKEditor 4](https://ckeditor.com/ckeditor-4/) should be 
 * If CKEditor 4 contains features that are essential for you, which are not available in CKEditor 5 yet.
 * If CKEditor 4 is already in use in you application and you are still not ready to replace it with CKEditor 5.
 
-[Letters](https://ckeditor.com/letters/) may be used instead, in the following cases:
+In the following cases [Letters](https://ckeditor.com/letters/) may be used instead:
 
 * When you want an easy way to enable, as part of your application, the creation of articles and documents that feature:
 	* Real-time collaborative writing.
-	* Inline comments and discussion in the contents.
+	* Inline comments and discussion in the content.
 	* Advanced writing features.

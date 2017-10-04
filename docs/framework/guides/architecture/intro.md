@@ -398,7 +398,7 @@ class SampleInputView extends View {
 				type: 'text'
 			},
 			on: {
-				// DOM keydown events will fire view#input event.
+				// DOM keydown events will fire the view#input event.
 				keydown: bind.to( 'input' )
 			}
 		} );
@@ -440,7 +440,7 @@ parent.init();
 document.body.appendChild( parent.element );
 ```
 
-It is also possible to create standalone views, which don't belong to any collection. They must be {@link module:ui/view~View#init initialized} before  injection into DOM:
+It is also possible to create standalone views that do not belong to any collection. They must be {@link module:ui/view~View#init initialized} before  injection into DOM:
 
 ```js
 const view = new SampleInputView( locale );
@@ -453,7 +453,7 @@ document.body.appendChild( view.element );
 
 #### Interaction
 
-Features can interact with the state of the DOM via the attributes of the view so the following:
+Features can interact with the state of the DOM via the attributes of the view, so the following:
 
 ```js
 view.isEnabled = true;
@@ -501,7 +501,7 @@ view.element.placeholder = 'A new placeholder';
 
 ### Templates
 
-{@link module:ui/template~Template Templates} render DOM elements and text nodes in the UI library. Used primarily by [views](#Views), they're the lowest layer of the UI connecting the application to the web page.
+{@link module:ui/template~Template Templates} render DOM elements and text nodes in the UI library. Used primarily by [views](#Views), they are the lowest layer of the UI connecting the application to the web page.
 
 <info-box>
 	Check out the {@link module:ui/template~TemplateDefinition} to learn more about the template syntax and other advanced concepts.
@@ -536,21 +536,21 @@ and renders to an HTML element:
 <p class="foo bar" style="background-color: yellow;">A paragraph.</p>
 ```
 
-when `observable#className` is `"bar"`. The `observable` in the example above can be a [view](#Views) or any object which is {@link module:utils/observablemixin~Observable observable}. When the value of the `className` attribute changes, the template updates the `class` attribute in DOM – from now on the element is permanently bound to the state of an application.
+where `observable#className` is `"bar"`. The `observable` in the example above can be a [view](#Views) or any object which is {@link module:utils/observablemixin~Observable observable}. When the value of the `className` attribute changes, the template updates the `class` attribute in DOM. From now on the element is permanently bound to the state of an application.
 
 Similarly, when rendered, the template also takes care of DOM events. A binding to the `click` event in the definition makes the `observable` always fire the `clicked` event upon an action in DOM. This way the `observable` provides an event interface of the DOM element and all the communication should pass through it.
 
 ### View collections and the UI tree
 
-Views are organized into {@link module:ui/viewcollection~ViewCollection collections}, which manage their elements and propagate DOM events even further. Adding or removing a view in a collection moves the {@link module:ui/view~View#element view's element} in DOM to reflect the position.
+Views are organized into {@link module:ui/viewcollection~ViewCollection collections} which manage their elements and propagate DOM events even further. Adding or removing a view in a collection moves the {@link module:ui/view~View#element view's element} in DOM to reflect the position.
 
 Each editor UI has a {@link module:core/editor/editorui~EditorUI#view root view}, which can be found under `editor.ui.view`. Such view usually defines the container element of the editor and undermost view collections that other features can populate.
 
 For instance, the `BoxedEditorUiView` class defines two collections:
-* {@link module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView#top} – a collection that hosts the toolbar,
-* {@link module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView#main} – a collection that contains the editable area of the editor.
+* {@link module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView#top} &ndash; A collection that hosts the toolbar.
+* {@link module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView#main} &ndash; A collection that contains the editable area of the editor.
 
-It also inherits the {@link module:ui/editorui/editoruiview~EditorUIView#body} collection, which resides directly in the `<body>` of the web page and stores floating elements like {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon panels}.
+It also inherits the {@link module:ui/editorui/editoruiview~EditorUIView#body} collection which resides directly in the `<body>` of the web page and stores floating elements like {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon panels}.
 
 Plugins can populate the root view collections with their children. Such child views become a part of the UI tree and will be managed by the editor, e.g. they will be initialized and destroyed along with the editor.
 
