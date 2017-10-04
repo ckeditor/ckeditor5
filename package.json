@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5",
-  "version": "0.11.0",
+  "version": "1.0.0-alpha.1",
   "description": "The development environment of CKEditor 5.",
   "keywords": [
     "CKEditor",
