@@ -24,7 +24,7 @@ Inserting images into the content is now very intuitive, with all technical aspe
 
 The outdated concept of image alignment was dropped in favor of {@link features/image#Image-styles image styles}:
 
-{@img assets/img/builds-image-styles.png Image styles toolbar.}
+{@img assets/img/builds-image-styles.png 591 Image styles toolbar.}
 
 When integrated with {@link features/image-upload#Easy-Image Easy Image}, uploading, resizing and producing different image sizes for responsive design is all automated.
 
