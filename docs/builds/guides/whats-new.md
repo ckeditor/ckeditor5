@@ -92,7 +92,7 @@ With [collaboration services provided by CKEditor Cloud Services](https://ckedit
 
 [Letters](https://ckeditor.com/letters/) is an example of an application using the power of CKEditor 5 for collaboration.
 
-[ TODO Animated GIF of Letters and collaboration ]
+{@img assets/img/letters-collab.jpg 1440 Letters uses CKEditor 5 to allow users collaborate.}
 
 ## Modern
 
