@@ -23,11 +23,6 @@ describe( 'BoxedEditorUIView', () => {
 			expect( view.main ).to.be.instanceof( ViewCollection );
 		} );
 
-		it( 'sets "width" and "height" attributes', () => {
-			expect( view.width ).to.equal( null );
-			expect( view.height ).to.equal( null );
-		} );
-
 		it( 'bootstraps the view element from template', () => {
 			expect( view.element.classList.contains( 'ck-editor' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-reset' ) ).to.be.true;
