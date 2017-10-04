@@ -18,9 +18,9 @@ CKEditor 5 strives to provide a truly seamless, distraction-free editing experie
 
 Inserting images into the content is now very intuitive, with all technical aspects (uploading, resizing) hidden from the user experience. No more complex dialogs!
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/MRnYtmPAJ30?rel=0&amp;" frameborder="0" allowfullscreen></iframe>
+<iframe width="600" height="337" src="https://www.youtube.com/embed/MRnYtmPAJ30?rel=0&amp;" frameborder="0" allowfullscreen></iframe>
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/WWT9pkPZSnI?rel=0&amp;" frameborder="0" allowfullscreen></iframe>
+<iframe width="600" height="337" src="https://www.youtube.com/embed/WWT9pkPZSnI?rel=0&amp;" frameborder="0" allowfullscreen></iframe>
 
 The outdated concept of image alignment was dropped in favor of {@link features/image#Image-styles image styles}:
 
@@ -28,7 +28,7 @@ The outdated concept of image alignment was dropped in favor of {@link features/
 
 When integrated with {@link features/image-upload#Easy-Image Easy Image}, uploading, resizing and producing different image sizes for responsive design is all automated.
 
-[ TODO Animated GIF of image being inserted and how it looks like in a smartphone and desktop ]
+<!-- [ TODO Animated GIF of image being inserted and how it looks like in a smartphone and desktop ] -->
 
 ### Simple linking
 
@@ -40,7 +40,7 @@ No more complex dialogs for links.
 
 Start lists, headings and even bold text by typing, without the need to use toolbar buttons. See {@link features/autoformat Autoformatting feature} for more details.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/ZmMMyvGiI5A?rel=0" frameborder="0" allowfullscreen></iframe>
+<iframe width="600" height="337" src="https://www.youtube.com/embed/ZmMMyvGiI5A?rel=0" frameborder="0" allowfullscreen></iframe>
 
 ## Enhanced classic editor
 
@@ -50,13 +50,13 @@ For CKEditor 5 we reinvented the concept of the "boxed" editor.
 
 The toolbar is now always visible when the user scrolls the page down.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/rLZe37MXzHE?rel=0" frameborder="0" allowfullscreen></iframe>
+<iframe width="600" height="337" src="https://www.youtube.com/embed/rLZe37MXzHE?rel=0" frameborder="0" allowfullscreen></iframe>
 
 ### Inlined content
 
 The editor content is now placed inline in the page &mdash; it is now much easier to style it. Additionally, the editor grows with the content (or not, it is up to you!).
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/igoI02wBykA?rel=0" frameborder="0" allowfullscreen></iframe>
+<iframe width="600" height="337" src="https://www.youtube.com/embed/igoI02wBykA?rel=0" frameborder="0" allowfullscreen></iframe>
 
 ## Fewer features == better content
 
@@ -65,8 +65,6 @@ We focused on creating a tool for writing quality content. At the same time, we 
 We feel that in previous editor versions we had way too many features and configurations. This was confusing developers and at the same time negatively impacting the end user experience.
 
 In CKEditor 5 misleading formatting tools were removed, dialogs were stripped out or simplified in favor of well-designed features that require no configuration.
-
-{@img assets/img/feature-toolbar.png 610 Simplified toolbar with features designed for writing quality content.}
 
 ## Lightweight
 
@@ -92,7 +90,7 @@ With [collaboration services provided by CKEditor Cloud Services](https://ckedit
 
 [Letters](https://ckeditor.com/letters/) is an example of an application using the power of CKEditor 5 for collaboration.
 
-[ TODO Animated GIF of Letters and collaboration ]
+[{@img assets/img/letters-collab.jpg 1440 Letters uses CKEditor 5 to allow users collaborate.}](%BASE_PATH%/assets/img/letters-collab.jpg)
 
 ## Modern
 

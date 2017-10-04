@@ -24,6 +24,15 @@
 	margin-bottom: .5em;
 }
 
+/* By default Umberto uses a trick with non breaking spaces around <code> to fix space rendering.
+It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
+.ck-editor .ck-editor__editable code:before,
+.ck-editor .ck-editor__editable code:after {
+	content: '' !important;
+	letter-spacing: 0 !important;
+	display: none !important;
+}
+
 .ck-reset.ck-list {
 	/* See https://github.com/ckeditor/ckeditor5/issues/494 */
 	margin-left: 0;
