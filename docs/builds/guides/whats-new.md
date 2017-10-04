@@ -18,13 +18,13 @@ CKEditor 5 strives to provide a truly seamless, distraction-free editing experie
 
 Inserting images into the content is now very intuitive, with all technical aspects (uploading, resizing) hidden from the user experience. No more complex dialogs!
 
-[ TODO Animated GIF of pasting ]
+<iframe width="560" height="315" src="https://www.youtube.com/embed/MRnYtmPAJ30?rel=0&amp;" frameborder="0" allowfullscreen></iframe>
 
-[ TODO Animated GIF of DnD ]
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WWT9pkPZSnI?rel=0&amp;" frameborder="0" allowfullscreen></iframe>
 
 The outdated concept of image alignment was dropped in favor of {@link features/image#Image-styles image styles}:
 
-[ TODO Animated GIF of styles ]
+{@img assets/img/builds-image-styles.png 591 Image styles toolbar.}
 
 When integrated with {@link features/image-upload#Easy-Image Easy Image}, uploading, resizing and producing different image sizes for responsive design is all automated.
 
@@ -40,7 +40,7 @@ No more complex dialogs for links.
 
 Start lists, headings and even bold text by typing, without the need to use toolbar buttons. See {@link features/autoformat Autoformatting feature} for more details.
 
-[ TODO Animated GIF with auto formatting in action ]
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ZmMMyvGiI5A?rel=0" frameborder="0" allowfullscreen></iframe>
 
 ## Enhanced classic editor
 
@@ -50,13 +50,13 @@ For CKEditor 5 we reinvented the concept of the "boxed" editor.
 
 The toolbar is now always visible when the user scrolls the page down.
 
-[ TODO Animated GIF with scrolling and toolbar ]
+<iframe width="560" height="315" src="https://www.youtube.com/embed/rLZe37MXzHE?rel=0" frameborder="0" allowfullscreen></iframe>
 
 ### Inlined content
 
 The editor content is now placed inline in the page &mdash; it is now much easier to style it. Additionally, the editor grows with the content (or not, it is up to you!).
 
-[ TODO Animated GIF of the editor growing when typing ]
+<iframe width="560" height="315" src="https://www.youtube.com/embed/igoI02wBykA?rel=0" frameborder="0" allowfullscreen></iframe>
 
 ## Fewer features == better content
 
