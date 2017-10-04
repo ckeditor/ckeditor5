@@ -3,8 +3,6 @@ title: Autoformatting
 category: features
 ---
 
-{@snippet build-classic-source}
-
 The {@link module:autoformat/autoformat~Autoformat} feature allows you to quickly apply formatting to the content you are writing.
 
 <info-box info>
@@ -36,7 +34,7 @@ Example:
 2. Press <kbd>#</kbd> and then <kbd>Space</kbd>.
 3. The current line will be turned into a heading.
 
-{@snippet examples/classic-editor-short}
+{@snippet features/autoformat}
 
 ## Installation
 
