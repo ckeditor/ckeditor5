@@ -27,10 +27,10 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid.js';
  * (e.g. {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter} or
  * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}) or write your own one
  * (which boils down to setting the {@link ~FileRepository#createAdapter} factory function – see
- * {@link ~Adapter `Adapter` interface} documentation).
+ * {@link module:upload/filerepository~Adapter `Adapter` interface} documentation).
  *
- * Then, you can use {@link ~FileRepository#createLoader `createLoader()`} and the returned {@link ~FileLoader} instance to
- * load and upload files.
+ * Then, you can use {@link module:upload/filerepository~FileRepository#createLoader `createLoader()`} and the returned
+ * {@link module:upload/filerepository~FileLoader} instance to load and upload files.
  *
  * @extends module:core/plugin~Plugin
  */
