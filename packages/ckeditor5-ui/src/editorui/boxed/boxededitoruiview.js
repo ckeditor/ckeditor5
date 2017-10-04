@@ -30,22 +30,6 @@ export default class BoxedEditorUIView extends EditorUIView {
 		const ariaLabelUid = uid();
 
 		/**
-		 * The UI's width.
-		 *
-		 * @observable
-		 * @member {Number} #width
-		 */
-		this.set( 'width', null );
-
-		/**
-		 * The UI's height.
-		 *
-		 * @observable
-		 * @member {Number} #height
-		 */
-		this.set( 'height', null );
-
-		/**
 		 * Collection of the child views located in the top (`.ck-editor__top`)
 		 * area of the UI.
 		 *
