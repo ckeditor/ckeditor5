@@ -42,10 +42,6 @@ CKEditor will then be available at `node_modules/ckeditor5-build-[name]/build/ck
 
 ### Zip download
 
-<info-box warning>
-	This download method is not available yet.
-</info-box>
-
 Go to the [CKEditor 5 builds download page](https://ckeditor.com/ckeditor5-builds/download) and download your preferred build. For example, you may download the `ckeditor5-build-classic-1.0.0.zip` file for the Classic editor build.
 
 Extract the `.zip` file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor is installed.
