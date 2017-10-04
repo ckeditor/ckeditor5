@@ -105,4 +105,21 @@ describe( 'ImageStyleCommand', () => {
 		expect( defaultStyleCommand.isEnabled ).to.be.false;
 		expect( otherStyleCommand.isEnabled ).to.be.false;
 	} );
+
+	it( 'default style should be active after executing it after another style', () => {
+		setData( document, '[<image></image>]' );
+
+		expect( defaultStyleCommand.value ).to.be.true;
+		expect( otherStyleCommand.value ).to.be.false;
+
+		otherStyleCommand.execute();
+
+		expect( getData( document ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
+
+		defaultStyleCommand.execute();
+
+		expect( getData( document ) ).to.equal( '[<image></image>]' );
+		expect( defaultStyleCommand.value ).to.be.true;
+		expect( otherStyleCommand.value ).to.be.false;
+	} );
 } );
