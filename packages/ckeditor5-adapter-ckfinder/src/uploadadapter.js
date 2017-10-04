@@ -195,7 +195,7 @@ class Adapter {
  *		ClassicEditor
  *			.create( editorElement, {
  * 				ckfinder: {
- *					uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files'
+ *					uploadUrl: ‘/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json’
  * 				}
  *			} )
  *			.then( ... )
