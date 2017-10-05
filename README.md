@@ -6,13 +6,19 @@ CKEditor 5 – development repository
 [![Dependency Status](https://img.shields.io/david/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5)
 [![devDependency Status](https://img.shields.io/david/dev/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5?type=dev)
 
-## Project Status (September 2017)
+## Project Status (October 2017)
 
-Version 0.11.0 was released on September 3, 2017. This is the 11th developer preview of the new CKEditor 5.
+1.0.0-alpha.1 was released on October 3, 2017. This is the 12th developer preview of the new CKEditor 5.
 
-Read more in the [CKEditor 5 v0.11.0 release blog post](https://github.com/ckeditor/ckeditor5-design/issues/180) and check the [CKEditor 5 sample](https://ckeditor5.github.io/).
+Read more about the status of the project in the [CKEditor 5 v1.0.0-alpha.1 release blog post](https://github.com/ckeditor/ckeditor5-design/issues/181).
 
-**Version 0.11.0 is the last release before v1.0.0-alpha**. The alpha version will be followed by a several releases before it reaches v1.0.0. See the [roadmap to 1.0.0 and beyond](https://github.com/ckeditor/ckeditor5-design/issues/172).
+The first alpha version will be followed by a several releases before it reaches v1.0.0. See the [roadmap to 1.0.0 and beyond](https://github.com/ckeditor/ckeditor5-design/issues/172).
+
+## Demos
+
+To play with the editors see the [CKEditor 5 Builds](https://ckeditor.com/ckeditor-5-builds/) website.
+
+You can also find out more examples (such as [Markdown output](https://docs.ckeditor.com/ckeditor5/latest/features/markdown.html) or [text autoformatting](https://docs.ckeditor.com/ckeditor5/latest/features/autoformat.html)) in the [Features](https://docs.ckeditor.com/ckeditor5/latest/features/index.html) section of the documentation.
 
 ### Follow us!
 
@@ -21,11 +27,18 @@ Read more in the [CKEditor 5 v0.11.0 release blog post](https://github.com/ckedi
 
 ## Documentation
 
-* [API documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/index.html)
-* [CKEditor 5 Framework](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/framework/index.html)
-* [CKEditor 5 Builds](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/index.html)
-* [CKEditor 5 Features](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/features/index.html)
-* [Examples](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/index.html)
+For high-level overview of the project see:
+
+* [CKEditor 5 Builds](https://ckeditor.com/ckeditor-5-builds/) website
+* [CKEditor 5 Framework](https://ckeditor.com/ckeditor-5-framework/) website.
+
+To find out more see the following [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest) sections:
+
+* [API documentation](https://docs.ckeditor.com/ckeditor5/latest/api/index.html)
+* [CKEditor 5 Framework documentation](https://docs.ckeditor.com/ckeditor5/latest/framework/index.html)
+* [CKEditor 5 Builds documentation](https://docs.ckeditor.com/ckeditor5/latest/builds/index.html)
+* [CKEditor 5 Features documentation](https://docs.ckeditor.com/ckeditor5/latest/features/index.html)
+* [CKEditor 5 Examples](https://docs.ckeditor.com/ckeditor5/latest/examples/index.html)
 
 The documentation is far from being complete and will be constantly evolving (as will the editor) until it is ready for v1.0.0.
 
@@ -41,13 +54,13 @@ The documentation is far from being complete and will be constantly evolving (as
 
 CKEditor 5 is a modular, multi-package, multi-repository project. It consists of a several packages which create the editing framework, based on which the feature packages are implemented.
 
-The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository is the place that centralizes the development of CKEditor 5. It bundles different packages into a single place, adding the necessary helper tools for the development workflow, like the builder and the test runner. [Basic information on how to set up the development environment](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/framework/guides/contributing/development-environment.html) can be found in the documentation.
+The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository is the place that centralizes the development of CKEditor 5. It bundles different packages into a single place, adding the necessary helper tools for the development workflow, like the builder and the test runner. [Basic information on how to set up the development environment](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/contributing/development-environment.html) can be found in the documentation.
 
 ### Reporting issues and feature requests
 
 Each repository independently handles its issues. However, it's recommended to report issues in [this repository](https://github.com/ckeditor/ckeditor5/issues) unless you know to which specific repository the issue belongs.
 
-Read more in the [Support](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/framework/guides/support.html) page.
+Read more in the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/support/getting-support.html) page.
 
 ## Packages
 
