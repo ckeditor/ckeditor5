@@ -14,7 +14,7 @@ The framework is made of several [npm packages](https://npmjs.com). To install i
 * [Node.js](https://nodejs.org/en/) >= 6.0.0
 * npm 4.x (**note:** using npm 5 [is not recommended](https://github.com/npm/npm/issues/16991))
 
-Besides Node.js and npm you also need [webpack](https://webpack.js.org) (>=2.0.0) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 Buids' Advanced setup} guide.
+Besides Node.js and npm you also need [webpack](https://webpack.js.org) (>=2.0.0) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 Builds Advanced setup} guide.
 
 <!-- TODO replace the link above when the Framework will get its own building guide. -->
 
