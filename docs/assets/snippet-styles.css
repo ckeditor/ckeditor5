@@ -30,7 +30,7 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 .ck-editor .ck-editor__editable code:after {
 	content: '' !important;
 	letter-spacing: 0 !important;
-	display: none !important;
+	display: none !important; /* Firefox is very stubborn. */
 }
 
 .ck-reset.ck-list {
