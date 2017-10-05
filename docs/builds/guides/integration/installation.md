@@ -52,8 +52,6 @@ Extract the `.zip` file into a dedicated directory inside your project. It is re
 * `ckeditor.js.map` – the source map for the editor bundle.
 * `README.md` and `LICENSE.md`
 
-TODO
-
 ## Loading the API
 
 After downloading and installing a CKEditor 5 build in your application, it is time to make the editor API available in your pages. For that purpose, it is enough to load the API entry point script:
