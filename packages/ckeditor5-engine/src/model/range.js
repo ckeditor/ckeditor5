@@ -615,7 +615,7 @@ export default class Range {
 		} else {
 			const range = Range.createFromRange( this );
 
-			const insertBeforeStart = range.isCollapsed ? true : !isSticky;
+			const insertBeforeStart = !isSticky;
 			const insertBeforeEnd = range.isCollapsed ? true : isSticky;
 
 			range.start = range.start._getTransformedByInsertion( insertPosition, howMany, insertBeforeStart );
