@@ -138,7 +138,7 @@ These events make it possible to control the command from the outside. For insta
 const command = editor.commands.get( 'someCommand' );
 
 command.on( 'change:isEnabled', forceDisable, { priority: 'lowest' } );
-command.isEanabled = false;
+command.isEnabled = false;
 
 function forceDisabled() {
 	this.isEnabled = false;
