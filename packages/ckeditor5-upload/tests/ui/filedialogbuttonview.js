@@ -5,33 +5,26 @@
 
 /* globals document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import FileDialogButtonView from '../../src/ui/filedialogbuttonview';
 
 describe( 'FileDialogButtonView', () => {
-	let view, editor;
+	let view, localeMock;
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
-		document.body.appendChild( editorElement );
+		localeMock = { t: val => val };
+		view = new FileDialogButtonView( localeMock );
 
-		return ClassicEditor
-			.create( editorElement )
-			.then( newEditor => {
-				editor = newEditor;
-
-				view = new FileDialogButtonView( editor.locale );
-			} );
+		return view.init();
 	} );
 
 	it( 'should append input view to document body', () => {
-		expect( view.fileInputView.element.parentNode ).to.equal( document.body );
+		expect( document.body.contains( view.fileInputView.element ) ).to.true;
 	} );
 
 	it( 'should remove input view from body after destroy', () => {
 		view.destroy();
 
-		expect( view.fileInputView.element.parentNode ).to.be.null;
+		expect( document.body.contains( view.fileInputView.element ) ).to.false;
 	} );
 
 	it( 'should open file dialog on execute', () => {

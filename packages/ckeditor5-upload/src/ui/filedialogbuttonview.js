@@ -32,6 +32,7 @@ export default class FileDialogButtonView extends ButtonView {
 		 * @member {module:upload/ui/filedialogbuttonview~FileInputView}
 		 */
 		this.fileInputView = new FileInputView( locale );
+		this.addChildren( this.fileInputView );
 
 		/**
 		 * Accepted file types. Can be provided in form of file extensions, media type or one of:
@@ -42,7 +43,7 @@ export default class FileDialogButtonView extends ButtonView {
 		 * @observable
 		 * @member {String} #acceptedType
 		 */
-		this.fileInputView.bind( 'acceptedType' ).to( this, 'acceptedType' );
+		this.fileInputView.bind( 'acceptedType' ).to( this );
 
 		/**
 		 * Indicates if multiple files can be selected. Defaults to `true`.
@@ -50,8 +51,7 @@ export default class FileDialogButtonView extends ButtonView {
 		 * @observable
 		 * @member {Boolean} #allowMultipleFiles
 		 */
-		this.set( 'allowMultipleFiles', false );
-		this.fileInputView.bind( 'allowMultipleFiles' ).to( this, 'allowMultipleFiles' );
+		this.fileInputView.bind( 'allowMultipleFiles' ).to( this );
 
 		/**
 		 * Fired when file dialog is closed with file selected.
@@ -70,7 +70,13 @@ export default class FileDialogButtonView extends ButtonView {
 		this.on( 'execute', () => {
 			this.fileInputView.open();
 		} );
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		super.init();
 		document.body.appendChild( this.fileInputView.element );
 	}
 
@@ -78,9 +84,8 @@ export default class FileDialogButtonView extends ButtonView {
 	 * @inheritDoc
 	 */
 	destroy() {
-		document.body.removeChild( this.fileInputView.element );
-
 		super.destroy();
+		this.fileInputView.element.remove();
 	}
 }
 
