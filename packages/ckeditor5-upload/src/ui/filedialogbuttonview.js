@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
-
 /**
  * @module upload/ui/filedialogbuttonview
  */
@@ -16,9 +14,12 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
 /**
  * File Dialog button view.
  *
- * @extends module:ui/button/buttonview~ButtonView
+ * This component implements wrapper element with {@link module:ui/button/buttonview~ButtonView ButtonView}
+ * and and hidden `input[type="file"]` inside.
+ *
+ * @extends module:ui/view~View
  */
-export default class FileDialogButtonView extends ButtonView {
+export default class FileDialogButtonView extends View {
 	/**
 	 * @inheritDoc
 	 */
@@ -26,13 +27,19 @@ export default class FileDialogButtonView extends ButtonView {
 		super( locale );
 
 		/**
-		 * Hidden input view used to execute file dialog. It will be hidden and added to the end of `document.body`.
+		 * Button View.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this.buttonView = new ButtonView( locale );
+
+		/**
+		 * Hidden input view used to execute file dialog.
 		 *
 		 * @protected
 		 * @member {module:upload/ui/filedialogbuttonview~FileInputView}
 		 */
-		this.fileInputView = new FileInputView( locale );
-		this.addChildren( this.fileInputView );
+		this._fileInputView = new FileInputView( locale );
 
 		/**
 		 * Accepted file types. Can be provided in form of file extensions, media type or one of:
@@ -43,7 +50,7 @@ export default class FileDialogButtonView extends ButtonView {
 		 * @observable
 		 * @member {String} #acceptedType
 		 */
-		this.fileInputView.bind( 'acceptedType' ).to( this );
+		this._fileInputView.bind( 'acceptedType' ).to( this );
 
 		/**
 		 * Indicates if multiple files can be selected. Defaults to `true`.
@@ -51,7 +58,7 @@ export default class FileDialogButtonView extends ButtonView {
 		 * @observable
 		 * @member {Boolean} #allowMultipleFiles
 		 */
-		this.fileInputView.bind( 'allowMultipleFiles' ).to( this );
+		this._fileInputView.bind( 'allowMultipleFiles' ).to( this );
 
 		/**
 		 * Fired when file dialog is closed with file selected.
@@ -65,27 +72,22 @@ export default class FileDialogButtonView extends ButtonView {
 		 * @event done
 		 * @param {Array.<File>} files Array of selected files.
 		 */
-		this.fileInputView.delegate( 'done' ).to( this );
+		this._fileInputView.delegate( 'done' ).to( this );
 
-		this.on( 'execute', () => {
-			this.fileInputView.open();
+		this.template = new Template( {
+			tag: 'span',
+			attributes: {
+				class: 'ck-file-dialog-button',
+			},
+			children: [
+				this.buttonView,
+				this._fileInputView
+			]
 		} );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		super.init();
-		document.body.appendChild( this.fileInputView.element );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		super.destroy();
-		this.fileInputView.element.remove();
+		this.buttonView.on( 'execute', () => {
+			this._fileInputView.open();
+		} );
 	}
 }
 

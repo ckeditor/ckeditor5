@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
-
 import FileDialogButtonView from '../../src/ui/filedialogbuttonview';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import View from '@ckeditor/ckeditor5-ui/src/view';
 
 describe( 'FileDialogButtonView', () => {
 	let view, localeMock;
@@ -17,43 +17,53 @@ describe( 'FileDialogButtonView', () => {
 		return view.init();
 	} );
 
-	it( 'should append input view to document body', () => {
-		expect( document.body.contains( view.fileInputView.element ) ).to.true;
+	it( 'should be rendered from a template', () => {
+		expect( view.element.classList.contains( 'ck-file-dialog-button' ) ).to.true;
 	} );
 
-	it( 'should remove input view from body after destroy', () => {
-		view.destroy();
+	describe( 'child views', () => {
+		describe( 'button view', () => {
+			it( 'should be rendered', () => {
+				expect( view.buttonView ).to.instanceof( ButtonView );
+				expect( view.buttonView ).to.equal( view.template.children.get( 0 ) );
+			} );
 
-		expect( document.body.contains( view.fileInputView.element ) ).to.false;
-	} );
+			it( 'should open file dialog on execute', () => {
+				const spy = sinon.spy( view._fileInputView, 'open' );
+				view.buttonView.fire( 'execute' );
 
-	it( 'should open file dialog on execute', () => {
-		const spy = sinon.spy( view.fileInputView, 'open' );
-		view.fire( 'execute' );
-
-		sinon.assert.calledOnce( spy );
-	} );
-
-	it( 'should pass acceptedType to input view', () => {
-		view.set( { acceptedType: 'audio/*' } );
-
-		expect( view.fileInputView.acceptedType ).to.equal( 'audio/*' );
-	} );
-
-	it( 'should pass allowMultipleFiles to input view', () => {
-		view.set( { allowMultipleFiles: true } );
-
-		expect( view.fileInputView.allowMultipleFiles ).to.be.true;
-	} );
-
-	it( 'should delegate input view done event', done => {
-		const files = [];
-
-		view.on( 'done', ( evt, data ) => {
-			expect( data ).to.equal( files );
-			done();
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 
-		view.fileInputView.fire( 'done', files );
+		describe( 'file dialog', () => {
+			it( 'should be rendered', () => {
+				expect( view._fileInputView ).to.instanceof( View );
+				expect( view._fileInputView ).to.equal( view.template.children.get( 1 ) );
+			} );
+
+			it( 'should be bound to view#acceptedType', () => {
+				view.set( { acceptedType: 'audio/*' } );
+
+				expect( view._fileInputView.acceptedType ).to.equal( 'audio/*' );
+			} );
+
+			it( 'should be bound to view#allowMultipleFiles', () => {
+				view.set( { allowMultipleFiles: true } );
+
+				expect( view._fileInputView.allowMultipleFiles ).to.be.true;
+			} );
+
+			it( 'should delegate done event to view', () => {
+				const spy = sinon.spy();
+				const files = [];
+
+				view.on( 'done', spy );
+				view._fileInputView.fire( 'done', files );
+
+				sinon.assert.calledOnce( spy );
+				expect( spy.lastCall.args[ 1 ] ).to.equal( files );
+			} );
+		} );
 	} );
 } );
