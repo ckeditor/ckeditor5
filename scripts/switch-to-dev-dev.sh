@@ -23,11 +23,6 @@ echo "Linking ckeditor5-dev-env..."
 rm -rf node_modules/@ckeditor/ckeditor5-dev-env
 ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-env node_modules/@ckeditor
 
-echo "Linking ckeditor5-dev-lint..."
-
-rm -rf node_modules/@ckeditor/ckeditor5-dev-lint
-ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-lint node_modules/@ckeditor
-
 echo "Linking ckeditor5-dev-tests..."
 
 rm -rf node_modules/@ckeditor/ckeditor5-dev-tests

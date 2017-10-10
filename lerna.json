@@ -5,7 +5,7 @@
     "."
   ],
   "hoist": true,
-  "nohoist": "guppy-pre-commit",
+  "nohoist": "husky",
   "commands": {
     "bootstrap": {
       "concurrency": 1
