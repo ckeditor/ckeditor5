@@ -3,6 +3,7 @@
 	"slug": "ckeditor5",
 	"hexo-config": "docs/hexo-custom-config.json",
 	"path": "docs",
+	"observablesdocs": "module:utils/observablemixin~ObservableMixin",
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippet-adapter/snippetadapter",
 		"import-path": "../scripts/docs/getrealimportpath"
