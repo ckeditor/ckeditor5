@@ -67,12 +67,12 @@
     "url": "https://github.com/ckeditor/ckeditor5.git"
   },
   "scripts": {
+    "lint": "eslint --quiet '**/*.js'",
+    "precommit": "lint-staged",
     "test": "node --max_old_space_size=4096 ./node_modules/.bin/ckeditor5-dev-tests --reporter=dots",
     "install-optional-dependencies": "./scripts/install-optional-dependencies.sh",
     "switch-to-dev-dev": "./scripts/switch-to-dev-dev.sh",
-    "build-and-publish-docs": "./scripts/docs/build-and-publish.js",
-    "lint": "eslint --quiet '**/*.js'",
-    "precommit": "lint-staged"
+    "build-and-publish-docs": "./scripts/docs/build-and-publish.js"
   },
   "lint-staged": {
     "**/*.js": [
