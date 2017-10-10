@@ -40,11 +40,14 @@ export default class ImageUploadButton extends Plugin {
 			const command = editor.commands.get( 'imageUpload' );
 
 			view.set( {
-				label: t( 'Insert image' ),
-				icon: imageIcon,
-				tooltip: true,
 				acceptedType: 'image/*',
 				allowMultipleFiles: true
+			} );
+
+			view.buttonView.set( {
+				label: t( 'Insert image' ),
+				icon: imageIcon,
+				tooltip: true
 			} );
 
 			view.bind( 'isEnabled' ).to( command );
