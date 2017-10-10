@@ -53,5 +53,6 @@
     "**/*.js": [
       "eslint --quiet"
     ]
-  }
+  },
+  "eslintIgnore": [ "src/lib/**" ]
 }
