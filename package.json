@@ -78,5 +78,10 @@
     "**/*.js": [
       "eslint --quiet"
     ]
-  }
+  },
+  "eslintIgnore": [
+	  "build/**",
+	  "coverage/**",
+	  "packages/**"
+  ]
 }
