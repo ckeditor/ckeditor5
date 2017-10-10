@@ -13,13 +13,12 @@
     "@ckeditor/ckeditor5-upload": "^1.0.0-alpha.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-lint": "^3.1.4",
     "@ckeditor/ckeditor5-editor-classic": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-paragraph": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-utils": "^1.0.0-alpha.1",
     "eslint-config-ckeditor5": "^1.0.6",
-    "gulp": "^3.9.1",
-    "guppy-pre-commit": "^0.4.0"
+    "husky": "^0.14.3",
+    "lint-staged": "^4.2.3"
   },
   "engines": {
     "node": ">=6.0.0",
@@ -37,5 +36,15 @@
     "lang",
     "src",
     "theme"
-  ]
+  ],
+  "scripts": {
+    "lint": "eslint --quiet '**/*.js'",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "eslint --quiet"
+    ]
+  },
+  "eslintIgnore": [ "src/lib/**" ]
 }
