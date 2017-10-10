@@ -13,9 +13,7 @@
 		"importants": [
 			"module:editor-balloon/ballooneditor~BalloonEditor.create",
 			"module:editor-classic/classiceditor~ClassicEditor.create",
-			"module:editor-inline/inlineeditor~InlineEditor.create",
-			"module:core/editor/editor~Editor.create",
-			"module:core/editor/standardeditor~StandardEditor.create"
+			"module:editor-inline/inlineeditor~InlineEditor.create"
 		]
 	},
 	"googleanalytics": {
