@@ -10,14 +10,6 @@
 const path = require( 'path' );
 const gulp = require( 'gulp' );
 
-// Lint tasks. ---------------------------------------------------------------
-
-const ckeditor5Lint = require( '@ckeditor/ckeditor5-dev-lint' );
-
-gulp.task( 'lint', () => ckeditor5Lint.lint() );
-gulp.task( 'lint-staged', () => ckeditor5Lint.lintStaged() );
-gulp.task( 'pre-commit', [ 'lint-staged' ] );
-
 // Tests. ---------------------------------------------------------------------
 
 gulp.task( 'test', () => {

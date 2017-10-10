@@ -96,7 +96,6 @@ total 16
 drwxr-xr-x    5 p  staff   170 31 Jan 10:37 .
 drwxr-xr-x  292 p  staff  9928 20 Jan 00:20 ..
 lrwxr-xr-x    1 p  staff    23 31 Jan 10:37 ckeditor5-core -> ../../../ckeditor5-core
-drwxr-xr-x    7 p  staff   238 20 Jan 00:20 ckeditor5-dev-lint
 lrwxr-xr-x    1 p  staff    25 31 Jan 10:37 ckeditor5-engine -> ../../../ckeditor5-engine
 ```
 
