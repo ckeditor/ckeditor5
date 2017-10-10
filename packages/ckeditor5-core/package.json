@@ -52,5 +52,8 @@
       "eslint --quiet"
     ]
   },
-  "eslintIgnore": [ "src/lib/**" ]
+  "eslintIgnore": [
+    "src/lib/**",
+    "packages/**"
+  ]
 }
