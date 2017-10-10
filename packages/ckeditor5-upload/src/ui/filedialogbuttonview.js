@@ -12,10 +12,29 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 /**
- * File Dialog button view.
+ * The file dialog button view.
  *
- * This component implements wrapper element with {@link module:ui/button/buttonview~ButtonView ButtonView}
- * and and hidden `input[type="file"]` inside.
+ * This component provides a button that opens the native file selection dialog.
+ * It can be used to implement the UI of a file upload feature.
+ *
+ *		const view = new FileDialogButtonView( locale );
+ *
+ *		view.set( {
+ *			acceptedType: 'image/*',
+ *			allowMultipleFiles: true
+ *		} );
+ *
+ *		view.buttonView.set( {
+ *			label: t( 'Insert image' ),
+ *			icon: imageIcon,
+ *			tooltip: true
+ *		} );
+ *
+ *		view.on( 'done', ( evt, files ) => {
+ *			for ( const file of Array.from( files ) ) {
+ *				console.log( 'Selected file', file );
+ *			}
+ *		} );
  *
  * @extends module:ui/view~View
  */
@@ -27,14 +46,14 @@ export default class FileDialogButtonView extends View {
 		super( locale );
 
 		/**
-		 * Button View.
+		 * The button view of the component.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.buttonView = new ButtonView( locale );
 
 		/**
-		 * Hidden input view used to execute file dialog.
+		 * A hidden `<input>` view used to execute file dialog.
 		 *
 		 * @protected
 		 * @member {module:upload/ui/filedialogbuttonview~FileInputView}
@@ -63,11 +82,11 @@ export default class FileDialogButtonView extends View {
 		/**
 		 * Fired when file dialog is closed with file selected.
 		 *
-		 *	fileDialogButtonView.on( 'done', ( evt, files ) => {
-		 *		for ( const file of files ) {
-		 *			processFile( file );
+		 *		view.on( 'done', ( evt, files ) => {
+		 *			for ( const file of files ) {
+		 *				console.log( 'Selected file', file );
+		 *			}
 		 *		}
-		 *	}
 		 *
 		 * @event done
 		 * @param {Array.<File>} files Array of selected files.
@@ -92,7 +111,7 @@ export default class FileDialogButtonView extends View {
 }
 
 /**
- * Hidden file input view class.
+ * The hidden file input view class.
  *
  * @private
  * @extends {module:ui/view~View}
