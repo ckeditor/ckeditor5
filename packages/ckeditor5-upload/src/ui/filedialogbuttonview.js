@@ -108,6 +108,13 @@ export default class FileDialogButtonView extends View {
 			this._fileInputView.open();
 		} );
 	}
+
+	/**
+	 * Focuses the {@link #buttonView}.
+	 */
+	focus() {
+		this.buttonView.focus();
+	}
 }
 
 /**

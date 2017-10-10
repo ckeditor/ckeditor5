@@ -66,4 +66,14 @@ describe( 'FileDialogButtonView', () => {
 			} );
 		} );
 	} );
+
+	describe( 'focus()', () => {
+		it( 'should focus view#buttonView', () => {
+			const spy = sinon.spy( view.buttonView, 'focus' );
+
+			view.focus();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
 } );
