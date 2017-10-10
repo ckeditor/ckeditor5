@@ -592,4 +592,59 @@ EditorUIView
 
 ### Using the existing components
 
+The framework provides a number of common {@link api/ui components} like {@link module:ui/button/buttonview~ButtonView `ButtonView`} or {@link module:ui/toolbar/toolbarview~ToolbarView `ToolbarView`} that can be helpful when developing a new user interface.
+
+For example, to create a toolbar with a few buttons inside, `ToolbarView` and `ButtonView` classes need to be imported first:
+
+```js
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+```
+
+Create the toolbar and a couple of buttons with labels first. Then append the buttons to the toolbar:
+
+```js
+const toolbar = new ToolbarView();
+const buttonFoo = new ButtonView();
+const buttonBar = new ButtonView();
+
+buttonFoo.set( {
+	label: 'Foo',
+	withText: true
+} );
+
+buttonBar.set( {
+	label: 'Bar',
+	withText: true
+} );
+
+toolbar.items.add( buttonFoo );
+toolbar.items.add( buttonBar );
+```
+
+The toolbar can now join the [UI tree](##View-collections-and-the-UI-tree) or it can be injected straight into DOM. To keep the example simple, proceed with the latter scenario:
+
+```js
+toolbar.init();
+
+document.body.appendChild( toolbar.element );
+```
+
+The result should look like this:
+
+{@img assets/img/framework-architecture-toolbar.png 442 A simple toolbar created using existing components.}
+
+The toolbar renders correctly but it does not do much. To execute an action when the button is clicked, a listener must be defined. To shorten the code and instead of two listeners define just one, the buttons can {@link module:utils/emittermixin~EmitterMixin#delegate delegate} the {@link module:ui/button/buttonview~ButtonView#execute `execute`} event to their parent:
+
+```js
+buttonFoo.delegate( 'execute' ).to( toolbar );
+buttonBar.delegate( 'execute' ).to( toolbar );
+
+toolbar.on( 'execute', evt => {
+	console.log( `The "${ evt.source.label }" button was clicked!` );
+} );
+```
+
 ### Keystrokes and focus management
+
+_Coming soon..._
