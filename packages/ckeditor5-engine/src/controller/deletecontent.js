@@ -123,27 +123,20 @@ function mergeBranches( batch, startPos, endPos ) {
 	startPos = Position.createAfter( startParent );
 	endPos = Position.createBefore( endParent );
 
-	if ( endParent.isEmpty ) {
-		batch.remove( endParent );
-	} else {
-		// At the moment, next startPos is also the position to which the endParent
-		// needs to be moved:
+	if ( !endPos.isEqual( startPos ) ) {
+		// In this case, before we merge, we need to move `endParent` to the `startPos`:
 		// <a><b>x[]</b></a><c><d>{}y</d></c>
 		// becomes:
 		// <a><b>x</b>[]<d>y</d></a><c>{}</c>
-
-		// Move the end parent only if needed.
-		// E.g. not in this case: <p>ab</p>[]{}<p>cd</p>
-		if ( !endPos.isEqual( startPos ) ) {
-			batch.move( endParent, startPos );
-		}
-
-		// To then become:
-		// <a><b>xy</b>[]</a><c>{}</c>
-		batch.merge( startPos );
+		batch.move( endParent, startPos );
 	}
 
-	// Removes empty end ancestors:
+	// Merge two siblings:
+	// <a>x</a>[]<b>y</b> -> <a>xy</a> (the usual case)
+	// <a><b>x</b>[]<d>y</d></a><c></c> -> <a><b>xy</b>[]</a><c></c> (this is the "move parent" case shown above)
+	batch.merge( startPos );
+
+	// Remove empty end ancestors:
 	// <a>fo[o</a><b><a><c>bar]</c></a></b>
 	// becomes:
 	// <a>fo[]</a><b><a>{}</a></b>

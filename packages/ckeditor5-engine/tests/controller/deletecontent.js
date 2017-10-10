@@ -233,19 +233,30 @@ describe( 'DataController', () => {
 				'<heading1>[]bar</heading1>'
 			);
 
-			it( 'uses remove delta instead of merge delta if merged element is empty', () => {
+			it( 'uses merge delta even if merged element is empty', () => {
 				setData( doc, '<paragraph>ab[cd</paragraph><paragraph>efgh]</paragraph>' );
 
 				const batch = doc.batch();
 				const spyMerge = sinon.spy( batch, 'merge' );
-				const spyRemove = sinon.spy( batch, 'remove' );
 
 				deleteContent( doc.selection, batch );
 
 				expect( getData( doc ) ).to.equal( '<paragraph>ab[]</paragraph>' );
 
-				expect( spyMerge.called ).to.be.false;
-				expect( spyRemove.called ).to.be.true;
+				expect( spyMerge.called ).to.be.true;
+			} );
+
+			it( 'uses merge delta even if merged element is empty #2', () => {
+				setData( doc, '<paragraph>ab[</paragraph><paragraph>]</paragraph>' );
+
+				const batch = doc.batch();
+				const spyMerge = sinon.spy( batch, 'merge' );
+
+				deleteContent( doc.selection, batch );
+
+				expect( getData( doc ) ).to.equal( '<paragraph>ab[]</paragraph>' );
+
+				expect( spyMerge.called ).to.be.true;
 			} );
 
 			it( 'does not try to move the second block if not needed', () => {
