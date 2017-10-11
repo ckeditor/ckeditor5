@@ -82,7 +82,7 @@ export default class ImageStyleCommand extends Command {
 			// Default style means that there is no `imageStyle` attribute in the model.
 			// https://github.com/ckeditor/ckeditor5-image/issues/147
 			if ( this.style.isDefault ) {
-				batch.removeAttribute( imageElement, 'imageStyle', this.style.name );
+				batch.removeAttribute( imageElement, 'imageStyle' );
 			} else {
 				batch.setAttribute( imageElement, 'imageStyle', this.style.name );
 			}
