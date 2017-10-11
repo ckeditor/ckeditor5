@@ -19,8 +19,8 @@ install:
   - mgit bootstrap --resolver-url-template="https://github.com/\${ path }.git"
   - lerna bootstrap
 script:
-  - npm t
-  - gulp docs:api --validate-only
+  - npm t -- --reporter=dots
+  - npm run docs:api -- --validate-only
 after_success:
   - ./node_modules/.bin/ckeditor5-dev-docs-publish-nightly
 notifications:
