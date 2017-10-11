@@ -10,23 +10,6 @@
 const path = require( 'path' );
 const gulp = require( 'gulp' );
 
-// Tests. ---------------------------------------------------------------------
-
-gulp.task( 'test', () => {
-	return require( '@ckeditor/ckeditor5-dev-tests' )
-		.runAutomatedTests( getTestOptions() );
-} );
-
-gulp.task( 'test:manual', () => {
-	return require( '@ckeditor/ckeditor5-dev-tests' )
-		.runManualTests( getTestOptions() );
-} );
-
-function getTestOptions() {
-	return require( '@ckeditor/ckeditor5-dev-tests' )
-		.parseArguments( process.argv.slice( 2 ) );
-}
-
 // Documentation. -------------------------------------------------------------
 
 gulp.task( 'docs', () => {

@@ -103,7 +103,7 @@ lrwxr-xr-x    1 p  staff    25 31 Jan 10:37 ckeditor5-engine -> ../../../ckedito
 If everything worked correctly, you should be able to run some tests:
 
 ```bash
-gulp test --files=core
+npm run test -- --files=core
 ```
 
 ### Fetching changes
