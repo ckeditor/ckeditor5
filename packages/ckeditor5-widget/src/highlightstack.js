@@ -54,13 +54,13 @@ export default class HighlightStack {
 	 * Removes highlight descriptor from the stack.
 	 *
 	 * @fires change:top
-	 * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} descriptor
+	 * @param {String} id Id of the descriptor to remove.
 	 */
-	remove( descriptor ) {
+	remove( id ) {
 		const stack = this._stack;
 
 		const oldTop = stack[ 0 ];
-		this._removeDescriptor( descriptor );
+		this._removeDescriptor( id );
 		const newTop = stack[ 0 ];
 
 		// When new object is at the top and stores different information.
@@ -108,11 +108,11 @@ export default class HighlightStack {
 	 * Removes descriptor with given id from the stack.
 	 *
 	 * @private
-	 * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} descriptor
+	 * @param {String} id Descriptor's id.
 	 */
-	_removeDescriptor( descriptor ) {
+	_removeDescriptor( id ) {
 		const stack = this._stack;
-		const index = stack.findIndex( item => item.id === descriptor.id );
+		const index = stack.findIndex( item => item.id === id );
 
 		// If descriptor with same id is on the list - remove it.
 		if ( index > -1 ) {

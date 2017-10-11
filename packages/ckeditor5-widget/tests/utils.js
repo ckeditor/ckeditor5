@@ -62,7 +62,7 @@ describe( 'widget utils', () => {
 			set( element, { priority: 1, class: 'highlight', id: 'highlight' } );
 			expect( element.hasClass( 'highlight' ) ).to.be.true;
 
-			remove( element, { priority: 1, class: 'highlight', id: 'highlight' } );
+			remove( element, 'highlight' );
 			expect( element.hasClass( 'highlight' ) ).to.be.false;
 		} );
 
@@ -79,7 +79,7 @@ describe( 'widget utils', () => {
 			expect( element.hasClass( 'highlight' ) ).to.be.true;
 			expect( element.hasClass( 'foo' ) ).to.be.true;
 
-			remove( element, { priority: 1, class: [ 'foo', 'highlight' ], id: 'highlight' } );
+			remove( element, 'highlight' );
 			expect( element.hasClass( 'highlight' ) ).to.be.false;
 			expect( element.hasClass( 'foo' ) ).to.be.false;
 		} );
@@ -177,7 +177,7 @@ describe( 'widget utils', () => {
 			const descriptor = { priority: 10, class: 'highlight', id: 'highlight' };
 
 			set( element, descriptor );
-			remove( element, descriptor );
+			remove( element, descriptor.id );
 
 			sinon.assert.calledOnce( addSpy );
 			sinon.assert.calledWithExactly( addSpy, element, descriptor );
@@ -215,7 +215,7 @@ describe( 'widget utils', () => {
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
-			remove( element, secondDescriptor );
+			remove( element, secondDescriptor.id );
 
 			sinon.assert.calledThrice( addSpy );
 			expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );

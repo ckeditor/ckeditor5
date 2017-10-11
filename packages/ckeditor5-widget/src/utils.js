@@ -96,7 +96,7 @@ export function setHighlightHandling( element, add, remove ) {
 	} );
 
 	element.setCustomProperty( 'addHighlight', ( element, descriptor ) => stack.add( descriptor ) );
-	element.setCustomProperty( 'removeHighlight', ( element, descriptor ) => stack.remove( descriptor ) );
+	element.setCustomProperty( 'removeHighlight', ( element, id ) => stack.remove( id ) );
 }
 
 /**
