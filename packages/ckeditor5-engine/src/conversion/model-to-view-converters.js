@@ -445,10 +445,9 @@ export function highlightText( highlightDescriptor ) {
 
 /**
  * Function factory, creates converter that converts all elements inside marker's range. Converter checks if element has
- * functions stored under `addHighlight` and `removeHighlight` custom properties and calls them passing
- * {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor}. In such case converter will consume
- * all element's children, assuming that they were handled by element itself. If highlight descriptor will not provide
- * priority, priority `10` will be used as default, to be compliant with
+ * functions stored under `addHighlight` and `removeHighlight` custom properties and calls them when highlight should be added
+ * or removed. In such case converter will consume all element's children, assuming that they were handled by element itself.
+ * If highlight descriptor will not provide priority, priority `10` will be used as default, to be compliant with
  * {@link module:engine/conversion/model-to-view-converters~highlightText} method which uses default priority of
  * {@link module:engine/view/attributeelement~AttributeElement}.
  *
@@ -496,7 +495,7 @@ export function highlightElement( highlightDescriptor ) {
 				consumable.consume( value.item, evt.name );
 			}
 
-			viewElement.getCustomProperty( highlightHandlingMethod )( viewElement, descriptor );
+			viewElement.getCustomProperty( highlightHandlingMethod )( viewElement, addMarker ? descriptor : descriptor.id );
 		}
 	};
 }
@@ -640,8 +639,11 @@ class HighlightAttributeElement extends ViewAttributeElement {
  * described by this object.
  *
  * Each element can handle displaying highlight separately by providing `addHighlight` and `removeHighlight` custom
- * properties. Those properties are passed `HighlightDescriptor` object upon conversion and should use it to
- * change the element.
+ * properties:
+ *  * `HighlightDescriptor` is passed to `addHighlight` function upon conversion and should be used to apply highlight to
+ *  the element,
+ *  * descriptor id is passed to `removeHighlight` function upon conversion and should be used to remove highlight of given
+ *  id from the element.
  *
  * @typedef {Object} module:engine/conversion/model-to-view-converters~HighlightDescriptor
  *

@@ -284,7 +284,7 @@ class ModelConverterBuilder {
 	 * custom properties:
 	 *
 	 *		viewElement.setCustomProperty( 'addHighlight', ( element, descriptor ) => {} );
-	 *		viewElement.setCustomProperty( 'removeHighlight', ( element, descriptor ) => {} );
+	 *		viewElement.setCustomProperty( 'removeHighlight', ( element, descriptorId ) => {} );
 	 *
 	 * {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor} will be used to create
 	 * spans over text nodes and also will be provided to `addHighlight` and `removeHighlight` methods
