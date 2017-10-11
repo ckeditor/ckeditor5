@@ -16,6 +16,7 @@
     "@ckeditor/ckeditor5-editor-classic": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-paragraph": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-utils": "^1.0.0-alpha.1",
+    "eslint": "^4.8.0",
     "eslint-config-ckeditor5": "^1.0.6",
     "husky": "^0.14.3",
     "lint-staged": "^4.2.3"
