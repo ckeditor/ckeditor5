@@ -342,7 +342,9 @@ const ot = {
 		InsertOperation( a, b, context ) {
 			// Create range from MoveOperation properties and transform it by insertion.
 			let range = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
-			range = range._getTransformedByInsertion( b.position, b.nodes.maxOffset, false, a.isSticky && !context.forceNotSticky )[ 0 ];
+			const includeB = a.isSticky && !context.forceNotSticky;
+
+			range = range._getTransformedByInsertion( b.position, b.nodes.maxOffset, false, includeB )[ 0 ];
 
 			// Check whether there is a forced order of nodes or use `context.isStrong` flag for conflict resolving.
 			const insertBefore = context.insertBefore === undefined ? !context.isStrong : context.insertBefore;

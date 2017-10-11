@@ -397,6 +397,25 @@ describe( 'debug tools', () => {
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
 			} );
 
+			it( 'MergeDelta - NoOperation as second operation', () => {
+				const otherRoot = modelDoc.createRoot( '$root', 'otherRoot' );
+				const firstEle = new ModelElement( 'paragraph' );
+				const removedEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
+
+				otherRoot.appendChildren( [ firstEle, removedEle ] );
+
+				const delta = new MergeDelta();
+				const move = new MoveOperation( ModelPosition.createAt( removedEle, 0 ), 3, ModelPosition.createAt( firstEle, 0 ), 0 );
+
+				delta.addOperation( move );
+				delta.addOperation( new NoOperation( 1 ) );
+
+				expect( delta.toString() ).to.equal( 'MergeDelta( 0 ): (move from otherRoot [ 1, 0 ])' );
+
+				delta.log();
+				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
+			} );
+
 			it( 'MoveDelta', () => {
 				const delta = new MoveDelta();
 				const move1 = new MoveOperation( ModelPosition.createAt( modelRoot, 0 ), 1, ModelPosition.createAt( modelRoot, 3 ), 0 );

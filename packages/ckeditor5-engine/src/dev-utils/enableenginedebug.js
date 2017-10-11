@@ -382,7 +382,10 @@ function enableLoggingTools() {
 
 	MergeDelta.prototype.toString = function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			this.position.toString();
+			( this.position ?
+				this.position.toString() :
+				`(move from ${ this.operations[ 0 ].sourcePosition })`
+			);
 	};
 
 	MoveDelta.prototype.toString = function() {
