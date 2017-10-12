@@ -124,16 +124,13 @@ gulp.task( 'changelog', () => {
 		cwd: process.cwd(),
 		packages: 'packages'
 	};
+	const editorBuildsGlob = '@ckeditor/ckeditor5-build-*';
 
 	const optionsForDependencies = Object.assign( {}, commonOptions, {
-		skipPackages: [
-			'@ckeditor/ckeditor5-build-inline',
-			'@ckeditor/ckeditor5-build-classic',
-			'@ckeditor/ckeditor5-build-balloon'
-		]
+		skipPackages: editorBuildsGlob
 	} );
 	const optionsForBuilds = Object.assign( {}, commonOptions, {
-		scope: /-build-/
+		scope: editorBuildsGlob
 	} );
 
 	return Promise.resolve()
