@@ -11,26 +11,6 @@ const gulp = require( 'gulp' );
 
 const assertIsInstalled = require( './scripts/util/assertisinstalled' );
 
-// Translations. --------------------------------------------------------------
-
-gulp.task( 'translations:collect', () => {
-	assertIsInstalled( '@ckeditor/ckeditor5-dev-env' );
-
-	return require( '@ckeditor/ckeditor5-dev-env' ).collectTranslations();
-} );
-
-gulp.task( 'translations:upload', () => {
-	assertIsInstalled( '@ckeditor/ckeditor5-dev-env' );
-
-	return require( '@ckeditor/ckeditor5-dev-env' ).uploadTranslations();
-} );
-
-gulp.task( 'translations:download', () => {
-	assertIsInstalled( '@ckeditor/ckeditor5-dev-env' );
-
-	return require( '@ckeditor/ckeditor5-dev-env' ).downloadTranslations();
-} );
-
 // Releasing. -----------------------------------------------------------------
 
 gulp.task( 'changelog:dependencies', () => {
