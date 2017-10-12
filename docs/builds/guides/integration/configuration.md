@@ -86,6 +86,14 @@ ClassicEditor
 	The above is a strict UI-related configuration. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their relative plugins. Check [Removing features](#Removing-features) above for more information.
 </info-box>
 
+### Listing available items
+
+You can use the following snippet to retrieve all toolbar items available in your editor:
+
+```js
+Array.from( editor.ui.componentFactory.names );
+```
+
 ## Other configuration options
 
 See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options.
