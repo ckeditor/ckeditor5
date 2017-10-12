@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-alpha.1...v1.0.0) (2017-10-12)
+
+### Other changes
+
+* Removed legacy width and height attributes from the BoxedEditorUIView. Closes [#25](https://github.com/ckeditor/ckeditor5-ui/issues/25). ([ffa419a](https://github.com/ckeditor/ckeditor5-ui/commit/ffa419a))
+
+
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-ui/compare/v0.10.0...v1.0.0-alpha.1) (2017-10-03)
 
 ### Bug fixes
