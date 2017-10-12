@@ -3,7 +3,7 @@ category: framework-contributing
 order: 30
 ---
 
-## Git commit message convention
+# Git commit message convention
 
 Every commit made *directly* to the `master` branch must follow the below convention. Based on commits in the `master` branch CKEditor 5's release tools will generate changelog entries for the current release.
 
