@@ -138,6 +138,10 @@ export default class ToolbarView extends View {
 				 * Make sure the plugin responsible for this toolbar item is loaded and the toolbar configuration
 				 * is correct, e.g. {@link module:basic-styles/bold~Bold} is loaded for the `'bold'` toolbar item.
 				 *
+				 * You can use the following snippet to retrieve all available toolbar items:
+				 *
+				 *		Array.from( editor.ui.componentFactory.names );
+				 *
 				 * @error toolbarview-item-unavailable
 				 * @param {String} name The name of the component.
 				 */
