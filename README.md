@@ -12,7 +12,7 @@ CKEditor 5 – development repository
 
 Read more about the status of the project in the [CKEditor 5 v1.0.0-alpha.1 release blog post](https://github.com/ckeditor/ckeditor5-design/issues/181).
 
-The first alpha version will be followed by a several releases before it reaches v1.0.0. See the [roadmap to 1.0.0 and beyond](https://github.com/ckeditor/ckeditor5-design/issues/172).
+The first alpha version will be followed by several releases before it reaches v1.0.0. See the [roadmap to 1.0.0 and beyond](https://github.com/ckeditor/ckeditor5-design/issues/172).
 
 ## Demos
 
@@ -27,12 +27,12 @@ You can also find out more examples (such as [Markdown output](https://docs.cked
 
 ## Documentation
 
-For high-level overview of the project see:
+For a high-level overview of the project see:
 
 * [CKEditor 5 Builds](https://ckeditor.com/ckeditor-5-builds/) website
 * [CKEditor 5 Framework](https://ckeditor.com/ckeditor-5-framework/) website.
 
-To find out more see the following [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest) sections:
+To find out more see the following [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/index.html) sections:
 
 * [API documentation](https://docs.ckeditor.com/ckeditor5/latest/api/index.html)
 * [CKEditor 5 Framework documentation](https://docs.ckeditor.com/ckeditor5/latest/framework/index.html)
@@ -118,7 +118,7 @@ Read more in the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/
 	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-utils"><code>@ckeditor/ckeditor5-utils</code></a>
 		<br>
-		The editor utils library.
+		The editor utilities library.
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-utils"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-utils.svg" alt="ckeditor5-utils npm package badge"></a>
@@ -131,7 +131,7 @@ Read more in the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/
 	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-upload"><code>@ckeditor/ckeditor5-upload</code></a>
 		<br>
-		Introduces the file upload utils.
+		Introduces the file upload utilities.
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-upload"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-upload.svg" alt="ckeditor5-upload npm package badge"></a>
@@ -224,7 +224,7 @@ Read more in the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/
 	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-adapter-ckfinder"><code>@ckeditor/ckeditor5-adapter-ckfinder</code></a>
 		<br>
-		Introduces the <a href="https://cksource.com/ckfinder">CKFinder</a> adapter for features which require the upload capabilities.
+		Introduces the <a href="https://ckeditor.com/ckeditor-4/ckfinder/">CKFinder</a> adapter for features which require upload capabilities.
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-adapter-ckfinder.svg" alt="ckeditor5-adapter-ckfinder npm package badge"></a>
@@ -237,7 +237,7 @@ Read more in the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/
 	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-autoformat"><code>@ckeditor/ckeditor5-autoformat</code></a>
 		<br>
-		Introduces the autoformatting feature. Replaces predefined characters with corresponding format (e.g. <code>**foo**</code> becomes bolded <code>&lt;strong&gt;foo&lt;/strong&gt;</code>).
+		Introduces the autoformatting feature. Replaces predefined characters with a corresponding format (e.g. <code>**foo**</code> becomes bolded <code>&lt;strong&gt;foo&lt;/strong&gt;</code>).
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-autoformat.svg" alt="ckeditor5-autoformat npm package badge"></a>
@@ -250,7 +250,7 @@ Read more in the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/
 	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-basic-styles"><code>@ckeditor/ckeditor5-basic-styles</code></a>
 		<br>
-		Introduces the bold and italic features.
+		Introduces the bold, italic, underline and code features.
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-basic-styles.svg" alt="ckeditor5-basic-styles npm package badge"></a>
@@ -289,7 +289,7 @@ Read more in the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/
 	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-enter"><code>@ckeditor/ckeditor5-enter</code></a>
 		<br>
-		Introduces the enter key feature.
+		Introduces the Enter key feature.
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-enter"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-enter.svg" alt="ckeditor5-enter npm package badge"></a>
@@ -367,7 +367,7 @@ Read more in the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/
 	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-markdown-gfm"><code>@ckeditor/ckeditor5-markdown-gfm</code></a>
 		<br>
-		Introduces GitHub flavored Markdown data processor.
+		Introduces GitHub-flavored Markdown data processor.
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-markdown-gfm.svg" alt="ckeditor5-markdown-gfm npm package badge"></a>
@@ -433,7 +433,7 @@ Read more in the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/
 	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-theme-lark"><code>@ckeditor/ckeditor5-theme-lark</code></a>
 		<br>
-		The lark theme.
+		The Lark theme.
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-theme-lark.svg" alt="ckeditor5-theme-lark npm package badge"></a>

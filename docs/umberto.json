@@ -3,13 +3,19 @@
 	"slug": "ckeditor5",
 	"hexo-config": "docs/hexo-custom-config.json",
 	"path": "docs",
+	"observablesdocs": "module:utils/observablemixin~ObservableMixin",
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippet-adapter/snippetadapter",
 		"import-path": "../scripts/docs/getrealimportpath"
 	},
 	"docsearch": {
 		"apiKey": "fc463c26455365ad403d5ec51796cd73",
-		"indexName": "ckeditor_nightly"
+		"indexName": "ckeditor_nightly",
+		"importants": [
+			"module:editor-balloon/ballooneditor~BalloonEditor.create",
+			"module:editor-classic/classiceditor~ClassicEditor.create",
+			"module:editor-inline/inlineeditor~InlineEditor.create"
+		]
 	},
 	"googleanalytics": {
 		"domains": [ "ckeditor5.github.io" ],

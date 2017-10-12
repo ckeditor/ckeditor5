@@ -138,7 +138,7 @@ These events make it possible to control the command from the outside. For insta
 const command = editor.commands.get( 'someCommand' );
 
 command.on( 'change:isEnabled', forceDisable, { priority: 'lowest' } );
-command.isEanabled = false;
+command.isEnabled = false;
 
 function forceDisabled() {
 	this.isEnabled = false;
@@ -592,4 +592,156 @@ EditorUIView
 
 ### Using the existing components
 
+The framework provides a number of common {@link api/ui components} like {@link module:ui/button/buttonview~ButtonView `ButtonView`} or {@link module:ui/toolbar/toolbarview~ToolbarView `ToolbarView`} that can be helpful when developing a new user interface.
+
+For example, to create a toolbar with a few buttons inside, `ToolbarView` and `ButtonView` classes need to be imported first:
+
+```js
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+```
+
+Create the toolbar and a couple of buttons with labels first. Then append the buttons to the toolbar:
+
+```js
+const toolbar = new ToolbarView();
+const buttonFoo = new ButtonView();
+const buttonBar = new ButtonView();
+
+buttonFoo.set( {
+	label: 'Foo',
+	withText: true
+} );
+
+buttonBar.set( {
+	label: 'Bar',
+	withText: true
+} );
+
+toolbar.items.add( buttonFoo );
+toolbar.items.add( buttonBar );
+```
+
+The toolbar can now join the [UI tree](##View-collections-and-the-UI-tree) or it can be injected straight into DOM. To keep the example simple, proceed with the latter scenario:
+
+```js
+toolbar.init();
+
+document.body.appendChild( toolbar.element );
+```
+
+The result should look like this:
+
+{@img assets/img/framework-architecture-toolbar.png 442 A simple toolbar created using existing components.}
+
+The toolbar renders correctly but it does not do much. To execute an action when the button is clicked, a listener must be defined. To shorten the code and instead of two listeners define just one, the buttons can {@link module:utils/emittermixin~EmitterMixin#delegate delegate} the {@link module:ui/button/buttonview~ButtonView#execute `execute`} event to their parent:
+
+```js
+buttonFoo.delegate( 'execute' ).to( toolbar );
+buttonBar.delegate( 'execute' ).to( toolbar );
+
+toolbar.on( 'execute', evt => {
+	console.log( `The "${ evt.source.label }" button was clicked!` );
+} );
+```
+
 ### Keystrokes and focus management
+
+<<<<<<< HEAD
+_Coming soon..._
+=======
+The framework offers built–in classes that help manage keystrokes and focus in the UI. They are particularly useful when it comes to bringing accessibility features to the application.
+
+#### Focus tracker
+
+The {@link module:utils/focustracker~FocusTracker `FocusTracker`} class can observe a number of HTML elements and determine if one of them is focused: either by the user (clicking, typing) or using the `HTMLElement.focus()` DOM method.
+
+```js
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+
+// ...
+
+const focusTracker = new FocusTracker();
+```
+
+To register elements in the tracker, use the {@link module:utils/focustracker~FocusTracker#add `add()`} method:
+
+```js
+focusTracker.add( document.querySelector( '.some-element' ) );
+focusTracker.add( viewInstance.element );
+```
+
+Observing focus tracker's {@link module:utils/focustracker~FocusTracker#isFocused `isFocused`} attribute allows to determine whether one of the registered elements is currently focused:
+
+```js
+focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
+	if ( isFocused ) {
+		console.log( 'The', focusTracker.focusedElement, 'is focused now.' );
+	} else {
+		console.log( 'The elements are blurred.' );
+	}
+} );
+```
+
+This information is useful when implementing a certain type of UI which behavior depends on the focus, e.g. contextual panels and floating balloons containing forms should hide when the user decides to abandon them.
+
+#### Keystroke handler
+
+The {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} listens to the keystroke events fired by an HTML element or any of its descendants and executes pre–defined actions when the keystroke is pressed. Usually, each [view](#Views) creates own keystroke handler instance which takes care of the keystrokes fired by the elements the view has rendered.
+
+```js
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+
+// ...
+
+const keystrokeHandler = new KeystrokeHandler();
+```
+
+To define the scope of the keystroke handler in DOM, use the {@link module:utils/keystrokehandler~KeystrokeHandler#listenTo `listenTo()`} method:
+
+```js
+keystrokeHandler.listenTo( document.querySelector( '.some-element' ) );
+keystrokeHandler.listenTo( viewInstance.element );
+```
+
+<info-box>
+	Check out the list of {@link module:utils/keyboard#keyCodes known key names} supported by the keystroke handler.
+</info-box>
+
+Keystroke action callbacks are functions. To prevent the default action of the keystroke and stop further propagation, use the `cancel()` function provided in the callback.
+
+```js
+keystrokeHandler.set( 'Tab', ( keyEvtData, cancel ) => {
+	console.log( 'Tab was pressed!' );
+
+	// This keystroke has been handled and can be canceled.
+	cancel();
+} );
+```
+
+<info-box>
+	There is also an {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler `EditingKeystrokeHandler`} class which has the same API as `KeystrokeHandler` but it offers direct keystroke bindings to editor commands.
+
+	Usually, the editor provides such keystroke handler under the {@link module:core/editor/standardeditor~StandardEditor#keystrokes `editor.keystrokes`} property so any plugin can register keystrokes associated with editor commands, e.g. the {@link module:undo/undo~Undo `Undo`} plugin registers `editor.keystrokes.set( 'Ctrl+Z', 'undo' );` to execute its "undo" command.
+</info-box>
+
+When multiple callbacks are assigned to the same keystroke, priorities can be used to decide which one should be handled first and whether other callbacks should be executed at all:
+
+```js
+keystrokeHandler.set( 'Ctrl+A', ( keyEvtData ) => {
+	console.log( 'A normal priority listener.' );
+} );
+
+keystrokeHandler.set( 'Ctrl+A', ( keyEvtData ) => {
+	console.log( 'A high priority listener.' );
+
+	// The normal priority listener will not be executed.
+	cancel();
+}, { priority: 'high' } );
+```
+
+Pressing <kbd>Ctrl</kbd>+<kbd>A</kbd> will only log:
+
+```
+"A high priority listener."
+```
