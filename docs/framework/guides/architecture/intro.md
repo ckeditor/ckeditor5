@@ -647,14 +647,13 @@ toolbar.on( 'execute', evt => {
 
 ### Keystrokes and focus management
 
-<<<<<<< HEAD
 _Coming soon..._
-=======
+
 The framework offers built–in classes that help manage keystrokes and focus in the UI. They are particularly useful when it comes to bringing accessibility features to the application.
 
 #### Focus tracker
 
-The {@link module:utils/focustracker~FocusTracker `FocusTracker`} class can observe a number of HTML elements and determine if one of them is focused: either by the user (clicking, typing) or using the `HTMLElement.focus()` DOM method.
+The {@link module:utils/focustracker~FocusTracker `FocusTracker`} class can observe a number of HTML elements and determine if one of them is focused either by the user (clicking, typing) or using the `HTMLElement.focus()` DOM method.
 
 ```js
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
@@ -683,11 +682,11 @@ focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
 } );
 ```
 
-This information is useful when implementing a certain type of UI which behavior depends on the focus, e.g. contextual panels and floating balloons containing forms should hide when the user decides to abandon them.
+This information is useful when implementing a certain type of UI whose behavior depends on the focus, for example, contextual panels and floating balloons containing forms should hide when the user decides to abandon them.
 
 #### Keystroke handler
 
-The {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} listens to the keystroke events fired by an HTML element or any of its descendants and executes pre–defined actions when the keystroke is pressed. Usually, each [view](#Views) creates own keystroke handler instance which takes care of the keystrokes fired by the elements the view has rendered.
+The {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} listens to the keystroke events fired by an HTML element or any of its descendants and executes pre–defined actions when the keystroke is pressed. Usually, each [view](#Views) creates its own keystroke handler instance which takes care of the keystrokes fired by the elements the view has rendered.
 
 ```js
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -722,7 +721,7 @@ keystrokeHandler.set( 'Tab', ( keyEvtData, cancel ) => {
 <info-box>
 	There is also an {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler `EditingKeystrokeHandler`} class which has the same API as `KeystrokeHandler` but it offers direct keystroke bindings to editor commands.
 
-	Usually, the editor provides such keystroke handler under the {@link module:core/editor/standardeditor~StandardEditor#keystrokes `editor.keystrokes`} property so any plugin can register keystrokes associated with editor commands, e.g. the {@link module:undo/undo~Undo `Undo`} plugin registers `editor.keystrokes.set( 'Ctrl+Z', 'undo' );` to execute its "undo" command.
+	Usually, the editor provides such keystroke handler under the {@link module:core/editor/standardeditor~StandardEditor#keystrokes `editor.keystrokes`} property so any plugin can register keystrokes associated with editor commands. For example, the {@link module:undo/undo~Undo `Undo`} plugin registers `editor.keystrokes.set( 'Ctrl+Z', 'undo' );` to execute its "undo" command.
 </info-box>
 
 When multiple callbacks are assigned to the same keystroke, priorities can be used to decide which one should be handled first and whether other callbacks should be executed at all:
