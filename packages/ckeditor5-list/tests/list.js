@@ -116,6 +116,68 @@ describe( 'List', () => {
 		} );
 	} );
 
+	describe( 'delete key handling callback', () => {
+		it( 'should execute outdentList command on backspace key in first item of list', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			expect( editor.execute.calledWithExactly( 'outdentList' ) );
+		} );
+
+		it( 'should execute outdentList command on backspace key in first item of list', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<paragraph>foo</paragraph><listItem type="bulleted" indent="0">[]foo</listItem>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			expect( editor.execute.calledWithExactly( 'outdentList' ) );
+		} );
+
+		it( 'should not execute outdentList command on backspace key not in first place in list', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'forward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<listItem type="bulleted" indent="0">fo[]o</listItem>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should not execute outdentList command on delete key in first item of list', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'forward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should not execute outdentList command when selection is not collapsed', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<listItem type="bulleted" indent="0">[fo]o</listItem>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+	} );
+
 	describe( 'tab key handling callback', () => {
 		let domEvtDataStub;
 

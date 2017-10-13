@@ -61,6 +61,28 @@ export default class List extends Plugin {
 			}
 		} );
 
+		// Overwrite default Backspace key behavior.
+		// If Backspace key is pressed with selection collapsed on first position in first list item, outdent it.
+		this.listenTo( this.editor.editing.view, 'delete', ( evt, data ) => {
+			const selection = this.editor.document.selection;
+			const positionParent = selection.getLastPosition().parent;
+
+			const isInListItem = positionParent.name === 'listItem';
+			const previousIsNotAListItem = !positionParent.previousSibling || positionParent.previousSibling.name !== 'listItem';
+
+			const isBackward = data.direction === 'backward';
+
+			const firstPosition = selection.getFirstPosition();
+			const isAtStart = firstPosition.isAtStart;
+
+			if ( isInListItem && previousIsNotAListItem && isBackward && selection.isCollapsed && isAtStart ) {
+				this.editor.execute( 'outdentList' );
+
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { priority: 'high' } );
+
 		const getCommandExecuter = commandName => {
 			return ( data, cancel ) => {
 				const command = this.editor.commands.get( commandName );
