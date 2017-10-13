@@ -9,7 +9,7 @@
 
 'use strict';
 
-const assertIsInstalled = require( './../util/assertisinstalled' );
+const assertIsInstalled = require( './../utils/assertisinstalled' );
 const buildApiDocs = require( './buildapi' );
 
 const skipLiveSnippets = process.argv.includes( '--skip-snippets' );

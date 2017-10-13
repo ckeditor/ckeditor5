@@ -9,7 +9,7 @@
 
 const path = require( 'path' );
 
-const assertIsInstalled = require( './../util/assertisinstalled' );
+const assertIsInstalled = require( './../utils/assertisinstalled' );
 
 module.exports = function buildApiDocs() {
 	assertIsInstalled( '@ckeditor/ckeditor5-dev-docs' );
