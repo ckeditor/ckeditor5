@@ -70,16 +70,16 @@
     "precommit": "lint-staged",
     "test": "node --max_old_space_size=4096 ./node_modules/.bin/ckeditor5-dev-tests",
     "test:manual": "node --max_old_space_size=4096 ./node_modules/.bin/ckeditor5-dev-tests-manual",
-    "docs": "./scripts/docs/build-docs.js",
-    "docs:api": "./scripts/docs/build-api-docs.js",
+    "docs": "node ./scripts/docs/build-docs.js",
+    "docs:api": "node ./scripts/docs/build-api-docs.js",
     "translations:collect": "ckeditor5-dev-env-translations collect",
     "translations:download": "ckeditor5-dev-env-translations download",
     "translations:upload": "ckeditor5-dev-env-translations upload",
-    "changelog:dependencies": "./scripts/release/changelog-dependencies.js",
-    "release:dependencies": "./scripts/release/release-dependencies.js",
-    "install-optional-dependencies": "./scripts/install-optional-dependencies.sh",
-    "switch-to-dev-dev": "./scripts/switch-to-dev-dev.sh",
-    "build-and-publish-docs": "./scripts/docs/build-and-publish.js"
+    "changelog:dependencies": "node ./scripts/release/changelog-dependencies.js",
+    "release:dependencies": "node ./scripts/release/release-dependencies.js",
+    "install-optional-dependencies": "sh ./scripts/install-optional-dependencies.sh",
+    "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
+    "build-and-publish-docs": "node ./scripts/docs/build-and-publish.js"
   },
   "lint-staged": {
     "**/*.js": [
