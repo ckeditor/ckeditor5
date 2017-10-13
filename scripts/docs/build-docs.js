@@ -16,30 +16,36 @@ const skipLiveSnippets = process.argv.includes( '--skip-snippets' );
 const skipApi = process.argv.includes( '--skip-api' );
 const production = process.argv.includes( '--production' );
 
-if ( skipApi ) {
-	const fs = require( 'fs' );
-	const apiJsonPath = './docs/api/output.json';
+buildDocs();
 
-	if ( fs.existsSync( apiJsonPath ) ) {
-		fs.unlinkSync( apiJsonPath );
+function buildDocs() {
+	if ( skipApi ) {
+		const fs = require( 'fs' );
+		const apiJsonPath = './docs/api/output.json';
+
+		if ( fs.existsSync( apiJsonPath ) ) {
+			fs.unlinkSync( apiJsonPath );
+		}
+
+		runUmberto( {
+			skipLiveSnippets,
+			skipApi,
+			production
+		} ).then( () => process.exit() );
+
+		return;
 	}
 
-	runUmberto( {
-		skipLiveSnippets,
-		skipApi,
-		production
-	} ).then( () => process.exit() );
-}
-
-// Simple way to reuse existing api/output.json:
-// return Promise.resolve()
-buildApiDocs()
-	.then( () => {
-		return runUmberto( {
-			skipLiveSnippets,
-			production
+	// Simple way to reuse existing api/output.json:
+	// return Promise.resolve()
+	buildApiDocs()
+		.then( () => {
+			return runUmberto( {
+				skipLiveSnippets,
+				production
+			} );
 		} );
-	} );
+}
 
 function runUmberto( options ) {
 	assertIsInstalled( 'umberto' );
