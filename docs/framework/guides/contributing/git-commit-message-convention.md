@@ -10,7 +10,7 @@ Every commit made *directly* to the `master` branch must follow the below conven
 <info-box>
 	Commits in the ticket branches are not analyzed for the changelog and do not have to follow any specific convention (other than finishing sentences with periods). In case of ticket branches, **only merge commits are analyzed**.
 
-	Therefore, this guide is mainly targeted to core team members. However, it may help you to understand how to write a suggested commit message when creating a PR for CKEditor 5.
+	Therefore, this guide is mainly targeted at core team members. However, it may help you understand how to write a suggested commit message when creating a pull request for CKEditor 5.
 </info-box>
 
 ## Convention
@@ -34,7 +34,7 @@ BREAKING CHANGE: Another breaking change if needed. Closes #YYY.
 | --- | --- | --- | --- |
 | Feature | `minor` | A new feature. | Visible |
 | Fix | `patch` | A bug fix. Should also be used for enhancements if they do not introduce new features at the same time. | Visible |
-| Other | `patch` | An enhancement – when it is neither a bug fix nor a feature. For example – public API refactoring. Use it also if you do not want to admit that it was a bug ;). | Visible |
+| Other | `patch` | An enhancement &mdash; when it is neither a bug fix nor a feature. Example: public API refactoring. Use it also if you do not want to admit that it was a bug ;). | Visible |
 | Code style | `patch` | Our beloved code style improvements (used in the broad meaning of general code quality). | Hidden |
 | Docs | `patch` | Updated documentation. | Hidden |
 | Internal | `patch` | Other kinds of internal changes. | Hidden |
@@ -69,27 +69,27 @@ A bug fix for an existing feature (closes two tickets):
 Fix: The editor will be great again. Closes #3. Closes #4.
 ```
 
-Commit with updated the documentation:
+Commit with updated documentation:
 
 ```
 Docs: Updated the README.
 ```
 
-Commit which provides / changes the tests:
+Commit which provides or changes the tests:
 
 ```
 Tests: Introduced missing tests. Closes #5.
 ```
 
-An enhancement which is not backward compatible. Public API has been changed:
+An enhancement which is not backward compatible. Public API was changed:
 
 ```
 Other: Extracted `utils.moo()` to a separate package. Closes #9.
 
-BREAKING CHANGE: The `util.moo()` method is now available in the `moo` packages. See #9.
+BREAKING CHANGE: The `util.moo()` method is now available in the `moo` package. See #9.
 ```
 
-For the commits above the changelog will look like this:
+For the commits shown above the changelog will look like this:
 
 ```md
 Changelog
@@ -113,7 +113,7 @@ Changelog
 
 ### BREAKING CHANGES
 
-* The `util.moo()` method is now available in the `moo` packages. See [#9](https://github.com/ckeditor/ckeditor5-dev/issue/9).
+* The `util.moo()` method is now available in the `moo` package. See [#9](https://github.com/ckeditor/ckeditor5-dev/issue/9).
 
 ### NOTE
 
@@ -136,7 +136,7 @@ Things like:
 
 should be checked and added if missing.
 
-As a reviewer, remember that the message will end up in the changelog and must be understandable in a broad context of the entire editor. It is not for you – it is for other developers.
+As a reviewer, remember that the message will end up in the changelog and must be understandable in a broad context of the entire editor. It is not for you &mdash; it is for other developers.
 
 When closing a PR remember to copy the source of the message to the textarea with the merge commit message:
 
@@ -144,7 +144,7 @@ When closing a PR remember to copy the source of the message to the textarea wit
 
 ### Giving credit
 
-When closing a non-core contributor's PR make sure to add an information about the contributor to the commit message. For example:
+When closing a non-core contributor's PR make sure to add information about the contributor to the commit message. For example:
 
 ```
 Feature: Added support for RTL languages. Closes #1.
