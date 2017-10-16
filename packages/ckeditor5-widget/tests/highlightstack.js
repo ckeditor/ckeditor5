@@ -79,7 +79,7 @@ describe( 'HighlightStack', () => {
 
 		stack.on( 'change:top', spy );
 
-		stack.remove( secondDescriptor );
+		stack.remove( secondDescriptor.id );
 
 		sinon.assert.calledOnce( spy );
 		expect( spy.firstCall.args[ 1 ].oldDescriptor ).to.equal( secondDescriptor );
@@ -143,7 +143,7 @@ describe( 'HighlightStack', () => {
 
 		stack.add( descriptor );
 		stack.on( 'change:top', spy );
-		stack.remove( descriptor );
+		stack.remove( descriptor.id );
 
 		sinon.assert.calledOnce( spy );
 		expect( spy.firstCall.args[ 1 ].newDescriptor ).to.be.undefined;
@@ -158,7 +158,7 @@ describe( 'HighlightStack', () => {
 		stack.add( descriptor );
 		stack.add( secondDescriptor );
 		stack.on( 'change:top', spy );
-		stack.remove( secondDescriptor );
+		stack.remove( secondDescriptor.id );
 
 		sinon.assert.notCalled( spy );
 	} );
