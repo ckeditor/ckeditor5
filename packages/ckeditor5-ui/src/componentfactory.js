@@ -83,7 +83,7 @@ export default class ComponentFactory {
 			);
 		}
 
-		this._components.set( name, callback );
+		this._components.set( _componentsMapKey( name ), callback );
 	}
 
 	/**
@@ -111,7 +111,7 @@ export default class ComponentFactory {
 			);
 		}
 
-		return this._components.get( name )( this.editor.locale );
+		return this._components.get( _componentsMapKey( name ) )( this.editor.locale );
 	}
 
 	/**
@@ -121,6 +121,18 @@ export default class ComponentFactory {
 	 * @returns {Boolean}
 	 */
 	has( name ) {
-		return this._components.has( name );
+		return this._components.has( _componentsMapKey( name ) );
 	}
+}
+
+/**
+ * Ensures that component name used as key in internal map is in lower case.
+ *
+ * @ignore
+ * @private
+ * @param {String} name
+ * @returns {String}
+ */
+function _componentsMapKey( name ) {
+	return String( name ).toLowerCase();
 }
