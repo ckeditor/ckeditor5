@@ -198,6 +198,7 @@ export default class InlineAutoformatEngine {
 				// Remove delimiters.
 				for ( const range of rangesToRemove ) {
 					fixBatch.remove( range );
+					range.detach(); // Prevents memory leaks. #39
 				}
 			} );
 		} );
