@@ -446,8 +446,8 @@ export function highlightText( highlightDescriptor ) {
 /**
  * Converter function factory. Creates a function which applies the marker's highlight to all elements inside a marker's range.
  * The converter checks if an element has the addHighlight and removeHighlight functions stored as
- * {@link TODO custom properties} and if so use them to apply the highlight. In such case converter will consume all
- * element's children, assuming that they were handled by element itself.
+ * {@link module:engine/view/element~Element#setCustomProperty custom properties} and if so use them to apply the highlight.
+ * In such case converter will consume all element's children, assuming that they were handled by element itself.
  * If the highlight descriptor will not provide priority, priority `10` will be used as default, to be compliant with
  * {@link module:engine/conversion/model-to-view-converters~highlightText} method which uses default priority of
  * {@link module:engine/view/attributeelement~AttributeElement}.
