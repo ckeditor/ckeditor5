@@ -444,15 +444,15 @@ export function highlightText( highlightDescriptor ) {
 }
 
 /**
- * Function factory, creates converter that converts all elements inside marker's range. Converter checks if element has
- * functions stored under `addHighlight` and `removeHighlight` custom properties and calls them passing
- * {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor}. In such case converter will consume
- * all element's children, assuming that they were handled by element itself. If highlight descriptor will not provide
- * priority, priority `10` will be used as default, to be compliant with
+ * Converter function factory. Creates a function which applies the marker's highlight to all elements inside a marker's range.
+ * The converter checks if an element has the addHighlight and removeHighlight functions stored as
+ * {@link TODO custom properties} and if so use them to apply the highlight. In such case converter will consume all
+ * element's children, assuming that they were handled by element itself.
+ * If the highlight descriptor will not provide priority, priority `10` will be used as default, to be compliant with
  * {@link module:engine/conversion/model-to-view-converters~highlightText} method which uses default priority of
  * {@link module:engine/view/attributeelement~AttributeElement}.
  *
- * If highlight descriptor will not provide `id` property, name of the marker will be used.
+ * If the highlight descriptor will not provide `id` property, name of the marker will be used.
  * When `addHighlight` and `removeHighlight` custom properties are not present, element is not converted
  * in any special way. This means that converters will proceed to convert element's child nodes.
  *
@@ -496,7 +496,7 @@ export function highlightElement( highlightDescriptor ) {
 				consumable.consume( value.item, evt.name );
 			}
 
-			viewElement.getCustomProperty( highlightHandlingMethod )( viewElement, descriptor );
+			viewElement.getCustomProperty( highlightHandlingMethod )( viewElement, addMarker ? descriptor : descriptor.id );
 		}
 	};
 }
@@ -634,14 +634,17 @@ class HighlightAttributeElement extends ViewAttributeElement {
 }
 
 /**
- * Object describing how content highlight should be created in the view.
+ * Object describing how the content highlight should be created in the view.
  *
- * Each text node contained in highlight will be wrapped with `span` element with CSS class(es), attributes and priority
+ * Each text node contained in the highlight will be wrapped with `span` element with CSS class(es), attributes and priority
  * described by this object.
  *
- * Each element can handle displaying highlight separately by providing `addHighlight` and `removeHighlight` custom
- * properties. Those properties are passed `HighlightDescriptor` object upon conversion and should use it to
- * change the element.
+ * Each element can handle displaying the highlight separately by providing `addHighlight` and `removeHighlight` custom
+ * properties:
+ *  * `HighlightDescriptor` is passed to the `addHighlight` function upon conversion and should be used to apply the highlight to
+ *  the element,
+ *  * descriptor id is passed to the `removeHighlight` function upon conversion and should be used to remove the highlight of given
+ *  id from the element.
  *
  * @typedef {Object} module:engine/conversion/model-to-view-converters~HighlightDescriptor
  *

@@ -211,10 +211,10 @@ describe( 'model-to-view-converters', () => {
 					expect( descriptor ).to.equal( highlightDescriptor );
 				} );
 
-				viewContainer.setCustomProperty( 'removeHighlight', ( element, descriptor ) => {
+				viewContainer.setCustomProperty( 'removeHighlight', ( element, id ) => {
 					element.removeClass( 'highlight-own-class' );
 
-					expect( descriptor ).to.equal( highlightDescriptor );
+					expect( id ).to.equal( highlightDescriptor.id );
 				} );
 
 				return viewContainer;
@@ -251,8 +251,13 @@ describe( 'model-to-view-converters', () => {
 
 			dispatcher.on( 'insert:paragraph', insertElement( () => {
 				const element = new ViewContainerElement( 'p' );
-				element.setCustomProperty( 'addHighlight', ( element, data ) => element.addClass( data.class ) );
-				element.setCustomProperty( 'removeHighlight', ( element, data ) => element.removeClass( data.class ) );
+				const descriptors = new Map();
+
+				element.setCustomProperty( 'addHighlight', ( element, data ) => {
+					descriptors.set( data.id, data );
+					element.addClass( data.class );
+				} );
+				element.setCustomProperty( 'removeHighlight', ( element, id ) => element.removeClass( descriptors.get( id ).class ) );
 
 				return element;
 			} ), { priority: 'high' } );
