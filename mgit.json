@@ -30,6 +30,6 @@
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#c48562e",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#557906f",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#7a7da1d",
-    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#e8f526d"
+    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#1dfdc83"
   }
 }
