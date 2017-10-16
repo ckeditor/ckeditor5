@@ -14,6 +14,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * It allows functions producing specific UI components to be registered under their unique names
  * in the factory. A registered component can be then instantiated by providing its name.
+ * Note that names are case-insensitive.
  *
  *		// Editor provides localization tools for the factory.
  *		const factory = new ComponentFactory( editor );
@@ -23,6 +24,9 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  *		// An instance of FooView.
  *		const fooInstance = factory.create( 'foo' );
+ *
+ *		// Names are case-insensitive os this is also allowed:
+ *		const barInstance = factory.create( 'Bar' );
  *
  * The {@link module:core/editor/editor~Editor#locale editor locale} is passed to the factory
  * function when {@link module:ui/componentfactory~ComponentFactory#create} is called.
@@ -53,7 +57,7 @@ export default class ComponentFactory {
 	}
 
 	/**
-	 * Returns an iterator of registered component names.
+	 * Returns an iterator of registered component names. Names are returned in lower case.
 	 *
 	 * @returns {Iterator.<String>}
 	 */
@@ -83,7 +87,7 @@ export default class ComponentFactory {
 			);
 		}
 
-		this._components.set( _componentsMapKey( name ), callback );
+		this._components.set( getNormalized( name ), callback );
 	}
 
 	/**
@@ -111,7 +115,7 @@ export default class ComponentFactory {
 			);
 		}
 
-		return this._components.get( _componentsMapKey( name ) )( this.editor.locale );
+		return this._components.get( getNormalized( name ) )( this.editor.locale );
 	}
 
 	/**
@@ -121,18 +125,16 @@ export default class ComponentFactory {
 	 * @returns {Boolean}
 	 */
 	has( name ) {
-		return this._components.has( _componentsMapKey( name ) );
+		return this._components.has( getNormalized( name ) );
 	}
 }
 
-/**
- * Ensures that component name used as key in internal map is in lower case.
- *
- * @ignore
- * @private
- * @param {String} name
- * @returns {String}
- */
-function _componentsMapKey( name ) {
+//
+// Ensures that component name used as key in internal map is in lower case.
+//
+// @private
+// @param {String} name
+// @returns {String}
+function getNormalized( name ) {
 	return String( name ).toLowerCase();
 }
