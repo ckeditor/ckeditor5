@@ -31,14 +31,23 @@ describe( 'ComponentFactory', () => {
 		it( 'returns iterator of command names', () => {
 			factory.add( 'foo', () => {} );
 			factory.add( 'bar', () => {} );
+			factory.add( 'Baz', () => {} );
 
-			expect( Array.from( factory.names() ) ).to.have.members( [ 'foo', 'bar' ] );
+			expect( Array.from( factory.names() ) ).to.have.members( [ 'foo', 'bar', 'baz' ] );
 		} );
 	} );
 
 	describe( 'add()', () => {
 		it( 'throws when trying to override already registered component', () => {
 			factory.add( 'foo', () => {} );
+
+			expect( () => {
+				factory.add( 'foo', () => {} );
+			} ).to.throw( CKEditorError, /^componentfactory-item-exists/ );
+		} );
+
+		it( 'throws when trying to override already registered component added with different case', () => {
+			factory.add( 'Foo', () => {} );
 
 			expect( () => {
 				factory.add( 'foo', () => {} );
@@ -69,6 +78,23 @@ describe( 'ComponentFactory', () => {
 			expect( instance ).to.be.instanceof( View );
 			expect( instance.locale ).to.equal( locale );
 		} );
+
+		it( 'creates an instance even with different case', () => {
+			class View {
+				constructor( locale ) {
+					this.locale = locale;
+				}
+			}
+
+			const locale = editor.locale = {};
+
+			factory.add( 'Foo', locale => new View( locale ) );
+
+			const instance = factory.create( 'foo' );
+
+			expect( instance ).to.be.instanceof( View );
+			expect( instance.locale ).to.equal( locale );
+		} );
 	} );
 
 	describe( 'has()', () => {
@@ -79,6 +105,8 @@ describe( 'ComponentFactory', () => {
 			expect( factory.has( 'foo' ) ).to.be.true;
 			expect( factory.has( 'bar' ) ).to.be.true;
 			expect( factory.has( 'baz' ) ).to.be.false;
+			expect( factory.has( 'Foo' ) ).to.be.true;
+			expect( factory.has( 'fOO' ) ).to.be.true;
 		} );
 	} );
 } );
