@@ -35,7 +35,7 @@ The editor is a root object, gluing all other components. It holds a couple of p
 * {@link module:core/editor/editor~Editor#plugins} and {@link module:core/editor/editor~Editor#commands} &ndash; The collection of loaded plugins and commands.
 * {@link module:core/editor/editor~Editor#document} &ndash; The document. It is the editing engine's entry point.
 * {@link module:core/editor/editor~Editor#data} &ndash; The data controller (there is also the {@link module:core/editor/editor~Editor#editing editing controller} but [we plan to merge it](https://github.com/ckeditor/ckeditor5-engine/issues/678) into the data controller). It is a set of high-level utilities to work on the document,
-* {@link module:core/editor/editor~Editor#keystrokes} &ndash; The keystroke handler. It allows to bind keystrokes to actions.
+* {@link module:core/editor/standardeditor~StandardEditor#keystrokes} &ndash; The keystroke handler. It allows to bind keystrokes to actions.
 
 Besides that, the editor exposes a few of methods:
 
