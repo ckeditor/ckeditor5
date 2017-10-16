@@ -44,28 +44,32 @@ export default class Widget extends Plugin {
 	init() {
 		const viewDocument = this.editor.editing.view;
 
-		let previouslySelected;
+		this._previouslySelected = new Set();
 
 		// Model to view selection converter.
 		// Converts selection placed over widget element to fake selection
 		this.editor.editing.modelToView.on( 'selection', ( evt, data, consumable, conversionApi ) => {
-			// Remove selected class from previously selected widget.
-			if ( previouslySelected && previouslySelected.hasClass( WIDGET_SELECTED_CLASS_NAME ) ) {
-				previouslySelected.removeClass( WIDGET_SELECTED_CLASS_NAME );
-			}
+			// Remove selected class from previously selected widgets.
+			this._clearPreviouslySelected();
 
 			const viewSelection = conversionApi.viewSelection;
-
-			// Check if widget was clicked or some sub-element.
 			const selectedElement = viewSelection.getSelectedElement();
 
-			if ( !selectedElement || !isWidget( selectedElement ) ) {
-				return;
-			}
+			for ( const range of viewSelection.getRanges() ) {
+				for ( const value of range ) {
+					const node = value.item;
 
-			viewSelection.setFake( true, { label: getLabel( selectedElement ) } );
-			selectedElement.addClass( WIDGET_SELECTED_CLASS_NAME );
-			previouslySelected = selectedElement;
+					if ( node.is( 'element' ) && isWidget( node ) ) {
+						node.addClass( WIDGET_SELECTED_CLASS_NAME );
+						this._previouslySelected.add( node );
+
+						// Check if widget was single element selected.
+						if ( node == selectedElement ) {
+							viewSelection.setFake( true, { label: getLabel( selectedElement ) } );
+						}
+					}
+				}
+			}
 		}, { priority: 'low' } );
 
 		// If mouse down is pressed on widget - create selection over whole widget.
@@ -136,7 +140,8 @@ export default class Widget extends Plugin {
 		} else if ( isArrowKeyCode( keyCode ) ) {
 			wasHandled = this._handleArrowKeys( isForward );
 		} else if ( isSelectAllKeyCode( domEventData ) ) {
-			wasHandled = this._selectAllNestedEditableContent();
+			wasHandled = this._selectAllNestedEditableContent() ||
+				this._selectAllContent();
 		}
 
 		if ( wasHandled ) {
@@ -256,6 +261,26 @@ export default class Widget extends Plugin {
 		return true;
 	}
 
+	_selectAllContent() {
+		const modelDocument = this.editor.document;
+		const modelSelection = modelDocument.selection;
+		const viewDocument = this.editor.editing.view;
+		const viewSelection = viewDocument.selection;
+
+		const selectedElement = viewSelection.getSelectedElement();
+
+		// Only widget is selected.
+		if ( selectedElement && isWidget( selectedElement ) ) {
+			modelDocument.enqueueChanges( () => {
+				modelSelection.setRanges( [ ModelRange.createIn( modelDocument.getRoot() ) ] );
+			} );
+
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Sets {@link module:engine/model/selection~Selection document's selection} over given element.
 	 *
@@ -292,6 +317,14 @@ export default class Widget extends Plugin {
 		}
 
 		return null;
+	}
+
+	_clearPreviouslySelected() {
+		for ( const widget of this._previouslySelected ) {
+			widget.removeClass( WIDGET_SELECTED_CLASS_NAME );
+		}
+
+		this._previouslySelected.clear();
 	}
 }
 
