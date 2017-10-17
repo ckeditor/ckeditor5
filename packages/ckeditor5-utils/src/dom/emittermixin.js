@@ -51,17 +51,17 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 *
 	 * @method module:utils/dom/emittermixin~EmitterMixin#listenTo
 	 */
-	listenTo( ...args ) {
-		const emitter = args[ 0 ];
-
+	listenTo( emitter, event, callback, options = {} ) {
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with
 		// corresponding ProxyEmitter (or create one if not existing).
 		if ( isDomNode( emitter ) ) {
-			args[ 0 ] = this._getProxyEmitter( emitter ) || new ProxyEmitter( emitter );
+			emitter = this._getProxyEmitter( emitter ) || new ProxyEmitter( emitter );
+
+			emitter.registerEvent( event, callback, options );
 		}
 
 		// Execute parent class method with Emitter (or ProxyEmitter) instance.
-		EmitterMixin.listenTo.apply( this, args );
+		EmitterMixin.listenTo.call( this, emitter, event, callback, options );
 	},
 
 	/**
@@ -81,9 +81,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 *
 	 * @method module:utils/dom/emittermixin~EmitterMixin#stopListening
 	 */
-	stopListening( ...args ) {
-		const emitter = args[ 0 ];
-
+	stopListening( emitter, event, callback ) {
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with corresponding ProxyEmitter.
 		if ( isDomNode( emitter ) ) {
 			const proxy = this._getProxyEmitter( emitter );
@@ -93,11 +91,11 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 				return;
 			}
 
-			args[ 0 ] = proxy;
+			emitter = proxy;
 		}
 
 		// Execute parent class method with Emitter (or ProxyEmitter) instance.
-		EmitterMixin.stopListening.apply( this, args );
+		EmitterMixin.stopListening.call( this, emitter, event, callback );
 	},
 
 	/**
@@ -183,10 +181,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 *
 	 * @method module:utils/dom/emittermixin~ProxyEmitter#on
 	 */
-	on( event, callback, options = {} ) {
-		// Execute parent class method first.
-		EmitterMixin.on.call( this, event, callback, options );
-
+	registerEvent( event, callback, options = {} ) {
 		// If the DOM Listener for given event already exist it is pointless
 		// to attach another one.
 		if ( this._domListeners && this._domListeners[ event ] ) {
