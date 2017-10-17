@@ -103,7 +103,7 @@ export default class Template {
 		 *
 		 * **Note**: This property only makes sense when {@link #tag} is defined.
 		 *
-		 * @member {module:utils/collection~Collection.<module:ui/template~Template>} #children
+		 * @member {Array.<module:ui/template~Template>} #children
 		 */
 
 		/**
@@ -210,6 +210,50 @@ export default class Template {
 	}
 
 	/**
+	 * Returns an iterator which traverses the template in search of {@link module:ui/view~View}
+	 * instances and returns them one by one.
+	 *
+	 *		const viewFoo = new View();
+	 *		const viewBar = new View();
+	 *		const viewBaz = new View();
+	 *		const template = new Template( {
+	 *			tag: 'div',
+	 *			children: [
+	 *				viewFoo,
+	 *				{
+	 *					tag: 'div',
+	 *					children: [
+	 *						viewBar
+	 *					]
+	 *				},
+	 *				viewBaz
+	 *			]
+	 *		} );
+	 *
+	 *		// Logs: viewFoo, viewBar, viewBaz
+	 *		for ( const view of template.getViews() ) {
+	 *			console.log( view );
+	 *		}
+	 *
+	 * @returns {Iterator.<module:ui/view~View>}
+	 */
+	* getViews() {
+		function* search( def ) {
+			if ( def.children ) {
+				for ( const child of def.children ) {
+					if ( isView( child ) ) {
+						yield child;
+					} else {
+						yield* search( child );
+					}
+				}
+			}
+		}
+
+		yield* search( this );
+	}
+
+	/**
 	 * An entry point to the interface which binds DOM nodes to
 	 * {@link module:utils/observablemixin~Observable observables}.
 	 * There are two types of bindings:
@@ -305,7 +349,7 @@ export default class Template {
 	 *		} );
 	 *
 	 *		// Child extension.
-	 *		Template.extend( template.children.get( 0 ), {
+	 *		Template.extend( template.children[ 0 ], {
 	 *			attributes: {
 	 *				class: 'd'
 	 *			}
@@ -643,6 +687,7 @@ export default class Template {
 			if ( isViewCollection( child ) ) {
 				if ( !isApplying ) {
 					child.setParent( node );
+					child.render();
 
 					for ( const view of child ) {
 						container.appendChild( view.element );
@@ -650,6 +695,10 @@ export default class Template {
 				}
 			} else if ( isView( child ) ) {
 				if ( !isApplying ) {
+					if ( !child.isRendered ) {
+						child.render();
+					}
+
 					container.appendChild( child.element );
 				}
 			} else {
@@ -1117,17 +1166,17 @@ function normalize( def ) {
 			normalizeAttributes( def.attributes );
 		}
 
-		const children = new ViewCollection();
+		const children = [];
 
 		if ( def.children ) {
 			if ( isViewCollection( def.children ) ) {
-				children.add( def.children );
+				children.push( def.children );
 			} else {
 				for ( const child of def.children ) {
 					if ( isTemplate( child ) || isView( child ) ) {
-						children.add( child );
+						children.push( child );
 					} else {
-						children.add( new Template( child ) );
+						children.push( new Template( child ) );
 					}
 				}
 			}
@@ -1336,7 +1385,7 @@ function extendTemplate( template, def ) {
 		let childIndex = 0;
 
 		for ( const childDef of def.children ) {
-			extendTemplate( template.children.get( childIndex++ ), childDef );
+			extendTemplate( template.children[ childIndex++ ], childDef );
 		}
 	}
 }

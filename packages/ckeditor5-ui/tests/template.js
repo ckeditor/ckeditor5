@@ -13,7 +13,6 @@ import Model from '../src/model';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
@@ -67,11 +66,11 @@ describe( 'Template', () => {
 			expect( tpl.attributes.c[ 0 ].value[ 0 ] ).to.be.instanceof( TemplateToBinding );
 
 			expect( tpl.children ).to.have.length( 4 );
-			expect( tpl.children.get( 0 ).text[ 0 ] ).to.equal( 'content' );
-			expect( tpl.children.get( 1 ).text[ 0 ] ).to.be.instanceof( TemplateToBinding );
-			expect( tpl.children.get( 2 ).text[ 0 ] ).to.equal( 'abc' );
-			expect( tpl.children.get( 3 ).text[ 0 ] ).to.equal( 'a' );
-			expect( tpl.children.get( 3 ).text[ 1 ] ).to.equal( 'b' );
+			expect( tpl.children[ 0 ].text[ 0 ] ).to.equal( 'content' );
+			expect( tpl.children[ 1 ].text[ 0 ] ).to.be.instanceof( TemplateToBinding );
+			expect( tpl.children[ 2 ].text[ 0 ] ).to.equal( 'abc' );
+			expect( tpl.children[ 3 ].text[ 0 ] ).to.equal( 'a' );
+			expect( tpl.children[ 3 ].text[ 1 ] ).to.equal( 'b' );
 
 			expect( tpl.eventListeners[ 'a@span' ][ 0 ] ).to.be.instanceof( TemplateToBinding );
 			expect( tpl.eventListeners[ 'b@span' ][ 0 ] ).to.be.instanceof( TemplateToBinding );
@@ -92,8 +91,9 @@ describe( 'Template', () => {
 				text: 'foo'
 			} );
 
-			expect( elementTpl.children ).to.be.instanceof( Collection );
+			expect( elementTpl.children ).to.be.an( 'array' );
 			expect( elementTpl.children ).to.have.length( 0 );
+
 			// Text will never have children.
 			expect( textTpl.children ).to.be.undefined;
 		} );
@@ -114,12 +114,12 @@ describe( 'Template', () => {
 
 			expect( def.attributes ).to.not.equal( tpl.attributes );
 			expect( def.children ).to.not.equal( tpl.children );
-			expect( def.children[ 0 ] ).to.not.equal( tpl.children.get( 0 ) );
+			expect( def.children[ 0 ] ).to.not.equal( tpl.children[ 0 ] );
 			expect( def.attributes.a ).to.equal( 'foo' );
 			expect( def.children[ 0 ].tag ).to.equal( 'span' );
 
 			expect( tpl.attributes.a[ 0 ] ).to.equal( 'foo' );
-			expect( tpl.children.get( 0 ).tag ).to.equal( 'span' );
+			expect( tpl.children[ 0 ].tag ).to.equal( 'span' );
 		} );
 	} );
 
@@ -448,8 +448,8 @@ describe( 'Template', () => {
 					children: [ v1, v2 ]
 				} );
 
-				expect( tpl.children.get( 0 ) ).to.equal( v1 );
-				expect( tpl.children.get( 1 ) ).to.equal( v2 );
+				expect( tpl.children[ 0 ] ).to.equal( v1 );
+				expect( tpl.children[ 1 ] ).to.equal( v2 );
 
 				const rendered = tpl.render();
 
@@ -562,9 +562,9 @@ describe( 'Template', () => {
 				} );
 
 				// Make sure child instances weren't cloned.
-				expect( tpl.children.get( 0 ) ).to.equal( childTplA );
-				expect( tpl.children.get( 1 ) ).to.equal( childTplB );
-				expect( tpl.children.get( 2 ) ).to.equal( childTplC );
+				expect( tpl.children[ 0 ] ).to.equal( childTplA );
+				expect( tpl.children[ 1 ] ).to.equal( childTplB );
+				expect( tpl.children[ 2 ] ).to.equal( childTplC );
 
 				expect( normalizeHtml( tpl.render().outerHTML ) ).to.equal(
 					'<p><a></a><b></b><i>foo</i></p>'
@@ -1438,6 +1438,36 @@ describe( 'Template', () => {
 				dispatchEvent( el.firstChild, 'keyup' );
 				sinon.assert.calledOnce( spy );
 			} );
+		} );
+	} );
+
+	describe( 'getViews()', () => {
+		it( 'returns iterator', () => {
+			const template = new Template( {} );
+
+			expect( template.getViews().next ).to.be.a( 'function' );
+			expect( Array.from( template.getViews() ) ).to.have.length( 0 );
+		} );
+
+		it( 'returns all child views', () => {
+			const viewA = new View();
+			const viewB = new View();
+			const viewC = new View();
+			const template = new Template( {
+				tag: 'div',
+				children: [
+					viewA,
+					{
+						tag: 'div',
+						children: [
+							viewB
+						]
+					},
+					viewC
+				]
+			} );
+
+			expect( Array.from( template.getViews() ) ).to.have.members( [ viewA, viewB, viewC ] );
 		} );
 	} );
 
@@ -2739,7 +2769,7 @@ describe( 'Template', () => {
 					]
 				} );
 
-				Template.extend( template.children.get( 0 ), {
+				Template.extend( template.children[ 0 ], {
 					attributes: {
 						class: 'bar'
 					}
@@ -2773,7 +2803,7 @@ describe( 'Template', () => {
 					]
 				} );
 
-				Template.extend( template.children.get( 0 ), {
+				Template.extend( template.children[ 0 ], {
 					attributes: {
 						class: 'B',
 					},
