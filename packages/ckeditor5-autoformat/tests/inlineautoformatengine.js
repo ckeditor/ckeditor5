@@ -150,7 +150,7 @@ describe( 'InlineAutoformatEngine', () => {
 				doc.batch().insert( doc.selection.getFirstPosition(), '*' );
 			} );
 
-			// There should be two ranges removed
+			// There should be two ranges removed.
 			expect( detachSpies ).to.have.length( 2 );
 
 			for ( const spy of detachSpies ) {

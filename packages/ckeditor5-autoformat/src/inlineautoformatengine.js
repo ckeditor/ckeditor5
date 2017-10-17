@@ -198,7 +198,10 @@ export default class InlineAutoformatEngine {
 				// Remove delimiters.
 				for ( const range of rangesToRemove ) {
 					fixBatch.remove( range );
-					range.detach(); // Prevents memory leaks. #39
+
+					// Prevents memory leaks.
+					// https://github.com/ckeditor/ckeditor5-autoformat/issues/39
+					range.detach();
 				}
 			} );
 		} );
