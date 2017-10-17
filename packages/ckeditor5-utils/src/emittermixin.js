@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource -insteadico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -23,6 +23,7 @@ const _emitterId = Symbol( 'emitterId' );
 const EmitterMixin = {
 	/**
 	 * Registers a callback function to be executed when an event is fired.
+	 * Shorthand for {@link #listenTo this.listenTo( this, event, callback, options) }.
 	 *
 	 * Events can be grouped in namespaces using `:`.
 	 * When namespaced event is fired, it additionally fires all callbacks for that namespace.
@@ -49,34 +50,7 @@ const EmitterMixin = {
 	 * order they were added.
 	 */
 	on( event, callback, options = {} ) {
-		createEventNamespace( this, event );
-		const lists = getCallbacksListsForNamespace( this, event );
-		const priority = priorities.get( options.priority );
-
-		callback = {
-			callback,
-			priority
-		};
-
-		// Add the callback to all callbacks list.
-		for ( const callbacks of lists ) {
-			// Add the callback to the list in the right priority position.
-			let added = false;
-
-			for ( let i = 0; i < callbacks.length; i++ ) {
-				if ( callbacks[ i ].priority < priority ) {
-					callbacks.splice( i, 0, callback );
-					added = true;
-
-					break;
-				}
-			}
-
-			// Add at the end, if right place was not found.
-			if ( !added ) {
-				callbacks.push( callback );
-			}
-		}
+		this.listenTo( this, event, callback, options );
 	},
 
 	/**
@@ -101,7 +75,7 @@ const EmitterMixin = {
 		};
 
 		// Make a similar on() call, simply replacing the callback.
-		this.on( event, onceCallback, options );
+		this.listenTo( this, event, onceCallback, options );
 	},
 
 	/**
@@ -137,7 +111,7 @@ const EmitterMixin = {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
-	listenTo( emitter, event, callback, options ) {
+	listenTo( emitter, event, callback, options = {} ) {
 		let emitterInfo, eventCallbacks;
 
 		// _listeningTo contains a list of emitters that this object is listening to.
@@ -180,7 +154,34 @@ const EmitterMixin = {
 		eventCallbacks.push( callback );
 
 		// Finally register the callback to the event.
-		emitter.on( event, callback, options );
+		createEventNamespace( emitter, event );
+		const lists = getCallbacksListsForNamespace( emitter, event );
+		const priority = priorities.get( options.priority );
+
+		const callbackDefinition = {
+			callback,
+			priority
+		};
+
+		// Add the callback to all callbacks list.
+		for ( const callbacks of lists ) {
+			// Add the callback to the list in the right priority position.
+			let added = false;
+
+			for ( let i = 0; i < callbacks.length; i++ ) {
+				if ( callbacks[ i ].priority < priority ) {
+					callbacks.splice( i, 0, callbackDefinition );
+					added = true;
+
+					break;
+				}
+			}
+
+			// Add at the end, if right place was not found.
+			if ( !added ) {
+				callbacks.push( callbackDefinition );
+			}
+		}
 	},
 
 	/**
