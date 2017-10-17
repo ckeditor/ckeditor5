@@ -195,9 +195,16 @@ export default class InlineAutoformatEngine {
 				// Apply format.
 				formatCallback( fixBatch, validRanges );
 
+				// Detach ranges used to apply Autoformat. Prevents memory leaks. #39
+				rangesToFormat.forEach( range => range.detach() );
+
 				// Remove delimiters.
 				for ( const range of rangesToRemove ) {
 					fixBatch.remove( range );
+
+					// Prevents memory leaks.
+					// https://github.com/ckeditor/ckeditor5-autoformat/issues/39
+					range.detach();
 				}
 			} );
 		} );

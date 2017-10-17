@@ -137,5 +137,32 @@ describe( 'InlineAutoformatEngine', () => {
 
 			sinon.assert.notCalled( formatSpy );
 		} );
+
+		it( 'should detach removed ranges', () => {
+			const detachSpies = [];
+			const callback = fixBatch => testUtils.sinon.stub( fixBatch, 'remove' ).callsFake( saveDetachSpy );
+			testUtils.sinon.stub( editor.document.schema, 'getValidRanges' )
+				.callThrough()
+				.callsFake( ranges => ranges.map( saveDetachSpy ) );
+
+			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, callback ); // eslint-disable-line no-new
+
+			setData( doc, '<paragraph>*foobar[]</paragraph>' );
+
+			doc.enqueueChanges( () => {
+				doc.batch().insert( doc.selection.getFirstPosition(), '*' );
+			} );
+
+			// There should be two removed ranges and one range used to apply autoformat.
+			expect( detachSpies ).to.have.length( 3 );
+
+			for ( const spy of detachSpies ) {
+				testUtils.sinon.assert.calledOnce( spy );
+			}
+
+			function saveDetachSpy( range ) {
+				detachSpies.push( testUtils.sinon.spy( range, 'detach' ) );
+			}
+		} );
 	} );
 } );
