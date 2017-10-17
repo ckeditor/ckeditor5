@@ -9,7 +9,7 @@
 
 'use strict';
 
-const assertIsInstalled = require( './../util/assertisinstalled' );
+const assertIsInstalled = require( './../utils/assertisinstalled' );
 
 assertIsInstalled( '@ckeditor/ckeditor5-dev-env' );
 
