@@ -51,7 +51,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 *
 	 * @method module:utils/dom/emittermixin~EmitterMixin#listenTo
 	 */
-	listenTo( emitter, event, callback, options = {} ) {
+	listenTo( emitter, event, callback, options ) {
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with
 		// corresponding ProxyEmitter (or create one if not existing).
 		if ( isDomNode( emitter ) ) {
