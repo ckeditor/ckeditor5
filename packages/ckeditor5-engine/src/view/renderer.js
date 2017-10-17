@@ -15,7 +15,6 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import insertAt from '@ckeditor/ckeditor5-utils/src/dom/insertat';
 import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -640,16 +639,6 @@ export default class Renderer {
 
 		// If selection is not collapsed, it does not need to be updated if it is similar.
 		if ( !this.selection.isCollapsed && this.selection.isSimilar( oldViewSelection ) ) {
-			const data = {
-				oldSelection: oldViewSelection,
-				currentSelection: this.selection
-			};
-
-			log.warn(
-				'renderer-skipped-selection-rendering: The selection was not rendered due to its similarity to the current one.',
-				data
-			);
-
 			// Selection did not changed and is correct, do not update.
 			return false;
 		}
