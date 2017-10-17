@@ -21,9 +21,9 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  * {@link module:ui/view~View#template}. Views are building blocks of the user interface and handle
  * interaction
  *
- * Views {@link module:ui/view~View#addChildren aggregate} children in
+ * Views {@link module:ui/view~View#registerChildren aggregate} children in
  * {@link module:ui/view~View#createCollection collections} and manage the life cycle of DOM
- * listeners e.g. by handling initialization and destruction.
+ * listeners e.g. by handling rendering and destruction.
  *
  * See the {@link module:ui/template~TemplateDefinition} syntax to learn more about shaping view
  * elements, attributes and listeners.
@@ -66,8 +66,7 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  *
  *		const view = new SampleView( locale );
  *
- *		// Each view must be first initialized.
- *		view.init();
+ *		view.render();
  *
  *		// Append <p class="foo bar">Hello<b>world</b></p> to the <body>
  *		document.body.appendChild( view.element );
@@ -86,11 +85,52 @@ export default class View {
 	/**
 	 * Creates an instance of the {@link module:ui/view~View} class.
 	 *
-	 * Also see {@link #init}.
+	 * Also see {@link #render}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 */
 	constructor( locale ) {
+		/**
+		 * An HTML element of the view. `null` until {@link #render rendered}
+		 * from the {@link #template}.
+		 *
+		 *		class SampleView extends View {
+		 *			constructor() {
+		 *				super();
+		 *
+		 *				// A template instance the #element will be created from.
+		 *				this.template = new Template( {
+		 *					tag: 'p'
+		 *
+		 *					// ...
+		 *				} );
+		 *			}
+		 *		}
+		 *
+		 *		const view = new SampleView();
+		 *
+		 *		// Renders the #template
+		 *		view.render();
+		 *
+		 *		// Append the HTML element of the view to <body>.
+		 *		document.body.appendChild( view.element );
+		 *
+		 * **Note**: The element of the view can also be assigned directly:
+		 *
+		 *		view.element = document.querySelector( '#my-container' );
+		 *
+		 * @member {HTMLElement}
+		 */
+		this.element = null;
+
+		/**
+		 * Set `true` when the view has already been {@link module:ui/view~View#render rendered}.
+		 *
+		 * @readonly
+		 * @member {Boolean} #isRendered
+		 */
+		this.isRendered = false;
+
 		/**
 		 * A set of tools to localize the user interface.
 		 *
@@ -111,17 +151,6 @@ export default class View {
 		 * @method
 		 */
 		this.t = locale && locale.t;
-
-		/**
-		 * A flag set `true` after {@link #init initialization}. Because the process can be
-		 * asynchronous, this {@link module:utils/observablemixin~Observable observable} flag allows
-		 * deferring certain actions until it is finished.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #ready
-		 */
-		this.set( 'ready', false );
 
 		/**
 		 * Collections registered with {@link #createCollection}.
@@ -147,16 +176,9 @@ export default class View {
 
 		/**
 		 * Template of this view. It provides the {@link #element} representing
-		 * the view in DOM.
+		 * the view in DOM, which is {@link #render rendered}.
 		 *
 		 * @member {module:ui/template~Template} #template
-		 */
-
-		/**
-		 * An internal, cached element of this view. See {@link #element}.
-		 *
-		 * @private
-		 * @member {HTMLElement} #_element
 		 */
 
 		/**
@@ -166,54 +188,6 @@ export default class View {
 		 * @private
 		 * @member {Object} #_bindTemplate
 		 */
-	}
-
-	/**
-	 * An HTML element of this view. The element is rendered on first reference
-	 * by the {@link #template}:
-	 *
-	 *		class SampleView extends View {
-	 *			constructor() {
-	 *				super();
-	 *
-	 *				// A template instance the #element will be created from.
-	 *				this.template = new Template( {
-	 *					tag: 'p'
-	 *
-	 *					// ...
-	 *				} );
-	 *			}
-	 *		}
-	 *
-	 *		const view = new SampleView();
-	 *		view.init();
-	 *
-	 *		// Renders the #template and appends the output to <body>.
-	 *		document.body.appendChild( view.element );
-	 *
-	 * The element of the view can also be assigned directly:
-	 *
-	 *		view.element = document.querySelector( '#my-container' );
-	 *
-	 * @type {HTMLElement}
-	 */
-	get element() {
-		if ( this._element ) {
-			return this._element;
-		}
-
-		// No template means no element (a virtual view).
-		if ( !this.template ) {
-			return null;
-		}
-
-		this._addTemplateChildren();
-
-		return ( this._element = this.template.render() );
-	}
-
-	set element( el ) {
-		this._element = el;
 	}
 
 	/**
@@ -289,7 +263,7 @@ export default class View {
 	 *		const view = new SampleView( locale );
 	 *		const child = new ChildView( locale );
 	 *
-	 *		view.init();
+	 *		view.render();
 	 *
 	 *		// It will append <p></p> to the <body>.
 	 *		document.body.appendChild( view.element );
@@ -310,7 +284,7 @@ export default class View {
 
 	/**
 	 * Registers a new child view under the view instance. Once registered, a child
-	 * view is managed by its parent, including {@link #init initization}
+	 * view is managed by its parent, including {@link #render rendering}
 	 * and {@link #destroy destruction}.
 	 *
 	 * To revert this, use {@link #removeChildren}.
@@ -325,20 +299,20 @@ export default class View {
 	 *				this.template = new Template( { tag: 'p' } );
 	 *
 	 *				// Register the children.
-	 *				this.addChildren( [ this.childA, this.childB ] );
+	 *				this.registerChildren( [ this.childA, this.childB ] );
 	 *			}
 	 *
-	 *			init() {
+	 *			render() {
+	 *				super.render();
+	 *
 	 *				this.element.appendChild( this.childA.element );
 	 *				this.element.appendChild( this.childB.element );
-	 *
-	 *				return super.init();
 	 *			}
 	 *		}
 	 *
 	 *		const view = new SampleView( locale );
 	 *
-	 *		view.init();
+	 *		view.render();
 	 *
 	 *		// Will append <p><childA#element><b></b><childB#element></p>.
 	 *		document.body.appendChild( view.element );
@@ -357,7 +331,7 @@ export default class View {
 	 *					tag: 'p',
 	 *
  	 *					// These children will be added automatically. There's no
- 	 *					// need to call {@link #addChildren} for any of them.
+ 	 *					// need to call {@link #registerChildren} for any of them.
 	 *					children: [ this.childA, this.childB ]
 	 *				} );
 	 *			}
@@ -367,39 +341,53 @@ export default class View {
 	 *
 	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Children views to be registered.
 	 */
-	addChildren( children ) {
+	registerChildren( children ) {
 		if ( !isIterable( children ) ) {
 			children = [ children ];
 		}
 
-		children.map( c => this._unboundChildren.add( c ) );
+		for ( const child of children ) {
+			this._unboundChildren.add( child );
+		}
 	}
 
 	/**
-	 * The opposite of {@link #addChildren}. Removes a child view from this view instance.
+	 * The opposite of {@link #registerChildren}. Removes a child view from this view instance.
 	 * Once removed, the child is no longer managed by its parent, e.g. it can safely
 	 * become a child of another parent view.
 	 *
-	 * @see #addChildren
+	 * @see #registerChildren
 	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Child views to be removed.
 	 */
-	removeChildren( children ) {
+	deregisterChildren( children ) {
 		if ( !isIterable( children ) ) {
 			children = [ children ];
 		}
 
-		children.map( c => this._unboundChildren.remove( c ) );
+		for ( const child of children ) {
+			this._unboundChildren.remove( child );
+		}
 	}
 
 	/**
-	 * Initializes the view and its children added by {@link #addChildren} and residing in collections
-	 * created by the {@link #createCollection} method.
+	 * Recursively renders the view.
 	 *
-	 * In general, `init()` is the right place to keep the code which refers to the {@link #element}
-	 * and should be executed at the very beginning of the view's life cycle. It is possible to
-	 * {@link module:ui/template~Template.extend} the {@link #template} before the first reference of
-	 * the {@link #element}. To allow an early customization of the view (e.g. by its parent),
-	 * such references should be done in `init()`.
+	 * Once the view is rendered:
+	 * * the {@link #element} becomes an HTML element out of {@link #template},
+	 * * the {@link #isRendered} flag is set `true`.
+	 *
+	 * **Note**: The children of the view:
+	 * * defined directly in the {@link #template}
+	 * * residing in collections created by the {@link #createCollection} method,
+	 * * and added by {@link #registerChildren}
+	 * are also rendered in the process.
+	 *
+	 * In general, `render()` method is the right place to keep the code which refers to the
+	 * {@link #element} and should be executed at the very beginning of the view's life cycle.
+	 *
+	 * It is possible to {@link module:ui/template~Template.extend} the {@link #template} before
+	 * the view is rendered. To allow an early customization of the view (e.g. by its parent),
+	 * such references should be done in `render()`.
 	 *
 	 *		class SampleView extends View {
 	 *			constructor() {
@@ -408,26 +396,25 @@ export default class View {
 	 *				} );
 	 *			},
 	 *
-	 *			init() {
-	 *				super.init();
+	 *			render() {
+	 *				// View#element becomes available.
+	 *				super.render();
 	 *
-	 *				function scroll() {
+	 *				// The "scroll" listener depends on #element.
+	 *				this.listenTo( window, 'scroll', () => {
 	 *					// A reference to #element would render the #template and make it non-extendable.
 	 *					if ( window.scrollY > 0 ) {
 	 *						this.element.scrollLeft = 100;
 	 *					} else {
 	 *						this.element.scrollLeft = 0;
 	 *					}
-	 *				}
-	 *
-	 *				this.listenTo( window, 'scroll', () => {
-	 *					scroll();
 	 *				} );
 	 *			}
 	 *		}
 	 *
 	 *		const view = new SampleView();
 	 *
+	 *		// Let's customize the view before it gets rendered.
 	 *		Template.extend( view.template, {
 	 *			attributes: {
 	 *				class: [
@@ -436,30 +423,35 @@ export default class View {
 	 *			}
 	 *		} );
 	 *
-	 *		// Late initialization allows customization of the view.
-	 *		view.init();
-	 *
-	 * Once initialized, the view becomes {@link #ready}.
+	 *		// Late rendering allows customization of the view.
+	 *		view.render();
 	 */
-	init() {
-		if ( this.ready ) {
+	render() {
+		if ( this.isRendered ) {
 			/**
-			 * This View has already been initialized.
+			 * This View has already been rendered.
 			 *
-			 * @error ui-view-init-reinit
+			 * @error ui-view-render-rendered
 			 */
-			throw new CKEditorError( 'ui-view-init-reinit: This View has already been initialized.' );
+			throw new CKEditorError( 'ui-view-render-already-rendered: This View has already been rendered.' );
 		}
 
-		// Initialize collections in #_viewCollections.
-		this._viewCollections.map( c => c.init() );
+		// Render collections in #_viewCollections.
+		this._viewCollections.map( col => col.render() );
 
-		// Spread the word that this view is ready!
-		this.ready = true;
+		// Render #element of the view.
+		if ( this.template ) {
+			this.element = this.template.render();
+
+			// Auto–register view children from #template.
+			this.registerChildren( this.template.getViews() );
+		}
+
+		this.isRendered = true;
 	}
 
 	/**
-	 * Recursively destroys the view instance and child views added by {@link #addChildren} and
+	 * Recursively destroys the view instance and child views added by {@link #registerChildren} and
 	 * residing in collections created by the {@link #createCollection}.
 	 *
 	 * Destruction disables all event listeners:
@@ -470,28 +462,6 @@ export default class View {
 		this.stopListening();
 
 		this._viewCollections.map( c => c.destroy() );
-	}
-
-	/**
-	 * Recursively traverses {@link #template} in search of {@link module:ui/view~View}
-	 * instances and automatically registers them using {@link #addChildren} method.
-	 *
-	 * @protected
-	 */
-	_addTemplateChildren() {
-		const search = def => {
-			if ( def.children ) {
-				for ( const defOrView of def.children ) {
-					if ( defOrView instanceof View ) {
-						this.addChildren( defOrView );
-					} else {
-						search( defOrView );
-					}
-				}
-			}
-		};
-
-		search( this.template );
 	}
 }
 

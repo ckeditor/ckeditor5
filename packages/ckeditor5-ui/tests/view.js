@@ -28,7 +28,7 @@ describe( 'View', () => {
 
 			expect( view.t ).to.be.undefined;
 			expect( view.locale ).to.be.undefined;
-			expect( view.ready ).to.be.false;
+			expect( view.isRendered ).to.be.false;
 			expect( view.template ).to.be.undefined;
 			expect( view._viewCollections ).to.be.instanceOf( Collection );
 			expect( view._unboundChildren ).to.be.instanceOf( ViewCollection );
@@ -81,7 +81,7 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'addChildren()', () => {
+	describe( 'registerChildren()', () => {
 		beforeEach( () => {
 			setTestViewClass();
 			setTestViewInstance();
@@ -90,9 +90,9 @@ describe( 'View', () => {
 		it( 'should add a single view to #_unboundChildren', () => {
 			expect( view._unboundChildren ).to.have.length( 0 );
 
-			const child = {};
+			const child = new View();
 
-			view.addChildren( child );
+			view.registerChildren( child );
 			expect( view._unboundChildren ).to.have.length( 1 );
 			expect( view._unboundChildren.get( 0 ) ).to.equal( child );
 		} );
@@ -100,74 +100,82 @@ describe( 'View', () => {
 		it( 'should support iterables', () => {
 			expect( view._unboundChildren ).to.have.length( 0 );
 
-			view.addChildren( [ {}, {}, {} ] );
+			view.registerChildren( [ new View(), new View(), new View() ] );
 			expect( view._unboundChildren ).to.have.length( 3 );
 		} );
 	} );
 
-	describe( 'removeChildren()', () => {
+	describe( 'deregisterChildren()', () => {
 		beforeEach( () => {
 			setTestViewClass();
 			setTestViewInstance();
 		} );
 
 		it( 'should remove a single view from #_unboundChildren', () => {
-			const child1 = {};
-			const child2 = {};
+			const child1 = new View();
+			const child2 = new View();
 
-			view.addChildren( child1 );
-			view.addChildren( child2 );
+			view.registerChildren( child1 );
+			view.registerChildren( child2 );
 			expect( view._unboundChildren ).to.have.length( 2 );
 
-			view.removeChildren( child2 );
+			view.deregisterChildren( child2 );
 			expect( view._unboundChildren ).to.have.length( 1 );
 			expect( view._unboundChildren.get( 0 ) ).to.equal( child1 );
 		} );
 
 		it( 'should support iterables', () => {
-			const child1 = {};
-			const child2 = {};
-			const child3 = {};
+			const child1 = new View();
+			const child2 = new View();
+			const child3 = new View();
 
-			view.addChildren( [ child1, child2, child3 ] );
+			view.registerChildren( [ child1, child2, child3 ] );
 			expect( view._unboundChildren ).to.have.length( 3 );
 
-			view.removeChildren( [ child2, child3 ] );
+			view.deregisterChildren( [ child2, child3 ] );
 			expect( view._unboundChildren ).to.have.length( 1 );
 			expect( view._unboundChildren.get( 0 ) ).to.equal( child1 );
 		} );
 	} );
 
-	describe( 'init()', () => {
-		beforeEach( createViewWithChildren );
+	describe( 'render()', () => {
+		it( 'should throw if already rendered', () => {
+			const view = new View();
 
-		it( 'should throw if already initialized', () => {
-			view.init();
+			view.render();
 
 			try {
-				view.init();
+				view.render();
 				throw new Error( 'This should not be executed.' );
 			} catch ( err ) {
 				expect( err ).to.be.instanceof( CKEditorError );
-				expect( err.message ).to.match( /ui-view-init-re/ );
+				expect( err.message ).to.match( /^ui-view-render-already-rendered:/ );
 			}
 		} );
 
-		it( 'should set view#ready', () => {
-			expect( view.ready ).to.be.false;
+		it( 'should set view#isRendered', () => {
+			const view = new View();
 
-			view.init();
-			expect( view.ready ).to.be.true;
+			view.template = new Template( {
+				tag: 'div'
+			} );
+
+			expect( view.isRendered ).to.be.false;
+
+			view.render();
+			expect( view.isRendered ).to.be.true;
 		} );
 
-		it( 'calls init() on all view#_viewCollections', () => {
+		it( 'calls render() on all view#_viewCollections', () => {
+			const view = new View();
+
 			const collectionA = view.createCollection();
 			const collectionB = view.createCollection();
 
-			const spyA = testUtils.sinon.spy( collectionA, 'init' );
-			const spyB = testUtils.sinon.spy( collectionB, 'init' );
+			const spyA = testUtils.sinon.spy( collectionA, 'render' );
+			const spyB = testUtils.sinon.spy( collectionB, 'render' );
 
-			view.init();
+			view.render();
 			sinon.assert.calledOnce( spyA );
 			sinon.assert.calledOnce( spyB );
 			sinon.assert.callOrder( spyA, spyB );
@@ -248,8 +256,7 @@ describe( 'View', () => {
 
 			expect( view._unboundChildren ).to.have.length( 0 );
 
-			// Render the view.
-			view.element;
+			view.render();
 
 			expect( view._unboundChildren ).to.have.length( 3 );
 			expect( view._unboundChildren.get( 0 ) ).to.equal( viewA );
@@ -282,7 +289,7 @@ describe( 'View', () => {
 		it( 'should not clear the #_unboundChildren', () => {
 			const cached = view._unboundChildren;
 
-			view.addChildren( [ new View(), new View() ] );
+			view.registerChildren( [ new View(), new View() ] );
 			expect( cached ).to.have.length( 4 );
 
 			view.destroy();
@@ -354,6 +361,8 @@ function setTestViewInstance() {
 	view = new TestView();
 
 	if ( view.template ) {
+		view.render();
+
 		document.body.appendChild( view.element );
 	}
 }
