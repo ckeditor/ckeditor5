@@ -15,7 +15,7 @@ describe( 'LabeledInputView', () => {
 	beforeEach( () => {
 		view = new LabeledInputView( locale, InputView );
 
-		view.init();
+		view.render();
 	} );
 
 	describe( 'constructor()', () => {
@@ -38,11 +38,11 @@ describe( 'LabeledInputView', () => {
 
 	describe( 'template', () => {
 		it( 'should have label view', () => {
-			expect( view.template.children.get( 0 ) ).to.equal( view.labelView );
+			expect( view.template.children[ 0 ] ).to.equal( view.labelView );
 		} );
 
 		it( 'should have input view', () => {
-			expect( view.template.children.get( 1 ) ).to.equal( view.inputView );
+			expect( view.template.children[ 1 ] ).to.equal( view.inputView );
 		} );
 
 		describe( 'DOM bindings', () => {

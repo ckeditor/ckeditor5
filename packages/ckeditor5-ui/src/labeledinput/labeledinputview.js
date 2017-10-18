@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-import Template from '../template';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 import LabelView from '../label/labelview';
@@ -70,7 +69,7 @@ export default class LabeledInputView extends View {
 
 		const bind = this.bindTemplate;
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'div',
 			attributes: {
 				class: [
