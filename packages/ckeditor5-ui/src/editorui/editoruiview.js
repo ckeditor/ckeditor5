@@ -46,9 +46,10 @@ export default class EditorUIView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	render() {
+		super.render();
+
 		this._renderBodyCollection();
-		super.init();
 	}
 
 	/**

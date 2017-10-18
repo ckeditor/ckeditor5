@@ -19,7 +19,7 @@ describe( 'EditorUIView', () => {
 		locale = new Locale( 'en' );
 		view = new EditorUIView( locale );
 
-		return view.init();
+		view.render();
 	} );
 
 	describe( 'constructor()', () => {
