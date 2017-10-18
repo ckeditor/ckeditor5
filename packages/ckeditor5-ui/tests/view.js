@@ -11,6 +11,7 @@ import Template from '../src/template';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ViewCollection from '../src/viewcollection';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 let TestView, view, childA, childB;
 
@@ -135,6 +136,53 @@ describe( 'View', () => {
 			view.deregisterChildren( [ child2, child3 ] );
 			expect( view._unboundChildren ).to.have.length( 1 );
 			expect( view._unboundChildren.get( 0 ) ).to.equal( child1 );
+		} );
+	} );
+
+	describe( 'setTemplate()', () => {
+		it( 'sets the template', () => {
+			const view = new View();
+			const bind = view.bindTemplate;
+
+			view.set( 'foo', 'bar' );
+
+			view.setTemplate( {
+				tag: 'div',
+				attributes: {
+					class: [
+						bind.to( 'foo' )
+					]
+				}
+			} );
+
+			view.render();
+
+			expect( normalizeHtml( view.element.outerHTML ) ).to.equal( '<div class="bar"></div>' );
+		} );
+	} );
+
+	describe( 'extendTemplate()', () => {
+		it( 'extends the template', () => {
+			const view = new View();
+			const bind = view.bindTemplate;
+
+			view.set( 'foo', 'bar' );
+
+			view.setTemplate( {
+				tag: 'div'
+			} );
+
+			view.extendTemplate( {
+				attributes: {
+					class: [
+						bind.to( 'foo' )
+					]
+				}
+			} );
+
+			view.render();
+
+			expect( normalizeHtml( view.element.outerHTML ) ).to.equal( '<div class="bar"></div>' );
 		} );
 	} );
 

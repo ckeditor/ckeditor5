@@ -370,6 +370,36 @@ export default class View {
 	}
 
 	/**
+	 * Sets the {@link #template} of the view with with given definition.
+	 *
+	 * A shorthand for:
+	 *
+	 *		view.template = new Template( definition );
+	 *
+	 * @param {@link module:ui/template~TemplateDefinition} definition Definition of view's template.
+	 */
+	setTemplate( definition ) {
+		this.template = new Template( definition );
+	}
+
+	/**
+	 * {@link module:ui/template~Template.extend Extends} the {@link #template} of the view with
+	 * with given definition.
+	 *
+	 * A shorthand for:
+	 *
+	 *		Template.extend( view.template, definition );
+	 *
+	 * **Note**: Is requires the {@link #template} to be already set. See {@link #setTemplate}.
+	 *
+	 * @param {@link module:ui/template~TemplateDefinition} definition Definition which
+	 * extends the {@link #template}.
+	 */
+	extendTemplate( definition ) {
+		Template.extend( this.template, definition );
+	}
+
+	/**
 	 * Recursively renders the view.
 	 *
 	 * Once the view is rendered:
