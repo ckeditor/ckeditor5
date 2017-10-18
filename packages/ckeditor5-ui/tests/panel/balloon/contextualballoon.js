@@ -48,7 +48,7 @@ describe( 'ContextualBalloon', () => {
 					}
 				} );
 
-				viewB.init();
+				viewB.render();
 			} );
 	} );
 
