@@ -12,9 +12,8 @@ describe( 'BoxedEditorUIView', () => {
 
 	beforeEach( () => {
 		view = new BoxedEditorUIView( new Locale( 'en' ) );
+		view.render();
 		element = view.element;
-
-		return view.init();
 	} );
 
 	describe( 'constructor()', () => {

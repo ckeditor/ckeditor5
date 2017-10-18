@@ -9,7 +9,6 @@
 
 import EditorUIView from '../../editorui/editoruiview';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
-import Template from '../../template';
 
 /**
  * The boxed editor UI view class. This class represents an editor interface
@@ -47,7 +46,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 		 */
 		this.main = this.createCollection();
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'div',
 
 			attributes: {
