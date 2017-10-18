@@ -9,10 +9,19 @@ describe( 'IconView', () => {
 	let view;
 
 	beforeEach( () => {
-		return ( view = new IconView() ).init();
+		view = new IconView();
+		view.render();
 	} );
 
 	describe( 'constructor()', () => {
+		it( 'sets #content', () => {
+			expect( view.content ).to.equal( '' );
+		} );
+
+		it( 'sets #viewBox', () => {
+			expect( view.viewBox ).to.equal( '0 0 20 20' );
+		} );
+
 		it( 'creates element from template', () => {
 			expect( view.element.tagName ).to.equal( 'svg' );
 			expect( view.element.getAttribute( 'class' ) ).to.equal( 'ck-icon' );
@@ -33,9 +42,13 @@ describe( 'IconView', () => {
 
 		describe( 'inline svg', () => {
 			it( 'should react to changes in view#content', () => {
-				view.content = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="test"></g></svg>';
+				expect( view.element.innerHTML = '' );
 
+				view.content = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="test"></g></svg>';
 				expect( view.element.innerHTML = '<g id="test"></g>' );
+
+				view.content = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>';
+				expect( view.element.innerHTML = '' );
 			} );
 		} );
 	} );
