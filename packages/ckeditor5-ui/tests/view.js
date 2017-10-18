@@ -204,7 +204,7 @@ describe( 'View', () => {
 		it( 'should set view#isRendered', () => {
 			const view = new View();
 
-			view.template = new Template( {
+			view.setTemplate( {
 				tag: 'div'
 			} );
 
@@ -266,11 +266,11 @@ describe( 'View', () => {
 			const viewB = new View();
 			const viewC = new View();
 
-			viewA.template = new Template( { tag: 'a' } );
-			viewB.template = new Template( { tag: 'b' } );
-			viewC.template = new Template( { tag: 'c' } );
+			viewA.setTemplate( { tag: 'a' } );
+			viewB.setTemplate( { tag: 'b' } );
+			viewC.setTemplate( { tag: 'c' } );
 
-			view.template = new Template( {
+			view.setTemplate( {
 				tag: 'div',
 				children: [
 					viewA,
@@ -384,7 +384,7 @@ function setTestViewClass( templateDef ) {
 			this.locale = { t() {} };
 
 			if ( templateDef ) {
-				this.template = new Template( templateDef );
+				this.setTemplate( templateDef );
 			}
 		}
 	};
@@ -405,7 +405,7 @@ function createViewWithChildren() {
 		constructor() {
 			super();
 
-			this.template = new Template( {
+			this.setTemplate( {
 				tag: 'span'
 			} );
 		}

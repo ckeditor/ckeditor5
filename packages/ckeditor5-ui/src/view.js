@@ -37,7 +37,7 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  *				// Views define their interface (state) using observable attributes.
  *				this.set( 'elementClass', 'bar' );
  *
- *				this.template = new Template( {
+ *				this.setTemplate( {
  *					tag: 'p',
  *
  *					// The element of the view can be defined with its children.
@@ -99,7 +99,7 @@ export default class View {
 		 *				super();
 		 *
 		 *				// A template instance the #element will be created from.
-		 *				this.template = new Template( {
+		 *				this.setTemplate( {
 		 *					tag: 'p'
 		 *
 		 *					// ...
@@ -211,7 +211,7 @@ export default class View {
 	 *				 	isEnabled: true
 	 *				 } );
 	 *
-	 *				this.template = new Template( {
+	 *				this.setTemplate( {
 	 *					tag: 'p',
 	 *
 	 *					attributes: {
@@ -251,7 +251,7 @@ export default class View {
 	 *
 	 *				this.items = this.createCollection();
  	 *
-	 *				this.template = new Template( {
+	 *				this.setTemplate( {
 	 *					tag: 'p',
 	 *
 	 *					// `items` collection will render here.
@@ -296,7 +296,7 @@ export default class View {
 	 *				this.childA = new SomeChildView( locale );
 	 *				this.childB = new SomeChildView( locale );
 	 *
-	 *				this.template = new Template( { tag: 'p' } );
+	 *				this.setTemplate( { tag: 'p' } );
 	 *
 	 *				// Register the children.
 	 *				this.registerChildren( [ this.childA, this.childB ] );
@@ -327,7 +327,7 @@ export default class View {
 	 *				this.childA = new SomeChildView( locale );
 	 *				this.childB = new SomeChildView( locale );
 	 *
-	 *				this.template = new Template( {
+	 *				this.setTemplate( {
 	 *					tag: 'p',
 	 *
  	 *					// These children will be added automatically. There's no
@@ -374,7 +374,7 @@ export default class View {
 	 *
 	 * A shorthand for:
 	 *
-	 *		view.template = new Template( definition );
+	 *		view.setTemplate( definition );
 	 *
 	 * @param {@link module:ui/template~TemplateDefinition} definition Definition of view's template.
 	 */
@@ -421,7 +421,7 @@ export default class View {
 	 *
 	 *		class SampleView extends View {
 	 *			constructor() {
-	 *				this.template = new Template( {
+	 *				this.setTemplate( {
 	 *					// ...
 	 *				} );
 	 *			},
@@ -445,7 +445,7 @@ export default class View {
 	 *		const view = new SampleView();
 	 *
 	 *		// Let's customize the view before it gets rendered.
-	 *		Template.extend( view.template, {
+	 *		view.extendTemplate( {
 	 *			attributes: {
 	 *				class: [
 	 *					'additional-class'

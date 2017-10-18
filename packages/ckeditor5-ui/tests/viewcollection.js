@@ -9,7 +9,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import View from '../src/view';
 import ViewCollection from '../src/viewcollection';
-import Template from '../src/template';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 let collection;
@@ -76,7 +75,7 @@ describe( 'ViewCollection', () => {
 				function getView( text ) {
 					const view = new View();
 
-					view.template = new Template( {
+					view.setTemplate( {
 						tag: 'li',
 						children: [
 							{
@@ -93,7 +92,7 @@ describe( 'ViewCollection', () => {
 				collection.add( viewB );
 
 				// Put the collection in the template.
-				view.template = new Template( {
+				view.setTemplate( {
 					tag: 'ul',
 					children: collection
 				} );

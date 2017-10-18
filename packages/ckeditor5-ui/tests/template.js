@@ -546,7 +546,7 @@ describe( 'Template', () => {
 				// words to explain it. But what actually matters is that it proves the Template
 				// class is free of "Maximum call stack size exceeded" error in certain
 				// situations.
-				view.template = new Template( {
+				view.setTemplate( {
 					tag: 'span',
 
 					children: [
@@ -2972,7 +2972,7 @@ function dispatchEvent( el, domEvtName ) {
 function getView( def ) {
 	const view = new View();
 
-	view.template = new Template( def );
+	view.setTemplate( def );
 
 	return view;
 }
