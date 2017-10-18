@@ -203,12 +203,12 @@ const EmitterMixin = {
 
 		// All params provided. off() that single callback.
 		if ( callback ) {
-			offCallback( emitter, event, callback );
+			removeCallback( emitter, event, callback );
 		}
 		// Only `emitter` and `event` provided. off() all callbacks for that event.
 		else if ( eventCallbacks ) {
 			while ( ( callback = eventCallbacks.pop() ) ) {
-				offCallback( emitter, event, callback );
+				removeCallback( emitter, event, callback );
 			}
 
 			delete emitterInfo.callbacks[ event ];
@@ -270,7 +270,7 @@ const EmitterMixin = {
 					// Remove the called mark for the next calls.
 					delete eventInfo.off.called;
 
-					offCallback( this, event, callbacks[ i ].callback );
+					removeCallback( this, event, callbacks[ i ].callback );
 				}
 
 				// Do not execute next callbacks if stop() was called.
@@ -568,7 +568,7 @@ function fireDelegatedEvents( destinations, eventInfo, fireArgs ) {
 // @param {module:utils/emittermixin~Emitter} emitter
 // @param {String} event
 // @param {Function} callback
-function offCallback( emitter, event, callback ) {
+function removeCallback( emitter, event, callback ) {
 	const lists = getCallbacksListsForNamespace( emitter, event );
 
 	for ( const callbacks of lists ) {
