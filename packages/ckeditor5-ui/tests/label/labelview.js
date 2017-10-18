@@ -11,7 +11,7 @@ describe( 'LabelView', () => {
 	beforeEach( () => {
 		view = new LabelView();
 
-		view.init();
+		view.render();
 	} );
 
 	describe( 'constructor()', () => {
