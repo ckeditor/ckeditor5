@@ -18,17 +18,16 @@ describe( 'BalloonPanelView', () => {
 
 	beforeEach( () => {
 		view = new BalloonPanelView();
+		view.render();
 
 		document.body.appendChild( view.element );
-
-		return view.init();
 	} );
 
 	afterEach( () => {
 		if ( view ) {
 			view.element.remove();
 
-			return view.destroy();
+			view.destroy();
 		}
 	} );
 
