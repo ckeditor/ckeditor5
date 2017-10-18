@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-import Template from '../template';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
@@ -42,7 +41,7 @@ export default class ListItemView extends View {
 
 		const bind = this.bindTemplate;
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'li',
 
 			attributes: {
@@ -104,7 +103,9 @@ export default class ListItemView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	render() {
+		super.render();
+
 		const onKeystrokePress = ( data, cancel ) => {
 			this.fire( 'execute' );
 			cancel();
