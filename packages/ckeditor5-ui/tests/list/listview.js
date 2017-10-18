@@ -17,7 +17,8 @@ describe( 'ListView', () => {
 	let view;
 
 	beforeEach( () => {
-		return ( view = new ListView() ).init();
+		view = new ListView();
+		view.render();
 	} );
 
 	describe( 'constructor()', () => {
@@ -26,10 +27,10 @@ describe( 'ListView', () => {
 			expect( view.element.classList.contains( 'ck-list' ) ).to.be.true;
 		} );
 
-		it( 'creates view#children collection', () => {
+		it( 'creates view#items collection', () => {
 			expect( view.items ).to.be.instanceOf( ViewCollection );
 			expect( view.template.children ).to.have.length( 1 );
-			expect( view.template.children.get( 0 ) ).to.equal( view.items );
+			expect( view.template.children[ 0 ] ).to.equal( view.items );
 		} );
 
 		it( 'creates #focusTracker instance', () => {
@@ -58,13 +59,13 @@ describe( 'ListView', () => {
 		} );
 	} );
 
-	describe( 'init()', () => {
+	describe( 'render()', () => {
 		it( 'starts listening for #keystrokes coming from #element', () => {
 			view = new ListView();
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
-			view.init();
+			view.render();
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, view.element );
 		} );
