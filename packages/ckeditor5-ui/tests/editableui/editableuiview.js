@@ -19,7 +19,8 @@ describe( 'EditableUIView', () => {
 		locale = new Locale( 'en' );
 		editableElement = document.createElement( 'div' );
 
-		return ( view = new EditableUIView( locale ) ).init();
+		view = new EditableUIView( locale );
+		view.render();
 	} );
 
 	describe( 'constructor()', () => {
@@ -32,22 +33,24 @@ describe( 'EditableUIView', () => {
 		it( 'renders element from template when no editableElement', () => {
 			view = new EditableUIView( locale );
 
-			view.init();
+			view.render();
 			expect( view.element ).to.equal( view.editableElement );
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
 			expect( view.externalElement ).to.be.undefined;
+			expect( view.isRendered ).to.be.true;
 		} );
 
 		it( 'accepts editableElement as an argument', () => {
 			view = new EditableUIView( locale, editableElement );
 
-			view.init();
+			view.render();
 			expect( view.element ).to.equal( editableElement );
 			expect( view.element ).to.equal( view.editableElement );
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
 			expect( view.externalElement ).to.equal( editableElement );
+			expect( view.isRendered ).to.be.true;
 		} );
 	} );
 
@@ -98,7 +101,7 @@ describe( 'EditableUIView', () => {
 
 				view = new EditableUIView( locale, editableElement );
 
-				view.init();
+				view.render();
 				expect( editableElement.contentEditable ).to.equal( 'true' );
 				view.destroy();
 				expect( editableElement.contentEditable ).to.equal( 'false' );
@@ -110,7 +113,7 @@ describe( 'EditableUIView', () => {
 
 				view = new EditableUIView( locale, editableElement );
 
-				view.init();
+				view.render();
 				expect( editableElement.contentEditable ).to.equal( 'true' );
 				view.destroy();
 				expect( editableElement.contentEditable ).to.equal( 'true' );
