@@ -11,7 +11,7 @@ describe( 'InputTextView', () => {
 	beforeEach( () => {
 		view = new InputTextView();
 
-		view.init();
+		view.render();
 	} );
 
 	describe( 'constructor()', () => {
