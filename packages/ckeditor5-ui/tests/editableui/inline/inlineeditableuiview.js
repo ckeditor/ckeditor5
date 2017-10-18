@@ -15,7 +15,8 @@ describe( 'InlineEditableUIView', () => {
 		locale = new Locale( 'en' );
 		editableElement = document.createElement( 'div' );
 
-		return ( view = new InlineEditableUIView( locale ) ).init();
+		view = new InlineEditableUIView( locale );
+		view.render();
 	} );
 
 	describe( 'constructor()', () => {
