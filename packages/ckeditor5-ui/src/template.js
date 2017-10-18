@@ -687,8 +687,8 @@ export default class Template {
 			if ( isViewCollection( child ) ) {
 				if ( !isApplying ) {
 					child.setParent( node );
-					child.render();
 
+					// Note: ViewCollection renders its children.
 					for ( const view of child ) {
 						container.appendChild( view.element );
 					}

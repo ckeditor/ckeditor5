@@ -426,7 +426,7 @@ describe( 'Template', () => {
 
 			it( 'renders view children', () => {
 				const v1 = getView( {
-					tag: 'span',
+					tag: 'b',
 					attributes: {
 						class: [
 							'v1'
@@ -435,7 +435,7 @@ describe( 'Template', () => {
 				} );
 
 				const v2 = getView( {
-					tag: 'span',
+					tag: 'b',
 					attributes: {
 						class: [
 							'v2'
@@ -443,22 +443,36 @@ describe( 'Template', () => {
 					}
 				} );
 
+				const v3 = getView( {
+					tag: 'b',
+					attributes: {
+						class: [
+							'v3'
+						]
+					}
+				} );
+
+				v3.render();
+
 				const tpl = new Template( {
 					tag: 'p',
-					children: [ v1, v2 ]
+					children: [ v1, v2, v3 ]
 				} );
 
 				expect( tpl.children[ 0 ] ).to.equal( v1 );
 				expect( tpl.children[ 1 ] ).to.equal( v2 );
+				expect( tpl.children[ 2 ] ).to.equal( v3 );
 
 				const rendered = tpl.render();
 
-				expect( normalizeHtml( rendered.outerHTML ) ).to.equal( '<p><span class="v1"></span><span class="v2"></span></p>' );
+				expect( normalizeHtml( rendered.outerHTML ) )
+					.to.equal( '<p><b class="v1"></b><b class="v2"></b><b class="v3"></b></p>' );
 
 				// Make sure the child views will not re–render their elements but
 				// use ones rendered by the template instance above.
 				expect( v1.element ).to.equal( rendered.firstChild );
-				expect( v2.element ).to.equal( rendered.lastChild );
+				expect( v2.element ).to.equal( rendered.children[ 1 ] );
+				expect( v3.element ).to.equal( rendered.lastChild );
 			} );
 
 			it( 'renders view collection', () => {

@@ -165,21 +165,6 @@ describe( 'View', () => {
 			view.render();
 			expect( view.isRendered ).to.be.true;
 		} );
-
-		it( 'calls render() on all view#_viewCollections', () => {
-			const view = new View();
-
-			const collectionA = view.createCollection();
-			const collectionB = view.createCollection();
-
-			const spyA = testUtils.sinon.spy( collectionA, 'render' );
-			const spyB = testUtils.sinon.spy( collectionB, 'render' );
-
-			view.render();
-			sinon.assert.calledOnce( spyA );
-			sinon.assert.calledOnce( spyB );
-			sinon.assert.callOrder( spyA, spyB );
-		} );
 	} );
 
 	describe( 'bind', () => {

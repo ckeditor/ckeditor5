@@ -436,9 +436,6 @@ export default class View {
 			throw new CKEditorError( 'ui-view-render-already-rendered: This View has already been rendered.' );
 		}
 
-		// Render collections in #_viewCollections.
-		this._viewCollections.map( col => col.render() );
-
 		// Render #element of the view.
 		if ( this.template ) {
 			this.element = this.template.render();
