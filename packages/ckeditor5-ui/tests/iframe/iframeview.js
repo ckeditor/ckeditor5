@@ -13,6 +13,7 @@ describe( 'IframeView', () => {
 	describe( 'constructor()', () => {
 		it( 'creates view element from the template', () => {
 			view = new IframeView();
+			view.render();
 			document.body.appendChild( view.element );
 
 			expect( view.element.classList.contains( 'ck-reset_all' ) ).to.be.true;
@@ -20,19 +21,20 @@ describe( 'IframeView', () => {
 		} );
 	} );
 
-	describe( 'init', () => {
-		it( 'returns promise', () => {
+	describe( 'render', () => {
+		it( 'returns a promise', () => {
 			view = new IframeView();
 
-			expect( view.init() ).to.be.an.instanceof( Promise );
+			expect( view.render() ).to.be.an.instanceof( Promise );
 		} );
 
 		it( 'returns promise which is resolved when iframe finished loading', () => {
 			view = new IframeView();
 
-			const promise = view.init().then( () => {
-				expect( view.element.contentDocument.readyState ).to.equal( 'complete' );
-			} );
+			const promise = view.render()
+				.then( () => {
+					expect( view.element.contentDocument.readyState ).to.equal( 'complete' );
+				} );
 
 			// Moving iframe into DOM trigger creation of a document inside iframe.
 			document.body.appendChild( view.element );
@@ -46,8 +48,7 @@ describe( 'IframeView', () => {
 			view = new IframeView();
 
 			view.on( 'loaded', () => done() );
-
-			view.init();
+			view.render();
 
 			// Moving iframe into DOM trigger creation of a document inside iframe.
 			document.body.appendChild( view.element );
