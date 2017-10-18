@@ -80,23 +80,14 @@ const EmitterMixin = {
 
 	/**
 	 * Stops executing the callback on the given event.
+	 * Shorthand for {@link #stopListening this.stopListening( this, event, callback) }.
 	 *
 	 * @method #off
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to stop being called.
 	 */
 	off( event, callback ) {
-		const lists = getCallbacksListsForNamespace( this, event );
-
-		for ( const callbacks of lists ) {
-			for ( let i = 0; i < callbacks.length; i++ ) {
-				if ( callbacks[ i ].callback == callback ) {
-					// Remove the callback from the list (fixing the next index).
-					callbacks.splice( i, 1 );
-					i--;
-				}
-			}
-		}
+		this.stopListening( this, event, callback );
 	},
 
 	/**
@@ -212,13 +203,14 @@ const EmitterMixin = {
 
 		// All params provided. off() that single callback.
 		if ( callback ) {
-			emitter.off( event, callback );
+			offCallback( emitter, event, callback );
 		}
 		// Only `emitter` and `event` provided. off() all callbacks for that event.
 		else if ( eventCallbacks ) {
 			while ( ( callback = eventCallbacks.pop() ) ) {
-				emitter.off( event, callback );
+				offCallback( emitter, event, callback );
 			}
+
 			delete emitterInfo.callbacks[ event ];
 		}
 		// Only `emitter` provided. off() all events for that emitter.
@@ -278,7 +270,7 @@ const EmitterMixin = {
 					// Remove the called mark for the next calls.
 					delete eventInfo.off.called;
 
-					this.off( event, callbacks[ i ].callback );
+					offCallback( this, event, callbacks[ i ].callback );
 				}
 
 				// Do not execute next callbacks if stop() was called.
@@ -568,6 +560,25 @@ function fireDelegatedEvents( destinations, eventInfo, fireArgs ) {
 		delegatedInfo.path = [ ...eventInfo.path ];
 
 		emitter.fire( delegatedInfo, ...fireArgs );
+	}
+}
+
+// Removes callback from emitter for given event.
+//
+// @param {module:utils/emittermixin~Emitter} emitter
+// @param {String} event
+// @param {Function} callback
+function offCallback( emitter, event, callback ) {
+	const lists = getCallbacksListsForNamespace( emitter, event );
+
+	for ( const callbacks of lists ) {
+		for ( let i = 0; i < callbacks.length; i++ ) {
+			if ( callbacks[ i ].callback == callback ) {
+				// Remove the callback from the list (fixing the next index).
+				callbacks.splice( i, 1 );
+				i--;
+			}
+		}
 	}
 }
 
