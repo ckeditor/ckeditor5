@@ -266,18 +266,28 @@ export default class Widget extends Plugin {
 		return true;
 	}
 
+	/**
+	 * Handles <kbd>CTRL + A</kbd> when widget is selected.
+	 *
+	 * @private
+	 * @returns {Boolean} Returns true if widget was selected and selecting all was handled by this method.
+	 */
 	_selectAllContent() {
 		const modelDocument = this.editor.document;
 		const modelSelection = modelDocument.selection;
-		const viewDocument = this.editor.editing.view;
+		const editing = this.editor.editing;
+		const viewDocument = editing.view;
 		const viewSelection = viewDocument.selection;
 
 		const selectedElement = viewSelection.getSelectedElement();
 
 		// Only widget is selected.
+		// https://github.com/ckeditor/ckeditor5-widget/issues/23
 		if ( selectedElement && isWidget( selectedElement ) ) {
+			const widgetParent = editing.mapper.toModelElement( selectedElement.parent );
+
 			modelDocument.enqueueChanges( () => {
-				modelSelection.setRanges( [ ModelRange.createIn( modelDocument.getRoot() ) ] );
+				modelSelection.setRanges( [ ModelRange.createIn( widgetParent ) ] );
 			} );
 
 			return true;
