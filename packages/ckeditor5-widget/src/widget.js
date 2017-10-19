@@ -44,13 +44,19 @@ export default class Widget extends Plugin {
 	init() {
 		const viewDocument = this.editor.editing.view;
 
+		/**
+		 * Holds previously selected widgets.
+		 *
+		 * @private
+		 * @type {Set.<module:engine/view/element~Element>}
+		 */
 		this._previouslySelected = new Set();
 
 		// Model to view selection converter.
 		// Converts selection placed over widget element to fake selection
 		this.editor.editing.modelToView.on( 'selection', ( evt, data, consumable, conversionApi ) => {
 			// Remove selected class from previously selected widgets.
-			this._clearPreviouslySelected();
+			this._clearPreviouslySelectedWidgets();
 
 			const viewSelection = conversionApi.viewSelection;
 			const selectedElement = viewSelection.getSelectedElement();
@@ -63,7 +69,7 @@ export default class Widget extends Plugin {
 						node.addClass( WIDGET_SELECTED_CLASS_NAME );
 						this._previouslySelected.add( node );
 
-						// Check if widget was single element selected.
+						// Check if widget is a single element selected.
 						if ( node == selectedElement ) {
 							viewSelection.setFake( true, { label: getLabel( selectedElement ) } );
 						}
@@ -140,8 +146,7 @@ export default class Widget extends Plugin {
 		} else if ( isArrowKeyCode( keyCode ) ) {
 			wasHandled = this._handleArrowKeys( isForward );
 		} else if ( isSelectAllKeyCode( domEventData ) ) {
-			wasHandled = this._selectAllNestedEditableContent() ||
-				this._selectAllContent();
+			wasHandled = this._selectAllNestedEditableContent() || this._selectAllContent();
 		}
 
 		if ( wasHandled ) {
@@ -319,7 +324,11 @@ export default class Widget extends Plugin {
 		return null;
 	}
 
-	_clearPreviouslySelected() {
+	/**
+	 * Removes CSS class from previously selected widgets.
+	 * @private
+	 */
+	_clearPreviouslySelectedWidgets() {
 		for ( const widget of this._previouslySelected ) {
 			widget.removeClass( WIDGET_SELECTED_CLASS_NAME );
 		}
