@@ -31,10 +31,9 @@ import createDropdown from '../createdropdown';
  *
  *		const dropdown = createListDropdown( model, locale );
  *
- *		dropdown.init();
- *
  *		// Will render a dropdown labeled "A dropdown" with a list in the panel
  *		// containing two items.
+ *		dropdown.render()
  *		document.body.appendChild( dropdown.element );
  *
  * The model instance remains in control of the dropdown after it has been created. E.g. changes to the
@@ -54,7 +53,6 @@ import createDropdown from '../createdropdown';
  */
 export default function createListDropdown( model, locale ) {
 	const dropdownView = createDropdown( model, locale );
-
 	const listView = dropdownView.listView = new ListView( locale );
 
 	listView.items.bindTo( model.items ).using( itemModel => {
