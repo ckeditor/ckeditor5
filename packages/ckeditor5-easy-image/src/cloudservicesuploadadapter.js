@@ -102,8 +102,7 @@ CloudServicesUploadAdapter._UploadGateway = UploadGateway;
  *		ClassicEditor
  *			.create( editorElement, {
  * 				cloudServices: {
- *					token: '...',
- *					uploadUrl: 'https://files.cke-cs.com/upload/'
+ *					token: '...'
  * 				}
  *			} )
  *			.then( ... )
@@ -117,7 +116,7 @@ CloudServicesUploadAdapter._UploadGateway = UploadGateway;
 /**
  * The URL to which the files should be uploaded.
  *
- * @member {String} module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig#uploadUrl
+ * @member {String} [module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig#uploadUrl='https://files.cke-cs.com/upload/']
  */
 
 /**
