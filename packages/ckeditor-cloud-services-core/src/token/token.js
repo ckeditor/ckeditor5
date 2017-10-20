@@ -36,9 +36,11 @@ class Token {
 		/**
 		 * Value of the token.
 		 *
-		 * @readonly
+		 * @name value
+		 * @type {String}
 		 * @observable
-		 * @member {String} #value
+		 * @readonly
+		 * @memberOf Token#
 		 */
 		this.set( 'value', initTokenValue );
 
