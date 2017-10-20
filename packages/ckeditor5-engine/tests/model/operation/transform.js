@@ -38,8 +38,7 @@ describe( 'transform', () => {
 			if ( params.hasOwnProperty( i ) ) {
 				if ( i == 'type' ) {
 					expect( op, 'type' ).to.be.instanceof( params[ i ] );
-				}
-				else if ( params[ i ] instanceof Array ) {
+				} else if ( params[ i ] instanceof Array ) {
 					expect( op[ i ].length, i ).to.equal( params[ i ].length );
 
 					for ( let j = 0; j < params[ i ].length; j++ ) {
@@ -52,6 +51,14 @@ describe( 'transform', () => {
 				}
 			}
 		}
+	}
+
+	function getPositionMovedInPath( position, index, howMany ) {
+		const path = position.path.slice();
+
+		path[ index ] += howMany;
+
+		return position.getMovedToPath( path );
 	}
 
 	describe( 'InsertOperation', () => {
@@ -94,7 +101,7 @@ describe( 'transform', () => {
 				);
 
 				const transOp = transform( op, transformBy );
-				expected.position.offset += 2;
+				expected.position = expected.position.getShiftedBy( 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -108,7 +115,7 @@ describe( 'transform', () => {
 				);
 
 				const transOp = transform( op, transformBy );
-				expected.position.offset += 2;
+				expected.position = expected.position.getShiftedBy( 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -148,7 +155,7 @@ describe( 'transform', () => {
 				);
 
 				const transOp = transform( op, transformBy );
-				expected.position.offset += 2;
+				expected.position = expected.position.getShiftedBy( 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -175,7 +182,7 @@ describe( 'transform', () => {
 				);
 
 				const transOp = transform( op, transformBy );
-				expected.position.path[ 1 ] += 2;
+				expected.position = getPositionMovedInPath( expected.position, 1, 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -253,7 +260,7 @@ describe( 'transform', () => {
 				);
 
 				const transOp = transform( op, transformBy );
-				expected.position.offset--;
+				expected.position = expected.position.getShiftedBy( -1 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -282,7 +289,7 @@ describe( 'transform', () => {
 				);
 
 				const transOp = transform( op, transformBy );
-				expected.position.offset += 2;
+				expected.position = expected.position.getShiftedBy( 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -311,7 +318,7 @@ describe( 'transform', () => {
 				);
 
 				const transOp = transform( op, transformBy );
-				expected.position.offset += 2;
+				expected.position = expected.position.getShiftedBy( 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -340,7 +347,7 @@ describe( 'transform', () => {
 				);
 
 				const transOp = transform( op, transformBy, { isStrong: true, insertBefore: true } );
-				expected.position.offset += 2;
+				expected.position = expected.position.getShiftedBy( 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -369,7 +376,7 @@ describe( 'transform', () => {
 				);
 
 				const transOp = transform( op, transformBy );
-				expected.position.path[ 1 ] -= 1;
+				expected.position = getPositionMovedInPath( expected.position, 1, -1 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -398,7 +405,7 @@ describe( 'transform', () => {
 				);
 
 				const transOp = transform( op, transformBy );
-				expected.position.path[ 1 ] += 2;
+				expected.position = getPositionMovedInPath( expected.position, 1, 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -427,7 +434,7 @@ describe( 'transform', () => {
 				);
 
 				const transOp = transform( op, transformBy );
-				expected.position.path = [ 1, 2, 2 ];
+				expected.position = new Position( expected.position.root, [ 1, 2, 2 ] );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -442,7 +449,7 @@ describe( 'transform', () => {
 				);
 
 				const transOp = transform( op, transformBy );
-				expected.position.path = [ 1, 2 ];
+				expected.position = new Position( expected.position.root, [ 1, 2 ] );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -532,7 +539,7 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.offset += 2;
+					expected.range.start = expected.range.start.getShiftedBy( 2 );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -547,7 +554,7 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.offset += 2;
+					expected.range.start = expected.range.start.getShiftedBy( 2 );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -575,8 +582,8 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.path[ 0 ] += 2;
-					expected.range.end.path[ 0 ] += 2;
+					expected.range.start = getPositionMovedInPath( expected.range.start, 0, 2 );
+					expected.range.end = getPositionMovedInPath( expected.range.end, 0, 2 );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -606,12 +613,12 @@ describe( 'transform', () => {
 
 					expect( transOp.length ).to.equal( 2 );
 
-					expected.range.start.path = [ 1, 3, 3 ];
+					expected.range.start = new Position( expected.range.start.root, [ 1, 3, 3 ] );
 
 					expectOperation( transOp[ 0 ], expected );
 
 					expected.range.start = op.range.start;
-					expected.range.end.path = [ 1, 3, 1 ];
+					expected.range.end = new Position( expected.range.end.root, [ 1, 3, 1 ] );
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 1 ], expected );
@@ -723,11 +730,11 @@ describe( 'transform', () => {
 
 						expect( transOp.length ).to.equal( 2 );
 
-						expected.range.end.path = [ 1, 4, 2 ];
+						expected.range.end = new Position( expected.range.end.root, [ 1, 4, 2 ] );
 
 						expectOperation( transOp[ 0 ], expected );
 
-						expected.range.start.path = [ 1, 4, 2 ];
+						expected.range.start = new Position( expected.range.start.root, [ 1, 4, 2 ] );
 						expected.range.end = op.range.end;
 						expected.oldValue = 'another';
 						expected.baseVersion++;
@@ -749,12 +756,12 @@ describe( 'transform', () => {
 
 						expect( transOp.length ).to.equal( 2 );
 
-						expected.range.start.path = [ 2, 1 ];
+						expected.range.start = new Position( expected.range.start.root, [ 2, 1 ] );
 
 						expectOperation( transOp[ 0 ], expected );
 
 						expected.range.start = op.range.start;
-						expected.range.end.path = [ 2, 1 ];
+						expected.range.end = new Position( expected.range.end.root, [ 2, 1 ] );
 						expected.oldValue = null;
 						expected.baseVersion++;
 
@@ -774,18 +781,18 @@ describe( 'transform', () => {
 
 						expect( transOp.length ).to.equal( 3 );
 
-						expected.range.end.path = [ 1, 4, 1 ];
+						expected.range.end = new Position( expected.range.end.root, [ 1, 4, 1 ] );
 
 						expectOperation( transOp[ 0 ], expected );
 
-						expected.range.start.path = [ 2, 1 ];
+						expected.range.start = new Position( expected.range.start.root, [ 2, 1 ] );
 						expected.range.end = op.range.end;
 						expected.baseVersion++;
 
 						expectOperation( transOp[ 1 ], expected );
 
-						expected.range.start.path = [ 1, 4, 1 ];
-						expected.range.end.path = [ 2, 1 ];
+						expected.range.start = new Position( expected.range.start.root, [ 1, 4, 1 ] );
+						expected.range.end = new Position( expected.range.end.root, [ 2, 1 ] );
 						expected.oldValue = null;
 						expected.baseVersion++;
 
@@ -860,7 +867,7 @@ describe( 'transform', () => {
 
 						const transOp = transform( op, transformBy );
 
-						expected.range.end.path = [ 1, 4, 2 ];
+						expected.range.end = new Position( expected.range.end.root, [ 1, 4, 2 ] );
 
 						expect( transOp.length ).to.equal( 1 );
 						expectOperation( transOp[ 0 ], expected );
@@ -878,7 +885,7 @@ describe( 'transform', () => {
 
 						const transOp = transform( op, transformBy );
 
-						expected.range.start.path = [ 2, 1 ];
+						expected.range.start = new Position( expected.range.start.root, [ 2, 1 ] );
 
 						expect( transOp.length ).to.equal( 1 );
 						expectOperation( transOp[ 0 ], expected );
@@ -897,11 +904,11 @@ describe( 'transform', () => {
 
 						expect( transOp.length ).to.equal( 2 );
 
-						expected.range.end.path = [ 1, 4, 1 ];
+						expected.range.end = new Position( expected.range.end.root, [ 1, 4, 1 ] );
 
 						expectOperation( transOp[ 0 ], expected );
 
-						expected.range.start.path = [ 2, 1 ];
+						expected.range.start = new Position( expected.range.start.root, [ 2, 1 ] );
 						expected.range.end = op.range.end;
 						expected.baseVersion++;
 
@@ -952,7 +959,7 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.offset -= 2;
+					expected.range.start = expected.range.start.getShiftedBy( -2 );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -968,7 +975,7 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.offset += 2;
+					expected.range.start = expected.range.start.getShiftedBy( 2 );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -984,8 +991,8 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.path[ 0 ]--;
-					expected.range.end.path[ 0 ]--;
+					expected.range.start = getPositionMovedInPath( expected.range.start, 0, -1 );
+					expected.range.end = getPositionMovedInPath( expected.range.end, 0, -1 );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -1015,7 +1022,7 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.path[ 1 ] += 2;
+					expected.range.start = getPositionMovedInPath( expected.range.start, 1, 2 );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -1047,12 +1054,12 @@ describe( 'transform', () => {
 
 					expect( transOp.length ).to.equal( 2 );
 
-					expected.range.end.path = [ 2, 1 ];
+					expected.range.end = new Position( expected.range.end.root, [ 2, 1 ] );
 
 					expectOperation( transOp[ 0 ], expected );
 
-					expected.range.start.path = [ 4 ];
-					expected.range.end.path = [ 5, 4 ];
+					expected.range.start = new Position( expected.range.start.root, [ 4 ] );
+					expected.range.end = new Position( expected.range.end.root, [ 5, 4 ] );
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 1 ], expected );
@@ -1070,12 +1077,12 @@ describe( 'transform', () => {
 
 					expect( transOp.length ).to.equal( 2 );
 
-					expected.range.start.path = [ 1, 1 ];
+					expected.range.start = new Position( expected.range.start.root, [ 1, 1 ] );
 
 					expectOperation( transOp[ 0 ], expected );
 
-					expected.range.start.path = [ 0, 1 ];
-					expected.range.end.path = [ 0, 3 ];
+					expected.range.start = new Position( expected.range.start.root, [ 0, 1 ] );
+					expected.range.end = new Position( expected.range.end.root, [ 0, 3 ] );
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 1 ], expected );
@@ -1091,8 +1098,8 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.path = [ 1, 4, 1, 2 ];
-					expected.range.end.path = [ 1, 4, 2, 2, 4 ];
+					expected.range.start = new Position( expected.range.start.root, [ 1, 4, 1, 2 ] );
+					expected.range.end = new Position( expected.range.end.root, [ 1, 4, 2, 2, 4 ] );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -1112,8 +1119,8 @@ describe( 'transform', () => {
 
 					expectOperation( transOp[ 0 ], expected );
 
-					expected.range.start.path = [ 3, 2 ];
-					expected.range.end.path = [ 3, 4 ];
+					expected.range.start = new Position( expected.range.start.root, [ 3, 2 ] );
+					expected.range.end = new Position( expected.range.end.root, [ 3, 4 ] );
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 1 ], expected );
@@ -1131,12 +1138,12 @@ describe( 'transform', () => {
 
 					expect( transOp.length ).to.equal( 2 );
 
-					expected.range.start.path = [ 1, 6 ];
+					expected.range.start = new Position( expected.range.start.root, [ 1, 6 ] );
 
 					expectOperation( transOp[ 0 ], expected );
 
 					expected.range.start = op.range.start;
-					expected.range.end.path = [ 1, 4 ];
+					expected.range.end = new Position( expected.range.end.root, [ 1, 4 ] );
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 1 ], expected );
@@ -1154,19 +1161,19 @@ describe( 'transform', () => {
 
 					expect( transOp.length ).to.equal( 3 );
 
-					expected.range.start.path = [ 5 ];
-					expected.range.end.path = [ 5, 2, 4 ];
+					expected.range.start = new Position( expected.range.start.root, [ 5 ] );
+					expected.range.end = new Position( expected.range.end.root, [ 5, 2, 4 ] );
 
 					expectOperation( transOp[ 0 ], expected );
 
-					expected.range.start.path = [ 1, 1 ];
-					expected.range.end.path = [ 2 ];
+					expected.range.start = new Position( expected.range.start.root, [ 1, 1 ] );
+					expected.range.end = new Position( expected.range.end.root, [ 2 ] );
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 1 ], expected );
 
-					expected.range.start.path = [ 3 ];
-					expected.range.end.path = [ 5 ];
+					expected.range.start = new Position( expected.range.start.root, [ 3 ] );
+					expected.range.end = new Position( expected.range.end.root, [ 5 ] );
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 2 ], expected );
@@ -1234,8 +1241,8 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.offset += 2;
-					expected.range.end.offset += 2;
+					expected.range.start = expected.range.start.getShiftedBy( 2 );
+					expected.range.end = expected.range.end.getShiftedBy( 2 );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -1250,8 +1257,8 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.offset += 2;
-					expected.range.end.offset += 2;
+					expected.range.start = expected.range.start.getShiftedBy( 2 );
+					expected.range.end = expected.range.end.getShiftedBy( 2 );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -1269,8 +1276,8 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.offset--;
-					expected.range.end.offset--;
+					expected.range.start = expected.range.start.getShiftedBy( -1 );
+					expected.range.end = expected.range.end.getShiftedBy( -1 );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -1286,8 +1293,8 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.offset += 2;
-					expected.range.end.offset += 2;
+					expected.range.start = expected.range.start.getShiftedBy( 2 );
+					expected.range.end = expected.range.end.getShiftedBy( 2 );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -1305,12 +1312,12 @@ describe( 'transform', () => {
 
 					expect( transOp.length ).to.equal( 2 );
 
-					expected.range.end.offset -= 2;
+					expected.range.end = expected.range.end.getShiftedBy( -2 );
 
 					expectOperation( transOp[ 0 ], expected );
 
-					expected.range.start.path = [ 2, 4, 1 ];
-					expected.range.end.path = [ 2, 4, 3 ];
+					expected.range.start = new Position( expected.range.start.root, [ 2, 4, 1 ] );
+					expected.range.end = new Position( expected.range.end.root, [ 2, 4, 3 ] );
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 1 ], expected );
@@ -1328,13 +1335,13 @@ describe( 'transform', () => {
 
 					expect( transOp.length ).to.equal( 2 );
 
-					expected.range.start.offset -= 1;
-					expected.range.end.offset -= 2;
+					expected.range.start = expected.range.start.getShiftedBy( -1 );
+					expected.range.end = expected.range.end.getShiftedBy( -2 );
 
 					expectOperation( transOp[ 0 ], expected );
 
-					expected.range.start.path = [ 2, 4, 2 ];
-					expected.range.end.path = [ 2, 4, 3 ];
+					expected.range.start = new Position( expected.range.start.root, [ 2, 4, 2 ] );
+					expected.range.end = new Position( expected.range.end.root, [ 2, 4, 3 ] );
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 1 ], expected );
@@ -1350,8 +1357,8 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.path = [ 2, 4, 2, 1 ];
-					expected.range.end.path = [ 2, 4, 2, 4 ];
+					expected.range.start = new Position( expected.range.start.root, [ 2, 4, 2, 1 ] );
+					expected.range.end = new Position( expected.range.end.root, [ 2, 4, 2, 4 ] );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -1369,12 +1376,12 @@ describe( 'transform', () => {
 
 					expect( transOp.length ).to.equal( 2 );
 
-					expected.range.end.offset--;
+					expected.range.end = expected.range.end.getShiftedBy( -1 );
 
 					expectOperation( transOp[ 0 ], expected );
 
-					expected.range.start.path = [ 2, 4, 1 ];
-					expected.range.end.path = [ 2, 4, 2 ];
+					expected.range.start = new Position( expected.range.start.root, [ 2, 4, 1 ] );
+					expected.range.end = new Position( expected.range.end.root, [ 2, 4, 2 ] );
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 1 ], expected );
@@ -1390,8 +1397,8 @@ describe( 'transform', () => {
 
 					const transOp = transform( op, transformBy );
 
-					expected.range.start.path = [ 2, 4, 1 ];
-					expected.range.end.path = [ 2, 4, 4 ];
+					expected.range.start = new Position( expected.range.start.root, [ 2, 4, 1 ] );
+					expected.range.end = new Position( expected.range.end.root, [ 2, 4, 4 ] );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -1409,13 +1416,13 @@ describe( 'transform', () => {
 
 					expect( transOp.length ).to.equal( 2 );
 
-					expected.range.start.offset = 4;
-					expected.range.end.offset = 6;
+					expected.range.start = expected.range.start.getShiftedTo( 4 );
+					expected.range.end = expected.range.end.getShiftedTo( 6 );
 
 					expectOperation( transOp[ 0 ], expected );
 
-					expected.range.start.offset = op.range.start.offset;
-					expected.range.end.offset = 2;
+					expected.range.start = expected.range.start.getShiftedTo( op.range.start.offset );
+					expected.range.end = expected.range.end.getShiftedTo( 2 );
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 1 ], expected );
@@ -1433,19 +1440,19 @@ describe( 'transform', () => {
 
 					expect( transOp.length ).to.equal( 3 );
 
-					expected.range.start.offset = 3;
-					expected.range.end.offset = 4;
+					expected.range.start = expected.range.start.getShiftedTo( 3 );
+					expected.range.end = expected.range.end.getShiftedTo( 4 );
 
 					expectOperation( transOp[ 0 ], expected );
 
-					expected.range.start.offset = 0;
-					expected.range.end.offset = 1;
+					expected.range.start = expected.range.start.getShiftedTo( 0 );
+					expected.range.end = expected.range.end.getShiftedTo( 1 );
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 1 ], expected );
 
-					expected.range.start.offset = 2;
-					expected.range.end.offset = 3;
+					expected.range.start = expected.range.start.getShiftedTo( 2 );
+					expected.range.end = expected.range.end.getShiftedTo( 3 );
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 2 ], expected );
@@ -1473,14 +1480,14 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				transformBy.targetPosition.path = [ 0 ];
+				transformBy.targetPosition = new Position( transformBy.targetPosition.root, [ 0 ] );
 
 				const transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.range.start.path = [ 4, 0 ];
-				expected.range.end.path = [ 4, 4 ];
+				expected.range.start = new Position( expected.range.start.root, [ 4, 0 ] );
+				expected.range.end = new Position( expected.range.end.root, [ 4, 4 ] );
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
@@ -1493,7 +1500,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				transformBy.targetPosition.path = [ 4 ];
+				transformBy.targetPosition = new Position( transformBy.targetPosition.root, [ 4 ] );
 
 				const transOp = transform( op, transformBy );
 
@@ -1696,8 +1703,7 @@ describe( 'transform', () => {
 			targetPosition = new Position( root, [ 3, 3, 3 ] );
 			howMany = 2;
 
-			rangeEnd = Position.createFromPosition( sourcePosition );
-			rangeEnd.offset += howMany;
+			rangeEnd = sourcePosition.getShiftedBy( howMany );
 
 			op = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
 
@@ -1746,7 +1752,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.sourcePosition.offset += 2;
+				expected.sourcePosition = expected.sourcePosition.getShiftedBy( 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1774,7 +1780,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.sourcePosition.path[ 1 ] += 2;
+				expected.sourcePosition = getPositionMovedInPath( expected.sourcePosition, 1, 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1802,7 +1808,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.targetPosition.offset += 2;
+				expected.targetPosition = expected.targetPosition.getShiftedBy( 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1830,7 +1836,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.targetPosition.path[ 1 ] += 2;
+				expected.targetPosition = getPositionMovedInPath( expected.targetPosition, 1, 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1858,7 +1864,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.targetPosition.offset += 2;
+				expected.targetPosition = expected.targetPosition.getShiftedBy( 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1886,7 +1892,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy, { isStrong: true, insertBefore: true } );
 
-				expected.targetPosition.offset += 2;
+				expected.targetPosition = expected.targetPosition.getShiftedBy( 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2011,7 +2017,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.sourcePosition.offset += 2;
+				expected.sourcePosition = expected.sourcePosition.getShiftedBy( 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2041,7 +2047,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.sourcePosition.offset -= 2;
+				expected.sourcePosition = expected.sourcePosition.getShiftedBy( -2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2071,7 +2077,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.sourcePosition.path[ 1 ] += 2;
+				expected.sourcePosition = getPositionMovedInPath( expected.sourcePosition, 1, 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2101,7 +2107,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.sourcePosition.path[ 1 ] -= 1;
+				expected.sourcePosition = getPositionMovedInPath( expected.sourcePosition, 1, -1 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2131,7 +2137,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.targetPosition.offset += 2;
+				expected.targetPosition = expected.targetPosition.getShiftedBy( 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2161,7 +2167,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.targetPosition.offset -= 2;
+				expected.targetPosition = expected.targetPosition.getShiftedBy( -2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2191,7 +2197,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.targetPosition.path[ 1 ] += 2;
+				expected.targetPosition = getPositionMovedInPath( expected.targetPosition, 1, 2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2221,7 +2227,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.targetPosition.path[ 1 ] -= 2;
+				expected.targetPosition = getPositionMovedInPath( expected.targetPosition, 1, -2 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2256,7 +2262,7 @@ describe( 'transform', () => {
 				expected.howMany = 1;
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.sourcePosition.path = [ 2, 2, 6 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 2, 2, 6 ] );
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
 				expected.baseVersion++;
 				expectOperation( transOp[ 1 ], expected );
@@ -2274,7 +2280,7 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.sourcePosition.offset = 6;
+				expected.sourcePosition = expected.sourcePosition.getShiftedTo( 6 );
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
@@ -2355,7 +2361,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.sourcePosition.path = [ 4, 3, 4 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 4, 3, 4 ] );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2371,7 +2377,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.targetPosition.path = [ 0, 2, 3 ];
+				expected.targetPosition = new Position( expected.targetPosition.root, [ 0, 2, 3 ] );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2423,7 +2429,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy, { isStrong: true } );
 
-				expected.sourcePosition.path = [ 4, 1, 0 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 4, 1, 0 ] );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2456,14 +2462,14 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy, { isStrong: true } );
 
-				expected.sourcePosition.path = [ 4, 1, 1 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 4, 1, 1 ] );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
 			it( 'range contains transforming range and target and is important: update range path and target', () => {
-				op.targetPosition.path = [ 2, 2, 7 ];
+				op.targetPosition = new Position( op.targetPosition.root, [ 2, 2, 7 ] );
 
 				const transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 3 ] ),
@@ -2476,14 +2482,14 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.sourcePosition.path = [ 4, 1, 1 ];
-				expected.targetPosition.path = [ 4, 1, 4 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 4, 1, 1 ] );
+				expected.targetPosition = new Position( expected.targetPosition.root, [ 4, 1, 4 ] );
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
 			it( 'range contains transforming range and target and is less important: update range path and target', () => {
-				op.targetPosition.path = [ 2, 2, 7 ];
+				op.targetPosition = new Position( op.targetPosition.root, [ 2, 2, 7 ] );
 
 				const transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 3 ] ),
@@ -2496,8 +2502,8 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.sourcePosition.path = [ 4, 1, 1 ];
-				expected.targetPosition.path = [ 4, 1, 4 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 4, 1, 1 ] );
+				expected.targetPosition = new Position( expected.targetPosition.root, [ 4, 1, 4 ] );
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
@@ -2512,7 +2518,7 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy );
 
-				expected.sourcePosition.path = [ 2, 2, 3 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 2, 2, 3 ] );
 				expected.howMany = 1;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -2600,12 +2606,12 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 2 );
 
-				expected.sourcePosition.path = [ 2, 2, 3 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 2, 2, 3 ] );
 				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.sourcePosition.path = [ 2, 2, 5 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 2, 2, 5 ] );
 				expected.howMany = 2;
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
 				expected.baseVersion++;
@@ -2627,12 +2633,12 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 2 );
 
-				expected.sourcePosition.path = [ 2, 2, 3 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 2, 2, 3 ] );
 				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.sourcePosition.path = [ 2, 2, 5 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 2, 2, 5 ] );
 				expected.howMany = 2;
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
 				expected.baseVersion++;
@@ -2681,7 +2687,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'range intersects, target inside transforming range and is important: split into two operations', () => {
-				op.targetPosition.path = [ 2, 2, 7 ];
+				op.targetPosition = new Position( op.targetPosition.root, [ 2, 2, 7 ] );
 
 				const transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 5 ] ),
@@ -2694,21 +2700,21 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 2 );
 
-				expected.sourcePosition.path = [ 2, 2, 4 ];
-				expected.targetPosition.path = [ 4, 1, 2 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 2, 2, 4 ] );
+				expected.targetPosition = new Position( expected.targetPosition.root, [ 4, 1, 2 ] );
 				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.sourcePosition.path = [ 4, 1, 0 ];
-				expected.targetPosition.path = [ 4, 1, 3 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 4, 1, 0 ] );
+				expected.targetPosition = new Position( expected.targetPosition.root, [ 4, 1, 3 ] );
 				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
 			} );
 
 			it( 'range intersects, target inside transforming range and is less important: shrink range', () => {
-				op.targetPosition.path = [ 2, 2, 7 ];
+				op.targetPosition = new Position( op.targetPosition.root, [ 2, 2, 7 ] );
 
 				const transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 5 ] ),
@@ -2721,8 +2727,8 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.sourcePosition.path = [ 2, 2, 4 ];
-				expected.targetPosition.path = [ 4, 1, 2 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 2, 2, 4 ] );
+				expected.targetPosition = new Position( expected.targetPosition.root, [ 4, 1, 2 ] );
 				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
@@ -2742,7 +2748,7 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 2 );
 
-				expected.sourcePosition.path = [ 2, 2, 4 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 2, 2, 4 ] );
 				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
@@ -2767,19 +2773,19 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 3 );
 
-				expected.sourcePosition.path = [ 2, 2, 4 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 2, 2, 4 ] );
 				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.sourcePosition.path = [ 4, 1, 0 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 4, 1, 0 ] );
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
 				expected.howMany = 2;
 				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
 
-				expected.sourcePosition.path = [ 2, 2, 4 ];
+				expected.sourcePosition = new Position( expected.sourcePosition.root, [ 2, 2, 4 ] );
 				expected.targetPosition = targetPosition.getShiftedBy( 3 );
 				expected.howMany = 1;
 				expected.baseVersion++;
@@ -3060,7 +3066,7 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.position.offset = 4;
+				expected.position = expected.position.getShiftedTo( 4 );
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
@@ -3089,7 +3095,7 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.position.path = [ 0, 4, 2 ];
+				expected.position = new Position( expected.position.root, [ 0, 4, 2 ] );
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
@@ -3219,7 +3225,7 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.position.offset = 0;
+				expected.position = expected.position.getShiftedTo( 0 );
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
@@ -3236,7 +3242,7 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.position.path = [ 0, 0, 2 ];
+				expected.position = new Position( expected.position.root, [ 0, 0, 2 ] );
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
@@ -3253,7 +3259,7 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.position.path = [ 2, 6 ];
+				expected.position = new Position( expected.position.root, [ 2, 6 ] );
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
@@ -3270,7 +3276,7 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.position.path = [ 2, 6, 2 ];
+				expected.position = new Position( expected.position.root, [ 2, 6, 2 ] );
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
@@ -3287,7 +3293,7 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.position.offset = 4;
+				expected.position = expected.position.getShiftedTo( 4 );
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
@@ -3304,7 +3310,7 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 1 );
 
-				expected.position.offset = 0;
+				expected.position = expected.position.getShiftedTo( 0 );
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
@@ -3336,8 +3342,8 @@ describe( 'transform', () => {
 				const transOp = transform( op, transformBy );
 
 				expected.newRange = null;
-				expected.oldRange.start.offset = 3;
-				expected.oldRange.end.offset = 6;
+				expected.oldRange.start = expected.oldRange.start.getShiftedTo( 3 );
+				expected.oldRange.end = expected.oldRange.end.getShiftedTo( 6 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3351,8 +3357,8 @@ describe( 'transform', () => {
 				const transOp = transform( op, transformBy );
 
 				expected.oldRange = null;
-				expected.newRange.start.offset = 12;
-				expected.newRange.end.offset = 14;
+				expected.newRange.start = expected.newRange.start.getShiftedTo( 12 );
+				expected.newRange.end = expected.newRange.end.getShiftedTo( 14 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3388,8 +3394,8 @@ describe( 'transform', () => {
 				const transOp = transform( op, transformBy );
 
 				expected.newRange = null;
-				expected.oldRange.start.offset = 0;
-				expected.oldRange.end.offset = 3;
+				expected.oldRange.start = expected.oldRange.start.getShiftedTo( 0 );
+				expected.oldRange.end = expected.oldRange.end.getShiftedTo( 3 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3399,10 +3405,10 @@ describe( 'transform', () => {
 				const transformBy = new MoveOperation( Position.createAt( root, 2 ), 2, Position.createAt( root, 20 ), baseVersion );
 				const transOp = transform( op, transformBy );
 
-				expected.oldRange.start.offset = 1;
-				expected.oldRange.end.offset = 2;
-				expected.newRange.start.offset = 8;
-				expected.newRange.end.offset = 10;
+				expected.oldRange.start = expected.oldRange.start.getShiftedTo( 1 );
+				expected.oldRange.end = expected.oldRange.end.getShiftedTo( 2 );
+				expected.newRange.start = expected.newRange.start.getShiftedTo( 8 );
+				expected.newRange.end = expected.newRange.end.getShiftedTo( 10 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3416,8 +3422,8 @@ describe( 'transform', () => {
 				const transOp = transform( op, transformBy );
 
 				expected.oldRange = null;
-				expected.newRange.start.offset = 10;
-				expected.newRange.end.offset = 14;
+				expected.newRange.start = expected.newRange.start.getShiftedTo( 10 );
+				expected.newRange.end = expected.newRange.end.getShiftedTo( 14 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3427,10 +3433,10 @@ describe( 'transform', () => {
 				const transformBy = new MoveOperation( Position.createAt( root, 20 ), 4, Position.createAt( root, 2 ), baseVersion );
 				const transOp = transform( op, transformBy );
 
-				expected.oldRange.start.offset = 1;
-				expected.oldRange.end.offset = 8;
-				expected.newRange.start.offset = 14;
-				expected.newRange.end.offset = 16;
+				expected.oldRange.start = expected.oldRange.start.getShiftedTo( 1 );
+				expected.oldRange.end = expected.oldRange.end.getShiftedTo( 8 );
+				expected.newRange.start = expected.newRange.start.getShiftedTo( 14 );
+				expected.newRange.end = expected.newRange.end.getShiftedTo( 16 );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );

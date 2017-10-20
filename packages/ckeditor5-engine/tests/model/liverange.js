@@ -208,7 +208,7 @@ describe( 'LiveRange', () => {
 			} );
 
 			it( 'is at the live range start position and live range is collapsed', () => {
-				live.end.path = [ 0, 1, 4 ];
+				live.end = new Position( live.end.root, [ 0, 1, 4 ] );
 
 				const insertRange = new Range( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 1, 8 ] ) );
 
@@ -372,7 +372,7 @@ describe( 'LiveRange', () => {
 			} );
 
 			it( 'is equal to live range', () => {
-				live.end.path = [ 0, 1, 7 ];
+				live.end = new Position( live.end.root, [ 0, 1, 7 ] );
 
 				const moveSource = new Position( root, [ 0, 1, 4 ] );
 				const moveRange = new Range( new Position( root, [ 0, 3, 0 ] ), new Position( root, [ 0, 3, 3 ] ) );
@@ -389,7 +389,7 @@ describe( 'LiveRange', () => {
 			} );
 
 			it( 'contains live range', () => {
-				live.end.path = [ 0, 1, 7 ];
+				live.end = new Position( live.end.root, [ 0, 1, 7 ] );
 
 				const moveSource = new Position( root, [ 0, 1, 3 ] );
 				const moveRange = new Range( new Position( root, [ 0, 3, 0 ] ), new Position( root, [ 0, 3, 9 ] ) );
@@ -406,7 +406,7 @@ describe( 'LiveRange', () => {
 			} );
 
 			it( 'is intersecting with live range and points to live range', () => {
-				live.end.path = [ 0, 1, 12 ];
+				live.end = new Position( live.end.root, [ 0, 1, 12 ] );
 
 				const moveSource = new Position( root, [ 0, 1, 2 ] );
 				const moveRange = new Range( new Position( root, [ 0, 1, 7 ] ), new Position( root, [ 0, 1, 10 ] ) );
@@ -656,7 +656,7 @@ describe( 'LiveRange', () => {
 			} );
 
 			it( 'from the range to the range', () => {
-				live.end.path = [ 0, 1, 12 ];
+				live.end = new Position( live.end.root, [ 0, 1, 12 ] );
 
 				const moveSource = new Position( root, [ 0, 1, 6 ] );
 				const moveRange = new Range( new Position( root, [ 0, 1, 8 ] ), new Position( root, [ 0, 1, 10 ] ) );

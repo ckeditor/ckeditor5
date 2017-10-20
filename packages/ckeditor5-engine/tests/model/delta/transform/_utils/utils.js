@@ -68,12 +68,9 @@ export function getMarkerDelta( name, oldRange, newRange, version ) {
 export function getMergeDelta( position, howManyInPrev, howManyInNext, version ) {
 	const delta = new MergeDelta();
 
-	const sourcePosition = Position.createFromPosition( position );
-	sourcePosition.path.push( 0 );
+	const sourcePosition = position.getMovedToChild();
 
-	const targetPosition = Position.createFromPosition( position );
-	targetPosition.offset--;
-	targetPosition.path.push( howManyInPrev );
+	const targetPosition = position.getShiftedBy( -1 ).getMovedToChild( howManyInPrev );
 
 	const move = new MoveOperation( sourcePosition, howManyInNext, targetPosition, version );
 	move.isSticky = true;
@@ -129,12 +126,9 @@ export function getRenameDelta( position, oldName, newName, baseVersion ) {
 export function getSplitDelta( position, nodeCopy, howManyMove, version ) {
 	const delta = new SplitDelta();
 
-	const insertPosition = Position.createFromPosition( position );
-	insertPosition.path = insertPosition.getParentPath();
-	insertPosition.offset++;
+	const insertPosition = position.getMovedToParent().getShiftedBy( 1 );
 
-	const targetPosition = Position.createFromPosition( insertPosition );
-	targetPosition.path.push( 0 );
+	const targetPosition = insertPosition.getMovedToChild();
 
 	delta.addOperation( new InsertOperation( insertPosition, [ nodeCopy ], version ) );
 
@@ -153,8 +147,8 @@ export function getWrapDelta( range, element, version ) {
 
 	const insert = new InsertOperation( range.end, element, version );
 
-	const targetPosition = Position.createFromPosition( range.end );
-	targetPosition.path.push( 0 );
+	const targetPosition = range.end.getMovedToChild();
+
 	const move = new MoveOperation( range.start, range.end.offset - range.start.offset, targetPosition, version + 1 );
 
 	delta.addOperation( insert );
@@ -168,14 +162,12 @@ export function getWrapDelta( range, element, version ) {
 export function getUnwrapDelta( positionBefore, howManyChildren, version ) {
 	const delta = new UnwrapDelta();
 
-	const sourcePosition = Position.createFromPosition( positionBefore );
-	sourcePosition.path.push( 0 );
+	const sourcePosition = positionBefore.getMovedToChild();
 
 	const move = new MoveOperation( sourcePosition, howManyChildren, positionBefore, version );
 	move.isSticky = true;
 
-	const removePosition = Position.createFromPosition( positionBefore );
-	removePosition.offset += howManyChildren;
+	const removePosition = positionBefore.getShiftedBy( howManyChildren );
 
 	const gy = sourcePosition.root.document.graveyard;
 	const gyPos = Position.createAt( gy, 0 );

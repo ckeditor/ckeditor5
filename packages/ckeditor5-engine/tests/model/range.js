@@ -855,7 +855,8 @@ describe( 'Range', () => {
 			} );
 
 			it( 'move inside the range', () => {
-				range.end.offset = 6;
+				range.end = range.end.getShiftedTo( 6 );
+
 				const start = new Position( root, [ 3 ] );
 				const target = new Position( root, [ 5 ] );
 				const delta = getMoveDelta( start, 1, target, 1 );

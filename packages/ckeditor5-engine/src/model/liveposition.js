@@ -7,7 +7,7 @@
  * @module engine/model/liveposition
  */
 
-import Position from './position';
+import Position, { setPath, setRoot } from './position';
 import Range from './range';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -194,8 +194,8 @@ function transform( type, range, position ) {
 	if ( !this.isEqual( transformed ) ) {
 		const oldPosition = Position.createFromPosition( this );
 
-		this.path = transformed.path;
-		this.root = transformed.root;
+		setPath( this, transformed.path );
+		setRoot( this, transformed.root );
 
 		this.fire( 'change', oldPosition );
 	}

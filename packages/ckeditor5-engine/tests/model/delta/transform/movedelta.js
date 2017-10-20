@@ -135,8 +135,8 @@ describe( 'transform', () => {
 			} );
 
 			it( 'move range in merged node #2', () => {
-				moveDelta._moveOperation.sourcePosition.path = [ 3, 3, 1 ];
-				moveDelta._moveOperation.targetPosition.path = [ 3, 3, 4 ];
+				moveDelta._moveOperation.sourcePosition = new Position( root, [ 3, 3, 1 ] );
+				moveDelta._moveOperation.targetPosition = new Position( root, [ 3, 3, 4 ] );
 
 				const mergePosition = new Position( root, [ 3, 3 ] );
 				const mergeDelta = getMergeDelta( mergePosition, 1, 4, baseVersion );
