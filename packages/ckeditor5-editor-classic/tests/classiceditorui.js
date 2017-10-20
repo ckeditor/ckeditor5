@@ -24,24 +24,15 @@ describe( 'ClassicEditorUI', () => {
 	let editor, view, ui;
 
 	beforeEach( () => {
-		return VirtualTestEditor
+		return VirtualClassicTestEditor
 			.create( {
 				toolbar: [ 'foo', 'bar' ],
-				ui: {
-					width: 100,
-					height: 200
-				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 
-				view = new ClassicEditorUIView( editor.locale );
-				ui = new ClassicEditorUI( editor, view );
-
-				ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
-				ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
-
-				ui.init();
+				ui = editor.ui;
+				view = ui.view;
 			} );
 	} );
 
@@ -56,7 +47,7 @@ describe( 'ClassicEditorUI', () => {
 		} );
 
 		it( 'sets #view', () => {
-			expect( ui.view ).to.equal( view );
+			expect( ui.view ).to.be.instanceOf( ClassicEditorUIView );
 		} );
 
 		it( 'creates #componentFactory factory', () => {
@@ -70,19 +61,7 @@ describe( 'ClassicEditorUI', () => {
 
 	describe( 'init()', () => {
 		it( 'renders the #view', () => {
-			return VirtualTestEditor.create()
-				.then( editor => {
-					const view = new ClassicEditorUIView( editor.locale );
-					const ui = new ClassicEditorUI( editor, view );
-					const spy = sinon.spy( view, 'render' );
-
-					ui.init();
-					sinon.assert.calledOnce( spy );
-
-					ui.destroy();
-
-					return editor.destroy();
-				} );
+			expect( view.isRendered ).to.be.true;
 		} );
 
 		describe( 'stickyPanel', () => {
@@ -103,20 +82,14 @@ describe( 'ClassicEditorUI', () => {
 			} );
 
 			it( 'sets view.stickyPanel#viewportTopOffset, when specified in the config', () => {
-				return VirtualTestEditor
+				return VirtualClassicTestEditor
 					.create( {
 						toolbar: {
 							viewportTopOffset: 100
 						}
 					} )
 					.then( editor => {
-						const view = new ClassicEditorUIView( editor.locale );
-						const ui = new ClassicEditorUI( editor, view );
-
-						ui.init();
-						expect( view.stickyPanel.viewportTopOffset ).to.equal( 100 );
-
-						ui.destroy();
+						expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 100 );
 
 						return editor.destroy();
 					} );
@@ -164,29 +137,22 @@ describe( 'ClassicEditorUI', () => {
 
 		describe( 'view.toolbar#items', () => {
 			it( 'are filled with the config.toolbar (specified as an Array)', () => {
-				return VirtualTestEditor
+				return VirtualClassicTestEditor
 					.create( {
 						toolbar: [ 'foo', 'bar' ]
 					} )
 					.then( editor => {
-						const view = new ClassicEditorUIView( editor.locale );
-						const ui = new ClassicEditorUI( editor, view );
-						const spy = testUtils.sinon.spy( view.toolbar, 'fillFromConfig' );
+						const items = editor.ui.view.toolbar.items;
 
-						ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
-						ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
-
-						ui.init();
-						sinon.assert.calledWithExactly( spy, editor.config.get( 'toolbar' ), ui.componentFactory );
-
-						ui.destroy();
+						expect( items.get( 0 ).name ).to.equal( 'foo' );
+						expect( items.get( 1 ).name ).to.equal( 'bar' );
 
 						return editor.destroy();
 					} );
 			} );
 
 			it( 'are filled with the config.toolbar (specified as an Object)', () => {
-				return VirtualTestEditor
+				return VirtualClassicTestEditor
 					.create( {
 						toolbar: {
 							items: [ 'foo', 'bar' ],
@@ -194,20 +160,10 @@ describe( 'ClassicEditorUI', () => {
 						}
 					} )
 					.then( editor => {
-						const view = new ClassicEditorUIView( editor.locale );
-						const ui = new ClassicEditorUI( editor, view );
-						const spy = testUtils.sinon.spy( view.toolbar, 'fillFromConfig' );
+						const items = editor.ui.view.toolbar.items;
 
-						ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
-						ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
-
-						ui.init();
-						sinon.assert.calledWithExactly( spy,
-							editor.config.get( 'toolbar.items' ),
-							ui.componentFactory
-						);
-
-						ui.destroy();
+						expect( items.get( 0 ).name ).to.equal( 'foo' );
+						expect( items.get( 1 ).name ).to.equal( 'bar' );
 
 						return editor.destroy();
 					} );
@@ -215,13 +171,11 @@ describe( 'ClassicEditorUI', () => {
 		} );
 
 		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
-			return VirtualTestEditor.create()
+			return VirtualClassicTestEditor.create()
 				.then( editor => {
-					const view = new ClassicEditorUIView( editor.locale );
-					const ui = new ClassicEditorUI( editor, view );
+					const ui = editor.ui;
+					const view = ui.view;
 					const spy = testUtils.sinon.spy( view.toolbar, 'focus' );
-
-					ui.init();
 
 					ui.focusTracker.isFocused = true;
 					ui.view.toolbar.focusTracker.isFocused = false;
@@ -234,8 +188,6 @@ describe( 'ClassicEditorUI', () => {
 					} );
 
 					sinon.assert.calledOnce( spy );
-
-					ui.destroy();
 
 					return editor.destroy();
 				} );
@@ -261,4 +213,39 @@ function viewCreator( name ) {
 
 		return view;
 	};
+}
+
+class VirtualClassicTestEditor extends VirtualTestEditor {
+	constructor( config ) {
+		super( config );
+
+		const view = new ClassicEditorUIView( this.locale );
+		this.ui = new ClassicEditorUI( this, view );
+
+		this.ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
+		this.ui.componentFactory.add( 'bar', viewCreator( 'bar' ) );
+	}
+
+	destroy() {
+		this.ui.destroy();
+
+		return super.destroy();
+	}
+
+	static create( config ) {
+		return new Promise( resolve => {
+			const editor = new this( config );
+
+			resolve(
+				editor.initPlugins()
+					.then( () => {
+						editor.ui.init();
+						editor.fire( 'uiReady' );
+						editor.fire( 'dataReady' );
+						editor.fire( 'ready' );
+					} )
+					.then( () => editor )
+			);
+		} );
+	}
 }
