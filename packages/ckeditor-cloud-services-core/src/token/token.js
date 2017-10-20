@@ -25,7 +25,7 @@ class Token {
 	 * @param {String} tokenUrl Endpoint address to download the token.
 	 * @param {Object} options
 	 * @param {Number} [options.refreshIntervalTime=3600000] Delay between refreshes. Default 1 hour.
-	 * @param {Boolean} [options.autoStart=true] Specifies whether to start the refresh automatically.
+	 * @param {Boolean} [options.startAutoRefresh=true] Specifies whether to start the refresh automatically.
 	 */
 	constructor( tokenUrl, options = DEFAULT_OPTIONS ) {
 		/**
