@@ -10,7 +10,7 @@
 import { default as EmitterMixin, _getEmitterListenedTo, _setEmitterId } from '../emittermixin';
 import uid from '../uid';
 import extend from '../lib/lodash/extend';
-import isNative from '../lib/lodash/isNative';
+import isDomNode from './isdomnode';
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
@@ -271,15 +271,6 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 // @return {String} UID for given DOM Node.
 function getNodeUID( node ) {
 	return node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = uid() );
-}
-
-// Checks (naively) if given node is native DOM Node.
-//
-// @private
-// @param {Node} node
-// @return {Boolean} True when native DOM Node.
-function isDomNode( node ) {
-	return node && isNative( node.addEventListener );
 }
 
 /**
