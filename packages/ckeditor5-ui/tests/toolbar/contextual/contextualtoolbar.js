@@ -44,8 +44,6 @@ describe( 'ContextualToolbar', () => {
 
 				// Focus the engine.
 				editor.editing.view.isFocused = true;
-
-				contextualToolbar.toolbarView.init();
 			} );
 	} );
 
