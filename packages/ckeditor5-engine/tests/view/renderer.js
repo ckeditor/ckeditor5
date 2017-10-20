@@ -410,6 +410,50 @@ describe( 'Renderer', () => {
 			expect( viewRoot ).to.be.ok;
 		} );
 
+		it( 'should not add filler when inside contenteditable=false parent', () => {
+			const { view: viewP, selection: newSelection } = parse(
+				'<container:p>foo<attribute:b contenteditable="false">[]</attribute:b>bar</container:p>' );
+
+			viewRoot.appendChildren( viewP );
+			selection.setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
+
+			const domP = domRoot.childNodes[ 0 ];
+
+			expect( domP.childNodes.length ).to.equal( 3 );
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'foo' );
+			expect( domP.childNodes[ 2 ].data ).to.equal( 'bar' );
+			expect( domP.childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
+			expect( domP.childNodes[ 1 ].childNodes.length ).to.equal( 0 );
+		} );
+
+		it( 'should not add filler when inside contenteditable=false ancestor', () => {
+			const { view: viewP, selection: newSelection } = parse(
+				'<container:p contenteditable="false">foo<attribute:b>[]</attribute:b>bar</container:p>' );
+
+			viewRoot.appendChildren( viewP );
+			selection.setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
+
+			const domP = domRoot.childNodes[ 0 ];
+
+			expect( domP.childNodes.length ).to.equal( 3 );
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'foo' );
+			expect( domP.childNodes[ 2 ].data ).to.equal( 'bar' );
+			expect( domP.childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
+			expect( domP.childNodes[ 1 ].childNodes.length ).to.equal( 0 );
+		} );
+
 		it( 'should add and remove inline filler in case <p>foo<b>[]</b>bar</p>', () => {
 			const domSelection = document.getSelection();
 
