@@ -39,7 +39,7 @@ describe( 'BalloonEditorUI', () => {
 		} );
 
 		it( 'sets #view', () => {
-			expect( ui.view ).to.equal( view );
+			expect( ui.view ).to.be.instanceOf( BalloonEditorUIView );
 		} );
 
 		it( 'creates #componentFactory factory', () => {
