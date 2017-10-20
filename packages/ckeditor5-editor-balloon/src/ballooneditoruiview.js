@@ -32,7 +32,7 @@ export default class BalloonEditorUIView extends EditorUIView {
 		 */
 		this.editable = new InlineEditableUIView( locale, editableElement );
 
-		this.addChildren( this.editable );
+		this.registerChildren( this.editable );
 	}
 
 	/**

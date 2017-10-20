@@ -3,35 +3,34 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, Event */
+/* globals Event */
 
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
-
 import BalloonEditorUI from '../src/ballooneditorui';
 import BalloonEditorUIView from '../src/ballooneditoruiview';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'BalloonEditorUI', () => {
-	let editorElement, editor, editable, view, ui;
+	let editor, view, ui;
 
 	beforeEach( () => {
-		editorElement = document.createElement( 'div' );
-		document.body.appendChild( editorElement );
-
-		editor = new ClassicTestEditor( editorElement, {
-			plugins: [ ContextualToolbar ]
-		} );
-
-		return editor.initPlugins()
-			.then( () => {
-				view = new BalloonEditorUIView( editor.locale );
-				ui = new BalloonEditorUI( editor, view );
-				editable = editor.editing.view.getRoot();
+		return VirtualBalloonTestEditor
+			.create( {
+				plugins: [ ContextualToolbar ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				ui = editor.ui;
+				view = ui.view;
 			} );
+	} );
+
+	afterEach( () => {
+		editor.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -52,6 +51,12 @@ describe( 'BalloonEditorUI', () => {
 		} );
 
 		describe( 'editable', () => {
+			let editable;
+
+			beforeEach( () => {
+				editable = editor.editing.view.getRoot();
+			} );
+
 			it( 'registers view.editable#element in editor focus tracker', () => {
 				ui.focusTracker.isFocused = false;
 
@@ -88,15 +93,8 @@ describe( 'BalloonEditorUI', () => {
 	} );
 
 	describe( 'init()', () => {
-		afterEach( () => {
-			ui.destroy();
-		} );
-
 		it( 'initializes the #view', () => {
-			const spy = sinon.spy( view, 'init' );
-
-			ui.init();
-			sinon.assert.calledOnce( spy );
+			expect( view.isRendered ).to.be.true;
 		} );
 
 		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
@@ -106,7 +104,6 @@ describe( 'BalloonEditorUI', () => {
 			const toolbarHideSpy = sinon.stub( toolbar, 'hide' ).returns( {} );
 			const editingFocusSpy = sinon.stub( editor.editing.view, 'focus' ).returns( {} );
 
-			ui.init();
 			ui.focusTracker.isFocused = true;
 
 			// #show and #hide are mocked so mocking the focus as well.
@@ -140,10 +137,42 @@ describe( 'BalloonEditorUI', () => {
 		it( 'destroys the #view', () => {
 			const spy = sinon.spy( view, 'destroy' );
 
-			ui.init();
-			ui.destroy();
-
-			sinon.assert.calledOnce( spy );
+			return editor.destroy()
+				.then( () => {
+					sinon.assert.calledOnce( spy );
+				} );
 		} );
 	} );
 } );
+
+class VirtualBalloonTestEditor extends VirtualTestEditor {
+	constructor( config ) {
+		super( config );
+
+		const view = new BalloonEditorUIView( this.locale );
+		this.ui = new BalloonEditorUI( this, view );
+	}
+
+	destroy() {
+		this.ui.destroy();
+
+		return super.destroy();
+	}
+
+	static create( config ) {
+		return new Promise( resolve => {
+			const editor = new this( config );
+
+			resolve(
+				editor.initPlugins()
+					.then( () => {
+						editor.ui.init();
+						editor.fire( 'uiReady' );
+						editor.fire( 'dataReady' );
+						editor.fire( 'ready' );
+					} )
+					.then( () => editor )
+			);
+		} );
+	}
+}

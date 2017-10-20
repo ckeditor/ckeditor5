@@ -40,7 +40,7 @@ describe( 'BalloonEditor', () => {
 	describe( 'constructor()', () => {
 		beforeEach( () => {
 			editor = new BalloonEditor( editorElement, {
-				plugins: [ Bold ],
+				plugins: [ ContextualToolbar, Bold ],
 				toolbar: [ 'Bold' ]
 			} );
 		} );
@@ -53,10 +53,6 @@ describe( 'BalloonEditor', () => {
 			expect( editor.config.get( 'contextualToolbar' ) ).to.have.members( [ 'Bold' ] );
 		} );
 
-		it( 'creates a single div editable root in the view', () => {
-			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
-		} );
-
 		it( 'creates a single document root', () => {
 			expect( count( editor.document.getRootNames() ) ).to.equal( 1 );
 			expect( editor.document.getRoot() ).to.have.property( 'name', '$root' );
@@ -64,11 +60,6 @@ describe( 'BalloonEditor', () => {
 
 		it( 'uses HTMLDataProcessor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
-		} );
-
-		it( 'creates the UI using BalloonEditorUI classes', () => {
-			expect( editor.ui ).to.be.instanceof( BalloonEditorUI );
-			expect( editor.ui.view ).to.be.instanceof( BalloonEditorUIView );
 		} );
 	} );
 
@@ -97,6 +88,15 @@ describe( 'BalloonEditor', () => {
 
 		it( 'attaches editable UI as view\'s DOM root', () => {
 			expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
+		} );
+
+		it( 'creates a single div editable root in the view', () => {
+			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
+		} );
+
+		it( 'creates the UI using BalloonEditorUI classes', () => {
+			expect( editor.ui ).to.be.instanceof( BalloonEditorUI );
+			expect( editor.ui.view ).to.be.instanceof( BalloonEditorUIView );
 		} );
 
 		it( 'loads data from the editor element', () => {
@@ -186,12 +186,12 @@ describe( 'BalloonEditor', () => {
 		} );
 
 		it( 'fires uiReady once UI is ready', () => {
-			let isReady;
+			let isRendered;
 
 			class EventWatcher extends Plugin {
 				init() {
 					this.editor.on( 'uiReady', () => {
-						isReady = this.editor.ui.view.ready;
+						isRendered = this.editor.ui.view.isRendered;
 					} );
 				}
 			}
@@ -201,7 +201,7 @@ describe( 'BalloonEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( isReady ).to.be.true;
+					expect( isRendered ).to.be.true;
 
 					editor = newEditor;
 				} );

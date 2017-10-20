@@ -43,6 +43,17 @@ export default class BalloonEditorUI {
 		 * @inheritDoc
 		 */
 		this.focusTracker = new FocusTracker();
+	}
+
+	/**
+	 * Initializes the UI.
+	 */
+	init() {
+		const editor = this.editor;
+		const view = this.view;
+		const contextualToolbar = editor.plugins.get( 'ContextualToolbar' );
+
+		view.render();
 
 		// Setup the editable.
 		const editingRoot = editor.editing.createRoot( view.editableElement );
@@ -54,16 +65,6 @@ export default class BalloonEditorUI {
 		view.editable.name = editingRoot.rootName;
 
 		this.focusTracker.add( view.editableElement );
-	}
-
-	/**
-	 * Initializes the UI.
-	 */
-	init() {
-		const editor = this.editor;
-		const contextualToolbar = editor.plugins.get( 'ContextualToolbar' );
-
-		this.view.init();
 
 		enableToolbarKeyboardFocus( {
 			origin: editor.editing.view,

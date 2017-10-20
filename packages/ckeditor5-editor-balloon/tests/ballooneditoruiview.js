@@ -28,7 +28,7 @@ describe( 'BalloonEditorUIView', () => {
 			it( 'is registered as a child', () => {
 				const spy = sinon.spy( view.editable, 'destroy' );
 
-				view.init();
+				view.render();
 				view.destroy();
 				sinon.assert.calledOnce( spy );
 			} );
@@ -37,7 +37,7 @@ describe( 'BalloonEditorUIView', () => {
 
 	describe( 'editableElement', () => {
 		it( 'returns editable\'s view element', () => {
-			view.init();
+			view.render();
 			expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
 			view.destroy();
 		} );
