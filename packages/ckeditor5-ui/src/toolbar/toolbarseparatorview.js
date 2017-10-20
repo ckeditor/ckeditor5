@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-import Template from '../template';
 
 /**
  * The toolbar separator view class.
@@ -22,7 +21,7 @@ export default class ToolbarSeparatorView extends View {
 	constructor( locale ) {
 		super( locale );
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'span',
 			attributes: {
 				class: [

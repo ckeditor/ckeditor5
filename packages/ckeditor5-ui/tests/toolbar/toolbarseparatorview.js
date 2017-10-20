@@ -11,7 +11,7 @@ describe( 'ToolbarSeparatorView', () => {
 	beforeEach( () => {
 		view = new ToolbarSeparatorView();
 
-		return view.init();
+		view.render();
 	} );
 
 	describe( 'template', () => {
