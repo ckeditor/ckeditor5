@@ -287,7 +287,7 @@ export default class View {
 	 * view is managed by its parent, including {@link #render rendering}
 	 * and {@link #destroy destruction}.
 	 *
-	 * To revert this, use {@link #removeChildren}.
+	 * To revert this, use {@link #deregisterChildren}.
 	 *
 	 *		class SampleView extends View {
 	 *			constructor( locale ) {

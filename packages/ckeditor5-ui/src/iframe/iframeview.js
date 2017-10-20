@@ -41,7 +41,7 @@ export default class IframeView extends View {
 
 	/**
 	 * Renders the iframe's {@link #element} and returns a `Promise` for asynchronous
-	 * child `contentDocument` loading process. See {@link #_iframePromise}.
+	 * child `contentDocument` loading process.
 	 *
 	 * @returns {Promise} A promise which resolves once the iframe `contentDocument` has
 	 * been {@link #event:loaded}.
