@@ -35,20 +35,10 @@ describe( 'ClassicTestEditorUI', () => {
 		} );
 	} );
 
-	describe( 'init()', () => {
-		it( 'initializes the #view', () => {
-			const spy = sinon.spy( view, 'init' );
-
-			ui.init();
-			sinon.assert.calledOnce( spy );
-		} );
-	} );
-
 	describe( 'destroy()', () => {
 		it( 'destroys the #view', () => {
 			const spy = sinon.spy( view, 'destroy' );
 
-			ui.init();
 			ui.destroy();
 			sinon.assert.calledOnce( spy );
 		} );
