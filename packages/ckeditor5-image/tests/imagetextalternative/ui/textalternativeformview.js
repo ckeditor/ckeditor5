@@ -21,12 +21,12 @@ describe( 'TextAlternativeFormView', () => {
 
 	beforeEach( () => {
 		view = new TextAlternativeFormView( { t: () => {} } );
-
-		view.init();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
+			view.render();
+
 			expect( view.element.classList.contains( 'cke-text-alternative-form' ) ).to.be.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
@@ -45,6 +45,14 @@ describe( 'TextAlternativeFormView', () => {
 			expect( view.cancelButtonView ).to.be.instanceOf( View );
 		} );
 
+		it( 'should create #_focusCycler instance', () => {
+			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
+		} );
+
+		it( 'should create #_focusables view collection', () => {
+			expect( view._focusables ).to.be.instanceOf( ViewCollection );
+		} );
+
 		it( 'should fire `cancel` event on cancelButtonView#execute', () => {
 			const spy = sinon.spy();
 			view.on( 'cancel', spy );
@@ -52,17 +60,21 @@ describe( 'TextAlternativeFormView', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+	} );
+
+	describe( 'render()', () => {
+		it( 'starts listening for #keystrokes coming from #element', () => {
+			const spy = sinon.spy( view.keystrokes, 'listenTo' );
+
+			view.render();
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, view.element );
+		} );
 
 		describe( 'focus cycling and management', () => {
-			it( 'should create #_focusCycler instance', () => {
-				expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
-			} );
-
-			it( 'should create #_focusables view collection', () => {
-				expect( view._focusables ).to.be.instanceOf( ViewCollection );
-			} );
-
 			it( 'should register child views in #_focusables', () => {
+				view.render();
+
 				expect( view._focusables.map( f => f ) ).to.have.members( [
 					view.labeledInput,
 					view.saveButtonView,
@@ -73,7 +85,7 @@ describe( 'TextAlternativeFormView', () => {
 			it( 'should register child views\' #element in #focusTracker', () => {
 				const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
 
-				view = new TextAlternativeFormView( { t: () => {} } );
+				view.render();
 
 				sinon.assert.calledWithExactly( spy.getCall( 0 ), view.labeledInput.element );
 				sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
@@ -81,6 +93,10 @@ describe( 'TextAlternativeFormView', () => {
 			} );
 
 			describe( 'activates keyboard navigation in the form', () => {
+				beforeEach( () => {
+					view.render();
+				} );
+
 				it( 'so "tab" focuses the next focusable item', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.tab,
@@ -123,23 +139,12 @@ describe( 'TextAlternativeFormView', () => {
 		} );
 	} );
 
-	describe( 'init()', () => {
-		it( 'starts listening for #keystrokes coming from #element', () => {
-			view = new TextAlternativeFormView( { t: () => {} } );
-
-			const spy = sinon.spy( view.keystrokes, 'listenTo' );
-
-			view.init();
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, view.element );
-		} );
-	} );
-
 	describe( 'DOM bindings', () => {
 		describe( 'submit event', () => {
 			it( 'should trigger submit event', () => {
 				const spy = sinon.spy();
 
+				view.render();
 				view.on( 'submit', spy );
 				view.element.dispatchEvent( new Event( 'submit' ) );
 

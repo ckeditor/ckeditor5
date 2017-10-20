@@ -102,6 +102,9 @@ export default class ImageTextAlternative extends Plugin {
 		 */
 		this._form = new TextAlternativeFormView( editor.locale );
 
+		// Render the form so its #element is available for clickOutsideHandler.
+		this._form.render();
+
 		this.listenTo( this._form, 'submit', () => {
 			editor.execute( 'imageTextAlternative', {
 				newValue: this._form.labeledInput.inputView.element.value

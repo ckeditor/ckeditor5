@@ -7,7 +7,6 @@
  * @module image/imagetoolbar
  */
 
-import Template from '@ckeditor/ckeditor5-ui/src/template';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
@@ -71,7 +70,7 @@ export default class ImageToolbar extends Plugin {
 		this._toolbar = new ToolbarView();
 
 		// Add CSS class to the toolbar.
-		Template.extend( this._toolbar.template, {
+		this._toolbar.extendTemplate( {
 			attributes: {
 				class: 'ck-editor-toolbar'
 			}
