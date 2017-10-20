@@ -39,27 +39,33 @@ describe( 'ClassicEditor', () => {
 			editor = new ClassicEditor( editorElement );
 		} );
 
-		it( 'creates a single div editable root in the view', () => {
-			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
-		} );
-
 		it( 'creates a single document root', () => {
 			expect( count( editor.document.getRootNames() ) ).to.equal( 1 );
 			expect( editor.document.getRoot() ).to.have.property( 'name', '$root' );
 		} );
 
-		it( 'creates the UI using BoxedEditorUI classes', () => {
-			expect( editor.ui ).to.be.instanceof( ClassicEditorUI );
-			expect( editor.ui.view ).to.be.instanceof( ClassicEditorUIView );
-		} );
-
 		it( 'uses HTMLDataProcessor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
+		} );
+
+		describe( 'ui', () => {
+			it( 'creates a single div editable root in the view', () => {
+				editor.ui.init();
+
+				expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
+
+				editor.ui.destroy();
+			} );
+
+			it( 'creates the UI using BoxedEditorUI classes', () => {
+				expect( editor.ui ).to.be.instanceof( ClassicEditorUI );
+				expect( editor.ui.view ).to.be.instanceof( ClassicEditorUIView );
+			} );
 		} );
 	} );
 
 	describe( 'create()', () => {
-		beforeEach( function() {
+		beforeEach( () => {
 			return ClassicEditor
 				.create( editorElement, {
 					plugins: [ Paragraph, Bold ]
@@ -75,14 +81,6 @@ describe( 'ClassicEditor', () => {
 
 		it( 'creates an instance which inherits from the ClassicEditor', () => {
 			expect( editor ).to.be.instanceof( ClassicEditor );
-		} );
-
-		it( 'inserts editor UI next to editor element', () => {
-			expect( editor.ui.view.element.previousSibling ).to.equal( editorElement );
-		} );
-
-		it( 'attaches editable UI as view\'s DOM root', () => {
-			expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
 		} );
 
 		it( 'loads data from the editor element', () => {
@@ -105,6 +103,16 @@ describe( 'ClassicEditor', () => {
 
 					return newEditor.destroy();
 				} );
+		} );
+
+		describe( 'ui', () => {
+			it( 'inserts editor UI next to editor element', () => {
+				expect( editor.ui.view.element.previousSibling ).to.equal( editorElement );
+			} );
+
+			it( 'attaches editable UI as view\'s DOM root', () => {
+				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
+			} );
 		} );
 	} );
 
@@ -162,13 +170,13 @@ describe( 'ClassicEditor', () => {
 				} );
 		} );
 
-		it( 'fires uiReady once UI is ready', () => {
+		it( 'fires uiReady once UI is rendered', () => {
 			let isReady;
 
 			class EventWatcher extends Plugin {
 				init() {
 					this.editor.on( 'uiReady', () => {
-						isReady = this.editor.ui.view.ready;
+						isReady = this.editor.ui.view.isRendered;
 					} );
 				}
 			}

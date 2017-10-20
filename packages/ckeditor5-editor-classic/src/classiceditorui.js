@@ -52,10 +52,16 @@ export default class ClassicEditorUI {
 		 * @private
 		 */
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+	}
 
-		// Set–up the view.
-		view.set( 'width', editor.config.get( 'ui.width' ) );
-		view.set( 'height', editor.config.get( 'ui.height' ) );
+	/**
+	 * Initializes the UI.
+	 */
+	init() {
+		const editor = this.editor;
+		const view = this.view;
+
+		view.render();
 
 		// Set–up the sticky panel with toolbar.
 		view.stickyPanel.bind( 'isActive' ).to( this.focusTracker, 'isFocused' );
@@ -70,16 +76,8 @@ export default class ClassicEditorUI {
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
 		view.editable.bind( 'isFocused' ).to( editor.editing.view );
 		view.editable.name = editingRoot.rootName;
-		this.focusTracker.add( view.editableElement );
-	}
 
-	/**
-	 * Initializes the UI.
-	 */
-	init() {
-		const editor = this.editor;
-
-		this.view.init();
+		this.focusTracker.add( this.view.editableElement );
 
 		if ( this._toolbarConfig ) {
 			this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );

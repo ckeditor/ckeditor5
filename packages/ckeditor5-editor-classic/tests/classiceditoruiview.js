@@ -17,6 +17,11 @@ describe( 'ClassicEditorUIView', () => {
 	beforeEach( () => {
 		locale = new Locale( 'en' );
 		view = new ClassicEditorUIView( locale );
+		view.render();
+	} );
+
+	afterEach( () => {
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -72,10 +77,10 @@ describe( 'ClassicEditorUIView', () => {
 			document.body.appendChild( view.element );
 
 			view.stickyPanel.limiterElement = view.element;
-			view.init();
 
 			expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
 
+			view.element.remove();
 			view.destroy();
 		} );
 	} );

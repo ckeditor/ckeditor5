@@ -11,7 +11,6 @@ import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxeded
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import StickyPanelView from '@ckeditor/ckeditor5-ui/src/panel/sticky/stickypanelview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 /**
  * Classic editor UI view. Uses an inline editable and a sticky toolbar, all
@@ -45,14 +44,11 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		 */
 		this.toolbar = new ToolbarView( locale );
 
-		Template.extend( this.toolbar.template, {
+		this.toolbar.extendTemplate( {
 			attributes: {
 				class: 'ck-editor-toolbar'
 			}
 		} );
-
-		// Set toolbar as a child of a stickyPanel and makes toolbar sticky.
-		this.stickyPanel.content.add( this.toolbar );
 
 		/**
 		 * Editable UI view.
@@ -61,6 +57,16 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
 		this.editable = new InlineEditableUIView( locale );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
+
+		// Set toolbar as a child of a stickyPanel and makes toolbar sticky.
+		this.stickyPanel.content.add( this.toolbar );
 
 		this.top.add( this.stickyPanel );
 		this.main.add( this.editable );
