@@ -15,7 +15,6 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-import Template from '../../../src/template';
 import ToolbarView from '../../../src/toolbar/toolbarview';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 
@@ -40,7 +39,7 @@ function createImageToolbar( editor ) {
 	// Create a BalloonPanelView instance.
 	const panel = new BalloonPanelView( editor.locale );
 
-	Template.extend( panel.template, {
+	panel.extendTemplate( {
 		attributes: {
 			class: [
 				'ck-toolbar-container',
