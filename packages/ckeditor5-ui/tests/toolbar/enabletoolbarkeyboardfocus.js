@@ -21,14 +21,14 @@ describe( 'enableToolbarKeyboardFocus()', () => {
 		originKeystrokeHandler = new KeystrokeHandler();
 		toolbar = new ToolbarView();
 
+		toolbar.render();
+
 		enableToolbarKeyboardFocus( {
 			origin,
 			originFocusTracker,
 			originKeystrokeHandler,
 			toolbar
 		} );
-
-		toolbar.init();
 	} );
 
 	it( 'focuses the toolbar on Alt+F10', () => {
@@ -99,6 +99,8 @@ describe( 'enableToolbarKeyboardFocus()', () => {
 		const originFocusSpy = origin.focus = sinon.spy();
 		const toolbarFocusTracker = toolbar.focusTracker;
 
+		toolbar.render();
+
 		enableToolbarKeyboardFocus( {
 			origin,
 			originFocusTracker,
@@ -107,8 +109,6 @@ describe( 'enableToolbarKeyboardFocus()', () => {
 			beforeFocus,
 			afterBlur
 		} );
-
-		toolbar.init();
 
 		let keyEvtData = {
 			keyCode: keyCodes.f10,
