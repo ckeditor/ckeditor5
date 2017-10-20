@@ -94,10 +94,6 @@ export default class ToolbarView extends View {
 	render() {
 		super.render();
 
-		for ( const item of this.items ) {
-			this.focusTracker.add( item.element );
-		}
-
 		this.items.on( 'add', ( evt, item ) => {
 			this.focusTracker.add( item.element );
 		} );
