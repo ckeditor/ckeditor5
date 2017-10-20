@@ -23,11 +23,16 @@ class Token {
 	 * Creates `Token` instance.
 	 *
 	 * @param {String} tokenUrl Endpoint address to download the token.
+	 * @param {String} [initTokenValue] Initial value of the token.
 	 * @param {Object} options
 	 * @param {Number} [options.refreshIntervalTime=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.startAutoRefresh=true] Specifies whether to start the refresh automatically.
 	 */
-	constructor( tokenUrl, options = DEFAULT_OPTIONS ) {
+	constructor( tokenUrl, initTokenValue, options = DEFAULT_OPTIONS ) {
+		if ( !tokenUrl ) {
+			throw new Error( '`tokenUrl` must be provided' );
+		}
+
 		/**
 		 * Value of the token.
 		 *
@@ -35,7 +40,7 @@ class Token {
 		 * @observable
 		 * @member {String} #value
 		 */
-		this.set( 'value', '' );
+		this.set( 'value', initTokenValue );
 
 		/**
 		 * @type {String}
@@ -103,12 +108,13 @@ class Token {
 	 * @private
 	 */
 	_init() {
-		this.refreshToken()
-			.then( () => {
-				if ( this._options.startAutoRefresh ) {
-					this.startRefreshing();
-				}
-			} );
+		if ( !this.value ) {
+			this.refreshToken();
+		}
+
+		if ( this._options.startAutoRefresh ) {
+			this.startRefreshing();
+		}
 	}
 }
 

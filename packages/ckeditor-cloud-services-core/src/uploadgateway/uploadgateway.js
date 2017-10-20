@@ -14,7 +14,7 @@ export default class UploadGateway {
 	/**
 	 * Creates `UploadGateway` instance.
 	 *
-	 * @param {String} token Token used for authentication.
+	 * @param {Token} token Token used for authentication.
 	 * @param {String} apiAddress API address.
 	 */
 	constructor( token, apiAddress ) {
@@ -29,7 +29,7 @@ export default class UploadGateway {
 		/**
 		 * CKEditor Cloud Services access token.
 		 *
-		 * @type {String}
+		 * @type {Token}
 		 * @private
 		 */
 		this._token = token;

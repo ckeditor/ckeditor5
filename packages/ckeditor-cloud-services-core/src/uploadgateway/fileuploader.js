@@ -20,7 +20,7 @@ class FileUploader {
 	 * Creates `FileUploader` instance.
 	 *
 	 * @param {Blob|String} fileOrData A blob object or a data string encoded with Base64.
-	 * @param {String} token Token used for authentication.
+	 * @param {Token} token Token used for authentication.
 	 * @param {String} apiAddress API address.
 	 */
 	constructor( fileOrData, token, apiAddress ) {
@@ -46,7 +46,7 @@ class FileUploader {
 		/**
 		 * CKEditor Cloud Services access token.
 		 *
-		 * @type {String}
+		 * @type {Token}
 		 * @private
 		 */
 		this._token = token;
@@ -115,7 +115,7 @@ class FileUploader {
 		const xhr = new XMLHttpRequest();
 
 		xhr.open( 'POST', this._apiAddress );
-		xhr.setRequestHeader( 'Authorization', this._token );
+		xhr.setRequestHeader( 'Authorization', this._token.value );
 		xhr.responseType = 'json';
 
 		this.xhr = xhr;
