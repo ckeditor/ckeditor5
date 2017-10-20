@@ -25,7 +25,7 @@ describe( 'ToolbarView', () => {
 	beforeEach( () => {
 		locale = {};
 		view = new ToolbarView( locale );
-		view.init();
+		view.render();
 	} );
 
 	describe( 'constructor()', () => {
@@ -79,13 +79,13 @@ describe( 'ToolbarView', () => {
 		} );
 	} );
 
-	describe( 'init()', () => {
+	describe( 'render()', () => {
 		it( 'starts listening for #keystrokes coming from #element', () => {
 			view = new ToolbarView();
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
-			view.init();
+			view.render();
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, view.element );
 		} );
