@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-import Template from '../template';
 
 /**
  * The tooltip view class.
@@ -53,7 +52,7 @@ export default class TooltipView extends View {
 
 		const bind = this.bindTemplate;
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'span',
 			attributes: {
 				class: [
