@@ -17,7 +17,7 @@
  *
  *		// ...
  *
- *		this.template = new Template( {
+ *		this.setTemplate( {
  *			tag: 'div',
  *
  *			on: {

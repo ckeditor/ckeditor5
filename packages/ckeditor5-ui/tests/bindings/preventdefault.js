@@ -7,13 +7,12 @@
 
 import preventDefault from '../../src/bindings/preventdefault';
 import View from '../../src/view';
-import Template from '../../src/template';
 
 describe( 'preventDefault', () => {
 	it( 'prevents default of a native DOM event', () => {
 		const view = new View();
 
-		view.template = new Template( {
+		view.setTemplate( {
 			tag: 'div',
 
 			on: {
@@ -25,7 +24,7 @@ describe( 'preventDefault', () => {
 		const spy = sinon.spy( evt, 'preventDefault' );
 
 		// Render to enable bubbling.
-		view.element;
+		view.render();
 
 		view.element.dispatchEvent( evt );
 		sinon.assert.calledOnce( spy );
@@ -35,11 +34,11 @@ describe( 'preventDefault', () => {
 		const view = new View();
 		const child = new View();
 
-		child.template = new Template( {
+		child.setTemplate( {
 			tag: 'a'
 		} );
 
-		view.template = new Template( {
+		view.setTemplate( {
 			tag: 'div',
 
 			on: {
@@ -55,7 +54,7 @@ describe( 'preventDefault', () => {
 		const spy = sinon.spy( evt, 'preventDefault' );
 
 		// Render to enable bubbling.
-		view.element;
+		view.render();
 
 		child.element.dispatchEvent( evt );
 		sinon.assert.notCalled( spy );
