@@ -28,6 +28,11 @@ describe( 'Template', () => {
 
 		it( 'accepts and normalizes the definition', () => {
 			const bind = Template.bind( new Model( {} ), Object.create( DomEmitterMixin ) );
+			const childNode = document.createElement( 'div' );
+			const childTemplate = new Template( {
+				tag: 'b'
+			} );
+
 			const tpl = new Template( {
 				tag: 'p',
 				attributes: {
@@ -48,7 +53,9 @@ describe( 'Template', () => {
 					'abc',
 					{
 						text: [ 'a', 'b' ]
-					}
+					},
+					childNode,
+					childTemplate
 				],
 				on: {
 					'a@span': bind.to( 'b' ),
@@ -65,12 +72,14 @@ describe( 'Template', () => {
 			expect( tpl.attributes.b[ 1 ] ).to.equal( 'baz' );
 			expect( tpl.attributes.c[ 0 ].value[ 0 ] ).to.be.instanceof( TemplateToBinding );
 
-			expect( tpl.children ).to.have.length( 4 );
+			expect( tpl.children ).to.have.length( 6 );
 			expect( tpl.children[ 0 ].text[ 0 ] ).to.equal( 'content' );
 			expect( tpl.children[ 1 ].text[ 0 ] ).to.be.instanceof( TemplateToBinding );
 			expect( tpl.children[ 2 ].text[ 0 ] ).to.equal( 'abc' );
 			expect( tpl.children[ 3 ].text[ 0 ] ).to.equal( 'a' );
 			expect( tpl.children[ 3 ].text[ 1 ] ).to.equal( 'b' );
+			expect( tpl.children[ 4 ] ).to.equal( childNode );
+			expect( tpl.children[ 5 ] ).to.equal( childTemplate );
 
 			expect( tpl.eventListeners[ 'a@span' ][ 0 ] ).to.be.instanceof( TemplateToBinding );
 			expect( tpl.eventListeners[ 'b@span' ][ 0 ] ).to.be.instanceof( TemplateToBinding );
@@ -512,6 +521,38 @@ describe( 'Template', () => {
 				expect( v2.element ).to.equal( rendered.lastChild );
 
 				expect( collection._parentElement ).to.equal( rendered );
+			} );
+
+			it( 'renders DOM nodes', () => {
+				const view = new View();
+
+				view.set( {
+					foo: 'bar',
+					bar: 'baz'
+				} );
+
+				const bind = Template.bind( view, view );
+
+				const childA = new Template( {
+					tag: 'b',
+					attributes: {
+						class: bind.to( 'foo' )
+					}
+				} ).render();
+
+				const childB = new Template( {
+					text: bind.to( 'bar' )
+				} ).render();
+
+				const rendered = new Template( {
+					tag: 'p',
+					children: [
+						childA,
+						childB
+					]
+				} ).render();
+
+				expect( normalizeHtml( rendered.outerHTML ) ).to.equal( '<p><b class="bar"></b>baz</p>' );
 			} );
 
 			// #117
