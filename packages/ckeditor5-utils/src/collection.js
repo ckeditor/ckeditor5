@@ -99,6 +99,24 @@ export default class Collection {
 	}
 
 	/**
+	 * Returns the first item from the collection or null when collection is empty.
+	 *
+	 * @returns {Object|null} The first item or `null` if collection is empty.
+	 */
+	get first() {
+		return this._items[ 0 ] || null;
+	}
+
+	/**
+	 * Returns the last item from the collection or null when collection is empty.
+	 *
+	 * @returns {Object|null} The last item or `null` if collection is empty.
+	 */
+	get last() {
+		return this._items[ this.length - 1 ] || null;
+	}
+
+	/**
 	 * Adds an item into the collection.
 	 *
 	 * If the item does not have an id, then it will be automatically generated and set on the item.
@@ -162,7 +180,7 @@ export default class Collection {
 	 * Gets item by its id or index.
 	 *
 	 * @param {String|Number} idOrIndex The item id or index in the collection.
-	 * @returns {Object} The requested item or `null` if such item does not exist.
+	 * @returns {Object|null} The requested item or `null` if such item does not exist.
 	 */
 	get( idOrIndex ) {
 		let item;
