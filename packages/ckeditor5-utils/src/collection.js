@@ -28,10 +28,10 @@ export default class Collection {
 	/**
 	 * Creates a new Collection instance.
 	 *
-	 * @param {Object} options The options object.
+	 * @param {Object} [options={}] The options object.
 	 * @param {String} [options.idProperty='id'] The name of the property which is considered to identify an item.
 	 */
-	constructor( options ) {
+	constructor( { idProperty = 'id' } = {} ) {
 		/**
 		 * The internal list of items in the collection.
 		 *
@@ -54,7 +54,7 @@ export default class Collection {
 		 * @private
 		 * @member {String}
 		 */
-		this._idProperty = options && options.idProperty || 'id';
+		this._idProperty = idProperty;
 
 		/**
 		 * A helper mapping external items of a bound collection ({@link #bindTo})

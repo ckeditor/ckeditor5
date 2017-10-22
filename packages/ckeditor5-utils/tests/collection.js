@@ -376,7 +376,7 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should remove the model by model - custom id property', () => {
-			const collection = new Collection( null, 'name' );
+			const collection = new Collection( { idProperty: 'name' } );
 			const item = getItem( 'foo', 'name' );
 
 			collection.add( item );
