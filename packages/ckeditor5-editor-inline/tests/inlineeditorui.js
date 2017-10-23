@@ -23,24 +23,24 @@ testUtils.createSinonSandbox();
 describe( 'InlineEditorUI', () => {
 	let editor, view, ui;
 
+	beforeEach( () => {
+		return VirtualInlineTestEditor
+			.create( {
+				toolbar: [ 'foo', 'bar' ],
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+
+				ui = editor.ui;
+				view = ui.view;
+			} );
+	} );
+
+	afterEach( () => {
+		editor.destroy();
+	} );
+
 	describe( 'constructor()', () => {
-		beforeEach( () => {
-			return VirtualInlineTestEditor
-				.create( {
-					toolbar: [ 'foo', 'bar' ],
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-
-					ui = editor.ui;
-					view = ui.view;
-				} );
-		} );
-
-		afterEach( () => {
-			editor.destroy();
-		} );
-
 		it( 'sets #editor', () => {
 			expect( ui.editor ).to.equal( editor );
 		} );
@@ -150,24 +150,6 @@ describe( 'InlineEditorUI', () => {
 	} );
 
 	describe( 'init()', () => {
-		beforeEach( () => {
-			return VirtualInlineTestEditor
-				.create( {
-					toolbar: [ 'foo', 'bar' ],
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-
-					ui = editor.ui;
-					view = ui.view;
-				} );
-		} );
-
-		afterEach( () => {
-			ui.destroy();
-			editor.destroy();
-		} );
-
 		it( 'renders the #view', () => {
 			expect( view.isRendered ).to.be.true;
 		} );

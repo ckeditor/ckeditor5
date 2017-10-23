@@ -66,7 +66,7 @@ export default class InlineEditorUI {
 		// Set–up the view#panel.
 		view.panel.bind( 'isVisible' ).to( this.focusTracker, 'isFocused' );
 
-		if ( this._toolbarConfig && this._toolbarConfig.viewportTopOffset ) {
+		if ( this._toolbarConfig.viewportTopOffset ) {
 			view.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
 		}
 
@@ -93,9 +93,7 @@ export default class InlineEditorUI {
 
 		this.focusTracker.add( view.editableElement );
 
-		if ( this._toolbarConfig ) {
-			view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
-		}
+		view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
 			origin: editor.editing.view,
