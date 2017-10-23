@@ -60,25 +60,6 @@ describe( 'EmitterMixin', () => {
 			sinon.assert.calledWithExactly( spy2, sinon.match.instanceOf( EventInfo ), 1, 'b', true );
 		} );
 
-		it( 'should pass proper context to callbacks', () => {
-			const ctx1 = {};
-			const ctx2 = {};
-
-			const spy1 = sinon.spy();
-			const spy2 = sinon.spy();
-			const spy3 = sinon.spy();
-
-			emitter.on( 'test', spy1, { context: ctx1 } );
-			emitter.on( 'test', spy2, { context: ctx2 } );
-			emitter.on( 'test', spy3 );
-
-			emitter.fire( 'test' );
-
-			sinon.assert.calledOn( spy1, ctx1 );
-			sinon.assert.calledOn( spy2, ctx2 );
-			sinon.assert.calledOn( spy3, emitter );
-		} );
-
 		it( 'should fire the right event', () => {
 			const spy1 = sinon.spy();
 			const spy2 = sinon.spy();
@@ -316,21 +297,6 @@ describe( 'EmitterMixin', () => {
 			sinon.assert.calledTwice( spy3 );
 		} );
 
-		it( 'should have proper scope', () => {
-			const ctx = {};
-
-			const spy1 = sinon.spy();
-			const spy2 = sinon.spy();
-
-			emitter.once( 'test', spy1, { context: ctx } );
-			emitter.once( 'test', spy2 );
-
-			emitter.fire( 'test' );
-
-			sinon.assert.calledOn( spy1, ctx );
-			sinon.assert.calledOn( spy2, emitter );
-		} );
-
 		it( 'should have proper arguments', () => {
 			const spy = sinon.spy();
 
@@ -385,27 +351,6 @@ describe( 'EmitterMixin', () => {
 
 			sinon.assert.callCount( spy1, 2 );
 			sinon.assert.callCount( spy2, 4 );
-		} );
-
-		it( 'should remove the callback for given context only', () => {
-			const spy = sinon.spy().named( 1 );
-
-			const ctx1 = { context: 1 };
-			const ctx2 = { context: 2 };
-
-			emitter.on( 'test', spy, { context: ctx1 } );
-			emitter.on( 'test', spy, { context: ctx2 } );
-
-			emitter.fire( 'test' );
-
-			spy.reset();
-
-			emitter.off( 'test', spy, ctx1 );
-
-			emitter.fire( 'test' );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledOn( spy, ctx2 );
 		} );
 
 		it( 'should properly remove callbacks for namespaced events', () => {
