@@ -3,7 +3,7 @@
 
 @include ck-editor {
 	.ck-sticky-panel {
-		&.ck-sticky-panel_sticky {
+		.ck-sticky-panel__content_sticky {
 			@include ck-drop-shadow();
 
 			border-width: 0 1px 1px;
