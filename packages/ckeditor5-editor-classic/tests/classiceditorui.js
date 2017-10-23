@@ -37,7 +37,6 @@ describe( 'ClassicEditorUI', () => {
 	} );
 
 	afterEach( () => {
-		ui.destroy();
 		editor.destroy();
 	} );
 
@@ -198,8 +197,10 @@ describe( 'ClassicEditorUI', () => {
 		it( 'destroys the #view', () => {
 			const spy = sinon.spy( view, 'destroy' );
 
-			ui.destroy();
-			sinon.assert.calledOnce( spy );
+			return editor.destroy()
+				.then( () => {
+					sinon.assert.calledOnce( spy );
+				} );
 		} );
 	} );
 } );
