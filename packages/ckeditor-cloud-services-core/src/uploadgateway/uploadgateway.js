@@ -48,7 +48,8 @@ export default class UploadGateway {
 	 * The file is being sent at a time when the method {@link FileUploader#then then} is called
 	 * or when {@link FileUploader#send send} method is called.
 	 *
-	 *     new UploadGateway( 'JSON_WEB_TOKEN_FROM_SERVER', 'https://example.org' )
+	 *     const token = await Token.create( 'https://token-endpoint' );
+	 *     new UploadGateway( token, 'https://example.org' )
 	 *        .upload( 'FILE' )
 	 *        .onProgress( ( data ) => console.log( data ) )
 	 *        .send()
@@ -56,7 +57,8 @@ export default class UploadGateway {
 	 *
 	 *     // OR
 	 *
-	 *     new UploadGateway( 'JSON_WEB_TOKEN_FROM_SERVER', 'https://example.org' )
+	 *     const token = await Token.create( 'https://token-endpoint' );
+	 *     new UploadGateway( token, 'https://example.org' )
 	 *         .upload( 'FILE' )
 	 *         .onProgress( ( data ) => console.log( data ) )
 	 *         .send()

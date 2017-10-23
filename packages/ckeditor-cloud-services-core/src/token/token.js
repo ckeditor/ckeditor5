@@ -125,6 +125,22 @@ class Token {
 	stopRefreshing() {
 		clearInterval( this._refreshInterval );
 	}
+
+	/**
+	 * Creates a initialized {@link Token} instance.
+	 *
+	 * @param {String} tokenUrl Endpoint address to download the token.
+	 * @param {String} [initTokenValue] Initial value of the token.
+	 * @param {Object} options
+	 * @param {Number} [options.refreshIntervalTime=3600000] Delay between refreshes. Default 1 hour.
+	 * @param {Boolean} [options.startAutoRefresh=true] Specifies whether to start the refresh automatically.
+	 * @returns {Promise.<Token>}
+	 */
+	static create( tokenUrl, initTokenValue, options = DEFAULT_OPTIONS ) {
+		const token = new Token( tokenUrl, initTokenValue, options );
+
+		return token.init();
+	}
 }
 
 mix( Token, ObservableMixin );

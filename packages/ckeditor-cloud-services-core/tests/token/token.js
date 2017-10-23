@@ -185,4 +185,17 @@ describe( 'Token', () => {
 				} );
 		} );
 	} );
+
+	describe( 'static create()', () => {
+		it( 'should return a initialized token', done => {
+			Token.create( 'http://token-endpoint', '', { startAutoRefresh: false } )
+				.then( token => {
+					expect( token.value ).to.equal( 'token-value' );
+
+					done();
+				} );
+
+			requests[ 0 ].respond( 200, '', 'token-value' );
+		} );
+	} );
 } );
