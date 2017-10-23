@@ -28,10 +28,10 @@ export default class Collection {
 	/**
 	 * Creates a new Collection instance.
 	 *
-	 * @param {Object} options The options object.
+	 * @param {Object} [options={}] The options object.
 	 * @param {String} [options.idProperty='id'] The name of the property which is considered to identify an item.
 	 */
-	constructor( options ) {
+	constructor( options = {} ) {
 		/**
 		 * The internal list of items in the collection.
 		 *
@@ -54,7 +54,7 @@ export default class Collection {
 		 * @private
 		 * @member {String}
 		 */
-		this._idProperty = options && options.idProperty || 'id';
+		this._idProperty = options.idProperty || 'id';
 
 		/**
 		 * A helper mapping external items of a bound collection ({@link #bindTo})
@@ -96,6 +96,24 @@ export default class Collection {
 	 */
 	get length() {
 		return this._items.length;
+	}
+
+	/**
+	 * Returns the first item from the collection or null when collection is empty.
+	 *
+	 * @returns {Object|null} The first item or `null` if collection is empty.
+	 */
+	get first() {
+		return this._items[ 0 ] || null;
+	}
+
+	/**
+	 * Returns the last item from the collection or null when collection is empty.
+	 *
+	 * @returns {Object|null} The last item or `null` if collection is empty.
+	 */
+	get last() {
+		return this._items[ this.length - 1 ] || null;
 	}
 
 	/**
@@ -162,7 +180,7 @@ export default class Collection {
 	 * Gets item by its id or index.
 	 *
 	 * @param {String|Number} idOrIndex The item id or index in the collection.
-	 * @returns {Object} The requested item or `null` if such item does not exist.
+	 * @returns {Object|null} The requested item or `null` if such item does not exist.
 	 */
 	get( idOrIndex ) {
 		let item;
