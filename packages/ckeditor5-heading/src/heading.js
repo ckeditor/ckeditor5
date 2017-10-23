@@ -13,7 +13,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 import '../theme/theme.scss';
 
@@ -98,7 +97,7 @@ export default class Heading extends Plugin {
 		editor.ui.componentFactory.add( 'headings', locale => {
 			const dropdown = createListDropdown( dropdownModel, locale );
 
-			Template.extend( dropdown.template, {
+			dropdown.extendTemplate( {
 				attributes: {
 					class: [
 						'ck-heading-dropdown'

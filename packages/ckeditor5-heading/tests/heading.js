@@ -92,6 +92,9 @@ describe( 'Heading', () => {
 
 		it( 'should add custom CSS class to dropdown', () => {
 			const dropdown = editor.ui.componentFactory.create( 'headings' );
+
+			dropdown.render();
+
 			expect( dropdown.element.classList.contains( 'ck-heading-dropdown' ) ).to.be.true;
 		} );
 
