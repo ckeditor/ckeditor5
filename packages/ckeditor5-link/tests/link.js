@@ -46,7 +46,7 @@ describe( 'Link', () => {
 				testUtils.sinon.stub( balloon.view, 'attachTo' ).returns( {} );
 				testUtils.sinon.stub( balloon.view, 'pin' ).returns( {} );
 
-				formView.init();
+				formView.render();
 			} );
 	} );
 
@@ -146,7 +146,7 @@ describe( 'Link', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 			const viewMock = {
 				ready: true,
-				init: () => {},
+				render: () => {},
 				destroy: () => {}
 			};
 
@@ -546,7 +546,7 @@ describe( 'Link', () => {
 
 			const viewMock = {
 				ready: true,
-				init: () => {},
+				render: () => {},
 				destroy: () => {}
 			};
 

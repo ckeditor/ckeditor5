@@ -225,17 +225,6 @@ export default class Link extends Plugin {
 		const showIsCollapsed = showViewDocument.selection.isCollapsed;
 		const showSelectedLink = this._getSelectedLinkElement();
 
-		// https://github.com/ckeditor/ckeditor5-link/issues/53
-		this.formView.unlinkButtonView.isVisible = unlinkCommand.isEnabled;
-
-		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
-		// the command. If the user typed in the input, then canceled the balloon (`urlInputView#value` stays
-		// unaltered) and re-opened it without changing the value of the link command (e.g. because they
-		// clicked the same link), they would see the old value instead of the actual value of the command.
-		// https://github.com/ckeditor/ckeditor5-link/issues/78
-		// https://github.com/ckeditor/ckeditor5-link/issues/123
-		this.formView.urlInputView.inputView.element.value = linkCommand.value || '';
-
 		this.listenTo( showViewDocument, 'render', () => {
 			const renderSelectedLink = this._getSelectedLinkElement();
 			const renderIsCollapsed = showViewDocument.selection.isCollapsed;
@@ -275,6 +264,17 @@ export default class Link extends Plugin {
 				this.formView.urlInputView.select();
 			}
 		}
+
+		// https://github.com/ckeditor/ckeditor5-link/issues/53
+		this.formView.unlinkButtonView.isVisible = unlinkCommand.isEnabled;
+
+		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
+		// the command. If the user typed in the input, then canceled the balloon (`urlInputView#value` stays
+		// unaltered) and re-opened it without changing the value of the link command (e.g. because they
+		// clicked the same link), they would see the old value instead of the actual value of the command.
+		// https://github.com/ckeditor/ckeditor5-link/issues/78
+		// https://github.com/ckeditor/ckeditor5-link/issues/123
+		this.formView.urlInputView.inputView.element.value = linkCommand.value || '';
 	}
 
 	/**

@@ -8,7 +8,6 @@
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -110,7 +109,7 @@ export default class LinkFormView extends View {
 			}
 		} );
 
-		Template.extend( this.saveButtonView.template, {
+		this.saveButtonView.extendTemplate( {
 			attributes: {
 				class: [
 					'ck-button-action'
@@ -118,7 +117,7 @@ export default class LinkFormView extends View {
 			}
 		} );
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'form',
 
 			attributes: {
@@ -149,6 +148,13 @@ export default class LinkFormView extends View {
 				}
 			]
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
 
 		submitHandler( {
 			view: this
@@ -168,16 +174,9 @@ export default class LinkFormView extends View {
 			// Register the view in the focus tracker.
 			this.focusTracker.add( v.element );
 		} );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	init() {
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
-
-		return super.init();
 	}
 
 	/**

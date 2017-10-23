@@ -21,8 +21,7 @@ describe( 'LinkFormView', () => {
 
 	beforeEach( () => {
 		view = new LinkFormView( { t: val => val } );
-
-		return view.init();
+		view.render();
 	} );
 
 	describe( 'constructor()', () => {
@@ -59,26 +58,6 @@ describe( 'LinkFormView', () => {
 			expect( view._focusables ).to.be.instanceOf( ViewCollection );
 		} );
 
-		it( 'should register child views in #_focusables', () => {
-			expect( view._focusables.map( f => f ) ).to.have.members( [
-				view.urlInputView,
-				view.saveButtonView,
-				view.cancelButtonView,
-				view.unlinkButtonView
-			] );
-		} );
-
-		it( 'should register child views\' #element in #focusTracker', () => {
-			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
-
-			view = new LinkFormView( { t: () => {} } );
-
-			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.cancelButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.unlinkButtonView.element );
-		} );
-
 		it( 'should fire `cancel` event on cancelButtonView#execute', () => {
 			const spy = sinon.spy();
 
@@ -107,30 +86,51 @@ describe( 'LinkFormView', () => {
 
 		describe( 'template', () => {
 			it( 'has url input view', () => {
-				expect( view.template.children.get( 0 ) ).to.equal( view.urlInputView );
+				expect( view.template.children[ 0 ] ).to.equal( view.urlInputView );
 			} );
 
 			it( 'has form actions container', () => {
-				expect( view.template.children.get( 1 ).attributes.class ).to.have.members( [ 'ck-link-form__actions' ] );
+				expect( view.template.children[ 1 ].attributes.class ).to.have.members( [ 'ck-link-form__actions' ] );
 			} );
 
 			it( 'has form action views', () => {
-				const actions = view.template.children.get( 1 ).children;
+				const actions = view.template.children[ 1 ].children;
 
-				expect( actions.get( 0 ) ).to.equal( view.saveButtonView );
-				expect( actions.get( 1 ) ).to.equal( view.cancelButtonView );
-				expect( actions.get( 2 ) ).to.equal( view.unlinkButtonView );
+				expect( actions[ 0 ] ).to.equal( view.saveButtonView );
+				expect( actions[ 1 ] ).to.equal( view.cancelButtonView );
+				expect( actions[ 2 ] ).to.equal( view.unlinkButtonView );
 			} );
 		} );
 	} );
 
-	describe( 'init()', () => {
+	describe( 'render()', () => {
+		it( 'should register child views in #_focusables', () => {
+			expect( view._focusables.map( f => f ) ).to.have.members( [
+				view.urlInputView,
+				view.saveButtonView,
+				view.cancelButtonView,
+				view.unlinkButtonView
+			] );
+		} );
+
+		it( 'should register child views\' #element in #focusTracker', () => {
+			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
+
+			view = new LinkFormView( { t: () => {} } );
+			view.render();
+
+			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.cancelButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.unlinkButtonView.element );
+		} );
+
 		it( 'starts listening for #keystrokes coming from #element', () => {
 			view = new LinkFormView( { t: () => {} } );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
-			view.init();
+			view.render();
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, view.element );
 		} );
