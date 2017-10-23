@@ -11,7 +11,6 @@ import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 /**
  * Inline editor UI view. Uses an nline editable and a floating toolbar.
@@ -50,7 +49,7 @@ export default class InlineEditorUIView extends EditorUIView {
 		 */
 		this.set( 'viewportTopOffset', 0 );
 
-		Template.extend( this.toolbar.template, {
+		this.toolbar.extendTemplate( {
 			attributes: {
 				class: [
 					'ck-editor-toolbar',
@@ -118,7 +117,7 @@ export default class InlineEditorUIView extends EditorUIView {
 		 */
 		this.panelPositions = this._getPanelPositions();
 
-		Template.extend( this.panel.template, {
+		this.panel.extendTemplate( {
 			attributes: {
 				class: 'ck-toolbar-container'
 			}
@@ -133,14 +132,14 @@ export default class InlineEditorUIView extends EditorUIView {
 		this.editable = new InlineEditableUIView( locale, editableElement );
 
 		this.body.add( this.panel );
-		this.addChildren( this.editable );
+		this.registerChildren( this.editable );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		super.init();
+	render() {
+		super.render();
 
 		this.panel.content.add( this.toolbar );
 	}

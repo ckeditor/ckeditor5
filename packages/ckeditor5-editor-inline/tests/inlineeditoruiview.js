@@ -15,6 +15,11 @@ describe( 'InlineEditorUIView', () => {
 	beforeEach( () => {
 		locale = new Locale( 'en' );
 		view = new InlineEditorUIView( locale );
+		view.render();
+	} );
+
+	afterEach( () => {
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -71,7 +76,6 @@ describe( 'InlineEditorUIView', () => {
 			it( 'is registered as a child', () => {
 				const spy = sinon.spy( view.editable, 'destroy' );
 
-				view.init();
 				view.destroy();
 				sinon.assert.calledOnce( spy );
 			} );
@@ -80,17 +84,19 @@ describe( 'InlineEditorUIView', () => {
 
 	describe( 'init()', () => {
 		it( 'appends #toolbar to panel#content', () => {
+			const view = new InlineEditorUIView( locale );
+
 			expect( view.panel.content ).to.have.length( 0 );
 
-			view.init();
+			view.render();
 			expect( view.panel.content.get( 0 ) ).to.equal( view.toolbar );
+
 			view.destroy();
 		} );
 	} );
 
 	describe( 'editableElement', () => {
 		it( 'returns editable\'s view element', () => {
-			view.init();
 			expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
 			view.destroy();
 		} );

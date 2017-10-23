@@ -89,18 +89,19 @@ export default class InlineEditorUI {
 	 */
 	init() {
 		const editor = this.editor;
+		const view = this.view;
 
-		this.view.init();
+		view.render();
 
 		if ( this._toolbarConfig ) {
-			this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+			view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 		}
 
 		enableToolbarKeyboardFocus( {
 			origin: editor.editing.view,
 			originFocusTracker: this.focusTracker,
 			originKeystrokeHandler: editor.keystrokes,
-			toolbar: this.view.toolbar
+			toolbar: view.toolbar
 		} );
 	}
 

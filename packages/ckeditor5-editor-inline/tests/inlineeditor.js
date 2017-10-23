@@ -179,7 +179,7 @@ describe( 'InlineEditor', () => {
 			class EventWatcher extends Plugin {
 				init() {
 					this.editor.on( 'uiReady', () => {
-						isReady = this.editor.ui.view.ready;
+						isReady = this.editor.ui.view.isRendered;
 					} );
 				}
 			}
