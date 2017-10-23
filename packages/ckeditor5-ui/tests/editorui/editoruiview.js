@@ -22,6 +22,10 @@ describe( 'EditorUIView', () => {
 		view.render();
 	} );
 
+	afterEach( () => {
+		view.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'accepts locale', () => {
 			expect( view.locale ).to.equal( locale );
@@ -32,7 +36,7 @@ describe( 'EditorUIView', () => {
 		} );
 	} );
 
-	describe( 'init()', () => {
+	describe( 'render()', () => {
 		it( 'sets the right class set to the body region', () => {
 			const el = view._bodyCollectionContainer;
 

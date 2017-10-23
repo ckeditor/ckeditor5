@@ -30,6 +30,10 @@ describe( 'createListDropdown', () => {
 		document.body.appendChild( view.element );
 	} );
 
+	afterEach( () => {
+		view.element.remove();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'sets view#locale', () => {
 			expect( view.locale ).to.equal( locale );

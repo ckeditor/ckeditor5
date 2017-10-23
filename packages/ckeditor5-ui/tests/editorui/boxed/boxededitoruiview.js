@@ -16,6 +16,10 @@ describe( 'BoxedEditorUIView', () => {
 		element = view.element;
 	} );
 
+	afterEach( () => {
+		view.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'adds view collections', () => {
 			expect( view.top ).to.be.instanceof( ViewCollection );

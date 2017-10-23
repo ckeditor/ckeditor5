@@ -18,6 +18,8 @@ describe( 'IframeView', () => {
 
 			expect( view.element.classList.contains( 'ck-reset_all' ) ).to.be.true;
 			expect( view.element.attributes.getNamedItem( 'sandbox' ).value ).to.equal( 'allow-same-origin allow-scripts' );
+
+			view.element.remove();
 		} );
 	} );
 
@@ -34,6 +36,8 @@ describe( 'IframeView', () => {
 			const promise = view.render()
 				.then( () => {
 					expect( view.element.contentDocument.readyState ).to.equal( 'complete' );
+
+					view.element.remove();
 				} );
 
 			// Moving iframe into DOM trigger creation of a document inside iframe.
@@ -47,7 +51,12 @@ describe( 'IframeView', () => {
 		it( 'is fired when frame finished loading', done => {
 			view = new IframeView();
 
-			view.on( 'loaded', () => done() );
+			view.on( 'loaded', () => {
+				view.element.remove();
+
+				done();
+			} );
+
 			view.render();
 
 			// Moving iframe into DOM trigger creation of a document inside iframe.

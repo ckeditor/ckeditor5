@@ -45,6 +45,10 @@ describe( 'StickyPanelView', () => {
 		document.body.appendChild( element );
 	} );
 
+	afterEach( () => {
+		element.remove();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'inherits from View', () => {
 			expect( view ).to.be.instanceof( View );
