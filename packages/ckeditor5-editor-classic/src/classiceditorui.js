@@ -67,7 +67,7 @@ export default class ClassicEditorUI {
 		view.stickyPanel.bind( 'isActive' ).to( this.focusTracker, 'isFocused' );
 		view.stickyPanel.limiterElement = view.element;
 
-		if ( this._toolbarConfig && this._toolbarConfig.viewportTopOffset ) {
+		if ( this._toolbarConfig.viewportTopOffset ) {
 			view.stickyPanel.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
 		}
 
@@ -79,9 +79,7 @@ export default class ClassicEditorUI {
 
 		this.focusTracker.add( this.view.editableElement );
 
-		if ( this._toolbarConfig ) {
-			this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
-		}
+		this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
 			origin: editor.editing.view,
