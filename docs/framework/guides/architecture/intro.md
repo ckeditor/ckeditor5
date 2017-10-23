@@ -383,7 +383,7 @@ class SampleInputView extends View {
 			placeholder: ''
 		} );
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'input',
 			attributes: {
 				class: [
@@ -422,7 +422,7 @@ class ParentView extends View {
 		const childA = new SampleInputView( locale );
 		const childB = new SampleInputView( locale );
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'div',
 			children: [
 				childA
