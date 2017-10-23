@@ -55,14 +55,36 @@ class Token {
 		 * @private
 		 */
 		this._options = Object.assign( {}, DEFAULT_OPTIONS, options );
+	}
 
-		this._init();
+	/**
+	 * Initializes the token.
+	 * If `initTokenValue` is not provided then the value of the token is download from url.
+	 *
+	 * @returns {Promise.<Token>}
+	 */
+	init() {
+		return new Promise( ( resolve, reject ) => {
+			if ( this._options.startAutoRefresh ) {
+				this.startRefreshing();
+			}
+
+			if ( !this.value ) {
+				this.refreshToken()
+					.then( resolve )
+					.catch( reject );
+
+				return;
+			}
+
+			resolve( this );
+		} );
 	}
 
 	/**
 	 * Gets the new token.
 	 *
-	 * @returns {Promise}
+	 * @returns {Promise.<Token>}
 	 */
 	refreshToken() {
 		return new Promise( ( resolve, reject ) => {
@@ -80,7 +102,7 @@ class Token {
 
 				this.set( 'value', xhrResponse );
 
-				return resolve( xhrResponse );
+				return resolve( this );
 			} );
 
 			xhr.addEventListener( 'error', () => reject( 'Network Error' ) );
@@ -102,21 +124,6 @@ class Token {
 	 */
 	stopRefreshing() {
 		clearInterval( this._refreshInterval );
-	}
-
-	/**
-	 * Initializes the value of the token.
-	 *
-	 * @private
-	 */
-	_init() {
-		if ( !this.value ) {
-			this.refreshToken();
-		}
-
-		if ( this._options.startAutoRefresh ) {
-			this.startRefreshing();
-		}
 	}
 }
 

@@ -29,15 +29,7 @@ describe( 'Token', () => {
 			expect( () => new Token() ).to.throw( '`tokenUrl` must be provided' );
 		} );
 
-		it( 'should get a token value from endpoint', () => {
-			const token = new Token( 'http://token-endpoint', '', { startAutoRefresh: false } );
-
-			requests[ 0 ].respond( 200, '', 'token-value' );
-
-			expect( token.value ).to.equal( 'token-value' );
-		} );
-
-		it( 'should set a token value', () => {
+		it( 'should set a init token value', () => {
 			const token = new Token( 'http://token-endpoint', 'initValue', { startAutoRefresh: false } );
 
 			expect( token.value ).to.equal( 'initValue' );
@@ -52,23 +44,45 @@ describe( 'Token', () => {
 				done();
 			} );
 
+			token.init();
+
+			requests[ 0 ].respond( 200, '', 'token-value' );
+		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'should get a token value from endpoint', done => {
+			const token = new Token( 'http://token-endpoint', '', { startAutoRefresh: false } );
+
+			token.init()
+				.then( () => {
+					expect( token.value ).to.equal( 'token-value' );
+
+					done();
+				} );
+
 			requests[ 0 ].respond( 200, '', 'token-value' );
 		} );
 
-		it( 'should start token refresh every 1 hour', () => {
+		it( 'should start token refresh every 1 hour', done => {
 			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval' ] } );
 
-			const token = new Token( 'http://token-endpoint' ); // eslint-disable-line no-unused-vars
+			const token = new Token( 'http://token-endpoint', 'initValues' );
 
-			clock.tick( 3600000 );
-			clock.tick( 3600000 );
-			clock.tick( 3600000 );
-			clock.tick( 3600000 );
-			clock.tick( 3600000 );
+			token.init()
+				.then( () => {
+					clock.tick( 3600000 );
+					clock.tick( 3600000 );
+					clock.tick( 3600000 );
+					clock.tick( 3600000 );
+					clock.tick( 3600000 );
 
-			expect( requests.length ).to.equal( 6 );
+					expect( requests.length ).to.equal( 5 );
 
-			clock.restore();
+					clock.restore();
+
+					done();
+				} );
 		} );
 	} );
 
@@ -77,11 +91,8 @@ describe( 'Token', () => {
 			const token = new Token( 'http://token-endpoint', 'initValue', { startAutoRefresh: false } );
 
 			token.refreshToken()
-				.then( newValue => {
-					expect( newValue ).to.equal( 'token-value' );
-					expect( token.value ).to.equal( newValue );
-
-					token.stopRefreshing();
+				.then( newToken => {
+					expect( newToken.value ).to.equal( 'token-value' );
 
 					done();
 				} );
@@ -133,7 +144,7 @@ describe( 'Token', () => {
 		it( 'should start refreshing', () => {
 			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval' ] } );
 
-			const token = new Token( 'http://token-endpoint', '', { startAutoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', 'initValue', { startAutoRefresh: false } );
 
 			token.startRefreshing();
 
@@ -143,30 +154,35 @@ describe( 'Token', () => {
 			clock.tick( 3600000 );
 			clock.tick( 3600000 );
 
-			expect( requests.length ).to.equal( 6 );
+			expect( requests.length ).to.equal( 5 );
 
 			clock.restore();
 		} );
 	} );
 
 	describe( 'stopRefreshing()', () => {
-		it( 'should stop refreshing', () => {
+		it( 'should stop refreshing', done => {
 			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval', 'clearInterval' ] } );
 
 			const token = new Token( 'http://token-endpoint', 'initValue' );
 
-			clock.tick( 3600000 );
-			clock.tick( 3600000 );
-			clock.tick( 3600000 );
+			token.init()
+				.then( () => {
+					clock.tick( 3600000 );
+					clock.tick( 3600000 );
+					clock.tick( 3600000 );
 
-			token.stopRefreshing();
+					token.stopRefreshing();
 
-			clock.tick( 3600000 );
-			clock.tick( 3600000 );
+					clock.tick( 3600000 );
+					clock.tick( 3600000 );
 
-			expect( requests.length ).to.equal( 3 );
+					expect( requests.length ).to.equal( 3 );
 
-			clock.restore();
+					clock.restore();
+
+					done();
+				} );
 		} );
 	} );
 } );
