@@ -11,6 +11,9 @@ import Position from './position';
 import TreeWalker from './treewalker';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
+const _start = Symbol( 'start' );
+const _end = Symbol( 'end' );
+
 /**
  * Range class. Range is iterable.
  */
@@ -24,21 +27,8 @@ export default class Range {
 	 * @param {module:engine/model/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
 	 */
 	constructor( start, end = null ) {
-		/**
-		 * Start position.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/position~Position}
-		 */
-		this.start = start;
-
-		/**
-		 * End position.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/position~Position}
-		 */
-		this.end = end ? end : start;
+		setStart( this, start );
+		setEnd( this, end ? end : start );
 	}
 
 	/**
@@ -55,6 +45,26 @@ export default class Range {
 	 */
 	* [ Symbol.iterator ]() {
 		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
+	}
+
+	/**
+	 * Start position.
+	 *
+	 * @readonly
+	 * @member {module:engine/model/position~Position}
+	 */
+	get start() {
+		return this[ _start ];
+	}
+
+	/**
+	 * End position.
+	 *
+	 * @readonly
+	 * @member {module:engine/model/position~Position}
+	 */
+	get end() {
+		return this[ _end ];
 	}
 
 	/**
@@ -466,6 +476,18 @@ export default class Range {
 	}
 
 	/**
+	 * Converts `Range` to plain object and returns it.
+	 *
+	 * @returns {Object} `Range` converted to plain object.
+	 */
+	toJSON() {
+		return {
+			start: this.start.toJSON(),
+			end: this.end.toJSON()
+		};
+	}
+
+	/**
 	 * Returns a range that is a result of transforming this range by a change in the model document.
 	 *
 	 * @protected
@@ -612,15 +634,13 @@ export default class Range {
 				)
 			];
 		} else {
-			const range = Range.createFromRange( this );
-
 			const insertBeforeStart = !isSticky;
-			const insertBeforeEnd = range.isCollapsed ? true : isSticky;
+			const insertBeforeEnd = this.isCollapsed ? true : isSticky;
 
-			range.start = range.start._getTransformedByInsertion( insertPosition, howMany, insertBeforeStart );
-			range.end = range.end._getTransformedByInsertion( insertPosition, howMany, insertBeforeEnd );
+			const start = this.start._getTransformedByInsertion( insertPosition, howMany, insertBeforeStart );
+			const end = this.end._getTransformedByInsertion( insertPosition, howMany, insertBeforeEnd );
 
-			return [ range ];
+			return [ new Range( start, end ) ];
 		}
 	}
 
@@ -802,13 +822,13 @@ export default class Range {
 		// 4. At this moment we don't need the original range.
 		// We are going to modify the result and we need to return a new instance of Range.
 		// We have to create a copy of the reference range.
-		const result = new this( ref.start, ref.end );
+		let result = new this( ref.start, ref.end );
 
 		// 5. Ranges should be checked and glued starting from the range that is closest to the reference range.
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex - 1; i >= 0; i++ ) {
 			if ( ranges[ i ].end.isEqual( result.start ) ) {
-				result.start = ranges[ i ].start;
+				result = new this( ranges[ i ].start, result.end );
 			} else {
 				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;
@@ -819,7 +839,7 @@ export default class Range {
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex + 1; i < ranges.length; i++ ) {
 			if ( ranges[ i ].start.isEqual( result.end ) ) {
-				result.end = ranges[ i ].end;
+				result = new this( result.start, ranges[ i ].end );
 			} else {
 				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;
@@ -839,4 +859,25 @@ export default class Range {
 	static fromJSON( json, doc ) {
 		return new this( Position.fromJSON( json.start, doc ), Position.fromJSON( json.end, doc ) );
 	}
+}
+
+/**
+ * Method used to expose start setter to child classes.
+ * @protected
+ * @param {module:engine/model/range~Range} range Range of which start position should be sent.
+ * @param {module:engine/model/position~Position} position Position to set as range start.
+ * See {@link module:engine/model/range~Range#start}.
+ */
+export function setStart( range, position ) {
+	range[ _start ] = position;
+}
+
+/**
+ * Method used to expose end setter to child classes.
+ * @protected
+ * @param {module:engine/model/range~Range} range Range of which end position should be sent.
+ * @param {module:engine/model/position~Position} position Position to set as range end. See {@link module:engine/model/range~Range#end}.
+ */
+export function setEnd( range, position ) {
+	range[ _end ] = position;
 }

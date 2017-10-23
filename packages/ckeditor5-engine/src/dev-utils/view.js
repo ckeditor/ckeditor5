@@ -550,7 +550,7 @@ class RangeParser {
 			if ( item.bracket == ELEMENT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_START_TOKEN ) {
 				range = new Range( item.position, item.position );
 			} else {
-				range.end = item.position;
+				range = new Range( range.start, item.position );
 				ranges.push( range );
 				range = null;
 			}

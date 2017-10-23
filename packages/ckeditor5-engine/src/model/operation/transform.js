@@ -179,25 +179,29 @@ const ot = {
 				// Take the start and the end of the range and transform them by deletion of moved nodes.
 				// Note that if rangeB was inside AttributeOperation range, only difference.end will be transformed.
 				// This nicely covers the joining simplification we did in the previous step.
-				difference.start = difference.start._getTransformedByDeletion( b.sourcePosition, b.howMany );
-				difference.end = difference.end._getTransformedByDeletion( b.sourcePosition, b.howMany );
+				const range = new Range(
+					difference.start._getTransformedByDeletion( b.sourcePosition, b.howMany ),
+					difference.end._getTransformedByDeletion( b.sourcePosition, b.howMany )
+				);
 
 				// MoveOperation pastes nodes into target position. We acknowledge this by proper transformation.
 				// Note that since we operate on transformed difference range, we should transform by
 				// previously transformed target position.
 				// Note that we do not use Position._getTransformedByMove on range boundaries because we need to
 				// transform by insertion a range as a whole, since newTargetPosition might be inside that range.
-				ranges = difference._getTransformedByInsertion( b.getMovedRangeStart(), b.howMany, true, false ).reverse();
+				ranges = range._getTransformedByInsertion( b.getMovedRangeStart(), b.howMany, true, false ).reverse();
 			}
 
 			if ( common !== null ) {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
 				// would mean that the MoveOperation targets into itself, and that is incorrect operation.
 				// Instead, we calculate the new position of that part of original range.
-				common.start = common.start._getCombined( b.sourcePosition, b.getMovedRangeStart() );
-				common.end = common.end._getCombined( b.sourcePosition, b.getMovedRangeStart() );
+				const range = new Range(
+					common.start._getCombined( b.sourcePosition, b.getMovedRangeStart() ),
+					common.end._getCombined( b.sourcePosition, b.getMovedRangeStart() )
+				);
 
-				ranges.push( common );
+				ranges.push( range );
 			}
 
 			// Map transformed range(s) to operations and return them.
@@ -376,7 +380,7 @@ const ot = {
 			// Setting and evaluating some variables that will be used in special cases and default algorithm.
 			//
 			// Create ranges from `MoveOperations` properties.
-			const rangeA = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
+			let rangeA = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
 			const rangeB = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
 
 			// Assign `context.isStrong` to a different variable, because the value may change during execution of
@@ -428,8 +432,10 @@ const ot = {
 			if ( bTargetsToA && rangeA.containsRange( rangeB, true ) ) {
 				// There is a mini-special case here, where `rangeB` is on other level than `rangeA`. That's why
 				// we need to transform `a` operation anyway.
-				rangeA.start = rangeA.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !includeB );
-				rangeA.end = rangeA.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, includeB );
+				rangeA = new Range(
+					rangeA.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !includeB ),
+					rangeA.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, includeB )
+				);
 
 				return makeMoveOperationsFromRanges( [ rangeA ], newTargetPosition, a );
 			}
@@ -444,8 +450,10 @@ const ot = {
 			if ( aTargetsToB && rangeB.containsRange( rangeA, true ) ) {
 				// `a` operation is "moved together" with `b` operation.
 				// Here, just move `rangeA` "inside" `rangeB`.
-				rangeA.start = rangeA.start._getCombined( b.sourcePosition, b.getMovedRangeStart() );
-				rangeA.end = rangeA.end._getCombined( b.sourcePosition, b.getMovedRangeStart() );
+				rangeA = new Range(
+					rangeA.start._getCombined( b.sourcePosition, b.getMovedRangeStart() ),
+					rangeA.end._getCombined( b.sourcePosition, b.getMovedRangeStart() )
+				);
 
 				return makeMoveOperationsFromRanges( [ rangeA ], newTargetPosition, a );
 			}
@@ -466,8 +474,10 @@ const ot = {
 				// Transform `rangeA` by `b` operation and make operation out of it, and that's all.
 				// Note that this is a simplified version of default case, but here we treat the common part (whole `rangeA`)
 				// like a one difference part.
-				rangeA.start = rangeA.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !includeB );
-				rangeA.end = rangeA.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, includeB );
+				rangeA = new Range(
+					rangeA.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !includeB ),
+					rangeA.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, includeB )
+				);
 
 				return makeMoveOperationsFromRanges( [ rangeA ], newTargetPosition, a );
 			}
@@ -500,10 +510,12 @@ const ot = {
 			// This is an array with one or two ranges. Two ranges if `rangeB` is inside `rangeA`.
 			const difference = rangeA.getDifference( rangeB );
 
-			for ( const range of difference ) {
+			for ( const rangeInDiff of difference ) {
 				// Transform those ranges by `b` operation. For example if `b` moved range from before those ranges, fix those ranges.
-				range.start = range.start._getTransformedByDeletion( b.sourcePosition, b.howMany );
-				range.end = range.end._getTransformedByDeletion( b.sourcePosition, b.howMany );
+				const range = new Range(
+					rangeInDiff.start._getTransformedByDeletion( b.sourcePosition, b.howMany ),
+					rangeInDiff.end._getTransformedByDeletion( b.sourcePosition, b.howMany )
+				);
 
 				// If `b` operation targets into `rangeA` on the same level, spread `rangeA` into two ranges.
 				const shouldSpread = compareArrays( range.start.getParentPath(), b.getMovedRangeStart().getParentPath() ) == 'same';
@@ -513,12 +525,14 @@ const ot = {
 			}
 
 			// Then, we have to manage the "common part" of both move ranges.
-			const common = rangeA.getIntersection( rangeB );
+			const intersectionRange = rangeA.getIntersection( rangeB );
 
-			if ( common !== null && isStrong && !bTargetsToA ) {
+			if ( intersectionRange !== null && isStrong && !bTargetsToA ) {
 				// Calculate the new position of that part of original range.
-				common.start = common.start._getCombined( b.sourcePosition, b.getMovedRangeStart() );
-				common.end = common.end._getCombined( b.sourcePosition, b.getMovedRangeStart() );
+				const common = new Range(
+					intersectionRange.start._getCombined( b.sourcePosition, b.getMovedRangeStart() ),
+					intersectionRange.end._getCombined( b.sourcePosition, b.getMovedRangeStart() )
+				);
 
 				// Take care of proper range order.
 				//
@@ -627,9 +641,10 @@ function joinRanges( ranges ) {
 	} else if ( ranges.length == 1 ) {
 		return ranges[ 0 ];
 	} else {
-		ranges[ 0 ].end = ranges[ ranges.length - 1 ].end;
-
-		return ranges[ 0 ];
+		return new Range(
+			ranges[ 0 ].start,
+			ranges[ ranges.length - 1 ].end
+		);
 	}
 }
 

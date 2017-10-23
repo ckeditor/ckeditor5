@@ -7,7 +7,7 @@
  * @module engine/model/liverange
  */
 
-import Range from './range';
+import Range, { setStart, setEnd } from './range';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
@@ -178,8 +178,8 @@ function transform( changeType, deltaType, batch, targetRange, sourcePosition ) 
 		// If range boundaries have changed, fire `change:range` event.
 		const oldRange = Range.createFromRange( this );
 
-		this.start = updated.start;
-		this.end = updated.end;
+		setStart( this, updated.start );
+		setEnd( this, updated.end );
 
 		this.fire( 'change:range', oldRange, {
 			type: changeType,
