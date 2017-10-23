@@ -44,28 +44,38 @@ export default class Widget extends Plugin {
 	init() {
 		const viewDocument = this.editor.editing.view;
 
-		let previouslySelected;
+		/**
+		 * Holds previously selected widgets.
+		 *
+		 * @private
+		 * @type {Set.<module:engine/view/element~Element>}
+		 */
+		this._previouslySelected = new Set();
 
 		// Model to view selection converter.
 		// Converts selection placed over widget element to fake selection
 		this.editor.editing.modelToView.on( 'selection', ( evt, data, consumable, conversionApi ) => {
-			// Remove selected class from previously selected widget.
-			if ( previouslySelected && previouslySelected.hasClass( WIDGET_SELECTED_CLASS_NAME ) ) {
-				previouslySelected.removeClass( WIDGET_SELECTED_CLASS_NAME );
-			}
+			// Remove selected class from previously selected widgets.
+			this._clearPreviouslySelectedWidgets();
 
 			const viewSelection = conversionApi.viewSelection;
-
-			// Check if widget was clicked or some sub-element.
 			const selectedElement = viewSelection.getSelectedElement();
 
-			if ( !selectedElement || !isWidget( selectedElement ) ) {
-				return;
-			}
+			for ( const range of viewSelection.getRanges() ) {
+				for ( const value of range ) {
+					const node = value.item;
 
-			viewSelection.setFake( true, { label: getLabel( selectedElement ) } );
-			selectedElement.addClass( WIDGET_SELECTED_CLASS_NAME );
-			previouslySelected = selectedElement;
+					if ( node.is( 'element' ) && isWidget( node ) ) {
+						node.addClass( WIDGET_SELECTED_CLASS_NAME );
+						this._previouslySelected.add( node );
+
+						// Check if widget is a single element selected.
+						if ( node == selectedElement ) {
+							viewSelection.setFake( true, { label: getLabel( selectedElement ) } );
+						}
+					}
+				}
+			}
 		}, { priority: 'low' } );
 
 		// If mouse down is pressed on widget - create selection over whole widget.
@@ -136,7 +146,7 @@ export default class Widget extends Plugin {
 		} else if ( isArrowKeyCode( keyCode ) ) {
 			wasHandled = this._handleArrowKeys( isForward );
 		} else if ( isSelectAllKeyCode( domEventData ) ) {
-			wasHandled = this._selectAllNestedEditableContent();
+			wasHandled = this._selectAllNestedEditableContent() || this._selectAllContent();
 		}
 
 		if ( wasHandled ) {
@@ -257,6 +267,36 @@ export default class Widget extends Plugin {
 	}
 
 	/**
+	 * Handles <kbd>CTRL + A</kbd> when widget is selected.
+	 *
+	 * @private
+	 * @returns {Boolean} Returns true if widget was selected and selecting all was handled by this method.
+	 */
+	_selectAllContent() {
+		const modelDocument = this.editor.document;
+		const modelSelection = modelDocument.selection;
+		const editing = this.editor.editing;
+		const viewDocument = editing.view;
+		const viewSelection = viewDocument.selection;
+
+		const selectedElement = viewSelection.getSelectedElement();
+
+		// Only widget is selected.
+		// https://github.com/ckeditor/ckeditor5-widget/issues/23
+		if ( selectedElement && isWidget( selectedElement ) ) {
+			const widgetParent = editing.mapper.toModelElement( selectedElement.parent );
+
+			modelDocument.enqueueChanges( () => {
+				modelSelection.setRanges( [ ModelRange.createIn( widgetParent ) ] );
+			} );
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Sets {@link module:engine/model/selection~Selection document's selection} over given element.
 	 *
 	 * @private
@@ -292,6 +332,18 @@ export default class Widget extends Plugin {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Removes CSS class from previously selected widgets.
+	 * @private
+	 */
+	_clearPreviouslySelectedWidgets() {
+		for ( const widget of this._previouslySelected ) {
+			widget.removeClass( WIDGET_SELECTED_CLASS_NAME );
+		}
+
+		this._previouslySelected.clear();
 	}
 }
 

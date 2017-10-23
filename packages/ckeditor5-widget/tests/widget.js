@@ -196,6 +196,19 @@ describe( 'Widget', () => {
 		expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'element label' );
 	} );
 
+	it( 'should add selected class when no only a widget is selected', () => {
+		setModelData( doc, '[<paragraph>foo</paragraph><widget></widget><widget></widget>]' );
+
+		expect( viewDocument.selection.isFake ).to.be.false;
+		expect( getViewData( viewDocument ) ).to.equal(
+			'[' +
+			'<p>foo</p>' +
+			'<div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div>' +
+			'<div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div>' +
+			']'
+		);
+	} );
+
 	it( 'fake selection should be empty if widget is not selected', () => {
 		setModelData( doc, '<paragraph>foo</paragraph><widget>foo bar</widget>' );
 
@@ -1075,9 +1088,18 @@ describe( 'Widget', () => {
 				{ keyCode: keyCodes.a, ctrlKey: true },
 				'<widget><nested>foo</nested></widget><paragraph>[]bar</paragraph>'
 			);
+
+			test(
+				'should selected whole content when widget is selected',
+				'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
+				{ keyCode: keyCodes.a, ctrlKey: true },
+				'[<paragraph>foo</paragraph><widget></widget><paragraph>bar</paragraph>]',
+				'[<p>foo</p><div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div><p>bar</p>]'
+
+			);
 		} );
 
-		function test( name, data, keyCodeOrMock, expected ) {
+		function test( name, data, keyCodeOrMock, expected, expectedView ) {
 			it( name, () => {
 				const domEventDataMock = ( typeof keyCodeOrMock == 'object' ) ? keyCodeOrMock : {
 					keyCode: keyCodeOrMock
@@ -1091,6 +1113,10 @@ describe( 'Widget', () => {
 				) );
 
 				expect( getModelData( doc ) ).to.equal( expected );
+
+				if ( expectedView ) {
+					expect( getViewData( viewDocument ) ).to.equal( expectedView );
+				}
 			} );
 		}
 	} );
