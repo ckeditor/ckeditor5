@@ -18,6 +18,14 @@ let TestView, view, childA, childB;
 testUtils.createSinonSandbox();
 
 describe( 'View', () => {
+	afterEach( () => {
+		if ( view.element ) {
+			view.element.remove();
+		}
+
+		view.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		beforeEach( () => {
 			setTestViewClass();
@@ -236,8 +244,6 @@ describe( 'View', () => {
 		beforeEach( createViewInstanceWithTemplate );
 
 		it( 'invokes out of #template', () => {
-			setTestViewInstance();
-
 			expect( view.element ).to.be.an.instanceof( HTMLElement );
 			expect( view.element.nodeName ).to.equal( 'A' );
 		} );
@@ -251,13 +257,17 @@ describe( 'View', () => {
 				}
 			}
 
-			view = new CustomView();
+			const view = new CustomView();
 
 			expect( view.element ).to.be.an.instanceof( HTMLElement );
 		} );
 
 		it( 'is null when there is no template', () => {
-			expect( new View().element ).to.be.null;
+			const view = new View();
+
+			view.render();
+
+			expect( view.element ).to.be.null;
 		} );
 
 		it( 'registers child views found in the template', () => {
@@ -362,7 +372,7 @@ describe( 'View', () => {
 		} );
 
 		it( 'destroy a template–less view', () => {
-			view = new View();
+			const view = new View();
 
 			expect( () => {
 				view.destroy();
