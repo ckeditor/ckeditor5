@@ -25,8 +25,8 @@ describe( 'widget utils', () => {
 	} );
 
 	describe( 'toWidget()', () => {
-		it( 'should set contenteditable to false', () => {
-			expect( element.getAttribute( 'contenteditable' ) ).to.be.false;
+		it( 'should set contenteditable to "false"', () => {
+			expect( element.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
 		} );
 
 		it( 'should define getFillerOffset method', () => {
@@ -138,12 +138,21 @@ describe( 'widget utils', () => {
 			expect( element.hasClass( 'ck-editable' ) ).to.be.true;
 		} );
 
-		it( 'should add proper contenteditable value when element is read-only', () => {
-			element.isReadOnly = false;
-			expect( element.getAttribute( 'contenteditable' ) ).to.true;
-
+		it( 'should add proper contenteditable value when element is read-only - initialization', () => {
+			const element = new ViewEditableElement( 'div' );
+			element.document = viewDocument;
 			element.isReadOnly = true;
-			expect( element.getAttribute( 'contenteditable' ) ).to.false;
+			toWidgetEditable( element );
+
+			expect( element.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
+		} );
+
+		it( 'should add proper contenteditable value when element is read-only - when changing', () => {
+			element.isReadOnly = true;
+			expect( element.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
+
+			element.isReadOnly = false;
+			expect( element.getAttribute( 'contenteditable' ) ).to.equal( 'true' );
 		} );
 
 		it( 'should add proper class when element is focused', () => {

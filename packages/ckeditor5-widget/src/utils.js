@@ -38,7 +38,7 @@ export function isWidget( element ) {
 
 /**
  * Converts given {@link module:engine/view/element~Element} to widget in following way:
- * * sets `contenteditable` attribute to `true`,
+ * * sets `contenteditable` attribute to `"true"`,
  * * adds custom `getFillerOffset` method returning `null`,
  * * adds `ck-widget` CSS class,
  * * adds custom property allowing to recognize widget elements by using {@link ~isWidget},
@@ -51,7 +51,7 @@ export function isWidget( element ) {
  * @returns {module:engine/view/element~Element} Returns same element.
  */
 export function toWidget( element, options = {} ) {
-	element.setAttribute( 'contenteditable', false );
+	element.setAttribute( 'contenteditable', 'false' );
 	element.getFillerOffset = getFillerOffset;
 	element.addClass( WIDGET_CLASS_NAME );
 	element.setCustomProperty( widgetSymbol, true );
@@ -141,11 +141,11 @@ export function toWidgetEditable( editable ) {
 	editable.addClass( 'ck-editable' );
 
 	// Set initial contenteditable value.
-	editable.setAttribute( 'contenteditable', !editable.isReadOnly );
+	editable.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true' );
 
 	// Bind contenteditable property to element#isReadOnly.
 	editable.on( 'change:isReadOnly', ( evt, property, is ) => {
-		editable.setAttribute( 'contenteditable', !is );
+		editable.setAttribute( 'contenteditable', is ? 'false' : 'true' );
 	} );
 
 	editable.on( 'change:isFocused', ( evt, property, is ) => {
