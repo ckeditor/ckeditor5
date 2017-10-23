@@ -19,8 +19,16 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 testUtils.createSinonSandbox();
 
 let el, text;
+const injectedElements = [];
 
 describe( 'Template', () => {
+	// Clean-up document.body from the rendered elements.
+	afterEach( () => {
+		for ( const el of injectedElements ) {
+			el.remove();
+		}
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'sets #_isRendered property', () => {
 			expect( new Template( { tag: 'p' } )._isRendered ).to.be.false;
@@ -702,7 +710,8 @@ describe( 'Template', () => {
 		let observable, domEmitter, bind;
 
 		beforeEach( () => {
-			el = getElement( { tag: 'div' } );
+			setElement( { tag: 'div' } );
+
 			text = document.createTextNode( '' );
 
 			observable = new Model( {
@@ -2983,7 +2992,10 @@ function getElement( template ) {
 
 function setElement( template ) {
 	el = new Template( template ).render();
+
 	document.body.appendChild( el );
+
+	injectedElements.push( el );
 }
 
 function extensionTest( baseDefinition, extendedDefinition, expectedHtml ) {
@@ -2996,6 +3008,8 @@ function extensionTest( baseDefinition, extendedDefinition, expectedHtml ) {
 	document.body.appendChild( el );
 
 	expect( normalizeHtml( el.outerHTML ) ).to.equal( expectedHtml );
+
+	injectedElements.push( el );
 
 	return el;
 }
