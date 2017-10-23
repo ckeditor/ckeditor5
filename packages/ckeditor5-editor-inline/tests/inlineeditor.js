@@ -42,7 +42,11 @@ describe( 'InlineEditor', () => {
 		} );
 
 		it( 'creates a single div editable root in the view', () => {
+			editor.ui.init();
+
 			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
+
+			editor.ui.destroy();
 		} );
 
 		it( 'creates a single document root', () => {

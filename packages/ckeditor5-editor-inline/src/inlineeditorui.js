@@ -52,6 +52,16 @@ export default class InlineEditorUI {
 		 * @private
 		 */
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+	}
+
+	/**
+	 * Initializes the UI.
+	 */
+	init() {
+		const editor = this.editor;
+		const view = this.view;
+
+		view.render();
 
 		// Set–up the view#panel.
 		view.panel.bind( 'isVisible' ).to( this.focusTracker, 'isFocused' );
@@ -82,16 +92,6 @@ export default class InlineEditorUI {
 		view.editable.name = editingRoot.rootName;
 
 		this.focusTracker.add( view.editableElement );
-	}
-
-	/**
-	 * Initializes the UI.
-	 */
-	init() {
-		const editor = this.editor;
-		const view = this.view;
-
-		view.render();
 
 		if ( this._toolbarConfig ) {
 			view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
