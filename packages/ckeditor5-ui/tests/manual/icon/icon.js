@@ -59,8 +59,8 @@ addCase( iconWrapper );
 function renderIcon( content, size, color ) {
 	const iconView = new IconView();
 
+	iconView.render();
 	iconView.content = content;
-	iconView.init();
 
 	if ( size ) {
 		iconView.element.style.width = `${ size }px`;

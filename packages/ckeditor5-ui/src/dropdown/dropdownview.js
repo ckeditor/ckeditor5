@@ -24,7 +24,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
  *			withText: true
  *		} );
  *
- *		dropdown.init();
+ *		dropdown.render();
  *
  *		// Will render a dropdown with a panel containing a "Content of the panel" text.
  *		document.body.appendChild( dropdown.element );

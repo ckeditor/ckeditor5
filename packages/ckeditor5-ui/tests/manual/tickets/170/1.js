@@ -21,8 +21,8 @@ ClassicEditor
 	.then( editor => {
 		const panel = new BalloonPanelView();
 
-		panel.element.innerHTML = 'Balloon content.';
 		editor.ui.view.body.add( panel );
+		panel.element.innerHTML = 'Balloon content.';
 
 		editor.ui.view.element.querySelector( '.ck-editor__editable' ).scrollTop = 360;
 
@@ -46,8 +46,8 @@ ClassicEditor
 	.then( editor => {
 		const panel = new BalloonPanelView();
 
-		panel.element.innerHTML = 'Balloon content.';
 		editor.ui.view.body.add( panel );
+		panel.element.innerHTML = 'Balloon content.';
 
 		editor.ui.view.element.querySelector( '.ck-editor__editable' ).scrollTop = 360;
 
