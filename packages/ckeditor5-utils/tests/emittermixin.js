@@ -60,16 +60,6 @@ describe( 'EmitterMixin', () => {
 			sinon.assert.calledWithExactly( spy2, sinon.match.instanceOf( EventInfo ), 1, 'b', true );
 		} );
 
-		it( 'should pass proper context to callbacks', () => {
-			const spy = sinon.spy();
-
-			emitter.on( 'test', spy );
-
-			emitter.fire( 'test' );
-
-			sinon.assert.calledOn( spy, emitter );
-		} );
-
 		it( 'should fire the right event', () => {
 			const spy1 = sinon.spy();
 			const spy2 = sinon.spy();
@@ -305,16 +295,6 @@ describe( 'EmitterMixin', () => {
 			sinon.assert.calledTwice( spy1 );
 			sinon.assert.calledOnce( spy2 );
 			sinon.assert.calledTwice( spy3 );
-		} );
-
-		it( 'should have proper scope', () => {
-			const spy = sinon.spy();
-
-			emitter.once( 'test', spy );
-
-			emitter.fire( 'test' );
-
-			sinon.assert.calledOn( spy, emitter );
 		} );
 
 		it( 'should have proper arguments', () => {
