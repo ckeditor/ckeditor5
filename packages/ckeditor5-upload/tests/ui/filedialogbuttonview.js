@@ -14,7 +14,7 @@ describe( 'FileDialogButtonView', () => {
 		localeMock = { t: val => val };
 		view = new FileDialogButtonView( localeMock );
 
-		return view.init();
+		view.render();
 	} );
 
 	it( 'should be rendered from a template', () => {
@@ -25,7 +25,7 @@ describe( 'FileDialogButtonView', () => {
 		describe( 'button view', () => {
 			it( 'should be rendered', () => {
 				expect( view.buttonView ).to.instanceof( ButtonView );
-				expect( view.buttonView ).to.equal( view.template.children.get( 0 ) );
+				expect( view.buttonView ).to.equal( view.template.children[ 0 ] );
 			} );
 
 			it( 'should open file dialog on execute', () => {
@@ -39,7 +39,7 @@ describe( 'FileDialogButtonView', () => {
 		describe( 'file dialog', () => {
 			it( 'should be rendered', () => {
 				expect( view._fileInputView ).to.instanceof( View );
-				expect( view._fileInputView ).to.equal( view.template.children.get( 1 ) );
+				expect( view._fileInputView ).to.equal( view.template.children[ 1 ] );
 			} );
 
 			it( 'should be bound to view#acceptedType', () => {

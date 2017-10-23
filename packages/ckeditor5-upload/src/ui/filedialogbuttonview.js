@@ -9,7 +9,6 @@
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 /**
  * The file dialog button view.
@@ -93,7 +92,7 @@ export default class FileDialogButtonView extends View {
 		 */
 		this._fileInputView.delegate( 'done' ).to( this );
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'span',
 			attributes: {
 				class: 'ck-file-dialog-button',
@@ -151,7 +150,7 @@ class FileInputView extends View {
 
 		const bind = this.bindTemplate;
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'input',
 
 			attributes: {
