@@ -10,7 +10,6 @@ import testUtils from '@ckeditor/ckeditor5-ui/tests/_utils/utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -37,7 +36,7 @@ class ToolbarNewlineView extends View {
 	constructor() {
 		super();
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'span',
 			attributes: {
 				class: 'ck-toolbar__newline'
@@ -114,6 +113,10 @@ function renderButton() {
 	const roundedButton = button( { label: 'Rounded corners' } );
 	const boldButton = button( { label: 'Bold text' } );
 
+	ui.buttonTypes.add( actionButton );
+	ui.buttonTypes.add( roundedButton );
+	ui.buttonTypes.add( boldButton );
+
 	// TODO: It requires model interface.
 	actionButton.element.classList.add( 'ck-button-action' );
 
@@ -122,10 +125,6 @@ function renderButton() {
 
 	// TODO: It requires model interface.
 	boldButton.element.classList.add( 'ck-button-bold' );
-
-	ui.buttonTypes.add( actionButton );
-	ui.buttonTypes.add( roundedButton );
-	ui.buttonTypes.add( boldButton );
 
 	// --- Icon ------------------------------------------------------------
 
@@ -139,10 +138,10 @@ function renderButton() {
 		icon: italicIcon
 	} );
 
+	ui.buttonIconCustom.add( styledButton );
+
 	// TODO: It probably requires model interface.
 	styledButton.element.setAttribute( 'style', 'border-radius: 100px; border: 0' );
-
-	ui.buttonIconCustom.add( styledButton );
 
 	ui.buttonIconStates.add( button( {
 		label: 'Disabled',
@@ -156,10 +155,10 @@ function renderButton() {
 		isEnabled: false
 	} );
 
+	ui.buttonIconStates.add( disabledActionButton );
+
 	// TODO: It requires model interface.
 	disabledActionButton.element.classList.add( 'ck-button-action' );
-
-	ui.buttonIconStates.add( disabledActionButton );
 
 	ui.buttonIconStates.add( button( {
 		label: 'Bold',
@@ -189,10 +188,10 @@ function renderButton() {
 			icon: boldIcon
 		} );
 
+		ui[ `buttonResponsive${ i }` ].add( notextButton );
+
 		// TODO: It requires model interface.
 		notextButton.element.classList.add( 'ck-button-action' );
-
-		ui[ `buttonResponsive${ i }` ].add( notextButton );
 	}
 
 	// --- Tooltip ------------------------------------------------------------
@@ -282,9 +281,9 @@ function renderToolbar() {
 		button()
 	] );
 
-	wrapToolbar.element.style.width = '150px';
-
 	ui.toolbarWrap.add( wrapToolbar );
+
+	wrapToolbar.element.style.width = '150px';
 
 	// --- Separator ------------------------------------------------------------
 
