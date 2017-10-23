@@ -17,7 +17,6 @@ $widget-outline-thickness: 3px;
 .ck-widget {
 	margin: ck-spacing() 0;
 	padding: 0;
-	//user-select: none;
 
 	&.ck-widget_selected, &.ck-widget_selected:hover {
 		outline: $widget-outline-thickness solid ck-color( 'border-focus' );
