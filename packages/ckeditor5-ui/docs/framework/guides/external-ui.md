@@ -83,8 +83,8 @@ export default class BootstrapEditor extends StandardEditor {
 
 			resolve(
 				editor.initPlugins()
-					// Initialize the editable view in DOM first.
-					.then( () => editable.init() )
+					// Render the editable view in DOM first.
+					.then( () => editable.render() )
 					// Replace the editor#element with editor.editable#element.
 					.then( () => editor._elementReplacer.replace( element, editable.element ) )
 					// Handle the UI of the editor.
