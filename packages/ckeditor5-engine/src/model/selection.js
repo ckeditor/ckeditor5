@@ -240,7 +240,7 @@ export default class Selection {
 	getFirstPosition() {
 		const first = this.getFirstRange();
 
-		return first ? Position.createFromPosition( first.start ) : null;
+		return first ? first.start : null;
 	}
 
 	/**
@@ -255,7 +255,7 @@ export default class Selection {
 	getLastPosition() {
 		const lastRange = this.getLastRange();
 
-		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
+		return lastRange ? lastRange.end : null;
 	}
 
 	/**

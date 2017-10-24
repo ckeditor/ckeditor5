@@ -85,9 +85,9 @@ export default class TreeWalker {
 		 * @member {module:engine/model/position~Position} module:engine/model/treewalker~TreeWalker#position
 		 */
 		if ( options.startPosition ) {
-			this.position = Position.createFromPosition( options.startPosition );
+			this.position = options.startPosition;
 		} else {
-			this.position = Position.createFromPosition( this.boundaries[ this.direction == 'backward' ? 'end' : 'start' ] );
+			this.position = this.boundaries[ this.direction == 'backward' ? 'end' : 'start' ];
 		}
 
 		/**
