@@ -8,17 +8,19 @@
 'use strict';
 
 import FileUploader from '../../src/uploadgateway/fileuploader';
+import Token from '../../src/token/token';
 
 const API_ADDRESS = 'https://example.dev';
-const TOKEN = 'token';
 const BASE_64_FILE = 'data:image/gif;base64,R0lGODlhCQAJAPIAAGFhYZXK/1FRUf///' +
 	'9ra2gD/AAAAAAAAACH5BAEAAAUALAAAAAAJAAkAAAMYWFqwru2xERcYJLSNNWNBVimC5wjfaTkJADs=';
 
 describe( 'FileUploader', () => {
+	const token = new Token( 'url', { initValue: 'token', autoRefresh: false } );
+
 	let fileUploader;
 
 	beforeEach( () => {
-		fileUploader = new FileUploader( BASE_64_FILE, TOKEN, API_ADDRESS );
+		fileUploader = new FileUploader( BASE_64_FILE, token, API_ADDRESS );
 	} );
 
 	describe( 'constructor()', () => {
@@ -31,11 +33,11 @@ describe( 'FileUploader', () => {
 		} );
 
 		it( 'should throw error when no api address provided', () => {
-			expect( () => new FileUploader( 'file', TOKEN ) ).to.throw( 'Api address must be provided' );
+			expect( () => new FileUploader( 'file', token ) ).to.throw( 'Api address must be provided' );
 		} );
 
 		it( 'should throw error when wrong Base64 file is provided', () => {
-			expect( () => new FileUploader( 'data:image/gif;base64,R', TOKEN, API_ADDRESS ) )
+			expect( () => new FileUploader( 'data:image/gif;base64,R', token, API_ADDRESS ) )
 				.to.throw( 'Problem with decoding Base64 image data.' );
 		} );
 
@@ -53,7 +55,7 @@ describe( 'FileUploader', () => {
 		it( 'should set `file` field', () => {
 			const file = new File( [], 'test.jpg' );
 
-			const fileUploader = new FileUploader( file, TOKEN, API_ADDRESS );
+			const fileUploader = new FileUploader( file, token, API_ADDRESS );
 
 			expect( fileUploader.file.name ).to.be.equal( 'test.jpg' );
 		} );
