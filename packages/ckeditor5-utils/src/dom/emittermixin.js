@@ -51,19 +51,19 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 *
 	 * @method module:utils/dom/emittermixin~EmitterMixin#listenTo
 	 */
-	listenTo( emitter, event, callback, options ) {
+	listenTo( emitter, ...rest ) {
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with
 		// corresponding ProxyEmitter (or create one if not existing).
 		if ( isDomNode( emitter ) ) {
 			const proxy = this._getProxyEmitter( emitter ) || new ProxyEmitter( emitter );
 
-			proxy.attach( event, callback, options );
+			proxy.attach( ...rest );
 
 			emitter = proxy;
 		}
 
 		// Execute parent class method with Emitter (or ProxyEmitter) instance.
-		EmitterMixin.listenTo.call( this, emitter, event, callback, options );
+		EmitterMixin.listenTo.call( this, emitter, ...rest );
 	},
 
 	/**
@@ -100,7 +100,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 		EmitterMixin.stopListening.call( this, emitter, event, callback );
 
 		if ( emitter instanceof ProxyEmitter ) {
-			emitter.detach( event, callback );
+			emitter.detach( event );
 		}
 	},
 
