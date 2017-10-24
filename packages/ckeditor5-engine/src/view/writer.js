@@ -355,7 +355,7 @@ export function remove( range ) {
 	// Merge after removing.
 	const mergePosition = mergeAttributes( breakStart );
 	range.start = mergePosition;
-	range.end = Position.createFromPosition( mergePosition );
+	range.end = mergePosition;
 
 	// Return removed nodes.
 	return new DocumentFragment( removed );
@@ -537,7 +537,7 @@ export function wrapPosition( position, attribute ) {
 
 	// Return same position when trying to wrap with attribute similar to position parent.
 	if ( attribute.isSimilar( position.parent ) ) {
-		return movePositionToTextNode( Position.createFromPosition( position ) );
+		return movePositionToTextNode( position );
 	}
 
 	// When position is inside text node - break it and place new position between two text nodes.
@@ -752,12 +752,12 @@ function _breakAttributes( position, forceSplitText = false ) {
 
 	// There are no attributes to break and text nodes breaking is not forced.
 	if ( !forceSplitText && positionParent.is( 'text' ) && isContainerOrFragment( positionParent.parent ) ) {
-		return Position.createFromPosition( position );
+		return position;
 	}
 
 	// Position's parent is container, so no attributes to break.
 	if ( isContainerOrFragment( positionParent ) ) {
-		return Position.createFromPosition( position );
+		return position;
 	}
 
 	// Break text and start again in new position.

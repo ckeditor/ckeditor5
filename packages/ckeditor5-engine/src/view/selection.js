@@ -132,9 +132,8 @@ export default class Selection {
 			return null;
 		}
 		const range = this._ranges[ this._ranges.length - 1 ];
-		const anchor = this._lastRangeBackward ? range.end : range.start;
 
-		return Position.createFromPosition( anchor );
+		return this._lastRangeBackward ? range.end : range.start;
 	}
 
 	/**
@@ -148,9 +147,8 @@ export default class Selection {
 			return null;
 		}
 		const range = this._ranges[ this._ranges.length - 1 ];
-		const focus = this._lastRangeBackward ? range.start : range.end;
 
-		return Position.createFromPosition( focus );
+		return this._lastRangeBackward ? range.start : range.end;
 	}
 
 	/**
@@ -281,7 +279,7 @@ export default class Selection {
 	getFirstPosition() {
 		const firstRange = this.getFirstRange();
 
-		return firstRange ? Position.createFromPosition( firstRange.start ) : null;
+		return firstRange ? firstRange.start : null;
 	}
 
 	/**
@@ -294,7 +292,7 @@ export default class Selection {
 	getLastPosition() {
 		const lastRange = this.getLastRange();
 
-		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
+		return lastRange ? lastRange.end : null;
 	}
 
 	/**

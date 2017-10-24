@@ -28,14 +28,14 @@ export default class Range {
 		 *
 		 * @member {module:engine/view/position~Position}
 		 */
-		this.start = Position.createFromPosition( start );
+		this.start = start;
 
 		/**
 		 * End position.
 		 *
 		 * @member {module:engine/view/position~Position}
 		 */
-		this.end = end ? Position.createFromPosition( end ) : Position.createFromPosition( start );
+		this.end = end ? end : start;
 	}
 
 	/**
@@ -451,9 +451,8 @@ export default class Range {
 	 */
 	static createCollapsedAt( itemOrPosition, offset ) {
 		const start = Position.createAt( itemOrPosition, offset );
-		const end = Position.createFromPosition( start );
 
-		return new Range( start, end );
+		return new Range( start, start );
 	}
 }
 
