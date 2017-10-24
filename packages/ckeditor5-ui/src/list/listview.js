@@ -88,6 +88,11 @@ export default class ListView extends View {
 	render() {
 		super.render();
 
+		// Items added before rendering should be known to the #focusTracker.
+		for ( const item of this.items ) {
+			this.focusTracker.add( item.element );
+		}
+
 		this.items.on( 'add', ( evt, item ) => {
 			this.focusTracker.add( item.element );
 		} );

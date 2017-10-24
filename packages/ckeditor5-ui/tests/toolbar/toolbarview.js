@@ -28,6 +28,10 @@ describe( 'ToolbarView', () => {
 		view.render();
 	} );
 
+	afterEach( () => {
+		view.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should set view#locale', () => {
 			expect( view.locale ).to.equal( locale );
@@ -48,19 +52,6 @@ describe( 'ToolbarView', () => {
 		it( 'creates #_focusCycler instance', () => {
 			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
-
-		it( 'registers #items in #focusTracker', () => {
-			const spyAdd = sinon.spy( view.focusTracker, 'add' );
-			const spyRemove = sinon.spy( view.focusTracker, 'remove' );
-
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-
-			sinon.assert.calledTwice( spyAdd );
-
-			view.items.remove( 1 );
-			sinon.assert.calledOnce( spyRemove );
-		} );
 	} );
 
 	describe( 'template', () => {
@@ -80,14 +71,33 @@ describe( 'ToolbarView', () => {
 	} );
 
 	describe( 'render()', () => {
-		it( 'starts listening for #keystrokes coming from #element', () => {
-			view = new ToolbarView();
+		it( 'registers #items in #focusTracker', () => {
+			const view = new ToolbarView( locale );
+			const spyAdd = sinon.spy( view.focusTracker, 'add' );
+			const spyRemove = sinon.spy( view.focusTracker, 'remove' );
 
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			sinon.assert.notCalled( spyAdd );
+
+			view.render();
+			sinon.assert.calledTwice( spyAdd );
+
+			view.items.remove( 1 );
+			sinon.assert.calledOnce( spyRemove );
+
+			view.destroy();
+		} );
+
+		it( 'starts listening for #keystrokes coming from #element', () => {
+			const view = new ToolbarView();
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
 			view.render();
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, view.element );
+
+			view.destroy();
 		} );
 
 		describe( 'activates keyboard navigation for the toolbar', () => {
