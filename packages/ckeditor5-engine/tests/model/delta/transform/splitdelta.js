@@ -968,8 +968,15 @@ describe( 'transform', () => {
 				baseVersion = removeDelta.operations.length;
 
 				const newInsertPosition = removeOperation.targetPosition.getShiftedBy( 2 );
-				const newMoveSourcePosition = removeOperation.targetPosition.getShiftedBy( 1 ).getMovedToChild( 2 );
-				const newMoveTargetPosition = newInsertPosition.getMovedToChild( );
+
+				const newSourcePath = removeOperation.targetPosition.getShiftedBy( 1 ).path.slice();
+				newSourcePath.push( 2 );
+				const newMoveSourcePosition = new Position( removeOperation.targetPosition.root, newSourcePath );
+
+				const newMoveTargetPath = newInsertPosition.path.slice();
+				newMoveTargetPath.push( 0 );
+
+				const newMoveTargetPosition = new Position( newInsertPosition.root, newMoveTargetPath );
 
 				expectDelta( transformed[ 0 ], {
 					type: SplitDelta,
@@ -1002,8 +1009,13 @@ describe( 'transform', () => {
 				baseVersion = removeDelta.operations.length;
 
 				const newInsertPosition = removeOperation.targetPosition.getShiftedBy( 2 );
-				const newMoveSourcePosition = removeOperation.targetPosition.getShiftedBy( 1 ).getMovedToChild( 3 );
-				const newMoveTargetPosition = newInsertPosition.getMovedToChild( );
+				const newMoveSourcePath = removeOperation.targetPosition.getShiftedBy( 1 ).path.slice();
+				newMoveSourcePath.push( 3 );
+				const newMoveSourcePosition = new Position( removeOperation.targetPosition.root, newMoveSourcePath );
+
+				const newMoveTargetPath = newInsertPosition.path.slice();
+				newMoveTargetPath.push( 0 );
+				const newMoveTargetPosition = new Position( newInsertPosition.root, newMoveTargetPath );
 
 				expectDelta( transformed[ 0 ], {
 					type: SplitDelta,

@@ -223,7 +223,9 @@ export default class TreeWalker {
 		if ( node instanceof Element ) {
 			if ( !this.shallow ) {
 				// Manual operations on path internals for optimization purposes. Here and in the rest of the method.
-				position = position.getMovedToChild();
+				const path = position.path.slice();
+				path.push( 0 );
+				position = new Position( position.root, path );
 
 				this._visitedParent = node;
 			} else {
@@ -258,7 +260,9 @@ export default class TreeWalker {
 			return formatReturnValue( 'text', item, previousPosition, this.position, charactersCount );
 		} else {
 			// `node` is not set, we reached the end of current `parent`.
-			position = position.getMovedToParent().getShiftedBy( 1 );
+			const path = position.getParentPath();
+			path[ path.length - 1 ]++;
+			position = new Position( position.root, path );
 
 			this.position = position;
 			this._visitedParent = parent.parent;
@@ -301,7 +305,10 @@ export default class TreeWalker {
 			position = position.getShiftedBy( -1 );
 
 			if ( !this.shallow ) {
-				position = position.getMovedToChild( node.maxOffset );
+				const path = position.path.slice();
+				path.push( node.maxOffset );
+
+				position = new Position( position.root, path );
 
 				this.position = position;
 				this._visitedParent = node;
@@ -341,7 +348,7 @@ export default class TreeWalker {
 			return formatReturnValue( 'text', item, previousPosition, position, charactersCount );
 		} else {
 			// `node` is not set, we reached the beginning of current `parent`.
-			position = position.getMovedToParent();
+			position = new Position( position.root, position.getParentPath() );
 
 			this.position = position;
 			this._visitedParent = parent.parent;

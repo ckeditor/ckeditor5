@@ -73,7 +73,10 @@ addTransformationCase( AttributeDelta, SplitDelta, ( a, b, context ) => {
 			const additionalAttributeDelta = new AttributeDelta();
 
 			const rangeStart = splitPosition.getShiftedBy( 1 );
-			const rangeEnd = rangeStart.getMovedToChild();
+
+			const rangeEndPath = rangeStart.path.slice();
+			rangeEndPath.push( 0 );
+			const rangeEnd = new Position( rangeStart.root, rangeEndPath );
 
 			const oldValue = b._cloneOperation.nodes.getNode( 0 ).getAttribute( operation.key );
 
@@ -319,7 +322,10 @@ addTransformationCase( SplitDelta, WrapDelta, ( a, b, context ) => {
 
 		// Now, `splitNodePos` points before wrapping element.
 		// To get a position before last children of that element, we expand position's `path` member by proper offset.
-		const splitNodePos = b.range.start.getMovedToChild( b.howMany - 1 );
+		const splitPath = b.range.start.path.slice();
+		splitPath.push( b.howMany - 1 );
+
+		const splitNodePos = new Position( b.range.start.root, splitPath );
 
 		// SplitDelta insert operation position should be right after the node we split.
 		delta._cloneOperation.position = splitNodePos.getShiftedBy( 1 );
@@ -328,12 +334,18 @@ addTransformationCase( SplitDelta, WrapDelta, ( a, b, context ) => {
 		// Nodes moved by SplitDelta will be moved from new position, modified by WrapDelta.
 		// To obtain that new position, `splitNodePos` will be used, as this is the node we are extracting children from.
 		// Nothing changed inside split node so it is correct to use the original split position offset.
-		delta._moveOperation.sourcePosition = splitNodePos.getMovedToChild( a.position.offset );
+		const sourcePath = splitNodePos.path.slice();
+		sourcePath.push( a.position.offset );
+
+		delta._moveOperation.sourcePosition = new Position( splitNodePos.root, sourcePath );
 
 		// 3. Fix move operation target position.
 		// SplitDelta move operation target position should be inside the node inserted by operation above.
 		// Since the node is empty, we will insert at offset 0.
-		delta._moveOperation.targetPosition = splitNodePos.getShiftedBy( 1 ).getMovedToChild();
+		const targetPath = splitNodePos.getShiftedBy( 1 ).path.slice();
+		targetPath.push( 0 );
+
+		delta._moveOperation.targetPosition = new Position( splitNodePos.root, targetPath );
 
 		return [ delta ];
 	}
@@ -438,7 +450,7 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, context ) => {
 
 		const path = delta._moveOperation.targetPosition.path.slice();
 		path[ index ] += 1;
-		delta._moveOperation.targetPosition = delta._moveOperation.targetPosition.getMovedToPath( path );
+		delta._moveOperation.targetPosition = new Position( delta._moveOperation.targetPosition.root, path );
 
 		return [ delta ];
 	}

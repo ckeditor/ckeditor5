@@ -58,7 +58,7 @@ describe( 'transform', () => {
 
 		path[ index ] += howMany;
 
-		return position.getMovedToPath( path );
+		return new Position( position.root, path );
 	}
 
 	describe( 'InsertOperation', () => {

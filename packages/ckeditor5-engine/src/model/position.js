@@ -346,16 +346,6 @@ export default class Position {
 	}
 
 	/**
-	 * Returns a new instance of `Position`, that has same {@link #root root} but it's path is set to `path` value.
-	 *
-	 * @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
-	 * @returns {module:engine/model/position~Position} Moved position.
-	 */
-	getMovedToPath( path ) {
-		return new Position( this.root, path );
-	}
-
-	/**
 	 * Returns a new instance of `Position`, that has same {@link #parent parent} but it's offset
 	 * is set to `offset` value.
 	 *
@@ -367,7 +357,7 @@ export default class Position {
 
 		setOffset( path, offset );
 
-		return this.getMovedToPath( path );
+		return new Position( this.root, path );
 	}
 
 	/**
@@ -381,28 +371,6 @@ export default class Position {
 		const newOffset = this.offset + shift;
 
 		return this.getShiftedTo( newOffset < 0 ? 0 : newOffset );
-	}
-
-	/**
-	 * Returns a new instance of `Position`, that has same {@link #root root} but it's moved in path by one level up.
-	 *
-	 * @returns {module:engine/model/position~Position} Moved position.
-	 */
-	getMovedToParent() {
-		return this.getMovedToPath( this.getParentPath() );
-	}
-
-	/**
-	 * Returns a new instance of `Position`, that has same {@link #root root} but it's moved in path by one level down.
-	 *
-	 * @returns {module:engine/model/position~Position} Moved position.
-	 */
-	getMovedToChild( offsetInChild = 0 ) {
-		const path = this.path.slice();
-
-		path.push( offsetInChild );
-
-		return this.getMovedToPath( path );
 	}
 
 	/**
@@ -508,14 +476,17 @@ export default class Position {
 					return false;
 				}
 
-				left = left.getMovedToParent().getShiftedBy( 1 );
+				const path = left.getParentPath();
+				path[ path.length - 1 ]++;
+				left = new Position( left.root, path );
+
 				leftParent = leftParent.parent;
 			} else {
 				if ( right.offset !== 0 ) {
 					return false;
 				}
 
-				right = right.getMovedToParent();
+				right = new Position( right.root, right.getParentPath() );
 			}
 		}
 	}
@@ -573,8 +544,10 @@ export default class Position {
 				} else {
 					// Otherwise, decrement index on that path.
 					const path = this.path.slice();
+
 					path[ i ] -= howMany;
-					return this.getMovedToPath( path );
+
+					return new Position( this.root, path );
 				}
 			}
 		}
@@ -614,8 +587,10 @@ export default class Position {
 				// And are inserted before next node of that path...
 				// "Push" the index on that path.
 				const path = this.path.slice();
+
 				path[ i ] += howMany;
-				return this.getMovedToPath( path );
+
+				return new Position( this.root, path );
 			}
 		}
 

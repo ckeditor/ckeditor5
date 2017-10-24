@@ -301,7 +301,10 @@ export default class Range {
 				ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
 			}
 
-			pos = pos.getMovedToParent().getShiftedBy( 1 );
+			const path = pos.getParentPath();
+			path[ path.length - 1 ]++;
+
+			pos = new Position( pos.root, path );
 
 			posParent = posParent.parent;
 		}
@@ -315,7 +318,11 @@ export default class Range {
 				ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
 			}
 
-			pos = pos.getShiftedTo( offset ).getMovedToChild();
+			const path = pos.getParentPath();
+			path.push( offset );
+			path.push( 0 );
+
+			pos = new Position( pos.root, path );
 		}
 
 		return ranges;
