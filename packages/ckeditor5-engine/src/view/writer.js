@@ -305,7 +305,7 @@ export function insert( position, nodes ) {
 	const insertionPosition = _breakAttributes( position, true );
 
 	const length = container.insertChildren( insertionPosition.offset, nodes );
-	const endPosition = insertionPosition.getShiftedBy( length );
+	let endPosition = insertionPosition.getShiftedBy( length );
 	const start = mergeAttributes( insertionPosition );
 
 	// When no nodes were inserted - return collapsed range.
@@ -314,7 +314,7 @@ export function insert( position, nodes ) {
 	} else {
 		// If start position was merged - move end position.
 		if ( !start.isEqual( insertionPosition ) ) {
-			endPosition.offset--;
+			endPosition = endPosition.getShiftedBy( -1 );
 		}
 
 		const end = mergeAttributes( endPosition );
@@ -447,7 +447,7 @@ export function move( sourceRange, targetPosition ) {
 
 		nodes = remove( sourceRange );
 
-		targetPosition.offset += ( parent.childCount - countBefore );
+		targetPosition = targetPosition.getShiftedBy( parent.childCount - countBefore );
 	} else {
 		nodes = remove( sourceRange );
 	}
@@ -512,7 +512,7 @@ export function wrap( range, attribute ) {
 
 	// If start position was merged - move end position back.
 	if ( !start.isEqual( newRange.start ) ) {
-		newRange.end.offset--;
+		newRange.end = newRange.end.getShiftedBy( -1 );
 	}
 	const end = mergeAttributes( newRange.end );
 
@@ -626,7 +626,7 @@ export function unwrap( range, attribute ) {
 
 	// If start position was merged - move end position back.
 	if ( !start.isEqual( newRange.start ) ) {
-		newRange.end.offset--;
+		newRange.end = newRange.end.getShiftedBy( -1 );
 	}
 	const end = mergeAttributes( newRange.end );
 
@@ -702,12 +702,12 @@ function _breakAttributesRange( range, forceSplitText = false ) {
 		return new Range( position, position );
 	}
 
-	const breakEnd = _breakAttributes( rangeEnd, forceSplitText );
+	let breakEnd = _breakAttributes( rangeEnd, forceSplitText );
 	const count = breakEnd.parent.childCount;
 	const breakStart = _breakAttributes( rangeStart, forceSplitText );
 
 	// Calculate new break end offset.
-	breakEnd.offset += breakEnd.parent.childCount - count;
+	breakEnd = breakEnd.getShiftedBy( breakEnd.parent.childCount - count );
 
 	return new Range( breakStart, breakEnd );
 }
@@ -857,8 +857,8 @@ function unwrapChildren( parent, startOffset, endOffset, attribute ) {
 	// Merge at each unwrap.
 	let offsetChange = 0;
 
-	for ( const position of unwrapPositions ) {
-		position.offset -= offsetChange;
+	for ( let position of unwrapPositions ) {
+		position = position.getShiftedBy( -offsetChange );
 
 		// Do not merge with elements outside selected children.
 		if ( position.offset == startOffset || position.offset == endOffset ) {
@@ -918,8 +918,8 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 	// Merge at each wrap.
 	let offsetChange = 0;
 
-	for ( const position of wrapPositions ) {
-		position.offset -= offsetChange;
+	for ( let position of wrapPositions ) {
+		position = position.getShiftedBy( -offsetChange );
 
 		// Do not merge with elements outside selected children.
 		if ( position.offset == startOffset ) {

@@ -13,6 +13,9 @@ import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EditableElement from './editableelement';
 
+const _parent = Symbol( 'parent' );
+const _offset = Symbol( 'offset' );
+
 /**
  * Position in the tree. Position is always located before or after a node.
  */
@@ -24,20 +27,28 @@ export default class Position {
 	 * @param {Number} offset Position offset.
 	 */
 	constructor( parent, offset ) {
-		/**
-		 * Position parent.
-		 *
-		 * @member {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
-		 * module:engine/view/position~Position#parent
-		 */
-		this.parent = parent;
+		this[ _parent ] = parent;
+		this[ _offset ] = offset;
+	}
 
-		/**
-		 * Position offset.
-		 *
-		 * @member {Number} module:engine/view/position~Position#offset
-		 */
-		this.offset = offset;
+	/**
+	 * Position parent.
+	 *
+	 * @readonly
+	 * @type {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
+	 */
+	get parent() {
+		return this[ _parent ];
+	}
+
+	/**
+	 * Position offset.
+	 *
+	 * @readonly
+	 * @type {Number}
+	 */
+	get offset() {
+		return this[ _offset ];
 	}
 
 	/**
@@ -129,12 +140,9 @@ export default class Position {
 	 * @returns {module:engine/view/position~Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
-		const shifted = Position.createFromPosition( this );
+		const offset = this.offset + shift;
 
-		const offset = shifted.offset + shift;
-		shifted.offset = offset < 0 ? 0 : offset;
-
-		return shifted;
+		return new Position( this.parent, offset < 0 ? 0 : offset );
 	}
 
 	/**

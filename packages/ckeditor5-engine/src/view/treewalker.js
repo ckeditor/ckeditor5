@@ -73,9 +73,9 @@ export default class TreeWalker {
 		 * @member {module:engine/view/position~Position} module:engine/view/treewalker~TreeWalker#position
 		 */
 		if ( options.startPosition ) {
-			this.position = Position.createFromPosition( options.startPosition );
+			this.position = options.startPosition;
 		} else {
-			this.position = Position.createFromPosition( options.boundaries[ options.direction == 'backward' ? 'end' : 'start' ] );
+			this.position = options.boundaries[ options.direction == 'backward' ? 'end' : 'start' ];
 		}
 
 		/**
@@ -222,7 +222,7 @@ export default class TreeWalker {
 			if ( !this.shallow ) {
 				position = new Position( node, 0 );
 			} else {
-				position.offset++;
+				position = position.getShiftedBy( 1 );
 			}
 
 			this.position = position;
@@ -245,7 +245,7 @@ export default class TreeWalker {
 					position = Position.createAfter( item );
 				} else {
 					// If not just keep moving forward.
-					position.offset++;
+					position = position.getShiftedBy( 1 );
 				}
 
 				this.position = position;
@@ -266,7 +266,8 @@ export default class TreeWalker {
 
 			const textProxy = new TextProxy( parent, position.offset, textLength );
 
-			position.offset += textLength;
+			position = position.getShiftedBy( textLength );
+
 			this.position = position;
 
 			return this._formatReturnValue( 'text', textProxy, previousPosition, position, textLength );
@@ -334,7 +335,7 @@ export default class TreeWalker {
 					return this._formatReturnValue( 'elementEnd', node, previousPosition, position );
 				}
 			} else {
-				position.offset--;
+				position = position.getShiftedBy( -1 );
 				this.position = position;
 
 				return this._formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
@@ -358,7 +359,7 @@ export default class TreeWalker {
 					position = Position.createBefore( item );
 				} else {
 					// If not just keep moving backward.
-					position.offset--;
+					position = position.getShiftedBy( -1 );
 				}
 
 				this.position = position;
@@ -377,7 +378,7 @@ export default class TreeWalker {
 				textLength = 1;
 			}
 
-			position.offset -= textLength;
+			position = position.getShiftedBy( -textLength );
 
 			const textProxy = new TextProxy( parent, position.offset, textLength );
 
