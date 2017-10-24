@@ -30,7 +30,7 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should set a init token value', () => {
-			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue', autoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
 
 			expect( token.value ).to.equal( 'initValue' );
 		} );
@@ -67,7 +67,7 @@ describe( 'Token', () => {
 		it( 'should start token refresh every 1 hour', done => {
 			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval' ] } );
 
-			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue' } );
+			const token = new Token( 'http://token-endpoint', { initValue: 'initValue' } );
 
 			token.init()
 				.then( () => {
@@ -88,7 +88,7 @@ describe( 'Token', () => {
 
 	describe( '_refreshToken()', () => {
 		it( 'should get a token from the specified address', done => {
-			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue', autoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
 
 			token._refreshToken()
 				.then( newToken => {
@@ -101,7 +101,7 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should throw error when cannot download new token ', done => {
-			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue', autoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
 
 			token._refreshToken()
 				.catch( error => {
@@ -114,7 +114,7 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should throw error when response is aborted', done => {
-			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue', autoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
 
 			token._refreshToken()
 				.catch( error => {
@@ -127,7 +127,7 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should throw error event when network error occurs', done => {
-			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue', autoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
 
 			token._refreshToken()
 				.catch( error => {
@@ -144,7 +144,7 @@ describe( 'Token', () => {
 		it( 'should start refreshing', () => {
 			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval' ] } );
 
-			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue', autoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
 
 			token._startRefreshing();
 
@@ -164,7 +164,7 @@ describe( 'Token', () => {
 		it( 'should stop refreshing', done => {
 			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval', 'clearInterval' ] } );
 
-			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue' } );
+			const token = new Token( 'http://token-endpoint', { initValue: 'initValue' } );
 
 			token.init()
 				.then( () => {

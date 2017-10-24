@@ -21,10 +21,11 @@ const DEFAULT_OPTIONS = { refreshInterval: 3600000, autoRefresh: true };
 class Token {
 	/**
 	 * Creates `Token` instance.
+	 * Method `init` should be called after using the constructor or use `create` method instead.
 	 *
 	 * @param {String} tokenUrl Endpoint address to download the token.
 	 * @param {Object} options
-	 * @param {String} [options.initTokenValue] Initial value of the token.
+	 * @param {String} [options.initValue] Initial value of the token.
 	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 */
@@ -35,6 +36,8 @@ class Token {
 
 		/**
 		 * Value of the token.
+		 * The value of the token is null if `initValue` is not provided or `init` method was not called.
+		 * `create` method creates token with initialized value from url.
 		 *
 		 * @name value
 		 * @type {String}
@@ -42,7 +45,7 @@ class Token {
 		 * @readonly
 		 * @memberOf Token#
 		 */
-		this.set( 'value', options.initTokenValue );
+		this.set( 'value', options.initValue );
 
 		/**
 		 * @type {String}
@@ -135,7 +138,7 @@ class Token {
 	 *
 	 * @param {String} tokenUrl Endpoint address to download the token.
 	 * @param {Object} options
-	 * @param {String} [options.initTokenValue] Initial value of the token.
+	 * @param {String} [options.initValue] Initial value of the token.
 	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 * @returns {Promise.<Token>}
