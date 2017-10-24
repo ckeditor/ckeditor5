@@ -376,7 +376,7 @@ export default class View {
 	 *
 	 *		view.setTemplate( definition );
 	 *
-	 * @param {@link module:ui/template~TemplateDefinition} definition Definition of view's template.
+	 * @param {module:ui/template~TemplateDefinition} definition Definition of view's template.
 	 */
 	setTemplate( definition ) {
 		this.template = new Template( definition );
@@ -392,7 +392,7 @@ export default class View {
 	 *
 	 * **Note**: Is requires the {@link #template} to be already set. See {@link #setTemplate}.
 	 *
-	 * @param {@link module:ui/template~TemplateDefinition} definition Definition which
+	 * @param {module:ui/template~TemplateDefinition} definition Definition which
 	 * extends the {@link #template}.
 	 */
 	extendTemplate( definition ) {
