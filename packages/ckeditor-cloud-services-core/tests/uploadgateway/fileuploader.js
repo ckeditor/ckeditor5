@@ -15,7 +15,7 @@ const BASE_64_FILE = 'data:image/gif;base64,R0lGODlhCQAJAPIAAGFhYZXK/1FRUf///' +
 	'9ra2gD/AAAAAAAAACH5BAEAAAUALAAAAAAJAAkAAAMYWFqwru2xERcYJLSNNWNBVimC5wjfaTkJADs=';
 
 describe( 'FileUploader', () => {
-	const token = new Token( 'url', 'token', { startAutoRefresh: false } );
+	const token = new Token( 'url', { initTokenValue: 'token', autoRefresh: false } );
 
 	let fileUploader;
 

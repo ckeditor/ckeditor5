@@ -10,7 +10,7 @@ import UploadGateway from '../../src/uploadgateway/uploadgateway';
 import Token from '../../src/token/token';
 
 describe( 'UploadGateway', () => {
-	const token = new Token( 'url', 'token', { startAutoRefresh: false } );
+	const token = new Token( 'url', { initTokenValue: 'token', autoRefresh: false } );
 
 	describe( 'constructor()', () => {
 		it( 'should throw error when no token provided', () => {

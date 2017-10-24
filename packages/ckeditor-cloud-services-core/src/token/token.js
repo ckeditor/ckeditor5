@@ -10,7 +10,7 @@
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
-const DEFAULT_OPTIONS = { refreshIntervalTime: 3600000, startAutoRefresh: true };
+const DEFAULT_OPTIONS = { refreshInterval: 3600000, autoRefresh: true };
 
 /**
  * Class representing the token used for communication with CKEditor Cloud Services.
@@ -23,12 +23,12 @@ class Token {
 	 * Creates `Token` instance.
 	 *
 	 * @param {String} tokenUrl Endpoint address to download the token.
-	 * @param {String} [initTokenValue] Initial value of the token.
 	 * @param {Object} options
-	 * @param {Number} [options.refreshIntervalTime=3600000] Delay between refreshes. Default 1 hour.
-	 * @param {Boolean} [options.startAutoRefresh=true] Specifies whether to start the refresh automatically.
+	 * @param {String} [options.initTokenValue] Initial value of the token.
+	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
+	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 */
-	constructor( tokenUrl, initTokenValue, options = DEFAULT_OPTIONS ) {
+	constructor( tokenUrl, options = DEFAULT_OPTIONS ) {
 		if ( !tokenUrl ) {
 			throw new Error( '`tokenUrl` must be provided' );
 		}
@@ -42,7 +42,7 @@ class Token {
 		 * @readonly
 		 * @memberOf Token#
 		 */
-		this.set( 'value', initTokenValue );
+		this.set( 'value', options.initTokenValue );
 
 		/**
 		 * @type {String}
@@ -59,18 +59,17 @@ class Token {
 
 	/**
 	 * Initializes the token.
-	 * If `initTokenValue` is not provided then the value of the token is download from url.
 	 *
 	 * @returns {Promise.<Token>}
 	 */
 	init() {
 		return new Promise( ( resolve, reject ) => {
-			if ( this._options.startAutoRefresh ) {
-				this.startRefreshing();
+			if ( this._options.autoRefresh ) {
+				this._startRefreshing();
 			}
 
 			if ( !this.value ) {
-				this.refreshToken()
+				this._refreshToken()
 					.then( resolve )
 					.catch( reject );
 
@@ -84,9 +83,10 @@ class Token {
 	/**
 	 * Gets the new token.
 	 *
+	 * @protected
 	 * @returns {Promise.<Token>}
 	 */
-	refreshToken() {
+	_refreshToken() {
 		return new Promise( ( resolve, reject ) => {
 			const xhr = new XMLHttpRequest();
 
@@ -114,15 +114,19 @@ class Token {
 
 	/**
 	 * Starts value refreshing every `refreshInterval` time.
+	 *
+	 * @protected
 	 */
-	startRefreshing() {
-		this._refreshInterval = setInterval( this.refreshToken.bind( this ), this._options.refreshIntervalTime );
+	_startRefreshing() {
+		this._refreshInterval = setInterval( this._refreshToken.bind( this ), this._options.refreshInterval );
 	}
 
 	/**
 	 * Stops value refreshing.
+	 *
+	 * @protected
 	 */
-	stopRefreshing() {
+	_stopRefreshing() {
 		clearInterval( this._refreshInterval );
 	}
 
@@ -130,14 +134,14 @@ class Token {
 	 * Creates a initialized {@link Token} instance.
 	 *
 	 * @param {String} tokenUrl Endpoint address to download the token.
-	 * @param {String} [initTokenValue] Initial value of the token.
 	 * @param {Object} options
-	 * @param {Number} [options.refreshIntervalTime=3600000] Delay between refreshes. Default 1 hour.
-	 * @param {Boolean} [options.startAutoRefresh=true] Specifies whether to start the refresh automatically.
+	 * @param {String} [options.initTokenValue] Initial value of the token.
+	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
+	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 * @returns {Promise.<Token>}
 	 */
-	static create( tokenUrl, initTokenValue, options = DEFAULT_OPTIONS ) {
-		const token = new Token( tokenUrl, initTokenValue, options );
+	static create( tokenUrl, options = DEFAULT_OPTIONS ) {
+		const token = new Token( tokenUrl, options );
 
 		return token.init();
 	}

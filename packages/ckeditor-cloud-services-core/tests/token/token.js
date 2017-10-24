@@ -30,13 +30,13 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should set a init token value', () => {
-			const token = new Token( 'http://token-endpoint', 'initValue', { startAutoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue', autoRefresh: false } );
 
 			expect( token.value ).to.equal( 'initValue' );
 		} );
 
 		it( 'should fire `change:value` event if the value of the token has changed', done => {
-			const token = new Token( 'http://token-endpoint', '', { startAutoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
 			token.on( 'change:value', ( event, name, newValue ) => {
 				expect( newValue ).to.equal( 'token-value' );
@@ -52,7 +52,7 @@ describe( 'Token', () => {
 
 	describe( 'init()', () => {
 		it( 'should get a token value from endpoint', done => {
-			const token = new Token( 'http://token-endpoint', '', { startAutoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
 			token.init()
 				.then( () => {
@@ -67,7 +67,7 @@ describe( 'Token', () => {
 		it( 'should start token refresh every 1 hour', done => {
 			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval' ] } );
 
-			const token = new Token( 'http://token-endpoint', 'initValues' );
+			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue' } );
 
 			token.init()
 				.then( () => {
@@ -86,11 +86,11 @@ describe( 'Token', () => {
 		} );
 	} );
 
-	describe( 'refreshToken()', () => {
+	describe( '_refreshToken()', () => {
 		it( 'should get a token from the specified address', done => {
-			const token = new Token( 'http://token-endpoint', 'initValue', { startAutoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue', autoRefresh: false } );
 
-			token.refreshToken()
+			token._refreshToken()
 				.then( newToken => {
 					expect( newToken.value ).to.equal( 'token-value' );
 
@@ -101,9 +101,9 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should throw error when cannot download new token ', done => {
-			const token = new Token( 'http://token-endpoint', 'initValue', { startAutoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue', autoRefresh: false } );
 
-			token.refreshToken()
+			token._refreshToken()
 				.catch( error => {
 					expect( error ).to.equal( 'Cannot download new token!' );
 
@@ -114,9 +114,9 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should throw error when response is aborted', done => {
-			const token = new Token( 'http://token-endpoint', 'initValue', { startAutoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue', autoRefresh: false } );
 
-			token.refreshToken()
+			token._refreshToken()
 				.catch( error => {
 					expect( error ).to.equal( 'Abort' );
 
@@ -127,9 +127,9 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should throw error event when network error occurs', done => {
-			const token = new Token( 'http://token-endpoint', 'initValue', { startAutoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue', autoRefresh: false } );
 
-			token.refreshToken()
+			token._refreshToken()
 				.catch( error => {
 					expect( error ).to.equal( 'Network Error' );
 
@@ -140,13 +140,13 @@ describe( 'Token', () => {
 		} );
 	} );
 
-	describe( 'startRefreshing()', () => {
+	describe( '_startRefreshing()', () => {
 		it( 'should start refreshing', () => {
 			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval' ] } );
 
-			const token = new Token( 'http://token-endpoint', 'initValue', { startAutoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue', autoRefresh: false } );
 
-			token.startRefreshing();
+			token._startRefreshing();
 
 			clock.tick( 3600000 );
 			clock.tick( 3600000 );
@@ -160,11 +160,11 @@ describe( 'Token', () => {
 		} );
 	} );
 
-	describe( 'stopRefreshing()', () => {
+	describe( '_stopRefreshing()', () => {
 		it( 'should stop refreshing', done => {
 			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval', 'clearInterval' ] } );
 
-			const token = new Token( 'http://token-endpoint', 'initValue' );
+			const token = new Token( 'http://token-endpoint', { initTokenValue: 'initValue' } );
 
 			token.init()
 				.then( () => {
@@ -172,7 +172,7 @@ describe( 'Token', () => {
 					clock.tick( 3600000 );
 					clock.tick( 3600000 );
 
-					token.stopRefreshing();
+					token._stopRefreshing();
 
 					clock.tick( 3600000 );
 					clock.tick( 3600000 );
@@ -188,7 +188,7 @@ describe( 'Token', () => {
 
 	describe( 'static create()', () => {
 		it( 'should return a initialized token', done => {
-			Token.create( 'http://token-endpoint', '', { startAutoRefresh: false } )
+			Token.create( 'http://token-endpoint', { autoRefresh: false } )
 				.then( token => {
 					expect( token.value ).to.equal( 'token-value' );
 
