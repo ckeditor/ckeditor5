@@ -10,6 +10,9 @@
 import Position from './position';
 import TreeWalker from './treewalker';
 
+const _start = Symbol( 'start' );
+const _end = Symbol( 'end' );
+
 /**
  * Tree view range.
  */
@@ -23,19 +26,8 @@ export default class Range {
 	 * @param {module:engine/view/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
 	 */
 	constructor( start, end = null ) {
-		/**
-		 * Start position.
-		 *
-		 * @member {module:engine/view/position~Position}
-		 */
-		this.start = start;
-
-		/**
-		 * End position.
-		 *
-		 * @member {module:engine/view/position~Position}
-		 */
-		this.end = end ? end : start;
+		this[ _start ] = start;
+		this[ _end ] = end ? end : start;
 	}
 
 	/**
@@ -54,8 +46,29 @@ export default class Range {
 	}
 
 	/**
+	 * Start position.
+	 *
+	 * @readonly
+	 * @type {module:engine/view/position~Position}
+	 */
+	get start() {
+		return this[ _start ];
+	}
+
+	/**
+	 * End position.
+	 *
+	 * @readonly
+	 * @type {module:engine/view/position~Position}
+	 */
+	get end() {
+		return this[ _end ];
+	}
+
+	/**
 	 * Returns whether the range is collapsed, that is it start and end positions are equal.
 	 *
+	 * @readonly
 	 * @type {Boolean}
 	 */
 	get isCollapsed() {
@@ -66,6 +79,7 @@ export default class Range {
 	 * Returns whether this range is flat, that is if {@link module:engine/view/range~Range#start start} position and
 	 * {@link module:engine/view/range~Range#end end} position are in the same {@link module:engine/view/position~Position#parent parent}.
 	 *
+	 * @readonly
 	 * @type {Boolean}
 	 */
 	get isFlat() {
@@ -75,6 +89,7 @@ export default class Range {
 	/**
 	 * Range root element.
 	 *
+	 * @readonly
 	 * @type {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment}
 	 */
 	get root() {

@@ -353,9 +353,7 @@ export function remove( range ) {
 	const removed = parentContainer.removeChildren( breakStart.offset, count );
 
 	// Merge after removing.
-	const mergePosition = mergeAttributes( breakStart );
-	range.start = mergePosition;
-	range.end = mergePosition;
+	mergeAttributes( breakStart );
 
 	// Return removed nodes.
 	return new DocumentFragment( removed );
@@ -406,17 +404,20 @@ export function clear( range, element ) {
 
 		// If we have found element to remove.
 		if ( rangeToRemove ) {
+			let rangeEnd = rangeToRemove.end;
+			let rangeStart = rangeToRemove.start;
+
 			// We need to check if element range stick out of the given range and truncate if it is.
 			if ( rangeToRemove.end.isAfter( range.end ) ) {
-				rangeToRemove.end = range.end;
+				rangeEnd = range.end;
 			}
 
 			if ( rangeToRemove.start.isBefore( range.start ) ) {
-				rangeToRemove.start = range.start;
+				rangeStart = range.start;
 			}
 
 			// At the end we remove range with found element.
-			remove( rangeToRemove );
+			remove( new Range( rangeStart, rangeEnd ) );
 		}
 	}
 }
@@ -511,10 +512,13 @@ export function wrap( range, attribute ) {
 	const start = mergeAttributes( newRange.start );
 
 	// If start position was merged - move end position back.
+	let rangeEnd = newRange.end;
+
 	if ( !start.isEqual( newRange.start ) ) {
-		newRange.end = newRange.end.getShiftedBy( -1 );
+		rangeEnd = rangeEnd.getShiftedBy( -1 );
 	}
-	const end = mergeAttributes( newRange.end );
+
+	const end = mergeAttributes( rangeEnd );
 
 	return new Range( start, end );
 }
@@ -625,10 +629,12 @@ export function unwrap( range, attribute ) {
 	const start = mergeAttributes( newRange.start );
 
 	// If start position was merged - move end position back.
+	let rangeEnd = newRange.end;
+
 	if ( !start.isEqual( newRange.start ) ) {
-		newRange.end = newRange.end.getShiftedBy( -1 );
+		rangeEnd = rangeEnd.getShiftedBy( -1 );
 	}
-	const end = mergeAttributes( newRange.end );
+	const end = mergeAttributes( rangeEnd );
 
 	return new Range( start, end );
 }
