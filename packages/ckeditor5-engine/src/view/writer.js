@@ -331,8 +331,7 @@ export function insert( position, nodes ) {
  * same parent container.
  *
  * @function module:engine/view/writer~writer.remove
- * @param {module:engine/view/range~Range} range Range to remove from container. After removing, it will be updated
- * to a collapsed range showing the new position.
+ * @param {module:engine/view/range~Range} range Range to remove from container.
  * @returns {module:engine/view/documentfragment~DocumentFragment} Document fragment containing removed nodes.
  */
 export function remove( range ) {
