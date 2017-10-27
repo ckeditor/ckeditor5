@@ -10,8 +10,9 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import TokenMock from './_utils/tokenmock';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
+const Token = CloudServices.Token;
+
 describe( 'CloudServices', () => {
-	const OriginalToken = CloudServices.Token;
 	let element;
 
 	beforeEach( () => {
@@ -21,7 +22,7 @@ describe( 'CloudServices', () => {
 	} );
 
 	afterEach( () => {
-		CloudServices.Token = OriginalToken;
+		CloudServices.Token = Token;
 		document.body.removeChild( element );
 	} );
 
