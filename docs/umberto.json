@@ -11,10 +11,35 @@
 	"docsearch": {
 		"apiKey": "fc463c26455365ad403d5ec51796cd73",
 		"indexName": "ckeditor_nightly",
-		"importants": [
-			"module:editor-balloon/ballooneditor~BalloonEditor.create",
-			"module:editor-classic/classiceditor~ClassicEditor.create",
-			"module:editor-inline/inlineeditor~InlineEditor.create"
+		"customRanking": [
+			{
+				"url": "api/module_core_editor_editorconfig-EditorConfig.html",
+				"rank": 10
+			},
+			{
+				"url": "api/module_heading_heading-HeadingConfig.html",
+				"rank": 7
+			},
+			{
+				"url": "api/module_image_image-ImageConfig.html",
+				"rank": 7
+			},
+			{
+				"url": "api/module_editor-classic_classiceditor-ClassicEditor.html",
+				"rank": 5
+			},
+			{
+				"url": "api/module_editor-balloon_ballooneditor-BalloonEditor.html",
+				"rank": 5
+			},
+			{
+				"url": "api/module_editor-inline_inlineeditor-InlineEditor.html",
+				"rank": 5
+			},
+			{
+				"url": "api/module_utils_config.html",
+				"rank": -5
+			}
 		]
 	},
 	"googleanalytics": {
