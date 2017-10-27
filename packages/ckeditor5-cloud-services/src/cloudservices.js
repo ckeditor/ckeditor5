@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Token from 'ckeditor-cloudservices-core/src/token/token';
+import Token from '@ckeditor/ckeditor-cloudservices-core/src/token/token';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
