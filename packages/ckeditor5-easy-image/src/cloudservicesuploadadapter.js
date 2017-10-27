@@ -27,7 +27,7 @@ export default class CloudServicesUploadAdapter extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ FileRepository, CloudServicesUploadAdapter._CloudServices ];
+		return [ FileRepository, CloudServices ];
 	}
 
 	/**
@@ -36,7 +36,7 @@ export default class CloudServicesUploadAdapter extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		const cloudServices = editor.plugins.get( CloudServicesUploadAdapter._CloudServices );
+		const cloudServices = editor.plugins.get( CloudServices );
 
 		const token = cloudServices.token;
 		const uploadUrl = cloudServices.uploadUrl || 'https://files.cke-cs.com/upload/';
@@ -78,7 +78,6 @@ class Adapter {
 // Store the API in static property to easily overwrite it in tests.
 // Too bad dependency injection does not work in Webpack + ES 6 (const) + Babel.
 CloudServicesUploadAdapter._UploadGateway = UploadGateway;
-CloudServicesUploadAdapter._CloudServices = CloudServices;
 
 /**
  * The configuration of the {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter Cloud Services upload adapter}.

@@ -8,28 +8,27 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import CloudServicesUploadAdapter from '../src/cloudservicesuploadadapter';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
+import CloudServices from '@ckeditor/ckeditor5-cloudservices/src/cloudservices';
 
 import UploadGatewayMock from './_utils/uploadgatewaymock';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
-import CloudServicesMock from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservicesmock';
+import TokenMock from '@ckeditor/ckeditor5-cloudservices/tests/_utils/tokenmock';
 
 // Store original uploader.
 const CSUploader = CloudServicesUploadAdapter._UploadGateway;
-const CloudServices = CloudServicesUploadAdapter._CloudServices;
+const Token = CloudServices.Token;
 
 describe( 'CloudServicesUploadAdapter', () => {
 	let div;
 
 	before( () => {
-		// Mock uploader.
+		CloudServices.Token = TokenMock;
 		CloudServicesUploadAdapter._UploadGateway = UploadGatewayMock;
-		CloudServicesUploadAdapter._CloudServices = CloudServicesMock;
 	} );
 
 	after( () => {
-		// Restore original uploader.
+		CloudServices.Token = Token;
 		CloudServicesUploadAdapter._UploadGateway = CSUploader;
-		CloudServicesUploadAdapter._CloudServices = CloudServices;
 	} );
 
 	beforeEach( () => {
@@ -44,6 +43,7 @@ describe( 'CloudServicesUploadAdapter', () => {
 	describe( 'init()', () => {
 		it( 'should set loader', () => {
 			UploadGatewayMock.lastToken = undefined;
+			TokenMock.initialToken = 'token';
 
 			return ClassicTestEditor
 				.create( div, {
