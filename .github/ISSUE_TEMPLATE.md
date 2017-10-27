@@ -1,7 +1,7 @@
-## 🐞 Is this a bug report or feature request?
+## 🐞 Is this a bug report or feature request? (choose one)
 
-- [ ] Bug report
-- [ ] Feature request
+- Bug report
+- Feature request
 
 ## 💻 Version of CKEditor
 
