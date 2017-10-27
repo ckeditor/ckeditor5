@@ -35,7 +35,6 @@ export default class CloudServicesUploadAdapter extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const config = editor.config;
 
 		const cloudServices = editor.plugins.get( CloudServicesUploadAdapter._CloudServices );
 
