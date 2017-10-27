@@ -95,7 +95,7 @@ describe( 'EasyImage', () => {
 						Paragraph, EasyImage
 					],
 					cloudServices: {
-						token: 'abc',
+						tokenUrl: 'abc',
 						uploadUrl: 'http://upload.mock.url/'
 					}
 				} )
