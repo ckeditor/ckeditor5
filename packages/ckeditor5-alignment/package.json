@@ -1,0 +1,50 @@
+{
+  "name": "@ckeditor/ckeditor5-alignment",
+  "version": "1.0.0-alpha.1",
+  "description": "Text alignment feature for CKEditor 5.",
+  "keywords": [
+    "ckeditor5",
+    "ckeditor5-feature"
+  ],
+  "dependencies": {
+    "@ckeditor/ckeditor5-core": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-engine": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-utils": "^1.0.0-alpha.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.8.0",
+    "eslint-config-ckeditor5": "^1.0.6",
+    "husky": "^0.14.3",
+    "lint-staged": "^4.2.3"
+  },
+  "engines": {
+    "node": ">=6.0.0",
+    "npm": ">=3.0.0"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
+  "homepage": "https://ckeditor5.github.io",
+  "bugs": "https://github.com/ckeditor/ckeditor5-alignment/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5-alignment.git"
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme"
+  ],
+  "scripts": {
+    "lint": "eslint --quiet '**/*.js'",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "eslint --quiet"
+    ]
+  },
+  "eslintIgnore": [
+    "src/lib/**",
+    "packages/**"
+  ]
+}
