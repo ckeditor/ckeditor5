@@ -10,7 +10,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import EasyImage from '../../src/easyimage';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
-import getTokenUrl from '../_utils/getTokenUrl';
+import getTokenUrl from '../_utils/gettokenurl';
 
 const tokenUrl = getTokenUrl();
 
