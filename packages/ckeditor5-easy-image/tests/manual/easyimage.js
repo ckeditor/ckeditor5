@@ -13,11 +13,11 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import getToken from '../_utils/gettoken';
 
 getToken()
-	.then( token => {
+	.then( tokenUrl => {
 		return ClassicEditor
 			.create( document.querySelector( '#editor' ), {
 				cloudServices: {
-					token
+					tokenUrl
 				},
 				plugins: [ ArticlePluginSet, EasyImage ],
 				toolbar: [ 'headings', 'undo', 'redo', 'insertImage' ],

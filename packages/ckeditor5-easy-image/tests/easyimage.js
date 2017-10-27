@@ -14,7 +14,19 @@ import UploadGatewayMock from './_utils/uploadgatewaymock';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
+import CloudServicesMock from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservicesmock';
+
+const CloudServices = CloudServicesUploadAdapter._CloudServices;
+
 describe( 'EasyImage', () => {
+	before( () => {
+		CloudServicesUploadAdapter._CloudServices = CloudServicesMock;
+	} );
+
+	after( () => {
+		CloudServicesUploadAdapter._CloudServices = CloudServices;
+	} );
+
 	it( 'should require other plugins', () => {
 		const plugins = EasyImage.requires;
 
