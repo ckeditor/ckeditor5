@@ -14,27 +14,8 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid';
 // into a subscription at any moment, allowing you to preserve all uploaded images.
 const CLOUD_SERVICES_TOKEN_URL = 'https://j2sns7jmy0.execute-api.eu-central-1.amazonaws.com/prod/token';
 
-export default function getToken() {
-	return new Promise( ( resolve, reject ) => {
-		const xhr = new XMLHttpRequest();
-		const userId = uid();
+export default function getTokenUrl() {
+	const userId = uid();
 
-		xhr.open( 'GET', `${ CLOUD_SERVICES_TOKEN_URL }?user.id=${ userId }` );
-
-		xhr.onload = () => {
-			if ( xhr.status >= 200 && xhr.status < 300 ) {
-				const response = JSON.parse( xhr.responseText );
-
-				resolve( response.token );
-			} else {
-				reject( new Error( `XHR status: ${ xhr.status }` ) );
-			}
-		};
-
-		xhr.onerror = err => {
-			reject( err );
-		};
-
-		xhr.send( null );
-	} );
+	return `${ CLOUD_SERVICES_TOKEN_URL }?user.id=${ userId }`;
 }
