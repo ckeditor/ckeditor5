@@ -31,18 +31,6 @@ export default class CloudServices extends Plugin {
 		/**
 		 * The authentication token URL for CloudServices.
 		 *
-		 *		ClassicEditor
-		 *			.create( document.querySelector( '#editor' ), {
-		 *				cloudServices: {
-		 *					tokenUrl: TOKEN_URL
-		 *				},
-		 * 				plugins: [ ArticlePluginSet, EasyImage ],
-		 *				toolbar: [ 'headings', 'undo', 'redo', 'insertImage' ],
-		 *				image: {
-		 *					toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
-		 *				}
-		 *			} );
-		 *
 		 * @readonly
 		 * @member {String} #tokenUrl
 		 */
@@ -59,8 +47,7 @@ export default class CloudServices extends Plugin {
 		}
 
 		/**
-		 * Other plugins use this token for authorization process.
-		 * It handles token refreshing. You should use `token.value` later to get its value.
+		 * Other plugins use this token for authorization process. It handles token requesting and refreshing.
 		 *
 		 * @readonly
 		 */
@@ -81,7 +68,7 @@ CloudServices.Token = Token;
  */
 
 /**
- * The configuration of the Cloud Services.
+ * The configuration for all plugins using Cloud Services.
  *
  *		ClassicEditor
  *			.create( {
@@ -94,7 +81,20 @@ CloudServices.Token = Token;
  */
 
 /**
- * The authentication token URL for CloudServices.
+ * The authentication token URL for CloudServices. Token us used to authenticate all plugins using CloudServices,
+ * for instance Easy Image. The token URL have to point to the service where the token is generated.
+ *
+ *		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				cloudServices: {
+ *					tokenUrl: TOKEN_URL
+ *				},
+ * 				plugins: [ ArticlePluginSet, EasyImage ],
+ *				toolbar: [ 'headings', 'undo', 'redo', 'insertImage' ],
+ *				image: {
+ *					toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+ *				}
+ *			} );
  *
  * @member {String} module:cloudservices/cloudservices~CloudServicesConfig#tokenUrl
  */
