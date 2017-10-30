@@ -9,7 +9,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import AlignmentComment from '../src/alignmentcommand';
+import AlignmentCommand from '../src/alignmentcommand';
 
 describe( 'AlignmentEditing', () => {
 	let editor, doc;
@@ -30,16 +30,18 @@ describe( 'AlignmentEditing', () => {
 		editor.destroy();
 	} );
 
-	it( 'adds a alignment commands', () => {
-		expect( editor.commands.get( 'alignLeft' ) ).to.be.instanceOf( AlignmentComment );
-		expect( editor.commands.get( 'alignRight' ) ).to.be.instanceOf( AlignmentComment );
-		expect( editor.commands.get( 'alignCenter' ) ).to.be.instanceOf( AlignmentComment );
-		expect( editor.commands.get( 'alignJustify' ) ).to.be.instanceOf( AlignmentComment );
+	it( 'adds alignment commands', () => {
+		expect( editor.commands.get( 'alignLeft' ) ).to.be.instanceOf( AlignmentCommand );
+		expect( editor.commands.get( 'alignRight' ) ).to.be.instanceOf( AlignmentCommand );
+		expect( editor.commands.get( 'alignCenter' ) ).to.be.instanceOf( AlignmentCommand );
+		expect( editor.commands.get( 'alignJustify' ) ).to.be.instanceOf( AlignmentCommand );
 	} );
 
 	it( 'allows for alignment in the $blocks', () => {
 		expect( doc.schema.check( { name: '$block', inside: '$root', attributes: 'alignment' } ) ).to.be.true;
 	} );
+
+	// describe('alignLef')
 
 	it( 'adds converters to the data pipeline', () => {
 		const data = '<p style="text-align:center;">x</p>';

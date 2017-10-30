@@ -3,42 +3,29 @@
  * For licensing, see LICENSE.md.
  */
 
-import AlignmentEditing from '../src/alignmentediting';
 import AlignmentCommand from '../src/alignmentcommand';
 
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import ModelTestEditor from '../../ckeditor5-core/tests/_utils/modeltesteditor';
 
 describe( 'AlignmentCommand', () => {
 	let editor, doc, command;
 
 	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ AlignmentEditing ]
-			} )
+		return ModelTestEditor.create()
 			.then( newEditor => {
+				doc = newEditor.document;
+				command = new AlignmentCommand( newEditor, 'center' );
 				editor = newEditor;
 
-				doc = editor.document;
+				editor.commands.add( 'alignCenter', new AlignmentCommand( editor, 'center' ) );
 
 				doc.schema.registerItem( 'paragraph', '$block' );
 				doc.schema.registerItem( 'heading', '$block' );
 
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'paragraph' )
-					.toElement( 'p' );
-
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'heading' )
-					.toElement( 'h' );
-
-				command = editor.commands.get( 'alignLeft' );
+				doc.schema.allow( { name: '$block', inside: '$root', attributes: 'alignment' } );
 			} );
 	} );
 
@@ -68,18 +55,14 @@ describe( 'AlignmentCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		describe( 'applying right alignment', () => {
+		describe( 'applying alignment', () => {
 			it( 'add alignment to block element', () => {
 				setModelData( doc, '<paragraph>x[]x</paragraph>' );
 
-				editor.execute( 'alignRight' );
+				editor.execute( 'alignCenter' );
 
 				expect( getModelData( doc ) ).to.equal(
-					'<paragraph alignment="right">x[]x</paragraph>'
-				);
-
-				expect( getViewData( editor.editing.view ) ).to.equal(
-					'<p style="text-align:right;">x{}x</p>'
+					'<paragraph alignment="center">x[]x</paragraph>'
 				);
 			} );
 		} );

@@ -35,7 +35,7 @@ export default class AlignmentUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'Alignment';
+		return 'AlignmentUI';
 	}
 
 	/**
