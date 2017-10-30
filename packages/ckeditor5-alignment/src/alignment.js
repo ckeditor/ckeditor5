@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import AlignmentEngine from './alignmentengine';
+import AlignmentEditing from './alignmentediting';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
@@ -22,7 +22,7 @@ import alignJustifyIcon from '../theme/icons/align-justify.svg';
  * The alignment plugin.
  *
  * It introduces the `'alignLeft'`, `'alignRight'`, `'alignCenter'` and `'alignJustify'` buttons
- * and requires the {@link module:alignment/alignmentengine~AlignmentEngine} plugin.
+ * and requires the {@link module:alignment/alignmentediting~AlignmentEditing} plugin.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -31,7 +31,7 @@ export default class Alignment extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ AlignmentEngine ];
+		return [ AlignmentEditing ];
 	}
 
 	/**

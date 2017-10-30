@@ -4,7 +4,7 @@
  */
 
 /**
- * @module alignment/alignmentengine
+ * @module alignment/alignmentediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -17,7 +17,7 @@ import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildv
 /**
  * @extends module:core/plugin~Plugin
  */
-export default class AlignmentEngine extends Plugin {
+export default class AlignmentEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
