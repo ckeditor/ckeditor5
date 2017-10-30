@@ -45,7 +45,7 @@ export default class AlignmentCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.value = '';
+		this.value = false;
 		this.isEnabled = true;
 	}
 
