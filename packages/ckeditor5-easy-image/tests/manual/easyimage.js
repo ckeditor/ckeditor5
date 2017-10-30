@@ -10,14 +10,12 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import EasyImage from '../../src/easyimage';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
-import getTokenUrl from '../_utils/gettokenurl';
-
-const tokenUrl = getTokenUrl();
+import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/csconfig';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		cloudServices: {
-			tokenUrl
+			tokenUrl: TOKEN_URL
 		},
 		plugins: [ ArticlePluginSet, EasyImage ],
 		toolbar: [ 'headings', 'undo', 'redo', 'insertImage' ],
