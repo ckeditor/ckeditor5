@@ -72,14 +72,11 @@ describe( 'CloudServices', () => {
 			ClassicTestEditor
 				.create( element, {
 					plugins: [ CloudServices ],
-					cloudServices: {
-						additionalOption: 'some-value'
-					}
+					cloudServices: {}
 				} )
 				.catch( err => {
-					expect( err ).to.be.instanceOf( CKEditorError );
-					expect( err.message ).to.match( /cloudservices-token-endpoint-not-provided/ );
-
+					expect( err.name ).to.equal( 'CKEditorError' );
+					expect( err.message, '12' ).to.match( /cloudservices-token-endpoint-not-provided/ );
 					done();
 				} );
 		} );
