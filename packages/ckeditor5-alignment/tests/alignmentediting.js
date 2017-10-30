@@ -41,20 +41,71 @@ describe( 'AlignmentEditing', () => {
 		expect( doc.schema.check( { name: '$block', inside: '$root', attributes: 'alignment' } ) ).to.be.true;
 	} );
 
-	// describe('alignLef')
+	describe( 'alignLeft', () => {
+		it( 'adds converters to the data pipeline', () => {
+			const data = '<p style="text-align:left;">x</p>';
 
-	it( 'adds converters to the data pipeline', () => {
-		const data = '<p style="text-align:center;">x</p>';
+			editor.setData( data );
 
-		editor.setData( data );
+			expect( getModelData( doc ) ).to.equal( '<paragraph alignment="left">[]x</paragraph>' );
+			expect( editor.getData() ).to.equal( data );
+		} );
 
-		expect( getModelData( doc ) ).to.equal( '<paragraph alignment="center">[]x</paragraph>' );
-		expect( editor.getData() ).to.equal( data );
+		it( 'adds a converter to the view pipeline', () => {
+			setModelData( doc, '<paragraph alignment="left">[]x</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p style="text-align:left;">x</p>' );
+		} );
 	} );
 
-	it( 'adds a converter to the view pipeline', () => {
-		setModelData( doc, '<paragraph alignment="right">[]x</paragraph>' );
+	describe( 'alignCenter', () => {
+		it( 'adds converters to the data pipeline', () => {
+			const data = '<p style="text-align:center;">x</p>';
 
-		expect( editor.getData() ).to.equal( '<p style="text-align:right;">x</p>' );
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph alignment="center">[]x</paragraph>' );
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'adds a converter to the view pipeline', () => {
+			setModelData( doc, '<paragraph alignment="center">[]x</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p style="text-align:center;">x</p>' );
+		} );
+	} );
+
+	describe( 'alignRight', () => {
+		it( 'adds converters to the data pipeline', () => {
+			const data = '<p style="text-align:right;">x</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph alignment="right">[]x</paragraph>' );
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'adds a converter to the view pipeline', () => {
+			setModelData( doc, '<paragraph alignment="right">[]x</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p style="text-align:right;">x</p>' );
+		} );
+	} );
+
+	describe( 'alignJustify', () => {
+		it( 'adds converters to the data pipeline', () => {
+			const data = '<p style="text-align:justify;">x</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph alignment="justify">[]x</paragraph>' );
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'adds a converter to the view pipeline', () => {
+			setModelData( doc, '<paragraph alignment="justify">[]x</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p style="text-align:justify;">x</p>' );
+		} );
 	} );
 } );
