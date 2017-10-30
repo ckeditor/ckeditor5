@@ -10,19 +10,13 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import AlignmentEditing from './alignmentediting';
-
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-import alignLeftIcon from '../theme/icons/align-left.svg';
-import alignRightIcon from '../theme/icons/align-right.svg';
-import alignCenterIcon from '../theme/icons/align-center.svg';
-import alignJustifyIcon from '../theme/icons/align-justify.svg';
+import AlignmentUI from './alignmentui';
 
 /**
  * The alignment plugin.
  *
- * It introduces the `'alignLeft'`, `'alignRight'`, `'alignCenter'` and `'alignJustify'` buttons
- * and requires the {@link module:alignment/alignmentediting~AlignmentEditing} plugin.
+ *
+ * It requires {@link module:alignment/alignmentediting~AlignmentEditing} and {@link module:alignment/alignmentui~AlignmentUI} plugins.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -31,7 +25,7 @@ export default class Alignment extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ AlignmentEditing ];
+		return [ AlignmentEditing, AlignmentUI ];
 	}
 
 	/**
@@ -39,47 +33,5 @@ export default class Alignment extends Plugin {
 	 */
 	static get pluginName() {
 		return 'Alignment';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const t = this.editor.t;
-		this._addButton( 'alignLeft', t( 'Left' ), alignLeftIcon );
-		this._addButton( 'alignRight', t( 'Right' ), alignRightIcon );
-		this._addButton( 'alignCenter', t( 'Center' ), alignCenterIcon );
-		this._addButton( 'alignJustify', t( 'Justify' ), alignJustifyIcon );
-	}
-
-	/**
-	 * Helper method for initializing a button and linking it with an appropriate command.
-	 *
-	 * @private
-	 * @param {String} commandName The name of the command.
-	 * @param {Object} label The button label.
-	 * @param {String} icon The source of the icon.
-	 */
-	_addButton( commandName, label, icon ) {
-		const editor = this.editor;
-		const command = editor.commands.get( commandName );
-
-		editor.ui.componentFactory.add( commandName, locale => {
-			const buttonView = new ButtonView( locale );
-
-			buttonView.set( {
-				label,
-				icon,
-				tooltip: true
-			} );
-
-			// Bind button model to command.
-			buttonView.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
-
-			// Execute command.
-			this.listenTo( buttonView, 'execute', () => editor.execute( commandName ) );
-
-			return buttonView;
-		} );
 	}
 }
