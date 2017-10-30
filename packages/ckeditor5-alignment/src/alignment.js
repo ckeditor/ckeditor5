@@ -13,10 +13,10 @@ import AlignmentEngine from './alignmentengine';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import alignLeftIcon from '../theme/icons/alignleft.svg';
-import alignRightIcon from '../theme/icons/alignright.svg';
-import alignCenterIcon from '../theme/icons/aligncenter.svg';
-import alignJustifyIcon from '../theme/icons/alignjustify.svg';
+import alignLeftIcon from '../theme/icons/align-left.svg';
+import alignRightIcon from '../theme/icons/align-right.svg';
+import alignCenterIcon from '../theme/icons/align-center.svg';
+import alignJustifyIcon from '../theme/icons/align-justify.svg';
 
 /**
  * The alignment plugin.
