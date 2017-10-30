@@ -29,8 +29,22 @@ export default class CloudServices extends Plugin {
 		}
 
 		/**
+		 * The authentication token URL for CloudServices.
+		 *
+		 *		ClassicEditor
+		 *			.create( document.querySelector( '#editor' ), {
+		 *				cloudServices: {
+		 *					tokenUrl: TOKEN_URL
+		 *				},
+		 * 				plugins: [ ArticlePluginSet, EasyImage ],
+		 *				toolbar: [ 'headings', 'undo', 'redo', 'insertImage' ],
+		 *				image: {
+		 *					toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+		 *				}
+		 *			} );
+		 *
 		 * @readonly
-		 * @member {String} tokenUrl
+		 * @member {String} #tokenUrl
 		 */
 
 		if ( !this.tokenUrl ) {
@@ -45,6 +59,9 @@ export default class CloudServices extends Plugin {
 		}
 
 		/**
+		 * Other plugins use this token for authorization process.
+		 * It handles token refreshing. You should use `token.value` later to get its value.
+		 *
 		 * @readonly
 		 */
 		this.token = new CloudServices.Token( this.tokenUrl );
@@ -54,3 +71,30 @@ export default class CloudServices extends Plugin {
 }
 
 CloudServices.Token = Token;
+
+/**
+ * The configuration of the Cloud Services. Introduced by the {@link module:cloudservices/cloudservices~CloudServices} plugin.
+ *
+ * Read more in {@link module:cloudservices/cloudservices~CloudServices}.
+ *
+ * @member {module:cloudservices/cloudservices~CloudServicesConfig} module:core/editor/editorconfig~EditorConfig#cloudServices
+ */
+
+/**
+ * The configuration of the Cloud Services.
+ *
+ *		ClassicEditor
+ *			.create( {
+ * 				cloudServices: ... // CloudServices config.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @interface CloudServicesConfig
+ */
+
+/**
+ * The authentication token URL for CloudServices.
+ *
+ * @member {String} module:cloudservices/cloudservices~CloudServicesConfig#tokenUrl
+ */
