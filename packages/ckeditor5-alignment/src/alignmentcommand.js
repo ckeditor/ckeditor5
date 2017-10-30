@@ -8,6 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import first from '../../ckeditor5-utils/src/first';
 
 /**
  * The alignment command plugin.
@@ -45,7 +46,16 @@ export default class AlignmentCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.value = false;
+		const block = first( this.editor.document.selection.getSelectedBlocks() );
+
+		if ( !block ) {
+			return;
+		}
+
+		const alignment = block.getAttribute( 'alignment' );
+
+		this.value = !!block && ( alignment === this.type || isDefaultAlignment( alignment, this.type ) );
+
 		this.isEnabled = true;
 	}
 
@@ -70,4 +80,15 @@ export default class AlignmentCommand extends Command {
 			}
 		} );
 	}
+}
+
+function isDefaultAlignment( alignment, type ) {
+	// LTR only:
+	const defaultAlignment = 'left';
+
+	if ( type !== defaultAlignment ) {
+		return false;
+	}
+
+	return !alignment || alignment === type;
 }

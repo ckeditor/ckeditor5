@@ -17,10 +17,10 @@ describe( 'AlignmentCommand', () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
 				doc = newEditor.document;
-				command = new AlignmentCommand( newEditor, 'center' );
+				command = new AlignmentCommand( newEditor, 'left' );
 				editor = newEditor;
 
-				editor.commands.add( 'alignCenter', new AlignmentCommand( editor, 'center' ) );
+				editor.commands.add( 'alignCenter', new AlignmentCommand( editor, 'left' ) );
 
 				doc.schema.registerItem( 'paragraph', '$block' );
 				doc.schema.registerItem( 'heading', '$block' );
@@ -39,8 +39,14 @@ describe( 'AlignmentCommand', () => {
 	} );
 
 	describe( 'value', () => {
-		it( 'is false when selection is not in aligned block', () => {
+		it( 'is true when selection is in block with default alignment', () => {
 			setModelData( doc, '<paragraph>x[]x</paragraph>' );
+
+			expect( command ).to.have.property( 'value', true );
+		} );
+
+		it( 'is false when selection is not block that has different alignment', () => {
+			setModelData( doc, '<paragraph alignment="center">x[]x</paragraph>' );
 
 			expect( command ).to.have.property( 'value', false );
 		} );
@@ -57,12 +63,12 @@ describe( 'AlignmentCommand', () => {
 	describe( 'execute()', () => {
 		describe( 'applying alignment', () => {
 			it( 'add alignment to block element', () => {
-				setModelData( doc, '<paragraph>x[]x</paragraph>' );
+				setModelData( doc, '<paragraph alignment="justify">x[]x</paragraph>' );
 
 				editor.execute( 'alignCenter' );
 
 				expect( getModelData( doc ) ).to.equal(
-					'<paragraph alignment="center">x[]x</paragraph>'
+					'<paragraph alignment="left">x[]x</paragraph>'
 				);
 			} );
 		} );

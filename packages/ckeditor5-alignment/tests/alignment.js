@@ -34,7 +34,7 @@ describe( 'Alignment', () => {
 		return editor.destroy();
 	} );
 
-	it( 'requires AlignmentEditing adn AlignmentUI', () => {
+	it( 'requires AlignmentEditing and AlignmentUI', () => {
 		expect( Alignment.requires ).to.deep.equal( [ AlignmentEditing, AlignmentUI ] );
 	} );
 
