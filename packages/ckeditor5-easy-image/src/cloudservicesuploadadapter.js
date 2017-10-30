@@ -98,7 +98,7 @@ CloudServicesUploadAdapter._UploadGateway = UploadGateway;
  *		ClassicEditor
  *			.create( editorElement, {
  * 				cloudServices: {
- *					token: '...'
+ *					tokenUrl: '...'
  * 				}
  *			} )
  *			.then( ... )
