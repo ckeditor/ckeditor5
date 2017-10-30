@@ -381,6 +381,12 @@ export default class Renderer {
 			return false;
 		}
 
+		// Prevent adding inline filler inside elements with contenteditable=false.
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1170
+		if ( !_isEditable( selectionParent ) ) {
+			return false;
+		}
+
 		// We have block filler, we do not need inline one.
 		if ( selectionOffset === selectionParent.getFillerOffset() ) {
 			return false;
@@ -708,3 +714,18 @@ export default class Renderer {
 }
 
 mix( Renderer, ObservableMixin );
+
+// Checks if provided element is editable.
+//
+// @private
+// @param {module:engine/view/element~Element} element
+// @returns {Boolean}
+function _isEditable( element ) {
+	if ( element.getAttribute( 'contenteditable' ) == 'false' ) {
+		return false;
+	}
+
+	const parent = element.findAncestor( element => element.hasAttribute( 'contenteditable' ) );
+
+	return !parent || parent.getAttribute( 'contenteditable' ) == 'true';
+}
