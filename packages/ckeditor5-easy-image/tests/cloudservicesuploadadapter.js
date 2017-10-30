@@ -54,7 +54,6 @@ describe( 'CloudServicesUploadAdapter', () => {
 					}
 				} )
 				.then( editor => {
-					expect( UploadGatewayMock.lastToken.value ).to.equal( 'token' );
 					expect( UploadGatewayMock.lastUploadUrl ).to.equal( 'http://upload.mock.url/' );
 
 					return editor.destroy();
