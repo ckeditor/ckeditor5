@@ -29,7 +29,8 @@
     "url": "https://github.com/ckeditor/ckeditor5-cloudservices.git"
   },
   "files": [
-    "src"
+    "src",
+    "tests/_utils"
   ],
   "scripts": {
     "lint": "eslint --quiet '**/*.js'",
