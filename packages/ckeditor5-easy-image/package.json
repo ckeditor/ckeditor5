@@ -8,7 +8,7 @@
   ],
   "dependencies": {
     "@ckeditor/ckeditor-cloudservices-core": "^0.2.0",
-    "@ckeditor/ckeditor5-cloudservices": "ckeditor/ckeditor5-cloudservices#t/1",
+    "@ckeditor/ckeditor5-cloudservices": "ckeditor/ckeditor5-cloudservices",
     "@ckeditor/ckeditor5-core": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-image": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-upload": "^1.0.0-alpha.1"
