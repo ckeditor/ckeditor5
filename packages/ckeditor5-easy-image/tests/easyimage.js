@@ -17,7 +17,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import CloudServices from '@ckeditor/ckeditor5-cloudservices/src/cloudservices';
 import TokenMock from '@ckeditor/ckeditor5-cloudservices/tests/_utils/tokenmock';
 
-const Token = CloudServices.Token
+const Token = CloudServices.Token;
 
 describe( 'EasyImage', () => {
 	before( () => {
