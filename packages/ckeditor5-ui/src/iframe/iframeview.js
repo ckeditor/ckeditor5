@@ -47,16 +47,9 @@ export default class IframeView extends View {
 	 * been {@link #event:loaded}.
 	 */
 	render() {
-		let deferred = {};
-
-		this.on( 'loaded', () => {
-			deferred.resolve();
-		} );
-
-		super.render();
-
-		return new Promise( ( resolve, reject ) => {
-			deferred = { resolve, reject };
+		return new Promise( resolve => {
+			this.on( 'loaded', resolve );
+			super.render();
 		} );
 	}
 }
