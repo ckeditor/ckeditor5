@@ -40,6 +40,48 @@ describe( 'Collection', () => {
 		} );
 	} );
 
+	describe( 'length', () => {
+		it( 'should return collection length', () => {
+			expect( collection.length ).to.equal( 0 );
+
+			collection.add( { foo: 'bar' } );
+
+			expect( collection.length ).to.equal( 1 );
+		} );
+	} );
+
+	describe( 'first', () => {
+		it( 'should return the first item from the collection', () => {
+			const item1 = { foo: 'bar' };
+			const item2 = { bar: 'biz' };
+
+			collection.add( item1 );
+			collection.add( item2 );
+
+			expect( collection.first ).to.equal( item1 );
+		} );
+
+		it( 'should return null when collection is empty', () => {
+			expect( collection.first ).to.null;
+		} );
+	} );
+
+	describe( 'last', () => {
+		it( 'should return the last item from the collection', () => {
+			const item1 = { foo: 'bar' };
+			const item2 = { bar: 'biz' };
+
+			collection.add( item1 );
+			collection.add( item2 );
+
+			expect( collection.last ).to.equal( item2 );
+		} );
+
+		it( 'should return null when collection is empty', () => {
+			expect( collection.last ).to.null;
+		} );
+	} );
+
 	describe( 'add()', () => {
 		it( 'should be chainable', () => {
 			expect( collection.add( {} ) ).to.equal( collection );
@@ -376,7 +418,7 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should remove the model by model - custom id property', () => {
-			const collection = new Collection( null, 'name' );
+			const collection = new Collection( { idProperty: 'name' } );
 			const item = getItem( 'foo', 'name' );
 
 			collection.add( item );
