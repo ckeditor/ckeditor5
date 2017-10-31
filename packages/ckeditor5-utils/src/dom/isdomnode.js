@@ -4,7 +4,7 @@
  */
 
 /**
- * @module utils/dom/iswindow
+ * @module utils/dom/isdomnode
  */
 
 import isNative from '../lib/lodash/isNative';
