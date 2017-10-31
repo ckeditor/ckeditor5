@@ -5,6 +5,7 @@
 
 import AlignmentEditing from '../src/alignmentediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ImageCaptionEngine from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionengine';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -37,39 +38,31 @@ describe( 'AlignmentEditing', () => {
 		expect( editor.commands.get( 'alignJustify' ) ).to.be.instanceOf( AlignmentCommand );
 	} );
 
-	it( 'allows for alignment in the $blocks', () => {
+	it( 'allows for alignment in $blocks', () => {
 		expect( doc.schema.check( { name: '$block', inside: '$root', attributes: 'alignment' } ) ).to.be.true;
+	} );
+
+	describe( 'integration', () => {
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ AlignmentEditing, ImageCaptionEngine, Paragraph ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					doc = editor.document;
+				} );
+		} );
+
+		it( 'disallows for alignment in the catpion', () => {
+			expect( doc.schema.check( { name: '$block', inside: 'figcaption', attributes: 'alignment' } ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'alignLeft', () => {
 		it( 'adds converters to the data pipeline', () => {
 			const data = '<p style="text-align:left;">x</p>';
-
-			editor.setData( data );
-
-			expect( getModelData( doc ) ).to.equal( '<paragraph alignment="left">[]x</paragraph>' );
-			expect( editor.getData() ).to.equal( data );
-		} );
-
-		it( 'adds a converter to the view pipeline', () => {
-			setModelData( doc, '<paragraph alignment="left">[]x</paragraph>' );
-
-			expect( editor.getData() ).to.equal( '<p style="text-align:left;">x</p>' );
-		} );
-	} );
-
-	describe( 'should work with broken styles', () => {
-		it( 'should ignore empty style', () => {
-			const data = '<p style="text-align:">x</p>';
-
-			editor.setData( data );
-
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]x</paragraph>' );
-			expect( editor.getData() ).to.equal( '<p>x</p>' );
-		} );
-
-		it( 'should ignore not known style', () => {
-			const data = '<p style="text-align:unset;">x</p>';
 
 			editor.setData( data );
 
@@ -126,6 +119,26 @@ describe( 'AlignmentEditing', () => {
 			setModelData( doc, '<paragraph alignment="justify">[]x</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p style="text-align:justify;">x</p>' );
+		} );
+	} );
+
+	describe( 'should work with broken styles', () => {
+		it( 'should ignore empty style', () => {
+			const data = '<p style="text-align:">x</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]x</paragraph>' );
+			expect( editor.getData() ).to.equal( '<p>x</p>' );
+		} );
+
+		it( 'should ignore not known style', () => {
+			const data = '<p style="text-align:unset;">x</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]x</paragraph>' );
+			expect( editor.getData() ).to.equal( '<p>x</p>' );
 		} );
 	} );
 } );

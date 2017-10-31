@@ -34,7 +34,8 @@ export default class AlignmentCommand extends Command {
 		this.type = type;
 
 		/**
-		 * A flag indicating whether the command is active, which means that the selection starts in a list of the same type.
+		 * A flag indicating whether the command is active, which means that the selection starts in a block
+		 * that has defined alignment of the same type.
 		 *
 		 * @observable
 		 * @readonly
@@ -46,17 +47,11 @@ export default class AlignmentCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const block = first( this.editor.document.selection.getSelectedBlocks() );
+		const firstBlock = first( this.editor.document.selection.getSelectedBlocks() );
 
-		if ( !block ) {
-			return;
-		}
-
-		const alignment = block.getAttribute( 'alignment' );
-
-		this.value = !!block && ( alignment === this.type || isDefaultAlignment( alignment, this.type ) );
-
-		this.isEnabled = true;
+		// As first check whether to enable or disable command as value will be always false if command cannot be enabled.
+		this.isEnabled = this._checkEnabled( firstBlock );
+		this.value = this._getValue( firstBlock );
 	}
 
 	/**
@@ -75,20 +70,72 @@ export default class AlignmentCommand extends Command {
 			const batch = options.batch || document.batch();
 			const blocks = Array.from( document.selection.getSelectedBlocks() );
 
-			for ( const block of blocks ) {
-				batch.setAttribute( block, 'alignment', this.type );
+			if ( this._isDefault() ) {
+				removeAlignmentFromSelection( blocks, batch );
+			} else {
+				addAlignmentToSelection( blocks, batch, this.type );
 			}
 		} );
 	}
-}
 
-function isDefaultAlignment( alignment, type ) {
-	// LTR only:
-	const defaultAlignment = 'left';
-
-	if ( type !== defaultAlignment ) {
-		return false;
+	/**
+	 * Checks whether the command is default in given context.
+	 *
+	 * @private
+	 * @returns {Boolean} Whether the command should be enabled.
+	 */
+	_isDefault() {
+		return this.type === 'left';
 	}
 
-	return !alignment || alignment === type;
+	/**
+	 * Checks whether the command can be enabled in the current context.
+	 *
+	 * @private
+	 * @returns {Boolean} Whether the command should be enabled.
+	 */
+	_checkEnabled( firstBlock ) {
+		if ( !firstBlock ) {
+			return false;
+		}
+
+		const schema = this.editor.document.schema;
+
+		return schema.check( {
+			name: firstBlock.name,
+			attributes: [ ...firstBlock.getAttributeKeys(), 'alignment' ]
+		} );
+	}
+
+	/**
+	 * Checks the command's {@link #value}.
+	 *
+	 * @private
+	 * @returns {Boolean} The current value.
+	 */
+	_getValue( firstBlock ) {
+		if ( !this.isEnabled || !firstBlock ) {
+			return false;
+		}
+
+		const currentAlignment = firstBlock.getAttribute( 'alignment' );
+
+		return currentAlignment ? currentAlignment === this.type : this._isDefault();
+	}
+}
+
+// Removes alignment attribute from blocks.
+// @private
+function removeAlignmentFromSelection( blocks, batch ) {
+	for ( const block of blocks ) {
+		batch.removeAttribute( block, 'alignment' );
+	}
+}
+
+// Sets alignment attribute on blocks.
+// @private
+function addAlignmentToSelection( blocks, batch, type ) {
+	for ( const block of blocks ) {
+		batch.setAttribute( block, 'alignment', type );
+	}
 }

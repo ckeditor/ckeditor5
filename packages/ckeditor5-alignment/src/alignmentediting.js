@@ -37,8 +37,8 @@ export default class AlignmentEditing extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
-		// Allow alignment on all blocks.
-		schema.allow( { name: '$block', attributes: 'alignment', inside: '$root' } );
+		// Allow alignment attribute on all blocks.
+		schema.allow( { name: '$block', attributes: 'alignment' } );
 
 		buildModelConverter()
 			.for( data.modelToView, editing.modelToView )
@@ -51,7 +51,8 @@ export default class AlignmentEditing extends Plugin {
 			.toAttribute( viewElement => {
 				const textAlign = viewElement.getStyle( 'text-align' );
 
-				if ( !textAlign || !alignmentTypes.includes( textAlign ) ) {
+				// Do not convert empty, default or unknown alignment values.
+				if ( !textAlign || isDefault( textAlign ) || !alignmentTypes.includes( textAlign ) ) {
 					return;
 				}
 
@@ -64,4 +65,22 @@ export default class AlignmentEditing extends Plugin {
 		editor.commands.add( 'alignCenter', new AlignmentCommand( editor, 'center' ) );
 		editor.commands.add( 'alignJustify', new AlignmentCommand( editor, 'justify' ) );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
+		const schema = this.editor.document.schema;
+
+		// Disallow alignment on fiqcaption
+		if ( schema.hasItem( 'caption' ) ) {
+			schema.disallow( { name: 'caption', attributes: 'alignment' } );
+		}
+	}
+}
+
+// Check whether alignment is default one.
+// @private
+function isDefault( textAlign ) {
+	return textAlign === 'left';
 }
