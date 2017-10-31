@@ -8,22 +8,26 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import CloudServicesUploadAdapter from '../src/cloudservicesuploadadapter';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
+import CloudServices from '@ckeditor/ckeditor5-cloudservices/src/cloudservices';
+
 import UploadGatewayMock from './_utils/uploadgatewaymock';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
+import TokenMock from '@ckeditor/ckeditor5-cloudservices/tests/_utils/tokenmock';
 
 // Store original uploader.
 const CSUploader = CloudServicesUploadAdapter._UploadGateway;
+const Token = CloudServices.Token;
 
 describe( 'CloudServicesUploadAdapter', () => {
 	let div;
 
 	before( () => {
-		// Mock uploader.
+		CloudServices.Token = TokenMock;
 		CloudServicesUploadAdapter._UploadGateway = UploadGatewayMock;
 	} );
 
 	after( () => {
-		// Restore original uploader.
+		CloudServices.Token = Token;
 		CloudServicesUploadAdapter._UploadGateway = CSUploader;
 	} );
 
@@ -39,52 +43,35 @@ describe( 'CloudServicesUploadAdapter', () => {
 	describe( 'init()', () => {
 		it( 'should set loader', () => {
 			UploadGatewayMock.lastToken = undefined;
+			TokenMock.initialToken = 'token';
 
 			return ClassicTestEditor
 				.create( div, {
 					plugins: [ CloudServicesUploadAdapter ],
 					cloudServices: {
-						token: 'abc',
+						tokenUrl: 'abc',
 						uploadUrl: 'http://upload.mock.url/'
 					}
 				} )
 				.then( editor => {
-					expect( UploadGatewayMock.lastToken ).to.equal( 'abc' );
 					expect( UploadGatewayMock.lastUploadUrl ).to.equal( 'http://upload.mock.url/' );
 
 					return editor.destroy();
 				} );
 		} );
 
-		it( 'should not set loader if there is no token', () => {
-			UploadGatewayMock.lastToken = undefined;
-
-			return ClassicTestEditor
-				.create( div, {
-					plugins: [ CloudServicesUploadAdapter ]
-				} )
-				.then( editor => {
-					expect( UploadGatewayMock.lastToken ).to.be.an( 'undefined' );
-
-					return editor.destroy();
-				} );
-		} );
-
-		it( 'should set the default config.cloudServices.uploadUrl', () => {
+		it( 'should set the default uploadUrl', () => {
 			const expectedDefaultUrl = 'https://files.cke-cs.com/upload/';
 
 			return ClassicTestEditor
 				.create( div, {
 					plugins: [ CloudServicesUploadAdapter ],
 					cloudServices: {
-						token: 'abc'
+						tokenUrl: 'abc'
 					}
 				} )
 				.then( editor => {
-					expect( UploadGatewayMock.lastToken ).to.equal( 'abc' );
 					expect( UploadGatewayMock.lastUploadUrl ).to.equal( expectedDefaultUrl );
-
-					expect( editor.config.get( 'cloudServices.uploadUrl' ) ).to.equal( expectedDefaultUrl );
 
 					return editor.destroy();
 				} );
@@ -98,7 +85,7 @@ describe( 'CloudServicesUploadAdapter', () => {
 			return ClassicTestEditor.create( div, {
 				plugins: [ CloudServicesUploadAdapter ],
 				cloudServices: {
-					token: 'abc',
+					tokenUrl: 'abc',
 					uploadUrl: 'http://upload.mock.url/'
 				}
 			} ).then( _editor => {

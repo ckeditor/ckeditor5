@@ -10,24 +10,21 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import EasyImage from '../../src/easyimage';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
-import getToken from '../_utils/gettoken';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 
-getToken()
-	.then( token => {
-		return ClassicEditor
-			.create( document.querySelector( '#editor' ), {
-				cloudServices: {
-					token
-				},
-				plugins: [ ArticlePluginSet, EasyImage ],
-				toolbar: [ 'headings', 'undo', 'redo', 'insertImage' ],
-				image: {
-					toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
-				}
-			} )
-			.then( editor => {
-				window.editor = editor;
-			} );
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		cloudServices: {
+			tokenUrl: TOKEN_URL
+		},
+		plugins: [ ArticlePluginSet, EasyImage ],
+		toolbar: [ 'headings', 'undo', 'redo', 'insertImage' ],
+		image: {
+			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );

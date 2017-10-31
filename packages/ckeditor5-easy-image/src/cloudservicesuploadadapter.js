@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import UploadGateway from '@ckeditor/ckeditor-cloudservices-core/src/uploadgateway/uploadgateway';
+import CloudServices from '@ckeditor/ckeditor5-cloudservices/src/cloudservices';
 
 /**
  * A plugin which enables upload to Cloud Services.
@@ -26,7 +27,7 @@ export default class CloudServicesUploadAdapter extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ FileRepository ];
+		return [ FileRepository, CloudServices ];
 	}
 
 	/**
@@ -34,16 +35,11 @@ export default class CloudServicesUploadAdapter extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const config = editor.config;
 
-		config.define( 'cloudServices.uploadUrl', 'https://files.cke-cs.com/upload/' );
+		const cloudServices = editor.plugins.get( CloudServices );
 
-		const token = config.get( 'cloudServices.token' );
-		const uploadUrl = config.get( 'cloudServices.uploadUrl' );
-
-		if ( !token || !uploadUrl ) {
-			return;
-		}
+		const token = cloudServices.token;
+		const uploadUrl = cloudServices.uploadUrl || 'https://files.cke-cs.com/upload/';
 
 		this._uploadGateway = new CloudServicesUploadAdapter._UploadGateway( token, uploadUrl );
 
@@ -102,7 +98,7 @@ CloudServicesUploadAdapter._UploadGateway = UploadGateway;
  *		ClassicEditor
  *			.create( editorElement, {
  * 				cloudServices: {
- *					token: '...'
+ *					tokenUrl: '...'
  * 				}
  *			} )
  *			.then( ... )

@@ -14,7 +14,20 @@ import UploadGatewayMock from './_utils/uploadgatewaymock';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
+import CloudServices from '@ckeditor/ckeditor5-cloudservices/src/cloudservices';
+import TokenMock from '@ckeditor/ckeditor5-cloudservices/tests/_utils/tokenmock';
+
+const Token = CloudServices.Token
+
 describe( 'EasyImage', () => {
+	before( () => {
+		CloudServices.Token = TokenMock;
+	} );
+
+	after( () => {
+		CloudServices.Token = Token;
+	} );
+
 	it( 'should require other plugins', () => {
 		const plugins = EasyImage.requires;
 
@@ -29,7 +42,10 @@ describe( 'EasyImage', () => {
 
 		return ClassicTestEditor
 			.create( div, {
-				plugins: [ EasyImage ]
+				plugins: [ EasyImage ],
+				cloudServices: {
+					tokenUrl: 'abc',
+				}
 			} )
 			.then( editor => {
 				const easyImage = editor.plugins.get( EasyImage );
@@ -83,7 +99,7 @@ describe( 'EasyImage', () => {
 						Paragraph, EasyImage
 					],
 					cloudServices: {
-						token: 'abc',
+						tokenUrl: 'abc',
 						uploadUrl: 'http://upload.mock.url/'
 					}
 				} )
