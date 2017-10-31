@@ -58,6 +58,26 @@ describe( 'AlignmentEditing', () => {
 		} );
 	} );
 
+	describe( 'should work with broken styles', () => {
+		it( 'should ignore empty style', () => {
+			const data = '<p style="text-align:">x</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]x</paragraph>' );
+			expect( editor.getData() ).to.equal( '<p>x</p>' );
+		} );
+
+		it( 'should ignore not known style', () => {
+			const data = '<p style="text-align:unset;">x</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]x</paragraph>' );
+			expect( editor.getData() ).to.equal( '<p>x</p>' );
+		} );
+	} );
+
 	describe( 'alignCenter', () => {
 		it( 'adds converters to the data pipeline', () => {
 			const data = '<p style="text-align:center;">x</p>';

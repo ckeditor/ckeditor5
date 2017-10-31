@@ -14,6 +14,8 @@ import AlignmentCommand from './alignmentcommand';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
+const alignmentTypes = [ 'left', 'right', 'center', 'justify' ];
+
 /**
  * @extends module:core/plugin~Plugin
  */
@@ -49,7 +51,7 @@ export default class AlignmentEditing extends Plugin {
 			.toAttribute( viewElement => {
 				const textAlign = viewElement.getStyle( 'text-align' );
 
-				if ( !textAlign ) {
+				if ( !textAlign || !alignmentTypes.includes( textAlign ) ) {
 					return;
 				}
 
