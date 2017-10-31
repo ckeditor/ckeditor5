@@ -37,12 +37,12 @@ export default class CloudServices extends Plugin {
 
 		if ( !this.tokenUrl ) {
 			/**
-			 * The authentication `cloudServices.token` config is not provided.
+			 * The authentication `cloudServices.tokenUrl` config is not provided.
 			 *
 			 * @error cloudservices-token-endpoint-not-provided
 			 */
 			throw new CKEditorError(
-				'cloudservices-token-endpoint-not-provided: The authentication `cloudServices.token` config is not provided.'
+				'cloudservices-token-endpoint-not-provided: The authentication `cloudServices.tokenUrl` config is not provided.'
 			);
 		}
 
