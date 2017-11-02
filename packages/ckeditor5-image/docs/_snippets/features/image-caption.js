@@ -5,24 +5,23 @@
 
 /* globals ClassicEditor, console, window, document */
 
-import getToken from '@ckeditor/ckeditor5-easy-image/tests/_utils/gettoken';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config.js';
 
-getToken()
-	.then( token => {
-		ClassicEditor
-			.create( document.querySelector( '#snippet-image-caption' ), {
-				removePlugins: [ 'ImageStyle' ],
-				image: {
-					toolbar: [ 'imageTextAlternative' ]
-				},
-				toolbar: {
-					viewportTopOffset: 60
-				},
-				cloudServices: { token }
-			} )
-			.then( editor => {
-				window.editorCaption = editor;
-			} );
+ClassicEditor
+	.create( document.querySelector( '#snippet-image-caption' ), {
+		removePlugins: [ 'ImageStyle' ],
+		image: {
+			toolbar: [ 'imageTextAlternative' ]
+		},
+		toolbar: {
+			viewportTopOffset: 60
+		},
+		cloudServices: {
+			tokenUrl: TOKEN_URL
+		}
+	} )
+	.then( editor => {
+		window.editorCaption = editor;
 	} )
 	.catch( err => {
 		console.error( err );
