@@ -12,6 +12,8 @@ import Token from '@ckeditor/ckeditor-cloudservices-core/src/token/token';
 
 /**
  * Base plugin for Cloud Services. It takes care about the `cloudServices` config options and initializes token provider.
+ *
+ * @extends module:core/plugin~Plugin
  */
 export default class CloudServices extends Plugin {
 	/**
@@ -31,8 +33,20 @@ export default class CloudServices extends Plugin {
 		 * The authentication token URL for CloudServices.
 		 *
 		 * @readonly
-		 * @member {String} #tokenUrl
+		 * @member {String|undefined} #tokenUrl
 		 */
+
+		/**
+		 * The URL to which the files should be uploaded.
+		 *
+		 * @readonly
+		 * @default 'https://files.cke-cs.com/upload/'
+		 * @member {String} #uploadUrl
+		 */
+
+		if ( !this.uploadUrl ) {
+			this.uploadUrl = 'https://files.cke-cs.com/upload/';
+		}
 
 		/**
 		 * Other plugins use this token for authorization process. It handles token requesting and refreshing.
@@ -94,4 +108,10 @@ CloudServices.Token = Token;
  *			} );
  *
  * @member {String} module:cloudservices/cloudservices~CloudServicesConfig#tokenUrl
+ */
+
+/**
+ * The URL to which the files should be uploaded.
+ *
+ * @member {String} [module:cloudservices/cloudservices~CloudServicesConfig#uploadUrl='https://files.cke-cs.com/upload/']
  */

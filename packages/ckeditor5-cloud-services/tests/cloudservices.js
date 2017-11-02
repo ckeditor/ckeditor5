@@ -53,6 +53,33 @@ describe( 'CloudServices', () => {
 				} );
 		} );
 
+		it( 'should expose default uploadUrl if is not provided', () => {
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ CloudServices ]
+				} )
+				.then( editor => {
+					const cloudServicesPlugin = editor.plugins.get( CloudServices );
+
+					expect( cloudServicesPlugin.uploadUrl ).to.equal( 'https://files.cke-cs.com/upload/' );
+				} );
+		} );
+
+		it( 'should use provided uploadUrl', () => {
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ CloudServices ],
+					cloudServices: {
+						uploadUrl: 'https://some-upload-url/'
+					}
+				} )
+				.then( editor => {
+					const cloudServicesPlugin = editor.plugins.get( CloudServices );
+
+					expect( cloudServicesPlugin.uploadUrl ).to.equal( 'https://some-upload-url/' );
+				} );
+		} );
+
 		it( 'should provide token if tokenUrl is provided', () => {
 			CloudServices.Token.initialToken = 'initial-token';
 
