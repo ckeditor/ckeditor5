@@ -11,7 +11,9 @@ import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/clouds
 
 BalloonEditor
 	.create( document.querySelector( '#snippet-balloon-editor' ), {
-		cloudServices: { tokenUrl: TOKEN_URL }
+		cloudServices: {
+			tokenUrl: TOKEN_URL
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
