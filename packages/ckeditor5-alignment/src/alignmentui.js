@@ -15,6 +15,16 @@ import alignLeftIcon from '../theme/icons/align-left.svg';
 import alignRightIcon from '../theme/icons/align-right.svg';
 import alignCenterIcon from '../theme/icons/align-center.svg';
 import alignJustifyIcon from '../theme/icons/align-justify.svg';
+import AlignmentEditing, { isSupported } from './alignmentediting';
+
+import upperFirst from '@ckeditor/ckeditor5-utils/src/lib/lodash/upperFirst';
+
+const icons = new Map( [
+	[ 'left', alignLeftIcon ],
+	[ 'right', alignRightIcon ],
+	[ 'center', alignCenterIcon ],
+	[ 'justify', alignJustifyIcon ]
+] );
 
 /**
  * The default Alignment UI plugin.
@@ -28,7 +38,7 @@ export default class AlignmentUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [];
+		return [ AlignmentEditing ];
 	}
 
 	/**
@@ -42,31 +52,32 @@ export default class AlignmentUI extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const t = this.editor.t;
-		this._addButton( 'alignLeft', t( 'Left' ), alignLeftIcon );
-		this._addButton( 'alignRight', t( 'Right' ), alignRightIcon );
-		this._addButton( 'alignCenter', t( 'Center' ), alignCenterIcon );
-		this._addButton( 'alignJustify', t( 'Justify' ), alignJustifyIcon );
+		const styles = this.editor.config.get( 'alignment.styles' );
+
+		styles
+			.filter( isSupported )
+			.forEach( style => this._addButton( style ) );
 	}
 
 	/**
 	 * Helper method for initializing a button and linking it with an appropriate command.
 	 *
 	 * @private
-	 * @param {String} commandName The name of the command.
-	 * @param {Object} label The button label.
-	 * @param {String} icon The source of the icon.
+	 * @param {String} style The name of style for which add button.
 	 */
-	_addButton( commandName, label, icon ) {
+	_addButton( style ) {
 		const editor = this.editor;
+		const t = editor.t;
+
+		const commandName = AlignmentEditing.commandName( style );
 		const command = editor.commands.get( commandName );
 
 		editor.ui.componentFactory.add( commandName, locale => {
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
-				label,
-				icon,
+				label: t( upperFirst( style ) ),
+				icon: icons.get( style ),
 				tooltip: true
 			} );
 

@@ -14,7 +14,7 @@ import AlignmentCommand from './alignmentcommand';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
-const alignmentTypes = [ 'left', 'right', 'center', 'justify' ];
+import upperFirst from '@ckeditor/ckeditor5-utils/src/lib/lodash/upperFirst';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -23,8 +23,39 @@ export default class AlignmentEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'alignment', { styles: [ ...this.constructor.supportedStyles ] } );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [];
+	}
+
+	/**
+	 * Returns list of supported styles.
+	 *
+	 * @static
+	 * @readonly
+	 * @member {Array.<String>} module:alignment/alignmentediting~AlignmentEditing.supportedStyles
+	 */
+	static get supportedStyles() {
+		return [ 'left', 'right', 'center', 'justify' ];
+	}
+
+	/**
+	 * Helper function that returns command name for given style. May produce unknown commands if passed style is not
+	 * in {@link module:alignment/alignmentediting~AlignmentEditing.supportedStyles}.
+	 *
+	 * @param {String} style
+	 * @returns {String}
+	 */
+	static commandName( style ) {
+		return `align${ upperFirst( style ) }`;
 	}
 
 	/**
@@ -36,6 +67,8 @@ export default class AlignmentEditing extends Plugin {
 		const schema = doc.schema;
 		const data = editor.data;
 		const editing = editor.editing;
+
+		const enabledStyles = editor.config.get( 'alignment.styles' );
 
 		// Allow alignment attribute on all blocks.
 		schema.allow( { name: '$block', attributes: 'alignment' } );
@@ -52,18 +85,16 @@ export default class AlignmentEditing extends Plugin {
 				const textAlign = viewElement.getStyle( 'text-align' );
 
 				// Do not convert empty, default or unknown alignment values.
-				if ( !textAlign || isDefault( textAlign ) || !alignmentTypes.includes( textAlign ) ) {
+				if ( !textAlign || isDefault( textAlign ) || !enabledStyles.includes( textAlign ) ) {
 					return;
 				}
 
 				return { key: 'alignment', value: textAlign };
 			} );
 
-		// Register commands for text alignment.
-		editor.commands.add( 'alignLeft', new AlignmentCommand( editor, 'left' ) );
-		editor.commands.add( 'alignRight', new AlignmentCommand( editor, 'right' ) );
-		editor.commands.add( 'alignCenter', new AlignmentCommand( editor, 'center' ) );
-		editor.commands.add( 'alignJustify', new AlignmentCommand( editor, 'justify' ) );
+		enabledStyles
+			.filter( isSupported )
+			.forEach( style => editor.commands.add( AlignmentEditing.commandName( style ), new AlignmentCommand( editor, style ) ) );
 	}
 
 	/**
@@ -79,8 +110,43 @@ export default class AlignmentEditing extends Plugin {
 	}
 }
 
+export function isSupported( style ) {
+	return AlignmentEditing.supportedStyles.includes( style );
+}
+
 // Check whether alignment is default one.
 // @private
 function isDefault( textAlign ) {
 	return textAlign === 'left';
 }
+
+/**
+ * The configuration of the {@link module:alignment/alignmentediting~AlignmentEditing Alignment feature}.
+ *
+ * Read more in {@link module:alignment/alignmentediting~AlignmentEditingConfig}.
+ *
+ * @member {module:alignment/alignmentediting~AlignmentEditingConfig} module:core/editor/editorconfig~EditorConfig#alignment
+ */
+
+/**
+ * The configuration of the {@link module:alignment/alignmentediting~AlignmentEditing Alignment feature}.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ * 				alignment: {
+ *					styles: [ 'left', 'right' ]
+ * 				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface AlignmentEditingConfig
+ */
+
+/**
+ * Enabled alignment styles from supported styles: `left`, `right`, `center` and `justify`. Other values are ignored.
+ *
+ * @member {String} module:alignment/alignmentediting~AlignmentEditingConfig#styles
+ */

@@ -70,10 +70,11 @@ export default class AlignmentCommand extends Command {
 			const batch = options.batch || document.batch();
 			const blocks = Array.from( document.selection.getSelectedBlocks() );
 
-			if ( this._isDefault() ) {
+			// Executing command on already aligned text should remove alignment attribute
+			if ( this.value || this._isDefault() ) {
 				removeAlignmentFromSelection( blocks, batch );
 			} else {
-				addAlignmentToSelection( blocks, batch, this.type );
+				setAlignmentOnSelection( blocks, batch, this.type );
 			}
 		} );
 	}
@@ -134,7 +135,7 @@ function removeAlignmentFromSelection( blocks, batch ) {
 
 // Sets alignment attribute on blocks.
 // @private
-function addAlignmentToSelection( blocks, batch, type ) {
+function setAlignmentOnSelection( blocks, batch, type ) {
 	for ( const block of blocks ) {
 		batch.setAttribute( block, 'alignment', type );
 	}

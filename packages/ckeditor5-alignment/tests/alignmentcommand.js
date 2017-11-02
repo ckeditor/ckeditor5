@@ -83,8 +83,33 @@ describe( 'AlignmentCommand', () => {
 				expect( getModelData( doc ) ).to.equal( '<paragraph alignment="center">x[]x</paragraph>' );
 			} );
 
+			it( 'should remove alignment from single block element if already has one', () => {
+				setModelData( doc, '<paragraph alignment="center">x[]x</paragraph>' );
+
+				editor.execute( 'alignCenter' );
+
+				expect( getModelData( doc ) ).to.equal( '<paragraph>x[]x</paragraph>' );
+			} );
+
 			it( 'adds alignment to all selected blocks', () => {
 				setModelData( doc, '<paragraph>x[x</paragraph><paragraph>xx</paragraph><paragraph>x]x</paragraph>' );
+
+				editor.execute( 'alignCenter' );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<paragraph alignment="center">x[x</paragraph>' +
+					'<paragraph alignment="center">xx</paragraph>' +
+					'<paragraph alignment="center">x]x</paragraph>'
+				);
+			} );
+
+			it( 'sets alignment on all selected blocks as first block', () => {
+				setModelData(
+					doc,
+					'<paragraph>x[x</paragraph>' +
+					'<paragraph >xx</paragraph>' +
+					'<paragraph alignment="center">x]x</paragraph>'
+				);
 
 				editor.execute( 'alignCenter' );
 
@@ -106,9 +131,25 @@ describe( 'AlignmentCommand', () => {
 			} );
 
 			it( 'removes alignment from all selected blocks', () => {
-				setModelData( doc, '<paragraph alignment="center">x[x</paragraph>' +
+				setModelData( doc,
+					'<paragraph alignment="center">x[x</paragraph>' +
 					'<paragraph alignment="center">xx</paragraph>' +
-					'<paragraph alignment="center">x]x</paragraph>' );
+					'<paragraph alignment="center">x]x</paragraph>'
+				);
+
+				editor.execute( 'alignLeft' );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<paragraph>x[x</paragraph><paragraph>xx</paragraph><paragraph>x]x</paragraph>'
+				);
+			} );
+
+			it( 'removes alignment from all selected blocks even if one has not alignment', () => {
+				setModelData( doc,
+					'<paragraph alignment="center">x[x</paragraph>' +
+					'<paragraph>xx</paragraph>' +
+					'<paragraph alignment="center">x]x</paragraph>'
+				);
 
 				editor.execute( 'alignLeft' );
 

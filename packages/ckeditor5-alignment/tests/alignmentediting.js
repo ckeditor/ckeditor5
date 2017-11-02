@@ -154,4 +154,28 @@ describe( 'AlignmentEditing', () => {
 			expect( editor.getData() ).to.equal( '<p>x</p>' );
 		} );
 	} );
+
+	describe( 'config', () => {
+		describe( 'styles', () => {
+			describe( 'default value', () => {
+				it( 'should be set', () => {
+					expect( editor.config.get( 'alignment.styles' ) ).to.deep.equal( [ 'left', 'right', 'center', 'justify' ] );
+				} );
+			} );
+
+			it( 'should customize commands', () => {
+				return VirtualTestEditor
+					.create( {
+						alignment: { styles: [ 'left', 'right' ] },
+						plugins: [ AlignmentEditing, Paragraph ]
+					} )
+					.then( editor => {
+						expect( editor.commands.get( 'alignLeft' ), 'adds alignLeft' ).to.be.instanceof( AlignmentCommand );
+						expect( editor.commands.get( 'alignRight' ), 'adds alignLeft' ).to.be.instanceof( AlignmentCommand );
+						expect( editor.commands.get( 'alignCenter' ), 'does not add alignCenter' ).to.be.undefined;
+						expect( editor.commands.get( 'alignJustify' ), 'does not add alignJustify' ).to.be.undefined;
+					} );
+			} );
+		} );
+	} );
 } );
