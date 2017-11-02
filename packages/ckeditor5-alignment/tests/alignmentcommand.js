@@ -8,7 +8,7 @@ import AlignmentCommand from '../src/alignmentcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import ModelTestEditor from '../../ckeditor5-core/tests/_utils/modeltesteditor';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 
 describe( 'AlignmentCommand', () => {
 	let editor, doc, command, defaultAlignmentCommand;
@@ -25,7 +25,6 @@ describe( 'AlignmentCommand', () => {
 				editor.commands.add( 'alignLeft', defaultAlignmentCommand );
 
 				doc.schema.registerItem( 'paragraph', '$block' );
-				doc.schema.registerItem( 'heading', '$block' );
 
 				doc.schema.allow( { name: '$block', inside: '$root', attributes: 'alignment' } );
 			} );
@@ -76,17 +75,15 @@ describe( 'AlignmentCommand', () => {
 
 	describe( 'execute()', () => {
 		describe( 'applying alignment', () => {
-			it( 'add should alignment to block element', () => {
+			it( 'adds alignment to block element', () => {
 				setModelData( doc, '<paragraph>x[]x</paragraph>' );
 
 				editor.execute( 'alignCenter' );
 
-				expect( getModelData( doc ) ).to.equal(
-					'<paragraph alignment="center">x[]x</paragraph>'
-				);
+				expect( getModelData( doc ) ).to.equal( '<paragraph alignment="center">x[]x</paragraph>' );
 			} );
 
-			it( 'add should alignment to all selected blocks', () => {
+			it( 'adds alignment to all selected blocks', () => {
 				setModelData( doc, '<paragraph>x[x</paragraph><paragraph>xx</paragraph><paragraph>x]x</paragraph>' );
 
 				editor.execute( 'alignCenter' );
@@ -97,29 +94,27 @@ describe( 'AlignmentCommand', () => {
 					'<paragraph alignment="center">x]x</paragraph>'
 				);
 			} );
+		} );
 
-			describe( 'applying default alignment', () => {
-				it( 'add should remove alignment from block element', () => {
-					setModelData( doc, '<paragraph alignment="justify">x[]x</paragraph>' );
+		describe( 'applying default alignment', () => {
+			it( 'removes alignment from block element', () => {
+				setModelData( doc, '<paragraph alignment="justify">x[]x</paragraph>' );
 
-					editor.execute( 'alignLeft' );
+				editor.execute( 'alignLeft' );
 
-					expect( getModelData( doc ) ).to.equal(
-						'<paragraph>x[]x</paragraph>'
-					);
-				} );
+				expect( getModelData( doc ) ).to.equal( '<paragraph>x[]x</paragraph>' );
+			} );
 
-				it( 'add remove alignment from all selected blocks', () => {
-					setModelData( doc, '<paragraph alignment="center">x[x</paragraph>' +
-						'<paragraph alignment="center">xx</paragraph>' +
-						'<paragraph alignment="center">x]x</paragraph>' );
+			it( 'removes alignment from all selected blocks', () => {
+				setModelData( doc, '<paragraph alignment="center">x[x</paragraph>' +
+					'<paragraph alignment="center">xx</paragraph>' +
+					'<paragraph alignment="center">x]x</paragraph>' );
 
-					editor.execute( 'alignLeft' );
+				editor.execute( 'alignLeft' );
 
-					expect( getModelData( doc ) ).to.equal(
-						'<paragraph>x[x</paragraph><paragraph>xx</paragraph><paragraph>x]x</paragraph>'
-					);
-				} );
+				expect( getModelData( doc ) ).to.equal(
+					'<paragraph>x[x</paragraph><paragraph>xx</paragraph><paragraph>x]x</paragraph>'
+				);
 			} );
 		} );
 	} );

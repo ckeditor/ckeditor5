@@ -6,7 +6,8 @@
 import AlignmentEditing from '../src/alignmentediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageCaptionEngine from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionengine';
-
+import ListEngine from '@ckeditor/ckeditor5-list/src/listengine';
+import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -46,7 +47,7 @@ describe( 'AlignmentEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ AlignmentEditing, ImageCaptionEngine, Paragraph ]
+					plugins: [ AlignmentEditing, ImageCaptionEngine, Paragraph, ListEngine, HeadingEngine ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -55,8 +56,20 @@ describe( 'AlignmentEditing', () => {
 				} );
 		} );
 
-		it( 'disallows for alignment in the catpion', () => {
-			expect( doc.schema.check( { name: '$block', inside: 'figcaption', attributes: 'alignment' } ) ).to.be.true;
+		it( 'is allowed on paragraph', () => {
+			expect( doc.schema.check( { name: 'paragraph', attributes: 'alignment' } ) ).to.be.true;
+		} );
+
+		it( 'is allowed on listItem', () => {
+			expect( doc.schema.check( { name: 'listItem', attributes: [ 'type', 'indent', 'alignment' ] } ) ).to.be.true;
+		} );
+
+		it( 'is allowed on heading', () => {
+			expect( doc.schema.check( { name: 'heading1', attributes: 'alignment' } ) ).to.be.true;
+		} );
+
+		it( 'is disallowed on figcaption', () => {
+			expect( doc.schema.check( { name: 'figcaption', attributes: 'alignment' } ) ).to.be.false;
 		} );
 	} );
 
