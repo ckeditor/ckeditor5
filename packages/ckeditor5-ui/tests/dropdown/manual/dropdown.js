@@ -12,7 +12,7 @@ import createDropdown from '../../../src/dropdown/createdropdown';
 import createListDropdown from '../../../src/dropdown/list/createlistdropdown';
 
 import '@ckeditor/ckeditor5-theme-lark/theme/theme.scss';
-import testUtils from '@ckeditor/ckeditor5-ui/tests/_utils/utils';
+import testUtils from '../../_utils/utils';
 
 const ui = testUtils.createTestUIView( {
 	dropdown: '#dropdown',
