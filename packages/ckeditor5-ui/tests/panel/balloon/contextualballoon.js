@@ -48,12 +48,13 @@ describe( 'ContextualBalloon', () => {
 					}
 				} );
 
-				viewB.init();
+				viewB.render();
 			} );
 	} );
 
 	afterEach( () => {
 		editor.destroy();
+		editorElement.remove();
 	} );
 
 	it( 'should create a plugin instance', () => {

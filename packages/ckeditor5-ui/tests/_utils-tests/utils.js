@@ -26,13 +26,13 @@ describe( 'utils', () => {
 				expect( view.bar._parentElement ).to.equal( document.body.lastChild );
 			} );
 
-			it( 'is ready', () => {
+			it( 'is rendered', () => {
 				const view = testUtils.createTestUIView( {
 					foo: el => el.firstChild,
 					bar: el => el.lastChild,
 				} );
 
-				expect( view.ready ).to.be.true;
+				expect( view.isRendered ).to.be.true;
 			} );
 		} );
 	} );

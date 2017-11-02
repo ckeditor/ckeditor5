@@ -9,6 +9,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ButtonView from '../../src/button/buttonview';
 import IconView from '../../src/icon/iconview';
 import TooltipView from '../../src/tooltip/tooltipview';
+import View from '../../src/view';
+import ViewCollection from '../../src/viewcollection';
 
 testUtils.createSinonSandbox();
 
@@ -18,7 +20,22 @@ describe( 'ButtonView', () => {
 	beforeEach( () => {
 		locale = { t() {} };
 
-		return ( view = new ButtonView( locale ) ).init();
+		view = new ButtonView( locale );
+		view.render();
+	} );
+
+	describe( 'constructor()', () => {
+		it( 'creates view#children collection', () => {
+			expect( view.children ).to.be.instanceOf( ViewCollection );
+		} );
+
+		it( 'creates #tooltipView', () => {
+			expect( view.tooltipView ).to.be.instanceOf( TooltipView );
+		} );
+
+		it( 'creates #labelView', () => {
+			expect( view.labelView ).to.be.instanceOf( View );
+		} );
 	} );
 
 	describe( '<button> bindings', () => {
@@ -76,19 +93,13 @@ describe( 'ButtonView', () => {
 		} );
 
 		describe( 'tooltip', () => {
-			beforeEach( () => {
-				view = new ButtonView( locale );
-			} );
-
 			it( 'is initially set', () => {
-				expect( view.tooltipView ).to.be.instanceof( TooltipView );
-				expect( Array.from( view.template.children ) ).to.include( view.tooltipView );
+				expect( view.children.getIndex( view.tooltipView ) ).to.equal( 0 );
 			} );
 
 			it( 'it reacts to #tooltipPosition attribute', () => {
 				view.tooltip = 'foo';
 				view.icon = 'bar';
-				view.init();
 
 				expect( view.tooltipPosition ).to.equal( 's' );
 				expect( view.tooltipView.position ).to.equal( 's' );
@@ -102,7 +113,6 @@ describe( 'ButtonView', () => {
 					view.tooltip = true;
 					view.label = 'bar';
 					view.keystroke = 'A';
-					view.init();
 
 					expect( view.tooltipView.text ).to.equal( 'bar (A)' );
 				} );
@@ -111,7 +121,6 @@ describe( 'ButtonView', () => {
 					view.tooltip = false;
 					view.label = 'bar';
 					view.keystroke = 'A';
-					view.init();
 
 					expect( view.tooltipView.text ).to.equal( '' );
 				} );
@@ -120,7 +129,6 @@ describe( 'ButtonView', () => {
 					view.tooltip = true;
 					view.label = 'foo';
 					view.keystroke = 'B';
-					view.init();
 
 					expect( view.tooltipView.text ).to.equal( 'foo (B)' );
 
@@ -136,14 +144,12 @@ describe( 'ButtonView', () => {
 					view.tooltip = 'bar';
 					view.label = 'foo';
 					view.keystroke = 'A';
-					view.init();
 
 					expect( view.tooltipView.text ).to.equal( 'bar' );
 				} );
 
 				it( 'reacts to changes of #tooltip', () => {
 					view.tooltip = 'bar';
-					view.init();
 
 					expect( view.tooltipView.text ).to.equal( 'bar' );
 
@@ -157,7 +163,6 @@ describe( 'ButtonView', () => {
 					view.tooltip = ( l, k ) => `${ l } - ${ k }`;
 					view.label = 'foo';
 					view.keystroke = 'A';
-					view.init();
 
 					expect( view.tooltipView.text ).to.equal( 'foo - A' );
 				} );
@@ -166,7 +171,6 @@ describe( 'ButtonView', () => {
 					view.tooltip = ( l, k ) => `${ l } - ${ k }`;
 					view.label = 'foo';
 					view.keystroke = 'A';
-					view.init();
 
 					expect( view.tooltipView.text ).to.equal( 'foo - A' );
 
@@ -237,8 +241,8 @@ describe( 'ButtonView', () => {
 		it( 'is set when view#icon is defined', () => {
 			view = new ButtonView( locale );
 			view.icon = 'foo';
+			view.render();
 
-			view.init();
 			expect( view.element.childNodes ).to.have.length( 3 );
 			expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
 
@@ -252,8 +256,7 @@ describe( 'ButtonView', () => {
 		it( 'is destroyed with the view', () => {
 			view = new ButtonView( locale );
 			view.icon = 'foo';
-
-			view.init();
+			view.render();
 
 			const spy = sinon.spy( view.iconView, 'destroy' );
 

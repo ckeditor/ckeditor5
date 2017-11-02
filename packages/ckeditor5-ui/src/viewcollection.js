@@ -23,16 +23,13 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *		const viewA = new ChildView( locale );
  *		const viewB = new ChildView( locale );
  *
- * View collection manages view {@link module:ui/view~View#element elements}:
+ * View collection renders and manages view {@link module:ui/view~View#element elements}:
  *
- *		// parentView.element.children == [ viewA.element, vievB.element ]
  *		collection.add( viewA );
  *		collection.add( viewB );
  *
- * It handles initialization of the children:
- *
- *		// viewA.ready == viewB.ready == true;
- *		collection.init();
+ *		console.log( parentView.element.firsChild ); // -> viewA.element
+ *		console.log( parentView.element.lastChild ); // -> viewB.element
  *
  * It {@link module:ui/viewcollection~ViewCollection#delegate propagates} DOM events too:
  *
@@ -67,6 +64,10 @@ export default class ViewCollection extends Collection {
 
 		// Handle {@link module:ui/view~View#element} in DOM when a new view is added to the collection.
 		this.on( 'add', ( evt, view, index ) => {
+			if ( !view.isRendered ) {
+				view.render();
+			}
+
 			if ( view.element && this._parentElement ) {
 				this._parentElement.insertBefore( view.element, this._parentElement.children[ index ] );
 			}
@@ -88,16 +89,6 @@ export default class ViewCollection extends Collection {
 		this.locale = locale;
 
 		/**
-		 * Set `true` when all views in the collection are {@link module:ui/view~View#ready}.
-		 * See the view {@link module:ui/view~View#init init} method.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #ready
-		 */
-		this.set( 'ready', false );
-
-		/**
 		 * A parent element within which child views are rendered and managed in DOM.
 		 *
 		 * @protected
@@ -107,65 +98,11 @@ export default class ViewCollection extends Collection {
 	}
 
 	/**
-	 * Initializes all child views in the collection by calling view {@link module:ui/view~View#init}
-	 * method.
-	 *
-	 * Once finished, sets {@link #ready} `true`.
-	 */
-	init() {
-		if ( this.ready ) {
-			/**
-			 * This ViewCollection has already been initialized.
-			 *
-			 * @error ui-viewcollection-init-reinit
-			 */
-			throw new CKEditorError( 'ui-viewcollection-init-reinit: This ViewCollection has already been initialized.' );
-		}
-
-		this.map( v => v.init() );
-
-		this.ready = true;
-	}
-
-	/**
 	 * Destroys the view collection along with child views.
 	 * See the view {@link module:ui/view~View#destroy} method.
 	 */
 	destroy() {
-		this.map( v => v.destroy() );
-	}
-
-	/**
-	 * Adds a new child view to the collection. If the collection is
-	 * {@link module:ui/viewcollection~ViewCollection#ready}, the child view is also
-	 * {@link module:ui/view~View#init initialized} when added.
-	 *
-	 * Additionally, if the {@link #setParent parent element} of the collection has been set, the
-	 * {@link module:ui/view~View#element element} of the view is also added in DOM,
-	 * reflecting the order of the collection.
-	 *
-	 *		const collection = new ViewCollection();
-	 *		const parentElement = document.querySelector( '#container' );
-	 *		collection.setParent( parentElement );
-	 *
-	 *		const viewA = new View();
-	 *		const viewB = new View();
-	 *
-	 *		// parentElement.children == [ viewA.element, vievB.element ]
-	 *		collection.add( viewA );
-	 *		collection.add( viewB );
-	 *
-	 * See the {@link #remove} method.
-	 *
-	 * @param {module:ui/view~View} view A child view.
-	 * @param {Number} [index] Index at which the child will be added to the collection.
-	 */
-	add( view, index ) {
-		super.add( view, index );
-
-		if ( this.ready && !view.ready ) {
-			view.init();
-		}
+		this.map( view => view.destroy() );
 	}
 
 	/**

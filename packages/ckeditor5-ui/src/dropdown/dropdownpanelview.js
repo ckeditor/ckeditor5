@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-import Template from '../template';
 
 /**
  * The dropdown panel view class.
@@ -46,7 +45,7 @@ export default class DropdownPanelView extends View {
 		 */
 		this.children = this.createCollection();
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'div',
 
 			attributes: {

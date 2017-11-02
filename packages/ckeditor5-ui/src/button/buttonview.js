@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-import Template from '../template';
 import IconView from '../icon/iconview';
 import TooltipView from '../tooltip/tooltipview';
 
@@ -26,7 +25,7 @@ import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils/src/keyboard';
  *			withText: true
  *		} );
  *
- *		view.init();
+ *		view.render();
  *
  *		document.body.append( view.element );
  *
@@ -38,6 +37,8 @@ export default class ButtonView extends View {
 	 */
 	constructor( locale ) {
 		super( locale );
+
+		const bind = this.bindTemplate;
 
 		/**
 		 * The label of the button view visible to the user when {@link #withText} is `true`.
@@ -152,6 +153,30 @@ export default class ButtonView extends View {
 		this.set( 'tabindex', -1 );
 
 		/**
+		 * Collection of the child views inside of the button {@link #element}.
+		 *
+		 * @readonly
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
+		this.children = this.createCollection();
+
+		/**
+		 * Tooltip of the button view. It is configurable using the {@link #tooltip tooltip attribute}.
+		 *
+		 * @readonly
+		 * @member {module:ui/tooltip/tooltipview~TooltipView} #tooltipView
+		 */
+		this.tooltipView = this._createTooltipView();
+
+		/**
+		 * Label of the button view. It is configurable using the {@link #label label attribute}.
+		 *
+		 * @readonly
+		 * @member {module:ui/view~View} #labelView
+		 */
+		this.labelView = this._createLabelView();
+
+		/**
 		 * Tooltip of the button bound to the template.
 		 *
 		 * @see #tooltip
@@ -168,23 +193,13 @@ export default class ButtonView extends View {
 		);
 
 		/**
-		 * Tooltip of the button view. It is configurable using the {@link #tooltip tooltip attribute}.
-		 *
-		 * @readonly
-		 * @member {module:ui/tooltip/tooltipview~TooltipView} #tooltipView
-		 */
-		this.tooltipView = this._createTooltipView();
-
-		/**
 		 * (Optional) The icon view of the button. Only present when the {@link #icon icon attribute} is defined.
 		 *
 		 * @readonly
 		 * @member {module:ui/icon/iconview~IconView} #iconView
 		 */
 
-		const bind = this.bindTemplate;
-
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'button',
 
 			attributes: {
@@ -199,22 +214,7 @@ export default class ButtonView extends View {
 				tabindex: bind.to( 'tabindex' )
 			},
 
-			children: [
-				{
-					tag: 'span',
-
-					attributes: {
-						class: [ 'ck-button__label' ]
-					},
-
-					children: [
-						{
-							text: bind.to( 'label' )
-						}
-					]
-				},
-				this.tooltipView
-			],
+			children: this.children,
 
 			on: {
 				mousedown: bind.to( evt => {
@@ -246,18 +246,19 @@ export default class ButtonView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	render() {
+		super.render();
+
 		if ( this.icon ) {
 			const iconView = this.iconView = new IconView();
 
 			iconView.bind( 'content' ).to( this, 'icon' );
-			this.element.insertBefore( iconView.element, this.element.firstChild );
 
-			// Make sure the icon will be destroyed along with the button.
-			this.addChildren( iconView );
+			this.children.add( iconView );
 		}
 
-		super.init();
+		this.children.add( this.tooltipView );
+		this.children.add( this.labelView );
 	}
 
 	/**
@@ -281,6 +282,32 @@ export default class ButtonView extends View {
 		tooltipView.bind( 'position' ).to( this, 'tooltipPosition' );
 
 		return tooltipView;
+	}
+
+	/**
+	 * Creates a label view instance and binds it with button attributes.
+	 *
+	 * @private
+	 * @returns {module:ui/view~View}
+	 */
+	_createLabelView() {
+		const labelView = new View();
+
+		labelView.setTemplate( {
+			tag: 'span',
+
+			attributes: {
+				class: [ 'ck-button__label' ]
+			},
+
+			children: [
+				{
+					text: this.bindTemplate.to( 'label' )
+				}
+			]
+		} );
+
+		return labelView;
 	}
 
 	/**

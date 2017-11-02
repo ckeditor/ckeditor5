@@ -16,6 +16,7 @@ import View from './view';
 import ViewCollection from './viewcollection';
 import cloneDeepWith from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeepWith';
 import isObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isObject';
+import isDomNode from '@ckeditor/ckeditor5-utils/src/dom/isdomnode';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
@@ -98,12 +99,13 @@ export default class Template {
 		 */
 
 		/**
-		 * Children of the template, sub–templates. Each one is an independent
-		 * instance of {@link ~Template}.
+		 * Children of the template. They can be either:
+		 * * an independent instances of {@link ~Template} (sub–templates),
+		 * * native DOM Nodes.
 		 *
 		 * **Note**: This property only makes sense when {@link #tag} is defined.
 		 *
-		 * @member {module:utils/collection~Collection.<module:ui/template~Template>} #children
+		 * @member {Array.<module:ui/template~Template|Node>} #children
 		 */
 
 		/**
@@ -210,6 +212,50 @@ export default class Template {
 	}
 
 	/**
+	 * Returns an iterator which traverses the template in search of {@link module:ui/view~View}
+	 * instances and returns them one by one.
+	 *
+	 *		const viewFoo = new View();
+	 *		const viewBar = new View();
+	 *		const viewBaz = new View();
+	 *		const template = new Template( {
+	 *			tag: 'div',
+	 *			children: [
+	 *				viewFoo,
+	 *				{
+	 *					tag: 'div',
+	 *					children: [
+	 *						viewBar
+	 *					]
+	 *				},
+	 *				viewBaz
+	 *			]
+	 *		} );
+	 *
+	 *		// Logs: viewFoo, viewBar, viewBaz
+	 *		for ( const view of template.getViews() ) {
+	 *			console.log( view );
+	 *		}
+	 *
+	 * @returns {Iterator.<module:ui/view~View>}
+	 */
+	* getViews() {
+		function* search( def ) {
+			if ( def.children ) {
+				for ( const child of def.children ) {
+					if ( isView( child ) ) {
+						yield child;
+					} else {
+						yield* search( child );
+					}
+				}
+			}
+		}
+
+		yield* search( this );
+	}
+
+	/**
 	 * An entry point to the interface which binds DOM nodes to
 	 * {@link module:utils/observablemixin~Observable observables}.
 	 * There are two types of bindings:
@@ -305,7 +351,7 @@ export default class Template {
 	 *		} );
 	 *
 	 *		// Child extension.
-	 *		Template.extend( template.children.get( 0 ), {
+	 *		Template.extend( template.children[ 0 ], {
 	 *			attributes: {
 	 *				class: 'd'
 	 *			}
@@ -644,14 +690,21 @@ export default class Template {
 				if ( !isApplying ) {
 					child.setParent( node );
 
+					// Note: ViewCollection renders its children.
 					for ( const view of child ) {
 						container.appendChild( view.element );
 					}
 				}
 			} else if ( isView( child ) ) {
 				if ( !isApplying ) {
+					if ( !child.isRendered ) {
+						child.render();
+					}
+
 					container.appendChild( child.element );
 				}
+			} else if ( isDomNode( child ) ) {
+				container.appendChild( child );
 			} else {
 				if ( isApplying ) {
 					const revertData = data.revertData;
@@ -1117,17 +1170,17 @@ function normalize( def ) {
 			normalizeAttributes( def.attributes );
 		}
 
-		const children = new ViewCollection();
+		const children = [];
 
 		if ( def.children ) {
 			if ( isViewCollection( def.children ) ) {
-				children.add( def.children );
+				children.push( def.children );
 			} else {
 				for ( const child of def.children ) {
-					if ( isTemplate( child ) || isView( child ) ) {
-						children.add( child );
+					if ( isTemplate( child ) || isView( child ) || isDomNode( child ) ) {
+						children.push( child );
 					} else {
-						children.add( new Template( child ) );
+						children.push( new Template( child ) );
 					}
 				}
 			}
@@ -1336,7 +1389,7 @@ function extendTemplate( template, def ) {
 		let childIndex = 0;
 
 		for ( const childDef of def.children ) {
-			extendTemplate( template.children.get( childIndex++ ), childDef );
+			extendTemplate( template.children[ childIndex++ ], childDef );
 		}
 	}
 }
@@ -1436,11 +1489,12 @@ function shouldExtend( attrName ) {
  *			}
  *		} );
  *
- * A {@link module:ui/view~View} or another {@link module:ui/template~Template} can also become a child
- * of a template. In case of a view {@link module:ui/view~View#element} is used:
+ * A {@link module:ui/view~View}, another {@link module:ui/template~Template} or a native DOM node
+ * can also become a child of a template. When a view is passed, its {@link module:ui/view~View#element} is used:
  *
  *		const view = new SomeView();
  *		const childTemplate = new Template( { ... } );
+ *		const childNode = document.createElement( 'b' );
  *
  *		new Template( {
  *			tag: 'p',
@@ -1450,7 +1504,10 @@ function shouldExtend( attrName ) {
  *				view,
  *
  * 				// The output of childTemplate.render() will be added here.
- *				childTemplate
+ *				childTemplate,
+ *
+ *				// Native DOM nodes are included directly in the rendered output.
+ *				childNode
  *			]
  *		} );
  *

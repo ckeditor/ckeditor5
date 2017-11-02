@@ -19,7 +19,11 @@ describe( 'EditorUIView', () => {
 		locale = new Locale( 'en' );
 		view = new EditorUIView( locale );
 
-		return view.init();
+		view.render();
+	} );
+
+	afterEach( () => {
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -32,7 +36,7 @@ describe( 'EditorUIView', () => {
 		} );
 	} );
 
-	describe( 'init()', () => {
+	describe( 'render()', () => {
 		it( 'sets the right class set to the body region', () => {
 			const el = view._bodyCollectionContainer;
 

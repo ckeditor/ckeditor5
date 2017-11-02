@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-import Template from '../template';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -72,7 +71,7 @@ export default class ToolbarView extends View {
 			}
 		} );
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'div',
 			attributes: {
 				class: [
@@ -87,6 +86,18 @@ export default class ToolbarView extends View {
 				mousedown: preventDefault( this )
 			}
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
+
+		// Items added before rendering should be known to the #focusTracker.
+		for ( const item of this.items ) {
+			this.focusTracker.add( item.element );
+		}
 
 		this.items.on( 'add', ( evt, item ) => {
 			this.focusTracker.add( item.element );
@@ -95,16 +106,9 @@ export default class ToolbarView extends View {
 		this.items.on( 'remove', ( evt, item ) => {
 			this.focusTracker.remove( item.element );
 		} );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	init() {
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
-
-		super.init();
 	}
 
 	/**

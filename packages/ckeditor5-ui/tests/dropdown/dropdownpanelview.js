@@ -14,7 +14,8 @@ describe( 'DropdownPanelView', () => {
 	beforeEach( () => {
 		locale = { t() {} };
 
-		return ( view = new DropdownPanelView( locale ) ).init();
+		view = new DropdownPanelView( locale );
+		view.render();
 	} );
 
 	describe( 'constructor()', () => {

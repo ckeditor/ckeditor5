@@ -9,7 +9,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import View from '../src/view';
 import ViewCollection from '../src/viewcollection';
-import Template from '../src/template';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 let collection;
@@ -22,7 +21,6 @@ describe( 'ViewCollection', () => {
 	describe( 'constructor()', () => {
 		it( 'sets basic properties and attributes', () => {
 			expect( collection.locale ).to.be.undefined;
-			expect( collection.ready ).to.be.false;
 			expect( collection._parentElement ).to.be.null;
 			expect( collection._idProperty ).to.equal( 'viewUid' );
 		} );
@@ -46,7 +44,6 @@ describe( 'ViewCollection', () => {
 				} ).to.not.throw();
 
 				expect( () => {
-					collection.ready = true;
 					collection.add( viewA );
 					collection.remove( viewA );
 				} ).to.not.throw();
@@ -78,7 +75,7 @@ describe( 'ViewCollection', () => {
 				function getView( text ) {
 					const view = new View();
 
-					view.template = new Template( {
+					view.setTemplate( {
 						tag: 'li',
 						children: [
 							{
@@ -95,7 +92,7 @@ describe( 'ViewCollection', () => {
 				collection.add( viewB );
 
 				// Put the collection in the template.
-				view.template = new Template( {
+				view.setTemplate( {
 					tag: 'ul',
 					children: collection
 				} );
@@ -110,52 +107,12 @@ describe( 'ViewCollection', () => {
 				collection.add( viewC );
 				collection.remove( 1 );
 
-				// Finally init the view. Check what's in there.
-				view.init();
+				view.render();
 
 				expect( view.element.childNodes ).to.have.length( 2 );
 				expect( view.element.childNodes[ 0 ] ).to.equal( viewA.element );
 				expect( view.element.childNodes[ 1 ] ).to.equal( viewC.element );
 			} );
-		} );
-	} );
-
-	describe( 'init()', () => {
-		it( 'should throw if already initialized', () => {
-			collection.init();
-
-			try {
-				collection.init();
-				throw new Error( 'This should not be executed.' );
-			} catch ( err ) {
-				expect( err ).to.be.instanceof( CKEditorError );
-				expect( err.message ).to.match( /ui-viewcollection-init-reinit/ );
-			}
-		} );
-
-		it( 'calls #init on all views in the collection', () => {
-			const viewA = new View();
-			const viewB = new View();
-
-			viewA.element = document.createElement( 'a' );
-			viewB.element = document.createElement( 'b' );
-
-			const spyA = testUtils.sinon.spy( viewA, 'init' );
-			const spyB = testUtils.sinon.spy( viewB, 'init' );
-
-			collection.setParent( document.body );
-
-			collection.add( viewA );
-			collection.add( viewB );
-
-			collection.init();
-			sinon.assert.calledOnce( spyA );
-			sinon.assert.calledOnce( spyB );
-			sinon.assert.callOrder( spyA, spyB );
-
-			expect( viewA.element.parentNode ).to.equal( collection._parentElement );
-			expect( viewA.element.nextSibling ).to.equal( viewB.element );
-			expect( collection.ready ).to.be.true;
 		} );
 	} );
 
@@ -178,26 +135,14 @@ describe( 'ViewCollection', () => {
 	} );
 
 	describe( 'add()', () => {
-		it( 'initializes the new view in the collection', () => {
-			let view = new View();
-			let spy = testUtils.sinon.spy( view, 'init' );
+		it( 'renders the new view in the collection', () => {
+			const view = new View();
+			const spy = testUtils.sinon.spy( view, 'render' );
 
-			expect( collection.ready ).to.be.false;
-			expect( view.ready ).to.be.false;
-
-			collection.add( view );
-			expect( collection.ready ).to.be.false;
-			expect( view.ready ).to.be.false;
-
-			sinon.assert.notCalled( spy );
-
-			view = new View();
-			spy = testUtils.sinon.spy( view, 'init' );
-
-			collection.ready = true;
+			expect( view.isRendered ).to.be.false;
 
 			collection.add( view );
-			expect( view.ready ).to.be.true;
+			expect( view.isRendered ).to.be.true;
 			sinon.assert.calledOnce( spy );
 		} );
 

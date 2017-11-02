@@ -12,8 +12,8 @@ import '@ckeditor/ckeditor5-theme-lark/theme/theme.scss';
 window.createPanel = selector => {
 	const view = new BalloonPanelView();
 
+	view.render();
 	view.element.innerHTML = `Parent of this panel has position:${ selector }.`;
-	view.init();
 
 	document.querySelector( `#${ selector }-container` ).appendChild( view.element );
 

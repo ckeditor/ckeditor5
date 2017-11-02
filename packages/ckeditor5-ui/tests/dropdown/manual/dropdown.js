@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, window */
+/* globals window */
 
 import Model from '../../../src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -12,11 +12,14 @@ import createDropdown from '../../../src/dropdown/createdropdown';
 import createListDropdown from '../../../src/dropdown/list/createlistdropdown';
 
 import '@ckeditor/ckeditor5-theme-lark/theme/theme.scss';
+import testUtils from '@ckeditor/ckeditor5-ui/tests/_utils/utils';
 
-function renderInto( selector, view ) {
-	view.init();
-	document.querySelector( selector ).appendChild( view.element );
-}
+const ui = testUtils.createTestUIView( {
+	dropdown: '#dropdown',
+	listDropdown: '#list-dropdown',
+	dropdownShared: '#dropdown-shared',
+	dropdownLabel: '#dropdown-label'
+} );
 
 function testEmpty() {
 	const dropdownView = createDropdown( new Model( {
@@ -26,9 +29,9 @@ function testEmpty() {
 		withText: true
 	} ) );
 
-	dropdownView.panelView.element.innerHTML = 'Empty panel. There is no child view in this DropdownPanelView.';
+	ui.dropdown.add( dropdownView );
 
-	renderInto( '#dropdown', dropdownView );
+	dropdownView.panelView.element.innerHTML = 'Empty panel. There is no child view in this DropdownPanelView.';
 }
 
 function testList() {
@@ -56,7 +59,7 @@ function testList() {
 		console.log( 'List#execute:', evt.source.label );
 	} );
 
-	renderInto( '#list-dropdown', dropdownView );
+	ui.listDropdown.add( dropdownView );
 
 	window.listDropdownModel = model;
 	window.listDropdownCollection = collection;
@@ -74,8 +77,8 @@ function testSharedModel() {
 	const dropdownView1 = createDropdown( model );
 	const dropdownView2 = createDropdown( model );
 
-	renderInto( '#dropdown-shared', dropdownView1 );
-	renderInto( '#dropdown-shared', dropdownView2 );
+	ui.dropdownShared.add( dropdownView1 );
+	ui.dropdownShared.add( dropdownView2 );
 
 	dropdownView1.panelView.element.innerHTML = dropdownView2.panelView.element.innerHTML = 'Empty panel.';
 }
@@ -88,7 +91,7 @@ function testLongLabel() {
 		withText: true
 	} ) );
 
-	renderInto( '#dropdown-label', dropdownView );
+	ui.dropdownLabel.add( dropdownView );
 
 	dropdownView.panelView.element.innerHTML = 'Empty panel. There is no child view in this DropdownPanelView.';
 }

@@ -10,7 +10,6 @@
  */
 
 import View from '../view';
-import Template from '../template';
 
 /**
  * The icon view class.
@@ -32,7 +31,7 @@ export default class IconView extends View {
 		 * @observable
 		 * @member {String} #content
 		 */
-		this.set( 'content' );
+		this.set( 'content', '' );
 
 		/**
 		 * This attribute specifies the boundaries to which the
@@ -44,7 +43,7 @@ export default class IconView extends View {
 		 */
 		this.set( 'viewBox', '0 0 20 20' );
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'svg',
 			ns: 'http://www.w3.org/2000/svg',
 			attributes: {
@@ -52,17 +51,37 @@ export default class IconView extends View {
 				viewBox: bind.to( 'viewBox' )
 			}
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
+
+		this._updateXMLContent();
 
 		// This is a hack for lack of innerHTML binding.
 		// See: https://github.com/ckeditor/ckeditor5-ui/issues/99.
-		this.on( 'change:content', ( evt, name, value ) => {
+		this.on( 'change:content', () => this._updateXMLContent() );
+	}
+
+	/**
+	 * Updates the {@link #element} with the value of {@link #content}.
+	 *
+	 * @private
+	 */
+	_updateXMLContent() {
+		if ( this.content ) {
 			const svg = new DOMParser()
-				.parseFromString( value.trim(), 'image/svg+xml' )
+				.parseFromString( this.content.trim(), 'image/svg+xml' )
 				.firstChild;
+
+			this.element.innerHTML = '';
 
 			while ( svg.childNodes.length > 0 ) {
 				this.element.appendChild( svg.childNodes[ 0 ] );
 			}
-		} );
+		}
 	}
 }

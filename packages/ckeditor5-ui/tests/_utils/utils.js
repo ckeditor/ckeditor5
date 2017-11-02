@@ -12,21 +12,24 @@ import View from '../../src/view';
  */
 const utils = {
 	/**
-	 * Returns UI controller for given region/DOM selector pairs, which {@link ui.Controller#view}
+	 * Returns a view for a given region/DOM selector pairs, which {@link module:ui/view~View#element}
 	 * is `document.body`. It is useful for manual tests which engage various UI components and/or
-	 * UI {@link ui.Controller} instances, where initialization and the process of insertion into
+	 * UI {@link module:ui/view~View} instances, where initialization and the process of insertion into
 	 * DOM could be problematic i.e. because of the number of instances.
 	 *
 	 * Usage:
 	 *
-	 *		// Get the controller.
-	 *		const controller = testUtils.createTestUIView();
+	 *		// Get the view.
+	 *		const view = testUtils.createTestUIView( {
+	 *			'some-collection': '#collection'
+	 *		} );
 	 *
 	 *		// Then use it to organize and initialize children.
-	 *		controller.add( 'some-collection', childControllerInstance );
+	 *		view.add( 'some-collection', childControllerInstance );
 	 *
 	 * @param {Object} regions An object literal with `regionName: [DOM Selector|callback]` pairs.
-	 * See {@link ui.View#register}.
+	 *
+	 * See {@link module:ui/view~View#createCollection}.
 	 */
 	createTestUIView( regions ) {
 		const TestUIView = class extends View {
@@ -50,7 +53,7 @@ const utils = {
 
 		const view = new TestUIView();
 
-		view.init();
+		view.render();
 
 		return view;
 	}

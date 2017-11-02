@@ -10,6 +10,7 @@ describe( 'TooltipView', () => {
 
 	beforeEach( () => {
 		view = new TooltipView();
+		view.render();
 		text = view.element.firstChild;
 	} );
 

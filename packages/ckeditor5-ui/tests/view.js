@@ -11,12 +11,21 @@ import Template from '../src/template';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ViewCollection from '../src/viewcollection';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 let TestView, view, childA, childB;
 
 testUtils.createSinonSandbox();
 
 describe( 'View', () => {
+	afterEach( () => {
+		if ( view.element ) {
+			view.element.remove();
+		}
+
+		view.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		beforeEach( () => {
 			setTestViewClass();
@@ -28,7 +37,7 @@ describe( 'View', () => {
 
 			expect( view.t ).to.be.undefined;
 			expect( view.locale ).to.be.undefined;
-			expect( view.ready ).to.be.false;
+			expect( view.isRendered ).to.be.false;
 			expect( view.template ).to.be.undefined;
 			expect( view._viewCollections ).to.be.instanceOf( Collection );
 			expect( view._unboundChildren ).to.be.instanceOf( ViewCollection );
@@ -81,7 +90,7 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'addChildren()', () => {
+	describe( 'registerChildren()', () => {
 		beforeEach( () => {
 			setTestViewClass();
 			setTestViewInstance();
@@ -90,9 +99,9 @@ describe( 'View', () => {
 		it( 'should add a single view to #_unboundChildren', () => {
 			expect( view._unboundChildren ).to.have.length( 0 );
 
-			const child = {};
+			const child = new View();
 
-			view.addChildren( child );
+			view.registerChildren( child );
 			expect( view._unboundChildren ).to.have.length( 1 );
 			expect( view._unboundChildren.get( 0 ) ).to.equal( child );
 		} );
@@ -100,77 +109,117 @@ describe( 'View', () => {
 		it( 'should support iterables', () => {
 			expect( view._unboundChildren ).to.have.length( 0 );
 
-			view.addChildren( [ {}, {}, {} ] );
+			view.registerChildren( [ new View(), new View(), new View() ] );
 			expect( view._unboundChildren ).to.have.length( 3 );
 		} );
 	} );
 
-	describe( 'removeChildren()', () => {
+	describe( 'deregisterChildren()', () => {
 		beforeEach( () => {
 			setTestViewClass();
 			setTestViewInstance();
 		} );
 
 		it( 'should remove a single view from #_unboundChildren', () => {
-			const child1 = {};
-			const child2 = {};
+			const child1 = new View();
+			const child2 = new View();
 
-			view.addChildren( child1 );
-			view.addChildren( child2 );
+			view.registerChildren( child1 );
+			view.registerChildren( child2 );
 			expect( view._unboundChildren ).to.have.length( 2 );
 
-			view.removeChildren( child2 );
+			view.deregisterChildren( child2 );
 			expect( view._unboundChildren ).to.have.length( 1 );
 			expect( view._unboundChildren.get( 0 ) ).to.equal( child1 );
 		} );
 
 		it( 'should support iterables', () => {
-			const child1 = {};
-			const child2 = {};
-			const child3 = {};
+			const child1 = new View();
+			const child2 = new View();
+			const child3 = new View();
 
-			view.addChildren( [ child1, child2, child3 ] );
+			view.registerChildren( [ child1, child2, child3 ] );
 			expect( view._unboundChildren ).to.have.length( 3 );
 
-			view.removeChildren( [ child2, child3 ] );
+			view.deregisterChildren( [ child2, child3 ] );
 			expect( view._unboundChildren ).to.have.length( 1 );
 			expect( view._unboundChildren.get( 0 ) ).to.equal( child1 );
 		} );
 	} );
 
-	describe( 'init()', () => {
-		beforeEach( createViewWithChildren );
+	describe( 'setTemplate()', () => {
+		it( 'sets the template', () => {
+			const view = new View();
+			const bind = view.bindTemplate;
 
-		it( 'should throw if already initialized', () => {
-			view.init();
+			view.set( 'foo', 'bar' );
+
+			view.setTemplate( {
+				tag: 'div',
+				attributes: {
+					class: [
+						bind.to( 'foo' )
+					]
+				}
+			} );
+
+			view.render();
+
+			expect( normalizeHtml( view.element.outerHTML ) ).to.equal( '<div class="bar"></div>' );
+		} );
+	} );
+
+	describe( 'extendTemplate()', () => {
+		it( 'extends the template', () => {
+			const view = new View();
+			const bind = view.bindTemplate;
+
+			view.set( 'foo', 'bar' );
+
+			view.setTemplate( {
+				tag: 'div'
+			} );
+
+			view.extendTemplate( {
+				attributes: {
+					class: [
+						bind.to( 'foo' )
+					]
+				}
+			} );
+
+			view.render();
+
+			expect( normalizeHtml( view.element.outerHTML ) ).to.equal( '<div class="bar"></div>' );
+		} );
+	} );
+
+	describe( 'render()', () => {
+		it( 'should throw if already rendered', () => {
+			const view = new View();
+
+			view.render();
 
 			try {
-				view.init();
+				view.render();
 				throw new Error( 'This should not be executed.' );
 			} catch ( err ) {
 				expect( err ).to.be.instanceof( CKEditorError );
-				expect( err.message ).to.match( /ui-view-init-re/ );
+				expect( err.message ).to.match( /^ui-view-render-already-rendered:/ );
 			}
 		} );
 
-		it( 'should set view#ready', () => {
-			expect( view.ready ).to.be.false;
+		it( 'should set view#isRendered', () => {
+			const view = new View();
 
-			view.init();
-			expect( view.ready ).to.be.true;
-		} );
+			view.setTemplate( {
+				tag: 'div'
+			} );
 
-		it( 'calls init() on all view#_viewCollections', () => {
-			const collectionA = view.createCollection();
-			const collectionB = view.createCollection();
+			expect( view.isRendered ).to.be.false;
 
-			const spyA = testUtils.sinon.spy( collectionA, 'init' );
-			const spyB = testUtils.sinon.spy( collectionB, 'init' );
-
-			view.init();
-			sinon.assert.calledOnce( spyA );
-			sinon.assert.calledOnce( spyB );
-			sinon.assert.callOrder( spyA, spyB );
+			view.render();
+			expect( view.isRendered ).to.be.true;
 		} );
 	} );
 
@@ -195,8 +244,6 @@ describe( 'View', () => {
 		beforeEach( createViewInstanceWithTemplate );
 
 		it( 'invokes out of #template', () => {
-			setTestViewInstance();
-
 			expect( view.element ).to.be.an.instanceof( HTMLElement );
 			expect( view.element.nodeName ).to.equal( 'A' );
 		} );
@@ -210,13 +257,17 @@ describe( 'View', () => {
 				}
 			}
 
-			view = new CustomView();
+			const view = new CustomView();
 
 			expect( view.element ).to.be.an.instanceof( HTMLElement );
 		} );
 
 		it( 'is null when there is no template', () => {
-			expect( new View().element ).to.be.null;
+			const view = new View();
+
+			view.render();
+
+			expect( view.element ).to.be.null;
 		} );
 
 		it( 'registers child views found in the template', () => {
@@ -225,11 +276,11 @@ describe( 'View', () => {
 			const viewB = new View();
 			const viewC = new View();
 
-			viewA.template = new Template( { tag: 'a' } );
-			viewB.template = new Template( { tag: 'b' } );
-			viewC.template = new Template( { tag: 'c' } );
+			viewA.setTemplate( { tag: 'a' } );
+			viewB.setTemplate( { tag: 'b' } );
+			viewC.setTemplate( { tag: 'c' } );
 
-			view.template = new Template( {
+			view.setTemplate( {
 				tag: 'div',
 				children: [
 					viewA,
@@ -248,8 +299,7 @@ describe( 'View', () => {
 
 			expect( view._unboundChildren ).to.have.length( 0 );
 
-			// Render the view.
-			view.element;
+			view.render();
 
 			expect( view._unboundChildren ).to.have.length( 3 );
 			expect( view._unboundChildren.get( 0 ) ).to.equal( viewA );
@@ -282,7 +332,7 @@ describe( 'View', () => {
 		it( 'should not clear the #_unboundChildren', () => {
 			const cached = view._unboundChildren;
 
-			view.addChildren( [ new View(), new View() ] );
+			view.registerChildren( [ new View(), new View() ] );
 			expect( cached ).to.have.length( 4 );
 
 			view.destroy();
@@ -322,7 +372,7 @@ describe( 'View', () => {
 		} );
 
 		it( 'destroy a template–less view', () => {
-			view = new View();
+			const view = new View();
 
 			expect( () => {
 				view.destroy();
@@ -344,7 +394,7 @@ function setTestViewClass( templateDef ) {
 			this.locale = { t() {} };
 
 			if ( templateDef ) {
-				this.template = new Template( templateDef );
+				this.setTemplate( templateDef );
 			}
 		}
 	};
@@ -354,6 +404,8 @@ function setTestViewInstance() {
 	view = new TestView();
 
 	if ( view.template ) {
+		view.render();
+
 		document.body.appendChild( view.element );
 	}
 }
@@ -363,7 +415,7 @@ function createViewWithChildren() {
 		constructor() {
 			super();
 
-			this.template = new Template( {
+			this.setTemplate( {
 				tag: 'span'
 			} );
 		}

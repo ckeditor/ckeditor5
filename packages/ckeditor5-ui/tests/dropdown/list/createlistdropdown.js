@@ -26,8 +26,12 @@ describe( 'createListDropdown', () => {
 		} );
 
 		view = createListDropdown( model, locale );
-		view.init();
+		view.render();
 		document.body.appendChild( view.element );
+	} );
+
+	afterEach( () => {
+		view.element.remove();
 	} );
 
 	describe( 'constructor()', () => {

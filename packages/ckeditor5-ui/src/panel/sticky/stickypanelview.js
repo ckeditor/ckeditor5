@@ -141,19 +141,48 @@ export default class StickyPanelView extends View {
 		 * @member {Object} #_limiterRect
 		 */
 
-		this.template = new Template( {
+		/**
+		 * A dummy element which visually fills the space as long as the
+		 * actual panel is sticky. It prevents flickering of the UI.
+		 *
+		 * @protected
+		 * @property {HTMLElement}
+		 */
+		this._contentPanelPlaceholder = new Template( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck-sticky-panel__placeholder'
+				],
+				style: {
+					display: bind.to( 'isSticky', isSticky => isSticky ? 'block' : 'none' ),
+					height: bind.to( 'isSticky', isSticky => {
+						return isSticky ? toPx( this._panelRect.height ) : null;
+					} )
+				}
+			}
+		} ).render();
+
+		/**
+		 * The panel which accepts children into {@link #content} collection.
+		 * Also an element which is positioned when {@link #isSticky}.
+		 *
+		 * @protected
+		 * @property {HTMLElement}
+		 */
+		this._contentPanel = new Template( {
 			tag: 'div',
 
 			attributes: {
 				class: [
-					'ck-sticky-panel',
+					'ck-sticky-panel__content',
 					// Toggle class of the panel when "sticky" state changes in the view.
-					bind.if( 'isSticky', 'ck-sticky-panel_sticky' ),
-					bind.if( '_isStickyToTheLimiter', 'ck-sticky-panel_sticky_bottom-limit' ),
+					bind.if( 'isSticky', 'ck-sticky-panel__content_sticky' ),
+					bind.if( '_isStickyToTheLimiter', 'ck-sticky-panel__content_sticky_bottom-limit' ),
 				],
 				style: {
 					width: bind.to( 'isSticky', isSticky => {
-						return isSticky ? toPx( this._elementPlaceholder.getBoundingClientRect().width ) : null;
+						return isSticky ? toPx( this._contentPanelPlaceholder.getBoundingClientRect().width ) : null;
 					} ),
 
 					top: bind.to( '_hasViewportTopOffset', _hasViewportTopOffset => {
@@ -169,38 +198,27 @@ export default class StickyPanelView extends View {
 			},
 
 			children: this.content
-		} );
+		} ).render();
 
-		/**
-		 * A dummy element which visually fills the space as long as the
-		 * actual panel is sticky. It prevents flickering of the UI.
-		 *
-		 * @private
-		 * @property {HTMLElement}
-		 */
-		this._elementPlaceholder = new Template( {
+		this.setTemplate( {
 			tag: 'div',
 			attributes: {
 				class: [
-					'ck-sticky-panel__placeholder'
-				],
-				style: {
-					display: bind.to( 'isSticky', isSticky => isSticky ? 'block' : 'none' ),
-					height: bind.to( 'isSticky', isSticky => {
-						return isSticky ? toPx( this._panelRect.height ) : null;
-					} )
-				}
-			}
-		} ).render();
+					'ck-sticky-panel'
+				]
+			},
+			children: [
+				this._contentPanelPlaceholder,
+				this._contentPanel
+			]
+		} );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		super.init();
-
-		this.element.parentNode.insertBefore( this._elementPlaceholder, this.element );
+	render() {
+		super.render();
 
 		// Check if the panel should go into the sticky state immediately.
 		this._checkIfShouldBeSticky();
@@ -217,32 +235,30 @@ export default class StickyPanelView extends View {
 	}
 
 	/**
-	 * Destroys the panel and removes the {@link #_elementPlaceholder}.
-	 */
-	destroy() {
-		super.destroy();
-		this._elementPlaceholder.remove();
-	}
-
-	/**
 	 * Analyzes the environment to decide whether the panel should
 	 * be sticky or not.
 	 *
 	 * @protected
 	 */
 	_checkIfShouldBeSticky() {
-		const limiterRect = this._limiterRect = this.limiterElement.getBoundingClientRect();
-		const panelRect = this._panelRect = this.element.getBoundingClientRect();
+		const panelRect = this._panelRect = this._contentPanel.getBoundingClientRect();
+		let limiterRect;
 
-		// The panel must be active to become sticky.
-		this.isSticky = this.isActive &&
-			// The limiter's top edge must be beyond the upper edge of the visible viewport (+the viewportTopOffset).
-			limiterRect.top < this.viewportTopOffset &&
-			// The model#limiterElement's height mustn't be smaller than the panel's height and model#limiterBottomOffset.
-			// There's no point in entering the sticky mode if the model#limiterElement is very, very small, because
-			// it would immediately set model#_isStickyToTheLimiter true and, given model#limiterBottomOffset, the panel
-			// would be positioned before the model#limiterElement.
-			this._panelRect.height + this.limiterBottomOffset < limiterRect.height;
+		if ( !this.limiterElement ) {
+			this.isSticky = false;
+		} else {
+			limiterRect = this._limiterRect = this.limiterElement.getBoundingClientRect();
+
+			// The panel must be active to become sticky.
+			this.isSticky = this.isActive &&
+				// The limiter's top edge must be beyond the upper edge of the visible viewport (+the viewportTopOffset).
+				limiterRect.top < this.viewportTopOffset &&
+				// The model#limiterElement's height mustn't be smaller than the panel's height and model#limiterBottomOffset.
+				// There's no point in entering the sticky mode if the model#limiterElement is very, very small, because
+				// it would immediately set model#_isStickyToTheLimiter true and, given model#limiterBottomOffset, the panel
+				// would be positioned before the model#limiterElement.
+				this._panelRect.height + this.limiterBottomOffset < limiterRect.height;
+		}
 
 		// Stick the panel to the top edge of the viewport simulating CSS position:sticky.
 		// TODO: Possibly replaced by CSS in the future http://caniuse.com/#feat=css-sticky

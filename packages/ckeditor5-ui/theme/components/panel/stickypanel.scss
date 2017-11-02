@@ -3,12 +3,12 @@
 
 @include ck-editor {
 	.ck-sticky-panel {
-		&.ck-sticky-panel_sticky {
+		.ck-sticky-panel__content_sticky {
 			z-index: ck-z( 'modal' ); // #315
 			position: fixed;
 			top: 0;
 
-			&.ck-sticky-panel_sticky_bottom-limit {
+			&_bottom-limit {
 				top: auto;
 				position: absolute;
 			}

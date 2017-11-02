@@ -17,7 +17,12 @@ describe( 'ListView', () => {
 	let view;
 
 	beforeEach( () => {
-		return ( view = new ListView() ).init();
+		view = new ListView();
+		view.render();
+	} );
+
+	afterEach( () => {
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -26,10 +31,10 @@ describe( 'ListView', () => {
 			expect( view.element.classList.contains( 'ck-list' ) ).to.be.true;
 		} );
 
-		it( 'creates view#children collection', () => {
+		it( 'creates view#items collection', () => {
 			expect( view.items ).to.be.instanceOf( ViewCollection );
 			expect( view.template.children ).to.have.length( 1 );
-			expect( view.template.children.get( 0 ) ).to.equal( view.items );
+			expect( view.template.children[ 0 ] ).to.equal( view.items );
 		} );
 
 		it( 'creates #focusTracker instance', () => {
@@ -43,30 +48,36 @@ describe( 'ListView', () => {
 		it( 'creates #_focusCycler instance', () => {
 			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
+	} );
 
+	describe( 'render()', () => {
 		it( 'registers #items in #focusTracker', () => {
+			const view = new ListView();
 			const spyAdd = sinon.spy( view.focusTracker, 'add' );
 			const spyRemove = sinon.spy( view.focusTracker, 'remove' );
 
+			sinon.assert.notCalled( spyAdd );
 			view.items.add( focusable() );
 			view.items.add( focusable() );
 
+			view.render();
 			sinon.assert.calledTwice( spyAdd );
 
 			view.items.remove( 1 );
 			sinon.assert.calledOnce( spyRemove );
+
+			view.destroy();
 		} );
-	} );
 
-	describe( 'init()', () => {
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			view = new ListView();
-
+			const view = new ListView();
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
-			view.init();
+			view.render();
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, view.element );
+
+			view.destroy();
 		} );
 
 		describe( 'activates keyboard navigation for the list', () => {

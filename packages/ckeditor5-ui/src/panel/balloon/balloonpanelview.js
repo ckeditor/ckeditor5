@@ -8,7 +8,6 @@
  */
 
 import View from '../../view';
-import Template from '../../template';
 import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
 import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange';
 import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
@@ -40,7 +39,7 @@ const defaultLimiterElement = global.document.body;
  *		const childView = new ChildView();
  *		const positions = BalloonPanelView.defaultPositions;
  *
- *		panel.init();
+ *		panel.render();
  *
  *		// Add a child view to the panel's content collection.
  *		panel.content.add( childView );
@@ -144,7 +143,7 @@ export default class BalloonPanelView extends View {
 		 */
 		this.content = this.createCollection();
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'div',
 			attributes: {
 				class: [
@@ -194,7 +193,7 @@ export default class BalloonPanelView extends View {
 	 *		const panel = new BalloonPanelView( locale );
 	 *		const positions = BalloonPanelView.defaultPositions;
 	 *
-	 *		panel.init();
+	 *		panel.render();
 	 *
 	 *		// Attach the panel to an element with the "target" id DOM.
 	 *		panel.attachTo( {
@@ -249,7 +248,7 @@ export default class BalloonPanelView extends View {
 	 *		const panel = new BalloonPanelView( locale );
 	 *		const positions = BalloonPanelView.defaultPositions;
 	 *
-	 *		panel.init();
+	 *		panel.render();
 	 *
 	 *		// Pin the panel to an element with the "target" id DOM.
 	 *		panel.pin( {

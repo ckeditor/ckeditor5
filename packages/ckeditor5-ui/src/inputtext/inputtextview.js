@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-import Template from '../template';
 
 /**
  * The text input view class.
@@ -56,7 +55,7 @@ export default class InputTextView extends View {
 
 		const bind = this.bindTemplate;
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'input',
 			attributes: {
 				type: 'text',
@@ -69,6 +68,13 @@ export default class InputTextView extends View {
 				readonly: bind.to( 'isReadOnly' )
 			}
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
 
 		// Note: `value` cannot be an HTML attribute, because it doesn't change HTMLInputElement value once changed.
 		this.on( 'change:value', ( evt, propertyName, value ) => {

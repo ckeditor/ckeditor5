@@ -8,7 +8,6 @@
  */
 
 import EditableUIView from '../../editableui/editableuiview';
-import Template from '../../template';
 
 /**
  * The inline editable UI class implementing an inline {@link module:ui/editableui/editableuiview~EditableUIView}.
@@ -42,7 +41,7 @@ export default class InlineEditableUIView extends EditableUIView {
 			return t( 'Rich Text Editor, %0', [ value ] );
 		};
 
-		Template.extend( this.template, {
+		this.extendTemplate( {
 			attributes: {
 				role: 'textbox',
 				'aria-label': bind.to( 'name', getLabel ),

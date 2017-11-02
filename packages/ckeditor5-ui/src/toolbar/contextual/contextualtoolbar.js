@@ -7,7 +7,6 @@
  * @module ui/toolbar/contextual/contextualtoolbar
  */
 
-import Template from '../../template';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView from '../toolbarview';
@@ -51,7 +50,7 @@ export default class ContextualToolbar extends Plugin {
 		 */
 		this.toolbarView = new ToolbarView( editor.locale );
 
-		Template.extend( this.toolbarView.template, {
+		this.toolbarView.extendTemplate( {
 			attributes: {
 				class: [
 					'ck-editor-toolbar',
@@ -59,6 +58,8 @@ export default class ContextualToolbar extends Plugin {
 				]
 			}
 		} );
+
+		this.toolbarView.render();
 
 		/**
 		 * The contextual balloon plugin instance.

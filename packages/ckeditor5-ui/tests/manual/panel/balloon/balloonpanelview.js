@@ -17,6 +17,7 @@ for ( const i in defaultPositions ) {
 	container.appendChild( target );
 
 	const balloon = new BalloonPanelView();
+	balloon.render();
 	balloon.element.textContent = i;
 	document.body.appendChild( balloon.element );
 

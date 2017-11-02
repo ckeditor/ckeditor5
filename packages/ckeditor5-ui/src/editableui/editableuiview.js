@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-import Template from '../template';
 
 /**
  * The editable UI view class.
@@ -32,7 +31,7 @@ export default class EditableUIView extends View {
 			this.element = this.editableElement = editableElement;
 		}
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'div',
 			attributes: {
 				class: [
@@ -77,17 +76,17 @@ export default class EditableUIView extends View {
 	}
 
 	/**
-	 * Initializes the view by either applying the {@link #template} to the existing
+	 * Renders the view by either applying the {@link #template} to the existing
 	 * {@link #editableElement} or assigning {@link #element} as {@link #editableElement}.
 	 */
-	init() {
+	render() {
+		super.render();
+
 		if ( this.externalElement ) {
-			this.template.apply( this.externalElement );
+			this.template.apply( this.element = this.externalElement );
 		} else {
 			this.editableElement = this.element;
 		}
-
-		super.init();
 	}
 
 	/**

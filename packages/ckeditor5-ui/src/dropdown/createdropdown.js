@@ -24,7 +24,7 @@ import DropdownPanelView from './dropdownpanelview';
  *
  *		const dropdown = createDropdown( model );
  *
- *		dropdown.init();
+ *		dropdown.render();
  *
  *		// Will render a dropdown labeled "A dropdown" with an empty panel.
  *		document.body.appendChild( dropdown.element );

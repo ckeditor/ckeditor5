@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-import Template from '../template';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
@@ -25,7 +24,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
  *			withText: true
  *		} );
  *
- *		dropdown.init();
+ *		dropdown.render();
  *
  *		// Will render a dropdown with a panel containing a "Content of the panel" text.
  *		document.body.appendChild( dropdown.element );
@@ -46,7 +45,7 @@ export default class DropdownView extends View {
 		// Extend button's template before it's registered as a child of the dropdown because
 		// by doing so, its #element is rendered and any post–render template extension will
 		// not be reflected in DOM.
-		Template.extend( buttonView.template, {
+		buttonView.extendTemplate( {
 			attributes: {
 				class: [
 					'ck-dropdown__button'
@@ -106,7 +105,7 @@ export default class DropdownView extends View {
 		 */
 		this.keystrokes = new KeystrokeHandler();
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'div',
 
 			attributes: {
@@ -120,20 +119,22 @@ export default class DropdownView extends View {
 				panelView
 			]
 		} );
-
-		// Toggle the the dropdown when it's button has been clicked.
-		this.listenTo( buttonView, 'execute', () => {
-			this.isOpen = !this.isOpen;
-		} );
-
-		// Toggle the visibility of the panel when the dropdown becomes open.
-		panelView.bind( 'isVisible' ).to( this, 'isOpen' );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	render() {
+		super.render();
+
+		// Toggle the the dropdown when it's button has been clicked.
+		this.listenTo( this.buttonView, 'execute', () => {
+			this.isOpen = !this.isOpen;
+		} );
+
+		// Toggle the visibility of the panel when the dropdown becomes open.
+		this.panelView.bind( 'isVisible' ).to( this, 'isOpen' );
+
 		// Listen for keystrokes coming from within #element.
 		this.keystrokes.listenTo( this.element );
 
@@ -167,8 +168,6 @@ export default class DropdownView extends View {
 		// Close the dropdown using the arrow left/escape key.
 		this.keystrokes.set( 'arrowleft', closeDropdown );
 		this.keystrokes.set( 'esc', closeDropdown );
-
-		super.init();
 	}
 
 	/**

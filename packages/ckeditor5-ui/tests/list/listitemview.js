@@ -18,7 +18,7 @@ describe( 'ListItemView', () => {
 			label: 'bar'
 		} );
 
-		return view.init();
+		return view.render();
 	} );
 
 	describe( 'constructor()', () => {
@@ -31,11 +31,13 @@ describe( 'ListItemView', () => {
 		} );
 	} );
 
-	describe( 'init()', () => {
+	describe( 'render()', () => {
 		it( 'starts listening for #keystrokes coming from #element', () => {
+			view = new ListItemView();
+
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
-			view.init();
+			view.render();
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, view.element );
 		} );
