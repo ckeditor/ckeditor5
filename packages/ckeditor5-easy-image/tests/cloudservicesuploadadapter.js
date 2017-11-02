@@ -68,7 +68,7 @@ describe( 'CloudServicesUploadAdapter', () => {
 					plugins: [ CloudServicesUploadAdapter ]
 				} )
 				.then( editor => {
-					expect( UploadGatewayMock.lastToken ).to.be.an( 'undefined' );
+					expect( UploadGatewayMock.lastToken ).to.be.undefined;
 
 					return editor.destroy();
 				} );
