@@ -383,7 +383,7 @@ class SampleInputView extends View {
 			placeholder: ''
 		} );
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'input',
 			attributes: {
 				class: [
@@ -422,7 +422,7 @@ class ParentView extends View {
 		const childA = new SampleInputView( locale );
 		const childB = new SampleInputView( locale );
 
-		this.template = new Template( {
+		this.setTemplate( {
 			tag: 'div',
 			children: [
 				childA
@@ -434,18 +434,18 @@ class ParentView extends View {
 
 const parent = new ParentView( locale );
 
-parent.init();
+parent.render();
 
 // Will insert <div><input .. /><input .. /></div>.
 document.body.appendChild( parent.element );
 ```
 
-It is also possible to create standalone views that do not belong to any collection. They must be {@link module:ui/view~View#init initialized} before  injection into DOM:
+It is also possible to create standalone views that do not belong to any collection. They must be {@link module:ui/view~View#render rendered} before  injection into DOM:
 
 ```js
 const view = new SampleInputView( locale );
 
-view.init();
+view.render();
 
 // Will insert <input class="foo" type="text" placeholder="" />
 document.body.appendChild( view.element );
@@ -625,7 +625,7 @@ toolbar.items.add( buttonBar );
 The toolbar can now join the [UI tree](##View-collections-and-the-UI-tree) or it can be injected straight into DOM. To keep the example simple, proceed with the latter scenario:
 
 ```js
-toolbar.init();
+toolbar.render();
 
 document.body.appendChild( toolbar.element );
 ```
