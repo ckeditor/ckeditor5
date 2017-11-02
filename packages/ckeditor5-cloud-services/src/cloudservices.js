@@ -40,6 +40,7 @@ export default class CloudServices extends Plugin {
 		 * The URL to which the files should be uploaded.
 		 *
 		 * @readonly
+		 * @default 'https://files.cke-cs.com/upload/'
 		 * @member {String} #uploadUrl
 		 */
 
