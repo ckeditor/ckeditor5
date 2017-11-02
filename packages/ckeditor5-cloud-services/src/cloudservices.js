@@ -42,13 +42,15 @@ export default class CloudServices extends Plugin {
 		 * @member {Object|null} #token
 		 */
 
-		if ( this.tokenUrl ) {
-			this.token = new CloudServices.Token( this.tokenUrl );
+		if ( !this.tokenUrl ) {
+			this.token = null;
 
-			return this.token.init();
+			return;
 		}
 
-		this.token = null;
+		this.token = new CloudServices.Token( this.tokenUrl );
+
+		return this.token.init();
 	}
 }
 
