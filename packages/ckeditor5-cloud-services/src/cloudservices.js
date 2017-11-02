@@ -9,7 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Token from '@ckeditor/ckeditor-cloudservices-core/src/token/token';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Base plugin for Cloud Services. It takes care about the `cloudServices` config options and initializes token provider.
@@ -22,7 +21,7 @@ export default class CloudServices extends Plugin {
 		const editor = this.editor;
 		const config = editor.config;
 
-		const options = config.get( 'cloudServices' );
+		const options = config.get( 'cloudServices' ) || {};
 
 		for ( const optionName in options ) {
 			this[ optionName ] = options[ optionName ];
@@ -35,25 +34,21 @@ export default class CloudServices extends Plugin {
 		 * @member {String} #tokenUrl
 		 */
 
-		if ( !this.tokenUrl ) {
-			/**
-			 * The authentication `cloudServices.tokenUrl` config is not provided.
-			 *
-			 * @error cloudservices-token-endpoint-not-provided
-			 */
-			throw new CKEditorError(
-				'cloudservices-token-endpoint-not-provided: The authentication `cloudServices.tokenUrl` config is not provided.'
-			);
-		}
-
 		/**
 		 * Other plugins use this token for authorization process. It handles token requesting and refreshing.
+		 * Its value is null when `tokenUrl` is not provided.
 		 *
 		 * @readonly
+		 * @member {Object|null} #token
 		 */
-		this.token = new CloudServices.Token( this.tokenUrl );
 
-		return this.token.init();
+		if ( this.tokenUrl ) {
+			this.token = new CloudServices.Token( this.tokenUrl );
+
+			return this.token.init();
+		}
+
+		this.token = null;
 	}
 }
 

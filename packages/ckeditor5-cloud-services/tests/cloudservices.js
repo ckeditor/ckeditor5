@@ -26,7 +26,7 @@ describe( 'CloudServices', () => {
 	} );
 
 	describe( 'init()', () => {
-		it( 'should expose option property based on config', () => {
+		it( 'should expose its properties based on config', () => {
 			return ClassicTestEditor
 				.create( element, {
 					plugins: [ CloudServices ],
@@ -46,7 +46,14 @@ describe( 'CloudServices', () => {
 				} );
 		} );
 
-		it( 'should provide token', () => {
+		it( 'should not throw an error when no config is provided', () => {
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ CloudServices ]
+				} );
+		} );
+
+		it( 'should provide token if tokenUrl is provided', () => {
 			CloudServices.Token.initialToken = 'initial-token';
 
 			return ClassicTestEditor
@@ -65,18 +72,18 @@ describe( 'CloudServices', () => {
 				} );
 		} );
 
-		it( 'should throw an error when token URL is not provided', done => {
+		it( 'should not provide token if tokenUrl is not provided', () => {
 			CloudServices.Token.initialToken = 'initial-token';
 
-			ClassicTestEditor
+			return ClassicTestEditor
 				.create( element, {
 					plugins: [ CloudServices ],
 					cloudServices: {}
 				} )
-				.catch( err => {
-					expect( err.name ).to.equal( 'CKEditorError' );
-					expect( err.message, '12' ).to.match( /cloudservices-token-endpoint-not-provided/ );
-					done();
+				.then( editor => {
+					const cloudServicesPlugin = editor.plugins.get( CloudServices );
+
+					expect( cloudServicesPlugin.token ).to.equal( null );
 				} );
 		} );
 	} );
