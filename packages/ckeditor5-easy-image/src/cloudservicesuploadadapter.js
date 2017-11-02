@@ -18,7 +18,7 @@ import CloudServices from '@ckeditor/ckeditor5-cloudservices/src/cloudservices';
  * It is mainly used by the {@link module:easy-image/easyimage~EasyImage} feature.
  *
  * After enabling this adapter you need to configure the Cloud Services integration through
- * {@link module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig `config.cloudServices`}.
+ * {@link module:cloudservices/cloudservices~CloudServicesConfig `config.cloudServices`}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -39,7 +39,7 @@ export default class CloudServicesUploadAdapter extends Plugin {
 		const cloudServices = editor.plugins.get( CloudServices );
 
 		const token = cloudServices.token;
-		const uploadUrl = cloudServices.uploadUrl || 'https://files.cke-cs.com/upload/';
+		const uploadUrl = cloudServices.uploadUrl;
 
 		if ( !token ) {
 			return;
@@ -82,45 +82,3 @@ class Adapter {
 // Store the API in static property to easily overwrite it in tests.
 // Too bad dependency injection does not work in Webpack + ES 6 (const) + Babel.
 CloudServicesUploadAdapter._UploadGateway = UploadGateway;
-
-/**
- * The configuration of the {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter Cloud Services upload adapter}.
- *
- * It is used mainly by the {@link module:easy-image/easyimage~EasyImage} feature.
- *
- * Read more in {@link module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig}.
- *
- * @member {module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig}
- *         module:core/editor/editorconfig~EditorConfig#cloudServices
- */
-
-/**
- * The configuration of the {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter Cloud Services upload adapter}.
- *
- * It is used mainly by the {@link module:easy-image/easyimage~EasyImage} feature.
- *
- *		ClassicEditor
- *			.create( editorElement, {
- * 				cloudServices: {
- *					tokenUrl: '...'
- * 				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
- *
- * @interface CloudServicesAdapterConfig
- */
-
-/**
- * The URL to which the files should be uploaded.
- *
- * @member {String} [module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig#uploadUrl='https://files.cke-cs.com/upload/']
- */
-
-/**
- * The token to the Cloud Services application. You can obtain it from the token service.
- *
- * @member {String} module:easy-image/cloudservicesuploadadapter~CloudServicesAdapterConfig#token
- */

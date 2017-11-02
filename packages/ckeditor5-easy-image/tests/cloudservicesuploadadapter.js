@@ -73,23 +73,6 @@ describe( 'CloudServicesUploadAdapter', () => {
 					return editor.destroy();
 				} );
 		} );
-
-		it( 'should set the default uploadUrl', () => {
-			const expectedDefaultUrl = 'https://files.cke-cs.com/upload/';
-
-			return ClassicTestEditor
-				.create( div, {
-					plugins: [ CloudServicesUploadAdapter ],
-					cloudServices: {
-						tokenUrl: 'abc'
-					}
-				} )
-				.then( editor => {
-					expect( UploadGatewayMock.lastUploadUrl ).to.equal( expectedDefaultUrl );
-
-					return editor.destroy();
-				} );
-		} );
 	} );
 
 	describe( 'Adapter', () => {
