@@ -60,6 +60,20 @@ describe( 'CloudServicesUploadAdapter', () => {
 				} );
 		} );
 
+		it( 'should not set loader if there is no token', () => {
+			UploadGatewayMock.lastToken = undefined;
+
+			return ClassicTestEditor
+				.create( div, {
+					plugins: [ CloudServicesUploadAdapter ]
+				} )
+				.then( editor => {
+					expect( UploadGatewayMock.lastToken ).to.be.undefined;
+
+					return editor.destroy();
+				} );
+		} );
+
 		it( 'should set the default uploadUrl', () => {
 			const expectedDefaultUrl = 'https://files.cke-cs.com/upload/';
 

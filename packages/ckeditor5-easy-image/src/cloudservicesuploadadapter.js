@@ -41,6 +41,10 @@ export default class CloudServicesUploadAdapter extends Plugin {
 		const token = cloudServices.token;
 		const uploadUrl = cloudServices.uploadUrl || 'https://files.cke-cs.com/upload/';
 
+		if ( !token ) {
+			return;
+		}
+
 		this._uploadGateway = new CloudServicesUploadAdapter._UploadGateway( token, uploadUrl );
 
 		editor.plugins.get( FileRepository ).createAdapter = loader => {
