@@ -15,7 +15,6 @@ import AlignmentUI from './alignmentui';
 /**
  * The alignment plugin.
  *
- *
  * It requires {@link module:alignment/alignmentediting~AlignmentEditing} and {@link module:alignment/alignmentui~AlignmentUI} plugins.
  *
  * @extends module:core/plugin~Plugin

@@ -70,7 +70,8 @@ export default class AlignmentCommand extends Command {
 			const batch = options.batch || document.batch();
 			const blocks = Array.from( document.selection.getSelectedBlocks() );
 
-			// Executing command on already aligned text should remove alignment attribute
+			// Remove alignment attribute if current alignment is as selected or is default one.
+			// Default alignment should not be stored in model as it will bloat model data.
 			if ( this.value || this._isDefault() ) {
 				removeAlignmentFromSelection( blocks, batch );
 			} else {
@@ -86,6 +87,7 @@ export default class AlignmentCommand extends Command {
 	 * @returns {Boolean} Whether the command should be enabled.
 	 */
 	_isDefault() {
+		// Right now only LTR is supported so 'left' is always default one.
 		return this.type === 'left';
 	}
 
@@ -102,9 +104,11 @@ export default class AlignmentCommand extends Command {
 
 		const schema = this.editor.document.schema;
 
+		// Check if adding alignment attribute to selected block is allowed.
 		return schema.check( {
 			name: firstBlock.name,
-			attributes: [ ...firstBlock.getAttributeKeys(), 'alignment' ]
+			// Apparently I must pass current attributes as otherwise adding alignment on listItem will fail.
+			attributes: [ 'alignment' ]
 		} );
 	}
 
@@ -115,13 +119,15 @@ export default class AlignmentCommand extends Command {
 	 * @returns {Boolean} The current value.
 	 */
 	_getValue( firstBlock ) {
+		// The #_checkEnabled is checked as first so if command is disabled it's value is also false.
 		if ( !this.isEnabled || !firstBlock ) {
 			return false;
 		}
 
-		const currentAlignment = firstBlock.getAttribute( 'alignment' );
+		const selectionAlignment = firstBlock.getAttribute( 'alignment' );
 
-		return currentAlignment ? currentAlignment === this.type : this._isDefault();
+		// Command's value will be set when commands type is matched in selection or the selection is default one.
+		return selectionAlignment ? selectionAlignment === this.type : this._isDefault();
 	}
 }
 

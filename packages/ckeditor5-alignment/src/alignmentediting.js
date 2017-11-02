@@ -37,7 +37,11 @@ export default class AlignmentEditing extends Plugin {
 	}
 
 	/**
-	 * Returns list of supported styles.
+	 * List of supported alignment styles:
+	 * - left
+	 * - right
+	 * - center
+	 * - justify
 	 *
 	 * @static
 	 * @readonly
@@ -73,11 +77,13 @@ export default class AlignmentEditing extends Plugin {
 		// Allow alignment attribute on all blocks.
 		schema.allow( { name: '$block', attributes: 'alignment' } );
 
+		// Convert model attribute alignment to `text-align` style property.
 		buildModelConverter()
 			.for( data.modelToView, editing.modelToView )
 			.fromAttribute( 'alignment' )
 			.toAttribute( value => ( { key: 'style', value: `text-align:${ value }` } ) );
 
+		// Convert `text-align` style property from element to model attribute alignment.
 		buildViewConverter()
 			.for( data.viewToModel )
 			.fromAttribute( 'style', /text-align/ )
@@ -92,6 +98,7 @@ export default class AlignmentEditing extends Plugin {
 				return { key: 'alignment', value: textAlign };
 			} );
 
+		// Add only enabled & supported commands.
 		enabledStyles
 			.filter( isSupported )
 			.forEach( style => editor.commands.add( AlignmentEditing.commandName( style ), new AlignmentCommand( editor, style ) ) );
@@ -110,6 +117,12 @@ export default class AlignmentEditing extends Plugin {
 	}
 }
 
+/**
+ * Checks whether passed style is supported by {@link module:alignment/alignmentediting~AlignmentEditing}.
+ *
+ * @param {String} style Style value to check.
+ * @returns {Boolean}
+ */
 export function isSupported( style ) {
 	return AlignmentEditing.supportedStyles.includes( style );
 }
@@ -117,6 +130,7 @@ export function isSupported( style ) {
 // Check whether alignment is default one.
 // @private
 function isDefault( textAlign ) {
+	// Right now only RTL is supported so 'left' value is always default one.
 	return textAlign === 'left';
 }
 
