@@ -6,17 +6,15 @@
 /* globals console, window, document */
 
 import BalloonEditor from '@ckeditor/ckeditor5-build-balloon/src/ckeditor';
-import getToken from '@ckeditor/ckeditor5-easy-image/tests/_utils/gettoken';
 
-getToken()
-	.then( token => {
-		return BalloonEditor
-			.create( document.querySelector( '#snippet-balloon-editor' ), {
-				cloudServices: { token }
-			} )
-			.then( editor => {
-				window.editor = editor;
-			} );
+import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+
+BalloonEditor
+	.create( document.querySelector( '#snippet-balloon-editor' ), {
+		cloudServices: { tokenUrl: TOKEN_URL }
+	} )
+	.then( editor => {
+		window.editor = editor;
 	} )
 	.catch( err => {
 		console.error( err );

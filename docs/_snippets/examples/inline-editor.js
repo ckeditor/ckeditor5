@@ -6,7 +6,7 @@
 /* globals console, window, document */
 
 import InlineEditor from '@ckeditor/ckeditor5-build-inline/src/ckeditor';
-import getToken from '@ckeditor/ckeditor5-easy-image/tests/_utils/gettoken';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 
 const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor [data-inline-inject]' );
 
@@ -18,6 +18,9 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 		},
 		toolbar: {
 			viewportTopOffset: 60
+		},
+		cloudServices: {
+			tokenUrl: TOKEN_URL
 		}
 	};
 
@@ -36,15 +39,10 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 		config.toolbar.items = [ 'headings', 'bold', 'italic', 'link' ];
 	}
 
-	getToken()
-		.then( token => {
-			config.cloudServices = { token };
-
-			return InlineEditor
-				.create( inlineElement, config )
-				.then( editor => {
-					window.editor = editor;
-				} );
+	InlineEditor
+		.create( inlineElement, config )
+		.then( editor => {
+			window.editor = editor;
 		} )
 		.catch( err => {
 			console.error( err );

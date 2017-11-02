@@ -5,20 +5,17 @@
 
 /* globals ClassicEditor, console, window, document */
 
-import getToken from '@ckeditor/ckeditor5-easy-image/tests/_utils/gettoken';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 
-getToken()
-	.then( token => {
-		return ClassicEditor
-			.create( document.querySelector( '#snippet-classic-editor' ), {
-				cloudServices: { token },
-				toolbar: {
-					viewportTopOffset: 60
-				}
-			} )
-			.then( editor => {
-				window.editor = editor;
-			} );
+ClassicEditor
+	.create( document.querySelector( '#snippet-classic-editor' ), {
+		cloudServices: { tokenUrl: TOKEN_URL },
+		toolbar: {
+			viewportTopOffset: 60
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
 	} )
 	.catch( err => {
 		console.error( err );
