@@ -137,6 +137,10 @@ describe( 'Renderer', () => {
 			} );
 		} );
 
+		afterEach( () => {
+			domRoot.remove();
+		} );
+
 		it( 'should update attributes', () => {
 			viewRoot.setAttribute( 'class', 'foo' );
 
