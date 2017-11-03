@@ -66,8 +66,10 @@ export default class AlignmentEditing extends Plugin {
 		// Allow alignment attribute on all blocks.
 		schema.allow( { name: '$block', attributes: 'alignment' } );
 
-		attributeToStyleConverter( data.modelToView, 'alignment', attribute => ( { 'text-align': attribute } ), () => [ 'text-align' ] );
-		attributeToStyleConverter( editing.modelToView, 'alignment', attribute => ( { 'text-align': attribute } ), () => [ 'text-align' ] );
+		attributeToStyleConverter(
+			[ data.modelToView, editing.modelToView ],
+			'alignment', attribute => ( { 'text-align': attribute } ), () => [ 'text-align' ]
+		);
 
 		// Convert `text-align` style property from element to model attribute alignment.
 		buildViewConverter()
@@ -124,10 +126,12 @@ export function isSupported( style ) {
 	return AlignmentEditing.supportedStyles.includes( style );
 }
 
-function attributeToStyleConverter( dispatcher, modelAttributeName, setStyleFn, removeStyleFn ) {
-	dispatcher.on( `addAttribute:${ modelAttributeName }`, setStyle( setStyleFn ) );
-	dispatcher.on( `changeAttribute:${ modelAttributeName }`, setStyle( setStyleFn ) );
-	dispatcher.on( `removeAttribute:${ modelAttributeName }`, removeStyle( removeStyleFn ) );
+function attributeToStyleConverter( dispatchers, modelAttributeName, setStyleFn, removeStyleFn ) {
+	for ( const dispatcher of dispatchers ) {
+		dispatcher.on( `addAttribute:${ modelAttributeName }`, setStyle( setStyleFn ) );
+		dispatcher.on( `changeAttribute:${ modelAttributeName }`, setStyle( setStyleFn ) );
+		dispatcher.on( `removeAttribute:${ modelAttributeName }`, removeStyle( removeStyleFn ) );
+	}
 }
 
 function setStyle( setStyleFn ) {
