@@ -52,17 +52,6 @@ export default class AlignmentEditing extends Plugin {
 	}
 
 	/**
-	 * Helper function that returns command name for given style. May produce unknown commands if passed style is not
-	 * in {@link module:alignment/alignmentediting~AlignmentEditing.supportedStyles}.
-	 *
-	 * @param {String} style
-	 * @returns {String}
-	 */
-	static commandName( style ) {
-		return `align${ upperFirst( style ) }`;
-	}
-
-	/**
 	 * @inheritDoc
 	 */
 	init() {
@@ -114,6 +103,17 @@ export default class AlignmentEditing extends Plugin {
 		if ( schema.hasItem( 'caption' ) ) {
 			schema.disallow( { name: 'caption', attributes: 'alignment' } );
 		}
+	}
+
+	/**
+	 * Helper function that returns command name for given style. May produce unknown commands if passed style is not
+	 * in {@link module:alignment/alignmentediting~AlignmentEditing.supportedStyles}.
+	 *
+	 * @param {String} style
+	 * @returns {String}
+	 */
+	static commandName( style ) {
+		return `align${ upperFirst( style ) }`;
 	}
 }
 
