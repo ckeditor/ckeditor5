@@ -11,8 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import AlignmentCommand from './alignmentcommand';
 
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 
 import upperFirst from '@ckeditor/ckeditor5-utils/src/lib/lodash/upperFirst';
 
@@ -66,11 +66,8 @@ export default class AlignmentEditing extends Plugin {
 		// Allow alignment attribute on all blocks.
 		schema.allow( { name: '$block', attributes: 'alignment' } );
 
-		// Convert model attribute alignment to `text-align` style property.
-		buildModelConverter()
-			.for( data.modelToView, editing.modelToView )
-			.fromAttribute( 'alignment' )
-			.toAttribute( value => ( { key: 'style', value: `text-align:${ value }` } ) );
+		attributeToStyleConverter( data.modelToView, 'alignment', attribute => ( { 'text-align': attribute } ), () => [ 'text-align' ] );
+		attributeToStyleConverter( editing.modelToView, 'alignment', attribute => ( { 'text-align': attribute } ), () => [ 'text-align' ] );
 
 		// Convert `text-align` style property from element to model attribute alignment.
 		buildViewConverter()
@@ -125,6 +122,36 @@ export default class AlignmentEditing extends Plugin {
  */
 export function isSupported( style ) {
 	return AlignmentEditing.supportedStyles.includes( style );
+}
+
+function attributeToStyleConverter( dispatcher, modelAttributeName, setStyleFn, removeStyleFn ) {
+	dispatcher.on( `addAttribute:${ modelAttributeName }`, setStyle( setStyleFn ) );
+	dispatcher.on( `changeAttribute:${ modelAttributeName }`, setStyle( setStyleFn ) );
+	dispatcher.on( `removeAttribute:${ modelAttributeName }`, removeStyle( removeStyleFn ) );
+}
+
+function setStyle( setStyleFn ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
+			return;
+		}
+
+		const styles = setStyleFn( data.attributeNewValue );
+
+		conversionApi.mapper.toViewElement( data.item ).setStyle( styles );
+	};
+}
+
+function removeStyle( removeStyleFn ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
+			return;
+		}
+
+		const styles = removeStyleFn();
+		const viewElement = conversionApi.mapper.toViewElement( data.item );
+		viewElement.removeStyle( ...styles );
+	};
 }
 
 // Check whether alignment is default one.

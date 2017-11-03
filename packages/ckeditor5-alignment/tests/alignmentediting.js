@@ -10,6 +10,7 @@ import ListEngine from '@ckeditor/ckeditor5-list/src/listengine';
 import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 
 import AlignmentCommand from '../src/alignmentcommand';
 
@@ -82,6 +83,18 @@ describe( 'AlignmentEditing', () => {
 			expect( getModelData( doc ) ).to.equal( '<paragraph>[]x</paragraph>' );
 			expect( editor.getData() ).to.equal( '<p>x</p>' );
 		} );
+
+		it( 'adds a converter to the view pipeline for removing attribute', () => {
+			setModelData( doc, '<paragraph alignment="center">[]x</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p style="text-align:center;">x</p>' );
+
+			const command = editor.commands.get( 'alignLeft' );
+
+			command.execute();
+
+			expect( editor.getData() ).to.equal( '<p>x</p>' );
+		} );
 	} );
 
 	describe( 'alignCenter', () => {
@@ -96,6 +109,18 @@ describe( 'AlignmentEditing', () => {
 
 		it( 'adds a converter to the view pipeline', () => {
 			setModelData( doc, '<paragraph alignment="center">[]x</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p style="text-align:center;">x</p>' );
+		} );
+
+		it( 'adds a converter to the view pipeline for changing attribute', () => {
+			setModelData( doc, '<paragraph alignment="right">[]x</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p style="text-align:right;">x</p>' );
+
+			const command = editor.commands.get( 'alignCenter' );
+
+			command.execute();
 
 			expect( editor.getData() ).to.equal( '<p style="text-align:center;">x</p>' );
 		} );
@@ -132,6 +157,26 @@ describe( 'AlignmentEditing', () => {
 			setModelData( doc, '<paragraph alignment="justify">[]x</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p style="text-align:justify;">x</p>' );
+		} );
+	} );
+
+	describe( 'should be extensible', () => {
+		it( 'converters in the data pipeline', () => {
+			blockDefaultConversion( editor.data.modelToView );
+			blockDefaultConversion( editor.editing.modelToView );
+
+			const data = '<p style="text-align:justify;">x</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph alignment="justify">[]x</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>x</p>' );
+
+			const command = editor.commands.get( 'alignLeft' );
+			command.execute();
+
+			expect( editor.getData() ).to.equal( '<p>x</p>' );
 		} );
 	} );
 
@@ -179,3 +224,21 @@ describe( 'AlignmentEditing', () => {
 		} );
 	} );
 } );
+
+function blockDefaultConversion( dispatcher ) {
+	dispatcher.on(
+		'addAttribute:alignment',
+		( evt, data, consumable ) => consumable.consume( data.item, eventNameToConsumableType( evt.name ) ),
+		{ 'priority': 'high' }
+	);
+	dispatcher.on(
+		'changeAttribute:alignment',
+		( evt, data, consumable ) => consumable.consume( data.item, eventNameToConsumableType( evt.name ) ),
+		{ 'priority': 'high' }
+	);
+	dispatcher.on(
+		'removeAttribute:alignment',
+		( evt, data, consumable ) => consumable.consume( data.item, eventNameToConsumableType( evt.name ) ),
+		{ 'priority': 'high' }
+	);
+}
