@@ -10,6 +10,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import { isImageWidget } from '../../src/image/utils';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 describe( 'ImageEngine', () => {
 	let editor, document, viewDocument;
@@ -54,9 +55,9 @@ describe( 'ImageEngine', () => {
 					'<image src="foo.png" alt="alt text" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></image>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( normalizeHtml( editor.getData() ) ).to.equal(
 					'<figure class="image">' +
-						'<img srcset="small.png 148w, big.png 1024w" sizes="100vw" alt="alt text" src="foo.png">' +
+						'<img alt="alt text" sizes="100vw" src="foo.png" srcset="small.png 148w, big.png 1024w"></img>' +
 					'</figure>'
 				);
 			} );
@@ -70,9 +71,9 @@ describe( 'ImageEngine', () => {
 					'</image>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( normalizeHtml( editor.getData() ) ).to.equal(
 					'<figure class="image">' +
-						'<img srcset="small.png 148w, big.png 1024w" sizes="100vw" width="1024" alt="alt text" src="foo.png">' +
+						'<img alt="alt text" sizes="100vw" src="foo.png" srcset="small.png 148w, big.png 1024w" width="1024"></img>' +
 					'</figure>'
 				);
 			} );
