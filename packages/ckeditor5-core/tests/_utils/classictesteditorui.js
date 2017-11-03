@@ -53,15 +53,6 @@ export default class ClassicTestEditorUI {
 	}
 
 	/**
-	 * Initializes the UI.
-	 *
-	 * @returns {Promise} A Promise resolved when the initialization process is finished.
-	 */
-	init() {
-		this.view.init();
-	}
-
-	/**
 	 * Destroys the UI.
 	 *
 	 * @returns {Promise} A Promise resolved when the destruction process is finished.
