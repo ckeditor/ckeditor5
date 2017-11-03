@@ -108,7 +108,7 @@ export default class AlignmentCommand extends Command {
 		return schema.check( {
 			name: firstBlock.name,
 			// Apparently I must pass current attributes as otherwise adding alignment on listItem will fail.
-			attributes: [ 'alignment' ]
+			attributes: [ ...firstBlock.getAttributeKeys(), 'alignment' ]
 		} );
 	}
 
