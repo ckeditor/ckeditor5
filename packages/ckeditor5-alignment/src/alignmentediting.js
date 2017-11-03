@@ -68,7 +68,9 @@ export default class AlignmentEditing extends Plugin {
 
 		attributeToStyleConverter(
 			[ data.modelToView, editing.modelToView ],
-			'alignment', attribute => ( { 'text-align': attribute } ), () => [ 'text-align' ]
+			'alignment',
+			attribute => ( { 'text-align': attribute } ),
+			() => [ 'text-align' ]
 		);
 
 		// Convert `text-align` style property from element to model attribute alignment.
@@ -126,6 +128,8 @@ export function isSupported( style ) {
 	return AlignmentEditing.supportedStyles.includes( style );
 }
 
+// Defines attribute to style converters.
+// @private
 function attributeToStyleConverter( dispatchers, modelAttributeName, setStyleFn, removeStyleFn ) {
 	for ( const dispatcher of dispatchers ) {
 		dispatcher.on( `addAttribute:${ modelAttributeName }`, setStyle( setStyleFn ) );
@@ -134,6 +138,8 @@ function attributeToStyleConverter( dispatchers, modelAttributeName, setStyleFn,
 	}
 }
 
+// Dispatcher handler responsible for setting style to a view element.
+// @private
 function setStyle( setStyleFn ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
@@ -146,6 +152,8 @@ function setStyle( setStyleFn ) {
 	};
 }
 
+// Dispatcher handler responsible for removing style attributes from a view element.
+// @private
 function removeStyle( removeStyleFn ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
