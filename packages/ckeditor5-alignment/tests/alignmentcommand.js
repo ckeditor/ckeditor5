@@ -40,13 +40,13 @@ describe( 'AlignmentCommand', () => {
 	} );
 
 	describe( 'value', () => {
-		it( 'is true when selection is in block with commend type alignment', () => {
+		it( 'is true when selection is in block with command type alignment', () => {
 			setModelData( doc, '<paragraph alignment="center">x[]x</paragraph>' );
 
 			expect( command ).to.have.property( 'value', true );
 		} );
 
-		it( 'is false when selection is not block that has different alignment', () => {
+		it( 'is false when selection is inside block that has different alignment', () => {
 			setModelData( doc, '<paragraph alignment="justify">x[]x</paragraph>' );
 
 			expect( command ).to.have.property( 'value', false );
@@ -58,7 +58,7 @@ describe( 'AlignmentCommand', () => {
 			expect( defaultAlignmentCommand ).to.have.property( 'value', true );
 		} );
 
-		it( 'is false when selection is not block that has different alignment', () => {
+		it( 'is false when selection is inside block that has different alignment (default style)', () => {
 			setModelData( doc, '<paragraph alignment="justify">x[]x</paragraph>' );
 
 			expect( defaultAlignmentCommand ).to.have.property( 'value', false );
@@ -144,7 +144,7 @@ describe( 'AlignmentCommand', () => {
 				);
 			} );
 
-			it( 'removes alignment from all selected blocks even if one has not alignment', () => {
+			it( 'removes alignment from all selected blocks even if one has no alignment defined', () => {
 				setModelData( doc,
 					'<paragraph alignment="center">x[x</paragraph>' +
 					'<paragraph>xx</paragraph>' +

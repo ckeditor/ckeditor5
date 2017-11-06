@@ -93,7 +93,7 @@ export default class AlignmentEditing extends Plugin {
 	afterInit() {
 		const schema = this.editor.document.schema;
 
-		// Disallow alignment on fiqcaption
+		// Disallow alignment on fiqcaption.
 		if ( schema.hasItem( 'caption' ) ) {
 			schema.disallow( { name: 'caption', attributes: 'alignment' } );
 		}
