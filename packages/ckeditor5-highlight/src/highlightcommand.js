@@ -66,23 +66,19 @@ export default class HighlightCommand extends Command {
 		const selection = doc.selection;
 		const value = options.class;
 
-		doc.enqueueChanges( () => {
-			if ( selection.isCollapsed ) {
-				if ( value ) {
-					selection.setAttribute( 'highlight', value );
-				} else {
-					selection.removeAttribute( 'highlight' );
-				}
-			} else {
-				const ranges = doc.schema.getValidRanges( selection.getRanges(), 'highlight' );
-				const batch = options.batch || doc.batch();
+		if ( selection.isCollapsed ) {
+			return;
+		}
 
-				for ( const range of ranges ) {
-					if ( value ) {
-						batch.setAttribute( range, 'highlight', value );
-					} else {
-						batch.removeAttribute( range, 'highlight' );
-					}
+		doc.enqueueChanges( () => {
+			const ranges = doc.schema.getValidRanges( selection.getRanges(), 'highlight' );
+			const batch = options.batch || doc.batch();
+
+			for ( const range of ranges ) {
+				if ( value ) {
+					batch.setAttribute( range, 'highlight', value );
+				} else {
+					batch.removeAttribute( range, 'highlight' );
 				}
 			}
 		} );

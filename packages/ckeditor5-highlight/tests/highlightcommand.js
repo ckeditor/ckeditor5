@@ -98,5 +98,17 @@ describe( 'HighlightCommand', () => {
 
 			expect( command.value ).to.be.undefined;
 		} );
+
+		it( 'should do nothing on collapsed range', () => {
+			setData( doc, '<paragraph>abc<$text highlight="marker">foo[]bar</$text>xyz</paragraph>' );
+
+			expect( command.value ).to.equal( 'marker' );
+
+			command.execute();
+
+			expect( getData( doc ) ).to.equal( '<paragraph>abc<$text highlight="marker">foo[]bar</$text>xyz</paragraph>' );
+
+			expect( command.value ).to.equal( 'marker' );
+		} );
 	} );
 } );
