@@ -30,13 +30,6 @@ export default class AlignmentEditing extends Plugin {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [];
-	}
-
-	/**
 	 * List of supported alignment styles:
 	 * - left
 	 * - right
