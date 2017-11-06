@@ -5,11 +5,9 @@
 
 import HighlightCommand from './../src/highlightcommand';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { getData, setData } from '../../ckeditor5-engine/src/dev-utils/model';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'HighlightCommand', () => {
 	let editor, doc, command;
@@ -40,13 +38,13 @@ describe( 'HighlightCommand', () => {
 
 	describe( 'value', () => {
 		it( 'is set to highlight attribute value when selection is in text with highlight attribute', () => {
-			setModelData( doc, '<paragraph><$text highlight="marker">fo[]o</$text></paragraph>' );
+			setData( doc, '<paragraph><$text highlight="marker">fo[]o</$text></paragraph>' );
 
 			expect( command ).to.have.property( 'value', 'marker' );
 		} );
 
 		it( 'is undefined when selection is not in text with highlight attribute', () => {
-			setModelData( doc, '<paragraph>fo[]o</paragraph>' );
+			setData( doc, '<paragraph>fo[]o</paragraph>' );
 
 			expect( command ).to.have.property( 'value', undefined );
 		} );
@@ -54,7 +52,7 @@ describe( 'HighlightCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'is true when selection is on text which can have highlight added', () => {
-			setModelData( doc, '<paragraph>fo[]o</paragraph>' );
+			setData( doc, '<paragraph>fo[]o</paragraph>' );
 
 			expect( command ).to.have.property( 'isEnabled', true );
 		} );
