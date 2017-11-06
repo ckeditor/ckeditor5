@@ -82,5 +82,5 @@ export function attachLinkToDocumentation( message ) {
 		return message;
 	}
 
-	return message + ` Read more: ${ DOCUMENTATION_URL }#${ matchedErrorName[ 1 ] }.\n`;
+	return message + ` Read more: ${ DOCUMENTATION_URL }#${ matchedErrorName[ 1 ] }\n`;
 }
