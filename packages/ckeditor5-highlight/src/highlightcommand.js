@@ -57,15 +57,34 @@ export default class HighlightCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.
+	 * @param {String} options.class Name of marker class name.
 	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps.
 	 * A new batch will be created if this option is not set.
 	 */
-	execute() {
-		const editor = this.editor;
-		const document = editor.document;
+	execute( options = {} ) {
+		const doc = this.editor.document;
+		const selection = doc.selection;
+		const value = options.class;
 
-		document.enqueueChanges( () => {
-			// TODO
+		doc.enqueueChanges( () => {
+			if ( selection.isCollapsed ) {
+				if ( value ) {
+					selection.setAttribute( 'highlight', value );
+				} else {
+					selection.removeAttribute( 'highlight' );
+				}
+			} else {
+				const ranges = doc.schema.getValidRanges( selection.getRanges(), 'highlight' );
+				const batch = options.batch || doc.batch();
+
+				for ( const range of ranges ) {
+					if ( value ) {
+						batch.setAttribute( range, 'highlight', value );
+					} else {
+						batch.removeAttribute( range, 'highlight' );
+					}
+				}
+			}
 		} );
 	}
 }

@@ -5,10 +5,11 @@
 
 import HighlightCommand from './../src/highlightcommand';
 
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import { getData, setData } from '../../ckeditor5-engine/src/dev-utils/model';
 
 describe( 'HighlightCommand', () => {
 	let editor, doc, command;
@@ -59,15 +60,43 @@ describe( 'HighlightCommand', () => {
 		} );
 	} );
 
-	describe.skip( 'execute()', () => {
-		describe( 'applying highlight', () => {
-			it( 'adds highlight to selected text element', () => {
-				setModelData( doc, '<paragraph>f[o]o</paragraph>' );
+	describe( 'execute()', () => {
+		it( 'should add highlight attribute on selected nodes nodes when passed as parameter', () => {
+			setData( doc, '<paragraph>a[bc<$text highlight="marker">fo]obar</$text>xyz</paragraph>' );
 
-				editor.execute( 'highlight', { class: 'marker' } );
+			expect( command.value ).to.be.undefined;
 
-				expect( getModelData( doc ) ).to.equal( '<paragraph>f<$text highlight="marker">[o]</$text>o</paragraph>' );
-			} );
+			command.execute( { class: 'marker' } );
+
+			expect( command.value ).to.equal( 'marker' );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>a[<$text highlight="marker">bcfo]obar</$text>xyz</paragraph>' );
+		} );
+
+		it( 'should set highlight attribute on selected nodes when passed as parameter', () => {
+			setData( doc, '<paragraph>abc[<$text highlight="marker">foo]bar</$text>xyz</paragraph>' );
+
+			expect( command.value ).to.equal( 'marker' );
+
+			command.execute( { class: 'foo' } );
+
+			expect( getData( doc ) ).to.equal(
+				'<paragraph>abc[<$text highlight="foo">foo</$text>]<$text highlight="marker">bar</$text>xyz</paragraph>'
+			);
+
+			expect( command.value ).to.equal( 'foo' );
+		} );
+
+		it( 'should remove highlight attribute on selected nodes nodes when undefined passed as parameter', () => {
+			setData( doc, '<paragraph>abc[<$text highlight="marker">foo]bar</$text>xyz</paragraph>' );
+
+			expect( command.value ).to.equal( 'marker' );
+
+			command.execute();
+
+			expect( getData( doc ) ).to.equal( '<paragraph>abc[foo]<$text highlight="marker">bar</$text>xyz</paragraph>' );
+
+			expect( command.value ).to.be.undefined;
 		} );
 	} );
 } );
