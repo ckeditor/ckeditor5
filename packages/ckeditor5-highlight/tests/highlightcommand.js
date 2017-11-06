@@ -24,7 +24,7 @@ describe( 'HighlightCommand', () => {
 
 				doc.schema.registerItem( 'paragraph', '$block' );
 
-				doc.schema.allow( { name: '$block', inside: '$root', attributes: 'highlight' } );
+				doc.schema.allow( { name: '$inline', attributes: 'highlight', inside: '$block' } );
 			} );
 	} );
 
@@ -38,16 +38,22 @@ describe( 'HighlightCommand', () => {
 	} );
 
 	describe( 'value', () => {
-		it( 'is true when selection is in block with commend type highlight', () => {
-			setModelData( doc, '<paragraph highlight="center"><$text highlight="true">fo[]o</$text></paragraph>' );
+		it( 'is set to highlight attribute value when selection is in text with highlight attribute', () => {
+			setModelData( doc, '<paragraph><$text highlight="marker">fo[]o</$text></paragraph>' );
 
-			expect( command ).to.have.property( 'value', true );
+			expect( command ).to.have.property( 'value', 'marker' );
+		} );
+
+		it( 'is undefined when selection is not in text with highlight attribute', () => {
+			setModelData( doc, '<paragraph>fo[]o</paragraph>' );
+
+			expect( command ).to.have.property( 'value', undefined );
 		} );
 	} );
 
 	describe( 'isEnabled', () => {
-		it( 'is true when selection is in a block which can have added highlight', () => {
-			setModelData( doc, '<paragraph highlight="center"><$text highlight="true">fo[]o</$text></paragraph>' );
+		it( 'is true when selection is on text which can have highlight added', () => {
+			setModelData( doc, '<paragraph>fo[]o</paragraph>' );
 
 			expect( command ).to.have.property( 'isEnabled', true );
 		} );
@@ -58,9 +64,9 @@ describe( 'HighlightCommand', () => {
 			it( 'adds highlight to selected text element', () => {
 				setModelData( doc, '<paragraph>f[o]o</paragraph>' );
 
-				editor.execute( 'highlight' );
+				editor.execute( 'highlight', { class: 'marker' } );
 
-				expect( getModelData( doc ) ).to.equal( '<paragraph>f<$text highlight="true">[o]</$text>o</paragraph>' );
+				expect( getModelData( doc ) ).to.equal( '<paragraph>f<$text highlight="marker">[o]</$text>o</paragraph>' );
 			} );
 		} );
 	} );

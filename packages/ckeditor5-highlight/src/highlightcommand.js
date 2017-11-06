@@ -46,8 +46,10 @@ export default class HighlightCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = this._checkEnabled();
-		this.value = this._getValue();
+		const doc = this.editor.document;
+
+		this.value = doc.selection.getAttribute( 'highlight' );
+		this.isEnabled = doc.schema.checkAttributeInSelection( doc.selection, 'highlight' );
 	}
 
 	/**
@@ -65,27 +67,5 @@ export default class HighlightCommand extends Command {
 		document.enqueueChanges( () => {
 			// TODO
 		} );
-	}
-
-	/**
-	 * Checks whether the command can be enabled in the current context.
-	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} firstBlock A first block in selection to be checked.
-	 * @returns {Boolean} Whether the command should be enabled.
-	 */
-	_checkEnabled() {
-		return true;
-	}
-
-	/**
-	 * Checks the command's {@link #value}.
-	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} firstBlock A first block in selection to be checked.
-	 * @returns {Boolean} The current value.
-	 */
-	_getValue() {
-		return true;
 	}
 }
