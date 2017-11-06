@@ -56,16 +56,18 @@ describe( 'HighlightEditing', () => {
 		} );
 	} );
 
-	describe.skip( 'highlight', () => {
-		it( 'adds converters to the data pipeline', () => {
-			const data = '<p>f<mark>o</mark>o</p>';
+	describe.skip( 'data pipeline conversions', () => {
+		it( 'should convert defined marker classes', () => {
+			const data = '<p>f<mark class="marker">o</mark>o</p>';
 
 			editor.setData( data );
 
 			expect( getModelData( doc ) ).to.equal( '<paragraph>f<$text highlight="">o</$text>o</paragraph>' );
 			expect( editor.getData() ).to.equal( '<p>x</p>' );
 		} );
+	} );
 
+	describe.skip( 'editing pipeline conversion', () => {
 		it( 'adds a converter to the view pipeline for removing attribute', () => {
 			setModelData( doc, '<paragraph>f<$text highlight="">o</$text>o</paragraph>' );
 
@@ -79,12 +81,16 @@ describe( 'HighlightEditing', () => {
 		} );
 	} );
 
-	describe.skip( 'config', () => {
-		describe( 'styles', () => {
-			describe( 'default value', () => {
-				it( 'should be set', () => {
-					expect( editor.config.get( 'highlight.styles' ) ).to.deep.equal( {} );
-				} );
+	describe( 'config', () => {
+		describe( 'default value', () => {
+			it( 'should be set', () => {
+				expect( editor.config.get( 'highlight' ) ).to.deep.equal( [
+					{ class: 'marker', title: 'Marker', color: '#ffff66', type: 'marker' },
+					{ class: 'marker-green', title: 'Green Marker', color: '#66ff00', type: 'marker' },
+					{ class: 'marker-pink', title: 'Pink Marker', color: '#ff6fff', type: 'marker' },
+					{ class: 'pen-red', title: 'Red Pen', color: '#ff0000', type: 'pen' },
+					{ class: 'pen-blue', title: 'Blue Pen', color: '#0000ff', type: 'pen' }
+				] );
 			} );
 		} );
 	} );

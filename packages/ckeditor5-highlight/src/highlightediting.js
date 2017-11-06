@@ -21,6 +21,14 @@ export default class HighlightEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 
+		editor.config.define( 'highlight', [
+			{ class: 'marker', title: 'Marker', color: '#ffff66', type: 'marker' },
+			{ class: 'marker-green', title: 'Green Marker', color: '#66ff00', type: 'marker' },
+			{ class: 'marker-pink', title: 'Pink Marker', color: '#ff6fff', type: 'marker' },
+			{ class: 'pen-red', title: 'Red Pen', color: '#ff0000', type: 'pen' },
+			{ class: 'pen-blue', title: 'Blue Pen', color: '#0000ff', type: 'pen' }
+		] );
+
 		editor.commands.add( 'highlight', new HighlightCommand( editor ) );
 	}
 }
