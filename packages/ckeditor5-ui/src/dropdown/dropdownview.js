@@ -11,6 +11,8 @@ import View from '../view';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
+import '../../theme/components/dropdown.css';
+
 /**
  * The dropdown view class.
  *

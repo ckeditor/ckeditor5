@@ -1,12 +1,16 @@
-// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
-// For licensing, see LICENSE.md or http://ckeditor.com/license
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../helpers/zindex.css";
 
 /**
  * Enables the tooltip, which is the tooltip is in DOM but
  * not yet displayed.
  */
-@mixin ck-tooltip_enabled {
-	.ck-tooltip {
+@define-mixin ck-tooltip_enabled {
+	& .ck-tooltip {
 		display: block;
 	}
 }
@@ -14,8 +18,8 @@
 /**
  * Disables the tooltip making it disappear from DOM.
  */
-@mixin ck-tooltip_disabled {
-	.ck-tooltip {
+@define-mixin ck-tooltip_disabled {
+	& .ck-tooltip {
 		display: none;
 	}
 }
@@ -24,8 +28,8 @@
  * Shows the tooltip, which is already in DOM.
  * Requires `ck-tooltip_enabled` first.
  */
-@mixin ck-tooltip_visible {
-	.ck-tooltip {
+@define-mixin ck-tooltip_visible {
+	& .ck-tooltip {
 		visibility: visible;
 		opacity: 1;
 	}
@@ -35,20 +39,20 @@
 .ck-tooltip__text::after {
 	position: absolute;
 
-	// Without this, hovering the tooltip could keep it visible.
+	/*Without this, hovering the tooltip could keep it visible.*/
 	pointer-events: none;
 
-	// This is to get rid of flickering when transitioning opacity in Chrome.
-	// It's weird but it works.
+	/*This is to get rid of flickering when transitioning opacity in Chrome.
+	It's weird but it works.*/
 	-webkit-backface-visibility: hidden;
 }
 
 .ck-tooltip {
-	// Tooltip is hidden by default.
+	/*Tooltip is hidden by default.*/
 	visibility: hidden;
 	opacity: 0;
 	display: none;
-	z-index: ck-z( 'modal' );
+	z-index: var(--ck-z-modal);
 }
 
 .ck-tooltip__text {

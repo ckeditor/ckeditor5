@@ -9,6 +9,8 @@
 
 import View from '../view';
 
+import '../../theme/components/label.css';
+
 /**
  * The label view class.
  *

@@ -6,8 +6,6 @@
 import testUtils from '../../../_utils/utils';
 import StickyPanelView from '../../../../src/panel/sticky/stickypanelview';
 
-import '@ckeditor/ckeditor5-theme-lark/theme/theme.scss';
-
 const ui = testUtils.createTestUIView( {
 	stickyToTheTop: '.ck-sticky_to-the-top .ck-editor__top',
 	stickyToTheBox: '.ck-sticky_to-the-box .ck-editor__top'

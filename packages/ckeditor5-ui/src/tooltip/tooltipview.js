@@ -9,6 +9,8 @@
 
 import View from '../view';
 
+import '../../theme/components/tooltip.css';
+
 /**
  * The tooltip view class.
  *

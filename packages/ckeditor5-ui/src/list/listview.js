@@ -12,6 +12,8 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
+import '../../theme/components/list.css';
+
 /**
  * The list view class.
  *

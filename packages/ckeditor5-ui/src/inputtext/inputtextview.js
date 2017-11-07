@@ -9,6 +9,8 @@
 
 import View from '../view';
 
+import '../../theme/components/inputtext.css';
+
 /**
  * The text input view class.
  *

@@ -12,6 +12,8 @@
 import View from '../view';
 import Template from '../template';
 
+import '../../theme/components/editorui.css';
+
 /**
  * The editor UI view class. Base class for the editor main views.
  *
