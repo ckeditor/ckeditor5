@@ -14,8 +14,6 @@ import BalloonEditorUI from './ballooneditorui';
 import BalloonEditorUIView from './ballooneditoruiview';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
-import '../theme/theme.scss';
-
 /**
  * The {@glink builds/guides/overview#Balloon-editor balloon editor} implementation (Medium-like editor).
  * It uses an inline editable and a toolbar based on the {@link module:ui/toolbar/contextual/contextualtoolbar~ContextualToolbar}.
