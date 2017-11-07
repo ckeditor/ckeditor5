@@ -23,8 +23,13 @@ gulp.task( 'test:manual', () => {
 } );
 
 function getTestOptions() {
-	return require( '@ckeditor/ckeditor5-dev-tests' )
+	const options = require( '@ckeditor/ckeditor5-dev-tests' )
 		.parseArguments( process.argv.slice( 2 ) );
+
+	// "Lark" is the default theme for tests.
+	options.themePath = path.resolve( __dirname, 'packages/ckeditor5-theme-lark' );
+
+	return options;
 }
 
 // Documentation. -------------------------------------------------------------
