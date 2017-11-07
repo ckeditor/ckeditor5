@@ -12,7 +12,7 @@ import CodeEngine from './codeengine';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import codeIcon from '../theme/icons/code.svg';
 
-import '../theme/code.scss';
+import '../theme/code.css';
 
 /**
  * The code feature. It introduces the Code button.
