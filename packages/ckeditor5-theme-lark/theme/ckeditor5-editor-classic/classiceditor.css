@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../helpers/colors.css";
+@import "../helpers/rounded.css";
+
+.ck-editor__top {
+	& .ck-sticky-panel {
+		& .ck-toolbar {
+			@mixin ck-rounded-corners {
+				border-bottom-left-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+
+			/* https://github.com/ckeditor/ckeditor5-editor-classic/issues/62 */
+			background: var(--ck-color-editor-toolbar-background);
+			border-bottom-width: 0;
+		}
+
+		& .ck-sticky-panel__content_sticky .ck-toolbar {
+			border-bottom-width: 1px;
+
+			@mixin ck-rounded-corners {
+				border-radius: 0;
+			}
+		}
+	}
+}
+
+.ck-editor__editable {
+	@mixin ck-rounded-corners {
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+	border: 1px solid var(--ck-color-editor-border);
+}

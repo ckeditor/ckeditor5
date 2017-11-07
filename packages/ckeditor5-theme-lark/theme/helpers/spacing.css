@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+:root {
+	--ck-spacing-unit: 						0.8;
+	--ck-spacing-large: 					calc(var(--ck-spacing-unit)*1.5em);
+	--ck-spacing-standard: 					var(--ck-spacing-unit)em;
+	--ck-spacing-medium: 					calc(var(--ck-spacing-unit)*0.8em);
+	--ck-spacing-small: 					calc(var(--ck-spacing-unit)*0.5em);
+	--ck-spacing-tiny: 						calc(var(--ck-spacing-unit)*0.25em);
+}

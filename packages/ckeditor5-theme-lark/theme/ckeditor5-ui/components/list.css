@@ -1,0 +1,45 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../helpers/colors.css";
+@import "../../helpers/rounded.css";
+@import "../../helpers/spacing.css";
+@import "../../helpers/states.css";
+@import "../../helpers/shadow.css";
+
+.ck-list {
+	@mixin ck-rounded-corners;
+	@mixin ck-unselectable;
+
+	list-style-type: none;
+	background: var(--ck-color-list-background);
+}
+
+.ck-list__item {
+	padding: var(--ck-spacing-medium);
+	cursor: default;
+	min-width: 12em;
+
+	&:hover,
+	&:focus {
+		background: var(--ck-color-list-item-background-hover);
+	}
+
+	&:focus {
+		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+
+		outline: none;
+	}
+}
+
+.ck-list__item_active {
+	background: var(--ck-color-list-item-background-active);
+	color: var(--ck-color-list-item-text-active);
+
+	&:hover,
+	&:focus {
+		background: color(var(--ck-color-list-item-background-active) shade(10));
+	}
+}

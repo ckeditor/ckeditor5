@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../helpers/spacing.css";
+
+:root {
+	--ck-image-spacing: calc(5 * var(--ck-spacing-small));
+	--ck-image-max-width: 50%;
+};
+
+.ck-editor__editable {
+	& .image-style-side,
+	& .image-style-align-left,
+	& .image-style-align-center,
+	& .image-style-align-right {
+		max-width: var(--ck-image-max-width);
+	}
+
+	& .image-style-side {
+		float: right;
+		margin-left: var(--ck-image-spacing);
+	}
+
+	& .image-style-align-left {
+		float: left;
+		margin-right: var(--ck-image-spacing);
+	}
+
+	& .image-style-align-center {
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	& .image-style-align-right {
+		float: right;
+		margin-left: var(--ck-image-spacing);
+	}
+}

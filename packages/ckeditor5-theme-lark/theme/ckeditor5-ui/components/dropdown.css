@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../helpers/colors.css";
+@import "../../helpers/rounded.css";
+@import "../../helpers/spacing.css";
+@import "../../helpers/states.css";
+@import "../../helpers/shadow.css";
+
+.ck-dropdown {
+	/* Enable font size inheritance, which allows fluid UI scaling. */
+	font-size: inherit;
+
+	/* A triangle displayed to indicate this is actually a dropdown. */
+	&::after {
+		border-style: solid;
+		border-width: .4em .4em 0 .4em;
+		border-color: var(--ck-color-dropdown-symbol) transparent;
+		right: var(--ck-spacing-standard);
+	}
+
+	& .ck-button.ck-dropdown__button {
+		/* A space to accommodate the triangle. */
+		padding-right: calc(2 * var(--ck-spacing-standard));
+
+		/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
+		&.ck-disabled .ck-button__label {
+			@mixin ck-disabled;
+		}
+
+		/* #23 */
+		& .ck-button__label {
+			width: 7em;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+	}
+}
+
+.ck-dropdown__panel {
+	@mixin ck-rounded-corners;
+	@mixin ck-drop-shadow;
+
+	background: var(--ck-color-dropdown-panel-background);
+	border: 1px solid var(--ck-color-dropdown-panel-border);
+
+	/* Compensate double border from button and from box when positioned below the button. */
+	bottom: 1px;
+}

@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+:root {
+	--ck-color-base-foreground: 						#f7f7f7;
+	--ck-color-base-background: 						#fff;
+	--ck-color-base-border: 							color(var(--ck-color-base-background) shade(25%));
+	--ck-color-base-action: 							#61B145;
+	--ck-color-base-focus: 								#6ab5f9;
+	--ck-color-base-text: 								#333;
+	--ck-color-base-active: 							#1A8BF1;
+
+	/* ----------------------------------------------------------------------------- */
+
+	--ck-color-border-focus: 							#48a3f5;
+	--ck-color-text: 									var(--ck-color-base-text);
+	--ck-color-shadow-drop: 							rgba( 0, 0, 0, .2 );
+	--ck-color-shadow-inner: 							rgba( 0, 0, 0, .1 );
+
+	/* ----------------------------------------------------------------------------- */
+
+	--ck-color-button-default-background: 				var(--ck-color-base-background);
+	--ck-color-button-default-border: 					var(--ck-color-base-border);
+	--ck-color-button-on-background: 					var(--ck-color-base-foreground);
+	--ck-color-button-on-border: 						color(var(--ck-color-base-foreground) shade(25%));
+	--ck-color-button-action-background: 				var(--ck-color-base-action);
+	--ck-color-button-action-border: 					color(var(--ck-color-base-action) shade(20%));
+	--ck-color-button-action-text: 						var(--ck-color-base-background);
+
+	--ck-color-dropdown-panel-background: 				var(--ck-color-base-background);
+	--ck-color-dropdown-panel-border: 					var(--ck-color-base-border);
+	--ck-color-dropdown-symbol: 						#707070;
+
+	--ck-color-input-background: 						var(--ck-color-base-background);
+	--ck-color-input-border: 							var(--ck-color-base-border);
+	--ck-color-input-text: 								var(--ck-color-base-text);
+
+	--ck-color-list-background: 						var(--ck-color-base-background);
+	--ck-color-list-item-background-hover: 				var(--ck-color-base-foreground);
+	--ck-color-list-item-background-active: 			var(--ck-color-base-active);
+	--ck-color-list-item-text-active:					var(--ck-color-base-background);
+
+	--ck-color-panel-background: 						var(--ck-color-base-background);
+	--ck-color-panel-border: 							var(--ck-color-base-border);
+
+	--ck-color-toolbar-background: 						var(--ck-color-base-background);
+	--ck-color-toolbar-border: 							var(--ck-color-base-border);
+
+	--ck-color-tooltip-background: 						var(--ck-color-base-text);
+	--ck-color-tooltip-text: 							var(--ck-color-base-background);
+
+	--ck-color-editor-border: 							var(--ck-color-base-border);
+	--ck-color-editor-toolbar-background: 				var(--ck-color-base-foreground);
+	--ck-color-editor-toolbar-button-background: 		var(--ck-color-base-foreground);
+	--ck-color-editor-dropdown-background: 				var(--ck-color-base-background);
+}

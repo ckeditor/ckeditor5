@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "./colors.css";
+
+:root {
+	/**
+	 * A visual style of element's inner shadow (i.e. input).
+	 */
+	--ck-inner-shadow: 2px 2px 3px var(--ck-color-shadow-inner) inset;
+
+	/**
+	 * A visual style of element's drop shadow (i.e. panel).
+	 */
+	--ck-drop-shadow: 0 1px 2px 0 var(--ck-color-shadow-drop);
+}
+
+/**
+ * A helper to combine multiple shadows.
+ */
+@define-mixin ck-box-shadow $shadowA, $shadowB: 0 0 {
+	box-shadow: $shadowA, $shadowB;
+}
+
+/**
+ * Gives an element a drop shadow so it looks like a floating panel.
+ */
+@define-mixin ck-drop-shadow {
+	@mixin ck-box-shadow var(--ck-drop-shadow);
+}

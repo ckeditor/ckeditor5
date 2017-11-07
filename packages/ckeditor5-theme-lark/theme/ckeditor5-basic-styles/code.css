@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../helpers/colors.css";
+@import "../helpers/rounded.css";
+@import "../helpers/spacing.css";
+
+:root {
+	--ck-color-code: rgba( 200, 200, 200, 0.3 );
+}
+
+code {
+	background-color: var(--ck-color-code);
+	padding: var(--ck-spacing-tiny);
+	border-radius: var(--ck-border-radius);
+}

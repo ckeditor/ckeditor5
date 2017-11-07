@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../helpers/fonts.css";
+@import "../helpers/spacing.css";
+
+.ck-heading_heading1 {
+	font-size: 1.5em;
+}
+
+.ck-heading_heading2 {
+	font-size: 1.3em;
+}
+
+.ck-heading_heading3 {
+	font-size: 1.1em;
+}
+
+/* Using absolute units to make sure each element has the same height and padding.
+https://github.com/ckeditor/ckeditor5-heading/issues/63 */
+[class*="ck-heading_"] {
+	line-height: calc(1.8 * var(--ck-font-size-base));
+	/* Strip the units from $ck-def-spacing here. */
+	padding: calc(var(--ck-spacing-unit) * var(--ck-font-size-base));
+}
+
+[class*="ck-heading_heading"] {
+	font-weight: bold;
+}
+
+/* Resize dropdown's button label. */
+.ck-dropdown.ck-heading-dropdown {
+	& .ck-dropdown__button .ck-button__label {
+		width: 8em;
+	}
+}

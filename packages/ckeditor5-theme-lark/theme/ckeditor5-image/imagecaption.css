@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../helpers/colors.css";
+@import "../helpers/fonts.css";
+@import "../helpers/spacing.css";
+
+:root {
+	--ck-color-image-caption-background: var(--ck-color-base-foreground);
+	--ck-color-image-caption-text: var(--ck-color-base-text);
+};
+
+.ck-editor__editable .image > figcaption {
+	color: var(--ck-color-image-caption-text);
+	background-color: var(--ck-color-image-caption-background);
+	padding: var(--ck-spacing-standard);
+	font-size: var(--ck-font-size-small);
+	outline-offset: -1px;
+}

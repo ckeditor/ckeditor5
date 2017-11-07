@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../../helpers/colors.css";
+@import "../../../helpers/rounded.css";
+@import "../../../helpers/spacing.css";
+@import "../../../helpers/states.css";
+
+.ck-toolbar {
+	@mixin ck-rounded-corners;
+
+	padding: var(--ck-spacing-small);
+	border: 1px solid var(--ck-color-toolbar-border);
+
+	/* Allow wrapping toolbar items to the new line. */
+	white-space: initial;
+
+	/* (#11) Separate toolbar items. */
+	& > * {
+		margin-right: var(--ck-spacing-small);
+	}
+
+	& > *:last-child {
+		margin-right: 0;
+	}
+
+	@nest .ck-toolbar-container & {
+		border: 0;
+	}
+}
+
+.ck-toolbar_floating {
+	/* Disallow wrapping toolbar items to the new line when the toolbar is floating,
+	resulting in an toolbar shapes when the horizontal space is limited.
+	https://github.com/ckeditor/ckeditor5-theme-lark/issues/93 */
+	white-space: nowrap;
+}
+
+.ck-toolbar__separator {
+	width: 1px;
+	height: calc(1em + 2 * var(--ck-spacing-medium));
+	vertical-align: middle;
+	background: var(--ck-color-toolbar-border);
+}
+
+.ck-toolbar__newline {
+	height: var(--ck-spacing-small);
+}

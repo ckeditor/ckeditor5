@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "./colors.css";
+
+:root {
+	/**
+	 * A visual style of focused element's outer shadow.
+	 */
+	--ck-focus-outer-shadow: 0 0 3px 2px color(var(--ck-color-border-focus) lightness(+15%));
+
+	/**
+	 * A visual style of focused element's border or outline.
+	 */
+	--ck-focus-ring: 1px solid var(--ck-color-border-focus);
+
+	/**
+	 * An opacity value of disabled UI item.
+	 */
+	--ck-disabled-opacity: .5;
+}
+
+/**
+ * A class which indicates that an element holding it is disabled.
+ */
+@define-mixin ck-disabled {
+	opacity: var(--ck-disabled-opacity);
+}
+
+/**
+ * A visual style of focused element's border.
+ */
+@define-mixin ck-focus-ring {
+	/* Disable native outline. */
+	outline: none;
+	border: var(--ck-focus-ring)
+}
