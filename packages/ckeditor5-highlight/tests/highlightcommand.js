@@ -71,6 +71,25 @@ describe( 'HighlightCommand', () => {
 			expect( getData( doc ) ).to.equal( '<paragraph>a[<$text highlight="marker">bcfo]obar</$text>xyz</paragraph>' );
 		} );
 
+		it( 'should add highlight attribute on selected nodes nodes when passed as parameter (multiple nodes)', () => {
+			setData(
+				doc,
+				'<paragraph>abcabc[abc</paragraph>' +
+				'<paragraph>foofoofoo</paragraph>' +
+				'<paragraph>barbar]bar</paragraph>'
+			);
+
+			command.execute( { class: 'marker' } );
+
+			expect( command.value ).to.equal( 'marker' );
+
+			expect( getData( doc ) ).to.equal(
+				'<paragraph>abcabc[<$text highlight="marker">abc</$text></paragraph>' +
+				'<paragraph><$text highlight="marker">foofoofoo</$text></paragraph>' +
+				'<paragraph><$text highlight="marker">barbar</$text>]bar</paragraph>'
+			);
+		} );
+
 		it( 'should set highlight attribute on selected nodes when passed as parameter', () => {
 			setData( doc, '<paragraph>abc[<$text highlight="marker">foo]bar</$text>xyz</paragraph>' );
 

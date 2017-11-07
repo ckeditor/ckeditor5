@@ -34,28 +34,6 @@ describe( 'HighlightEditing', () => {
 		expect( editor.commands.get( 'highlight' ) ).to.be.instanceOf( HighlightCommand );
 	} );
 
-	it.skip( 'allows for highlight in $blocks', () => {
-		expect( doc.schema.check( { name: '$text', inside: '$root', attributes: 'highlight' } ) ).to.be.true;
-	} );
-
-	describe.skip( 'integration', () => {
-		beforeEach( () => {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ HighlightEditing, Paragraph ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-
-					doc = editor.document;
-				} );
-		} );
-
-		it( 'is allowed inside paragraph', () => {
-			expect( doc.schema.check( { name: 'paragraph', attributes: 'highlight' } ) ).to.be.true;
-		} );
-	} );
-
 	describe( 'data pipeline conversions', () => {
 		it( 'should convert defined marker classes', () => {
 			const data = '<p>f<mark class="marker">o</mark>o</p>';
