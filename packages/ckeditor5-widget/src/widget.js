@@ -17,7 +17,7 @@ import RootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditabl
 import { isWidget, WIDGET_SELECTED_CLASS_NAME, getLabel } from './utils';
 import { keyCodes, getCode, parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
-import '../theme/theme.scss';
+import '../theme/widget.css';
 
 const selectAllKeystrokeCode = parseKeystroke( 'Ctrl+A' );
 
