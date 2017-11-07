@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "@ckeditor/ckeditor5-theme-lark/theme/helpers/colors.css";
+@import "@ckeditor/ckeditor5-theme-lark/theme/helpers/states.css";
+@import "@ckeditor/ckeditor5-theme-lark/theme/helpers/shadow.css";
+
+figure {
+	background-color: #f3f3f3;
+	padding: 10px;
+
+	& figcaption {
+		background: white;
+		outline: none;
+
+		&.focused {
+			@mixin ck-focus-ring;
+			@mixin ck-box-shadow var(--ck-inner-shadow);
+		}
+	}
+}
+
+
+
+
