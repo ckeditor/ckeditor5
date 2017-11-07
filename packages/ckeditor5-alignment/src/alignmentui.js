@@ -17,8 +17,6 @@ import alignCenterIcon from '../theme/icons/align-center.svg';
 import alignJustifyIcon from '../theme/icons/align-justify.svg';
 import AlignmentEditing, { isSupported } from './alignmentediting';
 
-import upperFirst from '@ckeditor/ckeditor5-utils/src/lib/lodash/upperFirst';
-
 const icons = new Map( [
 	[ 'left', alignLeftIcon ],
 	[ 'right', alignRightIcon ],
@@ -34,6 +32,31 @@ const icons = new Map( [
  * @extends module:core/plugin~Plugin
  */
 export default class AlignmentUI extends Plugin {
+	/**
+	 * Returns the localized style titles provided by the plugin.
+	 *
+	 * The following localized titles corresponding with
+	 * {@link module:alignment/alignmentediting~AlignmentEditingConfig#styles} are available:
+	 *
+	 * * `'Left'`,
+	 * * `'Right'`,
+	 * * `'Center'`,
+	 * * `'Justify'`
+	 *
+	 * @readonly
+	 * @type {Object.<String,String>}
+	 */
+	get localizedStylesTitles() {
+		const t = this.editor.t;
+
+		return {
+			'left': t( 'Align left' ),
+			'right': t( 'Align right' ),
+			'center': t( 'Align center' ),
+			'justify': t( 'Justify' )
+		};
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -67,7 +90,6 @@ export default class AlignmentUI extends Plugin {
 	 */
 	_addButton( style ) {
 		const editor = this.editor;
-		const t = editor.t;
 
 		const commandName = AlignmentEditing.commandName( style );
 		const command = editor.commands.get( commandName );
@@ -76,7 +98,7 @@ export default class AlignmentUI extends Plugin {
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
-				label: t( upperFirst( style ) ),
+				label: this.localizedStylesTitles[ style ],
 				icon: icons.get( style ),
 				tooltip: true
 			} );
