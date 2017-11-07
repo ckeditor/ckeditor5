@@ -435,7 +435,7 @@ describe( 'Rect', () => {
 			ancestorA = document.createElement( 'div' );
 			ancestorB = document.createElement( 'div' );
 
-			ancestorA.append( element );
+			ancestorA.appendChild( element );
 			document.body.appendChild( ancestorA );
 		} );
 
@@ -575,7 +575,7 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should return the visible rect (HTMLElement), partially cropped, deep ancestor overflow', () => {
-			ancestorB.append( ancestorA );
+			ancestorB.appendChild( ancestorA );
 			document.body.appendChild( ancestorB );
 
 			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
