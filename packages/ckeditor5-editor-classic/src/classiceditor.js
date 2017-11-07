@@ -13,7 +13,7 @@ import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 
-import '../theme/theme.scss';
+import '../theme/classiceditor.css';
 
 /**
  * The {@glink builds/guides/overview#Classic-editor classic editor} implementation.
