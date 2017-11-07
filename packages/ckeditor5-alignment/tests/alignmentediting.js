@@ -69,8 +69,8 @@ describe( 'AlignmentEditing', () => {
 			expect( doc.schema.check( { name: 'heading1', attributes: 'alignment' } ) ).to.be.true;
 		} );
 
-		it( 'is disallowed on figcaption', () => {
-			expect( doc.schema.check( { name: 'figcaption', attributes: 'alignment' } ) ).to.be.false;
+		it( 'is disallowed on caption', () => {
+			expect( doc.schema.check( { name: 'caption', attributes: 'alignment' } ) ).to.be.false;
 		} );
 	} );
 
