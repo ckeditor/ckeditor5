@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+.ck-link-form {
+	overflow: hidden;
+}
+
+.ck-link-form__actions {
+	clear: both;
+
+	& .ck-button {
+		float: right;
+
+		/* The "Unlink" button.*/
+		&:last-child {
+			float: left;
+		}
+	}
+}
