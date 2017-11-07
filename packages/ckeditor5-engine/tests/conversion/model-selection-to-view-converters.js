@@ -528,9 +528,9 @@ describe( 'model-selection-to-view-converters', () => {
 		beforeEach( () => {
 			function themeElementCreator( themeValue ) {
 				if ( themeValue == 'important' ) {
-					return new ViewAttributeElement( 'strong', { style: 'text-transform:uppercase;' } );
+					return new ViewAttributeElement( 'strong', { style: 'text-transform:uppercase' } );
 				} else if ( themeValue == 'gold' ) {
-					return new ViewAttributeElement( 'span', { style: 'color:yellow;' } );
+					return new ViewAttributeElement( 'span', { style: 'color:yellow' } );
 				}
 			}
 
@@ -545,7 +545,7 @@ describe( 'model-selection-to-view-converters', () => {
 				test(
 					[ 1, 5 ],
 					'fo<$text theme="gold">ob</$text>ar',
-					'f{o<span style="color:yellow;">ob</span>a}r'
+					'f{o<span style="color:yellow">ob</span>a}r'
 				);
 			} );
 
@@ -553,7 +553,7 @@ describe( 'model-selection-to-view-converters', () => {
 				test(
 					[ 2, 4 ],
 					'f<$text theme="gold">ooba</$text>r',
-					'f<span style="color:yellow;">o{ob}a</span>r'
+					'f<span style="color:yellow">o{ob}a</span>r'
 				);
 			} );
 
@@ -561,7 +561,7 @@ describe( 'model-selection-to-view-converters', () => {
 				test(
 					[ 2, 4 ],
 					'fo<$text theme="important">ob</$text>ar',
-					'fo{<strong style="text-transform:uppercase;">ob</strong>}ar'
+					'fo{<strong style="text-transform:uppercase">ob</strong>}ar'
 				);
 			} );
 
@@ -569,7 +569,7 @@ describe( 'model-selection-to-view-converters', () => {
 				test(
 					[ 3, 5 ],
 					'fo<$text theme="important">ob</$text>ar',
-					'fo<strong style="text-transform:uppercase;">o{b</strong>a}r'
+					'fo<strong style="text-transform:uppercase">o{b</strong>a}r'
 				);
 			} );
 		} );
@@ -579,7 +579,7 @@ describe( 'model-selection-to-view-converters', () => {
 				test(
 					[ 3, 3 ],
 					'f<$text theme="gold">ooba</$text>r',
-					'f<span style="color:yellow;">oo{}ba</span>r'
+					'f<span style="color:yellow">oo{}ba</span>r'
 				);
 			} );
 
@@ -587,7 +587,7 @@ describe( 'model-selection-to-view-converters', () => {
 				test(
 					[ 1, 1 ],
 					'foobar',
-					'f<strong style="text-transform:uppercase;">[]</strong>oobar',
+					'f<strong style="text-transform:uppercase">[]</strong>oobar',
 					{ theme: 'important' }
 				);
 			} );
@@ -596,9 +596,9 @@ describe( 'model-selection-to-view-converters', () => {
 				test(
 					[ 3, 3 ],
 					'f<$text theme="gold">ooba</$text>r',
-					'f<span style="color:yellow;">oo</span>' +
-					'<em><span style="color:yellow;">[]</span></em>' +
-					'<span style="color:yellow;">ba</span>r',
+					'f<span style="color:yellow">oo</span>' +
+					'<em><span style="color:yellow">[]</span></em>' +
+					'<span style="color:yellow">ba</span>r',
 					{ italic: true }
 				);
 			} );
@@ -611,9 +611,9 @@ describe( 'model-selection-to-view-converters', () => {
 				test(
 					[ 3, 3 ],
 					'f<$text theme="gold">ooba</$text>r',
-					'f<span style="color:yellow;">oo</span>' +
-					'<strong style="text-transform:uppercase;">[]</strong>' +
-					'<span style="color:yellow;">ba</span>r',
+					'f<span style="color:yellow">oo</span>' +
+					'<strong style="text-transform:uppercase">[]</strong>' +
+					'<span style="color:yellow">ba</span>r',
 					{ theme: 'important' }
 				);
 			} );
