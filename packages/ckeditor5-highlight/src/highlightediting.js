@@ -9,13 +9,16 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import HighlightCommand from './highlightcommand';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 
 import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
 
+import HighlightCommand from './highlightcommand';
+
 /**
+ * The highlight editing feature. It introduces `highlight` command which allow to highlight selected text with defined 'marker' or 'pen'.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class HighlightEditing extends Plugin {
@@ -69,3 +72,50 @@ export default class HighlightEditing extends Plugin {
 		editor.commands.add( 'highlight', new HighlightCommand( editor ) );
 	}
 }
+
+/**
+ * Highlight option descriptor.
+ *
+ * @typedef {Object} module:highlight/highlightediting~HeadingOption
+ * @property {String} class The class which is used to differentiate highlighters.
+ * @property {String} title The user-readable title of the option.
+ * @property {String} color Color used for highlighter. Should be coherent with CSS class definition.
+ * @property {'marker'|'pen'} type The type of highlighter. Either "marker" - will use #color as background name
+ * of the view element that will be used to represent the model element in the view.
+ */
+
+/**
+ * The configuration of the {@link module:highlight/highlightediting~HighlightEditing Highlight feature}.
+ *
+ * Read more in {@link module:highlight/highlightediting~HighlightEditingConfig}.
+ *
+ * @member {module:highlight/highlightediting~HighlightEditingConfig} module:core/editor/editorconfig~EditorConfig#alignment
+ */
+
+/**
+ * The configuration of the {@link module:highlight/highlightediting~HighlightEditing Highlight feature}.
+ *
+ *        ClassicEditor
+ *            .create( editorElement, {
+ * 				highlight:  ... // Highlight feature config.
+ *			} )
+ *            .then( ... )
+ *            .catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface HighlightEditingConfig
+ */
+
+/**
+ * Available highlighters options.
+ *
+ * There are two types of highlighters:
+ * - 'marker' - rendered as `<mark>` element with defined background color.
+ * - 'pen' - rendered as `<mark>` element with defined foreground (font) color.
+ *
+ * Note: Each highlighter must have it's own CSS class defined to properly match content data. Also it is advised
+ * that color value should match the values defined in content CSS stylesheet.
+ *
+ * @member {Array.<module:heading/heading~HeadingOption>} module:heading/heading~HeadingConfig#options
+ */

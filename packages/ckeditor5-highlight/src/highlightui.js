@@ -30,11 +30,4 @@ export default class HighlightUI extends Plugin {
 	static get pluginName() {
 		return 'HighlightUI';
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		// TODO
-	}
 }

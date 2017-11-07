@@ -10,38 +10,12 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
- * The highlight command.
+ * The highlight command. It is used by the {@link module:highlight/highlight~HighlightEditing highlight feature}
+ * to apply text highlighting.
  *
  * @extends module:core/command~Command
  */
 export default class HighlightCommand extends Command {
-	/**
-	 * Creates an instance of the command.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {'left'|'right'|'center'|'justify'} type Highlight type to be handled by this command.
-	 */
-	constructor( editor, type ) {
-		super( editor );
-
-		/**
-		 * The type of the list created by the command.
-		 *
-		 * @readonly
-		 * @member {'left'|'right'|'center'|'justify'}
-		 */
-		this.type = type;
-
-		/**
-		 * A flag indicating whether the command is active, which means that the selection starts in a block
-		 * that has defined highlight of the same type.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #value
-		 */
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -57,15 +31,15 @@ export default class HighlightCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} options.class Name of marker class name.
+	 * @param {String} options.class Name of highlighter class.
 	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps.
 	 * A new batch will be created if this option is not set.
 	 */
 	execute( options = {} ) {
 		const doc = this.editor.document;
 		const selection = doc.selection;
-		const value = options.class;
 
+		// Do not apply highlight no collapsed selection.
 		if ( selection.isCollapsed ) {
 			return;
 		}
@@ -75,8 +49,8 @@ export default class HighlightCommand extends Command {
 			const batch = options.batch || doc.batch();
 
 			for ( const range of ranges ) {
-				if ( value ) {
-					batch.setAttribute( range, 'highlight', value );
+				if ( options.class ) {
+					batch.setAttribute( range, 'highlight', options.class );
 				} else {
 					batch.removeAttribute( range, 'highlight' );
 				}
@@ -84,3 +58,11 @@ export default class HighlightCommand extends Command {
 		} );
 	}
 }
+
+/**
+ * Holds current highlight class. If there is no highlight in selection then value will be undefined.
+ *
+ * @observable
+ * @readonly
+ * @member {undefined|String} HighlightCommand#value
+ */
