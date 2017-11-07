@@ -49,6 +49,22 @@ describe( 'Alignment', () => {
 
 			expect( getModelData( doc ) ).to.equal( '<image src="foo.png"><caption>Foo[]</caption></image>' );
 		} );
+		it( 'does not work inside image caption when selection overlaps image', () => {
+			setModelData(
+				doc,
+				'<paragraph>foo[foo</paragraph>' +
+				'<image src="foo.png"><caption>bar</caption></image>' +
+				'<paragraph>baz]baz</paragraph>'
+			);
+
+			editor.execute( 'alignCenter' );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph alignment="center">foo[foo</paragraph>' +
+				'<image src="foo.png"><caption>bar</caption></image>' +
+				'<paragraph alignment="center">baz]baz</paragraph>'
+			);
+		} );
 	} );
 
 	describe( 'compatibility with blockQuote', () => {

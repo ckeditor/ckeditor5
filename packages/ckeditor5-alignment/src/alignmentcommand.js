@@ -60,7 +60,7 @@ export default class AlignmentCommand extends Command {
 		const firstBlock = first( this.editor.document.selection.getSelectedBlocks() );
 
 		// As first check whether to enable or disable command as value will be always false if command cannot be enabled.
-		this.isEnabled = this._checkEnabled( firstBlock );
+		this.isEnabled = !!firstBlock && this._canBeAligned( firstBlock );
 		this.value = this._getValue( firstBlock );
 	}
 
@@ -78,7 +78,9 @@ export default class AlignmentCommand extends Command {
 
 		document.enqueueChanges( () => {
 			const batch = options.batch || document.batch();
-			const blocks = Array.from( document.selection.getSelectedBlocks() );
+
+			// Get only those blocks from selected that can have alignment set
+			const blocks = Array.from( document.selection.getSelectedBlocks() ).filter( block => this._canBeAligned( block ) );
 
 			// Remove alignment attribute if current alignment is as selected or is default one.
 			// Default alignment should not be stored in model as it will bloat model data.
@@ -91,24 +93,20 @@ export default class AlignmentCommand extends Command {
 	}
 
 	/**
-	 * Checks whether the command can be enabled in the current context.
+	 * Checks whether block can have aligned set.
 	 *
+	 * @param {module:engine/model/element~Element} block A block to be checked.
+	 * @returns {Boolean}
 	 * @private
-	 * @param {module:engine/model/element~Element} firstBlock A first block in selection to be checked.
-	 * @returns {Boolean} Whether the command should be enabled.
 	 */
-	_checkEnabled( firstBlock ) {
-		if ( !firstBlock ) {
-			return false;
-		}
-
+	_canBeAligned( block ) {
 		const schema = this.editor.document.schema;
 
 		// Check if adding alignment attribute to selected block is allowed.
 		return schema.check( {
-			name: firstBlock.name,
+			name: block.name,
 			// Apparently I must pass current attributes as otherwise adding alignment on listItem will fail.
-			attributes: [ ...firstBlock.getAttributeKeys(), 'alignment' ]
+			attributes: [ ...block.getAttributeKeys(), 'alignment' ]
 		} );
 	}
 
