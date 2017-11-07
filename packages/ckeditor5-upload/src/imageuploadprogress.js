@@ -14,7 +14,7 @@ import uploadingPlaceholder from '../theme/icons/image_placeholder.svg';
 import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 import ImageUploadEngine from './imageuploadengine';
 
-import '../theme/imageuploadprogress.scss';
+import '../theme/imageuploadprogress.css';
 
 /**
  * Image upload progress plugin.
