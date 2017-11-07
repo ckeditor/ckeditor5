@@ -42,13 +42,7 @@ export default class HighlightEditing extends Plugin {
 		buildModelConverter()
 			.for( data.modelToView, editing.modelToView )
 			.fromAttribute( 'highlight' )
-			.toElement( data => {
-				const attributeElement = new AttributeElement( 'mark' );
-
-				attributeElement.addClass( data );
-
-				return attributeElement;
-			} );
+			.toElement( data => new AttributeElement( 'mark', { class: data } ) );
 
 		const configuredClasses = editor.config.get( 'highlight' ).map( config => config.class );
 
