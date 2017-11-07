@@ -84,7 +84,9 @@ export default class AlignmentEditing extends Plugin {
 		// Add only enabled & supported commands.
 		enabledStyles
 			.filter( isSupported )
-			.forEach( style => editor.commands.add( AlignmentEditing.commandName( style ), new AlignmentCommand( editor, style ) ) );
+			.forEach( style => {
+				editor.commands.add( AlignmentEditing.commandName( style ), new AlignmentCommand( editor, style, isDefault( style ) ) );
+			} );
 	}
 
 	/**
@@ -160,8 +162,8 @@ function removeStyle( removeStyleFn ) {
 }
 
 // Check whether alignment is default one.
-// @private
-function isDefault( textAlign ) {
+// @protected
+export function isDefault( textAlign ) {
 	// Right now only RTL is supported so 'left' value is always default one.
 	return textAlign === 'left';
 }

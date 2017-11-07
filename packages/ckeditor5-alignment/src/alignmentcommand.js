@@ -21,8 +21,9 @@ export default class AlignmentCommand extends Command {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 * @param {'left'|'right'|'center'|'justify'} type Alignment type to be handled by this command.
+	 * @param {Boolean} isDefault Indicates if command is of default type.
 	 */
-	constructor( editor, type ) {
+	constructor( editor, type, isDefault ) {
 		super( editor );
 
 		/**
@@ -32,6 +33,15 @@ export default class AlignmentCommand extends Command {
 		 * @member {'left'|'right'|'center'|'justify'}
 		 */
 		this.type = type;
+
+		/**
+		 * Whether this command has default type.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {Boolean}
+		 */
+		this._isDefault = isDefault;
 
 		/**
 		 * A flag indicating whether the command is active, which means that the selection starts in a block
@@ -72,23 +82,12 @@ export default class AlignmentCommand extends Command {
 
 			// Remove alignment attribute if current alignment is as selected or is default one.
 			// Default alignment should not be stored in model as it will bloat model data.
-			if ( this.value || this._isDefault() ) {
+			if ( this.value || this._isDefault ) {
 				removeAlignmentFromSelection( blocks, batch );
 			} else {
 				setAlignmentOnSelection( blocks, batch, this.type );
 			}
 		} );
-	}
-
-	/**
-	 * Checks whether the command is default in given context.
-	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
-	 */
-	_isDefault() {
-		// Right now only LTR is supported so 'left' is always default one.
-		return this.type === 'left';
 	}
 
 	/**
@@ -129,7 +128,7 @@ export default class AlignmentCommand extends Command {
 		const selectionAlignment = firstBlock.getAttribute( 'alignment' );
 
 		// Command's value will be set when commands type is matched in selection or the selection is default one.
-		return selectionAlignment ? selectionAlignment === this.type : this._isDefault();
+		return selectionAlignment ? selectionAlignment === this.type : this._isDefault;
 	}
 }
 

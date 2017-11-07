@@ -17,8 +17,8 @@ describe( 'AlignmentCommand', () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
 				doc = newEditor.document;
-				command = new AlignmentCommand( newEditor, 'center' );
-				defaultAlignmentCommand = new AlignmentCommand( newEditor, 'left' );
+				command = new AlignmentCommand( newEditor, 'center', false );
+				defaultAlignmentCommand = new AlignmentCommand( newEditor, 'left', true );
 				editor = newEditor;
 
 				editor.commands.add( 'alignCenter', command );
