@@ -10,7 +10,7 @@
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 const { bundler } = require( '@ckeditor/ckeditor5-dev-utils' );
-const getPostCssConfig = require( '@ckeditor/ckeditor5-dev-utils' ).themes.getPostCssConfig;
+const { getPostCssConfig } = require( '@ckeditor/ckeditor5-dev-utils' ).styles;
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 const BabiliPlugin = require( 'babel-minify-webpack-plugin' );
 const buildConfig = require( './build-config' );
