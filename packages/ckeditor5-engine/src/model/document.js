@@ -7,11 +7,9 @@
  * @module engine/model/document
  */
 
-// Load all basic deltas and transformations, they register themselves, but they need to be imported somewhere.
-/* eslint-disable no-unused-vars */
-import deltas from './delta/basic-deltas';
-import transformations from './delta/basic-transformations';
-/* eslint-enable no-unused-vars */
+// Load all basic deltas and transformations, they register themselves.
+import './delta/basic-deltas';
+import './delta/basic-transformations';
 
 import Range from './range';
 import Position from './position';
