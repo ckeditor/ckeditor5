@@ -74,7 +74,7 @@ describe( 'ImageUploadEngine', () => {
 	it( 'should execute imageUpload command when image is pasted', () => {
 		const spy = sinon.spy( editor, 'execute' );
 		const fileMock = createNativeFileMock();
-		const dataTransfer = new DataTransfer( { files: [ fileMock ] } );
+		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 		setModelData( doc, '<paragraph>[]foo</paragraph>' );
 
 		const targetRange = Range.createFromParentsAndOffsets( doc.getRoot(), 1, doc.getRoot(), 1 );
@@ -94,7 +94,7 @@ describe( 'ImageUploadEngine', () => {
 	it( 'should execute imageUpload command with an optimized position when image is pasted', () => {
 		const spy = sinon.spy( editor, 'execute' );
 		const fileMock = createNativeFileMock();
-		const dataTransfer = new DataTransfer( { files: [ fileMock ] } );
+		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 		setModelData( doc, '<paragraph>[]foo</paragraph>' );
 
 		const paragraph = doc.getRoot().getChild( 0 );
@@ -115,7 +115,7 @@ describe( 'ImageUploadEngine', () => {
 	it( 'should execute imageUpload command when multiple files image are pasted', () => {
 		const spy = sinon.spy( editor, 'execute' );
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
-		const dataTransfer = new DataTransfer( { files } );
+		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
 		setModelData( doc, '<paragraph>[]foo</paragraph>' );
 
 		const targetRange = Range.createFromParentsAndOffsets( doc.getRoot(), 1, doc.getRoot(), 1 );
@@ -143,9 +143,27 @@ describe( 'ImageUploadEngine', () => {
 			type: 'media/mp3',
 			size: 1024
 		};
-		const dataTransfer = new DataTransfer( { files: [ fileMock ] } );
+		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 
 		setModelData( doc, '<paragraph>foo[]</paragraph>' );
+
+		const targetRange = Range.createFromParentsAndOffsets( doc.getRoot(), 1, doc.getRoot(), 1 );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		sinon.assert.notCalled( spy );
+	} );
+
+	it( 'should not execute imageUpload command when there is non-empty HTML content pasted', () => {
+		const spy = sinon.spy( editor, 'execute' );
+		const fileMock = createNativeFileMock();
+		const dataTransfer = new DataTransfer( {
+			files: [ fileMock ],
+			types: [ 'Files', 'text/html' ],
+			getData: type => type === 'text/html' ? '<p>SomeData</p>' : ''
+		} );
+		setModelData( doc, '<paragraph>[]foo</paragraph>' );
 
 		const targetRange = Range.createFromParentsAndOffsets( doc.getRoot(), 1, doc.getRoot(), 1 );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
