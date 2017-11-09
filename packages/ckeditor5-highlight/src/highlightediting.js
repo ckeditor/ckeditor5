@@ -87,8 +87,9 @@ export default class HighlightEditing extends Plugin {
  * @property {String} class The class which is used to differentiate highlighters.
  * @property {String} title The user-readable title of the option.
  * @property {String} color Color used for highlighter. Should be coherent with CSS class definition.
- * @property {'marker'|'pen'} type The type of highlighter. Either "marker" - will use #color as background name
- * of the view element that will be used to represent the model element in the view.
+ * @property {'marker'|'pen'} type The type of highlighter:
+ * - "marker" - will use #color as background,
+ * - "pen" - will use #color as font color.
  */
 
 /**
@@ -96,7 +97,7 @@ export default class HighlightEditing extends Plugin {
  *
  * Read more in {@link module:highlight/highlightediting~HighlightEditingConfig}.
  *
- * @member {module:highlight/highlightediting~HighlightEditingConfig} module:core/editor/editorconfig~EditorConfig#alignment
+ * @member {module:highlight/highlightediting~HighlightEditingConfig} module:core/editor/editorconfig~EditorConfig#highlight
  */
 
 /**

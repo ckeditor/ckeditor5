@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
- * The highlight command. It is used by the {@link module:highlight/highlight~HighlightEditing highlight feature}
+ * The highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}
  * to apply text highlighting.
  *
  * @extends module:core/command~Command
@@ -64,5 +64,5 @@ export default class HighlightCommand extends Command {
  *
  * @observable
  * @readonly
- * @member {undefined|String} HighlightCommand#value
+ * @member {undefined|String} module:highlight/highlightcommand~HighlightCommand#value
  */
