@@ -63,9 +63,7 @@ export default class HighlightEditing extends Plugin {
 			.for( data.viewToModel )
 			.fromElement( 'mark' )
 			.toAttribute( viewElement => {
-				const viewClassNames = [ ...viewElement.getClassNames() ];
-
-				for ( const className of viewClassNames ) {
+				for ( const className of viewElement.getClassNames() ) {
 					if ( configuredClasses.indexOf( className ) > -1 ) {
 						return { key: 'highlight', value: className };
 					}
