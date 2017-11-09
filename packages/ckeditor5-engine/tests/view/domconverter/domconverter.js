@@ -48,6 +48,8 @@ describe( 'DomConverter', () => {
 			domEditable.setAttribute( 'contenteditable', 'true' );
 			domEditableParent.appendChild( domEditable );
 			document.body.appendChild( domEditableParent );
+			// Make sure we are starting with focus on document body each time.
+			document.body.focus();
 		} );
 
 		afterEach( () => {
