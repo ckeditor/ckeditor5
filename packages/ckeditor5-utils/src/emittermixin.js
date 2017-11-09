@@ -505,6 +505,7 @@ function createEventNamespace( source, eventName ) {
 function getCallbacksListsForNamespace( source, eventName ) {
 	const eventNode = getEvents( source )[ eventName ];
 
+	/* istanbul ignore if: this check make sense but in code it does not occur. */
 	if ( !eventNode ) {
 		return [];
 	}
