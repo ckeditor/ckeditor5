@@ -37,7 +37,8 @@
     "postcss-loader": "^2.0.8",
     "raw-loader": "^0.5.1",
     "style-loader": "^0.18.2",
-    "webpack": "^3.6.0"
+    "webpack": "^3.8.1",
+    "webpack-sources": "1.0.1"
   },
   "engines": {
     "node": ">=6.0.0",
