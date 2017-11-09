@@ -65,20 +65,9 @@ export default class InputTextView extends View {
 				],
 				id: bind.to( 'id' ),
 				placeholder: bind.to( 'placeholder' ),
-				readonly: bind.to( 'isReadOnly' )
+				readonly: bind.to( 'isReadOnly' ),
+				value: bind.to( 'value' )
 			}
-		} );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	render() {
-		super.render();
-
-		// Note: `value` cannot be an HTML attribute, because it doesn't change HTMLInputElement value once changed.
-		this.on( 'change:value', ( evt, propertyName, value ) => {
-			this.element.value = value || '';
 		} );
 	}
 
