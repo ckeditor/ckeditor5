@@ -65,17 +65,11 @@ export default class HighlightEditing extends Plugin {
 			.toAttribute( viewElement => {
 				const viewClassNames = [ ...viewElement.getClassNames() ];
 
-				if ( !viewClassNames.length ) {
-					return;
+				for ( const className of viewClassNames ) {
+					if ( configuredClasses.indexOf( className ) > -1 ) {
+						return { key: 'highlight', value: className };
+					}
 				}
-
-				const highlightClassNames = viewClassNames.filter( className => configuredClasses.includes( className ) );
-
-				if ( !highlightClassNames.length ) {
-					return;
-				}
-
-				return { key: 'highlight', value: highlightClassNames[ 0 ] };
 			} );
 
 		editor.commands.add( 'highlight', new HighlightCommand( editor ) );
