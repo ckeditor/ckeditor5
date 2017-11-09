@@ -263,15 +263,6 @@ function getNodeUID( node ) {
 	return node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = uid() );
 }
 
-// Checks (naively) if given node is native DOM Node.
-//
-// @private
-// @param {Node} node
-// @return {Boolean} True when native DOM Node.
-function isDomNode( node ) {
-	return !!node && isNative( node.addEventListener );
-}
-
 /**
  * Interface representing classes which mix in {@link module:utils/dom/emittermixin~EmitterMixin}.
  *
