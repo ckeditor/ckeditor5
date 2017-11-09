@@ -11,7 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Token from '@ckeditor/ckeditor-cloudservices-core/src/token/token';
 
 /**
- * Base plugin for Cloud Services. It takes care about the `cloudServices` config options and initializes token provider.
+ * Base plugin for CKEditor Cloud Services. It takes care of the `cloudServices` configuration options and initializes
+ * the token provider.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -30,7 +31,7 @@ export default class CloudServices extends Plugin {
 		}
 
 		/**
-		 * The authentication token URL for CloudServices.
+		 * The authentication token URL for CKEditor Cloud Services.
 		 *
 		 * @readonly
 		 * @member {String|undefined} #tokenUrl
@@ -49,7 +50,7 @@ export default class CloudServices extends Plugin {
 		}
 
 		/**
-		 * Other plugins use this token for authorization process. It handles token requesting and refreshing.
+		 * Other plugins use this token for the authorization process. It handles token requesting and refreshing.
 		 * Its value is null when `tokenUrl` is not provided.
 		 *
 		 * @readonly
@@ -71,7 +72,7 @@ export default class CloudServices extends Plugin {
 CloudServices.Token = Token;
 
 /**
- * The configuration of the Cloud Services. Introduced by the {@link module:cloudservices/cloudservices~CloudServices} plugin.
+ * The configuration of CKEditor Cloud Services. Introduced by the {@link module:cloudservices/cloudservices~CloudServices} plugin.
  *
  * Read more in {@link module:cloudservices/cloudservices~CloudServices}.
  *
@@ -79,7 +80,7 @@ CloudServices.Token = Token;
  */
 
 /**
- * The configuration for all plugins using Cloud Services.
+ * The configuration for all plugins using CKEditor Cloud Services.
  *
  *		ClassicEditor
  *			.create( {
@@ -92,8 +93,8 @@ CloudServices.Token = Token;
  */
 
 /**
- * The authentication token URL for CloudServices. Token us used to authenticate all plugins using CloudServices,
- * for instance Easy Image. The token URL have to point to the service where the token is generated.
+ * The authentication token URL for CKEditor Cloud Services. The token is used to authenticate all plugins using Cloud Services,
+ * for instance Easy Image. The token URL has to point to the service where the token is generated.
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {

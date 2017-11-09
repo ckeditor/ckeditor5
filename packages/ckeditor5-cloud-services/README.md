@@ -8,7 +8,7 @@ CKEditor 5 Cloud Services base package
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-cloudservices/status.svg)](https://david-dm.org/ckeditor/ckeditor5-cloudservices)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-cloudservices/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-cloudservices?type=dev)
 
-Base package for Cloud Services' integration, which handles CKEditor's `cloudservices` configuration and tokens.
+Base package for CKEditor Cloud Services integration, which handles CKEditor's `cloudservices` configuration and tokens.
 
 ## Documentation
 
