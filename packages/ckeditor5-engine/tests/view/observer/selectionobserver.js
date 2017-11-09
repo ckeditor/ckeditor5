@@ -43,6 +43,7 @@ describe( 'SelectionObserver', () => {
 		domDocument.getSelection().removeAllRanges();
 
 		viewDocument.isFocused = true;
+		domMain.focus();
 
 		selectionObserver.enable();
 
@@ -147,7 +148,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.on( 'selectionChange', spy );
 
 		setTimeout( () => {
-			sinon.assert.calledOnce( spy );
+			sinon.assert.called( spy );
 			done();
 		}, 70 );
 
@@ -156,7 +157,7 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should warn and not enter infinite loop', () => {
 		// Selectionchange event is called twice per `changeDomSelection()` execution.
-		let counter = 35;
+		let counter = 70;
 
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
@@ -347,7 +348,6 @@ describe( 'SelectionObserver', () => {
 		const domFoo = domMain.childNodes[ 1 ].childNodes[ 0 ];
 		const offset = domSelection.anchorOffset;
 
-		domSelection.removeAllRanges();
 		domSelection.collapse( domFoo, offset == 2 ? 3 : 2 );
 	}
 } );
