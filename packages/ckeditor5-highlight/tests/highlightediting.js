@@ -30,6 +30,11 @@ describe( 'HighlightEditing', () => {
 		editor.destroy();
 	} );
 
+	it( 'should set proper schema rules', () => {
+		expect( doc.schema.check( { name: '$inline', attributes: 'highlight', inside: '$block' } ) ).to.be.true;
+		expect( doc.schema.check( { name: '$inline', attributes: 'highlight', inside: '$clipboardHolder' } ) ).to.be.true;
+	} );
+
 	it( 'adds highlight commands', () => {
 		expect( editor.commands.get( 'highlight' ) ).to.be.instanceOf( HighlightCommand );
 	} );

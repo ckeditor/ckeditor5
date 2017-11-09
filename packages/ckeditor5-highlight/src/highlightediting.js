@@ -47,6 +47,8 @@ export default class HighlightEditing extends Plugin {
 
 		// Allow highlight attribute on all elements
 		editor.document.schema.allow( { name: '$inline', attributes: 'highlight', inside: '$block' } );
+		// Temporary workaround. See https://github.com/ckeditor/ckeditor5/issues/477.
+		editor.document.schema.allow( { name: '$inline', attributes: 'highlight', inside: '$clipboardHolder' } );
 
 		// Convert highlight attribute to a mark element with associated class.
 		buildModelConverter()
