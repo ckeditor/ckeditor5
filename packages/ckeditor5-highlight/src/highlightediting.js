@@ -25,10 +25,8 @@ export default class HighlightEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		const editor = this.editor;
-		const data = editor.data;
-		const editing = editor.editing;
+	constructor( editor ) {
+		super( editor );
 
 		editor.config.define( 'highlight', [
 			{ class: 'marker', title: 'Marker', color: '#ffff66', type: 'marker' },
@@ -37,6 +35,15 @@ export default class HighlightEditing extends Plugin {
 			{ class: 'pen-red', title: 'Red Pen', color: '#ff0000', type: 'pen' },
 			{ class: 'pen-blue', title: 'Blue Pen', color: '#0000ff', type: 'pen' }
 		] );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+		const data = editor.data;
+		const editing = editor.editing;
 
 		// Allow highlight attribute on all elements
 		editor.document.schema.allow( { name: '$inline', attributes: 'highlight', inside: '$block' } );
