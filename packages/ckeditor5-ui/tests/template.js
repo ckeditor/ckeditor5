@@ -1533,6 +1533,32 @@ describe( 'Template', () => {
 
 			expect( Array.from( template.getViews() ) ).to.have.members( [ viewA, viewB, viewC ] );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5-ui/issues/337
+		it( 'does not traverse non–Template children', () => {
+			const viewA = new View();
+			const viewB = new View();
+			const viewC = new View();
+
+			const template = new Template( {
+				tag: 'div',
+				children: [
+					viewA,
+				]
+			} );
+
+			// Technically, this kind of child is invalid but the aim of this test is to
+			// check if the generator will accidentally traverse non–Template objects
+			// like native HTML elements, which also have "children" property. It could happen
+			// because it is possible to pass HTML elements directly to the templateDefinition.
+			template.children.push( {
+				children: [ viewB ]
+			} );
+
+			template.children.push( viewC );
+
+			expect( Array.from( template.getViews() ) ).to.have.members( [ viewA, viewC ] );
+		} );
 	} );
 
 	describe( 'bind()', () => {
