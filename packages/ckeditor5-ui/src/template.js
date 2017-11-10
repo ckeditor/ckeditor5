@@ -245,7 +245,7 @@ export default class Template {
 				for ( const child of def.children ) {
 					if ( isView( child ) ) {
 						yield child;
-					} else {
+					} else if ( isTemplate( child ) ) {
 						yield* search( child );
 					}
 				}
