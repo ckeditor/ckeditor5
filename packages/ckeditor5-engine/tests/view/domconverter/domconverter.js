@@ -48,13 +48,14 @@ describe( 'DomConverter', () => {
 			domEditable.setAttribute( 'contenteditable', 'true' );
 			domEditableParent.appendChild( domEditable );
 			document.body.appendChild( domEditableParent );
-			// Make sure we are starting with focus on document body each time.
-			document.body.focus();
 		} );
 
 		afterEach( () => {
+			converter.unbindDomElement( domEditable );
 			document.body.removeChild( domEditableParent );
 			viewDocument.destroy();
+
+			document.body.focus();
 		} );
 
 		it( 'should call focus on corresponding DOM editable', () => {
@@ -228,6 +229,10 @@ describe( 'DomConverter', () => {
 			document.body.appendChild( domP );
 		} );
 
+		afterEach( () => {
+			domP.remove();
+		} );
+
 		it( 'should return true for correct dom selection', () => {
 			// <p>INLINE_FILLER{foo}<span></span></p>.
 			const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
@@ -276,20 +281,20 @@ describe( 'DomConverter', () => {
 			it( 'if anchor or focus is directly inside dom element that represents view ui element', () => {
 				// Tests forward and backward selection.
 				// <p>INLINE_FILLER{foo<span-ui>]<span-container></span></span></p>.
-				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH + 3, domUiSpan, 0 );
+				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH, domUiSpan, 0 );
 				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
-				const sel2 = domSelection( domUiSpan, 0, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
+				const sel2 = domSelection( domUiSpan, 0, domFillerTextNode, INLINE_FILLER_LENGTH );
 				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
 			} );
 
 			it( 'if anchor or focus is inside deep ui element structure (not directly in ui element)', () => {
 				// Tests forward and backward selection.
 				// <p>INLINE_FILLER{foo<span-ui><span-container>]</span></span></p>.
-				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH + 3, domUiDeepSpan, 0 );
+				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH, domUiDeepSpan, 0 );
 				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
-				const sel2 = domSelection( domUiDeepSpan, 0, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
+				const sel2 = domSelection( domUiDeepSpan, 0, domFillerTextNode, INLINE_FILLER_LENGTH );
 				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
 			} );
 		} );
