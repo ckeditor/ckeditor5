@@ -16,6 +16,8 @@ import alignRightIcon from '../theme/icons/align-right.svg';
 import alignCenterIcon from '../theme/icons/align-center.svg';
 import alignJustifyIcon from '../theme/icons/align-justify.svg';
 import AlignmentEditing, { isSupported } from './alignmentediting';
+import createButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/button/createbuttondropdown';
+import Model from '../../ckeditor5-ui/src/model';
 
 const icons = new Map( [
 	[ 'left', alignLeftIcon ],
@@ -75,11 +77,26 @@ export default class AlignmentUI extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const styles = this.editor.config.get( 'alignment.styles' );
+		const editor = this.editor;
+		const componentFactory = editor.ui.componentFactory;
+		const t = editor.t;
+		const styles = editor.config.get( 'alignment.styles' );
 
 		styles
 			.filter( isSupported )
 			.forEach( style => this._addButton( style ) );
+
+		componentFactory.add( 'alignmentDropdown', locale => {
+			const buttons = styles.map( style => componentFactory.create( AlignmentEditing.commandName( style ) ) );
+
+			const model = new Model( {
+				label: t( 'Text alignment' ),
+				withText: false,
+				isVertical: true
+			} );
+
+			return createButtonDropdown( model, buttons, locale );
+		} );
 	}
 
 	/**
