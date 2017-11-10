@@ -174,13 +174,12 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * It attaches a native DOM listener to the DOM Node. When fired,
 	 * a corresponding Emitter event will also fire with DOM Event object as an argument.
 	 *
+	 * @method module:utils/dom/emittermixin~ProxyEmitter#on
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {Object} [options={}] Additional options.
 	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
 	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
-	 *
-	 * @method module:utils/dom/emittermixin~ProxyEmitter#on
 	 */
 	attach( event, callback, options = {} ) {
 		// If the DOM Listener for given event already exist it is pointless
@@ -206,9 +205,8 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	/**
 	 * Stops executing the callback on the given event.
 	 *
+	 * @method module:utils/dom/emittermixin~ProxyEmitter#detach
 	 * @param {String} event The name of the event.
-	 *
-	 * @method module:utils/dom/emittermixin~ProxyEmitter#off
 	 */
 	detach( event ) {
 		let events;
