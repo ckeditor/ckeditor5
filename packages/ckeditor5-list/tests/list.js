@@ -10,6 +10,7 @@ import ListEngine from '../src/listengine';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -21,7 +22,7 @@ describe( 'List', () => {
 		const editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, List ] } )
+		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, BlockQuote, List ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				doc = editor.document;
@@ -113,6 +114,128 @@ describe( 'List', () => {
 			editor.editing.view.fire( 'enter', domEvtDataStub );
 
 			expect( editor.execute.called ).to.be.false;
+		} );
+	} );
+
+	describe( 'delete key handling callback', () => {
+		it( 'should execute outdentList command on backspace key in first item of list', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			expect( editor.execute.calledWithExactly( 'outdentList' ) );
+		} );
+
+		it( 'should execute outdentList command on backspace key in first item of list', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<paragraph>foo</paragraph><listItem type="bulleted" indent="0">[]foo</listItem>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			expect( editor.execute.calledWithExactly( 'outdentList' ) );
+		} );
+
+		it( 'should not execute outdentList command on delete key in first item of list', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'forward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should not execute outdentList command when selection is not collapsed', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<listItem type="bulleted" indent="0">[fo]o</listItem>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should not execute outdentList command if not in list item', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<paragraph>[]foo</paragraph>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should not execute outdentList command if not in first list item', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<listItem type="bulleted" indent="0">foo</listItem><listItem type="bulleted" indent="0">[]foo</listItem>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should not execute outdentList command when selection is not on first position', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<listItem type="bulleted" indent="0">fo[]o</listItem>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should not execute outdentList command when selection is not on first position', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<listItem type="bulleted" indent="0">fo[]o</listItem>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should outdent list when previous element is nested in block quote', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<blockQuote><paragraph>x</paragraph></blockQuote><listItem type="bulleted" indent="0">[]foo</listItem>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			expect( editor.execute.calledWithExactly( 'outdentList' ) );
+		} );
+
+		it( 'should outdent list when list is nested in block quote', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setData( doc, '<paragraph>x</paragraph><blockQuote><listItem type="bulleted" indent="0">[]foo</listItem></blockQuote>' );
+
+			editor.editing.view.fire( 'delete', domEvtDataStub );
+
+			expect( editor.execute.calledWithExactly( 'outdentList' ) );
 		} );
 	} );
 
