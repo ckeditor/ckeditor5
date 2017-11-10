@@ -1,0 +1,15 @@
+/**
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module ui/dropdown/button/buttondropdownmodel
+ */
+
+/**
+ * The button dropdown model interface.
+ *
+ * @implements module:ui/dropdown/dropdownmodel~DropdownModel
+ * @interface module:ui/dropdown/button/buttondropdownmodel~ButtonDropdownModel
+ */

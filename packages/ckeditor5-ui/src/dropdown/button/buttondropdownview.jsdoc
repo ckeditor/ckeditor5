@@ -1,0 +1,26 @@
+/**
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module ui/dropdown/button/createbuttonview
+ */
+
+/**
+ * The button dropdown view.
+ *
+ * See {@link module:ui/dropdown/button/createbuttonview~createButtonDropdown}.
+ *
+ * @abstract
+ * @class module:ui/dropdown/button/buttondropdownview~ButtonDropdownView
+ * @extends module:ui/dropdown/dropdownview~DropdownView
+ */
+
+/**
+ * A child {@link module:ui/buttongroup/buttongroupview~ButtonGroupView button group view} of the dropdown located
+ * in its {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel}.
+ *
+ * @readonly
+ * @member {module:ui/buttongroup/buttongroup~ButtonGroupView} #buttonGroupView
+ */
