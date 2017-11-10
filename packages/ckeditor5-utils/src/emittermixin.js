@@ -23,23 +23,9 @@ const _emitterId = Symbol( 'emitterId' );
 const EmitterMixin = {
 	/**
 	 * Registers a callback function to be executed when an event is fired.
-	 * Shorthand for {@link #listenTo this.listenTo( this, event, callback, options) }.
 	 *
-	 * Events can be grouped in namespaces using `:`.
-	 * When namespaced event is fired, it additionally fires all callbacks for that namespace.
-	 *
-	 *		myEmitter.on( 'myGroup', genericCallback );
-	 *		myEmitter.on( 'myGroup:myEvent', specificCallback );
-	 *
-	 *		// genericCallback is fired.
-	 *		myEmitter.fire( 'myGroup' );
-	 *		// both genericCallback and specificCallback are fired.
-	 *		myEmitter.fire( 'myGroup:myEvent' );
-	 *		// genericCallback is fired even though there are no callbacks for "foo".
-	 *		myEmitter.fire( 'myGroup:foo' );
-	 *
-	 * An event callback can {@link module:utils/eventinfo~EventInfo#stop stop the event} and
-	 * set the {@link module:utils/eventinfo~EventInfo#return return value} of the {@link #fire} method.
+	 * Shorthand for {@link #listenTo `this.listenTo( this, event, callback, options )`} (it makes the emitter
+	 * listen on itself).
 	 *
 	 * @method #on
 	 * @param {String} event The name of the event.
@@ -80,7 +66,7 @@ const EmitterMixin = {
 
 	/**
 	 * Stops executing the callback on the given event.
-	 * Shorthand for {@link #stopListening this.stopListening( this, event, callback) }.
+	 * Shorthand for {@link #stopListening `this.stopListening( this, event, callback )`}.
 	 *
 	 * @method #off
 	 * @param {String} event The name of the event.
@@ -92,6 +78,23 @@ const EmitterMixin = {
 
 	/**
 	 * Registers a callback function to be executed when an event is fired in a specific (emitter) object.
+	 *
+	 * Events can be grouped in namespaces using `:`.
+	 * When namespaced event is fired, it additionally fires all callbacks for that namespace.
+	 *
+	 *		// myEmitter.on( ... ) is a shorthand for myEmitter.listenTo( myEmitter, ... ).
+	 *		myEmitter.on( 'myGroup', genericCallback );
+	 *		myEmitter.on( 'myGroup:myEvent', specificCallback );
+	 *
+	 *		// genericCallback is fired.
+	 *		myEmitter.fire( 'myGroup' );
+	 *		// both genericCallback and specificCallback are fired.
+	 *		myEmitter.fire( 'myGroup:myEvent' );
+	 *		// genericCallback is fired even though there are no callbacks for "foo".
+	 *		myEmitter.fire( 'myGroup:foo' );
+	 *
+	 * An event callback can {@link module:utils/eventinfo~EventInfo#stop stop the event} and
+	 * set the {@link module:utils/eventinfo~EventInfo#return return value} of the {@link #fire} method.
 	 *
 	 * @method #listenTo
 	 * @param {module:utils/emittermixin~Emitter} emitter The object that fires the event.
@@ -181,7 +184,7 @@ const EmitterMixin = {
 	 * * To stop listening to a specific callback.
 	 * * To stop listening to a specific event.
 	 * * To stop listening to all events fired by a specific object.
-	 * * To stop listening to all events fired by all object.
+	 * * To stop listening to all events fired by all objects.
 	 *
 	 * @method #stopListening
 	 * @param {module:utils/emittermixin~Emitter} [emitter] The object to stop listening to. If omitted, stops it for all objects.

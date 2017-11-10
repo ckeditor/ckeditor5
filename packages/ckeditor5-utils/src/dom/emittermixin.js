@@ -39,6 +39,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.
 	 * It is backwards compatible with {@link module:utils/emittermixin~EmitterMixin#listenTo}.
 	 *
+	 * @method module:utils/dom/emittermixin~EmitterMixin#listenTo
 	 * @param {module:utils/emittermixin~Emitter|Node} emitter The object that fires the event.
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
@@ -48,8 +49,6 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * order they were added.
 	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
 	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
-	 *
-	 * @method module:utils/dom/emittermixin~EmitterMixin#listenTo
 	 */
 	listenTo( emitter, ...rest ) {
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with
@@ -75,13 +74,12 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * * To stop listening to all events fired by a specific object.
 	 * * To stop listening to all events fired by all object.
 	 *
+	 * @method module:utils/dom/emittermixin~EmitterMixin#stopListening
 	 * @param {module:utils/emittermixin~Emitter|Node} [emitter] The object to stop listening to. If omitted, stops it for all objects.
 	 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
 	 * for all events from `emitter`.
 	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
 	 * `event`.
-	 *
-	 * @method module:utils/dom/emittermixin~EmitterMixin#stopListening
 	 */
 	stopListening( emitter, event, callback ) {
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with corresponding ProxyEmitter.
@@ -225,13 +223,11 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	},
 
 	/**
-	 * Create a native DOM listener callback. When the native DOM event
+	 * Creates a native DOM listener callback. When the native DOM event
 	 * is fired it will fire corresponding event on this ProxyEmitter.
 	 * Note: A native DOM Event is passed as an argument.
 	 *
 	 * @private
-	 * @param {String} event
-	 *
 	 * @method module:utils/dom/emittermixin~ProxyEmitter#_createDomListener
 	 * @param {String} event The name of the event.
 	 * @param {Boolean} useCapture Indicates whether the listener was created for capturing event.
