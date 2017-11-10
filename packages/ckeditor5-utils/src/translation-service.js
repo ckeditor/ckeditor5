@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals window */
+
 /**
  * @module utils/translation-service
  */
@@ -34,7 +36,7 @@ export function add( lang, translations ) {
  * When no translation is defined in the dictionary or the dictionary doesn't exist this function returns
  * the original string without the `'[context: ]'` (happens in development and single-language modes).
  *
- * In a single-language mode (when values passed to `t()` were replaced with target languange strings) the dictionary
+ * In a single-language mode (when values passed to `t()` were replaced with target language strings) the dictionary
  * is left empty, so this function will return the original strings always.
  *
  *		translate( 'pl', 'Cancel [context: reject]' );
@@ -44,14 +46,22 @@ export function add( lang, translations ) {
  * @returns {String} Translated sentence.
  */
 export function translate( lang, translationKey ) {
-	if ( !hasTranslation( lang, translationKey ) ) {
+	const numberOfLanguages = getNumberOfLanguages();
+
+	if ( numberOfLanguages === 1 ) {
+		// Override the language to the only supported one.
+		// This can't be done in the `Locale` class, because the translations comes after the `Locale` class initializes.
+		lang = Object.keys( dictionaries )[ 0 ];
+	}
+
+	if ( numberOfLanguages === 0 || !hasTranslation( lang, translationKey ) ) {
 		return translationKey.replace( / \[context: [^\]]+\]$/, '' );
 	}
 
 	return dictionaries[ lang ][ translationKey ];
 }
 
-// Checks whether the dictionary exists and translaiton in that dictionary exists.
+// Checks whether the dictionary exists and translation in that dictionary exists.
 function hasTranslation( lang, translationKey ) {
 	return (
 		( lang in dictionaries ) &&
@@ -67,3 +77,12 @@ function hasTranslation( lang, translationKey ) {
 export function _clear() {
 	dictionaries = {};
 }
+
+function getNumberOfLanguages() {
+	return Object.keys( dictionaries ).length;
+}
+
+// Export globally add function to enable adding later translations.
+// See https://github.com/ckeditor/ckeditor5/issues/624
+window.CKEDITOR_TRANSLATIONS = window.CKEDITOR_TRANSLATIONS || {};
+window.CKEDITOR_TRANSLATIONS.add = add;
