@@ -504,14 +504,8 @@ function createEventNamespace( source, eventName ) {
 // Gets an array containing callbacks list for a given event and it's more specific events.
 // I.e. if given event is foo:bar and there is also foo:bar:abc event registered, this will
 // return callback list of foo:bar and foo:bar:abc (but not foo).
-// Returns empty array if given event has not been yet registered.
 function getCallbacksListsForNamespace( source, eventName ) {
 	const eventNode = getEvents( source )[ eventName ];
-
-	/* istanbul ignore if: this check make sense but in code it does not occur. */
-	if ( !eventNode ) {
-		return [];
-	}
 
 	let callbacksLists = [ eventNode.callbacks ];
 

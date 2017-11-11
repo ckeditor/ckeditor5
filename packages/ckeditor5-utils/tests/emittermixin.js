@@ -331,7 +331,8 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should not fail with unknown events', () => {
-			emitter.off( 'test', () => {} );
+			emitter.off( 'foo', () => {} );
+			emitter.off( 'foo:bar', () => {} );
 		} );
 
 		it( 'should remove all entries for the same callback', () => {
@@ -530,6 +531,26 @@ describe( 'EmitterMixin', () => {
 
 			sinon.assert.notCalled( spyFoo );
 			sinon.assert.calledOnce( spyBar );
+		} );
+
+		it( 'should not fail with unknown events', () => {
+			listener.stopListening( emitter, 'foo', () => {} );
+			listener.stopListening( emitter, 'foo:bar', () => {} );
+			listener.stopListening( emitter, 'foo' );
+			listener.stopListening( emitter, 'foo:bar' );
+		} );
+
+		it( 'should not fail with unknown callbacks', () => {
+			const spy = sinon.spy();
+
+			listener.listenTo( emitter, 'foo', () => {
+				spy();
+			} );
+			listener.stopListening( emitter, 'foo', () => {} );
+
+			emitter.fire( 'foo' );
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
