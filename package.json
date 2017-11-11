@@ -45,8 +45,8 @@
     "@ckeditor/ckeditor5-widget": "^1.0.0-alpha.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-docs": "^7.4.1",
-    "@ckeditor/ckeditor5-dev-tests": "^8.2.2",
+    "@ckeditor/ckeditor5-dev-docs": "^7.5.1",
+    "@ckeditor/ckeditor5-dev-tests": "^8.2.5",
     "eslint": "^4.8.0",
     "eslint-config-ckeditor5": "^1.0.6",
     "gulp": "^3.9.1",
