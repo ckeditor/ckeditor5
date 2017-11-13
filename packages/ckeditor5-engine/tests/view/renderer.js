@@ -20,7 +20,6 @@ import { parse, setData as setViewData, getData as getViewData } from '../../src
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import { unwrap, insert, remove } from '../../src/view/writer';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
@@ -1507,11 +1506,7 @@ describe( 'Renderer', () => {
 		describe( 'similar selection', () => {
 			// Use spies to check selection updates. Some selection positions are not achievable in some
 			// browsers (e.g. <p>Foo<b>{}Bar</b></p> in Chrome) so asserting dom selection after rendering would fail.
-			let selectionCollapseSpy, selectionExtendSpy, logWarnStub;
-
-			before( () => {
-				logWarnStub = sinon.stub( log, 'warn' );
-			} );
+			let selectionCollapseSpy, selectionExtendSpy;
 
 			afterEach( () => {
 				if ( selectionCollapseSpy ) {
@@ -1523,11 +1518,6 @@ describe( 'Renderer', () => {
 					selectionExtendSpy.restore();
 					selectionExtendSpy = null;
 				}
-				logWarnStub.reset();
-			} );
-
-			after( () => {
-				logWarnStub.restore();
 			} );
 
 			it( 'should always render collapsed selection even if it is similar', () => {
@@ -1568,7 +1558,6 @@ describe( 'Renderer', () => {
 				expect( selectionCollapseSpy.calledWith( domB.childNodes[ 0 ], 0 ) ).to.true;
 				expect( selectionExtendSpy.calledOnce ).to.true;
 				expect( selectionExtendSpy.calledWith( domB.childNodes[ 0 ], 0 ) ).to.true;
-				expect( logWarnStub.notCalled ).to.true;
 			} );
 
 			it( 'should always render collapsed selection even if it is similar (with empty element)', () => {
@@ -1608,7 +1597,6 @@ describe( 'Renderer', () => {
 				expect( selectionCollapseSpy.calledWith( domP.childNodes[ 0 ], 3 ) ).to.true;
 				expect( selectionExtendSpy.calledOnce ).to.true;
 				expect( selectionExtendSpy.calledWith( domP.childNodes[ 0 ], 3 ) ).to.true;
-				expect( logWarnStub.notCalled ).to.true;
 			} );
 
 			it( 'should always render non-collapsed selection if it not is similar', () => {
@@ -1649,7 +1637,6 @@ describe( 'Renderer', () => {
 				expect( selectionCollapseSpy.calledWith( domP.childNodes[ 0 ], 2 ) ).to.true;
 				expect( selectionExtendSpy.calledOnce ).to.true;
 				expect( selectionExtendSpy.calledWith( domB.childNodes[ 0 ], 1 ) ).to.true;
-				expect( logWarnStub.notCalled ).to.true;
 			} );
 
 			it( 'should always render selection (even if it is same in view) if current dom selection is in incorrect place', () => {
@@ -1717,7 +1704,6 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
-				expect( logWarnStub.called ).to.true;
 			} );
 
 			it( 'should not render non-collapsed selection it is similar (element end)', () => {
@@ -1756,7 +1742,6 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
-				expect( logWarnStub.called ).to.true;
 			} );
 
 			it( 'should not render non-collapsed selection it is similar (element start - nested)', () => {
@@ -1795,7 +1780,6 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
-				expect( logWarnStub.called ).to.true;
 			} );
 
 			it( 'should not render non-collapsed selection it is similar (element end - nested)', () => {
@@ -1833,7 +1817,6 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
-				expect( logWarnStub.called ).to.true;
 			} );
 		} );
 	} );
