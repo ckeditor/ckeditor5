@@ -173,6 +173,28 @@ describe( 'ImageUploadEngine', () => {
 		sinon.assert.notCalled( spy );
 	} );
 
+	// https://github.com/ckeditor/ckeditor5-upload/issues/70
+	it( 'should not crash on browsers which do not implement DOMStringList as a child class of an Array', () => {
+		const typesDomStringListMock = {
+			length: 2,
+			'0': 'text/html',
+			'1': 'text/plain'
+		};
+		const dataTransfer = new DataTransfer( {
+			types: typesDomStringListMock,
+			getData: type => type === 'text/html' ? '<p>SomeData</p>' : 'SomeData'
+		} );
+		setModelData( doc, '<paragraph>[]foo</paragraph>' );
+
+		const targetRange = doc.selection.getFirstRange();
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		// Well, there's no clipboard plugin, so nothing happens.
+		expect( getModelData( doc ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+	} );
+
 	it( 'should not convert image\'s uploadId attribute if is consumed already', () => {
 		editor.editing.modelToView.on( 'addAttribute:uploadId:image', ( evt, data, consumable ) => {
 			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
