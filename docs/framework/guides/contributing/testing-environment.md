@@ -9,19 +9,15 @@ Before reading this article we recommend getting familiar with the CKEditor 5 {@
 
 ## Introduction
 
-The CKEditor 5 testing environment uses a popular setup with [Karma](https://karma-runner.github.io), [webpack](https://webpack.github.io/), [babel-loader](https://github.com/babel/babel-loader) and [Istanbul](https://github.com/gotwarlost/istanbul). We created some [gulp](https://github.com/gulpjs/gulp) tasks which glue all these pieces and special requirements for CKEditor together.
-
-<info-box>
-	We are [considering dropping gulp and switching to npm scripts](https://github.com/ckeditor/ckeditor5/issues/473), so please do not be surprised that both methods are in use now.
-</info-box>
+The CKEditor 5 testing environment uses a popular setup with [Karma](https://karma-runner.github.io), [webpack](https://webpack.github.io/), [babel-loader](https://github.com/babel/babel-loader) and [Istanbul](https://github.com/gotwarlost/istanbul). We created some [npm scripts](https://docs.npmjs.com/cli/run-script) which glue all these pieces and special requirements for CKEditor together.
 
 Each CKEditor package has its own tests suite (see for example the [engine's tests](https://github.com/ckeditor/ckeditor5-engine/tree/master/tests)), however, the test runner is available in the [`ckeditor5`](https://github.com/ckeditor/ckeditor5) package which is the central development environment. The actual code of the test runner is implemented in the [`@ckeditor/ckeditor5-dev-tests`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-tests) package and can be easily reused outside of `ckeditor5`.
 
 ## Running automated tests
 
-In order to run the automated tests use the `gulp test` task.
+In order to run the automated tests use the `npm test [-- <args>...]` command.
 
-It accepts the following arguments:
+It accepts the following arguments (must be passed after the `--` option):
 
 * `--watch` (alias `-w`) &ndash; Whether to watch the files and execute tests whenever any file changes.
 * `--source-map` (alias `-s`) &ndash; Whether to generate the source maps.
@@ -35,24 +31,24 @@ It accepts the following arguments:
 Run all tests with the code coverage check of the [`ckeditor5-core`](https://github.com/ckeditor/ckeditor5-core) package:
 
 ```
-gulp test -c --files=core
+npm test -- -c --files=core
 ```
 
 Run and watch the [engine's `view` namespace tests](https://github.com/ckeditor/ckeditor5-engine/tree/master/tests/view) and all the tests in [`ckeditor5-typing`](https://github.com/ckeditor/ckeditor5-typing):
 
 ```
-gulp test -cw --files=engine/view,typing
+npm test -- -cw --files=engine/view,typing
 ```
 
 Run the `bold*.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ckeditor/ckeditor5-basic-styles) package:
 
 ```
-gulp test -cw --files=basic-styles/bold*.js
+npm test -- -cw --files=basic-styles/bold*.js
 ```
 
 ## Running manual tests
 
-In order to start the manual tests server use the `gulp test:manual` task.
+In order to start the manual tests server use the `npm run test:manual` task.
 
 The task accepts the `--source-map` (alias `-s`) option.
 

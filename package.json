@@ -21,7 +21,7 @@
     "@ckeditor/ckeditor5-build-classic": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-build-inline": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-clipboard": "^1.0.0-alpha.1",
-    "@ckeditor/ckeditor5-cloudeservices": "ckeditor/ckeditor5-cloudservices",
+    "@ckeditor/ckeditor5-cloudservices": "^0.0.1",
     "@ckeditor/ckeditor5-core": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-easy-image": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-editor-balloon": "^1.0.0-alpha.1",
@@ -45,11 +45,10 @@
     "@ckeditor/ckeditor5-widget": "^1.0.0-alpha.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-docs": "^7.5.1",
-    "@ckeditor/ckeditor5-dev-tests": "^8.2.5",
+    "@ckeditor/ckeditor5-dev-docs": "^8.0.0",
+    "@ckeditor/ckeditor5-dev-tests": "^9.0.0",
     "eslint": "^4.8.0",
     "eslint-config-ckeditor5": "^1.0.6",
-    "gulp": "^3.9.1",
     "husky": "^0.14.3",
     "lint-staged": "^4.2.3",
     "lerna": "^2.2.0",
@@ -70,10 +69,18 @@
   "scripts": {
     "lint": "eslint --quiet '**/*.js'",
     "precommit": "lint-staged",
-    "test": "node --max_old_space_size=4096 ./node_modules/.bin/ckeditor5-dev-tests --reporter=dots",
-    "install-optional-dependencies": "./scripts/install-optional-dependencies.sh",
-    "switch-to-dev-dev": "./scripts/switch-to-dev-dev.sh",
-    "build-and-publish-docs": "./scripts/docs/build-and-publish.js"
+    "test": "node --max_old_space_size=4096 ./node_modules/.bin/ckeditor5-dev-tests",
+    "test:manual": "node --max_old_space_size=4096 ./node_modules/.bin/ckeditor5-dev-tests-manual",
+    "docs": "node ./scripts/docs/build-docs.js",
+    "docs:api": "node ./scripts/docs/build-api-docs.js",
+    "translations:collect": "ckeditor5-dev-env-translations collect",
+    "translations:download": "ckeditor5-dev-env-translations download",
+    "translations:upload": "ckeditor5-dev-env-translations upload",
+    "changelog": "node ./scripts/release/changelog.js",
+    "release:dependencies": "node ./scripts/release/release-dependencies.js",
+    "install-optional-dependencies": "sh ./scripts/install-optional-dependencies.sh",
+    "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
+    "build-and-publish-docs": "node ./scripts/docs/build-and-publish.js"
   },
   "lint-staged": {
     "**/*.js": [
