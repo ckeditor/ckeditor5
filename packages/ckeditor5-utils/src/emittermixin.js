@@ -507,6 +507,10 @@ function createEventNamespace( source, eventName ) {
 function getCallbacksListsForNamespace( source, eventName ) {
 	const eventNode = getEvents( source )[ eventName ];
 
+	if ( !eventNode ) {
+		return [];
+	}
+
 	let callbacksLists = [ eventNode.callbacks ];
 
 	for ( let i = 0; i < eventNode.childEvents.length; i++ ) {
