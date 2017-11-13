@@ -1049,7 +1049,6 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			// 2. Check the DOM.
-
 			const domP = domRoot.childNodes[ 0 ];
 
 			expect( domP.childNodes.length ).to.equal( 2 );
@@ -1067,6 +1066,7 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
+			domSelection.removeAllRanges();
 			// 3. Add text node only to the view: <p><b>x{}</b>foo</p>.
 
 			const viewText = new ViewText( 'x' );
@@ -1081,9 +1081,19 @@ describe( 'Renderer', () => {
 			expect( domB.childNodes[ 0 ].data ).to.equal( INLINE_FILLER + 'x' );
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domB.childNodes[ 0 ] );
-			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH + 1 );
-			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
+
+			// Depending on the browser selection may end up at the end of the text node or after the text node.
+			// TODO: Switch this code to the upcoming tool: https://github.com/ckeditor/ckeditor5-core/issues/107.
+			const firstRange = domSelection.getRangeAt( 0 );
+
+			if ( firstRange.startContainer === domB.childNodes[ 0 ] ) {
+				expect( firstRange.startOffset ).to.equal( INLINE_FILLER_LENGTH + 1 );
+			} else {
+				expect( firstRange.startContainer ).to.equal( domB );
+				expect( firstRange.startOffset ).to.equal( 1 );
+			}
+
+			expect( firstRange.collapsed ).to.be.true;
 		} );
 
 		it( 'should handle typing in empty attribute as a text change, render if needed', () => {
