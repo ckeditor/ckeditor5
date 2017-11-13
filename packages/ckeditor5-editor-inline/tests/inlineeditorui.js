@@ -61,6 +61,12 @@ describe( 'InlineEditorUI', () => {
 		it( 'creates root editable element', () => {
 			expect( editor.editing.view.getRoot() ).to.be.instanceOf( RootEditableElement );
 		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'renders the #view', () => {
+			expect( view.isRendered ).to.be.true;
+		} );
 
 		describe( 'panel', () => {
 			it( 'binds view.panel#isVisible to editor.ui#focusTracker', () => {
@@ -151,12 +157,6 @@ describe( 'InlineEditorUI', () => {
 					{ isReadOnly: true }
 				);
 			} );
-		} );
-	} );
-
-	describe( 'init()', () => {
-		it( 'renders the #view', () => {
-			expect( view.isRendered ).to.be.true;
 		} );
 
 		describe( 'view.toolbar#items', () => {
