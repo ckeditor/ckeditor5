@@ -14,9 +14,9 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * It allows functions producing specific UI components to be registered under their unique names
  * in the factory. A registered component can be then instantiated by providing its name.
- * Note that names are case-insensitive.
+ * Note that names are case insensitive.
  *
- *		// Editor provides localization tools for the factory.
+ *		// The editor provides localization tools for the factory.
  *		const factory = new ComponentFactory( editor );
  *
  *		factory.add( 'foo', locale => new FooView( locale ) );
@@ -25,7 +25,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *		// An instance of FooView.
  *		const fooInstance = factory.create( 'foo' );
  *
- *		// Names are case-insensitive os this is also allowed:
+ *		// Names are case insensitive so this is also allowed:
  *		const barInstance = factory.create( 'Bar' );
  *
  * The {@link module:core/editor/editor~Editor#locale editor locale} is passed to the factory
@@ -40,7 +40,7 @@ export default class ComponentFactory {
 	 */
 	constructor( editor ) {
 		/**
-		 * The editor instance the factory belongs to.
+		 * The editor instance that the factory belongs to.
 		 *
 		 * @readonly
 		 * @member {module:core/editor/editor~Editor}
@@ -130,7 +130,7 @@ export default class ComponentFactory {
 }
 
 //
-// Ensures that component name used as key in internal map is in lower case.
+// Ensures that the component name used as the key in the internal map is in lower case.
 //
 // @private
 // @param {String} name
