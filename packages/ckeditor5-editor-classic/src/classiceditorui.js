@@ -52,6 +52,10 @@ export default class ClassicEditorUI {
 		 * @private
 		 */
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+
+		// RootEditableElement should be created together with the editor structure.
+		// See https://github.com/ckeditor/ckeditor5/issues/647.
+		editor.editing.createRoot( 'div' );
 	}
 
 	/**
@@ -72,7 +76,7 @@ export default class ClassicEditorUI {
 		}
 
 		// Setup the editable.
-		const editingRoot = editor.editing.createRoot( 'div' );
+		const editingRoot = editor.editing.view.getRoot();
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
 		view.editable.bind( 'isFocused' ).to( editor.editing.view );
 		view.editable.name = editingRoot.rootName;
