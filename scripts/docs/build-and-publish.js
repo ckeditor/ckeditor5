@@ -21,7 +21,7 @@ console.log( 'Updating your ckeditor5.github.io clone...' );
 exec( 'cd ../ckeditor5.github.io && git pull && cd -' );
 
 console.log( 'Building documentation...' );
-exec( 'gulp docs --production' );
+exec( 'npm run docs -- --production' );
 
 console.log( 'Copying files...' );
 
