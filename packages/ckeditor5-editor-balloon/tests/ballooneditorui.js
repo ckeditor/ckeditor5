@@ -54,47 +54,6 @@ describe( 'BalloonEditorUI', () => {
 		it( 'creates root editable element', () => {
 			expect( editor.editing.view.getRoot() ).to.be.instanceOf( RootEditableElement );
 		} );
-
-		describe( 'editable', () => {
-			let editable;
-
-			beforeEach( () => {
-				editable = editor.editing.view.getRoot();
-			} );
-
-			it( 'registers view.editable#element in editor focus tracker', () => {
-				ui.focusTracker.isFocused = false;
-
-				view.editable.element.dispatchEvent( new Event( 'focus' ) );
-				expect( ui.focusTracker.isFocused ).to.true;
-			} );
-
-			it( 'sets view.editable#name', () => {
-				expect( view.editable.name ).to.equal( editable.rootName );
-			} );
-
-			it( 'binds view.editable#isFocused', () => {
-				utils.assertBinding(
-					view.editable,
-					{ isFocused: false },
-					[
-						[ ui.focusTracker, { isFocused: true } ]
-					],
-					{ isFocused: true }
-				);
-			} );
-
-			it( 'binds view.editable#isReadOnly', () => {
-				utils.assertBinding(
-					view.editable,
-					{ isReadOnly: false },
-					[
-						[ editable, { isReadOnly: true } ]
-					],
-					{ isReadOnly: true }
-				);
-			} );
-		} );
 	} );
 
 	describe( 'init()', () => {
@@ -135,6 +94,47 @@ describe( 'BalloonEditorUI', () => {
 			} );
 
 			sinon.assert.callOrder( editingFocusSpy, toolbarHideSpy );
+		} );
+
+		describe( 'editable', () => {
+			let editable;
+
+			beforeEach( () => {
+				editable = editor.editing.view.getRoot();
+			} );
+
+			it( 'registers view.editable#element in editor focus tracker', () => {
+				ui.focusTracker.isFocused = false;
+
+				view.editable.element.dispatchEvent( new Event( 'focus' ) );
+				expect( ui.focusTracker.isFocused ).to.true;
+			} );
+
+			it( 'sets view.editable#name', () => {
+				expect( view.editable.name ).to.equal( editable.rootName );
+			} );
+
+			it( 'binds view.editable#isFocused', () => {
+				utils.assertBinding(
+					view.editable,
+					{ isFocused: false },
+					[
+						[ ui.focusTracker, { isFocused: true } ]
+					],
+					{ isFocused: true }
+				);
+			} );
+
+			it( 'binds view.editable#isReadOnly', () => {
+				utils.assertBinding(
+					view.editable,
+					{ isReadOnly: false },
+					[
+						[ editable, { isReadOnly: true } ]
+					],
+					{ isReadOnly: true }
+				);
+			} );
 		} );
 	} );
 
