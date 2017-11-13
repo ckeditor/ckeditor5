@@ -11,4 +11,4 @@ msgstr "插入图像"
 
 msgctxt "Title of the notification displayed when upload fails."
 msgid "Upload failed"
-msgstr ""
+msgstr "上传失败"
