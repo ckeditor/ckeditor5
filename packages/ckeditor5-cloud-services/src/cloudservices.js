@@ -11,8 +11,9 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Token from '@ckeditor/ckeditor-cloudservices-core/src/token/token';
 
 /**
- * Base plugin for CKEditor Cloud Services. It takes care of the `cloudServices` configuration options and initializes
- * the token provider.
+ * Plugin introducing CKEditor 5's Cloud Services integration.
+ * It takes care of the {@link module:cloudservices/cloudservices~CloudServicesConfig `config.cloudService`}
+ * configuration options and initializes the token provider.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -51,7 +52,7 @@ export default class CloudServices extends Plugin {
 
 		/**
 		 * Other plugins use this token for the authorization process. It handles token requesting and refreshing.
-		 * Its value is null when `tokenUrl` is not provided.
+		 * Its value is `null` when {@link module:cloudservices/cloudservices~CloudServicesConfig#tokenUrl} is not provided.
 		 *
 		 * @readonly
 		 * @member {Object|null} #token
@@ -83,7 +84,7 @@ CloudServices.Token = Token;
  * The configuration for all plugins using CKEditor Cloud Services.
  *
  *		ClassicEditor
- *			.create( {
+ *			.create( document.querySelector( '#editor' ), {
  * 				cloudServices: ... // CloudServices config.
  *			} )
  *			.then( ... )
