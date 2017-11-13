@@ -21,7 +21,7 @@
     "@ckeditor/ckeditor5-build-classic": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-build-inline": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-clipboard": "^1.0.0-alpha.1",
-    "@ckeditor/ckeditor5-cloudeservices": "^0.0.1",
+    "@ckeditor/ckeditor5-cloudservices": "^0.0.1",
     "@ckeditor/ckeditor5-core": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-easy-image": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-editor-balloon": "^1.0.0-alpha.1",
