@@ -156,7 +156,6 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should warn and not enter infinite loop', () => {
-		// Selectionchange event is called twice per `changeDomSelection()` execution.
 		let counter = 70;
 
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
@@ -216,8 +215,6 @@ describe( 'SelectionObserver', () => {
 				clock.restore();
 			} );
 
-		// Selectionchange event is called twice per `changeDomSelection()` execution. We call it 25 times to get
-		// 50 events. Infinite loop counter is reset, so calling this method twice should not show any warning.
 		function doChanges() {
 			return new Promise( resolve => {
 				viewDocument.once( 'selectionChangeDone', () => {
@@ -225,7 +222,7 @@ describe( 'SelectionObserver', () => {
 					resolve();
 				} );
 
-				for ( let i = 0; i < 30; i++ ) {
+				for ( let i = 0; i < 50; i++ ) {
 					changeDomSelection();
 				}
 			} );
