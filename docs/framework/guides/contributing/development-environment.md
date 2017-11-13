@@ -196,6 +196,8 @@ This task accepts two arguments which can speed up the process:
 * `--skip-api` &ndash; Skips building API docs (which takes the majority of the total time).
 * `--skip-snippets` &ndash; Skips building live snippets.
 
+Note: These arguments must be passed after additional `--`: `npm run docs -- --skip-api`.
+
 ## Bisecting through a multi-repository
 
 CKEditor 5 is a multi-repository project. It means that [`git bisect`](https://git-scm.com/docs/git-bisect) (which is super handy when tracking which commit introduced a bug) will not work out of the box.
