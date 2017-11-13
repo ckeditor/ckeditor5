@@ -22,7 +22,7 @@ script:
   - npm t -- --reporter=dots
   - npm run docs:api -- --validate-only
 after_success:
-  - ./node_modules/.bin/ckeditor5-dev-docs-publish-nightly
+  - travis_wait ./node_modules/.bin/ckeditor5-dev-docs-publish-nightly
 notifications:
   slack:
     rooms:

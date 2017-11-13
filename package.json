@@ -21,6 +21,7 @@
     "@ckeditor/ckeditor5-build-classic": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-build-inline": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-clipboard": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-cloudeservices": "ckeditor/ckeditor5-cloudservices",
     "@ckeditor/ckeditor5-core": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-easy-image": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-editor-balloon": "^1.0.0-alpha.1",
@@ -44,8 +45,8 @@
     "@ckeditor/ckeditor5-widget": "^1.0.0-alpha.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-docs": "^7.4.1",
-    "@ckeditor/ckeditor5-dev-tests": "^8.2.2",
+    "@ckeditor/ckeditor5-dev-docs": "^7.5.1",
+    "@ckeditor/ckeditor5-dev-tests": "^8.2.5",
     "eslint": "^4.8.0",
     "eslint-config-ckeditor5": "^1.0.6",
     "husky": "^0.14.3",
@@ -75,7 +76,7 @@
     "translations:collect": "ckeditor5-dev-env-translations collect",
     "translations:download": "ckeditor5-dev-env-translations download",
     "translations:upload": "ckeditor5-dev-env-translations upload",
-    "changelog:dependencies": "node ./scripts/release/changelog-dependencies.js",
+    "changelog": "node ./scripts/release/changelog.js",
     "release:dependencies": "node ./scripts/release/release-dependencies.js",
     "install-optional-dependencies": "sh ./scripts/install-optional-dependencies.sh",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
