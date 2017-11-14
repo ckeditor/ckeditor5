@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v0.9.0...v1.0.0-alpha.1) (2017-10-03)
 
 ### Bug fixes
