@@ -1,6 +1,20 @@
 Changelog
 =========
 
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+
+### Bug fixes
+
+* `model.Range` will now be extended if it was collapsed and it was transformed by insertion. Closes [#1159](https://github.com/ckeditor/ckeditor5-engine/issues/1159). ([5f020b0](https://github.com/ckeditor/ckeditor5-engine/commit/5f020b0))
+* Prevent adding inline filler to non-editable content. Closes [#1170](https://github.com/ckeditor/ckeditor5-engine/issues/1170). ([07a01b1](https://github.com/ckeditor/ckeditor5-engine/commit/07a01b1))
+* The `deleteContent()` algorithm will use merging to "remove" empty element which will ensure a better conflict resolution on collaborative editing. Closes [#1161](https://github.com/ckeditor/ckeditor5-engine/issues/1161). ([0dd29d4](https://github.com/ckeditor/ckeditor5-engine/commit/0dd29d4))
+
+### Other changes
+
+* Removed the `renderer-skipped-selection-rendering` warning since it doesn't bring any value. Closes [#1158](https://github.com/ckeditor/ckeditor5-engine/issues/1158). ([4a5a5d1](https://github.com/ckeditor/ckeditor5-engine/commit/4a5a5d1))
+* The `removeHighlight()` function now accepts descriptor id instead of a `HighlightDescriptor` object. Closes [#1164](https://github.com/ckeditor/ckeditor5-engine/issues/1164). ([7bde6f7](https://github.com/ckeditor/ckeditor5-engine/commit/7bde6f7))
+
+
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-engine/compare/v0.11.0...v1.0.0-alpha.1) (2017-10-03)
 
 ### Bug fixes
