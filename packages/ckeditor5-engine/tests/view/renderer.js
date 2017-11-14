@@ -1181,16 +1181,14 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not change selection if there is no editable with selection', () => {
-			const domDiv = createElement( document, 'div', null, 'not editable' );
+			const domDiv = createElement( document, 'div', { contenteditable: true }, 'not editable' );
 			document.body.appendChild( domDiv );
+			domDiv.focus();
 
 			const domSelection = document.getSelection();
 
 			domSelection.removeAllRanges();
-			const domRange = document.createRange();
-			domRange.setStart( domDiv, 0 );
-			domRange.collapse( true );
-			domSelection.addRange( domRange );
+			domSelection.collapse( domDiv, 0 );
 
 			selectionEditable = null;
 
@@ -1202,9 +1200,21 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domDiv );
-			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
-			expect( domSelection.getRangeAt( 0 ).collapsed ).to.equal( true );
+
+			// Depending on the browser selection may end up before the text node or at the beginning of it.
+			// TODO: Switch this code to the upcoming tool: https://github.com/ckeditor/ckeditor5-core/issues/107.
+			const domRange = domSelection.getRangeAt( 0 );
+
+			if ( domRange.startContainer == domDiv ) {
+				expect( domRange.startContainer ).to.equal( domDiv );
+			} else {
+				expect( domRange.startContainer ).to.equal( domDiv.childNodes[ 0 ] );
+			}
+
+			expect( domRange.startOffset ).to.equal( 0 );
+			expect( domRange.collapsed ).to.be.true;
+
+			domDiv.remove();
 		} );
 
 		it( 'should not change selection if there is no focus', () => {
@@ -1229,9 +1239,21 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domDiv );
-			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
-			expect( domSelection.getRangeAt( 0 ).collapsed ).to.equal( true );
+
+			// Depending on the browser selection may end up before the text node or at the beginning of it.
+			// TODO: Switch this code to the upcoming tool: https://github.com/ckeditor/ckeditor5-core/issues/107.
+			const domSelectionRange = domSelection.getRangeAt( 0 );
+
+			if ( domSelectionRange.startContainer == domDiv ) {
+				expect( domSelectionRange.startContainer ).to.equal( domDiv );
+			} else {
+				expect( domSelectionRange.startContainer ).to.equal( domDiv.childNodes[ 0 ] );
+			}
+
+			expect( domSelectionRange.startOffset ).to.equal( 0 );
+			expect( domSelectionRange.collapsed ).to.be.true;
+
+			domDiv.remove();
 		} );
 
 		it( 'should not add inline filler after text node', () => {
@@ -1672,10 +1694,19 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				// Expect that after calling `renderer.render()` the DOM selection was re-rendered (and set at correct position).
-				expect( domSelection.anchorNode ).to.equal( domP );
-				expect( domSelection.anchorOffset ).to.equal( 1 );
-				expect( domSelection.focusNode ).to.equal( domP );
-				expect( domSelection.focusOffset ).to.equal( 1 );
+
+				// Depending on the browser selection may end up at the end of the text node or after the text node.
+				// TODO: Switch this code to the upcoming tool: https://github.com/ckeditor/ckeditor5-core/issues/107.
+				if ( domSelection.anchorNode == domP ) {
+					expect( domSelection.anchorNode ).to.equal( domP );
+					expect( domSelection.anchorOffset ).to.equal( 1 );
+				} else {
+					const textNode = domP.childNodes[ 0 ];
+					expect( domSelection.anchorNode ).to.equal( textNode );
+					expect( domSelection.anchorOffset ).to.equal( 3 );
+				}
+
+				expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 			} );
 
 			it( 'should not render non-collapsed selection it is similar (element start)', () => {

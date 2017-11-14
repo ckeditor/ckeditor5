@@ -303,6 +303,9 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should re-render view if selections are similar if DOM selection is in incorrect place', done => {
 		const sel = domDocument.getSelection();
+		const domParagraph = domMain.childNodes[ 0 ];
+		const domText = domParagraph.childNodes[ 0 ];
+		const domUI = domParagraph.childNodes[ 1 ];
 
 		// Add rendering on selectionChange event to check this feature.
 		viewDocument.on( 'selectionChange', () => {
@@ -332,12 +335,22 @@ describe( 'SelectionObserver', () => {
 			// 3. Now, collapse selection in similar position, but in UI element.
 			// Current and new selection position are similar in view (but not equal!).
 			// Also add a spy to `viewDocument#render` to see if view will be re-rendered.
-			sel.collapse( domMain.childNodes[ 0 ].childNodes[ 1 ], 0 );
+			sel.collapse( domUI, 0 );
 			sinon.spy( viewDocument, 'render' );
+
+			// Some browsers like Safari won't allow to put selection inside empty ui element.
+			// In that situation selection should stay in correct place.
+			if ( sel.anchorNode !== domUI ) {
+				expect( sel.anchorNode ).to.equal( domText );
+				expect( sel.anchorOffset ).to.equal( 3 );
+				expect( sel.isCollapsed ).to.be.true;
+
+				done();
+			}
 		}, { priority: 'lowest' } );
 
 		// 1. Collapse in a text node, before ui element, and wait for async selectionchange to fire selection change handling.
-		sel.collapse( domMain.childNodes[ 0 ].childNodes[ 0 ], 3 );
+		sel.collapse( domText, 3 );
 	} );
 
 	function changeDomSelection() {
