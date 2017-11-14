@@ -124,7 +124,10 @@ export default class AlignmentUI extends Plugin {
 			buttonView.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 			// Execute command.
-			this.listenTo( buttonView, 'execute', () => editor.execute( commandName ) );
+			this.listenTo( buttonView, 'execute', () => {
+				editor.execute( commandName );
+				editor.editing.view.focus();
+			} );
 
 			return buttonView;
 		} );
