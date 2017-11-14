@@ -5,8 +5,8 @@ Changelog
 
 ### Bug fixes
 
-* Correctly handling select all keystroke when widget is selected. Closes [#23](https://github.com/ckeditor/ckeditor5-widget/issues/23). ([3e8f91f](https://github.com/ckeditor/ckeditor5-widget/commit/3e8f91f))
-* Using strings instead of boolean values in contenteditable attribute. Closes [#26](https://github.com/ckeditor/ckeditor5-widget/issues/26). ([d2a6cf5](https://github.com/ckeditor/ckeditor5-widget/commit/d2a6cf5))
+* The <kbd>Ctrl</kbd>+<kbd>A</kbd> keystroke will be now correctly handled when a widget is selected. Closes [#23](https://github.com/ckeditor/ckeditor5-widget/issues/23). ([3e8f91f](https://github.com/ckeditor/ckeditor5-widget/commit/3e8f91f))
+* View element's `setAttribute()` method should be used with string values of the `contenteditable` attribute. Closes [#26](https://github.com/ckeditor/ckeditor5-widget/issues/26). ([d2a6cf5](https://github.com/ckeditor/ckeditor5-widget/commit/d2a6cf5))
 
 ### Other changes
 
