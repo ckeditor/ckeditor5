@@ -174,7 +174,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * It attaches a native DOM listener to the DOM Node. When fired,
 	 * a corresponding Emitter event will also fire with DOM Event object as an argument.
 	 *
-	 * @method module:utils/dom/emittermixin~ProxyEmitter#on
+	 * @method module:utils/dom/emittermixin~ProxyEmitter#attach
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {Object} [options={}] Additional options.
@@ -213,7 +213,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 
 		// Remove native DOM listeners which are orphans. If no callbacks
 		// are awaiting given event, detach native DOM listener from DOM Node.
-		// See: {@link on}.
+		// See: {@link attach}.
 
 		if ( this._domListeners[ event ] && ( !( events = this._events[ event ] ) || !events.callbacks.length ) ) {
 			this._domListeners[ event ].removeListener();
@@ -238,7 +238,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 
 		// Supply the DOM listener callback with a function that will help
 		// detach it from the DOM Node, when it is no longer necessary.
-		// See: {@link off}.
+		// See: {@link detach}.
 		domListener.removeListener = () => {
 			this._domNode.removeEventListener( event, domListener, useCapture );
 			delete this._domListeners[ event ];
