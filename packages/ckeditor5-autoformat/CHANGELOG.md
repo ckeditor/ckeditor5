@@ -5,7 +5,7 @@ Changelog
 
 ### Bug fixes
 
-* LiveRanges used by InlineAutoFormatEngine are now properly detached. Closes [#39](https://github.com/ckeditor/ckeditor5-autoformat/issues/39). ([5f24ae8](https://github.com/ckeditor/ckeditor5-autoformat/commit/5f24ae8))
+* `LiveRanges` used by `InlineAutoFormatEngine` are now properly detached. Closes [#39](https://github.com/ckeditor/ckeditor5-autoformat/issues/39). ([5f24ae8](https://github.com/ckeditor/ckeditor5-autoformat/commit/5f24ae8))
 
 
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-autoformat/compare/v0.6.0...v1.0.0-alpha.1) (2017-10-03)
