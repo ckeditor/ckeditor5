@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-list/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+
+### Bug fixes
+
+* Pressing <kbd>Backspace</kbd> at the beginning of a first list item will turn it into a paragraph instead of merging with the previous block. Closes [#68](https://github.com/ckeditor/ckeditor5-list/issues/68). ([5160277](https://github.com/ckeditor/ckeditor5-list/commit/5160277))
+
+### Other changes
+
+* Updated translations. [skip ci]. ([a1c4477](https://github.com/ckeditor/ckeditor5-list/commit/a1c4477))
+
+
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-list/compare/v0.7.0...v1.0.0-alpha.1) (2017-10-03)
 
 ### Bug fixes
