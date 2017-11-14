@@ -5,24 +5,28 @@ Changelog
 
 ### Bug fixes
 
-* `Template#getViews` generator should not traverse native HTML elements. Closes [#337](https://github.com/ckeditor/ckeditor5-ui/issues/337). Closes [ckeditor/ckeditor5#657](https://github.com/ckeditor/ckeditor5/issues/657). ([894bad0](https://github.com/ckeditor/ckeditor5-ui/commit/894bad0))
-* Improved binding of value attribute in InputTextView. Closes [#335](https://github.com/ckeditor/ckeditor5-ui/issues/335). ([823120b](https://github.com/ckeditor/ckeditor5-ui/commit/823120b))
+* `Template#getViews()` generator should not traverse native HTML elements. Closes [#337](https://github.com/ckeditor/ckeditor5-ui/issues/337). Closes [ckeditor/ckeditor5#657](https://github.com/ckeditor/ckeditor5/issues/657). ([894bad0](https://github.com/ckeditor/ckeditor5-ui/commit/894bad0))
+* Improved binding of the `value` attribute in `InputTextView`. Closes [#335](https://github.com/ckeditor/ckeditor5-ui/issues/335). ([823120b](https://github.com/ckeditor/ckeditor5-ui/commit/823120b))
 
 ### Other changes
 
-* Implemented `View#render` method which replaces the `#element` rendering upon the first reference and incorporates the `#init` method functionality. Closes [#262](https://github.com/ckeditor/ckeditor5-ui/issues/262). Closes [#302](https://github.com/ckeditor/ckeditor5-ui/issues/302). ([bf90ad5](https://github.com/ckeditor/ckeditor5-ui/commit/bf90ad5))
+* Implemented `View#render()` method which replaces rendering the `#element` upon the first access and incorporates the `#init()` method functionality. Closes [#262](https://github.com/ckeditor/ckeditor5-ui/issues/262). Closes [#302](https://github.com/ckeditor/ckeditor5-ui/issues/302). ([bf90ad5](https://github.com/ckeditor/ckeditor5-ui/commit/bf90ad5))
 
-  From now on `View#setTemplate` and `View#extendTemplate` methods are recommended as a shorthand for `view.template = new Template( { ... } )` and `Template.extend( view.template )`.
-* Removed legacy width and height attributes from the BoxedEditorUIView. Closes [#25](https://github.com/ckeditor/ckeditor5-ui/issues/25). ([ffa419a](https://github.com/ckeditor/ckeditor5-ui/commit/ffa419a))
+   In other words – the `View#render()` method needs to be called to render a view and it sets the `View#element` itself. It can be called only once and it is done automatically if a view is added to some other view (as its child). If you need to add any additional logic to your component's initialization, then override the `render()` method (and remember to call `super.render()`).
+
+   Additionally, from now on `View#setTemplate()` and `View#extendTemplate()` methods are recommended as a shorthand for `view.template = new Template( { ... } )` and `Template.extend( view.template )`.
+
+    Please refer to the updated [documentation](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/architecture/intro.html#UI-library) to learn more.
+* Removed legacy `width` and `height` attributes from the `BoxedEditorUIView`. Closes [#25](https://github.com/ckeditor/ckeditor5-ui/issues/25). ([ffa419a](https://github.com/ckeditor/ckeditor5-ui/commit/ffa419a))
 * The `ComponentFactory` should be case-insensitive. Closes [#324](https://github.com/ckeditor/ckeditor5-ui/issues/324). ([94417e9](https://github.com/ckeditor/ckeditor5-ui/commit/94417e9))
-* Updated translations. [skip ci]. ([186f365](https://github.com/ckeditor/ckeditor5-ui/commit/186f365))
+* Updated translations. ([186f365](https://github.com/ckeditor/ckeditor5-ui/commit/186f365))
 
 ### BREAKING CHANGES
 
-* The `init()` method in various UI components has been renamed to `render()`. Please refer to the documentation to learn more.
+* The `View#init()` method in UI components has been renamed to `render()`. Please refer to the [documentation](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/architecture/intro.html#UI-library) to learn more.
 * The `View#element` is no longer a getter which renders an element when first referenced. Use the `View#render()` method instead.
 * `Template#children` property became an `Array` (previously `ViewCollection`).
-* `View#addChildren` and `View#removeChildren` methods became `#registerChildren` and `#deregisterChildren`.
+* `View#addChildren()` and `View#removeChildren()` methods became `#registerChildren()` and `#deregisterChildren()`.
 * The DOM structure of the `StickyPanelView` has changed along with the class names. Please refer to the component documentation to learn more.
 
 
