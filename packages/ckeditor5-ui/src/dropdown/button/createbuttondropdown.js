@@ -77,6 +77,12 @@ export default function createButtonDropdown( model, buttonViews, locale ) {
 		}
 	);
 
+	dropdownView.buttonView.extendTemplate( {
+		attributes: {
+			class: [ 'ck-button-dropdown' ]
+		}
+	} );
+
 	dropdownView.panelView.children.add( buttonGroupView );
 
 	closeDropdownOnBlur( dropdownView );
