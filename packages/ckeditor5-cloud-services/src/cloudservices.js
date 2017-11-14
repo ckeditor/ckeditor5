@@ -75,7 +75,7 @@ CloudServices.Token = Token;
 /**
  * The configuration of CKEditor Cloud Services. Introduced by the {@link module:cloudservices/cloudservices~CloudServices} plugin.
  *
- * Read more in {@link module:cloudservices/cloudservices~CloudServices}.
+ * Read more in {@link module:cloudservices/cloudservices~CloudServicesConfig}.
  *
  * @member {module:cloudservices/cloudservices~CloudServicesConfig} module:core/editor/editorconfig~EditorConfig#cloudServices
  */
