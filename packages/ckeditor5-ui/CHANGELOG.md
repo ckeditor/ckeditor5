@@ -1,6 +1,31 @@
 Changelog
 =========
 
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+
+### Bug fixes
+
+* `Template#getViews` generator should not traverse native HTML elements. Closes [#337](https://github.com/ckeditor/ckeditor5-ui/issues/337). Closes [ckeditor/ckeditor5#657](https://github.com/ckeditor/ckeditor5/issues/657). ([894bad0](https://github.com/ckeditor/ckeditor5-ui/commit/894bad0))
+* Improved binding of value attribute in InputTextView. Closes [#335](https://github.com/ckeditor/ckeditor5-ui/issues/335). ([823120b](https://github.com/ckeditor/ckeditor5-ui/commit/823120b))
+
+### Other changes
+
+* Implemented `View#render` method which replaces the `#element` rendering upon the first reference and incorporates the `#init` method functionality. Closes [#262](https://github.com/ckeditor/ckeditor5-ui/issues/262). Closes [#302](https://github.com/ckeditor/ckeditor5-ui/issues/302). ([bf90ad5](https://github.com/ckeditor/ckeditor5-ui/commit/bf90ad5))
+
+  From now on `View#setTemplate` and `View#extendTemplate` methods are recommended as a shorthand for `view.template = new Template( { ... } )` and `Template.extend( view.template )`.
+* Removed legacy width and height attributes from the BoxedEditorUIView. Closes [#25](https://github.com/ckeditor/ckeditor5-ui/issues/25). ([ffa419a](https://github.com/ckeditor/ckeditor5-ui/commit/ffa419a))
+* The `ComponentFactory` should be case-insensitive. Closes [#324](https://github.com/ckeditor/ckeditor5-ui/issues/324). ([94417e9](https://github.com/ckeditor/ckeditor5-ui/commit/94417e9))
+* Updated translations. [skip ci]. ([186f365](https://github.com/ckeditor/ckeditor5-ui/commit/186f365))
+
+### BREAKING CHANGES
+
+* The `init()` method in various UI components has been renamed to `render()`. Please refer to the documentation to learn more.
+* The `View#element` is no longer a getter which renders an element when first referenced. Use the `View#render()` method instead.
+* `Template#children` property became an `Array` (previously `ViewCollection`).
+* `View#addChildren` and `View#removeChildren` methods became `#registerChildren` and `#deregisterChildren`.
+* The DOM structure of the `StickyPanelView` has changed along with the class names. Please refer to the component documentation to learn more.
+
+
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-ui/compare/v0.10.0...v1.0.0-alpha.1) (2017-10-03)
 
 ### Bug fixes
