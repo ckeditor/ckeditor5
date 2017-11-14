@@ -9,7 +9,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. [skip ci]. ([a1c4477](https://github.com/ckeditor/ckeditor5-list/commit/a1c4477))
+* Updated translations. ([a1c4477](https://github.com/ckeditor/ckeditor5-list/commit/a1c4477))
 
 
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-list/compare/v0.7.0...v1.0.0-alpha.1) (2017-10-03)
