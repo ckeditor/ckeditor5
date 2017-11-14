@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. [skip ci]. ([e150fe2](https://github.com/ckeditor/ckeditor5-block-quote/commit/e150fe2))
+* Updated translations. ([e150fe2](https://github.com/ckeditor/ckeditor5-block-quote/commit/e150fe2))
 
 
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-block-quote/compare/v0.2.0...v1.0.0-alpha.1) (2017-10-03)
