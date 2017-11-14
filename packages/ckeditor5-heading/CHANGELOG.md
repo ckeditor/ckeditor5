@@ -5,7 +5,8 @@ Changelog
 
 ### Other changes
 
-* Updated translations. [skip ci]. ([c3ad925](https://github.com/ckeditor/ckeditor5-heading/commit/c3ad925))
+* Updated translations. ([c3ad925](https://github.com/ckeditor/ckeditor5-heading/commit/c3ad925))
+* Aligned UI library usage to the [changes in the UI framework](https://github.com/ckeditor/ckeditor5-ui/pull/332).
 
 
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-heading/compare/v0.10.0...v1.0.0-alpha.1) (2017-10-03)
