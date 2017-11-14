@@ -206,5 +206,5 @@ export default class ImageUploadEngine extends Plugin {
 // @param {module:clipboard/datatransfer~DataTransfer} dataTransfer
 // @returns {Boolean}
 export function isHtmlIncluded( dataTransfer ) {
-	return dataTransfer.types.indexOf( 'text/html' ) > -1 && dataTransfer.getData( 'text/html' ) !== '';
+	return Array.from( dataTransfer.types ).includes( 'text/html' ) && dataTransfer.getData( 'text/html' ) !== '';
 }
