@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. [skip ci]. ([398054d](https://github.com/ckeditor/ckeditor5-basic-styles/commit/398054d))
+* Updated translations. ([398054d](https://github.com/ckeditor/ckeditor5-basic-styles/commit/398054d))
 
 
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v0.9.0...v1.0.0-alpha.1) (2017-10-03)
