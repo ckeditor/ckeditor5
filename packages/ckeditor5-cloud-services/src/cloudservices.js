@@ -90,6 +90,8 @@ CloudServices.Token = Token;
  *			.then( ... )
  *			.catch( ... );
  *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
  * @interface CloudServicesConfig
  */
 
