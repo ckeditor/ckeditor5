@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+
+### Other changes
+
+* Updated translations. [skip ci]. ([c3ad925](https://github.com/ckeditor/ckeditor5-heading/commit/c3ad925))
+
+
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-heading/compare/v0.10.0...v1.0.0-alpha.1) (2017-10-03)
 
 Internal changes only (updated dependencies, documentation, etc.).
