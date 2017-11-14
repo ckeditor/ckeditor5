@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. [skip ci]. ([7f80868](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/commit/7f80868))
+* Updated translations. ([7f80868](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/commit/7f80868))
 
 
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/compare/v0.1.1...v1.0.0-alpha.1) (2017-10-03)
