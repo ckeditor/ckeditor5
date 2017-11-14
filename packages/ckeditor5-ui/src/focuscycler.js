@@ -10,8 +10,8 @@
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 /**
- * An utility class that helps cycling over focusable {@link module:ui/view~View views} in a
- * {@link module:ui/viewcollection~ViewCollection} when the focus is tracked by
+ * A utility class that helps cycling over focusable {@link module:ui/view~View views} in a
+ * {@link module:ui/viewcollection~ViewCollection} when the focus is tracked by the
  * {@link module:utils/focustracker~FocusTracker} instance. It helps implementing keyboard
  * navigation in HTML forms, toolbars, lists and the like.
  *
@@ -31,10 +31,10 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
  *
  *		const cycler = new FocusCycler( { focusables, focusTracker } );
  *
- *		// Will focus the first forusable view in #focusables.
+ *		// Will focus the first focusable view in #focusables.
  *		cycler.focusFirst();
  *
- *		// Will log next focusable item in #focusables.
+ *		// Will log the next focusable item in #focusables.
  *		console.log( cycler.next );
  *
  * Alternatively, it can work side by side with the {@link module:utils/keystrokehandler~KeystrokeHandler}:
@@ -47,7 +47,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
  *		const cycler = new FocusCycler( {
  *			focusables, focusTracker, keystrokeHandler,
  *			actions: {
- *				// When arrowup of arrowleft is detected by the #keystrokeHandler
+ *				// When arrowup of arrowleft is detected by the #keystrokeHandler,
  *				// focusPrevious() will be called on the cycler.
  *				focusPrevious: [ 'arrowup', 'arrowleft' ],
  *			}
@@ -67,14 +67,14 @@ export default class FocusCycler {
 		Object.assign( this, options );
 
 		/**
-		 * A {@link module:ui/view~View view} collection the cycler operates on.
+		 * A {@link module:ui/view~View view} collection that the cycler operates on.
 		 *
 		 * @readonly
 		 * @member {module:utils/collection~Collection} #focusables
 		 */
 
 		/**
-		 * A focus tracker instance that cycler uses to determine the current focus
+		 * A focus tracker instance that the cycler uses to determine the current focus
 		 * state in {@link #focusables}.
 		 *
 		 * @readonly
@@ -93,7 +93,7 @@ export default class FocusCycler {
 		 * Actions that the cycler can take when a keystroke is pressed. Requires
 		 * `options.keystrokeHandler` to be passed and working. When an action is
 		 * performed, `preventDefault` and `stopPropagation` will be called on the event
-		 * the keystroke fired in DOM.
+		 * the keystroke fired in the DOM.
 		 *
 		 *		actions: {
 		 *			// Will call #focusPrevious() when arrowleft or arrowup is pressed.
@@ -171,7 +171,7 @@ export default class FocusCycler {
 
 	/**
 	 * An index of the view in the {@link #focusables} which is focused according
-	 * to {@link #focusTracker}. `null` when there is no such view.
+	 * to {@link #focusTracker}. Returns `null` when there is no such view.
 	 *
 	 * @readonly
 	 * @member {Number|null} #current
@@ -226,7 +226,7 @@ export default class FocusCycler {
 	}
 
 	/**
-	 * Focuses the given view, if exists.
+	 * Focuses the given view if it exists.
 	 *
 	 * @protected
 	 * @param {module:ui/view~View} view
@@ -238,11 +238,11 @@ export default class FocusCycler {
 	}
 
 	/**
-	 * Returns the next/previous focusable view in {@link #focusables} with respect
+	 * Returns the next or previous focusable view in {@link #focusables} with respect
 	 * to {@link #current}.
 	 *
 	 * @protected
-	 * @param {Number} step Either `1` for checking forward of {@link #current} or
+	 * @param {Number} step Either `1` for checking forward from {@link #current} or
 	 * `-1` for checking backwards.
 	 * @returns {module:ui/view~View|null}
 	 */
@@ -280,7 +280,7 @@ export default class FocusCycler {
 	}
 }
 
-// Checks whether an view is focusable.
+// Checks whether a view is focusable.
 //
 // @private
 // @param {module:ui/view~View} view A view to be checked.
