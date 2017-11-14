@@ -66,11 +66,22 @@ describe( 'UnlinkCommand', () => {
 
 				command.execute();
 
-				expect( getData( document ) ).to.equal(
-					'<$text bold="true" linkHref="url">f</$text>' +
-					'[<$text bold="true">ooba</$text>]' +
-					'<$text bold="true" linkHref="url">r</$text>'
-				);
+				const assertAll = () => {
+					expect( getData( document ) ).to.equal(
+						'<$text bold="true" linkHref="url">f</$text>' +
+						'[<$text bold="true">ooba</$text>]' +
+						'<$text bold="true" linkHref="url">r</$text>'
+					);
+				};
+
+				const assertEdge = () => {
+					expect( getData( document ) ).to.equal(
+						'<$text bold="true" linkHref="url">f</$text>' +
+						'[<$text bold="true">ooba]<$text linkHref="url">r</$text></$text>'
+					);
+				};
+
+				testUtils.checkAssertions( assertAll, assertEdge );
 			} );
 
 			it( 'should remove `linkHref` attribute from selected text when attributes have different value', () => {
