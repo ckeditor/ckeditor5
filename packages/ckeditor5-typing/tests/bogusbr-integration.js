@@ -15,7 +15,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'Bogus BR integration', () => {
+describe( 'Typing – bogus BR integration', () => {
 	let editor, domRoot, mutationObserver, editorElement;
 
 	beforeEach( () => {

@@ -20,7 +20,7 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'InputCommand integration', () => {
+describe( 'Typing – InputCommand integration', () => {
 	let editor, doc, viewDocument, boldView, italicView, editorElement;
 
 	beforeEach( () => {
