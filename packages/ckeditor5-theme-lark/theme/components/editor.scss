@@ -33,7 +33,7 @@
 		}
 	}
 
-	.ck-button.ck-dropdown__button {
+	.ck-button.ck-dropdown__button:not(.ck-button-dropdown) {
 		border-width: 1px;
 
 		&:not(:hover):not(:focus):not(.ck-on) {
