@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-undo/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+
+### Other changes
+
+* Updated translations. [skip ci]. ([847838f](https://github.com/ckeditor/ckeditor5-undo/commit/847838f))
+
+
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-undo/compare/v0.9.0...v1.0.0-alpha.1) (2017-10-03)
 
 ### Bug fixes
