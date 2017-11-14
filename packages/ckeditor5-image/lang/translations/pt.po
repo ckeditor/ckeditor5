@@ -23,7 +23,7 @@ msgstr ""
 
 msgctxt "Label for the Centered image option"
 msgid "Centered image"
-msgstr ""
+msgstr "Imagem centrada"
 
 msgctxt "Label for the Right aligned image option"
 msgid "Right aligned image"
@@ -35,7 +35,7 @@ msgstr ""
 
 msgctxt "Label for the image text alternative input."
 msgid "Text alternative"
-msgstr ""
+msgstr "Texto alternativo"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
