@@ -50,7 +50,8 @@ export function translate( lang, translationKey ) {
 
 	if ( numberOfLanguages === 1 ) {
 		// Override the language to the only supported one.
-		// This can't be done in the `Locale` class, because the translations comes after the `Locale` class initializes.
+		// This can't be done in the `Locale` class,
+		// because the translations comes after the `Locale` class initializes.
 		lang = Object.keys( dictionaries )[ 0 ];
 	}
 
