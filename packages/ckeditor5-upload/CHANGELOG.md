@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+
+### Bug fixes
+
+* Destroying `FileDialogButtonView` should not throw an error. Closes [#66](https://github.com/ckeditor/ckeditor5-upload/issues/66). ([2d4ba62](https://github.com/ckeditor/ckeditor5-upload/commit/2d4ba62))
+* Images pasted with additional HTML content will not be handled by the upload plugin. Closes [#68](https://github.com/ckeditor/ckeditor5-upload/issues/68). ([8d0644a](https://github.com/ckeditor/ckeditor5-upload/commit/8d0644a))
+
+### Other changes
+
+* Updated translations. [skip ci]. ([93e9643](https://github.com/ckeditor/ckeditor5-upload/commit/93e9643))
+
+### BREAKING CHANGES
+
+* The `FileDialogButtonView` is not a `ButtonView` instance anymore but a wrapper instead. The button of the component is available under the `#buttonView` property.
+
+
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-upload/compare/v0.2.0...v1.0.0-alpha.1) (2017-10-03)
 
 ### Bug fixes
