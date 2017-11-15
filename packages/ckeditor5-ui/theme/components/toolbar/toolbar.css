@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../../helpers/states.css";
+@import "../../mixins/_unselectable.css";
 
 .ck-toolbar {
 	@mixin ck-unselectable;

@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../helpers/states.css";
-@import "../helpers/zindex.css";
+@import "../mixins/_unselectable.css";
 
 .ck-list {
 	@mixin ck-unselectable;

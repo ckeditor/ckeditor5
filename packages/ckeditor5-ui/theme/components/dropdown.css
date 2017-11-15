@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../helpers/zindex.css";
-
 .ck-dropdown {
 	display: inline-block;
 	position: relative;

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../helpers/states.css";
-@import "./tooltip.css";
+@import "../mixins/_unselectable.css";
+@import "./tooltip/mixins/_tooltip.css";
 
 .ck-button,
 a.ck-button {
