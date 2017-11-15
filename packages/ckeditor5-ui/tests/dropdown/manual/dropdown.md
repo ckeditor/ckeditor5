@@ -28,3 +28,6 @@ listDropdownCollection.add(
 	} )
 );
 ```
+* Play with `buttons[ n ].isOn` to control buttonDropdown active icon.
+* Play with `buttons[ n ].isEnabled` to control buttonDropdown disabled state (all buttons must be set to `false`).
+* Play with `buttonDropdownModel.isVertical` to control buttonDropdown vertical/horizontal alignment.

@@ -72,6 +72,8 @@ export default function createButtonDropdown( model, buttonViews, locale ) {
 
 	const buttonGroupView = dropdownView.buttonGroupView = new ButtonGroupView( { isVertical: model.isVertical } );
 
+	buttonGroupView.bind( 'isVertical' ).to( model, 'isVertical' );
+
 	buttonViews.map( view => buttonGroupView.items.add( view ) );
 
 	dropdownView.buttonView.extendTemplate( {
