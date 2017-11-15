@@ -57,7 +57,7 @@ const utils = {
 	 *          testUtils.checkAssertions( assertEdge, assertAll );
 	 *      } );
 	 *
-	 * @param {Array.<Function>} assertions Functions that will be executed.
+	 * @param {...Function} assertions Functions that will be executed.
 	 */
 	checkAssertions( ...assertions ) {
 		const errors = [];
