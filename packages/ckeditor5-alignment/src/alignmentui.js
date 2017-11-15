@@ -91,6 +91,7 @@ export default class AlignmentUI extends Plugin {
 
 			const model = new Model( {
 				label: t( 'Text alignment' ),
+				defaultIcon: alignLeftIcon,
 				withText: false,
 				isVertical: true
 			} );
