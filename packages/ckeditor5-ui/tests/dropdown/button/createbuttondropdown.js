@@ -25,9 +25,7 @@ describe( 'createButtonDropdown', () => {
 			return button;
 		} );
 
-		model = new Model( {
-			label: 'foo'
-		} );
+		model = new Model( { isVertical: true } );
 
 		view = createButtonDropdown( model, buttonViews, locale );
 		view.render();
@@ -156,7 +154,7 @@ describe( 'createButtonDropdown', () => {
 		} );
 
 		describe( 'icon', () => {
-			it( 'should be set to first button', () => {
+			it( 'should be set to first button\'s icon if no defaultIcon defined', () => {
 				expect( view.buttonView.icon ).to.equal( view.buttonGroupView.items.get( 0 ).icon );
 			} );
 
@@ -169,6 +167,27 @@ describe( 'createButtonDropdown', () => {
 				view.buttonGroupView.items.get( 1 ).isOn = false;
 
 				expect( view.buttonView.icon ).to.equal( view.buttonGroupView.items.get( 0 ).icon );
+			} );
+
+			it( 'should be set to defaultIcon if defined and on button is on', () => {
+				const model = new Model( { defaultIcon: 'baz' } );
+
+				view = createButtonDropdown( model, buttonViews, locale );
+				view.render();
+
+				expect( view.buttonView.icon ).to.equal( 'baz' );
+			} );
+
+			it( 'should not bind icons if staticIcon is set', () => {
+				const model = new Model( { defaultIcon: 'baz', staticIcon: true } );
+
+				view = createButtonDropdown( model, buttonViews, locale );
+				view.render();
+
+				expect( view.buttonView.icon ).to.equal( 'baz' );
+				view.buttonGroupView.items.get( 1 ).isOn = true;
+
+				expect( view.buttonView.icon ).to.equal( 'baz' );
 			} );
 		} );
 	} );

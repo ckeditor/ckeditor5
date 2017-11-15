@@ -54,19 +54,27 @@ export default function createButtonDropdown( model, buttonViews, locale ) {
 		( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
 	);
 
-	// Make dropdown icon as any active button.
-	model.bind( 'icon' ).to(
-		// Bind to #isOn of each button...
-		...getBindingTargets( buttonViews, 'isOn' ),
-		// ...and chose the title of the first one which #isOn is true.
-		( ...areActive ) => {
-			const index = areActive.findIndex( value => value );
+	// If defined `staticIcon` use the `defautlIcon` without binding it to active buttonView
+	if ( model.staticIcon ) {
+		model.bind( 'icon' ).to( model, 'defaultIcon' );
+	} else {
+		// Make dropdown icon as any active button.
+		model.bind( 'icon' ).to(
+			// Bind to #isOn of each button...
+			...getBindingTargets( buttonViews, 'isOn' ),
+			// ...and chose the title of the first one which #isOn is true.
+			( ...areActive ) => {
+				const index = areActive.findIndex( value => value );
 
-			// If none of the commands is active, display first icon.
-			// TODO: make this configurable (defaultIcon)
-			return buttonViews[ index < 0 ? 0 : index ].icon;
-		}
-	);
+				// If none of the commands is active, display either defaultIcon or first button icon.
+				if ( index < 0 && model.defaultIcon ) {
+					return model.defaultIcon;
+				}
+
+				return buttonViews[ index < 0 ? 0 : index ].icon;
+			}
+		);
+	}
 
 	const dropdownView = createDropdown( model, locale );
 
