@@ -21,7 +21,7 @@ export default class ButtonGroupView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( buttonsViews = [], options = {} ) {
+	constructor( options = {} ) {
 		super();
 
 		/**
@@ -31,8 +31,6 @@ export default class ButtonGroupView extends View {
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
 		this.items = this.createCollection();
-
-		buttonsViews.map( button => this.items.add( button ) );
 
 		/**
 		 * Tracks information about DOM focus in the group.
