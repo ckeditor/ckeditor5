@@ -8,9 +8,9 @@ import ButtonGroupView from '../../src/buttongroup/buttongroupview';
 import ButtonView from '../../src/button/buttonview';
 import ViewCollection from '../../src/viewcollection';
 import FocusCycler from '../../src/focuscycler';
-import FocusTracker from '../../../ckeditor5-utils/src/focustracker';
-import KeystrokeHandler from '../../../ckeditor5-utils/src/keystrokehandler';
-import { keyCodes } from '../../../ckeditor5-utils/src/keyboard';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 testUtils.createSinonSandbox();
 
