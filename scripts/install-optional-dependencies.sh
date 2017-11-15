@@ -6,10 +6,10 @@
 # Installs optional dev dependencies.
 # They are required by the following tasks:
 #
-# * gulp docs
-# * gulp changelog:dependencies
-# * gulp release:dependencies
-# * gulp translations:*
+# * npm run docs
+# * npm run changelog:dependencies
+# * npm run release:dependencies
+# * npm run translations:*
 
 set -e
 

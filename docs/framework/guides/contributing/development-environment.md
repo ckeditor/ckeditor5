@@ -27,14 +27,13 @@ In order to start developing CKEditor 5 you will require:
 
 First, you need to install a couple of tools which you will be using later:
 
-* [gulp](http://gulpjs.com/) (a JavaScript task runner),
 * [mgit](https://www.npmjs.com/package/mgit2) (a multi-repo management tool),
 * [Lerna.js](https://github.com/lerna/lerna) (a multi-package management tool).
 
 It is best to install them globally in your system for an easier use later on:
 
 ```bash
-npm install -g gulp lerna mgit2
+npm install -g lerna mgit2
 ```
 
 Note: You may need to use `sudo` on Linux and macOS.
@@ -103,7 +102,7 @@ lrwxr-xr-x    1 p  staff    25 31 Jan 10:37 ckeditor5-engine -> ../../../ckedito
 If everything worked correctly, you should be able to run some tests:
 
 ```bash
-gulp test --files=core
+npm run test -- --files=core
 ```
 
 ### Fetching changes
@@ -153,13 +152,13 @@ Lerna is a tool used by many well-known projects such as [Babel.js](https://gith
 In order to run tests you need to use the `test` and `test:manual` tasks.
 
 ```bash
-gulp test --watch --coverage --source-map --files=engine
+npm test -- --watch --coverage --source-map --files=engine
 ```
 
 or, shorter:
 
 ```bash
-gulp test -wcs --files=engine
+npm test -- -wcs --files=engine
 ```
 
 This command will run the [`ckeditor5-engine`](https://github.com/ckeditor/ckeditor5-engine) package's tests.
@@ -169,7 +168,7 @@ This command will run the [`ckeditor5-engine`](https://github.com/ckeditor/ckedi
 To create a server for manual tests use the `test:manual` task:
 
 ```bash
-gulp test:manual
+npm run test:manual
 ```
 
 It accepts the `--source-map` (`-s`) option. Note that it watches for changes only in the JavaScript files (see the [bug](https://github.com/ckeditor/ckeditor5-dev/issues/52)).
@@ -187,7 +186,7 @@ npm run install-optional-dependencies
 Then you can run the `docs` task:
 
 ```bash
-gulp docs
+npm run docs
 ```
 
 The documentation will be available in `build/docs/`.
