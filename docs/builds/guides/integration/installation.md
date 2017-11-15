@@ -38,7 +38,7 @@ npm install --save @ckeditor/ckeditor5-build-inline
 npm install --save @ckeditor/ckeditor5-build-balloon
 ```
 
-CKEditor will then be available at `node_modules/ckeditor5-build-[name]/build/ckeditor.js`. It can also be imported directly to your code by `require( '@ckeditor/ckeditor5-build-[name]' )`.
+CKEditor will then be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/ckeditor.js`. It can also be imported directly to your code by `require( '@ckeditor/ckeditor5-build-[name]' )`.
 
 ### Zip download
 
