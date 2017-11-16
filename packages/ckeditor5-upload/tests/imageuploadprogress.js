@@ -83,7 +83,7 @@ describe( 'ImageUploadProgress', () => {
 		);
 	} );
 
-	it.only( 'should convert image\'s "uploading" uploadStatus attribute', done => {
+	it( 'should convert image\'s "uploading" uploadStatus attribute', done => {
 		setModelData( document, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
