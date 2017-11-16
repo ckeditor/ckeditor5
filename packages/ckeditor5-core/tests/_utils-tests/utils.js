@@ -8,7 +8,7 @@ import testUtils from '../_utils/utils';
 testUtils.createSinonSandbox();
 
 describe( 'utils', () => {
-	describe( 'checkAssertions', () => {
+	describe( 'checkAssertions()', () => {
 		it( 'does not throw an error if at least one assertion passed', () => {
 			const assertionRed = testUtils.sinon.stub().callsFake( () => {
 				expect( 1 ).to.equal( 2 );
