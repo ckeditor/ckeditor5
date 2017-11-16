@@ -3,10 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../helpers/colors.css";
-@import "../helpers/rounded.css";
-@import "../helpers/spacing.css";
-
 :root {
 	--ck-color-code: rgba( 200, 200, 200, 0.3 );
 }

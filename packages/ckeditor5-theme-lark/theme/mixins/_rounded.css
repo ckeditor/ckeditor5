@@ -4,13 +4,6 @@
  */
 
 /**
- * Default border-radius value.
- */
-:root{
-	--ck-border-radius: 2px;
-}
-
-/**
  * Implements rounded corner interface for .ck-rounded-corners class.
  *
  * @see $ck-border-radius

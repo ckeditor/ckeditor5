@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../helpers/colors.css";
-@import "../helpers/spacing.css";
-@import "../helpers/shadow.css";
-@import "../helpers/states.css";
+@import "../mixins/_focus.css";
+@import "../mixins/_shadow.css";
 
 :root {
 	--ck-widget-outline-thickness: 3px;
@@ -20,7 +18,7 @@
 	margin: var(--ck-spacing-standard) 0;
 	padding: 0;
 
-	&.ck-widget_selected, 
+	&.ck-widget_selected,
 	&.ck-widget_selected:hover {
 		outline: var(--ck-widget-outline-thickness) solid var(--ck-color-border-focus);
 	}
@@ -38,7 +36,7 @@
 
 		/*The `:focus` style is applied before `.ck-editable_focused` class is rendered in the view.
 		These styles show a different border for a blink of an eye, so `:focus` need to have same styles applied.*/
-		&.ck-editable_focused, 
+		&.ck-editable_focused,
 		&:focus {
 			@mixin ck-focus-ring;
 			@mixin ck-box-shadow var(--ck-inner-shadow);

@@ -3,36 +3,34 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../../helpers/colors.css";
-
 /**
  * Implements a button of given background color.
  *
  * @param {String} $background - Background color of the button.
  * @param {String} $border - Border color of the button.
  */
-@define-mixin ck-button-colors $background, $border {
-	background: $background;
-	border-color: $border;
+@define-mixin ck-button-colors $prefix {
+	background: var($(prefix)-background);
+	border-color: var($(prefix)-border);
 
 	&:not(.ck-disabled) {
 		&:hover,
 		&:focus {
-			background: color($background shade(10%));
-			border-color: color($border shade(10%));
+			background: var($(prefix)-focus-background);
+			border-color: var($(prefix)-focus-border);
 		}
 
 		&:active {
-			background: color($background shade(15%));
-			border-color: color($border shade(15%));
-			box-shadow: inset 0 2px 2px color($background shade(25%));
+			background: var($(prefix)-active-background);
+			border-color: var($(prefix)-active-border);
+			box-shadow: inset 0 2px 2px var($(prefix)-active-shadow);
 		}
 	}
 
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/98 */
 	&.ck-disabled {
-		background: color($background shade(10%));
-		border-color: color($border tint(10%));
+		background: var($(prefix)-disabled-background);
+		border-color: var($(prefix)-disabled-border);
 	}
 }
 

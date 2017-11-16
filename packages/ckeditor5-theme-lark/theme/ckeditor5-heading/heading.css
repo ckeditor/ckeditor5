@@ -3,9 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../helpers/fonts.css";
-@import "../helpers/spacing.css";
-
 .ck-heading_heading1 {
 	font-size: 1.5em;
 }
@@ -22,8 +19,7 @@
 https://github.com/ckeditor/ckeditor5-heading/issues/63 */
 [class*="ck-heading_"] {
 	line-height: calc(1.8 * var(--ck-font-size-base));
-	/* Strip the units from $ck-def-spacing here. */
-	padding: calc(var(--ck-spacing-unit) * var(--ck-font-size-base));
+	padding: calc(0.8 * var(--ck-font-size-base));
 }
 
 [class*="ck-heading_heading"] {

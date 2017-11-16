@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../helpers/spacing.css";
-
 :root {
 	--ck-image-spacing: calc(5 * var(--ck-spacing-small));
 	--ck-image-max-width: 50%;

@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../../helpers/colors.css";
-@import "../../helpers/rounded.css";
-@import "../../helpers/spacing.css";
-@import "../../helpers/states.css";
-@import "../../helpers/shadow.css";
-
-@import '../helpers/button.css';
+@import "../../mixins/_rounded.css";
+@import "../../mixins/_disabled.css";
+@import "../../mixins/_shadow.css";
+@import "../../mixins/_focus.css";
+@import "../mixins/_button.css";
 
 .ck-editor__editable {
 	@mixin ck-rounded-corners;
@@ -39,7 +37,7 @@
 		}
 
 		&.ck-on {
-			@mixin ck-button-colors color(var(--ck-color-editor-toolbar-button-background) shade(10%)), color(var(--ck-color-button-default-border) shade(10%));
+			@mixin ck-button-colors --ck-color-editor-toolbar-button-on;
 		}
 	}
 

@@ -3,9 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../helpers/fonts.css";
-@import "../helpers/colors.css";
-
 @custom-selector :--ck-reset-all
 	.ck-reset_all,
 	.ck-reset_all *,

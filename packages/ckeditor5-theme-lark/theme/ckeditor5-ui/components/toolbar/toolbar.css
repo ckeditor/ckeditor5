@@ -3,10 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../../../helpers/colors.css";
-@import "../../../helpers/rounded.css";
-@import "../../../helpers/spacing.css";
-@import "../../../helpers/states.css";
+@import "../../../mixins/_rounded.css";
 
 .ck-toolbar {
 	@mixin ck-rounded-corners;

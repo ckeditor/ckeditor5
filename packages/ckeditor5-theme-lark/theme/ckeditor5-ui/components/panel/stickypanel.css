@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../../../helpers/shadow.css";
+@import "../../../mixins/_shadow.css";
 
 .ck-editor {
 	& .ck-sticky-panel {

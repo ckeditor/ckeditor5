@@ -3,20 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../../helpers/fonts.css";
-
 /**
  * Default width/height of an icon. Note that it equals the default
  * height of the line of text, so e.g. it matches the height of the
  * button's label.
  */
 :root {
-	--ck-icon-min-size: calc(var(--ck-font-size-base)*var(--ck-line-height-base));
+	--ck-icon-min-size: calc(var(--ck-font-size-base) * var(--ck-line-height-base));
 }
 
 svg.ck-icon {
-	width: var(--ck-line-height-base)em;
-	height: var(--ck-line-height-base)em;
+	width: calc(var(--ck-line-height-base) * 1em);
+	height: calc(var(--ck-line-height-base) * 1em);
 
 	min-width: var(--ck-icon-min-size);
 	min-height: var(--ck-icon-min-size);

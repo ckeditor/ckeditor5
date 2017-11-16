@@ -3,15 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../../helpers/colors.css";
-@import "../../helpers/rounded.css";
-@import "../../helpers/spacing.css";
-@import "../../helpers/states.css";
-@import "../../helpers/shadow.css";
+
+@import "../../mixins/_rounded.css";
+@import "../../mixins/_shadow.css";
 
 .ck-list {
 	@mixin ck-rounded-corners;
-	@mixin ck-unselectable;
 
 	list-style-type: none;
 	background: var(--ck-color-list-background);

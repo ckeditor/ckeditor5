@@ -3,18 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../../helpers/colors.css";
-@import "../../helpers/fonts.css";
-@import "../../helpers/rounded.css";
-@import "../../helpers/spacing.css";
-@import "../../helpers/states.css";
-@import "../../helpers/shadow.css";
-
-@import "../helpers/button.css";
+@import "../../mixins/_focus.css";
+@import "../../mixins/_shadow.css";
+@import "../../mixins/_disabled.css";
+@import "../../mixins/_rounded.css";
+@import "../mixins/_button.css";
 
 .ck-button,
 a.ck-button {
-	@mixin ck-button-colors var(--ck-color-button-default-background), var(--ck-color-button-default-border);
+	@mixin ck-button-colors --ck-color-button-default;
 	@mixin ck-rounded-corners;
 
 	border-width: 1px;
@@ -63,7 +60,7 @@ a.ck-button {
 
 	/* A style of the button which is currently on, e.g. its feature is active. */
 	&.ck-on {
-		@mixin ck-button-colors var(--ck-color-button-on-background), var(--ck-color-button-on-border);
+		@mixin ck-button-colors --ck-color-button-on;
 	}
 
 	& .ck-icon {
@@ -89,15 +86,15 @@ a.ck-button {
 /* A style of the button which handles the primary action. */
 .ck-button-action,
 a.ck-button-action {
-	@mixin ck-button-colors var(--ck-color-button-action-background), var(--ck-color-button-action-border);
+	@mixin ck-button-colors --ck-color-button-action;
 
-	text-shadow: 0 -1px color(var(--ck-color-button-action-background) shade(20%));
+	text-shadow: 0 -1px var(--ck-color-button-action-border);
 	color: var(--ck-color-button-action-text);
 
 	&:hover,
 	&:focus,
 	&:active {
-		text-shadow: 0 -1px color(var(--ck-color-button-action-background) shade(20%))
+		text-shadow: 0 -1px var(--ck-color-button-action-active-border);
 	}
 }
 

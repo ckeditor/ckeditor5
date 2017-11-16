@@ -3,10 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../helpers/colors.css";
-@import "../helpers/fonts.css";
-@import "../helpers/spacing.css";
-
 :root {
 	--ck-color-image-caption-background: var(--ck-color-base-foreground);
 	--ck-color-image-caption-text: var(--ck-color-base-text);

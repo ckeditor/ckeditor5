@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../helpers/spacing.css";
-
 .ck-link-form {
 	padding: var(--ck-spacing-large);
 

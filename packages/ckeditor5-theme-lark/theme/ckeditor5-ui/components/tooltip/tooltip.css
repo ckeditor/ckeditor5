@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../../helpers/colors.css";
-@import "../../helpers/rounded.css";
-@import "../../helpers/spacing.css";
+@import "../../../mixins/_rounded.css";
 
 :root {
 	--ck-tooltip-arrow-size: 5px;

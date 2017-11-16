@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../helpers/colors.css";
-@import "../helpers/rounded.css";
+@import "../mixins/_rounded.css";
 
 .ck-editor__top {
 	& .ck-sticky-panel {
