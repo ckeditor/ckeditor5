@@ -59,7 +59,8 @@ export function translate( lang, translationKey ) {
 		return translationKey.replace( / \[context: [^\]]+\]$/, '' );
 	}
 
-	return dictionaries[ lang ][ translationKey ];
+	// In case of missing translations we still need to cut off the `[context: ]` parts.
+	return dictionaries[ lang ][ translationKey ].replace( / \[context: [^\]]+\]$/, '' );
 }
 
 // Checks whether the dictionary exists and translation in that dictionary exists.
