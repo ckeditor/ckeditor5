@@ -31,6 +31,48 @@ const utils = {
 		afterEach( () => {
 			utils.sinon.restore();
 		} );
+	},
+
+	/**
+	 * Executes specified assertions. It expects that at least one function will not throw an error.
+	 *
+	 * Some of the tests fail because different browsers renders selection differently when it comes to element boundaries.
+	 * Using this method we can check few scenarios.
+	 *
+	 * See https://github.com/ckeditor/ckeditor5-core/issues/107.
+	 *
+	 * Usage:
+	 *
+	 *      it( 'test', () => {
+	 *          // Test bootstrapping...
+	 *
+	 *          const assertEdge = () => {
+	 *              // expect();
+	 *          };
+	 *
+	 *          const assertAll = () => {
+	 *              // expect();
+	 *          };
+	 *
+	 *          testUtils.checkAssertions( assertEdge, assertAll );
+	 *      } );
+	 *
+	 * @param {...Function} assertions Functions that will be executed.
+	 */
+	checkAssertions( ...assertions ) {
+		const errors = [];
+
+		for ( const assertFn of assertions ) {
+			try {
+				assertFn();
+
+				return;
+			} catch ( err ) {
+				errors.push( err.message );
+			}
+		}
+
+		throw new Error( errors.join( '\n\n' ) );
 	}
 };
 
