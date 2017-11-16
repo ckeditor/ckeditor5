@@ -109,7 +109,7 @@ describe( 'ImageUploadProgress', () => {
 			adapterMock.mockProgress( 40, 100 );
 
 			expect( getViewData( viewDocument ) ).to.equal(
-				'[<figure class="ck-widget ck-appear image" contenteditable="false">' +
+				'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
 				`<img src="${ base64Sample }"></img>` +
 				'<div class="ck-progress-bar" style="width:40%"></div>' +
 				'</figure>]<p>foo</p>'
