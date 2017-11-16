@@ -16,9 +16,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
-import '../theme/globals/_reset.css';
-import '../theme/globals/_hidden.css';
-import '../theme/globals/_zindex.css';
+import '../theme/globals/globals.css';
 
 /**
  * The basic view class, which represents an HTML element created out of a
