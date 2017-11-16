@@ -13,3 +13,42 @@
  * @implements module:ui/dropdown/dropdownmodel~DropdownModel
  * @interface module:ui/dropdown/button/buttondropdownmodel~ButtonDropdownModel
  */
+
+/**
+ * Fired when the button dropdown is executed. It fires when one of the buttons
+ * {@link module:ui/button/buttonview~ButtonView#event:execute executed}.
+ *
+ * @event #execute
+ */
+
+/**
+ * Controls dropdown direction.
+ *
+ * @observable
+ * @member {Boolean} #isVertical=false
+ */
+
+/**
+ * Disables automatic button icon binding. If set to true dropdown's button {@link #icon} will be set to {@link #defaultIcon}.
+ *
+ * @observable
+ * @member {Boolean} #staticIcon=false
+ */
+
+/**
+ * Defines default icon which is used when no button is active.
+ *
+ * Also see {@link #icon}.
+ *
+ * @observable
+ * @member {String} #defaultIcon
+ */
+
+/**
+ * Button dropdown icon is set from inner button views.
+ *
+ * Also see {@link #defaultIcon} and {@link #staticIcon}.
+ *
+ * @observable
+ * @member {String} #icon
+ */

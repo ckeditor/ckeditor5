@@ -4,13 +4,13 @@
  */
 
 /**
- * @module ui/dropdown/button/createbuttonview
+ * @module ui/dropdown/button/createbuttondropdown
  */
 
 /**
  * The button dropdown view.
  *
- * See {@link module:ui/dropdown/button/createbuttonview~createButtonDropdown}.
+ * See {@link module:ui/dropdown/button/createbuttondropdown~createButtonDropdown}.
  *
  * @abstract
  * @class module:ui/dropdown/button/buttondropdownview~ButtonDropdownView

@@ -28,7 +28,7 @@ import { closeDropdownOnBlur, closeDropdownOnExecute, openDropdownOnArrows } fro
  *
  *		const dropdown = createButtonDropdown( model, buttons, locale );
  *
- *		// Will render a vertucak button dropdown labeled "A button dropdown"
+ *		// Will render a vertical button dropdown labeled "A button dropdown"
  *		// with a button group in the panel containing two buttons.
  *		dropdown.render()
  *		document.body.appendChild( dropdown.element );
@@ -37,7 +37,7 @@ import { closeDropdownOnBlur, closeDropdownOnExecute, openDropdownOnArrows } fro
  * {@link module:ui/dropdown/dropdownmodel~DropdownModel#label `model.label`} will be reflected in the
  * dropdown button's {@link module:ui/button/buttonview~ButtonView#label} attribute and in DOM.
  *
- * See {@link module:ui/dropdown/createdropdown~createDropdown} and {@link module:ui/buttongroup/buttongroup~ButtonGroup}.
+ * See {@link module:ui/dropdown/createdropdown~createDropdown} and {@link module:ui/buttongroup/buttongroupview~ButtonGroupView}.
  *
  * @param {module:ui/dropdown/button/buttondropdownmodel~ButtonDropdownModel} model Model of the list dropdown.
  * @param {Array.<module:ui/button/buttonview~ButtonView>} buttonViews List of buttons to be included in dropdown.
