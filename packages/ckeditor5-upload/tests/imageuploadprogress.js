@@ -83,13 +83,13 @@ describe( 'ImageUploadProgress', () => {
 		);
 	} );
 
-	it( 'should convert image\'s "uploading" uploadStatus attribute', done => {
+	it.only( 'should convert image\'s "uploading" uploadStatus attribute', done => {
 		setModelData( document, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		document.once( 'changesDone', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
-				'[<figure class="ck-widget ck-appear image" contenteditable="false">' +
+				'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
 					`<img src="${ base64Sample }"></img>` +
 					'<div class="ck-progress-bar"></div>' +
 				'</figure>]<p>foo</p>'
@@ -111,7 +111,7 @@ describe( 'ImageUploadProgress', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[<figure class="ck-widget ck-appear image" contenteditable="false">' +
 				`<img src="${ base64Sample }"></img>` +
-				'<div class="ck-progress-bar" style="width:40%;"></div>' +
+				'<div class="ck-progress-bar" style="width:40%"></div>' +
 				'</figure>]<p>foo</p>'
 			);
 
