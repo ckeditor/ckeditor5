@@ -279,22 +279,27 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'if anchor or focus is directly inside dom element that represents view ui element', () => {
+				// Set text indside ui element to put selection there.
+				domUiSpan.innerText = 'xxx';
 				// Tests forward and backward selection.
-				// <p>INLINE_FILLER{foo<span-ui>]<span-container></span></span></p>.
-				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH, domUiSpan, 0 );
+				// <p>INLINE_FILLER{foo<span-ui>xxx]<span-container></span></span></p>.
+				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH, domUiSpan, 1 );
+
 				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
-				const sel2 = domSelection( domUiSpan, 0, domFillerTextNode, INLINE_FILLER_LENGTH );
+				const sel2 = domSelection( domUiSpan, 1, domFillerTextNode, INLINE_FILLER_LENGTH );
 				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
 			} );
 
 			it( 'if anchor or focus is inside deep ui element structure (not directly in ui element)', () => {
+				// Set text indside ui element to put selection there.
+				domUiDeepSpan.innerText = 'xxx';
 				// Tests forward and backward selection.
-				// <p>INLINE_FILLER{foo<span-ui><span-container>]</span></span></p>.
-				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH, domUiDeepSpan, 0 );
+				// <p>INLINE_FILLER{foo<span-ui><span-container>xxx]</span></span></p>.
+				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH, domUiDeepSpan, 1 );
 				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
-				const sel2 = domSelection( domUiDeepSpan, 0, domFillerTextNode, INLINE_FILLER_LENGTH );
+				const sel2 = domSelection( domUiDeepSpan, 1, domFillerTextNode, INLINE_FILLER_LENGTH );
 				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
 			} );
 		} );
