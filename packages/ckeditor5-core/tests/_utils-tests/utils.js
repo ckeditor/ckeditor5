@@ -39,7 +39,7 @@ describe( 'utils', () => {
 			const assertionRed = testUtils.sinon.stub().callsFake( () => {
 				expect( 1 ).to.equal( 1 );
 			} );
-			const assertionGreen = testUtils.sinon.stub().callsFake();
+			const assertionGreen = testUtils.sinon.stub()
 
 			testUtils.checkAssertions( assertionRed, assertionGreen );
 			expect( assertionGreen.called ).to.equal( false );
