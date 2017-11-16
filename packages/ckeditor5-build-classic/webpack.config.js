@@ -29,10 +29,8 @@ module.exports = {
 
 	plugins: [
 		new CKEditorWebpackPlugin( {
-			languages: [ 'de', 'pl', 'en' ],
-			throwErrorOnMissingTranslation: true,
-			// optimizeBuildForOneLanguage: true,
-			outputDirectory: 'lang'
+			languages: [ buildConfig.config.lang ],
+			optimizeBuildForOneLanguage: true
 		} ),
 		new BabiliPlugin( null, {
 			comments: false
