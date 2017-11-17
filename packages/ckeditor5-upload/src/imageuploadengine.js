@@ -46,6 +46,12 @@ export default class ImageUploadEngine extends Plugin {
 
 		// Execute imageUpload command when image is dropped or pasted.
 		editor.editing.view.on( 'clipboardInput', ( evt, data ) => {
+			// Skip if non empty HTML data is included.
+			// https://github.com/ckeditor/ckeditor5-upload/issues/68
+			if ( isHtmlIncluded( data.dataTransfer ) ) {
+				return;
+			}
+
 			let targetModelSelection = new ModelSelection(
 				data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) )
 			);
@@ -193,4 +199,12 @@ export default class ImageUploadEngine extends Plugin {
 			fileRepository.destroyLoader( loader );
 		}
 	}
+}
+
+// Returns true if non-empty `text/html` is included in data transfer.
+//
+// @param {module:clipboard/datatransfer~DataTransfer} dataTransfer
+// @returns {Boolean}
+export function isHtmlIncluded( dataTransfer ) {
+	return Array.from( dataTransfer.types ).includes( 'text/html' ) && dataTransfer.getData( 'text/html' ) !== '';
 }

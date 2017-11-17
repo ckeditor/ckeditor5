@@ -1,14 +1,14 @@
 # Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: pt\n"
-"Language-Team: Portuguese (https://www.transifex.com/ckeditor/teams/11143/pt/)\n"
+"Language: fi\n"
+"Language-Team: Finnish (https://www.transifex.com/ckeditor/teams/11143/fi/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Label for the insert image toolbar button."
 msgid "Insert image"
-msgstr "Inserir imagem"
+msgstr "Lisää kuva"
 
 msgctxt "Title of the notification displayed when upload fails."
 msgid "Upload failed"
-msgstr "Falha ao carregar"
+msgstr "Lataus epäonnistui"
