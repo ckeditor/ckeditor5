@@ -314,23 +314,6 @@ describe( 'EmitterMixin', () => {
 			sinon.assert.calledTwice( spy3 );
 		} );
 
-		it( 'should be called just once for namespaced event when calling general event', () => {
-			const spy1 = sinon.spy();
-			const spy2 = sinon.spy();
-			const spy3 = sinon.spy();
-
-			emitter.on( 'foo', spy1 );
-			emitter.once( 'foo', spy2 );
-			emitter.on( 'foo', spy3 );
-
-			emitter.fire( 'foo:bar' );
-			emitter.fire( 'foo:bar' );
-
-			sinon.assert.calledTwice( spy1 );
-			sinon.assert.calledOnce( spy2 );
-			sinon.assert.calledTwice( spy3 );
-		} );
-
 		it( 'should have proper arguments', () => {
 			const spy = sinon.spy();
 
@@ -510,13 +493,6 @@ describe( 'EmitterMixin', () => {
 			sinon.assert.calledThrice( spyFoo );
 			sinon.assert.calledTwice( spyBar );
 			sinon.assert.calledOnce( spyBaz );
-		} );
-
-		it( 'should not fail on empty callback', () => {
-			listener.listenTo( emitter, 'foo' );
-
-			emitter.fire( 'foo' );
-			emitter.fire( 'foo:bar' );
 		} );
 	} );
 
