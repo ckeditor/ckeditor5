@@ -515,7 +515,7 @@ export default class Position {
 	_getTransformedByDeletion( deletePosition, howMany ) {
 		// This position can't be affected if deletion was in a different root.
 		if ( this.root != deletePosition.root ) {
-			return this;
+			return Position.createFromPosition( this );
 		}
 
 		const comparisonResult = compareArrays( deletePosition.getParentPath(), this.getParentPath() );
@@ -552,7 +552,7 @@ export default class Position {
 			}
 		}
 
-		return this;
+		return Position.createFromPosition( this );
 	}
 
 	/**
@@ -569,7 +569,7 @@ export default class Position {
 	_getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
 		// This position can't be affected if insertion was in a different root.
 		if ( this.root != insertPosition.root ) {
-			return this;
+			return Position.createFromPosition( this );
 		}
 
 		if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'same' ) {
@@ -594,7 +594,7 @@ export default class Position {
 			}
 		}
 
-		return this;
+		return Position.createFromPosition( this );
 	}
 
 	/**
