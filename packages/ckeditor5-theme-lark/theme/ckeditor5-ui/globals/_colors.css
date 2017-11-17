@@ -8,20 +8,18 @@
 	--ck-color-base-background: 								#fff;
 	--ck-color-base-border: 									#BFBFBF;
 	--ck-color-base-action: 									#61B145;
-	--ck-color-base-focus: 										#6ab5f9;
 	--ck-color-base-text: 										#333;
 	--ck-color-base-active: 									#1A8BF1;
 	--ck-color-base-active-focus:								#0e7ee2;
 
-	/* ----------------------------------------------------------------------------- */
+	/* ------------------------------------------------------------------------------------------ */
 
 	--ck-color-focus-border: 									#48a3f5;
 	--ck-color-focus-shadow:									#78bbf8;
-	--ck-color-text: 											var(--ck-color-base-text);
-	--ck-color-shadow-drop: 									rgba( 0, 0, 0, .2 );
-	--ck-color-shadow-inner: 									rgba( 0, 0, 0, .1 );
+	--ck-color-shadow-drop: 									rgba(0,0,0,.2);
+	--ck-color-shadow-inner: 									rgba(0,0,0,.1);
 
-	/* ----------------------------------------------------------------------------- */
+	/* -- Buttons ------------------------------------------------------------------------------- */
 
 	--ck-color-button-default-background: 						var(--ck-color-base-background);
 	--ck-color-button-default-border: 							var(--ck-color-base-border);
@@ -54,34 +52,17 @@
 	--ck-color-button-action-disabled-border: 					#4d8d36;
 	--ck-color-button-action-text: 								var(--ck-color-base-background);
 
-	--ck-color-dropdown-panel-background: 						var(--ck-color-base-background);
-	--ck-color-dropdown-panel-border: 							var(--ck-color-base-border);
+	/* -- Dropdown ------------------------------------------------------------------------------ */
+
 	--ck-color-dropdown-symbol: 								#707070;
 
-	--ck-color-input-background: 								var(--ck-color-base-background);
-	--ck-color-input-border: 									var(--ck-color-base-border);
-	--ck-color-input-text: 										var(--ck-color-base-text);
+	/* -- Input --------------------------------------------------------------------------------- */
+
 	--ck-color-input-disabled-background: 						#f2f2f2;
 	--ck-color-input-disabled-border: 							#c6c6c6;
 	--ck-color-input-disabled-text: 							#5c5c5c;
 
-	--ck-color-list-background: 								var(--ck-color-base-background);
-	--ck-color-list-item-background-hover: 						var(--ck-color-base-foreground);
-	--ck-color-list-item-background-active: 					var(--ck-color-base-active);
-	--ck-color-list-item-background-active-focus: 				var(--ck-color-base-active-focus);
-	--ck-color-list-item-text-active:							var(--ck-color-base-background);
-
-	--ck-color-panel-background: 								var(--ck-color-base-background);
-	--ck-color-panel-border: 									var(--ck-color-base-border);
-
-	--ck-color-toolbar-background: 								var(--ck-color-base-background);
-	--ck-color-toolbar-border: 									var(--ck-color-base-border);
-
-	--ck-color-tooltip-background: 								var(--ck-color-base-text);
-	--ck-color-tooltip-text: 									var(--ck-color-base-background);
-
-	--ck-color-editor-border: 									var(--ck-color-base-border);
-	--ck-color-editor-toolbar-background: 						var(--ck-color-base-foreground);
+	/* -- Editor -------------------------------------------------------------------------------- */
 
 	--ck-color-editor-toolbar-button-on-background: 			#dedede;
 	--ck-color-editor-toolbar-button-on-border: 				transparent;
@@ -92,6 +73,4 @@
 	--ck-color-editor-toolbar-button-on-active-shadow: 			#a1a1a1;
 	--ck-color-editor-toolbar-button-on-disabled-background: 	#dedede;
 	--ck-color-editor-toolbar-button-on-disabled-border: 		transparent;
-
-	--ck-color-editor-dropdown-background: 						var(--ck-color-base-background);
 }

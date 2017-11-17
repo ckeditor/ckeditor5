@@ -41,8 +41,8 @@
 	@mixin ck-rounded-corners;
 	@mixin ck-drop-shadow;
 
-	background: var(--ck-color-dropdown-panel-background);
-	border: 1px solid var(--ck-color-dropdown-panel-border);
+	background: var(--ck-color-base-background);
+	border: 1px solid var(--ck-color-base-border);
 
 	/* Compensate double border from button and from box when positioned below the button. */
 	bottom: 1px;

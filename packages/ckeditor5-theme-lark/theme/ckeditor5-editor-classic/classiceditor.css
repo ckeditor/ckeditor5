@@ -14,7 +14,7 @@
 			}
 
 			/* https://github.com/ckeditor/ckeditor5-editor-classic/issues/62 */
-			background: var(--ck-color-editor-toolbar-background);
+			background: var(--ck-color-base-foreground);
 			border-bottom-width: 0;
 		}
 
@@ -34,5 +34,5 @@
 		border-top-right-radius: 0;
 	}
 
-	border: 1px solid var(--ck-color-editor-border);
+	border: 1px solid var(--ck-color-base-border);
 }

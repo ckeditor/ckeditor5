@@ -9,7 +9,7 @@
 	@mixin ck-rounded-corners;
 
 	padding: var(--ck-spacing-small);
-	border: 1px solid var(--ck-color-toolbar-border);
+	border: 1px solid var(--ck-color-base-border);
 
 	/* Allow wrapping toolbar items to the new line. */
 	white-space: initial;
@@ -39,7 +39,7 @@
 	width: 1px;
 	height: calc(1em + 2 * var(--ck-spacing-medium));
 	vertical-align: middle;
-	background: var(--ck-color-toolbar-border);
+	background: var(--ck-color-base-border);
 }
 
 .ck-toolbar__newline {
