@@ -9,11 +9,7 @@
 
 import Delta from './delta';
 import DeltaFactory from './deltafactory';
-import { register } from '../batch';
-import AttributeOperation from '../operation/attributeoperation';
-import RootAttributeOperation from '../operation/rootattributeoperation';
 import NoOperation from '../operation/nooperation';
-import Position from '../position';
 import Range from '../range';
 
 /**
@@ -126,133 +122,6 @@ export class RootAttributeDelta extends Delta {
 	 */
 	static get className() {
 		return 'engine.model.delta.RootAttributeDelta';
-	}
-}
-
-/**
- * Sets value of the attribute with given key on a {@link module:engine/model/item~Item model item}
- * or on a {@link module:engine/model/range~Range range}.
- *
- * @chainable
- * @method module:engine/model/batch~Batch#setAttribute
- * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
- * Model item or range on which the attribute will be set.
- * @param {String} key Attribute key.
- * @param {*} value Attribute new value.
- */
-register( 'setAttribute', function( itemOrRange, key, value ) {
-	attribute( this, key, value, itemOrRange );
-
-	return this;
-} );
-
-/**
- * Removes an attribute with given key from a {@link module:engine/model/item~Item model item}
- * or from a {@link module:engine/model/range~Range range}.
- *
- * @chainable
- * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
- * Model item or range from which the attribute will be removed.
- * @method module:engine/model/batch~Batch#removeAttribute
- * @param {String} key Attribute key.
- */
-register( 'removeAttribute', function( itemOrRange, key ) {
-	attribute( this, key, null, itemOrRange );
-
-	return this;
-} );
-
-function attribute( batch, key, value, itemOrRange ) {
-	if ( itemOrRange instanceof Range ) {
-		changeRange( batch, batch.document, key, value, itemOrRange );
-	} else {
-		changeItem( batch, batch.document, key, value, itemOrRange );
-	}
-}
-
-function changeItem( batch, doc, key, value, item ) {
-	const previousValue = item.getAttribute( key );
-	let range, operation;
-
-	const delta = item.is( 'rootElement' ) ? new RootAttributeDelta() : new AttributeDelta();
-
-	if ( previousValue != value ) {
-		batch.addDelta( delta );
-
-		if ( item.is( 'rootElement' ) ) {
-			// If we change attributes of root element, we have to use `RootAttributeOperation`.
-			operation = new RootAttributeOperation( item, key, previousValue, value, doc.version );
-		} else {
-			if ( item.is( 'element' ) ) {
-				// If we change the attribute of the element, we do not want to change attributes of its children, so
-				// the end of the range cannot be after the closing tag, it should be inside that element, before any of
-				// it's children, so the range will contain only the opening tag.
-				range = new Range( Position.createBefore( item ), Position.createFromParentAndOffset( item, 0 ) );
-			} else {
-				// If `item` is text proxy, we create a range from the beginning to the end of that text proxy, to change
-				// all characters represented by it.
-				range = new Range( Position.createBefore( item ), Position.createAfter( item ) );
-			}
-
-			operation = new AttributeOperation( range, key, previousValue, value, doc.version );
-		}
-
-		delta.addOperation( operation );
-		doc.applyOperation( operation );
-	}
-}
-
-// Because attribute operation needs to have the same attribute value on the whole range, this function splits the range
-// into smaller parts.
-function changeRange( batch, doc, attributeKey, attributeValue, range ) {
-	const delta = new AttributeDelta();
-
-	// Position of the last split, the beginning of the new range.
-	let lastSplitPosition = range.start;
-
-	// Currently position in the scanning range. Because we need value after the position, it is not a current
-	// position of the iterator but the previous one (we need to iterate one more time to get the value after).
-	let position,
-		// Value before the currently position.
-		attributeValueBefore,
-		// Value after the currently position.
-		attributeValueAfter;
-
-	for ( const value of range ) {
-		attributeValueAfter = value.item.getAttribute( attributeKey );
-
-		// At the first run of the iterator the position in undefined. We also do not have a attributeValueBefore, but
-		// because attributeValueAfter may be null, attributeValueBefore may be equal attributeValueAfter ( undefined == null ).
-		if ( position && attributeValueBefore != attributeValueAfter ) {
-			// if attributeValueBefore == attributeValue there is nothing to change, so we add operation only if these values are different.
-			if ( attributeValueBefore != attributeValue ) {
-				addOperation();
-			}
-
-			lastSplitPosition = position;
-		}
-
-		position = value.nextPosition;
-		attributeValueBefore = attributeValueAfter;
-	}
-
-	// Because position in the loop is not the iterator position (see let position comment), the last position in
-	// the while loop will be last but one position in the range. We need to check the last position manually.
-	if ( position instanceof Position && position != lastSplitPosition && attributeValueBefore != attributeValue ) {
-		addOperation();
-	}
-
-	function addOperation() {
-		// Add delta to the batch only if there is at least operation in the delta. Add delta only once.
-		if ( delta.operations.length === 0 ) {
-			batch.addDelta( delta );
-		}
-
-		const range = new Range( lastSplitPosition, position );
-		const operation = new AttributeOperation( range, attributeKey, attributeValueBefore, attributeValue, doc.version );
-
-		delta.addOperation( operation );
-		doc.applyOperation( operation );
 	}
 }
 
