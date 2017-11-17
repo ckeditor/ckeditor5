@@ -1,22 +1,22 @@
 {
   "name": "@ckeditor/ckeditor5-basic-styles",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "Basic styles feature for CKEditor 5.",
   "keywords": [
     "ckeditor5",
     "ckeditor5-feature"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^1.0.0-alpha.1",
-    "@ckeditor/ckeditor5-engine": "^1.0.0-alpha.1",
-    "@ckeditor/ckeditor5-ui": "^1.0.0-alpha.1",
-    "@ckeditor/ckeditor5-theme-lark": "^1.0.0-alpha.1"
+    "@ckeditor/ckeditor5-core": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-engine": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-ui": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-theme-lark": "^1.0.0-alpha.2"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-editor-classic": "^1.0.0-alpha.1",
-    "@ckeditor/ckeditor5-essentials": "^1.0.0-alpha.1",
-    "@ckeditor/ckeditor5-paragraph": "^1.0.0-alpha.1",
-    "@ckeditor/ckeditor5-utils": "^1.0.0-alpha.1",
+    "@ckeditor/ckeditor5-editor-classic": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-essentials": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-paragraph": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-utils": "^1.0.0-alpha.2",
     "eslint": "^4.8.0",
     "eslint-config-ckeditor5": "^1.0.6",
     "husky": "^0.14.3",

@@ -19,4 +19,4 @@ msgstr "Podkreślenie"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr ""
+msgstr "Kod"

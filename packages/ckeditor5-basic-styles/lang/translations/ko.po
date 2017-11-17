@@ -1,22 +1,22 @@
 # Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: fr\n"
-"Language-Team: French (https://www.transifex.com/ckeditor/teams/11143/fr/)\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: ko\n"
+"Language-Team: Korean (https://www.transifex.com/ckeditor/teams/11143/ko/)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Toolbar button tooltip for the Bold feature."
 msgid "Bold"
-msgstr "Gras"
+msgstr "굵게"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
-msgstr "Italique"
+msgstr "기울임꼴"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
-msgstr "Souligner"
+msgstr "밑줄"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr "Code"
+msgstr "소스"
