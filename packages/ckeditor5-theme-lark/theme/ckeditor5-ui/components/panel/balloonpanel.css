@@ -10,7 +10,7 @@
 	--ck-balloon-arrow-offset: 2px;
 	--ck-balloon-arrow-height: 15px;
 	--ck-balloon-arrow-half-width: 10px;
-};
+}
 
 .ck-balloon-panel {
 	@mixin ck-rounded-corners;

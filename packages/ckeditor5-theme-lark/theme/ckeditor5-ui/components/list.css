@@ -37,6 +37,6 @@
 
 	&:hover,
 	&:focus {
-		background: color(var(--ck-color-list-item-background-active) shade(10));
+		background: var(--ck-color-list-item-background-active-focus);
 	}
 }

@@ -6,7 +6,7 @@
 :root {
 	--ck-color-image-caption-background: var(--ck-color-base-foreground);
 	--ck-color-image-caption-text: var(--ck-color-base-text);
-};
+}
 
 .ck-editor__editable .image > figcaption {
 	color: var(--ck-color-image-caption-text);

@@ -23,8 +23,8 @@
 	}
 
 	&[readonly] {
-		border: 1px solid color(var(--ck-color-input-border) tint(10));
-		background: color(var(--ck-color-input-background) shade(5));
-		color: color(var(--ck-color-input-text) tint(20)));
+		border: 1px solid var(--ck-color-input-disabled-border);
+		background: var(--ck-color-input-disabled-background);
+		color: var(--ck-color-input-disabled-text);
 	}
 }

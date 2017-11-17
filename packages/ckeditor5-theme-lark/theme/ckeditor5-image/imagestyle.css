@@ -6,7 +6,7 @@
 :root {
 	--ck-image-spacing: calc(5 * var(--ck-spacing-small));
 	--ck-image-max-width: 50%;
-};
+}
 
 .ck-editor__editable {
 	& .image-style-side,
