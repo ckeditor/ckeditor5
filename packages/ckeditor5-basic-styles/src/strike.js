@@ -4,7 +4,7 @@
  */
 
 /**
- * @module notes/ckeditor-build/strike
+ * @module basic-styles/strike
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
