@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/helpers/zindex.css";
-
 .ck-editor {
 	/* All the elements within `.ck-editor` are positioned relatively to it.
 	 If any element needs to be positioned with respect to the <body>, etc.,
