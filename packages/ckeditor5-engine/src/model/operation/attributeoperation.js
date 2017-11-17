@@ -116,7 +116,7 @@ export default class AttributeOperation extends Operation {
 				/**
 				 * Changed node has different attribute value than operation's old attribute value.
 				 *
-				 * @error operation-attribute-wrong-old-value
+				 * @error attribute-operation-wrong-old-value
 				 * @param {module:engine/model/item~Item} item
 				 * @param {String} key
 				 * @param {*} value
