@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+
+### Bug fixes
+
+* The <kbd>Ctrl</kbd>+<kbd>A</kbd> keystroke will be now correctly handled when a widget is selected. Closes [#23](https://github.com/ckeditor/ckeditor5-widget/issues/23). ([3e8f91f](https://github.com/ckeditor/ckeditor5-widget/commit/3e8f91f))
+* View element's `setAttribute()` method should be used with string values of the `contenteditable` attribute. Closes [#26](https://github.com/ckeditor/ckeditor5-widget/issues/26). ([d2a6cf5](https://github.com/ckeditor/ckeditor5-widget/commit/d2a6cf5))
+
+### Other changes
+
+* Widgets highlight remove handler will now use only descriptor id, instead of the full descriptor. ([1dfdc83](https://github.com/ckeditor/ckeditor5-widget/commit/1dfdc83))
+
+
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-widget/compare/v0.2.0...v1.0.0-alpha.1) (2017-10-03)
 
 ### Bug fixes
