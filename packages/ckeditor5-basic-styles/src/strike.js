@@ -41,7 +41,7 @@ export default class Strike extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const command = editor.commands.get( 'strike' );
-		const keystroke = 'CTRL+E';
+		const keystroke = 'Cmd+Shift+X';
 
 		// Add strike button to feature components.
 		editor.ui.componentFactory.add( 'strike', locale => {
@@ -62,7 +62,7 @@ export default class Strike extends Plugin {
 			return view;
 		} );
 
-		// Set the Ctrl+ALT+S keystroke.
+		// Set the Cmd+Shift+X keystroke.
 		editor.keystrokes.set( keystroke, 'strike' );
 	}
 }
