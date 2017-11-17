@@ -38,7 +38,8 @@ module.exports = {
 		new webpack.BannerPlugin( {
 			banner: bundler.getLicenseBanner(),
 			raw: true
-		} )
+		} ),
+		new webpack.optimize.ModuleConcatenationPlugin()
 	],
 
 	module: {
