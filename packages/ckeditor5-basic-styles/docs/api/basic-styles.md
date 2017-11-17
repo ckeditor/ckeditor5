@@ -6,7 +6,7 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-basic-styles.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles)
 
-This package contains features allowing to apply basic text formatting such as bold, italic, underline and code in CKEditor 5.
+This package contains features allowing to apply basic text formatting such as bold, italic, underline, strike and code in CKEditor 5.
 
 ## Documentation
 
@@ -14,6 +14,7 @@ Check out the following plugins:
 
 * {@link module:basic-styles/bold~Bold}
 * {@link module:basic-styles/italic~Italic}
+* {@link module:basic-styles/strike~Strike}
 * {@link module:basic-styles/underline~Underline}
 * {@link module:basic-styles/code~Code}
 
