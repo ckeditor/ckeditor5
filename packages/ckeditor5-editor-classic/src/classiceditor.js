@@ -13,8 +13,6 @@ import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 
-import '../theme/classiceditor.css';
-
 /**
  * The {@glink builds/guides/overview#Classic-editor classic editor} implementation.
  * It uses an inline editable and a sticky toolbar, all enclosed in a boxed UI.
