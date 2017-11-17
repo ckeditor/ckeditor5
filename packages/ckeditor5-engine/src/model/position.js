@@ -832,7 +832,7 @@ export default class Position {
 // @private
 // @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
 function getOffset( path ) {
-	return last( path ) || 0;
+	return last( path );
 }
 
 // Helper for setting offset on give path array.
