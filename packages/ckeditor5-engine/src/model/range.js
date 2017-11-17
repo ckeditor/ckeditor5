@@ -11,9 +11,6 @@ import Position from './position';
 import TreeWalker from './treewalker';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-const _start = Symbol( 'start' );
-const _end = Symbol( 'end' );
-
 /**
  * Range class. Range is iterable.
  */
@@ -27,8 +24,21 @@ export default class Range {
 	 * @param {module:engine/model/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
 	 */
 	constructor( start, end = null ) {
-		setStart( this, start );
-		setEnd( this, end ? end : start );
+		/**
+		 * Start position.
+		 *
+		 * @protected
+		 * @member {module:engine/model/position~Position}
+		 */
+		this._start = start;
+
+		/**
+		 * End position.
+		 *
+		 * @protected
+		 * @member {module:engine/model/position~Position}
+		 */
+		this._end = end ? end : start;
 	}
 
 	/**
@@ -54,7 +64,7 @@ export default class Range {
 	 * @member {module:engine/model/position~Position}
 	 */
 	get start() {
-		return this[ _start ];
+		return this._start;
 	}
 
 	/**
@@ -64,7 +74,7 @@ export default class Range {
 	 * @member {module:engine/model/position~Position}
 	 */
 	get end() {
-		return this[ _end ];
+		return this._end;
 	}
 
 	/**
@@ -866,25 +876,4 @@ export default class Range {
 	static fromJSON( json, doc ) {
 		return new this( Position.fromJSON( json.start, doc ), Position.fromJSON( json.end, doc ) );
 	}
-}
-
-/**
- * Method used to expose start setter to child classes.
- * @protected
- * @param {module:engine/model/range~Range} range Range of which start position should be sent.
- * @param {module:engine/model/position~Position} position Position to set as range start.
- * See {@link module:engine/model/range~Range#start}.
- */
-export function setStart( range, position ) {
-	range[ _start ] = position;
-}
-
-/**
- * Method used to expose end setter to child classes.
- * @protected
- * @param {module:engine/model/range~Range} range Range of which end position should be sent.
- * @param {module:engine/model/position~Position} position Position to set as range end. See {@link module:engine/model/range~Range#end}.
- */
-export function setEnd( range, position ) {
-	range[ _end ] = position;
 }

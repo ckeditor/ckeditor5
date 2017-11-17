@@ -13,9 +13,6 @@ import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Text from './text';
 
-const _path = Symbol( 'path' );
-const _root = Symbol( 'root' );
-
 /**
  * Represents a position in the model tree.
  *
@@ -73,8 +70,22 @@ export default class Position {
 		// Make path immutable
 		Object.freeze( path );
 
-		setRoot( this, root.root );
-		setPath( this, path );
+		/**
+		 * Root of the position path.
+		 *
+		 * @protected
+		 * @member {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
+		 * module:engine/model/position~Position#_root
+		 */
+		this._root = root.root;
+
+		/**
+		 * Position of the node in the tree.
+		 *
+		 * @protected
+		 * @member {Array.<Number>} module:engine/model/position~Position#_path
+		 */
+		this._path = path;
 	}
 
 	/**
@@ -107,7 +118,7 @@ export default class Position {
 	 * @member {Array.<Number>} module:engine/model/position~Position#path
 	 */
 	get path() {
-		return this[ _path ];
+		return this._path;
 	}
 
 	/**
@@ -118,7 +129,7 @@ export default class Position {
 	 * module:engine/model/position~Position#root
 	 */
 	get root() {
-		return this[ _root ];
+		return this._root;
 	}
 
 	/**
@@ -815,26 +826,6 @@ export default class Position {
 
 		return new Position( doc.getRoot( json.root ), json.path );
 	}
-}
-
-/**
- * Method used to expose root setter to child classes.
- * @protected
- * @param {module:engine/model/position~Position} position Position of which root should be modified.
- * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} root Root of the position.
- */
-export function setRoot( position, root ) {
-	position[ _root ] = root;
-}
-
-/**
- * Method used to expose path setter to child classes.
- * @protected
- * @param {module:engine/model/position~Position} position Position of which path should be modified.
- * @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
- */
-export function setPath( position, path ) {
-	position[ _path ] = path;
 }
 
 // Helper for setting offset on give path array.
