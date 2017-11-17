@@ -839,13 +839,14 @@ export default class Range {
 		// 4. At this moment we don't need the original range.
 		// We are going to modify the result and we need to return a new instance of Range.
 		// We have to create a copy of the reference range.
-		let result = new this( ref.start, ref.end );
+		let start = ref.start;
+		let end = ref.end;
 
 		// 5. Ranges should be checked and glued starting from the range that is closest to the reference range.
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex - 1; i >= 0; i++ ) {
-			if ( ranges[ i ].end.isEqual( result.start ) ) {
-				result = new this( ranges[ i ].start, result.end );
+			if ( ranges[ i ].end.isEqual( start ) ) {
+				start = ranges[ i ].start;
 			} else {
 				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;
@@ -855,15 +856,15 @@ export default class Range {
 		// 6. Ranges should be checked and glued starting from the range that is closest to the reference range.
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex + 1; i < ranges.length; i++ ) {
-			if ( ranges[ i ].start.isEqual( result.end ) ) {
-				result = new this( result.start, ranges[ i ].end );
+			if ( ranges[ i ].start.isEqual( end ) ) {
+				end = ranges[ i ].end;
 			} else {
 				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;
 			}
 		}
 
-		return result;
+		return new this( start, end );
 	}
 
 	/**
