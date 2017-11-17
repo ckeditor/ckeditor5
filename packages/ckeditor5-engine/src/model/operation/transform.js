@@ -179,7 +179,7 @@ const ot = {
 				// Take the start and the end of the range and transform them by deletion of moved nodes.
 				// Note that if rangeB was inside AttributeOperation range, only difference.end will be transformed.
 				// This nicely covers the joining simplification we did in the previous step.
-				const range = new Range(
+				const differenceTransformed = new Range(
 					difference.start._getTransformedByDeletion( b.sourcePosition, b.howMany ),
 					difference.end._getTransformedByDeletion( b.sourcePosition, b.howMany )
 				);
@@ -189,19 +189,19 @@ const ot = {
 				// previously transformed target position.
 				// Note that we do not use Position._getTransformedByMove on range boundaries because we need to
 				// transform by insertion a range as a whole, since newTargetPosition might be inside that range.
-				ranges = range._getTransformedByInsertion( b.getMovedRangeStart(), b.howMany, true, false ).reverse();
+				ranges = differenceTransformed._getTransformedByInsertion( b.getMovedRangeStart(), b.howMany, true, false ).reverse();
 			}
 
 			if ( common !== null ) {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
 				// would mean that the MoveOperation targets into itself, and that is incorrect operation.
 				// Instead, we calculate the new position of that part of original range.
-				const range = new Range(
+				const commonTransformed = new Range(
 					common.start._getCombined( b.sourcePosition, b.getMovedRangeStart() ),
 					common.end._getCombined( b.sourcePosition, b.getMovedRangeStart() )
 				);
 
-				ranges.push( range );
+				ranges.push( commonTransformed );
 			}
 
 			// Map transformed range(s) to operations and return them.
