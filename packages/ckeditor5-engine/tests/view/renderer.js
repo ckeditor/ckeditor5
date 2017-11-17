@@ -1083,16 +1083,18 @@ describe( 'Renderer', () => {
 			expect( domSelection.rangeCount ).to.equal( 1 );
 
 			// Depending on the browser selection may end up at the end of the text node or after the text node.
-			// TODO: Switch this code to the upcoming tool: https://github.com/ckeditor/ckeditor5-core/issues/107.
 			const firstRange = domSelection.getRangeAt( 0 );
 
-			if ( firstRange.startContainer === domB.childNodes[ 0 ] ) {
+			const assertSelectionAtEndOfTextNode = () => {
 				expect( firstRange.startOffset ).to.equal( INLINE_FILLER_LENGTH + 1 );
-			} else {
+			};
+
+			const assertSelectionInsideTextNode = () => {
 				expect( firstRange.startContainer ).to.equal( domB );
 				expect( firstRange.startOffset ).to.equal( 1 );
-			}
+			};
 
+			testUtils.checkAssertions( assertSelectionAtEndOfTextNode, assertSelectionInsideTextNode );
 			expect( firstRange.collapsed ).to.be.true;
 		} );
 
@@ -1202,14 +1204,17 @@ describe( 'Renderer', () => {
 			expect( domSelection.rangeCount ).to.equal( 1 );
 
 			// Depending on the browser selection may end up before the text node or at the beginning of it.
-			// TODO: Switch this code to the upcoming tool: https://github.com/ckeditor/ckeditor5-core/issues/107.
 			const domRange = domSelection.getRangeAt( 0 );
 
-			if ( domRange.startContainer == domDiv ) {
+			const assertSelectionAtEndOfTextNode = () => {
 				expect( domRange.startContainer ).to.equal( domDiv );
-			} else {
+			};
+
+			const assertSelectionInsideTextNode = () => {
 				expect( domRange.startContainer ).to.equal( domDiv.childNodes[ 0 ] );
-			}
+			};
+
+			testUtils.checkAssertions( assertSelectionAtEndOfTextNode, assertSelectionInsideTextNode );
 
 			expect( domRange.startOffset ).to.equal( 0 );
 			expect( domRange.collapsed ).to.be.true;
@@ -1241,14 +1246,17 @@ describe( 'Renderer', () => {
 			expect( domSelection.rangeCount ).to.equal( 1 );
 
 			// Depending on the browser selection may end up before the text node or at the beginning of it.
-			// TODO: Switch this code to the upcoming tool: https://github.com/ckeditor/ckeditor5-core/issues/107.
 			const domSelectionRange = domSelection.getRangeAt( 0 );
 
-			if ( domSelectionRange.startContainer == domDiv ) {
+			const assertSelectionAtEndOfTextNode = () => {
 				expect( domSelectionRange.startContainer ).to.equal( domDiv );
-			} else {
+			};
+
+			const assertSelectionInsideTextNode = () => {
 				expect( domSelectionRange.startContainer ).to.equal( domDiv.childNodes[ 0 ] );
-			}
+			};
+
+			testUtils.checkAssertions( assertSelectionAtEndOfTextNode, assertSelectionInsideTextNode );
 
 			expect( domSelectionRange.startOffset ).to.equal( 0 );
 			expect( domSelectionRange.collapsed ).to.be.true;
@@ -1694,17 +1702,20 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				// Expect that after calling `renderer.render()` the DOM selection was re-rendered (and set at correct position).
-
 				// Depending on the browser selection may end up at the end of the text node or after the text node.
-				// TODO: Switch this code to the upcoming tool: https://github.com/ckeditor/ckeditor5-core/issues/107.
-				if ( domSelection.anchorNode == domP ) {
+
+				const assertSelectionAtEndOfTextNode = () => {
 					expect( domSelection.anchorNode ).to.equal( domP );
 					expect( domSelection.anchorOffset ).to.equal( 1 );
-				} else {
+				};
+
+				const assertSelectionInsideTextNode = () => {
 					const textNode = domP.childNodes[ 0 ];
 					expect( domSelection.anchorNode ).to.equal( textNode );
 					expect( domSelection.anchorOffset ).to.equal( 3 );
-				}
+				};
+
+				testUtils.checkAssertions( assertSelectionAtEndOfTextNode, assertSelectionInsideTextNode );
 
 				expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 			} );
