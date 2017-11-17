@@ -323,6 +323,22 @@ describe( 'EmitterMixin', () => {
 
 			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 1, 2, 3 );
 		} );
+
+		it( 'should be removed only after exact event fired', () => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+
+			emitter.on( 'foo', spy1 );
+			emitter.once( 'foo', spy2 );
+
+			emitter.fire( 'foo:bar' );
+			emitter.fire( 'foo' );
+			emitter.fire( 'foo:bar' );
+			emitter.fire( 'foo' );
+
+			sinon.assert.callCount( spy1, 4 );
+			sinon.assert.calledTwice( spy2 );
+		} );
 	} );
 
 	describe( 'off', () => {
