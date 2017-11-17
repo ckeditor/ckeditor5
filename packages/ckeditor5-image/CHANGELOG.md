@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+
+### Bug fixes
+
+* Default style's command will properly remove model element's attribute. Closes [#147](https://github.com/ckeditor/ckeditor5-image/issues/147). ([c96fb19](https://github.com/ckeditor/ckeditor5-image/commit/c96fb19))
+
+### Other changes
+
+* Updated translations. ([eb4ba5b](https://github.com/ckeditor/ckeditor5-image/commit/eb4ba5b))
+* Aligned UI library usage to the [changes in the UI framework](https://github.com/ckeditor/ckeditor5-ui/pull/332).
+
+
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-image/compare/v0.7.0...v1.0.0-alpha.1) (2017-10-03)
 
 ### Bug fixes

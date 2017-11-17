@@ -11,27 +11,27 @@ msgstr "图像小部件"
 
 msgctxt "Label for the Side image option."
 msgid "Side image"
-msgstr ""
+msgstr "图片侧边显示"
 
 msgctxt "Label for the Full size image option."
 msgid "Full size image"
-msgstr "全尺寸图像"
+msgstr "图片通栏显示"
 
 msgctxt "Label for the Left aligned image option"
 msgid "Left aligned image"
-msgstr ""
+msgstr "图片左侧对齐"
 
 msgctxt "Label for the Centered image option"
 msgid "Centered image"
-msgstr ""
+msgstr "图片居中"
 
 msgctxt "Label for the Right aligned image option"
 msgid "Right aligned image"
-msgstr ""
+msgstr "图片右侧对齐"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr "更改图像替换文本"
+msgstr "更改图片替换文本"
 
 msgctxt "Label for the image text alternative input."
 msgid "Text alternative"
@@ -39,4 +39,4 @@ msgstr "替换文本"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
-msgstr "输入图像标题"
+msgstr "输入图片标题"

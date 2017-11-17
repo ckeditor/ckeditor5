@@ -19,15 +19,15 @@ msgstr "Obrázok v plnej veľkosti"
 
 msgctxt "Label for the Left aligned image option"
 msgid "Left aligned image"
-msgstr ""
+msgstr "Zarovnať vľavo"
 
 msgctxt "Label for the Centered image option"
 msgid "Centered image"
-msgstr ""
+msgstr "Zarovnať na stred"
 
 msgctxt "Label for the Right aligned image option"
 msgid "Right aligned image"
-msgstr ""
+msgstr "Zarovnať vpravo"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"

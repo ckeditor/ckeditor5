@@ -19,15 +19,15 @@ msgstr "پڕ بەقەبارەی وێنە"
 
 msgctxt "Label for the Left aligned image option"
 msgid "Left aligned image"
-msgstr ""
+msgstr "ڕیزکردنی وێنە بۆ لای چەپ"
 
 msgctxt "Label for the Centered image option"
 msgid "Centered image"
-msgstr ""
+msgstr "ناوەڕاستکراوی وێنە"
 
 msgctxt "Label for the Right aligned image option"
 msgid "Right aligned image"
-msgstr ""
+msgstr "ڕیزکردنی وێنە بۆ لای ڕاست"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
