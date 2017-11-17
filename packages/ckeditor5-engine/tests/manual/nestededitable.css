@@ -3,9 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "@ckeditor/ckeditor5-theme-lark/theme/helpers/colors.css";
-@import "@ckeditor/ckeditor5-theme-lark/theme/helpers/states.css";
-@import "@ckeditor/ckeditor5-theme-lark/theme/helpers/shadow.css";
+@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_focus.css";
+@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css";
 
 figure {
 	background-color: #f3f3f3;
@@ -21,7 +20,3 @@ figure {
 		}
 	}
 }
-
-
-
-
