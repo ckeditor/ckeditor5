@@ -6,13 +6,13 @@ CKEditor 5 – development repository
 [![Dependency Status](https://img.shields.io/david/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5)
 [![devDependency Status](https://img.shields.io/david/dev/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5?type=dev)
 
-## Project Status (October 2017)
+## Project Status (November 2017)
 
-1.0.0-alpha.1 was released on October 3, 2017. This is the 12th developer preview of the new CKEditor 5.
+1.0.0-alpha.2 was released on November 14, 2017. This is the 13th developer preview of the new CKEditor 5.
 
-Read more about the status of the project in the [CKEditor 5 v1.0.0-alpha.1 release blog post](https://github.com/ckeditor/ckeditor5-design/issues/181).
+Read more about the status of the project in the [CKEditor 5 v1.0.0-alpha.2 release blog post](https://github.com/ckeditor/ckeditor5-design/issues/182).
 
-The first alpha version will be followed by several releases before it reaches v1.0.0. See the [roadmap to 1.0.0 and beyond](https://github.com/ckeditor/ckeditor5-design/issues/172).
+The first alpha versions will be followed by several releases before CKEditor 5 reaches v1.0.0. See the [roadmap to 1.0.0 and beyond](https://github.com/ckeditor/ckeditor5-design/issues/172).
 
 ## Demos
 
