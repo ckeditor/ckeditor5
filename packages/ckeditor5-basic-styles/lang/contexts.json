@@ -2,5 +2,6 @@
 	"Bold": "Toolbar button tooltip for the Bold feature.",
 	"Italic": "Toolbar button tooltip for the Italic feature.",
 	"Underline": "Toolbar button tooltip for the Underline feature.",
-	"Code": "Toolbar button tooltip for the Code feature."
+	"Code": "Toolbar button tooltip for the Code feature.",
+	"Strike": "Toolbar button tooltip for the Strike feature."
 }
