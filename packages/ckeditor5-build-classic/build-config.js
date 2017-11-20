@@ -54,11 +54,6 @@ module.exports = {
 
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
-		},
-
-		cloudServices: {
-			tokenUrl: 'http://token-endpoint',
-			additionalOption: 'some-value'
 		}
 	}
 };

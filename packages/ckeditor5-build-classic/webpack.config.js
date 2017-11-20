@@ -60,7 +60,9 @@ module.exports = {
 					{
 						loader: 'postcss-loader',
 						options: getPostCssConfig( {
-							themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
+							themeimporter: {
+								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+							},
 							minify: true
 						} )
 					},

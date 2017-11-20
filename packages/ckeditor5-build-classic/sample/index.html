@@ -28,12 +28,7 @@
 
 <script src="../build/ckeditor.js"></script>
 <script>
-	ClassicEditor.create( document.querySelector( '#editor' ), {
-			cloudServices: {
-				tokenUrl: 'http://localhost',
-				additionalOption: 'some-value'
-			}
-		} )
+	ClassicEditor.create( document.querySelector( '#editor' ) )
 		.then( editor => {
 			window.editor = editor;
 		} )
