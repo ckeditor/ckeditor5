@@ -355,6 +355,24 @@ describe( 'view test utils', () => {
 			expect( stringify( p, null, { showType: true } ) )
 				.to.equal( '<container:p><ui:span></ui:span></container:p>' );
 		} );
+
+		it( 'should sort classes in specified element', () => {
+			const text = new Text( 'foobar' );
+			const b = new Element( 'b', {
+				class: 'zz xx aa'
+			}, text );
+
+			expect( stringify( b ) ).to.equal( '<b class="aa xx zz">foobar</b>' );
+		} );
+
+		it( 'should sort styles in specified element', () => {
+			const text = new Text( 'foobar' );
+			const i = new Element( 'i', {
+				style: 'text-decoration: underline; font-weight: bold'
+			}, text );
+
+			expect( stringify( i ) ).to.equal( '<i style="font-weight:bold;text-decoration:underline">foobar</i>' );
+		} );
 	} );
 
 	describe( 'parse', () => {

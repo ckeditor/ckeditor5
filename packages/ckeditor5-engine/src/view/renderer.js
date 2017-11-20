@@ -15,7 +15,6 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import insertAt from '@ckeditor/ckeditor5-utils/src/dom/insertat';
 import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -381,6 +380,12 @@ export default class Renderer {
 			return false;
 		}
 
+		// Prevent adding inline filler inside elements with contenteditable=false.
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1170
+		if ( !_isEditable( selectionParent ) ) {
+			return false;
+		}
+
 		// We have block filler, we do not need inline one.
 		if ( selectionOffset === selectionParent.getFillerOffset() ) {
 			return false;
@@ -640,16 +645,6 @@ export default class Renderer {
 
 		// If selection is not collapsed, it does not need to be updated if it is similar.
 		if ( !this.selection.isCollapsed && this.selection.isSimilar( oldViewSelection ) ) {
-			const data = {
-				oldSelection: oldViewSelection,
-				currentSelection: this.selection
-			};
-
-			log.warn(
-				'renderer-skipped-selection-rendering: The selection was not rendered due to its similarity to the current one.',
-				data
-			);
-
 			// Selection did not changed and is correct, do not update.
 			return false;
 		}
@@ -708,3 +703,18 @@ export default class Renderer {
 }
 
 mix( Renderer, ObservableMixin );
+
+// Checks if provided element is editable.
+//
+// @private
+// @param {module:engine/view/element~Element} element
+// @returns {Boolean}
+function _isEditable( element ) {
+	if ( element.getAttribute( 'contenteditable' ) == 'false' ) {
+		return false;
+	}
+
+	const parent = element.findAncestor( element => element.hasAttribute( 'contenteditable' ) );
+
+	return !parent || parent.getAttribute( 'contenteditable' ) == 'true';
+}

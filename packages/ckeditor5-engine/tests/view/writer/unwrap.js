@@ -259,7 +259,7 @@ describe( 'writer', () => {
 
 		it( 'should unwrap single element by removing matching classes', () => {
 			test(
-				'<container:p>[<attribute:b view-priority="1" class="foo bar baz">test</attribute:b>]</container:p>',
+				'<container:p>[<attribute:b view-priority="1" class="bar baz foo">test</attribute:b>]</container:p>',
 				'<attribute:b view-priority="1" class="baz foo"></attribute:b>',
 				'<container:p>[<attribute:b view-priority="1" class="bar">test</attribute:b>]</container:p>'
 			);
@@ -267,9 +267,9 @@ describe( 'writer', () => {
 
 		it( 'should not unwrap single element when classes are different', () => {
 			test(
-				'<container:p>[<attribute:b view-priority="1" class="foo bar baz">test</attribute:b>]</container:p>',
+				'<container:p>[<attribute:b view-priority="1" class="bar baz foo">test</attribute:b>]</container:p>',
 				'<attribute:b view-priority="1" class="baz foo qux"></attribute:b>',
-				'<container:p>[<attribute:b view-priority="1" class="foo bar baz">test</attribute:b>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" class="bar baz foo">test</attribute:b>]</container:p>'
 			);
 		} );
 
@@ -279,18 +279,18 @@ describe( 'writer', () => {
 					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">test</attribute:b>]' +
 				'</container:p>',
 				'<attribute:b view-priority="1" style="position: absolute;"></attribute:b>',
-				'<container:p>[<attribute:b view-priority="1" style="color:red;top:10px;">test</attribute:b>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" style="color:red;top:10px">test</attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should not unwrap single element when styles are different', () => {
 			test(
 				'<container:p>' +
-					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">test</attribute:b>]' +
+					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px">test</attribute:b>]' +
 				'</container:p>',
 				'<attribute:b view-priority="1" style="position: relative;"></attribute:b>',
 				'<container:p>' +
-					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">test</attribute:b>]' +
+					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px">test</attribute:b>]' +
 				'</container:p>'
 			);
 		} );

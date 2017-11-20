@@ -827,7 +827,22 @@ class ViewStringify {
 		const keys = [ ...element.getAttributeKeys() ].sort();
 
 		for ( const attribute of keys ) {
-			attributes.push( `${ attribute }="${ element.getAttribute( attribute ) }"` );
+			let attributeValue;
+
+			if ( attribute === 'class' ) {
+				attributeValue = [ ...element.getClassNames() ]
+					.sort()
+					.join( ' ' );
+			} else if ( attribute === 'style' ) {
+				attributeValue = [ ...element.getStyleNames() ]
+					.sort()
+					.map( style => `${ style }:${ element.getStyle( style ) }` )
+					.join( ';' );
+			} else {
+				attributeValue = element.getAttribute( attribute );
+			}
+
+			attributes.push( `${ attribute }="${ attributeValue }"` );
 		}
 
 		return attributes.join( ' ' );
