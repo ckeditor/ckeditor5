@@ -49,7 +49,7 @@ describe( 'Strike', () => {
 		expect( strikeView.isOn ).to.be.false;
 		expect( strikeView.label ).to.equal( 'Strike' );
 		expect( strikeView.icon ).to.match( /<svg / );
-		expect( strikeView.keystroke ).to.equal( 'Cmd+Shift+X' );
+		expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
 	} );
 
 	it( 'should execute strike command on model execute event', () => {
@@ -76,15 +76,15 @@ describe( 'Strike', () => {
 	} );
 
 	it( 'should set keystroke in the model', () => {
-		expect( strikeView.keystroke ).to.equal( 'Cmd+Shift+X' );
+		expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
 	} );
 
 	it( 'should set editor keystroke', () => {
 		const spy = sinon.spy( editor, 'execute' );
 		const keyEventData = {
 			keyCode: keyCodes.x,
-			altKey: true,
-			cmdKey: true,
+			shiftKey: true,
+			ctrlKey: true,
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		};

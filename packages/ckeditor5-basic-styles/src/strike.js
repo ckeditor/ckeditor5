@@ -13,7 +13,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import strikeIcon from '../theme/icons/strike.svg';
 
 /**
- * The strike feature. It introduces the Strike button and the <kbd>Ctrl+E</kbd> keystroke.
+ * The strike feature. It introduces the Strike button and the <kbd>Ctrl+Shift+X</kbd> keystroke.
  *
  * It uses the {@link module:basic-styles/strikeengine~StrikeEngine strike engine feature}.
  *
@@ -41,7 +41,7 @@ export default class Strike extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const command = editor.commands.get( 'strike' );
-		const keystroke = 'Cmd+Shift+X';
+		const keystroke = 'CTRL+SHIFT+X';
 
 		// Add strike button to feature components.
 		editor.ui.componentFactory.add( 'strike', locale => {
@@ -62,7 +62,7 @@ export default class Strike extends Plugin {
 			return view;
 		} );
 
-		// Set the Cmd+Shift+X keystroke.
+		// Set the Ctrl+Shift+X keystroke.
 		editor.keystrokes.set( keystroke, 'strike' );
 	}
 }
