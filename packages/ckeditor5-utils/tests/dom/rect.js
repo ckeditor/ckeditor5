@@ -909,6 +909,9 @@ describe( 'Rect', () => {
 					height: 230
 				} );
 
+				// Safari fails because of "afterEach()" hook tries to restore values from removed element.
+				// We need to restore these values manually.
+				testUtils.sinon.restore();
 				iframe.remove();
 				done();
 			} );
