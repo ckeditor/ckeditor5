@@ -4,6 +4,6 @@
   * italic _"This"_,
   * bold **"editor"**,
   * underline "instance",
-  * strike ~~"is"~~,
+  * strikethrough ~~"is"~~,
   * code `"an"`.
-2. Test the bold, italic, strike, underline and code features live.
+2. Test the bold, italic, strikethrough, underline and code features live.

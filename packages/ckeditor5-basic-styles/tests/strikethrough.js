@@ -6,15 +6,15 @@
 /* globals document */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Strike from '../src/strike';
-import StrikeEngine from '../src/strikeengine';
+import Strikethrough from '../src/strike';
+import StrikethroughEngine from '../src/strikeengine';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 testUtils.createSinonSandbox();
 
-describe( 'Strike', () => {
+describe( 'Strikethrough', () => {
 	let editor, strikeView;
 
 	beforeEach( () => {
@@ -23,7 +23,7 @@ describe( 'Strike', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Strike ]
+				plugins: [ Strikethrough ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -37,17 +37,17 @@ describe( 'Strike', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( Strike ) ).to.be.instanceOf( Strike );
+		expect( editor.plugins.get( Strikethrough ) ).to.be.instanceOf( Strikethrough );
 	} );
 
-	it( 'should load StrikeEngine', () => {
-		expect( editor.plugins.get( StrikeEngine ) ).to.be.instanceOf( StrikeEngine );
+	it( 'should load StrikethroughEngine', () => {
+		expect( editor.plugins.get( StrikethroughEngine ) ).to.be.instanceOf( StrikethroughEngine );
 	} );
 
 	it( 'should register strike feature component', () => {
 		expect( strikeView ).to.be.instanceOf( ButtonView );
 		expect( strikeView.isOn ).to.be.false;
-		expect( strikeView.label ).to.equal( 'Strike' );
+		expect( strikeView.label ).to.equal( 'Strikethrough' );
 		expect( strikeView.icon ).to.match( /<svg / );
 		expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
 	} );

@@ -12,18 +12,18 @@ import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/build
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import AttributeCommand from './attributecommand';
 
-const STRIKE = 'strike';
+const STRIKETHROUGH = 'strikethrough';
 
 /**
- * The strike engine feature.
+ * The strikethrough engine feature.
  *
- * It registers the `strike` command and introduces the
- * `strikesthrough` attribute in the model which renders to the view
+ * It registers the `strikethrough` command and introduces the
+ * `strikethroughsthrough` attribute in the model which renders to the view
  * as a `<s>` element.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class StrikeEngine extends Plugin {
+export default class StrikethroughEngine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -32,25 +32,25 @@ export default class StrikeEngine extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
-		// Allow strike attribute on all inline nodes.
-		editor.document.schema.allow( { name: '$inline', attributes: STRIKE, inside: '$block' } );
+		// Allow strikethrough attribute on all inline nodes.
+		editor.document.schema.allow( { name: '$inline', attributes: STRIKETHROUGH, inside: '$block' } );
 		// Temporary workaround. See https://github.com/ckeditor/ckeditor5/issues/477.
-		editor.document.schema.allow( { name: '$inline', attributes: STRIKE, inside: '$clipboardHolder' } );
+		editor.document.schema.allow( { name: '$inline', attributes: STRIKETHROUGH, inside: '$clipboardHolder' } );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
-			.fromAttribute( STRIKE )
+			.fromAttribute( STRIKETHROUGH )
 			.toElement( 's' );
 
 		// Build converter from view to model for data pipeline.
 		buildViewConverter().for( data.viewToModel )
 			.fromElement( 's' )
 			.fromElement( 'del' )
-			.fromElement( 'strike' )
+			.fromElement( 'strikethrough' )
 			.fromAttribute( 'style', { 'text-decoration': 'line-through' } )
-			.toAttribute( STRIKE, true );
+			.toAttribute( STRIKETHROUGH, true );
 
-		// Create strike command.
-		editor.commands.add( STRIKE, new AttributeCommand( editor, STRIKE ) );
+		// Create strikethrough command.
+		editor.commands.add( STRIKETHROUGH, new AttributeCommand( editor, STRIKETHROUGH ) );
 	}
 }
