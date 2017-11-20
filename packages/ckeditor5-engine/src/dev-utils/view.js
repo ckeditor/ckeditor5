@@ -836,7 +836,7 @@ class ViewStringify {
 			} else if ( attribute === 'style' ) {
 				attributeValue = [ ...element.getStyleNames() ]
 					.sort()
-					.map( style => `${ style.trim() }:${ element.getStyle( style.trim() ) }` )
+					.map( style => `${ style }:${ element.getStyle( style ) }` )
 					.join( ';' );
 			} else {
 				attributeValue = element.getAttribute( attribute );
