@@ -5,6 +5,8 @@
 
 import Batch from '../../src/model/batch';
 import Delta from '../../src/model/delta/delta';
+import InsertDelta from '../../src/model/delta/insertdelta';
+import WeakInsertDelta from '../../src/model/delta/weakinsertdelta';
 
 import Operation from '../../src/model/operation/operation';
 import InsertOperation from '../../src/model/operation/insertoperation';
@@ -93,57 +95,270 @@ describe( 'Batch', () => {
 		} );
 	} );
 
-	describe( 'insert', () => {
-		let doc, root, batch, p, ul, chain;
+	describe( 'createText()', () => {
+		let doc, batch;
 
 		beforeEach( () => {
 			doc = new Document();
-			root = doc.createRoot();
-			root.insertChildren( 0, new Text( 'abc' ) );
-
 			batch = doc.batch();
-
-			p = new Element( 'p' );
-			ul = new Element( 'ul' );
-
-			chain = batch.insert( new Position( root, [ 2 ] ), [ p, ul ] );
 		} );
 
-		it( 'should insert given nodes at given position', () => {
-			expect( root.childCount ).to.equal( 4 );
-			expect( root.maxOffset ).to.equal( 5 );
-			expect( root.getChild( 1 ) ).to.equal( p );
-			expect( root.getChild( 2 ) ).to.equal( ul );
+		it( 'should create text node', () => {
+			const text = batch.createText( 'foo' );
+
+			expect( text ).to.instanceof( Text );
+			expect( text.data ).to.equal( 'foo' );
+			expect( Array.from( text.getAttributes() ) ).to.length( 0 );
 		} );
 
-		it( 'should be chainable', () => {
-			expect( chain ).to.equal( batch );
+		it( 'should create text with attributes', () => {
+			const text = batch.createText( 'foo', { foo: 'bar', biz: 'baz' } );
+
+			expect( Array.from( text.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'biz', 'baz' ] ] );
+		} );
+	} );
+
+	describe( 'createElement()', () => {
+		let doc, batch;
+
+		beforeEach( () => {
+			doc = new Document();
+			batch = doc.batch();
 		} );
 
-		it( 'should add delta to batch and operation to delta before applying operation', () => {
-			sinon.spy( doc, 'applyOperation' );
-			batch.insert( new Position( root, [ 2 ] ), [ p, ul ] );
+		it( 'should create element', () => {
+			const element = batch.createElement( 'foo' );
 
-			const correctDeltaMatcher = sinon.match( operation => {
-				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-			} );
-
-			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+			expect( element ).to.instanceof( Element );
+			expect( element.name ).to.equal( 'foo' );
+			expect( Array.from( element.getAttributes() ) ).to.length( 0 );
 		} );
 
-		it( 'should transfer markers from given DocumentFragment', () => {
-			const documentFragment = new DocumentFragment( [ new Element( 'li', null, [ new Text( 'foo bar' ) ] ) ] );
+		it( 'should create element with attributes', () => {
+			const element = batch.createText( 'foo', { foo: 'bar', biz: 'baz' } );
+
+			expect( Array.from( element.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'biz', 'baz' ] ] );
+		} );
+	} );
+
+	describe( 'createDocumentFragment()', () => {
+		let doc, batch;
+
+		beforeEach( () => {
+			doc = new Document();
+			batch = doc.batch();
+		} );
+
+		it( 'should create element', () => {
+			const element = batch.createDocumentFragment();
+
+			expect( element ).to.instanceof( DocumentFragment );
+		} );
+	} );
+
+	describe( 'insert()', () => {
+		let doc, batch;
+
+		beforeEach( () => {
+			doc = new Document();
+			batch = doc.batch();
+		} );
+
+		it( 'should insert node at given position', () => {
+			const parent = batch.createDocumentFragment();
+			const child = batch.createElement( 'child' );
+			const textChild = batch.createText( 'textChild' );
+
+			batch.insert( child, new Position( parent, [ 0 ] ) );
+			batch.insert( textChild, new Position( parent, [ 1 ] ) );
+
+			expect( Array.from( parent ) ).to.deep.equal( [ child, textChild ] );
+		} );
+
+		it( 'should insert node at the beginning of given element', () => {
+			const parent = batch.createDocumentFragment();
+			const child1 = batch.createElement( 'child' );
+			const child2 = batch.createElement( 'child' );
+
+			batch.insert( child1, parent );
+			batch.insert( child2, parent );
+
+			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child2, child1 ] );
+		} );
+
+		it( 'should insert node at the end of given element', () => {
+			const parent = batch.createDocumentFragment();
+			const child1 = batch.createElement( 'child' );
+			const child2 = batch.createElement( 'child' );
+
+			batch.insert( child1, parent );
+			batch.insert( child2, parent, 'end' );
+
+			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2 ] );
+		} );
+
+		it( 'should insert node at the given offset of given element', () => {
+			const parent = batch.createDocumentFragment();
+			const child1 = batch.createElement( 'child' );
+			const child2 = batch.createElement( 'child' );
+			const child3 = batch.createElement( 'child' );
+
+			batch.insert( child3, parent );
+			batch.insert( child1, parent );
+			batch.insert( child2, parent, 1 );
+
+			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2, child3 ] );
+		} );
+
+		it( 'should insert node before the given node', () => {
+			const parent = batch.createDocumentFragment();
+			const child1 = batch.createElement( 'child' );
+			const child2 = batch.createElement( 'child' );
+			const child3 = batch.createElement( 'child' );
+
+			batch.insert( child3, parent );
+			batch.insert( child1, parent );
+			batch.insert( child2, child3, 'before' );
+
+			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2, child3 ] );
+		} );
+
+		it( 'should insert node after the given node', () => {
+			const parent = batch.createDocumentFragment();
+			const child1 = batch.createElement( 'child' );
+			const child2 = batch.createElement( 'child' );
+			const child3 = batch.createElement( 'child' );
+
+			batch.insert( child3, parent );
+			batch.insert( child1, parent );
+			batch.insert( child2, child1, 'after' );
+
+			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2, child3 ] );
+		} );
+
+		it( 'should move element from one parent to the other within different root', () => {
+			const parent1 = batch.createDocumentFragment();
+			const parent2 = batch.createDocumentFragment();
+			const b = batch.createText( 'b', { foo: 'bar' } );
+
+			batch
+				.insert( batch.createText( 'a' ), parent1 )
+				.insert( b, parent1, 'end' )
+				.insert( batch.createText( 'c' ), parent1, 'end' );
+
+			batch.insert( batch.createText( 'ac' ), parent2 );
+
+			const spy = sinon.spy( doc, 'applyOperation' );
+
+			batch.insert( b, parent2, 1 );
+
+			// Verify result.
+			expect( Array.from( parent1, item => item.data ) ).to.deep.equal( [ 'ac' ] );
+			expect( Array.from( parent2, item => item.data ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+
+			// Verify deltas and operations.
+			sinon.assert.calledTwice( spy );
+			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'remove' );
+			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.secondCall.args[ 0 ].type ).to.equal( 'insert' );
+			expect( spy.secondCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should move element from one parent to the other within the same root', () => {
+			const root = batch.createDocumentFragment();
+			const parent1 = batch.createElement( 'parent' );
+			const parent2 = batch.createElement( 'parent' );
+			const b = batch.createText( 'b', { foo: 'bar' } );
+
+			batch
+				.insert( parent1, root )
+				.insert( batch.createText( 'a' ), parent1 )
+				.insert( b, parent1, 'end' )
+				.insert( batch.createText( 'c' ), parent1, 'end' );
+
+			batch
+				.insert( parent2, root )
+				.insert( batch.createText( 'ac' ), parent2 );
+
+			const spy = sinon.spy( doc, 'applyOperation' );
+
+			batch.insert( b, parent2, 1 );
+
+			// Verify result.
+			expect( Array.from( parent1.getChildren(), item => item.data ) ).to.deep.equal( [ 'ac' ] );
+			expect( Array.from( parent2.getChildren(), item => item.data ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+
+			// Verify deltas and operations.
+			sinon.assert.calledOnce( spy );
+			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
+			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should create proper delta for element', () => {
+			const parent = batch.createDocumentFragment();
+			const element = batch.createElement( 'child' );
+
+			const spy = sinon.spy( doc, 'applyOperation' );
+
+			batch.insert( element, parent );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
+			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( InsertDelta );
+			expect( spy.lastCall.args[ 0 ].delta ).to.not.instanceof( WeakInsertDelta );
+			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should create proper delta for text with no parent', () => {
+			const parent = batch.createDocumentFragment();
+			const text = batch.createText( 'child' );
+
+			const spy = sinon.spy( doc, 'applyOperation' );
+
+			batch.insert( text, parent );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
+			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( WeakInsertDelta );
+			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should create proper delta for text with parent', () => {
+			const parent1 = batch.createDocumentFragment();
+			const parent2 = batch.createDocumentFragment();
+			const text = batch.createText( 'child' );
+
+			batch.insert( text, parent1 );
+
+			const spy = sinon.spy( doc, 'applyOperation' );
+
+			batch.insert( text, parent2 );
+
+			sinon.assert.calledTwice( spy );
+			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
+			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( InsertDelta );
+			expect( spy.lastCall.args[ 0 ].delta ).to.not.instanceof( WeakInsertDelta );
+			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it.skip( 'should transfer markers from given DocumentFragment', () => {
+			const documentFragment = batch.createDocumentFragment();
+			const li = batch.createElement( 'li' );
+
+			batch.insert( batch.createText( 'foo bar' ), li );
+			batch.insert( li, documentFragment );
+
 			const marker = new Range( new Position( documentFragment, [ 0, 1 ] ), new Position( documentFragment, [ 0, 5 ] ) );
 
 			documentFragment.markers.set( 'marker', marker );
 
-			batch.insert( new Position( root, [ 3, 0 ] ), documentFragment );
+			batch.insert( documentFragment, new Position( root, [ 3, 0 ] ) );
 
 			expect( Array.from( doc.markers ).length ).to.equal( 1 );
 			expect( stringify( root, doc.markers.get( 'marker' ).getRange() ) ).to.equal( 'ab<p></p><ul><li>f[oo b]ar</li></ul>c' );
 		} );
 
-		it( 'should set each marker as separate operation', () => {
+		it.skip( 'should set each marker as separate operation', () => {
 			sinon.spy( doc, 'applyOperation' );
 
 			const documentFragment = new DocumentFragment( [ new Element( 'li', null, [ new Text( 'foo bar' ) ] ) ] );
@@ -161,65 +376,447 @@ describe( 'Batch', () => {
 			expect( doc.applyOperation.thirdCall.calledWith( sinon.match( operation => operation instanceof MarkerOperation ) ) );
 		} );
 
-		it( 'should not create a delta and an operation if no nodes were inserted', () => {
-			sinon.spy( doc, 'applyOperation' );
+		it( 'should be chainable', () => {
+			const parent = batch.createDocumentFragment();
+			const child = batch.createElement( 'child' );
 
-			batch = doc.batch();
-
-			batch.insert( new Position( root, [ 0 ] ), [] );
-
-			expect( batch.deltas.length ).to.equal( 0 );
-			expect( doc.applyOperation.called ).to.be.false;
+			expect( batch.insert( child, parent ) ).to.equal( batch );
 		} );
 	} );
 
-	describe( 'weakInsert()', () => {
-		let doc, root, batch, chain, attrs;
+	describe( 'insertText()', () => {
+		let doc, batch;
 
 		beforeEach( () => {
 			doc = new Document();
-			root = doc.createRoot();
-
-			root.insertChildren( 0, new Text( 'abc' ) );
-
 			batch = doc.batch();
-
-			attrs = [ [ 'bold', true ], [ 'foo', 'bar' ] ];
-
-			doc.selection.setAttributesTo( attrs );
-
-			chain = batch.weakInsert( new Position( root, [ 2 ] ), 'xyz' );
 		} );
 
-		it( 'should insert given nodes at given position', () => {
-			expect( root.maxOffset ).to.equal( 6 );
-			expect( root.getChild( 0 ).data ).to.equal( 'ab' );
-			expect( root.getChild( 1 ).data ).to.equal( 'xyz' );
-			expect( root.getChild( 2 ).data ).to.equal( 'c' );
+		it( 'should create and insert text node with attributes at given position', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.insertText( 'foo', { bar: 'biz' }, new Position( parent, [ 0 ] ) );
+
+			expect( parent.childCount ).to.equal( 1 );
+			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'bar', 'biz' ] ] );
 		} );
 
-		it( 'should set inserted nodes attributes to same as current selection attributes', () => {
-			expect( Array.from( root.getChild( 1 ).getAttributes() ) ).to.deep.equal( attrs );
+		it( 'should create and insert text node with no attributes at given position', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.insertText( 'foo', null, new Position( parent, [ 0 ] ) );
+
+			expect( parent.childCount ).to.equal( 1 );
+			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+		} );
+
+		it( 'should create and insert text node at the beginning of given element', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.insert( batch.createElement( 'child' ), parent );
+
+			batch.insertText( 'foo', null, parent );
+
+			expect( parent.childCount ).to.equal( 2 );
+			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 1 ) ).to.instanceof( Element );
+		} );
+
+		it( 'should create and insert text node at the end of given element', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.insert( batch.createElement( 'child' ), parent );
+
+			batch.insertText( 'foo', null, parent, 'end' );
+
+			expect( parent.childCount ).to.equal( 2 );
+			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 1 ) ).to.instanceof( Text );
+		} );
+
+		it( 'should create and insert text node at the given offset of given element', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.insert( batch.createElement( 'child' ), parent );
+			batch.insert( batch.createElement( 'child' ), parent );
+
+			batch.insertText( 'foo', null, parent, 1 );
+
+			expect( parent.childCount ).to.equal( 3 );
+			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 1 ) ).to.instanceof( Text );
+			expect( parent.getChild( 2 ) ).to.instanceof( Element );
+		} );
+
+		it( 'should create and insert text node before the given node', () => {
+			const parent = batch.createDocumentFragment();
+			const child1 = batch.createElement( 'child' );
+			const child2 = batch.createElement( 'child' );
+
+			batch.insert( child1, parent );
+			batch.insert( child2, parent, 'end' );
+
+			batch.insertText( 'foo', null, child2, 'before' );
+
+			expect( parent.childCount ).to.equal( 3 );
+			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 1 ) ).to.instanceof( Text );
+			expect( parent.getChild( 2 ) ).to.instanceof( Element );
+		} );
+
+		it( 'should create and insert text node after the given node', () => {
+			const parent = batch.createDocumentFragment();
+			const child1 = batch.createElement( 'child' );
+			const child2 = batch.createElement( 'child' );
+
+			batch.insert( child1, parent );
+			batch.insert( child2, parent, 'end' );
+
+			batch.insertText( 'foo', null, child1, 'after' );
+
+			expect( parent.childCount ).to.equal( 3 );
+			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 1 ) ).to.instanceof( Text );
+			expect( parent.getChild( 2 ) ).to.instanceof( Element );
+		} );
+
+		it( 'should create proper delta', () => {
+			const parent = batch.createDocumentFragment();
+			const spy = sinon.spy( doc, 'applyOperation' );
+
+			batch.insertText( 'foo', null, parent );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
+			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( WeakInsertDelta );
+			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
 
 		it( 'should be chainable', () => {
-			expect( chain ).to.equal( batch );
+			const parent = batch.createDocumentFragment();
+
+			expect( batch.insertText( 'foo', null, parent ) ).to.equal( batch );
+		} );
+	} );
+
+	describe( 'insertElement()', () => {
+		let doc, batch;
+
+		beforeEach( () => {
+			doc = new Document();
+			batch = doc.batch();
 		} );
 
-		it( 'should add delta to batch and operation to delta before applying operation', () => {
-			sinon.spy( doc, 'applyOperation' );
-			batch.weakInsert( new Position( root, [ 2 ] ), 'xyz' );
+		it( 'should create and insert element with attributes at given position', () => {
+			const parent = batch.createDocumentFragment();
 
-			const correctDeltaMatcher = sinon.match( operation => {
-				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-			} );
+			batch.insertElement( 'foo', { bar: 'biz' }, new Position( parent, [ 0 ] ) );
 
-			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+			expect( parent.childCount ).to.equal( 1 );
+			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'bar', 'biz' ] ] );
+		} );
+
+		it( 'should create and insert element with no attributes at given position', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.insertElement( 'foo', null, new Position( parent, [ 0 ] ) );
+
+			expect( parent.childCount ).to.equal( 1 );
+			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+		} );
+
+		it( 'should create and insert element at the beginning of given element', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.insert( batch.createElement( 'child' ), parent );
+
+			batch.insertElement( 'foo', null, parent );
+
+			expect( parent.childCount ).to.equal( 2 );
+			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
+			expect( parent.getChild( 1 ).name ).to.equal( 'child' );
+		} );
+
+		it( 'should create and insert element at the end of given element', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.insert( batch.createElement( 'child' ), parent );
+
+			batch.insertElement( 'foo', null, parent, 'end' );
+
+			expect( parent.childCount ).to.equal( 2 );
+			expect( parent.getChild( 0 ).name ).to.equal( 'child' );
+			expect( parent.getChild( 1 ).name ).to.equal( 'foo' );
+		} );
+
+		it( 'should create and insert element at the given offset of given element', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.insert( batch.createElement( 'child1' ), parent );
+			batch.insert( batch.createElement( 'child2' ), parent, 'end' );
+
+			batch.insertElement( 'foo', null, parent, 1 );
+
+			expect( parent.childCount ).to.equal( 3 );
+			expect( parent.getChild( 0 ).name ).to.equal( 'child1' );
+			expect( parent.getChild( 1 ).name ).to.equal( 'foo' );
+			expect( parent.getChild( 2 ).name ).to.equal( 'child2' );
+		} );
+
+		it( 'should create and insert element before the given node', () => {
+			const parent = batch.createDocumentFragment();
+			const child1 = batch.createElement( 'child1' );
+			const child2 = batch.createElement( 'child2' );
+
+			batch.insert( child1, parent );
+			batch.insert( child2, parent, 'end' );
+
+			batch.insertElement( 'foo', null, child2, 'before' );
+
+			expect( parent.childCount ).to.equal( 3 );
+			expect( parent.getChild( 0 ).name ).to.equal( 'child1' );
+			expect( parent.getChild( 1 ).name ).to.equal( 'foo' );
+			expect( parent.getChild( 2 ).name ).to.equal( 'child2' );
+		} );
+
+		it( 'should create and insert element after the given node', () => {
+			const parent = batch.createDocumentFragment();
+			const child1 = batch.createElement( 'child1' );
+			const child2 = batch.createElement( 'child2' );
+
+			batch.insert( child1, parent );
+			batch.insert( child2, parent, 'end' );
+
+			batch.insertElement( 'foo', null, child1, 'after' );
+
+			expect( parent.childCount ).to.equal( 3 );
+			expect( parent.getChild( 0 ).name ).to.equal( 'child1' );
+			expect( parent.getChild( 1 ).name ).to.equal( 'foo' );
+			expect( parent.getChild( 2 ).name ).to.equal( 'child2' );
+		} );
+
+		it( 'should create proper delta', () => {
+			const parent = batch.createDocumentFragment();
+			const spy = sinon.spy( doc, 'applyOperation' );
+
+			batch.insertText( 'foo', null, parent );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
+			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( InsertDelta );
+			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should be chainable', () => {
+			const parent = batch.createDocumentFragment();
+
+			expect( batch.insertElement( 'foo', null, parent ) ).to.equal( batch );
+		} );
+	} );
+
+	describe( 'append()', () => {
+		let doc, batch;
+
+		beforeEach( () => {
+			doc = new Document();
+			batch = doc.batch();
+		} );
+
+		it( 'should insert element at the end of the parent', () => {
+			const parent = doc.batch().createDocumentFragment();
+			const childText = doc.batch().createText( 'foo' );
+			const childElement = doc.batch().createElement( 'foo' );
+
+			batch.append( childText, parent );
+			batch.append( childElement, parent );
+
+			expect( Array.from( parent ) ).to.deep.equal( [ childText, childElement ] );
+		} );
+
+		it( 'should create proper delta', () => {
+			const parent = batch.createDocumentFragment();
+			const text = batch.createText( 'foo' );
+
+			const spy = sinon.spy( doc, 'applyOperation' );
+
+			batch.append( text, parent );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
+			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should move element from one parent to the other within different root', () => {
+			const parent1 = batch.createDocumentFragment();
+			const parent2 = batch.createDocumentFragment();
+			const b = batch.createText( 'b', { foo: 'bar' } );
+
+			batch
+				.append( batch.createText( 'a' ), parent1 )
+				.append( b, parent1 )
+				.append( batch.createText( 'c' ), parent1 );
+
+			const spy = sinon.spy( doc, 'applyOperation' );
+
+			batch.append( b, parent2, 1 );
+
+			// Verify result.
+			expect( Array.from( parent1, item => item.data ) ).to.deep.equal( [ 'ac' ] );
+			expect( Array.from( parent2, item => item.data ) ).to.deep.equal( [ 'b' ] );
+
+			// Verify deltas and operations.
+			sinon.assert.calledTwice( spy );
+			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'remove' );
+			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.secondCall.args[ 0 ].type ).to.equal( 'insert' );
+			expect( spy.secondCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should move element from one parent to the other within the same root', () => {
+			const root = batch.createDocumentFragment();
+			const parent1 = batch.createElement( 'parent' );
+			const parent2 = batch.createElement( 'parent' );
+			const b = batch.createText( 'b', { foo: 'bar' } );
+
+			batch
+				.append( parent1, root )
+				.append( batch.createText( 'a' ), parent1 )
+				.append( b, parent1 )
+				.append( batch.createText( 'c' ), parent1 );
+
+			batch.append( parent2, root );
+
+			const spy = sinon.spy( doc, 'applyOperation' );
+
+			batch.append( b, parent2 );
+
+			// Verify result.
+			expect( Array.from( parent1.getChildren(), item => item.data ) ).to.deep.equal( [ 'ac' ] );
+			expect( Array.from( parent2.getChildren(), item => item.data ) ).to.deep.equal( [ 'b' ] );
+
+			// Verify deltas and operations.
+			sinon.assert.calledOnce( spy );
+			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
+			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should be chainable', () => {
+			expect( batch.append( batch.createElement( 'a' ), batch.createElement( 'b' ) ) ).to.equal( batch );
+		} );
+	} );
+
+	describe( 'appendText()', () => {
+		let doc, batch;
+
+		beforeEach( () => {
+			doc = new Document();
+			batch = doc.batch();
+		} );
+
+		it( 'should create and insert text node with attributes at the end of the parent', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.appendText( 'foo', { bar: 'biz' }, parent );
+			batch.appendText( 'bar', { biz: 'bar' }, parent );
+
+			expect( parent.childCount ).to.equal( 2 );
+			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'bar', 'biz' ] ] );
+			expect( parent.getChild( 1 ).data ).to.equal( 'bar' );
+			expect( Array.from( parent.getChild( 1 ).getAttributes() ) ).to.deep.equal( [ [ 'biz', 'bar' ] ] );
+		} );
+
+		it( 'should create and insert text node with no attributes at the end of the parent', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.appendText( 'foo', null, parent );
+
+			expect( parent.childCount ).to.equal( 1 );
+			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+		} );
+
+		it( 'should create proper delta', () => {
+			const parent = batch.createDocumentFragment();
+			const spy = sinon.spy( doc, 'applyOperation' );
+
+			batch.appendText( 'foo', null, parent );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
+			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( WeakInsertDelta );
+			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should be chainable', () => {
+			const parent = batch.createDocumentFragment();
+
+			expect( batch.appendText( 'foo', null, parent ) ).to.equal( batch );
+		} );
+	} );
+
+	describe( 'appendElement()', () => {
+		let doc, batch;
+
+		beforeEach( () => {
+			doc = new Document();
+			batch = doc.batch();
+		} );
+
+		it( 'should create and insert element with attributes at the end of the parent', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.appendElement( 'foo', { bar: 'biz' }, parent );
+			batch.appendElement( 'bar', { biz: 'bar' }, parent );
+
+			expect( parent.childCount ).to.equal( 2 );
+			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'bar', 'biz' ] ] );
+			expect( parent.getChild( 1 ).name ).to.equal( 'bar' );
+			expect( Array.from( parent.getChild( 1 ).getAttributes() ) ).to.deep.equal( [ [ 'biz', 'bar' ] ] );
+		} );
+
+		it( 'should create and insert element with no attributes at the end of the parent', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.appendElement( 'foo', null, parent );
+
+			expect( parent.childCount ).to.equal( 1 );
+			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+		} );
+
+		it( 'should create proper delta', () => {
+			const parent = batch.createDocumentFragment();
+			const spy = sinon.spy( doc, 'applyOperation' );
+
+			batch.appendElement( 'foo', null, parent );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
+			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( InsertDelta );
+			expect( spy.lastCall.args[ 0 ].delta ).to.not.instanceof( WeakInsertDelta );
+			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should be chainable', () => {
+			const parent = batch.createDocumentFragment();
+
+			expect( batch.appendElement( 'foo', null, parent ) ).to.equal( batch );
 		} );
 	} );
 
 	describe( 'setAttribute() / removeAttribute()', () => {
-		let batch, doc, root;
+		let batch, doc, root, spy;
 
 		const correctDeltaMatcher = sinon.match( operation => {
 			return operation.delta && operation.delta.batch && operation.delta.batch == batch;
@@ -231,54 +828,47 @@ describe( 'Batch', () => {
 			batch = doc.batch();
 		} );
 
-		function getOperationsCount() {
-			let totalNumber = 0;
-
-			for ( const delta of batch.deltas ) {
-				totalNumber += count( delta.operations );
-			}
-
-			return totalNumber;
-		}
-
 		describe( 'change attribute on node', () => {
 			let node, text;
 
 			beforeEach( () => {
-				node = new Element( 'p', { a: 1 } );
-				text = new Text( 'c', { a: 1 } );
+				node = batch.createElement( 'p', { a: 1 } );
+				text = batch.createText( 'c', { a: 1 } );
 
-				root.insertChildren( 0, [ node, text ] );
+				batch.append( node, root );
+				batch.append( text, root );
+
+				spy = sinon.spy( doc, 'applyOperation' );
 			} );
 
 			describe( 'setAttribute', () => {
 				it( 'should create the attribute on element', () => {
 					batch.setAttribute( node, 'b', 2 );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( node.getAttribute( 'b' ) ).to.equal( 2 );
 				} );
 
 				it( 'should change the attribute of element', () => {
 					batch.setAttribute( node, 'a', 2 );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( node.getAttribute( 'a' ) ).to.equal( 2 );
 				} );
 
 				it( 'should create the attribute on text node', () => {
 					batch.setAttribute( text, 'b', 2 );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getChild( 1 ).getAttribute( 'b' ) ).to.equal( 2 );
 				} );
 
 				it( 'should change the attribute of text node', () => {
 					batch.setAttribute( text, 'a', 2 );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.equal( 2 );
 				} );
 
 				it( 'should do nothing if the attribute value is the same', () => {
 					batch.setAttribute( node, 'a', 1 );
-					expect( getOperationsCount() ).to.equal( 0 );
+					expect( spy.callCount ).to.equal( 0 );
 					expect( node.getAttribute( 'a' ) ).to.equal( 1 );
 				} );
 
@@ -288,29 +878,28 @@ describe( 'Batch', () => {
 				} );
 
 				it( 'should add delta to batch and operation to delta before applying operation', () => {
-					sinon.spy( doc, 'applyOperation' );
 					batch.setAttribute( node, 'b', 2 );
 
-					expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+					sinon.assert.calledWith( spy, correctDeltaMatcher );
 				} );
 			} );
 
 			describe( 'removeAttribute', () => {
 				it( 'should remove the attribute from element', () => {
 					batch.removeAttribute( node, 'a' );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( node.getAttribute( 'a' ) ).to.be.undefined;
 				} );
 
 				it( 'should remove the attribute from character', () => {
 					batch.removeAttribute( text, 'a' );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.be.undefined;
 				} );
 
 				it( 'should do nothing if the attribute is not set', () => {
 					batch.removeAttribute( node, 'b' );
-					expect( getOperationsCount() ).to.equal( 0 );
+					expect( spy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'should be chainable', () => {
@@ -319,26 +908,29 @@ describe( 'Batch', () => {
 				} );
 
 				it( 'should add delta to batch and operation to delta before applying operation', () => {
-					sinon.spy( doc, 'applyOperation' );
 					batch.removeAttribute( node, 'a' );
 
-					expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+					sinon.assert.calledWith( spy, correctDeltaMatcher );
 				} );
 			} );
 		} );
 
 		describe( 'change attribute on range', () => {
 			beforeEach( () => {
-				root.insertChildren( 0, [
-					new Text( 'xxx', { a: 1 } ),
-					new Text( 'xxx' ),
-					new Text( 'xxx', { a: 1 } ),
-					new Text( 'xxx', { a: 2 } ),
-					new Text( 'xxx' ),
-					new Text( 'xxx', { a: 1 } ),
-					new Element( 'e', { a: 2 }, new Text( 'xxx' ) ),
-					new Text( 'xxx' )
-				] );
+				const element = batch.createElement( 'e', { a: 2 } );
+
+				batch
+					.appendText( 'xxx', { a: 1 }, root )
+					.appendText( 'xxx', null, root )
+					.appendText( 'xxx', { a: 1 }, root )
+					.appendText( 'xxx', { a: 2 }, root )
+					.appendText( 'xxx', null, root )
+					.appendText( 'xxx', { a: 1 }, root )
+					.appendText( 'xxx', null, element )
+					.append( element, root )
+					.appendText( 'xxx', null, root );
+
+				spy = sinon.spy( doc, 'applyOperation' );
 			} );
 
 			function getRange( startIndex, endIndex ) {
@@ -353,7 +945,9 @@ describe( 'Batch', () => {
 
 				for ( const delta of batch.deltas ) {
 					for ( const operation of delta.operations ) {
-						totalNumber += count( operation.range.getItems( { singleCharacters: true } ) );
+						if ( operation.range ) {
+							totalNumber += count( operation.range.getItems( { singleCharacters: true } ) );
+						}
 					}
 				}
 
@@ -372,42 +966,42 @@ describe( 'Batch', () => {
 			describe( 'setAttribute', () => {
 				it( 'should set the attribute on the range', () => {
 					batch.setAttribute( getRange( 3, 6 ), 'a', 3 );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 3 );
 					expect( getCompressedAttrs() ).to.equal( '111333111222---1112------' );
 				} );
 
 				it( 'should split the operations if parts of the range have different attributes', () => {
 					batch.setAttribute( getRange( 4, 14 ), 'a', 3 );
-					expect( getOperationsCount() ).to.equal( 4 );
+					expect( spy.callCount ).to.equal( 4 );
 					expect( getChangesAttrsCount() ).to.equal( 10 );
 					expect( getCompressedAttrs() ).to.equal( '111-3333333333-1112------' );
 				} );
 
 				it( 'should split the operations if parts of the part of the range have the attribute', () => {
 					batch.setAttribute( getRange( 4, 14 ), 'a', 2 );
-					expect( getOperationsCount() ).to.equal( 3 );
+					expect( spy.callCount ).to.equal( 3 );
 					expect( getChangesAttrsCount() ).to.equal( 7 );
 					expect( getCompressedAttrs() ).to.equal( '111-2222222222-1112------' );
 				} );
 
 				it( 'should strip the range if the beginning have the attribute', () => {
 					batch.setAttribute( getRange( 1, 5 ), 'a', 1 );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 2 );
 					expect( getCompressedAttrs() ).to.equal( '11111-111222---1112------' );
 				} );
 
 				it( 'should strip the range if the ending have the attribute', () => {
 					batch.setAttribute( getRange( 13, 17 ), 'a', 1 );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 2 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222-111112------' );
 				} );
 
 				it( 'should do nothing if the range has attribute', () => {
 					batch.setAttribute( getRange( 0, 3 ), 'a', 1 );
-					expect( getOperationsCount() ).to.equal( 0 );
+					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
@@ -418,7 +1012,7 @@ describe( 'Batch', () => {
 					);
 
 					batch.setAttribute( range, 'a', 1 );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 2 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112-11---' );
 				} );
@@ -430,7 +1024,7 @@ describe( 'Batch', () => {
 					);
 
 					batch.setAttribute( range, 'a', 1 );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 4 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112-1111-' );
 				} );
@@ -442,19 +1036,19 @@ describe( 'Batch', () => {
 					);
 
 					batch.setAttribute( range, 'a', 3 );
-					expect( getOperationsCount() ).to.equal( 0 );
+					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
 				it( 'should not create an operation if is collapsed', () => {
 					batch.setAttribute( getRange( 3, 3 ), 'a', 1 );
-					expect( getOperationsCount() ).to.equal( 0 );
+					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
 				it( 'should create a proper operations for the mixed range', () => {
 					batch.setAttribute( getRange( 0, 20 ), 'a', 1 );
-					expect( getOperationsCount() ).to.equal( 5 );
+					expect( spy.callCount ).to.equal( 5 );
 					expect( getChangesAttrsCount() ).to.equal( 14 );
 					expect( getCompressedAttrs() ).to.equal( '11111111111111111111111--' );
 				} );
@@ -465,7 +1059,6 @@ describe( 'Batch', () => {
 				} );
 
 				it( 'should add delta to batch and operation to delta before applying operation', () => {
-					sinon.spy( doc, 'applyOperation' );
 					batch.setAttribute( getRange( 3, 6 ), 'a', 3 );
 
 					expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
@@ -475,42 +1068,42 @@ describe( 'Batch', () => {
 			describe( 'removeAttribute', () => {
 				it( 'should remove the attribute on the range', () => {
 					batch.removeAttribute( getRange( 0, 2 ), 'a' );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 2 );
 					expect( getCompressedAttrs() ).to.equal( '--1---111222---1112------' );
 				} );
 
 				it( 'should split the operations if parts of the range have different attributes', () => {
 					batch.removeAttribute( getRange( 7, 11 ), 'a' );
-					expect( getOperationsCount() ).to.equal( 2 );
+					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 4 );
 					expect( getCompressedAttrs() ).to.equal( '111---1----2---1112------' );
 				} );
 
 				it( 'should split the operations if parts of the part of the range have no attribute', () => {
 					batch.removeAttribute( getRange( 1, 7 ), 'a' );
-					expect( getOperationsCount() ).to.equal( 2 );
+					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 3 );
 					expect( getCompressedAttrs() ).to.equal( '1------11222---1112------' );
 				} );
 
 				it( 'should strip the range if the beginning have no attribute', () => {
 					batch.removeAttribute( getRange( 4, 12 ), 'a' );
-					expect( getOperationsCount() ).to.equal( 2 );
+					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 6 );
 					expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
 				} );
 
 				it( 'should strip the range if the ending have no attribute', () => {
 					batch.removeAttribute( getRange( 7, 15 ), 'a' );
-					expect( getOperationsCount() ).to.equal( 2 );
+					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 5 );
 					expect( getCompressedAttrs() ).to.equal( '111---1--------1112------' );
 				} );
 
 				it( 'should do nothing if the range has no attribute', () => {
 					batch.removeAttribute( getRange( 4, 5 ), 'a' );
-					expect( getOperationsCount() ).to.equal( 0 );
+					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
@@ -521,27 +1114,27 @@ describe( 'Batch', () => {
 					);
 
 					batch.removeAttribute( range, 'a' );
-					expect( getOperationsCount() ).to.equal( 0 );
+					expect( spy.callCount ).to.equal( 0 );
 					expect( getChangesAttrsCount() ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
 				it( 'should not apply operation twice in the range contains opening and closing tags', () => {
 					batch.removeAttribute( getRange( 18, 22 ), 'a' );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 1 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---111-------' );
 				} );
 
 				it( 'should not create an operation if range is collapsed', () => {
 					batch.removeAttribute( getRange( 3, 3 ), 'a' );
-					expect( getOperationsCount() ).to.equal( 0 );
+					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
 				it( 'should create a proper operations for the mixed range', () => {
 					batch.removeAttribute( getRange( 3, 15 ), 'a' );
-					expect( getOperationsCount() ).to.equal( 2 );
+					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 6 );
 					expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
 				} );
@@ -552,33 +1145,35 @@ describe( 'Batch', () => {
 				} );
 
 				it( 'should add delta to batch and operation to delta before applying operation', () => {
-					sinon.spy( doc, 'applyOperation' );
 					batch.removeAttribute( getRange( 0, 2 ), 'a' );
-
-					expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+					sinon.assert.calledWith( spy, correctDeltaMatcher );
 				} );
 			} );
 		} );
 
 		describe( 'change attribute on root element', () => {
+			beforeEach( () => {
+				spy = sinon.spy( doc, 'applyOperation' );
+			} );
+
 			describe( 'setAttribute', () => {
 				it( 'should create the attribute on root', () => {
 					batch.setAttribute( root, 'b', 2 );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getAttribute( 'b' ) ).to.equal( 2 );
 				} );
 
 				it( 'should change the attribute of root', () => {
 					batch.setAttribute( root, 'a', 2 );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getAttribute( 'a' ) ).to.equal( 2 );
 				} );
 
 				it( 'should do nothing if the attribute value is the same', () => {
 					batch.setAttribute( root, 'a', 1 );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					batch.setAttribute( root, 'a', 1 );
-					expect( getOperationsCount() ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getAttribute( 'a' ) ).to.equal( 1 );
 				} );
 			} );
@@ -587,13 +1182,14 @@ describe( 'Batch', () => {
 				it( 'should remove the attribute from root', () => {
 					batch.setAttribute( root, 'a', 1 );
 					batch.removeAttribute( root, 'a' );
-					expect( getOperationsCount() ).to.equal( 2 );
+
+					expect( spy.callCount ).to.equal( 2 );
 					expect( root.getAttribute( 'a' ) ).to.be.undefined;
 				} );
 
 				it( 'should do nothing if the attribute is not set', () => {
 					batch.removeAttribute( root, 'b' );
-					expect( getOperationsCount() ).to.equal( 0 );
+					expect( spy.callCount ).to.equal( 0 );
 				} );
 			} );
 		} );
@@ -669,7 +1265,7 @@ describe( 'Batch', () => {
 	} );
 
 	describe( 'move()', () => {
-		let doc, root, div, p, batch, chain;
+		let doc, root, range, div, p, batch, chain;
 
 		beforeEach( () => {
 			doc = new Document();
@@ -683,19 +1279,12 @@ describe( 'Batch', () => {
 
 			root.insertChildren( 0, [ div, p ] );
 
+			range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 7 ] ) );
+
 			batch = doc.batch();
 		} );
 
-		it( 'should move specified node', () => {
-			batch.move( div, new Position( root, [ 2 ] ) );
-
-			expect( root.maxOffset ).to.equal( 2 );
-			expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
-			expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'PggggPfoobarPhhhhP' );
-		} );
-
 		it( 'should move flat range of nodes', () => {
-			const range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 7 ] ) );
 			batch.move( range, new Position( root, [ 1, 3 ] ) );
 
 			expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
@@ -711,14 +1300,14 @@ describe( 'Batch', () => {
 		} );
 
 		it( 'should be chainable', () => {
-			chain = batch.move( div, new Position( root, [ 1, 3 ] ) );
+			chain = batch.move( range, new Position( root, [ 1, 3 ] ) );
 
 			expect( chain ).to.equal( batch );
 		} );
 
 		it( 'should add delta to batch and operation to delta before applying operation', () => {
 			sinon.spy( doc, 'applyOperation' );
-			batch.move( div, new Position( root, [ 2 ] ) );
+			batch.move( range, new Position( root, [ 2 ] ) );
 
 			const correctDeltaMatcher = sinon.match( operation => {
 				return operation.delta && operation.delta.batch && operation.delta.batch == batch;

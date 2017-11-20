@@ -28,11 +28,10 @@ import RenameOperation from './operation/renameoperation';
 import RootAttributeOperation from './operation/rootattributeoperation';
 
 import DocumentFragment from './documentfragment';
+import Text from './text';
 import Element from './element';
 import Position from './position';
 import Range from './range.js';
-
-import { normalizeNodes } from './writer';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -129,34 +128,47 @@ export default class Batch {
 		}
 	}
 
-	/**
-	 * Inserts a node or nodes at the given position.
-	 *
-	 * When inserted element is a {@link module:engine/model/documentfragment~DocumentFragment} and has markers its markers will
-	 * be set to {@link module:engine/model/document~Document#markers}.
-	 *
-	 * @chainable
-	 * @param {module:engine/model/position~Position} position Position of insertion.
-	 * @param {module:engine/model/node~NodeSet} nodes The list of nodes to be inserted.
-	 */
-	insert( position, nodes ) {
-		const normalizedNodes = normalizeNodes( nodes );
+	createText( data, attributes = {} ) {
+		return new Text( data, attributes );
+	}
 
-		// If nothing is inserted do not create delta and operation.
-		if ( normalizedNodes.length === 0 ) {
-			return this;
+	createElement( name, attributes ) {
+		return new Element( name, attributes );
+	}
+
+	createDocumentFragment() {
+		return new DocumentFragment();
+	}
+
+	insert( item, itemOrPosition, offset ) {
+		const position = Position.createAt( itemOrPosition, offset );
+
+		// For text that has no parent we need to make WeakInsert.
+		const delta = item instanceof Text && !item.parent ? new WeakInsertDelta() : new InsertDelta();
+
+		// If item is already in parent.
+		if ( item.parent ) {
+			// We need to check if item is going to be inserted to the same root.
+			if ( item.root === position.root ) {
+				// If it's we just need to move it.
+				return this.move( Range.createOn( item ), position );
+			}
+			// If it isn't the same root
+			else {
+				// We need to remove this item from old position first.
+				this.remove( item );
+			}
 		}
 
-		const delta = new InsertDelta();
-		const insert = new InsertOperation( position, normalizedNodes, this.document.version );
+		const insert = new InsertOperation( position, item, this.document.version );
 
 		this.addDelta( delta );
 		delta.addOperation( insert );
 		this.document.applyOperation( insert );
 
 		// When element is a DocumentFragment we need to move its markers to Document#markers.
-		if ( nodes instanceof DocumentFragment ) {
-			for ( const [ markerName, markerRange ] of nodes.markers ) {
+		if ( item instanceof DocumentFragment ) {
+			for ( const [ markerName, markerRange ] of item.markers ) {
 				// We need to migrate marker range from DocumentFragment to Document.
 				const rangeRootPosition = Position.createAt( markerRange.root );
 				const range = new Range(
@@ -171,40 +183,24 @@ export default class Batch {
 		return this;
 	}
 
-	/**
-	 * Inserts a node or nodes at given position. {@link module:engine/model/batch~Batch#weakInsert weakInsert} is commonly used for actions
-	 * like typing or plain-text paste (without formatting). There are two differences between
-	 * {@link module:engine/model/batch~Batch#insert insert} and {@link module:engine/model/batch~Batch#weakInsert weakInsert}:
-	 *
-	 * * When using `weakInsert`, inserted nodes will have same attributes as the current attributes of
-	 * {@link module:engine/model/document~Document#selection document selection}.
-	 * * If {@link module:engine/model/operation/insertoperation~InsertOperation insert operation} position is inside a range changed by
-	 * {@link module:engine/model/operation/attributeoperation~AttributeOperation attribute operation},
-	 * the attribute operation is split into two operations.
-	 * Thanks to this, attribute change "omits" the inserted nodes. The correct behavior for `WeakInsertDelta` is that
-	 * {@link module:engine/model/operation/attributeoperation~AttributeOperation AttributeOperation} does not "break" and also
-	 * applies attributes for inserted nodes. This behavior has to be reflected during
-	 * {@link module:engine/model/delta/transform~transform delta transformation}.
-	 *
-	 * @chainable
-	 * @param {module:engine/model/position~Position} position Position of insertion.
-	 * @param {module:engine/model/node~NodeSet} nodes The list of nodes to be inserted.
-	 */
-	weakInsert( position, nodes ) {
-		const delta = new WeakInsertDelta();
-		this.addDelta( delta );
+	insertText( text, attributes, itemOrPosition, offset ) {
+		return this.insert( this.createText( text, attributes ), itemOrPosition, offset );
+	}
 
-		nodes = normalizeNodes( nodes );
+	insertElement( name, attributes, itemOrPosition, offset ) {
+		return this.insert( this.createElement( name, attributes ), itemOrPosition, offset );
+	}
 
-		for ( const node of nodes ) {
-			node.setAttributesTo( this.document.selection.getAttributes() );
-		}
+	append( item, parent ) {
+		return this.insert( item, parent, 'end' );
+	}
 
-		const operation = new InsertOperation( position, nodes, this.document.version );
-		delta.addOperation( operation );
-		this.document.applyOperation( operation );
+	appendText( text, attributes, parent ) {
+		return this.insert( this.createText( text, attributes ), parent, 'end' );
+	}
 
-		return this;
+	appendElement( text, attributes, parent ) {
+		return this.insert( this.createElement( text, attributes ), parent, 'end' );
 	}
 
 	/**
@@ -309,34 +305,25 @@ export default class Batch {
 	 * Moves given {@link module:engine/model/item~Item model item} or given range to target position.
 	 *
 	 * @chainable
-	 * @method module:engine/model/batch~Batch#move
-	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange Model item or range of nodes to move.
-	 * @param {module:engine/model/position~Position} targetPosition Position where moved nodes will be inserted.
 	 */
-	move( itemOrRange, targetPosition ) {
+	move( range, itemOrPosition, offset ) {
+		if ( !range.isFlat ) {
+			/**
+			 * Range to move is not flat.
+			 *
+			 * @error batch-move-range-not-flat
+			 */
+			throw new CKEditorError( 'batch-move-range-not-flat: Range to move is not flat.' );
+		}
+
+		const position = Position.createAt( itemOrPosition, offset );
+
 		const delta = new MoveDelta();
 		this.addDelta( delta );
 
-		const addOperation = ( sourcePosition, howMany, targetPosition ) => {
-			const operation = new MoveOperation( sourcePosition, howMany, targetPosition, this.document.version );
-			delta.addOperation( operation );
-			this.document.applyOperation( operation );
-		};
-
-		if ( itemOrRange instanceof Range ) {
-			if ( !itemOrRange.isFlat ) {
-				/**
-				 * Range to move is not flat.
-				 *
-				 * @error batch-move-range-not-flat
-				 */
-				throw new CKEditorError( 'batch-move-range-not-flat: Range to move is not flat.' );
-			}
-
-			addOperation( itemOrRange.start, itemOrRange.end.offset - itemOrRange.start.offset, targetPosition );
-		} else {
-			addOperation( Position.createBefore( itemOrRange ), 1, targetPosition );
-		}
+		const operation = new MoveOperation( range.start, range.end.offset - range.start.offset, position, this.document.version );
+		delta.addOperation( operation );
+		this.document.applyOperation( operation );
 
 		return this;
 	}
@@ -704,9 +691,8 @@ function setAttributeToItem( batch, key, value, item ) {
 	const previousValue = item.getAttribute( key );
 	let range, operation;
 
-	const delta = item.is( 'rootElement' ) ? new RootAttributeDelta() : new AttributeDelta();
-
 	if ( previousValue != value ) {
+		const delta = item.is( 'rootElement' ) ? new RootAttributeDelta() : new AttributeDelta();
 		batch.addDelta( delta );
 
 		if ( item.is( 'rootElement' ) ) {
