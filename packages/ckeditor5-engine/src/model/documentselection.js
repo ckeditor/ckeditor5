@@ -723,7 +723,7 @@ function clearAttributesStoredInElement( changes, batch, document ) {
 
 	// `changes.range` is not set in case of rename, root and marker operations.
 	// None of them may lead to the element becoming non-empty.
-	if ( !changeParent || changeParent.isEmpty ) {
+	if ( !changeParent || changeParent.is( 'documentFragment' ) || changeParent.isEmpty ) {
 		return;
 	}
 
