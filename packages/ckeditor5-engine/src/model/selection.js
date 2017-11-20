@@ -174,18 +174,16 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns an iterator that iterates over copies of selection ranges.
+	 * Returns an iterator that iterates over selection ranges.
 	 *
 	 * @returns {Iterator.<module:engine/model/range~Range>}
 	 */
-	* getRanges() {
-		for ( const range of this._ranges ) {
-			yield Range.createFromRange( range );
-		}
+	getRanges() {
+		return this._ranges[ Symbol.iterator ]();
 	}
 
 	/**
-	 * Returns a copy of the first range in the selection.
+	 * Returns first range in the selection.
 	 * First range is the one which {@link module:engine/model/range~Range#start start} position
 	 * {@link module:engine/model/position~Position#isBefore is before} start position of all other ranges
 	 * (not to confuse with the first range added to the selection).
@@ -203,11 +201,11 @@ export default class Selection {
 			}
 		}
 
-		return first ? Range.createFromRange( first ) : null;
+		return first;
 	}
 
 	/**
-	 * Returns a copy of the last range in the selection.
+	 * Returns last range in the selection.
 	 * Last range is the one which {@link module:engine/model/range~Range#end end} position
 	 * {@link module:engine/model/position~Position#isAfter is after} end position of all other ranges (not to confuse with the range most
 	 * recently added to the selection).
@@ -225,7 +223,7 @@ export default class Selection {
 			}
 		}
 
-		return last ? Range.createFromRange( last ) : null;
+		return last;
 	}
 
 	/**

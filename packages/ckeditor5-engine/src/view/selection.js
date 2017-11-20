@@ -220,18 +220,16 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns an iterator that contains copies of all ranges added to the selection.
+	 * Returns an iterator that contains all ranges added to the selection.
 	 *
 	 * @returns {Iterator.<module:engine/view/range~Range>}
 	 */
-	* getRanges() {
-		for ( const range of this._ranges ) {
-			yield Range.createFromRange( range );
-		}
+	getRanges() {
+		return this._ranges[ Symbol.iterator ]();
 	}
 
 	/**
-	 * Returns copy of the first range in the selection. First range is the one which
+	 * Returns first range in the selection. First range is the one which
 	 * {@link module:engine/view/range~Range#start start} position {@link module:engine/view/position~Position#isBefore is before} start
 	 * position of all other ranges (not to confuse with the first range added to the selection).
 	 * Returns `null` if no ranges are added to selection.
@@ -247,11 +245,11 @@ export default class Selection {
 			}
 		}
 
-		return first ? Range.createFromRange( first ) : null;
+		return first;
 	}
 
 	/**
-	 * Returns copy of the last range in the selection. Last range is the one which {@link module:engine/view/range~Range#end end}
+	 * Returns last range in the selection. Last range is the one which {@link module:engine/view/range~Range#end end}
 	 * position {@link module:engine/view/position~Position#isAfter is after} end position of all other ranges (not to confuse
 	 * with the last range added to the selection). Returns `null` if no ranges are added to selection.
 	 *
@@ -266,7 +264,7 @@ export default class Selection {
 			}
 		}
 
-		return last ? Range.createFromRange( last ) : null;
+		return last;
 	}
 
 	/**
