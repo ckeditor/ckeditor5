@@ -20,6 +20,12 @@ let dictionaries = {};
  *			'Cancel [context: reject]': 'Anuluj'
  *		} );
  *
+ * That function is accessible globally via `window.CKEDITOR_TRANSLATIONS.add()`. So it's possible to add translation from
+ * the other script, just after that one.
+ *
+ * 		<script src="./path/to/ckeditor.js"></script>
+ * 		<script src="./path/to/translations/en.js"></script>
+ *
  * @param {String} lang Target language.
  * @param {Object.<String, String>} translations Translations which will be added to the dictionary.
  */
@@ -42,7 +48,7 @@ export function add( lang, translations ) {
  *		translate( 'pl', 'Cancel [context: reject]' );
  *
  * @param {String} lang Target language.
- * @param {String} translationKey String which is going to be translated.
+ * @param {String} translationKey String that will be translated.
  * @returns {String} Translated sentence.
  */
 export function translate( lang, translationKey ) {
@@ -50,8 +56,7 @@ export function translate( lang, translationKey ) {
 
 	if ( numberOfLanguages === 1 ) {
 		// Override the language to the only supported one.
-		// This can't be done in the `Locale` class,
-		// because the translations comes after the `Locale` class initializes.
+		// This can't be done in the `Locale` class, because the translations comes after the `Locale` class initialization.
 		lang = Object.keys( dictionaries )[ 0 ];
 	}
 
