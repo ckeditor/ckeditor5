@@ -46,7 +46,7 @@ export default class StrikethroughEngine extends Plugin {
 		buildViewConverter().for( data.viewToModel )
 			.fromElement( 's' )
 			.fromElement( 'del' )
-			.fromElement( 'strikethrough' )
+			.fromElement( 'strike' )
 			.fromAttribute( 'style', { 'text-decoration': 'line-through' } )
 			.toAttribute( STRIKETHROUGH, true );
 
