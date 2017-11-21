@@ -28,7 +28,7 @@ describe( 'Strikethrough', () => {
 			.then( newEditor => {
 				editor = newEditor;
 
-				strikeView = editor.ui.componentFactory.create( 'strike' );
+				strikeView = editor.ui.componentFactory.create( 'strikethrough' );
 			} );
 	} );
 
@@ -44,7 +44,7 @@ describe( 'Strikethrough', () => {
 		expect( editor.plugins.get( StrikethroughEngine ) ).to.be.instanceOf( StrikethroughEngine );
 	} );
 
-	it( 'should register strike feature component', () => {
+	it( 'should register strikethrough feature component', () => {
 		expect( strikeView ).to.be.instanceOf( ButtonView );
 		expect( strikeView.isOn ).to.be.false;
 		expect( strikeView.label ).to.equal( 'Strikethrough' );
@@ -52,17 +52,17 @@ describe( 'Strikethrough', () => {
 		expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
 	} );
 
-	it( 'should execute strike command on model execute event', () => {
+	it( 'should execute strikethrough command on model execute event', () => {
 		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
 		strikeView.fire( 'execute' );
 
 		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'strike' );
+		sinon.assert.calledWithExactly( executeSpy, 'strikethrough' );
 	} );
 
-	it( 'should bind model to strike command', () => {
-		const command = editor.commands.get( 'strike' );
+	it( 'should bind model to strikethrough command', () => {
+		const command = editor.commands.get( 'strikethrough' );
 
 		expect( strikeView.isOn ).to.be.false;
 
