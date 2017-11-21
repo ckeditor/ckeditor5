@@ -223,6 +223,12 @@ export default class Batch {
 		return this;
 	}
 
+	setAttributes( itemOrRange, attributes ) {
+		for ( const attribute of Object.keys( attributes ) ) {
+			this.setAttribute( itemOrRange, attribute, attributes[ attribute ] );
+		}
+	}
+
 	/**
 	 * Removes an attribute with given key from a {@link module:engine/model/item~Item model item}
 	 * or from a {@link module:engine/model/range~Range range}.
@@ -241,6 +247,22 @@ export default class Batch {
 		}
 
 		return this;
+	}
+
+	clearAttributes( itemOrRange ) {
+		const removeAttributesFromItem = item => {
+			for ( const attribute of item.getAttributeKeys() ) {
+				this.removeAttribute( item, attribute );
+			}
+		};
+
+		if ( !( itemOrRange instanceof Range ) ) {
+			removeAttributesFromItem( itemOrRange );
+		} else {
+			for ( const item of itemOrRange.getItems() ) {
+				removeAttributesFromItem( item );
+			}
+		}
 	}
 
 	/**
