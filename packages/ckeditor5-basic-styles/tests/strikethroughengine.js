@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import StrikethroughEngine from '../src/strikeengine';
+import StrikethroughEngine from '../src/strikethroughengine';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';

@@ -6,8 +6,8 @@
 /* globals document */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Strikethrough from '../src/strike';
-import StrikethroughEngine from '../src/strikeengine';
+import Strikethrough from '../src/strikethrough';
+import StrikethroughEngine from '../src/strikethroughengine';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
