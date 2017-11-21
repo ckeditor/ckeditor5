@@ -11,7 +11,7 @@
 	@mixin ck-rounded-corners;
 
 	list-style-type: none;
-	background: var(--ck-color-base-background);
+	background: var(--ck-color-list-background);
 }
 
 .ck-list__item {
@@ -21,7 +21,7 @@
 
 	&:hover,
 	&:focus {
-		background: var(--ck-color-base-foreground);
+		background: var(--ck-color-list-item-background-hover);
 	}
 
 	&:focus {
@@ -32,11 +32,11 @@
 }
 
 .ck-list__item_active {
-	background: var(--ck-color-base-active);
-	color: var(--ck-color-base-background);
+	background: var(--ck-color-list-item-background-active);
+	color: var(--ck-color-list-item-text-active);
 
 	&:hover,
 	&:focus {
-		background: var(--ck-color-base-active-focus);
+		background: var(--ck-color-list-item-background-active-focus);
 	}
 }

@@ -18,8 +18,8 @@
 
 	min-height: 15px;
 
-	background: var(--ck-color-base-background);
-	border: 1px solid var(--ck-color-base-border);
+	background: var(--ck-color-panel-background);
+	border: 1px solid var(--ck-color-panel-border);
 
 	&.ck-balloon-panel_with-arrow {
 		&:before,
@@ -37,11 +37,11 @@
 		}
 
 		&:before {
-			border-color: transparent transparent var(--ck-color-base-border) transparent;
+			border-color: transparent transparent var(--ck-color-panel-border) transparent;
 		}
 
 		&:after {
-			border-color: transparent transparent var(--ck-color-base-background) transparent;
+			border-color: transparent transparent var(--ck-color-panel-background) transparent;
 			margin-top: var(--ck-balloon-arrow-offset);
 		}
 	}
@@ -53,11 +53,11 @@
 		}
 
 		&:before {
-			border-color: var(--ck-color-base-border) transparent  transparent;
+			border-color: var(--ck-color-panel-border) transparent  transparent;
 		}
 
 		&:after {
-			border-color: var(--ck-color-base-background) transparent transparent transparent;
+			border-color: var(--ck-color-panel-background) transparent transparent transparent;
 			margin-bottom: var(--ck-balloon-arrow-offset);
 		}
 	}

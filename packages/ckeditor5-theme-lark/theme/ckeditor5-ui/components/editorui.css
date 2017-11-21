@@ -33,7 +33,7 @@
 	& .ck-button {
 		&:not(:hover):not(:focus):not(.ck-on),
 		&.ck-disabled {
-			background: var(--ck-color-base-foreground);
+			background: var(--ck-color-editor-toolbar-background);
 		}
 
 		&.ck-on {
@@ -45,24 +45,24 @@
 		border-width: 1px;
 
 		&:not(:hover):not(:focus):not(.ck-on) {
-			background: var(--ck-color-base-background);
+			background: var(--ck-color-editor-dropdown-background);
 		}
 	}
 
 	@nest .ck-toolbar-container & {
-		background: var(--ck-color-base-foreground);
+		background: var(--ck-color-editor-toolbar-background);
 	}
 }
 
 /* https://github.com/ckeditor/ckeditor5-theme-lark/issues/111 */
 .ck-toolbar-container.ck-editor-toolbar-container[class*="arrow_n"] {
 	&:after {
-		border-bottom-color: var(--ck-color-base-foreground);
+		border-bottom-color: var(--ck-color-editor-toolbar-background);
 	}
 }
 
 .ck-toolbar-container.ck-editor-toolbar-container[class*="arrow_s"] {
 	&:after {
-		border-top-color: var(--ck-color-base-foreground);
+		border-top-color: var(--ck-color-editor-toolbar-background);
 	}
 }

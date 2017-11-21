@@ -28,7 +28,7 @@
 		& .ck-tooltip__text::after {
 			top: calc(-1 * var(--ck-tooltip-arrow-size));
 			transform: translateX( -50% );
-			border-color: transparent transparent var(--ck-color-base-text) transparent;
+			border-color: transparent transparent var(--ck-color-tooltip-background) transparent;
 			border-width: 0 var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size);
 		}
 	}
@@ -49,7 +49,7 @@
 		& .ck-tooltip__text::after {
 			bottom: calc(-1 * var(--ck-tooltip-arrow-size));
 			transform: translateX( -50% );
-			border-color: var(--ck-color-base-text) transparent transparent transparent;
+			border-color: var(--ck-color-tooltip-background) transparent transparent transparent;
 			border-width: var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size) 0 var(--ck-tooltip-arrow-size);
 		}
 	}
@@ -60,9 +60,9 @@
 
 	font-size: .9em;
 	line-height: 1.5;
-	color: var(--ck-color-base-background);
+	color: var(--ck-color-tooltip-text);
 	padding: var(--ck-spacing-small) var(--ck-spacing-medium);
-	background: var(--ck-color-base-text);
+	background: var(--ck-color-tooltip-background);
 	position: relative;
 	left: -50%;
 

@@ -34,7 +34,7 @@
 	/* These are rule inherited by all children elements. */
 	border-collapse: collapse;
 	font: normal normal normal var(--ck-font-size-base)/var(--ck-line-height-base) var(--ck-font-face);
-	color: var(--ck-color-base-text);
+	color: var(--ck-color-text);
 	text-align: left;
 	white-space: nowrap;
 	cursor: auto;
