@@ -30,8 +30,11 @@ import RootAttributeOperation from './operation/rootattributeoperation';
 import DocumentFragment from './documentfragment';
 import Text from './text';
 import Element from './element';
+import RootElement from './rootelement';
 import Position from './position';
 import Range from './range.js';
+
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -143,17 +146,17 @@ export default class Batch {
 	insert( item, itemOrPosition, offset ) {
 		const position = Position.createAt( itemOrPosition, offset );
 
-		// For text that has no parent we need to make WeakInsert.
+		// For text that has no parent we need to make a WeakInsert.
 		const delta = item instanceof Text && !item.parent ? new WeakInsertDelta() : new InsertDelta();
 
-		// If item is already in parent.
+		// If item has a parent already.
 		if ( item.parent ) {
-			// We need to check if item is going to be inserted to the same root.
-			if ( item.root === position.root ) {
+			// We need to check if item is going to be inserted within the same document.
+			if ( isTheSameDocument( item.root, position.root ) ) {
 				// If it's we just need to move it.
 				return this.move( Range.createOn( item ), position );
 			}
-			// If it isn't the same root
+			// If it isn't the same root.
 			else {
 				// We need to remove this item from old position first.
 				this.remove( item );
@@ -224,8 +227,8 @@ export default class Batch {
 	}
 
 	setAttributes( itemOrRange, attributes ) {
-		for ( const attribute of Object.keys( attributes ) ) {
-			this.setAttribute( itemOrRange, attribute, attributes[ attribute ] );
+		for ( const [ key, val ] of toMap( attributes ) ) {
+			this.setAttribute( itemOrRange, key, val );
 		}
 	}
 
@@ -263,6 +266,78 @@ export default class Batch {
 				removeAttributesFromItem( item );
 			}
 		}
+	}
+
+	/**
+	 * Moves given {@link module:engine/model/item~Item model item} or given range to target position.
+	 *
+	 * @chainable
+	 */
+	move( range, itemOrPosition, offset ) {
+		if ( !range.isFlat ) {
+			/**
+			 * Range to move is not flat.
+			 *
+			 * @error batch-move-range-not-flat
+			 */
+			throw new CKEditorError( 'batch-move-range-not-flat: Range to move is not flat.' );
+		}
+
+		const position = Position.createAt( itemOrPosition, offset );
+
+		if ( !isTheSameDocument( range.root, position.root ) ) {
+			/**
+			 * Range is going to be moved within not the same document. Please use
+			 * {@link module:engine/model/batch~Batch#insert insert} instead.
+			 *
+			 * @error batch-move-different-document
+			 */
+			throw new CKEditorError( 'batch-move-different-document: Range is going to be moved between different documents.' );
+		}
+
+		const delta = new MoveDelta();
+		this.addDelta( delta );
+
+		const operation = new MoveOperation( range.start, range.end.offset - range.start.offset, position, this.document.version );
+		delta.addOperation( operation );
+		this.document.applyOperation( operation );
+
+		return this;
+	}
+
+	/**
+	 * Removes given {@link module:engine/model/item~Item model item} or given range.
+	 *
+	 * @chainable
+	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange Model item or range to remove.
+	 */
+	remove( itemOrRange ) {
+		const addRemoveDelta = ( position, howMany ) => {
+			const delta = new RemoveDelta();
+			this.addDelta( delta );
+
+			const graveyard = this.document.graveyard;
+			const gyPosition = new Position( graveyard, [ 0 ] );
+
+			const operation = new RemoveOperation( position, howMany, gyPosition, this.document.version );
+			delta.addOperation( operation );
+			this.document.applyOperation( operation );
+		};
+
+		if ( itemOrRange instanceof Range ) {
+			// The array is reversed, so the ranges to remove are in correct order and do not have to be updated.
+			const ranges = itemOrRange.getMinimalFlatRanges().reverse();
+
+			for ( const flat of ranges ) {
+				addRemoveDelta( flat.start, flat.end.offset - flat.start.offset );
+			}
+		} else {
+			const howMany = itemOrRange.is( 'text' ) ? itemOrRange.offsetSize : 1;
+
+			addRemoveDelta( Position.createBefore( itemOrRange ), howMany );
+		}
+
+		return this;
 	}
 
 	/**
@@ -319,66 +394,6 @@ export default class Batch {
 		const remove = new RemoveOperation( position, 1, gyPosition, this.document.version );
 		delta.addOperation( remove );
 		this.document.applyOperation( remove );
-
-		return this;
-	}
-
-	/**
-	 * Moves given {@link module:engine/model/item~Item model item} or given range to target position.
-	 *
-	 * @chainable
-	 */
-	move( range, itemOrPosition, offset ) {
-		if ( !range.isFlat ) {
-			/**
-			 * Range to move is not flat.
-			 *
-			 * @error batch-move-range-not-flat
-			 */
-			throw new CKEditorError( 'batch-move-range-not-flat: Range to move is not flat.' );
-		}
-
-		const position = Position.createAt( itemOrPosition, offset );
-
-		const delta = new MoveDelta();
-		this.addDelta( delta );
-
-		const operation = new MoveOperation( range.start, range.end.offset - range.start.offset, position, this.document.version );
-		delta.addOperation( operation );
-		this.document.applyOperation( operation );
-
-		return this;
-	}
-
-	/**
-	 * Removes given {@link module:engine/model/item~Item model item} or given range.
-	 *
-	 * @chainable
-	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange Model item or range to remove.
-	 */
-	remove( itemOrRange ) {
-		const addRemoveDelta = ( position, howMany ) => {
-			const delta = new RemoveDelta();
-			this.addDelta( delta );
-
-			const graveyard = this.document.graveyard;
-			const gyPosition = new Position( graveyard, [ 0 ] );
-
-			const operation = new RemoveOperation( position, howMany, gyPosition, this.document.version );
-			delta.addOperation( operation );
-			this.document.applyOperation( operation );
-		};
-
-		if ( itemOrRange instanceof Range ) {
-			// The array is reversed, so the ranges to remove are in correct order and do not have to be updated.
-			const ranges = itemOrRange.getMinimalFlatRanges().reverse();
-
-			for ( const flat of ranges ) {
-				addRemoveDelta( flat.start, flat.end.offset - flat.start.offset );
-			}
-		} else {
-			addRemoveDelta( Position.createBefore( itemOrRange ), 1 );
-		}
 
 		return this;
 	}
@@ -758,4 +773,12 @@ function addMarkerOperation( batch, name, oldRange, newRange ) {
 	batch.addDelta( delta );
 	delta.addOperation( operation );
 	doc.applyOperation( operation );
+}
+
+function isTheSameDocument( rootA, rootB ) {
+	if ( rootA === rootB ) {
+		return true;
+	}
+
+	return rootA instanceof RootElement && rootB instanceof RootElement;
 }
