@@ -10,7 +10,7 @@
 	/* Overrides the default font size in the theme. */
 	--ck-font-size-base: 14px;
 
-	/* Helper variables to avoid duplication in --ck-colors. */
+	/* Helper variables to avoid duplication in the colors. */
 	--ck-custom-background: #4A494B;
 	--ck-custom-foreground: #3a393d;
 	--ck-custom-border: #383738;
