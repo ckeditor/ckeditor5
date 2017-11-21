@@ -36,52 +36,52 @@ describe( 'StrikethroughEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: 'strike', inside: '$root' } ) ).to.be.false;
-		expect( doc.schema.check( { name: '$inline', attributes: 'strike', inside: '$block' } ) ).to.be.true;
-		expect( doc.schema.check( { name: '$inline', attributes: 'strike', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( doc.schema.check( { name: '$inline', attributes: 'strikethrough', inside: '$root' } ) ).to.be.false;
+		expect( doc.schema.check( { name: '$inline', attributes: 'strikethrough', inside: '$block' } ) ).to.be.true;
+		expect( doc.schema.check( { name: '$inline', attributes: 'strikethrough', inside: '$clipboardHolder' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
-		it( 'should register strike command', () => {
-			const command = editor.commands.get( 'strike' );
+		it( 'should register strikethrough command', () => {
+			const command = editor.commands.get( 'strikethrough' );
 
 			expect( command ).to.be.instanceOf( AttributeCommand );
-			expect( command ).to.have.property( 'attributeKey', 'strike' );
+			expect( command ).to.have.property( 'attributeKey', 'strikethrough' );
 		} );
 	} );
 
 	describe( 'data pipeline conversions', () => {
-		it( 'should convert <strike> to strike attribute', () => {
+		it( 'should convert <strike> to strikethrough attribute', () => {
 			editor.setData( '<p><strike>foo</strike>bar</p>' );
 
 			expect( getModelData( doc, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text strike="true">foo</$text>bar</paragraph>' );
+				.to.equal( '<paragraph><$text strikethrough="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><s>foo</s>bar</p>' );
 		} );
-		it( 'should convert <del> to strike attribute', () => {
+		it( 'should convert <del> to strikethrough attribute', () => {
 			editor.setData( '<p><del>foo</del>bar</p>' );
 
 			expect( getModelData( doc, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text strike="true">foo</$text>bar</paragraph>' );
+				.to.equal( '<paragraph><$text strikethrough="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><s>foo</s>bar</p>' );
 		} );
 
-		it( 'should convert <s> to strike attribute', () => {
+		it( 'should convert <s> to strikethrough attribute', () => {
 			editor.setData( '<p><s>foo</s>bar</p>' );
 
 			expect( getModelData( doc, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text strike="true">foo</$text>bar</paragraph>' );
+				.to.equal( '<paragraph><$text strikethrough="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><s>foo</s>bar</p>' );
 		} );
 
-		it( 'should convert text-decoration:line-through to strike attribute', () => {
+		it( 'should convert text-decoration:line-through to strikethrough attribute', () => {
 			editor.setData( '<p><span style="text-decoration: line-through;">foo</span>bar</p>' );
 
 			expect( getModelData( doc, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text strike="true">foo</$text>bar</paragraph>' );
+				.to.equal( '<paragraph><$text strikethrough="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><s>foo</s>bar</p>' );
 		} );
@@ -100,7 +100,7 @@ describe( 'StrikethroughEngine', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( doc, '<paragraph><$text strike="true">foo</$text>bar</paragraph>' );
+			setModelData( doc, '<paragraph><$text strikethrough="true">foo</$text>bar</paragraph>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><s>foo</s>bar</p>' );
 		} );
