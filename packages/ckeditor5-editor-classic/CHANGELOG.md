@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+
+### Other changes
+
+* Aligned UI library usage to the [changes in the UI framework](https://github.com/ckeditor/ckeditor5-ui/pull/332).
+
+
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v0.8.0...v1.0.0-alpha.1) (2017-10-03)
 
 ### Features
