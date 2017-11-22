@@ -1,0 +1,15 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+.ck-splitbutton-arrow {
+	svg.ck-icon {
+		width: 0;
+		min-width: 0;
+	}
+
+	&::after {
+		border-style: solid;
+		border-width: .4em .4em 0 .4em;
+		border-color: ck-color( 'dropdown-symbol' ) transparent;
+	}
+}
