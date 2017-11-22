@@ -56,6 +56,13 @@ export default class InsertOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	get root() {
+		return this.position.root;
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns {module:engine/model/operation/insertoperation~InsertOperation} Clone of this operation.

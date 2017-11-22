@@ -206,6 +206,30 @@ describe( 'InsertOperation', () => {
 		expect( op2.nodes.getNode( 0 ) ).not.to.equal( text );
 	} );
 
+	describe( 'root', () => {
+		it( 'should return operation root for document', () => {
+			const op = new InsertOperation(
+				new Position( root, [ 0 ] ),
+				new Text( 'x' ),
+				doc.version
+			);
+
+			expect( op.root ).to.equal( root );
+		} );
+
+		it( 'should return operation root for document fragment', () => {
+			const docFrag = doc.batch().createDocumentFragment();
+
+			const op = new InsertOperation(
+				new Position( docFrag, [ 0 ] ),
+				new Text( 'x' ),
+				doc.version
+			);
+
+			expect( op.root ).to.equal( docFrag );
+		} );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
 			const position = new Position( root, [ 0 ] );
