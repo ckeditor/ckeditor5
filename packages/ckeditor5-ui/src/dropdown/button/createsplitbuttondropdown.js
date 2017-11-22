@@ -13,7 +13,7 @@ import DropdownView from '../dropdownview';
 import DropdownPanelView from '../dropdownpanelview';
 
 import ButtonGroupView from '../../buttongroup/buttongroupview';
-import { closeDropdownOnBlur, closeDropdownOnExecute, openDropdownOnArrows } from '../utils';
+import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownItemsOnArrows } from '../utils';
 
 /**
  * TODO
@@ -34,7 +34,6 @@ export default function createSplitButtonDropdown( model, buttonViews, locale, s
 	const panelView = new DropdownPanelView( locale );
 
 	const dropdownView = new DropdownView( locale, splitButtonView, panelView );
-	// END of TODO
 
 	const buttonGroupView = dropdownView.buttonGroupView = new ButtonGroupView( { isVertical: model.isVertical } );
 
@@ -60,7 +59,14 @@ export default function createSplitButtonDropdown( model, buttonViews, locale, s
 
 	closeDropdownOnBlur( dropdownView );
 	closeDropdownOnExecute( dropdownView, buttonGroupView.items );
-	openDropdownOnArrows( dropdownView, buttonGroupView );
+	focusDropdownItemsOnArrows( dropdownView, buttonGroupView );
+
+	splitButtonView.arrowView.on( 'execute', () => {
+		if ( splitButtonView.buttonView.isEnabled && !dropdownView.isOpen ) {
+			dropdownView.isOpen = true;
+			buttonGroupView.focus();
+		}
+	} );
 
 	return dropdownView;
 }

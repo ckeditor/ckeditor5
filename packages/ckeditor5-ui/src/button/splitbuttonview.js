@@ -56,19 +56,19 @@ export default class SplitButtonView extends View {
 
 		this.keystrokes.listenTo( this.element );
 
-		this.keystrokes.set( 'arrowright', ( evt, cb ) => {
+		this.keystrokes.set( 'arrowright', ( evt, cancel ) => {
 			if ( this.focusTracker.focusedElement === this.buttonView.element ) {
-				cb();
-
 				this.arrowView.focus();
+
+				cancel();
 			}
 		} );
 
-		this.keystrokes.set( 'arrowleft', ( evt, cb ) => {
+		this.keystrokes.set( 'arrowleft', ( evt, cancel ) => {
 			if ( this.focusTracker.focusedElement === this.arrowView.element ) {
-				cb();
-
 				this.buttonView.focus();
+
+				cancel();
 			}
 		} );
 	}
