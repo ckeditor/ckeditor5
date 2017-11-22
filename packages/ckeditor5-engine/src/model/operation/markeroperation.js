@@ -65,6 +65,13 @@ export default class MarkerOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	get root() {
+		return this.newRange ? this.newRange.root : this.oldRange.root;
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns {module:engine/model/operation/markeroperation~MarkerOperation} Clone of this operation.

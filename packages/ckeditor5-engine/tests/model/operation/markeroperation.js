@@ -161,6 +161,20 @@ describe( 'MarkerOperation', () => {
 		expect( clone ).to.deep.equal( op );
 	} );
 
+	describe( 'type', () => {
+		it( 'should return root of new marker range when new marker is added', () => {
+			const op = new MarkerOperation( 'name', null, range, doc.markers, doc.version );
+
+			expect( op.root ).to.equal( root );
+		} );
+
+		it( 'should return root of old marker range when marker is removed', () => {
+			const op = new MarkerOperation( 'name', range, null, doc.markers, doc.version );
+
+			expect( op.root ).to.equal( root );
+		} );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
 			const op = new MarkerOperation( 'name', null, range, doc.markers, doc.version );
