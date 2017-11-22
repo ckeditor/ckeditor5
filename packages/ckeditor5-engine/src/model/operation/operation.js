@@ -46,6 +46,15 @@ export default class Operation {
 		 */
 
 		/**
+		 * Root within operation is applied. It might be {@link module:engine/model/rootelement~RootElement RootElement}
+		 * when operation is applied on {@link module:engine/model/document~Document Document} or any
+		 * {module:engine/model/item~Item} when operation is applied on detached node.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/item~Item} #root
+		 */
+
+		/**
 		 * Creates and returns an operation that has the same parameters as this operation.
 		 *
 		 * @method #clone
