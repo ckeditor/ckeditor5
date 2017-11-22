@@ -15,8 +15,10 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import highlightIcon from '@ckeditor/ckeditor5-core/theme/icons/input.svg';
 import highlightRemoveIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 
-import Model from '../../ckeditor5-ui/src/model';
-import createSplitButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/button/createsplitbuttondropdown';
+import Model from '@ckeditor/ckeditor5-ui/src/model';
+import createSplitButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/createsplitbuttondropdown';
+import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownItemsOnArrows } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import ButtonGroupView from '@ckeditor/ckeditor5-ui/src/buttongroup/buttongroupview';
 
 /**
  * The default Highlight UI plugin.
@@ -70,8 +72,7 @@ export default class HighlightUI extends Plugin {
 			return buttonView;
 		} );
 
-		// Add highlight dropdown
-
+		// Add highlight dropdown:
 		componentFactory.add( 'highlightDropdown', locale => {
 			const model = new Model( {
 				label: 'Highlight',
@@ -86,19 +87,64 @@ export default class HighlightUI extends Plugin {
 
 			const buttonView = componentFactory.create( 'highlight-' + highlighters[ 0 ].class );
 
-			const dropdown = createSplitButtonDropdown( model, buttons, locale, buttonView );
+			// TODO: move this out of this method (related to button only design) Make disabled when all buttons are disabled
+			model.bind( 'isEnabled' ).to(
+				// Bind to #isEnabled of each command...
+				...getBindingTargets( buttons, 'isEnabled' ),
+				// ...and set it true if any command #isEnabled is true.
+				( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
+			);
 
+			// TODO: Is this needed in UI at all?
+			const dropdownView = createSplitButtonDropdown( model, buttons, locale, buttonView );
+
+			const buttonGroupView = dropdownView.buttonGroupView = new ButtonGroupView( { isVertical: model.isVertical } );
+
+			buttonGroupView.bind( 'isVertical' ).to( model, 'isVertical' );
+
+			buttons.map( view => buttonGroupView.items.add( view ) );
+
+			dropdownView.extendTemplate( {
+				attributes: {
+					class: [
+						'ck-splitbutton-dropdown'
+					]
+				}
+			} );
+
+			dropdownView.buttonView.extendTemplate( {
+				attributes: {
+					class: [ 'ck-button-dropdown' ]
+				}
+			} );
+
+			dropdownView.panelView.children.add( buttonGroupView );
+
+			closeDropdownOnBlur( dropdownView );
+			closeDropdownOnExecute( dropdownView, buttonGroupView.items );
+			focusDropdownItemsOnArrows( dropdownView, buttonGroupView );
+
+			// TODO: weak names buttonView.buttonView
+			// TODO: could be move to createSplitButtonDropdown
+			dropdownView.buttonView.arrowView.on( 'execute', () => {
+				if ( dropdownView.buttonView.buttonView.isEnabled && !dropdownView.isOpen ) {
+					dropdownView.isOpen = true;
+					buttonGroupView.focus();
+				}
+			} );
+
+			// TODO: A bit hack-ish: Swap the split button button to executed one.
 			buttons.map( buttonView => {
 				this.listenTo( buttonView, 'execute', () => {
-					if ( dropdown.buttonView.buttonView.class !== buttonView.class ) {
-						const newButton = componentFactory.create( 'highlight-' + buttonView.class );
+					if ( dropdownView.buttonView.buttonView.class !== buttonView.class ) {
+						const newButton = componentFactory.create( buttonView.class ? 'highlight-' + buttonView.class : 'highlightRemove' );
 
-						dropdown.buttonView.swapButton( newButton );
+						dropdownView.buttonView.swapButton( newButton );
 					}
 				} );
 			} );
 
-			return dropdown;
+			return dropdownView;
 		} );
 	}
 
@@ -116,6 +162,7 @@ export default class HighlightUI extends Plugin {
 				tooltip: true,
 				class: highlighter.class
 			} );
+
 			// Bind button model to command.
 			buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
@@ -136,4 +183,9 @@ export default class HighlightUI extends Plugin {
 			return buttonView;
 		} );
 	}
+}
+
+// TODO: this is duplicated
+function getBindingTargets( buttons, attribute ) {
+	return Array.prototype.concat( ...buttons.map( button => [ button, attribute ] ) );
 }
