@@ -267,6 +267,34 @@ describe( 'MoveOperation', () => {
 		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
 
+	describe( 'root', () => {
+		it( 'should return root for document', () => {
+			const op = new MoveOperation(
+				new Position( root, [ 0, 0 ] ),
+				1,
+				new Position( root, [ 1, 0 ] ),
+				doc.version
+			);
+
+			expect( op.root ).to.equal( root );
+		} );
+
+		it( 'should return root for document fragment', () => {
+			const docFrag = doc.batch().createDocumentFragment();
+
+			doc.batch().appendText( 'abc', null, docFrag );
+
+			const op = new MoveOperation(
+				new Position( docFrag, [ 0 ] ),
+				1,
+				new Position( docFrag, [ 2 ] ),
+				doc.version
+			);
+
+			expect( op.root ).to.equal( docFrag );
+		} );
+	} );
+
 	describe( 'getMovedRangeStart', () => {
 		it( 'should return move operation target position transformed by removing move operation source range', () => {
 			const sourcePosition = new Position( root, [ 0, 2 ] );

@@ -74,6 +74,15 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	get root() {
+		// Note that range cannot be moved within different documents e.g. from docFrag to document root so
+		// root of source and target positions will be always the same.
+		return this.targetPosition.root;
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns {module:engine/model/operation/moveoperation~MoveOperation} Clone of this operation.
