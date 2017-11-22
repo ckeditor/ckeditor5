@@ -89,6 +89,13 @@ export default class AttributeOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	get root() {
+		return this.range.root;
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns {module:engine/model/operation/attributeoperation~AttributeOperation} Clone of this operation.

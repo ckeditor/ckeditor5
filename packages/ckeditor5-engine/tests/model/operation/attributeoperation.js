@@ -59,6 +59,35 @@ describe( 'AttributeOperation', () => {
 		} );
 	} );
 
+	describe( 'root', () => {
+		it( 'should return root of range when range is in document', () => {
+			const op = new AttributeOperation(
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				'key',
+				'oldValue',
+				'newValue',
+				doc.version
+			);
+
+			expect( op.root ).to.equal( root );
+		} );
+
+		it( 'should return root of range when range is in document fragment', () => {
+			const docFrag = doc.batch().createDocumentFragment();
+			doc.batch().appendText( 'abc', null, docFrag );
+
+			const op = new AttributeOperation(
+				Range.createIn( docFrag ),
+				'key',
+				'oldValue',
+				'newValue',
+				doc.version
+			);
+
+			expect( op.root ).to.equal( docFrag );
+		} );
+	} );
+
 	it( 'should insert attribute to the set of nodes', () => {
 		root.insertChildren( 0, new Text( 'bar' ) );
 
