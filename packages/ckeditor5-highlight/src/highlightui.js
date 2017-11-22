@@ -61,7 +61,11 @@ export default class HighlightUI extends Plugin {
 				tooltip: true
 			} );
 
-			this.listenTo( buttonView, 'execute', () => editor.execute( 'highlight' ) );
+			this.listenTo( buttonView, 'execute', () => {
+				// TODO: minor duplication of code
+				editor.execute( 'highlight' );
+				editor.editing.view.focus();
+			} );
 
 			return buttonView;
 		} );
@@ -120,7 +124,10 @@ export default class HighlightUI extends Plugin {
 			} );
 
 			// Execute command.
-			this.listenTo( buttonView, 'execute', () => editor.execute( 'highlight', { class: highlighter.class } ) );
+			this.listenTo( buttonView, 'execute', () => {
+				editor.execute( 'highlight', { class: highlighter.class } );
+				editor.editing.view.focus();
+			} );
 
 			buttonView.iconView.extendTemplate( {
 				attributes: { style: highlighter.type === 'pen' ? { color: highlighter.color } : { backgroundColor: highlighter.color } }
