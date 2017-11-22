@@ -56,6 +56,7 @@ export default class SplitButtonView extends View {
 
 		this.keystrokes.listenTo( this.element );
 
+		// Overrides toolbar focus cycling behavior
 		this.keystrokes.set( 'arrowright', ( evt, cancel ) => {
 			if ( this.focusTracker.focusedElement === this.buttonView.element ) {
 				this.arrowView.focus();
@@ -64,6 +65,7 @@ export default class SplitButtonView extends View {
 			}
 		} );
 
+		// Overrides toolbar focus cycling behavior
 		this.keystrokes.set( 'arrowleft', ( evt, cancel ) => {
 			if ( this.focusTracker.focusedElement === this.arrowView.element ) {
 				this.buttonView.focus();
