@@ -163,9 +163,10 @@ export default class Document {
 
 		const changes = operation._execute();
 
-		this.version++;
-
-		this.history.addDelta( operation.delta );
+		if ( operation.isDocumentOperation ) {
+			this.version++;
+			this.history.addDelta( operation.delta );
+		}
 
 		this.fire( 'change', operation.type, changes, operation.delta.batch, operation.delta.type );
 	}
