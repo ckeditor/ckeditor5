@@ -11,6 +11,7 @@ import BalloonEditorUIView from '../src/ballooneditoruiview';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import RootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
@@ -50,45 +51,8 @@ describe( 'BalloonEditorUI', () => {
 			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
 
-		describe( 'editable', () => {
-			let editable;
-
-			beforeEach( () => {
-				editable = editor.editing.view.getRoot();
-			} );
-
-			it( 'registers view.editable#element in editor focus tracker', () => {
-				ui.focusTracker.isFocused = false;
-
-				view.editable.element.dispatchEvent( new Event( 'focus' ) );
-				expect( ui.focusTracker.isFocused ).to.true;
-			} );
-
-			it( 'sets view.editable#name', () => {
-				expect( view.editable.name ).to.equal( editable.rootName );
-			} );
-
-			it( 'binds view.editable#isFocused', () => {
-				utils.assertBinding(
-					view.editable,
-					{ isFocused: false },
-					[
-						[ ui.focusTracker, { isFocused: true } ]
-					],
-					{ isFocused: true }
-				);
-			} );
-
-			it( 'binds view.editable#isReadOnly', () => {
-				utils.assertBinding(
-					view.editable,
-					{ isReadOnly: false },
-					[
-						[ editable, { isReadOnly: true } ]
-					],
-					{ isReadOnly: true }
-				);
-			} );
+		it( 'creates root editable element', () => {
+			expect( editor.editing.view.getRoot() ).to.be.instanceOf( RootEditableElement );
 		} );
 	} );
 
@@ -130,6 +94,47 @@ describe( 'BalloonEditorUI', () => {
 			} );
 
 			sinon.assert.callOrder( editingFocusSpy, toolbarHideSpy );
+		} );
+
+		describe( 'editable', () => {
+			let editable;
+
+			beforeEach( () => {
+				editable = editor.editing.view.getRoot();
+			} );
+
+			it( 'registers view.editable#element in editor focus tracker', () => {
+				ui.focusTracker.isFocused = false;
+
+				view.editable.element.dispatchEvent( new Event( 'focus' ) );
+				expect( ui.focusTracker.isFocused ).to.true;
+			} );
+
+			it( 'sets view.editable#name', () => {
+				expect( view.editable.name ).to.equal( editable.rootName );
+			} );
+
+			it( 'binds view.editable#isFocused', () => {
+				utils.assertBinding(
+					view.editable,
+					{ isFocused: false },
+					[
+						[ ui.focusTracker, { isFocused: true } ]
+					],
+					{ isFocused: true }
+				);
+			} );
+
+			it( 'binds view.editable#isReadOnly', () => {
+				utils.assertBinding(
+					view.editable,
+					{ isReadOnly: false },
+					[
+						[ editable, { isReadOnly: true } ]
+					],
+					{ isReadOnly: true }
+				);
+			} );
 		} );
 	} );
 
