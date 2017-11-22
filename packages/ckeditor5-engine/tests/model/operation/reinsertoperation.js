@@ -99,6 +99,10 @@ describe( 'ReinsertOperation', () => {
 		expect( graveyard.maxOffset ).to.equal( 2 );
 	} );
 
+	it( 'should return root of operation', () => {
+		expect( operation.root ).to.equal( root );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
 			const serialized = jsonParseStringify( operation );

@@ -41,6 +41,13 @@ export default class ReinsertOperation extends MoveOperation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	get root() {
+		return this.targetPosition.root;
+	}
+
+	/**
 	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
 	 *
 	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
