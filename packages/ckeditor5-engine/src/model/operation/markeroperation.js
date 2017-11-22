@@ -67,8 +67,10 @@ export default class MarkerOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	get root() {
-		return this.newRange ? this.newRange.root : this.oldRange.root;
+	get isDocumentOperation() {
+		const root = this.newRange ? this.newRange.root : this.oldRange.root;
+
+		return !!root.document;
 	}
 
 	/**

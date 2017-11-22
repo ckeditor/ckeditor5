@@ -161,17 +161,17 @@ describe( 'MarkerOperation', () => {
 		expect( clone ).to.deep.equal( op );
 	} );
 
-	describe( 'type', () => {
-		it( 'should return root of new marker range when new marker is added', () => {
+	describe( 'isDocumentOperation', () => {
+		it( 'should return true when new marker range is added to the document', () => {
 			const op = new MarkerOperation( 'name', null, range, doc.markers, doc.version );
 
-			expect( op.root ).to.equal( root );
+			expect( op.isDocumentOperation ).to.true;
 		} );
 
-		it( 'should return root of old marker range when marker is removed', () => {
+		it( 'should return false when marker range is removed from the document', () => {
 			const op = new MarkerOperation( 'name', range, null, doc.markers, doc.version );
 
-			expect( op.root ).to.equal( root );
+			expect( op.isDocumentOperation ).to.true;
 		} );
 	} );
 

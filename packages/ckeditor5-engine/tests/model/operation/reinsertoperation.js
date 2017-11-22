@@ -10,6 +10,7 @@ import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'ReinsertOperation', () => {
@@ -99,8 +100,38 @@ describe( 'ReinsertOperation', () => {
 		expect( graveyard.maxOffset ).to.equal( 2 );
 	} );
 
-	it( 'should return root of operation', () => {
-		expect( operation.root ).to.equal( root );
+	it( 'should be a document operation', () => {
+		expect( operation.isDocumentOperation ).to.true;
+	} );
+
+	it( 'should throw when target position is not in the document', () => {
+		const docFrag = doc.batch().createDocumentFragment();
+
+		operation = new ReinsertOperation(
+			graveyardPosition,
+			1,
+			Position.createAt( docFrag ),
+			doc.version
+		);
+
+		expect( () => {
+			operation._execute();
+		} ).to.throw( CKEditorError, /^reinsert-operation-to-detached-parent/ );
+	} );
+
+	it( 'should throw when source position is not in the document', () => {
+		const docFrag = doc.batch().createDocumentFragment();
+
+		operation = new ReinsertOperation(
+			Position.createAt( docFrag ),
+			1,
+			rootPosition,
+			doc.version
+		);
+
+		expect( () => {
+			operation._execute();
+		} ).to.throw( CKEditorError, /^reinsert-operation-on-detached-item/ );
 	} );
 
 	describe( 'toJSON', () => {

@@ -206,18 +206,18 @@ describe( 'InsertOperation', () => {
 		expect( op2.nodes.getNode( 0 ) ).not.to.equal( text );
 	} );
 
-	describe( 'root', () => {
-		it( 'should return operation root for document', () => {
+	describe( 'isDocumentOperation', () => {
+		it( 'should return true when element is inserted to the document', () => {
 			const op = new InsertOperation(
 				new Position( root, [ 0 ] ),
 				new Text( 'x' ),
 				doc.version
 			);
 
-			expect( op.root ).to.equal( root );
+			expect( op.isDocumentOperation ).to.true;
 		} );
 
-		it( 'should return operation root for document fragment', () => {
+		it( 'should return false when element is inserted to document fragment', () => {
 			const docFrag = doc.batch().createDocumentFragment();
 
 			const op = new InsertOperation(
@@ -226,7 +226,7 @@ describe( 'InsertOperation', () => {
 				doc.version
 			);
 
-			expect( op.root ).to.equal( docFrag );
+			expect( op.isDocumentOperation ).to.false;
 		} );
 	} );
 

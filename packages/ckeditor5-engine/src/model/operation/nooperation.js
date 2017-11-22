@@ -45,6 +45,13 @@ export default class NoOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	get isDocumentOperation() {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	_execute() {
 		return {};
 	}

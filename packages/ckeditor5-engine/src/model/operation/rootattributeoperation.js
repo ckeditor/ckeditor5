@@ -69,6 +69,9 @@ export default class RootAttributeOperation extends Operation {
 		this.newValue = newValue;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	get type() {
 		if ( this.oldValue === null ) {
 			return 'addRootAttribute';
@@ -77,6 +80,13 @@ export default class RootAttributeOperation extends Operation {
 		} else {
 			return 'changeRootAttribute';
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	get isDocumentOperation() {
+		return !!this.root.document;
 	}
 
 	/**

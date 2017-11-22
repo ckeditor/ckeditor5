@@ -58,8 +58,8 @@ export default class InsertOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	get root() {
-		return this.position.root;
+	get isDocumentOperation() {
+		return !!this.position.root.document;
 	}
 
 	/**

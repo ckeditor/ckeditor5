@@ -46,12 +46,10 @@ export default class Operation {
 		 */
 
 		/**
-		 * Root within operation is applied. It might be {@link module:engine/model/rootelement~RootElement RootElement}
-		 * when operation is applied on {@link module:engine/model/document~Document Document} or any
-		 * {module:engine/model/item~Item} when operation is applied on detached node.
+		 * Defines whether operation is executed on attached or detached {@link module:engine/model/item~Item items}.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/item~Item} #root
+		 * @member {Boolean} #isDocumentOperation
 		 */
 
 		/**

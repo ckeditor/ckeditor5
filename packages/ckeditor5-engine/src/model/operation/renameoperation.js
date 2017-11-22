@@ -61,6 +61,13 @@ export default class RenameOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	get isDocumentOperation() {
+		return !!this.position.root.document;
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns {module:engine/model/operation/renameoperation~RenameOperation} Clone of this operation.

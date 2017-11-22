@@ -267,8 +267,8 @@ describe( 'MoveOperation', () => {
 		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
 
-	describe( 'root', () => {
-		it( 'should return root for document', () => {
+	describe( 'isDocumentOperation', () => {
+		it( 'should return root when operation is executed on attached items', () => {
 			const op = new MoveOperation(
 				new Position( root, [ 0, 0 ] ),
 				1,
@@ -276,10 +276,10 @@ describe( 'MoveOperation', () => {
 				doc.version
 			);
 
-			expect( op.root ).to.equal( root );
+			expect( op.isDocumentOperation ).to.true;
 		} );
 
-		it( 'should return root for document fragment', () => {
+		it( 'should return false when operation is executed on detached items', () => {
 			const docFrag = doc.batch().createDocumentFragment();
 
 			doc.batch().appendText( 'abc', null, docFrag );
@@ -291,7 +291,7 @@ describe( 'MoveOperation', () => {
 				doc.version
 			);
 
-			expect( op.root ).to.equal( docFrag );
+			expect( op.isDocumentOperation ).to.false;
 		} );
 	} );
 

@@ -91,8 +91,8 @@ export default class AttributeOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	get root() {
-		return this.range.root;
+	get isDocumentOperation() {
+		return !!this.range.root.document;
 	}
 
 	/**

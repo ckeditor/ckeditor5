@@ -59,8 +59,8 @@ describe( 'AttributeOperation', () => {
 		} );
 	} );
 
-	describe( 'root', () => {
-		it( 'should return root of range when range is in document', () => {
+	describe( 'isDocumentOperation', () => {
+		it( 'should return true when attribute is applied on attached items', () => {
 			const op = new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
 				'key',
@@ -69,10 +69,10 @@ describe( 'AttributeOperation', () => {
 				doc.version
 			);
 
-			expect( op.root ).to.equal( root );
+			expect( op.isDocumentOperation ).to.true;
 		} );
 
-		it( 'should return root of range when range is in document fragment', () => {
+		it( 'should return false when attribute is applied on detached items', () => {
 			const docFrag = doc.batch().createDocumentFragment();
 			doc.batch().appendText( 'abc', null, docFrag );
 
@@ -84,7 +84,7 @@ describe( 'AttributeOperation', () => {
 				doc.version
 			);
 
-			expect( op.root ).to.equal( docFrag );
+			expect( op.isDocumentOperation ).to.false;
 		} );
 	} );
 

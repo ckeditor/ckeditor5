@@ -9,6 +9,7 @@
 
 import MoveOperation from './moveoperation';
 import RemoveOperation from './removeoperation';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Operation to reinsert previously removed nodes back to the non-graveyard root. This operation acts like
@@ -41,10 +42,12 @@ export default class ReinsertOperation extends MoveOperation {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Reinsert operation is always executed on attached items.
+	 *
+	 * @member {Boolean}
 	 */
-	get root() {
-		return this.targetPosition.root;
+	get isDocumentOperation() {
+		return true;
 	}
 
 	/**
@@ -56,6 +59,21 @@ export default class ReinsertOperation extends MoveOperation {
 		const newTargetPosition = this.sourcePosition._getTransformedByInsertion( this.targetPosition, this.howMany );
 
 		return new RemoveOperation( this.getMovedRangeStart(), this.howMany, newTargetPosition, this.baseVersion + 1 );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_execute() {
+		if ( !this.sourcePosition.root.document ) {
+			throw new CKEditorError( 'reinsert-operation-on-detached-item: Cannot reinsert detached item.' );
+		}
+
+		if ( !this.targetPosition.root.document ) {
+			throw new CKEditorError( 'reinsert-operation-to-detached-parent: Cannot reinsert item to detached parent.' );
+		}
+
+		return super._execute();
 	}
 
 	/**
