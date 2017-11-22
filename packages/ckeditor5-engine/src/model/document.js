@@ -419,7 +419,7 @@ export default class Document {
 	/**
 	 * Fired when document changes by applying an operation.
 	 *
-	 * There are 5 types of change:
+	 * There are a few types of change:
 	 *
 	 * * 'insert' when nodes are inserted,
 	 * * 'remove' when nodes are removed,
