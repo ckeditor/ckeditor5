@@ -22,6 +22,16 @@ export default class RemoveOperation extends MoveOperation {
 	}
 
 	/**
+	 * Remove operation cannot be applied on element that is not inside the document
+	 * so this will always be a document operation.
+	 *
+	 * @member {Boolean}
+	 */
+	get isDocumentOperation() {
+		return true;
+	}
+
+	/**
 	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
 	 *
 	 * @returns {module:engine/model/operation/reinsertoperation~ReinsertOperation|module:engine/model/operation/nooperation~NoOperation}
