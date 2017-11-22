@@ -1,0 +1,22 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+.ck-splitbutton-arrow {
+	//padding-right: 2 * ck-spacing();
+	svg.icon {
+		width: 0;
+		min-width: 0;
+	}
+
+	&::after {
+		content: '';
+		width: 0;
+		height: 0;
+		pointer-events: none;
+		z-index: ck-z();
+
+		position: absolute;
+		top: 50%;
+		transform: translate3d(-50%, -50%, 0);
+	}
+}
