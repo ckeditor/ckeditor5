@@ -1511,65 +1511,149 @@ describe( 'Batch', () => {
 	} );
 
 	describe( 'remove()', () => {
-		let doc, root, div, p, batch, chain, range;
+		let doc, batch, div, p, range;
 
 		beforeEach( () => {
 			doc = new Document();
-			root = doc.createRoot();
-
-			div = new Element( 'div', [], new Text( 'foobar' ) );
-			p = new Element( 'p', [], new Text( 'abcxyz' ) );
-
-			div.insertChildren( 0, [ new Element( 'p', [], new Text( 'gggg' ) ) ] );
-			div.insertChildren( 2, [ new Element( 'p', [], new Text( 'hhhh' ) ) ] );
-
-			root.insertChildren( 0, [ div, p ] );
-
 			batch = doc.batch();
 
-			// Range starts in ROOT > DIV > P > gg|gg.
-			// Range ends in ROOT > DIV > ...|ar.
-			range = new Range( new Position( root, [ 0, 0, 2 ] ), new Position( root, [ 0, 5 ] ) );
+			div = batch.createElement( 'div' );
+			batch.appendText( 'foobar', null, div );
+
+			p = batch.createElement( 'p' );
+			batch.appendText( 'abcxyz', null, p );
+
+			batch.insertElement( 'p', null, div );
+			batch.appendElement( 'p', null, div );
+
+			batch.insertText( 'gggg', null, new Position( div, [ 0, 0 ] ) );
+			batch.insertText( 'hhhh', null, new Position( div, [ 7, 0 ] ) );
 		} );
 
-		it( 'should remove specified node', () => {
-			batch.remove( div );
+		describe( 'remove from document', () => {
+			let root;
 
-			expect( root.maxOffset ).to.equal( 1 );
-			expect( root.childCount ).to.equal( 1 );
-			expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
-		} );
+			beforeEach( () => {
+				root = doc.createRoot();
+				batch.append( div, root );
+				batch.append( p, root );
 
-		it( 'should remove any range of nodes', () => {
-			batch.remove( range );
+				// Reset batch.
+				batch = doc.batch();
 
-			expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
-			expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
-		} );
-
-		it( 'should create minimal number of remove deltas, each with only one operation', () => {
-			batch.remove( range );
-
-			expect( batch.deltas.length ).to.equal( 2 );
-			expect( batch.deltas[ 0 ].operations.length ).to.equal( 1 );
-			expect( batch.deltas[ 1 ].operations.length ).to.equal( 1 );
-		} );
-
-		it( 'should be chainable', () => {
-			chain = batch.remove( range );
-
-			expect( chain ).to.equal( batch );
-		} );
-
-		it( 'should add delta to batch and operation to delta before applying operation', () => {
-			sinon.spy( doc, 'applyOperation' );
-			batch.remove( div );
-
-			const correctDeltaMatcher = sinon.match( operation => {
-				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
+				// Range starts in ROOT > DIV > P > gg|gg.
+				// Range ends in ROOT > DIV > ...|ar.
+				range = new Range( new Position( root, [ 0, 0, 2 ] ), new Position( root, [ 0, 5 ] ) );
 			} );
 
-			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+			it( 'should remove specified node', () => {
+				batch.remove( div );
+
+				expect( root.maxOffset ).to.equal( 1 );
+				expect( root.childCount ).to.equal( 1 );
+				expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
+			} );
+
+			it( 'should remove specified text node', () => {
+				batch.remove( p.getChild( 0 ) );
+
+				expect( getNodesAndText( Range.createOn( p ) ) ).to.equal( 'PP' );
+			} );
+
+			it( 'should remove any range of nodes', () => {
+				batch.remove( range );
+
+				expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
+				expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
+			} );
+
+			it( 'should create minimal number of remove deltas, each with only one operation', () => {
+				batch.remove( range );
+
+				expect( batch.deltas.length ).to.equal( 2 );
+				expect( batch.deltas[ 0 ].operations.length ).to.equal( 1 );
+				expect( batch.deltas[ 1 ].operations.length ).to.equal( 1 );
+			} );
+
+			it( 'should add delta to batch and operation to delta before applying operation', () => {
+				sinon.spy( doc, 'applyOperation' );
+				batch.remove( div );
+
+				const correctDeltaMatcher = sinon.match( operation => {
+					return operation.delta && operation.delta.batch && operation.delta.batch == batch;
+				} );
+
+				expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+			} );
+
+			it( 'should use RemoveOperation', () => {
+				batch.remove( div );
+
+				expect( batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'remove' );
+			} );
+		} );
+
+		describe( 'remove from document fragment', () => {
+			let frag;
+
+			beforeEach( () => {
+				frag = batch.createDocumentFragment();
+				batch.append( div, frag );
+				batch.append( p, frag );
+
+				// Reset batch.
+				batch = doc.batch();
+
+				// Range starts in FRAG > DIV > P > gg|gg.
+				// Range ends in FRAG > DIV > ...|ar.
+				range = new Range( new Position( frag, [ 0, 0, 2 ] ), new Position( frag, [ 0, 5 ] ) );
+			} );
+
+			it( 'should remove specified node', () => {
+				batch.remove( div );
+
+				expect( frag.maxOffset ).to.equal( 1 );
+				expect( frag.childCount ).to.equal( 1 );
+				expect( getNodesAndText( Range.createIn( frag.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
+			} );
+
+			it( 'should remove specified text node', () => {
+				batch.remove( p.getChild( 0 ) );
+
+				expect( getNodesAndText( Range.createOn( p ) ) ).to.equal( 'PP' );
+			} );
+
+			it( 'should remove any range of nodes', () => {
+				batch.remove( range );
+
+				expect( getNodesAndText( Range.createIn( frag.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
+				expect( getNodesAndText( Range.createIn( frag.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
+			} );
+
+			it( 'should create minimal number of remove deltas, each with only one operation', () => {
+				batch.remove( range );
+
+				expect( batch.deltas.length ).to.equal( 2 );
+				expect( batch.deltas[ 0 ].operations.length ).to.equal( 1 );
+				expect( batch.deltas[ 1 ].operations.length ).to.equal( 1 );
+			} );
+
+			it( 'should add delta to batch and operation to delta before applying operation', () => {
+				sinon.spy( doc, 'applyOperation' );
+				batch.remove( div );
+
+				const correctDeltaMatcher = sinon.match( operation => {
+					return operation.delta && operation.delta.batch && operation.delta.batch == batch;
+				} );
+
+				expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+			} );
+
+			it( 'should use DetachOperation', () => {
+				batch.remove( div );
+
+				expect( batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'detach' );
+			} );
 		} );
 	} );
 

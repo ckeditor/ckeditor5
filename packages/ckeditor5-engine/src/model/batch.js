@@ -20,6 +20,7 @@ import WeakInsertDelta from './delta/weakinsertdelta';
 import WrapDelta from './delta/wrapdelta';
 
 import AttributeOperation from './operation/attributeoperation';
+import DetachOperation from './operation/detachoperation';
 import InsertOperation from './operation/insertoperation';
 import MarkerOperation from './operation/markeroperation';
 import MoveOperation from './operation/moveoperation';
@@ -131,7 +132,7 @@ export default class Batch {
 		}
 	}
 
-	createText( data, attributes = {} ) {
+	createText( data, attributes ) {
 		return new Text( data, attributes );
 	}
 
@@ -315,11 +316,19 @@ export default class Batch {
 		const addRemoveDelta = ( position, howMany ) => {
 			const delta = new RemoveDelta();
 			this.addDelta( delta );
+			let operation;
 
-			const graveyard = this.document.graveyard;
-			const gyPosition = new Position( graveyard, [ 0 ] );
+			if ( position.root.document ) {
+				const graveyard = this.document.graveyard;
+				const gyPosition = new Position( graveyard, [ 0 ] );
 
-			const operation = new RemoveOperation( position, howMany, gyPosition, this.document.version );
+				operation = new RemoveOperation( position, howMany, gyPosition, this.document.version );
+			} else {
+				const range = Range.createFromPositionAndShift( position, howMany );
+
+				operation = new DetachOperation( range, this.document.version );
+			}
+
 			delta.addOperation( operation );
 			this.document.applyOperation( operation );
 		};
