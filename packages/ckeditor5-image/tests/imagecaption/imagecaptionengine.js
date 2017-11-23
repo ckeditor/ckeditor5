@@ -15,7 +15,6 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -175,7 +174,7 @@ describe( 'ImageCaptionEngine', () => {
 
 				doc.enqueueChanges( () => {
 					const batch = doc.batch();
-					batch.insert( ModelPosition.createAt( caption ), 'foo bar' );
+					batch.insertText( 'foo bar', caption );
 				} );
 
 				expect( getViewData( viewDocument ) ).to.equal(
@@ -235,11 +234,10 @@ describe( 'ImageCaptionEngine', () => {
 
 	describe( 'inserting image to the document', () => {
 		it( 'should add caption element if image does not have it', () => {
-			const image = new ModelElement( 'image', { src: '', alt: '' } );
 			const batch = doc.batch();
 
 			doc.enqueueChanges( () => {
-				batch.insert( new ModelPosition( doc.getRoot(), [ 0 ] ), image );
+				batch.insertElement( 'image', { src: '', alt: '' }, doc.getRoot() );
 			} );
 
 			expect( getModelData( doc ) ).to.equal(
@@ -263,7 +261,7 @@ describe( 'ImageCaptionEngine', () => {
 			const batch = doc.batch();
 
 			doc.enqueueChanges( () => {
-				batch.insert( new ModelPosition( doc.getRoot(), [ 0 ] ), image );
+				batch.insert( image, doc.getRoot() );
 			} );
 
 			expect( getModelData( doc ) ).to.equal(
@@ -287,11 +285,11 @@ describe( 'ImageCaptionEngine', () => {
 			const batch = doc.batch();
 
 			doc.enqueueChanges( () => {
-				batch
-					// Since we are adding an empty image, this should trigger caption fixer.
-					.insert( ModelPosition.createAt( doc.getRoot() ), image )
-					// Add caption just after the image is inserted, in same batch and enqueue changes block.
-					.insert( ModelPosition.createAt( image ), caption );
+				// Since we are adding an empty image, this should trigger caption fixer.
+				batch.insert( image, doc.getRoot() );
+
+				// Add caption just after the image is inserted, in same batch and enqueue changes block.
+				batch.insert( caption, image );
 			} );
 
 			// Check whether caption fixer added redundant caption.
@@ -489,7 +487,7 @@ describe( 'ImageCaptionEngine', () => {
 				doc.enqueueChanges( () => {
 					const batch = doc.batch();
 
-					batch.insert( ModelPosition.createAt( doc.getRoot() ), image );
+					batch.insert( image, doc.getRoot() );
 				} );
 
 				expect( getModelData( doc ) ).to.equal( '<image src="/foo.png"><caption></caption></image><paragraph>foo[]</paragraph>' );
