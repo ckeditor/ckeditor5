@@ -9,8 +9,6 @@ import InsertDelta from '../../src/model/delta/insertdelta';
 import WeakInsertDelta from '../../src/model/delta/weakinsertdelta';
 
 import Operation from '../../src/model/operation/operation';
-import InsertOperation from '../../src/model/operation/insertoperation';
-import MarkerOperation from '../../src/model/operation/markeroperation';
 
 import Document from '../../src/model/document';
 import DocumentFragment from '../../src/model/documentfragment';
@@ -22,7 +20,6 @@ import Range from '../../src/model/range';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import { stringify } from '../../src/dev-utils/model';
 import { getNodesAndText } from '../../tests/model/_utils/utils';
 
 describe( 'Batch', () => {
@@ -380,39 +377,51 @@ describe( 'Batch', () => {
 			expect( spy.secondCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
 
-		it.skip( 'should transfer markers from given DocumentFragment', () => {
-			const documentFragment = batch.createDocumentFragment();
-			const li = batch.createElement( 'li' );
+		it( 'should transfer markers from given DocumentFragment', () => {
+			const root = doc.createRoot();
+			const docFrag = batch.createDocumentFragment();
 
-			batch.insert( batch.createText( 'foo bar' ), li );
-			batch.insert( li, documentFragment );
+			batch.appendText( 'abcd', root );
+			batch.appendElement( 'p', docFrag );
+			batch.insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
 
-			const marker = new Range( new Position( documentFragment, [ 0, 1 ] ), new Position( documentFragment, [ 0, 5 ] ) );
+			const marker = new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 5 ] ) );
 
-			documentFragment.markers.set( 'marker', marker );
+			docFrag.markers.set( 'marker', marker );
 
-			batch.insert( documentFragment, new Position( root, [ 3, 0 ] ) );
+			batch.insert( docFrag, new Position( root, [ 2 ] ) );
 
 			expect( Array.from( doc.markers ).length ).to.equal( 1 );
-			expect( stringify( root, doc.markers.get( 'marker' ).getRange() ) ).to.equal( 'ab<p></p><ul><li>f[oo b]ar</li></ul>c' );
+
+			const range = doc.markers.get( 'marker' ).getRange();
+			expect( range.root ).to.equal( root );
+			expect( range.start.path ).to.deep.equal( [ 2, 1 ] );
+			expect( range.end.path ).to.deep.equal( [ 2, 5 ] );
 		} );
 
-		it.skip( 'should set each marker as separate operation', () => {
-			sinon.spy( doc, 'applyOperation' );
+		it( 'should set each marker as a separate operation', () => {
+			const spy = sinon.spy();
+			const root = doc.createRoot();
+			const docFrag = batch.createDocumentFragment();
 
-			const documentFragment = new DocumentFragment( [ new Element( 'li', null, [ new Text( 'foo bar' ) ] ) ] );
-			const marker1 = new Range( new Position( documentFragment, [ 0, 1 ] ), new Position( documentFragment, [ 0, 2 ] ) );
-			const marker2 = new Range( new Position( documentFragment, [ 0, 5 ] ), new Position( documentFragment, [ 0, 6 ] ) );
+			batch.appendText( 'abcd', root );
+			batch.appendElement( 'p', docFrag );
+			batch.insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
 
-			documentFragment.markers.set( 'marker1', marker1 );
-			documentFragment.markers.set( 'marker2', marker2 );
+			const marker1 = new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 2 ] ) );
+			const marker2 = new Range( new Position( docFrag, [ 0, 5 ] ), new Position( docFrag, [ 0, 6 ] ) );
 
-			batch.insert( new Position( root, [ 3, 0 ] ), documentFragment );
+			docFrag.markers.set( 'marker1', marker1 );
+			docFrag.markers.set( 'marker2', marker2 );
 
-			expect( doc.applyOperation.calledThrice );
-			expect( doc.applyOperation.firstCall.calledWith( sinon.match( operation => operation instanceof InsertOperation ) ) );
-			expect( doc.applyOperation.secondCall.calledWith( sinon.match( operation => operation instanceof MarkerOperation ) ) );
-			expect( doc.applyOperation.thirdCall.calledWith( sinon.match( operation => operation instanceof MarkerOperation ) ) );
+			doc.on( 'change', spy );
+
+			batch.insert( docFrag, new Position( root, [ 2 ] ) );
+
+			sinon.assert.calledThrice( spy );
+			expect( spy.firstCall.args[ 1 ] ).to.equal( 'insert' );
+			expect( spy.secondCall.args[ 1 ] ).to.equal( 'marker' );
+			expect( spy.thirdCall.args[ 1 ] ).to.equal( 'marker' );
 		} );
 	} );
 
