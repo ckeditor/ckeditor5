@@ -21,7 +21,6 @@ import { convertText, convertToModelFragment } from '../conversion/view-to-model
 import ViewDocumentFragment from '../view/documentfragment';
 
 import ModelRange from '../model/range';
-import ModelPosition from '../model/position';
 import ModelElement from '../model/element';
 
 import insertContent from './insertcontent';
@@ -196,9 +195,10 @@ export default class DataController {
 			this.model.selection.clearAttributes();
 
 			// Initial batch should be ignored by features like undo, etc.
-			this.model.batch( 'transparent' )
-				.remove( ModelRange.createIn( modelRoot ) )
-				.insert( ModelPosition.createAt( modelRoot, 0 ), this.parse( data ) );
+			const batch = this.model.batch( 'transparent' );
+
+			batch.remove( ModelRange.createIn( modelRoot ) );
+			batch.insert( this.parse( data ), modelRoot );
 		} );
 	}
 

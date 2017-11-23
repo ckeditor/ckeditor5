@@ -256,7 +256,7 @@ class Insertion {
 
 		const livePos = LivePosition.createFromPosition( this.position );
 
-		this.batch.insert( this.position, node );
+		this.batch.insert( node, this.position );
 
 		this.position = Position.createFromPosition( livePos );
 		livePos.detach();
