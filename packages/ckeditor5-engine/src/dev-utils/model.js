@@ -113,9 +113,10 @@ export function setData( document, data, options = {} ) {
 
 	document.enqueueChanges( () => {
 		// Replace existing model in document by new one.
-		document.batch( options.batchType || 'transparent' )
-			.remove( ModelRange.createIn( modelRoot ) )
-			.insert( ModelPosition.createAt( modelRoot, 0 ), modelDocumentFragment );
+		const batch = document.batch( options.batchType || 'transparent' );
+
+		batch.remove( ModelRange.createIn( modelRoot ) );
+		batch.insert( modelDocumentFragment, modelRoot );
 
 		// Clean up previous document selection.
 		document.selection.clearAttributes();
