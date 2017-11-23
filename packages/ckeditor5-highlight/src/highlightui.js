@@ -71,7 +71,6 @@ export default class HighlightUI extends Plugin {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 			button.bind( 'isOn' ).to( command, 'value' );
 
-			// TODO: bind to
 			button.iconView.extendTemplate( {
 				attributes: {
 					style: highlighter.type === 'pen' ? { color: highlighter.color } : { backgroundColor: highlighter.color }
@@ -108,19 +107,62 @@ export default class HighlightUI extends Plugin {
 		const t = editor.t;
 		const componentFactory = editor.ui.componentFactory;
 
+		const firstHighlighter = highlighters[ 0 ];
+
 		componentFactory.add( 'highlightDropdown', locale => {
 			const model = new Model( {
 				label: t( 'Highlight' ),
 				withText: false,
-				selected: highlighters[ 0 ].class,
-				icon: highlightIcon
+				selected: firstHighlighter.name,
+				icon: highlightIcon,
+				type: firstHighlighter.type,
+				color: firstHighlighter.color,
+				command: firstHighlighter.name
 			} );
 
-			const buttons = highlighters.map( highlighter => componentFactory.create( highlighter.name ) );
+			// TODO: bind this in model
+			const dropdownView = createSplitButtonDropdown( model, locale );
 
-			buttons.push( componentFactory.create( 'removeHighlight' ) );
+			const iconView = dropdownView.buttonView.buttonView.iconView;
+			const bind = iconView.bindTemplate;
 
-			const initialButton = componentFactory.create( highlighters[ 0 ].name );
+			// TODO: forward event:
+			dropdownView.buttonView.buttonView.on( 'execute', () => {
+				editor.execute( model.command );
+				editor.editing.view.focus();
+			} );
+
+			iconView.extendTemplate( {
+				attributes: {
+					style: bind.to( 'style' )
+				}
+			} );
+
+			iconView.bind( 'style' )
+				.to( model, 'type', model, 'color', ( type, color ) => type === 'pen' ? 'color:' + color : 'background-color:' + color );
+
+			const buttons = highlighters.map( highlighter => {
+				const buttonView = componentFactory.create( highlighter.name );
+
+				this.listenTo( buttonView, 'execute', () => {
+					model.type = highlighter.type;
+					model.color = highlighter.color;
+					model.command = highlighter.name;
+					model.icon = highlightIcon;
+				} );
+
+				return buttonView;
+			} );
+
+			// TODO: bind
+			const removeButton = componentFactory.create( 'removeHighlight' );
+			buttons.push( removeButton );
+			this.listenTo( removeButton, 'execute', () => {
+				model.type = false;
+				model.color = false;
+				model.command = 'removeHighlight';
+				model.icon = highlightRemoveIcon;
+			} );
 
 			model.bind( 'isEnabled' ).to(
 				// Bind to #isEnabled of each command...
@@ -129,14 +171,14 @@ export default class HighlightUI extends Plugin {
 				( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
 			);
 
-			// TODO: Is this needed in UI at all?
-			const dropdownView = createSplitButtonDropdown( model, locale, initialButton );
-
 			const buttonGroupView = dropdownView.buttonGroupView = new ButtonGroupView( { isVertical: model.isVertical } );
 
 			buttonGroupView.bind( 'isVertical' ).to( model, 'isVertical' );
 
-			buttons.map( view => buttonGroupView.items.add( view ) );
+			// TODO: A bit hack-ish: Swap the split button button to executed one.
+			buttons.map( buttonView => {
+				buttonGroupView.items.add( buttonView );
+			} );
 
 			dropdownView.extendTemplate( {
 				attributes: {
@@ -157,40 +199,6 @@ export default class HighlightUI extends Plugin {
 					dropdownView.isOpen = true;
 					buttonGroupView.focus();
 				}
-			} );
-
-			const bind = dropdownView.buttonView.buttonView.iconView.bindTemplate;
-
-			// const bind = Template.bind( observable, emitter );
-
-			// TODO: check binding
-
-			dropdownView.buttonView.buttonView.iconView.extendTemplate( {
-				attributes: {
-					style: bind.to( 'style' )
-				}
-			} );
-
-			dropdownView.buttonView.buttonView.iconView.bind( 'style' ).to( model, 'type', model, 'color', ( type, color ) => {
-				if ( type === 'pen' ) {
-					return 'color:' + color;
-				} else {
-					return 'background-color:' + color;
-				}
-			} );
-
-			// TODO: A bit hack-ish: Swap the split button button to executed one.
-			buttons.map( buttonView => {
-				this.listenTo( buttonView, 'execute', () => {
-					if ( dropdownView.buttonView.buttonView.class !== buttonView.class ) {
-						// TODO: const newButton =
-						// componentFactory.create( buttonView.class ? 'highlight-' + buttonView.class : 'highlightRemove' );
-
-						model.type = '';
-						model.color = '';
-						model.command = '';
-					}
-				} );
 			} );
 
 			return dropdownView;
