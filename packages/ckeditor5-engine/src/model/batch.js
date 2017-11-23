@@ -155,7 +155,9 @@ export default class Batch {
 			// We need to check if item is going to be inserted within the same document.
 			if ( isTheSameDocument( item.root, position.root ) ) {
 				// If it's we just need to move it.
-				return this.move( Range.createOn( item ), position );
+				this.move( Range.createOn( item ), position );
+
+				return;
 			}
 			// If it isn't the same root.
 			else {
@@ -183,28 +185,26 @@ export default class Batch {
 				this.setMarker( markerName, range );
 			}
 		}
-
-		return this;
 	}
 
 	insertText( text, attributes, itemOrPosition, offset ) {
-		return this.insert( this.createText( text, attributes ), itemOrPosition, offset );
+		this.insert( this.createText( text, attributes ), itemOrPosition, offset );
 	}
 
 	insertElement( name, attributes, itemOrPosition, offset ) {
-		return this.insert( this.createElement( name, attributes ), itemOrPosition, offset );
+		this.insert( this.createElement( name, attributes ), itemOrPosition, offset );
 	}
 
 	append( item, parent ) {
-		return this.insert( item, parent, 'end' );
+		this.insert( item, parent, 'end' );
 	}
 
 	appendText( text, attributes, parent ) {
-		return this.insert( this.createText( text, attributes ), parent, 'end' );
+		this.insert( this.createText( text, attributes ), parent, 'end' );
 	}
 
 	appendElement( text, attributes, parent ) {
-		return this.insert( this.createElement( text, attributes ), parent, 'end' );
+		this.insert( this.createElement( text, attributes ), parent, 'end' );
 	}
 
 	/**
@@ -223,8 +223,6 @@ export default class Batch {
 		} else {
 			setAttributeToItem( this, key, value, itemOrRange );
 		}
-
-		return this;
 	}
 
 	setAttributes( itemOrRange, attributes ) {
@@ -249,8 +247,6 @@ export default class Batch {
 		} else {
 			setAttributeToItem( this, key, null, itemOrRange );
 		}
-
-		return this;
 	}
 
 	clearAttributes( itemOrRange ) {
@@ -302,8 +298,6 @@ export default class Batch {
 		const operation = new MoveOperation( range.start, range.end.offset - range.start.offset, position, this.document.version );
 		delta.addOperation( operation );
 		this.document.applyOperation( operation );
-
-		return this;
 	}
 
 	/**
@@ -345,8 +339,6 @@ export default class Batch {
 
 			addRemoveDelta( Position.createBefore( itemOrRange ), howMany );
 		}
-
-		return this;
 	}
 
 	/**
@@ -403,8 +395,6 @@ export default class Batch {
 		const remove = new RemoveOperation( position, 1, gyPosition, this.document.version );
 		delta.addOperation( remove );
 		this.document.applyOperation( remove );
-
-		return this;
 	}
 
 	/**
@@ -430,8 +420,6 @@ export default class Batch {
 		const renameOperation = new RenameOperation( Position.createBefore( element ), element.name, newName, this.document.version );
 		delta.addOperation( renameOperation );
 		this.document.applyOperation( renameOperation );
-
-		return this;
 	}
 
 	/**
@@ -479,8 +467,6 @@ export default class Batch {
 
 		delta.addOperation( move );
 		this.document.applyOperation( move );
-
-		return this;
 	}
 
 	/**
@@ -537,8 +523,6 @@ export default class Batch {
 		);
 		delta.addOperation( move );
 		this.document.applyOperation( move );
-
-		return this;
 	}
 
 	/**
@@ -582,8 +566,6 @@ export default class Batch {
 		const remove = new RemoveOperation( Position.createBefore( element ), 1, gyPosition, this.document.version );
 		delta.addOperation( remove );
 		this.document.applyOperation( remove );
-
-		return this;
 	}
 
 	/**
@@ -626,8 +608,6 @@ export default class Batch {
 			// Just change marker range.
 			addMarkerOperation( this, name, currentRange, newRange );
 		}
-
-		return this;
 	}
 
 	/**
@@ -651,8 +631,6 @@ export default class Batch {
 		const oldRange = this.document.markers.get( name ).getRange();
 
 		addMarkerOperation( this, name, oldRange, null );
-
-		return this;
 	}
 }
 

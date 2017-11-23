@@ -374,7 +374,7 @@ describe( 'Batch', () => {
 
 			// Verify deltas and operations.
 			sinon.assert.calledTwice( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'remove' );
+			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'detach' );
 			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
 			expect( spy.secondCall.args[ 0 ].type ).to.equal( 'insert' );
 			expect( spy.secondCall.args[ 0 ].delta.batch ).to.equal( batch );
@@ -413,13 +413,6 @@ describe( 'Batch', () => {
 			expect( doc.applyOperation.firstCall.calledWith( sinon.match( operation => operation instanceof InsertOperation ) ) );
 			expect( doc.applyOperation.secondCall.calledWith( sinon.match( operation => operation instanceof MarkerOperation ) ) );
 			expect( doc.applyOperation.thirdCall.calledWith( sinon.match( operation => operation instanceof MarkerOperation ) ) );
-		} );
-
-		it( 'should be chainable', () => {
-			const parent = batch.createDocumentFragment();
-			const child = batch.createElement( 'child' );
-
-			expect( batch.insert( child, parent ) ).to.equal( batch );
 		} );
 	} );
 
@@ -534,12 +527,6 @@ describe( 'Batch', () => {
 			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( WeakInsertDelta );
 			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
-
-		it( 'should be chainable', () => {
-			const parent = batch.createDocumentFragment();
-
-			expect( batch.insertText( 'foo', null, parent ) ).to.equal( batch );
-		} );
 	} );
 
 	describe( 'insertElement()', () => {
@@ -652,12 +639,6 @@ describe( 'Batch', () => {
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
 			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( InsertDelta );
 			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
-		} );
-
-		it( 'should be chainable', () => {
-			const parent = batch.createDocumentFragment();
-
-			expect( batch.insertElement( 'foo', null, parent ) ).to.equal( batch );
 		} );
 	} );
 
@@ -802,14 +783,10 @@ describe( 'Batch', () => {
 
 			// Verify deltas and operations.
 			sinon.assert.calledTwice( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'remove' );
+			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'detach' );
 			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
 			expect( spy.secondCall.args[ 0 ].type ).to.equal( 'insert' );
 			expect( spy.secondCall.args[ 0 ].delta.batch ).to.equal( batch );
-		} );
-
-		it( 'should be chainable', () => {
-			expect( batch.append( batch.createElement( 'a' ), batch.createElement( 'b' ) ) ).to.equal( batch );
 		} );
 	} );
 
@@ -845,22 +822,16 @@ describe( 'Batch', () => {
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
 
-		it( 'should create proper delta', () => {
+		it( 'should create proper delta and operations', () => {
 			const parent = batch.createDocumentFragment();
 			const spy = sinon.spy( doc, 'applyOperation' );
 
 			batch.appendText( 'foo', null, parent );
 
 			sinon.assert.calledOnce( spy );
-			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( WeakInsertDelta );
-			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
-		} );
-
-		it( 'should be chainable', () => {
-			const parent = batch.createDocumentFragment();
-
-			expect( batch.appendText( 'foo', null, parent ) ).to.equal( batch );
+			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'insert' );
+			expect( spy.firstCall.args[ 0 ].delta ).to.instanceof( WeakInsertDelta );
+			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
 	} );
 
@@ -895,23 +866,16 @@ describe( 'Batch', () => {
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
 
-		it( 'should create proper delta', () => {
+		it( 'should create proper delta and operation', () => {
 			const parent = batch.createDocumentFragment();
 			const spy = sinon.spy( doc, 'applyOperation' );
 
 			batch.appendElement( 'foo', null, parent );
 
 			sinon.assert.calledOnce( spy );
-			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( InsertDelta );
-			expect( spy.lastCall.args[ 0 ].delta ).to.not.instanceof( WeakInsertDelta );
-			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
-		} );
-
-		it( 'should be chainable', () => {
-			const parent = batch.createDocumentFragment();
-
-			expect( batch.appendElement( 'foo', null, parent ) ).to.equal( batch );
+			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'insert' );
+			expect( spy.firstCall.args[ 0 ].delta ).to.instanceof( InsertDelta ).to.not.instanceof( WeakInsertDelta );
+			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
 	} );
 
@@ -972,11 +936,6 @@ describe( 'Batch', () => {
 					expect( node.getAttribute( 'a' ) ).to.equal( 1 );
 				} );
 
-				it( 'should be chainable', () => {
-					const chain = batch.setAttribute( node, 'b', 2 );
-					expect( chain ).to.equal( batch );
-				} );
-
 				it( 'should add delta to batch and operation to delta before applying operation', () => {
 					batch.setAttribute( node, 'b', 2 );
 
@@ -1002,11 +961,6 @@ describe( 'Batch', () => {
 					expect( spy.callCount ).to.equal( 0 );
 				} );
 
-				it( 'should be chainable', () => {
-					const chain = batch.removeAttribute( node, 'a' );
-					expect( chain ).to.equal( batch );
-				} );
-
 				it( 'should add delta to batch and operation to delta before applying operation', () => {
 					batch.removeAttribute( node, 'a' );
 
@@ -1019,16 +973,15 @@ describe( 'Batch', () => {
 			beforeEach( () => {
 				const element = batch.createElement( 'e', { a: 2 } );
 
-				batch
-					.appendText( 'xxx', { a: 1 }, root )
-					.appendText( 'xxx', null, root )
-					.appendText( 'xxx', { a: 1 }, root )
-					.appendText( 'xxx', { a: 2 }, root )
-					.appendText( 'xxx', null, root )
-					.appendText( 'xxx', { a: 1 }, root )
-					.appendText( 'xxx', null, element )
-					.append( element, root )
-					.appendText( 'xxx', null, root );
+				batch.appendText( 'xxx', { a: 1 }, root );
+				batch.appendText( 'xxx', null, root );
+				batch.appendText( 'xxx', { a: 1 }, root );
+				batch.appendText( 'xxx', { a: 2 }, root );
+				batch.appendText( 'xxx', null, root );
+				batch.appendText( 'xxx', { a: 1 }, root );
+				batch.appendText( 'xxx', null, element );
+				batch.append( element, root );
+				batch.appendText( 'xxx', null, root );
 
 				spy = sinon.spy( doc, 'applyOperation' );
 			} );
@@ -1153,11 +1106,6 @@ describe( 'Batch', () => {
 					expect( getCompressedAttrs() ).to.equal( '11111111111111111111111--' );
 				} );
 
-				it( 'should be chainable', () => {
-					const chain = batch.setAttribute( getRange( 3, 6 ), 'a', 3 );
-					expect( chain ).to.equal( batch );
-				} );
-
 				it( 'should add delta to batch and operation to delta before applying operation', () => {
 					batch.setAttribute( getRange( 3, 6 ), 'a', 3 );
 
@@ -1237,11 +1185,6 @@ describe( 'Batch', () => {
 					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 6 );
 					expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
-				} );
-
-				it( 'should be chainable', () => {
-					const chain = batch.removeAttribute( getRange( 0, 2 ), 'a' );
-					expect( chain ).to.equal( batch );
 				} );
 
 				it( 'should add delta to batch and operation to delta before applying operation', () => {
@@ -1395,7 +1338,7 @@ describe( 'Batch', () => {
 	} );
 
 	describe( 'merge()', () => {
-		let doc, root, p1, p2, batch;
+		let doc, root, p1, p2;
 
 		beforeEach( () => {
 			doc = new Document();
@@ -1429,28 +1372,10 @@ describe( 'Batch', () => {
 				doc.batch().merge( new Position( root, [ 0, 2 ] ) );
 			} ).to.throw( CKEditorError, /^batch-merge-no-element-before/ );
 		} );
-
-		it( 'should be chainable', () => {
-			batch = doc.batch();
-
-			const chain = batch.merge( new Position( root, [ 1 ] ) );
-			expect( chain ).to.equal( batch );
-		} );
-
-		it( 'should add delta to batch and operation to delta before applying operation', () => {
-			sinon.spy( doc, 'applyOperation' );
-			batch = doc.batch().merge( new Position( root, [ 1 ] ) );
-
-			const correctDeltaMatcher = sinon.match( operation => {
-				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-			} );
-
-			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
-		} );
 	} );
 
 	describe( 'move()', () => {
-		let doc, root, range, div, p, batch, chain;
+		let doc, root, range, div, p, batch;
 
 		beforeEach( () => {
 			doc = new Document();
@@ -1490,23 +1415,6 @@ describe( 'Batch', () => {
 			expect( () => {
 				doc.batch().move( range, docFrag );
 			} ).to.throw( CKEditorError, /^batch-move-different-document/ );
-		} );
-
-		it( 'should be chainable', () => {
-			chain = batch.move( range, new Position( root, [ 1, 3 ] ) );
-
-			expect( chain ).to.equal( batch );
-		} );
-
-		it( 'should add delta to batch and operation to delta before applying operation', () => {
-			sinon.spy( doc, 'applyOperation' );
-			batch.move( range, new Position( root, [ 2 ] ) );
-
-			const correctDeltaMatcher = sinon.match( operation => {
-				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-			} );
-
-			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 		} );
 	} );
 
@@ -1575,17 +1483,6 @@ describe( 'Batch', () => {
 				expect( batch.deltas[ 1 ].operations.length ).to.equal( 1 );
 			} );
 
-			it( 'should add delta to batch and operation to delta before applying operation', () => {
-				sinon.spy( doc, 'applyOperation' );
-				batch.remove( div );
-
-				const correctDeltaMatcher = sinon.match( operation => {
-					return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-				} );
-
-				expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
-			} );
-
 			it( 'should use RemoveOperation', () => {
 				batch.remove( div );
 
@@ -1638,17 +1535,6 @@ describe( 'Batch', () => {
 				expect( batch.deltas[ 1 ].operations.length ).to.equal( 1 );
 			} );
 
-			it( 'should add delta to batch and operation to delta before applying operation', () => {
-				sinon.spy( doc, 'applyOperation' );
-				batch.remove( div );
-
-				const correctDeltaMatcher = sinon.match( operation => {
-					return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-				} );
-
-				expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
-			} );
-
 			it( 'should use DetachOperation', () => {
 				batch.remove( div );
 
@@ -1658,7 +1544,7 @@ describe( 'Batch', () => {
 	} );
 
 	describe( 'rename()', () => {
-		let doc, root, batch, chain;
+		let doc, root, batch;
 
 		beforeEach( () => {
 			doc = new Document();
@@ -1669,12 +1555,11 @@ describe( 'Batch', () => {
 
 			batch = doc.batch();
 
-			chain = batch.rename( p, 'h' );
+			batch.rename( p, 'h' );
 		} );
 
 		it( 'should rename given element', () => {
 			expect( root.maxOffset ).to.equal( 1 );
-			expect( root.getChild( 0 ) ).to.have.property( 'name', 'h' );
 			expect( root.getChild( 0 ) ).to.have.property( 'name', 'h' );
 		} );
 
@@ -1682,21 +1567,6 @@ describe( 'Batch', () => {
 			expect( () => {
 				batch.rename( new Text( 'abc' ), 'h' );
 			} ).to.throw( CKEditorError, /^batch-rename-not-element-instance/ );
-		} );
-
-		it( 'should be chainable', () => {
-			expect( chain ).to.equal( batch );
-		} );
-
-		it( 'should add delta to batch and operation to delta before applying operation', () => {
-			sinon.spy( doc, 'applyOperation' );
-			batch.rename( root.getChild( 0 ), 'p' );
-
-			const correctDeltaMatcher = sinon.match( operation => {
-				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-			} );
-
-			expect( doc.applyOperation.alwaysCalledWith( correctDeltaMatcher ) ).to.be.true;
 		} );
 	} );
 
@@ -1752,24 +1622,6 @@ describe( 'Batch', () => {
 				doc.batch().split( new Position( root, [ 0 ] ) );
 			} ).to.throw( CKEditorError, /^batch-split-root/ );
 		} );
-
-		it( 'should be chainable', () => {
-			const batch = doc.batch();
-
-			const chain = batch.split( new Position( root, [ 0, 3 ] ) );
-			expect( chain ).to.equal( batch );
-		} );
-
-		it( 'should add delta to batch and operation to delta before applying operation', () => {
-			sinon.spy( doc, 'applyOperation' );
-			const batch = doc.batch().split( new Position( root, [ 0, 3 ] ) );
-
-			const correctDeltaMatcher = sinon.match( operation => {
-				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-			} );
-
-			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
-		} );
 	} );
 
 	describe( 'wrap()', () => {
@@ -1814,7 +1666,7 @@ describe( 'Batch', () => {
 			} ).to.throw( CKEditorError, /^batch-wrap-range-not-flat/ );
 		} );
 
-		it( 'should throw if element to wrap with has children', () => {
+		it( 'should throw if element to wrap with has children #1', () => {
 			const p = new Element( 'p', [], new Text( 'a' ) );
 
 			expect( () => {
@@ -1822,31 +1674,13 @@ describe( 'Batch', () => {
 			} ).to.throw( CKEditorError, /^batch-wrap-element-not-empty/ );
 		} );
 
-		it( 'should throw if element to wrap with has children', () => {
+		it( 'should throw if element to wrap with has children #2', () => {
 			const p = new Element( 'p' );
 			root.insertChildren( 0, p );
 
 			expect( () => {
 				doc.batch().wrap( range, p );
 			} ).to.throw( CKEditorError, /^batch-wrap-element-attached/ );
-		} );
-
-		it( 'should be chainable', () => {
-			const batch = doc.batch();
-
-			const chain = batch.wrap( range, 'p' );
-			expect( chain ).to.equal( batch );
-		} );
-
-		it( 'should add delta to batch and operation to delta before applying operation', () => {
-			sinon.spy( doc, 'applyOperation' );
-			const batch = doc.batch().wrap( range, 'p' );
-
-			const correctDeltaMatcher = sinon.match( operation => {
-				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-			} );
-
-			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 		} );
 	} );
 
@@ -1874,24 +1708,6 @@ describe( 'Batch', () => {
 			expect( () => {
 				doc.batch().unwrap( element );
 			} ).to.throw( CKEditorError, /^batch-unwrap-element-no-parent/ );
-		} );
-
-		it( 'should be chainable', () => {
-			const batch = doc.batch();
-
-			const chain = batch.unwrap( p );
-			expect( chain ).to.equal( batch );
-		} );
-
-		it( 'should add delta to batch and operation to delta before applying operation', () => {
-			sinon.spy( doc, 'applyOperation' );
-			const batch = doc.batch().unwrap( p );
-
-			const correctDeltaMatcher = sinon.match( operation => {
-				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-			} );
-
-			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 		} );
 	} );
 
@@ -1925,7 +1741,8 @@ describe( 'Batch', () => {
 			const marker = doc.markers.get( 'name' );
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
 
-			const batch = doc.batch().setMarker( marker, range2 );
+			const batch = doc.batch();
+			batch.setMarker( marker, range2 );
 			const op = batch.deltas[ 0 ].operations[ 0 ];
 
 			expect( doc.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
@@ -1945,7 +1762,8 @@ describe( 'Batch', () => {
 				}
 			} );
 
-			const batch = doc.batch().setMarker( marker );
+			const batch = doc.batch();
+			batch.setMarker( marker );
 			const op = batch.deltas[ 0 ].operations[ 0 ];
 
 			expect( doc.fire.calledWith( 'change', 'marker' ) ).to.be.true;
@@ -1957,13 +1775,6 @@ describe( 'Batch', () => {
 			expect( () => {
 				doc.batch().setMarker( 'name' );
 			} ).to.throw( CKEditorError, /^batch-setMarker-no-range/ );
-		} );
-
-		it( 'should be chainable', () => {
-			const batch = doc.batch();
-			const chain = batch.setMarker( 'name', range );
-
-			expect( chain ).to.equal( batch );
 		} );
 	} );
 
@@ -1997,17 +1808,6 @@ describe( 'Batch', () => {
 			doc.batch().removeMarker( marker );
 
 			expect( doc.markers.get( 'name' ) ).to.be.null;
-		} );
-
-		it( 'should add delta to batch and operation to delta before applying operation', () => {
-			sinon.spy( doc, 'applyOperation' );
-			const batch = doc.batch().setMarker( 'name', range );
-
-			const correctDeltaMatcher = sinon.match( operation => {
-				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-			} );
-
-			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 		} );
 	} );
 } );
