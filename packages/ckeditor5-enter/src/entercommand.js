@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
  * Enter command. It is used by the {@link module:enter/enter~Enter Enter feature} to handle the <kbd>Enter</kbd> key.
@@ -89,12 +88,12 @@ function splitBlock( batch, selection, splitPos ) {
 		// If the split is at the end of element, instead of splitting, just create a clone of position's parent
 		// element and insert it after split element. The result is the same but less operations are done
 		// and it's more semantically correct (when it comes to operational transformation).
-		batch.insert( Position.createAfter( splitPos.parent ), newElement );
+		batch.insert( newElement, splitPos.parent, 'after' );
 	} else if ( splitPos.isAtStart ) {
 		// If the split is at the start of element, instead of splitting, just create a clone of position's parent
 		// element and insert it before split element. The result is the same but less operations are done
 		// and it's more semantically correct (when it comes to operational transformation).
-		batch.insert( Position.createBefore( splitPos.parent ), newElement );
+		batch.insert( newElement, splitPos.parent, 'before' );
 	} else {
 		batch.split( splitPos );
 	}
