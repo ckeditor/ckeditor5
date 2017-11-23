@@ -16,11 +16,11 @@ import DropdownPanelView from './dropdownpanelview';
  *
  * TODO: docs
  */
-export default function createSplitButtonDropdown( model, locale, startButton ) {
-	const splitButtonView = new SplitButtonView( locale, startButton );
+export default function createSplitButtonDropdown( model, locale ) {
+	const splitButtonView = new SplitButtonView( locale );
 
 	// TODO: keystroke?
-	splitButtonView.bind( 'label', 'isOn', 'isEnabled', 'withText', 'keystroke', 'tooltip' ).to( model );
+	splitButtonView.bind( 'label', 'isOn', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
 
 	const panelView = new DropdownPanelView( locale );
 

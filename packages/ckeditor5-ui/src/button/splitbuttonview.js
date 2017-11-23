@@ -20,12 +20,12 @@ export default class SplitButtonView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale, startButton ) {
+	constructor( locale ) {
 		super( locale );
 
 		this.children = this.createCollection();
 
-		this.buttonView = startButton || this._createButtonView();
+		this.buttonView = this._createButtonView();
 		this.arrowView = this._createArrowView();
 
 		this.keystrokes = new KeystrokeHandler();
@@ -75,18 +75,6 @@ export default class SplitButtonView extends View {
 		} );
 	}
 
-	swapButton( buttonView ) {
-		// remove from FT
-		this.focusTracker.remove( this.buttonView.element );
-
-		this.children.remove( this.buttonView );
-
-		this.buttonView = buttonView;
-
-		this.children.add( this.buttonView, 0 );
-		this.focusTracker.add( this.buttonView.element );
-	}
-
 	focus() {
 		this.buttonView.focus();
 	}
@@ -101,7 +89,10 @@ export default class SplitButtonView extends View {
 
 	_createArrowView() {
 		const arrowView = new ButtonView();
+
+		// TODO:
 		arrowView.icon = 'abc';
+
 		arrowView.extendTemplate( {
 			attributes: {
 				class: 'ck-splitbutton-arrow'
