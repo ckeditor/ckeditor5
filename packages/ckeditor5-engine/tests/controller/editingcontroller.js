@@ -159,7 +159,7 @@ describe( 'EditingController', () => {
 			)._children );
 
 			model.enqueueChanges( () => {
-				model.batch().insert( ModelPosition.createAt( model.getRoot(), 0 ), modelData );
+				model.batch().insert( modelData, model.getRoot() );
 				model.selection.addRange( ModelRange.createFromParentsAndOffsets(
 					modelRoot.getChild( 0 ), 1, modelRoot.getChild( 0 ), 1 ) );
 			} );
@@ -375,7 +375,7 @@ describe( 'EditingController', () => {
 
 		it( 'should forward add marker event if content is moved into a marker range', () => {
 			model.enqueueChanges( () => {
-				model.batch().insert( ModelPosition.createAt( model.getRoot(), 'end' ), new ModelElement( 'paragraph' ) );
+				model.batch().appendElement( 'paragraph', model.getRoot() );
 			} );
 
 			const markerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
@@ -411,7 +411,7 @@ describe( 'EditingController', () => {
 
 			model.enqueueChanges( () => {
 				const modelData = parse( '<paragraph>foo</paragraph>', model.schema ).getChild( 0 );
-				model.batch().insert( ModelPosition.createAt( model.getRoot(), 0 ), modelData );
+				model.batch().insert( modelData, model.getRoot() );
 			} );
 
 			expect( spy.called ).to.be.false;

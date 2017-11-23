@@ -37,7 +37,9 @@ const graveyardName = '$graveyard';
  * All changes in the document are done by {@link module:engine/model/operation/operation~Operation operations}. To create operations in
  * a simple way, use the {@link module:engine/model/batch~Batch} API, for example:
  *
- *		doc.batch().insert( position, nodes ).split( otherPosition );
+ *		const batch = doc.batch();
+ *		batch.insert( node, position );
+ *		batch.split( otherPosition );
  *
  * @see module:engine/model/document~Document#batch
  * @mixes module:utils/emittermixin~EmitterMixin
