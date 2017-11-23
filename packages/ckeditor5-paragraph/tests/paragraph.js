@@ -17,9 +17,7 @@ import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/build
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 describe( 'Paragraph feature', () => {
@@ -416,7 +414,7 @@ describe( 'Paragraph feature', () => {
 
 				if ( root.isEmpty ) {
 					doc.enqueueChanges( () => {
-						doc.batch().insert( ModelPosition.createAt( root ), new ModelElement( 'heading' ) );
+						doc.batch().insertElement( 'heading', root );
 					} );
 				}
 			} );
