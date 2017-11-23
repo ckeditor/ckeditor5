@@ -934,10 +934,6 @@ describe( 'Batch', () => {
 	describe( 'setAttribute() / removeAttribute()', () => {
 		let batch, doc, root, spy;
 
-		const correctDeltaMatcher = sinon.match( operation => {
-			return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-		} );
-
 		beforeEach( () => {
 			doc = new Document();
 			root = doc.createRoot();
@@ -987,12 +983,6 @@ describe( 'Batch', () => {
 					expect( spy.callCount ).to.equal( 0 );
 					expect( node.getAttribute( 'a' ) ).to.equal( 1 );
 				} );
-
-				it( 'should add delta to batch and operation to delta before applying operation', () => {
-					batch.setAttribute( node, 'b', 2 );
-
-					sinon.assert.calledWith( spy, correctDeltaMatcher );
-				} );
 			} );
 
 			describe( 'removeAttribute', () => {
@@ -1011,12 +1001,6 @@ describe( 'Batch', () => {
 				it( 'should do nothing if the attribute is not set', () => {
 					batch.removeAttribute( node, 'b' );
 					expect( spy.callCount ).to.equal( 0 );
-				} );
-
-				it( 'should add delta to batch and operation to delta before applying operation', () => {
-					batch.removeAttribute( node, 'a' );
-
-					sinon.assert.calledWith( spy, correctDeltaMatcher );
 				} );
 			} );
 		} );
@@ -1157,12 +1141,6 @@ describe( 'Batch', () => {
 					expect( getChangesAttrsCount() ).to.equal( 14 );
 					expect( getCompressedAttrs() ).to.equal( '11111111111111111111111--' );
 				} );
-
-				it( 'should add delta to batch and operation to delta before applying operation', () => {
-					batch.setAttribute( getRange( 3, 6 ), 'a', 3 );
-
-					expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
-				} );
 			} );
 
 			describe( 'removeAttribute', () => {
@@ -1238,16 +1216,14 @@ describe( 'Batch', () => {
 					expect( getChangesAttrsCount() ).to.equal( 6 );
 					expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
 				} );
-
-				it( 'should add delta to batch and operation to delta before applying operation', () => {
-					batch.removeAttribute( getRange( 0, 2 ), 'a' );
-					sinon.assert.calledWith( spy, correctDeltaMatcher );
-				} );
 			} );
 		} );
 
 		describe( 'change attribute on root element', () => {
+			let p;
+
 			beforeEach( () => {
+				p = batch.createElement( 'p', { a: 3 } );
 				spy = sinon.spy( doc, 'applyOperation' );
 			} );
 
@@ -1258,10 +1234,22 @@ describe( 'Batch', () => {
 					expect( root.getAttribute( 'b' ) ).to.equal( 2 );
 				} );
 
+				it( 'should create the attribute on detached root', () => {
+					batch.setAttribute( p, 'b', 2 );
+					expect( spy.callCount ).to.equal( 1 );
+					expect( p.getAttribute( 'b' ) ).to.equal( 2 );
+				} );
+
 				it( 'should change the attribute of root', () => {
 					batch.setAttribute( root, 'a', 2 );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getAttribute( 'a' ) ).to.equal( 2 );
+				} );
+
+				it( 'should change the attribute of detached root', () => {
+					batch.setAttribute( p, 'a', 2 );
+					expect( spy.callCount ).to.equal( 1 );
+					expect( p.getAttribute( 'a' ) ).to.equal( 2 );
 				} );
 
 				it( 'should do nothing if the attribute value is the same', () => {
@@ -1270,6 +1258,14 @@ describe( 'Batch', () => {
 					batch.setAttribute( root, 'a', 1 );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getAttribute( 'a' ) ).to.equal( 1 );
+				} );
+
+				it( 'should do nothing if the attribute value is the same on detached root', () => {
+					batch.setAttribute( p, 'a', 1 );
+					expect( spy.callCount ).to.equal( 1 );
+					batch.setAttribute( p, 'a', 1 );
+					expect( spy.callCount ).to.equal( 1 );
+					expect( p.getAttribute( 'a' ) ).to.equal( 1 );
 				} );
 			} );
 

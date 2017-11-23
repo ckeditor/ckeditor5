@@ -736,10 +736,10 @@ function setAttributeToItem( batch, key, value, item ) {
 	let range, operation;
 
 	if ( previousValue != value ) {
-		const delta = item.is( 'rootElement' ) ? new RootAttributeDelta() : new AttributeDelta();
+		const delta = item.root === item ? new RootAttributeDelta() : new AttributeDelta();
 		batch.addDelta( delta );
 
-		if ( item.is( 'rootElement' ) ) {
+		if ( item.root === item ) {
 			// If we change attributes of root element, we have to use `RootAttributeOperation`.
 			operation = new RootAttributeOperation( item, key, previousValue, value, doc.version );
 		} else {
