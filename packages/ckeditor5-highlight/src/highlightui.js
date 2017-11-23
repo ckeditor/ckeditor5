@@ -44,38 +44,59 @@ export default class HighlightUI extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const editor = this.editor;
-		const highlighters = editor.config.get( 'highlight' );
+		const highlighters = this.editor.config.get( 'highlight' );
 
 		for ( const highlighter of highlighters ) {
 			this._addButton( highlighter );
 		}
 
-		// Add rubber button
-		const componentFactory = editor.ui.componentFactory;
+		this._addRubberButton();
 
-		componentFactory.add( 'highlightRemove', locale => {
+		this._addDropdown( highlighters );
+	}
+
+	_addButton( highlighter ) {
+		const editor = this.editor;
+		const command = editor.commands.get( 'highlight' );
+
+		editor.ui.componentFactory.add( 'highlight-' + highlighter.class, locale => {
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
-				label: 'Remove highlighting',
-				icon: highlightRemoveIcon,
-				tooltip: true
+				label: highlighter.title,
+				icon: highlightIcon,
+				tooltip: true,
+				// TODO: how to pass this & name
+				class: highlighter.class
 			} );
 
+			// Bind button model to command.
+			buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
+			buttonView.bind( 'isOn' ).to( command, 'value', value => value === highlighter.class );
+
+			// Execute command.
 			this.listenTo( buttonView, 'execute', () => {
-				// TODO: minor duplication of code
-				editor.execute( 'highlight' );
+				editor.execute( 'highlight', { class: highlighter.class } );
 				editor.editing.view.focus();
+			} );
+
+			// TODO:
+			buttonView.iconView.extendTemplate( {
+				attributes: { style: highlighter.type === 'pen' ? { color: highlighter.color } : { backgroundColor: highlighter.color } }
 			} );
 
 			return buttonView;
 		} );
+	}
 
-		// Add highlight dropdown:
+	_addDropdown( highlighters ) {
+		const editor = this.editor;
+		const t = editor.t;
+		const componentFactory = editor.ui.componentFactory;
+
 		componentFactory.add( 'highlightDropdown', locale => {
 			const model = new Model( {
-				label: 'Highlight',
+				label: t( 'Highlight' ),
 				withText: false,
 				selected: highlighters[ 0 ].class,
 				icon: highlightIcon
@@ -87,7 +108,6 @@ export default class HighlightUI extends Plugin {
 
 			const buttonView = componentFactory.create( 'highlight-' + highlighters[ 0 ].class );
 
-			// TODO: move this out of this method (related to button only design) Make disabled when all buttons are disabled
 			model.bind( 'isEnabled' ).to(
 				// Bind to #isEnabled of each command...
 				...getBindingTargets( buttons, 'isEnabled' ),
@@ -96,7 +116,7 @@ export default class HighlightUI extends Plugin {
 			);
 
 			// TODO: Is this needed in UI at all?
-			const dropdownView = createSplitButtonDropdown( model, buttons, locale, buttonView );
+			const dropdownView = createSplitButtonDropdown( model, locale, buttonView );
 
 			const buttonGroupView = dropdownView.buttonGroupView = new ButtonGroupView( { isVertical: model.isVertical } );
 
@@ -106,15 +126,7 @@ export default class HighlightUI extends Plugin {
 
 			dropdownView.extendTemplate( {
 				attributes: {
-					class: [
-						'ck-splitbutton-dropdown'
-					]
-				}
-			} );
-
-			dropdownView.buttonView.extendTemplate( {
-				attributes: {
-					class: [ 'ck-button-dropdown' ]
+					class: 'ck-splitbutton-dropdown'
 				}
 			} );
 
@@ -148,36 +160,22 @@ export default class HighlightUI extends Plugin {
 		} );
 	}
 
-	_addButton( highlighter ) {
+	_addRubberButton() {
 		const editor = this.editor;
+		const t = editor.t;
 
-		const command = editor.commands.get( 'highlight' );
-
-		editor.ui.componentFactory.add( 'highlight-' + highlighter.class, locale => {
+		editor.ui.componentFactory.add( 'highlightRemove', locale => {
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
-				label: highlighter.title,
-				icon: highlightIcon,
-				tooltip: true,
-				class: highlighter.class
+				label: t( 'Remove highlighting' ),
+				icon: highlightRemoveIcon,
+				tooltip: true
 			} );
 
-			// Bind button model to command.
-			buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
-
-			buttonView.bind( 'isOn' ).to( command, 'value', value => {
-				return value === highlighter.class;
-			} );
-
-			// Execute command.
 			this.listenTo( buttonView, 'execute', () => {
-				editor.execute( 'highlight', { class: highlighter.class } );
+				editor.execute( 'highlight' );
 				editor.editing.view.focus();
-			} );
-
-			buttonView.iconView.extendTemplate( {
-				attributes: { style: highlighter.type === 'pen' ? { color: highlighter.color } : { backgroundColor: highlighter.color } }
 			} );
 
 			return buttonView;
