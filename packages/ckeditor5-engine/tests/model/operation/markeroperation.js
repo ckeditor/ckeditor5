@@ -173,6 +173,12 @@ describe( 'MarkerOperation', () => {
 
 			expect( op.isDocumentOperation ).to.true;
 		} );
+
+		it( 'should return true when non-existing marker range is removed from the document', () => {
+			const op = new MarkerOperation( 'name', null, null, doc.markers, doc.version );
+
+			expect( op.isDocumentOperation ).to.true;
+		} );
 	} );
 
 	describe( 'toJSON', () => {

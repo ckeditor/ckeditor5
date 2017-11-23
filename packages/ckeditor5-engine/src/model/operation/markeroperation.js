@@ -68,9 +68,16 @@ export default class MarkerOperation extends Operation {
 	 * @inheritDoc
 	 */
 	get isDocumentOperation() {
-		const root = this.newRange ? this.newRange.root : this.oldRange.root;
+		if ( this.newRange ) {
+			return !!this.newRange.root.document;
+		}
 
-		return !!root.document;
+		if ( this.oldRange ) {
+			return !!this.oldRange.root.document;
+		}
+
+		// This is edge and might happen only on data from the server.
+		return true;
 	}
 
 	/**
