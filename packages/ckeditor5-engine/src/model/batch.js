@@ -188,11 +188,19 @@ export default class Batch {
 	}
 
 	insertText( text, attributes, itemOrPosition, offset ) {
-		this.insert( this.createText( text, attributes ), itemOrPosition, offset );
+		if ( attributes instanceof DocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
+			this.insert( this.createText( text ), attributes, itemOrPosition );
+		} else {
+			this.insert( this.createText( text, attributes ), itemOrPosition, offset );
+		}
 	}
 
 	insertElement( name, attributes, itemOrPosition, offset ) {
-		this.insert( this.createElement( name, attributes ), itemOrPosition, offset );
+		if ( attributes instanceof DocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
+			this.insert( this.createElement( name ), attributes, itemOrPosition );
+		} else {
+			this.insert( this.createElement( name, attributes ), itemOrPosition, offset );
+		}
 	}
 
 	append( item, parent ) {
@@ -200,11 +208,19 @@ export default class Batch {
 	}
 
 	appendText( text, attributes, parent ) {
-		this.insert( this.createText( text, attributes ), parent, 'end' );
+		if ( attributes instanceof DocumentFragment || attributes instanceof Element ) {
+			this.insert( this.createText( text ), attributes, 'end' );
+		} else {
+			this.insert( this.createText( text, attributes ), parent, 'end' );
+		}
 	}
 
 	appendElement( text, attributes, parent ) {
-		this.insert( this.createElement( text, attributes ), parent, 'end' );
+		if ( attributes instanceof DocumentFragment || attributes instanceof Element ) {
+			this.insert( this.createElement( text ), attributes, 'end' );
+		} else {
+			this.insert( this.createElement( text, attributes ), parent, 'end' );
+		}
 	}
 
 	/**
@@ -265,11 +281,6 @@ export default class Batch {
 		}
 	}
 
-	/**
-	 * Moves given {@link module:engine/model/item~Item model item} or given range to target position.
-	 *
-	 * @chainable
-	 */
 	move( range, itemOrPosition, offset ) {
 		if ( !range.isFlat ) {
 			/**

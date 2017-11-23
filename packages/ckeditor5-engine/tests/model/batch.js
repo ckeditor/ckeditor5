@@ -446,12 +446,23 @@ describe( 'Batch', () => {
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
 
+		it( 'should create and insert text node omitting attributes param', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.insertText( 'foo', new Position( parent, [ 0 ] ) );
+
+			expect( parent.childCount ).to.equal( 1 );
+			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+		} );
+
 		it( 'should create and insert text node at the beginning of given element', () => {
 			const parent = batch.createDocumentFragment();
 
 			batch.insert( batch.createElement( 'child' ), parent );
 
-			batch.insertText( 'foo', null, parent );
+			batch.insertText( 'foo', parent );
 
 			expect( parent.childCount ).to.equal( 2 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Text );
@@ -463,7 +474,7 @@ describe( 'Batch', () => {
 
 			batch.insert( batch.createElement( 'child' ), parent );
 
-			batch.insertText( 'foo', null, parent, 'end' );
+			batch.insertText( 'foo', parent, 'end' );
 
 			expect( parent.childCount ).to.equal( 2 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Element );
@@ -476,7 +487,7 @@ describe( 'Batch', () => {
 			batch.insert( batch.createElement( 'child' ), parent );
 			batch.insert( batch.createElement( 'child' ), parent );
 
-			batch.insertText( 'foo', null, parent, 1 );
+			batch.insertText( 'foo', parent, 1 );
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Element );
@@ -492,7 +503,7 @@ describe( 'Batch', () => {
 			batch.insert( child1, parent );
 			batch.insert( child2, parent, 'end' );
 
-			batch.insertText( 'foo', null, child2, 'before' );
+			batch.insertText( 'foo', child2, 'before' );
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Element );
@@ -508,7 +519,7 @@ describe( 'Batch', () => {
 			batch.insert( child1, parent );
 			batch.insert( child2, parent, 'end' );
 
-			batch.insertText( 'foo', null, child1, 'after' );
+			batch.insertText( 'foo', child1, 'after' );
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Element );
@@ -520,7 +531,7 @@ describe( 'Batch', () => {
 			const parent = batch.createDocumentFragment();
 			const spy = sinon.spy( doc, 'applyOperation' );
 
-			batch.insertText( 'foo', null, parent );
+			batch.insertText( 'foo', parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
@@ -559,12 +570,23 @@ describe( 'Batch', () => {
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
 
+		it( 'should create and insert element with no attributes omitting attributes param', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.insertElement( 'foo', new Position( parent, [ 0 ] ) );
+
+			expect( parent.childCount ).to.equal( 1 );
+			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+		} );
+
 		it( 'should create and insert element at the beginning of given element', () => {
 			const parent = batch.createDocumentFragment();
 
 			batch.insert( batch.createElement( 'child' ), parent );
 
-			batch.insertElement( 'foo', null, parent );
+			batch.insertElement( 'foo', parent );
 
 			expect( parent.childCount ).to.equal( 2 );
 			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
@@ -576,7 +598,7 @@ describe( 'Batch', () => {
 
 			batch.insert( batch.createElement( 'child' ), parent );
 
-			batch.insertElement( 'foo', null, parent, 'end' );
+			batch.insertElement( 'foo', parent, 'end' );
 
 			expect( parent.childCount ).to.equal( 2 );
 			expect( parent.getChild( 0 ).name ).to.equal( 'child' );
@@ -589,7 +611,7 @@ describe( 'Batch', () => {
 			batch.insert( batch.createElement( 'child1' ), parent );
 			batch.insert( batch.createElement( 'child2' ), parent, 'end' );
 
-			batch.insertElement( 'foo', null, parent, 1 );
+			batch.insertElement( 'foo', parent, 1 );
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ).name ).to.equal( 'child1' );
@@ -605,7 +627,7 @@ describe( 'Batch', () => {
 			batch.insert( child1, parent );
 			batch.insert( child2, parent, 'end' );
 
-			batch.insertElement( 'foo', null, child2, 'before' );
+			batch.insertElement( 'foo', child2, 'before' );
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ).name ).to.equal( 'child1' );
@@ -621,7 +643,7 @@ describe( 'Batch', () => {
 			batch.insert( child1, parent );
 			batch.insert( child2, parent, 'end' );
 
-			batch.insertElement( 'foo', null, child1, 'after' );
+			batch.insertElement( 'foo', child1, 'after' );
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ).name ).to.equal( 'child1' );
@@ -633,7 +655,7 @@ describe( 'Batch', () => {
 			const parent = batch.createDocumentFragment();
 			const spy = sinon.spy( doc, 'applyOperation' );
 
-			batch.insertText( 'foo', null, parent );
+			batch.insertText( 'foo', parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
@@ -822,11 +844,22 @@ describe( 'Batch', () => {
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
 
+		it( 'should create and insert text node with no attributes omitting attributes param', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.appendText( 'foo', parent );
+
+			expect( parent.childCount ).to.equal( 1 );
+			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+		} );
+
 		it( 'should create proper delta and operations', () => {
 			const parent = batch.createDocumentFragment();
 			const spy = sinon.spy( doc, 'applyOperation' );
 
-			batch.appendText( 'foo', null, parent );
+			batch.appendText( 'foo', parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'insert' );
@@ -866,11 +899,21 @@ describe( 'Batch', () => {
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
 
+		it( 'should create and insert element with no attributes omitting attributes param', () => {
+			const parent = batch.createDocumentFragment();
+
+			batch.appendElement( 'foo', parent );
+
+			expect( parent.childCount ).to.equal( 1 );
+			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
+			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
+		} );
+
 		it( 'should create proper delta and operation', () => {
 			const parent = batch.createDocumentFragment();
 			const spy = sinon.spy( doc, 'applyOperation' );
 
-			batch.appendElement( 'foo', null, parent );
+			batch.appendElement( 'foo', parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'insert' );
@@ -974,14 +1017,14 @@ describe( 'Batch', () => {
 				const element = batch.createElement( 'e', { a: 2 } );
 
 				batch.appendText( 'xxx', { a: 1 }, root );
-				batch.appendText( 'xxx', null, root );
+				batch.appendText( 'xxx', root );
 				batch.appendText( 'xxx', { a: 1 }, root );
 				batch.appendText( 'xxx', { a: 2 }, root );
-				batch.appendText( 'xxx', null, root );
+				batch.appendText( 'xxx', root );
 				batch.appendText( 'xxx', { a: 1 }, root );
-				batch.appendText( 'xxx', null, element );
+				batch.appendText( 'xxx', element );
 				batch.append( element, root );
-				batch.appendText( 'xxx', null, root );
+				batch.appendText( 'xxx', root );
 
 				spy = sinon.spy( doc, 'applyOperation' );
 			} );
@@ -1426,16 +1469,16 @@ describe( 'Batch', () => {
 			batch = doc.batch();
 
 			div = batch.createElement( 'div' );
-			batch.appendText( 'foobar', null, div );
+			batch.appendText( 'foobar', div );
 
 			p = batch.createElement( 'p' );
-			batch.appendText( 'abcxyz', null, p );
+			batch.appendText( 'abcxyz', p );
 
-			batch.insertElement( 'p', null, div );
-			batch.appendElement( 'p', null, div );
+			batch.insertElement( 'p', div );
+			batch.appendElement( 'p', div );
 
-			batch.insertText( 'gggg', null, new Position( div, [ 0, 0 ] ) );
-			batch.insertText( 'hhhh', null, new Position( div, [ 7, 0 ] ) );
+			batch.insertText( 'gggg', new Position( div, [ 0, 0 ] ) );
+			batch.insertText( 'hhhh', new Position( div, [ 7, 0 ] ) );
 		} );
 
 		describe( 'remove from document', () => {
