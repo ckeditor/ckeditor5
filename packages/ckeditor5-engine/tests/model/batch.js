@@ -1444,6 +1444,12 @@ describe( 'Batch', () => {
 			expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
 		} );
 
+		it( 'should throw if object to move is not a range', () => {
+			expect( () => {
+				doc.batch().move( root.getChild( 0 ), new Position( root, [ 1, 3 ] ) );
+			} ).to.throw( CKEditorError, /^batch-move-invalid-range/ );
+		} );
+
 		it( 'should throw if given range is not flat', () => {
 			const notFlatRange = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
 

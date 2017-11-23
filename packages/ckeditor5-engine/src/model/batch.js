@@ -282,6 +282,15 @@ export default class Batch {
 	}
 
 	move( range, itemOrPosition, offset ) {
+		if ( !( range instanceof Range ) ) {
+			/**
+			 * Invalid range to move.
+			 *
+			 * @error batch-move-invalid-range
+			 */
+			throw new CKEditorError( 'batch-move-invalid-range: Invalid range to move.' );
+		}
+
 		if ( !range.isFlat ) {
 			/**
 			 * Range to move is not flat.
