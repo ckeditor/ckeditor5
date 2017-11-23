@@ -4,7 +4,7 @@
  */
 
 /**
- * @module highlight/highlightcommand
+ * @module highlight/removehighlightcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -15,20 +15,14 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  *
  * @extends module:core/command~Command
  */
-export default class HighlightCommand extends Command {
-	constructor( editor, className ) {
-		super( editor );
-
-		this.className = className;
-	}
-
+export default class RemoveHighlightCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
 	refresh() {
 		const doc = this.editor.document;
 
-		this.value = doc.selection.getAttribute( 'highlight' ) === this.className;
+		this.value = false;
 		this.isEnabled = doc.schema.checkAttributeInSelection( doc.selection, 'highlight' );
 	}
 
@@ -45,7 +39,7 @@ export default class HighlightCommand extends Command {
 		const doc = this.editor.document;
 		const selection = doc.selection;
 
-		// Do not apply highlight on collapsed selection.
+		// Do nothing on collapsed selection.
 		if ( selection.isCollapsed ) {
 			return;
 		}
@@ -55,7 +49,7 @@ export default class HighlightCommand extends Command {
 			const batch = options.batch || doc.batch();
 
 			for ( const range of ranges ) {
-				batch.setAttribute( range, 'highlight', this.className );
+				batch.removeAttribute( range, 'highlight' );
 			}
 		} );
 	}

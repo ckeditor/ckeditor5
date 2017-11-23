@@ -15,6 +15,7 @@ import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/build
 import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
 
 import HighlightCommand from './highlightcommand';
+import RemoveHighlightCommand from './removehighlightcommand';
 
 /**
  * The highlight editing feature. It introduces `highlight` command which allow to highlight selected text with defined 'marker' or 'pen'.
@@ -29,11 +30,11 @@ export default class HighlightEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'highlight', [
-			{ class: 'marker', title: 'Marker', color: '#ffff66', type: 'marker' },
-			{ class: 'marker-green', title: 'Green Marker', color: '#66ff00', type: 'marker' },
-			{ class: 'marker-pink', title: 'Pink Marker', color: '#ff6fff', type: 'marker' },
-			{ class: 'pen-red', title: 'Red Pen', color: '#ff0000', type: 'pen' },
-			{ class: 'pen-blue', title: 'Blue Pen', color: '#0000ff', type: 'pen' }
+			{ name: 'marker', class: 'marker', title: 'Marker', color: '#ffff66', type: 'marker' },
+			{ name: 'greenMarker', class: 'marker-green', title: 'Green Marker', color: '#66ff00', type: 'marker' },
+			{ name: 'pinkMarker', class: 'marker-pink', title: 'Pink Marker', color: '#ff6fff', type: 'marker' },
+			{ name: 'redPen', class: 'pen-red', title: 'Red Pen', color: '#ff0000', type: 'pen' },
+			{ name: 'bluePen', class: 'pen-blue', title: 'Blue Pen', color: '#0000ff', type: 'pen' }
 		] );
 	}
 
@@ -70,7 +71,11 @@ export default class HighlightEditing extends Plugin {
 				}
 			} );
 
-		editor.commands.add( 'highlight', new HighlightCommand( editor ) );
+		editor.config
+			.get( 'highlight' )
+			.map( highlighter => editor.commands.add( highlighter.name, new HighlightCommand( editor, highlighter.class ) ) );
+
+		editor.commands.add( 'removeHighlight', new RemoveHighlightCommand( editor ) );
 	}
 }
 
