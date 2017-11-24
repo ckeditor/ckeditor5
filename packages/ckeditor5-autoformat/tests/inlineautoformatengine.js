@@ -34,7 +34,7 @@ describe( 'InlineAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '*' );
+				batch.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
@@ -45,7 +45,7 @@ describe( 'InlineAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '*' );
+				batch.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph><$text testAttribute="true">foobar</$text>[]</paragraph>' );
@@ -56,7 +56,7 @@ describe( 'InlineAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				doc.batch( 'transparent' ).insert( doc.selection.getFirstPosition(), '*' );
+				doc.batch( 'transparent' ).insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
@@ -67,7 +67,7 @@ describe( 'InlineAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*foob[ar]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '*' );
+				batch.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>*foob*[ar]</paragraph>' );
@@ -81,7 +81,7 @@ describe( 'InlineAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				doc.batch( 'transparent' ).insert( doc.selection.getFirstPosition(), '*' );
+				doc.batch( 'transparent' ).insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( spy );
@@ -98,7 +98,7 @@ describe( 'InlineAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( formatSpy );
@@ -115,7 +115,7 @@ describe( 'InlineAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( formatSpy );
@@ -132,7 +132,7 @@ describe( 'InlineAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( formatSpy );
@@ -150,7 +150,7 @@ describe( 'InlineAutoformatEngine', () => {
 			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 
 			doc.enqueueChanges( () => {
-				doc.batch().insert( doc.selection.getFirstPosition(), '*' );
+				doc.batch().insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			// There should be two removed ranges and one range used to apply autoformat.

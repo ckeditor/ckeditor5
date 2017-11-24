@@ -36,7 +36,7 @@ describe( 'BlockAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.calledOnce( spy );
@@ -49,7 +49,7 @@ describe( 'BlockAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				doc.batch( 'transparent' ).insert( doc.selection.getFirstPosition(), ' ' );
+				doc.batch( 'transparent' ).insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( spy );
@@ -62,7 +62,7 @@ describe( 'BlockAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.calledOnce( spy );
@@ -77,7 +77,7 @@ describe( 'BlockAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.calledOnce( spy );
@@ -89,7 +89,7 @@ describe( 'BlockAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				doc.batch( 'transparent' ).insert( doc.selection.getFirstPosition(), ' ' );
+				doc.batch( 'transparent' ).insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( spy );
@@ -113,7 +113,7 @@ describe( 'BlockAutoformatEngine', () => {
 
 			setData( doc, '<paragraph>[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( spy );
@@ -128,7 +128,7 @@ class TestCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor~Editor} editor Editor instance.
+	 * @param {module:core/editor/editor~Editor} editor Editor instance.
 	 * @param {Function} onExecuteCallback execute call hook
 	 */
 	constructor( editor, onExecuteCallback ) {
