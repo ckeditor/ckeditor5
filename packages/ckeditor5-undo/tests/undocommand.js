@@ -256,6 +256,21 @@ describe( 'UndoCommand', () => {
 				expect( editor.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
 				expect( editor.document.selection.isBackward ).to.be.false;
 			} );
+
+			it( 'should omit deltas with non-document operations', () => {
+				const batch = doc.batch();
+				const element = batch.createElement( 'p' );
+
+				undo.addBatch( batch );
+
+				batch.setAttribute( element, 'foo', 'bar' );
+				batch.setAttribute( root, 'foo', 'bar' );
+
+				undo.execute();
+
+				expect( element.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( root.getAttribute( 'foo' ) ).to.not.equal( 'bar' );
+			} );
 		} );
 
 		it( 'merges touching ranges when restoring selection', () => {
