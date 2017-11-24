@@ -236,9 +236,9 @@ export default class Selection {
 	 * @returns {module:engine/model/position~Position|null}
 	 */
 	getFirstPosition() {
-		const first = this.getFirstRange();
+		const firstRange = this.getFirstRange();
 
-		return first ? first.start : null;
+		return firstRange ? firstRange.start : null;
 	}
 
 	/**

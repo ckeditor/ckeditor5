@@ -13,9 +13,6 @@ import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EditableElement from './editableelement';
 
-const _parent = Symbol( 'parent' );
-const _offset = Symbol( 'offset' );
-
 /**
  * Position in the tree. Position is always located before or after a node.
  */
@@ -27,8 +24,8 @@ export default class Position {
 	 * @param {Number} offset Position offset.
 	 */
 	constructor( parent, offset ) {
-		this[ _parent ] = parent;
-		this[ _offset ] = offset;
+		this._parent = parent;
+		this._offset = offset;
 	}
 
 	/**
@@ -38,7 +35,7 @@ export default class Position {
 	 * @type {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
 	 */
 	get parent() {
-		return this[ _parent ];
+		return this._parent;
 	}
 
 	/**
@@ -48,7 +45,7 @@ export default class Position {
 	 * @type {Number}
 	 */
 	get offset() {
-		return this[ _offset ];
+		return this._offset;
 	}
 
 	/**

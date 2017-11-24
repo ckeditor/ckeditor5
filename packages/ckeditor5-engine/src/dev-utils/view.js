@@ -541,8 +541,7 @@ class RangeParser {
 				throw new Error( `Parse error - end of range was found '${ item.bracket }' but range was not started before.` );
 			}
 
-			// When second start of range is found when one is already opened - selection does not allow intersecting
-			// ranges.
+			// When second start of range is found when one is already opened - selection does not allow intersecting ranges.
 			if ( range && ( item.bracket == ELEMENT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_START_TOKEN ) ) {
 				throw new Error( `Parse error - start of range was found '${ item.bracket }' but one range is already started.` );
 			}

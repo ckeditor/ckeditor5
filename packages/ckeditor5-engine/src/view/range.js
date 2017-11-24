@@ -10,9 +10,6 @@
 import Position from './position';
 import TreeWalker from './treewalker';
 
-const _start = Symbol( 'start' );
-const _end = Symbol( 'end' );
-
 /**
  * Tree view range.
  */
@@ -26,8 +23,8 @@ export default class Range {
 	 * @param {module:engine/view/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
 	 */
 	constructor( start, end = null ) {
-		this[ _start ] = start;
-		this[ _end ] = end ? end : start;
+		this._start = start;
+		this._end = end ? end : start;
 	}
 
 	/**
@@ -52,7 +49,7 @@ export default class Range {
 	 * @type {module:engine/view/position~Position}
 	 */
 	get start() {
-		return this[ _start ];
+		return this._start;
 	}
 
 	/**
@@ -62,7 +59,7 @@ export default class Range {
 	 * @type {module:engine/view/position~Position}
 	 */
 	get end() {
-		return this[ _end ];
+		return this._end;
 	}
 
 	/**

@@ -311,11 +311,7 @@ export default class Range {
 				ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
 			}
 
-			const path = pos.getParentPath();
-			path[ path.length - 1 ]++;
-
-			pos = new Position( pos.root, path );
-
+			pos = Position.createAfter( posParent );
 			posParent = posParent.parent;
 		}
 
@@ -844,7 +840,7 @@ export default class Range {
 
 		// 5. Ranges should be checked and glued starting from the range that is closest to the reference range.
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
-		for ( let i = refIndex - 1; i >= 0; i++ ) {
+		for ( let i = refIndex - 1; i >= 0; i-- ) {
 			if ( ranges[ i ].end.isEqual( start ) ) {
 				start = ranges[ i ].start;
 			} else {

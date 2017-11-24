@@ -139,7 +139,7 @@ export default class Position {
 	 * @type {Number}
 	 */
 	get offset() {
-		return getOffset( this.path );
+		return last( this.path );
 	}
 
 	/**
@@ -365,8 +365,7 @@ export default class Position {
 	 */
 	getShiftedTo( offset ) {
 		const path = this.path.slice();
-
-		setOffset( path, offset );
+		path[ path.length - 1 ] = offset;
 
 		return new Position( this.root, path );
 	}
@@ -678,7 +677,9 @@ export default class Position {
 		// Then we have to update the rest of the path.
 
 		// Fix the offset because this position might be after `from` position and we have to reflect that.
-		setOffset( combinedPath, getOffset( combinedPath ) + this.path[ i ] - source.offset );
+		const oldOffset = last( combinedPath );
+		const newOffset = oldOffset + this.path[ i ] - source.offset;
+		combinedPath[ combinedPath.length - 1 ] = newOffset;
 
 		// Then, add the rest of the path.
 		// If this position is at the same level as `from` position nothing will get added.
@@ -826,21 +827,6 @@ export default class Position {
 
 		return new Position( doc.getRoot( json.root ), json.path );
 	}
-}
-
-// Helper for setting offset on give path array.
-// @private
-// @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
-function getOffset( path ) {
-	return last( path );
-}
-
-// Helper for setting offset on give path array.
-// @private
-// @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
-// @param {Number} newOffset Offset to set.
-function setOffset( path, newOffset ) {
-	path[ path.length - 1 ] = newOffset;
 }
 
 /**
