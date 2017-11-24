@@ -6,7 +6,7 @@
 import Document from '../../../src/model/document';
 import Range from '../../../src/model/range';
 import Position from '../../../src/model/position';
-import { default as AttributeDelta, RootAttributeDelta } from '../../../src/model/delta/attributedelta';
+import AttributeDelta from '../../../src/model/delta/attributedelta';
 import AttributeOperation from '../../../src/model/operation/attributeoperation';
 import NoOperation from '../../../src/model/operation/nooperation';
 import { jsonParseStringify } from '../../../tests/model/_utils/utils';
@@ -126,11 +126,5 @@ describe( 'AttributeDelta', () => {
 		const json = jsonParseStringify( delta );
 
 		expect( json ).not.to.have.property( '_range' );
-	} );
-} );
-
-describe( 'RootAttributeDelta', () => {
-	it( 'should provide proper className', () => {
-		expect( RootAttributeDelta.className ).to.equal( 'engine.model.delta.RootAttributeDelta' );
 	} );
 } );

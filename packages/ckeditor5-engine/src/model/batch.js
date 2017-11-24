@@ -7,13 +7,14 @@
  * @module engine/model/batch
  */
 
-import { default as AttributeDelta, RootAttributeDelta } from './delta/attributedelta';
+import AttributeDelta from './delta/attributedelta';
 import InsertDelta from './delta/insertdelta';
 import MarkerDelta from './delta/markerdelta';
 import MergeDelta from './delta/mergedelta';
 import MoveDelta from './delta/movedelta';
 import RemoveDelta from './delta/removedelta';
 import RenameDelta from './delta/renamedelta';
+import RootAttributeDelta from './delta/rootattributedelta';
 import SplitDelta from './delta/splitdelta';
 import UnwrapDelta from './delta/unwrapdelta';
 import WeakInsertDelta from './delta/weakinsertdelta';

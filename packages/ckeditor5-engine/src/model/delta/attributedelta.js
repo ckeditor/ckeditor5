@@ -108,22 +108,4 @@ export default class AttributeDelta extends Delta {
 	}
 }
 
-/**
- * To provide specific OT behavior and better collisions solving, methods to change attributes
- * ({@link module:engine/model/batch~Batch#setAttribute} and {@link module:engine/model/batch~Batch#removeAttribute})
- * use `RootAttributeDelta` class which inherits from the `Delta` class and may
- * overwrite some methods.
- *
- * @extends module:engine/model/delta/delta~Delta
- */
-export class RootAttributeDelta extends Delta {
-	/**
-	 * @inheritDoc
-	 */
-	static get className() {
-		return 'engine.model.delta.RootAttributeDelta';
-	}
-}
-
 DeltaFactory.register( AttributeDelta );
-DeltaFactory.register( RootAttributeDelta );
