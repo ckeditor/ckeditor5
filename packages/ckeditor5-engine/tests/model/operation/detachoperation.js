@@ -7,7 +7,7 @@ import Document from '../../../src/model/document';
 import DetachOperation from '../../../src/model/operation/detachoperation';
 import { wrapInDelta } from '../../../tests/model/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Range from '../../../src/model/range';
+import Position from '../../../src/model/position';
 
 describe( 'DetachOperation', () => {
 	let doc, batch, docFrag, element;
@@ -22,13 +22,13 @@ describe( 'DetachOperation', () => {
 	} );
 
 	it( 'should have type equal to detach', () => {
-		const op = new DetachOperation( element, doc.version );
+		const op = new DetachOperation( Position.createBefore( element ), 1, doc.version );
 
 		expect( op.type ).to.equal( 'detach' );
 	} );
 
 	it( 'should remove given element from parent', () => {
-		const op = new DetachOperation( Range.createOn( element ), doc.version );
+		const op = new DetachOperation( Position.createBefore( element ), 1, doc.version );
 
 		doc.applyOperation( wrapInDelta( op ) );
 
@@ -40,7 +40,7 @@ describe( 'DetachOperation', () => {
 		const element = batch.createElement( 'element' );
 		batch.append( element, root );
 
-		const op = new DetachOperation( Range.createOn( element ), doc.version );
+		const op = new DetachOperation( Position.createBefore( element ), 1, doc.version );
 
 		expect( () => {
 			op._execute();
@@ -48,7 +48,7 @@ describe( 'DetachOperation', () => {
 	} );
 
 	it( 'should be not a document operation', () => {
-		const op = new DetachOperation( element, doc.version );
+		const op = new DetachOperation( Position.createBefore( element ), 1, doc.version );
 
 		expect( op.isDocumentOperation ).to.false;
 	} );

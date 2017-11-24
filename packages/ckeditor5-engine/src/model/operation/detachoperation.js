@@ -8,6 +8,8 @@
  */
 
 import Operation from './operation';
+import Position from '../position';
+import Range from '../range';
 import { remove } from '../writer';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -21,19 +23,28 @@ export default class DetachOperation extends Operation {
 	/**
 	 * Creates an insert operation.
 	 *
-	 * @param {module:engine/model/range~Range} range Range to remove.
+	 * @param {module:engine/model/position~Position} sourcePosition
+	 * Position before the first {@link module:engine/model/item~Item model item} to move.
+	 * @param {Number} howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
+	 * `sourcePosition` with offset shifted by `howMany`.
 	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which operation can be applied.
 	 */
-	constructor( range, baseVersion ) {
+	constructor( sourcePosition, howMany, baseVersion ) {
 		super( baseVersion );
 
 		/**
-		 * Node to remove.
+		 * Position before the first {@link module:engine/model/item~Item model item} to detach.
 		 *
-		 * @readonly
-		 * @member {module:engine/model/range~Range} #range
+		 * @member {module:engine/model/position~Position} #sourcePosition
 		 */
-		this.range = range;
+		this.sourcePosition = Position.createFromPosition( sourcePosition );
+
+		/**
+		 * Offset size of moved range.
+		 *
+		 * @member {Number} #howMany
+		 */
+		this.howMany = howMany;
 	}
 
 	/**
@@ -54,7 +65,7 @@ export default class DetachOperation extends Operation {
 	 * @inheritDoc
 	 */
 	_execute() {
-		if ( this.range.root.document ) {
+		if ( this.sourcePosition.root.document ) {
 			/**
 			 * Cannot detach document node.
 			 * Use {@link module:engine/model/operation/removeoperation~RemoveOperation remove operation} instead.
@@ -64,8 +75,15 @@ export default class DetachOperation extends Operation {
 			throw new CKEditorError( 'detach-operation-on-document-node: Cannot detach document node.' );
 		}
 
-		const nodes = remove( this.range );
+		const nodes = remove( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ) );
 
 		return { nodes };
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.model.operation.DetachOperation';
 	}
 }
