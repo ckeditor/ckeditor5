@@ -4,7 +4,6 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import UndoEngine from '../src/undoengine';
 
 describe( 'UndoEngine', () => {
@@ -38,7 +37,7 @@ describe( 'UndoEngine', () => {
 			expect( undo._undoCommand.addBatch.called ).to.be.false;
 			expect( undo._redoCommand.clearStack.called ).to.be.false;
 
-			batch.insert( new Position( root, [ 0 ] ), 'foobar' );
+			batch.insertText( 'foobar', root );
 
 			expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
 			expect( undo._redoCommand.clearStack.calledOnce ).to.be.true;
@@ -47,7 +46,8 @@ describe( 'UndoEngine', () => {
 		it( 'should add each batch only once', () => {
 			sinon.spy( undo._undoCommand, 'addBatch' );
 
-			batch.insert( new Position( root, [ 0 ] ), 'foobar' ).insert( new Position( root, [ 0 ] ), 'foobar' );
+			batch.insertText( 'foobar', root );
+			batch.insertText( 'foobar', root );
 
 			expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
 		} );
@@ -58,7 +58,7 @@ describe( 'UndoEngine', () => {
 
 			undo._redoCommand._createdBatches.add( batch );
 
-			batch.insert( new Position( root, [ 0 ] ), 'foobar' );
+			batch.insertText( 'foobar', root );
 
 			expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
 			expect( undo._redoCommand.clearStack.called ).to.be.false;

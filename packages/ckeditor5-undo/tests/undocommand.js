@@ -41,7 +41,7 @@ describe( 'UndoCommand', () => {
 				editor.document.selection.setRanges( [ r( 0, 0 ) ] );
 				batch0 = doc.batch();
 				undo.addBatch( batch0 );
-				batch0.insert( p( 0 ), 'foobar' );
+				batch0.insertText( 'foobar', p( 0 ) );
 
 				/*
 				 [root]

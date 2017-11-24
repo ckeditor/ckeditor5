@@ -9,7 +9,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import UndoEngine from '../src/undoengine';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -71,7 +70,7 @@ describe( 'UndoEngine integration', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
 			doc.enqueueChanges( () => {
-				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+				doc.batch().insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
@@ -85,16 +84,17 @@ describe( 'UndoEngine integration', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
 			doc.enqueueChanges( () => {
-				doc.batch()
-					.insert( doc.selection.getFirstPosition(), 'zzz' )
-					.insert( new Position( root, [ 1, 0 ] ), 'xxx' );
+				const batch = doc.batch();
+
+				batch.insertText( 'zzz', doc.selection.getFirstPosition() );
+				batch.insertText( 'xxx', new Position( root, [ 1, 0 ] ) );
 			} );
 
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>xxxbar</paragraph>' );
 
 			doc.enqueueChanges( () => {
 				setSelection( [ 1, 0 ], [ 1, 0 ] );
-				doc.batch().insert( doc.selection.getFirstPosition(), 'yyy' );
+				doc.batch().insertText( 'yyy', doc.selection.getFirstPosition() );
 			} );
 
 			output( '<paragraph>fozzzo</paragraph><paragraph>yyy[]xxxbar</paragraph>' );
@@ -112,13 +112,13 @@ describe( 'UndoEngine integration', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
 			doc.enqueueChanges( () => {
-				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+				doc.batch().insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
 			doc.enqueueChanges( () => {
 				setSelection( [ 1, 0 ], [ 1, 0 ] );
-				doc.batch().insert( doc.selection.getFirstPosition(), 'yyy' );
+				doc.batch().insertText( 'yyy', doc.selection.getFirstPosition() );
 			} );
 
 			output( '<paragraph>fozzzo</paragraph><paragraph>yyy[]bar</paragraph>' );
@@ -128,7 +128,7 @@ describe( 'UndoEngine integration', () => {
 
 			doc.enqueueChanges( () => {
 				setSelection( [ 0, 0 ], [ 0, 0 ] );
-				doc.batch().insert( doc.selection.getFirstPosition(), 'xxx' );
+				doc.batch().insertText( 'xxx', doc.selection.getFirstPosition() );
 			} );
 			output( '<paragraph>xxx[]fozzzo</paragraph><paragraph>bar</paragraph>' );
 
@@ -170,7 +170,7 @@ describe( 'UndoEngine integration', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
 			doc.enqueueChanges( () => {
-				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+				doc.batch().insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
@@ -193,7 +193,7 @@ describe( 'UndoEngine integration', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
 			doc.enqueueChanges( () => {
-				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+				doc.batch().insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
@@ -229,7 +229,7 @@ describe( 'UndoEngine integration', () => {
 			input( '' );
 
 			doc.enqueueChanges( () => {
-				doc.batch().insert( doc.selection.getFirstPosition(), new Element( 'heading1' ) );
+				doc.batch().insertElement( 'heading1', doc.selection.getFirstPosition() );
 			} );
 			output( '<heading1>[]</heading1>' );
 
@@ -247,10 +247,11 @@ describe( 'UndoEngine integration', () => {
 			const pos = new Position( root, [ 0 ] );
 
 			doc.enqueueChanges( () => {
-				doc.batch()
-					.remove( p )
-					.insert( pos, new Element( 'heading1' ) )
-					.insert( pos.getShiftedBy( 1 ), new Element( 'heading2' ) );
+				const batch = doc.batch();
+
+				batch.remove( p );
+				batch.insertElement( 'heading1', pos );
+				batch.insertElement( 'heading2', pos.getShiftedBy( 1 ) );
 			} );
 
 			output( '<heading1>[]</heading1><heading2></heading2>' );
@@ -321,7 +322,7 @@ describe( 'UndoEngine integration', () => {
 
 			doc.enqueueChanges( () => {
 				setSelection( [ 0, 3 ], [ 0, 3 ] );
-				doc.batch().insert( doc.selection.getFirstPosition(), 'zzz' );
+				doc.batch().insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
 			output( '<paragraph>fo<$text bold="true">o</$text>zzz<$text bold="true">[]b</$text>ar</paragraph>' );
 			expect( doc.selection.getAttribute( 'bold' ) ).to.true;
