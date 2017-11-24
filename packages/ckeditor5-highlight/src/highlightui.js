@@ -69,11 +69,10 @@ export default class HighlightUI extends Plugin {
 
 		function decorateHighlightButton( button ) {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
-			button.bind( 'isOn' ).to( command, 'value' );
 
 			button.iconView.extendTemplate( {
 				attributes: {
-					style: highlighter.type === 'pen' ? { color: highlighter.color } : { backgroundColor: highlighter.color }
+					style: getIconStyleForHighlighter( highlighter.type, highlighter.color )
 				}
 			} );
 		}
@@ -91,7 +90,7 @@ export default class HighlightUI extends Plugin {
 				tooltip: true
 			} );
 
-			this.listenTo( buttonView, 'execute', () => {
+			buttonView.on( 'execute', () => {
 				editor.execute( name );
 				editor.editing.view.focus();
 			} );
@@ -120,17 +119,14 @@ export default class HighlightUI extends Plugin {
 				command: firstHighlighter.name
 			} );
 
+			model.bind( 'isOn' ).to( editor.commands.get( firstHighlighter.name ), 'value' );
+
 			// TODO: bind this in model
 			const dropdownView = createSplitButtonDropdown( model, locale );
 
+			// Extend split button icon style to reflect last used button style
 			const iconView = dropdownView.buttonView.buttonView.iconView;
 			const bind = iconView.bindTemplate;
-
-			// TODO: forward event:
-			dropdownView.buttonView.buttonView.on( 'execute', () => {
-				editor.execute( model.command );
-				editor.editing.view.focus();
-			} );
 
 			iconView.extendTemplate( {
 				attributes: {
@@ -138,30 +134,44 @@ export default class HighlightUI extends Plugin {
 				}
 			} );
 
-			iconView.bind( 'style' )
-				.to( model, 'type', model, 'color', ( type, color ) => type === 'pen' ? 'color:' + color : 'background-color:' + color );
+			iconView.bind( 'style' ).to( model, 'type', model, 'color', getIconStyleForHighlighter );
+
+			// TODO: forward event ?:
+			// TODO: lame names buttonView/buttonView
+			dropdownView.buttonView.on( 'execute', () => {
+				editor.execute( model.command );
+				editor.editing.view.focus();
+			} );
 
 			const buttons = highlighters.map( highlighter => {
 				const buttonView = componentFactory.create( highlighter.name );
 
 				this.listenTo( buttonView, 'execute', () => {
-					model.type = highlighter.type;
-					model.color = highlighter.color;
-					model.command = highlighter.name;
-					model.icon = highlightIcon;
+					model.set( {
+						type: highlighter.type,
+						color: highlighter.color,
+						command: highlighter.name,
+						icon: highlightIcon
+					} );
+
+					model.unbind( 'isOn' );
+					model.bind( 'isOn' ).to( editor.commands.get( highlighter.name ), 'value' );
 				} );
 
 				return buttonView;
 			} );
 
-			// TODO: bind
 			const removeButton = componentFactory.create( 'removeHighlight' );
 			buttons.push( removeButton );
+
 			this.listenTo( removeButton, 'execute', () => {
-				model.type = false;
-				model.color = false;
+				model.type = 'remove';
+				model.color = undefined;
 				model.command = 'removeHighlight';
 				model.icon = highlightRemoveIcon;
+
+				model.unbind( 'isOn' );
+				model.bind( 'isOn' ).to( editor.commands.get( 'removeHighlight' ), 'value' );
 			} );
 
 			model.bind( 'isEnabled' ).to(
@@ -171,20 +181,10 @@ export default class HighlightUI extends Plugin {
 				( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
 			);
 
-			const buttonGroupView = dropdownView.buttonGroupView = new ButtonGroupView( { isVertical: model.isVertical } );
-
-			buttonGroupView.bind( 'isVertical' ).to( model, 'isVertical' );
-
-			// TODO: A bit hack-ish: Swap the split button button to executed one.
-			buttons.map( buttonView => {
-				buttonGroupView.items.add( buttonView );
-			} );
-
-			dropdownView.extendTemplate( {
-				attributes: {
-					class: 'ck-splitbutton-dropdown'
-				}
-			} );
+			// TODO: This duplicates buttonDropdown
+			// Group buttons for dropdown.
+			const buttonGroupView = dropdownView.buttonGroupView = new ButtonGroupView( { isVertical: false } );
+			buttons.map( buttonView => buttonGroupView.items.add( buttonView ) );
 
 			dropdownView.panelView.children.add( buttonGroupView );
 
@@ -192,14 +192,12 @@ export default class HighlightUI extends Plugin {
 			closeDropdownOnExecute( dropdownView, buttonGroupView.items );
 			focusDropdownItemsOnArrows( dropdownView, buttonGroupView );
 
-			// TODO: weak names buttonView.buttonView
-			// TODO: could be move to createSplitButtonDropdown
-			dropdownView.buttonView.arrowView.on( 'execute', () => {
-				if ( dropdownView.buttonView.buttonView.isEnabled && !dropdownView.isOpen ) {
-					dropdownView.isOpen = true;
+			// Focus button group upon opening dropdown view
+			dropdownView.buttonView.on( 'select', () => {
+				if ( dropdownView.buttonView.buttonView.isEnabled && dropdownView.isOpen ) {
 					buttonGroupView.focus();
 				}
-			} );
+			}, { priority: 'low' } );
 
 			return dropdownView;
 		} );
@@ -209,4 +207,16 @@ export default class HighlightUI extends Plugin {
 // TODO: this is duplicated
 function getBindingTargets( buttons, attribute ) {
 	return Array.prototype.concat( ...buttons.map( button => [ button, attribute ] ) );
+}
+
+// Returns style definition for highlighter button
+// @param {String} type Type of highlighter. One of: "marker", "pen", "remove".
+// @param {String} color Color of highlighter.
+function getIconStyleForHighlighter( type, color ) {
+	// Only return type for defined types "marker"/"pen". Return empty style otherwise (ie. for "remove" type).
+	if ( type === 'pen' ) {
+		return 'color:' + color;
+	} else if ( type === 'marker' ) {
+		return 'background-color:' + color;
+	}
 }
