@@ -18,6 +18,7 @@ import ModelTextProxy from '../model/textproxy';
 import ModelElement from '../model/element';
 import Operation from '../model/operation/operation';
 import AttributeOperation from '../model/operation/attributeoperation';
+import DetachOperation from '../model/operation/detachoperation';
 import InsertOperation from '../model/operation/insertoperation';
 import MarkerOperation from '../model/operation/markeroperation';
 import MoveOperation from '../model/operation/moveoperation';
@@ -25,7 +26,8 @@ import NoOperation from '../model/operation/nooperation';
 import RenameOperation from '../model/operation/renameoperation';
 import RootAttributeOperation from '../model/operation/rootattributeoperation';
 import Delta from '../model/delta/delta';
-import { default as AttributeDelta, RootAttributeDelta } from '../model/delta/attributedelta';
+import AttributeDelta from '../model/delta/attributedelta';
+import RootAttributeDelta from '../model/delta/rootattributedelta';
 import InsertDelta from '../model/delta/insertdelta';
 import MarkerDelta from '../model/delta/markerdelta';
 import MergeDelta from '../model/delta/mergedelta';
@@ -271,6 +273,13 @@ function enableLoggingTools() {
 	AttributeOperation.prototype.toString = function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.range }`;
+	};
+
+	DetachOperation.prototype.toString = function() {
+		const range = ModelRange.createFromPositionAndShift( this.sourcePosition, this.howMany );
+		const nodes = Array.from( range.getItems() );
+
+		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodes.length > 1 ? range : nodes[ 0 ] + ' ' + range }`;
 	};
 
 	InsertOperation.prototype.toString = function() {
