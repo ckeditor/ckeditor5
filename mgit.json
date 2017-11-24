@@ -9,7 +9,7 @@
     "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon",
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic",
     "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline",
-    "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard",
+    "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#t/ckeditor5-engine/858",
     "@ckeditor/ckeditor5-cloudservices": "ckeditor/ckeditor5-cloudservices",
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core",
     "@ckeditor/ckeditor5-easy-image": "ckeditor/ckeditor5-easy-image",
