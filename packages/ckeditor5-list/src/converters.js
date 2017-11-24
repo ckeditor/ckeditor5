@@ -612,7 +612,8 @@ export function modelChangePostFixer( document ) {
 
 			// Element name is changed from list to something else. Remove useless attributes.
 			document.enqueueChanges( () => {
-				batch.removeAttribute( element, 'indent' ).removeAttribute( element, 'type' );
+				batch.removeAttribute( element, 'indent' );
+				batch.removeAttribute( element, 'type' );
 			} );
 
 			const changePos = ModelPosition.createAfter( changes.element );

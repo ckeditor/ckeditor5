@@ -208,7 +208,9 @@ export default class ListCommand extends Command {
 				} else if ( !turnOff && element.name != 'listItem' ) {
 					// We are turning on and the element is not a `listItem` - it should be converted to `listItem`.
 					// The order of operations is important to keep model in correct state.
-					batch.setAttribute( element, 'type', this.type ).setAttribute( element, 'indent', 0 ).rename( element, 'listItem' );
+					batch.setAttribute( element, 'type', this.type );
+					batch.setAttribute( element, 'indent', 0 );
+					batch.rename( element, 'listItem' );
 				} else if ( !turnOff && element.name == 'listItem' && element.getAttribute( 'type' ) != this.type ) {
 					// We are turning on and the element is a `listItem` but has different type - change it's type and
 					// type of it's all siblings that have same indent.

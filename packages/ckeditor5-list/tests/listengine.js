@@ -1543,9 +1543,10 @@ describe( 'ListEngine', () => {
 						const item2 = '<listItem indent="1" type="bulleted">d</listItem>';
 
 						modelDoc.enqueueChanges( () => {
-							modelDoc.batch()
-								.insert( ModelPosition.createAt( modelRoot, 'end' ), parseModel( item1, modelDoc.schema ) )
-								.insert( ModelPosition.createAt( modelRoot, 'end' ), parseModel( item2, modelDoc.schema ) );
+							const batch = modelDoc.batch();
+
+							batch.append( parseModel( item1, modelDoc.schema ), modelRoot );
+							batch.append( parseModel( item2, modelDoc.schema ), modelRoot );
 						} );
 					}
 				);
@@ -2660,7 +2661,7 @@ describe( 'ListEngine', () => {
 			setModelData( modelDoc, input );
 
 			modelDoc.enqueueChanges( () => {
-				modelDoc.batch( 'transparent' ).insert( modelDoc.selection.getFirstPosition(), parseModel( inserted, modelDoc.schema ) );
+				modelDoc.batch( 'transparent' ).insert( parseModel( inserted, modelDoc.schema ), modelDoc.selection.getFirstPosition() );
 			} );
 
 			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
@@ -2672,7 +2673,7 @@ describe( 'ListEngine', () => {
 					setModelData( modelDoc, input );
 
 					modelDoc.enqueueChanges( () => {
-						modelDoc.batch().insert( modelDoc.selection.getFirstPosition(), parseModel( inserted, modelDoc.schema ) );
+						modelDoc.batch().insert( parseModel( inserted, modelDoc.schema ), modelDoc.selection.getFirstPosition() );
 					} );
 
 					expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
@@ -2806,9 +2807,10 @@ describe( 'ListEngine', () => {
 				const item2 = '<listItem indent="1" type="bulleted">d</listItem>';
 
 				modelDoc.enqueueChanges( () => {
-					modelDoc.batch()
-						.insert( ModelPosition.createAt( modelRoot, 'end' ), parseModel( item1, modelDoc.schema ) )
-						.insert( ModelPosition.createAt( modelRoot, 'end' ), parseModel( item2, modelDoc.schema ) );
+					const batch = modelDoc.batch();
+
+					batch.append( parseModel( item1, modelDoc.schema ), modelRoot );
+					batch.append( parseModel( item2, modelDoc.schema ), modelRoot );
 				} );
 
 				expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
@@ -3508,7 +3510,7 @@ describe( 'ListEngine', () => {
 
 		const actionCallback = () => {
 			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().insert( modelDoc.selection.getFirstPosition(), parseModel( item, modelDoc.schema ) );
+				modelDoc.batch().insert( parseModel( item, modelDoc.schema ), modelDoc.selection.getFirstPosition() );
 			} );
 		};
 
@@ -3543,10 +3545,11 @@ describe( 'ListEngine', () => {
 			const element = modelDoc.selection.getFirstPosition().nodeAfter;
 
 			modelDoc.enqueueChanges( () => {
-				modelDoc.batch()
-					.rename( element, 'paragraph' )
-					.removeAttribute( element, 'type' )
-					.removeAttribute( element, 'indent' );
+				const batch = modelDoc.batch();
+
+				batch.rename( element, 'paragraph' );
+				batch.removeAttribute( element, 'type' );
+				batch.removeAttribute( element, 'indent' );
 			} );
 		};
 
@@ -3558,10 +3561,11 @@ describe( 'ListEngine', () => {
 			const element = modelDoc.selection.getFirstPosition().nodeAfter;
 
 			modelDoc.enqueueChanges( () => {
-				modelDoc.batch()
-					.setAttribute( element, 'type', 'bulleted' )
-					.setAttribute( element, 'indent', newIndent )
-					.rename( element, 'listItem' );
+				const batch = modelDoc.batch();
+
+				batch.setAttribute( element, 'type', 'bulleted' );
+				batch.setAttribute( element, 'indent', newIndent );
+				batch.rename( element, 'listItem' );
 			} );
 		};
 
