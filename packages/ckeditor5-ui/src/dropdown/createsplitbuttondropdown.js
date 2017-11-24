@@ -8,7 +8,7 @@
  */
 
 import SplitButtonView from '../button/splitbuttonview';
-import DropdownView from './dropdownview';
+import SplitButtonDropdownView from './splitbuttondropdownview';
 import DropdownPanelView from './dropdownpanelview';
 
 /**
@@ -19,10 +19,18 @@ import DropdownPanelView from './dropdownpanelview';
 export default function createSplitButtonDropdown( model, locale ) {
 	const splitButtonView = new SplitButtonView( locale );
 
-	// TODO: keystroke?
 	splitButtonView.bind( 'label', 'isOn', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
+	splitButtonView.buttonView.bind( 'isOn' ).to( model );
 
 	const panelView = new DropdownPanelView( locale );
+	const dropdownView = new SplitButtonDropdownView( locale, splitButtonView, panelView );
 
-	return new DropdownView( locale, splitButtonView, panelView );
+	// Extend template to hide arrow from dropdown.
+	dropdownView.extendTemplate( {
+		attributes: {
+			class: 'ck-splitbutton-dropdown'
+		}
+	} );
+
+	return dropdownView;
 }

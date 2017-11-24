@@ -26,7 +26,7 @@ export default class SplitButtonView extends View {
 		this.children = this.createCollection();
 
 		this.buttonView = this._createButtonView();
-		this.arrowView = this._createArrowView();
+		this.selectView = this._createArrowView();
 
 		this.keystrokes = new KeystrokeHandler();
 		this.focusTracker = new FocusTracker();
@@ -49,17 +49,17 @@ export default class SplitButtonView extends View {
 		super.render();
 
 		this.children.add( this.buttonView );
-		this.children.add( this.arrowView );
+		this.children.add( this.selectView );
 
 		this.focusTracker.add( this.buttonView.element );
-		this.focusTracker.add( this.arrowView.element );
+		this.focusTracker.add( this.selectView.element );
 
 		this.keystrokes.listenTo( this.element );
 
 		// Overrides toolbar focus cycling behavior
 		this.keystrokes.set( 'arrowright', ( evt, cancel ) => {
 			if ( this.focusTracker.focusedElement === this.buttonView.element ) {
-				this.arrowView.focus();
+				this.selectView.focus();
 
 				cancel();
 			}
@@ -67,7 +67,7 @@ export default class SplitButtonView extends View {
 
 		// Overrides toolbar focus cycling behavior
 		this.keystrokes.set( 'arrowleft', ( evt, cancel ) => {
-			if ( this.focusTracker.focusedElement === this.arrowView.element ) {
+			if ( this.focusTracker.focusedElement === this.selectView.element ) {
 				this.buttonView.focus();
 
 				cancel();
@@ -84,21 +84,24 @@ export default class SplitButtonView extends View {
 
 		buttonView.bind( 'icon' ).to( this, 'icon' );
 
+		buttonView.delegate( 'execute' ).to( this );
+
 		return buttonView;
 	}
 
 	_createArrowView() {
-		const arrowView = new ButtonView();
+		const selectView = new ButtonView();
 
-		// TODO:
-		arrowView.icon = 'abc';
+		selectView.icon = 'TODO';
 
-		arrowView.extendTemplate( {
+		selectView.extendTemplate( {
 			attributes: {
 				class: 'ck-splitbutton-arrow'
 			}
 		} );
 
-		return arrowView;
+		selectView.delegate( 'execute' ).to( this, 'select' );
+
+		return selectView;
 	}
 }
