@@ -22,12 +22,13 @@ import RootAttributeOperation from '../../src/model/operation/rootattributeopera
 import RemoveOperation from '../../src/model/operation/removeoperation';
 import DeltaFactory from '../../src/model/delta/deltafactory';
 import Delta from '../../src/model/delta/delta';
-import { default as AttributeDelta, RootAttributeDelta } from '../../src/model/delta/attributedelta';
+import AttributeDelta from '../../src/model/delta/attributedelta';
 import InsertDelta from '../../src/model/delta/insertdelta';
 import MarkerDelta from '../../src/model/delta/markerdelta';
 import MergeDelta from '../../src/model/delta/mergedelta';
 import MoveDelta from '../../src/model/delta/movedelta';
 import RenameDelta from '../../src/model/delta/renamedelta';
+import RootAttributeDelta from '../../src/model/delta/rootattributedelta';
 import SplitDelta from '../../src/model/delta/splitdelta';
 import UnwrapDelta from '../../src/model/delta/unwrapdelta';
 import WrapDelta from '../../src/model/delta/wrapdelta';
