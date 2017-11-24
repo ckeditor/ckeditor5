@@ -59,7 +59,7 @@ describe( 'Selection', () => {
 			const anchor = selection.anchor;
 
 			expect( anchor.isEqual( range1.start ) ).to.be.true;
-			expect( anchor ).to.not.equal( range1.start );
+			expect( anchor ).to.equal( range1.start );
 		} );
 
 		it( 'should return end of single range in selection when added as backward', () => {
@@ -67,7 +67,7 @@ describe( 'Selection', () => {
 			const anchor = selection.anchor;
 
 			expect( anchor.isEqual( range1.end ) ).to.be.true;
-			expect( anchor ).to.not.equal( range1.end );
+			expect( anchor ).to.equal( range1.end );
 		} );
 
 		it( 'should get anchor from last inserted range', () => {
@@ -95,7 +95,7 @@ describe( 'Selection', () => {
 			const focus = selection.focus;
 
 			expect( focus.isEqual( range1.start ) ).to.be.true;
-			expect( focus ).to.not.equal( range1.start );
+			expect( focus ).to.equal( range1.start );
 		} );
 
 		it( 'should get focus from last inserted range', () => {
@@ -410,7 +410,7 @@ describe( 'Selection', () => {
 			const position = selection.getFirstPosition();
 
 			expect( position.isEqual( range2.start ) ).to.be.true;
-			expect( position ).to.not.equal( range2.start );
+			expect( position ).to.equal( range2.start );
 		} );
 
 		it( 'should return null if no ranges are present', () => {
@@ -427,7 +427,7 @@ describe( 'Selection', () => {
 			const position = selection.getLastPosition();
 
 			expect( position.isEqual( range3.end ) ).to.be.true;
-			expect( position ).to.not.equal( range3.end );
+			expect( position ).to.equal( range3.end );
 		} );
 
 		it( 'should return null if no ranges are present', () => {

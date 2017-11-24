@@ -73,8 +73,10 @@ addTransformationCase( AttributeDelta, SplitDelta, ( a, b, context ) => {
 			const additionalAttributeDelta = new AttributeDelta();
 
 			const rangeStart = splitPosition.getShiftedBy( 1 );
-			const rangeEnd = Position.createFromPosition( rangeStart );
-			rangeEnd.path.push( 0 );
+
+			const rangeEndPath = rangeStart.path.slice();
+			rangeEndPath.push( 0 );
+			const rangeEnd = new Position( rangeStart.root, rangeEndPath );
 
 			const oldValue = b._cloneOperation.nodes.getNode( 0 ).getAttribute( operation.key );
 
@@ -236,7 +238,7 @@ addTransformationCase( SplitDelta, SplitDelta, ( a, b, context ) => {
 				a._cloneOperation instanceof ReinsertOperation && b._cloneOperation instanceof ReinsertOperation &&
 				a._cloneOperation.sourcePosition.offset > b._cloneOperation.sourcePosition.offset
 			) {
-				a._cloneOperation.sourcePosition.offset--;
+				a._cloneOperation.sourcePosition = a._cloneOperation.sourcePosition.getShiftedBy( -1 );
 			}
 
 			// `a` splits closer or at same offset.
@@ -317,29 +319,33 @@ addTransformationCase( SplitDelta, WrapDelta, ( a, b, context ) => {
 		// Wrapping element is the element inserted by WrapDelta (re)insert operation.
 		// It is inserted after the wrapped range, but the wrapped range will be moved inside it.
 		// Having this in mind, it is correct to use wrapped range start position as the position before wrapping element.
-		const splitNodePos = Position.createFromPosition( b.range.start );
+
 		// Now, `splitNodePos` points before wrapping element.
 		// To get a position before last children of that element, we expand position's `path` member by proper offset.
-		splitNodePos.path.push( b.howMany - 1 );
+		const splitPath = b.range.start.path.slice();
+		splitPath.push( b.howMany - 1 );
+
+		const splitNodePos = new Position( b.range.start.root, splitPath );
 
 		// SplitDelta insert operation position should be right after the node we split.
-		const insertPos = splitNodePos.getShiftedBy( 1 );
-		delta._cloneOperation.position = insertPos;
+		delta._cloneOperation.position = splitNodePos.getShiftedBy( 1 );
 
 		// 2. Fix move operation source position.
 		// Nodes moved by SplitDelta will be moved from new position, modified by WrapDelta.
 		// To obtain that new position, `splitNodePos` will be used, as this is the node we are extracting children from.
-		const sourcePos = Position.createFromPosition( splitNodePos );
 		// Nothing changed inside split node so it is correct to use the original split position offset.
-		sourcePos.path.push( a.position.offset );
-		delta._moveOperation.sourcePosition = sourcePos;
+		const sourcePath = splitNodePos.path.slice();
+		sourcePath.push( a.position.offset );
+
+		delta._moveOperation.sourcePosition = new Position( splitNodePos.root, sourcePath );
 
 		// 3. Fix move operation target position.
 		// SplitDelta move operation target position should be inside the node inserted by operation above.
 		// Since the node is empty, we will insert at offset 0.
-		const targetPos = Position.createFromPosition( insertPos );
-		targetPos.path.push( 0 );
-		delta._moveOperation.targetPosition = targetPos;
+		const targetPath = splitNodePos.getShiftedBy( 1 ).path.slice();
+		targetPath.push( 0 );
+
+		delta._moveOperation.targetPosition = new Position( splitNodePos.root, targetPath );
 
 		return [ delta ];
 	}
@@ -434,13 +440,17 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, context ) => {
 		const delta = a.clone();
 
 		// Move wrapping element insert position one node further so it is after the split node insertion.
-		delta._insertOperation.position.offset++;
+		delta._insertOperation.position = delta._insertOperation.position.getShiftedBy( 1 );
 
 		// Include the split node copy.
 		delta._moveOperation.howMany++;
 
 		// Change the path to wrapping element in move operation.
-		delta._moveOperation.targetPosition.path[ delta._moveOperation.targetPosition.path.length - 2 ]++;
+		const index = delta._moveOperation.targetPosition.path.length - 2;
+
+		const path = delta._moveOperation.targetPosition.path.slice();
+		path[ index ] += 1;
+		delta._moveOperation.targetPosition = new Position( delta._moveOperation.targetPosition.root, path );
 
 		return [ delta ];
 	}

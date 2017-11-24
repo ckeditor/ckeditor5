@@ -305,7 +305,7 @@ export function insert( position, nodes ) {
 	const insertionPosition = _breakAttributes( position, true );
 
 	const length = container.insertChildren( insertionPosition.offset, nodes );
-	const endPosition = insertionPosition.getShiftedBy( length );
+	let endPosition = insertionPosition.getShiftedBy( length );
 	const start = mergeAttributes( insertionPosition );
 
 	// When no nodes were inserted - return collapsed range.
@@ -314,7 +314,7 @@ export function insert( position, nodes ) {
 	} else {
 		// If start position was merged - move end position.
 		if ( !start.isEqual( insertionPosition ) ) {
-			endPosition.offset--;
+			endPosition = endPosition.getShiftedBy( -1 );
 		}
 
 		const end = mergeAttributes( endPosition );
@@ -331,8 +331,7 @@ export function insert( position, nodes ) {
  * same parent container.
  *
  * @function module:engine/view/writer~writer.remove
- * @param {module:engine/view/range~Range} range Range to remove from container. After removing, it will be updated
- * to a collapsed range showing the new position.
+ * @param {module:engine/view/range~Range} range Range to remove from container.
  * @returns {module:engine/view/documentfragment~DocumentFragment} Document fragment containing removed nodes.
  */
 export function remove( range ) {
@@ -353,9 +352,7 @@ export function remove( range ) {
 	const removed = parentContainer.removeChildren( breakStart.offset, count );
 
 	// Merge after removing.
-	const mergePosition = mergeAttributes( breakStart );
-	range.start = mergePosition;
-	range.end = Position.createFromPosition( mergePosition );
+	mergeAttributes( breakStart );
 
 	// Return removed nodes.
 	return new DocumentFragment( removed );
@@ -406,17 +403,20 @@ export function clear( range, element ) {
 
 		// If we have found element to remove.
 		if ( rangeToRemove ) {
+			let rangeEnd = rangeToRemove.end;
+			let rangeStart = rangeToRemove.start;
+
 			// We need to check if element range stick out of the given range and truncate if it is.
 			if ( rangeToRemove.end.isAfter( range.end ) ) {
-				rangeToRemove.end = range.end;
+				rangeEnd = range.end;
 			}
 
 			if ( rangeToRemove.start.isBefore( range.start ) ) {
-				rangeToRemove.start = range.start;
+				rangeStart = range.start;
 			}
 
 			// At the end we remove range with found element.
-			remove( rangeToRemove );
+			remove( new Range( rangeStart, rangeEnd ) );
 		}
 	}
 }
@@ -447,7 +447,7 @@ export function move( sourceRange, targetPosition ) {
 
 		nodes = remove( sourceRange );
 
-		targetPosition.offset += ( parent.childCount - countBefore );
+		targetPosition = targetPosition.getShiftedBy( parent.childCount - countBefore );
 	} else {
 		nodes = remove( sourceRange );
 	}
@@ -511,10 +511,13 @@ export function wrap( range, attribute ) {
 	const start = mergeAttributes( newRange.start );
 
 	// If start position was merged - move end position back.
+	let rangeEnd = newRange.end;
+
 	if ( !start.isEqual( newRange.start ) ) {
-		newRange.end.offset--;
+		rangeEnd = rangeEnd.getShiftedBy( -1 );
 	}
-	const end = mergeAttributes( newRange.end );
+
+	const end = mergeAttributes( rangeEnd );
 
 	return new Range( start, end );
 }
@@ -537,7 +540,7 @@ export function wrapPosition( position, attribute ) {
 
 	// Return same position when trying to wrap with attribute similar to position parent.
 	if ( attribute.isSimilar( position.parent ) ) {
-		return movePositionToTextNode( Position.createFromPosition( position ) );
+		return movePositionToTextNode( position );
 	}
 
 	// When position is inside text node - break it and place new position between two text nodes.
@@ -625,10 +628,12 @@ export function unwrap( range, attribute ) {
 	const start = mergeAttributes( newRange.start );
 
 	// If start position was merged - move end position back.
+	let rangeEnd = newRange.end;
+
 	if ( !start.isEqual( newRange.start ) ) {
-		newRange.end.offset--;
+		rangeEnd = rangeEnd.getShiftedBy( -1 );
 	}
-	const end = mergeAttributes( newRange.end );
+	const end = mergeAttributes( rangeEnd );
 
 	return new Range( start, end );
 }
@@ -702,12 +707,12 @@ function _breakAttributesRange( range, forceSplitText = false ) {
 		return new Range( position, position );
 	}
 
-	const breakEnd = _breakAttributes( rangeEnd, forceSplitText );
+	let breakEnd = _breakAttributes( rangeEnd, forceSplitText );
 	const count = breakEnd.parent.childCount;
 	const breakStart = _breakAttributes( rangeStart, forceSplitText );
 
 	// Calculate new break end offset.
-	breakEnd.offset += breakEnd.parent.childCount - count;
+	breakEnd = breakEnd.getShiftedBy( breakEnd.parent.childCount - count );
 
 	return new Range( breakStart, breakEnd );
 }
@@ -752,12 +757,12 @@ function _breakAttributes( position, forceSplitText = false ) {
 
 	// There are no attributes to break and text nodes breaking is not forced.
 	if ( !forceSplitText && positionParent.is( 'text' ) && isContainerOrFragment( positionParent.parent ) ) {
-		return Position.createFromPosition( position );
+		return position;
 	}
 
 	// Position's parent is container, so no attributes to break.
 	if ( isContainerOrFragment( positionParent ) ) {
-		return Position.createFromPosition( position );
+		return position;
 	}
 
 	// Break text and start again in new position.
@@ -857,8 +862,8 @@ function unwrapChildren( parent, startOffset, endOffset, attribute ) {
 	// Merge at each unwrap.
 	let offsetChange = 0;
 
-	for ( const position of unwrapPositions ) {
-		position.offset -= offsetChange;
+	for ( let position of unwrapPositions ) {
+		position = position.getShiftedBy( -offsetChange );
 
 		// Do not merge with elements outside selected children.
 		if ( position.offset == startOffset || position.offset == endOffset ) {
@@ -918,8 +923,8 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 	// Merge at each wrap.
 	let offsetChange = 0;
 
-	for ( const position of wrapPositions ) {
-		position.offset -= offsetChange;
+	for ( let position of wrapPositions ) {
+		position = position.getShiftedBy( -offsetChange );
 
 		// Do not merge with elements outside selected children.
 		if ( position.offset == startOffset ) {

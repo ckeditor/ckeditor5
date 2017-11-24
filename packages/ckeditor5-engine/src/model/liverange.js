@@ -178,8 +178,8 @@ function transform( changeType, deltaType, batch, targetRange, sourcePosition ) 
 		// If range boundaries have changed, fire `change:range` event.
 		const oldRange = Range.createFromRange( this );
 
-		this.start = updated.start;
-		this.end = updated.end;
+		this._start = updated.start;
+		this._end = updated.end;
 
 		this.fire( 'change:range', oldRange, {
 			type: changeType,

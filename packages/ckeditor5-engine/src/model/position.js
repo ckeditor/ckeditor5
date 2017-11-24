@@ -66,47 +66,70 @@ export default class Position {
 
 		// Normalize the root and path (if element was passed).
 		path = root.getPath().concat( path );
-		root = root.root;
+
+		// Make path immutable
+		Object.freeze( path );
 
 		/**
 		 * Root of the position path.
 		 *
-		 * @readonly
+		 * @protected
 		 * @member {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
-		 * module:engine/model/position~Position#root
+		 * module:engine/model/position~Position#_root
 		 */
-		this.root = root;
+		this._root = root.root;
 
 		/**
-		 * Position of the node in the tree. **Path contains offsets, not indexes.**
+		 * Position of the node in the tree.
 		 *
-		 * Position can be placed before, after or in a {@link module:engine/model/node~Node node} if that node has
-		 * {@link module:engine/model/node~Node#offsetSize} greater than `1`. Items in position path are
-		 * {@link module:engine/model/node~Node#startOffset starting offsets} of position ancestors, starting from direct root children,
-		 * down to the position offset in it's parent.
-		 *
-		 *		 ROOT
-		 *		  |- P            before: [ 0 ]         after: [ 1 ]
-		 *		  |- UL           before: [ 1 ]         after: [ 2 ]
-		 *		     |- LI        before: [ 1, 0 ]      after: [ 1, 1 ]
-		 *		     |  |- foo    before: [ 1, 0, 0 ]   after: [ 1, 0, 3 ]
-		 *		     |- LI        before: [ 1, 1 ]      after: [ 1, 2 ]
-		 *		        |- bar    before: [ 1, 1, 0 ]   after: [ 1, 1, 3 ]
-		 *
-		 * `foo` and `bar` are representing {@link module:engine/model/text~Text text nodes}. Since text nodes has offset size
-		 * greater than `1` you can place position offset between their start and end:
-		 *
-		 *		 ROOT
-		 *		  |- P
-		 *		  |- UL
-		 *		     |- LI
-		 *		     |  |- f^o|o  ^ has path: [ 1, 0, 1 ]   | has path: [ 1, 0, 2 ]
-		 *		     |- LI
-		 *		        |- b^a|r  ^ has path: [ 1, 1, 1 ]   | has path: [ 1, 1, 2 ]
-		 *
-		 * @member {Array.<Number>} module:engine/model/position~Position#path
+		 * @protected
+		 * @member {Array.<Number>} module:engine/model/position~Position#_path
 		 */
-		this.path = path;
+		this._path = path;
+	}
+
+	/**
+	 * Position of the node in the tree. **Path contains offsets, not indexes.**
+	 *
+	 * Position can be placed before, after or in a {@link module:engine/model/node~Node node} if that node has
+	 * {@link module:engine/model/node~Node#offsetSize} greater than `1`. Items in position path are
+	 * {@link module:engine/model/node~Node#startOffset starting offsets} of position ancestors, starting from direct root children,
+	 * down to the position offset in it's parent.
+	 *
+	 *		 ROOT
+	 *		  |- P            before: [ 0 ]         after: [ 1 ]
+	 *		  |- UL           before: [ 1 ]         after: [ 2 ]
+	 *		     |- LI        before: [ 1, 0 ]      after: [ 1, 1 ]
+	 *		     |  |- foo    before: [ 1, 0, 0 ]   after: [ 1, 0, 3 ]
+	 *		     |- LI        before: [ 1, 1 ]      after: [ 1, 2 ]
+	 *		        |- bar    before: [ 1, 1, 0 ]   after: [ 1, 1, 3 ]
+	 *
+	 * `foo` and `bar` are representing {@link module:engine/model/text~Text text nodes}. Since text nodes has offset size
+	 * greater than `1` you can place position offset between their start and end:
+	 *
+	 *		 ROOT
+	 *		  |- P
+	 *		  |- UL
+	 *		     |- LI
+	 *		     |  |- f^o|o  ^ has path: [ 1, 0, 1 ]   | has path: [ 1, 0, 2 ]
+	 *		     |- LI
+	 *		        |- b^a|r  ^ has path: [ 1, 1, 1 ]   | has path: [ 1, 1, 2 ]
+	 *
+	 * @member {Array.<Number>} module:engine/model/position~Position#path
+	 */
+	get path() {
+		return this._path;
+	}
+
+	/**
+	 * Root of the position path.
+	 *
+	 * @readonly
+	 * @member {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
+	 * module:engine/model/position~Position#root
+	 */
+	get root() {
+		return this._root;
 	}
 
 	/**
@@ -117,13 +140,6 @@ export default class Position {
 	 */
 	get offset() {
 		return last( this.path );
-	}
-
-	/**
-	 * @param {Number} newOffset
-	 */
-	set offset( newOffset ) {
-		this.path[ this.path.length - 1 ] = newOffset;
 	}
 
 	/**
@@ -342,18 +358,29 @@ export default class Position {
 
 	/**
 	 * Returns a new instance of `Position`, that has same {@link #parent parent} but it's offset
+	 * is set to `offset` value.
+	 *
+	 * @param {Number} offset Position offset. See {@link module:engine/model/position~Position#offset}.
+	 * @returns {module:engine/model/position~Position} Moved position.
+	 */
+	getShiftedTo( offset ) {
+		const path = this.path.slice();
+		path[ path.length - 1 ] = offset;
+
+		return new Position( this.root, path );
+	}
+
+	/**
+	 * Returns a new instance of `Position`, that has same {@link #parent parent} but it's offset
 	 * is shifted by `shift` value (can be a negative value).
 	 *
 	 * @param {Number} shift Offset shift. Can be a negative value.
 	 * @returns {module:engine/model/position~Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
-		const shifted = Position.createFromPosition( this );
+		const newOffset = this.offset + shift;
 
-		const offset = shifted.offset + shift;
-		shifted.offset = offset < 0 ? 0 : offset;
-
-		return shifted;
+		return this.getShiftedTo( newOffset < 0 ? 0 : newOffset );
 	}
 
 	/**
@@ -433,13 +460,13 @@ export default class Position {
 				return true;
 
 			case 'before':
-				left = Position.createFromPosition( this );
-				right = Position.createFromPosition( otherPosition );
+				left = this; // eslint-disable-line consistent-this
+				right = otherPosition;
 				break;
 
 			case 'after':
-				left = Position.createFromPosition( otherPosition );
-				right = Position.createFromPosition( this );
+				left = otherPosition;
+				right = this; // eslint-disable-line consistent-this
 				break;
 
 			default:
@@ -459,17 +486,31 @@ export default class Position {
 					return false;
 				}
 
-				left.path = left.path.slice( 0, -1 );
+				const path = left.getParentPath();
+				path[ path.length - 1 ]++;
+				left = new Position( left.root, path );
+
 				leftParent = leftParent.parent;
-				left.offset++;
 			} else {
 				if ( right.offset !== 0 ) {
 					return false;
 				}
 
-				right.path = right.path.slice( 0, -1 );
+				right = new Position( right.root, right.getParentPath() );
 			}
 		}
+	}
+
+	/**
+	 * Converts `Position` to plain object and returns it.
+	 *
+	 * @returns {Object} `Position` converted to plain object.
+	 */
+	toJSON() {
+		return {
+			root: this.root.toJSON(),
+			path: this.path
+		};
 	}
 
 	/**
@@ -482,14 +523,14 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position|null} Transformed position or `null`.
 	 */
 	_getTransformedByDeletion( deletePosition, howMany ) {
-		const transformed = Position.createFromPosition( this );
-
 		// This position can't be affected if deletion was in a different root.
 		if ( this.root != deletePosition.root ) {
-			return transformed;
+			return Position.createFromPosition( this );
 		}
 
-		if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'same' ) {
+		const comparisonResult = compareArrays( deletePosition.getParentPath(), this.getParentPath() );
+
+		if ( comparisonResult == 'same' ) {
 			// If nodes are removed from the node that is pointed by this position...
 			if ( deletePosition.offset < this.offset ) {
 				// And are removed from before an offset of that position...
@@ -497,11 +538,10 @@ export default class Position {
 					// Position is in removed range, it's no longer in the tree.
 					return null;
 				} else {
-					// Decrement the offset accordingly.
-					transformed.offset -= howMany;
+					return this.getShiftedBy( -howMany );
 				}
 			}
-		} else if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'prefix' ) {
+		} else if ( comparisonResult == 'prefix' ) {
 			// If nodes are removed from a node that is on a path to this position...
 			const i = deletePosition.path.length - 1;
 
@@ -513,12 +553,16 @@ export default class Position {
 					return null;
 				} else {
 					// Otherwise, decrement index on that path.
-					transformed.path[ i ] -= howMany;
+					const path = this.path.slice();
+
+					path[ i ] -= howMany;
+
+					return new Position( this.root, path );
 				}
 			}
 		}
 
-		return transformed;
+		return Position.createFromPosition( this );
 	}
 
 	/**
@@ -533,11 +577,9 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position} Transformed position.
 	 */
 	_getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
-		const transformed = Position.createFromPosition( this );
-
 		// This position can't be affected if insertion was in a different root.
 		if ( this.root != insertPosition.root ) {
-			return transformed;
+			return Position.createFromPosition( this );
 		}
 
 		if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'same' ) {
@@ -545,7 +587,7 @@ export default class Position {
 			if ( insertPosition.offset < this.offset || ( insertPosition.offset == this.offset && insertBefore ) ) {
 				// And are inserted before an offset of that position...
 				// "Push" this positions offset.
-				transformed.offset += howMany;
+				return this.getShiftedBy( howMany );
 			}
 		} else if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'prefix' ) {
 			// If nodes are inserted in a node that is on a path to this position...
@@ -554,11 +596,15 @@ export default class Position {
 			if ( insertPosition.offset <= this.path[ i ] ) {
 				// And are inserted before next node of that path...
 				// "Push" the index on that path.
-				transformed.path[ i ] += howMany;
+				const path = this.path.slice();
+
+				path[ i ] += howMany;
+
+				return new Position( this.root, path );
 			}
 		}
 
-		return transformed;
+		return Position.createFromPosition( this );
 	}
 
 	/**
@@ -626,18 +672,20 @@ export default class Position {
 		const i = source.path.length - 1;
 
 		// The first part of a path to combined position is a path to the place where nodes were moved.
-		const combined = Position.createFromPosition( target );
+		let combinedPath = target.path.slice();
 
 		// Then we have to update the rest of the path.
 
 		// Fix the offset because this position might be after `from` position and we have to reflect that.
-		combined.offset = combined.offset + this.path[ i ] - source.offset;
+		const oldOffset = last( combinedPath );
+		const newOffset = oldOffset + this.path[ i ] - source.offset;
+		combinedPath[ combinedPath.length - 1 ] = newOffset;
 
 		// Then, add the rest of the path.
 		// If this position is at the same level as `from` position nothing will get added.
-		combined.path = combined.path.concat( this.path.slice( i + 1 ) );
+		combinedPath = combinedPath.concat( this.path.slice( i + 1 ) );
 
-		return combined;
+		return new Position( target.root, combinedPath );
 	}
 
 	/**
