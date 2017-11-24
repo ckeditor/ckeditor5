@@ -339,9 +339,7 @@ export default class Batch {
 
 				operation = new RemoveOperation( position, howMany, gyPosition, this.document.version );
 			} else {
-				const range = Range.createFromPositionAndShift( position, howMany );
-
-				operation = new DetachOperation( range, this.document.version );
+				operation = new DetachOperation( position, howMany, this.document.version );
 			}
 
 			delta.addOperation( operation );
