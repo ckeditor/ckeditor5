@@ -6,7 +6,6 @@
 import transformations from '../../../../src/model/delta/basic-transformations'; // eslint-disable-line no-unused-vars
 
 import deltaTransform from '../../../../src/model/delta/transform';
-
 const transform = deltaTransform.transform;
 
 import Element from '../../../../src/model/element';
@@ -968,15 +967,10 @@ describe( 'transform', () => {
 				baseVersion = removeDelta.operations.length;
 
 				const newInsertPosition = removeOperation.targetPosition.getShiftedBy( 2 );
-
-				const newSourcePath = removeOperation.targetPosition.getShiftedBy( 1 ).path.slice();
-				newSourcePath.push( 2 );
-				const newMoveSourcePosition = new Position( removeOperation.targetPosition.root, newSourcePath );
-
-				const newMoveTargetPath = newInsertPosition.path.slice();
-				newMoveTargetPath.push( 0 );
-
-				const newMoveTargetPosition = new Position( newInsertPosition.root, newMoveTargetPath );
+				const newMoveSourcePosition = removeOperation.targetPosition.getShiftedBy( 1 );
+				newMoveSourcePosition.path.push( 2 );
+				const newMoveTargetPosition = Position.createAt( newInsertPosition );
+				newMoveTargetPosition.path.push( 0 );
 
 				expectDelta( transformed[ 0 ], {
 					type: SplitDelta,
@@ -1009,13 +1003,10 @@ describe( 'transform', () => {
 				baseVersion = removeDelta.operations.length;
 
 				const newInsertPosition = removeOperation.targetPosition.getShiftedBy( 2 );
-				const newMoveSourcePath = removeOperation.targetPosition.getShiftedBy( 1 ).path.slice();
-				newMoveSourcePath.push( 3 );
-				const newMoveSourcePosition = new Position( removeOperation.targetPosition.root, newMoveSourcePath );
-
-				const newMoveTargetPath = newInsertPosition.path.slice();
-				newMoveTargetPath.push( 0 );
-				const newMoveTargetPosition = new Position( newInsertPosition.root, newMoveTargetPath );
+				const newMoveSourcePosition = removeOperation.targetPosition.getShiftedBy( 1 );
+				newMoveSourcePosition.path.push( 3 );
+				const newMoveTargetPosition = Position.createAt( newInsertPosition );
+				newMoveTargetPosition.path.push( 0 );
 
 				expectDelta( transformed[ 0 ], {
 					type: SplitDelta,

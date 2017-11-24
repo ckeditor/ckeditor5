@@ -27,18 +27,18 @@ export default class Range {
 		/**
 		 * Start position.
 		 *
-		 * @protected
+		 * @readonly
 		 * @member {module:engine/model/position~Position}
 		 */
-		this._start = start;
+		this.start = Position.createFromPosition( start );
 
 		/**
 		 * End position.
 		 *
-		 * @protected
+		 * @readonly
 		 * @member {module:engine/model/position~Position}
 		 */
-		this._end = end ? end : start;
+		this.end = end ? Position.createFromPosition( end ) : Position.createFromPosition( start );
 	}
 
 	/**
@@ -55,26 +55,6 @@ export default class Range {
 	 */
 	* [ Symbol.iterator ]() {
 		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
-	}
-
-	/**
-	 * Start position.
-	 *
-	 * @readonly
-	 * @member {module:engine/model/position~Position}
-	 */
-	get start() {
-		return this._start;
-	}
-
-	/**
-	 * End position.
-	 *
-	 * @readonly
-	 * @member {module:engine/model/position~Position}
-	 */
-	get end() {
-		return this._end;
 	}
 
 	/**
@@ -300,7 +280,7 @@ export default class Range {
 		const ranges = [];
 		const diffAt = this.start.getCommonPath( this.end ).length;
 
-		let pos = this.start;
+		const pos = Position.createFromPosition( this.start );
 		let posParent = pos.parent;
 
 		// Go up.
@@ -311,7 +291,8 @@ export default class Range {
 				ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
 			}
 
-			pos = Position.createAfter( posParent );
+			pos.path = pos.path.slice( 0, -1 );
+			pos.offset++;
 			posParent = posParent.parent;
 		}
 
@@ -324,11 +305,8 @@ export default class Range {
 				ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
 			}
 
-			const path = pos.getParentPath();
-			path.push( offset );
-			path.push( 0 );
-
-			pos = new Position( pos.root, path );
+			pos.offset = offset;
+			pos.path.push( 0 );
 		}
 
 		return ranges;
@@ -489,18 +467,6 @@ export default class Range {
 	}
 
 	/**
-	 * Converts `Range` to plain object and returns it.
-	 *
-	 * @returns {Object} `Range` converted to plain object.
-	 */
-	toJSON() {
-		return {
-			start: this.start.toJSON(),
-			end: this.end.toJSON()
-		};
-	}
-
-	/**
 	 * Returns a range that is a result of transforming this range by a change in the model document.
 	 *
 	 * @protected
@@ -647,13 +613,15 @@ export default class Range {
 				)
 			];
 		} else {
+			const range = Range.createFromRange( this );
+
 			const insertBeforeStart = !isSticky;
-			const insertBeforeEnd = this.isCollapsed ? true : isSticky;
+			const insertBeforeEnd = range.isCollapsed ? true : isSticky;
 
-			const start = this.start._getTransformedByInsertion( insertPosition, howMany, insertBeforeStart );
-			const end = this.end._getTransformedByInsertion( insertPosition, howMany, insertBeforeEnd );
+			range.start = range.start._getTransformedByInsertion( insertPosition, howMany, insertBeforeStart );
+			range.end = range.end._getTransformedByInsertion( insertPosition, howMany, insertBeforeEnd );
 
-			return [ new Range( start, end ) ];
+			return [ range ];
 		}
 	}
 
@@ -787,8 +755,9 @@ export default class Range {
 	 */
 	static createCollapsedAt( itemOrPosition, offset ) {
 		const start = Position.createAt( itemOrPosition, offset );
+		const end = Position.createFromPosition( start );
 
-		return new Range( start, start );
+		return new Range( start, end );
 	}
 
 	/**
@@ -835,14 +804,13 @@ export default class Range {
 		// 4. At this moment we don't need the original range.
 		// We are going to modify the result and we need to return a new instance of Range.
 		// We have to create a copy of the reference range.
-		let start = ref.start;
-		let end = ref.end;
+		const result = new this( ref.start, ref.end );
 
 		// 5. Ranges should be checked and glued starting from the range that is closest to the reference range.
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
-		for ( let i = refIndex - 1; i >= 0; i-- ) {
-			if ( ranges[ i ].end.isEqual( start ) ) {
-				start = ranges[ i ].start;
+		for ( let i = refIndex - 1; i >= 0; i++ ) {
+			if ( ranges[ i ].end.isEqual( result.start ) ) {
+				result.start = Position.createFromPosition( ranges[ i ].start );
 			} else {
 				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;
@@ -852,15 +820,15 @@ export default class Range {
 		// 6. Ranges should be checked and glued starting from the range that is closest to the reference range.
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex + 1; i < ranges.length; i++ ) {
-			if ( ranges[ i ].start.isEqual( end ) ) {
-				end = ranges[ i ].end;
+			if ( ranges[ i ].start.isEqual( result.end ) ) {
+				result.end = Position.createFromPosition( ranges[ i ].end );
 			} else {
 				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;
 			}
 		}
 
-		return new this( start, end );
+		return result;
 	}
 
 	/**

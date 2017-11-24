@@ -15,7 +15,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'writer', () => {
 	/**
-	 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create ranges.
+	 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+	 * test ranges.
 	 *
 	 * @param {String} input
 	 * @param {String} expectedResult
@@ -26,7 +27,7 @@ describe( 'writer', () => {
 
 		const range = selection.getFirstRange();
 		const removed = remove( range );
-		expect( stringify( view, null, { showType: true, showPriority: true } ) ).to.equal( expectedResult );
+		expect( stringify( view, range, { showType: true, showPriority: true } ) ).to.equal( expectedResult );
 		expect( stringify( removed, null, { showType: true, showPriority: true } ) ).to.equal( expectedRemoved );
 	}
 
@@ -59,21 +60,21 @@ describe( 'writer', () => {
 		} );
 
 		it( 'should remove single text node', () => {
-			test( '<container:p>[foobar]</container:p>', '<container:p></container:p>', 'foobar' );
+			test( '<container:p>[foobar]</container:p>', '<container:p>[]</container:p>', 'foobar' );
 		} );
 
 		it( 'should not leave empty text nodes', () => {
-			test( '<container:p>{foobar}</container:p>', '<container:p></container:p>', 'foobar' );
+			test( '<container:p>{foobar}</container:p>', '<container:p>[]</container:p>', 'foobar' );
 		} );
 
 		it( 'should remove part of the text node', () => {
-			test( '<container:p>f{oob}ar</container:p>', '<container:p>far</container:p>', 'oob' );
+			test( '<container:p>f{oob}ar</container:p>', '<container:p>f{}ar</container:p>', 'oob' );
 		} );
 
 		it( 'should remove parts of nodes #1', () => {
 			test(
 				'<container:p>f{oo<attribute:b view-priority="10">ba}r</attribute:b></container:p>',
-				'<container:p>f<attribute:b view-priority="10">r</attribute:b></container:p>',
+				'<container:p>f[]<attribute:b view-priority="10">r</attribute:b></container:p>',
 				'oo<attribute:b view-priority="10">ba</attribute:b>'
 			);
 		} );
@@ -81,7 +82,7 @@ describe( 'writer', () => {
 		it( 'should support unicode', () => {
 			test(
 				'<container:p>நி{லை<attribute:b view-priority="10">க்}கு</attribute:b></container:p>',
-				'<container:p>நி<attribute:b view-priority="10">கு</attribute:b></container:p>',
+				'<container:p>நி[]<attribute:b view-priority="10">கு</attribute:b></container:p>',
 				'லை<attribute:b view-priority="10">க்</attribute:b>'
 			);
 		} );
@@ -91,7 +92,7 @@ describe( 'writer', () => {
 				'<container:p>' +
 					'<attribute:b view-priority="1">foo</attribute:b>[bar]<attribute:b view-priority="1">bazqux</attribute:b>' +
 				'</container:p>',
-				'<container:p><attribute:b view-priority="1">foobazqux</attribute:b></container:p>',
+				'<container:p><attribute:b view-priority="1">foo{}bazqux</attribute:b></container:p>',
 				'bar'
 			);
 		} );
@@ -101,19 +102,19 @@ describe( 'writer', () => {
 				'<container:p>' +
 					'<attribute:b view-priority="1">fo{o</attribute:b>bar<attribute:b view-priority="1">ba}zqux</attribute:b>' +
 				'</container:p>',
-				'<container:p><attribute:b view-priority="1">fozqux</attribute:b></container:p>',
+				'<container:p><attribute:b view-priority="1">fo{}zqux</attribute:b></container:p>',
 				'<attribute:b view-priority="1">o</attribute:b>bar<attribute:b view-priority="1">ba</attribute:b>'
 			);
 		} );
 
 		it( 'should remove part of the text node in document fragment', () => {
-			test( 'fo{ob}ar', 'foar', 'ob' );
+			test( 'fo{ob}ar', 'fo{}ar', 'ob' );
 		} );
 
 		it( 'should remove EmptyElement', () => {
 			test(
 				'<container:p>foo[<empty:img></empty:img>]bar</container:p>',
-				'<container:p>foobar</container:p>',
+				'<container:p>foo{}bar</container:p>',
 				'<empty:img></empty:img>'
 			);
 		} );
@@ -132,7 +133,7 @@ describe( 'writer', () => {
 		it( 'should remove UIElement', () => {
 			test(
 				'<container:p>foo[<ui:span></ui:span>]bar</container:p>',
-				'<container:p>foobar</container:p>',
+				'<container:p>foo{}bar</container:p>',
 				'<ui:span></ui:span>'
 			);
 		} );

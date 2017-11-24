@@ -291,6 +291,14 @@ describe( 'Position', () => {
 		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'index' ).that.equals( 1 );
 	} );
 
+	it( 'should be able to set offset', () => {
+		const position = new Position( root, [ 1, 0, 2 ] );
+		position.offset = 4;
+
+		expect( position.offset ).to.equal( 4 );
+		expect( position.path ).to.deep.equal( [ 1, 0, 4 ] );
+	} );
+
 	it( 'should have nodeBefore if it is not inside a text node', () => {
 		expect( new Position( root, [ 0 ] ).nodeBefore ).to.be.null;
 		expect( new Position( root, [ 1 ] ).nodeBefore ).to.equal( p );
@@ -597,6 +605,14 @@ describe( 'Position', () => {
 	} );
 
 	describe( '_getTransformedByInsertion()', () => {
+		it( 'should return a new Position instance', () => {
+			const position = new Position( root, [ 0 ] );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 2 ] ), 4, false );
+
+			expect( transformed ).not.to.equal( position );
+			expect( transformed ).to.be.instanceof( Position );
+		} );
+
 		it( 'should increment offset if insertion is in the same parent and closer offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 2 ] ), 2, false );
@@ -649,6 +665,14 @@ describe( 'Position', () => {
 	} );
 
 	describe( '_getTransformedByDeletion()', () => {
+		it( 'should return a new Position instance', () => {
+			const position = new Position( root, [ 0 ] );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 2 ] ), 4 );
+
+			expect( transformed ).not.to.equal( position );
+			expect( transformed ).to.be.instanceof( Position );
+		} );
+
 		it( 'should return null if original position is inside one of removed nodes', () => {
 			const position = new Position( root, [ 1, 2 ] );
 			const transformed = position._getTransformedByDeletion( new Position( root, [ 0 ] ), 2 );

@@ -7,6 +7,7 @@
  * @module engine/model/documentselection
  */
 
+import Position from './position';
 import Range from './range';
 import LiveRange from './liverange';
 import Text from './text';
@@ -665,9 +666,10 @@ export default class DocumentSelection extends Selection {
 	_fixGraveyardSelection( liveRange, removedRangeStart ) {
 		// The start of the removed range is the closest position to the `liveRange` - the original selection range.
 		// This is a good candidate for a fixed selection range.
+		const positionCandidate = Position.createFromPosition( removedRangeStart );
 
 		// Find a range that is a correct selection range and is closest to the start of removed range.
-		const selectionRange = this._document.getNearestSelectionRange( removedRangeStart );
+		const selectionRange = this._document.getNearestSelectionRange( positionCandidate );
 
 		// Remove the old selection range before preparing and adding new selection range. This order is important,
 		// because new range, in some cases, may intersect with old range (it depends on `getNearestSelectionRange()` result).

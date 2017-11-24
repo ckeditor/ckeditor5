@@ -68,14 +68,12 @@ export function getMarkerDelta( name, oldRange, newRange, version ) {
 export function getMergeDelta( position, howManyInPrev, howManyInNext, version ) {
 	const delta = new MergeDelta();
 
-	const sourcePath = position.path.slice();
-	sourcePath.push( 0 );
-	const sourcePosition = new Position( position.root, sourcePath );
+	const sourcePosition = Position.createFromPosition( position );
+	sourcePosition.path.push( 0 );
 
-	const targetPath = position.getShiftedBy( -1 ).path.slice();
-	targetPath.push( howManyInPrev );
-
-	const targetPosition = new Position( position.root, targetPath );
+	const targetPosition = Position.createFromPosition( position );
+	targetPosition.offset--;
+	targetPosition.path.push( howManyInPrev );
 
 	const move = new MoveOperation( sourcePosition, howManyInNext, targetPosition, version );
 	move.isSticky = true;
@@ -131,15 +129,12 @@ export function getRenameDelta( position, oldName, newName, baseVersion ) {
 export function getSplitDelta( position, nodeCopy, howManyMove, version ) {
 	const delta = new SplitDelta();
 
-	const insertPath = position.getParentPath();
-	insertPath[ insertPath.length - 1 ]++;
+	const insertPosition = Position.createFromPosition( position );
+	insertPosition.path = insertPosition.getParentPath();
+	insertPosition.offset++;
 
-	const insertPosition = new Position( position.root, insertPath );
-
-	const targetPath = insertPosition.path.slice();
-	targetPath.push( 0 );
-
-	const targetPosition = new Position( insertPosition.root, targetPath );
+	const targetPosition = Position.createFromPosition( insertPosition );
+	targetPosition.path.push( 0 );
 
 	delta.addOperation( new InsertOperation( insertPosition, [ nodeCopy ], version ) );
 
@@ -158,10 +153,8 @@ export function getWrapDelta( range, element, version ) {
 
 	const insert = new InsertOperation( range.end, element, version );
 
-	const targetPath = range.end.path.slice();
-	targetPath.push( 0 );
-	const targetPosition = new Position( range.end.root, targetPath );
-
+	const targetPosition = Position.createFromPosition( range.end );
+	targetPosition.path.push( 0 );
 	const move = new MoveOperation( range.start, range.end.offset - range.start.offset, targetPosition, version + 1 );
 
 	delta.addOperation( insert );
@@ -175,14 +168,14 @@ export function getWrapDelta( range, element, version ) {
 export function getUnwrapDelta( positionBefore, howManyChildren, version ) {
 	const delta = new UnwrapDelta();
 
-	const sourcePath = positionBefore.path.slice();
-	sourcePath.push( 0 );
-	const sourcePosition = new Position( positionBefore.root, sourcePath );
+	const sourcePosition = Position.createFromPosition( positionBefore );
+	sourcePosition.path.push( 0 );
 
 	const move = new MoveOperation( sourcePosition, howManyChildren, positionBefore, version );
 	move.isSticky = true;
 
-	const removePosition = positionBefore.getShiftedBy( howManyChildren );
+	const removePosition = Position.createFromPosition( positionBefore );
+	removePosition.offset += howManyChildren;
 
 	const gy = sourcePosition.root.document.graveyard;
 	const gyPos = Position.createAt( gy, 0 );

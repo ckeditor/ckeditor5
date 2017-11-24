@@ -132,8 +132,9 @@ export default class Selection {
 			return null;
 		}
 		const range = this._ranges[ this._ranges.length - 1 ];
+		const anchor = this._lastRangeBackward ? range.end : range.start;
 
-		return this._lastRangeBackward ? range.end : range.start;
+		return Position.createFromPosition( anchor );
 	}
 
 	/**
@@ -147,8 +148,9 @@ export default class Selection {
 			return null;
 		}
 		const range = this._ranges[ this._ranges.length - 1 ];
+		const focus = this._lastRangeBackward ? range.start : range.end;
 
-		return this._lastRangeBackward ? range.start : range.end;
+		return Position.createFromPosition( focus );
 	}
 
 	/**
@@ -220,16 +222,18 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns an iterator that contains all ranges added to the selection.
+	 * Returns an iterator that contains copies of all ranges added to the selection.
 	 *
 	 * @returns {Iterator.<module:engine/view/range~Range>}
 	 */
-	getRanges() {
-		return this._ranges[ Symbol.iterator ]();
+	* getRanges() {
+		for ( const range of this._ranges ) {
+			yield Range.createFromRange( range );
+		}
 	}
 
 	/**
-	 * Returns first range in the selection. First range is the one which
+	 * Returns copy of the first range in the selection. First range is the one which
 	 * {@link module:engine/view/range~Range#start start} position {@link module:engine/view/position~Position#isBefore is before} start
 	 * position of all other ranges (not to confuse with the first range added to the selection).
 	 * Returns `null` if no ranges are added to selection.
@@ -245,11 +249,11 @@ export default class Selection {
 			}
 		}
 
-		return first;
+		return first ? Range.createFromRange( first ) : null;
 	}
 
 	/**
-	 * Returns last range in the selection. Last range is the one which {@link module:engine/view/range~Range#end end}
+	 * Returns copy of the last range in the selection. Last range is the one which {@link module:engine/view/range~Range#end end}
 	 * position {@link module:engine/view/position~Position#isAfter is after} end position of all other ranges (not to confuse
 	 * with the last range added to the selection). Returns `null` if no ranges are added to selection.
 	 *
@@ -264,7 +268,7 @@ export default class Selection {
 			}
 		}
 
-		return last;
+		return last ? Range.createFromRange( last ) : null;
 	}
 
 	/**
@@ -277,7 +281,7 @@ export default class Selection {
 	getFirstPosition() {
 		const firstRange = this.getFirstRange();
 
-		return firstRange ? firstRange.start : null;
+		return firstRange ? Position.createFromPosition( firstRange.start ) : null;
 	}
 
 	/**
@@ -290,7 +294,7 @@ export default class Selection {
 	getLastPosition() {
 		const lastRange = this.getLastRange();
 
-		return lastRange ? lastRange.end : null;
+		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
 	}
 
 	/**

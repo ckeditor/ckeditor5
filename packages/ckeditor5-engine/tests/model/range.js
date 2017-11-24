@@ -855,8 +855,7 @@ describe( 'Range', () => {
 			} );
 
 			it( 'move inside the range', () => {
-				range = new Range( range.start, range.end.getShiftedTo( 6 ) );
-
+				range.end.offset = 6;
 				const start = new Position( root, [ 3 ] );
 				const target = new Position( root, [ 5 ] );
 				const delta = getMoveDelta( start, 1, target, 1 );
@@ -978,10 +977,8 @@ describe( 'Range', () => {
 
 		describe( 'by SplitDelta', () => {
 			it( 'split inside range', () => {
-				range = new Range(
-					new Position( root, [ 0, 2 ] ),
-					new Position( root, [ 0, 4 ] )
-				);
+				range.start = new Position( root, [ 0, 2 ] );
+				range.end = new Position( root, [ 0, 4 ] );
 
 				const delta = getSplitDelta( new Position( root, [ 0, 3 ] ), new Element( 'p' ), 3, 1 );
 
@@ -993,10 +990,8 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split at the beginning of multi-element range', () => {
-				range = new Range(
-					new Position( root, [ 0, 4 ] ),
-					new Position( root, [ 1, 2 ] )
-				);
+				range.start = new Position( root, [ 0, 4 ] );
+				range.end = new Position( root, [ 1, 2 ] );
 
 				const delta = getSplitDelta( new Position( root, [ 0, 4 ] ), new Element( 'p' ), 3, 1 );
 
@@ -1008,10 +1003,8 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split inside range which starts at the beginning of split element', () => {
-				range = new Range(
-					new Position( root, [ 0, 0 ] ),
-					new Position( root, [ 0, 4 ] )
-				);
+				range.start = new Position( root, [ 0, 0 ] );
+				range.end = new Position( root, [ 0, 4 ] );
 
 				const delta = getSplitDelta( new Position( root, [ 0, 3 ] ), new Element( 'p' ), 3, 1 );
 
@@ -1023,10 +1016,8 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split inside range which end is at the end of split element', () => {
-				range = new Range(
-					new Position( root, [ 0, 3 ] ),
-					new Position( root, [ 0, 6 ] )
-				);
+				range.start = new Position( root, [ 0, 3 ] );
+				range.end = new Position( root, [ 0, 6 ] );
 
 				const delta = getSplitDelta( new Position( root, [ 0, 4 ] ), new Element( 'p' ), 2, 1 );
 
@@ -1038,10 +1029,8 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split element which has collapsed range at the end', () => {
-				range = new Range(
-					new Position( root, [ 0, 6 ] ),
-					new Position( root, [ 0, 6 ] )
-				);
+				range.start = new Position( root, [ 0, 6 ] );
+				range.end = new Position( root, [ 0, 6 ] );
 
 				const delta = getSplitDelta( new Position( root, [ 0, 3 ] ), new Element( 'p' ), 3, 1 );
 
@@ -1055,10 +1044,8 @@ describe( 'Range', () => {
 
 		describe( 'by MergeDelta', () => {
 			it( 'merge element with collapsed range', () => {
-				range = new Range(
-					new Position( root, [ 1, 0 ] ),
-					new Position( root, [ 1, 0 ] )
-				);
+				range.start = new Position( root, [ 1, 0 ] );
+				range.end = new Position( root, [ 1, 0 ] );
 
 				const delta = getMergeDelta( new Position( root, [ 1 ] ), 3, 3, 1 );
 
@@ -1119,10 +1106,8 @@ describe( 'Range', () => {
 		describe( 'by WrapDelta', () => {
 			it( 'maintans start position when wrapping element in which the range starts and ends', () => {
 				// <p>f[o]o</p><p>bar</p>
-				range = new Range(
-					new Position( root, [ 0, 1 ] ),
-					new Position( root, [ 0, 2 ] )
-				);
+				range.start = new Position( root, [ 0, 1 ] );
+				range.end = new Position( root, [ 0, 2 ] );
 
 				const wrapRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 				const wrapElement = new Element( 'w' );
@@ -1138,10 +1123,8 @@ describe( 'Range', () => {
 
 			it( 'maintans start position when wrapping element in which the range starts but not ends', () => {
 				// <p>f[oo</p><p>b]ar</p>
-				range = new Range(
-					new Position( root, [ 0, 1 ] ),
-					new Position( root, [ 1, 1 ] )
-				);
+				range.start = new Position( root, [ 0, 1 ] );
+				range.end = new Position( root, [ 1, 1 ] );
 
 				const wrapRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 				const wrapElement = new Element( 'w' );
@@ -1157,10 +1140,8 @@ describe( 'Range', () => {
 
 			it( 'maintans end position when wrapping element in which the range ends but not starts', () => {
 				// <p>f[oo</p><p>b]ar</p>
-				range = new Range(
-					new Position( root, [ 0, 1 ] ),
-					new Position( root, [ 1, 1 ] )
-				);
+				range.start = new Position( root, [ 0, 1 ] );
+				range.end = new Position( root, [ 1, 1 ] );
 
 				const wrapRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
 				const wrapElement = new Element( 'w' );
@@ -1178,10 +1159,8 @@ describe( 'Range', () => {
 		describe( 'by UnwrapDelta', () => {
 			it( 'maintans start position when wrapping element in which the range starts and ends', () => {
 				// <w><p>f[o]o</p></w><p>bar</p>
-				range = new Range(
-					new Position( root, [ 0, 0, 1 ] ),
-					new Position( root, [ 0, 0, 2 ] )
-				);
+				range.start = new Position( root, [ 0, 0, 1 ] );
+				range.end = new Position( root, [ 0, 0, 2 ] );
 
 				const unwrapPosition = new Position( root, [ 0 ] );
 				const delta = getUnwrapDelta( unwrapPosition, 1, 1 );
@@ -1196,10 +1175,8 @@ describe( 'Range', () => {
 
 			it( 'maintans start position when wrapping element in which the range starts but not ends', () => {
 				// <w><p>f[oo</p></w><p>b]ar</p>
-				range = new Range(
-					new Position( root, [ 0, 0, 1 ] ),
-					new Position( root, [ 1, 1 ] )
-				);
+				range.start = new Position( root, [ 0, 0, 1 ] );
+				range.end = new Position( root, [ 1, 1 ] );
 
 				const unwrapPosition = new Position( root, [ 0 ] );
 				const delta = getUnwrapDelta( unwrapPosition, 1, 1 );
@@ -1217,10 +1194,8 @@ describe( 'Range', () => {
 
 			it( 'maintans end position when wrapping element in which the range ends but not starts', () => {
 				// <p>f[oo</p><w><p>b]ar</p></w>
-				range = new Range(
-					new Position( root, [ 0, 1 ] ),
-					new Position( root, [ 1, 0, 1 ] )
-				);
+				range.start = new Position( root, [ 0, 1 ] );
+				range.end = new Position( root, [ 1, 0, 1 ] );
 
 				const unwrapPosition = new Position( root, [ 1 ] );
 				const delta = getUnwrapDelta( unwrapPosition, 1, 1 );

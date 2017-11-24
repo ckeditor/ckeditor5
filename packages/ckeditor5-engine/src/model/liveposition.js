@@ -194,8 +194,8 @@ function transform( type, range, position ) {
 	if ( !this.isEqual( transformed ) ) {
 		const oldPosition = Position.createFromPosition( this );
 
-		this._path = transformed.path;
-		this._root = transformed.root;
+		this.path = transformed.path;
+		this.root = transformed.root;
 
 		this.fire( 'change', oldPosition );
 	}

@@ -25,8 +25,8 @@ describe( 'Range', () => {
 			const range = new Range( start, end );
 
 			expect( range ).to.be.an.instanceof( Range );
-			expect( range ).to.have.property( 'start' ).that.equals( start );
-			expect( range ).to.have.property( 'end' ).that.equals( end );
+			expect( range ).to.have.property( 'start' ).that.not.equals( start );
+			expect( range ).to.have.property( 'end' ).that.not.equals( end );
 			expect( range.start.parent ).to.equal( start.parent );
 			expect( range.end.parent ).to.equal( end.parent );
 			expect( range.start.offset ).to.equal( start.offset );

@@ -85,9 +85,9 @@ export default class TreeWalker {
 		 * @member {module:engine/model/position~Position} module:engine/model/treewalker~TreeWalker#position
 		 */
 		if ( options.startPosition ) {
-			this.position = options.startPosition;
+			this.position = Position.createFromPosition( options.startPosition );
 		} else {
-			this.position = this.boundaries[ this.direction == 'backward' ? 'end' : 'start' ];
+			this.position = Position.createFromPosition( this.boundaries[ this.direction == 'backward' ? 'end' : 'start' ] );
 		}
 
 		/**
@@ -204,33 +204,33 @@ export default class TreeWalker {
 	 */
 	_next() {
 		const previousPosition = this.position;
+		const position = Position.createFromPosition( this.position );
 		const parent = this._visitedParent;
 
 		// We are at the end of the root.
-		if ( parent.parent === null && this.position.offset === parent.maxOffset ) {
+		if ( parent.parent === null && position.offset === parent.maxOffset ) {
 			return { done: true };
 		}
 
 		// We reached the walker boundary.
-		if ( parent === this._boundaryEndParent && this.position.offset == this.boundaries.end.offset ) {
+		if ( parent === this._boundaryEndParent && position.offset == this.boundaries.end.offset ) {
 			return { done: true };
 		}
 
-		const node = this.position.textNode ? this.position.textNode : this.position.nodeAfter;
+		const node = position.textNode ? position.textNode : position.nodeAfter;
 
 		if ( node instanceof Element ) {
 			if ( !this.shallow ) {
 				// Manual operations on path internals for optimization purposes. Here and in the rest of the method.
-				const path = this.position.path.slice();
-				path.push( 0 );
-				this.position = new Position( this.position.root, path );
-
+				position.path.push( 0 );
 				this._visitedParent = node;
 			} else {
-				this.position = this.position.getShiftedBy( 1 );
+				position.offset++;
 			}
 
-			return formatReturnValue( 'elementStart', node, previousPosition, this.position, 1 );
+			this.position = position;
+
+			return formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 		} else if ( node instanceof Text ) {
 			let charactersCount;
 
@@ -243,24 +243,27 @@ export default class TreeWalker {
 					offset = this.boundaries.end.offset;
 				}
 
-				charactersCount = offset - this.position.offset;
+				charactersCount = offset - position.offset;
 			}
 
-			const offsetInTextNode = this.position.offset - node.startOffset;
+			const offsetInTextNode = position.offset - node.startOffset;
 			const item = new TextProxy( node, offsetInTextNode, charactersCount );
 
-			this.position = this.position.getShiftedBy( charactersCount );
+			position.offset += charactersCount;
+			this.position = position;
 
-			return formatReturnValue( 'text', item, previousPosition, this.position, charactersCount );
+			return formatReturnValue( 'text', item, previousPosition, position, charactersCount );
 		} else {
 			// `node` is not set, we reached the end of current `parent`.
-			this.position = Position.createAfter( parent );
+			position.path.pop();
+			position.offset++;
+			this.position = position;
 			this._visitedParent = parent.parent;
 
 			if ( this.ignoreElementEnd ) {
 				return this._next();
 			} else {
-				return formatReturnValue( 'elementEnd', parent, previousPosition, this.position );
+				return formatReturnValue( 'elementEnd', parent, previousPosition, position );
 			}
 		}
 	}
@@ -275,38 +278,39 @@ export default class TreeWalker {
 	 */
 	_previous() {
 		const previousPosition = this.position;
+		const position = Position.createFromPosition( this.position );
 		const parent = this._visitedParent;
 
 		// We are at the beginning of the root.
-		if ( parent.parent === null && this.position.offset === 0 ) {
+		if ( parent.parent === null && position.offset === 0 ) {
 			return { done: true };
 		}
 
 		// We reached the walker boundary.
-		if ( parent == this._boundaryStartParent && this.position.offset == this.boundaries.start.offset ) {
+		if ( parent == this._boundaryStartParent && position.offset == this.boundaries.start.offset ) {
 			return { done: true };
 		}
 
 		// Get node just before current position
-		const node = this.position.textNode ? this.position.textNode : this.position.nodeBefore;
+		const node = position.textNode ? position.textNode : position.nodeBefore;
 
 		if ( node instanceof Element ) {
-			this.position = this.position.getShiftedBy( -1 );
+			position.offset--;
 
 			if ( !this.shallow ) {
-				const path = this.position.path.slice();
-				path.push( node.maxOffset );
-
-				this.position = new Position( this.position.root, path );
+				position.path.push( node.maxOffset );
+				this.position = position;
 				this._visitedParent = node;
 
 				if ( this.ignoreElementEnd ) {
 					return this._previous();
 				} else {
-					return formatReturnValue( 'elementEnd', node, previousPosition, this.position );
+					return formatReturnValue( 'elementEnd', node, previousPosition, position );
 				}
 			} else {
-				return formatReturnValue( 'elementStart', node, previousPosition, this.position, 1 );
+				this.position = position;
+
+				return formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 			}
 		} else if ( node instanceof Text ) {
 			let charactersCount;
@@ -320,21 +324,23 @@ export default class TreeWalker {
 					offset = this.boundaries.start.offset;
 				}
 
-				charactersCount = this.position.offset - offset;
+				charactersCount = position.offset - offset;
 			}
 
-			const offsetInTextNode = this.position.offset - node.startOffset;
+			const offsetInTextNode = position.offset - node.startOffset;
 			const item = new TextProxy( node, offsetInTextNode - charactersCount, charactersCount );
 
-			this.position = this.position.getShiftedBy( -charactersCount );
+			position.offset -= charactersCount;
+			this.position = position;
 
-			return formatReturnValue( 'text', item, previousPosition, this.position, charactersCount );
+			return formatReturnValue( 'text', item, previousPosition, position, charactersCount );
 		} else {
 			// `node` is not set, we reached the beginning of current `parent`.
-			this.position = Position.createBefore( parent );
+			position.path.pop();
+			this.position = position;
 			this._visitedParent = parent.parent;
 
-			return formatReturnValue( 'elementStart', parent, previousPosition, this.position, 1 );
+			return formatReturnValue( 'elementStart', parent, previousPosition, position, 1 );
 		}
 	}
 }

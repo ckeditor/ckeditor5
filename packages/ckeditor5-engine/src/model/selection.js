@@ -174,16 +174,18 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns an iterator that iterates over selection ranges.
+	 * Returns an iterator that iterates over copies of selection ranges.
 	 *
 	 * @returns {Iterator.<module:engine/model/range~Range>}
 	 */
-	getRanges() {
-		return this._ranges[ Symbol.iterator ]();
+	* getRanges() {
+		for ( const range of this._ranges ) {
+			yield Range.createFromRange( range );
+		}
 	}
 
 	/**
-	 * Returns first range in the selection.
+	 * Returns a copy of the first range in the selection.
 	 * First range is the one which {@link module:engine/model/range~Range#start start} position
 	 * {@link module:engine/model/position~Position#isBefore is before} start position of all other ranges
 	 * (not to confuse with the first range added to the selection).
@@ -201,11 +203,11 @@ export default class Selection {
 			}
 		}
 
-		return first;
+		return first ? Range.createFromRange( first ) : null;
 	}
 
 	/**
-	 * Returns last range in the selection.
+	 * Returns a copy of the last range in the selection.
 	 * Last range is the one which {@link module:engine/model/range~Range#end end} position
 	 * {@link module:engine/model/position~Position#isAfter is after} end position of all other ranges (not to confuse with the range most
 	 * recently added to the selection).
@@ -223,7 +225,7 @@ export default class Selection {
 			}
 		}
 
-		return last;
+		return last ? Range.createFromRange( last ) : null;
 	}
 
 	/**
@@ -236,9 +238,9 @@ export default class Selection {
 	 * @returns {module:engine/model/position~Position|null}
 	 */
 	getFirstPosition() {
-		const firstRange = this.getFirstRange();
+		const first = this.getFirstRange();
 
-		return firstRange ? firstRange.start : null;
+		return first ? Position.createFromPosition( first.start ) : null;
 	}
 
 	/**
@@ -253,7 +255,7 @@ export default class Selection {
 	getLastPosition() {
 		const lastRange = this.getLastRange();
 
-		return lastRange ? lastRange.end : null;
+		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
 	}
 
 	/**
