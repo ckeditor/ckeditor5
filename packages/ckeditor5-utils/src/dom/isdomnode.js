@@ -7,8 +7,6 @@
  * @module utils/dom/isdomnode
  */
 
-import isNative from '../lib/lodash/isNative';
-
 /**
  * Checks if the object is a native DOM Node.
  *
@@ -16,5 +14,13 @@ import isNative from '../lib/lodash/isNative';
  * @returns {Boolean}
  */
 export default function isDomNode( obj ) {
-	return !!( obj && isNative( obj.addEventListener ) );
+	if ( obj ) {
+		if ( obj.defaultView ) {
+			return obj instanceof obj.defaultView.Document;
+		} else if ( obj.ownerDocument && obj.ownerDocument.defaultView ) {
+			return obj instanceof obj.ownerDocument.defaultView.Node;
+		}
+	}
+
+	return false;
 }

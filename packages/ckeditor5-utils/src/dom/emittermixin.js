@@ -11,6 +11,7 @@ import { default as EmitterMixin, _getEmitterListenedTo, _setEmitterId } from '.
 import uid from '../uid';
 import extend from '../lib/lodash/extend';
 import isDomNode from './isdomnode';
+import isWindow from './iswindow';
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
@@ -56,7 +57,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with
 		// corresponding ProxyEmitter (or create one if not existing).
-		if ( isDomNode( emitter ) ) {
+		if ( isDomNode( emitter ) || isWindow( emitter ) ) {
 			args[ 0 ] = this._getProxyEmitter( emitter ) || new ProxyEmitter( emitter );
 		}
 
@@ -85,7 +86,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 		const emitter = args[ 0 ];
 
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with corresponding ProxyEmitter.
-		if ( isDomNode( emitter ) ) {
+		if ( isDomNode( emitter ) || isWindow( emitter ) ) {
 			const proxy = this._getProxyEmitter( emitter );
 
 			// Element has no listeners.
