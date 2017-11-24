@@ -159,18 +159,19 @@ export default class Clipboard extends Plugin {
 		this.listenTo( this, 'inputTransformation', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				const dataController = this.editor.data;
+				const batch = doc.batch();
 
 				// Convert the pasted content to a model document fragment.
 				// Conversion is contextual, but in this case we need an "all allowed" context and for that
 				// we use the $clipboardHolder item.
-				const modelFragment = dataController.toModel( data.content, '$clipboardHolder' );
+				const modelFragment = dataController.toModel( data.content, batch, '$clipboardHolder' );
 
 				if ( modelFragment.childCount == 0 ) {
 					return;
 				}
 
 				doc.enqueueChanges( () => {
-					dataController.insertContent( modelFragment, doc.selection );
+					dataController.insertContent( modelFragment, doc.selection, batch );
 				} );
 			}
 		}, { priority: 'low' } );
