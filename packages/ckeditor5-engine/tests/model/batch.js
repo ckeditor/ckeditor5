@@ -1283,6 +1283,61 @@ describe( 'Batch', () => {
 					expect( spy.callCount ).to.equal( 0 );
 				} );
 			} );
+
+			describe( 'clearAttributes', () => {
+				it( 'should clear attributes from range', () => {
+					batch.appendText( 'xxx', { a: 1, b: 2, c: 3 }, root );
+					batch.appendText( 'xxx', root );
+					batch.appendText( 'xxx', { a: 1 }, root );
+					batch.appendText( 'xxx', { b: 2 }, root );
+					batch.appendText( 'xxx', root );
+					batch.appendElement( 'e', { a: 1 }, root );
+					batch.appendText( 'xxx', root );
+
+					const range = Range.createIn( root );
+
+					batch.clearAttributes( range );
+
+					let itemsCount = 0;
+
+					for ( const item of range.getItems() ) {
+						itemsCount++;
+						expect( Array.from( item.getAttributeKeys() ).length ).to.equal( 0 );
+					}
+
+					expect( itemsCount ).to.equal( 3 );
+				} );
+
+				it( 'should clear attributes on element', () => {
+					const element = batch.createElement( 'x', { a: 1, b: 2, c: 3 }, root );
+
+					expect( Array.from( element.getAttributeKeys() ).length ).to.equal( 3 );
+
+					batch.clearAttributes( element );
+
+					expect( Array.from( element.getAttributeKeys() ).length ).to.equal( 0 );
+				} );
+
+				it( 'should clear attributes on root element', () => {
+					batch.setAttributes( root, { a: 1, b: 2, c: 3 } );
+
+					expect( Array.from( root.getAttributeKeys() ).length ).to.equal( 3 );
+
+					batch.clearAttributes( root );
+
+					expect( Array.from( root.getAttributeKeys() ).length ).to.equal( 0 );
+				} );
+
+				it( 'should do nothing if there are no attributes', () => {
+					const element = batch.createElement( 'x' );
+
+					expect( Array.from( element.getAttributeKeys() ).length ).to.equal( 0 );
+
+					batch.clearAttributes( element );
+
+					expect( Array.from( element.getAttributeKeys() ).length ).to.equal( 0 );
+				} );
+			} );
 		} );
 
 		it( 'should not add empty delta to the batch', () => {
