@@ -42,6 +42,10 @@ import ViewText from '../../src/view/text';
 import ViewTextProxy from '../../src/view/textproxy';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+testUtils.createSinonSandbox();
+
 /* global document */
 
 describe( 'enableEngineDebug', () => {
@@ -1056,9 +1060,7 @@ describe( 'debug tools', () => {
 				const opB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
 				deltaB.addOperation( opB );
 
-				deltaTransform.defaultTransform = () => {
-					throw new Error();
-				};
+				testUtils.sinon.stub( deltaTransform, 'defaultTransform' ).throws( new Error() );
 
 				expect( () => deltaTransform.transform( deltaA, deltaB, { isStrong: true } ) ).to.throw( Error );
 				expect( error.calledWith( deltaA.toString() + ' (important)' ) ).to.be.true;
@@ -1074,9 +1076,7 @@ describe( 'debug tools', () => {
 				const opB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
 				deltaB.addOperation( opB );
 
-				deltaTransform.defaultTransform = () => {
-					throw new Error();
-				};
+				testUtils.sinon.stub( deltaTransform, 'defaultTransform' ).throws( new Error() );
 
 				expect( () => deltaTransform.transform( deltaA, deltaB, { isStrong: false } ) ).to.throw( Error );
 				expect( error.calledWith( deltaA.toString() ) ).to.be.true;
