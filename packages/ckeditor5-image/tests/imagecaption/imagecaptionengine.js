@@ -314,7 +314,7 @@ describe( 'ImageCaptionEngine', () => {
 			const batch = doc.batch();
 
 			doc.enqueueChanges( () => {
-				batch.setAttribute( image, 'alt', 'alt text' );
+				batch.setAttribute( 'alt', 'alt text', image );
 			} );
 
 			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal(

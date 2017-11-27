@@ -139,7 +139,7 @@ describe( 'Image converters', () => {
 			document.enqueueChanges( () => {
 				const batch = document.batch();
 
-				batch.setAttribute( image, 'alt', 'foo bar' );
+				batch.setAttribute( 'alt', 'foo bar', image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -154,7 +154,7 @@ describe( 'Image converters', () => {
 			document.enqueueChanges( () => {
 				const batch = document.batch();
 
-				batch.removeAttribute( image, 'alt' );
+				batch.removeAttribute( 'alt', image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -169,7 +169,7 @@ describe( 'Image converters', () => {
 			document.enqueueChanges( () => {
 				const batch = document.batch();
 
-				batch.setAttribute( image, 'alt', 'baz quix' );
+				batch.setAttribute( 'alt', 'baz quix', image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -188,7 +188,7 @@ describe( 'Image converters', () => {
 			document.enqueueChanges( () => {
 				const batch = document.batch();
 
-				batch.setAttribute( image, 'alt', 'baz quix' );
+				batch.setAttribute( 'alt', 'baz quix', image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
