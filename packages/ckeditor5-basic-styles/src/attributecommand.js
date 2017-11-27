@@ -100,9 +100,9 @@ export default class AttributeCommand extends Command {
 
 				for ( const range of ranges ) {
 					if ( value ) {
-						batch.setAttribute( range, this.attributeKey, value );
+						batch.setAttribute( this.attributeKey, value, range );
 					} else {
-						batch.removeAttribute( range, this.attributeKey );
+						batch.removeAttribute( this.attributeKey, range );
 					}
 				}
 			}
