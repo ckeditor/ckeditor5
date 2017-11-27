@@ -17,6 +17,10 @@ import leftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
 import centerIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import rightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+testUtils.createSinonSandbox();
+
 describe( 'ImageStyleEngine', () => {
 	let editor, plugin, document, viewDocument;
 
@@ -94,7 +98,7 @@ describe( 'ImageStyleEngine', () => {
 			expect( getModelData( document, { withoutSelection: true } ) )
 				.to.equal( '<image imageStyle="sideStyle" src="foo.png"></image>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget side-class" contenteditable="false">' +
+				'<figure class="ck-widget image side-class" contenteditable="false">' +
 					'<img src="foo.png"></img>' +
 				'</figure>' );
 		} );
@@ -104,7 +108,7 @@ describe( 'ImageStyleEngine', () => {
 
 			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image src="foo.png"></image>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 		} );
 
@@ -121,7 +125,7 @@ describe( 'ImageStyleEngine', () => {
 
 			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image src="foo.png"></image>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 		} );
 
@@ -136,7 +140,7 @@ describe( 'ImageStyleEngine', () => {
 
 			expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="foo.png"></figure>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget side-class" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image side-class" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 		} );
 
@@ -151,7 +155,7 @@ describe( 'ImageStyleEngine', () => {
 
 			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 		} );
 
@@ -168,7 +172,7 @@ describe( 'ImageStyleEngine', () => {
 
 			// https://github.com/ckeditor/ckeditor5-image/issues/132
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget side-class" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image side-class" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 
 			document.enqueueChanges( () => {
@@ -179,7 +183,7 @@ describe( 'ImageStyleEngine', () => {
 
 			// https://github.com/ckeditor/ckeditor5-image/issues/132
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget dummy-class" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget dummy-class image" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 		} );
 
@@ -197,7 +201,7 @@ describe( 'ImageStyleEngine', () => {
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 		} );
 
@@ -215,7 +219,7 @@ describe( 'ImageStyleEngine', () => {
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget side-class" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image side-class" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 		} );
 
@@ -233,7 +237,7 @@ describe( 'ImageStyleEngine', () => {
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget dummy-class" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget dummy-class image" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 		} );
 
@@ -248,7 +252,7 @@ describe( 'ImageStyleEngine', () => {
 
 			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 		} );
 
@@ -263,7 +267,7 @@ describe( 'ImageStyleEngine', () => {
 
 			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 		} );
 
@@ -278,7 +282,7 @@ describe( 'ImageStyleEngine', () => {
 
 			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 		} );
 	} );
@@ -417,7 +421,7 @@ describe( 'ImageStyleEngine', () => {
 			} );
 
 			it( 'should warn if a #name not found in default styles', () => {
-				sinon.stub( log, 'warn' );
+				testUtils.sinon.stub( log, 'warn' );
 
 				return VirtualTestEditor
 					.create( {
