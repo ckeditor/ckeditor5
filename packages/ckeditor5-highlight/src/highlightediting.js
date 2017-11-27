@@ -82,7 +82,7 @@ export default class HighlightEditing extends Plugin {
 /**
  * Highlight option descriptor.
  *
- * @typedef {Object} module:highlight/highlightediting~HeadingOption
+ * @typedef {Object} module:highlight/highlightediting~HighlightOption
  * @property {String} class The class which is used to differentiate highlighters.
  * @property {String} title The user-readable title of the option.
  * @property {String} color Color used for highlighter. Should be coherent with CSS class definition.
@@ -124,5 +124,5 @@ export default class HighlightEditing extends Plugin {
  * Note: Each highlighter must have it's own CSS class defined to properly match content data. Also it is advised
  * that color value should match the values defined in content CSS stylesheet.
  *
- * @member {Array.<module:heading/heading~HeadingOption>} module:heading/heading~HeadingConfig#options
+ * @member {Array.<module:heading/heading~HighlightOption>} module:heading/heading~HeadingConfig#options
  */

@@ -19,7 +19,18 @@ export default class HighlightCommand extends Command {
 	constructor( editor, className ) {
 		super( editor );
 
+		/**
+		 * Name of marker class that is used by associated highlighter.
+		 */
 		this.className = className;
+
+		/**
+		 * A flag indicating whether the command is active, which means that the selection has highlight attribute set.
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {undefined|String} module:highlight/highlightcommand~HighlightCommand#value
+		 */
 	}
 
 	/**
@@ -37,7 +48,6 @@ export default class HighlightCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} options.class Name of highlighter class.
 	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps.
 	 * A new batch will be created if this option is not set.
 	 */
@@ -60,11 +70,3 @@ export default class HighlightCommand extends Command {
 		} );
 	}
 }
-
-/**
- * Holds current highlight class. If there is no highlight in selection then value will be undefined.
- *
- * @observable
- * @readonly
- * @member {undefined|String} module:highlight/highlightcommand~HighlightCommand#value
- */

@@ -10,8 +10,8 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
- * The highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}
- * to apply text highlighting.
+ * The remove highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}
+ * to remove text highlighting.
  *
  * @extends module:core/command~Command
  */
@@ -54,11 +54,3 @@ export default class RemoveHighlightCommand extends Command {
 		} );
 	}
 }
-
-/**
- * Holds current highlight class. If there is no highlight in selection then value will be undefined.
- *
- * @observable
- * @readonly
- * @member {undefined|String} module:highlight/highlightcommand~HighlightCommand#value
- */

@@ -55,12 +55,23 @@ export default class HighlightUI extends Plugin {
 		this._addDropdown( highlighters );
 	}
 
+	/**
+	 * Creates remove highlight button.
+	 *
+	 * @private
+	 */
 	_addRemoveHighlightButton() {
 		const t = this.editor.t;
 
 		this._addButton( 'removeHighlight', t( 'Remove highlighting' ), highlightRemoveIcon );
 	}
 
+	/**
+	 * Creates toolbar button from provided highlight option.
+	 *
+	 * @param {module:highlight/highlightediting~HighlightOption} highlighter
+	 * @private
+	 */
 	_addHighlighterButton( highlighter ) {
 		const name = highlighter.name;
 		const command = this.editor.commands.get( name );
@@ -78,6 +89,15 @@ export default class HighlightUI extends Plugin {
 		}
 	}
 
+	/**
+	 * Internal method for creating highlight buttons.
+	 *
+	 * @param {String} name Name of a button.
+	 * @param {String} label Label for button.
+	 * @param {String} icon Button's icon.
+	 * @param {Function} [decorateButton=()=>{}] Additional method for extending button.
+	 * @private
+	 */
 	_addButton( name, label, icon, decorateButton = () => {} ) {
 		const editor = this.editor;
 
@@ -95,85 +115,76 @@ export default class HighlightUI extends Plugin {
 				editor.editing.view.focus();
 			} );
 
+			// Add additional behavior for buttonView.
 			decorateButton( buttonView );
 
 			return buttonView;
 		} );
 	}
 
+	/**
+	 * Creates split button drop down UI from provided highlight options.
+	 *
+	 * @param {Array.<module:highlight/highlightediting~HighlightOption>} highlighters
+	 * @private
+	 */
 	_addDropdown( highlighters ) {
 		const editor = this.editor;
 		const t = editor.t;
 		const componentFactory = editor.ui.componentFactory;
 
-		const firstHighlighter = highlighters[ 0 ];
+		const startingHighlighter = highlighters[ 0 ];
 
 		componentFactory.add( 'highlightDropdown', locale => {
+			const commandName = startingHighlighter.name;
+
 			const model = new Model( {
 				label: t( 'Highlight' ),
 				withText: false,
-				selected: firstHighlighter.name,
 				icon: highlightIcon,
-				type: firstHighlighter.type,
-				color: firstHighlighter.color,
-				command: firstHighlighter.name
+				type: startingHighlighter.type,
+				color: startingHighlighter.color,
+				command: commandName
 			} );
 
-			model.bind( 'isOn' ).to( editor.commands.get( firstHighlighter.name ), 'value' );
+			bindModelToCommand( model, editor, commandName );
 
-			// TODO: bind this in model
 			const dropdownView = createSplitButtonDropdown( model, locale );
 
-			// Extend split button icon style to reflect last used button style
-			const iconView = dropdownView.buttonView.buttonView.iconView;
-			const bind = iconView.bindTemplate;
+			bindIconStyle( dropdownView, model );
 
-			iconView.extendTemplate( {
-				attributes: {
-					style: bind.to( 'style' )
-				}
-			} );
-
-			iconView.bind( 'style' ).to( model, 'type', model, 'color', getIconStyleForHighlighter );
-
-			// TODO: forward event ?:
-			// TODO: lame names buttonView/buttonView
 			dropdownView.buttonView.on( 'execute', () => {
 				editor.execute( model.command );
 				editor.editing.view.focus();
 			} );
 
+			// Add highlighters buttons to dropdown
 			const buttons = highlighters.map( highlighter => {
 				const buttonView = componentFactory.create( highlighter.name );
+				const commandName = highlighter.name;
 
-				this.listenTo( buttonView, 'execute', () => {
-					model.set( {
-						type: highlighter.type,
-						color: highlighter.color,
-						command: highlighter.name,
-						icon: highlightIcon
-					} );
-
-					model.unbind( 'isOn' );
-					model.bind( 'isOn' ).to( editor.commands.get( highlighter.name ), 'value' );
-				} );
+				this.listenTo( buttonView, 'execute', () => changeToolbarButton( editor, model, {
+					type: highlighter.type,
+					color: highlighter.color,
+					command: commandName,
+					icon: highlightIcon
+				} ) );
 
 				return buttonView;
 			} );
 
-			const removeButton = componentFactory.create( 'removeHighlight' );
-			buttons.push( removeButton );
+			// Add rubber button to dropdown.
+			const rubberButton = componentFactory.create( 'removeHighlight' );
+			buttons.push( rubberButton );
 
-			this.listenTo( removeButton, 'execute', () => {
-				model.type = 'remove';
-				model.color = undefined;
-				model.command = 'removeHighlight';
-				model.icon = highlightRemoveIcon;
+			this.listenTo( rubberButton, 'execute', () => changeToolbarButton( editor, model, {
+				type: 'remove',
+				color: undefined,
+				command: 'removeHighlight',
+				icon: highlightRemoveIcon
+			} ) );
 
-				model.unbind( 'isOn' );
-				model.bind( 'isOn' ).to( editor.commands.get( 'removeHighlight' ), 'value' );
-			} );
-
+			// Make toolbar button enabled when any button in dropdown is enabled.
 			model.bind( 'isEnabled' ).to(
 				// Bind to #isEnabled of each command...
 				...getBindingTargets( buttons, 'isEnabled' ),
@@ -181,7 +192,7 @@ export default class HighlightUI extends Plugin {
 				( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
 			);
 
-			// TODO: This duplicates buttonDropdown
+			// TODO: Temporary group as UI not fully defined yet. Also duplicates button dropdown
 			// Group buttons for dropdown.
 			const buttonGroupView = dropdownView.buttonGroupView = new ButtonGroupView( { isVertical: false } );
 			buttons.map( buttonView => buttonGroupView.items.add( buttonView ) );
@@ -198,13 +209,11 @@ export default class HighlightUI extends Plugin {
 					buttonGroupView.focus();
 				}
 			}, { priority: 'low' } );
-
-			return dropdownView;
 		} );
 	}
 }
 
-// TODO: this is duplicated
+// TODO: this is duplicated in various places (dropdowns)
 function getBindingTargets( buttons, attribute ) {
 	return Array.prototype.concat( ...buttons.map( button => [ button, attribute ] ) );
 }
@@ -219,4 +228,32 @@ function getIconStyleForHighlighter( type, color ) {
 	} else if ( type === 'marker' ) {
 		return 'background-color:' + color;
 	}
+}
+
+// Rebinds model values to a new command.
+function bindModelToCommand( model, editor, commandName ) {
+	model.unbind( 'isOn' );
+	model.bind( 'isOn' ).to( editor.commands.get( commandName ), 'value' );
+}
+
+// Updates toolbar dropdown button with last selected highlighter.
+function changeToolbarButton( editor, model, iconData ) {
+	model.set( iconData );
+
+	bindModelToCommand( model, editor, iconData.command );
+}
+
+// Extends split button icon style to reflect last used button style.
+function bindIconStyle( dropdownView, model ) {
+	const iconView = dropdownView.buttonView.buttonView.iconView;
+
+	const bind = iconView.bindTemplate;
+
+	iconView.extendTemplate( {
+		attributes: {
+			style: bind.to( 'style' )
+		}
+	} );
+
+	iconView.bind( 'style' ).to( model, 'type', model, 'color', getIconStyleForHighlighter );
 }
