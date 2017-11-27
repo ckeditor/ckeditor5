@@ -69,7 +69,7 @@ export default class LinkCommand extends Command {
 					// Then update `linkHref` value.
 					const linkRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ) );
 
-					batch.setAttribute( linkRange, 'linkHref', href );
+					batch.setAttribute( 'linkHref', href, linkRange );
 
 					// Create new range wrapping changed link.
 					selection.setRanges( [ linkRange ] );
@@ -93,7 +93,7 @@ export default class LinkCommand extends Command {
 				const ranges = doc.schema.getValidRanges( selection.getRanges(), 'linkHref' );
 
 				for ( const range of ranges ) {
-					batch.setAttribute( range, 'linkHref', href );
+					batch.setAttribute( 'linkHref', href, range );
 				}
 			}
 		} );
