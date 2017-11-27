@@ -8,7 +8,7 @@
 import { translate, add, _clear } from '../src/translation-service';
 
 describe( 'translation-service', () => {
-	beforeEach( () => {
+	afterEach( () => {
 		_clear();
 	} );
 
@@ -79,15 +79,5 @@ describe( 'translation-service', () => {
 	it( 'should expose `add` function globally', () => {
 		expect( window.CKEDITOR_TRANSLATIONS ).to.be.an( 'object' );
 		expect( window.CKEDITOR_TRANSLATIONS.add ).to.be.a( 'function' );
-		expect( window.CKEDITOR_TRANSLATIONS.add ).to.equal( add );
-
-		window.CKEDITOR_TRANSLATIONS.add( 'pl', {
-			'OK': 'OK',
-			'Cancel [context: reject]': 'Anuluj'
-		} );
-
-		const translationPL = translate( 'pl', 'Cancel [context: reject]' );
-
-		expect( translationPL ).to.be.equal( 'Anuluj' );
 	} );
 } );
