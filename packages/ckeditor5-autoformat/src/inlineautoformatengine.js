@@ -62,7 +62,7 @@ export default class InlineAutoformatEngine {
 	 *		// Use formatting callback:
 	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, ( batch, validRanges ) => {
 	 *			for ( let range of validRanges ) {
-	 *				batch.setAttribute( range, command, true );
+	 *				batch.setAttribute( command, true, range );
 	 *			}
 	 *		} );
 	 */
@@ -132,7 +132,7 @@ export default class InlineAutoformatEngine {
 		// A format callback run on matched text.
 		formatCallback = formatCallback || ( ( batch, validRanges ) => {
 			for ( const range of validRanges ) {
-				batch.setAttribute( range, command, true );
+				batch.setAttribute( command, true, range );
 			}
 		} );
 
