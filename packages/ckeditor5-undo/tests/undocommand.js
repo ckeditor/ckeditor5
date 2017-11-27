@@ -56,7 +56,7 @@ describe( 'UndoCommand', () => {
 				editor.document.selection.setRanges( [ r( 2, 4 ) ], true );
 				batch1 = doc.batch();
 				undo.addBatch( batch1 );
-				batch1.setAttribute( r( 2, 4 ), 'key', 'value' );
+				batch1.setAttribute( 'key', 'value', r( 2, 4 ) );
 
 				/*
 				 [root]
@@ -263,8 +263,8 @@ describe( 'UndoCommand', () => {
 
 				undo.addBatch( batch );
 
-				batch.setAttribute( element, 'foo', 'bar' );
-				batch.setAttribute( root, 'foo', 'bar' );
+				batch.setAttribute( 'foo', 'bar', element );
+				batch.setAttribute( 'foo', 'bar', root );
 
 				undo.execute();
 
@@ -291,7 +291,7 @@ describe( 'UndoCommand', () => {
 			editor.document.selection.setRanges( [ r( 1, 4 ) ] );
 			const batch0 = doc.batch();
 			undo.addBatch( batch0 );
-			batch0.setAttribute( r( 1, 4 ), 'uppercase', true );
+			batch0.setAttribute( 'uppercase', true, r( 1, 4 ) );
 			expect( getCaseText( root ) ).to.equal( 'aBCDef' );
 
 			editor.document.selection.setRanges( [ r( 3, 4 ) ] );

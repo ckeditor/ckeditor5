@@ -316,7 +316,7 @@ describe( 'UndoEngine integration', () => {
 			input( '<paragraph>fo[ob]ar</paragraph>' );
 
 			doc.enqueueChanges( () => {
-				doc.batch().setAttribute( doc.selection.getFirstRange(), 'bold', true );
+				doc.batch().setAttribute( 'bold', true, doc.selection.getFirstRange() );
 			} );
 			output( '<paragraph>fo[<$text bold="true">ob</$text>]ar</paragraph>' );
 
@@ -960,7 +960,7 @@ describe( 'UndoEngine integration', () => {
 
 			doc.enqueueChanges( () => {
 				doc.batch().remove( p );
-				doc.batch().setAttribute( p, 'bold', true );
+				doc.batch().setAttribute( 'bold', true, p );
 			} );
 
 			editor.execute( 'undo' );
