@@ -56,9 +56,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *		batch.insert( firstPosition, 'foo' );
  *		batch.insert( secondPosition, 'bar' );
  *
- * Note that all document modification methods (insert, remove, split, etc.) are chainable so you can shorten code to:
- *
- *		doc.batch().insert( firstPosition, 'foo' ).insert( secondPosition, 'bar' );
  */
 export default class Batch {
 	/**
@@ -228,7 +225,6 @@ export default class Batch {
 	 * Sets value of the attribute with given key on a {@link module:engine/model/item~Item model item}
 	 * or on a {@link module:engine/model/range~Range range}.
 	 *
-	 * @chainable
 	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
 	 * Model item or range on which the attribute will be set.
 	 * @param {String} key Attribute key.
@@ -252,7 +248,6 @@ export default class Batch {
 	 * Removes an attribute with given key from a {@link module:engine/model/item~Item model item}
 	 * or from a {@link module:engine/model/range~Range range}.
 	 *
-	 * @chainable
 	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
 	 * Model item or range from which the attribute will be removed.
 	 * @method module:engine/model/batch~Batch#removeAttribute
@@ -322,9 +317,8 @@ export default class Batch {
 	}
 
 	/**
-	 * Removes given {@link module:engine/model/item~Item model item} or given range.
+	 * Removes given model {@link module:engine/model/item~Item item} or {@link module:engine/model/range~Range range}.
 	 *
-	 * @chainable
 	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange Model item or range to remove.
 	 */
 	remove( itemOrRange ) {
@@ -366,7 +360,6 @@ export default class Batch {
 	 * Node before and after the position have to be an element. Otherwise `batch-merge-no-element-before` or
 	 * `batch-merge-no-element-after` error will be thrown.
 	 *
-	 * @chainable
 	 * @param {module:engine/model/position~Position} position Position of merge.
 	 */
 	merge( position ) {
@@ -419,7 +412,6 @@ export default class Batch {
 	/**
 	 * Renames given element.
 	 *
-	 * @chainable
 	 * @param {module:engine/model/element~Element} element The element to rename.
 	 * @param {String} newName New element name.
 	 */
@@ -444,10 +436,9 @@ export default class Batch {
 	/**
 	 * Splits an element at the given position.
 	 *
-	 * The element cannot be a root element, as root element cannot be split. The `batch-split-root` error will be thrown if
-	 * you try to split the root element.
+	 * The element cannot be a root element, as root element cannot be split. The `batch-split-element-no-parent` error
+	 * will be thrown if you try to split an element with no parent.
 	 *
-	 * @chainable
 	 * @param {module:engine/model/position~Position} position Position of split.
 	 */
 	split( position ) {
@@ -458,11 +449,11 @@ export default class Batch {
 
 		if ( !splitElement.parent ) {
 			/**
-			 * Root element can not be split.
+			 * Element with no parent can not be split.
 			 *
-			 * @error batch-split-root
+			 * @error batch-split-element-no-parent
 			 */
-			throw new CKEditorError( 'batch-split-root: Root element can not be split.' );
+			throw new CKEditorError( 'batch-split-element-no-parent: Element with no parent can not be split.' );
 		}
 
 		const copy = new Element( splitElement.name, splitElement.getAttributes() );
@@ -492,7 +483,6 @@ export default class Batch {
 	 * Wraps given range with given element or with a new element with specified name, if string has been passed.
 	 * **Note:** range to wrap should be a "flat range" (see {@link module:engine/model/range~Range#isFlat}). If not, error will be thrown.
 	 *
-	 * @chainable
 	 * @param {module:engine/model/range~Range} range Range to wrap.
 	 * @param {module:engine/model/element~Element|String} elementOrString Element or name of element to wrap the range with.
 	 */
@@ -548,7 +538,6 @@ export default class Batch {
 	 * Unwraps children of the given element – all its children are moved before it and then the element is removed.
 	 * Throws error if you try to unwrap an element which does not have a parent.
 	 *
-	 * @chainable
 	 * @param {module:engine/model/element~Element} element Element to unwrap.
 	 */
 	unwrap( element ) {
@@ -600,7 +589,6 @@ export default class Batch {
 	 * is waiting for additional data, etc.). In this case, the marker may be first created directly through
 	 * {@link module:engine/model/markercollection~MarkerCollection MarkerCollection API} and only later added using `Batch` API.
 	 *
-	 * @chainable
 	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to add or update.
 	 * @param {module:engine/model/range~Range} [newRange] Marker range.
 	 */
@@ -632,7 +620,6 @@ export default class Batch {
 	/**
 	 * Removes given {@link module:engine/model/markercollection~Marker marker} or marker with given name.
 	 *
-	 * @chainable
 	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to remove.
 	 */
 	removeMarker( markerOrName ) {

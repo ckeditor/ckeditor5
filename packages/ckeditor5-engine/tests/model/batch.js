@@ -1729,7 +1729,27 @@ describe( 'Batch', () => {
 		it( 'should throw if we try to split a root', () => {
 			expect( () => {
 				doc.batch().split( new Position( root, [ 0 ] ) );
-			} ).to.throw( CKEditorError, /^batch-split-root/ );
+			} ).to.throw( CKEditorError, /^batch-split-element-no-parent/ );
+		} );
+
+		it( 'should throw if we try to split an element with no parent', () => {
+			const batch = doc.batch();
+
+			expect( () => {
+				const element = batch.createElement( 'p' );
+
+				batch.split( new Position( element, [ 0 ] ) );
+			} ).to.throw( CKEditorError, /^batch-split-element-no-parent/ );
+		} );
+
+		it( 'should throw if we try to split a document fragment', () => {
+			const batch = doc.batch();
+
+			expect( () => {
+				const documentFragment = batch.createDocumentFragment();
+
+				batch.split( new Position( documentFragment, [ 0 ] ) );
+			} ).to.throw( CKEditorError, /^batch-split-element-no-parent/ );
 		} );
 	} );
 
