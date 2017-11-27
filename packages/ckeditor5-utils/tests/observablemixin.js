@@ -739,6 +739,14 @@ describe( 'Observable', () => {
 			observable.unbind();
 		} );
 
+		it( 'should not fail when unbinding non-binded property', () => {
+			const observable = new Observable();
+
+			observable.bind( 'foo' ).to( car, 'color' );
+
+			observable.unbind( 'bar' );
+		} );
+
 		it( 'should throw when non-string attribute is passed', () => {
 			expect( () => {
 				car.unbind( new Date() );
