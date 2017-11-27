@@ -63,6 +63,7 @@ BalloonEditor.build = {
 				'|',
 				'imageTextAlternative'
 			]
-		}
+		},
+		lang: 'en'
 	}
 };
