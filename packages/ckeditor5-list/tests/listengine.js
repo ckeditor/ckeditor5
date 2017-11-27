@@ -1545,8 +1545,8 @@ describe( 'ListEngine', () => {
 						modelDoc.enqueueChanges( () => {
 							const batch = modelDoc.batch();
 
-							batch.append( parseModel( item1, modelDoc.schema ), modelRoot );
-							batch.append( parseModel( item2, modelDoc.schema ), modelRoot );
+							batch.append( parseModel( item1, modelDoc.schema, modelDoc.batch() ), modelRoot );
+							batch.append( parseModel( item2, modelDoc.schema, modelDoc.batch() ), modelRoot );
 						} );
 					}
 				);
@@ -2661,7 +2661,8 @@ describe( 'ListEngine', () => {
 			setModelData( modelDoc, input );
 
 			modelDoc.enqueueChanges( () => {
-				modelDoc.batch( 'transparent' ).insert( parseModel( inserted, modelDoc.schema ), modelDoc.selection.getFirstPosition() );
+				modelDoc.batch( 'transparent' )
+					.insert( parseModel( inserted, modelDoc.schema, modelDoc.batch() ), modelDoc.selection.getFirstPosition() );
 			} );
 
 			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
@@ -2673,7 +2674,8 @@ describe( 'ListEngine', () => {
 					setModelData( modelDoc, input );
 
 					modelDoc.enqueueChanges( () => {
-						modelDoc.batch().insert( parseModel( inserted, modelDoc.schema ), modelDoc.selection.getFirstPosition() );
+						modelDoc.batch()
+							.insert( parseModel( inserted, modelDoc.schema, modelDoc.batch() ), modelDoc.selection.getFirstPosition() );
 					} );
 
 					expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
@@ -2809,8 +2811,8 @@ describe( 'ListEngine', () => {
 				modelDoc.enqueueChanges( () => {
 					const batch = modelDoc.batch();
 
-					batch.append( parseModel( item1, modelDoc.schema ), modelRoot );
-					batch.append( parseModel( item2, modelDoc.schema ), modelRoot );
+					batch.append( parseModel( item1, modelDoc.schema, modelDoc.batch() ), modelRoot );
+					batch.append( parseModel( item2, modelDoc.schema, modelDoc.batch() ), modelRoot );
 				} );
 
 				expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
@@ -3077,7 +3079,8 @@ describe( 'ListEngine', () => {
 					parseModel(
 						'<listItem type="bulleted" indent="0">X</listItem>' +
 						'<listItem type="bulleted" indent="1">Y</listItem>',
-						modelDoc.schema
+						modelDoc.schema,
+						modelDoc.batch()
 					),
 					modelDoc.selection
 				);
@@ -3510,7 +3513,7 @@ describe( 'ListEngine', () => {
 
 		const actionCallback = () => {
 			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().insert( parseModel( item, modelDoc.schema ), modelDoc.selection.getFirstPosition() );
+				modelDoc.batch().insert( parseModel( item, modelDoc.schema, modelDoc.batch() ), modelDoc.selection.getFirstPosition() );
 			} );
 		};
 
