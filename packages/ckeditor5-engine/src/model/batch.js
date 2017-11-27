@@ -130,18 +130,77 @@ export default class Batch {
 		}
 	}
 
+	/**
+	 * Creates a new {@link module:engine/model/text~Text text node}.
+	 *
+	 *		batch.createText( 'foo' );
+	 *		batch.createText( 'foo', { bold: true } );
+	 *
+	 * @param {String} data Text data.
+	 * @param {Object} [attributes] Text attributes.
+	 * @returns {module:engine/model/text~Text} Created text node.
+	 */
 	createText( data, attributes ) {
 		return new Text( data, attributes );
 	}
 
+	/**
+	 * Creates a new {@link module:engine/model/element~Element element}.
+	 *
+	 *		batch.createElement( 'paragraph' );
+	 *		batch.createElement( 'paragraph', { 'alignment': 'center' } );
+	 *
+	 * @param {String} name Name of the element.
+	 * @param {Object} [attributes] Elements attributes.
+	 * @returns {module:engine/model/element~Element} Created element.
+	 */
 	createElement( name, attributes ) {
 		return new Element( name, attributes );
 	}
 
+	/**
+	 * Creates a new {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
+	 *
+	 * @returns {module:engine/model/documentfragment~DocumentFragment} Created document fragment.
+	 */
 	createDocumentFragment() {
 		return new DocumentFragment();
 	}
 
+	/**
+	 * Inserts item on given position.
+	 *
+	 *		const paragraph = batch.createElement( 'paragraph' );
+	 *		batch.insert( paragraph, position );
+	 *
+	 * Instead of using position you can use parent and offset:
+	 *
+	 * 		const text = batch.createText( 'foo' );
+	 *		batch.insert( text, paragraph, 5 );
+	 *
+	 * You can also use 'end' instead of the offset to insert at the end:
+	 *
+	 * 		const text = batch.createText( 'foo' );
+	 *		batch.insert( text, paragraph, 'end' );
+	 *
+	 * Or insert before or after another element:
+	 *
+	 * 		const anotherParagraph = batch.createElement( 'paragraph' );
+	 *		batch.insert( anotherParagraph, paragraph, 'after' );
+	 *
+	 * These parameters works the same way as {@link module:engine/model/position~Position#createAt}.
+	 *
+	 * Note that if the item already has parent it will be removed from the previous parent.
+	 *
+	 * If you want to move {@link module:engine/model/range~Range range} instead of an
+	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/batch~Batch#move batch}.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/documentfragment~DocumentFragment}
+	 * item Item or document fragment to insert.
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * second parameter is a {@link module:engine/model/item~Item model item}.
+	 */
 	insert( item, itemOrPosition, offset ) {
 		const position = Position.createAt( itemOrPosition, offset );
 
@@ -185,6 +244,27 @@ export default class Batch {
 		}
 	}
 
+	/**
+	 * Creates and inserts text on given position. You can optionally set text attributes:
+	 *
+	 *		batch.insertText( 'foo', position );
+	 *		batch.insertText( 'foo', { 'bold': true }, position );
+	 *
+	 * Instead of using position you can use parent and offset or define that text should be inserted at the end
+	 * or before or after other node:
+	 *
+	 * 		batch.insertText( 'foo', paragraph, 5 );
+	 *		batch.insertText( 'foo', paragraph, 'end' ); // insets at the end of the paragraph
+	 *		batch.insertText( 'foo', image, 'after' ); // inserts after image
+	 *
+	 * These parameters works the same way as {@link module:engine/model/position~Position#createAt}.
+	 *
+	 * @param {String} data Text data.
+	 * @param {Object} [attributes] Text attributes.
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * third parameter is a {@link module:engine/model/item~Item model item}.
+	 */
 	insertText( text, attributes, itemOrPosition, offset ) {
 		if ( attributes instanceof DocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
 			this.insert( this.createText( text ), attributes, itemOrPosition );
@@ -193,6 +273,27 @@ export default class Batch {
 		}
 	}
 
+	/**
+	 * Creates and inserts element on given position. You can optionally set attributes:
+	 *
+	 *		batch.insertElement( 'paragraph', position );
+	 *		batch.insertElement( 'paragraph', { 'alignment': 'center' }, position );
+	 *
+	 * Instead of using position you can use parent and offset or define that text should be inserted at the end
+	 * or before or after other node:
+	 *
+	 * 		batch.insertElement( 'paragraph', paragraph, 5 );
+	 *		batch.insertElement( 'paragraph', blockquote, 'end' ); // insets at the end of the blockquote
+	 *		batch.insertElement( 'paragraph', image, 'after' ); // inserts after image
+	 *
+	 * These parameters works the same way as {@link module:engine/model/position~Position#createAt}.
+	 *
+	 * @param {String} name Name of the element.
+	 * @param {Object} [attributes] Elements attributes.
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * third parameter is a {@link module:engine/model/item~Item model item}.
+	 */
 	insertElement( name, attributes, itemOrPosition, offset ) {
 		if ( attributes instanceof DocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
 			this.insert( this.createElement( name ), attributes, itemOrPosition );
@@ -201,10 +302,35 @@ export default class Batch {
 		}
 	}
 
+	/**
+	 * Inserts item at the end of the given parent.
+	 *
+	 *		const paragraph = batch.createElement( 'paragraph' );
+	 *		batch.append( paragraph, root );
+	 *
+	 * Note that if the item already has parent it will be removed from the previous parent.
+	 *
+	 * If you want to move {@link module:engine/model/range~Range range} instead of an
+	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/batch~Batch#move batch}.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/documentfragment~DocumentFragment}
+	 * item Item or document fragment to insert.
+	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} parent
+	 */
 	append( item, parent ) {
 		this.insert( item, parent, 'end' );
 	}
 
+	/**
+	 * Creates text node and inserts it at the end of the parent. You can optionally set text attributes:
+	 *
+	 *		batch.appendText( 'foo', paragraph );
+	 *		batch.appendText( 'foo', { 'bold': true }, paragraph );
+	 *
+	 * @param {String} data Text data.
+	 * @param {Object} [attributes] Text attributes.
+	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} parent
+	 */
 	appendText( text, attributes, parent ) {
 		if ( attributes instanceof DocumentFragment || attributes instanceof Element ) {
 			this.insert( this.createText( text ), attributes, 'end' );
@@ -213,6 +339,16 @@ export default class Batch {
 		}
 	}
 
+	/**
+	 * Creates element and inserts it at the end of the parent. You can optionally set attributes:
+	 *
+	 *		batch.appendElement( 'paragraph', root );
+	 *		batch.appendElement( 'paragraph', { 'alignment': 'center' }, root );
+	 *
+	 * @param {String} name Name of the element.
+	 * @param {Object} [attributes] Elements attributes.
+	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} parent
+	 */
 	appendElement( text, attributes, parent ) {
 		if ( attributes instanceof DocumentFragment || attributes instanceof Element ) {
 			this.insert( this.createElement( text ), attributes, 'end' );
@@ -238,6 +374,19 @@ export default class Batch {
 		}
 	}
 
+	/**
+	 * Sets values of attributes on a {@link module:engine/model/item~Item model item}
+	 * or on a {@link module:engine/model/range~Range range}.
+	 *
+	 *		batch.setAttributes( range, {
+	 *			'bold': true,
+	 *			'italic': true
+	 *		} );
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
+	 * Model item or range on which the attributes will be set.
+	 * @param {Object} attributes Attributes keys and values.
+	 */
 	setAttributes( itemOrRange, attributes ) {
 		for ( const [ key, val ] of toMap( attributes ) ) {
 			this.setAttribute( itemOrRange, key, val );
@@ -261,6 +410,12 @@ export default class Batch {
 		}
 	}
 
+	/**
+	 * Removes all attributes from all elements in the range or from the given item.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
+	 * Model item or range from which all attributes will be removed.
+	 */
 	clearAttributes( itemOrRange ) {
 		const removeAttributesFromItem = item => {
 			for ( const attribute of item.getAttributeKeys() ) {
@@ -277,6 +432,30 @@ export default class Batch {
 		}
 	}
 
+	/**
+	 * Moves all items in the source range to the target position.
+	 *
+	 *		batch.move( sourceRange, targetPosition );
+	 *
+	 * Instead of the target position you can use parent and offset or define that range should be moved to the end
+	 * or before or after chosen item:
+	 *
+	 * 		batch.move( sourceRange, paragraph, 5 ); // moves all items in the range to the paragraph at offset 5
+	 *		batch.move( sourceRange, blockquote, 'end' ); // moves all items in the range at the end of the blockquote
+	 *		batch.move( sourceRange, image, 'after' ); // moves all items in the range after the image
+	 *
+	 * These parameters works the same way as {@link module:engine/model/position~Position#createAt}.
+	 *
+	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
+	 * (element or document fragment) or between {@link module:engine/model/document~Document#roots documents roots},
+	 * but you can not move items from document fragment to the document or from one detached element to another. Use
+	 * {@link module:engine/model/batch~Batch#insert} for such cases.
+	 *
+	 * @param {module:engine/model/range~Range} range Source range.
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * second parameter is a {@link module:engine/model/item~Item model item}.
+	 */
 	move( range, itemOrPosition, offset ) {
 		if ( !( range instanceof Range ) ) {
 			/**
@@ -707,15 +886,13 @@ function setAttributeToRange( batch, key, value, range ) {
 	}
 }
 
-/**
- * Sets given attribute to the given node. When attribute value is null then attribute will be removed.
- *
- * @private
- * @param {module:engine/model/batch~Batch} batch
- * @param {String} key Attribute key.
- * @param {*} value Attribute new value.
- * @param {module:engine/model/item~Item} item Model item on which the attribute will be set.
- */
+// Sets given attribute to the given node. When attribute value is null then attribute will be removed.
+//
+// @private
+// @param {module:engine/model/batch~Batch} batch
+// @param {String} key Attribute key.
+// @param {*} value Attribute new value.
+// @param {module:engine/model/item~Item} item Model item on which the attribute will be set.
 function setAttributeToItem( batch, key, value, item ) {
 	const doc = batch.document;
 	const previousValue = item.getAttribute( key );
@@ -748,15 +925,13 @@ function setAttributeToItem( batch, key, value, item ) {
 	}
 }
 
-/**
- * Creates and adds marker operation to {@link module:engine/model/delta/delta~Delta delta}.
- *
- * @private
- * @param {module:engine/model/batch~Batch} batch
- * @param {String} name Marker name.
- * @param {module:engine/model/range~Range} oldRange Marker range before the change.
- * @param {module:engine/model/range~Range} newRange Marker range after the change.
- */
+// Creates and adds marker operation to {@link module:engine/model/delta/delta~Delta delta}.
+//
+// @private
+// @param {module:engine/model/batch~Batch} batch
+// @param {String} name Marker name.
+// @param {module:engine/model/range~Range} oldRange Marker range before the change.
+// @param {module:engine/model/range~Range} newRange Marker range after the change.
 function addMarkerOperation( batch, name, oldRange, newRange ) {
 	const doc = batch.document;
 	const delta = new MarkerDelta();
@@ -768,6 +943,12 @@ function addMarkerOperation( batch, name, oldRange, newRange ) {
 	doc.applyOperation( operation );
 }
 
+// Returns true if both elements are in the document or are the same element.
+//
+// Elements "in the same document" can be moved (you can move element form one documents root to another, or
+// within the same document fragment), but when element supposed to be moved from document fragment to the document, or
+// to another document it should be removed and inserted to avoid problems it OT. This is because features like undo or
+// collaboration may track changes on the document and should not get unexpected move.
 function isTheSameDocument( rootA, rootB ) {
 	if ( rootA === rootB ) {
 		return true;
