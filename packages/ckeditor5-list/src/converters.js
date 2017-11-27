@@ -612,8 +612,8 @@ export function modelChangePostFixer( document ) {
 
 			// Element name is changed from list to something else. Remove useless attributes.
 			document.enqueueChanges( () => {
-				batch.removeAttribute( element, 'indent' );
-				batch.removeAttribute( element, 'type' );
+				batch.removeAttribute( 'indent', element );
+				batch.removeAttribute( 'type', element );
 			} );
 
 			const changePos = ModelPosition.createAfter( changes.element );
@@ -667,7 +667,7 @@ function _fixItemsIndent( changePosition, document, batch ) {
 			if ( items.length > 0 ) {
 				// Since we are outdenting list items, it is safer to start from the last one (it will maintain correct model state).
 				for ( const item of items.reverse() ) {
-					batch.setAttribute( item.item, 'indent', item.indent );
+					batch.setAttribute( 'indent', item.indent, item.item );
 				}
 			}
 		} );
@@ -701,7 +701,7 @@ function _fixItemsType( changePosition, fixPrevious, document, batch ) {
 
 		while ( item && item.is( 'listItem' ) && item.getAttribute( 'indent' ) >= refIndent ) {
 			if ( item.getAttribute( 'type' ) != refType && item.getAttribute( 'indent' ) == refIndent ) {
-				batch.setAttribute( item, 'type', refType );
+				batch.setAttribute( 'type', refType, item );
 			}
 
 			item = item[ fixPrevious ? 'previousSibling' : 'nextSibling' ];

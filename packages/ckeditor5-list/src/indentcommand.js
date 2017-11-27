@@ -87,7 +87,7 @@ export default class IndentCommand extends Command {
 				}
 				// If indent is >= 0, change the attribute value.
 				else {
-					batch.setAttribute( item, 'indent', indent );
+					batch.setAttribute( 'indent', indent, item );
 				}
 			}
 
@@ -155,7 +155,7 @@ function _fixType( item, batch ) {
 
 	// If found, fix type.
 	if ( prev ) {
-		batch.setAttribute( item, 'type', prev.getAttribute( 'type' ) );
+		batch.setAttribute( 'type', prev.getAttribute( 'type' ), item );
 
 		return;
 	}
@@ -165,7 +165,7 @@ function _fixType( item, batch ) {
 
 	// If found, fix type.
 	if ( next ) {
-		batch.setAttribute( item, 'type', next.getAttribute( 'type' ) );
+		batch.setAttribute( 'type', next.getAttribute( 'type' ), item );
 	}
 }
 
