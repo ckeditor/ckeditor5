@@ -9,22 +9,36 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Heading from '../src/heading';
 import HeadingEngine from '../src/headingengine';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import { add } from '@ckeditor/ckeditor5-utils/src/translation-service';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
-add( 'pl', {
-	'Choose heading': 'Wybierz nagłówek',
-	'Paragraph': 'Akapit',
-	'Heading': 'Nagłówek',
-	'Heading 1': 'Nagłówek 1',
-	'Heading 2': 'Nagłówek 2',
-} );
 
 testUtils.createSinonSandbox();
 
 describe( 'Heading', () => {
 	let editor, editorElement, dropdown;
+
+	before( () => {
+		addTranslations( 'en', {
+			'Choose heading': 'Choose heading',
+			'Paragraph': 'Paragraph',
+			'Heading': 'Heading',
+			'Heading 1': 'Heading 1',
+			'Heading 2': 'Heading 2',
+		} );
+
+		addTranslations( 'pl', {
+			'Choose heading': 'Wybierz nagłówek',
+			'Paragraph': 'Akapit',
+			'Heading': 'Nagłówek',
+			'Heading 1': 'Nagłówek 1',
+			'Heading 2': 'Nagłówek 2',
+		} );
+	} );
+
+	after( () => {
+		clearTranslations();
+	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
