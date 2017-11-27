@@ -210,7 +210,7 @@ export default class Batch {
 		// If item has a parent already.
 		if ( item.parent ) {
 			// We need to check if item is going to be inserted within the same document.
-			if ( isTheSameDocument( item.root, position.root ) ) {
+			if ( isSameTree( item.root, position.root ) ) {
 				// If it's we just need to move it.
 				this.move( Range.createOn( item ), position );
 
@@ -449,7 +449,7 @@ export default class Batch {
 	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
 	 * (element or document fragment) or between {@link module:engine/model/document~Document#roots documents roots},
 	 * but you can not move items from document fragment to the document or from one detached element to another. Use
-	 * {@link module:engine/model/batch~Batch#insert} for such cases.
+	 * {@link module:engine/model/batch~Batch#insert} in such cases.
 	 *
 	 * @param {module:engine/model/range~Range} range Source range.
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
@@ -477,7 +477,7 @@ export default class Batch {
 
 		const position = Position.createAt( itemOrPosition, offset );
 
-		if ( !isTheSameDocument( range.root, position.root ) ) {
+		if ( !isSameTree( range.root, position.root ) ) {
 			/**
 			 * Range is going to be moved within not the same document. Please use
 			 * {@link module:engine/model/batch~Batch#insert insert} instead.
@@ -943,13 +943,14 @@ function addMarkerOperation( batch, name, oldRange, newRange ) {
 	doc.applyOperation( operation );
 }
 
-// Returns true if both elements are in the document or are the same element.
+// Returns `true` if both root elements are the same element or both are documents root elements.
 //
-// Elements "in the same document" can be moved (you can move element form one documents root to another, or
+// Elements in the same tree can be moved (for instance you can move element form one documents root to another, or
 // within the same document fragment), but when element supposed to be moved from document fragment to the document, or
-// to another document it should be removed and inserted to avoid problems it OT. This is because features like undo or
-// collaboration may track changes on the document and should not get unexpected move.
-function isTheSameDocument( rootA, rootB ) {
+// to another document it should be removed and inserted to avoid problems with OT. This is because features like undo or
+// collaboration may track changes on the document but ignore changes on detached fragments and should not get
+// unexpected `move` operation.
+function isSameTree( rootA, rootB ) {
 	if ( rootA === rootB ) {
 		return true;
 	}
