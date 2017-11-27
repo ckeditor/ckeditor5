@@ -278,8 +278,9 @@ function enableLoggingTools() {
 	DetachOperation.prototype.toString = function() {
 		const range = ModelRange.createFromPositionAndShift( this.sourcePosition, this.howMany );
 		const nodes = Array.from( range.getItems() );
+		const nodeString = nodes.length > 1 ? `[ ${ nodes.length } ]` : nodes[ 0 ];
 
-		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodes.length > 1 ? range : nodes[ 0 ] + ' ' + range }`;
+		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ range }`;
 	};
 
 	InsertOperation.prototype.toString = function() {
