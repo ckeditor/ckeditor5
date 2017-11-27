@@ -120,7 +120,7 @@ export default class ImageUploadEngine extends Plugin {
 		const notification = editor.plugins.get( Notification );
 
 		doc.enqueueChanges( () => {
-			doc.batch( 'transparent' ).setAttribute( imageElement, 'uploadStatus', 'reading' );
+			doc.batch( 'transparent' ).setAttribute( 'uploadStatus', 'reading', imageElement );
 		} );
 
 		loader.read()
@@ -133,15 +133,14 @@ export default class ImageUploadEngine extends Plugin {
 				editor.editing.view.render();
 
 				doc.enqueueChanges( () => {
-					doc.batch( 'transparent' ).setAttribute( imageElement, 'uploadStatus', 'uploading' );
+					doc.batch( 'transparent' ).setAttribute( 'uploadStatus', 'uploading', imageElement );
 				} );
 
 				return promise;
 			} )
 			.then( data => {
 				doc.enqueueChanges( () => {
-					doc.batch( 'transparent' ).setAttribute( imageElement, 'uploadStatus', 'complete' );
-					doc.batch( 'transparent' ).setAttribute( imageElement, 'src', data.default );
+					doc.batch( 'transparent' ).setAttributes( { uploadStatus: 'complete', src: data.default }, imageElement );
 
 					// Srcset attribute for responsive images support.
 					let maxWidth = 0;
@@ -164,10 +163,10 @@ export default class ImageUploadEngine extends Plugin {
 						.join( ', ' );
 
 					if ( srcsetAttribute != '' ) {
-						doc.batch( 'transparent' ).setAttribute( imageElement, 'srcset', {
+						doc.batch( 'transparent' ).setAttribute( 'srcset', {
 							data: srcsetAttribute,
 							width: maxWidth
-						} );
+						}, imageElement );
 					}
 				} );
 
@@ -192,8 +191,10 @@ export default class ImageUploadEngine extends Plugin {
 
 		function clean() {
 			doc.enqueueChanges( () => {
-				doc.batch( 'transparent' ).removeAttribute( imageElement, 'uploadId' );
-				doc.batch( 'transparent' ).removeAttribute( imageElement, 'uploadStatus' );
+				const batch = doc.batch( 'transparent' );
+
+				batch.removeAttribute( 'uploadId', imageElement );
+				batch.removeAttribute( 'uploadStatus', imageElement );
 			} );
 
 			fileRepository.destroyLoader( loader );

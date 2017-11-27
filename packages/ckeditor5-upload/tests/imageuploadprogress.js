@@ -175,7 +175,7 @@ describe( 'ImageUploadProgress', () => {
 		const image = document.getRoot().getChild( 0 );
 
 		document.enqueueChanges( () => {
-			document.batch().setAttribute( image, 'uploadStatus', 'uploading' );
+			document.batch().setAttribute( 'uploadStatus', 'uploading', image );
 		} );
 
 		expect( getViewData( viewDocument ) ).to.equal(
@@ -185,7 +185,7 @@ describe( 'ImageUploadProgress', () => {
 		);
 
 		document.enqueueChanges( () => {
-			document.batch().setAttribute( image, 'uploadStatus', 'complete' );
+			document.batch().setAttribute( 'uploadStatus', 'complete', image );
 		} );
 
 		expect( getViewData( viewDocument ) ).to.equal(
