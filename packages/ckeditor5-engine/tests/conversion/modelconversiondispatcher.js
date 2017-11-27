@@ -112,13 +112,13 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.on( 'addAttribute:key:$text', cbAddText );
 			dispatcher.on( 'addAttribute:key:image', cbAddImage );
 
-			doc.batch().setAttribute( image, 'key', 'value' );
+			doc.batch().setAttribute( 'key', 'value', image );
 
 			// Callback for adding attribute on text not called.
 			expect( cbAddText.called ).to.be.false;
 			expect( cbAddImage.calledOnce ).to.be.true;
 
-			doc.batch().setAttribute( ModelRange.createFromParentsAndOffsets( root, 3, root, 4 ), 'key', 'value' );
+			doc.batch().setAttribute( 'key', 'value', ModelRange.createFromParentsAndOffsets( root, 3, root, 4 ) );
 
 			expect( cbAddText.calledOnce ).to.be.true;
 			// Callback for adding attribute on image not called this time.
@@ -133,16 +133,16 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.on( 'changeAttribute:key:$text', cbChangeText );
 			dispatcher.on( 'changeAttribute:key:image', cbChangeImage );
 
-			batch.setAttribute( image, 'key', 'value' );
-			batch.setAttribute( image, 'key', 'newValue' );
+			batch.setAttribute( 'key', 'value', image );
+			batch.setAttribute( 'key', 'newValue', image );
 
 			// Callback for adding attribute on text not called.
 			expect( cbChangeText.called ).to.be.false;
 			expect( cbChangeImage.calledOnce ).to.be.true;
 
 			const range = ModelRange.createFromParentsAndOffsets( root, 3, root, 4 );
-			batch.setAttribute( range, 'key', 'value' );
-			batch.setAttribute( range, 'key', 'newValue' );
+			batch.setAttribute( 'key', 'value', range );
+			batch.setAttribute( 'key', 'newValue', range );
 
 			expect( cbChangeText.calledOnce ).to.be.true;
 			// Callback for adding attribute on image not called this time.
@@ -157,16 +157,16 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.on( 'removeAttribute:key:$text', cbRemoveText );
 			dispatcher.on( 'removeAttribute:key:image', cbRemoveImage );
 
-			batch.setAttribute( image, 'key', 'value' );
-			batch.removeAttribute( image, 'key' );
+			batch.setAttribute( 'key', 'value', image );
+			batch.removeAttribute( 'key', image );
 
 			// Callback for adding attribute on text not called.
 			expect( cbRemoveText.called ).to.be.false;
 			expect( cbRemoveImage.calledOnce ).to.be.true;
 
 			const range = ModelRange.createFromParentsAndOffsets( root, 3, root, 4 );
-			batch.setAttribute( range, 'key', 'value' );
-			batch.removeAttribute( range, 'key' );
+			batch.setAttribute( 'key', 'value', range );
+			batch.removeAttribute( 'key', range );
 
 			expect( cbRemoveText.calledOnce ).to.be.true;
 			// Callback for adding attribute on image not called this time.
@@ -187,7 +187,7 @@ describe( 'ModelConversionDispatcher', () => {
 			const gyNode = new ModelElement( 'image' );
 			doc.graveyard.appendChildren( gyNode );
 
-			doc.batch().setAttribute( gyNode, 'key', 'value' );
+			doc.batch().setAttribute( 'key', 'value', gyNode );
 
 			expect( dispatcher.fire.called ).to.be.false;
 		} );
@@ -623,8 +623,8 @@ describe( 'ModelConversionDispatcher', () => {
 			doc.enqueueChanges( () => {
 				const batch = doc.batch();
 
-				batch.setAttribute( ModelRange.createIn( root ), 'bold', true );
-				batch.setAttribute( ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ), 'italic', true );
+				batch.setAttribute( 'bold', true, ModelRange.createIn( root ) );
+				batch.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
 			} );
 
 			dispatcher.on( 'selection', ( evt, data, consumable ) => {
@@ -642,8 +642,8 @@ describe( 'ModelConversionDispatcher', () => {
 			doc.enqueueChanges( () => {
 				const batch = doc.batch();
 
-				batch.setAttribute( ModelRange.createIn( root ), 'bold', true );
-				batch.setAttribute( ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ), 'italic', true );
+				batch.setAttribute( 'bold', true, ModelRange.createIn( root ) );
+				batch.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
 			} );
 
 			dispatcher.convertSelection( doc.selection, [] );
@@ -662,8 +662,8 @@ describe( 'ModelConversionDispatcher', () => {
 			doc.enqueueChanges( () => {
 				const batch = doc.batch();
 
-				batch.setAttribute( ModelRange.createIn( root ), 'bold', true );
-				batch.setAttribute( ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ), 'italic', true );
+				batch.setAttribute( 'bold', true, ModelRange.createIn( root ) );
+				batch.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
 			} );
 
 			dispatcher.convertSelection( doc.selection, [] );

@@ -955,31 +955,31 @@ describe( 'Batch', () => {
 
 			describe( 'setAttribute', () => {
 				it( 'should create the attribute on element', () => {
-					batch.setAttribute( node, 'b', 2 );
+					batch.setAttribute( 'b', 2, node );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( node.getAttribute( 'b' ) ).to.equal( 2 );
 				} );
 
 				it( 'should change the attribute of element', () => {
-					batch.setAttribute( node, 'a', 2 );
+					batch.setAttribute( 'a', 2, node );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( node.getAttribute( 'a' ) ).to.equal( 2 );
 				} );
 
 				it( 'should create the attribute on text node', () => {
-					batch.setAttribute( text, 'b', 2 );
+					batch.setAttribute( 'b', 2, text );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getChild( 1 ).getAttribute( 'b' ) ).to.equal( 2 );
 				} );
 
 				it( 'should change the attribute of text node', () => {
-					batch.setAttribute( text, 'a', 2 );
+					batch.setAttribute( 'a', 2, text );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.equal( 2 );
 				} );
 
 				it( 'should do nothing if the attribute value is the same', () => {
-					batch.setAttribute( node, 'a', 1 );
+					batch.setAttribute( 'a', 1, node );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( node.getAttribute( 'a' ) ).to.equal( 1 );
 				} );
@@ -987,19 +987,19 @@ describe( 'Batch', () => {
 
 			describe( 'removeAttribute', () => {
 				it( 'should remove the attribute from element', () => {
-					batch.removeAttribute( node, 'a' );
+					batch.removeAttribute( 'a', node );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( node.getAttribute( 'a' ) ).to.be.undefined;
 				} );
 
 				it( 'should remove the attribute from character', () => {
-					batch.removeAttribute( text, 'a' );
+					batch.removeAttribute( 'a', text );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.be.undefined;
 				} );
 
 				it( 'should do nothing if the attribute is not set', () => {
-					batch.removeAttribute( node, 'b' );
+					batch.removeAttribute( 'b', node );
 					expect( spy.callCount ).to.equal( 0 );
 				} );
 			} );
@@ -1054,42 +1054,42 @@ describe( 'Batch', () => {
 
 			describe( 'setAttribute', () => {
 				it( 'should set the attribute on the range', () => {
-					batch.setAttribute( getRange( 3, 6 ), 'a', 3 );
+					batch.setAttribute( 'a', 3, getRange( 3, 6 ) );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 3 );
 					expect( getCompressedAttrs() ).to.equal( '111333111222---1112------' );
 				} );
 
 				it( 'should split the operations if parts of the range have different attributes', () => {
-					batch.setAttribute( getRange( 4, 14 ), 'a', 3 );
+					batch.setAttribute( 'a', 3, getRange( 4, 14 ) );
 					expect( spy.callCount ).to.equal( 4 );
 					expect( getChangesAttrsCount() ).to.equal( 10 );
 					expect( getCompressedAttrs() ).to.equal( '111-3333333333-1112------' );
 				} );
 
 				it( 'should split the operations if parts of the part of the range have the attribute', () => {
-					batch.setAttribute( getRange( 4, 14 ), 'a', 2 );
+					batch.setAttribute( 'a', 2, getRange( 4, 14 ) );
 					expect( spy.callCount ).to.equal( 3 );
 					expect( getChangesAttrsCount() ).to.equal( 7 );
 					expect( getCompressedAttrs() ).to.equal( '111-2222222222-1112------' );
 				} );
 
 				it( 'should strip the range if the beginning have the attribute', () => {
-					batch.setAttribute( getRange( 1, 5 ), 'a', 1 );
+					batch.setAttribute( 'a', 1, getRange( 1, 5 ) );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 2 );
 					expect( getCompressedAttrs() ).to.equal( '11111-111222---1112------' );
 				} );
 
 				it( 'should strip the range if the ending have the attribute', () => {
-					batch.setAttribute( getRange( 13, 17 ), 'a', 1 );
+					batch.setAttribute( 'a', 1, getRange( 13, 17 ) );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 2 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222-111112------' );
 				} );
 
 				it( 'should do nothing if the range has attribute', () => {
-					batch.setAttribute( getRange( 0, 3 ), 'a', 1 );
+					batch.setAttribute( 'a', 1, getRange( 0, 3 ) );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
@@ -1100,7 +1100,7 @@ describe( 'Batch', () => {
 						new Position( root, [ 19 ] )
 					);
 
-					batch.setAttribute( range, 'a', 1 );
+					batch.setAttribute( 'a', 1, range );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 2 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112-11---' );
@@ -1112,7 +1112,7 @@ describe( 'Batch', () => {
 						new Position( root, [ 21 ] )
 					);
 
-					batch.setAttribute( range, 'a', 1 );
+					batch.setAttribute( 'a', 1, range );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 4 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112-1111-' );
@@ -1124,19 +1124,19 @@ describe( 'Batch', () => {
 						new Position( root, [ 19 ] )
 					);
 
-					batch.setAttribute( range, 'a', 3 );
+					batch.setAttribute( 'a', 3, range );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
 				it( 'should not create an operation if is collapsed', () => {
-					batch.setAttribute( getRange( 3, 3 ), 'a', 1 );
+					batch.setAttribute( 'a', 1, getRange( 3, 3 ) );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
 				it( 'should create a proper operations for the mixed range', () => {
-					batch.setAttribute( getRange( 0, 20 ), 'a', 1 );
+					batch.setAttribute( 'a', 1, getRange( 0, 20 ) );
 					expect( spy.callCount ).to.equal( 5 );
 					expect( getChangesAttrsCount() ).to.equal( 14 );
 					expect( getCompressedAttrs() ).to.equal( '11111111111111111111111--' );
@@ -1145,42 +1145,42 @@ describe( 'Batch', () => {
 
 			describe( 'removeAttribute', () => {
 				it( 'should remove the attribute on the range', () => {
-					batch.removeAttribute( getRange( 0, 2 ), 'a' );
+					batch.removeAttribute( 'a', getRange( 0, 2 ) );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 2 );
 					expect( getCompressedAttrs() ).to.equal( '--1---111222---1112------' );
 				} );
 
 				it( 'should split the operations if parts of the range have different attributes', () => {
-					batch.removeAttribute( getRange( 7, 11 ), 'a' );
+					batch.removeAttribute( 'a', getRange( 7, 11 ) );
 					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 4 );
 					expect( getCompressedAttrs() ).to.equal( '111---1----2---1112------' );
 				} );
 
 				it( 'should split the operations if parts of the part of the range have no attribute', () => {
-					batch.removeAttribute( getRange( 1, 7 ), 'a' );
+					batch.removeAttribute( 'a', getRange( 1, 7 ) );
 					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 3 );
 					expect( getCompressedAttrs() ).to.equal( '1------11222---1112------' );
 				} );
 
 				it( 'should strip the range if the beginning have no attribute', () => {
-					batch.removeAttribute( getRange( 4, 12 ), 'a' );
+					batch.removeAttribute( 'a', getRange( 4, 12 ) );
 					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 6 );
 					expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
 				} );
 
 				it( 'should strip the range if the ending have no attribute', () => {
-					batch.removeAttribute( getRange( 7, 15 ), 'a' );
+					batch.removeAttribute( 'a', getRange( 7, 15 ) );
 					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 5 );
 					expect( getCompressedAttrs() ).to.equal( '111---1--------1112------' );
 				} );
 
 				it( 'should do nothing if the range has no attribute', () => {
-					batch.removeAttribute( getRange( 4, 5 ), 'a' );
+					batch.removeAttribute( 'a', getRange( 4, 5 ) );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
@@ -1191,27 +1191,27 @@ describe( 'Batch', () => {
 						new Position( root, [ 19 ] )
 					);
 
-					batch.removeAttribute( range, 'a' );
+					batch.removeAttribute( 'a', range );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( getChangesAttrsCount() ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
 				it( 'should not apply operation twice in the range contains opening and closing tags', () => {
-					batch.removeAttribute( getRange( 18, 22 ), 'a' );
+					batch.removeAttribute( 'a', getRange( 18, 22 ) );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 1 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---111-------' );
 				} );
 
 				it( 'should not create an operation if range is collapsed', () => {
-					batch.removeAttribute( getRange( 3, 3 ), 'a' );
+					batch.removeAttribute( 'a', getRange( 3, 3 ) );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
 				it( 'should create a proper operations for the mixed range', () => {
-					batch.removeAttribute( getRange( 3, 15 ), 'a' );
+					batch.removeAttribute( 'a', getRange( 3, 15 ) );
 					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 6 );
 					expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
@@ -1229,41 +1229,41 @@ describe( 'Batch', () => {
 
 			describe( 'setAttribute', () => {
 				it( 'should create the attribute on root', () => {
-					batch.setAttribute( root, 'b', 2 );
+					batch.setAttribute( 'b', 2, root );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getAttribute( 'b' ) ).to.equal( 2 );
 				} );
 
 				it( 'should create the attribute on detached root', () => {
-					batch.setAttribute( p, 'b', 2 );
+					batch.setAttribute( 'b', 2, p );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( p.getAttribute( 'b' ) ).to.equal( 2 );
 				} );
 
 				it( 'should change the attribute of root', () => {
-					batch.setAttribute( root, 'a', 2 );
+					batch.setAttribute( 'a', 2, root );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getAttribute( 'a' ) ).to.equal( 2 );
 				} );
 
 				it( 'should change the attribute of detached root', () => {
-					batch.setAttribute( p, 'a', 2 );
+					batch.setAttribute( 'a', 2, p );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( p.getAttribute( 'a' ) ).to.equal( 2 );
 				} );
 
 				it( 'should do nothing if the attribute value is the same', () => {
-					batch.setAttribute( root, 'a', 1 );
+					batch.setAttribute( 'a', 1, root );
 					expect( spy.callCount ).to.equal( 1 );
-					batch.setAttribute( root, 'a', 1 );
+					batch.setAttribute( 'a', 1, root );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getAttribute( 'a' ) ).to.equal( 1 );
 				} );
 
 				it( 'should do nothing if the attribute value is the same on detached root', () => {
-					batch.setAttribute( p, 'a', 1 );
+					batch.setAttribute( 'a', 1, p );
 					expect( spy.callCount ).to.equal( 1 );
-					batch.setAttribute( p, 'a', 1 );
+					batch.setAttribute( 'a', 1, p );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( p.getAttribute( 'a' ) ).to.equal( 1 );
 				} );
@@ -1271,15 +1271,15 @@ describe( 'Batch', () => {
 
 			describe( 'removeAttribute', () => {
 				it( 'should remove the attribute from root', () => {
-					batch.setAttribute( root, 'a', 1 );
-					batch.removeAttribute( root, 'a' );
+					batch.setAttribute( 'a', 1, root );
+					batch.removeAttribute( 'a', root );
 
 					expect( spy.callCount ).to.equal( 2 );
 					expect( root.getAttribute( 'a' ) ).to.be.undefined;
 				} );
 
 				it( 'should do nothing if the attribute is not set', () => {
-					batch.removeAttribute( root, 'b' );
+					batch.removeAttribute( 'b', root );
 					expect( spy.callCount ).to.equal( 0 );
 				} );
 			} );
@@ -1319,7 +1319,7 @@ describe( 'Batch', () => {
 				} );
 
 				it( 'should clear attributes on root element', () => {
-					batch.setAttributes( root, { a: 1, b: 2, c: 3 } );
+					batch.setAttributes( { a: 1, b: 2, c: 3 }, root );
 
 					expect( Array.from( root.getAttributeKeys() ).length ).to.equal( 3 );
 
@@ -1345,11 +1345,11 @@ describe( 'Batch', () => {
 			const nodeB = new Element( 'p', { b: 2 } );
 			root.insertChildren( 0, [ nodeA, nodeB ] );
 
-			batch.setAttribute( nodeA, 'a', 1 );
+			batch.setAttribute( 'a', 1, nodeA );
 
 			expect( batch.deltas.length ).to.equal( 0 );
 
-			batch.removeAttribute( Range.createIn( root ), 'x' );
+			batch.removeAttribute( 'x', Range.createIn( root ) );
 
 			expect( batch.deltas.length ).to.equal( 0 );
 		} );
@@ -1376,7 +1376,7 @@ describe( 'Batch', () => {
 			// such a big amount of the same tests, so let's use a spy here.
 			const spy = sinon.spy( batch, 'setAttribute' );
 
-			batch.setAttributes( range, { a: 3, c: null } );
+			batch.setAttributes( { a: 3, c: null }, range );
 
 			// Verify result.
 			expect( Array.from( frag.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'a', 3 ] ] );
@@ -1384,8 +1384,8 @@ describe( 'Batch', () => {
 
 			// Verify operations
 			sinon.assert.calledTwice( spy );
-			sinon.assert.calledWith( spy.firstCall, range, 'a', 3 );
-			sinon.assert.calledWith( spy.secondCall, range, 'c', null );
+			sinon.assert.calledWith( spy.firstCall, 'a', 3, range );
+			sinon.assert.calledWith( spy.secondCall, 'c', null, range );
 		} );
 
 		it( 'should set attributes one by one on range for map as attributes list', () => {
@@ -1395,7 +1395,7 @@ describe( 'Batch', () => {
 			// such a big amount of the same tests, so let's use a spy here.
 			const spy = sinon.spy( batch, 'setAttribute' );
 
-			batch.setAttributes( range, new Map( [ [ 'a', 3 ], [ 'c', null ] ] ) );
+			batch.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), range );
 
 			// Verify result.
 			expect( Array.from( frag.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'a', 3 ] ] );
@@ -1403,8 +1403,8 @@ describe( 'Batch', () => {
 
 			// Verify operations
 			sinon.assert.calledTwice( spy );
-			sinon.assert.calledWith( spy.firstCall, range, 'a', 3 );
-			sinon.assert.calledWith( spy.secondCall, range, 'c', null );
+			sinon.assert.calledWith( spy.firstCall, 'a', 3, range );
+			sinon.assert.calledWith( spy.secondCall, 'c', null, range );
 		} );
 
 		it( 'should set attributes one by one on item', () => {
@@ -1412,15 +1412,15 @@ describe( 'Batch', () => {
 			// such a big amount of the same tests, so let's use a spy here.
 			const spy = sinon.spy( batch, 'setAttribute' );
 
-			batch.setAttributes( item, { a: 3, c: null } );
+			batch.setAttributes( { a: 3, c: null }, item );
 
 			// Verify result.
 			expect( Array.from( item.getAttributes() ) ).to.deep.equal( [ [ 'b', 2 ], [ 'a', 3 ] ] );
 
 			// Verify operations
 			sinon.assert.calledTwice( spy );
-			sinon.assert.calledWith( spy.firstCall, item, 'a', 3 );
-			sinon.assert.calledWith( spy.secondCall, item, 'c', null );
+			sinon.assert.calledWith( spy.firstCall, 'a', 3, item );
+			sinon.assert.calledWith( spy.secondCall, 'c', null, item );
 		} );
 
 		it( 'should set attributes one by one on item for maps as attributes list', () => {
@@ -1428,15 +1428,15 @@ describe( 'Batch', () => {
 			// such a big amount of the same tests, so let's use a spy here.
 			const spy = sinon.spy( batch, 'setAttribute' );
 
-			batch.setAttributes( item, new Map( [ [ 'a', 3 ], [ 'c', null ] ] ) );
+			batch.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), item );
 
 			// Verify result.
 			expect( Array.from( item.getAttributes() ) ).to.deep.equal( [ [ 'b', 2 ], [ 'a', 3 ] ] );
 
 			// Verify operations
 			sinon.assert.calledTwice( spy );
-			sinon.assert.calledWith( spy.firstCall, item, 'a', 3 );
-			sinon.assert.calledWith( spy.secondCall, item, 'c', null );
+			sinon.assert.calledWith( spy.firstCall, 'a', 3, item );
+			sinon.assert.calledWith( spy.secondCall, 'c', null, item );
 		} );
 	} );
 

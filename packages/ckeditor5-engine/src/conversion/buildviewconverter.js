@@ -528,7 +528,7 @@ function setAttributeOn( toChange, attribute, data, conversionApi ) {
 	};
 
 	if ( conversionApi.schema.check( schemaQuery ) ) {
-		data.batch.setAttribute( toChange, attribute.key, attribute.value );
+		data.batch.setAttribute( attribute.key, attribute.value, toChange );
 	}
 }
 

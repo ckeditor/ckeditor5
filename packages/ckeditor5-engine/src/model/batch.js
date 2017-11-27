@@ -327,7 +327,7 @@ export default class Batch {
 	 *		batch.appendText( 'foo', paragraph );
 	 *		batch.appendText( 'foo', { 'bold': true }, paragraph );
 	 *
-	 * @param {String} data Text data.
+	 * @param {String} text Text data.
 	 * @param {Object} [attributes] Text attributes.
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} parent
 	 */
@@ -349,11 +349,11 @@ export default class Batch {
 	 * @param {Object} [attributes] Elements attributes.
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} parent
 	 */
-	appendElement( text, attributes, parent ) {
+	appendElement( name, attributes, parent ) {
 		if ( attributes instanceof DocumentFragment || attributes instanceof Element ) {
-			this.insert( this.createElement( text ), attributes, 'end' );
+			this.insert( this.createElement( name ), attributes, 'end' );
 		} else {
-			this.insert( this.createElement( text, attributes ), parent, 'end' );
+			this.insert( this.createElement( name, attributes ), parent, 'end' );
 		}
 	}
 
@@ -361,12 +361,12 @@ export default class Batch {
 	 * Sets value of the attribute with given key on a {@link module:engine/model/item~Item model item}
 	 * or on a {@link module:engine/model/range~Range range}.
 	 *
-	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
-	 * Model item or range on which the attribute will be set.
 	 * @param {String} key Attribute key.
 	 * @param {*} value Attribute new value.
+	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
+	 * Model item or range on which the attribute will be set.
 	 */
-	setAttribute( itemOrRange, key, value ) {
+	setAttribute( key, value, itemOrRange ) {
 		if ( itemOrRange instanceof Range ) {
 			setAttributeToRange( this, key, value, itemOrRange );
 		} else {
@@ -378,18 +378,18 @@ export default class Batch {
 	 * Sets values of attributes on a {@link module:engine/model/item~Item model item}
 	 * or on a {@link module:engine/model/range~Range range}.
 	 *
-	 *		batch.setAttributes( range, {
+	 *		batch.setAttributes( {
 	 *			'bold': true,
 	 *			'italic': true
-	 *		} );
+	 *		}, range );
 	 *
+	 * @param {Object} attributes Attributes keys and values.
 	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
 	 * Model item or range on which the attributes will be set.
-	 * @param {Object} attributes Attributes keys and values.
 	 */
-	setAttributes( itemOrRange, attributes ) {
+	setAttributes( attributes, itemOrRange ) {
 		for ( const [ key, val ] of toMap( attributes ) ) {
-			this.setAttribute( itemOrRange, key, val );
+			this.setAttribute( key, val, itemOrRange );
 		}
 	}
 
@@ -397,12 +397,11 @@ export default class Batch {
 	 * Removes an attribute with given key from a {@link module:engine/model/item~Item model item}
 	 * or from a {@link module:engine/model/range~Range range}.
 	 *
+	 * @param {String} key Attribute key.
 	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
 	 * Model item or range from which the attribute will be removed.
-	 * @method module:engine/model/batch~Batch#removeAttribute
-	 * @param {String} key Attribute key.
 	 */
-	removeAttribute( itemOrRange, key ) {
+	removeAttribute( key, itemOrRange ) {
 		if ( itemOrRange instanceof Range ) {
 			setAttributeToRange( this, key, null, itemOrRange );
 		} else {
@@ -419,7 +418,7 @@ export default class Batch {
 	clearAttributes( itemOrRange ) {
 		const removeAttributesFromItem = item => {
 			for ( const attribute of item.getAttributeKeys() ) {
-				this.removeAttribute( item, attribute );
+				this.removeAttribute( attribute, item );
 			}
 		};
 
@@ -819,18 +818,16 @@ export default class Batch {
 	}
 }
 
-/**
- * Sets given attribute to each node in given range. When attribute value is null then attribute will be removed.
- *
- * Because attribute operation needs to have the same attribute value on the whole range, this function splits
- * the range into smaller parts.
- *
- * @private
- * @param {module:engine/model/batch~Batch} batch
- * @param {String} key Attribute key.
- * @param {*} value Attribute new value.
- * @param {module:engine/model/range~Range} range Model range on which the attribute will be set.
- */
+// Sets given attribute to each node in given range. When attribute value is null then attribute will be removed.
+//
+// Because attribute operation needs to have the same attribute value on the whole range, this function splits
+// the range into smaller parts.
+//
+// @private
+// @param {module:engine/model/batch~Batch} batch
+// @param {String} key Attribute key.
+// @param {*} value Attribute new value.
+// @param {module:engine/model/range~Range} range Model range on which the attribute will be set.
 function setAttributeToRange( batch, key, value, range ) {
 	const delta = new AttributeDelta();
 	const doc = batch.document;

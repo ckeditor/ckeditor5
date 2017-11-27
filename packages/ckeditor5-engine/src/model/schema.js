@@ -432,7 +432,7 @@ export default class Schema {
 				// TODO: this should be improved to check all combination of attributes.
 				for ( const attribute of node.getAttributeKeys() ) {
 					if ( !this.check( { name, attributes: attribute, inside: queryPath } ) ) {
-						batch.removeAttribute( node, attribute );
+						batch.removeAttribute( attribute, node );
 					}
 				}
 			}
