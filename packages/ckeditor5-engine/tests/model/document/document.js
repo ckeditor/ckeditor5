@@ -143,7 +143,7 @@ describe( 'Document', () => {
 			expect( changeCallback.args[ 0 ][ 4 ] ).to.equal( delta.type );
 		} );
 
-		it( 'should execute operation, fire event with proper data and not increase document version ' +
+		it( 'should execute operation, not fire event and not increase document version ' +
 			'when operation is not a document operation', () => {
 			const changeCallback = sinon.spy();
 			const type = 't';
@@ -169,11 +169,7 @@ describe( 'Document', () => {
 			expect( doc.history._deltas.length ).to.equal( 0 );
 			sinon.assert.calledOnce( operation._execute );
 
-			sinon.assert.calledOnce( changeCallback );
-			expect( changeCallback.args[ 0 ][ 1 ] ).to.equal( type );
-			expect( changeCallback.args[ 0 ][ 2 ] ).to.equal( data );
-			expect( changeCallback.args[ 0 ][ 3 ] ).to.deep.equal( batch );
-			expect( changeCallback.args[ 0 ][ 4 ] ).to.equal( delta.type );
+			sinon.assert.notCalled( changeCallback );
 		} );
 
 		it( 'should throw an error on the operation base version and the document version is different', () => {

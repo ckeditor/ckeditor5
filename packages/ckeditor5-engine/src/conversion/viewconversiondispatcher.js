@@ -13,7 +13,6 @@ import ModelPosition from '../model/position';
 import ModelTreeWalker from '../model/treewalker';
 import ModelNode from '../model/node';
 import ModelDocumentFragment from '../model/documentfragment';
-import { remove } from '../model/writer';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -134,13 +133,16 @@ export default class ViewConversionDispatcher {
 	 * @fires documentFragment
 	 * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element} viewItem
 	 * Part of the view to be converted.
-	 * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
+	 * @param {Object} additionalData Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
 	 * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
+	 * @param {module:engine/model/batch~Batch} additionalData.batch Batch to which the deltas will be added.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model data that is a result of the conversion process
 	 * wrapped in `DocumentFragment`. Converted marker elements will be set as that document fragment's
 	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 */
-	convert( viewItem, additionalData = {} ) {
+	convert( viewItem, additionalData ) {
+		const batch = additionalData.batch;
+
 		this.fire( 'viewCleanup', viewItem );
 
 		const consumable = ViewConsumable.createFrom( viewItem );
@@ -149,16 +151,19 @@ export default class ViewConversionDispatcher {
 		// We can get a null here if conversion failed (see _convertItem())
 		// or simply if an item could not be converted (e.g. due to the schema).
 		if ( !conversionResult ) {
-			return new ModelDocumentFragment();
+			return batch.createDocumentFragment();
 		}
 
 		// When conversion result is not a document fragment we need to wrap it in document fragment.
 		if ( !conversionResult.is( 'documentFragment' ) ) {
-			conversionResult = new ModelDocumentFragment( [ conversionResult ] );
+			const docFrag = batch.createDocumentFragment();
+
+			batch.append( conversionResult, docFrag );
+			conversionResult = docFrag;
 		}
 
 		// Extract temporary markers elements from model and set as static markers collection.
-		conversionResult.markers = extractMarkersFromModelFragment( conversionResult );
+		conversionResult.markers = extractMarkersFromModelFragment( conversionResult, batch );
 
 		return conversionResult;
 	}
@@ -203,24 +208,23 @@ export default class ViewConversionDispatcher {
 	 * @private
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertChildren
 	 */
-	_convertChildren( input, consumable, additionalData = {} ) {
-		// Get all children of view input item.
-		const viewChildren = Array.from( input.getChildren() );
+	_convertChildren( input, consumable, additionalData ) {
+		const batch = additionalData.batch;
+		const documentFragment = batch.createDocumentFragment();
 
-		// 1. Map those children to model.
-		// 2. Filter out items that has not been converted or for which conversion returned wrong result (for those warning is logged).
-		// 3. Extract children from document fragments to flatten results.
-		const convertedChildren = viewChildren
-			.map( viewChild => this._convertItem( viewChild, consumable, additionalData ) )
-			.filter( converted => converted instanceof ModelNode || converted instanceof ModelDocumentFragment )
-			.reduce( ( result, filtered ) => {
-				return result.concat(
-					filtered.is( 'documentFragment' ) ? Array.from( filtered.getChildren() ) : filtered
-				);
-			}, [] );
+		for ( const viewChild of Array.from( input.getChildren() ) ) {
+			const modelChild = this._convertItem( viewChild, consumable, additionalData );
 
-		// Normalize array to model document fragment.
-		return new ModelDocumentFragment( convertedChildren );
+			if ( modelChild instanceof ModelNode ) {
+				batch.append( modelChild, documentFragment );
+			} else if ( modelChild instanceof ModelDocumentFragment ) {
+				for ( const child of Array.from( modelChild ) ) {
+					batch.append( child, documentFragment );
+				}
+			}
+		}
+
+		return documentFragment;
 	}
 
 	/**
@@ -278,7 +282,7 @@ mix( ViewConversionDispatcher, EmitterMixin );
 //
 // @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/node~Node} modelItem Fragment of model.
 // @returns {Map<String, module:engine/model/range~Range>} List of static markers.
-function extractMarkersFromModelFragment( modelItem ) {
+function extractMarkersFromModelFragment( modelItem, batch ) {
 	const markerElements = new Set();
 	const markers = new Map();
 
@@ -310,7 +314,7 @@ function extractMarkersFromModelFragment( modelItem ) {
 		}
 
 		// Remove marker element from DocumentFragment.
-		remove( ModelRange.createOn( markerElement ) );
+		batch.remove( markerElement );
 	}
 
 	return markers;

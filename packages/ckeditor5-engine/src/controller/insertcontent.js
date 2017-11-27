@@ -229,7 +229,7 @@ class Insertion {
 		// If the node is a text and bare text is allowed in current position it means that the node
 		// contains disallowed attributes and we have to remove them.
 		else if ( this.schema.check( { name: '$text', inside: this.position } ) ) {
-			this.schema.removeDisallowedAttributes( [ node ], this.position );
+			this.schema.removeDisallowedAttributes( [ node ], this.position, this.batch );
 			this._handleNode( node, context );
 		}
 		// If text is not allowed, try autoparagraphing.
@@ -341,7 +341,7 @@ class Insertion {
 	 * @param {Object} context
 	 */
 	_tryAutoparagraphing( node, context ) {
-		const paragraph = new Element( 'paragraph' );
+		const paragraph = this.batch.createElement( 'paragraph' );
 
 		// Do not autoparagraph if the paragraph won't be allowed there,
 		// cause that would lead to an infinite loop. The paragraph would be rejected in
@@ -350,7 +350,7 @@ class Insertion {
 			// When node is a text and is disallowed by schema it means that contains disallowed attributes
 			// and we need to remove them.
 			if ( node.is( 'text' ) && !this._checkIsAllowed( node, [ paragraph ] ) ) {
-				this.schema.removeDisallowedAttributes( [ node ], [ paragraph ] );
+				this.schema.removeDisallowedAttributes( [ node ], [ paragraph ], this.batch );
 			}
 
 			if ( this._checkIsAllowed( node, [ paragraph ] ) ) {

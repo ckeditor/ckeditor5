@@ -155,7 +155,8 @@ describe( 'EditingController', () => {
 				'<paragraph>foo</paragraph>' +
 				'<paragraph></paragraph>' +
 				'<paragraph>bar</paragraph>',
-				model.schema
+				model.schema,
+				model.batch()
 			)._children );
 
 			model.enqueueChanges( () => {
@@ -409,9 +410,11 @@ describe( 'EditingController', () => {
 
 			editing.destroy();
 
+			const batch = model.batch();
+
 			model.enqueueChanges( () => {
-				const modelData = parse( '<paragraph>foo</paragraph>', model.schema ).getChild( 0 );
-				model.batch().insert( modelData, model.getRoot() );
+				const modelData = parse( '<paragraph>foo</paragraph>', model.schema, batch ).getChild( 0 );
+				batch.insert( modelData, model.getRoot() );
 			} );
 
 			expect( spy.called ).to.be.false;

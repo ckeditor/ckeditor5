@@ -9,6 +9,7 @@ import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewText from '../../src/view/text';
 
 import ModelSchema from '../../src/model/schema';
+import ModelDocument from '../../src/model/document';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
@@ -16,13 +17,16 @@ import ModelText from '../../src/model/text';
 import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
 
 describe( 'view-to-model-converters', () => {
-	let dispatcher, schema, objWithContext;
+	let dispatcher, schema, additionalData, batch;
+
+	const modelDocument = new ModelDocument();
 
 	beforeEach( () => {
 		schema = new ModelSchema();
 		schema.registerItem( 'paragraph', '$block' );
 		schema.allow( { name: '$text', inside: '$root' } );
-		objWithContext = { context: [ '$root' ] };
+		batch = modelDocument.batch();
+		additionalData = { context: [ '$root' ], batch };
 		dispatcher = new ViewConversionDispatcher( { schema } );
 	} );
 
@@ -32,7 +36,7 @@ describe( 'view-to-model-converters', () => {
 
 			dispatcher.on( 'text', convertText() );
 
-			const conversionResult = dispatcher.convert( viewText, objWithContext );
+			const conversionResult = dispatcher.convert( viewText, additionalData );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
@@ -51,7 +55,7 @@ describe( 'view-to-model-converters', () => {
 				}
 			} );
 
-			const conversionResult = dispatcher.convert( viewText, objWithContext );
+			const conversionResult = dispatcher.convert( viewText, additionalData );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
@@ -64,12 +68,12 @@ describe( 'view-to-model-converters', () => {
 			const viewText = new ViewText( 'foobar' );
 			dispatcher.on( 'text', convertText() );
 
-			let conversionResult = dispatcher.convert( viewText, objWithContext );
+			let conversionResult = dispatcher.convert( viewText, additionalData );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.childCount ).to.equal( 0 );
 
-			conversionResult = dispatcher.convert( viewText, { context: [ '$block' ] } );
+			conversionResult = dispatcher.convert( viewText, { context: [ '$block' ], batch } );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.childCount ).to.equal( 1 );
@@ -82,7 +86,7 @@ describe( 'view-to-model-converters', () => {
 
 			dispatcher.on( 'text', convertText() );
 
-			const conversionResult = dispatcher.convert( viewText, objWithContext );
+			const conversionResult = dispatcher.convert( viewText, additionalData );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
@@ -103,7 +107,7 @@ describe( 'view-to-model-converters', () => {
 			dispatcher.on( 'element', convertToModelFragment() );
 			dispatcher.on( 'documentFragment', convertToModelFragment() );
 
-			const conversionResult = dispatcher.convert( viewFragment, objWithContext );
+			const conversionResult = dispatcher.convert( viewFragment, additionalData );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.maxOffset ).to.equal( 6 );
@@ -128,7 +132,7 @@ describe( 'view-to-model-converters', () => {
 				}
 			} );
 
-			const conversionResult = dispatcher.convert( viewP, objWithContext );
+			const conversionResult = dispatcher.convert( viewP, additionalData );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelElement );

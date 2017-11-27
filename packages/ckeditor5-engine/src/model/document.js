@@ -168,9 +168,8 @@ export default class Document {
 		if ( operation.isDocumentOperation ) {
 			this.version++;
 			this.history.addDelta( operation.delta );
+			this.fire( 'change', operation.type, changes, operation.delta.batch, operation.delta.type );
 		}
-
-		this.fire( 'change', operation.type, changes, operation.delta.batch, operation.delta.type );
 	}
 
 	/**
