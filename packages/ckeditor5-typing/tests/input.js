@@ -126,6 +126,28 @@ describe( 'Input feature', () => {
 			expect( getViewData( view ) ).to.equal( '<p>x{}</p>' );
 		} );
 
+		it( 'should apply selection attributes to the inserted text', () => {
+			setModelData( model, '<paragraph>[]</paragraph>', {
+				selectionAttributes: {
+					bold: true,
+					italic: true
+				}
+			} );
+
+			view.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [],
+					newChildren: [ new ViewText( 'x' ) ],
+					node: viewRoot.getChild( 0 )
+				}
+			] );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text bold="true" italic="true">x</$text><$text bold="true" italic="true">[]</$text></paragraph>'
+			);
+		} );
+
 		it( 'should handle multiple text mutations', () => {
 			editor.setData( '<p>foo<strong>bar</strong></p>' );
 
@@ -272,7 +294,7 @@ describe( 'Input feature', () => {
 			const viewSelection = new ViewSelection();
 			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
-			testUtils.sinon.spy( Batch.prototype, 'weakInsert' );
+			testUtils.sinon.spy( Batch.prototype, 'insert' );
 			testUtils.sinon.spy( Batch.prototype, 'remove' );
 
 			view.fire( 'mutations',
@@ -285,7 +307,7 @@ describe( 'Input feature', () => {
 				viewSelection
 			);
 
-			expect( Batch.prototype.weakInsert.calledOnce ).to.be.true;
+			expect( Batch.prototype.insert.calledOnce ).to.be.true;
 			expect( Batch.prototype.remove.calledOnce ).to.be.true;
 		} );
 

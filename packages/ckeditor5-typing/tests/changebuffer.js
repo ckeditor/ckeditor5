@@ -6,7 +6,6 @@
 import ChangeBuffer from '../src/changebuffer';
 import Document from '@ckeditor/ckeditor5-engine/src/model/document';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 describe( 'ChangeBuffer', () => {
 	const CHANGE_LIMIT = 3;
@@ -91,7 +90,7 @@ describe( 'ChangeBuffer', () => {
 			// Ensure that size is reset too.
 			buffer.input( 1 );
 
-			doc.batch().insert( Position.createAt( root, 0 ), 'a' );
+			doc.batch().insertText( 'a', root );
 
 			expect( buffer.batch ).to.not.equal( batch1 );
 			expect( buffer.size ).to.equal( 0 );
@@ -100,31 +99,31 @@ describe( 'ChangeBuffer', () => {
 		it( 'is not reset when changes are added to the buffer\'s batch', () => {
 			const batch1 = buffer.batch;
 
-			buffer.batch.insert( Position.createAt( root, 0 ), 'a' );
+			buffer.batch.insert( 'a', root );
 			expect( buffer.batch ).to.equal( batch1 );
 
-			buffer.batch.insert( Position.createAt( root, 0 ), 'b' );
+			buffer.batch.insert( 'b', root );
 			expect( buffer.batch ).to.equal( batch1 );
 		} );
 
 		it( 'is not reset when changes are added to batch which existed previously', () => {
 			const externalBatch = doc.batch();
 
-			externalBatch.insert( Position.createAt( root, 0 ), 'a' );
+			externalBatch.insertText( 'a', root );
 
 			const bufferBatch = buffer.batch;
 
-			buffer.batch.insert( Position.createAt( root, 0 ), 'b' );
+			bufferBatch.insertText( 'b', root );
 			expect( buffer.batch ).to.equal( bufferBatch );
 
-			doc.batch().insert( Position.createAt( root, 0 ), 'c' );
+			doc.batch().insertText( 'c', root );
 			expect( buffer.batch ).to.not.equal( bufferBatch );
 		} );
 
 		it( 'is not reset when changes are applied in transparent batch', () => {
 			const bufferBatch = buffer.batch;
 
-			doc.batch( 'transparent' ).insert( Position.createAt( root, 0 ), 'a' );
+			doc.batch( 'transparent' ).insert( 'a', root );
 
 			expect( buffer.batch ).to.equal( bufferBatch );
 		} );
@@ -175,7 +174,7 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.lock();
 
-			doc.batch().insert( Position.createAt( root, 0 ), 'a' );
+			doc.batch().insertText( 'a', root );
 
 			buffer.unlock();
 
@@ -236,7 +235,7 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.destroy();
 
-			doc.batch().insert( Position.createAt( root, 0 ), 'a' );
+			doc.batch().insertText( 'a', root );
 
 			expect( buffer.batch ).to.equal( batch1 );
 		} );

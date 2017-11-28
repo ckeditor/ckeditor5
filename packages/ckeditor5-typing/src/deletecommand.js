@@ -10,7 +10,6 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import ChangeBuffer from './changebuffer';
 import count from '@ckeditor/ckeditor5-utils/src/count';
@@ -175,7 +174,7 @@ export default class DeleteCommand extends Command {
 		const paragraph = new Element( 'paragraph' );
 
 		this._buffer.batch.remove( Range.createIn( limitElement ) );
-		this._buffer.batch.insert( Position.createAt( limitElement ), paragraph );
+		this._buffer.batch.insert( paragraph, limitElement );
 
 		selection.setCollapsedAt( paragraph );
 	}

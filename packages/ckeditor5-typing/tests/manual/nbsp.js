@@ -27,7 +27,7 @@ ClassicEditor
 		document.querySelector( '#nbsp' ).addEventListener( 'click', () => {
 			editor.document.enqueueChanges( () => {
 				editor.document.selection.collapseToStart();
-				editor.document.batch().weakInsert( editor.document.selection.getFirstPosition(), '\u00A0' );
+				editor.document.batch().insertText( '\u00A0', editor.document.selection.getFirstPosition() );
 			} );
 		} );
 

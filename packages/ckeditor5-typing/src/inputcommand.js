@@ -85,7 +85,7 @@ export default class InputCommand extends Command {
 			}
 
 			if ( text ) {
-				this._buffer.batch.weakInsert( range.start, text );
+				this._buffer.batch.insertText( text, doc.selection.getAttributes(), range.start );
 			}
 
 			if ( resultRange ) {
