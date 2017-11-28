@@ -45,6 +45,11 @@ export default class DetachOperation extends Operation {
 		 * @member {Number} #howMany
 		 */
 		this.howMany = howMany;
+
+		/**
+		 * @inheritDoc
+		 */
+		this.isDocumentOperation = false;
 	}
 
 	/**
@@ -52,13 +57,6 @@ export default class DetachOperation extends Operation {
 	 */
 	get type() {
 		return 'detach';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	get isDocumentOperation() {
-		return false;
 	}
 
 	/**

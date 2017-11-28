@@ -46,6 +46,11 @@ export default class InsertOperation extends Operation {
 		 * @member {module:engine/model/nodelist~NodeList} module:engine/model/operation/insertoperation~InsertOperation#nodeList
 		 */
 		this.nodes = new NodeList( normalizeNodes( nodes ) );
+
+		/**
+		 * @inheritDoc
+		 */
+		this.isDocumentOperation = !!this.position.root.document;
 	}
 
 	/**
@@ -53,13 +58,6 @@ export default class InsertOperation extends Operation {
 	 */
 	get type() {
 		return 'insert';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	get isDocumentOperation() {
-		return !!this.position.root.document;
 	}
 
 	/**

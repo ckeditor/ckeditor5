@@ -67,6 +67,11 @@ export default class RootAttributeOperation extends Operation {
 		 * @member {*}
 		 */
 		this.newValue = newValue;
+
+		/**
+		 * @inheritDoc
+		 */
+		this.isDocumentOperation = !!this.root.document;
 	}
 
 	/**
@@ -80,13 +85,6 @@ export default class RootAttributeOperation extends Operation {
 		} else {
 			return 'changeRootAttribute';
 		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	get isDocumentOperation() {
-		return !!this.root.document;
 	}
 
 	/**

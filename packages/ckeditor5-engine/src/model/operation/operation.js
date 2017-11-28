@@ -97,6 +97,9 @@ export default class Operation {
 		// Remove parent delta to avoid circular dependencies.
 		delete json.delta;
 
+		// Only document operations are shared with other clients so it is not necessary to keep this information.
+		delete json.isDocumentOperation;
+
 		return json;
 	}
 

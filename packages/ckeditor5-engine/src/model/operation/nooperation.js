@@ -20,6 +20,18 @@ import Operation from './operation';
  * @extends module:engine/model/operation/operation~Operation
  */
 export default class NoOperation extends Operation {
+	/**
+	 * @inheritDoc
+	 */
+	constructor( baseVersion ) {
+		super( baseVersion );
+
+		/**
+		 * @inheritDoc
+		 */
+		this.isDocumentOperation = true;
+	}
+
 	get type() {
 		return 'noop';
 	}
@@ -40,13 +52,6 @@ export default class NoOperation extends Operation {
 	 */
 	getReversed() {
 		return new NoOperation( this.baseVersion + 1 );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	get isDocumentOperation() {
-		return true;
 	}
 
 	/**

@@ -55,6 +55,11 @@ export default class MarkerOperation extends Operation {
 		 * @member {module:engine/model/markercollection~MarkerCollection}
 		 */
 		this._markers = markers;
+
+		/**
+		 * @inheritDoc
+		 */
+		this.isDocumentOperation = this._isDocumentOperation();
 	}
 
 	/**
@@ -65,9 +70,11 @@ export default class MarkerOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks if operation is executed on document or document fragment nodes.
+	 *
+	 * @private
 	 */
-	get isDocumentOperation() {
+	_isDocumentOperation() {
 		if ( this.newRange ) {
 			return !!this.newRange.root.document;
 		}

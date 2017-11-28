@@ -19,6 +19,21 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  */
 export default class ReinsertOperation extends MoveOperation {
 	/**
+	 * @inheritDocs
+	 */
+	constructor( sourcePosition, howMany, targetPosition, baseVersion ) {
+		super( sourcePosition, howMany, targetPosition, baseVersion );
+
+		/**
+		 * Reinsert operation is always executed on attached items.
+		 *
+		 * @readonly
+		 * @member {Boolean}
+		 */
+		this.isDocumentOperation = true;
+	}
+
+	/**
 	 * Position where nodes will be re-inserted.
 	 *
 	 * @type {module:engine/model/position~Position}
@@ -39,15 +54,6 @@ export default class ReinsertOperation extends MoveOperation {
 	 */
 	get type() {
 		return 'reinsert';
-	}
-
-	/**
-	 * Reinsert operation is always executed on attached items.
-	 *
-	 * @member {Boolean}
-	 */
-	get isDocumentOperation() {
-		return true;
 	}
 
 	/**

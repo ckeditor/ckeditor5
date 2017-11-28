@@ -73,6 +73,11 @@ export default class AttributeOperation extends Operation {
 		 * @member {*}
 		 */
 		this.newValue = newValue === undefined ? null : newValue;
+
+		/**
+		 * @inheritDoc
+		 */
+		this.isDocumentOperation = !!this.range.root.document;
 	}
 
 	/**
@@ -86,13 +91,6 @@ export default class AttributeOperation extends Operation {
 		} else {
 			return 'changeAttribute';
 		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	get isDocumentOperation() {
-		return !!this.range.root.document;
 	}
 
 	/**

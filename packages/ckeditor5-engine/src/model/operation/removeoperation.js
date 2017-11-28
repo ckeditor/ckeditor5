@@ -16,20 +16,26 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  */
 export default class RemoveOperation extends MoveOperation {
 	/**
+	 * @inheritDocs
+	 */
+	constructor( sourcePosition, howMany, targetPosition, baseVersion ) {
+		super( sourcePosition, howMany, targetPosition, baseVersion );
+
+		/**
+		 * Remove operation cannot be applied on element that is not inside the document
+		 * so this will always be a document operation.
+		 *
+		 * @readonly
+		 * @member {Boolean}
+		 */
+		this.isDocumentOperation = true;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	get type() {
 		return 'remove';
-	}
-
-	/**
-	 * Remove operation cannot be applied on element that is not inside the document
-	 * so this will always be a document operation.
-	 *
-	 * @member {Boolean}
-	 */
-	get isDocumentOperation() {
-		return true;
 	}
 
 	/**
