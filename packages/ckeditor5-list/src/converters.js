@@ -349,7 +349,7 @@ export function modelViewMergeAfter( evt, data, consumable, conversionApi ) {
  */
 export function viewModelConverter( evt, data, consumable, conversionApi ) {
 	if ( consumable.consume( data.input, { name: true } ) ) {
-		const batch = data.batch;
+		const batch = conversionApi.batch;
 
 		// 1. Create `listItem` model element.
 		const listItem = batch.createElement( 'listItem' );
