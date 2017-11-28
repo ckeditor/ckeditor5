@@ -9,10 +9,8 @@
 
 import ViewListItemElement from './viewlistitemelement';
 
-import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
-import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
 
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
@@ -351,16 +349,18 @@ export function modelViewMergeAfter( evt, data, consumable, conversionApi ) {
  */
 export function viewModelConverter( evt, data, consumable, conversionApi ) {
 	if ( consumable.consume( data.input, { name: true } ) ) {
+		const batch = data.batch;
+
 		// 1. Create `listItem` model element.
-		const listItem = new ModelElement( 'listItem' );
+		const listItem = batch.createElement( 'listItem' );
 
 		// 2. Handle `listItem` model element attributes.
 		data.indent = data.indent ? data.indent : 0;
-		listItem.setAttribute( 'indent', data.indent );
+		batch.setAttribute( 'indent', data.indent, listItem );
 
 		// Set 'bulleted' as default. If this item is pasted into a context,
 		const type = data.input.parent && data.input.parent.name == 'ol' ? 'numbered' : 'bulleted';
-		listItem.setAttribute( 'type', type );
+		batch.setAttribute( 'type', type, listItem );
 
 		// 3. Handle `<li>` children.
 		data.context.push( listItem );
@@ -369,8 +369,8 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
 		data.indent++;
 
 		// `listItem`s will be kept in flat structure.
-		const items = new ModelDocumentFragment();
-		items.appendChildren( listItem );
+		const items = batch.createDocumentFragment();
+		batch.append( listItem, items );
 
 		// Check all children of the converted `<li>`.
 		// At this point we assume there are no "whitespace" view text nodes in view list, between view list items.
@@ -382,11 +382,13 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
 			// If this is a view list element, we will convert it and concat the result (`listItem` model elements)
 			// with already gathered results (in `items` array). `converted` should be a `ModelDocumentFragment`.
 			if ( child.name == 'ul' || child.name == 'ol' ) {
-				items.appendChildren( Array.from( converted.getChildren() ) );
+				for ( const child of Array.from( converted.getChildren() ) ) {
+					batch.append( child, items );
+				}
 			}
 			// If it was not a list it was a "regular" list item content. Just append it to `listItem`.
 			else {
-				modelWriter.insert( ModelPosition.createAt( listItem, 'end' ), converted );
+				batch.append( converted, listItem );
 			}
 		}
 
