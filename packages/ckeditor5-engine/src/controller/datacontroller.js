@@ -238,7 +238,7 @@ export default class DataController {
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Output document fragment.
 	 */
 	toModel( viewElementOrFragment, batch, context = '$root' ) {
-		return this.viewToModel.convert( viewElementOrFragment, { context: [ context ], batch } );
+		return this.viewToModel.convert( viewElementOrFragment, batch, { context: [ context ] } );
 	}
 
 	/**

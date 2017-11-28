@@ -16,7 +16,6 @@ import ModelDocumentFragment from '../model/documentfragment';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
@@ -92,7 +91,7 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  *		// Fire conversion.
  *		// Always take care where the converted model structure will be appended to. If this `viewDocumentFragment`
  *		// is going to be appended directly to a '$root' element, use that in `context`.
- *		viewDispatcher.convert( viewDocumentFragment, { context: [ '$root' ] } );
+ *		viewDispatcher.convert( viewDocumentFragment, batch, { context: [ '$root' ] } );
  *
  * Before each conversion process, `ViewConversionDispatcher` fires {@link ~ViewConversionDispatcher#event:viewCleanup}
  * event which can be used to prepare tree view for conversion.
@@ -117,12 +116,15 @@ export default class ViewConversionDispatcher {
 		 *
 		 * @member {module:engine/conversion/viewconversiondispatcher~ViewConversionApi}
 		 */
-		this.conversionApi = extend( {}, conversionApi );
+		this.conversionApi = Object.assign( {}, conversionApi );
 
 		// `convertItem` and `convertChildren` are bound to this `ViewConversionDispatcher` instance and
 		// set on `conversionApi`. This way only a part of `ViewConversionDispatcher` API is exposed.
 		this.conversionApi.convertItem = this._convertItem.bind( this );
 		this.conversionApi.convertChildren = this._convertChildren.bind( this );
+
+		// Batch used for conversion. Is passed to #convert method and removed at the and of the conversion.
+		this.conversionApi.batch = null;
 	}
 
 	/**
@@ -133,15 +135,16 @@ export default class ViewConversionDispatcher {
 	 * @fires documentFragment
 	 * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element} viewItem
 	 * Part of the view to be converted.
+	 * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
 	 * @param {Object} additionalData Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
 	 * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
-	 * @param {module:engine/model/batch~Batch} additionalData.batch Batch to which the deltas will be added.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model data that is a result of the conversion process
 	 * wrapped in `DocumentFragment`. Converted marker elements will be set as that document fragment's
 	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 */
-	convert( viewItem, additionalData ) {
-		const batch = additionalData.batch;
+	convert( viewItem, batch, additionalData ) {
+		// Store batch in current conversion as conversionApi, will be removed at the end of this conversion.
+		this.conversionApi.batch = batch;
 
 		this.fire( 'viewCleanup', viewItem );
 
@@ -173,7 +176,7 @@ export default class ViewConversionDispatcher {
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertItem
 	 */
 	_convertItem( input, consumable, additionalData = {} ) {
-		const data = extend( {}, additionalData, {
+		const data = Object.assign( {}, additionalData, {
 			input,
 			output: null
 		} );
@@ -209,7 +212,7 @@ export default class ViewConversionDispatcher {
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertChildren
 	 */
 	_convertChildren( input, consumable, additionalData ) {
-		const batch = additionalData.batch;
+		const batch = this.conversionApi.batch;
 		const documentFragment = batch.createDocumentFragment();
 
 		for ( const viewChild of Array.from( input.getChildren() ) ) {

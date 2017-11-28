@@ -270,7 +270,7 @@ class ViewConverterBuilder {
 	toElement( element ) {
 		function eventCallbackGen( from ) {
 			return ( evt, data, consumable, conversionApi ) => {
-				const batch = data.batch;
+				const batch = conversionApi.batch;
 
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
@@ -434,8 +434,8 @@ class ViewConverterBuilder {
 	 */
 	toMarker( creator ) {
 		function eventCallbackGen( from ) {
-			return ( evt, data, consumable ) => {
-				const batch = data.batch;
+			return ( evt, data, consumable, conversionApi ) => {
+				const batch = conversionApi.batch;
 
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
@@ -528,7 +528,7 @@ function setAttributeOn( toChange, attribute, data, conversionApi ) {
 	};
 
 	if ( conversionApi.schema.check( schemaQuery ) ) {
-		data.batch.setAttribute( attribute.key, attribute.value, toChange );
+		conversionApi.batch.setAttribute( attribute.key, attribute.value, toChange );
 	}
 }
 

@@ -48,7 +48,7 @@ export function convertText() {
 
 		if ( conversionApi.schema.check( schemaQuery ) ) {
 			if ( consumable.consume( data.input ) ) {
-				data.output = data.batch.createText( data.input.data );
+				data.output = conversionApi.batch.createText( data.input.data );
 			}
 		}
 	};

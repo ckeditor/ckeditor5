@@ -208,8 +208,8 @@ describe( 'advanced-converters', () => {
 
 			const viewFigureConverter = function( evt, data, consumable, conversionApi ) {
 				if ( consumable.consume( data.input, { name: true } ) ) {
-					const modelImage = conversionApi.convertItem( data.input.getChild( 0 ), consumable, { batch } );
-					const modelCaption = conversionApi.convertItem( data.input.getChild( 1 ), consumable, { batch } );
+					const modelImage = conversionApi.convertItem( data.input.getChild( 0 ), consumable, batch );
+					const modelCaption = conversionApi.convertItem( data.input.getChild( 1 ), consumable, batch );
 
 					modelImage.appendChildren( modelCaption );
 
@@ -232,7 +232,7 @@ describe( 'advanced-converters', () => {
 			const viewFigcaptionConverter = function( evt, data, consumable, conversionApi ) {
 				if ( consumable.consume( data.input, { name: true } ) ) {
 					const modelCaption = new ModelElement( 'caption' );
-					const children = conversionApi.convertChildren( data.input, consumable, { batch } );
+					const children = conversionApi.convertChildren( data.input, consumable, batch );
 
 					modelCaption.appendChildren( children );
 
@@ -287,7 +287,7 @@ describe( 'advanced-converters', () => {
 
 		it( 'should convert view image to model', () => {
 			const viewElement = new ViewContainerElement( 'img', { src: 'bar.jpg', title: 'bar' } );
-			const modelElement = viewDispatcher.convert( viewElement, { batch } );
+			const modelElement = viewDispatcher.convert( viewElement, batch );
 
 			expect( modelToString( modelElement ) ).to.equal( '<image src="bar.jpg" title="bar"></image>' );
 		} );
@@ -301,7 +301,7 @@ describe( 'advanced-converters', () => {
 					new ViewContainerElement( 'figcaption', null, new ViewText( 'foobar' ) )
 				]
 			);
-			const modelElement = viewDispatcher.convert( viewElement, { batch } );
+			const modelElement = viewDispatcher.convert( viewElement, batch );
 
 			expect( modelToString( modelElement ) ).to.equal( '<image src="bar.jpg" title="bar"><caption>foobar</caption></image>' );
 		} );
@@ -372,7 +372,7 @@ describe( 'advanced-converters', () => {
 			viewDispatcher.on( 'element:a', ( evt, data, consumable, conversionApi ) => {
 				if ( consumable.consume( data.input, { name: true, attribute: 'href' } ) ) {
 					if ( !data.output ) {
-						data.output = conversionApi.convertChildren( data.input, consumable, { batch } );
+						data.output = conversionApi.convertChildren( data.input, consumable, batch );
 					}
 
 					for ( const child of data.output ) {
@@ -384,7 +384,7 @@ describe( 'advanced-converters', () => {
 			viewDispatcher.on( 'element:a', ( evt, data, consumable, conversionApi ) => {
 				if ( consumable.consume( data.input, { attribute: 'title' } ) ) {
 					if ( !data.output ) {
-						data.output = conversionApi.convertChildren( data.input, consumable, { batch } );
+						data.output = conversionApi.convertChildren( data.input, consumable, batch );
 					}
 
 					for ( const child of data.output ) {
@@ -469,7 +469,7 @@ describe( 'advanced-converters', () => {
 						}
 					}
 
-					const children = conversionApi.convertChildren( data.input, consumable, { batch } );
+					const children = conversionApi.convertChildren( data.input, consumable, batch );
 					data.output.appendChildren( children );
 				}
 			} );
@@ -520,7 +520,7 @@ describe( 'advanced-converters', () => {
 		it( 'should convert a view element to model', () => {
 			const viewElement = new ViewAttributeElement( 'a', { href: 'foo.html', title: 'Foo title' }, new ViewText( 'foo' ) );
 
-			const modelText = viewDispatcher.convert( viewElement, { batch } ).getChild( 0 );
+			const modelText = viewDispatcher.convert( viewElement, batch ).getChild( 0 );
 
 			expect( modelText ).to.be.instanceof( ModelText );
 			expect( modelText.data ).to.equal( 'foo' );
@@ -591,7 +591,7 @@ describe( 'advanced-converters', () => {
 				]
 			);
 
-			const modelElement = viewDispatcher.convert( viewElement, { batch } );
+			const modelElement = viewDispatcher.convert( viewElement, batch );
 
 			expect( modelToString( modelElement ) ).to.equal( '<quote linkHref="foo.html" linkTitle="Foo source">foo</quote>' );
 		} );
@@ -603,7 +603,7 @@ describe( 'advanced-converters', () => {
 		viewDispatcher.on( 'element:a', ( evt, data, consumable, conversionApi ) => {
 			if ( consumable.consume( data.input, { name: true, attribute: 'href' } ) ) {
 				if ( !data.output ) {
-					data.output = conversionApi.convertChildren( data.input, consumable, { batch } );
+					data.output = conversionApi.convertChildren( data.input, consumable, batch );
 				}
 
 				for ( const child of data.output ) {
@@ -616,7 +616,7 @@ describe( 'advanced-converters', () => {
 			if ( consumable.consume( data.input, { name: true } ) ) {
 				data.output = new ModelElement( 'paragraph' );
 
-				const children = conversionApi.convertChildren( data.input, consumable, { batch } );
+				const children = conversionApi.convertChildren( data.input, consumable, batch );
 
 				for ( let i = 1; i < children.childCount; i++ ) {
 					const child = children.getChild( i );
@@ -633,13 +633,13 @@ describe( 'advanced-converters', () => {
 
 		viewDispatcher.on( 'element:table', ( evt, data, consumable, conversionApi ) => {
 			if ( consumable.consume( data.input, { name: true } ) ) {
-				data.output = conversionApi.convertChildren( data.input, consumable, { batch } );
+				data.output = conversionApi.convertChildren( data.input, consumable, batch );
 			}
 		} );
 
 		viewDispatcher.on( 'element:td', ( evt, data, consumable, conversionApi ) => {
 			if ( consumable.consume( data.input, { name: true } ) ) {
-				data.output = conversionApi.convertChildren( data.input, consumable, { batch } );
+				data.output = conversionApi.convertChildren( data.input, consumable, batch );
 			}
 		} );
 
@@ -654,7 +654,7 @@ describe( 'advanced-converters', () => {
 			] )
 		] );
 
-		const model = viewDispatcher.convert( viewTable, { batch } );
+		const model = viewDispatcher.convert( viewTable, batch );
 		const modelFragment = new ModelDocumentFragment( model );
 
 		expect( modelToString( modelFragment ) )
@@ -681,7 +681,7 @@ describe( 'advanced-converters', () => {
 						}
 					}
 
-					data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, { batch } ) );
+					data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, batch ) );
 				}
 			}, { priority: 'lowest' } );
 
@@ -705,7 +705,7 @@ describe( 'advanced-converters', () => {
 			viewDispatcher.on( 'element:strong', ( evt, data, consumable, conversionApi ) => {
 				if ( consumable.consume( data.input, { name: true } ) ) {
 					if ( !data.output ) {
-						data.output = conversionApi.convertChildren( data.input, consumable, { batch } );
+						data.output = conversionApi.convertChildren( data.input, consumable, batch );
 					}
 
 					for ( const child of data.output ) {
@@ -756,7 +756,7 @@ describe( 'advanced-converters', () => {
 				] )
 			] );
 
-			const modelElement = viewDispatcher.convert( viewElement, { batch } );
+			const modelElement = viewDispatcher.convert( viewElement, batch );
 
 			expect( modelToString( modelElement ) ).to.equal(
 				'<table cellpadding="5" cellspacing="5">' +
