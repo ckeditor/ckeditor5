@@ -56,7 +56,7 @@ describe( 'Autoformat', () => {
 		it( 'should replace asterisk with bulleted list item', () => {
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">[]</listItem>' );
@@ -65,7 +65,7 @@ describe( 'Autoformat', () => {
 		it( 'should replace minus character with bulleted list item', () => {
 			setData( doc, '<paragraph>-[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">[]</listItem>' );
@@ -74,7 +74,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace minus character when inside bulleted list item', () => {
 			setData( doc, '<listItem indent="0" type="bulleted">-[]</listItem>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">- []</listItem>' );
@@ -85,7 +85,7 @@ describe( 'Autoformat', () => {
 		it( 'should replace digit with numbered list item', () => {
 			setData( doc, '<paragraph>1.[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">[]</listItem>' );
@@ -94,7 +94,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace digit character when inside numbered list item', () => {
 			setData( doc, '<listItem indent="0" type="numbered">1.[]</listItem>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">1. []</listItem>' );
@@ -105,7 +105,7 @@ describe( 'Autoformat', () => {
 		it( 'should replace hash character with heading', () => {
 			setData( doc, '<paragraph>#[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<heading1>[]</heading1>' );
@@ -114,7 +114,7 @@ describe( 'Autoformat', () => {
 		it( 'should replace two hash characters with heading level 2', () => {
 			setData( doc, '<paragraph>##[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<heading2>[]</heading2>' );
@@ -123,7 +123,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace hash character when inside heading', () => {
 			setData( doc, '<heading1>#[]</heading1>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<heading1># []</heading1>' );
@@ -160,14 +160,14 @@ describe( 'Autoformat', () => {
 
 					setData( doc, '<paragraph>#[]</paragraph>' );
 					doc.enqueueChanges( () => {
-						doc.batch().insert( doc.selection.getFirstPosition(), ' ' );
+						doc.batch().insertText( ' ', doc.selection.getFirstPosition() );
 					} );
 
 					expect( spy1.calledOnce ).to.be.true;
 
 					setData( doc, '<paragraph>######[]</paragraph>' );
 					doc.enqueueChanges( () => {
-						doc.batch().insert( doc.selection.getFirstPosition(), ' ' );
+						doc.batch().insertText( ' ', doc.selection.getFirstPosition() );
 					} );
 
 					expect( spy6.calledOnce ).to.be.true;
@@ -181,7 +181,7 @@ describe( 'Autoformat', () => {
 		it( 'should replace greater-than character with heading', () => {
 			setData( doc, '<paragraph>>[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<blockQuote><paragraph>[]</paragraph></blockQuote>' );
@@ -190,7 +190,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace greater-than character when inside heading', () => {
 			setData( doc, '<heading1>>[]</heading1>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<heading1>> []</heading1>' );
@@ -199,7 +199,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace greater-than character when inside numbered list', () => {
 			setData( doc, '<listItem indent="0" type="numbered">1. >[]</listItem>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">1. > []</listItem>' );
@@ -208,7 +208,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace greater-than character when inside buletted list', () => {
 			setData( doc, '<listItem indent="0" type="bulleted">1. >[]</listItem>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">1. > []</listItem>' );
@@ -219,7 +219,7 @@ describe( 'Autoformat', () => {
 		it( 'should replace both "**" with bold', () => {
 			setData( doc, '<paragraph>**foobar*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '*' );
+				batch.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
@@ -228,7 +228,7 @@ describe( 'Autoformat', () => {
 		it( 'should replace both "*" with italic', () => {
 			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '*' );
+				batch.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph><$text italic="true">foobar</$text>[]</paragraph>' );
@@ -237,7 +237,7 @@ describe( 'Autoformat', () => {
 		it( 'should replace both "`" with code', () => {
 			setData( doc, '<paragraph>`foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '`' );
+				batch.insertText( '`', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph><$text code="true">foobar</$text>[]</paragraph>' );
@@ -246,7 +246,7 @@ describe( 'Autoformat', () => {
 		it( 'nothing should be replaces when typing "*"', () => {
 			setData( doc, '<paragraph>foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '*' );
+				batch.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>foobar*[]</paragraph>' );
@@ -255,7 +255,7 @@ describe( 'Autoformat', () => {
 		it( 'should format inside the text', () => {
 			setData( doc, '<paragraph>foo **bar*[] baz</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '*' );
+				batch.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text>[] baz</paragraph>' );
@@ -278,7 +278,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace asterisk with bulleted list item', () => {
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>* []</paragraph>' );
@@ -287,7 +287,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace minus character with bulleted list item', () => {
 			setData( doc, '<paragraph>-[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>- []</paragraph>' );
@@ -296,7 +296,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace digit with numbered list item', () => {
 			setData( doc, '<paragraph>1.[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>1. []</paragraph>' );
@@ -305,7 +305,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace hash character with heading', () => {
 			setData( doc, '<paragraph>#[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph># []</paragraph>' );
@@ -314,7 +314,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace two hash characters with heading level 2', () => {
 			setData( doc, '<paragraph>##[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>## []</paragraph>' );
@@ -323,7 +323,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace both "**" with bold', () => {
 			setData( doc, '<paragraph>**foobar*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '*' );
+				batch.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
@@ -332,7 +332,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace both "*" with italic', () => {
 			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '*' );
+				batch.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
@@ -341,7 +341,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace both "`" with code', () => {
 			setData( doc, '<paragraph>`foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '`' );
+				batch.insertText( '`', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>`foobar`[]</paragraph>' );
@@ -350,7 +350,7 @@ describe( 'Autoformat', () => {
 		it( 'should not replace ">" with block quote', () => {
 			setData( doc, '<paragraph>>[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<paragraph>> []</paragraph>' );
@@ -373,7 +373,7 @@ describe( 'Autoformat', () => {
 
 					setData( doc, '<paragraph>##[]</paragraph>' );
 					doc.enqueueChanges( () => {
-						batch.insert( doc.selection.getFirstPosition(), ' ' );
+						batch.insertText( ' ', doc.selection.getFirstPosition() );
 					} );
 
 					expect( getData( doc ) ).to.equal( '<paragraph>## []</paragraph>' );
