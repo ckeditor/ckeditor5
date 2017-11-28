@@ -8,9 +8,9 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import findLinkRange from './findlinkrange';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
@@ -69,16 +69,20 @@ export default class LinkCommand extends Command {
 					// Then update `linkHref` value.
 					const linkRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ) );
 
-					batch.setAttribute( linkRange, 'linkHref', href );
+					batch.setAttribute( 'linkHref', href, linkRange );
 
 					// Create new range wrapping changed link.
 					selection.setRanges( [ linkRange ] );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
 				else {
-					const node = new Text( href, { linkHref: href } );
+					const attributes = toMap( doc.selection.getAttributes() );
 
-					batch.insert( position, node );
+					attributes.set( 'linkHref', href );
+
+					const node = batch.createText( href, attributes );
+
+					batch.insert( node, position );
 
 					// Create new range wrapping created node.
 					selection.setRanges( [ Range.createOn( node ) ] );
@@ -89,7 +93,7 @@ export default class LinkCommand extends Command {
 				const ranges = doc.schema.getValidRanges( selection.getRanges(), 'linkHref' );
 
 				for ( const range of ranges ) {
-					batch.setAttribute( range, 'linkHref', href );
+					batch.setAttribute( 'linkHref', href, range );
 				}
 			}
 		} );

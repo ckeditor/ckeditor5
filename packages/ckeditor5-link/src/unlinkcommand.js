@@ -45,7 +45,7 @@ export default class UnlinkCommand extends Command {
 
 			// Remove `linkHref` attribute from specified ranges.
 			for ( const range of rangesToUnlink ) {
-				batch.removeAttribute( range, 'linkHref' );
+				batch.removeAttribute( 'linkHref', range );
 			}
 		} );
 	}
