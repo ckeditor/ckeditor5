@@ -949,9 +949,15 @@ function addMarkerOperation( batch, name, oldRange, newRange ) {
 // collaboration may track changes on the document but ignore changes on detached fragments and should not get
 // unexpected `move` operation.
 function isSameTree( rootA, rootB ) {
+	// If it is the same root this is the same tree.
 	if ( rootA === rootB ) {
 		return true;
 	}
 
-	return rootA instanceof RootElement && rootB instanceof RootElement;
+	// If both roots are documents root it is operation within the document what we still treat as the same tree.
+	if ( rootA instanceof RootElement && rootB instanceof RootElement ) {
+		return true;
+	}
+
+	return false;
 }
