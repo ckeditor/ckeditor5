@@ -11,7 +11,6 @@ import ParagraphCommand from './paragraphcommand';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
@@ -295,7 +294,7 @@ function autoparagraphEmptyRoots() {
 				rootsToFix.delete( root );
 
 				// Fix empty root.
-				batch.insert( ModelPosition.createAt( root ), new ModelElement( 'paragraph' ) );
+				batch.insertElement( 'paragraph', root );
 			} );
 		}
 	}
