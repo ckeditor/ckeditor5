@@ -7,9 +7,7 @@
  * @module image/image/converters
  */
 
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
-import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
 
 /**
  * Returns a function that converts the image view representation:
@@ -57,7 +55,7 @@ export function viewFigureToModel() {
 		data.context.pop();
 
 		// Add converted children to model image.
-		modelWriter.insert( ModelPosition.createAt( modelImage ), modelChildren );
+		data.batch.insert( modelChildren, modelImage );
 
 		// Set model image as conversion result.
 		data.output = modelImage;
