@@ -106,12 +106,12 @@ module.exports = {
 		'../relative/path/to/some/othercustomplugin'
 	],
 
-	// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
-	language: 'en',
-
 	// Editor configuration.
 	config: {
-		toolbar: [ 'headings', 'bold', 'italic', 'custombutton' ]
+		toolbar: [ 'headings', 'bold', 'italic', 'custombutton' ],
+
+		// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
+		lang: 'en'
 	}
 };
 ```
