@@ -174,7 +174,7 @@ function insertMissingModelCaptionElement( evt, changeType, data, batch ) {
 				// Make sure that the image does not have caption already.
 				// https://github.com/ckeditor/ckeditor5-image/issues/78
 				if ( !getCaptionFromImage( item ) ) {
-					batch.appendElement( 'caption', null, item );
+					batch.appendElement( 'caption', item );
 				}
 			} );
 		}
