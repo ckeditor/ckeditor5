@@ -18,6 +18,7 @@ import ModelTextProxy from '../model/textproxy';
 import ModelElement from '../model/element';
 import Operation from '../model/operation/operation';
 import AttributeOperation from '../model/operation/attributeoperation';
+import DetachOperation from '../model/operation/detachoperation';
 import InsertOperation from '../model/operation/insertoperation';
 import MarkerOperation from '../model/operation/markeroperation';
 import MoveOperation from '../model/operation/moveoperation';
@@ -25,12 +26,13 @@ import NoOperation from '../model/operation/nooperation';
 import RenameOperation from '../model/operation/renameoperation';
 import RootAttributeOperation from '../model/operation/rootattributeoperation';
 import Delta from '../model/delta/delta';
-import { default as AttributeDelta, RootAttributeDelta } from '../model/delta/attributedelta';
+import AttributeDelta from '../model/delta/attributedelta';
 import InsertDelta from '../model/delta/insertdelta';
 import MarkerDelta from '../model/delta/markerdelta';
 import MergeDelta from '../model/delta/mergedelta';
 import MoveDelta from '../model/delta/movedelta';
 import RenameDelta from '../model/delta/renamedelta';
+import RootAttributeDelta from '../model/delta/rootattributedelta';
 import SplitDelta from '../model/delta/splitdelta';
 import UnwrapDelta from '../model/delta/unwrapdelta';
 import WrapDelta from '../model/delta/wrapdelta';
@@ -271,6 +273,14 @@ function enableLoggingTools() {
 	AttributeOperation.prototype.toString = function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.range }`;
+	};
+
+	DetachOperation.prototype.toString = function() {
+		const range = ModelRange.createFromPositionAndShift( this.sourcePosition, this.howMany );
+		const nodes = Array.from( range.getItems() );
+		const nodeString = nodes.length > 1 ? `[ ${ nodes.length } ]` : nodes[ 0 ];
+
+		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ range }`;
 	};
 
 	InsertOperation.prototype.toString = function() {

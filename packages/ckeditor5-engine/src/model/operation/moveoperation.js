@@ -64,6 +64,17 @@ export default class MoveOperation extends Operation {
 		 * @member {Boolean} module:engine/model/operation/moveoperation~MoveOperation#isSticky
 		 */
 		this.isSticky = false;
+
+		/**
+		 * Defines whether operation is executed on attached or detached {@link module:engine/model/item~Item items}.
+		 *
+		 * Note that range cannot be moved within different documents e.g. from docFrag to document root so
+		 * root of source and target positions is always the same.
+		 *
+		 * @readonly
+		 * @member {Boolean} #isDocumentOperation
+		 */
+		this.isDocumentOperation = !!this.targetPosition.root.document;
 	}
 
 	/**

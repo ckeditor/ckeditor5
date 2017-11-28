@@ -3,78 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import { getNodesAndText } from '../../../tests/model/_utils/utils';
 import Document from '../../../src/model/document';
 import Position from '../../../src/model/position';
-import Range from '../../../src/model/range';
-import Element from '../../../src/model/element';
-import Text from '../../../src/model/text';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import MoveDelta from '../../../src/model/delta/movedelta';
 import MoveOperation from '../../../src/model/operation/moveoperation';
-
-describe( 'Batch', () => {
-	let doc, root, div, p, batch, chain;
-
-	beforeEach( () => {
-		doc = new Document();
-		root = doc.createRoot();
-
-		div = new Element( 'div', [], new Text( 'foobar' ) );
-		p = new Element( 'p', [], new Text( 'abcxyz' ) );
-
-		div.insertChildren( 0, [ new Element( 'p', [], new Text( 'gggg' ) ) ] );
-		div.insertChildren( 2, [ new Element( 'p', [], new Text( 'hhhh' ) ) ] );
-
-		root.insertChildren( 0, [ div, p ] );
-
-		batch = doc.batch();
-	} );
-
-	describe( 'move', () => {
-		it( 'should move specified node', () => {
-			batch.move( div, new Position( root, [ 2 ] ) );
-
-			expect( root.maxOffset ).to.equal( 2 );
-			expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
-			expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'PggggPfoobarPhhhhP' );
-		} );
-
-		it( 'should move flat range of nodes', () => {
-			const range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 7 ] ) );
-			batch.move( range, new Position( root, [ 1, 3 ] ) );
-
-			expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
-			expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
-		} );
-
-		it( 'should throw if given range is not flat', () => {
-			const notFlatRange = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
-
-			expect( () => {
-				doc.batch().move( notFlatRange, new Position( root, [ 1, 3 ] ) );
-			} ).to.throw( CKEditorError, /^batch-move-range-not-flat/ );
-		} );
-
-		it( 'should be chainable', () => {
-			chain = batch.move( div, new Position( root, [ 1, 3 ] ) );
-
-			expect( chain ).to.equal( batch );
-		} );
-
-		it( 'should add delta to batch and operation to delta before applying operation', () => {
-			sinon.spy( doc, 'applyOperation' );
-			batch.move( div, new Position( root, [ 2 ] ) );
-
-			const correctDeltaMatcher = sinon.match( operation => {
-				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-			} );
-
-			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
-		} );
-	} );
-} );
 
 describe( 'MoveDelta', () => {
 	let moveDelta, doc, root;

@@ -48,7 +48,7 @@ describe( 'DataController', () => {
 	describe( 'parse', () => {
 		it( 'should set text', () => {
 			schema.allow( { name: '$text', inside: '$root' } );
-			const model = data.parse( '<p>foo<b>bar</b></p>' );
+			const model = data.parse( '<p>foo<b>bar</b></p>', modelDocument.batch() );
 
 			expect( model ).to.instanceof( ModelDocumentFragment );
 			expect( stringify( model ) ).to.equal( 'foobar' );
@@ -59,7 +59,7 @@ describe( 'DataController', () => {
 
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
-			const model = data.parse( '<p>foo<b>bar</b></p>' );
+			const model = data.parse( '<p>foo<b>bar</b></p>', modelDocument.batch() );
 
 			expect( model ).to.instanceof( ModelDocumentFragment );
 			expect( stringify( model ) ).to.equal( '<paragraph>foobar</paragraph>' );
@@ -70,7 +70,7 @@ describe( 'DataController', () => {
 
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
-			const model = data.parse( '<p>foo</p><p>bar</p>' );
+			const model = data.parse( '<p>foo</p><p>bar</p>', modelDocument.batch() );
 
 			expect( model ).to.instanceof( ModelDocumentFragment );
 			expect( stringify( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
@@ -83,20 +83,20 @@ describe( 'DataController', () => {
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 			buildViewConverter().for( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', true );
 
-			const model = data.parse( '<p>foo<b>bar</b></p>' );
+			const model = data.parse( '<p>foo<b>bar</b></p>', modelDocument.batch() );
 
 			expect( model ).to.instanceof( ModelDocumentFragment );
 			expect( stringify( model ) ).to.equal( '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 		} );
 
 		it( 'should parse in the root context by default', () => {
-			const model = data.parse( 'foo' );
+			const model = data.parse( 'foo', modelDocument.batch() );
 
 			expect( stringify( model ) ).to.equal( '' );
 		} );
 
 		it( 'should accept parsing context', () => {
-			const model = data.parse( 'foo', '$block' );
+			const model = data.parse( 'foo', modelDocument.batch(), '$block' );
 
 			expect( stringify( model ) ).to.equal( 'foo' );
 		} );
@@ -111,7 +111,7 @@ describe( 'DataController', () => {
 
 		it( 'should convert content of an element #1', () => {
 			const viewElement = parseView( '<p>foo</p>' );
-			const model = data.toModel( viewElement );
+			const model = data.toModel( viewElement, modelDocument.batch() );
 
 			expect( model ).to.instanceof( ModelDocumentFragment );
 			expect( stringify( model ) ).to.equal( '<paragraph>foo</paragraph>' );
@@ -119,7 +119,7 @@ describe( 'DataController', () => {
 
 		it( 'should convert content of an element #2', () => {
 			const viewFragment = parseView( '<p>foo</p><p>bar</p>' );
-			const model = data.toModel( viewFragment );
+			const model = data.toModel( viewFragment, modelDocument.batch() );
 
 			expect( model ).to.be.instanceOf( ModelDocumentFragment );
 			expect( stringify( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
@@ -134,10 +134,10 @@ describe( 'DataController', () => {
 			const viewFragment = new ViewDocumentFragment( [ parseView( 'foo' ) ] );
 
 			// Model fragment in root.
-			expect( stringify( data.toModel( viewFragment ) ) ).to.equal( '' );
+			expect( stringify( data.toModel( viewFragment, modelDocument.batch() ) ) ).to.equal( '' );
 
 			// Model fragment in inline root.
-			expect( stringify( data.toModel( viewFragment, 'inlineRoot' ) ) ).to.equal( 'foo' );
+			expect( stringify( data.toModel( viewFragment, modelDocument.batch(), 'inlineRoot' ) ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -264,6 +264,8 @@ describe( 'DataController', () => {
 	} );
 
 	describe( 'stringify', () => {
+		let batch;
+
 		beforeEach( () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			modelDocument.schema.registerItem( 'div' );
@@ -272,16 +274,18 @@ describe( 'DataController', () => {
 			modelDocument.schema.allow( { name: 'div', inside: '$root' } );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+
+			batch = modelDocument.batch();
 		} );
 
 		it( 'should stringify a content of an element', () => {
-			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', modelDocument.schema );
+			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', modelDocument.schema, batch );
 
 			expect( data.stringify( modelElement ) ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'should stringify a content of a document fragment', () => {
-			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', modelDocument.schema );
+			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', modelDocument.schema, batch );
 
 			expect( data.stringify( modelDocumentFragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
@@ -299,7 +303,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should convert a content of an element', () => {
-			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', modelDocument.schema );
+			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', modelDocument.schema, modelDocument.batch() );
 
 			const viewDocumentFragment = data.toView( modelElement );
 
@@ -313,7 +317,11 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should convert a document fragment', () => {
-			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', modelDocument.schema );
+			const modelDocumentFragment = parseModel(
+				'<paragraph>foo</paragraph><paragraph>bar</paragraph>',
+				modelDocument.schema,
+				modelDocument.batch()
+			);
 
 			const viewDocumentFragment = data.toView( modelDocumentFragment );
 
