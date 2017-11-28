@@ -48,11 +48,11 @@ testUtils.createSinonSandbox();
 
 /* global document */
 
-after( () => {
-	disableEngineDebug();
-} );
-
 describe( 'enableEngineDebug', () => {
+	afterEach( () => {
+		disableEngineDebug();
+	} );
+
 	it( 'should return plugin class', () => {
 		const result = enableEngineDebug();
 
@@ -84,6 +84,10 @@ describe( 'debug tools', () => {
 		log = sinon.spy();
 		error = sinon.spy();
 		DebugPlugin = enableEngineDebug( { log, error } );
+	} );
+
+	after( () => {
+		disableEngineDebug();
 	} );
 
 	afterEach( () => {

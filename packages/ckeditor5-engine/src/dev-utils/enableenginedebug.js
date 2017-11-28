@@ -52,7 +52,7 @@ import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 
 class Sandbox {
 	constructor() {
-		this._stubs = new Set();
+		this._restores = [];
 	}
 
 	create( object, methodName, fakeMethod ) {
@@ -60,23 +60,21 @@ class Sandbox {
 
 		object[ methodName ] = fakeMethod;
 
-		fakeMethod.restore = function restore() {
+		this._restores.unshift( () => {
 			if ( originalMethod ) {
-				Object.defineProperty( object, methodName, originalMethod );
+				object[ methodName ] = originalMethod;
 			} else {
 				delete object[ methodName ];
 			}
-		};
-
-		this._stubs.add( object[ methodName ] );
+		} );
 	}
 
 	restore() {
-		for ( const stub of this._stubs.values() ) {
-			stub.restore();
+		for ( const restore of this._restores ) {
+			restore();
 		}
 
-		this._stubs.clear();
+		this._restores = [];
 	}
 }
 
