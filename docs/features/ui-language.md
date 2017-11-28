@@ -58,7 +58,7 @@ If you build CKEditor from scratch or integrate it directly into your applicatio
 	// ...
 	```
 
-3. Run webpack. If the `additionalLanguages` option is not set, the CKEditor plugin for webpack will replace the {@link module:utils/locale~Locale#t `t()`} function call parameters used in the source code with localized language strings. Otherwise the CKEditor plugin for webpack will replace the {@link module:utils/locale~Locale#t `t()`} function call parameters with short ids and emit the translation files that should land in the `'lang'` directory (Or different, if the `outputDirectory` option is specified.
+3. Run webpack. If the `additionalLanguages` option is not set, the CKEditor plugin for webpack will replace the {@link module:utils/locale~Locale#t `t()`} function call parameters used in the source code with localized language strings. Otherwise the CKEditor plugin for webpack will replace the {@link module:utils/locale~Locale#t `t()`} function call parameters with short ids and emit the translation files that should land in the `'lang'` directory (or different, if the `outputDirectory` option is specified).
 
 4. If you want to change the language after the build ends, you will need to edit the `index.html` file, add the translation file and set the UI language to the target one.
 
