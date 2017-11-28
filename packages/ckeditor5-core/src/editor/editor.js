@@ -63,7 +63,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:utils/locale~Locale}
 		 */
-		this.locale = new Locale( this.config.get( 'lang' ) );
+		this.locale = new Locale( this.config.get( 'language' ) );
 
 		/**
 		 * Shorthand for {@link module:utils/locale~Locale#t}.

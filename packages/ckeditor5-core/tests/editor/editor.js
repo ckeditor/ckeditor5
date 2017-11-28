@@ -151,10 +151,10 @@ describe( 'Editor', () => {
 			expect( editor.t ).to.equal( editor.locale.t );
 		} );
 
-		it( 'is configured with the config.lang', () => {
-			const editor = new Editor( { lang: 'pl' } );
+		it( 'is configured with the config.language', () => {
+			const editor = new Editor( { language: 'pl' } );
 
-			expect( editor.locale.lang ).to.equal( 'pl' );
+			expect( editor.locale.language ).to.equal( 'pl' );
 		} );
 	} );
 
