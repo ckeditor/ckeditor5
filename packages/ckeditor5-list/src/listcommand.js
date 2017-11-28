@@ -154,7 +154,7 @@ export default class ListCommand extends Command {
 				changes = changes.reverse();
 
 				for ( const item of changes ) {
-					batch.setAttribute( item.element, 'indent', item.indent );
+					batch.setAttribute( 'indent', item.indent, item.element );
 				}
 			}
 
@@ -208,11 +208,12 @@ export default class ListCommand extends Command {
 				} else if ( !turnOff && element.name != 'listItem' ) {
 					// We are turning on and the element is not a `listItem` - it should be converted to `listItem`.
 					// The order of operations is important to keep model in correct state.
-					batch.setAttribute( element, 'type', this.type ).setAttribute( element, 'indent', 0 ).rename( element, 'listItem' );
+					batch.setAttributes( { type: this.type, indent: 0 }, element );
+					batch.rename( element, 'listItem' );
 				} else if ( !turnOff && element.name == 'listItem' && element.getAttribute( 'type' ) != this.type ) {
 					// We are turning on and the element is a `listItem` but has different type - change it's type and
 					// type of it's all siblings that have same indent.
-					batch.setAttribute( element, 'type', this.type );
+					batch.setAttribute( 'type', this.type, element );
 				}
 			}
 		} );

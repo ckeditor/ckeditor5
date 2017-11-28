@@ -1543,9 +1543,10 @@ describe( 'ListEngine', () => {
 						const item2 = '<listItem indent="1" type="bulleted">d</listItem>';
 
 						modelDoc.enqueueChanges( () => {
-							modelDoc.batch()
-								.insert( ModelPosition.createAt( modelRoot, 'end' ), parseModel( item1, modelDoc.schema ) )
-								.insert( ModelPosition.createAt( modelRoot, 'end' ), parseModel( item2, modelDoc.schema ) );
+							const batch = modelDoc.batch();
+
+							batch.append( parseModel( item1, modelDoc.schema, modelDoc.batch() ), modelRoot );
+							batch.append( parseModel( item2, modelDoc.schema, modelDoc.batch() ), modelRoot );
 						} );
 					}
 				);
@@ -2660,7 +2661,8 @@ describe( 'ListEngine', () => {
 			setModelData( modelDoc, input );
 
 			modelDoc.enqueueChanges( () => {
-				modelDoc.batch( 'transparent' ).insert( modelDoc.selection.getFirstPosition(), parseModel( inserted, modelDoc.schema ) );
+				modelDoc.batch( 'transparent' )
+					.insert( parseModel( inserted, modelDoc.schema, modelDoc.batch() ), modelDoc.selection.getFirstPosition() );
 			} );
 
 			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
@@ -2672,7 +2674,8 @@ describe( 'ListEngine', () => {
 					setModelData( modelDoc, input );
 
 					modelDoc.enqueueChanges( () => {
-						modelDoc.batch().insert( modelDoc.selection.getFirstPosition(), parseModel( inserted, modelDoc.schema ) );
+						modelDoc.batch()
+							.insert( parseModel( inserted, modelDoc.schema, modelDoc.batch() ), modelDoc.selection.getFirstPosition() );
 					} );
 
 					expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
@@ -2806,9 +2809,10 @@ describe( 'ListEngine', () => {
 				const item2 = '<listItem indent="1" type="bulleted">d</listItem>';
 
 				modelDoc.enqueueChanges( () => {
-					modelDoc.batch()
-						.insert( ModelPosition.createAt( modelRoot, 'end' ), parseModel( item1, modelDoc.schema ) )
-						.insert( ModelPosition.createAt( modelRoot, 'end' ), parseModel( item2, modelDoc.schema ) );
+					const batch = modelDoc.batch();
+
+					batch.append( parseModel( item1, modelDoc.schema, modelDoc.batch() ), modelRoot );
+					batch.append( parseModel( item2, modelDoc.schema, modelDoc.batch() ), modelRoot );
 				} );
 
 				expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
@@ -3075,7 +3079,8 @@ describe( 'ListEngine', () => {
 					parseModel(
 						'<listItem type="bulleted" indent="0">X</listItem>' +
 						'<listItem type="bulleted" indent="1">Y</listItem>',
-						modelDoc.schema
+						modelDoc.schema,
+						modelDoc.batch()
 					),
 					modelDoc.selection
 				);
@@ -3348,7 +3353,7 @@ describe( 'ListEngine', () => {
 
 			setModelData( modelDoc, '<listItem indent="0" type="bulleted"></listItem>' );
 
-			modelDoc.batch().setAttribute( modelRoot.getChild( 0 ), 'type', 'numbered' );
+			modelDoc.batch().setAttribute( 'type', 'numbered', modelRoot.getChild( 0 ) );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li></li></ul>' );
 		} );
@@ -3360,7 +3365,7 @@ describe( 'ListEngine', () => {
 
 			setModelData( modelDoc, '<listItem indent="0" type="bulleted">a</listItem><listItem indent="0" type="bulleted">b</listItem>' );
 
-			modelDoc.batch().setAttribute( modelRoot.getChild( 1 ), 'indent', 1 );
+			modelDoc.batch().setAttribute( 'indent', 1, modelRoot.getChild( 1 ) );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li>a</li><li>b</li></ul>' );
 		} );
@@ -3406,7 +3411,7 @@ describe( 'ListEngine', () => {
 				.to.equal( '<ul><li>Foo<span></span></li><li>Bar</li></ul>' );
 
 			// Change indent of the second list item.
-			modelDoc.batch().setAttribute( modelRoot.getChild( 1 ), 'indent', 1 );
+			modelDoc.batch().setAttribute( 'indent', 1, modelRoot.getChild( 1 ) );
 
 			// Check if the new <ul> was added at correct position.
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -3508,7 +3513,7 @@ describe( 'ListEngine', () => {
 
 		const actionCallback = () => {
 			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().insert( modelDoc.selection.getFirstPosition(), parseModel( item, modelDoc.schema ) );
+				modelDoc.batch().insert( parseModel( item, modelDoc.schema, modelDoc.batch() ), modelDoc.selection.getFirstPosition() );
 			} );
 		};
 
@@ -3531,7 +3536,7 @@ describe( 'ListEngine', () => {
 			const newType = element.getAttribute( 'type' ) == 'numbered' ? 'bulleted' : 'numbered';
 
 			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().setAttribute( modelDoc.selection.getFirstRange(), 'type', newType );
+				modelDoc.batch().setAttribute( 'type', newType, modelDoc.selection.getFirstRange() );
 			} );
 		};
 
@@ -3543,10 +3548,11 @@ describe( 'ListEngine', () => {
 			const element = modelDoc.selection.getFirstPosition().nodeAfter;
 
 			modelDoc.enqueueChanges( () => {
-				modelDoc.batch()
-					.rename( element, 'paragraph' )
-					.removeAttribute( element, 'type' )
-					.removeAttribute( element, 'indent' );
+				const batch = modelDoc.batch();
+
+				batch.rename( element, 'paragraph' );
+				batch.removeAttribute( 'type', element );
+				batch.removeAttribute( 'indent', element );
 			} );
 		};
 
@@ -3558,10 +3564,10 @@ describe( 'ListEngine', () => {
 			const element = modelDoc.selection.getFirstPosition().nodeAfter;
 
 			modelDoc.enqueueChanges( () => {
-				modelDoc.batch()
-					.setAttribute( element, 'type', 'bulleted' )
-					.setAttribute( element, 'indent', newIndent )
-					.rename( element, 'listItem' );
+				const batch = modelDoc.batch();
+
+				batch.setAttributes( { type: 'bulleted', indent: newIndent }, element );
+				batch.rename( element, 'listItem' );
 			} );
 		};
 
@@ -3571,7 +3577,7 @@ describe( 'ListEngine', () => {
 	function testChangeIndent( testName, newIndent, input, output ) {
 		const actionCallback = () => {
 			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().setAttribute( modelDoc.selection.getFirstRange(), 'indent', newIndent );
+				modelDoc.batch().setAttribute( 'indent', newIndent, modelDoc.selection.getFirstRange() );
 			} );
 		};
 
