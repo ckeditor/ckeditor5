@@ -50,6 +50,38 @@ import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 
 import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 
+class Sandbox {
+	constructor() {
+		this._stubs = new Set();
+	}
+
+	create( object, methodName, fakeMethod ) {
+		const originalMethod = object[ methodName ];
+
+		object[ methodName ] = fakeMethod;
+
+		fakeMethod.restore = function restore() {
+			if ( originalMethod ) {
+				Object.defineProperty( object, methodName, originalMethod );
+			} else {
+				delete object[ methodName ];
+			}
+		};
+
+		this._stubs.add( object[ methodName ] );
+	}
+
+	restore() {
+		for ( const stub of this._stubs.values() ) {
+			stub.restore();
+		}
+
+		this._stubs.clear();
+	}
+}
+
+const sandbox = new Sandbox();
+
 const treeDump = Symbol( '_treeDump' );
 
 // Maximum number of stored states of model and view document.
@@ -118,60 +150,68 @@ export default function enableEngineDebug( _logger = console ) {
 	return DebugPlugin;
 }
 
+/**
+ * Restores all methods that have been overwritten.
+ */
+export function disableEngineDebug() {
+	sandbox.restore();
+	enabled = false;
+}
+
 function enableLoggingTools() {
-	ModelPosition.prototype.toString = function() {
+	sandbox.create( ModelPosition.prototype, 'toString', function() {
 		return `${ this.root } [ ${ this.path.join( ', ' ) } ]`;
-	};
+	} );
 
-	ModelPosition.prototype.log = function() {
+	sandbox.create( ModelPosition.prototype, 'log', function() {
 		logger.log( 'ModelPosition: ' + this );
-	};
+	} );
 
-	ModelRange.prototype.toString = function() {
+	sandbox.create( ModelRange.prototype, 'toString', function() {
 		return `${ this.root } [ ${ this.start.path.join( ', ' ) } ] - [ ${ this.end.path.join( ', ' ) } ]`;
-	};
+	} );
 
-	ModelRange.prototype.log = function() {
+	sandbox.create( ModelRange.prototype, 'log', function() {
 		logger.log( 'ModelRange: ' + this );
-	};
+	} );
 
-	ModelText.prototype.toString = function() {
+	sandbox.create( ModelText.prototype, 'toString', function() {
 		return `#${ this.data }`;
-	};
+	} );
 
-	ModelText.prototype.logExtended = function() {
+	sandbox.create( ModelText.prototype, 'logExtended', function() {
 		logger.log( `ModelText: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
-	};
+	} );
 
-	ModelText.prototype.log = function() {
+	sandbox.create( ModelText.prototype, 'log', function() {
 		logger.log( 'ModelText: ' + this );
-	};
+	} );
 
-	ModelTextProxy.prototype.toString = function() {
+	sandbox.create( ModelTextProxy.prototype, 'toString', function() {
 		return `#${ this.data }`;
-	};
+	} );
 
-	ModelTextProxy.prototype.logExtended = function() {
+	sandbox.create( ModelTextProxy.prototype, 'logExtended', function() {
 		logger.log( `ModelTextProxy: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
-	};
+	} );
 
-	ModelTextProxy.prototype.log = function() {
+	sandbox.create( ModelTextProxy.prototype, 'log', function() {
 		logger.log( 'ModelTextProxy: ' + this );
-	};
+	} );
 
-	ModelElement.prototype.toString = function() {
+	sandbox.create( ModelElement.prototype, 'toString', function() {
 		return `<${ this.rootName || this.name }>`;
-	};
+	} );
 
-	ModelElement.prototype.log = function() {
+	sandbox.create( ModelElement.prototype, 'log', function() {
 		logger.log( 'ModelElement: ' + this );
-	};
+	} );
 
-	ModelElement.prototype.logExtended = function() {
+	sandbox.create( ModelElement.prototype, 'logExtended', function() {
 		logger.log( `ModelElement: ${ this }, ${ this.childCount } children, attrs: ${ mapString( this.getAttributes() ) }` );
-	};
+	} );
 
-	ModelElement.prototype.logAll = function() {
+	sandbox.create( ModelElement.prototype, 'logAll', function() {
 		logger.log( '--------------------' );
 
 		this.logExtended();
@@ -180,9 +220,9 @@ function enableLoggingTools() {
 		for ( const child of this.getChildren() ) {
 			child.log();
 		}
-	};
+	} );
 
-	ModelElement.prototype.printTree = function( level = 0 ) {
+	sandbox.create( ModelElement.prototype, 'printTree', function( level = 0 ) {
 		let string = '';
 
 		string += '\t'.repeat( level ) + `<${ this.rootName || this.name }${ mapToTags( this.getAttributes() ) }>`;
@@ -212,29 +252,29 @@ function enableLoggingTools() {
 		string += `</${ this.rootName || this.name }>`;
 
 		return string;
-	};
+	} );
 
-	ModelElement.prototype.logTree = function() {
+	sandbox.create( ModelElement.prototype, 'logTree', function() {
 		logger.log( this.printTree() );
-	};
+	} );
 
-	ModelRootElement.prototype.toString = function() {
+	sandbox.create( ModelRootElement.prototype, 'toString', function() {
 		return this.rootName;
-	};
+	} );
 
-	ModelRootElement.prototype.log = function() {
+	sandbox.create( ModelRootElement.prototype, 'log', function() {
 		logger.log( 'ModelRootElement: ' + this );
-	};
+	} );
 
-	ModelDocumentFragment.prototype.toString = function() {
+	sandbox.create( ModelDocumentFragment.prototype, 'toString', function() {
 		return 'documentFragment';
-	};
+	} );
 
-	ModelDocumentFragment.prototype.log = function() {
+	sandbox.create( ModelDocumentFragment.prototype, 'log', function() {
 		logger.log( 'ModelDocumentFragment: ' + this );
-	};
+	} );
 
-	ModelDocumentFragment.prototype.printTree = function() {
+	sandbox.create( ModelDocumentFragment.prototype, 'printTree', function() {
 		let string = 'ModelDocumentFragment: [';
 
 		for ( const child of this.getChildren() ) {
@@ -258,58 +298,58 @@ function enableLoggingTools() {
 		string += '\n]';
 
 		return string;
-	};
+	} );
 
-	ModelDocumentFragment.prototype.logTree = function() {
+	sandbox.create( ModelDocumentFragment.prototype, 'logTree', function() {
 		logger.log( this.printTree() );
-	};
+	} );
 
-	Operation.prototype.log = function() {
+	sandbox.create( Operation.prototype, 'log', function() {
 		logger.log( this.toString() );
-	};
+	} );
 
-	AttributeOperation.prototype.toString = function() {
+	sandbox.create( AttributeOperation.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.range }`;
-	};
+	} );
 
-	InsertOperation.prototype.toString = function() {
+	sandbox.create( InsertOperation.prototype, 'toString', function() {
 		const nodeString = this.nodes.length > 1 ? `[ ${ this.nodes.length } ]` : this.nodes.getNode( 0 );
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ this.position }`;
-	};
+	} );
 
-	MarkerOperation.prototype.toString = function() {
+	sandbox.create( MarkerOperation.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.name }": ${ this.oldRange } -> ${ this.newRange }`;
-	};
+	} );
 
-	MoveOperation.prototype.toString = function() {
+	sandbox.create( MoveOperation.prototype, 'toString', function() {
 		const range = ModelRange.createFromPositionAndShift( this.sourcePosition, this.howMany );
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`${ range } -> ${ this.targetPosition }${ this.isSticky ? ' (sticky)' : '' }`;
-	};
+	} );
 
-	NoOperation.prototype.toString = function() {
+	sandbox.create( NoOperation.prototype, 'toString', function() {
 		return `NoOperation( ${ this.baseVersion } )`;
-	};
+	} );
 
-	RenameOperation.prototype.toString = function() {
+	sandbox.create( RenameOperation.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`${ this.position }: "${ this.oldName }" -> "${ this.newName }"`;
-	};
+	} );
 
-	RootAttributeOperation.prototype.toString = function() {
+	sandbox.create( RootAttributeOperation.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.root.rootName }`;
-	};
+	} );
 
-	Delta.prototype.log = function() {
+	sandbox.create( Delta.prototype, 'log', function() {
 		logger.log( this.toString() );
-	};
+	} );
 
-	Delta.prototype.logAll = function() {
+	sandbox.create( Delta.prototype, 'logAll', function() {
 		logger.log( '--------------------' );
 
 		this.log();
@@ -317,9 +357,9 @@ function enableLoggingTools() {
 		for ( const op of this.operations ) {
 			op.log();
 		}
-	};
+	} );
 
-	Delta.prototype._saveHistory = function( itemToSave ) {
+	sandbox.create( Delta.prototype, '_saveHistory', function( itemToSave ) {
 		const history = itemToSave.before.history ? itemToSave.before.history : [];
 
 		itemToSave.before = clone( itemToSave.before );
@@ -331,11 +371,11 @@ function enableLoggingTools() {
 		itemToSave.transformedBy = JSON.stringify( itemToSave.transformedBy );
 
 		this.history = history.concat( itemToSave );
-	};
+	} );
 
 	const _deltaTransformTransform = deltaTransform.transform;
 
-	deltaTransform.transform = function( a, b, context ) {
+	sandbox.create( deltaTransform, 'transform', function( a, b, context ) {
 		let results;
 
 		try {
@@ -359,36 +399,36 @@ function enableLoggingTools() {
 		}
 
 		return results;
-	};
+	} );
 
-	AttributeDelta.prototype.toString = function() {
+	sandbox.create( AttributeDelta.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.key }": -> ${ JSON.stringify( this.value ) }, ${ this.range }, ${ this.operations.length } ops`;
-	};
+	} );
 
-	InsertDelta.prototype.toString = function() {
+	sandbox.create( InsertDelta.prototype, 'toString', function() {
 		const op = this._insertOperation;
 		const nodeString = op.nodes.length > 1 ? `[ ${ op.nodes.length } ]` : op.nodes.getNode( 0 );
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ op.position }`;
-	};
+	} );
 
-	MarkerDelta.prototype.toString = function() {
+	sandbox.create( MarkerDelta.prototype, 'toString', function() {
 		const op = this.operations[ 0 ];
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ op.name }": ${ op.oldRange } -> ${ op.newRange }`;
-	};
+	} );
 
-	MergeDelta.prototype.toString = function() {
+	sandbox.create( MergeDelta.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			( this.position ?
 				this.position.toString() :
 				`(move from ${ this.operations[ 0 ].sourcePosition })`
 			);
-	};
+	} );
 
-	MoveDelta.prototype.toString = function() {
+	sandbox.create( MoveDelta.prototype, 'toString', function() {
 		const opStrings = [];
 
 		for ( const op of this.operations ) {
@@ -399,67 +439,67 @@ function enableLoggingTools() {
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			opStrings.join( '; ' );
-	};
+	} );
 
-	RenameDelta.prototype.toString = function() {
+	sandbox.create( RenameDelta.prototype, 'toString', function() {
 		const op = this.operations[ 0 ];
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`${ op.position }: "${ op.oldName }" -> "${ op.newName }"`;
-	};
+	} );
 
-	RootAttributeDelta.prototype.toString = function() {
+	sandbox.create( RootAttributeDelta.prototype, 'toString', function() {
 		const op = this.operations[ 0 ];
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ op.key }": ${ JSON.stringify( op.oldValue ) } -> ${ JSON.stringify( op.newValue ) }, ${ op.root.rootName }`;
-	};
+	} );
 
-	SplitDelta.prototype.toString = function() {
+	sandbox.create( SplitDelta.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			( this.position ?
 				this.position.toString() :
 				`(clone to ${ this._cloneOperation.position || this._cloneOperation.targetPosition })`
 			);
-	};
+	} );
 
-	UnwrapDelta.prototype.toString = function() {
+	sandbox.create( UnwrapDelta.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			this.position.toString();
-	};
+	} );
 
-	WrapDelta.prototype.toString = function() {
+	sandbox.create( WrapDelta.prototype, 'toString', function() {
 		const wrapElement = this._insertOperation.nodes.getNode( 0 );
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`${ this.range } -> ${ wrapElement }`;
-	};
+	} );
 
-	ViewText.prototype.toString = function() {
+	sandbox.create( ViewText.prototype, 'toString', function() {
 		return `#${ this.data }`;
-	};
+	} );
 
-	ViewText.prototype.logExtended = function() {
+	sandbox.create( ViewText.prototype, 'logExtended', function() {
 		logger.log( 'ViewText: ' + this );
-	};
+	} );
 
-	ViewText.prototype.log = function() {
+	sandbox.create( ViewText.prototype, 'log', function() {
 		logger.log( 'ViewText: ' + this );
-	};
+	} );
 
-	ViewTextProxy.prototype.toString = function() {
+	sandbox.create( ViewTextProxy.prototype, 'toString', function() {
 		return `#${ this.data }`;
-	};
+	} );
 
-	ViewTextProxy.prototype.logExtended = function() {
+	sandbox.create( ViewTextProxy.prototype, 'logExtended', function() {
 		logger.log( 'ViewTextProxy: ' + this );
-	};
+	} );
 
-	ViewTextProxy.prototype.log = function() {
+	sandbox.create( ViewTextProxy.prototype, 'log', function() {
 		logger.log( 'ViewTextProxy: ' + this );
-	};
+	} );
 
-	ViewElement.prototype.printTree = function( level = 0 ) {
+	sandbox.create( ViewElement.prototype, 'printTree', function( level = 0 ) {
 		let string = '';
 
 		string += '\t'.repeat( level ) + `<${ this.name }${ mapToTags( this.getAttributes() ) }>`;
@@ -479,13 +519,13 @@ function enableLoggingTools() {
 		string += `</${ this.name }>`;
 
 		return string;
-	};
+	} );
 
-	ViewElement.prototype.logTree = function() {
+	sandbox.create( ViewElement.prototype, 'logTree', function() {
 		logger.log( this.printTree() );
-	};
+	} );
 
-	ViewDocumentFragment.prototype.printTree = function() {
+	sandbox.create( ViewDocumentFragment.prototype, 'printTree', function() {
 		let string = 'ViewDocumentFragment: [';
 
 		for ( const child of this.getChildren() ) {
@@ -499,17 +539,17 @@ function enableLoggingTools() {
 		string += '\n]';
 
 		return string;
-	};
+	} );
 
-	ViewDocumentFragment.prototype.logTree = function() {
+	sandbox.create( ViewDocumentFragment.prototype, 'logTree', function() {
 		logger.log( this.printTree() );
-	};
+	} );
 }
 
 function enableReplayerTools() {
 	const _modelDocumentApplyOperation = ModelDocument.prototype.applyOperation;
 
-	ModelDocument.prototype.applyOperation = function( operation ) {
+	sandbox.create( ModelDocument.prototype, 'applyOperation', function( operation ) {
 		if ( !this._lastDelta ) {
 			this._appliedDeltas = [];
 		} else if ( this._lastDelta !== operation.delta ) {
@@ -519,9 +559,9 @@ function enableReplayerTools() {
 		this._lastDelta = operation.delta;
 
 		_modelDocumentApplyOperation.call( this, operation );
-	};
+	} );
 
-	ModelDocument.prototype.getAppliedDeltas = function() {
+	sandbox.create( ModelDocument.prototype, 'getAppliedDeltas', function() {
 		// No deltas has been applied yet, return empty string.
 		if ( !this._lastDelta ) {
 			return '';
@@ -530,17 +570,17 @@ function enableReplayerTools() {
 		const appliedDeltas = this._appliedDeltas.concat( this._lastDelta );
 
 		return appliedDeltas.map( JSON.stringify ).join( LOG_SEPARATOR );
-	};
+	} );
 
-	ModelDocument.prototype.createReplayer = function( stringifiedDeltas ) {
+	sandbox.create( ModelDocument.prototype, 'createReplayer', function( stringifiedDeltas ) {
 		return new DeltaReplayer( this, LOG_SEPARATOR, stringifiedDeltas );
-	};
+	} );
 }
 
 function enableDocumentTools() {
 	const _modelDocumentApplyOperation = ModelDocument.prototype.applyOperation;
 
-	ModelDocument.prototype.applyOperation = function( operation ) {
+	sandbox.create( ModelDocument.prototype, 'applyOperation', function( operation ) {
 		logger.log( 'Applying ' + operation );
 
 		if ( !this._operationLogs ) {
@@ -550,34 +590,34 @@ function enableDocumentTools() {
 		this._operationLogs.push( JSON.stringify( operation.toJSON() ) );
 
 		_modelDocumentApplyOperation.call( this, operation );
-	};
+	} );
 
-	ModelDocument.prototype.log = function( version = null ) {
+	sandbox.create( ModelDocument.prototype, 'log', function( version = null ) {
 		version = version === null ? this.version : version;
 
 		logDocument( this, version );
-	};
+	} );
 
-	ViewDocument.prototype.log = function( version ) {
+	sandbox.create( ViewDocument.prototype, 'log', function( version ) {
 		logDocument( this, version );
-	};
+	} );
 
-	Editor.prototype.logModel = function( version = null ) {
+	sandbox.create( Editor.prototype, 'logModel', function( version = null ) {
 		version = version === null ? this.document.version : version;
 
 		this.document.log( version );
-	};
+	} );
 
-	Editor.prototype.logView = function( version ) {
+	sandbox.create( Editor.prototype, 'logView', function( version ) {
 		this.editing.view.log( version );
-	};
+	} );
 
-	Editor.prototype.logDocuments = function( version = null ) {
+	sandbox.create( Editor.prototype, 'logDocuments', function( version = null ) {
 		version = version === null ? this.document.version : version;
 
 		this.logModel( version );
 		this.logView( version );
-	};
+	} );
 
 	function logDocument( document, version ) {
 		logger.log( '--------------------' );

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import enableEngineDebug from '../../src/dev-utils/enableenginedebug';
+import { default as enableEngineDebug, disableEngineDebug } from '../../src/dev-utils/enableenginedebug';
 import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
@@ -47,6 +47,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 testUtils.createSinonSandbox();
 
 /* global document */
+
+after( () => {
+	disableEngineDebug();
+} );
 
 describe( 'enableEngineDebug', () => {
 	it( 'should return plugin class', () => {
