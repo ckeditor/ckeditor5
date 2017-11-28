@@ -218,12 +218,8 @@ export default class ViewConversionDispatcher {
 		for ( const viewChild of Array.from( input.getChildren() ) ) {
 			const modelChild = this._convertItem( viewChild, consumable, additionalData );
 
-			if ( modelChild instanceof ModelNode ) {
+			if ( modelChild instanceof ModelNode || modelChild instanceof ModelDocumentFragment ) {
 				batch.append( modelChild, documentFragment );
-			} else if ( modelChild instanceof ModelDocumentFragment ) {
-				for ( const child of Array.from( modelChild ) ) {
-					batch.append( child, documentFragment );
-				}
 			}
 		}
 
