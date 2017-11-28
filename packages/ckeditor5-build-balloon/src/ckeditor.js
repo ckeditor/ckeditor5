@@ -64,6 +64,6 @@ BalloonEditor.build = {
 				'imageTextAlternative'
 			]
 		},
-		lang: 'en'
+		language: 'en'
 	}
 };
