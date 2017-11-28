@@ -349,7 +349,7 @@ export function modelViewMergeAfter( evt, data, consumable, conversionApi ) {
  */
 export function viewModelConverter( evt, data, consumable, conversionApi ) {
 	if ( consumable.consume( data.input, { name: true } ) ) {
-		const batch = data.batch;
+		const batch = conversionApi.batch;
 
 		// 1. Create `listItem` model element.
 		const listItem = batch.createElement( 'listItem' );
@@ -382,9 +382,7 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
 			// If this is a view list element, we will convert it and concat the result (`listItem` model elements)
 			// with already gathered results (in `items` array). `converted` should be a `ModelDocumentFragment`.
 			if ( child.name == 'ul' || child.name == 'ol' ) {
-				for ( const child of Array.from( converted.getChildren() ) ) {
-					batch.append( child, items );
-				}
+				batch.append( converted, items );
 			}
 			// If it was not a list it was a "regular" list item content. Just append it to `listItem`.
 			else {
