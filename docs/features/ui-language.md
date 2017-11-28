@@ -67,7 +67,7 @@ If you build CKEditor from scratch or integrate it directly into your applicatio
 	<script src="../build/lang/pl.js"></script>
 	<script>
 		ClassicEditor.create( document.querySelector( '#editor' ), {
-			lang: 'pl'
+			language: 'pl'
 		} )
 			.then( editor => {
 				window.editor = editor;
