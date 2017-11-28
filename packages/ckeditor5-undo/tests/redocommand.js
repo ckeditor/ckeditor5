@@ -52,7 +52,7 @@ describe( 'RedoCommand', () => {
 				editor.document.selection.setRanges( [ r( 0, 0 ) ] );
 				batch0 = doc.batch();
 				undo.addBatch( batch0 );
-				batch0.insert( p( 0 ), 'foobar' );
+				batch0.insertText( 'foobar', p( 0 ) );
 
 				/*
 				 [root]
@@ -67,7 +67,7 @@ describe( 'RedoCommand', () => {
 				editor.document.selection.setRanges( [ r( 2, 4 ) ], true );
 				batch1 = doc.batch();
 				undo.addBatch( batch1 );
-				batch1.setAttribute( r( 2, 4 ), 'key', 'value' );
+				batch1.setAttribute( 'key', 'value', r( 2, 4 ) );
 
 				/*
 				 [root]
@@ -233,7 +233,7 @@ describe( 'RedoCommand', () => {
 				undo.execute();
 
 				// Append "xx" at the beginning. Now it is "xxfoob".
-				doc.batch().insert( p( 0 ), 'xx' );
+				doc.batch().insertText( 'xx', p( 0 ) );
 
 				// Redo setting attribute on "ob". Now it is "xxfoOB".
 				redo.execute();

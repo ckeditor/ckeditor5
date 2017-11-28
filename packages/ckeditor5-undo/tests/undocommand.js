@@ -41,7 +41,7 @@ describe( 'UndoCommand', () => {
 				editor.document.selection.setRanges( [ r( 0, 0 ) ] );
 				batch0 = doc.batch();
 				undo.addBatch( batch0 );
-				batch0.insert( p( 0 ), 'foobar' );
+				batch0.insertText( 'foobar', p( 0 ) );
 
 				/*
 				 [root]
@@ -56,7 +56,7 @@ describe( 'UndoCommand', () => {
 				editor.document.selection.setRanges( [ r( 2, 4 ) ], true );
 				batch1 = doc.batch();
 				undo.addBatch( batch1 );
-				batch1.setAttribute( r( 2, 4 ), 'key', 'value' );
+				batch1.setAttribute( 'key', 'value', r( 2, 4 ) );
 
 				/*
 				 [root]
@@ -256,6 +256,21 @@ describe( 'UndoCommand', () => {
 				expect( editor.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
 				expect( editor.document.selection.isBackward ).to.be.false;
 			} );
+
+			it( 'should omit deltas with non-document operations', () => {
+				const batch = doc.batch();
+				const element = batch.createElement( 'p' );
+
+				undo.addBatch( batch );
+
+				batch.setAttribute( 'foo', 'bar', element );
+				batch.setAttribute( 'foo', 'bar', root );
+
+				undo.execute();
+
+				expect( element.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( root.getAttribute( 'foo' ) ).to.not.equal( 'bar' );
+			} );
 		} );
 
 		it( 'merges touching ranges when restoring selection', () => {
@@ -276,7 +291,7 @@ describe( 'UndoCommand', () => {
 			editor.document.selection.setRanges( [ r( 1, 4 ) ] );
 			const batch0 = doc.batch();
 			undo.addBatch( batch0 );
-			batch0.setAttribute( r( 1, 4 ), 'uppercase', true );
+			batch0.setAttribute( 'uppercase', true, r( 1, 4 ) );
 			expect( getCaseText( root ) ).to.equal( 'aBCDef' );
 
 			editor.document.selection.setRanges( [ r( 3, 4 ) ] );
