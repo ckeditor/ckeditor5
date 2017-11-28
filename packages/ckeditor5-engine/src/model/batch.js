@@ -47,14 +47,14 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * For example to create two separate undo steps you can call:
  *
- *		doc.batch().insert( firstPosition, 'foo' );
- *		doc.batch().insert( secondPosition, 'bar' );
+ *		doc.batch().insert( 'foo', firstPosition );
+ *		doc.batch().insert( 'bar', secondPosition );
  *
  * To create a single undo step:
  *
  *		const batch = doc.batch();
- *		batch.insert( firstPosition, 'foo' );
- *		batch.insert( secondPosition, 'bar' );
+ *		batch.insert( 'foo', firstPosition );
+ *		batch.insert( 'bar', secondPosition );
  *
  */
 export default class Batch {
@@ -134,7 +134,7 @@ export default class Batch {
 	 * Creates a new {@link module:engine/model/text~Text text node}.
 	 *
 	 *		batch.createText( 'foo' );
-	 *		batch.createText( 'foo', { bold: true } );
+	 *		batch.createText( 'foo', { 'bold': true } );
 	 *
 	 * @param {String} data Text data.
 	 * @param {Object} [attributes] Text attributes.
@@ -178,22 +178,22 @@ export default class Batch {
 	 * 		const text = batch.createText( 'foo' );
 	 *		batch.insert( text, paragraph, 5 );
 	 *
-	 * You can also use 'end' instead of the offset to insert at the end:
+	 * You can also use `end` instead of the offset to insert at the end:
 	 *
 	 * 		const text = batch.createText( 'foo' );
 	 *		batch.insert( text, paragraph, 'end' );
 	 *
 	 * Or insert before or after another element:
 	 *
-	 * 		const anotherParagraph = batch.createElement( 'paragraph' );
-	 *		batch.insert( anotherParagraph, paragraph, 'after' );
+	 * 		const paragraph = batch.createElement( 'paragraph' );
+	 *		batch.insert( paragraph, anotherParagraph, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position#createAt}.
+	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt}.
 	 *
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
 	 * If you want to move {@link module:engine/model/range~Range range} instead of an
-	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/batch~Batch#move batch}.
+	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/batch~Batch#move move}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/documentfragment~DocumentFragment}
 	 * item Item or document fragment to insert.
@@ -253,11 +253,11 @@ export default class Batch {
 	 * Instead of using position you can use parent and offset or define that text should be inserted at the end
 	 * or before or after other node:
 	 *
-	 * 		batch.insertText( 'foo', paragraph, 5 );
-	 *		batch.insertText( 'foo', paragraph, 'end' ); // insets at the end of the paragraph
+	 * 		batch.insertText( 'foo', paragraph, 5 ); // inserts in paragraph, at offset 5
+	 *		batch.insertText( 'foo', paragraph, 'end' ); // inserts at the end of the paragraph
 	 *		batch.insertText( 'foo', image, 'after' ); // inserts after image
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position#createAt}.
+	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt}.
 	 *
 	 * @param {String} data Text data.
 	 * @param {Object} [attributes] Text attributes.
@@ -282,11 +282,11 @@ export default class Batch {
 	 * Instead of using position you can use parent and offset or define that text should be inserted at the end
 	 * or before or after other node:
 	 *
-	 * 		batch.insertElement( 'paragraph', paragraph, 5 );
+	 * 		batch.insertElement( 'paragraph', paragraph, 5 ); // inserts in paragraph, at offset 5
 	 *		batch.insertElement( 'paragraph', blockquote, 'end' ); // insets at the end of the blockquote
 	 *		batch.insertElement( 'paragraph', image, 'after' ); // inserts after image
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position#createAt}.
+	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt}.
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -311,7 +311,7 @@ export default class Batch {
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
 	 * If you want to move {@link module:engine/model/range~Range range} instead of an
-	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/batch~Batch#move batch}.
+	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/batch~Batch#move move}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/documentfragment~DocumentFragment}
 	 * item Item or document fragment to insert.
@@ -443,7 +443,7 @@ export default class Batch {
 	 *		batch.move( sourceRange, blockquote, 'end' ); // moves all items in the range at the end of the blockquote
 	 *		batch.move( sourceRange, image, 'after' ); // moves all items in the range after the image
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position#createAt}.
+	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt}.
 	 *
 	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
 	 * (element or document fragment) or between {@link module:engine/model/document~Document#roots documents roots},
@@ -614,8 +614,8 @@ export default class Batch {
 	/**
 	 * Splits an element at the given position.
 	 *
-	 * The element cannot be a root element, as root element cannot be split. The `batch-split-element-no-parent` error
-	 * will be thrown if you try to split an element with no parent.
+	 * The element needs to have a parent. It cannot be a root element nor document fragment.
+	 * The `batch-split-element-no-parent` error will be thrown if you try to split an element with no parent.
 	 *
 	 * @param {module:engine/model/position~Position} position Position of split.
 	 */
@@ -659,6 +659,7 @@ export default class Batch {
 
 	/**
 	 * Wraps given range with given element or with a new element with specified name, if string has been passed.
+	 *
 	 * **Note:** range to wrap should be a "flat range" (see {@link module:engine/model/range~Range#isFlat}). If not, error will be thrown.
 	 *
 	 * @param {module:engine/model/range~Range} range Range to wrap.
