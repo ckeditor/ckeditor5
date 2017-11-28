@@ -22,13 +22,14 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'Image converters', () => {
-	let editor, document, viewDocument;
+	let editor, document, viewDocument, batch;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
 				document = editor.document;
+				batch = document.batch();
 				viewDocument = editor.editing.view;
 				const schema = document.schema;
 
@@ -138,7 +139,7 @@ describe( 'Image converters', () => {
 			document.enqueueChanges( () => {
 				const batch = document.batch();
 
-				batch.setAttribute( image, 'alt', 'foo bar' );
+				batch.setAttribute( 'alt', 'foo bar', image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -153,7 +154,7 @@ describe( 'Image converters', () => {
 			document.enqueueChanges( () => {
 				const batch = document.batch();
 
-				batch.removeAttribute( image, 'alt' );
+				batch.removeAttribute( 'alt', image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -168,7 +169,7 @@ describe( 'Image converters', () => {
 			document.enqueueChanges( () => {
 				const batch = document.batch();
 
-				batch.setAttribute( image, 'alt', 'baz quix' );
+				batch.setAttribute( 'alt', 'baz quix', image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -187,7 +188,7 @@ describe( 'Image converters', () => {
 			document.enqueueChanges( () => {
 				const batch = document.batch();
 
-				batch.setAttribute( image, 'alt', 'baz quix' );
+				batch.setAttribute( 'alt', 'baz quix', image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -230,7 +231,7 @@ describe( 'Image converters', () => {
 
 		describe( 'convertHoistableImage', () => {
 			it( 'should convert img element using already added converters if it is allowed in any point of given context #1', () => {
-				const result = dispatcher.convert( viewImg, { context: [ '$root', 'div', 'paragraph' ] } );
+				const result = dispatcher.convert( viewImg, { context: [ '$root', 'div', 'paragraph' ], batch } );
 
 				// `result` is a model document fragment.
 				expect( result.childCount ).to.equal( 1 );
@@ -240,7 +241,7 @@ describe( 'Image converters', () => {
 			} );
 
 			it( 'should convert img element using already added converters if it is allowed in any point of given context #2', () => {
-				const result = dispatcher.convert( viewImg, { context: [ '$root', modelDiv, modelParagraph ] } );
+				const result = dispatcher.convert( viewImg, { context: [ '$root', modelDiv, modelParagraph ], batch } );
 
 				// `result` is a model document fragment.
 				expect( result.childCount ).to.equal( 1 );
@@ -250,7 +251,7 @@ describe( 'Image converters', () => {
 			} );
 
 			it( 'should not convert img element if there is no allowed context #1', () => {
-				const result = dispatcher.convert( viewImg, { context: [ 'div', 'paragraph' ] } );
+				const result = dispatcher.convert( viewImg, { context: [ 'div', 'paragraph' ], batch } );
 
 				// `result` is an empty model document fragment.
 				expect( result.childCount ).to.equal( 0 );
@@ -258,7 +259,7 @@ describe( 'Image converters', () => {
 			} );
 
 			it( 'should not convert img element if there is no allowed context #2', () => {
-				const result = dispatcher.convert( viewImg, { context: [ modelDiv, modelParagraph ] } );
+				const result = dispatcher.convert( viewImg, { context: [ modelDiv, modelParagraph ], batch } );
 
 				// `result` is an empty model document fragment.
 				expect( result.childCount ).to.equal( 0 );
@@ -268,7 +269,7 @@ describe( 'Image converters', () => {
 			it( 'should not convert img element if allowed context is "above" limiting element #1', () => {
 				schema.limits.add( 'limit' );
 
-				const result = dispatcher.convert( viewImg, { context: [ '$root', 'limit', 'div', 'paragraph' ] } );
+				const result = dispatcher.convert( viewImg, { context: [ '$root', 'limit', 'div', 'paragraph' ], batch } );
 
 				// `result` is an empty model document fragment.
 				expect( result.childCount ).to.equal( 0 );
@@ -278,7 +279,7 @@ describe( 'Image converters', () => {
 			it( 'should not convert img element if allowed context is "above" limiting element #2', () => {
 				schema.limits.add( 'limit' );
 
-				const result = dispatcher.convert( viewImg, { context: [ '$root', modelLimit, modelDiv, modelParagraph ] } );
+				const result = dispatcher.convert( viewImg, { context: [ '$root', modelLimit, modelDiv, modelParagraph ], batch } );
 
 				// `result` is an empty model document fragment.
 				expect( result.childCount ).to.equal( 0 );
@@ -300,7 +301,7 @@ describe( 'Image converters', () => {
 				// because image is not allowed in div.
 				const viewDiv = new ViewContainerElement( 'div', null, [ 'foo', viewImg, 'bar' ] );
 
-				const result = dispatcher.convert( viewDiv, { context: [ '$root' ] } );
+				const result = dispatcher.convert( viewDiv, { context: [ '$root' ], batch } );
 
 				// `result` is a model document fragment.
 				expect( result.childCount ).to.equal( 3 );
@@ -319,7 +320,7 @@ describe( 'Image converters', () => {
 
 				const viewDiv = new ViewContainerElement( 'p', null, [ 'foo', viewImg, 'bar' ] );
 
-				const result = dispatcher.convert( viewDiv, { context: [ '$root', 'div' ] } );
+				const result = dispatcher.convert( viewDiv, { context: [ '$root', 'div' ], batch } );
 
 				// `result` is a model document fragment.
 				expect( result.childCount ).to.equal( 3 );

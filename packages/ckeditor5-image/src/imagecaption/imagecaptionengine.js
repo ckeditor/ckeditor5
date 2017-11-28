@@ -9,11 +9,9 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ModelTreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import { isImage } from '../image/utils';
@@ -176,12 +174,13 @@ function insertMissingModelCaptionElement( evt, changeType, data, batch ) {
 				// Make sure that the image does not have caption already.
 				// https://github.com/ckeditor/ckeditor5-image/issues/78
 				if ( !getCaptionFromImage( item ) ) {
-					batch.insert( ModelPosition.createAt( item, 'end' ), new ModelElement( 'caption' ) );
+					batch.appendElement( 'caption', null, item );
 				}
 			} );
 		}
 	}
 }
+
 // Creates a converter that converts image caption model element to view element.
 //
 // @private
