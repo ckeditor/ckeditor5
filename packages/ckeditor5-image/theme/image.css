@@ -8,7 +8,7 @@
 		clear: both;
 
 		& > img {
-			/*Prevent unnecessary margins caused by line-height (see #44).*/
+			/* Prevent unnecessary margins caused by line-height (see #44). */
 			display: block;
 		}
 	}
