@@ -13,7 +13,6 @@
 				border-bottom-right-radius: 0;
 			}
 
-			/* https://github.com/ckeditor/ckeditor5-editor-classic/issues/62 */
 			background: var(--ck-color-editor-toolbar-background);
 			border-bottom-width: 0;
 		}
