@@ -10,7 +10,6 @@ import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
-import modelWriter from '../../src/model/writer';
 
 import ViewDocument from '../../src/view/document';
 import ViewElement from '../../src/view/element';
@@ -70,11 +69,13 @@ function viewToString( item ) {
 }
 
 describe( 'Model converter builder', () => {
-	let dispatcher, mapper, modelDoc, modelRoot, viewDoc, viewRoot, viewSelection;
+	let dispatcher, mapper, modelDoc, modelRoot, viewDoc, viewRoot, viewSelection, batch;
 
 	beforeEach( () => {
 		modelDoc = new ModelDocument();
 		modelRoot = modelDoc.createRoot( 'root', 'root' );
+
+		batch = modelDoc.batch();
 
 		viewDoc = new ViewDocument();
 		viewRoot = viewDoc.createRoot( 'div' );
@@ -145,7 +146,7 @@ describe( 'Model converter builder', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><strong>foo</strong></div>' );
 
-			modelWriter.removeAttribute( ModelRange.createIn( modelRoot ), 'bold' );
+			batch.removeAttribute( 'bold', modelRoot );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'bold', true, null );
 
@@ -162,7 +163,7 @@ describe( 'Model converter builder', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><strong>foo</strong></div>' );
 
-			modelWriter.removeAttribute( ModelRange.createIn( modelRoot ), 'bold' );
+			batch.removeAttribute( 'bold', modelRoot );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'bold', true, null );
 
@@ -179,13 +180,13 @@ describe( 'Model converter builder', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>foo</em></div>' );
 
-			modelWriter.setAttribute( ModelRange.createIn( modelRoot ), 'italic', 'i' );
+			batch.setAttribute( 'italic', 'i', modelRoot );
 
 			dispatcher.convertAttribute( 'changeAttribute', ModelRange.createIn( modelRoot ), 'italic', 'em', 'i' );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><i>foo</i></div>' );
 
-			modelWriter.removeAttribute( ModelRange.createIn( modelRoot ), 'italic' );
+			batch.removeAttribute( 'italic', modelRoot );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'italic', 'i', null );
 
