@@ -471,7 +471,8 @@ describe( 'Clipboard feature', () => {
 			editingView.fire( 'clipboardOutput', {
 				dataTransfer: dataTransferMock,
 				content: new ViewDocumentFragment(),
-				method: 'cut'
+				method: 'cut',
+				batch: editor.document.batch()
 			} );
 
 			expect( getModelData( editor.document ) ).to.equal( '<paragraph>f[]o</paragraph>' );
