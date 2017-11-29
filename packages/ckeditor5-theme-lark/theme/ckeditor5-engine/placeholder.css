@@ -5,5 +5,5 @@
 
 .ck-placeholder::before {
 	cursor: text;
-	color: #c2c2c2;
+	color: var(--ck-color-engine-placeholder-text);
 }

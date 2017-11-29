@@ -108,4 +108,8 @@
 	--ck-color-editor-toolbar-button-on-disabled-border: 		transparent;
 
 	--ck-color-editor-dropdown-background: 						var(--ck-color-base-background);
+
+	/* -- Engine -------------------------------------------------------------------------------- */
+
+	--ck-color-engine-placeholder-text: 						#c2c2c2;
 }
