@@ -5,9 +5,7 @@
 
 .ck-reset,
 .ck-reset_all,
-.ck-reset_all *,
-.ck-reset_all a,
-.ck-reset_all textarea {
+.ck-reset_all * {
 	box-sizing: border-box;
 	width: auto;
 	height: auto;
