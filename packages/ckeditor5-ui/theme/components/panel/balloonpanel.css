@@ -10,37 +10,37 @@
 	z-index: var(--ck-z-modal);
 
 	&.ck-balloon-panel_with-arrow {
-		&:before,
-		&:after {
+		&::before,
+		&::after {
 			content: "";
 			position: absolute;
 		}
 
-		&:before {
+		&::before {
 			z-index: var(--ck-z-default);
 		}
 
-		&:after {
+		&::after {
 			z-index: calc(var(--ck-z-default) + 1 );
 		}
 	}
 
 	&[class*="arrow_n"] {
-		&:before {
+		&::before {
 			z-index: var(--ck-z-default);
 		}
 
-		&:after {
+		&::after {
 			z-index: calc(var(--ck-z-default) + 1);
 		}
 	}
 
 	&[class*="arrow_s"] {
-		&:before {
+		&::before {
 			z-index: var(--ck-z-default);
 		}
 
-		&:after {
+		&::after {
 			z-index: calc(var(--ck-z-default) + 1);
 		}
 	}

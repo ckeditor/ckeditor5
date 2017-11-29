@@ -7,16 +7,16 @@
 .ck-tooltip__text::after {
 	position: absolute;
 
-	/*Without this, hovering the tooltip could keep it visible.*/
+	/* Without this, hovering the tooltip could keep it visible. */
 	pointer-events: none;
 
-	/*This is to get rid of flickering when transitioning opacity in Chrome.
-	It's weird but it works.*/
+	/* This is to get rid of flickering when transitioning opacity in Chrome.
+	It's weird but it works. */
 	-webkit-backface-visibility: hidden;
 }
 
 .ck-tooltip {
-	/*Tooltip is hidden by default.*/
+	/* Tooltip is hidden by default. */
 	visibility: hidden;
 	opacity: 0;
 	display: none;
