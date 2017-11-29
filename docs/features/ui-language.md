@@ -37,7 +37,7 @@ ClassicEditor
 
 ### CDN
 
-To use different language than default one, you need to load the editor together with the preferred language:
+To use different language than default one (English), you need to load the editor together with the preferred language:
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/ckeditor.js"></script>
@@ -48,8 +48,8 @@ See {@link builds/guides/integration/installation#CDN CDN installation guides} f
 
 ### npm
 
-After installing the build from npm, languages will be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/`.
-Single language can be imported directly to your code by `'@ckeditor/ckeditor5-build-[name]/build/lang/de.js' )`.
+After installing the build from npm, languages will be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/[lang].js`.
+Single language can be loaded directly to your code by importing `'@ckeditor/ckeditor5-build-[name]/build/lang/de.js'`.
 
 See {@link builds/guides/integration/installation#npm npm installation guides} for more information.
 
@@ -96,12 +96,11 @@ If you build CKEditor from scratch or integrate it directly into your applicatio
 				// The bundle is optimized for one language when this option is omitted.
 				additionalLanguages: 'all',
 
-				// Optional directory for emitted translations, `'lang'` by default.
-				// Relative to the webpack's output.
-				outputDirectory: 'lang',
+				// outputDirectory - optional directory for emitted translations, `'lang'` by default, relative to the webpack's output.
 
-				// Optional flag indicates breaking the build process when the error is found.
-				throwErrorOnMissingTranslation: false
+				// strict - will cause the building process to fail if an error is found during the building process.
+
+				// verbose - will cause logging all warnings into the console
 			} ),
 
 			// Other webpack plugins...
