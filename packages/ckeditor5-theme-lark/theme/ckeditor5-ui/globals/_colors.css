@@ -116,4 +116,9 @@
 	/* -- Block quote --------------------------------------------------------------------------- */
 
 	--ck-color-block-quote-border:		 						#ccc;
+
+	/* -- Upload -------------------------------------------------------------------------------- */
+
+	--ck-color-upload-bar-background:		 					#6ab5f9;
+	--ck-color-upload-infinite-background:		 				rgba(0,0,0,0.1);
 }

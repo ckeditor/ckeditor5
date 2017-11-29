@@ -18,7 +18,7 @@ figure.image {
 	&.ck-infinite-progress::before {
 		width: var(--ck-image-upload-progress-line-width);
 		height: 2px;
-		background: rgba(0, 0, 0, 0.1);
+		background: var(--ck-color-upload-infinite-background);
 		animation-name: readingProgressAnimation;
 		animation-duration: 1500ms;
 		animation-iteration-count: infinite;
@@ -33,7 +33,7 @@ figure.image {
 	& .ck-progress-bar {
 		height: 2px;
 		width: 0;
-		background: #6ab5f9;
+		background: var(--ck-color-upload-bar-background);
 		transition: width 100ms;
 	}
 }
