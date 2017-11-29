@@ -7,12 +7,12 @@
 	padding: var(--ck-spacing-large);
 
 	&:focus {
-		/*https://github.com/ckeditor/ckeditor5-link/issues/90*/
+		/* https://github.com/ckeditor/ckeditor5-link/issues/90 */
 		outline: none;
 	}
 
 	& .ck-input-text {
-		/*https://github.com/ckeditor/ckeditor5-link/issues/145*/
+		/* https://github.com/ckeditor/ckeditor5-link/issues/145 */
 		width: 100%;
 	}
 
@@ -32,7 +32,7 @@
 
 		/* The "Unlink" button.*/
 		&:last-child {
-			/*https://github.com/ckeditor/ckeditor5-link/issues/145*/
+			/* https://github.com/ckeditor/ckeditor5-link/issues/145 */
 			margin-right: calc(4 * var(--ck-spacing-medium));
 		}
 	}
