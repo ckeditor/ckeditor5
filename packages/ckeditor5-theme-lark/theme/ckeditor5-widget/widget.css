@@ -33,8 +33,8 @@
 	& .ck-editable {
 		border: 1px solid transparent;
 
-		/*The `:focus` style is applied before `.ck-editable_focused` class is rendered in the view.
-		These styles show a different border for a blink of an eye, so `:focus` need to have same styles applied.*/
+		/* The :focus style is applied before .ck-editable_focused class is rendered in the view.
+		These styles show a different border for a blink of an eye, so `:focus` need to have same styles applied. */
 		&.ck-editable_focused,
 		&:focus {
 			@mixin ck-focus-ring;
