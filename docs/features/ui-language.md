@@ -13,6 +13,57 @@ See the demo of the editor in German:
 
 {@snippet features/ui-language}
 
+## Loading additional languages from CDN, npm and zip file
+
+You can load additional languages using:
+* [CDN](#CDN),
+* [npm](#npm),
+* [Zip download](#Zip).
+
+Next, configure the editor to use chosen language:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		language: 'de'
+	} )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
+```
+
+### CDN
+
+To use different language than default one, you need to load the editor together with the preferred language:
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/lang/de.js"></script>
+```
+
+See {@link builds/guides/integration/installation#CDN CDN installation guides} for more information.
+
+### npm
+
+After installing the build from npm, languages will be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/`.
+Single language can be imported directly to your code by `'@ckeditor/ckeditor5-build-[name]/build/lang/de.js' )`.
+
+See {@link builds/guides/integration/installation#npm npm installation guides} for more information.
+
+### Zip
+
+All additional languages are included in `.zip` file. You need to include `ckeditor.js` file together with language file:
+
+```js
+<script src="[ckeditor-path]/ckeditor.js"></script>
+<script src="[ckeditor-path]/lang/de.js"></script>
+```
+
+See {@link builds/guides/integration/installation#Zip-download zip installation guides} for more information.
+
 ## Building the editor using a specific language
 
 Currently, it is possible to change the UI language at the build stage and after the build. A single build of the editor supports the language which was defined in the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin)'s configuration. See the whole translation process to see how you can change the language later.
