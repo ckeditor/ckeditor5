@@ -398,6 +398,22 @@ describe( 'AttributeOperation', () => {
 		expect( root.getChild( 1 ).data ).to.equal( 'bcxyz' );
 	} );
 
+	it( 'should do nothing when attribute value is the same', () => {
+		root.insertChildren( 0, new Text( 'x', { foo: true } ) );
+
+		expect( () => {
+			doc.applyOperation( wrapInDelta(
+				new AttributeOperation(
+					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					'foo',
+					true,
+					true,
+					doc.version
+				)
+			) );
+		} ).to.not.throw();
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
 			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) );
