@@ -21,7 +21,6 @@ import { convertText, convertToModelFragment } from '../conversion/view-to-model
 import ViewDocumentFragment from '../view/documentfragment';
 
 import ModelRange from '../model/range';
-import ModelPosition from '../model/position';
 import ModelElement from '../model/element';
 
 import insertContent from './insertcontent';
@@ -196,9 +195,10 @@ export default class DataController {
 			this.model.selection.clearAttributes();
 
 			// Initial batch should be ignored by features like undo, etc.
-			this.model.batch( 'transparent' )
-				.remove( ModelRange.createIn( modelRoot ) )
-				.insert( ModelPosition.createAt( modelRoot, 0 ), this.parse( data ) );
+			const batch = this.model.batch( 'transparent' );
+
+			batch.remove( ModelRange.createIn( modelRoot ) );
+			batch.insert( this.parse( data, batch ), modelRoot );
 		} );
 	}
 
@@ -208,16 +208,17 @@ export default class DataController {
 	 *
 	 * @see #set
 	 * @param {String} data Data to parse.
+	 * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
 	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Parsed data.
 	 */
-	parse( data, context = '$root' ) {
+	parse( data, batch, context = '$root' ) {
 		// data -> view
 		const viewDocumentFragment = this.processor.toView( data );
 
 		// view -> model
-		return this.toModel( viewDocumentFragment, context );
+		return this.toModel( viewDocumentFragment, batch, context );
 	}
 
 	/**
@@ -231,12 +232,13 @@ export default class DataController {
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElementOrFragment
 	 * Element or document fragment which content will be converted.
+	 * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
 	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Output document fragment.
 	 */
-	toModel( viewElementOrFragment, context = '$root' ) {
-		return this.viewToModel.convert( viewElementOrFragment, { context: [ context ] } );
+	toModel( viewElementOrFragment, batch, context = '$root' ) {
+		return this.viewToModel.convert( viewElementOrFragment, batch, { context: [ context ] } );
 	}
 
 	/**

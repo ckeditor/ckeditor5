@@ -161,6 +161,26 @@ describe( 'MarkerOperation', () => {
 		expect( clone ).to.deep.equal( op );
 	} );
 
+	describe( 'isDocumentOperation', () => {
+		it( 'should return true when new marker range is added to the document', () => {
+			const op = new MarkerOperation( 'name', null, range, doc.markers, doc.version );
+
+			expect( op.isDocumentOperation ).to.true;
+		} );
+
+		it( 'should return false when marker range is removed from the document', () => {
+			const op = new MarkerOperation( 'name', range, null, doc.markers, doc.version );
+
+			expect( op.isDocumentOperation ).to.true;
+		} );
+
+		it( 'should return true when non-existing marker range is removed from the document', () => {
+			const op = new MarkerOperation( 'name', null, null, doc.markers, doc.version );
+
+			expect( op.isDocumentOperation ).to.true;
+		} );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
 			const op = new MarkerOperation( 'name', null, range, doc.markers, doc.version );

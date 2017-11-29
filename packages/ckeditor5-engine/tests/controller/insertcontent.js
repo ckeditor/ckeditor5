@@ -756,12 +756,14 @@ describe( 'DataController', () => {
 	//
 	// @param {module:engine/model/item~Item|String} content
 	function insertHelper( content ) {
+		const batch = doc.batch();
+
 		if ( typeof content == 'string' ) {
-			content = parse( content, doc.schema, {
+			content = parse( content, doc.schema, batch, {
 				context: [ '$clipboardHolder' ]
 			} );
 		}
 
-		insertContent( dataController, content, doc.selection );
+		insertContent( dataController, content, doc.selection, batch );
 	}
 } );

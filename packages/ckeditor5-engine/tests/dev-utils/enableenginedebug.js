@@ -13,6 +13,7 @@ import ModelText from '../../src/model/text';
 import ModelTextProxy from '../../src/model/textproxy';
 import ModelElement from '../../src/model/element';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
+import DetachOperation from '../../src/model/operation/detachoperation';
 import InsertOperation from '../../src/model/operation/insertoperation';
 import MarkerOperation from '../../src/model/operation/markeroperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
@@ -22,12 +23,13 @@ import RootAttributeOperation from '../../src/model/operation/rootattributeopera
 import RemoveOperation from '../../src/model/operation/removeoperation';
 import DeltaFactory from '../../src/model/delta/deltafactory';
 import Delta from '../../src/model/delta/delta';
-import { default as AttributeDelta, RootAttributeDelta } from '../../src/model/delta/attributedelta';
+import AttributeDelta from '../../src/model/delta/attributedelta';
 import InsertDelta from '../../src/model/delta/insertdelta';
 import MarkerDelta from '../../src/model/delta/markerdelta';
 import MergeDelta from '../../src/model/delta/mergedelta';
 import MoveDelta from '../../src/model/delta/movedelta';
 import RenameDelta from '../../src/model/delta/renamedelta';
+import RootAttributeDelta from '../../src/model/delta/rootattributedelta';
 import SplitDelta from '../../src/model/delta/splitdelta';
 import UnwrapDelta from '../../src/model/delta/unwrapdelta';
 import WrapDelta from '../../src/model/delta/wrapdelta';
@@ -216,6 +218,39 @@ describe( 'debug tools', () => {
 				const op = new AttributeOperation( ModelRange.createIn( modelRoot ), 'key', null, { foo: 'bar' }, 0 );
 
 				expect( op.toString() ).to.equal( 'AttributeOperation( 0 ): "key": null -> {"foo":"bar"}, main [ 0 ] - [ 6 ]' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'DetachOperation (text node)', () => {
+				const op = new DetachOperation( ModelPosition.createAt( modelRoot, 0 ), 3, 0 );
+
+				expect( op.toString() ).to.equal( 'DetachOperation( 0 ): #foo -> main [ 0 ] - [ 3 ]' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'DetachOperation (element)', () => {
+				const element = new ModelElement( 'element' );
+				modelRoot.insertChildren( 0, element );
+
+				const op = new DetachOperation( ModelPosition.createBefore( element ), 1, 0 );
+
+				expect( op.toString() ).to.equal( 'DetachOperation( 0 ): <element> -> main [ 0 ] - [ 1 ]' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'DetachOperation (multiple nodes)', () => {
+				const element = new ModelElement( 'element' );
+				modelRoot.insertChildren( 0, element );
+
+				const op = new DetachOperation( ModelPosition.createBefore( element ), 2, 0 );
+
+				expect( op.toString() ).to.equal( 'DetachOperation( 0 ): [ 2 ] -> main [ 0 ] - [ 2 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;

@@ -54,6 +54,34 @@ describe( 'RootAttributeOperation', () => {
 		} );
 	} );
 
+	describe( 'isDocumentOperation', () => {
+		it( 'should be true when root is in the document', () => {
+			const operation = new RootAttributeOperation(
+				root,
+				'isNew',
+				null,
+				true,
+				doc.version
+			);
+
+			expect( operation.isDocumentOperation ).to.true;
+		} );
+
+		it( 'should be false when root is not in the document', () => {
+			const element = doc.batch().createElement( 'element' );
+
+			const operation = new RootAttributeOperation(
+				element,
+				'isNew',
+				null,
+				true,
+				doc.version
+			);
+
+			expect( operation.isDocumentOperation ).to.false;
+		} );
+	} );
+
 	it( 'should add attribute on the root element', () => {
 		doc.applyOperation( wrapInDelta(
 			new RootAttributeOperation(

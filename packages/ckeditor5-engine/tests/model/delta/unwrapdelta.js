@@ -4,10 +4,7 @@
  */
 
 import Document from '../../../src/model/document';
-import Element from '../../../src/model/element';
-import Text from '../../../src/model/text';
 import Position from '../../../src/model/position';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import UnwrapDelta from '../../../src/model/delta/unwrapdelta';
 import WrapDelta from '../../../src/model/delta/wrapdelta';
@@ -15,53 +12,6 @@ import WrapDelta from '../../../src/model/delta/wrapdelta';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
-
-describe( 'Batch', () => {
-	let doc, root, p;
-
-	beforeEach( () => {
-		doc = new Document();
-		root = doc.createRoot();
-
-		p = new Element( 'p', [], new Text( 'xyz' ) );
-		root.insertChildren( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
-	} );
-
-	describe( 'unwrap', () => {
-		it( 'should unwrap given element', () => {
-			doc.batch().unwrap( p );
-
-			expect( root.maxOffset ).to.equal( 5 );
-			expect( root.getChild( 0 ).data ).to.equal( 'axyzb' );
-		} );
-
-		it( 'should throw if element to unwrap has no parent', () => {
-			const element = new Element( 'p' );
-
-			expect( () => {
-				doc.batch().unwrap( element );
-			} ).to.throw( CKEditorError, /^batch-unwrap-element-no-parent/ );
-		} );
-
-		it( 'should be chainable', () => {
-			const batch = doc.batch();
-
-			const chain = batch.unwrap( p );
-			expect( chain ).to.equal( batch );
-		} );
-
-		it( 'should add delta to batch and operation to delta before applying operation', () => {
-			sinon.spy( doc, 'applyOperation' );
-			const batch = doc.batch().unwrap( p );
-
-			const correctDeltaMatcher = sinon.match( operation => {
-				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-			} );
-
-			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
-		} );
-	} );
-} );
 
 describe( 'UnwrapDelta', () => {
 	let unwrapDelta, doc, root;

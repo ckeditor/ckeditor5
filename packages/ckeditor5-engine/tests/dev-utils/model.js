@@ -497,21 +497,21 @@ describe( 'model test utils', () => {
 
 		it( 'throws when invalid XML', () => {
 			expect( () => {
-				parse( '<a><b></a></b>', document.schema );
+				parse( '<a><b></a></b>', document.schema, document.batch() );
 			} ).to.throw( Error, /Parse error/ );
 		} );
 
 		it( 'throws when try to set element not registered in schema', () => {
 			expect( () => {
-				parse( '<xyz></xyz>', document.schema );
+				parse( '<xyz></xyz>', document.schema, document.batch() );
 			} ).to.throw( Error, 'Element \'xyz\' not allowed in context ["$root"].' );
 		} );
 
 		it( 'throws when try to set text directly to $root without registering it', () => {
-			const doc = new Document();
+			const document = new Document();
 
 			expect( () => {
-				parse( 'text', doc.schema );
+				parse( 'text', document.schema, document.batch() );
 			} ).to.throw( Error, 'Element \'$text\' not allowed in context ["$root"].' );
 		} );
 
@@ -521,7 +521,7 @@ describe( 'model test utils', () => {
 			doc.schema.allow( { name: '$text', inside: 'foo' } );
 
 			expect( () => {
-				parse( 'text', doc.schema, { context: [ 'foo' ] } );
+				parse( 'text', doc.schema, doc.batch(), { context: [ 'foo' ] } );
 			} ).to.not.throw();
 		} );
 
@@ -556,7 +556,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'sets selection attributes', () => {
-				const result = parse( 'foo[]bar', document.schema, { selectionAttributes: {
+				const result = parse( 'foo[]bar', document.schema, document.batch(), { selectionAttributes: {
 					bold: true,
 					italic: true
 				} } );
@@ -577,7 +577,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'sets selection with attribute containing an element', () => {
-				const result = parse( 'x[<a></a>]', document.schema, { selectionAttributes: {
+				const result = parse( 'x[<a></a>]', document.schema, document.batch(), { selectionAttributes: {
 					bold: true
 				} } );
 
@@ -586,7 +586,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'sets a backward selection containing an element', () => {
-				const result = parse( 'x[<a></a>]', document.schema, {
+				const result = parse( 'x[<a></a>]', document.schema, document.batch(), {
 					lastRangeBackward: true
 				} );
 
@@ -599,7 +599,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'sets selection within a text with different attributes', () => {
-				const result = parse( '<$text bold="true">fo[o</$text>ba]r', document.schema, {
+				const result = parse( '<$text bold="true">fo[o</$text>ba]r', document.schema, document.batch(), {
 					selectionAttributes: { bold: true }
 				} );
 
@@ -609,13 +609,13 @@ describe( 'model test utils', () => {
 
 			it( 'throws when missing selection start', () => {
 				expect( () => {
-					parse( 'foo]' );
+					parse( 'foo]', document.schema, document.batch() );
 				} ).to.throw( Error );
 			} );
 
 			it( 'throws when missing selection end', () => {
 				expect( () => {
-					parse( '[foo' );
+					parse( '[foo', document.schema, document.batch() );
 				} ).to.throw( Error );
 			} );
 		} );
@@ -623,7 +623,7 @@ describe( 'model test utils', () => {
 		function test( title, options ) {
 			it( title, () => {
 				const output = options.output || options.data;
-				const data = parse( options.data, document.schema );
+				const data = parse( options.data, document.schema, document.batch() );
 				let model, selection;
 
 				if ( data.selection && data.model ) {

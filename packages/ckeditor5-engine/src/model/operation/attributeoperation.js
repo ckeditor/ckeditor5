@@ -73,6 +73,11 @@ export default class AttributeOperation extends Operation {
 		 * @member {*}
 		 */
 		this.newValue = newValue === undefined ? null : newValue;
+
+		/**
+		 * @inheritDoc
+		 */
+		this.isDocumentOperation = !!this.range.root.document;
 	}
 
 	/**
