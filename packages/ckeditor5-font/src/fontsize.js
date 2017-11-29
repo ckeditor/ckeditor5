@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import FontSizeEditing from './fontsizeediting';
 
 /**
  * The Font Size plugin.
@@ -19,7 +20,7 @@ export default class FontSize extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [];
+		return [ FontSizeEditing ];
 	}
 
 	/**
