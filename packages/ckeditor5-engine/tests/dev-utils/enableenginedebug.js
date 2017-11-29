@@ -83,7 +83,7 @@ describe( 'disableEngineDebug', () => {
 
 		enableEngineDebug();
 
-		expect( ModelPosition.prototype.log ).to.be.a( 'function', 'After enabling engine debug (model/position)\'' );
+		expect( ModelPosition.prototype.log ).to.be.a( 'function', 'After enabling engine debug (model/position)' );
 		expect( ModelElement.prototype.printTree ).to.be.a( 'function', 'After enabling engine debug (model/element)' );
 		expect( Delta.prototype.log ).to.be.a( 'function', 'After enabling engine debug (model/delta/delta)' );
 		expect( ViewElement.prototype.printTree ).to.be.a( 'function', 'After enabling engine debug (view/element)' );
@@ -92,7 +92,7 @@ describe( 'disableEngineDebug', () => {
 
 		disableEngineDebug();
 
-		expect( ModelPosition.prototype.log ).to.equal( undefined, 'After disabling engine debug (model/position)\'' );
+		expect( ModelPosition.prototype.log ).to.equal( undefined, 'After disabling engine debug (model/position)' );
 		expect( ModelElement.prototype.printTree ).to.equal( undefined, 'After disabling engine debug (model/element)' );
 		expect( Delta.prototype.log ).to.equal( undefined, 'After disabling engine debug (model/delta/delta)' );
 		expect( ViewElement.prototype.printTree ).to.equal( undefined, 'After disabling engine debug (view/element)' );
