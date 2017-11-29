@@ -4,6 +4,7 @@
  */
 
 import { default as enableEngineDebug, disableEngineDebug } from '../../src/dev-utils/enableenginedebug';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
@@ -43,6 +44,7 @@ import ViewContainerElement from '../../src/view/containerelement';
 import ViewText from '../../src/view/text';
 import ViewTextProxy from '../../src/view/textproxy';
 import ViewDocumentFragment from '../../src/view/documentfragment';
+import ViewElement from '../../src/view/element';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -67,6 +69,35 @@ describe( 'enableEngineDebug', () => {
 		const result = enableEngineDebug();
 
 		expect( result.prototype ).to.be.instanceof( Plugin );
+	} );
+} );
+
+describe( 'disableEngineDebug', () => {
+	it( 'restores modified stubs', () => {
+		expect( ModelPosition.prototype.log ).to.equal( undefined, 'Initial value (model/position)' );
+		expect( ModelElement.prototype.printTree ).to.equal( undefined, 'Initial value (model/element)' );
+		expect( Delta.prototype.log ).to.equal( undefined, 'Initial value (model/delta/delta)' );
+		expect( ViewElement.prototype.printTree ).to.equal( undefined, 'Initial value (view/element)' );
+		expect( ModelDocument.prototype.createReplayer ).to.equal( undefined, 'Initial value (model/document)' );
+		expect( Editor.prototype.logDocuments ).to.equal( undefined, 'Initial value (core~editor/editor)' );
+
+		enableEngineDebug();
+
+		expect( ModelPosition.prototype.log ).to.be.a( 'function', 'After enabling engine debug (model/position)\'' );
+		expect( ModelElement.prototype.printTree ).to.be.a( 'function', 'After enabling engine debug (model/element)' );
+		expect( Delta.prototype.log ).to.be.a( 'function', 'After enabling engine debug (model/delta/delta)' );
+		expect( ViewElement.prototype.printTree ).to.be.a( 'function', 'After enabling engine debug (view/element)' );
+		expect( ModelDocument.prototype.createReplayer ).to.be.a( 'function', 'After enabling engine debug (model/document)' );
+		expect( Editor.prototype.logDocuments ).to.be.a( 'function', 'After enabling engine debug (core~editor/editor)' );
+
+		disableEngineDebug();
+
+		expect( ModelPosition.prototype.log ).to.equal( undefined, 'After disabling engine debug (model/position)\'' );
+		expect( ModelElement.prototype.printTree ).to.equal( undefined, 'After disabling engine debug (model/element)' );
+		expect( Delta.prototype.log ).to.equal( undefined, 'After disabling engine debug (model/delta/delta)' );
+		expect( ViewElement.prototype.printTree ).to.equal( undefined, 'After disabling engine debug (view/element)' );
+		expect( ModelDocument.prototype.createReplayer ).to.equal( undefined, 'After disabling engine debug (model/document)' );
+		expect( Editor.prototype.logDocuments ).to.equal( undefined, 'After disabling engine debug (core~editor/editor)' );
 	} );
 } );
 
