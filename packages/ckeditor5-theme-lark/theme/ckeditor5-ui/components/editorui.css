@@ -56,13 +56,13 @@
 
 /* https://github.com/ckeditor/ckeditor5-theme-lark/issues/111 */
 .ck-toolbar-container.ck-editor-toolbar-container[class*="arrow_n"] {
-	&:after {
+	&::after {
 		border-bottom-color: var(--ck-color-editor-toolbar-background);
 	}
 }
 
 .ck-toolbar-container.ck-editor-toolbar-container[class*="arrow_s"] {
-	&:after {
+	&::after {
 		border-top-color: var(--ck-color-editor-toolbar-background);
 	}
 }
