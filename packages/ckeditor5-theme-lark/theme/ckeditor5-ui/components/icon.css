@@ -13,8 +13,8 @@
 }
 
 svg.ck-icon {
-	width: calc(var(--ck-line-height-base) * 1em);
-	height: calc(var(--ck-line-height-base) * 1em);
+	width: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));
+	height: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));
 
 	min-width: var(--ck-icon-min-size);
 	min-height: var(--ck-icon-min-size);
