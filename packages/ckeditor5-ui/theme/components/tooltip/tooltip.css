@@ -25,10 +25,11 @@
 
 .ck-tooltip__text {
 	display: inline-block;
+
+	&::after {
+		content: "";
+		width: 0;
+		height: 0;
+	}
 }
 
-.ck-tooltip__text::after {
-	content: "";
-	width: 0;
-	height: 0;
-}
