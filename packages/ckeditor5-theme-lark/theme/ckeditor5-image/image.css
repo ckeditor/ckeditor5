@@ -8,10 +8,10 @@
 		text-align: center;
 
 		& > img {
-			/*Center the image if its width is smaller than content's width.*/
+			/* Center the image if its width is smaller than content's width. */
 			margin: 0 auto;
 
-			/*Make sure the image never exceeds the size of the parent container (#67).*/
+			/* Make sure the image never exceeds the size of the parent container (#67). */
 			max-width: 100%;
 		}
 	}

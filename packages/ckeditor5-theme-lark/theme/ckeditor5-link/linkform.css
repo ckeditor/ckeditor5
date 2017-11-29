@@ -25,7 +25,7 @@
 	padding-top: var(--ck-spacing-large);
 
 	& .ck-button {
-		/*"Save" and "Cancel" buttons.*/
+		/* "Save" and "Cancel" buttons. */
 		& + .ck-button {
 			margin-right: var(--ck-spacing-medium);
 		}
