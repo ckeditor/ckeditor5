@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import FontSizeEditing from './fontsizeediting';
+import FontSizeEditing from './fontsize/fontsizeediting';
 
 /**
  * The Font Size plugin.

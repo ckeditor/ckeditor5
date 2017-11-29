@@ -4,7 +4,7 @@
  */
 
 /**
- * @module font/fontsizeediting
+ * @module font/fontsize/fontsizeediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';

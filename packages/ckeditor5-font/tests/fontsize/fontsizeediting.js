@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import FontSizeEditing from './../src/fontsizeediting';
+import FontSizeEditing from './../../src/fontsize/fontsizeediting';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 

@@ -4,7 +4,7 @@
  */
 
 import FontSize from './../src/fontsize';
-import FontSizeEditing from './../src/fontsizeediting';
+import FontSizeEditing from './../src/fontsize/fontsizeediting';
 
 describe( 'FontSize', () => {
 	it( 'requires FontSizeEditing', () => {
