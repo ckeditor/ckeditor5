@@ -57,7 +57,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 				],
 				role: 'application',
 				dir: 'ltr',
-				language: locale.language,
+				lang: locale.language,
 				'aria-labelledby': `cke-editor__aria-label_${ ariaLabelUid }`
 			},
 
