@@ -11,7 +11,7 @@ import Operation from './operation';
 import Position from '../position';
 import NodeList from '../nodelist';
 import RemoveOperation from './removeoperation';
-import { insert, normalizeNodes } from '../writer';
+import { insert, normalizeNodes } from './utils';
 import Text from '../text';
 import Element from '../element';
 

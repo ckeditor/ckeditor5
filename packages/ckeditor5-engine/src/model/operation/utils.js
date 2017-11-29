@@ -4,48 +4,39 @@
  */
 
 /**
- * @module engine/model/writer
+ * @module engine/model/operation/utils
  */
 
-import Node from './node';
-import Text from './text';
-import TextProxy from './textproxy';
-import Range from './range';
-import DocumentFragment from './documentfragment';
-import NodeList from './nodelist';
+import Node from '../node';
+import Text from '../text';
+import TextProxy from '../textproxy';
+import Range from '../range';
+import DocumentFragment from '../documentfragment';
+import NodeList from '../nodelist';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Contains functions used for composing model tree, grouped together under "model writer" name. Those functions
- * are built on top of {@link module:engine/model/node~Node node}, and it's child classes', APIs.
+ * Contains functions used for composing model tree by {@link module:engine/model/operation~Operation operations}.
+ * Those functions are built on top of {@link module:engine/model/node~Node node}, and it's child classes', APIs.
  *
- * Model writer API has multiple advantages and it is highly recommended to use it when changing model tree and nodes:
- * * model writer API {@link module:engine/model/writer~writer.normalizeNodes normalizes inserted nodes}, which means that you can insert
- * not only {@link module:engine/model/node~Node nodes}, but also `String`s, {@link module:engine/model/textproxy~TextProxy text proxies}
- * and
- * {@link module:engine/model/documentfragment~DocumentFragment document fragments},
- * * model writer API operates on {@link module:engine/model/position~Position positions}, which means that you have
- * better control over manipulating model tree as positions operate on offsets rather than indexes,
- * * model writer API automatically merges {@link module:engine/model/text~Text text nodes} with same attributes, which means
- * lower memory usage and better efficiency.
- *
- * @namespace writer
+ * @protected
+ * @namespace utils
  */
-const writer = {
+const utils = {
 	insert,
 	remove,
 	move,
 	setAttribute,
-	removeAttribute,
 	normalizeNodes
 };
 
-export default writer;
+export default utils;
 
 /**
  * Inserts given nodes at given position.
  *
- * @function module:engine/model/writer~writer.insert
+ * @protected
+ * @function module:engine/model/operation/utils~utils.insert
  * @param {module:engine/model/position~Position} position Position at which nodes should be inserted.
  * @param {module:engine/model/node~NodeSet} nodes Nodes to insert.
  * @returns {module:engine/model/range~Range} Range spanning over inserted elements.
@@ -75,7 +66,8 @@ export function insert( position, nodes ) {
 /**
  * Removed nodes in given range. Only {@link module:engine/model/range~Range#isFlat flat} ranges are accepted.
  *
- * @function module:engine/model/writer~writer.remove
+ * @protected
+ * @function module:engine/model/operation/utils~utils.remove
  * @param {module:engine/model/range~Range} range Range containing nodes to remove.
  * @returns {Array.<module:engine/model/node~Node>}
  */
@@ -84,9 +76,9 @@ export function remove( range ) {
 		/**
 		 * Trying to remove a range which starts and ends in different element.
 		 *
-		 * @error model-writer-remove-range-not-flat
+		 * @error operation-utils-remove-range-not-flat
 		 */
-		throw new CKEditorError( 'model-writer-remove-range-not-flat: ' +
+		throw new CKEditorError( 'operation-utils-remove-range-not-flat: ' +
 			'Trying to remove a range which starts and ends in different element.' );
 	}
 
@@ -109,6 +101,8 @@ export function remove( range ) {
 /**
  * Moves nodes in given range to given target position. Only {@link module:engine/model/range~Range#isFlat flat} ranges are accepted.
  *
+ * @protected
+ * @function module:engine/model/operation/utils~utils.move
  * @param {module:engine/model/range~Range} sourceRange Range containing nodes to move.
  * @param {module:engine/model/position~Position} targetPosition Position to which nodes should be moved.
  * @returns {module:engine/model/range~Range} Range containing moved nodes.
@@ -118,24 +112,26 @@ export function move( sourceRange, targetPosition ) {
 		/**
 		 * Trying to move a range which starts and ends in different element.
 		 *
-		 * @error model-writer-move-range-not-flat
+		 * @error operation-utils-move-range-not-flat
 		 */
-		throw new CKEditorError( 'model-writer-move-range-not-flat: ' +
+		throw new CKEditorError( 'operation-utils-move-range-not-flat: ' +
 			'Trying to move a range which starts and ends in different element.' );
 	}
 
-	const nodes = this.remove( sourceRange );
+	const nodes = remove( sourceRange );
 
 	// We have to fix `targetPosition` because model changed after nodes from `sourceRange` got removed and
 	// that change might have an impact on `targetPosition`.
 	targetPosition = targetPosition._getTransformedByDeletion( sourceRange.start, sourceRange.end.offset - sourceRange.start.offset );
 
-	return this.insert( targetPosition, nodes );
+	return insert( targetPosition, nodes );
 }
 
 /**
  * Sets given attribute on nodes in given range.
  *
+ * @protected
+ * @function module:engine/model/operation/utils~utils.setAttribute
  * @param {module:engine/model/range~Range} range Range containing nodes that should have the attribute set.
  * @param {String} key Key of attribute to set.
  * @param {*} value Attribute value.
@@ -167,19 +163,11 @@ export function setAttribute( range, key, value ) {
 }
 
 /**
- * Removes given attribute from nodes in given range.
- *
- * @param {module:engine/model/range~Range} range Range containing nodes that should have the attribute removed.
- * @param {String} key Key of attribute to remove.
- */
-export function removeAttribute( range, key ) {
-	this.setAttribute( range, key, null );
-}
-
-/**
  * Normalizes given object or an array of objects to an array of {@link module:engine/model/node~Node nodes}. See
  * {@link module:engine/model/node~NodeSet NodeSet} for details on how normalization is performed.
  *
+ * @protected
+ * @function module:engine/model/operation/utils~utils.normalizeNodes
  * @param {module:engine/model/node~NodeSet} nodes Objects to normalize.
  * @returns {Array.<module:engine/model/node~Node>} Normalized nodes.
  */

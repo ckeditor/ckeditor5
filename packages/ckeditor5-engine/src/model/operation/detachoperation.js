@@ -10,7 +10,7 @@
 import Operation from './operation';
 import Position from '../position';
 import Range from '../range';
-import { remove } from '../writer';
+import { remove } from './utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
