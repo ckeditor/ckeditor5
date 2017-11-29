@@ -225,7 +225,7 @@ describe( 'Marker', () => {
 		expect( marker.getEnd().isEqual( range.end ) ).to.be.true;
 
 		doc.enqueueChanges( () => {
-			doc.batch().insert( Position.createAt( root, 0 ), 'abc' );
+			doc.batch().insertText( 'abc', root );
 		} );
 
 		const updatedRange = Range.createFromParentsAndOffsets( root, 4, root, 5 );

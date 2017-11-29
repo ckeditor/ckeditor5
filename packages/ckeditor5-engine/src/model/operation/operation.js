@@ -46,6 +46,13 @@ export default class Operation {
 		 */
 
 		/**
+		 * Defines whether operation is executed on attached or detached {@link module:engine/model/item~Item items}.
+		 *
+		 * @readonly
+		 * @member {Boolean} #isDocumentOperation
+		 */
+
+		/**
 		 * Creates and returns an operation that has the same parameters as this operation.
 		 *
 		 * @method #clone
@@ -89,6 +96,9 @@ export default class Operation {
 
 		// Remove parent delta to avoid circular dependencies.
 		delete json.delta;
+
+		// Only document operations are shared with other clients so it is not necessary to keep this information.
+		delete json.isDocumentOperation;
 
 		return json;
 	}

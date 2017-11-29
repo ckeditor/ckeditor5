@@ -9,12 +9,7 @@
 
 import Delta from './delta';
 import DeltaFactory from './deltafactory';
-import { register } from '../batch';
-import Position from '../position';
-import Element from '../element';
-import InsertOperation from '../operation/insertoperation';
 import MoveOperation from '../operation/moveoperation';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import MergeDelta from '../delta/mergedelta';
 
 /**
@@ -84,55 +79,5 @@ export default class SplitDelta extends Delta {
 		return 'engine.model.delta.SplitDelta';
 	}
 }
-
-/**
- * Splits an element at the given position.
- *
- * The element cannot be a root element, as root element cannot be split. The `batch-split-root` error will be thrown if
- * you try to split the root element.
- *
- * @chainable
- * @method module:engine/model/batch~Batch#split
- * @param {module:engine/model/position~Position} position Position of split.
- */
-register( 'split', function( position ) {
-	const delta = new SplitDelta();
-	this.addDelta( delta );
-
-	const splitElement = position.parent;
-
-	if ( !splitElement.parent ) {
-		/**
-		 * Root element can not be split.
-		 *
-		 * @error batch-split-root
-		 */
-		throw new CKEditorError( 'batch-split-root: Root element can not be split.' );
-	}
-
-	const copy = new Element( splitElement.name, splitElement.getAttributes() );
-
-	const insert = new InsertOperation(
-		Position.createAfter( splitElement ),
-		copy,
-		this.document.version
-	);
-
-	delta.addOperation( insert );
-	this.document.applyOperation( insert );
-
-	const move = new MoveOperation(
-		position,
-		splitElement.maxOffset - position.offset,
-		Position.createFromParentAndOffset( copy, 0 ),
-		this.document.version
-	);
-	move.isSticky = true;
-
-	delta.addOperation( move );
-	this.document.applyOperation( move );
-
-	return this;
-} );
 
 DeltaFactory.register( SplitDelta );

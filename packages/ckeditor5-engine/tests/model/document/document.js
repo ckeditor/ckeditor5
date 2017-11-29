@@ -110,7 +110,8 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'applyOperation()', () => {
-		it( 'should increase document version, execute operation and fire event with proper data', () => {
+		it( 'should increase document version, execute operation and fire event with proper data ' +
+			'when operation is a document operation', () => {
 			const changeCallback = sinon.spy();
 			const type = 't';
 			const data = { data: 'x' };
@@ -121,6 +122,7 @@ describe( 'Document', () => {
 			const operation = {
 				type,
 				baseVersion: 0,
+				isDocumentOperation: true,
 				_execute: sinon.stub().returns( data )
 			};
 
@@ -131,6 +133,7 @@ describe( 'Document', () => {
 			doc.applyOperation( operation );
 
 			expect( doc.version ).to.equal( 1 );
+			expect( doc.history._deltas.length ).to.equal( 1 );
 			sinon.assert.calledOnce( operation._execute );
 
 			sinon.assert.calledOnce( changeCallback );
@@ -138,6 +141,35 @@ describe( 'Document', () => {
 			expect( changeCallback.args[ 0 ][ 2 ] ).to.equal( data );
 			expect( changeCallback.args[ 0 ][ 3 ] ).to.deep.equal( batch );
 			expect( changeCallback.args[ 0 ][ 4 ] ).to.equal( delta.type );
+		} );
+
+		it( 'should execute operation, not fire event and not increase document version ' +
+			'when operation is not a document operation', () => {
+			const changeCallback = sinon.spy();
+			const type = 't';
+			const data = { data: 'x' };
+			const batch = new Batch();
+			const delta = new Delta();
+			delta.type = 'type';
+
+			const operation = {
+				type,
+				baseVersion: 0,
+				isDocumentOperation: false,
+				_execute: sinon.stub().returns( data )
+			};
+
+			delta.addOperation( operation );
+			batch.addDelta( delta );
+
+			doc.on( 'change', changeCallback );
+			doc.applyOperation( operation );
+
+			expect( doc.version ).to.equal( 0 );
+			expect( doc.history._deltas.length ).to.equal( 0 );
+			sinon.assert.calledOnce( operation._execute );
+
+			sinon.assert.notCalled( changeCallback );
 		} );
 
 		it( 'should throw an error on the operation base version and the document version is different', () => {
@@ -149,7 +181,7 @@ describe( 'Document', () => {
 				() => {
 					doc.applyOperation( operation );
 				}
-			).to.throw( CKEditorError, /model-document-applyOperation-wrong-version/ );
+			).to.throw( CKEditorError, /^model-document-applyOperation-wrong-version/ );
 		} );
 	} );
 
