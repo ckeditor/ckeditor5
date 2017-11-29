@@ -57,7 +57,7 @@ class Sandbox {
 		this._restores = [];
 	}
 
-	create( object, methodName, fakeMethod ) {
+	mock( object, methodName, fakeMethod ) {
 		const originalMethod = object[ methodName ];
 
 		object[ methodName ] = fakeMethod;
@@ -159,59 +159,59 @@ export function disableEngineDebug() {
 }
 
 function enableLoggingTools() {
-	sandbox.create( ModelPosition.prototype, 'toString', function() {
+	sandbox.mock( ModelPosition.prototype, 'toString', function() {
 		return `${ this.root } [ ${ this.path.join( ', ' ) } ]`;
 	} );
 
-	sandbox.create( ModelPosition.prototype, 'log', function() {
+	sandbox.mock( ModelPosition.prototype, 'log', function() {
 		logger.log( 'ModelPosition: ' + this );
 	} );
 
-	sandbox.create( ModelRange.prototype, 'toString', function() {
+	sandbox.mock( ModelRange.prototype, 'toString', function() {
 		return `${ this.root } [ ${ this.start.path.join( ', ' ) } ] - [ ${ this.end.path.join( ', ' ) } ]`;
 	} );
 
-	sandbox.create( ModelRange.prototype, 'log', function() {
+	sandbox.mock( ModelRange.prototype, 'log', function() {
 		logger.log( 'ModelRange: ' + this );
 	} );
 
-	sandbox.create( ModelText.prototype, 'toString', function() {
+	sandbox.mock( ModelText.prototype, 'toString', function() {
 		return `#${ this.data }`;
 	} );
 
-	sandbox.create( ModelText.prototype, 'logExtended', function() {
+	sandbox.mock( ModelText.prototype, 'logExtended', function() {
 		logger.log( `ModelText: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
 	} );
 
-	sandbox.create( ModelText.prototype, 'log', function() {
+	sandbox.mock( ModelText.prototype, 'log', function() {
 		logger.log( 'ModelText: ' + this );
 	} );
 
-	sandbox.create( ModelTextProxy.prototype, 'toString', function() {
+	sandbox.mock( ModelTextProxy.prototype, 'toString', function() {
 		return `#${ this.data }`;
 	} );
 
-	sandbox.create( ModelTextProxy.prototype, 'logExtended', function() {
+	sandbox.mock( ModelTextProxy.prototype, 'logExtended', function() {
 		logger.log( `ModelTextProxy: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
 	} );
 
-	sandbox.create( ModelTextProxy.prototype, 'log', function() {
+	sandbox.mock( ModelTextProxy.prototype, 'log', function() {
 		logger.log( 'ModelTextProxy: ' + this );
 	} );
 
-	sandbox.create( ModelElement.prototype, 'toString', function() {
+	sandbox.mock( ModelElement.prototype, 'toString', function() {
 		return `<${ this.rootName || this.name }>`;
 	} );
 
-	sandbox.create( ModelElement.prototype, 'log', function() {
+	sandbox.mock( ModelElement.prototype, 'log', function() {
 		logger.log( 'ModelElement: ' + this );
 	} );
 
-	sandbox.create( ModelElement.prototype, 'logExtended', function() {
+	sandbox.mock( ModelElement.prototype, 'logExtended', function() {
 		logger.log( `ModelElement: ${ this }, ${ this.childCount } children, attrs: ${ mapString( this.getAttributes() ) }` );
 	} );
 
-	sandbox.create( ModelElement.prototype, 'logAll', function() {
+	sandbox.mock( ModelElement.prototype, 'logAll', function() {
 		logger.log( '--------------------' );
 
 		this.logExtended();
@@ -222,7 +222,7 @@ function enableLoggingTools() {
 		}
 	} );
 
-	sandbox.create( ModelElement.prototype, 'printTree', function( level = 0 ) {
+	sandbox.mock( ModelElement.prototype, 'printTree', function( level = 0 ) {
 		let string = '';
 
 		string += '\t'.repeat( level ) + `<${ this.rootName || this.name }${ mapToTags( this.getAttributes() ) }>`;
@@ -254,27 +254,27 @@ function enableLoggingTools() {
 		return string;
 	} );
 
-	sandbox.create( ModelElement.prototype, 'logTree', function() {
+	sandbox.mock( ModelElement.prototype, 'logTree', function() {
 		logger.log( this.printTree() );
 	} );
 
-	sandbox.create( ModelRootElement.prototype, 'toString', function() {
+	sandbox.mock( ModelRootElement.prototype, 'toString', function() {
 		return this.rootName;
 	} );
 
-	sandbox.create( ModelRootElement.prototype, 'log', function() {
+	sandbox.mock( ModelRootElement.prototype, 'log', function() {
 		logger.log( 'ModelRootElement: ' + this );
 	} );
 
-	sandbox.create( ModelDocumentFragment.prototype, 'toString', function() {
+	sandbox.mock( ModelDocumentFragment.prototype, 'toString', function() {
 		return 'documentFragment';
 	} );
 
-	sandbox.create( ModelDocumentFragment.prototype, 'log', function() {
+	sandbox.mock( ModelDocumentFragment.prototype, 'log', function() {
 		logger.log( 'ModelDocumentFragment: ' + this );
 	} );
 
-	sandbox.create( ModelDocumentFragment.prototype, 'printTree', function() {
+	sandbox.mock( ModelDocumentFragment.prototype, 'printTree', function() {
 		let string = 'ModelDocumentFragment: [';
 
 		for ( const child of this.getChildren() ) {
@@ -300,20 +300,20 @@ function enableLoggingTools() {
 		return string;
 	} );
 
-	sandbox.create( ModelDocumentFragment.prototype, 'logTree', function() {
+	sandbox.mock( ModelDocumentFragment.prototype, 'logTree', function() {
 		logger.log( this.printTree() );
 	} );
 
-	sandbox.create( Operation.prototype, 'log', function() {
+	sandbox.mock( Operation.prototype, 'log', function() {
 		logger.log( this.toString() );
 	} );
 
-	sandbox.create( AttributeOperation.prototype, 'toString', function() {
+	sandbox.mock( AttributeOperation.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.range }`;
 	} );
 
-	sandbox.create( DetachOperation.prototype, 'toString', function() {
+	sandbox.mock( DetachOperation.prototype, 'toString', function() {
 		const range = ModelRange.createFromPositionAndShift( this.sourcePosition, this.howMany );
 		const nodes = Array.from( range.getItems() );
 		const nodeString = nodes.length > 1 ? `[ ${ nodes.length } ]` : nodes[ 0 ];
@@ -321,43 +321,43 @@ function enableLoggingTools() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ range }`;
 	} );
 
-	sandbox.create( InsertOperation.prototype, 'toString', function() {
+	sandbox.mock( InsertOperation.prototype, 'toString', function() {
 		const nodeString = this.nodes.length > 1 ? `[ ${ this.nodes.length } ]` : this.nodes.getNode( 0 );
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ this.position }`;
 	} );
 
-	sandbox.create( MarkerOperation.prototype, 'toString', function() {
+	sandbox.mock( MarkerOperation.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.name }": ${ this.oldRange } -> ${ this.newRange }`;
 	} );
 
-	sandbox.create( MoveOperation.prototype, 'toString', function() {
+	sandbox.mock( MoveOperation.prototype, 'toString', function() {
 		const range = ModelRange.createFromPositionAndShift( this.sourcePosition, this.howMany );
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`${ range } -> ${ this.targetPosition }${ this.isSticky ? ' (sticky)' : '' }`;
 	} );
 
-	sandbox.create( NoOperation.prototype, 'toString', function() {
+	sandbox.mock( NoOperation.prototype, 'toString', function() {
 		return `NoOperation( ${ this.baseVersion } )`;
 	} );
 
-	sandbox.create( RenameOperation.prototype, 'toString', function() {
+	sandbox.mock( RenameOperation.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`${ this.position }: "${ this.oldName }" -> "${ this.newName }"`;
 	} );
 
-	sandbox.create( RootAttributeOperation.prototype, 'toString', function() {
+	sandbox.mock( RootAttributeOperation.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.root.rootName }`;
 	} );
 
-	sandbox.create( Delta.prototype, 'log', function() {
+	sandbox.mock( Delta.prototype, 'log', function() {
 		logger.log( this.toString() );
 	} );
 
-	sandbox.create( Delta.prototype, 'logAll', function() {
+	sandbox.mock( Delta.prototype, 'logAll', function() {
 		logger.log( '--------------------' );
 
 		this.log();
@@ -367,7 +367,7 @@ function enableLoggingTools() {
 		}
 	} );
 
-	sandbox.create( Delta.prototype, '_saveHistory', function( itemToSave ) {
+	sandbox.mock( Delta.prototype, '_saveHistory', function( itemToSave ) {
 		const history = itemToSave.before.history ? itemToSave.before.history : [];
 
 		itemToSave.before = clone( itemToSave.before );
@@ -383,7 +383,7 @@ function enableLoggingTools() {
 
 	const _deltaTransformTransform = deltaTransform.transform;
 
-	sandbox.create( deltaTransform, 'transform', function( a, b, context ) {
+	sandbox.mock( deltaTransform, 'transform', function( a, b, context ) {
 		let results;
 
 		try {
@@ -409,26 +409,26 @@ function enableLoggingTools() {
 		return results;
 	} );
 
-	sandbox.create( AttributeDelta.prototype, 'toString', function() {
+	sandbox.mock( AttributeDelta.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.key }": -> ${ JSON.stringify( this.value ) }, ${ this.range }, ${ this.operations.length } ops`;
 	} );
 
-	sandbox.create( InsertDelta.prototype, 'toString', function() {
+	sandbox.mock( InsertDelta.prototype, 'toString', function() {
 		const op = this._insertOperation;
 		const nodeString = op.nodes.length > 1 ? `[ ${ op.nodes.length } ]` : op.nodes.getNode( 0 );
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ op.position }`;
 	} );
 
-	sandbox.create( MarkerDelta.prototype, 'toString', function() {
+	sandbox.mock( MarkerDelta.prototype, 'toString', function() {
 		const op = this.operations[ 0 ];
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ op.name }": ${ op.oldRange } -> ${ op.newRange }`;
 	} );
 
-	sandbox.create( MergeDelta.prototype, 'toString', function() {
+	sandbox.mock( MergeDelta.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			( this.position ?
 				this.position.toString() :
@@ -436,7 +436,7 @@ function enableLoggingTools() {
 			);
 	} );
 
-	sandbox.create( MoveDelta.prototype, 'toString', function() {
+	sandbox.mock( MoveDelta.prototype, 'toString', function() {
 		const opStrings = [];
 
 		for ( const op of this.operations ) {
@@ -449,21 +449,21 @@ function enableLoggingTools() {
 			opStrings.join( '; ' );
 	} );
 
-	sandbox.create( RenameDelta.prototype, 'toString', function() {
+	sandbox.mock( RenameDelta.prototype, 'toString', function() {
 		const op = this.operations[ 0 ];
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`${ op.position }: "${ op.oldName }" -> "${ op.newName }"`;
 	} );
 
-	sandbox.create( RootAttributeDelta.prototype, 'toString', function() {
+	sandbox.mock( RootAttributeDelta.prototype, 'toString', function() {
 		const op = this.operations[ 0 ];
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ op.key }": ${ JSON.stringify( op.oldValue ) } -> ${ JSON.stringify( op.newValue ) }, ${ op.root.rootName }`;
 	} );
 
-	sandbox.create( SplitDelta.prototype, 'toString', function() {
+	sandbox.mock( SplitDelta.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			( this.position ?
 				this.position.toString() :
@@ -471,43 +471,43 @@ function enableLoggingTools() {
 			);
 	} );
 
-	sandbox.create( UnwrapDelta.prototype, 'toString', function() {
+	sandbox.mock( UnwrapDelta.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			this.position.toString();
 	} );
 
-	sandbox.create( WrapDelta.prototype, 'toString', function() {
+	sandbox.mock( WrapDelta.prototype, 'toString', function() {
 		const wrapElement = this._insertOperation.nodes.getNode( 0 );
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`${ this.range } -> ${ wrapElement }`;
 	} );
 
-	sandbox.create( ViewText.prototype, 'toString', function() {
+	sandbox.mock( ViewText.prototype, 'toString', function() {
 		return `#${ this.data }`;
 	} );
 
-	sandbox.create( ViewText.prototype, 'logExtended', function() {
+	sandbox.mock( ViewText.prototype, 'logExtended', function() {
 		logger.log( 'ViewText: ' + this );
 	} );
 
-	sandbox.create( ViewText.prototype, 'log', function() {
+	sandbox.mock( ViewText.prototype, 'log', function() {
 		logger.log( 'ViewText: ' + this );
 	} );
 
-	sandbox.create( ViewTextProxy.prototype, 'toString', function() {
+	sandbox.mock( ViewTextProxy.prototype, 'toString', function() {
 		return `#${ this.data }`;
 	} );
 
-	sandbox.create( ViewTextProxy.prototype, 'logExtended', function() {
+	sandbox.mock( ViewTextProxy.prototype, 'logExtended', function() {
 		logger.log( 'ViewTextProxy: ' + this );
 	} );
 
-	sandbox.create( ViewTextProxy.prototype, 'log', function() {
+	sandbox.mock( ViewTextProxy.prototype, 'log', function() {
 		logger.log( 'ViewTextProxy: ' + this );
 	} );
 
-	sandbox.create( ViewElement.prototype, 'printTree', function( level = 0 ) {
+	sandbox.mock( ViewElement.prototype, 'printTree', function( level = 0 ) {
 		let string = '';
 
 		string += '\t'.repeat( level ) + `<${ this.name }${ mapToTags( this.getAttributes() ) }>`;
@@ -529,11 +529,11 @@ function enableLoggingTools() {
 		return string;
 	} );
 
-	sandbox.create( ViewElement.prototype, 'logTree', function() {
+	sandbox.mock( ViewElement.prototype, 'logTree', function() {
 		logger.log( this.printTree() );
 	} );
 
-	sandbox.create( ViewDocumentFragment.prototype, 'printTree', function() {
+	sandbox.mock( ViewDocumentFragment.prototype, 'printTree', function() {
 		let string = 'ViewDocumentFragment: [';
 
 		for ( const child of this.getChildren() ) {
@@ -549,7 +549,7 @@ function enableLoggingTools() {
 		return string;
 	} );
 
-	sandbox.create( ViewDocumentFragment.prototype, 'logTree', function() {
+	sandbox.mock( ViewDocumentFragment.prototype, 'logTree', function() {
 		logger.log( this.printTree() );
 	} );
 }
@@ -557,7 +557,7 @@ function enableLoggingTools() {
 function enableReplayerTools() {
 	const _modelDocumentApplyOperation = ModelDocument.prototype.applyOperation;
 
-	sandbox.create( ModelDocument.prototype, 'applyOperation', function( operation ) {
+	sandbox.mock( ModelDocument.prototype, 'applyOperation', function( operation ) {
 		if ( !this._lastDelta ) {
 			this._appliedDeltas = [];
 		} else if ( this._lastDelta !== operation.delta ) {
@@ -569,7 +569,7 @@ function enableReplayerTools() {
 		_modelDocumentApplyOperation.call( this, operation );
 	} );
 
-	sandbox.create( ModelDocument.prototype, 'getAppliedDeltas', function() {
+	sandbox.mock( ModelDocument.prototype, 'getAppliedDeltas', function() {
 		// No deltas has been applied yet, return empty string.
 		if ( !this._lastDelta ) {
 			return '';
@@ -580,7 +580,7 @@ function enableReplayerTools() {
 		return appliedDeltas.map( JSON.stringify ).join( LOG_SEPARATOR );
 	} );
 
-	sandbox.create( ModelDocument.prototype, 'createReplayer', function( stringifiedDeltas ) {
+	sandbox.mock( ModelDocument.prototype, 'createReplayer', function( stringifiedDeltas ) {
 		return new DeltaReplayer( this, LOG_SEPARATOR, stringifiedDeltas );
 	} );
 }
@@ -588,7 +588,7 @@ function enableReplayerTools() {
 function enableDocumentTools() {
 	const _modelDocumentApplyOperation = ModelDocument.prototype.applyOperation;
 
-	sandbox.create( ModelDocument.prototype, 'applyOperation', function( operation ) {
+	sandbox.mock( ModelDocument.prototype, 'applyOperation', function( operation ) {
 		logger.log( 'Applying ' + operation );
 
 		if ( !this._operationLogs ) {
@@ -600,27 +600,27 @@ function enableDocumentTools() {
 		_modelDocumentApplyOperation.call( this, operation );
 	} );
 
-	sandbox.create( ModelDocument.prototype, 'log', function( version = null ) {
+	sandbox.mock( ModelDocument.prototype, 'log', function( version = null ) {
 		version = version === null ? this.version : version;
 
 		logDocument( this, version );
 	} );
 
-	sandbox.create( ViewDocument.prototype, 'log', function( version ) {
+	sandbox.mock( ViewDocument.prototype, 'log', function( version ) {
 		logDocument( this, version );
 	} );
 
-	sandbox.create( Editor.prototype, 'logModel', function( version = null ) {
+	sandbox.mock( Editor.prototype, 'logModel', function( version = null ) {
 		version = version === null ? this.document.version : version;
 
 		this.document.log( version );
 	} );
 
-	sandbox.create( Editor.prototype, 'logView', function( version ) {
+	sandbox.mock( Editor.prototype, 'logView', function( version ) {
 		this.editing.view.log( version );
 	} );
 
-	sandbox.create( Editor.prototype, 'logDocuments', function( version = null ) {
+	sandbox.mock( Editor.prototype, 'logDocuments', function( version = null ) {
 		version = version === null ? this.document.version : version;
 
 		this.logModel( version );
