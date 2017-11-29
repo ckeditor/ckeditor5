@@ -52,11 +52,20 @@ import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 
 import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 
+// Sandbox class allows creating mocks of the functions and restoring these mocks to the original values.
 class Sandbox {
 	constructor() {
+		// An array that contains functions which restore the original values of mocked objects.
+		// @private
+		// @type {Array.<Function>}
 		this._restores = [];
 	}
 
+	// Creates a new mock.
+	//
+	// @param {Object} object Object to mock.
+	// @param {String} methodName Function to mock.
+	// @param {Function} fakeMethod Function that will be executed.
 	mock( object, methodName, fakeMethod ) {
 		const originalMethod = object[ methodName ];
 
@@ -71,6 +80,7 @@ class Sandbox {
 		} );
 	}
 
+	// Restores all mocked functions.
 	restore() {
 		for ( const restore of this._restores ) {
 			restore();
