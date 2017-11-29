@@ -4,5 +4,6 @@
  */
 
 blockquote {
+	/* See #12 */
 	overflow: hidden;
 }
