@@ -4,15 +4,15 @@
  */
 
 .ck-heading_heading1 {
-	font-size: 1.5em;
+	font-size: calc(var(--ck-font-size-normal) * 1.5);
 }
 
 .ck-heading_heading2 {
-	font-size: 1.3em;
+	font-size: calc(var(--ck-font-size-normal) * 1.3);
 }
 
 .ck-heading_heading3 {
-	font-size: 1.1em;
+	font-size: calc(var(--ck-font-size-normal) * 1.1);
 }
 
 /* Using absolute units to make sure each element has the same height and padding.
