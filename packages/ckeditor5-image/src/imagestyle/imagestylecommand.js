@@ -20,7 +20,7 @@ export default class ImageStyleCommand extends Command {
 	 * Creates an instance of the image style command. Each command instance is handling one style.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} styles A style to be applied by this command.
+	 * @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style A style to be applied by this command.
 	 */
 	constructor( editor, style ) {
 		super( editor );
@@ -82,9 +82,9 @@ export default class ImageStyleCommand extends Command {
 			// Default style means that there is no `imageStyle` attribute in the model.
 			// https://github.com/ckeditor/ckeditor5-image/issues/147
 			if ( this.style.isDefault ) {
-				batch.removeAttribute( imageElement, 'imageStyle' );
+				batch.removeAttribute( 'imageStyle', imageElement );
 			} else {
-				batch.setAttribute( imageElement, 'imageStyle', this.style.name );
+				batch.setAttribute( 'imageStyle', this.style.name, imageElement );
 			}
 		} );
 	}
