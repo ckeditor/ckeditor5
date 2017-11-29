@@ -295,10 +295,11 @@ export default class DataController {
 	 *
 	 * @fires module:engine/controller/datacontroller~DataController#getSelectedContent
 	 * @param {module:engine/model/selection~Selection} selection The selection of which content will be retrieved.
+	 * @param {module:engine/model/batch~Batch} batch Batch to which deltas will be added.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Document fragment holding the clone of the selected content.
 	 */
-	getSelectedContent( selection ) {
-		return getSelectedContent( selection );
+	getSelectedContent( selection, batch ) {
+		return getSelectedContent( selection, batch );
 	}
 
 	/**

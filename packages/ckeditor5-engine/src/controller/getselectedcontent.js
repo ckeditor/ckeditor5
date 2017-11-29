@@ -7,11 +7,8 @@
  * @module engine/controller/getselectedcontent
  */
 
-import DocumentFragment from '../model/documentfragment';
 import Range from '../model/range';
 import Position from '../model/position';
-import Text from '../model/text';
-import { remove } from '../model/writer';
 
 /**
  * Gets a clone of the selected content.
@@ -25,10 +22,11 @@ import { remove } from '../model/writer';
  *		<quote><h>st</h></quote><p>se</p>
  *
  * @param {module:engine/model/selection~Selection} selection The selection of which content will be returned.
+ * @param {module:engine/model/batch~Batch} batch Batch to which deltas will be added.
  * @returns {module:engine/model/documentfragment~DocumentFragment}
  */
-export default function getSelectedContent( selection ) {
-	const frag = new DocumentFragment();
+export default function getSelectedContent( selection, batch ) {
+	const frag = batch.createDocumentFragment();
 	const range = selection.getFirstRange();
 
 	if ( !range || range.isCollapsed ) {
@@ -69,9 +67,9 @@ export default function getSelectedContent( selection ) {
 	// Clone the whole contents.
 	for ( const item of flatSubtreeRange.getItems( { shallow: true } ) ) {
 		if ( item.is( 'textProxy' ) ) {
-			frag.appendChildren( new Text( item.data, item.getAttributes() ) );
+			batch.appendText( item.data, item.getAttributes(), frag );
 		} else {
-			frag.appendChildren( item.clone( true ) );
+			batch.append( item.clone( true ), frag );
 		}
 	}
 
@@ -97,8 +95,8 @@ export default function getSelectedContent( selection ) {
 		const leftExcessRange = new Range( Position.createAt( frag ), newRange.start );
 		const rightExcessRange = new Range( newRange.end, Position.createAt( frag, 'end' ) );
 
-		removeRangeContent( rightExcessRange );
-		removeRangeContent( leftExcessRange );
+		removeRangeContent( rightExcessRange, batch );
+		removeRangeContent( leftExcessRange, batch );
 	}
 
 	return frag;
@@ -106,7 +104,7 @@ export default function getSelectedContent( selection ) {
 
 // After https://github.com/ckeditor/ckeditor5-engine/issues/690 is fixed,
 // this function will, most likely, be able to rewritten using getMinimalFlatRanges().
-function removeRangeContent( range ) {
+function removeRangeContent( range, batch ) {
 	const parentsToCheck = [];
 
 	Array.from( range.getItems( { direction: 'backward' } ) )
@@ -128,7 +126,7 @@ function removeRangeContent( range ) {
 		.forEach( itemRange => {
 			parentsToCheck.push( itemRange.start.parent );
 
-			remove( itemRange );
+			batch.remove( itemRange );
 		} );
 
 	// Remove ancestors of the removed items if they turned to be empty now
@@ -141,7 +139,7 @@ function removeRangeContent( range ) {
 
 			parent = parent.parent;
 
-			remove( removeRange );
+			batch.remove( removeRange );
 		}
 	} );
 }
