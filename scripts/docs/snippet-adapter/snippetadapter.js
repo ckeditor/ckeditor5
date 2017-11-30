@@ -88,7 +88,7 @@ function getWebpackConfig( config ) {
 	const plugins = [
 		new ExtractTextPlugin( 'snippet.css' ),
 		new CKEditorWebpackPlugin( {
-			languages: [ config.language || 'en' ]
+			language: config.language || 'en'
 		} ),
 		new webpack.BannerPlugin( {
 			banner: bundler.getLicenseBanner(),
