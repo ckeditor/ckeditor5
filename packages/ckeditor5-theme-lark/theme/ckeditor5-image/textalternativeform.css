@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+.cke-text-alternative-form {
+	padding: var(--ck-spacing-large);
+
+	&:focus {
+		/* https://github.com/ckeditor/ckeditor5-image/issues/40 */
+		outline: none;
+	}
+
+	& .ck-label {
+		margin-bottom: var(--ck-spacing-small);
+	}
+}
+
+.cke-text-alternative-form__actions {
+	padding-top: var(--ck-spacing-large);
+
+	& .ck-button {
+		& + .ck-button {
+			margin-right: var(--ck-spacing-medium);
+		}
+	}
+}

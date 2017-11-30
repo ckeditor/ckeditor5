@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_disabled.css";
+@import "../../../mixins/_shadow.css";
+@import "../../../mixins/_focus.css";
+@import "../../mixins/_button.css";
+
+.ck-editor__editable {
+	@mixin ck-rounded-corners;
+
+	&.ck-focused {
+		@mixin ck-focus-ring;
+		@mixin ck-box-shadow var(--ck-inner-shadow);
+	}
+}
+
+.ck-editor__editable_inline {
+	overflow: auto;
+	padding: 0 var(--ck-spacing-standard);
+	border: 1px solid transparent;
+}
+
+.ck-editor-toolbar {
+	& .ck-button,
+	& .ck-button:focus {
+		border-width: 0;
+	}
+
+	& .ck-button {
+		&:not(:hover):not(:focus):not(.ck-on),
+		&.ck-disabled {
+			background: var(--ck-color-editor-toolbar-background);
+		}
+
+		&.ck-on {
+			@mixin ck-button-colors --ck-color-editor-toolbar-button-on;
+		}
+	}
+
+	& .ck-button.ck-dropdown__button {
+		border-width: 1px;
+
+		&:not(:hover):not(:focus):not(.ck-on) {
+			background: var(--ck-color-editor-dropdown-background);
+		}
+	}
+
+	@nest .ck-toolbar-container & {
+		background: var(--ck-color-editor-toolbar-background);
+	}
+}
+
+/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/111 */
+.ck-toolbar-container.ck-editor-toolbar-container[class*="arrow_n"] {
+	&::after {
+		border-bottom-color: var(--ck-color-editor-toolbar-background);
+	}
+}
+
+.ck-toolbar-container.ck-editor-toolbar-container[class*="arrow_s"] {
+	&::after {
+		border-top-color: var(--ck-color-editor-toolbar-background);
+	}
+}

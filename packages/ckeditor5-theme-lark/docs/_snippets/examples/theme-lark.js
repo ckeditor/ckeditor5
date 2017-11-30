@@ -5,11 +5,10 @@
 
 /* globals console, window, document */
 
-/* config { "sassImportPath": "./custom.scss" } */
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import './extras.scss';
+import './custom.css';
+import './extras.css';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {

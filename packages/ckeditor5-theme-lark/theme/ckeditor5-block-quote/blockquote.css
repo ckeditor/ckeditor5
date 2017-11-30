@@ -1,0 +1,16 @@
+/**
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+:root {
+	--ck-block-quote-border-width: 5px;
+	--ck-block-quote-padding: 20px;
+}
+
+blockquote {
+	border-left: solid 5px var(--ck-color-block-quote-border);
+	padding-left: var(--ck-block-quote-padding);
+	margin-left: 0;
+	font-style: italic;
+}

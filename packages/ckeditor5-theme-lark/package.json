@@ -39,6 +39,7 @@
     "lint": "eslint --quiet '**/*.js'",
     "precommit": "lint-staged"
   },
+  "main": "./theme/theme.css",
   "lint-staged": {
     "**/*.js": [
       "eslint --quiet"

@@ -1,0 +1,33 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_focus.css";
+@import "../../../mixins/_shadow.css";
+
+:root {
+	--ck-input-text-min-width: 21em;
+}
+
+.ck-input-text {
+	@mixin ck-rounded-corners;
+	@mixin ck-box-shadow var(--ck-inner-shadow);
+
+	background: var(--ck-color-input-background);
+	border: 1px solid var(--ck-color-input-border);
+	padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+	min-width: var(--ck-input-text-min-width);
+
+	&:focus {
+		@mixin ck-focus-ring;
+		@mixin ck-box-shadow var(--ck-focus-outer-shadow), var(--ck-inner-shadow);
+	}
+
+	&[readonly] {
+		border: 1px solid var(--ck-color-input-disabled-border);
+		background: var(--ck-color-input-disabled-background);
+		color: var(--ck-color-input-disabled-text);
+	}
+}

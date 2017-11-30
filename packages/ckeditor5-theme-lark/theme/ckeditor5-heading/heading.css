@@ -1,0 +1,34 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+.ck-heading_heading1 {
+	font-size: calc(var(--ck-font-size-normal) * 1.5);
+}
+
+.ck-heading_heading2 {
+	font-size: calc(var(--ck-font-size-normal) * 1.3);
+}
+
+.ck-heading_heading3 {
+	font-size: calc(var(--ck-font-size-normal) * 1.1);
+}
+
+/* Using absolute units to make sure each element has the same height and padding.
+https://github.com/ckeditor/ckeditor5-heading/issues/63 */
+[class*="ck-heading_"] {
+	line-height: calc(1.8 * var(--ck-font-size-base));
+	padding: calc(0.8 * var(--ck-font-size-base));
+}
+
+[class*="ck-heading_heading"] {
+	font-weight: bold;
+}
+
+/* Resize dropdown's button label. */
+.ck-dropdown.ck-heading-dropdown {
+	& .ck-dropdown__button .ck-button__label {
+		width: 8em;
+	}
+}
