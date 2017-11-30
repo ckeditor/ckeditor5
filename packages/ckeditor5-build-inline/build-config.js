@@ -33,9 +33,6 @@ module.exports = {
 		'@ckeditor/ckeditor5-upload/src/imageupload'
 	],
 
-	// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
-	language: 'en',
-
 	// Editor config.
 	config: {
 		toolbar: {
@@ -54,6 +51,9 @@ module.exports = {
 
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
-		}
+		},
+
+		// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
+		language: 'en'
 	}
 };

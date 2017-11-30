@@ -63,6 +63,7 @@ InlineEditor.build = {
 				'|',
 				'imageTextAlternative'
 			]
-		}
+		},
+		language: 'en'
 	}
 };
