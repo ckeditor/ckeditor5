@@ -12,6 +12,8 @@ import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/i
 import StickyPanelView from '@ckeditor/ckeditor5-ui/src/panel/sticky/stickypanelview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 
+import '../theme/classiceditor.css';
+
 /**
  * Classic editor UI view. Uses an inline editable and a sticky toolbar, all
  * enclosed in a boxed UI view.
