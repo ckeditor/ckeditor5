@@ -433,7 +433,7 @@ describe( 'DataController', () => {
 
 			data.on( 'getSelectedContent', spy );
 
-			data.getSelectedContent( sel );
+			data.getSelectedContent( sel, modelDocument.batch() );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
@@ -443,7 +443,7 @@ describe( 'DataController', () => {
 
 			setData( modelDocument, '<paragraph>fo[ob]ar</paragraph>' );
 
-			const content = data.getSelectedContent( modelDocument.selection );
+			const content = data.getSelectedContent( modelDocument.selection, modelDocument.batch() );
 
 			expect( stringify( content ) ).to.equal( 'ob' );
 		} );

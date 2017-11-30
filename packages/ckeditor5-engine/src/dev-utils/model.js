@@ -20,7 +20,6 @@ import ModelSelection from '../model/selection';
 import ModelDocumentFragment from '../model/documentfragment';
 import ModelElement from '../model/element';
 import ModelText from '../model/text';
-import modelWriter from '../model/writer';
 
 import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
 import ViewSelection from '../view/selection';
@@ -324,9 +323,7 @@ export function parse( data, schema, batch, options = {} ) {
 
 function convertToModelFragment() {
 	return ( evt, data, consumable, conversionApi ) => {
-		const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
-
-		data.output = new ModelDocumentFragment( modelWriter.normalizeNodes( convertedChildren ) );
+		data.output = conversionApi.convertChildren( data.input, consumable, data );
 		conversionApi.mapper.bindElements( data.output, data.input );
 
 		evt.stop();

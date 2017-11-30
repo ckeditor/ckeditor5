@@ -10,7 +10,7 @@
 import Operation from './operation';
 import Range from '../range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import writer from '../writer';
+import { _setAttribute } from './utils';
 import isEqual from '@ckeditor/ckeditor5-utils/src/lib/lodash/isEqual';
 
 /**
@@ -151,7 +151,7 @@ export default class AttributeOperation extends Operation {
 		// If value to set is same as old value, don't do anything.
 		if ( !isEqual( this.oldValue, this.newValue ) ) {
 			// Execution.
-			writer.setAttribute( this.range, this.key, this.newValue );
+			_setAttribute( this.range, this.key, this.newValue );
 		}
 
 		return { range: this.range, key: this.key, oldValue: this.oldValue, newValue: this.newValue };
