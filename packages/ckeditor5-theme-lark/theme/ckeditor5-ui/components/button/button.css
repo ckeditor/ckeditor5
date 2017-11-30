@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../../mixins/_focus.css";
-@import "../../mixins/_shadow.css";
-@import "../../mixins/_disabled.css";
-@import "../../mixins/_rounded.css";
-@import "../mixins/_button.css";
+@import "../../../mixins/_focus.css";
+@import "../../../mixins/_shadow.css";
+@import "../../../mixins/_disabled.css";
+@import "../../../mixins/_rounded.css";
+@import "../../mixins/_button.css";
 
 .ck-button,
 a.ck-button {

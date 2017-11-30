@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../../mixins/_rounded.css";
-@import "../../mixins/_disabled.css";
-@import "../../mixins/_shadow.css";
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_disabled.css";
+@import "../../../mixins/_shadow.css";
 
 .ck-dropdown {
 	/* Enable font size inheritance, which allows fluid UI scaling. */

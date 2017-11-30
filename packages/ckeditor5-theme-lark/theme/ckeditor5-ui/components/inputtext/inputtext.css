@@ -3,10 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-
-@import "../../mixins/_rounded.css";
-@import "../../mixins/_focus.css";
-@import "../../mixins/_shadow.css";
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_focus.css";
+@import "../../../mixins/_shadow.css";
 
 :root {
 	--ck-input-text-min-width: 21em;

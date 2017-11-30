@@ -3,9 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-
-@import "../../mixins/_rounded.css";
-@import "../../mixins/_shadow.css";
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_shadow.css";
 
 .ck-list {
 	@mixin ck-rounded-corners;
