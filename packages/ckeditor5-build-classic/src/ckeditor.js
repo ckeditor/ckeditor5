@@ -63,6 +63,7 @@ ClassicEditor.build = {
 				'|',
 				'imageTextAlternative'
 			]
-		}
+		},
+		language: 'en'
 	}
 };
