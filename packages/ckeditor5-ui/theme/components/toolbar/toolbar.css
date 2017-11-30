@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../mixins/_unselectable.css";
+
+.ck-toolbar {
+	@mixin ck-unselectable;
+}
+
+.ck-toolbar__separator {
+	display: inline-block;
+}
+
+.ck-toolbar__newline {
+	display: block;
+	clear: left;
+}

@@ -7,8 +7,6 @@
 
 import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview';
 
-import '@ckeditor/ckeditor5-theme-lark/theme/theme.scss';
-
 window.createPanel = selector => {
 	const view = new BalloonPanelView();
 

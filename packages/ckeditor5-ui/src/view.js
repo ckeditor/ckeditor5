@@ -16,6 +16,8 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
+import '../theme/globals/globals.css';
+
 /**
  * The basic view class, which represents an HTML element created out of a
  * {@link module:ui/view~View#template}. Views are building blocks of the user interface and handle

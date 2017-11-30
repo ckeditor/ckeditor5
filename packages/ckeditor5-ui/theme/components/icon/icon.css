@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+svg.ck-icon {
+	font-size: 1em;
+	vertical-align: middle;
+	color: inherit;
+
+	/* Inherit cursor style (#5). */
+	cursor: inherit;
+
+	& * {
+		/* Inherit cursor style (#5). */
+		cursor: inherit;
+
+		/* Allows dynamic coloring of the icons. */
+		color: inherit;
+
+		/* Needed by FF. */
+		fill: currentColor;
+	}
+}
