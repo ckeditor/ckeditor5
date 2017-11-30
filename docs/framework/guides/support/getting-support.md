@@ -46,4 +46,4 @@ And most importantly, be kind to everyone.
 
 CKEditor 5 also comes with commercial licensing benefits, such as direct support from the core CKEditor development team. Commercial licenses are designed with professionals and enterprises in mind.
 
-For more information, check [the CKEditor 5 Pricing page](https://ckeditor.com/ckeditor-5-builds/pricing/).
+For more information, check the [CKEditor 5 Pricing page](https://ckeditor.com/ckeditor-5-builds/pricing/).
