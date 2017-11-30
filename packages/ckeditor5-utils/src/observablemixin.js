@@ -216,6 +216,12 @@ const ObservableMixin = {
 
 			unbindAttrs.forEach( attrName => {
 				const binding = boundAttributes.get( attrName );
+
+				// Nothing to do if the binding is not defined
+				if ( !binding ) {
+					return;
+				}
+
 				let toObservable, toAttr, toAttrs, toAttrBindings;
 
 				binding.to.forEach( to => {
