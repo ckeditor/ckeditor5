@@ -14,7 +14,7 @@ import Model from '@ckeditor/ckeditor5-ui/src/model';
 import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
-import '../theme/theme.scss';
+import '../theme/heading.css';
 
 /**
  * The headings feature. It introduces the `headings` drop-down and the `heading1`-`headingN` commands which allow
