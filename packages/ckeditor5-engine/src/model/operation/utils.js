@@ -22,15 +22,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * @protected
  * @namespace utils
  */
-const utils = {
-	insert,
-	remove,
-	move,
-	setAttribute,
-	normalizeNodes
-};
-
-export default utils;
 
 /**
  * Inserts given nodes at given position.
@@ -41,8 +32,8 @@ export default utils;
  * @param {module:engine/model/node~NodeSet} nodes Nodes to insert.
  * @returns {module:engine/model/range~Range} Range spanning over inserted elements.
  */
-export function insert( position, nodes ) {
-	nodes = normalizeNodes( nodes );
+export function _insert( position, nodes ) {
+	nodes = _normalizeNodes( nodes );
 
 	// We have to count offset before inserting nodes because they can get merged and we would get wrong offsets.
 	const offset = nodes.reduce( ( sum, node ) => sum + node.offsetSize, 0 );
@@ -71,7 +62,7 @@ export function insert( position, nodes ) {
  * @param {module:engine/model/range~Range} range Range containing nodes to remove.
  * @returns {Array.<module:engine/model/node~Node>}
  */
-export function remove( range ) {
+export function _remove( range ) {
 	if ( !range.isFlat ) {
 		/**
 		 * Trying to remove a range which starts and ends in different element.
@@ -107,7 +98,7 @@ export function remove( range ) {
  * @param {module:engine/model/position~Position} targetPosition Position to which nodes should be moved.
  * @returns {module:engine/model/range~Range} Range containing moved nodes.
  */
-export function move( sourceRange, targetPosition ) {
+export function _move( sourceRange, targetPosition ) {
 	if ( !sourceRange.isFlat ) {
 		/**
 		 * Trying to move a range which starts and ends in different element.
@@ -118,13 +109,13 @@ export function move( sourceRange, targetPosition ) {
 			'Trying to move a range which starts and ends in different element.' );
 	}
 
-	const nodes = remove( sourceRange );
+	const nodes = _remove( sourceRange );
 
 	// We have to fix `targetPosition` because model changed after nodes from `sourceRange` got removed and
 	// that change might have an impact on `targetPosition`.
 	targetPosition = targetPosition._getTransformedByDeletion( sourceRange.start, sourceRange.end.offset - sourceRange.start.offset );
 
-	return insert( targetPosition, nodes );
+	return _insert( targetPosition, nodes );
 }
 
 /**
@@ -136,7 +127,7 @@ export function move( sourceRange, targetPosition ) {
  * @param {String} key Key of attribute to set.
  * @param {*} value Attribute value.
  */
-export function setAttribute( range, key, value ) {
+export function _setAttribute( range, key, value ) {
 	// Range might start or end in text nodes, so we have to split them.
 	_splitNodeAtPosition( range.start );
 	_splitNodeAtPosition( range.end );
@@ -171,7 +162,7 @@ export function setAttribute( range, key, value ) {
  * @param {module:engine/model/node~NodeSet} nodes Objects to normalize.
  * @returns {Array.<module:engine/model/node~Node>} Normalized nodes.
  */
-export function normalizeNodes( nodes ) {
+export function _normalizeNodes( nodes ) {
 	const normalized = [];
 
 	if ( !( nodes instanceof Array ) ) {
