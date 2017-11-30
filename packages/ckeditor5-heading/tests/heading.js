@@ -226,7 +226,7 @@ describe( 'Heading', () => {
 					.create( editorElement, {
 						plugins: [ Heading ],
 						toolbar: [ 'heading' ],
-						lang: 'pl',
+						language: 'pl',
 						heading: {
 							options
 						}
