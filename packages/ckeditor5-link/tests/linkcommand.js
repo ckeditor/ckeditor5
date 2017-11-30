@@ -213,6 +213,16 @@ describe( 'LinkCommand', () => {
 				expect( getData( document ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
 			} );
 
+			it( 'should insert text with `linkHref` attribute, and selection attributes', () => {
+				setData( document, '<$text bold="true">foo[]bar</$text>', {
+					selectionAttributes: { bold: true }
+				} );
+
+				command.execute( 'url' );
+
+				expect( getData( document ) ).to.equal( '<$text bold="true">foo[<$text linkHref="url">url</$text>]bar</$text>' );
+			} );
+
 			it( 'should update `linkHref` attribute and select whole link when selection is inside text with `linkHref` attribute', () => {
 				setData( document, '<$text linkHref="other url">foo[]bar</$text>' );
 
