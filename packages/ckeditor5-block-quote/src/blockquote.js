@@ -9,11 +9,10 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BlockQuoteEngine from './blockquoteengine';
-
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import quoteIcon from '@ckeditor/ckeditor5-core/theme/icons/quote.svg';
-import '../theme/theme.scss';
+import '../theme/blockquote.css';
 
 /**
  * The block quote plugin.
