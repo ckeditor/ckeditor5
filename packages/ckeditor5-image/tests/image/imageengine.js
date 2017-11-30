@@ -114,7 +114,7 @@ describe( 'ImageEngine', () => {
 				document.enqueueChanges( () => {
 					const batch = document.batch();
 
-					batch.removeAttribute( image, 'srcset' );
+					batch.removeAttribute( 'srcset', image );
 				} );
 
 				expect( editor.getData() ).to.equal(
@@ -420,7 +420,7 @@ describe( 'ImageEngine', () => {
 				document.enqueueChanges( () => {
 					const batch = document.batch();
 
-					batch.setAttribute( image, 'alt', 'new text' );
+					batch.setAttribute( 'alt', 'new text', image );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -435,7 +435,7 @@ describe( 'ImageEngine', () => {
 				document.enqueueChanges( () => {
 					const batch = document.batch();
 
-					batch.removeAttribute( image, 'alt' );
+					batch.removeAttribute( 'alt', image );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) )
@@ -453,7 +453,7 @@ describe( 'ImageEngine', () => {
 				document.enqueueChanges( () => {
 					const batch = document.batch();
 
-					batch.removeAttribute( image, 'alt' );
+					batch.removeAttribute( 'alt', image );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -488,7 +488,7 @@ describe( 'ImageEngine', () => {
 				document.enqueueChanges( () => {
 					const batch = document.batch();
 
-					batch.removeAttribute( image, 'srcset' );
+					batch.removeAttribute( 'srcset', image );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -520,7 +520,7 @@ describe( 'ImageEngine', () => {
 				document.enqueueChanges( () => {
 					const batch = document.batch();
 
-					batch.removeAttribute( image, 'srcset' );
+					batch.removeAttribute( 'srcset', image );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -542,7 +542,7 @@ describe( 'ImageEngine', () => {
 				document.enqueueChanges( () => {
 					const batch = document.batch();
 
-					batch.removeAttribute( image, 'srcset' );
+					batch.removeAttribute( 'srcset', image );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(

@@ -135,7 +135,7 @@ describe( 'ImageStyleEngine', () => {
 			const batch = document.batch();
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', 'sideStyle' );
+				batch.setAttribute( 'imageStyle', 'sideStyle', image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="foo.png"></figure>' );
@@ -150,7 +150,7 @@ describe( 'ImageStyleEngine', () => {
 			const batch = document.batch();
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', null );
+				batch.setAttribute( 'imageStyle', null, image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
@@ -165,7 +165,7 @@ describe( 'ImageStyleEngine', () => {
 			const batch = document.batch();
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', 'sideStyle' );
+				batch.setAttribute( 'imageStyle', 'sideStyle', image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="foo.png"></figure>' );
@@ -176,7 +176,7 @@ describe( 'ImageStyleEngine', () => {
 			);
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', 'dummyStyle' );
+				batch.setAttribute( 'imageStyle', 'dummyStyle', image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image dummy-class"><img src="foo.png"></figure>' );
@@ -197,7 +197,7 @@ describe( 'ImageStyleEngine', () => {
 			const batch = document.batch();
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', 'sideStyle' );
+				batch.setAttribute( 'imageStyle', 'sideStyle', image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -215,7 +215,7 @@ describe( 'ImageStyleEngine', () => {
 			const batch = document.batch();
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', null );
+				batch.setAttribute( 'imageStyle', null, image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -233,7 +233,7 @@ describe( 'ImageStyleEngine', () => {
 			const batch = document.batch();
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', 'sideStyle' );
+				batch.setAttribute( 'imageStyle', 'sideStyle', image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -247,7 +247,7 @@ describe( 'ImageStyleEngine', () => {
 			const batch = document.batch();
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', 'foo' );
+				batch.setAttribute( 'imageStyle', 'foo', image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
@@ -262,7 +262,7 @@ describe( 'ImageStyleEngine', () => {
 			const batch = document.batch();
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', 'foo' );
+				batch.setAttribute( 'imageStyle', 'foo', image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
@@ -277,7 +277,7 @@ describe( 'ImageStyleEngine', () => {
 			const batch = document.batch();
 
 			document.enqueueChanges( () => {
-				batch.setAttribute( image, 'imageStyle', null );
+				batch.setAttribute( 'imageStyle', null, image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );

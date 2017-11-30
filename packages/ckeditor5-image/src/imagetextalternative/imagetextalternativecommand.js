@@ -55,7 +55,7 @@ export default class ImageTextAlternativeCommand extends Command {
 		doc.enqueueChanges( () => {
 			const batch = options.batch || doc.batch();
 
-			batch.setAttribute( imageElement, 'alt', options.newValue );
+			batch.setAttribute( 'alt', options.newValue, imageElement );
 		} );
 	}
 }
