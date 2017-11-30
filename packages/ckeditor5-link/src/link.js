@@ -20,7 +20,6 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import LinkFormView from './ui/linkformview';
 
 import linkIcon from '../theme/icons/link.svg';
-import '../theme/theme.scss';
 
 const linkKeystroke = 'Ctrl+K';
 
