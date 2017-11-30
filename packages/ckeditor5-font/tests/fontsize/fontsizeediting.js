@@ -8,7 +8,7 @@ import FontSizeEditing from './../../src/fontsize/fontsizeediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { setData as setModelData } from '../../../ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '../../../ckeditor5-engine/src/dev-utils/model';
 
 describe( 'FontSizeEditing', () => {
 	let editor, doc;
@@ -122,10 +122,10 @@ describe( 'FontSizeEditing', () => {
 						const plugin = editor.plugins.get( FontSizeEditing );
 
 						expect( plugin.configuredItems ).to.deep.equal( [
-							{ label: '10', model: '10', stopValue: 10, view: { name: 'span', styles: 'font-size: 10px' } },
-							{ label: '12', model: '12', stopValue: 12, view: { name: 'span', styles: 'font-size: 12px' } },
-							{ label: '14', model: '14', stopValue: 14, view: { name: 'span', styles: 'font-size: 14px' } },
-							{ label: '18', model: '18', stopValue: 18, view: { name: 'span', styles: 'font-size: 18px' } }
+							{ label: '10', model: '10', stopValue: 10, view: { name: 'span', styles: 'font-size:10px;' } },
+							{ label: '12', model: '12', stopValue: 12, view: { name: 'span', styles: 'font-size:12px;' } },
+							{ label: '14', model: '14', stopValue: 14, view: { name: 'span', styles: 'font-size:14px;' } },
+							{ label: '18', model: '18', stopValue: 18, view: { name: 'span', styles: 'font-size:18px;' } }
 						] );
 					} );
 			} );
@@ -178,6 +178,61 @@ describe( 'FontSizeEditing', () => {
 			setModelData( doc, '<paragraph>f<$text fontSize="my">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<mark class="my-style" style="font-size:30px;">o</mark>o</p>' );
+		} );
+	} );
+
+	describe( 'data pipeline conversions', () => {
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ FontSizeEditing, Paragraph ],
+					fontSize: {
+						items: [ 'tiny', 'normal', 18, {
+							label: 'My setting',
+							model: 'my',
+							view: {
+								name: 'mark',
+								styles: 'font-size:30px;',
+								classes: 'my-style'
+							}
+						} ]
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					doc = editor.document;
+				} );
+		} );
+
+		it( 'should convert from element with defined class', () => {
+			const data = '<p>f<span class="text-tiny">o</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="text-tiny">o</$text>o</paragraph>' );
+
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'should convert from element with defined style', () => {
+			const data = '<p>f<span style="font-size:18px;">o</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="18">o</$text>o</paragraph>' );
+
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'should convert from user defined element', () => {
+			const data = '<p>f<mark class="my-style" style="font-size:30px;">o</mark>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="my">o</$text>o</paragraph>' );
+
+			expect( editor.getData() ).to.equal( data );
 		} );
 	} );
 } );
