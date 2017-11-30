@@ -2,6 +2,8 @@ CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?styl
 ===================================
 A set of ready to use rich text editors created with a powerful framework. Made with real-time collaborative editing in mind.
 
+![CKEditor 5 Classic editor build screenshot](https://github.com/ckeditor/ckeditor5/blob/master/.github/ckeditor%205%20classic%20screeshot.png)
+
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5)
 [![Dependency Status](https://img.shields.io/david/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5)
