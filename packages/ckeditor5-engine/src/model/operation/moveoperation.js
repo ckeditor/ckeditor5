@@ -12,7 +12,7 @@ import Position from '../position';
 import Range from '../range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
-import writer from './../writer';
+import { _move } from './utils';
 
 /**
  * Operation to move a range of {@link module:engine/model/item~Item model items}
@@ -184,7 +184,7 @@ export default class MoveOperation extends Operation {
 			}
 		}
 
-		const range = writer.move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
+		const range = _move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
 
 		return {
 			sourcePosition: this.sourcePosition,
