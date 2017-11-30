@@ -36,6 +36,7 @@ describe( 'Image integration', () => {
 					contextualToolbar.toolbarView.items.add( button );
 
 					newEditor.editing.view.isFocused = true;
+					newEditor.editing.view.getDomRoot().focus();
 				} );
 		} );
 
