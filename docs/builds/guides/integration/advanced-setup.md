@@ -11,17 +11,13 @@ In this guide, we would like to show you ways to closer integrate CKEditor with 
 
 ## Bundler
 
-CKEditor 5 is currently built using [webpack](https://webpack.js.org) (>=2.x.x). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/) but these setups are not officially supported yet. Also, the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows to localize the editor is only available for webpack. More work on this subject will be done after v1.0.0.
+CKEditor 5 is currently built using [webpack](https://webpack.js.org) (>=3.x.x). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/) but these setups are not officially supported yet. Also, the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows to localize the editor is only available for webpack. More work on this subject will be done after v1.0.0.
 
 Therefore, **a prerequisite to this guide is that you are using webpack as your build tool**.
 
 ## Scenario 1: Integrating existing builds
 
 This is the simplest scenario. It assumes that you want to use {@link builds/guides/overview#Available-builds one of the existing builds} "as-is" (you can, of course, still {@link builds/guides/integration/configuration configure the editor}). It also gives the fastest build times.
-
-<info-box>
-	At the current stage, builds are only available in English. {@link features/ui-language Setting editor UI language} requires rebuilding the editor which means that this scenario is quite limited.
-</info-box>
 
 First, install the build of your choice {@link builds/guides/integration/installation#npm from npm}:
 
@@ -119,7 +115,7 @@ module.exports = {
 
 		new CKEditorWebpackPlugin( {
 			// See https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/features/ui-language.html
-			languages: [ 'pl' ]
+			language: 'pl'
 		} )
 	],
 
