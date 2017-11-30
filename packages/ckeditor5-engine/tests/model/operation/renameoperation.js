@@ -92,6 +92,25 @@ describe( 'RenameOperation', () => {
 		expect( clone.newName ).to.equal( newName );
 	} );
 
+	describe( 'isDocumentOperation', () => {
+		it( 'should be true when target item is in the document', () => {
+			const op = new RenameOperation( position, oldName, newName, doc.version );
+
+			expect( op.isDocumentOperation ).to.true;
+		} );
+
+		it( 'should be false when target item is not in the document', () => {
+			const batch = doc.batch();
+			const docFrag = batch.createDocumentFragment();
+
+			batch.appendElement( 'element', null, docFrag );
+
+			const op = new RenameOperation( Position.createAt( docFrag ), oldName, newName, doc.version );
+
+			expect( op.isDocumentOperation ).to.false;
+		} );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
 			const op = new RenameOperation( Position.createAt( root, 'end' ), oldName, newName, doc.version );

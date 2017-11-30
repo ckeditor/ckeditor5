@@ -3,10 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelDocumentFragment from '../model/documentfragment';
-import ModelText from '../model/text';
-import { normalizeNodes } from '../model/writer';
-
 /**
  * Contains {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
  * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}.
@@ -33,9 +29,7 @@ export function convertToModelFragment() {
 	return ( evt, data, consumable, conversionApi ) => {
 		// Second argument in `consumable.consume` is discarded for ViewDocumentFragment but is needed for ViewElement.
 		if ( !data.output && consumable.consume( data.input, { name: true } ) ) {
-			const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
-
-			data.output = new ModelDocumentFragment( normalizeNodes( convertedChildren ) );
+			data.output = conversionApi.convertChildren( data.input, consumable, data );
 		}
 	};
 }
@@ -54,7 +48,7 @@ export function convertText() {
 
 		if ( conversionApi.schema.check( schemaQuery ) ) {
 			if ( consumable.consume( data.input ) ) {
-				data.output = new ModelText( data.input.data );
+				data.output = conversionApi.batch.createText( data.input.data );
 			}
 		}
 	};

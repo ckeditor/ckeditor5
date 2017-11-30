@@ -128,7 +128,7 @@ function mergeBranches( batch, startPos, endPos ) {
 		// <a><b>x[]</b></a><c><d>{}y</d></c>
 		// becomes:
 		// <a><b>x</b>[]<d>y</d></a><c>{}</c>
-		batch.move( endParent, startPos );
+		batch.insert( endParent, startPos );
 	}
 
 	// Merge two siblings:
@@ -181,7 +181,7 @@ function checkCanBeMerged( leftPos, rightPos ) {
 
 function insertParagraph( batch, position, selection ) {
 	const paragraph = new Element( 'paragraph' );
-	batch.insert( position, paragraph );
+	batch.insert( paragraph, position );
 
 	selection.setCollapsedAt( paragraph );
 }

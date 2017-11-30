@@ -543,7 +543,7 @@ export default class DocumentSelection extends Selection {
 	_removeStoredAttribute( key ) {
 		const storeKey = DocumentSelection._getStoreAttributeKey( key );
 
-		this._document.batch().removeAttribute( this.anchor.parent, storeKey );
+		this._document.batch().removeAttribute( storeKey, this.anchor.parent );
 	}
 
 	/**
@@ -556,7 +556,7 @@ export default class DocumentSelection extends Selection {
 	_storeAttribute( key, value ) {
 		const storeKey = DocumentSelection._getStoreAttributeKey( key );
 
-		this._document.batch().setAttribute( this.anchor.parent, storeKey, value );
+		this._document.batch().setAttribute( storeKey, value, this.anchor.parent );
 	}
 
 	/**
@@ -572,13 +572,13 @@ export default class DocumentSelection extends Selection {
 		for ( const [ oldKey ] of this._getStoredAttributes() ) {
 			const storeKey = DocumentSelection._getStoreAttributeKey( oldKey );
 
-			batch.removeAttribute( selectionParent, storeKey );
+			batch.removeAttribute( storeKey, selectionParent );
 		}
 
 		for ( const [ key, value ] of attrs ) {
 			const storeKey = DocumentSelection._getStoreAttributeKey( key );
 
-			batch.setAttribute( selectionParent, storeKey, value );
+			batch.setAttribute( storeKey, value, selectionParent );
 		}
 	}
 
@@ -731,7 +731,7 @@ function clearAttributesStoredInElement( changes, batch, document ) {
 		const storedAttributes = Array.from( changeParent.getAttributeKeys() ).filter( key => key.startsWith( storePrefix ) );
 
 		for ( const key of storedAttributes ) {
-			batch.removeAttribute( changeParent, key );
+			batch.removeAttribute( key, changeParent );
 		}
 	} );
 }

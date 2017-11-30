@@ -67,8 +67,16 @@ export default class RootAttributeOperation extends Operation {
 		 * @member {*}
 		 */
 		this.newValue = newValue;
+
+		/**
+		 * @inheritDoc
+		 */
+		this.isDocumentOperation = !!this.root.document;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	get type() {
 		if ( this.oldValue === null ) {
 			return 'addRootAttribute';

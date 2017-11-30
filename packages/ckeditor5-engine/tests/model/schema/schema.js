@@ -793,13 +793,6 @@ describe( 'Schema', () => {
 			} );
 
 			it( 'should filter out disallowed attributes from given nodes', () => {
-				schema.removeDisallowedAttributes( [ text, image ], '$root' );
-
-				expect( Array.from( text.getAttributeKeys() ) ).to.deep.equal( [ 'a' ] );
-				expect( Array.from( image.getAttributeKeys() ) ).to.deep.equal( [ 'b' ] );
-			} );
-
-			it( 'should filter out disallowed attributes from given nodes (batch)', () => {
 				const root = doc.getRoot();
 				const batch = doc.batch();
 
@@ -832,22 +825,6 @@ describe( 'Schema', () => {
 				const paragraph = new Element( 'paragraph', [], [ foo, imageInParagraph ] );
 
 				div = new Element( 'div', [], [ paragraph, bar, imageInDiv ] );
-			} );
-
-			it( 'should filter out disallowed attributes from child nodes', () => {
-				schema.removeDisallowedAttributes( [ div ], '$root' );
-
-				expect( stringify( div ) )
-					.to.equal(
-						'<div>' +
-							'<paragraph>' +
-								'<$text b="1">foo</$text>' +
-								'<image b="1"></image>' +
-							'</paragraph>' +
-							'<$text a="1">bar</$text>' +
-							'<image a="1"></image>' +
-						'</div>'
-					);
 			} );
 
 			it( 'should filter out disallowed attributes from child nodes (batch)', () => {
@@ -893,21 +870,21 @@ describe( 'Schema', () => {
 			} );
 
 			it( 'should accept iterable as nodes', () => {
-				schema.removeDisallowedAttributes( frag.getChildren(), '$root' );
+				schema.removeDisallowedAttributes( frag.getChildren(), '$root', doc.batch() );
 
 				expect( stringify( frag ) )
 					.to.equal( '<$text a="1">foo</$text><paragraph><$text b="1">bar</$text></paragraph>biz' );
 			} );
 
 			it( 'should accept Position as inside', () => {
-				schema.removeDisallowedAttributes( frag.getChildren(), Position.createAt( root ) );
+				schema.removeDisallowedAttributes( frag.getChildren(), Position.createAt( root ), doc.batch() );
 
 				expect( stringify( frag ) )
 					.to.equal( '<$text a="1">foo</$text><paragraph><$text b="1">bar</$text></paragraph>biz' );
 			} );
 
 			it( 'should accept Node as inside', () => {
-				schema.removeDisallowedAttributes( frag.getChildren(), [ root ] );
+				schema.removeDisallowedAttributes( frag.getChildren(), [ root ], doc.batch() );
 
 				expect( stringify( frag ) )
 					.to.equal( '<$text a="1">foo</$text><paragraph><$text b="1">bar</$text></paragraph>biz' );
@@ -920,7 +897,7 @@ describe( 'Schema', () => {
 
 			const image = new Element( 'image', { a: 1, b: 1 } );
 
-			schema.removeDisallowedAttributes( [ image ], '$root' );
+			schema.removeDisallowedAttributes( [ image ], '$root', doc.batch() );
 
 			expect( Array.from( image.getAttributeKeys() ) ).to.deep.equal( [ 'a', 'b' ] );
 		} );

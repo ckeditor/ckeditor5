@@ -894,14 +894,14 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return selected element', () => {
-			const { selection, model } = parse( '<p>foo</p>[<p>bar</p>]<p>baz</p>', schema );
+			const { selection, model } = parse( '<p>foo</p>[<p>bar</p>]<p>baz</p>', schema, doc.batch() );
 			const p = model.getChild( 1 );
 
 			expect( selection.getSelectedElement() ).to.equal( p );
 		} );
 
 		it( 'should return null if there is more than one range', () => {
-			const { selection } = parse( '[<p>foo</p>][<p>bar</p>]<p>baz</p>', schema );
+			const { selection } = parse( '[<p>foo</p>][<p>bar</p>]<p>baz</p>', schema, doc.batch() );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
@@ -911,13 +911,13 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return null if selection is not over single element #1', () => {
-			const { selection } = parse( '<p>foo</p>[<p>bar</p><p>baz}</p>', schema );
+			const { selection } = parse( '<p>foo</p>[<p>bar</p><p>baz}</p>', schema, doc.batch() );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
 
 		it( 'should return null if selection is not over single element #2', () => {
-			const { selection } = parse( '<p>{bar}</p>', schema );
+			const { selection } = parse( '<p>{bar}</p>', schema, doc.batch() );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );

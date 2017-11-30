@@ -1012,7 +1012,7 @@ describe( 'DocumentSelection', () => {
 					batchTypes.set( batch, batch.type );
 				} );
 
-				doc.batch().insert( rangeInEmptyP.start, 'x' );
+				doc.batch().insertText( 'x', rangeInEmptyP.start );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
@@ -1024,7 +1024,7 @@ describe( 'DocumentSelection', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
-				doc.batch().move( fullP.getChild( 0 ), rangeInEmptyP.start );
+				doc.batch().move( Range.createOn( fullP.getChild( 0 ) ), rangeInEmptyP.start );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 			} );
@@ -1048,7 +1048,7 @@ describe( 'DocumentSelection', () => {
 
 				selection.setRanges( [ rangeInFullP ] );
 
-				doc.batch().insert( rangeInEmptyP.start, 'x' );
+				doc.batch().insertText( 'x', rangeInEmptyP.start );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 			} );
@@ -1076,7 +1076,7 @@ describe( 'DocumentSelection', () => {
 				selection.setAttribute( 'foo', 'bar' );
 
 				doc.enqueueChanges( () => {
-					doc.batch().insert( rangeInEmptyP.start, 'x' );
+					doc.batch().insertText( 'x', rangeInEmptyP.start );
 
 					// `emptyP` still has the attribute, because attribute clearing is in enqueued block.
 					expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
@@ -1109,7 +1109,7 @@ describe( 'DocumentSelection', () => {
 
 				sinon.spy( doc, 'enqueueChanges' );
 
-				doc.batch( 'transparent' ).insert( rangeInEmptyP.start, 'x' );
+				doc.batch( 'transparent' ).insertText( 'x', rangeInEmptyP.start );
 
 				expect( doc.enqueueChanges.called ).to.be.false;
 				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
