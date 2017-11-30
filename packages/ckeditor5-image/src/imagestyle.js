@@ -11,6 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageStyleEngine from './imagestyle/imagestyleengine';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
+import '../theme/imagestyle.css';
+
 /**
  * The image style plugin.
  *

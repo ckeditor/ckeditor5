@@ -17,8 +17,6 @@ import textAlternativeIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision
 import { repositionContextualBalloon, getBalloonPositionData } from './image/ui/utils';
 import { isImageWidgetSelected } from './image/utils';
 
-import '../theme/imagetextalternative/theme.scss';
-
 /**
  * The image text alternative plugin.
  *

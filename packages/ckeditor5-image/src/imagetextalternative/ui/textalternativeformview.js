@@ -19,6 +19,8 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 
+import '../../../theme/textalternativeform.css';
+
 /**
  * The TextAlternativeFormView class.
  *

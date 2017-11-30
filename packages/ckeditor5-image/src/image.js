@@ -13,7 +13,7 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import ImageTextAlternative from './imagetextalternative';
 import { isImageWidgetSelected } from './image/utils';
 
-import '../theme/theme.scss';
+import '../theme/image.css';
 
 /**
  * The image plugin.
