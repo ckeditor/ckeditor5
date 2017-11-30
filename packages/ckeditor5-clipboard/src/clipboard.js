@@ -179,12 +179,13 @@ export default class Clipboard extends Plugin {
 		// The clipboard copy/cut pipeline.
 
 		function onCopyCut( evt, data ) {
+			const batch = doc.batch();
 			const dataTransfer = data.dataTransfer;
-			const content = editor.data.toView( editor.data.getSelectedContent( doc.selection ) );
+			const content = editor.data.toView( editor.data.getSelectedContent( doc.selection, batch ) );
 
 			data.preventDefault();
 
-			editingView.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name } );
+			editingView.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name, batch } );
 		}
 
 		this.listenTo( editingView, 'copy', onCopyCut, { priority: 'low' } );
@@ -206,7 +207,7 @@ export default class Clipboard extends Plugin {
 
 			if ( data.method == 'cut' ) {
 				doc.enqueueChanges( () => {
-					editor.data.deleteContent( doc.selection, doc.batch() );
+					editor.data.deleteContent( doc.selection, data.batch );
 				} );
 			}
 		}, { priority: 'low' } );
