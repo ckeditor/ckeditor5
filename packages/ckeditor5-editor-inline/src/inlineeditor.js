@@ -13,8 +13,6 @@ import InlineEditorUI from './inlineeditorui';
 import InlineEditorUIView from './inlineeditoruiview';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
-import '../theme/theme.scss';
-
 /**
  * The {@glink builds/guides/overview#Inline-editor inline editor} implementation.
  * It uses an inline editable and a floating toolbar.
