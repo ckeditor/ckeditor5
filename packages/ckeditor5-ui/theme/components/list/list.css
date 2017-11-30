@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "../mixins/_unselectable.css";
+@import "../../mixins/_unselectable.css";
 
 .ck-list {
 	@mixin ck-unselectable;
