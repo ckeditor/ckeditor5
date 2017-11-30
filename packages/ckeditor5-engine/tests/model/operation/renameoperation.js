@@ -92,6 +92,14 @@ describe( 'RenameOperation', () => {
 		expect( clone.newName ).to.equal( newName );
 	} );
 
+	it( 'should do nothing when new name is the same as previous', () => {
+		const op = new RenameOperation( position, oldName, oldName, doc.version );
+
+		expect( () => {
+			doc.applyOperation( wrapInDelta( op ) );
+		} ).to.not.throw();
+	} );
+
 	describe( 'isDocumentOperation', () => {
 		it( 'should be true when target item is in the document', () => {
 			const op = new RenameOperation( position, oldName, newName, doc.version );

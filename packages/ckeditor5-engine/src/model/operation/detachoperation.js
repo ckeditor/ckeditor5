@@ -10,7 +10,7 @@
 import Operation from './operation';
 import Position from '../position';
 import Range from '../range';
-import { remove } from '../writer';
+import { _remove } from './utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
@@ -73,7 +73,7 @@ export default class DetachOperation extends Operation {
 			throw new CKEditorError( 'detach-operation-on-document-node: Cannot detach document node.' );
 		}
 
-		const nodes = remove( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ) );
+		const nodes = _remove( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ) );
 
 		return { nodes };
 	}

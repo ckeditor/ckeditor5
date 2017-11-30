@@ -11,7 +11,7 @@ import Operation from './operation';
 import Position from '../position';
 import NodeList from '../nodelist';
 import RemoveOperation from './removeoperation';
-import { insert, normalizeNodes } from '../writer';
+import { _insert, _normalizeNodes } from './utils';
 import Text from '../text';
 import Element from '../element';
 
@@ -45,7 +45,7 @@ export default class InsertOperation extends Operation {
 		 * @readonly
 		 * @member {module:engine/model/nodelist~NodeList} module:engine/model/operation/insertoperation~InsertOperation#nodeList
 		 */
-		this.nodes = new NodeList( normalizeNodes( nodes ) );
+		this.nodes = new NodeList( _normalizeNodes( nodes ) );
 
 		/**
 		 * @inheritDoc
@@ -94,7 +94,7 @@ export default class InsertOperation extends Operation {
 		const originalNodes = this.nodes;
 		this.nodes = new NodeList( [ ...originalNodes ].map( node => node.clone( true ) ) );
 
-		const range = insert( this.position, originalNodes );
+		const range = _insert( this.position, originalNodes );
 
 		return { range };
 	}
