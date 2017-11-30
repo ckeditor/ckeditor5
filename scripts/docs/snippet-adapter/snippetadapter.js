@@ -134,7 +134,7 @@ function getWebpackConfig( config ) {
 							{
 								loader: 'postcss-loader',
 								options: getPostCssConfig( {
-									themeimporter: {
+									themeImporter: {
 										themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
 									},
 									minify: config.minify
