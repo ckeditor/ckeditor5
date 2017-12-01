@@ -47,7 +47,6 @@ export default class Document {
 	 * the {@link #graveyard graveyard root}).
 	 */
 	constructor( model ) {
-
 		this.model = model;
 
 		/**
@@ -108,7 +107,7 @@ export default class Document {
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 		this.createRoot( '$root', graveyardName );
 
-		this.listenTo( model, 'applyOperation', () => {
+		this.listenTo( model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
 
 			if ( operation.isDocumentOperation && operation.baseVersion !== this.version ) {
@@ -143,16 +142,6 @@ export default class Document {
 	 */
 	get graveyard() {
 		return this.getRoot( graveyardName );
-	}
-
-	/**
-	 * Creates a {@link module:engine/model/batch~Batch} instance which allows to change the document.
-	 *
-	 * @param {String} [type] Batch type. See {@link module:engine/model/batch~Batch#type}.
-	 * @returns {module:engine/model/batch~Batch} Batch instance.
-	 */
-	batch( type ) {
-		return new Batch( this, type );
 	}
 
 	/**

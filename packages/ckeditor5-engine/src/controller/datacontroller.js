@@ -44,15 +44,15 @@ export default class DataController {
 	/**
 	 * Creates data controller instance.
 	 *
-	 * @param {module:engine/model/document~Document} model Document model.
+	 * @param {module:engine/model/model~Model} model Data model.
 	 * @param {module:engine/dataprocessor/dataprocessor~DataProcessor} [dataProcessor] Data processor which should used by the controller.
 	 */
 	constructor( model, dataProcessor ) {
 		/**
-		 * Document model.
+		 * Data model.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/document~Document}
+		 * @member {module:engine/model/model~Model}
 		 */
 		this.model = model;
 
@@ -86,7 +86,7 @@ export default class DataController {
 		 * @readonly
 		 * @member {module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}
 		 */
-		this.modelToView = new ModelConversionDispatcher( this.model, {
+		this.modelToView = new ModelConversionDispatcher( this.model.document, {
 			mapper: this.mapper
 		} );
 		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
@@ -130,7 +130,7 @@ export default class DataController {
 	 */
 	get( rootName = 'main' ) {
 		// Get model range.
-		return this.stringify( this.model.getRoot( rootName ) );
+		return this.stringify( this.model.document.getRoot( rootName ) );
 	}
 
 	/**
@@ -186,13 +186,13 @@ export default class DataController {
 	 */
 	set( data, rootName = 'main' ) {
 		// Save to model.
-		const modelRoot = this.model.getRoot( rootName );
+		const modelRoot = this.model.document.getRoot( rootName );
 
 		this.model.enqueueChanges( () => {
 			// Clearing selection is a workaround for ticket #569 (LiveRange loses position after removing data from document).
 			// After fixing it this code should be removed.
-			this.model.selection.removeAllRanges();
-			this.model.selection.clearAttributes();
+			this.model.document.selection.removeAllRanges();
+			this.model.document.selection.clearAttributes();
 
 			// Initial batch should be ignored by features like undo, etc.
 			const batch = this.model.batch( 'transparent' );

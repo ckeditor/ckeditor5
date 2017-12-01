@@ -4,13 +4,14 @@
  */
 
 /**
- * @module engine/model
+ * @module engine/model/model
  */
 
 import Batch from './batch';
 import Schema from './schema';
 import Document from './document';
 import MarkerCollection from './markercollection';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 

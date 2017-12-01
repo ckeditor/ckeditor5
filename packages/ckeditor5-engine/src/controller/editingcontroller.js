@@ -36,14 +36,14 @@ export default class EditingController {
 	/**
 	 * Creates editing controller instance.
 	 *
-	 * @param {module:engine/model/document~Document} model Document model.
+	 * @param {module:engine/model/model~Model} model Editing model.
 	 */
 	constructor( model ) {
 		/**
-		 * Document model.
+		 * Editing model.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/document~Document}
+		 * @member {module:engine/model/model~Model}
 		 */
 		this.model = model;
 
@@ -78,18 +78,18 @@ export default class EditingController {
 		 * @readonly
 		 * @member {module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher} #modelToView
 		 */
-		this.modelToView = new ModelConversionDispatcher( this.model, {
+		this.modelToView = new ModelConversionDispatcher( this.model.document, {
 			mapper: this.mapper,
 			viewSelection: this.view.selection
 		} );
 
 		// Convert changes in model to view.
-		this.listenTo( this.model, 'change', ( evt, type, changes ) => {
+		this.listenTo( this.model.document, 'change', ( evt, type, changes ) => {
 			this.modelToView.convertChange( type, changes );
 		}, { priority: 'low' } );
 
 		// Convert model selection to view.
-		this.listenTo( this.model, 'changesDone', () => {
+		this.listenTo( this.model.document, 'changesDone', () => {
 			const selection = this.model.selection;
 
 			this.modelToView.convertSelection( selection );
@@ -106,7 +106,7 @@ export default class EditingController {
 		} );
 
 		// Convert view selection to model.
-		this.listenTo( this.view, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
+		this.listenTo( this.view, 'selectionChange', convertSelectionChange( this.model.document, this.mapper ) );
 
 		// Attach default content converters.
 		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
@@ -139,7 +139,7 @@ export default class EditingController {
 	 */
 	createRoot( domRoot, name = 'main' ) {
 		const viewRoot = this.view.createRoot( domRoot, name );
-		const modelRoot = this.model.getRoot( name );
+		const modelRoot = this.model.document.getRoot( name );
 
 		this.mapper.bindElements( modelRoot, viewRoot );
 
