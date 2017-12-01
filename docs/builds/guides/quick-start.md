@@ -25,7 +25,7 @@ In your HTML page add an element that CKEditor should replace:
 <textarea name="content" id="editor"></textarea>
 ```
 
-Load CKEditor 5, the classic editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+Load the classic editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
@@ -77,7 +77,7 @@ In your HTML page add an element that CKEditor should make editable:
 <div id="editor"></div>
 ```
 
-Load CKEditor 5, the inline editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+Load the inline editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/inline/ckeditor.js"></script>
@@ -129,7 +129,7 @@ In your HTML page add an element that CKEditor should make editable:
 <div id="editor"></div>
 ```
 
-Load CKEditor 5, the balloon editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+Load the balloon editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon/ckeditor.js"></script>
