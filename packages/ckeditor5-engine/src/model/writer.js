@@ -69,10 +69,9 @@ export default class Writer {
 		this.model = model;
 
 		/**
-		 * @protected
 		 * @type {module:engine/model/batch~Batch}
 		 */
-		this._batch = batch;
+		this.batch = batch;
 	}
 
 	/**

@@ -12,7 +12,6 @@ import Writer from './writer';
 import Schema from './schema';
 import Document from './document';
 import MarkerCollection from './markercollection';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
@@ -58,12 +57,10 @@ export default class Model {
 			batchOrType = new Batch();
 		}
 
-		this._pendingChanges.push( { batchOrType, callback } );
+		this._pendingChanges.push( { batch: batchOrType, callback } );
 
 		if ( this._pendingChanges.length == 1 ) {
 			this._runPendingChanges();
-
-			this.fire( 'changesDone' );
 		}
 	}
 
@@ -89,10 +86,6 @@ export default class Model {
 
 	applyOperation( operation ) {
 		return operation._execute();
-	}
-
-	transformDeltas() {
-		// ...
 	}
 }
 
