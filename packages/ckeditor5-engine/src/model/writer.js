@@ -169,7 +169,7 @@ export default class Writer {
 
 		const insert = new InsertOperation( position, item, this.model.document.version );
 
-		this._batch.addDelta( delta );
+		this.batch.addDelta( delta );
 		delta.addOperation( insert );
 		this.model.applyOperation( insert );
 
@@ -431,7 +431,7 @@ export default class Writer {
 		}
 
 		const delta = new MoveDelta();
-		this._batch.addDelta( delta );
+		this.batch.addDelta( delta );
 
 		const operation = new MoveOperation( range.start, range.end.offset - range.start.offset, position, this.model.document.version );
 		delta.addOperation( operation );
@@ -446,7 +446,7 @@ export default class Writer {
 	remove( itemOrRange ) {
 		const addRemoveDelta = ( position, howMany ) => {
 			const delta = new RemoveDelta();
-			this._batch.addDelta( delta );
+			this.batch.addDelta( delta );
 			let operation;
 
 			if ( position.root.document ) {
@@ -486,7 +486,7 @@ export default class Writer {
 	 */
 	merge( position ) {
 		const delta = new MergeDelta();
-		this._batch.addDelta( delta );
+		this.batch.addDelta( delta );
 
 		const nodeBefore = position.nodeBefore;
 		const nodeAfter = position.nodeAfter;
@@ -550,7 +550,7 @@ export default class Writer {
 		}
 
 		const delta = new RenameDelta();
-		this._batch.addDelta( delta );
+		this.batch.addDelta( delta );
 
 		const renameOperation = new RenameOperation( Position.createBefore( element ), element.name, newName, this.model.document.version );
 		delta.addOperation( renameOperation );
@@ -567,7 +567,7 @@ export default class Writer {
 	 */
 	split( position ) {
 		const delta = new SplitDelta();
-		this._batch.addDelta( delta );
+		this.batch.addDelta( delta );
 
 		const splitElement = position.parent;
 
@@ -642,7 +642,7 @@ export default class Writer {
 		}
 
 		const delta = new WrapDelta();
-		this._batch.addDelta( delta );
+		this.batch.addDelta( delta );
 
 		const insert = new InsertOperation( range.end, element, this.model.document.version );
 		delta.addOperation( insert );
@@ -676,7 +676,7 @@ export default class Writer {
 		}
 
 		const delta = new UnwrapDelta();
-		this._batch.addDelta( delta );
+		this.batch.addDelta( delta );
 
 		const sourcePosition = Position.createFromParentAndOffset( element, 0 );
 
@@ -820,7 +820,7 @@ function setAttributeToRange( writer, key, value, range ) {
 	function addOperation() {
 		// Add delta to the batch only if there is at least operation in the delta. Add delta only once.
 		if ( delta.operations.length === 0 ) {
-			writer._batch.addDelta( delta );
+			writer.batch.addDelta( delta );
 		}
 
 		const range = new Range( lastSplitPosition, position );
@@ -846,7 +846,7 @@ function setAttributeToItem( writer, key, value, item ) {
 
 	if ( previousValue != value ) {
 		const delta = item.root === item ? new RootAttributeDelta() : new AttributeDelta();
-		writer._batch.addDelta( delta );
+		writer.batch.addDelta( delta );
 
 		if ( item.root === item ) {
 			// If we change attributes of root element, we have to use `RootAttributeOperation`.
@@ -885,7 +885,7 @@ function addMarkerOperation( writer, name, oldRange, newRange ) {
 
 	const operation = new MarkerOperation( name, oldRange, newRange, model.markers, doc.version );
 
-	writer._batch.addDelta( delta );
+	writer.batch.addDelta( delta );
 	delta.addOperation( operation );
 	model.applyOperation( operation );
 }

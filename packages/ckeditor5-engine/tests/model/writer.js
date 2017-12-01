@@ -34,6 +34,10 @@ describe( 'Writer', () => {
 		it( 'should have model instance', () => {
 			expect( writer.model ).to.instanceof( Model );
 		} );
+
+		it( 'should have batch instance', () => {
+			expect( writer.batch ).to.instanceof( Batch );
+		} );
 	} );
 
 	describe( 'createText()', () => {
@@ -330,7 +334,7 @@ describe( 'Writer', () => {
 			docFrag.markers.set( 'marker1', marker1 );
 			docFrag.markers.set( 'marker2', marker2 );
 
-			model.on( 'change', spy );
+			doc.on( 'change', spy );
 
 			writer.insert( docFrag, new Position( root, [ 2 ] ) );
 
@@ -911,7 +915,7 @@ describe( 'Writer', () => {
 			function getChangesAttrsCount() {
 				let totalNumber = 0;
 
-				for ( const delta of writer._batch.deltas ) {
+				for ( const delta of writer.batch.deltas ) {
 					for ( const operation of delta.operations ) {
 						if ( operation.range ) {
 							totalNumber += count( operation.range.getItems( { singleCharacters: true } ) );
@@ -1226,11 +1230,11 @@ describe( 'Writer', () => {
 
 			writer.setAttribute( 'a', 1, nodeA );
 
-			expect( writer._batch.deltas.length ).to.equal( 0 );
+			expect( writer.batch.deltas.length ).to.equal( 0 );
 
 			writer.removeAttribute( 'x', Range.createIn( root ) );
 
-			expect( writer._batch.deltas.length ).to.equal( 0 );
+			expect( writer.batch.deltas.length ).to.equal( 0 );
 		} );
 	} );
 
@@ -1457,15 +1461,15 @@ describe( 'Writer', () => {
 			it( 'should create minimal number of remove deltas, each with only one operation', () => {
 				writer.remove( range );
 
-				expect( writer._batch.deltas.length ).to.equal( 2 );
-				expect( writer._batch.deltas[ 0 ].operations.length ).to.equal( 1 );
-				expect( writer._batch.deltas[ 1 ].operations.length ).to.equal( 1 );
+				expect( writer.batch.deltas.length ).to.equal( 2 );
+				expect( writer.batch.deltas[ 0 ].operations.length ).to.equal( 1 );
+				expect( writer.batch.deltas[ 1 ].operations.length ).to.equal( 1 );
 			} );
 
 			it( 'should use RemoveOperation', () => {
 				writer.remove( div );
 
-				expect( writer._batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'remove' );
+				expect( writer.batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'remove' );
 			} );
 		} );
 
@@ -1510,15 +1514,15 @@ describe( 'Writer', () => {
 			it( 'should create minimal number of remove deltas, each with only one operation', () => {
 				writer.remove( range );
 
-				expect( writer._batch.deltas.length ).to.equal( 2 );
-				expect( writer._batch.deltas[ 0 ].operations.length ).to.equal( 1 );
-				expect( writer._batch.deltas[ 1 ].operations.length ).to.equal( 1 );
+				expect( writer.batch.deltas.length ).to.equal( 2 );
+				expect( writer.batch.deltas[ 0 ].operations.length ).to.equal( 1 );
+				expect( writer.batch.deltas[ 1 ].operations.length ).to.equal( 1 );
 			} );
 
 			it( 'should use DetachOperation', () => {
 				writer.remove( div );
 
-				expect( writer._batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'detach' );
+				expect( writer.batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'detach' );
 			} );
 		} );
 	} );
@@ -1726,12 +1730,11 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should accept marker instance', () => {
-			writer.setMarker( 'name', range );
-			const marker = model.markers.get( 'name' );
+			const marker = model.markers.set( 'name', range );
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
 
 			writer.setMarker( marker, range2 );
-			const op = writer._batch.deltas[ 0 ].operations[ 0 ];
+			const op = writer.batch.deltas[ 0 ].operations[ 0 ];
 
 			expect( model.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
 			expect( op.oldRange.isEqual( range ) ).to.be.true;
@@ -1740,20 +1743,15 @@ describe( 'Writer', () => {
 
 		it( 'should accept empty range parameter if marker instance is passed', () => {
 			const marker = model.markers.set( 'name', range );
+			const spy = sinon.spy();
 
-			sinon.spy( model, 'fire' );
-
-			model.on( 'change', ( evt, type, changes ) => {
-				if ( type == 'marker' ) {
-					expect( changes.type ).to.equal( 'set' );
-					expect( changes.name ).to.equal( 'name' );
-				}
-			} );
+			doc.on( 'change', spy );
 
 			writer.setMarker( marker );
-			const op = writer._batch.deltas[ 0 ].operations[ 0 ];
+			const op = writer.batch.deltas[ 0 ].operations[ 0 ];
 
-			expect( model.fire.calledWith( 'change', 'marker' ) ).to.be.true;
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWith( spy, sinon.match.any, 'marker' );
 			expect( op.oldRange ).to.be.null;
 			expect( op.newRange.isEqual( range ) ).to.be.true;
 		} );
