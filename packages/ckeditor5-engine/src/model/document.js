@@ -14,12 +14,9 @@ import './delta/basic-transformations';
 import Range from './range';
 import Position from './position';
 import RootElement from './rootelement';
-import Batch from './batch';
 import History from './history';
 import DocumentSelection from './documentselection';
-import Schema from './schema';
 import TreeWalker from './treewalker';
-import MarkerCollection from './markercollection';
 import deltaTransform from './delta/transform';
 import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -49,7 +46,10 @@ export default class Document {
 	 * Creates an empty document instance with no {@link #roots} (other than
 	 * the {@link #graveyard graveyard root}).
 	 */
-	constructor() {
+	constructor( model ) {
+
+		this.model = model;
+
 		/**
 		 * Document version. It starts from `0` and every operation increases the version number. It is used to ensure that
 		 * operations are applied on the proper document version.
@@ -62,13 +62,6 @@ export default class Document {
 		this.version = 0;
 
 		/**
-		 * Schema for this document.
-		 *
-		 * @member {module:engine/model/schema~Schema}
-		 */
-		this.schema = new Schema();
-
-		/**
 		 * Document's history.
 		 *
 		 * **Note:** Be aware that deltas applied to the document might get removed or changed.
@@ -79,28 +72,12 @@ export default class Document {
 		this.history = new History( this );
 
 		/**
-		 * Document's markers' collection.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/markercollection~MarkerCollection}
-		 */
-		this.markers = new MarkerCollection();
-
-		/**
 		 * Selection done on this document.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/documentselection~DocumentSelection}
 		 */
 		this.selection = new DocumentSelection( this );
-
-		/**
-		 * Array of pending changes. See: {@link #enqueueChanges}.
-		 *
-		 * @private
-		 * @member {Array.<Function>}
-		 */
-		this._pendingChanges = [];
 
 		/**
 		 * List of roots that are owned and managed by this document. Use {@link #createRoot} and
@@ -130,6 +107,32 @@ export default class Document {
 
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 		this.createRoot( '$root', graveyardName );
+
+		this.listenTo( model, 'applyOperation', () => {
+			const operation = args[ 0 ];
+
+			if ( operation.isDocumentOperation && operation.baseVersion !== this.version ) {
+				/**
+				 * Only operations with matching versions can be applied.
+				 *
+				 * @error document-applyOperation-wrong-version
+				 * @param {module:engine/model/operation/operation~Operation} operation
+				 */
+				throw new CKEditorError(
+					'model-document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
+					{ operation } );
+			}
+		}, { priority: 'high' } );
+
+		this.listenTo( model, 'applyOperation', ( evt, args ) => {
+			const operation = args[ 0 ];
+
+			if ( operation.isDocumentOperation ) {
+				this.version++;
+				this.history.addDelta( operation.delta );
+				this.fire( 'change', operation.type, evt.return, operation.delta.batch, operation.delta.type );
+			}
+		}, { priority: 'low' } );
 	}
 
 	/**
@@ -140,36 +143,6 @@ export default class Document {
 	 */
 	get graveyard() {
 		return this.getRoot( graveyardName );
-	}
-
-	/**
-	 * This is the entry point for all document changes. All changes on the document are done using
-	 * {@link module:engine/model/operation/operation~Operation operations}. To create operations in the simple way use the
-	 * {@link module:engine/model/batch~Batch} API available via {@link #batch} method.
-	 *
-	 * @fires event:change
-	 * @param {module:engine/model/operation/operation~Operation} operation Operation to be applied.
-	 */
-	applyOperation( operation ) {
-		if ( operation.baseVersion !== this.version ) {
-			/**
-			 * Only operations with matching versions can be applied.
-			 *
-			 * @error document-applyOperation-wrong-version
-			 * @param {module:engine/model/operation/operation~Operation} operation
-			 */
-			throw new CKEditorError(
-				'model-document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
-				{ operation } );
-		}
-
-		const changes = operation._execute();
-
-		if ( operation.isDocumentOperation ) {
-			this.version++;
-			this.history.addDelta( operation.delta );
-			this.fire( 'change', operation.type, changes, operation.delta.batch, operation.delta.type );
-		}
 	}
 
 	/**
@@ -499,7 +472,7 @@ function* combineWalkers( backward, forward ) {
 
 			if ( !step.done ) {
 				done = false;
-				yield{
+				yield {
 					walker: backward,
 					value: step.value
 				};
@@ -511,7 +484,7 @@ function* combineWalkers( backward, forward ) {
 
 			if ( !step.done ) {
 				done = false;
-				yield{
+				yield {
 					walker: forward,
 					value: step.value
 				};
