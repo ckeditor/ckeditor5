@@ -12,7 +12,7 @@ import PluginCollection from '../plugincollection';
 import CommandCollection from '../commandcollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
-import Document from '@ckeditor/ckeditor5-engine/src/model/document';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -74,14 +74,11 @@ export default class Editor {
 		this.t = this.locale.t;
 
 		/**
-		 * The editor's model document.
+		 * The editor's model.
 		 *
-		 * The center of the editor's abstract data model. The document contains
-		 * {@link module:engine/model/document~Document#getRoot all editing roots},
-		 * {@link module:engine/model/document~Document#selection} and allows
-		 * applying changes to through the {@link module:engine/model/document~Document#batch batch interface}.
+		 * The center of the editor's abstract data model.
 		 *
-		 * Besides the model document, the editor usually contains two controllers –
+		 * Besides the model, the editor usually contains two controllers –
 		 * {@link #data data controller} and {@link #editing editing controller}.
 		 * The former is used e.g. when setting or retrieving editor data and contains a useful
 		 * set of methods for operating on the content. The latter controls user input and rendering
@@ -90,7 +87,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:engine/model/document~Document}
 		 */
-		this.document = new Document();
+		this.model = new Model();
 
 		/**
 		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
@@ -98,7 +95,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:engine/controller/datacontroller~DataController}
 		 */
-		this.data = new DataController( this.document );
+		this.data = new DataController( this.model );
 
 		/**
 		 * Defines whether this editor is in read-only mode.

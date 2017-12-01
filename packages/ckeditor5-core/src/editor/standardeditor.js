@@ -41,7 +41,7 @@ export default class StandardEditor extends Editor {
 		this.element = element;
 
 		// Documented in Editor.
-		this.editing = new EditingController( this.document );
+		this.editing = new EditingController( this.model );
 		this.editing.view.bind( 'isReadOnly' ).to( this );
 
 		/**
