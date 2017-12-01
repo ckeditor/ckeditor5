@@ -54,7 +54,7 @@ In your HTML page add an element that CKEditor should replace:
 <textarea name="content" id="editor"></textarea>
 ```
 
-Load CKEditor 5, the classic editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+Load the classic editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```js
 <script src="https://cdn.ckeditor.com/ckeditor5/<version>/classic/ckeditor.js"></script>
