@@ -269,7 +269,7 @@ export default class Document {
 	 */
 	getNearestSelectionRange( position, direction = 'both' ) {
 		// Return collapsed range if provided position is valid.
-		if ( this.schema.check( { name: '$text', inside: position } ) ) {
+		if ( this.model.schema.check( { name: '$text', inside: position } ) ) {
 			return new Range( position );
 		}
 
