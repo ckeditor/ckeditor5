@@ -56,13 +56,13 @@ In your HTML page add an element that CKEditor should replace:
 
 Load the classic editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 
-```js
+```html
 <script src="https://cdn.ckeditor.com/ckeditor5/<version>/classic/ckeditor.js"></script>
 ```
 
 Call the [`ClassicEditor.create()`](https://docs.ckeditor.com/ckeditor5/latest/api/module_editor-classic_classiceditor-ClassicEditor.html#create) method:
 
-```js
+```html
 <script>
     ClassicEditor
         .create( document.querySelector( '#editor' ) )
