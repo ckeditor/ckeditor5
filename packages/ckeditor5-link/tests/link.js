@@ -33,8 +33,6 @@ describe( 'Link', () => {
 				plugins: [ Link, Paragraph ]
 			} )
 			.then( newEditor => {
-				newEditor.editing.view.attachDomRoot( editorElement );
-
 				editor = newEditor;
 
 				linkFeature = editor.plugins.get( Link );
@@ -114,7 +112,7 @@ describe( 'Link', () => {
 			'that link',
 		() => {
 			setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
-			const linkElement = editorElement.querySelector( 'a' );
+			const linkElement = editor.editing.view.getDomRoot().querySelector( 'a' );
 
 			linkFeature._showPanel();
 
