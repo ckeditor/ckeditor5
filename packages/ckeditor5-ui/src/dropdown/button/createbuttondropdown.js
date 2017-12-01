@@ -12,6 +12,8 @@ import createDropdown from '../createdropdown';
 import ButtonGroupView from '../../buttongroup/buttongroupview';
 import { closeDropdownOnBlur, closeDropdownOnExecute, openDropdownOnArrows } from '../utils';
 
+import '../../../theme/components/dropdown/buttondropdown.css';
+
 /**
  * Creates an instance of {@link module:ui/dropdown/button/buttondropdownview~ButtonDropdownView} class using
  * a provided {@link module:ui/dropdown/button/buttondropdownmodel~ButtonDropdownModel}.
