@@ -86,7 +86,7 @@ export default class DataController {
 		 * @readonly
 		 * @member {module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}
 		 */
-		this.modelToView = new ModelConversionDispatcher( this.model.document, {
+		this.modelToView = new ModelConversionDispatcher( this.model, {
 			mapper: this.mapper
 		} );
 		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
@@ -188,17 +188,14 @@ export default class DataController {
 		// Save to model.
 		const modelRoot = this.model.document.getRoot( rootName );
 
-		this.model.enqueueChanges( () => {
+		this.model.enqueueChanges( 'transparent', writer => {
 			// Clearing selection is a workaround for ticket #569 (LiveRange loses position after removing data from document).
 			// After fixing it this code should be removed.
 			this.model.document.selection.removeAllRanges();
 			this.model.document.selection.clearAttributes();
 
-			// Initial batch should be ignored by features like undo, etc.
-			const batch = this.model.batch( 'transparent' );
-
-			batch.remove( ModelRange.createIn( modelRoot ) );
-			batch.insert( this.parse( data, batch ), modelRoot );
+			writer.remove( ModelRange.createIn( modelRoot ) );
+			writer.insert( this.parse( data ), modelRoot );
 		} );
 	}
 
@@ -208,17 +205,16 @@ export default class DataController {
 	 *
 	 * @see #set
 	 * @param {String} data Data to parse.
-	 * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
 	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Parsed data.
 	 */
-	parse( data, batch, context = '$root' ) {
+	parse( data, context = '$root' ) {
 		// data -> view
 		const viewDocumentFragment = this.processor.toView( data );
 
 		// view -> model
-		return this.toModel( viewDocumentFragment, batch, context );
+		return this.toModel( viewDocumentFragment, context );
 	}
 
 	/**
@@ -232,13 +228,12 @@ export default class DataController {
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElementOrFragment
 	 * Element or document fragment which content will be converted.
-	 * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
 	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Output document fragment.
 	 */
-	toModel( viewElementOrFragment, batch, context = '$root' ) {
-		return this.viewToModel.convert( viewElementOrFragment, batch, { context: [ context ] } );
+	toModel( viewElementOrFragment, context = '$root' ) {
+		return this.viewToModel.convert( viewElementOrFragment, { context: [ context ] } );
 	}
 
 	/**
@@ -252,11 +247,9 @@ export default class DataController {
 	 * @fires insertContent
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
 	 * @param {module:engine/model/selection~Selection} selection Selection into which the content should be inserted.
-	 * @param {module:engine/model/batch~Batch} [batch] Batch to which deltas will be added. If not specified, then
-	 * changes will be added to a new batch.
 	 */
-	insertContent( content, selection, batch ) {
-		insertContent( this, content, selection, batch );
+	insertContent( content, selection ) {
+		insertContent( this, content, selection );
 	}
 
 	/**
@@ -272,11 +265,10 @@ export default class DataController {
 	 *
 	 * @fires deleteContent
 	 * @param {module:engine/model/selection~Selection} selection Selection of which the content should be deleted.
-	 * @param {module:engine/model/batch~Batch} batch Batch to which deltas will be added.
 	 * @param {Object} options See {@link module:engine/controller/deletecontent~deleteContent}'s options.
 	 */
-	deleteContent( selection, batch, options ) {
-		deleteContent( selection, batch, options );
+	deleteContent( selection, options ) {
+		deleteContent( selection, options );
 	}
 
 	/**
@@ -295,11 +287,10 @@ export default class DataController {
 	 *
 	 * @fires module:engine/controller/datacontroller~DataController#getSelectedContent
 	 * @param {module:engine/model/selection~Selection} selection The selection of which content will be retrieved.
-	 * @param {module:engine/model/batch~Batch} batch Batch to which deltas will be added.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Document fragment holding the clone of the selected content.
 	 */
-	getSelectedContent( selection, batch ) {
-		return getSelectedContent( selection, batch );
+	getSelectedContent( selection ) {
+		return getSelectedContent( selection );
 	}
 
 	/**

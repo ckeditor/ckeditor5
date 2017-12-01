@@ -40,10 +40,6 @@ export default class Model {
 	}
 
 	change( callback ) {
-		if ( arguments.length != 1 ) {
-			throw new CKEditorError( 'model-enqueueChange-two-arguments: Model.enqueueChange expect 1 argument.' );
-		}
-
 		if ( this._pendingChanges.length === 0 ) {
 			this._pendingChanges.push( { batch: new Batch(), callback } );
 
@@ -54,8 +50,11 @@ export default class Model {
 	}
 
 	enqueueChange( batch, callback ) {
-		if ( arguments.length != 2 ) {
-			throw new CKEditorError( 'model-enqueueChange-two-arguments: Model.enqueueChange expect 2 arguments.' );
+		if ( typeof batch === 'string' ) {
+			batch = this.batch( batch );
+		} else if ( typeof batch == 'function' ) {
+			callback = batch;
+			batch = this.batch();
 		}
 
 		this._pendingChanges.push( { batch, callback } );
@@ -85,6 +84,10 @@ export default class Model {
 		this.fire( 'changesDone' );
 
 		return ret;
+	}
+
+	batch( type ) {
+		return new Batch( type );
 	}
 
 	applyOperation( operation ) {

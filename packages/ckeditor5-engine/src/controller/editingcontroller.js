@@ -78,7 +78,7 @@ export default class EditingController {
 		 * @readonly
 		 * @member {module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher} #modelToView
 		 */
-		this.modelToView = new ModelConversionDispatcher( this.model.document, {
+		this.modelToView = new ModelConversionDispatcher( this.model, {
 			mapper: this.mapper,
 			viewSelection: this.view.selection
 		} );
