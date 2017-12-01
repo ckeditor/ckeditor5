@@ -499,7 +499,7 @@ function* combineWalkers( backward, forward ) {
 
 			if ( !step.done ) {
 				done = false;
-				yield{
+				yield {
 					walker: backward,
 					value: step.value
 				};
@@ -511,7 +511,7 @@ function* combineWalkers( backward, forward ) {
 
 			if ( !step.done ) {
 				done = false;
-				yield{
+				yield {
 					walker: forward,
 					value: step.value
 				};
