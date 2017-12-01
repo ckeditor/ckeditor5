@@ -122,10 +122,10 @@ describe( 'FontSizeEditing', () => {
 						const plugin = editor.plugins.get( FontSizeEditing );
 
 						expect( plugin.configuredItems ).to.deep.equal( [
-							{ label: '10', model: '10', stopValue: 10, view: { name: 'span', styles: 'font-size:10px;' } },
-							{ label: '12', model: '12', stopValue: 12, view: { name: 'span', styles: 'font-size:12px;' } },
-							{ label: '14', model: '14', stopValue: 14, view: { name: 'span', styles: 'font-size:14px;' } },
-							{ label: '18', model: '18', stopValue: 18, view: { name: 'span', styles: 'font-size:18px;' } }
+							{ label: '10', model: '10', stopValue: 10, view: { name: 'span', styles: { 'font-size': '10px' } } },
+							{ label: '12', model: '12', stopValue: 12, view: { name: 'span', styles: { 'font-size': '12px' } } },
+							{ label: '14', model: '14', stopValue: 14, view: { name: 'span', styles: { 'font-size': '14px' } } },
+							{ label: '18', model: '18', stopValue: 18, view: { name: 'span', styles: { 'font-size': '18px' } } }
 						] );
 					} );
 			} );
@@ -187,15 +187,29 @@ describe( 'FontSizeEditing', () => {
 				.create( {
 					plugins: [ FontSizeEditing, Paragraph ],
 					fontSize: {
-						items: [ 'tiny', 'normal', 18, {
-							label: 'My setting',
-							model: 'my',
-							view: {
-								name: 'mark',
-								styles: 'font-size:30px;',
-								classes: 'my-style'
+						items: [
+							'tiny',
+							'normal',
+							18,
+							{
+								label: 'My setting',
+								model: 'my',
+								view: {
+									name: 'mark',
+									styles: { 'font-size': '30px' },
+									classes: 'my-style'
+								}
+							},
+							{
+								label: 'Big multiple classes',
+								model: 'big-multiple',
+								// TODO: define ViewElementConfigDefinition interface (wheter strings or arrays to use)?
+								view: {
+									name: 'span',
+									classes: [ 'foo', 'foo-big' ]
+								}
 							}
-						} ]
+						]
 					}
 				} )
 				.then( newEditor => {
@@ -206,13 +220,23 @@ describe( 'FontSizeEditing', () => {
 		} );
 
 		it( 'should convert from element with defined class', () => {
-			const data = '<p>f<span class="text-tiny">o</span>o</p>';
+			const data = '<p>f<span class="text-tiny foo bar">o</span>o</p>';
 
 			editor.setData( data );
 
 			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="text-tiny">o</$text>o</paragraph>' );
 
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).to.equal( '<p>f<span class="text-tiny">o</span>o</p>' );
+		} );
+
+		it( 'should convert from element with defined multiple classes', () => {
+			const data = '<p>f<span class="foo foo-big bar">o</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="big-multiple">o</$text>o</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>f<span class="foo foo-big">o</span>o</p>' );
 		} );
 
 		it( 'should convert from element with defined style', () => {
@@ -223,6 +247,16 @@ describe( 'FontSizeEditing', () => {
 			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="18">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'should convert from element with defined style when with other styles', () => {
+			const data = '<p>f<span style="font-family: serif;font-size: 18px">o</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="18">o</$text>o</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>f<span style="font-size:18px;">o</span>o</p>' );
 		} );
 
 		it( 'should convert from user defined element', () => {

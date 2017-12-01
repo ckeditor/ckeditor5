@@ -45,20 +45,19 @@ export default class FontSizeEditing extends Plugin {
 			const classes = viewDefinition.classes;
 			const styles = viewDefinition.styles;
 
-			const attribute = {};
+			const pattern = { name: element };
 
 			if ( classes ) {
-				attribute.class = classes;
+				pattern.class = classes;
 			}
 
-			// TODO styles are not normalized in parsing - it require better handling
 			if ( styles ) {
-				attribute.style = styles;
+				pattern.style = styles;
 			}
 
 			buildViewConverter()
 				.for( data.viewToModel )
-				.from( { name: element, attribute } )
+				.from( pattern )
 				.toAttribute( () => ( {
 					key: 'fontSize',
 					value: item.model
@@ -75,17 +74,18 @@ export default class FontSizeEditing extends Plugin {
 					return;
 				}
 
-				// TODO: make utitlity class of this?
 				const viewDefinition = definition.view;
+				const classes = viewDefinition.classes;
+				const styles = viewDefinition.styles;
 
 				const attributes = {};
 
-				if ( viewDefinition.classes ) {
-					attributes.class = viewDefinition.classes;
+				if ( classes ) {
+					attributes.class = Array.isArray( classes ) ? classes.join( ' ' ) : classes;
 				}
 
-				if ( viewDefinition.styles ) {
-					attributes.style = viewDefinition.styles;
+				if ( styles ) {
+					attributes.style = typeof styles === 'string' ? styles : toStylesString( styles );
 				}
 
 				return new AttributeElement( viewDefinition.name, attributes );
@@ -214,7 +214,19 @@ function generatePixelPreset( size ) {
 		stopValue: size,
 		view: {
 			name: 'span',
-			styles: `font-size:${ size }px;`
+			styles: {
+				'font-size': `${ size }px`
+			}
 		}
 	};
+}
+
+function toStylesString( stylesObject ) {
+	const styles = [];
+
+	for ( const key in stylesObject ) {
+		styles.push( key + ':' + stylesObject[ key ] );
+	}
+
+	return styles.join( ';' );
 }
