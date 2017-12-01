@@ -70,7 +70,7 @@
     "lint": "eslint --quiet '**/*.js'",
     "precommit": "lint-staged",
     "test": "node --max_old_space_size=4096 ./node_modules/.bin/ckeditor5-dev-tests",
-    "test:manual": "node --max_old_space_size=4096 ./node_modules/.bin/ckeditor5-dev-tests-manual",
+    "test:manual": "node ./node_modules/.bin/ckeditor5-dev-tests-manual",
     "docs": "node ./scripts/docs/build-docs.js",
     "docs:api": "node ./scripts/docs/build-api-docs.js",
     "translations:collect": "ckeditor5-dev-env-translations collect",
