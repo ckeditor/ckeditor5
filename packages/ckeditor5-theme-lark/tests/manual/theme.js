@@ -22,8 +22,6 @@ import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinp
 import boldIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
 
-import '../../theme/theme.scss';
-
 class TextView extends View {
 	constructor() {
 		super();
