@@ -82,13 +82,31 @@ describe( 'Autoformat', () => {
 	} );
 
 	describe( 'Numbered list', () => {
-		it( 'should replace digit with numbered list item', () => {
+		it( 'should replace digit with numbered list item using the dot format', () => {
 			setData( doc, '<paragraph>1.[]</paragraph>' );
 			doc.enqueueChanges( () => {
 				batch.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">[]</listItem>' );
+		} );
+
+		it( 'should replace digit with numbered list item using the parenthesis format', () => {
+			setData( doc, '<paragraph>1)[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">[]</listItem>' );
+		} );
+
+		it( 'should not replace digit character when there is no . or ) in the format', () => {
+			setData( doc, '<paragraph>1[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>1 []</paragraph>' );
 		} );
 
 		it( 'should not replace digit character when inside numbered list item', () => {

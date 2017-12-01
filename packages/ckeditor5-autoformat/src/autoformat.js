@@ -54,7 +54,7 @@ export default class Autoformat extends Plugin {
 
 		if ( commands.get( 'numberedList' ) ) {
 			// eslint-disable-next-line no-new
-			new BlockAutoformatEngine( this.editor, /^\d+[.|)]?\s$/, 'numberedList' );
+			new BlockAutoformatEngine( this.editor, /^\d+[.|)]\s$/, 'numberedList' );
 		}
 	}
 
