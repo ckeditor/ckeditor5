@@ -76,7 +76,7 @@ export default class Document {
 		 * @readonly
 		 * @member {module:engine/model/documentselection~DocumentSelection}
 		 */
-		this.selection = new DocumentSelection( this );
+		this.selection = new DocumentSelection( this, this.model );
 
 		/**
 		 * List of roots that are owned and managed by this document. Use {@link #createRoot} and
@@ -268,8 +268,10 @@ export default class Document {
 	 * @returns {module:engine/model/range~Range|null} Nearest selection range or `null` if one cannot be found.
 	 */
 	getNearestSelectionRange( position, direction = 'both' ) {
+		const schema = this.model.schema;
+
 		// Return collapsed range if provided position is valid.
-		if ( this.model.schema.check( { name: '$text', inside: position } ) ) {
+		if ( schema.check( { name: '$text', inside: position } ) ) {
 			return new Range( position );
 		}
 
@@ -287,11 +289,11 @@ export default class Document {
 			const type = ( data.walker == backwardWalker ? 'elementEnd' : 'elementStart' );
 			const value = data.value;
 
-			if ( value.type == type && this.schema.objects.has( value.item.name ) ) {
+			if ( value.type == type && schema.objects.has( value.item.name ) ) {
 				return Range.createOn( value.item );
 			}
 
-			if ( this.schema.check( { name: '$text', inside: value.nextPosition } ) ) {
+			if ( schema.check( { name: '$text', inside: value.nextPosition } ) ) {
 				return new Range( value.nextPosition );
 			}
 		}
