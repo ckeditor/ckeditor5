@@ -49,15 +49,15 @@ export default class Model {
 		}
 	}
 
-	enqueueChange( batch, callback ) {
-		if ( typeof batch === 'string' ) {
-			batch = this.batch( batch );
-		} else if ( typeof batch == 'function' ) {
-			callback = batch;
-			batch = this.batch();
+	enqueueChange( batchOrType, callback ) {
+		if ( typeof batchOrType === 'string' ) {
+			batchOrType = new Batch( batchOrType );
+		} else if ( typeof batchOrType == 'function' ) {
+			callback = batchOrType;
+			batchOrType = new Batch();
 		}
 
-		this._pendingChanges.push( { batch, callback } );
+		this._pendingChanges.push( { batchOrType, callback } );
 
 		if ( this._pendingChanges.length == 1 ) {
 			this._runPendingChanges();
@@ -84,10 +84,6 @@ export default class Model {
 		this.fire( 'changesDone' );
 
 		return ret;
-	}
-
-	batch( type ) {
-		return new Batch( type );
 	}
 
 	applyOperation( operation ) {

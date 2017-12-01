@@ -4,7 +4,6 @@
  */
 
 import Model from '../../src/model/model';
-import Batch from '../../src/model/batch';
 
 describe( 'Model', () => {
 	let model;
@@ -61,7 +60,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should execute enqueueChanges immediately if its the first block', () => {
-			model.enqueueChange( new Batch(), () => {
+			model.enqueueChange( () => {
 				changes += 'A';
 
 				nested();
@@ -81,7 +80,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should be possible to enqueueChanges immediately if its the first block', () => {
-			model.enqueueChange( new Batch(), () => {
+			model.enqueueChange( () => {
 				changes += 'A';
 
 				nested();
@@ -90,14 +89,14 @@ describe( 'Model', () => {
 			expect( changes ).to.equal( 'AB' );
 
 			function nested() {
-				const ret = model.change( () => {
+				model.change( () => {
 					changes += 'B';
 				} );
 			}
 		} );
 
 		it( 'should be possible to nest change in enqueueChanges', () => {
-			model.enqueueChange( new Batch(), () => {
+			model.enqueueChange( () => {
 				changes += 'A';
 
 				nested();
@@ -119,7 +118,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should be possible to nest enqueueChanges in enqueueChanges', () => {
-			model.enqueueChange( new Batch(), () => {
+			model.enqueueChange( () => {
 				changes += 'A';
 
 				nestedEnqueue();
@@ -130,7 +129,7 @@ describe( 'Model', () => {
 			expect( changes ).to.equal( 'ABC' );
 
 			function nestedEnqueue() {
-				model.enqueueChange( new Batch(), () => {
+				model.enqueueChange( () => {
 					changes += 'C';
 				} );
 			}
@@ -152,7 +151,7 @@ describe( 'Model', () => {
 			expect( changes ).to.equal( 'ABCD' );
 
 			function nestedEnqueue() {
-				model.enqueueChange( new Batch(), () => {
+				model.enqueueChange( () => {
 					changes += 'C';
 				} );
 			}
