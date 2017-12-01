@@ -14,6 +14,8 @@ import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
+import '../../../theme/components/panel/balloonpanel.css';
+
 const toPx = toUnit( 'px' );
 const defaultLimiterElement = global.document.body;
 

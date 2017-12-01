@@ -15,6 +15,8 @@ import ToolbarSeparatorView from './toolbarseparatorview';
 import preventDefault from '../bindings/preventdefault.js';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
+import '../../theme/components/toolbar/toolbar.css';
+
 /**
  * The toolbar view class.
  *

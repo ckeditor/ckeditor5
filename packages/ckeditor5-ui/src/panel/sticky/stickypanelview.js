@@ -12,6 +12,8 @@ import View from '../../view';
 import Template from '../../template';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 
+import '../../../theme/components/panel/stickypanel.css';
+
 const toPx = toUnit( 'px' );
 
 /**

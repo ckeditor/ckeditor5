@@ -8,6 +8,7 @@
  */
 
 import EditorUIView from '../../editorui/editoruiview';
+import LabelView from '../../label/labelview';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
@@ -25,7 +26,6 @@ export default class BoxedEditorUIView extends EditorUIView {
 	constructor( locale ) {
 		super( locale );
 
-		const t = this.t;
 		const ariaLabelUid = uid();
 
 		/**
@@ -46,6 +46,15 @@ export default class BoxedEditorUIView extends EditorUIView {
 		 */
 		this.main = this.createCollection();
 
+		/**
+		 * Voice label of the UI.
+		 *
+		 * @protected
+		 * @readonly
+		 * @member {module:ui/view~View} #_voiceLabelView
+		 */
+		this._voiceLabelView = this._createVoiceLabel( ariaLabelUid );
+
 		this.setTemplate( {
 			tag: 'div',
 
@@ -57,22 +66,12 @@ export default class BoxedEditorUIView extends EditorUIView {
 				],
 				role: 'application',
 				dir: 'ltr',
-				lang: locale.lang,
+				lang: locale.language,
 				'aria-labelledby': `cke-editor__aria-label_${ ariaLabelUid }`
 			},
 
 			children: [
-				{
-					tag: 'span',
-					attributes: {
-						id: `cke-editor__aria-label_${ ariaLabelUid }`,
-						class: 'cke-voice-label'
-					},
-					children: [
-						// TODO: Editor name?
-						t( 'Rich Text Editor' )
-					]
-				},
+				this._voiceLabelView,
 				{
 					tag: 'div',
 					attributes: {
@@ -91,5 +90,27 @@ export default class BoxedEditorUIView extends EditorUIView {
 				}
 			]
 		} );
+	}
+
+	/**
+	 * Creates a voice label view instance.
+	 *
+	 * @private
+	 * @returns {module:ui/label/labelview~LabelView}
+	 */
+	_createVoiceLabel( ariaLabelUid ) {
+		const t = this.t;
+		const voiceLabel = new LabelView();
+
+		voiceLabel.text = t( 'Rich Text Editor' );
+
+		voiceLabel.extendTemplate( {
+			attributes: {
+				id: `cke-editor__aria-label_${ ariaLabelUid }`,
+				class: 'cke-voice-label'
+			}
+		} );
+
+		return voiceLabel;
 	}
 }

@@ -7,8 +7,6 @@
 
 import IconView from '../../../src/icon/iconview';
 
-import '@ckeditor/ckeditor5-theme-lark/theme/theme.scss';
-
 const wrapper = document.querySelector( '#inline-svg' );
 
 const icon = `
