@@ -18,7 +18,7 @@ import ViewEditableElement from '../../src/view/editableelement';
 import { getData } from '../../src/dev-utils/model';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
-import './nestededitable.scss';
+import './nestededitable.css';
 
 class NestedEditable extends Plugin {
 	init() {
