@@ -8,6 +8,7 @@
  */
 
 import Batch from './batch';
+import Writer from './writer';
 import Schema from './schema';
 import Document from './document';
 import MarkerCollection from './markercollection';
@@ -70,7 +71,7 @@ export default class Model {
 		const ret = [];
 
 		while ( this._pendingChanges.length ) {
-			this._currentWriter = this._pendingChanges[ 0 ].batch;
+			this._currentWriter = new Writer( this, this._pendingChanges[ 0 ].batch );
 
 			ret.push( this._pendingChanges[ 0 ].callback( this._currentWriter ) );
 
