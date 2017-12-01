@@ -8,7 +8,7 @@
     "raw-loader": "^0.5.1",
     "postcss-loader": "^2.0.8",
     "style-loader": "^0.18.2",
-    "webpack": "^3.8.1",
+    "webpack": "^3.6.0",
     "webpack-sources": "1.0.1"
   }
 }
