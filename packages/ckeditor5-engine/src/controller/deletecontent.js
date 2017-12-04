@@ -10,11 +10,12 @@
 import LivePosition from '../model/liveposition';
 import Position from '../model/position';
 import Range from '../model/range';
-import Element from '../model/element';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
  *
+ * @param {module:engine/controller/datacontroller~DataController} dataController The data controller in context of which the insertion
+ * should be performed.
  * @param {module:engine/model/selection~Selection} selection Selection of which the content should be deleted.
  * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
  * @param {Object} [options]
@@ -36,63 +37,65 @@ import Element from '../model/element';
  * * `<paragraph>^</paragraph>` with the option disabled (`doNotResetEntireContent == false`)
  * * `<heading>^</heading>` with enabled (`doNotResetEntireContent == true`).
  */
-export default function deleteContent( selection, batch, options = {} ) {
+export default function deleteContent( dataController, selection, options = {} ) {
 	if ( selection.isCollapsed ) {
 		return;
 	}
 
-	const schema = batch.document.schema;
+	const schema = dataController.model.schema;
 
-	// 1. Replace the entire content with paragraph.
-	// See: https://github.com/ckeditor/ckeditor5-engine/issues/1012#issuecomment-315017594.
-	if ( !options.doNotResetEntireContent && shouldEntireContentBeReplacedWithParagraph( schema, selection ) ) {
-		replaceEntireContentWithParagraph( batch, selection );
+	dataController.model.change( writer => {
+		// 1. Replace the entire content with paragraph.
+		// See: https://github.com/ckeditor/ckeditor5-engine/issues/1012#issuecomment-315017594.
+		if ( !options.doNotResetEntireContent && shouldEntireContentBeReplacedWithParagraph( schema, selection ) ) {
+			replaceEntireContentWithParagraph( writer, selection, schema );
 
-		return;
-	}
+			return;
+		}
 
-	const selRange = selection.getFirstRange();
-	const startPos = selRange.start;
-	const endPos = LivePosition.createFromPosition( selRange.end );
+		const selRange = selection.getFirstRange();
+		const startPos = selRange.start;
+		const endPos = LivePosition.createFromPosition( selRange.end );
 
-	// 2. Remove the content if there is any.
-	if ( !selRange.start.isTouching( selRange.end ) ) {
-		batch.remove( selRange );
-	}
+		// 2. Remove the content if there is any.
+		if ( !selRange.start.isTouching( selRange.end ) ) {
+			writer.remove( selRange );
+		}
 
-	// 3. Merge elements in the right branch to the elements in the left branch.
-	// The only reasonable (in terms of data and selection correctness) case in which we need to do that is:
-	//
-	// <heading type=1>Fo[</heading><paragraph>]ar</paragraph> => <heading type=1>Fo^ar</heading>
-	//
-	// However, the algorithm supports also merging deeper structures (up to the depth of the shallower branch),
-	// as it's hard to imagine what should actually be the default behavior. Usually, specific features will
-	// want to override that behavior anyway.
-	if ( !options.leaveUnmerged ) {
-		mergeBranches( batch, startPos, endPos );
-
-		// We need to check and strip disallowed attributes in all nested nodes because after merge
-		// some attributes could end up in a path where are disallowed.
+		// 3. Merge elements in the right branch to the elements in the left branch.
+		// The only reasonable (in terms of data and selection correctness) case in which we need to do that is:
 		//
-		// e.g. bold is disallowed for <H1>
-		// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
-		schema.removeDisallowedAttributes( startPos.parent.getChildren(), startPos, batch );
-	}
+		// <heading type=1>Fo[</heading><paragraph>]ar</paragraph> => <heading type=1>Fo^ar</heading>
+		//
+		// However, the algorithm supports also merging deeper structures (up to the depth of the shallower branch),
+		// as it's hard to imagine what should actually be the default behavior. Usually, specific features will
+		// want to override that behavior anyway.
+		if ( !options.leaveUnmerged ) {
+			mergeBranches( writer, startPos, endPos );
 
-	selection.setCollapsedAt( startPos );
+			// We need to check and strip disallowed attributes in all nested nodes because after merge
+			// some attributes could end up in a path where are disallowed.
+			//
+			// e.g. bold is disallowed for <H1>
+			// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
+			schema.removeDisallowedAttributes( startPos.parent.getChildren(), startPos, writer );
+		}
 
-	// 4. Autoparagraphing.
-	// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
-	if ( shouldAutoparagraph( schema, startPos ) ) {
-		insertParagraph( batch, startPos, selection );
-	}
+		selection.setCollapsedAt( startPos );
 
-	endPos.detach();
+		// 4. Autoparagraphing.
+		// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
+		if ( shouldAutoparagraph( schema, startPos ) ) {
+			insertParagraph( writer, startPos, selection );
+		}
+
+		endPos.detach();
+	} );
 }
 
 // This function is a result of reaching the Ballmer's peak for just the right amount of time.
 // Even I had troubles documenting it after a while and after reading it again I couldn't believe that it really works.
-function mergeBranches( batch, startPos, endPos ) {
+function mergeBranches( writer, startPos, endPos ) {
 	const startParent = startPos.parent;
 	const endParent = endPos.parent;
 
@@ -112,7 +115,7 @@ function mergeBranches( batch, startPos, endPos ) {
 	// Check if operations we'll need to do won't need to cross object or limit boundaries.
 	// E.g., we can't merge endParent into startParent in this case:
 	// <limit><startParent>x[]</startParent></limit><endParent>{}</endParent>
-	if ( !checkCanBeMerged( startPos, endPos ) ) {
+	if ( !checkCanBeMerged( startPos, endPos, writer.model.schema ) ) {
 		return;
 	}
 
@@ -128,13 +131,13 @@ function mergeBranches( batch, startPos, endPos ) {
 		// <a><b>x[]</b></a><c><d>{}y</d></c>
 		// becomes:
 		// <a><b>x</b>[]<d>y</d></a><c>{}</c>
-		batch.insert( endParent, startPos );
+		writer.insert( endParent, startPos );
 	}
 
 	// Merge two siblings:
 	// <a>x</a>[]<b>y</b> -> <a>xy</a> (the usual case)
 	// <a><b>x</b>[]<d>y</d></a><c></c> -> <a><b>xy</b>[]</a><c></c> (this is the "move parent" case shown above)
-	batch.merge( startPos );
+	writer.merge( startPos );
 
 	// Remove empty end ancestors:
 	// <a>fo[o</a><b><a><c>bar]</c></a></b>
@@ -146,11 +149,11 @@ function mergeBranches( batch, startPos, endPos ) {
 
 		endPos = Position.createBefore( parentToRemove );
 
-		batch.remove( parentToRemove );
+		writer.remove( parentToRemove );
 	}
 
 	// Continue merging next level.
-	mergeBranches( batch, startPos, endPos );
+	mergeBranches( writer, startPos, endPos );
 }
 
 function shouldAutoparagraph( schema, position ) {
@@ -166,8 +169,7 @@ function shouldAutoparagraph( schema, position ) {
 // E.g. in <bQ><p>x[]</p></bQ><widget><caption>{}</caption></widget>
 // we'll check <p>, <bQ>, <widget> and <caption>.
 // Usually, widget and caption are marked as objects/limits in the schema, so in this case merging will be blocked.
-function checkCanBeMerged( leftPos, rightPos ) {
-	const schema = leftPos.root.document.schema;
+function checkCanBeMerged( leftPos, rightPos, schema ) {
 	const rangeToCheck = new Range( leftPos, rightPos );
 
 	for ( const value of rangeToCheck.getWalker() ) {
@@ -179,18 +181,18 @@ function checkCanBeMerged( leftPos, rightPos ) {
 	return true;
 }
 
-function insertParagraph( batch, position, selection ) {
-	const paragraph = new Element( 'paragraph' );
-	batch.insert( paragraph, position );
+function insertParagraph( writer, position, selection ) {
+	const paragraph = writer.createElement( 'paragraph' );
 
+	writer.insert( paragraph, position );
 	selection.setCollapsedAt( paragraph );
 }
 
-function replaceEntireContentWithParagraph( batch, selection ) {
-	const limitElement = batch.document.schema.getLimitElement( selection );
+function replaceEntireContentWithParagraph( writer, selection ) {
+	const limitElement = writer.model.schema.getLimitElement( selection );
 
-	batch.remove( Range.createIn( limitElement ) );
-	insertParagraph( batch, Position.createAt( limitElement ), selection );
+	writer.remove( Range.createIn( limitElement ) );
+	insertParagraph( writer, Position.createAt( limitElement ), selection );
 }
 
 // We want to replace the entire content with a paragraph when:

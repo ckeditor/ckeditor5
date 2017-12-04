@@ -268,7 +268,7 @@ export default class DataController {
 	 * @param {Object} options See {@link module:engine/controller/deletecontent~deleteContent}'s options.
 	 */
 	deleteContent( selection, options ) {
-		deleteContent( selection, options );
+		deleteContent( this, selection, options );
 	}
 
 	/**
