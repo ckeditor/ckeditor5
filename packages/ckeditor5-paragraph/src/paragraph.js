@@ -10,7 +10,7 @@
 import ParagraphCommand from './paragraphcommand';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
@@ -34,14 +34,15 @@ export default class Paragraph extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const doc = editor.document;
+		const model = editor.model;
+		const doc = model.document;
 		const data = editor.data;
 		const editing = editor.editing;
 
 		editor.commands.add( 'paragraph', new ParagraphCommand( editor ) );
 
 		// Schema.
-		doc.schema.registerItem( 'paragraph', '$block' );
+		model.schema.registerItem( 'paragraph', '$block' );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
@@ -85,10 +86,10 @@ export default class Paragraph extends Plugin {
 
 			findEmptyRoots( doc, batch );
 		} );
-		doc.on( 'changesDone', autoparagraphEmptyRoots, { priority: 'lowest' } );
+		doc.on( 'changesDone', () => autoparagraphEmptyRoots( model ), { priority: 'lowest' } );
 		editor.on( 'dataReady', () => {
-			findEmptyRoots( doc, doc.batch( 'transparent' ) );
-			autoparagraphEmptyRoots();
+			findEmptyRoots( doc, new Batch( 'transparent' ) );
+			autoparagraphEmptyRoots( model );
 		}, { priority: 'lowest' } );
 	}
 }
@@ -215,8 +216,9 @@ function autoparagraphItems( evt, data, consumable, conversionApi ) {
 		if ( isParagraphable( child, data.context, conversionApi.schema, isParagraphLike ) ) {
 			// If there is no wrapping `paragraph` element, create it.
 			if ( !autoParagraph ) {
-				autoParagraph = new ModelElement( 'paragraph' );
-				data.output.insertChildren( child.index, autoParagraph );
+				conversionApi.writer.insertElement( 'paragraph', data.output, child.index );
+				autoParagraph = conversionApi.writer.createElement( 'paragraph' );
+				conversionApi.writer.insert( autoParagraph, data.output, child.index );
 			}
 			// Otherwise, use existing `paragraph` and just fix iterator.
 			// Thanks to reusing `paragraph` element, multiple siblings ends up in same container.
@@ -224,8 +226,7 @@ function autoparagraphItems( evt, data, consumable, conversionApi ) {
 				i--;
 			}
 
-			child.remove();
-			autoParagraph.appendChildren( child );
+			conversionApi.writer.append( child, autoParagraph );
 		} else {
 			// That was not a paragraphable children, reset `paragraph` wrapper - following auto-paragraphable children
 			// need to be placed in a new `paragraph` element.
@@ -278,23 +279,22 @@ function findEmptyRoots( doc, batch ) {
 }
 
 // Fixes all empty roots.
-function autoparagraphEmptyRoots() {
+function autoparagraphEmptyRoots( model ) {
 	for ( const [ root, batch ] of rootsToFix ) {
 		// Only empty roots are in `rootsToFix`. Even if root got content during `changesDone` event (because of, for example
 		// other feature), this will fire `findEmptyRoots` and remove that root from `rootsToFix`. So we are guaranteed
 		// to have only empty roots here.
 		const query = { name: 'paragraph', inside: [ root ] };
-		const doc = batch.document;
-		const schema = doc.schema;
+		const schema = model.schema;
 
 		// If paragraph element is allowed in the root, create paragraph element.
 		if ( schema.check( query ) ) {
-			doc.enqueueChanges( () => {
+			model.enqueueChange( batch, writer => {
 				// Remove root from `rootsToFix` here, before executing batch, to prevent infinite loops.
 				rootsToFix.delete( root );
 
 				// Fix empty root.
-				batch.insertElement( 'paragraph', root );
+				writer.insertElement( 'paragraph', root );
 			} );
 		}
 	}
