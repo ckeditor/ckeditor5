@@ -33,7 +33,7 @@ export default class InputCommand extends Command {
 		 * @private
 		 * @member {module:typing/changebuffer~ChangeBuffer} #_buffer
 		 */
-		this._buffer = new ChangeBuffer( editor.document, undoStepSize );
+		this._buffer = new ChangeBuffer( editor.model.document, undoStepSize );
 	}
 
 	/**
@@ -69,23 +69,24 @@ export default class InputCommand extends Command {
 	 * the inserted text.
 	 */
 	execute( options = {} ) {
-		const doc = this.editor.document;
+		const model = this.editor.model;
+		const doc = this.model.document;
 		const text = options.text || '';
 		const textInsertions = text.length;
 		const range = options.range || doc.selection.getFirstRange();
 		const resultRange = options.resultRange;
 
-		doc.enqueueChanges( () => {
+		model.enqueueChange( this._buffer.batch, writer => {
 			const isCollapsedRange = range.isCollapsed;
 
 			this._buffer.lock();
 
 			if ( !isCollapsedRange ) {
-				this._buffer.batch.remove( range );
+				writer.remove( range );
 			}
 
 			if ( text ) {
-				this._buffer.batch.insertText( text, doc.selection.getAttributes(), range.start );
+				writer.insertText( text, doc.selection.getAttributes(), range.start );
 			}
 
 			if ( resultRange ) {

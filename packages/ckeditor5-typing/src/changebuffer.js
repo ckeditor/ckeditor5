@@ -8,6 +8,7 @@
  */
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 
 /**
  * Change buffer allows to group atomic changes (like characters that have been typed) into
@@ -112,7 +113,7 @@ export default class ChangeBuffer {
 	 */
 	get batch() {
 		if ( !this._batch ) {
-			this._batch = this.document.batch();
+			this._batch = new Batch();
 		}
 
 		return this._batch;

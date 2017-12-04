@@ -61,10 +61,11 @@ export default class DeleteCommand extends Command {
 	 * See the {@link module:engine/view/document~Document#event:delete} event data.
 	 */
 	execute( options = {} ) {
-		const doc = this.editor.document;
+		const model = this.editor.model;
+		const doc = model.document;
 		const dataController = this.editor.data;
 
-		doc.enqueueChanges( () => {
+		model.enqueueChange( this._buffer.batch, writer => {
 			this._buffer.lock();
 
 			const selection = Selection.createFromSelection( doc.selection );
@@ -83,7 +84,7 @@ export default class DeleteCommand extends Command {
 
 			// Check if deleting in an empty editor. See #61.
 			if ( this._shouldEntireContentBeReplacedWithParagraph( options.sequence || 1 ) ) {
-				this._replaceEntireContentWithParagraph();
+				this._replaceEntireContentWithParagraph( writer );
 
 				return;
 			}
@@ -101,7 +102,7 @@ export default class DeleteCommand extends Command {
 				);
 			} );
 
-			dataController.deleteContent( selection, this._buffer.batch, { doNotResetEntireContent } );
+			dataController.deleteContent( selection, { doNotResetEntireContent } );
 			this._buffer.input( changeCount );
 
 			doc.selection.setRanges( selection.getRanges(), selection.isBackward );
@@ -134,9 +135,10 @@ export default class DeleteCommand extends Command {
 			return false;
 		}
 
-		const document = this.editor.document;
-		const selection = document.selection;
-		const limitElement = document.schema.getLimitElement( selection );
+		const model = this.editor.model;
+		const doc = model.document;
+		const selection = doc.selection;
+		const limitElement = model.schema.getLimitElement( selection );
 
 		// If a collapsed selection contains the whole content it means that the content is empty
 		// (from the user perspective).
@@ -146,7 +148,7 @@ export default class DeleteCommand extends Command {
 			return false;
 		}
 
-		if ( !document.schema.check( { name: 'paragraph', inside: limitElement.name } ) ) {
+		if ( !model.schema.check( { name: 'paragraph', inside: limitElement.name } ) ) {
 			return false;
 		}
 
@@ -167,14 +169,15 @@ export default class DeleteCommand extends Command {
 	 *
 	 * @private
 	 */
-	_replaceEntireContentWithParagraph() {
-		const document = this.editor.document;
-		const selection = document.selection;
-		const limitElement = document.schema.getLimitElement( selection );
+	_replaceEntireContentWithParagraph( writer ) {
+		const model = this.editor.model;
+		const doc = model.document;
+		const selection = doc.selection;
+		const limitElement = model.schema.getLimitElement( selection );
 		const paragraph = new Element( 'paragraph' );
 
-		this._buffer.batch.remove( Range.createIn( limitElement ) );
-		this._buffer.batch.insert( paragraph, limitElement );
+		writer.remove( Range.createIn( limitElement ) );
+		writer.insert( paragraph, limitElement );
 
 		selection.setCollapsedAt( paragraph );
 	}
