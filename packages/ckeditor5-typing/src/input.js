@@ -69,7 +69,7 @@ export default class Input extends Plugin {
 	 */
 	_handleKeydown( evtData, inputCommand ) {
 		const model = this.editor.model;
-		const doc = this.model.document;
+		const doc = model.document;
 		const buffer = inputCommand.buffer;
 
 		// By relying on the state of the input command we allow disabling the entire input easily

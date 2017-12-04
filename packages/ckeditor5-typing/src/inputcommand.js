@@ -70,7 +70,7 @@ export default class InputCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
-		const doc = this.model.document;
+		const doc = model.document;
 		const text = options.text || '';
 		const textInsertions = text.length;
 		const range = options.range || doc.selection.getFirstRange();
@@ -90,10 +90,10 @@ export default class InputCommand extends Command {
 			}
 
 			if ( resultRange ) {
-				this.editor.data.model.selection.setRanges( [ resultRange ] );
+				doc.selection.setRanges( [ resultRange ] );
 			} else if ( isCollapsedRange ) {
 				// If range was collapsed just shift the selection by the number of inserted characters.
-				this.editor.data.model.selection.setCollapsedAt( range.start.getShiftedBy( textInsertions ) );
+				doc.selection.setCollapsedAt( range.start.getShiftedBy( textInsertions ) );
 			}
 
 			this._buffer.unlock();
