@@ -18,7 +18,7 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  *
  * DocumentFragment has own {@link module:engine/model/markercollection~MarkerCollection}. Markers from this collection
  * will be set to the {@link module:engine/model/document~Document#markers document markers} by a
- * {@link module:engine/model/writer~writer.insert} function.
+ * {@linkTODO module:engine/model/writer~writer.insert} function.
  */
 export default class DocumentFragment {
 	/**

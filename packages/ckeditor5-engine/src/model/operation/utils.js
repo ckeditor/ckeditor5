@@ -16,7 +16,7 @@ import NodeList from '../nodelist';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Contains functions used for composing model tree by {@link module:engine/model/operation~Operation operations}.
+ * Contains functions used for composing model tree by {@link module:engine/model/operation/operation~Operation operations}.
  * Those functions are built on top of {@link module:engine/model/node~Node node}, and it's child classes', APIs.
  *
  * @protected

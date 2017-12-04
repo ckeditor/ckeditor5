@@ -28,7 +28,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * parameter of methods.
  *
  * **Note:** `TextProxy` is a readonly interface. If you want to perform changes on model data represented by a `TextProxy`
- * use {@link module:engine/model/writer~writer model writer API}.
+ * use {@linkTODO module:engine/model/writer~writer model writer API}.
  *
  * **Note:** `TextProxy` instances are created on the fly, basing on the current state of model. Because of this, it is
  * highly unrecommended to store references to `TextProxy` instances. `TextProxy` instances are not refreshed when
