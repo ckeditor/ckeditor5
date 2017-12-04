@@ -14,6 +14,10 @@ describe( 'InputTextView', () => {
 		view.render();
 	} );
 
+	afterEach( () => {
+		view.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should creates element from template', () => {
 			expect( view.element.tagName ).to.equal( 'INPUT' );
