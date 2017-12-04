@@ -58,7 +58,7 @@ export default class HeadingEngine extends Plugin {
 			// Skip paragraph - it is defined in required Paragraph feature.
 			if ( option.modelElement !== defaultModelElement ) {
 				// Schema.
-				editor.document.schema.registerItem( option.modelElement, '$block' );
+				editor.model.schema.registerItem( option.modelElement, '$block' );
 
 				// Build converter from model to view for data and editing pipelines.
 				buildModelConverter().for( data.modelToView, editing.modelToView )
