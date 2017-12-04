@@ -418,9 +418,9 @@ export default class Schema {
 	 *
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes that will be filtered.
 	 * @param {module:engine/model/schema~SchemaPath} inside Path inside which schema will be checked.
-	 * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
+	 * @param {module:engine/model/writer~Writer} writer
 	 */
-	removeDisallowedAttributes( nodes, inside, batch ) {
+	removeDisallowedAttributes( nodes, inside, writer ) {
 		for ( const node of nodes ) {
 			const name = node.is( 'text' ) ? '$text' : node.name;
 			const attributes = Array.from( node.getAttributeKeys() );
@@ -432,13 +432,13 @@ export default class Schema {
 				// TODO: this should be improved to check all combination of attributes.
 				for ( const attribute of node.getAttributeKeys() ) {
 					if ( !this.check( { name, attributes: attribute, inside: queryPath } ) ) {
-						batch.removeAttribute( attribute, node );
+						writer.removeAttribute( attribute, node );
 					}
 				}
 			}
 
 			if ( node.is( 'element' ) ) {
-				this.removeDisallowedAttributes( node.getChildren(), queryPath.concat( node.name ), batch );
+				this.removeDisallowedAttributes( node.getChildren(), queryPath.concat( node.name ), writer );
 			}
 		}
 	}

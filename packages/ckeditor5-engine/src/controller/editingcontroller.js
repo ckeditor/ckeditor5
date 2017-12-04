@@ -90,7 +90,7 @@ export default class EditingController {
 
 		// Convert model selection to view.
 		this.listenTo( this.model.document, 'changesDone', () => {
-			const selection = this.model.selection;
+			const selection = this.model.document.selection;
 
 			this.modelToView.convertSelection( selection );
 			this.view.render();

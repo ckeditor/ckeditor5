@@ -40,7 +40,7 @@ export function convertSelectionChange( model, mapper ) {
 		modelSelection.setRanges( ranges, viewSelection.isBackward );
 
 		if ( !modelSelection.isEqual( model.document.selection ) ) {
-			model.enqueueChanges( () => {
+			model.enqueueChange( () => {
 				model.document.selection.setTo( modelSelection );
 			} );
 		}

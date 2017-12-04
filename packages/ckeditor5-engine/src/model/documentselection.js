@@ -611,7 +611,7 @@ export default class DocumentSelection extends Selection {
 	 */
 	_getSurroundingAttributes() {
 		const position = this.getFirstPosition();
-		const schema = this._document.schema;
+		const schema = this._model.schema;
 
 		let attrs = null;
 
