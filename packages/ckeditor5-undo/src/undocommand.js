@@ -36,10 +36,10 @@ export default class UndoCommand extends BaseCommand {
 
 		// All changes has to be done in one `enqueueChanges` callback so other listeners will not
 		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.
-		this.editor.document.enqueueChanges( () => {
+		this.editor.model.enqueueChange( () => {
 			const undoingBatch = this._undo( item.batch );
 
-			const deltas = this.editor.document.history.getDeltas( item.batch.baseVersion );
+			const deltas = this.editor.model.document.history.getDeltas( item.batch.baseVersion );
 			this._restoreSelection( item.selection.ranges, item.selection.isBackward, deltas );
 
 			this.fire( 'revert', item.batch, undoingBatch );

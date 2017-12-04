@@ -33,10 +33,10 @@ export default class RedoCommand extends BaseCommand {
 
 		// All changes have to be done in one `enqueueChanges` callback so other listeners will not
 		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.
-		this.editor.document.enqueueChanges( () => {
+		this.editor.model.enqueueChange( () => {
 			const lastDelta = item.batch.deltas[ item.batch.deltas.length - 1 ];
 			const nextBaseVersion = lastDelta.baseVersion + lastDelta.operations.length;
-			const deltas = this.editor.document.history.getDeltas( nextBaseVersion );
+			const deltas = this.editor.model.document.history.getDeltas( nextBaseVersion );
 
 			this._restoreSelection( item.selection.ranges, item.selection.isBackward, deltas );
 			this._undo( item.batch );
