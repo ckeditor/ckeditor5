@@ -55,10 +55,11 @@ export default class AttributeCommand extends Command {
 	 * Updates the command's {@link #value} and {@link #isEnabled} based on the current selection.
 	 */
 	refresh() {
-		const doc = this.editor.document;
+		const model = this.editor.model;
+		const doc = model.document;
 
 		this.value = doc.selection.hasAttribute( this.attributeKey );
-		this.isEnabled = doc.schema.checkAttributeInSelection( doc.selection, this.attributeKey );
+		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, this.attributeKey );
 	}
 
 	/**
@@ -80,14 +81,14 @@ export default class AttributeCommand extends Command {
 	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply the attribute,
 	 * otherwise the command will remove the attribute.
 	 * If not set, the command will look for its current value to decide what it should do.
-	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to group undo steps.
 	 */
 	execute( options = {} ) {
-		const doc = this.editor.document;
+		const model = this.editor.model;
+		const doc = model.document;
 		const selection = doc.selection;
 		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
 
-		doc.enqueueChanges( () => {
+		model.enqueueChange( writer => {
 			if ( selection.isCollapsed ) {
 				if ( value ) {
 					selection.setAttribute( this.attributeKey, true );
@@ -95,14 +96,13 @@ export default class AttributeCommand extends Command {
 					selection.removeAttribute( this.attributeKey );
 				}
 			} else {
-				const ranges = doc.schema.getValidRanges( selection.getRanges(), this.attributeKey );
-				const batch = options.batch || doc.batch();
+				const ranges = model.schema.getValidRanges( selection.getRanges(), this.attributeKey );
 
 				for ( const range of ranges ) {
 					if ( value ) {
-						batch.setAttribute( this.attributeKey, value, range );
+						writer.setAttribute( this.attributeKey, value, range );
 					} else {
-						batch.removeAttribute( this.attributeKey, range );
+						writer.removeAttribute( this.attributeKey, range );
 					}
 				}
 			}

@@ -32,9 +32,9 @@ export default class CodeEngine extends Plugin {
 		const editing = editor.editing;
 
 		// Allow code attribute on all inline nodes.
-		editor.document.schema.allow( { name: '$inline', attributes: CODE, inside: '$block' } );
+		editor.model.schema.allow( { name: '$inline', attributes: CODE, inside: '$block' } );
 		// Temporary workaround. See https://github.com/ckeditor/ckeditor5/issues/477.
-		editor.document.schema.allow( { name: '$inline', attributes: CODE, inside: '$clipboardHolder' } );
+		editor.model.schema.allow( { name: '$inline', attributes: CODE, inside: '$clipboardHolder' } );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
