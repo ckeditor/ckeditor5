@@ -110,17 +110,17 @@ export default class ModelConversionDispatcher {
 	/**
 	 * Creates a `ModelConversionDispatcher` that operates using passed API.
 	 *
-	 * @param {module:engine/model/document~Document} modelDocument Model document instance bound with this dispatcher.
+	 * @param {module:engine/model/document~Document} model Data model.
 	 * @param {Object} [conversionApi] Interface passed by dispatcher to the events callbacks.
 	 */
-	constructor( modelDocument, conversionApi = {} ) {
+	constructor( model, conversionApi = {} ) {
 		/**
-		 * Model document instance bound with this dispatcher.
+		 * Data model instance bound with this dispatcher.
 		 *
 		 * @private
 		 * @member {module:engine/model/document~Document}
 		 */
-		this._modelDocument = modelDocument;
+		this._model = model;
 
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
@@ -215,7 +215,7 @@ export default class ModelConversionDispatcher {
 			}
 		}
 
-		for ( const marker of this._modelDocument.markers ) {
+		for ( const marker of this._model.markers ) {
 			const markerRange = marker.getRange();
 			const intersection = markerRange.getIntersection( range );
 
@@ -357,7 +357,7 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
 	 */
 	convertSelection( selection ) {
-		const markers = Array.from( this._modelDocument.markers.getMarkersAtPosition( selection.getFirstPosition() ) );
+		const markers = Array.from( this._model.markers.getMarkersAtPosition( selection.getFirstPosition() ) );
 		const consumable = this._createSelectionConsumable( selection, markers );
 
 		this.fire( 'selection', { selection }, consumable, this.conversionApi );

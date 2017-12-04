@@ -104,7 +104,7 @@ export default class DataController {
 		 * @readonly
 		 * @member {module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}
 		 */
-		this.viewToModel = new ViewConversionDispatcher( {
+		this.viewToModel = new ViewConversionDispatcher( this.model, {
 			schema: model.schema
 		} );
 
@@ -188,7 +188,7 @@ export default class DataController {
 		// Save to model.
 		const modelRoot = this.model.document.getRoot( rootName );
 
-		this.model.enqueueChanges( 'transparent', writer => {
+		this.model.enqueueChange( 'transparent', writer => {
 			// Clearing selection is a workaround for ticket #569 (LiveRange loses position after removing data from document).
 			// After fixing it this code should be removed.
 			this.model.document.selection.removeAllRanges();

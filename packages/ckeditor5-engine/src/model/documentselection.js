@@ -557,7 +557,9 @@ export default class DocumentSelection extends Selection {
 	_removeStoredAttribute( key ) {
 		const storeKey = DocumentSelection._getStoreAttributeKey( key );
 
-		this._document.batch().removeAttribute( storeKey, this.anchor.parent );
+		this._model.change( writer => {
+			writer.removeAttribute( storeKey, this.anchor.parent );
+		} );
 	}
 
 	/**
@@ -570,7 +572,9 @@ export default class DocumentSelection extends Selection {
 	_storeAttribute( key, value ) {
 		const storeKey = DocumentSelection._getStoreAttributeKey( key );
 
-		this._document.batch().setAttribute( storeKey, value, this.anchor.parent );
+		this._model.change( writer => {
+			writer.setAttribute( storeKey, value, this.anchor.parent );
+		} );
 	}
 
 	/**
@@ -581,19 +585,20 @@ export default class DocumentSelection extends Selection {
 	 */
 	_setStoredAttributesTo( attrs ) {
 		const selectionParent = this.anchor.parent;
-		const batch = this._document.batch();
 
-		for ( const [ oldKey ] of this._getStoredAttributes() ) {
-			const storeKey = DocumentSelection._getStoreAttributeKey( oldKey );
+		this._model.change( writer => {
+			for ( const [ oldKey ] of this._getStoredAttributes() ) {
+				const storeKey = DocumentSelection._getStoreAttributeKey( oldKey );
 
-			batch.removeAttribute( storeKey, selectionParent );
-		}
+				writer.removeAttribute( storeKey, selectionParent );
+			}
 
-		for ( const [ key, value ] of attrs ) {
-			const storeKey = DocumentSelection._getStoreAttributeKey( key );
+			for ( const [ key, value ] of attrs ) {
+				const storeKey = DocumentSelection._getStoreAttributeKey( key );
 
-			batch.setAttribute( storeKey, value, selectionParent );
-		}
+				writer.setAttribute( storeKey, value, selectionParent );
+			}
+		} );
 	}
 
 	/**

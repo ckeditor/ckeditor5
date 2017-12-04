@@ -263,14 +263,14 @@ class ViewConverterBuilder {
 	 *		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 	 *		buildViewConverter().for( dispatcher )
 	 *			.fromElement( 'img' )
-	 *			.toElement( ( viewElement, batch ) => batch.createElement( 'image', { src: viewElement.getAttribute( 'src' ) } ) );
+	 *			.toElement( ( viewElement, writer ) => writer.createElement( 'image', { src: viewElement.getAttribute( 'src' ) } ) );
 	 *
 	 * @param {String|Function} element Model element name or model element creator function.
 	 */
 	toElement( element ) {
 		function eventCallbackGen( from ) {
 			return ( evt, data, consumable, conversionApi ) => {
-				const batch = conversionApi.batch;
+				const writer = conversionApi.writer;
 
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
@@ -284,7 +284,7 @@ class ViewConverterBuilder {
 				// Now, for every match between matcher and actual element, we will try to consume the match.
 				for ( const match of matchAll ) {
 					// Create model element basing on creator function or element name.
-					const modelElement = element instanceof Function ? element( data.input, batch ) : batch.createElement( element );
+					const modelElement = element instanceof Function ? element( data.input, writer ) : writer.createElement( element );
 
 					// Do not convert if element building function returned falsy value.
 					if ( !modelElement ) {
@@ -311,7 +311,7 @@ class ViewConverterBuilder {
 					const modelChildren = conversionApi.convertChildren( data.input, consumable, data );
 
 					for ( const child of Array.from( modelChildren ) ) {
-						batch.append( child, modelElement );
+						writer.append( child, modelElement );
 					}
 
 					// Remove created `modelElement` from the parents stack.
@@ -435,7 +435,7 @@ class ViewConverterBuilder {
 	toMarker( creator ) {
 		function eventCallbackGen( from ) {
 			return ( evt, data, consumable, conversionApi ) => {
-				const batch = conversionApi.batch;
+				const writer = conversionApi.writer;
 
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
@@ -453,7 +453,7 @@ class ViewConverterBuilder {
 					modelElement = creator( data.input );
 				// When there is no creator then create model element basing on data from view element.
 				} else {
-					modelElement = batch.createElement( '$marker', { 'data-name': data.input.getAttribute( 'data-name' ) } );
+					modelElement = writer.createElement( '$marker', { 'data-name': data.input.getAttribute( 'data-name' ) } );
 				}
 
 				// Check if model element is correct (has proper name and property).
@@ -528,7 +528,7 @@ function setAttributeOn( toChange, attribute, data, conversionApi ) {
 	};
 
 	if ( conversionApi.schema.check( schemaQuery ) ) {
-		conversionApi.batch.setAttribute( attribute.key, attribute.value, toChange );
+		conversionApi.writer.setAttribute( attribute.key, attribute.value, toChange );
 	}
 }
 

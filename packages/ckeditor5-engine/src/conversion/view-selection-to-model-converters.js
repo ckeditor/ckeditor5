@@ -22,11 +22,11 @@ import ModelSelection from '../model/selection';
  *
  *		view.document.on( 'selectionChange', convertSelectionChange( modelDocument, mapper ) );
  *
- * @param {module:engine/model/document~Document} modelDocument Model document on which selection should be updated.
+ * @param {module:engine/model/model~Model} model Data model.
  * @param {module:engine/conversion/mapper~Mapper} mapper Conversion mapper.
  * @returns {Function} {@link module:engine/view/document~Document#event:selectionChange} callback function.
  */
-export function convertSelectionChange( modelDocument, mapper ) {
+export function convertSelectionChange( model, mapper ) {
 	return ( evt, data ) => {
 		const viewSelection = data.newSelection;
 		const modelSelection = new ModelSelection();
@@ -39,9 +39,9 @@ export function convertSelectionChange( modelDocument, mapper ) {
 
 		modelSelection.setRanges( ranges, viewSelection.isBackward );
 
-		if ( !modelSelection.isEqual( modelDocument.selection ) ) {
-			modelDocument.enqueueChanges( () => {
-				modelDocument.selection.setTo( modelSelection );
+		if ( !modelSelection.isEqual( model.document.selection ) ) {
+			model.enqueueChanges( () => {
+				model.document.selection.setTo( modelSelection );
 			} );
 		}
 	};
