@@ -117,10 +117,8 @@ export default class Autoformat extends Plugin {
 				const pattern = new RegExp( `^(#{${ level }})\\s$` );
 
 				// eslint-disable-next-line no-new
-				new BlockAutoformatEngine( this.editor, pattern, context => {
-					const { batch } = context;
-
-					this.editor.execute( commandName, { batch } );
+				new BlockAutoformatEngine( this.editor, pattern, () => {
+					this.editor.execute( commandName );
 				} );
 			} );
 	}

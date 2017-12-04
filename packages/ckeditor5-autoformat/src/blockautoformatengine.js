@@ -36,11 +36,10 @@ export default class BlockAutoformatEngine {
 	 * To convert a paragraph to heading 1 when `- ` is typed, using just the callback:
 	 *
 	 *		new BlockAutoformatEngine( editor, /^\- $/, ( context ) => {
-	 *			const { batch, match } = context;
+	 *			const { match } = context;
 	 *			const headingLevel = match[ 1 ].length;
 	 *
 	 *			editor.execute( 'heading', {
-	 *				batch,
 	 *				formatId: `heading${ headingLevel }`
 	 *			} );
 	 * 		} );
@@ -48,8 +47,7 @@ export default class BlockAutoformatEngine {
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 * @param {RegExp} pattern The regular expression to execute on just inserted text.
 	 * @param {Function|String} callbackOrCommand The callback to execute or the command to run when the text is matched.
-	 * In case of providing the callback, it receives the following parameters:
-	 * * {module:engine/model/batch~Batch} batch Newly created batch for autoformat changes.
+	 * In case of providing the callback, it receives the following parameter:
 	 * * {Object} match RegExp.exec() result of matching the pattern to inserted text.
 	 */
 	constructor( editor, pattern, callbackOrCommand ) {
@@ -61,15 +59,12 @@ export default class BlockAutoformatEngine {
 			// We assume that the actual command name was provided.
 			const command = callbackOrCommand;
 
-			callback = context => {
-				const { batch } = context;
-
-				// Create new batch for removal and command execution.
-				editor.execute( command, { batch } );
+			callback = () => {
+				editor.execute( command );
 			};
 		}
 
-		editor.document.on( 'change', ( event, type, changes, batch ) => {
+		editor.model.document.on( 'change', ( event, type, changes, batch ) => {
 			if ( batch.type == 'transparent' ) {
 				return;
 			}
@@ -100,17 +95,15 @@ export default class BlockAutoformatEngine {
 				return;
 			}
 
-			editor.document.enqueueChanges( () => {
-				// Create new batch to separate typing batch from the Autoformat changes.
-				const fixBatch = editor.document.batch();
-
+			// Use enqueueChange to create new batch to separate typing batch from the autoformat changes.
+			editor.model.enqueueChange( writer => {
 				// Matched range.
 				const range = Range.createFromParentsAndOffsets( textNode.parent, 0, textNode.parent, match[ 0 ].length );
 
 				// Remove matched text.
-				fixBatch.remove( range );
+				writer.remove( range );
 
-				callback( { fixBatch, match } );
+				callback( { match } );
 			} );
 		} );
 	}

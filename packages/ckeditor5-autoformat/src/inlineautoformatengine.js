@@ -60,9 +60,9 @@ export default class InlineAutoformatEngine {
 	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
 	 *
 	 *		// Use formatting callback:
-	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, ( batch, validRanges ) => {
+	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, ( writer, validRanges ) => {
 	 *			for ( let range of validRanges ) {
-	 *				batch.setAttribute( command, true, range );
+	 *				writer.setAttribute( command, true, range );
 	 *			}
 	 *		} );
 	 */
@@ -130,13 +130,13 @@ export default class InlineAutoformatEngine {
 		} );
 
 		// A format callback run on matched text.
-		formatCallback = formatCallback || ( ( batch, validRanges ) => {
+		formatCallback = formatCallback || ( ( writer, validRanges ) => {
 			for ( const range of validRanges ) {
-				batch.setAttribute( command, true, range );
+				writer.setAttribute( command, true, range );
 			}
 		} );
 
-		editor.document.on( 'change', ( evt, type, changes, batch ) => {
+		editor.model.document.on( 'change', ( evt, type, changes, batch ) => {
 			if ( batch.type == 'transparent' ) {
 				return;
 			}
@@ -145,7 +145,7 @@ export default class InlineAutoformatEngine {
 				return;
 			}
 
-			const selection = editor.document.selection;
+			const selection = editor.model.document.selection;
 
 			if ( !selection.isCollapsed || !selection.focus || !selection.focus.parent ) {
 				return;
@@ -186,21 +186,19 @@ export default class InlineAutoformatEngine {
 				return;
 			}
 
-			editor.document.enqueueChanges( () => {
-				// Create new batch to separate typing batch from the Autoformat changes.
-				const fixBatch = editor.document.batch();
-
-				const validRanges = editor.document.schema.getValidRanges( rangesToFormat, command );
+			// Use enqueueChange to create new batch to separate typing batch from the autoformat changes.
+			editor.model.enqueueChange( writer => {
+				const validRanges = editor.model.schema.getValidRanges( rangesToFormat, command );
 
 				// Apply format.
-				formatCallback( fixBatch, validRanges );
+				formatCallback( writer, validRanges );
 
 				// Detach ranges used to apply Autoformat. Prevents memory leaks. #39
 				rangesToFormat.forEach( range => range.detach() );
 
 				// Remove delimiters.
 				for ( const range of rangesToRemove ) {
-					fixBatch.remove( range );
+					writer.remove( range );
 
 					// Prevents memory leaks.
 					// https://github.com/ckeditor/ckeditor5-autoformat/issues/39
