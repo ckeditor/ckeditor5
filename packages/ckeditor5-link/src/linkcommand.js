@@ -30,10 +30,11 @@ export default class LinkCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const doc = this.editor.document;
+		const model = this.editor.model;
+		const doc = model.document;
 
 		this.value = doc.selection.getAttribute( 'linkHref' );
-		this.isEnabled = doc.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
+		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
 	}
 
 	/**
@@ -53,13 +54,10 @@ export default class LinkCommand extends Command {
 	 * @param {String} href Link destination.
 	 */
 	execute( href ) {
-		const doc = this.editor.document;
-		const selection = doc.selection;
+		const model = this.editor.model;
+		const selection = model.document.selection;
 
-		doc.enqueueChanges( () => {
-			// Keep it as one undo step.
-			const batch = doc.batch();
-
+		model.enqueueChange( writer => {
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
 			if ( selection.isCollapsed ) {
 				const position = selection.getFirstPosition();
@@ -69,20 +67,20 @@ export default class LinkCommand extends Command {
 					// Then update `linkHref` value.
 					const linkRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ) );
 
-					batch.setAttribute( 'linkHref', href, linkRange );
+					writer.setAttribute( 'linkHref', href, linkRange );
 
 					// Create new range wrapping changed link.
 					selection.setRanges( [ linkRange ] );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
 				else {
-					const attributes = toMap( doc.selection.getAttributes() );
+					const attributes = toMap( selection.getAttributes() );
 
 					attributes.set( 'linkHref', href );
 
-					const node = batch.createText( href, attributes );
+					const node = writer.createText( href, attributes );
 
-					batch.insert( node, position );
+					writer.insert( node, position );
 
 					// Create new range wrapping created node.
 					selection.setRanges( [ Range.createOn( node ) ] );
@@ -90,10 +88,10 @@ export default class LinkCommand extends Command {
 			} else {
 				// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges
 				// omitting nodes where `linkHref` attribute is disallowed.
-				const ranges = doc.schema.getValidRanges( selection.getRanges(), 'linkHref' );
+				const ranges = model.schema.getValidRanges( selection.getRanges(), 'linkHref' );
 
 				for ( const range of ranges ) {
-					batch.setAttribute( 'linkHref', href, range );
+					writer.setAttribute( 'linkHref', href, range );
 				}
 			}
 		} );
