@@ -44,6 +44,7 @@ describe( 'ContextualToolbar', () => {
 
 				// Focus the engine.
 				editor.editing.view.isFocused = true;
+				editor.editing.view.getDomRoot().focus();
 
 				// Remove all selection ranges from DOM before testing.
 				window.getSelection().removeAllRanges();
@@ -122,12 +123,12 @@ describe( 'ContextualToolbar', () => {
 				// Still not yet.
 				sinon.assert.notCalled( spy );
 
-				// Another 101 ms waiting.
+				// Another waiting.
 				setTimeout( () => {
 					// And here it is.
 					sinon.assert.calledOnce( spy );
 					done();
-				}, 100 );
+				}, 110 );
 			}, 101 );
 		}, 100 );
 	} );
