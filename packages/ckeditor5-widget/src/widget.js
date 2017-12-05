@@ -168,7 +168,7 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		const modelDocument = this.editor.document;
+		const modelDocument = this.editor.model.document;
 		const modelSelection = modelDocument.selection;
 
 		// Do nothing on non-collapsed selection.
@@ -204,8 +204,9 @@ export default class Widget extends Plugin {
 	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
 	 */
 	_handleArrowKeys( isForward ) {
-		const modelDocument = this.editor.document;
-		const schema = modelDocument.schema;
+		const model = this.editor.model;
+		const schema = model.schema;
+		const modelDocument = model.document;
 		const modelSelection = modelDocument.selection;
 		const objectElement = modelSelection.getSelectedElement();
 
@@ -215,7 +216,7 @@ export default class Widget extends Plugin {
 			const newRange = modelDocument.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
 
 			if ( newRange ) {
-				this.editor.model.change( () => {
+				model.change( () => {
 					modelSelection.setRanges( [ newRange ] );
 				} );
 			}
@@ -231,8 +232,8 @@ export default class Widget extends Plugin {
 
 		const objectElement2 = this._getObjectElementNextToSelection( isForward );
 
-		if ( objectElement2 instanceof ModelElement && modelDocument.schema.objects.has( objectElement2.name ) ) {
-			this.editor.model.change( () => {
+		if ( objectElement2 instanceof ModelElement && schema.objects.has( objectElement2.name ) ) {
+			model.change( () => {
 				this._setSelectionOverElement( objectElement2 );
 			} );
 
@@ -249,16 +250,15 @@ export default class Widget extends Plugin {
 	 * @private
 	 */
 	_selectAllNestedEditableContent() {
-		const modelDocument = this.editor.document;
-		const modelSelection = modelDocument.selection;
-		const schema = modelDocument.schema;
-		const limitElement = schema.getLimitElement( modelSelection );
+		const model = this.editor.model;
+		const modelSelection = model.document.selection;
+		const limitElement = model.schema.getLimitElement( modelSelection );
 
 		if ( modelSelection.getFirstRange().root == limitElement ) {
 			return false;
 		}
 
-		this.editor.model.change( () => {
+		model.change( () => {
 			modelSelection.setIn( limitElement );
 		} );
 
@@ -272,8 +272,8 @@ export default class Widget extends Plugin {
 	 * @returns {Boolean} Returns true if widget was selected and selecting all was handled by this method.
 	 */
 	_selectAllContent() {
-		const modelDocument = this.editor.document;
-		const modelSelection = modelDocument.selection;
+		const model = this.editor.model;
+		const modelSelection = model.document.selection;
 		const editing = this.editor.editing;
 		const viewDocument = editing.view;
 		const viewSelection = viewDocument.selection;
@@ -285,7 +285,7 @@ export default class Widget extends Plugin {
 		if ( selectedElement && isWidget( selectedElement ) ) {
 			const widgetParent = editing.mapper.toModelElement( selectedElement.parent );
 
-			this.editor.model.change( () => {
+			model.change( () => {
 				modelSelection.setRanges( [ ModelRange.createIn( widgetParent ) ] );
 			} );
 
@@ -302,7 +302,7 @@ export default class Widget extends Plugin {
 	 * @param {module:engine/model/element~Element} element
 	 */
 	_setSelectionOverElement( element ) {
-		this.editor.document.selection.setRanges( [ ModelRange.createOn( element ) ] );
+		this.editor.model.document.selection.setRanges( [ ModelRange.createOn( element ) ] );
 	}
 
 	/**
@@ -315,9 +315,8 @@ export default class Widget extends Plugin {
 	 * @returns {module:engine/model/element~Element|null}
 	 */
 	_getObjectElementNextToSelection( forward ) {
-		const modelDocument = this.editor.document;
-		const schema = modelDocument.schema;
-		const modelSelection = modelDocument.selection;
+		const schema = this.editor.model.schema;
+		const modelSelection = this.editor.model.document.selection;
 		const dataController = this.editor.data;
 
 		// Clone current selection to use it as a probe. We must leave default selection as it is so it can return
