@@ -32,8 +32,8 @@ export default class ImageUploadEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const doc = editor.document;
-		const schema = doc.schema;
+		const doc = editor.model.document;
+		const schema = editor.model.schema;
 		const fileRepository = editor.plugins.get( FileRepository );
 
 		// Setup schema to allow uploadId for images.
@@ -114,13 +114,13 @@ export default class ImageUploadEngine extends Plugin {
 	 */
 	load( loader, imageElement ) {
 		const editor = this.editor;
+		const model = editor.model;
 		const t = editor.locale.t;
-		const doc = editor.document;
 		const fileRepository = editor.plugins.get( FileRepository );
 		const notification = editor.plugins.get( Notification );
 
-		doc.enqueueChanges( () => {
-			doc.batch( 'transparent' ).setAttribute( 'uploadStatus', 'reading', imageElement );
+		model.enqueueChange( 'transparent', writer => {
+			writer.setAttribute( 'uploadStatus', 'reading', imageElement );
 		} );
 
 		loader.read()
@@ -132,15 +132,15 @@ export default class ImageUploadEngine extends Plugin {
 				viewImg.setAttribute( 'src', data );
 				editor.editing.view.render();
 
-				doc.enqueueChanges( () => {
-					doc.batch( 'transparent' ).setAttribute( 'uploadStatus', 'uploading', imageElement );
+				model.enqueueChange( 'transparent', writer => {
+					writer.setAttribute( 'uploadStatus', 'uploading', imageElement );
 				} );
 
 				return promise;
 			} )
 			.then( data => {
-				doc.enqueueChanges( () => {
-					doc.batch( 'transparent' ).setAttributes( { uploadStatus: 'complete', src: data.default }, imageElement );
+				model.enqueueChange( 'transparent', writer => {
+					writer.setAttributes( { uploadStatus: 'complete', src: data.default }, imageElement );
 
 					// Srcset attribute for responsive images support.
 					let maxWidth = 0;
@@ -163,7 +163,7 @@ export default class ImageUploadEngine extends Plugin {
 						.join( ', ' );
 
 					if ( srcsetAttribute != '' ) {
-						doc.batch( 'transparent' ).setAttribute( 'srcset', {
+						writer.setAttribute( 'srcset', {
 							data: srcsetAttribute,
 							width: maxWidth
 						}, imageElement );
@@ -184,17 +184,15 @@ export default class ImageUploadEngine extends Plugin {
 				clean();
 
 				// Permanently remove image from insertion batch.
-				doc.enqueueChanges( () => {
-					doc.batch( 'transparent' ).remove( imageElement );
+				model.enqueueChange( 'transparent', writer => {
+					writer.remove( imageElement );
 				} );
 			} );
 
 		function clean() {
-			doc.enqueueChanges( () => {
-				const batch = doc.batch( 'transparent' );
-
-				batch.removeAttribute( 'uploadId', imageElement );
-				batch.removeAttribute( 'uploadStatus', imageElement );
+			model.enqueueChange( 'transparent', writer => {
+				writer.removeAttribute( 'uploadId', imageElement );
+				writer.removeAttribute( 'uploadStatus', imageElement );
 			} );
 
 			fileRepository.destroyLoader( loader );
