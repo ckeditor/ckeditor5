@@ -67,9 +67,27 @@ export default class InputTextView extends View {
 				],
 				id: bind.to( 'id' ),
 				placeholder: bind.to( 'placeholder' ),
-				readonly: bind.to( 'isReadOnly' ),
-				value: bind.to( 'value' )
+				readonly: bind.to( 'isReadOnly' )
 			}
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
+
+		const setValue = value => {
+			this.element.value = ( !value && value !== 0 ) ? '' : value;
+		};
+
+		setValue( this.value );
+
+		// Bind `this.value` to the DOM element's value.
+		// We cannot use `value` DOM attribute because removing it on Edge does not clear the DOM element's value property.
+		this.on( 'change:value', ( evt, name, value ) => {
+			setValue( value );
 		} );
 	}
 
