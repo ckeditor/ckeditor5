@@ -62,8 +62,6 @@ export default class Model {
 		if ( this._pendingChanges.length == 1 ) {
 			this._runPendingChanges();
 		}
-
-		this.document.fire( 'changesDone' );
 	}
 
 	_runPendingChanges() {

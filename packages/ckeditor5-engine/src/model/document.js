@@ -132,6 +132,9 @@ export default class Document {
 				this.fire( 'change', operation.type, evt.return, operation.delta.batch, operation.delta.type );
 			}
 		}, { priority: 'low' } );
+
+		// Temporary compatibility.
+		model.delegate( 'changesDone' ).to( this );
 	}
 
 	/**
