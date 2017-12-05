@@ -88,7 +88,7 @@ export default class AttributeCommand extends Command {
 		const selection = doc.selection;
 		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
 
-		model.enqueueChange( writer => {
+		model.change( writer => {
 			if ( selection.isCollapsed ) {
 				if ( value ) {
 					selection.setAttribute( this.attributeKey, true );
