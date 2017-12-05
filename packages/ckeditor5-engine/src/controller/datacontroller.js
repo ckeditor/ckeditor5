@@ -290,7 +290,7 @@ export default class DataController {
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Document fragment holding the clone of the selected content.
 	 */
 	getSelectedContent( selection ) {
-		return getSelectedContent( selection );
+		return getSelectedContent( this, selection );
 	}
 
 	/**

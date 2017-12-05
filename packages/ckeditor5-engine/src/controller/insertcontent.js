@@ -26,51 +26,47 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  * should be performed.
  * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
  * @param {module:engine/model/selection~Selection} selection Selection into which the content should be inserted.
- * @param {module:engine/model/batch~Batch} [batch] Batch to which deltas will be added. If not specified, then
- * changes will be added to a new batch.
  */
-export default function insertContent( dataController, content, selection, batch ) {
-	if ( !batch ) {
-		batch = dataController.model.batch();
-	}
+export default function insertContent( dataController, content, selection ) {
+	dataController.model.change( writer => {
+		if ( !selection.isCollapsed ) {
+			dataController.deleteContent( selection );
+		}
 
-	if ( !selection.isCollapsed ) {
-		dataController.deleteContent( selection, batch );
-	}
+		const insertion = new Insertion( dataController, writer, selection.anchor );
 
-	const insertion = new Insertion( dataController, batch, selection.anchor );
+		let nodesToInsert;
 
-	let nodesToInsert;
+		if ( content.is( 'documentFragment' ) ) {
+			nodesToInsert = content.getChildren();
+		} else {
+			nodesToInsert = [ content ];
+		}
 
-	if ( content.is( 'documentFragment' ) ) {
-		nodesToInsert = content.getChildren();
-	} else {
-		nodesToInsert = [ content ];
-	}
+		insertion.handleNodes( nodesToInsert, {
+			// The set of children being inserted is the only set in this context
+			// so it's the first and last (it's a hack ;)).
+			isFirst: true,
+			isLast: true
+		} );
 
-	insertion.handleNodes( nodesToInsert, {
-		// The set of children being inserted is the only set in this context
-		// so it's the first and last (it's a hack ;)).
-		isFirst: true,
-		isLast: true
+		const newRange = insertion.getSelectionRange();
+
+		/* istanbul ignore else */
+		if ( newRange ) {
+			selection.setRanges( [ newRange ] );
+		} else {
+			// We are not testing else because it's a safe check for unpredictable edge cases:
+			// an insertion without proper range to select.
+
+			/**
+			 * Cannot determine a proper selection range after insertion.
+			 *
+			 * @warning insertcontent-no-range
+			 */
+			log.warn( 'insertcontent-no-range: Cannot determine a proper selection range after insertion.' );
+		}
 	} );
-
-	const newRange = insertion.getSelectionRange();
-
-	/* istanbul ignore else */
-	if ( newRange ) {
-		selection.setRanges( [ newRange ] );
-	} else {
-		// We are not testing else because it's a safe check for unpredictable edge cases:
-		// an insertion without proper range to select.
-
-		/**
-		 * Cannot determine a proper selection range after insertion.
-		 *
-		 * @warning insertcontent-no-range
-		 */
-		log.warn( 'insertcontent-no-range: Cannot determine a proper selection range after insertion.' );
-	}
 }
 
 /**
@@ -79,7 +75,7 @@ export default function insertContent( dataController, content, selection, batch
  * @private
  */
 class Insertion {
-	constructor( dataController, batch, position ) {
+	constructor( dataController, writer, position ) {
 		/**
 		 * The data controller in context of which the insertion should be performed.
 		 *
@@ -90,9 +86,9 @@ class Insertion {
 		/**
 		 * Batch to which deltas will be added.
 		 *
-		 * @member {module:engine/controller/batch~Batch} #batch
+		 * @member {module:engine/controller/writer~Batch} #writer
 		 */
-		this.batch = batch;
+		this.writer = writer;
 
 		/**
 		 * The position at which (or near which) the next node will be inserted.
@@ -153,7 +149,7 @@ class Insertion {
 			return Range.createOn( this.nodeToSelect );
 		}
 
-		return this.dataController.model.getNearestSelectionRange( this.position );
+		return this.dataController.model.document.getNearestSelectionRange( this.position );
 	}
 
 	/**
@@ -229,7 +225,7 @@ class Insertion {
 		// If the node is a text and bare text is allowed in current position it means that the node
 		// contains disallowed attributes and we have to remove them.
 		else if ( this.schema.check( { name: '$text', inside: this.position } ) ) {
-			this.schema.removeDisallowedAttributes( [ node ], this.position, this.batch );
+			this.schema.removeDisallowedAttributes( [ node ], this.position, this.writer );
 			this._handleNode( node, context );
 		}
 		// If text is not allowed, try autoparagraphing.
@@ -256,7 +252,7 @@ class Insertion {
 
 		const livePos = LivePosition.createFromPosition( this.position );
 
-		this.batch.insert( node, this.position );
+		this.writer.insert( node, this.position );
 
 		this.position = Position.createFromPosition( livePos );
 		livePos.detach();
@@ -286,12 +282,12 @@ class Insertion {
 		if ( mergeLeft ) {
 			const position = LivePosition.createFromPosition( this.position );
 
-			this.batch.merge( mergePosLeft );
+			this.writer.merge( mergePosLeft );
 
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
 			// some attributes could end up in a path where are disallowed.
 			const parent = position.nodeBefore;
-			this.schema.removeDisallowedAttributes( parent.getChildren(), Position.createAt( parent ), this.batch );
+			this.schema.removeDisallowedAttributes( parent.getChildren(), Position.createAt( parent ), this.writer );
 
 			this.position = Position.createFromPosition( position );
 			position.detach();
@@ -314,11 +310,11 @@ class Insertion {
 			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
 			const position = new LivePosition( this.position.root, this.position.path, 'sticksToPrevious' );
 
-			this.batch.merge( mergePosRight );
+			this.writer.merge( mergePosRight );
 
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
 			// some attributes could end up in a place where are disallowed.
-			this.schema.removeDisallowedAttributes( position.parent.getChildren(), position, this.batch );
+			this.schema.removeDisallowedAttributes( position.parent.getChildren(), position, this.writer );
 
 			this.position = Position.createFromPosition( position );
 			position.detach();
@@ -330,7 +326,7 @@ class Insertion {
 		// When there was no merge we need to check and strip disallowed attributes in all nested nodes of
 		// just inserted node because some attributes could end up in a place where are disallowed.
 		if ( !mergeLeft && !mergeRight ) {
-			this.schema.removeDisallowedAttributes( node.getChildren(), Position.createAt( node ), this.batch );
+			this.schema.removeDisallowedAttributes( node.getChildren(), Position.createAt( node ), this.writer );
 		}
 	}
 
@@ -341,7 +337,7 @@ class Insertion {
 	 * @param {Object} context
 	 */
 	_tryAutoparagraphing( node, context ) {
-		const paragraph = this.batch.createElement( 'paragraph' );
+		const paragraph = this.writer.createElement( 'paragraph' );
 
 		// Do not autoparagraph if the paragraph won't be allowed there,
 		// cause that would lead to an infinite loop. The paragraph would be rejected in
@@ -350,7 +346,7 @@ class Insertion {
 			// When node is a text and is disallowed by schema it means that contains disallowed attributes
 			// and we need to remove them.
 			if ( node.is( 'text' ) && !this._checkIsAllowed( node, [ paragraph ] ) ) {
-				this.schema.removeDisallowedAttributes( [ node ], [ paragraph ], this.batch );
+				this.schema.removeDisallowedAttributes( [ node ], [ paragraph ], this.writer );
 			}
 
 			if ( this._checkIsAllowed( node, [ paragraph ] ) ) {
@@ -385,14 +381,14 @@ class Insertion {
 				// Special case – parent is empty (<p>^</p>) so isAtStart == isAtEnd == true.
 				// We can remove the element after moving selection out of it.
 				if ( parent.isEmpty ) {
-					this.batch.remove( parent );
+					this.writer.remove( parent );
 				}
 			} else if ( this.position.isAtEnd ) {
 				this.position = Position.createAfter( this.position.parent );
 			} else {
 				const tempPos = Position.createAfter( this.position.parent );
 
-				this.batch.split( this.position );
+				this.writer.split( this.position );
 
 				this.position = tempPos;
 
