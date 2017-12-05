@@ -248,6 +248,9 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		afterEach( () => {
+			// Safari fails because of "afterEach()" hook tries to restore values from removed element.
+			// We need to restore these values manually.
+			testUtils.sinon.restore();
 			iframeAncestor.remove();
 		} );
 
