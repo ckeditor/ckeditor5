@@ -75,6 +75,53 @@ describe( 'HeadingEngine', () => {
 		expect( editor.getData() ).to.equal( '<h4>foobar</h4>' );
 	} );
 
+	describe( 'user defined', () => {
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ HeadingEngine ],
+					heading: {
+						options: [
+							{ model: 'paragraph', title: 'paragraph' },
+							{
+								model: 'heading1',
+								view: {
+									from: [
+										{ name: 'h1' },
+										{ name: 'p', attribute: { 'data-heading': 'h1' }, priority: 'high' }
+									],
+									to: {
+										name: 'h1'
+									}
+								},
+								title: 'User H1'
+							}
+						]
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					document = editor.document;
+				} );
+		} );
+
+		it( 'should convert from defined h element', () => {
+			editor.setData( '<h1>foobar</h1>' );
+
+			expect( getData( document, { withoutSelection: true } ) ).to.equal( '<heading1>foobar</heading1>' );
+			expect( editor.getData() ).to.equal( '<h1>foobar</h1>' );
+		} );
+
+		it( 'should convert from defined paragraph with attributes', () => {
+			editor.setData( '<p data-heading="h1">foobar</p><p>Normal paragraph</p>' );
+
+			expect( getData( document, { withoutSelection: true } ) )
+				.to.equal( '<heading1>foobar</heading1><paragraph>Normal paragraph</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<h1>foobar</h1><p>Normal paragraph</p>' );
+		} );
+	} );
+
 	it( 'should not blow up if there\'s no enter command in the editor', () => {
 		return VirtualTestEditor
 			.create( {

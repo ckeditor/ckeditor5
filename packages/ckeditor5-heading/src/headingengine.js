@@ -8,9 +8,9 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { modelElementToView, viewToModelElement } from '@ckeditor/ckeditor5-engine/src/conversion/elementconverters';
+
 import HeadingCommand from './headingcommand';
 
 const defaultModelElement = 'paragraph';
@@ -86,14 +86,10 @@ export default class HeadingEngine extends Plugin {
 				editor.document.schema.registerItem( option.model, '$block' );
 
 				// Build converter from model to view for data and editing pipelines.
-				buildModelConverter().for( data.modelToView, editing.modelToView )
-					.fromElement( option.model )
-					.toElement( option.view.name );
+				modelElementToView( option.model, option.view, [ data.modelToView, editing.modelToView ] );
 
 				// Build converter from view to model for data pipeline.
-				buildViewConverter().for( data.viewToModel )
-					.from( { name: option.view.name } )
-					.toElement( option.model );
+				viewToModelElement( option.model, option.view, [ data.viewToModel ] );
 
 				// Register the heading command for this option.
 				editor.commands.add( option.model, new HeadingCommand( editor, option.model ) );
