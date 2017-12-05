@@ -137,6 +137,8 @@ describe( 'EditingController', () => {
 			editing = new EditingController( model );
 
 			domRoot = document.createElement( 'div' );
+			domRoot.contentEditable = true;
+
 			document.body.appendChild( domRoot );
 			viewRoot = editing.createRoot( domRoot );
 
@@ -218,12 +220,15 @@ describe( 'EditingController', () => {
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>foo</paragraph>' +
 						'<paragraph></paragraph>' +
-						'<paragraph>b[a]r</paragraph>' );
+						'<paragraph>b[a]r</paragraph>'
+					);
+
 					done();
 				} );
 			} );
 
 			editing.view.isFocused = true;
+			editing.view.render();
 
 			const domSelection = document.getSelection();
 			domSelection.removeAllRanges();
