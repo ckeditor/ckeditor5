@@ -47,7 +47,7 @@ export default class ImageStyleCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const element = this.editor.document.selection.getSelectedElement();
+		const element = this.editor.model.document.selection.getSelectedElement();
 
 		this.isEnabled = isImage( element );
 
@@ -64,27 +64,22 @@ export default class ImageStyleCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @fires execute
-	 * @param {Object} options
-	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps. A new batch will be
-	 * created if this option is not set.
 	 */
-	execute( options = {} ) {
+	execute() {
 		if ( this.value ) {
 			return;
 		}
 
-		const doc = this.editor.document;
-		const imageElement = doc.selection.getSelectedElement();
+		const model = this.editor.model;
+		const imageElement = model.document.selection.getSelectedElement();
 
-		doc.enqueueChanges( () => {
-			const batch = options.batch || doc.batch();
-
+		model.change( writer => {
 			// Default style means that there is no `imageStyle` attribute in the model.
 			// https://github.com/ckeditor/ckeditor5-image/issues/147
 			if ( this.style.isDefault ) {
-				batch.removeAttribute( 'imageStyle', imageElement );
+				writer.removeAttribute( 'imageStyle', imageElement );
 			} else {
-				batch.setAttribute( 'imageStyle', this.style.name, imageElement );
+				writer.setAttribute( 'imageStyle', this.style.name, imageElement );
 			}
 		} );
 	}

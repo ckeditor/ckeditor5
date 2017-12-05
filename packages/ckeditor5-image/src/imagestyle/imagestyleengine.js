@@ -44,8 +44,7 @@ export default class ImageStyleEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const doc = editor.document;
-		const schema = doc.schema;
+		const schema = editor.model.schema;
 		const data = editor.data;
 		const editing = editor.editing;
 

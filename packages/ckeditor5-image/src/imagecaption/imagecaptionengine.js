@@ -35,9 +35,9 @@ export default class ImageCaptionEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const document = editor.document;
+		const document = editor.model.document;
 		const viewDocument = editor.editing.view;
-		const schema = document.schema;
+		const schema = editor.model.schema;
 		const data = editor.data;
 		const editing = editor.editing;
 		const t = editor.t;
@@ -65,7 +65,7 @@ export default class ImageCaptionEngine extends Plugin {
 		schema.limits.add( 'caption' );
 
 		// Add caption element to each image inserted without it.
-		document.on( 'change', insertMissingModelCaptionElement );
+		document.on( 'change', ( evt, type, data, batch ) => this._insertMissingModelCaptionElement( type, data, batch ) );
 
 		// View to model converter for the data pipeline.
 		buildViewConverter()
@@ -105,7 +105,7 @@ export default class ImageCaptionEngine extends Plugin {
 		}
 
 		// If whole image is selected.
-		const modelSelection = this.editor.document.selection;
+		const modelSelection = this.editor.model.document.selection;
 		const selectedElement = modelSelection.getSelectedElement();
 
 		if ( selectedElement && selectedElement.is( 'image' ) ) {
@@ -150,33 +150,38 @@ export default class ImageCaptionEngine extends Plugin {
 			}
 		}
 	}
-}
 
-// Checks whether data inserted to the model document have image element that has no caption element inside it.
-// If there is none - adds it to the image element.
-//
-// @private
-function insertMissingModelCaptionElement( evt, changeType, data, batch ) {
-	if ( changeType !== 'insert' ) {
-		return;
-	}
+	/**
+	 * Checks whether data inserted to the model document have image element that has no caption element inside it.
+	 * If there is none - adds it to the image element.
+	 *
+	 * @private
+	 * @param {String} changeType Type of change.
+	 * @param {Object} data Change data.
+	 * @param {module:engine/model/batch} batch Bath to with changed will be added.
+	 */
+	_insertMissingModelCaptionElement( changeType, data, batch ) {
+		if ( changeType !== 'insert' ) {
+			return;
+		}
 
-	const walker = new ModelTreeWalker( {
-		boundaries: data.range,
-		ignoreElementEnd: true
-	} );
+		const walker = new ModelTreeWalker( {
+			boundaries: data.range,
+			ignoreElementEnd: true
+		} );
 
-	for ( const value of walker ) {
-		const item = value.item;
+		for ( const value of walker ) {
+			const item = value.item;
 
-		if ( value.type == 'elementStart' && isImage( item ) && !getCaptionFromImage( item ) ) {
-			batch.document.enqueueChanges( () => {
-				// Make sure that the image does not have caption already.
-				// https://github.com/ckeditor/ckeditor5-image/issues/78
-				if ( !getCaptionFromImage( item ) ) {
-					batch.appendElement( 'caption', item );
-				}
-			} );
+			if ( value.type == 'elementStart' && isImage( item ) && !getCaptionFromImage( item ) ) {
+				this.editor.model.enqueueChange( batch, writer => {
+					// Make sure that the image does not have caption already.
+					// https://github.com/ckeditor/ckeditor5-image/issues/78
+					if ( !getCaptionFromImage( item ) ) {
+						writer.appendElement( 'caption', item );
+					}
+				} );
+			}
 		}
 	}
 }
@@ -230,12 +235,11 @@ function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper 
 	mapper.bindElements( modelCaption, viewCaption );
 }
 
-/**
- * Checks if the provided node or one of its ancestors is a caption element, and returns it.
- *
- * @param {module:engine/model/node~Node} node
- * @returns {module:engine/model/element~Element|null}
- */
+// Checks if the provided node or one of its ancestors is a caption element, and returns it.
+//
+// @private
+// @param {module:engine/model/node~Node} node
+// @returns {module:engine/model/element~Element|null}
 function getParentCaption( node ) {
 	const ancestors = node.getAncestors( { includeSelf: true } );
 	const caption = ancestors.find( ancestor => ancestor.name == 'caption' );
