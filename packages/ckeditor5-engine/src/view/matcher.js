@@ -378,3 +378,17 @@ function matchStyles( patterns, element ) {
 
 	return match;
 }
+
+/**
+ * @typedef {Object} @module engine/view/matcher~Pattern
+ *
+ * @param {String|RegExp} [name] Name or regular expression to match element's name.
+ * @param {Object} [attribute] Object with key-value pairs representing attributes to match. Each object key
+ * represents attribute name. Value under that key can be either a string or a regular expression and it will be
+ * used to match attribute value.
+ * @param {String|RegExp|Array} [class] Class name or array of class names to match. Each name can be
+ * provided in a form of string or regular expression.
+ * @param {Object} [style] Object with key-value pairs representing styles to match. Each object key
+ * represents style name. Value under that key can be either a string or a regular expression and it will be used
+ * to match style value.
+ */
