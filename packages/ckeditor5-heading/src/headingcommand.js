@@ -64,7 +64,7 @@ export default class HeadingCommand extends Command {
 		const model = this.editor.model;
 		const document = model.document;
 
-		model.enqueueChange( writer => {
+		model.change( writer => {
 			const blocks = Array.from( document.selection.getSelectedBlocks() )
 				.filter( block => {
 					return checkCanBecomeHeading( block, this.modelElement, model.schema );
