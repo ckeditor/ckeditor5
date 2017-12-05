@@ -118,7 +118,8 @@ export default class Clipboard extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const doc = editor.document;
+		const model = editor.model;
+		const doc = model.document;
 		const editingView = editor.editing.view;
 
 		/**
@@ -159,19 +160,18 @@ export default class Clipboard extends Plugin {
 		this.listenTo( this, 'inputTransformation', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				const dataController = this.editor.data;
-				const batch = doc.batch();
 
 				// Convert the pasted content to a model document fragment.
 				// Conversion is contextual, but in this case we need an "all allowed" context and for that
 				// we use the $clipboardHolder item.
-				const modelFragment = dataController.toModel( data.content, batch, '$clipboardHolder' );
+				const modelFragment = dataController.toModel( data.content, '$clipboardHolder' );
 
 				if ( modelFragment.childCount == 0 ) {
 					return;
 				}
 
-				doc.enqueueChanges( () => {
-					dataController.insertContent( modelFragment, doc.selection, batch );
+				model.change( () => {
+					dataController.insertContent( modelFragment, doc.selection );
 				} );
 			}
 		}, { priority: 'low' } );
@@ -179,13 +179,17 @@ export default class Clipboard extends Plugin {
 		// The clipboard copy/cut pipeline.
 
 		function onCopyCut( evt, data ) {
-			const batch = doc.batch();
 			const dataTransfer = data.dataTransfer;
-			const content = editor.data.toView( editor.data.getSelectedContent( doc.selection, batch ) );
 
 			data.preventDefault();
 
-			editingView.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name, batch } );
+			model.change( writer => {
+				const content = editor.data.toView( editor.data.getSelectedContent( doc.selection ) );
+
+				// This is really bad that writer is passed along with this event.
+				// We need to figure out something better.
+				editingView.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name, writer } );
+			} );
 		}
 
 		this.listenTo( editingView, 'copy', onCopyCut, { priority: 'low' } );
@@ -206,8 +210,8 @@ export default class Clipboard extends Plugin {
 			}
 
 			if ( data.method == 'cut' ) {
-				doc.enqueueChanges( () => {
-					editor.data.deleteContent( doc.selection, data.batch );
+				model.enqueueChange( data.writer.batch, () => {
+					editor.data.deleteContent( doc.selection );
 				} );
 			}
 		}, { priority: 'low' } );
