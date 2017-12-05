@@ -118,8 +118,8 @@ describe( 'Heading', () => {
 			beforeEach( () => {
 				commands = {};
 
-				editor.config.get( 'heading.options' ).forEach( ( { modelElement } ) => {
-					commands[ modelElement ] = editor.commands.get( modelElement );
+				editor.config.get( 'heading.options' ).forEach( ( { model } ) => {
+					commands[ model ] = editor.commands.get( model );
 				} );
 			} );
 
@@ -151,17 +151,17 @@ describe( 'Heading', () => {
 
 			beforeEach( () => {
 				return localizedEditor( [
-					{ modelElement: 'paragraph', title: 'Paragraph' },
-					{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
-					{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2' }
+					{ model: 'paragraph', title: 'Paragraph' },
+					{ model: 'heading1', view: { name: 'h2' }, title: 'Heading 1' },
+					{ model: 'heading2', view: { name: 'h3' }, title: 'Heading 2' }
 				] );
 			} );
 
 			it( 'does not alter the original config', () => {
 				expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
-					{ modelElement: 'paragraph', title: 'Paragraph' },
-					{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
-					{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2' }
+					{ model: 'paragraph', title: 'Paragraph' },
+					{ model: 'heading1', view: { name: 'h2' }, title: 'Heading 1' },
+					{ model: 'heading2', view: { name: 'h3' }, title: 'Heading 2' }
 				] );
 			} );
 
@@ -194,8 +194,8 @@ describe( 'Heading', () => {
 
 			it( 'allows custom titles', () => {
 				return localizedEditor( [
-					{ modelElement: 'paragraph', title: 'Custom paragraph title' },
-					{ modelElement: 'heading1', title: 'Custom heading1 title' }
+					{ model: 'paragraph', title: 'Custom paragraph title' },
+					{ model: 'heading1', view: { name: 'h1' }, title: 'Custom heading1 title' }
 				] ).then( () => {
 					const listView = dropdown.listView;
 
@@ -208,7 +208,7 @@ describe( 'Heading', () => {
 
 			it( 'translates default using the the locale', () => {
 				return localizedEditor( [
-					{ modelElement: 'paragraph', title: 'Paragraph' }
+					{ model: 'paragraph', title: 'Paragraph' }
 				] ).then( () => {
 					const listView = dropdown.listView;
 
@@ -236,8 +236,8 @@ describe( 'Heading', () => {
 						dropdown = editor.ui.componentFactory.create( 'headings' );
 						commands = {};
 
-						editor.config.get( 'heading.options' ).forEach( ( { modelElement } ) => {
-							commands[ modelElement ] = editor.commands.get( modelElement );
+						editor.config.get( 'heading.options' ).forEach( ( { model } ) => {
+							commands[ model ] = editor.commands.get( model );
 						} );
 
 						editorElement.remove();

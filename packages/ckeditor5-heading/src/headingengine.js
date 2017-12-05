@@ -30,10 +30,35 @@ export default class HeadingEngine extends Plugin {
 
 		editor.config.define( 'heading', {
 			options: [
-				{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-				{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
-				{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
-				{ modelElement: 'heading3', viewElement: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
+				{
+					model: 'paragraph',
+					title: 'Paragraph',
+					class: 'ck-heading_paragraph'
+				},
+				{
+					model: 'heading1',
+					title: 'Heading 1',
+					class: 'ck-heading_heading1',
+					view: {
+						name: 'h2'
+					}
+				},
+				{
+					model: 'heading2',
+					title: 'Heading 2',
+					view: {
+						name: 'h3'
+					},
+					class: 'ck-heading_heading2'
+				},
+				{
+					model: 'heading3',
+					title: 'Heading 3',
+					class: 'ck-heading_heading3',
+					view: {
+						name: 'h4'
+					}
+				}
 			]
 		} );
 	}
@@ -56,22 +81,22 @@ export default class HeadingEngine extends Plugin {
 
 		for ( const option of options ) {
 			// Skip paragraph - it is defined in required Paragraph feature.
-			if ( option.modelElement !== defaultModelElement ) {
+			if ( option.model !== defaultModelElement ) {
 				// Schema.
-				editor.document.schema.registerItem( option.modelElement, '$block' );
+				editor.document.schema.registerItem( option.model, '$block' );
 
 				// Build converter from model to view for data and editing pipelines.
 				buildModelConverter().for( data.modelToView, editing.modelToView )
-					.fromElement( option.modelElement )
-					.toElement( option.viewElement );
+					.fromElement( option.model )
+					.toElement( option.view.name );
 
 				// Build converter from view to model for data pipeline.
 				buildViewConverter().for( data.viewToModel )
-					.fromElement( option.viewElement )
-					.toElement( option.modelElement );
+					.from( { name: option.view.name } )
+					.toElement( option.model );
 
 				// Register the heading command for this option.
-				editor.commands.add( option.modelElement, new HeadingCommand( editor, option.modelElement ) );
+				editor.commands.add( option.model, new HeadingCommand( editor, option.model ) );
 			}
 		}
 	}
@@ -90,7 +115,7 @@ export default class HeadingEngine extends Plugin {
 			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
 				const positionParent = editor.document.selection.getFirstPosition().parent;
 				const batch = data.batch;
-				const isHeading = options.some( option => positionParent.is( option.modelElement ) );
+				const isHeading = options.some( option => positionParent.is( option.model ) );
 
 				if ( isHeading && !positionParent.is( defaultModelElement ) && positionParent.childCount === 0 ) {
 					batch.rename( positionParent, defaultModelElement );

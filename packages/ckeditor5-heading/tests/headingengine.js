@@ -87,18 +87,18 @@ describe( 'HeadingEngine', () => {
 			describe( 'default value', () => {
 				it( 'should be set', () => {
 					expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
-						{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-						{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
-						{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
-						{ modelElement: 'heading3', viewElement: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
+						{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+						{ model: 'heading1', view: { name: 'h2' }, title: 'Heading 1', class: 'ck-heading_heading1' },
+						{ model: 'heading2', view: { name: 'h3' }, title: 'Heading 2', class: 'ck-heading_heading2' },
+						{ model: 'heading3', view: { name: 'h4' }, title: 'Heading 3', class: 'ck-heading_heading3' }
 					] );
 				} );
 			} );
 
 			it( 'should customize options', () => {
 				const options = [
-					{ modelElement: 'paragraph', title: 'Paragraph' },
-					{ modelElement: 'h4', viewElement: 'h4', title: 'H4' }
+					{ model: 'paragraph', title: 'Paragraph' },
+					{ model: 'h4', view: { name: 'h4' }, title: 'H4' }
 				];
 
 				return VirtualTestEditor
