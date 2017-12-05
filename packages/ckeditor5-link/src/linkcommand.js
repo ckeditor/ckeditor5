@@ -57,7 +57,7 @@ export default class LinkCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
-		model.enqueueChange( writer => {
+		model.change( writer => {
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
 			if ( selection.isCollapsed ) {
 				const position = selection.getFirstPosition();

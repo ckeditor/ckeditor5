@@ -35,7 +35,7 @@ export default class UnlinkCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
-		model.enqueueChange( writer => {
+		model.change( writer => {
 			// Get ranges to unlink.
 			const rangesToUnlink = selection.isCollapsed ?
 				[ findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ) ) ] : selection.getRanges();
