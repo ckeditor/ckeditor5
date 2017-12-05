@@ -122,7 +122,7 @@ export default class Widget extends Plugin {
 		// Create model selection over widget.
 		const modelElement = editor.editing.mapper.toModelElement( element );
 
-		editor.document.enqueueChanges( ( ) => {
+		editor.model.change( () => {
 			this._setSelectionOverElement( modelElement );
 		} );
 	}
@@ -179,8 +179,7 @@ export default class Widget extends Plugin {
 		const objectElement = this._getObjectElementNextToSelection( isForward );
 
 		if ( objectElement ) {
-			modelDocument.enqueueChanges( () => {
-				const batch = modelDocument.batch();
+			this.editor.model.change( writer => {
 				let previousNode = modelSelection.anchor.parent;
 
 				// Remove previous element if empty.
@@ -188,7 +187,7 @@ export default class Widget extends Plugin {
 					const nodeToRemove = previousNode;
 					previousNode = nodeToRemove.parent;
 
-					batch.remove( nodeToRemove );
+					writer.remove( nodeToRemove );
 				}
 
 				this._setSelectionOverElement( objectElement );
@@ -216,7 +215,7 @@ export default class Widget extends Plugin {
 			const newRange = modelDocument.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
 
 			if ( newRange ) {
-				modelDocument.enqueueChanges( () => {
+				this.editor.model.change( () => {
 					modelSelection.setRanges( [ newRange ] );
 				} );
 			}
@@ -233,7 +232,7 @@ export default class Widget extends Plugin {
 		const objectElement2 = this._getObjectElementNextToSelection( isForward );
 
 		if ( objectElement2 instanceof ModelElement && modelDocument.schema.objects.has( objectElement2.name ) ) {
-			modelDocument.enqueueChanges( () => {
+			this.editor.model.change( () => {
 				this._setSelectionOverElement( objectElement2 );
 			} );
 
@@ -259,7 +258,7 @@ export default class Widget extends Plugin {
 			return false;
 		}
 
-		modelDocument.enqueueChanges( () => {
+		this.editor.model.change( () => {
 			modelSelection.setIn( limitElement );
 		} );
 
@@ -286,7 +285,7 @@ export default class Widget extends Plugin {
 		if ( selectedElement && isWidget( selectedElement ) ) {
 			const widgetParent = editing.mapper.toModelElement( selectedElement.parent );
 
-			modelDocument.enqueueChanges( () => {
+			this.editor.model.change( () => {
 				modelSelection.setRanges( [ ModelRange.createIn( widgetParent ) ] );
 			} );
 
