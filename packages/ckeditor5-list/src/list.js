@@ -50,7 +50,7 @@ export default class List extends Plugin {
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
 		this.listenTo( this.editor.editing.view, 'enter', ( evt, data ) => {
-			const doc = this.editor.document;
+			const doc = this.editor.model.document;
 			const positionParent = doc.selection.getLastPosition().parent;
 
 			if ( doc.selection.isCollapsed && positionParent.name == 'listItem' && positionParent.isEmpty ) {
@@ -69,7 +69,7 @@ export default class List extends Plugin {
 				return;
 			}
 
-			const selection = this.editor.document.selection;
+			const selection = this.editor.model.document.selection;
 
 			if ( !selection.isCollapsed ) {
 				return;

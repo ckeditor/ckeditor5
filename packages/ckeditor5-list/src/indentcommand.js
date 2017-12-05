@@ -49,11 +49,11 @@ export default class IndentCommand extends Command {
 	 * @fires execute
 	 */
 	execute() {
-		const doc = this.editor.document;
-		const batch = doc.batch();
+		const model = this.editor.model;
+		const doc = model.document;
 		let itemsToChange = Array.from( doc.selection.getSelectedBlocks() );
 
-		doc.enqueueChanges( () => {
+		model.change( writer => {
 			const lastItem = itemsToChange[ itemsToChange.length - 1 ];
 
 			// Indenting a list item should also indent all the items that are already sub-items of indented item.
@@ -83,11 +83,11 @@ export default class IndentCommand extends Command {
 					// To keep the model as correct as possible, first rename listItem, then remove attributes,
 					// as listItem without attributes is very incorrect and will cause problems in converters.
 					// No need to remove attributes, will be removed by post fixer.
-					batch.rename( item, 'paragraph' );
+					writer.rename( item, 'paragraph' );
 				}
 				// If indent is >= 0, change the attribute value.
 				else {
-					batch.setAttribute( 'indent', indent, item );
+					writer.setAttribute( 'indent', indent, item );
 				}
 			}
 
@@ -98,7 +98,7 @@ export default class IndentCommand extends Command {
 			}
 
 			for ( const item of itemsToChange ) {
-				_fixType( item, batch );
+				_fixType( item, writer );
 			}
 		} );
 	}
@@ -111,7 +111,7 @@ export default class IndentCommand extends Command {
 	 */
 	_checkEnabled() {
 		// Check whether any of position's ancestor is a list item.
-		const listItem = first( this.editor.document.selection.getSelectedBlocks() );
+		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		// If selection is not in a list item, the command is disabled.
 		if ( !listItem || !listItem.is( 'listItem' ) ) {
@@ -149,13 +149,13 @@ export default class IndentCommand extends Command {
 
 // Fixes type of `item` element after it was indented/outdented. Looks for a sibling of `item` that has the same
 // indent and sets `item`'s type to the same as that sibling.
-function _fixType( item, batch ) {
+function _fixType( item, writer ) {
 	// Find a preceding sibling of `item` that is a list item of the same list as `item`.
 	const prev = _seekListItem( item, false );
 
 	// If found, fix type.
 	if ( prev ) {
-		batch.setAttribute( 'type', prev.getAttribute( 'type' ), item );
+		writer.setAttribute( 'type', prev.getAttribute( 'type' ), item );
 
 		return;
 	}
@@ -165,7 +165,7 @@ function _fixType( item, batch ) {
 
 	// If found, fix type.
 	if ( next ) {
-		batch.setAttribute( 'type', next.getAttribute( 'type' ), item );
+		writer.setAttribute( 'type', next.getAttribute( 'type' ), item );
 	}
 }
 

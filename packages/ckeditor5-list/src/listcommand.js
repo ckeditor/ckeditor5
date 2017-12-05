@@ -55,22 +55,18 @@ export default class ListCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @protected
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps.
-	 * A new batch will be created if this option is not set.
 	 */
-	execute( options = {} ) {
-		const document = this.editor.document;
+	execute() {
+		const model = this.editor.model;
+		const document = model.document;
 		const blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => checkCanBecomeListItem( block, document.schema ) );
+			.filter( block => checkCanBecomeListItem( block, model.schema ) );
 
 		// Whether we are turning off some items.
 		const turnOff = this.value === true;
 		// If we are turning off items, we are going to rename them to paragraphs.
 
-		document.enqueueChanges( () => {
-			const batch = options.batch || document.batch();
-
+		model.change( writer => {
 			// If part of a list got turned off, we need to handle (outdent) all of sub-items of the last turned-off item.
 			// To be sure that model is all the time in a good state, we first fix items below turned-off item.
 			if ( turnOff ) {
@@ -154,7 +150,7 @@ export default class ListCommand extends Command {
 				changes = changes.reverse();
 
 				for ( const item of changes ) {
-					batch.setAttribute( 'indent', item.indent, item.element );
+					writer.setAttribute( 'indent', item.indent, item.element );
 				}
 			}
 
@@ -204,16 +200,16 @@ export default class ListCommand extends Command {
 				if ( turnOff && element.name == 'listItem' ) {
 					// We are turning off and the element is a `listItem` - it should be converted to `paragraph`.
 					// List item specific attributes are removed by post fixer.
-					batch.rename( element, 'paragraph' );
+					writer.rename( element, 'paragraph' );
 				} else if ( !turnOff && element.name != 'listItem' ) {
 					// We are turning on and the element is not a `listItem` - it should be converted to `listItem`.
 					// The order of operations is important to keep model in correct state.
-					batch.setAttributes( { type: this.type, indent: 0 }, element );
-					batch.rename( element, 'listItem' );
+					writer.setAttributes( { type: this.type, indent: 0 }, element );
+					writer.rename( element, 'listItem' );
 				} else if ( !turnOff && element.name == 'listItem' && element.getAttribute( 'type' ) != this.type ) {
 					// We are turning on and the element is a `listItem` but has different type - change it's type and
 					// type of it's all siblings that have same indent.
-					batch.setAttribute( 'type', this.type, element );
+					writer.setAttribute( 'type', this.type, element );
 				}
 			}
 		} );
@@ -227,7 +223,7 @@ export default class ListCommand extends Command {
 	 */
 	_getValue() {
 		// Check whether closest `listItem` ancestor of the position has a correct type.
-		const listItem = first( this.editor.document.selection.getSelectedBlocks() );
+		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		return !!listItem && listItem.is( 'listItem' ) && listItem.getAttribute( 'type' ) == this.type;
 	}
@@ -244,8 +240,8 @@ export default class ListCommand extends Command {
 			return true;
 		}
 
-		const selection = this.editor.document.selection;
-		const schema = this.editor.document.schema;
+		const selection = this.editor.model.document.selection;
+		const schema = this.editor.model.schema;
 
 		const firstBlock = first( selection.getSelectedBlocks() );
 

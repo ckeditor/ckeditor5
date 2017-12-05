@@ -53,11 +53,12 @@ export default class ListEngine extends Plugin {
 		// Note: in case `$block` will be ever allowed in `listItem`, keep in mind that this feature
 		// uses `Selection#getSelectedBlocks()` without any additional processing to obtain all selected list items.
 		// If there are blocks allowed inside list item, algorithms using `getSelectedBlocks()` will have to be modified.
-		const schema = editor.document.schema;
+		const schema = editor.model.schema;
 		schema.registerItem( 'listItem', '$block' );
 		schema.allow( {
 			name: 'listItem',
 			inside: '$root',
+			coinside: '$root',
 			attributes: [ 'type', 'indent' ]
 		} );
 		schema.requireAttributes( 'listItem', [ 'type', 'indent' ] );
@@ -66,11 +67,11 @@ export default class ListEngine extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
-		this.editor.document.on( 'change', modelChangePostFixer( this.editor.document ), { priority: 'high' } );
+		this.editor.model.document.on( 'change', modelChangePostFixer( this.editor.model ), { priority: 'high' } );
 
 		// Unbind all moved model elements before conversion happens. This is important for converters.
 		// TODO: fix this when changes are converted on `changesDone`.
-		this.editor.document.on( 'change', ( evt, type, changes ) => {
+		this.editor.model.document.on( 'change', ( evt, type, changes ) => {
 			if ( type == 'move' ) {
 				for ( const item of changes.range.getItems() ) {
 					if ( item.is( 'listItem' ) ) {
