@@ -65,7 +65,7 @@ describe( 'FontSizeEditing', () => {
 				.create( {
 					plugins: [ FontSizeEditing ],
 					fontSize: {
-						items: [ { label: 'My Size', model: 'my-size', view: { name: 'span', styles: 'font-size: 12em;' } } ]
+						items: [ { label: 'My Size', model: 'my-size', view: { name: 'span', style: 'font-size: 12em;' } } ]
 					}
 				} )
 				.then( newEditor => {
@@ -77,7 +77,7 @@ describe( 'FontSizeEditing', () => {
 						{
 							label: 'My Size',
 							model: 'my-size',
-							view: { name: 'span', styles: 'font-size: 12em;' }
+							view: { name: 'span', style: 'font-size: 12em;' }
 						}
 					] );
 				} );
@@ -98,10 +98,10 @@ describe( 'FontSizeEditing', () => {
 						const plugin = editor.plugins.get( FontSizeEditing );
 
 						expect( plugin.configuredItems ).to.deep.equal( [
-							{ label: 'Tiny', model: 'text-tiny', view: { name: 'span', classes: 'text-tiny' } },
-							{ label: 'Small', model: 'text-small', view: { name: 'span', classes: 'text-small' } },
-							{ label: 'Big', model: 'text-big', view: { name: 'span', classes: 'text-big' } },
-							{ label: 'Huge', model: 'text-huge', view: { name: 'span', classes: 'text-huge' } }
+							{ label: 'Tiny', model: 'text-tiny', view: { name: 'span', class: 'text-tiny' } },
+							{ label: 'Small', model: 'text-small', view: { name: 'span', class: 'text-small' } },
+							{ label: 'Big', model: 'text-big', view: { name: 'span', class: 'text-big' } },
+							{ label: 'Huge', model: 'text-huge', view: { name: 'span', class: 'text-huge' } }
 						] );
 					} );
 			} );
@@ -122,10 +122,10 @@ describe( 'FontSizeEditing', () => {
 						const plugin = editor.plugins.get( FontSizeEditing );
 
 						expect( plugin.configuredItems ).to.deep.equal( [
-							{ label: '10', model: '10', stopValue: 10, view: { name: 'span', styles: { 'font-size': '10px' } } },
-							{ label: '12', model: '12', stopValue: 12, view: { name: 'span', styles: { 'font-size': '12px' } } },
-							{ label: '14', model: '14', stopValue: 14, view: { name: 'span', styles: { 'font-size': '14px' } } },
-							{ label: '18', model: '18', stopValue: 18, view: { name: 'span', styles: { 'font-size': '18px' } } }
+							{ label: '10', model: '10', view: { name: 'span', style: { 'font-size': '10px' } } },
+							{ label: '12', model: '12', view: { name: 'span', style: { 'font-size': '12px' } } },
+							{ label: '14', model: '14', view: { name: 'span', style: { 'font-size': '14px' } } },
+							{ label: '18', model: '18', view: { name: 'span', style: { 'font-size': '18px' } } }
 						] );
 					} );
 			} );
@@ -143,8 +143,8 @@ describe( 'FontSizeEditing', () => {
 							model: 'my',
 							view: {
 								name: 'mark',
-								styles: 'font-size: 30px',
-								classes: 'my-style'
+								style: 'font-size: 30px',
+								class: 'my-style'
 							}
 						} ]
 					}
@@ -196,17 +196,30 @@ describe( 'FontSizeEditing', () => {
 								model: 'my',
 								view: {
 									name: 'mark',
-									styles: { 'font-size': '30px' },
-									classes: 'my-style'
+									style: { 'font-size': '30px' },
+									class: 'my-style'
 								}
 							},
 							{
 								label: 'Big multiple classes',
 								model: 'big-multiple',
-								// TODO: define ViewElementConfigDefinition interface (wheter strings or arrays to use)?
 								view: {
 									name: 'span',
-									classes: [ 'foo', 'foo-big' ]
+									class: [ 'foo', 'foo-big' ]
+								}
+							},
+							{
+								label: 'Hybrid',
+								model: 'complex',
+								view: {
+									to: {
+										name: 'span',
+										class: [ 'text-complex' ]
+									},
+									from: [
+										{ name: 'span', style: { 'font-size': '77em' } },
+										{ name: 'span', attribute: { 'data-size': '77em' } }
+									]
 								}
 							}
 						]
@@ -267,6 +280,26 @@ describe( 'FontSizeEditing', () => {
 			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="my">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'should convert from complex definitions', () => {
+			editor.setData(
+				'<p>f<span style="font-size: 77em;">o</span>o</p>' +
+				'<p>b<span data-size="77em">a</span>r</p>' +
+				'<p>b<span class="text-complex">a</span>z</p>'
+			);
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph>[]f<$text fontSize="complex">o</$text>o</paragraph>' +
+				'<paragraph>b<$text fontSize="complex">a</$text>r</paragraph>' +
+				'<paragraph>b<$text fontSize="complex">a</$text>z</paragraph>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<p>f<span class="text-complex">o</span>o</p>' +
+				'<p>b<span class="text-complex">a</span>r</p>' +
+				'<p>b<span class="text-complex">a</span>z</p>'
+			);
 		} );
 	} );
 } );

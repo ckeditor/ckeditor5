@@ -39,57 +39,15 @@ export default class FontSizeEditing extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
+		// Covert view to model
 		for ( const item of this.configuredItems ) {
-			const viewDefinition = item.view;
-			const element = viewDefinition.name;
-			const classes = viewDefinition.classes;
-			const styles = viewDefinition.styles;
-
-			const pattern = { name: element };
-
-			if ( classes ) {
-				pattern.class = classes;
-			}
-
-			if ( styles ) {
-				pattern.style = styles;
-			}
-
-			buildViewConverter()
-				.for( data.viewToModel )
-				.from( pattern )
-				.toAttribute( () => ( {
-					key: 'fontSize',
-					value: item.model
-				} ) );
+			viewToAttribute( item.view, [ data.viewToModel ], 'fontSize', item.model );
 		}
 
 		// Convert model to view
-		buildModelConverter().for( data.modelToView, editing.modelToView )
-			.fromAttribute( 'fontSize' )
-			.toElement( data => {
-				const definition = this._getDefinition( data );
+		const items = this.configuredItems;
 
-				if ( !definition ) {
-					return;
-				}
-
-				const viewDefinition = definition.view;
-				const classes = viewDefinition.classes;
-				const styles = viewDefinition.styles;
-
-				const attributes = {};
-
-				if ( classes ) {
-					attributes.class = Array.isArray( classes ) ? classes.join( ' ' ) : classes;
-				}
-
-				if ( styles ) {
-					attributes.style = typeof styles === 'string' ? styles : toStylesString( styles );
-				}
-
-				return new AttributeElement( viewDefinition.name, attributes );
-			} );
+		attributeToView( [ data.modelToView, editing.modelToView ], 'fontSize', items );
 	}
 
 	get configuredItems() {
@@ -126,57 +84,39 @@ export default class FontSizeEditing extends Plugin {
 		// Temporary workaround. See https://github.com/ckeditor/ckeditor5/issues/477.
 		editor.document.schema.allow( { name: '$inline', attributes: 'fontSize', inside: '$clipboardHolder' } );
 	}
-
-	_getDefinition( name ) {
-		const stringName = String( name );
-
-		for ( const item of this.configuredItems ) {
-			if ( item.model === stringName ) {
-				return item;
-			}
-		}
-	}
 }
 
 const namedPresets = {
 	tiny: {
 		label: 'Tiny',
 		model: 'text-tiny',
-		// stopValue: .7
-		// stopUnit: 'em'
 		view: {
 			name: 'span',
-			classes: 'text-tiny'
+			class: 'text-tiny'
 		}
 	},
 	small: {
 		label: 'Small',
 		model: 'text-small',
-		// stopValue: .85
-		// stopUnit: 'em',
 		view: {
 			name: 'span',
-			classes: 'text-small'
+			class: 'text-small'
 		}
 	},
 	big: {
 		label: 'Big',
 		model: 'text-big',
-		// stopValue: 1.4
-		// stopUnit: 'em',
 		view: {
 			name: 'span',
-			classes: 'text-big'
+			class: 'text-big'
 		}
 	},
 	huge: {
 		label: 'Huge',
 		model: 'text-huge',
-		// stopValue: 1.8
-		// stopUnit: 'em',
 		view: {
 			name: 'span',
-			classes: 'text-huge'
+			class: 'text-huge'
 		}
 	}
 };
@@ -211,10 +151,9 @@ function generatePixelPreset( size ) {
 	return {
 		label: sizeName,
 		model: sizeName,
-		stopValue: size,
 		view: {
 			name: 'span',
-			styles: {
+			style: {
 				'font-size': `${ size }px`
 			}
 		}
@@ -230,3 +169,119 @@ function toStylesString( stylesObject ) {
 
 	return styles.join( ';' );
 }
+
+function viewToAttribute( view, dispatchers, attributeName, attributeValue ) {
+	const viewDefinitions = view.from ? view.from : [ view ];
+
+	for ( const viewDefinition of viewDefinitions ) {
+		const element = viewDefinition.name;
+		const classes = viewDefinition.class;
+		const styles = viewDefinition.style;
+
+		const pattern = { name: element };
+
+		if ( classes ) {
+			pattern.class = classes;
+		}
+
+		if ( styles ) {
+			pattern.style = styles;
+		}
+
+		buildViewConverter()
+			.for( ...dispatchers )
+			.from( pattern )
+			.toAttribute( () => ( {
+				key: attributeName,
+				value: attributeValue
+			} ) );
+	}
+}
+
+function attributeToView( dispatchers, attributeName, items ) {
+	buildModelConverter()
+		.for( ...dispatchers )
+		.fromAttribute( attributeName )
+		.toElement( attributeValue => {
+			const definition = _getDefinition( attributeValue );
+
+			if ( !definition ) {
+				return;
+			}
+
+			const viewDefinition = definition.view.to ? definition.view.to : definition.view;
+			// TODO: AttributeElement.fromDefinition() ?
+
+			const classes = viewDefinition.class;
+			const styles = viewDefinition.style;
+
+			const attributes = {};
+
+			// TODO: AttributeElement does no accept Array
+			if ( classes ) {
+				attributes.class = Array.isArray( classes ) ? classes.join( ' ' ) : classes;
+			}
+
+			// TODO: Attribute element does not accept Object
+			if ( styles ) {
+				attributes.style = typeof styles === 'string' ? styles : toStylesString( styles );
+			}
+
+			return new AttributeElement( viewDefinition.name, attributes );
+		} );
+
+	function _getDefinition( name ) {
+		const stringName = String( name );
+
+		for ( const item of items ) {
+			if ( item.model === stringName ) {
+				return item;
+			}
+		}
+	}
+}
+
+/**
+ * Font size option descriptor.
+ *
+ * @typedef {Object} module:font/fontsize/fontsizeediting~FontSizeOption
+ *
+ * @property {String} label TODO me
+ * @property {String} model TODO me
+ * @property {module:engine/view/viewelementdefinition~ViewElementDefinition} view View element configuration.
+ */
+
+/**
+ * The configuration of the heading feature. Introduced by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing} feature.
+ *
+ * Read more in {@link module:font/fontsize/fontsizeediting~FontSizeConfig}.
+ *
+ * @member {module:font/fontsize/fontsizeediting~FontSizeConfig} module:core/editor/editorconfig~EditorConfig#fontSize
+ */
+
+/**
+ * The configuration of the font size feature.
+ * The option is used by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing} feature.
+ *
+ *        ClassicEditor
+ *            .create( {
+ * 				fontSize: ... // Font size feature config.
+ *			} )
+ *            .then( ... )
+ *            .catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface module:font/fontsize/fontsizeediting~FontSizeConfig
+ */
+
+/**
+ * Available font size options. Defined either as array of strings.
+ *
+ * The default value is
+ * TODO code
+ * which configures
+ *
+ * @member {Array.<String|Number|module:font/fontsize/fontsizeediting~FontSizeOption>}
+ *  module:font/fontsize/fontsizeediting~FontSizeConfig#items
+ */
