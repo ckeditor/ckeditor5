@@ -1,8 +1,9 @@
 ## Basic styles
 
 1. The data should be loaded with:
-  * italic "This",
-  * bold "editor",
+  * italic _"This"_,
+  * bold **"editor"**,
   * underline "instance",
-  * code "is an".
-2. Test the bold, italic, underline and code features live.
+  * strikethrough ~~"is"~~,
+  * code `"an"`.
+2. Test the bold, italic, strikethrough, underline and code features live.
