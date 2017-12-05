@@ -138,15 +138,20 @@ describe( 'FontSizeEditing', () => {
 				.create( {
 					plugins: [ FontSizeEditing, Paragraph ],
 					fontSize: {
-						items: [ 'tiny', 'normal', 18, {
-							label: 'My setting',
-							model: 'my',
-							view: {
-								name: 'mark',
-								style: 'font-size: 30px',
-								class: 'my-style'
+						items: [
+							'tiny',
+							'normal',
+							18,
+							{
+								label: 'My setting',
+								model: 'my',
+								view: {
+									name: 'mark',
+									style: 'font-size: 30px',
+									class: 'my-style'
+								}
 							}
-						} ]
+						]
 					}
 				} )
 				.then( newEditor => {

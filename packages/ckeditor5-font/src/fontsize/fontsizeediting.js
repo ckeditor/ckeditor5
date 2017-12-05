@@ -8,9 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
+import { modelAttributeToView, viewToModelAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/attributeconverters';
 
 /**
  * The Font Size Editing feature.
@@ -39,15 +37,15 @@ export default class FontSizeEditing extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
-		// Covert view to model
 		for ( const item of this.configuredItems ) {
-			viewToAttribute( item.view, [ data.viewToModel ], 'fontSize', item.model );
+			// Covert view to model.
+			viewToModelAttribute( 'fontSize', item.model, item.view, [ data.viewToModel ] );
+
+			// Covert model to view.
+			modelAttributeToView( 'fontSize', item.model, item.view, [ data.modelToView, editing.modelToView ] );
+
+			// Add command.
 		}
-
-		// Convert model to view
-		const items = this.configuredItems;
-
-		attributeToView( [ data.modelToView, editing.modelToView ], 'fontSize', items );
 	}
 
 	get configuredItems() {
@@ -158,87 +156,6 @@ function generatePixelPreset( size ) {
 			}
 		}
 	};
-}
-
-function toStylesString( stylesObject ) {
-	const styles = [];
-
-	for ( const key in stylesObject ) {
-		styles.push( key + ':' + stylesObject[ key ] );
-	}
-
-	return styles.join( ';' );
-}
-
-function viewToAttribute( view, dispatchers, attributeName, attributeValue ) {
-	const viewDefinitions = view.from ? view.from : [ view ];
-
-	for ( const viewDefinition of viewDefinitions ) {
-		const element = viewDefinition.name;
-		const classes = viewDefinition.class;
-		const styles = viewDefinition.style;
-
-		const pattern = { name: element };
-
-		if ( classes ) {
-			pattern.class = classes;
-		}
-
-		if ( styles ) {
-			pattern.style = styles;
-		}
-
-		buildViewConverter()
-			.for( ...dispatchers )
-			.from( pattern )
-			.toAttribute( () => ( {
-				key: attributeName,
-				value: attributeValue
-			} ) );
-	}
-}
-
-function attributeToView( dispatchers, attributeName, items ) {
-	buildModelConverter()
-		.for( ...dispatchers )
-		.fromAttribute( attributeName )
-		.toElement( attributeValue => {
-			const definition = _getDefinition( attributeValue );
-
-			if ( !definition ) {
-				return;
-			}
-
-			const viewDefinition = definition.view.to ? definition.view.to : definition.view;
-			// TODO: AttributeElement.fromDefinition() ?
-
-			const classes = viewDefinition.class;
-			const styles = viewDefinition.style;
-
-			const attributes = {};
-
-			// TODO: AttributeElement does no accept Array
-			if ( classes ) {
-				attributes.class = Array.isArray( classes ) ? classes.join( ' ' ) : classes;
-			}
-
-			// TODO: Attribute element does not accept Object
-			if ( styles ) {
-				attributes.style = typeof styles === 'string' ? styles : toStylesString( styles );
-			}
-
-			return new AttributeElement( viewDefinition.name, attributes );
-		} );
-
-	function _getDefinition( name ) {
-		const stringName = String( name );
-
-		for ( const item of items ) {
-			if ( item.model === stringName ) {
-				return item;
-			}
-		}
-	}
 }
 
 /**
