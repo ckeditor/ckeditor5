@@ -171,7 +171,7 @@ export default class Editor {
 
 		return this.plugins.destroy()
 			.then( () => {
-				this.document.destroy();
+				this.model.document.destroy();
 				this.data.destroy();
 			} );
 	}
