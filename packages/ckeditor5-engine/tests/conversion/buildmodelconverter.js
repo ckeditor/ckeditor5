@@ -5,7 +5,7 @@
 
 import buildModelConverter from '../../src/conversion/buildmodelconverter';
 
-import ModelDocument from '../../src/model/document';
+import Model from '../../src/model/model';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
@@ -69,13 +69,12 @@ function viewToString( item ) {
 }
 
 describe( 'Model converter builder', () => {
-	let dispatcher, mapper, modelDoc, modelRoot, viewDoc, viewRoot, viewSelection, batch;
+	let dispatcher, mapper, modelDoc, modelRoot, viewDoc, viewRoot, viewSelection, model;
 
 	beforeEach( () => {
-		modelDoc = new ModelDocument();
+		model = new Model();
+		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot( 'root', 'root' );
-
-		batch = modelDoc.batch();
 
 		viewDoc = new ViewDocument();
 		viewRoot = viewDoc.createRoot( 'div' );
@@ -84,7 +83,7 @@ describe( 'Model converter builder', () => {
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
 
-		dispatcher = new ModelConversionDispatcher( modelDoc, { mapper, viewSelection } );
+		dispatcher = new ModelConversionDispatcher( model, { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'remove', remove() );
@@ -146,7 +145,7 @@ describe( 'Model converter builder', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><strong>foo</strong></div>' );
 
-			batch.removeAttribute( 'bold', modelRoot );
+			modelRoot.removeAttribute( 'bold' );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'bold', true, null );
 
@@ -163,7 +162,7 @@ describe( 'Model converter builder', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><strong>foo</strong></div>' );
 
-			batch.removeAttribute( 'bold', modelRoot );
+			modelRoot.removeAttribute( 'bold' );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'bold', true, null );
 
@@ -180,13 +179,13 @@ describe( 'Model converter builder', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>foo</em></div>' );
 
-			batch.setAttribute( 'italic', 'i', modelRoot );
+			modelRoot.setAttribute( 'italic', 'i' );
 
 			dispatcher.convertAttribute( 'changeAttribute', ModelRange.createIn( modelRoot ), 'italic', 'em', 'i' );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><i>foo</i></div>' );
 
-			batch.removeAttribute( 'italic', modelRoot );
+			modelRoot.removeAttribute( 'italic' );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'italic', 'i', null );
 

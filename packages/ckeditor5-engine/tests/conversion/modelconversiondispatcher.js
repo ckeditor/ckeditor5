@@ -4,11 +4,13 @@
  */
 
 import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
-import ModelDocument from '../../src/model/document';
+import Model from '../../src/model/model';
 import ModelText from '../../src/model/text';
 import ModelElement from '../../src/model/element';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
+import ModelWriter from '../../src/model/writer';
+import Batch from '../../src/model/batch';
 import RemoveOperation from '../../src/model/operation/removeoperation';
 import NoOperation from '../../src/model/operation/nooperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
@@ -18,20 +20,24 @@ import { wrapInDelta } from '../../tests/model/_utils/utils';
 import ViewContainerElement from '../../src/view/containerelement';
 
 describe( 'ModelConversionDispatcher', () => {
-	let dispatcher, doc, root, gyPos;
+	let dispatcher, doc, root, gyPos, model, writer;
 
 	beforeEach( () => {
-		doc = new ModelDocument();
-		dispatcher = new ModelConversionDispatcher( doc );
+		model = new Model();
+		doc = model.document;
+		dispatcher = new ModelConversionDispatcher( model );
 		root = doc.createRoot();
 
 		gyPos = new ModelPosition( doc.graveyard, [ 0 ] );
+
+		// As an util for modifying model tree.
+		writer = new ModelWriter( model, new Batch() );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should create ModelConversionDispatcher with given api', () => {
 			const apiObj = {};
-			const dispatcher = new ModelConversionDispatcher( doc, { apiObj } );
+			const dispatcher = new ModelConversionDispatcher( model, { apiObj } );
 
 			expect( dispatcher.conversionApi.apiObj ).to.equal( apiObj );
 		} );
@@ -63,7 +69,9 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.on( 'insert:image', cbInsertImage );
 			dispatcher.on( 'addAttribute:key:$text', cbAddAttribute );
 
-			doc.batch().insertText( 'foo', { key: 'value' }, root );
+			model.change( writer => {
+				writer.insertText( 'foo', { key: 'value' }, root );
+			} );
 
 			expect( cbInsertText.called ).to.be.true;
 			expect( cbAddAttribute.called ).to.be.true;
@@ -78,7 +86,7 @@ describe( 'ModelConversionDispatcher', () => {
 			const removeOperation = new RemoveOperation( imagePos, 1, gyPos, 0 );
 
 			// Let's apply remove operation so reinsert operation won't break.
-			doc.applyOperation( wrapInDelta( removeOperation ) );
+			model.applyOperation( wrapInDelta( removeOperation ) );
 
 			const cbInsertText = sinon.spy();
 			const cbInsertImage = sinon.spy();
@@ -88,7 +96,7 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.on( 'insert:image', cbInsertImage );
 			dispatcher.on( 'addAttribute:key:image', cbAddAttribute );
 
-			doc.applyOperation( wrapInDelta( removeOperation.getReversed() ) );
+			model.applyOperation( wrapInDelta( removeOperation.getReversed() ) );
 
 			expect( cbInsertImage.called ).to.be.true;
 			expect( cbAddAttribute.called ).to.be.true;
@@ -100,7 +108,9 @@ describe( 'ModelConversionDispatcher', () => {
 
 			dispatcher.on( 'remove', cbRemove );
 
-			doc.batch().remove( image );
+			model.change( writer => {
+				writer.remove( image );
+			} );
 
 			expect( cbRemove.called ).to.be.true;
 		} );
@@ -112,13 +122,17 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.on( 'addAttribute:key:$text', cbAddText );
 			dispatcher.on( 'addAttribute:key:image', cbAddImage );
 
-			doc.batch().setAttribute( 'key', 'value', image );
+			model.change( writer => {
+				writer.setAttribute( 'key', 'value', image );
+			} );
 
 			// Callback for adding attribute on text not called.
 			expect( cbAddText.called ).to.be.false;
 			expect( cbAddImage.calledOnce ).to.be.true;
 
-			doc.batch().setAttribute( 'key', 'value', ModelRange.createFromParentsAndOffsets( root, 3, root, 4 ) );
+			model.change( writer => {
+				writer.setAttribute( 'key', 'value', ModelRange.createFromParentsAndOffsets( root, 3, root, 4 ) );
+			} );
 
 			expect( cbAddText.calledOnce ).to.be.true;
 			// Callback for adding attribute on image not called this time.
@@ -128,21 +142,24 @@ describe( 'ModelConversionDispatcher', () => {
 		it( 'should fire changeAttribute callbacks for change attribute change', () => {
 			const cbChangeText = sinon.spy();
 			const cbChangeImage = sinon.spy();
-			const batch = doc.batch();
 
 			dispatcher.on( 'changeAttribute:key:$text', cbChangeText );
 			dispatcher.on( 'changeAttribute:key:image', cbChangeImage );
 
-			batch.setAttribute( 'key', 'value', image );
-			batch.setAttribute( 'key', 'newValue', image );
+			model.change( writer => {
+				writer.setAttribute( 'key', 'value', image );
+				writer.setAttribute( 'key', 'newValue', image );
+			} );
 
 			// Callback for adding attribute on text not called.
 			expect( cbChangeText.called ).to.be.false;
 			expect( cbChangeImage.calledOnce ).to.be.true;
 
 			const range = ModelRange.createFromParentsAndOffsets( root, 3, root, 4 );
-			batch.setAttribute( 'key', 'value', range );
-			batch.setAttribute( 'key', 'newValue', range );
+			model.change( writer => {
+				writer.setAttribute( 'key', 'value', range );
+				writer.setAttribute( 'key', 'newValue', range );
+			} );
 
 			expect( cbChangeText.calledOnce ).to.be.true;
 			// Callback for adding attribute on image not called this time.
@@ -152,21 +169,20 @@ describe( 'ModelConversionDispatcher', () => {
 		it( 'should fire removeAttribute callbacks for remove attribute change', () => {
 			const cbRemoveText = sinon.spy();
 			const cbRemoveImage = sinon.spy();
-			const batch = doc.batch();
 
 			dispatcher.on( 'removeAttribute:key:$text', cbRemoveText );
 			dispatcher.on( 'removeAttribute:key:image', cbRemoveImage );
 
-			batch.setAttribute( 'key', 'value', image );
-			batch.removeAttribute( 'key', image );
+			writer.setAttribute( 'key', 'value', image );
+			writer.removeAttribute( 'key', image );
 
 			// Callback for adding attribute on text not called.
 			expect( cbRemoveText.called ).to.be.false;
 			expect( cbRemoveImage.calledOnce ).to.be.true;
 
 			const range = ModelRange.createFromParentsAndOffsets( root, 3, root, 4 );
-			batch.setAttribute( 'key', 'value', range );
-			batch.removeAttribute( 'key', range );
+			writer.setAttribute( 'key', 'value', range );
+			writer.removeAttribute( 'key', range );
 
 			expect( cbRemoveText.calledOnce ).to.be.true;
 			// Callback for adding attribute on image not called this time.
@@ -187,7 +203,7 @@ describe( 'ModelConversionDispatcher', () => {
 			const gyNode = new ModelElement( 'image' );
 			doc.graveyard.appendChildren( gyNode );
 
-			doc.batch().setAttribute( 'key', 'value', gyNode );
+			writer.setAttribute( 'key', 'value', gyNode );
 
 			expect( dispatcher.fire.called ).to.be.false;
 		} );
@@ -199,7 +215,7 @@ describe( 'ModelConversionDispatcher', () => {
 			const gyNode = new ModelElement( 'image' );
 			doc.graveyard.appendChildren( gyNode );
 
-			doc.batch().remove( gyNode );
+			writer.remove( gyNode );
 
 			expect( dispatcher.fire.called ).to.be.false;
 		} );
@@ -211,7 +227,7 @@ describe( 'ModelConversionDispatcher', () => {
 			const gyNode = new ModelElement( 'image' );
 			doc.graveyard.appendChildren( gyNode );
 
-			doc.batch().rename( gyNode, 'p' );
+			writer.rename( gyNode, 'p' );
 
 			expect( dispatcher.fire.called ).to.be.false;
 		} );
@@ -219,7 +235,7 @@ describe( 'ModelConversionDispatcher', () => {
 		it( 'should not fire any event after NoOperation is applied', () => {
 			sinon.spy( dispatcher, 'fire' );
 
-			doc.applyOperation( wrapInDelta( new NoOperation( 0 ) ) );
+			model.applyOperation( wrapInDelta( new NoOperation( 0 ) ) );
 
 			expect( dispatcher.fire.called ).to.be.false;
 		} );
@@ -230,7 +246,7 @@ describe( 'ModelConversionDispatcher', () => {
 			root.removeChildren( 0, root.childCount );
 			root.appendChildren( [ new ModelElement( 'paragraph' ) ] );
 
-			doc.applyOperation( wrapInDelta( new RenameOperation( new ModelPosition( root, [ 0 ] ), 'paragraph', 'paragraph', 0 ) ) );
+			model.applyOperation( wrapInDelta( new RenameOperation( new ModelPosition( root, [ 0 ] ), 'paragraph', 'paragraph', 0 ) ) );
 
 			expect( dispatcher.fire.called ).to.be.false;
 		} );
@@ -242,7 +258,7 @@ describe( 'ModelConversionDispatcher', () => {
 			root.appendChildren( [ new ModelElement( 'paragraph', { foo: 'bar' } ) ] );
 
 			const range = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 0, 0 ] ) );
-			doc.applyOperation( wrapInDelta( new AttributeOperation( range, 'foo', 'bar', 'bar', 0 ) ) );
+			model.applyOperation( wrapInDelta( new AttributeOperation( range, 'foo', 'bar', 'bar', 0 ) ) );
 
 			expect( dispatcher.fire.called ).to.be.false;
 		} );
@@ -337,7 +353,7 @@ describe( 'ModelConversionDispatcher', () => {
 			root.appendChildren( [ paragraph1, paragraph2 ] );
 
 			const markerRange = ModelRange.createFromParentsAndOffsets( root, 0, root, 2 );
-			doc.markers.set( 'marker', markerRange );
+			model.markers.set( 'marker', markerRange );
 
 			const insertionRange = ModelRange.createOn( paragraph2 );
 			dispatcher.convertInsertion( insertionRange );
@@ -356,7 +372,7 @@ describe( 'ModelConversionDispatcher', () => {
 			root.appendChildren( [ paragraph1, paragraph2 ] );
 
 			const markerRange = ModelRange.createIn( paragraph2 );
-			doc.markers.set( 'marker', markerRange );
+			model.markers.set( 'marker', markerRange );
 
 			const insertionRange = ModelRange.createOn( paragraph2 );
 			dispatcher.convertInsertion( insertionRange );
@@ -396,7 +412,7 @@ describe( 'ModelConversionDispatcher', () => {
 			};
 
 			const markerRange = ModelRange.createFromParentsAndOffsets( root, 0, root, 1 );
-			doc.markers.set( 'marker', markerRange );
+			model.markers.set( 'marker', markerRange );
 
 			const insertionRange = ModelRange.createFromParentsAndOffsets( caption, 1, caption, 2 );
 			dispatcher.convertInsertion( insertionRange );
@@ -432,7 +448,7 @@ describe( 'ModelConversionDispatcher', () => {
 			};
 
 			const markerRange = ModelRange.createFromParentsAndOffsets( caption, 0, caption, 3 );
-			doc.markers.set( 'marker', markerRange );
+			model.markers.set( 'marker', markerRange );
 
 			const insertionRange = ModelRange.createFromParentsAndOffsets( caption, 2, caption, 3 );
 			dispatcher.convertInsertion( insertionRange );
@@ -620,11 +636,9 @@ describe( 'ModelConversionDispatcher', () => {
 		} );
 
 		it( 'should prepare correct list of consumable values', () => {
-			doc.enqueueChanges( () => {
-				const batch = doc.batch();
-
-				batch.setAttribute( 'bold', true, ModelRange.createIn( root ) );
-				batch.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
+			model.enqueueChange( writer => {
+				writer.setAttribute( 'bold', true, ModelRange.createIn( root ) );
+				writer.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
 			} );
 
 			dispatcher.on( 'selection', ( evt, data, consumable ) => {
@@ -639,11 +653,9 @@ describe( 'ModelConversionDispatcher', () => {
 		it( 'should fire attributes events for selection', () => {
 			sinon.spy( dispatcher, 'fire' );
 
-			doc.enqueueChanges( () => {
-				const batch = doc.batch();
-
-				batch.setAttribute( 'bold', true, ModelRange.createIn( root ) );
-				batch.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
+			model.enqueueChange( writer => {
+				writer.setAttribute( 'bold', true, ModelRange.createIn( root ) );
+				writer.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
 			} );
 
 			dispatcher.convertSelection( doc.selection, [] );
@@ -659,11 +671,9 @@ describe( 'ModelConversionDispatcher', () => {
 				consumable.consume( data.selection, 'selectionAttribute:bold' );
 			} );
 
-			doc.enqueueChanges( () => {
-				const batch = doc.batch();
-
-				batch.setAttribute( 'bold', true, ModelRange.createIn( root ) );
-				batch.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
+			model.enqueueChange( writer => {
+				writer.setAttribute( 'bold', true, ModelRange.createIn( root ) );
+				writer.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
 			} );
 
 			dispatcher.convertSelection( doc.selection, [] );
@@ -672,11 +682,11 @@ describe( 'ModelConversionDispatcher', () => {
 		} );
 
 		it( 'should fire events for each marker which contains selection', () => {
-			doc.markers.set( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
+			model.markers.set( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
 
 			sinon.spy( dispatcher, 'fire' );
 
-			const markers = Array.from( doc.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
+			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
 			dispatcher.convertSelection( doc.selection, markers );
 
 			expect( dispatcher.fire.calledWith( 'selectionMarker:name' ) ).to.be.true;
@@ -710,12 +720,12 @@ describe( 'ModelConversionDispatcher', () => {
 				}
 			};
 
-			doc.markers.set( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 1 ) );
+			model.markers.set( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 1 ) );
 			doc.selection.setRanges( [ ModelRange.createFromParentsAndOffsets( caption, 1, caption, 1 ) ] );
 
 			sinon.spy( dispatcher, 'fire' );
 
-			const markers = Array.from( doc.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
+			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
 
 			dispatcher.convertSelection( doc.selection, markers );
 
@@ -723,8 +733,8 @@ describe( 'ModelConversionDispatcher', () => {
 		} );
 
 		it( 'should not fire events if information about marker has been consumed', () => {
-			doc.markers.set( 'foo', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
-			doc.markers.set( 'bar', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
+			model.markers.set( 'foo', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
+			model.markers.set( 'bar', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
 
 			sinon.spy( dispatcher, 'fire' );
 
@@ -732,7 +742,7 @@ describe( 'ModelConversionDispatcher', () => {
 				consumable.consume( data.selection, 'selectionMarker:bar' );
 			} );
 
-			const markers = Array.from( doc.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
+			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
 			dispatcher.convertSelection( doc.selection, markers );
 
 			expect( dispatcher.fire.calledWith( 'selectionMarker:foo' ) ).to.be.true;
