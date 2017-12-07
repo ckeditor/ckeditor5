@@ -12,14 +12,13 @@
  */
 
 import RootElement from '../model/rootelement';
-import ModelDocument from '../model/document';
+import Model from '../model/model';
+import Batch from '../model/batch';
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
 import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
 import ModelSelection from '../model/selection';
 import ModelDocumentFragment from '../model/documentfragment';
-import ModelElement from '../model/element';
-import ModelText from '../model/text';
 
 import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
 import ViewSelection from '../view/selection';
@@ -44,7 +43,7 @@ import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObjec
  *
  *		<$text attribute="value">Text data</$text>
  *
- * @param {module:engine/model/document~Document} document
+ * @param {module:engine/model/model~Model} model
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
  * be not included in returned string.
@@ -52,16 +51,16 @@ import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObjec
  * default `main` name will be used.
  * @returns {String} The stringified data.
  */
-export function getData( document, options = {} ) {
-	if ( !( document instanceof ModelDocument ) ) {
-		throw new TypeError( 'Document needs to be an instance of module:engine/model/document~Document.' );
+export function getData( model, options = {} ) {
+	if ( !( model instanceof Model ) ) {
+		throw new TypeError( 'Model needs to be an instance of module:engine/model/model~Model.' );
 	}
 
 	const withoutSelection = !!options.withoutSelection;
 	const rootName = options.rootName || 'main';
-	const root = document.getRoot( rootName );
+	const root = model.document.getRoot( rootName );
 
-	return withoutSelection ? getData._stringify( root ) : getData._stringify( root, document.selection );
+	return withoutSelection ? getData._stringify( root ) : getData._stringify( root, model.document.selection );
 }
 
 // Set stringify as getData private method - needed for testing/spying.
@@ -77,7 +76,7 @@ getData._stringify = stringify;
  *
  *		<$text attribute="value">Text data</$text>
  *
- * @param {module:engine/model/document~Document} document
+ * @param {module:engine/model/model~Model} model
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
  * @param {String} [options.rootName='main'] Root name where parsed data will be stored. If not provided, default `main`
@@ -87,18 +86,17 @@ getData._stringify = stringify;
  * @param {String} [options.batchType='transparent'] Batch type used for inserting elements.
  * See {@link module:engine/model/batch~Batch#type}.
  */
-export function setData( document, data, options = {} ) {
-	if ( !( document instanceof ModelDocument ) ) {
-		throw new TypeError( 'Document needs to be an instance of module:engine/model/document~Document.' );
+export function setData( model, data, options = {} ) {
+	if ( !( model instanceof Model ) ) {
+		throw new TypeError( 'Model needs to be an instance of module:engine/model/model~Model.' );
 	}
 
 	let modelDocumentFragment, selection;
-	const modelRoot = document.getRoot( options.rootName || 'main' );
-
-	const batch = document.batch( options.batchType || 'transparent' );
+	const modelRoot = model.document.getRoot( options.rootName || 'main' );
+	const batch = new Batch( options.batchType || 'transparent' );
 
 	// Parse data string to model.
-	const parsedResult = setData._parse( data, document.schema, batch, {
+	const parsedResult = setData._parse( data, model.schema, {
 		lastRangeBackward: options.lastRangeBackward,
 		selectionAttributes: options.selectionAttributes,
 		context: [ modelRoot.name ]
@@ -112,14 +110,14 @@ export function setData( document, data, options = {} ) {
 		modelDocumentFragment = parsedResult;
 	}
 
-	document.enqueueChanges( () => {
+	model.enqueueChange( batch, writer => {
 		// Replace existing model in document by new one.
-		batch.remove( ModelRange.createIn( modelRoot ) );
-		batch.insert( modelDocumentFragment, modelRoot );
+		writer.remove( ModelRange.createIn( modelRoot ) );
+		writer.insert( modelDocumentFragment, modelRoot );
 
 		// Clean up previous document selection.
-		document.selection.clearAttributes();
-		document.selection.removeAllRanges();
+		model.document.selection.clearAttributes();
+		model.document.selection.removeAllRanges();
 
 		// Update document selection if specified.
 		if ( selection ) {
@@ -132,10 +130,10 @@ export function setData( document, data, options = {} ) {
 				ranges.push( new ModelRange( start, end ) );
 			}
 
-			document.selection.setRanges( ranges, selection.isBackward );
+			model.document.selection.setRanges( ranges, selection.isBackward );
 
 			if ( options.selectionAttributes ) {
-				document.selection.setAttributesTo( selection.getAttributes() );
+				model.document.selection.setAttributesTo( selection.getAttributes() );
 			}
 		}
 	} );
@@ -161,7 +159,7 @@ setData._parse = parse;
  * @returns {String} HTML-like string representing the model.
  */
 export function stringify( node, selectionOrPositionOrRange = null ) {
-	const modelDoc = new ModelDocument();
+	const model = new Model();
 	const mapper = new Mapper();
 	let selection, range;
 
@@ -195,7 +193,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	// Setup model to view converter.
 	const viewDocumentFragment = new ViewDocumentFragment();
 	const viewSelection = new ViewSelection();
-	const modelToView = new ModelConversionDispatcher( modelDoc, { mapper, viewSelection } );
+	const modelToView = new ModelConversionDispatcher( model, { mapper, viewSelection } );
 
 	// Bind root elements.
 	mapper.bindElements( node.root, viewDocumentFragment );
@@ -252,7 +250,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  * module:engine/model/documentfragment~DocumentFragment|Object} Returns parsed model node or
  * object with two fields `model` and `selection` when selection ranges were included in data to parse.
  */
-export function parse( data, schema, batch, options = {} ) {
+export function parse( data, schema, options = {} ) {
 	const mapper = new Mapper();
 
 	// Replace not accepted by XML `$text` tag name by valid one `model-text-with-attributes`.
@@ -275,7 +273,7 @@ export function parse( data, schema, batch, options = {} ) {
 	}
 
 	// Setup view to model converter.
-	const viewToModel = new ViewConversionDispatcher( { schema, mapper } );
+	const viewToModel = new ViewConversionDispatcher( new Model(), { schema, mapper } );
 
 	viewToModel.on( 'documentFragment', convertToModelFragment() );
 	viewToModel.on( 'element:model-text-with-attributes', convertToModelText( true ) );
@@ -283,10 +281,10 @@ export function parse( data, schema, batch, options = {} ) {
 	viewToModel.on( 'text', convertToModelText() );
 
 	// Convert view to model.
-	let model = viewToModel.convert( viewDocumentFragment.root, batch, { context: options.context || [ '$root' ] } );
+	let model = viewToModel.convert( viewDocumentFragment.root, { context: options.context || [ '$root' ] } );
 
 	// If root DocumentFragment contains only one element - return that element.
-	if ( model.is( 'documentFragment' ) && model.childCount == 1 ) {
+	if ( model.childCount == 1 ) {
 		model = model.getChild( 0 );
 	}
 
@@ -346,7 +344,7 @@ function convertToModelElement() {
 		// E.g. `bold="true"` - value will be parsed from string `"true"` to boolean `true`.
 		const attributes = convertAttributes( data.input.getAttributes(), parseAttributeValue );
 
-		data.output = new ModelElement( data.input.name, attributes );
+		data.output = conversionApi.writer.createElement( data.input.name, attributes );
 		conversionApi.mapper.bindElements( data.output, data.input );
 
 		data.context.push( data.output );
@@ -375,9 +373,9 @@ function convertToModelText( withAttributes = false ) {
 			// E.g. `bold="true"` - value will be parsed from string `"true"` to boolean `true`.
 			const attributes = convertAttributes( data.input.getAttributes(), parseAttributeValue );
 
-			node = new ModelText( data.input.getChild( 0 ).data, attributes );
+			node = conversionApi.writer.createText( data.input.getChild( 0 ).data, attributes );
 		} else {
-			node = new ModelText( data.input.data );
+			node = conversionApi.writer.createText( data.input.data );
 		}
 
 		data.output = node;
