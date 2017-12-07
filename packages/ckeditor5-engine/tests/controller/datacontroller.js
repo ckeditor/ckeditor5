@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelDocument from '../../src/model/document';
+import Model from '../../src/model/model';
 import DataController from '../../src/controller/datacontroller';
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 
@@ -23,35 +23,36 @@ import { parse as parseView } from '../../src/dev-utils/view';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 
 describe( 'DataController', () => {
-	let modelDocument, htmlDataProcessor, data, schema;
+	let model, modelDocument, htmlDataProcessor, data, schema;
 
 	beforeEach( () => {
-		modelDocument = new ModelDocument();
+		model = new Model();
+		modelDocument = model.document;
 		modelDocument.createRoot();
 		modelDocument.createRoot( '$root', 'title' );
 
 		htmlDataProcessor = new HtmlDataProcessor();
 
-		data = new DataController( modelDocument, htmlDataProcessor );
+		data = new DataController( model, htmlDataProcessor );
 
-		schema = modelDocument.schema;
+		schema = model.schema;
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'works without data processor', () => {
-			const data = new DataController( modelDocument );
+			const data = new DataController( model );
 
 			expect( data.processor ).to.be.undefined;
 		} );
 	} );
 
-	describe( 'parse', () => {
+	describe( 'parse()', () => {
 		it( 'should set text', () => {
 			schema.allow( { name: '$text', inside: '$root' } );
-			const model = data.parse( '<p>foo<b>bar</b></p>', modelDocument.batch() );
+			const output = data.parse( '<p>foo<b>bar</b></p>' );
 
-			expect( model ).to.instanceof( ModelDocumentFragment );
-			expect( stringify( model ) ).to.equal( 'foobar' );
+			expect( output ).to.instanceof( ModelDocumentFragment );
+			expect( stringify( output ) ).to.equal( 'foobar' );
 		} );
 
 		it( 'should set paragraph', () => {
@@ -59,10 +60,10 @@ describe( 'DataController', () => {
 
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
-			const model = data.parse( '<p>foo<b>bar</b></p>', modelDocument.batch() );
+			const output = data.parse( '<p>foo<b>bar</b></p>' );
 
-			expect( model ).to.instanceof( ModelDocumentFragment );
-			expect( stringify( model ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( output ).to.instanceof( ModelDocumentFragment );
+			expect( stringify( output ) ).to.equal( '<paragraph>foobar</paragraph>' );
 		} );
 
 		it( 'should set two paragraphs', () => {
@@ -70,10 +71,10 @@ describe( 'DataController', () => {
 
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
-			const model = data.parse( '<p>foo</p><p>bar</p>', modelDocument.batch() );
+			const output = data.parse( '<p>foo</p><p>bar</p>' );
 
-			expect( model ).to.instanceof( ModelDocumentFragment );
-			expect( stringify( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			expect( output ).to.instanceof( ModelDocumentFragment );
+			expect( stringify( output ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 		} );
 
 		it( 'should set paragraphs with bold', () => {
@@ -83,26 +84,26 @@ describe( 'DataController', () => {
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 			buildViewConverter().for( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', true );
 
-			const model = data.parse( '<p>foo<b>bar</b></p>', modelDocument.batch() );
+			const output = data.parse( '<p>foo<b>bar</b></p>' );
 
-			expect( model ).to.instanceof( ModelDocumentFragment );
-			expect( stringify( model ) ).to.equal( '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
+			expect( output ).to.instanceof( ModelDocumentFragment );
+			expect( stringify( output ) ).to.equal( '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 		} );
 
 		it( 'should parse in the root context by default', () => {
-			const model = data.parse( 'foo', modelDocument.batch() );
+			const output = data.parse( 'foo' );
 
-			expect( stringify( model ) ).to.equal( '' );
+			expect( stringify( output ) ).to.equal( '' );
 		} );
 
 		it( 'should accept parsing context', () => {
-			const model = data.parse( 'foo', modelDocument.batch(), '$block' );
+			const output = data.parse( 'foo', '$block' );
 
-			expect( stringify( model ) ).to.equal( 'foo' );
+			expect( stringify( output ) ).to.equal( 'foo' );
 		} );
 	} );
 
-	describe( 'toModel', () => {
+	describe( 'toModel()', () => {
 		beforeEach( () => {
 			schema.registerItem( 'paragraph', '$block' );
 
@@ -111,18 +112,18 @@ describe( 'DataController', () => {
 
 		it( 'should convert content of an element #1', () => {
 			const viewElement = parseView( '<p>foo</p>' );
-			const model = data.toModel( viewElement, modelDocument.batch() );
+			const output = data.toModel( viewElement );
 
-			expect( model ).to.instanceof( ModelDocumentFragment );
-			expect( stringify( model ) ).to.equal( '<paragraph>foo</paragraph>' );
+			expect( output ).to.instanceof( ModelDocumentFragment );
+			expect( stringify( output ) ).to.equal( '<paragraph>foo</paragraph>' );
 		} );
 
 		it( 'should convert content of an element #2', () => {
 			const viewFragment = parseView( '<p>foo</p><p>bar</p>' );
-			const model = data.toModel( viewFragment, modelDocument.batch() );
+			const output = data.toModel( viewFragment );
 
-			expect( model ).to.be.instanceOf( ModelDocumentFragment );
-			expect( stringify( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			expect( output ).to.be.instanceOf( ModelDocumentFragment );
+			expect( stringify( output ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 		} );
 
 		it( 'should accept parsing context', () => {
@@ -134,19 +135,19 @@ describe( 'DataController', () => {
 			const viewFragment = new ViewDocumentFragment( [ parseView( 'foo' ) ] );
 
 			// Model fragment in root.
-			expect( stringify( data.toModel( viewFragment, modelDocument.batch() ) ) ).to.equal( '' );
+			expect( stringify( data.toModel( viewFragment ) ) ).to.equal( '' );
 
 			// Model fragment in inline root.
-			expect( stringify( data.toModel( viewFragment, modelDocument.batch(), 'inlineRoot' ) ) ).to.equal( 'foo' );
+			expect( stringify( data.toModel( viewFragment, 'inlineRoot' ) ) ).to.equal( 'foo' );
 		} );
 	} );
 
-	describe( 'set', () => {
+	describe( 'set()', () => {
 		it( 'should set data to root', () => {
 			schema.allow( { name: '$text', inside: '$root' } );
 			data.set( 'foo' );
 
-			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal( 'foo' );
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 
 		it( 'should create a batch', () => {
@@ -172,8 +173,8 @@ describe( 'DataController', () => {
 			data.set( 'foo', 'main' );
 			data.set( 'Bar', 'title' );
 
-			expect( getData( modelDocument, { withoutSelection: true, rootName: 'main' } ) ).to.equal( 'foo' );
-			expect( getData( modelDocument, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
+			expect( getData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( 'foo' );
+			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
 
 			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 2 );
 		} );
@@ -185,18 +186,18 @@ describe( 'DataController', () => {
 
 			data.set( 'foo', 'title' );
 
-			expect( getData( modelDocument, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'foo' );
+			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'foo' );
 
 			data.set( '', 'title' );
 
-			expect( getData( modelDocument, { withoutSelection: true, rootName: 'title' } ) ).to.equal( '' );
+			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( '' );
 		} );
 	} );
 
-	describe( 'get', () => {
+	describe( 'get()', () => {
 		it( 'should get paragraph with text', () => {
-			modelDocument.schema.registerItem( 'paragraph', '$block' );
-			setData( modelDocument, '<paragraph>foo</paragraph>' );
+			schema.registerItem( 'paragraph', '$block' );
+			setData( model, '<paragraph>foo</paragraph>' );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
@@ -204,8 +205,8 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get empty paragraph', () => {
-			modelDocument.schema.registerItem( 'paragraph', '$block' );
-			setData( modelDocument, '<paragraph></paragraph>' );
+			schema.registerItem( 'paragraph', '$block' );
+			setData( model, '<paragraph></paragraph>' );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
@@ -213,8 +214,8 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get two paragraphs', () => {
-			modelDocument.schema.registerItem( 'paragraph', '$block' );
-			setData( modelDocument, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			schema.registerItem( 'paragraph', '$block' );
+			setData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
@@ -222,15 +223,15 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get text directly in root', () => {
-			modelDocument.schema.allow( { name: '$text', inside: '$root' } );
-			setData( modelDocument, 'foo' );
+			schema.allow( { name: '$text', inside: '$root' } );
+			setData( model, 'foo' );
 
 			expect( data.get() ).to.equal( 'foo' );
 		} );
 
 		it( 'should get paragraphs without bold', () => {
-			modelDocument.schema.registerItem( 'paragraph', '$block' );
-			setData( modelDocument, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
+			schema.registerItem( 'paragraph', '$block' );
+			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
@@ -238,8 +239,8 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get paragraphs with bold', () => {
-			modelDocument.schema.registerItem( 'paragraph', '$block' );
-			setData( modelDocument, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
+			schema.registerItem( 'paragraph', '$block' );
+			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 			buildModelConverter().for( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
@@ -248,11 +249,11 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get root name as a parameter', () => {
-			modelDocument.schema.registerItem( 'paragraph', '$block' );
-			modelDocument.schema.allow( { name: '$text', inside: '$root' } );
+			schema.registerItem( 'paragraph', '$block' );
+			schema.allow( { name: '$text', inside: '$root' } );
 
-			setData( modelDocument, '<paragraph>foo</paragraph>', { rootName: 'main' } );
-			setData( modelDocument, 'Bar', { rootName: 'title' } );
+			setData( model, '<paragraph>foo</paragraph>', { rootName: 'main' } );
+			setData( model, 'Bar', { rootName: 'title' } );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 			buildModelConverter().for( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
@@ -263,47 +264,43 @@ describe( 'DataController', () => {
 		} );
 	} );
 
-	describe( 'stringify', () => {
-		let batch;
-
+	describe( 'stringify()', () => {
 		beforeEach( () => {
-			modelDocument.schema.registerItem( 'paragraph', '$block' );
-			modelDocument.schema.registerItem( 'div' );
+			schema.registerItem( 'paragraph', '$block' );
+			schema.registerItem( 'div' );
 
-			modelDocument.schema.allow( { name: '$block', inside: 'div' } );
-			modelDocument.schema.allow( { name: 'div', inside: '$root' } );
+			schema.allow( { name: '$block', inside: 'div' } );
+			schema.allow( { name: 'div', inside: '$root' } );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
-
-			batch = modelDocument.batch();
 		} );
 
 		it( 'should stringify a content of an element', () => {
-			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', modelDocument.schema, batch );
+			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', schema );
 
 			expect( data.stringify( modelElement ) ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'should stringify a content of a document fragment', () => {
-			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', modelDocument.schema, batch );
+			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
 
 			expect( data.stringify( modelDocumentFragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 	} );
 
-	describe( 'toView', () => {
+	describe( 'toView()', () => {
 		beforeEach( () => {
-			modelDocument.schema.registerItem( 'paragraph', '$block' );
-			modelDocument.schema.registerItem( 'div' );
+			schema.registerItem( 'paragraph', '$block' );
+			schema.registerItem( 'div' );
 
-			modelDocument.schema.allow( { name: '$block', inside: 'div' } );
-			modelDocument.schema.allow( { name: 'div', inside: '$root' } );
+			schema.allow( { name: '$block', inside: 'div' } );
+			schema.allow( { name: 'div', inside: '$root' } );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 		} );
 
 		it( 'should convert a content of an element', () => {
-			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', modelDocument.schema, modelDocument.batch() );
+			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', schema );
 
 			const viewDocumentFragment = data.toView( modelElement );
 
@@ -317,12 +314,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should convert a document fragment', () => {
-			const modelDocumentFragment = parseModel(
-				'<paragraph>foo</paragraph><paragraph>bar</paragraph>',
-				modelDocument.schema,
-				modelDocument.batch()
-			);
-
+			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
 			const viewDocumentFragment = data.toView( modelDocumentFragment );
 
 			expect( viewDocumentFragment ).to.be.instanceOf( ViewDocumentFragment );
@@ -336,7 +328,7 @@ describe( 'DataController', () => {
 		} );
 	} );
 
-	describe( 'destroy', () => {
+	describe( 'destroy()', () => {
 		it( 'should be there for you', () => {
 			// Should not throw.
 			data.destroy();
@@ -345,7 +337,7 @@ describe( 'DataController', () => {
 		} );
 	} );
 
-	describe( 'insertContent', () => {
+	describe( 'insertContent()', () => {
 		it( 'should be decorated', () => {
 			schema.allow( { name: '$text', inside: '$root' } ); // To surpress warnings.
 
@@ -361,25 +353,35 @@ describe( 'DataController', () => {
 		it( 'should insert content (item)', () => {
 			schema.registerItem( 'paragraph', '$block' );
 
-			setData( modelDocument, '<paragraph>fo[]ar</paragraph>' );
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
 
 			data.insertContent( new ModelText( 'ob' ), modelDocument.selection );
 
-			expect( getData( modelDocument ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
 		} );
 
 		it( 'should insert content (document fragment)', () => {
 			schema.registerItem( 'paragraph', '$block' );
 
-			setData( modelDocument, '<paragraph>fo[]ar</paragraph>' );
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
 
 			data.insertContent( new ModelDocumentFragment( [ new ModelText( 'ob' ) ] ), modelDocument.selection );
 
-			expect( getData( modelDocument ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
+		} );
+
+		it( 'should use parent batch', () => {
+			schema.registerItem( 'paragraph', '$block' );
+			setData( model, '<paragraph>[]</paragraph>' );
+
+			model.change( writer => {
+				data.insertContent( new ModelText( 'abc' ), modelDocument.selection );
+				expect( writer.batch.deltas ).to.length( 1 );
+			} );
 		} );
 	} );
 
-	describe( 'deleteContent', () => {
+	describe( 'deleteContent()', () => {
 		it( 'should be decorated', () => {
 			const spy = sinon.spy();
 
@@ -393,18 +395,29 @@ describe( 'DataController', () => {
 		it( 'should delete selected content', () => {
 			schema.registerItem( 'paragraph', '$block' );
 
-			setData( modelDocument, '<paragraph>fo[ob]ar</paragraph>' );
+			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
-			data.deleteContent( modelDocument.selection, modelDocument.batch() );
+			data.deleteContent( modelDocument.selection );
 
-			expect( getData( modelDocument ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
+		} );
+
+		it( 'should use parent batch', () => {
+			schema.registerItem( 'paragraph', '$block' );
+
+			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
+
+			model.change( writer => {
+				data.deleteContent( modelDocument.selection );
+				expect( writer.batch.deltas ).to.length( 1 );
+			} );
 		} );
 	} );
 
-	describe( 'modifySelection', () => {
+	describe( 'modifySelection()', () => {
 		it( 'should be decorated', () => {
 			schema.registerItem( 'paragraph', '$block' );
-			setData( modelDocument, '<paragraph>fo[ob]ar</paragraph>' );
+			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
 			const spy = sinon.spy();
 
@@ -418,22 +431,22 @@ describe( 'DataController', () => {
 		it( 'should modify a selection', () => {
 			schema.registerItem( 'paragraph', '$block' );
 
-			setData( modelDocument, '<paragraph>fo[ob]ar</paragraph>' );
+			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
 			data.modifySelection( modelDocument.selection, { direction: 'backward' } );
 
-			expect( getData( modelDocument ) ).to.equal( '<paragraph>fo[o]bar</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>fo[o]bar</paragraph>' );
 		} );
 	} );
 
-	describe( 'getSelectedContent', () => {
+	describe( 'getSelectedContent()', () => {
 		it( 'should be decorated', () => {
 			const spy = sinon.spy();
 			const sel = new ModelSelection();
 
 			data.on( 'getSelectedContent', spy );
 
-			data.getSelectedContent( sel, modelDocument.batch() );
+			data.getSelectedContent( sel );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
@@ -441,15 +454,26 @@ describe( 'DataController', () => {
 		it( 'should return selected content', () => {
 			schema.registerItem( 'paragraph', '$block' );
 
-			setData( modelDocument, '<paragraph>fo[ob]ar</paragraph>' );
+			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
-			const content = data.getSelectedContent( modelDocument.selection, modelDocument.batch() );
+			const content = data.getSelectedContent( modelDocument.selection );
 
 			expect( stringify( content ) ).to.equal( 'ob' );
 		} );
+
+		it( 'should use parent batch', () => {
+			schema.registerItem( 'paragraph', '$block' );
+
+			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
+
+			model.change( writer => {
+				data.getSelectedContent( modelDocument.selection );
+				expect( writer.batch.deltas ).to.length( 1 );
+			} );
+		} );
 	} );
 
-	describe( 'hasContent', () => {
+	describe( 'hasContent()', () => {
 		let root;
 
 		beforeEach( () => {
@@ -461,7 +485,7 @@ describe( 'DataController', () => {
 			schema.objects.add( 'image' );
 
 			setData(
-				modelDocument,
+				model,
 
 				'<div>' +
 					'<paragraph></paragraph>' +
