@@ -5,7 +5,6 @@
 
 import Model from '../../src/model/model';
 import DataController from '../../src/controller/datacontroller';
-import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 import DocumentFragment from '../../src/model/documentfragment';
 import getSelectedContent from '../../src/controller/getselectedcontent';
 import { setData, stringify } from '../../src/dev-utils/model';
@@ -14,12 +13,27 @@ describe( 'DataController utils', () => {
 	let model, doc, data;
 
 	describe( 'getSelectedContent', () => {
+		it( 'should use parent batch', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+			data = new DataController( model );
+
+			model.schema.allow( { name: '$text', inside: '$root' } );
+			setData( model, 'x[abc]x' );
+
+			model.change( writer => {
+				getSelectedContent( data, doc.selection );
+				expect( writer.batch.deltas ).to.length( 1 );
+			} );
+		} );
+
 		describe( 'in simple scenarios', () => {
 			beforeEach( () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model, new HtmlDataProcessor() );
+				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -114,7 +128,7 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model, new HtmlDataProcessor() );
+				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -255,7 +269,7 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model, new HtmlDataProcessor() );
+				data = new DataController( model );
 
 				const schema = model.schema;
 

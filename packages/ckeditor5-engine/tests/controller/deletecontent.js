@@ -8,7 +8,6 @@ import Position from '../../src/model/position';
 import Range from '../../src/model/range';
 import Element from '../../src/model/element';
 import DataController from '../../src/controller/datacontroller';
-import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 import deleteContent from '../../src/controller/deletecontent';
 import { setData, getData } from '../../src/dev-utils/model';
 
@@ -16,12 +15,27 @@ describe( 'DataController utils', () => {
 	let model, doc, data;
 
 	describe( 'deleteContent', () => {
+		it( 'should use parent batch', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+			data = new DataController( model );
+
+			model.schema.allow( { name: '$text', inside: '$root' } );
+			setData( model, 'x[abc]x' );
+
+			model.change( writer => {
+				deleteContent( data, doc.selection );
+				expect( writer.batch.deltas ).to.length( 1 );
+			} );
+		} );
+
 		describe( 'in simple scenarios', () => {
 			beforeEach( () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model, new HtmlDataProcessor() );
+				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -87,7 +101,7 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model, new HtmlDataProcessor() );
+				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -157,7 +171,7 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model, new HtmlDataProcessor() );
+				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -514,7 +528,7 @@ describe( 'DataController utils', () => {
 				// Special root which allows only blockWidgets inside itself.
 				doc.createRoot( 'restrictedRoot', 'restrictedRoot' );
 
-				data = new DataController( model, new HtmlDataProcessor() );
+				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -633,7 +647,7 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model, new HtmlDataProcessor() );
+				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -691,7 +705,7 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model, new HtmlDataProcessor() );
+				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -740,7 +754,7 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model, new HtmlDataProcessor() );
+				data = new DataController( model );
 
 				const schema = model.schema;
 
