@@ -3,23 +3,27 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';
 import Element from '../../src/model/element';
+import DataController from '../../src/controller/datacontroller';
+import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 import deleteContent from '../../src/controller/deletecontent';
 import { setData, getData } from '../../src/dev-utils/model';
 
-describe( 'DataController', () => {
-	let doc;
+describe( 'DataController utils', () => {
+	let model, doc, data;
 
 	describe( 'deleteContent', () => {
 		describe( 'in simple scenarios', () => {
 			beforeEach( () => {
-				doc = new Document();
+				model = new Model();
+				doc = model.document;
 				doc.createRoot();
+				data = new DataController( model, new HtmlDataProcessor() );
 
-				const schema = doc.schema;
+				const schema = model.schema;
 
 				schema.registerItem( 'image', '$inline' );
 
@@ -40,11 +44,11 @@ describe( 'DataController', () => {
 			);
 
 			it( 'deletes single character (backward selection)', () => {
-				setData( doc, 'f[o]o', { lastRangeBackward: true } );
+				setData( model, 'f[o]o', { lastRangeBackward: true } );
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc ) ).to.equal( 'f[]o' );
+				expect( getData( model ) ).to.equal( 'f[]o' );
 			} );
 
 			test(
@@ -80,10 +84,12 @@ describe( 'DataController', () => {
 
 		describe( 'with text attributes', () => {
 			beforeEach( () => {
-				doc = new Document();
+				model = new Model();
+				doc = model.document;
 				doc.createRoot();
+				data = new DataController( model, new HtmlDataProcessor() );
 
-				const schema = doc.schema;
+				const schema = model.schema;
 
 				schema.registerItem( 'image', '$inline' );
 				schema.registerItem( 'paragraph', '$block' );
@@ -93,35 +99,35 @@ describe( 'DataController', () => {
 			} );
 
 			it( 'deletes characters (first half has attrs)', () => {
-				setData( doc, '<$text bold="true">fo[o</$text>b]ar' );
+				setData( model, '<$text bold="true">fo[o</$text>b]ar' );
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc ) ).to.equal( '<$text bold="true">fo[]</$text>ar' );
+				expect( getData( model ) ).to.equal( '<$text bold="true">fo[]</$text>ar' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'deletes characters (2nd half has attrs)', () => {
-				setData( doc, 'fo[o<$text bold="true">b]ar</$text>' );
+				setData( model, 'fo[o<$text bold="true">b]ar</$text>' );
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc ) ).to.equal( 'fo[]<$text bold="true">ar</$text>' );
+				expect( getData( model ) ).to.equal( 'fo[]<$text bold="true">ar</$text>' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.undefined;
 			} );
 
 			it( 'clears selection attrs when emptied content', () => {
-				setData( doc, '<paragraph>x</paragraph><paragraph>[<$text bold="true">foo</$text>]</paragraph><paragraph>y</paragraph>' );
+				setData( model, '<paragraph>x</paragraph><paragraph>[<$text bold="true">foo</$text>]</paragraph><paragraph>y</paragraph>' );
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc ) ).to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>' );
+				expect( getData( model ) ).to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.undefined;
 			} );
 
 			it( 'leaves selection attributes when text contains them', () => {
 				setData(
-					doc,
+					model,
 					'<paragraph>x<$text bold="true">a[foo]b</$text>y</paragraph>',
 					{
 						selectionAttributes: {
@@ -130,9 +136,9 @@ describe( 'DataController', () => {
 					}
 				);
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc ) ).to.equal( '<paragraph>x<$text bold="true">a[]b</$text>y</paragraph>' );
+				expect( getData( model ) ).to.equal( '<paragraph>x<$text bold="true">a[]b</$text>y</paragraph>' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 		} );
@@ -148,10 +154,12 @@ describe( 'DataController', () => {
 		// Those case should, again, be handled by their specific implementations.
 		describe( 'in multi-element scenarios', () => {
 			beforeEach( () => {
-				doc = new Document();
+				model = new Model();
+				doc = model.document;
 				doc.createRoot();
+				data = new DataController( model, new HtmlDataProcessor() );
 
-				const schema = doc.schema;
+				const schema = model.schema;
 
 				schema.registerItem( 'paragraph', '$block' );
 				schema.registerItem( 'heading1', '$block' );
@@ -199,14 +207,14 @@ describe( 'DataController', () => {
 			// forward and backward delete.
 			it( 'merges second element into the first one (different name, backward selection)', () => {
 				setData(
-					doc,
+					model,
 					'<paragraph>x</paragraph><heading1>fo[o</heading1><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
 					{ lastRangeBackward: true }
 				);
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc ) ).to.equal( '<paragraph>x</paragraph><heading1>fo[]ar</heading1><paragraph>y</paragraph>' );
+				expect( getData( model ) ).to.equal( '<paragraph>x</paragraph><heading1>fo[]ar</heading1><paragraph>y</paragraph>' );
 			} );
 
 			test(
@@ -234,44 +242,50 @@ describe( 'DataController', () => {
 			);
 
 			it( 'uses merge delta even if merged element is empty', () => {
-				setData( doc, '<paragraph>ab[cd</paragraph><paragraph>efgh]</paragraph>' );
+				let mergeSpy;
 
-				const batch = doc.batch();
-				const spyMerge = sinon.spy( batch, 'merge' );
+				setData( model, '<paragraph>ab[cd</paragraph><paragraph>efgh]</paragraph>' );
 
-				deleteContent( doc.selection, batch );
+				model.change( writer => {
+					mergeSpy = sinon.spy( writer, 'merge' );
+					deleteContent( data, doc.selection );
+				} );
 
-				expect( getData( doc ) ).to.equal( '<paragraph>ab[]</paragraph>' );
+				expect( getData( model ) ).to.equal( '<paragraph>ab[]</paragraph>' );
 
-				expect( spyMerge.called ).to.be.true;
+				expect( mergeSpy.called ).to.be.true;
 			} );
 
 			it( 'uses merge delta even if merged element is empty #2', () => {
-				setData( doc, '<paragraph>ab[</paragraph><paragraph>]</paragraph>' );
+				let mergeSpy;
 
-				const batch = doc.batch();
-				const spyMerge = sinon.spy( batch, 'merge' );
+				setData( model, '<paragraph>ab[</paragraph><paragraph>]</paragraph>' );
 
-				deleteContent( doc.selection, batch );
+				model.change( writer => {
+					mergeSpy = sinon.spy( writer, 'merge' );
+					deleteContent( data, doc.selection );
+				} );
 
-				expect( getData( doc ) ).to.equal( '<paragraph>ab[]</paragraph>' );
+				expect( getData( model ) ).to.equal( '<paragraph>ab[]</paragraph>' );
 
-				expect( spyMerge.called ).to.be.true;
+				expect( mergeSpy.called ).to.be.true;
 			} );
 
 			it( 'does not try to move the second block if not needed', () => {
-				setData( doc, '<paragraph>ab[cd</paragraph><paragraph>ef]gh</paragraph>' );
+				let mergeSpy, moveSpy;
 
-				const batch = doc.batch();
-				const spyMerge = sinon.spy( batch, 'merge' );
-				const spyMove = sinon.spy( batch, 'move' );
+				setData( model, '<paragraph>ab[cd</paragraph><paragraph>ef]gh</paragraph>' );
 
-				deleteContent( doc.selection, batch );
+				model.change( writer => {
+					mergeSpy = sinon.spy( writer, 'merge' );
+					moveSpy = sinon.spy( writer, 'move' );
+					deleteContent( data, doc.selection );
+				} );
 
-				expect( getData( doc ) ).to.equal( '<paragraph>ab[]gh</paragraph>' );
+				expect( getData( model ) ).to.equal( '<paragraph>ab[]gh</paragraph>' );
 
-				expect( spyMove.called ).to.be.false;
-				expect( spyMerge.called ).to.be.true;
+				expect( moveSpy.called ).to.be.false;
+				expect( mergeSpy.called ).to.be.true;
 			} );
 
 			// Note: in all these cases we ignore the direction of merge.
@@ -318,9 +332,9 @@ describe( 'DataController', () => {
 
 					doc.selection.setRanges( [ range ] );
 
-					deleteContent( doc.selection, doc.batch() );
+					deleteContent( data, doc.selection );
 
-					expect( getData( doc ) )
+					expect( getData( model ) )
 						.to.equal( '<pparent>x<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>y</pparent>' );
 				} );
 
@@ -363,9 +377,9 @@ describe( 'DataController', () => {
 
 					doc.selection.setRanges( [ range ] );
 
-					deleteContent( doc.selection, doc.batch() );
+					deleteContent( data, doc.selection );
 
-					expect( getData( doc ) )
+					expect( getData( model ) )
 						.to.equal( '<pparent>x<paragraph>foo<pchild>ba[]om</pchild></paragraph></pparent>' );
 				} );
 
@@ -406,16 +420,16 @@ describe( 'DataController', () => {
 
 					doc.selection.setRanges( [ range ] );
 
-					deleteContent( doc.selection, doc.batch() );
+					deleteContent( data, doc.selection );
 
-					expect( getData( doc ) )
+					expect( getData( model ) )
 						.to.equal( '<paragraph>fo[]</paragraph>' );
 				} );
 			} );
 
 			describe( 'with object elements', () => {
 				beforeEach( () => {
-					const schema = doc.schema;
+					const schema = model.schema;
 
 					schema.registerItem( 'blockWidget' );
 					schema.registerItem( 'nestedEditable' );
@@ -444,7 +458,7 @@ describe( 'DataController', () => {
 
 			describe( 'filtering out', () => {
 				beforeEach( () => {
-					const schema = doc.schema;
+					const schema = model.schema;
 
 					schema.allow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'paragraph' } );
 					schema.allow( { name: '$text', attributes: [ 'b', 'c' ], inside: 'pchild' } );
@@ -490,7 +504,9 @@ describe( 'DataController', () => {
 
 		describe( 'in element selections scenarios', () => {
 			beforeEach( () => {
-				doc = new Document();
+				model = new Model();
+				doc = model.document;
+
 				// <p> like root.
 				doc.createRoot( 'paragraph', 'paragraphRoot' );
 				// <body> like root.
@@ -498,7 +514,9 @@ describe( 'DataController', () => {
 				// Special root which allows only blockWidgets inside itself.
 				doc.createRoot( 'restrictedRoot', 'restrictedRoot' );
 
-				const schema = doc.schema;
+				data = new DataController( model, new HtmlDataProcessor() );
+
+				const schema = model.schema;
 
 				schema.limits.add( 'restrictedRoot' );
 
@@ -517,105 +535,107 @@ describe( 'DataController', () => {
 			// See also "in simple scenarios => deletes an element".
 
 			it( 'deletes two inline elements', () => {
-				doc.schema.limits.add( 'paragraph' );
+				model.schema.limits.add( 'paragraph' );
 
 				setData(
-					doc,
+					model,
 					'x[<image></image><image></image>]z',
 					{ rootName: 'paragraphRoot' }
 				);
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc, { rootName: 'paragraphRoot' } ) )
+				expect( getData( model, { rootName: 'paragraphRoot' } ) )
 					.to.equal( 'x[]z' );
 			} );
 
 			it( 'creates a paragraph when text is not allowed (paragraph selected)', () => {
 				setData(
-					doc,
+					model,
 					'<paragraph>x</paragraph>[<paragraph>yyy</paragraph>]<paragraph>z</paragraph>',
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc, { rootName: 'bodyRoot' } ) )
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
 			} );
 
 			it( 'creates a paragraph when text is not allowed (block widget selected)', () => {
 				setData(
-					doc,
+					model,
 					'<paragraph>x</paragraph>[<blockWidget></blockWidget>]<paragraph>z</paragraph>',
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc, { rootName: 'bodyRoot' } ) )
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
 			} );
 
 			it( 'creates paragraph when text is not allowed (heading selected)', () => {
 				setData(
-					doc,
+					model,
 					'<paragraph>x</paragraph>[<heading1>yyy</heading1>]<paragraph>z</paragraph>',
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc, { rootName: 'bodyRoot' } ) )
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
 			} );
 
 			it( 'creates paragraph when text is not allowed (two blocks selected)', () => {
 				setData(
-					doc,
+					model,
 					'<paragraph>x</paragraph>[<heading1>yyy</heading1><paragraph>yyy</paragraph>]<paragraph>z</paragraph>',
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc, { rootName: 'bodyRoot' } ) )
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
 			} );
 
 			it( 'creates paragraph when text is not allowed (all content selected)', () => {
 				setData(
-					doc,
+					model,
 					'[<heading1>x</heading1><paragraph>z</paragraph>]',
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc, { rootName: 'bodyRoot' } ) )
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>[]</paragraph>' );
 			} );
 
 			it( 'does not create a paragraph when it is not allowed', () => {
 				setData(
-					doc,
+					model,
 					'<blockWidget></blockWidget>[<blockWidget></blockWidget>]<blockWidget></blockWidget>',
 					{ rootName: 'restrictedRoot' }
 				);
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc, { rootName: 'restrictedRoot' } ) )
+				expect( getData( model, { rootName: 'restrictedRoot' } ) )
 					.to.equal( '<blockWidget></blockWidget>[]<blockWidget></blockWidget>' );
 			} );
 		} );
 
 		describe( 'integration with inline limit elements', () => {
 			beforeEach( () => {
-				doc = new Document();
+				model = new Model();
+				doc = model.document;
 				doc.createRoot();
+				data = new DataController( model, new HtmlDataProcessor() );
 
-				const schema = doc.schema;
+				const schema = model.schema;
 
 				schema.registerItem( 'inlineLimit' );
 				schema.allow( { name: 'inlineLimit', inside: '$root' } );
@@ -668,10 +688,12 @@ describe( 'DataController', () => {
 
 		describe( 'integration with block limit elements', () => {
 			beforeEach( () => {
-				doc = new Document();
+				model = new Model();
+				doc = model.document;
 				doc.createRoot();
+				data = new DataController( model, new HtmlDataProcessor() );
 
-				const schema = doc.schema;
+				const schema = model.schema;
 
 				schema.registerItem( 'blockLimit' );
 				schema.allow( { name: 'blockLimit', inside: '$root' } );
@@ -715,10 +737,12 @@ describe( 'DataController', () => {
 
 		describe( 'should leave a paragraph if the entire content was selected', () => {
 			beforeEach( () => {
-				doc = new Document();
+				model = new Model();
+				doc = model.document;
 				doc.createRoot();
+				data = new DataController( model, new HtmlDataProcessor() );
 
-				const schema = doc.schema;
+				const schema = model.schema;
 
 				schema.registerItem( 'div', '$block' );
 				schema.limits.add( 'div' );
@@ -789,14 +813,14 @@ describe( 'DataController', () => {
 				doc.createRoot( 'paragraph', 'paragraphRoot' );
 
 				setData(
-					doc,
+					model,
 					'x[<image></image><image></image>]z',
 					{ rootName: 'paragraphRoot' }
 				);
 
-				deleteContent( doc.selection, doc.batch() );
+				deleteContent( data, doc.selection );
 
-				expect( getData( doc, { rootName: 'paragraphRoot' } ) )
+				expect( getData( model, { rootName: 'paragraphRoot' } ) )
 					.to.equal( 'x[]z' );
 			} );
 
@@ -812,11 +836,11 @@ describe( 'DataController', () => {
 
 		function test( title, input, output, options ) {
 			it( title, () => {
-				setData( doc, input );
+				setData( model, input );
 
-				deleteContent( doc.selection, doc.batch(), options );
+				deleteContent( data, doc.selection, options );
 
-				expect( getData( doc ) ).to.equal( output );
+				expect( getData( model ) ).to.equal( output );
 			} );
 		}
 	} );
