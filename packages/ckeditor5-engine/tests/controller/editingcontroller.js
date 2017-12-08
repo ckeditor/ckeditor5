@@ -15,7 +15,7 @@ import Mapper from '../../src/conversion/mapper';
 import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
 import buildModelConverter from '../../src/conversion/buildmodelconverter';
 
-import ModelDocument from '../../src/model/document';
+import Model from '../../src/model/model';
 import ModelPosition from '../../src/model/position';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
@@ -32,7 +32,7 @@ describe( 'EditingController', () => {
 		let model, editing;
 
 		beforeEach( () => {
-			model = new ModelDocument();
+			model = new Model();
 			editing = new EditingController( model );
 		} );
 
@@ -63,9 +63,9 @@ describe( 'EditingController', () => {
 		let model, modelRoot, editing;
 
 		beforeEach( () => {
-			model = new ModelDocument();
-			modelRoot = model.createRoot();
-			model.createRoot( '$root', 'header' );
+			model = new Model();
+			modelRoot = model.document.createRoot();
+			model.document.createRoot( '$root', 'header' );
 
 			editing = new EditingController( model );
 		} );
@@ -101,8 +101,8 @@ describe( 'EditingController', () => {
 			expect( editing.view.domConverter.mapViewToDom( viewRoot ) ).to.equal( domRoot );
 			expect( editing.view.renderer.markedChildren.has( viewRoot ) ).to.be.true;
 
-			expect( editing.mapper.toModelElement( viewRoot ) ).to.equal( model.getRoot( 'header' ) );
-			expect( editing.mapper.toViewElement( model.getRoot( 'header' ) ) ).to.equal( viewRoot );
+			expect( editing.mapper.toModelElement( viewRoot ) ).to.equal( model.document.getRoot( 'header' ) );
+			expect( editing.mapper.toViewElement( model.document.getRoot( 'header' ) ) ).to.equal( viewRoot );
 		} );
 
 		it( 'should be possible to attach DOM element later', () => {
@@ -131,8 +131,8 @@ describe( 'EditingController', () => {
 		beforeEach( () => {
 			listener = Object.create( EmitterMixin );
 
-			model = new ModelDocument();
-			modelRoot = model.createRoot();
+			model = new Model();
+			modelRoot = model.document.createRoot();
 
 			editing = new EditingController( model );
 
@@ -146,7 +146,7 @@ describe( 'EditingController', () => {
 			buildModelConverter().for( editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 
 			// Note: The below code is highly overcomplicated due to #455.
-			model.selection.removeAllRanges();
+			model.document.selection.removeAllRanges();
 			modelRoot.removeChildren( 0, modelRoot.childCount );
 
 			viewRoot.removeChildren( 0, viewRoot.childCount );
@@ -155,13 +155,12 @@ describe( 'EditingController', () => {
 				'<paragraph>foo</paragraph>' +
 				'<paragraph></paragraph>' +
 				'<paragraph>bar</paragraph>',
-				model.schema,
-				model.batch()
+				model.schema
 			)._children );
 
-			model.enqueueChanges( () => {
-				model.batch().insert( modelData, model.getRoot() );
-				model.selection.addRange( ModelRange.createFromParentsAndOffsets(
+			model.enqueueChange( writer => {
+				writer.insert( modelData, model.document.getRoot() );
+				model.document.selection.addRange( ModelRange.createFromParentsAndOffsets(
 					modelRoot.getChild( 0 ), 1, modelRoot.getChild( 0 ), 1 ) );
 			} );
 		} );
@@ -179,9 +178,9 @@ describe( 'EditingController', () => {
 		it( 'should convert split', () => {
 			expect( getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
 
-			model.enqueueChanges( () => {
-				model.batch().split( model.selection.getFirstPosition() );
-				model.selection.setRanges( [
+			model.enqueueChange( writer => {
+				writer.split( model.document.selection.getFirstPosition() );
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets(	modelRoot.getChild( 1 ), 0, modelRoot.getChild( 1 ), 0 )
 				] );
 			} );
@@ -192,19 +191,19 @@ describe( 'EditingController', () => {
 		it( 'should convert rename', () => {
 			expect( getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
 
-			model.enqueueChanges( () => {
-				model.batch().rename( modelRoot.getChild( 0 ), 'div' );
+			model.enqueueChange( writer => {
+				writer.rename( modelRoot.getChild( 0 ), 'div' );
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<div>f{}oo</div><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert delete', () => {
-			model.enqueueChanges( () => {
-				model.batch().remove(
-					ModelRange.createFromPositionAndShift( model.selection.getFirstPosition(), 1 )
+			model.enqueueChange( writer => {
+				writer.remove(
+					ModelRange.createFromPositionAndShift( model.document.selection.getFirstPosition(), 1 )
 				);
-				model.selection.setRanges( [
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 1, modelRoot.getChild( 0 ), 1 )
 				] );
 			} );
@@ -235,8 +234,8 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should convert collapsed selection', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.enqueueChange( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 1, modelRoot.getChild( 2 ), 1 )
 				] );
 			} );
@@ -245,8 +244,8 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should convert not collapsed selection', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.enqueueChange( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 1, modelRoot.getChild( 2 ), 2 )
 				] );
 			} );
@@ -255,16 +254,16 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should clear previous selection', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.enqueueChange( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 1, modelRoot.getChild( 2 ), 1 )
 				] );
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
 
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.enqueueChange( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 2, modelRoot.getChild( 2 ), 2 )
 				] );
 			} );
@@ -375,8 +374,8 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should forward add marker event if content is moved into a marker range', () => {
-			model.enqueueChanges( () => {
-				model.batch().appendElement( 'paragraph', model.getRoot() );
+			model.enqueueChange( writer => {
+				writer.appendElement( 'paragraph', model.document.getRoot() );
 			} );
 
 			const markerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
@@ -398,8 +397,8 @@ describe( 'EditingController', () => {
 
 	describe( 'destroy()', () => {
 		it( 'should remove listenters', () => {
-			const model = new ModelDocument();
-			model.createRoot();
+			const model = new Model();
+			model.document.createRoot();
 			model.schema.registerItem( 'paragraph', '$block' );
 
 			const editing = new EditingController( model );
@@ -410,11 +409,9 @@ describe( 'EditingController', () => {
 
 			editing.destroy();
 
-			const batch = model.batch();
-
-			model.enqueueChanges( () => {
-				const modelData = parse( '<paragraph>foo</paragraph>', model.schema, batch ).getChild( 0 );
-				batch.insert( modelData, model.getRoot() );
+			model.enqueueChange( writer => {
+				const modelData = parse( '<paragraph>foo</paragraph>', model.schema ).getChild( 0 );
+				writer.insert( modelData, model.document.getRoot() );
 			} );
 
 			expect( spy.called ).to.be.false;
@@ -423,8 +420,8 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should destroy view', () => {
-			const model = new ModelDocument();
-			model.createRoot();
+			const model = new Model();
+			model.document.createRoot();
 			model.schema.registerItem( 'paragraph', '$block' );
 
 			const editing = new EditingController( model );
