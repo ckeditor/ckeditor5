@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import Position from '../../../src/model/position';
 import Element from '../../../src/model/element';
 
@@ -18,7 +18,9 @@ describe( 'WrapDelta', () => {
 	let wrapDelta, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		const model = new Model();
+
+		doc = model.document;
 		root = doc.createRoot();
 		wrapDelta = new WrapDelta();
 	} );

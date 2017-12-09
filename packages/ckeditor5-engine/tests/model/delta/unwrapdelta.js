@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import Position from '../../../src/model/position';
 
 import UnwrapDelta from '../../../src/model/delta/unwrapdelta';
@@ -17,7 +17,9 @@ describe( 'UnwrapDelta', () => {
 	let unwrapDelta, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		const model = new Model();
+
+		doc = model.document;
 		root = doc.createRoot();
 		unwrapDelta = new UnwrapDelta();
 	} );
