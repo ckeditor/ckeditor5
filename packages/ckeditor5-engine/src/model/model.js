@@ -87,6 +87,14 @@ export default class Model {
 	applyOperation( operation ) {
 		return operation._execute();
 	}
+
+	/**
+	 * Removes all events listeners set by model instance and destroy Document.
+	 */
+	destroy() {
+		this.document.destroy();
+		this.stopListening();
+	}
 }
 
 mix( Model, ObservableMixin );

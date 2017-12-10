@@ -304,4 +304,26 @@ describe( 'Model', () => {
 			} );
 		} );
 	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy document', () => {
+			sinon.spy( model.document, 'destroy' );
+
+			model.destroy();
+
+			sinon.assert.calledOnce( model.document.destroy );
+		} );
+
+		it( 'should stop listening', () => {
+			const spy = sinon.spy();
+
+			model.on( 'event', spy );
+
+			model.destroy();
+
+			model.fire( 'event' );
+
+			sinon.assert.notCalled( spy );
+		} );
+	} );
 } );
