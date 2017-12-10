@@ -3,16 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
+import Element from '../../../src/model/element';
 import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'RootAttributeOperation', () => {
-	let doc, root;
+	let model, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 	} );
 
@@ -68,7 +70,7 @@ describe( 'RootAttributeOperation', () => {
 		} );
 
 		it( 'should be false when root is not in the document', () => {
-			const element = doc.batch().createElement( 'element' );
+			const element = new Element( 'element' );
 
 			const operation = new RootAttributeOperation(
 				element,
@@ -83,7 +85,7 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	it( 'should add attribute on the root element', () => {
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new RootAttributeOperation(
 				root,
 				'isNew',
@@ -100,7 +102,7 @@ describe( 'RootAttributeOperation', () => {
 	it( 'should change attribute on the root element', () => {
 		root.setAttribute( 'isNew', false );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new RootAttributeOperation(
 				root,
 				'isNew',
@@ -117,7 +119,7 @@ describe( 'RootAttributeOperation', () => {
 	it( 'should remove attribute from the root element', () => {
 		root.setAttribute( 'x', true );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new RootAttributeOperation(
 				root,
 				'x',
@@ -154,8 +156,8 @@ describe( 'RootAttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		doc.applyOperation( wrapInDelta( operation ) );
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.hasAttribute( 'x' ) ).to.be.false;
@@ -174,8 +176,8 @@ describe( 'RootAttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		doc.applyOperation( wrapInDelta( operation ) );
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getAttribute( 'isNew' ) ).to.be.false;
@@ -194,8 +196,8 @@ describe( 'RootAttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		doc.applyOperation( wrapInDelta( operation ) );
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getAttribute( 'foo' ) ).to.be.true;
@@ -203,7 +205,7 @@ describe( 'RootAttributeOperation', () => {
 
 	it( 'should throw an error when one try to remove and the attribute does not exists', () => {
 		expect( () => {
-			doc.applyOperation( wrapInDelta(
+			model.applyOperation( wrapInDelta(
 				new RootAttributeOperation(
 					root,
 					'foo',
@@ -219,7 +221,7 @@ describe( 'RootAttributeOperation', () => {
 		root.setAttribute( 'x', 1 );
 
 		expect( () => {
-			doc.applyOperation( wrapInDelta(
+			model.applyOperation( wrapInDelta(
 				new RootAttributeOperation(
 					root,
 					'x',

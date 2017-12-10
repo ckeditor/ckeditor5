@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import Element from '../../src/model/element';
 import Position from '../../src/model/position';
 import LiveRange from '../../src/model/liverange';
@@ -12,10 +12,11 @@ import Text from '../../src/model/text';
 import { stringify, setData } from '../../src/dev-utils/model';
 
 describe( 'LiveRange', () => {
-	let doc, root, ul, p;
+	let model, doc, root, ul, p;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 
 		const lis = [
@@ -429,11 +430,11 @@ describe( 'LiveRange', () => {
 			let live;
 
 			beforeEach( () => {
-				doc.schema.registerItem( 'p', '$block' );
-				doc.schema.registerItem( 'w' );
+				model.schema.registerItem( 'p', '$block' );
+				model.schema.registerItem( 'w' );
 
-				doc.schema.allow( { name: 'p', inside: 'w' } );
-				doc.schema.allow( { name: 'w', inside: '$root' } );
+				model.schema.allow( { name: 'p', inside: 'w' } );
+				model.schema.allow( { name: 'w', inside: '$root' } );
 			} );
 
 			afterEach( () => {
@@ -441,67 +442,79 @@ describe( 'LiveRange', () => {
 			} );
 
 			it( 'is inside the wrapped range', () => {
-				setData( doc, '<p>x</p><p>[a]</p><p>x</p>' );
+				setData( model, '<p>x</p><p>[a]</p><p>x</p>' );
 
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
-				// [<p>a</p>]
-				doc.batch().wrap( new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) ), 'w' );
+				model.change( writer => {
+					// [<p>a</p>]
+					writer.wrap( new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) ), 'w' );
+				} );
 
 				expect( stringify( root, live ) ).to.equal( '<p>x</p><w><p>[a]</p></w><p>x</p>' );
 			} );
 
 			it( 'its start is intersecting with the wrapped range', () => {
-				setData( doc, '<p>a[b</p><p>x</p><p>c]d</p>' );
+				setData( model, '<p>a[b</p><p>x</p><p>c]d</p>' );
 
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
-				// [<p>ab</p>]
-				doc.batch().wrap( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ), 'w' );
+				model.change( writer => {
+					// [<p>ab</p>]
+					writer.wrap( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ), 'w' );
+				} );
 
 				expect( stringify( root, live ) ).to.equal( '<w><p>a[b</p></w><p>x</p><p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapped range', () => {
-				setData( doc, '<p>a[b</p><p>x</p><p>c]d</p>' );
+				setData( model, '<p>a[b</p><p>x</p><p>c]d</p>' );
 
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
-				// [<p>cd</p>]
-				doc.batch().wrap( new Range( new Position( root, [ 2 ] ), new Position( root, [ 3 ] ) ), 'w' );
+				model.change( writer => {
+					// [<p>cd</p>]
+					writer.wrap( new Range( new Position( root, [ 2 ] ), new Position( root, [ 3 ] ) ), 'w' );
+				} );
 
 				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>x</p><w><p>c]d</p></w>' );
 			} );
 
 			it( 'its start is intersecting with the wrapped range (multilpe elements)', () => {
-				setData( doc, '<p>a[b</p><p>x</p><p>c]d</p>' );
+				setData( model, '<p>a[b</p><p>x</p><p>c]d</p>' );
 
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
-				// [<p>ab</p><p>x</p>]
-				doc.batch().wrap( new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ), 'w' );
+				model.change( writer => {
+					// [<p>ab</p><p>x</p>]
+					writer.wrap( new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ), 'w' );
+				} );
 
 				expect( stringify( root, live ) ).to.equal( '<w><p>a[b</p><p>x</p></w><p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapped range (multiple elements)', () => {
-				setData( doc, '<p>a[b</p><p>x</p><p>c]d</p>' );
+				setData( model, '<p>a[b</p><p>x</p><p>c]d</p>' );
 
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
-				// [<p>x</p><p>cd</p>]
-				doc.batch().wrap( new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) ), 'w' );
+				model.change( writer => {
+					// [<p>x</p><p>cd</p>]
+					writer.wrap( new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) ), 'w' );
+				} );
 
 				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><w><p>x</p><p>c]d</p></w>' );
 			} );
 
 			it( 'contains element to wrap', () => {
-				setData( doc, '<p>a[b</p><p>x</p><p>c]d</p>' );
+				setData( model, '<p>a[b</p><p>x</p><p>c]d</p>' );
 
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
-				// [<p>x</p>]
-				doc.batch().wrap( new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) ), 'w' );
+				model.change( writer => {
+					// [<p>x</p>]
+					writer.wrap( new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) ), 'w' );
+				} );
 
 				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><w><p>x</p></w><p>c]d</p>' );
 			} );
@@ -513,11 +526,11 @@ describe( 'LiveRange', () => {
 			let live;
 
 			beforeEach( () => {
-				doc.schema.registerItem( 'p', '$block' );
-				doc.schema.registerItem( 'w' );
+				model.schema.registerItem( 'p', '$block' );
+				model.schema.registerItem( 'w' );
 
-				doc.schema.allow( { name: 'p', inside: 'w' } );
-				doc.schema.allow( { name: 'w', inside: '$root' } );
+				model.schema.allow( { name: 'p', inside: 'w' } );
+				model.schema.allow( { name: 'w', inside: '$root' } );
 			} );
 
 			afterEach( () => {
@@ -525,61 +538,73 @@ describe( 'LiveRange', () => {
 			} );
 
 			it( 'is inside the wrapper to remove', () => {
-				setData( doc, '<p>x</p><w><p>[a]</p></w><p>x</p>' );
+				setData( model, '<p>x</p><w><p>[a]</p></w><p>x</p>' );
 
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
-				doc.batch().unwrap( root.getChild( 1 ) );
+				model.change( writer => {
+					writer.unwrap( root.getChild( 1 ) );
+				} );
 
 				expect( stringify( root, live ) ).to.equal( '<p>x</p><p>[a]</p><p>x</p>' );
 			} );
 
 			it( 'its start is intersecting with the wrapper to remove', () => {
-				setData( doc, '<w><p>a[b</p></w><p>c]d</p>' );
+				setData( model, '<w><p>a[b</p></w><p>c]d</p>' );
 
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
-				doc.batch().unwrap( root.getChild( 0 ) );
+				model.change( writer => {
+					writer.unwrap( root.getChild( 0 ) );
+				} );
 
 				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapper to remove', () => {
-				setData( doc, '<p>a[b</p><w><p>c]d</p></w>' );
+				setData( model, '<p>a[b</p><w><p>c]d</p></w>' );
 
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
-				doc.batch().unwrap( root.getChild( 1 ) );
+				model.change( writer => {
+					writer.unwrap( root.getChild( 1 ) );
+				} );
 
 				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>c]d</p>' );
 			} );
 
 			it( 'its start is intersecting with the wrapper to remove (multiple elements)', () => {
-				setData( doc, '<w><p>a[b</p><p>x</p></w><p>c]d</p>' );
+				setData( model, '<w><p>a[b</p><p>x</p></w><p>c]d</p>' );
 
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
-				doc.batch().unwrap( root.getChild( 0 ) );
+				model.change( writer => {
+					writer.unwrap( root.getChild( 0 ) );
+				} );
 
 				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>x</p><p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapper to remove (multiple elements)', () => {
-				setData( doc, '<p>a[b</p><w><p>x</p><p>c]d</p></w>' );
+				setData( model, '<p>a[b</p><w><p>x</p><p>c]d</p></w>' );
 
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
-				doc.batch().unwrap( root.getChild( 1 ) );
+				model.change( writer => {
+					writer.unwrap( root.getChild( 1 ) );
+				} );
 
 				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>x</p><p>c]d</p>' );
 			} );
 
 			it( 'contains wrapped element', () => {
-				setData( doc, '<p>a[b</p><w><p>x</p></w><p>c]d</p>' );
+				setData( model, '<p>a[b</p><w><p>x</p></w><p>c]d</p>' );
 
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
-				doc.batch().unwrap( root.getChild( 1 ) );
+				model.change( writer => {
+					writer.unwrap( root.getChild( 1 ) );
+				} );
 
 				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>x</p><p>c]d</p>' );
 			} );

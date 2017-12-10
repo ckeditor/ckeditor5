@@ -3,21 +3,23 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
+import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'ReinsertOperation', () => {
-	let doc, root, graveyard, operation, graveyardPosition, rootPosition;
+	let model, doc, root, graveyard, operation, graveyardPosition, rootPosition;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 		graveyard = doc.graveyard;
 
@@ -87,13 +89,13 @@ describe( 'ReinsertOperation', () => {
 
 		graveyard.insertChildren( 0, new Text( 'xx' ) );
 
-		doc.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 2 );
 		expect( graveyard.maxOffset ).to.equal( 0 );
 
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 0 );
@@ -105,7 +107,7 @@ describe( 'ReinsertOperation', () => {
 	} );
 
 	it( 'should throw when target position is not in the document', () => {
-		const docFrag = doc.batch().createDocumentFragment();
+		const docFrag = new DocumentFragment();
 
 		operation = new ReinsertOperation(
 			graveyardPosition,
@@ -120,7 +122,7 @@ describe( 'ReinsertOperation', () => {
 	} );
 
 	it( 'should throw when source position is not in the document', () => {
-		const docFrag = doc.batch().createDocumentFragment();
+		const docFrag = new DocumentFragment();
 
 		operation = new ReinsertOperation(
 			Position.createAt( docFrag ),

@@ -146,7 +146,7 @@ export default class MarkerOperation extends Operation {
 			json.name,
 			json.oldRange ? Range.fromJSON( json.oldRange, document ) : null,
 			json.newRange ? Range.fromJSON( json.newRange, document ) : null,
-			document.markers,
+			document.model.markers,
 			json.baseVersion
 		);
 	}

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import DocumentFragment from '../../src/model/documentfragment';
 import Node from '../../src/model/node';
 import Element from '../../src/model/element';
@@ -17,6 +17,8 @@ describe( 'Node', () => {
 		textBA, textR, img;
 
 	beforeEach( () => {
+		const model = new Model();
+
 		node = new Node();
 
 		one = new Element( 'one' );
@@ -26,7 +28,7 @@ describe( 'Node', () => {
 		textR = two.getChild( 2 );
 		three = new Element( 'three' );
 
-		doc = new Document();
+		doc = model.document;
 		root = doc.createRoot();
 		root.appendChildren( [ one, two, three ] );
 	} );

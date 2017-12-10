@@ -7,14 +7,16 @@ import MarkerCollection from '../../src/model/markercollection';
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';
 import Text from '../../src/model/text';
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'MarkerCollection', () => {
 	let markers, range, range2, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		const model = new Model();
+
+		doc = model.document;
 		markers = new MarkerCollection();
 
 		root = doc.createRoot();
@@ -207,10 +209,11 @@ describe( 'MarkerCollection', () => {
 } );
 
 describe( 'Marker', () => {
-	let doc, root;
+	let model, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 	} );
 
@@ -218,14 +221,14 @@ describe( 'Marker', () => {
 		root.appendChildren( new Text( 'foo' ) );
 
 		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
-		const marker = doc.markers.set( 'name', range );
+		const marker = model.markers.set( 'name', range );
 
 		expect( marker.getRange().isEqual( range ) ).to.be.true;
 		expect( marker.getStart().isEqual( range.start ) ).to.be.true;
 		expect( marker.getEnd().isEqual( range.end ) ).to.be.true;
 
-		doc.enqueueChanges( () => {
-			doc.batch().insertText( 'abc', root );
+		model.change( writer => {
+			writer.insertText( 'abc', root );
 		} );
 
 		const updatedRange = Range.createFromParentsAndOffsets( root, 4, root, 5 );
@@ -237,9 +240,9 @@ describe( 'Marker', () => {
 
 	it( 'should throw when using the API if marker was removed from markers collection', () => {
 		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
-		const marker = doc.markers.set( 'name', range );
+		const marker = model.markers.set( 'name', range );
 
-		doc.markers.remove( 'name' );
+		model.markers.remove( 'name' );
 
 		expect( () => {
 			marker.getRange();
@@ -256,7 +259,7 @@ describe( 'Marker', () => {
 
 	it( 'should delegate events from live range', () => {
 		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
-		const marker = doc.markers.set( 'name', range );
+		const marker = model.markers.set( 'name', range );
 
 		const eventRange = sinon.spy();
 		const eventContent = sinon.spy();

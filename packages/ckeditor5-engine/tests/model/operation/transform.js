@@ -5,7 +5,7 @@
 
 import transform from '../../../src/model/operation/transform';
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import RootElement from '../../../src/model/rootelement';
 import Node from '../../../src/model/node';
 import Position from '../../../src/model/position';
@@ -24,7 +24,9 @@ describe( 'transform', () => {
 	let doc, root, op, nodeA, nodeB, expected, baseVersion;
 
 	beforeEach( () => {
-		doc = new Document();
+		const model = new Model();
+
+		doc = model.document;
 		root = doc.createRoot();
 
 		nodeA = new Node();
