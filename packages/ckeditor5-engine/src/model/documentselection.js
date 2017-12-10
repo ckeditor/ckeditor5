@@ -98,7 +98,7 @@ export default class DocumentSelection extends Selection {
 			if ( batch && batch.type !== 'transparent' ) {
 				// Whenever element which had selection's attributes stored in it stops being empty,
 				// the attributes need to be removed.
-				clearAttributesStoredInElement( changes, this._model );
+				clearAttributesStoredInElement( changes, this._model, batch );
 			}
 		} );
 	}
@@ -730,7 +730,7 @@ function getAttrsIfCharacter( node ) {
 }
 
 // Removes selection attributes from element which is not empty anymore.
-function clearAttributesStoredInElement( changes, model ) {
+function clearAttributesStoredInElement( changes, model, batch ) {
 	const changeParent = changes.range && changes.range.start.parent;
 
 	// `changes.range` is not set in case of rename, root and marker operations.
@@ -739,7 +739,7 @@ function clearAttributesStoredInElement( changes, model ) {
 		return;
 	}
 
-	model.change( writer => {
+	model.enqueueChange( batch, writer => {
 		const storedAttributes = Array.from( changeParent.getAttributeKeys() ).filter( key => key.startsWith( storePrefix ) );
 
 		for ( const key of storedAttributes ) {
