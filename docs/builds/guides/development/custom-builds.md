@@ -26,7 +26,7 @@ Some of the reasons for creating custom builds are:
 Start with [forking](https://help.github.com/articles/fork-a-repo/) one of the official builds (it will serve as the starting point for your custom one) and then clone your fork:
 
 ```bash
-git clone https://github.com/<your-username>/ckeditor5-build-classic.git
+git clone -b stable https://github.com/<your-username>/ckeditor5-build-classic.git
 ```
 
 To make updating easier you may optionally add the original build repository to your Git remotes:
@@ -39,6 +39,10 @@ git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
 	If you do not want to fork the official build, you can just clone it. However, you will not be able to commit and push your customizations back to GitHub.
 
 	Alternatively, instead of creating a custom build you can {@link builds/guides/integration/advanced-setup#Scenario-2-Building-from-source integrate CKEditor 5 directly from source}. This option allows even greater flexibility and requires less overhead (you will not need to fork the official build).
+</info-box>
+
+<info-box warning>
+	It is important that you use the `stable` branch of a build, not the `master` branch. The `master` branch might contain changes which are not yet compatible with the versions of CKEditor 5 source packages which were published on npm.
 </info-box>
 
 ## Build anatomy
@@ -142,7 +146,7 @@ You may decide to update your build at any time. Since it is a fork of the offic
 
 ```bash
 git fetch upstream
-git merge upstream/master
+git merge upstream/stable
 ```
 
 You should handle eventual conflicts and verify the merged changes. After that, just follow the previous instructions for creating your build and test it.
