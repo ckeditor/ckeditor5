@@ -39,7 +39,7 @@ export function getNodesAndText( range ) {
 }
 
 /**
- * Returns object JSON representation. It pases an object by JSON.stringify and JSON.parse functions.
+ * Returns object JSON representation. It passes an object by JSON.stringify and JSON.parse functions.
  *
  * @param {Object|Array} object
  */
