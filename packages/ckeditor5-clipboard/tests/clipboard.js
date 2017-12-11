@@ -279,7 +279,7 @@ describe( 'Clipboard feature', () => {
 			const dataTransferMock = createDataTransfer();
 			const preventDefaultSpy = sinon.spy();
 
-			setModelData( editor.document, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
 
 			editingView.on( 'clipboardOutput', ( evt, data ) => {
 				expect( preventDefaultSpy.calledOnce ).to.be.true;
@@ -303,7 +303,7 @@ describe( 'Clipboard feature', () => {
 			const dataTransferMock = createDataTransfer();
 			const preventDefaultSpy = sinon.spy();
 
-			setModelData( editor.document, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
 
 			editingView.on( 'clipboardOutput', ( evt, data ) => {
 				expect( data.method ).to.equal( 'cut' );
@@ -322,7 +322,7 @@ describe( 'Clipboard feature', () => {
 			const preventDefaultSpy = sinon.spy();
 			const spy = sinon.spy();
 
-			setModelData( editor.document, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
 			editor.isReadOnly = true;
 
 			editingView.on( 'clipboardOutput', spy );
@@ -466,16 +466,20 @@ describe( 'Clipboard feature', () => {
 		it( 'deletes selected content in case of cut', () => {
 			const dataTransferMock = createDataTransfer();
 
-			setModelData( editor.document, '<paragraph>f[o</paragraph><paragraph>x]o</paragraph>' );
+			setModelData( editor.model, '<paragraph>f[o</paragraph><paragraph>x]o</paragraph>' );
 
-			editingView.fire( 'clipboardOutput', {
-				dataTransfer: dataTransferMock,
-				content: new ViewDocumentFragment(),
-				method: 'cut',
-				batch: editor.document.batch()
+			// Change block is only to get writer instance.
+			// Writer should not be passed along this event.
+			editor.model.change( writer => {
+				editingView.fire( 'clipboardOutput', {
+					dataTransfer: dataTransferMock,
+					content: new ViewDocumentFragment(),
+					method: 'cut',
+					writer
+				} );
 			} );
 
-			expect( getModelData( editor.document ) ).to.equal( '<paragraph>f[]o</paragraph>' );
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph>f[]o</paragraph>' );
 		} );
 
 		it( 'uses low priority observer for the clipboardOutput event', () => {
