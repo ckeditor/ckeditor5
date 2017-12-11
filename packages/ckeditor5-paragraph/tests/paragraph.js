@@ -449,6 +449,23 @@ describe( 'Paragraph feature', () => {
 
 			expect( editor.getData() ).to.equal( '' );
 		} );
+
+		it( 'should fix empty roots in the right batch', () => {
+			let removeBatch, attributeBatch;
+
+			model.enqueueChange( writer => {
+				removeBatch = writer.batch;
+				writer.remove( ModelRange.createIn( root ) );
+
+				model.enqueueChange( writer => {
+					attributeBatch = writer.batch;
+					writer.setAttribute( 'foo', 'bar', root );
+				} );
+			} );
+
+			expect( Array.from( removeBatch.deltas, delta => delta.type ) ).to.include.members( [ 'insert' ] );
+			expect( Array.from( attributeBatch.deltas, delta => delta.type ) ).to.not.include.members( [ 'insert' ] );
+		} );
 	} );
 
 	describe( 'command', () => {
