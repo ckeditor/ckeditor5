@@ -21,16 +21,16 @@ import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 describe( 'Paragraph feature', () => {
-	let editor, doc, root, batch;
+	let model, editor, doc, root;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( { plugins: [ Paragraph ] } )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
+				model = editor.model;
+				doc = model.document;
 				root = doc.getRoot();
-				batch = doc.batch();
 			} );
 	} );
 
@@ -39,9 +39,9 @@ describe( 'Paragraph feature', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.hasItem( 'paragraph' ) ).to.be.true;
-		expect( doc.schema.check( { name: 'paragraph', inside: '$root' } ) ).to.be.true;
-		expect( doc.schema.check( { name: '$inline', inside: 'paragraph' } ) ).to.be.true;
+		expect( model.schema.hasItem( 'paragraph' ) ).to.be.true;
+		expect( model.schema.check( { name: 'paragraph', inside: '$root' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', inside: 'paragraph' } ) ).to.be.true;
 	} );
 
 	it( 'should have a static paragraphLikeElements property', () => {
@@ -52,21 +52,21 @@ describe( 'Paragraph feature', () => {
 		it( 'should convert paragraph', () => {
 			editor.setData( '<p>foobar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
 			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
 		} );
 
 		it( 'should convert paragraph only', () => {
 			editor.setData( '<p>foo<b>baz</b>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foobazbar</paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobazbar</paragraph>' );
 			expect( editor.getData() ).to.equal( '<p>foobazbar</p>' );
 		} );
 
 		it( 'should convert multiple paragraphs', () => {
 			editor.setData( '<p>foo</p><p>baz</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph><paragraph>baz</paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph><paragraph>baz</paragraph>' );
 			expect( editor.getData() ).to.equal( '<p>foo</p><p>baz</p>' );
 		} );
 
@@ -74,71 +74,71 @@ describe( 'Paragraph feature', () => {
 			it( 'should autoparagraph text', () => {
 				editor.setData( 'foo' );
 
-				expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
 				expect( editor.getData() ).to.equal( '<p>foo</p>' );
 			} );
 
 			it( 'should autoparagraph any inline element', () => {
-				editor.document.schema.registerItem( 'span', '$inline' );
-				editor.document.schema.allow( { name: '$text', inside: '$inline' } );
+				editor.model.schema.registerItem( 'span', '$inline' );
+				editor.model.schema.allow( { name: '$text', inside: '$inline' } );
 
 				buildModelConverter().for( editor.editing.modelToView, editor.data.modelToView ).fromElement( 'span' ).toElement( 'span' );
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'span' ).toElement( 'span' );
 
 				editor.setData( '<span>foo</span>' );
 
-				expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph><span>foo</span></paragraph>' );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph><span>foo</span></paragraph>' );
 				expect( editor.getData() ).to.equal( '<p><span>foo</span></p>' );
 			} );
 
 			it( 'should not autoparagraph text (in clipboard holder)', () => {
-				const modelFragment = editor.data.parse( 'foo', batch, '$clipboardHolder' );
+				const modelFragment = editor.data.parse( 'foo', '$clipboardHolder' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( 'foo' );
 			} );
 
 			it( 'should not autoparagraph text (in a context which does not allow paragraphs', () => {
-				doc.schema.registerItem( 'specialRoot' );
+				model.schema.registerItem( 'specialRoot' );
 
-				const modelFragment = editor.data.parse( 'foo', batch, 'specialRoot' );
+				const modelFragment = editor.data.parse( 'foo', 'specialRoot' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '' );
 			} );
 
 			it( 'should autoparagraph text next to allowed element', () => {
-				doc.schema.registerItem( 'heading1', '$block' );
+				model.schema.registerItem( 'heading1', '$block' );
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'h1' ).toElement( 'heading1' );
 
-				const modelFragment = editor.data.parse( '<h1>foo</h1>bar<p>bom</p>', batch );
+				const modelFragment = editor.data.parse( '<h1>foo</h1>bar<p>bom</p>' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<heading1>foo</heading1><paragraph>bar</paragraph><paragraph>bom</paragraph>' );
 			} );
 
 			it( 'should autoparagraph 3 inline nodes into one paragraph', () => {
-				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom', batch );
+				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>foobarbom</paragraph>' );
 			} );
 
 			it( 'should not autoparagraph 3 inline nodes (in clipboardHolder)', () => {
-				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom', batch, '$clipboardHolder' );
+				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom', '$clipboardHolder' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( 'foobarbom' );
 			} );
 
 			it( 'should autoparagraph text inside converted container', () => {
-				doc.schema.registerItem( 'div' );
-				doc.schema.allow( { name: 'div', inside: '$root' } );
-				doc.schema.allow( { name: 'paragraph', inside: 'div' } );
+				model.schema.registerItem( 'div' );
+				model.schema.allow( { name: 'div', inside: '$root' } );
+				model.schema.allow( { name: 'paragraph', inside: 'div' } );
 
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 
-				const modelFragment = editor.data.parse( '<div>foo</div><div>bom<p>bim</p></div>', batch );
+				const modelFragment = editor.data.parse( '<div>foo</div><div>bom<p>bim</p></div>' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal(
@@ -148,35 +148,35 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should autoparagraph text inside disallowed element next to allowed element', () => {
-				doc.schema.registerItem( 'heading1', '$block' );
+				model.schema.registerItem( 'heading1', '$block' );
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'h1' ).toElement( 'heading1' );
 
-				const modelFragment = editor.data.parse( '<div><h1>foo</h1>bar</div>', batch );
+				const modelFragment = editor.data.parse( '<div><h1>foo</h1>bar</div>' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<heading1>foo</heading1><paragraph>bar</paragraph>' );
 			} );
 
 			it( 'should not autoparagraph text in disallowed element', () => {
-				doc.schema.registerItem( 'heading1', '$block' );
+				model.schema.registerItem( 'heading1', '$block' );
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'h1' ).toElement( 'heading1' );
 
-				const modelFragment = editor.data.parse( '<h1><b>foo</b>bar</h1>', batch );
+				const modelFragment = editor.data.parse( '<h1><b>foo</b>bar</h1>' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<heading1>foobar</heading1>' );
 			} );
 
 			it( 'should not fail when text is not allowed in paragraph', () => {
-				doc.schema.disallow( { name: '$text', inside: [ '$root', 'paragraph' ] } );
+				model.schema.disallow( { name: '$text', inside: [ '$root', 'paragraph' ] } );
 
-				const modelFragment = editor.data.parse( 'foo', batch );
+				const modelFragment = editor.data.parse( 'foo' );
 
 				expect( stringifyModel( modelFragment ) ).to.equal( '' );
 			} );
 
 			it( 'creates normalized model', () => {
-				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom', batch );
+				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom' );
 
 				expect( modelFragment ).to.be.instanceof( ModelDocumentFragment );
 				expect( modelFragment.getChild( 0 ).childCount ).to.equal( 1 );
@@ -189,29 +189,29 @@ describe( 'Paragraph feature', () => {
 					consumable.consume( data.input, { name: true } );
 				}, { priority: 'highest' } );
 
-				const modelFragment = editor.data.parse( '<ul><li></li></ul>', batch );
+				const modelFragment = editor.data.parse( '<ul><li></li></ul>' );
 
 				expect( stringifyModel( modelFragment ) ).to.equal( '' );
 			} );
 
 			describe( 'should not strip attribute elements when autoparagraphing texts', () => {
 				beforeEach( () => {
-					doc.schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
+					model.schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
 					buildViewConverter().for( editor.data.viewToModel )
 						.fromElement( 'b' )
 						.toAttribute( 'bold', true );
 				} );
 
 				it( 'inside document fragment', () => {
-					const modelFragment = editor.data.parse( 'foo<b>bar</b>bom', batch );
+					const modelFragment = editor.data.parse( 'foo<b>bar</b>bom' );
 
 					expect( stringifyModel( modelFragment ) ).to.equal( '<paragraph>foo<$text bold="true">bar</$text>bom</paragraph>' );
 				} );
 
 				it( 'inside converted element', () => {
-					doc.schema.registerItem( 'blockquote' );
-					doc.schema.allow( { name: 'blockquote', inside: '$root' } );
-					doc.schema.allow( { name: '$block', inside: 'blockquote' } );
+					model.schema.registerItem( 'blockquote' );
+					model.schema.allow( { name: 'blockquote', inside: '$root' } );
+					model.schema.allow( { name: '$block', inside: 'blockquote' } );
 
 					buildModelConverter().for( editor.editing.modelToView, editor.data.modelToView )
 						.fromElement( 'blockquote' )
@@ -219,14 +219,14 @@ describe( 'Paragraph feature', () => {
 
 					buildViewConverter().for( editor.data.viewToModel ).fromElement( 'blockquote' ).toElement( 'blockquote' );
 
-					const modelFragment = editor.data.parse( '<blockquote>foo<b>bar</b>bom</blockquote>', batch );
+					const modelFragment = editor.data.parse( '<blockquote>foo<b>bar</b>bom</blockquote>' );
 
 					expect( stringifyModel( modelFragment ) )
 						.to.equal( '<blockquote><paragraph>foo<$text bold="true">bar</$text>bom</paragraph></blockquote>' );
 				} );
 
 				it( 'inside paragraph-like element', () => {
-					const modelFragment = editor.data.parse( '<h1>foo</h1><h2><b>bar</b>bom</h2>', batch );
+					const modelFragment = editor.data.parse( '<h1>foo</h1><h2><b>bar</b>bom</h2>' );
 
 					expect( stringifyModel( modelFragment ) )
 						.to.equal( '<paragraph>foo</paragraph><paragraph><$text bold="true">bar</$text>bom</paragraph>' );
@@ -236,49 +236,49 @@ describe( 'Paragraph feature', () => {
 
 		describe( 'generic block converter (paragraph-like element handling)', () => {
 			it( 'should convert h1+h2', () => {
-				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2>', batch );
+				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2>' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 			} );
 
 			it( 'should convert h1+h2 (in clipboard holder)', () => {
-				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2>', batch, '$clipboardHolder' );
+				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2>', '$clipboardHolder' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 			} );
 
 			it( 'should not convert h1+h2 (in a context which does not allow paragraphs)', () => {
-				doc.schema.registerItem( 'div' );
-				doc.schema.registerItem( 'specialRoot' );
-				doc.schema.allow( { name: 'div', inside: 'specialRoot' } );
-				doc.schema.allow( { name: '$text', inside: 'div' } );
+				model.schema.registerItem( 'div' );
+				model.schema.registerItem( 'specialRoot' );
+				model.schema.allow( { name: 'div', inside: 'specialRoot' } );
+				model.schema.allow( { name: '$text', inside: 'div' } );
 
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 
-				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2><div>bom</div>', batch, 'specialRoot' );
+				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2><div>bom</div>', 'specialRoot' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<div>bom</div>' );
 			} );
 
 			it( 'should convert ul,ol>li', () => {
-				const modelFragment = editor.data.parse( '<ul><li>a</li><li>b</li></ul><ol><li>c</li></ol>', batch );
+				const modelFragment = editor.data.parse( '<ul><li>a</li><li>b</li></ul><ol><li>c</li></ol>' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>a</paragraph><paragraph>b</paragraph><paragraph>c</paragraph>' );
 			} );
 
 			it( 'should convert ul,ol>li (in clipboard holder)', () => {
-				const modelFragment = editor.data.parse( '<ul><li>a</li><li>b</li></ul><ol><li>c</li></ol>', batch, '$clipboardHolder' );
+				const modelFragment = editor.data.parse( '<ul><li>a</li><li>b</li></ul><ol><li>c</li></ol>', '$clipboardHolder' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>a</paragraph><paragraph>b</paragraph><paragraph>c</paragraph>' );
 			} );
 
 			it( 'should convert ul>li>ul>li+li', () => {
-				const modelFragment = editor.data.parse( '<ul><li>a<ul><li>b</li><li>c</li></ul></li></ul>', batch );
+				const modelFragment = editor.data.parse( '<ul><li>a<ul><li>b</li><li>c</li></ul></li></ul>' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>a</paragraph><paragraph>b</paragraph><paragraph>c</paragraph>' );
@@ -287,14 +287,14 @@ describe( 'Paragraph feature', () => {
 			// "b" is not autoparagraphed because clipboard holder allows text nodes.
 			// There's a similar integrational test what's going to happen when pasting in paragraph-integration.js.
 			it( 'should convert ul>li>ul>li+li (in clipboard holder)', () => {
-				const modelFragment = editor.data.parse( '<ul><li>a<ul><li>b</li><li>c</li></ul></li></ul>', batch, '$clipboardHolder' );
+				const modelFragment = editor.data.parse( '<ul><li>a<ul><li>b</li><li>c</li></ul></li></ul>', '$clipboardHolder' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>a</paragraph><paragraph>b</paragraph><paragraph>c</paragraph>' );
 			} );
 
 			it( 'should convert ul>li>p,text', () => {
-				const modelFragment = editor.data.parse( '<ul><li><p>a</p>b</li></ul>', batch );
+				const modelFragment = editor.data.parse( '<ul><li><p>a</p>b</li></ul>' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>a</paragraph><paragraph>b</paragraph>' );
@@ -303,7 +303,7 @@ describe( 'Paragraph feature', () => {
 			// "b" is not autoparagraphed because clipboard holder allows text nodes.
 			// There's a similar integrational test what's going to happen when pasting in paragraph-integration.js.
 			it( 'should convert ul>li>p,text (in clipboard holder)', () => {
-				const modelFragment = editor.data.parse( '<ul><li><p>a</p>b</li></ul>', batch, '$clipboardHolder' );
+				const modelFragment = editor.data.parse( '<ul><li><p>a</p>b</li></ul>', '$clipboardHolder' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>a</paragraph><paragraph>b</paragraph>' );
@@ -311,8 +311,7 @@ describe( 'Paragraph feature', () => {
 
 			it( 'should convert td', () => {
 				const modelFragment = editor.data.parse(
-					'<table><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></table>',
-					batch
+					'<table><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></table>'
 				);
 
 				expect( stringifyModel( modelFragment ) )
@@ -322,7 +321,6 @@ describe( 'Paragraph feature', () => {
 			it( 'should convert td (in clipboardHolder)', () => {
 				const modelFragment = editor.data.parse(
 					'<table><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></table>',
-					batch,
 					'$clipboardHolder'
 				);
 
@@ -331,13 +329,13 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should convert li inside converted container', () => {
-				doc.schema.registerItem( 'div' );
-				doc.schema.allow( { name: 'div', inside: '$root' } );
-				doc.schema.allow( { name: 'paragraph', inside: 'div' } );
+				model.schema.registerItem( 'div' );
+				model.schema.allow( { name: 'div', inside: '$root' } );
+				model.schema.allow( { name: 'paragraph', inside: 'div' } );
 
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 
-				const modelFragment = editor.data.parse( '<div><ul><li>foo</li><li>bar</li></ul></div><div>bom<p>bim</p></div>', batch );
+				const modelFragment = editor.data.parse( '<div><ul><li>foo</li><li>bar</li></ul></div><div>bom<p>bim</p></div>' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal(
@@ -347,7 +345,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should convert li inside disallowed container', () => {
-				const modelFragment = editor.data.parse( '<div><ul><li>foo</li><li>bar</li></ul></div><div>bom<p>bim</p></div>', batch );
+				const modelFragment = editor.data.parse( '<div><ul><li>foo</li><li>bar</li></ul></div><div>bom<p>bim</p></div>' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal(
@@ -357,7 +355,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'creates normalized model', () => {
-				const modelFragment = editor.data.parse( '<h1><span>foo</span><span>bar</span>', batch );
+				const modelFragment = editor.data.parse( '<h1><span>foo</span><span>bar</span>' );
 
 				expect( stringifyModel( modelFragment ) ).to.equal( '<paragraph>foobar</paragraph>' );
 
@@ -370,7 +368,7 @@ describe( 'Paragraph feature', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert paragraph', () => {
-			setModelData( doc, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			setModelData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
@@ -380,7 +378,7 @@ describe( 'Paragraph feature', () => {
 		it( 'wraps text and place selection at the beginning of that paragraph', () => {
 			editor.setData( 'foo' );
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
 		} );
 	} );
 
@@ -398,8 +396,8 @@ describe( 'Paragraph feature', () => {
 			// fix root if it is not needed.
 			expect( editor.getData() ).to.equal( '<p>Foobar</p>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().remove( ModelRange.createIn( root ) );
+			model.change( writer => {
+				writer.remove( ModelRange.createIn( root ) );
 			} );
 
 			expect( doc.getRoot().childCount ).to.equal( 1 );
@@ -408,7 +406,7 @@ describe( 'Paragraph feature', () => {
 
 		it( 'should not fix root if it got content during changesDone event', () => {
 			// "Autoheading feature".
-			doc.schema.registerItem( 'heading', '$block' );
+			model.schema.registerItem( 'heading', '$block' );
 
 			buildModelConverter().for( editor.editing.modelToView, editor.data.modelToView )
 				.fromElement( 'heading' )
@@ -418,14 +416,14 @@ describe( 'Paragraph feature', () => {
 				const root = doc.getRoot();
 
 				if ( root.isEmpty ) {
-					doc.enqueueChanges( () => {
-						doc.batch().insertElement( 'heading', root );
+					model.change( writer => {
+						writer.insertElement( 'heading', root );
 					} );
 				}
 			} );
 
-			doc.enqueueChanges( () => {
-				doc.batch().remove( ModelRange.createIn( root ) );
+			model.change( writer => {
+				writer.remove( ModelRange.createIn( root ) );
 			} );
 
 			expect( doc.getRoot().childCount ).to.equal( 1 );
@@ -433,19 +431,22 @@ describe( 'Paragraph feature', () => {
 		} );
 
 		it( 'should not fix root which does not allow paragraph', () => {
-			doc.schema.disallow( { name: 'paragraph', inside: '$root' } );
+			model.schema.disallow( { name: 'paragraph', inside: '$root' } );
 
-			doc.enqueueChanges( () => {
-				doc.batch().remove( ModelRange.createIn( root ) );
+			model.change( writer => {
+				writer.remove( ModelRange.createIn( root ) );
 			} );
+
 			expect( editor.getData() ).to.equal( '' );
+
+			editor.destroy();
 		} );
 
 		it( 'should not fix root if change was in transparent batch', () => {
 			editor.setData( '<p>Foobar</p>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch( 'transparent' ).remove( ModelRange.createIn( root ) );
+			model.enqueueChange( 'transparent', writer => {
+				writer.remove( ModelRange.createIn( root ) );
 			} );
 
 			expect( editor.getData() ).to.equal( '' );

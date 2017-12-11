@@ -216,7 +216,6 @@ function autoparagraphItems( evt, data, consumable, conversionApi ) {
 		if ( isParagraphable( child, data.context, conversionApi.schema, isParagraphLike ) ) {
 			// If there is no wrapping `paragraph` element, create it.
 			if ( !autoParagraph ) {
-				conversionApi.writer.insertElement( 'paragraph', data.output, child.index );
 				autoParagraph = conversionApi.writer.createElement( 'paragraph' );
 				conversionApi.writer.insert( autoParagraph, data.output, child.index );
 			}

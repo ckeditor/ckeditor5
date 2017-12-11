@@ -52,7 +52,7 @@ export default class ParagraphCommand extends Command {
 		const model = this.editor.model;
 		const document = model.document;
 
-		model.enqueueChange( writer => {
+		model.change( writer => {
 			const blocks = ( options.selection || document.selection ).getSelectedBlocks();
 
 			for ( const block of blocks ) {

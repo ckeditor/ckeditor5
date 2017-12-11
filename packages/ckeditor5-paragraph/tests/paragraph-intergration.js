@@ -21,16 +21,15 @@ describe( 'Paragraph feature – integration', () => {
 				.create( { plugins: [ Paragraph, Clipboard ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const doc = editor.document;
 					const clipboard = editor.plugins.get( 'Clipboard' );
 
-					setModelData( doc, '<paragraph>[]</paragraph>' );
+					setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 					clipboard.fire( 'inputTransformation', {
 						content: parseView( '<h1>foo</h1><h2>bar</h2><p>bom</p>' )
 					} );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( getModelData( editor.model ) ).to.equal(
 						'<paragraph>foo</paragraph><paragraph>bar</paragraph><paragraph>bom[]</paragraph>'
 					);
 				} );
@@ -42,16 +41,15 @@ describe( 'Paragraph feature – integration', () => {
 				.create( { plugins: [ Paragraph, Clipboard, HeadingEngine ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const doc = editor.document;
 					const clipboard = editor.plugins.get( 'Clipboard' );
 
-					setModelData( doc, '<paragraph>[]</paragraph>' );
+					setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 					clipboard.fire( 'inputTransformation', {
 						content: parseView( '<h1>foo</h1><h2>bar</h2><p>bom</p>' )
 					} );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( getModelData( editor.model ) ).to.equal(
 						'<paragraph>foo</paragraph><heading1>bar</heading1><paragraph>bom[]</paragraph>'
 					);
 				} );
@@ -62,16 +60,15 @@ describe( 'Paragraph feature – integration', () => {
 				.create( { plugins: [ Paragraph, Clipboard ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const doc = editor.document;
 					const clipboard = editor.plugins.get( 'Clipboard' );
 
-					setModelData( doc, '<paragraph>[]</paragraph>' );
+					setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 					clipboard.fire( 'inputTransformation', {
 						content: parseView( '<ul><li>foo</li><li>bar</li></ul>' )
 					} );
 
-					expect( getModelData( doc ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar[]</paragraph>' );
+					expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar[]</paragraph>' );
 				} );
 		} );
 
@@ -82,16 +79,15 @@ describe( 'Paragraph feature – integration', () => {
 				.create( { plugins: [ Paragraph, Clipboard, HeadingEngine ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const doc = editor.document;
 					const clipboard = editor.plugins.get( 'Clipboard' );
 
-					setModelData( doc, '<paragraph>[]</paragraph>' );
+					setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 					clipboard.fire( 'inputTransformation', {
 						content: parseView( '<ul><li>x</li><li><h2>foo</h2><h3>bar</h3><p>bom</p></li><li>x</li></ul>' )
 					} );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( getModelData( editor.model ) ).to.equal(
 						'<paragraph>x</paragraph>' +
 						'<heading1>foo</heading1><heading2>bar</heading2><paragraph>bom</paragraph>' +
 						'<paragraph>x[]</paragraph>'
@@ -105,16 +101,15 @@ describe( 'Paragraph feature – integration', () => {
 				.create( { plugins: [ Paragraph, Clipboard ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const doc = editor.document;
 					const clipboard = editor.plugins.get( 'Clipboard' );
 
-					setModelData( doc, '<paragraph>[]</paragraph>' );
+					setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 					clipboard.fire( 'inputTransformation', {
 						content: parseView( '<ul><li>a<ul><li>b</li><li>c</li></ul></li></ul>' )
 					} );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( getModelData( editor.model ) ).to.equal(
 						'<paragraph>a</paragraph>' +
 						'<paragraph>b</paragraph>' +
 						'<paragraph>c[]</paragraph>'
@@ -128,16 +123,15 @@ describe( 'Paragraph feature – integration', () => {
 				.create( { plugins: [ Paragraph, Clipboard ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const doc = editor.document;
 					const clipboard = editor.plugins.get( 'Clipboard' );
 
-					setModelData( doc, '<paragraph>[]</paragraph>' );
+					setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 					clipboard.fire( 'inputTransformation', {
 						content: parseView( '<ul><li><p>a</p>b</li></ul>' )
 					} );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( getModelData( editor.model ) ).to.equal(
 						'<paragraph>a</paragraph>' +
 						'<paragraph>b[]</paragraph>'
 					);
@@ -151,7 +145,7 @@ describe( 'Paragraph feature – integration', () => {
 				.create( { plugins: [ Paragraph, UndoEngine ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const doc = editor.document;
+					const doc = editor.model.document;
 					const root = doc.getRoot();
 
 					expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
@@ -159,8 +153,8 @@ describe( 'Paragraph feature – integration', () => {
 
 					editor.setData( '<p>Foobar.</p>' );
 
-					doc.enqueueChanges( () => {
-						doc.batch().remove( root.getChild( 0 ) );
+					editor.model.change( writer => {
+						writer.remove( root.getChild( 0 ) );
 					} );
 
 					expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
@@ -184,7 +178,7 @@ describe( 'Paragraph feature – integration', () => {
 				.create( { plugins: [ Paragraph, UndoEngine ] } )
 				.then( newEditor => {
 					const editor = newEditor;
-					const doc = editor.document;
+					const doc = editor.model.document;
 					const root = doc.getRoot();
 					const otherRoot = doc.createRoot( '$root', 'otherRoot' );
 					editor.editing.createRoot( 'div', 'otherRoot' );
@@ -192,9 +186,12 @@ describe( 'Paragraph feature – integration', () => {
 					editor.data.set( '<p>Foobar.</p>', 'main' );
 					editor.data.set( '<p>Foobar.</p>', 'otherRoot' );
 
-					doc.enqueueChanges( () => {
-						doc.batch().remove( root.getChild( 0 ) );
-						doc.batch().remove( otherRoot.getChild( 0 ) );
+					editor.model.change( writer => {
+						writer.remove( root.getChild( 0 ) );
+					} );
+
+					editor.model.change( writer => {
+						writer.remove( otherRoot.getChild( 0 ) );
 					} );
 
 					expect( editor.data.get( 'main' ) ).to.equal( '<p>&nbsp;</p>' );
