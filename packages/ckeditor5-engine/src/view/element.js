@@ -712,6 +712,36 @@ export default class Element extends Node {
 			( attributes == '' ? '' : ` ${ attributes }` );
 	}
 
+	static fromViewDefinition( viewDefinition ) {
+		const attributes = {};
+
+		const classes = viewDefinition.class;
+
+		if ( viewDefinition.class ) {
+			attributes.class = Array.isArray( classes ) ? classes.join( ' ' ) : classes;
+		}
+
+		if ( viewDefinition.style ) {
+			attributes.style = toStylesString( viewDefinition.style );
+		}
+
+		if ( viewDefinition.attribute ) {
+			attributes.attribute = viewDefinition.attribute;
+		}
+
+		return new this( viewDefinition.name, attributes );
+
+		function toStylesString( stylesObject ) {
+			const styles = [];
+
+			for ( const key in stylesObject ) {
+				styles.push( key + ':' + stylesObject[ key ] );
+			}
+
+			return styles.join( ';' );
+		}
+	}
+
 	/**
 	 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
 	 *
