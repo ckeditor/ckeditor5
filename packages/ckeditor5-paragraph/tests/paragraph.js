@@ -392,7 +392,7 @@ describe( 'Paragraph feature', () => {
 			editor.setData( '<p>Foobar</p>' );
 
 			// Since `setData` first removes all contents from editor and then sets content during same enqueue
-			// changes block, the line below checks whether fixing empty roots does not kick too early and does not
+			// change block, the line below checks whether fixing empty roots does not kick too early and does not
 			// fix root if it is not needed.
 			expect( editor.getData() ).to.equal( '<p>Foobar</p>' );
 
