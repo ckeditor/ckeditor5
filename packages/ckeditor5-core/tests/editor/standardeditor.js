@@ -148,20 +148,20 @@ describe( 'StandardEditor', () => {
 
 					editor.data.processor = new HtmlDataProcessor();
 
-					editor.document.schema.allow( { name: '$text', inside: '$root' } );
+					editor.model.schema.allow( { name: '$text', inside: '$root' } );
 				} );
 		} );
 
 		it( 'should set data of the first root', () => {
-			editor.document.createRoot();
-			editor.document.createRoot( '$root', 'secondRoot' );
+			editor.model.document.createRoot();
+			editor.model.document.createRoot( '$root', 'secondRoot' );
 
 			editor.editing.createRoot( 'div' );
 			editor.editing.createRoot( 'div', 'secondRoot' );
 
 			editor.setData( 'foo' );
 
-			expect( getData( editor.document, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
+			expect( getData( editor.model, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -175,18 +175,18 @@ describe( 'StandardEditor', () => {
 
 					editor.data.processor = new HtmlDataProcessor();
 
-					editor.document.schema.allow( { name: '$text', inside: '$root' } );
+					editor.model.schema.allow( { name: '$text', inside: '$root' } );
 				} );
 		} );
 
 		it( 'should get data of the first root', () => {
-			editor.document.createRoot();
-			editor.document.createRoot( '$root', 'secondRoot' );
+			editor.model.document.createRoot();
+			editor.model.document.createRoot( '$root', 'secondRoot' );
 
 			editor.editing.createRoot( 'div' );
 			editor.editing.createRoot( 'div', 'secondRoot' );
 
-			setData( editor.document, 'foo' );
+			setData( editor.model, 'foo' );
 
 			expect( editor.getData() ).to.equal( 'foo' );
 		} );

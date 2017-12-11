@@ -34,10 +34,10 @@ describe( 'Command', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'adds a listener which refreshed the command on editor.document#changesDone', () => {
+		it( 'adds a listener which refreshed the command on editor.model.document#changesDone', () => {
 			sinon.spy( command, 'refresh' );
 
-			editor.document.fire( 'changesDone' );
+			editor.model.document.fire( 'changesDone' );
 
 			expect( command.refresh.calledOnce ).to.be.true;
 		} );
