@@ -13,7 +13,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import BlockQuoteCommand from '../src/blockquotecommand';
 
 describe( 'BlockQuoteEngine', () => {
-	let editor, doc;
+	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -22,13 +22,12 @@ describe( 'BlockQuoteEngine', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				doc = editor.document;
+				model = editor.model;
 			} );
 	} );
 
 	afterEach( () => {
-		editor.destroy();
+		return editor.destroy();
 	} );
 
 	it( 'adds a blockQuote command', () => {
@@ -36,12 +35,12 @@ describe( 'BlockQuoteEngine', () => {
 	} );
 
 	it( 'allows for blockQuote in the $root', () => {
-		expect( doc.schema.check( { name: 'blockQuote', inside: '$root' } ) ).to.be.true;
+		expect( model.schema.check( { name: 'blockQuote', inside: '$root' } ) ).to.be.true;
 	} );
 
 	it( 'allows for $block in blockQuote', () => {
-		expect( doc.schema.check( { name: '$block', inside: 'blockQuote' } ) ).to.be.true;
-		expect( doc.schema.check( { name: 'paragraph', inside: 'blockQuote' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$block', inside: 'blockQuote' } ) ).to.be.true;
+		expect( model.schema.check( { name: 'paragraph', inside: 'blockQuote' } ) ).to.be.true;
 	} );
 
 	it( 'adds converters to the data pipeline', () => {
@@ -49,12 +48,12 @@ describe( 'BlockQuoteEngine', () => {
 
 		editor.setData( data );
 
-		expect( getModelData( doc ) ).to.equal( '<blockQuote><paragraph>[]x</paragraph></blockQuote>' );
+		expect( getModelData( model ) ).to.equal( '<blockQuote><paragraph>[]x</paragraph></blockQuote>' );
 		expect( editor.getData() ).to.equal( data );
 	} );
 
 	it( 'adds a converter to the view pipeline', () => {
-		setModelData( doc, '<blockQuote><paragraph>x</paragraph></blockQuote>' );
+		setModelData( model, '<blockQuote><paragraph>x</paragraph></blockQuote>' );
 
 		expect( editor.getData() ).to.equal( '<blockquote><p>x</p></blockquote>' );
 	} );
