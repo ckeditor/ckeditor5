@@ -50,6 +50,21 @@ describe( 'IconView', () => {
 				view.content = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>';
 				expect( view.element.innerHTML = '' );
 			} );
+
+			it( 'works for #content with more than <svg> declaration', () => {
+				expect( view.element.innerHTML = '' );
+
+				view.content =
+					'<?xml version="1.0" encoding="utf-8"?><svg version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="test"></g></svg>';
+				expect( view.element.innerHTML = '<g id="test"></g>' );
+			} );
+
+			it( 'should respect parsed <svg>\'s viewBox attribute', () => {
+				expect( view.element.innerHTML = '' );
+
+				view.content = '<svg version="1.1" viewBox="10 20 30 40" xmlns="http://www.w3.org/2000/svg"><g id="test"></g></svg>';
+				expect( view.viewBox ).to.equal( '10 20 30 40' );
+			} );
 		} );
 	} );
 } );
