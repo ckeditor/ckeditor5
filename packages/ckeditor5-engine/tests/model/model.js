@@ -4,6 +4,7 @@
  */
 
 import Model from '../../src/model/model';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 describe( 'Model', () => {
 	let model;
@@ -315,13 +316,14 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should stop listening', () => {
+			const emitter = Object.create( EmitterMixin );
 			const spy = sinon.spy();
 
-			model.on( 'event', spy );
+			model.listenTo( emitter, 'event', spy );
 
 			model.destroy();
 
-			model.fire( 'event' );
+			emitter.fire( 'event' );
 
 			sinon.assert.notCalled( spy );
 		} );
