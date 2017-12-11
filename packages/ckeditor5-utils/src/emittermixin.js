@@ -24,21 +24,8 @@ const EmitterMixin = {
 	/**
 	 * Registers a callback function to be executed when an event is fired.
 	 *
-	 * Events can be grouped in namespaces using `:`.
-	 * When namespaced event is fired, it additionally fires all callbacks for that namespace.
-	 *
-	 *		myEmitter.on( 'myGroup', genericCallback );
-	 *		myEmitter.on( 'myGroup:myEvent', specificCallback );
-	 *
-	 *		// genericCallback is fired.
-	 *		myEmitter.fire( 'myGroup' );
-	 *		// both genericCallback and specificCallback are fired.
-	 *		myEmitter.fire( 'myGroup:myEvent' );
-	 *		// genericCallback is fired even though there are no callbacks for "foo".
-	 *		myEmitter.fire( 'myGroup:foo' );
-	 *
-	 * An event callback can {@link module:utils/eventinfo~EventInfo#stop stop the event} and
-	 * set the {@link module:utils/eventinfo~EventInfo#return return value} of the {@link #fire} method.
+	 * Shorthand for {@link #listenTo `this.listenTo( this, event, callback, options )`} (it makes the emitter
+	 * listen on itself).
 	 *
 	 * @method #on
 	 * @param {String} event The name of the event.
@@ -49,34 +36,7 @@ const EmitterMixin = {
 	 * order they were added.
 	 */
 	on( event, callback, options = {} ) {
-		createEventNamespace( this, event );
-		const lists = getCallbacksListsForNamespace( this, event );
-		const priority = priorities.get( options.priority );
-
-		callback = {
-			callback,
-			priority
-		};
-
-		// Add the callback to all callbacks list.
-		for ( const callbacks of lists ) {
-			// Add the callback to the list in the right priority position.
-			let added = false;
-
-			for ( let i = 0; i < callbacks.length; i++ ) {
-				if ( callbacks[ i ].priority < priority ) {
-					callbacks.splice( i, 0, callback );
-					added = true;
-
-					break;
-				}
-			}
-
-			// Add at the end, if right place was not found.
-			if ( !added ) {
-				callbacks.push( callback );
-			}
-		}
+		this.listenTo( this, event, callback, options );
 	},
 
 	/**
@@ -101,32 +61,40 @@ const EmitterMixin = {
 		};
 
 		// Make a similar on() call, simply replacing the callback.
-		this.on( event, onceCallback, options );
+		this.listenTo( this, event, onceCallback, options );
 	},
 
 	/**
 	 * Stops executing the callback on the given event.
+	 * Shorthand for {@link #stopListening `this.stopListening( this, event, callback )`}.
 	 *
 	 * @method #off
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to stop being called.
 	 */
 	off( event, callback ) {
-		const lists = getCallbacksListsForNamespace( this, event );
-
-		for ( const callbacks of lists ) {
-			for ( let i = 0; i < callbacks.length; i++ ) {
-				if ( callbacks[ i ].callback == callback ) {
-					// Remove the callback from the list (fixing the next index).
-					callbacks.splice( i, 1 );
-					i--;
-				}
-			}
-		}
+		this.stopListening( this, event, callback );
 	},
 
 	/**
 	 * Registers a callback function to be executed when an event is fired in a specific (emitter) object.
+	 *
+	 * Events can be grouped in namespaces using `:`.
+	 * When namespaced event is fired, it additionally fires all callbacks for that namespace.
+	 *
+	 *		// myEmitter.on( ... ) is a shorthand for myEmitter.listenTo( myEmitter, ... ).
+	 *		myEmitter.on( 'myGroup', genericCallback );
+	 *		myEmitter.on( 'myGroup:myEvent', specificCallback );
+	 *
+	 *		// genericCallback is fired.
+	 *		myEmitter.fire( 'myGroup' );
+	 *		// both genericCallback and specificCallback are fired.
+	 *		myEmitter.fire( 'myGroup:myEvent' );
+	 *		// genericCallback is fired even though there are no callbacks for "foo".
+	 *		myEmitter.fire( 'myGroup:foo' );
+	 *
+	 * An event callback can {@link module:utils/eventinfo~EventInfo#stop stop the event} and
+	 * set the {@link module:utils/eventinfo~EventInfo#return return value} of the {@link #fire} method.
 	 *
 	 * @method #listenTo
 	 * @param {module:utils/emittermixin~Emitter} emitter The object that fires the event.
@@ -137,7 +105,7 @@ const EmitterMixin = {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 */
-	listenTo( emitter, event, callback, options ) {
+	listenTo( emitter, event, callback, options = {} ) {
 		let emitterInfo, eventCallbacks;
 
 		// _listeningTo contains a list of emitters that this object is listening to.
@@ -180,7 +148,34 @@ const EmitterMixin = {
 		eventCallbacks.push( callback );
 
 		// Finally register the callback to the event.
-		emitter.on( event, callback, options );
+		createEventNamespace( emitter, event );
+		const lists = getCallbacksListsForNamespace( emitter, event );
+		const priority = priorities.get( options.priority );
+
+		const callbackDefinition = {
+			callback,
+			priority
+		};
+
+		// Add the callback to all callbacks list.
+		for ( const callbacks of lists ) {
+			// Add the callback to the list in the right priority position.
+			let added = false;
+
+			for ( let i = 0; i < callbacks.length; i++ ) {
+				if ( callbacks[ i ].priority < priority ) {
+					callbacks.splice( i, 0, callbackDefinition );
+					added = true;
+
+					break;
+				}
+			}
+
+			// Add at the end, if right place was not found.
+			if ( !added ) {
+				callbacks.push( callbackDefinition );
+			}
+		}
 	},
 
 	/**
@@ -189,7 +184,7 @@ const EmitterMixin = {
 	 * * To stop listening to a specific callback.
 	 * * To stop listening to a specific event.
 	 * * To stop listening to all events fired by a specific object.
-	 * * To stop listening to all events fired by all object.
+	 * * To stop listening to all events fired by all objects.
 	 *
 	 * @method #stopListening
 	 * @param {module:utils/emittermixin~Emitter} [emitter] The object to stop listening to. If omitted, stops it for all objects.
@@ -211,13 +206,14 @@ const EmitterMixin = {
 
 		// All params provided. off() that single callback.
 		if ( callback ) {
-			emitter.off( event, callback );
+			removeCallback( emitter, event, callback );
 		}
 		// Only `emitter` and `event` provided. off() all callbacks for that event.
 		else if ( eventCallbacks ) {
 			while ( ( callback = eventCallbacks.pop() ) ) {
-				emitter.off( event, callback );
+				removeCallback( emitter, event, callback );
 			}
+
 			delete emitterInfo.callbacks[ event ];
 		}
 		// Only `emitter` provided. off() all events for that emitter.
@@ -246,7 +242,7 @@ const EmitterMixin = {
 	 * @param {String|module:utils/eventinfo~EventInfo} eventOrInfo The name of the event or `EventInfo` object if event is delegated.
 	 * @param {...*} [args] Additional arguments to be passed to the callbacks.
 	 * @returns {*} By default the method returns `undefined`. However, the return value can be changed by listeners
-	 * through modification of the {@link module:utils/eventinfo~EventInfo#return}'s value (the event info
+	 * through modification of the {@link module:utils/eventinfo~EventInfo#return `evt.return`}'s property (the event info
 	 * is the first param of every callback).
 	 */
 	fire( eventOrInfo, ...args ) {
@@ -277,7 +273,7 @@ const EmitterMixin = {
 					// Remove the called mark for the next calls.
 					delete eventInfo.off.called;
 
-					this.off( event, callbacks[ i ].callback );
+					removeCallback( this, event, callbacks[ i ].callback );
 				}
 
 				// Do not execute next callbacks if stop() was called.
@@ -508,7 +504,6 @@ function createEventNamespace( source, eventName ) {
 // Gets an array containing callbacks list for a given event and it's more specific events.
 // I.e. if given event is foo:bar and there is also foo:bar:abc event registered, this will
 // return callback list of foo:bar and foo:bar:abc (but not foo).
-// Returns empty array if given event has not been yet registered.
 function getCallbacksListsForNamespace( source, eventName ) {
 	const eventNode = getEvents( source )[ eventName ];
 
@@ -567,6 +562,25 @@ function fireDelegatedEvents( destinations, eventInfo, fireArgs ) {
 		delegatedInfo.path = [ ...eventInfo.path ];
 
 		emitter.fire( delegatedInfo, ...fireArgs );
+	}
+}
+
+// Removes callback from emitter for given event.
+//
+// @param {module:utils/emittermixin~Emitter} emitter
+// @param {String} event
+// @param {Function} callback
+function removeCallback( emitter, event, callback ) {
+	const lists = getCallbacksListsForNamespace( emitter, event );
+
+	for ( const callbacks of lists ) {
+		for ( let i = 0; i < callbacks.length; i++ ) {
+			if ( callbacks[ i ].callback == callback ) {
+				// Remove the callback from the list (fixing the next index).
+				callbacks.splice( i, 1 );
+				i--;
+			}
+		}
 	}
 }
 
