@@ -736,7 +736,9 @@ export default class Element extends Node {
 		const attributesObject = viewElementDefinition.attributes;
 
 		if ( attributesObject ) {
-			attributes.attribute = attributesObject;
+			for ( const key in attributesObject ) {
+				attributes[ key ] = attributesObject[ key ];
+			}
 		}
 
 		return new this( viewElementDefinition.name, attributes );
