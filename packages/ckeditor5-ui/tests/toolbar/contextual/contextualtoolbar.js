@@ -15,7 +15,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-/* global document, setTimeout */
+/* global document, setTimeout, window */
 
 describe( 'ContextualToolbar', () => {
 	let sandbox, editor, contextualToolbar, balloon, editorElement;
@@ -44,6 +44,10 @@ describe( 'ContextualToolbar', () => {
 
 				// Focus the engine.
 				editor.editing.view.isFocused = true;
+				editor.editing.view.getDomRoot().focus();
+
+				// Remove all selection ranges from DOM before testing.
+				window.getSelection().removeAllRanges();
 			} );
 	} );
 
@@ -119,12 +123,12 @@ describe( 'ContextualToolbar', () => {
 				// Still not yet.
 				sinon.assert.notCalled( spy );
 
-				// Another 101 ms waiting.
+				// Another waiting.
 				setTimeout( () => {
 					// And here it is.
 					sinon.assert.calledOnce( spy );
 					done();
-				}, 100 );
+				}, 110 );
 			}, 101 );
 		}, 100 );
 	} );
@@ -284,7 +288,7 @@ describe( 'ContextualToolbar', () => {
 			let showSpy;
 
 			beforeEach( () => {
-				showSpy = sinon.spy( contextualToolbar, 'show' );
+				showSpy = sandbox.spy( contextualToolbar, 'show' );
 			} );
 
 			it( 'should not be called when the editor is not focused', () => {
@@ -437,7 +441,7 @@ describe( 'ContextualToolbar', () => {
 
 			contextualToolbar.fire( '_selectionChangeDebounced' );
 
-			const stub = sinon.stub( balloon, 'visibleView' ).get( () => contextualToolbar.toolbarView );
+			const stub = sandbox.stub( balloon, 'visibleView' ).get( () => contextualToolbar.toolbarView );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
@@ -455,7 +459,7 @@ describe( 'ContextualToolbar', () => {
 
 			contextualToolbar.fire( '_selectionChangeDebounced' );
 
-			const stub = sinon.stub( balloon, 'visibleView' ).get( () => null );
+			const stub = sandbox.stub( balloon, 'visibleView' ).get( () => null );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
@@ -471,7 +475,7 @@ describe( 'ContextualToolbar', () => {
 
 	describe( 'show event', () => {
 		it( 'should fire `show` event just before panel shows', () => {
-			const spy = sinon.spy();
+			const spy = sandbox.spy();
 
 			contextualToolbar.on( 'show', spy );
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
