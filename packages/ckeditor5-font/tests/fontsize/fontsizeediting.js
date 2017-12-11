@@ -147,7 +147,7 @@ describe( 'FontSizeEditing', () => {
 								model: 'my',
 								view: {
 									name: 'mark',
-									style: 'font-size: 30px',
+									style: { 'font-size': '30px' },
 									class: 'my-style'
 								}
 							}
@@ -217,15 +217,13 @@ describe( 'FontSizeEditing', () => {
 								label: 'Hybrid',
 								model: 'complex',
 								view: {
-									to: {
-										name: 'span',
-										class: [ 'text-complex' ]
-									},
-									from: [
-										{ name: 'span', style: { 'font-size': '77em' } },
-										{ name: 'span', attribute: { 'data-size': '77em' } }
-									]
-								}
+									name: 'span',
+									class: [ 'text-complex' ]
+								},
+								acceptsAlso: [
+									{ name: 'span', style: { 'font-size': '77em' } },
+									{ name: 'span', attribute: { 'data-size': '77em' } }
+								]
 							}
 						]
 					}

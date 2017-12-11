@@ -39,10 +39,10 @@ export default class FontSizeEditing extends Plugin {
 
 		for ( const item of this.configuredItems ) {
 			// Covert view to model.
-			viewToModelAttribute( 'fontSize', item.model, item.view, [ data.viewToModel ] );
+			viewToModelAttribute( 'fontSize', item, [ data.viewToModel ] );
 
 			// Covert model to view.
-			modelAttributeToView( 'fontSize', item.model, item.view, [ data.modelToView, editing.modelToView ] );
+			modelAttributeToView( 'fontSize', item, [ data.modelToView, editing.modelToView ] );
 
 			// Add command.
 		}
