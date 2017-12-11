@@ -712,24 +712,34 @@ export default class Element extends Node {
 			( attributes == '' ? '' : ` ${ attributes }` );
 	}
 
-	static fromViewDefinition( viewDefinition ) {
+	/**
+	 * Creates element instance from provided viewElementDefinition.
+	 *
+	 * @param {module:engine/view/viewelementdefinition~ViewElementDefinition} viewElementDefinition
+	 * @returns {Element}
+	 */
+	static fromViewDefinition( viewElementDefinition ) {
 		const attributes = {};
 
-		const classes = viewDefinition.class;
+		const classes = viewElementDefinition.classes;
 
-		if ( viewDefinition.class ) {
+		if ( classes ) {
 			attributes.class = Array.isArray( classes ) ? classes.join( ' ' ) : classes;
 		}
 
-		if ( viewDefinition.style ) {
-			attributes.style = toStylesString( viewDefinition.style );
+		const stylesObject = viewElementDefinition.styles;
+
+		if ( stylesObject ) {
+			attributes.style = toStylesString( stylesObject );
 		}
 
-		if ( viewDefinition.attribute ) {
-			attributes.attribute = viewDefinition.attribute;
+		const attributesObject = viewElementDefinition.attributes;
+
+		if ( attributesObject ) {
+			attributes.attribute = attributesObject;
 		}
 
-		return new this( viewDefinition.name, attributes );
+		return new this( viewElementDefinition.name, attributes );
 
 		function toStylesString( stylesObject ) {
 			const styles = [];

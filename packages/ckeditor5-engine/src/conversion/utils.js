@@ -19,9 +19,9 @@ export function parseDefinition( definition ) {
 
 export function definitionToPattern( viewDefinition ) {
 	const name = viewDefinition.name;
-	const classes = viewDefinition.class;
-	const styles = viewDefinition.style;
-	const attributes = viewDefinition.attribute;
+	const classes = viewDefinition.classes;
+	const styles = viewDefinition.styles;
+	const attributes = viewDefinition.attributes;
 
 	const pattern = { name };
 

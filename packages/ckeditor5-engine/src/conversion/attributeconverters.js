@@ -7,6 +7,11 @@ import AttributeElement from '../view/attributeelement';
 import buildModelConverter from './buildmodelconverter';
 import { defineConverter, parseDefinition } from './utils';
 
+/**
+ * @param {String} attributeName
+ * @param {module:engine/view/viewelementdefinition~ViewElementDefinition} definition
+ * @param dispatchers
+ */
 export function modelAttributeToView( attributeName, definition, dispatchers ) {
 	const { model: attributeValue, viewDefinition } = parseDefinition( definition );
 
