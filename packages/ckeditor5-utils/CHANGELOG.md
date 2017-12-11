@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+
+### Bug fixes
+
+* Removed a period at the end of an error message because some browsers included the period in links to errors. Closes [#193](https://github.com/ckeditor/ckeditor5-utils/issues/193). ([fdebc2f](https://github.com/ckeditor/ckeditor5-utils/commit/fdebc2f))
+
+
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-utils/compare/v0.10.0...v1.0.0-alpha.1) (2017-10-03)
 
 ### Features

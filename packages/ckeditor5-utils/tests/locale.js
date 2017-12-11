@@ -13,16 +13,16 @@ describe( 'Locale', () => {
 	} );
 
 	describe( 'constructor', () => {
-		it( 'sets the lang', () => {
+		it( 'sets the language', () => {
 			const locale = new Locale( 'pl' );
 
-			expect( locale ).to.have.property( 'lang', 'pl' );
+			expect( locale ).to.have.property( 'language', 'pl' );
 		} );
 
-		it( 'defaults lang to en', () => {
+		it( 'defaults language to en', () => {
 			const locale = new Locale();
 
-			expect( locale ).to.have.property( 'lang', 'en' );
+			expect( locale ).to.have.property( 'language', 'en' );
 		} );
 	} );
 
