@@ -65,7 +65,7 @@ describe( 'FontSizeEditing', () => {
 				.create( {
 					plugins: [ FontSizeEditing ],
 					fontSize: {
-						items: [ { label: 'My Size', model: 'my-size', view: { name: 'span', style: 'font-size: 12em;' } } ]
+						items: [ { label: 'My Size', model: 'my-size', view: { name: 'span', styles: 'font-size: 12em;' } } ]
 					}
 				} )
 				.then( newEditor => {
@@ -77,7 +77,7 @@ describe( 'FontSizeEditing', () => {
 						{
 							label: 'My Size',
 							model: 'my-size',
-							view: { name: 'span', style: 'font-size: 12em;' }
+							view: { name: 'span', styles: 'font-size: 12em;' }
 						}
 					] );
 				} );
@@ -98,10 +98,10 @@ describe( 'FontSizeEditing', () => {
 						const plugin = editor.plugins.get( FontSizeEditing );
 
 						expect( plugin.configuredItems ).to.deep.equal( [
-							{ label: 'Tiny', model: 'text-tiny', view: { name: 'span', class: 'text-tiny' } },
-							{ label: 'Small', model: 'text-small', view: { name: 'span', class: 'text-small' } },
-							{ label: 'Big', model: 'text-big', view: { name: 'span', class: 'text-big' } },
-							{ label: 'Huge', model: 'text-huge', view: { name: 'span', class: 'text-huge' } }
+							{ label: 'Tiny', model: 'text-tiny', view: { name: 'span', classes: 'text-tiny' } },
+							{ label: 'Small', model: 'text-small', view: { name: 'span', classes: 'text-small' } },
+							{ label: 'Big', model: 'text-big', view: { name: 'span', classes: 'text-big' } },
+							{ label: 'Huge', model: 'text-huge', view: { name: 'span', classes: 'text-huge' } }
 						] );
 					} );
 			} );
@@ -122,10 +122,10 @@ describe( 'FontSizeEditing', () => {
 						const plugin = editor.plugins.get( FontSizeEditing );
 
 						expect( plugin.configuredItems ).to.deep.equal( [
-							{ label: '10', model: '10', view: { name: 'span', style: { 'font-size': '10px' } } },
-							{ label: '12', model: '12', view: { name: 'span', style: { 'font-size': '12px' } } },
-							{ label: '14', model: '14', view: { name: 'span', style: { 'font-size': '14px' } } },
-							{ label: '18', model: '18', view: { name: 'span', style: { 'font-size': '18px' } } }
+							{ label: '10', model: '10', view: { name: 'span', styles: { 'font-size': '10px' } } },
+							{ label: '12', model: '12', view: { name: 'span', styles: { 'font-size': '12px' } } },
+							{ label: '14', model: '14', view: { name: 'span', styles: { 'font-size': '14px' } } },
+							{ label: '18', model: '18', view: { name: 'span', styles: { 'font-size': '18px' } } }
 						] );
 					} );
 			} );
@@ -147,8 +147,8 @@ describe( 'FontSizeEditing', () => {
 								model: 'my',
 								view: {
 									name: 'mark',
-									style: { 'font-size': '30px' },
-									class: 'my-style'
+									styles: { 'font-size': '30px' },
+									classes: 'my-style'
 								}
 							}
 						]
@@ -201,8 +201,8 @@ describe( 'FontSizeEditing', () => {
 								model: 'my',
 								view: {
 									name: 'mark',
-									style: { 'font-size': '30px' },
-									class: 'my-style'
+									styles: { 'font-size': '30px' },
+									classes: 'my-style'
 								}
 							},
 							{
@@ -210,7 +210,7 @@ describe( 'FontSizeEditing', () => {
 								model: 'big-multiple',
 								view: {
 									name: 'span',
-									class: [ 'foo', 'foo-big' ]
+									classes: [ 'foo', 'foo-big' ]
 								}
 							},
 							{
@@ -218,11 +218,11 @@ describe( 'FontSizeEditing', () => {
 								model: 'complex',
 								view: {
 									name: 'span',
-									class: [ 'text-complex' ]
+									classes: [ 'text-complex' ]
 								},
 								acceptsAlso: [
-									{ name: 'span', style: { 'font-size': '77em' } },
-									{ name: 'span', attribute: { 'data-size': '77em' } }
+									{ name: 'span', styles: { 'font-size': '77em' } },
+									{ name: 'span', attributes: { 'data-size': '77em' } }
 								]
 							}
 						]
