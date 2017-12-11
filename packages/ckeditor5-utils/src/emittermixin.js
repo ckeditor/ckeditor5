@@ -242,7 +242,7 @@ const EmitterMixin = {
 	 * @param {String|module:utils/eventinfo~EventInfo} eventOrInfo The name of the event or `EventInfo` object if event is delegated.
 	 * @param {...*} [args] Additional arguments to be passed to the callbacks.
 	 * @returns {*} By default the method returns `undefined`. However, the return value can be changed by listeners
-	 * through modification of the {@link module:utils/eventinfo~EventInfo#return}'s value (the event info
+	 * through modification of the {@link module:utils/eventinfo~EventInfo#return `evt.return`}'s property (the event info
 	 * is the first param of every callback).
 	 */
 	fire( eventOrInfo, ...args ) {
