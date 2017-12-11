@@ -18,7 +18,7 @@ export default class ModelTestEditor extends Editor {
 	constructor( config ) {
 		super( config );
 
-		this.document.createRoot();
+		this.model.document.createRoot();
 
 		this.data.processor = new HtmlDataProcessor();
 	}

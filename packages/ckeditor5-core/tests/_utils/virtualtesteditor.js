@@ -18,7 +18,7 @@ export default class VirtualTestEditor extends StandardEditor {
 	constructor( config ) {
 		super( null, config );
 
-		this.document.createRoot();
+		this.model.document.createRoot();
 
 		this.editing.createRoot( 'div' );
 
