@@ -4,7 +4,7 @@
  */
 
 import { default as Schema, SchemaItem } from '../../../src/model/schema';
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 import DocumentFragment from '../../../src/model/documentfragment';
@@ -302,7 +302,8 @@ describe( 'Schema', () => {
 			let doc, root;
 
 			beforeEach( () => {
-				doc = new Document();
+				const model = new Model();
+				doc = model.document;
 				root = doc.createRoot( 'div' );
 
 				root.insertChildren( 0, [
@@ -464,7 +465,8 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'should normalize model position to an array of strings', () => {
-			const doc = new Document();
+			const model = new Model();
+			const doc = model.document;
 			const root = doc.createRoot();
 
 			root.insertChildren( 0, [
@@ -494,13 +496,14 @@ describe( 'Schema', () => {
 
 	describe( 'checkAttributeInSelection()', () => {
 		const attribute = 'bold';
-		let doc, schema;
+		let model, doc, schema;
 
 		beforeEach( () => {
-			doc = new Document();
+			model = new Model();
+			doc = model.document;
 			doc.createRoot();
 
-			schema = doc.schema;
+			schema = model.schema;
 
 			schema.registerItem( 'p', '$block' );
 			schema.registerItem( 'h1', '$block' );
@@ -521,15 +524,15 @@ describe( 'Schema', () => {
 
 		describe( 'when selection is collapsed', () => {
 			it( 'should return true if characters with the attribute can be placed at caret position', () => {
-				setData( doc, '<p>f[]oo</p>' );
+				setData( model, '<p>f[]oo</p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
 			} );
 
 			it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
-				setData( doc, '<h1>[]</h1>' );
+				setData( model, '<h1>[]</h1>' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
 
-				setData( doc, '[]' );
+				setData( model, '[]' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
 			} );
 		} );
@@ -537,39 +540,39 @@ describe( 'Schema', () => {
 		describe( 'when selection is not collapsed', () => {
 			it( 'should return true if there is at least one node in selection that can have the attribute', () => {
 				// Simple selection on a few characters.
-				setData( doc, '<p>[foo]</p>' );
+				setData( model, '<p>[foo]</p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
 
 				// Selection spans over characters but also include nodes that can't have attribute.
-				setData( doc, '<p>fo[o<img />b]ar</p>' );
+				setData( model, '<p>fo[o<img />b]ar</p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
 
 				// Selection on whole root content. Characters in P can have an attribute so it's valid.
-				setData( doc, '[<p>foo<img />bar</p><h1></h1>]' );
+				setData( model, '[<p>foo<img />bar</p><h1></h1>]' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
 
 				// Selection on empty P. P can have the attribute.
-				setData( doc, '[<p></p>]' );
+				setData( model, '[<p></p>]' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
 			} );
 
 			it( 'should return false if there are no nodes in selection that can have the attribute', () => {
 				// Selection on DIV which can't have bold text.
-				setData( doc, '[<h1></h1>]' );
+				setData( model, '[<h1></h1>]' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
 
 				// Selection on two images which can't be bold.
-				setData( doc, '<p>foo[<img /><img />]bar</p>' );
+				setData( model, '<p>foo[<img /><img />]bar</p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
 			} );
 
 			it( 'should return true when checking element with required attribute', () => {
-				setData( doc, '[<figure name="figure"></figure>]' );
+				setData( model, '[<figure name="figure"></figure>]' );
 				expect( schema.checkAttributeInSelection( doc.selection, 'title' ) ).to.be.true;
 			} );
 
 			it( 'should return true when checking element when attribute is already present', () => {
-				setData( doc, '[<figure name="figure" title="title"></figure>]' );
+				setData( model, '[<figure name="figure" title="title"></figure>]' );
 				expect( schema.checkAttributeInSelection( doc.selection, 'title' ) ).to.be.true;
 			} );
 		} );
@@ -577,11 +580,12 @@ describe( 'Schema', () => {
 
 	describe( 'getValidRanges()', () => {
 		const attribute = 'bold';
-		let doc, root, schema, ranges;
+		let model, doc, root, schema, ranges;
 
 		beforeEach( () => {
-			doc = new Document();
-			schema = doc.schema;
+			model = new Model();
+			doc = model.document;
+			schema = model.schema;
 			root = doc.createRoot();
 
 			schema.registerItem( 'p', '$block' );
@@ -591,7 +595,7 @@ describe( 'Schema', () => {
 			schema.allow( { name: '$text', attributes: 'bold', inside: 'p' } );
 			schema.allow( { name: 'p', attributes: 'bold', inside: '$root' } );
 
-			setData( doc, '<p>foo<img />bar</p>' );
+			setData( model, '<p>foo<img />bar</p>' );
 			ranges = [ Range.createOn( root.getChild( 0 ) ) ];
 		} );
 
@@ -612,7 +616,7 @@ describe( 'Schema', () => {
 			schema.allow( { name: 'img', attributes: 'bold', inside: 'p' } );
 			schema.allow( { name: '$text', inside: 'img' } );
 
-			setData( doc, '[<p>foo<img>xxx</img>bar</p>]' );
+			setData( model, '[<p>foo<img>xxx</img>bar</p>]' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
 			const sel = new Selection();
@@ -625,7 +629,7 @@ describe( 'Schema', () => {
 			schema.allow( { name: '$text', inside: 'img' } );
 			schema.allow( { name: '$text', attributes: 'bold', inside: 'img' } );
 
-			setData( doc, '[<p>foo<img>xxx</img>bar</p>]' );
+			setData( model, '[<p>foo<img>xxx</img>bar</p>]' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
 			const sel = new Selection();
@@ -635,7 +639,7 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'should not leak beyond the given ranges', () => {
-			setData( doc, '<p>[foo<img></img>bar]x[bar<img></img>foo]</p>' );
+			setData( model, '<p>[foo<img></img>bar]x[bar<img></img>foo]</p>' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
 			const sel = new Selection();
@@ -647,7 +651,7 @@ describe( 'Schema', () => {
 		it( 'should correctly handle a range which ends in a disallowed position', () => {
 			schema.allow( { name: '$text', inside: 'img' } );
 
-			setData( doc, '<p>[foo<img>bar]</img>bom</p>' );
+			setData( model, '<p>[foo<img>bar]</img>bom</p>' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
 			const sel = new Selection();
@@ -658,7 +662,7 @@ describe( 'Schema', () => {
 
 		it( 'should split range into two ranges and omit disallowed element', () => {
 			// Disallow bold on img.
-			doc.schema.disallow( { name: 'img', attributes: 'bold', inside: 'p' } );
+			model.schema.disallow( { name: 'img', attributes: 'bold', inside: 'p' } );
 
 			const result = schema.getValidRanges( ranges, attribute );
 
@@ -671,11 +675,12 @@ describe( 'Schema', () => {
 	} );
 
 	describe( 'getLimitElement()', () => {
-		let doc, root;
+		let model, doc, root;
 
 		beforeEach( () => {
-			doc = new Document();
-			schema = doc.schema;
+			model = new Model();
+			doc = model.document;
+			schema = model.schema;
 			root = doc.createRoot();
 
 			schema.registerItem( 'div', '$block' );
@@ -696,7 +701,7 @@ describe( 'Schema', () => {
 		it( 'always returns $root element if any other limit was not defined', () => {
 			schema.limits.clear();
 
-			setData( doc, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
+			setData( model, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
 			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
 		} );
 
@@ -704,7 +709,7 @@ describe( 'Schema', () => {
 			schema.limits.add( 'article' );
 			schema.limits.add( 'section' );
 
-			setData( doc, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
+			setData( model, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
 
 			const article = root.getNodeByPath( [ 0, 0, 0 ] );
 
@@ -715,7 +720,7 @@ describe( 'Schema', () => {
 			schema.limits.add( 'article' );
 			schema.limits.add( 'section' );
 
-			setData( doc, '<div><section><article>[foo</article><article>bar]</article></section></div>' );
+			setData( model, '<div><section><article>[foo</article><article>bar]</article></section></div>' );
 
 			const section = root.getNodeByPath( [ 0, 0 ] );
 
@@ -728,7 +733,7 @@ describe( 'Schema', () => {
 			schema.limits.add( 'div' );
 
 			setData(
-				doc,
+				model,
 				'<div>' +
 					'<section>' +
 						'<article>' +
@@ -751,7 +756,7 @@ describe( 'Schema', () => {
 			schema.limits.clear();
 
 			setData(
-				doc,
+				model,
 				'<div>' +
 					'<section>' +
 						'<article>' +
@@ -767,12 +772,13 @@ describe( 'Schema', () => {
 	} );
 
 	describe( 'removeDisallowedAttributes()', () => {
-		let doc, root;
+		let model, doc, root;
 
 		beforeEach( () => {
-			doc = new Document();
+			model = new Model();
+			doc = model.document;
 			root = doc.createRoot();
-			schema = doc.schema;
+			schema = model.schema;
 
 			schema.registerItem( 'paragraph', '$block' );
 			schema.registerItem( 'div', '$block' );
@@ -794,18 +800,19 @@ describe( 'Schema', () => {
 
 			it( 'should filter out disallowed attributes from given nodes', () => {
 				const root = doc.getRoot();
-				const batch = doc.batch();
 
 				root.appendChildren( [ text, image ] );
 
-				schema.removeDisallowedAttributes( [ text, image ], '$root', batch );
+				model.change( writer => {
+					schema.removeDisallowedAttributes( [ text, image ], '$root', writer );
 
-				expect( Array.from( text.getAttributeKeys() ) ).to.deep.equal( [ 'a' ] );
-				expect( Array.from( image.getAttributeKeys() ) ).to.deep.equal( [ 'b' ] );
+					expect( Array.from( text.getAttributeKeys() ) ).to.deep.equal( [ 'a' ] );
+					expect( Array.from( image.getAttributeKeys() ) ).to.deep.equal( [ 'b' ] );
 
-				expect( batch.deltas ).to.length( 2 );
-				expect( batch.deltas[ 0 ] ).to.instanceof( AttributeDelta );
-				expect( batch.deltas[ 1 ] ).to.instanceof( AttributeDelta );
+					expect( writer.batch.deltas ).to.length( 2 );
+					expect( writer.batch.deltas[ 0 ] ).to.instanceof( AttributeDelta );
+					expect( writer.batch.deltas[ 1 ] ).to.instanceof( AttributeDelta );
+				} );
 			} );
 		} );
 
@@ -827,31 +834,32 @@ describe( 'Schema', () => {
 				div = new Element( 'div', [], [ paragraph, bar, imageInDiv ] );
 			} );
 
-			it( 'should filter out disallowed attributes from child nodes (batch)', () => {
+			it( 'should filter out disallowed attributes from child nodes', () => {
 				const root = doc.getRoot();
-				const batch = doc.batch();
 
 				root.appendChildren( [ div ] );
 
-				schema.removeDisallowedAttributes( [ div ], '$root', batch );
+				model.change( writer => {
+					schema.removeDisallowedAttributes( [ div ], '$root', writer );
 
-				expect( batch.deltas ).to.length( 4 );
-				expect( batch.deltas[ 0 ] ).to.instanceof( AttributeDelta );
-				expect( batch.deltas[ 1 ] ).to.instanceof( AttributeDelta );
-				expect( batch.deltas[ 2 ] ).to.instanceof( AttributeDelta );
-				expect( batch.deltas[ 3 ] ).to.instanceof( AttributeDelta );
+					expect( writer.batch.deltas ).to.length( 4 );
+					expect( writer.batch.deltas[ 0 ] ).to.instanceof( AttributeDelta );
+					expect( writer.batch.deltas[ 1 ] ).to.instanceof( AttributeDelta );
+					expect( writer.batch.deltas[ 2 ] ).to.instanceof( AttributeDelta );
+					expect( writer.batch.deltas[ 3 ] ).to.instanceof( AttributeDelta );
 
-				expect( getData( doc, { withoutSelection: true } ) )
-					.to.equal(
-						'<div>' +
-							'<paragraph>' +
-								'<$text b="1">foo</$text>' +
-								'<image b="1"></image>' +
-							'</paragraph>' +
-							'<$text a="1">bar</$text>' +
-							'<image a="1"></image>' +
-						'</div>'
-					);
+					expect( getData( model, { withoutSelection: true } ) )
+						.to.equal(
+							'<div>' +
+								'<paragraph>' +
+									'<$text b="1">foo</$text>' +
+									'<image b="1"></image>' +
+								'</paragraph>' +
+								'<$text a="1">bar</$text>' +
+								'<image a="1"></image>' +
+							'</div>'
+						);
+				} );
 			} );
 		} );
 
@@ -870,21 +878,27 @@ describe( 'Schema', () => {
 			} );
 
 			it( 'should accept iterable as nodes', () => {
-				schema.removeDisallowedAttributes( frag.getChildren(), '$root', doc.batch() );
+				model.change( writer => {
+					schema.removeDisallowedAttributes( frag.getChildren(), '$root', writer );
+				} );
 
 				expect( stringify( frag ) )
 					.to.equal( '<$text a="1">foo</$text><paragraph><$text b="1">bar</$text></paragraph>biz' );
 			} );
 
 			it( 'should accept Position as inside', () => {
-				schema.removeDisallowedAttributes( frag.getChildren(), Position.createAt( root ), doc.batch() );
+				model.change( writer => {
+					schema.removeDisallowedAttributes( frag.getChildren(), Position.createAt( root ), writer );
+				} );
 
 				expect( stringify( frag ) )
 					.to.equal( '<$text a="1">foo</$text><paragraph><$text b="1">bar</$text></paragraph>biz' );
 			} );
 
 			it( 'should accept Node as inside', () => {
-				schema.removeDisallowedAttributes( frag.getChildren(), [ root ], doc.batch() );
+				model.change( writer => {
+					schema.removeDisallowedAttributes( frag.getChildren(), [ root ], writer );
+				} );
 
 				expect( stringify( frag ) )
 					.to.equal( '<$text a="1">foo</$text><paragraph><$text b="1">bar</$text></paragraph>biz' );
@@ -897,7 +911,9 @@ describe( 'Schema', () => {
 
 			const image = new Element( 'image', { a: 1, b: 1 } );
 
-			schema.removeDisallowedAttributes( [ image ], '$root', doc.batch() );
+			model.change( writer => {
+				schema.removeDisallowedAttributes( [ image ], '$root', writer );
+			} );
 
 			expect( Array.from( image.getAttributeKeys() ) ).to.deep.equal( [ 'a', 'b' ] );
 		} );
