@@ -438,8 +438,6 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '' );
-
-			editor.destroy();
 		} );
 
 		it( 'should not fix root if change was in transparent batch', () => {
