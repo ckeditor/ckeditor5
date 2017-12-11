@@ -33,7 +33,7 @@ describe( 'Bug ckeditor5-engine#699', () => {
 			.then( editor => {
 				editor.setData( '<widget></widget><p>foo</p>' );
 
-				expect( getModelData( editor.document ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
+				expect( getModelData( editor.model ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
 				expect( getViewData( editor.editing.view ) ).to.equal( '[<widget></widget>]<p>foo</p>' );
 
 				return editor.destroy();
@@ -42,7 +42,7 @@ describe( 'Bug ckeditor5-engine#699', () => {
 } );
 
 function WidgetPlugin( editor ) {
-	const schema = editor.document.schema;
+	const schema = editor.model.schema;
 
 	schema.registerItem( 'widget' );
 	schema.allow( { name: 'widget', inside: '$root' } );
