@@ -1066,7 +1066,7 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'are removed only once in case of multi-op deltas', () => {
-				let spy;
+				let batch;
 				const emptyP2 = new Element( 'p', null, 'x' );
 				root.appendChildren( emptyP2 );
 
@@ -1074,15 +1074,14 @@ describe( 'DocumentSelection', () => {
 				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
 
 				model.change( writer => {
-					spy = sinon.spy( writer, 'removeAttribute' );
-
+					batch = writer.batch;
 					// <emptyP>{}<emptyP2>
 					writer.merge( Position.createAfter( emptyP ) );
 				} );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
-
-				expect( spy.calledOnce ).to.be.true;
+				// Attribute delta is only one.
+				expect( Array.from( batch.deltas, delta => delta.type ) ).to.deep.equal( [ 'merge', 'attribute' ] );
 			} );
 
 			it( 'uses model change to clear attributes', () => {

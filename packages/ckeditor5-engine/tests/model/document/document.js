@@ -41,6 +41,84 @@ describe( 'Document', () => {
 		} );
 	} );
 
+	describe( 'model#applyOperation listener', () => {
+		it( 'should increase document version, execute operation and fire event with proper data ' +
+			'when operation is a document operation', () => {
+			const changeCallback = sinon.spy();
+			const type = 't';
+			const data = { data: 'x' };
+			const batch = new Batch();
+			const delta = new Delta();
+			delta.type = 'type';
+
+			const operation = {
+				type,
+				baseVersion: 0,
+				isDocumentOperation: true,
+				_execute: sinon.stub().returns( data )
+			};
+
+			delta.addOperation( operation );
+			batch.addDelta( delta );
+
+			doc.on( 'change', changeCallback );
+			model.applyOperation( operation );
+
+			expect( doc.version ).to.equal( 1 );
+			expect( doc.history._deltas.length ).to.equal( 1 );
+			sinon.assert.calledOnce( operation._execute );
+
+			sinon.assert.calledOnce( changeCallback );
+			expect( changeCallback.args[ 0 ][ 1 ] ).to.equal( type );
+			expect( changeCallback.args[ 0 ][ 2 ] ).to.equal( data );
+			expect( changeCallback.args[ 0 ][ 3 ] ).to.deep.equal( batch );
+			expect( changeCallback.args[ 0 ][ 4 ] ).to.equal( delta.type );
+		} );
+
+		it( 'should execute operation, not fire event and not increase document version ' +
+			'when operation is not a document operation', () => {
+			const changeCallback = sinon.spy();
+			const type = 't';
+			const data = { data: 'x' };
+			const batch = new Batch();
+			const delta = new Delta();
+			delta.type = 'type';
+
+			const operation = {
+				type,
+				baseVersion: 0,
+				isDocumentOperation: false,
+				_execute: sinon.stub().returns( data )
+			};
+
+			delta.addOperation( operation );
+			batch.addDelta( delta );
+
+			doc.on( 'change', changeCallback );
+			model.applyOperation( operation );
+
+			expect( doc.version ).to.equal( 0 );
+			expect( doc.history._deltas.length ).to.equal( 0 );
+			sinon.assert.calledOnce( operation._execute );
+
+			sinon.assert.notCalled( changeCallback );
+		} );
+
+		it( 'should throw an error on the operation base version and the document version is different', () => {
+			const operation = {
+				baseVersion: 1,
+				isDocumentOperation: true,
+				_execute: () => {}
+			};
+
+			expect(
+				() => {
+					model.applyOperation( operation );
+				}
+			).to.throw( CKEditorError, /^model-document-applyOperation-wrong-version/ );
+		} );
+	} );
+
 	describe( 'getRootNames()', () => {
 		it( 'should return empty iterator if no roots exist', () => {
 			expect( count( doc.getRootNames() ) ).to.equal( 0 );
@@ -112,82 +190,6 @@ describe( 'Document', () => {
 
 		it( 'should return false when Document does not have RootElement with given name', () => {
 			expect( doc.hasRoot( 'noroot' ) ).to.be.false;
-		} );
-	} );
-
-	describe.skip( 'applyOperation()', () => {
-		it( 'should increase document version, execute operation and fire event with proper data ' +
-			'when operation is a document operation', () => {
-			const changeCallback = sinon.spy();
-			const type = 't';
-			const data = { data: 'x' };
-			const batch = new Batch();
-			const delta = new Delta();
-			delta.type = 'type';
-
-			const operation = {
-				type,
-				baseVersion: 0,
-				isDocumentOperation: true,
-				_execute: sinon.stub().returns( data )
-			};
-
-			delta.addOperation( operation );
-			batch.addDelta( delta );
-
-			doc.on( 'change', changeCallback );
-			model.applyOperation( operation );
-
-			expect( doc.version ).to.equal( 1 );
-			expect( doc.history._deltas.length ).to.equal( 1 );
-			sinon.assert.calledOnce( operation._execute );
-
-			sinon.assert.calledOnce( changeCallback );
-			expect( changeCallback.args[ 0 ][ 1 ] ).to.equal( type );
-			expect( changeCallback.args[ 0 ][ 2 ] ).to.equal( data );
-			expect( changeCallback.args[ 0 ][ 3 ] ).to.deep.equal( batch );
-			expect( changeCallback.args[ 0 ][ 4 ] ).to.equal( delta.type );
-		} );
-
-		it( 'should execute operation, not fire event and not increase document version ' +
-			'when operation is not a document operation', () => {
-			const changeCallback = sinon.spy();
-			const type = 't';
-			const data = { data: 'x' };
-			const batch = new Batch();
-			const delta = new Delta();
-			delta.type = 'type';
-
-			const operation = {
-				type,
-				baseVersion: 0,
-				isDocumentOperation: false,
-				_execute: sinon.stub().returns( data )
-			};
-
-			delta.addOperation( operation );
-			batch.addDelta( delta );
-
-			doc.on( 'change', changeCallback );
-			model.applyOperation( operation );
-
-			expect( doc.version ).to.equal( 0 );
-			expect( doc.history._deltas.length ).to.equal( 0 );
-			sinon.assert.calledOnce( operation._execute );
-
-			sinon.assert.notCalled( changeCallback );
-		} );
-
-		it( 'should throw an error on the operation base version and the document version is different', () => {
-			const operation = {
-				baseVersion: 1
-			};
-
-			expect(
-				() => {
-					model.applyOperation( operation );
-				}
-			).to.throw( CKEditorError, /^model-document-applyOperation-wrong-version/ );
 		} );
 	} );
 
@@ -523,8 +525,10 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	// @TODO: What for is this test?
-	it.skip( 'should be correctly converted to json', () => {
-		expect( jsonParseStringify( doc ).selection ).to.equal( '[engine.model.DocumentSelection]' );
+	it( 'should be correctly converted to json', () => {
+		const serialized = jsonParseStringify( doc );
+
+		expect( serialized.selection ).to.equal( '[engine.model.DocumentSelection]' );
+		expect( serialized.model ).to.equal( '[engine.model.Model]' );
 	} );
 } );

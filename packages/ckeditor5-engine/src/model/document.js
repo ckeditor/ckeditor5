@@ -186,30 +186,6 @@ export default class Document {
 	}
 
 	/**
-	 * Enqueues document changes. Any changes to be done on document (mostly using {@link #batch}
-	 * should be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
-	 * called immediately. Otherwise it will wait for all previously queued changes to finish happening. This way
-	 * queued callback will not interrupt other callbacks.
-	 *
-	 * When all queued changes are done {@link #event:changesDone} event is fired.
-	 *
-	 * @fires changesDone
-	 * @param {Function} callback Callback to enqueue.
-	 */
-	enqueueChanges( callback ) {
-		this._pendingChanges.push( callback );
-
-		if ( this._pendingChanges.length == 1 ) {
-			while ( this._pendingChanges.length ) {
-				this._pendingChanges[ 0 ]();
-				this._pendingChanges.shift();
-			}
-
-			this.fire( 'changesDone' );
-		}
-	}
-
-	/**
 	 * Returns top-level root by its name.
 	 *
 	 * @param {String} [name='main'] Unique root name.
@@ -334,6 +310,7 @@ export default class Document {
 
 		// Due to circular references we need to remove parent reference.
 		json.selection = '[engine.model.DocumentSelection]';
+		json.model = '[engine.model.Model]';
 
 		return json;
 	}
