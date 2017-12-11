@@ -13,7 +13,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'CodeEngine', () => {
-	let editor, doc;
+	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -22,8 +22,7 @@ describe( 'CodeEngine', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				doc = editor.document;
+				model = editor.model;
 			} );
 	} );
 
@@ -36,9 +35,9 @@ describe( 'CodeEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: 'code', inside: '$root' } ) ).to.be.false;
-		expect( doc.schema.check( { name: '$inline', attributes: 'code', inside: '$block' } ) ).to.be.true;
-		expect( doc.schema.check( { name: '$inline', attributes: 'code', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', attributes: 'code', inside: '$root' } ) ).to.be.false;
+		expect( model.schema.check( { name: '$inline', attributes: 'code', inside: '$block' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', attributes: 'code', inside: '$clipboardHolder' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -54,7 +53,7 @@ describe( 'CodeEngine', () => {
 		it( 'should convert <code> to code attribute', () => {
 			editor.setData( '<p><code>foo</code>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text code="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><code>foo</code>bar</p>' );
@@ -63,7 +62,7 @@ describe( 'CodeEngine', () => {
 		it( 'should convert word-wrap:break-word to code attribute', () => {
 			editor.setData( '<p><span style="word-wrap: break-word">foo</span>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text code="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><code>foo</code>bar</p>' );
@@ -75,7 +74,7 @@ describe( 'CodeEngine', () => {
 
 			editor.setData( '<code>foo</code>bar' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
 		} );
@@ -83,7 +82,7 @@ describe( 'CodeEngine', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( doc, '<paragraph><$text code="true">foo</$text>bar</paragraph>' );
+			setModelData( model, '<paragraph><$text code="true">foo</$text>bar</paragraph>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><code>foo</code>bar</p>' );
 		} );

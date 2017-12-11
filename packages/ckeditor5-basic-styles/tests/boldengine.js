@@ -13,7 +13,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'BoldEngine', () => {
-	let editor, doc;
+	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -22,8 +22,7 @@ describe( 'BoldEngine', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				doc = editor.document;
+				model = editor.model;
 			} );
 	} );
 
@@ -36,9 +35,9 @@ describe( 'BoldEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: 'bold', inside: '$root' } ) ).to.be.false;
-		expect( doc.schema.check( { name: '$inline', attributes: 'bold', inside: '$block' } ) ).to.be.true;
-		expect( doc.schema.check( { name: '$inline', attributes: 'bold', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', attributes: 'bold', inside: '$root' } ) ).to.be.false;
+		expect( model.schema.check( { name: '$inline', attributes: 'bold', inside: '$block' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', attributes: 'bold', inside: '$clipboardHolder' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -54,7 +53,7 @@ describe( 'BoldEngine', () => {
 		it( 'should convert <strong> to bold attribute', () => {
 			editor.setData( '<p><strong>foo</strong>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
@@ -63,7 +62,7 @@ describe( 'BoldEngine', () => {
 		it( 'should convert <b> to bold attribute', () => {
 			editor.setData( '<p><b>foo</b>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
@@ -72,7 +71,7 @@ describe( 'BoldEngine', () => {
 		it( 'should convert font-weight:bold to bold attribute', () => {
 			editor.setData( '<p><span style="font-weight: bold;">foo</span>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
@@ -84,7 +83,7 @@ describe( 'BoldEngine', () => {
 
 			editor.setData( '<strong>foo</strong>bar' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
 		} );
@@ -92,7 +91,7 @@ describe( 'BoldEngine', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( doc, '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
+			setModelData( model, '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><strong>foo</strong>bar</p>' );
 		} );
