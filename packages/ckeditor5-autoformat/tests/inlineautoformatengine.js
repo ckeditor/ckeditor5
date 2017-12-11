@@ -13,7 +13,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 testUtils.createSinonSandbox();
 
 describe( 'InlineAutoformatEngine', () => {
-	let editor, doc, batch;
+	let editor, model, doc;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -22,9 +22,9 @@ describe( 'InlineAutoformatEngine', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
-				batch = doc.batch();
-				doc.schema.allow( { name: '$inline', attributes: [ 'testAttribute' ] } );
+				model = editor.model;
+				doc = model.document;
+				model.schema.allow( { name: '$inline', attributes: [ 'testAttribute' ] } );
 			} );
 	} );
 
@@ -32,45 +32,45 @@ describe( 'InlineAutoformatEngine', () => {
 		it( 'should stop early if there are less than 3 capture groups', () => {
 			new InlineAutoformatEngine( editor, /(\*)(.+?)\*/g, 'testAttribute' ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*foobar[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( '*', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*foobar[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
 		} );
 
 		it( 'should apply an attribute when the pattern is matched', () => {
 			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, 'testAttribute' ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*foobar[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( '*', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*foobar[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph><$text testAttribute="true">foobar</$text>[]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph><$text testAttribute="true">foobar</$text>[]</paragraph>' );
 		} );
 
 		it( 'should not apply an attribute when changes are in transparent batch', () => {
 			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, 'testAttribute' ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*foobar[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				doc.batch( 'transparent' ).insertText( '*', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*foobar[]</paragraph>' );
+			model.enqueueChange( 'transparent', writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
 		} );
 
 		it( 'should stop early if selection is not collapsed', () => {
 			new InlineAutoformatEngine( editor, /(\*)(.+?)\*/g, 'testAttribute' ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*foob[ar]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( '*', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*foob[ar]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>*foob*[ar]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>*foob*[ar]</paragraph>' );
 		} );
 	} );
 
@@ -79,9 +79,9 @@ describe( 'InlineAutoformatEngine', () => {
 			const spy = testUtils.sinon.spy();
 			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, spy ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*foobar[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				doc.batch( 'transparent' ).insertText( '*', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*foobar[]</paragraph>' );
+			model.enqueueChange( 'transparent', writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( spy );
@@ -96,9 +96,9 @@ describe( 'InlineAutoformatEngine', () => {
 
 			new InlineAutoformatEngine( editor, testStub, formatSpy ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( formatSpy );
@@ -113,9 +113,9 @@ describe( 'InlineAutoformatEngine', () => {
 
 			new InlineAutoformatEngine( editor, testStub, formatSpy ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( formatSpy );
@@ -130,9 +130,9 @@ describe( 'InlineAutoformatEngine', () => {
 
 			new InlineAutoformatEngine( editor, testStub, formatSpy ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( formatSpy );
@@ -141,16 +141,16 @@ describe( 'InlineAutoformatEngine', () => {
 		it( 'should detach removed ranges', () => {
 			const detachSpies = [];
 			const callback = fixBatch => testUtils.sinon.stub( fixBatch, 'remove' ).callsFake( saveDetachSpy );
-			testUtils.sinon.stub( editor.document.schema, 'getValidRanges' )
+			testUtils.sinon.stub( editor.model.schema, 'getValidRanges' )
 				.callThrough()
 				.callsFake( ranges => ranges.map( saveDetachSpy ) );
 
 			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, callback ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*foobar[]</paragraph>' );
+			setData( model, '<paragraph>*foobar[]</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().insertText( '*', doc.selection.getFirstPosition() );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			// There should be two removed ranges and one range used to apply autoformat.
