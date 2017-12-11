@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import Range from '../../src/model/range';
@@ -19,10 +19,11 @@ import Schema from '../../src/model/schema';
 testUtils.createSinonSandbox();
 
 describe( 'Selection', () => {
-	let doc, root, selection, liveRange, range, range1, range2, range3;
+	let model, doc, root, selection, liveRange, range, range1, range2, range3;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 		root.appendChildren( [
 			new Element( 'p' ),
@@ -44,7 +45,7 @@ describe( 'Selection', () => {
 	} );
 
 	afterEach( () => {
-		doc.destroy();
+		model.destroy();
 		liveRange.detach();
 	} );
 
@@ -894,14 +895,14 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return selected element', () => {
-			const { selection, model } = parse( '<p>foo</p>[<p>bar</p>]<p>baz</p>', schema, doc.batch() );
+			const { selection, model } = parse( '<p>foo</p>[<p>bar</p>]<p>baz</p>', schema );
 			const p = model.getChild( 1 );
 
 			expect( selection.getSelectedElement() ).to.equal( p );
 		} );
 
 		it( 'should return null if there is more than one range', () => {
-			const { selection } = parse( '[<p>foo</p>][<p>bar</p>]<p>baz</p>', schema, doc.batch() );
+			const { selection } = parse( '[<p>foo</p>][<p>bar</p>]<p>baz</p>', schema );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
@@ -911,13 +912,13 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return null if selection is not over single element #1', () => {
-			const { selection } = parse( '<p>foo</p>[<p>bar</p><p>baz}</p>', schema, doc.batch() );
+			const { selection } = parse( '<p>foo</p>[<p>bar</p><p>baz}</p>', schema );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
 
 		it( 'should return null if selection is not over single element #2', () => {
-			const { selection } = parse( '<p>{bar}</p>', schema, doc.batch() );
+			const { selection } = parse( '<p>{bar}</p>', schema );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
@@ -925,37 +926,37 @@ describe( 'Selection', () => {
 
 	describe( 'getSelectedBlocks()', () => {
 		beforeEach( () => {
-			doc.schema.registerItem( 'p', '$block' );
-			doc.schema.registerItem( 'h', '$block' );
+			model.schema.registerItem( 'p', '$block' );
+			model.schema.registerItem( 'h', '$block' );
 
-			doc.schema.registerItem( 'blockquote' );
-			doc.schema.allow( { name: 'blockquote', inside: '$root' } );
-			doc.schema.allow( { name: '$block', inside: 'blockquote' } );
+			model.schema.registerItem( 'blockquote' );
+			model.schema.allow( { name: 'blockquote', inside: '$root' } );
+			model.schema.allow( { name: '$block', inside: 'blockquote' } );
 
-			doc.schema.registerItem( 'image' );
-			doc.schema.allow( { name: 'image', inside: '$root' } );
-			doc.schema.allow( { name: 'image', inside: '$block' } );
-			doc.schema.allow( { name: '$text', inside: 'image' } );
+			model.schema.registerItem( 'image' );
+			model.schema.allow( { name: 'image', inside: '$root' } );
+			model.schema.allow( { name: 'image', inside: '$block' } );
+			model.schema.allow( { name: '$text', inside: 'image' } );
 
 			// Special block which can contain another blocks.
-			doc.schema.registerItem( 'nestedBlock', '$block' );
-			doc.schema.allow( { name: 'nestedBlock', inside: '$block' } );
+			model.schema.registerItem( 'nestedBlock', '$block' );
+			model.schema.allow( { name: 'nestedBlock', inside: '$block' } );
 		} );
 
 		it( 'returns an iterator', () => {
-			setData( doc, '<p>a</p><p>[]b</p><p>c</p>' );
+			setData( model, '<p>a</p><p>[]b</p><p>c</p>' );
 
 			expect( doc.selection.getSelectedBlocks().next ).to.be.a( 'function' );
 		} );
 
 		it( 'returns block for a collapsed selection', () => {
-			setData( doc, '<p>a</p><p>[]b</p><p>c</p>' );
+			setData( model, '<p>a</p><p>[]b</p><p>c</p>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
 		} );
 
 		it( 'returns block for a collapsed selection (empty block)', () => {
-			setData( doc, '<p>a</p><p>[]</p><p>c</p>' );
+			setData( model, '<p>a</p><p>[]</p><p>c</p>' );
 
 			const blocks = Array.from( doc.selection.getSelectedBlocks() );
 
@@ -964,67 +965,67 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'returns block for a non collapsed selection', () => {
-			setData( doc, '<p>a</p><p>[b]</p><p>c</p>' );
+			setData( model, '<p>a</p><p>[b]</p><p>c</p>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
 		} );
 
 		it( 'returns two blocks for a non collapsed selection', () => {
-			setData( doc, '<p>a</p><h>[b</h><p>c]</p><p>d</p>' );
+			setData( model, '<p>a</p><h>[b</h><p>c]</p><p>d</p>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c' ] );
 		} );
 
 		it( 'returns two blocks for a non collapsed selection (starts at block end)', () => {
-			setData( doc, '<p>a</p><h>b[</h><p>c]</p><p>d</p>' );
+			setData( model, '<p>a</p><h>b[</h><p>c]</p><p>d</p>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c' ] );
 		} );
 
 		it( 'returns proper block for a multi-range selection', () => {
-			setData( doc, '<p>a</p><h>[b</h><p>c]</p><p>d</p><p>[e]</p>' );
+			setData( model, '<p>a</p><h>[b</h><p>c]</p><p>d</p><p>[e]</p>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c', 'e' ] );
 		} );
 
 		it( 'does not return a block twice if two ranges are anchored in it', () => {
-			setData( doc, '<p>[a]b[c]</p>' );
+			setData( model, '<p>[a]b[c]</p>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'abc' ] );
 		} );
 
 		it( 'returns only blocks', () => {
-			setData( doc, '<p>[a</p><image>b</image><p>c]</p>' );
+			setData( model, '<p>[a</p><image>b</image><p>c]</p>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'c' ] );
 		} );
 
 		it( 'gets deeper into the tree', () => {
-			setData( doc, '<p>[a</p><blockquote><p>b</p><p>c</p></blockquote><p>d]</p>' );
+			setData( model, '<p>[a</p><blockquote><p>b</p><p>c</p></blockquote><p>d]</p>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
 		} );
 
 		it( 'gets deeper into the tree (end deeper)', () => {
-			setData( doc, '<p>[a</p><blockquote><p>b]</p><p>c</p></blockquote><p>d</p>' );
+			setData( model, '<p>[a</p><blockquote><p>b]</p><p>c</p></blockquote><p>d</p>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b' ] );
 		} );
 
 		it( 'gets deeper into the tree (start deeper)', () => {
-			setData( doc, '<p>a</p><blockquote><p>b</p><p>[c</p></blockquote><p>d]</p>' );
+			setData( model, '<p>a</p><blockquote><p>b</p><p>[c</p></blockquote><p>d]</p>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'c', 'd' ] );
 		} );
 
 		it( 'returns an empty array if none of the selected elements is a block', () => {
-			setData( doc, '<p>a</p><image>[a</image><image>b]</image><p>b</p>' );
+			setData( model, '<p>a</p><image>[a</image><image>b]</image><p>b</p>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.be.empty;
 		} );
 
 		it( 'returns an empty array if the selected element is not a block', () => {
-			setData( doc, '<p>a</p><image>[]a</image><p>b</p>' );
+			setData( model, '<p>a</p><image>[]a</image><p>b</p>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.be.empty;
 		} );
@@ -1032,7 +1033,7 @@ describe( 'Selection', () => {
 		// Super edge case – should not happen (blocks should never be nested),
 		// but since the code handles it already it's worth testing.
 		it( 'returns only the lowest block if blocks are nested', () => {
-			setData( doc, '<nestedBlock>a<nestedBlock>[]b</nestedBlock></nestedBlock>' );
+			setData( model, '<nestedBlock>a<nestedBlock>[]b</nestedBlock></nestedBlock>' );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
 		} );
@@ -1040,7 +1041,7 @@ describe( 'Selection', () => {
 		// Like above but trickier.
 		it( 'returns only the lowest block if blocks are nested', () => {
 			setData(
-				doc,
+				model,
 				'<nestedBlock>a<nestedBlock>[b</nestedBlock></nestedBlock>' +
 				'<nestedBlock>c<nestedBlock>d]</nestedBlock></nestedBlock>'
 			);
@@ -1051,26 +1052,26 @@ describe( 'Selection', () => {
 		it( 'returns nothing if directly in a root', () => {
 			doc.createRoot( 'p', 'inlineOnlyRoot' );
 
-			setData( doc, 'a[b]c', { rootName: 'inlineOnlyRoot' } );
+			setData( model, 'a[b]c', { rootName: 'inlineOnlyRoot' } );
 
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.be.empty;
 		} );
 
 		describe( '#984', () => {
 			it( 'does not return the last block if none of its content is selected', () => {
-				setData( doc, '<p>[a</p><p>b</p><p>]c</p>' );
+				setData( model, '<p>[a</p><p>b</p><p>]c</p>' );
 
 				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b' ] );
 			} );
 
 			it( 'returns only the first block for a non collapsed selection if only end of selection is touching a block', () => {
-				setData( doc, '<p>a</p><h>b[</h><p>]c</p><p>d</p>' );
+				setData( model, '<p>a</p><h>b[</h><p>]c</p><p>d</p>' );
 
 				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
 			} );
 
 			it( 'does not return the last block if none of its content is selected (nested case)', () => {
-				setData( doc, '<p>[a</p><nestedBlock><nestedBlock>]b</nestedBlock></nestedBlock>' );
+				setData( model, '<p>[a</p><nestedBlock><nestedBlock>]b</nestedBlock></nestedBlock>' );
 
 				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a' ] );
 			} );
@@ -1078,20 +1079,20 @@ describe( 'Selection', () => {
 			// Like a super edge case, we can live with this behavior as I don't even know what we could expect here
 			// since only the innermost block is considerd a block to return (so the <nB>b...</nB> needs to be ignored).
 			it( 'does not return the last block if none of its content is selected (nested case, wrapper with a content)', () => {
-				setData( doc, '<p>[a</p><nestedBlock>b<nestedBlock>]c</nestedBlock></nestedBlock>' );
+				setData( model, '<p>[a</p><nestedBlock>b<nestedBlock>]c</nestedBlock></nestedBlock>' );
 
 				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a' ] );
 			} );
 
 			it( 'returns the last block if at least one of its child nodes is selected', () => {
-				setData( doc, '<p>[a</p><p>b</p><p><image></image>]c</p>' );
+				setData( model, '<p>[a</p><p>b</p><p><image></image>]c</p>' );
 
 				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
 			} );
 
 			// I needed these last 2 cases to justify the use of isTouching() instead of simple `offset == 0` check.
 			it( 'returns the last block if at least one of its child nodes is selected (end in an inline element)', () => {
-				setData( doc, '<p>[a</p><p>b</p><p><image>x]</image>c</p>' );
+				setData( model, '<p>[a</p><p>b</p><p><image>x]</image>c</p>' );
 
 				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
 			} );
@@ -1100,7 +1101,7 @@ describe( 'Selection', () => {
 				'does not return the last block if at least one of its child nodes is selected ' +
 				'(end in an inline element, no content selected)',
 				() => {
-					setData( doc, '<p>[a</p><p>b</p><p><image>]x</image>c</p>' );
+					setData( model, '<p>[a</p><p>b</p><p><image>]x</image>c</p>' );
 
 					expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b' ] );
 				}
@@ -1309,24 +1310,24 @@ describe( 'Selection', () => {
 
 	describe( 'containsEntireContent()', () => {
 		beforeEach( () => {
-			doc.schema.registerItem( 'p', '$block' );
-			doc.schema.allow( { name: 'p', inside: '$root' } );
+			model.schema.registerItem( 'p', '$block' );
+			model.schema.allow( { name: 'p', inside: '$root' } );
 		} );
 
 		it( 'returns true if the entire content in $root is selected', () => {
-			setData( doc, '<p>[Foo</p><p>Bom</p><p>Bar]</p>' );
+			setData( model, '<p>[Foo</p><p>Bom</p><p>Bar]</p>' );
 
 			expect( doc.selection.containsEntireContent() ).to.equal( true );
 		} );
 
 		it( 'returns false when only a fragment of the content in $root is selected', () => {
-			setData( doc, '<p>Fo[o</p><p>Bom</p><p>Bar]</p>' );
+			setData( model, '<p>Fo[o</p><p>Bom</p><p>Bar]</p>' );
 
 			expect( doc.selection.containsEntireContent() ).to.equal( false );
 		} );
 
 		it( 'returns true if the entire content in specified element is selected', () => {
-			setData( doc, '<p>Foo</p><p>[Bom]</p><p>Bar</p>' );
+			setData( model, '<p>Foo</p><p>[Bom]</p><p>Bar</p>' );
 
 			const root = doc.getRoot();
 			const secondParagraph = root.getNodeByPath( [ 1 ] );
@@ -1335,7 +1336,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'returns false if the entire content in specified element is not selected', () => {
-			setData( doc, '<p>Foo</p><p>[Bom</p><p>B]ar</p>' );
+			setData( model, '<p>Foo</p><p>[Bom</p><p>B]ar</p>' );
 
 			const root = doc.getRoot();
 			const secondParagraph = root.getNodeByPath( [ 1 ] );
@@ -1344,22 +1345,22 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'returns false when the entire content except an empty element is selected', () => {
-			doc.schema.registerItem( 'img', '$inline' );
-			doc.schema.allow( { name: 'img', inside: 'p' } );
+			model.schema.registerItem( 'img', '$inline' );
+			model.schema.allow( { name: 'img', inside: 'p' } );
 
-			setData( doc, '<p><img></img>[Foo]</p>' );
+			setData( model, '<p><img></img>[Foo]</p>' );
 
 			expect( doc.selection.containsEntireContent() ).to.equal( false );
 		} );
 
 		it( 'returns true if the content is empty', () => {
-			setData( doc, '[]' );
+			setData( model, '[]' );
 
 			expect( doc.selection.containsEntireContent() ).to.equal( true );
 		} );
 
 		it( 'returns false if empty selection is at the end of non-empty content', () => {
-			setData( doc, '<p>Foo bar bom.</p>[]' );
+			setData( model, '<p>Foo bar bom.</p>[]' );
 
 			expect( doc.selection.containsEntireContent() ).to.equal( false );
 		} );
