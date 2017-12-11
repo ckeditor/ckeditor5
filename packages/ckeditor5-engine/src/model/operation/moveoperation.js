@@ -12,7 +12,7 @@ import Position from '../position';
 import Range from '../range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
-import writer from './../writer';
+import { _move } from './utils';
 
 /**
  * Operation to move a range of {@link module:engine/model/item~Item model items}
@@ -64,6 +64,17 @@ export default class MoveOperation extends Operation {
 		 * @member {Boolean} module:engine/model/operation/moveoperation~MoveOperation#isSticky
 		 */
 		this.isSticky = false;
+
+		/**
+		 * Defines whether operation is executed on attached or detached {@link module:engine/model/item~Item items}.
+		 *
+		 * Note that range cannot be moved within different documents e.g. from docFrag to document root so
+		 * root of source and target positions is always the same.
+		 *
+		 * @readonly
+		 * @member {Boolean} #isDocumentOperation
+		 */
+		this.isDocumentOperation = !!this.targetPosition.root.document;
 	}
 
 	/**
@@ -173,7 +184,7 @@ export default class MoveOperation extends Operation {
 			}
 		}
 
-		const range = writer.move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
+		const range = _move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
 
 		return {
 			sourcePosition: this.sourcePosition,

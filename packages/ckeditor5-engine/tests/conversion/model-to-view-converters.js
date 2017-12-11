@@ -8,7 +8,6 @@ import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
-import modelWriter from '../../src/model/writer';
 
 import ViewElement from '../../src/view/element';
 import ViewContainerElement from '../../src/view/containerelement';
@@ -36,12 +35,14 @@ import {
 import { createRangeOnElementOnly } from '../../tests/model/_utils/utils';
 
 describe( 'model-to-view-converters', () => {
-	let dispatcher, modelDoc, modelRoot, mapper, viewRoot;
+	let dispatcher, modelDoc, modelRoot, mapper, viewRoot, batch;
 
 	beforeEach( () => {
 		modelDoc = new ModelDocument();
 		modelRoot = modelDoc.createRoot();
 		viewRoot = new ViewContainerElement( 'div' );
+
+		batch = modelDoc.batch();
 
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
@@ -537,7 +538,7 @@ describe( 'model-to-view-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
-			modelWriter.removeAttribute( ModelRange.createIn( modelElement ), 'bold' );
+			batch.removeAttribute( 'bold', modelElement );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'bold', true, null );
 
@@ -564,7 +565,7 @@ describe( 'model-to-view-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
-			modelWriter.removeAttribute( ModelRange.createIn( modelElement ), 'style' );
+			batch.removeAttribute( 'style', modelElement );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'style', 'bold', null );
 
@@ -594,7 +595,7 @@ describe( 'model-to-view-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>x<a href="http://foo.com">foo</a>x</p></div>' );
 
-			modelWriter.setAttribute( ModelRange.createIn( modelElement ), 'link', 'http://foobar.com' );
+			batch.setAttribute( 'link', 'http://foobar.com', modelElement );
 
 			dispatcher.convertAttribute(
 				'changeAttribute',
@@ -622,7 +623,7 @@ describe( 'model-to-view-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>நி<b>லைக்</b>கு</p></div>' );
 
-			modelWriter.removeAttribute( ModelRange.createIn( modelElement ), 'bold' );
+			batch.removeAttribute( 'bold', modelElement );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'bold', true, null );
 
@@ -665,7 +666,7 @@ describe( 'model-to-view-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
-			modelWriter.removeAttribute( ModelRange.createIn( modelElement ), 'bold' );
+			batch.removeAttribute( 'bold', modelElement );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'bold', true, null );
 
@@ -1011,10 +1012,7 @@ describe( 'model-to-view-converters', () => {
 
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
-			modelWriter.move(
-				ModelRange.createFromParentsAndOffsets( modelDiv, 0, modelDiv, 6 ),
-				ModelPosition.createAt( modelDoc.graveyard, 'end' )
-			);
+			batch.remove( ModelRange.createFromParentsAndOffsets( modelDiv, 0, modelDiv, 6 ) );
 
 			dispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelDiv, 0 ),
@@ -1035,10 +1033,7 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'remove', remove() );
 
 			// Remove 'b'.
-			modelWriter.move(
-				ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ),
-				ModelPosition.createAt( modelDoc.graveyard, 'end' )
-			);
+			batch.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ) );
 
 			dispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelRoot, 3 ),
@@ -1059,10 +1054,7 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'remove', remove() );
 
 			// Remove 'o<span></span>b'.
-			modelWriter.move(
-				ModelRange.createFromParentsAndOffsets( modelRoot, 2, modelRoot, 4 ),
-				ModelPosition.createAt( modelDoc.graveyard, 'end' )
-			);
+			batch.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 2, modelRoot, 4 ) );
 
 			dispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelRoot, 2 ),
@@ -1084,7 +1076,7 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'remove', remove() );
 
 			// Move <a></a> after "b". Can be e.g. a part of an unwrap delta (move + remove).
-			modelWriter.move(
+			batch.move(
 				ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ),
 				ModelPosition.createAt( modelRoot, 'end' )
 			);
@@ -1111,11 +1103,8 @@ describe( 'model-to-view-converters', () => {
 
 			dispatcher.on( 'remove', remove() );
 
-			// Move <a></a> to graveyard.
-			modelWriter.move(
-				ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ),
-				ModelPosition.createAt( modelDoc.graveyard, 'end' )
-			);
+			// Remove <a></a>.
+			batch.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
 
 			dispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelRoot, 0 ),
@@ -1188,10 +1177,7 @@ describe( 'model-to-view-converters', () => {
 
 			dispatcher.on( 'remove', remove() );
 
-			modelWriter.move(
-				ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 ),
-				ModelPosition.createAt( modelDoc.graveyard, 'end' )
-			);
+			batch.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 ) );
 
 			dispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelRoot, 1 ),
@@ -1215,10 +1201,7 @@ describe( 'model-to-view-converters', () => {
 
 			dispatcher.on( 'remove', remove() );
 
-			modelWriter.move(
-				ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ),
-				ModelPosition.createAt( modelDoc.graveyard, 'end' )
-			);
+			batch.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ) );
 
 			dispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelRoot, 3 ),

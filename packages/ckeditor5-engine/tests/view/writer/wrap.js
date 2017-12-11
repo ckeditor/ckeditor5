@@ -227,26 +227,26 @@ describe( 'writer', () => {
 			test(
 				'<container:p>[<attribute:b view-priority="1" class="foo bar baz"></attribute:b>]</container:p>',
 				'<attribute:b view-priority="1" class="foo bar qux jax"></attribute:b>',
-				'<container:p>[<attribute:b view-priority="1" class="foo bar baz qux jax"></attribute:b>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" class="bar baz foo jax qux"></attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should wrap single element by merging styles', () => {
 			test(
-				'<container:p>[<attribute:b view-priority="1" style="color:red; position: absolute;"></attribute:b>]</container:p>',
-				'<attribute:b view-priority="1" style="color:red; top: 20px;"></attribute:b>',
-				'<container:p>[<attribute:b view-priority="1" style="color:red;position:absolute;top:20px;"></attribute:b>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" style="color:red; position: absolute"></attribute:b>]</container:p>',
+				'<attribute:b view-priority="1" style="color:red; top: 20px"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1" style="color:red;position:absolute;top:20px"></attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should not merge styles when they differ', () => {
 			test(
-				'<container:p>[<attribute:b view-priority="1" style="color:red;"></attribute:b>]</container:p>',
-				'<attribute:b view-priority="1" style="color:black;"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1" style="color:red"></attribute:b>]</container:p>',
+				'<attribute:b view-priority="1" style="color:black"></attribute:b>',
 				'<container:p>' +
 				'[' +
-					'<attribute:b view-priority="1" style="color:black;">' +
-						'<attribute:b view-priority="1" style="color:red;"></attribute:b>' +
+					'<attribute:b view-priority="1" style="color:black">' +
+						'<attribute:b view-priority="1" style="color:red"></attribute:b>' +
 					'</attribute:b>' +
 				']' +
 				'</container:p>'
@@ -255,12 +255,12 @@ describe( 'writer', () => {
 
 		it( 'should not merge single elements when they have different priority', () => {
 			test(
-				'<container:p>[<attribute:b view-priority="2" style="color:red;"></attribute:b>]</container:p>',
-				'<attribute:b view-priority="1" style="color:red;"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="2" style="color:red"></attribute:b>]</container:p>',
+				'<attribute:b view-priority="1" style="color:red"></attribute:b>',
 				'<container:p>' +
 				'[' +
-					'<attribute:b view-priority="1" style="color:red;">' +
-						'<attribute:b view-priority="2" style="color:red;"></attribute:b>' +
+					'<attribute:b view-priority="1" style="color:red">' +
+						'<attribute:b view-priority="2" style="color:red"></attribute:b>' +
 					'</attribute:b>' +
 				']</container:p>'
 			);

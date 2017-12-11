@@ -17,6 +17,8 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  * {@link module:engine/model/element~Element#getChildren child nodes}.
  *
  * **Important**: see {@link module:engine/model/node~Node} to read about restrictions using `Element` and `Node` API.
+ *
+ * @extends {module:engine/model/node~Node}
  */
 export default class Element extends Node {
 	/**

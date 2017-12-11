@@ -80,7 +80,7 @@ class AutoLinker extends Plugin {
 
 				doc.enqueueChanges( () => {
 					const urlRange = Range.createFromPositionAndShift( livePos, url.length );
-					batch.setAttribute( urlRange, 'link', url );
+					batch.setAttribute( 'link', url, urlRange );
 				} );
 			}
 		} );

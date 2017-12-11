@@ -59,6 +59,35 @@ describe( 'AttributeOperation', () => {
 		} );
 	} );
 
+	describe( 'isDocumentOperation', () => {
+		it( 'should return true when attribute is applied on attached items', () => {
+			const op = new AttributeOperation(
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				'key',
+				'oldValue',
+				'newValue',
+				doc.version
+			);
+
+			expect( op.isDocumentOperation ).to.true;
+		} );
+
+		it( 'should return false when attribute is applied on detached items', () => {
+			const docFrag = doc.batch().createDocumentFragment();
+			doc.batch().appendText( 'abc', null, docFrag );
+
+			const op = new AttributeOperation(
+				Range.createIn( docFrag ),
+				'key',
+				'oldValue',
+				'newValue',
+				doc.version
+			);
+
+			expect( op.isDocumentOperation ).to.false;
+		} );
+	} );
+
 	it( 'should insert attribute to the set of nodes', () => {
 		root.insertChildren( 0, new Text( 'bar' ) );
 
@@ -367,6 +396,22 @@ describe( 'AttributeOperation', () => {
 
 		expect( root.getChild( 0 ).data ).to.equal( 'a' );
 		expect( root.getChild( 1 ).data ).to.equal( 'bcxyz' );
+	} );
+
+	it( 'should do nothing when attribute value is the same', () => {
+		root.insertChildren( 0, new Text( 'x', { foo: true } ) );
+
+		expect( () => {
+			doc.applyOperation( wrapInDelta(
+				new AttributeOperation(
+					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					'foo',
+					true,
+					true,
+					doc.version
+				)
+			) );
+		} ).to.not.throw();
 	} );
 
 	describe( 'toJSON', () => {

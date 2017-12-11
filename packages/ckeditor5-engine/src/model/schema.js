@@ -414,14 +414,11 @@ export default class Schema {
 	}
 
 	/**
-	 * Removes disallowed by {@link module:engine/model/schema~Schema schema} attributes from given nodes.
-	 * When {@link module:engine/model/batch~Batch batch} parameter is provided then attributes will be removed
-	 * using that batch, by creating {@link module:engine/model/delta/attributedelta~AttributeDelta attribute deltas}.
-	 * Otherwise, attributes will be removed directly from provided nodes using {@link module:engine/model/node~Node node} API.
+	 * Removes disallowed by {@link module:engine/model/schema~Schema schema} attributes from given nodes..
 	 *
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes that will be filtered.
 	 * @param {module:engine/model/schema~SchemaPath} inside Path inside which schema will be checked.
-	 * @param {module:engine/model/batch~Batch} [batch] Batch to which the deltas will be added.
+	 * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
 	 */
 	removeDisallowedAttributes( nodes, inside, batch ) {
 		for ( const node of nodes ) {
@@ -435,11 +432,7 @@ export default class Schema {
 				// TODO: this should be improved to check all combination of attributes.
 				for ( const attribute of node.getAttributeKeys() ) {
 					if ( !this.check( { name, attributes: attribute, inside: queryPath } ) ) {
-						if ( batch ) {
-							batch.removeAttribute( node, attribute );
-						} else {
-							node.removeAttribute( attribute );
-						}
+						batch.removeAttribute( attribute, node );
 					}
 				}
 			}

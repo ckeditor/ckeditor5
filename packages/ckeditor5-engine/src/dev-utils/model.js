@@ -20,7 +20,6 @@ import ModelSelection from '../model/selection';
 import ModelDocumentFragment from '../model/documentfragment';
 import ModelElement from '../model/element';
 import ModelText from '../model/text';
-import modelWriter from '../model/writer';
 
 import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
 import ViewSelection from '../view/selection';
@@ -96,8 +95,10 @@ export function setData( document, data, options = {} ) {
 	let modelDocumentFragment, selection;
 	const modelRoot = document.getRoot( options.rootName || 'main' );
 
+	const batch = document.batch( options.batchType || 'transparent' );
+
 	// Parse data string to model.
-	const parsedResult = setData._parse( data, document.schema, {
+	const parsedResult = setData._parse( data, document.schema, batch, {
 		lastRangeBackward: options.lastRangeBackward,
 		selectionAttributes: options.selectionAttributes,
 		context: [ modelRoot.name ]
@@ -113,9 +114,8 @@ export function setData( document, data, options = {} ) {
 
 	document.enqueueChanges( () => {
 		// Replace existing model in document by new one.
-		document.batch( options.batchType || 'transparent' )
-			.remove( ModelRange.createIn( modelRoot ) )
-			.insert( ModelPosition.createAt( modelRoot, 0 ), modelDocumentFragment );
+		batch.remove( ModelRange.createIn( modelRoot ) );
+		batch.insert( modelDocumentFragment, modelRoot );
 
 		// Clean up previous document selection.
 		document.selection.clearAttributes();
@@ -242,7 +242,8 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  *
  * @param {String} data HTML-like string to be parsed.
  * @param {module:engine/model/schema~Schema} schema Schema instance uses by converters for element validation.
- * @param {Object} options Additional configuration.
+ * @param {module:engine/model/batch~Batch} batch Batch used for conversion.
+ * @param {Object} [options={}] Additional configuration.
  * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to the selection.
  * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
  * @param {module:engine/model/schema~SchemaPath} [options.context=[ '$root' ]] The conversion context.
@@ -251,7 +252,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  * module:engine/model/documentfragment~DocumentFragment|Object} Returns parsed model node or
  * object with two fields `model` and `selection` when selection ranges were included in data to parse.
  */
-export function parse( data, schema, options = {} ) {
+export function parse( data, schema, batch, options = {} ) {
 	const mapper = new Mapper();
 
 	// Replace not accepted by XML `$text` tag name by valid one `model-text-with-attributes`.
@@ -282,7 +283,7 @@ export function parse( data, schema, options = {} ) {
 	viewToModel.on( 'text', convertToModelText() );
 
 	// Convert view to model.
-	let model = viewToModel.convert( viewDocumentFragment.root, { context: options.context || [ '$root' ] } );
+	let model = viewToModel.convert( viewDocumentFragment.root, batch, { context: options.context || [ '$root' ] } );
 
 	// If root DocumentFragment contains only one element - return that element.
 	if ( model.is( 'documentFragment' ) && model.childCount == 1 ) {
@@ -322,9 +323,7 @@ export function parse( data, schema, options = {} ) {
 
 function convertToModelFragment() {
 	return ( evt, data, consumable, conversionApi ) => {
-		const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
-
-		data.output = new ModelDocumentFragment( modelWriter.normalizeNodes( convertedChildren ) );
+		data.output = conversionApi.convertChildren( data.input, consumable, data );
 		conversionApi.mapper.bindElements( data.output, data.input );
 
 		evt.stop();

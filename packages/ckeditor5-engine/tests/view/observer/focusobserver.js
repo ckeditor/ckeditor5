@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, window */
+/* globals document */
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import ViewDocument from '../../../src/view/document';
 import ViewRange from '../../../src/view/range';
@@ -142,7 +142,7 @@ describe( 'FocusObserver', () => {
 	} );
 
 	describe( 'integration test', () => {
-		let viewDocument, domRoot, observer, domSelection;
+		let viewDocument, domRoot, observer;
 
 		beforeEach( () => {
 			domRoot = document.createElement( 'div' );
@@ -152,16 +152,14 @@ describe( 'FocusObserver', () => {
 			viewDocument.createRoot( domRoot );
 
 			observer = viewDocument.getObserver( FocusObserver );
-			domSelection = window.getSelection();
 		} );
 
-		it( 'should render document after selectionChange event', done => {
+		it( 'should always render document after selectionChange event', done => {
 			const selectionChangeSpy = sinon.spy();
 			const renderSpy = sinon.spy();
 
 			setData( viewDocument, '<div contenteditable="true">foo bar</div>' );
 			viewDocument.render();
-			const domEditable = domRoot.childNodes[ 0 ];
 
 			viewDocument.on( 'selectionChange', selectionChangeSpy );
 			viewDocument.on( 'render', renderSpy, { priority: 'low' } );
@@ -171,8 +169,10 @@ describe( 'FocusObserver', () => {
 				done();
 			}, { priority: 'low' } );
 
-			observer.onDomEvent( { type: 'focus', target: domEditable } );
-			domSelection.collapse( domEditable, 0 );
+			// Mock selectionchange event after focus event. Render called by focus observer should be fired after
+			// async selection change.
+			viewDocument.fire( 'focus' );
+			viewDocument.fire( 'selectionChange' );
 		} );
 
 		it( 'should render without selectionChange event', done => {

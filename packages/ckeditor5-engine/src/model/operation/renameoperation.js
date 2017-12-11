@@ -51,6 +51,11 @@ export default class RenameOperation extends Operation {
 		 * @member {String} module:engine/model/operation/renameoperation~RenameOperation#newName
 		 */
 		this.newName = newName;
+
+		/**
+		 * @inheritDoc
+		 */
+		this.isDocumentOperation = !!this.position.root.document;
 	}
 
 	/**

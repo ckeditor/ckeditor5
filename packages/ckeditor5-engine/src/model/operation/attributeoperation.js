@@ -10,7 +10,7 @@
 import Operation from './operation';
 import Range from '../range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import writer from '../writer';
+import { _setAttribute } from './utils';
 import isEqual from '@ckeditor/ckeditor5-utils/src/lib/lodash/isEqual';
 
 /**
@@ -73,6 +73,11 @@ export default class AttributeOperation extends Operation {
 		 * @member {*}
 		 */
 		this.newValue = newValue === undefined ? null : newValue;
+
+		/**
+		 * @inheritDoc
+		 */
+		this.isDocumentOperation = !!this.range.root.document;
 	}
 
 	/**
@@ -116,7 +121,7 @@ export default class AttributeOperation extends Operation {
 				/**
 				 * Changed node has different attribute value than operation's old attribute value.
 				 *
-				 * @error operation-attribute-wrong-old-value
+				 * @error attribute-operation-wrong-old-value
 				 * @param {module:engine/model/item~Item} item
 				 * @param {String} key
 				 * @param {*} value
@@ -146,7 +151,7 @@ export default class AttributeOperation extends Operation {
 		// If value to set is same as old value, don't do anything.
 		if ( !isEqual( this.oldValue, this.newValue ) ) {
 			// Execution.
-			writer.setAttribute( this.range, this.key, this.newValue );
+			_setAttribute( this.range, this.key, this.newValue );
 		}
 
 		return { range: this.range, key: this.key, oldValue: this.oldValue, newValue: this.newValue };

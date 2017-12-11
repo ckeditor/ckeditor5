@@ -13,7 +13,6 @@
 
 // Import default suite of deltas so a feature have to include only Batch class file.
 import './attributedelta';
-import './insertdelta';
 import './mergedelta';
 import './movedelta';
 import './removedelta';

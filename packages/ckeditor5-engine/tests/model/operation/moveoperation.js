@@ -267,6 +267,34 @@ describe( 'MoveOperation', () => {
 		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
 
+	describe( 'isDocumentOperation', () => {
+		it( 'should return root when operation is executed on attached items', () => {
+			const op = new MoveOperation(
+				new Position( root, [ 0, 0 ] ),
+				1,
+				new Position( root, [ 1, 0 ] ),
+				doc.version
+			);
+
+			expect( op.isDocumentOperation ).to.true;
+		} );
+
+		it( 'should return false when operation is executed on detached items', () => {
+			const docFrag = doc.batch().createDocumentFragment();
+
+			doc.batch().appendText( 'abc', null, docFrag );
+
+			const op = new MoveOperation(
+				new Position( docFrag, [ 0 ] ),
+				1,
+				new Position( docFrag, [ 2 ] ),
+				doc.version
+			);
+
+			expect( op.isDocumentOperation ).to.false;
+		} );
+	} );
+
 	describe( 'getMovedRangeStart', () => {
 		it( 'should return move operation target position transformed by removing move operation source range', () => {
 			const sourcePosition = new Position( root, [ 0, 2 ] );

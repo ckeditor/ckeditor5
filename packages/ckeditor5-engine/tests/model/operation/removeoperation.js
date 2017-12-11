@@ -10,6 +10,7 @@ import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
 import Text from '../../../src/model/text';
 import Element from '../../../src/model/element';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'RemoveOperation', () => {
@@ -138,6 +139,36 @@ describe( 'RemoveOperation', () => {
 		expect( doc.graveyard.getChild( 0 ).name ).to.equal( 'z' );
 		expect( doc.graveyard.getChild( 1 ).name ).to.equal( 'x' );
 		expect( doc.graveyard.getChild( 2 ).name ).to.equal( 'y' );
+	} );
+
+	it( 'should throw when is executed on detached item', () => {
+		const batch = doc.batch();
+		const docFrag = batch.createDocumentFragment();
+		const item = batch.createElement( 'foo' );
+
+		batch.append( item, docFrag );
+
+		const op = new RemoveOperation(
+			new Position( docFrag, [ 0 ] ),
+			1,
+			new Position( doc.graveyard, [ 0 ] ),
+			doc.version
+		);
+
+		expect( () => {
+			op._execute();
+		} ).to.throw( CKEditorError, /^remove-operation-on-detached-item/ );
+	} );
+
+	it( 'should always be a document operation', () => {
+		const op = new RemoveOperation(
+			new Position( root, [ 2 ] ),
+			2,
+			new Position( doc.graveyard, [ 0 ] ),
+			doc.version
+		);
+
+		expect( op.isDocumentOperation ).to.true;
 	} );
 
 	describe( 'toJSON', () => {

@@ -11,6 +11,7 @@ import ViewText from '../../src/view/text';
 import ModelText from '../../src/model/text';
 import ModelElement from '../../src/model/element';
 import ModelDocumentFragment from '../../src/model/documentfragment';
+import ModelDocument from '../../src/model/document';
 import { stringify } from '../../src/dev-utils/model';
 
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -35,10 +36,13 @@ describe( 'ViewConversionDispatcher', () => {
 	} );
 
 	describe( 'convert', () => {
-		let dispatcher;
+		let dispatcher, batch;
+
+		const modelDocument = new ModelDocument();
 
 		beforeEach( () => {
 			dispatcher = new ViewConversionDispatcher();
+			batch = modelDocument.batch();
 		} );
 
 		it( 'should fire viewCleanup event on converted view part', () => {
@@ -47,7 +51,7 @@ describe( 'ViewConversionDispatcher', () => {
 			sinon.spy( dispatcher, 'fire' );
 
 			const viewP = new ViewContainerElement( 'p' );
-			dispatcher.convert( viewP );
+			dispatcher.convert( viewP, batch );
 
 			expect( dispatcher.fire.calledWith( 'viewCleanup', viewP ) ).to.be.true;
 		} );
@@ -61,9 +65,9 @@ describe( 'ViewConversionDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convert( viewText );
-			dispatcher.convert( viewElement );
-			dispatcher.convert( viewFragment );
+			dispatcher.convert( viewText, batch );
+			dispatcher.convert( viewElement, batch );
+			dispatcher.convert( viewFragment, batch );
 
 			expect( dispatcher.fire.calledWith( 'text' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'element:p' ) ).to.be.true;
@@ -95,7 +99,7 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
-			const conversionResult = dispatcher.convert( viewText, { foo: 'bar' } );
+			const conversionResult = dispatcher.convert( viewText, batch, { foo: 'bar' } );
 
 			// Check conversion result.
 			// Result should be wrapped in document fragment.
@@ -130,7 +134,7 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
-			const conversionResult = dispatcher.convert( viewElement, { foo: 'bar' } );
+			const conversionResult = dispatcher.convert( viewElement, batch, { foo: 'bar' } );
 
 			// Check conversion result.
 			// Result should be wrapped in document fragment.
@@ -164,7 +168,7 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
-			const conversionResult = dispatcher.convert( viewFragment, { foo: 'bar' } );
+			const conversionResult = dispatcher.convert( viewFragment, batch, { foo: 'bar' } );
 
 			// Check conversion result.
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
@@ -187,7 +191,7 @@ describe( 'ViewConversionDispatcher', () => {
 				] );
 			} );
 
-			const conversionResult = dispatcher.convert( viewFragment );
+			const conversionResult = dispatcher.convert( viewFragment, batch );
 
 			expect( conversionResult.markers.size ).to.equal( 2 );
 			expect( stringify( conversionResult, conversionResult.markers.get( 'marker1' ) ) ).to.deep.equal( 'fo[ob]ar' );
@@ -197,9 +201,13 @@ describe( 'ViewConversionDispatcher', () => {
 
 	describe( 'conversionApi', () => {
 		let spy, spyP, spyText, viewP, viewText, modelP, modelText, consumableMock, dispatcher,
-			spyNull, spyArray, viewDiv, viewNull, viewArray;
+			spyNull, spyArray, viewDiv, viewNull, viewArray, batch;
+
+		const modelDocument = new ModelDocument();
 
 		beforeEach( () => {
+			batch = modelDocument.batch();
+
 			spy = sinon.spy();
 			spyP = sinon.spy();
 			spyText = sinon.spy();
@@ -260,9 +268,10 @@ describe( 'ViewConversionDispatcher', () => {
 
 					expect( conversionApi.convertItem( viewP, consumableMock, data ) ).to.equal( modelP );
 					expect( conversionApi.convertItem( viewText, consumableMock, data ) ).to.equal( modelText );
+					expect( conversionApi.batch ).to.equal( batch );
 				} );
 
-				dispatcher.convert( new ViewDocumentFragment(), { foo: 'bar' } );
+				dispatcher.convert( new ViewDocumentFragment(), batch, { foo: 'bar' } );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyP.calledOnce ).to.be.true;
@@ -279,7 +288,7 @@ describe( 'ViewConversionDispatcher', () => {
 					expect( conversionApi.convertItem( viewNull ) ).to.equal( null );
 				} );
 
-				dispatcher.convert( new ViewDocumentFragment() );
+				dispatcher.convert( new ViewDocumentFragment(), batch );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyNull.calledOnce ).to.be.true;
@@ -297,7 +306,7 @@ describe( 'ViewConversionDispatcher', () => {
 					expect( conversionApi.convertItem( viewArray ) ).to.equal( null );
 				} );
 
-				dispatcher.convert( new ViewDocumentFragment() );
+				dispatcher.convert( new ViewDocumentFragment(), batch );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyArray.calledOnce ).to.be.true;
@@ -323,7 +332,7 @@ describe( 'ViewConversionDispatcher', () => {
 					expect( result.getChild( 1 ) ).to.equal( modelText );
 				} );
 
-				dispatcher.convert( new ViewDocumentFragment( [ viewP, viewText ] ), { foo: 'bar' } );
+				dispatcher.convert( new ViewDocumentFragment( [ viewP, viewText ] ), batch, { foo: 'bar' } );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyP.calledOnce ).to.be.true;
@@ -344,7 +353,7 @@ describe( 'ViewConversionDispatcher', () => {
 					expect( result.getChild( 1 ) ).to.equal( modelText );
 				} );
 
-				dispatcher.convert( new ViewDocumentFragment( [ viewArray, viewP, viewDiv, viewText, viewNull ] ), { foo: 'bar' } );
+				dispatcher.convert( new ViewDocumentFragment( [ viewArray, viewP, viewDiv, viewText, viewNull ] ), batch, { foo: 'bar' } );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyNull.calledOnce ).to.be.true;

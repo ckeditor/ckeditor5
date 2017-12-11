@@ -4,14 +4,12 @@
  */
 
 import ModelDocument from '../../src/model/document';
-import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
 import ModelTextProxy from '../../src/model/textproxy';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 import ModelWalker from '../../src/model/treewalker';
-import modelWriter from '../../src/model/writer';
 
 import ViewElement from '../../src/view/element';
 import ViewContainerElement from '../../src/view/containerelement';
@@ -40,12 +38,13 @@ import { convertToModelFragment, convertText } from '../../src/conversion/view-t
 import { createRangeOnElementOnly } from '../../tests/model/_utils/utils';
 
 describe( 'advanced-converters', () => {
-	let modelDoc, modelRoot, viewRoot, mapper, modelDispatcher, viewDispatcher;
+	let modelDoc, modelRoot, viewRoot, mapper, modelDispatcher, viewDispatcher, batch;
 
 	beforeEach( () => {
 		modelDoc = new ModelDocument();
 		modelRoot = modelDoc.createRoot();
 		viewRoot = new ViewContainerElement( 'div' );
+		batch = modelDoc.batch();
 
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
@@ -216,24 +215,18 @@ describe( 'advanced-converters', () => {
 				}
 			};
 
-			const viewImageConverter = function( evt, data, consumable ) {
+			const viewImageConverter = function( evt, data, consumable, conversionApi ) {
 				if ( consumable.consume( data.input, { name: true } ) ) {
-					const modelImage = new ModelElement( 'image' );
-
-					for ( const attributeKey of data.input.getAttributeKeys() ) {
-						modelImage.setAttribute( attributeKey, data.input.getAttribute( attributeKey ) );
-					}
-
-					data.output = modelImage;
+					data.output = conversionApi.batch.createElement( 'image', data.input.getAttributes() );
 				}
 			};
 
 			const viewFigcaptionConverter = function( evt, data, consumable, conversionApi ) {
 				if ( consumable.consume( data.input, { name: true } ) ) {
-					const modelCaption = new ModelElement( 'caption' );
+					const modelCaption = conversionApi.batch.createElement( 'caption' );
 					const children = conversionApi.convertChildren( data.input, consumable );
 
-					modelCaption.appendChildren( children );
+					conversionApi.batch.append( children, modelCaption );
 
 					data.output = modelCaption;
 				}
@@ -249,14 +242,14 @@ describe( 'advanced-converters', () => {
 		} );
 
 		it( 'should convert model images changes without caption to view', () => {
-			const modelElement = new ModelElement( 'image', { src: 'bar.jpg', title: 'bar' } );
-			modelRoot.appendChildren( modelElement );
+			const modelElement = batch.createElement( 'image', { src: 'bar.jpg', title: 'bar' } );
+			batch.append( modelElement, modelRoot );
 			modelDispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><img src="bar.jpg" title="bar"></img></div>' );
 
-			modelElement.setAttribute( 'src', 'new.jpg' );
-			modelElement.removeAttribute( 'title' );
+			batch.setAttribute( 'src', 'new.jpg', modelElement );
+			batch.removeAttribute( 'title', modelElement );
 			modelDispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'src', 'bar.jpg', 'new.jpg' );
 			modelDispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'title', 'bar', null );
 
@@ -286,7 +279,7 @@ describe( 'advanced-converters', () => {
 
 		it( 'should convert view image to model', () => {
 			const viewElement = new ViewContainerElement( 'img', { src: 'bar.jpg', title: 'bar' } );
-			const modelElement = viewDispatcher.convert( viewElement );
+			const modelElement = viewDispatcher.convert( viewElement, batch );
 
 			expect( modelToString( modelElement ) ).to.equal( '<image src="bar.jpg" title="bar"></image>' );
 		} );
@@ -300,7 +293,7 @@ describe( 'advanced-converters', () => {
 					new ViewContainerElement( 'figcaption', null, new ViewText( 'foobar' ) )
 				]
 			);
-			const modelElement = viewDispatcher.convert( viewElement );
+			const modelElement = viewDispatcher.convert( viewElement, batch );
 
 			expect( modelToString( modelElement ) ).to.equal( '<image src="bar.jpg" title="bar"><caption>foobar</caption></image>' );
 		} );
@@ -485,15 +478,16 @@ describe( 'advanced-converters', () => {
 			expect( viewToString( viewRoot ) ).to.equal( '<div><a href="foo.html" title="Foo title">foo</a></div>' );
 
 			// Let's change link's attributes.
-			modelWriter.setAttribute( range, 'linkHref', 'bar.html' );
-			modelWriter.setAttribute( range, 'linkTitle', 'Bar title' );
+			batch.setAttributes( {
+				linkHref: 'bar.html',
+				linkTitle: 'Bar title'
+			}, range );
 			modelDispatcher.convertAttribute( 'changeAttribute', range, 'linkHref', 'foo.html', 'bar.html' );
 			modelDispatcher.convertAttribute( 'changeAttribute', range, 'linkTitle', 'Foo title', 'Bar title' );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><a href="bar.html" title="Bar title">foo</a></div>' );
 
-			const removed = modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
-			modelDoc.graveyard.appendChildren( removed );
+			batch.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
 			modelDispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelRoot, 0 ),
 				ModelRange.createIn( modelDoc.graveyard )
@@ -504,13 +498,13 @@ describe( 'advanced-converters', () => {
 			range = ModelRange.createIn( modelRoot );
 
 			// Let's remove just one attribute.
-			modelWriter.removeAttribute( range, 'linkTitle' );
+			batch.removeAttribute( 'linkTitle', range );
 			modelDispatcher.convertAttribute( 'removeAttribute', range, 'linkTitle', 'Bar title', null );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><a href="bar.html">oo</a></div>' );
 
 			// Let's remove the other attribute.
-			modelWriter.removeAttribute( range, 'linkHref' );
+			batch.removeAttribute( 'linkHref', range );
 			modelDispatcher.convertAttribute( 'removeAttribute', range, 'linkHref', 'bar.html', null );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>oo</div>' );
@@ -519,7 +513,7 @@ describe( 'advanced-converters', () => {
 		it( 'should convert a view element to model', () => {
 			const viewElement = new ViewAttributeElement( 'a', { href: 'foo.html', title: 'Foo title' }, new ViewText( 'foo' ) );
 
-			const modelText = viewDispatcher.convert( viewElement ).getChild( 0 );
+			const modelText = viewDispatcher.convert( viewElement, batch ).getChild( 0 );
 
 			expect( modelText ).to.be.instanceof( ModelText );
 			expect( modelText.data ).to.equal( 'foo' );
@@ -590,7 +584,7 @@ describe( 'advanced-converters', () => {
 				]
 			);
 
-			const modelElement = viewDispatcher.convert( viewElement );
+			const modelElement = viewDispatcher.convert( viewElement, batch );
 
 			expect( modelToString( modelElement ) ).to.equal( '<quote linkHref="foo.html" linkTitle="Foo source">foo</quote>' );
 		} );
@@ -653,10 +647,7 @@ describe( 'advanced-converters', () => {
 			] )
 		] );
 
-		const model = viewDispatcher.convert( viewTable );
-		const modelFragment = new ModelDocumentFragment( model );
-
-		expect( modelToString( modelFragment ) )
+		expect( modelToString( viewDispatcher.convert( viewTable, batch ) ) )
 			.to.equal( '<paragraph>foo <$text linkHref="bar.html">bar</$text></paragraph><paragraph>abc</paragraph>' );
 	} );
 
@@ -755,7 +746,7 @@ describe( 'advanced-converters', () => {
 				] )
 			] );
 
-			const modelElement = viewDispatcher.convert( viewElement );
+			const modelElement = viewDispatcher.convert( viewElement, batch );
 
 			expect( modelToString( modelElement ) ).to.equal(
 				'<table cellpadding="5" cellspacing="5">' +

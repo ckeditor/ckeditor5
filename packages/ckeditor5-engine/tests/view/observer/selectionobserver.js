@@ -43,6 +43,7 @@ describe( 'SelectionObserver', () => {
 		domDocument.getSelection().removeAllRanges();
 
 		viewDocument.isFocused = true;
+		domMain.focus();
 
 		selectionObserver.enable();
 
@@ -147,7 +148,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.on( 'selectionChange', spy );
 
 		setTimeout( () => {
-			sinon.assert.calledOnce( spy );
+			sinon.assert.called( spy );
 			done();
 		}, 70 );
 
@@ -155,8 +156,7 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should warn and not enter infinite loop', () => {
-		// Selectionchange event is called twice per `changeDomSelection()` execution.
-		let counter = 35;
+		let counter = 70;
 
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
@@ -215,8 +215,6 @@ describe( 'SelectionObserver', () => {
 				clock.restore();
 			} );
 
-		// Selectionchange event is called twice per `changeDomSelection()` execution. We call it 25 times to get
-		// 50 events. Infinite loop counter is reset, so calling this method twice should not show any warning.
 		function doChanges() {
 			return new Promise( resolve => {
 				viewDocument.once( 'selectionChangeDone', () => {
@@ -224,7 +222,7 @@ describe( 'SelectionObserver', () => {
 					resolve();
 				} );
 
-				for ( let i = 0; i < 30; i++ ) {
+				for ( let i = 0; i < 50; i++ ) {
 					changeDomSelection();
 				}
 			} );
@@ -305,6 +303,9 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should re-render view if selections are similar if DOM selection is in incorrect place', done => {
 		const sel = domDocument.getSelection();
+		const domParagraph = domMain.childNodes[ 0 ];
+		const domText = domParagraph.childNodes[ 0 ];
+		const domUI = domParagraph.childNodes[ 1 ];
 
 		// Add rendering on selectionChange event to check this feature.
 		viewDocument.on( 'selectionChange', () => {
@@ -334,12 +335,22 @@ describe( 'SelectionObserver', () => {
 			// 3. Now, collapse selection in similar position, but in UI element.
 			// Current and new selection position are similar in view (but not equal!).
 			// Also add a spy to `viewDocument#render` to see if view will be re-rendered.
-			sel.collapse( domMain.childNodes[ 0 ].childNodes[ 1 ], 0 );
+			sel.collapse( domUI, 0 );
 			sinon.spy( viewDocument, 'render' );
+
+			// Some browsers like Safari won't allow to put selection inside empty ui element.
+			// In that situation selection should stay in correct place.
+			if ( sel.anchorNode !== domUI ) {
+				expect( sel.anchorNode ).to.equal( domText );
+				expect( sel.anchorOffset ).to.equal( 3 );
+				expect( sel.isCollapsed ).to.be.true;
+
+				done();
+			}
 		}, { priority: 'lowest' } );
 
 		// 1. Collapse in a text node, before ui element, and wait for async selectionchange to fire selection change handling.
-		sel.collapse( domMain.childNodes[ 0 ].childNodes[ 0 ], 3 );
+		sel.collapse( domText, 3 );
 	} );
 
 	function changeDomSelection() {
@@ -347,7 +358,6 @@ describe( 'SelectionObserver', () => {
 		const domFoo = domMain.childNodes[ 1 ].childNodes[ 0 ];
 		const offset = domSelection.anchorOffset;
 
-		domSelection.removeAllRanges();
 		domSelection.collapse( domFoo, offset == 2 ? 3 : 2 );
 	}
 } );

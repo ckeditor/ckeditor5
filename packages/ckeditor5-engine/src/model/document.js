@@ -37,7 +37,9 @@ const graveyardName = '$graveyard';
  * All changes in the document are done by {@link module:engine/model/operation/operation~Operation operations}. To create operations in
  * a simple way, use the {@link module:engine/model/batch~Batch} API, for example:
  *
- *		doc.batch().insert( position, nodes ).split( otherPosition );
+ *		const batch = doc.batch();
+ *		batch.insert( node, position );
+ *		batch.split( otherPosition );
  *
  * @see module:engine/model/document~Document#batch
  * @mixes module:utils/emittermixin~EmitterMixin
@@ -163,11 +165,11 @@ export default class Document {
 
 		const changes = operation._execute();
 
-		this.version++;
-
-		this.history.addDelta( operation.delta );
-
-		this.fire( 'change', operation.type, changes, operation.delta.batch, operation.delta.type );
+		if ( operation.isDocumentOperation ) {
+			this.version++;
+			this.history.addDelta( operation.delta );
+			this.fire( 'change', operation.type, changes, operation.delta.batch, operation.delta.type );
+		}
 	}
 
 	/**
@@ -419,7 +421,7 @@ export default class Document {
 	/**
 	 * Fired when document changes by applying an operation.
 	 *
-	 * There are 5 types of change:
+	 * There are a few types of change:
 	 *
 	 * * 'insert' when nodes are inserted,
 	 * * 'remove' when nodes are removed,
@@ -497,7 +499,7 @@ function* combineWalkers( backward, forward ) {
 
 			if ( !step.done ) {
 				done = false;
-				yield{
+				yield {
 					walker: backward,
 					value: step.value
 				};
@@ -509,7 +511,7 @@ function* combineWalkers( backward, forward ) {
 
 			if ( !step.done ) {
 				done = false;
-				yield{
+				yield {
 					walker: forward,
 					value: step.value
 				};

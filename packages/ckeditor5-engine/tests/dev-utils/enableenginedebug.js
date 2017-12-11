@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import enableEngineDebug from '../../src/dev-utils/enableenginedebug';
+import { default as enableEngineDebug, disableEngineDebug } from '../../src/dev-utils/enableenginedebug';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
@@ -13,6 +14,7 @@ import ModelText from '../../src/model/text';
 import ModelTextProxy from '../../src/model/textproxy';
 import ModelElement from '../../src/model/element';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
+import DetachOperation from '../../src/model/operation/detachoperation';
 import InsertOperation from '../../src/model/operation/insertoperation';
 import MarkerOperation from '../../src/model/operation/markeroperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
@@ -22,12 +24,13 @@ import RootAttributeOperation from '../../src/model/operation/rootattributeopera
 import RemoveOperation from '../../src/model/operation/removeoperation';
 import DeltaFactory from '../../src/model/delta/deltafactory';
 import Delta from '../../src/model/delta/delta';
-import { default as AttributeDelta, RootAttributeDelta } from '../../src/model/delta/attributedelta';
+import AttributeDelta from '../../src/model/delta/attributedelta';
 import InsertDelta from '../../src/model/delta/insertdelta';
 import MarkerDelta from '../../src/model/delta/markerdelta';
 import MergeDelta from '../../src/model/delta/mergedelta';
 import MoveDelta from '../../src/model/delta/movedelta';
 import RenameDelta from '../../src/model/delta/renamedelta';
+import RootAttributeDelta from '../../src/model/delta/rootattributedelta';
 import SplitDelta from '../../src/model/delta/splitdelta';
 import UnwrapDelta from '../../src/model/delta/unwrapdelta';
 import WrapDelta from '../../src/model/delta/wrapdelta';
@@ -41,10 +44,19 @@ import ViewContainerElement from '../../src/view/containerelement';
 import ViewText from '../../src/view/text';
 import ViewTextProxy from '../../src/view/textproxy';
 import ViewDocumentFragment from '../../src/view/documentfragment';
+import ViewElement from '../../src/view/element';
+
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+testUtils.createSinonSandbox();
 
 /* global document */
 
 describe( 'enableEngineDebug', () => {
+	afterEach( () => {
+		disableEngineDebug();
+	} );
+
 	it( 'should return plugin class', () => {
 		const result = enableEngineDebug();
 
@@ -57,6 +69,35 @@ describe( 'enableEngineDebug', () => {
 		const result = enableEngineDebug();
 
 		expect( result.prototype ).to.be.instanceof( Plugin );
+	} );
+} );
+
+describe( 'disableEngineDebug', () => {
+	it( 'restores modified stubs', () => {
+		expect( ModelPosition.prototype.log ).to.equal( undefined, 'Initial value (model/position)' );
+		expect( ModelElement.prototype.printTree ).to.equal( undefined, 'Initial value (model/element)' );
+		expect( Delta.prototype.log ).to.equal( undefined, 'Initial value (model/delta/delta)' );
+		expect( ViewElement.prototype.printTree ).to.equal( undefined, 'Initial value (view/element)' );
+		expect( ModelDocument.prototype.createReplayer ).to.equal( undefined, 'Initial value (model/document)' );
+		expect( Editor.prototype.logDocuments ).to.equal( undefined, 'Initial value (core~editor/editor)' );
+
+		enableEngineDebug();
+
+		expect( ModelPosition.prototype.log ).to.be.a( 'function', 'After enabling engine debug (model/position)' );
+		expect( ModelElement.prototype.printTree ).to.be.a( 'function', 'After enabling engine debug (model/element)' );
+		expect( Delta.prototype.log ).to.be.a( 'function', 'After enabling engine debug (model/delta/delta)' );
+		expect( ViewElement.prototype.printTree ).to.be.a( 'function', 'After enabling engine debug (view/element)' );
+		expect( ModelDocument.prototype.createReplayer ).to.be.a( 'function', 'After enabling engine debug (model/document)' );
+		expect( Editor.prototype.logDocuments ).to.be.a( 'function', 'After enabling engine debug (core~editor/editor)' );
+
+		disableEngineDebug();
+
+		expect( ModelPosition.prototype.log ).to.equal( undefined, 'After disabling engine debug (model/position)' );
+		expect( ModelElement.prototype.printTree ).to.equal( undefined, 'After disabling engine debug (model/element)' );
+		expect( Delta.prototype.log ).to.equal( undefined, 'After disabling engine debug (model/delta/delta)' );
+		expect( ViewElement.prototype.printTree ).to.equal( undefined, 'After disabling engine debug (view/element)' );
+		expect( ModelDocument.prototype.createReplayer ).to.equal( undefined, 'After disabling engine debug (model/document)' );
+		expect( Editor.prototype.logDocuments ).to.equal( undefined, 'After disabling engine debug (core~editor/editor)' );
 	} );
 } );
 
@@ -76,6 +117,10 @@ describe( 'debug tools', () => {
 		log = sinon.spy();
 		error = sinon.spy();
 		DebugPlugin = enableEngineDebug( { log, error } );
+	} );
+
+	after( () => {
+		disableEngineDebug();
 	} );
 
 	afterEach( () => {
@@ -204,6 +249,39 @@ describe( 'debug tools', () => {
 				const op = new AttributeOperation( ModelRange.createIn( modelRoot ), 'key', null, { foo: 'bar' }, 0 );
 
 				expect( op.toString() ).to.equal( 'AttributeOperation( 0 ): "key": null -> {"foo":"bar"}, main [ 0 ] - [ 6 ]' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'DetachOperation (text node)', () => {
+				const op = new DetachOperation( ModelPosition.createAt( modelRoot, 0 ), 3, 0 );
+
+				expect( op.toString() ).to.equal( 'DetachOperation( 0 ): #foo -> main [ 0 ] - [ 3 ]' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'DetachOperation (element)', () => {
+				const element = new ModelElement( 'element' );
+				modelRoot.insertChildren( 0, element );
+
+				const op = new DetachOperation( ModelPosition.createBefore( element ), 1, 0 );
+
+				expect( op.toString() ).to.equal( 'DetachOperation( 0 ): <element> -> main [ 0 ] - [ 1 ]' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'DetachOperation (multiple nodes)', () => {
+				const element = new ModelElement( 'element' );
+				modelRoot.insertChildren( 0, element );
+
+				const op = new DetachOperation( ModelPosition.createBefore( element ), 2, 0 );
+
+				expect( op.toString() ).to.equal( 'DetachOperation( 0 ): [ 2 ] -> main [ 0 ] - [ 2 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -1056,9 +1134,7 @@ describe( 'debug tools', () => {
 				const opB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
 				deltaB.addOperation( opB );
 
-				deltaTransform.defaultTransform = () => {
-					throw new Error();
-				};
+				testUtils.sinon.stub( deltaTransform, 'defaultTransform' ).throws( new Error() );
 
 				expect( () => deltaTransform.transform( deltaA, deltaB, { isStrong: true } ) ).to.throw( Error );
 				expect( error.calledWith( deltaA.toString() + ' (important)' ) ).to.be.true;
@@ -1074,9 +1150,7 @@ describe( 'debug tools', () => {
 				const opB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
 				deltaB.addOperation( opB );
 
-				deltaTransform.defaultTransform = () => {
-					throw new Error();
-				};
+				testUtils.sinon.stub( deltaTransform, 'defaultTransform' ).throws( new Error() );
 
 				expect( () => deltaTransform.transform( deltaA, deltaB, { isStrong: false } ) ).to.throw( Error );
 				expect( error.calledWith( deltaA.toString() ) ).to.be.true;
