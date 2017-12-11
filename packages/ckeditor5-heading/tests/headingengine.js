@@ -85,15 +85,10 @@ describe( 'HeadingEngine', () => {
 							{ model: 'paragraph', title: 'paragraph' },
 							{
 								model: 'heading1',
-								view: {
-									from: [
-										{ name: 'h1' },
-										{ name: 'p', attribute: { 'data-heading': 'h1' }, priority: 'high' }
-									],
-									to: {
-										name: 'h1'
-									}
-								},
+								view: 'h1',
+								acceptsAlso: [
+									{ name: 'p', attribute: { 'data-heading': 'h1' }, priority: 'high' }
+								],
 								title: 'User H1'
 							}
 						]
@@ -172,3 +167,4 @@ describe( 'HeadingEngine', () => {
 		} );
 	} );
 } );
+

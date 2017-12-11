@@ -86,10 +86,10 @@ export default class HeadingEngine extends Plugin {
 				editor.document.schema.registerItem( option.model, '$block' );
 
 				// Build converter from model to view for data and editing pipelines.
-				modelElementToView( option.model, option.view, [ data.modelToView, editing.modelToView ] );
+				modelElementToView( option, [ data.modelToView, editing.modelToView ] );
 
 				// Build converter from view to model for data pipeline.
-				viewToModelElement( option.model, option.view, [ data.viewToModel ] );
+				viewToModelElement( option, [ data.viewToModel ] );
 
 				// Register the heading command for this option.
 				editor.commands.add( option.model, new HeadingCommand( editor, option.model ) );
