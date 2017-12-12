@@ -9,7 +9,7 @@ import { defineConverter, parseDefinition } from './utils';
 
 /**
  * @param {String} attributeName
- * @param {module:engine/view/viewelementdefinition~ViewElementDefinition} definition
+ * @param {} definition Converter definition
  * @param dispatchers
  */
 export function modelAttributeToView( attributeName, definition, dispatchers ) {
