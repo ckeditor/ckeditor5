@@ -110,7 +110,7 @@ export default class ModelConversionDispatcher {
 	/**
 	 * Creates a `ModelConversionDispatcher` that operates using passed API.
 	 *
-	 * @param {module:engine/model/document~Document} model Data model.
+	 * @param {module:engine/model/model~Model} model Data model.
 	 * @param {Object} [conversionApi] Interface passed by dispatcher to the events callbacks.
 	 */
 	constructor( model, conversionApi = {} ) {
@@ -118,7 +118,7 @@ export default class ModelConversionDispatcher {
 		 * Data model instance bound with this dispatcher.
 		 *
 		 * @private
-		 * @member {module:engine/model/document~Document}
+		 * @member {module:engine/model/model~Model}
 		 */
 		this._model = model;
 

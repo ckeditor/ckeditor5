@@ -69,7 +69,7 @@ getData._stringify = stringify;
 /**
  * Sets the contents of the {@link module:engine/model/document~Document Document} provided as HTML-like string.
  *
- * **Note:** Remember to register elements in {@link module:engine/model/document~Document#schema document's schema} before inserting them.
+ * **Note:** Remember to register elements in {@link module:engine/model/model~Model#schema model's schema} before inserting them.
  *
  * **Note:** To create {@link module:engine/model/text~Text text} node witch containing attributes use:
  *

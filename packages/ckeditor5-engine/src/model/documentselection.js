@@ -52,7 +52,7 @@ export default class DocumentSelection extends Selection {
 	 * Creates an empty live selection for given {@link module:engine/model/document~Document}.
 	 *
 	 * @param {module:engine/model/document~Document} document Document which owns this selection.
-	 * @param {module:engine/model/model~Model} model
+	 * @param {module:engine/model/model~Model} model Data model.
 	 */
 	constructor( document, model ) {
 		super();

@@ -17,7 +17,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * **Note:** If a node is detached from the model tree, you can manipulate it using it's API.
  * However, it is **very important** that nodes already attached to model tree should be only changed through
- * {@link module:engine/model/document~Document#batch Batch API}.
+ * {@link module:engine/model/writer~Writer Writer API}.
  *
  * Changes done by `Node` methods, like {@link module:engine/model/element~Element#insertChildren insertChildren} or
  * {@link module:engine/model/node~Node#setAttribute setAttribute}
