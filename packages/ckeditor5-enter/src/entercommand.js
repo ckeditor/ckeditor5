@@ -24,7 +24,6 @@ export default class EnterCommand extends Command {
 
 		model.change( writer => {
 			enterBlock( this.editor.data, writer, doc.selection, model.schema );
-			// @TODO This event is fired mainly for HeadingFeature this should be replace by heading post-fixer in the future.
 			this.fire( 'afterExecute', { writer } );
 		} );
 	}
