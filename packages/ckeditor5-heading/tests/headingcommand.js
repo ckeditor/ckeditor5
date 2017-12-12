@@ -16,14 +16,15 @@ const options = [
 ];
 
 describe( 'HeadingCommand', () => {
-	let editor, document, commands, root, schema;
+	let editor, model, document, commands, root, schema;
 
 	beforeEach( () => {
 		return ModelTestEditor.create().then( newEditor => {
 			editor = newEditor;
-			document = editor.document;
+			model = editor.model;
+			document = model.document;
 			commands = {};
-			schema = document.schema;
+			schema = model.schema;
 
 			editor.commands.add( 'paragraph', new ParagraphCommand( editor ) );
 			schema.registerItem( 'paragraph', '$block' );
@@ -60,7 +61,7 @@ describe( 'HeadingCommand', () => {
 
 		function test( { modelElement } ) {
 			it( `equals ${ modelElement } when collapsed selection is placed inside ${ modelElement } element`, () => {
-				setData( document, `<${ modelElement }>foobar</${ modelElement }>` );
+				setData( model, `<${ modelElement }>foobar</${ modelElement }>` );
 				const element = root.getChild( 0 );
 				document.selection.addRange( Range.createFromParentsAndOffsets( element, 3, element, 3 ) );
 
@@ -68,16 +69,16 @@ describe( 'HeadingCommand', () => {
 			} );
 
 			it( 'equals false if inside to non-block element', () => {
-				setData( document, '<notBlock>[foo]</notBlock>' );
+				setData( model, '<notBlock>[foo]</notBlock>' );
 
 				expect( commands[ modelElement ].value ).to.be.false;
 			} );
 
 			it( `equals false if moved from ${ modelElement } to non-block element`, () => {
-				setData( document, `<${ modelElement }>[foo]</${ modelElement }><notBlock>foo</notBlock>` );
+				setData( model, `<${ modelElement }>[foo]</${ modelElement }><notBlock>foo</notBlock>` );
 				const element = document.getRoot().getChild( 1 );
 
-				document.enqueueChanges( () => {
+				model.change( () => {
 					document.selection.setRanges( [ Range.createIn( element ) ] );
 				} );
 
@@ -86,10 +87,10 @@ describe( 'HeadingCommand', () => {
 
 			it( 'should be refreshed after calling refresh()', () => {
 				const command = commands[ modelElement ];
-				setData( document, `<${ modelElement }>[foo]</${ modelElement }><notBlock>foo</notBlock>` );
+				setData( model, `<${ modelElement }>[foo]</${ modelElement }><notBlock>foo</notBlock>` );
 				const element = document.getRoot().getChild( 1 );
 
-				// Purposely not putting it in `document.enqueueChanges` to update command manually.
+				// Purposely not putting it in `model.change` to update command manually.
 				document.selection.setRanges( [ Range.createIn( element ) ] );
 
 				expect( command.value ).to.be.true;
@@ -103,24 +104,24 @@ describe( 'HeadingCommand', () => {
 		it( 'should update value after execution', () => {
 			const command = commands.heading1;
 
-			setData( document, '<paragraph>[]</paragraph>' );
+			setData( model, '<paragraph>[]</paragraph>' );
 			command.execute();
 
-			expect( getData( document ) ).to.equal( '<heading1>[]</heading1>' );
+			expect( getData( model ) ).to.equal( '<heading1>[]</heading1>' );
 			expect( command.value ).to.be.true;
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-heading/issues/73
 		it( 'should not rename blocks which cannot become headings', () => {
-			document.schema.registerItem( 'restricted' );
-			document.schema.allow( { name: 'restricted', inside: '$root' } );
-			document.schema.disallow( { name: 'heading1', inside: 'restricted' } );
+			schema.registerItem( 'restricted' );
+			schema.allow( { name: 'restricted', inside: '$root' } );
+			schema.disallow( { name: 'heading1', inside: 'restricted' } );
 
-			document.schema.registerItem( 'fooBlock', '$block' );
-			document.schema.allow( { name: 'fooBlock', inside: 'restricted' } );
+			schema.registerItem( 'fooBlock', '$block' );
+			schema.allow( { name: 'fooBlock', inside: 'restricted' } );
 
 			setData(
-				document,
+				model,
 				'<paragraph>a[bc</paragraph>' +
 				'<restricted><fooBlock></fooBlock></restricted>' +
 				'<paragraph>de]f</paragraph>'
@@ -128,25 +129,24 @@ describe( 'HeadingCommand', () => {
 
 			commands.heading1.execute();
 
-			expect( getData( document ) ).to.equal(
+			expect( getData( model ) ).to.equal(
 				'<heading1>a[bc</heading1>' +
 				'<restricted><fooBlock></fooBlock></restricted>' +
 				'<heading1>de]f</heading1>'
 			);
 		} );
 
-		describe( 'custom options', () => {
-			it( 'should use provided batch', () => {
-				const batch = editor.document.batch();
-				const command = commands.heading1;
+		it( 'should use parent batch', () => {
+			const command = commands.heading1;
 
-				setData( document, '<paragraph>foo[]bar</paragraph>' );
+			setData( model, '<paragraph>foo[]bar</paragraph>' );
 
-				expect( batch.deltas.length ).to.equal( 0 );
+			model.change( writer => {
+				expect( writer.batch.deltas.length ).to.equal( 0 );
 
-				command.execute( { batch } );
+				command.execute();
 
-				expect( batch.deltas.length ).to.be.above( 0 );
+				expect( writer.batch.deltas.length ).to.be.above( 0 );
 			} );
 		} );
 
@@ -159,28 +159,28 @@ describe( 'HeadingCommand', () => {
 			}
 
 			it( 'does nothing when executed with already applied option', () => {
-				setData( document, '<heading1>foo[]bar</heading1>' );
+				setData( model, '<heading1>foo[]bar</heading1>' );
 
 				commands.heading1.execute();
-				expect( getData( document ) ).to.equal( '<heading1>foo[]bar</heading1>' );
+				expect( getData( model ) ).to.equal( '<heading1>foo[]bar</heading1>' );
 			} );
 
 			it( 'converts topmost blocks', () => {
 				schema.registerItem( 'inlineImage', '$inline' );
 				schema.allow( { name: '$text', inside: 'inlineImage' } );
 
-				setData( document, '<paragraph><inlineImage>foo[]</inlineImage>bar</paragraph>' );
+				setData( model, '<paragraph><inlineImage>foo[]</inlineImage>bar</paragraph>' );
 				commands.heading1.execute();
 
-				expect( getData( document ) ).to.equal( '<heading1><inlineImage>foo[]</inlineImage>bar</heading1>' );
+				expect( getData( model ) ).to.equal( '<heading1><inlineImage>foo[]</inlineImage>bar</heading1>' );
 			} );
 
 			function test( from, to ) {
 				it( `converts ${ from.modelElement } to ${ to.modelElement } on collapsed selection`, () => {
-					setData( document, `<${ from.modelElement }>foo[]bar</${ from.modelElement }>` );
+					setData( model, `<${ from.modelElement }>foo[]bar</${ from.modelElement }>` );
 					commands[ to.modelElement ].execute();
 
-					expect( getData( document ) ).to.equal( `<${ to.modelElement }>foo[]bar</${ to.modelElement }>` );
+					expect( getData( model ) ).to.equal( `<${ to.modelElement }>foo[]bar</${ to.modelElement }>` );
 				} );
 			}
 		} );
@@ -194,29 +194,29 @@ describe( 'HeadingCommand', () => {
 			}
 
 			it( 'converts all elements where selection is applied', () => {
-				setData( document, '<heading1>foo[</heading1><heading2>bar</heading2><heading3>baz]</heading3>' );
+				setData( model, '<heading1>foo[</heading1><heading2>bar</heading2><heading3>baz]</heading3>' );
 
 				commands.heading3.execute();
 
-				expect( getData( document ) ).to.equal(
+				expect( getData( model ) ).to.equal(
 					'<heading3>foo[</heading3><heading3>bar</heading3><heading3>baz]</heading3>'
 				);
 			} );
 
 			it( 'does nothing to the elements with same option (#1)', () => {
-				setData( document, '<heading1>[foo</heading1><heading1>bar]</heading1>' );
+				setData( model, '<heading1>[foo</heading1><heading1>bar]</heading1>' );
 				commands.heading1.execute();
 
-				expect( getData( document ) ).to.equal(
+				expect( getData( model ) ).to.equal(
 					'<heading1>[foo</heading1><heading1>bar]</heading1>'
 				);
 			} );
 
 			it( 'does nothing to the elements with same option (#2)', () => {
-				setData( document, '<heading1>[foo</heading1><heading1>bar</heading1><heading2>baz]</heading2>' );
+				setData( model, '<heading1>[foo</heading1><heading1>bar</heading1><heading2>baz]</heading2>' );
 				commands.heading1.execute();
 
-				expect( getData( document ) ).to.equal(
+				expect( getData( model ) ).to.equal(
 					'<heading1>[foo</heading1><heading1>bar</heading1><heading1>baz]</heading1>'
 				);
 			} );
@@ -224,13 +224,13 @@ describe( 'HeadingCommand', () => {
 			function test( { modelElement: fromElement }, { modelElement: toElement } ) {
 				it( `converts ${ fromElement } to ${ toElement } on non-collapsed selection`, () => {
 					setData(
-						document,
+						model,
 						`<${ fromElement }>foo[bar</${ fromElement }><${ fromElement }>baz]qux</${ fromElement }>`
 					);
 
 					commands[ toElement ].execute();
 
-					expect( getData( document ) ).to.equal(
+					expect( getData( model ) ).to.equal(
 						`<${ toElement }>foo[bar</${ toElement }><${ toElement }>baz]qux</${ toElement }>`
 					);
 				} );
@@ -252,19 +252,19 @@ describe( 'HeadingCommand', () => {
 
 			describe( `${ modelElement } command`, () => {
 				it( 'should be enabled when inside another block', () => {
-					setData( document, '<paragraph>f{}oo</paragraph>' );
+					setData( model, '<paragraph>f{}oo</paragraph>' );
 
 					expect( command.isEnabled ).to.be.true;
 				} );
 
 				it( 'should be disabled if inside non-block', () => {
-					setData( document, '<notBlock>f{}oo</notBlock>' );
+					setData( model, '<notBlock>f{}oo</notBlock>' );
 
 					expect( command.isEnabled ).to.be.false;
 				} );
 
 				it( 'should be disabled if selection is placed on non-block', () => {
-					setData( document, '[<notBlock>foo</notBlock>]' );
+					setData( model, '[<notBlock>foo</notBlock>]' );
 
 					expect( command.isEnabled ).to.be.false;
 				} );

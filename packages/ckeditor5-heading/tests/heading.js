@@ -54,7 +54,7 @@ describe( 'Heading', () => {
 				dropdown = editor.ui.componentFactory.create( 'headings' );
 
 				// Set data so the commands will be enabled.
-				setData( editor.document, '<paragraph>f{}oo</paragraph>' );
+				setData( editor.model, '<paragraph>f{}oo</paragraph>' );
 			} );
 	} );
 
@@ -262,7 +262,7 @@ describe( 'Heading', () => {
 			it( 'reflects the #value of the commands', () => {
 				const listView = dropdown.listView;
 
-				setData( editor.document, '<heading2>f{}oo</heading2>' );
+				setData( editor.model, '<heading2>f{}oo</heading2>' );
 
 				expect( listView.items.map( item => item.isActive ) ).to.deep.equal( [
 					false,
