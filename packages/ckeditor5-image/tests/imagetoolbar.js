@@ -17,7 +17,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageToolbar', () => {
-	let editor, doc, editingView, plugin, toolbar, balloon, editorElement;
+	let editor, model, doc, editingView, plugin, toolbar, balloon, editorElement;
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -32,7 +32,8 @@ describe( 'ImageToolbar', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
+				model = newEditor.model;
+				doc = model.document;
 				plugin = editor.plugins.get( ImageToolbar );
 				toolbar = plugin._toolbar;
 				editingView = editor.editing.view;
@@ -61,7 +62,7 @@ describe( 'ImageToolbar', () => {
 				expect( editor.plugins.get( ImageToolbar )._toolbar ).to.be.undefined;
 
 				editorElement.remove();
-				editor.destroy();
+				return editor.destroy();
 			} );
 	} );
 
@@ -76,7 +77,7 @@ describe( 'ImageToolbar', () => {
 
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( doc, '[<image src=""></image>]' );
+			setData( model, '[<image src=""></image>]' );
 
 			expect( toolbar.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
 
@@ -91,7 +92,7 @@ describe( 'ImageToolbar', () => {
 		it( 'should show the toolbar when the editor gains focus and the image is selected', () => {
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( doc, '[<image src=""></image>]' );
+			setData( model, '[<image src=""></image>]' );
 
 			editor.ui.focusTracker.isFocused = false;
 			expect( balloon.visibleView ).to.be.null;
@@ -103,7 +104,7 @@ describe( 'ImageToolbar', () => {
 		it( 'should hide the toolbar when the editor loses focus and the image is selected', () => {
 			editor.ui.focusTracker.isFocused = false;
 
-			setData( doc, '[<image src=""></image>]' );
+			setData( model, '[<image src=""></image>]' );
 
 			editor.ui.focusTracker.isFocused = true;
 			expect( balloon.visibleView ).to.equal( toolbar );
@@ -119,14 +120,14 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should show the toolbar on render when the image is selected', () => {
-			setData( doc, '<paragraph>[foo]</paragraph><image src=""></image>' );
+			setData( model, '<paragraph>[foo]</paragraph><image src=""></image>' );
 
 			expect( balloon.visibleView ).to.be.null;
 
 			editingView.fire( 'render' );
 			expect( balloon.visibleView ).to.be.null;
 
-			doc.enqueueChanges( () => {
+			model.change( () => {
 				// Select the [<image></image>]
 				doc.selection.setRanges( [
 					Range.createOn( doc.getRoot().getChild( 1 ) )
@@ -142,7 +143,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should not engage when the toolbar is in the balloon yet invisible', () => {
-			setData( doc, '[<image src=""></image>]' );
+			setData( model, '[<image src=""></image>]' );
 			expect( balloon.visibleView ).to.equal( toolbar );
 
 			const lastView = new View();
@@ -156,11 +157,11 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should hide the toolbar on render if the image is de–selected', () => {
-			setData( doc, '<paragraph>foo</paragraph>[<image src=""></image>]' );
+			setData( model, '<paragraph>foo</paragraph>[<image src=""></image>]' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
-			doc.enqueueChanges( () => {
+			model.change( () => {
 				// Select the <paragraph>[...]</paragraph>
 				doc.selection.setRanges( [
 					Range.createIn( doc.getRoot().getChild( 0 ) )

@@ -46,7 +46,7 @@ describe( 'Image integration', () => {
 
 		it( 'should prevent the ContextualToolbar from being displayed when an image is selected', () => {
 			// When image is selected along with text.
-			setModelData( newEditor.document, '<paragraph>fo[o</paragraph><image alt="alt text" src="foo.png"></image>]' );
+			setModelData( newEditor.model, '<paragraph>fo[o</paragraph><image alt="alt text" src="foo.png"></image>]' );
 
 			contextualToolbar.show();
 
@@ -54,7 +54,7 @@ describe( 'Image integration', () => {
 			expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 
 			// When only image is selected.
-			setModelData( newEditor.document, '<paragraph>foo</paragraph>[<image alt="alt text" src="foo.png"></image>]' );
+			setModelData( newEditor.model, '<paragraph>foo</paragraph>[<image alt="alt text" src="foo.png"></image>]' );
 
 			contextualToolbar.show();
 
@@ -68,7 +68,7 @@ describe( 'Image integration', () => {
 			const normalPrioritySpy = sinon.spy();
 
 			// Select an image
-			setModelData( newEditor.document, '<paragraph>foo</paragraph>[<image alt="alt text" src="foo.png"></image>]' );
+			setModelData( newEditor.model, '<paragraph>foo</paragraph>[<image alt="alt text" src="foo.png"></image>]' );
 
 			newEditor.listenTo( contextualToolbar, 'show', highestPrioritySpy, { priority: 'highest' } );
 			newEditor.listenTo( contextualToolbar, 'show', highPrioritySpy, { priority: 'high' } );

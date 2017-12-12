@@ -12,7 +12,7 @@ import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/build
 import { isImageWidget } from '../../src/image/utils';
 
 describe( 'ImageEngine', () => {
-	let editor, document, viewDocument;
+	let editor, model, document, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -21,7 +21,8 @@ describe( 'ImageEngine', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				document = editor.document;
+				model = editor.model;
+				document = model.document;
 				viewDocument = editor.editing.view;
 			} );
 	} );
@@ -31,26 +32,26 @@ describe( 'ImageEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( document.schema.check( { name: 'image', attributes: [ 'src', 'alt' ], inside: '$root' } ) ).to.be.true;
-		expect( document.schema.objects.has( 'image' ) ).to.be.true;
+		expect( model.schema.check( { name: 'image', attributes: [ 'src', 'alt' ], inside: '$root' } ) ).to.be.true;
+		expect( model.schema.objects.has( 'image' ) ).to.be.true;
 	} );
 
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
+				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img alt="alt text" src="foo.png"></figure>' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
-				setModelData( document, '<image src="foo.png"></image>' );
+				setModelData( model, '<image src="foo.png"></image>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
 			} );
 
 			it( 'should convert srcset attribute to srcset and sizes attribute', () => {
-				setModelData( document,
+				setModelData( model,
 					'<image src="foo.png" alt="alt text" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></image>'
 				);
 
@@ -62,7 +63,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should convert srcset attribute to width, srcset and add sizes attribute', () => {
-				setModelData( document,
+				setModelData( model,
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +
@@ -86,7 +87,7 @@ describe( 'ImageEngine', () => {
 					consumable.consume( modelImage, consumableType );
 				}, { priority: 'high' } );
 
-				setModelData( document,
+				setModelData( model,
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +
@@ -102,7 +103,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert srcset attribute if has wrong data', () => {
-				setModelData( document,
+				setModelData( model,
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +
@@ -110,10 +111,8 @@ describe( 'ImageEngine', () => {
 					'</image>' );
 
 				const image = document.getRoot().getChild( 0 );
-				document.enqueueChanges( () => {
-					const batch = document.batch();
-
-					batch.removeAttribute( 'srcset', image );
+				model.change( writer => {
+					writer.removeAttribute( 'srcset', image );
 				} );
 
 				expect( editor.getData() ).to.equal(
@@ -128,42 +127,42 @@ describe( 'ImageEngine', () => {
 			it( 'should convert image figure', () => {
 				editor.setData( '<figure class="image"><img src="foo.png" alt="alt text" /></figure>' );
 
-				expect( getModelData( document, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<image alt="alt text" src="foo.png"></image>' );
 			} );
 
 			it( 'should not convert if there is no image class', () => {
 				editor.setData( '<figure class="quote">My quote</figure>' );
 
-				expect( getModelData( document, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
 			} );
 
 			it( 'should not convert if there is no img inside #1', () => {
 				editor.setData( '<figure class="image"></figure>' );
 
-				expect( getModelData( document, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
 			} );
 
 			it( 'should not convert if there is no img inside #2', () => {
 				editor.setData( '<figure class="image">test</figure>' );
 
-				expect( getModelData( document, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
 				editor.setData( '<figure class="image"><img src="foo.png" /></figure>' );
 
-				expect( getModelData( document, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<image src="foo.png"></image>' );
 			} );
 
 			it( 'should not convert without src attribute', () => {
 				editor.setData( '<figure class="image"><img alt="alt text" /></figure>' );
 
-				expect( getModelData( document, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
 			} );
 
@@ -171,15 +170,15 @@ describe( 'ImageEngine', () => {
 				const data = editor.data;
 				const editing = editor.editing;
 
-				document.schema.registerItem( 'div', '$block' );
-				document.schema.disallow( { name: 'image', inside: '$root', attributes: 'src' } );
+				model.schema.registerItem( 'div', '$block' );
+				model.schema.disallow( { name: 'image', inside: '$root', attributes: 'src' } );
 
 				buildModelConverter().for( data.modelToView, editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 				buildViewConverter().for( data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 
 				editor.setData( '<div><figure class="image"><img src="foo.png" alt="alt text" /></figure></div>' );
 
-				expect( getModelData( document, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div></div>' );
 			} );
 
@@ -191,7 +190,7 @@ describe( 'ImageEngine', () => {
 
 				editor.setData( '<figure class="image"><img src="foo.png" alt="alt text" /></figure>' );
 
-				expect( getModelData( document, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
 			} );
 
@@ -203,7 +202,7 @@ describe( 'ImageEngine', () => {
 
 				editor.setData( '<figure class="image"><img src="foo.png" alt="alt text" /></figure>' );
 
-				expect( getModelData( document, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
 			} );
 
@@ -219,7 +218,7 @@ describe( 'ImageEngine', () => {
 			it( 'should convert bare img element', () => {
 				editor.setData( '<img src="foo.png" alt="alt text" />' );
 
-				expect( getModelData( document, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<image alt="alt text" src="foo.png"></image>' );
 			} );
 
@@ -227,25 +226,25 @@ describe( 'ImageEngine', () => {
 				const data = editor.data;
 				const editing = editor.editing;
 
-				document.schema.registerItem( 'div', '$block' );
-				document.schema.allow( { name: 'div', attributes: 'alt', inside: '$root' } );
+				model.schema.registerItem( 'div', '$block' );
+				model.schema.allow( { name: 'div', attributes: 'alt', inside: '$root' } );
 
 				buildModelConverter().for( data.modelToView, editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 				buildViewConverter().for( data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 
 				editor.setData( '<div alt="foo"></div>' );
 
-				expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<div></div>' );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<div></div>' );
 			} );
 
 			it( 'should handle figure with two images', () => {
-				document.schema.allow( { name: '$text', inside: 'image' } );
+				model.schema.allow( { name: '$text', inside: 'image' } );
 
 				editor.setData( '<figure class="image"><img src="foo.jpg" /><img src="bar.jpg" />abc</figure>' );
 
 				// The foo.jpg image is properly converted using figure converter. The other image was tried to
 				// be added as a child of foo.jpg and then was autohoisted.
-				expect( getModelData( document, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<image src="bar.jpg"></image><image src="foo.jpg">abc</image>' );
 			} );
 
@@ -256,7 +255,7 @@ describe( 'ImageEngine', () => {
 					'</figure>'
 				);
 
-				expect( getModelData( document, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<image alt="alt text" src="foo.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>' );
 			} );
 
@@ -267,7 +266,7 @@ describe( 'ImageEngine', () => {
 					'</figure>'
 				);
 
-				expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<image alt="alt text" src="foo.png" srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}"></image>' );
 			} );
 
@@ -278,13 +277,13 @@ describe( 'ImageEngine', () => {
 					'</figure>'
 				);
 
-				expect( getModelData( document, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<image alt="alt text" src="foo.png" srcset="{"data":"small.png 148w, big.png 1024w"}"></image>' );
 			} );
 
 			describe( 'should autohoist images', () => {
 				beforeEach( () => {
-					document.schema.registerItem( 'div', '$block' );
+					model.schema.registerItem( 'div', '$block' );
 
 					buildModelConverter()
 						.for( editor.data.modelToView, editor.editing.modelToView )
@@ -300,7 +299,7 @@ describe( 'ImageEngine', () => {
 				it( 'image between non-hoisted elements', () => {
 					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />bar</div>' );
 
-					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo</div>' +
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<div>bar</div>'
@@ -310,7 +309,7 @@ describe( 'ImageEngine', () => {
 				it( 'multiple images', () => {
 					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />ba<img src="foo.jpg" alt="foo" />r</div>' );
 
-					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo</div>' +
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<div>ba</div>' +
@@ -322,7 +321,7 @@ describe( 'ImageEngine', () => {
 				it( 'images on borders of parent', () => {
 					editor.setData( '<div><img src="foo.jpg" alt="foo" />foobar<img src="foo.jpg" alt="foo" /></div>' );
 
-					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<div>foobar</div>' +
 						'<image alt="foo" src="foo.jpg"></image>'
@@ -332,18 +331,18 @@ describe( 'ImageEngine', () => {
 				it( 'images are only content of parent', () => {
 					editor.setData( '<div><img src="foo.jpg" alt="foo" /><img src="foo.jpg" alt="foo" /></div>' );
 
-					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<image alt="foo" src="foo.jpg"></image>' +
 						'<image alt="foo" src="foo.jpg"></image>'
 					);
 				} );
 
 				it( 'deep autohoisting #1', () => {
-					document.schema.allow( { name: 'div', inside: 'div' } );
+					model.schema.allow( { name: 'div', inside: 'div' } );
 
 					editor.setData( '<div>foo<div>xx<img src="foo.jpg" alt="foo" /></div>bar</div>' );
 
-					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>' +
 							'foo' +
 							'<div>' +
@@ -356,7 +355,7 @@ describe( 'ImageEngine', () => {
 				} );
 
 				it( 'deep autohoisting #2', () => {
-					document.schema.allow( { name: 'div', inside: 'div' } );
+					model.schema.allow( { name: 'div', inside: 'div' } );
 
 					editor.setData(
 						'<div>x</div>' +
@@ -364,15 +363,15 @@ describe( 'ImageEngine', () => {
 						'<div>y</div>'
 					);
 
-					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>x</div><image alt="foo" src="foo.jpg"></image><div>y</div>'
 					);
 				} );
 
 				it( 'should not break a limiting element', () => {
-					document.schema.registerItem( 'limit', '$block' );
-					document.schema.allow( { name: 'div', inside: 'limit' } );
-					document.schema.limits.add( 'limit' );
+					model.schema.registerItem( 'limit', '$block' );
+					model.schema.allow( { name: 'div', inside: 'limit' } );
+					model.schema.limits.add( 'limit' );
 
 					buildModelConverter()
 						.for( editor.data.modelToView, editor.editing.modelToView ).fromElement( 'limit' ).toElement( 'limit' );
@@ -382,13 +381,13 @@ describe( 'ImageEngine', () => {
 					editor.setData( '<limit><div>foo<img src="foo.jpg" alt="foo" />bar</div></limit>' );
 
 					// <limit> element does not have converters so it is not converted.
-					expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<limit><div>foobar</div></limit>' );
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<limit><div>foobar</div></limit>' );
 				} );
 
 				it( 'should not convert and autohoist image element without src attribute (which is not allowed by schema)', () => {
 					editor.setData( '<div>foo<img alt="foo" />bar</div>' );
 
-					expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<div>foobar</div>' );
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<div>foobar</div>' );
 				} );
 			} );
 		} );
@@ -397,7 +396,7 @@ describe( 'ImageEngine', () => {
 	describe( 'conversion in editing pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
+				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>'
@@ -405,7 +404,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'converted element should be widgetized', () => {
-				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
+				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
 				const figure = viewDocument.getRoot().getChild( 0 );
 
 				expect( figure.name ).to.equal( 'figure' );
@@ -413,13 +412,11 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should convert attribute change', () => {
-				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
+				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
 				const image = document.getRoot().getChild( 0 );
 
-				document.enqueueChanges( () => {
-					const batch = document.batch();
-
-					batch.setAttribute( 'alt', 'new text', image );
+				model.change( writer => {
+					writer.setAttribute( 'alt', 'new text', image );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -428,13 +425,11 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should convert attribute removal', () => {
-				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
+				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
 				const image = document.getRoot().getChild( 0 );
 
-				document.enqueueChanges( () => {
-					const batch = document.batch();
-
-					batch.removeAttribute( 'alt', image );
+				model.change( writer => {
+					writer.removeAttribute( 'alt', image );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) )
@@ -442,17 +437,15 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert change if is already consumed', () => {
-				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
+				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
 				const image = document.getRoot().getChild( 0 );
 
 				editor.editing.modelToView.on( 'removeAttribute:alt:image', ( evt, data, consumable ) => {
 					consumable.consume( data.item, 'removeAttribute:alt' );
 				}, { priority: 'high' } );
 
-				document.enqueueChanges( () => {
-					const batch = document.batch();
-
-					batch.removeAttribute( 'alt', image );
+				model.change( writer => {
+					writer.removeAttribute( 'alt', image );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -461,7 +454,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should convert srcset attribute to srcset and sizes', () => {
-				setModelData( document,
+				setModelData( model,
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +
@@ -476,7 +469,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert srcset attribute if has wrong data', () => {
-				setModelData( document,
+				setModelData( model,
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +
@@ -484,10 +477,8 @@ describe( 'ImageEngine', () => {
 					'</image>' );
 
 				const image = document.getRoot().getChild( 0 );
-				document.enqueueChanges( () => {
-					const batch = document.batch();
-
-					batch.removeAttribute( 'srcset', image );
+				model.change( writer => {
+					writer.removeAttribute( 'srcset', image );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -498,7 +489,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should convert srcset attribute to srcset, width and sizes', () => {
-				setModelData( document,
+				setModelData( model,
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +
@@ -513,13 +504,11 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {
-				setModelData( document, '<image src="foo.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></image>' );
+				setModelData( model, '<image src="foo.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></image>' );
 				const image = document.getRoot().getChild( 0 );
 
-				document.enqueueChanges( () => {
-					const batch = document.batch();
-
-					batch.removeAttribute( 'srcset', image );
+				model.change( writer => {
+					writer.removeAttribute( 'srcset', image );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -530,7 +519,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should remove width, sizes and srcsset attribute when srcset attribute is removed from model', () => {
-				setModelData( document,
+				setModelData( model,
 					'<image ' +
 						'src="foo.png" ' +
 						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
@@ -538,10 +527,8 @@ describe( 'ImageEngine', () => {
 				);
 				const image = document.getRoot().getChild( 0 );
 
-				document.enqueueChanges( () => {
-					const batch = document.batch();
-
-					batch.removeAttribute( 'srcset', image );
+				model.change( writer => {
+					writer.removeAttribute( 'srcset', image );
 				} );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -560,7 +547,7 @@ describe( 'ImageEngine', () => {
 					consumable.consume( modelImage, consumableType );
 				}, { priority: 'high' } );
 
-				setModelData( document,
+				setModelData( model,
 					'<image ' +
 						'src="foo.png" ' +
 						'alt="alt text" ' +

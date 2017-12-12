@@ -23,7 +23,7 @@ import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildv
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 
 describe( 'ImageCaptionEngine', () => {
-	let editor, doc, viewDocument;
+	let editor, model, doc, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -32,12 +32,13 @@ describe( 'ImageCaptionEngine', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
+				model = editor.model;
+				doc = model.document;
 				viewDocument = editor.editing.view;
-				doc.schema.registerItem( 'widget' );
-				doc.schema.allow( { name: 'widget', inside: '$root' } );
-				doc.schema.allow( { name: 'caption', inside: 'widget' } );
-				doc.schema.allow( { name: '$inline', inside: 'widget' } );
+				model.schema.registerItem( 'widget' );
+				model.schema.allow( { name: 'widget', inside: '$root' } );
+				model.schema.allow( { name: 'caption', inside: 'widget' } );
+				model.schema.allow( { name: '$inline', inside: 'widget' } );
 
 				buildViewConverter()
 					.for( editor.data.viewToModel )
@@ -56,10 +57,10 @@ describe( 'ImageCaptionEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: 'caption', iniside: 'image' } ) ).to.be.true;
-		expect( doc.schema.check( { name: '$inline', inside: 'caption' } ) ).to.be.true;
-		expect( doc.schema.itemExtends( 'caption', '$block' ) ).to.be.true;
-		expect( doc.schema.limits.has( 'caption' ) );
+		expect( model.schema.check( { name: 'caption', iniside: 'image' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', inside: 'caption' } ) ).to.be.true;
+		expect( model.schema.itemExtends( 'caption', '$block' ) ).to.be.true;
+		expect( model.schema.limits.has( 'caption' ) );
 	} );
 
 	describe( 'data pipeline', () => {
@@ -67,28 +68,28 @@ describe( 'ImageCaptionEngine', () => {
 			it( 'should convert figcaption inside image figure', () => {
 				editor.setData( '<figure class="image"><img src="foo.png"/><figcaption>foo bar</figcaption></figure>' );
 
-				expect( getModelData( doc, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<image src="foo.png"><caption>foo bar</caption></image>' );
 			} );
 
 			it( 'should add empty caption if there is no figcaption', () => {
 				editor.setData( '<figure class="image"><img src="foo.png"/></figure>' );
 
-				expect( getModelData( doc, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<image src="foo.png"><caption></caption></image>' );
 			} );
 
 			it( 'should not convert figcaption inside other elements than image', () => {
 				editor.setData( '<widget><figcaption>foobar</figcaption></widget>' );
 
-				expect( getModelData( doc, { withoutSelection: true } ) )
+				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<widget>foobar</widget>' );
 			} );
 		} );
 
 		describe( 'model to view', () => {
 			it( 'should convert caption element to figcaption', () => {
-				setModelData( doc, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
+				setModelData( model, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="image"><img src="img.png"><figcaption>Foo bar baz.</figcaption></figure>'
@@ -96,13 +97,13 @@ describe( 'ImageCaptionEngine', () => {
 			} );
 
 			it( 'should not convert caption to figcaption if it\'s empty', () => {
-				setModelData( doc, '<image src="img.png"><caption></caption></image>' );
+				setModelData( model, '<image src="img.png"><caption></caption></image>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="img.png"></figure>' );
 			} );
 
 			it( 'should not convert caption from other elements', () => {
-				setModelData( doc, '<widget>foo bar<caption></caption></widget>' );
+				setModelData( model, '<widget>foo bar<caption></caption></widget>' );
 
 				expect( editor.getData() ).to.equal( '<widget>foo bar</widget>' );
 			} );
@@ -112,7 +113,7 @@ describe( 'ImageCaptionEngine', () => {
 	describe( 'editing pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert caption element to figcaption contenteditable', () => {
-				setModelData( doc, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
+				setModelData( model, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
@@ -125,7 +126,7 @@ describe( 'ImageCaptionEngine', () => {
 			} );
 
 			it( 'should convert caption to element with proper CSS class if it\'s empty', () => {
-				setModelData( doc, '<paragraph>foo</paragraph><image src="img.png"><caption></caption></image>' );
+				setModelData( model, '<paragraph>foo</paragraph><image src="img.png"><caption></caption></image>' );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 					'<p>foo</p>' +
@@ -139,7 +140,7 @@ describe( 'ImageCaptionEngine', () => {
 			} );
 
 			it( 'should not convert caption from other elements', () => {
-				setModelData( doc, '<widget>foo bar<caption></caption></widget>' );
+				setModelData( model, '<widget>foo bar<caption></caption></widget>' );
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( '<widget>foo bar</widget>' );
 			} );
 
@@ -159,7 +160,7 @@ describe( 'ImageCaptionEngine', () => {
 					{ priority: 'high' }
 				);
 
-				setModelData( doc, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
+				setModelData( model, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img src="img.png"></img><span></span>Foo bar baz.</figure>'
@@ -167,14 +168,13 @@ describe( 'ImageCaptionEngine', () => {
 			} );
 
 			it( 'should show caption when something is inserted inside', () => {
-				setModelData( doc, '<paragraph>foo</paragraph><image src="img.png"><caption></caption></image>' );
+				setModelData( model, '<paragraph>foo</paragraph><image src="img.png"><caption></caption></image>' );
 
 				const image = doc.getRoot().getChild( 1 );
 				const caption = image.getChild( 0 );
 
-				doc.enqueueChanges( () => {
-					const batch = doc.batch();
-					batch.insertText( 'foo bar', caption );
+				model.change( writer => {
+					writer.insertText( 'foo bar', caption );
 				} );
 
 				expect( getViewData( viewDocument ) ).to.equal(
@@ -189,14 +189,13 @@ describe( 'ImageCaptionEngine', () => {
 			} );
 
 			it( 'should hide when everything is removed from caption', () => {
-				setModelData( doc, '<paragraph>foo</paragraph><image src="img.png"><caption>foo bar baz</caption></image>' );
+				setModelData( model, '<paragraph>foo</paragraph><image src="img.png"><caption>foo bar baz</caption></image>' );
 
 				const image = doc.getRoot().getChild( 1 );
 				const caption = image.getChild( 0 );
 
-				doc.enqueueChanges( () => {
-					const batch = doc.batch();
-					batch.remove( ModelRange.createIn( caption ) );
+				model.change( writer => {
+					writer.remove( ModelRange.createIn( caption ) );
 				} );
 
 				expect( getViewData( viewDocument ) ).to.equal(
@@ -211,14 +210,13 @@ describe( 'ImageCaptionEngine', () => {
 			} );
 
 			it( 'should show when not everything is removed from caption', () => {
-				setModelData( doc, '<paragraph>foo</paragraph><image src="img.png"><caption>foo bar baz</caption></image>' );
+				setModelData( model, '<paragraph>foo</paragraph><image src="img.png"><caption>foo bar baz</caption></image>' );
 
 				const image = doc.getRoot().getChild( 1 );
 				const caption = image.getChild( 0 );
 
-				doc.enqueueChanges( () => {
-					const batch = doc.batch();
-					batch.remove( ModelRange.createFromParentsAndOffsets( caption, 0, caption, 8 ) );
+				model.change( writer => {
+					writer.remove( ModelRange.createFromParentsAndOffsets( caption, 0, caption, 8 ) );
 				} );
 
 				expect( getViewData( viewDocument ) ).to.equal(
@@ -234,13 +232,11 @@ describe( 'ImageCaptionEngine', () => {
 
 	describe( 'inserting image to the document', () => {
 		it( 'should add caption element if image does not have it', () => {
-			const batch = doc.batch();
-
-			doc.enqueueChanges( () => {
-				batch.insertElement( 'image', { src: '', alt: '' }, doc.getRoot() );
+			model.change( writer => {
+				writer.insertElement( 'image', { src: '', alt: '' }, doc.getRoot() );
 			} );
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'[<image alt="" src=""><caption></caption></image>]<paragraph></paragraph>'
 			);
 
@@ -258,13 +254,12 @@ describe( 'ImageCaptionEngine', () => {
 		it( 'should not add caption element if image already have it', () => {
 			const caption = new ModelElement( 'caption', null, 'foo bar' );
 			const image = new ModelElement( 'image', { src: '', alt: '' }, caption );
-			const batch = doc.batch();
 
-			doc.enqueueChanges( () => {
-				batch.insert( image, doc.getRoot() );
+			model.change( writer => {
+				writer.insert( image, doc.getRoot() );
 			} );
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'[<image alt="" src=""><caption>foo bar</caption></image>]<paragraph></paragraph>'
 			);
 
@@ -282,18 +277,17 @@ describe( 'ImageCaptionEngine', () => {
 		it( 'should not add caption element twice', () => {
 			const image = new ModelElement( 'image', { src: '', alt: '' } );
 			const caption = new ModelElement( 'caption' );
-			const batch = doc.batch();
 
-			doc.enqueueChanges( () => {
+			model.change( writer => {
 				// Since we are adding an empty image, this should trigger caption fixer.
-				batch.insert( image, doc.getRoot() );
+				writer.insert( image, doc.getRoot() );
 
-				// Add caption just after the image is inserted, in same batch and enqueue changes block.
-				batch.insert( caption, image );
+				// Add caption just after the image is inserted, in same batch.
+				writer.insert( caption, image );
 			} );
 
 			// Check whether caption fixer added redundant caption.
-			expect( getModelData( doc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'[<image alt="" src=""><caption></caption></image>]<paragraph></paragraph>'
 			);
 
@@ -308,16 +302,15 @@ describe( 'ImageCaptionEngine', () => {
 		} );
 
 		it( 'should do nothing for other changes than insert', () => {
-			setModelData( doc, '<image src=""><caption>foo bar</caption></image>' );
+			setModelData( model, '<image src=""><caption>foo bar</caption></image>' );
 
 			const image = doc.getRoot().getChild( 0 );
-			const batch = doc.batch();
 
-			doc.enqueueChanges( () => {
-				batch.setAttribute( 'alt', 'alt text', image );
+			model.change( writer => {
+				writer.setAttribute( 'alt', 'alt text', image );
 			} );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal(
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<image alt="alt text" src=""><caption>foo bar</caption></image>'
 			);
 		} );
@@ -325,7 +318,7 @@ describe( 'ImageCaptionEngine', () => {
 
 	describe( 'editing view', () => {
 		it( 'image should have empty figcaption element when is selected', () => {
-			setModelData( doc, '<paragraph>foo</paragraph>[<image src=""><caption></caption></image>]' );
+			setModelData( model, '<paragraph>foo</paragraph>[<image src=""><caption></caption></image>]' );
 
 			expect( getViewData( viewDocument ) ).to.equal(
 				'<p>foo</p>' +
@@ -338,7 +331,7 @@ describe( 'ImageCaptionEngine', () => {
 		} );
 
 		it( 'image should have empty figcaption element with hidden class when not selected', () => {
-			setModelData( doc, '<paragraph>[]foo</paragraph><image src=""><caption></caption></image>' );
+			setModelData( model, '<paragraph>[]foo</paragraph><image src=""><caption></caption></image>' );
 
 			expect( getViewData( viewDocument ) ).to.equal(
 				'<p>{}foo</p>' +
@@ -352,7 +345,7 @@ describe( 'ImageCaptionEngine', () => {
 		} );
 
 		it( 'should not add additional figcaption if one is already present', () => {
-			setModelData( doc, '<paragraph>foo</paragraph>[<image src=""><caption>foo bar</caption></image>]' );
+			setModelData( model, '<paragraph>foo</paragraph>[<image src=""><caption>foo bar</caption></image>]' );
 
 			expect( getViewData( viewDocument ) ).to.equal(
 				'<p>foo</p>' +
@@ -364,9 +357,9 @@ describe( 'ImageCaptionEngine', () => {
 		} );
 
 		it( 'should add hidden class to figcaption when caption is empty and image is no longer selected', () => {
-			setModelData( doc, '<paragraph>foo</paragraph>[<image src=""><caption></caption></image>]' );
+			setModelData( model, '<paragraph>foo</paragraph>[<image src=""><caption></caption></image>]' );
 
-			doc.enqueueChanges( () => {
+			model.change( () => {
 				doc.selection.removeAllRanges();
 			} );
 
@@ -382,10 +375,10 @@ describe( 'ImageCaptionEngine', () => {
 		} );
 
 		it( 'should not remove figcaption when selection is inside it even when it is empty', () => {
-			setModelData( doc, '<image src=""><caption>[foo bar]</caption></image>' );
+			setModelData( model, '<image src=""><caption>[foo bar]</caption></image>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().remove( doc.selection.getFirstRange() );
+			model.change( writer => {
+				writer.remove( doc.selection.getFirstRange() );
 			} );
 
 			expect( getViewData( viewDocument ) ).to.equal(
@@ -399,11 +392,11 @@ describe( 'ImageCaptionEngine', () => {
 		} );
 
 		it( 'should not remove figcaption when selection is moved from it to its image', () => {
-			setModelData( doc, '<image src=""><caption>[foo bar]</caption></image>' );
+			setModelData( model, '<image src=""><caption>[foo bar]</caption></image>' );
 			const image = doc.getRoot().getChild( 0 );
 
-			doc.enqueueChanges( () => {
-				doc.batch().remove( doc.selection.getFirstRange() );
+			model.change( writer => {
+				writer.remove( doc.selection.getFirstRange() );
 				doc.selection.setRanges( [ ModelRange.createOn( image ) ] );
 			} );
 
@@ -417,10 +410,10 @@ describe( 'ImageCaptionEngine', () => {
 		} );
 
 		it( 'should not remove figcaption when selection is moved from it to other image', () => {
-			setModelData( doc, '<image src=""><caption>[foo bar]</caption></image><image src=""><caption></caption></image>' );
+			setModelData( model, '<image src=""><caption>[foo bar]</caption></image><image src=""><caption></caption></image>' );
 			const image = doc.getRoot().getChild( 1 );
 
-			doc.enqueueChanges( () => {
+			model.change( () => {
 				doc.selection.setRanges( [ ModelRange.createOn( image ) ] );
 			} );
 
@@ -439,17 +432,15 @@ describe( 'ImageCaptionEngine', () => {
 
 		describe( 'undo/redo integration', () => {
 			it( 'should create view element after redo', () => {
-				setModelData( doc, '<paragraph>foo</paragraph><image src=""><caption>[foo bar baz]</caption></image>' );
+				setModelData( model, '<paragraph>foo</paragraph><image src=""><caption>[foo bar baz]</caption></image>' );
 
 				const modelRoot = doc.getRoot();
 				const modelImage = modelRoot.getChild( 1 );
 				const modelCaption = modelImage.getChild( 0 );
 
 				// Remove text and selection from caption.
-				doc.enqueueChanges( () => {
-					const batch = doc.batch();
-
-					batch.remove( ModelRange.createIn( modelCaption ) );
+				model.change( writer => {
+					writer.remove( ModelRange.createIn( modelCaption ) );
 					doc.selection.removeAllRanges();
 				} );
 
@@ -482,19 +473,17 @@ describe( 'ImageCaptionEngine', () => {
 				const image = new ModelElement( 'image' );
 				image.setAttribute( 'src', '/foo.png' );
 
-				setModelData( doc, '<paragraph>foo[]</paragraph>' );
+				setModelData( model, '<paragraph>foo[]</paragraph>' );
 
-				doc.enqueueChanges( () => {
-					const batch = doc.batch();
-
-					batch.insert( image, doc.getRoot() );
+				model.change( writer => {
+					writer.insert( image, doc.getRoot() );
 				} );
 
-				expect( getModelData( doc ) ).to.equal( '<image src="/foo.png"><caption></caption></image><paragraph>foo[]</paragraph>' );
+				expect( getModelData( model ) ).to.equal( '<image src="/foo.png"><caption></caption></image><paragraph>foo[]</paragraph>' );
 
 				editor.execute( 'undo' );
 
-				expect( getModelData( doc ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 			} );
 		} );
 	} );

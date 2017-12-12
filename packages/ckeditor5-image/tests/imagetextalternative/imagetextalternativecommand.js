@@ -8,78 +8,78 @@ import ImageTextAlternativeCommand from '../../src/imagetextalternative/imagetex
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageTextAlternativeCommand', () => {
-	let document, command;
+	let model, command;
 
 	beforeEach( () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
-				document = newEditor.document;
+				model = newEditor.model;
 				command = new ImageTextAlternativeCommand( newEditor );
 
-				document.schema.registerItem( 'p', '$block' );
+				model.schema.registerItem( 'p', '$block' );
 
-				document.schema.registerItem( 'image' );
-				document.schema.requireAttributes( 'image', [ 'src' ] );
-				document.schema.allow( { name: 'image', attributes: [ 'alt', 'src' ], inside: '$root' } );
-				document.schema.objects.add( 'image' );
+				model.schema.registerItem( 'image' );
+				model.schema.requireAttributes( 'image', [ 'src' ] );
+				model.schema.allow( { name: 'image', attributes: [ 'alt', 'src' ], inside: '$root' } );
+				model.schema.objects.add( 'image' );
 			} );
 	} );
 
 	it( 'should have false value if no image is selected', () => {
-		setData( document, '[]<p></p>' );
+		setData( model, '[]<p></p>' );
 
 		expect( command.value ).to.be.false;
 	} );
 
 	it( 'should have false value if image without alt is selected', () => {
-		setData( document, '[<image src="image.png"></image>]' );
+		setData( model, '[<image src="image.png"></image>]' );
 
 		expect( command.value ).to.be.false;
 	} );
 
 	it( 'should be disabled if not on image element', () => {
-		setData( document, '[]<p></p>' );
+		setData( model, '[]<p></p>' );
 
 		expect( command.isEnabled ).to.be.false;
 	} );
 
 	it( 'should be enabled on image element without alt attribute', () => {
-		setData( document, '[<image src="image.png"></image>]' );
+		setData( model, '[<image src="image.png"></image>]' );
 
 		expect( command.isEnabled ).to.be.true;
 	} );
 
 	it( 'should have proper value if on image element with alt attribute', () => {
-		setData( document, '[<image src="image.png" alt="foo bar baz"></image>]' );
+		setData( model, '[<image src="image.png" alt="foo bar baz"></image>]' );
 
 		expect( command.value ).to.equal( 'foo bar baz' );
 	} );
 
 	it( 'should set proper alt if executed on image without alt attribute', () => {
-		setData( document, '[<image src="image.png"></image>]' );
+		setData( model, '[<image src="image.png"></image>]' );
 
 		command.execute( { newValue: 'fiz buz' } );
 
-		expect( getData( document ) ).to.equal( '[<image alt="fiz buz" src="image.png"></image>]' );
+		expect( getData( model ) ).to.equal( '[<image alt="fiz buz" src="image.png"></image>]' );
 	} );
 
 	it( 'should change alt if executed on image with alt attribute', () => {
-		setData( document, '[<image alt="foo bar" src="image.png"></image>]' );
+		setData( model, '[<image alt="foo bar" src="image.png"></image>]' );
 
 		command.execute( { newValue: 'fiz buz' } );
 
-		expect( getData( document ) ).to.equal( '[<image alt="fiz buz" src="image.png"></image>]' );
+		expect( getData( model ) ).to.equal( '[<image alt="fiz buz" src="image.png"></image>]' );
 	} );
 
-	it( 'should allow to provide batch instance', () => {
-		const batch = document.batch();
-		const spy = sinon.spy( batch, 'setAttribute' );
+	it( 'should use parent batch', () => {
+		setData( model, '[<image src="image.png"></image>]' );
 
-		setData( document, '[<image src="image.png"></image>]' );
+		model.change( writer => {
+			expect( writer.batch.deltas ).to.length( 0 );
 
-		command.execute( { newValue: 'foo bar', batch } );
+			command.execute( { newValue: 'foo bar' } );
 
-		expect( getData( document ) ).to.equal( '[<image alt="foo bar" src="image.png"></image>]' );
-		sinon.assert.calledOnce( spy );
+			expect( writer.batch.deltas ).to.length.above( 0 );
+		} );
 	} );
 } );

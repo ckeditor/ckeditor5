@@ -22,7 +22,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 testUtils.createSinonSandbox();
 
 describe( 'ImageStyleEngine', () => {
-	let editor, plugin, document, viewDocument;
+	let editor, plugin, model, document, viewDocument;
 
 	afterEach( () => {
 		editor.destroy();
@@ -63,7 +63,8 @@ describe( 'ImageStyleEngine', () => {
 				} )
 				.then( newEditor => {
 					editor = newEditor;
-					document = editor.document;
+					model = editor.model;
+					document = model.document;
 					viewDocument = editor.editing.view;
 				} );
 		} );
@@ -81,7 +82,7 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		it( 'should set schema rules for image style', () => {
-			const schema = document.schema;
+			const schema = model.schema;
 
 			expect( schema.check( { name: 'image', attributes: [ 'imageStyle', 'src' ], inside: '$root' } ) ).to.be.true;
 		} );
@@ -95,7 +96,7 @@ describe( 'ImageStyleEngine', () => {
 		it( 'should convert from view to model', () => {
 			editor.setData( '<figure class="image side-class"><img src="foo.png" /></figure>' );
 
-			expect( getModelData( document, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<image imageStyle="sideStyle" src="foo.png"></image>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image side-class" contenteditable="false">' +
@@ -106,7 +107,7 @@ describe( 'ImageStyleEngine', () => {
 		it( 'should not convert from view to model if class is not defined', () => {
 			editor.setData( '<figure class="image foo-bar"><img src="foo.png" /></figure>' );
 
-			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image src="foo.png"></image>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="foo.png"></image>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
@@ -115,27 +116,26 @@ describe( 'ImageStyleEngine', () => {
 		it( 'should not convert from view to model when not in image figure', () => {
 			editor.setData( '<figure class="side-class"></figure>' );
 
-			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( '' );
 		} );
 
 		it( 'should not convert from view to model if schema prevents it', () => {
-			document.schema.disallow( { name: 'image', attributes: 'imageStyle' } );
+			model.schema.disallow( { name: 'image', attributes: 'imageStyle' } );
 			editor.setData( '<figure class="image side-class"><img src="foo.png" /></figure>' );
 
-			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image src="foo.png"></image>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="foo.png"></image>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 		} );
 
 		it( 'should convert model to view: adding attribute', () => {
-			setModelData( document, '<image src="foo.png"></image>' );
+			setModelData( model, '<image src="foo.png"></image>' );
 			const image = document.getRoot().getChild( 0 );
-			const batch = document.batch();
 
-			document.enqueueChanges( () => {
-				batch.setAttribute( 'imageStyle', 'sideStyle', image );
+			model.change( writer => {
+				writer.setAttribute( 'imageStyle', 'sideStyle', image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="foo.png"></figure>' );
@@ -145,12 +145,11 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		it( 'should convert model to view: removing attribute', () => {
-			setModelData( document, '<image src="foo.png" imageStyle="sideStyle"></image>' );
+			setModelData( model, '<image src="foo.png" imageStyle="sideStyle"></image>' );
 			const image = document.getRoot().getChild( 0 );
-			const batch = document.batch();
 
-			document.enqueueChanges( () => {
-				batch.setAttribute( 'imageStyle', null, image );
+			model.change( writer => {
+				writer.setAttribute( 'imageStyle', null, image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
@@ -160,12 +159,11 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		it( 'should convert model to view: change attribute', () => {
-			setModelData( document, '<image src="foo.png" imageStyle="dummy"></image>' );
+			setModelData( model, '<image src="foo.png" imageStyle="dummy"></image>' );
 			const image = document.getRoot().getChild( 0 );
-			const batch = document.batch();
 
-			document.enqueueChanges( () => {
-				batch.setAttribute( 'imageStyle', 'sideStyle', image );
+			model.change( writer => {
+				writer.setAttribute( 'imageStyle', 'sideStyle', image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="foo.png"></figure>' );
@@ -175,8 +173,8 @@ describe( 'ImageStyleEngine', () => {
 				'<figure class="ck-widget image side-class" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 
-			document.enqueueChanges( () => {
-				batch.setAttribute( 'imageStyle', 'dummyStyle', image );
+			model.change( writer => {
+				writer.setAttribute( 'imageStyle', 'dummyStyle', image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image dummy-class"><img src="foo.png"></figure>' );
@@ -192,12 +190,11 @@ describe( 'ImageStyleEngine', () => {
 				consumable.consume( data.item, 'addAttribute:imageStyle' );
 			}, { priority: 'high' } );
 
-			setModelData( document, '<image src="foo.png"></image>' );
+			setModelData( model, '<image src="foo.png"></image>' );
 			const image = document.getRoot().getChild( 0 );
-			const batch = document.batch();
 
-			document.enqueueChanges( () => {
-				batch.setAttribute( 'imageStyle', 'sideStyle', image );
+			model.change( writer => {
+				writer.setAttribute( 'imageStyle', 'sideStyle', image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -210,12 +207,11 @@ describe( 'ImageStyleEngine', () => {
 				consumable.consume( data.item, 'removeAttribute:imageStyle' );
 			}, { priority: 'high' } );
 
-			setModelData( document, '<image src="foo.png" imageStyle="sideStyle"></image>' );
+			setModelData( model, '<image src="foo.png" imageStyle="sideStyle"></image>' );
 			const image = document.getRoot().getChild( 0 );
-			const batch = document.batch();
 
-			document.enqueueChanges( () => {
-				batch.setAttribute( 'imageStyle', null, image );
+			model.change( writer => {
+				writer.removeAttribute( 'imageStyle', image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -228,12 +224,11 @@ describe( 'ImageStyleEngine', () => {
 				consumable.consume( data.item, 'changeAttribute:imageStyle' );
 			}, { priority: 'high' } );
 
-			setModelData( document, '<image src="foo.png" imageStyle="dummyStyle"></image>' );
+			setModelData( model, '<image src="foo.png" imageStyle="dummyStyle"></image>' );
 			const image = document.getRoot().getChild( 0 );
-			const batch = document.batch();
 
-			document.enqueueChanges( () => {
-				batch.setAttribute( 'imageStyle', 'sideStyle', image );
+			model.change( writer => {
+				writer.setAttribute( 'imageStyle', 'sideStyle', image );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
@@ -242,12 +237,11 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		it( 'should not convert from model to view if style is not present: adding attribute', () => {
-			setModelData( document, '<image src="foo.png"></image>' );
+			setModelData( model, '<image src="foo.png"></image>' );
 			const image = document.getRoot().getChild( 0 );
-			const batch = document.batch();
 
-			document.enqueueChanges( () => {
-				batch.setAttribute( 'imageStyle', 'foo', image );
+			model.change( writer => {
+				writer.setAttribute( 'imageStyle', 'foo', image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
@@ -257,12 +251,11 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		it( 'should not convert from model to view if style is not present: change attribute', () => {
-			setModelData( document, '<image src="foo.png" imageStyle="dummy"></image>' );
+			setModelData( model, '<image src="foo.png" imageStyle="dummy"></image>' );
 			const image = document.getRoot().getChild( 0 );
-			const batch = document.batch();
 
-			document.enqueueChanges( () => {
-				batch.setAttribute( 'imageStyle', 'foo', image );
+			model.change( writer => {
+				writer.setAttribute( 'imageStyle', 'foo', image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
@@ -272,12 +265,11 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		it( 'should not convert from model to view if style is not present: remove attribute', () => {
-			setModelData( document, '<image src="foo.png" imageStyle="foo"></image>' );
+			setModelData( model, '<image src="foo.png" imageStyle="foo"></image>' );
 			const image = document.getRoot().getChild( 0 );
-			const batch = document.batch();
 
-			document.enqueueChanges( () => {
-				batch.setAttribute( 'imageStyle', null, image );
+			model.change( writer => {
+				writer.setAttribute( 'imageStyle', null, image );
 			} );
 
 			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );

@@ -14,7 +14,7 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'Image', () => {
-	let editorElement, editor, document, viewDocument;
+	let editorElement, model, editor, document, viewDocument;
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -26,7 +26,8 @@ describe( 'Image', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				document = editor.document;
+				model = editor.model;
+				document = model.document;
 				viewDocument = editor.editing.view;
 			} );
 	} );
@@ -55,7 +56,7 @@ describe( 'Image', () => {
 
 	describe( 'selection', () => {
 		it( 'should create fake selection', () => {
-			setModelData( document, '[<image alt="alt text" src="foo.png"></image>]' );
+			setModelData( model, '[<image alt="alt text" src="foo.png"></image>]' );
 
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
@@ -68,7 +69,7 @@ describe( 'Image', () => {
 		} );
 
 		it( 'should create proper fake selection label when alt attribute is empty', () => {
-			setModelData( document, '[<image src="foo.png" alt=""></image>]' );
+			setModelData( model, '[<image src="foo.png" alt=""></image>]' );
 
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
@@ -81,7 +82,7 @@ describe( 'Image', () => {
 		} );
 
 		it( 'should remove selected class from previously selected element', () => {
-			setModelData( document,
+			setModelData( model,
 				'[<image src="foo.png" alt="alt text"></image>]' +
 				'<image src="foo.png" alt="alt text"></image>'
 			);
@@ -95,7 +96,7 @@ describe( 'Image', () => {
 				'</figure>'
 			);
 
-			document.enqueueChanges( () => {
+			model.change( () => {
 				const secondImage = document.getRoot().getChild( 1 );
 				document.selection.setRanges( [ ModelRange.createOn( secondImage ) ] );
 			} );
