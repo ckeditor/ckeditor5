@@ -82,7 +82,7 @@ describe( 'ParagraphCommand', () => {
 			setData( model, '<paragraph>[foo]</paragraph><notBlock>foo</notBlock>' );
 			const element = document.getRoot().getChild( 1 );
 
-			// Purposely not putting it in `document.enqueueChanges` to update command manually.
+			// Purposely not putting it in `model.change` to update command manually.
 			document.selection.setRanges( [ Range.createIn( element ) ] );
 
 			expect( command.value ).to.be.true;
