@@ -13,7 +13,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'StrikethroughEngine', () => {
-	let editor, doc;
+	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -22,8 +22,7 @@ describe( 'StrikethroughEngine', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				doc = editor.document;
+				model = editor.model;
 			} );
 	} );
 
@@ -36,9 +35,9 @@ describe( 'StrikethroughEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: 'strikethrough', inside: '$root' } ) ).to.be.false;
-		expect( doc.schema.check( { name: '$inline', attributes: 'strikethrough', inside: '$block' } ) ).to.be.true;
-		expect( doc.schema.check( { name: '$inline', attributes: 'strikethrough', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', attributes: 'strikethrough', inside: '$root' } ) ).to.be.false;
+		expect( model.schema.check( { name: '$inline', attributes: 'strikethrough', inside: '$block' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', attributes: 'strikethrough', inside: '$clipboardHolder' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -54,7 +53,7 @@ describe( 'StrikethroughEngine', () => {
 		it( 'should convert <strike> to strikethrough attribute', () => {
 			editor.setData( '<p><strike>foo</strike>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text strikethrough="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><s>foo</s>bar</p>' );
@@ -62,7 +61,7 @@ describe( 'StrikethroughEngine', () => {
 		it( 'should convert <del> to strikethrough attribute', () => {
 			editor.setData( '<p><del>foo</del>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text strikethrough="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><s>foo</s>bar</p>' );
@@ -71,7 +70,7 @@ describe( 'StrikethroughEngine', () => {
 		it( 'should convert <s> to strikethrough attribute', () => {
 			editor.setData( '<p><s>foo</s>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text strikethrough="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><s>foo</s>bar</p>' );
@@ -80,7 +79,7 @@ describe( 'StrikethroughEngine', () => {
 		it( 'should convert text-decoration:line-through to strikethrough attribute', () => {
 			editor.setData( '<p><span style="text-decoration: line-through;">foo</span>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text strikethrough="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><s>foo</s>bar</p>' );
@@ -92,7 +91,7 @@ describe( 'StrikethroughEngine', () => {
 
 			editor.setData( '<s>foo</s>bar' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
 		} );
@@ -100,7 +99,7 @@ describe( 'StrikethroughEngine', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( doc, '<paragraph><$text strikethrough="true">foo</$text>bar</paragraph>' );
+			setModelData( model, '<paragraph><$text strikethrough="true">foo</$text>bar</paragraph>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><s>foo</s>bar</p>' );
 		} );

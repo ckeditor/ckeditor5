@@ -33,9 +33,9 @@ export default class StrikethroughEngine extends Plugin {
 		const editing = editor.editing;
 
 		// Allow strikethrough attribute on all inline nodes.
-		editor.document.schema.allow( { name: '$inline', attributes: STRIKETHROUGH, inside: '$block' } );
+		editor.model.schema.allow( { name: '$inline', attributes: STRIKETHROUGH, inside: '$block' } );
 		// Temporary workaround. See https://github.com/ckeditor/ckeditor5/issues/477.
-		editor.document.schema.allow( { name: '$inline', attributes: STRIKETHROUGH, inside: '$clipboardHolder' } );
+		editor.model.schema.allow( { name: '$inline', attributes: STRIKETHROUGH, inside: '$clipboardHolder' } );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
