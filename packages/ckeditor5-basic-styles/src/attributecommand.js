@@ -16,7 +16,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  * `AttributeCommand` uses {@link module:engine/model/document~Document#selection}
  * to decide which nodes (if any) should be changed, and applies or removes the attribute from them.
  *
- * The command checks the {@link module:engine/model/document~Document#schema} to decide if it can be enabled
+ * The command checks the {@link module:engine/model/model~Model#schema} to decide if it can be enabled
  * for the current selection and to which nodes the attribute can be applied.
  *
  * @extends module:core/command~Command
