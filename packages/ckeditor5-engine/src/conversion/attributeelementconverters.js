@@ -12,7 +12,7 @@ import { defineConverter, parseDefinition } from './utils';
  * @param {} definition Converter definition
  * @param dispatchers
  */
-export function modelAttributeToView( attributeName, definition, dispatchers ) {
+export function attributeElementToViewConverter( attributeName, definition, dispatchers ) {
 	const { model: attributeValue, viewDefinition } = parseDefinition( definition );
 
 	buildModelConverter()
@@ -27,7 +27,7 @@ export function modelAttributeToView( attributeName, definition, dispatchers ) {
 		} );
 }
 
-export function viewToModelAttribute( attributeName, definition, dispatchers ) {
+export function viewToAttributeElementConverter( attributeName, definition, dispatchers ) {
 	const { model: attributeValue, viewDefinitions } = parseDefinition( definition );
 
 	const converter = defineConverter( dispatchers, viewDefinitions );
