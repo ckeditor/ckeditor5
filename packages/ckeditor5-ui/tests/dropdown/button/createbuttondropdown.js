@@ -9,7 +9,7 @@ import Model from '../../../src/model';
 import createButtonDropdown from '../../../src/dropdown/button/createbuttondropdown';
 
 import ButtonView from '../../../src/button/buttonview';
-import ButtonGroupView from '../../../src/buttongroup/buttongroupview';
+import ToolbarView from '../../../src/toolbar/toolbarview';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -47,7 +47,7 @@ describe( 'createButtonDropdown', () => {
 
 				expect( panelChildren ).to.have.length( 1 );
 				expect( panelChildren.get( 0 ) ).to.equal( view.buttonGroupView );
-				expect( view.buttonGroupView ).to.be.instanceof( ButtonGroupView );
+				expect( view.buttonGroupView ).to.be.instanceof( ToolbarView );
 			} );
 
 			it( 'delegates view.buttonGroupView#execute to the view', done => {
@@ -125,23 +125,6 @@ describe( 'createButtonDropdown', () => {
 					stopPropagation: sinon.spy()
 				};
 				const spy = sinon.spy( view.buttonGroupView, 'focus' );
-
-				view.isOpen = false;
-				view.keystrokes.press( keyEvtData );
-				sinon.assert.notCalled( spy );
-
-				view.isOpen = true;
-				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( spy );
-			} );
-
-			it( 'so "arrowup" focuses the last #item in #buttonGroupView if dropdown is open', () => {
-				const keyEvtData = {
-					keyCode: keyCodes.arrowup,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
-				};
-				const spy = sinon.spy( view.buttonGroupView, 'focusLast' );
 
 				view.isOpen = false;
 				view.keystrokes.press( keyEvtData );

@@ -9,12 +9,12 @@
 
 /* global document */
 
-export function openDropdownOnArrows( dropdownView, buttonGroupView ) {
+export function openDropdownOnArrows( dropdownView, panelViewContents ) {
 	// If the dropdown panel is already open, the arrow down key should
 	// focus the first element in list.
 	dropdownView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
 		if ( dropdownView.isOpen ) {
-			buttonGroupView.focus();
+			panelViewContents.focus();
 			cancel();
 		}
 	} );
@@ -23,7 +23,7 @@ export function openDropdownOnArrows( dropdownView, buttonGroupView ) {
 	// focus the last element in the list.
 	dropdownView.keystrokes.set( 'arrowup', ( data, cancel ) => {
 		if ( dropdownView.isOpen ) {
-			buttonGroupView.focusLast();
+			panelViewContents.focusLast();
 			cancel();
 		}
 	} );

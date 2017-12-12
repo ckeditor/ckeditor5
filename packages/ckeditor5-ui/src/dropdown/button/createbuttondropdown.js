@@ -9,7 +9,7 @@
 
 import createDropdown from '../createdropdown';
 
-import ButtonGroupView from '../../buttongroup/buttongroupview';
+import ToolbarView from '../../toolbar/toolbarview';
 import { closeDropdownOnBlur, closeDropdownOnExecute, openDropdownOnArrows } from '../utils';
 
 import '../../../theme/components/dropdown/buttondropdown.css';
@@ -80,15 +80,23 @@ export default function createButtonDropdown( model, buttonViews, locale ) {
 
 	const dropdownView = createDropdown( model, locale );
 
-	const buttonGroupView = dropdownView.buttonGroupView = new ButtonGroupView( { isVertical: model.isVertical } );
+	const buttonGroupView = dropdownView.buttonGroupView = new ToolbarView();
+
+	buttonGroupView.extendTemplate( {
+		attributes: {
+			class: [
+				buttonGroupView.bindTemplate.if( 'isVertical', 'ck-toolbar__vertical' )
+			]
+		}
+	} );
 
 	buttonGroupView.bind( 'isVertical' ).to( model, 'isVertical' );
 
 	buttonViews.map( view => buttonGroupView.items.add( view ) );
 
-	dropdownView.buttonView.extendTemplate( {
+	dropdownView.extendTemplate( {
 		attributes: {
-			class: [ 'ck-button-dropdown' ]
+			class: [ 'ck-buttondropdown' ]
 		}
 	} );
 
