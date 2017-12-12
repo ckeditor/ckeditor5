@@ -68,7 +68,6 @@ getData._stringify = stringify;
 
 /**
  * Sets the contents of the {@link module:engine/model/document~Document Document} provided as HTML-like string.
- * It uses {@link module:engine/model/document~Document#enqueueChanges enqueueChanges} method.
  *
  * **Note:** Remember to register elements in {@link module:engine/model/document~Document#schema document's schema} before inserting them.
  *

@@ -400,7 +400,7 @@ export default class Document {
 	 */
 
 	/**
-	 * Fired when all queued document changes are done. See {@link #enqueueChanges}.
+	 * Fired when all queued document changes are done. See {@link module:engine/model/model~Model#change}.
 	 *
 	 * @event changesDone
 	 */

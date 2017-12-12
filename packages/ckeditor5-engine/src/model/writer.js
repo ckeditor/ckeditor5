@@ -52,23 +52,23 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * Note that writer can be passed to a nested function but you should never store and use it outside the `change` or
  * `enqueueChange` block.
  *
- * @see module:engine/model~model#change
- * @see module:engine/model~model#enqueueChange
+ * @see module:engine/model/model~model#change
+ * @see module:engine/model/model~model#enqueueChange
  */
 export default class Writer {
 	/**
 	 * Writer class constructor.
 	 *
-	 * It is not recommended to use it directly, use {@link module:engine/model~model#change} or
-	 * {@link module:engine/model~model#enqueueChanges} instead.
+	 * It is not recommended to use it directly, use {@link module:engine/model/model~Model#change} or
+	 * {@link module:engine/model/model~Model#enqueueChanges} instead.
 	 *
 	 * @protected
-	 * @param {module:engine/model~Model} model
+	 * @param {module:engine/model/model~Model} model
 	 * @param {module:engine/model/batch~Batch} batch
 	 */
 	constructor( model, batch ) {
 		/**
-		 * @type {module:engine/model~Model}
+		 * @type {module:engine/model/model~Model}
 		 */
 		this.model = model;
 
