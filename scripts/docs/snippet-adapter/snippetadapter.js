@@ -8,7 +8,7 @@
 const path = require( 'path' );
 const fs = require( 'fs' );
 const webpack = require( 'webpack' );
-const { bundler } = require( '@ckeditor/ckeditor5-dev-utils' );
+const { bundler, styles: { getPostCssConfig } } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
 const BabelMinifyPlugin = require( 'babel-minify-webpack-plugin' );
@@ -22,18 +22,12 @@ module.exports = function snippetAdapter( data ) {
 
 	const snippetConfig = readSnippetConfig( data.snippetSource.js );
 	const outputPath = path.join( data.outputPath, data.snippetPath );
-	let sassImportPath;
-
-	if ( snippetConfig.sassImportPath ) {
-		sassImportPath = path.join( path.dirname( data.snippetSource.js ), snippetConfig.sassImportPath );
-	}
 
 	const webpackConfig = getWebpackConfig( {
 		entry: data.snippetSource.js,
 		outputPath,
 		language: snippetConfig.language,
-		minify: data.options.production,
-		sassImportPath
+		minify: data.options.production
 	} );
 
 	let promise;
@@ -133,21 +127,18 @@ function getWebpackConfig( config ) {
 					use: [ 'raw-loader' ]
 				},
 				{
-					test: /\.scss$/,
+					test: /\.css$/,
 					use: ExtractTextPlugin.extract( {
 						fallback: 'style-loader',
 						use: [
 							{
-								loader: 'css-loader',
-								options: {
-									minimize: config.minify
-								}
-							},
-							{
-								loader: 'sass-loader',
-								options: {
-									data: config.sassImportPath ? `@import '${ config.sassImportPath }';` : ''
-								}
+								loader: 'postcss-loader',
+								options: getPostCssConfig( {
+									themeImporter: {
+										themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+									},
+									minify: config.minify
+								} )
 							}
 						]
 					} )
