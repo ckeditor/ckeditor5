@@ -10,21 +10,21 @@
 /**
  * `Batch` instance groups model changes ({@link module:engine/model/delta/delta~Delta deltas}). All deltas grouped in a single `Batch`
  * can be reverted together, so you can think about `Batch` as of a single undo step. If you want to extend given undo step you
- * can add more changes to the batch using {@link module:engine/model~model#enqueueChange}:
+ * can add more changes to the batch using {@link module:engine/model/model~Model#enqueueChange}:
  *
  *		model.enqueueChange( batch, writer => {
  *			writer.insertText( 'foo', paragraph, 'end' );
  *		} );
  *
- * @see module:engine/model~model#enqueueChange
- * @see module:engine/model~model#change
+ * @see module:engine/model/model~Model#enqueueChange
+ * @see module:engine/model/model~Model#change
  */
 export default class Batch {
 	/**
 	 * Creates `Batch` instance.
 	 *
-	 * @see module:engine/model~model#enqueueChange
-	 * @see module:engine/model~model#change
+	 * @see module:engine/model/model~Model#enqueueChange
+	 * @see module:engine/model/model~Model#change
 	 * @param {'transparent'|'default'} [type='default'] Type of the batch.
 	 */
 	constructor( type = 'default' ) {

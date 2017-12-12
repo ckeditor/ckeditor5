@@ -11,7 +11,7 @@ import Delta from './delta';
 import DeltaFactory from './deltafactory';
 
 /**
- * To provide specific OT behavior and better collisions solving, the {@link module:engine/model/batch~Batch#rename Batch#rename} method
+ * To provide specific OT behavior and better collisions solving, the {@link module:engine/model/writer~Writer#rename Batch#rename} method
  * uses the `RenameDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
  * @extends module:engine/model/delta/delta~Delta

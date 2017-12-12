@@ -17,14 +17,15 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Editors data model class. Model defines all data: either nodes users see in editable roots, grouped as the
- * {@link #document}, and all detached nodes, used to data manipulation. All of them are
- * created and modified by the {@link module:engine/model/model~Writer}, which can be get using
- * {@link #change} or {@link #enqueueChange} methods.
+ * {@link module:engine/model/model~Model#document}, and all detached nodes, used to data manipulation. All of them are
+ * created and modified by the {@link module:engine/model/writer~Writer}, which can be get using
+ * {@link module:engine/model/model~Model#change} or {@link module:engine/model/model~Model#enqueueChange} methods.
  */
 export default class Model {
 	constructor() {
 		/**
-		 * All callbacks added by {@link #change} or {@link #enqueueChange} methods waiting to be executed.
+		 * All callbacks added by {@link module:engine/model/model~Model#change} or
+		 * {@link module:engine/model/model~Model#enqueueChange} methods waiting to be executed.
 		 *
 		 * @private
 		 * @type {Array.<Function>}
@@ -58,7 +59,7 @@ export default class Model {
 
 	/**
 	 * Change method is the primary way of changing the model. You should use it to modify any node, including detached
-	 * nodes, not added to the {@link #document}.
+	 * nodes, not added to the {@link module:engine/model/model~Model#document}.
 	 *
 	 *		model.change( writer => {
 	 *			writer.insertText( 'foo', paragraph, 'end' );
@@ -132,7 +133,7 @@ export default class Model {
 	 *
 	 * @fires event:change
 	 * @fires event:changesDone
-	 * @param {[<module:engine/model/batch~Batch|String>]} batchOrType Batch or batch type should be used in the callback.
+	 * @param {module:engine/model/batch~Batch|String} batchOrType Batch or batch type should be used in the callback.
 	 * If not defined new batch will be created.
 	 * @param {Function} callback Callback function which may modify the model.
 	 */
@@ -152,8 +153,8 @@ export default class Model {
 	}
 
 	/**
-	 * Common part of {@link #change} and {@link #enqueueChange} which calls callbacks and returns array of values
-	 * returned by these callbacks.
+	 * Common part of {@link module:engine/model/model~Model#change} and {@link module:engine/model/model~Model#enqueueChange}
+	 * which calls callbacks and returns array of values returned by these callbacks.
 	 *
 	 * @private
 	 * @returns {Array.<*>} Array of values returned by callbacks.
@@ -179,8 +180,8 @@ export default class Model {
 	}
 
 	/**
-	 * {@link #decorate Decorated} function to apply {@link module:engine/model/operation/operation~Operation operations}
-	 * on the model.
+	 * {@link module:utils/observablemixin~ObservableMixin#decorate Decorated} function to apply
+	 * {@link module:engine/model/operation/operation~Operation operations} on the model.
 	 *
 	 * @param {module:engine/model/operation/operation~Operation} operation Operation to apply
 	 * @returns {Object} Object with additional information about the applied changes. It properties depends on the
@@ -199,8 +200,9 @@ export default class Model {
 	}
 
 	/**
-	 * Fires after leaving each {@link #enqueueChange} block or outermost {@link #change} block.
-	 * Have the same parameters as {@link module:engine/model/document~Document#change}.
+	 * Fires after leaving each {@link module:engine/model/model~Model#enqueueChange} block or outermost
+	 * {@link module:engine/model/model~Model#change} block.
+	 * Have the same parameters as {@link module:engine/model/model~Model#change}.
 	 *
 	 * @event change
 	 */

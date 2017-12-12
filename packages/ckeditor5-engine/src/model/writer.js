@@ -42,8 +42,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Model writer it the proper way of modifying model. It should be used whenever you wants to create node, modify
- * child nodes, attributes or text. To get writer use {@link module:engine/model~model#change} or
- * {@link @see module:engine/model~model#enqueueChange}.
+ * child nodes, attributes or text. To get writer use {@link module:engine/model/model~Model#change} or
+ * {@link @see module:engine/model/model~Model#enqueueChange}.
  *
  *		model.change( writer => {
  *			writer.insertText( 'foo', paragraph, 'end' );
@@ -52,15 +52,15 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * Note that writer can be passed to a nested function but you should never store and use it outside the `change` or
  * `enqueueChange` block.
  *
- * @see module:engine/model/model~model#change
- * @see module:engine/model/model~model#enqueueChange
+ * @see module:engine/model/model~Model#change
+ * @see module:engine/model/model~Model#enqueueChange
  */
 export default class Writer {
 	/**
 	 * Writer class constructor.
 	 *
 	 * It is not recommended to use it directly, use {@link module:engine/model/model~Model#change} or
-	 * {@link module:engine/model/model~Model#enqueueChanges} instead.
+	 * {@link module:engine/model/model~Model#enqueueChange} instead.
 	 *
 	 * @protected
 	 * @param {module:engine/model/model~Model} model
@@ -141,7 +141,7 @@ export default class Writer {
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
 	 * If you want to move {@link module:engine/model/range~Range range} instead of an
-	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/batch~Batch#move move}.
+	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move move}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/documentfragment~DocumentFragment}
 	 * item Item or document fragment to insert.
@@ -259,7 +259,7 @@ export default class Writer {
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
 	 * If you want to move {@link module:engine/model/range~Range range} instead of an
-	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/batch~Batch#move move}.
+	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move move}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/documentfragment~DocumentFragment}
 	 * item Item or document fragment to insert.
@@ -396,7 +396,7 @@ export default class Writer {
 	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
 	 * (element or document fragment) or between {@link module:engine/model/document~Document#roots documents roots},
 	 * but you can not move items from document fragment to the document or from one detached element to another. Use
-	 * {@link module:engine/model/batch~Batch#insert} in such cases.
+	 * {@link module:engine/model/writer~Writer#insert} in such cases.
 	 *
 	 * @param {module:engine/model/range~Range} range Source range.
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
@@ -427,7 +427,7 @@ export default class Writer {
 		if ( !isSameTree( range.root, position.root ) ) {
 			/**
 			 * Range is going to be moved within not the same document. Please use
-			 * {@link module:engine/model/batch~Batch#insert insert} instead.
+			 * {@link module:engine/model/writer~Writer#insert insert} instead.
 			 *
 			 * @error writer-move-different-document
 			 */

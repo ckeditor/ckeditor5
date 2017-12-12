@@ -11,7 +11,7 @@ import MoveDelta from './movedelta';
 import DeltaFactory from './deltafactory';
 
 /**
- * To provide specific OT behavior and better collisions solving, {@link module:engine/model/batch~Batch#remove} method
+ * To provide specific OT behavior and better collisions solving, {@link module:engine/model/writer~Writer#remove} method
  * uses the `RemoveDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
  * @extends module:engine/model/delta/delta~Delta

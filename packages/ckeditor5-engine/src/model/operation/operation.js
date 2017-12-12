@@ -22,7 +22,7 @@ export default class Operation {
 	constructor( baseVersion ) {
 		/**
 		 * {@link module:engine/model/document~Document#version} on which operation can be applied. If you try to
-		 * {@link module:engine/model/document~Document#applyOperation apply} operation with different base version than the
+		 * {@link module:engine/model/model~Model#applyOperation apply} operation with different base version than the
 		 * {@link module:engine/model/document~Document#version document version} the
 		 * {@link module:utils/ckeditorerror~CKEditorError model-document-applyOperation-wrong-version} error is thrown.
 		 *

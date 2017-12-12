@@ -30,9 +30,9 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * 3. Change `Node` that was already added to the model using `Batch` API.
  *
  * Similarly, you cannot use `Batch` API on a node that has not been added to the model tree, with the exception
- * of {@link module:engine/model/batch~Batch#insert inserting} that node to the model tree.
+ * of {@link module:engine/model/writer~Writer#insert inserting} that node to the model tree.
  *
- * Be aware that using {@link module:engine/model/batch~Batch#remove remove from Batch API} does not allow to use `Node` API because
+ * Be aware that using {@link module:engine/model/writer~Writer#remove remove from Batch API} does not allow to use `Node` API because
  * the information about `Node` is still kept in model document.
  *
  * In case of {@link module:engine/model/element~Element element node}, adding and removing children also counts as changing a node and
