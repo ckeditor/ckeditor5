@@ -112,7 +112,7 @@ describe( 'EasyImage', () => {
 							reject( new Error( data.title ) );
 						} );
 
-						editor.document.on( 'change', () => {
+						editor.model.document.on( 'change', () => {
 							// Check whether the image is uploaded and the image's src is replaced correctly.
 							if ( editor.getData() === '<figure class="image"><img src="http://image.mock.url/"></figure>' ) {
 								editor.destroy().then( resolve );
