@@ -24,6 +24,6 @@ module.exports = function buildApiDocs() {
 				'!' + process.cwd() + '/packages/ckeditor5-*/src/lib/**/*.js',
 				'!' + process.cwd() + '/packages/ckeditor5-build-*/src/**/*.js'
 			],
-			validateOnly: process.argv[ 3 ] == '--validate-only'
+			validateOnly: process.argv.includes( '--validate-only' )
 		} );
 };
