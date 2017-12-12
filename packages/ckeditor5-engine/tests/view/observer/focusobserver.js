@@ -115,13 +115,13 @@ describe( 'FocusObserver', () => {
 			expect( viewDocument.isFocused ).to.be.true;
 		} );
 
-		it( 'should delay rendering to the next iteration of event loop', () => {
+		it( 'should delay rendering by 50ms', () => {
 			const renderSpy = sinon.spy( viewDocument, 'render' );
 			const clock = sinon.useFakeTimers();
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 			sinon.assert.notCalled( renderSpy );
-			clock.tick( 0 );
+			clock.tick( 50 );
 			sinon.assert.called( renderSpy );
 
 			clock.restore();
@@ -134,7 +134,7 @@ describe( 'FocusObserver', () => {
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 			sinon.assert.notCalled( renderSpy );
 			observer.destroy();
-			clock.tick( 0 );
+			clock.tick( 50 );
 			sinon.assert.notCalled( renderSpy );
 
 			clock.restore();
