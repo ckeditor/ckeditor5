@@ -64,7 +64,7 @@ describe( 'InputCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'uses enqueueChanges', () => {
+		it( 'uses enqueueChange', () => {
 			setData( model, '<p>foo[]bar</p>' );
 
 			model.enqueueChange( () => {
