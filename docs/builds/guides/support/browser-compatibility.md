@@ -53,3 +53,9 @@ When working on mobile support we need to consider two complex aspects:
 	Mobile browsers (especially mobile Safari) work differently than their desktop equivalents. [Chrome's incomplete `keydown` event](https://bugs.chromium.org/p/chromium/issues/detail?id=118639) is just one of the issues that we need to deal with.
 
 	For several years we have worked with W3C on [fixing `contentEditable`](https://medium.com/content-uneditable/fixing-contenteditable-1a9a5073c35d) &mdash; a technology on which the entire browser-based editing is based. Recently, browser vendors started implementing the core part of [the new specifications](http://w3c.github.io/editing/) &mdash; the `beforeinput` event which has a chance to improve the situation. CKEditor 5's architecture was designed with this event in mind, so we will start taking advantage of it as soon as it proves to be stable enough.
+
+## Quality assurance
+
+To ensure the highest quality, we maintain a complete test suite with a stable 100% of code coverage for each of the packages. As of December 2017, this means over 7000 tests and the number is growing.
+
+Such an extensive test suite requires a proper continuous integration service. We use [Travis CI](https://travis-ci.com/) as a build platform and [BrowserStack](https://www.browserstack.com/) to be able to run tests on all browsers. These services ensure seamless and fast developer experience and allow us to focus on the job.
