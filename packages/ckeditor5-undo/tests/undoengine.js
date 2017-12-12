@@ -4,17 +4,17 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import UndoEngine from '../src/undoengine';
 
 describe( 'UndoEngine', () => {
-	let editor, undo, batch, doc, root;
+	let editor, undo, model, root;
 
 	beforeEach( () => {
 		editor = new ModelTestEditor();
 
-		doc = editor.document;
-		batch = doc.batch();
-		root = doc.getRoot();
+		model = editor.model;
+		root = model.document.getRoot();
 
 		undo = new UndoEngine( editor );
 		undo.init();
@@ -37,7 +37,9 @@ describe( 'UndoEngine', () => {
 			expect( undo._undoCommand.addBatch.called ).to.be.false;
 			expect( undo._redoCommand.clearStack.called ).to.be.false;
 
-			batch.insertText( 'foobar', root );
+			model.change( writer => {
+				writer.insertText( 'foobar', root );
+			} );
 
 			expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
 			expect( undo._redoCommand.clearStack.calledOnce ).to.be.true;
@@ -46,8 +48,10 @@ describe( 'UndoEngine', () => {
 		it( 'should add each batch only once', () => {
 			sinon.spy( undo._undoCommand, 'addBatch' );
 
-			batch.insertText( 'foobar', root );
-			batch.insertText( 'foobar', root );
+			model.change( writer => {
+				writer.insertText( 'foobar', root );
+				writer.insertText( 'foobar', root );
+			} );
 
 			expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
 		} );
@@ -56,9 +60,13 @@ describe( 'UndoEngine', () => {
 			sinon.spy( undo._undoCommand, 'addBatch' );
 			sinon.spy( undo._redoCommand, 'clearStack' );
 
+			const batch = new Batch();
+
 			undo._redoCommand._createdBatches.add( batch );
 
-			batch.insertText( 'foobar', root );
+			model.enqueueChange( batch, writer => {
+				writer.insertText( 'foobar', root );
+			} );
 
 			expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
 			expect( undo._redoCommand.clearStack.called ).to.be.false;
@@ -68,7 +76,7 @@ describe( 'UndoEngine', () => {
 			sinon.spy( undo._redoCommand, 'addBatch' );
 			sinon.spy( undo._redoCommand, 'clearStack' );
 
-			undo._undoCommand.fire( 'revert', null, batch );
+			undo._undoCommand.fire( 'revert', null, new Batch() );
 
 			expect( undo._redoCommand.addBatch.calledOnce ).to.be.true;
 			expect( undo._redoCommand.clearStack.called ).to.be.false;
