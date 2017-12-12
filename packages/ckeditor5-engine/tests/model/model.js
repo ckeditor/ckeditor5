@@ -60,7 +60,7 @@ describe( 'Model', () => {
 			}
 		} );
 
-		it( 'should execute enqueueChanges immediately if its the first block', () => {
+		it( 'should execute enqueueChange immediately if its the first block', () => {
 			model.enqueueChange( () => {
 				changes += 'A';
 
@@ -80,7 +80,7 @@ describe( 'Model', () => {
 			}
 		} );
 
-		it( 'should be possible to enqueueChanges immediately if its the first block', () => {
+		it( 'should be possible to enqueueChange immediately if its the first block', () => {
 			model.enqueueChange( () => {
 				changes += 'A';
 
@@ -96,7 +96,7 @@ describe( 'Model', () => {
 			}
 		} );
 
-		it( 'should be possible to nest change in enqueueChanges', () => {
+		it( 'should be possible to nest change in enqueueChange', () => {
 			model.enqueueChange( () => {
 				changes += 'A';
 
@@ -118,7 +118,7 @@ describe( 'Model', () => {
 			}
 		} );
 
-		it( 'should be possible to nest enqueueChanges in enqueueChanges', () => {
+		it( 'should be possible to nest enqueueChange in enqueueChange', () => {
 			model.enqueueChange( () => {
 				changes += 'A';
 
@@ -136,7 +136,7 @@ describe( 'Model', () => {
 			}
 		} );
 
-		it( 'should be possible to nest enqueueChanges in changes', () => {
+		it( 'should be possible to nest enqueueChange in changes', () => {
 			const ret = model.change( () => {
 				changes += 'A';
 
@@ -158,7 +158,7 @@ describe( 'Model', () => {
 			}
 		} );
 
-		it( 'should be possible to nest enqueueChanges in enqueueChanges event', () => {
+		it( 'should be possible to nest enqueueChange in enqueueChange event', () => {
 			model.once( 'change', () => {
 				model.enqueueChange( () => {
 					changes += 'C';
@@ -178,7 +178,7 @@ describe( 'Model', () => {
 			expect( changes ).to.equal( 'ABCD' );
 		} );
 
-		it( 'should be possible to nest enqueueChanges in changes event', () => {
+		it( 'should be possible to nest enqueueChange in changes event', () => {
 			model.once( 'change', () => {
 				model.enqueueChange( () => {
 					changes += 'C';
@@ -198,7 +198,7 @@ describe( 'Model', () => {
 			expect( changes ).to.equal( 'ABCD' );
 		} );
 
-		it( 'should be possible to nest changes in enqueueChanges event', () => {
+		it( 'should be possible to nest changes in enqueueChange event', () => {
 			model.once( 'change', () => {
 				model.change( () => {
 					changes += 'B';
