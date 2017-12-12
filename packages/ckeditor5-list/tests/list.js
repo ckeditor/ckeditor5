@@ -16,7 +16,7 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'List', () => {
-	let editor, doc, bulletedListButton, numberedListButton;
+	let editor, model, bulletedListButton, numberedListButton;
 
 	beforeEach( () => {
 		const editorElement = document.createElement( 'div' );
@@ -25,7 +25,7 @@ describe( 'List', () => {
 		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, BlockQuote, List ] } )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
+				model = editor.model;
 
 				bulletedListButton = editor.ui.componentFactory.create( 'bulletedList' );
 				numberedListButton = editor.ui.componentFactory.create( 'numberedList' );
@@ -60,7 +60,7 @@ describe( 'List', () => {
 	} );
 
 	it( 'should bind bulleted list button model to bulledList command', () => {
-		setData( doc, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+		setData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
 
 		const command = editor.commands.get( 'bulletedList' );
 
@@ -75,7 +75,7 @@ describe( 'List', () => {
 	} );
 
 	it( 'should bind numbered list button model to numberedList command', () => {
-		setData( doc, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+		setData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
 
 		const command = editor.commands.get( 'numberedList' );
 
@@ -96,7 +96,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setData( doc, '<listItem type="bulleted" indent="0">[]</listItem>' );
+			setData( model, '<listItem type="bulleted" indent="0">[]</listItem>' );
 
 			editor.editing.view.fire( 'enter', domEvtDataStub );
 
@@ -109,7 +109,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setData( doc, '<listItem type="bulleted" indent="0">foo[]</listItem>' );
+			setData( model, '<listItem type="bulleted" indent="0">foo[]</listItem>' );
 
 			editor.editing.view.fire( 'enter', domEvtDataStub );
 
@@ -123,7 +123,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setData( doc, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+			setData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
 
 			editor.editing.view.fire( 'delete', domEvtDataStub );
 
@@ -135,7 +135,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setData( doc, '<paragraph>foo</paragraph><listItem type="bulleted" indent="0">[]foo</listItem>' );
+			setData( model, '<paragraph>foo</paragraph><listItem type="bulleted" indent="0">[]foo</listItem>' );
 
 			editor.editing.view.fire( 'delete', domEvtDataStub );
 
@@ -147,7 +147,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setData( doc, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+			setData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
 
 			editor.editing.view.fire( 'delete', domEvtDataStub );
 
@@ -159,7 +159,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setData( doc, '<listItem type="bulleted" indent="0">[fo]o</listItem>' );
+			setData( model, '<listItem type="bulleted" indent="0">[fo]o</listItem>' );
 
 			editor.editing.view.fire( 'delete', domEvtDataStub );
 
@@ -171,7 +171,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setData( doc, '<paragraph>[]foo</paragraph>' );
+			setData( model, '<paragraph>[]foo</paragraph>' );
 
 			editor.editing.view.fire( 'delete', domEvtDataStub );
 
@@ -183,7 +183,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setData( doc, '<listItem type="bulleted" indent="0">foo</listItem><listItem type="bulleted" indent="0">[]foo</listItem>' );
+			setData( model, '<listItem type="bulleted" indent="0">foo</listItem><listItem type="bulleted" indent="0">[]foo</listItem>' );
 
 			editor.editing.view.fire( 'delete', domEvtDataStub );
 
@@ -195,7 +195,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setData( doc, '<listItem type="bulleted" indent="0">fo[]o</listItem>' );
+			setData( model, '<listItem type="bulleted" indent="0">fo[]o</listItem>' );
 
 			editor.editing.view.fire( 'delete', domEvtDataStub );
 
@@ -207,7 +207,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setData( doc, '<listItem type="bulleted" indent="0">fo[]o</listItem>' );
+			setData( model, '<listItem type="bulleted" indent="0">fo[]o</listItem>' );
 
 			editor.editing.view.fire( 'delete', domEvtDataStub );
 
@@ -219,7 +219,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setData( doc, '<blockQuote><paragraph>x</paragraph></blockQuote><listItem type="bulleted" indent="0">[]foo</listItem>' );
+			setData( model, '<blockQuote><paragraph>x</paragraph></blockQuote><listItem type="bulleted" indent="0">[]foo</listItem>' );
 
 			editor.editing.view.fire( 'delete', domEvtDataStub );
 
@@ -231,7 +231,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setData( doc, '<paragraph>x</paragraph><blockQuote><listItem type="bulleted" indent="0">[]foo</listItem></blockQuote>' );
+			setData( model, '<paragraph>x</paragraph><blockQuote><listItem type="bulleted" indent="0">[]foo</listItem></blockQuote>' );
 
 			editor.editing.view.fire( 'delete', domEvtDataStub );
 
@@ -258,7 +258,7 @@ describe( 'List', () => {
 
 		it( 'should execute indentList command on tab key', () => {
 			setData(
-				doc,
+				model,
 				'<listItem type="bulleted" indent="0">foo</listItem>' +
 				'<listItem type="bulleted" indent="0">[]bar</listItem>'
 			);
@@ -275,7 +275,7 @@ describe( 'List', () => {
 			domEvtDataStub.keyCode += getCode( 'Shift' );
 
 			setData(
-				doc,
+				model,
 				'<listItem type="bulleted" indent="0">foo</listItem>' +
 				'<listItem type="bulleted" indent="1">[]bar</listItem>'
 			);
@@ -289,7 +289,7 @@ describe( 'List', () => {
 		} );
 
 		it( 'should not indent if command is disabled', () => {
-			setData( doc, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+			setData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
 
 			editor.editing.view.fire( 'keydown', domEvtDataStub );
 
@@ -302,7 +302,7 @@ describe( 'List', () => {
 			domEvtDataStub.keyCode += getCode( 'alt' );
 
 			setData(
-				doc,
+				model,
 				'<listItem type="bulleted" indent="0">foo</listItem>' +
 				'<listItem type="bulleted" indent="0">[]bar</listItem>'
 			);

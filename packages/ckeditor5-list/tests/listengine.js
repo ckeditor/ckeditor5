@@ -24,7 +24,7 @@ import { getData as getModelData, setData as setModelData, parse as parseModel }
 import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'ListEngine', () => {
-	let editor, modelDoc, modelRoot, viewDoc, viewRoot;
+	let editor, model, modelDoc, modelRoot, viewDoc, viewRoot;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -34,7 +34,8 @@ describe( 'ListEngine', () => {
 			.then( newEditor => {
 				editor = newEditor;
 
-				modelDoc = editor.document;
+				model = editor.model;
+				modelDoc = model.document;
 				modelRoot = modelDoc.getRoot();
 
 				viewDoc = editor.editing.view;
@@ -47,17 +48,17 @@ describe( 'ListEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( modelDoc.schema.hasItem( 'listItem' ) );
-		expect( modelDoc.schema.itemExtends( 'listItem', '$block' ) );
+		expect( model.schema.hasItem( 'listItem' ) );
+		expect( model.schema.itemExtends( 'listItem', '$block' ) );
 
-		expect( modelDoc.schema.check( { name: '$inline', inside: 'listItem' } ) ).to.be.true;
-		expect( modelDoc.schema.check( { name: 'listItem', inside: 'listItem' } ) ).to.be.false;
-		expect( modelDoc.schema.check( { name: '$block', inside: 'listItem' } ) ).to.be.false;
+		expect( model.schema.check( { name: '$inline', inside: 'listItem' } ) ).to.be.true;
+		expect( model.schema.check( { name: 'listItem', inside: 'listItem' } ) ).to.be.false;
+		expect( model.schema.check( { name: '$block', inside: 'listItem' } ) ).to.be.false;
 
-		expect( modelDoc.schema.check( { name: 'listItem', inside: '$root' } ) ).to.be.false;
-		expect( modelDoc.schema.check( { name: 'listItem', inside: '$root', attributes: [ 'indent' ] } ) ).to.be.false;
-		expect( modelDoc.schema.check( { name: 'listItem', inside: '$root', attributes: [ 'type' ] } ) ).to.be.false;
-		expect( modelDoc.schema.check( { name: 'listItem', inside: '$root', attributes: [ 'indent', 'type' ] } ) ).to.be.true;
+		expect( model.schema.check( { name: 'listItem', inside: '$root' } ) ).to.be.false;
+		expect( model.schema.check( { name: 'listItem', inside: '$root', attributes: [ 'indent' ] } ) ).to.be.false;
+		expect( model.schema.check( { name: 'listItem', inside: '$root', attributes: [ 'type' ] } ) ).to.be.false;
+		expect( model.schema.check( { name: 'listItem', inside: '$root', attributes: [ 'indent', 'type' ] } ) ).to.be.true;
 	} );
 
 	describe( 'commands', () => {
@@ -116,7 +117,7 @@ describe( 'ListEngine', () => {
 					'<paragraph>yyy</paragraph>' +
 					'<listItem indent="0" type="bulleted">d</listItem>';
 
-				expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModelData );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModelData );
 			} );
 		} );
 
@@ -1039,7 +1040,7 @@ describe( 'ListEngine', () => {
 					'<listItem indent="0" type="bulleted">2</listItem>' +
 					'<paragraph>bar</paragraph>';
 
-				expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModelData );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModelData );
 			} );
 		} );
 
@@ -1542,11 +1543,9 @@ describe( 'ListEngine', () => {
 						const item1 = '<listItem indent="1" type="numbered">c</listItem>';
 						const item2 = '<listItem indent="1" type="bulleted">d</listItem>';
 
-						modelDoc.enqueueChanges( () => {
-							const batch = modelDoc.batch();
-
-							batch.append( parseModel( item1, modelDoc.schema, modelDoc.batch() ), modelRoot );
-							batch.append( parseModel( item2, modelDoc.schema, modelDoc.batch() ), modelRoot );
+						model.change( writer => {
+							writer.append( parseModel( item1, model.schema ), modelRoot );
+							writer.append( parseModel( item2, model.schema ), modelRoot );
 						} );
 					}
 				);
@@ -2658,27 +2657,25 @@ describe( 'ListEngine', () => {
 				'<paragraph>x</paragraph>' +
 				'<listItem indent="1" type="bulleted">b</listItem>';
 
-			setModelData( modelDoc, input );
+			setModelData( model, input );
 
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch( 'transparent' )
-					.insert( parseModel( inserted, modelDoc.schema, modelDoc.batch() ), modelDoc.selection.getFirstPosition() );
+			model.enqueueChange( 'transparent', writer => {
+				writer.insert( parseModel( inserted, model.schema ), modelDoc.selection.getFirstPosition() );
 			} );
 
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 		} );
 
 		describe( 'insert', () => {
 			function test( testName, input, inserted, output ) {
 				it( testName, () => {
-					setModelData( modelDoc, input );
+					setModelData( model, input );
 
-					modelDoc.enqueueChanges( () => {
-						modelDoc.batch()
-							.insert( parseModel( inserted, modelDoc.schema, modelDoc.batch() ), modelDoc.selection.getFirstPosition() );
+					model.change( writer => {
+						writer.insert( parseModel( inserted, model.schema ), modelDoc.selection.getFirstPosition() );
 					} );
 
-					expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 				} );
 			}
 
@@ -2803,32 +2800,30 @@ describe( 'ListEngine', () => {
 					'<listItem indent="1" type="bulleted">c</listItem>' +
 					'<listItem indent="1" type="bulleted">d</listItem>';
 
-				setModelData( modelDoc, input );
+				setModelData( model, input );
 
 				const item1 = '<listItem indent="1" type="numbered">c</listItem>';
 				const item2 = '<listItem indent="1" type="bulleted">d</listItem>';
 
-				modelDoc.enqueueChanges( () => {
-					const batch = modelDoc.batch();
-
-					batch.append( parseModel( item1, modelDoc.schema, modelDoc.batch() ), modelRoot );
-					batch.append( parseModel( item2, modelDoc.schema, modelDoc.batch() ), modelRoot );
+				model.change( writer => {
+					writer.append( parseModel( item1, model.schema ), modelRoot );
+					writer.append( parseModel( item2, model.schema ), modelRoot );
 				} );
 
-				expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 			} );
 		} );
 
 		describe( 'remove', () => {
 			function test( testName, input, output ) {
 				it( testName, () => {
-					setModelData( modelDoc, input );
+					setModelData( model, input );
 
-					modelDoc.enqueueChanges( () => {
-						modelDoc.batch().remove( modelDoc.selection.getFirstRange() );
+					model.change( writer => {
+						writer.remove( modelDoc.selection.getFirstRange() );
 					} );
 
-					expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 				} );
 			}
 
@@ -2879,15 +2874,15 @@ describe( 'ListEngine', () => {
 		describe( 'move', () => {
 			function test( testName, input, offset, output ) {
 				it( testName, () => {
-					setModelData( modelDoc, input );
+					setModelData( model, input );
 
 					const targetPosition = ModelPosition.createAt( modelRoot, offset );
 
-					modelDoc.enqueueChanges( () => {
-						modelDoc.batch().move( modelDoc.selection.getFirstRange(), targetPosition );
+					model.change( writer => {
+						writer.move( modelDoc.selection.getFirstRange(), targetPosition );
 					} );
 
-					expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 				} );
 			}
 
@@ -3053,40 +3048,37 @@ describe( 'ListEngine', () => {
 					'<listItem indent="0" type="bulleted">h</listItem>' +
 					'<listItem indent="1" type="bulleted">i</listItem>';
 
-				setModelData( modelDoc, modelBefore );
+				setModelData( model, modelBefore );
 
 				const element = modelDoc.selection.getFirstPosition().nodeAfter;
 
-				modelDoc.enqueueChanges( () => {
-					modelDoc.batch().rename( element, 'paragraph' );
+				model.change( writer => {
+					writer.rename( element, 'paragraph' );
 				} );
 
-				expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModel );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
 			} );
 		} );
 	} );
 
 	describe( 'paste and insertContent integration', () => {
 		it( 'should be triggered on DataController#insertContent()', () => {
-			setModelData( modelDoc,
+			setModelData( model,
 				'<listItem type="bulleted" indent="0">A</listItem>' +
 				'<listItem type="bulleted" indent="1">B[]</listItem>' +
 				'<listItem type="bulleted" indent="2">C</listItem>'
 			);
 
-			modelDoc.enqueueChanges( () => {
-				editor.data.insertContent(
-					parseModel(
-						'<listItem type="bulleted" indent="0">X</listItem>' +
-						'<listItem type="bulleted" indent="1">Y</listItem>',
-						modelDoc.schema,
-						modelDoc.batch()
-					),
-					modelDoc.selection
-				);
-			} );
+			editor.data.insertContent(
+				parseModel(
+					'<listItem type="bulleted" indent="0">X</listItem>' +
+					'<listItem type="bulleted" indent="1">Y</listItem>',
+					model.schema
+				),
+				modelDoc.selection
+			);
 
-			expect( getModelData( modelDoc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'<listItem indent="0" type="bulleted">A</listItem>' +
 				'<listItem indent="1" type="bulleted">BX</listItem>' +
 				'<listItem indent="2" type="bulleted">Y[]</listItem>' +
@@ -3096,20 +3088,18 @@ describe( 'ListEngine', () => {
 
 		// Just checking that it doesn't crash. #69
 		it( 'should work if an element is passed to DataController#insertContent()', () => {
-			setModelData( modelDoc,
+			setModelData( model,
 				'<listItem type="bulleted" indent="0">A</listItem>' +
 				'<listItem type="bulleted" indent="1">B[]</listItem>' +
 				'<listItem type="bulleted" indent="2">C</listItem>'
 			);
 
-			modelDoc.enqueueChanges( () => {
-				editor.data.insertContent(
-					new ModelElement( 'listItem', { type: 'bulleted', indent: '0' }, 'X' ),
-					modelDoc.selection
-				);
-			} );
+			editor.data.insertContent(
+				new ModelElement( 'listItem', { type: 'bulleted', indent: '0' }, 'X' ),
+				modelDoc.selection
+			);
 
-			expect( getModelData( modelDoc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'<listItem indent="0" type="bulleted">A</listItem>' +
 				'<listItem indent="1" type="bulleted">BX[]</listItem>' +
 				'<listItem indent="2" type="bulleted">C</listItem>'
@@ -3118,20 +3108,18 @@ describe( 'ListEngine', () => {
 
 		// Just checking that it doesn't crash. #69
 		it( 'should work if an element is passed to DataController#insertContent()', () => {
-			setModelData( modelDoc,
+			setModelData( model,
 				'<listItem type="bulleted" indent="0">A</listItem>' +
 				'<listItem type="bulleted" indent="1">B[]</listItem>' +
 				'<listItem type="bulleted" indent="2">C</listItem>'
 			);
 
-			modelDoc.enqueueChanges( () => {
-				editor.data.insertContent(
-					new ModelText( 'X' ),
-					modelDoc.selection
-				);
-			} );
+			editor.data.insertContent(
+				new ModelText( 'X' ),
+				modelDoc.selection
+			);
 
-			expect( getModelData( modelDoc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'<listItem indent="0" type="bulleted">A</listItem>' +
 				'<listItem indent="1" type="bulleted">BX[]</listItem>' +
 				'<listItem indent="2" type="bulleted">C</listItem>'
@@ -3139,7 +3127,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'should fix indents of pasted list items', () => {
-			setModelData( modelDoc,
+			setModelData( model,
 				'<listItem type="bulleted" indent="0">A</listItem>' +
 				'<listItem type="bulleted" indent="1">B[]</listItem>' +
 				'<listItem type="bulleted" indent="2">C</listItem>'
@@ -3151,7 +3139,7 @@ describe( 'ListEngine', () => {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( modelDoc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'<listItem indent="0" type="bulleted">A</listItem>' +
 				'<listItem indent="1" type="bulleted">BX</listItem>' +
 				'<listItem indent="2" type="bulleted">Y[]</listItem>' +
@@ -3160,7 +3148,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'should not fix indents of list items that are separated by non-list element', () => {
-			setModelData( modelDoc,
+			setModelData( model,
 				'<listItem type="bulleted" indent="0">A</listItem>' +
 				'<listItem type="bulleted" indent="1">B[]</listItem>' +
 				'<listItem type="bulleted" indent="2">C</listItem>'
@@ -3172,7 +3160,7 @@ describe( 'ListEngine', () => {
 				content: parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
 			} );
 
-			expect( getModelData( modelDoc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'<listItem indent="0" type="bulleted">A</listItem>' +
 				'<listItem indent="1" type="bulleted">BW</listItem>' +
 				'<listItem indent="2" type="bulleted">X</listItem>' +
@@ -3183,7 +3171,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'should co-work correctly with post fixer', () => {
-			setModelData( modelDoc,
+			setModelData( model,
 				'<listItem type="bulleted" indent="0">A</listItem>' +
 				'<listItem type="bulleted" indent="1">B[]</listItem>' +
 				'<listItem type="bulleted" indent="2">C</listItem>'
@@ -3195,7 +3183,7 @@ describe( 'ListEngine', () => {
 				content: parseView( '<p>X</p><ul><li>Y</li></ul>' )
 			} );
 
-			expect( getModelData( modelDoc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'<listItem indent="0" type="bulleted">A</listItem>' +
 				'<listItem indent="1" type="bulleted">BX</listItem>' +
 				'<listItem indent="0" type="bulleted">Y[]</listItem>' +
@@ -3204,7 +3192,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'should work if items are pasted between listItem elements', () => {
-			setModelData( modelDoc,
+			setModelData( model,
 				'<listItem type="bulleted" indent="0">A</listItem>' +
 				'<listItem type="bulleted" indent="1">B</listItem>[]' +
 				'<listItem type="bulleted" indent="2">C</listItem>'
@@ -3216,7 +3204,7 @@ describe( 'ListEngine', () => {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( modelDoc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'<listItem indent="0" type="bulleted">A</listItem>' +
 				'<listItem indent="1" type="bulleted">B</listItem>' +
 				'<listItem indent="1" type="bulleted">X</listItem>' +
@@ -3226,7 +3214,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'should create correct model when list items are pasted in top-level list', () => {
-			setModelData( modelDoc,
+			setModelData( model,
 				'<listItem type="bulleted" indent="0">A[]</listItem>' +
 				'<listItem type="bulleted" indent="1">B</listItem>'
 			);
@@ -3237,7 +3225,7 @@ describe( 'ListEngine', () => {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( modelDoc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'<listItem indent="0" type="bulleted">AX</listItem>' +
 				'<listItem indent="1" type="bulleted">Y[]</listItem>' +
 				'<listItem indent="1" type="bulleted">B</listItem>'
@@ -3245,7 +3233,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'should create correct model when list items are pasted in non-list context', () => {
-			setModelData( modelDoc,
+			setModelData( model,
 				'<paragraph>A[]</paragraph>' +
 				'<paragraph>B</paragraph>'
 			);
@@ -3256,7 +3244,7 @@ describe( 'ListEngine', () => {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( modelDoc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'<paragraph>AX</paragraph>' +
 				'<listItem indent="0" type="bulleted">Y[]</listItem>' +
 				'<paragraph>B</paragraph>'
@@ -3264,7 +3252,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'should not crash when "empty content" is inserted', () => {
-			setModelData( modelDoc, '<paragraph>[]</paragraph>' );
+			setModelData( model, '<paragraph>[]</paragraph>' );
 
 			expect( () => {
 				editor.data.insertContent( new ModelDocumentFragment(), modelDoc.selection );
@@ -3272,7 +3260,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'should correctly handle item that is pasted without its parent', () => {
-			setModelData( modelDoc,
+			setModelData( model,
 				'<paragraph>Foo</paragraph>' +
 				'<listItem type="numbered" indent="0">A</listItem>' +
 				'<listItem type="numbered" indent="1">B</listItem>' +
@@ -3286,7 +3274,7 @@ describe( 'ListEngine', () => {
 				content: parseView( '<li>X</li>' )
 			} );
 
-			expect( getModelData( modelDoc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem indent="0" type="numbered">A</listItem>' +
 				'<listItem indent="1" type="numbered">B</listItem>' +
@@ -3296,7 +3284,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'should correctly handle item that is pasted without its parent #2', () => {
-			setModelData( modelDoc,
+			setModelData( model,
 				'<paragraph>Foo</paragraph>' +
 				'<listItem type="numbered" indent="0">A</listItem>' +
 				'<listItem type="numbered" indent="1">B</listItem>' +
@@ -3310,7 +3298,7 @@ describe( 'ListEngine', () => {
 				content: parseView( '<li>X<ul><li>Y</li></ul></li>' )
 			} );
 
-			expect( getModelData( modelDoc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem indent="0" type="numbered">A</listItem>' +
 				'<listItem indent="1" type="numbered">B</listItem>' +
@@ -3328,7 +3316,7 @@ describe( 'ListEngine', () => {
 			}, { priority: 'highest' } );
 
 			// Paragraph is needed, otherwise selection throws.
-			setModelData( modelDoc, '<paragraph>x</paragraph><listItem indent="0" type="bulleted"></listItem>' );
+			setModelData( model, '<paragraph>x</paragraph><listItem indent="0" type="bulleted"></listItem>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p>' );
 		} );
@@ -3339,9 +3327,11 @@ describe( 'ListEngine', () => {
 			}, { priority: 'highest' } );
 
 			// Paragraph is needed to prevent autoparagraphing of empty editor.
-			setModelData( modelDoc, '<paragraph>x</paragraph><listItem indent="0" type="bulleted"></listItem>' );
+			setModelData( model, '<paragraph>x</paragraph><listItem indent="0" type="bulleted"></listItem>' );
 
-			modelDoc.batch().remove( modelRoot.getChild( 1 ) );
+			model.change( writer => {
+				writer.remove( modelRoot.getChild( 1 ) );
+			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p><ul><li></li></ul>' );
 		} );
@@ -3351,9 +3341,11 @@ describe( 'ListEngine', () => {
 				consumable.consume( data.item, 'changeAttribute:type' );
 			}, { priority: 'highest' } );
 
-			setModelData( modelDoc, '<listItem indent="0" type="bulleted"></listItem>' );
+			setModelData( model, '<listItem indent="0" type="bulleted"></listItem>' );
 
-			modelDoc.batch().setAttribute( 'type', 'numbered', modelRoot.getChild( 0 ) );
+			model.change( writer => {
+				writer.setAttribute( 'type', 'numbered', modelRoot.getChild( 0 ) );
+			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li></li></ul>' );
 		} );
@@ -3363,9 +3355,11 @@ describe( 'ListEngine', () => {
 				consumable.consume( data.item, 'changeAttribute:indent' );
 			}, { priority: 'highest' } );
 
-			setModelData( modelDoc, '<listItem indent="0" type="bulleted">a</listItem><listItem indent="0" type="bulleted">b</listItem>' );
+			setModelData( model, '<listItem indent="0" type="bulleted">a</listItem><listItem indent="0" type="bulleted">b</listItem>' );
 
-			modelDoc.batch().setAttribute( 'indent', 1, modelRoot.getChild( 1 ) );
+			model.change( writer => {
+				writer.setAttribute( 'indent', 1, modelRoot.getChild( 1 ) );
+			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li>a</li><li>b</li></ul>' );
 		} );
@@ -3377,7 +3371,7 @@ describe( 'ListEngine', () => {
 
 			editor.setData( '<p></p><ul><li></li></ul>' );
 
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 
 		it( 'view ul converter should not fire if change was already consumed', () => {
@@ -3387,7 +3381,7 @@ describe( 'ListEngine', () => {
 
 			editor.setData( '<p></p><ul><li></li></ul>' );
 
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 
 		it( 'view converter should pass model document fragment in data.output', () => {
@@ -3411,7 +3405,9 @@ describe( 'ListEngine', () => {
 				.to.equal( '<ul><li>Foo<span></span></li><li>Bar</li></ul>' );
 
 			// Change indent of the second list item.
-			modelDoc.batch().setAttribute( 'indent', 1, modelRoot.getChild( 1 ) );
+			model.change( writer => {
+				writer.setAttribute( 'indent', 1, modelRoot.getChild( 1 ) );
+			} );
 
 			// Check if the new <ul> was added at correct position.
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -3431,7 +3427,9 @@ describe( 'ListEngine', () => {
 				.to.equal( '<ul><li>Foo<span></span></li><li>Bar<ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
 
 			// Remove second list item. Expect that its sub-list will be moved to first list item.
-			modelDoc.batch().remove( modelRoot.getChild( 1 ) );
+			model.change( writer => {
+				writer.remove( modelRoot.getChild( 1 ) );
+			} );
 
 			// Check if the <ul> was added at correct position.
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -3453,7 +3451,9 @@ describe( 'ListEngine', () => {
 				// Append ui element before <ul>.
 				viewRoot.insertChildren( 0, [ uiElement ] );
 
-				modelDoc.batch().remove( liFoo );
+				model.change( writer => {
+					writer.remove( liFoo );
+				} );
 
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 					.to.equal( '<span></span><ul><li>Bar</li></ul>' );
@@ -3463,7 +3463,9 @@ describe( 'ListEngine', () => {
 				// Append ui element before <ul>.
 				viewRoot.getChild( 0 ).insertChildren( 0, [ uiElement ] );
 
-				modelDoc.batch().remove( liFoo );
+				model.change( writer => {
+					writer.remove( liFoo );
+				} );
 
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 					.to.equal( '<ul><span></span><li>Bar</li></ul>' );
@@ -3473,7 +3475,9 @@ describe( 'ListEngine', () => {
 				// Append ui element before <ul>.
 				viewRoot.getChild( 0 ).insertChildren( 1, [ uiElement ] );
 
-				modelDoc.batch().remove( liBar );
+				model.change( writer => {
+					writer.remove( liBar );
+				} );
 
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 					.to.equal( '<ul><li>Foo</li><span></span></ul>' );
@@ -3509,21 +3513,21 @@ describe( 'ListEngine', () => {
 		const selEnd = input.indexOf( ']' );
 
 		const item = input.substring( selStart, selEnd );
-		const model = input.substring( 0, selStart ) + input.substring( selEnd );
+		const modelInput = input.substring( 0, selStart ) + input.substring( selEnd );
 
 		const actionCallback = () => {
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().insert( parseModel( item, modelDoc.schema, modelDoc.batch() ), modelDoc.selection.getFirstPosition() );
+			model.change( writer => {
+				writer.insert( parseModel( item, model.schema ), modelDoc.selection.getFirstPosition() );
 			} );
 		};
 
-		_test( testName, model, output, actionCallback, testUndo );
+		_test( testName, modelInput, output, actionCallback, testUndo );
 	}
 
 	function testRemove( testName, input, output ) {
 		const actionCallback = () => {
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().remove( modelDoc.selection.getFirstRange() );
+			model.change( writer => {
+				writer.remove( modelDoc.selection.getFirstRange() );
 			} );
 		};
 
@@ -3535,8 +3539,8 @@ describe( 'ListEngine', () => {
 			const element = modelDoc.selection.getFirstPosition().nodeAfter;
 			const newType = element.getAttribute( 'type' ) == 'numbered' ? 'bulleted' : 'numbered';
 
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().setAttribute( 'type', newType, modelDoc.selection.getFirstRange() );
+			model.change( writer => {
+				writer.setAttribute( 'type', newType, modelDoc.selection.getFirstRange() );
 			} );
 		};
 
@@ -3547,12 +3551,10 @@ describe( 'ListEngine', () => {
 		const actionCallback = () => {
 			const element = modelDoc.selection.getFirstPosition().nodeAfter;
 
-			modelDoc.enqueueChanges( () => {
-				const batch = modelDoc.batch();
-
-				batch.rename( element, 'paragraph' );
-				batch.removeAttribute( 'type', element );
-				batch.removeAttribute( 'indent', element );
+			model.change( writer => {
+				writer.rename( element, 'paragraph' );
+				writer.removeAttribute( 'type', element );
+				writer.removeAttribute( 'indent', element );
 			} );
 		};
 
@@ -3563,11 +3565,9 @@ describe( 'ListEngine', () => {
 		const actionCallback = () => {
 			const element = modelDoc.selection.getFirstPosition().nodeAfter;
 
-			modelDoc.enqueueChanges( () => {
-				const batch = modelDoc.batch();
-
-				batch.setAttributes( { type: 'bulleted', indent: newIndent }, element );
-				batch.rename( element, 'listItem' );
+			model.change( writer => {
+				writer.setAttributes( { type: 'bulleted', indent: newIndent }, element );
+				writer.rename( element, 'listItem' );
 			} );
 		};
 
@@ -3576,8 +3576,8 @@ describe( 'ListEngine', () => {
 
 	function testChangeIndent( testName, newIndent, input, output ) {
 		const actionCallback = () => {
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().setAttribute( 'indent', newIndent, modelDoc.selection.getFirstRange() );
+			model.change( writer => {
+				writer.setAttribute( 'indent', newIndent, modelDoc.selection.getFirstRange() );
 			} );
 		};
 
@@ -3588,8 +3588,8 @@ describe( 'ListEngine', () => {
 		const actionCallback = () => {
 			const targetPosition = ModelPosition.createAt( modelRoot, rootOffset );
 
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().move( modelDoc.selection.getFirstRange(), targetPosition );
+			model.change( writer => {
+				writer.move( modelDoc.selection.getFirstRange(), targetPosition );
 			} );
 		};
 
@@ -3598,7 +3598,7 @@ describe( 'ListEngine', () => {
 
 	function _test( testName, input, output, actionCallback, testUndo = true ) {
 		it( testName, () => {
-			setModelData( modelDoc, input );
+			setModelData( model, input );
 
 			actionCallback();
 
@@ -3608,24 +3608,24 @@ describe( 'ListEngine', () => {
 		const undoTestFunction = testUndo ? it : it.skip;
 
 		undoTestFunction( testName + ' (undo integration)', () => {
-			setModelData( modelDoc, input );
+			setModelData( model, input );
 
 			const modelBefore = input;
 			const viewBefore = getViewData( viewDoc, { withoutSelection: true } );
 
 			actionCallback();
 
-			const modelAfter = getModelData( modelDoc );
+			const modelAfter = getModelData( model );
 			const viewAfter = getViewData( viewDoc, { withoutSelection: true } );
 
 			editor.execute( 'undo' );
 
-			expect( getModelData( modelDoc ) ).to.equal( modelBefore );
+			expect( getModelData( model ) ).to.equal( modelBefore );
 			expect( getViewData( viewDoc, { withoutSelection: true } ) ).to.equal( viewBefore );
 
 			editor.execute( 'redo' );
 
-			expect( getModelData( modelDoc ) ).to.equal( modelAfter );
+			expect( getModelData( model ) ).to.equal( modelAfter );
 			expect( getViewData( viewDoc, { withoutSelection: true } ) ).to.equal( viewAfter );
 		} );
 	}
