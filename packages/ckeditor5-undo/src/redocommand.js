@@ -31,7 +31,7 @@ export default class RedoCommand extends BaseCommand {
 	execute() {
 		const item = this._stack.pop();
 
-		// All changes have to be done in one `enqueueChanges` callback so other listeners will not
+		// All changes have to be done in one `enqueueChange` callback so other listeners will not
 		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.
 		this.editor.model.enqueueChange( () => {
 			const lastDelta = item.batch.deltas[ item.batch.deltas.length - 1 ];
