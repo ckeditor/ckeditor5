@@ -35,6 +35,15 @@
 			text-overflow: ellipsis;
 		}
 	}
+
+	&.ck-buttondropdown .ck-toolbar {
+		border: 0;
+		padding: 0;
+
+		& .ck-button {
+			border-radius: 0;
+		}
+	}
 }
 
 .ck-dropdown__panel {
