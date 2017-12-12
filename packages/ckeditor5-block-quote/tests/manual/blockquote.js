@@ -25,5 +25,5 @@ ClassicEditor
 	} );
 
 window.setInterval( function() {
-	console.log( getData( window.editor.document ) );
+	console.log( getData( window.editor.model ) );
 }, 3000 );
