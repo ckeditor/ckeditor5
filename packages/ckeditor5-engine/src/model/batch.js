@@ -10,25 +10,21 @@
 /**
  * `Batch` instance groups model changes ({@link module:engine/model/delta/delta~Delta deltas}). All deltas grouped in a single `Batch`
  * can be reverted together, so you can think about `Batch` as of a single undo step. If you want to extend given undo step you
- * can call another method on the same `Batch` object. If you want to create a separate undo step you can create a new `Batch`.
+ * can add more changes to the batch using {@link module:engine/model~model#enqueueChange}:
  *
- * For example to create two separate undo steps you can call:
+ *		model.enqueueChange( batch, writer => {
+ *			writer.insertText( 'foo', paragraph, 'end' );
+ *		} );
  *
- *		doc.batch().insert( 'foo', firstPosition );
- *		doc.batch().insert( 'bar', secondPosition );
- *
- * To create a single undo step:
- *
- *		const batch = doc.batch();
- *		batch.insert( 'foo', firstPosition );
- *		batch.insert( 'bar', secondPosition );
- *
+ * @see module:engine/model~model#enqueueChange
+ * @see module:engine/model~model#change
  */
 export default class Batch {
 	/**
-	 * Creates `Batch` instance. Not recommended to use directly, use {@link module:engine/model~model#change} or
-	 * {@link module:engine/model~model#enqueueChanges} instead.
+	 * Creates `Batch` instance.
 	 *
+	 * @see module:engine/model~model#enqueueChange
+	 * @see module:engine/model~model#change
 	 * @param {'transparent'|'default'} [type='default'] Type of the batch.
 	 */
 	constructor( type = 'default' ) {

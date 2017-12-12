@@ -15,21 +15,38 @@ import MarkerCollection from './markercollection';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
+/**
+ * Editors data model class. Model defines all data: either nodes users see in editable roots, grouped as the
+ * {@link #document}, and all detached nodes, used to data manipulation. All of them are
+ * created and modified by the {@link module:engine/model/model~Writer}, which can be get using
+ * {@link #change} or {@link #enqueueChange} methods.
+ */
 export default class Model {
 	constructor() {
+		/**
+		 * All callbacks added by {@link #change} or {@link #enqueueChange} methods waiting to be executed.
+		 *
+		 * @private
+		 * @type {Array.<Function>}
+		 */
 		this._pendingChanges = [];
 
+		/**
+		 * Editors document model.
+		 *
+		 * @member {module:engine/model/document~Document}
+		 */
 		this.document = new Document( this );
 
 		/**
-		 * Schema for this document.
+		 * Schema for editors model.
 		 *
 		 * @member {module:engine/model/schema~Schema}
 		 */
 		this.schema = new Schema();
 
 		/**
-		 * Document's markers' collection.
+		 * Models markers' collection.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/markercollection~MarkerCollection}
@@ -39,6 +56,43 @@ export default class Model {
 		this.decorate( 'applyOperation' );
 	}
 
+	/**
+	 * Change method is the primary way of changing the model. You should use it to modify any node, including detached
+	 * nodes, not added to the {@link #document}.
+	 *
+	 *		model.change( writer => {
+	 *			writer.insertText( 'foo', paragraph, 'end' );
+	 *		} );
+	 *
+	 * All changes inside the change block use the same {@link module:engine/model/batch~Batch} so share the same
+	 * undo step.
+	 *
+	 *		model.change( writer => {
+	 *			writer.insertText( 'foo', paragraph, 'end' ); // foo
+	 *
+	 *			model.change( writer => {
+	 *				writer.insertText( 'bar', paragraph, 'end' ); // foobar
+	 *			} );
+	 *
+	 * 			writer.insertText( 'bom', paragraph, 'end' ); // foobarbom
+	 *		} );
+	 *
+	 * Change block is executed imminently.
+	 *
+	 * You can also return a value from the change block.
+	 *
+	 *		const img = model.change( writer => {
+	 *			return writer.createElement( 'img' );
+	 *		} );
+	 *
+	 * When the outermost block is done the {@link #event:change} event is fired.
+	 *
+	 * @see #enqueueChange
+	 * @fires event:change
+	 * @fires event:changesDone
+	 * @param {Function} callback Callback function which may modify the model.
+	 * @returns {*} Value returned by the callback
+	 */
 	change( callback ) {
 		if ( this._pendingChanges.length === 0 ) {
 			this._pendingChanges.push( { batch: new Batch(), callback } );
@@ -49,6 +103,39 @@ export default class Model {
 		}
 	}
 
+	/**
+	 * `enqueueChange` method is very similar to the {@link #change change method}, with two major differences.
+	 *
+	 * First, the callback of the `enqueueChange` is executed when all other changes are done. It might be executed
+	 * imminently if it is not nested in any other change block, but if it is nested in another change it will be delayed
+	 * and executed after the outermost block. If will be also executed after all previous `enqueueChange` blocks.
+	 *
+	 *		model.change( writer => {
+	 *			console.log( 1 );
+	 *
+	 *			model.enqueueChange( writer => {
+	 *				console.log( 3 );
+	 *			} );
+	 *
+	 * 			console.log( 2 );
+	 *		} );
+	 *
+	 * Second, it let you define the {@link module:engine/model/batch~Batch} to which you want to add your changes.
+	 * By default it creates a new batch, note that in the sample above `change` and `enqueueChange` blocks use a different
+	 * batch (and different {@link module:engine/model/writer~Writer} since each of them operates on the separate batch).
+	 *
+	 * Using `enqueueChange` block you can also add some changes to the batch you used before.
+	 *
+	 *		model.enqueueChange( batch, writer => {
+	 *			writer.insertText( 'foo', paragraph, 'end' );
+	 *		} );
+	 *
+	 * @fires event:change
+	 * @fires event:changesDone
+	 * @param {[<module:engine/model/batch~Batch|String>]} batchOrType Batch or batch type should be used in the callback.
+	 * If not defined new batch will be created.
+	 * @param {Function} callback Callback function which may modify the model.
+	 */
 	enqueueChange( batchOrType, callback ) {
 		if ( typeof batchOrType === 'string' ) {
 			batchOrType = new Batch( batchOrType );
@@ -64,6 +151,13 @@ export default class Model {
 		}
 	}
 
+	/**
+	 * Common part of {@link #change} and {@link #enqueueChange} which calls callbacks and returns array of values
+	 * returned by these callbacks.
+	 *
+	 * @private
+	 * @returns {Array.<*>} Array of values returned by callbacks.
+	 */
 	_runPendingChanges() {
 		const ret = [];
 
@@ -84,6 +178,14 @@ export default class Model {
 		return ret;
 	}
 
+	/**
+	 * {@link #decorate Decorated} function to apply {@link module:engine/model/operation/operation~Operation operations}
+	 * on the model.
+	 *
+	 * @param {module:engine/model/operation/operation~Operation} operation Operation to apply
+	 * @returns {Object} Object with additional information about the applied changes. It properties depends on the
+	 * operation type.
+	 */
 	applyOperation( operation ) {
 		return operation._execute();
 	}
@@ -95,6 +197,25 @@ export default class Model {
 		this.document.destroy();
 		this.stopListening();
 	}
+
+	/**
+	 * Fires after leaving each {@link #enqueueChange} block or outermost {@link #change} block.
+	 * Have the same parameters as {@link module:engine/model/document~Document#change}.
+	 *
+	 * @event change
+	 */
+
+	/**
+	 * Fires when all queued model changes are done.
+	 *
+	 * @see #change
+	 * @see #enqueueChange
+	 * @event changesDone
+	 */
+
+	/**
+	 * @event applyOperation
+	 */
 }
 
 mix( Model, ObservableMixin );

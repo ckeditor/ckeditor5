@@ -31,14 +31,6 @@ const graveyardName = '$graveyard';
  * {@link module:engine/model/document~Document#roots root elements}, for example if the editor have multiple editable areas,
  * each area will be represented by the separate root.
  *
- * All changes in the document are done by {@link module:engine/model/operation/operation~Operation operations}. To create operations in
- * a simple way, use the {@link module:engine/model/batch~Batch} API, for example:
- *
- *		const batch = doc.batch();
- *		batch.insert( node, position );
- *		batch.split( otherPosition );
- *
- * @see module:engine/model/document~Document#batch
  * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class Document {
@@ -47,6 +39,12 @@ export default class Document {
 	 * the {@link #graveyard graveyard root}).
 	 */
 	constructor( model ) {
+		/**
+		 * {@link module:engine/model/model~Model} the document is part of.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/model~Model}
+		 */
 		this.model = model;
 
 		/**

@@ -41,24 +41,28 @@ import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * `Batch` instance groups document changes ({@link module:engine/model/delta/delta~Delta deltas}). All deltas grouped in a single `Batch`
- * can be reverted together, so you can think about `Batch` as of a single undo step. If you want to extend given undo step you
- * can call another method on the same `Batch` object. If you want to create a separate undo step you can create a new `Batch`.
+ * Model writer it the proper way of modifying model. It should be used whenever you wants to create node, modify
+ * child nodes, attributes or text. To get writer use {@link module:engine/model~model#change} or
+ * {@link @see module:engine/model~model#enqueueChange}.
  *
- * For example to create two separate undo steps you can call:
+ *		model.change( writer => {
+ *			writer.insertText( 'foo', paragraph, 'end' );
+ *		} );
  *
- *		doc.batch().insert( 'foo', firstPosition );
- *		doc.batch().insert( 'bar', secondPosition );
+ * Note that writer can be passed to a nested function but you should never store and use it outside the `change` or
+ * `enqueueChange` block.
  *
- * To create a single undo step:
- *
- *		const batch = doc.batch();
- *		writer.insert( 'foo', firstPosition );
- *		writer.insert( 'bar', secondPosition );
- *
+ * @see module:engine/model~model#change
+ * @see module:engine/model~model#enqueueChange
  */
 export default class Writer {
 	/**
+	 * Writer class constructor.
+	 *
+	 * It is not recommended to use it directly, use {@link module:engine/model~model#change} or
+	 * {@link module:engine/model~model#enqueueChanges} instead.
+	 *
+	 * @protected
 	 * @param {module:engine/model~Model} model
 	 * @param {module:engine/model/batch~Batch} batch
 	 */
