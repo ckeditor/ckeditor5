@@ -306,6 +306,21 @@ describe( 'Model', () => {
 		} );
 	} );
 
+	describe( 'applyOperation', () => {
+		it( 'should execute provided operation end return the result of operation', () => {
+			const returnValue = { foo: 'bar' };
+
+			const operation = {
+				_execute: sinon.stub().returns( returnValue )
+			};
+
+			model.applyOperation( operation );
+
+			sinon.assert.calledOnce( operation._execute );
+			expect( model.applyOperation( operation ) ).to.equal( returnValue );
+		} );
+	} );
+
 	describe( 'destroy()', () => {
 		it( 'should destroy document', () => {
 			sinon.spy( model.document, 'destroy' );
