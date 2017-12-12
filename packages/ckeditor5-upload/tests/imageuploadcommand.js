@@ -22,7 +22,7 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ImageUploadCommand', () => {
-	let editor, command, doc, fileRepository;
+	let editor, command, model, doc, fileRepository;
 
 	testUtils.createSinonSandbox();
 
@@ -42,11 +42,12 @@ describe( 'ImageUploadCommand', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+				model = editor.model;
+				doc = model.document;
+
 				command = new ImageUploadCommand( editor );
 
-				doc = editor.document;
-
-				const schema = doc.schema;
+				const schema = model.schema;
 				schema.allow( { name: 'image', attributes: [ 'uploadId' ], inside: '$root' } );
 				schema.requireAttributes( 'image', [ 'uploadId' ] );
 			} );
@@ -59,57 +60,57 @@ describe( 'ImageUploadCommand', () => {
 	describe( 'execute()', () => {
 		it( 'should insert image at selection position (includes deleting selected content)', () => {
 			const file = createNativeFileMock();
-			setModelData( doc, '<paragraph>f[o]o</paragraph>' );
+			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 			command.execute( { file } );
 
 			const id = fileRepository.getLoader( file ).id;
-			expect( getModelData( doc ) )
+			expect( getModelData( model ) )
 				.to.equal( `<paragraph>f</paragraph>[<image uploadId="${ id }"></image>]<paragraph>o</paragraph>` );
 		} );
 
 		it( 'should insert directly at specified position (options.insertAt)', () => {
 			const file = createNativeFileMock();
-			setModelData( doc, '<paragraph>f[]oo</paragraph>' );
+			setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
 			const insertAt = new ModelPosition( doc.getRoot(), [ 0, 2 ] ); // fo[]o
 
 			command.execute( { file, insertAt } );
 
 			const id = fileRepository.getLoader( file ).id;
-			expect( getModelData( doc ) )
+			expect( getModelData( model ) )
 				.to.equal( `<paragraph>fo</paragraph>[<image uploadId="${ id }"></image>]<paragraph>o</paragraph>` );
 		} );
 
-		it( 'should allow to provide batch instance (options.batch)', () => {
-			const batch = doc.batch();
+		it( 'should use parent batch', () => {
 			const file = createNativeFileMock();
-			const spy = sinon.spy( batch, 'insert' );
 
-			setModelData( doc, '<paragraph>[]foo</paragraph>' );
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-			command.execute( { batch, file } );
-			const id = fileRepository.getLoader( file ).id;
+			model.change( writer => {
+				expect( writer.batch.deltas ).to.length( 0 );
 
-			expect( getModelData( doc ) ).to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
-			sinon.assert.calledOnce( spy );
+				command.execute( { file } );
+
+				expect( writer.batch.deltas ).to.length.above( 0 );
+			} );
 		} );
 
 		it( 'should not insert image nor crash when image could not be inserted', () => {
 			const file = createNativeFileMock();
-			doc.schema.registerItem( 'other' );
-			doc.schema.allow( { name: '$text', inside: 'other' } );
-			doc.schema.allow( { name: 'other', inside: '$root' } );
-			doc.schema.limits.add( 'other' );
+			model.schema.registerItem( 'other' );
+			model.schema.allow( { name: '$text', inside: 'other' } );
+			model.schema.allow( { name: 'other', inside: '$root' } );
+			model.schema.limits.add( 'other' );
 			buildModelConverter().for( editor.editing.modelToView )
 				.fromElement( 'other' )
 				.toElement( 'p' );
 
-			setModelData( doc, '<other>[]</other>' );
+			setModelData( model, '<other>[]</other>' );
 
 			command.execute( { file } );
 
-			expect( getModelData( doc ) ).to.equal( '<other>[]</other>' );
+			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
 
 		it( 'should not throw when upload adapter is not set (FileRepository will log an error anyway)', () => {
@@ -119,13 +120,13 @@ describe( 'ImageUploadCommand', () => {
 
 			const logStub = testUtils.sinon.stub( log, 'error' );
 
-			setModelData( doc, '<paragraph>fo[]o</paragraph>' );
+			setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 			expect( () => {
 				command.execute( { file } );
 			} ).to.not.throw();
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
 			expect( logStub.calledOnce ).to.be.true;
 		} );
 	} );

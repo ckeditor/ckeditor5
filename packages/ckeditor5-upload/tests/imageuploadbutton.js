@@ -20,7 +20,7 @@ import { createNativeFileMock, AdapterMock } from './_utils/mocks';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageUploadButton', () => {
-	let editor, doc, editorElement, fileRepository;
+	let editor, model, editorElement, fileRepository;
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -41,7 +41,7 @@ describe( 'ImageUploadButton', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
+				model = editor.model;
 
 				// Hide all notifications (prevent alert() calls).
 				const notification = editor.plugins.get( Notification );
@@ -93,13 +93,13 @@ describe( 'ImageUploadButton', () => {
 		const button = editor.ui.componentFactory.create( 'insertImage' );
 		const files = [ createNativeFileMock() ];
 
-		setModelData( doc, '<paragraph>f[]oo</paragraph>' );
+		setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
 		button.fire( 'done', files );
 
 		const id = fileRepository.getLoader( files[ 0 ] ).id;
 
-		expect( getModelData( doc ) ).to.equal(
+		expect( getModelData( model ) ).to.equal(
 			`[<image uploadId="${ id }" uploadStatus="reading"></image>]` +
 			'<paragraph>foo</paragraph>'
 		);
@@ -109,14 +109,14 @@ describe( 'ImageUploadButton', () => {
 		const button = editor.ui.componentFactory.create( 'insertImage' );
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
 
-		setModelData( doc, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+		setModelData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
 
 		button.fire( 'done', files );
 
 		const id1 = fileRepository.getLoader( files[ 0 ] ).id;
 		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
 
-		expect( getModelData( doc ) ).to.equal(
+		expect( getModelData( model ) ).to.equal(
 			'<paragraph>foo</paragraph>' +
 			`<image uploadId="${ id1 }" uploadStatus="reading"></image>` +
 			`[<image uploadId="${ id2 }" uploadStatus="reading"></image>]` +

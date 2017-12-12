@@ -26,7 +26,7 @@ describe( 'ImageUploadProgress', () => {
 
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
-	let editor, document, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
+	let editor, model, document, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -55,7 +55,8 @@ describe( 'ImageUploadProgress', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				document = editor.document;
+				model = editor.model;
+				document = model.document;
 				viewDocument = editor.editing.view;
 
 				fileRepository = editor.plugins.get( FileRepository );
@@ -73,7 +74,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should convert image\'s "reading" uploadStatus attribute', () => {
-		setModelData( document, '<paragraph>[]foo</paragraph>' );
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		expect( getViewData( viewDocument ) ).to.equal(
@@ -84,7 +85,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should convert image\'s "uploading" uploadStatus attribute', done => {
-		setModelData( document, '<paragraph>[]foo</paragraph>' );
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		document.once( 'changesDone', () => {
@@ -102,7 +103,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should update progressbar width on progress', done => {
-		setModelData( document, '<paragraph>[]foo</paragraph>' );
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		document.once( 'changesDone', () => {
@@ -122,7 +123,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should convert image\'s "complete" uploadStatus attribute', done => {
-		setModelData( document, '<paragraph>[]foo</paragraph>' );
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		document.once( 'changesDone', () => {
@@ -146,7 +147,7 @@ describe( 'ImageUploadProgress', () => {
 		const uploadProgress = editor.plugins.get( ImageUploadProgress );
 		uploadProgress.placeholder = base64Sample;
 
-		setModelData( document, '<paragraph>[]foo</paragraph>' );
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		expect( getViewData( viewDocument ) ).to.equal(
@@ -161,7 +162,7 @@ describe( 'ImageUploadProgress', () => {
 			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 		}, { priority: 'highest' } );
 
-		setModelData( document, '<paragraph>[]foo</paragraph>' );
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		expect( getViewData( viewDocument ) ).to.equal(
@@ -170,12 +171,12 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should not show progress bar if there is no loader with given uploadId', () => {
-		setModelData( document, '<image uploadId="123" uploadStatus="reading"></image>' );
+		setModelData( model, '<image uploadId="123" uploadStatus="reading"></image>' );
 
 		const image = document.getRoot().getChild( 0 );
 
-		document.enqueueChanges( () => {
-			document.batch().setAttribute( 'uploadStatus', 'uploading', image );
+		model.change( writer => {
+			writer.setAttribute( 'uploadStatus', 'uploading', image );
 		} );
 
 		expect( getViewData( viewDocument ) ).to.equal(
@@ -184,8 +185,8 @@ describe( 'ImageUploadProgress', () => {
 			'</figure>]'
 		);
 
-		document.enqueueChanges( () => {
-			document.batch().setAttribute( 'uploadStatus', 'complete', image );
+		model.change( writer => {
+			writer.setAttribute( 'uploadStatus', 'complete', image );
 		} );
 
 		expect( getViewData( viewDocument ) ).to.equal(
