@@ -23,7 +23,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * For instance, if a feature wants to define that an attribute bold is allowed on the text it needs to register this rule like this:
  *
- *		editor.document.schema.allow( '$text', 'bold' );
+ *		editor.model.schema.allow( '$text', 'bold' );
  *
  * Note: items prefixed with `$` are special group of items. By default, `Schema` defines three special items:
  *
@@ -152,7 +152,7 @@ export default class Schema {
 	 *		if ( schema.check( query ) ) { ... }
 	 *
 	 *		// Check whether bold and italic text can be placed at caret position.
-	 *		let caretPos = editor.document.selection.getFirstPosition();
+	 *		let caretPos = editor.model.document.selection.getFirstPosition();
 	 *		let query = {
 	 *			name: '$text',
 	 *			attributes: [ 'bold', 'italic' ],

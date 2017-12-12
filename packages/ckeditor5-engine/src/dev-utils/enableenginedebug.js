@@ -655,7 +655,7 @@ class DebugPlugin extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		const modelDocument = this.editor.document;
+		const modelDocument = this.editor.model.document;
 		const viewDocument = this.editor.editing.view;
 
 		modelDocument[ treeDump ] = [];
