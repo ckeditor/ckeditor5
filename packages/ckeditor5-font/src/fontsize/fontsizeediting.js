@@ -8,7 +8,10 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { modelAttributeToView, viewToModelAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/attributeconverters';
+import {
+	attributeElementToViewConverter,
+	viewToAttributeElementConverter
+} from '@ckeditor/ckeditor5-engine/src/conversion/attributeelementconverters';
 
 /**
  * The Font Size Editing feature.
@@ -39,10 +42,10 @@ export default class FontSizeEditing extends Plugin {
 
 		for ( const item of this.configuredItems ) {
 			// Covert view to model.
-			viewToModelAttribute( 'fontSize', item, [ data.viewToModel ] );
+			viewToAttributeElementConverter( 'fontSize', item, [ data.viewToModel ] );
 
 			// Covert model to view.
-			modelAttributeToView( 'fontSize', item, [ data.modelToView, editing.modelToView ] );
+			attributeElementToViewConverter( 'fontSize', item, [ data.modelToView, editing.modelToView ] );
 
 			// Add command.
 		}
