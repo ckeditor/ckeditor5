@@ -85,7 +85,7 @@ export default class Editor {
 		 * the content for editing.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/document~Document}
+		 * @member {module:engine/model/model~Model}
 		 */
 		this.model = new Model();
 
