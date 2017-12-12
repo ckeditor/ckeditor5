@@ -15,7 +15,7 @@ import RedoCommand from './redocommand';
  * The undo engine feature.
  *
  * Undo brings in possibility to undo and redo changes done in the model by deltas through
- * the {@link module:engine/model/document~Document#batch Batch API}.
+ * the {@link module:engine/model/writer~Writer Writer API}.
  *
  * @extends module:core/plugin~Plugin
  */
