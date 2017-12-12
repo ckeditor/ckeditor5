@@ -183,13 +183,9 @@ export default class Clipboard extends Plugin {
 
 			data.preventDefault();
 
-			model.change( writer => {
-				const content = editor.data.toView( editor.data.getSelectedContent( doc.selection ) );
+			const content = editor.data.toView( editor.data.getSelectedContent( doc.selection ) );
 
-				// This is really bad that writer is passed along with this event.
-				// We need to figure out something better.
-				editingView.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name, writer } );
-			} );
+			editingView.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name } );
 		}
 
 		this.listenTo( editingView, 'copy', onCopyCut, { priority: 'low' } );
@@ -210,9 +206,7 @@ export default class Clipboard extends Plugin {
 			}
 
 			if ( data.method == 'cut' ) {
-				model.enqueueChange( data.writer.batch, () => {
-					editor.data.deleteContent( doc.selection );
-				} );
+				editor.data.deleteContent( doc.selection );
 			}
 		}, { priority: 'low' } );
 	}
