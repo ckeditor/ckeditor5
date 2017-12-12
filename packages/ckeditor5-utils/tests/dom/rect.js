@@ -965,6 +965,27 @@ describe( 'Rect', () => {
 			expect( rects ).to.have.length( 1 );
 			assertRect( rects[ 0 ], expectedGeometry );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5-ui/issues/317
+		it( 'should return rects for a text node\'s parent (collapsed, no Range rects available)', () => {
+			const range = document.createRange();
+			const element = document.createElement( 'div' );
+			const textNode = document.createTextNode( 'abc' );
+			element.appendChild( textNode );
+
+			range.setStart( textNode, 3 );
+			range.collapse();
+			testUtils.sinon.stub( range, 'getClientRects' ).returns( [] );
+			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+
+			const expectedGeometry = Object.assign( {}, geometry );
+			expectedGeometry.right = expectedGeometry.left;
+			expectedGeometry.width = 0;
+
+			const rects = Rect.getDomRangeRects( range );
+			expect( rects ).to.have.length( 1 );
+			assertRect( rects[ 0 ], expectedGeometry );
+		} );
 	} );
 } );
 
