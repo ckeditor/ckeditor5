@@ -8,7 +8,7 @@ import ViewContainerElement from '../view/containerelement';
 
 import { defineConverter, parseDefinition } from './utils';
 
-export function modelElementToView( definition, dispatchers ) {
+export function containerElementToView( definition, dispatchers ) {
 	const { model: modelElement, viewDefinition } = parseDefinition( definition );
 
 	buildModelConverter()
@@ -17,7 +17,7 @@ export function modelElementToView( definition, dispatchers ) {
 		.toElement( () => ViewContainerElement.fromViewDefinition( viewDefinition ) );
 }
 
-export function viewToModelElement( definition, dispatchers ) {
+export function viewToContainerElement( definition, dispatchers ) {
 	const { model: modelElement, viewDefinitions } = parseDefinition( definition );
 
 	const converter = defineConverter( dispatchers, viewDefinitions );
