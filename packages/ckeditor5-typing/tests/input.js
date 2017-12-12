@@ -14,7 +14,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
 import LinkEngine from '@ckeditor/ckeditor5-link/src/linkengine';
 import Input from '../src/input';
 
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
+import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
@@ -45,7 +45,7 @@ describe( 'Input feature', () => {
 			} )
 			.then( newEditor => {
 				// Mock image feature.
-				newEditor.document.schema.registerItem( 'image', '$inline' );
+				newEditor.model.schema.registerItem( 'image', '$inline' );
 
 				buildModelConverter().for( newEditor.data.modelToView, newEditor.editing.modelToView )
 					.fromElement( 'image' )
@@ -56,8 +56,8 @@ describe( 'Input feature', () => {
 					.toElement( 'image' );
 
 				editor = newEditor;
-				model = editor.editing.model;
-				modelRoot = model.getRoot();
+				model = editor.model;
+				modelRoot = model.document.getRoot();
 				view = editor.editing.view;
 				viewRoot = view.getRoot();
 			} );
@@ -70,8 +70,8 @@ describe( 'Input feature', () => {
 	beforeEach( () => {
 		editor.setData( '<p>foobar</p>' );
 
-		model.enqueueChanges( () => {
-			model.selection.setRanges( [
+		model.change( () => {
+			model.document.selection.setRanges( [
 				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 3, modelRoot.getChild( 0 ), 3 )
 			] );
 		} );
@@ -133,7 +133,6 @@ describe( 'Input feature', () => {
 					italic: true
 				}
 			} );
-
 			view.fire( 'mutations', [
 				{
 					type: 'children',
@@ -294,8 +293,8 @@ describe( 'Input feature', () => {
 			const viewSelection = new ViewSelection();
 			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
-			testUtils.sinon.spy( Batch.prototype, 'insert' );
-			testUtils.sinon.spy( Batch.prototype, 'remove' );
+			testUtils.sinon.spy( Writer.prototype, 'insert' );
+			testUtils.sinon.spy( Writer.prototype, 'remove' );
 
 			view.fire( 'mutations',
 				[ {
@@ -307,8 +306,8 @@ describe( 'Input feature', () => {
 				viewSelection
 			);
 
-			expect( Batch.prototype.insert.calledOnce ).to.be.true;
-			expect( Batch.prototype.remove.calledOnce ).to.be.true;
+			expect( Writer.prototype.insert.calledOnce ).to.be.true;
+			expect( Writer.prototype.remove.calledOnce ).to.be.true;
 		} );
 
 		it( 'should place selection after when correcting to longer word (spellchecker)', () => {
@@ -396,8 +395,8 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should replace last &nbsp; with space', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.change( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
 				] );
 			} );
@@ -416,8 +415,8 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should replace first &nbsp; with space', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.change( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 0, modelRoot.getChild( 0 ), 0 )
 				] );
 			} );
@@ -436,8 +435,8 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should replace all &nbsp; with spaces', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.change( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
 				] );
 			} );
@@ -458,8 +457,8 @@ describe( 'Input feature', () => {
 
 	describe( 'keystroke handling', () => {
 		it( 'should remove contents', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.change( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
 			} );
 
@@ -492,8 +491,8 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should do nothing on arrow key', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.change( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
 			} );
 
@@ -503,8 +502,8 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should do nothing on ctrl combinations', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.change( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
 			} );
 
@@ -514,8 +513,8 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should do nothing on non printable keys', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.change( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
 			} );
 
@@ -528,8 +527,8 @@ describe( 'Input feature', () => {
 
 		// #69
 		it( 'should do nothing on tab key', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.change( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
 			} );
 
@@ -540,8 +539,8 @@ describe( 'Input feature', () => {
 
 		// #82
 		it( 'should do nothing on composition start key', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.change( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
 			} );
 
@@ -561,8 +560,8 @@ describe( 'Input feature', () => {
 			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
 			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
 
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.change( () => {
+				model.document.selection.setRanges( [
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
 			} );
 
@@ -637,14 +636,14 @@ describe( 'Input feature', () => {
 			return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, Italic, LinkEngine ] } )
 				.then( newEditor => {
 					editor = newEditor;
-					model = editor.document;
-					modelRoot = model.getRoot();
+					model = editor.model;
+					modelRoot = model.document.getRoot();
 					view = editor.editing.view;
 					viewRoot = view.getRoot();
 					domRoot = view.getDomRoot();
 
 					// Mock image feature.
-					newEditor.document.schema.registerItem( 'image', '$inline' );
+					newEditor.model.schema.registerItem( 'image', '$inline' );
 
 					buildModelConverter().for( newEditor.data.modelToView, newEditor.editing.modelToView )
 						.fromElement( 'image' )

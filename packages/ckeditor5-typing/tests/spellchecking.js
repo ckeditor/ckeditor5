@@ -43,7 +43,7 @@ describe( 'Typing – spellchecking integration', () => {
 
 	beforeEach( () => {
 		if ( onChangesDone ) {
-			editor.document.off( 'changesDone', onChangesDone );
+			editor.model.document.off( 'changesDone', onChangesDone );
 			onChangesDone = null;
 		}
 
@@ -250,24 +250,24 @@ function emulateSpellcheckerMutation( editor, nodeIndex, resultPositionIndex, ol
 }
 
 function emulateSpellcheckerInsertText( editor, nodeIndex, rangeStart, rangeEnd, text, onChangesDoneCallback ) {
-	const model = editor.editing.model;
-	const modelRoot = model.getRoot();
+	const model = editor.model;
+	const modelRoot = model.document.getRoot();
 
 	editor.editing.view.focus();
 
-	model.enqueueChanges( () => {
-		model.selection.setRanges( [
+	model.change( () => {
+		model.document.selection.setRanges( [
 			ModelRange.createFromParentsAndOffsets( modelRoot.getChild( nodeIndex ), rangeStart, modelRoot.getChild( nodeIndex ), rangeEnd )
 		] );
 	} );
 
-	editor.document.once( 'changesDone', onChangesDoneCallback, { priority: 'low' } );
+	editor.model.document.once( 'changesDone', onChangesDoneCallback, { priority: 'low' } );
 
 	window.document.execCommand( 'insertText', false, text );
 }
 
 function expectContent( editor, expectedModel, expectedView ) {
-	expect( getModelData( editor.editing.model ) ).to.equal( expectedModel );
+	expect( getModelData( editor.model ) ).to.equal( expectedModel );
 	expect( getViewData( editor.editing.view ) ).to.equal( expectedView );
 }
 
