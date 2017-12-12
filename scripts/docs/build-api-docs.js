@@ -11,4 +11,7 @@
 
 const buildApiDocs = require( './buildapi' );
 
-buildApiDocs();
+buildApiDocs()
+	.catch( () => {
+		process.exitCode = 1;
+	} );
