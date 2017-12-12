@@ -16,7 +16,7 @@ import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 window.getData = getData;
 
 window.setInterval( function() {
-	console.log( getData( window.editor.document ) );
+	console.log( getData( window.editor.model.document ) );
 }, 3000 );
 
 ClassicEditor
