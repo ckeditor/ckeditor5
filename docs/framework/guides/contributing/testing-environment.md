@@ -116,3 +116,13 @@ ClassicEditor
 <info-box>
 	Do not forget to add all dependencies of your manual test as `devDependencies` (in `package.json`).
 </info-box>
+
+## Test suite and CI
+
+To ensure the highest quality, we maintain a complete test suite with a stable 100% of code coverage for each of the packages. As of December 2017, this means over 7000 tests and the number is growing. Since every package is tested separately, we implement lower-level tests for libraries and higher-level tests for end-user features.
+
+Such an extensive test suite requires a proper continuous integration service. We use [Travis CI](https://travis-ci.com/) as a build platform and [BrowserStack](https://www.browserstack.com/) to be able to run tests on all browsers. These services ensure seamless and fast developer experience and allow us to focus on the job.
+
+Besides automated tests, we also maintain a smaller set of manual tests. They help us to verify whether something unexpected happens that might have been missed by the automated tests.
+
+When proposing a pull request make sure to add test(s) which verifies it. Every code change should be accompanied by a test which proves that it is needed. Such a strict approach to testing ensures that not only we have 100% of code coverage (which is quite easy to achieve and gives only an illusory safety) but also a high level of coverage for cases which we failed to notice initially (and might do that again in the future).
