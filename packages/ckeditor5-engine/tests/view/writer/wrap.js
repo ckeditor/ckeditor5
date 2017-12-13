@@ -283,6 +283,33 @@ describe( 'writer', () => {
 			);
 		} );
 
+		it( 'should be merged with broken element', () => {
+			test(
+				'<container:p>' +
+					'[<attribute:b view-priority="1" foo="bar">foo}bar</attribute:b>' +
+				'</container:p>',
+				'<attribute:b view-priority="1" baz="qux"></attribute:b>',
+				'<container:p>' +
+					'[<attribute:b view-priority="1" baz="qux" foo="bar">foo</attribute:b>]' +
+					'<attribute:b view-priority="1" foo="bar">bar</attribute:b>' +
+				'</container:p>'
+			);
+		} );
+
+		it( 'should be merged with broken element and merged with siblings', () => {
+			test(
+				'<container:p>' +
+					'<attribute:b view-priority="1" baz="qux" foo="bar">xyz</attribute:b>' +
+					'[<attribute:b view-priority="1" foo="bar">foo}bar</attribute:b>' +
+				'</container:p>',
+				'<attribute:b view-priority="1" baz="qux"></attribute:b>',
+				'<container:p>' +
+					'<attribute:b view-priority="1" baz="qux" foo="bar">xyz{foo</attribute:b>]' +
+					'<attribute:b view-priority="1" foo="bar">bar</attribute:b>' +
+				'</container:p>'
+			);
+		} );
+
 		it( 'should wrap EmptyElement', () => {
 			test(
 				'<container:p>[<empty:img></empty:img>]</container:p>',
