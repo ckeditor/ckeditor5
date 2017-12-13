@@ -87,16 +87,22 @@ export default class AlignmentUI extends Plugin {
 			.forEach( style => this._addButton( style ) );
 
 		componentFactory.add( 'alignmentDropdown', locale => {
-			const buttons = styles.map( style => componentFactory.create( AlignmentEditing.commandName( style ) ) );
+			const buttons = styles.map( style => {
+				return componentFactory.create( AlignmentEditing.commandName( style ) );
+			} );
 
 			const model = new Model( {
 				label: t( 'Text alignment' ),
 				defaultIcon: alignLeftIcon,
 				withText: false,
-				isVertical: true
+				isVertical: true,
+				toolbarClassName: 'ck-editor-toolbar',
+				buttons
 			} );
 
-			return createButtonDropdown( model, buttons, locale );
+			const dropdown = createButtonDropdown( model, locale );
+
+			return dropdown;
 		} );
 	}
 

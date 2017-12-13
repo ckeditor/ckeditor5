@@ -221,14 +221,15 @@ describe( 'Alignment', () => {
 			expect( button ).to.have.property( 'withText', false );
 		} );
 
-		it( 'buttonGroup has the base properties', () => {
-			const buttonGroup = dropdown.buttonGroupView;
+		it( '#toolbarView has the base properties', () => {
+			const toolbarView = dropdown.toolbarView;
 
-			expect( buttonGroup ).to.have.property( 'isVertical', true );
+			expect( toolbarView ).to.have.property( 'className', 'ck-editor-toolbar' );
+			expect( toolbarView ).to.have.property( 'isVertical', true );
 		} );
 
 		it( 'should hold defined buttons', () => {
-			const items = [ ...dropdown.buttonGroupView.items ].map( item => item.label );
+			const items = [ ...dropdown.toolbarView.items ].map( item => item.label );
 
 			expect( items ).to.have.length( 4 );
 
@@ -258,7 +259,7 @@ describe( 'Alignment', () => {
 			} );
 
 			it( 'should hold only defined buttons', () => {
-				const items = [ ...dropdown.buttonGroupView.items ].map( item => item.label );
+				const items = [ ...dropdown.toolbarView.items ].map( item => item.label );
 
 				expect( items ).to.have.length( 2 );
 
