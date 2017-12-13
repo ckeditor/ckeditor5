@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-buttondropdown .ck-button {
+.ck-buttondropdown .ck-dropdown__panel .ck-button {
 	&:focus {
 		z-index: calc(var(--ck-z-default) + 1);
 	}
