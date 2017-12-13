@@ -37,6 +37,7 @@ import SplitDelta from '../model/delta/splitdelta';
 import UnwrapDelta from '../model/delta/unwrapdelta';
 import WrapDelta from '../model/delta/wrapdelta';
 import deltaTransform from '../model/delta/transform';
+import Model from '../model/model';
 import ModelDocument from '../model/document';
 import ModelDocumentFragment from '../model/documentfragment';
 import ModelRootElement from '../model/rootelement';
@@ -565,9 +566,9 @@ function enableLoggingTools() {
 }
 
 function enableReplayerTools() {
-	const _modelDocumentApplyOperation = ModelDocument.prototype.applyOperation;
+	const _modelApplyOperation = Model.prototype.applyOperation;
 
-	sandbox.mock( ModelDocument.prototype, 'applyOperation', function( operation ) {
+	sandbox.mock( Model.prototype, 'applyOperation', function( operation ) {
 		if ( !this._lastDelta ) {
 			this._appliedDeltas = [];
 		} else if ( this._lastDelta !== operation.delta ) {
@@ -576,10 +577,10 @@ function enableReplayerTools() {
 
 		this._lastDelta = operation.delta;
 
-		_modelDocumentApplyOperation.call( this, operation );
+		return _modelApplyOperation.call( this, operation );
 	} );
 
-	sandbox.mock( ModelDocument.prototype, 'getAppliedDeltas', function() {
+	sandbox.mock( Model.prototype, 'getAppliedDeltas', function() {
 		// No deltas has been applied yet, return empty string.
 		if ( !this._lastDelta ) {
 			return '';
@@ -590,15 +591,15 @@ function enableReplayerTools() {
 		return appliedDeltas.map( JSON.stringify ).join( LOG_SEPARATOR );
 	} );
 
-	sandbox.mock( ModelDocument.prototype, 'createReplayer', function( stringifiedDeltas ) {
+	sandbox.mock( Model.prototype, 'createReplayer', function( stringifiedDeltas ) {
 		return new DeltaReplayer( this, LOG_SEPARATOR, stringifiedDeltas );
 	} );
 }
 
 function enableDocumentTools() {
-	const _modelDocumentApplyOperation = ModelDocument.prototype.applyOperation;
+	const _modelApplyOperation = Model.prototype.applyOperation;
 
-	sandbox.mock( ModelDocument.prototype, 'applyOperation', function( operation ) {
+	sandbox.mock( Model.prototype, 'applyOperation', function( operation ) {
 		logger.log( 'Applying ' + operation );
 
 		if ( !this._operationLogs ) {
@@ -607,7 +608,7 @@ function enableDocumentTools() {
 
 		this._operationLogs.push( JSON.stringify( operation.toJSON() ) );
 
-		_modelDocumentApplyOperation.call( this, operation );
+		return _modelApplyOperation.call( this, operation );
 	} );
 
 	sandbox.mock( ModelDocument.prototype, 'log', function( version = null ) {
@@ -621,9 +622,9 @@ function enableDocumentTools() {
 	} );
 
 	sandbox.mock( Editor.prototype, 'logModel', function( version = null ) {
-		version = version === null ? this.document.version : version;
+		version = version === null ? this.model.document.version : version;
 
-		this.document.log( version );
+		this.model.document.log( version );
 	} );
 
 	sandbox.mock( Editor.prototype, 'logView', function( version ) {
@@ -631,7 +632,7 @@ function enableDocumentTools() {
 	} );
 
 	sandbox.mock( Editor.prototype, 'logDocuments', function( version = null ) {
-		version = version === null ? this.document.version : version;
+		version = version === null ? this.model.document.version : version;
 
 		this.logModel( version );
 		this.logView( version );

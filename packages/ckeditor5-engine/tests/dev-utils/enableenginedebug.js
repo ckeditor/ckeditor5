@@ -35,7 +35,7 @@ import SplitDelta from '../../src/model/delta/splitdelta';
 import UnwrapDelta from '../../src/model/delta/unwrapdelta';
 import WrapDelta from '../../src/model/delta/wrapdelta';
 import deltaTransform from '../../src/model/delta/transform';
-import ModelDocument from '../../src/model/document';
+import Model from '../../src/model/model';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 
 import ViewDocument from '../../src/view/document';
@@ -52,7 +52,7 @@ testUtils.createSinonSandbox();
 
 /* global document */
 
-describe.skip( 'enableEngineDebug', () => {
+describe( 'enableEngineDebug', () => {
 	afterEach( () => {
 		disableEngineDebug();
 	} );
@@ -72,13 +72,13 @@ describe.skip( 'enableEngineDebug', () => {
 	} );
 } );
 
-describe.skip( 'disableEngineDebug', () => {
+describe( 'disableEngineDebug', () => {
 	it( 'restores modified stubs', () => {
 		expect( ModelPosition.prototype.log ).to.equal( undefined, 'Initial value (model/position)' );
 		expect( ModelElement.prototype.printTree ).to.equal( undefined, 'Initial value (model/element)' );
 		expect( Delta.prototype.log ).to.equal( undefined, 'Initial value (model/delta/delta)' );
 		expect( ViewElement.prototype.printTree ).to.equal( undefined, 'Initial value (view/element)' );
-		expect( ModelDocument.prototype.createReplayer ).to.equal( undefined, 'Initial value (model/document)' );
+		expect( Model.prototype.createReplayer ).to.equal( undefined, 'Initial value (model/document)' );
 		expect( Editor.prototype.logDocuments ).to.equal( undefined, 'Initial value (core~editor/editor)' );
 
 		enableEngineDebug();
@@ -87,7 +87,7 @@ describe.skip( 'disableEngineDebug', () => {
 		expect( ModelElement.prototype.printTree ).to.be.a( 'function', 'After enabling engine debug (model/element)' );
 		expect( Delta.prototype.log ).to.be.a( 'function', 'After enabling engine debug (model/delta/delta)' );
 		expect( ViewElement.prototype.printTree ).to.be.a( 'function', 'After enabling engine debug (view/element)' );
-		expect( ModelDocument.prototype.createReplayer ).to.be.a( 'function', 'After enabling engine debug (model/document)' );
+		expect( Model.prototype.createReplayer ).to.be.a( 'function', 'After enabling engine debug (model/document)' );
 		expect( Editor.prototype.logDocuments ).to.be.a( 'function', 'After enabling engine debug (core~editor/editor)' );
 
 		disableEngineDebug();
@@ -96,19 +96,19 @@ describe.skip( 'disableEngineDebug', () => {
 		expect( ModelElement.prototype.printTree ).to.equal( undefined, 'After disabling engine debug (model/element)' );
 		expect( Delta.prototype.log ).to.equal( undefined, 'After disabling engine debug (model/delta/delta)' );
 		expect( ViewElement.prototype.printTree ).to.equal( undefined, 'After disabling engine debug (view/element)' );
-		expect( ModelDocument.prototype.createReplayer ).to.equal( undefined, 'After disabling engine debug (model/document)' );
+		expect( Model.prototype.createReplayer ).to.equal( undefined, 'After disabling engine debug (model/document)' );
 		expect( Editor.prototype.logDocuments ).to.equal( undefined, 'After disabling engine debug (core~editor/editor)' );
 	} );
 } );
 
-describe.skip( 'debug tools', () => {
+describe( 'debug tools', () => {
 	let DebugPlugin, log, error;
 
 	class TestEditor extends StandardEditor {
 		constructor( ...args ) {
 			super( ...args );
 
-			this.document.createRoot( 'main' );
+			this.model.document.createRoot( 'main' );
 			this.editing.createRoot( this.element, 'main' );
 		}
 	}
@@ -128,10 +128,11 @@ describe.skip( 'debug tools', () => {
 	} );
 
 	describe( 'should provide logging tools', () => {
-		let modelDoc, modelRoot, modelElement, modelDocFrag;
+		let model, modelDoc, modelRoot, modelElement, modelDocFrag;
 
 		beforeEach( () => {
-			modelDoc = new ModelDocument();
+			model = new Model();
+			modelDoc = model.document;
 			modelRoot = modelDoc.createRoot();
 			modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foo' ) );
 			modelDocFrag = new ModelDocumentFragment( [ new ModelText( 'bar' ) ] );
@@ -627,7 +628,7 @@ describe.skip( 'debug tools', () => {
 			const op = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), [ new ModelText( 'foo' ) ], 0 );
 			delta.addOperation( op );
 
-			modelDoc.applyOperation( op );
+			model.applyOperation( op );
 
 			expect( log.calledWithExactly( 'Applying InsertOperation( 0 ): #foo -> main [ 0 ]' ) ).to.be.true;
 		} );
@@ -635,7 +636,8 @@ describe.skip( 'debug tools', () => {
 
 	describe( 'should provide tree printing tools', () => {
 		it( 'for model', () => {
-			const modelDoc = new ModelDocument();
+			const model = new Model();
+			const modelDoc = model.document;
 			const modelRoot = modelDoc.createRoot();
 
 			modelRoot.appendChildren( [
@@ -795,26 +797,27 @@ describe.skip( 'debug tools', () => {
 		} );
 
 		it( 'should store model and view state after each applied operation', () => {
-			const model = editor.document;
-			const modelRoot = model.getRoot();
-			const view = editor.editing.view;
+			const model = editor.model;
+			const modelDoc = model.document;
+			const modelRoot = modelDoc.getRoot();
+			const viewDoc = editor.editing.view;
 
 			const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), 0 );
 			model.applyOperation( wrapInDelta( insert ) );
 
-			const graveyard = model.graveyard;
+			const graveyard = modelDoc.graveyard;
 			const remove = new RemoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( graveyard, 0 ), 1 );
 			model.applyOperation( wrapInDelta( remove ) );
 
 			log.reset();
 
-			model.log( 0 );
+			modelDoc.log( 0 );
 			expectLog(
 				'<$graveyard></$graveyard>' +
 				'\n<main></main>'
 			);
 
-			model.log( 1 );
+			modelDoc.log( 1 );
 			expectLog(
 				'<$graveyard></$graveyard>' +
 				'\n<main>' +
@@ -822,7 +825,7 @@ describe.skip( 'debug tools', () => {
 				'\n</main>'
 			);
 
-			model.log( 2 );
+			modelDoc.log( 2 );
 			expectLog(
 				'<$graveyard>' +
 				'\n\too' +
@@ -832,7 +835,7 @@ describe.skip( 'debug tools', () => {
 				'\n</main>'
 			);
 
-			model.log();
+			modelDoc.log();
 			expectLog(
 				'<$graveyard>' +
 				'\n\too' +
@@ -842,74 +845,76 @@ describe.skip( 'debug tools', () => {
 				'\n</main>'
 			);
 
-			view.log( 0 );
+			viewDoc.log( 0 );
 			expectLog(
 				'<div></div>'
 			);
 
-			view.log( 1 );
+			viewDoc.log( 1 );
 			expectLog(
 				'<div>' +
 				'\n\tfoobar' +
 				'\n</div>'
 			);
 
-			view.log( 2 );
+			viewDoc.log( 2 );
 			expectLog(
 				'<div>' +
 				'\n\tfbar' +
 				'\n</div>'
 			);
 
-			sinon.spy( model, 'log' );
-			sinon.spy( view, 'log' );
+			sinon.spy( modelDoc, 'log' );
+			sinon.spy( viewDoc, 'log' );
 
 			editor.logModel( 1 );
-			expect( model.log.calledWithExactly( 1 ) ).to.be.true;
+			expect( modelDoc.log.calledWithExactly( 1 ), 1 ).to.be.true;
 
 			editor.logView( 2 );
-			expect( view.log.calledWithExactly( 2 ) ).to.be.true;
+			expect( viewDoc.log.calledWithExactly( 2 ), 2 ).to.be.true;
 
-			model.log.reset();
-			view.log.reset();
+			modelDoc.log.reset();
+			viewDoc.log.reset();
 
 			editor.logModel();
-			expect( model.log.calledWithExactly( 2 ) ).to.be.true;
+			expect( modelDoc.log.calledWithExactly( 2 ), 3 ).to.be.true;
 
-			model.log.reset();
-			view.log.reset();
+			modelDoc.log.reset();
+			viewDoc.log.reset();
 
 			editor.logDocuments();
-			expect( model.log.calledWithExactly( 2 ) ).to.be.true;
-			expect( view.log.calledWithExactly( 2 ) ).to.be.true;
+			expect( modelDoc.log.calledWithExactly( 2 ), 4 ).to.be.true;
+			expect( viewDoc.log.calledWithExactly( 2 ), 5 ).to.be.true;
 
-			model.log.reset();
-			view.log.reset();
+			modelDoc.log.reset();
+			viewDoc.log.reset();
 
 			editor.logDocuments( 1 );
-			expect( model.log.calledWithExactly( 1 ) ).to.be.true;
-			expect( view.log.calledWithExactly( 1 ) ).to.be.true;
+			expect( modelDoc.log.calledWithExactly( 1 ), 6 ).to.be.true;
+			expect( viewDoc.log.calledWithExactly( 1 ), 7 ).to.be.true;
 		} );
 
 		it( 'should remove old states', () => {
-			const model = editor.document;
-			const modelRoot = model.getRoot();
+			const model = editor.model;
+			const modelDoc = model.document;
+			const modelRoot = model.document.getRoot();
 
 			for ( let i = 0; i < 25; i++ ) {
-				const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), model.version );
+				const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), modelDoc.version );
 				model.applyOperation( wrapInDelta( insert ) );
 			}
 
-			model.log( 0 );
+			modelDoc.log( 0 );
 			expectLog( 'Tree log unavailable for given version: 0' );
 		} );
 	} );
 
 	describe( 'should provide methods for delta replayer', () => {
 		it( 'getAppliedDeltas()', () => {
-			const modelDoc = new ModelDocument();
+			const model = new Model();
+			const modelDoc = model.document;
 
-			expect( modelDoc.getAppliedDeltas() ).to.equal( '' );
+			expect( model.getAppliedDeltas() ).to.equal( '' );
 
 			const otherRoot = modelDoc.createRoot( '$root', 'otherRoot' );
 			const firstEle = new ModelElement( 'paragraph' );
@@ -925,16 +930,17 @@ describe.skip( 'debug tools', () => {
 			delta.addOperation( move );
 			delta.addOperation( remove );
 
-			modelDoc.applyOperation( move );
-			modelDoc.applyOperation( remove );
+			model.applyOperation( move );
+			model.applyOperation( remove );
 
-			const stringifiedDeltas = modelDoc.getAppliedDeltas();
+			const stringifiedDeltas = model.getAppliedDeltas();
 
 			expect( stringifiedDeltas ).to.equal( JSON.stringify( delta.toJSON() ) );
 		} );
 
 		it( 'createReplayer()', () => {
-			const modelDoc = new ModelDocument();
+			const model = new Model();
+			const modelDoc = model.document;
 
 			const otherRoot = modelDoc.createRoot( '$root', 'otherRoot' );
 			const firstEle = new ModelElement( 'paragraph' );
@@ -952,17 +958,18 @@ describe.skip( 'debug tools', () => {
 
 			const stringifiedDeltas = JSON.stringify( delta.toJSON() );
 
-			const deltaReplayer = modelDoc.createReplayer( stringifiedDeltas );
+			const deltaReplayer = model.createReplayer( stringifiedDeltas );
 
 			expect( deltaReplayer.getDeltasToReplay() ).to.deep.equal( [ JSON.parse( stringifiedDeltas ) ] );
 		} );
 	} );
 
 	describe( 'should provide debug tools for delta transformation', () => {
-		let document, root, otherRoot;
+		let model, document, root, otherRoot;
 
 		beforeEach( () => {
-			document = new ModelDocument();
+			model = new Model();
+			document = model.document;
 			root = document.createRoot();
 			otherRoot = document.createRoot( 'other', 'other' );
 		} );
