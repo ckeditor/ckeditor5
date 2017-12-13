@@ -79,6 +79,16 @@ export default class DropdownView extends View {
 		this.set( 'isOpen', false );
 
 		/**
+		 * Controls whether the dropdown is enabled, i.e. it can be clicked and execute an action.
+		 *
+		 * See {@link module:ui/button/buttonview~ButtonView#isEnabled}.
+		 *
+		 * @observable
+		 * @member {Boolean} #isEnabled
+		 */
+		this.set( 'isEnabled', true );
+
+		/**
 		 * Tracks information about DOM focus in the dropdown.
 		 *
 		 * @readonly
@@ -103,7 +113,8 @@ export default class DropdownView extends View {
 
 			attributes: {
 				class: [
-					'ck-dropdown'
+					'ck-dropdown',
+					bind.to( 'isEnabled', isEnabled => isEnabled ? '' : 'ck-disabled' )
 				]
 			},
 

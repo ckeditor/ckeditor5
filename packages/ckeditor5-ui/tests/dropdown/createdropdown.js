@@ -25,6 +25,16 @@ describe( 'createDropdown', () => {
 		const model = new Model( modelDef );
 		const view = createDropdown( model );
 
+		assertBinding( view,
+			{ isEnabled: true },
+			[
+				[ model, { isEnabled: false } ]
+			],
+			{ isEnabled: false }
+		);
+
+		model.isEnabled = true;
+
 		assertBinding( view.buttonView,
 			modelDef,
 			[

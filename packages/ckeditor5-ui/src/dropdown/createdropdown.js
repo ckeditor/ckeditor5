@@ -41,10 +41,11 @@ import DropdownPanelView from './dropdownpanelview';
  */
 export default function createDropdown( model, locale ) {
 	const buttonView = new ButtonView( locale );
+	const panelView = new DropdownPanelView( locale );
+	const dropdownView = new DropdownView( locale, buttonView, panelView );
 
 	buttonView.bind( 'label', 'isOn', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
+	dropdownView.bind( 'isEnabled' ).to( model );
 
-	const panelView = new DropdownPanelView( locale );
-
-	return new DropdownView( locale, buttonView, panelView );
+	return dropdownView;
 }

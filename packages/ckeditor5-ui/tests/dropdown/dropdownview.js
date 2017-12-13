@@ -40,6 +40,10 @@ describe( 'DropdownView', () => {
 			expect( view.isOpen ).to.be.false;
 		} );
 
+		it( 'sets view#isEnabled true', () => {
+			expect( view.isEnabled ).to.be.true;
+		} );
+
 		it( 'creates #focusTracker instance', () => {
 			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
@@ -91,13 +95,25 @@ describe( 'DropdownView', () => {
 				} );
 			} );
 
-			describe( 'view#buttonView class to view#isOpen', () => {
-				it( 'is activated', () => {
-					view.isOpen = false;
-					expect( view.buttonView.element.classList.contains( 'ck-on' ) ).to.be.false;
+			describe( 'DOM', () => {
+				describe( 'view#element .ck-disabled class to view#isEnabled', () => {
+					it( 'is activated', () => {
+						view.isEnabled = true;
+						expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.false;
 
-					view.isOpen = true;
-					expect( view.buttonView.element.classList.contains( 'ck-on' ) ).to.be.true;
+						view.isEnabled = false;
+						expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.true;
+					} );
+				} );
+
+				describe( 'view.buttonView#element .ck-on class to view#isOpen', () => {
+					it( 'is activated', () => {
+						view.isOpen = false;
+						expect( view.buttonView.element.classList.contains( 'ck-on' ) ).to.be.false;
+
+						view.isOpen = true;
+						expect( view.buttonView.element.classList.contains( 'ck-on' ) ).to.be.true;
+					} );
 				} );
 			} );
 		} );
