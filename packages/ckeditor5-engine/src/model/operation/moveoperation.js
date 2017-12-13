@@ -131,7 +131,7 @@ export default class MoveOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	_execute() {
+	_validate() {
 		const sourceElement = this.sourcePosition.parent;
 		const targetElement = this.targetPosition.parent;
 		const sourceOffset = this.sourcePosition.offset;
@@ -183,7 +183,12 @@ export default class MoveOperation extends Operation {
 				}
 			}
 		}
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	_execute() {
 		const range = _move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
 
 		return {

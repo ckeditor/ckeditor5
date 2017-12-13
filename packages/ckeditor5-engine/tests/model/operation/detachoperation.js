@@ -35,17 +35,19 @@ describe( 'DetachOperation', () => {
 		expect( docFrag.childCount ).to.equal( 0 );
 	} );
 
-	it( 'should throw when is executed on element from document', () => {
-		const root = doc.createRoot();
-		const element = new Element( 'element' );
+	describe( '_validate()', () => {
+		it( 'should throw when is executed on element from document', () => {
+			const root = doc.createRoot();
+			const element = new Element( 'element' );
 
-		root.appendChildren( [ element ] );
+			root.appendChildren( [ element ] );
 
-		const op = new DetachOperation( Position.createBefore( element ), 1, doc.version );
+			const op = new DetachOperation( Position.createBefore( element ), 1, doc.version );
 
-		expect( () => {
-			op._execute();
-		} ).to.throw( CKEditorError, /^detach-operation-on-document-node/ );
+			expect( () => {
+				op._validate();
+			} ).to.throw( CKEditorError, /^detach-operation-on-document-node/ );
+		} );
 	} );
 
 	it( 'should be not a document operation', () => {

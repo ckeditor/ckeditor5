@@ -105,7 +105,10 @@ export default class RootAttributeOperation extends Operation {
 		return new RootAttributeOperation( this.root, this.key, this.newValue, this.oldValue, this.baseVersion + 1 );
 	}
 
-	_execute() {
+	/**
+	 * @inheritDoc
+	 */
+	_validate() {
 		if ( this.oldValue !== null && this.root.getAttribute( this.key ) !== this.oldValue ) {
 			/**
 			 * The attribute which should be removed does not exists for the given node.
@@ -135,7 +138,12 @@ export default class RootAttributeOperation extends Operation {
 				{ root: this.root, key: this.key }
 			);
 		}
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	_execute() {
 		if ( this.newValue !== null ) {
 			this.root.setAttribute( this.key, this.newValue );
 		} else {
