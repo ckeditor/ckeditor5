@@ -41,14 +41,12 @@
 		}
 	}
 
-	/* Exclude button dropdown button */
-	& :not(.ck-buttondropdown) {
-		& .ck-button.ck-dropdown__button {
-			border-width: 1px;
+	/* Exclude main button dropdown button */
+	& .ck-dropdown:not(.ck-buttondropdown) .ck-dropdown__button {
+		border-width: 1px;
 
-			&:not(:hover):not(:focus):not(.ck-on) {
-				background: var(--ck-color-editor-dropdown-background);
-			}
+		&:not(:hover):not(:focus):not(.ck-on) {
+			background: var(--ck-color-editor-dropdown-background);
 		}
 	}
 
