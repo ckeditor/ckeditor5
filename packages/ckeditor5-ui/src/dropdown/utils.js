@@ -9,7 +9,13 @@
 
 /* global document */
 
-export function openDropdownOnArrows( dropdownView, panelViewContents ) {
+/**
+ * Adds a behavior to a dropdownView that focuses dropdown panel view contents on keystrokes.
+ *
+ * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+ * @param panelViewContents
+ */
+export function focusDropdownContentsOnArrows( dropdownView, panelViewContents ) {
 	// If the dropdown panel is already open, the arrow down key should
 	// focus the first element in list.
 	dropdownView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
@@ -29,9 +35,15 @@ export function openDropdownOnArrows( dropdownView, panelViewContents ) {
 	} );
 }
 
-export function closeDropdownOnExecute( dropdownView, items ) {
+/**
+ * Adds a behavior to a dropdownView that closes dropdown view on any view collection item's "execute" event.
+ *
+ * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+ * @param {module:ui/viewcollection~ViewCollection} viewCollection
+ */
+export function closeDropdownOnExecute( dropdownView, viewCollection ) {
 	// TODO: Delegate all events instead of just execute.
-	items.delegate( 'execute' ).to( dropdownView );
+	viewCollection.delegate( 'execute' ).to( dropdownView );
 
 	// Close the dropdown when one of the list items has been executed.
 	dropdownView.on( 'execute', () => {
@@ -39,6 +51,11 @@ export function closeDropdownOnExecute( dropdownView, items ) {
 	} );
 }
 
+/**
+ * Adds a behavior to a dropdownView that closes opened dropdown on user click outside the dropdown.
+ *
+ * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+ */
 export function closeDropdownOnBlur( dropdownView ) {
 	dropdownView.on( 'change:isOpen', ( evt, name, value ) => {
 		if ( value ) {

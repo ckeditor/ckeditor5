@@ -10,7 +10,7 @@
 import ListView from '../../list/listview';
 import ListItemView from '../../list/listitemview';
 import createDropdown from '../createdropdown';
-import { closeDropdownOnBlur, closeDropdownOnExecute, openDropdownOnArrows } from '../utils';
+import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownContentsOnArrows } from '../utils';
 
 /**
  * Creates an instance of {@link module:ui/dropdown/list/listdropdownview~ListDropdownView} class using
@@ -67,7 +67,7 @@ export default function createListDropdown( model, locale ) {
 
 	closeDropdownOnBlur( dropdownView );
 	closeDropdownOnExecute( dropdownView, listView.items );
-	openDropdownOnArrows( dropdownView, listView );
+	focusDropdownContentsOnArrows( dropdownView, listView );
 
 	return dropdownView;
 }

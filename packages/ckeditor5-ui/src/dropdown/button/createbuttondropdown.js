@@ -10,7 +10,7 @@
 import createDropdown from '../createdropdown';
 
 import ToolbarView from '../../toolbar/toolbarview';
-import { closeDropdownOnBlur, closeDropdownOnExecute, openDropdownOnArrows } from '../utils';
+import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownContentsOnArrows } from '../utils';
 
 import '../../../theme/components/dropdown/buttondropdown.css';
 
@@ -20,7 +20,7 @@ import '../../../theme/components/dropdown/buttondropdown.css';
  *
  *		const buttons = [];
  *
- * 		buttons.push( new ButtonView() );
+ *		buttons.push( new ButtonView() );
  *		buttons.push( editor.ui.componentFactory.get( 'someButton' ) );
  *
  *		const model = new Model( {
@@ -104,11 +104,19 @@ export default function createButtonDropdown( model, buttonViews, locale ) {
 
 	closeDropdownOnBlur( dropdownView );
 	closeDropdownOnExecute( dropdownView, buttonGroupView.items );
-	openDropdownOnArrows( dropdownView, buttonGroupView );
+	focusDropdownContentsOnArrows( dropdownView, buttonGroupView );
 
 	return dropdownView;
 }
 
+// Returns an array of binding components for
+// {@link module:utils/observablemixin~Observable#bind} from a set of iterable
+// buttons.
+//
+// @private
+// @param {Iterable.<module:ui/button/buttonview~ButtonView>} buttons
+// @param {String} attribute
+// @returns {Array.<String>}
 function getBindingTargets( buttons, attribute ) {
 	return Array.prototype.concat( ...buttons.map( button => [ button, attribute ] ) );
 }
