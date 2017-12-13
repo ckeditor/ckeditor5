@@ -234,6 +234,25 @@ describe( 'ToolbarView', () => {
 		} );
 	} );
 
+	describe( 'focusLast()', () => {
+		it( 'focuses the last focusable item in DOM', () => {
+			// No children to focus.
+			view.focusLast();
+
+			// The second child is focusable.
+			view.items.add( nonFocusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( nonFocusable() );
+
+			const spy = sinon.spy( view.items.get( 3 ), 'focus' );
+			view.focusLast();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
 	describe( 'fillFromConfig()', () => {
 		let factory;
 

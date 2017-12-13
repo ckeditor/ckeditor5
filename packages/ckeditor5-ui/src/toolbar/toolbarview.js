@@ -21,6 +21,7 @@ import '../../theme/components/toolbar/toolbar.css';
  * The toolbar view class.
  *
  * @extends module:ui/view~View
+ * @implements module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable
  */
 export default class ToolbarView extends View {
 	/**
@@ -118,6 +119,13 @@ export default class ToolbarView extends View {
 	 */
 	focus() {
 		this._focusCycler.focusFirst();
+	}
+
+	/**
+	 * Focuses the last focusable in {@link #items}.
+	 */
+	focusLast() {
+		this._focusCycler.focusLast();
 	}
 
 	/**

@@ -18,6 +18,7 @@ import '../../theme/components/list/list.css';
  * The list view class.
  *
  * @extends module:ui/view~View
+ * @implements module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable
  */
 export default class ListView extends View {
 	/**

@@ -13,7 +13,7 @@
  * Adds a behavior to a dropdownView that focuses dropdown panel view contents on keystrokes.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
- * @param panelViewContents
+ * @param {module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable} panelViewContents
  */
 export function focusDropdownContentsOnArrows( dropdownView, panelViewContents ) {
 	// If the dropdown panel is already open, the arrow down key should

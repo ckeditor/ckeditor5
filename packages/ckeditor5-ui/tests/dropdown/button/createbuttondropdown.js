@@ -134,6 +134,23 @@ describe( 'createButtonDropdown', () => {
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( spy );
 			} );
+
+			it( 'so "arrowup" focuses the last #item in #buttonGroupView if dropdown is open', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowup,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+				const spy = sinon.spy( view.buttonGroupView, 'focusLast' );
+
+				view.isOpen = false;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.notCalled( spy );
+
+				view.isOpen = true;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 
 		describe( 'icon', () => {
