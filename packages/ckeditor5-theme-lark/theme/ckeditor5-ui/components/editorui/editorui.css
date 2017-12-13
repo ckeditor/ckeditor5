@@ -30,7 +30,8 @@
 		border-width: 0;
 	}
 
-	& .ck-button {
+	& > .ck-button,
+	& .ck-buttondropdown .ck-dropdown__button {
 		&:not(:hover):not(:focus):not(.ck-on),
 		&.ck-disabled {
 			background: var(--ck-color-editor-toolbar-background);
