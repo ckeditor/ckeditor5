@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+.ck-buttondropdown .ck-toolbar {
+	border: 0;
+	padding: 0;
+
+	& .ck-button {
+		border-radius: 0;
+		margin: 0;
+		border: 0;
+	}
+}

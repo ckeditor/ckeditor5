@@ -14,14 +14,14 @@
 	/* A triangle displayed to indicate this is actually a dropdown. */
 	&::after {
 		border-style: solid;
-		border-width: .4em .4em 0 .4em;
+		border-width: .4em .35em 0 .35em;
 		border-color: var(--ck-color-dropdown-symbol) transparent;
 		right: var(--ck-spacing-standard);
 	}
 
 	& .ck-button.ck-dropdown__button {
 		/* A space to accommodate the triangle. */
-		padding-right: calc(2 * var(--ck-spacing-standard));
+		padding-right: calc(2.5 * var(--ck-spacing-standard));
 
 		/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
 		&.ck-disabled .ck-button__label {
@@ -33,15 +33,6 @@
 			width: 7em;
 			overflow: hidden;
 			text-overflow: ellipsis;
-		}
-	}
-
-	&.ck-buttondropdown .ck-toolbar {
-		border: 0;
-		padding: 0;
-
-		& .ck-button {
-			border-radius: 0;
 		}
 	}
 }
