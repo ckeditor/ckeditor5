@@ -63,6 +63,21 @@ describe( 'createButtonDropdown', () => {
 
 				view.toolbarView.items.get( 0 ).fire( 'execute' );
 			} );
+
+			it( 'reacts on model#isVertical', () => {
+				model.isVertical = false;
+				expect( view.toolbarView.isVertical ).to.be.false;
+
+				model.isVertical = true;
+				expect( view.toolbarView.isVertical ).to.be.true;
+			} );
+
+			it( 'reacts on model#toolbarClassName', () => {
+				expect( view.toolbarView.className ).to.be.undefined;
+
+				model.set( 'toolbarClassName', 'foo' );
+				expect( view.toolbarView.className ).to.equal( 'foo' );
+			} );
 		} );
 
 		it( 'changes view#isOpen on view#execute', () => {

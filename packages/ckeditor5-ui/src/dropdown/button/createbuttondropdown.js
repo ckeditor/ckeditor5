@@ -81,7 +81,7 @@ export default function createButtonDropdown( model, locale ) {
 	const dropdownView = createDropdown( model, locale );
 	const toolbarView = dropdownView.toolbarView = new ToolbarView();
 
-	toolbarView.bind( 'isVertical' ).to( model, 'isVertical' );
+	toolbarView.bind( 'isVertical', 'className' ).to( model, 'isVertical', 'toolbarClassName' );
 
 	model.buttons.map( view => toolbarView.items.add( view ) );
 

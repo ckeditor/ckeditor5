@@ -59,3 +59,13 @@
  * @observable
  * @member {String} #icon
  */
+
+/**
+ * (Optional) A CSS class set to
+ * {@link module:ui/dropdown/button/buttondropdownview~ButtonDropdownView#toolbarView}.
+ *
+ * Also see {@link module:ui/toolbar/toolbarview~ToolbarView#className `ToolbarView#className`}.
+ *
+ * @observable
+ * @member {String} #toolbarClassName
+ */
