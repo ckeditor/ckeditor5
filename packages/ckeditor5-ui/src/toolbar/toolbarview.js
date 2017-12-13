@@ -65,6 +65,14 @@ export default class ToolbarView extends View {
 		this.set( 'isVertical', false );
 
 		/**
+		 * An additional CSS class added to the {@link #element}.
+		 *
+		 * @observable
+		 * @member {String} #className
+		 */
+		this.set( 'className' );
+
+		/**
 		 * Helps cycling over focusable {@link #items} in the toolbar.
 		 *
 		 * @readonly
@@ -89,7 +97,8 @@ export default class ToolbarView extends View {
 			attributes: {
 				class: [
 					'ck-toolbar',
-					bind.if( 'isVertical', 'ck-toolbar_vertical' )
+					bind.if( 'isVertical', 'ck-toolbar_vertical' ),
+					bind.to( 'className' )
 				]
 			},
 

@@ -83,6 +83,18 @@ describe( 'ToolbarView', () => {
 				view.isVertical = true;
 				expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).to.be.true;
 			} );
+
+			it( 'reacts on view#className', () => {
+				view.className = 'foo';
+				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+
+				view.className = 'bar';
+				expect( view.element.classList.contains( 'bar' ) ).to.be.true;
+
+				view.className = false;
+				expect( view.element.classList.contains( 'foo' ) ).to.be.false;
+				expect( view.element.classList.contains( 'bar' ) ).to.be.false;
+			} );
 		} );
 	} );
 
