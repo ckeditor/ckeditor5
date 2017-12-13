@@ -90,6 +90,16 @@ describe( 'DropdownView', () => {
 					expect( values ).to.have.members( [ true, false, true ] );
 				} );
 			} );
+
+			describe( 'view#buttonView class to view#isOpen', () => {
+				it( 'is activated', () => {
+					view.isOpen = false;
+					expect( view.buttonView.element.classList.contains( 'ck-on' ) ).to.be.false;
+
+					view.isOpen = true;
+					expect( view.buttonView.element.classList.contains( 'ck-on' ) ).to.be.true;
+				} );
+			} );
 		} );
 	} );
 
