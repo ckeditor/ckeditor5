@@ -10,13 +10,12 @@
 import {
 	insertElement,
 	insertUIElement,
-	setAttribute,
-	removeAttribute,
 	removeUIElement,
-	wrapItem,
-	unwrapItem,
+	changeAttribute,
+	wrap,
 	highlightText,
-	highlightElement
+	highlightElement,
+	removeHighlight
 } from './model-to-view-converters';
 
 import { convertSelectionAttribute, convertSelectionMarker } from './model-selection-to-view-converters';
@@ -254,15 +253,13 @@ class ModelConverterBuilder {
 
 				dispatcher.on( 'insert:' + this._from.name, insertElement( element ), { priority } );
 			} else if ( this._from.type == 'attribute' ) {
-				// From model attribute to view element -> wrap and unwrap.
+				// From model attribute to view element -> wrap.
 				element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
 
-				dispatcher.on( 'addAttribute:' + this._from.key, wrapItem( element ), { priority } );
-				dispatcher.on( 'changeAttribute:' + this._from.key, wrapItem( element ), { priority } );
-				dispatcher.on( 'removeAttribute:' + this._from.key, unwrapItem( element ), { priority } );
-
+				dispatcher.on( 'attribute:' + this._from.key, wrap( element ), { priority } );
 				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), { priority } );
-			} else { // From marker to element.
+			} else {
+				// From marker to element.
 				const priority = this._from.priority === null ? 'normal' : this._from.priority;
 
 				element = typeof element == 'string' ? new ViewUIElement( element ) : element;
@@ -326,12 +323,10 @@ class ModelConverterBuilder {
 		}
 
 		for ( const dispatcher of this._dispatchers ) {
-			// Separate converters for converting texts and elements inside marker's range.
 			dispatcher.on( 'addMarker:' + this._from.name, highlightText( highlightDescriptor ), { priority } );
 			dispatcher.on( 'addMarker:' + this._from.name, highlightElement( highlightDescriptor ), { priority } );
 
-			dispatcher.on( 'removeMarker:' + this._from.name, highlightText( highlightDescriptor ), { priority } );
-			dispatcher.on( 'removeMarker:' + this._from.name, highlightElement( highlightDescriptor ), { priority } );
+			dispatcher.on( 'removeMarker:' + this._from.name, removeHighlight( highlightDescriptor ), { priority } );
 
 			dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( highlightDescriptor ), { priority } );
 		}
@@ -383,7 +378,7 @@ class ModelConverterBuilder {
 
 		if ( !keyOrCreator ) {
 			// If `keyOrCreator` is not set, we assume default behavior which is 1:1 attribute re-write.
-			// This is also a default behavior for `setAttribute` converter when no attribute creator is passed.
+			// This is also a default behavior for `changeAttribute` converter when no attribute creator is passed.
 			attributeCreator = undefined;
 		} else if ( typeof keyOrCreator == 'string' ) {
 			// `keyOrCreator` is an attribute key.
@@ -407,9 +402,7 @@ class ModelConverterBuilder {
 		for ( const dispatcher of this._dispatchers ) {
 			const options = { priority: this._from.priority || 'normal' };
 
-			dispatcher.on( 'addAttribute:' + this._from.key, setAttribute( attributeCreator ), options );
-			dispatcher.on( 'changeAttribute:' + this._from.key, setAttribute( attributeCreator ), options );
-			dispatcher.on( 'removeAttribute:' + this._from.key, removeAttribute( attributeCreator ), options );
+			dispatcher.on( 'attribute:' + this._from.key, changeAttribute( attributeCreator ), options );
 		}
 	}
 }

@@ -802,12 +802,14 @@ describe( 'debug tools', () => {
 			const modelRoot = modelDoc.getRoot();
 			const viewDoc = editor.editing.view;
 
-			const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), 0 );
-			model.applyOperation( wrapInDelta( insert ) );
+			model.change( () => {
+				const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), 0 );
+				model.applyOperation( wrapInDelta( insert ) );
 
-			const graveyard = modelDoc.graveyard;
-			const remove = new RemoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( graveyard, 0 ), 1 );
-			model.applyOperation( wrapInDelta( remove ) );
+				const graveyard = modelDoc.graveyard;
+				const remove = new RemoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( graveyard, 0 ), 1 );
+				model.applyOperation( wrapInDelta( remove ) );
+			} );
 
 			log.reset();
 
@@ -848,13 +850,6 @@ describe( 'debug tools', () => {
 			viewDoc.log( 0 );
 			expectLog(
 				'<div></div>'
-			);
-
-			viewDoc.log( 1 );
-			expectLog(
-				'<div>' +
-				'\n\tfoobar' +
-				'\n</div>'
 			);
 
 			viewDoc.log( 2 );

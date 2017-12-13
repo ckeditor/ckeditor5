@@ -11,27 +11,13 @@ import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 
-import ViewDocument from '../../src/view/document';
 import ViewElement from '../../src/view/element';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewUIElement from '../../src/view/uielement';
 import ViewText from '../../src/view/text';
 
-import Mapper from '../../src/conversion/mapper';
-import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
-
-import {
-	insertText,
-	remove
-} from '../../src/conversion/model-to-view-converters';
-
-import {
-	convertCollapsedSelection,
-	clearAttributes
-} from '../../src/conversion/model-selection-to-view-converters';
-
-import { createRangeOnElementOnly } from '../../tests/model/_utils/utils';
+import EditingController from '../../src/controller/editingcontroller';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -69,38 +55,31 @@ function viewToString( item ) {
 }
 
 describe( 'Model converter builder', () => {
-	let dispatcher, mapper, modelDoc, modelRoot, viewDoc, viewRoot, viewSelection, model;
+	let dispatcher, modelDoc, modelRoot, viewRoot, viewSelection, model, controller;
 
 	beforeEach( () => {
 		model = new Model();
 		modelDoc = model.document;
-		modelRoot = modelDoc.createRoot( 'root', 'root' );
+		modelRoot = modelDoc.createRoot();
 
-		viewDoc = new ViewDocument();
-		viewRoot = viewDoc.createRoot( 'div' );
-		viewSelection = viewDoc.selection;
+		controller = new EditingController( model );
+		controller.createRoot( 'div' );
 
-		mapper = new Mapper();
-		mapper.bindElements( modelRoot, viewRoot );
+		dispatcher = controller.modelToView;
 
-		dispatcher = new ModelConversionDispatcher( model, { mapper, viewSelection } );
+		viewRoot = controller.view.getRoot();
+		viewSelection = controller.view.selection;
 
-		dispatcher.on( 'insert:$text', insertText() );
-		dispatcher.on( 'remove', remove() );
-	} );
-
-	afterEach( () => {
-		viewDoc.destroy();
+		buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
 	} );
 
 	describe( 'model element to view element conversion', () => {
 		it( 'using passed view element name', () => {
-			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
-
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
-			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -109,9 +88,10 @@ describe( 'Model converter builder', () => {
 			buildModelConverter().for( dispatcher ).fromElement( 'image' ).toElement( new ViewContainerElement( 'img' ) );
 
 			const modelElement = new ModelElement( 'image' );
-			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><img></img></div>' );
 		} );
@@ -122,32 +102,30 @@ describe( 'Model converter builder', () => {
 				.toElement( data => new ViewContainerElement( 'h' + data.item.getAttribute( 'level' ) ) );
 
 			const modelElement = new ModelElement( 'header', { level: 2 }, new ModelText( 'foobar' ) );
-			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><h2>foobar</h2></div>' );
 		} );
 	} );
 
 	describe( 'model attribute to view element conversion', () => {
-		beforeEach( () => {
-			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
-		} );
-
 		it( 'using passed view element name', () => {
 			buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( 'strong' );
 
 			const modelElement = new ModelText( 'foo', { bold: true } );
-			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><strong>foo</strong></div>' );
 
-			modelRoot.removeAttribute( 'bold' );
-
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'bold', true, null );
+			model.change( writer => {
+				writer.removeAttribute( 'bold', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foo</div>' );
 		} );
@@ -156,15 +134,16 @@ describe( 'Model converter builder', () => {
 			buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( new ViewAttributeElement( 'strong' ) );
 
 			const modelElement = new ModelText( 'foo', { bold: true } );
-			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><strong>foo</strong></div>' );
 
-			modelRoot.removeAttribute( 'bold' );
-
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'bold', true, null );
+			model.change( writer => {
+				writer.removeAttribute( 'bold', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foo</div>' );
 		} );
@@ -173,43 +152,38 @@ describe( 'Model converter builder', () => {
 			buildModelConverter().for( dispatcher ).fromAttribute( 'italic' ).toElement( value => new ViewAttributeElement( value ) );
 
 			const modelElement = new ModelText( 'foo', { italic: 'em' } );
-			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>foo</em></div>' );
 
-			modelRoot.setAttribute( 'italic', 'i' );
-
-			dispatcher.convertAttribute( 'changeAttribute', ModelRange.createIn( modelRoot ), 'italic', 'em', 'i' );
+			model.change( writer => {
+				writer.setAttribute( 'italic', 'i', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><i>foo</i></div>' );
 
-			modelRoot.removeAttribute( 'italic' );
-
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'italic', 'i', null );
+			model.change( writer => {
+				writer.removeAttribute( 'italic', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foo</div>' );
 		} );
 
 		it( 'selection conversion', () => {
-			// This test requires collapsed range selection converter (breaking attributes)  and clearing "artifacts".
-			dispatcher.on( 'selection', clearAttributes() );
-			dispatcher.on( 'selection', convertCollapsedSelection() );
-
 			// Model converter builder should add selection converter.
 			buildModelConverter().for( dispatcher ).fromAttribute( 'italic' ).toElement( value => new ViewAttributeElement( value ) );
 
-			modelRoot.appendChildren( new ModelText( 'foo', { italic: 'em' } ) );
+			model.change( writer => {
+				writer.insert( new ModelText( 'foo', { italic: 'em' } ), ModelPosition.createAt( modelRoot, 0 ) );
 
-			// Set collapsed selection after "f".
-			const position = new ModelPosition( modelRoot, [ 1 ] );
-			modelDoc.selection.setRanges( [ new ModelRange( position, position ) ] );
-			modelDoc.selection._updateAttributes();
-
-			// Convert stuff.
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-			dispatcher.convertSelection( modelDoc.selection, [] );
+				// Set collapsed selection after "f".
+				const position = new ModelPosition( modelRoot, [ 1 ] );
+				modelDoc.selection.setRanges( [ new ModelRange( position, position ) ] );
+				modelDoc.selection._updateAttributes();
+			} );
 
 			// Check if view structure is ok.
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>foo</em></div>' );
@@ -222,8 +196,9 @@ describe( 'Model converter builder', () => {
 			expect( ranges[ 0 ].start.offset ).to.equal( 1 );
 
 			// Change selection attribute, convert it.
-			modelDoc.selection.setAttribute( 'italic', 'i' );
-			dispatcher.convertSelection( modelDoc.selection, [] );
+			model.change( () => {
+				modelDoc.selection.setAttribute( 'italic', 'i' );
+			} );
 
 			// Check if view structure has changed.
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>f</em><i></i><em>oo</em></div>' );
@@ -236,16 +211,18 @@ describe( 'Model converter builder', () => {
 			expect( ranges[ 0 ].start.offset ).to.equal( 0 );
 
 			// Some more tests checking how selection attributes changes are converted:
-			modelDoc.selection.removeAttribute( 'italic' );
-			dispatcher.convertSelection( modelDoc.selection, [] );
+			model.change( () => {
+				modelDoc.selection.removeAttribute( 'italic' );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>f</em><em>oo</em></div>' );
 			ranges = Array.from( viewSelection.getRanges() );
 			expect( ranges[ 0 ].start.parent.name ).to.equal( 'div' );
 			expect( ranges[ 0 ].start.offset ).to.equal( 1 );
 
-			modelDoc.selection.setAttribute( 'italic', 'em' );
-			dispatcher.convertSelection( modelDoc.selection, [] );
+			model.change( () => {
+				modelDoc.selection.setAttribute( 'italic', 'em' );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>foo</em></div>' );
 			ranges = Array.from( viewSelection.getRanges() );
@@ -257,27 +234,26 @@ describe( 'Model converter builder', () => {
 	} );
 
 	describe( 'model attribute to view attribute conversion', () => {
-		beforeEach( () => {
-			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
-		} );
-
 		it( 'using default 1-to-1 conversion', () => {
 			buildModelConverter().for( dispatcher ).fromAttribute( 'class' ).toAttribute();
 
 			const modelElement = new ModelElement( 'paragraph', { class: 'myClass' }, new ModelText( 'foobar' ) );
-			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="myClass">foobar</p></div>' );
 
-			modelElement.setAttribute( 'class', 'newClass' );
-			dispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'class', 'myClass', 'newClass' );
+			model.change( writer => {
+				writer.setAttribute( 'class', 'newClass', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="newClass">foobar</p></div>' );
 
-			modelElement.removeAttribute( 'class' );
-			dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'class', 'newClass', null );
+			model.change( writer => {
+				writer.removeAttribute( 'class', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -286,19 +262,22 @@ describe( 'Model converter builder', () => {
 			buildModelConverter().for( dispatcher ).fromAttribute( 'theme' ).toAttribute( 'class' );
 
 			const modelElement = new ModelElement( 'paragraph', { theme: 'abc' }, new ModelText( 'foobar' ) );
-			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="abc">foobar</p></div>' );
 
-			modelElement.setAttribute( 'theme', 'xyz' );
-			dispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'theme', 'abc', 'xyz' );
+			model.change( writer => {
+				writer.setAttribute( 'theme', 'xyz', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="xyz">foobar</p></div>' );
 
-			modelElement.removeAttribute( 'theme' );
-			dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'theme', 'xyz', null );
+			model.change( writer => {
+				writer.removeAttribute( 'theme', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -307,14 +286,16 @@ describe( 'Model converter builder', () => {
 			buildModelConverter().for( dispatcher ).fromAttribute( 'highlighted' ).toAttribute( 'style', 'background:yellow' );
 
 			const modelElement = new ModelElement( 'paragraph', { 'highlighted': true }, new ModelText( 'foobar' ) );
-			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p style="background:yellow;">foobar</p></div>' );
 
-			modelElement.removeAttribute( 'highlighted' );
-			dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'highlighted', true, null );
+			model.change( writer => {
+				writer.removeAttribute( 'highlighted', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -325,19 +306,22 @@ describe( 'Model converter builder', () => {
 				.toAttribute( value => ( { key: 'class', value: value + '-theme' } ) );
 
 			const modelElement = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
-			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="nice-theme">foobar</p></div>' );
 
-			modelElement.setAttribute( 'theme', 'good' );
-			dispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'theme', 'nice', 'good' );
+			model.change( writer => {
+				writer.setAttribute( 'theme', 'good', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="good-theme">foobar</p></div>' );
 
-			modelElement.removeAttribute( 'theme' );
-			dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'theme', 'good', null );
+			model.change( writer => {
+				writer.removeAttribute( 'theme', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -349,13 +333,10 @@ describe( 'Model converter builder', () => {
 		beforeEach( () => {
 			modelText = new ModelText( 'foobar' );
 			modelElement = new ModelElement( 'paragraph', null, [ modelText ] );
-			modelRoot.appendChildren( modelElement );
 
-			const viewText = new ViewText( 'foobar' );
-			const viewElement = new ViewContainerElement( 'p', null, [ viewText ] );
-			viewRoot.appendChildren( viewElement );
-
-			mapper.bindElements( modelElement, viewElement );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 		} );
 
 		it( 'using passed highlight descriptor object', () => {
@@ -365,7 +346,9 @@ describe( 'Model converter builder', () => {
 				attributes: { title: 'highlight title' }
 			} );
 
-			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			model.change( () => {
+				model.markers.set( 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal(
 				'<div>' +
@@ -378,9 +361,9 @@ describe( 'Model converter builder', () => {
 
 			expect( viewRoot.getChild( 0 ).getChild( 1 ).priority ).to.equal( 3 );
 
-			dispatcher.convertMarker(
-				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
-			);
+			model.change( () => {
+				model.markers.remove( 'search' );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -392,7 +375,9 @@ describe( 'Model converter builder', () => {
 				attributes: { title: 'highlight title' }
 			} ) );
 
-			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			model.change( () => {
+				model.markers.set( 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal(
 				'<div>' +
@@ -405,9 +390,9 @@ describe( 'Model converter builder', () => {
 
 			expect( viewRoot.getChild( 0 ).getChild( 1 ).priority ).to.equal( 12 );
 
-			dispatcher.convertMarker(
-				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 )
-			);
+			model.change( () => {
+				model.markers.remove( 'search' );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -417,27 +402,26 @@ describe( 'Model converter builder', () => {
 				class: 'highlight'
 			} );
 
-			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 ) );
+			model.change( () => {
+				model.markers.set( 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 
-			dispatcher.convertMarker(
-				'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 )
-			);
+			model.change( () => {
+				model.markers.remove( 'search' );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
 
 		it( 'should create converters with provided priority', () => {
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toHighlight( {
-				class: 'highlight'
-			} );
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toHighlight( { class: 'highlight' } );
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toHighlight( { class: 'override' } );
 
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toHighlight( {
-				class: 'override'
+			model.change( () => {
+				model.markers.set( 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
 			} );
-
-			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
 
 			expect( viewToString( viewRoot ) ).to.equal(
 				'<div>' +
@@ -468,13 +452,10 @@ describe( 'Model converter builder', () => {
 		beforeEach( () => {
 			modelText = new ModelText( 'foobar' );
 			modelElement = new ModelElement( 'paragraph', null, [ modelText ] );
-			modelRoot.appendChildren( modelElement );
 
-			const viewText = new ViewText( 'foobar' );
-			const viewElement = new ViewContainerElement( 'p', null, [ viewText ] );
-			viewRoot.appendChildren( viewElement );
-
-			mapper.bindElements( modelElement, viewElement );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 		} );
 
 		describe( 'collapsed range', () => {
@@ -485,11 +466,15 @@ describe( 'Model converter builder', () => {
 			it( 'using passed view element name', () => {
 				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'span' );
 
-				dispatcher.convertMarker( 'addMarker', 'search', range );
+				model.change( () => {
+					model.markers.set( 'search', range );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span></span>obar</p></div>' );
 
-				dispatcher.convertMarker( 'removeMarker', 'search', range );
+				model.change( () => {
+					model.markers.remove( 'search' );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
@@ -498,11 +483,15 @@ describe( 'Model converter builder', () => {
 				const viewElement = new ViewUIElement( 'span', { class: 'search' } );
 				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( viewElement );
 
-				dispatcher.convertMarker( 'addMarker', 'search', range );
+				model.change( () => {
+					model.markers.set( 'search', range );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search"></span>obar</p></div>' );
 
-				dispatcher.convertMarker( 'removeMarker', 'search', range );
+				model.change( () => {
+					model.markers.remove( 'search' );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
@@ -514,11 +503,15 @@ describe( 'Model converter builder', () => {
 					return new ViewUIElement( 'span', { class: className } );
 				} );
 
-				dispatcher.convertMarker( 'addMarker', 'search:red', range );
+				model.change( () => {
+					model.markers.set( 'search:red', range );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search search-color-red"></span>obar</p></div>' );
 
-				dispatcher.convertMarker( 'removeMarker', 'search:red', range );
+				model.change( () => {
+					model.markers.remove( 'search:red' );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
@@ -532,11 +525,15 @@ describe( 'Model converter builder', () => {
 			it( 'using passed view element name', () => {
 				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'span' );
 
-				dispatcher.convertMarker( 'addMarker', 'search', range );
+				model.change( () => {
+					model.markers.set( 'search', range );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span></span>ob<span></span>ar</p></div>' );
 
-				dispatcher.convertMarker( 'removeMarker', 'search', range );
+				model.change( () => {
+					model.markers.remove( 'search' );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
@@ -545,13 +542,17 @@ describe( 'Model converter builder', () => {
 				const viewElement = new ViewUIElement( 'span', { class: 'search' } );
 				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( viewElement );
 
-				dispatcher.convertMarker( 'addMarker', 'search', range );
+				model.change( () => {
+					model.markers.set( 'search', range );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div><p>fo<span class="search"></span>ob<span class="search"></span>ar</p></div>'
 				);
 
-				dispatcher.convertMarker( 'removeMarker', 'search', range );
+				model.change( () => {
+					model.markers.remove( 'search' );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
@@ -563,13 +564,17 @@ describe( 'Model converter builder', () => {
 					return new ViewUIElement( 'span', { class: className } );
 				} );
 
-				dispatcher.convertMarker( 'addMarker', 'search:red', range );
+				model.change( () => {
+					model.markers.set( 'search:red', range );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div><p>fo<span class="search search-color-red"></span>ob<span class="search search-color-red"></span>ar</p></div>'
 				);
 
-				dispatcher.convertMarker( 'removeMarker', 'search:red', range );
+				model.change( () => {
+					model.markers.remove( 'search:red' );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
@@ -581,29 +586,17 @@ describe( 'Model converter builder', () => {
 			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'normal' );
 			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toElement( 'high' );
 
-			dispatcher.convertMarker( 'addMarker', 'search', range );
+			model.change( () => {
+				model.markers.set( 'search', range );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<high></high>obar</p></div>' );
 		} );
-	} );
 
-	describe( 'withPriority', () => {
-		it( 'should change default converters priority', () => {
-			buildModelConverter().for( dispatcher ).fromElement( 'custom' ).toElement( 'custom' );
-			buildModelConverter().for( dispatcher ).fromElement( 'custom' ).withPriority( 'high' ).toElement( 'other' );
-
-			const modelElement = new ModelElement( 'custom', null, new ModelText( 'foobar' ) );
-			modelRoot.appendChildren( modelElement );
-
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><other>foobar</other></div>' );
+		it( 'should throw when trying to build model element to view attribute converter', () => {
+			expect( () => {
+				buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toAttribute( 'paragraph', true );
+			} ).to.throw( CKEditorError, /^build-model-converter-non-attribute-to-attribute/ );
 		} );
-	} );
-
-	it( 'should throw when trying to build model element to view attribute converter', () => {
-		expect( () => {
-			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toAttribute( 'paragraph', true );
-		} ).to.throw( CKEditorError, /^build-model-converter-non-attribute-to-attribute/ );
 	} );
 } );
