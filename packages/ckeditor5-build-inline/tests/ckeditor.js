@@ -73,6 +73,17 @@ describe( 'InlineEditor build', () => {
 	} );
 
 	describe( 'plugins', () => {
+		beforeEach( () => {
+			return InlineEditor.create( editorElement )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
 		it( 'paragraph works', () => {
 			const data = '<p>Some text inside a paragraph.</p>';
 
