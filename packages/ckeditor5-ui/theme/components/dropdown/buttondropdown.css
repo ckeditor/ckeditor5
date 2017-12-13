@@ -4,18 +4,13 @@
  */
 
 .ck-buttondropdown {
+	& .ck-toolbar {
+		flex-wrap: nowrap;
+	}
+
 	& .ck-dropdown__panel .ck-button {
 		&:focus {
 			z-index: calc(var(--ck-z-default) + 1);
-		}
-	}
-
-	& .ck-toolbar {
-		display: flex;
-		flex-direction: row;
-
-		&.ck-toolbar__vertical {
-			flex-direction: column;
 		}
 	}
 }

@@ -30,6 +30,8 @@ export default class ToolbarView extends View {
 	constructor( locale ) {
 		super( locale );
 
+		const bind = this.bindTemplate;
+
 		/**
 		 * Collection of the toolbar items (like buttons).
 		 *
@@ -55,6 +57,14 @@ export default class ToolbarView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
+		 * Controls the orientation of toolbar items.
+		 *
+		 * @observable
+		 * @member {Boolean} #isVertical
+		 */
+		this.set( 'isVertical', false );
+
+		/**
 		 * Helps cycling over focusable {@link #items} in the toolbar.
 		 *
 		 * @readonly
@@ -78,7 +88,8 @@ export default class ToolbarView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
-					'ck-toolbar'
+					'ck-toolbar',
+					bind.if( 'isVertical', 'ck-toolbar_vertical' )
 				]
 			},
 

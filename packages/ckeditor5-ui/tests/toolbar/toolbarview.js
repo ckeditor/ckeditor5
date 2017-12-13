@@ -37,6 +37,10 @@ describe( 'ToolbarView', () => {
 			expect( view.locale ).to.equal( locale );
 		} );
 
+		it( 'should set view#isVertical', () => {
+			expect( view.isVertical ).to.be.false;
+		} );
+
 		it( 'should create view#children collection', () => {
 			expect( view.items ).to.be.instanceOf( ViewCollection );
 		} );
@@ -66,6 +70,18 @@ describe( 'ToolbarView', () => {
 
 				view.element.dispatchEvent( evt );
 				sinon.assert.calledOnce( spy );
+			} );
+		} );
+	} );
+
+	describe( 'element bindings', () => {
+		describe( 'class', () => {
+			it( 'reacts on view#isVertical', () => {
+				view.isVertical = false;
+				expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).to.be.false;
+
+				view.isVertical = true;
+				expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).to.be.true;
 			} );
 		} );
 	} );
