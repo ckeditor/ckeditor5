@@ -122,8 +122,12 @@ function testButton() {
 			return buttonView;
 		} );
 
-	const buttonDropdownModel = new Model( { isVertical: true } );
-	const buttonDropdown = createButtonDropdown( buttonDropdownModel, buttonViews, {} );
+	const buttonDropdownModel = new Model( {
+		isVertical: true,
+		buttons: buttonViews
+	} );
+
+	const buttonDropdown = createButtonDropdown( buttonDropdownModel, {} );
 
 	ui.buttonDropdown.add( buttonDropdown );
 

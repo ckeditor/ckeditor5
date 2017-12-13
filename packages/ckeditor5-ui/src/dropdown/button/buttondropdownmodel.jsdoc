@@ -15,6 +15,13 @@
  */
 
 /**
+ * List of buttons to be included in dropdown
+ *
+ * @observable
+ * @member {Array.<module:ui/button/buttonview~ButtonView>} #buttons
+ */
+
+/**
  * Fired when the button dropdown is executed. It fires when one of the buttons
  * {@link module:ui/button/buttonview~ButtonView#event:execute executed}.
  *

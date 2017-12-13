@@ -18,9 +18,9 @@
  */
 
 /**
- * A child {@link module:ui/buttongroup/buttongroupview~ButtonGroupView button group view} of the dropdown located
- * in its {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel}.
+ * A child toolbar of the dropdown located in the
+ * {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel}.
  *
  * @readonly
- * @member {module:ui/buttongroup/buttongroup~ButtonGroupView} #buttonGroupView
+ * @member {module:ui/toolbar/toolbarview~ToolbarView} #toolbarView
  */

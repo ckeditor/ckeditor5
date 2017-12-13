@@ -25,10 +25,11 @@ import '../../../theme/components/dropdown/buttondropdown.css';
  *
  *		const model = new Model( {
  *			label: 'A button dropdown',
- *			isVertical: true
+ *			isVertical: true,
+ *			buttons
  *		} );
  *
- *		const dropdown = createButtonDropdown( model, buttons, locale );
+ *		const dropdown = createButtonDropdown( model, locale );
  *
  *		// Will render a vertical button dropdown labeled "A button dropdown"
  *		// with a button group in the panel containing two buttons.
@@ -39,31 +40,30 @@ import '../../../theme/components/dropdown/buttondropdown.css';
  * {@link module:ui/dropdown/dropdownmodel~DropdownModel#label `model.label`} will be reflected in the
  * dropdown button's {@link module:ui/button/buttonview~ButtonView#label} attribute and in DOM.
  *
- * See {@link module:ui/dropdown/createdropdown~createDropdown} and {@link module:ui/buttongroup/buttongroupview~ButtonGroupView}.
+ * See {@link module:ui/dropdown/createdropdown~createDropdown}.
  *
  * @param {module:ui/dropdown/button/buttondropdownmodel~ButtonDropdownModel} model Model of the list dropdown.
- * @param {Array.<module:ui/button/buttonview~ButtonView>} buttonViews List of buttons to be included in dropdown.
  * @param {module:utils/locale~Locale} locale The locale instance.
  * @returns {module:ui/dropdown/button/buttondropdownview~ButtonDropdownView} The button dropdown view instance.
  * @returns {module:ui/dropdown/dropdownview~DropdownView}
  */
-export default function createButtonDropdown( model, buttonViews, locale ) {
+export default function createButtonDropdown( model, locale ) {
 	// Make disabled when all buttons are disabled
 	model.bind( 'isEnabled' ).to(
 		// Bind to #isEnabled of each command...
-		...getBindingTargets( buttonViews, 'isEnabled' ),
+		...getBindingTargets( model.buttons, 'isEnabled' ),
 		// ...and set it true if any command #isEnabled is true.
 		( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
 	);
 
-	// If defined `staticIcon` use the `defautlIcon` without binding it to active buttonView
+	// If defined `staticIcon` use the `defautlIcon` without binding it to active a button.
 	if ( model.staticIcon ) {
 		model.bind( 'icon' ).to( model, 'defaultIcon' );
 	} else {
 		// Make dropdown icon as any active button.
 		model.bind( 'icon' ).to(
 			// Bind to #isOn of each button...
-			...getBindingTargets( buttonViews, 'isOn' ),
+			...getBindingTargets( model.buttons, 'isOn' ),
 			// ...and chose the title of the first one which #isOn is true.
 			( ...areActive ) => {
 				const index = areActive.findIndex( value => value );
@@ -73,26 +73,17 @@ export default function createButtonDropdown( model, buttonViews, locale ) {
 					return model.defaultIcon;
 				}
 
-				return buttonViews[ index < 0 ? 0 : index ].icon;
+				return model.buttons[ index < 0 ? 0 : index ].icon;
 			}
 		);
 	}
 
 	const dropdownView = createDropdown( model, locale );
+	const toolbarView = dropdownView.toolbarView = new ToolbarView();
 
-	const buttonGroupView = dropdownView.buttonGroupView = new ToolbarView();
+	toolbarView.bind( 'isVertical' ).to( model, 'isVertical' );
 
-	buttonGroupView.extendTemplate( {
-		attributes: {
-			class: [
-				buttonGroupView.bindTemplate.if( 'isVertical', 'ck-toolbar__vertical' )
-			]
-		}
-	} );
-
-	buttonGroupView.bind( 'isVertical' ).to( model, 'isVertical' );
-
-	buttonViews.map( view => buttonGroupView.items.add( view ) );
+	model.buttons.map( view => toolbarView.items.add( view ) );
 
 	dropdownView.extendTemplate( {
 		attributes: {
@@ -100,11 +91,11 @@ export default function createButtonDropdown( model, buttonViews, locale ) {
 		}
 	} );
 
-	dropdownView.panelView.children.add( buttonGroupView );
+	dropdownView.panelView.children.add( toolbarView );
 
 	closeDropdownOnBlur( dropdownView );
-	closeDropdownOnExecute( dropdownView, buttonGroupView.items );
-	focusDropdownContentsOnArrows( dropdownView, buttonGroupView );
+	closeDropdownOnExecute( dropdownView, toolbarView.items );
+	focusDropdownContentsOnArrows( dropdownView, toolbarView );
 
 	return dropdownView;
 }

@@ -14,20 +14,23 @@ import ToolbarView from '../../../src/toolbar/toolbarview';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'createButtonDropdown', () => {
-	let view, model, locale, buttonViews;
+	let view, model, locale, buttons;
 
 	beforeEach( () => {
 		locale = { t() {} };
-		buttonViews = [ 'foo', 'bar' ].map( icon => {
+		buttons = [ 'foo', 'bar' ].map( icon => {
 			const button = new ButtonView();
 			button.icon = icon;
 
 			return button;
 		} );
 
-		model = new Model( { isVertical: true } );
+		model = new Model( {
+			isVertical: true,
+			buttons
+		} );
 
-		view = createButtonDropdown( model, buttonViews, locale );
+		view = createButtonDropdown( model, locale );
 		view.render();
 		document.body.appendChild( view.element );
 	} );
@@ -41,24 +44,24 @@ describe( 'createButtonDropdown', () => {
 			expect( view.locale ).to.equal( locale );
 		} );
 
-		describe( 'view#buttonGroupView', () => {
+		describe( 'view#toolbarView', () => {
 			it( 'is created', () => {
 				const panelChildren = view.panelView.children;
 
 				expect( panelChildren ).to.have.length( 1 );
-				expect( panelChildren.get( 0 ) ).to.equal( view.buttonGroupView );
-				expect( view.buttonGroupView ).to.be.instanceof( ToolbarView );
+				expect( panelChildren.get( 0 ) ).to.equal( view.toolbarView );
+				expect( view.toolbarView ).to.be.instanceof( ToolbarView );
 			} );
 
-			it( 'delegates view.buttonGroupView#execute to the view', done => {
+			it( 'delegates view.toolbarView#execute to the view', done => {
 				view.on( 'execute', evt => {
-					expect( evt.source ).to.equal( view.buttonGroupView.items.get( 0 ) );
-					expect( evt.path ).to.deep.equal( [ view.buttonGroupView.items.get( 0 ), view ] );
+					expect( evt.source ).to.equal( view.toolbarView.items.get( 0 ) );
+					expect( evt.path ).to.deep.equal( [ view.toolbarView.items.get( 0 ), view ] );
 
 					done();
 				} );
 
-				view.buttonGroupView.items.get( 0 ).fire( 'execute' );
+				view.toolbarView.items.get( 0 ).fire( 'execute' );
 			} );
 		} );
 
@@ -118,13 +121,13 @@ describe( 'createButtonDropdown', () => {
 		} );
 
 		describe( 'activates keyboard navigation for the dropdown', () => {
-			it( 'so "arrowdown" focuses the #buttonGroupView if dropdown is open', () => {
+			it( 'so "arrowdown" focuses the #toolbarView if dropdown is open', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowdown,
 					preventDefault: sinon.spy(),
 					stopPropagation: sinon.spy()
 				};
-				const spy = sinon.spy( view.buttonGroupView, 'focus' );
+				const spy = sinon.spy( view.toolbarView, 'focus' );
 
 				view.isOpen = false;
 				view.keystrokes.press( keyEvtData );
@@ -135,13 +138,13 @@ describe( 'createButtonDropdown', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
-			it( 'so "arrowup" focuses the last #item in #buttonGroupView if dropdown is open', () => {
+			it( 'so "arrowup" focuses the last #item in #toolbarView if dropdown is open', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowup,
 					preventDefault: sinon.spy(),
 					stopPropagation: sinon.spy()
 				};
-				const spy = sinon.spy( view.buttonGroupView, 'focusLast' );
+				const spy = sinon.spy( view.toolbarView, 'focusLast' );
 
 				view.isOpen = false;
 				view.keystrokes.press( keyEvtData );
@@ -155,37 +158,44 @@ describe( 'createButtonDropdown', () => {
 
 		describe( 'icon', () => {
 			it( 'should be set to first button\'s icon if no defaultIcon defined', () => {
-				expect( view.buttonView.icon ).to.equal( view.buttonGroupView.items.get( 0 ).icon );
+				expect( view.buttonView.icon ).to.equal( view.toolbarView.items.get( 0 ).icon );
 			} );
 
 			it( 'should be bound to first button that is on', () => {
-				view.buttonGroupView.items.get( 1 ).isOn = true;
+				view.toolbarView.items.get( 1 ).isOn = true;
 
-				expect( view.buttonView.icon ).to.equal( view.buttonGroupView.items.get( 1 ).icon );
+				expect( view.buttonView.icon ).to.equal( view.toolbarView.items.get( 1 ).icon );
 
-				view.buttonGroupView.items.get( 0 ).isOn = true;
-				view.buttonGroupView.items.get( 1 ).isOn = false;
+				view.toolbarView.items.get( 0 ).isOn = true;
+				view.toolbarView.items.get( 1 ).isOn = false;
 
-				expect( view.buttonView.icon ).to.equal( view.buttonGroupView.items.get( 0 ).icon );
+				expect( view.buttonView.icon ).to.equal( view.toolbarView.items.get( 0 ).icon );
 			} );
 
 			it( 'should be set to defaultIcon if defined and on button is on', () => {
-				const model = new Model( { defaultIcon: 'baz' } );
+				const model = new Model( {
+					defaultIcon: 'baz',
+					buttons
+				} );
 
-				view = createButtonDropdown( model, buttonViews, locale );
+				view = createButtonDropdown( model, locale );
 				view.render();
 
 				expect( view.buttonView.icon ).to.equal( 'baz' );
 			} );
 
 			it( 'should not bind icons if staticIcon is set', () => {
-				const model = new Model( { defaultIcon: 'baz', staticIcon: true } );
+				const model = new Model( {
+					defaultIcon: 'baz',
+					staticIcon: true,
+					buttons
+				} );
 
-				view = createButtonDropdown( model, buttonViews, locale );
+				view = createButtonDropdown( model, locale );
 				view.render();
 
 				expect( view.buttonView.icon ).to.equal( 'baz' );
-				view.buttonGroupView.items.get( 1 ).isOn = true;
+				view.toolbarView.items.get( 1 ).isOn = true;
 
 				expect( view.buttonView.icon ).to.equal( 'baz' );
 			} );
