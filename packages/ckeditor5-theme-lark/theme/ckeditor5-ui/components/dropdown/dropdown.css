@@ -19,6 +19,10 @@
 		right: var(--ck-spacing-standard);
 	}
 
+	&.ck-disabled::after {
+		border-color: var(--ck-color-dropdown-symbol-disabled) transparent;
+	}
+
 	& .ck-button.ck-dropdown__button {
 		/* A space to accommodate the triangle. */
 		padding-right: calc(2.5 * var(--ck-spacing-standard));
