@@ -3,24 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-buttondropdown .ck-dropdown__panel .ck-button {
-	&:focus {
-		z-index: calc(var(--ck-z-default) + 1);
+.ck-buttondropdown {
+	& .ck-dropdown__panel .ck-button {
+		&:focus {
+			z-index: calc(var(--ck-z-default) + 1);
+		}
 	}
-}
 
-.ck-dropdown {
-	&.ck-buttondropdown .ck-toolbar {
+	& .ck-toolbar {
 		display: flex;
 		flex-direction: row;
 
 		&.ck-toolbar__vertical {
 			flex-direction: column;
-		}
-
-		& .ck-button {
-			margin: 0;
-			border-radius: 0;
 		}
 	}
 }
