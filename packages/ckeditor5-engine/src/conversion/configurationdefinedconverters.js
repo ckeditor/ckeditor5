@@ -12,6 +12,12 @@ import ViewContainerElement from '../view/containerelement';
 
 import buildModelConverter from './buildmodelconverter';
 
+/**
+ * Helper for creating model to view converter from model's element.
+ *
+ * @param {module:engine/conversion/configurationdefinedconverters~ConverterDefinition} definition A conversion configuration.
+ * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
+ */
 export function containerElementToView( definition, dispatchers ) {
 	const { model: modelElement, viewDefinition } = parseConverterDefinition( definition );
 
@@ -21,10 +27,15 @@ export function containerElementToView( definition, dispatchers ) {
 		.toElement( () => ViewContainerElement.fromViewDefinition( viewDefinition ) );
 }
 
+/**
+ *
+ * @param {module:engine/conversion/configurationdefinedconverters~ConverterDefinition} definition A conversion configuration.
+ * @param {Array.<module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher>} dispatchers
+ */
 export function viewToContainerElement( definition, dispatchers ) {
 	const { model: modelElement, viewDefinitions } = parseConverterDefinition( definition );
 
-	const converter = defineViewConverter( dispatchers, viewDefinitions );
+	const converter = prepareViewConverter( dispatchers, viewDefinitions );
 
 	converter.toElement( modelElement );
 }
@@ -33,8 +44,8 @@ export function viewToContainerElement( definition, dispatchers ) {
  * Helper for creating model to view converter from model's attribute.
  *
  * @param {String} attributeName
- * @param {} definition Converter definition
- * @param dispatchers
+ * @param {module:engine/conversion/configurationdefinedconverters~ConverterDefinition} definition A conversion configuration.
+ * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
  */
 export function attributeElementToViewConverter( attributeName, definition, dispatchers ) {
 	const { model: attributeValue, viewDefinition } = parseConverterDefinition( definition );
@@ -54,13 +65,13 @@ export function attributeElementToViewConverter( attributeName, definition, disp
 /**
  *
  * @param attributeName
- * @param definition
- * @param dispatchers
+ * @param {module:engine/conversion/configurationdefinedconverters~ConverterDefinition} definition A conversion configuration.
+ * @param {Array.<module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher>} dispatchers
  */
 export function viewToAttributeElementConverter( attributeName, definition, dispatchers ) {
 	const { model: attributeValue, viewDefinitions } = parseConverterDefinition( definition );
 
-	const converter = defineViewConverter( dispatchers, viewDefinitions );
+	const converter = prepareViewConverter( dispatchers, viewDefinitions );
 
 	converter.toAttribute( () => ( {
 		key: attributeName,
@@ -70,9 +81,10 @@ export function viewToAttributeElementConverter( attributeName, definition, disp
 
 import buildViewConverter from './buildviewconverter';
 
-// Prepares a {@link module:engine/conversion/utils~ConverterDefinition definition object} for building converters.
+// Prepares a {@link module:engine/conversion/configurationdefinedconverters~ConverterDefinition definition object} for building converters.
 //
-// @param {module:engine/conversion/utils~ConverterDefinition} definition An object that defines view to model and model to view conversion.
+// @param {module:engine/conversion/configurationdefinedconverters~ConverterDefinition} definition An object that defines view to model
+// and model to view conversion.
 // @returns {Object}
 function parseConverterDefinition( definition ) {
 	const model = definition.model;
@@ -92,7 +104,7 @@ function parseConverterDefinition( definition ) {
 // @param {Array.<module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher>} dispatchers
 // @param {Array.<module:engine/view/viewelementdefinition~ViewElementDefinition>} viewDefinitions
 // @returns {module:engine/conversion/buildviewconverter~ViewConverterBuilder}
-function defineViewConverter( dispatchers, viewDefinitions ) {
+function prepareViewConverter( dispatchers, viewDefinitions ) {
 	const converter = buildViewConverter().for( ...dispatchers );
 
 	for ( const viewDefinition of viewDefinitions ) {
@@ -107,6 +119,7 @@ function defineViewConverter( dispatchers, viewDefinitions ) {
 }
 
 // Converts viewDefinition to a matcher pattern.
+//
 // @param {module:engine/view/viewelementdefinition~ViewElementDefinition} viewDefinition
 // @returns {module:engine/view/matcher~Pattern}
 function definitionToPattern( viewDefinition ) {
