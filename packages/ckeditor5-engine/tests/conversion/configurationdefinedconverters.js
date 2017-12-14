@@ -20,10 +20,10 @@ import { insertText, remove } from '../../src/conversion/model-to-view-converter
 import { convertText } from '../../src/conversion/view-to-model-converters';
 
 import {
-	attributeElementToViewConverter,
-	viewToAttributeElementConverter,
-	containerElementToView,
-	viewToContainerElement
+	modelAttributeToViewAttributeElement,
+	viewToModelAttribute,
+	modelElementToViewContainerElement,
+	viewToModelElement
 } from '../../src/conversion/configurationdefinedconverters';
 
 import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatcher';
@@ -124,9 +124,9 @@ describe( 'Configuration defined converters', () => {
 		viewDoc.destroy();
 	} );
 
-	describe( 'Attribute converter', () => {
+	describe( 'Attribute converters', () => {
 		function testConversion( definition, expectedConversion ) {
-			attributeElementToViewConverter( 'foo', definition, [ dispatcher ] );
+			modelAttributeToViewAttributeElement( 'foo', definition, [ dispatcher ] );
 
 			const modelElement = new ModelText( 'foo', { foo: 'bar' } );
 			modelRoot.appendChildren( modelElement );
@@ -177,7 +177,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should do nothing for undefined value', () => {
-				attributeElementToViewConverter( 'foo', { model: 'bar', view: 'strong' }, [ dispatcher ] );
+				modelAttributeToViewAttributeElement( 'foo', { model: 'bar', view: 'strong' }, [ dispatcher ] );
 
 				const modelElement = new ModelText( 'foo', { foo: 'baz' } );
 				modelRoot.appendChildren( modelElement );
@@ -211,7 +211,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToAttributeElementConverter( 'foo', { model: 'bar', view: 'strong' }, [ dispatcher ] );
+				viewToModelAttribute( 'foo', { model: 'bar', view: 'strong' }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), batch, additionalData
@@ -221,7 +221,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToAttributeElementConverter( 'foo', { model: 'bar', view: { name: 'strong' } }, [ dispatcher ] );
+				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'strong' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), batch, additionalData
@@ -231,7 +231,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToAttributeElementConverter( 'foo', { model: 'bar', view: { name: 'span', classes: 'foo' } }, [ dispatcher ] );
+				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'span', classes: 'foo' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewAttributeElement( 'span', { class: 'foo' }, new ViewText( 'foo' ) ), batch, additionalData
@@ -241,7 +241,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToAttributeElementConverter( 'foo', {
+				viewToModelAttribute( 'foo', {
 					model: 'bar',
 					view: { name: 'span', classes: [ 'foo', 'bar' ] }
 				}, [ dispatcher ] );
@@ -254,7 +254,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToAttributeElementConverter( 'foo', {
+				viewToModelAttribute( 'foo', {
 					model: 'bar',
 					view: { name: 'span', styles: { 'font-weight': 'bold' } }
 				}, [ dispatcher ] );
@@ -267,7 +267,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToAttributeElementConverter( 'foo', {
+				viewToModelAttribute( 'foo', {
 					model: 'bar',
 					view: { name: 'span', attributes: { 'data-foo': 'bar' } }
 				}, [ dispatcher ] );
@@ -280,7 +280,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToAttributeElementConverter( 'foo', {
+				viewToModelAttribute( 'foo', {
 					model: 'bar',
 					view: 'strong',
 					acceptsAlso: [
@@ -297,8 +297,8 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToAttributeElementConverter( 'foo', { model: 'baz', view: 'strong' }, [ dispatcher ] );
-				viewToAttributeElementConverter( 'foo', { model: 'bar', view: { name: 'strong', priority: 'high' } }, [ dispatcher ] );
+				viewToModelAttribute( 'foo', { model: 'baz', view: 'strong' }, [ dispatcher ] );
+				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'strong', priority: 'high' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), batch, additionalData
@@ -309,9 +309,9 @@ describe( 'Configuration defined converters', () => {
 		} );
 	} );
 
-	describe( 'Element converter', () => {
+	describe( 'Element converters', () => {
 		function testModelConversion( definition, expectedResult ) {
-			containerElementToView( definition, [ dispatcher ] );
+			modelElementToViewContainerElement( definition, [ dispatcher ] );
 
 			const modelElement = new ModelElement( 'foo', null, new ModelText( 'bar' ) );
 			modelRoot.appendChildren( modelElement );
@@ -380,8 +380,9 @@ describe( 'Configuration defined converters', () => {
 				dispatcher.on( 'text', convertText() );
 			} );
 
+			// TODO:
 			it( 'should convert from view element to model attribute', () => {
-				viewToContainerElement( { model: 'bar', view: 'strong' }, [ dispatcher ] );
+				viewToModelElement( { model: 'bar', view: 'strong' }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), batch, additionalData
@@ -391,7 +392,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToContainerElement( { model: 'bar', view: { name: 'strong' } }, [ dispatcher ] );
+				viewToModelElement( { model: 'bar', view: { name: 'strong' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), batch, additionalData
@@ -401,7 +402,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToContainerElement( { model: 'bar', view: { name: 'span', classes: 'foo' } }, [ dispatcher ] );
+				viewToModelElement( { model: 'bar', view: { name: 'span', classes: 'foo' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewElement( 'span', { class: 'foo' }, new ViewText( 'foo' ) ), batch, additionalData
@@ -411,7 +412,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToContainerElement( { model: 'bar', view: { name: 'span', classes: [ 'foo', 'bar' ] } }, [ dispatcher ] );
+				viewToModelElement( { model: 'bar', view: { name: 'span', classes: [ 'foo', 'bar' ] } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewElement( 'span', { class: 'foo bar' }, new ViewText( 'foo' ) ), batch, additionalData
@@ -421,7 +422,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToContainerElement( { model: 'bar', view: { name: 'span', styles: { 'font-weight': 'bold' } } }, [ dispatcher ] );
+				viewToModelElement( { model: 'bar', view: { name: 'span', styles: { 'font-weight': 'bold' } } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewElement( 'span', { style: 'font-weight:bold' }, new ViewText( 'foo' ) ), batch, additionalData
@@ -431,7 +432,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToContainerElement( { model: 'bar', view: { name: 'span', attributes: { 'data-foo': 'bar' } } }, [ dispatcher ] );
+				viewToModelElement( { model: 'bar', view: { name: 'span', attributes: { 'data-foo': 'bar' } } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), batch, additionalData
@@ -441,7 +442,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToContainerElement( {
+				viewToModelElement( {
 					model: 'bar',
 					view: 'strong',
 					acceptsAlso: [
@@ -458,8 +459,8 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert from view element to model attribute', () => {
-				viewToContainerElement( { model: 'baz', view: 'strong' }, [ dispatcher ] );
-				viewToContainerElement( { model: 'bar', view: { name: 'strong', priority: 'high' } }, [ dispatcher ] );
+				viewToModelElement( { model: 'baz', view: 'strong' }, [ dispatcher ] );
+				viewToModelElement( { model: 'bar', view: { name: 'strong', priority: 'high' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), batch, additionalData

@@ -12,7 +12,7 @@
  *
  * @typedef {Object} module:engine/view/viewelementdefinition~ViewElementDefinition
  *
- * @property {String} name View element attribute name.
+ * @property {String} name View element name.
  * @property {String|Array.<String>} [classes] Class name or array of class names to match. Each name can be
  * provided in a form of string.
  * @property {Object} [styles] Object with key-value pairs representing styles to match. Each object key
