@@ -58,7 +58,8 @@
 
 	--ck-color-dropdown-panel-background: 						var(--ck-color-base-background);
 	--ck-color-dropdown-panel-border: 							var(--ck-color-base-border);
-	--ck-color-dropdown-symbol: 								hsl(0, 0%, 44%);
+	--ck-color-dropdown-symbol: 								hsl(0, 0%, 30%);
+	--ck-color-dropdown-symbol-disabled: 						hsl(0, 0%, 50%);
 
 	/* -- Input --------------------------------------------------------------------------------- */
 
