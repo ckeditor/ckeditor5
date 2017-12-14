@@ -48,10 +48,10 @@ export default class HeadingCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const block = first( this.editor.document.selection.getSelectedBlocks() );
+		const block = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		this.value = !!block && block.is( this.modelElement );
-		this.isEnabled = !!block && checkCanBecomeHeading( block, this.modelElement, this.editor.document.schema );
+		this.isEnabled = !!block && checkCanBecomeHeading( block, this.modelElement, this.editor.model.schema );
 	}
 
 	/**
@@ -59,24 +59,20 @@ export default class HeadingCommand extends Command {
 	 * block is a heading already, turns selected headings (of this level only) to paragraphs.
 	 *
 	 * @fires execute
-	 * @param {Object} [options] Options for executed command.
-	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
-	 * New batch will be created if this option is not set.
 	 */
-	execute( options = {} ) {
-		const editor = this.editor;
-		const document = editor.document;
+	execute() {
+		const model = this.editor.model;
+		const document = model.document;
 
-		document.enqueueChanges( () => {
-			const batch = options.batch || document.batch();
+		model.change( writer => {
 			const blocks = Array.from( document.selection.getSelectedBlocks() )
 				.filter( block => {
-					return checkCanBecomeHeading( block, this.modelElement, document.schema );
+					return checkCanBecomeHeading( block, this.modelElement, model.schema );
 				} );
 
 			for ( const block of blocks ) {
 				if ( !block.is( this.modelElement ) ) {
-					batch.rename( block, this.modelElement );
+					writer.rename( block, this.modelElement );
 				}
 			}
 		} );
