@@ -43,8 +43,6 @@ export default class ParagraphCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps.
-	 * A new batch will be created if this option is not set.
 	 * @param {module:engine/model/selection~Selection} [options.selection] The selection that the command should be applied to.
 	 * By default, if not provided, the command is applied to the {@link module:engine/model/document~Document#selection}.
 	 */
