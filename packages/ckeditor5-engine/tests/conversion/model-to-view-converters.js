@@ -3,7 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelDocument from '../../src/model/document';
+import ModelWriter from '../../src/model/writer';
+import Batch from '../../src/model/batch';
+import Model from '../../src/model/model';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
@@ -35,19 +37,21 @@ import {
 import { createRangeOnElementOnly } from '../../tests/model/_utils/utils';
 
 describe( 'model-to-view-converters', () => {
-	let dispatcher, modelDoc, modelRoot, mapper, viewRoot, batch;
+	let dispatcher, model, modelDoc, modelRoot, modelWriter, mapper, viewRoot;
 
 	beforeEach( () => {
-		modelDoc = new ModelDocument();
+		model = new Model();
+		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
 		viewRoot = new ViewContainerElement( 'div' );
-
-		batch = modelDoc.batch();
 
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
 
-		dispatcher = new ModelConversionDispatcher( modelDoc, { mapper } );
+		dispatcher = new ModelConversionDispatcher( model, { mapper } );
+
+		// As an util for modifying model tree.
+		modelWriter = new ModelWriter( model, new Batch() );
 	} );
 
 	function viewAttributesToString( item ) {
@@ -110,7 +114,7 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'removeMarker:marker', highlightText( highlightDescriptor ) );
 			dispatcher.convertInsertion( markerRange );
 
-			modelDoc.markers.set( 'marker', markerRange );
+			model.markers.set( 'marker', markerRange );
 			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
 
 			expect( viewToString( viewRoot ) ).to.equal(
@@ -138,7 +142,7 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'removeMarker:marker', highlightText( newDescriptor ), { priority: 'high' } );
 			dispatcher.convertInsertion( markerRange );
 
-			modelDoc.markers.set( 'marker', markerRange );
+			model.markers.set( 'marker', markerRange );
 			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
 
 			expect( viewToString( viewRoot ) ).to.equal(
@@ -163,7 +167,7 @@ describe( 'model-to-view-converters', () => {
 
 			dispatcher.convertInsertion( markerRange );
 
-			modelDoc.markers.set( 'marker', markerRange );
+			model.markers.set( 'marker', markerRange );
 			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
@@ -222,7 +226,7 @@ describe( 'model-to-view-converters', () => {
 			} ), { priority: 'high' } );
 
 			dispatcher.convertInsertion( markerRange );
-			modelDoc.markers.set( 'marker', markerRange );
+			model.markers.set( 'marker', markerRange );
 			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
 
 			expect( viewToString( viewRoot ) ).to.equal(
@@ -264,7 +268,7 @@ describe( 'model-to-view-converters', () => {
 			} ), { priority: 'high' } );
 
 			dispatcher.convertInsertion( markerRange );
-			modelDoc.markers.set( 'marker', markerRange );
+			model.markers.set( 'marker', markerRange );
 			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
 
 			expect( viewToString( viewRoot ) ).to.equal(
@@ -310,7 +314,7 @@ describe( 'model-to-view-converters', () => {
 			} ), { priority: 'high' } );
 
 			dispatcher.convertInsertion( markerRange );
-			modelDoc.markers.set( 'marker', markerRange );
+			model.markers.set( 'marker', markerRange );
 			dispatcher.convertMarker( 'addMarker', 'marker:foo-bar-baz', markerRange );
 		} );
 
@@ -320,7 +324,7 @@ describe( 'model-to-view-converters', () => {
 
 			dispatcher.convertInsertion( markerRange );
 
-			modelDoc.markers.set( 'marker', markerRange );
+			model.markers.set( 'marker', markerRange );
 			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
@@ -538,7 +542,7 @@ describe( 'model-to-view-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
-			batch.removeAttribute( 'bold', modelElement );
+			modelWriter.removeAttribute( 'bold', modelElement );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'bold', true, null );
 
@@ -565,7 +569,7 @@ describe( 'model-to-view-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
-			batch.removeAttribute( 'style', modelElement );
+			modelWriter.removeAttribute( 'style', modelElement );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'style', 'bold', null );
 
@@ -595,7 +599,7 @@ describe( 'model-to-view-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>x<a href="http://foo.com">foo</a>x</p></div>' );
 
-			batch.setAttribute( 'link', 'http://foobar.com', modelElement );
+			modelWriter.setAttribute( 'link', 'http://foobar.com', modelElement );
 
 			dispatcher.convertAttribute(
 				'changeAttribute',
@@ -623,7 +627,7 @@ describe( 'model-to-view-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>நி<b>லைக்</b>கு</p></div>' );
 
-			batch.removeAttribute( 'bold', modelElement );
+			modelWriter.removeAttribute( 'bold', modelElement );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'bold', true, null );
 
@@ -666,7 +670,7 @@ describe( 'model-to-view-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
-			batch.removeAttribute( 'bold', modelElement );
+			modelWriter.removeAttribute( 'bold', modelElement );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'bold', true, null );
 
@@ -1012,7 +1016,7 @@ describe( 'model-to-view-converters', () => {
 
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
-			batch.remove( ModelRange.createFromParentsAndOffsets( modelDiv, 0, modelDiv, 6 ) );
+			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelDiv, 0, modelDiv, 6 ) );
 
 			dispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelDiv, 0 ),
@@ -1033,7 +1037,7 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'remove', remove() );
 
 			// Remove 'b'.
-			batch.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ) );
+			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ) );
 
 			dispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelRoot, 3 ),
@@ -1054,7 +1058,7 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'remove', remove() );
 
 			// Remove 'o<span></span>b'.
-			batch.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 2, modelRoot, 4 ) );
+			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 2, modelRoot, 4 ) );
 
 			dispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelRoot, 2 ),
@@ -1076,7 +1080,7 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'remove', remove() );
 
 			// Move <a></a> after "b". Can be e.g. a part of an unwrap delta (move + remove).
-			batch.move(
+			modelWriter.move(
 				ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ),
 				ModelPosition.createAt( modelRoot, 'end' )
 			);
@@ -1104,7 +1108,7 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.on( 'remove', remove() );
 
 			// Remove <a></a>.
-			batch.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
+			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
 
 			dispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelRoot, 0 ),
@@ -1145,7 +1149,7 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.convertChange( type, changes );
 			} );
 
-			modelDoc.batch().unwrap( modelWElement );
+			modelWriter.unwrap( modelWElement );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><a2></a2></div>' );
 
@@ -1177,7 +1181,7 @@ describe( 'model-to-view-converters', () => {
 
 			dispatcher.on( 'remove', remove() );
 
-			batch.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 ) );
+			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 ) );
 
 			dispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelRoot, 1 ),
@@ -1201,7 +1205,7 @@ describe( 'model-to-view-converters', () => {
 
 			dispatcher.on( 'remove', remove() );
 
-			batch.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ) );
+			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ) );
 
 			dispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelRoot, 3 ),

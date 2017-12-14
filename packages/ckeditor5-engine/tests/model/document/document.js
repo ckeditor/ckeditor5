@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+import Model from '../../../src/model/model';
 import Document from '../../../src/model/document';
-import Schema from '../../../src/model/schema';
 import RootElement from '../../../src/model/rootelement';
 import Batch from '../../../src/model/batch';
 import Delta from '../../../src/model/delta/delta';
@@ -17,21 +17,105 @@ import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 import { setData, getData } from '../../../src/dev-utils/model';
 
 describe( 'Document', () => {
-	let doc;
+	let model, doc;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = new Document( model );
+
+		// Normally Model is the one who creates Document instance and keeps it as reference.
+		// We have to be sure that Model uses the right Document instance.
+		model.document = doc;
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should create Document with no data, empty graveyard and selection set to default range', () => {
+			const doc = new Document( model );
+
+			expect( doc ).to.have.property( 'model' ).to.equal( model );
 			expect( doc ).to.have.property( 'roots' ).that.is.instanceof( Map );
 			expect( doc.roots.size ).to.equal( 1 );
 			expect( doc.graveyard ).to.be.instanceof( RootElement );
 			expect( doc.graveyard.maxOffset ).to.equal( 0 );
 			expect( count( doc.selection.getRanges() ) ).to.equal( 1 );
+		} );
+	} );
 
-			expect( doc.schema ).to.be.instanceof( Schema );
+	describe( 'model#applyOperation listener', () => {
+		it( 'should increase document version, execute operation and fire event with proper data ' +
+			'when operation is a document operation', () => {
+			const changeCallback = sinon.spy();
+			const type = 't';
+			const data = { data: 'x' };
+			const batch = new Batch();
+			const delta = new Delta();
+			delta.type = 'type';
+
+			const operation = {
+				type,
+				baseVersion: 0,
+				isDocumentOperation: true,
+				_execute: sinon.stub().returns( data )
+			};
+
+			delta.addOperation( operation );
+			batch.addDelta( delta );
+
+			doc.on( 'change', changeCallback );
+			model.applyOperation( operation );
+
+			expect( doc.version ).to.equal( 1 );
+			expect( doc.history._deltas.length ).to.equal( 1 );
+			sinon.assert.calledOnce( operation._execute );
+
+			sinon.assert.calledOnce( changeCallback );
+			expect( changeCallback.args[ 0 ][ 1 ] ).to.equal( type );
+			expect( changeCallback.args[ 0 ][ 2 ] ).to.equal( data );
+			expect( changeCallback.args[ 0 ][ 3 ] ).to.deep.equal( batch );
+			expect( changeCallback.args[ 0 ][ 4 ] ).to.equal( delta.type );
+		} );
+
+		it( 'should execute operation, not fire event and not increase document version ' +
+			'when operation is not a document operation', () => {
+			const changeCallback = sinon.spy();
+			const type = 't';
+			const data = { data: 'x' };
+			const batch = new Batch();
+			const delta = new Delta();
+			delta.type = 'type';
+
+			const operation = {
+				type,
+				baseVersion: 0,
+				isDocumentOperation: false,
+				_execute: sinon.stub().returns( data )
+			};
+
+			delta.addOperation( operation );
+			batch.addDelta( delta );
+
+			doc.on( 'change', changeCallback );
+			model.applyOperation( operation );
+
+			expect( doc.version ).to.equal( 0 );
+			expect( doc.history._deltas.length ).to.equal( 0 );
+			sinon.assert.calledOnce( operation._execute );
+
+			sinon.assert.notCalled( changeCallback );
+		} );
+
+		it( 'should throw an error on the operation base version and the document version is different', () => {
+			const operation = {
+				baseVersion: 1,
+				isDocumentOperation: true,
+				_execute: () => {}
+			};
+
+			expect(
+				() => {
+					model.applyOperation( operation );
+				}
+			).to.throw( CKEditorError, /^model-document-applyOperation-wrong-version/ );
 		} );
 	} );
 
@@ -109,154 +193,6 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'applyOperation()', () => {
-		it( 'should increase document version, execute operation and fire event with proper data ' +
-			'when operation is a document operation', () => {
-			const changeCallback = sinon.spy();
-			const type = 't';
-			const data = { data: 'x' };
-			const batch = new Batch();
-			const delta = new Delta();
-			delta.type = 'type';
-
-			const operation = {
-				type,
-				baseVersion: 0,
-				isDocumentOperation: true,
-				_execute: sinon.stub().returns( data )
-			};
-
-			delta.addOperation( operation );
-			batch.addDelta( delta );
-
-			doc.on( 'change', changeCallback );
-			doc.applyOperation( operation );
-
-			expect( doc.version ).to.equal( 1 );
-			expect( doc.history._deltas.length ).to.equal( 1 );
-			sinon.assert.calledOnce( operation._execute );
-
-			sinon.assert.calledOnce( changeCallback );
-			expect( changeCallback.args[ 0 ][ 1 ] ).to.equal( type );
-			expect( changeCallback.args[ 0 ][ 2 ] ).to.equal( data );
-			expect( changeCallback.args[ 0 ][ 3 ] ).to.deep.equal( batch );
-			expect( changeCallback.args[ 0 ][ 4 ] ).to.equal( delta.type );
-		} );
-
-		it( 'should execute operation, not fire event and not increase document version ' +
-			'when operation is not a document operation', () => {
-			const changeCallback = sinon.spy();
-			const type = 't';
-			const data = { data: 'x' };
-			const batch = new Batch();
-			const delta = new Delta();
-			delta.type = 'type';
-
-			const operation = {
-				type,
-				baseVersion: 0,
-				isDocumentOperation: false,
-				_execute: sinon.stub().returns( data )
-			};
-
-			delta.addOperation( operation );
-			batch.addDelta( delta );
-
-			doc.on( 'change', changeCallback );
-			doc.applyOperation( operation );
-
-			expect( doc.version ).to.equal( 0 );
-			expect( doc.history._deltas.length ).to.equal( 0 );
-			sinon.assert.calledOnce( operation._execute );
-
-			sinon.assert.notCalled( changeCallback );
-		} );
-
-		it( 'should throw an error on the operation base version and the document version is different', () => {
-			const operation = {
-				baseVersion: 1
-			};
-
-			expect(
-				() => {
-					doc.applyOperation( operation );
-				}
-			).to.throw( CKEditorError, /^model-document-applyOperation-wrong-version/ );
-		} );
-	} );
-
-	describe( 'batch()', () => {
-		it( 'should create a new batch with the document property', () => {
-			const batch = doc.batch();
-
-			expect( batch ).to.be.instanceof( Batch );
-			expect( batch ).to.have.property( 'document' ).that.equals( doc );
-		} );
-
-		it( 'should set given batch type', () => {
-			const batch = doc.batch( 'ignore' );
-
-			expect( batch ).to.have.property( 'type' ).that.equals( 'ignore' );
-		} );
-	} );
-
-	describe( 'enqueue()', () => {
-		it( 'should be executed immediately and fire changesDone event', () => {
-			const order = [];
-
-			doc.on( 'changesDone', () => order.push( 'done' ) );
-
-			doc.enqueueChanges( () => order.push( 'enqueue1' ) );
-
-			expect( order ).to.have.length( 2 );
-			expect( order[ 0 ] ).to.equal( 'enqueue1' );
-			expect( order[ 1 ] ).to.equal( 'done' );
-		} );
-
-		it( 'should fire done every time queue is empty', () => {
-			const order = [];
-
-			doc.on( 'changesDone', () => order.push( 'done' ) );
-
-			doc.enqueueChanges( () => order.push( 'enqueue1' ) );
-			doc.enqueueChanges( () => order.push( 'enqueue2' ) );
-
-			expect( order ).to.have.length( 4 );
-			expect( order[ 0 ] ).to.equal( 'enqueue1' );
-			expect( order[ 1 ] ).to.equal( 'done' );
-			expect( order[ 2 ] ).to.equal( 'enqueue2' );
-			expect( order[ 3 ] ).to.equal( 'done' );
-		} );
-
-		it( 'should put callbacks in the proper order', () => {
-			const order = [];
-
-			doc.on( 'changesDone', () => order.push( 'done' ) );
-
-			doc.enqueueChanges( () => {
-				order.push( 'enqueue1 start' );
-				doc.enqueueChanges( () => {
-					order.push( 'enqueue2 start' );
-					doc.enqueueChanges( () => order.push( 'enqueue4' ) );
-					order.push( 'enqueue2 end' );
-				} );
-
-				doc.enqueueChanges( () => order.push( 'enqueue3' ) );
-
-				order.push( 'enqueue1 end' );
-			} );
-
-			expect( order ).to.have.length( 7 );
-			expect( order[ 0 ] ).to.equal( 'enqueue1 start' );
-			expect( order[ 1 ] ).to.equal( 'enqueue1 end' );
-			expect( order[ 2 ] ).to.equal( 'enqueue2 start' );
-			expect( order[ 3 ] ).to.equal( 'enqueue2 end' );
-			expect( order[ 4 ] ).to.equal( 'enqueue3' );
-			expect( order[ 5 ] ).to.equal( 'enqueue4' );
-			expect( order[ 6 ] ).to.equal( 'done' );
-		} );
-	} );
-
 	describe( 'selection', () => {
 		it( 'should get updated attributes whenever attribute operation is applied', () => {
 			sinon.spy( doc.selection, '_updateAttributes' );
@@ -313,18 +249,18 @@ describe( 'Document', () => {
 		let selection;
 
 		beforeEach( () => {
-			doc.schema.registerItem( 'paragraph', '$block' );
+			model.schema.registerItem( 'paragraph', '$block' );
 
-			doc.schema.registerItem( 'emptyBlock' );
-			doc.schema.allow( { name: 'emptyBlock', inside: '$root' } );
+			model.schema.registerItem( 'emptyBlock' );
+			model.schema.allow( { name: 'emptyBlock', inside: '$root' } );
 
-			doc.schema.registerItem( 'widget' );
-			doc.schema.allow( { name: 'widget', inside: '$root' } );
-			doc.schema.objects.add( 'widget' );
+			model.schema.registerItem( 'widget' );
+			model.schema.allow( { name: 'widget', inside: '$root' } );
+			model.schema.objects.add( 'widget' );
 
-			doc.schema.registerItem( 'blockWidget', '$block' );
-			doc.schema.allow( { name: 'blockWidget', inside: '$root' } );
-			doc.schema.objects.add( 'blockWidget' );
+			model.schema.registerItem( 'blockWidget', '$block' );
+			model.schema.allow( { name: 'blockWidget', inside: '$root' } );
+			model.schema.objects.add( 'blockWidget' );
 
 			doc.createRoot();
 			selection = doc.selection;
@@ -524,14 +460,14 @@ describe( 'Document', () => {
 
 		function test( testName, data, direction, expected ) {
 			it( testName, () => {
-				setData( doc, data );
+				setData( model, data );
 				const range = doc.getNearestSelectionRange( selection.anchor, direction );
 
 				if ( expected === null ) {
 					expect( range ).to.be.null;
 				} else {
 					selection.setRanges( [ range ] );
-					expect( getData( doc ) ).to.equal( expected );
+					expect( getData( model ) ).to.equal( expected );
 				}
 			} );
 		}
@@ -590,6 +526,9 @@ describe( 'Document', () => {
 	} );
 
 	it( 'should be correctly converted to json', () => {
-		expect( jsonParseStringify( doc ).selection ).to.equal( '[engine.model.DocumentSelection]' );
+		const serialized = jsonParseStringify( doc );
+
+		expect( serialized.selection ).to.equal( '[engine.model.DocumentSelection]' );
+		expect( serialized.model ).to.equal( '[engine.model.Model]' );
 	} );
 } );

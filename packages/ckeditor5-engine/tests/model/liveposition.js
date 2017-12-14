@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import DocumentFragment from '../../src/model/documentfragment';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
@@ -16,7 +16,9 @@ describe( 'LivePosition', () => {
 	let doc, root, ul, p, li1, li2;
 
 	before( () => {
-		doc = new Document();
+		const model = new Model();
+
+		doc = model.document;
 		root = doc.createRoot();
 
 		li1 = new Element( 'li', [], new Text( 'abcdef' ) );

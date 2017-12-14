@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import Range from '../../../src/model/range';
 import Position from '../../../src/model/position';
 import AttributeDelta from '../../../src/model/delta/attributedelta';
@@ -12,11 +12,12 @@ import NoOperation from '../../../src/model/operation/nooperation';
 import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'AttributeDelta', () => {
-	let doc, root, delta;
+	let root, delta;
 
 	beforeEach( () => {
-		doc = new Document();
-		root = doc.createRoot();
+		const model = new Model();
+
+		root = model.document.createRoot();
 		delta = new AttributeDelta();
 	} );
 

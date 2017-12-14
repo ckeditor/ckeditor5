@@ -8,8 +8,8 @@ import ViewContainerElement from '../../src/view/containerelement';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewText from '../../src/view/text';
 
+import Model from '../../src/model/model';
 import ModelSchema from '../../src/model/schema';
-import ModelDocument from '../../src/model/document';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
@@ -17,17 +17,16 @@ import ModelText from '../../src/model/text';
 import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
 
 describe( 'view-to-model-converters', () => {
-	let dispatcher, schema, additionalData, batch;
+	let dispatcher, schema, additionalData;
 
-	const modelDocument = new ModelDocument();
+	const model = new Model();
 
 	beforeEach( () => {
 		schema = new ModelSchema();
 		schema.registerItem( 'paragraph', '$block' );
 		schema.allow( { name: '$text', inside: '$root' } );
-		batch = modelDocument.batch();
 		additionalData = { context: [ '$root' ] };
-		dispatcher = new ViewConversionDispatcher( { schema } );
+		dispatcher = new ViewConversionDispatcher( model, { schema } );
 	} );
 
 	describe( 'convertText', () => {
@@ -36,7 +35,7 @@ describe( 'view-to-model-converters', () => {
 
 			dispatcher.on( 'text', convertText() );
 
-			const conversionResult = dispatcher.convert( viewText, batch, additionalData );
+			const conversionResult = dispatcher.convert( viewText, additionalData );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
@@ -55,7 +54,7 @@ describe( 'view-to-model-converters', () => {
 				}
 			} );
 
-			const conversionResult = dispatcher.convert( viewText, batch, additionalData );
+			const conversionResult = dispatcher.convert( viewText, additionalData );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
@@ -68,12 +67,12 @@ describe( 'view-to-model-converters', () => {
 			const viewText = new ViewText( 'foobar' );
 			dispatcher.on( 'text', convertText() );
 
-			let conversionResult = dispatcher.convert( viewText, batch, additionalData );
+			let conversionResult = dispatcher.convert( viewText, additionalData );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.childCount ).to.equal( 0 );
 
-			conversionResult = dispatcher.convert( viewText, batch, { context: [ '$block' ] } );
+			conversionResult = dispatcher.convert( viewText, { context: [ '$block' ] } );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.childCount ).to.equal( 1 );
@@ -86,7 +85,7 @@ describe( 'view-to-model-converters', () => {
 
 			dispatcher.on( 'text', convertText() );
 
-			const conversionResult = dispatcher.convert( viewText, batch, additionalData );
+			const conversionResult = dispatcher.convert( viewText, additionalData );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
@@ -107,7 +106,7 @@ describe( 'view-to-model-converters', () => {
 			dispatcher.on( 'element', convertToModelFragment() );
 			dispatcher.on( 'documentFragment', convertToModelFragment() );
 
-			const conversionResult = dispatcher.convert( viewFragment, batch, additionalData );
+			const conversionResult = dispatcher.convert( viewFragment, additionalData );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.maxOffset ).to.equal( 6 );
@@ -132,7 +131,7 @@ describe( 'view-to-model-converters', () => {
 				}
 			} );
 
-			const conversionResult = dispatcher.convert( viewP, batch, additionalData );
+			const conversionResult = dispatcher.convert( viewP, additionalData );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelElement );

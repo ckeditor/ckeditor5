@@ -21,7 +21,7 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		const sel = editor.document.selection;
+		const sel = editor.model.document.selection;
 
 		sel.on( 'change', ( evt, data ) => {
 			const date = new Date();

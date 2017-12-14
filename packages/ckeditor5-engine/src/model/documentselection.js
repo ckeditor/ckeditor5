@@ -60,7 +60,15 @@ export default class DocumentSelection extends Selection {
 		 * Document which owns this selection.
 		 *
 		 * @protected
-		 * @member {module:engine/model/document~Document} module:engine/model/documentselection~DocumentSelection#_document
+		 * @member {module:engine/model/model~Model}
+		 */
+		this._model = document.model;
+
+		/**
+		 * Document which owns this selection.
+		 *
+		 * @protected
+		 * @member {module:engine/model/document~Document}
 		 */
 		this._document = document;
 
@@ -83,9 +91,14 @@ export default class DocumentSelection extends Selection {
 				this._updateAttributes( false );
 			}
 
-			// Whenever element which had selection's attributes stored in it stops being empty,
-			// the attributes need to be removed.
-			clearAttributesStoredInElement( changes, batch, this._document );
+			// Batch may not be passed to the document#change event in some tests.
+			// See https://github.com/ckeditor/ckeditor5-engine/issues/1001#issuecomment-314202352
+			// Ignore also transparent batches because they are... transparent.
+			if ( batch && batch.type !== 'transparent' ) {
+				// Whenever element which had selection's attributes stored in it stops being empty,
+				// the attributes need to be removed.
+				clearAttributesStoredInElement( changes, this._model, batch );
+			}
 		} );
 	}
 
@@ -543,7 +556,9 @@ export default class DocumentSelection extends Selection {
 	_removeStoredAttribute( key ) {
 		const storeKey = DocumentSelection._getStoreAttributeKey( key );
 
-		this._document.batch().removeAttribute( storeKey, this.anchor.parent );
+		this._model.change( writer => {
+			writer.removeAttribute( storeKey, this.anchor.parent );
+		} );
 	}
 
 	/**
@@ -556,7 +571,9 @@ export default class DocumentSelection extends Selection {
 	_storeAttribute( key, value ) {
 		const storeKey = DocumentSelection._getStoreAttributeKey( key );
 
-		this._document.batch().setAttribute( storeKey, value, this.anchor.parent );
+		this._model.change( writer => {
+			writer.setAttribute( storeKey, value, this.anchor.parent );
+		} );
 	}
 
 	/**
@@ -567,19 +584,20 @@ export default class DocumentSelection extends Selection {
 	 */
 	_setStoredAttributesTo( attrs ) {
 		const selectionParent = this.anchor.parent;
-		const batch = this._document.batch();
 
-		for ( const [ oldKey ] of this._getStoredAttributes() ) {
-			const storeKey = DocumentSelection._getStoreAttributeKey( oldKey );
+		this._model.change( writer => {
+			for ( const [ oldKey ] of this._getStoredAttributes() ) {
+				const storeKey = DocumentSelection._getStoreAttributeKey( oldKey );
 
-			batch.removeAttribute( storeKey, selectionParent );
-		}
+				writer.removeAttribute( storeKey, selectionParent );
+			}
 
-		for ( const [ key, value ] of attrs ) {
-			const storeKey = DocumentSelection._getStoreAttributeKey( key );
+			for ( const [ key, value ] of attrs ) {
+				const storeKey = DocumentSelection._getStoreAttributeKey( key );
 
-			batch.setAttribute( storeKey, value, selectionParent );
-		}
+				writer.setAttribute( storeKey, value, selectionParent );
+			}
+		} );
 	}
 
 	/**
@@ -592,7 +610,7 @@ export default class DocumentSelection extends Selection {
 	 */
 	_getSurroundingAttributes() {
 		const position = this.getFirstPosition();
-		const schema = this._document.schema;
+		const schema = this._model.schema;
 
 		let attrs = null;
 
@@ -711,14 +729,7 @@ function getAttrsIfCharacter( node ) {
 }
 
 // Removes selection attributes from element which is not empty anymore.
-function clearAttributesStoredInElement( changes, batch, document ) {
-	// Batch may not be passed to the document#change event in some tests.
-	// See https://github.com/ckeditor/ckeditor5-engine/issues/1001#issuecomment-314202352
-	// Ignore also transparent batches because they are... transparent.
-	if ( !batch || batch.type == 'transparent' ) {
-		return;
-	}
-
+function clearAttributesStoredInElement( changes, model, batch ) {
 	const changeParent = changes.range && changes.range.start.parent;
 
 	// `changes.range` is not set in case of rename, root and marker operations.
@@ -727,11 +738,11 @@ function clearAttributesStoredInElement( changes, batch, document ) {
 		return;
 	}
 
-	document.enqueueChanges( () => {
+	model.enqueueChange( batch, writer => {
 		const storedAttributes = Array.from( changeParent.getAttributeKeys() ).filter( key => key.startsWith( storePrefix ) );
 
 		for ( const key of storedAttributes ) {
-			batch.removeAttribute( key, changeParent );
+			writer.removeAttribute( key, changeParent );
 		}
 	} );
 }

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import Position from '../../../src/model/position';
 
 import MoveDelta from '../../../src/model/delta/movedelta';
@@ -13,7 +13,9 @@ describe( 'MoveDelta', () => {
 	let moveDelta, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		const model = new Model();
+
+		doc = model.document;
 		root = doc.createRoot();
 		moveDelta = new MoveDelta();
 	} );

@@ -14,12 +14,9 @@ import './delta/basic-transformations';
 import Range from './range';
 import Position from './position';
 import RootElement from './rootelement';
-import Batch from './batch';
 import History from './history';
 import DocumentSelection from './documentselection';
-import Schema from './schema';
 import TreeWalker from './treewalker';
-import MarkerCollection from './markercollection';
 import deltaTransform from './delta/transform';
 import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -34,14 +31,6 @@ const graveyardName = '$graveyard';
  * {@link module:engine/model/document~Document#roots root elements}, for example if the editor have multiple editable areas,
  * each area will be represented by the separate root.
  *
- * All changes in the document are done by {@link module:engine/model/operation/operation~Operation operations}. To create operations in
- * a simple way, use the {@link module:engine/model/batch~Batch} API, for example:
- *
- *		const batch = doc.batch();
- *		batch.insert( node, position );
- *		batch.split( otherPosition );
- *
- * @see module:engine/model/document~Document#batch
  * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class Document {
@@ -49,7 +38,15 @@ export default class Document {
 	 * Creates an empty document instance with no {@link #roots} (other than
 	 * the {@link #graveyard graveyard root}).
 	 */
-	constructor() {
+	constructor( model ) {
+		/**
+		 * {@link module:engine/model/model~Model} the document is part of.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/model~Model}
+		 */
+		this.model = model;
+
 		/**
 		 * Document version. It starts from `0` and every operation increases the version number. It is used to ensure that
 		 * operations are applied on the proper document version.
@@ -62,13 +59,6 @@ export default class Document {
 		this.version = 0;
 
 		/**
-		 * Schema for this document.
-		 *
-		 * @member {module:engine/model/schema~Schema}
-		 */
-		this.schema = new Schema();
-
-		/**
 		 * Document's history.
 		 *
 		 * **Note:** Be aware that deltas applied to the document might get removed or changed.
@@ -79,28 +69,12 @@ export default class Document {
 		this.history = new History( this );
 
 		/**
-		 * Document's markers' collection.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/markercollection~MarkerCollection}
-		 */
-		this.markers = new MarkerCollection();
-
-		/**
 		 * Selection done on this document.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/documentselection~DocumentSelection}
 		 */
 		this.selection = new DocumentSelection( this );
-
-		/**
-		 * Array of pending changes. See: {@link #enqueueChanges}.
-		 *
-		 * @private
-		 * @member {Array.<Function>}
-		 */
-		this._pendingChanges = [];
 
 		/**
 		 * List of roots that are owned and managed by this document. Use {@link #createRoot} and
@@ -130,6 +104,35 @@ export default class Document {
 
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 		this.createRoot( '$root', graveyardName );
+
+		this.listenTo( model, 'applyOperation', ( evt, args ) => {
+			const operation = args[ 0 ];
+
+			if ( operation.isDocumentOperation && operation.baseVersion !== this.version ) {
+				/**
+				 * Only operations with matching versions can be applied.
+				 *
+				 * @error document-applyOperation-wrong-version
+				 * @param {module:engine/model/operation/operation~Operation} operation
+				 */
+				throw new CKEditorError(
+					'model-document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
+					{ operation } );
+			}
+		}, { priority: 'high' } );
+
+		this.listenTo( model, 'applyOperation', ( evt, args ) => {
+			const operation = args[ 0 ];
+
+			if ( operation.isDocumentOperation ) {
+				this.version++;
+				this.history.addDelta( operation.delta );
+				this.fire( 'change', operation.type, evt.return, operation.delta.batch, operation.delta.type );
+			}
+		}, { priority: 'low' } );
+
+		// Temporary compatibility.
+		model.delegate( 'changesDone' ).to( this );
 	}
 
 	/**
@@ -140,46 +143,6 @@ export default class Document {
 	 */
 	get graveyard() {
 		return this.getRoot( graveyardName );
-	}
-
-	/**
-	 * This is the entry point for all document changes. All changes on the document are done using
-	 * {@link module:engine/model/operation/operation~Operation operations}. To create operations in the simple way use the
-	 * {@link module:engine/model/batch~Batch} API available via {@link #batch} method.
-	 *
-	 * @fires event:change
-	 * @param {module:engine/model/operation/operation~Operation} operation Operation to be applied.
-	 */
-	applyOperation( operation ) {
-		if ( operation.baseVersion !== this.version ) {
-			/**
-			 * Only operations with matching versions can be applied.
-			 *
-			 * @error document-applyOperation-wrong-version
-			 * @param {module:engine/model/operation/operation~Operation} operation
-			 */
-			throw new CKEditorError(
-				'model-document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
-				{ operation } );
-		}
-
-		const changes = operation._execute();
-
-		if ( operation.isDocumentOperation ) {
-			this.version++;
-			this.history.addDelta( operation.delta );
-			this.fire( 'change', operation.type, changes, operation.delta.batch, operation.delta.type );
-		}
-	}
-
-	/**
-	 * Creates a {@link module:engine/model/batch~Batch} instance which allows to change the document.
-	 *
-	 * @param {String} [type] Batch type. See {@link module:engine/model/batch~Batch#type}.
-	 * @returns {module:engine/model/batch~Batch} Batch instance.
-	 */
-	batch( type ) {
-		return new Batch( this, type );
 	}
 
 	/**
@@ -218,30 +181,6 @@ export default class Document {
 	destroy() {
 		this.selection.destroy();
 		this.stopListening();
-	}
-
-	/**
-	 * Enqueues document changes. Any changes to be done on document (mostly using {@link #batch}
-	 * should be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
-	 * called immediately. Otherwise it will wait for all previously queued changes to finish happening. This way
-	 * queued callback will not interrupt other callbacks.
-	 *
-	 * When all queued changes are done {@link #event:changesDone} event is fired.
-	 *
-	 * @fires changesDone
-	 * @param {Function} callback Callback to enqueue.
-	 */
-	enqueueChanges( callback ) {
-		this._pendingChanges.push( callback );
-
-		if ( this._pendingChanges.length == 1 ) {
-			while ( this._pendingChanges.length ) {
-				this._pendingChanges[ 0 ]();
-				this._pendingChanges.shift();
-			}
-
-			this.fire( 'changesDone' );
-		}
 	}
 
 	/**
@@ -306,8 +245,10 @@ export default class Document {
 	 * @returns {module:engine/model/range~Range|null} Nearest selection range or `null` if one cannot be found.
 	 */
 	getNearestSelectionRange( position, direction = 'both' ) {
+		const schema = this.model.schema;
+
 		// Return collapsed range if provided position is valid.
-		if ( this.schema.check( { name: '$text', inside: position } ) ) {
+		if ( schema.check( { name: '$text', inside: position } ) ) {
 			return new Range( position );
 		}
 
@@ -325,11 +266,11 @@ export default class Document {
 			const type = ( data.walker == backwardWalker ? 'elementEnd' : 'elementStart' );
 			const value = data.value;
 
-			if ( value.type == type && this.schema.objects.has( value.item.name ) ) {
+			if ( value.type == type && schema.objects.has( value.item.name ) ) {
 				return Range.createOn( value.item );
 			}
 
-			if ( this.schema.check( { name: '$text', inside: value.nextPosition } ) ) {
+			if ( schema.check( { name: '$text', inside: value.nextPosition } ) ) {
 				return new Range( value.nextPosition );
 			}
 		}
@@ -367,6 +308,7 @@ export default class Document {
 
 		// Due to circular references we need to remove parent reference.
 		json.selection = '[engine.model.DocumentSelection]';
+		json.model = '[engine.model.Model]';
 
 		return json;
 	}
@@ -458,7 +400,7 @@ export default class Document {
 	 */
 
 	/**
-	 * Fired when all queued document changes are done. See {@link #enqueueChanges}.
+	 * Fired when all queued document changes are done. See {@link module:engine/model/model~Model#change}.
 	 *
 	 * @event changesDone
 	 */

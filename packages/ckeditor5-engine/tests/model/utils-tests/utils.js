@@ -11,7 +11,7 @@ import {
 	getText,
 	createRangeOnElementOnly
 } from '../../../tests/model/_utils/utils';
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import Range from '../../../src/model/range';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
@@ -24,7 +24,9 @@ describe( 'getNodesAndText', () => {
 	let doc, root, div, p;
 
 	beforeEach( () => {
-		doc = new Document();
+		const model = new Model();
+
+		doc = model.document;
 		root = doc.createRoot();
 
 		div = new Element( 'div', [], new Text( 'foobar' ) );

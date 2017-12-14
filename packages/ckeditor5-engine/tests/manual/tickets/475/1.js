@@ -31,7 +31,7 @@ class Link extends Plugin {
 		const editing = editor.editing;
 
 		// Allow bold attribute on all inline nodes.
-		editor.document.schema.allow( { name: '$inline', attributes: [ 'link' ] } );
+		editor.model.schema.allow( { name: '$inline', attributes: [ 'link' ] } );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
@@ -49,7 +49,7 @@ const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b(
 
 class AutoLinker extends Plugin {
 	init() {
-		this.editor.document.on( 'change', ( event, type, changes, batch ) => {
+		this.editor.model.document.on( 'change', ( event, type, changes, batch ) => {
 			if ( type != 'insert' ) {
 				return;
 			}
@@ -73,14 +73,13 @@ class AutoLinker extends Plugin {
 					return;
 				}
 
-				const doc = this.editor.document;
 				const url = matchedUrl[ 0 ];
 				const offset = _getLastPathPart( currentValue.nextPosition.path ) + matchedUrl.index;
 				const livePos = LivePosition.createFromParentAndOffset( currentValue.item.parent, offset );
 
-				doc.enqueueChanges( () => {
+				this.editor.model.enqueueChange( batch, writer => {
 					const urlRange = Range.createFromPositionAndShift( livePos, url.length );
-					batch.setAttribute( 'link', url, urlRange );
+					writer.setAttribute( 'link', url, urlRange );
 				} );
 			}
 		} );

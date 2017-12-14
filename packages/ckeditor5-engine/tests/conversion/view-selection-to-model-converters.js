@@ -7,7 +7,7 @@ import ViewDocument from '../../src/view/document';
 import ViewSelection from '../../src/view/selection';
 import ViewRange from '../../src/view/range';
 
-import ModelDocument from '../../src/model/document';
+import Model from '../../src/model/model';
 
 import Mapper from '../../src/conversion/mapper';
 import { convertSelectionChange } from '../../src/conversion/view-selection-to-model-converters';
@@ -19,8 +19,8 @@ describe( 'convertSelectionChange', () => {
 	let model, view, mapper, convertSelection, modelRoot, viewRoot;
 
 	beforeEach( () => {
-		model = new ModelDocument();
-		modelRoot = model.createRoot();
+		model = new Model();
+		modelRoot = model.document.createRoot();
 		model.schema.registerItem( 'paragraph', '$block' );
 
 		modelSetData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
@@ -82,7 +82,7 @@ describe( 'convertSelectionChange', () => {
 		expect( modelGetData( model ) ).to.equal(
 			'<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
 
-		const ranges = Array.from( model.selection.getRanges() );
+		const ranges = Array.from( model.document.selection.getRanges() );
 		expect( ranges.length ).to.equal( 2 );
 
 		expect( ranges[ 0 ].start.parent ).to.equal( modelRoot.getChild( 0 ) );
@@ -106,7 +106,7 @@ describe( 'convertSelectionChange', () => {
 		convertSelection( null, { newSelection: viewSelection } );
 
 		expect( modelGetData( model ) ).to.equal( '<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
-		expect( model.selection.isBackward ).to.true;
+		expect( model.document.selection.isBackward ).to.true;
 	} );
 
 	it( 'should not enqueue changes if selection has not changed', () => {

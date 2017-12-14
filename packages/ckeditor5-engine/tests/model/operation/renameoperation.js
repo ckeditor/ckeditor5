@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
+import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import RenameOperation from '../../../src/model/operation/renameoperation';
 import Position from '../../../src/model/position';
@@ -14,10 +15,11 @@ describe( 'RenameOperation', () => {
 	const oldName = 'oldName';
 	const newName = 'newName';
 
-	let doc, root, element, position;
+	let model, doc, root, element, position;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 
 		element = new Element( oldName );
@@ -35,7 +37,7 @@ describe( 'RenameOperation', () => {
 	it( 'should change name of given element', () => {
 		const op = new RenameOperation( position, oldName, newName, doc.version );
 
-		doc.applyOperation( wrapInDelta( op ) );
+		model.applyOperation( wrapInDelta( op ) );
 
 		expect( element.name ).to.equal( newName );
 	} );
@@ -55,8 +57,8 @@ describe( 'RenameOperation', () => {
 		const op = new RenameOperation( position, oldName, newName, doc.version );
 		const reverse = op.getReversed();
 
-		doc.applyOperation( wrapInDelta( op ) );
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( op ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( element.name ).to.equal( oldName );
@@ -66,7 +68,7 @@ describe( 'RenameOperation', () => {
 		const op = new RenameOperation( Position.createAt( root, 'end' ), oldName, newName, doc.version );
 
 		expect( () => {
-			doc.applyOperation( wrapInDelta( op ) );
+			model.applyOperation( wrapInDelta( op ) );
 		} ).to.throw( CKEditorError, /rename-operation-wrong-position/ );
 	} );
 
@@ -74,7 +76,7 @@ describe( 'RenameOperation', () => {
 		const op = new RenameOperation( position, 'foo', newName, doc.version );
 
 		expect( () => {
-			doc.applyOperation( wrapInDelta( op ) );
+			model.applyOperation( wrapInDelta( op ) );
 		} ).to.throw( CKEditorError, /rename-operation-wrong-name/ );
 	} );
 
@@ -96,7 +98,7 @@ describe( 'RenameOperation', () => {
 		const op = new RenameOperation( position, oldName, oldName, doc.version );
 
 		expect( () => {
-			doc.applyOperation( wrapInDelta( op ) );
+			model.applyOperation( wrapInDelta( op ) );
 		} ).to.not.throw();
 	} );
 
@@ -108,11 +110,7 @@ describe( 'RenameOperation', () => {
 		} );
 
 		it( 'should be false when target item is not in the document', () => {
-			const batch = doc.batch();
-			const docFrag = batch.createDocumentFragment();
-
-			batch.appendElement( 'element', null, docFrag );
-
+			const docFrag = new DocumentFragment( [ new Element( 'element' ) ] );
 			const op = new RenameOperation( Position.createAt( docFrag ), oldName, newName, doc.version );
 
 			expect( op.isDocumentOperation ).to.false;

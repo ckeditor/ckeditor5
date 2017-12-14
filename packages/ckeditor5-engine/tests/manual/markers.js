@@ -30,7 +30,7 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		model = window.editor.editing.model;
+		model = editor.model;
 
 		buildModelConverter().for( editor.editing.modelToView )
 			.fromMarker( 'highlight' )
@@ -73,8 +73,8 @@ ClassicEditor
 			moveSelectionByOffset( 1 );
 		} );
 
-		model.enqueueChanges( () => {
-			const root = model.getRoot();
+		model.change( () => {
+			const root = model.document.getRoot();
 			const range = new Range( new Position( root, [ 0, 10 ] ), new Position( root, [ 0, 16 ] ) );
 			const name = 'highlight:yellow:' + uid();
 
@@ -91,8 +91,8 @@ function uid() {
 }
 
 function addHighlight( color ) {
-	model.enqueueChanges( () => {
-		const range = Range.createFromRange( model.selection.getFirstRange() );
+	model.change( () => {
+		const range = Range.createFromRange( model.document.selection.getFirstRange() );
 		const name = 'highlight:' + color + ':' + uid();
 
 		markerNames.push( name );
@@ -101,8 +101,8 @@ function addHighlight( color ) {
 }
 
 function removeHighlight() {
-	model.enqueueChanges( () => {
-		const pos = model.selection.getFirstPosition();
+	model.change( () => {
+		const pos = model.document.selection.getFirstPosition();
 
 		for ( let i = 0; i < markerNames.length; i++ ) {
 			const name = markerNames[ i ];
@@ -120,22 +120,22 @@ function removeHighlight() {
 }
 
 function moveSelectionToStart() {
-	const range = model.selection.getFirstRange();
+	const range = model.document.selection.getFirstRange();
 
 	if ( range.isFlat ) {
-		model.enqueueChanges( () => {
-			model.batch().move( range, new Position( model.getRoot(), [ 0, 0 ] ) );
+		model.change( writer => {
+			writer.move( range, new Position( model.document.getRoot(), [ 0, 0 ] ) );
 		} );
 	}
 }
 
 function moveSelectionByOffset( offset ) {
-	const range = model.selection.getFirstRange();
+	const range = model.document.selection.getFirstRange();
 	const pos = offset < 0 ? range.start : range.end;
 
 	if ( range.isFlat ) {
-		model.enqueueChanges( () => {
-			model.batch().move( range, pos.getShiftedBy( offset ) );
+		model.change( writer => {
+			writer.move( range, pos.getShiftedBy( offset ) );
 		} );
 	}
 }

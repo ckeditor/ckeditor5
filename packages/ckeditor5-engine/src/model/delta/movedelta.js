@@ -11,7 +11,7 @@ import Delta from './delta';
 import DeltaFactory from './deltafactory';
 
 /**
- * To provide specific OT behavior and better collisions solving, {@link module:engine/model/batch~Batch#move} method
+ * To provide specific OT behavior and better collisions solving, {@link module:engine/model/writer~Writer#move} method
  * uses the `MoveDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
  * @extends module:engine/model/delta/delta~Delta

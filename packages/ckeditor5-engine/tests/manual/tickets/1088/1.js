@@ -19,7 +19,7 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		const schema = editor.document.schema;
+		const schema = editor.model.schema;
 
 		schema.disallow( { name: '$text', attributes: [ 'linkHref', 'italic' ], inside: 'heading1' } );
 		schema.disallow( { name: '$text', attributes: [ 'italic' ], inside: 'heading2' } );

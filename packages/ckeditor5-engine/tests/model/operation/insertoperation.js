@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import NodeList from '../../../src/model/nodelist';
 import Element from '../../../src/model/element';
+import DocumentFragment from '../../../src/model/documentfragment';
 import InsertOperation from '../../../src/model/operation/insertoperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 import Position from '../../../src/model/position';
@@ -13,10 +14,11 @@ import Text from '../../../src/model/text';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'InsertOperation', () => {
-	let doc, root;
+	let model, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 	} );
 
@@ -31,7 +33,7 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should insert text node', () => {
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
 				new Text( 'x' ),
@@ -45,7 +47,7 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should insert element', () => {
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
 				new Element( 'p' ),
@@ -59,7 +61,7 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should insert set of nodes', () => {
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
 				[ 'bar', new Element( 'p' ), 'foo' ],
@@ -78,7 +80,7 @@ describe( 'InsertOperation', () => {
 	it( 'should insert between existing nodes', () => {
 		root.insertChildren( 0, new Text( 'xy' ) );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new InsertOperation(
 				new Position( root, [ 1 ] ),
 				'bar',
@@ -92,7 +94,7 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should insert text', () => {
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
 				[ 'foo', new Text( 'x' ), 'bar' ],
@@ -130,11 +132,11 @@ describe( 'InsertOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		doc.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
 
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 0 );
@@ -149,11 +151,11 @@ describe( 'InsertOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		doc.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
 
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 0 );
@@ -190,11 +192,11 @@ describe( 'InsertOperation', () => {
 		const element = new Element( 'p', { key: 'value' } );
 
 		const op = new InsertOperation( new Position( root, [ 0 ] ), element, doc.version );
-		doc.applyOperation( wrapInDelta( op ) );
+		model.applyOperation( wrapInDelta( op ) );
 
 		const text = new Text( 'text' );
 		const op2 = new InsertOperation( new Position( root, [ 0, 0 ] ), text, doc.version );
-		doc.applyOperation( wrapInDelta( op2 ) );
+		model.applyOperation( wrapInDelta( op2 ) );
 
 		expect( op.nodes.getNode( 0 ) ).not.to.equal( element );
 		expect( op.nodes.getNode( 0 ).name ).to.equal( 'p' );
@@ -218,7 +220,7 @@ describe( 'InsertOperation', () => {
 		} );
 
 		it( 'should return false when element is inserted to document fragment', () => {
-			const docFrag = doc.batch().createDocumentFragment();
+			const docFrag = new DocumentFragment();
 
 			const op = new InsertOperation(
 				new Position( docFrag, [ 0 ] ),

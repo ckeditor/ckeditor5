@@ -3,17 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 
 import RenameDelta from '../../../src/model/delta/renamedelta';
 
 describe( 'RenameDelta', () => {
-	let renameDelta, doc, root;
+	let renameDelta, model, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 		renameDelta = new RenameDelta();
 	} );
@@ -40,18 +41,18 @@ describe( 'RenameDelta', () => {
 		it( 'should return correct RenameDelta', () => {
 			root.appendChildren( new Element( 'p', null, new Text( 'abc' ) ) );
 
-			const batch = doc.batch();
+			model.change( writer => {
+				writer.rename( root.getChild( 0 ), 'h' );
 
-			batch.rename( root.getChild( 0 ), 'h' );
+				const reversed = writer.batch.deltas[ 0 ].getReversed();
 
-			const reversed = batch.deltas[ 0 ].getReversed();
+				reversed.operations.forEach( operation => {
+					model.applyOperation( operation );
+				} );
 
-			reversed.operations.forEach( operation => {
-				doc.applyOperation( operation );
+				expect( root.maxOffset ).to.equal( 1 );
+				expect( root.getChild( 0 ) ).to.have.property( 'name', 'p' );
 			} );
-
-			expect( root.maxOffset ).to.equal( 1 );
-			expect( root.getChild( 0 ) ).to.have.property( 'name', 'p' );
 		} );
 	} );
 

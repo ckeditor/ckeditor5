@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+import Model from '../../../src/model/model';
 import Document from '../../../src/model/document';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
@@ -15,10 +16,11 @@ import RemoveOperation from '../../../src/model/operation/removeoperation';
 import { wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'Document change event', () => {
-	let doc, root, graveyard, types, changes;
+	let model, doc, root, graveyard, types, changes;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = new Document( model );
 		root = doc.createRoot();
 		graveyard = doc.graveyard;
 
@@ -32,7 +34,7 @@ describe( 'Document change event', () => {
 	} );
 
 	it( 'should be fired when text is inserted', () => {
-		doc.applyOperation( wrapInDelta( new InsertOperation( new Position( root, [ 0 ] ), 'foo', doc.version ) ) );
+		model.applyOperation( wrapInDelta( new InsertOperation( new Position( root, [ 0 ] ), 'foo', doc.version ) ) );
 
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'insert' );
@@ -41,7 +43,7 @@ describe( 'Document change event', () => {
 
 	it( 'should be fired when element is inserted', () => {
 		const element = new Element( 'p' );
-		doc.applyOperation( wrapInDelta( new InsertOperation( new Position( root, [ 0 ] ), element, doc.version ) ) );
+		model.applyOperation( wrapInDelta( new InsertOperation( new Position( root, [ 0 ] ), element, doc.version ) ) );
 
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'insert' );
@@ -50,7 +52,7 @@ describe( 'Document change event', () => {
 
 	it( 'should be fired when nodes are inserted', () => {
 		const element = new Element( 'p' );
-		doc.applyOperation( wrapInDelta( new InsertOperation( new Position( root, [ 0 ] ), [ element, 'foo' ], doc.version ) ) );
+		model.applyOperation( wrapInDelta( new InsertOperation( new Position( root, [ 0 ] ), [ element, 'foo' ], doc.version ) ) );
 
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'insert' );
@@ -65,7 +67,7 @@ describe( 'Document change event', () => {
 
 		root.insertChildren( 0, [ p1, p2 ] );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new MoveOperation(
 				new Position( root, [ 0, 0 ] ),
 				3,
@@ -84,10 +86,10 @@ describe( 'Document change event', () => {
 		root.insertChildren( 0, new Text( 'foo' ) );
 
 		const removeOperation = new RemoveOperation( new Position( root, [ 0 ] ), 3, new Position( doc.graveyard, [ 0 ] ), doc.version );
-		doc.applyOperation( wrapInDelta( removeOperation ) );
+		model.applyOperation( wrapInDelta( removeOperation ) );
 
 		const reinsertOperation = removeOperation.getReversed();
-		doc.applyOperation( wrapInDelta( reinsertOperation ) );
+		model.applyOperation( wrapInDelta( reinsertOperation ) );
 
 		expect( changes ).to.have.length( 2 );
 
@@ -103,7 +105,7 @@ describe( 'Document change event', () => {
 	it( 'should be fired when attribute is inserted', () => {
 		root.insertChildren( 0, new Text( 'foo' ) );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				Range.createFromParentsAndOffsets( root, 0, root, 3 ),
 				'key',
@@ -125,7 +127,7 @@ describe( 'Document change event', () => {
 		const elem = new Element( 'p', { key: 'old' } );
 		root.insertChildren( 0, elem );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				Range.createFromParentsAndOffsets( root, 0, elem, 0 ),
 				'key',
@@ -147,7 +149,7 @@ describe( 'Document change event', () => {
 		const elem = new Element( 'p', { key: 'old' } );
 		root.insertChildren( 0, elem );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				Range.createFromParentsAndOffsets( root, 0, elem, 0 ),
 				'key',

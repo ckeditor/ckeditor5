@@ -19,7 +19,7 @@ ClassicEditor
 		window.editor = editor;
 
 		editor.editing.view.on( 'selectionChange', () => {
-			editor.document.enqueueChanges( () => {
+			editor.model.change( () => {
 			} );
 			console.log( 'selectionChange', ( new Date() ).getTime() );
 		} );

@@ -13,7 +13,7 @@ import MoveOperation from '../operation/moveoperation';
 import MergeDelta from '../delta/mergedelta';
 
 /**
- * To provide specific OT behavior and better collisions solving, the {@link module:engine/model/batch~Batch#split} method
+ * To provide specific OT behavior and better collisions solving, the {@link module:engine/model/writer~Writer#split} method
  * uses `SplitDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
  * @extends module:engine/model/delta/delta~Delta

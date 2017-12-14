@@ -14,7 +14,7 @@ import Range from '../range';
 
 /**
  * To provide specific OT behavior and better collisions solving, methods to change attributes
- * ({@link module:engine/model/batch~Batch#setAttribute} and {@link module:engine/model/batch~Batch#removeAttribute})
+ * ({@link module:engine/model/writer~Writer#setAttribute} and {@link module:engine/model/writer~Writer#removeAttribute})
  * use `AttributeDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
  * @extends module:engine/model/delta/delta~Delta

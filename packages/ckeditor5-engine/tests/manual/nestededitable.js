@@ -23,11 +23,10 @@ import './nestededitable.css';
 class NestedEditable extends Plugin {
 	init() {
 		const editor = this.editor;
-		const document = editor.document;
 		const editing = editor.editing;
 		const viewDocument = editing.view;
 		const data = editor.data;
-		const schema = document.schema;
+		const schema = editor.model.schema;
 
 		schema.registerItem( 'figure' );
 		schema.registerItem( 'figcaption' );
@@ -75,7 +74,7 @@ ClassicEditor
 		toolbar: [ 'undo', 'redo' ]
 	} )
 	.then( editor => {
-		editor.document.on( 'changesDone', () => {
+		editor.model.document.on( 'changesDone', () => {
 			printModelContents( editor );
 		} );
 
@@ -87,5 +86,5 @@ ClassicEditor
 
 const modelDiv = global.document.querySelector( '#model' );
 function printModelContents( editor ) {
-	modelDiv.innerText = getData( editor.document );
+	modelDiv.innerText = getData( editor.model );
 }

@@ -21,90 +21,93 @@ import Position from '../model/position';
  *
  *		<quote><h>st</h></quote><p>se</p>
  *
+ * @param {module:engine/controller/datacontroller~DataController} dataController The data controller in context of which
+ * the selection modification should be performed.
  * @param {module:engine/model/selection~Selection} selection The selection of which content will be returned.
- * @param {module:engine/model/batch~Batch} batch Batch to which deltas will be added.
  * @returns {module:engine/model/documentfragment~DocumentFragment}
  */
-export default function getSelectedContent( selection, batch ) {
-	const frag = batch.createDocumentFragment();
-	const range = selection.getFirstRange();
+export default function getSelectedContent( dataController, selection ) {
+	return dataController.model.change( writer => {
+		const frag = writer.createDocumentFragment();
+		const range = selection.getFirstRange();
 
-	if ( !range || range.isCollapsed ) {
-		return frag;
-	}
-
-	const root = range.start.root;
-	const commonPath = range.start.getCommonPath( range.end );
-	const commonParent = root.getNodeByPath( commonPath );
-
-	// ## 1st step
-	//
-	// First, we'll clone a fragment represented by a minimal flat range
-	// containing the original range to be cloned.
-	// E.g. let's consider such a range:
-	//
-	// <p>x</p><quote><p>y</p><h>fir[st</h></quote><p>se]cond</p><p>z</p>
-	//
-	// A minimal flat range containing this one is:
-	//
-	// <p>x</p>[<quote><p>y</p><h>first</h></quote><p>second</p>]<p>z</p>
-	//
-	// We can easily clone this structure, preserving e.g. the <quote> element.
-	let flatSubtreeRange;
-
-	if ( range.start.parent == range.end.parent ) {
-		// The original range is flat, so take it.
-		flatSubtreeRange = range;
-	} else {
-		flatSubtreeRange = Range.createFromParentsAndOffsets(
-			commonParent, range.start.path[ commonPath.length ],
-			commonParent, range.end.path[ commonPath.length ] + 1
-		);
-	}
-
-	const howMany = flatSubtreeRange.end.offset - flatSubtreeRange.start.offset;
-
-	// Clone the whole contents.
-	for ( const item of flatSubtreeRange.getItems( { shallow: true } ) ) {
-		if ( item.is( 'textProxy' ) ) {
-			batch.appendText( item.data, item.getAttributes(), frag );
-		} else {
-			batch.append( item.clone( true ), frag );
+		if ( !range || range.isCollapsed ) {
+			return frag;
 		}
-	}
 
-	// ## 2nd step
-	//
-	// If the original range wasn't flat, then we need to remove the excess nodes from the both ends of the cloned fragment.
-	//
-	// For example, for the range shown in the 1st step comment, we need to remove these pieces:
-	//
-	// <quote>[<p>y</p>]<h>[fir]st</h></quote><p>se[cond]</p>
-	//
-	// So this will be the final copied content:
-	//
-	// <quote><h>st</h></quote><p>se</p>
-	//
-	// In order to do that, we remove content from these two ranges:
-	//
-	// [<quote><p>y</p><h>fir]st</h></quote><p>se[cond</p>]
-	if ( flatSubtreeRange != range ) {
-		// Find the position of the original range in the cloned fragment.
-		const newRange = range._getTransformedByMove( flatSubtreeRange.start, Position.createAt( frag, 0 ), howMany )[ 0 ];
+		const root = range.start.root;
+		const commonPath = range.start.getCommonPath( range.end );
+		const commonParent = root.getNodeByPath( commonPath );
 
-		const leftExcessRange = new Range( Position.createAt( frag ), newRange.start );
-		const rightExcessRange = new Range( newRange.end, Position.createAt( frag, 'end' ) );
+		// ## 1st step
+		//
+		// First, we'll clone a fragment represented by a minimal flat range
+		// containing the original range to be cloned.
+		// E.g. let's consider such a range:
+		//
+		// <p>x</p><quote><p>y</p><h>fir[st</h></quote><p>se]cond</p><p>z</p>
+		//
+		// A minimal flat range containing this one is:
+		//
+		// <p>x</p>[<quote><p>y</p><h>first</h></quote><p>second</p>]<p>z</p>
+		//
+		// We can easily clone this structure, preserving e.g. the <quote> element.
+		let flatSubtreeRange;
 
-		removeRangeContent( rightExcessRange, batch );
-		removeRangeContent( leftExcessRange, batch );
-	}
+		if ( range.start.parent == range.end.parent ) {
+			// The original range is flat, so take it.
+			flatSubtreeRange = range;
+		} else {
+			flatSubtreeRange = Range.createFromParentsAndOffsets(
+				commonParent, range.start.path[ commonPath.length ],
+				commonParent, range.end.path[ commonPath.length ] + 1
+			);
+		}
 
-	return frag;
+		const howMany = flatSubtreeRange.end.offset - flatSubtreeRange.start.offset;
+
+		// Clone the whole contents.
+		for ( const item of flatSubtreeRange.getItems( { shallow: true } ) ) {
+			if ( item.is( 'textProxy' ) ) {
+				writer.appendText( item.data, item.getAttributes(), frag );
+			} else {
+				writer.append( item.clone( true ), frag );
+			}
+		}
+
+		// ## 2nd step
+		//
+		// If the original range wasn't flat, then we need to remove the excess nodes from the both ends of the cloned fragment.
+		//
+		// For example, for the range shown in the 1st step comment, we need to remove these pieces:
+		//
+		// <quote>[<p>y</p>]<h>[fir]st</h></quote><p>se[cond]</p>
+		//
+		// So this will be the final copied content:
+		//
+		// <quote><h>st</h></quote><p>se</p>
+		//
+		// In order to do that, we remove content from these two ranges:
+		//
+		// [<quote><p>y</p><h>fir]st</h></quote><p>se[cond</p>]
+		if ( flatSubtreeRange != range ) {
+			// Find the position of the original range in the cloned fragment.
+			const newRange = range._getTransformedByMove( flatSubtreeRange.start, Position.createAt( frag, 0 ), howMany )[ 0 ];
+
+			const leftExcessRange = new Range( Position.createAt( frag ), newRange.start );
+			const rightExcessRange = new Range( newRange.end, Position.createAt( frag, 'end' ) );
+
+			removeRangeContent( rightExcessRange, writer );
+			removeRangeContent( leftExcessRange, writer );
+		}
+
+		return frag;
+	} );
 }
 
 // After https://github.com/ckeditor/ckeditor5-engine/issues/690 is fixed,
 // this function will, most likely, be able to rewritten using getMinimalFlatRanges().
-function removeRangeContent( range, batch ) {
+function removeRangeContent( range, writer ) {
 	const parentsToCheck = [];
 
 	Array.from( range.getItems( { direction: 'backward' } ) )
@@ -126,7 +129,7 @@ function removeRangeContent( range, batch ) {
 		.forEach( itemRange => {
 			parentsToCheck.push( itemRange.start.parent );
 
-			batch.remove( itemRange );
+			writer.remove( itemRange );
 		} );
 
 	// Remove ancestors of the removed items if they turned to be empty now
@@ -139,7 +142,7 @@ function removeRangeContent( range, batch ) {
 
 			parent = parent.parent;
 
-			batch.remove( removeRange );
+			writer.remove( removeRange );
 		}
 	} );
 }

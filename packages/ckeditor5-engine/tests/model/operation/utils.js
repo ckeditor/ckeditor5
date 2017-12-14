@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
@@ -15,12 +15,13 @@ import { getData } from '../../../src/dev-utils/model';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-let doc, root;
+let model, doc, root;
 
-describe( 'writer utils', () => {
+describe( 'Operation utils', () => {
 	beforeEach( () => {
-		doc = new Document();
-		doc.schema.allow( { name: '$text', inside: '$root' } );
+		model = new Model();
+		doc = model.document;
+		model.schema.allow( { name: '$text', inside: '$root' } );
 
 		root = doc.createRoot();
 
@@ -204,5 +205,5 @@ describe( 'normalizeNodes', () => {
 } );
 
 function expectData( html ) {
-	expect( getData( doc, { withoutSelection: true } ) ).to.equal( html );
+	expect( getData( model, { withoutSelection: true } ) ).to.equal( html );
 }

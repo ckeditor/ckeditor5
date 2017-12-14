@@ -6,14 +6,15 @@
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import TextProxy from '../../src/model/textproxy';
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'TextProxy', () => {
-	let doc, element, textProxy, root, textProxyNoParent, text, textNoParent;
+	let model, doc, element, textProxy, root, textProxyNoParent, text, textNoParent;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 		element = new Element( 'div' );
 		root.insertChildren( 0, element );

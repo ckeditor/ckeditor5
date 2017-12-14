@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
+import Batch from '../../src/model/batch';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import Range from '../../src/model/range';
@@ -26,13 +27,14 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 testUtils.createSinonSandbox();
 
 describe( 'DocumentSelection', () => {
-	let doc, root, selection, liveRange, range;
+	let model, doc, root, selection, liveRange, range;
 
 	const fooStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'foo' );
 	const abcStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'abc' );
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 		root.appendChildren( [
 			new Element( 'p' ),
@@ -44,17 +46,17 @@ describe( 'DocumentSelection', () => {
 			new Element( 'p', [], new Text( 'foobar' ) )
 		] );
 		selection = doc.selection;
-		doc.schema.registerItem( 'p', '$block' );
+		model.schema.registerItem( 'p', '$block' );
 
-		doc.schema.registerItem( 'widget' );
-		doc.schema.objects.add( 'widget' );
+		model.schema.registerItem( 'widget' );
+		model.schema.objects.add( 'widget' );
 
 		liveRange = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 		range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 2 ] ) );
 	} );
 
 	afterEach( () => {
-		doc.destroy();
+		model.destroy();
 		liveRange.detach();
 	} );
 
@@ -69,7 +71,8 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should be set to the beginning of the doc if there is no editable element', () => {
-			doc = new Document();
+			model = new Model();
+			doc = model.document;
 			root = doc.createRoot();
 			root.insertChildren( 0, new Text( 'foobar' ) );
 			selection = doc.selection;
@@ -84,14 +87,15 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should skip element when you can not put selection', () => {
-			doc = new Document();
+			model = new Model();
+			doc = model.document;
 			root = doc.createRoot();
 			root.insertChildren( 0, [
 				new Element( 'img' ),
 				new Element( 'p', [], new Text( 'foobar' ) )
 			] );
-			doc.schema.registerItem( 'img' );
-			doc.schema.registerItem( 'p', '$block' );
+			model.schema.registerItem( 'img' );
+			model.schema.registerItem( 'p', '$block' );
 			selection = doc.selection;
 
 			const ranges = Array.from( selection.getRanges() );
@@ -356,16 +360,16 @@ describe( 'DocumentSelection', () => {
 
 		// See #630.
 		it( 'should refresh attributes – integration test for #630', () => {
-			doc.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.allow( { name: '$text', inside: '$root' } );
 
-			setData( doc, 'f<$text italic="true">[o</$text><$text bold="true">ob]a</$text>r' );
+			setData( model, 'f<$text italic="true">[o</$text><$text bold="true">ob]a</$text>r' );
 
 			selection.setRanges( [ Range.createFromPositionAndShift( selection.getLastRange().end, 0 ) ] );
 
 			expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			expect( selection.hasAttribute( 'italic' ) ).to.equal( false );
 
-			expect( getData( doc ) )
+			expect( getData( model ) )
 				.to.equal( 'f<$text italic="true">o</$text><$text bold="true">ob[]a</$text>r' );
 		} );
 	} );
@@ -433,7 +437,7 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new InsertOperation(
 						new Position( root, [ 0, 1 ] ),
 						'xyz',
@@ -453,7 +457,7 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new InsertOperation(
 						new Position( root, [ 1, 0 ] ),
 						'xyz',
@@ -475,7 +479,7 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new MoveOperation(
 						new Position( root, [ 0, 0 ] ),
 						2,
@@ -496,7 +500,7 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new MoveOperation(
 						new Position( root, [ 2 ] ),
 						2,
@@ -517,7 +521,7 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new MoveOperation(
 						new Position( root, [ 1, 0 ] ),
 						2,
@@ -538,7 +542,7 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new MoveOperation(
 						new Position( root, [ 1, 3 ] ),
 						2,
@@ -559,7 +563,7 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				const batch = doc.batch();
+				const batch = new Batch();
 				const splitDelta = new SplitDelta();
 
 				const insertOperation = new InsertOperation(
@@ -580,8 +584,8 @@ describe( 'DocumentSelection', () => {
 				splitDelta.addOperation( insertOperation );
 				splitDelta.addOperation( moveOperation );
 
-				doc.applyOperation( insertOperation );
-				doc.applyOperation( moveOperation );
+				model.applyOperation( insertOperation );
+				model.applyOperation( moveOperation );
 
 				const range = selection.getFirstRange();
 
@@ -601,7 +605,7 @@ describe( 'DocumentSelection', () => {
 					expect( data.attributeKeys ).to.deep.equal( [ 'foo' ] );
 				} );
 
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new AttributeOperation(
 						new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ),
 						'foo',
@@ -621,7 +625,7 @@ describe( 'DocumentSelection', () => {
 				const spyAttribute = sinon.spy();
 				selection.on( 'change:attribute', spyAttribute );
 
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new AttributeOperation(
 						new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ),
 						'foo',
@@ -642,7 +646,7 @@ describe( 'DocumentSelection', () => {
 				const spyAttribute = sinon.spy();
 				selection.on( 'change:attribute', spyAttribute );
 
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new AttributeOperation(
 						new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ),
 						'foo',
@@ -661,7 +665,7 @@ describe( 'DocumentSelection', () => {
 			it( 'fix selection range if it ends up in graveyard #1', () => {
 				selection.setCollapsedAt( new Position( root, [ 1, 3 ] ) );
 
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new RemoveOperation(
 						new Position( root, [ 1, 2 ] ),
 						2,
@@ -676,7 +680,7 @@ describe( 'DocumentSelection', () => {
 			it( 'fix selection range if it ends up in graveyard #2', () => {
 				selection.setRanges( [ new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 1, 4 ] ) ) ] );
 
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new RemoveOperation(
 						new Position( root, [ 1, 2 ] ),
 						2,
@@ -691,7 +695,7 @@ describe( 'DocumentSelection', () => {
 			it( 'fix selection range if it ends up in graveyard #3', () => {
 				selection.setRanges( [ new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ) ] );
 
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new RemoveOperation(
 						new Position( root, [ 1 ] ),
 						2,
@@ -704,7 +708,7 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'fix selection range if it ends up in graveyard #4 - whole content removed', () => {
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new RemoveOperation(
 						new Position( root, [ 0 ] ),
 						3,
@@ -715,7 +719,7 @@ describe( 'DocumentSelection', () => {
 
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0 ] );
 
-				doc.applyOperation( wrapInDelta(
+				model.applyOperation( wrapInDelta(
 					new InsertOperation(
 						new Position( root, [ 0 ] ),
 						new Element( 'p' ),
@@ -937,50 +941,50 @@ describe( 'DocumentSelection', () => {
 		// #986
 		describe( 'are not inherited from the inside of object elements', () => {
 			beforeEach( () => {
-				doc.schema.registerItem( 'image' );
-				doc.schema.allow( { name: 'image', inside: '$root' } );
-				doc.schema.allow( { name: 'image', inside: '$block' } );
-				doc.schema.allow( { name: '$inline', inside: 'image' } );
-				doc.schema.objects.add( 'image' );
+				model.schema.registerItem( 'image' );
+				model.schema.allow( { name: 'image', inside: '$root' } );
+				model.schema.allow( { name: 'image', inside: '$block' } );
+				model.schema.allow( { name: '$inline', inside: 'image' } );
+				model.schema.objects.add( 'image' );
 
-				doc.schema.registerItem( 'caption' );
-				doc.schema.allow( { name: '$inline', inside: 'caption' } );
-				doc.schema.allow( { name: 'caption', inside: 'image' } );
-				doc.schema.allow( { name: '$text', attributes: 'bold', inside: 'caption' } );
+				model.schema.registerItem( 'caption' );
+				model.schema.allow( { name: '$inline', inside: 'caption' } );
+				model.schema.allow( { name: 'caption', inside: 'image' } );
+				model.schema.allow( { name: '$text', attributes: 'bold', inside: 'caption' } );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object', () => {
-				setData( doc, '<p>[<image><$text bold="true">Caption for the image.</$text></image>]</p>' );
+				setData( model, '<p>[<image><$text bold="true">Caption for the image.</$text></image>]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object (deeper structure)', () => {
-				setData( doc, '<p>[<image><caption><$text bold="true">Caption for the image.</$text></caption></image>]</p>' );
+				setData( model, '<p>[<image><caption><$text bold="true">Caption for the image.</$text></caption></image>]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object (block level)', () => {
-				setData( doc, '<p>foo</p>[<image><$text bold="true">Caption for the image.</$text></image>]<p>foo</p>' );
+				setData( model, '<p>foo</p>[<image><$text bold="true">Caption for the image.</$text></image>]<p>foo</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'reads attributes from text even if the selection contains an object', () => {
-				setData( doc, '<p>x<$text bold="true">[bar</$text><image></image>foo]</p>' );
+				setData( model, '<p>x<$text bold="true">[bar</$text><image></image>foo]</p>' );
 
 				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'reads attributes when the entire selection inside an object', () => {
-				setData( doc, '<p><image><caption><$text bold="true">[bar]</$text></caption></image></p>' );
+				setData( model, '<p><image><caption><$text bold="true">[bar]</$text></caption></image></p>' );
 
 				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'stops reading attributes if selection starts with an object', () => {
-				setData( doc, '<p>[<image></image><$text bold="true">bar]</$text></p>' );
+				setData( model, '<p>[<image></image><$text bold="true">bar]</$text></p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
@@ -1012,7 +1016,9 @@ describe( 'DocumentSelection', () => {
 					batchTypes.set( batch, batch.type );
 				} );
 
-				doc.batch().insertText( 'x', rangeInEmptyP.start );
+				model.change( writer => {
+					writer.insertText( 'x', rangeInEmptyP.start );
+				} );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
@@ -1024,7 +1030,9 @@ describe( 'DocumentSelection', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
-				doc.batch().move( Range.createOn( fullP.getChild( 0 ) ), rangeInEmptyP.start );
+				model.change( writer => {
+					writer.move( Range.createOn( fullP.getChild( 0 ) ), rangeInEmptyP.start );
+				} );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 			} );
@@ -1036,8 +1044,10 @@ describe( 'DocumentSelection', () => {
 				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
 				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
 
-				// <emptyP>{}<emptyP2>
-				doc.batch().merge( Position.createAfter( emptyP ) );
+				model.change( writer => {
+					// <emptyP>{}<emptyP2>
+					writer.merge( Position.createAfter( emptyP ) );
+				} );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
@@ -1048,35 +1058,38 @@ describe( 'DocumentSelection', () => {
 
 				selection.setRanges( [ rangeInFullP ] );
 
-				doc.batch().insertText( 'x', rangeInEmptyP.start );
+				model.change( writer => {
+					writer.insertText( 'x', rangeInEmptyP.start );
+				} );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 			} );
 
 			it( 'are removed only once in case of multi-op deltas', () => {
+				let batch;
 				const emptyP2 = new Element( 'p', null, 'x' );
 				root.appendChildren( emptyP2 );
 
 				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
 				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
 
-				const batch = doc.batch();
-				const spy = sinon.spy( batch, 'removeAttribute' );
-
-				// <emptyP>{}<emptyP2>
-				batch.merge( Position.createAfter( emptyP ) );
+				model.change( writer => {
+					batch = writer.batch;
+					// <emptyP>{}<emptyP2>
+					writer.merge( Position.createAfter( emptyP ) );
+				} );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
-
-				expect( spy.calledOnce ).to.be.true;
+				// Attribute delta is only one.
+				expect( Array.from( batch.deltas, delta => delta.type ) ).to.deep.equal( [ 'merge', 'attribute' ] );
 			} );
 
-			it( 'uses document enqueue changes to clear attributes', () => {
+			it( 'uses model change to clear attributes', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
-				doc.enqueueChanges( () => {
-					doc.batch().insertText( 'x', rangeInEmptyP.start );
+				model.change( writer => {
+					writer.insertText( 'x', rangeInEmptyP.start );
 
 					// `emptyP` still has the attribute, because attribute clearing is in enqueued block.
 					expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
@@ -1096,8 +1109,10 @@ describe( 'DocumentSelection', () => {
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
 				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
 
-				// <emptyP>{}<emptyP2>
-				doc.batch().merge( Position.createAfter( emptyP ) );
+				model.change( writer => {
+					// <emptyP>{}<emptyP2>
+					writer.merge( Position.createAfter( emptyP ) );
+				} );
 
 				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
@@ -1107,12 +1122,14 @@ describe( 'DocumentSelection', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
-				sinon.spy( doc, 'enqueueChanges' );
+				model.enqueueChange( 'transparent', writer => {
+					sinon.spy( model, 'enqueueChange' );
 
-				doc.batch( 'transparent' ).insertText( 'x', rangeInEmptyP.start );
+					writer.insertText( 'x', rangeInEmptyP.start );
 
-				expect( doc.enqueueChanges.called ).to.be.false;
-				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+					expect( model.enqueueChange.called ).to.be.false;
+					expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+				} );
 			} );
 
 			// Rename and some other deltas don't specify range in doc#change event.
@@ -1121,11 +1138,13 @@ describe( 'DocumentSelection', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
-				sinon.spy( doc, 'enqueueChanges' );
+				sinon.spy( model, 'enqueueChange' );
 
-				doc.batch().rename( emptyP, 'pnew' );
+				model.change( writer => {
+					writer.rename( emptyP, 'pnew' );
+				} );
 
-				expect( doc.enqueueChanges.called ).to.be.false;
+				expect( model.enqueueChange.called ).to.be.false;
 				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 			} );
 		} );
