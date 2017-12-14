@@ -28,7 +28,7 @@ ClassicEditor
 
 		const outputElement = document.querySelector( '#snippet-markdown-output' );
 
-		editor.document.on( 'changesDone', () => {
+		editor.model.document.on( 'changesDone', () => {
 			outputElement.innerText = editor.getData();
 		} );
 
