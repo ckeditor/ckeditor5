@@ -118,8 +118,7 @@ export default class Clipboard extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const model = editor.model;
-		const doc = model.document;
+		const doc = editor.model.document;
 		const editingView = editor.editing.view;
 
 		/**
@@ -170,9 +169,7 @@ export default class Clipboard extends Plugin {
 					return;
 				}
 
-				model.change( () => {
-					dataController.insertContent( modelFragment, doc.selection );
-				} );
+				dataController.insertContent( modelFragment, doc.selection );
 			}
 		}, { priority: 'low' } );
 
