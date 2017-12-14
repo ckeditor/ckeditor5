@@ -78,7 +78,7 @@ describe( 'Heading', () => {
 
 			expect( dropdown ).to.be.instanceOf( DropdownView );
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
-			expect( dropdown.buttonView.isOn ).to.be.undefined;
+			expect( dropdown.buttonView.isOn ).to.be.false;
 			expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
 			expect( dropdown.buttonView.tooltip ).to.equal( 'Heading' );
 		} );
