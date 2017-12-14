@@ -50,4 +50,7 @@
 
 	/* Compensate double border from button and from box when positioned below the button. */
 	bottom: 1px;
+
+	/* Make sure the panel is at least as wide as the dropdown's button. */
+	min-width: 100%;
 }
