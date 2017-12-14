@@ -210,7 +210,7 @@ describe( 'Configuration defined converters', () => {
 				dispatcher.on( 'text', convertText() );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using element name', () => {
 				viewToModelAttribute( 'foo', { model: 'bar', view: 'strong' }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
@@ -220,7 +220,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using object', () => {
 				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'strong' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
@@ -230,7 +230,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using class string', () => {
 				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'span', classes: 'foo' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
@@ -240,7 +240,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using classes array', () => {
 				viewToModelAttribute( 'foo', {
 					model: 'bar',
 					view: { name: 'span', classes: [ 'foo', 'bar' ] }
@@ -253,7 +253,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using styles object', () => {
 				viewToModelAttribute( 'foo', {
 					model: 'bar',
 					view: { name: 'span', styles: { 'font-weight': 'bold' } }
@@ -266,7 +266,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using attributes object', () => {
 				viewToModelAttribute( 'foo', {
 					model: 'bar',
 					view: { name: 'span', attributes: { 'data-foo': 'bar' } }
@@ -279,7 +279,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using acceptAlso array', () => {
 				viewToModelAttribute( 'foo', {
 					model: 'bar',
 					view: 'strong',
@@ -296,7 +296,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using priority', () => {
 				viewToModelAttribute( 'foo', { model: 'baz', view: 'strong' }, [ dispatcher ] );
 				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'strong', priority: 'high' } }, [ dispatcher ] );
 
@@ -380,8 +380,7 @@ describe( 'Configuration defined converters', () => {
 				dispatcher.on( 'text', convertText() );
 			} );
 
-			// TODO:
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using element name', () => {
 				viewToModelElement( { model: 'bar', view: 'strong' }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
@@ -391,7 +390,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using object', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'strong' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
@@ -401,7 +400,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using class string', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'span', classes: 'foo' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
@@ -411,7 +410,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using classes array', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'span', classes: [ 'foo', 'bar' ] } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
@@ -421,7 +420,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using styles object', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'span', styles: { 'font-weight': 'bold' } } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
@@ -431,7 +430,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using attributes object', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'span', attributes: { 'data-foo': 'bar' } } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
@@ -441,7 +440,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using acceptAlso array', () => {
 				viewToModelElement( {
 					model: 'bar',
 					view: 'strong',
@@ -458,7 +457,7 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
 			} );
 
-			it( 'should convert from view element to model attribute', () => {
+			it( 'should convert using priority', () => {
 				viewToModelElement( { model: 'baz', view: 'strong' }, [ dispatcher ] );
 				viewToModelElement( { model: 'bar', view: { name: 'strong', priority: 'high' } }, [ dispatcher ] );
 
