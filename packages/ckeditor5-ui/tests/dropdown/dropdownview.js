@@ -40,6 +40,10 @@ describe( 'DropdownView', () => {
 			expect( view.isOpen ).to.be.false;
 		} );
 
+		it( 'sets view#isEnabled true', () => {
+			expect( view.isEnabled ).to.be.true;
+		} );
+
 		it( 'creates #focusTracker instance', () => {
 			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
@@ -88,6 +92,18 @@ describe( 'DropdownView', () => {
 					view.isOpen = true;
 
 					expect( values ).to.have.members( [ true, false, true ] );
+				} );
+			} );
+
+			describe( 'DOM', () => {
+				describe( 'view#element .ck-disabled class to view#isEnabled', () => {
+					it( 'is activated', () => {
+						view.isEnabled = true;
+						expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.false;
+
+						view.isEnabled = false;
+						expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.true;
+					} );
 				} );
 			} );
 		} );
