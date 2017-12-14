@@ -52,7 +52,7 @@ export default class ClassicEditor extends StandardEditor {
 	constructor( element, config ) {
 		super( element, config );
 
-		this.document.createRoot();
+		this.model.document.createRoot();
 		this.data.processor = new HtmlDataProcessor();
 		this.ui = new ClassicEditorUI( this, new ClassicEditorUIView( this.locale ) );
 
