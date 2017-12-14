@@ -134,7 +134,7 @@ export default class AlignmentCommand extends Command {
 // @private
 function removeAlignmentFromSelection( blocks, batch ) {
 	for ( const block of blocks ) {
-		batch.removeAttribute( block, 'alignment' );
+		batch.removeAttribute( 'alignment', block );
 	}
 }
 
@@ -142,6 +142,6 @@ function removeAlignmentFromSelection( blocks, batch ) {
 // @private
 function setAlignmentOnSelection( blocks, batch, type ) {
 	for ( const block of blocks ) {
-		batch.setAttribute( block, 'alignment', type );
+		batch.setAttribute( 'alignment', type, block );
 	}
 }

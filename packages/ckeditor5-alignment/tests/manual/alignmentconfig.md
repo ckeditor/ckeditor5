@@ -6,9 +6,14 @@
   * third paragraph should be centered,
   * fourth paragraph should be justified,
   * an image with caption between first and second paragraphs.
-2. Toolbar should have only two buttons for alignment control: center and justify.
+2. Toolbar should have button dropdown with only two buttons for alignment control: center and justify.
 
 ### Testing
+
+Alignment dropdown button should change to:
+- "left" icon when text has default (left) alignment,
+- "center" icon when text is centered,
+- "jusifty" icon when text is justified.
 
 "Center" alignment button:
 1. should be highlighted only in third paragraph,
