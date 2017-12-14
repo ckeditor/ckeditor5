@@ -27,7 +27,7 @@ export default class BlockQuoteEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const schema = editor.document.schema;
+		const schema = editor.model.schema;
 
 		editor.commands.add( 'blockQuote', new BlockQuoteCommand( editor ) );
 
@@ -48,7 +48,7 @@ export default class BlockQuoteEngine extends Plugin {
 	 * @inheritDoc
 	 */
 	afterInit() {
-		const schema = this.editor.document.schema;
+		const schema = this.editor.model.schema;
 
 		// TODO
 		// Workaround for https://github.com/ckeditor/ckeditor5-engine/issues/532#issuecomment-280924650.

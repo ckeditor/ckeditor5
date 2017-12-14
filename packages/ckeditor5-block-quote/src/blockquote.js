@@ -78,7 +78,7 @@ export default class BlockQuote extends Plugin {
 		// We can't use a priority for this, because 'low' is already used by the enter feature, unless
 		// we'd use numeric priority in this case.
 		this.listenTo( this.editor.editing.view, 'enter', ( evt, data ) => {
-			const doc = this.editor.document;
+			const doc = this.editor.model.document;
 			const positionParent = doc.selection.getLastPosition().parent;
 
 			if ( doc.selection.isCollapsed && positionParent.isEmpty && command.value ) {
