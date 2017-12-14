@@ -16,6 +16,16 @@
 		margin-right: var(--ck-spacing-small);
 	}
 
+	&.ck-toolbar_vertical {
+		& > * {
+			/* Items in a vertical toolbar should have no horizontal margin */
+			margin-right: 0;
+
+			/* Items in a vertical toolbar should span the horizontal space */
+			width: 100%;
+		}
+	}
+
 	& > *:last-child {
 		margin-right: 0;
 	}
