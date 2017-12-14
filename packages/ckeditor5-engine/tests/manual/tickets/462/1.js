@@ -27,8 +27,8 @@ ClassicEditor
 			const selectionExists = domSelection && domSelection.anchorNode;
 
 			console.log( editor.editing.view.getDomRoot().innerHTML.replace( /\u200b/g, '@' ) );
-			console.log( 'selection.hasAttribute( italic ):', editor.document.selection.hasAttribute( 'italic' ) );
-			console.log( 'selection.hasAttribute( bold ):', editor.document.selection.hasAttribute( 'bold' ) );
+			console.log( 'selection.hasAttribute( italic ):', editor.model.document.selection.hasAttribute( 'italic' ) );
+			console.log( 'selection.hasAttribute( bold ):', editor.model.document.selection.hasAttribute( 'bold' ) );
 			console.log( 'selection anchor\'s parentNode:', selectionExists ? domSelection.anchorNode.parentNode : 'no DOM selection' );
 		}, 2000 );
 	} )

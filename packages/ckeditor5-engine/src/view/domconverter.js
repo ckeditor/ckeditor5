@@ -1061,7 +1061,9 @@ export default class DomConverter {
 
 		const direction = getNext ? 'nextNode' : 'previousNode';
 		const document = node.ownerDocument;
-		const treeWalker = document.createTreeWalker( document.childNodes[ 0 ], NodeFilter.SHOW_TEXT );
+		const topmostParent = getAncestors( node )[ 0 ];
+
+		const treeWalker = document.createTreeWalker( topmostParent, NodeFilter.SHOW_TEXT );
 
 		treeWalker.currentNode = node;
 

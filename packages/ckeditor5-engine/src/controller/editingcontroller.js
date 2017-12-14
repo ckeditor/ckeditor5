@@ -36,14 +36,14 @@ export default class EditingController {
 	/**
 	 * Creates editing controller instance.
 	 *
-	 * @param {module:engine/model/document~Document} model Document model.
+	 * @param {module:engine/model/model~Model} model Editing model.
 	 */
 	constructor( model ) {
 		/**
-		 * Document model.
+		 * Editing model.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/document~Document}
+		 * @member {module:engine/model/model~Model}
 		 */
 		this.model = model;
 
@@ -84,13 +84,13 @@ export default class EditingController {
 		} );
 
 		// Convert changes in model to view.
-		this.listenTo( this.model, 'change', ( evt, type, changes ) => {
+		this.listenTo( this.model.document, 'change', ( evt, type, changes ) => {
 			this.modelToView.convertChange( type, changes );
 		}, { priority: 'low' } );
 
 		// Convert model selection to view.
-		this.listenTo( this.model, 'changesDone', () => {
-			const selection = this.model.selection;
+		this.listenTo( this.model.document, 'changesDone', () => {
+			const selection = this.model.document.selection;
 
 			this.modelToView.convertSelection( selection );
 			this.view.render();
@@ -139,7 +139,7 @@ export default class EditingController {
 	 */
 	createRoot( domRoot, name = 'main' ) {
 		const viewRoot = this.view.createRoot( domRoot, name );
-		const modelRoot = this.model.getRoot( name );
+		const modelRoot = this.model.document.getRoot( name );
 
 		this.mapper.bindElements( modelRoot, viewRoot );
 

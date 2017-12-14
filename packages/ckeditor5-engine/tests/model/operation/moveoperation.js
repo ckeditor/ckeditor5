@@ -3,19 +3,21 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
+import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'MoveOperation', () => {
-	let doc, root;
+	let model, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 	} );
 
@@ -47,7 +49,7 @@ describe( 'MoveOperation', () => {
 
 		root.insertChildren( 0, [ p1, p2 ] );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new MoveOperation(
 				new Position( root, [ 0, 0 ] ),
 				1,
@@ -68,7 +70,7 @@ describe( 'MoveOperation', () => {
 	it( 'should move position of children in one node backward', () => {
 		root.insertChildren( 0, new Text( 'xbarx' ) );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new MoveOperation(
 				new Position( root, [ 2 ] ),
 				2,
@@ -85,7 +87,7 @@ describe( 'MoveOperation', () => {
 	it( 'should move position of children in one node forward', () => {
 		root.insertChildren( 0, new Text( 'xbarx' ) );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new MoveOperation(
 				new Position( root, [ 1 ] ),
 				2,
@@ -132,7 +134,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		doc.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 2 );
@@ -140,7 +142,7 @@ describe( 'MoveOperation', () => {
 		expect( p2.maxOffset ).to.equal( 1 );
 		expect( p2.getChild( 0 ).name ).to.equal( 'x' );
 
-		doc.applyOperation( wrapInDelta( operation.getReversed() ) );
+		model.applyOperation( wrapInDelta( operation.getReversed() ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 2 );
@@ -159,7 +161,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-nodes-do-not-exist/ );
+		expect( () => model.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-nodes-do-not-exist/ );
 	} );
 
 	it( 'should throw an error if target or source parent-element specified by position does not exist', () => {
@@ -176,7 +178,7 @@ describe( 'MoveOperation', () => {
 
 		root.removeChildren( 1 );
 
-		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-position-invalid/ );
+		expect( () => model.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-position-invalid/ );
 	} );
 
 	it( 'should throw an error if operation tries to move a range between the beginning and the end of that range', () => {
@@ -189,7 +191,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-range-into-itself/ );
+		expect( () => model.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-range-into-itself/ );
 	} );
 
 	it( 'should throw an error if operation tries to move a range into a sub-tree of a node that is in that range', () => {
@@ -203,7 +205,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-node-into-itself/ );
+		expect( () => model.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-node-into-itself/ );
 	} );
 
 	it( 'should not throw an error if operation move a range into a sibling', () => {
@@ -219,7 +221,7 @@ describe( 'MoveOperation', () => {
 
 		expect(
 			() => {
-				doc.applyOperation( wrapInDelta( operation ) );
+				model.applyOperation( wrapInDelta( operation ) );
 			}
 		).not.to.throw();
 
@@ -242,7 +244,7 @@ describe( 'MoveOperation', () => {
 
 		expect(
 			() => {
-				doc.applyOperation( wrapInDelta( operation ) );
+				model.applyOperation( wrapInDelta( operation ) );
 			}
 		).not.to.throw();
 	} );
@@ -280,9 +282,7 @@ describe( 'MoveOperation', () => {
 		} );
 
 		it( 'should return false when operation is executed on detached items', () => {
-			const docFrag = doc.batch().createDocumentFragment();
-
-			doc.batch().appendText( 'abc', null, docFrag );
+			const docFrag = new DocumentFragment( [ new Text( 'abc' ) ] );
 
 			const op = new MoveOperation(
 				new Position( docFrag, [ 0 ] ),

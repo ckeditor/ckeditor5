@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import Range from '../../../src/model/range';
 
 import MarkerDelta from '../../../src/model/delta/markerdelta';
@@ -13,7 +13,9 @@ describe( 'MarkerDelta', () => {
 	let markerDelta, doc, root, range;
 
 	beforeEach( () => {
-		doc = new Document();
+		const model = new Model();
+
+		doc = model.document;
 		root = doc.createRoot();
 		range = Range.createIn( root );
 		markerDelta = new MarkerDelta();

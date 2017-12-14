@@ -3,13 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelDocument from '../../src/model/document';
+import Model from '../../src/model/model';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
 import ModelTextProxy from '../../src/model/textproxy';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 import ModelWalker from '../../src/model/treewalker';
+import ModelWriter from '../../src/model/writer';
+import Batch from '../../src/model/batch';
 
 import ViewElement from '../../src/view/element';
 import ViewContainerElement from '../../src/view/containerelement';
@@ -38,25 +40,28 @@ import { convertToModelFragment, convertText } from '../../src/conversion/view-t
 import { createRangeOnElementOnly } from '../../tests/model/_utils/utils';
 
 describe( 'advanced-converters', () => {
-	let modelDoc, modelRoot, viewRoot, mapper, modelDispatcher, viewDispatcher, batch;
+	let model, modelDoc, modelRoot, viewRoot, mapper, modelDispatcher, viewDispatcher, modelWriter;
 
 	beforeEach( () => {
-		modelDoc = new ModelDocument();
+		model = new Model();
+		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
 		viewRoot = new ViewContainerElement( 'div' );
-		batch = modelDoc.batch();
 
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
 
-		modelDispatcher = new ModelConversionDispatcher( modelDoc, { mapper } );
+		modelDispatcher = new ModelConversionDispatcher( model, { mapper } );
 		// Schema is mocked up because we don't care about it in those tests.
-		viewDispatcher = new ViewConversionDispatcher( { schema: { check: () => true } } );
+		viewDispatcher = new ViewConversionDispatcher( model, { schema: { check: () => true } } );
 
 		modelDispatcher.on( 'insert:$text', insertText() );
 		modelDispatcher.on( 'remove', remove() );
 		viewDispatcher.on( 'text', convertText() );
 		viewDispatcher.on( 'documentFragment', convertToModelFragment() );
+
+		// We need to create a model writer to modify model tree in tests.
+		modelWriter = new ModelWriter( model, new Batch() );
 	} );
 
 	function viewAttributesToString( item ) {
@@ -217,16 +222,16 @@ describe( 'advanced-converters', () => {
 
 			const viewImageConverter = function( evt, data, consumable, conversionApi ) {
 				if ( consumable.consume( data.input, { name: true } ) ) {
-					data.output = conversionApi.batch.createElement( 'image', data.input.getAttributes() );
+					data.output = conversionApi.writer.createElement( 'image', data.input.getAttributes() );
 				}
 			};
 
 			const viewFigcaptionConverter = function( evt, data, consumable, conversionApi ) {
 				if ( consumable.consume( data.input, { name: true } ) ) {
-					const modelCaption = conversionApi.batch.createElement( 'caption' );
+					const modelCaption = conversionApi.writer.createElement( 'caption' );
 					const children = conversionApi.convertChildren( data.input, consumable );
 
-					conversionApi.batch.append( children, modelCaption );
+					conversionApi.writer.append( children, modelCaption );
 
 					data.output = modelCaption;
 				}
@@ -242,14 +247,14 @@ describe( 'advanced-converters', () => {
 		} );
 
 		it( 'should convert model images changes without caption to view', () => {
-			const modelElement = batch.createElement( 'image', { src: 'bar.jpg', title: 'bar' } );
-			batch.append( modelElement, modelRoot );
+			const modelElement = new ModelElement( 'image', { src: 'bar.jpg', title: 'bar' } );
+			modelRoot.appendChildren( modelElement );
 			modelDispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><img src="bar.jpg" title="bar"></img></div>' );
 
-			batch.setAttribute( 'src', 'new.jpg', modelElement );
-			batch.removeAttribute( 'title', modelElement );
+			modelElement.setAttribute( 'src', 'new.jpg' );
+			modelElement.removeAttribute( 'title' );
 			modelDispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'src', 'bar.jpg', 'new.jpg' );
 			modelDispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'title', 'bar', null );
 
@@ -260,7 +265,7 @@ describe( 'advanced-converters', () => {
 			const modelElement = new ModelElement( 'image', { src: 'foo.jpg', title: 'foo' }, [
 				new ModelElement( 'caption', {}, new ModelText( 'foobar' ) )
 			] );
-			modelRoot.appendChildren( modelElement );
+			modelRoot.appendChildren( [ modelElement ] );
 			modelDispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal(
@@ -279,7 +284,7 @@ describe( 'advanced-converters', () => {
 
 		it( 'should convert view image to model', () => {
 			const viewElement = new ViewContainerElement( 'img', { src: 'bar.jpg', title: 'bar' } );
-			const modelElement = viewDispatcher.convert( viewElement, batch );
+			const modelElement = viewDispatcher.convert( viewElement );
 
 			expect( modelToString( modelElement ) ).to.equal( '<image src="bar.jpg" title="bar"></image>' );
 		} );
@@ -293,7 +298,7 @@ describe( 'advanced-converters', () => {
 					new ViewContainerElement( 'figcaption', null, new ViewText( 'foobar' ) )
 				]
 			);
-			const modelElement = viewDispatcher.convert( viewElement, batch );
+			const modelElement = viewDispatcher.convert( viewElement );
 
 			expect( modelToString( modelElement ) ).to.equal( '<image src="bar.jpg" title="bar"><caption>foobar</caption></image>' );
 		} );
@@ -478,7 +483,7 @@ describe( 'advanced-converters', () => {
 			expect( viewToString( viewRoot ) ).to.equal( '<div><a href="foo.html" title="Foo title">foo</a></div>' );
 
 			// Let's change link's attributes.
-			batch.setAttributes( {
+			modelWriter.setAttributes( {
 				linkHref: 'bar.html',
 				linkTitle: 'Bar title'
 			}, range );
@@ -487,7 +492,7 @@ describe( 'advanced-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><a href="bar.html" title="Bar title">foo</a></div>' );
 
-			batch.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
+			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
 			modelDispatcher.convertRemove(
 				ModelPosition.createFromParentAndOffset( modelRoot, 0 ),
 				ModelRange.createIn( modelDoc.graveyard )
@@ -498,13 +503,13 @@ describe( 'advanced-converters', () => {
 			range = ModelRange.createIn( modelRoot );
 
 			// Let's remove just one attribute.
-			batch.removeAttribute( 'linkTitle', range );
+			modelWriter.removeAttribute( 'linkTitle', range );
 			modelDispatcher.convertAttribute( 'removeAttribute', range, 'linkTitle', 'Bar title', null );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><a href="bar.html">oo</a></div>' );
 
 			// Let's remove the other attribute.
-			batch.removeAttribute( 'linkHref', range );
+			modelWriter.removeAttribute( 'linkHref', range );
 			modelDispatcher.convertAttribute( 'removeAttribute', range, 'linkHref', 'bar.html', null );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>oo</div>' );
@@ -513,7 +518,7 @@ describe( 'advanced-converters', () => {
 		it( 'should convert a view element to model', () => {
 			const viewElement = new ViewAttributeElement( 'a', { href: 'foo.html', title: 'Foo title' }, new ViewText( 'foo' ) );
 
-			const modelText = viewDispatcher.convert( viewElement, batch ).getChild( 0 );
+			const modelText = viewDispatcher.convert( viewElement ).getChild( 0 );
 
 			expect( modelText ).to.be.instanceof( ModelText );
 			expect( modelText.data ).to.equal( 'foo' );
@@ -584,7 +589,7 @@ describe( 'advanced-converters', () => {
 				]
 			);
 
-			const modelElement = viewDispatcher.convert( viewElement, batch );
+			const modelElement = viewDispatcher.convert( viewElement );
 
 			expect( modelToString( modelElement ) ).to.equal( '<quote linkHref="foo.html" linkTitle="Foo source">foo</quote>' );
 		} );
@@ -647,7 +652,7 @@ describe( 'advanced-converters', () => {
 			] )
 		] );
 
-		expect( modelToString( viewDispatcher.convert( viewTable, batch ) ) )
+		expect( modelToString( viewDispatcher.convert( viewTable ) ) )
 			.to.equal( '<paragraph>foo <$text linkHref="bar.html">bar</$text></paragraph><paragraph>abc</paragraph>' );
 	} );
 
@@ -746,7 +751,7 @@ describe( 'advanced-converters', () => {
 				] )
 			] );
 
-			const modelElement = viewDispatcher.convert( viewElement, batch );
+			const modelElement = viewDispatcher.convert( viewElement );
 
 			expect( modelToString( modelElement ) ).to.equal(
 				'<table cellpadding="5" cellspacing="5">' +

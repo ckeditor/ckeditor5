@@ -12,7 +12,7 @@ import DeltaFactory from './deltafactory';
 import WrapDelta from './wrapdelta';
 
 /**
- * To provide specific OT behavior and better collisions solving, {@link module:engine/model/batch~Batch#merge} method
+ * To provide specific OT behavior and better collisions solving, {@link module:engine/model/writer~Writer#merge} method
  * uses the `UnwrapDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
  * @extends module:engine/model/delta/delta~Delta

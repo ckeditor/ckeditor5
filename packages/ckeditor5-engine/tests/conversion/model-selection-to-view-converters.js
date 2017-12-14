@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelDocument from '../../src/model/document';
+import Model from '../../src/model/model';
 import ModelElement from '../../src/model/element';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
@@ -37,14 +37,15 @@ import { stringify as stringifyView } from '../../src/dev-utils/view';
 import { setData as setModelData } from '../../src/dev-utils/model';
 
 describe( 'model-selection-to-view-converters', () => {
-	let dispatcher, mapper, modelDoc, modelRoot, modelSelection, viewDoc, viewRoot, viewSelection, highlightDescriptor;
+	let dispatcher, mapper, model, modelDoc, modelRoot, modelSelection, viewDoc, viewRoot, viewSelection, highlightDescriptor;
 
 	beforeEach( () => {
-		modelDoc = new ModelDocument();
+		model = new Model();
+		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
 		modelSelection = modelDoc.selection;
 
-		modelDoc.schema.allow( { name: '$text', inside: '$root' } );
+		model.schema.allow( { name: '$text', inside: '$root' } );
 
 		viewDoc = new ViewDocument();
 		viewRoot = viewDoc.createRoot( 'div' );
@@ -55,7 +56,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 		highlightDescriptor = { class: 'marker', priority: 1 };
 
-		dispatcher = new ModelConversionDispatcher( modelDoc, { mapper, viewSelection } );
+		dispatcher = new ModelConversionDispatcher( model, { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
@@ -218,8 +219,8 @@ describe( 'model-selection-to-view-converters', () => {
 			} );
 
 			it( 'in attribute and marker', () => {
-				setModelData( modelDoc, 'fo<$text bold="true">ob</$text>ar' );
-				const marker = modelDoc.markers.set( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
+				const marker = model.markers.set( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
 				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
 
@@ -233,7 +234,7 @@ describe( 'model-selection-to-view-converters', () => {
 				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
 
-				const markers = Array.from( modelDoc.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
+				const markers = Array.from( model.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
 				dispatcher.convertSelection( modelSelection, markers );
 
 				// Stringify view and check if it is same as expected.
@@ -243,8 +244,8 @@ describe( 'model-selection-to-view-converters', () => {
 			} );
 
 			it( 'in attribute and marker - no attribute', () => {
-				setModelData( modelDoc, 'fo<$text bold="true">ob</$text>ar' );
-				const marker = modelDoc.markers.set( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
+				const marker = model.markers.set( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
 				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
 
@@ -260,7 +261,7 @@ describe( 'model-selection-to-view-converters', () => {
 				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
 
-				const markers = Array.from( modelDoc.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
+				const markers = Array.from( model.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
 				dispatcher.convertSelection( modelSelection, markers );
 
 				// Stringify view and check if it is same as expected.
@@ -273,8 +274,8 @@ describe( 'model-selection-to-view-converters', () => {
 					data => ( { 'class': data.markerName } )
 				) );
 
-				setModelData( modelDoc, 'foobar' );
-				const marker = modelDoc.markers.set( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+				setModelData( model, 'foobar' );
+				const marker = model.markers.set( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
 				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
 
@@ -285,7 +286,7 @@ describe( 'model-selection-to-view-converters', () => {
 				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
 
-				const markers = Array.from( modelDoc.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
+				const markers = Array.from( model.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
 				dispatcher.convertSelection( modelSelection, markers );
 
 				// Stringify view and check if it is same as expected.
@@ -297,8 +298,8 @@ describe( 'model-selection-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker2', highlightText( data => ( { 'class': data.markerName } ) ) );
 				dispatcher.on( 'selectionMarker:marker2', convertSelectionMarker( data => ( { 'class': data.markerName } ) ) );
 
-				setModelData( modelDoc, 'foobar' );
-				const marker = modelDoc.markers.set( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+				setModelData( model, 'foobar' );
+				const marker = model.markers.set( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
 				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
 
@@ -309,7 +310,7 @@ describe( 'model-selection-to-view-converters', () => {
 				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
 
-				const markers = Array.from( modelDoc.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
+				const markers = Array.from( model.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
 				dispatcher.convertSelection( modelSelection, markers );
 
 				// Stringify view and check if it is same as expected.
@@ -322,8 +323,8 @@ describe( 'model-selection-to-view-converters', () => {
 
 				} ) );
 
-				setModelData( modelDoc, 'foobar' );
-				const marker = modelDoc.markers.set( 'marker3', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+				setModelData( model, 'foobar' );
+				const marker = model.markers.set( 'marker3', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
 				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
 
@@ -334,7 +335,7 @@ describe( 'model-selection-to-view-converters', () => {
 				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
 
-				const markers = Array.from( modelDoc.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
+				const markers = Array.from( model.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
 				dispatcher.convertSelection( modelSelection, markers );
 
 				// Stringify view and check if it is same as expected.
@@ -344,7 +345,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 			// #1072 - if the container has only ui elements, collapsed selection attribute should be rendered after those ui elements.
 			it( 'selection with attribute before ui element - no non-ui children', () => {
-				setModelData( modelDoc, '' );
+				setModelData( model, '' );
 
 				// Add two ui elements to view.
 				viewRoot.appendChildren( [
@@ -365,7 +366,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 			// #1072.
 			it( 'selection with attribute before ui element - has non-ui children #1', () => {
-				setModelData( modelDoc, 'x' );
+				setModelData( model, 'x' );
 
 				modelSelection.setRanges( [ new ModelRange( new ModelPosition( modelRoot, [ 1 ] ) ) ] );
 				modelSelection.setAttribute( 'bold', true );
@@ -386,7 +387,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 			// #1072.
 			it( 'selection with attribute before ui element - has non-ui children #2', () => {
-				setModelData( modelDoc, '<$text bold="true">x</$text>y' );
+				setModelData( model, '<$text bold="true">x</$text>y' );
 
 				modelSelection.setRanges( [ new ModelRange( new ModelPosition( modelRoot, [ 1 ] ) ) ] );
 				modelSelection.setAttribute( 'bold', true );
@@ -635,14 +636,14 @@ describe( 'model-selection-to-view-converters', () => {
 
 	describe( 'table cell selection converter', () => {
 		beforeEach( () => {
-			modelDoc.schema.registerItem( 'table' );
-			modelDoc.schema.registerItem( 'tr' );
-			modelDoc.schema.registerItem( 'td' );
+			model.schema.registerItem( 'table' );
+			model.schema.registerItem( 'tr' );
+			model.schema.registerItem( 'td' );
 
-			modelDoc.schema.allow( { name: 'table', inside: '$root' } );
-			modelDoc.schema.allow( { name: 'tr', inside: 'table' } );
-			modelDoc.schema.allow( { name: 'td', inside: 'tr' } );
-			modelDoc.schema.allow( { name: '$text', inside: 'td' } );
+			model.schema.allow( { name: 'table', inside: '$root' } );
+			model.schema.allow( { name: 'tr', inside: 'table' } );
+			model.schema.allow( { name: 'td', inside: 'tr' } );
+			model.schema.allow( { name: '$text', inside: 'td' } );
 
 			// "Universal" converter to convert table structure.
 			const tableConverter = insertElement( data => new ViewContainerElement( data.item.name ) );
@@ -705,7 +706,7 @@ describe( 'model-selection-to-view-converters', () => {
 	// that are offsets or paths of selection positions in root element.
 	function test( selectionPaths, modelInput, expectedView, selectionAttributes = {} ) {
 		// Parse passed `modelInput` string and set it as current model.
-		setModelData( modelDoc, modelInput );
+		setModelData( model, modelInput );
 
 		// Manually set selection ranges using passed `selectionPaths`.
 		const startPath = typeof selectionPaths[ 0 ] == 'number' ? [ selectionPaths[ 0 ] ] : selectionPaths[ 0 ];

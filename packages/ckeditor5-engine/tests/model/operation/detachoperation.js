@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import DetachOperation from '../../../src/model/operation/detachoperation';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Position from '../../../src/model/position';
+import DocumentFragment from '../../../src/model/documentfragment';
+import Element from '../../../src/model/element';
 
 describe( 'DetachOperation', () => {
-	let doc, batch, docFrag, element;
+	let model, doc, docFrag, element;
 
 	beforeEach( () => {
-		doc = new Document();
-		batch = doc.batch();
-
-		docFrag = batch.createDocumentFragment();
-		element = batch.createElement( 'element' );
-		batch.append( element, docFrag );
+		model = new Model();
+		doc = model.document;
+		element = new Element( 'element' );
+		docFrag = new DocumentFragment( [ element ] );
 	} );
 
 	it( 'should have type equal to detach', () => {
@@ -30,15 +30,16 @@ describe( 'DetachOperation', () => {
 	it( 'should remove given element from parent', () => {
 		const op = new DetachOperation( Position.createBefore( element ), 1, doc.version );
 
-		doc.applyOperation( wrapInDelta( op ) );
+		model.applyOperation( wrapInDelta( op ) );
 
 		expect( docFrag.childCount ).to.equal( 0 );
 	} );
 
 	it( 'should throw when is executed on element from document', () => {
 		const root = doc.createRoot();
-		const element = batch.createElement( 'element' );
-		batch.append( element, root );
+		const element = new Element( 'element' );
+
+		root.appendChildren( [ element ] );
 
 		const op = new DetachOperation( Position.createBefore( element ), 1, doc.version );
 

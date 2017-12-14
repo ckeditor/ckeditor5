@@ -7,7 +7,7 @@ import Range from '../../src/model/range';
 import Position from '../../src/model/position';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import TreeWalker from '../../src/model/treewalker';
 import MergeDelta from '../../src/model/delta/mergedelta';
 import MoveOperation from '../../src/model/operation/moveoperation';
@@ -31,7 +31,9 @@ describe( 'Range', () => {
 	let doc, range, start, end, root, otherRoot;
 
 	beforeEach( () => {
-		doc = new Document();
+		const model = new Model();
+
+		doc = model.document;
 		root = doc.createRoot();
 		otherRoot = doc.createRoot( '$root', 'otherRoot' );
 

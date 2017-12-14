@@ -4,7 +4,7 @@
  */
 
 import { stringify, parse, getData, setData } from '../../src/dev-utils/model';
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import DocumentFragment from '../../src/model/documentfragment';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
@@ -13,31 +13,32 @@ import Position from '../../src/model/position';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 
 describe( 'model test utils', () => {
-	let document, root, selection, sandbox;
+	let model, document, root, selection, sandbox;
 
 	beforeEach( () => {
-		document = new Document();
+		model = new Model();
+		document = model.document;
 		root = document.createRoot();
 		selection = document.selection;
 		sandbox = sinon.sandbox.create();
 		selection.removeAllRanges();
 
-		document.schema.registerItem( 'a', '$inline' );
-		document.schema.allow( { name: 'a', inside: '$root' } );
-		document.schema.allow( { name: 'a', inside: '$root', attributes: [ 'bar', 'car', 'foo' ] } );
+		model.schema.registerItem( 'a', '$inline' );
+		model.schema.allow( { name: 'a', inside: '$root' } );
+		model.schema.allow( { name: 'a', inside: '$root', attributes: [ 'bar', 'car', 'foo' ] } );
 
-		document.schema.registerItem( 'b', '$inline' );
-		document.schema.allow( { name: 'b', inside: '$root' } );
-		document.schema.allow( { name: 'b', inside: '$root', attributes: [ 'barFoo', 'fooBar', 'x' ] } );
+		model.schema.registerItem( 'b', '$inline' );
+		model.schema.allow( { name: 'b', inside: '$root' } );
+		model.schema.allow( { name: 'b', inside: '$root', attributes: [ 'barFoo', 'fooBar', 'x' ] } );
 
-		document.schema.registerItem( 'c', '$inline' );
-		document.schema.allow( { name: 'c', inside: '$root' } );
+		model.schema.registerItem( 'c', '$inline' );
+		model.schema.allow( { name: 'c', inside: '$root' } );
 
-		document.schema.registerItem( 'paragraph', '$block' );
-		document.schema.allow( { name: '$text', inside: '$root' } );
-		document.schema.allow( { name: '$text', inside: 'a' } );
-		document.schema.allow( { name: '$text', inside: 'b' } );
-		document.schema.allow( { name: 'c', inside: 'b' } );
+		model.schema.registerItem( 'paragraph', '$block' );
+		model.schema.allow( { name: '$text', inside: '$root' } );
+		model.schema.allow( { name: '$text', inside: 'a' } );
+		model.schema.allow( { name: '$text', inside: 'b' } );
+		model.schema.allow( { name: 'c', inside: 'b' } );
 	} );
 
 	afterEach( () => {
@@ -49,7 +50,7 @@ describe( 'model test utils', () => {
 			const stringifySpy = sandbox.spy( getData, '_stringify' );
 			root.appendChildren( new Element( 'b', null, new Text( 'btext' ) ) );
 
-			expect( getData( document, { withoutSelection: true } ) ).to.equal( '<b>btext</b>' );
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<b>btext</b>' );
 			sinon.assert.calledOnce( stringifySpy );
 			sinon.assert.calledWithExactly( stringifySpy, root );
 		} );
@@ -59,7 +60,7 @@ describe( 'model test utils', () => {
 			root.appendChildren( new Element( 'b', null, new Text( 'btext' ) ) );
 			document.selection.addRange( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
 
-			expect( getData( document ) ).to.equal( '[<b>btext</b>]' );
+			expect( getData( model ) ).to.equal( '[<b>btext</b>]' );
 			sinon.assert.calledOnce( stringifySpy );
 			sinon.assert.calledWithExactly( stringifySpy, root, document.selection );
 		} );
@@ -67,7 +68,7 @@ describe( 'model test utils', () => {
 		it( 'should throw an error when passing invalid document', () => {
 			expect( () => {
 				getData( { invalid: 'document' } );
-			} ).to.throw( TypeError, 'Document needs to be an instance of module:engine/model/document~Document.' );
+			} ).to.throw( TypeError, 'Model needs to be an instance of module:engine/model/model~Model.' );
 		} );
 	} );
 
@@ -77,9 +78,9 @@ describe( 'model test utils', () => {
 			const options = {};
 			const data = '<b>btext</b>text';
 
-			setData( document, data, options );
+			setData( model, data, options );
 
-			expect( getData( document, { withoutSelection: true } ) ).to.equal( data );
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( data );
 			sinon.assert.calledOnce( parseSpy );
 			const args = parseSpy.firstCall.args;
 			expect( args[ 0 ] ).to.equal( data );
@@ -90,9 +91,9 @@ describe( 'model test utils', () => {
 			const options = {};
 			const data = '[<b>btext</b>]';
 
-			setData( document, data, options );
+			setData( model, data, options );
 
-			expect( getData( document ) ).to.equal( data );
+			expect( getData( model ) ).to.equal( data );
 			sinon.assert.calledOnce( parseSpy );
 			const args = parseSpy.firstCall.args;
 			expect( args[ 0 ] ).to.equal( data );
@@ -139,41 +140,41 @@ describe( 'model test utils', () => {
 		} );
 
 		it( 'should insert backward selection', () => {
-			setData( document, '<b>[foo bar</b>]', { lastRangeBackward: true } );
+			setData( model, '<b>[foo bar</b>]', { lastRangeBackward: true } );
 
-			expect( getData( document ) ).to.equal( '<b>[foo bar</b>]' );
+			expect( getData( model ) ).to.equal( '<b>[foo bar</b>]' );
 			expect( document.selection.isBackward ).to.true;
 		} );
 
 		it( 'should throw an error when passing invalid document', () => {
 			expect( () => {
 				setData( { invalid: 'document' } );
-			} ).to.throw( TypeError, 'Document needs to be an instance of module:engine/model/document~Document.' );
+			} ).to.throw( TypeError, 'Model needs to be an instance of module:engine/model/model~Model.' );
 		} );
 
 		it( 'should set attributes to the selection', () => {
-			setData( document, '<b>[foo bar]</b>', { selectionAttributes: { foo: 'bar' } } );
+			setData( model, '<b>[foo bar]</b>', { selectionAttributes: { foo: 'bar' } } );
 
 			expect( document.selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 		} );
 
 		// #815.
 		it( 'should work in a special root', () => {
-			const document = new Document();
+			const model = new Model();
 
-			document.schema.registerItem( 'textOnly' );
-			document.schema.allow( { name: '$text', inside: 'textOnly' } );
-			document.createRoot( 'textOnly', 'textOnly' );
+			model.schema.registerItem( 'textOnly' );
+			model.schema.allow( { name: '$text', inside: 'textOnly' } );
+			model.document.createRoot( 'textOnly', 'textOnly' );
 
-			setData( document, 'a[b]c', { rootName: 'textOnly' } );
-			expect( getData( document, { rootName: 'textOnly' } ) ).to.equal( 'a[b]c' );
+			setData( model, 'a[b]c', { rootName: 'textOnly' } );
+			expect( getData( model, { rootName: 'textOnly' } ) ).to.equal( 'a[b]c' );
 		} );
 
 		function test( data, expected ) {
 			expected = expected || data;
 
-			setData( document, data );
-			expect( getData( document ) ).to.equal( expected );
+			setData( model, data );
+			expect( getData( model ) ).to.equal( expected );
 		}
 	} );
 
@@ -497,31 +498,31 @@ describe( 'model test utils', () => {
 
 		it( 'throws when invalid XML', () => {
 			expect( () => {
-				parse( '<a><b></a></b>', document.schema, document.batch() );
+				parse( '<a><b></a></b>', model.schema );
 			} ).to.throw( Error, /Parse error/ );
 		} );
 
 		it( 'throws when try to set element not registered in schema', () => {
 			expect( () => {
-				parse( '<xyz></xyz>', document.schema, document.batch() );
+				parse( '<xyz></xyz>', model.schema );
 			} ).to.throw( Error, 'Element \'xyz\' not allowed in context ["$root"].' );
 		} );
 
 		it( 'throws when try to set text directly to $root without registering it', () => {
-			const document = new Document();
+			const model = new Model();
 
 			expect( () => {
-				parse( 'text', document.schema, document.batch() );
+				parse( 'text', model.schema );
 			} ).to.throw( Error, 'Element \'$text\' not allowed in context ["$root"].' );
 		} );
 
 		it( 'converts data in the specified context', () => {
-			const doc = new Document();
-			doc.schema.registerItem( 'foo' );
-			doc.schema.allow( { name: '$text', inside: 'foo' } );
+			const model = new Model();
+			model.schema.registerItem( 'foo' );
+			model.schema.allow( { name: '$text', inside: 'foo' } );
 
 			expect( () => {
-				parse( 'text', doc.schema, doc.batch(), { context: [ 'foo' ] } );
+				parse( 'text', model.schema, { context: [ 'foo' ] } );
 			} ).to.not.throw();
 		} );
 
@@ -556,7 +557,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'sets selection attributes', () => {
-				const result = parse( 'foo[]bar', document.schema, document.batch(), { selectionAttributes: {
+				const result = parse( 'foo[]bar', model.schema, { selectionAttributes: {
 					bold: true,
 					italic: true
 				} } );
@@ -577,7 +578,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'sets selection with attribute containing an element', () => {
-				const result = parse( 'x[<a></a>]', document.schema, document.batch(), { selectionAttributes: {
+				const result = parse( 'x[<a></a>]', model.schema, { selectionAttributes: {
 					bold: true
 				} } );
 
@@ -586,7 +587,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'sets a backward selection containing an element', () => {
-				const result = parse( 'x[<a></a>]', document.schema, document.batch(), {
+				const result = parse( 'x[<a></a>]', model.schema, {
 					lastRangeBackward: true
 				} );
 
@@ -599,7 +600,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'sets selection within a text with different attributes', () => {
-				const result = parse( '<$text bold="true">fo[o</$text>ba]r', document.schema, document.batch(), {
+				const result = parse( '<$text bold="true">fo[o</$text>ba]r', model.schema, {
 					selectionAttributes: { bold: true }
 				} );
 
@@ -609,34 +610,34 @@ describe( 'model test utils', () => {
 
 			it( 'throws when missing selection start', () => {
 				expect( () => {
-					parse( 'foo]', document.schema, document.batch() );
-				} ).to.throw( Error );
+					parse( 'foo]', model.schema );
+				} ).to.throw( Error, /^Parse error/ );
 			} );
 
 			it( 'throws when missing selection end', () => {
 				expect( () => {
-					parse( '[foo', document.schema, document.batch() );
-				} ).to.throw( Error );
+					parse( '[foo', model.schema );
+				} ).to.throw( Error, /^Parse error/ );
 			} );
 		} );
 
 		function test( title, options ) {
 			it( title, () => {
 				const output = options.output || options.data;
-				const data = parse( options.data, document.schema, document.batch() );
-				let model, selection;
+				const data = parse( options.data, model.schema );
+				let converted, selection;
 
 				if ( data.selection && data.model ) {
-					model = data.model;
+					converted = data.model;
 					selection = data.selection;
 				} else {
-					model = data;
+					converted = data;
 				}
 
-				expect( stringify( model, selection ) ).to.equal( output );
+				expect( stringify( converted, selection ) ).to.equal( output );
 
 				if ( options.check ) {
-					options.check( model, selection );
+					options.check( converted, selection );
 				}
 			} );
 		}

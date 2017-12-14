@@ -32,8 +32,7 @@ class FancyWidget extends Plugin {
 
 	init() {
 		const editor = this.editor;
-		const doc = editor.document;
-		const schema = doc.schema;
+		const schema = editor.model.schema;
 		const data = editor.data;
 		const editing = editor.editing;
 
@@ -101,9 +100,9 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 		} );
 
 		document.getElementById( 'remove-markers' ).addEventListener( 'mousedown', evt => {
-			const markers = editor.document.markers;
+			const markers = editor.model.markers;
 
-			editor.document.enqueueChanges( () => {
+			editor.model.change( () => {
 				for ( const marker of markers ) {
 					markers.remove( marker );
 				}
@@ -117,18 +116,14 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	} );
 
 function addMarker( editor, color ) {
-	const model = editor.document;
-
-	editor.document.enqueueChanges( () => {
-		const range = ModelRange.createFromRange( model.selection.getFirstRange() );
-		model.markers.set( 'marker:' + color, range );
+	editor.model.change( () => {
+		const range = ModelRange.createFromRange( editor.model.document.selection.getFirstRange() );
+		editor.model.markers.set( 'marker:' + color, range );
 	} );
 }
 
 function removeMarker( editor, color ) {
-	const model = editor.document;
-
-	editor.document.enqueueChanges( () => {
-		model.markers.remove( 'marker:' + color );
+	editor.model.change( () => {
+		editor.model.markers.remove( 'marker:' + color );
 	} );
 }

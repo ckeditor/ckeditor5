@@ -16,12 +16,12 @@ import DeltaFactory from '../model/delta/deltafactory';
  */
 export default class DeltaReplayer {
 	/**
-	 * @param {module:engine/model/document~Document} document Document to replay deltas on.
+	 * @param {module:engine/model/model~Model} model Data model.
 	 * @param {String} logSeparator Separator between deltas.
 	 * @param {String} stringifiedDeltas Deltas to replay.
 	 */
-	constructor( document, logSeparator, stringifiedDeltas ) {
-		this._document = document;
+	constructor( model, logSeparator, stringifiedDeltas ) {
+		this._model = model;
 		this._logSeparator = logSeparator;
 		this.setStringifiedDeltas( stringifiedDeltas );
 	}
@@ -118,23 +118,22 @@ export default class DeltaReplayer {
 	 * @returns {Promise.<Boolean>}
 	 */
 	applyNextDelta() {
-		const document = this._document;
+		const model = this._model;
 
 		return new Promise( res => {
-			document.enqueueChanges( () => {
+			model.enqueueChange( writer => {
 				const jsonDelta = this._deltasToReplay.shift();
 
 				if ( !jsonDelta ) {
 					return res( true );
 				}
 
-				const delta = DeltaFactory.fromJSON( jsonDelta, this._document );
+				const delta = DeltaFactory.fromJSON( jsonDelta, model.document );
 
-				const batch = document.batch();
-				batch.addDelta( delta );
+				writer.batch.addDelta( delta );
 
 				for ( const operation of delta.operations ) {
-					document.applyOperation( operation );
+					model.applyOperation( operation );
 				}
 
 				res( false );

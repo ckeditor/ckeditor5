@@ -136,6 +136,10 @@ describe( 'Renderer', () => {
 			} );
 		} );
 
+		afterEach( () => {
+			domRoot.remove();
+		} );
+
 		it( 'should update attributes', () => {
 			viewRoot.setAttribute( 'class', 'foo' );
 
@@ -1045,7 +1049,6 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			// 2. Check the DOM.
-
 			const domP = domRoot.childNodes[ 0 ];
 
 			expect( domP.childNodes.length ).to.equal( 2 );
@@ -1063,6 +1066,7 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
+			domSelection.removeAllRanges();
 			// 3. Add text node only to the view: <p><b>x{}</b>foo</p>.
 
 			const viewText = new ViewText( 'x' );
@@ -1077,9 +1081,21 @@ describe( 'Renderer', () => {
 			expect( domB.childNodes[ 0 ].data ).to.equal( INLINE_FILLER + 'x' );
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domB.childNodes[ 0 ] );
-			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH + 1 );
-			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
+
+			// Depending on the browser selection may end up at the end of the text node or after the text node.
+			const firstRange = domSelection.getRangeAt( 0 );
+
+			const assertSelectionAtEndOfTextNode = () => {
+				expect( firstRange.startOffset ).to.equal( INLINE_FILLER_LENGTH + 1 );
+			};
+
+			const assertSelectionInsideTextNode = () => {
+				expect( firstRange.startContainer ).to.equal( domB );
+				expect( firstRange.startOffset ).to.equal( 1 );
+			};
+
+			testUtils.checkAssertions( assertSelectionAtEndOfTextNode, assertSelectionInsideTextNode );
+			expect( firstRange.collapsed ).to.be.true;
 		} );
 
 		it( 'should handle typing in empty attribute as a text change, render if needed', () => {
@@ -1167,16 +1183,14 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not change selection if there is no editable with selection', () => {
-			const domDiv = createElement( document, 'div', null, 'not editable' );
+			const domDiv = createElement( document, 'div', { contenteditable: true }, 'not editable' );
 			document.body.appendChild( domDiv );
+			domDiv.focus();
 
 			const domSelection = document.getSelection();
 
 			domSelection.removeAllRanges();
-			const domRange = document.createRange();
-			domRange.setStart( domDiv, 0 );
-			domRange.collapse( true );
-			domSelection.addRange( domRange );
+			domSelection.collapse( domDiv, 0 );
 
 			selectionEditable = null;
 
@@ -1188,9 +1202,24 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domDiv );
-			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
-			expect( domSelection.getRangeAt( 0 ).collapsed ).to.equal( true );
+
+			// Depending on the browser selection may end up before the text node or at the beginning of it.
+			const domRange = domSelection.getRangeAt( 0 );
+
+			const assertSelectionAtEndOfTextNode = () => {
+				expect( domRange.startContainer ).to.equal( domDiv );
+			};
+
+			const assertSelectionInsideTextNode = () => {
+				expect( domRange.startContainer ).to.equal( domDiv.childNodes[ 0 ] );
+			};
+
+			testUtils.checkAssertions( assertSelectionAtEndOfTextNode, assertSelectionInsideTextNode );
+
+			expect( domRange.startOffset ).to.equal( 0 );
+			expect( domRange.collapsed ).to.be.true;
+
+			domDiv.remove();
 		} );
 
 		it( 'should not change selection if there is no focus', () => {
@@ -1215,9 +1244,24 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domDiv );
-			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
-			expect( domSelection.getRangeAt( 0 ).collapsed ).to.equal( true );
+
+			// Depending on the browser selection may end up before the text node or at the beginning of it.
+			const domSelectionRange = domSelection.getRangeAt( 0 );
+
+			const assertSelectionAtEndOfTextNode = () => {
+				expect( domSelectionRange.startContainer ).to.equal( domDiv );
+			};
+
+			const assertSelectionInsideTextNode = () => {
+				expect( domSelectionRange.startContainer ).to.equal( domDiv.childNodes[ 0 ] );
+			};
+
+			testUtils.checkAssertions( assertSelectionAtEndOfTextNode, assertSelectionInsideTextNode );
+
+			expect( domSelectionRange.startOffset ).to.equal( 0 );
+			expect( domSelectionRange.collapsed ).to.be.true;
+
+			domDiv.remove();
 		} );
 
 		it( 'should not add inline filler after text node', () => {
@@ -1658,10 +1702,22 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				// Expect that after calling `renderer.render()` the DOM selection was re-rendered (and set at correct position).
-				expect( domSelection.anchorNode ).to.equal( domP );
-				expect( domSelection.anchorOffset ).to.equal( 1 );
-				expect( domSelection.focusNode ).to.equal( domP );
-				expect( domSelection.focusOffset ).to.equal( 1 );
+				// Depending on the browser selection may end up at the end of the text node or after the text node.
+
+				const assertSelectionAtEndOfTextNode = () => {
+					expect( domSelection.anchorNode ).to.equal( domP );
+					expect( domSelection.anchorOffset ).to.equal( 1 );
+				};
+
+				const assertSelectionInsideTextNode = () => {
+					const textNode = domP.childNodes[ 0 ];
+					expect( domSelection.anchorNode ).to.equal( textNode );
+					expect( domSelection.anchorOffset ).to.equal( 3 );
+				};
+
+				testUtils.checkAssertions( assertSelectionAtEndOfTextNode, assertSelectionInsideTextNode );
+
+				expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 			} );
 
 			it( 'should not render non-collapsed selection it is similar (element start)', () => {

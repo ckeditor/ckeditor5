@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../../../src/model/document';
+import Model from '../../../../../src/model/model';
 import Element from '../../../../../src/model/element';
 import Text from '../../../../../src/model/text';
 
@@ -216,12 +216,13 @@ export function expectOperation( op, params ) {
 
 export function applyDelta( delta, document ) {
 	for ( const op of delta.operations ) {
-		document.applyOperation( op );
+		document.model.applyOperation( op );
 	}
 }
 
 export function getFilledDocument() {
-	const doc = new Document();
+	const model = new Model();
+	const doc = model.document;
 	const root = doc.createRoot();
 
 	root.insertChildren( 0, [
