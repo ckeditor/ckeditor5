@@ -143,7 +143,7 @@ describe( 'Input feature', () => {
 			] );
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph><$text bold="true" italic="true">x</$text><$text bold="true" italic="true">[]</$text></paragraph>'
+				'<paragraph><$text bold="true" italic="true">x[]</$text></paragraph>'
 			);
 		} );
 

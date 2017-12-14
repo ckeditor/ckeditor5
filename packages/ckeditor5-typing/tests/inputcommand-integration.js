@@ -193,16 +193,14 @@ describe( 'Typing – InputCommand integration', () => {
 			simulateTyping( 'z' );
 
 			expectOutput(
-				'<paragraph>Foo <$text bold="true">B<$text italic="true">a</$text></$text>z[] Bar</paragraph>',
+				'<paragraph>Foo <$text bold="true">B</$text><$text bold="true" italic="true">a</$text>z[] Bar</paragraph>',
 				'<p>Foo <strong>B</strong><i><strong>a</strong></i>z{} Bar</p>'
 			);
 
 			editor.execute( 'undo' );
 
 			expectOutput(
-				'<paragraph>' +
-					'Foo <$text bold="true">B<$text italic="true">a[]</$text></$text> Bar' +
-				'</paragraph>',
+				'<paragraph>Foo <$text bold="true">B</$text><$text bold="true" italic="true">a[]</$text> Bar</paragraph>',
 				'<p>Foo <strong>B</strong><i><strong>a{}</strong></i> Bar</p>'
 			);
 
