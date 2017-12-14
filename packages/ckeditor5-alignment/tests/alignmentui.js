@@ -218,6 +218,7 @@ describe( 'Alignment', () => {
 
 			expect( button ).to.have.property( 'label', 'Text alignment' );
 			expect( button ).to.have.property( 'icon' );
+			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'withText', false );
 		} );
 

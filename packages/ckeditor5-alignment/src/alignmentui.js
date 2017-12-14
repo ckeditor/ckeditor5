@@ -96,6 +96,7 @@ export default class AlignmentUI extends Plugin {
 				defaultIcon: alignLeftIcon,
 				withText: false,
 				isVertical: true,
+				tooltip: true,
 				toolbarClassName: 'ck-editor-toolbar',
 				buttons
 			} );
