@@ -69,18 +69,6 @@ export default class ListEngine extends Plugin {
 
 		this.editor.model.document.on( 'change', modelChangePostFixer( this.editor.model ), { priority: 'high' } );
 
-		// Unbind all moved model elements before conversion happens. This is important for converters.
-		// TODO: fix this when changes are converted on `changesDone`.
-		this.editor.model.document.on( 'change', ( evt, type, changes ) => {
-			if ( type == 'move' ) {
-				for ( const item of changes.range.getItems() ) {
-					if ( item.is( 'listItem' ) ) {
-						editing.mapper.unbindModelElement( item );
-					}
-				}
-			}
-		}, { priority: 'high' } );
-
 		editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 
@@ -93,18 +81,15 @@ export default class ListEngine extends Plugin {
 		data.modelToView.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
 		data.modelToView.on( 'insert:listItem', modelViewInsertion );
 
-		// Only change converter is needed. List item's type attribute is required, so it's adding is handled when
-		// list item is added and you cannot remove it.
-		editing.modelToView.on( 'changeAttribute:type:listItem', modelViewChangeType );
-		data.modelToView.on( 'changeAttribute:type:listItem', modelViewChangeType );
+		editing.modelToView.on( 'attribute:type:listItem', modelViewChangeType );
+		data.modelToView.on( 'attribute:type:listItem', modelViewChangeType );
+		editing.modelToView.on( 'attribute:indent:listItem', modelViewChangeIndent );
+		data.modelToView.on( 'attribute:indent:listItem', modelViewChangeIndent );
 
 		editing.modelToView.on( 'remove:listItem', modelViewRemove );
 		editing.modelToView.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
 		data.modelToView.on( 'remove:listItem', modelViewRemove );
 		data.modelToView.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
-
-		editing.modelToView.on( 'changeAttribute:indent:listItem', modelViewChangeIndent );
-		data.modelToView.on( 'changeAttribute:indent:listItem', modelViewChangeIndent );
 
 		data.viewToModel.on( 'element:ul', cleanList, { priority: 'high' } );
 		data.viewToModel.on( 'element:ol', cleanList, { priority: 'high' } );
