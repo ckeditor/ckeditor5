@@ -305,6 +305,18 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-alignment"><code>@ckeditor/ckeditor5-alignment</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-alignment.svg" alt="@ckeditor/ckeditor5-alignment npm package badge"></a>
+	</td>
+	<td>
+		Introduces the text alignment feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-autoformat"><code>@ckeditor/ckeditor5-autoformat</code></a>
 	</td>
 	<td>
