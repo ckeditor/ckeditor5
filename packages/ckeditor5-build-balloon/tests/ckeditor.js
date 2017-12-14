@@ -73,6 +73,17 @@ describe( 'BalloonEditor build', () => {
 	} );
 
 	describe( 'plugins', () => {
+		beforeEach( () => {
+			return BalloonEditor.create( editorElement )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
 		it( 'paragraph works', () => {
 			const data = '<p>Some text inside a paragraph.</p>';
 
