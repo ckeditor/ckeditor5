@@ -57,7 +57,7 @@ export default class AlignmentCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const firstBlock = first( this.editor.document.selection.getSelectedBlocks() );
+		const firstBlock = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		// As first check whether to enable or disable command as value will be always false if command cannot be enabled.
 		this.isEnabled = !!firstBlock && this._canBeAligned( firstBlock );
@@ -74,20 +74,19 @@ export default class AlignmentCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const editor = this.editor;
-		const document = editor.document;
+		const model = editor.model;
+		const document = model.document;
 
-		document.enqueueChanges( () => {
-			const batch = options.batch || document.batch();
-
+		model.change( writer => {
 			// Get only those blocks from selected that can have alignment set
 			const blocks = Array.from( document.selection.getSelectedBlocks() ).filter( block => this._canBeAligned( block ) );
 
 			// Remove alignment attribute if current alignment is as selected or is default one.
 			// Default alignment should not be stored in model as it will bloat model data.
 			if ( this.value || this._isDefault ) {
-				removeAlignmentFromSelection( blocks, batch );
+				removeAlignmentFromSelection( blocks, writer );
 			} else {
-				setAlignmentOnSelection( blocks, batch, this.type );
+				setAlignmentOnSelection( blocks, writer, this.type );
 			}
 		} );
 	}
@@ -100,7 +99,7 @@ export default class AlignmentCommand extends Command {
 	 * @private
 	 */
 	_canBeAligned( block ) {
-		const schema = this.editor.document.schema;
+		const schema = this.editor.model.schema;
 
 		// Check if adding alignment attribute to selected block is allowed.
 		return schema.check( {
@@ -132,16 +131,16 @@ export default class AlignmentCommand extends Command {
 
 // Removes alignment attribute from blocks.
 // @private
-function removeAlignmentFromSelection( blocks, batch ) {
+function removeAlignmentFromSelection( blocks, writer ) {
 	for ( const block of blocks ) {
-		batch.removeAttribute( 'alignment', block );
+		writer.removeAttribute( 'alignment', block );
 	}
 }
 
 // Sets alignment attribute on blocks.
 // @private
-function setAlignmentOnSelection( blocks, batch, type ) {
+function setAlignmentOnSelection( blocks, writer, type ) {
 	for ( const block of blocks ) {
-		batch.setAttribute( 'alignment', type, block );
+		writer.setAttribute( 'alignment', type, block );
 	}
 }
