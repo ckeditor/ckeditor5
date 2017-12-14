@@ -55,7 +55,7 @@ export function viewFigureToModel() {
 		data.context.pop();
 
 		// Add converted children to model image.
-		conversionApi.batch.insert( modelChildren, modelImage );
+		conversionApi.writer.insert( modelChildren, modelImage );
 
 		// Set model image as conversion result.
 		data.output = modelImage;
