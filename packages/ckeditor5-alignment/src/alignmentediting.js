@@ -49,8 +49,7 @@ export default class AlignmentEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const doc = editor.document;
-		const schema = doc.schema;
+		const schema = editor.model.schema;
 		const data = editor.data;
 		const editing = editor.editing;
 
@@ -93,7 +92,7 @@ export default class AlignmentEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	afterInit() {
-		const schema = this.editor.document.schema;
+		const schema = this.editor.model.schema;
 
 		// Disallow alignment on caption elements.
 		if ( schema.hasItem( 'caption' ) ) {

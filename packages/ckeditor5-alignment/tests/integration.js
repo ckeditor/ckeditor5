@@ -19,7 +19,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'Alignment', () => {
-	let editor, doc, element;
+	let editor, model, element;
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -31,7 +31,7 @@ describe( 'Alignment', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
+				model = editor.model;
 			} );
 	} );
 
@@ -43,15 +43,15 @@ describe( 'Alignment', () => {
 
 	describe( 'compatibility with images', () => {
 		it( 'does not work inside image caption', () => {
-			setModelData( doc, '<image src="foo.png"><caption>Foo[]</caption></image>' );
+			setModelData( model, '<image src="foo.png"><caption>Foo[]</caption></image>' );
 
 			editor.execute( 'alignCenter' );
 
-			expect( getModelData( doc ) ).to.equal( '<image src="foo.png"><caption>Foo[]</caption></image>' );
+			expect( getModelData( model ) ).to.equal( '<image src="foo.png"><caption>Foo[]</caption></image>' );
 		} );
 		it( 'does not work inside image caption when selection overlaps image', () => {
 			setModelData(
-				doc,
+				model,
 				'<paragraph>foo[foo</paragraph>' +
 				'<image src="foo.png"><caption>bar</caption></image>' +
 				'<paragraph>baz]baz</paragraph>'
@@ -59,7 +59,7 @@ describe( 'Alignment', () => {
 
 			editor.execute( 'alignCenter' );
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'<paragraph alignment="center">foo[foo</paragraph>' +
 				'<image src="foo.png"><caption>bar</caption></image>' +
 				'<paragraph alignment="center">baz]baz</paragraph>'
@@ -69,27 +69,27 @@ describe( 'Alignment', () => {
 
 	describe( 'compatibility with blockQuote', () => {
 		it( 'does work inside BlockQuote on paragraph', () => {
-			setModelData( doc, '<blockQuote><paragraph>Foo[]</paragraph></blockQuote>' );
+			setModelData( model, '<blockQuote><paragraph>Foo[]</paragraph></blockQuote>' );
 
 			editor.execute( 'alignCenter' );
 
-			expect( getModelData( doc ) ).to.equal( '<blockQuote><paragraph alignment="center">Foo[]</paragraph></blockQuote>' );
+			expect( getModelData( model ) ).to.equal( '<blockQuote><paragraph alignment="center">Foo[]</paragraph></blockQuote>' );
 		} );
 
 		it( 'does work inside blockQuote on heading', () => {
-			setModelData( doc, '<blockQuote><heading1>Foo[]</heading1></blockQuote>' );
+			setModelData( model, '<blockQuote><heading1>Foo[]</heading1></blockQuote>' );
 
 			editor.execute( 'alignCenter' );
 
-			expect( getModelData( doc ) ).to.equal( '<blockQuote><heading1 alignment="center">Foo[]</heading1></blockQuote>' );
+			expect( getModelData( model ) ).to.equal( '<blockQuote><heading1 alignment="center">Foo[]</heading1></blockQuote>' );
 		} );
 
 		it( 'does work inside blockQuote on listItem', () => {
-			setModelData( doc, '<blockQuote><listItem indent="0" type="numbered">Foo[]</listItem></blockQuote>' );
+			setModelData( model, '<blockQuote><listItem indent="0" type="numbered">Foo[]</listItem></blockQuote>' );
 
 			editor.execute( 'alignCenter' );
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( getModelData( model ) ).to.equal(
 				'<blockQuote><listItem alignment="center" indent="0" type="numbered">Foo[]</listItem></blockQuote>'
 			);
 		} );
