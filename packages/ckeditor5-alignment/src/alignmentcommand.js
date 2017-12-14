@@ -68,11 +68,8 @@ export default class AlignmentCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @protected
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps.
-	 * A new batch will be created if this option is not set.
 	 */
-	execute( options = {} ) {
+	execute() {
 		const editor = this.editor;
 		const model = editor.model;
 		const document = model.document;
