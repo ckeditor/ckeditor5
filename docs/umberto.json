@@ -156,6 +156,10 @@
 			"prefix": "adapter-ckfinder"
 		},
 		{
+			"path": "packages/ckeditor5-alignment",
+			"prefix": "alignment"
+		},
+		{
 			"path": "packages/ckeditor5-autoformat",
 			"prefix": "autoformat"
 		},
