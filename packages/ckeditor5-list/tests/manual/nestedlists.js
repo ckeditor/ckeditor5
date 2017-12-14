@@ -22,7 +22,7 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		window.modelRoot = editor.document.getRoot();
+		window.modelRoot = editor.model.document.getRoot();
 		window.viewRoot = editor.editing.view.getRoot();
 	} )
 	.catch( err => {

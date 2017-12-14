@@ -4,35 +4,36 @@
  */
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import Document from '@ckeditor/ckeditor5-engine/src/model/document';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import ListCommand from '../src/listcommand';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ListCommand', () => {
-	let editor, command, doc, root;
+	let editor, command, model, doc, root;
 
 	beforeEach( () => {
 		editor = new Editor();
-		editor.document = new Document();
+		editor.model = new Model();
 
-		doc = editor.document;
+		model = editor.model;
+		doc = model.document;
 		root = doc.createRoot();
 
 		command = new ListCommand( editor, 'bulleted' );
 
-		doc.schema.registerItem( 'listItem', '$block' );
-		doc.schema.registerItem( 'paragraph', '$block' );
-		doc.schema.registerItem( 'widget', '$block' );
+		model.schema.registerItem( 'listItem', '$block' );
+		model.schema.registerItem( 'paragraph', '$block' );
+		model.schema.registerItem( 'widget', '$block' );
 
-		doc.schema.allow( { name: '$block', inside: '$root' } );
-		doc.schema.allow( { name: 'paragraph', inside: 'widget' } );
-		doc.schema.allow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: '$root' } );
-		doc.schema.disallow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: 'widget' } );
+		model.schema.allow( { name: '$block', inside: '$root' } );
+		model.schema.allow( { name: 'paragraph', inside: 'widget' } );
+		model.schema.allow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: '$root' } );
+		model.schema.disallow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: 'widget' } );
 
 		setData(
-			doc,
+			model,
 			'<paragraph>foo</paragraph>' +
 			'<listItem type="bulleted" indent="0">bulleted</listItem>' +
 			'<listItem type="numbered" indent="0">numbered</listItem>' +
@@ -62,7 +63,7 @@ describe( 'ListCommand', () => {
 
 		describe( 'value', () => {
 			it( 'should be false if first position in selection is not in a list item', () => {
-				doc.enqueueChanges( () => {
+				model.change( () => {
 					doc.selection.setCollapsedAt( doc.getRoot().getChild( 3 ) );
 				} );
 
@@ -70,7 +71,7 @@ describe( 'ListCommand', () => {
 			} );
 
 			it( 'should be false if first position in selection is in a list item of different type', () => {
-				doc.enqueueChanges( () => {
+				model.change( () => {
 					doc.selection.setCollapsedAt( doc.getRoot().getChild( 2 ) );
 				} );
 
@@ -78,7 +79,7 @@ describe( 'ListCommand', () => {
 			} );
 
 			it( 'should be true if first position in selection is in a list item of same type', () => {
-				doc.enqueueChanges( () => {
+				model.change( () => {
 					doc.selection.setCollapsedAt( doc.getRoot().getChild( 1 ) );
 				} );
 
@@ -88,69 +89,67 @@ describe( 'ListCommand', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be true if entire selection is in a list', () => {
-				setData( doc, '<listItem type="bulleted" indent="0">[a]</listItem>' );
+				setData( model, '<listItem type="bulleted" indent="0">[a]</listItem>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be true if entire selection is in a block which can be turned into a list', () => {
-				setData( doc, '<paragraph>[a]</paragraph>' );
+				setData( model, '<paragraph>[a]</paragraph>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be true if selection first position is in a block which can be turned into a list', () => {
-				setData( doc, '<paragraph>[a</paragraph><widget>b]</widget>' );
+				setData( model, '<paragraph>[a</paragraph><widget>b]</widget>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be false if selection first position is in an element which cannot be converted to a list item', () => {
-				setData( doc, '<widget><paragraph>[a</paragraph></widget><paragraph>b]</paragraph>' );
+				setData( model, '<widget><paragraph>[a</paragraph></widget><paragraph>b]</paragraph>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
 
 			it( 'should be false in a root which does not allow blocks at all', () => {
 				doc.createRoot( 'paragraph', 'inlineOnlyRoot' );
-				setData( doc, 'a[]b', { rootName: 'inlineOnlyRoot' } );
+				setData( model, 'a[]b', { rootName: 'inlineOnlyRoot' } );
 				expect( command.isEnabled ).to.be.false;
 			} );
 		} );
 
 		describe( 'execute()', () => {
-			describe( 'custom options', () => {
-				it( 'should use provided batch', () => {
-					const batch = editor.document.batch();
+			it( 'should use parent batch', () => {
+				model.change( writer => {
+					expect( writer.batch.deltas.length ).to.equal( 0 );
 
-					expect( batch.deltas.length ).to.equal( 0 );
+					command.execute();
 
-					command.execute( { batch } );
-
-					expect( batch.deltas.length ).to.be.above( 0 );
+					expect( writer.batch.deltas.length ).to.be.above( 0 );
 				} );
 			} );
 
 			describe( 'collapsed selection', () => {
 				it( 'should rename closest block to listItem and set correct attributes', () => {
-					setData( doc, '<paragraph>fo[]o</paragraph>' );
+					setData( model, '<paragraph>fo[]o</paragraph>' );
 
 					command.execute();
 
-					expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
+					expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
 				} );
 
 				it( 'should rename closest listItem to paragraph', () => {
-					setData( doc, '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
+					setData( model, '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
 
 					command.execute();
 
 					// Attributes will be removed by post fixer.
-					expect( getData( doc ) ).to.equal( '<paragraph indent="0" type="bulleted">fo[]o</paragraph>' );
+					expect( getData( model ) ).to.equal( '<paragraph indent="0" type="bulleted">fo[]o</paragraph>' );
 				} );
 
 				it( 'should change closest listItem\' type', () => {
-					setData( doc, '<listItem indent="0" type="numbered">fo[]o</listItem>' );
+					setData( model, '<listItem indent="0" type="numbered">fo[]o</listItem>' );
 
 					command.execute();
 
-					expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
+					expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
 				} );
 
 				it( 'should handle outdenting sub-items when list item is turned off', () => {
@@ -193,7 +192,7 @@ describe( 'ListCommand', () => {
 					/* eslint-enable max-len */
 
 					setData(
-						doc,
+						model,
 						'<listItem indent="0" type="bulleted">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>' +
 						'<listItem indent="2" type="bulleted">[]---</listItem>' +
@@ -228,14 +227,14 @@ describe( 'ListCommand', () => {
 						'<listItem indent="1" type="bulleted">---</listItem>' +
 						'<listItem indent="2" type="bulleted">---</listItem>';
 
-					expect( getData( doc ) ).to.equal( expectedData );
+					expect( getData( model ) ).to.equal( expectedData );
 				} );
 			} );
 
 			describe( 'non-collapsed selection', () => {
 				beforeEach( () => {
 					setData(
-						doc,
+						model,
 						'<listItem indent="0" type="bulleted">---</listItem>' +
 						'<listItem indent="0" type="bulleted">---</listItem>' +
 						'<paragraph>---</paragraph>' +
@@ -249,15 +248,15 @@ describe( 'ListCommand', () => {
 
 				// https://github.com/ckeditor/ckeditor5-list/issues/62
 				it( 'should not rename blocks which cannot become listItems', () => {
-					doc.schema.registerItem( 'restricted' );
-					doc.schema.allow( { name: 'restricted', inside: '$root' } );
-					doc.schema.disallow( { name: 'paragraph', inside: 'restricted' } );
+					model.schema.registerItem( 'restricted' );
+					model.schema.allow( { name: 'restricted', inside: '$root' } );
+					model.schema.disallow( { name: 'paragraph', inside: 'restricted' } );
 
-					doc.schema.registerItem( 'fooBlock', '$block' );
-					doc.schema.allow( { name: 'fooBlock', inside: 'restricted' } );
+					model.schema.registerItem( 'fooBlock', '$block' );
+					model.schema.allow( { name: 'fooBlock', inside: 'restricted' } );
 
 					setData(
-						doc,
+						model,
 						'<paragraph>a[bc</paragraph>' +
 						'<restricted><fooBlock></fooBlock></restricted>' +
 						'<paragraph>de]f</paragraph>'
@@ -265,7 +264,7 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( getData( doc ) ).to.equal(
+					expect( getData( model ) ).to.equal(
 						'<listItem indent="0" type="bulleted">a[bc</listItem>' +
 						'<restricted><fooBlock></fooBlock></restricted>' +
 						'<listItem indent="0" type="bulleted">de]f</listItem>'
@@ -275,7 +274,7 @@ describe( 'ListCommand', () => {
 				it( 'should rename closest block to listItem and set correct attributes', () => {
 					// From first paragraph to second paragraph.
 					// Command value=false, we are turning on list items.
-					doc.enqueueChanges( () => {
+					model.change( () => {
 						doc.selection.setRanges( [ new Range(
 							Position.createAt( root.getChild( 2 ) ),
 							Position.createAt( root.getChild( 3 ), 'end' )
@@ -294,13 +293,13 @@ describe( 'ListCommand', () => {
 						'<listItem indent="1" type="bulleted">---</listItem>' +
 						'<listItem indent="2" type="bulleted">---</listItem>';
 
-					expect( getData( doc ) ).to.equal( expectedData );
+					expect( getData( model ) ).to.equal( expectedData );
 				} );
 
 				it( 'should rename closest listItem to paragraph', () => {
 					// From second bullet list item to first numbered list item.
 					// Command value=true, we are turning off list items.
-					doc.enqueueChanges( () => {
+					model.change( () => {
 						doc.selection.setRanges( [ new Range(
 							Position.createAt( root.getChild( 1 ) ),
 							Position.createAt( root.getChild( 4 ), 'end' )
@@ -320,12 +319,12 @@ describe( 'ListCommand', () => {
 						'<listItem indent="1" type="bulleted">---</listItem>' +
 						'<listItem indent="2" type="bulleted">---</listItem>';
 
-					expect( getData( doc ) ).to.equal( expectedData );
+					expect( getData( model ) ).to.equal( expectedData );
 				} );
 
 				it( 'should change closest listItem\'s type', () => {
 					// From first numbered lsit item to third bulleted list item.
-					doc.enqueueChanges( () => {
+					model.change( () => {
 						doc.selection.setRanges( [ new Range(
 							Position.createAt( root.getChild( 4 ) ),
 							Position.createAt( root.getChild( 6 ) )
@@ -345,12 +344,12 @@ describe( 'ListCommand', () => {
 						'<listItem indent="1" type="bulleted">]---</listItem>' +
 						'<listItem indent="2" type="bulleted">---</listItem>';
 
-					expect( getData( doc ) ).to.equal( expectedData );
+					expect( getData( model ) ).to.equal( expectedData );
 				} );
 
 				it( 'should handle outdenting sub-items when list item is turned off', () => {
 					// From first numbered list item to third bulleted list item.
-					doc.enqueueChanges( () => {
+					model.change( () => {
 						doc.selection.setRanges( [ new Range(
 							Position.createAt( root.getChild( 1 ) ),
 							Position.createAt( root.getChild( 5 ), 'end' )
@@ -370,13 +369,13 @@ describe( 'ListCommand', () => {
 						'<listItem indent="0" type="bulleted">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>';
 
-					expect( getData( doc ) ).to.equal( expectedData );
+					expect( getData( model ) ).to.equal( expectedData );
 				} );
 
 				// Example from docs.
 				it( 'should change type of all items in nested list if one of items changed', () => {
 					setData(
-						doc,
+						model,
 						'<listItem indent="0" type="numbered">---</listItem>' +
 						'<listItem indent="1" type="numbered">---</listItem>' +
 						'<listItem indent="2" type="numbered">---</listItem>' +
@@ -423,7 +422,7 @@ describe( 'ListCommand', () => {
 						'<listItem indent="2" type="numbered">---</listItem>' +
 						'<listItem indent="0" type="numbered">---</listItem>';
 
-					expect( getData( doc ) ).to.equal( expectedData );
+					expect( getData( model ) ).to.equal( expectedData );
 				} );
 			} );
 		} );

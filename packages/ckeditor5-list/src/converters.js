@@ -349,18 +349,18 @@ export function modelViewMergeAfter( evt, data, consumable, conversionApi ) {
  */
 export function viewModelConverter( evt, data, consumable, conversionApi ) {
 	if ( consumable.consume( data.input, { name: true } ) ) {
-		const batch = conversionApi.batch;
+		const writer = conversionApi.writer;
 
 		// 1. Create `listItem` model element.
-		const listItem = batch.createElement( 'listItem' );
+		const listItem = writer.createElement( 'listItem' );
 
 		// 2. Handle `listItem` model element attributes.
 		data.indent = data.indent ? data.indent : 0;
-		batch.setAttribute( 'indent', data.indent, listItem );
+		writer.setAttribute( 'indent', data.indent, listItem );
 
 		// Set 'bulleted' as default. If this item is pasted into a context,
 		const type = data.input.parent && data.input.parent.name == 'ol' ? 'numbered' : 'bulleted';
-		batch.setAttribute( 'type', type, listItem );
+		writer.setAttribute( 'type', type, listItem );
 
 		// 3. Handle `<li>` children.
 		data.context.push( listItem );
@@ -369,8 +369,8 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
 		data.indent++;
 
 		// `listItem`s will be kept in flat structure.
-		const items = batch.createDocumentFragment();
-		batch.append( listItem, items );
+		const items = writer.createDocumentFragment();
+		writer.append( listItem, items );
 
 		// Check all children of the converted `<li>`.
 		// At this point we assume there are no "whitespace" view text nodes in view list, between view list items.
@@ -382,11 +382,11 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
 			// If this is a view list element, we will convert it and concat the result (`listItem` model elements)
 			// with already gathered results (in `items` array). `converted` should be a `ModelDocumentFragment`.
 			if ( child.name == 'ul' || child.name == 'ol' ) {
-				batch.append( converted, items );
+				writer.append( converted, items );
 			}
 			// If it was not a list it was a "regular" list item content. Just append it to `listItem`.
 			else {
-				batch.append( converted, listItem );
+				writer.append( converted, listItem );
 			}
 		}
 
@@ -568,10 +568,10 @@ export function viewToModelPosition( evt, data ) {
  *		<listItem type="bulleted" indent=0>Item 1</listItem>
  *		<listItem type="bulleted" indent=1>Item 3</listItem>   <--- note that indent got post-fixed.
  *
- * @param {module:engine/model/document~Document} document The document to observe.
+ * @param {module:engine/model/model~Model} model The data model.
  * @returns {Function} A callback to be attached to the {@link module:engine/model/document~Document#event:change document change event}.
  */
-export function modelChangePostFixer( document ) {
+export function modelChangePostFixer( model ) {
 	return ( evt, type, changes, batch ) => {
 		if ( batch.type == 'transparent' ) {
 			return;
@@ -583,67 +583,67 @@ export function modelChangePostFixer( document ) {
 
 			// Fix list items after the cut-out range.
 			// This fix is needed if items in model after cut-out range have now wrong indents compared to their previous siblings.
-			_fixItemsIndent( sourcePos, document, batch );
+			_fixItemsIndent( sourcePos, model, batch );
 			// This fix is needed if two different nested lists got merged, change types of list items "below".
-			_fixItemsType( sourcePos, false, document, batch );
+			_fixItemsType( sourcePos, false, model, batch );
 		} else if ( type == 'move' ) {
 			const howMany = changes.range.end.offset - changes.range.start.offset;
 			const sourcePos = changes.sourcePosition._getTransformedByInsertion( changes.range.start, howMany, true );
 
 			// Fix list items after the cut-out range.
 			// This fix is needed if items in model after cut-out range have now wrong indents compared to their previous siblings.
-			_fixItemsIndent( sourcePos, document, batch );
+			_fixItemsIndent( sourcePos, model, batch );
 			// This fix is needed if two different nested lists got merged, change types of list items "below".
-			_fixItemsType( sourcePos, false, document, batch );
+			_fixItemsType( sourcePos, false, model, batch );
 
 			// Fix items in moved range.
 			// This fix is needed if inserted items are too deeply intended.
-			_fixItemsIndent( changes.range.start, document, batch );
+			_fixItemsIndent( changes.range.start, model, batch );
 			// This fix is needed if one or more first inserted items have different type.
-			_fixItemsType( changes.range.start, false, document, batch );
+			_fixItemsType( changes.range.start, false, model, batch );
 
 			// Fix list items after inserted range.
 			// This fix is needed if items in model after inserted range have wrong indents.
-			_fixItemsIndent( changes.range.end, document, batch );
+			_fixItemsIndent( changes.range.end, model, batch );
 			// This fix is needed if one or more last inserted items have different type.
-			_fixItemsType( changes.range.end, true, document, batch );
+			_fixItemsType( changes.range.end, true, model, batch );
 		} else if ( type == 'rename' && changes.oldName == 'listItem' && changes.newName != 'listItem' ) {
 			const element = changes.element;
 
 			// Element name is changed from list to something else. Remove useless attributes.
-			document.enqueueChanges( () => {
-				batch.removeAttribute( 'indent', element );
-				batch.removeAttribute( 'type', element );
+			model.enqueueChange( batch, writer => {
+				writer.removeAttribute( 'indent', element );
+				writer.removeAttribute( 'type', element );
 			} );
 
 			const changePos = ModelPosition.createAfter( changes.element );
 
 			// Fix list items after the renamed element.
 			// This fix is needed if there are items after renamed element, those items should start from indent = 0.
-			_fixItemsIndent( changePos, document, batch );
+			_fixItemsIndent( changePos, model, batch );
 		} else if ( type == 'insert' ) {
 			// Fix list items in inserted range.
 			// This fix is needed if inserted items are too deeply intended.
-			_fixItemsIndent( changes.range.start, document, batch );
+			_fixItemsIndent( changes.range.start, model, batch );
 			// This fix is needed if one or more first inserted items have different type.
-			_fixItemsType( changes.range.start, false, document, batch );
+			_fixItemsType( changes.range.start, false, model, batch );
 
 			// Fix list items after inserted range.
 			// This fix is needed if items in model after inserted range have wrong indents.
-			_fixItemsIndent( changes.range.end, document, batch );
+			_fixItemsIndent( changes.range.end, model, batch );
 			// This fix is needed if one or more last inserted items have different type.
-			_fixItemsType( changes.range.end, true, document, batch );
+			_fixItemsType( changes.range.end, true, model, batch );
 		}
 	};
 }
 
 // Helper function for post fixer callback. Performs fixing of model `listElement` items indent attribute. Checks the model at the
 // `changePosition`. Looks at the node before position where change occurred and uses that node as a reference for following list items.
-function _fixItemsIndent( changePosition, document, batch ) {
+function _fixItemsIndent( changePosition, model, batch ) {
 	let nextItem = changePosition.nodeAfter;
 
 	if ( nextItem && nextItem.name == 'listItem' ) {
-		document.enqueueChanges( () => {
+		model.enqueueChange( batch, writer => {
 			const prevItem = nextItem.previousSibling;
 			// This is the maximum indent that following model list item may have.
 			const maxIndent = prevItem && prevItem.is( 'listItem' ) ? prevItem.getAttribute( 'indent' ) + 1 : 0;
@@ -667,7 +667,7 @@ function _fixItemsIndent( changePosition, document, batch ) {
 			if ( items.length > 0 ) {
 				// Since we are outdenting list items, it is safer to start from the last one (it will maintain correct model state).
 				for ( const item of items.reverse() ) {
-					batch.setAttribute( 'indent', item.indent, item.item );
+					writer.setAttribute( 'indent', item.indent, item.item );
 				}
 			}
 		} );
@@ -677,7 +677,7 @@ function _fixItemsIndent( changePosition, document, batch ) {
 // Helper function for post fixer callback. Performs fixing of model nested `listElement` items type attribute.
 // Checks the model at the `changePosition`. Looks at nodes after/before that position and changes those items type
 // to the same as node before/after `changePosition`.
-function _fixItemsType( changePosition, fixPrevious, document, batch ) {
+function _fixItemsType( changePosition, fixPrevious, model, batch ) {
 	let item = changePosition[ fixPrevious ? 'nodeBefore' : 'nodeAfter' ];
 
 	if ( !item || !item.is( 'listItem' ) || item.getAttribute( 'indent' ) === 0 ) {
@@ -687,7 +687,7 @@ function _fixItemsType( changePosition, fixPrevious, document, batch ) {
 		return;
 	}
 
-	document.enqueueChanges( () => {
+	model.enqueueChange( batch, writer => {
 		const refItem = _getBoundaryItemOfSameList( item, !fixPrevious );
 
 		if ( !refItem || refItem == item ) {
@@ -701,7 +701,7 @@ function _fixItemsType( changePosition, fixPrevious, document, batch ) {
 
 		while ( item && item.is( 'listItem' ) && item.getAttribute( 'indent' ) >= refIndent ) {
 			if ( item.getAttribute( 'type' ) != refType && item.getAttribute( 'indent' ) == refIndent ) {
-				batch.setAttribute( 'type', refType, item );
+				writer.setAttribute( 'type', refType, item );
 			}
 
 			item = item[ fixPrevious ? 'previousSibling' : 'nextSibling' ];
