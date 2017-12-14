@@ -15,8 +15,8 @@ export default class Matcher {
 	/**
 	 * Creates new instance of Matcher.
 	 *
-	 * @param {String|RegExp|Object} [pattern] Match patterns. See {@link module:engine/view/matcher~Matcher#add add method} for
-	 * more information.
+	 * @param {String|RegExp|module:engine/view/matcher~Pattern} [pattern] Match patterns.
+	 * See {@link module:engine/view/matcher~Matcher#add add method} for more information.
 	 */
 	constructor( ...pattern ) {
 		this._patterns = [];
@@ -88,8 +88,8 @@ export default class Matcher {
 	 *
 	 * 		matcher.add( 'div', { class: 'foobar' } );
 	 *
-	 * @param {Object|String|RegExp|Function} pattern Object describing pattern details. If string or regular expression
-	 * is provided it will be used to match element's name. Pattern can be also provided in a form
+	 * @param {module:engine/view/matcher~Pattern|String|RegExp|Function} pattern Object describing pattern details.
+	 * If string or regular expression is provided it will be used to match element's name. Pattern can be also provided in a form
 	 * of a function - then this function will be called with each {@link module:engine/view/element~Element element} as a parameter.
 	 * Function's return value will be stored under `match` key of the object returned from
 	 * {@link module:engine/view/matcher~Matcher#match match} or {@link module:engine/view/matcher~Matcher#matchAll matchAll} methods.
@@ -380,7 +380,7 @@ function matchStyles( patterns, element ) {
 }
 
 /**
- * @typedef {Object} @module engine/view/matcher~Pattern
+ * @typedef {Object} Pattern
  *
  * @param {String|RegExp} [name] Name or regular expression to match element's name.
  * @param {Object} [attribute] Object with key-value pairs representing attributes to match. Each object key
