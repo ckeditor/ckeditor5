@@ -74,7 +74,7 @@ export default class Document {
 		 * @readonly
 		 * @member {module:engine/model/documentselection~DocumentSelection}
 		 */
-		this.selection = new DocumentSelection( this, this.model );
+		this.selection = new DocumentSelection( this );
 
 		/**
 		 * List of roots that are owned and managed by this document. Use {@link #createRoot} and
