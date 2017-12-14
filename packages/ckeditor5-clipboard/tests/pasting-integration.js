@@ -34,11 +34,11 @@ describe( 'Pasting – integration', () => {
 			return ClassicTestEditor
 				.create( element, { plugins: [ Clipboard, Paragraph, Bold, Italic, Link ] } )
 				.then( editor => {
-					setData( editor.document, '<paragraph>[]</paragraph>' );
+					setData( editor.model, '<paragraph>[]</paragraph>' );
 
 					pasteHtml( editor, 'x <strong>bold</strong> <i>italic</i> <a href="x">link</a> y' );
 
-					expect( getData( editor.document ) ).to.equal(
+					expect( getData( editor.model ) ).to.equal(
 						'<paragraph>' +
 							'x <$text bold="true">bold</$text> <$text italic="true">italic</$text> ' +
 							'<$text linkHref="x">link</$text> y[]' +
@@ -53,11 +53,11 @@ describe( 'Pasting – integration', () => {
 			return ClassicTestEditor
 				.create( element, { plugins: [ Clipboard, Paragraph, Bold, Italic, Link ] } )
 				.then( editor => {
-					setData( editor.document, '<paragraph>[]</paragraph>' );
+					setData( editor.model, '<paragraph>[]</paragraph>' );
 
 					pasteHtml( editor, '<p>x <strong>bold</strong> <i>italic</i> <a href="x">link</a> y</p>' );
 
-					expect( getData( editor.document ) ).to.equal(
+					expect( getData( editor.model ) ).to.equal(
 						'<paragraph>' +
 							'x <$text bold="true">bold</$text> <$text italic="true">italic</$text> ' +
 							'<$text linkHref="x">link</$text> y[]' +
@@ -72,11 +72,11 @@ describe( 'Pasting – integration', () => {
 			return ClassicTestEditor
 				.create( element, { plugins: [ Clipboard, Paragraph, Bold, Italic, Link ] } )
 				.then( editor => {
-					setData( editor.document, '<paragraph>[]</paragraph>' );
+					setData( editor.model, '<paragraph>[]</paragraph>' );
 
 					pasteHtml( editor, '<div>x <strong>bold</strong> <i>italic</i> <a href="x">link</a> y</div>' );
 
-					expect( getData( editor.document ) ).to.equal(
+					expect( getData( editor.model ) ).to.equal(
 						'<paragraph>' +
 							'x <$text bold="true">bold</$text> <$text italic="true">italic</$text> ' +
 							'<$text linkHref="x">link</$text> y[]' +
@@ -91,11 +91,11 @@ describe( 'Pasting – integration', () => {
 			return ClassicTestEditor
 				.create( element, { plugins: [ Clipboard, Paragraph, BlockQuote, Bold, Italic, Link ] } )
 				.then( editor => {
-					setData( editor.document, '<paragraph>[]</paragraph>' );
+					setData( editor.model, '<paragraph>[]</paragraph>' );
 
 					pasteHtml( editor, '<blockquote>x <strong>bold</strong> <i>italic</i> <a href="x">link</a> y</blockquote>' );
 
-					expect( getData( editor.document ) ).to.equal(
+					expect( getData( editor.model ) ).to.equal(
 						'<blockQuote><paragraph>x bold italic link y[]</paragraph></blockQuote>'
 					);
 
@@ -122,7 +122,7 @@ describe( 'Pasting – integration', () => {
 			return ClassicTestEditor
 				.create( element, { plugins: [ Clipboard, Paragraph, Bold, Italic, Link ] } )
 				.then( editor => {
-					setData( editor.document, '<paragraph>x[]y</paragraph>' );
+					setData( editor.model, '<paragraph>x[]y</paragraph>' );
 
 					pasteHtml( editor,
 						'<meta charset=\'utf-8\'>' +
@@ -133,7 +133,7 @@ describe( 'Pasting – integration', () => {
 						'<span style="color: rgb(0, 0, 0); font-family: Times;">.</span>'
 					);
 
-					expect( getData( editor.document ) ).to.equal(
+					expect( getData( editor.model ) ).to.equal(
 						'<paragraph>' +
 							'xThis is the ' +
 							'<$text linkHref="url">third developer preview</$text> of <$text bold="true">CKEditor\u00a05</$text>' +
@@ -150,7 +150,7 @@ describe( 'Pasting – integration', () => {
 			return ClassicTestEditor
 				.create( element, { plugins: [ Clipboard, Paragraph, Bold, Italic, Link ] } )
 				.then( editor => {
-					setData( editor.document, '<paragraph>x[]y</paragraph>' );
+					setData( editor.model, '<paragraph>x[]y</paragraph>' );
 
 					/* eslint-disable max-len */
 					pasteHtml( editor,
@@ -162,7 +162,7 @@ describe( 'Pasting – integration', () => {
 					);
 					/* eslint-enable max-len */
 
-					expect( getData( editor.document ) ).to.equal(
+					expect( getData( editor.model ) ).to.equal(
 						'<paragraph>' +
 							'xThis is the ' +
 							'<$text linkHref="url">third developer preview</$text> of <$text bold="true">CKEditor\u00a05</$text>' +
@@ -178,7 +178,7 @@ describe( 'Pasting – integration', () => {
 			return ClassicTestEditor
 				.create( element, { plugins: [ Clipboard, Paragraph, Bold, Italic, Link ] } )
 				.then( editor => {
-					setData( editor.document, '<paragraph>x[]y</paragraph>' );
+					setData( editor.model, '<paragraph>x[]y</paragraph>' );
 
 					// Note, when copying the HTML from Firefox's console you'll see only normal spaces,
 					// but when you check it later in the model it's still an nbsp.
@@ -186,7 +186,7 @@ describe( 'Pasting – integration', () => {
 						'This is the <a href="url">third developer preview</a> of <strong>CKEditor\u00a05</strong>.'
 					);
 
-					expect( getData( editor.document ) ).to.equal(
+					expect( getData( editor.model ) ).to.equal(
 						'<paragraph>' +
 							'xThis is the ' +
 							'<$text linkHref="url">third developer preview</$text> of <$text bold="true">CKEditor\u00a05</$text>' +
