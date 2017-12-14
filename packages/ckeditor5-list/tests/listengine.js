@@ -3605,7 +3605,7 @@ describe( 'ListEngine', () => {
 		_test( testName, input, output, actionCallback, testUndo );
 	}
 
-	function _test( testName, input, output, actionCallback, testUndo = true ) {
+	function _test( testName, input, output, actionCallback ) {
 		it( testName, () => {
 			setModelData( model, input );
 
@@ -3614,9 +3614,7 @@ describe( 'ListEngine', () => {
 			expect( getViewData( viewDoc, { withoutSelection: true } ) ).to.equal( output );
 		} );
 
-		const undoTestFunction = testUndo ? it : it.skip;
-
-		undoTestFunction( testName + ' (undo integration)', () => {
+		it( testName + ' (undo integration)', () => {
 			setModelData( model, input );
 
 			const modelBefore = input;
