@@ -197,7 +197,7 @@ describe( 'ImageUploadEngine', () => {
 	} );
 
 	it( 'should not convert image\'s uploadId attribute if is consumed already', () => {
-		editor.editing.modelToView.on( 'addAttribute:uploadId:image', ( evt, data, consumable ) => {
+		editor.editing.modelToView.on( 'attribute:uploadId:image', ( evt, data, consumable ) => {
 			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 		}, { priority: 'high' } );
 
@@ -242,7 +242,7 @@ describe( 'ImageUploadEngine', () => {
 				expect( loader.status ).to.equal( 'idle' );
 
 				done();
-			} );
+			}, { priority: 'lowest' } );
 
 			adapterMock.mockSuccess( { default: 'image.png' } );
 		} );
@@ -396,7 +396,7 @@ describe( 'ImageUploadEngine', () => {
 				expect( loader.status ).to.equal( 'idle' );
 
 				done();
-			} );
+			}, { priority: 'lowest' } );
 
 			adapterMock.mockSuccess( { default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } );
 		} );
