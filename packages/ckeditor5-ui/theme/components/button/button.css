@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+@import "./mixins/_button.css";
 @import "../../mixins/_unselectable.css";
 @import "../tooltip/mixins/_tooltip.css";
 
@@ -14,9 +15,13 @@ a.ck-button {
 	display: inline-block;
 	position: relative;
 
+	@mixin ck-button-icon {
+		display: inline-block;
+	}
+
 	&.ck-button_with-text {
 		& .ck-button__label {
-			display: block;
+			display: inline-block;
 		}
 	}
 

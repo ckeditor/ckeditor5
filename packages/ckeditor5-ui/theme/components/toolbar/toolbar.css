@@ -7,6 +7,14 @@
 
 .ck-toolbar {
 	@mixin ck-unselectable;
+
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+
+	&.ck-toolbar_vertical {
+		flex-direction: column;
+	}
 }
 
 .ck-toolbar__separator {
@@ -15,5 +23,9 @@
 
 .ck-toolbar__newline {
 	display: block;
-	clear: left;
+	width: 100%;
+}
+
+.ck-toolbar_floating {
+	flex-wrap: nowrap;
 }

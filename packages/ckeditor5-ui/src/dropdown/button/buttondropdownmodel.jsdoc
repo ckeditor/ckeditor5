@@ -1,0 +1,71 @@
+/**
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module ui/dropdown/button/buttondropdownmodel
+ */
+
+/**
+ * The button dropdown model interface.
+ *
+ * @implements module:ui/dropdown/dropdownmodel~DropdownModel
+ * @interface module:ui/dropdown/button/buttondropdownmodel~ButtonDropdownModel
+ */
+
+/**
+ * List of buttons to be included in dropdown
+ *
+ * @observable
+ * @member {Array.<module:ui/button/buttonview~ButtonView>} #buttons
+ */
+
+/**
+ * Fired when the button dropdown is executed. It fires when one of the buttons
+ * {@link module:ui/button/buttonview~ButtonView#event:execute executed}.
+ *
+ * @event #execute
+ */
+
+/**
+ * Controls dropdown direction.
+ *
+ * @observable
+ * @member {Boolean} #isVertical=false
+ */
+
+/**
+ * Disables automatic button icon binding. If set to true dropdown's button {@link #icon} will be set to {@link #defaultIcon}.
+ *
+ * @observable
+ * @member {Boolean} #staticIcon=false
+ */
+
+/**
+ * Defines default icon which is used when no button is active.
+ *
+ * Also see {@link #icon}.
+ *
+ * @observable
+ * @member {String} #defaultIcon
+ */
+
+/**
+ * Button dropdown icon is set from inner button views.
+ *
+ * Also see {@link #defaultIcon} and {@link #staticIcon}.
+ *
+ * @observable
+ * @member {String} #icon
+ */
+
+/**
+ * (Optional) A CSS class set to
+ * {@link module:ui/dropdown/button/buttondropdownview~ButtonDropdownView#toolbarView}.
+ *
+ * Also see {@link module:ui/toolbar/toolbarview~ToolbarView#className `ToolbarView#className`}.
+ *
+ * @observable
+ * @member {String} #toolbarClassName
+ */

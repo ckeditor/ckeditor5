@@ -37,6 +37,10 @@ describe( 'ToolbarView', () => {
 			expect( view.locale ).to.equal( locale );
 		} );
 
+		it( 'should set view#isVertical', () => {
+			expect( view.isVertical ).to.be.false;
+		} );
+
 		it( 'should create view#children collection', () => {
 			expect( view.items ).to.be.instanceOf( ViewCollection );
 		} );
@@ -66,6 +70,30 @@ describe( 'ToolbarView', () => {
 
 				view.element.dispatchEvent( evt );
 				sinon.assert.calledOnce( spy );
+			} );
+		} );
+	} );
+
+	describe( 'element bindings', () => {
+		describe( 'class', () => {
+			it( 'reacts on view#isVertical', () => {
+				view.isVertical = false;
+				expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).to.be.false;
+
+				view.isVertical = true;
+				expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).to.be.true;
+			} );
+
+			it( 'reacts on view#className', () => {
+				view.className = 'foo';
+				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+
+				view.className = 'bar';
+				expect( view.element.classList.contains( 'bar' ) ).to.be.true;
+
+				view.className = false;
+				expect( view.element.classList.contains( 'foo' ) ).to.be.false;
+				expect( view.element.classList.contains( 'bar' ) ).to.be.false;
 			} );
 		} );
 	} );
@@ -229,6 +257,25 @@ describe( 'ToolbarView', () => {
 
 			const spy = sinon.spy( view.items.get( 1 ), 'focus' );
 			view.focus();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'focusLast()', () => {
+		it( 'focuses the last focusable item in DOM', () => {
+			// No children to focus.
+			view.focusLast();
+
+			// The second child is focusable.
+			view.items.add( nonFocusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( nonFocusable() );
+
+			const spy = sinon.spy( view.items.get( 3 ), 'focus' );
+			view.focusLast();
 
 			sinon.assert.calledOnce( spy );
 		} );

@@ -49,3 +49,12 @@
  * @observable
  * @member {Boolean} #withText
  */
+
+/**
+ * (Optional) Controls the icon of the dropdown.
+ *
+ * Also see {@link module:ui/button/buttonview~ButtonView#withText}.
+ *
+ * @observable
+ * @member {Boolean} #icon
+ */
