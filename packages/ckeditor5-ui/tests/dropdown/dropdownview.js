@@ -105,16 +105,6 @@ describe( 'DropdownView', () => {
 						expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.true;
 					} );
 				} );
-
-				describe( 'view.buttonView#element .ck-on class to view#isOpen', () => {
-					it( 'is activated', () => {
-						view.isOpen = false;
-						expect( view.buttonView.element.classList.contains( 'ck-on' ) ).to.be.false;
-
-						view.isOpen = true;
-						expect( view.buttonView.element.classList.contains( 'ck-on' ) ).to.be.true;
-					} );
-				} );
 			} );
 		} );
 	} );

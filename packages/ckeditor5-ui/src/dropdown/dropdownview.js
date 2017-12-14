@@ -128,7 +128,6 @@ export default class DropdownView extends View {
 			attributes: {
 				class: [
 					'ck-dropdown__button',
-					bind.if( 'isOpen', 'ck-on' )
 				]
 			}
 		} );
