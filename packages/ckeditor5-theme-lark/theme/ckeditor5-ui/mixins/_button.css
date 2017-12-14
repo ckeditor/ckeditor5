@@ -33,13 +33,3 @@
 		border-color: var($(prefix)-disabled-border);
 	}
 }
-
-/**
- * A helper to define button–specific icon styles.
- *
- */
-@define-mixin ck-button-icon {
-	& .ck-icon {
-		@mixin-content;
-	}
-}

@@ -8,6 +8,7 @@
 @import "../../../mixins/_disabled.css";
 @import "../../../mixins/_rounded.css";
 @import "../../mixins/_button.css";
+@import "@ckeditor/ckeditor5-ui/theme/components/button/mixins/_button.css";
 
 .ck-button,
 a.ck-button {
