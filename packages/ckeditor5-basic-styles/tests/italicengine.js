@@ -13,7 +13,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'ItalicEngine', () => {
-	let editor, doc;
+	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -22,8 +22,7 @@ describe( 'ItalicEngine', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				doc = editor.document;
+				model = editor.model;
 			} );
 	} );
 
@@ -36,9 +35,9 @@ describe( 'ItalicEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: 'italic', inside: '$root' } ) ).to.be.false;
-		expect( doc.schema.check( { name: '$inline', attributes: 'italic', inside: '$block' } ) ).to.be.true;
-		expect( doc.schema.check( { name: '$inline', attributes: 'italic', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', attributes: 'italic', inside: '$root' } ) ).to.be.false;
+		expect( model.schema.check( { name: '$inline', attributes: 'italic', inside: '$block' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', attributes: 'italic', inside: '$clipboardHolder' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -54,7 +53,7 @@ describe( 'ItalicEngine', () => {
 		it( 'should convert <em> to italic attribute', () => {
 			editor.setData( '<p><em>foo</em>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
@@ -63,7 +62,7 @@ describe( 'ItalicEngine', () => {
 		it( 'should convert <i> to italic attribute', () => {
 			editor.setData( '<p><i>foo</i>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
@@ -72,7 +71,7 @@ describe( 'ItalicEngine', () => {
 		it( 'should convert font-weight:italic to italic attribute', () => {
 			editor.setData( '<p><span style="font-style: italic;">foo</span>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
@@ -84,7 +83,7 @@ describe( 'ItalicEngine', () => {
 
 			editor.setData( '<em>foo</em>bar' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
 		} );
@@ -92,7 +91,7 @@ describe( 'ItalicEngine', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( doc, '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
+			setModelData( model, '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><i>foo</i>bar</p>' );
 		} );
