@@ -20,6 +20,7 @@ a.ck-button {
 	cursor: default;
 	vertical-align: middle;
 	padding: var(--ck-spacing-small);
+	text-align: center;
 
 	/* Enable font size inheritance, which allows fluid UI scaling. */
 	font-size: inherit;
@@ -27,10 +28,6 @@ a.ck-button {
 	&:focus {
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
-	}
-
-	@mixin ck-button-icon {
-		float: left;
 	}
 
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
@@ -52,10 +49,6 @@ a.ck-button {
 			margin-left: calc(-1 * var(--ck-spacing-small));
 			margin-right: var(--ck-spacing-small);
 		}
-
-		& .ck-button__label {
-			display: block;
-		}
 	}
 
 	/* A style of the button which is currently on, e.g. its feature is active. */
@@ -74,7 +67,6 @@ a.ck-button {
 		/* Enable font size inheritance, which allows fluid UI scaling. */
 		font-size: inherit;
 
-		float: left;
 		height: var(--ck-line-height-base)em;
 		line-height: inherit;
 		font-weight: inherit;
