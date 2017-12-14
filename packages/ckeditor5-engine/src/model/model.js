@@ -200,7 +200,7 @@ export default class Model {
 	}
 
 	/**
-	 * Fires after leaving each {@link module:engine/model/model~Model#enqueueChange} block or outermost
+	 * Fired after leaving each {@link module:engine/model/model~Model#enqueueChange} block or outermost
 	 * {@link module:engine/model/model~Model#change} block.
 	 * Have the same parameters as {@link module:engine/model/model~Model#change}.
 	 *
@@ -208,7 +208,7 @@ export default class Model {
 	 */
 
 	/**
-	 * Fires when all queued model changes are done.
+	 * Fired when all queued model changes are done.
 	 *
 	 * @see #change
 	 * @see #enqueueChange
@@ -216,7 +216,24 @@ export default class Model {
 	 */
 
 	/**
+	 * Fired every time any {@link module:engine/model/operation/operation~Operation operation} is applied on the model
+	 * using {@link #applyOperation}.
+	 *
+	 * Note that this is an internal event for the specific use-cases. You can use it if you need to know about each operation
+	 * applied on the document, but in most cases {@link #change} event which is fired when all changes in a
+	 * {@link module:engine/model/batch~Batch} are applied, is a better choice.
+	 *
+	 * With the high priority operation is validated.
+	 *
+	 * With the normal priority operation is executed. After that priority you will be able to get additional
+	 * information about the applied changes returned by {@link module:engine/model/operation/operation~Operation#_execute}
+	 * as `evt.return`.
+	 *
+	 * With the low priority the {@link module:engine/model/document~Document} listen on this event and updates its version.
+	 *
 	 * @event applyOperation
+	 * @param {Array} args Arguments of the `applyOperation` which are an array with a single element:
+	 * {@link module:engine/model/operation/operation~Operation operation}.
 	 */
 }
 
