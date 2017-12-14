@@ -4,15 +4,16 @@
  */
 
 import ChangeBuffer from '../src/changebuffer';
-import Document from '@ckeditor/ckeditor5-engine/src/model/document';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 
 describe( 'ChangeBuffer', () => {
 	const CHANGE_LIMIT = 3;
-	let doc, buffer, root;
+	let model, doc, buffer, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 		buffer = new ChangeBuffer( doc, CHANGE_LIMIT );
 	} );
@@ -90,7 +91,9 @@ describe( 'ChangeBuffer', () => {
 			// Ensure that size is reset too.
 			buffer.input( 1 );
 
-			doc.batch().insertText( 'a', root );
+			model.change( writer => {
+				writer.insertText( 'a', root );
+			} );
 
 			expect( buffer.batch ).to.not.equal( batch1 );
 			expect( buffer.size ).to.equal( 0 );
@@ -99,31 +102,48 @@ describe( 'ChangeBuffer', () => {
 		it( 'is not reset when changes are added to the buffer\'s batch', () => {
 			const batch1 = buffer.batch;
 
-			buffer.batch.insert( 'a', root );
+			model.enqueueChange( buffer.batch, writer => {
+				writer.insert( 'a', root );
+			} );
 			expect( buffer.batch ).to.equal( batch1 );
 
-			buffer.batch.insert( 'b', root );
+			model.enqueueChange( buffer.batch, writer => {
+				writer.insert( 'b', root );
+			} );
 			expect( buffer.batch ).to.equal( batch1 );
 		} );
 
 		it( 'is not reset when changes are added to batch which existed previously', () => {
-			const externalBatch = doc.batch();
+			const externalBatch = new Batch();
 
-			externalBatch.insertText( 'a', root );
+			model.change( writer => {
+				writer.insertText( 'a', root );
+			} );
+
+			model.enqueueChange( externalBatch, writer => {
+				writer.insertText( 'a', root );
+			} );
 
 			const bufferBatch = buffer.batch;
 
-			bufferBatch.insertText( 'b', root );
+			model.enqueueChange( bufferBatch, writer => {
+				writer.insertText( 'b', root );
+			} );
+
 			expect( buffer.batch ).to.equal( bufferBatch );
 
-			doc.batch().insertText( 'c', root );
+			model.change( writer => {
+				writer.insertText( 'c', root );
+			} );
 			expect( buffer.batch ).to.not.equal( bufferBatch );
 		} );
 
 		it( 'is not reset when changes are applied in transparent batch', () => {
 			const bufferBatch = buffer.batch;
 
-			doc.batch( 'transparent' ).insert( 'a', root );
+			model.enqueueChange( 'transparent', writer => {
+				writer.insert( 'a', root );
+			} );
 
 			expect( buffer.batch ).to.equal( bufferBatch );
 		} );
@@ -174,7 +194,9 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.lock();
 
-			doc.batch().insertText( 'a', root );
+			model.change( writer => {
+				writer.insertText( 'a', root );
+			} );
 
 			buffer.unlock();
 
@@ -235,7 +257,9 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.destroy();
 
-			doc.batch().insertText( 'a', root );
+			model.change( writer => {
+				writer.insertText( 'a', root );
+			} );
 
 			expect( buffer.batch ).to.equal( batch1 );
 		} );

@@ -14,7 +14,7 @@ import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 window.setInterval( function() {
-	console.log( getData( window.editor.document ) );
+	console.log( getData( window.editor.model.document ) );
 }, 3000 );
 
 ClassicEditor.create( document.querySelector( '#editor' ), {

@@ -21,7 +21,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Typing – InputCommand integration', () => {
-	let editor, doc, viewDocument, boldView, italicView, editorElement;
+	let editor, model, doc, viewDocument, boldView, italicView, editorElement;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -34,7 +34,8 @@ describe( 'Typing – InputCommand integration', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
+				model = editor.model;
+				doc = model.document;
 				viewDocument = editor.editing.view;
 
 				boldView = editor.ui.componentFactory.create( 'bold' );
@@ -49,7 +50,7 @@ describe( 'Typing – InputCommand integration', () => {
 	} );
 
 	function expectOutput( modelOutput, viewOutput ) {
-		expect( getModelData( editor.document ) ).to.equal( modelOutput );
+		expect( getModelData( model ) ).to.equal( modelOutput );
 		expect( getViewData( viewDocument ) ).to.equal( viewOutput );
 	}
 
@@ -77,7 +78,7 @@ describe( 'Typing – InputCommand integration', () => {
 
 	describe( 'InputCommand integration', () => {
 		it( 'resets the buffer on typing respecting typing.undoStep', () => {
-			setModelData( doc, '<paragraph>0[]</paragraph>' );
+			setModelData( model, '<paragraph>0[]</paragraph>' );
 
 			simulateTyping( '123456789' );
 
@@ -97,7 +98,7 @@ describe( 'Typing – InputCommand integration', () => {
 		} );
 
 		it( 'resets the buffer on text insertion respecting typing.undoStep', () => {
-			setModelData( doc, '<paragraph>0[]</paragraph>' );
+			setModelData( model, '<paragraph>0[]</paragraph>' );
 
 			simulateBatches( [ '1234', '5', '678', '9' ] );
 
@@ -117,7 +118,7 @@ describe( 'Typing – InputCommand integration', () => {
 		} );
 
 		it( 'resets the buffer when selection changes', () => {
-			setModelData( doc, '<paragraph>Foo[] Bar</paragraph>' );
+			setModelData( model, '<paragraph>Foo[] Bar</paragraph>' );
 
 			setSelection( [ 0, 5 ], [ 0, 5 ] );
 			simulateTyping( '1' );
@@ -141,7 +142,7 @@ describe( 'Typing – InputCommand integration', () => {
 		} );
 
 		it( 'resets the buffer when selection changes (with enter)', () => {
-			setModelData( doc, '<paragraph>Foo[]Bar</paragraph>' );
+			setModelData( model, '<paragraph>Foo[]Bar</paragraph>' );
 
 			simulateTyping( '1' );
 			editor.execute( 'enter' );
@@ -177,7 +178,7 @@ describe( 'Typing – InputCommand integration', () => {
 		} );
 
 		it( 'resets the buffer when attribute changes', () => {
-			setModelData( doc, '<paragraph>Foo[] Bar</paragraph>' );
+			setModelData( model, '<paragraph>Foo[] Bar</paragraph>' );
 
 			simulateTyping( ' ' );
 

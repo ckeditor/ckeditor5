@@ -11,7 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 window.setInterval( function() {
-	console.log( getData( window.editor.document ) );
+	console.log( getData( window.editor.model.document ) );
 }, 3000 );
 
 ClassicEditor

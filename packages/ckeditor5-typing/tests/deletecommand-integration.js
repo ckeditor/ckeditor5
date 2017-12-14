@@ -9,7 +9,7 @@ import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DeleteCommand integration', () => {
-	let editor, doc;
+	let editor, model;
 
 	beforeEach( () => {
 		return ModelTestEditor
@@ -21,19 +21,19 @@ describe( 'DeleteCommand integration', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
+				model = editor.model;
 
 				const command = new DeleteCommand( editor, 'backward' );
 				editor.commands.add( 'delete', command );
 
 				// Mock paragraph feature.
-				doc.schema.registerItem( 'paragraph', '$block' );
-				doc.schema.allow( { name: 'paragraph', inside: '$block' } );
+				model.schema.registerItem( 'paragraph', '$block' );
+				model.schema.allow( { name: 'paragraph', inside: '$block' } );
 
-				doc.schema.registerItem( 'img', '$inline' );
-				doc.schema.allow( { name: '$text', inside: 'img' } );
+				model.schema.registerItem( 'img', '$inline' );
+				model.schema.allow( { name: '$text', inside: 'img' } );
 
-				doc.schema.objects.add( 'img' );
+				model.schema.objects.add( 'img' );
 			} );
 	} );
 
@@ -42,12 +42,12 @@ describe( 'DeleteCommand integration', () => {
 	} );
 
 	function assertOutput( output ) {
-		expect( getData( doc ) ).to.equal( output );
+		expect( getData( model ) ).to.equal( output );
 	}
 
 	describe( 'with undo', () => {
 		it( 'deletes characters (and group changes in batches) and rollbacks', () => {
-			setData( doc, '<paragraph>123456789[]</paragraph>' );
+			setData( model, '<paragraph>123456789[]</paragraph>' );
 
 			for ( let i = 0; i < 3; ++i ) {
 				editor.execute( 'delete' );
@@ -59,7 +59,7 @@ describe( 'DeleteCommand integration', () => {
 		} );
 
 		it( 'deletes characters (and group changes in batches) and rollbacks - test step', () => {
-			setData( doc, '<paragraph>123456789[]</paragraph>' );
+			setData( model, '<paragraph>123456789[]</paragraph>' );
 
 			for ( let i = 0; i < 6; ++i ) {
 				editor.execute( 'delete' );
@@ -75,7 +75,7 @@ describe( 'DeleteCommand integration', () => {
 		} );
 
 		it( 'deletes elements (and group changes in batches) and rollbacks', () => {
-			setData( doc, '<paragraph><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img>[]</paragraph>' );
+			setData( model, '<paragraph><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img>[]</paragraph>' );
 
 			for ( let i = 0; i < 3; ++i ) {
 				editor.execute( 'delete' );
@@ -87,7 +87,7 @@ describe( 'DeleteCommand integration', () => {
 		} );
 
 		it( 'merges elements (and group changes in batches) and rollbacks', () => {
-			setData( doc, '<paragraph>123456</paragraph><paragraph>[]78</paragraph>' );
+			setData( model, '<paragraph>123456</paragraph><paragraph>[]78</paragraph>' );
 
 			for ( let i = 0; i < 6; ++i ) {
 				editor.execute( 'delete' );
@@ -107,7 +107,7 @@ describe( 'DeleteCommand integration', () => {
 		} );
 
 		it( 'merges elements (and group changes in batches) and rollbacks - non-collapsed selection', () => {
-			setData( doc, '<paragraph>12345[6</paragraph><paragraph>7]8</paragraph>' );
+			setData( model, '<paragraph>12345[6</paragraph><paragraph>7]8</paragraph>' );
 
 			editor.execute( 'delete' );
 			editor.execute( 'delete' );
@@ -125,11 +125,11 @@ describe( 'DeleteCommand integration', () => {
 
 	describe( 'with DataController.deleteContent', () => {
 		beforeEach( () => {
-			doc.schema.registerItem( 'h1', '$block' );
+			model.schema.registerItem( 'h1', '$block' );
 		} );
 
 		it( 'should replace content with paragraph - if whole content is selected', () => {
-			setData( doc, '<h1>[foo</h1><paragraph>bar]</paragraph>' );
+			setData( model, '<h1>[foo</h1><paragraph>bar]</paragraph>' );
 
 			editor.execute( 'delete' );
 
@@ -137,7 +137,7 @@ describe( 'DeleteCommand integration', () => {
 		} );
 
 		it( 'should not replace content with paragraph - if not whole content is selected', () => {
-			setData( doc, '<h1>f[oo</h1><paragraph>bar]</paragraph>' );
+			setData( model, '<h1>f[oo</h1><paragraph>bar]</paragraph>' );
 
 			editor.execute( 'delete' );
 
@@ -145,7 +145,7 @@ describe( 'DeleteCommand integration', () => {
 		} );
 
 		it( 'should not replace content with paragraph - if selection was collapsed', () => {
-			setData( doc, '<h1></h1><paragraph>[]</paragraph>' );
+			setData( model, '<h1></h1><paragraph>[]</paragraph>' );
 
 			editor.execute( 'delete' );
 

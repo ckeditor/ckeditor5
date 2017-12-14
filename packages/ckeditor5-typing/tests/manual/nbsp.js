@@ -20,21 +20,21 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		editor.document.schema.allow( { name: '$text', inside: '$root' } );
+		editor.model.schema.allow( { name: '$text', inside: '$root' } );
 
 		const editable = editor.ui.view.editableElement;
 
 		document.querySelector( '#nbsp' ).addEventListener( 'click', () => {
-			editor.document.enqueueChanges( () => {
-				editor.document.selection.collapseToStart();
-				editor.document.batch().insertText( '\u00A0', editor.document.selection.getFirstPosition() );
+			editor.model.change( writer => {
+				editor.model.document.selection.collapseToStart();
+				writer.insertText( '\u00A0', editor.model.document.selection.getFirstPosition() );
 			} );
 		} );
 
-		editor.document.on( 'changesDone', () => {
+		editor.model.document.on( 'changesDone', () => {
 			console.clear();
 
-			const modelData = getModelData( editor.document, { withoutSelection: true } );
+			const modelData = getModelData( editor.model.document, { withoutSelection: true } );
 			console.log( 'model:', modelData.replace( /\u00A0/g, '&nbsp;' ) );
 
 			const viewData = getViewData( editor.editing.view, { withoutSelection: true } );

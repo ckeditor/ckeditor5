@@ -68,7 +68,8 @@ export default class Input extends Plugin {
 	 * @param {module:typing/inputcommand~InputCommand} inputCommand
 	 */
 	_handleKeydown( evtData, inputCommand ) {
-		const doc = this.editor.document;
+		const model = this.editor.model;
+		const doc = model.document;
 		const buffer = inputCommand.buffer;
 
 		// By relying on the state of the input command we allow disabling the entire input easily
@@ -86,8 +87,8 @@ export default class Input extends Plugin {
 
 		buffer.lock();
 
-		doc.enqueueChanges( () => {
-			this.editor.data.deleteContent( doc.selection, buffer.batch );
+		model.enqueueChange( buffer.batch, () => {
+			this.editor.data.deleteContent( doc.selection );
 		} );
 
 		buffer.unlock();
@@ -194,8 +195,7 @@ class MutationHandler {
 		// This wouldn't be needed if DomConverter would allow to create fresh view without checking any mappings.
 		const freshDomConverter = new DomConverter();
 		const modelFromCurrentDom = this.editor.data.toModel(
-			freshDomConverter.domToView( domMutationCommonAncestor ),
-			this.editor.commands.get( 'input' ).buffer.batch
+			freshDomConverter.domToView( domMutationCommonAncestor )
 		).getChild( 0 );
 
 		// Current model.
