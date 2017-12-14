@@ -54,8 +54,8 @@ describe( 'BalloonEditor', () => {
 		} );
 
 		it( 'creates a single document root', () => {
-			expect( count( editor.document.getRootNames() ) ).to.equal( 1 );
-			expect( editor.document.getRoot() ).to.have.property( 'name', '$root' );
+			expect( count( editor.model.document.getRootNames() ) ).to.equal( 1 );
+			expect( editor.model.document.getRoot() ).to.have.property( 'name', '$root' );
 		} );
 
 		it( 'uses HTMLDataProcessor', () => {
@@ -215,7 +215,7 @@ describe( 'BalloonEditor', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					const schema = editor.document.schema;
+					const schema = editor.model.schema;
 
 					schema.registerItem( 'heading' );
 					schema.allow( { name: 'heading', inside: '$root' } );
