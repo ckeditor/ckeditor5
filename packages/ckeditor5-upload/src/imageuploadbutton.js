@@ -54,7 +54,7 @@ export default class ImageUploadButton extends Plugin {
 
 			view.on( 'done', ( evt, files ) => {
 				for ( const file of Array.from( files ) ) {
-					const insertAt = findOptimalInsertionPosition( editor.document.selection );
+					const insertAt = findOptimalInsertionPosition( editor.model.document.selection );
 
 					if ( isImageType( file ) ) {
 						editor.execute( 'imageUpload', { file, insertAt } );

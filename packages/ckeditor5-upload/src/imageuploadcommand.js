@@ -29,18 +29,15 @@ export default class ImageUploadCommand extends Command {
 	 * If the position is not specified the image will be inserted into the current selection.
 	 * Note: You can use the {@link module:upload/utils~findOptimalInsertionPosition} function to calculate
 	 * (e.g. based on the current selection) a position which is more optimal from UX perspective.
-	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
-	 * New batch will be created if this option is not set.
 	 */
 	execute( options ) {
 		const editor = this.editor;
-		const doc = editor.document;
-		const batch = options.batch || doc.batch();
+		const doc = editor.model.document;
 		const file = options.file;
 		const selection = doc.selection;
 		const fileRepository = editor.plugins.get( FileRepository );
 
-		doc.enqueueChanges( () => {
+		editor.model.change( () => {
 			const loader = fileRepository.createLoader( file );
 
 			// Do not throw when upload adapter is not set. FileRepository will log an error anyway.
@@ -60,7 +57,7 @@ export default class ImageUploadCommand extends Command {
 				insertAtSelection = doc.selection;
 			}
 
-			editor.data.insertContent( imageElement, insertAtSelection, batch );
+			editor.data.insertContent( imageElement, insertAtSelection );
 
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
@@ -69,9 +66,3 @@ export default class ImageUploadCommand extends Command {
 		} );
 	}
 }
-
-// Returns correct image insertion position.
-//
-// @param {module:engine/model/document~Document} doc
-// @returns {module:engine/model/position~Position|undefined}
-
