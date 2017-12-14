@@ -313,7 +313,6 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="0" type="bulleted">g</listItem>'
 				);
 			} );
-
 		} );
 	} );
 } );
