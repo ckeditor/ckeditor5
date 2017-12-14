@@ -14,7 +14,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 testUtils.createSinonSandbox();
 
 describe( 'BlockAutoformatEngine', () => {
-	let editor, doc, batch;
+	let editor, model, doc;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -23,8 +23,8 @@ describe( 'BlockAutoformatEngine', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
-				batch = doc.batch();
+				model = editor.model;
+				doc = model.document;
 			} );
 	} );
 
@@ -34,9 +34,9 @@ describe( 'BlockAutoformatEngine', () => {
 			editor.commands.add( 'testCommand', new TestCommand( editor, spy ) );
 			new BlockAutoformatEngine( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.calledOnce( spy );
@@ -47,9 +47,9 @@ describe( 'BlockAutoformatEngine', () => {
 			editor.commands.add( 'testCommand', new TestCommand( editor, spy ) );
 			new BlockAutoformatEngine( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				doc.batch( 'transparent' ).insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*[]</paragraph>' );
+			model.enqueueChange( 'transparent', writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( spy );
@@ -60,13 +60,13 @@ describe( 'BlockAutoformatEngine', () => {
 			editor.commands.add( 'testCommand', new TestCommand( editor, spy ) );
 			new BlockAutoformatEngine( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.calledOnce( spy );
-			expect( getData( doc ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 	} );
 
@@ -75,9 +75,9 @@ describe( 'BlockAutoformatEngine', () => {
 			const spy = testUtils.sinon.spy();
 			new BlockAutoformatEngine( editor, /^[*]\s$/, spy ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.calledOnce( spy );
@@ -87,9 +87,9 @@ describe( 'BlockAutoformatEngine', () => {
 			const spy = testUtils.sinon.spy();
 			new BlockAutoformatEngine( editor, /^[*]\s$/, spy ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				doc.batch( 'transparent' ).insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*[]</paragraph>' );
+			model.enqueueChange( 'transparent', writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( spy );
@@ -99,9 +99,9 @@ describe( 'BlockAutoformatEngine', () => {
 			const spy = testUtils.sinon.spy();
 			new BlockAutoformatEngine( editor, /^[*]\s/, spy ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>*[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.remove( doc.selection.getFirstRange() );
+			setData( model, '<paragraph>*[]</paragraph>' );
+			model.change( writer => {
+				writer.remove( doc.selection.getFirstRange() );
 			} );
 
 			sinon.assert.notCalled( spy );
@@ -111,9 +111,9 @@ describe( 'BlockAutoformatEngine', () => {
 			const spy = testUtils.sinon.spy();
 			new BlockAutoformatEngine( editor, /^[*]\s/, spy ); // eslint-disable-line no-new
 
-			setData( doc, '<paragraph>[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( spy );

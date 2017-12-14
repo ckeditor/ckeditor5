@@ -24,7 +24,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 testUtils.createSinonSandbox();
 
 describe( 'Autoformat', () => {
-	let editor, doc, batch;
+	let editor, model, doc;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -43,8 +43,8 @@ describe( 'Autoformat', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
-				batch = doc.batch();
+				model = editor.model;
+				doc = model.document;
 			} );
 	} );
 
@@ -54,97 +54,97 @@ describe( 'Autoformat', () => {
 
 	describe( 'Bulleted list', () => {
 		it( 'should replace asterisk with bulleted list item', () => {
-			setData( doc, '<paragraph>*[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">[]</listItem>' );
 		} );
 
 		it( 'should replace minus character with bulleted list item', () => {
-			setData( doc, '<paragraph>-[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>-[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">[]</listItem>' );
 		} );
 
 		it( 'should not replace minus character when inside bulleted list item', () => {
-			setData( doc, '<listItem indent="0" type="bulleted">-[]</listItem>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<listItem indent="0" type="bulleted">-[]</listItem>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">- []</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">- []</listItem>' );
 		} );
 	} );
 
 	describe( 'Numbered list', () => {
 		it( 'should replace digit with numbered list item using the dot format', () => {
-			setData( doc, '<paragraph>1.[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>1.[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem indent="0" type="numbered">[]</listItem>' );
 		} );
 
 		it( 'should replace digit with numbered list item using the parenthesis format', () => {
-			setData( doc, '<paragraph>1)[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>1)[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem indent="0" type="numbered">[]</listItem>' );
 		} );
 
 		it( 'should not replace digit character when there is no . or ) in the format', () => {
-			setData( doc, '<paragraph>1[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>1[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>1 []</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>1 []</paragraph>' );
 		} );
 
 		it( 'should not replace digit character when inside numbered list item', () => {
-			setData( doc, '<listItem indent="0" type="numbered">1.[]</listItem>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<listItem indent="0" type="numbered">1.[]</listItem>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">1. []</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem indent="0" type="numbered">1. []</listItem>' );
 		} );
 	} );
 
 	describe( 'Heading', () => {
 		it( 'should replace hash character with heading', () => {
-			setData( doc, '<paragraph>#[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>#[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<heading1>[]</heading1>' );
+			expect( getData( model ) ).to.equal( '<heading1>[]</heading1>' );
 		} );
 
 		it( 'should replace two hash characters with heading level 2', () => {
-			setData( doc, '<paragraph>##[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>##[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<heading2>[]</heading2>' );
+			expect( getData( model ) ).to.equal( '<heading2>[]</heading2>' );
 		} );
 
 		it( 'should not replace hash character when inside heading', () => {
-			setData( doc, '<heading1>#[]</heading1>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<heading1>#[]</heading1>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<heading1># []</heading1>' );
+			expect( getData( model ) ).to.equal( '<heading1># []</heading1>' );
 		} );
 
 		it( 'should work with heading1-heading6 commands regardless of the config of the heading feature', () => {
@@ -174,18 +174,19 @@ describe( 'Autoformat', () => {
 					]
 				} )
 				.then( editor => {
-					const doc = editor.document;
+					const model = editor.model;
+					const doc = model.document;
 
-					setData( doc, '<paragraph>#[]</paragraph>' );
-					doc.enqueueChanges( () => {
-						doc.batch().insertText( ' ', doc.selection.getFirstPosition() );
+					setData( model, '<paragraph>#[]</paragraph>' );
+					model.change( writer => {
+						writer.insertText( ' ', doc.selection.getFirstPosition() );
 					} );
 
 					expect( spy1.calledOnce ).to.be.true;
 
-					setData( doc, '<paragraph>######[]</paragraph>' );
-					doc.enqueueChanges( () => {
-						doc.batch().insertText( ' ', doc.selection.getFirstPosition() );
+					setData( model, '<paragraph>######[]</paragraph>' );
+					model.change( writer => {
+						writer.insertText( ' ', doc.selection.getFirstPosition() );
 					} );
 
 					expect( spy6.calledOnce ).to.be.true;
@@ -197,86 +198,86 @@ describe( 'Autoformat', () => {
 
 	describe( 'Block quote', () => {
 		it( 'should replace greater-than character with heading', () => {
-			setData( doc, '<paragraph>>[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>>[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<blockQuote><paragraph>[]</paragraph></blockQuote>' );
+			expect( getData( model ) ).to.equal( '<blockQuote><paragraph>[]</paragraph></blockQuote>' );
 		} );
 
 		it( 'should not replace greater-than character when inside heading', () => {
-			setData( doc, '<heading1>>[]</heading1>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<heading1>>[]</heading1>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<heading1>> []</heading1>' );
+			expect( getData( model ) ).to.equal( '<heading1>> []</heading1>' );
 		} );
 
 		it( 'should not replace greater-than character when inside numbered list', () => {
-			setData( doc, '<listItem indent="0" type="numbered">1. >[]</listItem>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<listItem indent="0" type="numbered">1. >[]</listItem>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">1. > []</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem indent="0" type="numbered">1. > []</listItem>' );
 		} );
 
 		it( 'should not replace greater-than character when inside buletted list', () => {
-			setData( doc, '<listItem indent="0" type="bulleted">1. >[]</listItem>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<listItem indent="0" type="bulleted">1. >[]</listItem>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">1. > []</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">1. > []</listItem>' );
 		} );
 	} );
 
 	describe( 'Inline autoformat', () => {
 		it( 'should replace both "**" with bold', () => {
-			setData( doc, '<paragraph>**foobar*[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( '*', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>**foobar*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
 		} );
 
 		it( 'should replace both "*" with italic', () => {
-			setData( doc, '<paragraph>*foobar[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( '*', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*foobar[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph><$text italic="true">foobar</$text>[]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph><$text italic="true">foobar</$text>[]</paragraph>' );
 		} );
 
 		it( 'should replace both "`" with code', () => {
-			setData( doc, '<paragraph>`foobar[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( '`', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>`foobar[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph><$text code="true">foobar</$text>[]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph><$text code="true">foobar</$text>[]</paragraph>' );
 		} );
 
 		it( 'nothing should be replaces when typing "*"', () => {
-			setData( doc, '<paragraph>foobar[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( '*', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>foobar[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>foobar*[]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>foobar*[]</paragraph>' );
 		} );
 
 		it( 'should format inside the text', () => {
-			setData( doc, '<paragraph>foo **bar*[] baz</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( '*', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>foo **bar*[] baz</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text>[] baz</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text>[] baz</paragraph>' );
 		} );
 	} );
 
@@ -288,90 +289,90 @@ describe( 'Autoformat', () => {
 				} )
 				.then( newEditor => {
 					editor = newEditor;
-					doc = editor.document;
-					batch = doc.batch();
+					model = editor.model;
+					doc = model.document;
 				} );
 		} );
 
 		it( 'should not replace asterisk with bulleted list item', () => {
-			setData( doc, '<paragraph>*[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>* []</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>* []</paragraph>' );
 		} );
 
 		it( 'should not replace minus character with bulleted list item', () => {
-			setData( doc, '<paragraph>-[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>-[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>- []</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>- []</paragraph>' );
 		} );
 
 		it( 'should not replace digit with numbered list item', () => {
-			setData( doc, '<paragraph>1.[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>1.[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>1. []</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>1. []</paragraph>' );
 		} );
 
 		it( 'should not replace hash character with heading', () => {
-			setData( doc, '<paragraph>#[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>#[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph># []</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph># []</paragraph>' );
 		} );
 
 		it( 'should not replace two hash characters with heading level 2', () => {
-			setData( doc, '<paragraph>##[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>##[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>## []</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>## []</paragraph>' );
 		} );
 
 		it( 'should not replace both "**" with bold', () => {
-			setData( doc, '<paragraph>**foobar*[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( '*', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>**foobar*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
 		} );
 
 		it( 'should not replace both "*" with italic', () => {
-			setData( doc, '<paragraph>*foobar[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( '*', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>*foobar[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
 		} );
 
 		it( 'should not replace both "`" with code', () => {
-			setData( doc, '<paragraph>`foobar[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( '`', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>`foobar[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>`foobar`[]</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>`foobar`[]</paragraph>' );
 		} );
 
 		it( 'should not replace ">" with block quote', () => {
-			setData( doc, '<paragraph>>[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insertText( ' ', doc.selection.getFirstPosition() );
+			setData( model, '<paragraph>>[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>> []</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>> []</paragraph>' );
 		} );
 
 		it( 'should use only configured headings', () => {
@@ -386,15 +387,15 @@ describe( 'Autoformat', () => {
 					}
 				} )
 				.then( editor => {
-					doc = editor.document;
-					batch = doc.batch();
+					model = editor.model;
+					doc = model.document;
 
-					setData( doc, '<paragraph>##[]</paragraph>' );
-					doc.enqueueChanges( () => {
-						batch.insertText( ' ', doc.selection.getFirstPosition() );
+					setData( model, '<paragraph>##[]</paragraph>' );
+					model.change( writer => {
+						writer.insertText( ' ', doc.selection.getFirstPosition() );
 					} );
 
-					expect( getData( doc ) ).to.equal( '<paragraph>## []</paragraph>' );
+					expect( getData( model ) ).to.equal( '<paragraph>## []</paragraph>' );
 				} );
 		} );
 	} );
