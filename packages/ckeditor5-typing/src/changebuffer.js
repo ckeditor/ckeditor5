@@ -32,17 +32,17 @@ export default class ChangeBuffer {
 	/**
 	 * Creates a new instance of the change buffer.
 	 *
-	 * @param {module:engine/model/document~Document} document
+	 * @param {module:engine/model/document~Document} doc
 	 * @param {Number} [limit=20] The maximum number of atomic changes which can be contained in one batch.
 	 */
-	constructor( document, limit = 20 ) {
+	constructor( doc, limit = 20 ) {
 		/**
 		 * The document instance.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/document~Document} #document
 		 */
-		this.document = document;
+		this.document = doc;
 
 		/**
 		 * The number of atomic changes in the buffer. Once it exceeds the {@link #limit},
@@ -77,11 +77,11 @@ export default class ChangeBuffer {
 			this._reset();
 		};
 
-		document.on( 'change', this._changeCallback );
+		doc.on( 'change', this._changeCallback );
 
-		document.selection.on( 'change:range', this._selectionChangeCallback );
+		doc.selection.on( 'change:range', this._selectionChangeCallback );
 
-		document.selection.on( 'change:attribute', this._selectionChangeCallback );
+		doc.selection.on( 'change:attribute', this._selectionChangeCallback );
 
 		/**
 		 * The current batch instance.
