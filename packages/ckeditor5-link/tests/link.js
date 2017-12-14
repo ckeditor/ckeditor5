@@ -79,7 +79,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should add #formView to the #_balloon and attach the #_balloon to the selection when text fragment is selected', () => {
-			setModelData( editor.document, '<paragraph>f[o]o</paragraph>' );
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
 			linkFeature._showPanel();
@@ -94,7 +94,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should add #formView to the #_balloon and attach the #_balloon to the selection when selection is collapsed', () => {
-			setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
+			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
 			linkFeature._showPanel();
@@ -111,7 +111,7 @@ describe( 'Link', () => {
 		it( 'should add #formView to the #_balloon and attach the #_balloon to the link element when collapsed selection is inside ' +
 			'that link',
 		() => {
-			setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 			const linkElement = editor.editing.view.getDomRoot().querySelector( 'a' );
 
 			linkFeature._showPanel();
@@ -171,7 +171,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should disable #formView elements when link and unlink commands are disabled', () => {
-			setModelData( editor.document, '<paragraph>f[o]o</paragraph>' );
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkFeature._showPanel();
 
@@ -194,17 +194,17 @@ describe( 'Link', () => {
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/53
 		it( 'should set formView.unlinkButtonView#isVisible depending on the selection in a link or not', () => {
-			setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
+			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 			linkFeature._showPanel();
 			expect( formView.unlinkButtonView.isVisible ).to.be.false;
 
-			setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 			linkFeature._showPanel();
 			expect( formView.unlinkButtonView.isVisible ).to.be.true;
 
-			setModelData( editor.document, '<paragraph><$text linkHref="url">[fo]o</$text></paragraph>' );
+			setModelData( editor.model, '<paragraph><$text linkHref="url">[fo]o</$text></paragraph>' );
 
 			linkFeature._showPanel();
 			expect( formView.unlinkButtonView.isVisible ).to.be.true;
@@ -212,7 +212,7 @@ describe( 'Link', () => {
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
 		it( 'should make sure the URL input in the #formView always stays in sync with the value of the command (selected link)', () => {
-			setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 			// Mock some leftover value **in DOM**, e.g. after previous editing.
 			formView.urlInputView.inputView.element.value = 'leftover';
@@ -223,7 +223,7 @@ describe( 'Link', () => {
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
 		it( 'should make sure the URL input in the #formView always stays in sync with the value of the command (no link selected)', () => {
-			setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
+			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 			linkFeature._showPanel();
 			expect( formView.urlInputView.inputView.element.value ).to.equal( '' );
@@ -233,7 +233,7 @@ describe( 'Link', () => {
 			it( 'should not duplicate #render listeners', () => {
 				const viewDocument = editor.editing.view;
 
-				setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
+				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
@@ -250,7 +250,7 @@ describe( 'Link', () => {
 			it( 'updates the position of the panel – editing a link, then the selection remains in the link upon #render', () => {
 				const viewDocument = editor.editing.view;
 
-				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 				linkFeature._showPanel();
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
@@ -272,7 +272,7 @@ describe( 'Link', () => {
 			it( 'updates the position of the panel – creating a new link, then the selection moved upon #render', () => {
 				const viewDocument = editor.editing.view;
 
-				setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
+				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 				linkFeature._showPanel();
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
@@ -294,7 +294,7 @@ describe( 'Link', () => {
 			it( 'hides of the panel – editing a link, then the selection moved out of the link upon #render', () => {
 				const viewDocument = editor.editing.view;
 
-				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text>bar</paragraph>' );
+				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text>bar</paragraph>' );
 
 				linkFeature._showPanel();
 
@@ -317,7 +317,7 @@ describe( 'Link', () => {
 				const viewDocument = editor.editing.view;
 
 				setModelData(
-					editor.document,
+					editor.model,
 					'<paragraph><$text linkHref="url">f[]oo</$text>bar<$text linkHref="url">b[]az</$text></paragraph>'
 				);
 
@@ -341,7 +341,7 @@ describe( 'Link', () => {
 			it( 'hides the panel – editing a link, then the selection expands upon #render', () => {
 				const viewDocument = editor.editing.view;
 
-				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 				linkFeature._showPanel();
 
@@ -594,69 +594,69 @@ describe( 'Link', () => {
 
 			beforeEach( () => {
 				observer = editor.editing.view.getObserver( ClickObserver );
-				editor.document.schema.allow( { name: '$text', inside: '$root' } );
+				editor.model.schema.allow( { name: '$text', inside: '$root' } );
 
 				spy = testUtils.sinon.stub( linkFeature, '_showPanel' ).returns( {} );
 			} );
 
 			it( 'should open with not selected formView when collapsed selection is inside link element', () => {
-				setModelData( editor.document, '<$text linkHref="url">fo[]o</$text>' );
+				setModelData( editor.model, '<$text linkHref="url">fo[]o</$text>' );
 
 				observer.fire( 'click', { target: document.body } );
 				sinon.assert.calledWithExactly( spy );
 			} );
 
 			it( 'should open when selection exclusively encloses a LinkElement (#1)', () => {
-				setModelData( editor.document, '[<$text linkHref="url">foo</$text>]' );
+				setModelData( editor.model, '[<$text linkHref="url">foo</$text>]' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.calledWithExactly( spy );
 			} );
 
 			it( 'should open when selection exclusively encloses a LinkElement (#2)', () => {
-				setModelData( editor.document, '<$text linkHref="url">[foo]</$text>' );
+				setModelData( editor.model, '<$text linkHref="url">[foo]</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.calledWithExactly( spy );
 			} );
 
 			it( 'should not open when selection is not inside link element', () => {
-				setModelData( editor.document, '[]' );
+				setModelData( editor.model, '[]' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#1)', () => {
-				setModelData( editor.document, '<$text linkHref="url">f[o]o</$text>' );
+				setModelData( editor.model, '<$text linkHref="url">f[o]o</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#2)', () => {
-				setModelData( editor.document, '<$text linkHref="url">[fo]o</$text>' );
+				setModelData( editor.model, '<$text linkHref="url">[fo]o</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#3)', () => {
-				setModelData( editor.document, '<$text linkHref="url">f[oo]</$text>' );
+				setModelData( editor.model, '<$text linkHref="url">f[oo]</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#4)', () => {
-				setModelData( editor.document, 'ba[r<$text linkHref="url">foo]</$text>' );
+				setModelData( editor.model, 'ba[r<$text linkHref="url">foo]</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#5)', () => {
-				setModelData( editor.document, 'ba[r<$text linkHref="url">foo</$text>]' );
+				setModelData( editor.model, 'ba[r<$text linkHref="url">foo</$text>]' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );

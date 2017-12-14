@@ -16,7 +16,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 
 describe( 'LinkEngine', () => {
-	let editor, doc;
+	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -25,8 +25,7 @@ describe( 'LinkEngine', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				doc = editor.document;
+				model = editor.model;
 			} );
 	} );
 
@@ -35,9 +34,9 @@ describe( 'LinkEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: 'linkHref', inside: '$root' } ) ).to.be.false;
-		expect( doc.schema.check( { name: '$inline', attributes: 'linkHref', inside: '$block' } ) ).to.be.true;
-		expect( doc.schema.check( { name: '$inline', attributes: 'linkHref', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', attributes: 'linkHref', inside: '$root' } ) ).to.be.false;
+		expect( model.schema.check( { name: '$inline', attributes: 'linkHref', inside: '$block' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', attributes: 'linkHref', inside: '$clipboardHolder' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -58,7 +57,7 @@ describe( 'LinkEngine', () => {
 		it( 'should convert `<a href="url">` to `linkHref="url"` attribute', () => {
 			editor.setData( '<p><a href="url">foo</a>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><a href="url">foo</a>bar</p>' );
@@ -70,7 +69,7 @@ describe( 'LinkEngine', () => {
 
 			editor.setData( '<a href="url">foo</a>bar' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
 		} );
@@ -79,7 +78,7 @@ describe( 'LinkEngine', () => {
 		it( 'should not pick up `<a name="foo">`', () => {
 			editor.setData( '<p><a name="foo">foo</a>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foobar</paragraph>' );
 		} );
 
@@ -87,7 +86,7 @@ describe( 'LinkEngine', () => {
 		it( 'should pick up `<a href="">`', () => {
 			editor.setData( '<p><a href="">foo</a>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text linkHref="">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><a href="">foo</a>bar</p>' );
@@ -96,26 +95,26 @@ describe( 'LinkEngine', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( doc, '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
+			setModelData( model, '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><a href="url">foo</a>bar</p>' );
 		} );
 
 		it( 'should convert to `LinkElement` instance', () => {
-			setModelData( doc, '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
+			setModelData( model, '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
 			expect( editor.editing.view.getRoot().getChild( 0 ).getChild( 0 ) ).to.be.instanceof( LinkElement );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/121
 		it( 'should should set priority for `linkHref` higher than all other attribute elements', () => {
-			editor.document.schema.allow( { name: '$inline', attributes: [ 'foo' ], inside: '$block' } );
+			model.schema.allow( { name: '$inline', attributes: [ 'foo' ], inside: '$block' } );
 
 			buildModelConverter().for( editor.data.modelToView )
 				.fromAttribute( 'foo' )
 				.toElement( 'f' );
 
-			setModelData( doc,
+			setModelData( model,
 				'<paragraph>' +
 					'<$text linkHref="url">a</$text><$text foo="true" linkHref="url">b</$text><$text linkHref="url">c</$text>' +
 				'</paragraph>' );
