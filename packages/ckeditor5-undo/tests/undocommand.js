@@ -6,18 +6,20 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import UndoCommand from '../src/undocommand';
 import { itemAt, getText } from '@ckeditor/ckeditor5-engine/tests/model/_utils/utils';
 
 describe( 'UndoCommand', () => {
-	let editor, doc, root, undo;
+	let editor, model, doc, root, undo;
 
 	beforeEach( () => {
 		editor = new ModelTestEditor();
 		undo = new UndoCommand( editor );
 
-		doc = editor.document;
+		model = editor.model;
+		doc = model.document;
 
 		root = doc.getRoot();
 	} );
@@ -38,10 +40,12 @@ describe( 'UndoCommand', () => {
 				 [root]
 				 - {}
 				 */
-				editor.document.selection.setRanges( [ r( 0, 0 ) ] );
-				batch0 = doc.batch();
+				editor.model.document.selection.setRanges( [ r( 0, 0 ) ] );
+				batch0 = new Batch();
 				undo.addBatch( batch0 );
-				batch0.insertText( 'foobar', p( 0 ) );
+				model.enqueueChange( batch0, writer => {
+					writer.insertText( 'foobar', p( 0 ) );
+				} );
 
 				/*
 				 [root]
@@ -53,10 +57,12 @@ describe( 'UndoCommand', () => {
 				 - r{}
 				 */
 				// Let's make things spicy and this time, make a backward selection.
-				editor.document.selection.setRanges( [ r( 2, 4 ) ], true );
-				batch1 = doc.batch();
+				editor.model.document.selection.setRanges( [ r( 2, 4 ) ], true );
+				batch1 = new Batch();
 				undo.addBatch( batch1 );
-				batch1.setAttribute( 'key', 'value', r( 2, 4 ) );
+				model.enqueueChange( batch1, writer => {
+					writer.setAttribute( 'key', 'value', r( 2, 4 ) );
+				} );
 
 				/*
 				 [root]
@@ -67,10 +73,12 @@ describe( 'UndoCommand', () => {
 				 - a
 				 - r
 				 */
-				editor.document.selection.setRanges( [ r( 1, 3 ) ] );
-				batch2 = doc.batch();
+				editor.model.document.selection.setRanges( [ r( 1, 3 ) ] );
+				batch2 = new Batch();
 				undo.addBatch( batch2 );
-				batch2.move( r( 1, 3 ), p( 6 ) );
+				model.enqueueChange( batch2, writer => {
+					writer.move( r( 1, 3 ), p( 6 ) );
+				} );
 
 				/*
 				 [root]
@@ -81,10 +89,12 @@ describe( 'UndoCommand', () => {
 				 - {o
 				 - o} (key: value)
 				 */
-				editor.document.selection.setRanges( [ r( 1, 4 ) ] );
-				batch3 = doc.batch();
+				editor.model.document.selection.setRanges( [ r( 1, 4 ) ] );
+				batch3 = new Batch();
 				undo.addBatch( batch3 );
-				batch3.wrap( r( 1, 4 ), 'p' );
+				model.enqueueChange( batch3, writer => {
+					writer.wrap( r( 1, 4 ), 'p' );
+				} );
 
 				/*
 				 [root]
@@ -96,8 +106,10 @@ describe( 'UndoCommand', () => {
 				 - o
 				 - o (key: value)
 				 */
-				editor.document.selection.setRanges( [ r( 0, 1 ) ] );
-				batch2.move( r( 0, 1 ), p( 3 ) );
+				editor.model.document.selection.setRanges( [ r( 0, 1 ) ] );
+				model.enqueueChange( batch2, writer => {
+					writer.move( r( 0, 1 ), p( 3 ) );
+				} );
 
 				/*
 				 [root]
@@ -109,7 +121,7 @@ describe( 'UndoCommand', () => {
 				 - f
 				 - o{} (key: value)
 				 */
-				editor.document.selection.setRanges( [ r( 4, 4 ) ] );
+				editor.model.document.selection.setRanges( [ r( 4, 4 ) ] );
 			} );
 
 			it( 'should revert changes done by deltas from the batch that was most recently added to the command stack', () => {
@@ -130,8 +142,8 @@ describe( 'UndoCommand', () => {
 				expect( itemAt( root, 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
 				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
-				expect( editor.document.selection.getFirstRange().isEqual( r( 0, 3 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 3 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.false;
 
 				undo.execute();
 
@@ -152,8 +164,8 @@ describe( 'UndoCommand', () => {
 
 				// Since selection restoring is not 100% accurate, selected range is not perfectly correct
 				// with what is expected in comment above. The correct result would be if range was [ 1 ] - [ 3 ].
-				expect( editor.document.selection.getFirstRange().isEqual( r( 0, 3 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 3 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.false;
 
 				undo.execute();
 
@@ -172,8 +184,8 @@ describe( 'UndoCommand', () => {
 				expect( itemAt( root, 2 ).hasAttribute( 'key' ) ).to.be.false;
 				expect( itemAt( root, 3 ).hasAttribute( 'key' ) ).to.be.false;
 
-				expect( editor.document.selection.getFirstRange().isEqual( r( 2, 4 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.true;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 2, 4 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.true;
 
 				undo.execute();
 
@@ -183,7 +195,7 @@ describe( 'UndoCommand', () => {
 				 */
 
 				expect( root.childCount ).to.equal( 0 );
-				expect( editor.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
 			} );
 
 			it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert set attribute)', () => {
@@ -210,8 +222,8 @@ describe( 'UndoCommand', () => {
 
 				// Selection is only partially restored because the range got broken.
 				// The selection would have to best on letter "b" and letter "o", but it is set only on letter "b".
-				expect( editor.document.selection.getFirstRange().isEqual( r( [ 0, 0 ], [ 0, 1 ] ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.true;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( [ 0, 0 ], [ 0, 1 ] ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.true;
 			} );
 
 			it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert insert foobar)', () => {
@@ -228,8 +240,8 @@ describe( 'UndoCommand', () => {
 				expect( root.childCount ).to.equal( 1 );
 				expect( itemAt( root, 0 ).name ).to.equal( 'p' );
 
-				expect( editor.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.false;
 
 				undo.execute( batch1 );
 				// Remove attributes.
@@ -240,8 +252,8 @@ describe( 'UndoCommand', () => {
 				expect( itemAt( root, 0 ).name ).to.equal( 'p' );
 
 				// Operations for undoing that batch were working on graveyard so document selection should not change.
-				expect( editor.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.false;
 
 				expect( doc.graveyard.maxOffset ).to.equal( 6 );
 
@@ -253,20 +265,23 @@ describe( 'UndoCommand', () => {
 				undo.execute( batch3 );
 				expect( root.maxOffset ).to.equal( 0 );
 
-				expect( editor.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.false;
 			} );
 
 			it( 'should omit deltas with non-document operations', () => {
-				const batch = doc.batch();
-				const element = batch.createElement( 'p' );
+				let element;
 
-				undo.addBatch( batch );
+				model.change( writer => {
+					element = writer.createElement( 'p' );
 
-				batch.setAttribute( 'foo', 'bar', element );
-				batch.setAttribute( 'foo', 'bar', root );
+					undo.addBatch( writer.batch );
 
-				undo.execute();
+					writer.setAttribute( 'foo', 'bar', element );
+					writer.setAttribute( 'foo', 'bar', root );
+
+					undo.execute();
+				} );
 
 				expect( element.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( root.getAttribute( 'foo' ) ).to.not.equal( 'bar' );
@@ -288,16 +303,20 @@ describe( 'UndoCommand', () => {
 			root.appendChildren( new Text( 'abcdef' ) );
 			expect( getCaseText( root ) ).to.equal( 'abcdef' );
 
-			editor.document.selection.setRanges( [ r( 1, 4 ) ] );
-			const batch0 = doc.batch();
+			editor.model.document.selection.setRanges( [ r( 1, 4 ) ] );
+			const batch0 = new Batch();
 			undo.addBatch( batch0 );
-			batch0.setAttribute( 'uppercase', true, r( 1, 4 ) );
+			model.enqueueChange( batch0, writer => {
+				writer.setAttribute( 'uppercase', true, r( 1, 4 ) );
+			} );
 			expect( getCaseText( root ) ).to.equal( 'aBCDef' );
 
-			editor.document.selection.setRanges( [ r( 3, 4 ) ] );
-			const batch1 = doc.batch();
+			editor.model.document.selection.setRanges( [ r( 3, 4 ) ] );
+			const batch1 = new Batch();
 			undo.addBatch( batch1 );
-			batch1.move( r( 3, 4 ), p( 1 ) );
+			model.enqueueChange( batch1, writer => {
+				writer.move( r( 3, 4 ), p( 1 ) );
+			} );
 			expect( getCaseText( root ) ).to.equal( 'aDBCef' );
 
 			undo.execute( batch0 );
@@ -305,7 +324,7 @@ describe( 'UndoCommand', () => {
 			// After undo-attr: acdbef <--- "cdb" should be selected, it would look weird if only "cd" or "b" is selected
 			// but the whole unbroken part "cdb" changed attribute.
 			expect( getCaseText( root ) ).to.equal( 'adbcef' );
-			expect( editor.document.selection.getFirstRange().isEqual( r( 1, 4 ) ) ).to.be.true;
+			expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 4 ) ) ).to.be.true;
 		} );
 	} );
 } );

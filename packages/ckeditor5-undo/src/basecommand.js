@@ -8,6 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 
 /**
  * Base class for undo feature commands: {@link module:undo/undocommand~UndoCommand} and {@link module:undo/redocommand~RedoCommand}.
@@ -56,7 +57,7 @@ export default class BaseCommand extends Command {
 	 * @param {module:engine/model/batch~Batch} batch The batch to add.
 	 */
 	addBatch( batch ) {
-		const docSelection = this.editor.document.selection;
+		const docSelection = this.editor.model.document.selection;
 
 		const selection = {
 			ranges: docSelection.hasOwnRange ? Array.from( docSelection.getRanges() ) : [],
@@ -84,7 +85,7 @@ export default class BaseCommand extends Command {
 	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltas Deltas which has been applied since selection has been stored.
 	 */
 	_restoreSelection( ranges, isBackward, deltas ) {
-		const document = this.editor.document;
+		const document = this.editor.model.document;
 
 		// This will keep the transformed selection ranges.
 		const selectionRanges = [];
@@ -121,10 +122,11 @@ export default class BaseCommand extends Command {
 	 * @param {module:engine/model/batch~Batch} batchToUndo The batch to be undone.
 	 */
 	_undo( batchToUndo ) {
-		const document = this.editor.document;
+		const model = this.editor.model;
+		const document = model.document;
 
 		// All changes done by the command execution will be saved as one batch.
-		const undoingBatch = document.batch();
+		const undoingBatch = new Batch();
 		this._createdBatches.add( undoingBatch );
 
 		const deltasToUndo = batchToUndo.deltas.slice();
@@ -156,7 +158,7 @@ export default class BaseCommand extends Command {
 
 					// Now, apply all operations of the delta.
 					for ( const operation of delta.operations ) {
-						document.applyOperation( operation );
+						model.applyOperation( operation );
 					}
 
 					document.history.setDeltaAsUndone( deltaToUndo, delta );

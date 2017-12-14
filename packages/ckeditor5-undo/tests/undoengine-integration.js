@@ -9,6 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import UndoEngine from '../src/undoengine';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -24,7 +25,7 @@ import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildv
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'UndoEngine integration', () => {
-	let editor, doc, root, div;
+	let editor, model, doc, root, div;
 
 	beforeEach( () => {
 		div = document.createElement( 'div' );
@@ -34,10 +35,11 @@ describe( 'UndoEngine integration', () => {
 			.then( newEditor => {
 				editor = newEditor;
 
-				doc = editor.document;
+				model = editor.model;
+				doc = model.document;
 
 				// Add "div feature".
-				doc.schema.registerItem( 'div', '$block' );
+				model.schema.registerItem( 'div', '$block' );
 				buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 
@@ -50,11 +52,11 @@ describe( 'UndoEngine integration', () => {
 	}
 
 	function input( input ) {
-		setData( doc, input );
+		setData( model, input );
 	}
 
 	function output( output ) {
-		expect( getData( doc ) ).to.equal( output );
+		expect( getData( model ) ).to.equal( output );
 	}
 
 	function undoDisabled() {
@@ -69,8 +71,8 @@ describe( 'UndoEngine integration', () => {
 		it( 'add and undo', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().insertText( 'zzz', doc.selection.getFirstPosition() );
+			model.change( writer => {
+				writer.insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
@@ -83,18 +85,16 @@ describe( 'UndoEngine integration', () => {
 		it( 'multiple adding and undo', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				const batch = doc.batch();
-
-				batch.insertText( 'zzz', doc.selection.getFirstPosition() );
-				batch.insertText( 'xxx', new Position( root, [ 1, 0 ] ) );
+			model.change( writer => {
+				writer.insertText( 'zzz', doc.selection.getFirstPosition() );
+				writer.insertText( 'xxx', new Position( root, [ 1, 0 ] ) );
 			} );
 
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>xxxbar</paragraph>' );
 
-			doc.enqueueChanges( () => {
+			model.change( writer => {
 				setSelection( [ 1, 0 ], [ 1, 0 ] );
-				doc.batch().insertText( 'yyy', doc.selection.getFirstPosition() );
+				writer.insertText( 'yyy', doc.selection.getFirstPosition() );
 			} );
 
 			output( '<paragraph>fozzzo</paragraph><paragraph>yyy[]xxxbar</paragraph>' );
@@ -111,14 +111,14 @@ describe( 'UndoEngine integration', () => {
 		it( 'multiple adding mixed with undo', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().insertText( 'zzz', doc.selection.getFirstPosition() );
+			model.change( writer => {
+				writer.insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
+			model.change( writer => {
 				setSelection( [ 1, 0 ], [ 1, 0 ] );
-				doc.batch().insertText( 'yyy', doc.selection.getFirstPosition() );
+				writer.insertText( 'yyy', doc.selection.getFirstPosition() );
 			} );
 
 			output( '<paragraph>fozzzo</paragraph><paragraph>yyy[]bar</paragraph>' );
@@ -126,9 +126,9 @@ describe( 'UndoEngine integration', () => {
 			editor.execute( 'undo' );
 			output( '<paragraph>fozzzo</paragraph><paragraph>[]bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
+			model.change( writer => {
 				setSelection( [ 0, 0 ], [ 0, 0 ] );
-				doc.batch().insertText( 'xxx', doc.selection.getFirstPosition() );
+				writer.insertText( 'xxx', doc.selection.getFirstPosition() );
 			} );
 			output( '<paragraph>xxx[]fozzzo</paragraph><paragraph>bar</paragraph>' );
 
@@ -144,14 +144,14 @@ describe( 'UndoEngine integration', () => {
 		it( 'multiple remove and undo', () => {
 			input( '<paragraph>[]foo</paragraph><paragraph>bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
+			model.change( writer => {
+				writer.remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
 			} );
 			output( '<paragraph>[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
+			model.change( writer => {
 				setSelection( [ 1, 1 ], [ 1, 1 ] );
-				doc.batch().remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
+				writer.remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
 			} );
 			output( '<paragraph>o</paragraph><paragraph>b[]</paragraph>' );
 
@@ -169,14 +169,14 @@ describe( 'UndoEngine integration', () => {
 		it( 'add and remove different parts and undo', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().insertText( 'zzz', doc.selection.getFirstPosition() );
+			model.change( writer => {
+				writer.insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
+			model.change( writer => {
 				setSelection( [ 1, 2 ], [ 1, 2 ] );
-				doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 1, 1 ] ), 1 ) );
+				writer.remove( Range.createFromPositionAndShift( new Position( root, [ 1, 1 ] ), 1 ) );
 			} );
 			output( '<paragraph>fozzzo</paragraph><paragraph>b[]r</paragraph>' );
 
@@ -192,13 +192,13 @@ describe( 'UndoEngine integration', () => {
 		it( 'add and remove same part and undo', () => {
 			input( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().insertText( 'zzz', doc.selection.getFirstPosition() );
+			model.change( writer => {
+				writer.insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().remove( Range.createFromPositionAndShift( new Position( root, [ 0, 2 ] ), 3 ) );
+			model.change( writer => {
+				writer.remove( Range.createFromPositionAndShift( new Position( root, [ 0, 2 ] ), 3 ) );
 			} );
 			output( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
@@ -214,8 +214,8 @@ describe( 'UndoEngine integration', () => {
 		it( 'undo remove all content', () => {
 			input( '<paragraph>foo[]</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().remove( Range.createIn( root ) );
+			model.change( writer => {
+				writer.remove( Range.createIn( root ) );
 			} );
 			output( '<paragraph>[]</paragraph>' ); // All hail our king and savior, autoparagraphing!
 
@@ -228,8 +228,8 @@ describe( 'UndoEngine integration', () => {
 		it( 'undo insert first content', () => {
 			input( '' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().insertElement( 'heading1', doc.selection.getFirstPosition() );
+			model.change( writer => {
+				writer.insertElement( 'heading1', doc.selection.getFirstPosition() );
 			} );
 			output( '<heading1>[]</heading1>' );
 
@@ -246,12 +246,10 @@ describe( 'UndoEngine integration', () => {
 			const p = root.getChild( 0 );
 			const pos = new Position( root, [ 0 ] );
 
-			doc.enqueueChanges( () => {
-				const batch = doc.batch();
-
-				batch.remove( p );
-				batch.insertElement( 'heading1', pos );
-				batch.insertElement( 'heading2', pos.getShiftedBy( 1 ) );
+			model.change( writer => {
+				writer.remove( p );
+				writer.insertElement( 'heading1', pos );
+				writer.insertElement( 'heading2', pos.getShiftedBy( 1 ) );
 			} );
 
 			output( '<heading1>[]</heading1><heading2></heading2>' );
@@ -268,13 +266,13 @@ describe( 'UndoEngine integration', () => {
 		it( 'move same content twice then undo', () => {
 			input( '<paragraph>f[o]z</paragraph><paragraph>bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
+			model.change( writer => {
+				writer.move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
 			} );
 			output( '<paragraph>fz</paragraph><paragraph>[o]bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0, 2 ] ) );
+			model.change( writer => {
+				writer.move( doc.selection.getFirstRange(), new Position( root, [ 0, 2 ] ) );
 			} );
 			output( '<paragraph>fz[o]</paragraph><paragraph>bar</paragraph>' );
 
@@ -290,14 +288,14 @@ describe( 'UndoEngine integration', () => {
 		it( 'move content and new parent then undo', () => {
 			input( '<paragraph>f[o]z</paragraph><paragraph>bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
+			model.change( writer => {
+				writer.move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
 			} );
 			output( '<paragraph>fz</paragraph><paragraph>[o]bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
+			model.change( writer => {
 				setSelection( [ 1 ], [ 2 ] );
-				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
+				writer.move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
 			} );
 			output( '[<paragraph>obar</paragraph>]<paragraph>fz</paragraph>' );
 
@@ -315,14 +313,14 @@ describe( 'UndoEngine integration', () => {
 		it( 'attributes then insert inside then undo', () => {
 			input( '<paragraph>fo[ob]ar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().setAttribute( 'bold', true, doc.selection.getFirstRange() );
+			model.change( writer => {
+				writer.setAttribute( 'bold', true, doc.selection.getFirstRange() );
 			} );
 			output( '<paragraph>fo[<$text bold="true">ob</$text>]ar</paragraph>' );
 
-			doc.enqueueChanges( () => {
+			model.change( writer => {
 				setSelection( [ 0, 3 ], [ 0, 3 ] );
-				doc.batch().insertText( 'zzz', doc.selection.getFirstPosition() );
+				writer.insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
 			output( '<paragraph>fo<$text bold="true">o</$text>zzz<$text bold="true">[]b</$text>ar</paragraph>' );
 			expect( doc.selection.getAttribute( 'bold' ) ).to.true;
@@ -340,11 +338,11 @@ describe( 'UndoEngine integration', () => {
 
 	describe( 'wrapping, unwrapping, merging, splitting', () => {
 		it( 'wrap and undo', () => {
-			doc.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.allow( { name: '$text', inside: '$root' } );
 			input( 'fo[zb]ar' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().wrap( doc.selection.getFirstRange(), 'paragraph' );
+			model.change( writer => {
+				writer.wrap( doc.selection.getFirstRange(), 'paragraph' );
 			} );
 			output( 'fo<paragraph>[zb]</paragraph>ar' );
 
@@ -355,18 +353,18 @@ describe( 'UndoEngine integration', () => {
 		} );
 
 		it( 'wrap, move and undo', () => {
-			doc.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.allow( { name: '$text', inside: '$root' } );
 			input( 'fo[zb]ar' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().wrap( doc.selection.getFirstRange(), 'paragraph' );
+			model.change( writer => {
+				writer.wrap( doc.selection.getFirstRange(), 'paragraph' );
 			} );
 			// Would be better if selection was inside P.
 			output( 'fo<paragraph>[zb]</paragraph>ar' );
 
-			doc.enqueueChanges( () => {
+			model.change( writer => {
 				setSelection( [ 2, 0 ], [ 2, 1 ] );
-				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
+				writer.move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
 			} );
 			output( '[z]fo<paragraph>b</paragraph>ar' );
 
@@ -382,8 +380,8 @@ describe( 'UndoEngine integration', () => {
 		it( 'unwrap and undo', () => {
 			input( '<paragraph>foo[]bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().unwrap( doc.selection.getFirstPosition().parent );
+			model.change( writer => {
+				writer.unwrap( doc.selection.getFirstPosition().parent );
 			} );
 			output( 'foo[]bar' );
 
@@ -396,8 +394,8 @@ describe( 'UndoEngine integration', () => {
 		it( 'merge and undo', () => {
 			input( '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().merge( new Position( root, [ 1 ] ) );
+			model.change( writer => {
+				writer.merge( new Position( root, [ 1 ] ) );
 				// Because selection is stuck with <paragraph> it ends up in graveyard. We have to manually move it to correct node.
 				setSelection( [ 0, 3 ], [ 0, 3 ] );
 			} );
@@ -412,8 +410,8 @@ describe( 'UndoEngine integration', () => {
 		it( 'split and undo', () => {
 			input( '<paragraph>foo[]bar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				doc.batch().split( doc.selection.getFirstPosition() );
+			model.change( writer => {
+				writer.split( doc.selection.getFirstPosition() );
 				// Because selection is stuck with <paragraph> it ends up in wrong node. We have to manually move it to correct node.
 				setSelection( [ 1, 0 ], [ 1, 0 ] );
 			} );
@@ -771,13 +769,19 @@ describe( 'UndoEngine integration', () => {
 		it( 'rename leaks to other elements on undo #1', () => {
 			input( '<heading1>[]Foo</heading1><paragraph>Bar</paragraph>' );
 
-			doc.batch().rename( root.getChild( 0 ), 'paragraph' );
+			model.change( writer => {
+				writer.rename( root.getChild( 0 ), 'paragraph' );
+			} );
 			output( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 
-			doc.batch().split( Position.createAt( root.getChild( 0 ), 1 ) );
+			model.change( writer => {
+				writer.split( Position.createAt( root.getChild( 0 ), 1 ) );
+			} );
 			output( '<paragraph>[]F</paragraph><paragraph>oo</paragraph><paragraph>Bar</paragraph>' );
 
-			doc.batch().merge( Position.createAt( root, 2 ) );
+			model.change( writer => {
+				writer.merge( Position.createAt( root, 2 ) );
+			} );
 			output( '<paragraph>[]F</paragraph><paragraph>ooBar</paragraph>' );
 
 			editor.execute( 'undo' );
@@ -794,10 +798,14 @@ describe( 'UndoEngine integration', () => {
 		it( 'rename leaks to other elements on undo #2', () => {
 			input( '<heading1>[]Foo</heading1><paragraph>Bar</paragraph>' );
 
-			doc.batch().rename( root.getChild( 0 ), 'heading2' );
+			model.change( writer => {
+				writer.rename( root.getChild( 0 ), 'heading2' );
+			} );
 			output( '<heading2>[]Foo</heading2><paragraph>Bar</paragraph>' );
 
-			doc.batch().merge( Position.createAt( root, 1 ) );
+			model.change( writer => {
+				writer.merge( Position.createAt( root, 1 ) );
+			} );
 			output( '<heading2>[]FooBar</heading2>' );
 
 			editor.execute( 'undo' );
@@ -811,10 +819,14 @@ describe( 'UndoEngine integration', () => {
 		it( 'merge, rename, undo, undo is correct', () => {
 			input( '<heading1>[]Foo</heading1><paragraph>Bar</paragraph>' );
 
-			doc.batch().merge( Position.createAt( root, 1 ) );
+			model.change( writer => {
+				writer.merge( Position.createAt( root, 1 ) );
+			} );
 			output( '<heading1>[]FooBar</heading1>' );
 
-			doc.batch().rename( root.getChild( 0 ), 'heading2' );
+			model.change( writer => {
+				writer.rename( root.getChild( 0 ), 'heading2' );
+			} );
 			output( '<heading2>[]FooBar</heading2>' );
 
 			editor.execute( 'undo' );
@@ -828,10 +840,14 @@ describe( 'UndoEngine integration', () => {
 		it( 'wrap, split, undo, undo is correct', () => {
 			input( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 
-			doc.batch().wrap( Range.createIn( root ), 'div' );
+			model.change( writer => {
+				writer.wrap( Range.createIn( root ), 'div' );
+			} );
 			output( '<div><paragraph>[]Foo</paragraph><paragraph>Bar</paragraph></div>' );
 
-			doc.batch().split( new Position( root, [ 0, 0, 1 ] ) );
+			model.change( writer => {
+				writer.split( new Position( root, [ 0, 0, 1 ] ) );
+			} );
 			output( '<div><paragraph>[]F</paragraph><paragraph>oo</paragraph><paragraph>Bar</paragraph></div>' );
 
 			editor.execute( 'undo' );
@@ -878,7 +894,7 @@ describe( 'UndoEngine integration', () => {
 
 			editor.execute( 'enter' );
 
-			doc.enqueueChanges( () => {
+			model.change( () => {
 				const range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 1, 3 ] ) );
 
 				doc.selection.setRanges( [ range ] );
@@ -914,17 +930,17 @@ describe( 'UndoEngine integration', () => {
 
 		// ckeditor5-engine#t/1065
 		it( 'undo paste into non empty element should not throw and be correct', () => {
-			doc.enqueueChanges( () => {
+			model.change( () => {
 				input( '<paragraph>Foo[]</paragraph>' );
 			} );
 
-			doc.enqueueChanges( () => {
+			model.change( () => {
 				pasteHtml( editor, '<p>a</p><p>b</p>' );
 			} );
 
 			output( '<paragraph>Fooa</paragraph><paragraph>b[]</paragraph>' );
 
-			doc.enqueueChanges( () => {
+			model.change( () => {
 				pasteHtml( editor, '<p>c</p><p>d</p>' );
 			} );
 
@@ -942,9 +958,7 @@ describe( 'UndoEngine integration', () => {
 		it( 'deleteContent between two nodes', () => {
 			input( '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
 
-			doc.enqueueChanges( () => {
-				editor.data.deleteContent( doc.selection, doc.batch() );
-			} );
+			editor.data.deleteContent( doc.selection );
 			output( '<paragraph>fo[]ar</paragraph>' );
 
 			editor.execute( 'undo' );
@@ -958,9 +972,12 @@ describe( 'UndoEngine integration', () => {
 			const gy = doc.graveyard;
 			const p = doc.getRoot().getChild( 0 );
 
-			doc.enqueueChanges( () => {
-				doc.batch().remove( p );
-				doc.batch().setAttribute( 'bold', true, p );
+			model.change( writer => {
+				writer.remove( p );
+			} );
+
+			model.change( writer => {
+				writer.setAttribute( 'bold', true, p );
 			} );
 
 			editor.execute( 'undo' );
@@ -979,18 +996,18 @@ describe( 'UndoEngine integration', () => {
 			// Remove children from graveyard because they are inserted there after `input` call.
 			doc.graveyard.removeChildren( 0, doc.graveyard.childCount );
 
-			const batchWithMerge = doc.batch();
+			const batchWithMerge = new Batch();
 
-			doc.enqueueChanges( () => {
-				batchWithMerge.merge( new Position( root, [ 1 ] ) );
-
-				const split = batchWithMerge.deltas[ 0 ].getReversed();
-				const batch = doc.batch();
-				batch.addDelta( split );
-
-				doc.applyOperation( split.operations[ 0 ] );
-				doc.applyOperation( split.operations[ 1 ] );
+			model.enqueueChange( batchWithMerge, writer => {
+				writer.merge( new Position( root, [ 1 ] ) );
 			} );
+
+			const split = batchWithMerge.deltas[ 0 ].getReversed();
+			const batch = new Batch();
+			batch.addDelta( split );
+
+			model.applyOperation( split.operations[ 0 ] );
+			model.applyOperation( split.operations[ 1 ] );
 
 			output( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 
