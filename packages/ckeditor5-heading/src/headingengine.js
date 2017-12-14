@@ -9,7 +9,10 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { containerElementToView, viewToContainerElement } from '@ckeditor/ckeditor5-engine/src/conversion/containerelementconverters.js';
+import {
+	containerElementToView,
+	viewToContainerElement
+} from '@ckeditor/ckeditor5-engine/src/conversion/configurationdefinedconverters';
 
 import HeadingCommand from './headingcommand';
 
