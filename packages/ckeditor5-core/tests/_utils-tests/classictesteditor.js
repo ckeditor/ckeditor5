@@ -42,7 +42,7 @@ describe( 'ClassicTestEditor', () => {
 		it( 'creates model and view roots', () => {
 			const editor = new ClassicTestEditor( editorElement );
 
-			expect( editor.document.getRoot() ).to.have.property( 'name', '$root' );
+			expect( editor.model.document.getRoot() ).to.have.property( 'name', '$root' );
 			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
@@ -81,13 +81,13 @@ describe( 'ClassicTestEditor', () => {
 
 			class PluginTextInRoot extends Plugin {
 				init() {
-					this.editor.document.schema.allow( { name: '$text', inside: '$root' } );
+					this.editor.model.schema.allow( { name: '$text', inside: '$root' } );
 				}
 			}
 
 			return ClassicTestEditor.create( editorElement, { plugins: [ PluginTextInRoot ] } )
 				.then( editor => {
-					expect( getData( editor.document, { withoutSelection: true } ) ).to.equal( 'foo' );
+					expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( 'foo' );
 				} );
 		} );
 

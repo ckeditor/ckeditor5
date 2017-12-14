@@ -26,7 +26,7 @@ describe( 'VirtualTestEditor', () => {
 		it( 'creates model and view roots', () => {
 			const editor = new VirtualTestEditor( { foo: 1 } );
 
-			expect( editor.document.getRoot() ).to.have.property( 'name', '$root' );
+			expect( editor.model.document.getRoot() ).to.have.property( 'name', '$root' );
 			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );

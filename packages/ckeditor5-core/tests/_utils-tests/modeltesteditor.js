@@ -28,7 +28,7 @@ describe( 'ModelTestEditor', () => {
 		it( 'creates model and view roots', () => {
 			const editor = new ModelTestEditor( { foo: 1 } );
 
-			expect( editor.document.getRoot() ).to.have.property( 'name', '$root' );
+			expect( editor.model.document.getRoot() ).to.have.property( 'name', '$root' );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 	} );
@@ -76,16 +76,16 @@ describe( 'ModelTestEditor', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					editor.document.schema.allow( { name: '$text', inside: '$root' } );
+					editor.model.schema.allow( { name: '$text', inside: '$root' } );
 				} );
 		} );
 
 		it( 'should set data of the first root', () => {
-			editor.document.createRoot( '$root', 'secondRoot' );
+			editor.model.document.createRoot( '$root', 'secondRoot' );
 
 			editor.setData( 'foo' );
 
-			expect( getData( editor.document, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
+			expect( getData( editor.model, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -97,12 +97,12 @@ describe( 'ModelTestEditor', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					editor.document.schema.allow( { name: '$text', inside: '$root' } );
+					editor.model.schema.allow( { name: '$text', inside: '$root' } );
 				} );
 		} );
 
 		it( 'should set data of the first root', () => {
-			setData( editor.document, 'foo' );
+			setData( editor.model, 'foo' );
 
 			expect( editor.getData() ).to.equal( 'foo' );
 		} );

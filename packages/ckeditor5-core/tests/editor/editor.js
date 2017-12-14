@@ -193,7 +193,7 @@ describe( 'Editor', () => {
 			const editor = new Editor();
 
 			const spy1 = sinon.spy( editor.data, 'destroy' );
-			const spy2 = sinon.spy( editor.document, 'destroy' );
+			const spy2 = sinon.spy( editor.model, 'destroy' );
 			const spy3 = sinon.spy( editor.plugins, 'destroy' );
 
 			return editor.destroy()
