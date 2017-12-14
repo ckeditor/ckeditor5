@@ -22,8 +22,8 @@ ClassicEditor
 		const contextualToolbar = editor.plugins.get( 'ContextualToolbar' );
 
 		contextualToolbar.on( 'show', evt => {
-			const selectionRange = editor.document.selection.getFirstRange();
-			const blockRange = Range.createOn( editor.document.getRoot().getChild( 0 ) );
+			const selectionRange = editor.model.document.selection.getFirstRange();
+			const blockRange = Range.createOn( editor.model.document.getRoot().getChild( 0 ) );
 
 			if ( selectionRange.containsRange( blockRange ) || selectionRange.isIntersecting( blockRange ) ) {
 				evt.stop();
