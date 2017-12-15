@@ -182,7 +182,7 @@ Note: the number of options has been reduced on purpose. We understood that conf
 | [tabSpaces](/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-tabSpaces) | N/A |
 | [templates](/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-templates) <br> [templates_files](/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-templates_files) <br> [templates_replaceContent](/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-templates_replaceContent) | N/A |
 | [title](/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-title) | N/A |
-| [toolbar](/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-toolbar) | <p>{@link module:core/editor/editorconfig~EditorConfig#toolbar `toolbar`}</p><p>See also {@link module:core/editor/editorconfig~contextualToolbar `contextualToolbar`} to define the toolbar of a Balloon editor.</p> |
+| [toolbar](/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-toolbar) | <p>{@link module:core/editor/editorconfig~EditorConfig#toolbar `toolbar`}</p><p>See also {@link module:core/editor/editorconfig~EditorConfig#contextualToolbar `contextualToolbar`} to define the toolbar of a Balloon editor.</p> |
 | [toolbarCanCollapse](/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-toolbarCanCollapse) | N/A |
 | [toolbarGroupCycling](/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-toolbarGroupCycling) <br> [toolbarGroups](/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-toolbarGroups) | N/A |
 | [toolbarLocation](/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-toolbarLocation) | N/A. Can be achieved by writing an editor with a customized UI view. |
