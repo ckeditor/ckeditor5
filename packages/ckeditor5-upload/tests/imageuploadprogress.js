@@ -97,7 +97,7 @@ describe( 'ImageUploadProgress', () => {
 			);
 
 			done();
-		} );
+		}, { priority: 'lowest' } );
 
 		nativeReaderMock.mockSuccess( base64Sample );
 	} );
@@ -117,7 +117,7 @@ describe( 'ImageUploadProgress', () => {
 			);
 
 			done();
-		} );
+		}, { priority: 'lowest' } );
 
 		nativeReaderMock.mockSuccess( base64Sample );
 	} );
@@ -135,7 +135,7 @@ describe( 'ImageUploadProgress', () => {
 				);
 
 				done();
-			} );
+			}, { priority: 'lowest' } );
 
 			adapterMock.mockSuccess( { default: 'image.png' } );
 		} );
@@ -158,7 +158,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should not process attribute change if it is already consumed', () => {
-		editor.editing.modelToView.on( 'addAttribute:uploadStatus:image', ( evt, data, consumable ) => {
+		editor.editing.modelToView.on( 'attribute:uploadStatus:image', ( evt, data, consumable ) => {
 			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 		}, { priority: 'highest' } );
 
