@@ -21,21 +21,22 @@ export function modelToViewStyleAttribute( styles ) {
 		const eventType = evt.name.split( ':' )[ 0 ];
 		const consumableType = eventType + ':imageStyle';
 
-		if ( !consumable.test( data.item, consumableType ) ) {
+		if ( !consumable.consume( data.item, consumableType ) ) {
 			return;
 		}
 
 		// Check if there is class name associated with given value.
 		const newStyle = getStyleByName( data.attributeNewValue, styles );
 		const oldStyle = getStyleByName( data.attributeOldValue, styles );
+
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-		const isRemovalHandled = handleRemoval( eventType, oldStyle, viewElement );
-		const isAdditionHandled = handleAddition( eventType, newStyle, viewElement );
+		if ( oldStyle ) {
+			viewElement.removeClass( oldStyle.className );
+		}
 
-		// https://github.com/ckeditor/ckeditor5-image/issues/132
-		if ( isRemovalHandled || isAdditionHandled ) {
-			consumable.consume( data.item, consumableType );
+		if ( newStyle ) {
+			viewElement.addClass( newStyle.className );
 		}
 	};
 }
@@ -102,38 +103,4 @@ function getStyleByName( name, styles ) {
 			return style;
 		}
 	}
-}
-
-// Handles converting removal of the attribute.
-// Returns `true` when handling was processed correctly and further conversion can be performed.
-//
-// @param {String} eventType Type of the event.
-// @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style
-// @param {module:engine/view/element~Element} viewElement
-// @returns {Boolean} Whether the change was handled.
-function handleRemoval( eventType, style, viewElement ) {
-	if ( style && ( eventType == 'changeAttribute' || eventType == 'removeAttribute' ) ) {
-		viewElement.removeClass( style.className );
-
-		return true;
-	}
-
-	return false;
-}
-
-// Handles converting addition of the attribute.
-// Returns `true` when handling was processed correctly and further conversion can be performed.
-//
-// @param {String} eventType Type of the event.
-// @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style
-// @param {module:engine/view/element~Element} viewElement
-// @returns {Boolean} Whether the change was handled.
-function handleAddition( evenType, style, viewElement ) {
-	if ( style && ( evenType == 'addAttribute' || evenType == 'changeAttribute' ) ) {
-		viewElement.addClass( style.className );
-
-		return true;
-	}
-
-	return false;
 }

@@ -98,6 +98,7 @@ describe( 'ImageStyleEngine', () => {
 
 			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<image imageStyle="sideStyle" src="foo.png"></image>' );
+
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image side-class" contenteditable="false">' +
 					'<img src="foo.png"></img>' +
@@ -186,8 +187,8 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		it( 'should not convert from model to view if already consumed: adding attribute', () => {
-			editor.editing.modelToView.on( 'addAttribute:imageStyle', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'addAttribute:imageStyle' );
+			editor.editing.modelToView.on( 'attribute:imageStyle', ( evt, data, consumable ) => {
+				consumable.consume( data.item, 'attribute:imageStyle' );
 			}, { priority: 'high' } );
 
 			setModelData( model, '<image src="foo.png"></image>' );
@@ -202,37 +203,15 @@ describe( 'ImageStyleEngine', () => {
 			);
 		} );
 
-		it( 'should not convert from model to view if already consumed: removing attribute', () => {
-			editor.editing.modelToView.on( 'removeAttribute:imageStyle', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'removeAttribute:imageStyle' );
-			}, { priority: 'high' } );
-
-			setModelData( model, '<image src="foo.png" imageStyle="sideStyle"></image>' );
-			const image = document.getRoot().getChild( 0 );
-
-			model.change( writer => {
-				writer.removeAttribute( 'imageStyle', image );
-			} );
-
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image side-class" contenteditable="false"><img src="foo.png"></img></figure>'
-			);
-		} );
-
-		it( 'should not convert from model to view if already consumed: change attribute', () => {
-			editor.editing.modelToView.on( 'changeAttribute:imageStyle', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'changeAttribute:imageStyle' );
+		it( 'should not set attribute if change was already consumed', () => {
+			editor.editing.modelToView.on( 'attribute:imageStyle', ( evt, data, consumable ) => {
+				consumable.consume( data.item, 'attribute:imageStyle' );
 			}, { priority: 'high' } );
 
 			setModelData( model, '<image src="foo.png" imageStyle="dummyStyle"></image>' );
-			const image = document.getRoot().getChild( 0 );
-
-			model.change( writer => {
-				writer.setAttribute( 'imageStyle', 'sideStyle', image );
-			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget dummy-class image" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
 			);
 		} );
 
