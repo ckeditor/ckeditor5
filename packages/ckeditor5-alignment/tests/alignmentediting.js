@@ -224,19 +224,7 @@ describe( 'AlignmentEditing', () => {
 } );
 
 function blockDefaultConversion( dispatcher ) {
-	dispatcher.on(
-		'addAttribute:alignment',
-		( evt, data, consumable ) => consumable.consume( data.item, eventNameToConsumableType( evt.name ) ),
-		{ 'priority': 'high' }
-	);
-	dispatcher.on(
-		'changeAttribute:alignment',
-		( evt, data, consumable ) => consumable.consume( data.item, eventNameToConsumableType( evt.name ) ),
-		{ 'priority': 'high' }
-	);
-	dispatcher.on(
-		'removeAttribute:alignment',
-		( evt, data, consumable ) => consumable.consume( data.item, eventNameToConsumableType( evt.name ) ),
-		{ 'priority': 'high' }
-	);
+	dispatcher.on( 'attribute:alignment', ( evt, data, consumable ) => {
+		consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
+	}, { 'priority': 'high' } );
 }

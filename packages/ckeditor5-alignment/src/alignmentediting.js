@@ -58,12 +58,8 @@ export default class AlignmentEditing extends Plugin {
 		// Allow alignment attribute on all blocks.
 		schema.allow( { name: '$block', attributes: 'alignment' } );
 
-		attributeToStyleConverter(
-			[ data.modelToView, editing.modelToView ],
-			'alignment',
-			attribute => ( { 'text-align': attribute } ),
-			() => [ 'text-align' ]
-		);
+		data.modelToView.on( 'attribute:alignment', convertStyle() );
+		editing.modelToView.on( 'attribute:alignment', convertStyle() );
 
 		// Convert `text-align` style property from element to model attribute alignment.
 		buildViewConverter()
@@ -122,41 +118,19 @@ export function isSupported( style ) {
 	return AlignmentEditing.supportedStyles.includes( style );
 }
 
-// Defines attribute to style converters.
-// @private
-function attributeToStyleConverter( dispatchers, modelAttributeName, setStyleFn, removeStyleFn ) {
-	for ( const dispatcher of dispatchers ) {
-		dispatcher.on( `addAttribute:${ modelAttributeName }`, setStyle( setStyleFn ) );
-		dispatcher.on( `changeAttribute:${ modelAttributeName }`, setStyle( setStyleFn ) );
-		dispatcher.on( `removeAttribute:${ modelAttributeName }`, removeStyle( removeStyleFn ) );
-	}
-}
-
 // Dispatcher handler responsible for setting style to a view element.
 // @private
-function setStyle( setStyleFn ) {
+function convertStyle() {
 	return ( evt, data, consumable, conversionApi ) => {
 		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
 			return;
 		}
 
-		const styles = setStyleFn( data.attributeNewValue );
-
-		conversionApi.mapper.toViewElement( data.item ).setStyle( styles );
-	};
-}
-
-// Dispatcher handler responsible for removing style attributes from a view element.
-// @private
-function removeStyle( removeStyleFn ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
-			return;
+		if ( data.attributeNewValue ) { // Set style.
+			conversionApi.mapper.toViewElement( data.item ).setStyle( { 'text-align': data.attributeNewValue } );
+		} else { // Remove style.
+			conversionApi.mapper.toViewElement( data.item ).removeStyle( 'text-align' );
 		}
-
-		const styles = removeStyleFn();
-		const viewElement = conversionApi.mapper.toViewElement( data.item );
-		viewElement.removeStyle( ...styles );
 	};
 }
 
