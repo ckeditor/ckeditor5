@@ -114,8 +114,7 @@ export default class AttributeOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	_execute() {
-		// Validation.
+	_validate() {
 		for ( const item of this.range.getItems() ) {
 			if ( this.oldValue !== null && !isEqual( item.getAttribute( this.key ), this.oldValue ) ) {
 				/**
@@ -147,7 +146,12 @@ export default class AttributeOperation extends Operation {
 				);
 			}
 		}
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	_execute() {
 		// If value to set is same as old value, don't do anything.
 		if ( !isEqual( this.oldValue, this.newValue ) ) {
 			// Execution.

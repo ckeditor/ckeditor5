@@ -96,8 +96,10 @@ export default class Document {
 					 * @error document-selection-wrong-position
 					 * @param {module:engine/model/range~Range} range
 					 */
-					throw new CKEditorError( 'document-selection-wrong-position: ' +
-						'Range from document selection starts or ends at incorrect position.', { range } );
+					throw new CKEditorError(
+						'document-selection-wrong-position: Range from document selection starts or ends at incorrect position.',
+						{ range }
+					);
 				}
 			}
 		} );
@@ -117,9 +119,12 @@ export default class Document {
 				 */
 				throw new CKEditorError(
 					'model-document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
-					{ operation } );
+					{ operation }
+				);
 			}
-		}, { priority: 'high' } );
+
+			operation._validate();
+		}, { priority: 'highest' } );
 
 		this.listenTo( model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
@@ -363,7 +368,7 @@ export default class Document {
 	/**
 	 * Fired when document changes by applying an operation.
 	 *
-	 * There are a few types of change:
+	 * There are several types of change:
 	 *
 	 * * 'insert' when nodes are inserted,
 	 * * 'remove' when nodes are removed,
@@ -379,7 +384,7 @@ export default class Document {
 	 * * 'changeRootAttribute' when attribute for root changes.
 	 *
 	 * @event change
-	 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attribute'.
+	 * @param {String} type Change type.
 	 * @param {Object} data Additional information about the change.
 	 * @param {module:engine/model/range~Range} [data.range] Range in model containing changed nodes. Note that the range state is
 	 * after changes has been done, i.e. for 'remove' the range will be in the {@link #graveyard graveyard root}.

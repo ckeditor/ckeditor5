@@ -311,7 +311,8 @@ describe( 'Model', () => {
 			const returnValue = { foo: 'bar' };
 
 			const operation = {
-				_execute: sinon.stub().returns( returnValue )
+				_execute: sinon.stub().returns( returnValue ),
+				_validate: () => true
 			};
 
 			model.applyOperation( operation );

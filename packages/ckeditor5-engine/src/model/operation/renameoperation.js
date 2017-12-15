@@ -86,8 +86,7 @@ export default class RenameOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	_execute() {
-		// Validation.
+	_validate() {
 		const element = this.position.nodeAfter;
 
 		if ( !( element instanceof Element ) ) {
@@ -109,12 +108,15 @@ export default class RenameOperation extends Operation {
 				'rename-operation-wrong-name: Element to change has different name than operation\'s old name.'
 			);
 		}
+	}
 
-		// If value to set is same as old value, don't do anything.
-		if ( element.name != this.newName ) {
-			// Execution.
-			element.name = this.newName;
-		}
+	/**
+	 * @inheritDoc
+	 */
+	_execute() {
+		const element = this.position.nodeAfter;
+
+		element.name = this.newName;
 
 		return { element, oldName: this.oldName };
 	}

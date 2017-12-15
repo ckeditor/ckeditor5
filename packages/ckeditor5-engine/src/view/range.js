@@ -438,7 +438,9 @@ export default class Range {
 	 * @returns {module:engine/view/range~Range}
 	 */
 	static createOn( item ) {
-		return this.createFromPositionAndShift( Position.createBefore( item ), 1 );
+		const size = item.is( 'textProxy' ) ? item.offsetSize : 1;
+
+		return this.createFromPositionAndShift( Position.createBefore( item ), size );
 	}
 
 	/**

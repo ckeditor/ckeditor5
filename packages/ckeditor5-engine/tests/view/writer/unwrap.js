@@ -295,6 +295,33 @@ describe( 'writer', () => {
 			);
 		} );
 
+		it( 'should partially unwrap part of a node', () => {
+			test(
+				'<container:p>' +
+					'[<attribute:b view-priority="1" baz="qux" foo="bar">foo}bar</attribute:b>' +
+				'</container:p>',
+				'<attribute:b view-priority="1" foo="bar"></attribute:b>',
+				'<container:p>' +
+					'[<attribute:b view-priority="1" baz="qux">foo</attribute:b>]' +
+					'<attribute:b view-priority="1" baz="qux" foo="bar">bar</attribute:b>' +
+				'</container:p>'
+			);
+		} );
+
+		it( 'should be merged after being partially unwrapped', () => {
+			test(
+				'<container:p>' +
+					'<attribute:b view-priority="1" baz="qux">xyz</attribute:b>' +
+					'[<attribute:b view-priority="1" baz="qux" foo="bar">foo}bar</attribute:b>' +
+				'</container:p>',
+				'<attribute:b view-priority="1" foo="bar"></attribute:b>',
+				'<container:p>' +
+					'<attribute:b view-priority="1" baz="qux">xyz{foo</attribute:b>]' +
+					'<attribute:b view-priority="1" baz="qux" foo="bar">bar</attribute:b>' +
+				'</container:p>'
+			);
+		} );
+
 		it( 'should unwrap single node in document fragment', () => {
 			test(
 				'<container:p>[<attribute:b view-priority="1">foobar</attribute:b>]</container:p>',

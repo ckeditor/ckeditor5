@@ -28,9 +28,10 @@ import {
 import {
 	insertElement,
 	insertText,
-	wrapItem,
+	wrap,
+	highlightElement,
 	highlightText,
-	highlightElement
+	removeHighlight
 } from '../../src/conversion/model-to-view-converters';
 
 import { stringify as stringifyView } from '../../src/dev-utils/view';
@@ -59,12 +60,11 @@ describe( 'model-selection-to-view-converters', () => {
 		dispatcher = new ModelConversionDispatcher( model, { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
-		dispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
+		dispatcher.on( 'attribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
 
 		dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
 		dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
-		dispatcher.on( 'removeMarker:marker', highlightText( highlightDescriptor ) );
-		dispatcher.on( 'removeMarker:marker', highlightElement( highlightDescriptor ) );
+		dispatcher.on( 'removeMarker:marker', removeHighlight( highlightDescriptor ) );
 
 		// Default selection converters.
 		dispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
@@ -231,8 +231,8 @@ describe( 'model-selection-to-view-converters', () => {
 				viewRoot.removeChildren( 0, viewRoot.childCount );
 
 				// Convert model to view.
-				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
+				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+				dispatcher.convertMarkerAdd( marker.name, marker.getRange() );
 
 				const markers = Array.from( model.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
 				dispatcher.convertSelection( modelSelection, markers );
@@ -258,8 +258,8 @@ describe( 'model-selection-to-view-converters', () => {
 				viewRoot.removeChildren( 0, viewRoot.childCount );
 
 				// Convert model to view.
-				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
+				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+				dispatcher.convertMarkerAdd( marker.name, marker.getRange() );
 
 				const markers = Array.from( model.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
 				dispatcher.convertSelection( modelSelection, markers );
@@ -283,8 +283,8 @@ describe( 'model-selection-to-view-converters', () => {
 				viewRoot.removeChildren( 0, viewRoot.childCount );
 
 				// Convert model to view.
-				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
+				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+				dispatcher.convertMarkerAdd( marker.name, marker.getRange() );
 
 				const markers = Array.from( model.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
 				dispatcher.convertSelection( modelSelection, markers );
@@ -296,6 +296,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 			it( 'in marker - should merge with the rest of attribute elements', () => {
 				dispatcher.on( 'addMarker:marker2', highlightText( data => ( { 'class': data.markerName } ) ) );
+				dispatcher.on( 'addMarker:marker2', highlightElement( data => ( { 'class': data.markerName } ) ) );
 				dispatcher.on( 'selectionMarker:marker2', convertSelectionMarker( data => ( { 'class': data.markerName } ) ) );
 
 				setModelData( model, 'foobar' );
@@ -307,8 +308,8 @@ describe( 'model-selection-to-view-converters', () => {
 				viewRoot.removeChildren( 0, viewRoot.childCount );
 
 				// Convert model to view.
-				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
+				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+				dispatcher.convertMarkerAdd( marker.name, marker.getRange() );
 
 				const markers = Array.from( model.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
 				dispatcher.convertSelection( modelSelection, markers );
@@ -332,8 +333,8 @@ describe( 'model-selection-to-view-converters', () => {
 				viewRoot.removeChildren( 0, viewRoot.childCount );
 
 				// Convert model to view.
-				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
+				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+				dispatcher.convertMarkerAdd( marker.name, marker.getRange() );
 
 				const markers = Array.from( model.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
 				dispatcher.convertSelection( modelSelection, markers );
@@ -372,7 +373,7 @@ describe( 'model-selection-to-view-converters', () => {
 				modelSelection.setAttribute( 'bold', true );
 
 				// Convert model to view.
-				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 				// Add ui element to view.
 				const uiElement = new ViewUIElement( 'span' );
@@ -393,7 +394,7 @@ describe( 'model-selection-to-view-converters', () => {
 				modelSelection.setAttribute( 'bold', true );
 
 				// Convert model to view.
-				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 				// Add ui element to view.
 				const uiElement = new ViewUIElement( 'span' );
@@ -467,7 +468,7 @@ describe( 'model-selection-to-view-converters', () => {
 		describe( 'clearAttributes', () => {
 			it( 'should remove all ranges before adding new range', () => {
 				dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'b' ) ) );
-				dispatcher.on( 'addAttribute:style', wrapItem( new ViewAttributeElement( 'b' ) ) );
+				dispatcher.on( 'attribute:style', wrap( new ViewAttributeElement( 'b' ) ) );
 
 				test(
 					[ 3, 3 ],
@@ -489,7 +490,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 			it( 'should do nothing if the attribute element had been already removed', () => {
 				dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'b' ) ) );
-				dispatcher.on( 'addAttribute:style', wrapItem( new ViewAttributeElement( 'b' ) ) );
+				dispatcher.on( 'attribute:style', wrap( new ViewAttributeElement( 'b' ) ) );
 
 				test(
 					[ 3, 3 ],
@@ -536,7 +537,7 @@ describe( 'model-selection-to-view-converters', () => {
 			}
 
 			dispatcher.on( 'selectionAttribute:theme', convertSelectionAttribute( themeElementCreator ) );
-			dispatcher.on( 'addAttribute:theme', wrapItem( themeElementCreator ) );
+			dispatcher.on( 'attribute:theme', wrap( themeElementCreator ) );
 
 			dispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
 		} );
@@ -736,7 +737,7 @@ describe( 'model-selection-to-view-converters', () => {
 		viewRoot.removeChildren( 0, viewRoot.childCount );
 
 		// Convert model to view.
-		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 		dispatcher.convertSelection( modelSelection, [] );
 
 		// Stringify view and check if it is same as expected.

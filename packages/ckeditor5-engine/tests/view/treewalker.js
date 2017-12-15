@@ -1005,14 +1005,53 @@ describe( 'TreeWalker', () => {
 		const b = new AttributeElement( 'b', null, bar );
 		const docFrag = new DocumentFragment( [ p, b ] );
 
-		const iterator = new TreeWalker( {
-			startPosition: new Position( docFrag, 0 ),
-			ignoreElementEnd: true
-		} );
+		const expected = [
+			{
+				type: 'elementStart',
+				item: p,
+				previousPosition: new Position( docFrag, 0 ),
+				nextPosition: new Position( p, 0 )
+			},
+			{
+				type: 'text',
+				text: 'foo',
+				previousPosition: new Position( p, 0 ),
+				nextPosition: new Position( p, 1 )
+			},
+			{
+				type: 'elementEnd',
+				item: p,
+				previousPosition: new Position( p, 1 ),
+				nextPosition: new Position( docFrag, 1 )
+			},
+			{
+				type: 'elementStart',
+				item: b,
+				previousPosition: new Position( docFrag, 1 ),
+				nextPosition: new Position( b, 0 )
+			},
+			{
+				type: 'text',
+				text: 'bar',
+				previousPosition: new Position( b, 0 ),
+				nextPosition: new Position( b, 1 )
+			},
+			{
+				type: 'elementEnd',
+				item: b,
+				previousPosition: new Position( b, 1 ),
+				nextPosition: new Position( docFrag, 2 )
+			}
+		];
 
-		const nodes = Array.from( iterator ).map( step => step.item );
+		const iterator = new TreeWalker( { boundaries: Range.createIn( docFrag ) } );
+		let i = 0;
 
-		expect( nodes ).to.deep.equal( [ p, foo, b, bar ] );
+		for ( const value of iterator ) {
+			expectValue( value, expected[ i++ ] );
+		}
+
+		expect( i ).to.equal( expected.length );
 	} );
 
 	describe( 'skip', () => {

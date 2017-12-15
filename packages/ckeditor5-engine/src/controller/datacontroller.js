@@ -167,7 +167,7 @@ export default class DataController {
 		const viewDocumentFragment = new ViewDocumentFragment();
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
-		this.modelToView.convertInsertion( modelRange );
+		this.modelToView.convertInsert( modelRange );
 
 		this.mapper.clearBindings();
 

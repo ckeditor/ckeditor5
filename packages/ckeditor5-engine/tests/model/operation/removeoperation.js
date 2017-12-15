@@ -143,22 +143,24 @@ describe( 'RemoveOperation', () => {
 		expect( doc.graveyard.getChild( 2 ).name ).to.equal( 'y' );
 	} );
 
-	it( 'should throw when is executed on detached item', () => {
-		const docFrag = new DocumentFragment();
-		const item = new Element( 'foo' );
+	describe( '_validate()', () => {
+		it( 'should throw when is executed on detached item', () => {
+			const docFrag = new DocumentFragment();
+			const item = new Element( 'foo' );
 
-		docFrag.appendChildren( [ item ] );
+			docFrag.appendChildren( [ item ] );
 
-		const op = new RemoveOperation(
-			new Position( docFrag, [ 0 ] ),
-			1,
-			new Position( doc.graveyard, [ 0 ] ),
-			doc.version
-		);
+			const op = new RemoveOperation(
+				new Position( docFrag, [ 0 ] ),
+				1,
+				new Position( doc.graveyard, [ 0 ] ),
+				doc.version
+			);
 
-		expect( () => {
-			op._execute();
-		} ).to.throw( CKEditorError, /^remove-operation-on-detached-item/ );
+			expect( () => {
+				op._validate();
+			} ).to.throw( CKEditorError, /^remove-operation-on-detached-item/ );
+		} );
 	} );
 
 	it( 'should always be a document operation', () => {

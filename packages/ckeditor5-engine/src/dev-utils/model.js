@@ -33,7 +33,7 @@ import {
 	convertCollapsedSelection,
 	convertSelectionAttribute
 } from '../conversion/model-selection-to-view-converters';
-import { insertText, insertElement, wrapItem } from '../conversion/model-to-view-converters';
+import { insertText, insertElement, wrap } from '../conversion/model-to-view-converters';
 import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
 
 /**
@@ -198,7 +198,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	mapper.bindElements( node.root, viewDocumentFragment );
 
 	modelToView.on( 'insert:$text', insertText() );
-	modelToView.on( 'addAttribute', wrapItem( ( value, data ) => {
+	modelToView.on( 'attribute', wrap( ( value, data ) => {
 		if ( data.item.is( 'textProxy' ) ) {
 			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: stringifyAttributeValue( value ) } );
 		}
@@ -216,7 +216,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	} ) );
 
 	// Convert model to view.
-	modelToView.convertInsertion( range );
+	modelToView.convertInsert( range );
 
 	// Convert model selection to view selection.
 	if ( selection ) {

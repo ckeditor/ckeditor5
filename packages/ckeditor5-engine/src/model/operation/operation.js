@@ -73,14 +73,23 @@ export default class Operation {
 		 */
 
 		/**
-		 * Executes the operation - modifications described by the operation attributes
-		 * will be applied to the tree model.
+		 * Executes the operation - modifications described by the operation attributes will be applied to the tree model.
 		 *
 		 * @protected
 		 * @method #_execute
 		 * @returns {Object} Object with additional information about the applied changes. It properties depends on the
 		 * operation type.
 		 */
+	}
+
+	/**
+	 * Checks whether the operation's parameters are correct and the operation can be correctly executed. Throws
+	 * an error if operation is not valid.
+	 *
+	 * @protected
+	 * @method #_validate
+	 */
+	_validate() {
 	}
 
 	/**

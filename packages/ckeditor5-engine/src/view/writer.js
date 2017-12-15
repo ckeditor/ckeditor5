@@ -391,8 +391,8 @@ export function clear( range, element ) {
 		if ( item.is( 'element' ) && element.isSimilar( item ) ) {
 			// Create range on this element.
 			rangeToRemove = Range.createOn( item );
-		// When range starts inside Text or TextProxy element.
-		} else if ( !current.nextPosition.isAfter( range.start ) && ( item.is( 'text' ) || item.is( 'textProxy' ) ) ) {
+			// When range starts inside Text or TextProxy element.
+		} else if ( !current.nextPosition.isAfter( range.start ) && item.is( 'textProxy' ) ) {
 			// We need to check if parent of this text matches to given element.
 			const parentElement = item.getAncestors().find( ancestor => {
 				return ancestor.is( 'element' ) && element.isSimilar( ancestor );
@@ -480,25 +480,36 @@ export function wrap( range, attribute ) {
 		return range;
 	}
 
-	// Range around one element.
-	if ( range.end.isEqual( range.start.getShiftedBy( 1 ) ) ) {
-		const node = range.start.nodeAfter;
-
-		if ( node instanceof AttributeElement && wrapAttributeElement( attribute, node ) ) {
-			return range;
-		}
-	}
-
 	// Range is inside single attribute and spans on all children.
 	if ( rangeSpansOnAllChildren( range ) && wrapAttributeElement( attribute, range.start.parent ) ) {
-		const parent = range.start.parent.parent;
-		const index = range.start.parent.index;
+		const parent = range.start.parent;
 
-		return Range.createFromParentsAndOffsets( parent, index, parent, index + 1 );
+		const end = mergeAttributes( Position.createAfter( parent ) );
+		const start = mergeAttributes( Position.createBefore( parent ) );
+
+		return new Range( start, end );
 	}
 
 	// Break attributes at range start and end.
 	const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
+
+	// Range around one element.
+	if ( breakEnd.isEqual( breakStart.getShiftedBy( 1 ) ) ) {
+		const node = breakStart.nodeAfter;
+
+		if ( node instanceof AttributeElement && wrapAttributeElement( attribute, node ) ) {
+			const start = mergeAttributes( breakStart );
+
+			if ( !start.isEqual( breakStart ) ) {
+				breakEnd.offset--;
+			}
+
+			const end = mergeAttributes( breakEnd );
+
+			return new Range( start, end );
+		}
+	}
+
 	const parentContainer = breakStart.parent;
 
 	// Unwrap children located between break points.
@@ -583,7 +594,7 @@ export function wrapPosition( position, attribute ) {
  * same parent container.
  *
  * @param {module:engine/view/range~Range} range
- * @param {module:engine/view/attributeelement~AttributeElement} element
+ * @param {module:engine/view/attributeelement~AttributeElement} attribute
  */
 export function unwrap( range, attribute ) {
 	if ( !( attribute instanceof AttributeElement ) ) {
@@ -602,20 +613,29 @@ export function unwrap( range, attribute ) {
 		return range;
 	}
 
+	// Break attributes at range start and end.
+	const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
+
 	// Range around one element - check if AttributeElement can be unwrapped partially when it's not similar.
 	// For example:
 	// <b class="foo bar" title="baz"></b> unwrap with:	<b class="foo"></p> result: <b class"bar" title="baz"></b>
-	if ( range.end.isEqual( range.start.getShiftedBy( 1 ) ) ) {
-		const node = range.start.nodeAfter;
+	if ( breakEnd.isEqual( breakStart.getShiftedBy( 1 ) ) ) {
+		const node = breakStart.nodeAfter;
 
 		// Unwrap single attribute element.
 		if ( !attribute.isSimilar( node ) && node instanceof AttributeElement && unwrapAttributeElement( attribute, node ) ) {
-			return range;
+			const start = mergeAttributes( breakStart );
+
+			if ( !start.isEqual( breakStart ) ) {
+				breakEnd.offset--;
+			}
+
+			const end = mergeAttributes( breakEnd );
+
+			return new Range( start, end );
 		}
 	}
 
-	// Break attributes at range start and end.
-	const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
 	const parentContainer = breakStart.parent;
 
 	// Unwrap children located between break points.
@@ -628,6 +648,7 @@ export function unwrap( range, attribute ) {
 	if ( !start.isEqual( newRange.start ) ) {
 		newRange.end.offset--;
 	}
+
 	const end = mergeAttributes( newRange.end );
 
 	return new Range( start, end );
