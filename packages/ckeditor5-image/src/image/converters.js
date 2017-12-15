@@ -72,9 +72,7 @@ export function viewFigureToModel() {
  */
 export function createImageAttributeConverter( dispatchers, attributeName, converter = modelToViewAttributeConverter ) {
 	for ( const dispatcher of dispatchers ) {
-		dispatcher.on( `addAttribute:${ attributeName }:image`, converter() );
-		dispatcher.on( `changeAttribute:${ attributeName }:image`, converter() );
-		dispatcher.on( `removeAttribute:${ attributeName }:image`, converter() );
+		dispatcher.on( `attribute:${ attributeName }:image`, converter() );
 	}
 }
 
@@ -95,9 +93,8 @@ export function srcsetAttributeConverter() {
 
 		const figure = conversionApi.mapper.toViewElement( modelImage );
 		const img = figure.getChild( 0 );
-		const type = parts[ 0 ];
 
-		if ( type == 'removeAttribute' ) {
+		if ( data.attributeNewValue === null ) {
 			const srcset = data.attributeOldValue;
 
 			if ( srcset.data ) {
@@ -139,12 +136,11 @@ function modelToViewAttributeConverter() {
 
 		const figure = conversionApi.mapper.toViewElement( modelImage );
 		const img = figure.getChild( 0 );
-		const type = parts[ 0 ];
 
-		if ( type == 'removeAttribute' ) {
-			img.removeAttribute( data.attributeKey );
-		} else {
+		if ( data.attributeNewValue !== null ) {
 			img.setAttribute( data.attributeKey, data.attributeNewValue );
+		} else {
+			img.removeAttribute( data.attributeKey );
 		}
 	};
 }

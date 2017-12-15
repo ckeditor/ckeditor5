@@ -83,7 +83,7 @@ export default class ImageCaptionEngine extends Plugin {
 		editing.modelToView.on( 'insert', ( evt, data ) => this._fixCaptionVisibility( data.item ), { priority: 'high' } );
 
 		// Hide caption when everything is removed from it.
-		editing.modelToView.on( 'remove', ( evt, data ) => this._fixCaptionVisibility( data.sourcePosition.parent ), { priority: 'high' } );
+		editing.modelToView.on( 'remove', ( evt, data ) => this._fixCaptionVisibility( data.position.parent ), { priority: 'high' } );
 
 		// Update view before each rendering.
 		this.listenTo( viewDocument, 'render', () => this._updateCaptionVisibility(), { priority: 'high' } );

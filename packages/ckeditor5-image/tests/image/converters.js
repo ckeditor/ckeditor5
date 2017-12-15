@@ -172,20 +172,15 @@ describe( 'Image converters', () => {
 			);
 		} );
 
-		it( 'should not change attribute if change is already consumed', () => {
-			editor.editing.modelToView.on( 'changeAttribute:alt:image', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'changeAttribute:alt' );
+		it( 'should not set attribute if change was already consumed', () => {
+			editor.editing.modelToView.on( 'attribute:alt:image', ( evt, data, consumable ) => {
+				consumable.consume( data.item, 'attribute:alt' );
 			}, { priority: 'high' } );
 
 			setModelData( model, '<image src="" alt="foo bar"></image>' );
-			const image = document.getRoot().getChild( 0 );
-
-			model.change( writer => {
-				writer.setAttribute( 'alt', 'baz quix', image );
-			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img alt="foo bar" src=""></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src=""></img></figure>'
 			);
 		} );
 	} );
