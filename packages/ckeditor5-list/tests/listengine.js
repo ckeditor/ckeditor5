@@ -11,6 +11,7 @@ import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewUIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -22,6 +23,8 @@ import BlockQuoteEngine from '@ckeditor/ckeditor5-block-quote/src/blockquoteengi
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+
+import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 
 describe( 'ListEngine', () => {
 	let editor, model, modelDoc, modelRoot, viewDoc, viewRoot;
@@ -1332,10 +1335,10 @@ describe( 'ListEngine', () => {
 						'<ul>' +
 							'<li>' +
 								'1' +
-								'<ul>' +
+								'<ol>' +
 									'<li>x</li>' +
 									'<li>1.1</li>' +
-								'</ul>' +
+								'</ol>' +
 							'</li>' +
 						'</ul>'
 					);
@@ -2084,10 +2087,8 @@ describe( 'ListEngine', () => {
 								'a' +
 								'<ol>' +
 									'<li>b</li>' +
-								'</ol>' +
-								'<ul>' +
 									'<li>c</li>' +
-								'</ul>' +
+								'</ol>' +
 							'</li>' +
 						'</ul>'
 					);
@@ -2105,11 +2106,7 @@ describe( 'ListEngine', () => {
 								'a' +
 								'<ul>' +
 									'<li>b</li>' +
-								'</ul>' +
-								'<ol>' +
 									'<li>c</li>' +
-								'</ol>' +
-								'<ul>' +
 									'<li>d</li>' +
 								'</ul>' +
 							'</li>' +
@@ -2282,8 +2279,8 @@ describe( 'ListEngine', () => {
 					'<listItem indent="1" type="bulleted">d</listItem>' +
 					'<listItem indent="2" type="bulleted">e</listItem>' +
 					'<listItem indent="2" type="bulleted">f</listItem>' +
-					'<listItem indent="2" type="numbered">g</listItem>' +
-					'<listItem indent="2" type="numbered">h</listItem>' +
+					'<listItem indent="2" type="bulleted">g</listItem>' +
+					'<listItem indent="2" type="bulleted">h</listItem>' +
 					'<listItem indent="0" type="bulleted"></listItem>' +
 					'<listItem indent="1" type="bulleted"></listItem>' +
 					'<listItem indent="2" type="numbered">k</listItem>' +
@@ -2304,11 +2301,9 @@ describe( 'ListEngine', () => {
 							'<ul>' +
 								'<li>e</li>' +
 								'<li>f</li>' +
-							'</ul>' +
-							'<ol>' +
 								'<li>g</li>' +
 								'<li>h</li>' +
-							'</ol>' +
+							'</ul>' +
 						'</li>' +
 						'<li>' +
 							'<ul>' +
@@ -2400,7 +2395,6 @@ describe( 'ListEngine', () => {
 
 			describe( 'move', () => {
 				// Since move is in fact remove + insert and does not event have its own converter, only a few cases will be tested here.
-
 				testMove(
 					'out nested list items',
 
@@ -2519,10 +2513,8 @@ describe( 'ListEngine', () => {
 										'<li>d</li>' +
 									'</ul>' +
 								'</li>' +
-							'</ul>' +
-							'<ol>' +
 								'<li>g</li>' +
-							'</ol>' +
+							'</ul>' +
 						'</li>' +
 					'</ol>'
 				);
@@ -2631,10 +2623,10 @@ describe( 'ListEngine', () => {
 						'</li>' +
 						'<li>' +
 							'd' +
-							'<ul>' +
+							'<ol>' +
 								'<li>e</li>' +
 								'<li>i</li>' +
-							'</ul>' +
+							'</ol>' +
 						'</li>' +
 					'</ul>'
 				);
@@ -2769,8 +2761,8 @@ describe( 'ListEngine', () => {
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">b</listItem>' +
 				'<listItem indent="1" type="bulleted">x</listItem>' +
-				'<listItem indent="2" type="bulleted">x</listItem>' +
-				'<listItem indent="2" type="bulleted">c</listItem>'
+				'<listItem indent="2" type="numbered">x</listItem>' +
+				'<listItem indent="2" type="numbered">c</listItem>'
 			);
 
 			test(
@@ -2996,8 +2988,8 @@ describe( 'ListEngine', () => {
 				'<listItem indent="1" type="bulleted">h</listItem>' +
 				'<listItem indent="1" type="bulleted">c</listItem>' +
 				'<listItem indent="0" type="bulleted">d</listItem>' +
-				'<listItem indent="1" type="bulleted">e</listItem>' +
-				'<listItem indent="1" type="bulleted">i</listItem>'
+				'<listItem indent="1" type="numbered">e</listItem>' +
+				'<listItem indent="1" type="numbered">i</listItem>'
 			);
 
 			// #78.
@@ -3311,19 +3303,24 @@ describe( 'ListEngine', () => {
 
 	describe( 'other', () => {
 		it( 'model insert converter should not fire if change was already consumed', () => {
-			editor.editing.modelToView.on( 'insert:listItem', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'insert' );
+			editor.editing.modelToView.on( 'insert:listItem', ( evt, data, consumable, conversionApi ) => {
+				consumable.consume( data.item, 'attribute:type' );
+				consumable.consume( data.item, 'attribute:indent' );
+
+				const converter = insertElement( new ViewContainerElement( 'p' ) );
+
+				return converter( evt, data, consumable, conversionApi );
 			}, { priority: 'highest' } );
 
 			// Paragraph is needed, otherwise selection throws.
-			setModelData( model, '<paragraph>x</paragraph><listItem indent="0" type="bulleted"></listItem>' );
+			setModelData( model, '<paragraph>x</paragraph><listItem indent="0" type="bulleted">y</listItem>' );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p>' );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p><p>y</p>' );
 		} );
 
-		it( 'model remove converter should not fire if change was already consumed', () => {
-			editor.editing.modelToView.on( 'remove:listItem', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'remove' );
+		it( 'model remove converter should be possible to overwrite', () => {
+			editor.editing.modelToView.on( 'remove:listItem', evt => {
+				evt.stop();
 			}, { priority: 'highest' } );
 
 			// Paragraph is needed to prevent autoparagraphing of empty editor.
@@ -3337,8 +3334,8 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'model change type converter should not fire if change was already consumed', () => {
-			editor.editing.modelToView.on( 'changeAttribute:type', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'changeAttribute:type' );
+			editor.editing.modelToView.on( 'attribute:type', ( evt, data, consumable ) => {
+				consumable.consume( data.item, 'attribute:type' );
 			}, { priority: 'highest' } );
 
 			setModelData( model, '<listItem indent="0" type="bulleted"></listItem>' );
@@ -3351,8 +3348,8 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'model change indent converter should not fire if change was already consumed', () => {
-			editor.editing.modelToView.on( 'changeAttribute:indent', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'changeAttribute:indent' );
+			editor.editing.modelToView.on( 'attribute:indent', ( evt, data, consumable ) => {
+				consumable.consume( data.item, 'attribute:indent' );
 			}, { priority: 'highest' } );
 
 			setModelData( model, '<listItem indent="0" type="bulleted">a</listItem><listItem indent="0" type="bulleted">b</listItem>' );
@@ -3404,8 +3401,8 @@ describe( 'ListEngine', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<ul><li>Foo<span></span></li><li>Bar</li></ul>' );
 
-			// Change indent of the second list item.
 			model.change( writer => {
+				// Change indent of the second list item.
 				writer.setAttribute( 'indent', 1, modelRoot.getChild( 1 ) );
 			} );
 
@@ -3426,8 +3423,8 @@ describe( 'ListEngine', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<ul><li>Foo<span></span></li><li>Bar<ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
 
-			// Remove second list item. Expect that its sub-list will be moved to first list item.
 			model.change( writer => {
+				// Remove second list item. Expect that its sub-list will be moved to first list item.
 				writer.remove( modelRoot.getChild( 1 ) );
 			} );
 
@@ -3540,7 +3537,11 @@ describe( 'ListEngine', () => {
 			const newType = element.getAttribute( 'type' ) == 'numbered' ? 'bulleted' : 'numbered';
 
 			model.change( writer => {
-				writer.setAttribute( 'type', newType, modelDoc.selection.getFirstRange() );
+				const itemsToChange = Array.from( modelDoc.selection.getSelectedBlocks() );
+
+				for ( const item of itemsToChange ) {
+					writer.setAttribute( 'type', newType, item );
+				}
 			} );
 		};
 
@@ -3596,7 +3597,7 @@ describe( 'ListEngine', () => {
 		_test( testName, input, output, actionCallback, testUndo );
 	}
 
-	function _test( testName, input, output, actionCallback, testUndo = true ) {
+	function _test( testName, input, output, actionCallback ) {
 		it( testName, () => {
 			setModelData( model, input );
 
@@ -3605,9 +3606,7 @@ describe( 'ListEngine', () => {
 			expect( getViewData( viewDoc, { withoutSelection: true } ) ).to.equal( output );
 		} );
 
-		const undoTestFunction = testUndo ? it : it.skip;
-
-		undoTestFunction( testName + ' (undo integration)', () => {
+		it( testName + ' (undo integration)', () => {
 			setModelData( model, input );
 
 			const modelBefore = input;
