@@ -103,7 +103,7 @@ export function remove() {
 		const viewStart = conversionApi.mapper.toViewPosition( data.position );
 
 		const modelEnd = data.position.getShiftedBy( data.length );
-		const viewEnd = conversionApi.mapper.toViewPosition( modelEnd, true );
+		const viewEnd = conversionApi.mapper.toViewPosition( modelEnd, { isPhantom: true } );
 
 		const viewRange = new ViewRange( viewStart, viewEnd );
 
@@ -153,6 +153,22 @@ export function insertUIElement( elementCreator ) {
 		}
 
 		const markerRange = data.markerRange;
+		const eventName = evt.name;
+
+		// Marker that is collapsed has consumable build differently that non-collapsed one.
+		// For more information see `addMarker` event description.
+		// If marker's range is collapsed - check if it can be consumed.
+		if ( markerRange.isCollapsed && !consumable.consume( markerRange, eventName ) ) {
+			return;
+		}
+
+		// If marker's range is not collapsed - consume all items inside.
+		for ( const value of markerRange ) {
+			if ( !consumable.consume( value.item, eventName ) ) {
+				return;
+			}
+		}
+
 		const mapper = conversionApi.mapper;
 
 		// Add "opening" element.
@@ -329,6 +345,10 @@ export function wrap( elementCreator ) {
  * {@link module:engine/view/attributeelement~AttributeElement} created from provided descriptor.
  * See {link module:engine/conversion/model-to-view-converters~createViewElementFromHighlightDescriptor}.
  *
+ * If the highlight descriptor will not provide `priority` property, `10` will be used.
+ *
+ * If the highlight descriptor will not provide `id` property, name of the marker will be used.
+ *
  * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
  */
@@ -366,15 +386,14 @@ export function highlightText( highlightDescriptor ) {
  *
  * The converter checks if an element has `addHighlight` function stored as
  * {@link module:engine/view/element~Element#setCustomProperty custom property} and, if so, uses it to apply the highlight.
- *
  * In such case converter will consume all element's children, assuming that they were handled by element itself.
- * If the highlight descriptor will not provide priority, priority `10` will be used as default, to be compliant with
- * {@link module:engine/conversion/model-to-view-converters~highlightText} method which uses default priority of
- * {@link module:engine/view/attributeelement~AttributeElement}.
+ *
+ * When `addHighlight` custom property is not present, element is not converted in any special way.
+ * This means that converters will proceed to convert element's child nodes.
+ *
+ * If the highlight descriptor will not provide `priority` property, `10` will be used.
  *
  * If the highlight descriptor will not provide `id` property, name of the marker will be used.
- * When `addHighlight` and `removeHighlight` custom properties are not present, element is not converted
- * in any special way. This means that converters will proceed to convert element's child nodes.
  *
  * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
@@ -418,18 +437,19 @@ export function highlightElement( highlightDescriptor ) {
 }
 
 /**
- * Function factory, creates a converter that converts model marker add/change/remove to the view.
+ * Function factory, creates a converter that converts model marker remove to the view.
  *
- * The result of this conversion is different for text nodes and elements.
+ * Both text nodes and elements are handled by this converter by they are handled a bit differently.
  *
- * Text nodes are wrapped with {@link module:engine/view/attributeelement~AttributeElement} created from provided
+ * Text nodes are unwrapped using {@link module:engine/view/attributeelement~AttributeElement} created from provided
  * highlight descriptor. See {link module:engine/conversion/model-to-view-converters~highlightDescriptorToAttributeElement}.
  *
- * For elements, the converter checks if an element has `addHighlight` and `removeHighlight` functions stored as
- * {@link module:engine/view/element~Element#setCustomProperty custom properties}. If so, it uses them to apply the highlight.
- * In such case, children of that element will not be converted. When `addHighlight` and `removeHighlight` are not present,
- * element is not converted in any special way, instead converter will proceed to convert element's child nodes. Most
- * common case is that the element will be given a special class, style or attribute basing on the descriptor.
+ * For elements, the converter checks if an element has `removeHighlight` function stored as
+ * {@link module:engine/view/element~Element#setCustomProperty custom property}. If so, it uses it to remove the highlight.
+ * In such case, children of that element will not be converted.
+ *
+ * When `removeHighlight` is not present, element is not converted in any special way.
+ * Instead converter will proceed to convert element's child nodes.
  *
  * If the highlight descriptor will not provide `priority` property, `10` will be used.
  *

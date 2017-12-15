@@ -161,8 +161,8 @@ export default class Differ {
 	}
 
 	/**
-	 * Calculates diff between old model tree state (before all the buffered operations) and the new model tree state
-	 * (actual one). Should be called after all buffered operations are executed.
+	 * Calculates diff between old model tree state (state before the first buffered operations since the last {@link #reset} call)
+	 * and the new model tree state (actual one). Should be called after all buffered operations are executed.
 	 *
 	 * The diff set is returned as an array of diff items, each describing a change done on model. The items are sorted by
 	 * the position on which the change happened. If a position {@link module:engine/model/position~Position#isBefore is before}
@@ -176,7 +176,9 @@ export default class Differ {
 
 		// Check all changed elements.
 		for ( const element of this._changesInElement.keys() ) {
-			// If the element is inside other changed element, skip changes in this element.
+			// Each item in `this._changesInElement` describes changes of the _children_ of that element.
+			// If the element itself has been inserted we should skip all the changes in it because the element will be reconverted.
+			// If the element itself has been removed we should skip all the changes in it because they would be incorrect.
 			if ( this._isInsertedOrRemoved( element ) ) {
 				continue;
 			}
@@ -185,6 +187,9 @@ export default class Differ {
 			const changes = this._changesInElement.get( element ).sort( ( a, b ) => {
 				if ( a.offset === b.offset ) {
 					if ( a.type != b.type ) {
+						// If there are multiple changes at the same position, "remove" change should be first.
+						// If the order is different, for example, we would first add some nodes and then removed them
+						// (instead of the nodes that we should remove).
 						return a.type == 'remove' ? -1 : 1;
 					}
 
@@ -306,6 +311,11 @@ export default class Differ {
 		// Remove `changeCount` property from diff items. It is used only for sorting and is internal thing.
 		for ( const item of diffSet ) {
 			delete item.changeCount;
+
+			if ( item.type == 'attribute' ) {
+				delete item.position;
+				delete item.length;
+			}
 		}
 
 		this._changeCount = 0;
@@ -417,9 +427,7 @@ export default class Differ {
 		const changes = this._getChangesForElement( parent );
 
 		// Then, look through all the changes, and transform them or the new change.
-		for ( const oldChange of changes ) {
-			this._handleChange( changeItem, oldChange, changes );
-		}
+		this._handleChange( changeItem, changes );
 
 		// Add the new change.
 		changes.push( changeItem );
@@ -474,135 +482,172 @@ export default class Differ {
 	 *
 	 * @private
 	 * @param {Object} inc Incoming (new) change.
-	 * @param {Object} old Old change (already done on the element).
 	 * @param {Array.<Object>} changes Array containing all the changes done on that element.
 	 */
-	_handleChange( inc, old, changes ) {
-		const incEnd = inc.offset + inc.howMany;
-		const oldEnd = old.offset + old.howMany;
+	_handleChange( inc, changes ) {
+		for ( const old of changes ) {
+			const incEnd = inc.offset + inc.howMany;
+			const oldEnd = old.offset + old.howMany;
 
-		if ( inc.type == 'insert' ) {
-			if ( old.type == 'insert' ) {
-				if ( inc.offset <= old.offset ) {
-					old.offset += inc.howMany;
-				} else if ( inc.offset < oldEnd ) {
-					old.howMany += inc.howMany;
-					inc.howMany = 0;
-				}
-			}
-
-			if ( old.type == 'remove' ) {
-				if ( inc.offset < old.offset ) {
-					old.offset += inc.howMany;
-				}
-			}
-
-			if ( old.type == 'attribute' ) {
-				if ( inc.offset <= old.offset ) {
-					old.offset += inc.howMany;
-				} else if ( inc.offset < oldEnd ) {
-					const howMany = old.howMany;
-
-					old.howMany = inc.offset - old.offset;
-
-					// Unshift to prevent further processing of this change.
-					changes.unshift( { type: 'attribute', offset: incEnd, howMany: howMany - old.howMany, count: this._changeCount++ } );
-				}
-			}
-		}
-
-		if ( inc.type == 'remove' ) {
-			if ( old.type == 'insert' ) {
-				if ( incEnd <= old.offset ) {
-					old.offset -= inc.howMany;
-				} else if ( incEnd <= oldEnd ) {
-					if ( inc.offset < old.offset ) {
-						const intersectionLength = incEnd - old.offset;
-
-						old.offset = inc.offset;
-
-						old.howMany -= intersectionLength;
-						inc.howMany -= intersectionLength;
-					} else {
-						old.howMany -= inc.howMany;
+			if ( inc.type == 'insert' ) {
+				if ( old.type == 'insert' ) {
+					if ( inc.offset <= old.offset ) {
+						old.offset += inc.howMany;
+					} else if ( inc.offset < oldEnd ) {
+						old.howMany += inc.howMany;
 						inc.howMany = 0;
 					}
-				} else {
-					if ( inc.offset <= old.offset ) {
-						inc.howMany = inc.howMany - old.howMany;
-						old.howMany = 0;
-					} else if ( inc.offset < oldEnd ) {
-						const intersectionLength = oldEnd - inc.offset;
+				}
 
-						old.howMany -= intersectionLength;
-						inc.howMany -= intersectionLength;
+				if ( old.type == 'remove' ) {
+					if ( inc.offset < old.offset ) {
+						old.offset += inc.howMany;
 					}
 				}
-			}
 
-			if ( old.type == 'remove' ) {
-				if ( inc.offset + inc.howMany <= old.offset ) {
-					old.offset -= inc.howMany;
-				} else if ( inc.offset < old.offset ) {
-					old.offset = inc.offset;
-					old.howMany += inc.howMany;
-
-					inc.howMany = 0;
-				}
-			}
-
-			if ( old.type == 'attribute' ) {
-				if ( incEnd <= old.offset ) {
-					old.offset -= inc.howMany;
-				} else if ( inc.offset < old.offset ) {
-					const intersectionLength = incEnd - old.offset;
-
-					old.offset = inc.offset;
-					old.howMany -= intersectionLength;
-				} else if ( inc.offset < oldEnd ) {
-					if ( incEnd <= oldEnd ) {
+				if ( old.type == 'attribute' ) {
+					if ( inc.offset <= old.offset ) {
+						old.offset += inc.howMany;
+					} else if ( inc.offset < oldEnd ) {
+						// This case is more complicated, because attribute change has to be split into two.
+						// Example (assume that uppercase and lowercase letters mean different attributes):
+						//
+						// initial state:		abcxyz
+						// attribute change:	aBCXYz
+						// incoming insert:		aBCfooXYz
+						//
+						// Change ranges cannot intersect because each item has to be described exactly (it was either
+						// not changed, inserted, removed, or its attribute was changed). That's why old attribute
+						// change has to be split and both parts has to be handled separately from now on.
 						const howMany = old.howMany;
 
 						old.howMany = inc.offset - old.offset;
 
-						const howManyAfter = howMany - old.howMany - inc.howMany;
-
-						// Unshift to prevent further processing of this change.
-						changes.unshift( { type: 'attribute', offset: inc.offset, howMany: howManyAfter, count: this._changeCount++ } );
-					} else {
-						old.howMany -= oldEnd - inc.offset;
+						// Add the second part of attribute change to the beginning of processed array so it won't
+						// be processed again in this loop.
+						changes.unshift( {
+							type: 'attribute',
+							offset: incEnd,
+							howMany: howMany - old.howMany,
+							count: this._changeCount++
+						} );
 					}
 				}
 			}
-		}
 
-		if ( inc.type == 'attribute' ) {
-			if ( old.type == 'insert' ) {
-				if ( inc.offset < old.offset && incEnd > old.offset ) {
-					if ( incEnd > oldEnd ) {
-						const changeItem = { type: 'attribute', offset: oldEnd, howMany: incEnd - oldEnd, count: this._changeCount++ };
+			if ( inc.type == 'remove' ) {
+				if ( old.type == 'insert' ) {
+					if ( incEnd <= old.offset ) {
+						old.offset -= inc.howMany;
+					} else if ( incEnd <= oldEnd ) {
+						if ( inc.offset < old.offset ) {
+							const intersectionLength = incEnd - old.offset;
 
-						for ( const oldChange of changes ) {
-							this._handleChange( changeItem, oldChange, changes );
+							old.offset = inc.offset;
+
+							old.howMany -= intersectionLength;
+							inc.howMany -= intersectionLength;
+						} else {
+							old.howMany -= inc.howMany;
+							inc.howMany = 0;
 						}
-
-						changes.push( changeItem );
-					}
-
-					inc.howMany = old.offset - inc.offset;
-				} else if ( inc.offset >= old.offset && inc.offset < oldEnd ) {
-					if ( incEnd > oldEnd ) {
-						inc.howMany = incEnd - oldEnd;
-						inc.offset = oldEnd;
 					} else {
+						if ( inc.offset <= old.offset ) {
+							inc.howMany = inc.howMany - old.howMany;
+							old.howMany = 0;
+						} else if ( inc.offset < oldEnd ) {
+							const intersectionLength = oldEnd - inc.offset;
+
+							old.howMany -= intersectionLength;
+							inc.howMany -= intersectionLength;
+						}
+					}
+				}
+
+				if ( old.type == 'remove' ) {
+					if ( inc.offset + inc.howMany <= old.offset ) {
+						old.offset -= inc.howMany;
+					} else if ( inc.offset < old.offset ) {
+						old.offset = inc.offset;
+						old.howMany += inc.howMany;
+
 						inc.howMany = 0;
 					}
 				}
+
+				if ( old.type == 'attribute' ) {
+					if ( incEnd <= old.offset ) {
+						old.offset -= inc.howMany;
+					} else if ( inc.offset < old.offset ) {
+						const intersectionLength = incEnd - old.offset;
+
+						old.offset = inc.offset;
+						old.howMany -= intersectionLength;
+					} else if ( inc.offset < oldEnd ) {
+						if ( incEnd <= oldEnd ) {
+							// On first sight in this case we don't need to split attribute operation into two.
+							// However the changes set is later converted to actions (see `_generateActionsFromChanges`).
+							// For that reason, no two changes may intersect.
+							// So we cannot have an attribute change that "contains" remove change.
+							// Attribute change needs to be split.
+							const howMany = old.howMany;
+
+							old.howMany = inc.offset - old.offset;
+
+							const howManyAfter = howMany - old.howMany - inc.howMany;
+
+							// Add the second part of attribute change to the beginning of processed array so it won't
+							// be processed again in this loop.
+							changes.unshift( {
+								type: 'attribute',
+								offset: inc.offset,
+								howMany: howManyAfter,
+								count: this._changeCount++
+							} );
+						} else {
+							old.howMany -= oldEnd - inc.offset;
+						}
+					}
+				}
 			}
 
-			if ( old.type == 'attribute' ) {
-				if ( inc.offset >= old.offset && incEnd <= oldEnd ) {
-					inc.howMany = 0;
+			if ( inc.type == 'attribute' ) {
+				if ( old.type == 'insert' ) {
+					if ( inc.offset < old.offset && incEnd > old.offset ) {
+						if ( incEnd > oldEnd ) {
+							// This case is similar to a case described when incoming change was insert and old change was attribute.
+							// See comment above.
+							//
+							// This time incoming change is attribute. We need to split incoming change in this case too.
+							// However this time, the second part of the attribute change needs to be processed further
+							// because there might be other changes that it collides with.
+							const attributePart = {
+								type: 'attribute',
+								offset: oldEnd,
+								howMany: incEnd - oldEnd,
+								count: this._changeCount++
+							};
+
+							this._handleChange( attributePart, changes );
+
+							changes.push( attributePart );
+						}
+
+						inc.howMany = old.offset - inc.offset;
+					} else if ( inc.offset >= old.offset && inc.offset < oldEnd ) {
+						if ( incEnd > oldEnd ) {
+							inc.howMany = incEnd - oldEnd;
+							inc.offset = oldEnd;
+						} else {
+							inc.howMany = 0;
+						}
+					}
+				}
+
+				if ( old.type == 'attribute' ) {
+					if ( inc.offset >= old.offset && incEnd <= oldEnd ) {
+						inc.howMany = 0;
+					}
 				}
 			}
 		}
@@ -736,36 +781,84 @@ function _getChildrenSnapshot( children ) {
 // - 'i' for 'insert' - when item at that position was inserted,
 // - 'r' for 'remove' - when item at that position was removed,
 // - 'a' for 'attribute' - when item at that position has it attributes changed.
+//
+// Example (assume that uppercase letters have bold attribute, compare with function code):
+//
+// children before:	fooBAR
+// children after:	foxybAR
+//
+// changes: type: remove, offset: 1, howMany: 1
+//			type: insert, offset: 2, howMany: 2
+//			type: attribute, offset: 4, howMany: 1
+//
+// expected actions: equal (f), remove (o), equal (o), insert (x), insert (y), attribute (b), equal (A), equal (R)
+//
+// steps taken by th script:
+//
+// 1. change = "type: remove, offset: 1, howMany: 1"; offset = 0; oldChildrenHandled = 0
+//    1.1 between this change and the beginning is one not-changed node, fill with one equal action, one old child has been handled
+//    1.2 this change removes one node, add one remove action
+//    1.3 change last visited `offset` to 1
+//    1.4 since an old child has been removed, one more old child has been handled
+//    1.5 actions at this point are: equal, remove
+//
+// 2. change = "type: insert, offset: 2, howMany: 2"; offset = 1; oldChildrenHandled = 2
+//    2.1 between this change and previous change is one not-changed node, add equal action, another one old children has been handled
+//    2.2 this change inserts two nodes, add two insert actions
+//    2.3 change last visited offset to the end of the inserted range, that is 4
+//    2.4 actions at this point are: equal, remove, equal, insert, insert
+//
+// 3. change = "type: attribute, offset: 4, howMany: 1"; offset = 4, oldChildrenHandled = 3
+//    3.1 between this change and previous change are no not-changed nodes
+//    3.2 this change changes one node, add one attribute action
+//    3.3 change last visited `offset` to the end of change range, that is 5
+//    3.4 since an old child has been changed, one more old child has been handled
+//    3.5 actions at this point are: equal, remove, equal, insert, insert, attribute
+//
+// 4. after loop oldChildrenHandled = 4, oldChildrenLength = 6 (fooBAR is 6 characters)
+//    4.1 fill up with two equal actions
+//
+// The result actions are: equal, remove, equal, insert, insert, attribute, equal, equal.
 function _generateActionsFromChanges( oldChildrenLength, changes ) {
 	const actions = [];
 
 	let offset = 0;
 	let oldChildrenHandled = 0;
 
+	// Go through all buffered changes.
 	for ( const change of changes ) {
+		// First, fill "holes" between changes with "equal" actions.
 		if ( change.offset > offset ) {
 			actions.push( ...'e'.repeat( change.offset - offset ).split( '' ) );
 
 			oldChildrenHandled += change.offset - offset;
 		}
 
+		// Then, fill up actions accordingly to change type.
 		if ( change.type == 'insert' ) {
 			actions.push( ...'i'.repeat( change.howMany ).split( '' ) );
 
+			// The last handled offset is after inserted range.
 			offset = change.offset + change.howMany;
 		} else if ( change.type == 'remove' ) {
 			actions.push( ...'r'.repeat( change.howMany ).split( '' ) );
 
+			// The last handled offset is at the position where the nodes were removed.
 			offset = change.offset;
+			// We removed `howMany` old nodes, update `oldChildrenHandled`.
 			oldChildrenHandled += change.howMany;
 		} else {
 			actions.push( ...'a'.repeat( change.howMany ).split( '' ) );
 
+			// The last handled offset isa at the position after the changed range.
 			offset = change.offset + change.howMany;
+			// We changed `howMany` old nodes, update `oldChildrenHandled`.
 			oldChildrenHandled += change.howMany;
 		}
 	}
 
+	// Fill "equal" actions at the end of actions set. Use `oldChildrenHandled` to see how many children
+	// has not been changed / removed at the end of their parent.
 	if ( oldChildrenHandled < oldChildrenLength ) {
 		actions.push( ...'e'.repeat( oldChildrenLength - oldChildrenHandled ).split( '' ) );
 	}

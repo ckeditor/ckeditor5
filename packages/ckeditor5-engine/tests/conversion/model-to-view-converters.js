@@ -399,31 +399,20 @@ describe( 'model-to-view-converters', () => {
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
 
-			it( 'should be possible to overwrite', () => {
+			it( 'should not convert if consumable was consumed', () => {
 				const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
-				const higherPriorityViewUi = new ViewUIElement( 'span', { 'class': 'high' } );
 
 				sinon.spy( dispatcher, 'fire' );
 
 				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
-				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
+				dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
+					consumable.consume( data.markerRange, 'addMarker:marker' );
+				}, { priority: 'high' } );
 
-				dispatcher.on( 'addMarker:marker', insertUIElement( higherPriorityViewUi ), { priority: 'high' } );
-				dispatcher.on( 'removeMarker:marker', removeUIElement( higherPriorityViewUi ), { priority: 'high' } );
-
-				model.change( () => {
-					model.markers.set( 'marker', range );
-				} );
-
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="high"></span>bar</p></div>' );
-				expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
-
-				model.change( () => {
-					model.markers.remove( 'marker' );
-				} );
+				dispatcher.convertMarkerAdd( 'marker', range );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-				expect( dispatcher.fire.calledWith( 'removeMarker:marker' ) );
+				expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
 			} );
 
 			it( 'should not convert if creator returned null', () => {
@@ -516,33 +505,20 @@ describe( 'model-to-view-converters', () => {
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
 
-			it( 'should be possible to overwrite', () => {
+			it( 'should not convert if consumable was consumed', () => {
 				const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
-				const higherPriorityViewUi = new ViewUIElement( 'span', { 'class': 'high' } );
 
 				sinon.spy( dispatcher, 'fire' );
 
 				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
-				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
+				dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
+					consumable.consume( data.item, 'addMarker:marker' );
+				}, { priority: 'high' } );
 
-				dispatcher.on( 'addMarker:marker', insertUIElement( higherPriorityViewUi ), { priority: 'high' } );
-				dispatcher.on( 'removeMarker:marker', removeUIElement( higherPriorityViewUi ), { priority: 'high' } );
-
-				model.change( () => {
-					model.markers.set( 'marker', range );
-				} );
-
-				expect( viewToString( viewRoot ) ).to.equal(
-					'<div><p>fo<span class="high"></span>oba<span class="high"></span>r</p></div>'
-				);
-				expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
-
-				model.change( () => {
-					model.markers.remove( 'marker' );
-				} );
+				dispatcher.convertMarkerAdd( 'marker', range );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-				expect( dispatcher.fire.calledWith( 'removeMarker:marker' ) );
+				expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
 			} );
 		} );
 	} );

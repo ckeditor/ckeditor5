@@ -86,40 +86,6 @@ import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
  *			// Remember to stop the event propagation.
  *			evt.stop();
  *		} );
- *
- * Callback that overrides other callback:
- *
- *		// Special converter for `linkHref` attribute added on custom `quote` element. Note, that this
- *		// attribute may be the same as the attribute added by other features (link feature in this case).
- *		// It might be even added by that feature! It makes sense that a part of content that is a quote is linked
- *		// to an external source so it makes sense that link feature works on the custom quote element.
- *		// However, we have to make sure that the attributes added by link feature are correctly converted.
- *		// To block default `linkHref` conversion we have to:
- *		// 1) add this callback with higher priority than link feature callback,
- *		// 2) consume `linkHref` attribute add change.
- *		modelConversionDispatcher.on( 'attribute:linkHref:quote', ( evt, data, consumable, conversionApi ) => {
- *			if ( consumable.consume( data.item, 'attribute:linkHref' ) ) {
- *				return;
- *			}
- *
- *			// Create a button that will represent the `linkHref` attribute.
- *			let viewSourceBtn = new ViewElement( 'a', {
- *				href: data.item.getAttribute( 'linkHref' ),
- *				title: 'source',
- *				class: 'source'
- *			} );
- *
- *			// Insert the button using writer API.
- *			// Note that attribute conversion is fired after insert conversion.
- *			// This means that we are safe to assume that the model `quote` element has already been converter to view.
- *			// `data.item` is model element on which attribute changed.
- *			const viewQuote = conversionApi.mapper.toViewElement( data.item );
- *			// Put `viewSourceBtn` at the end of quote.
- *			const position = ViewPosition.createAt( viewQuote, 'end' );
- *			viewWriter.insert( position, viewSourceBtn );
- *
- *			evt.stop();
- *		}, { priority: 'high' } );
  */
 export default class ModelConversionDispatcher {
 	/**
@@ -159,7 +125,7 @@ export default class ModelConversionDispatcher {
 		// Convert changes that happened on model tree.
 		for ( const entry of differ.getChanges() ) {
 			// Skip all the changes that happens in graveyard. These are not converted.
-			if ( entry.position.root.rootName == '$graveyard' ) {
+			if ( _isInGraveyard( entry ) ) {
 				continue;
 			}
 
@@ -168,6 +134,7 @@ export default class ModelConversionDispatcher {
 			} else if ( entry.type == 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name );
 			} else {
+				// entry.type == 'attribute'.
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue );
 			}
 		}
@@ -543,7 +510,13 @@ export default class ModelConversionDispatcher {
 	 * if markers are named `foo:abc`, `foo:bar`, then it is possible to listen to `addMarker:foo` or `addMarker:foo:abc` and
 	 * `addMarker:foo:bar` events.
 	 *
-	 * The event is fired for each item in the marker range, one by one.
+	 * If the marker range is not collapsed:
+	 * * the event is fired for each item in the marker range one by one,
+	 * * consumables object includes each item of the marker range and the consumable value is same as event name.
+	 *
+	 * If the marker range is collapsed:
+	 * * there is only one event,
+	 * * consumables object includes marker range with event name.
 	 *
 	 * @event addMarker
 	 * @param {Object} data Additional information about the change.
@@ -595,4 +568,10 @@ function shouldMarkerChangeBeConverted( modelPosition, marker, mapper ) {
 	} );
 
 	return !hasCustomHandling;
+}
+
+// Checks whether entry change describes changes that happen in graveyard.
+function _isInGraveyard( entry ) {
+	return ( entry.position && entry.position.root.rootName == '$graveyard' ) ||
+		( entry.range && entry.range.root.rootName == '$graveyard' );
 }

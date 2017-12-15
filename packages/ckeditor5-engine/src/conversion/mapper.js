@@ -222,15 +222,16 @@ export default class Mapper {
 	 *
 	 * @fires modelToViewPosition
 	 * @param {module:engine/model/position~Position} modelPosition Model position.
-	 * @param {Boolean} [isPhantom=false] Should be set to `true` if the model position to map is pointing to a place
+	 * @param {Object} [options] Additional options for position mapping process.
+	 * @param {Boolean} [options.isPhantom=false] Should be set to `true` if the model position to map is pointing to a place
 	 * in model tree which no longer exists. For example, it could be an end of a removed model range.
 	 * @returns {module:engine/view/position~Position} Corresponding view position.
 	 */
-	toViewPosition( modelPosition, isPhantom = false ) {
+	toViewPosition( modelPosition, options = { isPhantom: false } ) {
 		const data = {
 			modelPosition,
 			mapper: this,
-			isPhantom
+			isPhantom: options.isPhantom
 		};
 
 		this.fire( 'modelToViewPosition', data );
@@ -379,7 +380,7 @@ export default class Mapper {
 	 *		We are in the text node so we can simple find the offset.
 	 *		<p>fo<b>ba|r</b>bom</p> -> expected offset: 2, actual offset: 2 -> position found
 	 *
-	 * @protected
+	 * @private
 	 * @param {module:engine/view/element~Element} viewParent Tree view element in which we are looking for the position.
 	 * @param {Number} expectedOffset Expected offset.
 	 * @returns {module:engine/view/position~Position} Found position.
@@ -484,7 +485,8 @@ export default class Mapper {
 	 *				return;
 	 *			}
 	 *
-	 *			const sibling = modelPosition.nodeBefore; // Might crash for phantom position that does not exist in model.
+	 *			// Below line might crash for phantom position that does not exist in model.
+	 *			const sibling = data.modelPosition.nodeBefore;
 	 *
 	 *			// Check if this is the element we are interested in.
 	 *			if ( !sibling.is( 'customElement' ) ) {

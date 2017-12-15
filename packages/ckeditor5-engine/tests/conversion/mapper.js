@@ -619,7 +619,7 @@ describe( 'Mapper', () => {
 			evt.stop();
 		} );
 
-		mapper.toViewPosition( {}, true );
+		mapper.toViewPosition( {}, { isPhantom: true } );
 	} );
 
 	describe( 'getModelLength', () => {
