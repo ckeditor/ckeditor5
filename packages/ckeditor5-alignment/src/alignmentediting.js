@@ -126,37 +126,29 @@ export function isSupported( style ) {
 // @private
 function attributeToStyleConverter( dispatchers, modelAttributeName, setStyleFn, removeStyleFn ) {
 	for ( const dispatcher of dispatchers ) {
-		dispatcher.on( `addAttribute:${ modelAttributeName }`, setStyle( setStyleFn ) );
-		dispatcher.on( `changeAttribute:${ modelAttributeName }`, setStyle( setStyleFn ) );
-		dispatcher.on( `removeAttribute:${ modelAttributeName }`, removeStyle( removeStyleFn ) );
+		dispatcher.on( `attribute:${ modelAttributeName }`, style( setStyleFn, removeStyleFn ) );
 	}
 }
 
 // Dispatcher handler responsible for setting style to a view element.
 // @private
-function setStyle( setStyleFn ) {
+function style( setStyleFn, removeStyleFn ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
 			return;
 		}
 
-		const styles = setStyleFn( data.attributeNewValue );
+		if ( data.attributeNewValue ) {
+			// Set style.
+			const styles = setStyleFn( data.attributeNewValue );
 
-		conversionApi.mapper.toViewElement( data.item ).setStyle( styles );
-	};
-}
+			conversionApi.mapper.toViewElement( data.item ).setStyle( styles );
+		} else {
+			// Remove style.
+			const styles = removeStyleFn();
 
-// Dispatcher handler responsible for removing style attributes from a view element.
-// @private
-function removeStyle( removeStyleFn ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
-			return;
+			conversionApi.mapper.toViewElement( data.item ).removeStyle( ...styles );
 		}
-
-		const styles = removeStyleFn();
-		const viewElement = conversionApi.mapper.toViewElement( data.item );
-		viewElement.removeStyle( ...styles );
 	};
 }
 
