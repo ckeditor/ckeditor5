@@ -220,7 +220,9 @@ describe( 'LinkCommand', () => {
 
 				command.execute( 'url' );
 
-				expect( getData( model ) ).to.equal( '<$text bold="true">foo[<$text linkHref="url">url</$text>]bar</$text>' );
+				expect( getData( model ) ).to.equal(
+					'<$text bold="true">foo</$text>[<$text bold="true" linkHref="url">url</$text>]<$text bold="true">bar</$text>'
+				);
 			} );
 
 			it( 'should update `linkHref` attribute and select whole link when selection is inside text with `linkHref` attribute', () => {
