@@ -62,13 +62,6 @@ export default class AlignmentUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
-		return [ AlignmentEditing ];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	static get pluginName() {
 		return 'AlignmentUI';
 	}

@@ -34,10 +34,6 @@ describe( 'Alignment', () => {
 		return editor.destroy();
 	} );
 
-	it( 'requires AlignmentEditing', () => {
-		expect( AlignmentUI.requires ).to.deep.equal( [ AlignmentEditing ] );
-	} );
-
 	describe( 'localizedStylesTitles()', () => {
 		it( 'should return localized titles of styles', () => {
 			const editorMock = { t: str => str };
