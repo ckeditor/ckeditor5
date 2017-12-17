@@ -37,10 +37,10 @@ export default class FontSizeCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const doc = this.editor.document;
+		const doc = this.editor.model.document;
 
 		this.value = doc.selection.getAttribute( 'fontSize' ) === this.fontSize;
-		this.isEnabled = doc.schema.checkAttributeInSelection( doc.selection, 'fontSize' );
+		this.isEnabled = this.editor.model.schema.checkAttributeInSelection( doc.selection, 'fontSize' );
 	}
 
 	/**
@@ -48,24 +48,22 @@ export default class FontSizeCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps.
-	 * A new batch will be created if this option is not set.
 	 */
-	execute( options = {} ) {
-		const doc = this.editor.document;
-		const selection = doc.selection;
+	execute() {
+		const model = this.editor.model;
+		const document = model.document;
+		const selection = document.selection;
 
 		// Do not apply fontSize on collapsed selection.
 		if ( selection.isCollapsed ) {
 			return;
 		}
 
-		doc.enqueueChanges( () => {
-			const ranges = doc.schema.getValidRanges( selection.getRanges(), 'fontSize' );
-			const batch = options.batch || doc.batch();
+		model.change( writer => {
+			const ranges = model.schema.getValidRanges( selection.getRanges(), 'fontSize' );
 
 			for ( const range of ranges ) {
-				batch.setAttribute( 'fontSize', this.fontSize, range );
+				writer.setAttribute( 'fontSize', this.fontSize, range );
 			}
 		} );
 	}

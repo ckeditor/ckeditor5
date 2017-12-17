@@ -10,20 +10,20 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'FontSizeCommand', () => {
-	let editor, doc, command;
+	let editor, model, command;
 
 	beforeEach( () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
-				doc = newEditor.document;
+				model = newEditor.model;
 				command = new FontSizeCommand( newEditor, 'text-huge' );
 				editor = newEditor;
 
 				editor.commands.add( 'fontSize', command );
 
-				doc.schema.registerItem( 'paragraph', '$block' );
+				model.schema.registerItem( 'paragraph', '$block' );
 
-				doc.schema.allow( { name: '$inline', attributes: 'fontSize', inside: '$block' } );
+				model.schema.allow( { name: '$inline', attributes: 'fontSize', inside: '$block' } );
 			} );
 	} );
 
@@ -38,13 +38,13 @@ describe( 'FontSizeCommand', () => {
 
 	describe( 'value', () => {
 		it( 'is set to true when selection is in text with fontSize attribute', () => {
-			setData( doc, '<paragraph><$text fontSize="text-huge">fo[]o</$text></paragraph>' );
+			setData( model, '<paragraph><$text fontSize="text-huge">fo[]o</$text></paragraph>' );
 
 			expect( command ).to.have.property( 'value', true );
 		} );
 
 		it( 'is undefined when selection is not in text with fontSize attribute', () => {
-			setData( doc, '<paragraph>fo[]o</paragraph>' );
+			setData( model, '<paragraph>fo[]o</paragraph>' );
 
 			expect( command ).to.have.property( 'value', false );
 		} );
@@ -52,7 +52,7 @@ describe( 'FontSizeCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'is true when selection is on text which can have fontSize added', () => {
-			setData( doc, '<paragraph>fo[]o</paragraph>' );
+			setData( model, '<paragraph>fo[]o</paragraph>' );
 
 			expect( command ).to.have.property( 'isEnabled', true );
 		} );
@@ -60,7 +60,7 @@ describe( 'FontSizeCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should add fontSize attribute on selected text', () => {
-			setData( doc, '<paragraph>a[bc<$text fontSize="text-huge">fo]obar</$text>xyz</paragraph>' );
+			setData( model, '<paragraph>a[bc<$text fontSize="text-huge">fo]obar</$text>xyz</paragraph>' );
 
 			expect( command.value ).to.be.false;
 
@@ -68,12 +68,12 @@ describe( 'FontSizeCommand', () => {
 
 			expect( command.value ).to.be.true;
 
-			expect( getData( doc ) ).to.equal( '<paragraph>a[<$text fontSize="text-huge">bcfo]obar</$text>xyz</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>a[<$text fontSize="text-huge">bcfo]obar</$text>xyz</paragraph>' );
 		} );
 
 		it( 'should add fontSize attribute on selected nodes (multiple nodes)', () => {
 			setData(
-				doc,
+				model,
 				'<paragraph>abcabc[abc</paragraph>' +
 				'<paragraph>foofoofoo</paragraph>' +
 				'<paragraph>barbar]bar</paragraph>'
@@ -83,7 +83,7 @@ describe( 'FontSizeCommand', () => {
 
 			expect( command.value ).to.be.true;
 
-			expect( getData( doc ) ).to.equal(
+			expect( getData( model ) ).to.equal(
 				'<paragraph>abcabc[<$text fontSize="text-huge">abc</$text></paragraph>' +
 				'<paragraph><$text fontSize="text-huge">foofoofoo</$text></paragraph>' +
 				'<paragraph><$text fontSize="text-huge">barbar</$text>]bar</paragraph>'
@@ -92,7 +92,7 @@ describe( 'FontSizeCommand', () => {
 
 		it( 'should change fontSize attribute on selected nodes', () => {
 			setData(
-				doc,
+				model,
 				'<paragraph>abc[abc<$text fontSize="text-small">abc</$text></paragraph>' +
 				'<paragraph><$text fontSize="text-small">foofoofoo</$text></paragraph>' +
 				'<paragraph><$text fontSize="text-small">bar]bar</$text>bar</paragraph>'
@@ -102,7 +102,7 @@ describe( 'FontSizeCommand', () => {
 
 			expect( command.value ).to.be.true;
 
-			expect( getData( doc ) ).to.equal(
+			expect( getData( model ) ).to.equal(
 				'<paragraph>abc[<$text fontSize="text-huge">abcabc</$text></paragraph>' +
 				'<paragraph><$text fontSize="text-huge">foofoofoo</$text></paragraph>' +
 				'<paragraph><$text fontSize="text-huge">bar</$text>]<$text fontSize="text-small">bar</$text>bar</paragraph>'
@@ -110,13 +110,13 @@ describe( 'FontSizeCommand', () => {
 		} );
 
 		it( 'should do nothing on collapsed range', () => {
-			setData( doc, '<paragraph>abc<$text fontSize="text-huge">foo[]bar</$text>xyz</paragraph>' );
+			setData( model, '<paragraph>abc<$text fontSize="text-huge">foo[]bar</$text>xyz</paragraph>' );
 
 			expect( command.value ).to.be.true;
 
 			command.execute();
 
-			expect( getData( doc ) ).to.equal( '<paragraph>abc<$text fontSize="text-huge">foo[]bar</$text>xyz</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>abc<$text fontSize="text-huge">foo[]bar</$text>xyz</paragraph>' );
 
 			expect( command.value ).to.be.true;
 		} );

@@ -9,8 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import {
-	attributeElementToViewConverter,
-	viewToAttributeElementConverter
+	modelAttributeToViewAttributeElement,
+	viewToModelAttribute
 } from '@ckeditor/ckeditor5-engine/src/conversion/configurationdefinedconverters';
 
 /**
@@ -42,10 +42,10 @@ export default class FontSizeEditing extends Plugin {
 
 		for ( const item of this.configuredItems ) {
 			// Covert view to model.
-			viewToAttributeElementConverter( 'fontSize', item, [ data.viewToModel ] );
+			viewToModelAttribute( 'fontSize', item, [ data.viewToModel ] );
 
 			// Covert model to view.
-			attributeElementToViewConverter( 'fontSize', item, [ data.modelToView, editing.modelToView ] );
+			modelAttributeToViewAttributeElement( 'fontSize', item, [ data.modelToView, editing.modelToView ] );
 
 			// Add command.
 		}
@@ -81,9 +81,9 @@ export default class FontSizeEditing extends Plugin {
 		const editor = this.editor;
 
 		// Allow highlight attribute on all elements
-		editor.document.schema.allow( { name: '$inline', attributes: 'fontSize', inside: '$block' } );
+		editor.model.schema.allow( { name: '$inline', attributes: 'fontSize', inside: '$block' } );
 		// Temporary workaround. See https://github.com/ckeditor/ckeditor5/issues/477.
-		editor.document.schema.allow( { name: '$inline', attributes: 'fontSize', inside: '$clipboardHolder' } );
+		editor.model.schema.allow( { name: '$inline', attributes: 'fontSize', inside: '$clipboardHolder' } );
 	}
 }
 

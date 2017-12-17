@@ -30,8 +30,8 @@ describe( 'FontSizeEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: 'fontSize', inside: '$block' } ) ).to.be.true;
-		expect( doc.schema.check( { name: '$inline', attributes: 'fontSize', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( editor.model.schema.check( { name: '$inline', attributes: 'fontSize', inside: '$block' } ) ).to.be.true;
+		expect( editor.model.schema.check( { name: '$inline', attributes: 'fontSize', inside: '$clipboardHolder' } ) ).to.be.true;
 	} );
 
 	describe( 'config', () => {
@@ -157,7 +157,7 @@ describe( 'FontSizeEditing', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					doc = editor.document;
+					doc = editor.model;
 				} );
 		} );
 
@@ -231,7 +231,7 @@ describe( 'FontSizeEditing', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					doc = editor.document;
+					doc = editor.model;
 				} );
 		} );
 
