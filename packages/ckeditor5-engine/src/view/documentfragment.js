@@ -8,6 +8,7 @@
  */
 
 import Text from './text';
+import TextProxy from './textproxy';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -99,11 +100,11 @@ export default class DocumentFragment {
 	 * {@link module:engine/view/documentfragment~DocumentFragment#insertChildren Insert} a child node or a list of child nodes at the end
 	 * and sets the parent of these nodes to this fragment.
 	 *
-	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} nodes Node or the list of nodes to be inserted.
+	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
 	 * @returns {Number} Number of appended nodes.
 	 */
-	appendChildren( nodes ) {
-		return this.insertChildren( this.childCount, nodes );
+	appendChildren( items ) {
+		return this.insertChildren( this.childCount, items );
 	}
 
 	/**
@@ -140,14 +141,14 @@ export default class DocumentFragment {
 	 * this fragment.
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} nodes Node or list of nodes to be inserted.
+	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
 	 * @returns {Number} Number of inserted nodes.
 	 */
-	insertChildren( index, nodes ) {
+	insertChildren( index, items ) {
 		this._fireChange( 'children', this );
 		let count = 0;
 
-		nodes = normalize( nodes );
+		const nodes = normalize( items );
 
 		for ( const node of nodes ) {
 			// If node that is being added to this element is already inside another element, first remove it from the old parent.
@@ -199,7 +200,7 @@ mix( DocumentFragment, EmitterMixin );
 
 // Converts strings to Text and non-iterables to arrays.
 //
-// @param {String|module:engine/view/node~Node|Iterable.<String|module:engine/view/node~Node>}
+// @param {String|module:engine/view/item~Item|Iterable.<String|module:engine/view/item~Item>}
 // @return {Iterable.<module:engine/view/node~Node>}
 function normalize( nodes ) {
 	// Separate condition because string is iterable.
@@ -214,6 +215,14 @@ function normalize( nodes ) {
 	// Array.from to enable .map() on non-arrays.
 	return Array.from( nodes )
 		.map( node => {
-			return typeof node == 'string' ? new Text( node ) : node;
+			if ( typeof node == 'string' ) {
+				return new Text( node );
+			}
+
+			if ( node instanceof TextProxy ) {
+				return new Text( node.data );
+			}
+
+			return node;
 		} );
 }

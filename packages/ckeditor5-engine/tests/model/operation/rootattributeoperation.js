@@ -203,34 +203,36 @@ describe( 'RootAttributeOperation', () => {
 		expect( root.getAttribute( 'foo' ) ).to.be.true;
 	} );
 
-	it( 'should throw an error when one try to remove and the attribute does not exists', () => {
-		expect( () => {
-			model.applyOperation( wrapInDelta(
-				new RootAttributeOperation(
+	describe( '_validate()', () => {
+		it( 'should throw an error when one try to remove and the attribute does not exists', () => {
+			expect( () => {
+				const op = new RootAttributeOperation(
 					root,
 					'foo',
 					true,
 					null,
 					doc.version
-				)
-			) );
-		} ).to.throw( CKEditorError, /rootattribute-operation-wrong-old-value/ );
-	} );
+				);
 
-	it( 'should throw an error when one try to insert and the attribute already exists', () => {
-		root.setAttribute( 'x', 1 );
+				op._validate();
+			} ).to.throw( CKEditorError, /rootattribute-operation-wrong-old-value/ );
+		} );
 
-		expect( () => {
-			model.applyOperation( wrapInDelta(
-				new RootAttributeOperation(
+		it( 'should throw an error when one try to insert and the attribute already exists', () => {
+			root.setAttribute( 'x', 1 );
+
+			expect( () => {
+				const op = new RootAttributeOperation(
 					root,
 					'x',
 					null,
 					2,
 					doc.version
-				)
-			) );
-		} ).to.throw( CKEditorError, /rootattribute-operation-attribute-exists/ );
+				);
+
+				op._validate();
+			} ).to.throw( CKEditorError, /rootattribute-operation-attribute-exists/ );
+		} );
 	} );
 
 	it( 'should create a RootAttributeOperation with the same parameters when cloned', () => {
@@ -299,7 +301,7 @@ describe( 'RootAttributeOperation', () => {
 
 			expect( () => {
 				RootAttributeOperation.fromJSON( serialized, doc );
-			} ).to.throw( CKEditorError, /rootattribute-operation-fromjson-no-roo/ );
+			} ).to.throw( CKEditorError, /rootattribute-operation-fromjson-no-root/ );
 		} );
 	} );
 } );

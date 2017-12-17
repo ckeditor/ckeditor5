@@ -6,6 +6,8 @@
 import DocumentFragment from '../../src/view/documentfragment';
 import Element from '../../src/view/element';
 import Node from '../../src/view/node';
+import Text from '../../src/view/text';
+import TextProxy from '../../src/view/textproxy';
 
 describe( 'DocumentFragment', () => {
 	describe( 'constructor()', () => {
@@ -159,6 +161,18 @@ describe( 'DocumentFragment', () => {
 				} );
 
 				fragment.appendChildren( el1 );
+			} );
+
+			it( 'should accept and correctly handle text proxies', () => {
+				const frag = new DocumentFragment();
+				const text = new Text( 'abcxyz' );
+				const textProxy = new TextProxy( text, 2, 3 );
+
+				frag.insertChildren( 0, textProxy );
+
+				expect( frag.childCount ).to.equal( 1 );
+				expect( frag.getChild( 0 ) ).to.be.instanceof( Text );
+				expect( frag.getChild( 0 ).data ).to.equal( 'cxy' );
 			} );
 		} );
 

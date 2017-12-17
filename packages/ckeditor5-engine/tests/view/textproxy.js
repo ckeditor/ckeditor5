@@ -78,6 +78,12 @@ describe( 'TextProxy', () => {
 		} );
 	} );
 
+	describe( 'offsetSize', () => {
+		it( 'should be equal to the number of characters in text proxy', () => {
+			expect( textProxy.offsetSize ).to.equal( 3 );
+		} );
+	} );
+
 	describe( 'getDocument', () => {
 		it( 'should return null if any parent has not set Document', () => {
 			expect( textProxy.document ).to.be.null;

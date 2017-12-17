@@ -70,7 +70,9 @@ export default class ReinsertOperation extends MoveOperation {
 	/**
 	 * @inheritDoc
 	 */
-	_execute() {
+	_validate() {
+		super._validate();
+
 		if ( !this.sourcePosition.root.document ) {
 			throw new CKEditorError( 'reinsert-operation-on-detached-item: Cannot reinsert detached item.' );
 		}
@@ -78,7 +80,12 @@ export default class ReinsertOperation extends MoveOperation {
 		if ( !this.targetPosition.root.document ) {
 			throw new CKEditorError( 'reinsert-operation-to-detached-parent: Cannot reinsert item to detached parent.' );
 		}
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	_execute() {
 		return super._execute();
 	}
 

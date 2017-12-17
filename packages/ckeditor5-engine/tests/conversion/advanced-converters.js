@@ -10,8 +10,6 @@ import ModelTextProxy from '../../src/model/textproxy';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 import ModelWalker from '../../src/model/treewalker';
-import ModelWriter from '../../src/model/writer';
-import Batch from '../../src/model/batch';
 
 import ViewElement from '../../src/view/element';
 import ViewContainerElement from '../../src/view/containerelement';
@@ -21,47 +19,34 @@ import viewWriter from '../../src/view/writer';
 import ViewPosition from '../../src/view/position';
 import ViewRange from '../../src/view/range';
 
-import Mapper from '../../src/conversion/mapper';
-import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
+import EditingController from '../../src/controller/editingcontroller';
+
 import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatcher';
 
 import {
 	insertElement,
-	insertText,
-	setAttribute,
-	removeAttribute,
-	wrapItem,
-	unwrapItem,
-	remove,
-	eventNameToConsumableType
+	changeAttribute,
+	wrap
 } from '../../src/conversion/model-to-view-converters';
 import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
 
-import { createRangeOnElementOnly } from '../../tests/model/_utils/utils';
-
 describe( 'advanced-converters', () => {
-	let model, modelDoc, modelRoot, viewRoot, mapper, modelDispatcher, viewDispatcher, modelWriter;
+	let model, modelDoc, modelRoot, viewRoot, modelDispatcher, viewDispatcher;
 
 	beforeEach( () => {
 		model = new Model();
 		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
-		viewRoot = new ViewContainerElement( 'div' );
 
-		mapper = new Mapper();
-		mapper.bindElements( modelRoot, viewRoot );
+		const editing = new EditingController( model );
 
-		modelDispatcher = new ModelConversionDispatcher( model, { mapper } );
-		// Schema is mocked up because we don't care about it in those tests.
+		viewRoot = editing.createRoot( 'div' );
+
 		viewDispatcher = new ViewConversionDispatcher( model, { schema: { check: () => true } } );
-
-		modelDispatcher.on( 'insert:$text', insertText() );
-		modelDispatcher.on( 'remove', remove() );
 		viewDispatcher.on( 'text', convertText() );
 		viewDispatcher.on( 'documentFragment', convertToModelFragment() );
 
-		// We need to create a model writer to modify model tree in tests.
-		modelWriter = new ModelWriter( model, new Batch() );
+		modelDispatcher = editing.modelToView;
 	} );
 
 	function viewAttributesToString( item ) {
@@ -131,179 +116,6 @@ describe( 'advanced-converters', () => {
 		return result;
 	}
 
-	// Converter for custom `image` element that might have a `caption` element inside which changes
-	// how the image is displayed in the view:
-	//
-	// Model:
-	//
-	// [image {src="foo.jpg" title="foo"}]
-	//   └─ [caption]
-	//       ├─ f
-	//       ├─ o
-	//       └─ o
-	//
-	// [image {src="bar.jpg" title="bar"}]
-	//
-	// View:
-	//
-	// <figure>
-	//   ├─ <img src="foo.jpg" title="foo" />
-	//   └─ <caption>
-	//       └─ foo
-	//
-	// <img src="bar.jpg" title="bar" />
-	describe( 'image with caption converters', () => {
-		beforeEach( () => {
-			const modelImageConverter = function( evt, data, consumable, conversionApi ) {
-				// First, consume the `image` element.
-				consumable.consume( data.item, 'insert' );
-
-				// Just create normal image element for the view.
-				// Maybe it will be "decorated" later.
-				const viewImage = new ViewContainerElement( 'img' );
-				const insertPosition = conversionApi.mapper.toViewPosition( data.range.start );
-
-				// Check if the `image` element has children.
-				if ( data.item.childCount > 0 ) {
-					const modelCaption = data.item.getChild( 0 );
-
-					// `modelCaption` insertion change is consumed from consumable values.
-					// It will not be converted by other converters, but it's children (probably some text) will be.
-					// Through mapping, converters for text will know where to insert contents of `modelCaption`.
-					if ( consumable.consume( modelCaption, 'insert' ) ) {
-						const viewCaption = new ViewContainerElement( 'figcaption' );
-
-						const viewImageHolder = new ViewContainerElement( 'figure', null, [ viewImage, viewCaption ] );
-
-						conversionApi.mapper.bindElements( modelCaption, viewCaption );
-						conversionApi.mapper.bindElements( data.item, viewImageHolder );
-						viewWriter.insert( insertPosition, viewImageHolder );
-					}
-				} else {
-					conversionApi.mapper.bindElements( data.item, viewImage );
-					viewWriter.insert( insertPosition, viewImage );
-				}
-
-				evt.stop();
-			};
-
-			const modelImageAttributesConverter = function( evt, data, consumable, conversionApi ) {
-				if ( data.item.name != 'image' ) {
-					return;
-				}
-
-				let viewElement = conversionApi.mapper.toViewElement( data.item );
-
-				if ( viewElement.name == 'figure' ) {
-					viewElement = viewElement.getChild( 0 );
-				}
-
-				consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
-
-				if ( !data.attributeNewValue ) {
-					viewElement.removeAttribute( data.attributeKey );
-				} else {
-					viewElement.setAttribute( data.attributeKey, data.attributeNewValue );
-				}
-
-				evt.stop();
-			};
-
-			const viewFigureConverter = function( evt, data, consumable, conversionApi ) {
-				if ( consumable.consume( data.input, { name: true } ) ) {
-					const modelImage = conversionApi.convertItem( data.input.getChild( 0 ), consumable );
-					const modelCaption = conversionApi.convertItem( data.input.getChild( 1 ), consumable );
-
-					modelImage.appendChildren( modelCaption );
-
-					data.output = modelImage;
-				}
-			};
-
-			const viewImageConverter = function( evt, data, consumable, conversionApi ) {
-				if ( consumable.consume( data.input, { name: true } ) ) {
-					data.output = conversionApi.writer.createElement( 'image', data.input.getAttributes() );
-				}
-			};
-
-			const viewFigcaptionConverter = function( evt, data, consumable, conversionApi ) {
-				if ( consumable.consume( data.input, { name: true } ) ) {
-					const modelCaption = conversionApi.writer.createElement( 'caption' );
-					const children = conversionApi.convertChildren( data.input, consumable );
-
-					conversionApi.writer.append( children, modelCaption );
-
-					data.output = modelCaption;
-				}
-			};
-
-			modelDispatcher.on( 'insert:image', modelImageConverter );
-			modelDispatcher.on( 'addAttribute', modelImageAttributesConverter );
-			modelDispatcher.on( 'changeAttribute', modelImageAttributesConverter );
-			modelDispatcher.on( 'removeAttribute', modelImageAttributesConverter );
-			viewDispatcher.on( 'element:figure', viewFigureConverter );
-			viewDispatcher.on( 'element:img', viewImageConverter );
-			viewDispatcher.on( 'element:figcaption', viewFigcaptionConverter );
-		} );
-
-		it( 'should convert model images changes without caption to view', () => {
-			const modelElement = new ModelElement( 'image', { src: 'bar.jpg', title: 'bar' } );
-			modelRoot.appendChildren( modelElement );
-			modelDispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><img src="bar.jpg" title="bar"></img></div>' );
-
-			modelElement.setAttribute( 'src', 'new.jpg' );
-			modelElement.removeAttribute( 'title' );
-			modelDispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'src', 'bar.jpg', 'new.jpg' );
-			modelDispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'title', 'bar', null );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><img src="new.jpg"></img></div>' );
-		} );
-
-		it( 'should convert model images changes with caption to view', () => {
-			const modelElement = new ModelElement( 'image', { src: 'foo.jpg', title: 'foo' }, [
-				new ModelElement( 'caption', {}, new ModelText( 'foobar' ) )
-			] );
-			modelRoot.appendChildren( [ modelElement ] );
-			modelDispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-
-			expect( viewToString( viewRoot ) ).to.equal(
-				'<div><figure><img src="foo.jpg" title="foo"></img><figcaption>foobar</figcaption></figure></div>'
-			);
-
-			modelElement.setAttribute( 'src', 'new.jpg' );
-			modelElement.removeAttribute( 'title' );
-			modelDispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'src', 'bar.jpg', 'new.jpg' );
-			modelDispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'title', 'bar', null );
-
-			expect( viewToString( viewRoot ) ).to.equal(
-				'<div><figure><img src="new.jpg"></img><figcaption>foobar</figcaption></figure></div>'
-			);
-		} );
-
-		it( 'should convert view image to model', () => {
-			const viewElement = new ViewContainerElement( 'img', { src: 'bar.jpg', title: 'bar' } );
-			const modelElement = viewDispatcher.convert( viewElement );
-
-			expect( modelToString( modelElement ) ).to.equal( '<image src="bar.jpg" title="bar"></image>' );
-		} );
-
-		it( 'should convert view figure to model', () => {
-			const viewElement = new ViewContainerElement(
-				'figure',
-				null,
-				[
-					new ViewContainerElement( 'img', { src: 'bar.jpg', title: 'bar' } ),
-					new ViewContainerElement( 'figcaption', null, new ViewText( 'foobar' ) )
-				]
-			);
-			const modelElement = viewDispatcher.convert( viewElement );
-
-			expect( modelToString( modelElement ) ).to.equal( '<image src="bar.jpg" title="bar"><caption>foobar</caption></image>' );
-		} );
-	} );
-
 	// Converter overwrites default attribute converter for `linkHref` and `linkTitle` attribute is set on `quote` element.
 	//
 	// Model:
@@ -326,46 +138,11 @@ describe( 'advanced-converters', () => {
 	//	 └─ foo
 	describe( 'custom attribute handling for given element', () => {
 		beforeEach( () => {
-			// NORMAL LINK MODEL TO VIEW CONVERTERS
-			modelDispatcher.on( 'addAttribute:linkHref', wrapItem( value => new ViewAttributeElement( 'a', { href: value } ) ) );
-			modelDispatcher.on( 'addAttribute:linkTitle', wrapItem( value => new ViewAttributeElement( 'a', { title: value } ) ) );
+			// Normal model-to-view converters for links.
+			modelDispatcher.on( 'attribute:linkHref', wrap( value => new ViewAttributeElement( 'a', { href: value } ) ) );
+			modelDispatcher.on( 'attribute:linkTitle', wrap( value => new ViewAttributeElement( 'a', { title: value } ) ) );
 
-			const changeLinkAttribute = function( elementCreator ) {
-				return ( evt, data, consumable, conversionApi ) => {
-					consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
-
-					const viewRange = conversionApi.mapper.toViewRange( data.range );
-					const viewOldA = elementCreator( data.attributeOldValue );
-					const viewNewA = elementCreator( data.attributeNewValue );
-
-					viewWriter.unwrap( viewRange, viewOldA, evt.priority );
-					viewWriter.wrap( viewRange, viewNewA, evt.priority );
-
-					evt.stop();
-				};
-			};
-
-			modelDispatcher.on(
-				'changeAttribute:linkHref',
-				changeLinkAttribute( value => new ViewAttributeElement( 'a', { href: value } ) )
-			);
-
-			modelDispatcher.on(
-				'changeAttribute:linkTitle',
-				changeLinkAttribute( value => new ViewAttributeElement( 'a', { title: value } ) )
-			);
-
-			modelDispatcher.on(
-				'removeAttribute:linkHref',
-				unwrapItem( value => new ViewAttributeElement( 'a', { href: value } ) )
-			);
-
-			modelDispatcher.on(
-				'removeAttribute:linkTitle',
-				unwrapItem( value => new ViewAttributeElement( 'a', { title: value } ) )
-			);
-
-			// NORMAL LINK VIEW TO MODEL CONVERTERS
+			// Normal view-to-model converters for links.
 			viewDispatcher.on( 'element:a', ( evt, data, consumable, conversionApi ) => {
 				if ( consumable.consume( data.input, { name: true, attribute: 'href' } ) ) {
 					if ( !data.output ) {
@@ -390,7 +167,7 @@ describe( 'advanced-converters', () => {
 				}
 			} );
 
-			// QUOTE MODEL TO VIEW CONVERTERS
+			// Model-to-view converter for quote element.
 			modelDispatcher.on( 'insert:quote', ( evt, data, consumable, conversionApi ) => {
 				consumable.consume( data.item, 'insert' );
 
@@ -399,56 +176,63 @@ describe( 'advanced-converters', () => {
 
 				conversionApi.mapper.bindElements( data.item, viewElement );
 				viewWriter.insert( viewPosition, viewElement );
+			}, { priority: 'high' } );
 
-				if ( consumable.consume( data.item, 'addAttribute:linkHref' ) ) {
-					const viewA = new ViewAttributeElement(
+			modelDispatcher.on( 'attribute:linkHref:quote', linkHrefOnQuoteConverter, { priority: 'high' } );
+			modelDispatcher.on( 'attribute:linkTitle:quote', linkTitleOnQuoteConverter, { priority: 'high' } );
+
+			function linkHrefOnQuoteConverter( evt, data, consumable, conversionApi ) {
+				if ( !consumable.consume( data.item, 'attribute:linkHref' ) ) {
+					return;
+				}
+
+				const viewQuote = conversionApi.mapper.toViewElement( data.item );
+
+				if ( data.attributeNewValue === null ) {
+					// Attribute was removed -> remove the view link.
+					const viewLink = viewQuote.getChild( viewQuote.childCount - 1 );
+
+					viewWriter.remove( ViewRange.createOn( viewLink ) );
+
+					consumable.consume( data.item, 'attribute:linkTitle' );
+				} else if ( data.attributeOldValue === null ) {
+					// Attribute was added -> add the view link.
+					const viewLink = new ViewAttributeElement(
 						'a', { href: data.item.getAttribute( 'linkHref' ) }, new ViewText( 'see source' )
 					);
 
-					if ( consumable.consume( data.item, 'addAttribute:linkTitle' ) ) {
-						viewA.setAttribute( 'title', data.item.getAttribute( 'linkTitle' ) );
+					if ( consumable.consume( data.item, 'attribute:linkTitle' ) && data.item.getAttribute( 'linkTitle' ) !== null ) {
+						viewLink.setAttribute( 'title', data.item.getAttribute( 'linkTitle' ) );
 					}
 
-					viewWriter.insert( new ViewPosition( viewElement, viewElement.childCount ), viewA );
-				}
-
-				evt.stop();
-			}, { priority: 'high' } );
-
-			const modelChangeLinkAttrQuoteConverter = function( evt, data, consumable, conversionApi ) {
-				const viewKey = data.attributeKey.substr( 4 ).toLowerCase();
-
-				consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
-
-				const viewElement = conversionApi.mapper.toViewElement( data.item );
-				const viewA = viewElement.getChild( viewElement.childCount - 1 );
-
-				if ( data.attributeNewValue !== null ) {
-					viewA.setAttribute( viewKey, data.attributeNewValue );
+					viewWriter.insert( new ViewPosition( viewQuote, viewQuote.childCount ), viewLink );
 				} else {
-					viewA.removeAttribute( viewKey );
+					// Attribute has changed -> change the existing view link.
+					const viewLink = viewQuote.getChild( viewQuote.childCount - 1 );
+					viewLink.setAttribute( 'href', data.attributeNewValue );
+				}
+			}
+
+			function linkTitleOnQuoteConverter( evt, data, consumable, conversionApi ) {
+				if ( !consumable.consume( data.item, 'attribute:linkTitle' ) ) {
+					return;
 				}
 
-				evt.stop();
-			};
+				const viewQuote = conversionApi.mapper.toViewElement( data.item );
+				const viewLink = viewQuote.getChild( viewQuote.childCount - 1 );
 
-			modelDispatcher.on( 'changeAttribute:linkHref:quote', modelChangeLinkAttrQuoteConverter, { priority: 'high' } );
-			modelDispatcher.on( 'changeAttribute:linkTitle:quote', modelChangeLinkAttrQuoteConverter, { priority: 'high' } );
+				if ( !viewLink ) {
+					return;
+				}
 
-			modelDispatcher.on( 'removeAttribute:linkHref:quote', ( evt, data, consumable, conversionApi ) => {
-				consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
+				if ( data.attributeNewValue === null ) {
+					viewLink.removeAttribute( 'title' );
+				} else {
+					viewLink.setAttribute( 'title', data.attributeNewValue );
+				}
+			}
 
-				const viewElement = conversionApi.mapper.toViewElement( data.item );
-				const viewA = viewElement.getChild( viewElement.childCount - 1 );
-				const aIndex = viewA.index;
-
-				viewWriter.remove( ViewRange.createFromParentsAndOffsets( viewElement, aIndex, viewElement, aIndex + 1 ) );
-
-				evt.stop();
-			}, { priority: 'high' } );
-			modelDispatcher.on( 'removeAttribute:linkTitle:quote', modelChangeLinkAttrQuoteConverter, { priority: 'high' } );
-
-			// QUOTE VIEW TO MODEL CONVERTERS
+			// View-to-model converter for quote element.
 			viewDispatcher.on( 'element:blockquote', ( evt, data, consumable, conversionApi ) => {
 				if ( consumable.consume( data.input, { name: true } ) ) {
 					data.output = new ModelElement( 'quote' );
@@ -474,43 +258,47 @@ describe( 'advanced-converters', () => {
 
 		it( 'should convert model text with linkHref and linkTitle to view', () => {
 			const modelText = new ModelText( 'foo', { linkHref: 'foo.html', linkTitle: 'Foo title' } );
-			modelRoot.appendChildren( modelText );
 
-			let range = ModelRange.createIn( modelRoot );
+			// Let's insert text with link attributes.
+			model.change( writer => {
+				writer.insert(
+					modelText,
+					new ModelPosition( modelRoot, [ 0 ] )
+				);
+			} );
 
-			modelDispatcher.convertInsertion( range );
+			let range = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><a href="foo.html" title="Foo title">foo</a></div>' );
 
 			// Let's change link's attributes.
-			modelWriter.setAttributes( {
-				linkHref: 'bar.html',
-				linkTitle: 'Bar title'
-			}, range );
-			modelDispatcher.convertAttribute( 'changeAttribute', range, 'linkHref', 'foo.html', 'bar.html' );
-			modelDispatcher.convertAttribute( 'changeAttribute', range, 'linkTitle', 'Foo title', 'Bar title' );
+			model.change( writer => {
+				writer.setAttribute( 'linkHref', 'bar.html', range );
+				writer.setAttribute( 'linkTitle', 'Bar title', range );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><a href="bar.html" title="Bar title">foo</a></div>' );
 
-			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
-			modelDispatcher.convertRemove(
-				ModelPosition.createFromParentAndOffset( modelRoot, 0 ),
-				ModelRange.createIn( modelDoc.graveyard )
-			);
+			// Let's remove a letter from the link.
+			model.change( writer => {
+				writer.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><a href="bar.html" title="Bar title">oo</a></div>' );
 
-			range = ModelRange.createIn( modelRoot );
-
 			// Let's remove just one attribute.
-			modelWriter.removeAttribute( 'linkTitle', range );
-			modelDispatcher.convertAttribute( 'removeAttribute', range, 'linkTitle', 'Bar title', null );
+			model.change( writer => {
+				range = ModelRange.createIn( modelRoot );
+				writer.removeAttribute( 'linkTitle', range );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><a href="bar.html">oo</a></div>' );
 
 			// Let's remove the other attribute.
-			modelWriter.removeAttribute( 'linkHref', range );
-			modelDispatcher.convertAttribute( 'removeAttribute', range, 'linkHref', 'bar.html', null );
+			model.change( writer => {
+				range = ModelRange.createIn( modelRoot );
+				writer.removeAttribute( 'linkHref', range );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>oo</div>' );
 		} );
@@ -527,46 +315,45 @@ describe( 'advanced-converters', () => {
 		} );
 
 		it( 'should convert quote model element with linkHref and linkTitle attribute to view', () => {
+			modelDispatcher.on( 'attribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
+
 			const modelElement = new ModelElement( 'quote', { linkHref: 'foo.html', linkTitle: 'Foo source' }, new ModelText( 'foo' ) );
-			modelRoot.appendChildren( modelElement );
-			modelDispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+
+			// Let's insert a quote element with link attribute.
+			model.change( writer => {
+				writer.insert(
+					modelElement,
+					new ModelPosition( modelRoot, [ 0 ] )
+				);
+			} );
 
 			let expected = '<div><blockquote>foo<a href="foo.html" title="Foo source">see source</a></blockquote></div>';
 			expect( viewToString( viewRoot ) ).to.equal( expected );
 
-			modelDispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
-			modelDispatcher.on( 'changeAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
-			modelDispatcher.on( 'removeAttribute:bold', unwrapItem( new ViewAttributeElement( 'strong' ) ) );
-
-			modelElement.appendChildren( new ModelText( 'bar', { bold: true } ) );
-			modelDispatcher.convertInsertion( ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 6 ) );
+			// And insert some additional content into it.
+			model.change( writer => {
+				writer.insert(
+					new ModelText( 'bar', { bold: true } ),
+					new ModelPosition( modelRoot, [ 0, 3 ] )
+				);
+			} );
 
 			expected = '<div><blockquote>foo<strong>bar</strong><a href="foo.html" title="Foo source">see source</a></blockquote></div>';
 			expect( viewToString( viewRoot ) ).to.equal( expected );
 
-			modelElement.removeAttribute( 'linkTitle' );
-			modelElement.setAttribute( 'linkHref', 'bar.html' );
-
-			modelDispatcher.convertAttribute(
-				'removeAttribute',
-				createRangeOnElementOnly( modelElement ),
-				'linkTitle',
-				'Foo source',
-				null
-			);
-			modelDispatcher.convertAttribute(
-				'changeAttribute',
-				createRangeOnElementOnly( modelElement ),
-				'linkHref',
-				'foo.html',
-				'bar.html'
-			);
+			// Let's change some attributes.
+			model.change( writer => {
+				writer.removeAttribute( 'linkTitle', modelElement );
+				writer.setAttribute( 'linkHref', 'bar.html', modelElement );
+			} );
 
 			expected = '<div><blockquote>foo<strong>bar</strong><a href="bar.html">see source</a></blockquote></div>';
 			expect( viewToString( viewRoot ) ).to.equal( expected );
 
-			modelElement.removeAttribute( 'linkHref' );
-			modelDispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'linkHref', 'bar.html', null );
+			// Let's remove the only attribute connected with link.
+			model.change( writer => {
+				writer.removeAttribute( 'linkHref', modelElement );
+			} );
 
 			expected = '<div><blockquote>foo<strong>bar</strong></blockquote></div>';
 			expect( viewToString( viewRoot ) ).to.equal( expected );
@@ -662,9 +449,7 @@ describe( 'advanced-converters', () => {
 		beforeEach( () => {
 			// "Universal" converters
 			modelDispatcher.on( 'insert', insertElement( data => new ViewContainerElement( data.item.name ) ), { priority: 'lowest' } );
-			modelDispatcher.on( 'addAttribute', setAttribute(), { priority: 'lowest' } );
-			modelDispatcher.on( 'changeAttribute', setAttribute(), { priority: 'lowest' } );
-			modelDispatcher.on( 'removeAttribute', removeAttribute(), { priority: 'lowest' } );
+			modelDispatcher.on( 'attribute', changeAttribute(), { priority: 'lowest' } );
 
 			viewDispatcher.on( 'element', ( evt, data, consumable, conversionApi ) => {
 				if ( consumable.consume( data.input, { name: true } ) ) {
@@ -682,9 +467,7 @@ describe( 'advanced-converters', () => {
 
 			// "Real" converters -- added with higher priority. Should overwrite the "universal" converters.
 			modelDispatcher.on( 'insert:image', insertElement( new ViewContainerElement( 'img' ) ) );
-			modelDispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
-			modelDispatcher.on( 'changeAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
-			modelDispatcher.on( 'removeAttribute:bold', unwrapItem( new ViewAttributeElement( 'strong' ) ) );
+			modelDispatcher.on( 'attribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
 
 			viewDispatcher.on( 'element:img', ( evt, data, consumable ) => {
 				if ( consumable.consume( data.input, { name: true } ) ) {
@@ -725,7 +508,7 @@ describe( 'advanced-converters', () => {
 			] );
 
 			modelRoot.appendChildren( modelElement );
-			modelDispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			modelDispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal(
 				'<div>' +

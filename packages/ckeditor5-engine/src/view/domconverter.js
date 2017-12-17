@@ -1036,7 +1036,7 @@ export default class DomConverter {
 				// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
 				// text node in its container element.
 				return null;
-			} else if ( value.item.is( 'text' ) ) {
+			} else if ( value.item.is( 'textProxy' ) ) {
 				// Found a text node in the same container element.
 				return value.item;
 			}

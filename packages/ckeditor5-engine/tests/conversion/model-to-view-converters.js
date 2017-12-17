@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelWriter from '../../src/model/writer';
-import Batch from '../../src/model/batch';
 import Model from '../../src/model/model';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
@@ -17,41 +15,38 @@ import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewUIElement from '../../src/view/uielement';
 import ViewText from '../../src/view/text';
 
-import Mapper from '../../src/conversion/mapper';
-import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
 import {
 	insertElement,
-	insertText,
 	insertUIElement,
-	setAttribute,
-	removeAttribute,
-	wrapItem,
-	unwrapItem,
-	remove,
+	changeAttribute,
+	wrap,
 	removeUIElement,
-	highlightText,
 	highlightElement,
+	highlightText,
+	removeHighlight,
 	createViewElementFromHighlightDescriptor
 } from '../../src/conversion/model-to-view-converters';
 
-import { createRangeOnElementOnly } from '../../tests/model/_utils/utils';
+import EditingController from '../../src/controller/editingcontroller';
 
 describe( 'model-to-view-converters', () => {
-	let dispatcher, model, modelDoc, modelRoot, modelWriter, mapper, viewRoot;
+	let dispatcher, modelDoc, modelRoot, viewRoot, controller, modelRootStart, model;
 
 	beforeEach( () => {
 		model = new Model();
 		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
-		viewRoot = new ViewContainerElement( 'div' );
 
-		mapper = new Mapper();
-		mapper.bindElements( modelRoot, viewRoot );
+		controller = new EditingController( model );
+		controller.createRoot( 'div' );
 
-		dispatcher = new ModelConversionDispatcher( model, { mapper } );
+		viewRoot = controller.view.getRoot();
+		dispatcher = controller.modelToView;
 
-		// As an util for modifying model tree.
-		modelWriter = new ModelWriter( model, new Batch() );
+		dispatcher.on( 'insert:paragraph', insertElement( () => new ViewContainerElement( 'p' ) ) );
+		dispatcher.on( 'attribute:class', changeAttribute() );
+
+		modelRootStart = ModelPosition.createAt( modelRoot, 0 );
 	} );
 
 	function viewAttributesToString( item ) {
@@ -87,279 +82,31 @@ describe( 'model-to-view-converters', () => {
 		return result;
 	}
 
-	describe( 'highlightText()', () => {
-		let modelElement1, modelElement2, markerRange;
-		const highlightDescriptor = {
-			class: 'highlight-class',
-			priority: 7,
-			attributes: { title: 'title' }
-		};
-
-		beforeEach( () => {
-			const modelText1 = new ModelText( 'foo' );
-			modelElement1 = new ModelElement( 'paragraph', null, modelText1 );
-			const modelText2 = new ModelText( 'bar' );
-			modelElement2 = new ModelElement( 'paragraph', null, modelText2 );
-
-			modelRoot.appendChildren( modelElement1 );
-			modelRoot.appendChildren( modelElement2 );
-			dispatcher.on( 'insert:paragraph', insertElement( () => new ViewContainerElement( 'p' ) ) );
-			dispatcher.on( 'insert:$text', insertText() );
-
-			markerRange = ModelRange.createIn( modelRoot );
-		} );
-
-		it( 'should wrap and unwrap text nodes', () => {
-			dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
-			dispatcher.on( 'removeMarker:marker', highlightText( highlightDescriptor ) );
-			dispatcher.convertInsertion( markerRange );
-
-			model.markers.set( 'marker', markerRange );
-			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
-
-			expect( viewToString( viewRoot ) ).to.equal(
-				'<div>' +
-					'<p>' +
-						'<span class="highlight-class" title="title">foo</span>' +
-					'</p>' +
-					'<p>' +
-						'<span class="highlight-class" title="title">bar</span>' +
-					'</p>' +
-				'</div>'
-			);
-
-			dispatcher.convertMarker( 'removeMarker', 'marker', markerRange );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
-		} );
-
-		it( 'should not convert marker on elements already consumed', () => {
-			const newDescriptor = { class: 'override-class' };
-
-			dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
-			dispatcher.on( 'addMarker:marker', highlightText( newDescriptor ), { priority: 'high' } );
-			dispatcher.on( 'removeMarker:marker', highlightText( highlightDescriptor ) );
-			dispatcher.on( 'removeMarker:marker', highlightText( newDescriptor ), { priority: 'high' } );
-			dispatcher.convertInsertion( markerRange );
-
-			model.markers.set( 'marker', markerRange );
-			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
-
-			expect( viewToString( viewRoot ) ).to.equal(
-				'<div>' +
-					'<p>' +
-						'<span class="override-class">foo</span>' +
-					'</p>' +
-					'<p>' +
-						'<span class="override-class">bar</span>' +
-					'</p>' +
-				'</div>'
-			);
-
-			dispatcher.convertMarker( 'removeMarker', 'marker', markerRange );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
-		} );
-
-		it( 'should do nothing if descriptor is not provided', () => {
-			dispatcher.on( 'addMarker:marker', highlightText( () => null ) );
-			dispatcher.on( 'removeMarker:marker', highlightText( () => null ) );
-
-			dispatcher.convertInsertion( markerRange );
-
-			model.markers.set( 'marker', markerRange );
-			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
-			dispatcher.convertMarker( 'removeMarker', 'marker', markerRange );
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
-		} );
-	} );
-
-	describe( 'highlightElement()', () => {
-		let modelElement1, modelElement2, markerRange;
-		const highlightDescriptor = {
-			class: 'highlight-class',
-			priority: 7,
-			attributes: { title: 'title' },
-			id: 'customId'
-		};
-
-		beforeEach( () => {
-			const modelText1 = new ModelText( 'foo' );
-			modelElement1 = new ModelElement( 'paragraph', null, modelText1 );
-			const modelText2 = new ModelText( 'bar' );
-			modelElement2 = new ModelElement( 'paragraph', null, modelText2 );
-
-			modelRoot.appendChildren( modelElement1 );
-			modelRoot.appendChildren( modelElement2 );
-			dispatcher.on( 'insert:paragraph', insertElement( () => new ViewContainerElement( 'p' ) ) );
-			dispatcher.on( 'insert:$text', insertText() );
-
-			markerRange = ModelRange.createIn( modelRoot );
-		} );
-
-		it( 'should use addHighlight and removeHighlight on elements and not convert children nodes', () => {
-			dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
-			dispatcher.on( 'removeMarker:marker', highlightElement( highlightDescriptor ) );
-			dispatcher.on( 'insert:paragraph', insertElement( data => {
-				// Use special converter only for first paragraph.
-				if ( data.item == modelElement2 ) {
-					return;
-				}
-
-				const viewContainer = new ViewContainerElement( 'p' );
-
-				viewContainer.setCustomProperty( 'addHighlight', ( element, descriptor ) => {
-					element.addClass( 'highlight-own-class' );
-
-					expect( descriptor ).to.equal( highlightDescriptor );
-				} );
-
-				viewContainer.setCustomProperty( 'removeHighlight', ( element, id ) => {
-					element.removeClass( 'highlight-own-class' );
-
-					expect( id ).to.equal( highlightDescriptor.id );
-				} );
-
-				return viewContainer;
-			} ), { priority: 'high' } );
-
-			dispatcher.convertInsertion( markerRange );
-			model.markers.set( 'marker', markerRange );
-			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
-
-			expect( viewToString( viewRoot ) ).to.equal(
-				'<div>' +
-					'<p class="highlight-own-class">' +
-						'foo' +
-					'</p>' +
-					'<p>' +
-						'bar' +
-					'</p>' +
-				'</div>'
-			);
-
-			dispatcher.convertMarker( 'removeMarker', 'marker', markerRange );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
-		} );
-
-		it( 'should not convert marker on elements already consumed', () => {
-			const newDescriptor = { class: 'override-class' };
-
-			dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
-			dispatcher.on( 'removeMarker:marker', highlightElement( highlightDescriptor ) );
-
-			dispatcher.on( 'addMarker:marker', highlightElement( newDescriptor ), { priority: 'high' } );
-			dispatcher.on( 'removeMarker:marker', highlightElement( newDescriptor ), { priority: 'high' } );
-
-			dispatcher.on( 'insert:paragraph', insertElement( () => {
-				const element = new ViewContainerElement( 'p' );
-				const descriptors = new Map();
-
-				element.setCustomProperty( 'addHighlight', ( element, data ) => {
-					descriptors.set( data.id, data );
-					element.addClass( data.class );
-				} );
-				element.setCustomProperty( 'removeHighlight', ( element, id ) => element.removeClass( descriptors.get( id ).class ) );
-
-				return element;
-			} ), { priority: 'high' } );
-
-			dispatcher.convertInsertion( markerRange );
-			model.markers.set( 'marker', markerRange );
-			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
-
-			expect( viewToString( viewRoot ) ).to.equal(
-				'<div>' +
-					'<p class="override-class">' +
-						'foo' +
-					'</p>' +
-					'<p class="override-class">' +
-						'bar' +
-					'</p>' +
-				'</div>'
-			);
-
-			dispatcher.convertMarker( 'removeMarker', 'marker', markerRange );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
-		} );
-
-		it( 'should use provide default priority and id if not provided', () => {
-			const highlightDescriptor = { class: 'highlight-class' };
-
-			dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
-			dispatcher.on( 'removeMarker:marker', highlightElement( highlightDescriptor ) );
-			dispatcher.on( 'insert:paragraph', insertElement( data => {
-				// Use special converter only for first paragraph.
-				if ( data.item == modelElement2 ) {
-					return;
-				}
-
-				const viewContainer = new ViewContainerElement( 'p' );
-
-				viewContainer.setCustomProperty( 'addHighlight', ( element, descriptor ) => {
-					expect( descriptor.priority ).to.equal( 10 );
-					expect( descriptor.id ).to.equal( 'marker:foo-bar-baz' );
-				} );
-
-				viewContainer.setCustomProperty( 'removeHighlight', ( element, descriptor ) => {
-					expect( descriptor.priority ).to.equal( 10 );
-					expect( descriptor.id ).to.equal( 'marker:foo-bar-baz' );
-				} );
-
-				return viewContainer;
-			} ), { priority: 'high' } );
-
-			dispatcher.convertInsertion( markerRange );
-			model.markers.set( 'marker', markerRange );
-			dispatcher.convertMarker( 'addMarker', 'marker:foo-bar-baz', markerRange );
-		} );
-
-		it( 'should do nothing if descriptor is not provided', () => {
-			dispatcher.on( 'addMarker:marker', highlightElement( () => null ) );
-			dispatcher.on( 'removeMarker:marker', highlightElement( () => null ) );
-
-			dispatcher.convertInsertion( markerRange );
-
-			model.markers.set( 'marker', markerRange );
-			dispatcher.convertMarker( 'addMarker', 'marker', markerRange );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
-			dispatcher.convertMarker( 'removeMarker', 'marker', markerRange );
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
-		} );
-	} );
-
 	describe( 'insertText', () => {
 		it( 'should convert text insertion in model to view text', () => {
-			modelRoot.appendChildren( new ModelText( 'foobar' ) );
-			dispatcher.on( 'insert:$text', insertText() );
-
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( new ModelText( 'foobar' ), modelRootStart );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foobar</div>' );
 		} );
 
 		it( 'should support unicode', () => {
-			modelRoot.appendChildren( new ModelText( 'நிலைக்கு' ) );
-			dispatcher.on( 'insert:$text', insertText() );
-
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( new ModelText( 'நிலைக்கு' ), modelRootStart );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>நிலைக்கு</div>' );
 		} );
 
 		it( 'should be possible to override it', () => {
-			modelRoot.appendChildren( new ModelText( 'foobar' ) );
-			dispatcher.on( 'insert:$text', insertText() );
 			dispatcher.on( 'insert:$text', ( evt, data, consumable ) => {
 				consumable.consume( data.item, 'insert' );
 			}, { priority: 'high' } );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( new ModelText( 'foobar' ), modelRootStart );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div></div>' );
 		} );
@@ -368,90 +115,61 @@ describe( 'model-to-view-converters', () => {
 	describe( 'insertElement', () => {
 		it( 'should convert element insertion in model to and map positions for future converting', () => {
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
-			const viewElement = new ViewContainerElement( 'p' );
 
-			modelRoot.appendChildren( modelElement );
-			dispatcher.on( 'insert:paragraph', insertElement( viewElement ) );
-			dispatcher.on( 'insert:$text', insertText() );
-
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
 
 		it( 'should take view element function generator as a parameter', () => {
 			const elementGenerator = ( data, consumable ) => {
-				if ( consumable.consume( data.item, 'addAttribute:nice' ) ) {
+				if ( consumable.consume( data.item, 'attribute:nice' ) ) {
 					return new ViewContainerElement( 'div' );
-				} else {
-					return new ViewContainerElement( 'p' );
 				}
+
+				// Test if default converter will be fired for paragraph, if `null` is returned and consumable was not consumed.
+				return null;
 			};
-			const niceP = new ModelElement( 'myParagraph', { nice: true }, new ModelText( 'foo' ) );
-			const badP = new ModelElement( 'myParagraph', null, new ModelText( 'bar' ) );
 
-			modelRoot.appendChildren( [ niceP, badP ] );
+			dispatcher.on( 'insert:paragraph', insertElement( elementGenerator ), { priority: 'high' } );
 
-			dispatcher.on( 'insert:myParagraph', insertElement( elementGenerator ) );
-			dispatcher.on( 'insert:$text', insertText() );
+			const niceP = new ModelElement( 'paragraph', { nice: true }, new ModelText( 'foo' ) );
+			const badP = new ModelElement( 'paragraph', null, new ModelText( 'bar' ) );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( [ niceP, badP ], modelRootStart );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div><p>bar</p></div>' );
 		} );
-
-		it( 'should not convert and not consume if creator function returned null', () => {
-			const elementGenerator = () => null;
-
-			const modelP = new ModelElement( 'paragraph', null, new ModelText( 'foo' ) );
-
-			modelRoot.appendChildren( [ modelP ] );
-
-			sinon.spy( dispatcher, 'fire' );
-
-			dispatcher.on( 'insert:paragraph', insertElement( elementGenerator ) );
-			dispatcher.on( 'insert:paragraph', ( evt, data, consumable ) => {
-				expect( consumable.test( data.item, 'insert' ) ).to.be.true;
-			} );
-
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div></div>' );
-			expect( dispatcher.fire.calledWith( 'insert:paragraph' ) ).to.be.true;
-		} );
 	} );
 
-	describe( 'setAttribute/removeAttribute', () => {
+	describe( 'setAttribute', () => {
 		it( 'should convert attribute insert/change/remove on a model node', () => {
 			const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
-			const viewElement = new ViewContainerElement( 'p' );
 
-			modelRoot.appendChildren( modelElement );
-			dispatcher.on( 'insert:paragraph', insertElement( viewElement ) );
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'addAttribute:class', setAttribute() );
-			dispatcher.on( 'changeAttribute:class', setAttribute() );
-			dispatcher.on( 'removeAttribute:class', removeAttribute() );
-
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
 
-			modelElement.setAttribute( 'class', 'bar' );
-			dispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'class', 'foo', 'bar' );
+			model.change( writer => {
+				writer.setAttribute( 'class', 'bar', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="bar">foobar</p></div>' );
 
-			modelElement.removeAttribute( 'class' );
-			dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'class', 'bar', null );
+			model.change( writer => {
+				writer.removeAttribute( 'class', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
 
 		it( 'should convert insert/change/remove with attribute generating function as a parameter', () => {
-			const modelParagraph = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
-			const modelDiv = new ModelElement( 'div', { theme: 'nice' } );
-
 			const themeConverter = ( value, key, data ) => {
 				if ( data.item instanceof ModelElement && data.item.childCount > 0 ) {
 					value += ' fix-content';
@@ -460,98 +178,69 @@ describe( 'model-to-view-converters', () => {
 				return { key: 'class', value };
 			};
 
-			modelRoot.appendChildren( [ modelParagraph, modelDiv ] );
-			dispatcher.on( 'insert:paragraph', insertElement( new ViewContainerElement( 'p' ) ) );
 			dispatcher.on( 'insert:div', insertElement( new ViewContainerElement( 'div' ) ) );
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'addAttribute:theme', setAttribute( themeConverter ) );
-			dispatcher.on( 'changeAttribute:theme', setAttribute( themeConverter ) );
-			dispatcher.on( 'removeAttribute:theme', removeAttribute( themeConverter ) );
+			dispatcher.on( 'attribute:theme', changeAttribute( themeConverter ) );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			const modelParagraph = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
+			const modelDiv = new ModelElement( 'div', { theme: 'nice' } );
+
+			model.change( writer => {
+				writer.insert( [ modelParagraph, modelDiv ], modelRootStart );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="nice fix-content">foobar</p><div class="nice"></div></div>' );
 
-			modelParagraph.setAttribute( 'theme', 'awesome' );
-			dispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelParagraph ), 'theme', 'nice', 'awesome' );
+			model.change( writer => {
+				writer.setAttribute( 'theme', 'awesome', modelParagraph );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="awesome fix-content">foobar</p><div class="nice"></div></div>' );
 
-			modelParagraph.removeAttribute( 'theme' );
-			dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelParagraph ), 'theme', 'awesome', null );
+			model.change( writer => {
+				writer.removeAttribute( 'theme', modelParagraph );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p><div class="nice"></div></div>' );
 		} );
 
 		it( 'should be possible to override setAttribute', () => {
 			const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
-			const viewElement = new ViewContainerElement( 'p' );
 
-			modelRoot.appendChildren( modelElement );
-			dispatcher.on( 'insert:paragraph', insertElement( viewElement ) );
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'addAttribute:class', setAttribute() );
-			dispatcher.on( 'addAttribute:class', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'addAttribute:class' );
+			dispatcher.on( 'attribute:class', ( evt, data, consumable ) => {
+				consumable.consume( data.item, 'attribute:class' );
 			}, { priority: 'high' } );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
 
 			// No attribute set.
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
-
-		it( 'should be possible to override removeAttribute', () => {
-			const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
-			const viewElement = new ViewContainerElement( 'p' );
-
-			modelRoot.appendChildren( modelElement );
-			dispatcher.on( 'insert:paragraph', insertElement( viewElement ) );
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'addAttribute:class', setAttribute() );
-			dispatcher.on( 'removeAttribute:class', removeAttribute() );
-			dispatcher.on( 'removeAttribute:class', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'removeAttribute:class' );
-			}, { priority: 'high' } );
-
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
-
-			modelElement.removeAttribute( 'class' );
-			dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'class', 'bar', null );
-
-			// Nothing changed.
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
-		} );
 	} );
 
-	describe( 'wrap/unwrap', () => {
+	describe( 'wrap', () => {
 		it( 'should convert insert/change/remove of attribute in model into wrapping element in a view', () => {
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { bold: true } ) );
-			const viewP = new ViewContainerElement( 'p' );
 			const viewB = new ViewAttributeElement( 'b' );
 
-			modelRoot.appendChildren( modelElement );
-			dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'addAttribute:bold', wrapItem( viewB ) );
-			dispatcher.on( 'removeAttribute:bold', unwrapItem( viewB ) );
+			dispatcher.on( 'attribute:bold', wrap( viewB ) );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
-			modelWriter.removeAttribute( 'bold', modelElement );
-
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'bold', true, null );
+			model.change( writer => {
+				writer.removeAttribute( 'bold', ModelRange.createIn( modelElement ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
 
 		it( 'should convert insert/remove of attribute in model with wrapping element generating function as a parameter', () => {
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { style: 'bold' } ) );
-			const viewP = new ViewContainerElement( 'p' );
 
 			const elementGenerator = value => {
 				if ( value == 'bold' ) {
@@ -559,19 +248,17 @@ describe( 'model-to-view-converters', () => {
 				}
 			};
 
-			modelRoot.appendChildren( modelElement );
-			dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'addAttribute:style', wrapItem( elementGenerator ) );
-			dispatcher.on( 'removeAttribute:style', unwrapItem( elementGenerator ) );
+			dispatcher.on( 'attribute:style', wrap( elementGenerator ) );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
-			modelWriter.removeAttribute( 'style', modelElement );
-
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'style', 'bold', null );
+			model.change( writer => {
+				writer.removeAttribute( 'style', ModelRange.createIn( modelElement ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -583,285 +270,167 @@ describe( 'model-to-view-converters', () => {
 				new ModelText( 'x' )
 			] );
 
-			const viewP = new ViewContainerElement( 'p' );
-
 			const elementGenerator = href => new ViewAttributeElement( 'a', { href } );
 
-			modelRoot.appendChildren( modelElement );
-			dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'addAttribute:link', wrapItem( elementGenerator ) );
-			dispatcher.on( 'changeAttribute:link', wrapItem( elementGenerator ) );
+			dispatcher.on( 'attribute:link', wrap( elementGenerator ) );
 
-			dispatcher.convertInsertion(
-				ModelRange.createIn( modelRoot )
-			);
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>x<a href="http://foo.com">foo</a>x</p></div>' );
 
-			modelWriter.setAttribute( 'link', 'http://foobar.com', modelElement );
-
-			dispatcher.convertAttribute(
-				'changeAttribute',
-				ModelRange.createIn( modelElement ),
-				'link',
-				'http://foo.com',
-				'http://foobar.com'
-			);
+			// Set new attribute on old link but also on non-linked characters.
+			model.change( writer => {
+				writer.setAttribute( 'link', 'http://foobar.com', ModelRange.createIn( modelElement ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p><a href="http://foobar.com">xfoox</a></p></div>' );
 		} );
 
 		it( 'should support unicode', () => {
 			const modelElement = new ModelElement( 'paragraph', null, [ 'நி', new ModelText( 'லைக்', { bold: true } ), 'கு' ] );
-			const viewP = new ViewContainerElement( 'p' );
 			const viewB = new ViewAttributeElement( 'b' );
 
-			modelRoot.appendChildren( modelElement );
-			dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'addAttribute:bold', wrapItem( viewB ) );
-			dispatcher.on( 'removeAttribute:bold', unwrapItem( viewB ) );
+			dispatcher.on( 'attribute:bold', wrap( viewB ) );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>நி<b>லைக்</b>கு</p></div>' );
 
-			modelWriter.removeAttribute( 'bold', modelElement );
-
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'bold', true, null );
+			model.change( writer => {
+				writer.removeAttribute( 'bold', ModelRange.createIn( modelElement ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>நிலைக்கு</p></div>' );
 		} );
 
 		it( 'should be possible to override wrap', () => {
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { bold: true } ) );
-			const viewP = new ViewContainerElement( 'p' );
 			const viewB = new ViewAttributeElement( 'b' );
 
-			modelRoot.appendChildren( modelElement );
-			dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'addAttribute:bold', wrapItem( viewB ) );
-			dispatcher.on( 'addAttribute:bold', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'addAttribute:bold' );
+			dispatcher.on( 'attribute:bold', wrap( viewB ) );
+			dispatcher.on( 'attribute:bold', ( evt, data, consumable ) => {
+				consumable.consume( data.item, 'attribute:bold' );
 			}, { priority: 'high' } );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'should be possible to override unwrap', () => {
-			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { bold: true } ) );
-			const viewP = new ViewContainerElement( 'p' );
-			const viewB = new ViewAttributeElement( 'b' );
-
-			modelRoot.appendChildren( modelElement );
-			dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'addAttribute:bold', wrapItem( viewB ) );
-			dispatcher.on( 'removeAttribute:bold', unwrapItem( viewB ) );
-			dispatcher.on( 'removeAttribute:bold', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'removeAttribute:bold' );
-			}, { priority: 'high' } );
-
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
-
-			modelWriter.removeAttribute( 'bold', modelElement );
-
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'bold', true, null );
-
-			// Nothing changed.
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 		} );
 
 		it( 'should not convert and not consume if creator function returned null', () => {
 			const elementGenerator = () => null;
 
-			const modelText = new ModelText( 'foo', { bold: true } );
-
-			modelRoot.appendChildren( [ modelText ] );
-
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'addAttribute:bold', wrapItem( elementGenerator ) );
-			dispatcher.on( 'removeAttribute:bold', unwrapItem( elementGenerator ) );
+			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { italic: true } ) );
 
-			dispatcher.on( 'addAttribute:bold', ( evt, data, consumable ) => {
-				expect( consumable.test( data.item, 'addAttribute:bold' ) ).to.be.true;
-			} );
-			dispatcher.on( 'removeAttribute:bold', ( evt, data, consumable ) => {
-				expect( consumable.test( data.item, 'removeAttribute:bold' ) ).to.be.true;
+			dispatcher.on( 'attribute:italic', wrap( elementGenerator ) );
+			dispatcher.on( 'attribute:italic', ( evt, data, consumable ) => {
+				expect( consumable.test( data.item, 'attribute:italic' ) ).to.be.true;
 			} );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div>foo</div>' );
-			expect( dispatcher.fire.calledWith( 'addAttribute:bold:$text' ) ).to.be.true;
-
-			modelText.removeAttribute( 'bold' );
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'bold', true, null );
-			expect( dispatcher.fire.calledWith( 'removeAttribute:bold:$text' ) ).to.be.true;
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			expect( dispatcher.fire.calledWith( 'attribute:italic:$text' ) ).to.be.true;
 		} );
 	} );
 
 	describe( 'insertUIElement/removeUIElement', () => {
-		let modelText, range, modelElement;
+		let modelText, modelElement, range;
 
 		beforeEach( () => {
 			modelText = new ModelText( 'foobar' );
 			modelElement = new ModelElement( 'paragraph', null, modelText );
-			modelRoot.appendChildren( modelElement );
 
-			const viewText = new ViewText( 'foobar' );
-			const viewElement = new ViewContainerElement( 'p', null, viewText );
-			viewRoot.appendChildren( viewElement );
-
-			mapper.bindElements( modelElement, viewElement );
-
-			range = ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 3 );
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
 		} );
 
-		it( 'should insert and remove ui element - element as a creator', () => {
-			const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
-
-			dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
-			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
-
-			dispatcher.convertMarker( 'addMarker', 'marker', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="marker"></span>bar</p></div>' );
-
-			dispatcher.convertMarker( 'removeMarker', 'marker', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'should insert and remove ui element - function as a creator', () => {
-			const viewUi = data => new ViewUIElement( 'span', { 'class': data.markerName } );
-
-			dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
-			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
-
-			dispatcher.convertMarker( 'addMarker', 'marker', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="marker"></span>bar</p></div>' );
-
-			dispatcher.convertMarker( 'removeMarker', 'marker', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'should not convert or consume if generator function returned null', () => {
-			const viewUi = () => null;
-
-			sinon.spy( dispatcher, 'fire' );
-
-			dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
-			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
-
-			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-				expect( consumable.test( data.markerRange, 'addMarker:marker' ) ).to.be.true;
+		describe( 'collapsed range', () => {
+			beforeEach( () => {
+				range = ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 3 );
 			} );
 
-			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
-				expect( consumable.test( data.markerRange, 'removeMarker:marker' ) ).to.be.true;
+			it( 'should insert and remove ui element - element as a creator', () => {
+				const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
+
+				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
+				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
+
+				model.change( () => {
+					model.markers.set( 'marker', range );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="marker"></span>bar</p></div>' );
+
+				model.change( () => {
+					model.markers.remove( 'marker' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
 
-			dispatcher.convertMarker( 'addMarker', 'marker', range );
+			it( 'should insert and remove ui element - function as a creator', () => {
+				const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-			expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
+				dispatcher.on( 'addMarker:marker', insertUIElement( () => viewUi ) );
+				dispatcher.on( 'removeMarker:marker', removeUIElement( () => viewUi ) );
 
-			dispatcher.convertMarker( 'removeMarker', 'marker', range );
+				model.change( () => {
+					model.markers.set( 'marker', range );
+				} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-			expect( dispatcher.fire.calledWith( 'removeMarker:marker' ) );
-		} );
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="marker"></span>bar</p></div>' );
 
-		it( 'should be possible to overwrite', () => {
-			const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
+				model.change( () => {
+					model.markers.remove( 'marker' );
+				} );
 
-			sinon.spy( dispatcher, 'fire' );
-
-			dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
-			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
-
-			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-				consumable.consume( data.markerRange, 'addMarker:marker' );
-			}, { priority: 'high' } );
-
-			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
-				consumable.consume( data.markerRange, 'removeMarker:marker' );
-			}, { priority: 'high' } );
-
-			dispatcher.convertMarker( 'addMarker', 'marker', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-			expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
-
-			dispatcher.convertMarker( 'removeMarker', 'marker', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-			expect( dispatcher.fire.calledWith( 'removeMarker:marker' ) );
-		} );
-
-		it( 'should not convert or consume if generator function returned null', () => {
-			const viewUi = () => null;
-
-			sinon.spy( dispatcher, 'fire' );
-
-			dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
-			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
-
-			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-				expect( consumable.test( data.markerRange, 'addMarker:marker' ) ).to.be.true;
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
 
-			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
-				expect( consumable.test( data.markerRange, 'removeMarker:marker' ) ).to.be.true;
+			it( 'should not convert if consumable was consumed', () => {
+				const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
+
+				sinon.spy( dispatcher, 'fire' );
+
+				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
+				dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
+					consumable.consume( data.markerRange, 'addMarker:marker' );
+				}, { priority: 'high' } );
+
+				dispatcher.convertMarkerAdd( 'marker', range );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+				expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
 			} );
 
-			dispatcher.convertMarker( 'addMarker', 'marker', range );
+			it( 'should not convert if creator returned null', () => {
+				dispatcher.on( 'addMarker:marker', insertUIElement( () => null ) );
+				dispatcher.on( 'removeMarker:marker', removeUIElement( () => null ) );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-			expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
+				model.change( () => {
+					model.markers.set( 'marker', range );
+				} );
 
-			dispatcher.convertMarker( 'removeMarker', 'marker', range );
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-			expect( dispatcher.fire.calledWith( 'removeMarker:marker' ) );
-		} );
+				model.change( () => {
+					model.markers.remove( 'marker' );
+				} );
 
-		it( 'should be possible to overwrite', () => {
-			const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
-
-			sinon.spy( dispatcher, 'fire' );
-
-			dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
-			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
-
-			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-				consumable.consume( data.markerRange, 'addMarker:marker' );
-			}, { priority: 'high' } );
-
-			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
-				consumable.consume( data.markerRange, 'removeMarker:marker' );
-			}, { priority: 'high' } );
-
-			dispatcher.convertMarker( 'addMarker', 'marker', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-			expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
-
-			dispatcher.convertMarker( 'removeMarker', 'marker', range );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-			expect( dispatcher.fire.calledWith( 'removeMarker:marker' ) );
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			} );
 		} );
 
 		describe( 'non-collapsed range', () => {
@@ -875,12 +444,16 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
 				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
 
-				dispatcher.convertMarker( 'addMarker', 'marker', range );
+				model.change( () => {
+					model.markers.set( 'marker', range );
+				} );
 
 				expect( viewToString( viewRoot ) )
 					.to.equal( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
 
-				dispatcher.convertMarker( 'removeMarker', 'marker', range );
+				model.change( () => {
+					model.markers.remove( 'marker' );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
@@ -891,12 +464,16 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
 				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
 
-				dispatcher.convertMarker( 'addMarker', 'marker', range );
+				model.change( () => {
+					model.markers.set( 'marker', range );
+				} );
 
 				expect( viewToString( viewRoot ) )
 					.to.equal( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
 
-				dispatcher.convertMarker( 'removeMarker', 'marker', range );
+				model.change( () => {
+					model.markers.remove( 'marker' );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
@@ -913,258 +490,175 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
 				dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
 
-				dispatcher.convertMarker( 'addMarker', 'marker', range );
+				model.change( () => {
+					model.markers.set( 'marker', range );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div><p>fo<span class="marker" data-start="true"></span>oba<span class="marker" data-end="true"></span>r</p></div>'
 				);
 
-				dispatcher.convertMarker( 'removeMarker', 'marker', range );
+				model.change( () => {
+					model.markers.remove( 'marker' );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
 
-			it( 'should be possible to overwrite', () => {
+			it( 'should not convert if consumable was consumed', () => {
 				const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
 
 				sinon.spy( dispatcher, 'fire' );
 
 				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
-				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
-
 				dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
 					consumable.consume( data.item, 'addMarker:marker' );
 				}, { priority: 'high' } );
 
-				dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
-					consumable.consume( data.item, 'removeMarker:marker' );
-				}, { priority: 'high' } );
-
-				dispatcher.convertMarker( 'addMarker', 'marker', range );
+				dispatcher.convertMarkerAdd( 'marker', range );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 				expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
-
-				dispatcher.convertMarker( 'removeMarker', 'marker', range );
-
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-				expect( dispatcher.fire.calledWith( 'removeMarker:marker' ) );
 			} );
 		} );
 	} );
 
+	// Remove converter is by default already added in `EditingController` instance.
 	describe( 'remove', () => {
 		it( 'should remove items from view accordingly to changes in model #1', () => {
-			const modelDiv = new ModelElement( 'div', null, [
-				new ModelText( 'foo' ),
-				new ModelElement( 'image' ),
-				new ModelText( 'bar' )
-			] );
+			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
 
-			modelRoot.appendChildren( modelDiv );
-			dispatcher.on( 'insert:div', insertElement( new ViewContainerElement( 'div' ) ) );
-			dispatcher.on( 'insert:image', insertElement( new ViewContainerElement( 'img' ) ) );
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'remove', remove() );
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.remove( ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			} );
 
-			const removedNodes = modelDiv.removeChildren( 0, 2 );
-			modelDoc.graveyard.insertChildren( 0, removedNodes );
-
-			dispatcher.convertRemove(
-				ModelPosition.createFromParentAndOffset( modelDiv, 0 ),
-				ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 4 )
-			);
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><div>bar</div></div>' );
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foar</p></div>' );
 		} );
 
-		it( 'should not execute if value was already consumed', () => {
-			const modelDiv = new ModelElement( 'div', null, new ModelText( 'foo' ) );
+		it( 'should be possible to overwrite', () => {
+			dispatcher.on( 'remove', evt => evt.stop(), { priority: 'high' } );
 
-			modelRoot.appendChildren( modelDiv );
-			dispatcher.on( 'insert:div', insertElement( new ViewContainerElement( 'div' ) ) );
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'remove', remove() );
-			dispatcher.on( 'remove', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'remove' );
-			}, { priority: 'high' } );
+			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
+			model.change( writer => {
+				writer.remove( ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			} );
 
-			const removedNodes = modelDiv.removeChildren( 0, 1 );
-			modelDoc.graveyard.insertChildren( 0, removedNodes );
-
-			dispatcher.convertRemove(
-				ModelPosition.createFromParentAndOffset( modelDiv, 0 ),
-				ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 3 )
-			);
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
 
 		it( 'should support unicode', () => {
-			const modelDiv = new ModelElement( 'div', null, 'நிலைக்கு' );
+			const modelElement = new ModelElement( 'paragraph', null, 'நிலைக்கு' );
 
-			modelRoot.appendChildren( modelDiv );
-			dispatcher.on( 'insert:div', insertElement( new ViewContainerElement( 'div' ) ) );
-			dispatcher.on( 'insert:$text', insertText() );
-			dispatcher.on( 'remove', remove() );
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.remove( ModelRange.createFromParentsAndOffsets( modelElement, 0, modelElement, 6 ) );
+			} );
 
-			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelDiv, 0, modelDiv, 6 ) );
-
-			dispatcher.convertRemove(
-				ModelPosition.createFromParentAndOffset( modelDiv, 0 ),
-				ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 6 )
-			);
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><div>கு</div></div>' );
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>கு</p></div>' );
 		} );
 
 		it( 'should not remove view ui elements that are placed next to removed content', () => {
-			modelRoot.appendChildren( new ModelText( 'foobar' ) );
+			modelRoot.appendChildren( new ModelText( 'fozbar' ) );
 			viewRoot.appendChildren( [
-				new ViewText( 'foo' ),
+				new ViewText( 'foz' ),
 				new ViewUIElement( 'span' ),
 				new ViewText( 'bar' )
 			] );
 
-			dispatcher.on( 'remove', remove() );
-
 			// Remove 'b'.
-			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ) );
+			model.change( writer => {
+				writer.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ) );
+			} );
 
-			dispatcher.convertRemove(
-				ModelPosition.createFromParentAndOffset( modelRoot, 3 ),
-				ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 1 )
-			);
+			expect( viewToString( viewRoot ) ).to.equal( '<div>foz<span></span>ar</div>' );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div>foo<span></span>ar</div>' );
+			// Remove 'z'.
+			model.change( writer => {
+				writer.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 2, modelRoot, 3 ) );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div>fo<span></span>ar</div>' );
 		} );
 
 		it( 'should remove correct amount of text when it is split by view ui element', () => {
-			modelRoot.appendChildren( new ModelText( 'foobar' ) );
+			modelRoot.appendChildren( new ModelText( 'fozbar' ) );
 			viewRoot.appendChildren( [
-				new ViewText( 'foo' ),
+				new ViewText( 'foz' ),
 				new ViewUIElement( 'span' ),
 				new ViewText( 'bar' )
 			] );
 
-			dispatcher.on( 'remove', remove() );
-
-			// Remove 'o<span></span>b'.
-			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 2, modelRoot, 4 ) );
-
-			dispatcher.convertRemove(
-				ModelPosition.createFromParentAndOffset( modelRoot, 2 ),
-				ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 2 )
-			);
+			// Remove 'z<span></span>b'.
+			model.change( writer => {
+				writer.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 2, modelRoot, 4 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foar</div>' );
 		} );
 
-		it( 'should not unbind element that has not been moved to graveyard', () => {
+		it( 'should unbind elements', () => {
 			const modelElement = new ModelElement( 'paragraph' );
-			const viewElement = new ViewContainerElement( 'p' );
 
-			modelRoot.appendChildren( [ modelElement, new ModelText( 'b' ) ] );
-			viewRoot.appendChildren( [ viewElement, new ViewText( 'b' ) ] );
-
-			mapper.bindElements( modelElement, viewElement );
-
-			dispatcher.on( 'remove', remove() );
-
-			// Move <a></a> after "b". Can be e.g. a part of an unwrap delta (move + remove).
-			modelWriter.move(
-				ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ),
-				ModelPosition.createAt( modelRoot, 'end' )
-			);
-
-			dispatcher.convertRemove(
-				ModelPosition.createFromParentAndOffset( modelRoot, 0 ),
-				ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 )
-			);
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div>b</div>' );
-
-			expect( mapper.toModelElement( viewElement ) ).to.equal( modelElement );
-			expect( mapper.toViewElement( modelElement ) ).to.equal( viewElement );
-		} );
-
-		it( 'should unbind elements if model element was moved to graveyard', () => {
-			const modelElement = new ModelElement( 'paragraph' );
-			const viewElement = new ViewContainerElement( 'p' );
-
-			modelRoot.appendChildren( [ modelElement, new ModelText( 'b' ) ] );
-			viewRoot.appendChildren( [ viewElement, new ViewText( 'b' ) ] );
-
-			mapper.bindElements( modelElement, viewElement );
-
-			dispatcher.on( 'remove', remove() );
-
-			// Remove <a></a>.
-			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
-
-			dispatcher.convertRemove(
-				ModelPosition.createFromParentAndOffset( modelRoot, 0 ),
-				ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 1 )
-			);
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div>b</div>' );
-
-			expect( mapper.toModelElement( viewElement ) ).to.be.undefined;
-			expect( mapper.toViewElement( modelElement ) ).to.be.undefined;
-		} );
-
-		// TODO move to conversion/integration.js one day.
-		it( 'should not break when remove() is used as part of unwrapping', () => {
-			// The whole process looks like this:
-			// <w><a></a></w> => <a></a><w><a></a></w> => <a></a><w></w> => <a></a>
-			// The <a> is duplicated for a while in the view.
-
-			const modelAElement = new ModelElement( 'a' );
-			const modelWElement = new ModelElement( 'w' );
-			const viewAElement = new ViewContainerElement( 'a' );
-			const viewA2Element = new ViewContainerElement( 'a2' );
-			const viewWElement = new ViewContainerElement( 'w' );
-
-			modelRoot.appendChildren( modelWElement );
-			viewRoot.appendChildren( viewWElement );
-
-			modelWElement.appendChildren( modelAElement );
-			viewWElement.appendChildren( viewAElement );
-
-			mapper.bindElements( modelWElement, viewWElement );
-			mapper.bindElements( modelAElement, viewAElement );
-
-			dispatcher.on( 'remove', remove() );
-			dispatcher.on( 'insert', insertElement( () => viewA2Element ) );
-
-			modelDoc.on( 'change', ( evt, type, changes ) => {
-				dispatcher.convertChange( type, changes );
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
 			} );
 
-			modelWriter.unwrap( modelWElement );
+			const viewElement = controller.mapper.toViewElement( modelElement );
+			expect( viewElement ).not.to.be.undefined;
+			expect( controller.mapper.toModelElement( viewElement ) ).to.equal( modelElement );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><a2></a2></div>' );
+			model.change( writer => {
+				writer.remove( modelElement );
+			} );
 
-			expect( mapper.toModelElement( viewA2Element ) ).to.equal( modelAElement );
-			expect( mapper.toViewElement( modelAElement ) ).to.equal( viewA2Element );
+			expect( controller.mapper.toViewElement( modelElement ) ).to.be.undefined;
+			expect( controller.mapper.toModelElement( viewElement ) ).to.be.undefined;
+		} );
 
-			// This is a bit unfortunate, but we think we can live with this.
-			// The viewAElement is not in the tree and there's a high chance that all reference to it are gone.
-			expect( mapper.toModelElement( viewAElement ) ).to.equal( modelAElement );
+		it( 'should not break when remove() is used as part of unwrapping', () => {
+			const modelP = new ModelElement( 'paragraph', null, new ModelText( 'foo' ) );
+			const modelWidget = new ModelElement( 'widget', null, modelP );
 
-			expect( mapper.toModelElement( viewWElement ) ).to.be.undefined;
-			expect( mapper.toViewElement( modelWElement ) ).to.be.undefined;
+			dispatcher.on( 'insert:widget', insertElement( () => new ViewContainerElement( 'widget' ) ) );
+
+			model.change( writer => {
+				writer.insert( modelWidget, modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><widget><p>foo</p></widget></div>' );
+
+			const viewP = controller.mapper.toViewElement( modelP );
+
+			expect( viewP ).not.to.be.undefined;
+
+			model.change( writer => {
+				writer.unwrap( modelWidget );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p></div>' );
+			// `modelP` is now bound with newly created view element.
+			expect( controller.mapper.toViewElement( modelP ) ).not.to.equal( viewP );
+			// `viewP` is no longer bound with model element.
+			expect( controller.mapper.toModelElement( viewP ) ).to.be.undefined;
+			// View element from view root is bound to `modelP`.
+			expect( controller.mapper.toModelElement( viewRoot.getChild( 0 ) ) ).to.equal( modelP );
 		} );
 
 		it( 'should work correctly if container element after ui element is removed', () => {
+			// Prepare a model and view structure.
+			// This is done outside of conversion to put view ui elements inside easily.
 			const modelP1 = new ModelElement( 'paragraph' );
 			const modelP2 = new ModelElement( 'paragraph' );
 
@@ -1176,17 +670,13 @@ describe( 'model-to-view-converters', () => {
 			modelRoot.appendChildren( [ modelP1, modelP2 ] );
 			viewRoot.appendChildren( [ viewP1, viewUi1, viewUi2, viewP2 ] );
 
-			mapper.bindElements( modelP1, viewP1 );
-			mapper.bindElements( modelP2, viewP2 );
+			controller.mapper.bindElements( modelP1, viewP1 );
+			controller.mapper.bindElements( modelP2, viewP2 );
 
-			dispatcher.on( 'remove', remove() );
-
-			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 ) );
-
-			dispatcher.convertRemove(
-				ModelPosition.createFromParentAndOffset( modelRoot, 1 ),
-				ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 1 )
-			);
+			// Remove second paragraph element.
+			model.change( writer => {
+				writer.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p></p><span></span><span></span></div>' );
 		} );
@@ -1195,24 +685,241 @@ describe( 'model-to-view-converters', () => {
 			const modelText = new ModelText( 'foo' );
 			const modelP = new ModelElement( 'paragraph' );
 
-			const viewText = new ViewText( 'foo' );
-			const viewP = new ViewContainerElement( 'p' );
+			model.change( writer => {
+				writer.insert( [ modelText, modelP ], modelRootStart );
+			} );
 
-			modelRoot.appendChildren( [ modelText, modelP ] );
-			viewRoot.appendChildren( [ viewText, viewP ] );
-
-			mapper.bindElements( modelP, viewP );
-
-			dispatcher.on( 'remove', remove() );
-
-			modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ) );
-
-			dispatcher.convertRemove(
-				ModelPosition.createFromParentAndOffset( modelRoot, 3 ),
-				ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 1 )
-			);
+			model.change( writer => {
+				writer.remove( modelP );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foo</div>' );
+		} );
+	} );
+
+	describe( 'highlight', () => {
+		describe( 'on text', () => {
+			const highlightDescriptor = {
+				class: 'highlight-class',
+				priority: 7,
+				attributes: { title: 'title' }
+			};
+
+			let markerRange;
+
+			beforeEach( () => {
+				const modelElement1 = new ModelElement( 'paragraph', null, new ModelText( 'foo' ) );
+				const modelElement2 = new ModelElement( 'paragraph', null, new ModelText( 'bar' ) );
+
+				model.change( writer => {
+					writer.insert( [ modelElement1, modelElement2 ], modelRootStart );
+				} );
+
+				markerRange = ModelRange.createIn( modelRoot );
+			} );
+
+			it( 'should wrap and unwrap text nodes', () => {
+				dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
+				dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
+				dispatcher.on( 'removeMarker:marker', removeHighlight( highlightDescriptor ) );
+
+				model.change( () => {
+					model.markers.set( 'marker', markerRange );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div>' +
+						'<p>' +
+							'<span class="highlight-class" title="title">foo</span>' +
+						'</p>' +
+						'<p>' +
+							'<span class="highlight-class" title="title">bar</span>' +
+						'</p>' +
+					'</div>'
+				);
+
+				model.change( () => {
+					model.markers.remove( 'marker' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+			} );
+
+			it( 'should be possible to overwrite', () => {
+				dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
+				dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
+				dispatcher.on( 'removeMarker:marker', removeHighlight( highlightDescriptor ) );
+
+				const newDescriptor = { class: 'override-class' };
+
+				dispatcher.on( 'addMarker:marker', highlightText( newDescriptor ), { priority: 'high' } );
+				dispatcher.on( 'addMarker:marker', highlightElement( newDescriptor ), { priority: 'high' } );
+				dispatcher.on( 'removeMarker:marker', removeHighlight( newDescriptor ), { priority: 'high' } );
+
+				model.change( () => {
+					model.markers.set( 'marker', markerRange );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div>' +
+						'<p>' +
+							'<span class="override-class">foo</span>' +
+						'</p>' +
+						'<p>' +
+							'<span class="override-class">bar</span>' +
+						'</p>' +
+					'</div>'
+				);
+
+				model.change( () => {
+					model.markers.remove( 'marker' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+			} );
+
+			it( 'should do nothing if descriptor is not provided or generating function returns null', () => {
+				dispatcher.on( 'addMarker:marker', highlightText( () => null ), { priority: 'high' } );
+				dispatcher.on( 'addMarker:marker', highlightElement( () => null ), { priority: 'high' } );
+				dispatcher.on( 'removeMarker:marker', removeHighlight( () => null ), { priority: 'high' } );
+
+				model.change( () => {
+					model.markers.set( 'marker', markerRange );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+
+				model.change( () => {
+					model.markers.remove( 'marker' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+			} );
+		} );
+
+		describe( 'on element', () => {
+			const highlightDescriptor = {
+				class: 'highlight-class',
+				priority: 7,
+				attributes: { title: 'title' },
+				id: 'customId'
+			};
+
+			let markerRange;
+
+			beforeEach( () => {
+				// Provide converter for div element. View div element will have custom highlight handling.
+				dispatcher.on( 'insert:div', insertElement( () => {
+					const viewContainer = new ViewContainerElement( 'div' );
+
+					viewContainer.setCustomProperty( 'addHighlight', ( element, descriptor ) => {
+						element.addClass( descriptor.class );
+					} );
+
+					viewContainer.setCustomProperty( 'removeHighlight', element => {
+						element.setAttribute( 'class', '' );
+					} );
+
+					return viewContainer;
+				} ) );
+
+				const modelElement = new ModelElement( 'div', null, new ModelText( 'foo' ) );
+
+				model.change( writer => {
+					writer.insert( modelElement, modelRootStart );
+				} );
+
+				markerRange = ModelRange.createOn( modelElement );
+
+				dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
+				dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
+				dispatcher.on( 'removeMarker:marker', removeHighlight( highlightDescriptor ) );
+			} );
+
+			it( 'should use addHighlight and removeHighlight on elements and not convert children nodes', () => {
+				model.change( () => {
+					model.markers.set( 'marker', markerRange );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div>' +
+						'<div class="highlight-class">' +
+							'foo' +
+						'</div>' +
+					'</div>'
+				);
+
+				model.change( () => {
+					model.markers.remove( 'marker' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
+			} );
+
+			it( 'should be possible to override', () => {
+				const newDescriptor = { class: 'override-class' };
+
+				dispatcher.on( 'addMarker:marker', highlightText( newDescriptor ), { priority: 'high' } );
+				dispatcher.on( 'addMarker:marker', highlightElement( newDescriptor ), { priority: 'high' } );
+				dispatcher.on( 'removeMarker:marker', removeHighlight( newDescriptor ), { priority: 'high' } );
+
+				model.change( () => {
+					model.markers.set( 'marker', markerRange );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div>' +
+						'<div class="override-class">' +
+							'foo' +
+						'</div>' +
+					'</div>'
+				);
+
+				model.change( () => {
+					model.markers.remove( 'marker' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
+			} );
+
+			it( 'should use default priority and id if not provided', () => {
+				const viewDiv = viewRoot.getChild( 0 );
+
+				dispatcher.on( 'addMarker:marker2', highlightText( () => null ) );
+				dispatcher.on( 'addMarker:marker2', highlightElement( () => null ) );
+				dispatcher.on( 'removeMarker:marker2', removeHighlight( () => null ) );
+
+				viewDiv.setCustomProperty( 'addHighlight', ( element, descriptor ) => {
+					expect( descriptor.priority ).to.equal( 10 );
+					expect( descriptor.id ).to.equal( 'marker:foo-bar-baz' );
+				} );
+
+				viewDiv.setCustomProperty( 'removeHighlight', ( element, id ) => {
+					expect( id ).to.equal( 'marker:foo-bar-baz' );
+				} );
+
+				model.change( () => {
+					model.markers.set( 'marker2', markerRange );
+				} );
+			} );
+
+			it( 'should do nothing if descriptor is not provided', () => {
+				dispatcher.on( 'addMarker:marker2', highlightText( () => null ) );
+				dispatcher.on( 'addMarker:marker2', highlightElement( () => null ) );
+				dispatcher.on( 'removeMarker:marker2', removeHighlight( () => null ) );
+
+				model.change( () => {
+					model.markers.set( 'marker2', markerRange );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
+
+				model.change( () => {
+					model.markers.remove( 'marker2' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
+			} );
 		} );
 	} );
 

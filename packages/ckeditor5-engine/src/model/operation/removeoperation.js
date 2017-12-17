@@ -52,7 +52,9 @@ export default class RemoveOperation extends MoveOperation {
 	/**
 	 * @inheritDoc
 	 */
-	_execute() {
+	_validate() {
+		super._validate();
+
 		if ( !this.sourcePosition.root.document ) {
 			/**
 			 * Item that is going to be removed needs to be a {@link module:engine/model/document~Document document} child.
@@ -63,7 +65,12 @@ export default class RemoveOperation extends MoveOperation {
 			 */
 			throw new CKEditorError( 'remove-operation-on-detached-item: Cannot remove detached item.' );
 		}
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	_execute() {
 		return super._execute();
 	}
 

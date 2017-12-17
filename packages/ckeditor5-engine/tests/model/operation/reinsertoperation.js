@@ -106,34 +106,38 @@ describe( 'ReinsertOperation', () => {
 		expect( operation.isDocumentOperation ).to.true;
 	} );
 
-	it( 'should throw when target position is not in the document', () => {
-		const docFrag = new DocumentFragment();
+	describe( '_validate()', () => {
+		it( 'should throw when target position is not in the document', () => {
+			const docFrag = new DocumentFragment();
 
-		operation = new ReinsertOperation(
-			graveyardPosition,
-			1,
-			Position.createAt( docFrag ),
-			doc.version
-		);
+			graveyard.insertChildren( 0, new Text( 'xx' ) );
 
-		expect( () => {
-			operation._execute();
-		} ).to.throw( CKEditorError, /^reinsert-operation-to-detached-parent/ );
-	} );
+			operation = new ReinsertOperation(
+				graveyardPosition,
+				1,
+				Position.createAt( docFrag ),
+				doc.version
+			);
 
-	it( 'should throw when source position is not in the document', () => {
-		const docFrag = new DocumentFragment();
+			expect( () => {
+				operation._validate();
+			} ).to.throw( CKEditorError, /^reinsert-operation-to-detached-parent/ );
+		} );
 
-		operation = new ReinsertOperation(
-			Position.createAt( docFrag ),
-			1,
-			rootPosition,
-			doc.version
-		);
+		it( 'should throw when source position is not in the document', () => {
+			const docFrag = new DocumentFragment( new Text( 'xx' ) );
 
-		expect( () => {
-			operation._execute();
-		} ).to.throw( CKEditorError, /^reinsert-operation-on-detached-item/ );
+			operation = new ReinsertOperation(
+				Position.createAt( docFrag ),
+				1,
+				rootPosition,
+				doc.version
+			);
+
+			expect( () => {
+				operation._validate();
+			} ).to.throw( CKEditorError, /^reinsert-operation-on-detached-item/ );
+		} );
 	} );
 
 	describe( 'toJSON', () => {

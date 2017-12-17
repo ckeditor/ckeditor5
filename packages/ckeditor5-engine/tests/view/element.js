@@ -6,6 +6,8 @@
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import Node from '../../src/view/node';
 import Element from '../../src/view/element';
+import Text from '../../src/view/text';
+import TextProxy from '../../src/view/textproxy';
 
 import encodedImage from './_utils/encodedimage.txt';
 
@@ -331,6 +333,18 @@ describe( 'Element', () => {
 				expect( count1 ).to.equal( 1 );
 				expect( count2 ).to.equal( 1 );
 				expect( count3 ).to.equal( 1 );
+			} );
+
+			it( 'should accept and correctly handle text proxies', () => {
+				const element = new Element( 'div' );
+				const text = new Text( 'abcxyz' );
+				const textProxy = new TextProxy( text, 2, 3 );
+
+				element.insertChildren( 0, textProxy );
+
+				expect( element.childCount ).to.equal( 1 );
+				expect( element.getChild( 0 ) ).to.be.instanceof( Text );
+				expect( element.getChild( 0 ).data ).to.equal( 'cxy' );
 			} );
 		} );
 

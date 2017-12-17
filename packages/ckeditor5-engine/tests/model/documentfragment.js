@@ -5,6 +5,7 @@
 
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
+import TextProxy from '../../src/model/textproxy';
 import DocumentFragment from '../../src/model/documentfragment';
 import { jsonParseStringify } from '../../tests/model/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -150,6 +151,20 @@ describe( 'DocumentFragment', () => {
 			expect( frag.maxOffset ).to.equal( 4 );
 			expect( frag.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( frag.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );
+		} );
+
+		it( 'should accept and correctly handle text proxies', () => {
+			const frag = new DocumentFragment();
+			const text = new Text( 'abcxyz', { bold: true } );
+			const textProxy = new TextProxy( text, 2, 3 );
+
+			frag.insertChildren( 0, textProxy );
+
+			expect( frag.childCount ).to.equal( 1 );
+			expect( frag.maxOffset ).to.equal( 3 );
+			expect( frag.getChild( 0 ) ).to.be.instanceof( Text );
+			expect( frag.getChild( 0 ).data ).to.equal( 'cxy' );
+			expect( frag.getChild( 0 ).getAttribute( 'bold' ) ).to.equal( true );
 		} );
 	} );
 

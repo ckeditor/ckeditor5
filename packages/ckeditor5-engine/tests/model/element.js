@@ -6,6 +6,7 @@
 import Node from '../../src/model/node';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
+import TextProxy from '../../src/model/textproxy';
 import { jsonParseStringify } from '../../tests/model/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -125,6 +126,20 @@ describe( 'Element', () => {
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 3 );
 			expect( element.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
+		} );
+
+		it( 'should accept and correctly handle text proxies', () => {
+			const element = new Element( 'div' );
+			const text = new Text( 'abcxyz', { bold: true } );
+			const textProxy = new TextProxy( text, 2, 3 );
+
+			element.insertChildren( 0, textProxy );
+
+			expect( element.childCount ).to.equal( 1 );
+			expect( element.maxOffset ).to.equal( 3 );
+			expect( element.getChild( 0 ) ).to.be.instanceof( Text );
+			expect( element.getChild( 0 ).data ).to.equal( 'cxy' );
+			expect( element.getChild( 0 ).getAttribute( 'bold' ) ).to.equal( true );
 		} );
 	} );
 

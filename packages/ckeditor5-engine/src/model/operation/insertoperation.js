@@ -14,6 +14,7 @@ import RemoveOperation from './removeoperation';
 import { _insert, _normalizeNodes } from './utils';
 import Text from '../text';
 import Element from '../element';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Operation to insert one or more nodes at given position in the model.
@@ -81,6 +82,24 @@ export default class InsertOperation extends Operation {
 		const gyPosition = new Position( graveyard, [ 0 ] );
 
 		return new RemoveOperation( this.position, this.nodes.maxOffset, gyPosition, this.baseVersion + 1 );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_validate() {
+		const targetElement = this.position.parent;
+
+		if ( !targetElement || targetElement.maxOffset < this.position.offset ) {
+			/**
+			 * Insertion position is invalid.
+			 *
+			 * @error insert-operation-position-invalid
+			 */
+			throw new CKEditorError(
+				'insert-operation-position-invalid: Insertion position is invalid.'
+			);
+		}
 	}
 
 	/**

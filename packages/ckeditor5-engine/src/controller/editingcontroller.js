@@ -7,6 +7,7 @@
  * @module engine/controller/editingcontroller
  */
 
+import ModelDiffer from '../model/differ';
 import ViewDocument from '../view/document';
 import Mapper from '../conversion/mapper';
 import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
@@ -64,10 +65,9 @@ export default class EditingController {
 		this.mapper = new Mapper();
 
 		/**
-		 * Model to view conversion dispatcher, which converts changes from the model to
-		 * {@link #view editing view}.
+		 * Model to view conversion dispatcher, which converts changes from the model to {@link #view the editing view}.
 		 *
-		 * To attach model to view converter to the editing pipeline you need to add lister to this property:
+		 * To attach model-to-view converter to the editing pipeline you need to add a listener to this dispatcher:
 		 *
 		 *		editing.modelToView( 'insert:$element', customInsertConverter );
 		 *
@@ -83,36 +83,60 @@ export default class EditingController {
 			viewSelection: this.view.selection
 		} );
 
-		// Convert changes in model to view.
-		this.listenTo( this.model.document, 'change', ( evt, type, changes ) => {
-			this.modelToView.convertChange( type, changes );
-		}, { priority: 'low' } );
+		// Model differ object. It's role is to buffer changes done on model and then calculates a diff of those changes.
+		// The diff is then passed to model conversion dispatcher which generates proper events and kicks-off conversion.
+		const modelDiffer = new ModelDiffer();
 
-		// Convert model selection to view.
-		this.listenTo( this.model.document, 'changesDone', () => {
-			const selection = this.model.document.selection;
+		// Before an operation is applied on model, buffer the change in differ.
+		this.listenTo( this.model, 'applyOperation', ( evt, args ) => {
+			const operation = args[ 0 ];
 
-			this.modelToView.convertSelection( selection );
-			this.view.render();
-		}, { priority: 'low' } );
+			if ( operation.isDocumentOperation ) {
+				modelDiffer.bufferOperation( operation );
+			}
+		}, { priority: 'high' } );
 
-		// Convert model markers changes.
+		// Buffer marker changes.
+		// This is not covered in buffering operations because markers may change outside of them (when they
+		// are modified using `model.document.markers` collection, not through `MarkerOperation`).
 		this.listenTo( this.model.markers, 'add', ( evt, marker ) => {
-			this.modelToView.convertMarker( 'addMarker', marker.name, marker.getRange() );
+			// Whenever a new marker is added, buffer that change.
+			modelDiffer.bufferMarkerChange( marker.name, null, marker.getRange() );
+
+			// Whenever marker changes, buffer that.
+			marker.on( 'change', ( evt, oldRange ) => {
+				modelDiffer.bufferMarkerChange( marker.name, oldRange, marker.getRange() );
+			} );
 		} );
 
 		this.listenTo( this.model.markers, 'remove', ( evt, marker ) => {
-			this.modelToView.convertMarker( 'removeMarker', marker.name, marker.getRange() );
+			// Whenever marker is removed, buffer that change.
+			modelDiffer.bufferMarkerChange( marker.name, marker.getRange(), null );
 		} );
 
-		// Convert view selection to model.
+		// When all changes are done, get the model diff containing all the changes and convert them to view and then render to DOM.
+		this.listenTo( this.model, 'changesDone', () => {
+			// Convert changes stored in `modelDiffer`.
+			this.modelToView.convertChanges( modelDiffer );
+
+			// Reset model diff object. When next operation is applied, new diff will be created.
+			modelDiffer.reset();
+
+			// After the view is ready, convert selection from model to view.
+			this.modelToView.convertSelection( this.model.document.selection );
+
+			// When everything is converted to the view, render it to DOM.
+			this.view.render();
+		}, { priority: 'low' } );
+
+		// Convert selection from view to model.
 		this.listenTo( this.view, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
-		// Attach default content converters.
+		// Attach default model converters.
 		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
 		this.modelToView.on( 'remove', remove(), { priority: 'low' } );
 
-		// Attach default selection converters.
+		// Attach default model selection converters.
 		this.modelToView.on( 'selection', clearAttributes(), { priority: 'low' } );
 		this.modelToView.on( 'selection', clearFakeSelection(), { priority: 'low' } );
 		this.modelToView.on( 'selection', convertRangeSelection(), { priority: 'low' } );

@@ -62,7 +62,7 @@ export default class DetachOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	_execute() {
+	_validate() {
 		if ( this.sourcePosition.root.document ) {
 			/**
 			 * Cannot detach document node.
@@ -72,7 +72,12 @@ export default class DetachOperation extends Operation {
 			 */
 			throw new CKEditorError( 'detach-operation-on-document-node: Cannot detach document node.' );
 		}
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	_execute() {
 		const nodes = _remove( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ) );
 
 		return { nodes };

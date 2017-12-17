@@ -51,9 +51,9 @@ export default class DocumentSelection extends Selection {
 	/**
 	 * Creates an empty live selection for given {@link module:engine/model/document~Document}.
 	 *
-	 * @param {module:engine/model/document~Document} document Document which owns this selection.
+	 * @param {module:engine/model/document~Document} doc Document which owns this selection.
 	 */
-	constructor( document ) {
+	constructor( doc ) {
 		super();
 
 		/**
@@ -62,7 +62,7 @@ export default class DocumentSelection extends Selection {
 		 * @protected
 		 * @member {module:engine/model/model~Model}
 		 */
-		this._model = document.model;
+		this._model = doc.model;
 
 		/**
 		 * Document which owns this selection.
@@ -70,7 +70,7 @@ export default class DocumentSelection extends Selection {
 		 * @protected
 		 * @member {module:engine/model/document~Document}
 		 */
-		this._document = document;
+		this._document = doc;
 
 		/**
 		 * Keeps mapping of attribute name to priority with which the attribute got modified (added/changed/removed)

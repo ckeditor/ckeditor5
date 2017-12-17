@@ -64,20 +64,30 @@ describe( 'RenameOperation', () => {
 		expect( element.name ).to.equal( oldName );
 	} );
 
-	it( 'should throw an error if position is not before an element', () => {
-		const op = new RenameOperation( Position.createAt( root, 'end' ), oldName, newName, doc.version );
+	describe( '_validate()', () => {
+		it( 'should throw an error if position is not before an element', () => {
+			const op = new RenameOperation( Position.createAt( root, 'end' ), oldName, newName, doc.version );
 
-		expect( () => {
-			model.applyOperation( wrapInDelta( op ) );
-		} ).to.throw( CKEditorError, /rename-operation-wrong-position/ );
-	} );
+			expect( () => {
+				op._validate();
+			} ).to.throw( CKEditorError, /rename-operation-wrong-position/ );
+		} );
 
-	it( 'should throw an error if oldName is different than renamed element name', () => {
-		const op = new RenameOperation( position, 'foo', newName, doc.version );
+		it( 'should throw an error if oldName is different than renamed element name', () => {
+			const op = new RenameOperation( position, 'foo', newName, doc.version );
 
-		expect( () => {
-			model.applyOperation( wrapInDelta( op ) );
-		} ).to.throw( CKEditorError, /rename-operation-wrong-name/ );
+			expect( () => {
+				op._validate();
+			} ).to.throw( CKEditorError, /rename-operation-wrong-name/ );
+		} );
+
+		it( 'should not throw when new name is the same as previous', () => {
+			const op = new RenameOperation( position, oldName, oldName, doc.version );
+
+			expect( () => {
+				op._validate();
+			} ).to.not.throw();
+		} );
 	} );
 
 	it( 'should create a RenameOperation with the same parameters when cloned', () => {
@@ -92,14 +102,6 @@ describe( 'RenameOperation', () => {
 		expect( clone.position.isEqual( op.position ) ).to.be.true;
 		expect( clone.oldName ).to.equal( oldName );
 		expect( clone.newName ).to.equal( newName );
-	} );
-
-	it( 'should do nothing when new name is the same as previous', () => {
-		const op = new RenameOperation( position, oldName, oldName, doc.version );
-
-		expect( () => {
-			model.applyOperation( wrapInDelta( op ) );
-		} ).to.not.throw();
 	} );
 
 	describe( 'isDocumentOperation', () => {

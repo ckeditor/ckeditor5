@@ -85,6 +85,13 @@ export default class TextProxy {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	get offsetSize() {
+		return this.data.length;
+	}
+
+	/**
 	 * Flag indicating whether `TextProxy` instance covers only part of the original {@link module:engine/view/text~Text text node}
 	 * (`true`) or the whole text node (`false`).
 	 *

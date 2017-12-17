@@ -10,6 +10,7 @@
 import Node from './node';
 import NodeList from './nodelist';
 import Text from './text';
+import TextProxy from './textproxy';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
@@ -187,7 +188,7 @@ export default class Element extends Node {
 	/**
 	 * {@link module:engine/model/element~Element#insertChildren Inserts} one or more nodes at the end of this element.
 	 *
-	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} nodes Nodes to be inserted.
+	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} nodes Nodes to be inserted.
 	 */
 	appendChildren( nodes ) {
 		this.insertChildren( this.childCount, nodes );
@@ -198,10 +199,10 @@ export default class Element extends Node {
 	 * to this element.
 	 *
 	 * @param {Number} index Index at which nodes should be inserted.
-	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} nodes Nodes to be inserted.
+	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} items Items to be inserted.
 	 */
-	insertChildren( index, nodes ) {
-		nodes = normalize( nodes );
+	insertChildren( index, items ) {
+		const nodes = normalize( items );
 
 		for ( const node of nodes ) {
 			// If node that is being added to this element is already inside another element, first remove it from the old parent.
@@ -305,7 +306,7 @@ export default class Element extends Node {
 
 // Converts strings to Text and non-iterables to arrays.
 //
-// @param {String|module:engine/model/node~Node|Iterable.<String|module:engine/model/node~Node>}
+// @param {String|module:engine/model/item~Item|Iterable.<String|module:engine/model/item~Item>}
 // @return {Iterable.<module:engine/model/node~Node>}
 function normalize( nodes ) {
 	// Separate condition because string is iterable.
@@ -320,6 +321,14 @@ function normalize( nodes ) {
 	// Array.from to enable .map() on non-arrays.
 	return Array.from( nodes )
 		.map( node => {
-			return typeof node == 'string' ? new Text( node ) : node;
+			if ( typeof node == 'string' ) {
+				return new Text( node );
+			}
+
+			if ( node instanceof TextProxy ) {
+				return new Text( node.data, node.getAttributes() );
+			}
+
+			return node;
 		} );
 }
