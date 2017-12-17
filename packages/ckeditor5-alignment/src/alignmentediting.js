@@ -9,12 +9,10 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import AlignmentCommand from './alignmentcommand';
-
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 
-import upperFirst from '@ckeditor/ckeditor5-utils/src/lib/lodash/upperFirst';
+import AlignmentCommand, { commandNameFromStyle } from './alignmentcommand';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -31,6 +29,7 @@ export default class AlignmentEditing extends Plugin {
 
 	/**
 	 * List of supported alignment styles:
+	 *
 	 * - left
 	 * - right
 	 * - center
@@ -80,7 +79,7 @@ export default class AlignmentEditing extends Plugin {
 		enabledStyles
 			.filter( isSupported )
 			.forEach( style => {
-				editor.commands.add( AlignmentEditing.commandName( style ), new AlignmentCommand( editor, style, isDefault( style ) ) );
+				editor.commands.add( commandNameFromStyle( style ), new AlignmentCommand( editor, style, isDefault( style ) ) );
 			} );
 	}
 
@@ -94,17 +93,6 @@ export default class AlignmentEditing extends Plugin {
 		if ( schema.hasItem( 'caption' ) ) {
 			schema.disallow( { name: 'caption', attributes: 'alignment' } );
 		}
-	}
-
-	/**
-	 * Helper function that returns command name for given style. May produce unknown commands if passed style is not
-	 * in {@link module:alignment/alignmentediting~AlignmentEditing.supportedStyles}.
-	 *
-	 * @param {String} style
-	 * @returns {String}
-	 */
-	static commandName( style ) {
-		return `align${ upperFirst( style ) }`;
 	}
 }
 
@@ -135,8 +123,8 @@ function convertStyle() {
 }
 
 // Check whether alignment is default one.
-// @protected
-export function isDefault( textAlign ) {
+// @private
+function isDefault( textAlign ) {
 	// Right now only RTL is supported so 'left' value is always default one.
 	return textAlign === 'left';
 }

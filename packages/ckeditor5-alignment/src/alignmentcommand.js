@@ -8,7 +8,9 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+
 import first from '@ckeditor/ckeditor5-utils/src/first';
+import upperFirst from '@ckeditor/ckeditor5-utils/src/lib/lodash/upperFirst';
 
 /**
  * The alignment command plugin.
@@ -124,6 +126,17 @@ export default class AlignmentCommand extends Command {
 		// Command's value will be set when commands type is matched in selection or the selection is default one.
 		return selectionAlignment ? selectionAlignment === this.type : this._isDefault;
 	}
+}
+
+/**
+ * Helper function that returns command name for given style. May produce unknown commands if passed style is not
+ * in {@link module:alignment/alignmentediting~AlignmentEditing.supportedStyles}.
+ *
+ * @param {String} style
+ * @returns {String}
+ */
+export function commandNameFromStyle( style ) {
+	return `align${ upperFirst( style ) }`;
 }
 
 // Removes alignment attribute from blocks.
