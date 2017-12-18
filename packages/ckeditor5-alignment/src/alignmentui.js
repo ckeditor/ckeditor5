@@ -42,10 +42,10 @@ export default class AlignmentUI extends Plugin {
 	 * The following localized titles corresponding with
 	 * {@link module:alignment/alignmentediting~AlignmentEditingConfig#styles} are available:
 	 *
-	 * * `'Left'`,
-	 * * `'Right'`,
-	 * * `'Center'`,
-	 * * `'Justify'`
+	 * * `'left'`,
+	 * * `'right'`,
+	 * * `'center'`,
+	 * * `'justify'`
 	 *
 	 * @readonly
 	 * @type {Object.<String,String>}

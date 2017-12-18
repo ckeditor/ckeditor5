@@ -30,10 +30,10 @@ export default class AlignmentEditing extends Plugin {
 	/**
 	 * List of supported alignment styles:
 	 *
-	 * - left
-	 * - right
-	 * - center
-	 * - justify
+	 * * `'left'`,
+	 * * `'right'`,
+	 * * `'center'`,
+	 * * `'justify'`
 	 *
 	 * @static
 	 * @readonly
