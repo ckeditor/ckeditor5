@@ -99,7 +99,7 @@ describe( 'ButtonView', () => {
 
 			it( 'it reacts to #tooltipPosition attribute', () => {
 				view.tooltip = 'foo';
-				view.icon = 'bar';
+				view.icon = '<svg></svg>';
 
 				expect( view.tooltipPosition ).to.equal( 's' );
 				expect( view.tooltipView.position ).to.equal( 's' );
@@ -240,22 +240,22 @@ describe( 'ButtonView', () => {
 
 		it( 'is set when view#icon is defined', () => {
 			view = new ButtonView( locale );
-			view.icon = 'foo';
+			view.icon = '<svg></svg>';
 			view.render();
 
 			expect( view.element.childNodes ).to.have.length( 3 );
 			expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
 
 			expect( view.iconView ).to.instanceOf( IconView );
-			expect( view.iconView.content ).to.equal( 'foo' );
+			expect( view.iconView.content ).to.equal( '<svg></svg>' );
 
-			view.icon = 'bar';
-			expect( view.iconView.content ).to.equal( 'bar' );
+			view.icon = '<svg>bar</svg>';
+			expect( view.iconView.content ).to.equal( '<svg>bar</svg>' );
 		} );
 
 		it( 'is destroyed with the view', () => {
 			view = new ButtonView( locale );
-			view.icon = 'foo';
+			view.icon = '<svg></svg>';
 			view.render();
 
 			const spy = sinon.spy( view.iconView, 'destroy' );
