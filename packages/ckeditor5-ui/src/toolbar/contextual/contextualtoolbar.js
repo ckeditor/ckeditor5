@@ -128,7 +128,7 @@ export default class ContextualToolbar extends Plugin {
 	 * @private
 	 */
 	_handleSelectionChange() {
-		const selection = this.editor.document.selection;
+		const selection = this.editor.model.document.selection;
 		const editingView = this.editor.editing.view;
 
 		this.listenTo( selection, 'change:range', ( evt, data ) => {
