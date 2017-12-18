@@ -15,14 +15,13 @@ describe( 'FontSizeCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
-				model = newEditor.model;
-				command = new FontSizeCommand( newEditor, 'text-huge' );
 				editor = newEditor;
+				model = editor.model;
 
+				command = new FontSizeCommand( editor, 'text-huge' );
 				editor.commands.add( 'fontSize', command );
 
 				model.schema.registerItem( 'paragraph', '$block' );
-
 				model.schema.allow( { name: '$inline', attributes: 'fontSize', inside: '$block' } );
 			} );
 	} );
