@@ -18,7 +18,7 @@ describe( 'createButtonDropdown', () => {
 
 	beforeEach( () => {
 		locale = { t() {} };
-		buttons = [ 'foo', 'bar' ].map( icon => {
+		buttons = [ '<svg>foo</svg>', '<svg>bar</svg>' ].map( icon => {
 			const button = new ButtonView();
 			button.icon = icon;
 
@@ -189,19 +189,19 @@ describe( 'createButtonDropdown', () => {
 
 			it( 'should be set to defaultIcon if defined and on button is on', () => {
 				const model = new Model( {
-					defaultIcon: 'baz',
+					defaultIcon: '<svg>baz</svg>',
 					buttons
 				} );
 
 				view = createButtonDropdown( model, locale );
 				view.render();
 
-				expect( view.buttonView.icon ).to.equal( 'baz' );
+				expect( view.buttonView.icon ).to.equal( '<svg>baz</svg>' );
 			} );
 
 			it( 'should not bind icons if staticIcon is set', () => {
 				const model = new Model( {
-					defaultIcon: 'baz',
+					defaultIcon: '<svg>baz</svg>',
 					staticIcon: true,
 					buttons
 				} );
@@ -209,10 +209,10 @@ describe( 'createButtonDropdown', () => {
 				view = createButtonDropdown( model, locale );
 				view.render();
 
-				expect( view.buttonView.icon ).to.equal( 'baz' );
+				expect( view.buttonView.icon ).to.equal( '<svg>baz</svg>' );
 				view.toolbarView.items.get( 1 ).isOn = true;
 
-				expect( view.buttonView.icon ).to.equal( 'baz' );
+				expect( view.buttonView.icon ).to.equal( '<svg>baz</svg>' );
 			} );
 		} );
 	} );
