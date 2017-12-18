@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+@import "../tooltip/mixins/_tooltip.css";
+
 .ck-dropdown {
 	display: inline-block;
 	position: relative;
@@ -17,7 +19,18 @@
 
 		position: absolute;
 		top: 50%;
-		transform: translate( 0, -50% );
+		transform: translate3d( 0, -50%, 0 );
+	}
+
+	/* Dropdown button should span horizontally, e.g. in vertical toolbars */
+	& .ck-button.ck-dropdown__button {
+		width: 100%;
+
+		/* Disable main button's tooltip when the dropdown is open. Otherwise the panel may
+		partially cover the tooltip */
+		&.ck-on {
+			@mixin ck-tooltip_disabled;
+		}
 	}
 }
 
@@ -31,9 +44,12 @@
 
 	position: absolute;
 	left: 0px;
-	transform: translateY( 100% );
+	transform: translate3d( 0, 100%, 0 );
 }
 
 .ck-dropdown__panel-visible {
 	display: inline-block;
+
+	/* This will prevent blurry icons in dropdown on Firefox. See #340. */
+	will-change: transform;
 }

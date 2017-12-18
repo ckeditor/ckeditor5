@@ -74,16 +74,16 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		describe( 'positionLimiter', () => {
-			let doc, viewDocument, root;
+			let model, viewDocument, root;
 
 			beforeEach( () => {
-				doc = editor.document;
+				model = editor.model;
 				viewDocument = editor.editing.view;
 				root = viewDocument.getRoot();
 			} );
 
 			it( 'obtains the root of the selection', () => {
-				setModelData( doc, '<paragraph>[]bar</paragraph>' );
+				setModelData( model, '<paragraph>[]bar</paragraph>' );
 
 				expect( balloon.positionLimiter() ).to.equal( viewDocument.domConverter.mapViewToDom( root ) );
 			} );
@@ -95,14 +95,14 @@ describe( 'ContextualBalloon', () => {
 			} );
 
 			it( 'obtains the farthest root of the selection (nested editable)', () => {
-				doc.schema.registerItem( 'widget' );
-				doc.schema.registerItem( 'nestededitable' );
+				model.schema.registerItem( 'widget' );
+				model.schema.registerItem( 'nestededitable' );
 
-				doc.schema.objects.add( 'widget' );
+				model.schema.objects.add( 'widget' );
 
-				doc.schema.allow( { name: 'widget', inside: '$root' } );
-				doc.schema.allow( { name: 'nestededitable', inside: 'widget' } );
-				doc.schema.allow( { name: '$inline', inside: 'nestededitable' } );
+				model.schema.allow( { name: 'widget', inside: '$root' } );
+				model.schema.allow( { name: 'nestededitable', inside: 'widget' } );
+				model.schema.allow( { name: '$inline', inside: 'nestededitable' } );
 
 				buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView )
 					.fromElement( 'widget' )
@@ -112,7 +112,7 @@ describe( 'ContextualBalloon', () => {
 					.fromElement( 'nestededitable' )
 					.toElement( () => new ViewEditableElement( 'figcaption', { contenteditable: 'true' } ) );
 
-				setModelData( doc, '<widget><nestededitable>[]foo</nestededitable></widget>' );
+				setModelData( model, '<widget><nestededitable>[]foo</nestededitable></widget>' );
 
 				expect( balloon.positionLimiter() ).to.equal( viewDocument.domConverter.mapViewToDom( root ) );
 			} );

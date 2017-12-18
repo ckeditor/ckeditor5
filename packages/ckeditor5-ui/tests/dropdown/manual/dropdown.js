@@ -13,11 +13,19 @@ import createListDropdown from '../../../src/dropdown/list/createlistdropdown';
 
 import testUtils from '../../_utils/utils';
 
+import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
+import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
+import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
+import ButtonView from '../../../src/button/buttonview';
+
+import createButtonDropdown from '../../../src/dropdown/button/createbuttondropdown';
+
 const ui = testUtils.createTestUIView( {
 	dropdown: '#dropdown',
 	listDropdown: '#list-dropdown',
 	dropdownShared: '#dropdown-shared',
-	dropdownLabel: '#dropdown-label'
+	dropdownLabel: '#dropdown-label',
+	buttonDropdown: '#button-dropown'
 } );
 
 function testEmpty() {
@@ -95,7 +103,40 @@ function testLongLabel() {
 	dropdownView.panelView.element.innerHTML = 'Empty panel. There is no child view in this DropdownPanelView.';
 }
 
+function testButton() {
+	const locale = {};
+
+	const icons = { left: alignLeftIcon, right: alignRightIcon, center: alignCenterIcon };
+
+	// Buttons to be obtained from factory later on.
+	const buttons = Object.keys( icons ).map( icon => new Model( { label: icon, isEnabled: true, isOn: false, icon: icons[ icon ] } ) );
+
+	const buttonViews = buttons
+		.map( buttonModel => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.bind( 'isEnabled', 'isOn', 'icon', 'label' ).to( buttonModel );
+
+			buttonView.on( 'execute', () => console.log( `Execute: ${ buttonModel.label }` ) );
+
+			return buttonView;
+		} );
+
+	const buttonDropdownModel = new Model( {
+		isVertical: true,
+		buttons: buttonViews
+	} );
+
+	const buttonDropdown = createButtonDropdown( buttonDropdownModel, {} );
+
+	ui.buttonDropdown.add( buttonDropdown );
+
+	window.buttons = buttons;
+	window.buttonDropdownModel = buttonDropdownModel;
+}
+
 testEmpty();
 testList();
 testSharedModel();
 testLongLabel();
+testButton();

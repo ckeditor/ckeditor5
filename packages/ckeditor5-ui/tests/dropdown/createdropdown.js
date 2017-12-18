@@ -13,7 +13,7 @@ import ButtonView from '../../src/button/buttonview';
 const assertBinding = utilsTestUtils.assertBinding;
 
 describe( 'createDropdown', () => {
-	it( 'accepts model', () => {
+	it( 'binds button attributes to the model', () => {
 		const modelDef = {
 			label: 'foo',
 			isOn: false,
@@ -28,9 +28,54 @@ describe( 'createDropdown', () => {
 		assertBinding( view.buttonView,
 			modelDef,
 			[
-				[ model, { label: 'bar', isOn: true, isEnabled: false, withText: true, tooltip: true } ]
+				[ model, { label: 'bar', isEnabled: false, isOn: true, withText: true, tooltip: true } ]
 			],
-			{ label: 'bar', isOn: true, isEnabled: false, withText: true, tooltip: true }
+			{ label: 'bar', isEnabled: false, isOn: true, withText: true, tooltip: true }
+		);
+	} );
+
+	it( 'binds button#isOn do dropdown #isOpen and model #isOn', () => {
+		const modelDef = {
+			label: 'foo',
+			isOn: false,
+			isEnabled: true,
+			withText: false,
+			tooltip: false
+		};
+
+		const model = new Model( modelDef );
+		const view = createDropdown( model );
+
+		view.isOpen = false;
+		expect( view.buttonView.isOn ).to.be.false;
+
+		model.isOn = true;
+		expect( view.buttonView.isOn ).to.be.true;
+
+		view.isOpen = true;
+		expect( view.buttonView.isOn ).to.be.true;
+
+		model.isOn = false;
+		expect( view.buttonView.isOn ).to.be.true;
+	} );
+
+	it( 'binds dropdown#isEnabled to the model', () => {
+		const modelDef = {
+			label: 'foo',
+			isEnabled: true,
+			withText: false,
+			tooltip: false
+		};
+
+		const model = new Model( modelDef );
+		const view = createDropdown( model );
+
+		assertBinding( view,
+			{ isEnabled: true },
+			[
+				[ model, { isEnabled: false } ]
+			],
+			{ isEnabled: false }
 		);
 	} );
 

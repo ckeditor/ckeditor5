@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * A helper to define button–specific icon styles.
+ */
+@define-mixin ck-button-icon {
+	& .ck-icon {
+		@mixin-content;
+	}
+}

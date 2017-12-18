@@ -7,11 +7,10 @@
  * @module ui/dropdown/list/createlistdropdown
  */
 
-/* global document */
-
 import ListView from '../../list/listview';
 import ListItemView from '../../list/listitemview';
 import createDropdown from '../createdropdown';
+import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownContentsOnArrows } from '../utils';
 
 /**
  * Creates an instance of {@link module:ui/dropdown/list/listdropdownview~ListDropdownView} class using
@@ -64,57 +63,11 @@ export default function createListDropdown( model, locale ) {
 		return item;
 	} );
 
-	// TODO: Delegate all events instead of just execute.
-	listView.items.delegate( 'execute' ).to( dropdownView );
-
 	dropdownView.panelView.children.add( listView );
 
-	dropdownView.on( 'change:isOpen', ( evt, name, value ) => {
-		if ( value ) {
-			attachDocumentClickListener( dropdownView );
-		} else {
-			dropdownView.stopListening( document );
-		}
-	} );
-
-	// Close the dropdown when one of the list items has been executed.
-	dropdownView.on( 'execute', () => {
-		dropdownView.isOpen = false;
-	} );
-
-	// If the dropdown panel is already open, the arrow down key should
-	// focus the first element in list.
-	dropdownView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
-		if ( dropdownView.isOpen ) {
-			listView.focus();
-			cancel();
-		}
-	} );
-
-	// If the dropdown panel is already open, the arrow up key should
-	// focus the last element in the list.
-	dropdownView.keystrokes.set( 'arrowup', ( data, cancel ) => {
-		if ( dropdownView.isOpen ) {
-			listView.focusLast();
-			cancel();
-		}
-	} );
+	closeDropdownOnBlur( dropdownView );
+	closeDropdownOnExecute( dropdownView, listView.items );
+	focusDropdownContentsOnArrows( dropdownView, listView );
 
 	return dropdownView;
-}
-
-// Attaches a "click" listener in DOM to check if any element outside
-// the dropdown has been clicked.
-//
-// @private
-// @param {module:ui/dropdown/listdropdownview~ListDropdownView} dropdownView
-function attachDocumentClickListener( dropdownView ) {
-	// TODO: It will probably be focus/blur-based rather than click. It should be bound
-	// to focusmanager of some sort.
-	dropdownView.listenTo( document, 'click', ( evtInfo, { target: domEvtTarget } ) => {
-		// Collapse the dropdown when the webpage outside of the component is clicked.
-		if ( dropdownView.element != domEvtTarget && !dropdownView.element.contains( domEvtTarget ) ) {
-			dropdownView.isOpen = false;
-		}
-	} );
 }
