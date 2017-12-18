@@ -31,27 +31,38 @@ import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
  * To map positions and elements during model to view conversion use {@link module:engine/conversion/mapper~Mapper}.
  *
  * `ModelConversionDispatcher` fires following events for model tree changes:
- * * {@link #event:insert insert} if a range of nodes has been inserted to the model tree,
- * * {@link #event:remove remove} if a range of nodes has been removed from the model tree,
- * * {@link #event:attribute attribute} if attribute has been added, changed or removed from a model node.
  *
- * For {@link #event:insert insert} and {@link #event:attribute attribute}, `ModelConversionDispatcher` generates
- * {@link module:engine/conversion/modelconsumable~ModelConsumable consumables}. These are used to have a control
- * over which changes has been already consumed. It is useful when some converters overwrite other or converts multiple
- * changes (for example converts insertion of an element and also converts that element's attributes during insertion).
+ * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert insert}
+ * if a range of nodes has been inserted to the model tree,
+ * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:remove remove}
+ * if a range of nodes has been removed from the model tree,
+ * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:attribute attribute}
+ * if attribute has been added, changed or removed from a model node.
  *
- * Additionally, `ModelConversionDispatcher` fires events for {@link module:engine/model/markerscollection~Marker marker} changes:
- * * {@link #event:addMarker} if a marker has been added,
- * * {@link #event:removeMarker} if a marker has been removed.
+ * For {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert insert}
+ * and {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:attribute attribute},
+ * `ModelConversionDispatcher` generates {@link module:engine/conversion/modelconsumable~ModelConsumable consumables}.
+ * These are used to have a control over which changes has been already consumed. It is useful when some converters
+ * overwrite other or converts multiple changes (for example converts insertion of an element and also converts that
+ * element's attributes during insertion).
+ *
+ * Additionally, `ModelConversionDispatcher` fires events for {@link module:engine/model/markercollection~Marker marker} changes:
+ *
+ * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker} if a marker has been added,
+ * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:removeMarker} if a marker has been removed.
  *
  * Note, that changing a marker is done through removing the marker from the old range, and adding on the new range,
  * so both those events are fired.
  *
  * Finally, `ModelConversionDispatcher` also handles firing events for {@link module:engine/model/selection model selection}
  * conversion:
- * * {@link #event:selection} which converts selection from model to view,
- * * {@link #event:selectionAttribute} which is fired for every selection attribute,
- * * {@link #event:selectionMarker} which is fired for every marker which contains selection.
+ *
+ * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:selection}
+ * which converts selection from model to view,
+ * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:selectionAttribute}
+ * which is fired for every selection attribute,
+ * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:selectionMarker}
+ * which is fired for every marker which contains selection.
  *
  * Unlike model tree and markers, events for selection are not fired for changes but for selection state.
  *
@@ -426,7 +437,7 @@ export default class ModelConversionDispatcher {
 	 * Fired for inserted nodes.
 	 *
 	 * `insert` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `insert:<name>`. `name` is either `'$text'`, when {@link module:engine/model/text~Text a text node} has been inserted,
+	 * `insert:name`. `name` is either `'$text'`, when {@link module:engine/model/text~Text a text node} has been inserted,
 	 * or {@link module:engine/model/element~Element#name name} of inserted element.
 	 *
 	 * This way listeners can either listen to a general `insert` event or specific event (for example `insert:paragraph`).
@@ -443,7 +454,7 @@ export default class ModelConversionDispatcher {
 	 * Fired for removed nodes.
 	 *
 	 * `remove` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `remove:<name>`. `name` is either `'$text'`, when {@link module:engine/model/text~Text a text node} has been removed,
+	 * `remove:name`. `name` is either `'$text'`, when {@link module:engine/model/text~Text a text node} has been removed,
 	 * or the {@link module:engine/model/element~Element#name name} of removed element.
 	 *
 	 * This way listeners can either listen to a general `remove` event or specific event (for example `remove:paragraph`).
@@ -460,7 +471,7 @@ export default class ModelConversionDispatcher {
 	 * Fired when attribute has been added/changed/removed from a node.
 	 *
 	 * `attribute` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `attribute:<attributeKey>:<name>`. `attributeKey` is the key of added/changed/removed attribute.
+	 * `attribute:attributeKey:name`. `attributeKey` is the key of added/changed/removed attribute.
 	 * `name` is either `'$text'` if change was on {@link module:engine/model/text~Text a text node},
 	 * or the {@link module:engine/model/element~Element#name name} of element which attribute has changed.
 	 *
@@ -490,7 +501,7 @@ export default class ModelConversionDispatcher {
 	 * Fired for {@link module:engine/model/selection~Selection selection} attributes changes.
 	 *
 	 * `selectionAttribute` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `selectionAttribute:<attributeKey>`. `attributeKey` is the key of selection attribute. This way listen can listen to
+	 * `selectionAttribute:attributeKey`. `attributeKey` is the key of selection attribute. This way it is possible to listen to
 	 * certain attribute, i.e. `selectionAttribute:bold`.
 	 *
 	 * @event selectionAttribute
@@ -503,10 +514,25 @@ export default class ModelConversionDispatcher {
 	 */
 
 	/**
+	 * Fired for markers containing {@link module:engine/model/selection~Selection selection}.
+	 *
+	 * `selectionMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
+	 * `selectionMarker:markerName`. `markerName` is the name of the marker containing selection. This way it is possible to listen to
+	 * certain marker, i.e. `selectionAttribute:highlight`.
+	 *
+	 * @event selectionMarker
+	 * @param {Object} data Additional information about the change.
+	 * @param {module:engine/model/selection~Selection} data.selection Selection that is converted.
+	 * @param {module:engine/model/range~Range} data.markerRange Marker range.
+	 * @param {String} data.markerName Marker name.
+	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+	 */
+
+	/**
 	 * Fired when a new marker is added to the model.
 	 *
 	 * `addMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `addMarker:<markerName>`. By specifying certain marker names, you can make the events even more gradual. For example,
+	 * `addMarker:markerName`. By specifying certain marker names, you can make the events even more gradual. For example,
 	 * if markers are named `foo:abc`, `foo:bar`, then it is possible to listen to `addMarker:foo` or `addMarker:foo:abc` and
 	 * `addMarker:foo:bar` events.
 	 *
@@ -521,8 +547,9 @@ export default class ModelConversionDispatcher {
 	 * @event addMarker
 	 * @param {Object} data Additional information about the change.
 	 * @param {module:engine/model/item~Item} data.item Item inside the new marker.
-	 * @param {module:engine/model/range~Range} data.range Range spanning over converted item.
-	 * @param {module:engine/model/range~Range} data.range Marker range.
+	 * @param {module:engine/model/range~Range} [data.range] Range spanning over converted item. Available only if
+	 * the marker range was not collapsed.
+	 * @param {module:engine/model/range~Range} data.markerRange Marker range.
 	 * @param {String} data.markerName Marker name.
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
@@ -532,13 +559,13 @@ export default class ModelConversionDispatcher {
 	 * Fired when marker is removed from the model.
 	 *
 	 * `removeMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `removeMarker:<markerName>`. By specifying certain marker names, you can make the events even more gradual. For example,
+	 * `removeMarker:markerName`. By specifying certain marker names, you can make the events even more gradual. For example,
 	 * if markers are named `foo:abc`, `foo:bar`, then it is possible to listen to `removeMarker:foo` or `removeMarker:foo:abc` and
 	 * `removeMarker:foo:bar` events.
 	 *
 	 * @event removeMarker
 	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/range~Range} data.range Marker range.
+	 * @param {module:engine/model/range~Range} data.markerRange Marker range.
 	 * @param {String} data.markerName Marker name.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
