@@ -28,7 +28,6 @@ export default class FontFamilyEditing extends Plugin {
 		// Define default configuration using named presets
 		editor.config.define( 'fontFamily', {
 			items: [
-				'default',
 				'Arial, Helvetica, sans-serif',
 				'Courier New, Courier, monospace'
 			]
@@ -92,18 +91,26 @@ function getItemDefinition( item ) {
 		return item;
 	}
 
+	// Ignore falsy values
+	if ( typeof item !== 'string' ) {
+		return;
+	}
+
 	return generateFontPreset( item );
 }
 
 // Creates a predefined preset for pixel size.
 function generateFontPreset( font ) {
-	const fontNames = font.split( ',' );
+	// Remove quotes from font names
+	const fontNames = font.replace( /"/g, '' ).split( ',' );
 
-	const cssFontNames = fontNames.join( fontNames );
+	const cssFontNames = fontNames.map( cleanFontName ).join( ', ' );
+
+	const firstFontName = fontNames[ 0 ];
 
 	return {
-		label: fontNames[ 0 ],
-		model: fontNames[ 0 ],
+		label: firstFontName,
+		model: firstFontName,
 		view: {
 			name: 'span',
 			styles: {
@@ -111,6 +118,16 @@ function generateFontPreset( font ) {
 			}
 		}
 	};
+}
+
+function cleanFontName( fontName ) {
+	fontName = fontName.trim();
+
+	if ( fontName.indexOf( ' ' ) > 0 ) {
+		fontName = `"${ fontName }"`;
+	}
+
+	return fontName;
 }
 
 /**

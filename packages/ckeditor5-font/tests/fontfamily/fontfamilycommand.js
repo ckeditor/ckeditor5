@@ -16,13 +16,12 @@ describe( 'FontFamilyCommand', () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
-				command = new FontFamilyCommand( editor, 'arial' );
 				model = editor.model;
 
+				command = new FontFamilyCommand( editor, 'arial' );
 				editor.commands.add( 'fontFamily', command );
 
 				model.schema.registerItem( 'paragraph', '$block' );
-
 				model.schema.allow( { name: '$inline', attributes: 'fontFamily', inside: '$block' } );
 			} );
 	} );
