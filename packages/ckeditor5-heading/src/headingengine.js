@@ -86,7 +86,7 @@ export default class HeadingEngine extends Plugin {
 			// Skip paragraph - it is defined in required Paragraph feature.
 			if ( option.model !== defaultModelElement ) {
 				// Schema.
-				editor.document.schema.registerItem( option.model, '$block' );
+				editor.model.schema.registerItem( option.model, '$block' );
 
 				// Build converter from model to view for data and editing pipelines.
 				modelElementToViewContainerElement( option, [ data.modelToView, editing.modelToView ] );
@@ -111,13 +111,13 @@ export default class HeadingEngine extends Plugin {
 		const options = editor.config.get( 'heading.options' );
 
 		if ( enterCommand ) {
+			// @TODO This should be handled by a post-fixer.
 			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
-				const positionParent = editor.document.selection.getFirstPosition().parent;
-				const batch = data.batch;
+				const positionParent = editor.model.document.selection.getFirstPosition().parent;
 				const isHeading = options.some( option => positionParent.is( option.model ) );
 
 				if ( isHeading && !positionParent.is( defaultModelElement ) && positionParent.childCount === 0 ) {
-					batch.rename( positionParent, defaultModelElement );
+					data.writer.rename( positionParent, defaultModelElement );
 				}
 			} );
 		}

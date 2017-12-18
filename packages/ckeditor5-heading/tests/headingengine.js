@@ -11,7 +11,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'HeadingEngine', () => {
-	let editor, document;
+	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -20,7 +20,7 @@ describe( 'HeadingEngine', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				document = editor.document;
+				model = editor.model;
 			} );
 	} );
 
@@ -33,18 +33,18 @@ describe( 'HeadingEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( document.schema.hasItem( 'heading1' ) ).to.be.true;
-		expect( document.schema.hasItem( 'heading2' ) ).to.be.true;
-		expect( document.schema.hasItem( 'heading3' ) ).to.be.true;
+		expect( model.schema.hasItem( 'heading1' ) ).to.be.true;
+		expect( model.schema.hasItem( 'heading2' ) ).to.be.true;
+		expect( model.schema.hasItem( 'heading3' ) ).to.be.true;
 
-		expect( document.schema.check( { name: 'heading1', inside: '$root' } ) ).to.be.true;
-		expect( document.schema.check( { name: '$inline', inside: 'heading1' } ) ).to.be.true;
+		expect( model.schema.check( { name: 'heading1', inside: '$root' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', inside: 'heading1' } ) ).to.be.true;
 
-		expect( document.schema.check( { name: 'heading2', inside: '$root' } ) ).to.be.true;
-		expect( document.schema.check( { name: '$inline', inside: 'heading2' } ) ).to.be.true;
+		expect( model.schema.check( { name: 'heading2', inside: '$root' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', inside: 'heading2' } ) ).to.be.true;
 
-		expect( document.schema.check( { name: 'heading3', inside: '$root' } ) ).to.be.true;
-		expect( document.schema.check( { name: '$inline', inside: 'heading3' } ) ).to.be.true;
+		expect( model.schema.check( { name: 'heading3', inside: '$root' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$inline', inside: 'heading3' } ) ).to.be.true;
 	} );
 
 	it( 'should register #commands', () => {
@@ -57,21 +57,21 @@ describe( 'HeadingEngine', () => {
 	it( 'should convert heading1', () => {
 		editor.setData( '<h2>foobar</h2>' );
 
-		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<heading1>foobar</heading1>' );
+		expect( getData( model, { withoutSelection: true } ) ).to.equal( '<heading1>foobar</heading1>' );
 		expect( editor.getData() ).to.equal( '<h2>foobar</h2>' );
 	} );
 
 	it( 'should convert heading2', () => {
 		editor.setData( '<h3>foobar</h3>' );
 
-		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<heading2>foobar</heading2>' );
+		expect( getData( model, { withoutSelection: true } ) ).to.equal( '<heading2>foobar</heading2>' );
 		expect( editor.getData() ).to.equal( '<h3>foobar</h3>' );
 	} );
 
 	it( 'should convert heading3', () => {
 		editor.setData( '<h4>foobar</h4>' );
 
-		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<heading3>foobar</heading3>' );
+		expect( getData( model, { withoutSelection: true } ) ).to.equal( '<heading3>foobar</heading3>' );
 		expect( editor.getData() ).to.equal( '<h4>foobar</h4>' );
 	} );
 
@@ -96,21 +96,21 @@ describe( 'HeadingEngine', () => {
 				} )
 				.then( newEditor => {
 					editor = newEditor;
-					document = editor.document;
+					model = editor.model;
 				} );
 		} );
 
 		it( 'should convert from defined h element', () => {
 			editor.setData( '<h1>foobar</h1>' );
 
-			expect( getData( document, { withoutSelection: true } ) ).to.equal( '<heading1>foobar</heading1>' );
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<heading1>foobar</heading1>' );
 			expect( editor.getData() ).to.equal( '<h1>foobar</h1>' );
 		} );
 
 		it( 'should convert from defined paragraph with attributes', () => {
 			editor.setData( '<p data-heading="h1">foobar</p><p>Normal paragraph</p>' );
 
-			expect( getData( document, { withoutSelection: true } ) )
+			expect( getData( model, { withoutSelection: true } ) )
 				.to.equal( '<heading1>foobar</heading1><paragraph>Normal paragraph</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<h1>foobar</h1><p>Normal paragraph</p>' );
@@ -151,17 +151,17 @@ describe( 'HeadingEngine', () => {
 						}
 					} )
 					.then( editor => {
-						document = editor.document;
+						model = editor.model;
 
 						expect( editor.commands.get( 'h4' ) ).to.be.instanceOf( HeadingCommand );
 						expect( editor.commands.get( 'paragraph' ) ).to.be.instanceOf( ParagraphCommand );
 
-						expect( document.schema.hasItem( 'paragraph' ) ).to.be.true;
-						expect( document.schema.hasItem( 'h4' ) ).to.be.true;
+						expect( model.schema.hasItem( 'paragraph' ) ).to.be.true;
+						expect( model.schema.hasItem( 'h4' ) ).to.be.true;
 
-						expect( document.schema.hasItem( 'heading1' ) ).to.be.false;
-						expect( document.schema.hasItem( 'heading2' ) ).to.be.false;
-						expect( document.schema.hasItem( 'heading3' ) ).to.be.false;
+						expect( model.schema.hasItem( 'heading1' ) ).to.be.false;
+						expect( model.schema.hasItem( 'heading2' ) ).to.be.false;
+						expect( model.schema.hasItem( 'heading3' ) ).to.be.false;
 					} );
 			} );
 		} );

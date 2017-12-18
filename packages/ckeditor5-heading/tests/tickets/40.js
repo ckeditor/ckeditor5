@@ -23,11 +23,11 @@ describe( 'Bug ckeditor5-heading#40', () => {
 			.then( newEditor => {
 				editor = newEditor;
 
-				setData( editor.document, '<heading1>foo[]</heading1>' );
+				setData( editor.model, '<heading1>foo[]</heading1>' );
 
 				editor.execute( 'enter' );
 
-				expect( getData( editor.document ) ).to.equal( '<heading1>foo</heading1><paragraph>[]</paragraph>' );
+				expect( getData( editor.model ) ).to.equal( '<heading1>foo</heading1><paragraph>[]</paragraph>' );
 			} );
 	} );
 
@@ -39,11 +39,11 @@ describe( 'Bug ckeditor5-heading#40', () => {
 			.then( newEditor => {
 				editor = newEditor;
 
-				setData( editor.document, '<heading1>foo[]</heading1>' );
+				setData( editor.model, '<heading1>foo[]</heading1>' );
 
 				editor.execute( 'enter' );
 
-				expect( getData( editor.document ) ).to.equal( '<heading1>foo</heading1><paragraph>[]</paragraph>' );
+				expect( getData( editor.model ) ).to.equal( '<heading1>foo</heading1><paragraph>[]</paragraph>' );
 			} );
 	} );
 } );
