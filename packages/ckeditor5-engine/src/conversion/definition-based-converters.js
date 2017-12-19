@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/conversion/configurationdefinedconverters
+ * @module engine/conversion/definition-based-converters
  */
 
 import AttributeElement from '../view/attributeelement';
@@ -41,7 +41,7 @@ import buildViewConverter from './buildviewconverter';
  *
  *		<h1 class="header article-header" data-header="level-1">...</h1>
  *
- * @param {module:engine/conversion/configurationdefinedconverters~ConverterDefinition} definition A conversion configuration.
+ * @param {module:engine/conversion/definition-based-converters~ConverterDefinition} definition A conversion configuration.
  * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
  */
 export function modelElementToViewContainerElement( definition, dispatchers ) {
@@ -103,7 +103,7 @@ export function modelElementToViewContainerElement( definition, dispatchers ) {
  *		<h1>Paragraph-like heading</h1>
  *		<h1>Another non-semantic header</h1>
  *
- * @param {module:engine/conversion/configurationdefinedconverters~ConverterDefinition} definition A conversion configuration.
+ * @param {module:engine/conversion/definition-based-converters~ConverterDefinition} definition A conversion configuration.
  * @param {Array.<module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher>} dispatchers
  */
 export function viewToModelElement( definition, dispatchers ) {
@@ -142,7 +142,7 @@ export function viewToModelElement( definition, dispatchers ) {
  *		<span style="font-size:1.2em;">...</span>
  *
  * @param {String} attributeName Attribute name from which convert.
- * @param {module:engine/conversion/configurationdefinedconverters~ConverterDefinition} definition A conversion configuration.
+ * @param {module:engine/conversion/definition-based-converters~ConverterDefinition} definition A conversion configuration.
  * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
  */
 export function modelAttributeToViewAttributeElement( attributeName, definition, dispatchers ) {
@@ -214,7 +214,7 @@ export function modelAttributeToViewAttributeElement( attributeName, definition,
  *		<p>
  *
  * @param {String} attributeName Attribute name to which convert.
- * @param {module:engine/conversion/configurationdefinedconverters~ConverterDefinition} definition A conversion configuration.
+ * @param {module:engine/conversion/definition-based-converters~ConverterDefinition} definition A conversion configuration.
  * @param {Array.<module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher>} dispatchers
  */
 export function viewToModelAttribute( attributeName, definition, dispatchers ) {
@@ -228,9 +228,9 @@ export function viewToModelAttribute( attributeName, definition, dispatchers ) {
 	} ) );
 }
 
-// Prepares a {@link module:engine/conversion/configurationdefinedconverters~ConverterDefinition definition object} for building converters.
+// Prepares a {@link module:engine/conversion/definition-based-converters~ConverterDefinition definition object} for building converters.
 //
-// @param {module:engine/conversion/configurationdefinedconverters~ConverterDefinition} definition An object that defines view to model
+// @param {module:engine/conversion/definition-based-converters~ConverterDefinition} definition An object that defines view to model
 // and model to view conversion.
 // @returns {Object}
 function parseConverterDefinition( definition ) {
@@ -297,11 +297,11 @@ function definitionToPattern( viewDefinition ) {
  *
  * @typedef {Object} ConverterDefinition
  * @property {String} model Defines to model conversion. When using to element conversion
- * ({@link module:engine/conversion/configurationdefinedconverters~viewToModelElement}
- * and {@link module:engine/conversion/configurationdefinedconverters~modelElementToViewContainerElement})
+ * ({@link module:engine/conversion/definition-based-converters~viewToModelElement}
+ * and {@link module:engine/conversion/definition-based-converters~modelElementToViewContainerElement})
  * it defines element name. When using to attribute conversion
- * ({@link module:engine/conversion/configurationdefinedconverters~viewToModelAttribute}
- * and {@link module:engine/conversion/configurationdefinedconverters~modelAttributeToViewAttributeElement})
+ * ({@link module:engine/conversion/definition-based-converters~viewToModelAttribute}
+ * and {@link module:engine/conversion/definition-based-converters~modelAttributeToViewAttributeElement})
  * it defines attribute value to which it is converted.
  * @property {String|module:engine/view/viewelementdefinition~ViewElementDefinition} view Defines model to view conversion and is also used
  * in view to model conversion pipeline.

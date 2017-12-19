@@ -3,20 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelDocument from '../../src/model/document';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
 
-import ViewDocument from '../../src/view/document';
 import ViewElement from '../../src/view/element';
 import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewText from '../../src/view/text';
 
-import Mapper from '../../src/conversion/mapper';
-import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
-
-import { insertText, remove } from '../../src/conversion/model-to-view-converters';
 import { convertText } from '../../src/conversion/view-to-model-converters';
 
 import {
@@ -24,12 +18,15 @@ import {
 	viewToModelAttribute,
 	modelElementToViewContainerElement,
 	viewToModelElement
-} from '../../src/conversion/configurationdefinedconverters';
+} from '../../src/conversion/definition-based-converters';
 
 import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatcher';
 import ModelSchema from '../../src/model/schema';
 import ModelWalker from '../../src/model/treewalker';
 import ModelTextProxy from '../../src/model/textproxy';
+import Model from '../../src/model/model';
+import ModelPosition from '../../src/model/position';
+import EditingController from '../../src/controller/editingcontroller';
 
 function viewAttributesToString( item ) {
 	let result = '';
@@ -99,78 +96,81 @@ function viewToString( item ) {
 }
 
 describe( 'Configuration defined converters', () => {
-	let dispatcher, mapper, modelDoc, modelRoot, viewDoc, viewRoot, viewSelection, batch;
+	let model, dispatcher, modelDoc, modelRoot, viewRoot, controller, additionalData, schema;
 
 	beforeEach( () => {
-		modelDoc = new ModelDocument();
-		modelRoot = modelDoc.createRoot( 'root', 'root' );
-
-		batch = modelDoc.batch();
-
-		viewDoc = new ViewDocument();
-		viewRoot = viewDoc.createRoot( 'div' );
-		viewSelection = viewDoc.selection;
-
-		mapper = new Mapper();
-		mapper.bindElements( modelRoot, viewRoot );
-
-		dispatcher = new ModelConversionDispatcher( modelDoc, { mapper, viewSelection } );
-
-		dispatcher.on( 'insert:$text', insertText() );
-		dispatcher.on( 'remove', remove() );
+		model = new Model();
 	} );
 
-	afterEach( () => {
-		viewDoc.destroy();
-	} );
+	function setupViewToModelTests() {
+		additionalData = { context: [ '$root' ] };
+		schema = new ModelSchema();
+		dispatcher = new ViewConversionDispatcher( model, { schema } );
+	}
+
+	function setupModelToViewTests() {
+		modelDoc = model.document;
+		modelRoot = modelDoc.createRoot();
+
+		controller = new EditingController( model );
+		controller.createRoot( 'div' );
+
+		viewRoot = controller.view.getRoot();
+		dispatcher = controller.modelToView;
+	}
 
 	describe( 'Attribute converters', () => {
-		function testConversion( definition, expectedConversion ) {
+		function testModelConversion( definition, expectedConversion ) {
 			modelAttributeToViewAttributeElement( 'foo', definition, [ dispatcher ] );
 
 			const modelElement = new ModelText( 'foo', { foo: 'bar' } );
-			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( expectedConversion );
 
-			batch.removeAttribute( 'bold', modelRoot );
-
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'foo', 'bar', null );
+			model.change( writer => {
+				writer.removeAttribute( 'foo', modelElement );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foo</div>' );
 		}
 
 		describe( 'model to view conversion', () => {
+			beforeEach( () => {
+				setupModelToViewTests();
+			} );
+
 			it( 'using passed view element name', () => {
-				testConversion( { model: 'bar', view: 'strong' }, '<div><strong>foo</strong></div>' );
+				testModelConversion( { model: 'bar', view: 'strong' }, '<div><strong>foo</strong></div>' );
 			} );
 
 			it( 'using passed view element object', () => {
-				testConversion( { model: 'bar', view: { name: 'strong' } }, '<div><strong>foo</strong></div>' );
+				testModelConversion( { model: 'bar', view: { name: 'strong' } }, '<div><strong>foo</strong></div>' );
 			} );
 
 			it( 'using passed view element object with styles object', () => {
-				testConversion( {
+				testModelConversion( {
 					model: 'bar',
 					view: { name: 'span', styles: { 'font-weight': 'bold' } }
 				}, '<div><span style="font-weight:bold;">foo</span></div>' );
 			} );
 
 			it( 'using passed view element object with class string', () => {
-				testConversion( { model: 'bar', view: { name: 'span', classes: 'foo' } }, '<div><span class="foo">foo</span></div>' );
+				testModelConversion( { model: 'bar', view: { name: 'span', classes: 'foo' } }, '<div><span class="foo">foo</span></div>' );
 			} );
 
 			it( 'using passed view element object with class array', () => {
-				testConversion( {
+				testModelConversion( {
 					model: 'bar',
 					view: { name: 'span', classes: [ 'foo', 'foo-bar' ] }
 				}, '<div><span class="foo foo-bar">foo</span></div>' );
 			} );
 
 			it( 'using passed view element object with attributes', () => {
-				testConversion( {
+				testModelConversion( {
 					model: 'bar',
 					view: { name: 'span', attributes: { 'data-foo': 'bar' } }
 				}, '<div><span data-foo="bar">foo</span></div>' );
@@ -180,33 +180,24 @@ describe( 'Configuration defined converters', () => {
 				modelAttributeToViewAttributeElement( 'foo', { model: 'bar', view: 'strong' }, [ dispatcher ] );
 
 				const modelElement = new ModelText( 'foo', { foo: 'baz' } );
-				modelRoot.appendChildren( modelElement );
 
-				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+				model.change( writer => {
+					writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div>foo</div>' );
 			} );
 		} );
 
 		describe( 'view to model conversion', () => {
-			let dispatcher, schema, additionalData, batch;
-
-			const modelDocument = new ModelDocument();
-
 			beforeEach( () => {
-				batch = modelDocument.batch();
-
-				// `additionalData` parameter for `.convert` calls.
-				additionalData = { context: [ '$root' ] };
-
-				schema = new ModelSchema();
+				setupViewToModelTests();
 
 				schema.registerItem( 'div', '$block' );
 
 				schema.allow( { name: '$inline', attributes: [ 'foo' ], inside: '$root' } );
 				schema.allow( { name: '$text', inside: '$root' } );
 
-				dispatcher = new ViewConversionDispatcher( { schema } );
 				dispatcher.on( 'text', convertText() );
 			} );
 
@@ -214,7 +205,7 @@ describe( 'Configuration defined converters', () => {
 				viewToModelAttribute( 'foo', { model: 'bar', view: 'strong' }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -224,7 +215,7 @@ describe( 'Configuration defined converters', () => {
 				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'strong' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -234,7 +225,7 @@ describe( 'Configuration defined converters', () => {
 				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'span', classes: 'foo' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'span', { class: 'foo' }, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewAttributeElement( 'span', { class: 'foo' }, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -247,7 +238,7 @@ describe( 'Configuration defined converters', () => {
 				}, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'span', { class: 'foo bar' }, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewAttributeElement( 'span', { class: 'foo bar' }, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -260,7 +251,7 @@ describe( 'Configuration defined converters', () => {
 				}, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'span', { style: 'font-weight:bold' }, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewAttributeElement( 'span', { style: 'font-weight:bold' }, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -273,7 +264,7 @@ describe( 'Configuration defined converters', () => {
 				}, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewAttributeElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -290,7 +281,7 @@ describe( 'Configuration defined converters', () => {
 				}, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewAttributeElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -301,7 +292,7 @@ describe( 'Configuration defined converters', () => {
 				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'strong', priority: 'high' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -314,20 +305,25 @@ describe( 'Configuration defined converters', () => {
 			modelElementToViewContainerElement( definition, [ dispatcher ] );
 
 			const modelElement = new ModelElement( 'foo', null, new ModelText( 'bar' ) );
-			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+			model.change( writer => {
+				writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>' + expectedResult + '</div>' );
 		}
 
 		describe( 'model to view conversion', () => {
+			beforeEach( () => {
+				setupModelToViewTests();
+			} );
+
 			it( 'using passed view element name', () => {
-				testModelConversion( { model: 'foo', view: 'strong' }, '<strong>bar</strong>' );
+				testModelConversion( { model: 'foo', view: 'code' }, '<code>bar</code>' );
 			} );
 
 			it( 'using passed view element object', () => {
-				testModelConversion( { model: 'foo', view: { name: 'strong' } }, '<strong>bar</strong>' );
+				testModelConversion( { model: 'foo', view: { name: 'code' } }, '<code>bar</code>' );
 			} );
 
 			it( 'using passed view element object with styles object', () => {
@@ -357,17 +353,8 @@ describe( 'Configuration defined converters', () => {
 		} );
 
 		describe( 'view to model conversion', () => {
-			let dispatcher, schema, additionalData, batch;
-
-			const modelDocument = new ModelDocument();
-
 			beforeEach( () => {
-				batch = modelDocument.batch();
-
-				// `additionalData` parameter for `.convert` calls.
-				additionalData = { context: [ '$root' ] };
-
-				schema = new ModelSchema();
+				setupViewToModelTests();
 
 				schema.registerItem( 'div', '$block' );
 				schema.registerItem( 'bar', '$block' );
@@ -376,7 +363,6 @@ describe( 'Configuration defined converters', () => {
 				schema.allow( { name: '$inline', attributes: [ 'foo' ], inside: '$root' } );
 				schema.allow( { name: '$text', inside: '$inline' } );
 
-				dispatcher = new ViewConversionDispatcher( { schema } );
 				dispatcher.on( 'text', convertText() );
 			} );
 
@@ -384,7 +370,7 @@ describe( 'Configuration defined converters', () => {
 				viewToModelElement( { model: 'bar', view: 'strong' }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -394,7 +380,7 @@ describe( 'Configuration defined converters', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'strong' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -404,7 +390,7 @@ describe( 'Configuration defined converters', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'span', classes: 'foo' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'span', { class: 'foo' }, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewElement( 'span', { class: 'foo' }, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -414,7 +400,7 @@ describe( 'Configuration defined converters', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'span', classes: [ 'foo', 'bar' ] } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'span', { class: 'foo bar' }, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewElement( 'span', { class: 'foo bar' }, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -424,7 +410,7 @@ describe( 'Configuration defined converters', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'span', styles: { 'font-weight': 'bold' } } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'span', { style: 'font-weight:bold' }, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewElement( 'span', { style: 'font-weight:bold' }, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -434,7 +420,7 @@ describe( 'Configuration defined converters', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'span', attributes: { 'data-foo': 'bar' } } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -451,7 +437,7 @@ describe( 'Configuration defined converters', () => {
 				}, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -462,7 +448,7 @@ describe( 'Configuration defined converters', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'strong', priority: 'high' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), batch, additionalData
+					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), additionalData
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
