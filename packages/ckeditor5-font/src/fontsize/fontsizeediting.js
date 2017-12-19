@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import {
 	modelAttributeToViewAttributeElement,
 	viewToModelAttribute
-} from '@ckeditor/ckeditor5-engine/src/conversion/configurationdefinedconverters';
+} from '@ckeditor/ckeditor5-engine/src/conversion/definition-based-converters';
 
 /**
  * The Font Size Editing feature.
