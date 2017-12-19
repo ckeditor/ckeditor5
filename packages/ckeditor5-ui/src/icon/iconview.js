@@ -75,9 +75,13 @@ export default class IconView extends View {
 	 */
 	_updateXMLContent() {
 		if ( this.content ) {
-			const svg = new DOMParser()
-				.parseFromString( this.content.trim(), 'image/svg+xml' )
-				.firstChild;
+			const parsed = new DOMParser().parseFromString( this.content.trim(), 'image/svg+xml' );
+			const svg = parsed.querySelector( 'svg' );
+			const viewBox = svg.getAttribute( 'viewBox' );
+
+			if ( viewBox ) {
+				this.viewBox = viewBox;
+			}
 
 			this.element.innerHTML = '';
 

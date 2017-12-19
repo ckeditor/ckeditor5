@@ -19,7 +19,7 @@
 
 		position: absolute;
 		top: 50%;
-		transform: translate( 0, -50% );
+		transform: translate3d( 0, -50%, 0 );
 	}
 
 	/* Dropdown button should span horizontally, e.g. in vertical toolbars */
@@ -44,9 +44,12 @@
 
 	position: absolute;
 	left: 0px;
-	transform: translateY( 100% );
+	transform: translate3d( 0, 100%, 0 );
 }
 
 .ck-dropdown__panel-visible {
 	display: inline-block;
+
+	/* This will prevent blurry icons in dropdown on Firefox. See #340. */
+	will-change: transform;
 }
