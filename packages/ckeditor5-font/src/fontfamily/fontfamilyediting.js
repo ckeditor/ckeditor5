@@ -29,7 +29,13 @@ export default class FontFamilyEditing extends Plugin {
 		editor.config.define( 'fontFamily', {
 			items: [
 				'Arial, Helvetica, sans-serif',
-				'Courier New, Courier, monospace'
+				'Courier New, Courier, monospace',
+				'Georgia, serif',
+				'Lucida Sans Unicode, Lucida Grande, sans-serif',
+				'Tahoma, Geneva, sans-serif',
+				'Times New Roman, Times, serif',
+				'Trebuchet MS, Helvetica, sans-serif',
+				'Verdana, Geneva, sans-serif'
 			]
 		} );
 
@@ -102,11 +108,17 @@ function getItemDefinition( item ) {
 // Creates a predefined preset for pixel size.
 function generateFontPreset( font ) {
 	// Remove quotes from font names
-	const fontNames = font.replace( /"/g, '' ).split( ',' );
+	const fontNames = font.replace( /"|'/g, '' ).split( ',' );
 
-	const cssFontNames = fontNames.map( cleanFontName ).join( ', ' );
+	const cssFontNames = fontNames.map( normalizeFontName );
 
 	const firstFontName = fontNames[ 0 ];
+
+	const quotesMatch = '("|\'|&qout;|\\W){0,2}';
+
+	const regexString = `${ quotesMatch }${ fontNames.map( n => n.trim() ).join( `${ quotesMatch },${ quotesMatch }` ) }${ quotesMatch }`;
+
+	const fontFamilyRegexp = new RegExp( regexString );
 
 	return {
 		label: firstFontName,
@@ -114,17 +126,30 @@ function generateFontPreset( font ) {
 		view: {
 			name: 'span',
 			styles: {
-				'font-family': cssFontNames
+				'font-family': cssFontNames.join( ', ' )
 			}
-		}
+		},
+		acceptsAlso: [
+			{
+				name: 'span',
+				styles: {
+					'font-family': fontFamilyRegexp
+				}
+			}
+		]
 	};
 }
 
-function cleanFontName( fontName ) {
+/**
+ *
+ * @param fontName
+ * @returns {string|*}
+ */
+function normalizeFontName( fontName ) {
 	fontName = fontName.trim();
 
 	if ( fontName.indexOf( ' ' ) > 0 ) {
-		fontName = `"${ fontName }"`;
+		fontName = `'${ fontName }'`;
 	}
 
 	return fontName;

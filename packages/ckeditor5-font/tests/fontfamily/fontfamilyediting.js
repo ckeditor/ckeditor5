@@ -39,7 +39,13 @@ describe( 'FontFamilyEditing', () => {
 			it( 'should be set', () => {
 				expect( editor.config.get( 'fontFamily.items' ) ).to.deep.equal( [
 					'Arial, Helvetica, sans-serif',
-					'Courier New, Courier, monospace'
+					'Courier New, Courier, monospace',
+					'Georgia, serif',
+					'Lucida Sans Unicode, Lucida Grande, sans-serif',
+					'Tahoma, Geneva, sans-serif',
+					'Times New Roman, Times, serif',
+					'Trebuchet MS, Helvetica, sans-serif',
+					'Verdana, Geneva, sans-serif'
 				] );
 			} );
 		} );
@@ -92,7 +98,8 @@ describe( 'FontFamilyEditing', () => {
 							label: 'Comic Sans',
 							model: 'comic',
 							view: {
-								name: 'span', styles: {
+								name: 'span',
+								styles: {
 									'font-family': 'Comic Sans'
 								}
 							}
@@ -110,7 +117,7 @@ describe( 'FontFamilyEditing', () => {
 							items: [
 								'Arial',
 								'"Comic Sans MS", sans-serif',
-								'Lucida Console, Courier New, Courier, monospace'
+								'Lucida Console, \'Courier New\', Courier, monospace'
 							]
 						}
 					} )
@@ -128,7 +135,15 @@ describe( 'FontFamilyEditing', () => {
 									styles: {
 										'font-family': 'Arial'
 									}
-								}
+								},
+								acceptsAlso: [
+									{
+										name: 'span',
+										styles: {
+											'font-family': new RegExp( '("|\'|&qout;|\\W){0,2}Arial("|\'|&qout;|\\W){0,2}' )
+										}
+									}
+								]
 							},
 							{
 								label: 'Comic Sans MS',
@@ -136,9 +151,20 @@ describe( 'FontFamilyEditing', () => {
 								view: {
 									name: 'span',
 									styles: {
-										'font-family': '"Comic Sans MS", sans-serif'
+										'font-family': '\'Comic Sans MS\', sans-serif'
 									}
-								}
+								},
+								acceptsAlso: [
+									{
+										name: 'span',
+										styles: {
+											'font-family': new RegExp(
+												'("|\'|&qout;|\\W){0,2}Comic Sans MS("|\'|&qout;|\\W){0,2},' +
+												'("|\'|&qout;|\\W){0,2}sans-serif("|\'|&qout;|\\W){0,2}'
+											)
+										}
+									}
+								]
 							},
 							{
 								label: 'Lucida Console',
@@ -146,9 +172,22 @@ describe( 'FontFamilyEditing', () => {
 								view: {
 									name: 'span',
 									styles: {
-										'font-family': '"Lucida Console", "Courier New", Courier, monospace'
+										'font-family': '\'Lucida Console\', \'Courier New\', Courier, monospace'
 									}
-								}
+								},
+								acceptsAlso: [
+									{
+										name: 'span',
+										styles: {
+											'font-family': new RegExp(
+												'("|\'|&qout;|\\W){0,2}Lucida Console("|\'|&qout;|\\W){0,2},' +
+												'("|\'|&qout;|\\W){0,2}Courier New("|\'|&qout;|\\W){0,2},' +
+												'("|\'|&qout;|\\W){0,2}Courier("|\'|&qout;|\\W){0,2},' +
+												'("|\'|&qout;|\\W){0,2}monospace("|\'|&qout;|\\W){0,2}'
+											)
+										}
+									}
+								]
 							}
 						] );
 					} );
@@ -164,6 +203,7 @@ describe( 'FontFamilyEditing', () => {
 					fontFamily: {
 						items: [
 							'Arial',
+							'Lucida Sans Unicode, Lucida Grande, sans-serif',
 							{
 								label: 'My font',
 								model: 'my',
@@ -188,10 +228,17 @@ describe( 'FontFamilyEditing', () => {
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
 		} );
 
-		it( 'should convert fontFamily attribute to configured preset', () => {
+		it( 'should convert fontFamily attribute to configured simple preset', () => {
 			setModelData( doc, '<paragraph>f<$text fontFamily="Arial">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial;">o</span>o</p>' );
+		} );
+
+		it( 'should convert fontFamily attribute to configured complex preset', () => {
+			setModelData( doc, '<paragraph>f<$text fontFamily="Lucida Sans Unicode">o</$text>o</paragraph>' );
+
+			expect( editor.getData() )
+				.to.equal( '<p>f<span style="font-family:\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif;">o</span>o</p>' );
 		} );
 
 		it( 'should convert fontFamily attribute from user defined settings', () => {
@@ -208,6 +255,7 @@ describe( 'FontFamilyEditing', () => {
 					plugins: [ FontFamilyEditing, Paragraph ],
 					fontFamily: {
 						items: [
+							'Lucida Sans Unicode, Lucida Grande, sans-serif',
 							{
 								label: 'My other setting',
 								model: 'my-other',
@@ -288,6 +336,26 @@ describe( 'FontFamilyEditing', () => {
 				'<p>f<span class="text-complex">o</span>o</p>' +
 				'<p>b<span class="text-complex">a</span>r</p>' +
 				'<p>b<span class="text-complex">a</span>z</p>'
+			);
+		} );
+
+		it( 'should convert from various inline style definitions', () => {
+			editor.setData(
+				'<p>f<span style="font-family:\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif;">o</span>o</p>' +
+				'<p>f<span style="font-family:Lucida Sans Unicode, Lucida Grande, sans-serif;">o</span>o</p>' +
+				'<p>f<span style="font-family:&quot;Lucida Sans Unicode&quot;, &quot;Lucida Grande&quot;, sans-serif;">o</span>o</p>'
+			);
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph>[]f<$text fontFamily="Lucida Sans Unicode">o</$text>o</paragraph>' +
+				'<paragraph>f<$text fontFamily="Lucida Sans Unicode">o</$text>o</paragraph>' +
+				'<paragraph>f<$text fontFamily="Lucida Sans Unicode">o</$text>o</paragraph>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<p>f<span style="font-family:\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif;">o</span>o</p>' +
+				'<p>f<span style="font-family:\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif;">o</span>o</p>' +
+				'<p>f<span style="font-family:\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif;">o</span>o</p>'
 			);
 		} );
 	} );
