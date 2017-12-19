@@ -717,42 +717,22 @@ export default class Element extends Node {
 	 * Creates element instance from provided viewElementDefinition.
 	 *
 	 * @param {module:engine/view/viewelementdefinition~ViewElementDefinition} viewElementDefinition
-	 * @returns {Element}
+	 * @returns {module:engine/view/element~Element}
 	 */
-	static fromViewDefinition( viewElementDefinition ) {
-		const attributes = {};
+	static createFromDefinition( viewElementDefinition ) {
+		const element = new this( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attributes ) );
+
+		if ( viewElementDefinition.styles ) {
+			element.setStyle( viewElementDefinition.styles );
+		}
 
 		const classes = viewElementDefinition.classes;
 
 		if ( classes ) {
-			attributes.class = Array.isArray( classes ) ? classes.join( ' ' ) : classes;
+			element.addClass( ... typeof classes === 'string' ? [ classes ] : classes );
 		}
 
-		const stylesObject = viewElementDefinition.styles;
-
-		if ( stylesObject ) {
-			attributes.style = toStylesString( stylesObject );
-		}
-
-		const attributesObject = viewElementDefinition.attributes;
-
-		if ( attributesObject ) {
-			for ( const key in attributesObject ) {
-				attributes[ key ] = attributesObject[ key ];
-			}
-		}
-
-		return new this( viewElementDefinition.name, attributes );
-
-		function toStylesString( stylesObject ) {
-			const styles = [];
-
-			for ( const key in stylesObject ) {
-				styles.push( key + ':' + stylesObject[ key ] );
-			}
-
-			return styles.join( ';' );
-		}
+		return element;
 	}
 
 	/**

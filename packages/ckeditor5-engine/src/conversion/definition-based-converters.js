@@ -50,7 +50,7 @@ export function modelElementToViewContainerElement( definition, dispatchers ) {
 	buildModelConverter()
 		.for( ...dispatchers )
 		.fromElement( modelElement )
-		.toElement( () => ViewContainerElement.fromViewDefinition( viewDefinition ) );
+		.toElement( () => ViewContainerElement.createFromDefinition( viewDefinition ) );
 }
 
 /**
@@ -155,7 +155,7 @@ export function modelAttributeToViewAttributeElement( attributeName, definition,
 				return;
 			}
 
-			return AttributeElement.fromViewDefinition( viewDefinition );
+			return AttributeElement.createFromDefinition( viewDefinition );
 		} );
 }
 

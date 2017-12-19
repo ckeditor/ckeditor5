@@ -1045,7 +1045,7 @@ describe( 'Element', () => {
 
 	describe( 'fromViewDefinition()', () => {
 		it( 'should create element from definition without any attributes', () => {
-			const el = Element.fromViewDefinition( { name: 'p' } );
+			const el = Element.createFromDefinition( { name: 'p' } );
 
 			expect( el ).to.be.an.instanceof( Node );
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
@@ -1054,7 +1054,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element from definition with attributes as plain object', () => {
-			const el = Element.fromViewDefinition( { name: 'p', attributes: { foo: 'bar' } } );
+			const el = Element.createFromDefinition( { name: 'p', attributes: { foo: 'bar' } } );
 
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( count( el.getAttributeKeys() ) ).to.equal( 1 );
@@ -1062,7 +1062,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element from definition with classes as single string', () => {
-			const el = Element.fromViewDefinition( { name: 'p', attributes: { id: 'test' }, classes: 'foo-bar' } );
+			const el = Element.createFromDefinition( { name: 'p', attributes: { id: 'test' }, classes: 'foo-bar' } );
 
 			expect( el._attrs.has( 'class' ) ).to.be.false;
 			expect( el._attrs.has( 'id' ) ).to.be.true;
@@ -1070,7 +1070,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element from definition with classes set as array', () => {
-			const el = Element.fromViewDefinition( { name: 'p', attributes: { id: 'test' }, classes: [ 'one', 'two', 'three' ] } );
+			const el = Element.createFromDefinition( { name: 'p', attributes: { id: 'test' }, classes: [ 'one', 'two', 'three' ] } );
 
 			expect( el._attrs.has( 'class' ) ).to.be.false;
 			expect( el._attrs.has( 'id' ) ).to.be.true;
@@ -1080,7 +1080,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element from definition with styles object', () => {
-			const el = Element.fromViewDefinition( {
+			const el = Element.createFromDefinition( {
 				name: 'p',
 				attributes: { id: 'test' },
 				styles: { one: 'style1', two: 'style2', three: 'url(http://ckeditor.com)' }
