@@ -94,7 +94,7 @@
  * * **`toolbar.items`** – Array of toolbar items names. The components (buttons, dropdowns, etc.) which can be used
  * as toolbar items are defined in `editor.ui.componentFactory` and can be listed using the following snippet:
  *
- *		Array.from( editor.ui.componentFactory.names );
+ *		Array.from( editor.ui.componentFactory.names() );
  *
  *	You can also use `'|'` to create a separator between groups of items:
  *
