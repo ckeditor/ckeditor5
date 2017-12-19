@@ -91,7 +91,7 @@ ClassicEditor
 You can use the following snippet to retrieve all toolbar items available in your editor:
 
 ```js
-Array.from( editor.ui.componentFactory.names );
+Array.from( editor.ui.componentFactory.names() );
 ```
 
 ## Other configuration options
