@@ -15,14 +15,14 @@ import buildViewConverter from './buildviewconverter';
 
 /**
  * Helper for creating model to view converter from model's element
- * to {@link module:engine/view/containerelement~ContainerElement ViewContainerElement}. The `acceptAlso` property is ignored.
+ * to {@link module:engine/view/containerelement~ContainerElement}.
  *
- * You can define conversion as simple model element to view element conversion using simplified definition:
+ * By defining conversion as simple model element to view element conversion using simplified definition:
  *
  *		modelElementToViewContainerElement( {
  *			model: 'heading1',
  *			view: 'h1',
- *		}, [ dispatcher ] );
+ *		}, [ editor.editing.modelToView, editor.data.modelToView ] );
  *
  * Or defining full-flavored view object:
  *
@@ -35,9 +35,9 @@ import buildViewConverter from './buildviewconverter';
  *					data-header: 'level-1',
  *				}
  *			},
- *		}, [ dispatcher ] );
+ *		}, [ editor.editing.modelToView, editor.data.modelToView ] );
  *
- * Above will generate an HTML tag:
+ * Above will generate the following view element:
  *
  *		<h1 class="header article-header" data-header="level-1">...</h1>
  *
@@ -54,7 +54,7 @@ export function modelElementToViewContainerElement( definition, dispatchers ) {
 }
 
 /**
- * Helper for creating view to model converter from view to model element. It will convert also all matched view elements defined in
+ * Helper for creating view to model element converter. It will convert also all matched view elements defined in
  * `acceptAlso` property. The `model` property is used as model element name.
  *
  * Conversion from model to view might be defined as simple one to one conversion:
@@ -70,38 +70,37 @@ export function modelElementToViewContainerElement( definition, dispatchers ) {
  *				attributes: {
  *					'data-heading': 'true'
  *				},
- *				// it might require to define higher priority for elements matched by other features
+ *				// You may need to use a high-priority listener to catch elements
+ *				// which are handled by other (usually – more generic) converters too.
  *				priority: 'high'
  *			}
-  *		}, [ dispatcher ] );
+  *		}, [ editor.data.viewToModel ] );
  *
  * or with `acceptAlso` property to match many elements:
  *
  *		viewToModelElement( {
  *			model: 'heading1',
- *			view: {
- *				name: 'h1'
- *			},
+ *			view: 'h1',
  *			acceptAlso: [
  *				{ name: 'p', attributes: { 'data-heading': 'level1' }, priority: 'high' },
  *				{ name: 'h2', class: 'heading-main' },
  *				{ name: 'div', style: { 'font-weight': 'bold', font-size: '24px' } }
  *			]
- *		}, [ dispatcher ] );
+ *		}, [ editor.data.viewToModel ] );
  *
- *    Above example will convert such existing HTML content:
+ * The above example will convert an existing view elements:
  *
  *		<h1>A heading</h1>
  *		<h2 class="heading-main">Another heading</h2>
  *		<p data-heading="level1">Paragraph-like heading</p>
  *		<div style="font-size:24px; font-weigh:bold;">Another non-semantic header</div>
  *
- * into `heading1` model element so after rendering it the output HTML will be cleaned up:
+ * into `heading1` model elements so in model it will be represented as:
  *
- *		<h1>A heading</h1>
- *		<h1>Another heading</h1>
- *		<h1>Paragraph-like heading</h1>
- *		<h1>Another non-semantic header</h1>
+ *		<heading1>A heading</heading1>
+ *		<heading1>Another heading</heading1>
+ *		<heading1>Paragraph-like heading</heading1>
+ *		<heading1>Another non-semantic header</heading1>
  *
  * @param {module:engine/conversion/definition-based-converters~ConverterDefinition} definition A conversion configuration.
  * @param {Array.<module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher>} dispatchers
@@ -116,18 +115,18 @@ export function viewToModelElement( definition, dispatchers ) {
 
 /**
  * Helper for creating model to view converter from model's attribute
- * to {@link module:engine/view/attributeelement~AttributeElement AttributeElement}. The `acceptAlso` property is ignored.
+ * to {@link module:engine/view/attributeelement~AttributeElement}.
  *
- * You can define conversion as simple model element to view element conversion using simplified definition:
+ * By defining conversion as simple model element to view element conversion using simplified definition:
  *
  *		modelAttributeToViewAttributeElement( 'bold', {
  *			model: 'true',
  *			view: 'strong',
- *		}, [ dispatcher ] );
+ *		}, [ editor.editing.modelToView, editor.data.modelToView ] );
  *
  * Or defining full-flavored view object:
  *
- *		modelAttributeToViewAttributeElement( 'fontSize' {
+ *		modelAttributeToViewAttributeElement( 'fontSize', {
  *			model: 'big',
  *			view: {
  *				name: 'span',
@@ -135,13 +134,13 @@ export function viewToModelElement( definition, dispatchers ) {
  *					'font-size': '1.2em'
  *				}
  *			},
- *		}, [ dispatcher ] );
+ *		}, [ editor.editing.modelToView, editor.data.modelToView ] );
  *
- * Above will generate an HTML tag for model's attribute `fontSize` with a `big` value set:
+ * Above will generate the following view element for model's attribute `fontSize` with a `big` value set:
  *
  *		<span style="font-size:1.2em;">...</span>
  *
- * @param {String} attributeName Attribute name from which convert.
+ * @param {String} attributeName The name of the model attribute which should be converted.
  * @param {module:engine/conversion/definition-based-converters~ConverterDefinition} definition A conversion configuration.
  * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
  */
@@ -178,7 +177,7 @@ export function modelAttributeToViewAttributeElement( attributeName, definition,
  *					'font-size': '1.2em'
  *				}
  *			}
-  *		}, [ dispatcher ] );
+ *		}, [ editor.data.viewToModel ] );
  *
  * or with `acceptAlso` property to match many elements:
  *
@@ -193,25 +192,27 @@ export function modelAttributeToViewAttributeElement( attributeName, definition,
  *				{ name: 'span', class: [ 'font', 'font-huge' ] },
  *				{ name: 'span', style: { font-size: '18px' } }
  *			]
- *		}, [ dispatcher ] );
+ *		}, [ editor.data.viewToModel ] );
  *
- *    Above example will convert such existing HTML content:
+ * The above example will convert an existing view elements:
  *
- *		<p>An example text with some big elements:
+ *		<p>
+ *			An example text with some big elements:
  *			<span class="text-big>one</span>,
  *			<span data-size="big>two</span>,
  *			<span class="font font-huge>three</span>,
  *			<span style="font-size:18px>four</span>
- *		<p>
+ *		</p>
  *
- * into `fontSize` model attribute with 'big' value set so after rendering it the output HTML will be cleaned up:
+ * into `fontSize` model attribute with 'big' value set so it will be represented:
  *
- *		<p>An example text with some big elements:
- *			<span class="text-big>one</span>,
- *			<span class="text-big>two</span>,
- *			<span class="text-big>three</span>,
- *			<span class="text-big>four</span>
- *		<p>
+ *		<paragraph>
+ *			An example text with some big elements:
+ *			<$text fontSize="big>one</$text>,
+ *			<$text fontSize="big>two</$text>,
+ *			<$text fontSize="big>three</$text>,
+ *			<$text fontSize="big>four</$text>
+ *		</paragraph>
  *
  * @param {String} attributeName Attribute name to which convert.
  * @param {module:engine/conversion/definition-based-converters~ConverterDefinition} definition A conversion configuration.
@@ -293,7 +294,11 @@ function definitionToPattern( viewDefinition ) {
 }
 
 /**
- * Defines conversion details.
+ * Defines conversion details. It is used bt configuration based converters:
+ * - {@link module:engine/conversion/definition-based-converters~modelAttributeToViewAttributeElement}
+ * - {@link module:engine/conversion/definition-based-converters~modelElementToViewContainerElement}
+ * - {@link module:engine/conversion/definition-based-converters~viewToModelAttribute}
+ * - {@link module:engine/conversion/definition-based-converters~viewToModelElement}
  *
  * @typedef {Object} ConverterDefinition
  * @property {String} model Defines to model conversion. When using to element conversion
