@@ -239,7 +239,7 @@ function parseConverterDefinition( definition ) {
 
 	const viewDefinition = typeof view == 'string' ? { name: view } : view;
 
-	const viewDefinitions = definition.acceptsAlso ? definition.acceptsAlso : [];
+	const viewDefinitions = Array.from( definition.acceptsAlso ? definition.acceptsAlso : [] );
 
 	viewDefinitions.push( viewDefinition );
 
