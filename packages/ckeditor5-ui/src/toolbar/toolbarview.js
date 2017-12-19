@@ -144,7 +144,7 @@ export default class ToolbarView extends View {
 				 *
 				 * You can use the following snippet to retrieve all available toolbar items:
 				 *
-				 *		Array.from( editor.ui.componentFactory.names );
+				 *		Array.from( editor.ui.componentFactory.names() );
 				 *
 				 * @error toolbarview-item-unavailable
 				 * @param {String} name The name of the component.
