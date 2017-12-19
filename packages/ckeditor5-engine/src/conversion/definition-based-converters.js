@@ -294,7 +294,7 @@ function definitionToPattern( viewDefinition ) {
 }
 
 /**
- * Defines conversion details. It is used bt configuration based converters:
+ * Defines conversion details. It is used in configuration based converters:
  * - {@link module:engine/conversion/definition-based-converters~modelAttributeToViewAttributeElement}
  * - {@link module:engine/conversion/definition-based-converters~modelElementToViewContainerElement}
  * - {@link module:engine/conversion/definition-based-converters~viewToModelAttribute}
@@ -308,7 +308,7 @@ function definitionToPattern( viewDefinition ) {
  * ({@link module:engine/conversion/definition-based-converters~viewToModelAttribute}
  * and {@link module:engine/conversion/definition-based-converters~modelAttributeToViewAttributeElement})
  * it defines attribute value to which it is converted.
- * @property {String|module:engine/view/viewelementdefinition~ViewElementDefinition} view Defines model to view conversion and is also used
+ * @property {module:engine/view/viewelementdefinition~ViewElementDefinition} view Defines model to view conversion and is also used
  * in view to model conversion pipeline.
  * @property {Array.<module:engine/view/viewelementdefinition~ViewElementDefinition>} acceptAlso An array with all matched elements that
  * view to model conversion should also accepts.
