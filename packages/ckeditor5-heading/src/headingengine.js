@@ -12,7 +12,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import {
 	modelElementToViewContainerElement,
 	viewToModelElement
-} from '@ckeditor/ckeditor5-engine/src/conversion/configurationdefinedconverters';
+} from '@ckeditor/ckeditor5-engine/src/conversion/definition-based-converters';
 
 import HeadingCommand from './headingcommand';
 
