@@ -10,14 +10,16 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import Model from '@ckeditor/ckeditor5-ui/src/model';
+import createButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/button/createbuttondropdown';
+
+import { commandNameFromStyle } from './alignmentcommand';
+import { isSupported } from './alignmentediting';
 
 import alignLeftIcon from '../theme/icons/align-left.svg';
 import alignRightIcon from '../theme/icons/align-right.svg';
 import alignCenterIcon from '../theme/icons/align-center.svg';
 import alignJustifyIcon from '../theme/icons/align-justify.svg';
-import AlignmentEditing, { isSupported } from './alignmentediting';
-import createButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/button/createbuttondropdown';
-import Model from '../../ckeditor5-ui/src/model';
 
 const icons = new Map( [
 	[ 'left', alignLeftIcon ],
@@ -40,10 +42,10 @@ export default class AlignmentUI extends Plugin {
 	 * The following localized titles corresponding with
 	 * {@link module:alignment/alignmentediting~AlignmentEditingConfig#styles} are available:
 	 *
-	 * * `'Left'`,
-	 * * `'Right'`,
-	 * * `'Center'`,
-	 * * `'Justify'`
+	 * * `'left'`,
+	 * * `'right'`,
+	 * * `'center'`,
+	 * * `'justify'`
 	 *
 	 * @readonly
 	 * @type {Object.<String,String>}
@@ -57,13 +59,6 @@ export default class AlignmentUI extends Plugin {
 			'center': t( 'Align center' ),
 			'justify': t( 'Justify' )
 		};
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ AlignmentEditing ];
 	}
 
 	/**
@@ -88,7 +83,7 @@ export default class AlignmentUI extends Plugin {
 
 		componentFactory.add( 'alignmentDropdown', locale => {
 			const buttons = styles.map( style => {
-				return componentFactory.create( AlignmentEditing.commandName( style ) );
+				return componentFactory.create( commandNameFromStyle( style ) );
 			} );
 
 			const model = new Model( {
@@ -101,9 +96,7 @@ export default class AlignmentUI extends Plugin {
 				buttons
 			} );
 
-			const dropdown = createButtonDropdown( model, locale );
-
-			return dropdown;
+			return createButtonDropdown( model, locale );
 		} );
 	}
 
@@ -116,7 +109,7 @@ export default class AlignmentUI extends Plugin {
 	_addButton( style ) {
 		const editor = this.editor;
 
-		const commandName = AlignmentEditing.commandName( style );
+		const commandName = commandNameFromStyle( style );
 		const command = editor.commands.get( commandName );
 
 		editor.ui.componentFactory.add( commandName, locale => {
