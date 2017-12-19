@@ -1043,7 +1043,7 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( 'fromViewDefinition()', () => {
+	describe( 'createFromDefinition()', () => {
 		it( 'should create element from definition without any attributes', () => {
 			const el = Element.createFromDefinition( { name: 'p' } );
 
@@ -1054,7 +1054,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element from definition with attributes as plain object', () => {
-			const el = Element.createFromDefinition( { name: 'p', attributes: { foo: 'bar' } } );
+			const el = Element.createFromDefinition( { name: 'p', attribute: { foo: 'bar' } } );
 
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( count( el.getAttributeKeys() ) ).to.equal( 1 );
@@ -1062,7 +1062,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element from definition with classes as single string', () => {
-			const el = Element.createFromDefinition( { name: 'p', attributes: { id: 'test' }, classes: 'foo-bar' } );
+			const el = Element.createFromDefinition( { name: 'p', attribute: { id: 'test' }, class: 'foo-bar' } );
 
 			expect( el._attrs.has( 'class' ) ).to.be.false;
 			expect( el._attrs.has( 'id' ) ).to.be.true;
@@ -1070,7 +1070,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element from definition with classes set as array', () => {
-			const el = Element.createFromDefinition( { name: 'p', attributes: { id: 'test' }, classes: [ 'one', 'two', 'three' ] } );
+			const el = Element.createFromDefinition( { name: 'p', attribute: { id: 'test' }, class: [ 'one', 'two', 'three' ] } );
 
 			expect( el._attrs.has( 'class' ) ).to.be.false;
 			expect( el._attrs.has( 'id' ) ).to.be.true;
@@ -1079,11 +1079,11 @@ describe( 'Element', () => {
 			expect( el._classes.has( 'three' ) ).to.be.true;
 		} );
 
-		it( 'should create element from definition with styles object', () => {
+		it( 'should create element from definition with style object', () => {
 			const el = Element.createFromDefinition( {
 				name: 'p',
-				attributes: { id: 'test' },
-				styles: { one: 'style1', two: 'style2', three: 'url(http://ckeditor.com)' }
+				attribute: { id: 'test' },
+				style: { one: 'style1', two: 'style2', three: 'url(http://ckeditor.com)' }
 			} );
 
 			expect( el._attrs.has( 'style' ) ).to.be.false;

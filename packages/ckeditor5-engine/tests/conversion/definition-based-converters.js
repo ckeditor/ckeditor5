@@ -95,7 +95,7 @@ function viewToString( item ) {
 	return result;
 }
 
-describe( 'Configuration defined converters', () => {
+describe( 'definition-based-converters', () => {
 	let model, dispatcher, modelDoc, modelRoot, viewRoot, controller, additionalData, schema;
 
 	beforeEach( () => {
@@ -151,28 +151,28 @@ describe( 'Configuration defined converters', () => {
 				testModelConversion( { model: 'bar', view: { name: 'strong' } }, '<div><strong>foo</strong></div>' );
 			} );
 
-			it( 'using passed view element object with styles object', () => {
+			it( 'using passed view element object with style object', () => {
 				testModelConversion( {
 					model: 'bar',
-					view: { name: 'span', styles: { 'font-weight': 'bold' } }
+					view: { name: 'span', style: { 'font-weight': 'bold' } }
 				}, '<div><span style="font-weight:bold;">foo</span></div>' );
 			} );
 
 			it( 'using passed view element object with class string', () => {
-				testModelConversion( { model: 'bar', view: { name: 'span', classes: 'foo' } }, '<div><span class="foo">foo</span></div>' );
+				testModelConversion( { model: 'bar', view: { name: 'span', class: 'foo' } }, '<div><span class="foo">foo</span></div>' );
 			} );
 
 			it( 'using passed view element object with class array', () => {
 				testModelConversion( {
 					model: 'bar',
-					view: { name: 'span', classes: [ 'foo', 'foo-bar' ] }
+					view: { name: 'span', class: [ 'foo', 'foo-bar' ] }
 				}, '<div><span class="foo foo-bar">foo</span></div>' );
 			} );
 
 			it( 'using passed view element object with attributes', () => {
 				testModelConversion( {
 					model: 'bar',
-					view: { name: 'span', attributes: { 'data-foo': 'bar' } }
+					view: { name: 'span', attribute: { 'data-foo': 'bar' } }
 				}, '<div><span data-foo="bar">foo</span></div>' );
 			} );
 
@@ -222,7 +222,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert using class string', () => {
-				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'span', classes: 'foo' } }, [ dispatcher ] );
+				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'span', class: 'foo' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewAttributeElement( 'span', { class: 'foo' }, new ViewText( 'foo' ) ), additionalData
@@ -231,10 +231,10 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
 			} );
 
-			it( 'should convert using classes array', () => {
+			it( 'should convert using class array', () => {
 				viewToModelAttribute( 'foo', {
 					model: 'bar',
-					view: { name: 'span', classes: [ 'foo', 'bar' ] }
+					view: { name: 'span', class: [ 'foo', 'bar' ] }
 				}, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
@@ -244,10 +244,10 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
 			} );
 
-			it( 'should convert using styles object', () => {
+			it( 'should convert using style object', () => {
 				viewToModelAttribute( 'foo', {
 					model: 'bar',
-					view: { name: 'span', styles: { 'font-weight': 'bold' } }
+					view: { name: 'span', style: { 'font-weight': 'bold' } }
 				}, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
@@ -260,7 +260,7 @@ describe( 'Configuration defined converters', () => {
 			it( 'should convert using attributes object', () => {
 				viewToModelAttribute( 'foo', {
 					model: 'bar',
-					view: { name: 'span', attributes: { 'data-foo': 'bar' } }
+					view: { name: 'span', attribute: { 'data-foo': 'bar' } }
 				}, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
@@ -275,8 +275,8 @@ describe( 'Configuration defined converters', () => {
 					model: 'bar',
 					view: 'strong',
 					acceptsAlso: [
-						{ name: 'span', classes: [ 'foo', 'bar' ] },
-						{ name: 'span', attributes: { 'data-foo': 'bar' } }
+						{ name: 'span', class: [ 'foo', 'bar' ] },
+						{ name: 'span', attribute: { 'data-foo': 'bar' } }
 					]
 				}, [ dispatcher ] );
 
@@ -326,28 +326,28 @@ describe( 'Configuration defined converters', () => {
 				testModelConversion( { model: 'foo', view: { name: 'code' } }, '<code>bar</code>' );
 			} );
 
-			it( 'using passed view element object with styles object', () => {
+			it( 'using passed view element object with style object', () => {
 				testModelConversion( {
 					model: 'foo',
-					view: { name: 'span', styles: { 'font-weight': 'bold' } }
+					view: { name: 'span', style: { 'font-weight': 'bold' } }
 				}, '<span style="font-weight:bold;">bar</span>' );
 			} );
 
 			it( 'using passed view element object with class string', () => {
-				testModelConversion( { model: 'foo', view: { name: 'span', classes: 'foo' } }, '<span class="foo">bar</span>' );
+				testModelConversion( { model: 'foo', view: { name: 'span', class: 'foo' } }, '<span class="foo">bar</span>' );
 			} );
 
 			it( 'using passed view element object with class array', () => {
 				testModelConversion( {
 					model: 'foo',
-					view: { name: 'span', classes: [ 'foo', 'foo-bar' ] }
+					view: { name: 'span', class: [ 'foo', 'foo-bar' ] }
 				}, '<span class="foo foo-bar">bar</span>' );
 			} );
 
 			it( 'using passed view element object with attributes', () => {
 				testModelConversion( {
 					model: 'foo',
-					view: { name: 'span', attributes: { 'data-foo': 'bar' } }
+					view: { name: 'span', attribute: { 'data-foo': 'bar' } }
 				}, '<span data-foo="bar">bar</span>' );
 			} );
 		} );
@@ -360,7 +360,7 @@ describe( 'Configuration defined converters', () => {
 				schema.registerItem( 'bar', '$block' );
 				schema.registerItem( 'baz', '$block' );
 
-				schema.allow( { name: '$inline', attributes: [ 'foo' ], inside: '$root' } );
+				schema.allow( { name: '$inline', attribute: [ 'foo' ], inside: '$root' } );
 				schema.allow( { name: '$text', inside: '$inline' } );
 
 				dispatcher.on( 'text', convertText() );
@@ -387,7 +387,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert using class string', () => {
-				viewToModelElement( { model: 'bar', view: { name: 'span', classes: 'foo' } }, [ dispatcher ] );
+				viewToModelElement( { model: 'bar', view: { name: 'span', class: 'foo' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewElement( 'span', { class: 'foo' }, new ViewText( 'foo' ) ), additionalData
@@ -396,8 +396,8 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
 			} );
 
-			it( 'should convert using classes array', () => {
-				viewToModelElement( { model: 'bar', view: { name: 'span', classes: [ 'foo', 'bar' ] } }, [ dispatcher ] );
+			it( 'should convert using class array', () => {
+				viewToModelElement( { model: 'bar', view: { name: 'span', class: [ 'foo', 'bar' ] } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewElement( 'span', { class: 'foo bar' }, new ViewText( 'foo' ) ), additionalData
@@ -406,8 +406,8 @@ describe( 'Configuration defined converters', () => {
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
 			} );
 
-			it( 'should convert using styles object', () => {
-				viewToModelElement( { model: 'bar', view: { name: 'span', styles: { 'font-weight': 'bold' } } }, [ dispatcher ] );
+			it( 'should convert using style object', () => {
+				viewToModelElement( { model: 'bar', view: { name: 'span', style: { 'font-weight': 'bold' } } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewElement( 'span', { style: 'font-weight:bold' }, new ViewText( 'foo' ) ), additionalData
@@ -417,7 +417,7 @@ describe( 'Configuration defined converters', () => {
 			} );
 
 			it( 'should convert using attributes object', () => {
-				viewToModelElement( { model: 'bar', view: { name: 'span', attributes: { 'data-foo': 'bar' } } }, [ dispatcher ] );
+				viewToModelElement( { model: 'bar', view: { name: 'span', attribute: { 'data-foo': 'bar' } } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
 					new ViewElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), additionalData
@@ -431,8 +431,8 @@ describe( 'Configuration defined converters', () => {
 					model: 'bar',
 					view: 'strong',
 					acceptsAlso: [
-						{ name: 'span', classes: [ 'foo', 'bar' ] },
-						{ name: 'span', attributes: { 'data-foo': 'bar' } }
+						{ name: 'span', class: [ 'foo', 'bar' ] },
+						{ name: 'span', attribute: { 'data-foo': 'bar' } }
 					]
 				}, [ dispatcher ] );
 

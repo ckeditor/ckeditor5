@@ -619,7 +619,7 @@ export default class Element extends Node {
 	 * Provided patterns should be compatible with {@link module:engine/view/matcher~Matcher Matcher} as it is used internally.
 	 *
 	 * @see module:engine/view/matcher~Matcher
-	 * @param {Object|String|RegExp|Function} patterns Patterns used to match correct ancestor.
+	 * @param {module:engine/view/matcher~Pattern} patterns Patterns used to match correct ancestor.
 	 * See {@link module:engine/view/matcher~Matcher}.
 	 * @returns {module:engine/view/element~Element|null} Found element or `null` if no matching ancestor was found.
 	 */
@@ -720,13 +720,13 @@ export default class Element extends Node {
 	 * @returns {module:engine/view/element~Element}
 	 */
 	static createFromDefinition( viewElementDefinition ) {
-		const element = new this( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attributes ) );
+		const element = new this( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attribute ) );
 
-		if ( viewElementDefinition.styles ) {
-			element.setStyle( viewElementDefinition.styles );
+		if ( viewElementDefinition.style ) {
+			element.setStyle( viewElementDefinition.style );
 		}
 
-		const classes = viewElementDefinition.classes;
+		const classes = viewElementDefinition.class;
 
 		if ( classes ) {
 			element.addClass( ... typeof classes === 'string' ? [ classes ] : classes );

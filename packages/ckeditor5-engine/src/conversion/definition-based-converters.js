@@ -31,7 +31,7 @@ import buildViewConverter from './buildviewconverter';
  *			view: {
  *				name: 'h1',
  *				class: [ 'header', 'article-header' ],
- *				attributes: {
+ *				attribute: {
  *					data-header: 'level-1',
  *				}
  *			},
@@ -67,7 +67,7 @@ export function modelElementToViewContainerElement( definition, dispatchers ) {
  *			model: 'heading1',
  *			view: {
  *				name: 'p',
- *				attributes: {
+ *				attribute: {
  *					'data-heading': 'true'
  *				},
  *				// You may need to use a high-priority listener to catch elements
@@ -82,7 +82,7 @@ export function modelElementToViewContainerElement( definition, dispatchers ) {
  *			model: 'heading1',
  *			view: 'h1',
  *			acceptAlso: [
- *				{ name: 'p', attributes: { 'data-heading': 'level1' }, priority: 'high' },
+ *				{ name: 'p', attribute: { 'data-heading': 'level1' }, priority: 'high' },
  *				{ name: 'h2', class: 'heading-main' },
  *				{ name: 'div', style: { 'font-weight': 'bold', font-size: '24px' } }
  *			]
@@ -130,7 +130,7 @@ export function viewToModelElement( definition, dispatchers ) {
  *			model: 'big',
  *			view: {
  *				name: 'span',
- *				styles: {
+ *				style: {
  *					'font-size': '1.2em'
  *				}
  *			},
@@ -188,7 +188,7 @@ export function modelAttributeToViewAttributeElement( attributeName, definition,
  *				class: 'text-big'
  *			},
  *			acceptAlso: [
- *				{ name: 'span', attributes: { 'data-size': 'big' } },
+ *				{ name: 'span', attribute: { 'data-size': 'big' } },
  *				{ name: 'span', class: [ 'font', 'font-huge' ] },
  *				{ name: 'span', style: { font-size: '18px' } }
  *			]
@@ -256,7 +256,7 @@ function prepareViewConverter( dispatchers, viewDefinitions ) {
 	const converter = buildViewConverter().for( ...dispatchers );
 
 	for ( const viewDefinition of viewDefinitions ) {
-		converter.from( definitionToPattern( viewDefinition ) );
+		converter.from( Object.assign( {}, viewDefinition ) );
 
 		if ( viewDefinition.priority ) {
 			converter.withPriority( viewDefinition.priority );
@@ -264,33 +264,6 @@ function prepareViewConverter( dispatchers, viewDefinitions ) {
 	}
 
 	return converter;
-}
-
-// Converts viewDefinition to a matcher pattern.
-//
-// @param {module:engine/view/viewelementdefinition~ViewElementDefinition} viewDefinition
-// @returns {module:engine/view/matcher~Pattern}
-function definitionToPattern( viewDefinition ) {
-	const name = viewDefinition.name;
-	const classes = viewDefinition.classes;
-	const styles = viewDefinition.styles;
-	const attributes = viewDefinition.attributes;
-
-	const pattern = { name };
-
-	if ( classes ) {
-		pattern.class = classes;
-	}
-
-	if ( styles ) {
-		pattern.style = styles;
-	}
-
-	if ( attributes ) {
-		pattern.attribute = attributes;
-	}
-
-	return pattern;
 }
 
 /**
