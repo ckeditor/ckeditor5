@@ -31,7 +31,7 @@
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#9b8b82d",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#944b204",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#f75441c",
-    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#d29307a",
+    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#bfa55e9",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#8a62ddc"
   }
 }
