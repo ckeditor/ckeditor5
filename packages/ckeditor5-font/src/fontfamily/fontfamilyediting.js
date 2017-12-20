@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import {
 	modelAttributeToViewAttributeElement,
 	viewToModelAttribute
-} from '@ckeditor/ckeditor5-engine/src/conversion/configurationdefinedconverters';
+} from '@ckeditor/ckeditor5-engine/src/conversion/definition-based-converters';
 
 /**
  * The Font Family Editing feature.
@@ -125,14 +125,14 @@ function generateFontPreset( font ) {
 		model: firstFontName,
 		view: {
 			name: 'span',
-			styles: {
+			style: {
 				'font-family': cssFontNames.join( ', ' )
 			}
 		},
 		acceptsAlso: [
 			{
 				name: 'span',
-				styles: {
+				style: {
 					'font-family': fontFamilyRegexp
 				}
 			}

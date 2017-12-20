@@ -80,7 +80,7 @@ describe( 'FontFamilyEditing', () => {
 								model: 'comic',
 								view: {
 									name: 'span',
-									styles: {
+									style: {
 										'font-family': 'Comic Sans'
 									}
 								}
@@ -99,7 +99,7 @@ describe( 'FontFamilyEditing', () => {
 							model: 'comic',
 							view: {
 								name: 'span',
-								styles: {
+								style: {
 									'font-family': 'Comic Sans'
 								}
 							}
@@ -132,14 +132,14 @@ describe( 'FontFamilyEditing', () => {
 								model: 'Arial',
 								view: {
 									name: 'span',
-									styles: {
+									style: {
 										'font-family': 'Arial'
 									}
 								},
 								acceptsAlso: [
 									{
 										name: 'span',
-										styles: {
+										style: {
 											'font-family': new RegExp( '("|\'|&qout;|\\W){0,2}Arial("|\'|&qout;|\\W){0,2}' )
 										}
 									}
@@ -150,14 +150,14 @@ describe( 'FontFamilyEditing', () => {
 								model: 'Comic Sans MS',
 								view: {
 									name: 'span',
-									styles: {
+									style: {
 										'font-family': '\'Comic Sans MS\', sans-serif'
 									}
 								},
 								acceptsAlso: [
 									{
 										name: 'span',
-										styles: {
+										style: {
 											'font-family': new RegExp(
 												'("|\'|&qout;|\\W){0,2}Comic Sans MS("|\'|&qout;|\\W){0,2},' +
 												'("|\'|&qout;|\\W){0,2}sans-serif("|\'|&qout;|\\W){0,2}'
@@ -171,14 +171,14 @@ describe( 'FontFamilyEditing', () => {
 								model: 'Lucida Console',
 								view: {
 									name: 'span',
-									styles: {
+									style: {
 										'font-family': '\'Lucida Console\', \'Courier New\', Courier, monospace'
 									}
 								},
 								acceptsAlso: [
 									{
 										name: 'span',
-										styles: {
+										style: {
 											'font-family': new RegExp(
 												'("|\'|&qout;|\\W){0,2}Lucida Console("|\'|&qout;|\\W){0,2},' +
 												'("|\'|&qout;|\\W){0,2}Courier New("|\'|&qout;|\\W){0,2},' +
@@ -209,7 +209,7 @@ describe( 'FontFamilyEditing', () => {
 								model: 'my',
 								view: {
 									name: 'mark',
-									classes: 'my-style'
+									class: 'my-style'
 								}
 							}
 						]
@@ -261,7 +261,7 @@ describe( 'FontFamilyEditing', () => {
 								model: 'my-other',
 								view: {
 									name: 'span',
-									styles: { 'font-family': 'Other' }
+									style: { 'font-family': 'Other' }
 								}
 							},
 							{
@@ -269,8 +269,8 @@ describe( 'FontFamilyEditing', () => {
 								model: 'my',
 								view: {
 									name: 'mark',
-									styles: { 'font-family': 'Verdana' },
-									classes: 'my-style'
+									style: { 'font-family': 'Verdana' },
+									class: 'my-style'
 								}
 							},
 							{
@@ -278,11 +278,11 @@ describe( 'FontFamilyEditing', () => {
 								model: 'complex',
 								view: {
 									name: 'span',
-									classes: [ 'text-complex' ]
+									class: [ 'text-complex' ]
 								},
 								acceptsAlso: [
-									{ name: 'span', styles: { 'font-family': 'Arial' } },
-									{ name: 'span', styles: { 'font-family': 'Arial,sans-serif' } },
+									{ name: 'span', style: { 'font-family': 'Arial' } },
+									{ name: 'span', style: { 'font-family': 'Arial,sans-serif' } },
 									{ name: 'span', attributes: { 'data-font': 'Arial' } }
 								]
 							}
