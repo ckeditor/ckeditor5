@@ -13,6 +13,8 @@ import {
 	viewToModelAttribute
 } from '@ckeditor/ckeditor5-engine/src/conversion/definition-based-converters';
 
+import FontSizeCommand from './fontsizecommand';
+
 /**
  * The Font Size Editing feature.
  *
@@ -41,6 +43,11 @@ export default class FontSizeEditing extends Plugin {
 		const editing = editor.editing;
 
 		for ( const item of this.configuredItems ) {
+			if ( item.model === 'normal' ) {
+				editor.commands.add( 'font-size:normal', new FontSizeCommand( editor ) );
+				continue;
+			}
+
 			// Covert view to model.
 			viewToModelAttribute( 'fontSize', item, [ data.viewToModel ] );
 
@@ -48,6 +55,7 @@ export default class FontSizeEditing extends Plugin {
 			modelAttributeToViewAttributeElement( 'fontSize', item, [ data.modelToView, editing.modelToView ] );
 
 			// Add command.
+			editor.commands.add( 'font-size:' + item.model, new FontSizeCommand( editor, item.model ) );
 		}
 	}
 
@@ -89,7 +97,7 @@ export default class FontSizeEditing extends Plugin {
 
 const namedPresets = {
 	tiny: {
-		label: 'Tiny',
+		title: 'Tiny',
 		model: 'text-tiny',
 		view: {
 			name: 'span',
@@ -97,7 +105,7 @@ const namedPresets = {
 		}
 	},
 	small: {
-		label: 'Small',
+		title: 'Small',
 		model: 'text-small',
 		view: {
 			name: 'span',
@@ -105,7 +113,7 @@ const namedPresets = {
 		}
 	},
 	big: {
-		label: 'Big',
+		title: 'Big',
 		model: 'text-big',
 		view: {
 			name: 'span',
@@ -113,7 +121,7 @@ const namedPresets = {
 		}
 	},
 	huge: {
-		label: 'Huge',
+		title: 'Huge',
 		model: 'text-huge',
 		view: {
 			name: 'span',
@@ -134,6 +142,13 @@ function getItemDefinition( item ) {
 		return item;
 	}
 
+	if ( item === 'normal' ) {
+		return {
+			model: 'normal',
+			title: 'Normal'
+		};
+	}
+
 	// At this stage we probably have numerical value to generate a preset so parse it's value.
 	const sizePreset = parseInt( item ); // TODO: Should we parse floats? 🤔
 
@@ -150,7 +165,7 @@ function generatePixelPreset( size ) {
 	const sizeName = String( size );
 
 	return {
-		label: sizeName,
+		title: sizeName,
 		model: sizeName,
 		view: {
 			name: 'span',
@@ -166,7 +181,7 @@ function generatePixelPreset( size ) {
  *
  * @typedef {Object} module:font/fontsize/fontsizeediting~FontSizeOption
  *
- * @property {String} label TODO me
+ * @property {String} title TODO me
  * @property {String} model TODO me
  * @property {module:engine/view/viewelementdefinition~ViewElementDefinition} view View element configuration.
  */
