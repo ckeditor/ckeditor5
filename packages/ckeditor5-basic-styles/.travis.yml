@@ -3,22 +3,26 @@ dist: trusty
 addons:
   apt:
     sources:
-      - google-chrome
+    - google-chrome
     packages:
-      - google-chrome-stable
+    - google-chrome-stable
 language: node_js
 node_js:
-  - "6"
+- '6'
 cache:
-  - node_modules
+- node_modules
 before_install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 install:
-  - npm install @ckeditor/ckeditor5-dev-tests
-  - ckeditor5-dev-tests-install-dependencies
+- npm install @ckeditor/ckeditor5-dev-tests
+- ckeditor5-dev-tests-install-dependencies
 script:
-  - ckeditor5-dev-tests-travis
+- ckeditor5-dev-tests-travis
 after_success:
-  - codeclimate-test-reporter < coverage/lcov.info
-  - ckeditor5-dev-tests-save-revision
+- codeclimate-test-reporter < coverage/lcov.info
+- ckeditor5-dev-tests-save-revision
+env:
+  global:
+  - secure: Fj33HYfPjfCq+P175FR2n69f1DgpxmRgm9UYsQO9BNHfG/4DQ0dcB1a+mgWijYiy0gv7CnTsFJ1LN5I+HN+x9FJx+m5ShxDXySu5mIXG4h3CW6O+21cgU5B9hqL/Z0fuZxMwfc/q/bv0ol/xpRz/0PZF3UKtnqSUEHnMkIKSa+AJx1b0rFWN+03/Q9vezVMNaUqdkuBJO/okXEuZltjvJtYWVIN4jPh9x4ZfGWWBWp2aPtr+PWrJrtnwrCCHCjywj3Zgp1oKuob7fkwJyBqC7gXsJjybpSrUjaQoxqroUEMHgbMtbW7iwWlNtUcTxxVj3XHl2i/lS5PCkv0NG3lvmatg6XDjEGfehLoHtJM8AobD4NDZIhcKX6zMyOx0hssvGOKcrarbxjZLGlGegT5kjKXrF6E3HdRib1QCRNp+uFWngJMZE8KU/4s2mA3/TgNwwrjkZZjG2HnbkN9SLW+89jA/ih2S1z3Olj1MMZMQKe1A+eXmERK8xHW0bP5wSHSegj7gVa4ZlVmxv4bUnGXi6hT9NGASYRYHT+MD3nOxAzJa5lmK4LT7ygtrpvPWyWTZMg/0K5oPQULQ2ILcGdsSagcaw8XZ3vJ8AsBv3HEUyOZTpK9swM4egf3Uli9LK8RMOsSmBgekjo+SRK5w1tBI/cU6NSQ3zwYMfYBGSYCr09c=
+  - secure: sXPKlnoggLs18TICVHaewd94Un1hDnk3BKNo6bPBDhIBeIMEVq39nF/KRsBqstvQYkP+iZP1EuR/n8Tha5pv9CGVIMJNC4i+GMzu+lpYgIfPx47GKyq2YD1ETyXH7qQxpg0s9ICHLdTTqvIObX+ZzdaqxIRaXDNjWpW0LY97RbQg1X0Yxf/MQwZ9wDeaht9fhROKOdBWNZryHL6hOjRE6D3W7ywEtZRqscytMfrhInDiWcWnWa0aTRSD8XqZ4bwMpLseGz5KPs9KUN7JtyDXEpFq1MzNQGWDk8aKls3KBXWOshKAYxRdmlG252gwCoGWS9j6Cj+ZXV0cpHcjukAjGIxrD1fqkBB+zPuAGNNltVqDiJzd1xoX+KeDpN4CcZCUrgbaz0GQ2GEmxakpH9mi7WDfngFDKOSnodEvt0yYxqfQJbcvyHKL+BlwY0Ip9xcwXTe5LDo7BOKQ/w/Pr2tPmOTMQ+IlR0cIacdknrbURNJPR0MaPyLosUpKn4SqWmGTxz6DXhP/e1HUaObSa3WdjroryKO1PHJ0oJ6Qep669k/yWl2oRJquGFg5ys4iCtBxObwkwhFTuikCeIPI55+4o8yh96jiVAsMVito8xphSI9T6Z2mf5zoJfSgrQ+nudnROpjXYxs8uwRSFVuXXL16Ja+BIBGC7fnf2cQVsHMomvE=
