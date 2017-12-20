@@ -5,10 +5,11 @@
 
 import FontSize from './../src/fontsize';
 import FontSizeEditing from './../src/fontsize/fontsizeediting';
+import FontSizeUI from './../src/fontsize/fontsizeui';
 
 describe( 'FontSize', () => {
-	it( 'requires FontSizeEditing', () => {
-		expect( FontSize.requires ).to.deep.equal( [ FontSizeEditing ] );
+	it( 'requires FontSizeEditing & FontSizeUI', () => {
+		expect( FontSize.requires ).to.deep.equal( [ FontSizeEditing, FontSizeUI ] );
 	} );
 
 	it( 'defines plugin name', () => {
