@@ -1,6 +1,7 @@
 sudo: required
 dist: trusty
 addons:
+  firefox: "latest"p
   apt:
     sources:
     - google-chrome
