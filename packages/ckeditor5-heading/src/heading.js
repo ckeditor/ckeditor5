@@ -162,13 +162,16 @@ function getCommandsBindingTargets( commands, attribute ) {
 }
 
 /**
- * Heading option descriptor.
+ * Heading option descriptor. Compatible with {@link module:engine/conversion/definition-based-converters~ConverterDefinition}.
  *
  * @typedef {Object} module:heading/heading~HeadingOption
  * @property {String} model Element's name in the model.
- * @property {String} view The name of the view element that will be used to represent the model element in the view.
+ * @property {module:engine/view/viewelementdefinition~ViewElementDefinition} view The name of the view element
+ * or {@link module:engine/view/viewelementdefinition~ViewElementDefinition} that will be used to represent the model element in the view.
  * @property {String} title The user-readable title of the option.
  * @property {String} class The class which will be added to the dropdown item representing this option.
+ * @property {Array.<module:engine/view/viewelementdefinition~ViewElementDefinition>} acceptAlso An array with all matched elements that
+ * view to model conversion should also accept.
  */
 
 /**
