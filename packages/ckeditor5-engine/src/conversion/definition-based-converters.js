@@ -14,17 +14,17 @@ import buildModelConverter from './buildmodelconverter';
 import buildViewConverter from './buildviewconverter';
 
 /**
- * Helper for creating model to view converter from model's element
- * to {@link module:engine/view/containerelement~ContainerElement}.
+ * Helper for creating a model element to {@link module:engine/view/containerelement~ContainerElement view container element}
+ * converters.
  *
- * By defining conversion as simple model element to view element conversion using simplified definition:
+ * You can creater a converter by using a simplified converter definition:
  *
  *		modelElementToViewContainerElement( {
  *			model: 'heading1',
  *			view: 'h1',
  *		}, [ editor.editing.modelToView, editor.data.modelToView ] );
  *
- * Or defining full-flavored view object:
+ * Or by using a full-flavored view object:
  *
  *		modelElementToViewContainerElement( {
  *			model: 'heading1',
@@ -37,11 +37,11 @@ import buildViewConverter from './buildviewconverter';
  *			},
  *		}, [ editor.editing.modelToView, editor.data.modelToView ] );
  *
- * Above will generate the following view element:
+ * The above will generate the following view element:
  *
  *		<h1 class="header article-header" data-header="level-1">...</h1>
  *
- * @param {module:engine/conversion/definition-based-converters~ConverterDefinition} definition A conversion configuration.
+ * @param {module:engine/conversion/definition-based-converters~ConverterDefinition} definition The converter configuration.
  * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
  */
 export function modelElementToViewContainerElement( definition, dispatchers ) {
@@ -54,14 +54,20 @@ export function modelElementToViewContainerElement( definition, dispatchers ) {
 }
 
 /**
- * Helper for creating view to model element converter. It will convert also all matched view elements defined in
- * `acceptAlso` property. The `model` property is used as model element name.
+ * Helper for creating a view element to model element converters.
  *
- * Conversion from model to view might be defined as simple one to one conversion:
+ * Besides converting the view element specificied in the `view` property it will also convert all view elements
+ * which match the patterns defined in the `acceptAlso` property. Such a "wide" converters are often needed so the editor
+ * is able to correctly handle a content that was pasted into the editor. Such pasted content may use various
+ * "flavors" of the same editing features (e.g. you may want to handle `<h1>` and `<p class="heading1">` as headings).
+ *
+ * The `model` property defines the model element name to be used by the converter.
+ *
+ * A converter can be defined using a simplified converter definition:
  *
  *		viewToModelElement( { model: 'heading1', view: 'h1' }, [ dispatcher ] );
  *
- * As a full-flavored definition:
+ * Or by using a full-flavored definition:
  *
  *		viewToModelElement( {
  *			model: 'heading1',
@@ -74,9 +80,9 @@ export function modelElementToViewContainerElement( definition, dispatchers ) {
  *				// which are handled by other (usually – more generic) converters too.
  *				priority: 'high'
  *			}
-  *		}, [ editor.data.viewToModel ] );
+ *		}, [ editor.data.viewToModel ] );
  *
- * or with `acceptAlso` property to match many elements:
+ * Or with the `acceptAlso` property to match more patterns:
  *
  *		viewToModelElement( {
  *			model: 'heading1',
@@ -114,40 +120,40 @@ export function viewToModelElement( definition, dispatchers ) {
 }
 
 /**
- * Helper for creating model to view converter from model's attribute
- * to {@link module:engine/view/attributeelement~AttributeElement}.
+ * Helper for creating a model attribute to {@link module:engine/view/attributeelement~AttributeElement view attribute element}
+ * converters.
  *
- * By defining conversion as simple model element to view element conversion using simplified definition:
+ * A converter can be defined by using a simplified converter definition:
  *
- *        modelAttributeToViewAttributeElement( 'bold', [
- *            {
+ *		modelAttributeToViewAttributeElement( 'bold', [
+ *			{
  *				model: 'true',
  *				view: 'strong'
  *			}
- *        ], [ editor.editing.modelToView, editor.data.modelToView ] );
+ *		], [ editor.editing.modelToView, editor.data.modelToView ] );
  *
  * Or defining full-flavored view objects:
  *
- *        modelAttributeToViewAttributeElement( 'fontSize', [
- *            {
+ *		modelAttributeToViewAttributeElement( 'fontSize', [
+ *			{
  *				model: 'big',
  *				view: {
  *					name: 'span',
  *					style: { 'font-size': '1.2em' }
  *				},
  *			},
- *            {
+ *			{
  *				model: 'small',
  *				view: {
  *					name: 'span',
  *					style: { 'font-size': '0.8em' }
  *				},
  *			}
- *        ], [ editor.editing.modelToView, editor.data.modelToView ] );
+ *		], [ editor.editing.modelToView, editor.data.modelToView ] );
  *
- * Above will generate the following view element for model's attribute `fontSize` with a `big` value set:
+ * The above will generate the following view element from a `fontSize="big"` model attribute:
  *
- *		<span style="font-size:1.2em;">...</span>
+ *		<span style="font-size: 1.2em">...</span>
  *
  * @param {String} attributeName The name of the model attribute which should be converted.
  * @param {Array.<module:engine/conversion/definition-based-converters~ConverterDefinition>} definitions A conversion configuration objects
@@ -179,14 +185,21 @@ export function modelAttributeToViewAttributeElement( attributeName, definitions
 }
 
 /**
- * Helper for creating view to model converter from view to model attribute. It will convert also all matched view elements defined in
- * `acceptAlso` property. The `model` property is used as model's attribute value to match.
+ * Helper for creating view element to model attribute converters.
  *
- * Conversion from model to view might be defined as simple one to one conversion:
+ * Besides converting the view element specificied in the `view` property it will also convert all view elements
+ * which match the patterns defined in the `acceptAlso` property. Such "wide" converters are often needed so the editor
+ * is able to correctly handle a content that was pasted into the editor. Such pasted content may use various
+ * "flavors" of the same editing features (e.g. bold might be represented as `<b>`, `<strong>` or
+ * `<span style="font-weight:bold">`).
+ *
+ * The `model` property defines the value of the model attribute.
+ *
+ * A converter can be defined using a simplified converter definition:
  *
  *		viewToModelAttribute( 'bold', { model: true, view: 'strong' }, [ dispatcher ] );
  *
- * As a full-flavored definition:
+ * Or by using a full-flavored definition:
  *
  *		viewToModelAttribute( 'fontSize', {
  *			model: 'big',
@@ -198,7 +211,7 @@ export function modelAttributeToViewAttributeElement( attributeName, definitions
  *			}
  *		}, [ editor.data.viewToModel ] );
  *
- * or with `acceptAlso` property to match many elements:
+ * Or with the `acceptAlso` property to match more patterns:
  *
  *		viewToModelAttribute( 'fontSize', {
  *			model: 'big',
@@ -213,24 +226,24 @@ export function modelAttributeToViewAttributeElement( attributeName, definitions
  *			]
  *		}, [ editor.data.viewToModel ] );
  *
- * The above example will convert an existing view elements:
+ * The above example will convert the following view elements:
  *
  *		<p>
  *			An example text with some big elements:
- *			<span class="text-big>one</span>,
- *			<span data-size="big>two</span>,
- *			<span class="font font-huge>three</span>,
- *			<span style="font-size:18px>four</span>
+ *			<span class="text-big">one</span>,
+ *			<span data-size="big">two</span>,
+ *			<span class="font font-huge">three</span>,
+ *			<span style="font-size: 18px">four</span>
  *		</p>
  *
- * into `fontSize` model attribute with 'big' value set so it will be represented:
+ * to a `fontSize="big"` model attribute:
  *
  *		<paragraph>
  *			An example text with some big elements:
- *			<$text fontSize="big>one</$text>,
- *			<$text fontSize="big>two</$text>,
- *			<$text fontSize="big>three</$text>,
- *			<$text fontSize="big>four</$text>
+ *			<$text fontSize="big">one</$text>,
+ *			<$text fontSize="big">two</$text>,
+ *			<$text fontSize="big">three</$text>,
+ *			<$text fontSize="big">four</$text>
  *		</paragraph>
  *
  * @param {String} attributeName Attribute name to which convert.
