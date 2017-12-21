@@ -30,9 +30,11 @@ describe( 'FileDialogButtonView', () => {
 
 			it( 'should open file dialog on execute', () => {
 				const spy = sinon.spy( view._fileInputView, 'open' );
+				const stub = sinon.stub( view._fileInputView.element, 'click' );
 				view.buttonView.fire( 'execute' );
 
 				sinon.assert.calledOnce( spy );
+				stub.restore();
 			} );
 		} );
 
