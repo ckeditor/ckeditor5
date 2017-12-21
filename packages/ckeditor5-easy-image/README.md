@@ -5,7 +5,8 @@ CKEditor 5 Easy Image with Cloud Services
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-easy-image.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image)
 [![Build Status](https://travis-ci.org/ckeditor/ckeditor5-easy-image.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-easy-image)
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=d3hvenZqQVZERFQ5d09FWXdyT0ozVXhLaVltRFRjTTUyZGpvQWNmWVhUUT0tLUZqNlJ1YWRUd0RvdEVOaEptM1B2Q0E9PQ==--c9d3dee40b9b4471ff3fb516d9ecf8d09292c7e0)](https://www.browserstack.com/automate/public-build/d3hvenZqQVZERFQ5d09FWXdyT0ozVXhLaVltRFRjTTUyZGpvQWNmWVhUUT0tLUZqNlJ1YWRUd0RvdEVOaEptM1B2Q0E9PQ==--c9d3dee40b9b4471ff3fb516d9ecf8d09292c7e0)
-[![Test Coverage](https://codeclimate.com/github/ckeditor/ckeditor5-easy-image/badges/coverage.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-easy-image/coverage)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-easy-image/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-easy-image?branch=master)
+<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-easy-image/status.svg)](https://david-dm.org/ckeditor/ckeditor5-easy-image)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-easy-image/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-easy-image?type=dev)
 
