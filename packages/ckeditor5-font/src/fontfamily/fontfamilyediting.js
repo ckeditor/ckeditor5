@@ -124,7 +124,7 @@ function generateFontPreset( font ) {
 	const fontFamilyRegexp = new RegExp( regexString );
 
 	return {
-		label: firstFontName,
+		title: firstFontName,
 		model: firstFontName,
 		view: {
 			name: 'span',
@@ -163,7 +163,7 @@ function normalizeFontName( fontName ) {
  *
  * @typedef {Object} module:font/fontfamily/fontfamilyediting~FontFamilyOption
  *
- * @property {String} label TODO me
+ * @property {String} title TODO me
  * @property {String} model TODO me
  * @property {module:engine/view/viewelementdefinition~ViewElementDefinition} view View element configuration.
  */

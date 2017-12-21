@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FontFamilyEditing from './fontfamily/fontfamilyediting';
+import FontFamilyUI from './fontfamily/fontfamilyui';
 
 /**
  * The Font Size plugin.
@@ -20,7 +21,7 @@ export default class FontFamily extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ FontFamilyEditing ];
+		return [ FontFamilyEditing, FontFamilyUI ];
 	}
 
 	/**
