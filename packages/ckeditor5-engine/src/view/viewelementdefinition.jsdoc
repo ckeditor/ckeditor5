@@ -1,0 +1,44 @@
+/**
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module engine/view/viewelementdefinition
+ */
+
+/**
+ * An object defining view element used in {@link module:engine/conversion/definition-based-converters} as part of
+ * {@link module:engine/conversion/definition-based-converters~ConverterDefinition}.
+ *
+ * It describe a view element that is used
+ *
+ *		const viewDefinition = {
+ *			name: 'h1',
+ *			class: [ 'foo', 'bar' ]
+ *		};
+ *
+ * Above describes a view element:
+ *
+ *		<h1 class="foo bar">...</h1>
+ *
+ * For elements without attributes you can use shorthand string version:
+ *
+ *		const viewDefinition = 'p';
+ *
+ * which will be treated as:
+ *
+ *		const viewDefinition = {
+ *			name: 'p'
+ *		};
+ *
+ * @typedef {String|Object} module:engine/view/viewelementdefinition~ViewElementDefinition
+ *
+ * @property {String} name View element name.
+ * @property {String|Array.<String>} [class] Class name or array of class names to match. Each name can be
+ * provided in a form of string.
+ * @property {Object} [style] Object with key-value pairs representing styles to match. Each object key
+ * represents style name. Value under that key must be a string.
+ * @property {Object} [attribute] Object with key-value pairs representing attributes to match. Each object key
+ * represents attribute name. Value under that key must be a string.
+ */
