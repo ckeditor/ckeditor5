@@ -45,12 +45,12 @@ import buildViewConverter from './buildviewconverter';
  * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
  */
 export function modelElementToViewContainerElement( definition, dispatchers ) {
-	const { model: modelElement, viewDefinition } = parseConverterDefinition( definition );
+	const { model: modelElement, targetView } = normalizeConverterDefinition( definition );
 
 	buildModelConverter()
 		.for( ...dispatchers )
 		.fromElement( modelElement )
-		.toElement( () => ViewContainerElement.createFromDefinition( viewDefinition ) );
+		.toElement( () => ViewContainerElement.createFromDefinition( targetView ) );
 }
 
 /**
@@ -106,9 +106,9 @@ export function modelElementToViewContainerElement( definition, dispatchers ) {
  * @param {Array.<module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher>} dispatchers
  */
 export function viewToModelElement( definition, dispatchers ) {
-	const { model: modelElement, viewDefinitions } = parseConverterDefinition( definition );
+	const { model: modelElement, sourceViews } = normalizeConverterDefinition( definition );
 
-	const converter = prepareViewConverter( dispatchers, viewDefinitions );
+	const converter = prepareViewConverter( dispatchers, sourceViews );
 
 	converter.toElement( modelElement );
 }
@@ -145,7 +145,7 @@ export function viewToModelElement( definition, dispatchers ) {
  * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
  */
 export function modelAttributeToViewAttributeElement( attributeName, definition, dispatchers ) {
-	const { model: attributeValue, viewDefinition } = parseConverterDefinition( definition );
+	const { model: attributeValue, targetView } = normalizeConverterDefinition( definition );
 
 	buildModelConverter()
 		.for( ...dispatchers )
@@ -155,7 +155,7 @@ export function modelAttributeToViewAttributeElement( attributeName, definition,
 				return;
 			}
 
-			return AttributeElement.createFromDefinition( viewDefinition );
+			return AttributeElement.createFromDefinition( targetView );
 		} );
 }
 
@@ -219,9 +219,9 @@ export function modelAttributeToViewAttributeElement( attributeName, definition,
  * @param {Array.<module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher>} dispatchers
  */
 export function viewToModelAttribute( attributeName, definition, dispatchers ) {
-	const { model: attributeValue, viewDefinitions } = parseConverterDefinition( definition );
+	const { model: attributeValue, sourceViews } = normalizeConverterDefinition( definition );
 
-	const converter = prepareViewConverter( dispatchers, viewDefinitions );
+	const converter = prepareViewConverter( dispatchers, sourceViews );
 
 	converter.toAttribute( () => ( {
 		key: attributeName,
@@ -229,22 +229,25 @@ export function viewToModelAttribute( attributeName, definition, dispatchers ) {
 	} ) );
 }
 
-// Prepares a {@link module:engine/conversion/definition-based-converters~ConverterDefinition definition object} for building converters.
+// Normalize a {@link module:engine/conversion/definition-based-converters~ConverterDefinition}
+// into internal object used when building converters.
 //
 // @param {module:engine/conversion/definition-based-converters~ConverterDefinition} definition An object that defines view to model
 // and model to view conversion.
 // @returns {Object}
-function parseConverterDefinition( definition ) {
+function normalizeConverterDefinition( definition ) {
 	const model = definition.model;
 	const view = definition.view;
 
-	const viewDefinition = typeof view == 'string' ? { name: view } : view;
+	// View definition might be defined as a name of an element.
+	const targetView = typeof view == 'string' ? { name: view } : view;
 
-	const viewDefinitions = Array.from( definition.acceptsAlso ? definition.acceptsAlso : [] );
+	const sourceViews = Array.from( definition.acceptsAlso ? definition.acceptsAlso : [] );
 
-	viewDefinitions.push( viewDefinition );
+	// Source views also accepts default view definition used in model-to-view conversion.
+	sourceViews.push( targetView );
 
-	return { model, viewDefinition, viewDefinitions };
+	return { model, targetView, sourceViews };
 }
 
 // Helper method for preparing a view converter from passed view definitions.
