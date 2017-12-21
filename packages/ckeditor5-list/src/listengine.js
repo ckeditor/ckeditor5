@@ -67,7 +67,7 @@ export default class ListEngine extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
-		this.editor.model.document.on( 'change', modelChangePostFixer( this.editor.model ), { priority: 'high' } );
+		editor.model.document.on( 'change', modelChangePostFixer( editor.model ), { priority: 'high' } );
 
 		editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
@@ -97,7 +97,7 @@ export default class ListEngine extends Plugin {
 		data.viewToModel.on( 'element:li', viewModelConverter );
 
 		// Fix indentation of pasted items.
-		data.on( 'insertContent', modelIndentPasteFixer, { priority: 'high' } );
+		editor.model.on( 'insertContent', modelIndentPasteFixer, { priority: 'high' } );
 
 		// Register commands for numbered and bulleted list.
 		editor.commands.add( 'numberedList', new ListCommand( editor, 'numbered' ) );
