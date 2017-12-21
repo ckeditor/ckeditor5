@@ -17,7 +17,7 @@ import buildViewConverter from './buildviewconverter';
  * Helper for creating a model element to {@link module:engine/view/containerelement~ContainerElement view container element}
  * converters.
  *
- * You can creater a converter by using a simplified converter definition:
+ * You can create a converter by using a simplified converter definition:
  *
  *		modelElementToViewContainerElement( {
  *			model: 'heading1',
@@ -56,7 +56,7 @@ export function modelElementToViewContainerElement( definition, dispatchers ) {
 /**
  * Helper for creating a view element to model element converters.
  *
- * Besides converting the view element specificied in the `view` property it will also convert all view elements
+ * Besides converting the view element specified in the `view` property it will also convert all view elements
  * which match the patterns defined in the `acceptAlso` property. Such a "wide" converters are often needed so the editor
  * is able to correctly handle a content that was pasted into the editor. Such pasted content may use various
  * "flavors" of the same editing features (e.g. you may want to handle `<h1>` and `<p class="heading1">` as headings).
@@ -187,7 +187,7 @@ export function modelAttributeToViewAttributeElement( attributeName, definitions
 /**
  * Helper for creating view element to model attribute converters.
  *
- * Besides converting the view element specificied in the `view` property it will also convert all view elements
+ * Besides converting the view element specified in the `view` property it will also convert all view elements
  * which match the patterns defined in the `acceptAlso` property. Such "wide" converters are often needed so the editor
  * is able to correctly handle a content that was pasted into the editor. Such pasted content may use various
  * "flavors" of the same editing features (e.g. bold might be represented as `<b>`, `<strong>` or
