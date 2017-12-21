@@ -13,6 +13,8 @@ import {
 	viewToModelAttribute
 } from '@ckeditor/ckeditor5-engine/src/conversion/definition-based-converters';
 
+import FontFamilyCommand from './fontfamilycommand';
+
 /**
  * The Font Family Editing feature.
  *
@@ -43,15 +45,16 @@ export default class FontFamilyEditing extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
+		// Add converters from view to model.
 		for ( const item of this.configuredItems ) {
-			// Covert view to model.
 			viewToModelAttribute( 'fontFamily', item, [ data.viewToModel ] );
-
-			// Covert model to view.
-			modelAttributeToViewAttributeElement( 'fontFamily', item, [ data.modelToView, editing.modelToView ] );
-
-			// Add command.
 		}
+
+		// Covert from model to view.
+		modelAttributeToViewAttributeElement( 'fontFamily', this.configuredItems, [ data.modelToView, editing.modelToView ] );
+
+		// Add FontSize command.
+		editor.commands.add( 'fontFamily', new FontFamilyCommand( editor ) );
 	}
 
 	get configuredItems() {

@@ -28,27 +28,22 @@ export default class FontSizeUI extends Plugin {
 		const dropdownItems = new Collection();
 
 		const options = this._getLocalizedOptions();
-		const commands = [];
 		const t = editor.t;
+
+		const command = editor.commands.get( 'fontSize' );
 
 		const dropdownTooltip = t( 'Font Size' );
 
 		for ( const option of options ) {
-			const commandName = 'font-size:' + option.model;
-
-			const command = editor.commands.get( commandName );
 			const itemModel = new Model( {
-				commandName,
+				commandName: 'fontSize',
+				commandParam: option.model,
 				label: option.title,
 				class: option.class
 			} );
 
-			itemModel.bind( 'isActive' ).to( command, 'value' );
-
 			// Add the option to the collection.
 			dropdownItems.add( itemModel );
-
-			commands.push( command );
 		}
 
 		// Create dropdown model.
@@ -59,12 +54,7 @@ export default class FontSizeUI extends Plugin {
 			tooltip: dropdownTooltip
 		} );
 
-		dropdownModel.bind( 'isEnabled' ).to(
-			// Bind to #isEnabled of each command...
-			...getCommandsBindingTargets( commands, 'isEnabled' ),
-			// ...and set it true if any command #isEnabled is true.
-			( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
-		);
+		dropdownModel.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'fontSize', locale => {
@@ -81,7 +71,7 @@ export default class FontSizeUI extends Plugin {
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdown, 'execute', evt => {
-				editor.execute( evt.source.commandName );
+				editor.execute( evt.source.commandName, { fontSize: evt.source.commandParam } );
 				editor.editing.view.focus();
 			} );
 
@@ -110,7 +100,7 @@ export default class FontSizeUI extends Plugin {
 			Huge: t( 'Huge' )
 		};
 
-		// TODO this is not nice :/
+		// TODO this is not nice :/ in terms of feature split.
 		const items = editor.plugins.get( FontSizeEditing ).configuredItems;
 
 		return items.map( option => {
@@ -124,18 +114,4 @@ export default class FontSizeUI extends Plugin {
 			return option;
 		} );
 	}
-}
-
-// Returns an array of binding components for
-// {@link module:utils/observablemixin~Observable#bind} from a set of iterable
-// commands.
-//
-// TODO: it's duplicated in various places - maybe it's worth exporting to utils?
-//
-// @private
-// @param {Iterable.<module:core/command~Command>} commands
-// @param {String} attribute
-// @returns {Array.<String>}
-function getCommandsBindingTargets( commands, attribute ) {
-	return Array.prototype.concat( ...commands.map( c => [ c, attribute ] ) );
 }

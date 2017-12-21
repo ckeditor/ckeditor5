@@ -16,13 +16,12 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  * @extends module:core/command~Command
  */
 export default class FontSizeCommand extends Command {
-	constructor( editor, fontSize ) {
-		super( editor );
-
-		/**
-		 * Name of font size config.
-		 */
-		this.fontSize = fontSize;
+	/**
+	 * @inheritDoc
+	 */
+	refresh() {
+		const model = this.editor.model;
+		const doc = model.document;
 
 		/**
 		 * A flag indicating whether the command is active, which means that the selection has fontSize attribute set.
@@ -31,16 +30,7 @@ export default class FontSizeCommand extends Command {
 		 * @readonly
 		 * @member {Boolean} module:font/fontsizecommand~FontSizeCommand#value
 		 */
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	refresh() {
-		const model = this.editor.model;
-		const doc = model.document;
-
-		this.value = doc.selection.getAttribute( 'fontSize' ) === this.fontSize;
+		this.value = doc.selection.getAttribute( 'fontSize' );
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'fontSize' );
 	}
 
@@ -49,8 +39,9 @@ export default class FontSizeCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.
+	 * @param {String} [options.fontSize] FontSize value to apply.
 	 */
-	execute() {
+	execute( options ) {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
@@ -60,11 +51,17 @@ export default class FontSizeCommand extends Command {
 			return;
 		}
 
+		const value = options.fontSize;
+
 		model.change( writer => {
 			const ranges = model.schema.getValidRanges( selection.getRanges(), 'fontSize' );
 
 			for ( const range of ranges ) {
-				writer.setAttribute( 'fontSize', this.fontSize, range );
+				if ( value !== 'normal' ) {
+					writer.setAttribute( 'fontSize', value, range );
+				} else {
+					writer.removeAttribute( 'fontSize', range );
+				}
 			}
 		} );
 	}

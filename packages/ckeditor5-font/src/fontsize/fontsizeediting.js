@@ -42,21 +42,19 @@ export default class FontSizeEditing extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
-		for ( const item of this.configuredItems ) {
-			if ( item.model === 'normal' ) {
-				editor.commands.add( 'font-size:normal', new FontSizeCommand( editor ) );
-				continue;
-			}
+		// Define view to model conversion.
+		const items = this.configuredItems.filter( item => item.model !== 'normal' );
 
+		for ( const item of items ) {
 			// Covert view to model.
 			viewToModelAttribute( 'fontSize', item, [ data.viewToModel ] );
-
-			// Add command.
-			editor.commands.add( 'font-size:' + item.model, new FontSizeCommand( editor, item.model ) );
 		}
 
-		// Covert model to view.
-		modelAttributeToViewAttributeElement( 'fontSize', this.configuredItems, [ data.modelToView, editing.modelToView ] );
+		// Define model to view conversion.
+		modelAttributeToViewAttributeElement( 'fontSize', items, [ data.modelToView, editing.modelToView ] );
+
+		// Add FontSize command.
+		editor.commands.add( 'fontSize', new FontSizeCommand( editor ) );
 	}
 
 	get configuredItems() {
@@ -88,7 +86,7 @@ export default class FontSizeEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		// Allow fontSize attribute on all elements
+		// Allow fontSize attribute on all elements.
 		editor.model.schema.allow( { name: '$inline', attributes: 'fontSize', inside: '$block' } );
 		// Temporary workaround. See https://github.com/ckeditor/ckeditor5/issues/477.
 		editor.model.schema.allow( { name: '$inline', attributes: 'fontSize', inside: '$clipboardHolder' } );
