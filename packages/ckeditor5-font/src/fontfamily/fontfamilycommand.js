@@ -40,25 +40,25 @@ export default class FontFamilyCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} [options.fontSize] FontSize value to apply.
+	 * @param {String} [options.fontFamily] FontSize value to apply.
 	 */
 	execute( options ) {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
 
-		// Do not apply fontSize on collapsed selection.
+		// Do not apply fontFamily on collapsed selection.
 		if ( selection.isCollapsed ) {
 			return;
 		}
 
-		const value = options.fontSize;
+		const value = options.fontFamily;
 
 		model.change( writer => {
 			const ranges = model.schema.getValidRanges( selection.getRanges(), 'fontFamily' );
 
 			for ( const range of ranges ) {
-				if ( value !== 'normal' ) {
+				if ( value !== 'default' ) {
 					writer.setAttribute( 'fontFamily', value, range );
 				} else {
 					writer.removeAttribute( 'fontFamily', range );

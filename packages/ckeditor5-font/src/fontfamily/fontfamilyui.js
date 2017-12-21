@@ -39,8 +39,12 @@ export default class FontFamilyUI extends Plugin {
 				commandName: 'fontFamily',
 				commandParam: option.model,
 				label: option.title,
-				style: 'font-family:' + option.view.style[ 'font-family' ]
 			} );
+
+			// Try to set style
+			if ( option.view && option.view.style ) {
+				itemModel.set( 'style', 'font-family:' + option.view.style[ 'font-family' ] );
+			}
 
 			// Add the option to the collection.
 			dropdownItems.add( itemModel );

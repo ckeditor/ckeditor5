@@ -30,6 +30,7 @@ export default class FontFamilyEditing extends Plugin {
 		// Define default configuration using named presets
 		editor.config.define( 'fontFamily', {
 			items: [
+				'default',
 				'Arial, Helvetica, sans-serif',
 				'Courier New, Courier, monospace',
 				'Georgia, serif',
@@ -46,12 +47,14 @@ export default class FontFamilyEditing extends Plugin {
 		const editing = editor.editing;
 
 		// Add converters from view to model.
-		for ( const item of this.configuredItems ) {
+		const items = this.configuredItems.filter( item => item.model !== 'default' );
+
+		for ( const item of items ) {
 			viewToModelAttribute( 'fontFamily', item, [ data.viewToModel ] );
 		}
 
 		// Covert from model to view.
-		modelAttributeToViewAttributeElement( 'fontFamily', this.configuredItems, [ data.modelToView, editing.modelToView ] );
+		modelAttributeToViewAttributeElement( 'fontFamily', items, [ data.modelToView, editing.modelToView ] );
 
 		// Add FontSize command.
 		editor.commands.add( 'fontFamily', new FontFamilyCommand( editor ) );
@@ -98,6 +101,13 @@ function getItemDefinition( item ) {
 	// Probably it is full item definition so return it
 	if ( typeof item === 'object' ) {
 		return item;
+	}
+
+	if ( item === 'default' ) {
+		return {
+			title: 'Default', // TODO localize us
+			model: 'default'
+		};
 	}
 
 	// Ignore falsy values
