@@ -37,10 +37,11 @@ export default class FontSizeCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const doc = this.editor.model.document;
+		const model = this.editor.model;
+		const doc = model.document;
 
 		this.value = doc.selection.getAttribute( 'fontSize' ) === this.fontSize;
-		this.isEnabled = this.editor.model.schema.checkAttributeInSelection( doc.selection, 'fontSize' );
+		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'fontSize' );
 	}
 
 	/**
