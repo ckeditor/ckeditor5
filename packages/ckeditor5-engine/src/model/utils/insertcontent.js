@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/controller/insertcontent
+ * @module engine/model/utils/insertcontent
  */
 
 import Position from '../position';
@@ -17,9 +17,9 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  * Inserts content into the editor (specified selection) as one would expect the paste
  * functionality to work.
  *
- * **Note:** Use {@link module:engine/controller/datacontroller~DataController#insertContent} instead of this function.
+ * **Note:** Use {@link module:engine/model/model~Model#insertContent} instead of this function.
  * This function is only exposed to be reusable in algorithms
- * which change the {@link module:engine/controller/datacontroller~DataController#insertContent}
+ * which change the {@link module:engine/model/model~Model#insertContent}
  * method's behavior.
  *
  * @param {module:engine/controller/datacontroller~DataController} dataController The data controller in context of which the insertion

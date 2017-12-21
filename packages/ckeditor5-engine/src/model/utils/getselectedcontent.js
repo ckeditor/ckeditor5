@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/controller/getselectedcontent
+ * @module engine/model/utils/getselectedcontent
  */
 
 import Range from '../range';

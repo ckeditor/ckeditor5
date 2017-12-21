@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/controller/deletecontent
+ * @module engine/model/utils/deletecontent
  */
 
 import LivePosition from '../liveposition';

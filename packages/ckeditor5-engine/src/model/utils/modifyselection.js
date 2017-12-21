@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/controller/modifyselection
+ * @module engine/model/utils/modifyselection
  */
 
 import Position from '../position';

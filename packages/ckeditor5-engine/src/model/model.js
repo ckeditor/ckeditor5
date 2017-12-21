@@ -225,7 +225,7 @@ export default class Model {
 	}
 
 	/**
-	 * See {@link module:engine/controller/insertcontent.insertContent}.
+	 * See {@link module:engine/model/utils/insertcontent~insertContent}.
 	 *
 	 * @fires insertContent
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
@@ -236,7 +236,7 @@ export default class Model {
 	}
 
 	/**
-	 * See {@link module:engine/controller/deletecontent.deleteContent}.
+	 * See {@link module:engine/model/utils/deletecontent.deleteContent}.
 	 *
 	 * Note: For the sake of predictability, the resulting selection should always be collapsed.
 	 * In cases where a feature wants to modify deleting behavior so selection isn't collapsed
@@ -248,27 +248,27 @@ export default class Model {
 	 *
 	 * @fires deleteContent
 	 * @param {module:engine/model/selection~Selection} selection Selection of which the content should be deleted.
-	 * @param {Object} options See {@link module:engine/controller/deletecontent~deleteContent}'s options.
+	 * @param {Object} options See {@link module:engine/model/utils/deletecontent~deleteContent}'s options.
 	 */
 	deleteContent( selection, options ) {
 		deleteContent( this, selection, options );
 	}
 
 	/**
-	 * See {@link module:engine/controller/modifyselection.modifySelection}.
+	 * See {@link module:engine/model/utils/modifyselection~modifySelection}.
 	 *
 	 * @fires modifySelection
 	 * @param {module:engine/model/selection~Selection} selection The selection to modify.
-	 * @param {Object} options See {@link module:engine/controller/modifyselection~modifySelection}'s options.
+	 * @param {Object} options See {@link module:engine/model/utils/modifyselection.modifySelection}'s options.
 	 */
 	modifySelection( selection, options ) {
 		modifySelection( this, selection, options );
 	}
 
 	/**
-	 * See {@link module:engine/controller/getselectedcontent.getSelectedContent}.
+	 * See {@link module:engine/model/utils/getselectedcontent~getSelectedContent}.
 	 *
-	 * @fires module:engine/controller/datacontroller~DataController#getSelectedContent
+	 * @fires getSelectedContent
 	 * @param {module:engine/model/selection~Selection} selection The selection of which content will be retrieved.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Document fragment holding the clone of the selected content.
 	 */
