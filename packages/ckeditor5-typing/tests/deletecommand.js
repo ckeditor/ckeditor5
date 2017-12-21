@@ -94,7 +94,7 @@ describe( 'DeleteCommand', () => {
 		it( 'does not try to delete when selection is at the boundary', () => {
 			const spy = sinon.spy();
 
-			editor.data.on( 'deleteContent', spy );
+			editor.model.on( 'deleteContent', spy );
 			setData( model, '<paragraph>[]foo</paragraph>' );
 
 			editor.execute( 'delete' );
@@ -106,7 +106,7 @@ describe( 'DeleteCommand', () => {
 		it( 'passes options to modifySelection', () => {
 			const spy = sinon.spy();
 
-			editor.data.on( 'modifySelection', spy );
+			editor.model.on( 'modifySelection', spy );
 			setData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			editor.commands.get( 'delete' ).direction = 'forward';
@@ -123,7 +123,7 @@ describe( 'DeleteCommand', () => {
 		it( 'passes options to deleteContent #1', () => {
 			const spy = sinon.spy();
 
-			editor.data.on( 'deleteContent', spy );
+			editor.model.on( 'deleteContent', spy );
 			setData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			editor.execute( 'delete' );
@@ -137,7 +137,7 @@ describe( 'DeleteCommand', () => {
 		it( 'passes options to deleteContent #2', () => {
 			const spy = sinon.spy();
 
-			editor.data.on( 'deleteContent', spy );
+			editor.model.on( 'deleteContent', spy );
 			setData( model, '<paragraph>[foobar]</paragraph>' );
 
 			editor.execute( 'delete' );

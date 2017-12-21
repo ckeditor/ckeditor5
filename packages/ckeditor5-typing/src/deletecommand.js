@@ -63,7 +63,6 @@ export default class DeleteCommand extends Command {
 	execute( options = {} ) {
 		const model = this.editor.model;
 		const doc = model.document;
-		const dataController = this.editor.data;
 
 		model.enqueueChange( this._buffer.batch, writer => {
 			this._buffer.lock();
@@ -79,7 +78,7 @@ export default class DeleteCommand extends Command {
 
 			// Try to extend the selection in the specified direction.
 			if ( selection.isCollapsed ) {
-				dataController.modifySelection( selection, { direction: this.direction, unit: options.unit } );
+				model.modifySelection( selection, { direction: this.direction, unit: options.unit } );
 			}
 
 			// Check if deleting in an empty editor. See #61.
@@ -102,7 +101,7 @@ export default class DeleteCommand extends Command {
 				);
 			} );
 
-			dataController.deleteContent( selection, { doNotResetEntireContent } );
+			model.deleteContent( selection, { doNotResetEntireContent } );
 			this._buffer.input( changeCount );
 
 			doc.selection.setRanges( selection.getRanges(), selection.isBackward );
