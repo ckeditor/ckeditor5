@@ -42,7 +42,7 @@ export default class FontFamilyCommand extends Command {
 	 * @param {Object} [options] Options for the executed command.
 	 * @param {String} [options.fontFamily] FontSize value to apply.
 	 */
-	execute( options ) {
+	execute( options = {} ) {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;

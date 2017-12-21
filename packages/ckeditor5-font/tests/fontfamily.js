@@ -5,10 +5,11 @@
 
 import FontFamily from './../src/fontfamily';
 import FontFamilyEditing from './../src/fontfamily/fontfamilyediting';
+import FontFamilyUI from '../src/fontfamily/fontfamilyui';
 
 describe( 'FontFamily', () => {
-	it( 'requires FontFamilyEditing', () => {
-		expect( FontFamily.requires ).to.deep.equal( [ FontFamilyEditing ] );
+	it( 'requires FontFamilyEditing and FontFamilyUI', () => {
+		expect( FontFamily.requires ).to.deep.equal( [ FontFamilyEditing, FontFamilyUI ] );
 	} );
 
 	it( 'defines plugin name', () => {

@@ -18,7 +18,7 @@ describe( 'FontFamilyCommand', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				command = new FontFamilyCommand( editor, 'arial' );
+				command = new FontFamilyCommand( editor );
 				editor.commands.add( 'fontFamily', command );
 
 				model.schema.registerItem( 'paragraph', '$block' );
@@ -36,16 +36,16 @@ describe( 'FontFamilyCommand', () => {
 	} );
 
 	describe( 'value', () => {
-		it( 'is set to true when selection is in text with fontFamily attribute', () => {
+		it( 'is set to fontFamily value when selection is in text with fontFamily attribute', () => {
 			setData( model, '<paragraph><$text fontFamily="arial">fo[]o</$text></paragraph>' );
 
-			expect( command ).to.have.property( 'value', true );
+			expect( command ).to.have.property( 'value', 'arial' );
 		} );
 
 		it( 'is undefined when selection is not in text with fontFamily attribute', () => {
 			setData( model, '<paragraph>fo[]o</paragraph>' );
 
-			expect( command ).to.have.property( 'value', false );
+			expect( command ).to.have.property( 'value', undefined );
 		} );
 	} );
 
@@ -61,11 +61,11 @@ describe( 'FontFamilyCommand', () => {
 		it( 'should add fontFamily attribute on selected text', () => {
 			setData( model, '<paragraph>a[bc<$text fontFamily="arial">fo]obar</$text>xyz</paragraph>' );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).to.be.undefined;
 
-			command.execute();
+			command.execute( { fontFamily: 'arial' } );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).to.equal( 'arial' );
 
 			expect( getData( model ) ).to.equal( '<paragraph>a[<$text fontFamily="arial">bcfo]obar</$text>xyz</paragraph>' );
 		} );
@@ -78,9 +78,9 @@ describe( 'FontFamilyCommand', () => {
 				'<paragraph>barbar]bar</paragraph>'
 			);
 
-			command.execute();
+			command.execute( { fontFamily: 'arial' } );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).to.equal( 'arial' );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>abcabc[<$text fontFamily="arial">abc</$text></paragraph>' +
@@ -97,9 +97,9 @@ describe( 'FontFamilyCommand', () => {
 				'<paragraph><$text fontFamily="text-small">bar]bar</$text>bar</paragraph>'
 			);
 
-			command.execute();
+			command.execute( { fontFamily: 'arial' } );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).to.equal( 'arial' );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>abc[<$text fontFamily="arial">abcabc</$text></paragraph>' +
@@ -111,13 +111,33 @@ describe( 'FontFamilyCommand', () => {
 		it( 'should do nothing on collapsed range', () => {
 			setData( model, '<paragraph>abc<$text fontFamily="arial">foo[]bar</$text>xyz</paragraph>' );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).to.equal( 'arial' );
 
-			command.execute();
+			command.execute( { fontFamily: 'arial' } );
 
 			expect( getData( model ) ).to.equal( '<paragraph>abc<$text fontFamily="arial">foo[]bar</$text>xyz</paragraph>' );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).to.equal( 'arial' );
+		} );
+
+		it( 'should remove fontFamily attribute on selected nodes when passing undefined fontFamily param', () => {
+			setData(
+				model,
+				'<paragraph>abcabc[<$text fontFamily="arial">abc</$text></paragraph>' +
+				'<paragraph><$text fontFamily="arial">foofoofoo</$text></paragraph>' +
+				'<paragraph><$text fontFamily="arial">barbar</$text>]bar</paragraph>'
+			);
+			expect( command.value ).to.equal( 'arial' );
+
+			command.execute();
+
+			expect( command.value ).to.be.undefined;
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>abcabc[abc</paragraph>' +
+				'<paragraph>foofoofoo</paragraph>' +
+				'<paragraph>barbar]bar</paragraph>'
+			);
 		} );
 	} );
 } );

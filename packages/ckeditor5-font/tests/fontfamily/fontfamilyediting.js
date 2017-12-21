@@ -38,6 +38,7 @@ describe( 'FontFamilyEditing', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
 				expect( editor.config.get( 'fontFamily.items' ) ).to.deep.equal( [
+					'default',
 					'Arial, Helvetica, sans-serif',
 					'Courier New, Courier, monospace',
 					'Georgia, serif',
@@ -76,7 +77,7 @@ describe( 'FontFamilyEditing', () => {
 					fontFamily: {
 						items: [
 							{
-								label: 'Comic Sans',
+								title: 'Comic Sans',
 								model: 'comic',
 								view: {
 									name: 'span',
@@ -95,7 +96,7 @@ describe( 'FontFamilyEditing', () => {
 
 					expect( plugin.configuredItems ).to.deep.equal( [
 						{
-							label: 'Comic Sans',
+							title: 'Comic Sans',
 							model: 'comic',
 							view: {
 								name: 'span',
@@ -128,7 +129,7 @@ describe( 'FontFamilyEditing', () => {
 
 						expect( plugin.configuredItems ).to.deep.equal( [
 							{
-								label: 'Arial',
+								title: 'Arial',
 								model: 'Arial',
 								view: {
 									name: 'span',
@@ -146,7 +147,7 @@ describe( 'FontFamilyEditing', () => {
 								]
 							},
 							{
-								label: 'Comic Sans MS',
+								title: 'Comic Sans MS',
 								model: 'Comic Sans MS',
 								view: {
 									name: 'span',
@@ -167,7 +168,7 @@ describe( 'FontFamilyEditing', () => {
 								]
 							},
 							{
-								label: 'Lucida Console',
+								title: 'Lucida Console',
 								model: 'Lucida Console',
 								view: {
 									name: 'span',
@@ -205,7 +206,7 @@ describe( 'FontFamilyEditing', () => {
 							'Arial',
 							'Lucida Sans Unicode, Lucida Grande, sans-serif',
 							{
-								label: 'My font',
+								title: 'My font',
 								model: 'my',
 								view: {
 									name: 'mark',
@@ -257,7 +258,7 @@ describe( 'FontFamilyEditing', () => {
 						items: [
 							'Lucida Sans Unicode, Lucida Grande, sans-serif',
 							{
-								label: 'My other setting',
+								title: 'My other setting',
 								model: 'my-other',
 								view: {
 									name: 'span',
@@ -265,7 +266,7 @@ describe( 'FontFamilyEditing', () => {
 								}
 							},
 							{
-								label: 'My setting',
+								title: 'My setting',
 								model: 'my',
 								view: {
 									name: 'mark',
@@ -274,7 +275,7 @@ describe( 'FontFamilyEditing', () => {
 								}
 							},
 							{
-								label: 'Hybrid',
+								title: 'Hybrid',
 								model: 'complex',
 								view: {
 									name: 'span',
