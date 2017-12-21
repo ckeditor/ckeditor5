@@ -84,6 +84,24 @@ export default class DocumentSelection extends Selection {
 		 */
 		this._attributePriority = new Map();
 
+		// Add events that will ensure selection correctness.
+		this.on( 'change:range', () => {
+			for ( const range of this.getRanges() ) {
+				if ( !this._document._validateSelectionRange( range ) ) {
+					/**
+					 * Range from {@link module:engine/model/documentselection~DocumentSelection document selection}
+					 * starts or ends at incorrect position.
+					 *
+					 * @error document-selection-wrong-position
+					 * @param {module:engine/model/range~Range} range
+					 */
+					throw new CKEditorError(
+						'document-selection-wrong-position: Range from document selection starts or ends at incorrect position.',
+						{ range }
+					);
+				}
+			}
+		} );
 		this.listenTo( this._document, 'change', ( evt, type, changes, batch ) => {
 			// Whenever attribute operation is performed on document, update selection attributes.
 			// This is not the most efficient way to update selection attributes, but should be okay for now.

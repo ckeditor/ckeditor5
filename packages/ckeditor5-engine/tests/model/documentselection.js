@@ -1152,4 +1152,46 @@ describe( 'DocumentSelection', () => {
 			} );
 		} );
 	} );
+
+	it( 'should throw if one of ranges starts or ends inside surrogate pair', () => {
+		root.removeChildren( 0, root.childCount );
+		root.appendChildren( '\uD83D\uDCA9' );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 0, root, 1 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 2 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+	} );
+
+	it( 'should throw if one of ranges starts or ends between base character and combining mark', () => {
+		root.removeChildren( 0, root.childCount );
+		root.appendChildren( 'foo̻̐ͩbar' );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 3, root, 9 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 4, root, 9 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 5, root, 9 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 3 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 4 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 5 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+	} );
 } );

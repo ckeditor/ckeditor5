@@ -81,24 +81,6 @@ export default class Document {
 		 */
 		this.roots = new Collection( { idProperty: 'rootName' } );
 
-		// Add events that will ensure selection correctness.
-		this.selection.on( 'change:range', () => {
-			for ( const range of this.selection.getRanges() ) {
-				if ( !this._validateSelectionRange( range ) ) {
-					/**
-					 * Range from {@link module:engine/model/documentselection~DocumentSelection document selection}
-					 * starts or ends at incorrect position.
-					 *
-					 * @error document-selection-wrong-position
-					 * @param {module:engine/model/range~Range} range
-					 */
-					throw new CKEditorError(
-						'document-selection-wrong-position: Range from document selection starts or ends at incorrect position.',
-						{ range }
-					);
-				}
-			}
-		} );
 
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 		this.createRoot( '$root', graveyardName );
