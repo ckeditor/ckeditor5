@@ -56,7 +56,7 @@ export default class DeleteCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options] The command options.
-	 * @param {'character'} [options.unit='character'] See {@link module:engine/controller/modifyselection~modifySelection}'s options.
+	 * @param {'character'} [options.unit='character'] See {@link module:engine/model/utils/modifyselection~modifySelection}'s options.
 	 * @param {Number} [options.sequence=1] A number describing which subsequent delete event it is without the key being released.
 	 * See the {@link module:engine/view/document~Document#event:delete} event data.
 	 */
