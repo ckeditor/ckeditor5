@@ -71,6 +71,14 @@ export default class Model {
 		[ 'insertContent', 'deleteContent', 'modifySelection', 'getSelectedContent', 'applyOperation' ]
 			.forEach( methodName => this.decorate( methodName ) );
 
+		// Adding operation validation with a highest priority, so it is called before any other feature would like
+		// to do anything with the operation. If the operation has incorrect parameters it should throw earliest moment.
+		this.on( 'applyOperation', ( evt, args ) => {
+			const operation = args[ 0 ];
+
+			operation._validate();
+		}, { priority: 'highest' } );
+
 		// Register some default abstract entities.
 		this.schema.register( '$root', {
 			isLimit: true

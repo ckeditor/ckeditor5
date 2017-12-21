@@ -119,7 +119,6 @@ export default class Document {
 				);
 			}
 
-			operation._validate();
 		}, { priority: 'highest' } );
 
 		this.listenTo( model, 'applyOperation', ( evt, args ) => {
