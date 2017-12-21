@@ -119,39 +119,58 @@ export function viewToModelElement( definition, dispatchers ) {
  *
  * By defining conversion as simple model element to view element conversion using simplified definition:
  *
- *		modelAttributeToViewAttributeElement( 'bold', {
- *			model: 'true',
- *			view: 'strong',
- *		}, [ editor.editing.modelToView, editor.data.modelToView ] );
+ *        modelAttributeToViewAttributeElement( 'bold', [
+ *            {
+ *				model: 'true',
+ *				view: 'strong'
+ *			}
+ *        ], [ editor.editing.modelToView, editor.data.modelToView ] );
  *
- * Or defining full-flavored view object:
+ * Or defining full-flavored view objects:
  *
- *		modelAttributeToViewAttributeElement( 'fontSize', {
- *			model: 'big',
- *			view: {
- *				name: 'span',
- *				style: {
- *					'font-size': '1.2em'
- *				}
+ *        modelAttributeToViewAttributeElement( 'fontSize', [
+ *            {
+ *				model: 'big',
+ *				view: {
+ *					name: 'span',
+ *					style: { 'font-size': '1.2em' }
+ *				},
  *			},
- *		}, [ editor.editing.modelToView, editor.data.modelToView ] );
+ *            {
+ *				model: 'small',
+ *				view: {
+ *					name: 'span',
+ *					style: { 'font-size': '0.8em' }
+ *				},
+ *			}
+ *        ], [ editor.editing.modelToView, editor.data.modelToView ] );
  *
  * Above will generate the following view element for model's attribute `fontSize` with a `big` value set:
  *
  *		<span style="font-size:1.2em;">...</span>
  *
  * @param {String} attributeName The name of the model attribute which should be converted.
- * @param {module:engine/conversion/definition-based-converters~ConverterDefinition} definition A conversion configuration.
+ * @param {Array.<module:engine/conversion/definition-based-converters~ConverterDefinition>} definitions A conversion configuration objects
+ * for each possible attribute value.
  * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
  */
-export function modelAttributeToViewAttributeElement( attributeName, definition, dispatchers ) {
-	const { model: attributeValue, targetView } = normalizeConverterDefinition( definition );
+export function modelAttributeToViewAttributeElement( attributeName, definitions, dispatchers ) {
+	// Create a map of attributeValue - to - ViewElementDefinition.
+	const valueToTargetViewMap = definitions
+		.map( normalizeConverterDefinition )
+		.reduce( ( mapObject, normalizedDefinition ) => {
+			mapObject[ normalizedDefinition.model ] = normalizedDefinition.targetView;
+
+			return mapObject;
+		}, {} );
 
 	buildModelConverter()
 		.for( ...dispatchers )
 		.fromAttribute( attributeName )
 		.toElement( value => {
-			if ( value != attributeValue ) {
+			const targetView = valueToTargetViewMap[ value ];
+
+			if ( !targetView ) {
 				return;
 			}
 

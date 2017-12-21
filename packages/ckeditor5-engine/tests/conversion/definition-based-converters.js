@@ -121,7 +121,7 @@ describe( 'definition-based-converters', () => {
 
 	describe( 'Attribute converters', () => {
 		function testModelConversion( definition, expectedConversion ) {
-			modelAttributeToViewAttributeElement( 'foo', definition, [ dispatcher ] );
+			modelAttributeToViewAttributeElement( 'foo', [ definition ], [ dispatcher ] );
 
 			const modelElement = new ModelText( 'foo', { foo: 'bar' } );
 
@@ -176,8 +176,29 @@ describe( 'definition-based-converters', () => {
 				}, '<div><span data-foo="bar">foo</span></div>' );
 			} );
 
+			it( 'should convert when changing attribute', () => {
+				const definition1 = { model: 'bar', view: { name: 'span', class: 'bar' } };
+				const definition2 = { model: 'baz', view: { name: 'span', class: 'baz' } };
+
+				modelAttributeToViewAttributeElement( 'foo', [ definition1, definition2 ], [ dispatcher ] );
+
+				const modelElement = new ModelText( 'foo', { foo: 'bar' } );
+
+				model.change( writer => {
+					writer.insert( modelElement, ModelPosition.createAt( modelRoot, 0 ) );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><span class="bar">foo</span></div>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'foo', 'baz', modelElement );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><span class="baz">foo</span></div>' );
+			} );
+
 			it( 'should do nothing for undefined value', () => {
-				modelAttributeToViewAttributeElement( 'foo', { model: 'bar', view: 'strong' }, [ dispatcher ] );
+				modelAttributeToViewAttributeElement( 'foo', [ { model: 'bar', view: 'strong' } ], [ dispatcher ] );
 
 				const modelElement = new ModelText( 'foo', { foo: 'baz' } );
 
