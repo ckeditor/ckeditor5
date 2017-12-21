@@ -39,9 +39,9 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		heading: {
 			options: [
-				{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-				{ modelElement: 'heading1', viewElement: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-				{ modelElement: 'heading2', viewElement: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+				{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+				{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
 			]
 		}
 	} )
@@ -50,6 +50,55 @@ ClassicEditor
 ```
 
 {@snippet features/custom-heading-levels}
+
+### Configuring custom heading elements
+
+It is also possible to define custom elements for headings using {@link module:engine/view/viewelementdefinition~ViewElementDefinition}.
+
+For example, the following editor will support `heading2fancy` that differs from `heading2` in view by extra `class` property: 
+
+```html
+<style>
+	.fancy {
+		color: #ff0050;
+	}
+</style>
+
+<div id="snippet-custom-heading-levels">
+	<h1>Heading 1</h1>
+	<h2>Heading 2</h2>
+	<h2 class="fancy">Fancy Heading 2</h2>
+	<p>This is <a href="https://ckeditor5.github.io">CKEditor 5</a>.</p>
+</div>
+
+```
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		heading: {
+			options: [
+				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+				{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+				{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+				{
+					model: 'heading2fancy',
+					view: {
+						name: 'h2',
+						class: 'fancy',
+						priority: 'high'
+					},
+					title: 'Heading 2 (fancy)',
+					class: 'ck-heading_heading2 fancy'
+				}
+			]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+{@snippet features/custom-heading-elements}
 
 ## Installation
 
