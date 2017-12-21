@@ -315,14 +315,14 @@ export default class Widget extends Plugin {
 	 * @returns {module:engine/model/element~Element|null}
 	 */
 	_getObjectElementNextToSelection( forward ) {
-		const schema = this.editor.model.schema;
-		const modelSelection = this.editor.model.document.selection;
-		const dataController = this.editor.data;
+		const model = this.editor.model;
+		const schema = model.schema;
+		const modelSelection = model.document.selection;
 
 		// Clone current selection to use it as a probe. We must leave default selection as it is so it can return
 		// to its current state after undo.
 		const probe = ModelSelection.createFromSelection( modelSelection );
-		dataController.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
+		model.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
 		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
 
 		if ( objectElement instanceof ModelElement && schema.objects.has( objectElement.name ) ) {
