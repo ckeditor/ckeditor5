@@ -35,7 +35,7 @@ ClassicEditor
 
 			editor.model.change( () => {
 				const insertAtSelection = new Selection( [ editor.editing.mapper.toModelRange( data.dropRange ) ] );
-				editor.data.insertContent( new Text( '@' ), insertAtSelection );
+				editor.model.insertContent( new Text( '@' ), insertAtSelection );
 				editor.model.document.selection.setTo( insertAtSelection );
 			} );
 		} );

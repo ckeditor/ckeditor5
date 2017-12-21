@@ -159,6 +159,7 @@ export default class Clipboard extends Plugin {
 		this.listenTo( this, 'inputTransformation', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				const dataController = this.editor.data;
+				const model = this.editor.model;
 
 				// Convert the pasted content to a model document fragment.
 				// Conversion is contextual, but in this case we need an "all allowed" context and for that
@@ -169,7 +170,7 @@ export default class Clipboard extends Plugin {
 					return;
 				}
 
-				dataController.insertContent( modelFragment, doc.selection );
+				model.insertContent( modelFragment, doc.selection );
 			}
 		}, { priority: 'low' } );
 
@@ -180,7 +181,7 @@ export default class Clipboard extends Plugin {
 
 			data.preventDefault();
 
-			const content = editor.data.toView( editor.data.getSelectedContent( doc.selection ) );
+			const content = editor.data.toView( editor.model.getSelectedContent( doc.selection ) );
 
 			editingView.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name } );
 		}
@@ -203,7 +204,7 @@ export default class Clipboard extends Plugin {
 			}
 
 			if ( data.method == 'cut' ) {
-				editor.data.deleteContent( doc.selection );
+				editor.model.deleteContent( doc.selection );
 			}
 		}, { priority: 'low' } );
 	}

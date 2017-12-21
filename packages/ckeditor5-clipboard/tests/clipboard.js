@@ -168,7 +168,7 @@ describe( 'Clipboard feature', () => {
 
 		it( 'inserts content to the editor', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
-			const spy = sinon.stub( editor.data, 'insertContent' );
+			const spy = sinon.stub( editor.model, 'insertContent' );
 
 			editingView.fire( 'paste', {
 				dataTransfer: dataTransferMock,
@@ -181,7 +181,7 @@ describe( 'Clipboard feature', () => {
 
 		it( 'does not insert content when editor is read-only', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
-			const spy = sinon.stub( editor.data, 'insertContent' );
+			const spy = sinon.stub( editor.model, 'insertContent' );
 
 			editor.isReadOnly = true;
 
@@ -197,7 +197,7 @@ describe( 'Clipboard feature', () => {
 			// Whole content is invalid. Even though there is "view" content, the "model" content would be empty.
 			// Do not insert content in this case.
 			const dataTransferMock = createDataTransfer( { 'text/html': '<unknownTag></unknownTag>', 'text/plain': '' } );
-			const spy = sinon.stub( editor.data, 'insertContent' );
+			const spy = sinon.stub( editor.model, 'insertContent' );
 
 			editingView.fire( 'paste', {
 				dataTransfer: dataTransferMock,
@@ -211,7 +211,7 @@ describe( 'Clipboard feature', () => {
 			// It's enough if we check this here with a text node and paragraph because if the conversion was made
 			// in a normal root, then text or paragraph wouldn't be allowed here.
 			const dataTransferMock = createDataTransfer( { 'text/html': 'x<p>y</p>', 'text/plain': 'z' } );
-			const spy = sinon.stub( editor.data, 'insertContent' );
+			const spy = sinon.stub( editor.model, 'insertContent' );
 
 			editingView.fire( 'paste', {
 				dataTransfer: dataTransferMock,
@@ -224,7 +224,7 @@ describe( 'Clipboard feature', () => {
 
 		it( 'does nothing when pasted content is empty', () => {
 			const dataTransferMock = createDataTransfer( { 'text/plain': '' } );
-			const spy = sinon.stub( editor.data, 'insertContent' );
+			const spy = sinon.stub( editor.model, 'insertContent' );
 
 			editingView.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
@@ -251,7 +251,7 @@ describe( 'Clipboard feature', () => {
 
 		it( 'uses low priority observer for the clipboardInput event', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': 'x' } );
-			const spy = sinon.stub( editor.data, 'insertContent' );
+			const spy = sinon.stub( editor.model, 'insertContent' );
 
 			editingView.on( 'clipboardInput', evt => {
 				evt.stop();
