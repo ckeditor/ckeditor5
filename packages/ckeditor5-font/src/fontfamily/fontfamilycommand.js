@@ -13,16 +13,16 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  * The font family command. It is used by the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing}
  * to apply font family.
  *
+ * TODO: those commands are duplicated here and there - maybe make them one?
+ *
  * @extends module:core/command~Command
  */
 export default class FontFamilyCommand extends Command {
-	constructor( editor, fontFamily ) {
-		super( editor );
-
-		/**
-		 * Name of font family config.
-		 */
-		this.fontFamily = fontFamily;
+	/**
+	 * @inheritDoc
+	 */
+	refresh() {
+		const doc = this.editor.model.document;
 
 		/**
 		 * A flag indicating whether the command is active, which means that the selection has fontFamily attribute set.
@@ -31,15 +31,7 @@ export default class FontFamilyCommand extends Command {
 		 * @readonly
 		 * @member {Boolean} module:font/fontfamilycommand~FontFamilyCommand#value
 		 */
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	refresh() {
-		const doc = this.editor.model.document;
-
-		this.value = doc.selection.getAttribute( 'fontFamily' ) === this.fontFamily;
+		this.value = doc.selection.getAttribute( 'fontFamily' );
 		this.isEnabled = this.editor.model.schema.checkAttributeInSelection( doc.selection, 'fontFamily' );
 	}
 
@@ -48,24 +40,29 @@ export default class FontFamilyCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps.
-	 * A new batch will be created if this option is not set.
+	 * @param {String} [options.fontSize] FontSize value to apply.
 	 */
-	execute() {
+	execute( options ) {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
 
-		// Do not apply fontFamily on collapsed selection.
+		// Do not apply fontSize on collapsed selection.
 		if ( selection.isCollapsed ) {
 			return;
 		}
+
+		const value = options.fontSize;
 
 		model.change( writer => {
 			const ranges = model.schema.getValidRanges( selection.getRanges(), 'fontFamily' );
 
 			for ( const range of ranges ) {
-				writer.setAttribute( 'fontFamily', this.fontFamily, range );
+				if ( value !== 'normal' ) {
+					writer.setAttribute( 'fontFamily', value, range );
+				} else {
+					writer.removeAttribute( 'fontFamily', range );
+				}
 			}
 		} );
 	}
