@@ -21,12 +21,6 @@ import { convertText, convertToModelFragment } from '../conversion/view-to-model
 import ViewDocumentFragment from '../view/documentfragment';
 
 import ModelRange from '../model/range';
-import ModelElement from '../model/element';
-
-import insertContent from './insertcontent';
-import deleteContent from './deletecontent';
-import modifySelection from './modifyselection';
-import getSelectedContent from './getselectedcontent';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -116,9 +110,6 @@ export default class DataController {
 		this.viewToModel.on( 'text', convertText(), { priority: 'lowest' } );
 		this.viewToModel.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.viewToModel.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
-
-		[ 'insertContent', 'deleteContent', 'modifySelection', 'getSelectedContent' ]
-			.forEach( methodName => this.decorate( methodName ) );
 	}
 
 	/**
@@ -240,126 +231,6 @@ export default class DataController {
 	 * Removes all event listeners set by the DataController.
 	 */
 	destroy() {}
-
-	/**
-	 * See {@link module:engine/controller/insertcontent.insertContent}.
-	 *
-	 * @fires insertContent
-	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
-	 * @param {module:engine/model/selection~Selection} selection Selection into which the content should be inserted.
-	 */
-	insertContent( content, selection ) {
-		insertContent( this, content, selection );
-	}
-
-	/**
-	 * See {@link module:engine/controller/deletecontent.deleteContent}.
-	 *
-	 * Note: For the sake of predictability, the resulting selection should always be collapsed.
-	 * In cases where a feature wants to modify deleting behavior so selection isn't collapsed
-	 * (e.g. a table feature may want to keep row selection after pressing <kbd>Backspace</kbd>),
-	 * then that behavior should be implemented in the view's listener. At the same time, the table feature
-	 * will need to modify this method's behavior too, e.g. to "delete contents and then collapse
-	 * the selection inside the last selected cell" or "delete the row and collapse selection somewhere near".
-	 * That needs to be done in order to ensure that other features which use `deleteContent()` will work well with tables.
-	 *
-	 * @fires deleteContent
-	 * @param {module:engine/model/selection~Selection} selection Selection of which the content should be deleted.
-	 * @param {Object} options See {@link module:engine/controller/deletecontent~deleteContent}'s options.
-	 */
-	deleteContent( selection, options ) {
-		deleteContent( this, selection, options );
-	}
-
-	/**
-	 * See {@link module:engine/controller/modifyselection.modifySelection}.
-	 *
-	 * @fires modifySelection
-	 * @param {module:engine/model/selection~Selection} selection The selection to modify.
-	 * @param {Object} options See {@link module:engine/controller/modifyselection~modifySelection}'s options.
-	 */
-	modifySelection( selection, options ) {
-		modifySelection( this, selection, options );
-	}
-
-	/**
-	 * See {@link module:engine/controller/getselectedcontent.getSelectedContent}.
-	 *
-	 * @fires module:engine/controller/datacontroller~DataController#getSelectedContent
-	 * @param {module:engine/model/selection~Selection} selection The selection of which content will be retrieved.
-	 * @returns {module:engine/model/documentfragment~DocumentFragment} Document fragment holding the clone of the selected content.
-	 */
-	getSelectedContent( selection ) {
-		return getSelectedContent( this, selection );
-	}
-
-	/**
-	 * Checks whether given {@link module:engine/model/range~Range range} or {@link module:engine/model/element~Element element}
-	 * has any content.
-	 *
-	 * Content is any text node or element which is registered in {@link module:engine/model/schema~Schema schema}.
-	 *
-	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
-	 * @returns {Boolean}
-	 */
-	hasContent( rangeOrElement ) {
-		if ( rangeOrElement instanceof ModelElement ) {
-			rangeOrElement = ModelRange.createIn( rangeOrElement );
-		}
-
-		if ( rangeOrElement.isCollapsed ) {
-			return false;
-		}
-
-		for ( const item of rangeOrElement.getItems() ) {
-			// Remember, `TreeWalker` returns always `textProxy` nodes.
-			if ( item.is( 'textProxy' ) || this.model.schema.objects.has( item.name ) ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
 }
 
 mix( DataController, ObservableMixin );
-
-/**
- * Event fired when {@link #insertContent} method is called.
- *
- * The {@link #insertContent default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
- *
- * @event insertContent
- * @param {Array} args The arguments passed to the original method.
- */
-
-/**
- * Event fired when {@link #deleteContent} method is called.
- *
- * The {@link #deleteContent default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
- *
- * @event deleteContent
- * @param {Array} args The arguments passed to the original method.
- */
-
-/**
- * Event fired when {@link #modifySelection} method is called.
- *
- * The {@link #modifySelection default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
- *
- * @event modifySelection
- * @param {Array} args The arguments passed to the original method.
- */
-
-/**
- * Event fired when {@link #getSelectedContent} method is called.
- *
- * The {@link #getSelectedContent default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
- *
- * @event getSelectedContent
- * @param {Array} args The arguments passed to the original method.
- */

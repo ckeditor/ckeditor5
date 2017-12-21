@@ -7,9 +7,9 @@
  * @module engine/controller/modifyselection
  */
 
-import Position from '../model/position';
-import TreeWalker from '../model/treewalker';
-import Range from '../model/range';
+import Position from '../position';
+import TreeWalker from '../treewalker';
+import Range from '../range';
 import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
 
 /**
@@ -40,8 +40,8 @@ import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckedito
  * @param {'forward'|'backward'} [options.direction='forward'] The direction in which the selection should be modified.
  * @param {'character'|'codePoint'} [options.unit='character'] The unit by which selection should be modified.
  */
-export default function modifySelection( dataController, selection, options = {} ) {
-	const schema = dataController.model.schema;
+export default function modifySelection( model, selection, options = {} ) {
+	const schema = model.schema;
 	const isForward = options.direction != 'backward';
 	const unit = options.unit ? options.unit : 'character';
 

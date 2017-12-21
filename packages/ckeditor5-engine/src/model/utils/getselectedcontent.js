@@ -7,8 +7,8 @@
  * @module engine/controller/getselectedcontent
  */
 
-import Range from '../model/range';
-import Position from '../model/position';
+import Range from '../range';
+import Position from '../position';
 
 /**
  * Gets a clone of the selected content.
@@ -26,8 +26,8 @@ import Position from '../model/position';
  * @param {module:engine/model/selection~Selection} selection The selection of which content will be returned.
  * @returns {module:engine/model/documentfragment~DocumentFragment}
  */
-export default function getSelectedContent( dataController, selection ) {
-	return dataController.model.change( writer => {
+export default function getSelectedContent( model, selection ) {
+	return model.change( writer => {
 		const frag = writer.createDocumentFragment();
 		const range = selection.getFirstRange();
 

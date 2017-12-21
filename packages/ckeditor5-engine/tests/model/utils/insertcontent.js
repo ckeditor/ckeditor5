@@ -3,31 +3,28 @@
  * For licensing, see LICENSE.md.
  */
 
-import Model from '../../src/model/model';
-import DataController from '../../src/controller/datacontroller';
-import insertContent from '../../src/controller/insertcontent';
+import Model from '../../../src/model/model';
+import insertContent from '../../../src/model/utils/insertcontent';
+import DocumentFragment from '../../../src/model/documentfragment';
+import Text from '../../../src/model/text';
+import Element from '../../../src/model/element';
 
-import DocumentFragment from '../../src/model/documentfragment';
-import Text from '../../src/model/text';
-import Element from '../../src/model/element';
-
-import { setData, getData, parse } from '../../src/dev-utils/model';
+import { setData, getData, parse } from '../../../src/dev-utils/model';
 
 describe( 'DataController utils', () => {
-	let model, doc, data;
+	let model, doc;
 
 	describe( 'insertContent', () => {
 		it( 'should use parent batch', () => {
 			model = new Model();
 			doc = model.document;
 			doc.createRoot();
-			data = new DataController( model );
 
 			model.schema.allow( { name: '$text', inside: '$root' } );
 			setData( model, 'x[]x' );
 
 			model.change( writer => {
-				insertContent( data, new Text( 'a' ), doc.selection );
+				insertContent( model, new Text( 'a' ), doc.selection );
 				expect( writer.batch.deltas ).to.length( 1 );
 			} );
 		} );
@@ -36,13 +33,12 @@ describe( 'DataController utils', () => {
 			model = new Model();
 			doc = model.document;
 			doc.createRoot();
-			data = new DataController( model );
 
 			model.schema.allow( { name: '$text', inside: '$root' } );
 
 			setData( model, 'x[]x' );
 
-			insertContent( data, new DocumentFragment( [ new Text( 'a' ) ] ), doc.selection );
+			insertContent( model, new DocumentFragment( [ new Text( 'a' ) ] ), doc.selection );
 
 			expect( getData( model ) ).to.equal( 'xa[]x' );
 		} );
@@ -51,13 +47,12 @@ describe( 'DataController utils', () => {
 			model = new Model();
 			doc = model.document;
 			doc.createRoot();
-			data = new DataController( model );
 
 			model.schema.allow( { name: '$text', inside: '$root' } );
 
 			setData( model, 'x[]x' );
 
-			insertContent( data, new Text( 'a' ), doc.selection );
+			insertContent( model, new Text( 'a' ), doc.selection );
 
 			expect( getData( model ) ).to.equal( 'xa[]x' );
 		} );
@@ -66,7 +61,6 @@ describe( 'DataController utils', () => {
 			model = new Model();
 			doc = model.document;
 			doc.createRoot();
-			data = new DataController( model );
 
 			const content = new Element( 'image' );
 
@@ -76,7 +70,7 @@ describe( 'DataController utils', () => {
 
 			setData( model, '<paragraph>foo[]</paragraph>' );
 
-			insertContent( data, content, doc.selection );
+			insertContent( model, content, doc.selection );
 
 			expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).to.equal( content );
 		} );
@@ -86,7 +80,6 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -217,7 +210,6 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -289,7 +281,7 @@ describe( 'DataController utils', () => {
 				] );
 
 				setData( model, '[<heading2>foo</heading2>]' );
-				insertContent( data, content, doc.selection );
+				insertContent( model, content, doc.selection );
 				expect( getData( model ) ).to.equal( '<heading1>bar[]</heading1>' );
 			} );
 
@@ -590,7 +582,6 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -697,7 +688,6 @@ describe( 'DataController utils', () => {
 			model = new Model();
 			doc = model.document;
 			doc.createRoot();
-			data = new DataController( model );
 
 			const schema = model.schema;
 
@@ -764,6 +754,6 @@ describe( 'DataController utils', () => {
 			} );
 		}
 
-		insertContent( data, content, doc.selection );
+		insertContent( model, content, doc.selection );
 	}
 } );

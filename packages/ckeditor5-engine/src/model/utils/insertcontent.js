@@ -7,10 +7,10 @@
  * @module engine/controller/insertcontent
  */
 
-import Position from '../model/position';
-import LivePosition from '../model/liveposition';
-import Element from '../model/element';
-import Range from '../model/range';
+import Position from '../position';
+import LivePosition from '../liveposition';
+import Element from '../element';
+import Range from '../range';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
@@ -27,13 +27,13 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
  * @param {module:engine/model/selection~Selection} selection Selection into which the content should be inserted.
  */
-export default function insertContent( dataController, content, selection ) {
-	dataController.model.change( writer => {
+export default function insertContent( model, content, selection ) {
+	model.change( writer => {
 		if ( !selection.isCollapsed ) {
-			dataController.deleteContent( selection );
+			model.deleteContent( selection );
 		}
 
-		const insertion = new Insertion( dataController, writer, selection.anchor );
+		const insertion = new Insertion( model, writer, selection.anchor );
 
 		let nodesToInsert;
 
@@ -75,13 +75,13 @@ export default function insertContent( dataController, content, selection ) {
  * @private
  */
 class Insertion {
-	constructor( dataController, writer, position ) {
+	constructor( model, writer, position ) {
 		/**
-		 * The data controller in context of which the insertion should be performed.
+		 * The model in context of which the insertion should be performed.
 		 *
-		 * @member {module:engine/controller/datacontroller~DataController} #dataController
+		 * @member {module:engine/model~Model} #model
 		 */
-		this.dataController = dataController;
+		this.model = model;
 
 		/**
 		 * Batch to which deltas will be added.
@@ -115,7 +115,7 @@ class Insertion {
 		 *
 		 * @member {module:engine/model/schema~Schema} #schema
 		 */
-		this.schema = dataController.model.schema;
+		this.schema = model.schema;
 	}
 
 	/**
@@ -149,7 +149,7 @@ class Insertion {
 			return Range.createOn( this.nodeToSelect );
 		}
 
-		return this.dataController.model.document.getNearestSelectionRange( this.position );
+		return this.model.document.getNearestSelectionRange( this.position );
 	}
 
 	/**

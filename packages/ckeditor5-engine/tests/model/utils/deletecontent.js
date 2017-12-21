@@ -3,29 +3,27 @@
  * For licensing, see LICENSE.md.
  */
 
-import Model from '../../src/model/model';
-import Position from '../../src/model/position';
-import Range from '../../src/model/range';
-import Element from '../../src/model/element';
-import DataController from '../../src/controller/datacontroller';
-import deleteContent from '../../src/controller/deletecontent';
-import { setData, getData } from '../../src/dev-utils/model';
+import Model from '../../../src/model/model';
+import Position from '../../../src/model/position';
+import Range from '../../../src/model/range';
+import Element from '../../../src/model/element';
+import deleteContent from '../../../src/model/utils/deletecontent';
+import { setData, getData } from '../../../src/dev-utils/model';
 
 describe( 'DataController utils', () => {
-	let model, doc, data;
+	let model, doc;
 
 	describe( 'deleteContent', () => {
 		it( 'should use parent batch', () => {
 			model = new Model();
 			doc = model.document;
 			doc.createRoot();
-			data = new DataController( model );
 
 			model.schema.allow( { name: '$text', inside: '$root' } );
 			setData( model, 'x[abc]x' );
 
 			model.change( writer => {
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 				expect( writer.batch.deltas ).to.length( 1 );
 			} );
 		} );
@@ -35,7 +33,6 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -60,7 +57,7 @@ describe( 'DataController utils', () => {
 			it( 'deletes single character (backward selection)', () => {
 				setData( model, 'f[o]o', { lastRangeBackward: true } );
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model ) ).to.equal( 'f[]o' );
 			} );
@@ -101,7 +98,6 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -115,7 +111,7 @@ describe( 'DataController utils', () => {
 			it( 'deletes characters (first half has attrs)', () => {
 				setData( model, '<$text bold="true">fo[o</$text>b]ar' );
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model ) ).to.equal( '<$text bold="true">fo[]</$text>ar' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
@@ -124,7 +120,7 @@ describe( 'DataController utils', () => {
 			it( 'deletes characters (2nd half has attrs)', () => {
 				setData( model, 'fo[o<$text bold="true">b]ar</$text>' );
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model ) ).to.equal( 'fo[]<$text bold="true">ar</$text>' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.undefined;
@@ -133,7 +129,7 @@ describe( 'DataController utils', () => {
 			it( 'clears selection attrs when emptied content', () => {
 				setData( model, '<paragraph>x</paragraph><paragraph>[<$text bold="true">foo</$text>]</paragraph><paragraph>y</paragraph>' );
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model ) ).to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.undefined;
@@ -150,7 +146,7 @@ describe( 'DataController utils', () => {
 					}
 				);
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model ) ).to.equal( '<paragraph>x<$text bold="true">a[]b</$text>y</paragraph>' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
@@ -171,7 +167,6 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -226,7 +221,7 @@ describe( 'DataController utils', () => {
 					{ lastRangeBackward: true }
 				);
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model ) ).to.equal( '<paragraph>x</paragraph><heading1>fo[]ar</heading1><paragraph>y</paragraph>' );
 			} );
@@ -262,7 +257,7 @@ describe( 'DataController utils', () => {
 
 				model.change( writer => {
 					mergeSpy = sinon.spy( writer, 'merge' );
-					deleteContent( data, doc.selection );
+					deleteContent( model, doc.selection );
 				} );
 
 				expect( getData( model ) ).to.equal( '<paragraph>ab[]</paragraph>' );
@@ -277,7 +272,7 @@ describe( 'DataController utils', () => {
 
 				model.change( writer => {
 					mergeSpy = sinon.spy( writer, 'merge' );
-					deleteContent( data, doc.selection );
+					deleteContent( model, doc.selection );
 				} );
 
 				expect( getData( model ) ).to.equal( '<paragraph>ab[]</paragraph>' );
@@ -293,7 +288,7 @@ describe( 'DataController utils', () => {
 				model.change( writer => {
 					mergeSpy = sinon.spy( writer, 'merge' );
 					moveSpy = sinon.spy( writer, 'move' );
-					deleteContent( data, doc.selection );
+					deleteContent( model, doc.selection );
 				} );
 
 				expect( getData( model ) ).to.equal( '<paragraph>ab[]gh</paragraph>' );
@@ -346,7 +341,7 @@ describe( 'DataController utils', () => {
 
 					doc.selection.setRanges( [ range ] );
 
-					deleteContent( data, doc.selection );
+					deleteContent( model, doc.selection );
 
 					expect( getData( model ) )
 						.to.equal( '<pparent>x<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>y</pparent>' );
@@ -391,7 +386,7 @@ describe( 'DataController utils', () => {
 
 					doc.selection.setRanges( [ range ] );
 
-					deleteContent( data, doc.selection );
+					deleteContent( model, doc.selection );
 
 					expect( getData( model ) )
 						.to.equal( '<pparent>x<paragraph>foo<pchild>ba[]om</pchild></paragraph></pparent>' );
@@ -434,7 +429,7 @@ describe( 'DataController utils', () => {
 
 					doc.selection.setRanges( [ range ] );
 
-					deleteContent( data, doc.selection );
+					deleteContent( model, doc.selection );
 
 					expect( getData( model ) )
 						.to.equal( '<paragraph>fo[]</paragraph>' );
@@ -528,8 +523,6 @@ describe( 'DataController utils', () => {
 				// Special root which allows only blockWidgets inside itself.
 				doc.createRoot( 'restrictedRoot', 'restrictedRoot' );
 
-				data = new DataController( model );
-
 				const schema = model.schema;
 
 				schema.limits.add( 'restrictedRoot' );
@@ -557,7 +550,7 @@ describe( 'DataController utils', () => {
 					{ rootName: 'paragraphRoot' }
 				);
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model, { rootName: 'paragraphRoot' } ) )
 					.to.equal( 'x[]z' );
@@ -570,7 +563,7 @@ describe( 'DataController utils', () => {
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
@@ -583,7 +576,7 @@ describe( 'DataController utils', () => {
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
@@ -596,7 +589,7 @@ describe( 'DataController utils', () => {
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
@@ -609,7 +602,7 @@ describe( 'DataController utils', () => {
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
@@ -622,7 +615,7 @@ describe( 'DataController utils', () => {
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>[]</paragraph>' );
@@ -635,7 +628,7 @@ describe( 'DataController utils', () => {
 					{ rootName: 'restrictedRoot' }
 				);
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model, { rootName: 'restrictedRoot' } ) )
 					.to.equal( '<blockWidget></blockWidget>[]<blockWidget></blockWidget>' );
@@ -647,7 +640,6 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -705,7 +697,6 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -754,7 +745,6 @@ describe( 'DataController utils', () => {
 				model = new Model();
 				doc = model.document;
 				doc.createRoot();
-				data = new DataController( model );
 
 				const schema = model.schema;
 
@@ -832,7 +822,7 @@ describe( 'DataController utils', () => {
 					{ rootName: 'paragraphRoot' }
 				);
 
-				deleteContent( data, doc.selection );
+				deleteContent( model, doc.selection );
 
 				expect( getData( model, { rootName: 'paragraphRoot' } ) )
 					.to.equal( 'x[]z' );
@@ -852,7 +842,7 @@ describe( 'DataController utils', () => {
 			it( title, () => {
 				setData( model, input );
 
-				deleteContent( data, doc.selection, options );
+				deleteContent( model, doc.selection, options );
 
 				expect( getData( model ) ).to.equal( output );
 			} );
