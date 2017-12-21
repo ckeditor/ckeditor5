@@ -61,6 +61,16 @@ export default class Differ {
 		 * @type {Number}
 		 */
 		this._changeCount = 0;
+
+		/**
+		 * For efficiency purposes, stores the change set returned by the differ after {@link ~getChanges} call. Cache
+		 * is reset each time a new operation is buffered. If the cache has not been reset, {@link ~getChanges} will
+		 * return the cached value instead of calculating it again.
+		 *
+		 * @private
+		 * @type {Array.<Object>|null}
+		 */
+		this._cachedChanges = null;
 	}
 
 	/**
@@ -98,6 +108,9 @@ export default class Differ {
 
 				break;
 		}
+
+		// Clear cache after each buffered operation as it is no longer valid.
+		this._cachedChanges = null;
 	}
 
 	/**
@@ -168,9 +181,23 @@ export default class Differ {
 	 * the position on which the change happened. If a position {@link module:engine/model/position~Position#isBefore is before}
 	 * another one, it will be on an earlier index in the diff set.
 	 *
+	 * Because calculating diff is a costly operation, the result is cached. If no new operation was buffered since the
+	 * previous {@link ~getChanges} call, the next call with return the cached value.
+	 *
+	 * @params {Boolean} [includeChangesInGraveyard=false] If set to `true`, also changes that happened in graveyard root will be returned.
 	 * @returns {Array.<Object>} Diff between old and new model tree state.
 	 */
-	getChanges() {
+	getChanges( includeChangesInGraveyard = false ) {
+		if ( this._cachedChanges ) {
+			// If there are cached changes, just return them instead of calculating changes again.
+			if ( !includeChangesInGraveyard ) {
+				// Filter out graveyard changes.
+				return this._cachedChanges.slice().filter( _changesInGraveyardFilter );
+			}
+
+			return this._cachedChanges.slice();
+		}
+
 		// Will contain returned results.
 		const diffSet = [];
 
@@ -320,6 +347,14 @@ export default class Differ {
 
 		this._changeCount = 0;
 
+		// Cache all changes (even those in graveyard).
+		this._cachedChanges = diffSet.slice();
+
+		if ( !includeChangesInGraveyard ) {
+			// Return changes without changes in graveyard.
+			return diffSet.filter( _changesInGraveyardFilter );
+		}
+
 		return diffSet;
 	}
 
@@ -330,6 +365,7 @@ export default class Differ {
 		this._changesInElement.clear();
 		this._elementSnapshots.clear();
 		this._changedMarkers.clear();
+		this._cachedChanges = null;
 	}
 
 	/**
@@ -864,4 +900,12 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 	}
 
 	return actions;
+}
+
+// Filter callback for Array.filter that filters out change entries that are in graveyard.
+function _changesInGraveyardFilter( entry ) {
+	const posInGy = entry.position && entry.position.root.rootName == '$graveyard';
+	const rangeInGy = entry.range && entry.range.root.rootName == '$graveyard';
+
+	return !posInGy && !rangeInGy;
 }
