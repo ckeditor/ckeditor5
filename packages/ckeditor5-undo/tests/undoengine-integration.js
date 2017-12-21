@@ -958,7 +958,7 @@ describe( 'UndoEngine integration', () => {
 		it( 'deleteContent between two nodes', () => {
 			input( '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
 
-			editor.data.deleteContent( doc.selection );
+			editor.model.deleteContent( doc.selection );
 			output( '<paragraph>fo[]ar</paragraph>' );
 
 			editor.execute( 'undo' );

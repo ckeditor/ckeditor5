@@ -145,7 +145,7 @@ export default class BaseCommand extends Command {
 
 				// Reverse delta from the history.
 				const historyDeltas = Array.from( document.history.getDeltas( nextBaseVersion ) );
-				const transformedSets = document.transformDeltas( [ deltaToUndo.getReversed() ], historyDeltas, true );
+				const transformedSets = model.transformDeltas( [ deltaToUndo.getReversed() ], historyDeltas, true );
 				const reversedDeltas = transformedSets.deltasA;
 
 				// After reversed delta has been transformed by all history deltas, apply it.
