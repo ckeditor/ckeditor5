@@ -43,7 +43,7 @@ describe( 'FontSizeEditing', () => {
 	} );
 
 	describe( 'configuredItems', () => {
-		it( 'should discard falsy values', () => {
+		it( 'should discard unsupported values', () => {
 			return VirtualTestEditor
 				.create( {
 					plugins: [ FontSizeEditing ],
@@ -56,7 +56,7 @@ describe( 'FontSizeEditing', () => {
 
 					const plugin = editor.plugins.get( FontSizeEditing );
 
-					expect( plugin.configuredItems ).to.deep.equal( [] );
+					expect( plugin.configuredItems ).to.deep.equal( [ { title: 'Normal', model: 'normal' } ] );
 				} );
 		} );
 
@@ -65,7 +65,7 @@ describe( 'FontSizeEditing', () => {
 				.create( {
 					plugins: [ FontSizeEditing ],
 					fontSize: {
-						items: [ { label: 'My Size', model: 'my-size', view: { name: 'span', style: 'font-size: 12em;' } } ]
+						items: [ { title: 'My Size', model: 'my-size', view: { name: 'span', style: 'font-size: 12em;' } } ]
 					}
 				} )
 				.then( newEditor => {
@@ -75,7 +75,7 @@ describe( 'FontSizeEditing', () => {
 
 					expect( plugin.configuredItems ).to.deep.equal( [
 						{
-							label: 'My Size',
+							title: 'My Size',
 							model: 'my-size',
 							view: { name: 'span', style: 'font-size: 12em;' }
 						}
@@ -98,10 +98,11 @@ describe( 'FontSizeEditing', () => {
 						const plugin = editor.plugins.get( FontSizeEditing );
 
 						expect( plugin.configuredItems ).to.deep.equal( [
-							{ label: 'Tiny', model: 'text-tiny', view: { name: 'span', class: 'text-tiny' } },
-							{ label: 'Small', model: 'text-small', view: { name: 'span', class: 'text-small' } },
-							{ label: 'Big', model: 'text-big', view: { name: 'span', class: 'text-big' } },
-							{ label: 'Huge', model: 'text-huge', view: { name: 'span', class: 'text-huge' } }
+							{ title: 'Tiny', model: 'text-tiny', view: { name: 'span', class: 'text-tiny' } },
+							{ title: 'Small', model: 'text-small', view: { name: 'span', class: 'text-small' } },
+							{ title: 'Normal', model: 'normal' },
+							{ title: 'Big', model: 'text-big', view: { name: 'span', class: 'text-big' } },
+							{ title: 'Huge', model: 'text-huge', view: { name: 'span', class: 'text-huge' } }
 						] );
 					} );
 			} );
@@ -122,10 +123,11 @@ describe( 'FontSizeEditing', () => {
 						const plugin = editor.plugins.get( FontSizeEditing );
 
 						expect( plugin.configuredItems ).to.deep.equal( [
-							{ label: '10', model: '10', view: { name: 'span', style: { 'font-size': '10px' } } },
-							{ label: '12', model: '12', view: { name: 'span', style: { 'font-size': '12px' } } },
-							{ label: '14', model: '14', view: { name: 'span', style: { 'font-size': '14px' } } },
-							{ label: '18', model: '18', view: { name: 'span', style: { 'font-size': '18px' } } }
+							{ title: '10', model: '10', view: { name: 'span', style: { 'font-size': '10px' } } },
+							{ title: '12', model: '12', view: { name: 'span', style: { 'font-size': '12px' } } },
+							{ title: 'Normal', model: 'normal' },
+							{ title: '14', model: '14', view: { name: 'span', style: { 'font-size': '14px' } } },
+							{ title: '18', model: '18', view: { name: 'span', style: { 'font-size': '18px' } } }
 						] );
 					} );
 			} );
@@ -143,7 +145,7 @@ describe( 'FontSizeEditing', () => {
 							'normal',
 							18,
 							{
-								label: 'My setting',
+								title: 'My setting',
 								model: 'my',
 								view: {
 									name: 'mark',
@@ -197,7 +199,7 @@ describe( 'FontSizeEditing', () => {
 							'normal',
 							18,
 							{
-								label: 'My setting',
+								title: 'My setting',
 								model: 'my',
 								view: {
 									name: 'mark',
@@ -206,7 +208,7 @@ describe( 'FontSizeEditing', () => {
 								}
 							},
 							{
-								label: 'Big multiple classes',
+								title: 'Big multiple classes',
 								model: 'big-multiple',
 								view: {
 									name: 'span',
@@ -214,7 +216,7 @@ describe( 'FontSizeEditing', () => {
 								}
 							},
 							{
-								label: 'Hybrid',
+								title: 'Hybrid',
 								model: 'complex',
 								view: {
 									name: 'span',
