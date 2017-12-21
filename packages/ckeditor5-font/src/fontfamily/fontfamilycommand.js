@@ -58,7 +58,7 @@ export default class FontFamilyCommand extends Command {
 			const ranges = model.schema.getValidRanges( selection.getRanges(), 'fontFamily' );
 
 			for ( const range of ranges ) {
-				if ( value !== 'default' ) {
+				if ( value && value !== 'default' ) {
 					writer.setAttribute( 'fontFamily', value, range );
 				} else {
 					writer.removeAttribute( 'fontFamily', range );

@@ -57,7 +57,7 @@ export default class FontSizeCommand extends Command {
 			const ranges = model.schema.getValidRanges( selection.getRanges(), 'fontSize' );
 
 			for ( const range of ranges ) {
-				if ( value !== 'normal' ) {
+				if ( value && value !== 'normal' ) {
 					writer.setAttribute( 'fontSize', value, range );
 				} else {
 					writer.removeAttribute( 'fontSize', range );
