@@ -50,7 +50,7 @@ export function modelElementToViewContainerElement( definition, dispatchers ) {
 	buildModelConverter()
 		.for( ...dispatchers )
 		.fromElement( modelElement )
-		.toElement( () => ViewContainerElement.createFromDefinition( targetView ) );
+		.toElement( () => createViewElementFromDefinition( targetView, ViewContainerElement ) );
 }
 
 /**
@@ -155,7 +155,7 @@ export function modelAttributeToViewAttributeElement( attributeName, definition,
 				return;
 			}
 
-			return AttributeElement.createFromDefinition( targetView );
+			return createViewElementFromDefinition( targetView, AttributeElement );
 		} );
 }
 
@@ -267,6 +267,27 @@ function prepareViewConverter( dispatchers, viewDefinitions ) {
 	}
 
 	return converter;
+}
+
+// Creates view element instance from provided viewElementDefinition and class.
+//
+// @param {module:engine/view/viewelementdefinition~ViewElementDefinition} viewElementDefinition
+// @param {Function} ViewElementClass
+// @returns {module:engine/view/element~Element}
+function createViewElementFromDefinition( viewElementDefinition, ViewElementClass ) {
+	const element = new ViewElementClass( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attribute ) );
+
+	if ( viewElementDefinition.style ) {
+		element.setStyle( viewElementDefinition.style );
+	}
+
+	const classes = viewElementDefinition.class;
+
+	if ( classes ) {
+		element.addClass( ... typeof classes === 'string' ? [ classes ] : classes );
+	}
+
+	return element;
 }
 
 /**

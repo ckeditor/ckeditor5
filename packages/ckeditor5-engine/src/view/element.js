@@ -714,28 +714,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Creates element instance from provided viewElementDefinition.
-	 *
-	 * @param {module:engine/view/viewelementdefinition~ViewElementDefinition} viewElementDefinition
-	 * @returns {module:engine/view/element~Element}
-	 */
-	static createFromDefinition( viewElementDefinition ) {
-		const element = new this( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attribute ) );
-
-		if ( viewElementDefinition.style ) {
-			element.setStyle( viewElementDefinition.style );
-		}
-
-		const classes = viewElementDefinition.class;
-
-		if ( classes ) {
-			element.addClass( ... typeof classes === 'string' ? [ classes ] : classes );
-		}
-
-		return element;
-	}
-
-	/**
 	 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
 	 *
 	 * @abstract
