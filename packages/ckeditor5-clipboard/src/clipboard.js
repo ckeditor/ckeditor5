@@ -88,7 +88,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  *
  * The default action is to:
  *
- * 1. {@link module:engine/controller/datacontroller~DataController#getSelectedContent get selected content} from the editor,
+ * 1. {@link module:engine/model/model~Model#getSelectedContent get selected content} from the editor,
  * 2. prevent the default action of the native `copy` or `cut` event,
  * 3. fire {@link module:engine/view/document~Document#event:clipboardOutput} with a clone of the selected content
  * converted to a {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
