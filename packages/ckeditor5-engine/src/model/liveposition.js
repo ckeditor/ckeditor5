@@ -186,7 +186,13 @@ function transform( type, range, position ) {
 				transformed = this._getCombined( position, range.start );
 			} else {
 				const insertBefore = this.stickiness == 'sticksToNext';
-				transformed = this._getTransformedByMove( position, range.start, howMany, insertBefore );
+
+				// `Position._getTransformedByMove` is expecting `targetPosition` to be "before" move
+				// (before transformation). `range.start` is already after the move happened.
+				// We have to revert `targetPosition` to the state before the move.
+				const targetPosition = range.start._getTransformedByInsertion( position, howMany );
+
+				transformed = this._getTransformedByMove( position, targetPosition, howMany, insertBefore );
 			}
 			break;
 	}
