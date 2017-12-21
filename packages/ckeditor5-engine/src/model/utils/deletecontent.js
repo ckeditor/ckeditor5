@@ -14,7 +14,7 @@ import Range from '../range';
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
  *
- * @param {module:engine/controller/datacontroller~DataController} dataController The data controller in context of which the insertion
+ * @param {module:engine/model/model~Model} model The model in context of which the insertion
  * should be performed.
  * @param {module:engine/model/selection~Selection} selection Selection of which the content should be deleted.
  * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.

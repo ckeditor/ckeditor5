@@ -22,7 +22,7 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  * which change the {@link module:engine/model/model~Model#insertContent}
  * method's behavior.
  *
- * @param {module:engine/controller/datacontroller~DataController} dataController The data controller in context of which the insertion
+ * @param {module:engine/model/model~Model} model The model in context of which the insertion
  * should be performed.
  * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
  * @param {module:engine/model/selection~Selection} selection Selection into which the content should be inserted.

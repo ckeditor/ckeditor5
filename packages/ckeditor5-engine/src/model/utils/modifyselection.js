@@ -33,7 +33,7 @@ import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckedito
  *
  * **Note:** if you extend a forward selection in a backward direction you will in fact shrink it.
  *
- * @param {module:engine/controller/datacontroller~DataController} dataController The data controller in context of which
+ * @param {module:engine/model/model~Model} model The model in context of which
  * the selection modification should be performed.
  * @param {module:engine/model/selection~Selection} selection The selection to modify.
  * @param {Object} [options]
