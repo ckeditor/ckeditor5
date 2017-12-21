@@ -6,7 +6,7 @@
 /* globals ClassicEditor, console, window, document */
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-custom-heading-levels' ), {
+	.create( document.querySelector( '#snippet-custom-heading-elements' ), {
 		heading: {
 			options: [
 				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
