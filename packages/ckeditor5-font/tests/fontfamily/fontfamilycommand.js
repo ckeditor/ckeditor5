@@ -63,7 +63,7 @@ describe( 'FontFamilyCommand', () => {
 
 			expect( command.value ).to.be.undefined;
 
-			command.execute( { fontFamily: 'arial' } );
+			command.execute( { value: 'arial' } );
 
 			expect( command.value ).to.equal( 'arial' );
 
@@ -78,7 +78,7 @@ describe( 'FontFamilyCommand', () => {
 				'<paragraph>barbar]bar</paragraph>'
 			);
 
-			command.execute( { fontFamily: 'arial' } );
+			command.execute( { value: 'arial' } );
 
 			expect( command.value ).to.equal( 'arial' );
 
@@ -97,7 +97,7 @@ describe( 'FontFamilyCommand', () => {
 				'<paragraph><$text fontFamily="text-small">bar]bar</$text>bar</paragraph>'
 			);
 
-			command.execute( { fontFamily: 'arial' } );
+			command.execute( { value: 'arial' } );
 
 			expect( command.value ).to.equal( 'arial' );
 
@@ -113,7 +113,7 @@ describe( 'FontFamilyCommand', () => {
 
 			expect( command.value ).to.equal( 'arial' );
 
-			command.execute( { fontFamily: 'arial' } );
+			command.execute( { value: 'arial' } );
 
 			expect( getData( model ) ).to.equal( '<paragraph>abc<$text fontFamily="arial">foo[]bar</$text>xyz</paragraph>' );
 

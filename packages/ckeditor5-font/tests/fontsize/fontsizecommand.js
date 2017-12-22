@@ -63,7 +63,7 @@ describe( 'FontSizeCommand', () => {
 
 			expect( command.value ).to.be.undefined;
 
-			command.execute( { fontSize: 'huge' } );
+			command.execute( { value: 'huge' } );
 
 			expect( command.value ).to.equal( 'huge' );
 
@@ -78,7 +78,7 @@ describe( 'FontSizeCommand', () => {
 				'<paragraph>barbar]bar</paragraph>'
 			);
 
-			command.execute( { fontSize: 'huge' } );
+			command.execute( { value: 'huge' } );
 
 			expect( command.value ).to.equal( 'huge' );
 
@@ -97,7 +97,7 @@ describe( 'FontSizeCommand', () => {
 				'<paragraph><$text fontSize="text-small">bar]bar</$text>bar</paragraph>'
 			);
 
-			command.execute( { fontSize: 'huge' } );
+			command.execute( { value: 'huge' } );
 
 			expect( command.value ).to.equal( 'huge' );
 

@@ -7,62 +7,20 @@
  * @module font/fontsizecommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import FontCommand from '../fontcommand';
 
 /**
- * The font size command. It is used by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing FontSizeEditing feature}
+ * The font size command. It is used by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing}
  * to apply font size.
  *
  * @extends module:core/command~Command
  */
-export default class FontSizeCommand extends Command {
+export default class FontSizeCommand extends FontCommand {
 	/**
-	 * @inheritDoc
+	 * TODO: docs me
+	 * @param editor
 	 */
-	refresh() {
-		const model = this.editor.model;
-		const doc = model.document;
-
-		/**
-		 * A flag indicating whether the command is active, which means that the selection has fontSize attribute set.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} module:font/fontsizecommand~FontSizeCommand#value
-		 */
-		this.value = doc.selection.getAttribute( 'fontSize' );
-		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'fontSize' );
-	}
-
-	/**
-	 * Executes the command.
-	 *
-	 * @protected
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} [options.fontSize] FontSize value to apply.
-	 */
-	execute( options = {} ) {
-		const model = this.editor.model;
-		const document = model.document;
-		const selection = document.selection;
-
-		// Do not apply fontSize on collapsed selection.
-		if ( selection.isCollapsed ) {
-			return;
-		}
-
-		const value = options.fontSize;
-
-		model.change( writer => {
-			const ranges = model.schema.getValidRanges( selection.getRanges(), 'fontSize' );
-
-			for ( const range of ranges ) {
-				if ( value && value !== 'normal' ) {
-					writer.setAttribute( 'fontSize', value, range );
-				} else {
-					writer.removeAttribute( 'fontSize', range );
-				}
-			}
-		} );
+	constructor( editor ) {
+		super( editor, 'fontSize' );
 	}
 }
