@@ -37,7 +37,7 @@ describe( 'FontFamilyEditing', () => {
 	describe( 'config', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
-				expect( editor.config.get( 'fontFamily.items' ) ).to.deep.equal( [
+				expect( editor.config.get( 'fontFamily.options' ) ).to.deep.equal( [
 					'default',
 					'Arial, Helvetica, sans-serif',
 					'Courier New, Courier, monospace',
@@ -52,13 +52,13 @@ describe( 'FontFamilyEditing', () => {
 		} );
 	} );
 
-	describe( 'configuredItems', () => {
+	describe( 'configuredOptions', () => {
 		it( 'should discard unparsable values', () => {
 			return VirtualTestEditor
 				.create( {
 					plugins: [ FontFamilyEditing ],
 					fontFamily: {
-						items: [ () => {}, 0, true ]
+						options: [ () => {}, 0, true ]
 					}
 				} )
 				.then( newEditor => {
@@ -66,7 +66,7 @@ describe( 'FontFamilyEditing', () => {
 
 					const plugin = editor.plugins.get( FontFamilyEditing );
 
-					expect( plugin.configuredItems ).to.deep.equal( [] );
+					expect( plugin.configuredOptions ).to.deep.equal( [] );
 				} );
 		} );
 
@@ -75,7 +75,7 @@ describe( 'FontFamilyEditing', () => {
 				.create( {
 					plugins: [ FontFamilyEditing ],
 					fontFamily: {
-						items: [
+						options: [
 							'default',
 							{
 								title: 'Comic Sans',
@@ -95,7 +95,7 @@ describe( 'FontFamilyEditing', () => {
 
 					const plugin = editor.plugins.get( FontFamilyEditing );
 
-					expect( plugin.configuredItems ).to.deep.equal( [
+					expect( plugin.configuredOptions ).to.deep.equal( [
 						{
 							model: undefined,
 							title: 'Default'
@@ -120,7 +120,7 @@ describe( 'FontFamilyEditing', () => {
 					.create( {
 						plugins: [ FontFamilyEditing ],
 						fontFamily: {
-							items: [
+							options: [
 								'Arial',
 								'"Comic Sans MS", sans-serif',
 								'Lucida Console, \'Courier New\', Courier, monospace'
@@ -132,7 +132,7 @@ describe( 'FontFamilyEditing', () => {
 
 						const plugin = editor.plugins.get( FontFamilyEditing );
 
-						expect( plugin.configuredItems ).to.deep.equal( [
+						expect( plugin.configuredOptions ).to.deep.equal( [
 							{
 								title: 'Arial',
 								model: 'Arial',
@@ -207,7 +207,7 @@ describe( 'FontFamilyEditing', () => {
 				.create( {
 					plugins: [ FontFamilyEditing, Paragraph ],
 					fontFamily: {
-						items: [
+						options: [
 							'Arial',
 							'Lucida Sans Unicode, Lucida Grande, sans-serif',
 							{
@@ -260,7 +260,7 @@ describe( 'FontFamilyEditing', () => {
 				.create( {
 					plugins: [ FontFamilyEditing, Paragraph ],
 					fontFamily: {
-						items: [
+						options: [
 							'Lucida Sans Unicode, Lucida Grande, sans-serif',
 							{
 								title: 'My other setting',

@@ -105,9 +105,9 @@ export default class FontFamilyUI extends Plugin {
 		};
 
 		// TODO this is not nice :/ in terms of feature split.
-		const items = editor.plugins.get( FontFamilyEditing ).configuredItems;
+		const options = editor.plugins.get( FontFamilyEditing ).configuredOptions;
 
-		return items.map( option => {
+		return options.map( option => {
 			const title = localizedTitles[ option.title ];
 
 			if ( title && title != option.title ) {
