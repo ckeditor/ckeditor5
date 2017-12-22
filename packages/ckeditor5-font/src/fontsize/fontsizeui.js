@@ -32,8 +32,6 @@ export default class FontSizeUI extends Plugin {
 
 		const command = editor.commands.get( 'fontSize' );
 
-		const dropdownTooltip = t( 'Font Size' );
-
 		for ( const option of options ) {
 			const itemModel = new Model( {
 				commandName: 'fontSize',
@@ -51,7 +49,7 @@ export default class FontSizeUI extends Plugin {
 			icon: fontSizeIcon,
 			withText: false,
 			items: dropdownItems,
-			tooltip: dropdownTooltip
+			tooltip: t( 'Font Size' )
 		} );
 
 		dropdownModel.bind( 'isEnabled' ).to( command, 'isEnabled' );
