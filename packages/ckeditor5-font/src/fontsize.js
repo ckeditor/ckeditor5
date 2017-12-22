@@ -14,6 +14,8 @@ import FontSizeUI from './fontsize/fontsizeui';
 /**
  * The Font Size plugin.
  *
+ * It requires {@link module:font/fontsizeediting~FontSizeEditing} and {@link module:font/fontsizeui~FontSizeUI} plugins.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class FontSize extends Plugin {

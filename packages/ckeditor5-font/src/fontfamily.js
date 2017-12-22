@@ -12,7 +12,9 @@ import FontFamilyEditing from './fontfamily/fontfamilyediting';
 import FontFamilyUI from './fontfamily/fontfamilyui';
 
 /**
- * The Font Size plugin.
+ * The Font Family plugin.
+ *
+ * It requires {@link module:font/fontfamilyediting~FontFamilyEditing} and {@link module:font/fontfamilyui~FontFamilyUI} plugins.
  *
  * @extends module:core/plugin~Plugin
  */
