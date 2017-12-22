@@ -47,7 +47,7 @@ export default class FontFamilyEditing extends Plugin {
 		const editing = editor.editing;
 
 		// Add converters from view to model.
-		const items = this.configuredItems.filter( item => item.model !== 'default' );
+		const items = this.configuredItems.filter( item => item.model );
 
 		for ( const item of items ) {
 			viewToModelAttribute( 'fontFamily', item, [ data.viewToModel ] );
@@ -106,7 +106,7 @@ function getItemDefinition( item ) {
 	if ( item === 'default' ) {
 		return {
 			title: 'Default', // TODO localize us
-			model: 'default'
+			model: undefined
 		};
 	}
 

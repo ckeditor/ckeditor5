@@ -43,7 +43,7 @@ export default class FontSizeEditing extends Plugin {
 		const editing = editor.editing;
 
 		// Define view to model conversion.
-		const items = this.configuredItems.filter( item => item.model !== 'normal' );
+		const items = this.configuredItems.filter( item => item.model );
 
 		for ( const item of items ) {
 			// Covert view to model.
@@ -142,7 +142,7 @@ function getItemDefinition( item ) {
 
 	if ( item === 'normal' ) {
 		return {
-			model: 'normal',
+			model: undefined,
 			title: 'Normal'
 		};
 	}

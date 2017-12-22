@@ -70,7 +70,7 @@ export default class FontCommand extends Command {
 			const ranges = model.schema.getValidRanges( selection.getRanges(), this.attribute );
 
 			for ( const range of ranges ) {
-				if ( value && value !== 'default' ) {
+				if ( value ) {
 					writer.setAttribute( this.attribute, value, range );
 				} else {
 					writer.removeAttribute( this.attribute, range );

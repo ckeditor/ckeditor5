@@ -75,7 +75,7 @@ export default class FontFamilyUI extends Plugin {
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdown, 'execute', evt => {
-				editor.execute( evt.source.commandName, { fontFamily: evt.source.commandParam } );
+				editor.execute( evt.source.commandName, { value: evt.source.commandParam } );
 				editor.editing.view.focus();
 			} );
 

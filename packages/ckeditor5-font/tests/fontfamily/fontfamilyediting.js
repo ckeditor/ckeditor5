@@ -76,6 +76,7 @@ describe( 'FontFamilyEditing', () => {
 					plugins: [ FontFamilyEditing ],
 					fontFamily: {
 						items: [
+							'default',
 							{
 								title: 'Comic Sans',
 								model: 'comic',
@@ -95,6 +96,10 @@ describe( 'FontFamilyEditing', () => {
 					const plugin = editor.plugins.get( FontFamilyEditing );
 
 					expect( plugin.configuredItems ).to.deep.equal( [
+						{
+							model: undefined,
+							title: 'Default'
+						},
 						{
 							title: 'Comic Sans',
 							model: 'comic',

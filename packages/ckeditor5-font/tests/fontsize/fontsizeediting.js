@@ -56,7 +56,7 @@ describe( 'FontSizeEditing', () => {
 
 					const plugin = editor.plugins.get( FontSizeEditing );
 
-					expect( plugin.configuredItems ).to.deep.equal( [ { title: 'Normal', model: 'normal' } ] );
+					expect( plugin.configuredItems ).to.deep.equal( [ { title: 'Normal', model: undefined } ] );
 				} );
 		} );
 
@@ -100,7 +100,7 @@ describe( 'FontSizeEditing', () => {
 						expect( plugin.configuredItems ).to.deep.equal( [
 							{ title: 'Tiny', model: 'text-tiny', view: { name: 'span', class: 'text-tiny' } },
 							{ title: 'Small', model: 'text-small', view: { name: 'span', class: 'text-small' } },
-							{ title: 'Normal', model: 'normal' },
+							{ title: 'Normal', model: undefined },
 							{ title: 'Big', model: 'text-big', view: { name: 'span', class: 'text-big' } },
 							{ title: 'Huge', model: 'text-huge', view: { name: 'span', class: 'text-huge' } }
 						] );
@@ -125,7 +125,7 @@ describe( 'FontSizeEditing', () => {
 						expect( plugin.configuredItems ).to.deep.equal( [
 							{ title: '10', model: '10', view: { name: 'span', style: { 'font-size': '10px' } } },
 							{ title: '12', model: '12', view: { name: 'span', style: { 'font-size': '12px' } } },
-							{ title: 'Normal', model: 'normal' },
+							{ title: 'Normal', model: undefined },
 							{ title: '14', model: '14', view: { name: 'span', style: { 'font-size': '14px' } } },
 							{ title: '18', model: '18', view: { name: 'span', style: { 'font-size': '18px' } } }
 						] );
