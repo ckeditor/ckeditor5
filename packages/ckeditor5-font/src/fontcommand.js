@@ -4,28 +4,40 @@
  */
 
 /**
- * @module font/fontfamilycommand
+ * @module font/fontcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
- * The font family command. It is used by the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing}
- * to apply font family.
- *
- * TODO: those commands are duplicated here and there - maybe make them one?
+ * The base font command.
  *
  * @extends module:core/command~Command
  */
 export default class FontCommand extends Command {
 	/**
-	 * TODO: docs me
-	 * @param editor
-	 * @param attribute
+	 * Creates a new `FontCommand` instance.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {String} attribute Name of an model attribute on which this command operates.
 	 */
 	constructor( editor, attribute ) {
 		super( editor );
 
+		/**
+		 * If is set it means that selection has `attribute` set.
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {Boolean} module:font/fontcommand~FontCommand#value
+		 */
+
+		/**
+		 * A model attribute on which this command operates.
+		 *
+		 * @readonly
+		 * @member {Boolean} module:font/fontcommand~FontCommand#attribute
+		 */
 		this.attribute = attribute;
 	}
 
@@ -36,23 +48,18 @@ export default class FontCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		/**
-		 * A flag indicating whether the command is active, which means that the selection has fontFamily attribute set.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} module:font/fontfamilycommand~FontFamilyCommand#value
-		 */
 		this.value = doc.selection.getAttribute( this.attribute );
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, this.attribute );
 	}
 
 	/**
-	 * Executes the command.
+	 * Executes the command. Applies the the attribute `value` to a selection. If no value is passed it removes attribute from selection.
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.
 	 * @param {String} [options.value] a value to apply.
+	 *
+	 * @fires execute
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;

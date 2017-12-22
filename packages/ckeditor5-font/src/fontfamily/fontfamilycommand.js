@@ -4,7 +4,7 @@
  */
 
 /**
- * @module font/fontfamilycommand
+ * @module font/fontfamily/fontfamilycommand
  */
 
 import FontCommand from '../fontcommand';
@@ -17,8 +17,9 @@ import FontCommand from '../fontcommand';
  */
 export default class FontFamilyCommand extends FontCommand {
 	/**
-	 * TODO: docs me
-	 * @param editor
+	 * Creates a new `FontFamilyCommand` instance.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
 	 */
 	constructor( editor ) {
 		super( editor, 'fontFamily' );

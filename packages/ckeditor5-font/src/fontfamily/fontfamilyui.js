@@ -4,7 +4,7 @@
  */
 
 /**
- * @module heading/heading
+ * @module font/fontfamily/fontfamilyui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
