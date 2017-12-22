@@ -14,7 +14,7 @@ import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createl
 
 import FontFamilyEditing from './fontfamilyediting';
 
-import fontFamilyIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
+import fontFamilyIcon from '../../theme/icons/font-family.svg';
 
 /**
  * @extends module:core/plugin~Plugin

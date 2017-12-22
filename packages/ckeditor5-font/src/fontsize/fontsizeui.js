@@ -14,7 +14,7 @@ import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createl
 
 import FontSizeEditing from './fontsizeediting';
 
-import fontSizeIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
+import fontSizeIcon from '../../theme/icons/font-size.svg';
 
 /**
  * @extends module:core/plugin~Plugin

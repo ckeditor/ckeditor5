@@ -8,7 +8,7 @@
 import FontSizeEditing from '../../src/fontsize/fontsizeediting';
 import FontSizeUI from '../../src/fontsize/fontsizeui';
 
-import fontSizeIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
+import fontSizeIcon from '../../theme/icons/font-size.svg';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';

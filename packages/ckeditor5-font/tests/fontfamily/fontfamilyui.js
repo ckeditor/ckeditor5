@@ -8,7 +8,7 @@
 import FontFamilyEditing from '../../src/fontfamily/fontfamilyediting';
 import FontFamilyUI from '../../src/fontfamily/fontfamilyui';
 
-import fontFamilyIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
+import fontFamilyIcon from '../../theme/icons/font-family.svg';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
