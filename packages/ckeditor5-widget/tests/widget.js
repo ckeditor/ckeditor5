@@ -5,6 +5,7 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Widget from '../src/widget';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import { toWidget } from '../src/utils';
@@ -22,7 +23,7 @@ describe( 'Widget', () => {
 	let editor, model, doc, viewDocument;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( { plugins: [ Widget ] } )
+		return VirtualTestEditor.create( { plugins: [ Widget, Delete ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -245,431 +246,6 @@ describe( 'Widget', () => {
 	} );
 
 	describe( 'keys handling', () => {
-		describe( 'delete and backspace', () => {
-			test(
-				'should select widget when backspace is pressed',
-				'<widget></widget><paragraph>[]foo</paragraph>',
-				keyCodes.backspace,
-				'[<widget></widget>]<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should remove empty element after selecting widget when backspace is pressed',
-				'<widget></widget><paragraph>[]</paragraph>',
-				keyCodes.backspace,
-				'[<widget></widget>]'
-			);
-
-			test(
-				'should select widget when delete is pressed',
-				'<paragraph>foo[]</paragraph><widget></widget>',
-				keyCodes.delete,
-				'<paragraph>foo</paragraph>[<widget></widget>]'
-			);
-
-			test(
-				'should remove empty element after selecting widget when delete is pressed',
-				'<paragraph>[]</paragraph><widget></widget>',
-				keyCodes.delete,
-				'[<widget></widget>]'
-			);
-
-			test(
-				'should not respond to other keys',
-				'<widget></widget><paragraph>[]foo</paragraph>',
-				65,
-				'<widget></widget><paragraph>[]foo</paragraph>'
-			);
-
-			test(
-				'should do nothing on non-collapsed selection',
-				'<widget></widget><paragraph>[f]oo</paragraph>',
-				keyCodes.backspace,
-				'<widget></widget><paragraph>[f]oo</paragraph>'
-			);
-
-			test(
-				'should do nothing on non-object elements',
-				'<paragraph>foo</paragraph><paragraph>[]bar</paragraph>',
-				keyCodes.backspace,
-				'<paragraph>foo</paragraph><paragraph>[]bar</paragraph>'
-			);
-
-			test(
-				'should work correctly with modifier key: backspace + ctrl',
-				'<widget></widget><paragraph>[]foo</paragraph>',
-				{ keyCode: keyCodes.backspace, ctrlKey: true },
-				'[<widget></widget>]<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should work correctly with modifier key: backspace + alt',
-				'<widget></widget><paragraph>[]foo</paragraph>',
-				{ keyCode: keyCodes.backspace, altKey: true },
-				'[<widget></widget>]<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should work correctly with modifier key: backspace + shift',
-				'<widget></widget><paragraph>[]foo</paragraph>',
-				{ keyCode: keyCodes.backspace, shiftKey: true },
-				'[<widget></widget>]<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should work correctly with modifier key: delete + ctrl',
-				'<paragraph>foo[]</paragraph><widget></widget>',
-				{ keyCode: keyCodes.delete, ctrlKey: true },
-				'<paragraph>foo</paragraph>[<widget></widget>]'
-			);
-
-			test(
-				'should work correctly with modifier key: delete + alt',
-				'<paragraph>foo[]</paragraph><widget></widget>',
-				{ keyCode: keyCodes.delete, altKey: true },
-				'<paragraph>foo</paragraph>[<widget></widget>]'
-			);
-
-			test(
-				'should work correctly with modifier key: delete + shift',
-				'<paragraph>foo[]</paragraph><widget></widget>',
-				{ keyCode: keyCodes.delete, shiftKey: true },
-				'<paragraph>foo</paragraph>[<widget></widget>]'
-			);
-
-			test(
-				'should not modify backspace default behaviour in single paragraph boundaries',
-				'<paragraph>[]foo</paragraph>',
-				keyCodes.backspace,
-				'<paragraph>[]foo</paragraph>'
-			);
-
-			test(
-				'should not modify delete default behaviour in single paragraph boundaries',
-				'<paragraph>foo[]</paragraph>',
-				keyCodes.delete,
-				'<paragraph>foo[]</paragraph>'
-			);
-
-			test(
-				'should do nothing on selected widget preceded by a paragraph - backspace',
-				'<paragraph>foo</paragraph>[<widget></widget>]',
-				keyCodes.backspace,
-				'<paragraph>foo</paragraph>[<widget></widget>]'
-			);
-
-			test(
-				'should do nothing on selected widget preceded by another widget - backspace',
-				'<widget></widget>[<widget></widget>]',
-				keyCodes.backspace,
-				'<widget></widget>[<widget></widget>]'
-			);
-
-			test(
-				'should do nothing on selected widget before paragraph - backspace',
-				'[<widget></widget>]<paragraph>foo</paragraph>',
-				keyCodes.backspace,
-				'[<widget></widget>]<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should do nothing on selected widget before another widget - backspace',
-				'[<widget></widget>]<widget></widget>',
-				keyCodes.backspace,
-				'[<widget></widget>]<widget></widget>'
-			);
-
-			test(
-				'should do nothing on selected widget between paragraphs - backspace',
-				'<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>',
-				keyCodes.backspace,
-				'<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should do nothing on selected widget between other widgets - backspace',
-				'<widget></widget>[<widget></widget>]<widget></widget>',
-				keyCodes.backspace,
-				'<widget></widget>[<widget></widget>]<widget></widget>'
-			);
-
-			test(
-				'should do nothing on selected widget preceded by a paragraph - delete',
-				'<paragraph>foo</paragraph>[<widget></widget>]',
-				keyCodes.delete,
-				'<paragraph>foo</paragraph>[<widget></widget>]'
-			);
-
-			test(
-				'should do nothing on selected widget preceded by another widget - delete',
-				'<widget></widget>[<widget></widget>]',
-				keyCodes.delete,
-				'<widget></widget>[<widget></widget>]'
-			);
-
-			test(
-				'should do nothing on selected widget before paragraph - delete',
-				'[<widget></widget>]<paragraph>foo</paragraph>',
-				keyCodes.delete,
-				'[<widget></widget>]<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should do nothing on selected widget before another widget - delete',
-				'[<widget></widget>]<widget></widget>',
-				keyCodes.delete,
-				'[<widget></widget>]<widget></widget>'
-			);
-
-			test(
-				'should do nothing on selected widget between paragraphs - delete',
-				'<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>',
-				keyCodes.delete,
-				'<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should do nothing on selected widget between other widgets - delete',
-				'<widget></widget>[<widget></widget>]<widget></widget>',
-				keyCodes.delete,
-				'<widget></widget>[<widget></widget>]<widget></widget>'
-			);
-
-			test(
-				'should select inline objects - backspace',
-				'<paragraph>foo<inline></inline>[]bar</paragraph>',
-				keyCodes.backspace,
-				'<paragraph>foo[<inline></inline>]bar</paragraph>'
-			);
-
-			test(
-				'should select inline objects - delete',
-				'<paragraph>foo[]<inline></inline>bar</paragraph>',
-				keyCodes.delete,
-				'<paragraph>foo[<inline></inline>]bar</paragraph>'
-			);
-
-			test(
-				'should do nothing on selected inline objects - backspace',
-				'<paragraph>foo[<inline></inline>]bar</paragraph>',
-				keyCodes.backspace,
-				'<paragraph>foo[<inline></inline>]bar</paragraph>'
-			);
-
-			test(
-				'should do nothing on selected inline objects - delete',
-				'<paragraph>foo[<inline></inline>]bar</paragraph>',
-				keyCodes.delete,
-				'<paragraph>foo[<inline></inline>]bar</paragraph>'
-			);
-
-			test(
-				'should do nothing if selection is placed after first letter - backspace',
-				'<paragraph>a[]</paragraph>',
-				keyCodes.backspace,
-				'<paragraph>a[]</paragraph>'
-			);
-
-			test(
-				'should do nothing if selection is placed before first letter - delete',
-				'<paragraph>[]a</paragraph>',
-				keyCodes.delete,
-				'<paragraph>[]a</paragraph>'
-			);
-
-			it( 'should prevent default behaviour and stop event propagation', () => {
-				const keydownHandler = sinon.spy();
-				const domEventDataMock = {
-					keyCode: keyCodes.delete,
-					preventDefault: sinon.spy(),
-				};
-				setModelData( model, '<paragraph>foo[]</paragraph><widget></widget>' );
-				viewDocument.on( 'keydown', keydownHandler );
-
-				viewDocument.fire( 'keydown', domEventDataMock );
-
-				expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<widget></widget>]' );
-				sinon.assert.calledOnce( domEventDataMock.preventDefault );
-				sinon.assert.notCalled( keydownHandler );
-			} );
-
-			test(
-				'should remove the entire empty element if it is next to a widget',
-
-				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
-				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
-				'<paragraph>foo</paragraph>',
-
-				keyCodes.backspace,
-
-				'<paragraph>foo</paragraph>[<image></image>]<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should remove the entire empty element (deeper structure) if it is next to a widget',
-
-				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
-				'<blockQuote><div><div><paragraph>[]</paragraph></div></div></blockQuote>' +
-				'<paragraph>foo</paragraph>',
-
-				keyCodes.backspace,
-
-				'<paragraph>foo</paragraph>' +
-				'[<image></image>]' +
-				'<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should remove the entire empty element (deeper structure) if it is next to a widget (forward delete)',
-
-				'<paragraph>foo</paragraph>' +
-				'<blockQuote><div><div><paragraph>[]</paragraph></div></div></blockQuote>' +
-				'<image></image>' +
-				'<paragraph>foo</paragraph>',
-
-				keyCodes.delete,
-
-				'<paragraph>foo</paragraph>' +
-				'[<image></image>]' +
-				'<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should not remove the entire element which is not empty and the element is next to a widget',
-
-				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
-				'<blockQuote><paragraph>[]</paragraph><paragraph></paragraph></blockQuote>' +
-				'<paragraph>foo</paragraph>',
-
-				keyCodes.backspace,
-
-				'<paragraph>foo</paragraph>' +
-				'[<image></image>]' +
-				'<blockQuote><paragraph></paragraph></blockQuote>' +
-				'<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should not remove the entire element which is not empty and the element is next to a widget (forward delete)',
-
-				'<paragraph>foo</paragraph>' +
-				'<blockQuote><paragraph>Foo</paragraph><paragraph>[]</paragraph></blockQuote>' +
-				'<image></image>' +
-				'<paragraph>foo</paragraph>',
-
-				keyCodes.delete,
-
-				'<paragraph>foo</paragraph>' +
-				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
-				'[<image></image>]' +
-				'<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should not remove the entire element (deeper structure) which is not empty and the element is next to a widget',
-
-				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
-				'<blockQuote>' +
-					'<div>' +
-						'<div>' +
-							'<paragraph>[]</paragraph>' +
-						'</div>' +
-					'</div>' +
-					'<paragraph></paragraph>' +
-				'</blockQuote>' +
-				'<paragraph>foo</paragraph>',
-
-				keyCodes.backspace,
-
-				'<paragraph>foo</paragraph>' +
-				'[<image></image>]' +
-				'<blockQuote>' +
-					'<paragraph></paragraph>' +
-				'</blockQuote>' +
-				'<paragraph>foo</paragraph>'
-			);
-
-			test(
-				'should do nothing if the nested element is not empty and the element is next to a widget',
-
-				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
-				'<blockQuote>' +
-					'<div>' +
-						'<div>' +
-							'<paragraph>Foo[]</paragraph>' +
-						'</div>' +
-					'</div>' +
-				'</blockQuote>' +
-				'<paragraph>foo</paragraph>',
-
-				keyCodes.backspace,
-
-				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
-				'<blockQuote>' +
-					'<div>' +
-						'<div>' +
-							'<paragraph>Foo[]</paragraph>' +
-						'</div>' +
-					'</div>' +
-				'</blockQuote>' +
-				'<paragraph>foo</paragraph>'
-			);
-
-			it( 'does nothing when editor when read only mode is enabled (delete)', () => {
-				setModelData( model,
-					'<paragraph>foo</paragraph>' +
-					'<image></image>' +
-					'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
-					'<paragraph>foo</paragraph>'
-				);
-
-				editor.isReadOnly = true;
-
-				viewDocument.fire( 'keydown', new DomEventData(
-					viewDocument,
-					{ target: document.createElement( 'div' ), preventDefault: () => {} },
-					{ keyCode: keyCodes.backspace }
-				) );
-
-				expect( getModelData( model ) ).to.equal(
-					'<paragraph>foo</paragraph>' +
-					'<image></image>' +
-					'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
-					'<paragraph>foo</paragraph>'
-				);
-			} );
-
-			it( 'does nothing when editor when read only mode is enabled (forward delete)', () => {
-				setModelData( model,
-					'<paragraph>foo</paragraph>' +
-					'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
-					'<image></image>' +
-					'<paragraph>foo</paragraph>'
-				);
-
-				editor.isReadOnly = true;
-
-				viewDocument.fire( 'keydown', new DomEventData(
-					viewDocument,
-					{ target: document.createElement( 'div' ), preventDefault: () => {} },
-					{ keyCode: keyCodes.delete }
-				) );
-
-				expect( getModelData( model ) ).to.equal(
-					'<paragraph>foo</paragraph>' +
-					'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
-					'<image></image>' +
-					'<paragraph>foo</paragraph>'
-				);
-			} );
-		} );
-
 		describe( 'arrows', () => {
 			test(
 				'should move selection forward from selected object - right arrow',
@@ -780,6 +356,13 @@ describe( 'Widget', () => {
 				'should not move selection if there is no correct location - up arrow',
 				'[<widget></widget>]<paragraph>foo</paragraph>',
 				keyCodes.arrowup,
+				'[<widget></widget>]<paragraph>foo</paragraph>'
+			);
+
+			test(
+				'should do nothing if other key is pressed',
+				'[<widget></widget>]<paragraph>foo</paragraph>',
+				keyCodes.a,
 				'[<widget></widget>]<paragraph>foo</paragraph>'
 			);
 
@@ -1120,5 +703,408 @@ describe( 'Widget', () => {
 				}
 			} );
 		}
+	} );
+
+	describe( 'delete integration', () => {
+		function test( name, input, direction, expected ) {
+			it( name, () => {
+				setModelData( model, input );
+				const scrollStub = sinon.stub( viewDocument, 'scrollToTheSelection' );
+
+				viewDocument.fire( 'delete', new DomEventData(
+					viewDocument,
+					{ target: document.createElement( 'div' ), preventDefault: () => {} },
+					{ direction, unit: 'character', sequence: 0 }
+				) );
+
+				expect( getModelData( model ) ).to.equal( expected );
+				scrollStub.restore();
+			} );
+		}
+
+		test(
+			'should select widget when backspace is pressed',
+			'<widget></widget><paragraph>[]foo</paragraph>',
+			'backward',
+			'[<widget></widget>]<paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should remove empty element after selecting widget when backspace is pressed',
+			'<widget></widget><paragraph>[]</paragraph>',
+			'backward',
+			'[<widget></widget>]'
+		);
+
+		test(
+			'should select widget when delete is pressed',
+			'<paragraph>foo[]</paragraph><widget></widget>',
+			'forward',
+			'<paragraph>foo</paragraph>[<widget></widget>]'
+		);
+
+		test(
+			'should remove empty element after selecting widget when delete is pressed',
+			'<paragraph>[]</paragraph><widget></widget>',
+			'forward',
+			'[<widget></widget>]'
+		);
+
+		test(
+			'should not select widget on non-collapsed selection',
+			'<widget></widget><paragraph>[f]oo</paragraph>',
+			'backward',
+			'<widget></widget><paragraph>[]oo</paragraph>'
+		);
+
+		test(
+			'should not affect non-object elements',
+			'<paragraph>foo</paragraph><paragraph>[]bar</paragraph>',
+			'backward',
+			'<paragraph>foo[]bar</paragraph>'
+		);
+
+		test(
+			'should not modify backward delete default behaviour in single paragraph boundaries',
+			'<paragraph>[]foo</paragraph>',
+			'backward',
+			'<paragraph>[]foo</paragraph>'
+		);
+
+		test(
+			'should not modify forward delete default behaviour in single paragraph boundaries',
+			'<paragraph>foo[]</paragraph>',
+			'forward',
+			'<paragraph>foo[]</paragraph>'
+		);
+
+		test(
+			'should delete selected widget with paragraph before - backward',
+			'<paragraph>foo</paragraph>[<widget></widget>]',
+			'backward',
+			'<paragraph>foo</paragraph><paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should delete selected widget with paragraph before - forward',
+			'<paragraph>foo</paragraph>[<widget></widget>]',
+			'forward',
+			'<paragraph>foo</paragraph><paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should delete selected widget with paragraph after - backward',
+			'[<widget></widget>]<paragraph>foo</paragraph>',
+			'backward',
+			'<paragraph>[]</paragraph><paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should delete selected widget with paragraph after - forward',
+			'[<widget></widget>]<paragraph>foo</paragraph>',
+			'forward',
+			'<paragraph>[]</paragraph><paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should delete selected widget between paragraphs - backward',
+			'<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>',
+			'backward',
+			'<paragraph>bar</paragraph><paragraph>[]</paragraph><paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should delete selected widget between paragraphs - forward',
+			'<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>',
+			'forward',
+			'<paragraph>bar</paragraph><paragraph>[]</paragraph><paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should delete selected widget preceded by another widget - backward',
+			'<widget></widget>[<widget></widget>]',
+			'backward',
+			'<widget></widget><paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should delete selected widget preceded by another widget - forward',
+			'<widget></widget>[<widget></widget>]',
+			'forward',
+			'<widget></widget><paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should delete selected widget before another widget - forward',
+			'[<widget></widget>]<widget></widget>',
+			'forward',
+			'<paragraph>[]</paragraph><widget></widget>'
+		);
+
+		test(
+			'should delete selected widget before another widget - backward',
+			'[<widget></widget>]<widget></widget>',
+			'backward',
+			'<paragraph>[]</paragraph><widget></widget>'
+		);
+
+		test(
+			'should delete selected widget between other widgets - forward',
+			'<widget></widget>[<widget></widget>]<widget></widget>',
+			'forward',
+			'<widget></widget><paragraph>[]</paragraph><widget></widget>'
+		);
+
+		test(
+			'should delete selected widget between other widgets - backward',
+			'<widget></widget>[<widget></widget>]<widget></widget>',
+			'backward',
+			'<widget></widget><paragraph>[]</paragraph><widget></widget>'
+		);
+
+		test(
+			'should select inline objects - backward',
+			'<paragraph>foo<inline></inline>[]bar</paragraph>',
+			'backward',
+			'<paragraph>foo[<inline></inline>]bar</paragraph>'
+		);
+
+		test(
+			'should select inline objects - forward',
+			'<paragraph>foo[]<inline></inline>bar</paragraph>',
+			'forward',
+			'<paragraph>foo[<inline></inline>]bar</paragraph>'
+		);
+
+		test(
+			'should delete selected inline objects - backward',
+			'<paragraph>foo[<inline></inline>]bar</paragraph>',
+			'backward',
+			'<paragraph>foo[]bar</paragraph>'
+		);
+
+		test(
+			'should delete selected inline objects - forward',
+			'<paragraph>foo[<inline></inline>]bar</paragraph>',
+			'forward',
+			'<paragraph>foo[]bar</paragraph>'
+		);
+
+		test(
+			'should use standard delete behaviour when after first letter - backward',
+			'<paragraph>a[]</paragraph>',
+			'backward',
+			'<paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should use standard delete behaviour when before first letter - forward',
+			'<paragraph>[]a</paragraph>',
+			'forward',
+			'<paragraph>[]</paragraph>'
+		);
+
+		it( 'should prevent default behaviour and stop event propagation', () => {
+			setModelData( model, '<paragraph>foo[]</paragraph><widget></widget>' );
+			const scrollStub = sinon.stub( viewDocument, 'scrollToTheSelection' );
+			const deleteSpy = sinon.spy();
+
+			viewDocument.on( 'delete', deleteSpy );
+			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
+
+			viewDocument.fire( 'delete', new DomEventData(
+				viewDocument,
+				domEventDataMock,
+				{ direction: 'forward', unit: 'character', sequence: 0 }
+			) );
+
+			sinon.assert.calledOnce( domEventDataMock.preventDefault );
+			sinon.assert.notCalled( deleteSpy );
+			scrollStub.restore();
+		} );
+
+		test(
+			'should remove the entire empty element if it is next to a widget',
+
+			'<paragraph>foo</paragraph>' +
+			'<image></image>' +
+			'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
+			'<paragraph>foo</paragraph>',
+
+			'backward',
+
+			'<paragraph>foo</paragraph>[<image></image>]<paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should remove the entire empty element (deeper structure) if it is next to a widget',
+
+			'<paragraph>foo</paragraph>' +
+			'<image></image>' +
+			'<blockQuote><div><div><paragraph>[]</paragraph></div></div></blockQuote>' +
+			'<paragraph>foo</paragraph>',
+
+			'backward',
+
+			'<paragraph>foo</paragraph>' +
+			'[<image></image>]' +
+			'<paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should remove the entire empty element (deeper structure) if it is next to a widget (forward delete)',
+
+			'<paragraph>foo</paragraph>' +
+			'<blockQuote><div><div><paragraph>[]</paragraph></div></div></blockQuote>' +
+			'<image></image>' +
+			'<paragraph>foo</paragraph>',
+
+			'forward',
+
+			'<paragraph>foo</paragraph>' +
+			'[<image></image>]' +
+			'<paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should not remove the entire element which is not empty and the element is next to a widget',
+
+			'<paragraph>foo</paragraph>' +
+			'<image></image>' +
+			'<blockQuote><paragraph>[]</paragraph><paragraph></paragraph></blockQuote>' +
+			'<paragraph>foo</paragraph>',
+
+			'backward',
+
+			'<paragraph>foo</paragraph>' +
+			'[<image></image>]' +
+			'<blockQuote><paragraph></paragraph></blockQuote>' +
+			'<paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should not remove the entire element which is not empty and the element is next to a widget (forward delete)',
+
+			'<paragraph>foo</paragraph>' +
+			'<blockQuote><paragraph>Foo</paragraph><paragraph>[]</paragraph></blockQuote>' +
+			'<image></image>' +
+			'<paragraph>foo</paragraph>',
+
+			'forward',
+
+			'<paragraph>foo</paragraph>' +
+			'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+			'[<image></image>]' +
+			'<paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should not remove the entire element (deeper structure) which is not empty and the element is next to a widget',
+
+			'<paragraph>foo</paragraph>' +
+			'<image></image>' +
+			'<blockQuote>' +
+			'<div>' +
+			'<div>' +
+			'<paragraph>[]</paragraph>' +
+			'</div>' +
+			'</div>' +
+			'<paragraph></paragraph>' +
+			'</blockQuote>' +
+			'<paragraph>foo</paragraph>',
+
+			'backward',
+
+			'<paragraph>foo</paragraph>' +
+			'[<image></image>]' +
+			'<blockQuote>' +
+			'<paragraph></paragraph>' +
+			'</blockQuote>' +
+			'<paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should do nothing if the nested element is not empty and the element is next to a widget',
+
+			'<paragraph>foo</paragraph>' +
+			'<image></image>' +
+			'<blockQuote>' +
+			'<div>' +
+			'<div>' +
+			'<paragraph>Foo[]</paragraph>' +
+			'</div>' +
+			'</div>' +
+			'</blockQuote>' +
+			'<paragraph>foo</paragraph>',
+
+			'backward',
+
+			'<paragraph>foo</paragraph>' +
+			'<image></image>' +
+			'<blockQuote>' +
+			'<div>' +
+			'<div>' +
+			'<paragraph>Fo[]</paragraph>' +
+			'</div>' +
+			'</div>' +
+			'</blockQuote>' +
+			'<paragraph>foo</paragraph>'
+		);
+
+		it( 'does nothing when editor when read only mode is enabled (delete)', () => {
+			const scrollStub = sinon.stub( viewDocument, 'scrollToTheSelection' );
+			setModelData( model,
+				'<paragraph>foo</paragraph>' +
+				'<image></image>' +
+				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
+				'<paragraph>foo</paragraph>'
+			);
+
+			editor.isReadOnly = true;
+
+			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
+
+			viewDocument.fire( 'delete', new DomEventData(
+				viewDocument,
+				domEventDataMock,
+				{ direction: 'backward', unit: 'character', sequence: 0 }
+			) );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<image></image>' +
+				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
+				'<paragraph>foo</paragraph>'
+			);
+			scrollStub.restore();
+		} );
+
+		it( 'does nothing when editor when read only mode is enabled (forward delete)', () => {
+			const scrollStub = sinon.stub( viewDocument, 'scrollToTheSelection' );
+			setModelData( model,
+				'<paragraph>foo</paragraph>' +
+				'<image></image>' +
+				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
+				'<paragraph>foo</paragraph>'
+			);
+
+			editor.isReadOnly = true;
+
+			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
+
+			viewDocument.fire( 'delete', new DomEventData(
+				viewDocument,
+				domEventDataMock,
+				{ direction: 'forward', unit: 'character', sequence: 0 }
+			) );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<image></image>' +
+				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
+				'<paragraph>foo</paragraph>'
+			);
+			scrollStub.restore();
+		} );
 	} );
 } );
