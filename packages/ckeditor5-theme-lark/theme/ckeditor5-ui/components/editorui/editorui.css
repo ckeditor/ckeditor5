@@ -31,19 +31,18 @@
 	}
 
 	& > .ck-button,
-	& .ck-buttondropdown .ck-dropdown__button {
+	& .ck-dropdown .ck-dropdown__button {
 		&:not(:hover):not(:focus):not(.ck-on),
 		&.ck-disabled {
 			background: var(--ck-color-editor-toolbar-background);
 		}
 
-		&.ck-on {
+		&.ck-on:not(.ck-button_with-text) {
 			@mixin ck-button-colors --ck-color-editor-toolbar-button-on;
 		}
 	}
 
-	/* Exclude main button dropdown button */
-	& .ck-dropdown:not(.ck-buttondropdown) .ck-dropdown__button {
+	& .ck-dropdown .ck-dropdown__button.ck-button_with-text {
 		border-width: 1px;
 
 		&:not(:hover):not(:focus):not(.ck-on) {
