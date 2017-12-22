@@ -13,6 +13,7 @@
     "@ckeditor/ckeditor5-theme-lark": "^1.0.0-alpha.2"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-typing": "^1.0.0-alpha.2",
     "eslint": "^4.8.0",
     "eslint-config-ckeditor5": "^1.0.7",
     "husky": "^0.14.3",
