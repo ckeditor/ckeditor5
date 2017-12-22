@@ -4,11 +4,12 @@
  */
 
 import Font from './../src/font';
+import FontFamily from './../src/fontfamily';
 import FontSize from './../src/fontsize';
 
 describe( 'Font', () => {
 	it( 'requires FontSize', () => {
-		expect( Font.requires ).to.deep.equal( [ FontSize ] );
+		expect( Font.requires ).to.deep.equal( [ FontFamily, FontSize ] );
 	} );
 
 	it( 'defines plugin name', () => {
