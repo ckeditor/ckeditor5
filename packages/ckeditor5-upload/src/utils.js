@@ -29,7 +29,7 @@ export function isImageType( file ) {
  * position after this paragraph will be returned.
  *
  * Note: If selection is placed in an empty block, that block will be returned. If that position
- * is then passed to {@link module:engine/controller/datacontroller~DataController#insertContent}
+ * is then passed to {@link module:engine/model/model~Model#insertContent}
  * that block will be fully replaced by the image.
  *
  * @param {module:engine/model/selection~Selection} selection Selection based on which the

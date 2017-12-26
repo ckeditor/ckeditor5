@@ -57,7 +57,7 @@ export default class ImageUploadCommand extends Command {
 				insertAtSelection = doc.selection;
 			}
 
-			editor.data.insertContent( imageElement, insertAtSelection );
+			editor.model.insertContent( imageElement, insertAtSelection );
 
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
