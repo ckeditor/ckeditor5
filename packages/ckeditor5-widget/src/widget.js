@@ -84,6 +84,14 @@ export default class Widget extends Plugin {
 
 		// Handle custom keydown behaviour.
 		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: 'high' } );
+
+		// Handle custom delete behaviour.
+		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+			if ( this._handleDelete( data.direction == 'forward' ) ) {
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -141,9 +149,7 @@ export default class Widget extends Plugin {
 
 		// Checks if the keys were handled and then prevents the default event behaviour and stops
 		// the propagation.
-		if ( isDeleteKeyCode( keyCode ) ) {
-			wasHandled = this._handleDelete( isForward );
-		} else if ( isArrowKeyCode( keyCode ) ) {
+		if ( isArrowKeyCode( keyCode ) ) {
 			wasHandled = this._handleArrowKeys( isForward );
 		} else if ( isSelectAllKeyCode( domEventData ) ) {
 			wasHandled = this._selectAllNestedEditableContent() || this._selectAllContent();
@@ -354,14 +360,6 @@ function isArrowKeyCode( keyCode ) {
 		keyCode == keyCodes.arrowleft ||
 		keyCode == keyCodes.arrowup ||
 		keyCode == keyCodes.arrowdown;
-}
-
-// Returns 'true' if provided key code represents one of the delete keys: delete or backspace.
-//
-// @param {Number} keyCode
-// @returns {Boolean}
-function isDeleteKeyCode( keyCode ) {
-	return keyCode == keyCodes.delete || keyCode == keyCodes.backspace;
 }
 
 // Returns 'true' if provided (DOM) key event data corresponds with the Ctrl+A keystroke.
