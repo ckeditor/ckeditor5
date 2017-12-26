@@ -202,6 +202,78 @@ describe( 'Schema', () => {
 		// TODO
 	} );
 
+	describe( 'isRegistered()', () => {
+		it( 'returns true if an item was registered', () => {
+			schema.register( 'foo' );
+
+			expect( schema.isRegistered( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'returns false if an item was not registered', () => {
+			expect( schema.isRegistered( 'foo' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isBlock()', () => {
+		it( 'returns true if an item was registered as a block', () => {
+			schema.register( 'foo', {
+				isBlock: true
+			} );
+
+			expect( schema.isBlock( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'returns false if an item was not registered as a block', () => {
+			schema.register( 'foo' );
+
+			expect( schema.isBlock( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'returns false if an item was not registered at all', () => {
+			expect( schema.isBlock( 'foo' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isLimit()', () => {
+		it( 'returns true if an item was registered as a limit element', () => {
+			schema.register( 'foo', {
+				isLimit: true
+			} );
+
+			expect( schema.isLimit( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'returns false if an item was not registered as a limit element', () => {
+			schema.register( 'foo' );
+
+			expect( schema.isLimit( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'returns false if an item was not registered at all', () => {
+			expect( schema.isLimit( 'foo' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isObject()', () => {
+		it( 'returns true if an item was registered as an object', () => {
+			schema.register( 'foo', {
+				isObject: true
+			} );
+
+			expect( schema.isObject( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'returns false if an item was not registered as an object', () => {
+			schema.register( 'foo' );
+
+			expect( schema.isObject( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'returns false if an item was not registered at all', () => {
+			expect( schema.isObject( 'foo' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'checkChild()', () => {
 		describe( 'allowIn cases', () => {
 			it( 'passes $root>paragraph', () => {

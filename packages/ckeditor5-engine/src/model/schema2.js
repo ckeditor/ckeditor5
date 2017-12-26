@@ -81,6 +81,28 @@ export default class Schema {
 		return this.getRules()[ itemName ];
 	}
 
+	isRegistered( itemName ) {
+		return !!this.getRule( itemName );
+	}
+
+	isBlock( itemName ) {
+		const rule = this.getRule( itemName );
+
+		return !!( rule && rule.isBlock );
+	}
+
+	isLimit( itemName ) {
+		const rule = this.getRule( itemName );
+
+		return !!( rule && rule.isLimit );
+	}
+
+	isObject( itemName ) {
+		const rule = this.getRule( itemName );
+
+		return !!( rule && rule.isObject );
+	}
+
 	checkChild( context, child ) {
 		const rule = this.getRule( child );
 
