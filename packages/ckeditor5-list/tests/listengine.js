@@ -3061,7 +3061,7 @@ describe( 'ListEngine', () => {
 				'<listItem type="bulleted" indent="2">C</listItem>'
 			);
 
-			editor.data.insertContent(
+			editor.model.insertContent(
 				parseModel(
 					'<listItem type="bulleted" indent="0">X</listItem>' +
 					'<listItem type="bulleted" indent="1">Y</listItem>',
@@ -3086,7 +3086,7 @@ describe( 'ListEngine', () => {
 				'<listItem type="bulleted" indent="2">C</listItem>'
 			);
 
-			editor.data.insertContent(
+			editor.model.insertContent(
 				new ModelElement( 'listItem', { type: 'bulleted', indent: '0' }, 'X' ),
 				modelDoc.selection
 			);
@@ -3106,7 +3106,7 @@ describe( 'ListEngine', () => {
 				'<listItem type="bulleted" indent="2">C</listItem>'
 			);
 
-			editor.data.insertContent(
+			editor.model.insertContent(
 				new ModelText( 'X' ),
 				modelDoc.selection
 			);
@@ -3247,7 +3247,7 @@ describe( 'ListEngine', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
 
 			expect( () => {
-				editor.data.insertContent( new ModelDocumentFragment(), modelDoc.selection );
+				editor.model.insertContent( new ModelDocumentFragment(), modelDoc.selection );
 			} ).not.to.throw();
 		} );
 

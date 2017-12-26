@@ -737,7 +737,7 @@ function _fixItemsType( changePosition, model, batch ) {
  *		<listItem type="bulleted" indent=2>C</listItem>
  *
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Array} args Arguments of {@link module:engine/controller/datacontroller~DataController#insertContent}.
+ * @param {Array} args Arguments of {@link module:engine/model/model~Model#insertContent}.
  */
 export function modelIndentPasteFixer( evt, [ content, selection ] ) {
 	// Check whether inserted content starts from a `listItem`. If it does not, it means that there are some other
