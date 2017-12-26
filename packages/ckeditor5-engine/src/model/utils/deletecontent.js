@@ -4,17 +4,17 @@
  */
 
 /**
- * @module engine/controller/deletecontent
+ * @module engine/model/utils/deletecontent
  */
 
-import LivePosition from '../model/liveposition';
-import Position from '../model/position';
-import Range from '../model/range';
+import LivePosition from '../liveposition';
+import Position from '../position';
+import Range from '../range';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
  *
- * @param {module:engine/controller/datacontroller~DataController} dataController The data controller in context of which the insertion
+ * @param {module:engine/model/model~Model} model The model in context of which the insertion
  * should be performed.
  * @param {module:engine/model/selection~Selection} selection Selection of which the content should be deleted.
  * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
@@ -37,14 +37,14 @@ import Range from '../model/range';
  * * `<paragraph>^</paragraph>` with the option disabled (`doNotResetEntireContent == false`)
  * * `<heading>^</heading>` with enabled (`doNotResetEntireContent == true`).
  */
-export default function deleteContent( dataController, selection, options = {} ) {
+export default function deleteContent( model, selection, options = {} ) {
 	if ( selection.isCollapsed ) {
 		return;
 	}
 
-	const schema = dataController.model.schema;
+	const schema = model.schema;
 
-	dataController.model.change( writer => {
+	model.change( writer => {
 		// 1. Replace the entire content with paragraph.
 		// See: https://github.com/ckeditor/ckeditor5-engine/issues/1012#issuecomment-315017594.
 		if ( !options.doNotResetEntireContent && shouldEntireContentBeReplacedWithParagraph( schema, selection ) ) {

@@ -4,11 +4,11 @@
  */
 
 /**
- * @module engine/controller/getselectedcontent
+ * @module engine/model/utils/getselectedcontent
  */
 
-import Range from '../model/range';
-import Position from '../model/position';
+import Range from '../range';
+import Position from '../position';
 
 /**
  * Gets a clone of the selected content.
@@ -21,13 +21,13 @@ import Position from '../model/position';
  *
  *		<quote><h>st</h></quote><p>se</p>
  *
- * @param {module:engine/controller/datacontroller~DataController} dataController The data controller in context of which
+ * @param {module:engine/model/model~Model} model The model in context of which
  * the selection modification should be performed.
  * @param {module:engine/model/selection~Selection} selection The selection of which content will be returned.
  * @returns {module:engine/model/documentfragment~DocumentFragment}
  */
-export default function getSelectedContent( dataController, selection ) {
-	return dataController.model.change( writer => {
+export default function getSelectedContent( model, selection ) {
+	return model.change( writer => {
 		const frag = writer.createDocumentFragment();
 		const range = selection.getFirstRange();
 

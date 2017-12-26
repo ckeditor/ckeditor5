@@ -7,6 +7,10 @@
  * @module engine/model/model
  */
 
+// Load all basic deltas and transformations, they register themselves.
+import './delta/basic-deltas';
+import './delta/basic-transformations';
+
 import Batch from './batch';
 import Writer from './writer';
 import Schema from './schema';
@@ -14,6 +18,14 @@ import Document from './document';
 import MarkerCollection from './markercollection';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import deltaTransform from './delta/transform';
+import ModelElement from './element';
+import ModelRange from './range';
+
+import insertContent from './utils/insertcontent';
+import deleteContent from './utils/deletecontent';
+import modifySelection from './utils/modifyselection';
+import getSelectedContent from './utils/getselectedcontent';
 
 /**
  * Editors data model class. Model defines all data: either nodes users see in editable roots, grouped as the
@@ -54,7 +66,8 @@ export default class Model {
 		 */
 		this.markers = new MarkerCollection();
 
-		this.decorate( 'applyOperation' );
+		[ 'insertContent', 'deleteContent', 'modifySelection', 'getSelectedContent', 'applyOperation' ]
+			.forEach( methodName => this.decorate( methodName ) );
 	}
 
 	/**
@@ -192,49 +205,189 @@ export default class Model {
 	}
 
 	/**
+	 * Transforms two sets of deltas by themselves. Returns both transformed sets.
+	 *
+	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltasA Array with the first set of deltas to transform. These
+	 * deltas are considered more important (than `deltasB`) when resolving conflicts.
+	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltasB Array with the second set of deltas to transform. These
+	 * deltas are considered less important (than `deltasA`) when resolving conflicts.
+	 * @param {Boolean} [useContext=false] When set to `true`, transformation will store and use additional context
+	 * information to guarantee more expected results. Should be used whenever deltas related to already applied
+	 * deltas are transformed (for example when undoing changes).
+	 * @returns {Object}
+	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasA The first set of deltas transformed
+	 * by the second set of deltas.
+	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasB The second set of deltas transformed
+	 * by the first set of deltas.
+	 */
+	transformDeltas( deltasA, deltasB, useContext = false ) {
+		return deltaTransform.transformDeltaSets( deltasA, deltasB, useContext ? this.document : null );
+	}
+
+	/**
+	 * See {@link module:engine/model/utils/insertcontent~insertContent}.
+	 *
+	 * @fires insertContent
+	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
+	 * @param {module:engine/model/selection~Selection} selection Selection into which the content should be inserted.
+	 */
+	insertContent( content, selection ) {
+		insertContent( this, content, selection );
+	}
+
+	/**
+	 * See {@link module:engine/model/utils/deletecontent.deleteContent}.
+	 *
+	 * Note: For the sake of predictability, the resulting selection should always be collapsed.
+	 * In cases where a feature wants to modify deleting behavior so selection isn't collapsed
+	 * (e.g. a table feature may want to keep row selection after pressing <kbd>Backspace</kbd>),
+	 * then that behavior should be implemented in the view's listener. At the same time, the table feature
+	 * will need to modify this method's behavior too, e.g. to "delete contents and then collapse
+	 * the selection inside the last selected cell" or "delete the row and collapse selection somewhere near".
+	 * That needs to be done in order to ensure that other features which use `deleteContent()` will work well with tables.
+	 *
+	 * @fires deleteContent
+	 * @param {module:engine/model/selection~Selection} selection Selection of which the content should be deleted.
+	 * @param {Object} options See {@link module:engine/model/utils/deletecontent~deleteContent}'s options.
+	 */
+	deleteContent( selection, options ) {
+		deleteContent( this, selection, options );
+	}
+
+	/**
+	 * See {@link module:engine/model/utils/modifyselection~modifySelection}.
+	 *
+	 * @fires modifySelection
+	 * @param {module:engine/model/selection~Selection} selection The selection to modify.
+	 * @param {Object} options See {@link module:engine/model/utils/modifyselection.modifySelection}'s options.
+	 */
+	modifySelection( selection, options ) {
+		modifySelection( this, selection, options );
+	}
+
+	/**
+	 * See {@link module:engine/model/utils/getselectedcontent~getSelectedContent}.
+	 *
+	 * @fires getSelectedContent
+	 * @param {module:engine/model/selection~Selection} selection The selection of which content will be retrieved.
+	 * @returns {module:engine/model/documentfragment~DocumentFragment} Document fragment holding the clone of the selected content.
+	 */
+	getSelectedContent( selection ) {
+		return getSelectedContent( this, selection );
+	}
+
+	/**
+	 * Checks whether given {@link module:engine/model/range~Range range} or {@link module:engine/model/element~Element element}
+	 * has any content.
+	 *
+	 * Content is any text node or element which is registered in {@link module:engine/model/schema~Schema schema}.
+	 *
+	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
+	 * @returns {Boolean}
+	 */
+	hasContent( rangeOrElement ) {
+		if ( rangeOrElement instanceof ModelElement ) {
+			rangeOrElement = ModelRange.createIn( rangeOrElement );
+		}
+
+		if ( rangeOrElement.isCollapsed ) {
+			return false;
+		}
+
+		for ( const item of rangeOrElement.getItems() ) {
+			// Remember, `TreeWalker` returns always `textProxy` nodes.
+			if ( item.is( 'textProxy' ) || this.schema.objects.has( item.name ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Removes all events listeners set by model instance and destroy Document.
 	 */
 	destroy() {
 		this.document.destroy();
 		this.stopListening();
 	}
-
-	/**
-	 * Fired after leaving each {@link module:engine/model/model~Model#enqueueChange} block or outermost
-	 * {@link module:engine/model/model~Model#change} block.
-	 * Have the same parameters as {@link module:engine/model/model~Model#change}.
-	 *
-	 * @event change
-	 */
-
-	/**
-	 * Fired when all queued model changes are done.
-	 *
-	 * @see #change
-	 * @see #enqueueChange
-	 * @event changesDone
-	 */
-
-	/**
-	 * Fired every time any {@link module:engine/model/operation/operation~Operation operation} is applied on the model
-	 * using {@link #applyOperation}.
-	 *
-	 * Note that this is an internal event for the specific use-cases. You can use it if you need to know about each operation
-	 * applied on the document, but in most cases {@link #change} event which is fired when all changes in a
-	 * {@link module:engine/model/batch~Batch} are applied, is a better choice.
-	 *
-	 * With the high priority operation is validated.
-	 *
-	 * With the normal priority operation is executed. After that priority you will be able to get additional
-	 * information about the applied changes returned by {@link module:engine/model/operation/operation~Operation#_execute}
-	 * as `evt.return`.
-	 *
-	 * With the low priority the {@link module:engine/model/document~Document} listen on this event and updates its version.
-	 *
-	 * @event applyOperation
-	 * @param {Array} args Arguments of the `applyOperation` which are an array with a single element:
-	 * {@link module:engine/model/operation/operation~Operation operation}.
-	 */
 }
 
 mix( Model, ObservableMixin );
+
+/**
+ * Fired after leaving each {@link module:engine/model/model~Model#enqueueChange} block or outermost
+ * {@link module:engine/model/model~Model#change} block.
+ * Have the same parameters as {@link module:engine/model/model~Model#change}.
+ *
+ * @event change
+ */
+
+/**
+ * Fired when all queued model changes are done.
+ *
+ * @see #change
+ * @see #enqueueChange
+ * @event changesDone
+ */
+
+/**
+ * Fired every time any {@link module:engine/model/operation/operation~Operation operation} is applied on the model
+ * using {@link #applyOperation}.
+ *
+ * Note that this is an internal event for the specific use-cases. You can use it if you need to know about each operation
+ * applied on the document, but in most cases {@link #change} event which is fired when all changes in a
+ * {@link module:engine/model/batch~Batch} are applied, is a better choice.
+ *
+ * With the high priority operation is validated.
+ *
+ * With the normal priority operation is executed. After that priority you will be able to get additional
+ * information about the applied changes returned by {@link module:engine/model/operation/operation~Operation#_execute}
+ * as `evt.return`.
+ *
+ * With the low priority the {@link module:engine/model/document~Document} listen on this event and updates its version.
+ *
+ * @event applyOperation
+ * @param {Array} args Arguments of the `applyOperation` which are an array with a single element:
+ * {@link module:engine/model/operation/operation~Operation operation}.
+ */
+
+/**
+ * Event fired when {@link #insertContent} method is called.
+ *
+ * The {@link #insertContent default action of that method} is implemented as a
+ * listener to this event so it can be fully customized by the features.
+ *
+ * @event insertContent
+ * @param {Array} args The arguments passed to the original method.
+ */
+
+/**
+ * Event fired when {@link #deleteContent} method is called.
+ *
+ * The {@link #deleteContent default action of that method} is implemented as a
+ * listener to this event so it can be fully customized by the features.
+ *
+ * @event deleteContent
+ * @param {Array} args The arguments passed to the original method.
+ */
+
+/**
+ * Event fired when {@link #modifySelection} method is called.
+ *
+ * The {@link #modifySelection default action of that method} is implemented as a
+ * listener to this event so it can be fully customized by the features.
+ *
+ * @event modifySelection
+ * @param {Array} args The arguments passed to the original method.
+ */
+
+/**
+ * Event fired when {@link #getSelectedContent} method is called.
+ *
+ * The {@link #getSelectedContent default action of that method} is implemented as a
+ * listener to this event so it can be fully customized by the features.
+ *
+ * @event getSelectedContent
+ * @param {Array} args The arguments passed to the original method.
+ */
