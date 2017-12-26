@@ -175,7 +175,7 @@ describe( 'EnterCommand', () => {
 			it( 'uses DataController.deleteContent', () => {
 				const spy = sinon.spy();
 
-				editor.data.on( 'deleteContent', spy );
+				editor.model.on( 'deleteContent', spy );
 
 				setData( model, '<p>[x]</p>' );
 

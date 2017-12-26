@@ -23,7 +23,7 @@ export default class EnterCommand extends Command {
 		const doc = model.document;
 
 		model.change( writer => {
-			enterBlock( this.editor.data, writer, doc.selection, model.schema );
+			enterBlock( this.editor.model, writer, doc.selection, model.schema );
 			this.fire( 'afterExecute', { writer } );
 		} );
 	}
@@ -31,11 +31,11 @@ export default class EnterCommand extends Command {
 
 // Creates a new block in the way that the <kbd>Enter</kbd> key is expected to work.
 //
-// @param {engine.controller.DataController} dataController
-// @param {module:engine.model/writer~Writer} writer
+// @param {module:engine/model~Model} model
+// @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/selection~Selection} selection Selection on which the action should be performed.
 // @param {module:engine/model/schema~Schema} schema
-function enterBlock( dataController, writer, selection, schema ) {
+function enterBlock( model, writer, selection, schema ) {
 	const isSelectionEmpty = selection.isCollapsed;
 	const range = selection.getFirstRange();
 	const startElement = range.start.parent;
@@ -48,7 +48,7 @@ function enterBlock( dataController, writer, selection, schema ) {
 		// This is an edge case and it's hard to tell what should actually happen because such a selection
 		// is not entirely valid.
 		if ( !isSelectionEmpty && startElement == endElement ) {
-			dataController.deleteContent( selection );
+			model.deleteContent( selection );
 		}
 
 		return;
@@ -60,7 +60,7 @@ function enterBlock( dataController, writer, selection, schema ) {
 		const leaveUnmerged = !( range.start.isAtStart && range.end.isAtEnd );
 		const isContainedWithinOneElement = ( startElement == endElement );
 
-		dataController.deleteContent( selection, { leaveUnmerged } );
+		model.deleteContent( selection, { leaveUnmerged } );
 
 		if ( leaveUnmerged ) {
 			// Partially selected elements.
