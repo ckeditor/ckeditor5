@@ -196,6 +196,8 @@ function compileBaseItemRule( sourceItemRules, itemName ) {
 	copyProperty( sourceItemRules, itemRule, 'allowAttributes' );
 	copyProperty( sourceItemRules, itemRule, 'allowAttributesOf' );
 
+	makeInheritAllWork( sourceItemRules, itemRule );
+
 	return itemRule;
 }
 
@@ -274,6 +276,18 @@ function copyProperty( sourceItemRules, itemRule, propertyName ) {
 			itemRule[ propertyName ].push( sourceItemRule[ propertyName ] );
 		} else if ( Array.isArray( sourceItemRule[ propertyName ] ) ) {
 			itemRule[ propertyName ].push( ...sourceItemRule[ propertyName ] );
+		}
+	}
+}
+
+function makeInheritAllWork( sourceItemRules, itemRule ) {
+	for ( const sourceItemRule of sourceItemRules ) {
+		const inheritFrom = sourceItemRule.inheritAllFrom;
+
+		if ( inheritFrom ) {
+			itemRule.allowContentOf.push( inheritFrom );
+			itemRule.allowWhere.push( inheritFrom );
+			itemRule.allowAttributesOf.push( inheritFrom );
 		}
 	}
 }

@@ -636,6 +636,67 @@ describe( 'Schema', () => {
 			// } );
 		} );
 
+		describe( 'inheritAllFrom', () => {
+			it( 'passes $root>paragraph – paragraph inherits allowIn from $block', () => {
+				schema.register( '$root' );
+				schema.register( '$block', {
+					allowIn: '$root'
+				} );
+				schema.register( 'paragraph', {
+					inheritAllFrom: '$block'
+				} );
+
+				expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
+			} );
+
+			it( 'passes $root>paragraph>$text – paragraph inherits allowed content of $block', () => {
+				schema.register( '$root' );
+				schema.register( '$block', {
+					allowIn: '$root'
+				} );
+				schema.register( '$text', {
+					allowIn: '$block'
+				} );
+				schema.register( 'paragraph', {
+					inheritAllFrom: '$block'
+				} );
+
+				expect( schema.checkChild( r1p1, r1p1.getChild( 0 ) ) ).to.be.true;
+			} );
+
+			it( 'passes $root>paragraph>$text – paragraph inherits allowIn from $block through $block\'s allowWhere', () => {
+				schema.register( '$root' );
+				schema.register( '$blockProto', {
+					allowIn: '$root'
+				} );
+				schema.register( '$block', {
+					allowWhere: '$blockProto'
+				} );
+				schema.register( 'paragraph', {
+					inheritAllFrom: '$block'
+				} );
+
+				expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
+			} );
+
+			it( 'passes $root>paragraph>$text – paragraph inherits allowIn from $block through $block\'s allowWhere', () => {
+				schema.register( '$root' );
+				schema.register( '$blockProto' );
+				schema.register( '$block', {
+					allowContentOf: '$blockProto',
+					allowIn: '$root'
+				} );
+				schema.register( '$text', {
+					allowIn: '$blockProto'
+				} );
+				schema.register( 'paragraph', {
+					inheritAllFrom: '$block'
+				} );
+
+				expect( schema.checkChild( r1p1, r1p1.getChild( 0 ) ) ).to.be.true;
+			} );
+		} );
+
 		// We need to handle cases where some independent features registered rules which might use
 		// optional elements (elements which might not have been registered).
 		describe( 'missing rules', () => {
@@ -694,6 +755,14 @@ describe( 'Schema', () => {
 				// $root isn't registered!
 
 				expect( schema.checkChild( root1, 'paragraph' ) ).to.be.false;
+			} );
+
+			it( 'does not break when inheriting all from an unregistered element', () => {
+				schema.register( 'paragraph', {
+					inheritAllFrom: '$block'
+				} );
+
+				expect( schema.checkChild( root1, r1p1 ) ).to.be.false;
 			} );
 		} );
 	} );
@@ -772,12 +841,47 @@ describe( 'Schema', () => {
 			// However, those situations are rather theoretical, so we're not going to waste time on them now.
 		} );
 
+		describe( 'inheritAllFrom', () => {
+			it( 'passes paragraph[align] – paragraph inherits attributes of $block', () => {
+				schema.register( '$block', {
+					allowAttributes: 'align'
+				} );
+				schema.register( 'paragraph', {
+					inheritAllFrom: '$block'
+				} );
+
+				expect( schema.checkAttribute( r1p1, 'align' ) ).to.be.true;
+			} );
+
+			it( 'passes paragraph[align] – paragraph inherits attributes of $block through allowAttributesOf', () => {
+				schema.register( '$blockProto', {
+					allowAttributes: 'align'
+				} );
+				schema.register( '$block', {
+					allowAttributesOf: '$blockProto'
+				} );
+				schema.register( 'paragraph', {
+					inheritAllFrom: '$block'
+				} );
+
+				expect( schema.checkAttribute( r1p1, 'align' ) ).to.be.true;
+			} );
+		} );
+
 		describe( 'missing rules', () => {
 			it( 'does not crash when checking an attribute of a unregistered element', () => {
 				expect( schema.checkAttribute( r1p1, 'align' ) ).to.be.false;
 			} );
 
-			it( 'does not crash when checking when inheriting attributes of a unregistered element', () => {
+			it( 'does not crash when inheriting attributes of a unregistered element', () => {
+				schema.register( 'paragraph', {
+					allowAttributesOf: '$block'
+				} );
+
+				expect( schema.checkAttribute( r1p1, 'whatever' ) ).to.be.false;
+			} );
+
+			it( 'does not crash when inheriting all from a unregistered element', () => {
 				schema.register( 'paragraph', {
 					allowAttributesOf: '$block'
 				} );
@@ -1124,5 +1228,5 @@ describe( 'Schema', () => {
 	// * checkAttributeInSelection
 	// * getLimitElement
 	// * removeDisallowedAttributes
-	// * isBlock, isLimit, isObject, isRegistered
+	// * checkChild()'s both params normalization
 } );
