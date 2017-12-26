@@ -23,8 +23,8 @@ describe( 'view-to-model-converters', () => {
 
 	beforeEach( () => {
 		schema = new ModelSchema();
-		schema.registerItem( 'paragraph', '$block' );
-		schema.allow( { name: '$text', inside: '$root' } );
+		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+		schema.extend( '$text', { allowIn: '$root' } );
 		additionalData = { context: [ '$root' ] };
 		dispatcher = new ViewConversionDispatcher( model, { schema } );
 	} );

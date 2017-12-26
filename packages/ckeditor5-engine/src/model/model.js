@@ -68,6 +68,19 @@ export default class Model {
 
 		[ 'insertContent', 'deleteContent', 'modifySelection', 'getSelectedContent', 'applyOperation' ]
 			.forEach( methodName => this.decorate( methodName ) );
+
+		// Register some default abstract entities.
+		this.schema.register( '$root', { isLimit: true } );
+		this.schema.register( '$block', { allowIn: '$root' } );
+		this.schema.register( '$text', { allowIn: '$block' } );
+
+		// TMP!
+		// Create an "all allowed" context in the schema for processing the pasted content.
+		// Read: https://github.com/ckeditor/ckeditor5-engine/issues/638#issuecomment-255086588
+		//
+		// TODO
+		// this.schema.register( '$clipboardHolder', '$root' );
+		// this.schema.allow( { name: '$inline', inside: '$clipboardHolder' } );
 	}
 
 	/**
@@ -296,7 +309,7 @@ export default class Model {
 
 		for ( const item of rangeOrElement.getItems() ) {
 			// Remember, `TreeWalker` returns always `textProxy` nodes.
-			if ( item.is( 'textProxy' ) || this.schema.objects.has( item.name ) ) {
+			if ( item.is( 'textProxy' ) || this.schema.isObject( item.name ) ) {
 				return true;
 			}
 		}

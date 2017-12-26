@@ -266,7 +266,7 @@ export default class Document {
 			const type = ( data.walker == backwardWalker ? 'elementEnd' : 'elementStart' );
 			const value = data.value;
 
-			if ( value.type == type && schema.objects.has( value.item.name ) ) {
+			if ( value.type == type && schema.isObject( value.item.name ) ) {
 				return Range.createOn( value.item );
 			}
 

@@ -214,10 +214,10 @@ describe( 'definition-based-converters', () => {
 			beforeEach( () => {
 				setupViewToModelTests();
 
-				schema.registerItem( 'div', '$block' );
+				schema.register( 'div', { inheritAllFrom: '$block' } );
 
 				schema.allow( { name: '$inline', attributes: [ 'foo' ], inside: '$root' } );
-				schema.allow( { name: '$text', inside: '$root' } );
+				schema.extend( '$text', { allowIn: '$root' } );
 
 				dispatcher.on( 'text', convertText() );
 			} );
@@ -377,12 +377,12 @@ describe( 'definition-based-converters', () => {
 			beforeEach( () => {
 				setupViewToModelTests();
 
-				schema.registerItem( 'div', '$block' );
-				schema.registerItem( 'bar', '$block' );
-				schema.registerItem( 'baz', '$block' );
+				schema.register( 'div', { inheritAllFrom: '$block' } );
+				schema.register( 'bar', { inheritAllFrom: '$block' } );
+				schema.register( 'baz', { inheritAllFrom: '$block' } );
 
 				schema.allow( { name: '$inline', attribute: [ 'foo' ], inside: '$root' } );
-				schema.allow( { name: '$text', inside: '$inline' } );
+				schema.extend( '$text', { allowIn: '$inline' } );
 
 				dispatcher.on( 'text', convertText() );
 			} );

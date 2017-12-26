@@ -173,7 +173,7 @@ function checkCanBeMerged( leftPos, rightPos, schema ) {
 	const rangeToCheck = new Range( leftPos, rightPos );
 
 	for ( const value of rangeToCheck.getWalker() ) {
-		if ( schema.objects.has( value.item.name ) || schema.limits.has( value.item.name ) ) {
+		if ( schema.isObject( value.item.name ) || schema.isLimit( value.item.name ) ) {
 			return false;
 		}
 	}

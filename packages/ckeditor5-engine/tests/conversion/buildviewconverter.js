@@ -74,17 +74,17 @@ describe( 'View converter builder', () => {
 
 		schema = new ModelSchema();
 
-		schema.registerItem( 'paragraph', '$block' );
-		schema.registerItem( 'div', '$block' );
-		schema.registerItem( 'customP', 'paragraph' );
-		schema.registerItem( 'image', '$inline' );
-		schema.registerItem( 'span', '$inline' );
-		schema.registerItem( 'MEGATRON', '$inline' ); // Yes, folks, we are building MEGATRON.
-		schema.registerItem( 'abcd', '$inline' );
+		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+		schema.register( 'div', { inheritAllFrom: '$block' } );
+		schema.register( 'customP', { inheritAllFrom: 'paragraph' } );
+		schema.register( 'image', { inheritAllFrom: '$inline' } );
+		schema.register( 'span', { inheritAllFrom: '$inline' } );
+		schema.register( 'MEGATRON', { inheritAllFrom: '$inline' } ); // Yes, folks, we are building MEGATRON.
+		schema.register( 'abcd', { inheritAllFrom: '$inline' } );
 		schema.allow( { name: '$inline', attributes: textAttributes, inside: '$root' } );
 		schema.allow( { name: 'image', attributes: [ 'src' ], inside: '$root' } );
 		schema.allow( { name: 'image', attributes: [ 'src' ], inside: '$block' } );
-		schema.allow( { name: '$text', inside: '$inline' } );
+		schema.extend( '$text', { allowIn: '$inline' } );
 		schema.allow( { name: '$text', attributes: textAttributes, inside: '$block' } );
 		schema.allow( { name: '$text', attributes: textAttributes, inside: '$root' } );
 		schema.allow( { name: 'paragraph', attributes: pAttributes, inside: '$root' } );

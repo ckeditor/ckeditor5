@@ -374,7 +374,7 @@ describe( 'Model', () => {
 
 	describe( 'insertContent()', () => {
 		it( 'should be decorated', () => {
-			schema.allow( { name: '$text', inside: '$root' } ); // To surpress warnings.
+			schema.extend( '$text', { allowIn: '$root' } ); // To surpress warnings.
 
 			const spy = sinon.spy();
 
@@ -386,7 +386,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should insert content (item)', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			setData( model, '<paragraph>fo[]ar</paragraph>' );
 
@@ -396,7 +396,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should insert content (document fragment)', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			setData( model, '<paragraph>fo[]ar</paragraph>' );
 
@@ -406,7 +406,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should use parent batch', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>[]</paragraph>' );
 
 			model.change( writer => {
@@ -428,7 +428,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should delete selected content', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
@@ -438,7 +438,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should use parent batch', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
@@ -451,7 +451,7 @@ describe( 'Model', () => {
 
 	describe( 'modifySelection()', () => {
 		it( 'should be decorated', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
 			const spy = sinon.spy();
@@ -464,7 +464,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should modify a selection', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
@@ -487,7 +487,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should return selected content', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
@@ -497,7 +497,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should use parent batch', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
@@ -512,12 +512,13 @@ describe( 'Model', () => {
 		let root;
 
 		beforeEach( () => {
-			schema.registerItem( 'paragraph', '$block' );
-			schema.registerItem( 'div', '$block' );
-			schema.allow( { name: '$block', inside: 'div' } );
-			schema.registerItem( 'image' );
-			schema.allow( { name: 'image', inside: 'div' } );
-			schema.objects.add( 'image' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			schema.register( 'div', { inheritAllFrom: '$block' } );
+			schema.extend( '$block', { allowIn: 'div' } );
+			schema.register( 'image', {
+				isObject: true
+			} );
+			schema.extend( 'image', { allowIn: 'div' } );
 
 			setData(
 				model,

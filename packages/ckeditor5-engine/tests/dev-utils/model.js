@@ -23,22 +23,22 @@ describe( 'model test utils', () => {
 		sandbox = sinon.sandbox.create();
 		selection.removeAllRanges();
 
-		model.schema.registerItem( 'a', '$inline' );
-		model.schema.allow( { name: 'a', inside: '$root' } );
+		model.schema.register( 'a', { inheritAllFrom: '$inline' } );
+		model.schema.extend( 'a', { allowIn: '$root' } );
 		model.schema.allow( { name: 'a', inside: '$root', attributes: [ 'bar', 'car', 'foo' ] } );
 
-		model.schema.registerItem( 'b', '$inline' );
-		model.schema.allow( { name: 'b', inside: '$root' } );
+		model.schema.register( 'b', { inheritAllFrom: '$inline' } );
+		model.schema.extend( 'b', { allowIn: '$root' } );
 		model.schema.allow( { name: 'b', inside: '$root', attributes: [ 'barFoo', 'fooBar', 'x' ] } );
 
-		model.schema.registerItem( 'c', '$inline' );
-		model.schema.allow( { name: 'c', inside: '$root' } );
+		model.schema.register( 'c', { inheritAllFrom: '$inline' } );
+		model.schema.extend( 'c', { allowIn: '$root' } );
 
-		model.schema.registerItem( 'paragraph', '$block' );
-		model.schema.allow( { name: '$text', inside: '$root' } );
-		model.schema.allow( { name: '$text', inside: 'a' } );
-		model.schema.allow( { name: '$text', inside: 'b' } );
-		model.schema.allow( { name: 'c', inside: 'b' } );
+		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+		model.schema.extend( '$text', { allowIn: '$root' } );
+		model.schema.extend( '$text', { allowIn: 'a' } );
+		model.schema.extend( '$text', { allowIn: 'b' } );
+		model.schema.extend( 'c', { allowIn: 'b' } );
 	} );
 
 	afterEach( () => {
@@ -162,8 +162,8 @@ describe( 'model test utils', () => {
 		it( 'should work in a special root', () => {
 			const model = new Model();
 
-			model.schema.registerItem( 'textOnly' );
-			model.schema.allow( { name: '$text', inside: 'textOnly' } );
+			model.schema.register( 'textOnly' );
+			model.schema.extend( '$text', { allowIn: 'textOnly' } );
 			model.document.createRoot( 'textOnly', 'textOnly' );
 
 			setData( model, 'a[b]c', { rootName: 'textOnly' } );
@@ -517,8 +517,8 @@ describe( 'model test utils', () => {
 
 		it( 'converts data in the specified context', () => {
 			const model = new Model();
-			model.schema.registerItem( 'foo' );
-			model.schema.allow( { name: '$text', inside: 'foo' } );
+			model.schema.register( 'foo' );
+			model.schema.extend( '$text', { allowIn: 'foo' } );
 
 			expect( () => {
 				parse( 'text', model.schema, { context: [ 'foo' ] } );

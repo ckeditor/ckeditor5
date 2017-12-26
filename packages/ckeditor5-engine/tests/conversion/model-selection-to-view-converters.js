@@ -46,7 +46,7 @@ describe( 'model-selection-to-view-converters', () => {
 		modelRoot = modelDoc.createRoot();
 		modelSelection = modelDoc.selection;
 
-		model.schema.allow( { name: '$text', inside: '$root' } );
+		model.schema.extend( '$text', { allowIn: '$root' } );
 
 		viewDoc = new ViewDocument();
 		viewRoot = viewDoc.createRoot( 'div' );
@@ -637,14 +637,14 @@ describe( 'model-selection-to-view-converters', () => {
 
 	describe( 'table cell selection converter', () => {
 		beforeEach( () => {
-			model.schema.registerItem( 'table' );
-			model.schema.registerItem( 'tr' );
-			model.schema.registerItem( 'td' );
+			model.schema.register( 'table' );
+			model.schema.register( 'tr' );
+			model.schema.register( 'td' );
 
-			model.schema.allow( { name: 'table', inside: '$root' } );
-			model.schema.allow( { name: 'tr', inside: 'table' } );
-			model.schema.allow( { name: 'td', inside: 'tr' } );
-			model.schema.allow( { name: '$text', inside: 'td' } );
+			model.schema.extend( 'table', { allowIn: '$root' } );
+			model.schema.extend( 'tr', { allowIn: 'table' } );
+			model.schema.extend( 'td', { allowIn: 'tr' } );
+			model.schema.extend( '$text', { allowIn: 'td' } );
 
 			// "Universal" converter to convert table structure.
 			const tableConverter = insertElement( data => new ViewContainerElement( data.item.name ) );

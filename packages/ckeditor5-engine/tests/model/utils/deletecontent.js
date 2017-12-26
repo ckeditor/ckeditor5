@@ -19,7 +19,7 @@ describe( 'DataController utils', () => {
 			doc = model.document;
 			doc.createRoot();
 
-			model.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'x[abc]x' );
 
 			model.change( writer => {
@@ -36,10 +36,10 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.registerItem( 'image', '$inline' );
+				schema.register( 'image', { inheritAllFrom: '$inline' } );
 
-				schema.allow( { name: '$text', inside: '$root' } );
-				schema.allow( { name: 'image', inside: '$root' } );
+				schema.extend( '$text', { allowIn: '$root' } );
+				schema.extend( 'image', { allowIn: '$root' } );
 			} );
 
 			test(
@@ -101,10 +101,10 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.registerItem( 'image', '$inline' );
-				schema.registerItem( 'paragraph', '$block' );
+				schema.register( 'image', { inheritAllFrom: '$inline' } );
+				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-				schema.allow( { name: '$text', inside: '$root' } );
+				schema.extend( '$text', { allowIn: '$root' } );
 				schema.allow( { name: '$text', attributes: [ 'bold', 'italic' ] } );
 			} );
 
@@ -170,18 +170,18 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.registerItem( 'paragraph', '$block' );
-				schema.registerItem( 'heading1', '$block' );
-				schema.registerItem( 'image', '$inline' );
-				schema.registerItem( 'pchild' );
-				schema.registerItem( 'pparent' );
+				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				schema.register( 'heading1', { inheritAllFrom: '$block' } );
+				schema.register( 'image', { inheritAllFrom: '$inline' } );
+				schema.register( 'pchild' );
+				schema.register( 'pparent' );
 
-				schema.allow( { name: 'pchild', inside: 'paragraph' } );
-				schema.allow( { name: '$text', inside: 'pchild' } );
+				schema.extend( 'pchild', { allowIn: 'paragraph' } );
+				schema.extend( '$text', { allowIn: 'pchild' } );
 
-				schema.allow( { name: 'paragraph', inside: 'pparent' } );
-				schema.allow( { name: 'pparent', inside: '$root' } );
-				schema.allow( { name: '$text', inside: 'pparent' } );
+				schema.extend( 'paragraph', { allowIn: 'pparent' } );
+				schema.extend( 'pparent', { allowIn: '$root' } );
+				schema.extend( '$text', { allowIn: 'pparent' } );
 
 				schema.allow( { name: 'paragraph', attributes: [ 'align' ] } );
 			} );
@@ -440,16 +440,17 @@ describe( 'DataController utils', () => {
 				beforeEach( () => {
 					const schema = model.schema;
 
-					schema.registerItem( 'blockWidget' );
-					schema.registerItem( 'nestedEditable' );
+					schema.register( 'blockWidget', {
+						isObject: true
+					} );
+					schema.register( 'nestedEditable', {
+						isLimit: true
+					} );
 
-					schema.allow( { name: 'blockWidget', inside: '$root' } );
+					schema.extend( 'blockWidget', { allowIn: '$root' } );
 
-					schema.allow( { name: 'nestedEditable', inside: 'blockWidget' } );
-					schema.allow( { name: '$text', inside: 'nestedEditable' } );
-
-					schema.objects.add( 'blockWidget' );
-					schema.limits.add( 'nestedEditable' );
+					schema.extend( 'nestedEditable', { allowIn: 'blockWidget' } );
+					schema.extend( '$text', { allowIn: 'nestedEditable' } );
 				} );
 
 				test(
@@ -471,7 +472,7 @@ describe( 'DataController utils', () => {
 
 					schema.allow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'paragraph' } );
 					schema.allow( { name: '$text', attributes: [ 'b', 'c' ], inside: 'pchild' } );
-					schema.allow( { name: 'pchild', inside: 'pchild' } );
+					schema.extend( 'pchild', { allowIn: 'pchild' } );
 					schema.disallow( { name: '$text', attributes: [ 'c' ], inside: 'pchild pchild' } );
 				} );
 
@@ -525,24 +526,26 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.limits.add( 'restrictedRoot' );
+				schema.register( 'image', { inheritAllFrom: '$inline' } );
+				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				schema.register( 'heading1', { inheritAllFrom: '$block' } );
+				schema.register( 'blockWidget' );
+				schema.register( 'restrictedRoot', {
+					isLimit: true
+				} );
 
-				schema.registerItem( 'image', '$inline' );
-				schema.registerItem( 'paragraph', '$block' );
-				schema.registerItem( 'heading1', '$block' );
-				schema.registerItem( 'blockWidget' );
-				schema.registerItem( 'restrictedRoot' );
+				schema.extend( '$block', { allowIn: '$root' } );
+				schema.extend( 'blockWidget', { allowIn: '$root' } );
 
-				schema.allow( { name: '$block', inside: '$root' } );
-				schema.allow( { name: 'blockWidget', inside: '$root' } );
-
-				schema.allow( { name: 'blockWidget', inside: 'restrictedRoot' } );
+				schema.extend( 'blockWidget', { allowIn: 'restrictedRoot' } );
 			} );
 
 			// See also "in simple scenarios => deletes an element".
 
 			it( 'deletes two inline elements', () => {
-				model.schema.limits.add( 'paragraph' );
+				model.schema.extend( 'paragraph', {
+					isLimit: true
+				} );
 
 				setData(
 					model,
@@ -643,16 +646,17 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.registerItem( 'inlineLimit' );
-				schema.allow( { name: 'inlineLimit', inside: '$root' } );
-				schema.allow( { name: '$text', inside: 'inlineLimit' } );
-				schema.limits.add( 'inlineLimit' );
+				schema.register( 'inlineLimit', {
+					isLimit: true
+				} );
+				schema.extend( 'inlineLimit', { allowIn: '$root' } );
+				schema.extend( '$text', { allowIn: 'inlineLimit' } );
 
-				schema.allow( { name: '$inline', inside: '$root' } );
+				schema.extend( '$inline', { allowIn: '$root' } );
 
-				schema.registerItem( 'x' );
-				schema.allow( { name: '$text', inside: 'x' } );
-				schema.allow( { name: 'x', inside: '$root' } );
+				schema.register( 'x' );
+				schema.extend( '$text', { allowIn: 'x' } );
+				schema.extend( 'x', { allowIn: '$root' } );
 			} );
 
 			test(
@@ -700,12 +704,13 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.registerItem( 'blockLimit' );
-				schema.allow( { name: 'blockLimit', inside: '$root' } );
-				schema.allow( { name: '$block', inside: 'blockLimit' } );
-				schema.limits.add( 'blockLimit' );
+				schema.register( 'blockLimit', {
+					isLimit: true
+				} );
+				schema.extend( 'blockLimit', { allowIn: '$root' } );
+				schema.extend( '$block', { allowIn: 'blockLimit' } );
 
-				schema.registerItem( 'paragraph', '$block' );
+				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			} );
 
 			test(
@@ -748,27 +753,33 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.registerItem( 'div', '$block' );
-				schema.limits.add( 'div' );
+				schema.register( 'div', {
+					inheritAllFrom: '$block',
+					isLimit: true
+				} );
 
-				schema.registerItem( 'article', '$block' );
-				schema.limits.add( 'article' );
+				schema.register( 'article', {
+					inheritAllFrom: '$block',
+					isLimit: true
+				} );
 
-				schema.registerItem( 'image', '$inline' );
-				schema.objects.add( 'image' );
+				schema.register( 'image', {
+					inheritAllFrom: '$inline',
+					isObject: true
+				} );
 
-				schema.registerItem( 'paragraph', '$block' );
-				schema.registerItem( 'heading1', '$block' );
-				schema.registerItem( 'heading2', '$block' );
+				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				schema.register( 'heading1', { inheritAllFrom: '$block' } );
+				schema.register( 'heading2', { inheritAllFrom: '$block' } );
 
-				schema.allow( { name: '$text', inside: '$root' } );
+				schema.extend( '$text', { allowIn: '$root' } );
 
-				schema.allow( { name: 'image', inside: '$root' } );
-				schema.allow( { name: 'image', inside: 'heading1' } );
-				schema.allow( { name: 'heading1', inside: 'div' } );
-				schema.allow( { name: 'paragraph', inside: 'div' } );
-				schema.allow( { name: 'heading1', inside: 'article' } );
-				schema.allow( { name: 'heading2', inside: 'article' } );
+				schema.extend( 'image', { allowIn: '$root' } );
+				schema.extend( 'image', { allowIn: 'heading1' } );
+				schema.extend( 'heading1', { allowIn: 'div' } );
+				schema.extend( 'paragraph', { allowIn: 'div' } );
+				schema.extend( 'heading1', { allowIn: 'article' } );
+				schema.extend( 'heading2', { allowIn: 'article' } );
 			} );
 
 			test(

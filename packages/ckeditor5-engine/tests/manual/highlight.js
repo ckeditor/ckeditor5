@@ -37,9 +37,10 @@ class FancyWidget extends Plugin {
 		const editing = editor.editing;
 
 		// Configure schema.
-		schema.registerItem( 'fancywidget' );
-		schema.allow( { name: 'fancywidget', inside: '$root' } );
-		schema.objects.add( 'fancywidget' );
+		schema.register( 'fancywidget', {
+			isObject: true
+		} );
+		schema.extend( 'fancywidget', { allowIn: '$root' } );
 
 		// Build converter from model to view for editing pipeline.
 		buildModelConverter().for( editing.modelToView )

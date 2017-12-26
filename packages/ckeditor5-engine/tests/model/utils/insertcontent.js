@@ -20,7 +20,7 @@ describe( 'DataController utils', () => {
 			doc = model.document;
 			doc.createRoot();
 
-			model.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'x[]x' );
 
 			model.change( writer => {
@@ -34,7 +34,7 @@ describe( 'DataController utils', () => {
 			doc = model.document;
 			doc.createRoot();
 
-			model.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.extend( '$text', { allowIn: '$root' } );
 
 			setData( model, 'x[]x' );
 
@@ -48,7 +48,7 @@ describe( 'DataController utils', () => {
 			doc = model.document;
 			doc.createRoot();
 
-			model.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.extend( '$text', { allowIn: '$root' } );
 
 			setData( model, 'x[]x' );
 
@@ -64,9 +64,11 @@ describe( 'DataController utils', () => {
 
 			const content = new Element( 'image' );
 
-			model.schema.registerItem( 'paragraph', '$block' );
-			model.schema.registerItem( 'image', '$inline' );
-			model.schema.objects.add( 'image' );
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			model.schema.register( 'image', {
+				inheritAllFrom: '$inline',
+				isObject: true
+			} );
 
 			setData( model, '<paragraph>foo[]</paragraph>' );
 
@@ -83,19 +85,20 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.registerItem( 'image', '$inline' );
-				schema.registerItem( 'disallowedElement' );
+				schema.register( 'image', {
+					inheritAllFrom: '$inline',
+					isObject: true
+				} );
+				schema.register( 'disallowedElement' );
 
-				schema.allow( { name: '$text', inside: '$root' } );
-				schema.allow( { name: 'image', inside: '$root' } );
+				schema.extend( '$text', { allowIn: '$root' } );
+				schema.extend( 'image', { allowIn: '$root' } );
 				// Otherwise it won't be passed to the temporary model fragment used inside insert().
-				schema.allow( { name: 'disallowedElement', inside: '$clipboardHolder' } );
-				model.schema.allow( { name: '$text', inside: 'disallowedElement' } );
+				schema.extend( 'disallowedElement', { allowIn: '$clipboardHolder' } );
+				model.schema.extend( '$text', { allowIn: 'disallowedElement' } );
 
 				schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
 				schema.allow( { name: '$inline', attributes: [ 'italic' ] } );
-
-				schema.objects.add( 'image' );
 			} );
 
 			it( 'inserts one text node', () => {
@@ -213,25 +216,26 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.registerItem( 'paragraph', '$block' );
-				schema.registerItem( 'heading1', '$block' );
-				schema.registerItem( 'heading2', '$block' );
-				schema.registerItem( 'blockWidget' );
-				schema.registerItem( 'inlineWidget' );
-				schema.registerItem( 'listItem', '$block' );
+				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				schema.register( 'heading1', { inheritAllFrom: '$block' } );
+				schema.register( 'heading2', { inheritAllFrom: '$block' } );
+				schema.register( 'blockWidget', {
+					isObject: true
+				} );
+				schema.register( 'inlineWidget', {
+					isObject: true
+				} );
+				schema.register( 'listItem', { inheritAllFrom: '$block' } );
 
-				schema.allow( { name: 'blockWidget', inside: '$root' } );
-				schema.allow( { name: 'inlineWidget', inside: '$block' } );
-				schema.allow( { name: 'inlineWidget', inside: '$clipboardHolder' } );
+				schema.extend( 'blockWidget', { allowIn: '$root' } );
+				schema.extend( 'inlineWidget', { allowIn: '$block' } );
+				schema.extend( 'inlineWidget', { allowIn: '$clipboardHolder' } );
 				schema.allow( {
 					name: 'listItem',
 					inside: '$root',
 					attributes: [ 'type', 'indent' ]
 				} );
 				schema.requireAttributes( 'listItem', [ 'type', 'indent' ] );
-
-				schema.objects.add( 'blockWidget' );
-				schema.objects.add( 'inlineWidget' );
 			} );
 
 			it( 'inserts one text node', () => {
@@ -585,28 +589,29 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.registerItem( 'paragraph', '$block' );
-				schema.registerItem( 'heading1', '$block' );
-				schema.registerItem( 'element', '$block' );
+				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				schema.register( 'heading1', { inheritAllFrom: '$block' } );
+				schema.register( 'element', { inheritAllFrom: '$block' } );
 
-				schema.registerItem( 'table' );
-				schema.registerItem( 'td' );
-				schema.registerItem( 'disallowedWidget' );
+				schema.register( 'table' );
+				schema.register( 'td' );
+				schema.register( 'disallowedWidget', {
+					isObject: true
+				} );
 
-				schema.allow( { name: 'table', inside: '$clipboardHolder' } );
-				schema.allow( { name: 'td', inside: '$clipboardHolder' } );
-				schema.allow( { name: 'td', inside: 'table' } );
-				schema.allow( { name: 'element', inside: 'td' } );
-				schema.allow( { name: '$block', inside: 'td' } );
-				schema.allow( { name: '$text', inside: 'td' } );
-				schema.allow( { name: 'table', inside: 'element' } );
+				schema.extend( 'table', { allowIn: '$clipboardHolder' } );
+				schema.extend( 'td', { allowIn: '$clipboardHolder' } );
+				schema.extend( 'td', { allowIn: 'table' } );
+				schema.extend( 'element', { allowIn: 'td' } );
+				schema.extend( '$block', { allowIn: 'td' } );
+				schema.extend( '$text', { allowIn: 'td' } );
+				schema.extend( 'table', { allowIn: 'element' } );
 
-				schema.allow( { name: 'disallowedWidget', inside: '$clipboardHolder' } );
-				schema.allow( { name: '$text', inside: 'disallowedWidget' } );
-				schema.objects.add( 'disallowedWidget' );
+				schema.extend( 'disallowedWidget', { allowIn: '$clipboardHolder' } );
+				schema.extend( '$text', { allowIn: 'disallowedWidget' } );
 
-				schema.allow( { name: 'element', inside: 'paragraph' } );
-				schema.allow( { name: 'element', inside: 'heading1' } );
+				schema.extend( 'element', { allowIn: 'paragraph' } );
+				schema.extend( 'element', { allowIn: 'heading1' } );
 				schema.allow( { name: '$text', attributes: 'b', inside: 'paragraph' } );
 				schema.allow( { name: '$text', attributes: [ 'b' ], inside: 'paragraph element' } );
 				schema.allow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'heading1 element' } );
@@ -691,15 +696,16 @@ describe( 'DataController utils', () => {
 
 			const schema = model.schema;
 
-			schema.registerItem( 'limit' );
-			schema.allow( { name: 'limit', inside: '$root' } );
-			schema.allow( { name: '$text', inside: 'limit' } );
-			schema.limits.add( 'limit' );
+			schema.register( 'limit', {
+				isLimit: true
+			} );
+			schema.extend( 'limit', { allowIn: '$root' } );
+			schema.extend( '$text', { allowIn: 'limit' } );
 
-			schema.registerItem( 'disallowedElement' );
-			schema.allow( { name: 'disallowedElement', inside: '$clipboardHolder' } );
+			schema.register( 'disallowedElement' );
+			schema.extend( 'disallowedElement', { allowIn: '$clipboardHolder' } );
 
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 		} );
 
 		it( 'should insert limit element', () => {

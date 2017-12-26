@@ -1275,5 +1275,10 @@ describe( 'Schema', () => {
 	// * checkAttributeInSelection
 	// * getLimitElement
 	// * removeDisallowedAttributes
-	// * checkChild()'s both params normalization
+	// * test checkChild()'s both params normalization
+	//   * and see insertContent's _checkIsObject()
+	// * add normalization to isObject(), isLimit(), isBlock(), isRegistered() and improve the existing code
+	// * inheritAllFrom should also inherit is* props (see tests documentselection getNearestSelectionRange())
+	// * test the default abstract entities (in model.js)
+	// * see clipboardHolder definition (and rename it to the pastebin)
 } );

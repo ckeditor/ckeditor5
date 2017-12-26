@@ -45,7 +45,7 @@ describe( 'DataController', () => {
 
 	describe( 'parse()', () => {
 		it( 'should set text', () => {
-			schema.allow( { name: '$text', inside: '$root' } );
+			schema.extend( '$text', { allowIn: '$root' } );
 			const output = data.parse( '<p>foo<b>bar</b></p>' );
 
 			expect( output ).to.instanceof( ModelDocumentFragment );
@@ -53,7 +53,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should set paragraph', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
@@ -64,7 +64,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should set two paragraphs', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
@@ -75,7 +75,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should set paragraphs with bold', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			schema.allow( { name: '$text', attributes: [ 'bold' ], inside: '$block' } );
 
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
@@ -102,7 +102,7 @@ describe( 'DataController', () => {
 
 	describe( 'toModel()', () => {
 		beforeEach( () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 		} );
@@ -126,8 +126,8 @@ describe( 'DataController', () => {
 		it( 'should accept parsing context', () => {
 			modelDocument.createRoot( 'inlineRoot', 'inlineRoot' );
 
-			schema.registerItem( 'inlineRoot' );
-			schema.allow( { name: '$text', inside: 'inlineRoot' } );
+			schema.register( 'inlineRoot' );
+			schema.extend( '$text', { allowIn: 'inlineRoot' } );
 
 			const viewFragment = new ViewDocumentFragment( [ parseView( 'foo' ) ] );
 
@@ -141,14 +141,14 @@ describe( 'DataController', () => {
 
 	describe( 'set()', () => {
 		it( 'should set data to root', () => {
-			schema.allow( { name: '$text', inside: '$root' } );
+			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo' );
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 
 		it( 'should create a batch', () => {
-			schema.allow( { name: '$text', inside: '$root' } );
+			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo' );
 
 			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 1 );
@@ -157,7 +157,7 @@ describe( 'DataController', () => {
 		it( 'should fire #changesDone', () => {
 			const spy = sinon.spy();
 
-			schema.allow( { name: '$text', inside: '$root' } );
+			schema.extend( '$text', { allowIn: '$root' } );
 			modelDocument.on( 'changesDone', spy );
 
 			data.set( 'foo' );
@@ -166,7 +166,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get root name as a parameter', () => {
-			schema.allow( { name: '$text', inside: '$root' } );
+			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo', 'main' );
 			data.set( 'Bar', 'title' );
 
@@ -179,7 +179,7 @@ describe( 'DataController', () => {
 		// This case was added when order of params was different and it really didn't work. Let's keep it
 		// if anyone will ever try to change this.
 		it( 'should allow setting empty data', () => {
-			schema.allow( { name: '$text', inside: '$root' } );
+			schema.extend( '$text', { allowIn: '$root' } );
 
 			data.set( 'foo', 'title' );
 
@@ -193,7 +193,7 @@ describe( 'DataController', () => {
 
 	describe( 'get()', () => {
 		it( 'should get paragraph with text', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo</paragraph>' );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
@@ -202,7 +202,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get empty paragraph', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph></paragraph>' );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
@@ -211,7 +211,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get two paragraphs', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
@@ -220,14 +220,14 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get text directly in root', () => {
-			schema.allow( { name: '$text', inside: '$root' } );
+			schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'foo' );
 
 			expect( data.get() ).to.equal( 'foo' );
 		} );
 
 		it( 'should get paragraphs without bold', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
@@ -236,7 +236,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get paragraphs with bold', () => {
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
@@ -246,8 +246,8 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get root name as a parameter', () => {
-			schema.registerItem( 'paragraph', '$block' );
-			schema.allow( { name: '$text', inside: '$root' } );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			schema.extend( '$text', { allowIn: '$root' } );
 
 			setData( model, '<paragraph>foo</paragraph>', { rootName: 'main' } );
 			setData( model, 'Bar', { rootName: 'title' } );
@@ -263,11 +263,11 @@ describe( 'DataController', () => {
 
 	describe( 'stringify()', () => {
 		beforeEach( () => {
-			schema.registerItem( 'paragraph', '$block' );
-			schema.registerItem( 'div' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			schema.register( 'div' );
 
-			schema.allow( { name: '$block', inside: 'div' } );
-			schema.allow( { name: 'div', inside: '$root' } );
+			schema.extend( '$block', { allowIn: 'div' } );
+			schema.extend( 'div', { allowIn: '$root' } );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 		} );
@@ -287,11 +287,11 @@ describe( 'DataController', () => {
 
 	describe( 'toView()', () => {
 		beforeEach( () => {
-			schema.registerItem( 'paragraph', '$block' );
-			schema.registerItem( 'div' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			schema.register( 'div' );
 
-			schema.allow( { name: '$block', inside: 'div' } );
-			schema.allow( { name: 'div', inside: '$root' } );
+			schema.extend( '$block', { allowIn: 'div' } );
+			schema.extend( 'div', { allowIn: '$root' } );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 		} );

@@ -370,7 +370,7 @@ class Insertion {
 
 		while ( allowedIn != this.position.parent ) {
 			// If a parent which we'd need to leave is a limit element, break.
-			if ( this.schema.limits.has( this.position.parent.name ) ) {
+			if ( this.schema.isLimit( this.position.parent.name ) ) {
 				return false;
 			}
 
@@ -438,7 +438,7 @@ class Insertion {
 	 * @param {module:engine/model/node~Node} node The node to check.
 	 */
 	_checkIsObject( node ) {
-		return this.schema.objects.has( getNodeSchemaName( node ) );
+		return this.schema.isObject( getNodeSchemaName( node ) );
 	}
 }
 

@@ -15,9 +15,9 @@ describe( 'DataController utils', () => {
 		model = new Model();
 		doc = model.document;
 
-		model.schema.registerItem( 'p', '$block' );
-		model.schema.registerItem( 'x', '$block' );
-		model.schema.allow( { name: 'x', inside: 'p' } );
+		model.schema.register( 'p', { inheritAllFrom: '$block' } );
+		model.schema.register( 'x', { inheritAllFrom: '$block' } );
+		model.schema.extend( 'x', { allowIn: 'p' } );
 
 		doc.createRoot();
 	} );
@@ -287,9 +287,9 @@ describe( 'DataController utils', () => {
 
 			describe( 'beyond element – skipping incorrect positions', () => {
 				beforeEach( () => {
-					model.schema.registerItem( 'quote' );
-					model.schema.allow( { name: 'quote', inside: '$root' } );
-					model.schema.allow( { name: '$block', inside: 'quote' } );
+					model.schema.register( 'quote' );
+					model.schema.extend( 'quote', { allowIn: '$root' } );
+					model.schema.extend( '$block', { allowIn: 'quote' } );
 				} );
 
 				test(
@@ -335,7 +335,7 @@ describe( 'DataController utils', () => {
 
 		describe( 'unit=codePoint', () => {
 			it( 'does nothing on empty content', () => {
-				model.schema.allow( { name: '$text', inside: '$root' } );
+				model.schema.extend( '$text', { allowIn: '$root' } );
 
 				setData( model, '' );
 
@@ -413,14 +413,17 @@ describe( 'DataController utils', () => {
 
 		describe( 'objects handling', () => {
 			beforeEach( () => {
-				model.schema.registerItem( 'obj' );
-				model.schema.allow( { name: 'obj', inside: '$root' } );
-				model.schema.allow( { name: '$text', inside: 'obj' } );
-				model.schema.objects.add( 'obj' );
+				model.schema.register( 'obj', {
+					isObject: true
+				} );
+				model.schema.extend( 'obj', { allowIn: '$root' } );
+				model.schema.extend( '$text', { allowIn: 'obj' } );
 
-				model.schema.registerItem( 'inlineObj', '$inline' );
-				model.schema.allow( { name: '$text', inside: 'inlineObj' } );
-				model.schema.objects.add( 'inlineObj' );
+				model.schema.register( 'inlineObj', {
+					inheritAllFrom: '$inline',
+					isObject: true
+				} );
+				model.schema.extend( '$text', { allowIn: 'inlineObj' } );
 			} );
 
 			test(
@@ -480,16 +483,17 @@ describe( 'DataController utils', () => {
 
 		describe( 'limits handling', () => {
 			beforeEach( () => {
-				model.schema.registerItem( 'inlineLimit' );
-				model.schema.allow( { name: 'inlineLimit', inside: '$block' } );
-				model.schema.allow( { name: '$text', inside: 'inlineLimit' } );
+				model.schema.register( 'inlineLimit', {
+					isLimit: true
+				} );
+				model.schema.extend( 'inlineLimit', { allowIn: '$block' } );
+				model.schema.extend( '$text', { allowIn: 'inlineLimit' } );
 
-				model.schema.registerItem( 'blockLimit' );
-				model.schema.allow( { name: 'blockLimit', inside: '$root' } );
-				model.schema.allow( { name: 'p', inside: 'blockLimit' } );
-
-				model.schema.limits.add( 'inlineLimit' );
-				model.schema.limits.add( 'blockLimit' );
+				model.schema.register( 'blockLimit', {
+					isLimit: true
+				} );
+				model.schema.extend( 'blockLimit', { allowIn: '$root' } );
+				model.schema.extend( 'p', { allowIn: 'blockLimit' } );
 			} );
 
 			test(
