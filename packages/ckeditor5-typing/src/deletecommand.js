@@ -56,14 +56,13 @@ export default class DeleteCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options] The command options.
-	 * @param {'character'} [options.unit='character'] See {@link module:engine/controller/modifyselection~modifySelection}'s options.
+	 * @param {'character'} [options.unit='character'] See {@link module:engine/model/utils/modifyselection~modifySelection}'s options.
 	 * @param {Number} [options.sequence=1] A number describing which subsequent delete event it is without the key being released.
 	 * See the {@link module:engine/view/document~Document#event:delete} event data.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
 		const doc = model.document;
-		const dataController = this.editor.data;
 
 		model.enqueueChange( this._buffer.batch, writer => {
 			this._buffer.lock();
@@ -79,7 +78,7 @@ export default class DeleteCommand extends Command {
 
 			// Try to extend the selection in the specified direction.
 			if ( selection.isCollapsed ) {
-				dataController.modifySelection( selection, { direction: this.direction, unit: options.unit } );
+				model.modifySelection( selection, { direction: this.direction, unit: options.unit } );
 			}
 
 			// Check if deleting in an empty editor. See #61.
@@ -102,7 +101,7 @@ export default class DeleteCommand extends Command {
 				);
 			} );
 
-			dataController.deleteContent( selection, { doNotResetEntireContent } );
+			model.deleteContent( selection, { doNotResetEntireContent } );
 			this._buffer.input( changeCount );
 
 			doc.selection.setRanges( selection.getRanges(), selection.isBackward );

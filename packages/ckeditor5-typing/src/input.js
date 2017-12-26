@@ -88,7 +88,7 @@ export default class Input extends Plugin {
 		buffer.lock();
 
 		model.enqueueChange( buffer.batch, () => {
-			this.editor.data.deleteContent( doc.selection );
+			this.editor.model.deleteContent( doc.selection );
 		} );
 
 		buffer.unlock();
