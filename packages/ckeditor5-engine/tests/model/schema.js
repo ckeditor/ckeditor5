@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import Schema from '../../../src/model/schema2';
+import Schema from '../../src/model/schema';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Element from '../../../src/model/element';
+import Element from '../../src/model/element';
 
 describe( 'Schema', () => {
 	let schema, root1, r1p1, r1p2, r1bQ, r1bQp, root2;
