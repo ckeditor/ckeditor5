@@ -66,7 +66,7 @@ export default class Command {
 		this.decorate( 'execute' );
 
 		// By default every command is refreshed when changes are applied to the model.
-		this.listenTo( this.editor.model.document, 'changesDone', () => {
+		this.listenTo( this.editor.model.document, 'change', () => {
 			this.refresh();
 		} );
 
@@ -99,7 +99,7 @@ export default class Command {
 	 * in this method.
 	 *
 	 * This method is automatically called when
-	 * {@link module:engine/model/document~Document#event:changesDone any changes are applied to the model}.
+	 * {@link module:engine/model/document~Document#event:change any changes are applied to the document}.
 	 */
 	refresh() {
 		this.isEnabled = true;
