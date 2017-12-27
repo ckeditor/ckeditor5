@@ -63,6 +63,10 @@ describe( 'AttributeCommand', () => {
 
 		it( 'is false when selection does not have the attribute', () => {
 			model.change( () => {
+				doc.selection.setAttribute( attrKey, true );
+			} );
+
+			model.change( () => {
 				doc.selection.removeAttribute( attrKey );
 			} );
 
@@ -269,7 +273,7 @@ describe( 'AttributeCommand', () => {
 			expect( getData( model ) ).to.equal( '<p>a[<$text bold="true">bcfo]obar</$text>xyz</p>' );
 		} );
 
-		describe( 'should cause firing model document changesDone event', () => {
+		describe( 'should cause firing model change event', () => {
 			let spy;
 
 			beforeEach( () => {
@@ -279,31 +283,31 @@ describe( 'AttributeCommand', () => {
 			it( 'collapsed selection in non-empty parent', () => {
 				setData( model, '<p>x[]y</p>' );
 
-				doc.on( 'changesDone', spy );
+				model.document.on( 'change', spy );
 
 				command.execute();
 
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy.called ).to.be.true;
 			} );
 
 			it( 'non-collapsed selection', () => {
 				setData( model, '<p>[xy]</p>' );
 
-				doc.on( 'changesDone', spy );
+				model.document.on( 'change', spy );
 
 				command.execute();
 
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy.called ).to.be.true;
 			} );
 
 			it( 'in empty parent', () => {
 				setData( model, '<p>[]</p>' );
 
-				doc.on( 'changesDone', spy );
+				model.document.on( 'change', spy );
 
 				command.execute();
 
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy.called ).to.be.true;
 			} );
 		} );
 	} );
