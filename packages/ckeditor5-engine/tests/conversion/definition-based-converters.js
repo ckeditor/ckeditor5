@@ -215,9 +215,10 @@ describe( 'definition-based-converters', () => {
 				setupViewToModelTests();
 
 				schema.register( 'div', { inheritAllFrom: '$block' } );
-
-				schema.allow( { name: '$inline', attributes: [ 'foo' ], inside: '$root' } );
-				schema.extend( '$text', { allowIn: '$root' } );
+				schema.extend( '$text', {
+					allowIn: '$root',
+					allowAttributes: 'foo'
+				} );
 
 				dispatcher.on( 'text', convertText() );
 			} );
@@ -381,8 +382,10 @@ describe( 'definition-based-converters', () => {
 				schema.register( 'bar', { inheritAllFrom: '$block' } );
 				schema.register( 'baz', { inheritAllFrom: '$block' } );
 
-				schema.allow( { name: '$inline', attribute: [ 'foo' ], inside: '$root' } );
-				schema.extend( '$text', { allowIn: '$inline' } );
+				schema.extend( '$text', {
+					allowIn: '$root',
+					allowAttributes: 'foo'
+				} );
 
 				dispatcher.on( 'text', convertText() );
 			} );

@@ -36,10 +36,8 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'image', { inheritAllFrom: '$inline' } );
-
+				schema.register( 'image', { allowWhere: '$text' } );
 				schema.extend( '$text', { allowIn: '$root' } );
-				schema.extend( 'image', { allowIn: '$root' } );
 			} );
 
 			test(
@@ -101,11 +99,13 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'image', { inheritAllFrom: '$inline' } );
+				schema.register( 'image', { allowWhere: '$text' } );
 				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-				schema.extend( '$text', { allowIn: '$root' } );
-				schema.allow( { name: '$text', attributes: [ 'bold', 'italic' ] } );
+				schema.extend( '$text', {
+					allowIn: '$root',
+					allowAttributes: [ 'bold', 'italic' ]
+				} );
 			} );
 
 			it( 'deletes characters (first half has attrs)', () => {
@@ -170,20 +170,16 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				schema.register( 'paragraph', {
+					inheritAllFrom: '$block',
+					allowIn: 'pparent',
+					allowAttributes: 'align'
+				} );
 				schema.register( 'heading1', { inheritAllFrom: '$block' } );
-				schema.register( 'image', { inheritAllFrom: '$inline' } );
-				schema.register( 'pchild' );
-				schema.register( 'pparent' );
-
-				schema.extend( 'pchild', { allowIn: 'paragraph' } );
-				schema.extend( '$text', { allowIn: 'pchild' } );
-
-				schema.extend( 'paragraph', { allowIn: 'pparent' } );
-				schema.extend( 'pparent', { allowIn: '$root' } );
-				schema.extend( '$text', { allowIn: 'pparent' } );
-
-				schema.allow( { name: 'paragraph', attributes: [ 'align' ] } );
+				schema.register( 'image', { inheritAllFrom: '$text' } );
+				schema.register( 'pchild', { allowIn: 'paragraph' } );
+				schema.register( 'pparent', { allowIn: '$root' } );
+				schema.extend( '$text', { allowIn: [ 'pchild', 'pparent' ] } );
 			} );
 
 			test(
@@ -470,10 +466,12 @@ describe( 'DataController utils', () => {
 				beforeEach( () => {
 					const schema = model.schema;
 
-					schema.allow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'paragraph' } );
-					schema.allow( { name: '$text', attributes: [ 'b', 'c' ], inside: 'pchild' } );
+					// TODO this requires a callback
+					// schema.xallow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'paragraph' } );
+					// schema.xallow( { name: '$text', attributes: [ 'b', 'c' ], inside: 'pchild' } );
+					// schema.xdisallow( { name: '$text', attributes: [ 'c' ], inside: 'pchild pchild' } );
+
 					schema.extend( 'pchild', { allowIn: 'pchild' } );
-					schema.disallow( { name: '$text', attributes: [ 'c' ], inside: 'pchild pchild' } );
 				} );
 
 				test(
@@ -526,7 +524,7 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'image', { inheritAllFrom: '$inline' } );
+				schema.register( 'image', { allowWhere: '$text' } );
 				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				schema.register( 'heading1', { inheritAllFrom: '$block' } );
 				schema.register( 'blockWidget' );
@@ -647,16 +645,13 @@ describe( 'DataController utils', () => {
 				const schema = model.schema;
 
 				schema.register( 'inlineLimit', {
-					isLimit: true
+					isLimit: true,
+					allowIn: '$root'
 				} );
-				schema.extend( 'inlineLimit', { allowIn: '$root' } );
-				schema.extend( '$text', { allowIn: 'inlineLimit' } );
-
-				schema.extend( '$inline', { allowIn: '$root' } );
-
-				schema.register( 'x' );
-				schema.extend( '$text', { allowIn: 'x' } );
-				schema.extend( 'x', { allowIn: '$root' } );
+				schema.extend( '$text', {
+					allowIn: [ 'inlineLimit', '$root', 'x' ]
+				} );
+				schema.register( 'x', { allowIn: '$root' } );
 			} );
 
 			test(
@@ -764,7 +759,7 @@ describe( 'DataController utils', () => {
 				} );
 
 				schema.register( 'image', {
-					inheritAllFrom: '$inline',
+					allowWhere: '$text',
 					isObject: true
 				} );
 

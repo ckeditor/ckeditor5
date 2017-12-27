@@ -74,13 +74,14 @@ export default class Model {
 		this.schema.register( '$block', { allowIn: '$root' } );
 		this.schema.register( '$text', { allowIn: '$block' } );
 
-		// TMP!
+		// TODO review
 		// Create an "all allowed" context in the schema for processing the pasted content.
 		// Read: https://github.com/ckeditor/ckeditor5-engine/issues/638#issuecomment-255086588
-		//
-		// TODO
-		// this.schema.register( '$clipboardHolder', '$root' );
-		// this.schema.allow( { name: '$inline', inside: '$clipboardHolder' } );
+
+		this.schema.register( '$clipboardHolder', {
+			allowContentOf: '$root'
+		} );
+		this.schema.extend( '$text', { allowIn: '$clipboardHolder' } );
 	}
 
 	/**

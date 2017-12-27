@@ -34,12 +34,11 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.register( 'image', { inheritAllFrom: '$inline' } );
-
-				schema.extend( '$text', { allowIn: '$root' } );
-				schema.extend( 'image', { allowIn: '$root' } );
-				schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
-				schema.allow( { name: '$inline', attributes: [ 'italic' ] } );
+				schema.register( 'image', { allowWhere: '$text', allowIn: '$root' } );
+				schema.extend( '$text', {
+					allowIn: '$root',
+					allowAttributes: [ 'bold', 'italic' ]
+				} );
 			} );
 
 			it( 'returns empty fragment for no selection', () => {
@@ -132,13 +131,14 @@ describe( 'DataController utils', () => {
 				schema.register( 'heading1', { inheritAllFrom: '$block' } );
 				schema.register( 'blockImage' );
 				schema.register( 'caption' );
-				schema.register( 'image', { inheritAllFrom: '$inline' } );
+				schema.register( 'image', { allowWhere: '$text' } );
 
 				schema.extend( 'blockImage', { allowIn: '$root' } );
 				schema.extend( 'caption', { allowIn: 'blockImage' } );
-				schema.extend( '$inline', { allowIn: 'caption' } );
-
-				schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
+				schema.extend( '$text', {
+					allowIn: 'caption',
+					allowAttributes: 'bold'
+				} );
 			} );
 
 			it( 'gets one character', () => {

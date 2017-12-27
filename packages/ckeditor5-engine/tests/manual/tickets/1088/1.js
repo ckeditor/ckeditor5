@@ -19,13 +19,14 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		const schema = editor.model.schema;
+		// const schema = editor.model.schema;
 
-		schema.disallow( { name: '$text', attributes: [ 'linkHref', 'italic' ], inside: 'heading1' } );
-		schema.disallow( { name: '$text', attributes: [ 'italic' ], inside: 'heading2' } );
-		schema.disallow( { name: '$text', attributes: [ 'linkHref' ], inside: 'blockQuote listItem' } );
-		schema.disallow( { name: '$text', attributes: [ 'bold' ], inside: 'paragraph' } );
-		schema.disallow( { name: 'heading3', inside: '$root' } );
+		// TODO this requires a callback
+		// schema.xdisallow( { name: '$text', attributes: [ 'linkHref', 'italic' ], inside: 'heading1' } );
+		// schema.xdisallow( { name: '$text', attributes: [ 'italic' ], inside: 'heading2' } );
+		// schema.xdisallow( { name: '$text', attributes: [ 'linkHref' ], inside: 'blockQuote listItem' } );
+		// schema.xdisallow( { name: '$text', attributes: [ 'bold' ], inside: 'paragraph' } );
+		// schema.xdisallow( { name: 'heading3', inside: '$root' } );
 	} )
 	.catch( err => {
 		console.error( err.stack );

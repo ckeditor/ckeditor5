@@ -420,7 +420,7 @@ describe( 'DataController utils', () => {
 				model.schema.extend( '$text', { allowIn: 'obj' } );
 
 				model.schema.register( 'inlineObj', {
-					inheritAllFrom: '$inline',
+					allowIn: 'p',
 					isObject: true
 				} );
 				model.schema.extend( '$text', { allowIn: 'inlineObj' } );

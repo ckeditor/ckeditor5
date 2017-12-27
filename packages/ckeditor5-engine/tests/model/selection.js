@@ -1345,8 +1345,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'returns false when the entire content except an empty element is selected', () => {
-			model.schema.register( 'img', { inheritAllFrom: '$inline' } );
-			model.schema.extend( 'img', { allowIn: 'p' } );
+			model.schema.register( 'img', {
+				allowIn: 'p'
+			} );
 
 			setData( model, '<p><img></img>[Foo]</p>' );
 

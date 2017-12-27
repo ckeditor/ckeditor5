@@ -23,22 +23,28 @@ describe( 'model test utils', () => {
 		sandbox = sinon.sandbox.create();
 		selection.removeAllRanges();
 
-		model.schema.register( 'a', { inheritAllFrom: '$inline' } );
-		model.schema.extend( 'a', { allowIn: '$root' } );
-		model.schema.allow( { name: 'a', inside: '$root', attributes: [ 'bar', 'car', 'foo' ] } );
+		model.schema.register( 'a', {
+			allowWhere: '$text',
+			allowIn: '$root',
+			allowAttributes: [ 'bar', 'car', 'foo' ]
+		} );
 
-		model.schema.register( 'b', { inheritAllFrom: '$inline' } );
-		model.schema.extend( 'b', { allowIn: '$root' } );
-		model.schema.allow( { name: 'b', inside: '$root', attributes: [ 'barFoo', 'fooBar', 'x' ] } );
+		model.schema.register( 'b', {
+			allowWhere: '$text',
+			allowIn: '$root',
+			allowAttributes: [ 'barFoo', 'fooBar', 'x' ]
+		} );
 
-		model.schema.register( 'c', { inheritAllFrom: '$inline' } );
-		model.schema.extend( 'c', { allowIn: '$root' } );
+		model.schema.register( 'c', {
+			allowWhere: '$text',
+			allowIn: [ '$root', 'b' ]
+		} );
 
 		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-		model.schema.extend( '$text', { allowIn: '$root' } );
-		model.schema.extend( '$text', { allowIn: 'a' } );
-		model.schema.extend( '$text', { allowIn: 'b' } );
-		model.schema.extend( 'c', { allowIn: 'b' } );
+
+		model.schema.extend( '$text', {
+			allowIn: [ '$root', 'a', 'b' ]
+		} );
 	} );
 
 	afterEach( () => {

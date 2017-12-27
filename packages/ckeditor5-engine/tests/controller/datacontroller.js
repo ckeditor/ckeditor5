@@ -76,7 +76,9 @@ describe( 'DataController', () => {
 
 		it( 'should set paragraphs with bold', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-			schema.allow( { name: '$text', attributes: [ 'bold' ], inside: '$block' } );
+			schema.extend( '$text', {
+				allowAttributes: [ 'bold' ]
+			} );
 
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 			buildViewConverter().for( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', true );

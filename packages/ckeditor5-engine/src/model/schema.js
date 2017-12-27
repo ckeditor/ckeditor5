@@ -163,6 +163,10 @@ export default class Schema {
 		return element;
 	}
 
+	removeDisallowedAttributes() {
+		// TODO
+	}
+
 	_clearCache() {
 		this._compiledRules = null;
 	}

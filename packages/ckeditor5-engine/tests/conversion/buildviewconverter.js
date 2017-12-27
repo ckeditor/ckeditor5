@@ -6,7 +6,6 @@
 import buildViewConverter from '../../src/conversion/buildviewconverter';
 
 import Model from '../../src/model/model';
-import ModelSchema from '../../src/model/schema';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelElement from '../../src/model/element';
 import ModelTextProxy from '../../src/model/textproxy';
@@ -60,36 +59,49 @@ function modelToString( item ) {
 	return result;
 }
 
-const textAttributes = [ undefined, 'linkHref', 'linkTitle', 'bold', 'italic', 'style' ];
-const pAttributes = [ undefined, 'class', 'important', 'theme', 'decorated', 'size' ];
+const textAttributes = [ 'linkHref', 'linkTitle', 'bold', 'italic', 'style' ];
+const pAttributes = [ 'class', 'important', 'theme', 'decorated', 'size' ];
 
 describe( 'View converter builder', () => {
-	let dispatcher, schema, additionalData;
-
-	const model = new Model();
+	let dispatcher, model, schema, additionalData;
 
 	beforeEach( () => {
+		model = new Model();
+
 		// `additionalData` parameter for `.convert` calls.
 		additionalData = { context: [ '$root' ] };
 
-		schema = new ModelSchema();
+		schema = model.schema;
 
-		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-		schema.register( 'div', { inheritAllFrom: '$block' } );
-		schema.register( 'customP', { inheritAllFrom: 'paragraph' } );
-		schema.register( 'image', { inheritAllFrom: '$inline' } );
-		schema.register( 'span', { inheritAllFrom: '$inline' } );
-		schema.register( 'MEGATRON', { inheritAllFrom: '$inline' } ); // Yes, folks, we are building MEGATRON.
-		schema.register( 'abcd', { inheritAllFrom: '$inline' } );
-		schema.allow( { name: '$inline', attributes: textAttributes, inside: '$root' } );
-		schema.allow( { name: 'image', attributes: [ 'src' ], inside: '$root' } );
-		schema.allow( { name: 'image', attributes: [ 'src' ], inside: '$block' } );
-		schema.extend( '$text', { allowIn: '$inline' } );
-		schema.allow( { name: '$text', attributes: textAttributes, inside: '$block' } );
-		schema.allow( { name: '$text', attributes: textAttributes, inside: '$root' } );
-		schema.allow( { name: 'paragraph', attributes: pAttributes, inside: '$root' } );
-		schema.allow( { name: 'span', attributes: [ 'transformer' ], inside: '$root' } );
-		schema.allow( { name: 'div', attributes: [ 'class' ], inside: '$root' } );
+		schema.register( 'paragraph', {
+			inheritAllFrom: '$block',
+			allowAttributes: pAttributes
+		} );
+		schema.register( 'div', {
+			inheritAllFrom: '$block',
+			allowAttributes: 'class'
+		} );
+		schema.register( 'customP', {
+			inheritAllFrom: 'paragraph'
+		} );
+		schema.register( 'image', {
+			inheritAllFrom: '$text',
+			allowAttributes: 'src'
+		} );
+		schema.register( 'span', {
+			inheritAllFrom: '$text',
+			allowAttributes: 'transformer'
+		} );
+		// Yes, folks, we are building MEGATRON.
+		schema.register( 'MEGATRON', {
+			inheritAllFrom: '$text'
+		} );
+		schema.register( 'abcd', {
+			inheritAllFrom: '$text'
+		} );
+		schema.extend( '$text', {
+			allowAttributes: textAttributes
+		} );
 
 		dispatcher = new ViewConversionDispatcher( model, { schema } );
 		dispatcher.on( 'text', convertText() );
@@ -152,7 +164,7 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should convert from view attribute and key to model attribute', () => {
-		schema.allow( { name: 'paragraph', attributes: [ 'type' ], inside: '$root' } );
+		schema.extend( 'paragraph', { allowAttributes: 'type' } );
 
 		dispatcher.on( 'documentFragment', convertToModelFragment() );
 
@@ -481,7 +493,8 @@ describe( 'View converter builder', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'div' ).toElement( 'div' );
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
-		schema.disallow( { name: 'div', inside: '$root' } );
+		// TODO this requires a callback
+		// schema.xdisallow( { name: 'div', inside: '$root' } );
 
 		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 
@@ -500,7 +513,8 @@ describe( 'View converter builder', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 		buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
 
-		schema.disallow( { name: '$text', attributes: 'bold', inside: 'paragraph' } );
+		// TODO this requires a callback
+		// schema.xdisallow( { name: '$text', attributes: 'bold', inside: 'paragraph' } );
 
 		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 
@@ -535,7 +549,7 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should stop to attribute conversion if creating function returned null', () => {
-		schema.allow( { name: 'paragraph', attributes: [ 'type' ], inside: '$root' } );
+		schema.extend( 'paragraph', { allowAttributes: 'type' } );
 
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 

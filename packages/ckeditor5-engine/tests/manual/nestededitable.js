@@ -34,9 +34,9 @@ class NestedEditable extends Plugin {
 		schema.register( 'figcaption' );
 		schema.extend( 'figure', { allowIn: '$root' } );
 		schema.extend( 'figcaption', { allowIn: 'figure' } );
-
-		schema.extend( '$inline', { allowIn: 'figure' } );
-		schema.extend( '$inline', { allowIn: 'figcaption' } );
+		schema.extend( '$text', {
+			allowIn: [ 'figure', 'figcaption' ]
+		} );
 
 		buildModelConverter().for( data.modelToView, editing.modelToView )
 			.fromElement( 'figure' )

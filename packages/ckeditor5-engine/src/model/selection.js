@@ -785,9 +785,7 @@ function isUnvisitedBlockContainer( element, visited ) {
 
 	visited.add( element );
 
-	// TODO https://github.com/ckeditor/ckeditor5-engine/issues/532#issuecomment-278900072.
-	// This should not be a `$block` check.
-	return element.document.model.schema.itemExtends( element.name, '$block' ) && element.parent;
+	return element.document.model.schema.isBlock( element.name ) && element.parent;
 }
 
 // Finds the lowest element in position's ancestors which is a block.

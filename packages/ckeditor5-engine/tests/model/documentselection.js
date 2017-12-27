@@ -947,12 +947,13 @@ describe( 'DocumentSelection', () => {
 				} );
 				model.schema.extend( 'image', { allowIn: '$root' } );
 				model.schema.extend( 'image', { allowIn: '$block' } );
-				model.schema.extend( '$inline', { allowIn: 'image' } );
 
 				model.schema.register( 'caption' );
-				model.schema.extend( '$inline', { allowIn: 'caption' } );
 				model.schema.extend( 'caption', { allowIn: 'image' } );
-				model.schema.allow( { name: '$text', attributes: 'bold', inside: 'caption' } );
+				model.schema.extend( '$text', {
+					allowIn: [ 'image', 'caption' ],
+					allowAttributes: 'bold'
+				} );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object', () => {

@@ -158,7 +158,7 @@ function mergeBranches( writer, startPos, endPos ) {
 
 function shouldAutoparagraph( schema, position ) {
 	const isTextAllowed = schema.checkChild( position, '$text' );
-	const isParagraphAllowed = schema.check( position, 'paragraph' );
+	const isParagraphAllowed = schema.checkChild( position, 'paragraph' );
 
 	return !isTextAllowed && isParagraphAllowed;
 }

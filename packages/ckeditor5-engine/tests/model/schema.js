@@ -1440,4 +1440,7 @@ describe( 'Schema', () => {
 	// * test the default abstract entities (in model.js)
 	// * see clipboardHolder definition (and rename it to the pastebin)
 	// * review insertContent's _tryAutoparagraphing()
+	// * it doesn't make sense for VCD to get schema as a param (it can get it from the model)
+	// * V->M conversion tests might got outdated and would need to be reviewed if someone has a spare week ;)
+	// * Do we need both $inline and $text?
 } );
