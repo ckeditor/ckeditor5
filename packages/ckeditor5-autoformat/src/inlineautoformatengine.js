@@ -136,75 +136,75 @@ export default class InlineAutoformatEngine {
 			}
 		} );
 
-		editor.model.document.on( 'change', ( evt, type, changes, batch ) => {
-			if ( batch.type == 'transparent' ) {
-				return;
-			}
+		editor.model.document.on( 'change', () => {
+			const changes = editor.model.document.differ.getChanges();
 
-			if ( type !== 'insert' ) {
-				return;
-			}
-
-			const selection = editor.model.document.selection;
-
-			if ( !selection.isCollapsed || !selection.focus || !selection.focus.parent ) {
-				return;
-			}
-
-			const block = selection.focus.parent;
-			const text = getText( block ).slice( 0, selection.focus.offset );
-			const ranges = testCallback( text );
-			const rangesToFormat = [];
-
-			// Apply format before deleting text.
-			ranges.format.forEach( range => {
-				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
-					return;
+			for ( const entry of changes ) {
+				if ( entry.type != 'insert' || entry.name != '$text' ) {
+					continue;
 				}
 
-				rangesToFormat.push( LiveRange.createFromParentsAndOffsets(
-					block, range[ 0 ],
-					block, range[ 1 ]
-				) );
-			} );
+				const selection = editor.model.document.selection;
 
-			const rangesToRemove = [];
-
-			// Reverse order to not mix the offsets while removing.
-			ranges.remove.slice().reverse().forEach( range => {
-				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
-					return;
+				if ( !selection.isCollapsed || !selection.focus || !selection.focus.parent ) {
+					continue;
 				}
 
-				rangesToRemove.push( LiveRange.createFromParentsAndOffsets(
-					block, range[ 0 ],
-					block, range[ 1 ]
-				) );
-			} );
+				const block = selection.focus.parent;
+				const text = getText( block ).slice( 0, selection.focus.offset );
+				const ranges = testCallback( text );
+				const rangesToFormat = [];
 
-			if ( !( rangesToFormat.length && rangesToRemove.length ) ) {
-				return;
+				// Apply format before deleting text.
+				ranges.format.forEach( range => {
+					if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
+						return;
+					}
+
+					rangesToFormat.push( LiveRange.createFromParentsAndOffsets(
+						block, range[ 0 ],
+						block, range[ 1 ]
+					) );
+				} );
+
+				const rangesToRemove = [];
+
+				// Reverse order to not mix the offsets while removing.
+				ranges.remove.slice().reverse().forEach( range => {
+					if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
+						return;
+					}
+
+					rangesToRemove.push( LiveRange.createFromParentsAndOffsets(
+						block, range[ 0 ],
+						block, range[ 1 ]
+					) );
+				} );
+
+				if ( !( rangesToFormat.length && rangesToRemove.length ) ) {
+					continue;
+				}
+
+				// Use enqueueChange to create new batch to separate typing batch from the auto-format changes.
+				editor.model.enqueueChange( writer => {
+					const validRanges = editor.model.schema.getValidRanges( rangesToFormat, command );
+
+					// Apply format.
+					formatCallback( writer, validRanges );
+
+					// Detach ranges used to apply Autoformat. Prevents memory leaks. #39
+					rangesToFormat.forEach( range => range.detach() );
+
+					// Remove delimiters.
+					for ( const range of rangesToRemove ) {
+						writer.remove( range );
+
+						// Prevents memory leaks.
+						// https://github.com/ckeditor/ckeditor5-autoformat/issues/39
+						range.detach();
+					}
+				} );
 			}
-
-			// Use enqueueChange to create new batch to separate typing batch from the autoformat changes.
-			editor.model.enqueueChange( writer => {
-				const validRanges = editor.model.schema.getValidRanges( rangesToFormat, command );
-
-				// Apply format.
-				formatCallback( writer, validRanges );
-
-				// Detach ranges used to apply Autoformat. Prevents memory leaks. #39
-				rangesToFormat.forEach( range => range.detach() );
-
-				// Remove delimiters.
-				for ( const range of rangesToRemove ) {
-					writer.remove( range );
-
-					// Prevents memory leaks.
-					// https://github.com/ckeditor/ckeditor5-autoformat/issues/39
-					range.detach();
-				}
-			} );
 		} );
 	}
 }

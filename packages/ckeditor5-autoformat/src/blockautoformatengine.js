@@ -8,7 +8,6 @@
  */
 
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import TextProxy from '@ckeditor/ckeditor5-engine/src/model/textproxy';
 
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,
@@ -64,47 +63,39 @@ export default class BlockAutoformatEngine {
 			};
 		}
 
-		editor.model.document.on( 'change', ( event, type, changes, batch ) => {
-			if ( batch.type == 'transparent' ) {
-				return;
+		editor.model.document.on( 'change', () => {
+			const changes = editor.model.document.differ.getChanges();
+
+			for ( const entry of changes ) {
+				if ( entry.type == 'insert' && entry.name == '$text' ) {
+					if ( entry.position.root.rootName == '$graveyard' ) {
+						continue;
+					}
+
+					const item = entry.position.textNode || entry.position.nodeAfter;
+
+					if ( !item.parent.is( 'paragraph' ) ) {
+						continue;
+					}
+
+					const match = pattern.exec( item.data );
+
+					if ( !match ) {
+						continue;
+					}
+
+					// Use enqueueChange to create new batch to separate typing batch from the auto-format changes.
+					editor.model.enqueueChange( writer => {
+						// Matched range.
+						const range = Range.createFromParentsAndOffsets( item.parent, 0, item.parent, match[ 0 ].length );
+
+						// Remove matched text.
+						writer.remove( range );
+
+						callback( { match } );
+					} );
+				}
 			}
-
-			if ( type != 'insert' ) {
-				return;
-			}
-
-			// Take the first element. Typing shouldn't add more than one element at once.
-			// And if it is not typing (e.g. paste), Autoformat should not be fired.
-			const value = changes.range.getItems().next().value;
-
-			if ( !( value instanceof TextProxy ) ) {
-				return;
-			}
-
-			const textNode = value.textNode;
-			const text = textNode.data;
-
-			// Run matching only on non-empty paragraphs.
-			if ( textNode.parent.name !== 'paragraph' || !text ) {
-				return;
-			}
-
-			const match = pattern.exec( text );
-
-			if ( !match ) {
-				return;
-			}
-
-			// Use enqueueChange to create new batch to separate typing batch from the autoformat changes.
-			editor.model.enqueueChange( writer => {
-				// Matched range.
-				const range = Range.createFromParentsAndOffsets( textNode.parent, 0, textNode.parent, match[ 0 ].length );
-
-				// Remove matched text.
-				writer.remove( range );
-
-				callback( { match } );
-			} );
 		} );
 	}
 }
