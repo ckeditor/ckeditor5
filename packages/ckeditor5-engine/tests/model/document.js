@@ -8,8 +8,6 @@ import Document from '../../src/model/document';
 import RootElement from '../../src/model/rootelement';
 import Batch from '../../src/model/batch';
 import Delta from '../../src/model/delta/delta';
-import NoOperation from '../../src/model/operation/nooperation';
-import deltaTransform from '../../src/model/delta/transform';
 import Range from '../../src/model/range';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
