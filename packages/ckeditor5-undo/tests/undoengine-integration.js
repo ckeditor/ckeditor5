@@ -227,14 +227,17 @@ describe( 'UndoEngine integration', () => {
 
 		it( 'undo insert first content', () => {
 			input( '' );
+			output( '<paragraph>[]</paragraph>' ); // All hail our king and savior, autoparagraphing!
 
 			model.change( writer => {
+				writer.remove( Range.createIn( root ) );
 				writer.insertElement( 'heading1', doc.selection.getFirstPosition() );
 			} );
+
 			output( '<heading1>[]</heading1>' );
 
 			editor.execute( 'undo' );
-			output( '<paragraph>[]</paragraph>' ); // All hail our king and savior, autoparagraphing!
+			output( '<paragraph>[]</paragraph>' );
 
 			undoDisabled();
 		} );
