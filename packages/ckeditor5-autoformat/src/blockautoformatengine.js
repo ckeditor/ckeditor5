@@ -68,10 +68,6 @@ export default class BlockAutoformatEngine {
 
 			for ( const entry of changes ) {
 				if ( entry.type == 'insert' && entry.name == '$text' ) {
-					if ( entry.position.root.rootName == '$graveyard' ) {
-						continue;
-					}
-
 					const item = entry.position.textNode || entry.position.nodeAfter;
 
 					if ( !item.parent.is( 'paragraph' ) ) {
