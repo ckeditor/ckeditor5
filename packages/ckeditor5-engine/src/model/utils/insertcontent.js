@@ -224,7 +224,7 @@ class Insertion {
 		}
 		// If the node is a text and bare text is allowed in current position it means that the node
 		// contains disallowed attributes and we have to remove them.
-		else if ( this.schema.check( { name: '$text', inside: this.position } ) ) {
+		else if ( this.schema.checkChild( this.position, '$text' ) ) {
 			this.schema.removeDisallowedAttributes( [ node ], this.position, this.writer );
 			this._handleNode( node, context );
 		}
@@ -239,7 +239,7 @@ class Insertion {
 	 */
 	_insert( node ) {
 		/* istanbul ignore if */
-		if ( !this._checkIsAllowed( node, this.position ) ) {
+		if ( !this.schema.checkChild( this.position, node ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 			// Note that it would often be a silent issue if we insert node in a place where it's not allowed.
 			log.error(
@@ -258,7 +258,7 @@ class Insertion {
 		livePos.detach();
 
 		// The last inserted object should be selected because we can't put a collapsed selection after it.
-		if ( this._checkIsObject( node ) && !this.schema.check( { name: '$text', inside: this.position } ) ) {
+		if ( this._checkIsObject( node ) && !this.schema.checkChild( this.position, '$text' ) ) {
 			this.nodeToSelect = node;
 		} else {
 			this.nodeToSelect = null;
@@ -345,11 +345,11 @@ class Insertion {
 		if ( this._getAllowedIn( paragraph, this.position.parent ) ) {
 			// When node is a text and is disallowed by schema it means that contains disallowed attributes
 			// and we need to remove them.
-			if ( node.is( 'text' ) && !this._checkIsAllowed( node, [ paragraph ] ) ) {
+			if ( node.is( 'text' ) && !this.schema.checkChild( paragraph, node ) ) {
 				this.schema.removeDisallowedAttributes( [ node ], [ paragraph ], this.writer );
 			}
 
-			if ( this._checkIsAllowed( node, [ paragraph ] ) ) {
+			if ( this.schema.checkChild( paragraph, node ) ) {
 				paragraph.appendChildren( node );
 				this._handleNode( paragraph, context );
 			}
@@ -407,7 +407,7 @@ class Insertion {
 	 * @returns {module:engine/model/element~Element|null}
 	 */
 	_getAllowedIn( node, element ) {
-		if ( this._checkIsAllowed( node, [ element ] ) ) {
+		if ( this.schema.checkChild( element, node ) ) {
 			return element;
 		}
 
@@ -419,33 +419,11 @@ class Insertion {
 	}
 
 	/**
-	 * Check whether the given node is allowed in the specified schema path.
-	 *
-	 * @param {module:engine/model/node~Node} node
-	 * @param {module:engine/model/schema~SchemaPath} path
-	 */
-	_checkIsAllowed( node, path ) {
-		return this.schema.check( {
-			name: getNodeSchemaName( node ),
-			attributes: Array.from( node.getAttributeKeys() ),
-			inside: path
-		} );
-	}
-
-	/**
 	 * Checks whether according to the schema this is an object type element.
 	 *
 	 * @param {module:engine/model/node~Node} node The node to check.
 	 */
 	_checkIsObject( node ) {
-		return this.schema.isObject( getNodeSchemaName( node ) );
+		return this.schema.isObject( node.is( 'text' ) ? '$text' : node.name );
 	}
-}
-
-// Gets a name under which we should check this node in the schema.
-//
-// @param {module:engine/model/node~Node} node The node.
-// @returns {String} Node name.
-function getNodeSchemaName( node ) {
-	return node.is( 'text' ) ? '$text' : node.name;
 }

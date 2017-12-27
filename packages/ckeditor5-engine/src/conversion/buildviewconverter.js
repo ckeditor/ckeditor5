@@ -291,10 +291,7 @@ class ViewConverterBuilder {
 						continue;
 					}
 
-					// Check whether generated structure is okay with `Schema`.
-					const keys = Array.from( modelElement.getAttributeKeys() );
-
-					if ( !conversionApi.schema.check( { name: modelElement.name, attributes: keys, inside: data.context } ) ) {
+					if ( !conversionApi.schema.checkChild( data.context, modelElement ) ) {
 						continue;
 					}
 
@@ -518,16 +515,7 @@ function setAttributeOn( toChange, attribute, data, conversionApi ) {
 		return;
 	}
 
-	const keys = Array.from( toChange.getAttributeKeys() );
-	keys.push( attribute.key );
-
-	const schemaQuery = {
-		name: toChange.name || '$text',
-		attributes: keys,
-		inside: data.context
-	};
-
-	if ( conversionApi.schema.check( schemaQuery ) ) {
+	if ( conversionApi.schema.checkAttribute( toChange, attribute.key ) ) {
 		conversionApi.writer.setAttribute( attribute.key, attribute.value, toChange );
 	}
 }

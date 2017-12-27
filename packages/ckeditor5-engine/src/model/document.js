@@ -248,7 +248,7 @@ export default class Document {
 		const schema = this.model.schema;
 
 		// Return collapsed range if provided position is valid.
-		if ( schema.check( { name: '$text', inside: position } ) ) {
+		if ( schema.checkChild( position, '$text' ) ) {
 			return new Range( position );
 		}
 
@@ -270,7 +270,7 @@ export default class Document {
 				return Range.createOn( value.item );
 			}
 
-			if ( schema.check( { name: '$text', inside: value.nextPosition } ) ) {
+			if ( schema.checkChild( value.nextPosition, '$text' ) ) {
 				return new Range( value.nextPosition );
 			}
 		}

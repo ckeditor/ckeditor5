@@ -87,7 +87,7 @@ function tryExtendingTo( data, value ) {
 		}
 
 		// If text allowed on this position, extend to this place.
-		if ( data.schema.check( { name: '$text', inside: value.nextPosition } ) ) {
+		if ( data.schema.checkChild( value.nextPosition, '$text' ) ) {
 			return value.nextPosition;
 		}
 	}
@@ -102,7 +102,7 @@ function tryExtendingTo( data, value ) {
 		}
 
 		// If text allowed on this position, extend to this place.
-		if ( data.schema.check( { name: '$text', inside: value.nextPosition } ) ) {
+		if ( data.schema.checkChild( value.nextPosition, '$text' ) ) {
 			return value.nextPosition;
 		}
 	}

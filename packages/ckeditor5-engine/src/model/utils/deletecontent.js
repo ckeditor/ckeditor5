@@ -157,8 +157,8 @@ function mergeBranches( writer, startPos, endPos ) {
 }
 
 function shouldAutoparagraph( schema, position ) {
-	const isTextAllowed = schema.check( { name: '$text', inside: position } );
-	const isParagraphAllowed = schema.check( { name: 'paragraph', inside: position } );
+	const isTextAllowed = schema.checkChild( position, '$text' );
+	const isParagraphAllowed = schema.check( position, 'paragraph' );
 
 	return !isTextAllowed && isParagraphAllowed;
 }
@@ -212,5 +212,5 @@ function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
 		return false;
 	}
 
-	return schema.check( { name: 'paragraph', inside: limitElement.name } );
+	return schema.checkChild( limitElement, 'paragraph' );
 }

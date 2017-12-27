@@ -329,14 +329,10 @@ function convertToModelFragment() {
 
 function convertToModelElement() {
 	return ( evt, data, consumable, conversionApi ) => {
-		const schemaQuery = {
-			name: data.input.name,
-			attributes: Array.from( data.input.getAttributeKeys() ),
-			inside: data.context
-		};
+		const elementName = data.input.name;
 
-		if ( !conversionApi.schema.check( schemaQuery ) ) {
-			throw new Error( `Element '${ schemaQuery.name }' not allowed in context ${ JSON.stringify( data.context ) }.` );
+		if ( !conversionApi.schema.checkChild( data.context, elementName ) ) {
+			throw new Error( `Element '${ elementName }' was not allowed in context ${ JSON.stringify( data.context ) }.` );
 		}
 
 		// View attribute value is a string so we want to typecast it to the original type.
@@ -356,13 +352,8 @@ function convertToModelElement() {
 
 function convertToModelText( withAttributes = false ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const schemaQuery = {
-			name: '$text',
-			inside: data.context
-		};
-
-		if ( !conversionApi.schema.check( schemaQuery ) ) {
-			throw new Error( `Element '${ schemaQuery.name }' not allowed in context ${ JSON.stringify( data.context ) }.` );
+		if ( !conversionApi.schema.checkChild( data.context, '$text' ) ) {
+			throw new Error( `Text was not allowed in context ${ JSON.stringify( data.context ) }.` );
 		}
 
 		let node;

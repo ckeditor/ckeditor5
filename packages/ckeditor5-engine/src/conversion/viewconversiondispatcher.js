@@ -50,12 +50,8 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  *		// Converter for paragraphs (<p>).
  *		viewDispatcher.on( 'element:p', ( evt, data, consumable, conversionApi ) => {
  *			const paragraph = new ModelElement( 'paragraph' );
- *			const schemaQuery = {
- *				name: 'paragraph',
- *				inside: data.context
- *			};
  *
- *			if ( conversionApi.schema.check( schemaQuery ) ) {
+ *			if ( conversionApi.schema.checkChild( data.context, paragraph ) ) {
  *				if ( !consumable.consume( data.input, { name: true } ) ) {
  *					// Before converting this paragraph's children we have to update their context by this paragraph.
  *					data.context.push( paragraph );
@@ -81,7 +77,8 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  *						inside: data.context
  *					};
  *
- *					if ( conversionApi.schema.check( schemaQuery ) ) {
+ *					// TODO it was impossible for me to understand wheter `data.context` contains `$text`.
+ *					if ( conversionApi.schema.checkAttribute( TODO ) ) {
  *						item.setAttribute( 'link', data.input.getAttribute( 'href' ) );
  *					}
  *				}
