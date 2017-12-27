@@ -7,6 +7,8 @@ import Schema from '../../src/model/schema';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Element from '../../src/model/element';
+import Position from '../../src/model/position';
+import Text from '../../src/model/text';
 
 describe( 'Schema', () => {
 	let schema, root1, r1p1, r1p2, r1bQ, r1bQp, root2;
@@ -275,6 +277,53 @@ describe( 'Schema', () => {
 	} );
 
 	describe( 'checkChild()', () => {
+		beforeEach( () => {
+			schema.register( '$root' );
+			schema.register( 'paragraph', {
+				allowIn: '$root'
+			} );
+			schema.register( '$text', {
+				allowIn: 'paragraph'
+			} );
+		} );
+
+		it( 'accepts an element as a context and a node name as a child', () => {
+			expect( schema.checkChild( root1, 'paragraph' ) ).to.be.true;
+			expect( schema.checkChild( root1, '$text' ) ).to.be.false;
+		} );
+
+		it( 'accepts a position as a context', () => {
+			const posInRoot = Position.createAt( root1 );
+			const posInParagraph = Position.createAt( r1p1 );
+
+			expect( schema.checkChild( posInRoot, 'paragraph' ) ).to.be.true;
+			expect( schema.checkChild( posInRoot, '$text' ) ).to.be.false;
+
+			expect( schema.checkChild( posInParagraph, '$text' ) ).to.be.true;
+			expect( schema.checkChild( posInParagraph, 'paragraph' ) ).to.be.false;
+		} );
+
+		// This is a temporary feature which is needed to make the current V->M conversion works.
+		// It should be removed once V->M conversion uses real positions.
+		// Of course, real positions have this advantage that we know element attributes at this point.
+		it( 'accepts an array of element names as a context', () => {
+			const contextInRoot = [ '$root' ];
+			const contextInParagraph = [ '$root', 'paragraph' ];
+
+			expect( schema.checkChild( contextInRoot, 'paragraph' ) ).to.be.true;
+			expect( schema.checkChild( contextInRoot, '$text' ) ).to.be.false;
+
+			expect( schema.checkChild( contextInParagraph, '$text' ) ).to.be.true;
+			expect( schema.checkChild( contextInParagraph, 'paragraph' ) ).to.be.false;
+		} );
+
+		it( 'accepts a node as a child', () => {
+			expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
+			expect( schema.checkChild( root1, new Text( 'foo' ) ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'rules compilation', () => {
 		describe( 'allowIn cases', () => {
 			it( 'passes $root>paragraph', () => {
 				schema.register( '$root' );
@@ -699,7 +748,7 @@ describe( 'Schema', () => {
 
 		// We need to handle cases where some independent features registered rules which might use
 		// optional elements (elements which might not have been registered).
-		describe( 'missing rules', () => {
+		describe( 'missing structure rules', () => {
 			it( 'does not break when trying to check a child which is not registered', () => {
 				schema.register( '$root' );
 
@@ -765,9 +814,7 @@ describe( 'Schema', () => {
 				expect( schema.checkChild( root1, r1p1 ) ).to.be.false;
 			} );
 		} );
-	} );
 
-	describe( 'checkAttribute()', () => {
 		describe( 'allowAttributes', () => {
 			it( 'passes paragraph[align]', () => {
 				schema.register( 'paragraph', {
@@ -868,7 +915,7 @@ describe( 'Schema', () => {
 			} );
 		} );
 
-		describe( 'missing rules', () => {
+		describe( 'missing attribute rules', () => {
 			it( 'does not crash when checking an attribute of a unregistered element', () => {
 				expect( schema.checkAttribute( r1p1, 'align' ) ).to.be.false;
 			} );

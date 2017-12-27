@@ -23,11 +23,11 @@ export default class Schema {
 		this.decorate( 'checkAttribute' );
 
 		this.on( 'checkAttribute', ( evt, args ) => {
-			args[ 0 ] = getContext( args[ 0 ] );
+			args[ 0 ] = normalizeContext( args[ 0 ] );
 		}, { priority: 'highest' } );
 
 		this.on( 'checkChild', ( evt, args ) => {
-			args[ 0 ] = getContext( args[ 0 ] );
+			args[ 0 ] = normalizeContext( args[ 0 ] );
 		}, { priority: 'highest' } );
 	}
 
@@ -65,6 +65,9 @@ export default class Schema {
 		return this._compiledRules;
 	}
 
+	/**
+	 * @param {module:engine/model/node~Node|String} item
+	 */
 	getRule( item ) {
 		let itemName;
 
@@ -103,6 +106,10 @@ export default class Schema {
 		return !!( rule && rule.isObject );
 	}
 
+	/**
+	 * @param {module:engine/model/element~Element|module:engine/model/position~Position|Array.<String>} context
+	 * @param {module:engine/model/node~Node|String}
+	 */
 	checkChild( context, child ) {
 		const rule = this.getRule( child );
 
@@ -298,15 +305,27 @@ function getAllowedChildren( compiledRules, itemName ) {
 	return getValues( compiledRules ).filter( rule => rule.allowIn.includes( itemRule.name ) );
 }
 
-function getContext( node ) {
-	return node.getAncestors( { includeSelf: true } ).map( node => {
-		return {
-			name: node.is( 'text' ) ? '$text' : node.name,
-			* getAttributes() {
-				yield* node.getAttributes();
-			}
-		};
-	} );
+function normalizeContext( ctx ) {
+	// See the comment in tests about specifying checkChild()'s context as an array.
+	if ( Array.isArray( ctx ) ) {
+		return ctx.map( nodeName => {
+			return {
+				name: nodeName,
+				* getAttributes() {}
+			};
+		} );
+	}
+	// Item or position (PS. It's ok that Position#getAncestors() doesn't accept params).
+	else {
+		return ctx.getAncestors( { includeSelf: true } ).map( node => {
+			return {
+				name: node.is( 'text' ) ? '$text' : node.name,
+				* getAttributes() {
+					yield* node.getAttributes();
+				}
+			};
+		} );
+	}
 }
 
 function getValues( obj ) {
