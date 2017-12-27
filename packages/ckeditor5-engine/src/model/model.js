@@ -28,10 +28,12 @@ import modifySelection from './utils/modifyselection';
 import getSelectedContent from './utils/getselectedcontent';
 
 /**
- * Editors data model class. Model defines all data: either nodes users see in editable roots, grouped as the
- * {@link module:engine/model/model~Model#document}, and all detached nodes, used to data manipulation. All of them are
- * created and modified by the {@link module:engine/model/writer~Writer}, which can be get using
- * {@link module:engine/model/model~Model#change} or {@link module:engine/model/model~Model#enqueueChange} methods.
+ * Editor's data model class. Model defines all the data: both nodes that are attached to the roots of the
+ * {@link module:engine/model/model~Model#document model document}, and also all detached nodes which has not been yet
+ * added to the document.
+ *
+ * All those nodes are created and modified by the {@link module:engine/model/writer~Writer model writer}, which can be
+ * accessed by using {@link module:engine/model/model~Model#change} or {@link module:engine/model/model~Model#enqueueChange} methods.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -47,11 +49,27 @@ export default class Model {
 		this._pendingChanges = [];
 
 		/**
+		 * Models markers' collection.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/markercollection~MarkerCollection}
+		 */
+		this.markers = new MarkerCollection();
+
+		/**
 		 * Editors document model.
 		 *
 		 * @member {module:engine/model/document~Document}
 		 */
 		this.document = new Document( this );
+
+		/**
+		 * The last created and currently used writer instance.
+		 *
+		 * @private
+		 * @member {module:engine/model/writer~Writer}
+		 */
+		this._currentWriter = null;
 
 		/**
 		 * Schema for editors model.
@@ -60,19 +78,11 @@ export default class Model {
 		 */
 		this.schema = new Schema();
 
-		/**
-		 * Models markers' collection.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/markercollection~MarkerCollection}
-		 */
-		this.markers = new MarkerCollection();
-
 		[ 'insertContent', 'deleteContent', 'modifySelection', 'getSelectedContent', 'applyOperation' ]
 			.forEach( methodName => this.decorate( methodName ) );
 
-		// Adding operation validation with a highest priority, so it is called before any other feature would like
-		// to do anything with the operation. If the operation has incorrect parameters it should throw earliest moment.
+		// Adding operation validation with `highest` priority, so it is called before any other feature would like
+		// to do anything with the operation. If the operation has incorrect parameters it should throw on the earliest occasion.
 		this.on( 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
 
@@ -99,26 +109,26 @@ export default class Model {
 
 	/**
 	 * Change method is the primary way of changing the model. You should use it to modify any node, including detached
-	 * nodes, not added to the {@link module:engine/model/model~Model#document}.
+	 * nodes (not added to the {@link module:engine/model/model~Model#document model document}).
 	 *
 	 *		model.change( writer => {
 	 *			writer.insertText( 'foo', paragraph, 'end' );
 	 *		} );
 	 *
-	 * All changes inside the change block use the same {@link module:engine/model/batch~Batch} so share the same
+	 * All changes inside the change block use the same {@link module:engine/model/batch~Batch} so they share the same
 	 * undo step.
 	 *
 	 *		model.change( writer => {
-	 *			writer.insertText( 'foo', paragraph, 'end' ); // foo
+	 *			writer.insertText( 'foo', paragraph, 'end' ); // foo.
 	 *
 	 *			model.change( writer => {
-	 *				writer.insertText( 'bar', paragraph, 'end' ); // foobar
+	 *				writer.insertText( 'bar', paragraph, 'end' ); // foobar.
 	 *			} );
 	 *
-	 * 			writer.insertText( 'bom', paragraph, 'end' ); // foobarbom
+	 * 			writer.insertText( 'bom', paragraph, 'end' ); // foobarbom.
 	 *		} );
 	 *
-	 * Change block is executed imminently.
+	 * Change block is executed immediately.
 	 *
 	 * You can also return a value from the change block.
 	 *
@@ -126,43 +136,44 @@ export default class Model {
 	 *			return writer.createElement( 'img' );
 	 *		} );
 	 *
-	 * When the outermost block is done the {@link #event:change} event is fired.
+	 * When the outermost block is done the {@link #event:_change} event is fired.
 	 *
 	 * @see #enqueueChange
-	 * @fires event:change
-	 * @fires event:changesDone
+	 * @fires event:_change
 	 * @param {Function} callback Callback function which may modify the model.
-	 * @returns {*} Value returned by the callback
+	 * @returns {*} Value returned by the callback.
 	 */
 	change( callback ) {
 		if ( this._pendingChanges.length === 0 ) {
+			// If this is the outermost block, create a new batch and start `_runPendingChanges` execution flow.
 			this._pendingChanges.push( { batch: new Batch(), callback } );
 
 			return this._runPendingChanges()[ 0 ];
 		} else {
+			// If this is not the outermost block, just execute the callback.
 			return callback( this._currentWriter );
 		}
 	}
 
 	/**
-	 * `enqueueChange` method is very similar to the {@link #change change method}, with two major differences.
+	 * `enqueueChange` method performs similar task as the {@link #change change method}, with two major differences.
 	 *
 	 * First, the callback of the `enqueueChange` is executed when all other changes are done. It might be executed
-	 * imminently if it is not nested in any other change block, but if it is nested in another change it will be delayed
-	 * and executed after the outermost block. If will be also executed after all previous `enqueueChange` blocks.
+	 * immediately if it is not nested in any other change block, but if it is nested in another (enqueue)change block,
+	 * it will be delayed and executed after the outermost block.
 	 *
 	 *		model.change( writer => {
 	 *			console.log( 1 );
 	 *
 	 *			model.enqueueChange( writer => {
-	 *				console.log( 3 );
+	 *				console.log( 2 );
 	 *			} );
 	 *
-	 * 			console.log( 2 );
-	 *		} );
+	 * 			console.log( 3 );
+	 *		} ); // Will log: 1, 3, 2.
 	 *
-	 * Second, it let you define the {@link module:engine/model/batch~Batch} to which you want to add your changes.
-	 * By default it creates a new batch, note that in the sample above `change` and `enqueueChange` blocks use a different
+	 * Second, it lets you define the {@link module:engine/model/batch~Batch} into which you want to add your changes.
+	 * By default, a new batch is created. In the sample above, `change` and `enqueueChange` blocks use a different
 	 * batch (and different {@link module:engine/model/writer~Writer} since each of them operates on the separate batch).
 	 *
 	 * Using `enqueueChange` block you can also add some changes to the batch you used before.
@@ -171,10 +182,11 @@ export default class Model {
 	 *			writer.insertText( 'foo', paragraph, 'end' );
 	 *		} );
 	 *
-	 * @fires event:change
-	 * @fires event:changesDone
+	 * `Batch` instance can be obtained from {@link module:engine/model/writer~Writer#batch the writer}.
+	 *
+	 * @fires event:_change
 	 * @param {module:engine/model/batch~Batch|String} batchOrType Batch or batch type should be used in the callback.
-	 * If not defined new batch will be created.
+	 * If not defined, a new batch will be created.
 	 * @param {Function} callback Callback function which may modify the model.
 	 */
 	enqueueChange( batchOrType, callback ) {
@@ -203,18 +215,20 @@ export default class Model {
 		const ret = [];
 
 		while ( this._pendingChanges.length ) {
-			this._currentWriter = new Writer( this, this._pendingChanges[ 0 ].batch );
+			// Create a new writer using batch instance created for this chain of changes.
+			const currentBatch = this._pendingChanges[ 0 ].batch;
+			this._currentWriter = new Writer( this, currentBatch );
 
-			ret.push( this._pendingChanges[ 0 ].callback( this._currentWriter ) );
+			// Execute changes callback and gather the returned value.
+			const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
+			ret.push( callbackReturnValue );
 
-			this.fire( 'change' );
+			// Fire internal `_change` event.
+			this.fire( '_change', this._currentWriter );
 
 			this._pendingChanges.shift();
-
 			this._currentWriter = null;
 		}
-
-		this.fire( 'changesDone' );
 
 		return ret;
 	}
@@ -332,89 +346,84 @@ export default class Model {
 	}
 
 	/**
-	 * Removes all events listeners set by model instance and destroy Document.
+	 * Removes all events listeners set by model instance and destroys {@link module:engine/model/document~Document}.
 	 */
 	destroy() {
 		this.document.destroy();
 		this.stopListening();
 	}
+
+	/**
+	 * Fired after leaving each {@link module:engine/model/model~Model#enqueueChange} block or outermost
+	 * {@link module:engine/model/model~Model#change} block.
+	 *
+	 * **Note:** This is an internal event! Use {@link module:engine/model/document~Document#event:change} instead.
+	 *
+	 * @protected
+	 * @event _change
+	 * @param {module:engine/model/writer~Writer} writer `Writer` instance that has been used in the change block.
+	 */
+
+	/**
+	 * Fired every time any {@link module:engine/model/operation/operation~Operation operation} is applied on the model
+	 * using {@link #applyOperation}.
+	 *
+	 * Note that this event is suitable only for very specific use-cases. Use it if you need to listen to every single operation
+	 * applied on the document. However, in most cases {@link module:engine/model/document~Document#event:change} should
+	 * be used.
+	 *
+	 * A few callbacks are already added to this event by engine internal classes:
+	 *
+	 * * with `highest` priority operation is validated,
+	 * * with `normal` priority operation is executed,
+	 * * with `low` priority the {@link module:engine/model/document~Document} updates its version,
+	 * * with `low` priority {@link module:engine/model/liveposition~LivePosition} and {@link module:engine/model/liverange~LiveRange}
+	 * update themselves.
+	 *
+	 * @event applyOperation
+	 * @param {Array} args Arguments of the `applyOperation` which is an array with a single element - applied
+	 * {@link module:engine/model/operation/operation~Operation operation}.
+	 */
+
+	/**
+	 * Event fired when {@link #insertContent} method is called.
+	 *
+	 * The {@link #insertContent default action of that method} is implemented as a
+	 * listener to this event so it can be fully customized by the features.
+	 *
+	 * @event insertContent
+	 * @param {Array} args The arguments passed to the original method.
+	 */
+
+	/**
+	 * Event fired when {@link #deleteContent} method is called.
+	 *
+	 * The {@link #deleteContent default action of that method} is implemented as a
+	 * listener to this event so it can be fully customized by the features.
+	 *
+	 * @event deleteContent
+	 * @param {Array} args The arguments passed to the original method.
+	 */
+
+	/**
+	 * Event fired when {@link #modifySelection} method is called.
+	 *
+	 * The {@link #modifySelection default action of that method} is implemented as a
+	 * listener to this event so it can be fully customized by the features.
+	 *
+	 * @event modifySelection
+	 * @param {Array} args The arguments passed to the original method.
+	 */
+
+	/**
+	 * Event fired when {@link #getSelectedContent} method is called.
+	 *
+	 * The {@link #getSelectedContent default action of that method} is implemented as a
+	 * listener to this event so it can be fully customized by the features.
+	 *
+	 * @event getSelectedContent
+	 * @param {Array} args The arguments passed to the original method.
+	 */
 }
 
 mix( Model, ObservableMixin );
-
-/**
- * Fired after leaving each {@link module:engine/model/model~Model#enqueueChange} block or outermost
- * {@link module:engine/model/model~Model#change} block.
- * Have the same parameters as {@link module:engine/model/model~Model#change}.
- *
- * @event change
- */
-
-/**
- * Fired when all queued model changes are done.
- *
- * @see #change
- * @see #enqueueChange
- * @event changesDone
- */
-
-/**
- * Fired every time any {@link module:engine/model/operation/operation~Operation operation} is applied on the model
- * using {@link #applyOperation}.
- *
- * Note that this is an internal event for the specific use-cases. You can use it if you need to know about each operation
- * applied on the document, but in most cases {@link #change} event which is fired when all changes in a
- * {@link module:engine/model/batch~Batch} are applied, is a better choice.
- *
- * With the high priority operation is validated.
- *
- * With the normal priority operation is executed. After that priority you will be able to get additional
- * information about the applied changes returned by {@link module:engine/model/operation/operation~Operation#_execute}
- * as `evt.return`.
- *
- * With the low priority the {@link module:engine/model/document~Document} listen on this event and updates its version.
- *
- * @event applyOperation
- * @param {Array} args Arguments of the `applyOperation` which are an array with a single element:
- * {@link module:engine/model/operation/operation~Operation operation}.
- */
-
-/**
- * Event fired when {@link #insertContent} method is called.
- *
- * The {@link #insertContent default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
- *
- * @event insertContent
- * @param {Array} args The arguments passed to the original method.
- */
-
-/**
- * Event fired when {@link #deleteContent} method is called.
- *
- * The {@link #deleteContent default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
- *
- * @event deleteContent
- * @param {Array} args The arguments passed to the original method.
- */
-
-/**
- * Event fired when {@link #modifySelection} method is called.
- *
- * The {@link #modifySelection default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
- *
- * @event modifySelection
- * @param {Array} args The arguments passed to the original method.
- */
-
-/**
- * Event fired when {@link #getSelectedContent} method is called.
- *
- * The {@link #getSelectedContent default action of that method} is implemented as a
- * listener to this event so it can be fully customized by the features.
- *
- * @event getSelectedContent
- * @param {Array} args The arguments passed to the original method.
- */

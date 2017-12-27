@@ -120,14 +120,25 @@ function bindWithDocument() {
 	const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
 
 	this.listenTo(
-		this.root.document,
-		'change',
-		( event, type, changes, batch, deltaType ) => {
+		this.root.document.model,
+		'applyOperation',
+		( event, args ) => {
+			const operation = args[ 0 ];
+
+			if ( !operation.isDocumentOperation ) {
+				return;
+			}
+
+			const type = operation.type;
+			const changes = event.return;
+			const deltaType = operation.delta.type;
+			const batch = operation.delta.batch;
+
 			if ( supportedTypes.has( type ) ) {
 				transform.call( this, type, deltaType, batch, changes.range, changes.sourcePosition );
 			}
 		},
-		{ priority: 'high' }
+		{ priority: 'low' }
 	);
 }
 

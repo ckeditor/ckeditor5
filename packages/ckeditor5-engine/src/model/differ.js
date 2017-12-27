@@ -63,14 +63,24 @@ export default class Differ {
 		this._changeCount = 0;
 
 		/**
-		 * For efficiency purposes, stores the change set returned by the differ after {@link ~getChanges} call. Cache
-		 * is reset each time a new operation is buffered. If the cache has not been reset, {@link ~getChanges} will
+		 * For efficiency purposes, `Differ` stores the change set returned by the differ after {@link #getChanges} call.
+		 * Cache is reset each time a new operation is buffered. If the cache has not been reset, {@link #getChanges} will
 		 * return the cached value instead of calculating it again.
 		 *
 		 * @private
 		 * @type {Array.<Object>|null}
 		 */
 		this._cachedChanges = null;
+	}
+
+	/**
+	 * Informs whether there are any changes buffered in `Differ`.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
+	get isEmpty() {
+		return this._changesInElement.size == 0 && this._changedMarkers.size == 0;
 	}
 
 	/**
@@ -182,7 +192,7 @@ export default class Differ {
 	 * another one, it will be on an earlier index in the diff set.
 	 *
 	 * Because calculating diff is a costly operation, the result is cached. If no new operation was buffered since the
-	 * previous {@link ~getChanges} call, the next call with return the cached value.
+	 * previous {@link #getChanges} call, the next call with return the cached value.
 	 *
 	 * @params {Boolean} [includeChangesInGraveyard=false] If set to `true`, also changes that happened in graveyard root will be returned.
 	 * @returns {Array.<Object>} Diff between old and new model tree state.

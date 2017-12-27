@@ -140,14 +140,23 @@ function bindWithDocument() {
 	const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
 
 	this.listenTo(
-		this.root.document,
-		'change',
-		( event, type, changes ) => {
+		this.root.document.model,
+		'applyOperation',
+		( event, args ) => {
+			const operation = args[ 0 ];
+
+			if ( !operation.isDocumentOperation ) {
+				return;
+			}
+
+			const type = operation.type;
+			const changes = event.return;
+
 			if ( supportedTypes.has( type ) ) {
 				transform.call( this, type, changes.range, changes.sourcePosition );
 			}
 		},
-		{ priority: 'high' }
+		{ priority: 'low' }
 	);
 }
 

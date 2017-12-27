@@ -102,7 +102,18 @@ export default class DocumentSelection extends Selection {
 				}
 			}
 		} );
-		this.listenTo( this._document, 'change', ( evt, type, changes, batch ) => {
+
+		this.listenTo( this._model, 'applyOperation', ( evt, args ) => {
+			const operation = args[ 0 ];
+
+			if ( !operation.isDocumentOperation ) {
+				return;
+			}
+
+			const type = operation.type;
+			const changes = evt.return;
+			const batch = operation.delta.batch;
+
 			// Whenever attribute operation is performed on document, update selection attributes.
 			// This is not the most efficient way to update selection attributes, but should be okay for now.
 			if ( attrOpTypes.has( type ) ) {
@@ -117,7 +128,7 @@ export default class DocumentSelection extends Selection {
 				// the attributes need to be removed.
 				clearAttributesStoredInElement( changes, this._model, batch );
 			}
-		} );
+		}, { priority: 'low' } );
 	}
 
 	/**
@@ -727,10 +738,6 @@ export default class DocumentSelection extends Selection {
 		this.fire( 'change:range', { directChange: false } );
 	}
 }
-
-/**
- * @event change:attribute
- */
 
 // Helper function for {@link module:engine/model/documentselection~DocumentSelection#_updateAttributes}.
 //

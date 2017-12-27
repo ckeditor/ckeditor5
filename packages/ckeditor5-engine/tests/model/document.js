@@ -3,17 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
-import Model from '../../../src/model/model';
-import Document from '../../../src/model/document';
-import RootElement from '../../../src/model/rootelement';
-import Batch from '../../../src/model/batch';
-import Delta from '../../../src/model/delta/delta';
-import Range from '../../../src/model/range';
+import Model from '../../src/model/model';
+import Document from '../../src/model/document';
+import RootElement from '../../src/model/rootelement';
+import Batch from '../../src/model/batch';
+import Delta from '../../src/model/delta/delta';
+import NoOperation from '../../src/model/operation/nooperation';
+import deltaTransform from '../../src/model/delta/transform';
+import Range from '../../src/model/range';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
-import { jsonParseStringify } from '../../../tests/model/_utils/utils';
-import { setData, getData } from '../../../src/dev-utils/model';
+import { jsonParseStringify } from './_utils/utils';
+import { setData, getData } from '../../src/dev-utils/model';
 
 describe( 'Document', () => {
 	let model, doc;
@@ -62,35 +64,22 @@ describe( 'Document', () => {
 			batch.addDelta( delta );
 		} );
 
-		it( 'for document operation: should increase document version, execute operation and fire change event with proper data', () => {
-			const changeCallback = sinon.spy();
-
-			doc.on( 'change', changeCallback );
+		it( 'for document operation: should increase document version and execute operation', () => {
 			model.applyOperation( operation );
 
 			expect( doc.version ).to.equal( 1 );
 			expect( doc.history._deltas.length ).to.equal( 1 );
 			sinon.assert.calledOnce( operation._execute );
-
-			sinon.assert.calledOnce( changeCallback );
-			expect( changeCallback.args[ 0 ][ 1 ] ).to.equal( 't' );
-			expect( changeCallback.args[ 0 ][ 2 ] ).to.equal( data );
-			expect( changeCallback.args[ 0 ][ 3 ] ).to.equal( batch );
-			expect( changeCallback.args[ 0 ][ 4 ] ).to.equal( delta.type );
 		} );
 
 		it( 'for non-document operation: should only execute operation', () => {
-			const changeCallback = sinon.spy();
 			operation.isDocumentOperation = false;
 
-			doc.on( 'change', changeCallback );
 			model.applyOperation( operation );
 
 			expect( doc.version ).to.equal( 0 );
 			expect( doc.history._deltas.length ).to.equal( 0 );
 			sinon.assert.calledOnce( operation._execute );
-
-			sinon.assert.notCalled( changeCallback );
 		} );
 
 		it( 'should do nothing if operation event was cancelled', () => {
@@ -177,58 +166,6 @@ describe( 'Document', () => {
 
 		it( 'should return null when trying to get non-existent root', () => {
 			expect( doc.getRoot( 'not-existing' ) ).to.null;
-		} );
-	} );
-
-	describe( 'selection', () => {
-		it( 'should get updated attributes whenever attribute operation is applied', () => {
-			sinon.spy( doc.selection, '_updateAttributes' );
-
-			doc.fire( 'change', 'addAttribute' );
-
-			expect( doc.selection._updateAttributes.called ).to.be.true;
-		} );
-
-		it( 'should throw if one of ranges starts or ends inside surrogate pair', () => {
-			const root = doc.createRoot();
-			root.appendChildren( '\uD83D\uDCA9' );
-
-			expect( () => {
-				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 0, root, 1 ) ] );
-			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
-
-			expect( () => {
-				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 2 ) ] );
-			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
-		} );
-
-		it( 'should throw if one of ranges starts or ends between base character and combining mark', () => {
-			const root = doc.createRoot();
-			root.appendChildren( 'foo̻̐ͩbar' );
-
-			expect( () => {
-				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 3, root, 9 ) ] );
-			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
-
-			expect( () => {
-				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 4, root, 9 ) ] );
-			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
-
-			expect( () => {
-				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 5, root, 9 ) ] );
-			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
-
-			expect( () => {
-				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 3 ) ] );
-			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
-
-			expect( () => {
-				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 4 ) ] );
-			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
-
-			expect( () => {
-				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 5 ) ] );
-			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 		} );
 	} );
 
@@ -500,6 +437,103 @@ describe( 'Document', () => {
 
 			// Still once.
 			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'differ', () => {
+		beforeEach( () => {
+			doc.createRoot();
+		} );
+
+		it( 'should buffer document operations in differ', () => {
+			sinon.spy( doc.differ, 'bufferOperation' );
+
+			model.change( writer => {
+				writer.insertText( 'foo', doc.getRoot(), 0 );
+			} );
+
+			expect( doc.differ.bufferOperation.called ).to.be.true;
+		} );
+
+		it( 'should not buffer changes not done on document', () => {
+			sinon.spy( doc.differ, 'bufferOperation' );
+
+			model.change( writer => {
+				const docFrag = writer.createDocumentFragment();
+				writer.insertText( 'foo', docFrag, 0 );
+			} );
+
+			expect( doc.differ.bufferOperation.called ).to.be.false;
+		} );
+
+		it( 'should buffer marker changes in differ', () => {
+			sinon.spy( doc.differ, 'bufferMarkerChange' );
+
+			model.change( () => {
+				model.markers.set( 'marker', Range.createCollapsedAt( doc.getRoot(), 0 ) );
+			} );
+
+			expect( doc.differ.bufferMarkerChange.called ).to.be.true;
+		} );
+
+		it( 'should reset differ after change block is done', () => {
+			model.change( writer => {
+				writer.insertText( 'foo', doc.getRoot(), 0 );
+
+				expect( doc.differ.getChanges().length > 0 ).to.be.true;
+			} );
+
+			expect( doc.differ.getChanges().length ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'registerPostFixer()', () => {
+		beforeEach( () => {
+			doc.createRoot();
+		} );
+
+		it( 'should add a callback that is fired after changes are done', () => {
+			const spy = sinon.spy();
+
+			doc.registerPostFixer( spy );
+
+			model.change( writer => {
+				writer.insertText( 'foo', doc.getRoot(), 0 );
+			} );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not fire callbacks if no changes on document were done', () => {
+			const spy = sinon.spy();
+
+			doc.registerPostFixer( spy );
+
+			model.change( writer => {
+				const docFrag = writer.createDocumentFragment();
+
+				writer.insertText( 'foo', docFrag, 0 );
+			} );
+
+			expect( spy.called ).to.be.false;
+		} );
+
+		it( 'should call all already processed callbacks again if a callback returned true', () => {
+			const callA = sinon.spy();
+			const callB = sinon.stub().onFirstCall().returns( true ).onSecondCall().returns( false );
+			const callC = sinon.spy();
+
+			doc.registerPostFixer( callA );
+			doc.registerPostFixer( callB );
+			doc.registerPostFixer( callC );
+
+			model.change( writer => {
+				writer.insertText( 'foo', doc.getRoot(), 0 );
+			} );
+
+			expect( callA.calledTwice ).to.be.true;
+			expect( callB.calledTwice ).to.be.true;
+			expect( callC.calledOnce ).to.be.true;
 		} );
 	} );
 

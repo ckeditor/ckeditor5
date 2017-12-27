@@ -327,32 +327,6 @@ describe( 'Writer', () => {
 			expect( range.end.path ).to.deep.equal( [ 2, 5 ] );
 		} );
 
-		it( 'should set each marker as a separate operation', () => {
-			const root = doc.createRoot();
-
-			const spy = sinon.spy();
-			const docFrag = createDocumentFragment();
-
-			appendText( 'abcd', root );
-			appendElement( 'p', docFrag );
-			insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
-
-			const marker1 = new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 2 ] ) );
-			const marker2 = new Range( new Position( docFrag, [ 0, 5 ] ), new Position( docFrag, [ 0, 6 ] ) );
-
-			docFrag.markers.set( 'marker1', marker1 );
-			docFrag.markers.set( 'marker2', marker2 );
-
-			doc.on( 'change', spy );
-
-			insert( docFrag, new Position( root, [ 2 ] ) );
-
-			sinon.assert.calledThrice( spy );
-			expect( spy.firstCall.args[ 1 ] ).to.equal( 'insert' );
-			expect( spy.secondCall.args[ 1 ] ).to.equal( 'marker' );
-			expect( spy.thirdCall.args[ 1 ] ).to.equal( 'marker' );
-		} );
-
 		it( 'should throw when trying to use detached writer', () => {
 			const writer = new Writer( model, batch );
 			const root = doc.createRoot();
@@ -1929,13 +1903,13 @@ describe( 'Writer', () => {
 			const marker = model.markers.set( 'name', range );
 			const spy = sinon.spy();
 
-			doc.on( 'change', spy );
+			model.on( 'applyOperation', spy );
 
 			setMarker( marker );
 			const op = batch.deltas[ 0 ].operations[ 0 ];
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWith( spy, sinon.match.any, 'marker' );
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 			expect( op.oldRange ).to.be.null;
 			expect( op.newRange.isEqual( range ) ).to.be.true;
 		} );
