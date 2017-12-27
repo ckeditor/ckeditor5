@@ -88,7 +88,7 @@ describe( 'ImageUploadProgress', () => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
-		document.once( 'changesDone', () => {
+		model.document.once( 'change', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
 					`<img src="${ base64Sample }"></img>` +
@@ -106,7 +106,7 @@ describe( 'ImageUploadProgress', () => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
-		document.once( 'changesDone', () => {
+		model.document.once( 'change', () => {
 			adapterMock.mockProgress( 40, 100 );
 
 			expect( getViewData( viewDocument ) ).to.equal(
@@ -126,8 +126,8 @@ describe( 'ImageUploadProgress', () => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
-		document.once( 'changesDone', () => {
-			document.once( 'changesDone', () => {
+		model.document.once( 'change', () => {
+			model.document.once( 'change', () => {
 				expect( getViewData( viewDocument ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="image.png"></img>' +

@@ -214,7 +214,7 @@ describe( 'ImageUploadEngine', () => {
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		doc.once( 'changesDone', () => {
+		model.once( '_change', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[<figure class="ck-widget image" contenteditable="false">' +
 				`<img src="${ base64Sample }"></img>` +
@@ -234,8 +234,8 @@ describe( 'ImageUploadEngine', () => {
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		doc.once( 'changesDone', () => {
-			doc.once( 'changesDone', () => {
+		model.document.once( 'change', () => {
+			model.document.once( 'change', () => {
 				expect( getViewData( viewDocument ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
 				);
@@ -309,8 +309,8 @@ describe( 'ImageUploadEngine', () => {
 
 		editor.execute( 'imageUpload', { file } );
 
-		doc.once( 'changesDone', () => {
-			doc.once( 'changesDone', () => {
+		model.document.once( 'change', () => {
+			model.document.once( 'change', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
 				sinon.assert.calledOnce( spy );
 
@@ -351,13 +351,13 @@ describe( 'ImageUploadEngine', () => {
 
 		editor.execute( 'imageUpload', { file } );
 
-		doc.once( 'changesDone', () => {
+		model.document.once( 'change', () => {
 			// This is called after "manual" remove.
-			doc.once( 'changesDone', () => {
+			model.document.once( 'change', () => {
 				// This is called after attributes are removed.
 				let undone = false;
 
-				doc.once( 'changesDone', () => {
+				model.document.once( 'change', () => {
 					if ( !undone ) {
 						undone = true;
 
@@ -376,6 +376,7 @@ describe( 'ImageUploadEngine', () => {
 		} );
 
 		const image = doc.getRoot().getChild( 0 );
+
 		model.change( writer => {
 			writer.remove( image );
 		} );
@@ -386,8 +387,8 @@ describe( 'ImageUploadEngine', () => {
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		doc.once( 'changesDone', () => {
-			doc.once( 'changesDone', () => {
+		model.document.once( 'change', () => {
+			model.document.once( 'change', () => {
 				expect( getViewData( viewDocument ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false">' +
 						'<img sizes="100vw" src="image.png" srcset="image-500.png 500w, image-800.png 800w" width="800"></img>' +

@@ -75,29 +75,34 @@ export default class ImageUploadEngine extends Plugin {
 			data.preventDefault();
 		} );
 
-		doc.on( 'change', ( evt, type, data ) => {
-			// Listen on document changes and:
-			// * start upload process when image with `uploadId` attribute is inserted,
-			// * abort upload process when image `uploadId` attribute is removed.
-			if ( type === 'insert' || type === 'reinsert' || type === 'remove' ) {
-				for ( const value of data.range ) {
-					if ( value.type === 'elementStart' && value.item.name === 'image' ) {
-						const imageElement = value.item;
-						const uploadId = imageElement.getAttribute( 'uploadId' );
+		doc.registerPostFixer( () => {
+			const changes = doc.differ.getChanges( true );
 
-						if ( uploadId ) {
-							const loader = fileRepository.loaders.get( uploadId );
+			for ( const entry of changes ) {
+				if ( entry.type == 'insert' && entry.name == 'image' ) {
+					const item = entry.position.nodeAfter;
+					const isInGraveyard = entry.position.root.rootName == '$graveyard';
 
-							if ( loader ) {
-								if ( type === 'insert' && loader.status == 'idle' ) {
-									this.load( loader, imageElement );
-								}
+					// Check if the image element still has upload id.
+					const uploadId = item.getAttribute( 'uploadId' );
 
-								if ( type === 'remove' ) {
-									loader.abort();
-								}
-							}
-						}
+					if ( !uploadId ) {
+						continue;
+					}
+
+					// Check if the image is loaded on this client.
+					const loader = fileRepository.loaders.get( uploadId );
+
+					if ( !loader ) {
+						continue;
+					}
+
+					if ( isInGraveyard ) {
+						// If the image was inserted to the graveyard - abort the loading process.
+						loader.abort();
+					} else if ( loader.status == 'idle' ) {
+						// If the image was inserted into content and has not been loaded, start loading it.
+						this.load( loader, item );
 					}
 				}
 			}
