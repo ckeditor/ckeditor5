@@ -6,9 +6,14 @@
 import Schema from '../../src/model/schema';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import Model from '../../src/model/model';
+
 import Element from '../../src/model/element';
 import Position from '../../src/model/position';
 import Text from '../../src/model/text';
+
+import { setData } from '../../src/dev-utils/model';
 
 describe( 'Schema', () => {
 	let schema, root1, r1p1, r1p2, r1bQ, r1bQp, root2;
@@ -367,6 +372,113 @@ describe( 'Schema', () => {
 
 		// TODO checks fires event
 		// TODO checks with a custom context array
+	} );
+
+	describe( 'getLimitElement()', () => {
+		let model, doc, root;
+
+		beforeEach( () => {
+			model = new Model();
+			doc = model.document;
+			schema = model.schema;
+			root = doc.createRoot();
+
+			schema.register( 'div', {
+				inheritAllFrom: '$block'
+			} );
+			schema.register( 'article', {
+				inheritAllFrom: '$block',
+				allowIn: 'section'
+			} );
+			schema.register( 'section', {
+				inheritAllFrom: '$block',
+				allowIn: 'div'
+			} );
+			schema.register( 'paragraph', {
+				inheritAllFrom: '$block',
+				allowIn: 'article'
+			} );
+			schema.register( 'widget', {
+				inheritAllFrom: '$block',
+				allowIn: 'div'
+			} );
+			schema.register( 'image', {
+				inheritAllFrom: '$block',
+				allowIn: 'widget'
+			} );
+			schema.register( 'caption', {
+				inheritAllFrom: '$block',
+				allowIn: 'image'
+			} );
+		} );
+
+		it( 'always returns $root element if any other limit was not defined', () => {
+			setData( model, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
+			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
+		} );
+
+		it( 'returns the limit element which is the closest element to common ancestor for collapsed selection', () => {
+			schema.extend( 'article', { isLimit: true } );
+			schema.extend( 'section', { isLimit: true } );
+
+			setData( model, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
+
+			const article = root.getNodeByPath( [ 0, 0, 0 ] );
+
+			expect( schema.getLimitElement( doc.selection ) ).to.equal( article );
+		} );
+
+		it( 'returns the limit element which is the closest element to common ancestor for non-collapsed selection', () => {
+			schema.extend( 'article', { isLimit: true } );
+			schema.extend( 'section', { isLimit: true } );
+
+			setData( model, '<div><section><article>[foo</article><article>bar]</article></section></div>' );
+
+			const section = root.getNodeByPath( [ 0, 0 ] );
+
+			expect( schema.getLimitElement( doc.selection ) ).to.equal( section );
+		} );
+
+		it( 'works fine with multi-range selections', () => {
+			schema.extend( 'article', { isLimit: true } );
+			schema.extend( 'widget', { isLimit: true } );
+			schema.extend( 'div', { isLimit: true } );
+
+			setData(
+				model,
+				'<div>' +
+					'<section>' +
+						'<article>' +
+							'<paragraph>[foo]</paragraph>' +
+						'</article>' +
+					'</section>' +
+					'<widget>' +
+						'<image>' +
+							'<caption>b[a]r</caption>' +
+						'</image>' +
+					'</widget>' +
+				'</div>'
+			);
+
+			const div = root.getNodeByPath( [ 0 ] );
+			expect( schema.getLimitElement( doc.selection ) ).to.equal( div );
+		} );
+
+		it( 'works fine with multi-range selections even if limit elements are not defined', () => {
+			setData(
+				model,
+				'<div>' +
+					'<section>' +
+						'<article>' +
+							'<paragraph>[foo]</paragraph>' +
+						'</article>' +
+					'</section>' +
+				'</div>' +
+				'<section>b[]ar</section>'
+			);
+
+			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
+		} );
 	} );
 
 	describe( 'rules compilation', () => {

@@ -134,6 +134,35 @@ export default class Schema {
 		return rule.allowAttributes.includes( attributeName );
 	}
 
+	/**
+	 * Returns the lowest {@link module:engine/model/schema~Schema#isLimit limit element} containing the entire
+	 * selection or the root otherwise.
+	 *
+	 * @param {module:engine/model/selection~Selection} selection Selection which returns the common ancestor.
+	 * @returns {module:engine/model/element~Element}
+	 */
+	getLimitElement( selection ) {
+		// Find the common ancestor for all selection's ranges.
+		let element = Array.from( selection.getRanges() )
+			.reduce( ( node, range ) => {
+				if ( !node ) {
+					return range.getCommonAncestor();
+				}
+
+				return node.getCommonAncestor( range.getCommonAncestor() );
+			}, null );
+
+		while ( !this.isLimit( element.name ) ) {
+			if ( element.parent ) {
+				element = element.parent;
+			} else {
+				break;
+			}
+		}
+
+		return element;
+	}
+
 	_clearCache() {
 		this._compiledRules = null;
 	}
