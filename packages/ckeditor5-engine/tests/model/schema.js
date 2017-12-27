@@ -321,6 +321,33 @@ describe( 'Schema', () => {
 			expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
 			expect( schema.checkChild( root1, new Text( 'foo' ) ) ).to.be.false;
 		} );
+
+		// TODO checks fires event
+		// TODO checks with a custom context array
+	} );
+
+	describe( 'checkAttribute()', () => {
+		beforeEach( () => {
+			schema.register( 'paragraph', {
+				allowAttributes: 'align'
+			} );
+			schema.register( '$text', {
+				allowAttributes: 'bold'
+			} );
+		} );
+
+		it( 'accepts an element as a context', () => {
+			expect( schema.checkAttribute( r1p1, 'align' ) ).to.be.true;
+			expect( schema.checkAttribute( r1p1, 'bold' ) ).to.be.false;
+		} );
+
+		it( 'accepts a text as a context', () => {
+			expect( schema.checkAttribute( new Text( 'foo' ), 'bold' ) ).to.be.true;
+			expect( schema.checkAttribute( new Text( 'foo' ), 'align' ) ).to.be.false;
+		} );
+
+		// TODO checks fires event
+		// TODO checks with a custom context array
 	} );
 
 	describe( 'rules compilation', () => {

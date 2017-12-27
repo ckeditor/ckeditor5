@@ -120,6 +120,10 @@ export default class Schema {
 		return this._checkContextMatch( rule, context );
 	}
 
+	/**
+	 * @param {module:engine/model/node~Node} context
+	 * @param {String}
+	 */
 	checkAttribute( context, attributeName ) {
 		const rule = this.getRule( context[ context.length - 1 ] );
 
