@@ -31,7 +31,7 @@ ClassicEditor
 			} );
 		} );
 
-		editor.model.document.on( 'changesDone', () => {
+		editor.model.document.once( 'change', () => {
 			console.clear();
 
 			const modelData = getModelData( editor.model.document, { withoutSelection: true } );

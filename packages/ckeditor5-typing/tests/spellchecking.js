@@ -43,7 +43,7 @@ describe( 'Typing – spellchecking integration', () => {
 
 	beforeEach( () => {
 		if ( onChangesDone ) {
-			editor.model.document.off( 'changesDone', onChangesDone );
+			editor.model.document.off( 'change', onChangesDone );
 			onChangesDone = null;
 		}
 
@@ -261,7 +261,7 @@ function emulateSpellcheckerInsertText( editor, nodeIndex, rangeStart, rangeEnd,
 		] );
 	} );
 
-	editor.model.document.once( 'changesDone', onChangesDoneCallback, { priority: 'low' } );
+	model.document.once( 'change', onChangesDoneCallback, { priority: 'low' } );
 
 	window.document.execCommand( 'insertText', false, text );
 }

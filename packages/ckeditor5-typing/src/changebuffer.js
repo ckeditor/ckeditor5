@@ -21,7 +21,7 @@ import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
  *
  * To use the change buffer you need to let it know about the number of changes that were added to the batch:
  *
- *		const buffer = new ChangeBuffer( document, LIMIT );
+ *		const buffer = new ChangeBuffer( model, LIMIT );
  *
  *		// Later on in your feature:
  *		buffer.batch.insert( pos, insertedCharacters );
@@ -35,14 +35,14 @@ export default class ChangeBuffer {
 	 * @param {module:engine/model/document~Document} doc
 	 * @param {Number} [limit=20] The maximum number of atomic changes which can be contained in one batch.
 	 */
-	constructor( doc, limit = 20 ) {
+	constructor( model, limit = 20 ) {
 		/**
-		 * The document instance.
+		 * The model instance.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/document~Document} #document
+		 * @member {module:engine/model/model~Model} #model
 		 */
-		this.document = doc;
+		this.model = model;
 
 		/**
 		 * The number of atomic changes in the buffer. Once it exceeds the {@link #limit},
@@ -69,7 +69,10 @@ export default class ChangeBuffer {
 		 */
 		this.isLocked = false;
 
-		this._changeCallback = ( evt, type, changes, batch ) => {
+		this._changeCallback = ( evt, args ) => {
+			const operation = args[ 0 ];
+			const batch = operation.delta.batch;
+
 			this._onBatch( batch );
 		};
 
@@ -77,11 +80,10 @@ export default class ChangeBuffer {
 			this._reset();
 		};
 
-		doc.on( 'change', this._changeCallback );
+		this.model.on( 'applyOperation', this._changeCallback );
 
-		doc.selection.on( 'change:range', this._selectionChangeCallback );
-
-		doc.selection.on( 'change:attribute', this._selectionChangeCallback );
+		this.model.document.selection.on( 'change:range', this._selectionChangeCallback );
+		this.model.document.selection.on( 'change:attribute', this._selectionChangeCallback );
 
 		/**
 		 * The current batch instance.
@@ -151,9 +153,9 @@ export default class ChangeBuffer {
 	 * Destroys the buffer.
 	 */
 	destroy() {
-		this.document.off( 'change', this._changeCallback );
-		this.document.selection.off( 'change:range', this._selectionChangeCallback );
-		this.document.selection.off( 'change:attribute', this._selectionChangeCallback );
+		this.model.off( 'applyOperation', this._changeCallback );
+		this.model.document.selection.off( 'change:range', this._selectionChangeCallback );
+		this.model.document.selection.off( 'change:attribute', this._selectionChangeCallback );
 	}
 
 	/**
