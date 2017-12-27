@@ -317,6 +317,25 @@ describe( 'Schema', () => {
 			expect( schema.checkChild( contextInParagraph, 'paragraph' ) ).to.be.false;
 		} );
 
+		it( 'accepts an array of elements as a context', () => {
+			const contextInRoot = [ root1 ];
+			const contextInParagraph = [ root1, r1p1 ];
+
+			expect( schema.checkChild( contextInRoot, 'paragraph' ) ).to.be.true;
+			expect( schema.checkChild( contextInRoot, '$text' ) ).to.be.false;
+
+			expect( schema.checkChild( contextInParagraph, '$text' ) ).to.be.true;
+			expect( schema.checkChild( contextInParagraph, 'paragraph' ) ).to.be.false;
+		} );
+
+		// Again, this is needed temporarily to handle current V->M conversion
+		it( 'accepts a mixed array of elements and strings as a context', () => {
+			const contextInParagraph = [ '$root', r1p1 ];
+
+			expect( schema.checkChild( contextInParagraph, '$text' ) ).to.be.true;
+			expect( schema.checkChild( contextInParagraph, 'paragraph' ) ).to.be.false;
+		} );
+
 		it( 'accepts a node as a child', () => {
 			expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
 			expect( schema.checkChild( root1, new Text( 'foo' ) ) ).to.be.false;
@@ -1308,4 +1327,5 @@ describe( 'Schema', () => {
 	// * inheritAllFrom should also inherit is* props (see tests documentselection getNearestSelectionRange())
 	// * test the default abstract entities (in model.js)
 	// * see clipboardHolder definition (and rename it to the pastebin)
+	// * review insertContent's _tryAutoparagraphing()
 } );

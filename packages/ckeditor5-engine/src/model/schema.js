@@ -310,25 +310,28 @@ function getAllowedChildren( compiledRules, itemName ) {
 }
 
 function normalizeContext( ctx ) {
-	// See the comment in tests about specifying checkChild()'s context as an array.
 	if ( Array.isArray( ctx ) ) {
-		return ctx.map( nodeName => {
-			return {
-				name: nodeName,
-				* getAttributes() {}
-			};
-		} );
+		return ctx.map( mapContextItem );
 	}
 	// Item or position (PS. It's ok that Position#getAncestors() doesn't accept params).
 	else {
-		return ctx.getAncestors( { includeSelf: true } ).map( node => {
-			return {
-				name: node.is( 'text' ) ? '$text' : node.name,
-				* getAttributes() {
-					yield* node.getAttributes();
-				}
-			};
-		} );
+		return ctx.getAncestors( { includeSelf: true } ).map( mapContextItem );
+	}
+}
+
+function mapContextItem( ctxItem ) {
+	if ( typeof ctxItem == 'string' ) {
+		return {
+			name: ctxItem,
+			* getAttributes() {}
+		};
+	} else {
+		return {
+			name: ctxItem.is( 'text' ) ? '$text' : ctxItem.name,
+			* getAttributes() {
+				yield* ctxItem.getAttributes();
+			}
+		};
 	}
 }
 
