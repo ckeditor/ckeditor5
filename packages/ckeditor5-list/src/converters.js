@@ -594,14 +594,6 @@ export function modelChangePostFixer( model, writer ) {
 	let applied = false;
 
 	for ( const entry of changes ) {
-		if ( entry.position && entry.position.root.rootName == '$graveyard' ) {
-			continue;
-		}
-
-		if ( entry.range && entry.range.root.rootName == '$graveyard' ) {
-			continue;
-		}
-
 		if ( entry.type == 'insert' && entry.name == 'listItem' ) {
 			_addListToFix( entry.position );
 		} else if ( entry.type == 'insert' && entry.name != 'listItem' ) {
