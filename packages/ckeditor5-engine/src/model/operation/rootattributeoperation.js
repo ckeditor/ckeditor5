@@ -149,8 +149,6 @@ export default class RootAttributeOperation extends Operation {
 		} else {
 			this.root.removeAttribute( this.key );
 		}
-
-		return { root: this.root, key: this.key, oldValue: this.oldValue, newValue: this.newValue };
 	}
 
 	/**

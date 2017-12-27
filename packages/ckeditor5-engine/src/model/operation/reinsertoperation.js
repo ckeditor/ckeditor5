@@ -85,13 +85,6 @@ export default class ReinsertOperation extends MoveOperation {
 	/**
 	 * @inheritDoc
 	 */
-	_execute() {
-		return super._execute();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	static get className() {
 		return 'engine.model.operation.ReinsertOperation';
 	}

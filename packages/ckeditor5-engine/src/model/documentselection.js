@@ -110,23 +110,20 @@ export default class DocumentSelection extends Selection {
 				return;
 			}
 
-			const type = operation.type;
-			const changes = evt.return;
-			const batch = operation.delta.batch;
-
 			// Whenever attribute operation is performed on document, update selection attributes.
 			// This is not the most efficient way to update selection attributes, but should be okay for now.
-			if ( attrOpTypes.has( type ) ) {
+			if ( attrOpTypes.has( operation.type ) ) {
 				this._updateAttributes( false );
 			}
 
+			const batch = operation.delta.batch;
+
 			// Batch may not be passed to the document#change event in some tests.
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/1001#issuecomment-314202352
-			// Ignore also transparent batches because they are... transparent.
-			if ( batch && batch.type !== 'transparent' ) {
+			if ( batch ) {
 				// Whenever element which had selection's attributes stored in it stops being empty,
 				// the attributes need to be removed.
-				clearAttributesStoredInElement( changes, this._model, batch );
+				clearAttributesStoredInElement( operation, this._model, batch );
 			}
 		}, { priority: 'low' } );
 	}
@@ -754,11 +751,15 @@ function getAttrsIfCharacter( node ) {
 }
 
 // Removes selection attributes from element which is not empty anymore.
-function clearAttributesStoredInElement( changes, model, batch ) {
-	const changeParent = changes.range && changes.range.start.parent;
+function clearAttributesStoredInElement( operation, model, batch ) {
+	let changeParent = null;
 
-	// `changes.range` is not set in case of rename, root and marker operations.
-	// None of them may lead to the element becoming non-empty.
+	if ( operation.type == 'insert' ) {
+		changeParent = operation.position.parent;
+	} else if ( operation.type == 'move' || operation.type == 'reinsert' || operation.type == 'remove' ) {
+		changeParent = operation.getMovedRangeStart().parent;
+	}
+
 	if ( !changeParent || changeParent.isEmpty ) {
 		return;
 	}

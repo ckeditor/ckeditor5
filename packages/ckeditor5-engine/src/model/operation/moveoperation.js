@@ -189,12 +189,7 @@ export default class MoveOperation extends Operation {
 	 * @inheritDoc
 	 */
 	_execute() {
-		const range = _move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
-
-		return {
-			sourcePosition: this.sourcePosition,
-			range
-		};
+		_move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
 	}
 
 	/**

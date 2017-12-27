@@ -129,13 +129,8 @@ function bindWithDocument() {
 				return;
 			}
 
-			const type = operation.type;
-			const changes = event.return;
-			const deltaType = operation.delta.type;
-			const batch = operation.delta.batch;
-
-			if ( supportedTypes.has( type ) ) {
-				transform.call( this, type, deltaType, batch, changes.range, changes.sourcePosition );
+			if ( supportedTypes.has( operation.type ) ) {
+				transform.call( this, operation );
 			}
 		},
 		{ priority: 'low' }
@@ -148,13 +143,22 @@ function bindWithDocument() {
  * @ignore
  * @private
  * @method transform
- * @param {String} [changeType] Type of change applied to the model document.
- * @param {String} [deltaType] Type of delta which introduced the change.
- * @param {module:engine/model/batch~Batch} batch Batch which changes the live range.
- * @param {module:engine/model/range~Range} targetRange Range containing the result of applied change.
- * @param {module:engine/model/position~Position} [sourcePosition] Source position for move, remove and reinsert change types.
+ * @param {module:engine/model/operation/operation~Operation} operation Executed operation.
  */
-function transform( changeType, deltaType, batch, targetRange, sourcePosition ) {
+function transform( operation ) {
+	const changeType = operation.type;
+	const batch = operation.delta.batch;
+
+	let targetRange;
+	let sourcePosition;
+
+	if ( changeType == 'insert' ) {
+		targetRange = Range.createFromPositionAndShift( operation.position, operation.nodes.maxOffset );
+	} else {
+		targetRange = Range.createFromPositionAndShift( operation.getMovedRangeStart(), operation.howMany );
+		sourcePosition = operation.sourcePosition;
+	}
+
 	const howMany = targetRange.end.offset - targetRange.start.offset;
 	let targetPosition = targetRange.start;
 
@@ -165,7 +169,7 @@ function transform( changeType, deltaType, batch, targetRange, sourcePosition ) 
 		targetPosition = targetPosition._getTransformedByInsertion( sourcePosition, howMany );
 	}
 
-	const result = this._getTransformedByDocumentChange( changeType, deltaType, targetPosition, howMany, sourcePosition );
+	const result = this._getTransformedByDocumentChange( changeType, operation.delta.type, targetPosition, howMany, sourcePosition );
 
 	// Decide whether moved part should be included in the range.
 	//

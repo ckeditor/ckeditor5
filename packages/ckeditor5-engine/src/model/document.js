@@ -307,7 +307,7 @@ export default class Document {
 	 *
 	 * Execution of a feature may lead to an incorrect document tree state. The callbacks are used to fix document tree after
 	 * it has changed. Post-fixers are fired just after all changes from the outermost change block were applied but
-	 * before {@link module:engine/model/model~Document#event:change} is fired. If a post-fixer callback made a change,
+	 * before {@link module:engine/model/document~Document#event:change} is fired. If a post-fixer callback made a change,
 	 * it should return `true`. When this happens, all post-fixers are fired again to check if something else should
 	 * not be fixed in the new document tree state.
 	 *

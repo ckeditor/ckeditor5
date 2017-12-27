@@ -113,9 +113,7 @@ export default class InsertOperation extends Operation {
 		const originalNodes = this.nodes;
 		this.nodes = new NodeList( [ ...originalNodes ].map( node => node.clone( true ) ) );
 
-		const range = _insert( this.position, originalNodes );
-
-		return { range };
+		_insert( this.position, originalNodes );
 	}
 
 	/**

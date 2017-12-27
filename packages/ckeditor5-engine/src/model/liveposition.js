@@ -149,11 +149,8 @@ function bindWithDocument() {
 				return;
 			}
 
-			const type = operation.type;
-			const changes = event.return;
-
-			if ( supportedTypes.has( type ) ) {
-				transform.call( this, type, changes.range, changes.sourcePosition );
+			if ( supportedTypes.has( operation.type ) ) {
+				transform.call( this, operation );
 			}
 		},
 		{ priority: 'low' }
@@ -166,16 +163,24 @@ function bindWithDocument() {
  * @ignore
  * @private
  * @method transform
- * @param {String} type Type of changes applied to the Tree Model.
- * @param {module:engine/model/range~Range} range Range containing the result of applied change.
- * @param {module:engine/model/position~Position} [position] Additional position parameter provided by some change events.
+ * @param {module:engine/model/operation/operation~Operation} operation Executed operation.
  */
-function transform( type, range, position ) {
+function transform( operation ) {
 	/* eslint-disable no-case-declarations */
+	let range;
+	let position;
+
+	if ( operation.type == 'insert' ) {
+		range = Range.createFromPositionAndShift( operation.position, operation.nodes.maxOffset );
+	} else {
+		range = Range.createFromPositionAndShift( operation.getMovedRangeStart(), operation.howMany );
+		position = operation.sourcePosition;
+	}
+
 	const howMany = range.end.offset - range.start.offset;
 	let transformed;
 
-	switch ( type ) {
+	switch ( operation.type ) {
 		case 'insert':
 			const insertBefore = this.stickiness == 'sticksToNext';
 			transformed = this._getTransformedByInsertion( range.start, howMany, insertBefore );

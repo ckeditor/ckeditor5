@@ -20,10 +20,6 @@ describe( 'NoOperation', () => {
 		expect( () => model.applyOperation( wrapInDelta( noop ) ) ).to.not.throw( Error );
 	} );
 
-	it( 'should return empty object when executed', () => {
-		expect( noop._execute() ).to.deep.equal( {} );
-	} );
-
 	it( 'should create a NoOperation as a reverse', () => {
 		const reverse = noop.getReversed();
 

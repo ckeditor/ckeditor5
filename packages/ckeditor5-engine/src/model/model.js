@@ -238,11 +238,9 @@ export default class Model {
 	 * {@link module:engine/model/operation/operation~Operation operations} on the model.
 	 *
 	 * @param {module:engine/model/operation/operation~Operation} operation Operation to apply
-	 * @returns {Object} Object with additional information about the applied changes. It properties depends on the
-	 * operation type.
 	 */
 	applyOperation( operation ) {
-		return operation._execute();
+		operation._execute();
 	}
 
 	/**

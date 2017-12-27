@@ -324,18 +324,15 @@ describe( 'Model', () => {
 	} );
 
 	describe( 'applyOperation()', () => {
-		it( 'should execute provided operation end return the result of operation', () => {
-			const returnValue = { foo: 'bar' };
-
+		it( 'should execute provided operation', () => {
 			const operation = {
-				_execute: sinon.stub().returns( returnValue ),
+				_execute: sinon.spy(),
 				_validate: () => true
 			};
 
 			model.applyOperation( operation );
 
 			sinon.assert.calledOnce( operation._execute );
-			expect( model.applyOperation( operation ) ).to.equal( returnValue );
 		} );
 	} );
 

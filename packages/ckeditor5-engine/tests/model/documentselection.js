@@ -1128,20 +1128,6 @@ describe( 'DocumentSelection', () => {
 				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
 			} );
 
-			it( 'are not removed on transparent batches', () => {
-				selection.setRanges( [ rangeInEmptyP ] );
-				selection.setAttribute( 'foo', 'bar' );
-
-				model.enqueueChange( 'transparent', writer => {
-					sinon.spy( model, 'enqueueChange' );
-
-					writer.insertText( 'x', rangeInEmptyP.start );
-
-					expect( model.enqueueChange.called ).to.be.false;
-					expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
-				} );
-			} );
-
 			// Rename and some other deltas don't specify range in doc#change event.
 			// So let's see if there's no crash or something.
 			it( 'are not removed on rename', () => {
