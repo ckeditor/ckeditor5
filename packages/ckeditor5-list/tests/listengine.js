@@ -921,6 +921,42 @@ describe( 'ListEngine', () => {
 						'</ul>' +
 					'</li>' +
 				'</ul>' +
+				'<p>bar</p>',
+
+				'<p>foo</p>' +
+				'<ul>' +
+					'<li>' +
+						'1' +
+						'<ul>' +
+							'<li>' +
+								'1.1' +
+								'<ul><li>1.1.1</li><li>1.1.2</li><li>1.1.3</li><li>1.1.4</li></ul>' +
+							'</li>' +
+							'<li>' +
+								'1.2' +
+								'<ul><li>1.2.1</li></ul>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+					'<li>2</li>' +
+					'<li>' +
+						'3' +
+						'<ol>' +
+							'<li>' +
+								'3.1' +
+								'<ul>' +
+									'<li>' +
+										'3.1.1' +
+										'<ol><li>3.1.1.1</li><li>3.1.1.2</li></ol>' +
+									'</li>' +
+									'<li>3.1.2</li>' +
+								'</ul>' +
+							'</li>' +
+							'<li>3.2</li>' +
+							'<li>3.3</li>' +
+						'</ol>' +
+					'</li>' +
+				'</ul>' +
 				'<p>bar</p>'
 			);
 
@@ -934,7 +970,7 @@ describe( 'ListEngine', () => {
 				'			xxx' +
 				'			<li>' +
 				'				<ul><li></li><li>1.1.2</li></ul>' +
-				'				<ol><li>1.1.3</li><li>1.1.4</li></ol>' +
+				'				<ol><li>1.1.3</li><li>1.1.4</li></ol>' +		// Will be changed to <ul>.
 				'			</li>' +
 				'			<li>' +
 				'				<ul><li>1.2.1</li></ul>' +
@@ -952,14 +988,14 @@ describe( 'ListEngine', () => {
 				'					<li>' +
 				'						3.1.1' +
 				'						<ol><li>3.1.1.1</li></ol>' +
-				'						<ul><li>3.1.1.2</li></ul>' +
+				'						<ul><li>3.1.1.2</li></ul>' +			// Will be changed to <ol>.
 				'					</li>' +
 				'					<li>3.1.2</li>' +
 				'				</ul>' +
 				'			</li>' +
 				'		</ol>' +
 				'		<p>xxx</p>' +
-				'		<ul>' +
+				'		<ul>' +													// Since <p> gets removed, this will become <ol>.
 				'			<li>3.2</li>' +
 				'			<li>3.3</li>' +
 				'		</ul>' +
@@ -967,6 +1003,7 @@ describe( 'ListEngine', () => {
 				'	<p>xxx</p>' +
 				'</ul>' +
 				'<p>bar</p>',
+
 				'<p>foo</p>' +
 				'<ul>' +
 					'<li>' +
@@ -974,8 +1011,12 @@ describe( 'ListEngine', () => {
 						'<ul>' +
 							'<li>' +
 								'&nbsp;' +
-								'<ul><li>&nbsp;</li><li>1.1.2</li></ul>' +
-								'<ol><li>1.1.3</li><li>1.1.4</li></ol>' +
+								'<ul>' +
+									'<li>&nbsp;</li>' +
+									'<li>1.1.2</li>' +
+									'<li>1.1.3</li>' +
+									'<li>1.1.4</li>' +
+								'</ul>' +
 							'</li>' +
 							'<li>' +
 								'&nbsp;' +
@@ -992,23 +1033,24 @@ describe( 'ListEngine', () => {
 								'<ul>' +
 									'<li>' +
 										'3.1.1' +
-										'<ol><li>3.1.1.1</li></ol>' +
-										'<ul><li>3.1.1.2</li></ul>' +
+										'<ol>' +
+											'<li>3.1.1.1</li>' +
+											'<li>3.1.1.2</li>' +
+										'</ol>' +
 									'</li>' +
 									'<li>3.1.2</li>' +
 								'</ul>' +
 							'</li>' +
-						'</ol>' +
-						'<ul>' +
 							'<li>3.2</li>' +
 							'<li>3.3</li>' +
-						'</ul>' +
+						'</ol>' +
 					'</li>' +
 				'</ul>' +
 				'<p>bar</p>'
 			);
 
 			it( 'model test for nested lists', () => {
+				// <ol> in the middle will be fixed by postfixer to bulleted list.
 				editor.setData(
 					'<p>foo</p>' +
 					'<ul>' +
@@ -1020,9 +1062,9 @@ describe( 'ListEngine', () => {
 							'<ol>' +
 								'<li>' +
 									'1.2' +
-									'<ul>' +
+									'<ol>' +
 										'<li>1.2.1</li>' +
-									'</ul>' +
+									'</ol>' +
 								'</li>' +
 								'<li>1.3</li>' +
 							'</ol>' +
@@ -1036,9 +1078,9 @@ describe( 'ListEngine', () => {
 					'<paragraph>foo</paragraph>' +
 					'<listItem indent="0" type="bulleted">1</listItem>' +
 					'<listItem indent="1" type="bulleted">1.1</listItem>' +
-					'<listItem indent="1" type="numbered">1.2</listItem>' +
-					'<listItem indent="2" type="bulleted">1.2.1</listItem>' +
-					'<listItem indent="1" type="numbered">1.3</listItem>' +
+					'<listItem indent="1" type="bulleted">1.2</listItem>' +
+					'<listItem indent="2" type="numbered">1.2.1</listItem>' +
+					'<listItem indent="1" type="bulleted">1.3</listItem>' +
 					'<listItem indent="0" type="bulleted">2</listItem>' +
 					'<paragraph>bar</paragraph>';
 
@@ -1762,8 +1804,6 @@ describe( 'ListEngine', () => {
 				);
 			} );
 
-			// Note: although the feature itself does not let changing type of singular nested list item,
-			// conversion of those items is done item-by-item and this is tested in this suite.
 			describe( 'change type', () => {
 				testChangeType(
 					'list item that has nested items',
@@ -1783,6 +1823,7 @@ describe( 'ListEngine', () => {
 					'</ul>'
 				);
 
+				// The change will be "prevented" by post fixer.
 				testChangeType(
 					'list item that is a nested item',
 
@@ -1796,33 +1837,9 @@ describe( 'ListEngine', () => {
 							'a' +
 							'<ol>' +
 								'<li>b</li>' +
-							'</ol>' +
-							'<ul>' +
-								'<li>c</li>' +
-							'</ul>' +
-							'<ol>' +
-								'<li>d</li>' +
-							'</ol>' +
-						'</li>' +
-					'</ul>'
-				);
-
-				testChangeType(
-					'list item between two nested items ',
-
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'[<listItem indent="1" type="numbered">c</listItem>]' +
-					'<listItem indent="1" type="bulleted">d</listItem>',
-
-					'<ul>' +
-						'<li>' +
-							'a' +
-							'<ul>' +
-								'<li>b</li>' +
 								'<li>c</li>' +
 								'<li>d</li>' +
-							'</ul>' +
+							'</ol>' +
 						'</li>' +
 					'</ul>'
 				);
@@ -2634,29 +2651,6 @@ describe( 'ListEngine', () => {
 	} );
 
 	describe( 'post fixer', () => {
-		it( 'should not be triggered if change-to-fix is in a transparent batch', () => {
-			// Note that the same example is also tested below in the insert suite, however in a non-transparent batch.
-			const input =
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'[]' +
-				'<listItem indent="1" type="bulleted">b</listItem>';
-
-			const inserted = '<paragraph>x</paragraph>';
-
-			const output =
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<paragraph>x</paragraph>' +
-				'<listItem indent="1" type="bulleted">b</listItem>';
-
-			setModelData( model, input );
-
-			model.enqueueChange( 'transparent', writer => {
-				writer.insert( parseModel( inserted, model.schema ), modelDoc.selection.getFirstPosition() );
-			} );
-
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
-		} );
-
 		describe( 'insert', () => {
 			function test( testName, input, inserted, output ) {
 				it( testName, () => {
