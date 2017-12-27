@@ -272,8 +272,17 @@ describe( 'DataController utils', () => {
 			} );
 
 			it( 'not insert autoparagraph when paragraph is disallowed at the current position', () => {
-				// TODO this requires a callback
-				// model.schema.xdisallow( { name: 'paragraph', inside: '$root' } );
+				// Disallow paragraph in $root.
+				model.schema.on( 'checkChild', ( evt, args ) => {
+					const context = args[ 0 ];
+					const child = args[ 1 ];
+					const childRule = model.schema.getRule( child );
+
+					if ( childRule.name == 'paragraph' && context[ context.length - 1 ].name == '$root' ) {
+						evt.stop();
+						evt.return = false;
+					}
+				} );
 
 				const content = new DocumentFragment( [
 					new Element( 'heading1', [], [ new Text( 'bar' ) ] ),
@@ -609,12 +618,54 @@ describe( 'DataController utils', () => {
 				schema.extend( 'element', { allowIn: 'paragraph' } );
 				schema.extend( 'element', { allowIn: 'heading1' } );
 
-				// TODO this requires a callback
-				// schema.xallow( { name: '$text', attributes: 'b', inside: 'paragraph' } );
-				// schema.xallow( { name: '$text', attributes: [ 'b' ], inside: 'paragraph element' } );
-				// schema.xallow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'heading1 element' } );
-				// schema.xallow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'td element' } );
-				// schema.xallow( { name: '$text', attributes: [ 'b' ], inside: 'element table td' } );
+				schema.on( 'checkAttribute', ( evt, args ) => {
+					const ctx = args[ 0 ];
+					const ctxItem = ctx[ ctx.length - 1 ];
+					const ctxParent = ctx[ ctx.length - 2 ];
+					const ctxParent2 = ctx[ ctx.length - 3 ];
+					const ctxParent3 = ctx[ ctx.length - 4 ];
+					const attributeName = args[ 1 ];
+
+					// 'b' in paragraph>$text
+					if (
+						ctxItem.name == '$text' &&
+						ctxParent.name == 'paragraph' &&
+						attributeName == 'b'
+					) {
+						evt.stop();
+						evt.return = true;
+					}
+
+					// 'b' in paragraph>element>$text
+					if (
+						ctxItem.name == '$text' &&
+						ctxParent.name == 'element' && ctxParent2.name == 'paragraph' &&
+						attributeName == 'b'
+					) {
+						evt.stop();
+						evt.return = true;
+					}
+
+					// 'a' and 'b' in heading1>element>$text
+					if (
+						ctxItem.name == '$text' &&
+						ctxParent.name == 'element' && ctxParent2 == 'heading1' &&
+						[ 'a', 'b' ].includes( attributeName )
+					) {
+						evt.stop();
+						evt.return = true;
+					}
+
+					// 'b' in element>table>td>$text
+					if (
+						ctxItem.name == '$text' &&
+						ctxParent.name == 'td' && ctxParent2.name == 'table' && ctxParent3.name == 'element' &&
+						attributeName == 'b'
+					) {
+						evt.stop();
+						evt.return = true;
+					}
+				}, { priority: 'high' } );
 			} );
 
 			it( 'filters out disallowed elements and leaves out the text', () => {

@@ -73,12 +73,13 @@ export default function deleteContent( model, selection, options = {} ) {
 		if ( !options.leaveUnmerged ) {
 			mergeBranches( writer, startPos, endPos );
 
+			// TMP this will be replaced with a postifxer.
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
 			// some attributes could end up in a path where are disallowed.
 			//
 			// e.g. bold is disallowed for <H1>
 			// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
-			schema.removeDisallowedAttributes( startPos.parent.getChildren(), startPos, writer );
+			schema.removeDisallowedAttributes( startPos.parent.getChildren(), writer );
 		}
 
 		selection.setCollapsedAt( startPos );

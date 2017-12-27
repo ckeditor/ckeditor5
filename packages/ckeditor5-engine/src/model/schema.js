@@ -163,8 +163,24 @@ export default class Schema {
 		return element;
 	}
 
-	removeDisallowedAttributes() {
-		// TODO
+	/**
+	 * Removes attributes disallowed the schema.
+	 *
+	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes that will be filtered.
+	 * @param {module:engine/model/writer~Writer} writer
+	 */
+	removeDisallowedAttributes( nodes, writer ) {
+		for ( const node of nodes ) {
+			for ( const attribute of node.getAttributeKeys() ) {
+				if ( !this.checkAttribute( node, attribute ) ) {
+					writer.removeAttribute( attribute, node );
+				}
+			}
+
+			if ( node.is( 'element' ) ) {
+				this.removeDisallowedAttributes( node.getChildren(), writer );
+			}
+		}
 	}
 
 	_clearCache() {

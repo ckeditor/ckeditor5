@@ -12,8 +12,11 @@ import Model from '../../src/model/model';
 import Element from '../../src/model/element';
 import Position from '../../src/model/position';
 import Text from '../../src/model/text';
+import DocumentFragment from '../../src/model/documentfragment';
 
-import { setData } from '../../src/dev-utils/model';
+import { setData, getData, stringify } from '../../src/dev-utils/model';
+
+import AttributeDelta from '../../src/model/delta/attributedelta';
 
 describe( 'Schema', () => {
 	let schema, root1, r1p1, r1p2, r1bQ, r1bQp, root2;
@@ -478,6 +481,119 @@ describe( 'Schema', () => {
 			);
 
 			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
+		} );
+	} );
+
+	describe( 'removeDisallowedAttributes()', () => {
+		let model, doc, root;
+
+		beforeEach( () => {
+			model = new Model();
+			doc = model.document;
+			root = doc.createRoot();
+			schema = model.schema;
+
+			schema.register( 'paragraph', {
+				inheritAllFrom: '$block'
+			} );
+			schema.register( 'div', {
+				inheritAllFrom: '$block'
+			} );
+			schema.register( 'image', {
+				isObject: true
+			} );
+			schema.extend( '$block', {
+				allowIn: 'div'
+			} );
+		} );
+
+		it( 'should filter out disallowed attributes from given nodes', () => {
+			schema.extend( '$text', { allowAttributes: 'a' } );
+			schema.extend( 'image', { allowAttributes: 'b' } );
+
+			const text = new Text( 'foo', { a: 1, b: 1 } );
+			const image = new Element( 'image', { a: 1, b: 1 } );
+
+			root.appendChildren( [ text, image ] );
+
+			model.change( writer => {
+				schema.removeDisallowedAttributes( root.getChildren(), writer );
+
+				expect( Array.from( text.getAttributeKeys() ) ).to.deep.equal( [ 'a' ] );
+				expect( Array.from( image.getAttributeKeys() ) ).to.deep.equal( [ 'b' ] );
+
+				expect( writer.batch.deltas ).to.length( 2 );
+				expect( writer.batch.deltas[ 0 ] ).to.instanceof( AttributeDelta );
+				expect( writer.batch.deltas[ 1 ] ).to.instanceof( AttributeDelta );
+
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( '<$text a="1">foo</$text><image b="1"></image>' );
+			} );
+		} );
+
+		it( 'should filter out disallowed attributes from all descendants of given nodes', () => {
+			schema.on( 'checkAttribute', ( evt, args ) => {
+				const ctx = args[ 0 ];
+				const ctxItem = ctx[ ctx.length - 1 ];
+				const ctxParent = ctx[ ctx.length - 2 ];
+				const ctxParent2 = ctx[ ctx.length - 3 ];
+				const attributeName = args[ 1 ];
+
+				// 'a' in div>$text
+				if ( ctxItem.name == '$text' && ctxParent.name == 'div' && attributeName == 'a' ) {
+					evt.stop();
+					evt.return = true;
+				}
+
+				// 'b' in div>paragraph>$text
+				if ( ctxItem.name == '$text' && ctxParent.name == 'paragraph' && ctxParent2.name == 'div' && attributeName == 'b' ) {
+					evt.stop();
+					evt.return = true;
+				}
+
+				// 'a' in div>image
+				if ( ctxItem.name == 'image' && ctxParent.name == 'div' && attributeName == 'a' ) {
+					evt.stop();
+					evt.return = true;
+				}
+
+				// 'b' in div>paragraph>image
+				if ( ctxItem.name == 'image' && ctxParent.name == 'paragraph' && ctxParent2.name == 'div' && attributeName == 'b' ) {
+					evt.stop();
+					evt.return = true;
+				}
+			}, { priority: 'high' } );
+
+			const foo = new Text( 'foo', { a: 1, b: 1 } );
+			const bar = new Text( 'bar', { a: 1, b: 1 } );
+			const imageInDiv = new Element( 'image', { a: 1, b: 1 } );
+			const imageInParagraph = new Element( 'image', { a: 1, b: 1 } );
+			const paragraph = new Element( 'paragraph', [], [ foo, imageInParagraph ] );
+			const div = new Element( 'div', [], [ paragraph, bar, imageInDiv ] );
+
+			root.appendChildren( [ div ] );
+
+			model.change( writer => {
+				schema.removeDisallowedAttributes( root.getChildren(), writer );
+
+				expect( writer.batch.deltas ).to.length( 4 );
+				expect( writer.batch.deltas[ 0 ] ).to.instanceof( AttributeDelta );
+				expect( writer.batch.deltas[ 1 ] ).to.instanceof( AttributeDelta );
+				expect( writer.batch.deltas[ 2 ] ).to.instanceof( AttributeDelta );
+				expect( writer.batch.deltas[ 3 ] ).to.instanceof( AttributeDelta );
+
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal(
+						'<div>' +
+							'<paragraph>' +
+								'<$text b="1">foo</$text>' +
+								'<image b="1"></image>' +
+							'</paragraph>' +
+							'<$text a="1">bar</$text>' +
+							'<image a="1"></image>' +
+						'</div>'
+					);
+			} );
 		} );
 	} );
 
@@ -1160,11 +1276,11 @@ describe( 'Schema', () => {
 				// Disallow bold in heading1.
 				schema.on( 'checkAttribute', ( evt, args ) => {
 					const context = args[ 0 ];
-					const contextLast = context[ context.length - 1 ];
-					const contextSecondToLast = context[ context.length - 2 ];
+					const ctxItem = context[ context.length - 1 ];
+					const ctxParent = context[ context.length - 2 ];
 					const attributeName = args[ 1 ];
 
-					if ( contextLast.name == '$text' && contextSecondToLast.name == 'heading1' && attributeName == 'bold' ) {
+					if ( ctxItem.name == '$text' && ctxParent.name == 'heading1' && attributeName == 'bold' ) {
 						evt.stop();
 						evt.return = false;
 					}
@@ -1443,4 +1559,5 @@ describe( 'Schema', () => {
 	// * it doesn't make sense for VCD to get schema as a param (it can get it from the model)
 	// * V->M conversion tests might got outdated and would need to be reviewed if someone has a spare week ;)
 	// * Do we need both $inline and $text?
+	// * Consider reversing context array for writing simpler callbacks
 } );

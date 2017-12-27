@@ -116,6 +116,8 @@ class Insertion {
 		 * @member {module:engine/model/schema~Schema} #schema
 		 */
 		this.schema = model.schema;
+
+		this._filterAttributesOf = [];
 	}
 
 	/**
@@ -136,6 +138,10 @@ class Insertion {
 				isLast: ( i === ( nodes.length - 1 ) ) && parentContext.isLast
 			} );
 		}
+
+		// TMP this will become a postfixer.
+		this.schema.removeDisallowedAttributes( this._filterAttributesOf, this.writer );
+		this._filterAttributesOf = [];
 	}
 
 	/**
@@ -222,13 +228,7 @@ class Insertion {
 		if ( node.is( 'element' ) ) {
 			this.handleNodes( node.getChildren(), context );
 		}
-		// If the node is a text and bare text is allowed in current position it means that the node
-		// contains disallowed attributes and we have to remove them.
-		else if ( this.schema.checkChild( this.position, '$text' ) ) {
-			this.schema.removeDisallowedAttributes( [ node ], this.position, this.writer );
-			this._handleNode( node, context );
-		}
-		// If text is not allowed, try autoparagraphing.
+		// If text is not allowed, try autoparagraphing it.
 		else {
 			this._tryAutoparagraphing( node, context );
 		}
@@ -263,6 +263,8 @@ class Insertion {
 		} else {
 			this.nodeToSelect = null;
 		}
+
+		this._filterAttributesOf.push( node );
 	}
 
 	/**
@@ -283,11 +285,6 @@ class Insertion {
 			const position = LivePosition.createFromPosition( this.position );
 
 			this.writer.merge( mergePosLeft );
-
-			// We need to check and strip disallowed attributes in all nested nodes because after merge
-			// some attributes could end up in a path where are disallowed.
-			const parent = position.nodeBefore;
-			this.schema.removeDisallowedAttributes( parent.getChildren(), Position.createAt( parent ), this.writer );
 
 			this.position = Position.createFromPosition( position );
 			position.detach();
@@ -312,22 +309,18 @@ class Insertion {
 
 			this.writer.merge( mergePosRight );
 
-			// We need to check and strip disallowed attributes in all nested nodes because after merge
-			// some attributes could end up in a place where are disallowed.
-			this.schema.removeDisallowedAttributes( position.parent.getChildren(), position, this.writer );
-
 			this.position = Position.createFromPosition( position );
 			position.detach();
 		}
 
+		if ( mergeLeft || mergeRight ) {
+			// After merge elements that were marked by _insert() to be filtered might be gone so
+			// we need to mark the new container.
+			this._filterAttributesOf.push( this.position.parent );
+		}
+
 		mergePosLeft.detach();
 		mergePosRight.detach();
-
-		// When there was no merge we need to check and strip disallowed attributes in all nested nodes of
-		// just inserted node because some attributes could end up in a place where are disallowed.
-		if ( !mergeLeft && !mergeRight ) {
-			this.schema.removeDisallowedAttributes( node.getChildren(), Position.createAt( node ), this.writer );
-		}
 	}
 
 	/**
@@ -342,17 +335,9 @@ class Insertion {
 		// Do not autoparagraph if the paragraph won't be allowed there,
 		// cause that would lead to an infinite loop. The paragraph would be rejected in
 		// the next _handleNode() call and we'd be here again.
-		if ( this._getAllowedIn( paragraph, this.position.parent ) ) {
-			// When node is a text and is disallowed by schema it means that contains disallowed attributes
-			// and we need to remove them.
-			if ( node.is( 'text' ) && !this.schema.checkChild( paragraph, node ) ) {
-				this.schema.removeDisallowedAttributes( [ node ], [ paragraph ], this.writer );
-			}
-
-			if ( this.schema.checkChild( paragraph, node ) ) {
-				paragraph.appendChildren( node );
-				this._handleNode( paragraph, context );
-			}
+		if ( this._getAllowedIn( paragraph, this.position.parent ) && this.schema.checkChild( paragraph, node ) ) {
+			paragraph.appendChildren( node );
+			this._handleNode( paragraph, context );
 		}
 	}
 

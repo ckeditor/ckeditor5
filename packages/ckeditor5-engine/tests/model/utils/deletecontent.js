@@ -466,10 +466,44 @@ describe( 'DataController utils', () => {
 				beforeEach( () => {
 					const schema = model.schema;
 
-					// TODO this requires a callback
-					// schema.xallow( { name: '$text', attributes: [ 'a', 'b' ], inside: 'paragraph' } );
-					// schema.xallow( { name: '$text', attributes: [ 'b', 'c' ], inside: 'pchild' } );
-					// schema.xdisallow( { name: '$text', attributes: [ 'c' ], inside: 'pchild pchild' } );
+					schema.on( 'checkAttribute', ( evt, args ) => {
+						const ctx = args[ 0 ];
+						const ctxItem = ctx[ ctx.length - 1 ];
+						const ctxParent = ctx[ ctx.length - 2 ];
+						const ctxParent2 = ctx[ ctx.length - 3 ];
+						const attributeName = args[ 1 ];
+
+						// allow 'a' and 'b' in paragraph>$text
+						if (
+							ctxItem.name == '$text' &&
+							ctxParent.name == 'paragraph' &&
+							[ 'a', 'b' ].includes( attributeName )
+						) {
+							evt.stop();
+							evt.return = true;
+						}
+
+						// allow 'b' and 'c' in pchild>$text
+						if (
+							ctxItem.name == '$text' &&
+							ctxParent.name == 'pchild' &&
+							[ 'b', 'c' ].includes( attributeName )
+						) {
+							evt.stop();
+							evt.return = true;
+						}
+
+						// disallow 'c' in pchild>pchild>$text
+						if (
+							ctxItem.name == '$text' &&
+							ctxParent.name == 'pchild' &&
+							ctxParent2.name == 'pchild' &&
+							attributeName == 'c'
+						) {
+							evt.stop();
+							evt.return = false;
+						}
+					}, { priority: 'high' } );
 
 					schema.extend( 'pchild', { allowIn: 'pchild' } );
 				} );
