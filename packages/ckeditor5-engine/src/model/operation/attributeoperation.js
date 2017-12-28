@@ -37,7 +37,8 @@ export default class AttributeOperation extends Operation {
 	 * @param {String} key Key of an attribute to change or remove.
 	 * @param {*} oldValue Old value of the attribute with given key or `null`, if attribute was not set before.
 	 * @param {*} newValue New value of the attribute with given key or `null`, if operation should remove attribute.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which the operation can be applied.
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( range, key, oldValue, newValue, baseVersion ) {
 		super( baseVersion );
@@ -73,11 +74,6 @@ export default class AttributeOperation extends Operation {
 		 * @member {*}
 		 */
 		this.newValue = newValue === undefined ? null : newValue;
-
-		/**
-		 * @inheritDoc
-		 */
-		this.isDocumentOperation = !!this.range.root.document;
 	}
 
 	/**

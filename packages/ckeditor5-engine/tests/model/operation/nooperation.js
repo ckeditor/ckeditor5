@@ -34,10 +34,6 @@ describe( 'NoOperation', () => {
 		expect( clone.baseVersion ).to.equal( 0 );
 	} );
 
-	it( 'should be a document operation', () => {
-		expect( noop.isDocumentOperation ).to.true;
-	} );
-
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
 			const serialized = jsonParseStringify( noop );

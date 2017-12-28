@@ -189,7 +189,7 @@ describe( 'Writer', () => {
 			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
 
-		it( 'should move element from one parent to the other within the same document (documentA -> documentA)', () => {
+		it( 'should move element from one parent to the other within the same document (rootA -> rootA)', () => {
 			const root = doc.createRoot();
 			const parent1 = createElement( 'parent' );
 			const parent2 = createElement( 'parent' );
@@ -213,7 +213,7 @@ describe( 'Writer', () => {
 			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
 
-		it( 'should move element from one parent to the other within the same document (documentA -> documentB)', () => {
+		it( 'should move element from one parent to the other within the same document (rootA -> rootB)', () => {
 			const rootA = doc.createRoot( '$root', 'A' );
 			const rootB = doc.createRoot( '$root', 'B' );
 			const node = createText( 'foo' );
@@ -1439,6 +1439,18 @@ describe( 'Writer', () => {
 			expect( root.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
 		} );
 
+		it( 'should correctly merge in document fragment', () => {
+			const docFrag = new DocumentFragment( [
+				new Element( 'p', null, 'foo' ),
+				new Element( 'p', null, 'bar' )
+			] );
+
+			writer.merge( new Position( docFrag, [ 1 ] ) );
+
+			expect( docFrag.getChild( 0 ).name ).to.equal( 'p' );
+			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
+		} );
+
 		it( 'should throw if there is no element after', () => {
 			expect( () => {
 				merge( new Position( root, [ 2 ] ) );
@@ -1653,20 +1665,28 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'rename()', () => {
-		let root;
-
-		beforeEach( () => {
-			root = doc.createRoot();
-
+		it( 'should rename given element', () => {
+			const root = doc.createRoot();
 			const p = new Element( 'p', null, new Text( 'abc' ) );
+
 			root.appendChildren( p );
 
 			rename( p, 'h' );
-		} );
 
-		it( 'should rename given element', () => {
 			expect( root.maxOffset ).to.equal( 1 );
 			expect( root.getChild( 0 ) ).to.have.property( 'name', 'h' );
+		} );
+
+		it( 'should rename in document fragment', () => {
+			const docFrag = new DocumentFragment();
+			const p = new Element( 'p' );
+
+			docFrag.appendChildren( p );
+
+			writer.rename( p, 'h' );
+
+			expect( docFrag.maxOffset ).to.equal( 1 );
+			expect( docFrag.getChild( 0 ) ).to.have.property( 'name', 'h' );
 		} );
 
 		it( 'should throw if not an Element instance is passed', () => {
@@ -1712,6 +1732,23 @@ describe( 'Writer', () => {
 			expect( count( root.getChild( 1 ).getAttributes() ) ).to.equal( 1 );
 			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
 			expect( root.getChild( 1 ).getChild( 0 ).data ).to.equal( 'bar' );
+		} );
+
+		it( 'should split inside document fragment', () => {
+			const docFrag = new DocumentFragment();
+			docFrag.appendChildren( new Element( 'p', null, new Text( 'foobar' ) ) );
+
+			writer.split( new Position( docFrag, [ 0, 3 ] ) );
+
+			expect( docFrag.maxOffset ).to.equal( 2 );
+
+			expect( docFrag.getChild( 0 ).name ).to.equal( 'p' );
+			expect( docFrag.getChild( 0 ).maxOffset ).to.equal( 3 );
+			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+
+			expect( docFrag.getChild( 1 ).name ).to.equal( 'p' );
+			expect( docFrag.getChild( 1 ).maxOffset ).to.equal( 3 );
+			expect( docFrag.getChild( 1 ).getChild( 0 ).data ).to.equal( 'bar' );
 		} );
 
 		it( 'should create an empty paragraph if we split at the end', () => {
@@ -1794,6 +1831,16 @@ describe( 'Writer', () => {
 			expect( root.getChild( 2 ).data ).to.equal( 'ar' );
 		} );
 
+		it( 'should wrap inside document fragment', () => {
+			const docFrag = new DocumentFragment( new Text( 'foo' ) );
+
+			writer.wrap( Range.createIn( docFrag ), 'p' );
+
+			expect( docFrag.maxOffset ).to.equal( 1 );
+			expect( docFrag.getChild( 0 ).name ).to.equal( 'p' );
+			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+		} );
+
 		it( 'should throw if range to wrap is not flat', () => {
 			root.insertChildren( 1, [ new Element( 'p', [], new Text( 'xyz' ) ) ] );
 			const notFlatRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6, 2 ] ) );
@@ -1844,6 +1891,15 @@ describe( 'Writer', () => {
 
 			expect( root.maxOffset ).to.equal( 5 );
 			expect( root.getChild( 0 ).data ).to.equal( 'axyzb' );
+		} );
+
+		it( 'should unwrap inside document fragment', () => {
+			const docFrag = new DocumentFragment( new Element( 'p', null, new Text( 'foo' ) ) );
+
+			writer.unwrap( docFrag.getChild( 0 ) );
+
+			expect( docFrag.maxOffset ).to.equal( 3 );
+			expect( docFrag.getChild( 0 ).data ).to.equal( 'foo' );
 		} );
 
 		it( 'should throw if element to unwrap has no parent', () => {

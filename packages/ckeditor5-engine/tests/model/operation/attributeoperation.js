@@ -4,7 +4,6 @@
  */
 
 import Model from '../../../src/model/model';
-import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 import AttributeOperation from '../../../src/model/operation/attributeoperation';
@@ -58,34 +57,6 @@ describe( 'AttributeOperation', () => {
 			);
 
 			expect( op.type ).to.equal( 'changeAttribute' );
-		} );
-	} );
-
-	describe( 'isDocumentOperation', () => {
-		it( 'should return true when attribute is applied on attached items', () => {
-			const op = new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
-				'key',
-				'oldValue',
-				'newValue',
-				doc.version
-			);
-
-			expect( op.isDocumentOperation ).to.true;
-		} );
-
-		it( 'should return false when attribute is applied on detached items', () => {
-			const docFrag = new DocumentFragment( [ new Text( 'abc' ) ] );
-
-			const op = new AttributeOperation(
-				Range.createIn( docFrag ),
-				'key',
-				'oldValue',
-				'newValue',
-				doc.version
-			);
-
-			expect( op.isDocumentOperation ).to.false;
 		} );
 	} );
 

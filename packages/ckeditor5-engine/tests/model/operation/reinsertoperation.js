@@ -102,10 +102,6 @@ describe( 'ReinsertOperation', () => {
 		expect( graveyard.maxOffset ).to.equal( 2 );
 	} );
 
-	it( 'should be a document operation', () => {
-		expect( operation.isDocumentOperation ).to.true;
-	} );
-
 	describe( '_validate()', () => {
 		it( 'should throw when target position is not in the document', () => {
 			const docFrag = new DocumentFragment();

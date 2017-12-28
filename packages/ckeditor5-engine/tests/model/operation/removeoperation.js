@@ -163,17 +163,6 @@ describe( 'RemoveOperation', () => {
 		} );
 	} );
 
-	it( 'should always be a document operation', () => {
-		const op = new RemoveOperation(
-			new Position( root, [ 2 ] ),
-			2,
-			new Position( doc.graveyard, [ 0 ] ),
-			doc.version
-		);
-
-		expect( op.isDocumentOperation ).to.true;
-	} );
-
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
 			const op = new RemoveOperation(

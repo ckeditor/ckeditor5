@@ -250,9 +250,9 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'DetachOperation (text node)', () => {
-				const op = new DetachOperation( ModelPosition.createAt( modelRoot, 0 ), 3, 0 );
+				const op = new DetachOperation( ModelPosition.createAt( modelRoot, 0 ), 3 );
 
-				expect( op.toString() ).to.equal( 'DetachOperation( 0 ): #foo -> main [ 0 ] - [ 3 ]' );
+				expect( op.toString() ).to.equal( 'DetachOperation( null ): #foo -> main [ 0 ] - [ 3 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -262,9 +262,9 @@ describe( 'debug tools', () => {
 				const element = new ModelElement( 'element' );
 				modelRoot.insertChildren( 0, element );
 
-				const op = new DetachOperation( ModelPosition.createBefore( element ), 1, 0 );
+				const op = new DetachOperation( ModelPosition.createBefore( element ), 1 );
 
-				expect( op.toString() ).to.equal( 'DetachOperation( 0 ): <element> -> main [ 0 ] - [ 1 ]' );
+				expect( op.toString() ).to.equal( 'DetachOperation( null ): <element> -> main [ 0 ] - [ 1 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -274,9 +274,9 @@ describe( 'debug tools', () => {
 				const element = new ModelElement( 'element' );
 				modelRoot.insertChildren( 0, element );
 
-				const op = new DetachOperation( ModelPosition.createBefore( element ), 2, 0 );
+				const op = new DetachOperation( ModelPosition.createBefore( element ), 2 );
 
-				expect( op.toString() ).to.equal( 'DetachOperation( 0 ): [ 2 ] -> main [ 0 ] - [ 2 ]' );
+				expect( op.toString() ).to.equal( 'DetachOperation( null ): [ 2 ] -> main [ 0 ] - [ 2 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
