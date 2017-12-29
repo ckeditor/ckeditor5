@@ -100,7 +100,8 @@ describe( 'View converter builder', () => {
 			inheritAllFrom: '$text'
 		} );
 		schema.extend( '$text', {
-			allowAttributes: textAttributes
+			allowAttributes: textAttributes,
+			allowIn: [ '$root', 'span', 'abcd', 'MEGATRON' ]
 		} );
 
 		dispatcher = new ViewConversionDispatcher( model, { schema } );
@@ -493,8 +494,17 @@ describe( 'View converter builder', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'div' ).toElement( 'div' );
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
-		// TODO this requires a callback
-		// schema.xdisallow( { name: 'div', inside: '$root' } );
+		// Disallow $root>div.
+		schema.on( 'checkChild', ( evt, args ) => {
+			const context = args[ 0 ];
+			const child = args[ 1 ];
+			const childRule = schema.getRule( child );
+
+			if ( childRule.name == 'div' && context[ context.length - 1 ].name == '$root' ) {
+				evt.stop();
+				evt.return = false;
+			}
+		}, { priority: 'high' } );
 
 		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 
@@ -513,8 +523,18 @@ describe( 'View converter builder', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 		buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
 
-		// TODO this requires a callback
-		// schema.xdisallow( { name: '$text', attributes: 'bold', inside: 'paragraph' } );
+		// Disallow bold in paragraph>$text.
+		schema.on( 'checkAttribute', ( evt, args ) => {
+			const context = args[ 0 ];
+			const ctxItem = context[ context.length - 1 ];
+			const ctxParent = context[ context.length - 2 ];
+			const attributeName = args[ 1 ];
+
+			if ( ctxItem.name == '$text' && ctxParent.name == 'paragraph' && attributeName == 'bold' ) {
+				evt.stop();
+				evt.return = false;
+			}
+		}, { priority: 'high' } );
 
 		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 

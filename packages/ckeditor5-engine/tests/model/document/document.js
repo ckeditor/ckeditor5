@@ -248,16 +248,18 @@ describe( 'Document', () => {
 		beforeEach( () => {
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			model.schema.register( 'emptyBlock' );
-			model.schema.extend( 'emptyBlock', { allowIn: '$root' } );
+			model.schema.register( 'emptyBlock', { allowIn: '$root' } );
 
 			model.schema.register( 'widget', {
+				allowIn: '$root',
 				isObject: true
 			} );
-			model.schema.extend( 'widget', { allowIn: '$root' } );
 
-			model.schema.register( 'blockWidget', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'blockWidget', { allowIn: '$root' } );
+			model.schema.register( 'blockWidget', {
+				allowIn: '$root',
+				allowContentOf: '$block',
+				isObject: true
+			} );
 
 			doc.createRoot();
 			selection = doc.selection;

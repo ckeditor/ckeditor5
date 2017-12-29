@@ -510,7 +510,7 @@ describe( 'model test utils', () => {
 		it( 'throws when try to set element not registered in schema', () => {
 			expect( () => {
 				parse( '<xyz></xyz>', model.schema );
-			} ).to.throw( Error, 'Element \'xyz\' not allowed in context ["$root"].' );
+			} ).to.throw( Error, 'Element \'xyz\' was not allowed in context ["$root"].' );
 		} );
 
 		it( 'throws when try to set text directly to $root without registering it', () => {
@@ -518,7 +518,7 @@ describe( 'model test utils', () => {
 
 			expect( () => {
 				parse( 'text', model.schema );
-			} ).to.throw( Error, 'Element \'$text\' not allowed in context ["$root"].' );
+			} ).to.throw( Error, 'Text was not allowed in context ["$root"].' );
 		} );
 
 		it( 'converts data in the specified context', () => {

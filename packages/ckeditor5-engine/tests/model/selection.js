@@ -891,7 +891,9 @@ describe( 'Selection', () => {
 
 		beforeEach( () => {
 			schema = new Schema();
-			schema.register( 'p', { inheritAllFrom: '$block' } );
+			schema.register( '$root' );
+			schema.register( 'p', { allowIn: '$root' } );
+			schema.register( '$text', { allowIn: 'p' } );
 		} );
 
 		it( 'should return selected element', () => {
@@ -933,9 +935,9 @@ describe( 'Selection', () => {
 			model.schema.extend( 'blockquote', { allowIn: '$root' } );
 			model.schema.extend( '$block', { allowIn: 'blockquote' } );
 
-			model.schema.register( 'image' );
-			model.schema.extend( 'image', { allowIn: '$root' } );
-			model.schema.extend( 'image', { allowIn: '$block' } );
+			model.schema.register( 'image', {
+				allowIn: [ '$root', '$block' ]
+			} );
 			model.schema.extend( '$text', { allowIn: 'image' } );
 
 			// Special block which can contain another blocks.

@@ -21,7 +21,6 @@ import {
 } from '../../src/conversion/definition-based-converters';
 
 import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatcher';
-import ModelSchema from '../../src/model/schema';
 import ModelWalker from '../../src/model/treewalker';
 import ModelTextProxy from '../../src/model/textproxy';
 import Model from '../../src/model/model';
@@ -104,7 +103,7 @@ describe( 'definition-based-converters', () => {
 
 	function setupViewToModelTests() {
 		additionalData = { context: [ '$root' ] };
-		schema = new ModelSchema();
+		schema = model.schema;
 		dispatcher = new ViewConversionDispatcher( model, { schema } );
 	}
 
