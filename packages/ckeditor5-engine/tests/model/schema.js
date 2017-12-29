@@ -1658,6 +1658,6 @@ describe( 'Schema', () => {
 	// * review insertContent's _tryAutoparagraphing()
 	// * it doesn't make sense for VCD to get schema as a param (it can get it from the model)
 	// * V->M conversion tests might got outdated and would need to be reviewed if someone has a spare week ;)
-	// * Do we need both $inline and $text?
+	// * Do we need both $inline and $text? It seems that it makes more sense to have "isInline" in the future.
 	// * Consider reversing context array for writing simpler callbacks
 } );

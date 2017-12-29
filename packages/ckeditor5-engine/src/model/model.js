@@ -70,9 +70,16 @@ export default class Model {
 			.forEach( methodName => this.decorate( methodName ) );
 
 		// Register some default abstract entities.
-		this.schema.register( '$root', { isLimit: true } );
-		this.schema.register( '$block', { allowIn: '$root' } );
-		this.schema.register( '$text', { allowIn: '$block' } );
+		this.schema.register( '$root', {
+			isLimit: true
+		} );
+		this.schema.register( '$block', {
+			allowIn: '$root',
+			isBlock: true
+		} );
+		this.schema.register( '$text', {
+			allowIn: '$block'
+		} );
 
 		// TODO review
 		// Create an "all allowed" context in the schema for processing the pasted content.
