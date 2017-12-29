@@ -206,6 +206,7 @@ export default class Schema {
 
 		for ( const itemName of itemNames ) {
 			compileAllowAttributesOf( compiledRules, itemName );
+			compileInheritPropertiesFrom( compiledRules, itemName );
 		}
 
 		for ( const itemName of itemNames ) {
@@ -244,7 +245,9 @@ function compileBaseItemRule( sourceItemRules, itemName ) {
 		allowWhere: [],
 
 		allowAttributes: [],
-		allowAttributesOf: []
+		allowAttributesOf: [],
+
+		inheritTypesFrom: []
 	};
 
 	copyTypes( sourceItemRules, itemRule );
@@ -255,6 +258,8 @@ function compileBaseItemRule( sourceItemRules, itemName ) {
 
 	copyProperty( sourceItemRules, itemRule, 'allowAttributes' );
 	copyProperty( sourceItemRules, itemRule, 'allowAttributesOf' );
+
+	copyProperty( sourceItemRules, itemRule, 'inheritTypesFrom' );
 
 	makeInheritAllWork( sourceItemRules, itemRule );
 
@@ -305,6 +310,26 @@ function compileAllowAttributesOf( compiledRules, itemName ) {
 	delete compiledRules[ itemName ].allowAttributesOf;
 }
 
+function compileInheritPropertiesFrom( compiledRules, itemName ) {
+	const item = compiledRules[ itemName ];
+
+	for ( const inheritPropertiesOfItem of item.inheritTypesFrom ) {
+		const inheritFrom = compiledRules[ inheritPropertiesOfItem ];
+
+		if ( inheritFrom ) {
+			const typeNames = Object.keys( inheritFrom ).filter( name => name.startsWith( 'is' ) );
+
+			for ( const name of typeNames ) {
+				if ( !( name in item ) ) {
+					item[ name ] = inheritFrom[ name ];
+				}
+			}
+		}
+	}
+
+	delete item.inheritTypesFrom;
+}
+
 // Remove items which weren't registered (because it may break some checks or we'd need to complicate them).
 // Make sure allowIn doesn't contain repeated values.
 function cleanUpAllowIn( compiledRules, itemName ) {
@@ -348,6 +373,7 @@ function makeInheritAllWork( sourceItemRules, itemRule ) {
 			itemRule.allowContentOf.push( inheritFrom );
 			itemRule.allowWhere.push( inheritFrom );
 			itemRule.allowAttributesOf.push( inheritFrom );
+			itemRule.inheritTypesFrom.push( inheritFrom );
 		}
 	}
 }

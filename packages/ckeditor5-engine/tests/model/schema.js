@@ -12,9 +12,8 @@ import Model from '../../src/model/model';
 import Element from '../../src/model/element';
 import Position from '../../src/model/position';
 import Text from '../../src/model/text';
-import DocumentFragment from '../../src/model/documentfragment';
 
-import { setData, getData, stringify } from '../../src/dev-utils/model';
+import { setData, getData } from '../../src/dev-utils/model';
 
 import AttributeDelta from '../../src/model/delta/attributedelta';
 
@@ -959,6 +958,50 @@ describe( 'Schema', () => {
 			// } );
 		} );
 
+		describe( 'inheritTypesFrom', () => {
+			it( 'inherit properties of another item', () => {
+				schema.register( '$block', {
+					isBlock: true,
+					isLimit: true
+				} );
+				schema.register( 'paragraph', {
+					inheritTypesFrom: '$block'
+				} );
+
+				expect( schema.getRule( 'paragraph' ).isBlock ).to.be.true;
+				expect( schema.getRule( 'paragraph' ).isLimit ).to.be.true;
+			} );
+
+			it( 'inherit properties of other items – support for arrays', () => {
+				schema.register( '$block', {
+					isBlock: true
+				} );
+				schema.register( '$block2', {
+					isLimit: true
+				} );
+				schema.register( 'paragraph', {
+					inheritTypesFrom: [ '$block', '$block2' ]
+				} );
+
+				expect( schema.getRule( 'paragraph' ).isBlock ).to.be.true;
+				expect( schema.getRule( 'paragraph' ).isLimit ).to.be.true;
+			} );
+
+			it( 'does not override existing props', () => {
+				schema.register( '$block', {
+					isBlock: true,
+					isLimit: true
+				} );
+				schema.register( 'paragraph', {
+					inheritTypesFrom: '$block',
+					isLimit: false
+				} );
+
+				expect( schema.getRule( 'paragraph' ).isBlock ).to.be.true;
+				expect( schema.getRule( 'paragraph' ).isLimit ).to.be.false;
+			} );
+		} );
+
 		describe( 'inheritAllFrom', () => {
 			it( 'passes $root>paragraph – paragraph inherits allowIn from $block', () => {
 				schema.register( '$root' );
@@ -970,6 +1013,17 @@ describe( 'Schema', () => {
 				} );
 
 				expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
+			} );
+
+			it( 'paragraph inherit properties of $block', () => {
+				schema.register( '$block', {
+					isBlock: true
+				} );
+				schema.register( 'paragraph', {
+					inheritAllFrom: '$block'
+				} );
+
+				expect( schema.isBlock( r1p1 ) ).to.be.true;
 			} );
 
 			it( 'passes $root>paragraph>$text – paragraph inherits allowed content of $block', () => {
@@ -1210,6 +1264,16 @@ describe( 'Schema', () => {
 				expect( schema.checkAttribute( r1p1, 'whatever' ) ).to.be.false;
 			} );
 		} );
+
+		describe( 'missing types rules', () => {
+			it( 'does not crash when inheriting types of an unregistered element', () => {
+				schema.register( 'paragraph', {
+					inheritTypesFrom: '$block'
+				} );
+
+				expect( schema.getRule( 'paragraph' ) ).to.be.an( 'object' );
+			} );
+		} );
 	} );
 
 	describe( 'real scenarios', () => {
@@ -1218,24 +1282,18 @@ describe( 'Schema', () => {
 		const rules = [
 			() => {
 				schema.register( 'paragraph', {
-					allowWhere: '$block',
-					allowContentOf: '$block',
-					allowAttributesOf: '$block'
+					inheritAllFrom: '$block'
 				} );
 			},
 			() => {
 				schema.register( 'heading1', {
-					allowWhere: '$block',
-					allowContentOf: '$block',
-					allowAttributesOf: '$block'
+					inheritAllFrom: '$block'
 				} );
 			},
 			() => {
 				schema.register( 'listItem', {
-					allowWhere: '$block',
-					allowContentOf: '$block',
-					allowAttributes: [ 'indent', 'type' ],
-					allowAttributesOf: '$block'
+					inheritAllFrom: '$block',
+					allowAttributes: [ 'indent', 'type' ]
 				} );
 			},
 			() => {
@@ -1259,13 +1317,16 @@ describe( 'Schema', () => {
 			() => {
 				schema.register( 'image', {
 					allowWhere: '$block',
-					allowAttributes: [ 'src', 'alt' ]
+					allowAttributes: [ 'src', 'alt' ],
+					isObject: true,
+					isBlock: true
 				} );
 			},
 			() => {
 				schema.register( 'caption', {
 					allowIn: 'image',
-					allowContentOf: '$block'
+					allowContentOf: '$block',
+					isLimit: true
 				} );
 			},
 			() => {
@@ -1294,9 +1355,12 @@ describe( 'Schema', () => {
 		];
 
 		beforeEach( () => {
-			schema.register( '$root' );
+			schema.register( '$root', {
+				isLimit: true
+			} );
 			schema.register( '$block', {
-				allowIn: '$root'
+				allowIn: '$root',
+				isBlock: true
 			} );
 			schema.register( '$text', {
 				allowIn: '$block'
@@ -1541,6 +1605,42 @@ describe( 'Schema', () => {
 
 		it( 'rejects attribute $root>image[alignment]', () => {
 			expect( schema.checkAttribute( r1i, 'alignment' ) ).to.be.false;
+		} );
+
+		it( '$root is limit', () => {
+			expect( schema.isLimit( '$root' ) ).to.be.true;
+			expect( schema.isBlock( '$root' ) ).to.be.false;
+			expect( schema.isObject( '$root' ) ).to.be.false;
+		} );
+
+		it( 'paragraph is block', () => {
+			expect( schema.isLimit( 'paragraph' ) ).to.be.false;
+			expect( schema.isBlock( 'paragraph' ) ).to.be.true;
+			expect( schema.isObject( 'paragraph' ) ).to.be.false;
+		} );
+
+		it( 'heading1 is block', () => {
+			expect( schema.isLimit( 'heading1' ) ).to.be.false;
+			expect( schema.isBlock( 'heading1' ) ).to.be.true;
+			expect( schema.isObject( 'heading1' ) ).to.be.false;
+		} );
+
+		it( 'listItem is block', () => {
+			expect( schema.isLimit( 'listItem' ) ).to.be.false;
+			expect( schema.isBlock( 'listItem' ) ).to.be.true;
+			expect( schema.isObject( 'listItem' ) ).to.be.false;
+		} );
+
+		it( 'image is block object', () => {
+			expect( schema.isLimit( 'image' ) ).to.be.false;
+			expect( schema.isBlock( 'image' ) ).to.be.true;
+			expect( schema.isObject( 'image' ) ).to.be.true;
+		} );
+
+		it( 'caption is limit', () => {
+			expect( schema.isLimit( 'caption' ) ).to.be.true;
+			expect( schema.isBlock( 'caption' ) ).to.be.false;
+			expect( schema.isObject( 'caption' ) ).to.be.false;
 		} );
 	} );
 
