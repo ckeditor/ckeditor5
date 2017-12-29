@@ -496,11 +496,11 @@ describe( 'View converter builder', () => {
 
 		// Disallow $root>div.
 		schema.on( 'checkChild', ( evt, args ) => {
-			const context = args[ 0 ];
+			const ctx = args[ 0 ];
 			const child = args[ 1 ];
 			const childRule = schema.getRule( child );
 
-			if ( childRule.name == 'div' && context[ context.length - 1 ].name == '$root' ) {
+			if ( childRule.name == 'div' && ctx.matchEnd( '$root' ) ) {
 				evt.stop();
 				evt.return = false;
 			}
@@ -529,11 +529,9 @@ describe( 'View converter builder', () => {
 	// 	// Disallow bold in paragraph>$text.
 	// 	schema.on( 'checkAttribute', ( evt, args ) => {
 	// 		const context = args[ 0 ];
-	// 		const ctxItem = context[ context.length - 1 ];
-	// 		const ctxParent = context[ context.length - 2 ];
 	// 		const attributeName = args[ 1 ];
 
-	// 		if ( ctxItem.name == '$text' && ctxParent.name == 'paragraph' && attributeName == 'bold' ) {
+	// 		if ( ctx.matchEnd( 'paragraph $text' ) && attributeName == 'bold' ) {
 	// 			evt.stop();
 	// 			evt.return = false;
 	// 		}

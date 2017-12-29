@@ -274,11 +274,11 @@ describe( 'DataController utils', () => {
 			it( 'not insert autoparagraph when paragraph is disallowed at the current position', () => {
 				// Disallow paragraph in $root.
 				model.schema.on( 'checkChild', ( evt, args ) => {
-					const context = args[ 0 ];
+					const ctx = args[ 0 ];
 					const child = args[ 1 ];
 					const childRule = model.schema.getRule( child );
 
-					if ( childRule.name == 'paragraph' && context[ context.length - 1 ].name == '$root' ) {
+					if ( childRule.name == 'paragraph' && ctx.matchEnd( '$root' ) ) {
 						evt.stop();
 						evt.return = false;
 					}
@@ -620,48 +620,28 @@ describe( 'DataController utils', () => {
 
 				schema.on( 'checkAttribute', ( evt, args ) => {
 					const ctx = args[ 0 ];
-					const ctxItem = ctx[ ctx.length - 1 ];
-					const ctxParent = ctx[ ctx.length - 2 ];
-					const ctxParent2 = ctx[ ctx.length - 3 ];
-					const ctxParent3 = ctx[ ctx.length - 4 ];
 					const attributeName = args[ 1 ];
 
-					// 'b' in paragraph>$text
-					if (
-						ctxItem.name == '$text' &&
-						ctxParent.name == 'paragraph' &&
-						attributeName == 'b'
-					) {
+					// Allow 'b' on paragraph>$text.
+					if ( ctx.matchEnd( 'paragraph $text' ) && attributeName == 'b' ) {
 						evt.stop();
 						evt.return = true;
 					}
 
-					// 'b' in paragraph>element>$text
-					if (
-						ctxItem.name == '$text' &&
-						ctxParent.name == 'element' && ctxParent2.name == 'paragraph' &&
-						attributeName == 'b'
-					) {
+					// Allow 'b' on paragraph>element>$text.
+					if ( ctx.matchEnd( 'paragraph element $text' ) && attributeName == 'b' ) {
 						evt.stop();
 						evt.return = true;
 					}
 
-					// 'a' and 'b' in heading1>element>$text
-					if (
-						ctxItem.name == '$text' &&
-						ctxParent.name == 'element' && ctxParent2 == 'heading1' &&
-						[ 'a', 'b' ].includes( attributeName )
-					) {
+					// Allow 'a' and 'b' on heading1>element>$text.
+					if ( ctx.matchEnd( 'heading1 element $text' ) && [ 'a', 'b' ].includes( attributeName ) ) {
 						evt.stop();
 						evt.return = true;
 					}
 
-					// 'b' in element>table>td>$text
-					if (
-						ctxItem.name == '$text' &&
-						ctxParent.name == 'td' && ctxParent2.name == 'table' && ctxParent3.name == 'element' &&
-						attributeName == 'b'
-					) {
+					// Allow 'b' on element>table>td>$text.
+					if ( ctx.matchEnd( 'element table td $text' ) && attributeName == 'b' ) {
 						evt.stop();
 						evt.return = true;
 					}

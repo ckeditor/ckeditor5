@@ -64,11 +64,11 @@ describe( 'view-to-model-converters', () => {
 
 		it( 'should not convert text if it is wrong with schema', () => {
 			schema.on( 'checkChild', ( evt, args ) => {
-				const context = args[ 0 ];
+				const ctx = args[ 0 ];
 				const child = args[ 1 ];
 				const childRule = schema.getRule( child );
 
-				if ( childRule.name == '$text' && context[ context.length - 1 ].name == '$root' ) {
+				if ( childRule.name == '$text' && ctx.matchEnd( '$root' ) ) {
 					evt.stop();
 					evt.return = false;
 				}

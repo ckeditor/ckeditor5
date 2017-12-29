@@ -23,11 +23,11 @@ export default class Schema {
 		this.decorate( 'checkAttribute' );
 
 		this.on( 'checkAttribute', ( evt, args ) => {
-			args[ 0 ] = normalizeContext( args[ 0 ] );
+			args[ 0 ] = new SchemaContext( args[ 0 ] );
 		}, { priority: 'highest' } );
 
 		this.on( 'checkChild', ( evt, args ) => {
-			args[ 0 ] = normalizeContext( args[ 0 ] );
+			args[ 0 ] = new SchemaContext( args[ 0 ] );
 		}, { priority: 'highest' } );
 	}
 
@@ -125,7 +125,7 @@ export default class Schema {
 	 * @param {String}
 	 */
 	checkAttribute( context, attributeName ) {
-		const rule = this.getRule( context[ context.length - 1 ] );
+		const rule = this.getRule( context.last );
 
 		if ( !rule ) {
 			return false;
@@ -218,7 +218,7 @@ export default class Schema {
 	}
 
 	_checkContextMatch( rule, context, contextItemIndex = context.length - 1 ) {
-		const contextItem = context[ contextItemIndex ];
+		const contextItem = context.getItem( contextItemIndex );
 
 		if ( rule.allowIn.includes( contextItem.name ) ) {
 			if ( contextItemIndex == 0 ) {
@@ -235,6 +235,50 @@ export default class Schema {
 }
 
 mix( Schema, ObservableMixin );
+
+/**
+ * @private
+ */
+export class SchemaContext {
+	constructor( ctx ) {
+		if ( Array.isArray( ctx ) ) {
+			this._items = ctx.map( mapContextItem );
+		}
+		// Item or position (PS. It's ok that Position#getAncestors() doesn't accept params).
+		else {
+			this._items = ctx.getAncestors( { includeSelf: true } ).map( mapContextItem );
+		}
+	}
+
+	get length() {
+		return this._items.length;
+	}
+
+	get last() {
+		return this._items[ this._items.length - 1 ];
+	}
+
+	/**
+	 * Returns an iterator that iterates over all context items
+	 *
+	 * @returns {Iterator.<TODO>}
+	 */
+	[ Symbol.iterator ]() {
+		return this._items[ Symbol.iterator ]();
+	}
+
+	getItem( index ) {
+		return this._items[ index ];
+	}
+
+	* getNames() {
+		yield* this._items.map( item => item.name );
+	}
+
+	matchEnd( query ) {
+		return Array.from( this.getNames() ).join( ' ' ).endsWith( query );
+	}
+}
 
 function compileBaseItemRule( sourceItemRules, itemName ) {
 	const itemRule = {
@@ -384,32 +428,30 @@ function getAllowedChildren( compiledRules, itemName ) {
 	return getValues( compiledRules ).filter( rule => rule.allowIn.includes( itemRule.name ) );
 }
 
-function normalizeContext( ctx ) {
-	if ( Array.isArray( ctx ) ) {
-		return ctx.map( mapContextItem );
-	}
-	// Item or position (PS. It's ok that Position#getAncestors() doesn't accept params).
-	else {
-		return ctx.getAncestors( { includeSelf: true } ).map( mapContextItem );
-	}
+function getValues( obj ) {
+	return Object.keys( obj ).map( key => obj[ key ] );
 }
 
 function mapContextItem( ctxItem ) {
 	if ( typeof ctxItem == 'string' ) {
 		return {
 			name: ctxItem,
-			* getAttributes() {}
+
+			* getAttributeKeys() {},
+
+			getAttribute() {}
 		};
 	} else {
 		return {
 			name: ctxItem.is( 'text' ) ? '$text' : ctxItem.name,
-			* getAttributes() {
-				yield* ctxItem.getAttributes();
+
+			* getAttributeKeys() {
+				yield* ctxItem.getAttributeKeys();
+			},
+
+			getAttribute( key ) {
+				return ctxItem.getAttribute( key );
 			}
 		};
 	}
-}
-
-function getValues( obj ) {
-	return Object.keys( obj ).map( key => obj[ key ] );
 }

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Schema from '../../src/model/schema';
+import Schema, { SchemaContext } from '../../src/model/schema';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -533,31 +533,28 @@ describe( 'Schema', () => {
 		it( 'should filter out disallowed attributes from all descendants of given nodes', () => {
 			schema.on( 'checkAttribute', ( evt, args ) => {
 				const ctx = args[ 0 ];
-				const ctxItem = ctx[ ctx.length - 1 ];
-				const ctxParent = ctx[ ctx.length - 2 ];
-				const ctxParent2 = ctx[ ctx.length - 3 ];
 				const attributeName = args[ 1 ];
 
-				// 'a' in div>$text
-				if ( ctxItem.name == '$text' && ctxParent.name == 'div' && attributeName == 'a' ) {
+				// Allow 'a' on div>$text.
+				if ( ctx.matchEnd( 'div $text' ) && attributeName == 'a' ) {
 					evt.stop();
 					evt.return = true;
 				}
 
-				// 'b' in div>paragraph>$text
-				if ( ctxItem.name == '$text' && ctxParent.name == 'paragraph' && ctxParent2.name == 'div' && attributeName == 'b' ) {
+				// Allow 'b' on div>paragraph>$text.
+				if ( ctx.matchEnd( 'div paragraph $text' ) && attributeName == 'b' ) {
 					evt.stop();
 					evt.return = true;
 				}
 
-				// 'a' in div>image
-				if ( ctxItem.name == 'image' && ctxParent.name == 'div' && attributeName == 'a' ) {
+				// Allow 'a' on div>image.
+				if ( ctx.matchEnd( 'div image' ) && attributeName == 'a' ) {
 					evt.stop();
 					evt.return = true;
 				}
 
-				// 'b' in div>paragraph>image
-				if ( ctxItem.name == 'image' && ctxParent.name == 'paragraph' && ctxParent2.name == 'div' && attributeName == 'b' ) {
+				// Allow 'b' on div>paragraph>image.
+				if ( ctx.matchEnd( 'div paragraph image' ) && attributeName == 'b' ) {
 					evt.stop();
 					evt.return = true;
 				}
@@ -1304,11 +1301,11 @@ describe( 'Schema', () => {
 
 				// Disallow blockQuote in blockQuote.
 				schema.on( 'checkChild', ( evt, args ) => {
-					const context = args[ 0 ];
+					const ctx = args[ 0 ];
 					const child = args[ 1 ];
 					const childRule = schema.getRule( child );
 
-					if ( childRule.name == 'blockQuote' && context[ context.length - 1 ].name == 'blockQuote' ) {
+					if ( childRule.name == 'blockQuote' && ctx.matchEnd( 'blockQuote' ) ) {
 						evt.stop();
 						evt.return = false;
 					}
@@ -1336,12 +1333,10 @@ describe( 'Schema', () => {
 
 				// Disallow bold in heading1.
 				schema.on( 'checkAttribute', ( evt, args ) => {
-					const context = args[ 0 ];
-					const ctxItem = context[ context.length - 1 ];
-					const ctxParent = context[ context.length - 2 ];
+					const ctx = args[ 0 ];
 					const attributeName = args[ 1 ];
 
-					if ( ctxItem.name == '$text' && ctxParent.name == 'heading1' && attributeName == 'bold' ) {
+					if ( ctx.matchEnd( 'heading1 $text' ) && attributeName == 'bold' ) {
 						evt.stop();
 						evt.return = false;
 					}
@@ -1646,18 +1641,219 @@ describe( 'Schema', () => {
 
 	// TODO:
 	// * getValidRanges
-	// * checkAttributeInSelection
-	// * getLimitElement
-	// * removeDisallowedAttributes
-	// * test checkChild()'s both params normalization
-	//   * and see insertContent's _checkIsObject()
+	// * checkAttributeInSelectionn
 	// * add normalization to isObject(), isLimit(), isBlock(), isRegistered() and improve the existing code
-	// * inheritAllFrom should also inherit is* props (see tests documentselection getNearestSelectionRange())
+	//   * see insertContent's _checkIsObject()
 	// * test the default abstract entities (in model.js)
-	// * see clipboardHolder definition (and rename it to the pastebin)
-	// * review insertContent's _tryAutoparagraphing()
-	// * it doesn't make sense for VCD to get schema as a param (it can get it from the model)
-	// * V->M conversion tests might got outdated and would need to be reviewed if someone has a spare week ;)
-	// * Do we need both $inline and $text? It seems that it makes more sense to have "isInline" in the future.
-	// * Consider reversing context array for writing simpler callbacks
+} );
+
+describe( 'SchemaContext', () => {
+	let root;
+
+	beforeEach( () => {
+		root = new Element( '$root', null, [
+			new Element( 'blockQuote', { foo: 1 }, [
+				new Element( 'paragraph', { align: 'left' }, [
+					new Text( 'foo', { bold: true, italic: true } )
+				] )
+			] )
+		] );
+	} );
+
+	describe( 'constructor()', () => {
+		it( 'creates context based on an array of strings', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			expect( ctx.length ).to.equal( 3 );
+
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+			expect( ctx.getItem( 0 ).name ).to.equal( 'a' );
+
+			expect( Array.from( ctx.getItem( 0 ).getAttributeKeys() ) ).to.be.empty;
+			expect( ctx.getItem( 0 ).getAttribute( 'foo' ) ).to.be.undefined;
+		} );
+
+		it( 'creates context based on an array of elements', () => {
+			const blockQuote = root.getChild( 0 );
+			const text = blockQuote.getChild( 0 ).getChild( 0 );
+
+			const ctx = new SchemaContext( [ blockQuote, text ] );
+
+			expect( ctx.length ).to.equal( 2 );
+
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'blockQuote', '$text' ] );
+			expect( ctx.getItem( 0 ).name ).to.equal( 'blockQuote' );
+
+			expect( Array.from( ctx.getItem( 1 ).getAttributeKeys() ).sort() ).to.deep.equal( [ 'bold', 'italic' ] );
+			expect( ctx.getItem( 1 ).getAttribute( 'bold' ) ).to.be.true;
+		} );
+
+		it( 'creates context based on a mixed array of strings and elements', () => {
+			const blockQuote = root.getChild( 0 );
+			const text = blockQuote.getChild( 0 ).getChild( 0 );
+
+			const ctx = new SchemaContext( [ blockQuote, 'paragraph', text ] );
+
+			expect( ctx.length ).to.equal( 3 );
+
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'blockQuote', 'paragraph', '$text' ] );
+		} );
+
+		it( 'creates context based on a root element', () => {
+			const ctx = new SchemaContext( root );
+
+			expect( ctx.length ).to.equal( 1 );
+
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$root' ] );
+
+			expect( Array.from( ctx.getItem( 0 ).getAttributeKeys() ) ).to.be.empty;
+			expect( ctx.getItem( 0 ).getAttribute( 'foo' ) ).to.be.undefined;
+		} );
+
+		it( 'creates context based on a nested element', () => {
+			const ctx = new SchemaContext( root.getChild( 0 ).getChild( 0 ) );
+
+			expect( ctx.length ).to.equal( 3 );
+
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$root', 'blockQuote', 'paragraph' ] );
+
+			expect( Array.from( ctx.getItem( 1 ).getAttributeKeys() ) ).to.deep.equal( [ 'foo' ] );
+			expect( ctx.getItem( 1 ).getAttribute( 'foo' ) ).to.equal( 1 );
+			expect( Array.from( ctx.getItem( 2 ).getAttributeKeys() ) ).to.deep.equal( [ 'align' ] );
+			expect( ctx.getItem( 2 ).getAttribute( 'align' ) ).to.equal( 'left' );
+		} );
+
+		it( 'creates context based on a text node', () => {
+			const ctx = new SchemaContext( root.getChild( 0 ).getChild( 0 ).getChild( 0 ) );
+
+			expect( ctx.length ).to.equal( 4 );
+
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$root', 'blockQuote', 'paragraph', '$text' ] );
+
+			expect( Array.from( ctx.getItem( 3 ).getAttributeKeys() ).sort() ).to.deep.equal( [ 'bold', 'italic' ] );
+			expect( ctx.getItem( 3 ).getAttribute( 'bold' ) ).to.be.true;
+		} );
+
+		it( 'creates context based on a position', () => {
+			const pos = Position.createAt( root.getChild( 0 ).getChild( 0 ) );
+			const ctx = new SchemaContext( pos );
+
+			expect( ctx.length ).to.equal( 3 );
+
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$root', 'blockQuote', 'paragraph' ] );
+
+			expect( Array.from( ctx.getItem( 2 ).getAttributeKeys() ).sort() ).to.deep.equal( [ 'align' ] );
+		} );
+	} );
+
+	describe( 'length', () => {
+		it( 'gets the number of items', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			expect( ctx.length ).to.equal( 3 );
+		} );
+	} );
+
+	describe( 'last', () => {
+		it( 'gets the last item', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			expect( ctx.last ).to.be.an( 'object' );
+			expect( ctx.last.name ).to.equal( 'c' );
+		} );
+	} );
+
+	describe( 'Symbol.iterator', () => {
+		it( 'exists', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			expect( ctx[ Symbol.iterator ] ).to.be.a( 'function' );
+			expect( Array.from( ctx ).map( item => item.name ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+	} );
+
+	describe( 'getItem()', () => {
+		it( 'returns item by index', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			expect( ctx.getItem( 1 ) ).to.be.an( 'object' );
+			expect( ctx.getItem( 1 ).name ).to.equal( 'b' );
+		} );
+
+		it( 'returns undefined if index exceeds the range', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			expect( ctx.getItem( 3 ) ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'getNames()', () => {
+		it( 'returns an iterator', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			expect( ctx.getNames().next ).to.be.a( 'function' );
+		} );
+
+		it( 'returns an iterator which returns all item names', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+	} );
+
+	describe( 'matchEnd()', () => {
+		it( 'returns true if the end of the context matches the query - 1 item', () => {
+			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+
+			expect( ctx.matchEnd( 'dom' ) ).to.be.true;
+		} );
+
+		it( 'returns true if the end of the context matches the query - 2 items', () => {
+			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+
+			expect( ctx.matchEnd( 'bom dom' ) ).to.be.true;
+		} );
+
+		it( 'returns true if the end of the context matches the query - full match of 3 items', () => {
+			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom' ] );
+
+			expect( ctx.matchEnd( 'foo bar bom' ) ).to.be.true;
+		} );
+
+		it( 'returns true if the end of the context matches the query - full match of 1 items', () => {
+			const ctx = new SchemaContext( [ 'foo' ] );
+
+			expect( ctx.matchEnd( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'returns true if not only the end of the context matches the query', () => {
+			const ctx = new SchemaContext( [ 'foo', 'foo', 'foo', 'foo' ] );
+
+			expect( ctx.matchEnd( 'foo foo' ) ).to.be.true;
+		} );
+
+		it( 'returns false if query matches the middle of the context', () => {
+			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+
+			expect( ctx.matchEnd( 'bom' ) ).to.be.false;
+		} );
+
+		it( 'returns false if query matches the start of the context', () => {
+			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+
+			expect( ctx.matchEnd( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'returns false if query does not match', () => {
+			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+
+			expect( ctx.matchEnd( 'dom bar' ) ).to.be.false;
+		} );
+
+		it( 'returns false if query is longer than context', () => {
+			const ctx = new SchemaContext( [ 'foo' ] );
+
+			expect( ctx.matchEnd( 'bar', 'foo' ) ).to.be.false;
+		} );
+	} );
 } );
