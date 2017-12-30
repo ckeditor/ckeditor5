@@ -27,14 +27,15 @@ describe( 'BlockQuoteCommand', () => {
 
 				model = editor.model;
 
-				model.schema.registerItem( 'paragraph', '$block' );
-				model.schema.registerItem( 'heading', '$block' );
-				model.schema.registerItem( 'widget' );
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				model.schema.register( 'heading', { inheritAllFrom: '$block' } );
+				model.schema.register( 'widget' );
 
-				model.schema.allow( { name: 'widget', inside: '$root' } );
-				model.schema.allow( { name: '$text', inside: 'widget' } );
-
-				model.schema.limits.add( 'widget' );
+				model.schema.extend( 'widget', {
+					allowIn: '$root',
+					isLimit: true
+				} );
+				model.schema.extend( '$text', { allowIn: 'widget' } );
 
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'paragraph' )
@@ -75,7 +76,7 @@ describe( 'BlockQuoteCommand', () => {
 		} );
 
 		it( 'is false when selection starts in a blockless space', () => {
-			model.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.extend( '$text', { allowIn: '$root' } );
 
 			setModelData( model, 'x[]x' );
 
@@ -124,7 +125,7 @@ describe( 'BlockQuoteCommand', () => {
 			'is false when selection is in an element which cannot be wrapped with blockQuote' +
 			'(because mQ is not allowed in its parent)',
 			() => {
-				model.schema.disallow( { name: 'blockQuote', inside: '$root' } );
+				model.schema.dis.extend( 'blockQuote', { allowIn: '$root' } );
 
 				setModelData( model, '<paragraph>x[]x</paragraph>' );
 
@@ -371,8 +372,8 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should not wrap a block which can not be in a quote', () => {
 				// blockQuote is allowed in root, but fooBlock can not be inside blockQuote.
-				model.schema.registerItem( 'fooBlock', '$block' );
-				model.schema.disallow( { name: 'fooBlock', inside: 'blockQuote' } );
+				model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
+				model.schema.dis.extend( 'fooBlock', { allowIn: 'blockQuote' } );
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'fooBlock' )
 					.toElement( 'fooblock' );
@@ -399,11 +400,11 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should not wrap a block which parent does not allow quote inside itself', () => {
 				// blockQuote is not be allowed in fooWrapper, but fooBlock can be inside blockQuote.
-				model.schema.registerItem( 'fooWrapper' );
-				model.schema.registerItem( 'fooBlock', '$block' );
+				model.schema.register( 'fooWrapper' );
+				model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
 
-				model.schema.allow( { name: 'fooWrapper', inside: '$root' } );
-				model.schema.allow( { name: 'fooBlock', inside: 'fooWrapper' } );
+				model.schema.extend( 'fooWrapper', { allowIn: '$root' } );
+				model.schema.extend( 'fooBlock', { allowIn: 'fooWrapper' } );
 
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'fooWrapper' )
