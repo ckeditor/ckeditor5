@@ -115,7 +115,7 @@ describe( 'HeadingCommand', () => {
 		it( 'should not rename blocks which cannot become headings', () => {
 			schema.register( 'restricted' );
 			schema.extend( 'restricted', { allowIn: '$root' } );
-			schema.dis.extend( 'heading1', { allowIn: 'restricted' } );
+			schema.xdisallow( 'heading1', { allowIn: 'restricted' } );
 
 			schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
 			schema.extend( 'fooBlock', { allowIn: 'restricted' } );

@@ -37,14 +37,14 @@ describe( 'HeadingEngine', () => {
 		expect( model.schema.isRegistered( 'heading2' ) ).to.be.true;
 		expect( model.schema.isRegistered( 'heading3' ) ).to.be.true;
 
-		expect( model.schema.check( { name: 'heading1', inside: '$root' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$text', inside: 'heading1' } ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'heading1' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'heading1' ], '$text' ) ).to.be.true;
 
-		expect( model.schema.check( { name: 'heading2', inside: '$root' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$text', inside: 'heading2' } ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'heading2' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'heading2' ], '$text' ) ).to.be.true;
 
-		expect( model.schema.check( { name: 'heading3', inside: '$root' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$text', inside: 'heading3' } ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'heading3' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'heading3' ], '$text' ) ).to.be.true;
 	} );
 
 	it( 'should register #commands', () => {
