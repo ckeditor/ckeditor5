@@ -255,7 +255,7 @@ describe( 'ListCommand', () => {
 				it( 'should not rename blocks which cannot become listItems', () => {
 					model.schema.register( 'restricted' );
 					model.schema.extend( 'restricted', { allowIn: '$root' } );
-					model.schema.dis.extend( 'paragraph', { allowIn: 'restricted' } );
+					model.schema.xdisallow( 'paragraph', { allowIn: 'restricted' } );
 
 					model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
 					model.schema.extend( 'fooBlock', { allowIn: 'restricted' } );
