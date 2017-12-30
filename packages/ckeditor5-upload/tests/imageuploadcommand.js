@@ -48,8 +48,7 @@ describe( 'ImageUploadCommand', () => {
 				command = new ImageUploadCommand( editor );
 
 				const schema = model.schema;
-				schema.allow( { name: 'image', attributes: [ 'uploadId' ], inside: '$root' } );
-				schema.requireAttributes( 'image', [ 'uploadId' ] );
+				schema.extend( 'image', { allowAttributes: 'uploadId' } );
 			} );
 	} );
 
@@ -98,10 +97,13 @@ describe( 'ImageUploadCommand', () => {
 
 		it( 'should not insert image nor crash when image could not be inserted', () => {
 			const file = createNativeFileMock();
-			model.schema.registerItem( 'other' );
-			model.schema.allow( { name: '$text', inside: 'other' } );
-			model.schema.allow( { name: 'other', inside: '$root' } );
-			model.schema.limits.add( 'other' );
+
+			model.schema.register( 'other', {
+				allowIn: '$root',
+				isLimit: true
+			} );
+			model.schema.extend( '$text', { allowIn: 'other' } );
+
 			buildModelConverter().for( editor.editing.modelToView )
 				.fromElement( 'other' )
 				.toElement( 'p' );

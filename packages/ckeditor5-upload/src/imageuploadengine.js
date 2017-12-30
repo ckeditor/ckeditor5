@@ -36,10 +36,10 @@ export default class ImageUploadEngine extends Plugin {
 		const schema = editor.model.schema;
 		const fileRepository = editor.plugins.get( FileRepository );
 
-		// Setup schema to allow uploadId for images.
-		schema.allow( { name: 'image', attributes: [ 'uploadId' ], inside: '$root' } );
-		schema.allow( { name: 'image', attributes: [ 'uploadStatus' ], inside: '$root' } );
-		schema.requireAttributes( 'image', [ 'uploadId' ] );
+		// Setup schema to allow uploadId and uploadStatus for images.
+		schema.extend( 'image', {
+			allowAttributes: [ 'uploadId', 'uploadStatus' ]
+		} );
 
 		// Register imageUpload command.
 		editor.commands.add( 'imageUpload', new ImageUploadCommand( editor ) );
