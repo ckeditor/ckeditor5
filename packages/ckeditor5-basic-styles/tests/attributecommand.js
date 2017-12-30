@@ -26,20 +26,21 @@ describe( 'AttributeCommand', () => {
 
 				command = new AttributeCommand( editor, attrKey );
 
-				model.schema.registerItem( 'p', '$block' );
-				model.schema.registerItem( 'h1', '$block' );
-				model.schema.registerItem( 'img', '$inline' );
-				model.schema.objects.add( 'img' );
+				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+				model.schema.register( 'h1', { inheritAllFrom: '$block' } );
+				model.schema.register( 'img', {
+					allowWhere: '$block',
+					isObject: true
+				} );
 
-				// Allow block in "root" (DIV)
-				model.schema.allow( { name: '$block', inside: '$root' } );
+				// TODO the following rules are odd
 
 				// Bold text is allowed only in P.
-				model.schema.allow( { name: '$text', attributes: 'bold', inside: 'p' } );
-				model.schema.allow( { name: 'p', attributes: 'bold', inside: '$root' } );
+				// model.schema.xallow( { name: '$text', attributes: 'bold', inside: 'p' } );
+				// model.schema.xallow( { name: 'p', attributes: 'bold', inside: '$root' } );
 
 				// Disallow bold on image.
-				model.schema.disallow( { name: 'img', attributes: 'bold', inside: '$root' } );
+				// model.schema.xdisallow( { name: 'img', attributes: 'bold', inside: '$root' } );
 			} );
 	} );
 
@@ -68,10 +69,12 @@ describe( 'AttributeCommand', () => {
 
 		// See https://github.com/ckeditor/ckeditor5-core/issues/73#issuecomment-311572827.
 		it( 'is false when selection contains object with nested editable', () => {
-			model.schema.registerItem( 'caption', '$block' );
-			model.schema.allow( { name: '$inline', inside: 'caption' } );
-			model.schema.allow( { name: 'caption', inside: 'img' } );
-			model.schema.allow( { name: '$text', attributes: 'bold', inside: 'caption' } );
+			model.schema.register( 'caption', { inheritAllFrom: '$block' } );
+			model.schema.extend( '$text', {
+				allowIn: 'caption',
+				allowAttributes: 'bold'
+			} );
+			model.schema.extend( 'caption', { allowIn: 'img' } );
 
 			setData( model, '<p>[<img><caption>Some caption inside the image.</caption></img>]</p>' );
 
@@ -90,7 +93,7 @@ describe( 'AttributeCommand', () => {
 		// Method `refresh()` uses `checkAttributeInSelection()` which is fully tested in its own test.
 
 		beforeEach( () => {
-			model.schema.registerItem( 'x', '$block' );
+			model.schema.register( 'x', { inheritAllFrom: '$block' } );
 			model.schema.disallow( { name: '$text', inside: 'x', attributes: 'link' } );
 		} );
 
@@ -239,7 +242,7 @@ describe( 'AttributeCommand', () => {
 		} );
 
 		it( 'should not apply attribute change where it would invalid schema', () => {
-			model.schema.registerItem( 'image', '$block' );
+			model.schema.register( 'image', { inheritAllFrom: '$block' } );
 			setData( model, '<p>ab[c<img></img><$text bold="true">foobar</$text>xy<img></img>]z</p>' );
 
 			expect( command.isEnabled ).to.be.true;

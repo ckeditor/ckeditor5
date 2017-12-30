@@ -35,9 +35,9 @@ describe( 'BoldEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.check( { name: '$inline', attributes: 'bold', inside: '$root' } ) ).to.be.false;
-		expect( model.schema.check( { name: '$inline', attributes: 'bold', inside: '$block' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$inline', attributes: 'bold', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$text', attributes: 'bold', inside: '$root' } ) ).to.be.false;
+		expect( model.schema.check( { name: '$text', attributes: 'bold', inside: '$block' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$text', attributes: 'bold', inside: '$clipboardHolder' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {

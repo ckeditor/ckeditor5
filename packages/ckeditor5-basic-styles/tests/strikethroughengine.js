@@ -35,9 +35,9 @@ describe( 'StrikethroughEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.check( { name: '$inline', attributes: 'strikethrough', inside: '$root' } ) ).to.be.false;
-		expect( model.schema.check( { name: '$inline', attributes: 'strikethrough', inside: '$block' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$inline', attributes: 'strikethrough', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$text', attributes: 'strikethrough', inside: '$root' } ) ).to.be.false;
+		expect( model.schema.check( { name: '$text', attributes: 'strikethrough', inside: '$block' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$text', attributes: 'strikethrough', inside: '$clipboardHolder' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {

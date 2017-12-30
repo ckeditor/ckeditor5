@@ -31,10 +31,8 @@ export default class UnderlineEngine extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
-		// Allow underline attribute on all inline nodes.
-		editor.model.schema.allow( { name: '$inline', attributes: UNDERLINE, inside: '$block' } );
-		// Temporary workaround. See https://github.com/ckeditor/ckeditor5/issues/477.
-		editor.model.schema.allow( { name: '$inline', attributes: UNDERLINE, inside: '$clipboardHolder' } );
+		// Allow strikethrough attribute on text nodes.
+		editor.model.schema.extend( '$text', { allowAttributes: UNDERLINE } );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
