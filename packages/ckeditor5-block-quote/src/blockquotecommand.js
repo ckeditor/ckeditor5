@@ -220,15 +220,9 @@ function getRangesOfBlockGroups( blocks ) {
 
 // Checks whether <bQ> can wrap the block.
 function checkCanBeQuoted( schema, block ) {
-	const isBQAllowed = schema.check( {
-		name: 'blockQuote',
-		inside: Position.createBefore( block )
-	} );
-	const isBlockAllowedInBQ = schema.check( {
-		name: block.name,
-		attributes: Array.from( block.getAttributeKeys() ),
-		inside: 'blockQuote'
-	} );
+	// TMP will be replaced with schema.checkWrap().
+	const isBQAllowed = schema.checkChild( block.parent, 'blockQuote' );
+	const isBlockAllowedInBQ = schema.checkChild( [ '$root', 'blockQuote' ], block );
 
 	return isBQAllowed && isBlockAllowedInBQ;
 }
