@@ -51,10 +51,10 @@ describe( 'ListEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.hasItem( 'listItem' ) );
-		expect( model.schema.itemExtends( 'listItem', '$block' ) );
+		expect( model.schema.isRegistered( 'listItem' ) );
+		expect( model.schema.isBlock( 'listItem' ) );
 
-		expect( model.schema.check( { name: '$inline', inside: 'listItem' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$text', inside: 'listItem' } ) ).to.be.true;
 		expect( model.schema.check( { name: 'listItem', inside: 'listItem' } ) ).to.be.false;
 		expect( model.schema.check( { name: '$block', inside: 'listItem' } ) ).to.be.false;
 

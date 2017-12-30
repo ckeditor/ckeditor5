@@ -50,18 +50,13 @@ export default class ListEngine extends Plugin {
 		const editor = this.editor;
 
 		// Schema.
-		// Note: in case `$block` will be ever allowed in `listItem`, keep in mind that this feature
+		// Note: in case `$block` will ever be allowed in `listItem`, keep in mind that this feature
 		// uses `Selection#getSelectedBlocks()` without any additional processing to obtain all selected list items.
 		// If there are blocks allowed inside list item, algorithms using `getSelectedBlocks()` will have to be modified.
-		const schema = editor.model.schema;
-		schema.registerItem( 'listItem', '$block' );
-		schema.allow( {
-			name: 'listItem',
-			inside: '$root',
-			coinside: '$root',
-			attributes: [ 'type', 'indent' ]
+		editor.model.schema.register( 'listItem', {
+			inheritAllFrom: '$block',
+			allowAttributes: [ 'type', 'indent' ]
 		} );
-		schema.requireAttributes( 'listItem', [ 'type', 'indent' ] );
 
 		// Converters.
 		const data = editor.data;

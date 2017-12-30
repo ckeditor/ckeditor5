@@ -23,14 +23,19 @@ describe( 'ListCommand', () => {
 
 		command = new ListCommand( editor, 'bulleted' );
 
-		model.schema.registerItem( 'listItem', '$block' );
-		model.schema.registerItem( 'paragraph', '$block' );
-		model.schema.registerItem( 'widget', '$block' );
+		model.schema.register( 'listItem', {
+			inheritAllFrom: '$block',
+			allowAttributes: [ 'type', 'indent' ]
+		} );
+		model.schema.register( 'listItem', { inheritAllFrom: '$block' } );
+		model.schema.register( 'paragraph', {
+			inheritAllFrom: '$block',
+			allowIn: 'widget'
+		} );
+		model.schema.register( 'widget', { inheritAllFrom: '$block' } );
 
-		model.schema.allow( { name: '$block', inside: '$root' } );
-		model.schema.allow( { name: 'paragraph', inside: 'widget' } );
-		model.schema.allow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: '$root' } );
-		model.schema.disallow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: 'widget' } );
+		// TODO callback if really needed cause this rule is odd
+		// model.schema.xdisallow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: 'widget' } );
 
 		setData(
 			model,
@@ -248,12 +253,12 @@ describe( 'ListCommand', () => {
 
 				// https://github.com/ckeditor/ckeditor5-list/issues/62
 				it( 'should not rename blocks which cannot become listItems', () => {
-					model.schema.registerItem( 'restricted' );
-					model.schema.allow( { name: 'restricted', inside: '$root' } );
-					model.schema.disallow( { name: 'paragraph', inside: 'restricted' } );
+					model.schema.register( 'restricted' );
+					model.schema.extend( 'restricted', { allowIn: '$root' } );
+					model.schema.dis.extend( 'paragraph', { allowIn: 'restricted' } );
 
-					model.schema.registerItem( 'fooBlock', '$block' );
-					model.schema.allow( { name: 'fooBlock', inside: 'restricted' } );
+					model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
+					model.schema.extend( 'fooBlock', { allowIn: 'restricted' } );
 
 					setData(
 						model,

@@ -21,12 +21,11 @@ describe( 'IndentCommand', () => {
 		doc = model.document;
 		root = doc.createRoot();
 
-		model.schema.registerItem( 'listItem', '$block' );
-		model.schema.registerItem( 'paragraph', '$block' );
-
-		model.schema.allow( { name: '$block', inside: '$root' } );
-		model.schema.allow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: '$root' } );
-		model.schema.allow( { name: 'paragraph', inside: '$root' } );
+		model.schema.register( 'listItem', {
+			inheritAllFrom: '$block',
+			allowAttributes: [ 'type', 'indent' ]
+		} );
+		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 		setData(
 			model,
@@ -117,7 +116,7 @@ describe( 'IndentCommand', () => {
 			// Edge case but may happen that some other blocks will also use the indent attribute
 			// and before we fixed it the command was enabled in such a case.
 			it( 'should be false if selection starts in a paragraph with indent attribute', () => {
-				model.schema.allow( { name: 'paragraph', attributes: [ 'indent' ], inside: '$root' } );
+				model.schema.extend( 'paragraph', { allowAttributes: 'indent' } );
 
 				setData( model, '<listItem indent="0">a</listItem><paragraph indent="0">b[]</paragraph>' );
 
