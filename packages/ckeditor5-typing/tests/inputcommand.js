@@ -31,8 +31,8 @@ describe( 'InputCommand', () => {
 				buffer = inputCommand.buffer;
 				buffer.size = 0;
 
-				model.schema.registerItem( 'p', '$block' );
-				model.schema.registerItem( 'h1', '$block' );
+				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+				model.schema.register( 'h1', { inheritAllFrom: '$block' } );
 			} );
 	} );
 
