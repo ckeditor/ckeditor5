@@ -34,9 +34,10 @@ describe( 'LinkEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', '$text' ], 'linkHref' ) ).to.be.false;
 		expect( model.schema.checkAttribute( [ '$block', '$text' ], 'linkHref' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'linkHref' ) ).to.be.true;
+
+		expect( model.schema.checkAttribute( [ '$block' ], 'linkHref' ) ).to.be.false;
 	} );
 
 	describe( 'command', () => {
@@ -64,14 +65,12 @@ describe( 'LinkEngine', () => {
 		} );
 
 		it( 'should be integrated with autoparagraphing', () => {
-			// Incorrect results because autoparagraphing works incorrectly (issue in paragraph).
-			// https://github.com/ckeditor/ckeditor5-paragraph/issues/10
-
 			editor.setData( '<a href="url">foo</a>bar' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+			expect( editor.getData() ).to.equal( '<p><a href="url">foo</a>bar</p>' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/500
@@ -108,7 +107,7 @@ describe( 'LinkEngine', () => {
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/121
 		it( 'should should set priority for `linkHref` higher than all other attribute elements', () => {
-			model.schema.extned( '$text', { allowAttributes: 'foo' } );
+			model.schema.extend( '$text', { allowAttributes: 'foo' } );
 
 			buildModelConverter().for( editor.data.modelToView )
 				.fromAttribute( 'foo' )

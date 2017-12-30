@@ -31,7 +31,7 @@ export default class LinkEngine extends Plugin {
 		const editing = editor.editing;
 
 		// Allow link attribute on all inline nodes.
-		editor.model.schema.allow( '$text', { allowAttributes: 'linkHref' } );
+		editor.model.schema.extend( '$text', { allowAttributes: 'linkHref' } );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
