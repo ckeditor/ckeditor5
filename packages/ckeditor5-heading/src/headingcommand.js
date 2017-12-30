@@ -86,5 +86,5 @@ export default class HeadingCommand extends Command {
 // @param {module:engine/model/schema~Schema} schema The schema of the document.
 // @returns {Boolean}
 function checkCanBecomeHeading( block, heading, schema ) {
-	return schema.checkChild( block.parent, heading );
+	return schema.checkChild( block.parent, heading ) && !schema.isObject( block );
 }

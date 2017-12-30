@@ -31,7 +31,7 @@ describe( 'HeadingCommand', () => {
 
 			for ( const option of options ) {
 				commands[ option.modelElement ] = new HeadingCommand( editor, option.modelElement );
-				schema.register( option.modelElement, '$block' );
+				schema.register( option.modelElement, { inheritAllFrom: '$block' } );
 			}
 
 			schema.register( 'notBlock' );
@@ -112,19 +112,20 @@ describe( 'HeadingCommand', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-heading/issues/73
-		it( 'should not rename blocks which cannot become headings', () => {
+		it( 'should not rename blocks which cannot become headings (heading is not allowed in their parent)', () => {
 			schema.register( 'restricted' );
 			schema.extend( 'restricted', { allowIn: '$root' } );
-			schema.xdisallow( 'heading1', { allowIn: 'restricted' } );
 
 			schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
-			schema.extend( 'fooBlock', { allowIn: 'restricted' } );
+			schema.extend( 'fooBlock', {
+				allowIn: [ 'restricted', '$root' ]
+			} );
 
 			setData(
 				model,
 				'<paragraph>a[bc</paragraph>' +
 				'<restricted><fooBlock></fooBlock></restricted>' +
-				'<paragraph>de]f</paragraph>'
+				'<fooBlock>de]f</fooBlock>'
 			);
 
 			commands.heading1.execute();
@@ -132,6 +133,29 @@ describe( 'HeadingCommand', () => {
 			expect( getData( model ) ).to.equal(
 				'<heading1>a[bc</heading1>' +
 				'<restricted><fooBlock></fooBlock></restricted>' +
+				'<heading1>de]f</heading1>'
+			);
+		} );
+
+		it( 'should not rename blocks which cannot become headings (block is an object)', () => {
+			schema.register( 'image', {
+				isBlock: true,
+				isObject: true,
+				allowIn: '$root'
+			} );
+
+			setData(
+				model,
+				'<paragraph>a[bc</paragraph>' +
+				'<image></image>' +
+				'<paragraph>de]f</paragraph>'
+			);
+
+			commands.heading1.execute();
+
+			expect( getData( model ) ).to.equal(
+				'<heading1>a[bc</heading1>' +
+				'<image></image>' +
 				'<heading1>de]f</heading1>'
 			);
 		} );
