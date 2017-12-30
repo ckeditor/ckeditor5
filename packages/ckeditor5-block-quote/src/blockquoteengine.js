@@ -42,7 +42,7 @@ export default class BlockQuoteEngine extends Plugin {
 			const child = args[ 1 ];
 			const childRule = schema.getRule( child );
 
-			if ( childRule.name == 'blockQuote' && ctx.matchEnd( 'blockQuote' ) ) {
+			if ( childRule && childRule.name == 'blockQuote' && ctx.matchEnd( 'blockQuote' ) ) {
 				evt.stop();
 				evt.return = false;
 			}
