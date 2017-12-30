@@ -837,7 +837,7 @@ describe( 'DataController utils', () => {
 				'<heading1>[]</heading1>'
 			);
 
-			it( 'when root element was not added as Schema.limits works fine as well', () => {
+			it( 'when root element was not added as Schema limits work fine as well', () => {
 				doc.createRoot( 'paragraph', 'paragraphRoot' );
 
 				setData(
