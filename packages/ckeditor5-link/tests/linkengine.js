@@ -34,9 +34,9 @@ describe( 'LinkEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.check( { name: '$inline', attributes: 'linkHref', inside: '$root' } ) ).to.be.false;
-		expect( model.schema.check( { name: '$inline', attributes: 'linkHref', inside: '$block' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$inline', attributes: 'linkHref', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$text', attributes: 'linkHref', inside: '$root' } ) ).to.be.false;
+		expect( model.schema.check( { name: '$text', attributes: 'linkHref', inside: '$block' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$text', attributes: 'linkHref', inside: '$clipboardHolder' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -108,7 +108,7 @@ describe( 'LinkEngine', () => {
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/121
 		it( 'should should set priority for `linkHref` higher than all other attribute elements', () => {
-			model.schema.allow( { name: '$inline', attributes: [ 'foo' ], inside: '$block' } );
+			model.schema.extned( '$text', { allowAttributes: 'foo' } );
 
 			buildModelConverter().for( editor.data.modelToView )
 				.fromAttribute( 'foo' )

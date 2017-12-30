@@ -16,8 +16,8 @@ describe( 'findLinkRange', () => {
 		model = new Model();
 		document = model.document;
 		root = document.createRoot();
-		model.schema.allow( { name: '$text', inside: '$root' } );
-		model.schema.registerItem( 'p', '$block' );
+		model.schema.extend( '$text', { allowIn: '$root' } );
+		model.schema.register( 'p', { inheritAllFrom: '$block' } );
 	} );
 
 	it( 'should find link range searching from the center of the link #1', () => {

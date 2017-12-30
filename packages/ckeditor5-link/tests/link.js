@@ -594,7 +594,7 @@ describe( 'Link', () => {
 
 			beforeEach( () => {
 				observer = editor.editing.view.getObserver( ClickObserver );
-				editor.model.schema.allow( { name: '$text', inside: '$root' } );
+				editor.model.schema.extend( '$text', { allowIn: '$root' } );
 
 				spy = testUtils.sinon.stub( linkFeature, '_showPanel' ).returns( {} );
 			} );
