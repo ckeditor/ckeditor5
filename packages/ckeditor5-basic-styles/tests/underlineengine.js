@@ -35,9 +35,9 @@ describe( 'UnderlineEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.check( { name: '$text', attributes: 'underline', inside: '$root' } ) ).to.be.false;
-		expect( model.schema.check( { name: '$text', attributes: 'underline', inside: '$block' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$text', attributes: 'underline', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$text' ], 'underline' ) ).to.be.false;
+		expect( model.schema.checkAttribute( [ '$block', '$text' ], 'underline' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'underline' ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {

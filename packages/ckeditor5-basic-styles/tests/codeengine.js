@@ -35,9 +35,9 @@ describe( 'CodeEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.check( { name: '$text', attributes: 'code', inside: '$root' } ) ).to.be.false;
-		expect( model.schema.check( { name: '$text', attributes: 'code', inside: '$block' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$text', attributes: 'code', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$text' ], 'code' ) ).to.be.false;
+		expect( model.schema.checkAttribute( [ '$block', '$text' ], 'code' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'code' ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
