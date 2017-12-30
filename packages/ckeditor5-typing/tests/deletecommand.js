@@ -244,7 +244,7 @@ describe( 'DeleteCommand', () => {
 		} );
 
 		it( 'does not replace an element if a paragraph is not allowed in current position', () => {
-			model.schema.dis.extend( 'paragraph', { allowIn: '$root' } );
+			model.schema.xdisallow( 'paragraph', { allowIn: '$root' } );
 
 			setData( model, '<heading1>[]</heading1>' );
 
