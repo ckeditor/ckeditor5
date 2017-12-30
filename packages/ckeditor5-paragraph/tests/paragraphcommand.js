@@ -101,7 +101,7 @@ describe( 'ParagraphCommand', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-paragraph/issues/24
-		it( 'should not rename blocks which cannot become paragraphs', () => {
+		it( 'should not rename blocks which cannot become paragraphs (paragraph is not allowed in their parent)', () => {
 			model.schema.register( 'restricted' );
 			model.schema.extend( 'restricted', { allowIn: '$root' } );
 			model.schema.xdisallow( 'paragraph', { allowIn: 'restricted' } );
@@ -121,6 +121,29 @@ describe( 'ParagraphCommand', () => {
 			expect( getData( model ) ).to.equal(
 				'<paragraph>a[bc</paragraph>' +
 				'<restricted><fooBlock></fooBlock></restricted>' +
+				'<paragraph>de]f</paragraph>'
+			);
+		} );
+
+		it( 'should not rename blocks which cannot become paragraphs (block is an object)', () => {
+			model.schema.register( 'image', {
+				isBlock: true,
+				isObject: true,
+				allowIn: '$root'
+			} );
+
+			setData(
+				model,
+				'<heading1>a[bc</heading1>' +
+				'<image></image>' +
+				'<heading1>de]f</heading1>'
+			);
+
+			command.execute();
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>a[bc</paragraph>' +
+				'<image></image>' +
 				'<paragraph>de]f</paragraph>'
 			);
 		} );

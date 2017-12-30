@@ -68,5 +68,5 @@ export default class ParagraphCommand extends Command {
 // @param {module:engine/model/schema~Schema} schema The schema of the document.
 // @returns {Boolean}
 function checkCanBecomeParagraph( block, schema ) {
-	return schema.checkChild( block.parent, 'paragraph' );
+	return schema.checkChild( block.parent, 'paragraph' ) && !schema.isObject( block );
 }
