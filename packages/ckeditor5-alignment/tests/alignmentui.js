@@ -12,7 +12,7 @@ import alignLeftIcon from '../theme/icons/align-left.svg';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-describe( 'Alignment', () => {
+describe( 'Alignment UI', () => {
 	let editor, command, element, button;
 
 	beforeEach( () => {

@@ -18,7 +18,7 @@ import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'Alignment', () => {
+describe( 'Alignment integration', () => {
 	let editor, model, element;
 
 	beforeEach( () => {
