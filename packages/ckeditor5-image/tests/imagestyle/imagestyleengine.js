@@ -84,7 +84,7 @@ describe( 'ImageStyleEngine', () => {
 		it( 'should set schema rules for image style', () => {
 			const schema = model.schema;
 
-			expect( schema.check( { name: 'image', attributes: [ 'imageStyle', 'src' ], inside: '$root' } ) ).to.be.true;
+			expect( schema.checkAttribute( [ '$root', 'image' ], 'imageStyle' ) ).to.be.true;
 		} );
 
 		it( 'should register separate command for each style', () => {

@@ -57,22 +57,24 @@ describe( 'ImageCaptionEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.check( { name: 'caption', iniside: 'image' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$text', inside: 'caption' } ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'image' ], 'caption' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'image', 'caption' ], '$text' ) ).to.be.true;
 		expect( model.schema.isLimit( 'caption' ) ).to.be.true;
+
+		expect( model.schema.checkChild( [ '$root', 'image', 'caption' ], 'caption' ) ).to.be.false;
 	} );
 
 	describe( 'data pipeline', () => {
 		describe( 'view to model', () => {
 			it( 'should convert figcaption inside image figure', () => {
-				editor.setData( '<figure class="image"><img src="foo.png"/><figcaption>foo bar</figcaption></figure>' );
+				editor.setData( '<figure class="image"><img src="foo.png" /><figcaption>foo bar</figcaption></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<image src="foo.png"><caption>foo bar</caption></image>' );
 			} );
 
 			it( 'should add empty caption if there is no figcaption', () => {
-				editor.setData( '<figure class="image"><img src="foo.png"/></figure>' );
+				editor.setData( '<figure class="image"><img src="foo.png" /></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<image src="foo.png"><caption></caption></image>' );

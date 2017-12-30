@@ -31,7 +31,7 @@ export function viewFigureToModel() {
 		}
 
 		// Do not convert if image cannot be placed in model at this context.
-		if ( !conversionApi.schema.check( { name: 'image', inside: data.context, attributes: 'src' } ) ) {
+		if ( !conversionApi.schema.checkChild( data.context, 'image' ) ) {
 			return;
 		}
 
@@ -197,16 +197,8 @@ function _findAllowedContext( modelData, context, schema ) {
 	// Copy context array so we won't modify original array.
 	context = context.slice();
 
-	// Prepare schema query to check with schema.
-	// Since `inside` property is passed as reference to `context` variable, we don't need to modify `schemaQuery`.
-	const schemaQuery = {
-		name: modelData.name,
-		attributes: modelData.attributes,
-		inside: context
-	};
-
 	// Try out all possible contexts.
-	while ( context.length && !schema.check( schemaQuery ) ) {
+	while ( context.length && !schema.checkChild( context, modelData.name ) ) {
 		const parent = context.pop();
 		const parentName = typeof parent === 'string' ? parent : parent.name;
 

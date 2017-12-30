@@ -198,7 +198,7 @@ describe( 'Image converters', () => {
 
 			dispatcher = editor.data.viewToModel;
 			dispatcher.on( 'element:img', ( evt, data, consumable ) => {
-				if ( !schema.check( { name: 'image', attributes: [ 'src' ], inside: data.context } ) ) {
+				if ( !schema.checkChild( data.context, 'image' ) ) {
 					return;
 				}
 

@@ -80,10 +80,7 @@ function viewToModelImageStyle( style, data, consumable, conversionApi ) {
 		return;
 	}
 
-	// Check if image element can be placed in current context wit additional attribute.
-	const attributes = [ ...modelImageElement.getAttributeKeys(), 'imageStyle' ];
-
-	if ( !conversionApi.schema.check( { name: 'image', inside: data.context, attributes } ) ) {
+	if ( !conversionApi.schema.checkAttribute( [ ...data.context, 'image' ], 'imageStyle' ) ) {
 		return;
 	}
 

@@ -33,8 +33,15 @@ describe( 'ImageEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.check( { name: 'image', attributes: [ 'src', 'alt' ], inside: '$root' } ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'image' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'src' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'alt' ) ).to.be.true;
+
 		expect( model.schema.isObject( 'image' ) ).to.be.true;
+
+		expect( model.schema.checkChild( [ '$root', 'image' ], 'image' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'image' ], '$text' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', '$block' ], 'image' ) ).to.be.false;
 	} );
 
 	describe( 'conversion in data pipeline', () => {
