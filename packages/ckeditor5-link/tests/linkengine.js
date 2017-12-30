@@ -34,9 +34,9 @@ describe( 'LinkEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.check( { name: '$text', attributes: 'linkHref', inside: '$root' } ) ).to.be.false;
-		expect( model.schema.check( { name: '$text', attributes: 'linkHref', inside: '$block' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$text', attributes: 'linkHref', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$text' ], 'linkHref' ) ).to.be.false;
+		expect( model.schema.checkAttribute( [ '$block', '$text' ], 'linkHref' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'linkHref' ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
