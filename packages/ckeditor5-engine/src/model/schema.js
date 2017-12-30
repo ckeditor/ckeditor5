@@ -7,6 +7,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
+import Range from './range';
+
 /**
  * @module engine/model/schema
  */
@@ -66,17 +68,17 @@ export default class Schema {
 	}
 
 	/**
-	 * @param {module:engine/model/node~Node|String} item
+	 * @param {module:engine/model/item~Item|SchemaContextItem|String} item
 	 */
 	getRule( item ) {
 		let itemName;
 
 		if ( typeof item == 'string' ) {
 			itemName = item;
-		} else if ( item.is && item.is( 'text' ) ) {
+		} else if ( item.is && ( item.is( 'text' ) || item.is( 'textProxy' ) ) ) {
 			itemName = '$text';
 		}
-		// Element or context item.
+		// Element or SchemaContextItem.
 		else {
 			itemName = item.name;
 		}
@@ -161,6 +163,74 @@ export default class Schema {
 		}
 
 		return element;
+	}
+
+	/**
+	 * Checks whether the attribute is allowed in selection:
+	 *
+	 * * if the selection is not collapsed, then checks if the attribute is allowed on any of nodes in that range,
+	 * * if the selection is collapsed, then checks if on the selection position there's a text with the
+	 * specified attribute allowed.
+	 *
+	 * @param {module:engine/model/selection~Selection} selection Selection which will be checked.
+	 * @param {String} attribute The name of the attribute to check.
+	 * @returns {Boolean}
+	 */
+	checkAttributeInSelection( selection, attribute ) {
+		if ( selection.isCollapsed ) {
+			// Check whether schema allows for a text with the attribute in the selection.
+			return this.checkAttribute( [ ...selection.getFirstPosition().getAncestors(), '$text' ], attribute );
+		} else {
+			const ranges = selection.getRanges();
+
+			// For all ranges, check nodes in them until you find a node that is allowed to have the attribute.
+			for ( const range of ranges ) {
+				for ( const value of range ) {
+					if ( this.checkAttribute( value.item, attribute ) ) {
+						// If we found a node that is allowed to have the attribute, return true.
+						return true;
+					}
+				}
+			}
+		}
+
+		// If we haven't found such node, return false.
+		return false;
+	}
+
+	/**
+	 * Transforms the given set ranges into a set of ranges where the given attribute is allowed (and can be applied).
+	 *
+	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to be validated.
+	 * @param {String} attribute The name of the attribute to check.
+	 * @returns {Array.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
+	 */
+	getValidRanges( ranges, attribute ) {
+		const validRanges = [];
+
+		for ( const range of ranges ) {
+			let last = range.start;
+			let from = range.start;
+			const to = range.end;
+
+			for ( const value of range.getWalker() ) {
+				if ( !this.checkAttribute( value.item, attribute ) ) {
+					if ( !from.isEqual( last ) ) {
+						validRanges.push( new Range( from, last ) );
+					}
+
+					from = value.nextPosition;
+				}
+
+				last = value.nextPosition;
+			}
+
+			if ( from && !from.isEqual( to ) ) {
+				validRanges.push( new Range( from, to ) );
+			}
+		}
+
+		return validRanges;
 	}
 
 	/**
@@ -443,7 +513,8 @@ function mapContextItem( ctxItem ) {
 		};
 	} else {
 		return {
-			name: ctxItem.is( 'text' ) ? '$text' : ctxItem.name,
+			// '$text' means text nodes and text proxies.
+			name: ctxItem.is( 'element' ) ? ctxItem.name : '$text',
 
 			* getAttributeKeys() {
 				yield* ctxItem.getAttributeKeys();
