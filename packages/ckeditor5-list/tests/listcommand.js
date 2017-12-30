@@ -252,7 +252,7 @@ describe( 'ListCommand', () => {
 				} );
 
 				// https://github.com/ckeditor/ckeditor5-list/issues/62
-				it( 'should not rename blocks which cannot become listItems', () => {
+				it( 'should not rename blocks which cannot become listItems (list item is not allowed in their parent)', () => {
 					model.schema.register( 'restricted' );
 					model.schema.extend( 'restricted', { allowIn: '$root' } );
 					model.schema.xdisallow( 'paragraph', { allowIn: 'restricted' } );
@@ -272,6 +272,29 @@ describe( 'ListCommand', () => {
 					expect( getData( model ) ).to.equal(
 						'<listItem indent="0" type="bulleted">a[bc</listItem>' +
 						'<restricted><fooBlock></fooBlock></restricted>' +
+						'<listItem indent="0" type="bulleted">de]f</listItem>'
+					);
+				} );
+
+				it( 'should not rename blocks which cannot become listItems (block is an object)', () => {
+					model.schema.register( 'image', {
+						isBlock: true,
+						isObject: true,
+						allowIn: '$root'
+					} );
+
+					setData(
+						model,
+						'<paragraph>a[bc</paragraph>' +
+						'<image></image>' +
+						'<paragraph>de]f</paragraph>'
+					);
+
+					command.execute();
+
+					expect( getData( model ) ).to.equal(
+						'<listItem indent="0" type="bulleted">a[bc</listItem>' +
+						'<image></image>' +
 						'<listItem indent="0" type="bulleted">de]f</listItem>'
 					);
 				} );

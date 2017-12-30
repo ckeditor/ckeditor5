@@ -307,5 +307,5 @@ function _fixType( blocks, isBackward, lowestIndent ) {
 // @param {module:engine/model/schema~Schema} schema The schema of the document.
 // @returns {Boolean}
 function checkCanBecomeListItem( block, schema ) {
-	return schema.checkChild( block.parent, 'listItem' );
+	return schema.checkChild( block.parent, 'listItem' ) && !schema.isObject( block );
 }
