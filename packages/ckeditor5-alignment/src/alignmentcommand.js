@@ -98,14 +98,7 @@ export default class AlignmentCommand extends Command {
 	 * @private
 	 */
 	_canBeAligned( block ) {
-		const schema = this.editor.model.schema;
-
-		// Check if adding alignment attribute to selected block is allowed.
-		return schema.check( {
-			name: block.name,
-			// Apparently I must pass current attributes as otherwise adding alignment on listItem will fail.
-			attributes: [ ...block.getAttributeKeys(), 'alignment' ]
-		} );
+		return this.editor.model.schema.checkAttribute( block, 'alignment' );
 	}
 
 	/**

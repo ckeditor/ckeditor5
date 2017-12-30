@@ -40,7 +40,7 @@ describe( 'AlignmentEditing', () => {
 	} );
 
 	it( 'allows for alignment in $blocks', () => {
-		expect( model.schema.check( { name: '$block', inside: '$root', attributes: 'alignment' } ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$block' ], 'alignment' ) ).to.be.true;
 	} );
 
 	describe( 'integration', () => {
@@ -56,19 +56,21 @@ describe( 'AlignmentEditing', () => {
 		} );
 
 		it( 'is allowed on paragraph', () => {
-			expect( model.schema.check( { name: 'paragraph', attributes: 'alignment' } ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'alignment' ) ).to.be.true;
 		} );
 
 		it( 'is allowed on listItem', () => {
-			expect( model.schema.check( { name: 'listItem', attributes: [ 'type', 'indent', 'alignment' ] } ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'type' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'indent' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'alignment' ) ).to.be.true;
 		} );
 
 		it( 'is allowed on heading', () => {
-			expect( model.schema.check( { name: 'heading1', attributes: 'alignment' } ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'heading1' ], 'alignment' ) ).to.be.true;
 		} );
 
 		it( 'is disallowed on caption', () => {
-			expect( model.schema.check( { name: 'caption', attributes: 'alignment' } ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', 'image', 'caption' ], 'alignment' ) ).to.be.false;
 		} );
 	} );
 
