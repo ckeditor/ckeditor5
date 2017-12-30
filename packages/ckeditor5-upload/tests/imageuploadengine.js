@@ -65,7 +65,7 @@ describe( 'ImageUploadEngine', () => {
 	} );
 
 	it( 'should register proper schema rules', () => {
-		expect( model.schema.check( { name: 'image', attributes: [ 'uploadId' ], inside: '$root' } ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
 	} );
 
 	it( 'should register imageUpload command', () => {
