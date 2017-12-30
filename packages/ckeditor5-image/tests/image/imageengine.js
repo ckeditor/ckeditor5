@@ -179,7 +179,14 @@ describe( 'ImageEngine', () => {
 				const editing = editor.editing;
 
 				model.schema.register( 'div', { inheritAllFrom: '$block' } );
-				model.schema.disallow( { name: 'image', inside: '$root', attributes: 'src' } );
+				model.schema.on( 'checkChild', ( evt, args ) => {
+					const rule = model.schema.getRule( args[ 1 ] );
+
+					if ( args[ 0 ].matchEnd( '$root' ) && rule.name == 'image' ) {
+						evt.stop();
+						evt.return = false;
+					}
+				}, { priority: 'high' } );
 
 				buildModelConverter().for( data.modelToView, editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 				buildViewConverter().for( data.viewToModel ).fromElement( 'div' ).toElement( 'div' );

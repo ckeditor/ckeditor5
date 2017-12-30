@@ -62,6 +62,9 @@ describe( 'ImageCaptionEngine', () => {
 		expect( model.schema.isLimit( 'caption' ) ).to.be.true;
 
 		expect( model.schema.checkChild( [ '$root', 'image', 'caption' ], 'caption' ) ).to.be.false;
+
+		model.schema.extend( '$block', { allowAttributes: 'aligmnent' } );
+		expect( model.schema.checkAttribute( [ '$root', 'image', 'caption' ], 'alignment' ) ).to.be.false;
 	} );
 
 	describe( 'data pipeline', () => {

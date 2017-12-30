@@ -257,7 +257,7 @@ describe( 'Image converters', () => {
 			} );
 
 			it( 'should not convert img element if allowed context is "above" limiting element #1', () => {
-				schema.extend( 'limit', { isLimit: true } );
+				schema.register( 'limit', { isLimit: true } );
 
 				const result = dispatcher.convert( viewImg, { context: [ '$root', 'limit', 'div', 'paragraph' ] } );
 
@@ -267,7 +267,7 @@ describe( 'Image converters', () => {
 			} );
 
 			it( 'should not convert img element if allowed context is "above" limiting element #2', () => {
-				schema.extend( 'limit', { isLimit: true } );
+				schema.register( 'limit', { isLimit: true } );
 
 				const result = dispatcher.convert( viewImg, { context: [ '$root', modelLimit, modelDiv, modelParagraph ] } );
 

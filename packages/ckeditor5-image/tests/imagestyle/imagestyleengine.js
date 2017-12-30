@@ -122,7 +122,13 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		it( 'should not convert from view to model if schema prevents it', () => {
-			model.schema.disallow( { name: 'image', attributes: 'imageStyle' } );
+			model.schema.on( 'checkAttribute', ( evt, args ) => {
+				if ( args[ 0 ].matchEnd( 'image' ) && args[ 1 ] == 'imageStyle' ) {
+					evt.stop();
+					evt.return = false;
+				}
+			} );
+
 			editor.setData( '<figure class="image side-class"><img src="foo.png" /></figure>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="foo.png"></image>' );

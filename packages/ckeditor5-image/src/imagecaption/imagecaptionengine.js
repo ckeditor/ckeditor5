@@ -59,10 +59,9 @@ export default class ImageCaptionEngine extends Plugin {
 		this._createCaption = captionElementCreator( viewDocument, t( 'Enter image caption' ) );
 
 		// Schema configuration.
-		schema.register( 'caption', { inheritAllFrom: '$block' } );
-		schema.extend( '$text', { allowIn: 'caption' } );
-		schema.extend( 'caption', {
+		schema.register( 'caption', {
 			allowIn: 'image',
+			allowContentOf: '$block',
 			isLimit: true
 		} );
 
