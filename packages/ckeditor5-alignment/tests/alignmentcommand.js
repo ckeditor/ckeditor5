@@ -24,9 +24,8 @@ describe( 'AlignmentCommand', () => {
 				editor.commands.add( 'alignCenter', command );
 				editor.commands.add( 'alignLeft', defaultAlignmentCommand );
 
-				model.schema.registerItem( 'paragraph', '$block' );
-
-				model.schema.allow( { name: '$block', inside: '$root', attributes: 'alignment' } );
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				model.schema.extend( '$block', { allowAttributes: 'alignment' } );
 			} );
 	} );
 
