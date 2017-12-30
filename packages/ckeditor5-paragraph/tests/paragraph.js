@@ -40,8 +40,8 @@ describe( 'Paragraph feature', () => {
 
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.isRegistered( 'paragraph' ) ).to.be.true;
-		expect( model.schema.check( { name: 'paragraph', inside: '$root' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$text', inside: 'paragraph' } ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'paragraph' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'paragraph' ], '$text' ) ).to.be.true;
 	} );
 
 	it( 'should have a static paragraphLikeElements property', () => {
@@ -431,7 +431,7 @@ describe( 'Paragraph feature', () => {
 		} );
 
 		it( 'should not fix root which does not allow paragraph', () => {
-			model.schema.dis.extend( 'paragraph', { allowIn: '$root' } );
+			model.schema.xdisallow( 'paragraph', { allowIn: '$root' } );
 
 			model.change( writer => {
 				writer.remove( ModelRange.createIn( root ) );

@@ -135,11 +135,9 @@ export default class Paragraph extends Plugin {
 			// Only empty roots are in `#_rootsToFix`. Even if root got content during `changesDone` event (because of, for example
 			// other feature), this will fire `findEmptyRoots` and remove that root from `#_rootsToFix`. So we are guaranteed
 			// to have only empty roots here.
-			const query = { name: 'paragraph', inside: [ root ] };
-			const schema = model.schema;
-
+			//
 			// If paragraph element is allowed in the root, create paragraph element.
-			if ( schema.check( query ) ) {
+			if ( model.schema.checkChild( root, 'paragraph' ) ) {
 				model.enqueueChange( batch, writer => {
 					// Remove root from `rootsToFix` here, before executing batch, to prevent infinite loops.
 					this._rootsToFix.delete( root );
@@ -297,21 +295,19 @@ function autoparagraphItems( evt, data, consumable, conversionApi ) {
 }
 
 function isParagraphable( node, context, schema, insideParagraphLikeElement ) {
-	const name = node.name || '$text';
-
 	// Node is paragraphable if it is inside paragraph like element, or...
 	// It is not allowed at this context...
-	if ( !insideParagraphLikeElement && schema.check( { name, inside: context } ) ) {
+	if ( !insideParagraphLikeElement && schema.checkChild( context, node ) ) {
 		return false;
 	}
 
 	// And paragraph is allowed in this context...
-	if ( !schema.check( { name: 'paragraph', inside: context } ) ) {
+	if ( !schema.checkChild( context, 'paragraph' ) ) {
 		return false;
 	}
 
 	// And a node would be allowed in this paragraph...
-	if ( !schema.check( { name, inside: context.concat( 'paragraph' ) } ) ) {
+	if ( !schema.checkChild( [ ...context, 'paragraph' ], node ) ) {
 		return false;
 	}
 
