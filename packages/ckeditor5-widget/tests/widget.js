@@ -30,35 +30,46 @@ describe( 'Widget', () => {
 				doc = model.document;
 				viewDocument = editor.editing.view;
 
-				model.schema.registerItem( 'widget', '$block' );
-				model.schema.objects.add( 'widget' );
-				model.schema.registerItem( 'paragraph', '$block' );
-				model.schema.registerItem( 'inline', '$inline' );
-				model.schema.objects.add( 'inline' );
-				model.schema.registerItem( 'nested' );
-				model.schema.limits.add( 'nested' );
-				model.schema.allow( { name: '$inline', inside: 'nested' } );
-				model.schema.allow( { name: 'nested', inside: 'widget' } );
-				model.schema.registerItem( 'editable' );
-				model.schema.allow( { name: '$inline', inside: 'editable' } );
-				model.schema.allow( { name: 'editable', inside: 'widget' } );
-				model.schema.allow( { name: 'editable', inside: '$root' } );
+				model.schema.register( 'widget', {
+					inheritAllFrom: '$block',
+					isObject: true
+				} );
+				model.schema.register( 'paragraph', {
+					inheritAllFrom: '$block',
+					allowIn: 'div'
+				} );
+				model.schema.register( 'inline', {
+					allowWhere: '$text',
+					isObject: true
+				} );
+				model.schema.register( 'nested', {
+					allowIn: 'widget',
+					isLimit: true
+				} );
+				model.schema.extend( '$text', {
+					allowIn: [ 'nested', 'editable' ]
+				} );
+				model.schema.register( 'editable', {
+					allowIn: [ 'widget', '$root' ]
+				} );
 
 				// Image feature.
-				model.schema.registerItem( 'image' );
-				model.schema.allow( { name: 'image', inside: '$root' } );
-				model.schema.objects.add( 'image' );
+				model.schema.register( 'image', {
+					allowIn: '$root',
+					isObject: true,
+					isBlock: true
+				} );
 
 				// Block-quote feature.
-				model.schema.registerItem( 'blockQuote' );
-				model.schema.allow( { name: 'blockQuote', inside: '$root' } );
-				model.schema.allow( { name: '$block', inside: 'blockQuote' } );
+				model.schema.register( 'blockQuote', {
+					allowIn: '$root'
+				} );
+				model.schema.extend( '$block', { allowIn: 'blockQuote' } );
 
 				// Div element which helps nesting elements.
-				model.schema.registerItem( 'div' );
-				model.schema.allow( { name: 'div', inside: 'blockQuote' } );
-				model.schema.allow( { name: 'div', inside: 'div' } );
-				model.schema.allow( { name: 'paragraph', inside: 'div' } );
+				model.schema.register( 'div', {
+					allowIn: [ 'blockQuote', 'div' ]
+				} );
 
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'paragraph' )
