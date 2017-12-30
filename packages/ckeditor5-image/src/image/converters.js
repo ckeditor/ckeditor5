@@ -211,7 +211,7 @@ function _findAllowedContext( modelData, context, schema ) {
 		const parentName = typeof parent === 'string' ? parent : parent.name;
 
 		// Do not try to autohoist "above" limiting element.
-		if ( schema.limits.has( parentName ) ) {
+		if ( schema.isLimit( parentName ) ) {
 			return null;
 		}
 	}

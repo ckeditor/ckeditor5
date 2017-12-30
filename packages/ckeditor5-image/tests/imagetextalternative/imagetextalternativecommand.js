@@ -16,12 +16,14 @@ describe( 'ImageTextAlternativeCommand', () => {
 				model = newEditor.model;
 				command = new ImageTextAlternativeCommand( newEditor );
 
-				model.schema.registerItem( 'p', '$block' );
+				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 
-				model.schema.registerItem( 'image' );
-				model.schema.requireAttributes( 'image', [ 'src' ] );
-				model.schema.allow( { name: 'image', attributes: [ 'alt', 'src' ], inside: '$root' } );
-				model.schema.objects.add( 'image' );
+				model.schema.register( 'image', {
+					allowWhere: '$block',
+					isObject: true,
+					isBlock: true,
+					alllowAttributes: [ 'alt', 'src' ]
+				} );
 			} );
 	} );
 

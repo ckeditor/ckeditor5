@@ -41,10 +41,12 @@ export default class ImageEngine extends Plugin {
 		const t = editor.t;
 
 		// Configure schema.
-		schema.registerItem( 'image' );
-		schema.requireAttributes( 'image', [ 'src' ] );
-		schema.allow( { name: 'image', attributes: [ 'alt', 'src', 'srcset' ], inside: '$root' } );
-		schema.objects.add( 'image' );
+		schema.register( 'image', {
+			isObject: true,
+			isBlock: true,
+			allowWhere: '$block',
+			allowAttributes: [ 'alt', 'src', 'srcset' ]
+		} );
 
 		// Build converter from model to view for data pipeline.
 		buildModelConverter().for( data.modelToView )

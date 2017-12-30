@@ -34,10 +34,12 @@ describe( 'Image converters', () => {
 
 				const schema = model.schema;
 
-				schema.registerItem( 'image' );
-				schema.requireAttributes( 'image', [ 'src' ] );
-				schema.allow( { name: 'image', attributes: [ 'alt', 'src' ], inside: '$root' } );
-				schema.objects.add( 'image' );
+				schema.register( 'image', {
+					allowWhere: '$block',
+					allowAttributes: [ 'alt', 'src' ],
+					isObject: true,
+					isBlock: true
+				} );
 
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'image' )
@@ -59,7 +61,7 @@ describe( 'Image converters', () => {
 			imgConverterCalled = false;
 
 			schema = model.schema;
-			schema.allow( { name: '$text', inside: 'image' } );
+			schema.extend( '$text', { allowIn: 'image' } );
 
 			dispatcher = editor.data.viewToModel;
 			dispatcher.on( 'element:figure', viewFigureToModel() );
@@ -83,10 +85,10 @@ describe( 'Image converters', () => {
 			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'foo' ).toElement( 'foo' );
 			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'bar' ).toElement( 'bar' );
 
-			schema.registerItem( 'foo' );
-			schema.registerItem( 'bar' );
+			schema.register( 'foo' );
+			schema.register( 'bar' );
 
-			schema.allow( { name: 'foo', inside: 'image' } );
+			schema.extend( 'foo', { allowIn: 'image' } );
 
 			editor.setData( '<figure class="image">x<img src="foo.png" />y<foo></foo><bar></bar></figure>' );
 
@@ -255,7 +257,7 @@ describe( 'Image converters', () => {
 			} );
 
 			it( 'should not convert img element if allowed context is "above" limiting element #1', () => {
-				schema.limits.add( 'limit' );
+				schema.extend( 'limit', { isLimit: true } );
 
 				const result = dispatcher.convert( viewImg, { context: [ '$root', 'limit', 'div', 'paragraph' ] } );
 
@@ -265,7 +267,7 @@ describe( 'Image converters', () => {
 			} );
 
 			it( 'should not convert img element if allowed context is "above" limiting element #2', () => {
-				schema.limits.add( 'limit' );
+				schema.extend( 'limit', { isLimit: true } );
 
 				const result = dispatcher.convert( viewImg, { context: [ '$root', modelLimit, modelDiv, modelParagraph ] } );
 
@@ -277,7 +279,7 @@ describe( 'Image converters', () => {
 
 		describe( 'hoistImageThroughElement', () => {
 			it( 'should hoist img element that was converted by convertHoistableImage', () => {
-				schema.registerItem( 'div', '$block' );
+				schema.register( 'div', { inheritAllFrom: '$block' } );
 
 				buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
@@ -301,7 +303,7 @@ describe( 'Image converters', () => {
 			it( 'should work fine with elements that are converted to document fragments', () => {
 				// The example here is <p> that contains some text and an <img> and is converted in $root > div context.
 				// This way we enable autohoisting for <img> and test how it will work when <p> is converted to model document fragment.
-				schema.registerItem( 'div', '$block' );
+				schema.register( 'div', { inheritAllFrom: '$block' } );
 
 				dispatcher.on( 'element:p', convertToModelFragment() );
 				dispatcher.on( 'element:p', hoistImageThroughElement, { priority: 'low' } );

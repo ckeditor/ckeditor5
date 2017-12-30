@@ -35,10 +35,10 @@ describe( 'ImageCaptionEngine', () => {
 				model = editor.model;
 				doc = model.document;
 				viewDocument = editor.editing.view;
-				model.schema.registerItem( 'widget' );
-				model.schema.allow( { name: 'widget', inside: '$root' } );
-				model.schema.allow( { name: 'caption', inside: 'widget' } );
-				model.schema.allow( { name: '$inline', inside: 'widget' } );
+				model.schema.register( 'widget' );
+				model.schema.extend( 'widget', { allowIn: '$root' } );
+				model.schema.extend( 'caption', { allowIn: 'widget' } );
+				model.schema.extend( '$text', { allowIn: 'widget' } );
 
 				buildViewConverter()
 					.for( editor.data.viewToModel )
@@ -58,9 +58,8 @@ describe( 'ImageCaptionEngine', () => {
 
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.check( { name: 'caption', iniside: 'image' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$inline', inside: 'caption' } ) ).to.be.true;
-		expect( model.schema.itemExtends( 'caption', '$block' ) ).to.be.true;
-		expect( model.schema.limits.has( 'caption' ) );
+		expect( model.schema.check( { name: '$text', inside: 'caption' } ) ).to.be.true;
+		expect( model.schema.isLimit( 'caption' ) ).to.be.true;
 	} );
 
 	describe( 'data pipeline', () => {
