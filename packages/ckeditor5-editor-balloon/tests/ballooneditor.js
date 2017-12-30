@@ -217,9 +217,9 @@ describe( 'BalloonEditor', () => {
 
 					const schema = editor.model.schema;
 
-					schema.registerItem( 'heading' );
-					schema.allow( { name: 'heading', inside: '$root' } );
-					schema.allow( { name: '$text', inside: 'heading' } );
+					schema.register( 'heading' );
+					schema.extend( 'heading', { allowIn: '$root' } );
+					schema.extend( '$text', { allowIn: 'heading' } );
 
 					buildModelConverter().for( editor.data.modelToView )
 						.fromElement( 'heading' )
