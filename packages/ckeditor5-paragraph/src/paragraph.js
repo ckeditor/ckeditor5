@@ -50,7 +50,7 @@ export default class Paragraph extends Plugin {
 		editor.commands.add( 'paragraph', new ParagraphCommand( editor ) );
 
 		// Schema.
-		model.schema.registerItem( 'paragraph', '$block' );
+		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )

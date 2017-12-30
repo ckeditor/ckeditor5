@@ -39,9 +39,9 @@ describe( 'Paragraph feature', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.hasItem( 'paragraph' ) ).to.be.true;
+		expect( model.schema.isRegistered( 'paragraph' ) ).to.be.true;
 		expect( model.schema.check( { name: 'paragraph', inside: '$root' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$inline', inside: 'paragraph' } ) ).to.be.true;
+		expect( model.schema.check( { name: '$text', inside: 'paragraph' } ) ).to.be.true;
 	} );
 
 	it( 'should have a static paragraphLikeElements property', () => {
@@ -79,8 +79,8 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should autoparagraph any inline element', () => {
-				editor.model.schema.registerItem( 'span', '$inline' );
-				editor.model.schema.allow( { name: '$text', inside: '$inline' } );
+				editor.model.schema.register( 'span', { allowWhere: '$text' } );
+				editor.model.schema.extend( '$text', { allowIn: 'span' } );
 
 				buildModelConverter().for( editor.editing.modelToView, editor.data.modelToView ).fromElement( 'span' ).toElement( 'span' );
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'span' ).toElement( 'span' );
@@ -99,7 +99,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should not autoparagraph text (in a context which does not allow paragraphs', () => {
-				model.schema.registerItem( 'specialRoot' );
+				model.schema.register( 'specialRoot' );
 
 				const modelFragment = editor.data.parse( 'foo', 'specialRoot' );
 
@@ -108,7 +108,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should autoparagraph text next to allowed element', () => {
-				model.schema.registerItem( 'heading1', '$block' );
+				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'h1' ).toElement( 'heading1' );
 
 				const modelFragment = editor.data.parse( '<h1>foo</h1>bar<p>bom</p>' );
@@ -132,9 +132,9 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should autoparagraph text inside converted container', () => {
-				model.schema.registerItem( 'div' );
-				model.schema.allow( { name: 'div', inside: '$root' } );
-				model.schema.allow( { name: 'paragraph', inside: 'div' } );
+				model.schema.register( 'div' );
+				model.schema.extend( 'div', { allowIn: '$root' } );
+				model.schema.extend( 'paragraph', { allowIn: 'div' } );
 
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 
@@ -148,7 +148,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should autoparagraph text inside disallowed element next to allowed element', () => {
-				model.schema.registerItem( 'heading1', '$block' );
+				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'h1' ).toElement( 'heading1' );
 
 				const modelFragment = editor.data.parse( '<div><h1>foo</h1>bar</div>' );
@@ -158,7 +158,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should not autoparagraph text in disallowed element', () => {
-				model.schema.registerItem( 'heading1', '$block' );
+				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'h1' ).toElement( 'heading1' );
 
 				const modelFragment = editor.data.parse( '<h1><b>foo</b>bar</h1>' );
@@ -196,7 +196,8 @@ describe( 'Paragraph feature', () => {
 
 			describe( 'should not strip attribute elements when autoparagraphing texts', () => {
 				beforeEach( () => {
-					model.schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
+					model.schema.extend( '$text', { allowAttributes: 'bold' } );
+
 					buildViewConverter().for( editor.data.viewToModel )
 						.fromElement( 'b' )
 						.toAttribute( 'bold', true );
@@ -209,20 +210,19 @@ describe( 'Paragraph feature', () => {
 				} );
 
 				it( 'inside converted element', () => {
-					model.schema.registerItem( 'blockquote' );
-					model.schema.allow( { name: 'blockquote', inside: '$root' } );
-					model.schema.allow( { name: '$block', inside: 'blockquote' } );
+					model.schema.register( 'blockQuote', { allowIn: '$root' } );
+					model.schema.extend( '$block', { allowIn: 'blockQuote' } );
 
 					buildModelConverter().for( editor.editing.modelToView, editor.data.modelToView )
-						.fromElement( 'blockquote' )
-						.toElement( 'blockquote' );
+						.fromElement( 'blockQuote' )
+						.toElement( 'blockQuote' );
 
-					buildViewConverter().for( editor.data.viewToModel ).fromElement( 'blockquote' ).toElement( 'blockquote' );
+					buildViewConverter().for( editor.data.viewToModel ).fromElement( 'blockQuote' ).toElement( 'blockQuote' );
 
-					const modelFragment = editor.data.parse( '<blockquote>foo<b>bar</b>bom</blockquote>' );
+					const modelFragment = editor.data.parse( '<blockQuote>foo<b>bar</b>bom</blockQuote>' );
 
 					expect( stringifyModel( modelFragment ) )
-						.to.equal( '<blockquote><paragraph>foo<$text bold="true">bar</$text>bom</paragraph></blockquote>' );
+						.to.equal( '<blockQuote><paragraph>foo<$text bold="true">bar</$text>bom</paragraph></blockQuote>' );
 				} );
 
 				it( 'inside paragraph-like element', () => {
@@ -250,10 +250,10 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should not convert h1+h2 (in a context which does not allow paragraphs)', () => {
-				model.schema.registerItem( 'div' );
-				model.schema.registerItem( 'specialRoot' );
-				model.schema.allow( { name: 'div', inside: 'specialRoot' } );
-				model.schema.allow( { name: '$text', inside: 'div' } );
+				model.schema.register( 'div' );
+				model.schema.register( 'specialRoot' );
+				model.schema.extend( 'div', { allowIn: 'specialRoot' } );
+				model.schema.extend( '$text', { allowIn: 'div' } );
 
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 
@@ -329,9 +329,9 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should convert li inside converted container', () => {
-				model.schema.registerItem( 'div' );
-				model.schema.allow( { name: 'div', inside: '$root' } );
-				model.schema.allow( { name: 'paragraph', inside: 'div' } );
+				model.schema.register( 'div' );
+				model.schema.extend( 'div', { allowIn: '$root' } );
+				model.schema.extend( 'paragraph', { allowIn: 'div' } );
 
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 
@@ -406,7 +406,7 @@ describe( 'Paragraph feature', () => {
 
 		it( 'should not fix root if it got content during changesDone event', () => {
 			// "Autoheading feature".
-			model.schema.registerItem( 'heading', '$block' );
+			model.schema.register( 'heading', { inheritAllFrom: '$block' } );
 
 			buildModelConverter().for( editor.editing.modelToView, editor.data.modelToView )
 				.fromElement( 'heading' )
@@ -431,7 +431,7 @@ describe( 'Paragraph feature', () => {
 		} );
 
 		it( 'should not fix root which does not allow paragraph', () => {
-			model.schema.disallow( { name: 'paragraph', inside: '$root' } );
+			model.schema.dis.extend( 'paragraph', { allowIn: '$root' } );
 
 			model.change( writer => {
 				writer.remove( ModelRange.createIn( root ) );
