@@ -12,6 +12,8 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
 testUtils.createSinonSandbox();
 
 describe( 'Strikethrough', () => {
@@ -23,7 +25,7 @@ describe( 'Strikethrough', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Strikethrough ]
+				plugins: [ Paragraph, Strikethrough ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -65,14 +67,13 @@ describe( 'Strikethrough', () => {
 		const command = editor.commands.get( 'strikethrough' );
 
 		expect( strikeView.isOn ).to.be.false;
-
-		expect( strikeView.isEnabled ).to.be.false;
+		expect( strikeView.isEnabled ).to.be.true;
 
 		command.value = true;
 		expect( strikeView.isOn ).to.be.true;
 
-		command.isEnabled = true;
-		expect( strikeView.isEnabled ).to.be.true;
+		command.isEnabled = false;
+		expect( strikeView.isEnabled ).to.be.false;
 	} );
 
 	it( 'should set keystroke in the model', () => {

@@ -12,6 +12,8 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
 testUtils.createSinonSandbox();
 
 describe( 'Bold', () => {
@@ -23,7 +25,7 @@ describe( 'Bold', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Bold ]
+				plugins: [ Paragraph, Bold ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -65,14 +67,13 @@ describe( 'Bold', () => {
 		const command = editor.commands.get( 'bold' );
 
 		expect( boldView.isOn ).to.be.false;
-
-		expect( boldView.isEnabled ).to.be.false;
+		expect( boldView.isEnabled ).to.be.true;
 
 		command.value = true;
 		expect( boldView.isOn ).to.be.true;
 
-		command.isEnabled = true;
-		expect( boldView.isEnabled ).to.be.true;
+		command.isEnabled = false;
+		expect( boldView.isEnabled ).to.be.false;
 	} );
 
 	it( 'should set keystroke in the model', () => {

@@ -29,18 +29,20 @@ describe( 'AttributeCommand', () => {
 				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 				model.schema.register( 'h1', { inheritAllFrom: '$block' } );
 				model.schema.register( 'img', {
-					allowWhere: '$block',
+					allowWhere: [ '$block', '$text' ],
 					isObject: true
 				} );
 
-				// TODO the following rules are odd
+				model.schema.on( 'checkAttribute', ( evt, args ) => {
+					const ctx = args[ 0 ];
+					const attributeName = args[ 1 ];
 
-				// Bold text is allowed only in P.
-				// model.schema.xallow( { name: '$text', attributes: 'bold', inside: 'p' } );
-				// model.schema.xallow( { name: 'p', attributes: 'bold', inside: '$root' } );
-
-				// Disallow bold on image.
-				// model.schema.xdisallow( { name: 'img', attributes: 'bold', inside: '$root' } );
+					// Allow 'bold' on p>$text.
+					if ( ctx.matchEnd( 'p $text' ) && attributeName == 'bold' ) {
+						evt.stop();
+						evt.return = true;
+					}
+				}, { priority: 'high' } );
 			} );
 	} );
 
@@ -69,12 +71,15 @@ describe( 'AttributeCommand', () => {
 
 		// See https://github.com/ckeditor/ckeditor5-core/issues/73#issuecomment-311572827.
 		it( 'is false when selection contains object with nested editable', () => {
-			model.schema.register( 'caption', { inheritAllFrom: '$block' } );
+			model.schema.register( 'caption', {
+				allowContentOf: '$block',
+				allowIn: 'img',
+				isLimit: true
+			} );
 			model.schema.extend( '$text', {
 				allowIn: 'caption',
 				allowAttributes: 'bold'
 			} );
-			model.schema.extend( 'caption', { allowIn: 'img' } );
 
 			setData( model, '<p>[<img><caption>Some caption inside the image.</caption></img>]</p>' );
 
@@ -94,7 +99,6 @@ describe( 'AttributeCommand', () => {
 
 		beforeEach( () => {
 			model.schema.register( 'x', { inheritAllFrom: '$block' } );
-			model.schema.disallow( { name: '$text', inside: 'x', attributes: 'link' } );
 		} );
 
 		describe( 'when selection is collapsed', () => {
