@@ -96,20 +96,13 @@ describe( 'Pasting – integration', () => {
 					pasteHtml( editor, '<blockquote>x <strong>bold</strong> <i>italic</i> <a href="x">link</a> y</blockquote>' );
 
 					expect( getData( editor.model ) ).to.equal(
-						'<blockQuote><paragraph>x bold italic link y[]</paragraph></blockQuote>'
+						'<blockQuote>' +
+							'<paragraph>' +
+								'x <$text bold="true">bold</$text> <$text italic="true">italic</$text> ' +
+								'<$text linkHref="x">link</$text> y[]' +
+							'</paragraph>' +
+						'</blockQuote>'
 					);
-
-					// The expected result would be this:
-					//
-					// '<blockQuote>' +
-					// 	'<paragraph>' +
-					// 		'x <$text bold="true">bold</$text> <$text italic="true">italic</$text> ' +
-					// 		'<$text linkHref="x">link</$text> y[]' +
-					// 	'</paragraph>' +
-					// '</blockQuote>'
-					//
-					// See https://github.com/ckeditor/ckeditor5/issues/477#issuecomment-310428963.
-					// Although, this may be a deeper problem with ckeditor5-paragraph's wildcard conversion.
 
 					return editor.destroy();
 				} );
