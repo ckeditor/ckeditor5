@@ -418,6 +418,11 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'always returns $root element if any other limit was not defined', () => {
+			schema.extend( '$root', {
+				isLimit: false
+			} );
+			expect( schema.isLimit( '$root' ) ).to.be.false;
+
 			setData( model, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
 			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
 		} );
