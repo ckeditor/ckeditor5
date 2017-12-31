@@ -102,12 +102,21 @@ describe( 'ParagraphCommand', () => {
 
 		// https://github.com/ckeditor/ckeditor5-paragraph/issues/24
 		it( 'should not rename blocks which cannot become paragraphs (paragraph is not allowed in their parent)', () => {
-			model.schema.register( 'restricted' );
-			model.schema.extend( 'restricted', { allowIn: '$root' } );
-			model.schema.xdisallow( 'paragraph', { allowIn: 'restricted' } );
+			model.schema.register( 'restricted', { allowIn: '$root' } );
 
-			model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'fooBlock', { allowIn: 'restricted' } );
+			model.schema.register( 'fooBlock', {
+				inheritAllFrom: '$block',
+				allowIn: 'restricted'
+			} );
+
+			model.schema.on( 'checkChild', ( evt, args ) => {
+				const rule = model.schema.getRule( args[ 1 ] );
+
+				if ( args[ 0 ].matchEnd( 'restricted' ) && rule.name == 'paragraph' ) {
+					evt.stop();
+					evt.return = false;
+				}
+			} );
 
 			setData(
 				model,

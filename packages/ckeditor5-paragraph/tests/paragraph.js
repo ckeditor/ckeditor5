@@ -168,7 +168,14 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should not fail when text is not allowed in paragraph', () => {
-				model.schema.disallow( { name: '$text', inside: [ '$root', 'paragraph' ] } );
+				model.schema.on( 'checkChild', ( evt, args ) => {
+					const rule = model.schema.getRule( args[ 1 ] );
+
+					if ( args[ 0 ].matchEnd( '$root paragraph' ) && rule.name == '$text' ) {
+						evt.stop();
+						evt.return = false;
+					}
+				} );
 
 				const modelFragment = editor.data.parse( 'foo' );
 
@@ -213,13 +220,9 @@ describe( 'Paragraph feature', () => {
 					model.schema.register( 'blockQuote', { allowIn: '$root' } );
 					model.schema.extend( '$block', { allowIn: 'blockQuote' } );
 
-					buildModelConverter().for( editor.editing.modelToView, editor.data.modelToView )
-						.fromElement( 'blockQuote' )
-						.toElement( 'blockQuote' );
+					buildViewConverter().for( editor.data.viewToModel ).fromElement( 'blockquote' ).toElement( 'blockQuote' );
 
-					buildViewConverter().for( editor.data.viewToModel ).fromElement( 'blockQuote' ).toElement( 'blockQuote' );
-
-					const modelFragment = editor.data.parse( '<blockQuote>foo<b>bar</b>bom</blockQuote>' );
+					const modelFragment = editor.data.parse( '<blockquote>foo<b>bar</b>bom</blockquote>' );
 
 					expect( stringifyModel( modelFragment ) )
 						.to.equal( '<blockQuote><paragraph>foo<$text bold="true">bar</$text>bom</paragraph></blockQuote>' );
@@ -431,7 +434,14 @@ describe( 'Paragraph feature', () => {
 		} );
 
 		it( 'should not fix root which does not allow paragraph', () => {
-			model.schema.xdisallow( 'paragraph', { allowIn: '$root' } );
+			model.schema.on( 'checkChild', ( evt, args ) => {
+				const rule = model.schema.getRule( args[ 1 ] );
+
+				if ( args[ 0 ].matchEnd( '$root' ) && rule.name == 'paragraph' ) {
+					evt.stop();
+					evt.return = false;
+				}
+			} );
 
 			model.change( writer => {
 				writer.remove( ModelRange.createIn( root ) );
