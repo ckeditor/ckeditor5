@@ -77,8 +77,7 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  *						inside: data.context
  *					};
  *
- *					// TODO it was impossible for me to understand wheter `data.context` contains `$text`.
- *					if ( conversionApi.schema.checkAttribute( TODO ) ) {
+ *					if ( conversionApi.schema.checkAttribute( [ ...data.context, '$text' ], 'link' ) ) {
  *						item.setAttribute( 'link', data.input.getAttribute( 'href' ) );
  *					}
  *				}

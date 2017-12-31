@@ -14,9 +14,172 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import Range from './range';
 
 /**
+ * The model's schema. It defines allowed and disallowed structures of nodes as well as their attributes.
+ * The schema rules are usually defined by features and based on them the editing framework and features
+ * make decisions how to process the model.
+ *
+ * The instance of schema is available in {@link module:engine/model/model~Model#schema `editor.model.schema`}.
+ *
+ * # Schema rules
+ *
+ * Schema defines allowed model structures and allowed attributes separately. They are also checked separately
+ * by using the {@link #checkChild} and {@link #checkAttribute} methods.
+ *
+ * ## Defining allowed structures
+ *
+ * When a feature introduces a model element it should registered it in the schema. Besides
+ * defining that such an element may exist in the model, the feature also needs to define where
+ * this element may occur:
+ *
+ *		schema.register( 'myElement', {
+ *			allowIn: '$root'
+ *		} );
+ *
+ * This lets the schema know that `<myElement>` may be a child of the `<$root>` element. `$root` is one of generic
+ * node types defined by the editing framework. By default, the editor names the main root element a `<$root>`,
+ * so the above rule allows `<myElement>` in the main editor element.
+ *
+ * In other words, this would be correct:
+ *
+ *		<$root><myElement></myElement></$root>
+ *
+ * While this would not be correct:
+ *
+ *		<$root><foo><myElement></myElement></foo></$root>
+ *
+ * ## Generic node types
+ *
+ * There are three basic generic node types: `$root`, `$block` and `$text`.
+ * They are defined as follows:
+ *
+ *		this.schema.register( '$root', {
+ *			isLimit: true
+ *		} );
+ *		this.schema.register( '$block', {
+ *			allowIn: '$root',
+ *			isBlock: true
+ *		} );
+ *		this.schema.register( '$text', {
+ *			allowIn: '$block'
+ *		} );
+ *
+ * Those rules can then be reused by features to define their rules in a more extensible way.
+ * For example, the {@link module:paragraph/paragraph~Paragraph} feature will define its rules as:
+ *
+ *		schema.register( 'paragraph', {
+ *			inheritAllFrom: '$block'
+ *		} );
+ *
+ * Which translates to:
+ *
+ *		schema.register( 'paragraph', {
+ *			allowWhere: '$block',
+ *			allowContentOf: '$block',
+ *			allowAttributesOf: '$block',
+ *			inheritTypesFrom: '$block'
+ *		} );
+ *
+ * Which can be read as:
+ *
+ * * The `<paragraph>` element will be allowed in elements in which `<$block>` is allowed (e.g. in `<$root>`).
+ * * The `<paragraph>` element will allow all nodes which are allowed in `<$block>` (e.g. `$text`).
+ * * The `<paragraph>` element will allow all attributes allowed on `<$block>`.
+ * * The `<paragraph>` element will inherit all `is*` properties of `<$block>` (e.g. `isBlock`).
+ *
+ * Thanks to the fact that `<paragraph>`'s rules are inherited from `<$block>` other features can use the `<$block>`
+ * type to indirectly extend `<paragraph>`'s rules. For example, the {@link module:block-quote/blockquote~BlockQuote}
+ * feature does this:
+ *
+ *		schema.register( 'blockQuote', {
+ *			allowWhere: '$block',
+ *			allowContentOf: '$root'
+ *		} );
+ *
+ * Thanks to that, despite the fact that block quote and paragraph features know nothing about themselves, paragraphs
+ * will be allowed in block quotes and block quotes will be allowed in all places where blocks are, so if anyone will
+ * register a `<section>` element (with `allowContentOf: '$root'` rule), that `<section>` elements will allow
+ * block quotes.
+ *
+ * The side effect of such a rule inheritance is that now `<blockQuote>` is allowed in `<blockQuote>` which needs to be
+ * resolved by a callback which will disallow this specific structure.
+ *
+ * ## Defining advanced rules in `checkChild()`'s callbacks
+ *
+ * The {@link #checkChild} method which is the base method used to check whether some element is allowed in a given structure
+ * is {@link module:utils/observablemixin~ObservableMixin#decorate decorated} with the {@link #event-checkChild} event.
+ * It means that you can add listeners to implement your specific rules which are not limited by the declarative
+ * {@link module:engine/model/schema~SchemaRuleDefinition} API.
+ *
+ * The block quote feature defines such a listener to disallow nested `<blockQuote>` structures:
+ *
+ * 		schema.on( 'checkChild', ( evt, args ) => {
+ * 			// The checkChild()'s params.
+ *			// Note that context is automatically normalized to SchemaContext instance by a highest-priority listener.
+ *			const context = args[ 0 ];
+ *			const child = args[ 1 ];
+ *
+ *			// Pass the child through getRule() to normalize it (child can be passed in multiple formats).
+ *			const childRule = schema.getRule( child );
+ *
+ *			// If checkChild() is called with a context that ends with blockQuote and blockQuote as a child
+ *			// to check, make the method return false and stop the event so no other listener will override your decision.
+ *			if ( childRule && childRule.name == 'blockQuote' && context.matchEnd( 'blockQuote' ) ) {
+ *				evt.stop();
+ *				evt.return = false;
+ *			}
+ *		}, { priority: 'high' } );
+ *
+ * ## Defining attributes
+ *
+ * TODO
+ *
+ * ## Implementing additional constraints
+ *
+ * Schema's capabilities were limited to simple (and atomic) {@link #checkChild} and {@link #checkAttribute} on purpose.
+ * One may imagine defining more complex rules such as "element `<x>` must be always followed by `<y>`". While it is
+ * feasible to create an API which would enable feeding the schema with such definitions, it is unrealistic to then
+ * expect that every editing feature will consider them when processing the model. It is also unrealistic to expect
+ * that it will be done automatically by the schema and the editing engine themselves.
+ *
+ * For instance, let's get back to the "element `<x>` must be always followed by `<y>`" rule and this initial content:
+ *
+ *		<$root>
+ *			<x>foo</x>
+ *			<y>bar[bom</y>
+ *			<z>bom]bar</z>
+ *		</$root>
+ *
+ * Now, imagine the user presses the "block quote" button. Usually it would wrap the two selected blocks (`<y>` and `<z>`)
+ * with a `<blockQuote>` element:
+ *
+ *		<$root>
+ *			<x>foo</x>
+ *			<blockQuote>
+ *				<y>bar[bom</y>
+ *				<z>bom]bar</z>
+ *			</blockQuote>
+ *		</$root>
+ *
+ * But it turns out that this creates an incorrect structure – `<x>` is not followed by `<y>` anymore.
+ *
+ * What should happen instead? There are at least 4 possible solutions: the block quote feature should not be
+ * applicable in such a context, someone should create a new `<y>` right after `<x>`, `<x>` should be moved
+ * inside `<blockQuote>` together with `<y>` or vice versa.
+ *
+ * While this is a relatively simple scenario (unlike most real-time collaboration scenarios),
+ * it turns out that it's already hard to say what should happen and who should react to fix this content.
+ *
+ * Therefore, if your editor needs to implement such rules, it should do that through model's post-fixers
+ * fixing incorrect content according to the rules that you'll define or actively prevent such situations
+ * (e.g. by disabling certain features). It means that those constraints will be defined specifically for your
+ * scenario by your code which answers the two problems that we had with generic rules – "who?" and "how?".
+ *
  * @mixes module:utils/emittermixin~ObservableMixin
  */
 export default class Schema {
+	/**
+	 * Creates schema instance.
+	 */
 	constructor() {
 		this._sourceRules = {};
 
@@ -33,6 +196,12 @@ export default class Schema {
 		}, { priority: 'highest' } );
 	}
 
+	/**
+	 * Registers schema item. Can only be called once for every item name.
+	 *
+	 * @param {String} itemName
+	 * @param {module:engine/model/schema~SchemaRuleDefintion} rules
+	 */
 	register( itemName, rules ) {
 		if ( this._sourceRules[ itemName ] ) {
 			// TODO docs
@@ -48,6 +217,30 @@ export default class Schema {
 		this._clearCache();
 	}
 
+	/**
+	 * Extends a {@link #register registered} item's rules.
+	 *
+	 * Extending properties such as `allowIn` will add more items to the existing properties,
+	 * while redefining properties such as `isBlock` will override the previously defined ones.
+	 *
+	 *		schema.register( 'foo', {
+	 *			allowIn: '$root',
+	 *			isBlock: true;
+	 *		} );
+	 *		schema.extend( 'foo', {
+	 *			allowIn: 'blockQuote',
+	 *			isBlock: false
+	 *		} );
+	 *
+	 *		schema.getRule( 'foo' );
+	 *		//	{
+	 *		//		allowIn: [ '$root', 'blockQuote' ],
+	 *		// 		isBlock: false
+	 *		//	}
+	 *
+	 * @param {String} itemName
+	 * @param {module:engine/model/schema~SchemaRuleDefintion} rules
+	 */
 	extend( itemName, rules ) {
 		if ( !this._sourceRules[ itemName ] ) {
 			// TODO docs
@@ -61,6 +254,11 @@ export default class Schema {
 		this._clearCache();
 	}
 
+	/**
+	 * Returns all registered items.
+	 *
+	 * @returns {Object.<String,module:engine/model/schema~SchemaRuleDefintion>}
+	 */
 	getRules() {
 		if ( !this._compiledRules ) {
 			this._compile();
@@ -70,7 +268,10 @@ export default class Schema {
 	}
 
 	/**
-	 * @param {module:engine/model/item~Item|SchemaContextItem|String} item
+	 * Returns a definition of the given item or `undefined` if item is not registered.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 * @returns {module:engine/model/schema~SchemaRuleDefintion}
 	 */
 	getRule( item ) {
 		let itemName;
@@ -80,7 +281,7 @@ export default class Schema {
 		} else if ( item.is && ( item.is( 'text' ) || item.is( 'textProxy' ) ) ) {
 			itemName = '$text';
 		}
-		// Element or SchemaContextItem.
+		// Element or module:engine/model/schema~SchemaContextItem.
 		else {
 			itemName = item.name;
 		}
@@ -89,14 +290,14 @@ export default class Schema {
 	}
 
 	/**
-	 * @param {module:engine/model/item~Item|SchemaContextItem|String} item
+	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isRegistered( item ) {
 		return !!this.getRule( item );
 	}
 
 	/**
-	 * @param {module:engine/model/item~Item|SchemaContextItem|String} item
+	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isBlock( item ) {
 		const rule = this.getRule( item );
@@ -105,7 +306,7 @@ export default class Schema {
 	}
 
 	/**
-	 * @param {module:engine/model/item~Item|SchemaContextItem|String} item
+	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isLimit( item ) {
 		const rule = this.getRule( item );
@@ -114,7 +315,7 @@ export default class Schema {
 	}
 
 	/**
-	 * @param {module:engine/model/item~Item|SchemaContextItem|String} item
+	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isObject( item ) {
 		const rule = this.getRule( item );
@@ -321,6 +522,10 @@ export default class Schema {
 mix( Schema, ObservableMixin );
 
 /**
+ * @typedef {Object} module:engine/model/schema~SchemaRuleDefinition
+ */
+
+/**
  * @private
  */
 export class SchemaContext {
@@ -368,7 +573,7 @@ export class SchemaContext {
  * TODO
  *
  * @typedef {module:engine/model/node~Node|module:engine/model/position~Position|
- * Array.<String|module:engine/model/node~Node>} SchemaContextDefinition
+ * Array.<String|module:engine/model/node~Node>} module:engine/model/schema~SchemaContextDefinition
  */
 
 function compileBaseItemRule( sourceItemRules, itemName ) {
