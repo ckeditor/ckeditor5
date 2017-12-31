@@ -11,22 +11,71 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet ],
-		toolbar: [ 'headings', 'undo', 'redo' ],
+		toolbar: {
+			items: [
+				'headings',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'blockQuote',
+				'undo',
+				'redo'
+			]
+		},
 		image: {
-			toolbar: [ 'imageTextAlternative' ]
+			toolbar: [
+				'imageStyleFull',
+				'imageStyleSide',
+				'|',
+				'imageTextAlternative'
+			]
 		}
 	} )
 	.then( editor => {
 		window.editor = editor;
 
-		// const schema = editor.model.schema;
+		const schema = editor.model.schema;
 
-		// TODO this requires a callback
-		// schema.xdisallow( { name: '$text', attributes: [ 'linkHref', 'italic' ], inside: 'heading1' } );
-		// schema.xdisallow( { name: '$text', attributes: [ 'italic' ], inside: 'heading2' } );
-		// schema.xdisallow( { name: '$text', attributes: [ 'linkHref' ], inside: 'blockQuote listItem' } );
-		// schema.xdisallow( { name: '$text', attributes: [ 'bold' ], inside: 'paragraph' } );
-		// schema.xdisallow( { name: 'heading3', inside: '$root' } );
+		schema.on( 'checkAttribute', ( evt, args ) => {
+			const ctx = args[ 0 ];
+			const attributeName = args[ 1 ];
+
+			if ( ctx.matchEnd( 'heading1 $text' ) && [ 'linkHref', 'italic' ].includes( attributeName ) ) {
+				evt.stop();
+				evt.return = false;
+			}
+
+			if ( ctx.matchEnd( 'heading2 $text' ) && attributeName == 'italic' ) {
+				evt.stop();
+				evt.return = false;
+			}
+
+			if ( ctx.matchEnd( 'heading2 $text' ) && attributeName == 'italic' ) {
+				evt.stop();
+				evt.return = false;
+			}
+
+			if ( ctx.matchEnd( 'blockQuote listItem $text' ) && attributeName == 'linkHref' ) {
+				evt.stop();
+				evt.return = false;
+			}
+
+			if ( ctx.matchEnd( 'paragraph $text' ) && attributeName == 'bold' ) {
+				evt.stop();
+				evt.return = false;
+			}
+		} );
+
+		schema.on( 'checkChild', ( evt, args ) => {
+			const rule = schema.getRule( args[ 1 ] );
+
+			if ( args[ 0 ].matchEnd( '$root' ) && rule.name == 'heading3' ) {
+				evt.stop();
+				evt.return = false;
+			}
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
