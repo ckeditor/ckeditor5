@@ -27,15 +27,20 @@ describe( 'ListCommand', () => {
 			inheritAllFrom: '$block',
 			allowAttributes: [ 'type', 'indent' ]
 		} );
-		model.schema.register( 'listItem', { inheritAllFrom: '$block' } );
 		model.schema.register( 'paragraph', {
 			inheritAllFrom: '$block',
 			allowIn: 'widget'
 		} );
 		model.schema.register( 'widget', { inheritAllFrom: '$block' } );
 
-		// TODO callback if really needed cause this rule is odd
-		// model.schema.xdisallow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: 'widget' } );
+		model.schema.on( 'checkChild', ( evt, args ) => {
+			const rule = model.schema.getRule( args[ 1 ] );
+
+			if ( args[ 0 ].matchEnd( 'widget' ) && rule.name == 'listItem' ) {
+				evt.stop();
+				evt.return = false;
+			}
+		} );
 
 		setData(
 			model,
@@ -255,7 +260,6 @@ describe( 'ListCommand', () => {
 				it( 'should not rename blocks which cannot become listItems (list item is not allowed in their parent)', () => {
 					model.schema.register( 'restricted' );
 					model.schema.extend( 'restricted', { allowIn: '$root' } );
-					model.schema.xdisallow( 'paragraph', { allowIn: 'restricted' } );
 
 					model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
 					model.schema.extend( 'fooBlock', { allowIn: 'restricted' } );

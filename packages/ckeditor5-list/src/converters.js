@@ -365,8 +365,14 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
 		const type = data.input.parent && data.input.parent.name == 'ol' ? 'numbered' : 'bulleted';
 		writer.setAttribute( 'type', type, listItem );
 
-		// 3. Handle `<li>` children.
-		data.context.push( listItem );
+		let alteredContext = false;
+
+		// See https://github.com/ckeditor/ckeditor5-list/issues/87
+		if ( data.context[ data.context.length - 1 ].name != 'listItem' ) {
+			// 3. Handle `<li>` children.
+			data.context.push( listItem );
+			alteredContext = true;
+		}
 
 		// `listItem`s created recursively should have bigger indent.
 		data.indent++;
@@ -394,7 +400,9 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
 		}
 
 		data.indent--;
-		data.context.pop();
+		if ( alteredContext ) {
+			data.context.pop();
+		}
 
 		data.output = items;
 	}
