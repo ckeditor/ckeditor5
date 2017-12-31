@@ -80,13 +80,9 @@ export default class Model {
 		this.schema.register( '$text', {
 			allowIn: '$block'
 		} );
-
-		// TODO review
-		// Create an "all allowed" context in the schema for processing the pasted content.
-		// Read: https://github.com/ckeditor/ckeditor5-engine/issues/638#issuecomment-255086588
-
 		this.schema.register( '$clipboardHolder', {
-			allowContentOf: '$root'
+			allowContentOf: '$root',
+			isLimit: true
 		} );
 		this.schema.extend( '$text', { allowIn: '$clipboardHolder' } );
 	}
@@ -317,7 +313,7 @@ export default class Model {
 
 		for ( const item of rangeOrElement.getItems() ) {
 			// Remember, `TreeWalker` returns always `textProxy` nodes.
-			if ( item.is( 'textProxy' ) || this.schema.isObject( item.name ) ) {
+			if ( item.is( 'textProxy' ) || this.schema.isObject( item ) ) {
 				return true;
 			}
 		}

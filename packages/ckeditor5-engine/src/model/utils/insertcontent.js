@@ -170,7 +170,7 @@ class Insertion {
 		// Let's handle object in a special way.
 		// * They should never be merged with other elements.
 		// * If they are not allowed in any of the selection ancestors, they could be either autoparagraphed or totally removed.
-		if ( this._checkIsObject( node ) ) {
+		if ( this.schema.isObject( node ) ) {
 			this._handleObject( node, context );
 
 			return;
@@ -258,7 +258,7 @@ class Insertion {
 		livePos.detach();
 
 		// The last inserted object should be selected because we can't put a collapsed selection after it.
-		if ( this._checkIsObject( node ) && !this.schema.checkChild( this.position, '$text' ) ) {
+		if ( this.schema.isObject( node ) && !this.schema.checkChild( this.position, '$text' ) ) {
 			this.nodeToSelect = node;
 		} else {
 			this.nodeToSelect = null;
@@ -355,7 +355,7 @@ class Insertion {
 
 		while ( allowedIn != this.position.parent ) {
 			// If a parent which we'd need to leave is a limit element, break.
-			if ( this.schema.isLimit( this.position.parent.name ) ) {
+			if ( this.schema.isLimit( this.position.parent ) ) {
 				return false;
 			}
 
@@ -401,14 +401,5 @@ class Insertion {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Checks whether according to the schema this is an object type element.
-	 *
-	 * @param {module:engine/model/node~Node} node The node to check.
-	 */
-	_checkIsObject( node ) {
-		return this.schema.isObject( node.is( 'text' ) ? '$text' : node.name );
 	}
 }

@@ -211,7 +211,53 @@ describe( 'Schema', () => {
 	} );
 
 	describe( 'getRule()', () => {
-		// TODO
+		it( 'returns a rule based on an item name', () => {
+			schema.register( 'foo', {
+				isMe: true
+			} );
+
+			expect( schema.getRule( 'foo' ).isMe ).to.be.true;
+		} );
+
+		it( 'returns a rule based on an element name', () => {
+			schema.register( 'foo', {
+				isMe: true
+			} );
+
+			expect( schema.getRule( new Element( 'foo' ) ).isMe ).to.be.true;
+		} );
+
+		it( 'returns a rule based on a text node', () => {
+			schema.register( '$text', {
+				isMe: true
+			} );
+
+			expect( schema.getRule( new Text( 'foo' ) ).isMe ).to.be.true;
+		} );
+
+		it( 'returns a rule based on a text proxy', () => {
+			schema.register( '$text', {
+				isMe: true
+			} );
+
+			const text = new Text( 'foo' );
+			const textProxy = new TextProxy( text, 0, 1 );
+
+			expect( schema.getRule( textProxy ).isMe ).to.be.true;
+		} );
+
+		it( 'returns a rule based on a schema context item', () => {
+			schema.register( 'foo', {
+				isMe: true
+			} );
+			const ctx = new SchemaContext( [ '$root', 'foo' ] );
+
+			expect( schema.getRule( ctx.last ).isMe ).to.be.true;
+		} );
+
+		it( 'returns undefined when trying to get an unregistered item', () => {
+			expect( schema.getRule( '404' ) ).to.be.undefined;
+		} );
 	} );
 
 	describe( 'isRegistered()', () => {
@@ -223,6 +269,13 @@ describe( 'Schema', () => {
 
 		it( 'returns false if an item was not registered', () => {
 			expect( schema.isRegistered( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'uses getRule()\'s item to rule normalization', () => {
+			const stub = sinon.stub( schema, 'getRule' ).returns( {} );
+
+			expect( schema.isRegistered( 'foo' ) ).to.be.true;
+			expect( stub.calledOnce ).to.be.true;
 		} );
 	} );
 
@@ -244,6 +297,13 @@ describe( 'Schema', () => {
 		it( 'returns false if an item was not registered at all', () => {
 			expect( schema.isBlock( 'foo' ) ).to.be.false;
 		} );
+
+		it( 'uses getRule()\'s item to rule normalization', () => {
+			const stub = sinon.stub( schema, 'getRule' ).returns( { isBlock: true } );
+
+			expect( schema.isBlock( 'foo' ) ).to.be.true;
+			expect( stub.calledOnce ).to.be.true;
+		} );
 	} );
 
 	describe( 'isLimit()', () => {
@@ -264,6 +324,13 @@ describe( 'Schema', () => {
 		it( 'returns false if an item was not registered at all', () => {
 			expect( schema.isLimit( 'foo' ) ).to.be.false;
 		} );
+
+		it( 'uses getRule()\'s item to rule normalization', () => {
+			const stub = sinon.stub( schema, 'getRule' ).returns( { isLimit: true } );
+
+			expect( schema.isLimit( 'foo' ) ).to.be.true;
+			expect( stub.calledOnce ).to.be.true;
+		} );
 	} );
 
 	describe( 'isObject()', () => {
@@ -283,6 +350,13 @@ describe( 'Schema', () => {
 
 		it( 'returns false if an item was not registered at all', () => {
 			expect( schema.isObject( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'uses getRule()\'s item to rule normalization', () => {
+			const stub = sinon.stub( schema, 'getRule' ).returns( { isObject: true } );
+
+			expect( schema.isObject( 'foo' ) ).to.be.true;
+			expect( stub.calledOnce ).to.be.true;
 		} );
 	} );
 
@@ -352,7 +426,6 @@ describe( 'Schema', () => {
 		} );
 
 		// TODO checks fires event
-		// TODO checks with a custom context array
 	} );
 
 	describe( 'checkAttribute()', () => {
@@ -375,8 +448,35 @@ describe( 'Schema', () => {
 			expect( schema.checkAttribute( new Text( 'foo' ), 'align' ) ).to.be.false;
 		} );
 
+		it( 'accepts a position as a context', () => {
+			const posInRoot = Position.createAt( root1 );
+			const posInParagraph = Position.createAt( r1p1 );
+
+			expect( schema.checkAttribute( posInRoot, 'align' ) ).to.be.false;
+			expect( schema.checkAttribute( posInParagraph, 'align' ) ).to.be.true;
+		} );
+
+		it( 'accepts an array of node names as a context', () => {
+			const contextInRoot = [ '$root' ];
+			const contextInParagraph = [ '$root', 'paragraph' ];
+			const contextInText = [ '$root', 'paragraph', '$text' ];
+
+			expect( schema.checkAttribute( contextInRoot, 'align' ) ).to.be.false;
+			expect( schema.checkAttribute( contextInParagraph, 'align' ) ).to.be.true;
+			expect( schema.checkAttribute( contextInText, 'bold' ) ).to.be.true;
+		} );
+
+		it( 'accepts an array of nodes as a context', () => {
+			const contextInRoot = [ root1 ];
+			const contextInParagraph = [ root1, r1p1 ];
+			const contextInText = [ root1, r1p1, r1p1.getChild( 0 ) ];
+
+			expect( schema.checkAttribute( contextInRoot, 'align' ) ).to.be.false;
+			expect( schema.checkAttribute( contextInParagraph, 'align' ) ).to.be.true;
+			expect( schema.checkAttribute( contextInText, 'bold' ) ).to.be.true;
+		} );
+
 		// TODO checks fires event
-		// TODO checks with a custom context array
 	} );
 
 	describe( 'getLimitElement()', () => {
@@ -1096,7 +1196,6 @@ describe( 'Schema', () => {
 				expect( schema.checkChild( r1p1, r1p1.getChild( 0 ) ) ).to.be.true;
 			} );
 
-			// TODO we need to make it possible to disallow bQ in bQ.
 			it( 'passes $root>blockQuote>paragraph – blockQuote inherits content of $root', () => {
 				schema.register( '$root' );
 				schema.register( 'blockQuote', {
@@ -1870,13 +1969,6 @@ describe( 'Schema', () => {
 			expect( schema.isObject( 'caption' ) ).to.be.false;
 		} );
 	} );
-
-	// TODO:
-	// * getValidRanges
-	// * checkAttributeInSelectionn
-	// * add normalization to isObject(), isLimit(), isBlock(), isRegistered() and improve the existing code
-	//   * see insertContent's _checkIsObject()
-	// * test the default abstract entities (in model.js)
 } );
 
 describe( 'SchemaContext', () => {

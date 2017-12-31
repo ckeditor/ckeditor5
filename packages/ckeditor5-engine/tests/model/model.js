@@ -27,7 +27,32 @@ describe( 'Model', () => {
 		changes = '';
 	} );
 
-	describe( 'change & enqueueChange', () => {
+	describe( 'constructor()', () => {
+		it( 'registers $root to the schema', () => {
+			expect( schema.isRegistered( '$root' ) ).to.be.true;
+			expect( schema.isLimit( '$root' ) ).to.be.true;
+		} );
+
+		it( 'registers $block to the schema', () => {
+			expect( schema.isRegistered( '$block' ) ).to.be.true;
+			expect( schema.isBlock( '$block' ) ).to.be.true;
+			expect( schema.checkChild( [ '$root' ], '$block' ) ).to.be.true;
+		} );
+
+		it( 'registers $text to the schema', () => {
+			expect( schema.isRegistered( '$text' ) ).to.be.true;
+			expect( schema.checkChild( [ '$block' ], '$text' ) ).to.be.true;
+		} );
+
+		it( 'registers $clipboardHolder to the schema', () => {
+			expect( schema.isRegistered( '$clipboardHolder' ) ).to.be.true;
+			expect( schema.isLimit( '$clipboardHolder' ) ).to.be.true;
+			expect( schema.checkChild( [ '$clipboardHolder' ], '$text' ) ).to.be.true;
+			expect( schema.checkChild( [ '$clipboardHolder' ], '$block' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'change() & enqueueChange()', () => {
 		it( 'should execute changes immediately', () => {
 			model.change( () => {
 				changes += 'A';
@@ -318,7 +343,7 @@ describe( 'Model', () => {
 		} );
 	} );
 
-	describe( 'applyOperation', () => {
+	describe( 'applyOperation()', () => {
 		it( 'should execute provided operation end return the result of operation', () => {
 			const returnValue = { foo: 'bar' };
 
@@ -334,7 +359,7 @@ describe( 'Model', () => {
 		} );
 	} );
 
-	describe( 'transformDeltas', () => {
+	describe( 'transformDeltas()', () => {
 		it( 'should use deltaTransform.transformDeltaSets', () => {
 			sinon.spy( deltaTransform, 'transformDeltaSets' );
 

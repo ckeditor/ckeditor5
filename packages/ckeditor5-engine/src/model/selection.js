@@ -785,7 +785,7 @@ function isUnvisitedBlockContainer( element, visited ) {
 
 	visited.add( element );
 
-	return element.document.model.schema.isBlock( element.name ) && element.parent;
+	return element.document.model.schema.isBlock( element ) && element.parent;
 }
 
 // Finds the lowest element in position's ancestors which is a block.

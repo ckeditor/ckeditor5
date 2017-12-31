@@ -621,7 +621,7 @@ export default class DocumentSelection extends Selection {
 			// ...look for a first character node in that range and take attributes from it.
 			for ( const value of range ) {
 				// If the item is an object, we don't want to get attributes from its children.
-				if ( value.item.is( 'element' ) && schema.isObject( value.item.name ) ) {
+				if ( value.item.is( 'element' ) && schema.isObject( value.item ) ) {
 					break;
 				}
 

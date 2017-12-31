@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/schema
+ */
+
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 import Range from './range';
-
-/**
- * @module engine/model/schema
- */
 
 /**
  * @mixes module:utils/emittermixin~ObservableMixin
@@ -20,7 +20,7 @@ export default class Schema {
 	constructor() {
 		this._sourceRules = {};
 
-		// TODO events
+		// TODO docs
 		this.decorate( 'checkChild' );
 		this.decorate( 'checkAttribute' );
 
@@ -36,7 +36,9 @@ export default class Schema {
 	register( itemName, rules ) {
 		if ( this._sourceRules[ itemName ] ) {
 			// TODO docs
-			throw new CKEditorError( 'schema-cannot-register-item-twice: A single item cannot be registered twice in the schema.' );
+			throw new CKEditorError( 'schema-cannot-register-item-twice: A single item cannot be registered twice in the schema.', {
+				itemName
+			} );
 		}
 
 		this._sourceRules[ itemName ] = [
@@ -47,11 +49,11 @@ export default class Schema {
 	}
 
 	extend( itemName, rules ) {
-		// TODO it should not throw if we want to allow e.g. adding attrs before element is registered
-		// (which may be done by another feature).
 		if ( !this._sourceRules[ itemName ] ) {
 			// TODO docs
-			throw new CKEditorError( 'schema-cannot-extend-missing-item: Cannot extend an item which was not registered yet.' );
+			throw new CKEditorError( 'schema-cannot-extend-missing-item: Cannot extend an item which was not registered yet.', {
+				itemName
+			} );
 		}
 
 		this._sourceRules[ itemName ].push( Object.assign( {}, rules ) );
@@ -86,30 +88,42 @@ export default class Schema {
 		return this.getRules()[ itemName ];
 	}
 
-	isRegistered( itemName ) {
-		return !!this.getRule( itemName );
+	/**
+	 * @param {module:engine/model/item~Item|SchemaContextItem|String} item
+	 */
+	isRegistered( item ) {
+		return !!this.getRule( item );
 	}
 
-	isBlock( itemName ) {
-		const rule = this.getRule( itemName );
+	/**
+	 * @param {module:engine/model/item~Item|SchemaContextItem|String} item
+	 */
+	isBlock( item ) {
+		const rule = this.getRule( item );
 
 		return !!( rule && rule.isBlock );
 	}
 
-	isLimit( itemName ) {
-		const rule = this.getRule( itemName );
+	/**
+	 * @param {module:engine/model/item~Item|SchemaContextItem|String} item
+	 */
+	isLimit( item ) {
+		const rule = this.getRule( item );
 
 		return !!( rule && rule.isLimit );
 	}
 
-	isObject( itemName ) {
-		const rule = this.getRule( itemName );
+	/**
+	 * @param {module:engine/model/item~Item|SchemaContextItem|String} item
+	 */
+	isObject( item ) {
+		const rule = this.getRule( item );
 
 		return !!( rule && rule.isObject );
 	}
 
 	/**
-	 * @param {module:engine/model/element~Element|module:engine/model/position~Position|Array.<String>} context
+	 * @param {SchemaContextDefinition} context
 	 * @param {module:engine/model/node~Node|String}
 	 */
 	checkChild( context, child ) {
@@ -123,7 +137,7 @@ export default class Schema {
 	}
 
 	/**
-	 * @param {module:engine/model/node~Node} context
+	 * @param {SchemaContextDefinition} context
 	 * @param {String}
 	 */
 	checkAttribute( context, attributeName ) {
@@ -154,7 +168,7 @@ export default class Schema {
 				return node.getCommonAncestor( range.getCommonAncestor() );
 			}, null );
 
-		while ( !this.isLimit( element.name ) ) {
+		while ( !this.isLimit( element ) ) {
 			if ( element.parent ) {
 				element = element.parent;
 			} else {
@@ -329,7 +343,7 @@ export class SchemaContext {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all context items
+	 * Returns an iterator that iterates over all context items.
 	 *
 	 * @returns {Iterator.<TODO>}
 	 */
@@ -349,6 +363,13 @@ export class SchemaContext {
 		return Array.from( this.getNames() ).join( ' ' ).endsWith( query );
 	}
 }
+
+/**
+ * TODO
+ *
+ * @typedef {module:engine/model/node~Node|module:engine/model/position~Position|
+ * Array.<String|module:engine/model/node~Node>} SchemaContextDefinition
+ */
 
 function compileBaseItemRule( sourceItemRules, itemName ) {
 	const itemRule = {
