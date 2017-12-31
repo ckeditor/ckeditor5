@@ -42,7 +42,7 @@ function enterBlock( model, writer, selection, schema ) {
 	const endElement = range.end.parent;
 
 	// Don't touch the roots and other limit elements.
-	if ( schema.isLimit( startElement.name ) || schema.isLimit( endElement.name ) ) {
+	if ( schema.isLimit( startElement ) || schema.isLimit( endElement ) ) {
 		// Delete the selected content but only if inside a single limit element.
 		// Abort, when crossing limit elements boundary (e.g. <limit1>x[x</limit1>donttouchme<limit2>y]y</limit2>).
 		// This is an edge case and it's hard to tell what should actually happen because such a selection
