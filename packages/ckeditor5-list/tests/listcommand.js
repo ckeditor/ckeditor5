@@ -34,9 +34,9 @@ describe( 'ListCommand', () => {
 		model.schema.register( 'widget', { inheritAllFrom: '$block' } );
 
 		model.schema.on( 'checkChild', ( evt, args ) => {
-			const rule = model.schema.getRule( args[ 1 ] );
+			const def = model.schema.getDefinition( args[ 1 ] );
 
-			if ( args[ 0 ].matchEnd( 'widget' ) && rule.name == 'listItem' ) {
+			if ( args[ 0 ].endsWith( 'widget' ) && def.name == 'listItem' ) {
 				evt.stop();
 				evt.return = false;
 			}
