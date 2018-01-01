@@ -82,19 +82,19 @@ function tryExtendingTo( data, value ) {
 	// Entering an element.
 	if ( value.type == ( data.isForward ? 'elementStart' : 'elementEnd' ) ) {
 		// If it's an object, we can select it now.
-		if ( data.schema.objects.has( value.item.name ) ) {
+		if ( data.schema.isObject( value.item ) ) {
 			return Position.createAt( value.item, data.isForward ? 'after' : 'before' );
 		}
 
 		// If text allowed on this position, extend to this place.
-		if ( data.schema.check( { name: '$text', inside: value.nextPosition } ) ) {
+		if ( data.schema.checkChild( value.nextPosition, '$text' ) ) {
 			return value.nextPosition;
 		}
 	}
 	// Leaving an element.
 	else {
 		// If leaving a limit element, stop.
-		if ( data.schema.limits.has( value.item.name ) ) {
+		if ( data.schema.isLimit( value.item ) ) {
 			// NOTE: Fast-forward the walker until the end.
 			data.walker.skip( () => true );
 
@@ -102,7 +102,7 @@ function tryExtendingTo( data, value ) {
 		}
 
 		// If text allowed on this position, extend to this place.
-		if ( data.schema.check( { name: '$text', inside: value.nextPosition } ) ) {
+		if ( data.schema.checkChild( value.nextPosition, '$text' ) ) {
 			return value.nextPosition;
 		}
 	}

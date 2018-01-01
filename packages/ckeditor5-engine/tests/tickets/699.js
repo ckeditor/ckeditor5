@@ -44,9 +44,10 @@ describe( 'Bug ckeditor5-engine#699', () => {
 function WidgetPlugin( editor ) {
 	const schema = editor.model.schema;
 
-	schema.registerItem( 'widget' );
-	schema.allow( { name: 'widget', inside: '$root' } );
-	schema.objects.add( 'widget' );
+	schema.register( 'widget', {
+		isObject: true
+	} );
+	schema.extend( 'widget', { allowIn: '$root' } );
 
 	buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView )
 		.fromElement( 'widget' )

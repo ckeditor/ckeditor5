@@ -243,7 +243,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  * @param {Object} [options={}] Additional configuration.
  * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to the selection.
  * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
- * @param {module:engine/model/schema~SchemaPath} [options.context=[ '$root' ]] The conversion context.
+ * @param {module:engine/model/schema~SchemaContextDefinition} [options.context=[ '$root' ]] The conversion context.
  * If not provided default `[ '$root' ]` will be used.
  * @returns {module:engine/model/element~Element|module:engine/model/text~Text|
  * module:engine/model/documentfragment~DocumentFragment|Object} Returns parsed model node or
@@ -329,14 +329,10 @@ function convertToModelFragment() {
 
 function convertToModelElement() {
 	return ( evt, data, consumable, conversionApi ) => {
-		const schemaQuery = {
-			name: data.input.name,
-			attributes: Array.from( data.input.getAttributeKeys() ),
-			inside: data.context
-		};
+		const elementName = data.input.name;
 
-		if ( !conversionApi.schema.check( schemaQuery ) ) {
-			throw new Error( `Element '${ schemaQuery.name }' not allowed in context ${ JSON.stringify( data.context ) }.` );
+		if ( !conversionApi.schema.checkChild( data.context, elementName ) ) {
+			throw new Error( `Element '${ elementName }' was not allowed in context ${ JSON.stringify( data.context ) }.` );
 		}
 
 		// View attribute value is a string so we want to typecast it to the original type.
@@ -356,13 +352,8 @@ function convertToModelElement() {
 
 function convertToModelText( withAttributes = false ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const schemaQuery = {
-			name: '$text',
-			inside: data.context
-		};
-
-		if ( !conversionApi.schema.check( schemaQuery ) ) {
-			throw new Error( `Element '${ schemaQuery.name }' not allowed in context ${ JSON.stringify( data.context ) }.` );
+		if ( !conversionApi.schema.checkChild( data.context, '$text' ) ) {
+			throw new Error( `Text was not allowed in context ${ JSON.stringify( data.context ) }.` );
 		}
 
 		let node;

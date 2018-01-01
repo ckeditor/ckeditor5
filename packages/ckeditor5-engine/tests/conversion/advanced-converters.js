@@ -42,7 +42,7 @@ describe( 'advanced-converters', () => {
 
 		viewRoot = editing.createRoot( 'div' );
 
-		viewDispatcher = new ViewConversionDispatcher( model, { schema: { check: () => true } } );
+		viewDispatcher = new ViewConversionDispatcher( model, { schema: { checkChild: () => true } } );
 		viewDispatcher.on( 'text', convertText() );
 		viewDispatcher.on( 'documentFragment', convertToModelFragment() );
 

@@ -32,6 +32,8 @@ import getSelectedContent from './utils/getselectedcontent';
  * {@link module:engine/model/model~Model#document}, and all detached nodes, used to data manipulation. All of them are
  * created and modified by the {@link module:engine/model/writer~Writer}, which can be get using
  * {@link module:engine/model/model~Model#change} or {@link module:engine/model/model~Model#enqueueChange} methods.
+ *
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Model {
 	constructor() {
@@ -68,6 +70,23 @@ export default class Model {
 
 		[ 'insertContent', 'deleteContent', 'modifySelection', 'getSelectedContent', 'applyOperation' ]
 			.forEach( methodName => this.decorate( methodName ) );
+
+		// Register some default abstract entities.
+		this.schema.register( '$root', {
+			isLimit: true
+		} );
+		this.schema.register( '$block', {
+			allowIn: '$root',
+			isBlock: true
+		} );
+		this.schema.register( '$text', {
+			allowIn: '$block'
+		} );
+		this.schema.register( '$clipboardHolder', {
+			allowContentOf: '$root',
+			isLimit: true
+		} );
+		this.schema.extend( '$text', { allowIn: '$clipboardHolder' } );
 	}
 
 	/**
@@ -296,7 +315,7 @@ export default class Model {
 
 		for ( const item of rangeOrElement.getItems() ) {
 			// Remember, `TreeWalker` returns always `textProxy` nodes.
-			if ( item.is( 'textProxy' ) || this.schema.objects.has( item.name ) ) {
+			if ( item.is( 'textProxy' ) || this.schema.isObject( item ) ) {
 				return true;
 			}
 		}

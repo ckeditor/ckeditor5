@@ -21,7 +21,7 @@ describe( 'convertSelectionChange', () => {
 	beforeEach( () => {
 		model = new Model();
 		modelRoot = model.document.createRoot();
-		model.schema.registerItem( 'paragraph', '$block' );
+		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 		modelSetData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 

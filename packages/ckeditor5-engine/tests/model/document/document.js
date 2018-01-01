@@ -246,18 +246,20 @@ describe( 'Document', () => {
 		let selection;
 
 		beforeEach( () => {
-			model.schema.registerItem( 'paragraph', '$block' );
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			model.schema.registerItem( 'emptyBlock' );
-			model.schema.allow( { name: 'emptyBlock', inside: '$root' } );
+			model.schema.register( 'emptyBlock', { allowIn: '$root' } );
 
-			model.schema.registerItem( 'widget' );
-			model.schema.allow( { name: 'widget', inside: '$root' } );
-			model.schema.objects.add( 'widget' );
+			model.schema.register( 'widget', {
+				allowIn: '$root',
+				isObject: true
+			} );
 
-			model.schema.registerItem( 'blockWidget', '$block' );
-			model.schema.allow( { name: 'blockWidget', inside: '$root' } );
-			model.schema.objects.add( 'blockWidget' );
+			model.schema.register( 'blockWidget', {
+				allowIn: '$root',
+				allowContentOf: '$block',
+				isObject: true
+			} );
 
 			doc.createRoot();
 			selection = doc.selection;

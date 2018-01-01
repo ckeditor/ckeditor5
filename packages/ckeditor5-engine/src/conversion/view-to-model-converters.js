@@ -41,12 +41,7 @@ export function convertToModelFragment() {
  */
 export function convertText() {
 	return ( evt, data, consumable, conversionApi ) => {
-		const schemaQuery = {
-			name: '$text',
-			inside: data.context
-		};
-
-		if ( conversionApi.schema.check( schemaQuery ) ) {
+		if ( conversionApi.schema.checkChild( data.context, '$text' ) ) {
 			if ( consumable.consume( data.input ) ) {
 				data.output = conversionApi.writer.createText( data.input.data );
 			}
