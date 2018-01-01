@@ -40,15 +40,17 @@ describe( 'upload utils', () => {
 
 			doc.createRoot();
 
-			model.schema.registerItem( 'paragraph', '$block' );
-			model.schema.registerItem( 'image' );
-			model.schema.registerItem( 'span' );
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			model.schema.register( 'image' );
+			model.schema.register( 'span' );
 
-			model.schema.allow( { name: 'image', inside: '$root' } );
-			model.schema.objects.add( 'image' );
+			model.schema.extend( 'image', {
+				allowIn: '$root',
+				isObject: true
+			} );
 
-			model.schema.allow( { name: 'span', inside: 'paragraph' } );
-			model.schema.allow( { name: '$text', inside: 'span' } );
+			model.schema.extend( 'span', { allowIn: 'paragraph' } );
+			model.schema.extend( '$text', { allowIn: 'span' } );
 		} );
 
 		it( 'returns position after selected element', () => {
@@ -101,7 +103,7 @@ describe( 'upload utils', () => {
 		} );
 
 		it( 'returns selection focus if not in a block', () => {
-			model.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'foo[]bar' );
 
 			const pos = findOptimalInsertionPosition( doc.selection );
