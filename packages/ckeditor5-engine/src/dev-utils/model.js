@@ -243,7 +243,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  * @param {Object} [options={}] Additional configuration.
  * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to the selection.
  * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
- * @param {module:engine/model/schema~SchemaPath} [options.context=[ '$root' ]] The conversion context.
+ * @param {module:engine/model/schema~SchemaContextDefinition} [options.context=[ '$root' ]] The conversion context.
  * If not provided default `[ '$root' ]` will be used.
  * @returns {module:engine/model/element~Element|module:engine/model/text~Text|
  * module:engine/model/documentfragment~DocumentFragment|Object} Returns parsed model node or

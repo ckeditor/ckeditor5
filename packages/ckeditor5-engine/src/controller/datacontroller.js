@@ -32,7 +32,7 @@ import ModelRange from '../model/range';
  * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher model to view} and
  * * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher view to model} converters.
  *
- * @mixes module:utils/emittermixin~ObservableMixin
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class DataController {
 	/**

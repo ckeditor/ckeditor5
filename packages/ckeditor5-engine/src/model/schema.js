@@ -23,7 +23,7 @@ import Range from './range';
  * # Schema rules
  *
  * Schema defines allowed model structures and allowed attributes separately. They are also checked separately
- * by using the {@link #checkChild} and {@link #checkAttribute} methods.
+ * by using the {@link ~Schema#checkChild} and {@link ~Schema#checkAttribute} methods.
  *
  * ## Defining allowed structures
  *
@@ -105,10 +105,10 @@ import Range from './range';
  *
  * ## Defining advanced rules in `checkChild()`'s callbacks
  *
- * The {@link #checkChild} method which is the base method used to check whether some element is allowed in a given structure
- * is {@link module:utils/observablemixin~ObservableMixin#decorate decorated} with the {@link #event-checkChild} event.
+ * The {@link ~Schema#checkChild} method which is the base method used to check whether some element is allowed in a given structure
+ * is {@link module:utils/observablemixin~ObservableMixin#decorate decorated} with the {@link ~Schema#event:checkChild} event.
  * It means that you can add listeners to implement your specific rules which are not limited by the declarative
- * {@link module:engine/model/schema~SchemaRuleDefinition} API.
+ * {@link module:engine/model/schema~SchemaItemDefinition} API.
  *
  * The block quote feature defines such a listener to disallow nested `<blockQuote>` structures:
  *
@@ -135,11 +135,13 @@ import Range from './range';
  *
  * ## Implementing additional constraints
  *
- * Schema's capabilities were limited to simple (and atomic) {@link #checkChild} and {@link #checkAttribute} on purpose.
- * One may imagine defining more complex rules such as "element `<x>` must be always followed by `<y>`". While it is
- * feasible to create an API which would enable feeding the schema with such definitions, it is unrealistic to then
- * expect that every editing feature will consider them when processing the model. It is also unrealistic to expect
- * that it will be done automatically by the schema and the editing engine themselves.
+ * Schema's capabilities were limited to simple (and atomic) {@link ~Schema#checkChild} and
+ * {@link ~Schema#checkAttribute} on purpose.
+ * One may imagine that schema should support defining more complex rules such as
+ * "element `<x>` must be always followed by `<y>`".
+ * While it is feasible to create an API which would enable feeding the schema with such definitions,
+ * it is unrealistic to then expect that every editing feature will consider them when processing the model.
+ * It is also unrealistic to expect that it will be done automatically by the schema and the editing engine themselves.
  *
  * For instance, let's get back to the "element `<x>` must be always followed by `<y>`" rule and this initial content:
  *
@@ -170,11 +172,14 @@ import Range from './range';
  * it turns out that it's already hard to say what should happen and who should react to fix this content.
  *
  * Therefore, if your editor needs to implement such rules, it should do that through model's post-fixers
- * fixing incorrect content according to the rules that you'll define or actively prevent such situations
- * (e.g. by disabling certain features). It means that those constraints will be defined specifically for your
- * scenario by your code which answers the two problems that we had with generic rules – "who?" and "how?".
+ * fixing incorrect content or actively prevent such situations (e.g. by disabling certain features).
+ * It means that those constraints will be defined specifically for your scenario by your code which
+ * makes their implementation much easier.
  *
- * @mixes module:utils/emittermixin~ObservableMixin
+ * So the answer for who and how should implement additional constraints is your features or your editor
+ * through CKEditor 5's rich and open API.
+ *
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Schema {
 	/**
@@ -183,7 +188,6 @@ export default class Schema {
 	constructor() {
 		this._sourceRules = {};
 
-		// TODO docs
 		this.decorate( 'checkChild' );
 		this.decorate( 'checkAttribute' );
 
@@ -200,7 +204,7 @@ export default class Schema {
 	 * Registers schema item. Can only be called once for every item name.
 	 *
 	 * @param {String} itemName
-	 * @param {module:engine/model/schema~SchemaRuleDefintion} rules
+	 * @param {module:engine/model/schema~SchemaItemDefinition} rules
 	 */
 	register( itemName, rules ) {
 		if ( this._sourceRules[ itemName ] ) {
@@ -239,7 +243,7 @@ export default class Schema {
 	 *		//	}
 	 *
 	 * @param {String} itemName
-	 * @param {module:engine/model/schema~SchemaRuleDefintion} rules
+	 * @param {module:engine/model/schema~SchemaItemDefinition} rules
 	 */
 	extend( itemName, rules ) {
 		if ( !this._sourceRules[ itemName ] ) {
@@ -257,7 +261,7 @@ export default class Schema {
 	/**
 	 * Returns all registered items.
 	 *
-	 * @returns {Object.<String,module:engine/model/schema~SchemaRuleDefintion>}
+	 * @returns {Object.<String,module:engine/model/schema~SchemaCompiledItemDefinition>}
 	 */
 	getRules() {
 		if ( !this._compiledRules ) {
@@ -271,7 +275,7 @@ export default class Schema {
 	 * Returns a definition of the given item or `undefined` if item is not registered.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
-	 * @returns {module:engine/model/schema~SchemaRuleDefintion}
+	 * @returns {module:engine/model/schema~SchemaCompiledItemDefinition}
 	 */
 	getRule( item ) {
 		let itemName;
@@ -324,8 +328,18 @@ export default class Schema {
 	}
 
 	/**
-	 * @param {SchemaContextDefinition} context
-	 * @param {module:engine/model/node~Node|String}
+	 * Checks whether the given node (`child`) can be a child of the given context.
+	 *
+	 *		schema.checkChild( model.document.getRoot(), paragraph ); // -> false
+	 *
+	 *		schema.register( 'paragraph', {
+	 *			allowIn: '$root'
+	 *		} );
+	 *		schema.checkChild( model.document.getRoot(), paragraph ); // -> true
+	 *
+	 * @fires checkChild
+	 * @param {module:engine/model/schema~SchemaContextDefinition} context Context in which the child will be checked.
+	 * @param {module:engine/model/node~Node|String} child The child to check.
 	 */
 	checkChild( context, child ) {
 		const rule = this.getRule( child );
@@ -338,8 +352,19 @@ export default class Schema {
 	}
 
 	/**
-	 * @param {SchemaContextDefinition} context
-	 * @param {String}
+	 * Checks whether the given attribute can be applied in the given context (on the last
+	 * item of the context).
+	 *
+	 *		schema.checkAttribute( textNode, 'bold' ); // -> false
+	 *
+	 *		schema.extend( '$text', {
+	 *			allowAttributes: 'bold'
+	 *		} );
+	 *		schema.checkAttribute( textNode, 'bold' ); // -> true
+	 *
+	 * @fires checkAttribute
+	 * @param {module:engine/model/schema~SchemaContextDefinition} context
+	 * @param {String} attributeName
 	 */
 	checkAttribute( context, attributeName ) {
 		const rule = this.getRule( context.last );
@@ -414,7 +439,7 @@ export default class Schema {
 	}
 
 	/**
-	 * Transforms the given set ranges into a set of ranges where the given attribute is allowed (and can be applied).
+	 * Transforms the given set of ranges into a set of ranges where the given attribute is allowed (and can be applied).
 	 *
 	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to be validated.
 	 * @param {String} attribute The name of the attribute to check.
@@ -449,7 +474,7 @@ export default class Schema {
 	}
 
 	/**
-	 * Removes attributes disallowed the schema.
+	 * Removes attributes disallowed by the schema.
 	 *
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes that will be filtered.
 	 * @param {module:engine/model/writer~Writer} writer
@@ -468,10 +493,16 @@ export default class Schema {
 		}
 	}
 
+	/**
+	 * @private
+	 */
 	_clearCache() {
 		this._compiledRules = null;
 	}
 
+	/**
+	 * @private
+	 */
 	_compile() {
 		const compiledRules = {};
 		const sourceRules = this._sourceRules;
@@ -502,6 +533,12 @@ export default class Schema {
 		this._compiledRules = compiledRules;
 	}
 
+	/**
+	 * @private
+	 * @param {module:engine/model/schema~SchemaCompiledItemDefinition} rule
+	 * @param {module:engine/model/schema~SchemaContext} context
+	 * @param {Number} contextItemIndex
+	 */
 	_checkContextMatch( rule, context, contextItemIndex = context.length - 1 ) {
 		const contextItem = context.getItem( contextItemIndex );
 
@@ -522,20 +559,45 @@ export default class Schema {
 mix( Schema, ObservableMixin );
 
 /**
- * @typedef {Object} module:engine/model/schema~SchemaRuleDefinition
+ * TODO
+ *
+ * @event checkChild
  */
 
 /**
- * @private
+ * TODO
+ *
+ * @event checkAttribute
+ */
+
+/**
+ * TODO
+ *
+ * @typedef {Object} module:engine/model/schema~SchemaItemDefinition
+ */
+
+/**
+ * TODO
+ *
+ * @typedef {Object} module:engine/model/schema~SchemaCompiledItemDefinition
+ */
+
+/**
+ * TODO
  */
 export class SchemaContext {
-	constructor( ctx ) {
-		if ( Array.isArray( ctx ) ) {
-			this._items = ctx.map( mapContextItem );
+	/**
+	 * TODO
+	 *
+	 * @param {module:engine/model/schema~SchemaContextDefinition} context
+	 */
+	constructor( context ) {
+		if ( Array.isArray( context ) ) {
+			this._items = context.map( mapContextItem );
 		}
 		// Item or position (PS. It's ok that Position#getAncestors() doesn't accept params).
 		else {
-			this._items = ctx.getAncestors( { includeSelf: true } ).map( mapContextItem );
+			this._items = context.getAncestors( { includeSelf: true } ).map( mapContextItem );
 		}
 	}
 
@@ -550,7 +612,7 @@ export class SchemaContext {
 	/**
 	 * Returns an iterator that iterates over all context items.
 	 *
-	 * @returns {Iterator.<TODO>}
+	 * @returns {Iterator.<module:engine/model/schema~SchemaContextItem>}
 	 */
 	[ Symbol.iterator ]() {
 		return this._items[ Symbol.iterator ]();
@@ -574,6 +636,12 @@ export class SchemaContext {
  *
  * @typedef {module:engine/model/node~Node|module:engine/model/position~Position|
  * Array.<String|module:engine/model/node~Node>} module:engine/model/schema~SchemaContextDefinition
+ */
+
+/**
+ * TODO
+ *
+ * @typedef {Object} module:engine/model/schema~SchemaContextItem
  */
 
 function compileBaseItemRule( sourceItemRules, itemName ) {

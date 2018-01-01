@@ -26,7 +26,7 @@ import Range from '../range';
  * * `<heading>x^y</heading>` with the option disabled (`leaveUnmerged == false`)
  * * `<heading>x^</heading><paragraph>y</paragraph>` with enabled (`leaveUnmerged == true`).
  *
- * Note: {@link module:engine/model/schema~Schema#objects object} and {@link module:engine/model/schema~Schema#limits limit}
+ * Note: {@link module:engine/model/schema~Schema#isObject object} and {@link module:engine/model/schema~Schema#isLimit limit}
  * elements will not be merged.
  *
  * @param {Boolean} [options.doNotResetEntireContent=false] Whether to skip replacing the entire content with a

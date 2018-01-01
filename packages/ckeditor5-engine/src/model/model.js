@@ -32,6 +32,8 @@ import getSelectedContent from './utils/getselectedcontent';
  * {@link module:engine/model/model~Model#document}, and all detached nodes, used to data manipulation. All of them are
  * created and modified by the {@link module:engine/model/writer~Writer}, which can be get using
  * {@link module:engine/model/model~Model#change} or {@link module:engine/model/model~Model#enqueueChange} methods.
+ *
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Model {
 	constructor() {
