@@ -39,7 +39,7 @@ describe( 'UndoEngine integration', () => {
 				doc = model.document;
 
 				// Add "div feature".
-				model.schema.registerItem( 'div', '$block' );
+				model.schema.register( 'div', { inheritAllFrom: '$block' } );
 				buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 
@@ -338,7 +338,7 @@ describe( 'UndoEngine integration', () => {
 
 	describe( 'wrapping, unwrapping, merging, splitting', () => {
 		it( 'wrap and undo', () => {
-			model.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.extend( '$text', { allowIn: '$root' } );
 			input( 'fo[zb]ar' );
 
 			model.change( writer => {
@@ -353,7 +353,7 @@ describe( 'UndoEngine integration', () => {
 		} );
 
 		it( 'wrap, move and undo', () => {
-			model.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.extend( '$text', { allowIn: '$root' } );
 			input( 'fo[zb]ar' );
 
 			model.change( writer => {
