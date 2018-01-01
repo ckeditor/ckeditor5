@@ -27,13 +27,14 @@ describe( 'DeleteCommand integration', () => {
 				editor.commands.add( 'delete', command );
 
 				// Mock paragraph feature.
-				model.schema.registerItem( 'paragraph', '$block' );
-				model.schema.allow( { name: 'paragraph', inside: '$block' } );
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				model.schema.extend( 'paragraph', { allowIn: '$block' } );
 
-				model.schema.registerItem( 'img', '$inline' );
-				model.schema.allow( { name: '$text', inside: 'img' } );
-
-				model.schema.objects.add( 'img' );
+				model.schema.register( 'img', {
+					allowWhere: '$text',
+					isObject: true
+				} );
+				model.schema.extend( '$text', { allowIn: 'img' } );
 			} );
 	} );
 
@@ -125,7 +126,7 @@ describe( 'DeleteCommand integration', () => {
 
 	describe( 'with DataController.deleteContent', () => {
 		beforeEach( () => {
-			model.schema.registerItem( 'h1', '$block' );
+			model.schema.register( 'h1', { inheritAllFrom: '$block' } );
 		} );
 
 		it( 'should replace content with paragraph - if whole content is selected', () => {

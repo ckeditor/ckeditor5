@@ -147,7 +147,7 @@ export default class DeleteCommand extends Command {
 			return false;
 		}
 
-		if ( !model.schema.check( { name: 'paragraph', inside: limitElement.name } ) ) {
+		if ( !model.schema.checkChild( limitElement, 'paragraph' ) ) {
 			return false;
 		}
 

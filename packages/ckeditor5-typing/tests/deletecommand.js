@@ -23,8 +23,8 @@ describe( 'DeleteCommand', () => {
 				const command = new DeleteCommand( editor, 'backward' );
 				editor.commands.add( 'delete', command );
 
-				model.schema.registerItem( 'paragraph', '$block' );
-				model.schema.registerItem( 'heading1', '$block' );
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
 			} );
 	} );
 
@@ -157,9 +157,11 @@ describe( 'DeleteCommand', () => {
 		} );
 
 		it( 'leaves an empty paragraph after removing the whole content inside limit element', () => {
-			model.schema.registerItem( 'section', '$root' );
-			model.schema.limits.add( 'section' );
-			model.schema.allow( { name: 'section', inside: '$root' } );
+			model.schema.register( 'section', {
+				inheritAllFrom: '$root',
+				allowIn: '$root',
+				isLimit: true
+			} );
 
 			setData( model,
 				'<heading1>Foo</heading1>' +
@@ -182,13 +184,15 @@ describe( 'DeleteCommand', () => {
 		} );
 
 		it( 'leaves an empty paragraph after removing another paragraph from block element', () => {
-			model.schema.registerItem( 'section', '$block' );
-			model.schema.registerItem( 'blockQuote', '$block' );
-			model.schema.limits.add( 'section' );
-			model.schema.allow( { name: 'section', inside: '$root' } );
-			model.schema.allow( { name: 'paragraph', inside: 'section' } );
-			model.schema.allow( { name: 'blockQuote', inside: 'section' } );
-			model.schema.allow( { name: 'paragraph', inside: 'blockQuote' } );
+			model.schema.register( 'section', {
+				inheritAllFrom: '$block',
+				isLimit: true
+			} );
+			model.schema.register( 'blockQuote', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'section', { allowIn: '$root' } );
+			model.schema.extend( 'paragraph', { allowIn: 'section' } );
+			model.schema.extend( 'blockQuote', { allowIn: 'section' } );
+			model.schema.extend( 'paragraph', { allowIn: 'blockQuote' } );
 
 			setData( model, '<section><blockQuote><paragraph>[]</paragraph></blockQuote></section>' );
 
@@ -197,8 +201,12 @@ describe( 'DeleteCommand', () => {
 			expect( getData( model ) ).to.equal( '<section><paragraph>[]</paragraph></section>' );
 		} );
 
-		it( 'leaves an empty paragraph after removing the whole content when root element was not added as Schema.limits', () => {
-			model.schema.limits.delete( '$root' );
+		it( 'leaves an empty paragraph after removing the whole content when root element was not added as Schema limit', () => {
+			model.schema.extend( '$root', {
+				isLimit: false
+			} );
+
+			expect( model.schema.isLimit( '$root' ) ).to.be.false;
 
 			setData( model, '<heading1>[]</heading1>' );
 
@@ -236,7 +244,14 @@ describe( 'DeleteCommand', () => {
 		} );
 
 		it( 'does not replace an element if a paragraph is not allowed in current position', () => {
-			model.schema.disallow( { name: 'paragraph', inside: '$root' } );
+			model.schema.on( 'checkChild', ( evt, args ) => {
+				const def = model.schema.getDefinition( args[ 1 ] );
+
+				if ( args[ 0 ].endsWith( '$root' ) && def.name == 'paragraph' ) {
+					evt.stop();
+					evt.return = false;
+				}
+			} );
 
 			setData( model, '<heading1>[]</heading1>' );
 

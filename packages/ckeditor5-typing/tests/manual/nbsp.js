@@ -20,7 +20,7 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		editor.model.schema.allow( { name: '$text', inside: '$root' } );
+		editor.model.schema.extend( '$text', { allowIn: '$root' } );
 
 		const editable = editor.ui.view.editableElement;
 

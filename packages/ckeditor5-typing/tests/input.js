@@ -45,7 +45,7 @@ describe( 'Input feature', () => {
 			} )
 			.then( newEditor => {
 				// Mock image feature.
-				newEditor.model.schema.registerItem( 'image', '$inline' );
+				newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
 
 				buildModelConverter().for( newEditor.data.modelToView, newEditor.editing.modelToView )
 					.fromElement( 'image' )
@@ -643,7 +643,7 @@ describe( 'Input feature', () => {
 					domRoot = view.getDomRoot();
 
 					// Mock image feature.
-					newEditor.model.schema.registerItem( 'image', '$inline' );
+					newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
 
 					buildModelConverter().for( newEditor.data.modelToView, newEditor.editing.modelToView )
 						.fromElement( 'image' )
