@@ -22,12 +22,12 @@ describe( 'ParagraphCommand', () => {
 			root = document.getRoot();
 
 			editor.commands.add( 'paragraph', command );
-			schema.registerItem( 'paragraph', '$block' );
-			schema.registerItem( 'heading1', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			schema.register( 'heading1', { inheritAllFrom: '$block' } );
 
-			schema.registerItem( 'notBlock' );
-			schema.allow( { name: 'notBlock', inside: '$root' } );
-			schema.allow( { name: '$text', inside: 'notBlock' } );
+			schema.register( 'notBlock' );
+			schema.extend( 'notBlock', { allowIn: '$root' } );
+			schema.extend( '$text', { allowIn: 'notBlock' } );
 		} );
 	} );
 
@@ -101,13 +101,22 @@ describe( 'ParagraphCommand', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-paragraph/issues/24
-		it( 'should not rename blocks which cannot become paragraphs', () => {
-			model.schema.registerItem( 'restricted' );
-			model.schema.allow( { name: 'restricted', inside: '$root' } );
-			model.schema.disallow( { name: 'paragraph', inside: 'restricted' } );
+		it( 'should not rename blocks which cannot become paragraphs (paragraph is not allowed in their parent)', () => {
+			model.schema.register( 'restricted', { allowIn: '$root' } );
 
-			model.schema.registerItem( 'fooBlock', '$block' );
-			model.schema.allow( { name: 'fooBlock', inside: 'restricted' } );
+			model.schema.register( 'fooBlock', {
+				inheritAllFrom: '$block',
+				allowIn: 'restricted'
+			} );
+
+			model.schema.on( 'checkChild', ( evt, args ) => {
+				const def = model.schema.getDefinition( args[ 1 ] );
+
+				if ( args[ 0 ].endsWith( 'restricted' ) && def.name == 'paragraph' ) {
+					evt.stop();
+					evt.return = false;
+				}
+			} );
 
 			setData(
 				model,
@@ -121,6 +130,29 @@ describe( 'ParagraphCommand', () => {
 			expect( getData( model ) ).to.equal(
 				'<paragraph>a[bc</paragraph>' +
 				'<restricted><fooBlock></fooBlock></restricted>' +
+				'<paragraph>de]f</paragraph>'
+			);
+		} );
+
+		it( 'should not rename blocks which cannot become paragraphs (block is an object)', () => {
+			model.schema.register( 'image', {
+				isBlock: true,
+				isObject: true,
+				allowIn: '$root'
+			} );
+
+			setData(
+				model,
+				'<heading1>a[bc</heading1>' +
+				'<image></image>' +
+				'<heading1>de]f</heading1>'
+			);
+
+			command.execute();
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>a[bc</paragraph>' +
+				'<image></image>' +
 				'<paragraph>de]f</paragraph>'
 			);
 		} );
@@ -174,8 +206,8 @@ describe( 'ParagraphCommand', () => {
 			} );
 
 			it( 'converts topmost blocks', () => {
-				schema.registerItem( 'inlineImage', '$inline' );
-				schema.allow( { name: '$text', inside: 'inlineImage' } );
+				schema.register( 'inlineImage', { allowWhere: '$text' } );
+				schema.extend( '$text', { allowIn: 'inlineImage' } );
 
 				setData( model, '<heading1><inlineImage>foo[]</inlineImage>bar</heading1>' );
 				command.execute();
@@ -186,7 +218,7 @@ describe( 'ParagraphCommand', () => {
 
 		describe( 'non-collapsed selection', () => {
 			it( 'converts all elements where selection is applied', () => {
-				schema.registerItem( 'heading2', '$block' );
+				schema.register( 'heading2', { inheritAllFrom: '$block' } );
 
 				setData( model, '<heading1>foo[</heading1><heading2>bar</heading2><heading2>baz]</heading2>' );
 
@@ -197,7 +229,7 @@ describe( 'ParagraphCommand', () => {
 			} );
 
 			it( 'converts all elements even if already anchored in paragraph', () => {
-				schema.registerItem( 'heading2', '$block' );
+				schema.register( 'heading2', { inheritAllFrom: '$block' } );
 
 				setData( model, '<paragraph>foo[</paragraph><heading2>bar]</heading2>' );
 
