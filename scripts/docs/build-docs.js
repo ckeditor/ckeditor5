@@ -44,6 +44,7 @@ function buildDocs() {
 		.then( () => {
 			return runUmberto( {
 				skipLiveSnippets,
+				skipValidation,
 				production
 			} );
 		} );
