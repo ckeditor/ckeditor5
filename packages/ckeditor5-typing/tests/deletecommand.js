@@ -245,9 +245,9 @@ describe( 'DeleteCommand', () => {
 
 		it( 'does not replace an element if a paragraph is not allowed in current position', () => {
 			model.schema.on( 'checkChild', ( evt, args ) => {
-				const rule = model.schema.getRule( args[ 1 ] );
+				const def = model.schema.getDefinition( args[ 1 ] );
 
-				if ( args[ 0 ].matchEnd( '$root' ) && rule.name == 'paragraph' ) {
+				if ( args[ 0 ].endsWith( '$root' ) && def.name == 'paragraph' ) {
 					evt.stop();
 					evt.return = false;
 				}
