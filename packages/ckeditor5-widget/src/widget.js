@@ -216,8 +216,8 @@ export default class Widget extends Plugin {
 		const modelSelection = modelDocument.selection;
 		const objectElement = modelSelection.getSelectedElement();
 
-		// if object element is selected.
-		if ( objectElement && schema.objects.has( objectElement.name ) ) {
+		// If object element is selected.
+		if ( objectElement && schema.isObject( objectElement ) ) {
 			const position = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
 			const newRange = modelDocument.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
 
@@ -238,7 +238,7 @@ export default class Widget extends Plugin {
 
 		const objectElement2 = this._getObjectElementNextToSelection( isForward );
 
-		if ( objectElement2 instanceof ModelElement && schema.objects.has( objectElement2.name ) ) {
+		if ( objectElement2 instanceof ModelElement && schema.isObject( objectElement2 ) ) {
 			model.change( () => {
 				this._setSelectionOverElement( objectElement2 );
 			} );
@@ -331,7 +331,7 @@ export default class Widget extends Plugin {
 		model.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
 		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
 
-		if ( objectElement instanceof ModelElement && schema.objects.has( objectElement.name ) ) {
+		if ( objectElement instanceof ModelElement && schema.isObject( objectElement ) ) {
 			return objectElement;
 		}
 
