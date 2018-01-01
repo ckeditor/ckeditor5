@@ -24,7 +24,8 @@ describe( 'InlineAutoformatEngine', () => {
 				editor = newEditor;
 				model = editor.model;
 				doc = model.document;
-				model.schema.allow( { name: '$inline', attributes: [ 'testAttribute' ] } );
+
+				model.schema.extend( '$text', { allowAttributes: 'testAttribute' } );
 			} );
 	} );
 
