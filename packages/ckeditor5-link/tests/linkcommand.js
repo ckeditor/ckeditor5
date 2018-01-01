@@ -17,13 +17,12 @@ describe( 'LinkCommand', () => {
 				model = editor.model;
 				command = new LinkCommand( editor );
 
-				// Allow text in $root.
-				model.schema.allow( { name: '$text', inside: '$root' } );
+				model.schema.extend( '$text', {
+					allowIn: '$root',
+					allowAttributes: 'linkHref'
+				} );
 
-				// Allow text with `linkHref` attribute in paragraph.
-				model.schema.registerItem( 'p', '$block' );
-				model.schema.allow( { name: '$text', attributes: 'linkHref', inside: '$root' } );
-				model.schema.allow( { name: '$text', attributes: 'linkHref', inside: 'p' } );
+				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 			} );
 	} );
 
@@ -36,8 +35,14 @@ describe( 'LinkCommand', () => {
 		// refresh() uses `isAttributeAllowedInSelection` helper which is fully tested in his own test.
 
 		beforeEach( () => {
-			model.schema.registerItem( 'x', '$block' );
-			model.schema.disallow( { name: '$text', inside: 'x', attributes: 'linkHref' } );
+			model.schema.register( 'x', { inheritAllFrom: '$block' } );
+
+			model.schema.on( 'checkAttribute', ( evt, args ) => {
+				if ( args[ 0 ].endsWith( 'x $text' ) && args[ 1 ] == 'linkHref' ) {
+					evt.stop();
+					evt.return = false;
+				}
+			}, { priority: 'high' } );
 		} );
 
 		describe( 'when selection is collapsed', () => {
@@ -189,8 +194,7 @@ describe( 'LinkCommand', () => {
 			} );
 
 			it( 'should set `linkHref` attribute only to allowed elements and omit disallowed', () => {
-				// Disallow text in img.
-				model.schema.registerItem( 'img', '$inline' );
+				model.schema.register( 'img', { allowWhere: '$text' } );
 
 				setData( model, '<p>f[oo<img></img>ba]r</p>' );
 
@@ -234,7 +238,13 @@ describe( 'LinkCommand', () => {
 			} );
 
 			it( 'should not insert text with `linkHref` attribute when is not allowed in parent', () => {
-				model.schema.disallow( { name: '$text', attributes: 'linkHref', inside: 'p' } );
+				model.schema.on( 'checkAttribute', ( evt, args ) => {
+					if ( args[ 0 ].endsWith( 'p $text' ) && args[ 1 ] == 'linkHref' ) {
+						evt.stop();
+						evt.return = false;
+					}
+				}, { priority: 'high' } );
+
 				setData( model, '<p>foo[]bar</p>' );
 
 				command.execute( 'url' );

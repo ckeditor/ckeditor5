@@ -21,12 +21,12 @@ describe( 'UnlinkCommand', () => {
 				document = model.document;
 				command = new UnlinkCommand( editor );
 
-				// Allow text in $root.
-				model.schema.allow( { name: '$text', inside: '$root' } );
+				model.schema.extend( '$text', {
+					allowIn: '$root',
+					allowAttributes: 'linkHref'
+				} );
 
-				// Allow text with `linkHref` attribute in paragraph.
-				model.schema.registerItem( 'p', '$block' );
-				model.schema.allow( { name: '$text', attributes: 'linkHref', inside: '$root' } );
+				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 			} );
 	} );
 
