@@ -123,7 +123,7 @@ describe( 'ImageStyleEngine', () => {
 
 		it( 'should not convert from view to model if schema prevents it', () => {
 			model.schema.on( 'checkAttribute', ( evt, args ) => {
-				if ( args[ 0 ].matchEnd( 'image' ) && args[ 1 ] == 'imageStyle' ) {
+				if ( args[ 0 ].endsWith( 'image' ) && args[ 1 ] == 'imageStyle' ) {
 					evt.stop();
 					evt.return = false;
 				}

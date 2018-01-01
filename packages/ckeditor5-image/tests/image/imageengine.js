@@ -180,9 +180,9 @@ describe( 'ImageEngine', () => {
 
 				model.schema.register( 'div', { inheritAllFrom: '$block' } );
 				model.schema.on( 'checkChild', ( evt, args ) => {
-					const rule = model.schema.getRule( args[ 1 ] );
+					const def = model.schema.getDefinition( args[ 1 ] );
 
-					if ( args[ 0 ].matchEnd( '$root' ) && rule.name == 'image' ) {
+					if ( args[ 0 ].endsWith( '$root' ) && def.name == 'image' ) {
 						evt.stop();
 						evt.return = false;
 					}
