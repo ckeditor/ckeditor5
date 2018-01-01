@@ -40,9 +40,9 @@ export default class BlockQuoteEngine extends Plugin {
 		schema.on( 'checkChild', ( evt, args ) => {
 			const ctx = args[ 0 ];
 			const child = args[ 1 ];
-			const childRule = schema.getRule( child );
+			const childRule = schema.getDefinition( child );
 
-			if ( childRule && childRule.name == 'blockQuote' && ctx.matchEnd( 'blockQuote' ) ) {
+			if ( childRule && childRule.name == 'blockQuote' && ctx.endsWith( 'blockQuote' ) ) {
 				evt.stop();
 				evt.return = false;
 			}
