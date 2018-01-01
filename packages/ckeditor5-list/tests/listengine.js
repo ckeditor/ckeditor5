@@ -51,17 +51,16 @@ describe( 'ListEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.hasItem( 'listItem' ) );
-		expect( model.schema.itemExtends( 'listItem', '$block' ) );
+		expect( model.schema.isRegistered( 'listItem' ) );
+		expect( model.schema.isBlock( 'listItem' ) );
 
-		expect( model.schema.check( { name: '$inline', inside: 'listItem' } ) ).to.be.true;
-		expect( model.schema.check( { name: 'listItem', inside: 'listItem' } ) ).to.be.false;
-		expect( model.schema.check( { name: '$block', inside: 'listItem' } ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root' ], 'listItem' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'listItem' ], '$text' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'listItem' ], 'listItem' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'listItem' ], '$block' ) ).to.be.false;
 
-		expect( model.schema.check( { name: 'listItem', inside: '$root' } ) ).to.be.false;
-		expect( model.schema.check( { name: 'listItem', inside: '$root', attributes: [ 'indent' ] } ) ).to.be.false;
-		expect( model.schema.check( { name: 'listItem', inside: '$root', attributes: [ 'type' ] } ) ).to.be.false;
-		expect( model.schema.check( { name: 'listItem', inside: '$root', attributes: [ 'indent', 'type' ] } ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'indent' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'type' ) ).to.be.true;
 	} );
 
 	describe( 'commands', () => {

@@ -23,14 +23,24 @@ describe( 'ListCommand', () => {
 
 		command = new ListCommand( editor, 'bulleted' );
 
-		model.schema.registerItem( 'listItem', '$block' );
-		model.schema.registerItem( 'paragraph', '$block' );
-		model.schema.registerItem( 'widget', '$block' );
+		model.schema.register( 'listItem', {
+			inheritAllFrom: '$block',
+			allowAttributes: [ 'type', 'indent' ]
+		} );
+		model.schema.register( 'paragraph', {
+			inheritAllFrom: '$block',
+			allowIn: 'widget'
+		} );
+		model.schema.register( 'widget', { inheritAllFrom: '$block' } );
 
-		model.schema.allow( { name: '$block', inside: '$root' } );
-		model.schema.allow( { name: 'paragraph', inside: 'widget' } );
-		model.schema.allow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: '$root' } );
-		model.schema.disallow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: 'widget' } );
+		model.schema.on( 'checkChild', ( evt, args ) => {
+			const def = model.schema.getDefinition( args[ 1 ] );
+
+			if ( args[ 0 ].endsWith( 'widget' ) && def.name == 'listItem' ) {
+				evt.stop();
+				evt.return = false;
+			}
+		} );
 
 		setData(
 			model,
@@ -247,13 +257,12 @@ describe( 'ListCommand', () => {
 				} );
 
 				// https://github.com/ckeditor/ckeditor5-list/issues/62
-				it( 'should not rename blocks which cannot become listItems', () => {
-					model.schema.registerItem( 'restricted' );
-					model.schema.allow( { name: 'restricted', inside: '$root' } );
-					model.schema.disallow( { name: 'paragraph', inside: 'restricted' } );
+				it( 'should not rename blocks which cannot become listItems (list item is not allowed in their parent)', () => {
+					model.schema.register( 'restricted' );
+					model.schema.extend( 'restricted', { allowIn: '$root' } );
 
-					model.schema.registerItem( 'fooBlock', '$block' );
-					model.schema.allow( { name: 'fooBlock', inside: 'restricted' } );
+					model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
+					model.schema.extend( 'fooBlock', { allowIn: 'restricted' } );
 
 					setData(
 						model,
@@ -267,6 +276,29 @@ describe( 'ListCommand', () => {
 					expect( getData( model ) ).to.equal(
 						'<listItem indent="0" type="bulleted">a[bc</listItem>' +
 						'<restricted><fooBlock></fooBlock></restricted>' +
+						'<listItem indent="0" type="bulleted">de]f</listItem>'
+					);
+				} );
+
+				it( 'should not rename blocks which cannot become listItems (block is an object)', () => {
+					model.schema.register( 'image', {
+						isBlock: true,
+						isObject: true,
+						allowIn: '$root'
+					} );
+
+					setData(
+						model,
+						'<paragraph>a[bc</paragraph>' +
+						'<image></image>' +
+						'<paragraph>de]f</paragraph>'
+					);
+
+					command.execute();
+
+					expect( getData( model ) ).to.equal(
+						'<listItem indent="0" type="bulleted">a[bc</listItem>' +
+						'<image></image>' +
 						'<listItem indent="0" type="bulleted">de]f</listItem>'
 					);
 				} );

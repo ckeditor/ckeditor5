@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
@@ -308,9 +307,5 @@ function _fixType( blocks, isBackward, lowestIndent ) {
 // @param {module:engine/model/schema~Schema} schema The schema of the document.
 // @returns {Boolean}
 function checkCanBecomeListItem( block, schema ) {
-	return schema.check( {
-		name: 'listItem',
-		attributes: [ 'type', 'indent' ],
-		inside: Position.createBefore( block )
-	} );
+	return schema.checkChild( block.parent, 'listItem' ) && !schema.isObject( block );
 }
