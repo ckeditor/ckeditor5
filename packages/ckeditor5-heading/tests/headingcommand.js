@@ -27,16 +27,16 @@ describe( 'HeadingCommand', () => {
 			schema = model.schema;
 
 			editor.commands.add( 'paragraph', new ParagraphCommand( editor ) );
-			schema.registerItem( 'paragraph', '$block' );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			for ( const option of options ) {
 				commands[ option.modelElement ] = new HeadingCommand( editor, option.modelElement );
-				schema.registerItem( option.modelElement, '$block' );
+				schema.register( option.modelElement, { inheritAllFrom: '$block' } );
 			}
 
-			schema.registerItem( 'notBlock' );
-			schema.allow( { name: 'notBlock', inside: '$root' } );
-			schema.allow( { name: '$text', inside: 'notBlock' } );
+			schema.register( 'notBlock' );
+			schema.extend( 'notBlock', { allowIn: '$root' } );
+			schema.extend( '$text', { allowIn: 'notBlock' } );
 
 			root = document.getRoot();
 		} );
@@ -112,19 +112,20 @@ describe( 'HeadingCommand', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-heading/issues/73
-		it( 'should not rename blocks which cannot become headings', () => {
-			schema.registerItem( 'restricted' );
-			schema.allow( { name: 'restricted', inside: '$root' } );
-			schema.disallow( { name: 'heading1', inside: 'restricted' } );
+		it( 'should not rename blocks which cannot become headings (heading is not allowed in their parent)', () => {
+			schema.register( 'restricted' );
+			schema.extend( 'restricted', { allowIn: '$root' } );
 
-			schema.registerItem( 'fooBlock', '$block' );
-			schema.allow( { name: 'fooBlock', inside: 'restricted' } );
+			schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
+			schema.extend( 'fooBlock', {
+				allowIn: [ 'restricted', '$root' ]
+			} );
 
 			setData(
 				model,
 				'<paragraph>a[bc</paragraph>' +
 				'<restricted><fooBlock></fooBlock></restricted>' +
-				'<paragraph>de]f</paragraph>'
+				'<fooBlock>de]f</fooBlock>'
 			);
 
 			commands.heading1.execute();
@@ -132,6 +133,29 @@ describe( 'HeadingCommand', () => {
 			expect( getData( model ) ).to.equal(
 				'<heading1>a[bc</heading1>' +
 				'<restricted><fooBlock></fooBlock></restricted>' +
+				'<heading1>de]f</heading1>'
+			);
+		} );
+
+		it( 'should not rename blocks which cannot become headings (block is an object)', () => {
+			schema.register( 'image', {
+				isBlock: true,
+				isObject: true,
+				allowIn: '$root'
+			} );
+
+			setData(
+				model,
+				'<paragraph>a[bc</paragraph>' +
+				'<image></image>' +
+				'<paragraph>de]f</paragraph>'
+			);
+
+			commands.heading1.execute();
+
+			expect( getData( model ) ).to.equal(
+				'<heading1>a[bc</heading1>' +
+				'<image></image>' +
 				'<heading1>de]f</heading1>'
 			);
 		} );
@@ -166,8 +190,8 @@ describe( 'HeadingCommand', () => {
 			} );
 
 			it( 'converts topmost blocks', () => {
-				schema.registerItem( 'inlineImage', '$inline' );
-				schema.allow( { name: '$text', inside: 'inlineImage' } );
+				schema.register( 'inlineImage', { allowWhere: '$text' } );
+				schema.extend( '$text', { allowIn: 'inlineImage' } );
 
 				setData( model, '<paragraph><inlineImage>foo[]</inlineImage>bar</paragraph>' );
 				commands.heading1.execute();

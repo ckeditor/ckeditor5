@@ -33,18 +33,18 @@ describe( 'HeadingEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.hasItem( 'heading1' ) ).to.be.true;
-		expect( model.schema.hasItem( 'heading2' ) ).to.be.true;
-		expect( model.schema.hasItem( 'heading3' ) ).to.be.true;
+		expect( model.schema.isRegistered( 'heading1' ) ).to.be.true;
+		expect( model.schema.isRegistered( 'heading2' ) ).to.be.true;
+		expect( model.schema.isRegistered( 'heading3' ) ).to.be.true;
 
-		expect( model.schema.check( { name: 'heading1', inside: '$root' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$inline', inside: 'heading1' } ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'heading1' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'heading1' ], '$text' ) ).to.be.true;
 
-		expect( model.schema.check( { name: 'heading2', inside: '$root' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$inline', inside: 'heading2' } ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'heading2' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'heading2' ], '$text' ) ).to.be.true;
 
-		expect( model.schema.check( { name: 'heading3', inside: '$root' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$inline', inside: 'heading3' } ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'heading3' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'heading3' ], '$text' ) ).to.be.true;
 	} );
 
 	it( 'should register #commands', () => {
@@ -114,12 +114,12 @@ describe( 'HeadingEngine', () => {
 						expect( editor.commands.get( 'h4' ) ).to.be.instanceOf( HeadingCommand );
 						expect( editor.commands.get( 'paragraph' ) ).to.be.instanceOf( ParagraphCommand );
 
-						expect( model.schema.hasItem( 'paragraph' ) ).to.be.true;
-						expect( model.schema.hasItem( 'h4' ) ).to.be.true;
+						expect( model.schema.isRegistered( 'paragraph' ) ).to.be.true;
+						expect( model.schema.isRegistered( 'h4' ) ).to.be.true;
 
-						expect( model.schema.hasItem( 'heading1' ) ).to.be.false;
-						expect( model.schema.hasItem( 'heading2' ) ).to.be.false;
-						expect( model.schema.hasItem( 'heading3' ) ).to.be.false;
+						expect( model.schema.isRegistered( 'heading1' ) ).to.be.false;
+						expect( model.schema.isRegistered( 'heading2' ) ).to.be.false;
+						expect( model.schema.isRegistered( 'heading3' ) ).to.be.false;
 					} );
 			} );
 		} );
