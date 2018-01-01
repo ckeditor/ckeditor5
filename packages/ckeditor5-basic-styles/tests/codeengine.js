@@ -35,9 +35,8 @@ describe( 'CodeEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.check( { name: '$inline', attributes: 'code', inside: '$root' } ) ).to.be.false;
-		expect( model.schema.check( { name: '$inline', attributes: 'code', inside: '$block' } ) ).to.be.true;
-		expect( model.schema.check( { name: '$inline', attributes: 'code', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'code' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'code' ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -69,14 +68,12 @@ describe( 'CodeEngine', () => {
 		} );
 
 		it( 'should be integrated with autoparagraphing', () => {
-			// Incorrect results because autoparagraphing works incorrectly (issue in paragraph).
-			// https://github.com/ckeditor/ckeditor5-paragraph/issues/10
-
 			editor.setData( '<code>foo</code>bar' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text code="true">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+			expect( editor.getData() ).to.equal( '<p><code>foo</code>bar</p>' );
 		} );
 	} );
 

@@ -12,6 +12,8 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
 testUtils.createSinonSandbox();
 
 describe( 'Italic', () => {
@@ -23,7 +25,7 @@ describe( 'Italic', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Italic ]
+				plugins: [ Paragraph, Italic ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -65,14 +67,13 @@ describe( 'Italic', () => {
 		const command = editor.commands.get( 'italic' );
 
 		expect( italicView.isOn ).to.be.false;
-
-		expect( italicView.isEnabled ).to.be.false;
+		expect( italicView.isEnabled ).to.be.true;
 
 		command.value = true;
 		expect( italicView.isOn ).to.be.true;
 
-		command.isEnabled = true;
-		expect( italicView.isEnabled ).to.be.true;
+		command.isEnabled = false;
+		expect( italicView.isEnabled ).to.be.false;
 	} );
 
 	it( 'should set keystroke in the model', () => {

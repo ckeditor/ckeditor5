@@ -11,6 +11,8 @@ import CodeEngine from '../src/codeengine';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
 testUtils.createSinonSandbox();
 
 describe( 'Code', () => {
@@ -22,7 +24,7 @@ describe( 'Code', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Code ]
+				plugins: [ Paragraph, Code ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -63,13 +65,12 @@ describe( 'Code', () => {
 		const command = editor.commands.get( 'code' );
 
 		expect( codeView.isOn ).to.be.false;
-
-		expect( codeView.isEnabled ).to.be.false;
+		expect( codeView.isEnabled ).to.be.true;
 
 		command.value = true;
 		expect( codeView.isOn ).to.be.true;
 
-		command.isEnabled = true;
-		expect( codeView.isEnabled ).to.be.true;
+		command.isEnabled = false;
+		expect( codeView.isEnabled ).to.be.false;
 	} );
 } );
