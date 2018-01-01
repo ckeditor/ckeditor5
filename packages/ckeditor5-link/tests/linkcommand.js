@@ -38,7 +38,7 @@ describe( 'LinkCommand', () => {
 			model.schema.register( 'x', { inheritAllFrom: '$block' } );
 
 			model.schema.on( 'checkAttribute', ( evt, args ) => {
-				if ( args[ 0 ].matchEnd( 'x $text' ) && args[ 1 ] == 'linkHref' ) {
+				if ( args[ 0 ].endsWith( 'x $text' ) && args[ 1 ] == 'linkHref' ) {
 					evt.stop();
 					evt.return = false;
 				}
@@ -239,7 +239,7 @@ describe( 'LinkCommand', () => {
 
 			it( 'should not insert text with `linkHref` attribute when is not allowed in parent', () => {
 				model.schema.on( 'checkAttribute', ( evt, args ) => {
-					if ( args[ 0 ].matchEnd( 'p $text' ) && args[ 1 ] == 'linkHref' ) {
+					if ( args[ 0 ].endsWith( 'p $text' ) && args[ 1 ] == 'linkHref' ) {
 						evt.stop();
 						evt.return = false;
 					}
