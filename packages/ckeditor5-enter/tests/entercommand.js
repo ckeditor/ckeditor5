@@ -25,20 +25,23 @@ describe( 'EnterCommand', () => {
 
 				// Note: We could use real names like 'paragraph', but that would make test patterns too long.
 				// Plus, this is actually a good test that the algorithm can be used for any model.
-				schema.registerItem( 'img', '$inline' );
-				schema.registerItem( 'p', '$block' );
-				schema.registerItem( 'h', '$block' );
-				schema.registerItem( 'inlineLimit' );
-				schema.registerItem( 'blockLimit' );
-
-				schema.allow( { name: 'inlineLimit', inside: 'p' } );
-				schema.allow( { name: '$text', inside: 'inlineLimit' } );
-				schema.allow( { name: '$text', inside: '$root' } );
-				schema.allow( { name: 'blockLimit', inside: '$root' } );
-				schema.allow( { name: 'p', inside: 'blockLimit' } );
-
-				schema.limits.add( 'inlineLimit' );
-				schema.limits.add( 'blockLimit' );
+				schema.register( 'img', { allowWhere: '$block' } );
+				schema.register( 'p', {
+					inheritAllFrom: '$block',
+					allowIn: 'blockLimit'
+				} );
+				schema.register( 'h', { inheritAllFrom: '$block' } );
+				schema.register( 'inlineLimit', {
+					allowIn: 'p',
+					isLimit: true
+				} );
+				schema.register( 'blockLimit', {
+					allowIn: '$root',
+					isLimit: true
+				} );
+				schema.extend( '$text', {
+					allowIn: [ 'inlineLimit', '$root' ]
+				} );
 			} );
 	} );
 
