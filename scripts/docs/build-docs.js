@@ -14,6 +14,7 @@ const buildApiDocs = require( './buildapi' );
 
 const skipLiveSnippets = process.argv.includes( '--skip-snippets' );
 const skipApi = process.argv.includes( '--skip-api' );
+const skipValidation = process.argv.includes( '--skip-validation' );
 const production = process.argv.includes( '--production' );
 
 buildDocs();
@@ -30,6 +31,7 @@ function buildDocs() {
 		runUmberto( {
 			skipLiveSnippets,
 			skipApi,
+			skipValidation,
 			production
 		} ).then( () => process.exit() );
 
@@ -42,6 +44,7 @@ function buildDocs() {
 		.then( () => {
 			return runUmberto( {
 				skipLiveSnippets,
+				skipValidation,
 				production
 			} );
 		} );
@@ -55,6 +58,7 @@ function runUmberto( options ) {
 		configDir: 'docs',
 		clean: true,
 		skipLiveSnippets: options.skipLiveSnippets,
+		skipValidation: options.skipValidation,
 		snippetOptions: {
 			production: options.production
 		},
