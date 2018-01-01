@@ -95,24 +95,22 @@ describe( 'ContextualBalloon', () => {
 			} );
 
 			it( 'obtains the farthest root of the selection (nested editable)', () => {
-				model.schema.registerItem( 'widget' );
-				model.schema.registerItem( 'nestededitable' );
-
-				model.schema.objects.add( 'widget' );
-
-				model.schema.allow( { name: 'widget', inside: '$root' } );
-				model.schema.allow( { name: 'nestededitable', inside: 'widget' } );
-				model.schema.allow( { name: '$inline', inside: 'nestededitable' } );
+				model.schema.register( 'widget', {
+					allowIn: '$root',
+					isObject: true
+				} );
+				model.schema.register( 'nestedEditable', { allowIn: 'widget' } );
+				model.schema.extend( '$text', { allowIn: 'nestedEditable' } );
 
 				buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView )
 					.fromElement( 'widget' )
 					.toElement( () => new ViewContainerElement( 'figure', { contenteditable: 'false' } ) );
 
 				buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView )
-					.fromElement( 'nestededitable' )
+					.fromElement( 'nestedEditable' )
 					.toElement( () => new ViewEditableElement( 'figcaption', { contenteditable: 'true' } ) );
 
-				setModelData( model, '<widget><nestededitable>[]foo</nestededitable></widget>' );
+				setModelData( model, '<widget><nestedEditable>[]foo</nestedEditable></widget>' );
 
 				expect( balloon.positionLimiter() ).to.equal( viewDocument.domConverter.mapViewToDom( root ) );
 			} );
