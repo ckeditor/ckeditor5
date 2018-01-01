@@ -55,7 +55,7 @@ export default class AlignmentEditing extends Plugin {
 		const enabledStyles = editor.config.get( 'alignment.styles' );
 
 		// Allow alignment attribute on all blocks.
-		schema.allow( { name: '$block', attributes: 'alignment' } );
+		schema.extend( '$block', { allowAttributes: 'alignment' } );
 
 		data.modelToView.on( 'attribute:alignment', convertStyle() );
 		editing.modelToView.on( 'attribute:alignment', convertStyle() );
@@ -81,18 +81,6 @@ export default class AlignmentEditing extends Plugin {
 			.forEach( style => {
 				editor.commands.add( commandNameFromStyle( style ), new AlignmentCommand( editor, style, isDefault( style ) ) );
 			} );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	afterInit() {
-		const schema = this.editor.model.schema;
-
-		// Disallow alignment on caption elements.
-		if ( schema.hasItem( 'caption' ) ) {
-			schema.disallow( { name: 'caption', attributes: 'alignment' } );
-		}
 	}
 }
 
