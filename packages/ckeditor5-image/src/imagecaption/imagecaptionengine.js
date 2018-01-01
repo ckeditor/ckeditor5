@@ -59,10 +59,11 @@ export default class ImageCaptionEngine extends Plugin {
 		this._createCaption = captionElementCreator( viewDocument, t( 'Enter image caption' ) );
 
 		// Schema configuration.
-		schema.registerItem( 'caption', '$block' );
-		schema.allow( { name: '$inline', inside: 'caption' } );
-		schema.allow( { name: 'caption', inside: 'image' } );
-		schema.limits.add( 'caption' );
+		schema.register( 'caption', {
+			allowIn: 'image',
+			allowContentOf: '$block',
+			isLimit: true
+		} );
 
 		// Add caption element to each image inserted without it.
 		document.on( 'change', ( evt, type, data, batch ) => this._insertMissingModelCaptionElement( type, data, batch ) );

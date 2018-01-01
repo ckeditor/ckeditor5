@@ -20,12 +20,14 @@ describe( 'ImageStyleCommand', () => {
 				defaultStyleCommand = new ImageStyleCommand( newEditor, defaultStyle );
 				otherStyleCommand = new ImageStyleCommand( newEditor, otherStyle );
 
-				model.schema.registerItem( 'p', '$block' );
+				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 
-				model.schema.registerItem( 'image' );
-				model.schema.objects.add( 'image' );
-				model.schema.allow( { name: 'image', inside: '$root' } );
-				model.schema.allow( { name: 'image', inside: '$root', attributes: [ 'imageStyle' ] } );
+				model.schema.register( 'image', {
+					isObject: true,
+					isBlock: true,
+					allowWhere: '$block',
+					allowAttributes: 'imageStyle'
+				} );
 			} );
 	} );
 

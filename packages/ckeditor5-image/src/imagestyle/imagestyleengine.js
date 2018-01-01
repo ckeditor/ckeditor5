@@ -56,7 +56,7 @@ export default class ImageStyleEngine extends Plugin {
 
 		// Allow imageStyle attribute in image.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
-		schema.allow( { name: 'image', attributes: 'imageStyle', inside: '$root' } );
+		schema.extend( 'image', { allowAttributes: 'imageStyle' } );
 
 		// Converters for imageStyle attribute from model to view.
 		const modelToViewConverter = modelToViewStyleAttribute( styles );

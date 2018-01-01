@@ -33,8 +33,15 @@ describe( 'ImageEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.check( { name: 'image', attributes: [ 'src', 'alt' ], inside: '$root' } ) ).to.be.true;
-		expect( model.schema.objects.has( 'image' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'image' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'src' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'alt' ) ).to.be.true;
+
+		expect( model.schema.isObject( 'image' ) ).to.be.true;
+
+		expect( model.schema.checkChild( [ '$root', 'image' ], 'image' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'image' ], '$text' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', '$block' ], 'image' ) ).to.be.false;
 	} );
 
 	describe( 'conversion in data pipeline', () => {
@@ -171,8 +178,15 @@ describe( 'ImageEngine', () => {
 				const data = editor.data;
 				const editing = editor.editing;
 
-				model.schema.registerItem( 'div', '$block' );
-				model.schema.disallow( { name: 'image', inside: '$root', attributes: 'src' } );
+				model.schema.register( 'div', { inheritAllFrom: '$block' } );
+				model.schema.on( 'checkChild', ( evt, args ) => {
+					const def = model.schema.getDefinition( args[ 1 ] );
+
+					if ( args[ 0 ].endsWith( '$root' ) && def.name == 'image' ) {
+						evt.stop();
+						evt.return = false;
+					}
+				}, { priority: 'high' } );
 
 				buildModelConverter().for( data.modelToView, editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 				buildViewConverter().for( data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
@@ -227,8 +241,10 @@ describe( 'ImageEngine', () => {
 				const data = editor.data;
 				const editing = editor.editing;
 
-				model.schema.registerItem( 'div', '$block' );
-				model.schema.allow( { name: 'div', attributes: 'alt', inside: '$root' } );
+				model.schema.register( 'div', {
+					inheritAllFrom: '$block',
+					allowAttributes: 'alt'
+				} );
 
 				buildModelConverter().for( data.modelToView, editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 				buildViewConverter().for( data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
@@ -239,7 +255,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should handle figure with two images', () => {
-				model.schema.allow( { name: '$text', inside: 'image' } );
+				model.schema.extend( '$text', { allowIn: 'image' } );
 
 				editor.setData( '<figure class="image"><img src="foo.jpg" /><img src="bar.jpg" />abc</figure>' );
 
@@ -284,7 +300,7 @@ describe( 'ImageEngine', () => {
 
 			describe( 'should autohoist images', () => {
 				beforeEach( () => {
-					model.schema.registerItem( 'div', '$block' );
+					model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
 					buildModelConverter()
 						.for( editor.data.modelToView, editor.editing.modelToView )
@@ -339,7 +355,7 @@ describe( 'ImageEngine', () => {
 				} );
 
 				it( 'deep autohoisting #1', () => {
-					model.schema.allow( { name: 'div', inside: 'div' } );
+					model.schema.extend( 'div', { allowIn: 'div' } );
 
 					editor.setData( '<div>foo<div>xx<img src="foo.jpg" alt="foo" /></div>bar</div>' );
 
@@ -356,7 +372,7 @@ describe( 'ImageEngine', () => {
 				} );
 
 				it( 'deep autohoisting #2', () => {
-					model.schema.allow( { name: 'div', inside: 'div' } );
+					model.schema.extend( 'div', { allowIn: 'div' } );
 
 					editor.setData(
 						'<div>x</div>' +
@@ -370,9 +386,11 @@ describe( 'ImageEngine', () => {
 				} );
 
 				it( 'should not break a limiting element', () => {
-					model.schema.registerItem( 'limit', '$block' );
-					model.schema.allow( { name: 'div', inside: 'limit' } );
-					model.schema.limits.add( 'limit' );
+					model.schema.register( 'limit', {
+						inheritAllFrom: '$block',
+						isLimit: true
+					} );
+					model.schema.extend( 'div', { allowIn: 'limit' } );
 
 					buildModelConverter()
 						.for( editor.data.modelToView, editor.editing.modelToView ).fromElement( 'limit' ).toElement( 'limit' );
