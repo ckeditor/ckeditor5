@@ -169,9 +169,9 @@ describe( 'Paragraph feature', () => {
 
 			it( 'should not fail when text is not allowed in paragraph', () => {
 				model.schema.on( 'checkChild', ( evt, args ) => {
-					const rule = model.schema.getRule( args[ 1 ] );
+					const def = model.schema.getDefinition( args[ 1 ] );
 
-					if ( args[ 0 ].matchEnd( '$root paragraph' ) && rule.name == '$text' ) {
+					if ( args[ 0 ].endsWith( '$root paragraph' ) && def.name == '$text' ) {
 						evt.stop();
 						evt.return = false;
 					}
@@ -435,9 +435,9 @@ describe( 'Paragraph feature', () => {
 
 		it( 'should not fix root which does not allow paragraph', () => {
 			model.schema.on( 'checkChild', ( evt, args ) => {
-				const rule = model.schema.getRule( args[ 1 ] );
+				const def = model.schema.getDefinition( args[ 1 ] );
 
-				if ( args[ 0 ].matchEnd( '$root' ) && rule.name == 'paragraph' ) {
+				if ( args[ 0 ].endsWith( '$root' ) && def.name == 'paragraph' ) {
 					evt.stop();
 					evt.return = false;
 				}

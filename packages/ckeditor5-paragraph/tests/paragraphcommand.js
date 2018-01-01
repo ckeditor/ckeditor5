@@ -110,9 +110,9 @@ describe( 'ParagraphCommand', () => {
 			} );
 
 			model.schema.on( 'checkChild', ( evt, args ) => {
-				const rule = model.schema.getRule( args[ 1 ] );
+				const def = model.schema.getDefinition( args[ 1 ] );
 
-				if ( args[ 0 ].matchEnd( 'restricted' ) && rule.name == 'paragraph' ) {
+				if ( args[ 0 ].endsWith( 'restricted' ) && def.name == 'paragraph' ) {
 					evt.stop();
 					evt.return = false;
 				}
