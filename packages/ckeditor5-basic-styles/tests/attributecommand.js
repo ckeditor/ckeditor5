@@ -38,7 +38,7 @@ describe( 'AttributeCommand', () => {
 					const attributeName = args[ 1 ];
 
 					// Allow 'bold' on p>$text.
-					if ( ctx.matchEnd( 'p $text' ) && attributeName == 'bold' ) {
+					if ( ctx.endsWith( 'p $text' ) && attributeName == 'bold' ) {
 						evt.stop();
 						evt.return = true;
 					}
