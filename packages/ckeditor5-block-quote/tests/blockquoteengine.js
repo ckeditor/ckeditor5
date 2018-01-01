@@ -35,12 +35,20 @@ describe( 'BlockQuoteEngine', () => {
 	} );
 
 	it( 'allows for blockQuote in the $root', () => {
-		expect( model.schema.check( { name: 'blockQuote', inside: '$root' } ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'blockQuote' ) ).to.be.true;
 	} );
 
 	it( 'allows for $block in blockQuote', () => {
-		expect( model.schema.check( { name: '$block', inside: 'blockQuote' } ) ).to.be.true;
-		expect( model.schema.check( { name: 'paragraph', inside: 'blockQuote' } ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], '$block' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'paragraph' ) ).to.be.true;
+	} );
+
+	it( 'does not allow for blockQuote in blockQuote', () => {
+		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'blockQuote' ) ).to.be.false;
+	} );
+
+	it( 'does not break when checking an unregisterd item', () => {
+		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'foo' ) ).to.be.false;
 	} );
 
 	it( 'adds converters to the data pipeline', () => {

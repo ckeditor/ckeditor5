@@ -31,9 +31,22 @@ export default class BlockQuoteEngine extends Plugin {
 
 		editor.commands.add( 'blockQuote', new BlockQuoteCommand( editor ) );
 
-		schema.registerItem( 'blockQuote' );
-		schema.allow( { name: 'blockQuote', inside: '$root' } );
-		schema.allow( { name: '$block', inside: 'blockQuote' } );
+		schema.register( 'blockQuote', {
+			allowWhere: '$block',
+			allowContentOf: '$root'
+		} );
+
+		// Disallow blockQuote in blockQuote.
+		schema.on( 'checkChild', ( evt, args ) => {
+			const ctx = args[ 0 ];
+			const child = args[ 1 ];
+			const childRule = schema.getDefinition( child );
+
+			if ( childRule && childRule.name == 'blockQuote' && ctx.endsWith( 'blockQuote' ) ) {
+				evt.stop();
+				evt.return = false;
+			}
+		}, { priority: 'high' } );
 
 		buildViewConverter().for( editor.data.viewToModel )
 			.fromElement( 'blockquote' )
@@ -42,22 +55,5 @@ export default class BlockQuoteEngine extends Plugin {
 		buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView )
 			.fromElement( 'blockQuote' )
 			.toElement( 'blockquote' );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	afterInit() {
-		const schema = this.editor.model.schema;
-
-		// TODO
-		// Workaround for https://github.com/ckeditor/ckeditor5-engine/issues/532#issuecomment-280924650.
-		if ( schema.hasItem( 'listItem' ) ) {
-			schema.allow( {
-				name: 'listItem',
-				inside: 'blockQuote',
-				attributes: [ 'type', 'indent' ]
-			} );
-		}
 	}
 }
