@@ -42,36 +42,36 @@ ClassicEditor
 			const ctx = args[ 0 ];
 			const attributeName = args[ 1 ];
 
-			if ( ctx.matchEnd( 'heading1 $text' ) && [ 'linkHref', 'italic' ].includes( attributeName ) ) {
+			if ( ctx.endsWith( 'heading1 $text' ) && [ 'linkHref', 'italic' ].includes( attributeName ) ) {
 				evt.stop();
 				evt.return = false;
 			}
 
-			if ( ctx.matchEnd( 'heading2 $text' ) && attributeName == 'italic' ) {
+			if ( ctx.endsWith( 'heading2 $text' ) && attributeName == 'italic' ) {
 				evt.stop();
 				evt.return = false;
 			}
 
-			if ( ctx.matchEnd( 'heading2 $text' ) && attributeName == 'italic' ) {
+			if ( ctx.endsWith( 'heading2 $text' ) && attributeName == 'italic' ) {
 				evt.stop();
 				evt.return = false;
 			}
 
-			if ( ctx.matchEnd( 'blockQuote listItem $text' ) && attributeName == 'linkHref' ) {
+			if ( ctx.endsWith( 'blockQuote listItem $text' ) && attributeName == 'linkHref' ) {
 				evt.stop();
 				evt.return = false;
 			}
 
-			if ( ctx.matchEnd( 'paragraph $text' ) && attributeName == 'bold' ) {
+			if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'bold' ) {
 				evt.stop();
 				evt.return = false;
 			}
 		} );
 
 		schema.on( 'checkChild', ( evt, args ) => {
-			const rule = schema.getRule( args[ 1 ] );
+			const def = schema.getDefinition( args[ 1 ] );
 
-			if ( args[ 0 ].matchEnd( '$root' ) && rule.name == 'heading3' ) {
+			if ( args[ 0 ].endsWith( '$root' ) && def.name == 'heading3' ) {
 				evt.stop();
 				evt.return = false;
 			}

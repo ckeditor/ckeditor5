@@ -498,9 +498,9 @@ describe( 'View converter builder', () => {
 		schema.on( 'checkChild', ( evt, args ) => {
 			const ctx = args[ 0 ];
 			const child = args[ 1 ];
-			const childRule = schema.getRule( child );
+			const childRule = schema.getDefinition( child );
 
-			if ( childRule.name == 'div' && ctx.matchEnd( '$root' ) ) {
+			if ( childRule.name == 'div' && ctx.endsWith( '$root' ) ) {
 				evt.stop();
 				evt.return = false;
 			}
@@ -531,7 +531,7 @@ describe( 'View converter builder', () => {
 	// 		const context = args[ 0 ];
 	// 		const attributeName = args[ 1 ];
 
-	// 		if ( ctx.matchEnd( 'paragraph $text' ) && attributeName == 'bold' ) {
+	// 		if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'bold' ) {
 	// 			evt.stop();
 	// 			evt.return = false;
 	// 		}

@@ -45,17 +45,17 @@ describe( 'Schema', () => {
 		it( 'allows registering an item', () => {
 			schema.register( 'foo' );
 
-			expect( schema.getRule( 'foo' ) ).to.be.an( 'object' );
+			expect( schema.getDefinition( 'foo' ) ).to.be.an( 'object' );
 		} );
 
-		it( 'copies rules', () => {
-			const rules = {};
+		it( 'copies definitions', () => {
+			const definitions = {};
 
-			schema.register( 'foo', rules );
+			schema.register( 'foo', definitions );
 
-			rules.isBlock = true;
+			definitions.isBlock = true;
 
-			expect( schema.getRules().foo ).to.not.have.property( 'isBlock' );
+			expect( schema.getDefinitions().foo ).to.not.have.property( 'isBlock' );
 		} );
 
 		it( 'throws when trying to register for a single item twice', () => {
@@ -68,25 +68,25 @@ describe( 'Schema', () => {
 	} );
 
 	describe( 'extend()', () => {
-		it( 'allows extending item\'s rules', () => {
+		it( 'allows extending item\'s definitions', () => {
 			schema.register( 'foo' );
 
 			schema.extend( 'foo', {
 				isBlock: true
 			} );
 
-			expect( schema.getRule( 'foo' ) ).to.have.property( 'isBlock', true );
+			expect( schema.getDefinition( 'foo' ) ).to.have.property( 'isBlock', true );
 		} );
 
-		it( 'copies rules', () => {
+		it( 'copies definitions', () => {
 			schema.register( 'foo', {} );
 
-			const rules = {};
-			schema.extend( 'foo', rules );
+			const definitions = {};
+			schema.extend( 'foo', definitions );
 
-			rules.isBlock = true;
+			definitions.isBlock = true;
 
-			expect( schema.getRules().foo ).to.not.have.property( 'isBlock' );
+			expect( schema.getDefinitions().foo ).to.not.have.property( 'isBlock' );
 		} );
 
 		it( 'throws when trying to extend a not yet registered item', () => {
@@ -96,8 +96,8 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( 'getRules()', () => {
-		it( 'returns compiled rules', () => {
+	describe( 'getDefinitions()', () => {
+		it( 'returns compiled definitions', () => {
 			schema.register( '$root' );
 
 			schema.register( 'foo', {
@@ -108,9 +108,9 @@ describe( 'Schema', () => {
 				isBlock: true
 			} );
 
-			const rules = schema.getRules();
+			const definitions = schema.getDefinitions();
 
-			expect( rules.foo ).to.deep.equal( {
+			expect( definitions.foo ).to.deep.equal( {
 				name: 'foo',
 				allowIn: [ '$root' ],
 				allowAttributes: [],
@@ -129,17 +129,17 @@ describe( 'Schema', () => {
 				isFoo: false // Just to check that the last one wins.
 			} );
 
-			const rules = schema.getRules();
+			const definitions = schema.getDefinitions();
 
-			expect( rules.foo ).to.have.property( 'isBlock', true );
-			expect( rules.foo ).to.have.property( 'isFoo', false );
-			expect( rules.foo ).to.have.property( 'isBar', true );
+			expect( definitions.foo ).to.have.property( 'isBlock', true );
+			expect( definitions.foo ).to.have.property( 'isFoo', false );
+			expect( definitions.foo ).to.have.property( 'isBar', true );
 		} );
 
-		it( 'does not recompile rules if not needed', () => {
+		it( 'does not recompile definitions if not needed', () => {
 			schema.register( 'foo' );
 
-			expect( schema.getRules() ).to.equal( schema.getRules() );
+			expect( schema.getDefinitions() ).to.equal( schema.getDefinitions() );
 		} );
 
 		it( 'ensures no duplicates in allowIn', () => {
@@ -151,9 +151,9 @@ describe( 'Schema', () => {
 				allowIn: '$root'
 			} );
 
-			const rules = schema.getRules();
+			const definitions = schema.getDefinitions();
 
-			expect( rules.foo ).to.deep.equal( {
+			expect( definitions.foo ).to.deep.equal( {
 				name: 'foo',
 				allowIn: [ '$root' ],
 				allowAttributes: []
@@ -165,9 +165,9 @@ describe( 'Schema', () => {
 				allowIn: '$root'
 			} );
 
-			const rules = schema.getRules();
+			const definitions = schema.getDefinitions();
 
-			expect( rules.foo ).to.deep.equal( {
+			expect( definitions.foo ).to.deep.equal( {
 				name: 'foo',
 				allowIn: [],
 				allowAttributes: []
@@ -182,9 +182,9 @@ describe( 'Schema', () => {
 				allowAttributes: 'foo'
 			} );
 
-			const rules = schema.getRules();
+			const definitions = schema.getDefinitions();
 
-			expect( rules.paragraph ).to.deep.equal( {
+			expect( definitions.paragraph ).to.deep.equal( {
 				name: 'paragraph',
 				allowIn: [],
 				allowAttributes: [ 'foo' ]
@@ -200,9 +200,9 @@ describe( 'Schema', () => {
 				allowAttributes: 'foo'
 			} );
 
-			const rules = schema.getRules();
+			const definitions = schema.getDefinitions();
 
-			expect( rules.paragraph ).to.deep.equal( {
+			expect( definitions.paragraph ).to.deep.equal( {
 				name: 'paragraph',
 				allowIn: [],
 				allowAttributes: [ 'foo' ]
@@ -210,32 +210,32 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( 'getRule()', () => {
-		it( 'returns a rule based on an item name', () => {
+	describe( 'getDefinition()', () => {
+		it( 'returns a definition based on an item name', () => {
 			schema.register( 'foo', {
 				isMe: true
 			} );
 
-			expect( schema.getRule( 'foo' ).isMe ).to.be.true;
+			expect( schema.getDefinition( 'foo' ).isMe ).to.be.true;
 		} );
 
-		it( 'returns a rule based on an element name', () => {
+		it( 'returns a definition based on an element name', () => {
 			schema.register( 'foo', {
 				isMe: true
 			} );
 
-			expect( schema.getRule( new Element( 'foo' ) ).isMe ).to.be.true;
+			expect( schema.getDefinition( new Element( 'foo' ) ).isMe ).to.be.true;
 		} );
 
-		it( 'returns a rule based on a text node', () => {
+		it( 'returns a definition based on a text node', () => {
 			schema.register( '$text', {
 				isMe: true
 			} );
 
-			expect( schema.getRule( new Text( 'foo' ) ).isMe ).to.be.true;
+			expect( schema.getDefinition( new Text( 'foo' ) ).isMe ).to.be.true;
 		} );
 
-		it( 'returns a rule based on a text proxy', () => {
+		it( 'returns a definition based on a text proxy', () => {
 			schema.register( '$text', {
 				isMe: true
 			} );
@@ -243,20 +243,20 @@ describe( 'Schema', () => {
 			const text = new Text( 'foo' );
 			const textProxy = new TextProxy( text, 0, 1 );
 
-			expect( schema.getRule( textProxy ).isMe ).to.be.true;
+			expect( schema.getDefinition( textProxy ).isMe ).to.be.true;
 		} );
 
-		it( 'returns a rule based on a schema context item', () => {
+		it( 'returns a definition based on a schema context item', () => {
 			schema.register( 'foo', {
 				isMe: true
 			} );
 			const ctx = new SchemaContext( [ '$root', 'foo' ] );
 
-			expect( schema.getRule( ctx.last ).isMe ).to.be.true;
+			expect( schema.getDefinition( ctx.last ).isMe ).to.be.true;
 		} );
 
 		it( 'returns undefined when trying to get an unregistered item', () => {
-			expect( schema.getRule( '404' ) ).to.be.undefined;
+			expect( schema.getDefinition( '404' ) ).to.be.undefined;
 		} );
 	} );
 
@@ -271,8 +271,8 @@ describe( 'Schema', () => {
 			expect( schema.isRegistered( 'foo' ) ).to.be.false;
 		} );
 
-		it( 'uses getRule()\'s item to rule normalization', () => {
-			const stub = sinon.stub( schema, 'getRule' ).returns( {} );
+		it( 'uses getDefinition()\'s item to definition normalization', () => {
+			const stub = sinon.stub( schema, 'getDefinition' ).returns( {} );
 
 			expect( schema.isRegistered( 'foo' ) ).to.be.true;
 			expect( stub.calledOnce ).to.be.true;
@@ -298,8 +298,8 @@ describe( 'Schema', () => {
 			expect( schema.isBlock( 'foo' ) ).to.be.false;
 		} );
 
-		it( 'uses getRule()\'s item to rule normalization', () => {
-			const stub = sinon.stub( schema, 'getRule' ).returns( { isBlock: true } );
+		it( 'uses getDefinition()\'s item to definition normalization', () => {
+			const stub = sinon.stub( schema, 'getDefinition' ).returns( { isBlock: true } );
 
 			expect( schema.isBlock( 'foo' ) ).to.be.true;
 			expect( stub.calledOnce ).to.be.true;
@@ -325,8 +325,8 @@ describe( 'Schema', () => {
 			expect( schema.isLimit( 'foo' ) ).to.be.false;
 		} );
 
-		it( 'uses getRule()\'s item to rule normalization', () => {
-			const stub = sinon.stub( schema, 'getRule' ).returns( { isLimit: true } );
+		it( 'uses getDefinition()\'s item to definition normalization', () => {
+			const stub = sinon.stub( schema, 'getDefinition' ).returns( { isLimit: true } );
 
 			expect( schema.isLimit( 'foo' ) ).to.be.true;
 			expect( stub.calledOnce ).to.be.true;
@@ -352,8 +352,8 @@ describe( 'Schema', () => {
 			expect( schema.isObject( 'foo' ) ).to.be.false;
 		} );
 
-		it( 'uses getRule()\'s item to rule normalization', () => {
-			const stub = sinon.stub( schema, 'getRule' ).returns( { isObject: true } );
+		it( 'uses getDefinition()\'s item to definition normalization', () => {
+			const stub = sinon.stub( schema, 'getDefinition' ).returns( { isObject: true } );
 
 			expect( schema.isObject( 'foo' ) ).to.be.true;
 			expect( stub.calledOnce ).to.be.true;
@@ -615,13 +615,13 @@ describe( 'Schema', () => {
 				const attributeName = args[ 1 ];
 
 				// Allow 'bold' on p>$text.
-				if ( ctx.matchEnd( 'p $text' ) && attributeName == 'bold' ) {
+				if ( ctx.endsWith( 'p $text' ) && attributeName == 'bold' ) {
 					evt.stop();
 					evt.return = true;
 				}
 
 				// Allow 'bold' on $root>p.
-				if ( ctx.matchEnd( '$root p' ) && attributeName == 'bold' ) {
+				if ( ctx.endsWith( '$root p' ) && attributeName == 'bold' ) {
 					evt.stop();
 					evt.return = true;
 				}
@@ -705,13 +705,13 @@ describe( 'Schema', () => {
 				const attributeName = args[ 1 ];
 
 				// Allow 'bold' on p>$text.
-				if ( ctx.matchEnd( 'p $text' ) && attributeName == 'bold' ) {
+				if ( ctx.endsWith( 'p $text' ) && attributeName == 'bold' ) {
 					evt.stop();
 					evt.return = true;
 				}
 
 				// Allow 'bold' on $root>p.
-				if ( ctx.matchEnd( '$root p' ) && attributeName == 'bold' ) {
+				if ( ctx.endsWith( '$root p' ) && attributeName == 'bold' ) {
 					evt.stop();
 					evt.return = true;
 				}
@@ -756,7 +756,7 @@ describe( 'Schema', () => {
 				const attributeName = args[ 1 ];
 
 				// Allow 'bold' on img>$text.
-				if ( ctx.matchEnd( 'img $text' ) && attributeName == 'bold' ) {
+				if ( ctx.endsWith( 'img $text' ) && attributeName == 'bold' ) {
 					evt.stop();
 					evt.return = true;
 				}
@@ -799,7 +799,7 @@ describe( 'Schema', () => {
 				const attributeName = args[ 1 ];
 
 				// Disallow 'bold' on p>img.
-				if ( ctx.matchEnd( 'p img' ) && attributeName == 'bold' ) {
+				if ( ctx.endsWith( 'p img' ) && attributeName == 'bold' ) {
 					evt.stop();
 					evt.return = false;
 				}
@@ -868,25 +868,25 @@ describe( 'Schema', () => {
 				const attributeName = args[ 1 ];
 
 				// Allow 'a' on div>$text.
-				if ( ctx.matchEnd( 'div $text' ) && attributeName == 'a' ) {
+				if ( ctx.endsWith( 'div $text' ) && attributeName == 'a' ) {
 					evt.stop();
 					evt.return = true;
 				}
 
 				// Allow 'b' on div>paragraph>$text.
-				if ( ctx.matchEnd( 'div paragraph $text' ) && attributeName == 'b' ) {
+				if ( ctx.endsWith( 'div paragraph $text' ) && attributeName == 'b' ) {
 					evt.stop();
 					evt.return = true;
 				}
 
 				// Allow 'a' on div>image.
-				if ( ctx.matchEnd( 'div image' ) && attributeName == 'a' ) {
+				if ( ctx.endsWith( 'div image' ) && attributeName == 'a' ) {
 					evt.stop();
 					evt.return = true;
 				}
 
 				// Allow 'b' on div>paragraph>image.
-				if ( ctx.matchEnd( 'div paragraph image' ) && attributeName == 'b' ) {
+				if ( ctx.endsWith( 'div paragraph image' ) && attributeName == 'b' ) {
 					evt.stop();
 					evt.return = true;
 				}
@@ -925,7 +925,7 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( 'rules compilation', () => {
+	describe( 'definitions compilation', () => {
 		describe( 'allowIn cases', () => {
 			it( 'passes $root>paragraph', () => {
 				schema.register( '$root' );
@@ -1086,7 +1086,7 @@ describe( 'Schema', () => {
 			} );
 
 			// This checks if some inapropriate caching or preprocessing isn't applied by register().
-			it( 'passes $root>paragraph – paragraph inherits from $block, order of rules does not matter', () => {
+			it( 'passes $root>paragraph – paragraph inherits from $block, order of definitions does not matter', () => {
 				schema.register( '$root' );
 				schema.register( 'paragraph', {
 					allowWhere: '$block'
@@ -1170,7 +1170,7 @@ describe( 'Schema', () => {
 				expect( schema.checkChild( root3, heading1 ), 'heading1' ).to.be.true;
 			} );
 
-			it( 'passes $root2>paragraph – $root2 inherits from $root, order of rules does not matter', () => {
+			it( 'passes $root2>paragraph – $root2 inherits from $root, order of definitions does not matter', () => {
 				schema.register( '$root' );
 				schema.register( '$root2', {
 					allowContentOf: '$root'
@@ -1265,14 +1265,14 @@ describe( 'Schema', () => {
 				expect( schema.checkChild( d, 'a' ) ).to.be.true;
 			} );
 
-			// This case won't pass becuase we compile the rules in a pretty naive way.
-			// To make chains like this work we'd need to repeat compilation of allowContentOf rules
+			// This case won't pass becuase we compile the definitions in a pretty naive way.
+			// To make chains like this work we'd need to repeat compilation of allowContentOf definitions
 			// as long as the previous iteration found something to compile.
 			// This way, even though we'd not compile d<-c in the first run, we'd still find b<-c
 			// and since we've found something, we'd now try d<-c which would work.
 			//
 			// We ignore those situations for now as they are very unlikely to happen and would
-			// significantly raised the complexity of rule compilation.
+			// significantly raised the complexity of definition compilation.
 			//
 			// it( 'passes d>a where d inherits content of c which inherits content of b', () => {
 			// 	schema.register( 'b' );
@@ -1296,8 +1296,8 @@ describe( 'Schema', () => {
 					inheritTypesFrom: '$block'
 				} );
 
-				expect( schema.getRule( 'paragraph' ).isBlock ).to.be.true;
-				expect( schema.getRule( 'paragraph' ).isLimit ).to.be.true;
+				expect( schema.getDefinition( 'paragraph' ).isBlock ).to.be.true;
+				expect( schema.getDefinition( 'paragraph' ).isLimit ).to.be.true;
 			} );
 
 			it( 'inherit properties of other items – support for arrays', () => {
@@ -1311,8 +1311,8 @@ describe( 'Schema', () => {
 					inheritTypesFrom: [ '$block', '$block2' ]
 				} );
 
-				expect( schema.getRule( 'paragraph' ).isBlock ).to.be.true;
-				expect( schema.getRule( 'paragraph' ).isLimit ).to.be.true;
+				expect( schema.getDefinition( 'paragraph' ).isBlock ).to.be.true;
+				expect( schema.getDefinition( 'paragraph' ).isLimit ).to.be.true;
 			} );
 
 			it( 'does not override existing props', () => {
@@ -1325,8 +1325,8 @@ describe( 'Schema', () => {
 					isLimit: false
 				} );
 
-				expect( schema.getRule( 'paragraph' ).isBlock ).to.be.true;
-				expect( schema.getRule( 'paragraph' ).isLimit ).to.be.false;
+				expect( schema.getDefinition( 'paragraph' ).isBlock ).to.be.true;
+				expect( schema.getDefinition( 'paragraph' ).isLimit ).to.be.false;
 			} );
 		} );
 
@@ -1402,9 +1402,9 @@ describe( 'Schema', () => {
 			} );
 		} );
 
-		// We need to handle cases where some independent features registered rules which might use
+		// We need to handle cases where some independent features registered definitions which might use
 		// optional elements (elements which might not have been registered).
-		describe( 'missing structure rules', () => {
+		describe( 'missing structure definitions', () => {
 			it( 'does not break when trying to check a child which is not registered', () => {
 				schema.register( '$root' );
 
@@ -1571,7 +1571,7 @@ describe( 'Schema', () => {
 			} );
 		} );
 
-		describe( 'missing attribute rules', () => {
+		describe( 'missing attribute definitions', () => {
 			it( 'does not crash when checking an attribute of a unregistered element', () => {
 				expect( schema.checkAttribute( r1p1, 'align' ) ).to.be.false;
 			} );
@@ -1593,13 +1593,13 @@ describe( 'Schema', () => {
 			} );
 		} );
 
-		describe( 'missing types rules', () => {
+		describe( 'missing types definitions', () => {
 			it( 'does not crash when inheriting types of an unregistered element', () => {
 				schema.register( 'paragraph', {
 					inheritTypesFrom: '$block'
 				} );
 
-				expect( schema.getRule( 'paragraph' ) ).to.be.an( 'object' );
+				expect( schema.getDefinition( 'paragraph' ) ).to.be.an( 'object' );
 			} );
 		} );
 	} );
@@ -1607,7 +1607,7 @@ describe( 'Schema', () => {
 	describe( 'real scenarios', () => {
 		let r1bQi, r1i, r1lI, r1h, r1bQlI;
 
-		const rules = [
+		const definitions = [
 			() => {
 				schema.register( 'paragraph', {
 					inheritAllFrom: '$block'
@@ -1634,9 +1634,9 @@ describe( 'Schema', () => {
 				schema.on( 'checkChild', ( evt, args ) => {
 					const ctx = args[ 0 ];
 					const child = args[ 1 ];
-					const childRule = schema.getRule( child );
+					const childRule = schema.getDefinition( child );
 
-					if ( childRule.name == 'blockQuote' && ctx.matchEnd( 'blockQuote' ) ) {
+					if ( childRule.name == 'blockQuote' && ctx.endsWith( 'blockQuote' ) ) {
 						evt.stop();
 						evt.return = false;
 					}
@@ -1667,7 +1667,7 @@ describe( 'Schema', () => {
 					const ctx = args[ 0 ];
 					const attributeName = args[ 1 ];
 
-					if ( ctx.matchEnd( 'heading1 $text' ) && attributeName == 'bold' ) {
+					if ( ctx.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
 						evt.stop();
 						evt.return = false;
 					}
@@ -1692,20 +1692,20 @@ describe( 'Schema', () => {
 				allowIn: '$block'
 			} );
 
-			for ( const rule of rules ) {
-				rule();
+			for ( const definition of definitions ) {
+				definition();
 			}
 
 			// or...
 			//
-			// Use the below code to shuffle the rules.
+			// Use the below code to shuffle the definitions.
 			// Don't look here, Szymon!
 			//
-			// const rulesCopy = rules.slice();
+			// const definitionsCopy = definitions.slice();
 			//
-			// while ( rulesCopy.length ) {
-			// 	const r = Math.floor( Math.random() * rulesCopy.length );
-			// 	rulesCopy.splice( r, 1 )[ 0 ]();
+			// while ( definitionsCopy.length ) {
+			// 	const r = Math.floor( Math.random() * definitionsCopy.length );
+			// 	definitionsCopy.splice( r, 1 )[ 0 ]();
 			// }
 
 			root1 = new Element( '$root', null, [
@@ -2138,59 +2138,59 @@ describe( 'SchemaContext', () => {
 		} );
 	} );
 
-	describe( 'matchEnd()', () => {
+	describe( 'endsWith()', () => {
 		it( 'returns true if the end of the context matches the query - 1 item', () => {
 			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
-			expect( ctx.matchEnd( 'dom' ) ).to.be.true;
+			expect( ctx.endsWith( 'dom' ) ).to.be.true;
 		} );
 
 		it( 'returns true if the end of the context matches the query - 2 items', () => {
 			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
-			expect( ctx.matchEnd( 'bom dom' ) ).to.be.true;
+			expect( ctx.endsWith( 'bom dom' ) ).to.be.true;
 		} );
 
 		it( 'returns true if the end of the context matches the query - full match of 3 items', () => {
 			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom' ] );
 
-			expect( ctx.matchEnd( 'foo bar bom' ) ).to.be.true;
+			expect( ctx.endsWith( 'foo bar bom' ) ).to.be.true;
 		} );
 
 		it( 'returns true if the end of the context matches the query - full match of 1 items', () => {
 			const ctx = new SchemaContext( [ 'foo' ] );
 
-			expect( ctx.matchEnd( 'foo' ) ).to.be.true;
+			expect( ctx.endsWith( 'foo' ) ).to.be.true;
 		} );
 
 		it( 'returns true if not only the end of the context matches the query', () => {
 			const ctx = new SchemaContext( [ 'foo', 'foo', 'foo', 'foo' ] );
 
-			expect( ctx.matchEnd( 'foo foo' ) ).to.be.true;
+			expect( ctx.endsWith( 'foo foo' ) ).to.be.true;
 		} );
 
 		it( 'returns false if query matches the middle of the context', () => {
 			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
-			expect( ctx.matchEnd( 'bom' ) ).to.be.false;
+			expect( ctx.endsWith( 'bom' ) ).to.be.false;
 		} );
 
 		it( 'returns false if query matches the start of the context', () => {
 			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
-			expect( ctx.matchEnd( 'foo' ) ).to.be.false;
+			expect( ctx.endsWith( 'foo' ) ).to.be.false;
 		} );
 
 		it( 'returns false if query does not match', () => {
 			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
-			expect( ctx.matchEnd( 'dom bar' ) ).to.be.false;
+			expect( ctx.endsWith( 'dom bar' ) ).to.be.false;
 		} );
 
 		it( 'returns false if query is longer than context', () => {
 			const ctx = new SchemaContext( [ 'foo' ] );
 
-			expect( ctx.matchEnd( 'bar', 'foo' ) ).to.be.false;
+			expect( ctx.endsWith( 'bar', 'foo' ) ).to.be.false;
 		} );
 	} );
 } );

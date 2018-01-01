@@ -14,13 +14,13 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import Range from './range';
 
 /**
- * The model's schema. It defines allowed and disallowed structures of nodes as well as their attributes.
- * The schema rules are usually defined by features and based on them the editing framework and features
- * make decisions how to process the model.
+ * The model's schema. It defines allowed and disallowed structures of nodes as well as nodes' attributes.
+ * The schema is usually defined by features and based on them the editing framework and features
+ * make decisions how to change and process the model.
  *
  * The instance of schema is available in {@link module:engine/model/model~Model#schema `editor.model.schema`}.
  *
- * # Schema rules
+ * # Schema definitions
  *
  * Schema defines allowed model structures and allowed attributes separately. They are also checked separately
  * by using the {@link ~Schema#checkChild} and {@link ~Schema#checkAttribute} methods.
@@ -37,7 +37,7 @@ import Range from './range';
  *
  * This lets the schema know that `<myElement>` may be a child of the `<$root>` element. `$root` is one of generic
  * node types defined by the editing framework. By default, the editor names the main root element a `<$root>`,
- * so the above rule allows `<myElement>` in the main editor element.
+ * so the above definition allows `<myElement>` in the main editor element.
  *
  * In other words, this would be correct:
  *
@@ -63,8 +63,8 @@ import Range from './range';
  *			allowIn: '$block'
  *		} );
  *
- * Those rules can then be reused by features to define their rules in a more extensible way.
- * For example, the {@link module:paragraph/paragraph~Paragraph} feature will define its rules as:
+ * These definitions can then be reused by features to create their own definitions in a more extensible way.
+ * For example, the {@link module:paragraph/paragraph~Paragraph} feature will define its item as:
  *
  *		schema.register( 'paragraph', {
  *			inheritAllFrom: '$block'
@@ -86,8 +86,8 @@ import Range from './range';
  * * The `<paragraph>` element will allow all attributes allowed on `<$block>`.
  * * The `<paragraph>` element will inherit all `is*` properties of `<$block>` (e.g. `isBlock`).
  *
- * Thanks to the fact that `<paragraph>`'s rules are inherited from `<$block>` other features can use the `<$block>`
- * type to indirectly extend `<paragraph>`'s rules. For example, the {@link module:block-quote/blockquote~BlockQuote}
+ * Thanks to the fact that `<paragraph>`'s definition is inherited from `<$block>` other features can use the `<$block>`
+ * type to indirectly extend `<paragraph>`'s definition. For example, the {@link module:block-quote/blockquote~BlockQuote}
  * feature does this:
  *
  *		schema.register( 'blockQuote', {
@@ -96,11 +96,11 @@ import Range from './range';
  *		} );
  *
  * Thanks to that, despite the fact that block quote and paragraph features know nothing about themselves, paragraphs
- * will be allowed in block quotes and block quotes will be allowed in all places where blocks are, so if anyone will
+ * will be allowed in block quotes and block quotes will be allowed in all places where blocks are. So if anyone will
  * register a `<section>` element (with `allowContentOf: '$root'` rule), that `<section>` elements will allow
- * block quotes.
+ * block quotes too.
  *
- * The side effect of such a rule inheritance is that now `<blockQuote>` is allowed in `<blockQuote>` which needs to be
+ * The side effect of such a definition inheritance is that now `<blockQuote>` is allowed in `<blockQuote>` which needs to be
  * resolved by a callback which will disallow this specific structure.
  *
  * ## Defining advanced rules in `checkChild()`'s callbacks
@@ -118,12 +118,12 @@ import Range from './range';
  *			const context = args[ 0 ];
  *			const child = args[ 1 ];
  *
- *			// Pass the child through getRule() to normalize it (child can be passed in multiple formats).
- *			const childRule = schema.getRule( child );
+ *			// Pass the child through getDefinition() to normalize it (child can be passed in multiple formats).
+ *			const childRule = schema.getDefinition( child );
  *
  *			// If checkChild() is called with a context that ends with blockQuote and blockQuote as a child
  *			// to check, make the method return false and stop the event so no other listener will override your decision.
- *			if ( childRule && childRule.name == 'blockQuote' && context.matchEnd( 'blockQuote' ) ) {
+ *			if ( childRule && childRule.name == 'blockQuote' && context.endsWith( 'blockQuote' ) ) {
  *				evt.stop();
  *				evt.return = false;
  *			}
@@ -186,7 +186,7 @@ export default class Schema {
 	 * Creates schema instance.
 	 */
 	constructor() {
-		this._sourceRules = {};
+		this._sourceDefinitions = {};
 
 		this.decorate( 'checkChild' );
 		this.decorate( 'checkAttribute' );
@@ -204,25 +204,25 @@ export default class Schema {
 	 * Registers schema item. Can only be called once for every item name.
 	 *
 	 * @param {String} itemName
-	 * @param {module:engine/model/schema~SchemaItemDefinition} rules
+	 * @param {module:engine/model/schema~SchemaItemDefinition} definition
 	 */
-	register( itemName, rules ) {
-		if ( this._sourceRules[ itemName ] ) {
+	register( itemName, definition ) {
+		if ( this._sourceDefinitions[ itemName ] ) {
 			// TODO docs
 			throw new CKEditorError( 'schema-cannot-register-item-twice: A single item cannot be registered twice in the schema.', {
 				itemName
 			} );
 		}
 
-		this._sourceRules[ itemName ] = [
-			Object.assign( {}, rules )
+		this._sourceDefinitions[ itemName ] = [
+			Object.assign( {}, definition )
 		];
 
 		this._clearCache();
 	}
 
 	/**
-	 * Extends a {@link #register registered} item's rules.
+	 * Extends a {@link #register registered} item's definition.
 	 *
 	 * Extending properties such as `allowIn` will add more items to the existing properties,
 	 * while redefining properties such as `isBlock` will override the previously defined ones.
@@ -236,24 +236,24 @@ export default class Schema {
 	 *			isBlock: false
 	 *		} );
 	 *
-	 *		schema.getRule( 'foo' );
+	 *		schema.getDefinition( 'foo' );
 	 *		//	{
 	 *		//		allowIn: [ '$root', 'blockQuote' ],
 	 *		// 		isBlock: false
 	 *		//	}
 	 *
 	 * @param {String} itemName
-	 * @param {module:engine/model/schema~SchemaItemDefinition} rules
+	 * @param {module:engine/model/schema~SchemaItemDefinition} definition
 	 */
-	extend( itemName, rules ) {
-		if ( !this._sourceRules[ itemName ] ) {
+	extend( itemName, definition ) {
+		if ( !this._sourceDefinitions[ itemName ] ) {
 			// TODO docs
 			throw new CKEditorError( 'schema-cannot-extend-missing-item: Cannot extend an item which was not registered yet.', {
 				itemName
 			} );
 		}
 
-		this._sourceRules[ itemName ].push( Object.assign( {}, rules ) );
+		this._sourceDefinitions[ itemName ].push( Object.assign( {}, definition ) );
 
 		this._clearCache();
 	}
@@ -263,12 +263,12 @@ export default class Schema {
 	 *
 	 * @returns {Object.<String,module:engine/model/schema~SchemaCompiledItemDefinition>}
 	 */
-	getRules() {
-		if ( !this._compiledRules ) {
+	getDefinitions() {
+		if ( !this._compiledDefinitions ) {
 			this._compile();
 		}
 
-		return this._compiledRules;
+		return this._compiledDefinitions;
 	}
 
 	/**
@@ -277,7 +277,7 @@ export default class Schema {
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 * @returns {module:engine/model/schema~SchemaCompiledItemDefinition}
 	 */
-	getRule( item ) {
+	getDefinition( item ) {
 		let itemName;
 
 		if ( typeof item == 'string' ) {
@@ -290,41 +290,41 @@ export default class Schema {
 			itemName = item.name;
 		}
 
-		return this.getRules()[ itemName ];
+		return this.getDefinitions()[ itemName ];
 	}
 
 	/**
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isRegistered( item ) {
-		return !!this.getRule( item );
+		return !!this.getDefinition( item );
 	}
 
 	/**
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isBlock( item ) {
-		const rule = this.getRule( item );
+		const def = this.getDefinition( item );
 
-		return !!( rule && rule.isBlock );
+		return !!( def && def.isBlock );
 	}
 
 	/**
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isLimit( item ) {
-		const rule = this.getRule( item );
+		const def = this.getDefinition( item );
 
-		return !!( rule && rule.isLimit );
+		return !!( def && def.isLimit );
 	}
 
 	/**
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isObject( item ) {
-		const rule = this.getRule( item );
+		const def = this.getDefinition( item );
 
-		return !!( rule && rule.isObject );
+		return !!( def && def.isObject );
 	}
 
 	/**
@@ -342,13 +342,13 @@ export default class Schema {
 	 * @param {module:engine/model/node~Node|String} child The child to check.
 	 */
 	checkChild( context, child ) {
-		const rule = this.getRule( child );
+		const def = this.getDefinition( child );
 
-		if ( !rule ) {
+		if ( !def ) {
 			return false;
 		}
 
-		return this._checkContextMatch( rule, context );
+		return this._checkContextMatch( def, context );
 	}
 
 	/**
@@ -367,13 +367,13 @@ export default class Schema {
 	 * @param {String} attributeName
 	 */
 	checkAttribute( context, attributeName ) {
-		const rule = this.getRule( context.last );
+		const def = this.getDefinition( context.last );
 
-		if ( !rule ) {
+		if ( !def ) {
 			return false;
 		}
 
-		return rule.allowAttributes.includes( attributeName );
+		return def.allowAttributes.includes( attributeName );
 	}
 
 	/**
@@ -497,56 +497,56 @@ export default class Schema {
 	 * @private
 	 */
 	_clearCache() {
-		this._compiledRules = null;
+		this._compiledDefinitions = null;
 	}
 
 	/**
 	 * @private
 	 */
 	_compile() {
-		const compiledRules = {};
-		const sourceRules = this._sourceRules;
+		const compiledDefinitions = {};
+		const sourceRules = this._sourceDefinitions;
 		const itemNames = Object.keys( sourceRules );
 
 		for ( const itemName of itemNames ) {
-			compiledRules[ itemName ] = compileBaseItemRule( sourceRules[ itemName ], itemName );
+			compiledDefinitions[ itemName ] = compileBaseItemRule( sourceRules[ itemName ], itemName );
 		}
 
 		for ( const itemName of itemNames ) {
-			compileAllowContentOf( compiledRules, itemName );
+			compileAllowContentOf( compiledDefinitions, itemName );
 		}
 
 		for ( const itemName of itemNames ) {
-			compileAllowWhere( compiledRules, itemName );
+			compileAllowWhere( compiledDefinitions, itemName );
 		}
 
 		for ( const itemName of itemNames ) {
-			compileAllowAttributesOf( compiledRules, itemName );
-			compileInheritPropertiesFrom( compiledRules, itemName );
+			compileAllowAttributesOf( compiledDefinitions, itemName );
+			compileInheritPropertiesFrom( compiledDefinitions, itemName );
 		}
 
 		for ( const itemName of itemNames ) {
-			cleanUpAllowIn( compiledRules, itemName );
-			cleanUpAllowAttributes( compiledRules, itemName );
+			cleanUpAllowIn( compiledDefinitions, itemName );
+			cleanUpAllowAttributes( compiledDefinitions, itemName );
 		}
 
-		this._compiledRules = compiledRules;
+		this._compiledDefinitions = compiledDefinitions;
 	}
 
 	/**
 	 * @private
-	 * @param {module:engine/model/schema~SchemaCompiledItemDefinition} rule
+	 * @param {module:engine/model/schema~SchemaCompiledItemDefinition} def
 	 * @param {module:engine/model/schema~SchemaContext} context
 	 * @param {Number} contextItemIndex
 	 */
-	_checkContextMatch( rule, context, contextItemIndex = context.length - 1 ) {
+	_checkContextMatch( def, context, contextItemIndex = context.length - 1 ) {
 		const contextItem = context.getItem( contextItemIndex );
 
-		if ( rule.allowIn.includes( contextItem.name ) ) {
+		if ( def.allowIn.includes( contextItem.name ) ) {
 			if ( contextItemIndex == 0 ) {
 				return true;
 			} else {
-				const parentRule = this.getRule( contextItem );
+				const parentRule = this.getDefinition( contextItem );
 
 				return this._checkContextMatch( parentRule, context, contextItemIndex - 1 );
 			}
@@ -626,7 +626,7 @@ export class SchemaContext {
 		yield* this._items.map( item => item.name );
 	}
 
-	matchEnd( query ) {
+	endsWith( query ) {
 		return Array.from( this.getNames() ).join( ' ' ).endsWith( query );
 	}
 }
@@ -674,11 +674,11 @@ function compileBaseItemRule( sourceItemRules, itemName ) {
 	return itemRule;
 }
 
-function compileAllowContentOf( compiledRules, itemName ) {
-	for ( const allowContentOfItemName of compiledRules[ itemName ].allowContentOf ) {
+function compileAllowContentOf( compiledDefinitions, itemName ) {
+	for ( const allowContentOfItemName of compiledDefinitions[ itemName ].allowContentOf ) {
 		// The allowContentOf property may point to an unregistered element.
-		if ( compiledRules[ allowContentOfItemName ] ) {
-			const allowedChildren = getAllowedChildren( compiledRules, allowContentOfItemName );
+		if ( compiledDefinitions[ allowContentOfItemName ] ) {
+			const allowedChildren = getAllowedChildren( compiledDefinitions, allowContentOfItemName );
 
 			allowedChildren.forEach( allowedItem => {
 				allowedItem.allowIn.push( itemName );
@@ -686,43 +686,43 @@ function compileAllowContentOf( compiledRules, itemName ) {
 		}
 	}
 
-	delete compiledRules[ itemName ].allowContentOf;
+	delete compiledDefinitions[ itemName ].allowContentOf;
 }
 
-function compileAllowWhere( compiledRules, itemName ) {
-	for ( const allowWhereItemName of compiledRules[ itemName ].allowWhere ) {
-		const inheritFrom = compiledRules[ allowWhereItemName ];
+function compileAllowWhere( compiledDefinitions, itemName ) {
+	for ( const allowWhereItemName of compiledDefinitions[ itemName ].allowWhere ) {
+		const inheritFrom = compiledDefinitions[ allowWhereItemName ];
 
 		// The allowWhere property may point to an unregistered element.
 		if ( inheritFrom ) {
 			const allowedIn = inheritFrom.allowIn;
 
-			compiledRules[ itemName ].allowIn.push( ...allowedIn );
+			compiledDefinitions[ itemName ].allowIn.push( ...allowedIn );
 		}
 	}
 
-	delete compiledRules[ itemName ].allowWhere;
+	delete compiledDefinitions[ itemName ].allowWhere;
 }
 
-function compileAllowAttributesOf( compiledRules, itemName ) {
-	for ( const allowAttributeOfItem of compiledRules[ itemName ].allowAttributesOf ) {
-		const inheritFrom = compiledRules[ allowAttributeOfItem ];
+function compileAllowAttributesOf( compiledDefinitions, itemName ) {
+	for ( const allowAttributeOfItem of compiledDefinitions[ itemName ].allowAttributesOf ) {
+		const inheritFrom = compiledDefinitions[ allowAttributeOfItem ];
 
 		if ( inheritFrom ) {
 			const inheritAttributes = inheritFrom.allowAttributes;
 
-			compiledRules[ itemName ].allowAttributes.push( ...inheritAttributes );
+			compiledDefinitions[ itemName ].allowAttributes.push( ...inheritAttributes );
 		}
 	}
 
-	delete compiledRules[ itemName ].allowAttributesOf;
+	delete compiledDefinitions[ itemName ].allowAttributesOf;
 }
 
-function compileInheritPropertiesFrom( compiledRules, itemName ) {
-	const item = compiledRules[ itemName ];
+function compileInheritPropertiesFrom( compiledDefinitions, itemName ) {
+	const item = compiledDefinitions[ itemName ];
 
 	for ( const inheritPropertiesOfItem of item.inheritTypesFrom ) {
-		const inheritFrom = compiledRules[ inheritPropertiesOfItem ];
+		const inheritFrom = compiledDefinitions[ inheritPropertiesOfItem ];
 
 		if ( inheritFrom ) {
 			const typeNames = Object.keys( inheritFrom ).filter( name => name.startsWith( 'is' ) );
@@ -740,15 +740,15 @@ function compileInheritPropertiesFrom( compiledRules, itemName ) {
 
 // Remove items which weren't registered (because it may break some checks or we'd need to complicate them).
 // Make sure allowIn doesn't contain repeated values.
-function cleanUpAllowIn( compiledRules, itemName ) {
-	const itemRule = compiledRules[ itemName ];
-	const existingItems = itemRule.allowIn.filter( itemToCheck => compiledRules[ itemToCheck ] );
+function cleanUpAllowIn( compiledDefinitions, itemName ) {
+	const itemRule = compiledDefinitions[ itemName ];
+	const existingItems = itemRule.allowIn.filter( itemToCheck => compiledDefinitions[ itemToCheck ] );
 
 	itemRule.allowIn = Array.from( new Set( existingItems ) );
 }
 
-function cleanUpAllowAttributes( compiledRules, itemName ) {
-	const itemRule = compiledRules[ itemName ];
+function cleanUpAllowAttributes( compiledDefinitions, itemName ) {
+	const itemRule = compiledDefinitions[ itemName ];
 
 	itemRule.allowAttributes = Array.from( new Set( itemRule.allowAttributes ) );
 }
@@ -786,10 +786,10 @@ function makeInheritAllWork( sourceItemRules, itemRule ) {
 	}
 }
 
-function getAllowedChildren( compiledRules, itemName ) {
-	const itemRule = compiledRules[ itemName ];
+function getAllowedChildren( compiledDefinitions, itemName ) {
+	const itemRule = compiledDefinitions[ itemName ];
 
-	return getValues( compiledRules ).filter( rule => rule.allowIn.includes( itemRule.name ) );
+	return getValues( compiledDefinitions ).filter( def => def.allowIn.includes( itemRule.name ) );
 }
 
 function getValues( obj ) {

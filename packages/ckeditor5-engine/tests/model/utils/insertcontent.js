@@ -276,9 +276,9 @@ describe( 'DataController utils', () => {
 				model.schema.on( 'checkChild', ( evt, args ) => {
 					const ctx = args[ 0 ];
 					const child = args[ 1 ];
-					const childRule = model.schema.getRule( child );
+					const childRule = model.schema.getDefinition( child );
 
-					if ( childRule.name == 'paragraph' && ctx.matchEnd( '$root' ) ) {
+					if ( childRule.name == 'paragraph' && ctx.endsWith( '$root' ) ) {
 						evt.stop();
 						evt.return = false;
 					}
@@ -623,25 +623,25 @@ describe( 'DataController utils', () => {
 					const attributeName = args[ 1 ];
 
 					// Allow 'b' on paragraph>$text.
-					if ( ctx.matchEnd( 'paragraph $text' ) && attributeName == 'b' ) {
+					if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'b' ) {
 						evt.stop();
 						evt.return = true;
 					}
 
 					// Allow 'b' on paragraph>element>$text.
-					if ( ctx.matchEnd( 'paragraph element $text' ) && attributeName == 'b' ) {
+					if ( ctx.endsWith( 'paragraph element $text' ) && attributeName == 'b' ) {
 						evt.stop();
 						evt.return = true;
 					}
 
 					// Allow 'a' and 'b' on heading1>element>$text.
-					if ( ctx.matchEnd( 'heading1 element $text' ) && [ 'a', 'b' ].includes( attributeName ) ) {
+					if ( ctx.endsWith( 'heading1 element $text' ) && [ 'a', 'b' ].includes( attributeName ) ) {
 						evt.stop();
 						evt.return = true;
 					}
 
 					// Allow 'b' on element>table>td>$text.
-					if ( ctx.matchEnd( 'element table td $text' ) && attributeName == 'b' ) {
+					if ( ctx.endsWith( 'element table td $text' ) && attributeName == 'b' ) {
 						evt.stop();
 						evt.return = true;
 					}

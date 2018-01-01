@@ -471,19 +471,19 @@ describe( 'DataController utils', () => {
 						const attributeName = args[ 1 ];
 
 						// Allow 'a' and 'b' on paragraph>$text.
-						if ( ctx.matchEnd( 'paragraph $text' ) && [ 'a', 'b' ].includes( attributeName ) ) {
+						if ( ctx.endsWith( 'paragraph $text' ) && [ 'a', 'b' ].includes( attributeName ) ) {
 							evt.stop();
 							evt.return = true;
 						}
 
 						// Allow 'b' and 'c' in pchild>$text.
-						if ( ctx.matchEnd( 'pchild $text' ) && [ 'b', 'c' ].includes( attributeName ) ) {
+						if ( ctx.endsWith( 'pchild $text' ) && [ 'b', 'c' ].includes( attributeName ) ) {
 							evt.stop();
 							evt.return = true;
 						}
 
 						// Disallow 'c' on pchild>pchild>$text.
-						if ( ctx.matchEnd( 'pchild pchild $text' ) && attributeName == 'c' ) {
+						if ( ctx.endsWith( 'pchild pchild $text' ) && attributeName == 'c' ) {
 							evt.stop();
 							evt.return = false;
 						}
