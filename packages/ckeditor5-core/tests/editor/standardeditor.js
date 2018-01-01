@@ -148,7 +148,7 @@ describe( 'StandardEditor', () => {
 
 					editor.data.processor = new HtmlDataProcessor();
 
-					editor.model.schema.allow( { name: '$text', inside: '$root' } );
+					editor.model.schema.extend( '$text', { allowIn: '$root' } );
 				} );
 		} );
 
@@ -175,7 +175,7 @@ describe( 'StandardEditor', () => {
 
 					editor.data.processor = new HtmlDataProcessor();
 
-					editor.model.schema.allow( { name: '$text', inside: '$root' } );
+					editor.model.schema.extend( '$text', { allowIn: '$root' } );
 				} );
 		} );
 

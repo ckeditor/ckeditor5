@@ -81,7 +81,7 @@ describe( 'ClassicTestEditor', () => {
 
 			class PluginTextInRoot extends Plugin {
 				init() {
-					this.editor.model.schema.allow( { name: '$text', inside: '$root' } );
+					this.editor.model.schema.extend( '$text', { allowIn: '$root' } );
 				}
 			}
 

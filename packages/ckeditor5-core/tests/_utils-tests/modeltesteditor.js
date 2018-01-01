@@ -76,7 +76,7 @@ describe( 'ModelTestEditor', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					editor.model.schema.allow( { name: '$text', inside: '$root' } );
+					editor.model.schema.extend( '$text', { allowIn: '$root' } );
 				} );
 		} );
 
@@ -97,7 +97,7 @@ describe( 'ModelTestEditor', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					editor.model.schema.allow( { name: '$text', inside: '$root' } );
+					editor.model.schema.extend( '$text', { allowIn: '$root' } );
 				} );
 		} );
 
