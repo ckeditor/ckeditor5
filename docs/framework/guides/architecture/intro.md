@@ -39,7 +39,7 @@ The editor is a root object, gluing all other components. It holds a couple of p
 
 Besides that, the editor exposes a few of methods:
 
-* {@link module:core/editor/editor~Editor.create `create()`} &ndash; The static `create()` method. Editor constructors are protected and you should create editors using this static method. It allows the initialization process to be asynchronous.
+* {@link module:core/editor/editor~Editor#create `create()`} &ndash; The static `create()` method. Editor constructors are protected and you should create editors using this static method. It allows the initialization process to be asynchronous.
 * {@link module:core/editor/editor~Editor#destroy `destroy()`} &ndash; Destroys the editor.
 * {@link module:core/editor/editor~Editor#setData `setData()`} and {@link module:core/editor/editor~Editor#getData `getData()`} &ndash; A way to retrieve data from the editor and set data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (it can be e.g. JSON if you implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See, for example, how to {@link features/markdown produce Markdown output}.
 * {@link module:core/editor/editor~Editor#execute `execute()`} &ndash; Executes the given command.
@@ -67,7 +67,7 @@ These are the rules based on which the official plugins were implemented. When i
 
 After this lengthy introduction (which is aimed at making it easier for you to digest the existing plugins), the plugin API can be explained.
 
-All plugins need to implement the {@link module:core/plugin~PluginInterface}. The easiest way to do so is by inheriting from the {@link module:core/plugin~Plugin} class. The plugin initialization code should be located in the {@link module:core/plugin~PluginInterface#init `init()`} method (which can return a promise). If some piece of code needs to be executed after other plugins are initialized, you can put it in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} method. The dependencies between plugins are implemented using the static {@link module:core/plugin~PluginInterface.requires} property.
+All plugins need to implement the {@link module:core/plugin~PluginInterface}. The easiest way to do so is by inheriting from the {@link module:core/plugin~Plugin} class. The plugin initialization code should be located in the {@link module:core/plugin~PluginInterface#init `init()`} method (which can return a promise). If some piece of code needs to be executed after other plugins are initialized, you can put it in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} method. The dependencies between plugins are implemented using the static {@link module:core/plugin~PluginInterface#requires} property.
 
 ```js
 import MyDependency from 'some/other/plugin';
