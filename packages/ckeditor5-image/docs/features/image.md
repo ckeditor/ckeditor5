@@ -148,7 +148,7 @@ See the result below:
 
 ### Defining custom styles
 
-Besides using the {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine#defaultStyles 5 predefined styles}:
+Besides using the {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultStyles 5 predefined styles}:
 
 * `'imageStyleFull'`,
 * `'imageStyleSide'`,
