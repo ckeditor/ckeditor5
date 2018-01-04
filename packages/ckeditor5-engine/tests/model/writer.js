@@ -38,7 +38,6 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should have model instance', () => {
-			// console.log( writer, model, batch );
 			expect( writer.model ).to.instanceof( Model );
 		} );
 
