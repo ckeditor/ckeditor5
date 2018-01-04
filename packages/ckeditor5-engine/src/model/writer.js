@@ -150,9 +150,7 @@ export default class Writer {
 	 * second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	insert( item, itemOrPosition, offset ) {
-		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model' );
-		}
+		this._assertWriterUsageCorrectness();
 
 		const position = Position.createAt( itemOrPosition, offset );
 
@@ -319,9 +317,7 @@ export default class Writer {
 	 * Model item or range on which the attribute will be set.
 	 */
 	setAttribute( key, value, itemOrRange ) {
-		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model' );
-		}
+		this._assertWriterUsageCorrectness();
 
 		if ( itemOrRange instanceof Range ) {
 			setAttributeToRange( this, key, value, itemOrRange );
@@ -358,9 +354,7 @@ export default class Writer {
 	 * Model item or range from which the attribute will be removed.
 	 */
 	removeAttribute( key, itemOrRange ) {
-		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model' );
-		}
+		this._assertWriterUsageCorrectness();
 
 		if ( itemOrRange instanceof Range ) {
 			setAttributeToRange( this, key, null, itemOrRange );
@@ -376,9 +370,7 @@ export default class Writer {
 	 * Model item or range from which all attributes will be removed.
 	 */
 	clearAttributes( itemOrRange ) {
-		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model' );
-		}
+		this._assertWriterUsageCorrectness();
 
 		const removeAttributesFromItem = item => {
 			for ( const attribute of item.getAttributeKeys() ) {
@@ -420,9 +412,7 @@ export default class Writer {
 	 * second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	move( range, itemOrPosition, offset ) {
-		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model' );
-		}
+		this._assertWriterUsageCorrectness();
 
 		if ( !( range instanceof Range ) ) {
 			/**
@@ -468,9 +458,7 @@ export default class Writer {
 	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange Model item or range to remove.
 	 */
 	remove( itemOrRange ) {
-		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model' );
-		}
+		this._assertWriterUsageCorrectness();
 
 		const addRemoveDelta = ( position, howMany ) => {
 			const delta = new RemoveDelta();
@@ -513,9 +501,7 @@ export default class Writer {
 	 * @param {module:engine/model/position~Position} position Position of merge.
 	 */
 	merge( position ) {
-		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model' );
-		}
+		this._assertWriterUsageCorrectness();
 
 		const delta = new MergeDelta();
 		this.batch.addDelta( delta );
@@ -570,9 +556,7 @@ export default class Writer {
 	 * @param {String} newName New element name.
 	 */
 	rename( element, newName ) {
-		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model' );
-		}
+		this._assertWriterUsageCorrectness();
 
 		if ( !( element instanceof Element ) ) {
 			/**
@@ -602,9 +586,7 @@ export default class Writer {
 	 * @param {module:engine/model/position~Position} position Position of split.
 	 */
 	split( position ) {
-		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model' );
-		}
+		this._assertWriterUsageCorrectness();
 
 		const delta = new SplitDelta();
 		this.batch.addDelta( delta );
@@ -652,9 +634,7 @@ export default class Writer {
 	 * @param {module:engine/model/element~Element|String} elementOrString Element or name of element to wrap the range with.
 	 */
 	wrap( range, elementOrString ) {
-		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model' );
-		}
+		this._assertWriterUsageCorrectness();
 
 		if ( !range.isFlat ) {
 			/**
@@ -710,9 +690,7 @@ export default class Writer {
 	 * @param {module:engine/model/element~Element} element Element to unwrap.
 	 */
 	unwrap( element ) {
-		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model' );
-		}
+		this._assertWriterUsageCorrectness();
 
 		if ( element.parent === null ) {
 			/**
@@ -766,9 +744,7 @@ export default class Writer {
 	 * @param {module:engine/model/range~Range} [newRange] Marker range.
 	 */
 	setMarker( markerOrName, newRange ) {
-		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model' );
-		}
+		this._assertWriterUsageCorrectness();
 
 		const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
 		const currentMarker = this.model.markers.get( name );
@@ -800,9 +776,7 @@ export default class Writer {
 	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to remove.
 	 */
 	removeMarker( markerOrName ) {
-		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model' );
-		}
+		this._assertWriterUsageCorrectness();
 
 		const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
 
@@ -818,6 +792,21 @@ export default class Writer {
 		const oldRange = this.model.markers.get( name ).getRange();
 
 		addMarkerOperation( this, name, oldRange, null );
+	}
+
+	/**
+	 * @private
+	 */
+	_assertWriterUsageCorrectness() {
+		/**
+		 * Detached writer tries to modify the model. Be sure, that your Writer is used
+		 * within the `model.change()` or `model.enqueueChange()` block.
+		 *
+		 * @error writer-detached-writer-tries-to-modify-model
+		 */
+		if ( this.model._currentWriter !== this ) {
+			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model.' );
+		}
 	}
 }
 
@@ -886,13 +875,6 @@ function setAttributeToRange( writer, key, value, range ) {
 		model.applyOperation( operation );
 	}
 }
-
-/**
- * Detached writer tries to modify the model. Be sure, that your Writer is used
- * within the `model.change()` or `model.enqueueChange()` block.
- *
- * @error writer-detached-writer-tries-to-modify-model
- */
 
 // Sets given attribute to the given node. When attribute value is null then attribute will be removed.
 //
