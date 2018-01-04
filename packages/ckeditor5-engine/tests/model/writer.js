@@ -1236,8 +1236,8 @@ describe( 'Writer', () => {
 		} );
 	} );
 
-	describe.skip( 'setAttributes()', () => {
-		let frag, item, writer;
+	describe( 'setAttributes()', () => {
+		let frag, item;
 
 		beforeEach( () => {
 			frag = createDocumentFragment();
@@ -1249,12 +1249,15 @@ describe( 'Writer', () => {
 
 		it( 'should set attributes one by one on range', () => {
 			const range = Range.createIn( frag );
+			let spy;
 
-			// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
-			// such a big amount of the same tests, so let's use a spy here.
-			const spy = sinon.spy( writer, 'setAttribute' );
+			model.change( writer => {
+				// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
+				// such a big amount of the same tests, so let's use a spy here.
+				spy = sinon.spy( writer, 'setAttribute' );
 
-			writer.setAttributes( { a: 3, c: null }, range );
+				writer.setAttributes( { a: 3, c: null }, range );
+			} );
 
 			// Verify result.
 			expect( Array.from( frag.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'a', 3 ] ] );
@@ -1268,12 +1271,15 @@ describe( 'Writer', () => {
 
 		it( 'should set attributes one by one on range for map as attributes list', () => {
 			const range = Range.createIn( frag );
+			let spy;
 
-			// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
-			// such a big amount of the same tests, so let's use a spy here.
-			const spy = sinon.spy( writer, 'setAttribute' );
+			model.change( writer => {
+				// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
+				// such a big amount of the same tests, so let's use a spy here.
+				spy = sinon.spy( writer, 'setAttribute' );
 
-			writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), range );
+				writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), range );
+			} );
 
 			// Verify result.
 			expect( Array.from( frag.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'a', 3 ] ] );
@@ -1286,11 +1292,15 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should set attributes one by one on item', () => {
-			// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
-			// such a big amount of the same tests, so let's use a spy here.
-			const spy = sinon.spy( writer, 'setAttribute' );
+			let spy;
 
-			writer.setAttributes( { a: 3, c: null }, item );
+			model.change( writer => {
+				// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
+				// such a big amount of the same tests, so let's use a spy here.
+				spy = sinon.spy( writer, 'setAttribute' );
+
+				writer.setAttributes( { a: 3, c: null }, item );
+			} );
 
 			// Verify result.
 			expect( Array.from( item.getAttributes() ) ).to.deep.equal( [ [ 'b', 2 ], [ 'a', 3 ] ] );
@@ -1302,11 +1312,15 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should set attributes one by one on item for maps as attributes list', () => {
-			// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
-			// such a big amount of the same tests, so let's use a spy here.
-			const spy = sinon.spy( writer, 'setAttribute' );
+			let spy;
 
-			writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), item );
+			model.change( writer => {
+				// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
+				// such a big amount of the same tests, so let's use a spy here.
+				spy = sinon.spy( writer, 'setAttribute' );
+
+				writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), item );
+			} );
 
 			// Verify result.
 			expect( Array.from( item.getAttributes() ) ).to.deep.equal( [ [ 'b', 2 ], [ 'a', 3 ] ] );
