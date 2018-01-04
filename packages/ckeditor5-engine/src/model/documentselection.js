@@ -8,13 +8,9 @@
  */
 
 import Position from './position';
-import Range from './range';
-import LiveRange from './liverange';
 import Text from './text';
 import TextProxy from './textproxy';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import Selection from './selection';
 
@@ -47,14 +43,19 @@ const attrOpTypes = new Set(
  *
  * @extends module:engine/model/selection~Selection
  */
-export default class DocumentSelection extends Selection {
+export default class DocumentSelection {
 	/**
 	 * Creates an empty live selection for given {@link module:engine/model/document~Document}.
 	 *
 	 * @param {module:engine/model/document~Document} doc Document which owns this selection.
 	 */
 	constructor( doc ) {
-		super();
+		/**
+		 * TODO
+		 *
+		 * @protected
+		 */
+		this._selection = new Selection();
 
 		/**
 		 * Document which owns this selection.
@@ -132,30 +133,28 @@ export default class DocumentSelection extends Selection {
 	 * @inheritDoc
 	 */
 	get isCollapsed() {
-		const length = this._ranges.length;
-
-		return length === 0 ? this._document._getDefaultRange().isCollapsed : super.isCollapsed;
+		return this._selection.isCollapsed || this._document._getDefaultRange().isCollapsed;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	get anchor() {
-		return super.anchor || this._document._getDefaultRange().start;
+		return this._selection.anchor || this._document._getDefaultRange().start;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	get focus() {
-		return super.focus || this._document._getDefaultRange().end;
+		return this._selection.focus || this._document._getDefaultRange().end;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	get rangeCount() {
-		return this._ranges.length ? this._ranges.length : 1;
+		return this._selection.rangeCount > 0 ? this._selection.rangeCount : 1;
 	}
 
 	/**
@@ -166,7 +165,7 @@ export default class DocumentSelection extends Selection {
 	 * @type {Boolean}
 	 */
 	get hasOwnRange() {
-		return this._ranges.length > 0;
+		return this._selection.rangeCount > 0;
 	}
 
 	/**
@@ -184,8 +183,8 @@ export default class DocumentSelection extends Selection {
 	 * @inheritDoc
 	 */
 	* getRanges() {
-		if ( this._ranges.length ) {
-			yield* super.getRanges();
+		if ( this._selection.rangeCount > 0 ) {
+			yield* this._selection.getRanges();
 		} else {
 			yield this._document._getDefaultRange();
 		}
@@ -195,102 +194,112 @@ export default class DocumentSelection extends Selection {
 	 * @inheritDoc
 	 */
 	getFirstRange() {
-		return super.getFirstRange() || this._document._getDefaultRange();
+		return this._selection.getFirstRange() || this._document._getDefaultRange();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	getLastRange() {
-		return super.getLastRange() || this._document._getDefaultRange();
+		return this._selection.getLastRange() || this._document._getDefaultRange();
 	}
 
 	/**
-	 * @inheritDoc
+	 * @protected
+	 * @param {*} itemOrPosition
+	 * @param {*} offset
 	 */
-	addRange( range, isBackward = false ) {
-		super.addRange( range, isBackward );
-		this.refreshAttributes();
+	_moveFocusTo( itemOrPosition, offset ) {
+		this._selection.moveFocusTo( itemOrPosition, offset );
 	}
 
 	/**
-	 * @inheritDoc
+	 * @protected
+	 * @param {*} selectable
 	 */
-	removeAllRanges() {
+	_setTo( selectable ) {
+		this._selection._setTo( selectable );
+		this._refreshAttributes();
+	}
+
+	_setAttribute( key, value ) {
+		this._selection.setAttribute( key, value );
+	}
+
+	/**
+	 * @private
+	 */
+	_removeAllRanges() {
 		super.removeAllRanges();
-		this.refreshAttributes();
+		this._refreshAttributes();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	setRanges( newRanges, isLastBackward = false ) {
-		super.setRanges( newRanges, isLastBackward );
-		this.refreshAttributes();
-	}
+	// /**
+	//  * @inheritDoc
+	//  */
+	// setAttribute( key, value ) {
+	// 	// Store attribute in parent element if the selection is collapsed in an empty node.
+	// 	if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
+	// 		this._storeAttribute( key, value );
+	// 	}
+
+	// 	if ( this._setAttribute( key, value ) ) {
+	// 		// Fire event with exact data.
+	// 		const attributeKeys = [ key ];
+	// 		this.fire( 'change:attribute', { attributeKeys, directChange: true } );
+	// 	}
+	// }
 
 	/**
-	 * @inheritDoc
+	 * Should be used only by the {@link module:engine/model/writer~Writer} class.
+	 *
+	 * @protected
 	 */
-	setAttribute( key, value ) {
-		// Store attribute in parent element if the selection is collapsed in an empty node.
-		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
-			this._storeAttribute( key, value );
-		}
-
-		if ( this._setAttribute( key, value ) ) {
-			// Fire event with exact data.
-			const attributeKeys = [ key ];
-			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
-		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	removeAttribute( key ) {
+	_removeAttribute( key ) {
 		// Remove stored attribute from parent element if the selection is collapsed in an empty node.
 		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
 			this._removeStoredAttribute( key );
 		}
 
-		if ( this._removeAttribute( key ) ) {
+		if ( this._removeAttributeByDirectChange( key ) ) {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
 			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
 		}
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	setAttributesTo( attrs ) {
-		attrs = toMap( attrs );
+	// /**
+	//  * @inheritDoc
+	//  */
+	// setAttributesTo( attrs ) {
+	// 	attrs = toMap( attrs );
 
-		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
-			this._setStoredAttributesTo( attrs );
-		}
+	// 	if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
+	// 		this._setStoredAttributesTo( attrs );
+	// 	}
 
-		const changed = this._setAttributesTo( attrs );
+	// 	const changed = this._setAttributesTo( attrs );
 
-		if ( changed.size > 0 ) {
-			// Fire event with exact data (fire only if anything changed).
-			const attributeKeys = Array.from( changed );
-			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
-		}
-	}
+	// 	if ( changed.size > 0 ) {
+	// 		// Fire event with exact data (fire only if anything changed).
+	// 		const attributeKeys = Array.from( changed );
+	// 		this.fire( 'change:attribute', { attributeKeys, directChange: true } );
+	// 	}
+	// }
 
-	/**
-	 * @inheritDoc
-	 */
-	clearAttributes() {
-		this.setAttributesTo( [] );
-	}
+	// /**
+	//  * @inheritDoc
+	//  */
+	// clearAttributes() {
+	// 	this.setAttributesTo( [] );
+	// }
 
 	/**
 	 * Removes all attributes from the selection and sets attributes according to the surrounding nodes.
+	 *
+	 * @private
 	 */
-	refreshAttributes() {
+	_refreshAttributes() {
 		this._updateAttributes( true );
 	}
 
@@ -312,121 +321,121 @@ export default class DocumentSelection extends Selection {
 		throw new CKEditorError( 'documentselection-cannot-create: Cannot create a new DocumentSelection instance.' );
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	_popRange() {
-		this._ranges.pop().detach();
-	}
+	// /**
+	//  * @inheritDoc
+	//  */
+	// _popRange() {
+	// 	this._ranges.pop().detach();
+	// }
 
-	/**
-	 * @inheritDoc
-	 */
-	_pushRange( range ) {
-		const liveRange = this._prepareRange( range );
+	// /**
+	//  * @inheritDoc
+	//  */
+	// _pushRange( range ) {
+	// 	const liveRange = this._prepareRange( range );
 
-		// `undefined` is returned when given `range` is in graveyard root.
-		if ( liveRange ) {
-			this._ranges.push( liveRange );
-		}
-	}
+	// 	// `undefined` is returned when given `range` is in graveyard root.
+	// 	if ( liveRange ) {
+	// 		this._ranges.push( liveRange );
+	// 	}
+	// }
 
-	/**
-	 * Prepares given range to be added to selection. Checks if it is correct,
-	 * converts it to {@link module:engine/model/liverange~LiveRange LiveRange}
-	 * and sets listeners listening to the range's change event.
-	 *
-	 * @private
-	 * @param {module:engine/model/range~Range} range
-	 */
-	_prepareRange( range ) {
-		if ( !( range instanceof Range ) ) {
-			/**
-			 * Trying to add an object that is not an instance of Range.
-			 *
-			 * @error model-selection-added-not-range
-			 */
-			throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
-		}
+	// /**
+	//  * Prepares given range to be added to selection. Checks if it is correct,
+	//  * converts it to {@link module:engine/model/liverange~LiveRange LiveRange}
+	//  * and sets listeners listening to the range's change event.
+	//  *
+	//  * @private
+	//  * @param {module:engine/model/range~Range} range
+	//  */
+	// _prepareRange( range ) {
+	// 	if ( !( range instanceof Range ) ) {
+	// 		/**
+	// 		 * Trying to add an object that is not an instance of Range.
+	// 		 *
+	// 		 * @error model-selection-added-not-range
+	// 		 */
+	// 		throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
+	// 	}
 
-		if ( range.root == this._document.graveyard ) {
-			/**
-			 * Trying to add a Range that is in the graveyard root. Range rejected.
-			 *
-			 * @warning model-selection-range-in-graveyard
-			 */
-			log.warn( 'model-selection-range-in-graveyard: Trying to add a Range that is in the graveyard root. Range rejected.' );
+	// 	if ( range.root == this._document.graveyard ) {
+	// 		/**
+	// 		 * Trying to add a Range that is in the graveyard root. Range rejected.
+	// 		 *
+	// 		 * @warning model-selection-range-in-graveyard
+	// 		 */
+	// 		log.warn( 'model-selection-range-in-graveyard: Trying to add a Range that is in the graveyard root. Range rejected.' );
 
-			return;
-		}
+	// 		return;
+	// 	}
 
-		this._checkRange( range );
+	// 	this._checkRange( range );
 
-		const liveRange = LiveRange.createFromRange( range );
+	// 	const liveRange = LiveRange.createFromRange( range );
 
-		liveRange.on( 'change:range', ( evt, oldRange, data ) => {
-			// If `LiveRange` is in whole moved to the graveyard, fix that range.
-			if ( liveRange.root == this._document.graveyard ) {
-				this._fixGraveyardSelection( liveRange, data.sourcePosition );
-			}
+	// 	liveRange.on( 'change:range', ( evt, oldRange, data ) => {
+	// 		// If `LiveRange` is in whole moved to the graveyard, fix that range.
+	// 		if ( liveRange.root == this._document.graveyard ) {
+	// 			this._fixGraveyardSelection( liveRange, data.sourcePosition );
+	// 		}
 
-			// Whenever a live range from selection changes, fire an event informing about that change.
-			this.fire( 'change:range', { directChange: false } );
-		} );
+	// 		// Whenever a live range from selection changes, fire an event informing about that change.
+	// 		this.fire( 'change:range', { directChange: false } );
+	// 	} );
 
-		return liveRange;
-	}
+	// 	return liveRange;
+	// }
 
-	/**
-	 * Updates this selection attributes according to its ranges and the {@link module:engine/model/document~Document model document}.
-	 *
-	 * @protected
-	 * @param {Boolean} clearAll
-	 * @fires change:attribute
-	 */
-	_updateAttributes( clearAll ) {
-		const newAttributes = toMap( this._getSurroundingAttributes() );
-		const oldAttributes = toMap( this.getAttributes() );
+	// /**
+	//  * Updates this selection attributes according to its ranges and the {@link module:engine/model/document~Document model document}.
+	//  *
+	//  * @protected
+	//  * @param {Boolean} clearAll
+	//  * @fires change:attribute
+	//  */
+	// _updateAttributes( clearAll ) {
+	// 	const newAttributes = toMap( this._getSurroundingAttributes() );
+	// 	const oldAttributes = toMap( this.getAttributes() );
 
-		if ( clearAll ) {
-			// If `clearAll` remove all attributes and reset priorities.
-			this._attributePriority = new Map();
-			this._attrs = new Map();
-		} else {
-			// If not, remove only attributes added with `low` priority.
-			for ( const [ key, priority ] of this._attributePriority ) {
-				if ( priority == 'low' ) {
-					this._attrs.delete( key );
-					this._attributePriority.delete( key );
-				}
-			}
-		}
+	// 	if ( clearAll ) {
+	// 		// If `clearAll` remove all attributes and reset priorities.
+	// 		this._attributePriority = new Map();
+	// 		this._attrs = new Map();
+	// 	} else {
+	// 		// If not, remove only attributes added with `low` priority.
+	// 		for ( const [ key, priority ] of this._attributePriority ) {
+	// 			if ( priority == 'low' ) {
+	// 				this._attrs.delete( key );
+	// 				this._attributePriority.delete( key );
+	// 			}
+	// 		}
+	// 	}
 
-		this._setAttributesTo( newAttributes, false );
+	// 	this._setAttributesTo( newAttributes, false );
 
-		// Let's evaluate which attributes really changed.
-		const changed = [];
+	// 	// Let's evaluate which attributes really changed.
+	// 	const changed = [];
 
-		// First, loop through all attributes that are set on selection right now.
-		// Check which of them are different than old attributes.
-		for ( const [ newKey, newValue ] of this.getAttributes() ) {
-			if ( !oldAttributes.has( newKey ) || oldAttributes.get( newKey ) !== newValue ) {
-				changed.push( newKey );
-			}
-		}
+	// 	// First, loop through all attributes that are set on selection right now.
+	// 	// Check which of them are different than old attributes.
+	// 	for ( const [ newKey, newValue ] of this.getAttributes() ) {
+	// 		if ( !oldAttributes.has( newKey ) || oldAttributes.get( newKey ) !== newValue ) {
+	// 			changed.push( newKey );
+	// 		}
+	// 	}
 
-		// Then, check which of old attributes got removed.
-		for ( const [ oldKey ] of oldAttributes ) {
-			if ( !this.hasAttribute( oldKey ) ) {
-				changed.push( oldKey );
-			}
-		}
+	// 	// Then, check which of old attributes got removed.
+	// 	for ( const [ oldKey ] of oldAttributes ) {
+	// 		if ( !this.hasAttribute( oldKey ) ) {
+	// 			changed.push( oldKey );
+	// 		}
+	// 	}
 
-		// Fire event with exact data (fire only if anything changed).
-		if ( changed.length > 0 ) {
-			this.fire( 'change:attribute', { attributeKeys: changed, directChange: false } );
-		}
-	}
+	// 	// Fire event with exact data (fire only if anything changed).
+	// 	if ( changed.length > 0 ) {
+	// 		this.fire( 'change:attribute', { attributeKeys: changed, directChange: false } );
+	// 	}
+	// }
 
 	/**
 	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
@@ -450,39 +459,39 @@ export default class DocumentSelection extends Selection {
 		return key.startsWith( storePrefix );
 	}
 
-	/**
-	 * Internal method for setting `DocumentSelection` attribute. Supports attribute priorities (through `directChange`
-	 * parameter).
-	 *
-	 * @private
-	 * @param {String} key Attribute key.
-	 * @param {*} value Attribute value.
-	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
-	 * is caused by `Batch` API.
-	 * @returns {Boolean} Whether value has changed.
-	 */
-	_setAttribute( key, value, directChange = true ) {
-		const priority = directChange ? 'normal' : 'low';
+	// /**
+	//  * Internal method for setting `DocumentSelection` attribute. Supports attribute priorities (through `directChange`
+	//  * parameter).
+	//  *
+	//  * @private
+	//  * @param {String} key Attribute key.
+	//  * @param {*} value Attribute value.
+	//  * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
+	//  * is caused by `Batch` API.
+	//  * @returns {Boolean} Whether value has changed.
+	//  */
+	// _setAttribute( key, value, directChange = true ) {
+	// 	const priority = directChange ? 'normal' : 'low';
 
-		if ( priority == 'low' && this._attributePriority.get( key ) == 'normal' ) {
-			// Priority too low.
-			return false;
-		}
+	// 	if ( priority == 'low' && this._attributePriority.get( key ) == 'normal' ) {
+	// 		// Priority too low.
+	// 		return false;
+	// 	}
 
-		const oldValue = super.getAttribute( key );
+	// 	const oldValue = super.getAttribute( key );
 
-		// Don't do anything if value has not changed.
-		if ( oldValue === value ) {
-			return false;
-		}
+	// 	// Don't do anything if value has not changed.
+	// 	if ( oldValue === value ) {
+	// 		return false;
+	// 	}
 
-		this._attrs.set( key, value );
+	// 	this._attrs.set( key, value );
 
-		// Update priorities map.
-		this._attributePriority.set( key, priority );
+	// 	// Update priorities map.
+	// 	this._attributePriority.set( key, priority );
 
-		return true;
-	}
+	// 	return true;
+	// }
 
 	/**
 	 * Internal method for removing `DocumentSelection` attribute. Supports attribute priorities (through `directChange`
@@ -495,7 +504,7 @@ export default class DocumentSelection extends Selection {
 	 * @returns {Boolean} Whether attribute was removed. May not be true if such attributes didn't exist or the
 	 * existing attribute had higher priority.
 	 */
-	_removeAttribute( key, directChange = true ) {
+	_removeAttributeByDirectChange( key, directChange = true ) {
 		const priority = directChange ? 'normal' : 'low';
 
 		if ( priority == 'low' && this._attributePriority.get( key ) == 'normal' ) {
@@ -536,7 +545,7 @@ export default class DocumentSelection extends Selection {
 			}
 
 			// Attribute still might not get removed because of priorities.
-			if ( this._removeAttribute( oldKey, directChange ) ) {
+			if ( this._removeAttributeByDirectChange( oldKey, directChange ) ) {
 				changed.add( oldKey );
 			}
 		}

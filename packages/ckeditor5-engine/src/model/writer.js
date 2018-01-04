@@ -808,6 +808,22 @@ export default class Writer {
 			throw new CKEditorError( 'writer-incorrect-use: Trying to use a writer outside the change() block.' );
 		}
 	}
+
+	setSelection( selectable ) {
+		this.model.document.selection._setTo( selectable );
+	}
+
+	setSelectionFocus( itemOrPosition, offset ) {
+		this.model.document.selection._moveFocusTo( itemOrPosition, offset );
+	}
+
+	setSelectionAttribute( key, value ) {
+		this.model.document.selection._setAttribute( key, value );
+	}
+
+	removeSelectionAttribute( key ) {
+		this.model.document.selection._removeAttribute( key );
+	}
 }
 
 // Sets given attribute to each node in given range. When attribute value is null then attribute will be removed.
