@@ -49,6 +49,30 @@ describe( 'EnterObserver', () => {
 
 			expect( spy.calledOnce ).to.be.false;
 		} );
+
+		it( 'should stop keydown event when enter event is stopped', () => {
+			const keydownSpy = sinon.spy();
+			viewDocument.on( 'keydown', keydownSpy );
+			viewDocument.on( 'enter', evt => evt.stop() );
+
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				keyCode: getCode( 'enter' )
+			} ) );
+
+			sinon.assert.notCalled( keydownSpy );
+		} );
+
+		it( 'should not stop keydown event when enter event is not stopped', () => {
+			const keydownSpy = sinon.spy();
+			viewDocument.on( 'keydown', keydownSpy );
+			viewDocument.on( 'enter', evt => evt.stop() );
+
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				keyCode: getCode( 'x' )
+			} ) );
+
+			sinon.assert.calledOnce( keydownSpy );
+		} );
 	} );
 
 	function getDomEvent() {

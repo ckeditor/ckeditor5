@@ -22,7 +22,17 @@ export default class EnterObserver extends Observer {
 
 		document.on( 'keydown', ( evt, data ) => {
 			if ( this.isEnabled && data.keyCode == keyCodes.enter ) {
+				// Save the event object to check later if it was stopped or not.
+				let event;
+				document.once( 'enter', evt => ( event = evt ), { priority: 'highest' } );
+
 				document.fire( 'enter', new DomEventData( document, data.domEvent ) );
+
+				// Stop `keydown` event if `enter` event was stopped.
+				// https://github.com/ckeditor/ckeditor5/issues/753
+				if ( event && event.stop.called ) {
+					evt.stop();
+				}
 			}
 		} );
 	}
