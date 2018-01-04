@@ -1454,6 +1454,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should create minimal number of remove deltas, each with only one operation', () => {
+				batch = new Batch();
 				remove( range );
 
 				expect( batch.deltas.length ).to.equal( 2 );
@@ -1462,6 +1463,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should use RemoveOperation', () => {
+				batch = new Batch();
 				remove( div );
 
 				expect( batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'remove' );
@@ -1503,6 +1505,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should create minimal number of remove deltas, each with only one operation', () => {
+				batch = new Batch();
 				remove( range );
 
 				expect( batch.deltas.length ).to.equal( 2 );
@@ -1511,6 +1514,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should use DetachOperation', () => {
+				batch = new Batch();
 				remove( div );
 
 				expect( batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'detach' );
