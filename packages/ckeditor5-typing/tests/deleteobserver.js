@@ -167,6 +167,30 @@ describe( 'DeleteObserver', () => {
 			expect( spy.args[ 0 ][ 1 ] ).to.have.property( 'sequence', 1 );
 			expect( spy.args[ 1 ][ 1 ] ).to.have.property( 'sequence', 2 );
 		} );
+
+		it( 'should stop keydown event when delete event is stopped', () => {
+			const keydownSpy = sinon.spy();
+			viewDocument.on( 'keydown', keydownSpy );
+			viewDocument.on( 'delete', evt => evt.stop() );
+
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				keyCode: getCode( 'delete' )
+			} ) );
+
+			sinon.assert.notCalled( keydownSpy );
+		} );
+
+		it( 'should not stop keydown event when delete event is not stopped', () => {
+			const keydownSpy = sinon.spy();
+			viewDocument.on( 'keydown', keydownSpy );
+			viewDocument.on( 'delete', evt => evt.stop() );
+
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				keyCode: getCode( 'x' )
+			} ) );
+
+			sinon.assert.calledOnce( keydownSpy );
+		} );
 	} );
 
 	function getDomEvent() {
