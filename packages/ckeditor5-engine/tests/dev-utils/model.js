@@ -23,22 +23,28 @@ describe( 'model test utils', () => {
 		sandbox = sinon.sandbox.create();
 		selection.removeAllRanges();
 
-		model.schema.registerItem( 'a', '$inline' );
-		model.schema.allow( { name: 'a', inside: '$root' } );
-		model.schema.allow( { name: 'a', inside: '$root', attributes: [ 'bar', 'car', 'foo' ] } );
+		model.schema.register( 'a', {
+			allowWhere: '$text',
+			allowIn: '$root',
+			allowAttributes: [ 'bar', 'car', 'foo' ]
+		} );
 
-		model.schema.registerItem( 'b', '$inline' );
-		model.schema.allow( { name: 'b', inside: '$root' } );
-		model.schema.allow( { name: 'b', inside: '$root', attributes: [ 'barFoo', 'fooBar', 'x' ] } );
+		model.schema.register( 'b', {
+			allowWhere: '$text',
+			allowIn: '$root',
+			allowAttributes: [ 'barFoo', 'fooBar', 'x' ]
+		} );
 
-		model.schema.registerItem( 'c', '$inline' );
-		model.schema.allow( { name: 'c', inside: '$root' } );
+		model.schema.register( 'c', {
+			allowWhere: '$text',
+			allowIn: [ '$root', 'b' ]
+		} );
 
-		model.schema.registerItem( 'paragraph', '$block' );
-		model.schema.allow( { name: '$text', inside: '$root' } );
-		model.schema.allow( { name: '$text', inside: 'a' } );
-		model.schema.allow( { name: '$text', inside: 'b' } );
-		model.schema.allow( { name: 'c', inside: 'b' } );
+		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+		model.schema.extend( '$text', {
+			allowIn: [ '$root', 'a', 'b' ]
+		} );
 	} );
 
 	afterEach( () => {
@@ -162,8 +168,8 @@ describe( 'model test utils', () => {
 		it( 'should work in a special root', () => {
 			const model = new Model();
 
-			model.schema.registerItem( 'textOnly' );
-			model.schema.allow( { name: '$text', inside: 'textOnly' } );
+			model.schema.register( 'textOnly' );
+			model.schema.extend( '$text', { allowIn: 'textOnly' } );
 			model.document.createRoot( 'textOnly', 'textOnly' );
 
 			setData( model, 'a[b]c', { rootName: 'textOnly' } );
@@ -504,7 +510,7 @@ describe( 'model test utils', () => {
 		it( 'throws when try to set element not registered in schema', () => {
 			expect( () => {
 				parse( '<xyz></xyz>', model.schema );
-			} ).to.throw( Error, 'Element \'xyz\' not allowed in context ["$root"].' );
+			} ).to.throw( Error, 'Element \'xyz\' was not allowed in context ["$root"].' );
 		} );
 
 		it( 'throws when try to set text directly to $root without registering it', () => {
@@ -512,13 +518,13 @@ describe( 'model test utils', () => {
 
 			expect( () => {
 				parse( 'text', model.schema );
-			} ).to.throw( Error, 'Element \'$text\' not allowed in context ["$root"].' );
+			} ).to.throw( Error, 'Text was not allowed in context ["$root"].' );
 		} );
 
 		it( 'converts data in the specified context', () => {
 			const model = new Model();
-			model.schema.registerItem( 'foo' );
-			model.schema.allow( { name: '$text', inside: 'foo' } );
+			model.schema.register( 'foo' );
+			model.schema.extend( '$text', { allowIn: 'foo' } );
 
 			expect( () => {
 				parse( 'text', model.schema, { context: [ 'foo' ] } );

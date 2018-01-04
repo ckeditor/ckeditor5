@@ -17,7 +17,7 @@ describe( 'DataController utils', () => {
 			doc = model.document;
 			doc.createRoot();
 
-			model.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'x[abc]x' );
 
 			model.change( writer => {
@@ -34,12 +34,11 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.registerItem( 'image', '$inline' );
-
-				schema.allow( { name: '$text', inside: '$root' } );
-				schema.allow( { name: 'image', inside: '$root' } );
-				schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
-				schema.allow( { name: '$inline', attributes: [ 'italic' ] } );
+				schema.register( 'image', { allowWhere: '$text', allowIn: '$root' } );
+				schema.extend( '$text', {
+					allowIn: '$root',
+					allowAttributes: [ 'bold', 'italic' ]
+				} );
 			} );
 
 			it( 'returns empty fragment for no selection', () => {
@@ -128,17 +127,18 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.registerItem( 'paragraph', '$block' );
-				schema.registerItem( 'heading1', '$block' );
-				schema.registerItem( 'blockImage' );
-				schema.registerItem( 'caption' );
-				schema.registerItem( 'image', '$inline' );
+				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				schema.register( 'heading1', { inheritAllFrom: '$block' } );
+				schema.register( 'blockImage' );
+				schema.register( 'caption' );
+				schema.register( 'image', { allowWhere: '$text' } );
 
-				schema.allow( { name: 'blockImage', inside: '$root' } );
-				schema.allow( { name: 'caption', inside: 'blockImage' } );
-				schema.allow( { name: '$inline', inside: 'caption' } );
-
-				schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
+				schema.extend( 'blockImage', { allowIn: '$root' } );
+				schema.extend( 'caption', { allowIn: 'blockImage' } );
+				schema.extend( '$text', {
+					allowIn: 'caption',
+					allowAttributes: 'bold'
+				} );
 			} );
 
 			it( 'gets one character', () => {
@@ -268,12 +268,12 @@ describe( 'DataController utils', () => {
 
 				const schema = model.schema;
 
-				schema.registerItem( 'paragraph', '$block' );
-				schema.registerItem( 'heading1', '$block' );
-				schema.registerItem( 'quote' );
+				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				schema.register( 'heading1', { inheritAllFrom: '$block' } );
+				schema.register( 'quote' );
 
-				schema.allow( { name: '$block', inside: 'quote' } );
-				schema.allow( { name: 'quote', inside: '$root' } );
+				schema.extend( '$block', { allowIn: 'quote' } );
+				schema.extend( 'quote', { allowIn: '$root' } );
 			} );
 
 			it( 'gets content when ends are equally deeply nested', () => {
@@ -329,8 +329,8 @@ describe( 'DataController utils', () => {
 
 			// See: https://github.com/ckeditor/ckeditor5-engine/pull/1043#issuecomment-318012286
 			it( 'ensures that elements are retrieved by indexes instead of offsets', () => {
-				model.schema.allow( { name: '$text', inside: '$root' } );
-				model.schema.allow( { name: '$text', inside: 'quote' } );
+				model.schema.extend( '$text', { allowIn: '$root' } );
+				model.schema.extend( '$text', { allowIn: 'quote' } );
 
 				setData( model,
 					'foo' +

@@ -21,7 +21,7 @@ describe( 'Operation utils', () => {
 	beforeEach( () => {
 		model = new Model();
 		doc = model.document;
-		model.schema.allow( { name: '$text', inside: '$root' } );
+		model.schema.extend( '$text', { allowIn: '$root' } );
 
 		root = doc.createRoot();
 

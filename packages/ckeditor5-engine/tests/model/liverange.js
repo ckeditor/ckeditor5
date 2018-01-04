@@ -430,11 +430,11 @@ describe( 'LiveRange', () => {
 			let live;
 
 			beforeEach( () => {
-				model.schema.registerItem( 'p', '$block' );
-				model.schema.registerItem( 'w' );
+				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+				model.schema.register( 'w' );
 
-				model.schema.allow( { name: 'p', inside: 'w' } );
-				model.schema.allow( { name: 'w', inside: '$root' } );
+				model.schema.extend( 'p', { allowIn: 'w' } );
+				model.schema.extend( 'w', { allowIn: '$root' } );
 			} );
 
 			afterEach( () => {
@@ -526,11 +526,11 @@ describe( 'LiveRange', () => {
 			let live;
 
 			beforeEach( () => {
-				model.schema.registerItem( 'p', '$block' );
-				model.schema.registerItem( 'w' );
+				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+				model.schema.register( 'w' );
 
-				model.schema.allow( { name: 'p', inside: 'w' } );
-				model.schema.allow( { name: 'w', inside: '$root' } );
+				model.schema.extend( 'p', { allowIn: 'w' } );
+				model.schema.extend( 'w', { allowIn: '$root' } );
 			} );
 
 			afterEach( () => {

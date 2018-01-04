@@ -11,9 +11,26 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet ],
-		toolbar: [ 'headings', 'undo', 'redo' ],
+		toolbar: {
+			items: [
+				'headings',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'blockQuote',
+				'undo',
+				'redo'
+			]
+		},
 		image: {
-			toolbar: [ 'imageTextAlternative' ]
+			toolbar: [
+				'imageStyleFull',
+				'imageStyleSide',
+				'|',
+				'imageTextAlternative'
+			]
 		}
 	} )
 	.then( editor => {
@@ -21,11 +38,44 @@ ClassicEditor
 
 		const schema = editor.model.schema;
 
-		schema.disallow( { name: '$text', attributes: [ 'linkHref', 'italic' ], inside: 'heading1' } );
-		schema.disallow( { name: '$text', attributes: [ 'italic' ], inside: 'heading2' } );
-		schema.disallow( { name: '$text', attributes: [ 'linkHref' ], inside: 'blockQuote listItem' } );
-		schema.disallow( { name: '$text', attributes: [ 'bold' ], inside: 'paragraph' } );
-		schema.disallow( { name: 'heading3', inside: '$root' } );
+		schema.on( 'checkAttribute', ( evt, args ) => {
+			const ctx = args[ 0 ];
+			const attributeName = args[ 1 ];
+
+			if ( ctx.endsWith( 'heading1 $text' ) && [ 'linkHref', 'italic' ].includes( attributeName ) ) {
+				evt.stop();
+				evt.return = false;
+			}
+
+			if ( ctx.endsWith( 'heading2 $text' ) && attributeName == 'italic' ) {
+				evt.stop();
+				evt.return = false;
+			}
+
+			if ( ctx.endsWith( 'heading2 $text' ) && attributeName == 'italic' ) {
+				evt.stop();
+				evt.return = false;
+			}
+
+			if ( ctx.endsWith( 'blockQuote listItem $text' ) && attributeName == 'linkHref' ) {
+				evt.stop();
+				evt.return = false;
+			}
+
+			if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'bold' ) {
+				evt.stop();
+				evt.return = false;
+			}
+		} );
+
+		schema.on( 'checkChild', ( evt, args ) => {
+			const def = schema.getDefinition( args[ 1 ] );
+
+			if ( args[ 0 ].endsWith( '$root' ) && def.name == 'heading3' ) {
+				evt.stop();
+				evt.return = false;
+			}
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

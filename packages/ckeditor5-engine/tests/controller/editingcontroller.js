@@ -140,8 +140,8 @@ describe( 'EditingController', () => {
 			document.body.appendChild( domRoot );
 			viewRoot = editing.createRoot( domRoot );
 
-			model.schema.registerItem( 'paragraph', '$block' );
-			model.schema.registerItem( 'div', '$block' );
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 			buildModelConverter().for( editing.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 			buildModelConverter().for( editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 			buildModelConverter().for( editing.modelToView ).fromMarker( 'marker' ).toHighlight( {} );
@@ -396,7 +396,7 @@ describe( 'EditingController', () => {
 		it( 'should remove listenters', () => {
 			const model = new Model();
 			model.document.createRoot();
-			model.schema.registerItem( 'paragraph', '$block' );
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			const editing = new EditingController( model );
 
@@ -420,7 +420,7 @@ describe( 'EditingController', () => {
 		it( 'should destroy view', () => {
 			const model = new Model();
 			model.document.createRoot();
-			model.schema.registerItem( 'paragraph', '$block' );
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			const editing = new EditingController( model );
 

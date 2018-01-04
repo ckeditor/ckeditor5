@@ -9,7 +9,6 @@ import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewText from '../../src/view/text';
 
 import Model from '../../src/model/model';
-import ModelSchema from '../../src/model/schema';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
@@ -17,15 +16,17 @@ import ModelText from '../../src/model/text';
 import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
 
 describe( 'view-to-model-converters', () => {
-	let dispatcher, schema, additionalData;
-
-	const model = new Model();
+	let dispatcher, schema, additionalData, model;
 
 	beforeEach( () => {
-		schema = new ModelSchema();
-		schema.registerItem( 'paragraph', '$block' );
-		schema.allow( { name: '$text', inside: '$root' } );
+		model = new Model();
+		schema = model.schema;
+
+		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+		schema.extend( '$text', { allowIn: '$root' } );
+
 		additionalData = { context: [ '$root' ] };
+
 		dispatcher = new ViewConversionDispatcher( model, { schema } );
 	} );
 
@@ -62,7 +63,16 @@ describe( 'view-to-model-converters', () => {
 		} );
 
 		it( 'should not convert text if it is wrong with schema', () => {
-			schema.disallow( { name: '$text', inside: '$root' } );
+			schema.on( 'checkChild', ( evt, args ) => {
+				const ctx = args[ 0 ];
+				const child = args[ 1 ];
+				const childRule = schema.getDefinition( child );
+
+				if ( childRule.name == '$text' && ctx.endsWith( '$root' ) ) {
+					evt.stop();
+					evt.return = false;
+				}
+			}, { priority: 'high' } );
 
 			const viewText = new ViewText( 'foobar' );
 			dispatcher.on( 'text', convertText() );

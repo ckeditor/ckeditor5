@@ -248,7 +248,7 @@ export default class Document {
 		const schema = this.model.schema;
 
 		// Return collapsed range if provided position is valid.
-		if ( schema.check( { name: '$text', inside: position } ) ) {
+		if ( schema.checkChild( position, '$text' ) ) {
 			return new Range( position );
 		}
 
@@ -266,11 +266,11 @@ export default class Document {
 			const type = ( data.walker == backwardWalker ? 'elementEnd' : 'elementStart' );
 			const value = data.value;
 
-			if ( value.type == type && schema.objects.has( value.item.name ) ) {
+			if ( value.type == type && schema.isObject( value.item ) ) {
 				return Range.createOn( value.item );
 			}
 
-			if ( schema.check( { name: '$text', inside: value.nextPosition } ) ) {
+			if ( schema.checkChild( value.nextPosition, '$text' ) ) {
 				return new Range( value.nextPosition );
 			}
 		}

@@ -21,7 +21,6 @@ import {
 } from '../../src/conversion/definition-based-converters';
 
 import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatcher';
-import ModelSchema from '../../src/model/schema';
 import ModelWalker from '../../src/model/treewalker';
 import ModelTextProxy from '../../src/model/textproxy';
 import Model from '../../src/model/model';
@@ -104,7 +103,7 @@ describe( 'definition-based-converters', () => {
 
 	function setupViewToModelTests() {
 		additionalData = { context: [ '$root' ] };
-		schema = new ModelSchema();
+		schema = model.schema;
 		dispatcher = new ViewConversionDispatcher( model, { schema } );
 	}
 
@@ -214,10 +213,11 @@ describe( 'definition-based-converters', () => {
 			beforeEach( () => {
 				setupViewToModelTests();
 
-				schema.registerItem( 'div', '$block' );
-
-				schema.allow( { name: '$inline', attributes: [ 'foo' ], inside: '$root' } );
-				schema.allow( { name: '$text', inside: '$root' } );
+				schema.register( 'div', { inheritAllFrom: '$block' } );
+				schema.extend( '$text', {
+					allowIn: '$root',
+					allowAttributes: 'foo'
+				} );
 
 				dispatcher.on( 'text', convertText() );
 			} );
@@ -377,12 +377,14 @@ describe( 'definition-based-converters', () => {
 			beforeEach( () => {
 				setupViewToModelTests();
 
-				schema.registerItem( 'div', '$block' );
-				schema.registerItem( 'bar', '$block' );
-				schema.registerItem( 'baz', '$block' );
+				schema.register( 'div', { inheritAllFrom: '$block' } );
+				schema.register( 'bar', { inheritAllFrom: '$block' } );
+				schema.register( 'baz', { inheritAllFrom: '$block' } );
 
-				schema.allow( { name: '$inline', attribute: [ 'foo' ], inside: '$root' } );
-				schema.allow( { name: '$text', inside: '$inline' } );
+				schema.extend( '$text', {
+					allowIn: '$root',
+					allowAttributes: 'foo'
+				} );
 
 				dispatcher.on( 'text', convertText() );
 			} );

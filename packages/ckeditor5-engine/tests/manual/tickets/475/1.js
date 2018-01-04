@@ -31,7 +31,7 @@ class Link extends Plugin {
 		const editing = editor.editing;
 
 		// Allow bold attribute on all inline nodes.
-		editor.model.schema.allow( { name: '$inline', attributes: [ 'link' ] } );
+		editor.model.schema.extend( '$text', { allowAttributes: 'link' } );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )

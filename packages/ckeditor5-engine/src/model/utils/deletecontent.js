@@ -26,7 +26,7 @@ import Range from '../range';
  * * `<heading>x^y</heading>` with the option disabled (`leaveUnmerged == false`)
  * * `<heading>x^</heading><paragraph>y</paragraph>` with enabled (`leaveUnmerged == true`).
  *
- * Note: {@link module:engine/model/schema~Schema#objects object} and {@link module:engine/model/schema~Schema#limits limit}
+ * Note: {@link module:engine/model/schema~Schema#isObject object} and {@link module:engine/model/schema~Schema#isLimit limit}
  * elements will not be merged.
  *
  * @param {Boolean} [options.doNotResetEntireContent=false] Whether to skip replacing the entire content with a
@@ -73,12 +73,13 @@ export default function deleteContent( model, selection, options = {} ) {
 		if ( !options.leaveUnmerged ) {
 			mergeBranches( writer, startPos, endPos );
 
+			// TMP this will be replaced with a postifxer.
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
 			// some attributes could end up in a path where are disallowed.
 			//
 			// e.g. bold is disallowed for <H1>
 			// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
-			schema.removeDisallowedAttributes( startPos.parent.getChildren(), startPos, writer );
+			schema.removeDisallowedAttributes( startPos.parent.getChildren(), writer );
 		}
 
 		selection.setCollapsedAt( startPos );
@@ -157,8 +158,8 @@ function mergeBranches( writer, startPos, endPos ) {
 }
 
 function shouldAutoparagraph( schema, position ) {
-	const isTextAllowed = schema.check( { name: '$text', inside: position } );
-	const isParagraphAllowed = schema.check( { name: 'paragraph', inside: position } );
+	const isTextAllowed = schema.checkChild( position, '$text' );
+	const isParagraphAllowed = schema.checkChild( position, 'paragraph' );
 
 	return !isTextAllowed && isParagraphAllowed;
 }
@@ -173,7 +174,7 @@ function checkCanBeMerged( leftPos, rightPos, schema ) {
 	const rangeToCheck = new Range( leftPos, rightPos );
 
 	for ( const value of rangeToCheck.getWalker() ) {
-		if ( schema.objects.has( value.item.name ) || schema.limits.has( value.item.name ) ) {
+		if ( schema.isObject( value.item ) || schema.isLimit( value.item ) ) {
 			return false;
 		}
 	}
@@ -212,5 +213,5 @@ function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
 		return false;
 	}
 
-	return schema.check( { name: 'paragraph', inside: limitElement.name } );
+	return schema.checkChild( limitElement, 'paragraph' );
 }

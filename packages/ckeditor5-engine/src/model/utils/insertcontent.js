@@ -116,6 +116,8 @@ class Insertion {
 		 * @member {module:engine/model/schema~Schema} #schema
 		 */
 		this.schema = model.schema;
+
+		this._filterAttributesOf = [];
 	}
 
 	/**
@@ -136,6 +138,10 @@ class Insertion {
 				isLast: ( i === ( nodes.length - 1 ) ) && parentContext.isLast
 			} );
 		}
+
+		// TMP this will become a postfixer.
+		this.schema.removeDisallowedAttributes( this._filterAttributesOf, this.writer );
+		this._filterAttributesOf = [];
 	}
 
 	/**
@@ -164,7 +170,7 @@ class Insertion {
 		// Let's handle object in a special way.
 		// * They should never be merged with other elements.
 		// * If they are not allowed in any of the selection ancestors, they could be either autoparagraphed or totally removed.
-		if ( this._checkIsObject( node ) ) {
+		if ( this.schema.isObject( node ) ) {
 			this._handleObject( node, context );
 
 			return;
@@ -222,13 +228,7 @@ class Insertion {
 		if ( node.is( 'element' ) ) {
 			this.handleNodes( node.getChildren(), context );
 		}
-		// If the node is a text and bare text is allowed in current position it means that the node
-		// contains disallowed attributes and we have to remove them.
-		else if ( this.schema.check( { name: '$text', inside: this.position } ) ) {
-			this.schema.removeDisallowedAttributes( [ node ], this.position, this.writer );
-			this._handleNode( node, context );
-		}
-		// If text is not allowed, try autoparagraphing.
+		// If text is not allowed, try autoparagraphing it.
 		else {
 			this._tryAutoparagraphing( node, context );
 		}
@@ -239,7 +239,7 @@ class Insertion {
 	 */
 	_insert( node ) {
 		/* istanbul ignore if */
-		if ( !this._checkIsAllowed( node, this.position ) ) {
+		if ( !this.schema.checkChild( this.position, node ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 			// Note that it would often be a silent issue if we insert node in a place where it's not allowed.
 			log.error(
@@ -258,11 +258,13 @@ class Insertion {
 		livePos.detach();
 
 		// The last inserted object should be selected because we can't put a collapsed selection after it.
-		if ( this._checkIsObject( node ) && !this.schema.check( { name: '$text', inside: this.position } ) ) {
+		if ( this.schema.isObject( node ) && !this.schema.checkChild( this.position, '$text' ) ) {
 			this.nodeToSelect = node;
 		} else {
 			this.nodeToSelect = null;
 		}
+
+		this._filterAttributesOf.push( node );
 	}
 
 	/**
@@ -283,11 +285,6 @@ class Insertion {
 			const position = LivePosition.createFromPosition( this.position );
 
 			this.writer.merge( mergePosLeft );
-
-			// We need to check and strip disallowed attributes in all nested nodes because after merge
-			// some attributes could end up in a path where are disallowed.
-			const parent = position.nodeBefore;
-			this.schema.removeDisallowedAttributes( parent.getChildren(), Position.createAt( parent ), this.writer );
 
 			this.position = Position.createFromPosition( position );
 			position.detach();
@@ -312,22 +309,18 @@ class Insertion {
 
 			this.writer.merge( mergePosRight );
 
-			// We need to check and strip disallowed attributes in all nested nodes because after merge
-			// some attributes could end up in a place where are disallowed.
-			this.schema.removeDisallowedAttributes( position.parent.getChildren(), position, this.writer );
-
 			this.position = Position.createFromPosition( position );
 			position.detach();
 		}
 
+		if ( mergeLeft || mergeRight ) {
+			// After merge elements that were marked by _insert() to be filtered might be gone so
+			// we need to mark the new container.
+			this._filterAttributesOf.push( this.position.parent );
+		}
+
 		mergePosLeft.detach();
 		mergePosRight.detach();
-
-		// When there was no merge we need to check and strip disallowed attributes in all nested nodes of
-		// just inserted node because some attributes could end up in a place where are disallowed.
-		if ( !mergeLeft && !mergeRight ) {
-			this.schema.removeDisallowedAttributes( node.getChildren(), Position.createAt( node ), this.writer );
-		}
 	}
 
 	/**
@@ -342,17 +335,9 @@ class Insertion {
 		// Do not autoparagraph if the paragraph won't be allowed there,
 		// cause that would lead to an infinite loop. The paragraph would be rejected in
 		// the next _handleNode() call and we'd be here again.
-		if ( this._getAllowedIn( paragraph, this.position.parent ) ) {
-			// When node is a text and is disallowed by schema it means that contains disallowed attributes
-			// and we need to remove them.
-			if ( node.is( 'text' ) && !this._checkIsAllowed( node, [ paragraph ] ) ) {
-				this.schema.removeDisallowedAttributes( [ node ], [ paragraph ], this.writer );
-			}
-
-			if ( this._checkIsAllowed( node, [ paragraph ] ) ) {
-				paragraph.appendChildren( node );
-				this._handleNode( paragraph, context );
-			}
+		if ( this._getAllowedIn( paragraph, this.position.parent ) && this.schema.checkChild( paragraph, node ) ) {
+			paragraph.appendChildren( node );
+			this._handleNode( paragraph, context );
 		}
 	}
 
@@ -370,7 +355,7 @@ class Insertion {
 
 		while ( allowedIn != this.position.parent ) {
 			// If a parent which we'd need to leave is a limit element, break.
-			if ( this.schema.limits.has( this.position.parent.name ) ) {
+			if ( this.schema.isLimit( this.position.parent ) ) {
 				return false;
 			}
 
@@ -407,7 +392,7 @@ class Insertion {
 	 * @returns {module:engine/model/element~Element|null}
 	 */
 	_getAllowedIn( node, element ) {
-		if ( this._checkIsAllowed( node, [ element ] ) ) {
+		if ( this.schema.checkChild( element, node ) ) {
 			return element;
 		}
 
@@ -417,35 +402,4 @@ class Insertion {
 
 		return null;
 	}
-
-	/**
-	 * Check whether the given node is allowed in the specified schema path.
-	 *
-	 * @param {module:engine/model/node~Node} node
-	 * @param {module:engine/model/schema~SchemaPath} path
-	 */
-	_checkIsAllowed( node, path ) {
-		return this.schema.check( {
-			name: getNodeSchemaName( node ),
-			attributes: Array.from( node.getAttributeKeys() ),
-			inside: path
-		} );
-	}
-
-	/**
-	 * Checks whether according to the schema this is an object type element.
-	 *
-	 * @param {module:engine/model/node~Node} node The node to check.
-	 */
-	_checkIsObject( node ) {
-		return this.schema.objects.has( getNodeSchemaName( node ) );
-	}
-}
-
-// Gets a name under which we should check this node in the schema.
-//
-// @param {module:engine/model/node~Node} node The node.
-// @returns {String} Node name.
-function getNodeSchemaName( node ) {
-	return node.is( 'text' ) ? '$text' : node.name;
 }

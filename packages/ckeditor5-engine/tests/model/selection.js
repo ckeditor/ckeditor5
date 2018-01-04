@@ -891,7 +891,9 @@ describe( 'Selection', () => {
 
 		beforeEach( () => {
 			schema = new Schema();
-			schema.registerItem( 'p', '$block' );
+			schema.register( '$root' );
+			schema.register( 'p', { allowIn: '$root' } );
+			schema.register( '$text', { allowIn: 'p' } );
 		} );
 
 		it( 'should return selected element', () => {
@@ -926,21 +928,21 @@ describe( 'Selection', () => {
 
 	describe( 'getSelectedBlocks()', () => {
 		beforeEach( () => {
-			model.schema.registerItem( 'p', '$block' );
-			model.schema.registerItem( 'h', '$block' );
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.register( 'h', { inheritAllFrom: '$block' } );
 
-			model.schema.registerItem( 'blockquote' );
-			model.schema.allow( { name: 'blockquote', inside: '$root' } );
-			model.schema.allow( { name: '$block', inside: 'blockquote' } );
+			model.schema.register( 'blockquote' );
+			model.schema.extend( 'blockquote', { allowIn: '$root' } );
+			model.schema.extend( '$block', { allowIn: 'blockquote' } );
 
-			model.schema.registerItem( 'image' );
-			model.schema.allow( { name: 'image', inside: '$root' } );
-			model.schema.allow( { name: 'image', inside: '$block' } );
-			model.schema.allow( { name: '$text', inside: 'image' } );
+			model.schema.register( 'image', {
+				allowIn: [ '$root', '$block' ]
+			} );
+			model.schema.extend( '$text', { allowIn: 'image' } );
 
 			// Special block which can contain another blocks.
-			model.schema.registerItem( 'nestedBlock', '$block' );
-			model.schema.allow( { name: 'nestedBlock', inside: '$block' } );
+			model.schema.register( 'nestedBlock', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'nestedBlock', { allowIn: '$block' } );
 		} );
 
 		it( 'returns an iterator', () => {
@@ -1310,8 +1312,8 @@ describe( 'Selection', () => {
 
 	describe( 'containsEntireContent()', () => {
 		beforeEach( () => {
-			model.schema.registerItem( 'p', '$block' );
-			model.schema.allow( { name: 'p', inside: '$root' } );
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'p', { allowIn: '$root' } );
 		} );
 
 		it( 'returns true if the entire content in $root is selected', () => {
@@ -1345,8 +1347,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'returns false when the entire content except an empty element is selected', () => {
-			model.schema.registerItem( 'img', '$inline' );
-			model.schema.allow( { name: 'img', inside: 'p' } );
+			model.schema.register( 'img', {
+				allowIn: 'p'
+			} );
 
 			setData( model, '<p><img></img>[Foo]</p>' );
 

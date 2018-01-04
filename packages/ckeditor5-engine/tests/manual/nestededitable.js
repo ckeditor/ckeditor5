@@ -28,14 +28,15 @@ class NestedEditable extends Plugin {
 		const data = editor.data;
 		const schema = editor.model.schema;
 
-		schema.registerItem( 'figure' );
-		schema.registerItem( 'figcaption' );
-		schema.allow( { name: 'figure', inside: '$root' } );
-		schema.allow( { name: 'figcaption', inside: 'figure' } );
-		schema.objects.add( 'figure' );
-
-		schema.allow( { name: '$inline', inside: 'figure' } );
-		schema.allow( { name: '$inline', inside: 'figcaption' } );
+		schema.register( 'figure', {
+			isObject: true
+		} );
+		schema.register( 'figcaption' );
+		schema.extend( 'figure', { allowIn: '$root' } );
+		schema.extend( 'figcaption', { allowIn: 'figure' } );
+		schema.extend( '$text', {
+			allowIn: [ 'figure', 'figcaption' ]
+		} );
 
 		buildModelConverter().for( data.modelToView, editing.modelToView )
 			.fromElement( 'figure' )

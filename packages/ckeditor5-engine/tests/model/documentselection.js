@@ -46,10 +46,11 @@ describe( 'DocumentSelection', () => {
 			new Element( 'p', [], new Text( 'foobar' ) )
 		] );
 		selection = doc.selection;
-		model.schema.registerItem( 'p', '$block' );
+		model.schema.register( 'p', { inheritAllFrom: '$block' } );
 
-		model.schema.registerItem( 'widget' );
-		model.schema.objects.add( 'widget' );
+		model.schema.register( 'widget', {
+			isObject: true
+		} );
 
 		liveRange = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 		range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 2 ] ) );
@@ -94,8 +95,8 @@ describe( 'DocumentSelection', () => {
 				new Element( 'img' ),
 				new Element( 'p', [], new Text( 'foobar' ) )
 			] );
-			model.schema.registerItem( 'img' );
-			model.schema.registerItem( 'p', '$block' );
+			model.schema.register( 'img' );
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
 			selection = doc.selection;
 
 			const ranges = Array.from( selection.getRanges() );
@@ -360,7 +361,7 @@ describe( 'DocumentSelection', () => {
 
 		// See #630.
 		it( 'should refresh attributes – integration test for #630', () => {
-			model.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.extend( '$text', { allowIn: '$root' } );
 
 			setData( model, 'f<$text italic="true">[o</$text><$text bold="true">ob]a</$text>r' );
 
@@ -941,16 +942,18 @@ describe( 'DocumentSelection', () => {
 		// #986
 		describe( 'are not inherited from the inside of object elements', () => {
 			beforeEach( () => {
-				model.schema.registerItem( 'image' );
-				model.schema.allow( { name: 'image', inside: '$root' } );
-				model.schema.allow( { name: 'image', inside: '$block' } );
-				model.schema.allow( { name: '$inline', inside: 'image' } );
-				model.schema.objects.add( 'image' );
+				model.schema.register( 'image', {
+					isObject: true
+				} );
+				model.schema.extend( 'image', { allowIn: '$root' } );
+				model.schema.extend( 'image', { allowIn: '$block' } );
 
-				model.schema.registerItem( 'caption' );
-				model.schema.allow( { name: '$inline', inside: 'caption' } );
-				model.schema.allow( { name: 'caption', inside: 'image' } );
-				model.schema.allow( { name: '$text', attributes: 'bold', inside: 'caption' } );
+				model.schema.register( 'caption' );
+				model.schema.extend( 'caption', { allowIn: 'image' } );
+				model.schema.extend( '$text', {
+					allowIn: [ 'image', 'caption' ],
+					allowAttributes: 'bold'
+				} );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object', () => {
