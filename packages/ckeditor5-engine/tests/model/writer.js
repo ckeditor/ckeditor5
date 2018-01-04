@@ -31,9 +31,14 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		const writer = new Writer( model, batch );
+		let writer;
+
+		beforeEach( () => {
+			writer = new Writer( model, batch );
+		} );
 
 		it( 'should have model instance', () => {
+			// console.log( writer, model, batch );
 			expect( writer.model ).to.instanceof( Model );
 		} );
 
@@ -172,18 +177,12 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create proper delta for inserting text', () => {
-			let parent, text, spy, batch;
+			const parent = createDocumentFragment();
+			const text = createText( 'child' );
 
-			model.enqueueChange( ( _batch, writer ) => {
-				batch = _batch;
+			const spy = sinon.spy( model, 'applyOperation' );
 
-				parent = writer.createDocumentFragment();
-				text = writer.createText( 'child' );
-
-				spy = sinon.spy( model, 'applyOperation' );
-
-				writer.insert( text, parent );
-			} );
+			insert( text, parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
@@ -192,24 +191,18 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should move element from one parent to the other within the same document (documentA -> documentA)', () => {
-			let root, parent1, parent2, node, spy, batch;
+			const root = doc.createRoot();
+			const parent1 = createElement( 'parent' );
+			const parent2 = createElement( 'parent' );
+			const node = createText( 'foo' );
 
-			model.enqueueChange( ( _batch, writer ) => {
-				batch = _batch;
+			insert( node, parent1 );
+			insert( parent1, root );
+			insert( parent2, root );
 
-				root = doc.createRoot();
-				parent1 = writer.createElement( 'parent' );
-				parent2 = writer.createElement( 'parent' );
-				node = writer.createText( 'foo' );
+			const spy = sinon.spy( model, 'applyOperation' );
 
-				writer.insert( node, parent1 );
-				writer.insert( parent1, root );
-				writer.insert( parent2, root );
-
-				spy = sinon.spy( model, 'applyOperation' );
-
-				writer.insert( node, parent2 );
-			} );
+			insert( node, parent2 );
 
 			// Verify result.
 			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
@@ -222,21 +215,15 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should move element from one parent to the other within the same document (documentA -> documentB)', () => {
-			let rootA, rootB, node, spy, batch;
+			const rootA = doc.createRoot( '$root', 'A' );
+			const rootB = doc.createRoot( '$root', 'B' );
+			const node = createText( 'foo' );
 
-			model.enqueueChange( ( _batch, writer ) => {
-				batch = _batch;
+			insert( node, rootA );
 
-				rootA = doc.createRoot( '$root', 'A' );
-				rootB = doc.createRoot( '$root', 'B' );
-				node = writer.createText( 'foo' );
+			const spy = sinon.spy( model, 'applyOperation' );
 
-				writer.insert( node, rootA );
-
-				spy = sinon.spy( model, 'applyOperation' );
-
-				writer.insert( node, rootB );
-			} );
+			insert( node, rootB );
 
 			// Verify result.
 			expect( Array.from( rootA.getChildren() ) ).to.deep.equal( [] );
@@ -249,24 +236,18 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should move element from one parent to the other within the same document (docFragA -> docFragA)', () => {
-			let docFragA, parent1, parent2, node, spy, batch;
+			const docFragA = createDocumentFragment();
+			const parent1 = createElement( 'parent' );
+			const parent2 = createElement( 'parent' );
+			const node = createText( 'foo' );
 
-			model.enqueueChange( ( _batch, writer ) => {
-				batch = _batch;
+			insert( node, parent1 );
+			insert( parent1, docFragA );
+			insert( parent2, docFragA );
 
-				docFragA = writer.createDocumentFragment();
-				parent1 = writer.createElement( 'parent' );
-				parent2 = writer.createElement( 'parent' );
-				node = writer.createText( 'foo' );
+			const spy = sinon.spy( model, 'applyOperation' );
 
-				writer.insert( node, parent1 );
-				writer.insert( parent1, docFragA );
-				writer.insert( parent2, docFragA );
-
-				spy = sinon.spy( model, 'applyOperation' );
-
-				writer.insert( node, parent2 );
-			} );
+			insert( node, parent2 );
 
 			// Verify result.
 			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
@@ -280,20 +261,14 @@ describe( 'Writer', () => {
 
 		it( 'should move element from one parent to the other within different document (document -> docFrag)', () => {
 			const root = doc.createRoot();
-			let docFrag, node, spy, batch;
+			const docFrag = createDocumentFragment();
+			const node = createText( 'foo' );
 
-			model.enqueueChange( ( _batch, writer ) => {
-				batch = _batch;
+			insert( node, root );
 
-				docFrag = writer.createDocumentFragment();
-				node = writer.createText( 'foo' );
+			const spy = sinon.spy( model, 'applyOperation' );
 
-				writer.insert( node, root );
-
-				spy = sinon.spy( model, 'applyOperation' );
-
-				writer.insert( node, docFrag );
-			} );
+			insert( node, docFrag );
 
 			// Verify result.
 			expect( Array.from( root.getChildren() ) ).to.deep.equal( [] );
@@ -308,21 +283,15 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should move element from one parent to the other within different document (docFragA -> docFragB)', () => {
-			let docFragA, docFragB, node, spy, batch;
+			const docFragA = createDocumentFragment();
+			const docFragB = createDocumentFragment();
+			const node = createText( 'foo' );
 
-			model.enqueueChange( ( _batch, writer ) => {
-				batch = _batch;
+			insert( node, docFragA );
 
-				docFragA = writer.createDocumentFragment();
-				docFragB = writer.createDocumentFragment();
-				node = writer.createText( 'foo' );
+			const spy = sinon.spy( model, 'applyOperation' );
 
-				writer.insert( node, docFragA );
-
-				spy = sinon.spy( model, 'applyOperation' );
-
-				writer.insert( node, docFragB );
-			} );
+			insert( node, docFragB );
 
 			// Verify result.
 			expect( Array.from( docFragA ) ).to.deep.equal( [] );
@@ -490,16 +459,10 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create proper delta', () => {
-			let parent, spy, batch;
+			const parent = createDocumentFragment();
+			const spy = sinon.spy( model, 'applyOperation' );
 
-			model.enqueueChange( ( _batch, writer ) => {
-				batch = _batch;
-
-				parent = createDocumentFragment();
-				spy = sinon.spy( model, 'applyOperation' );
-
-				writer.insertText( 'foo', parent );
-			} );
+			insertText( 'foo', parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
@@ -608,16 +571,10 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create proper delta', () => {
-			let parent, spy, batch;
+			const parent = createDocumentFragment();
+			const spy = sinon.spy( model, 'applyOperation' );
 
-			model.enqueueChange( ( _batch, writer ) => {
-				batch = _batch;
-
-				parent = createDocumentFragment();
-				spy = sinon.spy( model, 'applyOperation' );
-
-				writer.insertText( 'foo', parent );
-			} );
+			insertText( 'foo', parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
@@ -639,18 +596,11 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create proper delta', () => {
-			let parent, spy, batch;
+			const parent = createDocumentFragment();
+			const text = createText( 'foo' );
+			const spy = sinon.spy( model, 'applyOperation' );
 
-			model.enqueueChange( ( _batch, writer ) => {
-				batch = _batch;
-
-				parent = createDocumentFragment();
-				const text = writer.createText( 'foo' );
-
-				spy = sinon.spy( model, 'applyOperation' );
-
-				writer.append( text, parent );
-			} );
+			append( text, parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
@@ -659,23 +609,18 @@ describe( 'Writer', () => {
 
 		it( 'should move element from one parent to the other within the same document (documentA -> documentA)', () => {
 			const rootA = doc.createRoot();
-			let parent1, parent2, node, spy;
 
-			model.enqueueChange( ( _batch, writer ) => {
-				// batch = _batch;
+			const parent1 = createElement( 'parent' );
+			const parent2 = createElement( 'parent' );
+			const node = createText( 'foo' );
 
-				parent1 = writer.createElement( 'parent' );
-				parent2 = writer.createElement( 'parent' );
-				node = writer.createText( 'foo' );
+			insert( node, parent1 );
+			insert( parent1, rootA );
+			insert( parent2, rootA );
 
-				writer.insert( node, parent1 );
-				writer.insert( parent1, rootA );
-				writer.insert( parent2, rootA );
+			const spy = sinon.spy( model, 'applyOperation' );
 
-				spy = sinon.spy( model, 'applyOperation' );
-
-				writer.append( node, parent2 );
-			} );
+			append( node, parent2 );
 
 			// Verify result.
 			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
@@ -1509,27 +1454,17 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should create minimal number of remove deltas, each with only one operation', () => {
-				let writer;
+				remove( range );
 
-				model.enqueueChange( ( batch, _writer ) => {
-					writer = _writer;
-					writer.remove( range );
-				} );
-
-				expect( writer.batch.deltas.length ).to.equal( 2 );
-				expect( writer.batch.deltas[ 0 ].operations.length ).to.equal( 1 );
-				expect( writer.batch.deltas[ 1 ].operations.length ).to.equal( 1 );
+				expect( batch.deltas.length ).to.equal( 2 );
+				expect( batch.deltas[ 0 ].operations.length ).to.equal( 1 );
+				expect( batch.deltas[ 1 ].operations.length ).to.equal( 1 );
 			} );
 
 			it( 'should use RemoveOperation', () => {
-				let writer;
+				remove( div );
 
-				model.enqueueChange( ( batch, _writer ) => {
-					writer = _writer;
-					writer.remove( div );
-				} );
-
-				expect( writer.batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'remove' );
+				expect( batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'remove' );
 			} );
 		} );
 
@@ -1852,38 +1787,26 @@ describe( 'Writer', () => {
 	} );
 
 	function createText( data, attributes ) {
-		let text;
-
-		model.change( writer => {
-			text = writer.createText( data, attributes );
+		return model.change( writer => {
+			return writer.createText( data, attributes );
 		} );
-
-		return text;
 	}
 
 	function createElement( name, attributes ) {
-		let element;
-
-		model.change( writer => {
-			element = writer.createElement( name, attributes );
+		return model.change( writer => {
+			return writer.createElement( name, attributes );
 		} );
-
-		return element;
 	}
 
 	function createDocumentFragment() {
-		let documentFragment;
-
-		model.change( writer => {
-			documentFragment = writer.createDocumentFragment();
+		return model.change( writer => {
+			return writer.createDocumentFragment();
 		} );
-
-		return documentFragment;
 	}
 
 	function insert( item, itemOrPosition, offset ) {
 		model.enqueueChange( batch, writer => {
-			writer.inert( item, itemOrPosition, offset );
+			writer.insert( item, itemOrPosition, offset );
 		} );
 	}
 
