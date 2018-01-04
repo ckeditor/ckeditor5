@@ -352,6 +352,16 @@ describe( 'Writer', () => {
 			expect( spy.secondCall.args[ 1 ] ).to.equal( 'marker' );
 			expect( spy.thirdCall.args[ 1 ] ).to.equal( 'marker' );
 		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+			const root = doc.createRoot();
+			const node = createText( 'foo' );
+
+			expect( () => {
+				writer.insert( node, root );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+		} );
 	} );
 
 	describe( 'insertText()', () => {
@@ -468,6 +478,15 @@ describe( 'Writer', () => {
 			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( WeakInsertDelta );
 			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+			const parent = createDocumentFragment();
+
+			expect( () => {
+				writer.insertText( 'foo', parent );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+		} );
 	} );
 
 	describe( 'insertElement()', () => {
@@ -579,6 +598,15 @@ describe( 'Writer', () => {
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
 			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( InsertDelta );
 			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+			const child = createElement( 'child' );
+
+			expect( () => {
+				writer.insertElement( 'foo', child, 'after' );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -767,6 +795,15 @@ describe( 'Writer', () => {
 			expect( spy.firstCall.args[ 0 ].delta ).to.instanceof( WeakInsertDelta );
 			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+			const parent = createDocumentFragment();
+
+			expect( () => {
+				writer.appendText( 'foo', parent );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+		} );
 	} );
 
 	describe( 'appendElement()', () => {
@@ -810,6 +847,15 @@ describe( 'Writer', () => {
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'insert' );
 			expect( spy.firstCall.args[ 0 ].delta ).to.instanceof( InsertDelta ).to.not.instanceof( WeakInsertDelta );
 			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+			const parent = createDocumentFragment();
+
+			expect( () => {
+				writer.appendElement( 'foo', parent );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -863,6 +909,14 @@ describe( 'Writer', () => {
 					expect( spy.callCount ).to.equal( 0 );
 					expect( node.getAttribute( 'a' ) ).to.equal( 1 );
 				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+
+					expect( () => {
+						writer.setAttribute( 'a', 1, node );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+				} );
 			} );
 
 			describe( 'removeAttribute', () => {
@@ -881,6 +935,14 @@ describe( 'Writer', () => {
 				it( 'should do nothing if the attribute is not set', () => {
 					removeAttribute( 'b', node );
 					expect( spy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+
+					expect( () => {
+						writer.removeAttribute( 'b', node );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 				} );
 			} );
 		} );
@@ -1021,6 +1083,14 @@ describe( 'Writer', () => {
 					expect( getChangesAttrsCount() ).to.equal( 14 );
 					expect( getCompressedAttrs() ).to.equal( '11111111111111111111111--' );
 				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+
+					expect( () => {
+						writer.setAttribute( 'a', 1, getRange( 0, 20 ) );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+				} );
 			} );
 
 			describe( 'removeAttribute', () => {
@@ -1096,6 +1166,14 @@ describe( 'Writer', () => {
 					expect( getChangesAttrsCount() ).to.equal( 6 );
 					expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
 				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+
+					expect( () => {
+						writer.removeAttribute( 'a', getRange( 3, 15 ) );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+				} );
 			} );
 		} );
 
@@ -1147,6 +1225,14 @@ describe( 'Writer', () => {
 					expect( spy.callCount ).to.equal( 1 );
 					expect( p.getAttribute( 'a' ) ).to.equal( 1 );
 				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+
+					expect( () => {
+						writer.setAttribute( 'a', 1, p );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+				} );
 			} );
 
 			describe( 'removeAttribute', () => {
@@ -1161,6 +1247,14 @@ describe( 'Writer', () => {
 				it( 'should do nothing if the attribute is not set', () => {
 					removeAttribute( 'b', root );
 					expect( spy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+
+					expect( () => {
+						writer.removeAttribute( 'b', root );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 				} );
 			} );
 
@@ -1216,6 +1310,15 @@ describe( 'Writer', () => {
 					clearAttributes( element );
 
 					expect( Array.from( element.getAttributeKeys() ).length ).to.equal( 0 );
+				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+					const element = createElement( 'x' );
+
+					expect( () => {
+						writer.clearAttributes( element );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 				} );
 			} );
 		} );
@@ -1329,6 +1432,14 @@ describe( 'Writer', () => {
 			sinon.assert.calledWith( spy.firstCall, 'a', 3, item );
 			sinon.assert.calledWith( spy.secondCall, 'c', null, item );
 		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), item );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+		} );
 	} );
 
 	describe( 'merge()', () => {
@@ -1364,6 +1475,14 @@ describe( 'Writer', () => {
 			expect( () => {
 				merge( new Position( root, [ 0, 2 ] ) );
 			} ).to.throw( CKEditorError, /^writer-merge-no-element-before/ );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.merge( new Position( root, [ 1 ] ) );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -1411,6 +1530,14 @@ describe( 'Writer', () => {
 			expect( () => {
 				move( range, docFrag );
 			} ).to.throw( CKEditorError, /^writer-move-different-document/ );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.move( range, new Position( root, [ 1, 3 ] ) );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -1481,6 +1608,14 @@ describe( 'Writer', () => {
 
 				expect( batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'remove' );
 			} );
+
+			it( 'should throw when trying to use detached writer', () => {
+				const writer = new Writer( model, batch );
+
+				expect( () => {
+					writer.remove( range );
+				} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} );
 		} );
 
 		describe( 'remove from document fragment', () => {
@@ -1532,6 +1667,14 @@ describe( 'Writer', () => {
 
 				expect( batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'detach' );
 			} );
+
+			it( 'should throw when trying to use detached writer', () => {
+				const writer = new Writer( model, batch );
+
+				expect( () => {
+					writer.remove( range );
+				} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} );
 		} );
 	} );
 
@@ -1556,6 +1699,15 @@ describe( 'Writer', () => {
 			expect( () => {
 				rename( new Text( 'abc' ), 'h' );
 			} ).to.throw( CKEditorError, /^writer-rename-not-element-instance/ );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+			const p = new Element( 'p', null, new Text( 'abc' ) );
+
+			expect( () => {
+				writer.rename( p, 'h' );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -1626,6 +1778,14 @@ describe( 'Writer', () => {
 				split( new Position( documentFragment, [ 0 ] ) );
 			} ).to.throw( CKEditorError, /^writer-split-element-no-parent/ );
 		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.split( new Position( root, [ 0, 3 ] ) );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+		} );
 	} );
 
 	describe( 'wrap()', () => {
@@ -1685,6 +1845,14 @@ describe( 'Writer', () => {
 				wrap( range, p );
 			} ).to.throw( CKEditorError, /^writer-wrap-element-attached/ );
 		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.wrap( range, 'p' );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+		} );
 	} );
 
 	describe( 'unwrap()', () => {
@@ -1710,6 +1878,14 @@ describe( 'Writer', () => {
 			expect( () => {
 				unwrap( element );
 			} ).to.throw( CKEditorError, /^writer-unwrap-element-no-parent/ );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.unwrap( p );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -1769,6 +1945,15 @@ describe( 'Writer', () => {
 				setMarker( 'name' );
 			} ).to.throw( CKEditorError, /^writer-setMarker-no-range/ );
 		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const marker = model.markers.set( 'name', range );
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.setMarker( marker );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+		} );
 	} );
 
 	describe( 'removeMarker()', () => {
@@ -1791,6 +1976,14 @@ describe( 'Writer', () => {
 			expect( () => {
 				removeMarker( 'name' );
 			} ).to.throw( CKEditorError, /^writer-removeMarker-no-marker/ );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.removeMarker( 'name' );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 
 		it( 'should accept marker instance', () => {
