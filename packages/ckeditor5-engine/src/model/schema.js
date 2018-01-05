@@ -36,7 +36,7 @@ import Range from './range';
  *		} );
  *
  * This lets the schema know that `<myElement>` may be a child of the `<$root>` element. `$root` is one of generic
- * node types defined by the editing framework. By default, the editor names the main root element a `<$root>`,
+ * nodes defined by the editing framework. By default, the editor names the main root element a `<$root>`,
  * so the above definition allows `<myElement>` in the main editor element.
  *
  * In other words, this would be correct:
@@ -47,9 +47,9 @@ import Range from './range';
  *
  *		<$root><foo><myElement></myElement></foo></$root>
  *
- * ## Generic node types
+ * ## Generic items
  *
- * There are three basic generic node types: `$root`, `$block` and `$text`.
+ * There are three basic generic items: `$root`, `$block` and `$text`.
  * They are defined as follows:
  *
  *		this.schema.register( '$root', {
@@ -103,6 +103,8 @@ import Range from './range';
  * The side effect of such a definition inheritance is that now `<blockQuote>` is allowed in `<blockQuote>` which needs to be
  * resolved by a callback which will disallow this specific structure.
  *
+ * You can read more about the format of an item definition in {@link module:engine/model/schema~SchemaItemDefinition}.
+ *
  * ## Defining advanced rules in `checkChild()`'s callbacks
  *
  * The {@link ~Schema#checkChild} method which is the base method used to check whether some element is allowed in a given structure
@@ -112,8 +114,8 @@ import Range from './range';
  *
  * The block quote feature defines such a listener to disallow nested `<blockQuote>` structures:
  *
- * 		schema.on( 'checkChild', ( evt, args ) => {
- * 			// The checkChild()'s params.
+ *		schema.on( 'checkChild', ( evt, args ) => {
+ *			// The checkChild()'s params.
  *			// Note that context is automatically normalized to SchemaContext instance by a highest-priority listener.
  *			const context = args[ 0 ];
  *			const child = args[ 1 ];
@@ -136,11 +138,11 @@ import Range from './range';
  * ## Implementing additional constraints
  *
  * Schema's capabilities were limited to simple (and atomic) {@link ~Schema#checkChild} and
- * {@link ~Schema#checkAttribute} on purpose.
+ * {@link ~Schema#checkAttribute} checks on purpose.
  * One may imagine that schema should support defining more complex rules such as
  * "element `<x>` must be always followed by `<y>`".
  * While it is feasible to create an API which would enable feeding the schema with such definitions,
- * it is unrealistic to then expect that every editing feature will consider them when processing the model.
+ * it is unfortunately unrealistic to then expect that every editing feature will consider those rules when processing the model.
  * It is also unrealistic to expect that it will be done automatically by the schema and the editing engine themselves.
  *
  * For instance, let's get back to the "element `<x>` must be always followed by `<y>`" rule and this initial content:
@@ -151,8 +153,8 @@ import Range from './range';
  *			<z>bom]bar</z>
  *		</$root>
  *
- * Now, imagine the user presses the "block quote" button. Usually it would wrap the two selected blocks (`<y>` and `<z>`)
- * with a `<blockQuote>` element:
+ * Now, imagine that the user presses the "block quote" button. Usually it would wrap the two selected blocks
+ * (`<y>` and `<z>`) with a `<blockQuote>` element:
  *
  *		<$root>
  *			<x>foo</x>
@@ -171,7 +173,7 @@ import Range from './range';
  * While this is a relatively simple scenario (unlike most real-time collaboration scenarios),
  * it turns out that it's already hard to say what should happen and who should react to fix this content.
  *
- * Therefore, if your editor needs to implement such rules, it should do that through model's post-fixers
+ * Therefore, if your editor needs to implement such rules, you should do that through model's post-fixers
  * fixing incorrect content or actively prevent such situations (e.g. by disabling certain features).
  * It means that those constraints will be defined specifically for your scenario by your code which
  * makes their implementation much easier.
@@ -202,6 +204,10 @@ export default class Schema {
 
 	/**
 	 * Registers schema item. Can only be called once for every item name.
+	 *
+	 *		schema.register( 'paragraph', {
+	 *			inheritAllFrom: '$block'
+	 *		} );
 	 *
 	 * @param {String} itemName
 	 * @param {module:engine/model/schema~SchemaItemDefinition} definition
@@ -294,6 +300,12 @@ export default class Schema {
 	}
 
 	/**
+	 * Returns `true` if the given item is registered in the schema.
+	 *
+	 *		schema.isRegistered( 'paragraph' ); // -> true
+	 *		schema.isRegistered( editor.model.document.getRoot() ); // -> true
+	 *		schema.isRegistered( 'foo' ); // -> false
+	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isRegistered( item ) {
@@ -301,6 +313,15 @@ export default class Schema {
 	}
 
 	/**
+	 * Returns `true` if the given item is defined to be
+	 * a block by {@link module:engine/model/schema~SchemaItemDefinition}'s `isBlock` property.
+	 *
+	 *		schema.isBlock( 'paragraph' ); // -> true
+	 *		schema.isBlock( '$root' ); // -> false
+	 *
+	 *		const paragraphElement = writer.createElement( 'paragraph' );
+	 *		schema.isBlock( paragraphElement ); // -> true
+	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isBlock( item ) {
@@ -310,6 +331,13 @@ export default class Schema {
 	}
 
 	/**
+	 * Returns `true` if the given item is defined to be
+	 * a limit element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isLimit` property.
+	 *
+	 *		schema.isLimit( 'paragraph' ); // -> false
+	 *		schema.isLimit( '$root' ); // -> true
+	 *		schema.isLimit( editor.model.document.getRoot() ); // -> true
+	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isLimit( item ) {
@@ -319,6 +347,15 @@ export default class Schema {
 	}
 
 	/**
+	 * Returns `true` if the given item is defined to be
+	 * a object element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isObject` property.
+	 *
+	 *		schema.isObject( 'paragraph' ); // -> false
+	 *		schema.isObject( 'image' ); // -> true
+	 *
+	 *		const imageElement = writer.createElement( 'image' );
+	 *		schema.isObject( imageElement ); // -> true
+	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isObject( item ) {
@@ -559,35 +596,276 @@ export default class Schema {
 mix( Schema, ObservableMixin );
 
 /**
- * TODO
+ * Event fired when the {@link #checkChild} method is called. It allows plugging in
+ * additional behavior – e.g. implementing rules which cannot be defined using the declarative
+ * {@link module:engine/model/schema~SchemaItemDefinition} interface.
+ *
+ * The {@link #checkChild} method fires an event because it's
+ * {@link module:utils/observablemixin~ObservableMixin#decorate decorated} with it. Thanks to that you can
+ * use this event in a various way, but the most important use case is overriding standard behaviour of the
+ * `checkChild()` method. Let's see a typical listener template:
+ *
+ *		schema.on( 'checkChild', ( evt, args ) => {
+ *			const context = args[ 0 ];
+ *			const child = args[ 1 ];
+ *		}, { priority: 'high' } );
+ *
+ * The listener is added with a `high` priority to be executed before the default method is really called. The `args` callback
+ * parameter contains arguments passed to `checkChild( context, child )`. However, the `context` parameter is already
+ * normalized to a {@link module:engine/model/schema~SchemaContext} instance, so you don't have to worry about
+ * the various ways how `context` may be passed to `checkChild()`.
+ *
+ * So, in order to implement a rule "disallow `heading1` in `blockQuote`" you can add such a listener:
+ *
+ *		schema.on( 'checkChild', ( evt, args ) => {
+ *			const context = args[ 0 ];
+ *			const child = args[ 1 ];
+ *
+ *			// Normalize child too (it can be a string or a node).
+ *			const childDefinition = schema.getDefinition( child );
+ *
+ *			if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'heading1' ) {
+ *				// Prevent next listeners from being called.
+ *				evt.stop();
+ *				// Set the checkChild()'s return value.
+ *				evt.return = false;
+ *			}
+ *		}, { priority: 'high' } );
+ *
+ * Allowing elements in specific contexts will be a far less common use case, because it's normally handled by
+ * `allowIn` rule from {@link module:engine/model/schema~SchemaItemDefinition} but if you have a complex scenario
+ * where `listItem` should be allowed only in element `foo` which must be in element `bar`, then this would be the way:
+ *
+ *		schema.on( 'checkChild', ( evt, args ) => {
+ *			const context = args[ 0 ];
+ *			const child = args[ 1 ];
+ *
+ *			// Normalize child too (it can be a string or a node).
+ *			const childDefinition = schema.getDefinition( child );
+ *
+ *			if ( context.endsWith( 'bar foo' ) && childDefinition.name == 'listItem' ) {
+ *				// Prevent next listeners from being called.
+ *				evt.stop();
+ *				// Set the checkChild()'s return value.
+ *				evt.return = true;
+ *			}
+ *		}, { priority: 'high' } );
  *
  * @event checkChild
+ * @param {Array} args The `checkChild()`'s arguments.
  */
 
 /**
- * TODO
+ * Event fired when the {@link #checkAttribute} method is called. It allows plugging in
+ * additional behavior – e.g. implementing rules which cannot be defined using the declarative
+ * {@link module:engine/model/schema~SchemaItemDefinition} interface.
+ *
+ * The {@link #checkAttribute} method fires an event because it's
+ * {@link module:utils/observablemixin~ObservableMixin#decorate decorated} with it. Thanks to that you can
+ * use this event in a various way, but the most important use case is overriding standard behaviour of the
+ * `checkAttribute()` method. Let's see a typical listener template:
+ *
+ *		schema.on( 'checkAttribute', ( evt, args ) => {
+ *			const context = args[ 0 ];
+ *			const attributeName = args[ 1 ];
+ *		}, { priority: 'high' } );
+ *
+ * The listener is added with a `high` priority to be executed before the default method is really called. The `args` callback
+ * parameter contains arguments passed to `checkAttribute( context, attributeName )`. However, the `context` parameter is already
+ * normalized to a {@link module:engine/model/schema~SchemaContext} instance, so you don't have to worry about
+ * the various ways how `context` may be passed to `checkAttribute()`.
+ *
+ * So, in order to implement a rule "disallow `bold` in a text which is in a `heading1` you can add such a listener:
+ *
+ *		schema.on( 'checkAttribute', ( evt, args ) => {
+ *			const context = args[ 0 ];
+ *			const atributeName = args[ 1 ];
+ *
+ *			if ( context.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
+ *				// Prevent next listeners from being called.
+ *				evt.stop();
+ *				// Set the checkAttribute()'s return value.
+ *				evt.return = false;
+ *			}
+ *		}, { priority: 'high' } );
+ *
+ * Allowing attributes in specific contexts will be a far less common use case, because it's normally handled by
+ * `allowAttributes` rule from {@link module:engine/model/schema~SchemaItemDefinition} but if you have a complex scenario
+ * where `bold` should be allowed only in element `foo` which must be in element `bar`, then this would be the way:
+ *
+ *		schema.on( 'checkAttribute', ( evt, args ) => {
+ *			const context = args[ 0 ];
+ *			const atributeName = args[ 1 ];
+ *
+ *			if ( context.endsWith( 'bar foo $text' ) && attributeName == 'bold' ) {
+ *				// Prevent next listeners from being called.
+ *				evt.stop();
+ *				// Set the checkAttribute()'s return value.
+ *				evt.return = true;
+ *			}
+ *		}, { priority: 'high' } );
  *
  * @event checkAttribute
+ * @param {Array} args The `checkAttribute()`'s arguments.
  */
 
 /**
- * TODO
+ * A definition of a {@link module:engine/model/schema~Schema schema} item.
+ *
+ * You can define the following rules:
+ *
+ * * `allowIn` – a string or an array of strings. Defines in which other items this item will be allowed.
+ * * `allowAttributes` – a string or an array of strings. Defines allowed attributes of the given item.
+ * * `allowContentOf` – a string or an array of strings. Inherit "allowed children" from other items.
+ * * `allowWhere` – a string or an array of strings. Inherit "allowed in" from other items.
+ * * `allowAttributesOf` – a string or an array of strings. Inherit attributes from other items.
+ * * `inheritTypesFrom` – a string or an array of strings. Inherit `is*` properties of other items.
+ * * `inheritAllFrom` – a string. A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
+ * * additionall, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`. Read about them below.
+ *
+ * # The is* properties
+ *
+ * There are 3 commonly used `is*` properties. Their role is to assign additional semantics to schema items.
+ * You can define more properties but you will also need to implement support for them in the existing editor features.
+ *
+ * * `isBlock` – whether this item is paragraph-like. Generally speaking, a content is usually made out of blocks
+ * like paragraphs, list items, images, headings, etc. All these elements are marked as blocks. A block
+ * should not allow another block inside. Note: there's also the `$block` generic item which has `isBlock` set to true.
+ * Most block type items will inherit from `$block` (through `inheritAllFrom`).
+ * * `isLimit` – can be understood as whether this element should not be split by <kbd>Enter</kbd>.
+ * Examples of limit elements – `$root`, table cell, image caption, etc. In other words, all actions which happen inside
+ * a limit element are limitted to its content.
+ * * `isObject` – whether item is "self-contained" and should be treated as a whole. Examples of object elements –
+ * `image`, `table`, `video`, etc.
+ *
+ * # Generic items
+ *
+ * There are three basic generic items: `$root`, `$block` and `$text`.
+ * They are defined as follows:
+ *
+ *		this.schema.register( '$root', {
+ *			isLimit: true
+ *		} );
+ *		this.schema.register( '$block', {
+ *			allowIn: '$root',
+ *			isBlock: true
+ *		} );
+ *		this.schema.register( '$text', {
+ *			allowIn: '$block'
+ *		} );
+ *
+ * They reflect a typical editor content which is contained within one root, consists of several blocks
+ * (paragraphs, lists items, headings, images) which, in turn, may contain text inside.
+ *
+ * By inheriting from the generic items you can define new items which will get extended by other editor features.
+ * Read more about generic types in the {@linkTODO Defining schema} guide.
+ *
+ * # Example definitions
+ *
+ * Allow `paragraph` in roots and block quotes:
+ *
+ *		schema.register( 'paragraph', {
+ *			allowIn: [ '$root', 'blockQuote' ]
+ *		} );
+ *
+ * Allow `paragraph` everywhere where `$block` is allowed (i.e. in `$root`):
+ *
+ *		schema.register( 'paragraph', {
+ *			allowWhere: '$block'
+ *		} );
+ *
+ * Make `image` a block object, which is allowed everywhere where `$block` is.
+ * Also, allow `src` and `alt` attributes on it:
+ *
+ *		schema.register( 'paragraph', {
+ *			allowWhere: '$block',
+ *			allowAttributes: [ 'src', 'alt' ],
+ *			isBlock: true,
+ *			isObject: true
+ *		} );
+ *
+ * Make `caption` allowed in `image` and make it allow all the content of `$block`s (usually, `$text`).
+ * Also, mark it as a limit element so it can't be split:
+ *
+ *		schema.register( 'caption', {
+ *			allowIn: 'image',
+ *			allowContentOf: '$block',
+ *			isLimit: true
+ *		} );
+ *
+ * Make `listItem` inherit all from `$block` but also allow additional attributes:
+ *
+ *		schema.register( 'listItem', {
+ *			inheritAllFrom: '$block',
+ *			allowAttributes: [ 'type', 'indent' ]
+ *		} );
+ *
+ * Which translates to:
+ *
+ *		schema.register( 'listItem', {
+ *			allowWhere: '$block',
+ *			allowContentOf: '$block',
+ *			allowAttributesOf: '$block',
+ *			inheritTypesFrom: '$block',
+ *			allowAttributes: [ 'type', 'indent' ]
+ *		} );
+ *
+ * # Tips
+ *
+ * * Check schema definitions of existing features to see how they are defined.
+ * * If you want to publish your feature so other developers can use it, try to use
+ * generic items as much as possible.
+ * * Keep your model clean – limit it to the actual data and store information in an normalized way.
  *
  * @typedef {Object} module:engine/model/schema~SchemaItemDefinition
  */
 
 /**
- * TODO
+ * A simplified version of {@link module:engine/model/schema~SchemaItemDefinition} after
+ * compilation by the {@link module:engine/model/schema~Schema schema}.
+ * Rules feed to the schema by {@link module:engine/model/schema~Schema#register}
+ * and {@link module:engine/model/schema~Schema#extend} are defined in the
+ * {@link module:engine/model/schema~SchemaItemDefinition} format.
+ * Later on, they are compiled to `SchemaCompiledItemDefition` so when you use e.g.
+ * the {@link module:engine/model/schema~Schema#getDefinition} method you get the compiled version.
+ *
+ * The compiled version contains only the following properties:
+ *
+ * * `name` property,
+ * * `is*` properties,
+ * * `allowIn` array,
+ * * `allowAttributes` array.
  *
  * @typedef {Object} module:engine/model/schema~SchemaCompiledItemDefinition
  */
 
 /**
- * TODO
+ * A schema context – a list of ancestors of a given position in the document.
+ *
+ * Considering such a position:
+ *
+ *		<$root>
+ *			<blockQuote>
+ *				<paragraph>
+ *					^
+ *				</paragraph>
+ *			</blockQuote>
+ *		</$root>
+ *
+ * The context of this position is its {@link module:engine/model/position~Position#getAncestors lists of ancestors}:
+ *
+ *		[ rootElement, blockQuoteElement, paragraphElement ]
+ *
+ * Contexts are used in the {@link module:engine/model/schema~Schema#event:checkChild `Schema#checkChild`} and
+ * {@link module:engine/model/schema~Schema#event:checkAttribute `Schema#checkAttribute`} events as a definition
+ * of a place in the document where the check occurs. The context instances are created based on the first arguments
+ * of the {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} and
+ * {@link module:engine/model/schema~Schema#checkAttribute `Schema#checkAttribute()`} methods so when
+ * using these methods you need to use {@link module:engine/model/schema~SchemaContextDefinition}s.
  */
 export class SchemaContext {
 	/**
-	 * TODO
+	 * Creates an instance of the context.
 	 *
 	 * @param {module:engine/model/schema~SchemaContextDefinition} context
 	 */
@@ -601,10 +879,20 @@ export class SchemaContext {
 		}
 	}
 
+	/**
+	 * Number of items.
+	 *
+	 * @type {Number}
+	 */
 	get length() {
 		return this._items.length;
 	}
 
+	/**
+	 * The last item (the lowest node).
+	 *
+	 * @type {module:engine/model/schema~SchemaContextItem}
+	 */
 	get last() {
 		return this._items[ this._items.length - 1 ];
 	}
@@ -618,28 +906,127 @@ export class SchemaContext {
 		return this._items[ Symbol.iterator ]();
 	}
 
+	/**
+	 * Gets an item on the given index.
+	 *
+	 * @returns {module:engine/model/schema~SchemaContextItem}
+	 */
 	getItem( index ) {
 		return this._items[ index ];
 	}
 
+	/**
+	 * Returns the names of items.
+	 *
+	 * @returns {Iterator.<String>}
+	 */
 	* getNames() {
 		yield* this._items.map( item => item.name );
 	}
 
+	/**
+	 * Checks whether the context ends with the given nodes.
+	 *
+	 *		const ctx = new SchemaContext( [ rootElement, paragraphElement, textNode ] );
+	 *
+	 *		ctx.endsWith( '$text' ); // -> true
+	 *		ctx.endsWith( 'paragraph $text' ); // -> true
+	 *		ctx.endsWith( '$root' ); // -> false
+	 *		ctx.endsWith( 'paragraph' ); // -> false
+	 *
+	 * @param {String} query
+	 * @returns {Boolean}
+	 */
 	endsWith( query ) {
 		return Array.from( this.getNames() ).join( ' ' ).endsWith( query );
 	}
 }
 
 /**
- * TODO
+ * The definition of a {@link module:engine/model/schema~SchemaContext schema context}.
+ *
+ * Contexts can be created in multiple ways:
+ *
+ * * By defining a **node** – in this cases this node and all its ancestors will be used.
+ * * By defining a **position** in the document – in this case all its ancestors will be used.
+ * * By defining an **array of nodes** – in this case this array defines the entire context.
+ * * By defining an **array of node names** (potentially, mixed with real nodes) – in this case
+ * nodes definied by strings will be "mocked". Using strings is not recommended as it
+ * means that the context will be unrealistic (e.g. attributes of these nodes are not specified).
+ * However, at times this may be the only way to define the context (e.g. when checking some
+ * hypothetical situation).
+ *
+ * Examples of context definitions passed to the {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`}
+ * method:
+ *
+ *		// Assuming that we have a $root > blockQuote > paragraph structure, the following code
+ *		// will check node 'foo' in the following context:
+ *		// [ rootElement, blockQuoteElement, paragraphElement ]
+ *		const contextDefinition = paragraphElement;
+ * 		const childToCheck = 'foo';
+ *		schema.checkChild( contextDefinition, childToCheck );
+ *
+ *		// Also check in [ rootElement, blockQuoteElement, paragraphElement ].
+ *		schema.checkChild( Position.createAt( paragraphElement ), 'foo' );
+ *
+ *		// Check in [ rootElement, paragraphElement ].
+ *		schema.checkChild( [ rootElement, paragraphElement ], 'foo' );
+ *
+ *		// Check in [ fakeRootElement, fakeBarElement, paragraphElement ].
+ *		schema.checkChild( [ '$root', 'bar', paragraphElement ], 'foo' );
+ *
+ * All these `checkChild()` calls will fire {@link module:engine/model/schema~Schema#event:checkChild `Schema#checkChild`}
+ * events in which `args[ 0 ]` is an instance of the context. Therefore, you can write a listener like this:
+ *
+ *		schema.on( 'checkChild', ( evt, args ) => {
+ *			const ctx = args[ 0 ];
+ *
+ *			console.log( Array.from( ctx.getNames() ) );
+ *		} );
+ *
+ * Which will log the following:
+ *
+ *		[ '$root', 'blockQuote', 'paragraph' ]
+ *		[ '$root', 'paragraph' ]
+ *		[ '$root', 'bar', 'paragraph' ]
+ *
+ * Note: When using the {@link module:engine/model/schema~Schema#checkAttribute `Schema#checkAttribute()`} method
+ * you may want to check whether a text node may have an attribute. A {@link module:engine/model/text~Text} is a
+ * correct way to define a context so you can do this:
+ *
+ *		schema.checkAttribute( textNode, 'bold' );
+ *
+ * But sometimes you want to check whether a text at a given position might've had some attribute,
+ * in which case you can create a context by mising an array of elements with a `'$text'` string:
+ *
+ *		// Check in [ rootElement, paragraphElement, textNode ].
+ *		schema.checkChild( [ ...positionInParagraph.getAncestors(), '$text' ], 'bold' );
  *
  * @typedef {module:engine/model/node~Node|module:engine/model/position~Position|
  * Array.<String|module:engine/model/node~Node>} module:engine/model/schema~SchemaContextDefinition
  */
 
 /**
- * TODO
+ * An item of the {@link module:engine/model/schema~SchemaContext schema context}.
+ *
+ * It contains 3 properties:
+ *
+ * * `name` – the name of this item,
+ * * `* getAttributeKeys()` – a generator of keys of item attributes,
+ * * `getAttribute( keyName )` – a method to get attribute values.
+ *
+ * The context item interface is a highly simplified version of {@link module:engine/model/node~Node} and its role
+ * is to expose only the information which schema checks are able to provide (which is the name of the node and
+ * node's attributes).
+ *
+ *		schema.on( 'checkChild', ( evt, args ) => {
+ *			const ctx = args[ 0 ];
+ *			const firstItem = ctx.getItem( 0 );
+ *
+ *			console.log( firstItem.name ); // -> '$root'
+ *			console.log( firstItem.getAttribute( 'foo' ) ); // -> 'bar'
+ *			console.log( Array.from( firstItem.getAttributeKeys() ) ); // -> [ 'foo', 'faa' ]
+ *		} );
  *
  * @typedef {Object} module:engine/model/schema~SchemaContextItem
  */
