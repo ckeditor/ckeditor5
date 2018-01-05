@@ -795,6 +795,8 @@ export default class Writer {
 	}
 
 	/**
+	 * Throws `writer-detached-writer-tries-to-modify-model` error when the writer is used outside of the `change()` block.
+	 *
 	 * @private
 	 */
 	_assertWriterUsageCorrectness() {
