@@ -9,10 +9,6 @@
 
 'use strict';
 
-const assertIsInstalled = require( './../utils/assertisinstalled' );
-
-assertIsInstalled( '@ckeditor/ckeditor5-dev-env' );
-
 const devEnv = require( '@ckeditor/ckeditor5-dev-env' );
 const commonOptions = {
 	cwd: process.cwd(),

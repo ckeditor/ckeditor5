@@ -9,7 +9,6 @@
 
 'use strict';
 
-const assertIsInstalled = require( './../utils/assertisinstalled' );
 const buildApiDocs = require( './buildapi' );
 
 const skipLiveSnippets = process.argv.includes( '--skip-snippets' );
@@ -51,7 +50,6 @@ function buildDocs() {
 }
 
 function runUmberto( options ) {
-	assertIsInstalled( 'umberto' );
 	const umberto = require( 'umberto' );
 
 	return umberto.buildSingleProject( {

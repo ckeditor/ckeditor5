@@ -9,10 +9,6 @@
 
 'use strict';
 
-const assertIsInstalled = require( './../utils/assertisinstalled' );
-
-assertIsInstalled( '@ckeditor/ckeditor5-dev-env' );
-
 require( '@ckeditor/ckeditor5-dev-env' )
 	.releaseSubRepositories( {
 		cwd: process.cwd(),
