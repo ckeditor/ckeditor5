@@ -150,6 +150,8 @@ export default class Writer {
 	 * second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	insert( item, itemOrPosition, offset ) {
+		this._assertWriterUsageCorrectness();
+
 		const position = Position.createAt( itemOrPosition, offset );
 
 		// For text that has no parent we need to make a WeakInsert.
@@ -315,6 +317,8 @@ export default class Writer {
 	 * Model item or range on which the attribute will be set.
 	 */
 	setAttribute( key, value, itemOrRange ) {
+		this._assertWriterUsageCorrectness();
+
 		if ( itemOrRange instanceof Range ) {
 			setAttributeToRange( this, key, value, itemOrRange );
 		} else {
@@ -350,6 +354,8 @@ export default class Writer {
 	 * Model item or range from which the attribute will be removed.
 	 */
 	removeAttribute( key, itemOrRange ) {
+		this._assertWriterUsageCorrectness();
+
 		if ( itemOrRange instanceof Range ) {
 			setAttributeToRange( this, key, null, itemOrRange );
 		} else {
@@ -364,6 +370,8 @@ export default class Writer {
 	 * Model item or range from which all attributes will be removed.
 	 */
 	clearAttributes( itemOrRange ) {
+		this._assertWriterUsageCorrectness();
+
 		const removeAttributesFromItem = item => {
 			for ( const attribute of item.getAttributeKeys() ) {
 				this.removeAttribute( attribute, item );
@@ -404,6 +412,8 @@ export default class Writer {
 	 * second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	move( range, itemOrPosition, offset ) {
+		this._assertWriterUsageCorrectness();
+
 		if ( !( range instanceof Range ) ) {
 			/**
 			 * Invalid range to move.
@@ -448,6 +458,8 @@ export default class Writer {
 	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange Model item or range to remove.
 	 */
 	remove( itemOrRange ) {
+		this._assertWriterUsageCorrectness();
+
 		const addRemoveDelta = ( position, howMany ) => {
 			const delta = new RemoveDelta();
 			this.batch.addDelta( delta );
@@ -489,6 +501,8 @@ export default class Writer {
 	 * @param {module:engine/model/position~Position} position Position of merge.
 	 */
 	merge( position ) {
+		this._assertWriterUsageCorrectness();
+
 		const delta = new MergeDelta();
 		this.batch.addDelta( delta );
 
@@ -542,6 +556,8 @@ export default class Writer {
 	 * @param {String} newName New element name.
 	 */
 	rename( element, newName ) {
+		this._assertWriterUsageCorrectness();
+
 		if ( !( element instanceof Element ) ) {
 			/**
 			 * Trying to rename an object which is not an instance of Element.
@@ -570,6 +586,8 @@ export default class Writer {
 	 * @param {module:engine/model/position~Position} position Position of split.
 	 */
 	split( position ) {
+		this._assertWriterUsageCorrectness();
+
 		const delta = new SplitDelta();
 		this.batch.addDelta( delta );
 
@@ -616,6 +634,8 @@ export default class Writer {
 	 * @param {module:engine/model/element~Element|String} elementOrString Element or name of element to wrap the range with.
 	 */
 	wrap( range, elementOrString ) {
+		this._assertWriterUsageCorrectness();
+
 		if ( !range.isFlat ) {
 			/**
 			 * Range to wrap is not flat.
@@ -670,6 +690,8 @@ export default class Writer {
 	 * @param {module:engine/model/element~Element} element Element to unwrap.
 	 */
 	unwrap( element ) {
+		this._assertWriterUsageCorrectness();
+
 		if ( element.parent === null ) {
 			/**
 			 * Trying to unwrap an element which has no parent.
@@ -722,6 +744,8 @@ export default class Writer {
 	 * @param {module:engine/model/range~Range} [newRange] Marker range.
 	 */
 	setMarker( markerOrName, newRange ) {
+		this._assertWriterUsageCorrectness();
+
 		const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
 		const currentMarker = this.model.markers.get( name );
 
@@ -752,6 +776,8 @@ export default class Writer {
 	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to remove.
 	 */
 	removeMarker( markerOrName ) {
+		this._assertWriterUsageCorrectness();
+
 		const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
 
 		if ( !this.model.markers.has( name ) ) {
@@ -766,6 +792,23 @@ export default class Writer {
 		const oldRange = this.model.markers.get( name ).getRange();
 
 		addMarkerOperation( this, name, oldRange, null );
+	}
+
+	/**
+	 * Throws `writer-detached-writer-tries-to-modify-model` error when the writer is used outside of the `change()` block.
+	 *
+	 * @private
+	 */
+	_assertWriterUsageCorrectness() {
+		/**
+		 * Detached writer tries to modify the model. Be sure, that your Writer is used
+		 * within the `model.change()` or `model.enqueueChange()` block.
+		 *
+		 * @error writer-detached-writer-tries-to-modify-model
+		 */
+		if ( this.model._currentWriter !== this ) {
+			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model.' );
+		}
 	}
 }
 

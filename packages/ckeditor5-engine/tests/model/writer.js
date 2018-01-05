@@ -21,16 +21,22 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { getNodesAndText } from '../../tests/model/_utils/utils';
 
 describe( 'Writer', () => {
-	let writer, model, batch, doc;
+	let model, doc, batch;
 
 	beforeEach( () => {
 		model = new Model();
 		batch = new Batch();
-		writer = new Writer( model, batch );
+
 		doc = model.document;
 	} );
 
 	describe( 'constructor()', () => {
+		let writer;
+
+		beforeEach( () => {
+			writer = new Writer( model, batch );
+		} );
+
 		it( 'should have model instance', () => {
 			expect( writer.model ).to.instanceof( Model );
 		} );
@@ -42,7 +48,7 @@ describe( 'Writer', () => {
 
 	describe( 'createText()', () => {
 		it( 'should create text node', () => {
-			const text = writer.createText( 'foo' );
+			const text = createText( 'foo' );
 
 			expect( text ).to.instanceof( Text );
 			expect( text.data ).to.equal( 'foo' );
@@ -50,7 +56,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create text with attributes', () => {
-			const text = writer.createText( 'foo', { foo: 'bar', biz: 'baz' } );
+			const text = createText( 'foo', { foo: 'bar', biz: 'baz' } );
 
 			expect( Array.from( text.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'biz', 'baz' ] ] );
 		} );
@@ -58,7 +64,7 @@ describe( 'Writer', () => {
 
 	describe( 'createElement()', () => {
 		it( 'should create element', () => {
-			const element = writer.createElement( 'foo' );
+			const element = createElement( 'foo' );
 
 			expect( element ).to.instanceof( Element );
 			expect( element.name ).to.equal( 'foo' );
@@ -66,7 +72,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create element with attributes', () => {
-			const element = writer.createText( 'foo', { foo: 'bar', biz: 'baz' } );
+			const element = createText( 'foo', { foo: 'bar', biz: 'baz' } );
 
 			expect( Array.from( element.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'biz', 'baz' ] ] );
 		} );
@@ -74,7 +80,7 @@ describe( 'Writer', () => {
 
 	describe( 'createDocumentFragment()', () => {
 		it( 'should create element', () => {
-			const element = writer.createDocumentFragment();
+			const element = createDocumentFragment();
 
 			expect( element ).to.instanceof( DocumentFragment );
 		} );
@@ -82,86 +88,87 @@ describe( 'Writer', () => {
 
 	describe( 'insert()', () => {
 		it( 'should insert node at given position', () => {
-			const parent = writer.createDocumentFragment();
-			const child = writer.createElement( 'child' );
-			const textChild = writer.createText( 'textChild' );
+			const parent = createDocumentFragment();
+			const child = createElement( 'child' );
+			const textChild = createText( 'textChild' );
 
-			writer.insert( child, new Position( parent, [ 0 ] ) );
-			writer.insert( textChild, new Position( parent, [ 1 ] ) );
+			insert( child, new Position( parent, [ 0 ] ) );
+			insert( textChild, new Position( parent, [ 1 ] ) );
 
 			expect( Array.from( parent ) ).to.deep.equal( [ child, textChild ] );
 		} );
 
 		it( 'should insert node at the beginning of given element', () => {
-			const parent = writer.createDocumentFragment();
-			const child1 = writer.createElement( 'child' );
-			const child2 = writer.createElement( 'child' );
+			const parent = createDocumentFragment();
+			const child1 = createElement( 'child' );
+			const child2 = createElement( 'child' );
 
-			writer.insert( child1, parent );
-			writer.insert( child2, parent );
+			insert( child1, parent );
+			insert( child2, parent );
 
 			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child2, child1 ] );
 		} );
 
 		it( 'should insert node at the end of given element', () => {
-			const parent = writer.createDocumentFragment();
-			const child1 = writer.createElement( 'child' );
-			const child2 = writer.createElement( 'child' );
+			const parent = createDocumentFragment();
+			const child1 = createElement( 'child' );
+			const child2 = createElement( 'child' );
 
-			writer.insert( child1, parent );
-			writer.insert( child2, parent, 'end' );
+			insert( child1, parent );
+			insert( child2, parent, 'end' );
 
 			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2 ] );
 		} );
 
 		it( 'should insert node at the given offset of given element', () => {
-			const parent = writer.createDocumentFragment();
-			const child1 = writer.createElement( 'child' );
-			const child2 = writer.createElement( 'child' );
-			const child3 = writer.createElement( 'child' );
+			const parent = createDocumentFragment();
+			const child1 = createElement( 'child' );
+			const child2 = createElement( 'child' );
+			const child3 = createElement( 'child' );
 
-			writer.insert( child3, parent );
-			writer.insert( child1, parent );
-			writer.insert( child2, parent, 1 );
+			insert( child3, parent );
+			insert( child1, parent );
+			insert( child2, parent, 1 );
 
 			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2, child3 ] );
 		} );
 
 		it( 'should insert node before the given node', () => {
-			const parent = writer.createDocumentFragment();
-			const child1 = writer.createElement( 'child' );
-			const child2 = writer.createElement( 'child' );
-			const child3 = writer.createElement( 'child' );
+			const parent = createDocumentFragment();
+			const child1 = createElement( 'child' );
+			const child2 = createElement( 'child' );
+			const child3 = createElement( 'child' );
 
-			writer.insert( child3, parent );
-			writer.insert( child1, parent );
-			writer.insert( child2, child3, 'before' );
+			insert( child3, parent );
+			insert( child1, parent );
+			insert( child2, child3, 'before' );
 
 			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2, child3 ] );
 		} );
 
 		it( 'should insert node after the given node', () => {
-			const parent = writer.createDocumentFragment();
-			const child1 = writer.createElement( 'child' );
-			const child2 = writer.createElement( 'child' );
-			const child3 = writer.createElement( 'child' );
+			const parent = createDocumentFragment();
+			const child1 = createElement( 'child' );
+			const child2 = createElement( 'child' );
+			const child3 = createElement( 'child' );
 
-			writer.insert( child3, parent );
-			writer.insert( child1, parent );
-			writer.insert( child2, child1, 'after' );
+			insert( child3, parent );
+			insert( child1, parent );
+			insert( child2, child1, 'after' );
 
 			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2, child3 ] );
 		} );
 
 		it( 'should create proper delta for inserting element', () => {
-			const parent = writer.createDocumentFragment();
-			const element = writer.createElement( 'child' );
+			const parent = createDocumentFragment();
+			const element = createElement( 'child' );
 
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.insert( element, parent );
+			insert( element, parent );
 
 			sinon.assert.calledOnce( spy );
+
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
 			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( InsertDelta );
 			expect( spy.lastCall.args[ 0 ].delta ).to.not.instanceof( WeakInsertDelta );
@@ -169,12 +176,12 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create proper delta for inserting text', () => {
-			const parent = writer.createDocumentFragment();
-			const text = writer.createText( 'child' );
+			const parent = createDocumentFragment();
+			const text = createText( 'child' );
 
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.insert( text, parent );
+			insert( text, parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
@@ -183,18 +190,18 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should move element from one parent to the other within the same document (documentA -> documentA)', () => {
-			const rootA = doc.createRoot();
-			const parent1 = writer.createElement( 'parent' );
-			const parent2 = writer.createElement( 'parent' );
-			const node = writer.createText( 'foo' );
+			const root = doc.createRoot();
+			const parent1 = createElement( 'parent' );
+			const parent2 = createElement( 'parent' );
+			const node = createText( 'foo' );
 
-			writer.insert( node, parent1 );
-			writer.insert( parent1, rootA );
-			writer.insert( parent2, rootA );
+			insert( node, parent1 );
+			insert( parent1, root );
+			insert( parent2, root );
 
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.insert( node, parent2 );
+			insert( node, parent2 );
 
 			// Verify result.
 			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
@@ -209,13 +216,13 @@ describe( 'Writer', () => {
 		it( 'should move element from one parent to the other within the same document (documentA -> documentB)', () => {
 			const rootA = doc.createRoot( '$root', 'A' );
 			const rootB = doc.createRoot( '$root', 'B' );
-			const node = writer.createText( 'foo' );
+			const node = createText( 'foo' );
 
-			writer.insert( node, rootA );
+			insert( node, rootA );
 
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.insert( node, rootB );
+			insert( node, rootB );
 
 			// Verify result.
 			expect( Array.from( rootA.getChildren() ) ).to.deep.equal( [] );
@@ -228,18 +235,18 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should move element from one parent to the other within the same document (docFragA -> docFragA)', () => {
-			const docFragA = writer.createDocumentFragment();
-			const parent1 = writer.createElement( 'parent' );
-			const parent2 = writer.createElement( 'parent' );
-			const node = writer.createText( 'foo' );
+			const docFragA = createDocumentFragment();
+			const parent1 = createElement( 'parent' );
+			const parent2 = createElement( 'parent' );
+			const node = createText( 'foo' );
 
-			writer.insert( node, parent1 );
-			writer.insert( parent1, docFragA );
-			writer.insert( parent2, docFragA );
+			insert( node, parent1 );
+			insert( parent1, docFragA );
+			insert( parent2, docFragA );
 
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.insert( node, parent2 );
+			insert( node, parent2 );
 
 			// Verify result.
 			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
@@ -253,14 +260,14 @@ describe( 'Writer', () => {
 
 		it( 'should move element from one parent to the other within different document (document -> docFrag)', () => {
 			const root = doc.createRoot();
-			const docFrag = writer.createDocumentFragment();
-			const node = writer.createText( 'foo' );
+			const docFrag = createDocumentFragment();
+			const node = createText( 'foo' );
 
-			writer.insert( node, root );
+			insert( node, root );
 
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.insert( node, docFrag );
+			insert( node, docFrag );
 
 			// Verify result.
 			expect( Array.from( root.getChildren() ) ).to.deep.equal( [] );
@@ -275,15 +282,15 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should move element from one parent to the other within different document (docFragA -> docFragB)', () => {
-			const docFragA = writer.createDocumentFragment();
-			const docFragB = writer.createDocumentFragment();
-			const node = writer.createText( 'foo' );
+			const docFragA = createDocumentFragment();
+			const docFragB = createDocumentFragment();
+			const node = createText( 'foo' );
 
-			writer.insert( node, docFragA );
+			insert( node, docFragA );
 
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.insert( node, docFragB );
+			insert( node, docFragB );
 
 			// Verify result.
 			expect( Array.from( docFragA ) ).to.deep.equal( [] );
@@ -299,17 +306,18 @@ describe( 'Writer', () => {
 
 		it( 'should transfer markers from given DocumentFragment', () => {
 			const root = doc.createRoot();
-			const docFrag = writer.createDocumentFragment();
 
-			writer.appendText( 'abcd', root );
-			writer.appendElement( 'p', docFrag );
-			writer.insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
+			const docFrag = createDocumentFragment();
+
+			appendText( 'abcd', root );
+			appendElement( 'p', docFrag );
+			insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
 
 			const marker = new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 5 ] ) );
 
 			docFrag.markers.set( 'marker', marker );
 
-			writer.insert( docFrag, new Position( root, [ 2 ] ) );
+			insert( docFrag, new Position( root, [ 2 ] ) );
 
 			expect( Array.from( model.markers ).length ).to.equal( 1 );
 
@@ -320,13 +328,14 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should set each marker as a separate operation', () => {
-			const spy = sinon.spy();
 			const root = doc.createRoot();
-			const docFrag = writer.createDocumentFragment();
 
-			writer.appendText( 'abcd', root );
-			writer.appendElement( 'p', docFrag );
-			writer.insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
+			const spy = sinon.spy();
+			const docFrag = createDocumentFragment();
+
+			appendText( 'abcd', root );
+			appendElement( 'p', docFrag );
+			insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
 
 			const marker1 = new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 2 ] ) );
 			const marker2 = new Range( new Position( docFrag, [ 0, 5 ] ), new Position( docFrag, [ 0, 6 ] ) );
@@ -336,20 +345,30 @@ describe( 'Writer', () => {
 
 			doc.on( 'change', spy );
 
-			writer.insert( docFrag, new Position( root, [ 2 ] ) );
+			insert( docFrag, new Position( root, [ 2 ] ) );
 
 			sinon.assert.calledThrice( spy );
 			expect( spy.firstCall.args[ 1 ] ).to.equal( 'insert' );
 			expect( spy.secondCall.args[ 1 ] ).to.equal( 'marker' );
 			expect( spy.thirdCall.args[ 1 ] ).to.equal( 'marker' );
 		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+			const root = doc.createRoot();
+			const node = createText( 'foo' );
+
+			expect( () => {
+				writer.insert( node, root );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+		} );
 	} );
 
 	describe( 'insertText()', () => {
 		it( 'should create and insert text node with attributes at given position', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
 
-			writer.insertText( 'foo', { bar: 'biz' }, new Position( parent, [ 0 ] ) );
+			insertText( 'foo', { bar: 'biz' }, new Position( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Text );
@@ -358,9 +377,9 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert text node with no attributes at given position', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
 
-			writer.insertText( 'foo', null, new Position( parent, [ 0 ] ) );
+			insertText( 'foo', null, new Position( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Text );
@@ -369,9 +388,9 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert text node omitting attributes param', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
 
-			writer.insertText( 'foo', new Position( parent, [ 0 ] ) );
+			insertText( 'foo', new Position( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Text );
@@ -380,11 +399,11 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert text node at the beginning of given element', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
 
-			writer.insert( writer.createElement( 'child' ), parent );
+			insert( createElement( 'child' ), parent );
 
-			writer.insertText( 'foo', parent );
+			insertText( 'foo', parent );
 
 			expect( parent.childCount ).to.equal( 2 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Text );
@@ -392,11 +411,10 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert text node at the end of given element', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
 
-			writer.insert( writer.createElement( 'child' ), parent );
-
-			writer.insertText( 'foo', parent, 'end' );
+			insert( createElement( 'child' ), parent );
+			insertText( 'foo', parent, 'end' );
 
 			expect( parent.childCount ).to.equal( 2 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Element );
@@ -404,12 +422,12 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert text node at the given offset of given element', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
 
-			writer.insert( writer.createElement( 'child' ), parent );
-			writer.insert( writer.createElement( 'child' ), parent );
+			insert( createElement( 'child' ), parent );
+			insert( createElement( 'child' ), parent );
 
-			writer.insertText( 'foo', parent, 1 );
+			insertText( 'foo', parent, 1 );
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Element );
@@ -418,14 +436,14 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert text node before the given node', () => {
-			const parent = writer.createDocumentFragment();
-			const child1 = writer.createElement( 'child' );
-			const child2 = writer.createElement( 'child' );
+			const parent = createDocumentFragment();
+			const child1 = createElement( 'child' );
+			const child2 = createElement( 'child' );
 
-			writer.insert( child1, parent );
-			writer.insert( child2, parent, 'end' );
+			insert( child1, parent );
+			insert( child2, parent, 'end' );
 
-			writer.insertText( 'foo', child2, 'before' );
+			insertText( 'foo', child2, 'before' );
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Element );
@@ -434,14 +452,14 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert text node after the given node', () => {
-			const parent = writer.createDocumentFragment();
-			const child1 = writer.createElement( 'child' );
-			const child2 = writer.createElement( 'child' );
+			const parent = createDocumentFragment();
+			const child1 = createElement( 'child' );
+			const child2 = createElement( 'child' );
 
-			writer.insert( child1, parent );
-			writer.insert( child2, parent, 'end' );
+			insert( child1, parent );
+			insert( child2, parent, 'end' );
 
-			writer.insertText( 'foo', child1, 'after' );
+			insertText( 'foo', child1, 'after' );
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Element );
@@ -450,23 +468,32 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create proper delta', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.insertText( 'foo', parent );
+			insertText( 'foo', parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
 			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( WeakInsertDelta );
 			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+			const parent = createDocumentFragment();
+
+			expect( () => {
+				writer.insertText( 'foo', parent );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+		} );
 	} );
 
 	describe( 'insertElement()', () => {
 		it( 'should create and insert element with attributes at given position', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
 
-			writer.insertElement( 'foo', { bar: 'biz' }, new Position( parent, [ 0 ] ) );
+			insertElement( 'foo', { bar: 'biz' }, new Position( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Element );
@@ -475,9 +502,8 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert element with no attributes at given position', () => {
-			const parent = writer.createDocumentFragment();
-
-			writer.insertElement( 'foo', null, new Position( parent, [ 0 ] ) );
+			const parent = createDocumentFragment();
+			insertElement( 'foo', null, new Position( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Element );
@@ -486,9 +512,8 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert element with no attributes omitting attributes param', () => {
-			const parent = writer.createDocumentFragment();
-
-			writer.insertElement( 'foo', new Position( parent, [ 0 ] ) );
+			const parent = createDocumentFragment();
+			insertElement( 'foo', new Position( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Element );
@@ -497,11 +522,10 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert element at the beginning of given element', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
+			insert( createElement( 'child' ), parent );
 
-			writer.insert( writer.createElement( 'child' ), parent );
-
-			writer.insertElement( 'foo', parent );
+			insertElement( 'foo', parent );
 
 			expect( parent.childCount ).to.equal( 2 );
 			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
@@ -509,11 +533,10 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert element at the end of given element', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
+			insert( createElement( 'child' ), parent );
 
-			writer.insert( writer.createElement( 'child' ), parent );
-
-			writer.insertElement( 'foo', parent, 'end' );
+			insertElement( 'foo', parent, 'end' );
 
 			expect( parent.childCount ).to.equal( 2 );
 			expect( parent.getChild( 0 ).name ).to.equal( 'child' );
@@ -521,12 +544,11 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert element at the given offset of given element', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
+			insert( createElement( 'child1' ), parent );
+			insert( createElement( 'child2' ), parent, 'end' );
 
-			writer.insert( writer.createElement( 'child1' ), parent );
-			writer.insert( writer.createElement( 'child2' ), parent, 'end' );
-
-			writer.insertElement( 'foo', parent, 1 );
+			insertElement( 'foo', parent, 1 );
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ).name ).to.equal( 'child1' );
@@ -535,14 +557,14 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert element before the given node', () => {
-			const parent = writer.createDocumentFragment();
-			const child1 = writer.createElement( 'child1' );
-			const child2 = writer.createElement( 'child2' );
+			const parent = createDocumentFragment();
+			const child1 = createElement( 'child1' );
+			const child2 = createElement( 'child2' );
 
-			writer.insert( child1, parent );
-			writer.insert( child2, parent, 'end' );
+			insert( child1, parent );
+			insert( child2, parent, 'end' );
 
-			writer.insertElement( 'foo', child2, 'before' );
+			insertElement( 'foo', child2, 'before' );
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ).name ).to.equal( 'child1' );
@@ -551,14 +573,14 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert element after the given node', () => {
-			const parent = writer.createDocumentFragment();
-			const child1 = writer.createElement( 'child1' );
-			const child2 = writer.createElement( 'child2' );
+			const parent = createDocumentFragment();
+			const child1 = createElement( 'child1' );
+			const child2 = createElement( 'child2' );
 
-			writer.insert( child1, parent );
-			writer.insert( child2, parent, 'end' );
+			insert( child1, parent );
+			insert( child2, parent, 'end' );
 
-			writer.insertElement( 'foo', child1, 'after' );
+			insertElement( 'foo', child1, 'after' );
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ).name ).to.equal( 'child1' );
@@ -567,37 +589,45 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create proper delta', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.insertText( 'foo', parent );
+			insertText( 'foo', parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
 			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( InsertDelta );
 			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+			const child = createElement( 'child' );
+
+			expect( () => {
+				writer.insertElement( 'foo', child, 'after' );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+		} );
 	} );
 
 	describe( 'append()', () => {
 		it( 'should insert element at the end of the parent', () => {
-			const parent = writer.createDocumentFragment();
-			const childText = writer.createText( 'foo' );
-			const childElement = writer.createElement( 'foo' );
+			const parent = createDocumentFragment();
+			const childText = createText( 'foo' );
+			const childElement = createElement( 'foo' );
 
-			writer.append( childText, parent );
-			writer.append( childElement, parent );
+			append( childText, parent );
+			append( childElement, parent );
 
 			expect( Array.from( parent ) ).to.deep.equal( [ childText, childElement ] );
 		} );
 
 		it( 'should create proper delta', () => {
-			const parent = writer.createDocumentFragment();
-			const text = writer.createText( 'foo' );
-
+			const parent = createDocumentFragment();
+			const text = createText( 'foo' );
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.append( text, parent );
+			append( text, parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
@@ -606,17 +636,18 @@ describe( 'Writer', () => {
 
 		it( 'should move element from one parent to the other within the same document (documentA -> documentA)', () => {
 			const rootA = doc.createRoot();
-			const parent1 = writer.createElement( 'parent' );
-			const parent2 = writer.createElement( 'parent' );
-			const node = writer.createText( 'foo' );
 
-			writer.insert( node, parent1 );
-			writer.insert( parent1, rootA );
-			writer.insert( parent2, rootA );
+			const parent1 = createElement( 'parent' );
+			const parent2 = createElement( 'parent' );
+			const node = createText( 'foo' );
+
+			insert( node, parent1 );
+			insert( parent1, rootA );
+			insert( parent2, rootA );
 
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.append( node, parent2 );
+			append( node, parent2 );
 
 			// Verify result.
 			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
@@ -631,13 +662,13 @@ describe( 'Writer', () => {
 		it( 'should move element from one parent to the other within the same document (documentA -> documentB)', () => {
 			const rootA = doc.createRoot( '$root', 'A' );
 			const rootB = doc.createRoot( '$root', 'B' );
-			const node = writer.createText( 'foo' );
+			const node = createText( 'foo' );
 
-			writer.insert( node, rootA );
+			insert( node, rootA );
 
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.append( node, rootB );
+			append( node, rootB );
 
 			// Verify result.
 			expect( Array.from( rootA.getChildren() ) ).to.deep.equal( [] );
@@ -650,18 +681,18 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should move element from one parent to the other within the same document (docFragA -> docFragA)', () => {
-			const docFragA = writer.createDocumentFragment();
-			const parent1 = writer.createElement( 'parent' );
-			const parent2 = writer.createElement( 'parent' );
-			const node = writer.createText( 'foo' );
+			const docFragA = createDocumentFragment();
+			const parent1 = createElement( 'parent' );
+			const parent2 = createElement( 'parent' );
+			const node = createText( 'foo' );
 
-			writer.insert( node, parent1 );
-			writer.insert( parent1, docFragA );
-			writer.insert( parent2, docFragA );
+			insert( node, parent1 );
+			insert( parent1, docFragA );
+			insert( parent2, docFragA );
 
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.append( node, parent2 );
+			append( node, parent2 );
 
 			// Verify result.
 			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
@@ -675,14 +706,14 @@ describe( 'Writer', () => {
 
 		it( 'should move element from one parent to the other within different document (document -> docFrag)', () => {
 			const root = doc.createRoot();
-			const docFrag = writer.createDocumentFragment();
-			const node = writer.createText( 'foo' );
+			const docFrag = createDocumentFragment();
+			const node = createText( 'foo' );
 
-			writer.insert( node, root );
+			insert( node, root );
 
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.append( node, docFrag );
+			append( node, docFrag );
 
 			// Verify result.
 			expect( Array.from( root.getChildren() ) ).to.deep.equal( [] );
@@ -697,15 +728,15 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should move element from one parent to the other within different document (docFragA -> docFragB)', () => {
-			const docFragA = writer.createDocumentFragment();
-			const docFragB = writer.createDocumentFragment();
-			const node = writer.createText( 'foo' );
+			const docFragA = createDocumentFragment();
+			const docFragB = createDocumentFragment();
+			const node = createText( 'foo' );
 
-			writer.insert( node, docFragA );
+			insert( node, docFragA );
 
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.append( node, docFragB );
+			append( node, docFragB );
 
 			// Verify result.
 			expect( Array.from( docFragA ) ).to.deep.equal( [] );
@@ -722,10 +753,9 @@ describe( 'Writer', () => {
 
 	describe( 'appendText()', () => {
 		it( 'should create and insert text node with attributes at the end of the parent', () => {
-			const parent = writer.createDocumentFragment();
-
-			writer.appendText( 'foo', { bar: 'biz' }, parent );
-			writer.appendText( 'bar', { biz: 'bar' }, parent );
+			const parent = createDocumentFragment();
+			appendText( 'foo', { bar: 'biz' }, parent );
+			appendText( 'bar', { biz: 'bar' }, parent );
 
 			expect( parent.childCount ).to.equal( 2 );
 			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
@@ -735,9 +765,8 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert text node with no attributes at the end of the parent', () => {
-			const parent = writer.createDocumentFragment();
-
-			writer.appendText( 'foo', null, parent );
+			const parent = createDocumentFragment();
+			appendText( 'foo', null, parent );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Text );
@@ -746,9 +775,8 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert text node with no attributes omitting attributes param', () => {
-			const parent = writer.createDocumentFragment();
-
-			writer.appendText( 'foo', parent );
+			const parent = createDocumentFragment();
+			appendText( 'foo', parent );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Text );
@@ -757,24 +785,32 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create proper delta and operations', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.appendText( 'foo', parent );
+			appendText( 'foo', parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'insert' );
 			expect( spy.firstCall.args[ 0 ].delta ).to.instanceof( WeakInsertDelta );
 			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+			const parent = createDocumentFragment();
+
+			expect( () => {
+				writer.appendText( 'foo', parent );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+		} );
 	} );
 
 	describe( 'appendElement()', () => {
 		it( 'should create and insert element with attributes at the end of the parent', () => {
-			const parent = writer.createDocumentFragment();
-
-			writer.appendElement( 'foo', { bar: 'biz' }, parent );
-			writer.appendElement( 'bar', { biz: 'bar' }, parent );
+			const parent = createDocumentFragment();
+			appendElement( 'foo', { bar: 'biz' }, parent );
+			appendElement( 'bar', { biz: 'bar' }, parent );
 
 			expect( parent.childCount ).to.equal( 2 );
 			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
@@ -784,9 +820,8 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert element with no attributes at the end of the parent', () => {
-			const parent = writer.createDocumentFragment();
-
-			writer.appendElement( 'foo', null, parent );
+			const parent = createDocumentFragment();
+			appendElement( 'foo', null, parent );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
@@ -794,9 +829,8 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create and insert element with no attributes omitting attributes param', () => {
-			const parent = writer.createDocumentFragment();
-
-			writer.appendElement( 'foo', parent );
+			const parent = createDocumentFragment();
+			appendElement( 'foo', parent );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
@@ -804,15 +838,24 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create proper delta and operation', () => {
-			const parent = writer.createDocumentFragment();
+			const parent = createDocumentFragment();
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			writer.appendElement( 'foo', parent );
+			appendElement( 'foo', parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'insert' );
 			expect( spy.firstCall.args[ 0 ].delta ).to.instanceof( InsertDelta ).to.not.instanceof( WeakInsertDelta );
 			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+			const parent = createDocumentFragment();
+
+			expect( () => {
+				writer.appendElement( 'foo', parent );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -827,80 +870,96 @@ describe( 'Writer', () => {
 			let node, text;
 
 			beforeEach( () => {
-				node = writer.createElement( 'p', { a: 1 } );
-				text = writer.createText( 'c', { a: 1 } );
+				node = createElement( 'p', { a: 1 } );
+				text = createText( 'c', { a: 1 } );
 
-				writer.append( node, root );
-				writer.append( text, root );
+				append( node, root );
+				append( text, root );
 
 				spy = sinon.spy( model, 'applyOperation' );
 			} );
 
 			describe( 'setAttribute', () => {
 				it( 'should create the attribute on element', () => {
-					writer.setAttribute( 'b', 2, node );
+					setAttribute( 'b', 2, node );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( node.getAttribute( 'b' ) ).to.equal( 2 );
 				} );
 
 				it( 'should change the attribute of element', () => {
-					writer.setAttribute( 'a', 2, node );
+					setAttribute( 'a', 2, node );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( node.getAttribute( 'a' ) ).to.equal( 2 );
 				} );
 
 				it( 'should create the attribute on text node', () => {
-					writer.setAttribute( 'b', 2, text );
+					setAttribute( 'b', 2, text );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getChild( 1 ).getAttribute( 'b' ) ).to.equal( 2 );
 				} );
 
 				it( 'should change the attribute of text node', () => {
-					writer.setAttribute( 'a', 2, text );
+					setAttribute( 'a', 2, text );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.equal( 2 );
 				} );
 
 				it( 'should do nothing if the attribute value is the same', () => {
-					writer.setAttribute( 'a', 1, node );
+					setAttribute( 'a', 1, node );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( node.getAttribute( 'a' ) ).to.equal( 1 );
+				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+
+					expect( () => {
+						writer.setAttribute( 'a', 1, node );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 				} );
 			} );
 
 			describe( 'removeAttribute', () => {
 				it( 'should remove the attribute from element', () => {
-					writer.removeAttribute( 'a', node );
+					removeAttribute( 'a', node );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( node.getAttribute( 'a' ) ).to.be.undefined;
 				} );
 
 				it( 'should remove the attribute from character', () => {
-					writer.removeAttribute( 'a', text );
+					removeAttribute( 'a', text );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.be.undefined;
 				} );
 
 				it( 'should do nothing if the attribute is not set', () => {
-					writer.removeAttribute( 'b', node );
+					removeAttribute( 'b', node );
 					expect( spy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+
+					expect( () => {
+						writer.removeAttribute( 'b', node );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 				} );
 			} );
 		} );
 
 		describe( 'change attribute on range', () => {
 			beforeEach( () => {
-				const element = writer.createElement( 'e', { a: 2 } );
+				const element = createElement( 'e', { a: 2 } );
 
-				writer.appendText( 'xxx', { a: 1 }, root );
-				writer.appendText( 'xxx', root );
-				writer.appendText( 'xxx', { a: 1 }, root );
-				writer.appendText( 'xxx', { a: 2 }, root );
-				writer.appendText( 'xxx', root );
-				writer.appendText( 'xxx', { a: 1 }, root );
-				writer.appendText( 'xxx', element );
-				writer.append( element, root );
-				writer.appendText( 'xxx', root );
+				appendText( 'xxx', { a: 1 }, root );
+				appendText( 'xxx', root );
+				appendText( 'xxx', { a: 1 }, root );
+				appendText( 'xxx', { a: 2 }, root );
+				appendText( 'xxx', root );
+				appendText( 'xxx', { a: 1 }, root );
+				appendText( 'xxx', element );
+				append( element, root );
+				appendText( 'xxx', root );
 
 				spy = sinon.spy( model, 'applyOperation' );
 			} );
@@ -915,7 +974,7 @@ describe( 'Writer', () => {
 			function getChangesAttrsCount() {
 				let totalNumber = 0;
 
-				for ( const delta of writer.batch.deltas ) {
+				for ( const delta of batch.deltas ) {
 					for ( const operation of delta.operations ) {
 						if ( operation.range ) {
 							totalNumber += count( operation.range.getItems( { singleCharacters: true } ) );
@@ -937,42 +996,42 @@ describe( 'Writer', () => {
 
 			describe( 'setAttribute', () => {
 				it( 'should set the attribute on the range', () => {
-					writer.setAttribute( 'a', 3, getRange( 3, 6 ) );
+					setAttribute( 'a', 3, getRange( 3, 6 ) );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 3 );
 					expect( getCompressedAttrs() ).to.equal( '111333111222---1112------' );
 				} );
 
 				it( 'should split the operations if parts of the range have different attributes', () => {
-					writer.setAttribute( 'a', 3, getRange( 4, 14 ) );
+					setAttribute( 'a', 3, getRange( 4, 14 ) );
 					expect( spy.callCount ).to.equal( 4 );
 					expect( getChangesAttrsCount() ).to.equal( 10 );
 					expect( getCompressedAttrs() ).to.equal( '111-3333333333-1112------' );
 				} );
 
 				it( 'should split the operations if parts of the part of the range have the attribute', () => {
-					writer.setAttribute( 'a', 2, getRange( 4, 14 ) );
+					setAttribute( 'a', 2, getRange( 4, 14 ) );
 					expect( spy.callCount ).to.equal( 3 );
 					expect( getChangesAttrsCount() ).to.equal( 7 );
 					expect( getCompressedAttrs() ).to.equal( '111-2222222222-1112------' );
 				} );
 
 				it( 'should strip the range if the beginning have the attribute', () => {
-					writer.setAttribute( 'a', 1, getRange( 1, 5 ) );
+					setAttribute( 'a', 1, getRange( 1, 5 ) );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 2 );
 					expect( getCompressedAttrs() ).to.equal( '11111-111222---1112------' );
 				} );
 
 				it( 'should strip the range if the ending have the attribute', () => {
-					writer.setAttribute( 'a', 1, getRange( 13, 17 ) );
+					setAttribute( 'a', 1, getRange( 13, 17 ) );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 2 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222-111112------' );
 				} );
 
 				it( 'should do nothing if the range has attribute', () => {
-					writer.setAttribute( 'a', 1, getRange( 0, 3 ) );
+					setAttribute( 'a', 1, getRange( 0, 3 ) );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
@@ -983,7 +1042,7 @@ describe( 'Writer', () => {
 						new Position( root, [ 19 ] )
 					);
 
-					writer.setAttribute( 'a', 1, range );
+					setAttribute( 'a', 1, range );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 2 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112-11---' );
@@ -995,7 +1054,7 @@ describe( 'Writer', () => {
 						new Position( root, [ 21 ] )
 					);
 
-					writer.setAttribute( 'a', 1, range );
+					setAttribute( 'a', 1, range );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 4 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112-1111-' );
@@ -1007,63 +1066,71 @@ describe( 'Writer', () => {
 						new Position( root, [ 19 ] )
 					);
 
-					writer.setAttribute( 'a', 3, range );
+					setAttribute( 'a', 3, range );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
 				it( 'should not create an operation if is collapsed', () => {
-					writer.setAttribute( 'a', 1, getRange( 3, 3 ) );
+					setAttribute( 'a', 1, getRange( 3, 3 ) );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
 				it( 'should create a proper operations for the mixed range', () => {
-					writer.setAttribute( 'a', 1, getRange( 0, 20 ) );
+					setAttribute( 'a', 1, getRange( 0, 20 ) );
 					expect( spy.callCount ).to.equal( 5 );
 					expect( getChangesAttrsCount() ).to.equal( 14 );
 					expect( getCompressedAttrs() ).to.equal( '11111111111111111111111--' );
+				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+
+					expect( () => {
+						writer.setAttribute( 'a', 1, getRange( 0, 20 ) );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 				} );
 			} );
 
 			describe( 'removeAttribute', () => {
 				it( 'should remove the attribute on the range', () => {
-					writer.removeAttribute( 'a', getRange( 0, 2 ) );
+					removeAttribute( 'a', getRange( 0, 2 ) );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 2 );
 					expect( getCompressedAttrs() ).to.equal( '--1---111222---1112------' );
 				} );
 
 				it( 'should split the operations if parts of the range have different attributes', () => {
-					writer.removeAttribute( 'a', getRange( 7, 11 ) );
+					removeAttribute( 'a', getRange( 7, 11 ) );
 					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 4 );
 					expect( getCompressedAttrs() ).to.equal( '111---1----2---1112------' );
 				} );
 
 				it( 'should split the operations if parts of the part of the range have no attribute', () => {
-					writer.removeAttribute( 'a', getRange( 1, 7 ) );
+					removeAttribute( 'a', getRange( 1, 7 ) );
 					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 3 );
 					expect( getCompressedAttrs() ).to.equal( '1------11222---1112------' );
 				} );
 
 				it( 'should strip the range if the beginning have no attribute', () => {
-					writer.removeAttribute( 'a', getRange( 4, 12 ) );
+					removeAttribute( 'a', getRange( 4, 12 ) );
 					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 6 );
 					expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
 				} );
 
 				it( 'should strip the range if the ending have no attribute', () => {
-					writer.removeAttribute( 'a', getRange( 7, 15 ) );
+					removeAttribute( 'a', getRange( 7, 15 ) );
 					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 5 );
 					expect( getCompressedAttrs() ).to.equal( '111---1--------1112------' );
 				} );
 
 				it( 'should do nothing if the range has no attribute', () => {
-					writer.removeAttribute( 'a', getRange( 4, 5 ) );
+					removeAttribute( 'a', getRange( 4, 5 ) );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
@@ -1074,30 +1141,38 @@ describe( 'Writer', () => {
 						new Position( root, [ 19 ] )
 					);
 
-					writer.removeAttribute( 'a', range );
+					removeAttribute( 'a', range );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( getChangesAttrsCount() ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
 				it( 'should not apply operation twice in the range contains opening and closing tags', () => {
-					writer.removeAttribute( 'a', getRange( 18, 22 ) );
+					removeAttribute( 'a', getRange( 18, 22 ) );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( getChangesAttrsCount() ).to.equal( 1 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---111-------' );
 				} );
 
 				it( 'should not create an operation if range is collapsed', () => {
-					writer.removeAttribute( 'a', getRange( 3, 3 ) );
+					removeAttribute( 'a', getRange( 3, 3 ) );
 					expect( spy.callCount ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
 				it( 'should create a proper operations for the mixed range', () => {
-					writer.removeAttribute( 'a', getRange( 3, 15 ) );
+					removeAttribute( 'a', getRange( 3, 15 ) );
 					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 6 );
 					expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
+				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+
+					expect( () => {
+						writer.removeAttribute( 'a', getRange( 3, 15 ) );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 				} );
 			} );
 		} );
@@ -1106,80 +1181,96 @@ describe( 'Writer', () => {
 			let p;
 
 			beforeEach( () => {
-				p = writer.createElement( 'p', { a: 3 } );
+				p = createElement( 'p', { a: 3 } );
 				spy = sinon.spy( model, 'applyOperation' );
 			} );
 
 			describe( 'setAttribute', () => {
 				it( 'should create the attribute on root', () => {
-					writer.setAttribute( 'b', 2, root );
+					setAttribute( 'b', 2, root );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getAttribute( 'b' ) ).to.equal( 2 );
 				} );
 
 				it( 'should create the attribute on detached root', () => {
-					writer.setAttribute( 'b', 2, p );
+					setAttribute( 'b', 2, p );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( p.getAttribute( 'b' ) ).to.equal( 2 );
 				} );
 
 				it( 'should change the attribute of root', () => {
-					writer.setAttribute( 'a', 2, root );
+					setAttribute( 'a', 2, root );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getAttribute( 'a' ) ).to.equal( 2 );
 				} );
 
 				it( 'should change the attribute of detached root', () => {
-					writer.setAttribute( 'a', 2, p );
+					setAttribute( 'a', 2, p );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( p.getAttribute( 'a' ) ).to.equal( 2 );
 				} );
 
 				it( 'should do nothing if the attribute value is the same', () => {
-					writer.setAttribute( 'a', 1, root );
+					setAttribute( 'a', 1, root );
 					expect( spy.callCount ).to.equal( 1 );
-					writer.setAttribute( 'a', 1, root );
+					setAttribute( 'a', 1, root );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( root.getAttribute( 'a' ) ).to.equal( 1 );
 				} );
 
 				it( 'should do nothing if the attribute value is the same on detached root', () => {
-					writer.setAttribute( 'a', 1, p );
+					setAttribute( 'a', 1, p );
 					expect( spy.callCount ).to.equal( 1 );
-					writer.setAttribute( 'a', 1, p );
+					setAttribute( 'a', 1, p );
 					expect( spy.callCount ).to.equal( 1 );
 					expect( p.getAttribute( 'a' ) ).to.equal( 1 );
+				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+
+					expect( () => {
+						writer.setAttribute( 'a', 1, p );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 				} );
 			} );
 
 			describe( 'removeAttribute', () => {
 				it( 'should remove the attribute from root', () => {
-					writer.setAttribute( 'a', 1, root );
-					writer.removeAttribute( 'a', root );
+					setAttribute( 'a', 1, root );
+					removeAttribute( 'a', root );
 
 					expect( spy.callCount ).to.equal( 2 );
 					expect( root.getAttribute( 'a' ) ).to.be.undefined;
 				} );
 
 				it( 'should do nothing if the attribute is not set', () => {
-					writer.removeAttribute( 'b', root );
+					removeAttribute( 'b', root );
 					expect( spy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+
+					expect( () => {
+						writer.removeAttribute( 'b', root );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 				} );
 			} );
 
 			describe( 'clearAttributes', () => {
 				it( 'should clear attributes from range', () => {
-					writer.appendText( 'xxx', { a: 1, b: 2, c: 3 }, root );
-					writer.appendText( 'xxx', root );
-					writer.appendText( 'xxx', { a: 1 }, root );
-					writer.appendText( 'xxx', { b: 2 }, root );
-					writer.appendText( 'xxx', root );
-					writer.appendElement( 'e', { a: 1 }, root );
-					writer.appendText( 'xxx', root );
+					appendText( 'xxx', { a: 1, b: 2, c: 3 }, root );
+					appendText( 'xxx', root );
+					appendText( 'xxx', { a: 1 }, root );
+					appendText( 'xxx', { b: 2 }, root );
+					appendText( 'xxx', root );
+					appendElement( 'e', { a: 1 }, root );
+					appendText( 'xxx', root );
 
 					const range = Range.createIn( root );
 
-					writer.clearAttributes( range );
+					clearAttributes( range );
 
 					let itemsCount = 0;
 
@@ -1192,33 +1283,42 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should clear attributes on element', () => {
-					const element = writer.createElement( 'x', { a: 1, b: 2, c: 3 }, root );
+					const element = createElement( 'x', { a: 1, b: 2, c: 3 }, root );
 
 					expect( Array.from( element.getAttributeKeys() ).length ).to.equal( 3 );
 
-					writer.clearAttributes( element );
+					clearAttributes( element );
 
 					expect( Array.from( element.getAttributeKeys() ).length ).to.equal( 0 );
 				} );
 
 				it( 'should clear attributes on root element', () => {
-					writer.setAttributes( { a: 1, b: 2, c: 3 }, root );
+					setAttributes( { a: 1, b: 2, c: 3 }, root );
 
 					expect( Array.from( root.getAttributeKeys() ).length ).to.equal( 3 );
 
-					writer.clearAttributes( root );
+					clearAttributes( root );
 
 					expect( Array.from( root.getAttributeKeys() ).length ).to.equal( 0 );
 				} );
 
 				it( 'should do nothing if there are no attributes', () => {
-					const element = writer.createElement( 'x' );
+					const element = createElement( 'x' );
 
 					expect( Array.from( element.getAttributeKeys() ).length ).to.equal( 0 );
 
-					writer.clearAttributes( element );
+					clearAttributes( element );
 
 					expect( Array.from( element.getAttributeKeys() ).length ).to.equal( 0 );
+				} );
+
+				it( 'should throw when trying to use detached writer', () => {
+					const writer = new Writer( model, batch );
+					const element = createElement( 'x' );
+
+					expect( () => {
+						writer.clearAttributes( element );
+					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 				} );
 			} );
 		} );
@@ -1228,13 +1328,13 @@ describe( 'Writer', () => {
 			const nodeB = new Element( 'p', { b: 2 } );
 			root.insertChildren( 0, [ nodeA, nodeB ] );
 
-			writer.setAttribute( 'a', 1, nodeA );
+			setAttribute( 'a', 1, nodeA );
 
-			expect( writer.batch.deltas.length ).to.equal( 0 );
+			expect( batch.deltas.length ).to.equal( 0 );
 
-			writer.removeAttribute( 'x', Range.createIn( root ) );
+			removeAttribute( 'x', Range.createIn( root ) );
 
-			expect( writer.batch.deltas.length ).to.equal( 0 );
+			expect( batch.deltas.length ).to.equal( 0 );
 		} );
 	} );
 
@@ -1242,21 +1342,24 @@ describe( 'Writer', () => {
 		let frag, item;
 
 		beforeEach( () => {
-			frag = writer.createDocumentFragment();
-			item = writer.createText( 'xxx', { b: 2, c: 3 } );
+			frag = createDocumentFragment();
+			item = createText( 'xxx', { b: 2, c: 3 } );
 
-			writer.appendText( 'xxx', { a: 1 }, frag );
-			writer.append( item, frag );
+			appendText( 'xxx', { a: 1 }, frag );
+			append( item, frag );
 		} );
 
 		it( 'should set attributes one by one on range', () => {
 			const range = Range.createIn( frag );
+			let spy;
 
-			// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
-			// such a big amount of the same tests, so let's use a spy here.
-			const spy = sinon.spy( writer, 'setAttribute' );
+			model.change( writer => {
+				// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
+				// such a big amount of the same tests, so let's use a spy here.
+				spy = sinon.spy( writer, 'setAttribute' );
 
-			writer.setAttributes( { a: 3, c: null }, range );
+				writer.setAttributes( { a: 3, c: null }, range );
+			} );
 
 			// Verify result.
 			expect( Array.from( frag.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'a', 3 ] ] );
@@ -1270,12 +1373,15 @@ describe( 'Writer', () => {
 
 		it( 'should set attributes one by one on range for map as attributes list', () => {
 			const range = Range.createIn( frag );
+			let spy;
 
-			// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
-			// such a big amount of the same tests, so let's use a spy here.
-			const spy = sinon.spy( writer, 'setAttribute' );
+			model.change( writer => {
+				// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
+				// such a big amount of the same tests, so let's use a spy here.
+				spy = sinon.spy( writer, 'setAttribute' );
 
-			writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), range );
+				writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), range );
+			} );
 
 			// Verify result.
 			expect( Array.from( frag.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'a', 3 ] ] );
@@ -1288,11 +1394,15 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should set attributes one by one on item', () => {
-			// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
-			// such a big amount of the same tests, so let's use a spy here.
-			const spy = sinon.spy( writer, 'setAttribute' );
+			let spy;
 
-			writer.setAttributes( { a: 3, c: null }, item );
+			model.change( writer => {
+				// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
+				// such a big amount of the same tests, so let's use a spy here.
+				spy = sinon.spy( writer, 'setAttribute' );
+
+				writer.setAttributes( { a: 3, c: null }, item );
+			} );
 
 			// Verify result.
 			expect( Array.from( item.getAttributes() ) ).to.deep.equal( [ [ 'b', 2 ], [ 'a', 3 ] ] );
@@ -1304,11 +1414,15 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should set attributes one by one on item for maps as attributes list', () => {
-			// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
-			// such a big amount of the same tests, so let's use a spy here.
-			const spy = sinon.spy( writer, 'setAttribute' );
+			let spy;
 
-			writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), item );
+			model.change( writer => {
+				// `setAttribute` is a not trivial operation and is deeply tested above, there is no point to duplicate
+				// such a big amount of the same tests, so let's use a spy here.
+				spy = sinon.spy( writer, 'setAttribute' );
+
+				writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), item );
+			} );
 
 			// Verify result.
 			expect( Array.from( item.getAttributes() ) ).to.deep.equal( [ [ 'b', 2 ], [ 'a', 3 ] ] );
@@ -1317,6 +1431,14 @@ describe( 'Writer', () => {
 			sinon.assert.calledTwice( spy );
 			sinon.assert.calledWith( spy.firstCall, 'a', 3, item );
 			sinon.assert.calledWith( spy.secondCall, 'c', null, item );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), item );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -1333,7 +1455,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should merge foo and bar into foobar', () => {
-			writer.merge( new Position( root, [ 1 ] ) );
+			merge( new Position( root, [ 1 ] ) );
 
 			expect( root.maxOffset ).to.equal( 1 );
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
@@ -1345,14 +1467,22 @@ describe( 'Writer', () => {
 
 		it( 'should throw if there is no element after', () => {
 			expect( () => {
-				writer.merge( new Position( root, [ 2 ] ) );
+				merge( new Position( root, [ 2 ] ) );
 			} ).to.throw( CKEditorError, /^writer-merge-no-element-after/ );
 		} );
 
 		it( 'should throw if there is no element before', () => {
 			expect( () => {
-				writer.merge( new Position( root, [ 0, 2 ] ) );
+				merge( new Position( root, [ 0, 2 ] ) );
 			} ).to.throw( CKEditorError, /^writer-merge-no-element-before/ );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.merge( new Position( root, [ 1 ] ) );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -1374,7 +1504,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should move flat range of nodes', () => {
-			writer.move( range, new Position( root, [ 1, 3 ] ) );
+			move( range, new Position( root, [ 1, 3 ] ) );
 
 			expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
 			expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
@@ -1382,7 +1512,7 @@ describe( 'Writer', () => {
 
 		it( 'should throw if object to move is not a range', () => {
 			expect( () => {
-				writer.move( root.getChild( 0 ), new Position( root, [ 1, 3 ] ) );
+				move( root.getChild( 0 ), new Position( root, [ 1, 3 ] ) );
 			} ).to.throw( CKEditorError, /^writer-move-invalid-range/ );
 		} );
 
@@ -1390,16 +1520,24 @@ describe( 'Writer', () => {
 			const notFlatRange = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
 
 			expect( () => {
-				writer.move( notFlatRange, new Position( root, [ 1, 3 ] ) );
+				move( notFlatRange, new Position( root, [ 1, 3 ] ) );
 			} ).to.throw( CKEditorError, /^writer-move-range-not-flat/ );
 		} );
 
 		it( 'should throw if range is going to be moved to the other document', () => {
-			const docFrag = writer.createDocumentFragment();
+			const docFrag = createDocumentFragment();
 
 			expect( () => {
-				writer.move( range, docFrag );
+				move( range, docFrag );
 			} ).to.throw( CKEditorError, /^writer-move-different-document/ );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.move( range, new Position( root, [ 1, 3 ] ) );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -1407,17 +1545,17 @@ describe( 'Writer', () => {
 		let div, p, range;
 
 		beforeEach( () => {
-			div = writer.createElement( 'div' );
-			writer.appendText( 'foobar', div );
+			div = createElement( 'div' );
+			appendText( 'foobar', div );
 
-			p = writer.createElement( 'p' );
-			writer.appendText( 'abcxyz', p );
+			p = createElement( 'p' );
+			appendText( 'abcxyz', p );
 
-			writer.insertElement( 'p', div );
-			writer.appendElement( 'p', div );
+			insertElement( 'p', div );
+			appendElement( 'p', div );
 
-			writer.insertText( 'gggg', new Position( div, [ 0, 0 ] ) );
-			writer.insertText( 'hhhh', new Position( div, [ 7, 0 ] ) );
+			insertText( 'gggg', new Position( div, [ 0, 0 ] ) );
+			insertText( 'hhhh', new Position( div, [ 7, 0 ] ) );
 		} );
 
 		describe( 'remove from document', () => {
@@ -1425,12 +1563,9 @@ describe( 'Writer', () => {
 
 			beforeEach( () => {
 				root = doc.createRoot();
-				writer.append( div, root );
-				writer.append( p, root );
 
-				// Reset batch inside a writer.
-				batch = new Batch();
-				writer = new Writer( model, batch );
+				append( div, root );
+				append( p, root );
 
 				// Range starts in ROOT > DIV > P > gg|gg.
 				// Range ends in ROOT > DIV > ...|ar.
@@ -1438,7 +1573,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should remove specified node', () => {
-				writer.remove( div );
+				remove( div );
 
 				expect( root.maxOffset ).to.equal( 1 );
 				expect( root.childCount ).to.equal( 1 );
@@ -1446,30 +1581,40 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should remove specified text node', () => {
-				writer.remove( p.getChild( 0 ) );
+				remove( p.getChild( 0 ) );
 
 				expect( getNodesAndText( Range.createOn( p ) ) ).to.equal( 'PP' );
 			} );
 
 			it( 'should remove any range of nodes', () => {
-				writer.remove( range );
+				remove( range );
 
 				expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
 				expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should create minimal number of remove deltas, each with only one operation', () => {
-				writer.remove( range );
+				batch = new Batch();
+				remove( range );
 
-				expect( writer.batch.deltas.length ).to.equal( 2 );
-				expect( writer.batch.deltas[ 0 ].operations.length ).to.equal( 1 );
-				expect( writer.batch.deltas[ 1 ].operations.length ).to.equal( 1 );
+				expect( batch.deltas.length ).to.equal( 2 );
+				expect( batch.deltas[ 0 ].operations.length ).to.equal( 1 );
+				expect( batch.deltas[ 1 ].operations.length ).to.equal( 1 );
 			} );
 
 			it( 'should use RemoveOperation', () => {
-				writer.remove( div );
+				batch = new Batch();
+				remove( div );
 
-				expect( writer.batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'remove' );
+				expect( batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'remove' );
+			} );
+
+			it( 'should throw when trying to use detached writer', () => {
+				const writer = new Writer( model, batch );
+
+				expect( () => {
+					writer.remove( range );
+				} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 			} );
 		} );
 
@@ -1477,13 +1622,9 @@ describe( 'Writer', () => {
 			let frag;
 
 			beforeEach( () => {
-				frag = writer.createDocumentFragment();
-				writer.append( div, frag );
-				writer.append( p, frag );
-
-				// Reset batch in writer.
-				batch = new Batch();
-				writer = new Writer( model, batch );
+				frag = createDocumentFragment();
+				append( div, frag );
+				append( p, frag );
 
 				// Range starts in FRAG > DIV > P > gg|gg.
 				// Range ends in FRAG > DIV > ...|ar.
@@ -1491,7 +1632,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should remove specified node', () => {
-				writer.remove( div );
+				remove( div );
 
 				expect( frag.maxOffset ).to.equal( 1 );
 				expect( frag.childCount ).to.equal( 1 );
@@ -1499,30 +1640,40 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should remove specified text node', () => {
-				writer.remove( p.getChild( 0 ) );
+				remove( p.getChild( 0 ) );
 
 				expect( getNodesAndText( Range.createOn( p ) ) ).to.equal( 'PP' );
 			} );
 
 			it( 'should remove any range of nodes', () => {
-				writer.remove( range );
+				remove( range );
 
 				expect( getNodesAndText( Range.createIn( frag.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
 				expect( getNodesAndText( Range.createIn( frag.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should create minimal number of remove deltas, each with only one operation', () => {
-				writer.remove( range );
+				batch = new Batch();
+				remove( range );
 
-				expect( writer.batch.deltas.length ).to.equal( 2 );
-				expect( writer.batch.deltas[ 0 ].operations.length ).to.equal( 1 );
-				expect( writer.batch.deltas[ 1 ].operations.length ).to.equal( 1 );
+				expect( batch.deltas.length ).to.equal( 2 );
+				expect( batch.deltas[ 0 ].operations.length ).to.equal( 1 );
+				expect( batch.deltas[ 1 ].operations.length ).to.equal( 1 );
 			} );
 
 			it( 'should use DetachOperation', () => {
-				writer.remove( div );
+				batch = new Batch();
+				remove( div );
 
-				expect( writer.batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'detach' );
+				expect( batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'detach' );
+			} );
+
+			it( 'should throw when trying to use detached writer', () => {
+				const writer = new Writer( model, batch );
+
+				expect( () => {
+					writer.remove( range );
+				} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 			} );
 		} );
 	} );
@@ -1536,7 +1687,7 @@ describe( 'Writer', () => {
 			const p = new Element( 'p', null, new Text( 'abc' ) );
 			root.appendChildren( p );
 
-			writer.rename( p, 'h' );
+			rename( p, 'h' );
 		} );
 
 		it( 'should rename given element', () => {
@@ -1546,8 +1697,17 @@ describe( 'Writer', () => {
 
 		it( 'should throw if not an Element instance is passed', () => {
 			expect( () => {
-				writer.rename( new Text( 'abc' ), 'h' );
+				rename( new Text( 'abc' ), 'h' );
 			} ).to.throw( CKEditorError, /^writer-rename-not-element-instance/ );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+			const p = new Element( 'p', null, new Text( 'abc' ) );
+
+			expect( () => {
+				writer.rename( p, 'h' );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -1563,7 +1723,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should split foobar to foo and bar', () => {
-			writer.split( new Position( root, [ 0, 3 ] ) );
+			split( new Position( root, [ 0, 3 ] ) );
 
 			expect( root.maxOffset ).to.equal( 2 );
 
@@ -1581,7 +1741,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create an empty paragraph if we split at the end', () => {
-			writer.split( new Position( root, [ 0, 6 ] ) );
+			split( new Position( root, [ 0, 6 ] ) );
 
 			expect( root.maxOffset ).to.equal( 2 );
 
@@ -1599,24 +1759,32 @@ describe( 'Writer', () => {
 
 		it( 'should throw if we try to split a root', () => {
 			expect( () => {
-				writer.split( new Position( root, [ 0 ] ) );
+				split( new Position( root, [ 0 ] ) );
 			} ).to.throw( CKEditorError, /^writer-split-element-no-parent/ );
 		} );
 
 		it( 'should throw if we try to split an element with no parent', () => {
 			expect( () => {
-				const element = writer.createElement( 'p' );
+				const element = createElement( 'p' );
 
-				writer.split( new Position( element, [ 0 ] ) );
+				split( new Position( element, [ 0 ] ) );
 			} ).to.throw( CKEditorError, /^writer-split-element-no-parent/ );
 		} );
 
 		it( 'should throw if we try to split a document fragment', () => {
 			expect( () => {
-				const documentFragment = writer.createDocumentFragment();
+				const documentFragment = createDocumentFragment();
 
-				writer.split( new Position( documentFragment, [ 0 ] ) );
+				split( new Position( documentFragment, [ 0 ] ) );
 			} ).to.throw( CKEditorError, /^writer-split-element-no-parent/ );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.split( new Position( root, [ 0, 3 ] ) );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -1633,7 +1801,7 @@ describe( 'Writer', () => {
 
 		it( 'should wrap flat range with given element', () => {
 			const p = new Element( 'p' );
-			writer.wrap( range, p );
+			wrap( range, p );
 
 			expect( root.maxOffset ).to.equal( 5 );
 			expect( root.getChild( 0 ).data ).to.equal( 'fo' );
@@ -1643,7 +1811,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should wrap flat range with an element of given name', () => {
-			writer.wrap( range, 'p' );
+			wrap( range, 'p' );
 
 			expect( root.maxOffset ).to.equal( 5 );
 			expect( root.getChild( 0 ).data ).to.equal( 'fo' );
@@ -1657,7 +1825,7 @@ describe( 'Writer', () => {
 			const notFlatRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6, 2 ] ) );
 
 			expect( () => {
-				writer.wrap( notFlatRange, 'p' );
+				wrap( notFlatRange, 'p' );
 			} ).to.throw( CKEditorError, /^writer-wrap-range-not-flat/ );
 		} );
 
@@ -1665,7 +1833,7 @@ describe( 'Writer', () => {
 			const p = new Element( 'p', [], new Text( 'a' ) );
 
 			expect( () => {
-				writer.wrap( range, p );
+				wrap( range, p );
 			} ).to.throw( CKEditorError, /^writer-wrap-element-not-empty/ );
 		} );
 
@@ -1674,8 +1842,16 @@ describe( 'Writer', () => {
 			root.insertChildren( 0, p );
 
 			expect( () => {
-				writer.wrap( range, p );
+				wrap( range, p );
 			} ).to.throw( CKEditorError, /^writer-wrap-element-attached/ );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.wrap( range, 'p' );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -1690,7 +1866,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should unwrap given element', () => {
-			writer.unwrap( p );
+			unwrap( p );
 
 			expect( root.maxOffset ).to.equal( 5 );
 			expect( root.getChild( 0 ).data ).to.equal( 'axyzb' );
@@ -1700,8 +1876,16 @@ describe( 'Writer', () => {
 			const element = new Element( 'p' );
 
 			expect( () => {
-				writer.unwrap( element );
+				unwrap( element );
 			} ).to.throw( CKEditorError, /^writer-unwrap-element-no-parent/ );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.unwrap( p );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -1715,16 +1899,16 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should add marker to the document marker collection', () => {
-			writer.setMarker( 'name', range );
+			setMarker( 'name', range );
 
 			expect( model.markers.get( 'name' ).getRange().isEqual( range ) ).to.be.true;
 		} );
 
 		it( 'should update marker in the document marker collection', () => {
-			writer.setMarker( 'name', range );
+			setMarker( 'name', range );
 
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
-			writer.setMarker( 'name', range2 );
+			setMarker( 'name', range2 );
 
 			expect( model.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
 		} );
@@ -1733,8 +1917,8 @@ describe( 'Writer', () => {
 			const marker = model.markers.set( 'name', range );
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
 
-			writer.setMarker( marker, range2 );
-			const op = writer.batch.deltas[ 0 ].operations[ 0 ];
+			setMarker( marker, range2 );
+			const op = batch.deltas[ 0 ].operations[ 0 ];
 
 			expect( model.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
 			expect( op.oldRange.isEqual( range ) ).to.be.true;
@@ -1747,8 +1931,8 @@ describe( 'Writer', () => {
 
 			doc.on( 'change', spy );
 
-			writer.setMarker( marker );
-			const op = writer.batch.deltas[ 0 ].operations[ 0 ];
+			setMarker( marker );
+			const op = batch.deltas[ 0 ].operations[ 0 ];
 
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWith( spy, sinon.match.any, 'marker' );
@@ -1758,8 +1942,17 @@ describe( 'Writer', () => {
 
 		it( 'should throw if marker with given name does not exist and range is not passed', () => {
 			expect( () => {
-				writer.setMarker( 'name' );
+				setMarker( 'name' );
 			} ).to.throw( CKEditorError, /^writer-setMarker-no-range/ );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const marker = model.markers.set( 'name', range );
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.setMarker( marker );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
 		} );
 	} );
 
@@ -1773,25 +1966,165 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should remove marker from the document marker collection', () => {
-			writer.setMarker( 'name', range );
-			writer.removeMarker( 'name' );
+			setMarker( 'name', range );
+			removeMarker( 'name' );
 
 			expect( model.markers.get( 'name' ) ).to.be.null;
 		} );
 
 		it( 'should throw when trying to remove non existing marker', () => {
 			expect( () => {
-				writer.removeMarker( 'name' );
+				removeMarker( 'name' );
 			} ).to.throw( CKEditorError, /^writer-removeMarker-no-marker/ );
 		} );
 
+		it( 'should throw when trying to use detached writer', () => {
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.removeMarker( 'name' );
+			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+		} );
+
 		it( 'should accept marker instance', () => {
-			writer.setMarker( 'name', range );
+			setMarker( 'name', range );
 			const marker = model.markers.get( 'name' );
 
-			writer.removeMarker( marker );
+			removeMarker( marker );
 
 			expect( model.markers.get( 'name' ) ).to.be.null;
 		} );
 	} );
+
+	function createText( data, attributes ) {
+		return model.change( writer => {
+			return writer.createText( data, attributes );
+		} );
+	}
+
+	function createElement( name, attributes ) {
+		return model.change( writer => {
+			return writer.createElement( name, attributes );
+		} );
+	}
+
+	function createDocumentFragment() {
+		return model.change( writer => {
+			return writer.createDocumentFragment();
+		} );
+	}
+
+	function insert( item, itemOrPosition, offset ) {
+		model.enqueueChange( batch, writer => {
+			writer.insert( item, itemOrPosition, offset );
+		} );
+	}
+
+	function insertText( text, attributes, itemOrPosition, offset ) {
+		model.enqueueChange( batch, writer => {
+			writer.insertText( text, attributes, itemOrPosition, offset );
+		} );
+	}
+
+	function insertElement( name, attributes, itemOrPosition, offset ) {
+		model.enqueueChange( batch, writer => {
+			writer.insertElement( name, attributes, itemOrPosition, offset );
+		} );
+	}
+
+	function append( item, parent ) {
+		model.enqueueChange( batch, writer => {
+			writer.append( item, parent );
+		} );
+	}
+
+	function appendText( text, attributes, parent ) {
+		model.enqueueChange( batch, writer => {
+			writer.appendText( text, attributes, parent );
+		} );
+	}
+
+	function appendElement( name, attributes, parent ) {
+		model.enqueueChange( batch, writer => {
+			writer.appendElement( name, attributes, parent );
+		} );
+	}
+
+	function setAttribute( key, value, itemOrRange ) {
+		model.enqueueChange( batch, writer => {
+			writer.setAttribute( key, value, itemOrRange );
+		} );
+	}
+
+	function setAttributes( attributes, itemOrRange ) {
+		model.enqueueChange( batch, writer => {
+			writer.setAttributes( attributes, itemOrRange );
+		} );
+	}
+
+	function removeAttribute( key, itemOrRange ) {
+		model.enqueueChange( batch, writer => {
+			writer.removeAttribute( key, itemOrRange );
+		} );
+	}
+
+	function clearAttributes( itemOrRange ) {
+		model.enqueueChange( batch, writer => {
+			writer.clearAttributes( itemOrRange );
+		} );
+	}
+
+	function move( range, itemOrPosition, offset ) {
+		model.enqueueChange( batch, writer => {
+			writer.move( range, itemOrPosition, offset );
+		} );
+	}
+
+	function remove( itemOrRange ) {
+		model.enqueueChange( batch, writer => {
+			writer.remove( itemOrRange );
+		} );
+	}
+
+	function merge( position ) {
+		model.enqueueChange( batch, writer => {
+			writer.merge( position );
+		} );
+	}
+
+	function rename( element, newName ) {
+		model.enqueueChange( batch, writer => {
+			writer.rename( element, newName );
+		} );
+	}
+
+	function split( position ) {
+		model.enqueueChange( batch, writer => {
+			writer.split( position );
+		} );
+	}
+
+	function wrap( range, elementOrString ) {
+		model.enqueueChange( batch, writer => {
+			writer.wrap( range, elementOrString );
+		} );
+	}
+
+	function unwrap( element ) {
+		model.enqueueChange( batch, writer => {
+			writer.unwrap( element );
+		} );
+	}
+
+	function setMarker( markerOrName, newRange ) {
+		model.enqueueChange( batch, writer => {
+			writer.setMarker( markerOrName, newRange );
+		} );
+	}
+
+	function removeMarker( markerOrName ) {
+		model.enqueueChange( batch, writer => {
+			writer.removeMarker( markerOrName );
+		} );
+	}
 } );
