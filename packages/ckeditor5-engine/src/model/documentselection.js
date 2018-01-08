@@ -16,6 +16,7 @@ import Position from './position';
 import Selection from './selection';
 import Text from './text';
 import TextProxy from './textproxy';
+import Range from './range';
 
 const storePrefix = 'selection:';
 
@@ -223,7 +224,23 @@ export default class DocumentSelection {
 	 * @param {*} offset
 	 */
 	_moveFocusTo( itemOrPosition, offset ) {
-		this._selection.moveFocusTo( itemOrPosition, offset );
+		const newFocus = Position.createAt( itemOrPosition, offset );
+
+		if ( newFocus.compareWith( this.focus ) == 'same' ) {
+			return;
+		}
+
+		const anchor = this.anchor;
+
+		if ( this._selection.length ) {
+			this._selection._popRange();
+		}
+
+		if ( newFocus.compareWith( anchor ) == 'before' ) {
+			this._selection.addRange( new Range( newFocus, anchor ), true );
+		} else {
+			this._selection.addRange( new Range( anchor, newFocus ) );
+		}
 	}
 
 	/**
@@ -237,12 +254,12 @@ export default class DocumentSelection {
 
 	/**
 	 * @protected
-	 * @param {*} key
+	 * @param {String} key
 	 * @param {*} value
 	 */
 	_setAttribute( key, value ) {
 		// Store attribute in parent element if the selection is collapsed in an empty node.
-		if ( this._selection.isCollapsed && this._selection.anchor.parent.isEmpty ) {
+		if ( this.isCollapsed && this._selection.anchor.parent.isEmpty ) {
 			this._storeAttribute( key, value );
 		}
 
@@ -574,7 +591,7 @@ export default class DocumentSelection {
 	 * @returns {Iterable.<*>}
 	 */
 	* _getStoredAttributes() {
-		const selectionParent = this.getFirstRange().start.parent;
+		const selectionParent = this.getFirstPosition().parent;
 
 		if ( this.isCollapsed && selectionParent.isEmpty ) {
 			for ( const key of selectionParent.getAttributeKeys() ) {

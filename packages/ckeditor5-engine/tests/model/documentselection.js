@@ -247,7 +247,7 @@ describe( 'DocumentSelection', () => {
 		it( 'should unbind all events', () => {
 			selection._setTo( [ range, liveRange ] );
 
-			const ranges = selection._ranges;
+			const ranges = Array.from( selection.getRanges() );
 
 			sinon.spy( ranges[ 0 ], 'detach' );
 			sinon.spy( ranges[ 1 ], 'detach' );
@@ -267,7 +267,7 @@ describe( 'DocumentSelection', () => {
 			const startPos = selection.getFirstPosition();
 			const endPos = Position.createAt( root, 'end' );
 
-			selection.moveFocusTo( endPos );
+			selection._moveFocusTo( endPos );
 
 			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'same' );
 			expect( selection.focus.compareWith( endPos ) ).to.equal( 'same' );
@@ -281,7 +281,7 @@ describe( 'DocumentSelection', () => {
 
 			selection._setTo( new Range( startPos, endPos ) );
 
-			selection.moveFocusTo( newEndPos );
+			selection._moveFocusTo( newEndPos );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
@@ -291,12 +291,13 @@ describe( 'DocumentSelection', () => {
 		let spy, ranges;
 
 		beforeEach( () => {
-			selection._setTo( [ liveRange, range ] );
+			selection._selection.addRange( liveRange );
+			selection._selection.addRange( range );
 
 			spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			ranges = Array.from( selection._ranges );
+			ranges = Array.from( selection.getRanges() );
 
 			sinon.spy( ranges[ 0 ], 'detach' );
 			sinon.spy( ranges[ 1 ], 'detach' );
@@ -339,7 +340,7 @@ describe( 'DocumentSelection', () => {
 		it( 'should detach removed ranges', () => {
 			selection._setTo( [ liveRange, range ] );
 
-			const oldRanges = Array.from( selection._ranges );
+			const oldRanges = Array.from( selection.getRanges() );
 
 			sinon.spy( oldRanges[ 0 ], 'detach' );
 			sinon.spy( oldRanges[ 1 ], 'detach' );
