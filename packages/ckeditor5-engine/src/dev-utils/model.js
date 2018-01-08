@@ -114,8 +114,8 @@ export function setData( model, data, options = {} ) {
 		writer.insert( modelDocumentFragment, modelRoot );
 
 		// Clean up previous document selection.
-		model.document.selection.clearAttributes();
-		model.document.selection.removeAllRanges();
+		model.document.selection._clearAttributes();
+		model.document.selection._removeAllRanges();
 
 		// Update document selection if specified.
 		if ( selection ) {
@@ -128,10 +128,10 @@ export function setData( model, data, options = {} ) {
 				ranges.push( new ModelRange( start, end ) );
 			}
 
-			model.document.selection.setRanges( ranges, selection.isBackward );
+			model.document.selection._setTo( ranges, selection.isBackward );
 
 			if ( options.selectionAttributes ) {
-				model.document.selection.setAttributesTo( selection.getAttributes() );
+				model.document.selection._setAttributesTo( selection.getAttributes() );
 			}
 		}
 	} );

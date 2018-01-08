@@ -7,14 +7,15 @@
  * @module engine/model/documentselection
  */
 
-import Position from './position';
-import Text from './text';
-import TextProxy from './textproxy';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
+import Position from './position';
 import Selection from './selection';
+import Text from './text';
+import TextProxy from './textproxy';
 
 const storePrefix = 'selection:';
 
@@ -63,7 +64,7 @@ export default class DocumentSelection {
 		 * Document which owns this selection.
 		 *
 		 * @protected
-		 * @member {module:engine/model/model~Model}
+		 * @type {module:engine/model/model~Model}
 		 */
 		this._model = doc.model;
 
@@ -71,7 +72,7 @@ export default class DocumentSelection {
 		 * Document which owns this selection.
 		 *
 		 * @protected
-		 * @member {module:engine/model/document~Document}
+		 * @type {module:engine/model/document~Document}
 		 */
 		this._document = doc;
 
@@ -83,7 +84,7 @@ export default class DocumentSelection {
 		 * attributes API are set with `'normal'` priority.
 		 *
 		 * @private
-		 * @member {Map} module:engine/model/documentselection~DocumentSelection#_attributePriority
+		 * @type {Map.<String,String>}
 		 */
 		this._attributePriority = new Map();
 
@@ -179,14 +180,16 @@ export default class DocumentSelection {
 	 */
 	destroy() {
 		for ( const range of this._selection._ranges ) {
-			range.detach();
+			if ( range.detach ) {
+				// TODO
+				range.detach();
+			}
 		}
 
 		this.stopListening();
 	}
 
 	/**
-	 * @inheritDoc
 	 */
 	* getRanges() {
 		if ( this._selection.rangeCount > 0 ) {
@@ -197,14 +200,18 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * @inheritDoc
+	 */
+	getFirstPosition() {
+		return this.getFirstRange().start;
+	}
+
+	/**
 	 */
 	getFirstRange() {
 		return this._selection.getFirstRange() || this._document._getDefaultRange();
 	}
 
 	/**
-	 * @inheritDoc
 	 */
 	getLastRange() {
 		return this._selection.getLastRange() || this._document._getDefaultRange();
@@ -223,8 +230,8 @@ export default class DocumentSelection {
 	 * @protected
 	 * @param {*} selectable
 	 */
-	_setTo( selectable ) {
-		this._selection._setTo( selectable );
+	_setTo( selectable, isBackward ) {
+		this._selection.setTo( selectable, isBackward );
 		this._refreshAttributes();
 	}
 
@@ -276,35 +283,36 @@ export default class DocumentSelection {
 		return this._selection.getAttributes();
 	}
 
-	getAttribute() {
-		return this._selection.getAttribute();
+	getAttribute( key ) {
+		return this._selection.getAttribute( key );
 	}
 
-	// /**
-	//  * @inheritDoc
-	//  */
-	// setAttributesTo( attrs ) {
-	// 	attrs = toMap( attrs );
+	/**
+	 * @inheritDoc
+	 */
+	// TODO: Remove: for ( attr ) removeAttribute; setAttribute( newAttrs );
+	_setAttributesTo( attrs ) {
+		attrs = toMap( attrs );
 
-	// 	if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
-	// 		this._setStoredAttributesTo( attrs );
-	// 	}
+		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
+			this._setStoredAttributesTo( attrs );
+		}
 
-	// 	const changed = this._setAttributesTo( attrs );
+		const changed = this.__setAttributesTo( attrs );
 
-	// 	if ( changed.size > 0 ) {
-	// 		// Fire event with exact data (fire only if anything changed).
-	// 		const attributeKeys = Array.from( changed );
-	// 		this.fire( 'change:attribute', { attributeKeys, directChange: true } );
-	// 	}
-	// }
+		if ( changed.size > 0 ) {
+			// Fire event with exact data (fire only if anything changed).
+			const attributeKeys = Array.from( changed );
+			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
+		}
+	}
 
-	// /**
-	//  * @inheritDoc
-	//  */
-	// clearAttributes() {
-	// 	this.setAttributesTo( [] );
-	// }
+	/**
+	 * @inheritDoc
+	 */
+	_clearAttributes() {
+		this._setAttributesTo( [] );
+	}
 
 	/**
 	 * Removes all attributes from the selection and sets attributes according to the surrounding nodes.
@@ -379,56 +387,60 @@ export default class DocumentSelection {
 	// 	return liveRange;
 	// }
 
-	// /**
-	//  * Updates this selection attributes according to its ranges and the {@link module:engine/model/document~Document model document}.
-	//  *
-	//  * @protected
-	//  * @param {Boolean} clearAll
-	//  * @fires change:attribute
-	//  */
-	// _updateAttributes( clearAll ) {
-	// 	const newAttributes = toMap( this._getSurroundingAttributes() );
-	// 	const oldAttributes = toMap( this.getAttributes() );
+	/**
+	 * Updates this selection attributes according to its ranges and the {@link module:engine/model/document~Document model document}.
+	 *
+	 * @private
+	 * @param {Boolean} clearAll
+	 * @fires change:attribute
+	 */
+	_updateAttributes( clearAll ) {
+		const newAttributes = toMap( this._getSurroundingAttributes() );
+		const oldAttributes = toMap( this.getAttributes() );
 
-	// 	if ( clearAll ) {
-	// 		// If `clearAll` remove all attributes and reset priorities.
-	// 		this._attributePriority = new Map();
-	// 		this._attrs = new Map();
-	// 	} else {
-	// 		// If not, remove only attributes added with `low` priority.
-	// 		for ( const [ key, priority ] of this._attributePriority ) {
-	// 			if ( priority == 'low' ) {
-	// 				this._attrs.delete( key );
-	// 				this._attributePriority.delete( key );
-	// 			}
-	// 		}
-	// 	}
+		if ( clearAll ) {
+			// If `clearAll` remove all attributes and reset priorities.
+			this._attributePriority.clear();
+			this._selection._attrs.clear();
+		} else {
+			// If not, remove only attributes added with `low` priority.
+			for ( const [ key, priority ] of this._attributePriority ) {
+				if ( priority == 'low' ) {
+					this._selection._attrs.delete( key );
+					this._attributePriority.delete( key );
+				}
+			}
+		}
 
-	// 	this._setAttributesTo( newAttributes, false );
+		this.__setAttributesTo( newAttributes, false );
 
-	// 	// Let's evaluate which attributes really changed.
-	// 	const changed = [];
+		// Let's evaluate which attributes really changed.
+		const changed = [];
 
-	// 	// First, loop through all attributes that are set on selection right now.
-	// 	// Check which of them are different than old attributes.
-	// 	for ( const [ newKey, newValue ] of this.getAttributes() ) {
-	// 		if ( !oldAttributes.has( newKey ) || oldAttributes.get( newKey ) !== newValue ) {
-	// 			changed.push( newKey );
-	// 		}
-	// 	}
+		// First, loop through all attributes that are set on selection right now.
+		// Check which of them are different than old attributes.
+		for ( const [ newKey, newValue ] of this.getAttributes() ) {
+			if ( !oldAttributes.has( newKey ) || oldAttributes.get( newKey ) !== newValue ) {
+				changed.push( newKey );
+			}
+		}
 
-	// 	// Then, check which of old attributes got removed.
-	// 	for ( const [ oldKey ] of oldAttributes ) {
-	// 		if ( !this.hasAttribute( oldKey ) ) {
-	// 			changed.push( oldKey );
-	// 		}
-	// 	}
+		// Then, check which of old attributes got removed.
+		for ( const [ oldKey ] of oldAttributes ) {
+			if ( !this.hasAttribute( oldKey ) ) {
+				changed.push( oldKey );
+			}
+		}
 
-	// 	// Fire event with exact data (fire only if anything changed).
-	// 	if ( changed.length > 0 ) {
-	// 		this.fire( 'change:attribute', { attributeKeys: changed, directChange: false } );
-	// 	}
-	// }
+		// Fire event with exact data (fire only if anything changed).
+		if ( changed.length > 0 ) {
+			this.fire( 'change:attribute', { attributeKeys: changed, directChange: false } );
+		}
+	}
+
+	hasAttribute( key ) {
+		return this._selection.hasAttribute( key );
+	}
 
 	/**
 	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
@@ -471,14 +483,14 @@ export default class DocumentSelection {
 			return false;
 		}
 
-		const oldValue = this.selection.getAttribute( key );
+		const oldValue = this._selection.getAttribute( key );
 
 		// Don't do anything if value has not changed.
 		if ( oldValue === value ) {
 			return false;
 		}
 
-		this._attrs.set( key, value );
+		this._selection._attrs.set( key, value );
 
 		// Update priorities map.
 		this._attributePriority.set( key, priority );
@@ -510,7 +522,7 @@ export default class DocumentSelection {
 			return false;
 		}
 
-		this._attrs.delete( key );
+		this._selection._attrs.delete( key );
 
 		// Update priorities map.
 		this._attributePriority.set( key, priority );
@@ -528,7 +540,7 @@ export default class DocumentSelection {
 	 * is caused by `Batch` API.
 	 * @returns {Set.<String>} Changed attribute keys.
 	 */
-	_setAttributesTo( attrs, directChange = true ) {
+	__setAttributesTo( attrs, directChange = true ) {
 		const changed = new Set();
 
 		for ( const [ oldKey, oldValue ] of this.getAttributes() ) {
@@ -562,7 +574,7 @@ export default class DocumentSelection {
 	 * @returns {Iterable.<*>}
 	 */
 	* _getStoredAttributes() {
-		const selectionParent = this.getFirstPosition().parent;
+		const selectionParent = this.getFirstRange().start.parent;
 
 		if ( this.isCollapsed && selectionParent.isEmpty ) {
 			for ( const key of selectionParent.getAttributeKeys() ) {
@@ -637,7 +649,7 @@ export default class DocumentSelection {
 	 * @returns {Iterable.<*>} Collection of attributes.
 	 */
 	_getSurroundingAttributes() {
-		const position = this.getFirstPosition();
+		const position = this.getFirstRange().start;
 		const schema = this._model.schema;
 
 		let attrs = null;
