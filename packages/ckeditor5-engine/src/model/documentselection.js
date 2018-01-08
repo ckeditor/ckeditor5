@@ -61,6 +61,9 @@ export default class DocumentSelection {
 		 */
 		this._selection = new Selection();
 
+		this._selection.delegate( 'change:range' ).to( this );
+		this._selection.delegate( 'change:attribute' ).to( this );
+
 		/**
 		 * Document which owns this selection.
 		 *
@@ -137,7 +140,9 @@ export default class DocumentSelection {
 	 * @inheritDoc
 	 */
 	get isCollapsed() {
-		return this._selection.isCollapsed || this._document._getDefaultRange().isCollapsed;
+		return this._selection.rangeCount === 0 ?
+			this._document._getDefaultRange().isCollapsed :
+			this._selection.isCollapsed;
 	}
 
 	/**
@@ -417,8 +422,8 @@ export default class DocumentSelection {
 
 		if ( clearAll ) {
 			// If `clearAll` remove all attributes and reset priorities.
-			this._attributePriority.clear();
-			this._selection._attrs.clear();
+			this._attributePriority = new Map();
+			this._selection._attrs = new Map();
 		} else {
 			// If not, remove only attributes added with `low` priority.
 			for ( const [ key, priority ] of this._attributePriority ) {
@@ -666,7 +671,7 @@ export default class DocumentSelection {
 	 * @returns {Iterable.<*>} Collection of attributes.
 	 */
 	_getSurroundingAttributes() {
-		const position = this.getFirstRange().start;
+		const position = this.getFirstPosition();
 		const schema = this._model.schema;
 
 		let attrs = null;
