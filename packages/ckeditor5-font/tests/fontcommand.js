@@ -21,8 +21,8 @@ describe( 'FontCommand', () => {
 				command = new FontCommand( editor, 'font' );
 				editor.commands.add( 'font', command );
 
-				model.schema.registerItem( 'paragraph', '$block' );
-				model.schema.allow( { name: '$inline', attributes: 'font', inside: '$block' } );
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				model.schema.extend( '$text', { allowAttributes: 'font' } );
 			} );
 	} );
 

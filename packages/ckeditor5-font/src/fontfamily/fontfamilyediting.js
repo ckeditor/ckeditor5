@@ -87,10 +87,8 @@ export default class FontFamilyEditing extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
-		// Allow highlight attribute on all elements
-		editor.model.schema.allow( { name: '$inline', attributes: 'fontFamily', inside: '$block' } );
-		// Temporary workaround. See https://github.com/ckeditor/ckeditor5/issues/477.
-		editor.model.schema.allow( { name: '$inline', attributes: 'fontFamily', inside: '$clipboardHolder' } );
+		// Allow fontFamily attribute on text nodes.
+		editor.model.schema.extend( '$text', { allowAttributes: 'fontFamily' } );
 
 		// Get configured font family options without "default" option.
 		const fontFamilyOptions = this.configuredOptions.filter( item => item.model );

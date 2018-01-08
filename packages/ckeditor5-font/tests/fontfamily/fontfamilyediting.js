@@ -30,8 +30,10 @@ describe( 'FontFamilyEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( editor.model.schema.check( { name: '$inline', attributes: 'fontFamily', inside: '$block' } ) ).to.be.true;
-		expect( editor.model.schema.check( { name: '$inline', attributes: 'fontFamily', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( editor.model.schema.checkAttribute( [ '$block', '$text' ], 'fontFamily' ) ).to.be.true;
+		expect( editor.model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'fontFamily' ) ).to.be.true;
+
+		expect( editor.model.schema.checkAttribute( [ '$block' ], 'fontFamily' ) ).to.be.false;
 	} );
 
 	describe( 'config', () => {

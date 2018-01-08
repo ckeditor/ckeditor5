@@ -86,10 +86,8 @@ export default class FontSizeEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		// Allow fontSize attribute on all elements.
-		editor.model.schema.allow( { name: '$inline', attributes: 'fontSize', inside: '$block' } );
-		// Temporary workaround. See https://github.com/ckeditor/ckeditor5/issues/477.
-		editor.model.schema.allow( { name: '$inline', attributes: 'fontSize', inside: '$clipboardHolder' } );
+		// Allow fontSize attribute on text nodes.
+		editor.model.schema.extend( '$text', { allowAttributes: 'fontSize' } );
 	}
 }
 
