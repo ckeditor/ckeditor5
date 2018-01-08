@@ -80,6 +80,12 @@ export default class Collection {
 		 */
 		this._bindToInternalToExternalMap = new WeakMap();
 
+		/**
+		 * Stores indexes of skipped items from bound external collection.
+		 *
+		 * @private
+		 * @member {Array}
+		 */
 		this._skippedIndexesFromExternal = [];
 
 		/**
