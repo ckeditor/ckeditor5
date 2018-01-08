@@ -121,7 +121,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should back off to the default algorithm if selection has ranges', () => {
-			selection.addRange( range );
+			selection._setTo( range );
 
 			expect( selection.isCollapsed ).to.be.false;
 		} );
@@ -143,7 +143,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should back off to the default algorithm if selection has ranges', () => {
-			selection.addRange( range );
+			selection._setTo( range );
 
 			expect( selection.anchor.isEqual( range.start ) ).to.be.true;
 		} );
@@ -166,7 +166,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should back off to the default algorithm if selection has ranges', () => {
-			selection.addRange( range );
+			selection._setTo( range );
 
 			expect( selection.focus.isEqual( range.end ) ).to.be.true;
 		} );
@@ -176,11 +176,14 @@ describe( 'DocumentSelection', () => {
 		it( 'should return proper range count', () => {
 			expect( selection.rangeCount ).to.equal( 1 );
 
-			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+			selection._setTo( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
 
 			expect( selection.rangeCount ).to.equal( 1 );
 
-			selection.addRange( new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) );
+			selection._setTo( [
+				new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ),
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) )
+			] );
 
 			expect( selection.rangeCount ).to.equal( 2 );
 		} );
@@ -188,7 +191,7 @@ describe( 'DocumentSelection', () => {
 
 	describe( 'hasOwnRange', () => {
 		it( 'should return true if selection has any ranges set', () => {
-			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+			selection._setTo( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
 
 			expect( selection.hasOwnRange ).to.be.true;
 		} );
@@ -207,14 +210,14 @@ describe( 'DocumentSelection', () => {
 
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
-				selection.addRange( { invalid: 'range' } );
+				selection._setTo( { invalid: 'range' } );
 			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
 		} );
 
 		it( 'should not add a range that is in graveyard', () => {
 			const spy = testUtils.sinon.stub( log, 'warn' );
 
-			selection.addRange( Range.createIn( doc.graveyard ) );
+			selection._setTo( Range.createIn( doc.graveyard ) );
 
 			expect( selection._ranges.length ).to.equal( 0 );
 			expect( spy.calledOnce ).to.be.true;
@@ -223,7 +226,7 @@ describe( 'DocumentSelection', () => {
 		it( 'should refresh attributes', () => {
 			const spy = testUtils.sinon.spy( selection, '_updateAttributes' );
 
-			selection.addRange( range );
+			selection._setTo( range );
 
 			expect( spy.called ).to.be.true;
 		} );
@@ -231,8 +234,7 @@ describe( 'DocumentSelection', () => {
 
 	describe( 'setCollapsedAt()', () => {
 		it( 'detaches all existing ranges', () => {
-			selection.addRange( range );
-			selection.addRange( liveRange );
+			selection._setTo( [ range, liveRange ] );
 
 			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
 			selection.setCollapsedAt( root );
@@ -243,8 +245,7 @@ describe( 'DocumentSelection', () => {
 
 	describe( 'destroy()', () => {
 		it( 'should unbind all events', () => {
-			selection.addRange( liveRange );
-			selection.addRange( range );
+			selection._setTo( [ range, liveRange ] );
 
 			const ranges = selection._ranges;
 
@@ -278,7 +279,7 @@ describe( 'DocumentSelection', () => {
 			const newEndPos = Position.createAt( root, 4 );
 			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
 
-			selection.addRange( new Range( startPos, endPos ) );
+			selection._setTo( new Range( startPos, endPos ) );
 
 			selection.moveFocusTo( newEndPos );
 
@@ -290,8 +291,7 @@ describe( 'DocumentSelection', () => {
 		let spy, ranges;
 
 		beforeEach( () => {
-			selection.addRange( liveRange );
-			selection.addRange( range );
+			selection._setTo( [ liveRange, range ] );
 
 			spy = sinon.spy();
 			selection.on( 'change:range', spy );
@@ -332,20 +332,19 @@ describe( 'DocumentSelection', () => {
 	describe( 'setRanges()', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
-				selection.setRanges( [ { invalid: 'range' } ] );
+				selection._setTo( [ { invalid: 'range' } ] );
 			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
 		} );
 
 		it( 'should detach removed ranges', () => {
-			selection.addRange( liveRange );
-			selection.addRange( range );
+			selection._setTo( [ liveRange, range ] );
 
 			const oldRanges = Array.from( selection._ranges );
 
 			sinon.spy( oldRanges[ 0 ], 'detach' );
 			sinon.spy( oldRanges[ 1 ], 'detach' );
 
-			selection.setRanges( [] );
+			selection.setTo( [] );
 
 			expect( oldRanges[ 0 ].detach.called ).to.be.true;
 			expect( oldRanges[ 1 ].detach.called ).to.be.true;
@@ -354,7 +353,7 @@ describe( 'DocumentSelection', () => {
 		it( 'should refresh attributes', () => {
 			const spy = sinon.spy( selection, '_updateAttributes' );
 
-			selection.setRanges( [ range ] );
+			selection._setTo( [ range ] );
 
 			expect( spy.called ).to.be.true;
 		} );
@@ -365,7 +364,7 @@ describe( 'DocumentSelection', () => {
 
 			setData( model, 'f<$text italic="true">[o</$text><$text bold="true">ob]a</$text>r' );
 
-			selection.setRanges( [ Range.createFromPositionAndShift( selection.getLastRange().end, 0 ) ] );
+			selection._setTo( [ Range.createFromPositionAndShift( selection.getLastRange().end, 0 ) ] );
 
 			expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			expect( selection.hasAttribute( 'italic' ) ).to.equal( false );

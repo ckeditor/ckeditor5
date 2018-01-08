@@ -11,6 +11,8 @@ import Position from './position';
 import Text from './text';
 import TextProxy from './textproxy';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 import Selection from './selection';
 
@@ -168,12 +170,16 @@ export default class DocumentSelection {
 		return this._selection.rangeCount > 0;
 	}
 
+	get isBackward() {
+		return this._selection.isBackward;
+	}
+
 	/**
 	 * Unbinds all events previously bound by document selection.
 	 */
 	destroy() {
-		for ( let i = 0; i < this._ranges.length; i++ ) {
-			this._ranges[ i ].detach();
+		for ( const range of this._selection._ranges ) {
+			range.detach();
 		}
 
 		this.stopListening();
@@ -222,33 +228,31 @@ export default class DocumentSelection {
 		this._refreshAttributes();
 	}
 
+	/**
+	 * @protected
+	 * @param {*} key
+	 * @param {*} value
+	 */
 	_setAttribute( key, value ) {
-		this._selection.setAttribute( key, value );
+		// Store attribute in parent element if the selection is collapsed in an empty node.
+		if ( this._selection.isCollapsed && this._selection.anchor.parent.isEmpty ) {
+			this._storeAttribute( key, value );
+		}
+
+		if ( this._setAttribute2( key, value ) ) {
+			// Fire event with exact data.
+			const attributeKeys = [ key ];
+			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
+		}
 	}
 
 	/**
 	 * @private
 	 */
 	_removeAllRanges() {
-		super.removeAllRanges();
+		this._selection.removeAllRanges();
 		this._refreshAttributes();
 	}
-
-	// /**
-	//  * @inheritDoc
-	//  */
-	// setAttribute( key, value ) {
-	// 	// Store attribute in parent element if the selection is collapsed in an empty node.
-	// 	if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
-	// 		this._storeAttribute( key, value );
-	// 	}
-
-	// 	if ( this._setAttribute( key, value ) ) {
-	// 		// Fire event with exact data.
-	// 		const attributeKeys = [ key ];
-	// 		this.fire( 'change:attribute', { attributeKeys, directChange: true } );
-	// 	}
-	// }
 
 	/**
 	 * Should be used only by the {@link module:engine/model/writer~Writer} class.
@@ -266,6 +270,14 @@ export default class DocumentSelection {
 			const attributeKeys = [ key ];
 			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
 		}
+	}
+
+	getAttributes() {
+		return this._selection.getAttributes();
+	}
+
+	getAttribute() {
+		return this._selection.getAttribute();
 	}
 
 	// /**
@@ -320,25 +332,6 @@ export default class DocumentSelection {
 		 */
 		throw new CKEditorError( 'documentselection-cannot-create: Cannot create a new DocumentSelection instance.' );
 	}
-
-	// /**
-	//  * @inheritDoc
-	//  */
-	// _popRange() {
-	// 	this._ranges.pop().detach();
-	// }
-
-	// /**
-	//  * @inheritDoc
-	//  */
-	// _pushRange( range ) {
-	// 	const liveRange = this._prepareRange( range );
-
-	// 	// `undefined` is returned when given `range` is in graveyard root.
-	// 	if ( liveRange ) {
-	// 		this._ranges.push( liveRange );
-	// 	}
-	// }
 
 	// /**
 	//  * Prepares given range to be added to selection. Checks if it is correct,
@@ -459,39 +452,39 @@ export default class DocumentSelection {
 		return key.startsWith( storePrefix );
 	}
 
-	// /**
-	//  * Internal method for setting `DocumentSelection` attribute. Supports attribute priorities (through `directChange`
-	//  * parameter).
-	//  *
-	//  * @private
-	//  * @param {String} key Attribute key.
-	//  * @param {*} value Attribute value.
-	//  * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
-	//  * is caused by `Batch` API.
-	//  * @returns {Boolean} Whether value has changed.
-	//  */
-	// _setAttribute( key, value, directChange = true ) {
-	// 	const priority = directChange ? 'normal' : 'low';
+	/**
+	 * Internal method for setting `DocumentSelection` attribute. Supports attribute priorities (through `directChange`
+	 * parameter).
+	 *
+	 * @private
+	 * @param {String} key Attribute key.
+	 * @param {*} value Attribute value.
+	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
+	 * is caused by `Batch` API.
+	 * @returns {Boolean} Whether value has changed.
+	 */
+	_setAttribute2( key, value, directChange = true ) {
+		const priority = directChange ? 'normal' : 'low';
 
-	// 	if ( priority == 'low' && this._attributePriority.get( key ) == 'normal' ) {
-	// 		// Priority too low.
-	// 		return false;
-	// 	}
+		if ( priority == 'low' && this._attributePriority.get( key ) == 'normal' ) {
+			// Priority too low.
+			return false;
+		}
 
-	// 	const oldValue = super.getAttribute( key );
+		const oldValue = this.selection.getAttribute( key );
 
-	// 	// Don't do anything if value has not changed.
-	// 	if ( oldValue === value ) {
-	// 		return false;
-	// 	}
+		// Don't do anything if value has not changed.
+		if ( oldValue === value ) {
+			return false;
+		}
 
-	// 	this._attrs.set( key, value );
+		this._attrs.set( key, value );
 
-	// 	// Update priorities map.
-	// 	this._attributePriority.set( key, priority );
+		// Update priorities map.
+		this._attributePriority.set( key, priority );
 
-	// 	return true;
-	// }
+		return true;
+	}
 
 	/**
 	 * Internal method for removing `DocumentSelection` attribute. Supports attribute priorities (through `directChange`
@@ -513,7 +506,7 @@ export default class DocumentSelection {
 		}
 
 		// Don't do anything if value has not changed.
-		if ( !super.hasAttribute( key ) ) {
+		if ( !this._selection.hasAttribute( key ) ) {
 			return false;
 		}
 
@@ -552,7 +545,7 @@ export default class DocumentSelection {
 
 		for ( const [ key, value ] of attrs ) {
 			// Attribute may not be set because of attributes or because same key/value is already added.
-			const gotAdded = this._setAttribute( key, value, directChange );
+			const gotAdded = this._setAttribute2( key, value, directChange );
 
 			if ( gotAdded ) {
 				changed.add( key );
@@ -744,6 +737,12 @@ export default class DocumentSelection {
 		this.fire( 'change:range', { directChange: false } );
 	}
 }
+
+mix( DocumentSelection, EmitterMixin );
+
+/**
+ * @event change:attribute
+ */
 
 // Helper function for {@link module:engine/model/documentselection~DocumentSelection#_updateAttributes}.
 //
