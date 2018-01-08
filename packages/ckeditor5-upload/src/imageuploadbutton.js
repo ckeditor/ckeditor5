@@ -50,7 +50,7 @@ export default class ImageUploadButton extends Plugin {
 				tooltip: true
 			} );
 
-			view.bind( 'isEnabled' ).to( command );
+			view.buttonView.bind( 'isEnabled' ).to( command );
 
 			view.on( 'done', ( evt, files ) => {
 				for ( const file of Array.from( files ) ) {
