@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
+/* globals document, Event */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
@@ -71,11 +71,28 @@ describe( 'ImageUploadButton', () => {
 
 		command.isEnabled = true;
 
-		expect( button.isEnabled ).to.true;
+		expect( button.buttonView.isEnabled ).to.true;
 
 		command.isEnabled = false;
 
-		expect( button.isEnabled ).to.false;
+		expect( button.buttonView.isEnabled ).to.false;
+	} );
+
+	// ckeditor5-upload/#77
+	it( 'should be properly bound with ImageUploadCommand', () => {
+		const button = editor.ui.componentFactory.create( 'insertImage' );
+		const command = editor.commands.get( 'imageUpload' );
+		const spy = sinon.spy();
+
+		button.render();
+
+		button.buttonView.on( 'execute', spy );
+
+		command.isEnabled = false;
+
+		button.buttonView.element.dispatchEvent( new Event( 'click' ) );
+
+		sinon.assert.notCalled( spy );
 	} );
 
 	it( 'should execute imageUpload command', () => {
