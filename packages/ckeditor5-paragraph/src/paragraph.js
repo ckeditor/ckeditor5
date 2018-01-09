@@ -100,8 +100,6 @@ export default class Paragraph extends Plugin {
 	_autoparagraphEmptyRoots( writer ) {
 		const model = this.editor.model;
 
-		let applied = false;
-
 		for ( const rootName of model.document.getRootNames() ) {
 			const root = model.document.getRoot( rootName );
 
@@ -110,12 +108,10 @@ export default class Paragraph extends Plugin {
 				if ( model.schema.checkChild( root, 'paragraph' ) ) {
 					writer.insertElement( 'paragraph', root );
 
-					applied = true;
+					return true;
 				}
 			}
 		}
-
-		return applied;
 	}
 }
 
