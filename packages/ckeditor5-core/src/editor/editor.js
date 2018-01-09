@@ -14,14 +14,16 @@ import CommandCollection from '../commandcollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Class representing editor. It contains basic editor architecture and provides API needed by plugins
- * like {@link module:engine/controller/editingcontroller~EditingController editing pipeline} and
- * {@link module:engine/controller/datacontroller~DataController data pipeline}.
+ * like {@link module:engine/controller/editingcontroller~EditingController editing pipeline},
+ * {@link module:engine/controller/datacontroller~DataController data pipeline} and
+ * {module:core/editingkeystrokehandler~EditingKeystrokeHandler keystroke handler}.
  *
  * Besides it creates main {@link module:engine/model/rootelement~RootElement} using
  * {@link module:engine/model/document~Document#createRoot createRoot} method what automatically creates
@@ -122,6 +124,15 @@ export default class Editor {
 		 */
 		this.editing = new EditingController( this.model );
 		this.editing.view.bind( 'isReadOnly' ).to( this );
+
+		/**
+		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:core/editingkeystrokehandler~EditingKeystrokeHandler}
+		 */
+		this.keystrokes = new EditingKeystrokeHandler( this );
+		this.keystrokes.listenTo( this.editing.view );
 	}
 
 	/**
@@ -176,6 +187,7 @@ export default class Editor {
 				this.model.destroy();
 				this.data.destroy();
 				this.editing.destroy();
+				this.keystrokes.destroy();
 			} );
 	}
 

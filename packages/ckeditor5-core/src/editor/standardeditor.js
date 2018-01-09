@@ -8,14 +8,13 @@
  */
 
 import Editor from './editor';
-import EditingKeystrokeHandler from '../editingkeystrokehandler';
 import isFunction from '@ckeditor/ckeditor5-utils/src/lib/lodash/isFunction';
 
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
 /**
- * Class representing a typical browser-based editor.
+ * Class provides API methods for getting and setting data.
  *
  * @extends module:core/editor/editor~Editor
  */
@@ -39,14 +38,6 @@ export default class StandardEditor extends Editor {
 		this.element = element;
 
 		/**
-		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:core/editingkeystrokehandler~EditingKeystrokeHandler}
-		 */
-		this.keystrokes = new EditingKeystrokeHandler( this );
-
-		/**
 		 * Editor UI instance.
 		 *
 		 * This property is set by more specialized editor constructors. However, it's required
@@ -57,18 +48,7 @@ export default class StandardEditor extends Editor {
 		 * @member {module:core/editor/editorui~EditorUI} #ui
 		 */
 
-		this.keystrokes.listenTo( this.editing.view );
-
 		this._attachToForm();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		return Promise.resolve()
-			.then( () => this.keystrokes.destroy() )
-			.then( super.destroy() );
 	}
 
 	/**
