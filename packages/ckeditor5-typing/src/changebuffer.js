@@ -7,7 +7,6 @@
  * @module typing/changebuffer
  */
 
-import count from '@ckeditor/ckeditor5-utils/src/count';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 
 /**
@@ -69,18 +68,23 @@ export default class ChangeBuffer {
 		 */
 		this.isLocked = false;
 
-		this._changeCallback = ( evt, args ) => {
-			const operation = args[ 0 ];
-			const batch = operation.delta.batch;
-
-			this._onBatch( batch );
+		// The function to be called in order to notify the buffer about batches which appeared in the document.
+		// The callback will check whether it is a new batch and in that case the buffer will be flushed.
+		//
+		// The reason why the buffer needs to be flushed whenever a new batch appears is that the changes added afterwards
+		// should be added to a new batch. For instance, when the  user types, then inserts an image, and then types again,
+		// the characters typed after inserting the image should be added to a different batch than the characters typed before.
+		this._changeCallback = ( evt, batch ) => {
+			if ( batch.type != 'transparent' && batch !== this._batch ) {
+				this._reset( true );
+			}
 		};
 
 		this._selectionChangeCallback = () => {
 			this._reset();
 		};
 
-		this.model.on( 'applyOperation', this._changeCallback );
+		this.model.document.on( 'change', this._changeCallback );
 
 		this.model.document.selection.on( 'change:range', this._selectionChangeCallback );
 		this.model.document.selection.on( 'change:attribute', this._selectionChangeCallback );
@@ -153,27 +157,9 @@ export default class ChangeBuffer {
 	 * Destroys the buffer.
 	 */
 	destroy() {
-		this.model.off( 'applyOperation', this._changeCallback );
+		this.model.document.off( 'change', this._changeCallback );
 		this.model.document.selection.off( 'change:range', this._selectionChangeCallback );
 		this.model.document.selection.off( 'change:attribute', this._selectionChangeCallback );
-	}
-
-	/**
-	 * The method to be called in order to notify the buffer about batches which appeared in the document.
-	 * The method will check whether it is a new batch and in that case the buffer will be flushed.
-	 *
-	 * The reason why the buffer needs to be flushed whenever a new batch appears is that the changes added afterwards
-	 * should be added to a new batch. For instance, when the  user types, then inserts an image, and then types again,
-	 * the characters typed after inserting the image should be added to a different batch than the characters typed before.
-	 *
-	 * @private
-	 * @param {module:engine/model/batch~Batch} batch The batch which appears in the document.
-	 */
-	_onBatch( batch ) {
-		// One operation means a newly created batch.
-		if ( batch.type != 'transparent' && batch !== this._batch && count( batch.getOperations() ) <= 1 ) {
-			this._reset( true );
-		}
 	}
 
 	/**
