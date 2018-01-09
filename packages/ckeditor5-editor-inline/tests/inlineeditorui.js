@@ -7,7 +7,6 @@
 
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import RootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
 
 import InlineEditorUI from '../src/inlineeditorui';
 import InlineEditorUIView from '../src/inlineeditoruiview';
@@ -56,10 +55,6 @@ describe( 'InlineEditorUI', () => {
 
 		it( 'creates #focusTracker', () => {
 			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
-		} );
-
-		it( 'creates root editable element', () => {
-			expect( editor.editing.view.getRoot() ).to.be.instanceOf( RootEditableElement );
 		} );
 	} );
 

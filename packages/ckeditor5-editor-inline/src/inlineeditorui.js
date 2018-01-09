@@ -52,10 +52,6 @@ export default class InlineEditorUI {
 		 * @private
 		 */
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
-
-		// RootEditableElement should be created together with the editor structure.
-		// See https://github.com/ckeditor/ckeditor5/issues/647.
-		editor.editing.createRoot( view.editableElement );
 	}
 
 	/**
@@ -93,6 +89,7 @@ export default class InlineEditorUI {
 		// Bind to focusTracker instead of editor.editing.view because otherwise
 		// focused editable styles disappear when view#toolbar is focused.
 		view.editable.bind( 'isFocused' ).to( this.focusTracker );
+		editor.editing.view.attachDomRoot( view.editableElement );
 		view.editable.name = editingRoot.rootName;
 
 		this.focusTracker.add( view.editableElement );
