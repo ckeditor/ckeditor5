@@ -67,10 +67,24 @@ export default class Differ {
 		 * Cache is reset each time a new operation is buffered. If the cache has not been reset, {@link #getChanges} will
 		 * return the cached value instead of calculating it again.
 		 *
+		 * This property stores those changes that did not take place in graveyard root.
+		 *
 		 * @private
 		 * @type {Array.<Object>|null}
 		 */
 		this._cachedChanges = null;
+
+		/**
+		 * For efficiency purposes, `Differ` stores the change set returned by the differ after {@link #getChanges} call.
+		 * Cache is reset each time a new operation is buffered. If the cache has not been reset, {@link #getChanges} will
+		 * return the cached value instead of calculating it again.
+		 *
+		 * This property stores all changes evaluated by `Differ`, also those that took place in graveyard.
+		 *
+		 * @private
+		 * @type {Array.<Object>|null}
+		 */
+		this._cachedChangesWithGraveyard = null;
 	}
 
 	/**
@@ -200,14 +214,13 @@ export default class Differ {
 	 * @returns {Array.<Object>} Diff between old and new model tree state.
 	 */
 	getChanges( options = { includeChangesInGraveyard: false } ) {
+		// If there are cached changes, just return them instead of calculating changes again.
 		if ( this._cachedChanges ) {
-			// If there are cached changes, just return them instead of calculating changes again.
-			if ( !options.includeChangesInGraveyard ) {
-				// Filter out graveyard changes.
-				return this._cachedChanges.slice().filter( _changesInGraveyardFilter );
+			if ( options.includeChangesInGraveyard ) {
+				return this._cachedChangesWithGraveyard.slice();
+			} else {
+				return this._cachedChanges.slice();
 			}
-
-			return this._cachedChanges.slice();
 		}
 
 		// Will contain returned results.
@@ -359,15 +372,15 @@ export default class Differ {
 
 		this._changeCount = 0;
 
-		// Cache all changes (even those in graveyard).
-		this._cachedChanges = diffSet.slice();
+		// Cache changes.
+		this._cachedChangesWithGraveyard = diffSet.slice();
+		this._cachedChanges = diffSet.slice().filter( _changesInGraveyardFilter );
 
-		if ( !options.includeChangesInGraveyard ) {
-			// Return changes without changes in graveyard.
-			return diffSet.filter( _changesInGraveyardFilter );
+		if ( options.includeChangesInGraveyard ) {
+			return this._cachedChangesWithGraveyard;
+		} else {
+			return this._cachedChanges;
 		}
-
-		return diffSet;
 	}
 
 	/**
