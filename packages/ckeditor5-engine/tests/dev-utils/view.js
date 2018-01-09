@@ -18,6 +18,7 @@ import Selection from '../../src/view/selection';
 import Range from '../../src/view/range';
 import Document from '../../src/view/document';
 import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor';
+import createViewRoot from '../view/_utils/createroot';
 
 describe( 'view test utils', () => {
 	describe( 'getData, setData', () => {
@@ -37,7 +38,7 @@ describe( 'view test utils', () => {
 				const stringifySpy = sandbox.spy( getData, '_stringify' );
 				const viewDocument = new Document();
 				const options = { showType: false, showPriority: false, withoutSelection: true };
-				const root = viewDocument.createRoot( element );
+				const root = createAttachedRoot( viewDocument, element );
 				root.appendChildren( new Element( 'p' ) );
 
 				expect( getData( viewDocument, options ) ).to.equal( '<p></p>' );
@@ -57,7 +58,7 @@ describe( 'view test utils', () => {
 				const stringifySpy = sandbox.spy( getData, '_stringify' );
 				const viewDocument = new Document();
 				const options = { showType: false, showPriority: false };
-				const root = viewDocument.createRoot( element );
+				const root = createAttachedRoot( viewDocument, element );
 				root.appendChildren( new Element( 'p' ) );
 
 				viewDocument.selection.addRange( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
@@ -87,7 +88,7 @@ describe( 'view test utils', () => {
 				const data = 'foobar<b>baz</b>';
 				const parseSpy = sandbox.spy( setData, '_parse' );
 
-				viewDocument.createRoot( document.createElement( 'div' ) );
+				createAttachedRoot( viewDocument, document.createElement( 'div' ) );
 				setData( viewDocument, data );
 
 				expect( getData( viewDocument ) ).to.equal( 'foobar<b>baz</b>' );
@@ -105,7 +106,7 @@ describe( 'view test utils', () => {
 				const data = '[<b>baz</b>]';
 				const parseSpy = sandbox.spy( setData, '_parse' );
 
-				viewDocument.createRoot( document.createElement( 'div' ) );
+				createAttachedRoot( viewDocument, document.createElement( 'div' ) );
 				setData( viewDocument, data );
 
 				expect( getData( viewDocument ) ).to.equal( '[<b>baz</b>]' );
@@ -677,3 +678,11 @@ describe( 'view test utils', () => {
 		} );
 	} );
 } );
+
+function createAttachedRoot( viewDocument, element ) {
+	const root = createViewRoot( viewDocument );
+
+	viewDocument.attachDomRoot( element );
+
+	return root;
+}
