@@ -769,6 +769,11 @@ describe( 'Collection', () => {
 				} );
 
 				it( 'skips when there is no item', () => {
+					// Add before collection is bound.
+					items.add( { value: 1, skip: true } );
+
+					expect( collection ).to.have.length( 0 );
+
 					collection.bindTo( items ).using( item => {
 						if ( item.skip ) {
 							return null;
@@ -777,17 +782,18 @@ describe( 'Collection', () => {
 						return item;
 					} );
 
+					// Still 0 because initial item was skipped.
 					expect( collection ).to.have.length( 0 );
 
-					items.add( { value: 1, skip: false } );
-					items.add( { value: 2, skip: true } );
-					items.add( { value: 3, skip: false } );
+					items.add( { value: 2, skip: false } );
+					items.add( { value: 3, skip: true } );
+					items.add( { value: 4, skip: false } );
 
-					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 1, 3 ] );
+					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 2, 4 ] );
 
-					items.add( { value: 4, skip: false }, 1 );
+					items.add( { value: 5, skip: false }, 2 );
 
-					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 1, 4, 3 ] );
+					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 2, 5, 4 ] );
 				} );
 			} );
 
@@ -826,19 +832,22 @@ describe( 'Collection', () => {
 				} );
 
 				it( 'skips when there is no item', () => {
+					items.add( { prop: null } );
+
 					collection.bindTo( items ).using( 'prop' );
 
+					// Still 0 because initial item was skipped.
 					expect( collection ).to.have.length( 0 );
 
-					items.add( { prop: { value: 'foo' } } );
-					items.add( { value: null } );
-					items.add( { prop: { value: 'biz' } } );
+					items.add( { prop: { value: 2, skip: false } } );
+					items.add( { prop: null } );
+					items.add( { prop: { value: 4, skip: false } } );
 
-					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 'foo', 'biz' ] );
+					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 2, 4 ] );
 
-					items.add( { prop: { value: 'bar' } }, 1 );
+					items.add( { prop: { value: 5 } }, 2 );
 
-					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 'foo', 'bar', 'biz' ] );
+					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 2, 5, 4 ] );
 				} );
 			} );
 		} );

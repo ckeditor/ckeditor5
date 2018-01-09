@@ -572,7 +572,7 @@ export default class Collection {
 
 		// Load the initial content of the collection.
 		for ( const externalItem of externalCollection ) {
-			addItem( null, externalItem );
+			addItem( null, externalItem, externalCollection.getIndex( externalItem ) );
 		}
 
 		// Synchronize the with collection as new items are added.
