@@ -13,6 +13,7 @@ import RootElement from './rootelement';
 import History from './history';
 import DocumentSelection from './documentselection';
 import TreeWalker from './treewalker';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -76,9 +77,9 @@ export default class Document {
 		 * {@link #getRoot} to manipulate it.
 		 *
 		 * @readonly
-		 * @member {Map}
+		 * @member {module:utils/collection~Collection}
 		 */
-		this.roots = new Map();
+		this.roots = new Collection( { idProperty: 'rootName' } );
 
 		// Add events that will ensure selection correctness.
 		this.selection.on( 'change:range', () => {
@@ -148,6 +149,10 @@ export default class Document {
 	/**
 	 * Creates a new top-level root.
 	 *
+	 * **Note**: Creating model root automatically creates corresponding
+	 * {@link module:engine/view/document~Document#roots view root} with the same name. Name of view root
+	 * will be hanged later on when dom root will be {@link module:engine/view/document~Document#attachDomRoot attached}.
+	 *
 	 * @param {String} [elementName='$root'] Element name. Defaults to `'$root'` which also have
 	 * some basic schema defined (`$block`s are allowed inside the `$root`). Make sure to define a proper
 	 * schema if you use a different name.
@@ -155,7 +160,7 @@ export default class Document {
 	 * @returns {module:engine/model/rootelement~RootElement} Created root.
 	 */
 	createRoot( elementName = '$root', rootName = 'main' ) {
-		if ( this.roots.has( rootName ) ) {
+		if ( this.roots.get( rootName ) ) {
 			/**
 			 * Root with specified name already exists.
 			 *
@@ -170,7 +175,7 @@ export default class Document {
 		}
 
 		const root = new RootElement( this, elementName, rootName );
-		this.roots.set( rootName, root );
+		this.roots.add( root );
 
 		return root;
 	}
@@ -190,7 +195,7 @@ export default class Document {
 	 * @returns {module:engine/model/rootelement~RootElement} Root registered under given name.
 	 */
 	getRoot( name = 'main' ) {
-		if ( !this.roots.has( name ) ) {
+		if ( !this.hasRoot( name ) ) {
 			/**
 			 * Root with specified name does not exist.
 			 *
@@ -213,7 +218,7 @@ export default class Document {
 	 * @returns {Boolean}
 	 */
 	hasRoot( name ) {
-		return this.roots.has( name );
+		return !!this.roots.get( name );
 	}
 
 	/**
@@ -222,7 +227,7 @@ export default class Document {
 	 * @returns {Array.<String>} Roots names.
 	 */
 	getRootNames() {
-		return Array.from( this.roots.keys() ).filter( name => name != graveyardName );
+		return Array.from( this.roots, root => root.rootName ).filter( name => name != graveyardName );
 	}
 
 	/**
@@ -301,7 +306,7 @@ export default class Document {
 	 * @returns {module:engine/model/rootelement~RootElement} The default root for this document.
 	 */
 	_getDefaultRoot() {
-		for ( const root of this.roots.values() ) {
+		for ( const root of this.roots ) {
 			if ( root !== this.graveyard ) {
 				return root;
 			}
