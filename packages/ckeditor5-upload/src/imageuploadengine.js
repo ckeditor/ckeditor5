@@ -76,7 +76,7 @@ export default class ImageUploadEngine extends Plugin {
 		} );
 
 		doc.registerPostFixer( () => {
-			const changes = doc.differ.getChanges( true );
+			const changes = doc.differ.getChanges( { includeChangesInGraveyard: true } );
 
 			for ( const entry of changes ) {
 				if ( entry.type == 'insert' && entry.name == 'image' ) {
