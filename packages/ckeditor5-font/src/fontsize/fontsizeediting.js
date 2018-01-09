@@ -14,6 +14,7 @@ import {
 } from '@ckeditor/ckeditor5-engine/src/conversion/definition-based-converters';
 
 import FontSizeCommand from './fontsizecommand';
+import { normalizeOptions } from './utils';
 
 /**
  * The Font Size Editing feature.
@@ -29,7 +30,7 @@ export default class FontSizeEditing extends Plugin {
 
 		// Define default configuration using named presets
 		editor.config.define( 'fontSize', {
-			items: [
+			options: [
 				'tiny',
 				'small',
 				'normal',
@@ -43,41 +44,18 @@ export default class FontSizeEditing extends Plugin {
 		const editing = editor.editing;
 
 		// Define view to model conversion.
-		const items = this.configuredItems.filter( item => item.model );
+		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ) ).filter( item => item.model );
 
-		for ( const item of items ) {
+		for ( const option of options ) {
 			// Covert view to model.
-			viewToModelAttribute( 'fontSize', item, [ data.viewToModel ] );
+			viewToModelAttribute( 'fontSize', option, [ data.viewToModel ] );
 		}
 
 		// Define model to view conversion.
-		modelAttributeToViewAttributeElement( 'fontSize', items, [ data.modelToView, editing.modelToView ] );
+		modelAttributeToViewAttributeElement( 'fontSize', options, [ data.modelToView, editing.modelToView ] );
 
 		// Add FontSize command.
 		editor.commands.add( 'fontSize', new FontSizeCommand( editor ) );
-	}
-
-	get configuredItems() {
-		// Cache value
-		if ( this._cachedItems ) {
-			return this._cachedItems;
-		}
-
-		const items = [];
-		const editor = this.editor;
-		const config = editor.config;
-
-		const configuredItems = config.get( 'fontSize.items' );
-
-		for ( const item of configuredItems ) {
-			const itemDefinition = getItemDefinition( item );
-
-			if ( itemDefinition ) {
-				items.push( itemDefinition );
-			}
-		}
-
-		return ( this._cachedItems = items );
 	}
 
 	/**
@@ -89,87 +67,6 @@ export default class FontSizeEditing extends Plugin {
 		// Allow fontSize attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'fontSize' } );
 	}
-}
-
-const namedPresets = {
-	tiny: {
-		title: 'Tiny',
-		model: 'text-tiny',
-		view: {
-			name: 'span',
-			class: 'text-tiny'
-		}
-	},
-	small: {
-		title: 'Small',
-		model: 'text-small',
-		view: {
-			name: 'span',
-			class: 'text-small'
-		}
-	},
-	big: {
-		title: 'Big',
-		model: 'text-big',
-		view: {
-			name: 'span',
-			class: 'text-big'
-		}
-	},
-	huge: {
-		title: 'Huge',
-		model: 'text-huge',
-		view: {
-			name: 'span',
-			class: 'text-huge'
-		}
-	}
-};
-
-// Returns item definition from preset
-function getItemDefinition( item ) {
-	// Named preset exist so return it
-	if ( namedPresets[ item ] ) {
-		return namedPresets[ item ];
-	}
-
-	// Probably it is full item definition so return it
-	if ( typeof item === 'object' ) {
-		return item;
-	}
-
-	if ( item === 'normal' ) {
-		return {
-			model: undefined,
-			title: 'Normal'
-		};
-	}
-
-	// At this stage we probably have numerical value to generate a preset so parse it's value.
-	const sizePreset = parseInt( item ); // TODO: Should we parse floats? 🤔
-
-	// Discard any faulty values.
-	if ( isNaN( sizePreset ) ) {
-		return;
-	}
-
-	return generatePixelPreset( sizePreset );
-}
-
-// Creates a predefined preset for pixel size.
-function generatePixelPreset( size ) {
-	const sizeName = String( size );
-
-	return {
-		title: sizeName,
-		model: sizeName,
-		view: {
-			name: 'span',
-			style: {
-				'font-size': `${ size }px`
-			}
-		}
-	};
 }
 
 /**
@@ -214,5 +111,5 @@ function generatePixelPreset( size ) {
  * which configures
  *
  * @member {Array.<String|Number|module:font/fontsize/fontsizeediting~FontSizeOption>}
- *  module:font/fontsize/fontsizeediting~FontSizeConfig#items
+ *  module:font/fontsize/fontsizeediting~FontSizeConfig#options
  */

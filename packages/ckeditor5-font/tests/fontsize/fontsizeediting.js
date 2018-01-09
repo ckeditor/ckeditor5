@@ -39,99 +39,7 @@ describe( 'FontSizeEditing', () => {
 	describe( 'config', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
-				expect( editor.config.get( 'fontSize.items' ) ).to.deep.equal( [ 'tiny', 'small', 'normal', 'big', 'huge' ] );
-			} );
-		} );
-	} );
-
-	describe( 'configuredItems', () => {
-		it( 'should discard unsupported values', () => {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ FontSizeEditing ],
-					fontSize: {
-						items: [ () => {}, 'normal', 'unknown' ]
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-
-					const plugin = editor.plugins.get( FontSizeEditing );
-
-					expect( plugin.configuredItems ).to.deep.equal( [ { title: 'Normal', model: undefined } ] );
-				} );
-		} );
-
-		it( 'should pass through object definition', () => {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ FontSizeEditing ],
-					fontSize: {
-						items: [ { title: 'My Size', model: 'my-size', view: { name: 'span', style: 'font-size: 12em;' } } ]
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-
-					const plugin = editor.plugins.get( FontSizeEditing );
-
-					expect( plugin.configuredItems ).to.deep.equal( [
-						{
-							title: 'My Size',
-							model: 'my-size',
-							view: { name: 'span', style: 'font-size: 12em;' }
-						}
-					] );
-				} );
-		} );
-
-		describe( 'named presets', () => {
-			it( 'should return defined presets', () => {
-				return VirtualTestEditor
-					.create( {
-						plugins: [ FontSizeEditing ],
-						fontSize: {
-							items: [ 'tiny', 'small', 'normal', 'big', 'huge' ]
-						}
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-
-						const plugin = editor.plugins.get( FontSizeEditing );
-
-						expect( plugin.configuredItems ).to.deep.equal( [
-							{ title: 'Tiny', model: 'text-tiny', view: { name: 'span', class: 'text-tiny' } },
-							{ title: 'Small', model: 'text-small', view: { name: 'span', class: 'text-small' } },
-							{ title: 'Normal', model: undefined },
-							{ title: 'Big', model: 'text-big', view: { name: 'span', class: 'text-big' } },
-							{ title: 'Huge', model: 'text-huge', view: { name: 'span', class: 'text-huge' } }
-						] );
-					} );
-			} );
-		} );
-
-		describe( 'numeric presets', () => {
-			it( 'should return generated presets', () => {
-				return VirtualTestEditor
-					.create( {
-						plugins: [ FontSizeEditing ],
-						fontSize: {
-							items: [ '10', 12, 'normal', '14.1', 18.3 ]
-						}
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-
-						const plugin = editor.plugins.get( FontSizeEditing );
-
-						expect( plugin.configuredItems ).to.deep.equal( [
-							{ title: '10', model: '10', view: { name: 'span', style: { 'font-size': '10px' } } },
-							{ title: '12', model: '12', view: { name: 'span', style: { 'font-size': '12px' } } },
-							{ title: 'Normal', model: undefined },
-							{ title: '14', model: '14', view: { name: 'span', style: { 'font-size': '14px' } } },
-							{ title: '18', model: '18', view: { name: 'span', style: { 'font-size': '18px' } } }
-						] );
-					} );
+				expect( editor.config.get( 'fontSize.options' ) ).to.deep.equal( [ 'tiny', 'small', 'normal', 'big', 'huge' ] );
 			} );
 		} );
 	} );
@@ -142,7 +50,7 @@ describe( 'FontSizeEditing', () => {
 				.create( {
 					plugins: [ FontSizeEditing, Paragraph ],
 					fontSize: {
-						items: [
+						options: [
 							'tiny',
 							'normal',
 							18,
@@ -196,7 +104,7 @@ describe( 'FontSizeEditing', () => {
 				.create( {
 					plugins: [ FontSizeEditing, Paragraph ],
 					fontSize: {
-						items: [
+						options: [
 							'tiny',
 							'normal',
 							18,

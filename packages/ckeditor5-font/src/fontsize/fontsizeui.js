@@ -12,8 +12,7 @@ import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
 
-import FontSizeEditing from './fontsizeediting';
-
+import { normalizeOptions } from '../fontsize/utils';
 import fontSizeIcon from '../../theme/icons/font-size.svg';
 
 /**
@@ -91,6 +90,7 @@ export default class FontSizeUI extends Plugin {
 	_getLocalizedOptions() {
 		const editor = this.editor;
 		const t = editor.t;
+
 		const localizedTitles = {
 			Tiny: t( 'Tiny' ),
 			Small: t( 'Small' ),
@@ -98,10 +98,9 @@ export default class FontSizeUI extends Plugin {
 			Huge: t( 'Huge' )
 		};
 
-		// TODO this is not nice :/ in terms of feature split.
-		const items = editor.plugins.get( FontSizeEditing ).configuredItems;
+		const options = normalizeOptions( editor.config.get( 'fontSize.options' ) );
 
-		return items.map( option => {
+		return options.map( option => {
 			const title = localizedTitles[ option.title ];
 
 			if ( title && title != option.title ) {

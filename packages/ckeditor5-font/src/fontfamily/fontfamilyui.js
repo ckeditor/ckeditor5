@@ -12,9 +12,8 @@ import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
 
-import FontFamilyEditing from './fontfamilyediting';
-
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
+import { normalizeOptions } from './utils';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -25,15 +24,15 @@ export default class FontFamilyUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const t = editor.t;
+
 		const dropdownItems = new Collection();
 
 		const options = this._getLocalizedOptions();
-		const t = editor.t;
 
 		const command = editor.commands.get( 'fontFamily' );
 
-		const dropdownTooltip = t( 'Font Family' );
-
+		// Create dropdown items.
 		for ( const option of options ) {
 			const itemModel = new Model( {
 				commandName: 'fontFamily',
@@ -41,12 +40,11 @@ export default class FontFamilyUI extends Plugin {
 				label: option.title,
 			} );
 
-			// Try to set style
+			// Try to set a dropdown list item style.
 			if ( option.view && option.view.style ) {
 				itemModel.set( 'style', 'font-family:' + option.view.style[ 'font-family' ] );
 			}
 
-			// Add the option to the collection.
 			dropdownItems.add( itemModel );
 		}
 
@@ -55,7 +53,7 @@ export default class FontFamilyUI extends Plugin {
 			icon: fontFamilyIcon,
 			withText: false,
 			items: dropdownItems,
-			tooltip: dropdownTooltip
+			tooltip: t( 'Font Family' )
 		} );
 
 		dropdownModel.bind( 'isEnabled' ).to( command, 'isEnabled' );
@@ -64,7 +62,6 @@ export default class FontFamilyUI extends Plugin {
 		editor.ui.componentFactory.add( 'fontFamily', locale => {
 			const dropdown = createListDropdown( dropdownModel, locale );
 
-			// TODO check if needed
 			dropdown.extendTemplate( {
 				attributes: {
 					class: [
@@ -84,7 +81,7 @@ export default class FontFamilyUI extends Plugin {
 	}
 
 	/**
-	 * Returns heading options as defined in `config.heading.options` but processed to consider
+	 * Returns TODO options as defined in `config.heading.options` but processed to consider
 	 * editor localization, i.e. to display {@link module:heading/heading~HeadingOption}
 	 * in the correct language.
 	 *
@@ -97,21 +94,22 @@ export default class FontFamilyUI extends Plugin {
 	_getLocalizedOptions() {
 		const editor = this.editor;
 		const t = editor.t;
+
 		const localizedTitles = {
+			Default: t( 'Default' ),
 			Tiny: t( 'Tiny' ),
 			Small: t( 'Small' ),
 			Big: t( 'Big' ),
 			Huge: t( 'Huge' )
 		};
 
-		// TODO this is not nice :/ in terms of feature split.
-		const options = editor.plugins.get( FontFamilyEditing ).configuredOptions;
+		const options = normalizeOptions( editor.config.get( 'fontFamily.options' ) );
 
 		return options.map( option => {
 			const title = localizedTitles[ option.title ];
 
 			if ( title && title != option.title ) {
-				// Clone the option to avoid altering the original `config.heading.options`.
+				// Clone the option to avoid altering the original `config.fontFamily.options`.
 				option = Object.assign( {}, option, { title } );
 			}
 
