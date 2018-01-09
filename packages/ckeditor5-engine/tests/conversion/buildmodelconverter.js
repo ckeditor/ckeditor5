@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document */
+
 import buildModelConverter from '../../src/conversion/buildmodelconverter';
 
 import Model from '../../src/model/model';
@@ -63,7 +65,7 @@ describe( 'Model converter builder', () => {
 		modelRoot = modelDoc.createRoot();
 
 		controller = new EditingController( model );
-		controller.createRoot( 'div' );
+		controller.view.attachDomRoot( document.createElement( 'div' ) );
 
 		dispatcher = controller.modelToView;
 

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document */
+
 import Model from '../../src/model/model';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
@@ -38,7 +40,7 @@ describe( 'model-to-view-converters', () => {
 		modelRoot = modelDoc.createRoot();
 
 		controller = new EditingController( model );
-		controller.createRoot( 'div' );
+		controller.view.attachDomRoot( document.createElement( 'div' ) );
 
 		viewRoot = controller.view.getRoot();
 		dispatcher = controller.modelToView;

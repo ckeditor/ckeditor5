@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document */
+
 import Model from '../../src/model/model';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
@@ -40,7 +42,8 @@ describe( 'advanced-converters', () => {
 
 		const editing = new EditingController( model );
 
-		viewRoot = editing.createRoot( 'div' );
+		editing.view.attachDomRoot( document.createElement( 'div' ) );
+		viewRoot = editing.view.getRoot();
 
 		viewDispatcher = new ViewConversionDispatcher( model, { schema: { checkChild: () => true } } );
 		viewDispatcher.on( 'text', convertText() );
