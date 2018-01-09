@@ -5,6 +5,7 @@
 
 /* globals document */
 
+import RootEditableElement from '../../../src/view/rooteditableelement';
 import ViewRange from '../../../src/view/range';
 import ViewDocument from '../../../src/view/document';
 import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '../../../src/view/filler';
@@ -24,7 +25,8 @@ describe( 'Document', () => {
 		document.body.appendChild( domRoot );
 
 		viewDocument = new ViewDocument();
-		viewDocument.createRoot( domRoot );
+		createRoot( 'div', 'main', viewDocument );
+		viewDocument.attachDomRoot( domRoot );
 
 		document.getSelection().removeAllRanges();
 
@@ -133,3 +135,13 @@ describe( 'Document', () => {
 		} );
 	} );
 } );
+
+function createRoot( name, rootName, viewDoc ) {
+	const viewRoot = new RootEditableElement( name );
+
+	viewRoot.rootName = rootName;
+	viewRoot.document = viewDoc;
+	viewDoc.roots.add( viewRoot );
+
+	return viewRoot;
+}

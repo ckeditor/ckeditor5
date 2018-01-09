@@ -10,7 +10,6 @@
 import Selection from './selection';
 import Renderer from './renderer';
 import DomConverter from './domconverter';
-import RootEditableElement from './rooteditableelement';
 import { injectQuirksHandling } from './filler';
 import { injectUiElementHandling } from './uielement';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -19,6 +18,7 @@ import SelectionObserver from './observer/selectionobserver';
 import FocusObserver from './observer/focusobserver';
 import KeyObserver from './observer/keyobserver';
 import FakeSelectionObserver from './observer/fakeselectionobserver';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
@@ -76,10 +76,15 @@ export default class Document {
 		/**
 		 * Roots of the view tree. Map of the {module:engine/view/element~Element view elements} with roots names as keys.
 		 *
+		 * View roots are created as a result of binding between {@link module:engine/view/document~Document#roots} and
+		 * {@link module:engine/model/document~Document#roots} and this is handled by
+		 * {@link modeule:engine/controller/editingcontroller~EditingController}, so to create view root we need to create
+		 * model root using {@link module:engine/model/document~Document#createRoot}.
+		 *
 		 * @readonly
 		 * @member {Map} module:engine/view/document~Document#roots
 		 */
-		this.roots = new Map();
+		this.roots = new Collection( { idProperty: 'rootName' } );
 
 		/**
 		 * Defines whether document is in read-only mode.
@@ -177,68 +182,30 @@ export default class Document {
 	}
 
 	/**
-	 * Creates a {@link module:engine/view/document~Document#roots view root element}.
+	 * Attaches DOM root element to the view element and enable all observers on that element.
+	 * Also {@link module:engine/view/renderer~Renderer#markToSync mark element} to be synchronized with the view
+	 * what means that all child nodes will be removed and replaced with content of the view root.
 	 *
-	 * If the DOM element is passed as a first parameter it will be automatically
-	 * {@link module:engine/view/document~Document#attachDomRoot attached}:
+	 * This method also will change view element name as the same as tag name of given dom root.
+	 * Name is always transformed to lower case.
 	 *
-	 *		document.createRoot( document.querySelector( 'div#editor' ) ); // Will call document.attachDomRoot.
-	 *
-	 * However, if the string is passed, then only the view element will be created and the DOM element have to be
-	 * attached separately:
-	 *
-	 *		document.createRoot( 'body' );
-	 *		document.attachDomRoot( document.querySelector( 'body#editor' ) );
-	 *
-	 * In both cases, {@link module:engine/view/rooteditableelement~RootEditableElement#rootName element name} is always
-	 * transformed to lower
-	 * case.
-	 *
-	 * @param {Element|String} domRoot DOM root element or the tag name of view root element if the DOM element will be
-	 * attached later.
-	 * @param {String} [name='main'] Name of the root.
-	 * @returns {module:engine/view/rooteditableelement~RootEditableElement} The created view root element.
-	 */
-	createRoot( domRoot, name = 'main' ) {
-		const rootTag = typeof domRoot == 'string' ? domRoot : domRoot.tagName;
-
-		const viewRoot = new RootEditableElement( rootTag.toLowerCase(), name );
-		viewRoot.document = this;
-
-		this.roots.set( name, viewRoot );
-
-		// Mark changed nodes in the renderer.
-		viewRoot.on( 'change:children', ( evt, node ) => this.renderer.markToSync( 'children', node ) );
-		viewRoot.on( 'change:attributes', ( evt, node ) => this.renderer.markToSync( 'attributes', node ) );
-		viewRoot.on( 'change:text', ( evt, node ) => this.renderer.markToSync( 'text', node ) );
-
-		if ( this.domConverter.isElement( domRoot ) ) {
-			this.attachDomRoot( domRoot, name );
-		}
-
-		return viewRoot;
-	}
-
-	/**
-	 * Attaches DOM root element to the view element and enable all observers on that element. This method also
-	 * {@link module:engine/view/renderer~Renderer#markToSync mark element} to be synchronized with the view what means that all child
-	 * nodes will be removed and replaced with content of the view root.
-	 *
-	 * Note that {@link module:engine/view/document~Document#createRoot} will call this method automatically if the DOM element is
-	 * passed to it.
-	 *
-	 * @param {Element|String} domRoot DOM root element.
+	 * @param {Element} domRoot DOM root element.
 	 * @param {String} [name='main'] Name of the root.
 	 */
 	attachDomRoot( domRoot, name = 'main' ) {
 		const viewRoot = this.getRoot( name );
 
+		// Set view root name the same as DOM root tag name.
+		viewRoot._name = domRoot.tagName.toLowerCase();
+
 		this.domRoots.set( name, domRoot );
-
 		this.domConverter.bindElements( domRoot, viewRoot );
-
 		this.renderer.markToSync( 'children', viewRoot );
 		this.renderer.domDocuments.add( domRoot.ownerDocument );
+
+		viewRoot.on( 'change:children', ( evt, node ) => this.renderer.markToSync( 'children', node ) );
+		viewRoot.on( 'change:attributes', ( evt, node ) => this.renderer.markToSync( 'attributes', node ) );
+		viewRoot.on( 'change:text', ( evt, node ) => this.renderer.markToSync( 'text', node ) );
 
 		for ( const observer of this._observers.values() ) {
 			observer.observe( domRoot, name );

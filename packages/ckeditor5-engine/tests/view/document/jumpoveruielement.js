@@ -7,6 +7,7 @@
 
 import ViewDocument from '../../../src/view/document';
 import UIElement from '../../../src/view/uielement';
+import RootEditableElement from '../../../src/view/rooteditableelement';
 import ViewContainerElement from '../../../src/view/containerelement';
 import ViewAttribtueElement from '../../../src/view/attributeelement';
 import ViewText from '../../../src/view/text';
@@ -35,7 +36,8 @@ describe( 'Document', () => {
 		document.body.appendChild( domRoot );
 
 		viewDocument = new ViewDocument();
-		viewRoot = viewDocument.createRoot( domRoot );
+		viewRoot = createRoot( 'div', 'main', viewDocument );
+		viewDocument.attachDomRoot( domRoot );
 
 		domSelection = document.getSelection();
 		domSelection.removeAllRanges();
@@ -78,6 +80,16 @@ describe( 'Document', () => {
 		} else {
 			expect( domSelection.isCollapsed, 'isCollapsed' ).to.be.true;
 		}
+	}
+
+	function createRoot( name, rootName, viewDoc ) {
+		const viewRoot = new RootEditableElement( name );
+
+		viewRoot.rootName = rootName;
+		viewRoot.document = viewDoc;
+		viewDoc.roots.add( viewRoot );
+
+		return viewRoot;
 	}
 
 	describe( 'jump over ui element handler', () => {
