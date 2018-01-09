@@ -19,10 +19,6 @@ export default class VirtualTestEditor extends StandardEditor {
 		super( null, config );
 
 		this.data.processor = new HtmlDataProcessor();
-
-		// Lets change view root element name from $root to div.
-		// This will look more friendly in view tests.
-		this.editing.view.getRoot().name = 'div';
 	}
 
 	/**

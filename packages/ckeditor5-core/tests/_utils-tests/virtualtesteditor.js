@@ -19,16 +19,8 @@ describe( 'VirtualTestEditor', () => {
 			const editor = new VirtualTestEditor( { foo: 1 } );
 
 			expect( editor ).to.be.instanceof( StandardEditor );
-
-			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
-		} );
-
-		it( 'creates model and view roots', () => {
-			const editor = new VirtualTestEditor( { foo: 1 } );
-
-			expect( editor.model.document.getRoot() ).to.have.property( 'name', '$root' );
-			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
+			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
 		} );
 	} );
 
