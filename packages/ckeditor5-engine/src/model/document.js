@@ -91,7 +91,7 @@ export default class Document {
 		this.differ = new Differ();
 
 		/**
-		 * Post-fixer callbacks registered to the model.
+		 * Post-fixer callbacks registered to the model document.
 		 *
 		 * @private
 		 * @member {Set}
@@ -326,7 +326,7 @@ export default class Document {
 	 *
 	 *			for ( const entry of changes ) {
 	 *				if ( entry.type == 'remove' && entry.position.root.isEmpty ) {
-	 *					writer.insertElement( 'paragraph', ModelPosition.createAt( entry.position.root, 0 ) );
+	 *					writer.insertElement( 'paragraph', entry.position.root, 0 );
 	 *
 	 *					applied = true;
 	 *				}
@@ -423,9 +423,9 @@ export default class Document {
 	}
 
 	/**
-	 * Fired after outermost {@link module:engine/model/model~Model#change change} or
-	 * {@link module:engine/model/model~Model#enqueueChange enqueueChange} block has been executed and
-	 * document model tree was changed during its execution.
+	 * Fired after an {@link module:engine/model/model~Model#enqueueChange enqueueChange block} or the outermost
+	 * {@link module:engine/model/model~Model#change change block} has been executed and the document model tree was changed
+	 * during that block execution.
 	 *
 	 * @event change
 	 */
