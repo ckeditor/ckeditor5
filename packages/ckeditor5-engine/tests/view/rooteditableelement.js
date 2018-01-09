@@ -69,6 +69,18 @@ describe( 'RootEditableElement', () => {
 		} );
 	} );
 
+	describe( '_name', () => {
+		it( 'should set new name to element', () => {
+			const el = new RootEditableElement( '$root' );
+
+			expect( el.name ).to.equal( '$root' );
+
+			el._name = 'div';
+
+			expect( el.name ).to.equal( 'div' );
+		} );
+	} );
+
 	it( 'should be cloned properly', () => {
 		const root = new RootEditableElement( 'h1' );
 		root.document = createDocumentMock();
