@@ -162,8 +162,6 @@ export default class ImageCaptionEngine extends Plugin {
 		const model = this.editor.model;
 		const changes = model.document.differ.getChanges();
 
-		let applied = false;
-
 		for ( const entry of changes ) {
 			if ( entry.type == 'insert' && entry.name == 'image' ) {
 				const item = entry.position.nodeAfter;
@@ -171,12 +169,10 @@ export default class ImageCaptionEngine extends Plugin {
 				if ( !getCaptionFromImage( item ) ) {
 					writer.appendElement( 'caption', item );
 
-					applied = true;
+					return true;
 				}
 			}
 		}
-
-		return applied;
 	}
 }
 
