@@ -9,24 +9,20 @@
 
 /**
  * Returns {@link module:font/fontsize/fontsizeediting~FontSizeConfig#options} array with options normalized in the
- * {@link module:font/fontsize/fontsizeediting~FontSizeOption} format, translated
- * `title` for each style.
+ * {@link module:font/fontsize/fontsizeediting~FontSizeOption} format, translated.
  *
+ * @param {Array.<String|Number|Object>} configuredOptions An array of options taken from configuration.
  * @returns {Array.<module:font/fontsize/fontsizeediting~FontSizeOption>}
  */
 export function normalizeOptions( configuredOptions ) {
-	const options = [];
-
-	for ( const option of configuredOptions ) {
-		const definition = getOptionDefinition( option );
-
-		if ( definition ) {
-			options.push( definition );
-		}
-	}
-	return options;
+	// Convert options to objects.
+	return configuredOptions
+		.map( getOptionDefinition )
+		// Filter out undefined values that `getOptionDefinition` might return.
+		.filter( option => !!option );
 }
 
+// Default named presets map.
 const namedPresets = {
 	tiny: {
 		title: 'Tiny',
@@ -62,23 +58,24 @@ const namedPresets = {
 	}
 };
 
-// Returns item definition from preset. Returns undefined for unparsable item. If object is passed then this method will return it without
-// alternating.
+// Returns an option definition either from preset or creates one from number shortcut.
+// If object is passed then this method will return it without alternating it. Returns undefined for item than cannot be parsed.
 //
 // @param {String|Number|Object} item
-// @returns {undefinde|module:font/fontsize/fontsizeediting~FontSizeOption}
-function getOptionDefinition( item ) {
-	// Named preset exist so return it
-	if ( namedPresets[ item ] ) {
-		return namedPresets[ item ];
+// @returns {undefined|module:font/fontsize/fontsizeediting~FontSizeOption}
+function getOptionDefinition( option ) {
+	// Treat any object as full item definition provided by user in configuration.
+	if ( typeof option === 'object' ) {
+		return option;
 	}
 
-	// Probably it is full item definition so return it
-	if ( typeof item === 'object' ) {
-		return item;
+	// Item is a named preset.
+	if ( namedPresets[ option ] ) {
+		return namedPresets[ option ];
 	}
 
-	if ( item === 'normal' ) {
+	// 'Normal' font size. It will be used to remove the fontSize attribute.
+	if ( option === 'normal' ) {
 		return {
 			model: undefined,
 			title: 'Normal'
@@ -86,13 +83,14 @@ function getOptionDefinition( item ) {
 	}
 
 	// At this stage we probably have numerical value to generate a preset so parse it's value.
-	const sizePreset = parseInt( item ); // TODO: Should we parse floats? 🤔
+	const sizePreset = parseFloat( option );
 
 	// Discard any faulty values.
 	if ( isNaN( sizePreset ) ) {
 		return;
 	}
 
+	// Return font size definition from size value.
 	return generatePixelPreset( sizePreset );
 }
 

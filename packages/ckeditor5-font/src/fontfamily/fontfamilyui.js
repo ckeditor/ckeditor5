@@ -81,15 +81,15 @@ export default class FontFamilyUI extends Plugin {
 	}
 
 	/**
-	 * Returns TODO options as defined in `config.heading.options` but processed to consider
-	 * editor localization, i.e. to display {@link module:heading/heading~HeadingOption}
+	 * Returns options as defined in `config.fontFamily.options` but processed to consider
+	 * editor localization, i.e. to display {@link module:font/fontfamily/fontfamilyediting~FontFamilyOption}
 	 * in the correct language.
 	 *
 	 * Note: The reason behind this method is that there's no way to use {@link module:utils/locale~Locale#t}
 	 * when the user config is defined because the editor does not exist yet.
 	 *
 	 * @private
-	 * @returns {Array.<module:heading/heading~HeadingOption>}.
+	 * @returns {Array.<module:font/fontfamily/fontfamilyediting~FontFamilyOption>}.
 	 */
 	_getLocalizedOptions() {
 		const editor = this.editor;

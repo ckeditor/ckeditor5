@@ -5,8 +5,8 @@
 
 import { normalizeOptions } from '../../src/fontsize/utils';
 
-describe( 'FontSizeEditing', () => {
-	describe( 'configuredItems', () => {
+describe( 'FontSizeEditing Utils', () => {
+	describe( 'normalizeOptions()', () => {
 		it( 'should discard unsupported values', () => {
 			expect( normalizeOptions( [ () => {}, 'normal', 'unknown' ] ) ).to.deep.equal( [ { title: 'Normal', model: undefined } ] );
 		} );
@@ -43,8 +43,8 @@ describe( 'FontSizeEditing', () => {
 					{ title: '10', model: '10', view: { name: 'span', style: { 'font-size': '10px' } } },
 					{ title: '12', model: '12', view: { name: 'span', style: { 'font-size': '12px' } } },
 					{ title: 'Normal', model: undefined },
-					{ title: '14', model: '14', view: { name: 'span', style: { 'font-size': '14px' } } },
-					{ title: '18', model: '18', view: { name: 'span', style: { 'font-size': '18px' } } }
+					{ title: '14.1', model: '14.1', view: { name: 'span', style: { 'font-size': '14.1px' } } },
+					{ title: '18.3', model: '18.3', view: { name: 'span', style: { 'font-size': '18.3px' } } }
 				] );
 			} );
 		} );

@@ -57,7 +57,6 @@ export default class FontSizeUI extends Plugin {
 		editor.ui.componentFactory.add( 'fontSize', locale => {
 			const dropdown = createListDropdown( dropdownModel, locale );
 
-			// TODO check if needed
 			dropdown.extendTemplate( {
 				attributes: {
 					class: [
@@ -77,15 +76,15 @@ export default class FontSizeUI extends Plugin {
 	}
 
 	/**
-	 * Returns heading options as defined in `config.heading.options` but processed to consider
-	 * editor localization, i.e. to display {@link module:heading/heading~HeadingOption}
+	 * Returns options as defined in `config.fontSize.options` but processed to consider
+	 * editor localization, i.e. to display {@link module:font/fontsize/fontsizeediting~FontSizeOption}
 	 * in the correct language.
 	 *
 	 * Note: The reason behind this method is that there's no way to use {@link module:utils/locale~Locale#t}
 	 * when the user config is defined because the editor does not exist yet.
 	 *
 	 * @private
-	 * @returns {Array.<module:heading/heading~HeadingOption>}.
+	 * @returns {Array.<module:font/fontsize/fontsizeediting~FontSizeOption>}.
 	 */
 	_getLocalizedOptions() {
 		const editor = this.editor;
@@ -104,7 +103,7 @@ export default class FontSizeUI extends Plugin {
 			const title = localizedTitles[ option.title ];
 
 			if ( title && title != option.title ) {
-				// Clone the option to avoid altering the original `config.heading.options`.
+				// Clone the option to avoid altering the original `config.fontSize.options`.
 				option = Object.assign( {}, option, { title } );
 			}
 

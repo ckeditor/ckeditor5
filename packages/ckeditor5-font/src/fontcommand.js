@@ -16,9 +16,9 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  */
 export default class FontCommand extends Command {
 	/**
-	 * Creates a new `FontCommand` instance.
+	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor Editor instance.
 	 * @param {String} attribute Name of an model attribute on which this command operates.
 	 */
 	constructor( editor, attribute ) {

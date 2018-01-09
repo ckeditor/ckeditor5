@@ -6,8 +6,8 @@
 import { normalizeOptions } from '../../src/fontfamily/utils';
 
 describe( 'FontFamily utils', () => {
-	describe( 'normalizeOptions', () => {
-		it( 'should discard unparsable values', () => {
+	describe( 'normalizeOptions()', () => {
+		it( 'should discard unsupported values', () => {
 			expect( normalizeOptions( [ () => {}, 0, true ] ) ).to.deep.equal( [] );
 		} );
 

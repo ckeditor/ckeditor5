@@ -17,9 +17,9 @@ import FontCommand from '../fontcommand';
  */
 export default class FontSizeCommand extends FontCommand {
 	/**
-	 * Creates a new `FontSizeCommand` instance.
+	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor Editor instance.
 	 */
 	constructor( editor ) {
 		super( editor, 'fontSize' );

@@ -28,6 +28,7 @@ export default class FontFamilyEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
+		// Define default configuration using font families shortcuts.
 		editor.config.define( 'fontFamily', {
 			options: [
 				'default',
@@ -70,17 +71,17 @@ export default class FontFamilyEditing extends Plugin {
 }
 
 /**
- * Font family option. Compatible with {@link module:engine/conversion/definition-based-converters~ConverterDefinition}.
+ * Font family option descriptor. Compatible with {@link module:engine/conversion/definition-based-converters~ConverterDefinition}.
  *
  * @typedef {Object} module:font/fontfamily/fontfamilyediting~FontFamilyOption
  *
- * @property {String} model The `fontFamily` attribute value in the model.
- * @property {module:engine/view/viewelementdefinition~ViewElementDefinition} view The view representation for that option.
  * @property {String} title The user-readable title of the option.
+ * @property {String} model Attribute's unique value in the model.
+ * @property {module:engine/view/viewelementdefinition~ViewElementDefinition} view View element configuration.
+ * @property {Array.<module:engine/view/viewelementdefinition~ViewElementDefinition>} [acceptAlso] An array with all matched elements that
+ * view to model conversion should also accept.
  * @property {String} [uiStyle] The style which will be added to the dropdown item representing this option.
  * Defaults to `view.style[ 'font-family' ]`.
- * @property {Array.<module:engine/view/viewelementdefinition~ViewElementDefinition>} acceptAlso An array with all matched elements that
- * view to model conversion should also accept.
  */
 
 /**
@@ -127,11 +128,22 @@ export default class FontFamilyEditing extends Plugin {
  *			]
  *		};
  *
- * which configures 8 font family options and a default option that will remove font family to text default setting (defaulting to content
- * CSS styles).
+ * which configures 8 font family options. Each option consist one or more font-family names separated with coma. The first font name is
+ * used as dropdown item description in UI. The family names that consist spaces should not have quotes (as opposed to CSS standard).
+ * Appropriate quotes will be added in the view. For example, for the "Lucida Sans Unicode" the editor will render:
  *
- * TODO: what 'default' does.
- * TODO: how those string are translated to configuration
+ * 		<span style="font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif">...</span>
+ *
+ * The "default" option is used to remove fontFamily from selection. In such case the text will
+ * be represented in view using default content CSS font-family.
+
+ * To use defined font families from {@link module:core/commandcollection~CommandCollection} use `fontFamily` command and pass desired
+ * font family as a value.
+ * For example, the below code will apply `fontFamily` attribute with `tiny` value to the current selection:
+ *
+ *		editor.execute( 'fontFamily', { value: 'tiny' } );
+ *
+ * Executing `fontFamily` command without value will remove `fontFamily` attribute from the current selection.
  *
  * @member {Array.<String|module:font/fontfamily/fontfamilyediting~FontFamilyOption>}
  *  module:font/fontfamily/fontfamilyediting~FontFamilyConfig#options
