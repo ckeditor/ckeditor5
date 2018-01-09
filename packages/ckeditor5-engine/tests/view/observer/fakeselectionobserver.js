@@ -9,6 +9,7 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
 import ViewDocument from '../../../src/view/document';
 import DomEventData from '../../../src/view/observer/domeventdata';
+import createViewRoot from '../_utils/createroot';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData, stringify } from '../../../src/dev-utils/view';
 
@@ -28,7 +29,8 @@ describe( 'FakeSelectionObserver', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
-		root = viewDocument.createRoot( domRoot );
+		root = createViewRoot( viewDocument );
+		viewDocument.attachDomRoot( domRoot );
 		observer = viewDocument.getObserver( FakeSelectionObserver );
 		viewDocument.selection.setFake();
 	} );

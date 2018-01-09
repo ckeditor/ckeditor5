@@ -7,13 +7,13 @@
 
 import ViewDocument from '../../../src/view/document';
 import UIElement from '../../../src/view/uielement';
-import RootEditableElement from '../../../src/view/rooteditableelement';
 import ViewContainerElement from '../../../src/view/containerelement';
 import ViewAttribtueElement from '../../../src/view/attributeelement';
 import ViewText from '../../../src/view/text';
 import ViewRange from '../../../src/view/range';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import createViewRoot from '../_utils/createroot';
 import { setData as setViewData } from '../../../src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -36,7 +36,7 @@ describe( 'Document', () => {
 		document.body.appendChild( domRoot );
 
 		viewDocument = new ViewDocument();
-		viewRoot = createRoot( 'div', 'main', viewDocument );
+		viewRoot = createViewRoot( viewDocument );
 		viewDocument.attachDomRoot( domRoot );
 
 		domSelection = document.getSelection();
@@ -80,16 +80,6 @@ describe( 'Document', () => {
 		} else {
 			expect( domSelection.isCollapsed, 'isCollapsed' ).to.be.true;
 		}
-	}
-
-	function createRoot( name, rootName, viewDoc ) {
-		const viewRoot = new RootEditableElement( name );
-
-		viewRoot.rootName = rootName;
-		viewRoot.document = viewDoc;
-		viewDoc.roots.add( viewRoot );
-
-		return viewRoot;
 	}
 
 	describe( 'jump over ui element handler', () => {

@@ -4,6 +4,7 @@
  */
 
 import { attachPlaceholder, detachPlaceholder } from '../../src/view/placeholder';
+import createViewRoot from './_utils/createroot';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewDocument from '../../src/view/document';
 import ViewRange from '../../src/view/range';
@@ -14,7 +15,7 @@ describe( 'placeholder', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
-		viewRoot = viewDocument.createRoot( 'main' );
+		viewRoot = createViewRoot( viewDocument );
 		viewDocument.isFocused = true;
 	} );
 
@@ -131,7 +132,7 @@ describe( 'placeholder', () => {
 			const element = viewRoot.getChild( 0 );
 			const secondDocument = new ViewDocument();
 			secondDocument.isFocused = true;
-			const secondRoot = secondDocument.createRoot( 'main' );
+			const secondRoot = createViewRoot( secondDocument );
 			setData( secondDocument, '<div></div><div>{another div}</div>' );
 			const secondElement = secondRoot.getChild( 0 );
 

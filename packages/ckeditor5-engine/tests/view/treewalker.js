@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
-
 import Document from '../../src/view/document';
 import DocumentFragment from '../../src/view/documentfragment';
 import AttributeElement from '../../src/view/attributeelement';
@@ -13,6 +11,7 @@ import Text from '../../src/view/text';
 import TreeWalker from '../../src/view/treewalker';
 import Position from '../../src/view/position';
 import Range from '../../src/view/range';
+import createViewRoot from './_utils/createroot';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'TreeWalker', () => {
@@ -20,7 +19,7 @@ describe( 'TreeWalker', () => {
 
 	before( () => {
 		doc = new Document();
-		root = doc.createRoot( document.createElement( 'div' ) );
+		root = createViewRoot( doc );
 
 		// root
 		//  |- img1

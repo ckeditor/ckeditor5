@@ -5,7 +5,6 @@
 
 /* globals document */
 
-import RootEditableElement from '../../../src/view/rooteditableelement';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import Document from '../../../src/view/document';
 import Observer from '../../../src/view/observer/observer';
@@ -21,6 +20,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import createViewRoot from '../_utils/createroot';
 
 testUtils.createSinonSandbox();
 
@@ -92,7 +92,7 @@ describe( 'Document', () => {
 	describe( 'attachDomRoot()', () => {
 		it( 'should attach DOM element to main view element', () => {
 			const domDiv = document.createElement( 'div' );
-			const viewRoot = createRoot( 'div', 'main', viewDocument );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
 
@@ -108,7 +108,7 @@ describe( 'Document', () => {
 
 		it( 'should attach DOM element to custom view element', () => {
 			const domH1 = document.createElement( 'h1' );
-			const viewH1 = createRoot( 'h1', 'header', viewDocument );
+			const viewH1 = createViewRoot( viewDocument, 'h1', 'header' );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
 
@@ -136,7 +136,7 @@ describe( 'Document', () => {
 			const observerMock = viewDocument.addObserver( ObserverMock );
 			const observerMockGlobalCount = viewDocument.addObserver( ObserverMockGlobalCount );
 
-			createRoot( 'div', 'root1', viewDocument );
+			createViewRoot( viewDocument, 'div', 'root1' );
 			viewDocument.attachDomRoot( document.createElement( 'div' ), 'root1' );
 
 			sinon.assert.calledOnce( observerMock.observe );
@@ -146,7 +146,7 @@ describe( 'Document', () => {
 
 	describe( 'getRoot()', () => {
 		it( 'should return "main" root', () => {
-			createRoot( 'div', 'main', viewDocument );
+			createViewRoot( viewDocument, 'div', 'main' );
 
 			expect( count( viewDocument.roots ) ).to.equal( 1 );
 
@@ -154,7 +154,7 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should return named root', () => {
-			createRoot( 'h1', 'header', viewDocument );
+			createViewRoot( viewDocument, 'h1', 'header' );
 
 			expect( count( viewDocument.roots ) ).to.equal( 1 );
 
@@ -229,8 +229,8 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should call observe on each root', () => {
-			createRoot( 'div', 'roo1', viewDocument );
-			createRoot( 'div', 'roo2', viewDocument );
+			createViewRoot( viewDocument, 'div', 'roo1' );
+			createViewRoot( viewDocument, 'div', 'roo2' );
 
 			viewDocument.attachDomRoot( document.createElement( 'div' ), 'roo1' );
 			viewDocument.attachDomRoot( document.createElement( 'div' ), 'roo2' );
@@ -271,7 +271,7 @@ describe( 'Document', () => {
 		} );
 
 		it( 'scrolls to the first range in selection with an offset', () => {
-			const root = createRoot( 'div', 'main', viewDocument );
+			const root = createViewRoot( viewDocument, 'div', 'main' );
 			const stub = testUtils.sinon.stub( global.window, 'scrollTo' );
 			const range = ViewRange.createIn( root );
 
@@ -340,7 +340,7 @@ describe( 'Document', () => {
 			domEditable = document.createElement( 'div' );
 			domEditable.setAttribute( 'contenteditable', 'true' );
 			document.body.appendChild( domEditable );
-			viewEditable = createRoot( 'div', 'main', viewDocument );
+			viewEditable = createViewRoot( viewDocument, 'div', 'main' );
 			viewDocument.attachDomRoot( domEditable );
 			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewEditable, 0, viewEditable, 0 ) );
 		} );
@@ -408,13 +408,3 @@ describe( 'Document', () => {
 		} );
 	} );
 } );
-
-function createRoot( name, rootName, viewDoc ) {
-	const viewRoot = new RootEditableElement( name );
-
-	viewRoot.rootName = rootName;
-	viewRoot.document = viewDoc;
-	viewDoc.roots.add( viewRoot );
-
-	return viewRoot;
-}

@@ -7,6 +7,7 @@
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import ViewDocument from '../../../src/view/document';
 import ViewRange from '../../../src/view/range';
+import createViewRoot from '../_utils/createroot';
 import { setData } from '../../../src/dev-utils/view';
 
 describe( 'FocusObserver', () => {
@@ -72,7 +73,8 @@ describe( 'FocusObserver', () => {
 			domMain = document.createElement( 'div' );
 			domHeader = document.createElement( 'h1' );
 
-			viewMain = viewDocument.createRoot( domMain );
+			viewMain = createViewRoot( viewDocument );
+			viewDocument.attachDomRoot( domMain );
 		} );
 
 		it( 'should set isFocused to true on focus', () => {
@@ -149,7 +151,8 @@ describe( 'FocusObserver', () => {
 			document.body.appendChild( domRoot );
 
 			viewDocument = new ViewDocument();
-			viewDocument.createRoot( domRoot );
+			createViewRoot( viewDocument );
+			viewDocument.attachDomRoot( domRoot );
 
 			observer = viewDocument.getObserver( FocusObserver );
 		} );

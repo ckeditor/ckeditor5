@@ -8,6 +8,7 @@
 import ViewDocument from '../../../src/view/document';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
 import UIElement from '../../../src/view/uielement';
+import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 
 describe( 'MutationObserver', () => {
@@ -22,7 +23,8 @@ describe( 'MutationObserver', () => {
 		domEditor = document.getElementById( 'main' );
 		lastMutations = null;
 
-		viewDocument.createRoot( domEditor );
+		createViewRoot( viewDocument );
+		viewDocument.attachDomRoot( domEditor );
 		viewDocument.selection.removeAllRanges();
 		document.getSelection().removeAllRanges();
 
@@ -62,7 +64,8 @@ describe( 'MutationObserver', () => {
 	it( 'should not observe if disabled', () => {
 		const additional = document.getElementById( 'additional' );
 		mutationObserver.disable();
-		viewDocument.createRoot( additional, 'additional' );
+		createViewRoot( viewDocument, 'div', 'additional' );
+		viewDocument.attachDomRoot( additional, 'additional' );
 
 		additional.textContent = 'foobar';
 		mutationObserver.flush();
@@ -196,7 +199,8 @@ describe( 'MutationObserver', () => {
 		const domAdditionalEditor = document.getElementById( 'additional' );
 
 		// Prepare AdditionalEditor
-		viewDocument.createRoot( domAdditionalEditor, 'additional' );
+		createViewRoot( viewDocument, 'div', 'additional' );
+		viewDocument.attachDomRoot( domAdditionalEditor, 'additional' );
 
 		viewDocument.getRoot( 'additional' ).appendChildren(
 			parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
