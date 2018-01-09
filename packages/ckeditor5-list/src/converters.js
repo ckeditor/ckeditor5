@@ -631,6 +631,8 @@ export function modelChangePostFixer( model, writer ) {
 		_fixListTypes( listHead );
 	}
 
+	return applied;
+
 	function _addListToFix( position ) {
 		const prev = position.nodeBefore;
 
@@ -658,8 +660,6 @@ export function modelChangePostFixer( model, writer ) {
 			itemToListHead.set( position.nodeBefore, listHead );
 		}
 	}
-
-	return applied;
 
 	function _fixListIndents( item ) {
 		let maxIndent = 0;
