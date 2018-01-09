@@ -9,6 +9,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import Model from '../../src/model/model';
 
+import DocumentFragment from '../../src/model/documentfragment';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import TextProxy from '../../src/model/textproxy';
@@ -2080,6 +2081,35 @@ describe( 'SchemaContext', () => {
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$root', 'blockQuote', 'paragraph' ] );
 
 			expect( Array.from( ctx.getItem( 2 ).getAttributeKeys() ).sort() ).to.deep.equal( [ 'align' ] );
+		} );
+
+		it( 'filters out DocumentFragment when it is a first item of context - array', () => {
+			const ctx = new SchemaContext( [ new DocumentFragment(), 'paragraph' ] );
+
+			expect( ctx.length ).to.equal( 1 );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'paragraph' ] );
+		} );
+
+		it( 'filters out DocumentFragment when it is a first item of context - element', () => {
+			const p = new Element( 'paragraph' );
+			const docFrag = new DocumentFragment();
+			docFrag.appendChildren( p );
+
+			const ctx = new SchemaContext( p );
+
+			expect( ctx.length ).to.equal( 1 );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'paragraph' ] );
+		} );
+
+		it( 'filters out DocumentFragment when it is a first item of context - position', () => {
+			const p = new Element( 'paragraph' );
+			const docFrag = new DocumentFragment();
+			docFrag.appendChildren( p );
+
+			const ctx = new SchemaContext( new Position( docFrag, [ 0, 0 ] ) );
+
+			expect( ctx.length ).to.equal( 1 );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'paragraph' ] );
 		} );
 	} );
 
