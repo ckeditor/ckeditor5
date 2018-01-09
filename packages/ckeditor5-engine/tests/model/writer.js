@@ -1445,7 +1445,7 @@ describe( 'Writer', () => {
 				new Element( 'p', null, 'bar' )
 			] );
 
-			writer.merge( new Position( docFrag, [ 1 ] ) );
+			merge( new Position( docFrag, [ 1 ] ) );
 
 			expect( docFrag.getChild( 0 ).name ).to.equal( 'p' );
 			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
@@ -1683,7 +1683,7 @@ describe( 'Writer', () => {
 
 			docFrag.appendChildren( p );
 
-			writer.rename( p, 'h' );
+			rename( p, 'h' );
 
 			expect( docFrag.maxOffset ).to.equal( 1 );
 			expect( docFrag.getChild( 0 ) ).to.have.property( 'name', 'h' );
@@ -1738,7 +1738,7 @@ describe( 'Writer', () => {
 			const docFrag = new DocumentFragment();
 			docFrag.appendChildren( new Element( 'p', null, new Text( 'foobar' ) ) );
 
-			writer.split( new Position( docFrag, [ 0, 3 ] ) );
+			split( new Position( docFrag, [ 0, 3 ] ) );
 
 			expect( docFrag.maxOffset ).to.equal( 2 );
 
@@ -1834,7 +1834,7 @@ describe( 'Writer', () => {
 		it( 'should wrap inside document fragment', () => {
 			const docFrag = new DocumentFragment( new Text( 'foo' ) );
 
-			writer.wrap( Range.createIn( docFrag ), 'p' );
+			wrap( Range.createIn( docFrag ), 'p' );
 
 			expect( docFrag.maxOffset ).to.equal( 1 );
 			expect( docFrag.getChild( 0 ).name ).to.equal( 'p' );
@@ -1896,7 +1896,7 @@ describe( 'Writer', () => {
 		it( 'should unwrap inside document fragment', () => {
 			const docFrag = new DocumentFragment( new Element( 'p', null, new Text( 'foo' ) ) );
 
-			writer.unwrap( docFrag.getChild( 0 ) );
+			unwrap( docFrag.getChild( 0 ) );
 
 			expect( docFrag.maxOffset ).to.equal( 3 );
 			expect( docFrag.getChild( 0 ).data ).to.equal( 'foo' );
