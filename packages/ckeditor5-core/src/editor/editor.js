@@ -8,6 +8,7 @@
  */
 
 import Config from '@ckeditor/ckeditor5-utils/src/config';
+import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import PluginCollection from '../plugincollection';
 import CommandCollection from '../commandcollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
@@ -18,7 +19,13 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Class representing a basic editor. It contains a base architecture, without much additional logic.
+ * Class representing editor. It contains basic editor architecture and provides API needed by plugins
+ * like {@link module:engine/controller/editingcontroller~EditingController editing pipeline} and
+ * {@link module:engine/controller/datacontroller~DataController data pipeline}.
+ *
+ * Besides it creates main {@link module:engine/model/rootelement~RootElement} using
+ * {@link module:engine/model/document~Document#createRoot createRoot} method what automatically creates
+ * corresponding {@link module:engine/view/rooteditableelement~RootEditableElement view root} element.
  *
  * See also {@link module:core/editor/standardeditor~StandardEditor}.
  *
@@ -74,30 +81,6 @@ export default class Editor {
 		this.t = this.locale.t;
 
 		/**
-		 * The editor's model.
-		 *
-		 * The center of the editor's abstract data model.
-		 *
-		 * Besides the model, the editor usually contains two controllers –
-		 * {@link #data data controller} and {@link #editing editing controller}.
-		 * The former is used e.g. when setting or retrieving editor data and contains a useful
-		 * set of methods for operating on the content. The latter controls user input and rendering
-		 * the content for editing.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/model~Model}
-		 */
-		this.model = new Model();
-
-		/**
-		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
-		 *
-		 * @readonly
-		 * @member {module:engine/controller/datacontroller~DataController}
-		 */
-		this.data = new DataController( this.model );
-
-		/**
 		 * Defines whether this editor is in read-only mode.
 		 *
 		 * In read-only mode the editor {@link #commands commands} are disabled so it is not possible
@@ -109,17 +92,36 @@ export default class Editor {
 		this.set( 'isReadOnly', false );
 
 		/**
-		 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.
+		 * The editor's model.
 		 *
-		 * This property is set by more specialized editor classes (such as {@link module:core/editor/standardeditor~StandardEditor}),
-		 * however, it's required for features to work as their engine-related parts will try to connect converters.
-		 *
-		 * When defining a virtual editor class, like one working in Node.js, it's possible to plug a virtual
-		 * editing controller which only instantiates necessary properties, but without any observers and listeners.
+		 * The center of the editor's abstract data model.
 		 *
 		 * @readonly
-		 * @member {module:engine/controller/editingcontroller~EditingController} #editing
+		 * @member {module:engine/model/model~Model}
 		 */
+		this.model = new Model();
+
+		// Creates main root.
+		this.model.document.createRoot();
+
+		/**
+		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
+		 * Used e.g. for setting or retrieving editor data.
+		 *
+		 * @readonly
+		 * @member {module:engine/controller/datacontroller~DataController}
+		 */
+		this.data = new DataController( this.model );
+
+		/**
+		 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.
+		 * Controls user input and rendering the content for editing.
+		 *
+		 * @readonly
+		 * @member {module:engine/controller/editingcontroller~EditingController}
+		 */
+		this.editing = new EditingController( this.model );
+		this.editing.view.bind( 'isReadOnly' ).to( this );
 	}
 
 	/**
@@ -173,6 +175,7 @@ export default class Editor {
 			.then( () => {
 				this.model.destroy();
 				this.data.destroy();
+				this.editing.destroy();
 			} );
 	}
 

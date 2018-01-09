@@ -8,6 +8,7 @@
 import Editor from '../../src/editor/editor';
 import Plugin from '../../src/plugin';
 import Config from '@ckeditor/ckeditor5-utils/src/config';
+import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import PluginCollection from '../../src/plugincollection';
 import CommandCollection from '../../src/commandcollection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -103,6 +104,7 @@ describe( 'Editor', () => {
 
 			expect( editor.config ).to.be.an.instanceof( Config );
 			expect( editor.commands ).to.be.an.instanceof( CommandCollection );
+			expect( editor.editing ).to.be.instanceof( EditingController );
 
 			expect( editor.plugins ).to.be.an.instanceof( PluginCollection );
 			expect( getPlugins( editor ) ).to.be.empty;
@@ -132,6 +134,24 @@ describe( 'Editor', () => {
 			} );
 
 			expect( editor.config.get( 'bar' ) ).to.equal( 'foo' );
+		} );
+
+		it( 'should bind editing.view#isReadOnly to the editor', () => {
+			const editor = new Editor();
+
+			editor.isReadOnly = false;
+
+			expect( editor.editing.view.isReadOnly ).to.false;
+
+			editor.isReadOnly = true;
+
+			expect( editor.editing.view.isReadOnly ).to.true;
+		} );
+
+		it( 'should create main root element', () => {
+			const editor = new Editor();
+
+			expect( editor.model.document.hasRoot( 'main' ) ).to.true;
 		} );
 	} );
 
@@ -194,13 +214,15 @@ describe( 'Editor', () => {
 
 			const spy1 = sinon.spy( editor.data, 'destroy' );
 			const spy2 = sinon.spy( editor.model, 'destroy' );
-			const spy3 = sinon.spy( editor.plugins, 'destroy' );
+			const spy3 = sinon.spy( editor.editing, 'destroy' );
+			const spy4 = sinon.spy( editor.plugins, 'destroy' );
 
 			return editor.destroy()
 				.then( () => {
 					expect( spy1.calledOnce ).to.be.true;
 					expect( spy2.calledOnce ).to.be.true;
 					expect( spy3.calledOnce ).to.be.true;
+					expect( spy4.calledOnce ).to.be.true;
 				} );
 		} );
 	} );

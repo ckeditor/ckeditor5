@@ -9,15 +9,13 @@
 
 import Editor from './editor';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
-import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import isFunction from '@ckeditor/ckeditor5-utils/src/lib/lodash/isFunction';
 
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
 /**
- * Class representing a typical browser-based editor. It handles a single source element and
- * uses {@link module:engine/controller/editingcontroller~EditingController}.
+ * Class representing a typical browser-based editor.
  *
  * @extends module:core/editor/editor~Editor
  */
@@ -39,10 +37,6 @@ export default class StandardEditor extends Editor {
 		 * @member {HTMLElement}
 		 */
 		this.element = element;
-
-		// Documented in Editor.
-		this.editing = new EditingController( this.model );
-		this.editing.view.bind( 'isReadOnly' ).to( this );
 
 		/**
 		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
@@ -74,7 +68,6 @@ export default class StandardEditor extends Editor {
 	destroy() {
 		return Promise.resolve()
 			.then( () => this.keystrokes.destroy() )
-			.then( () => this.editing.destroy() )
 			.then( super.destroy() );
 	}
 
