@@ -923,8 +923,8 @@ describe( 'Differ', () => {
 			const removePosition = new Position( root, [ 1 ] );
 			remove( removePosition, 1 );
 
-			const changesA = differ.getChanges( true );
-			const changesB = differ.getChanges( true );
+			const changesA = differ.getChanges( { includeChangesInGraveyard: true } );
+			const changesB = differ.getChanges( { includeChangesInGraveyard: true } );
 
 			expect( changesA ).to.deep.equal( changesB );
 		} );
@@ -1004,7 +1004,7 @@ describe( 'Differ', () => {
 	}
 
 	function expectChanges( expected, includeChangesInGraveyard = false ) {
-		const changes = differ.getChanges( includeChangesInGraveyard );
+		const changes = differ.getChanges( { includeChangesInGraveyard } );
 
 		for ( let i = 0; i < expected.length; i++ ) {
 			for ( const key in expected[ i ] ) {

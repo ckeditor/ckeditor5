@@ -194,13 +194,15 @@ export default class Differ {
 	 * Because calculating diff is a costly operation, the result is cached. If no new operation was buffered since the
 	 * previous {@link #getChanges} call, the next call with return the cached value.
 	 *
-	 * @params {Boolean} [includeChangesInGraveyard=false] If set to `true`, also changes that happened in graveyard root will be returned.
+	 * @param {Object} options Additional options.
+	 * @param {Boolean} [options.includeChangesInGraveyard=false] If set to `true`, also changes that happened
+	 * in graveyard root will be returned. By default, changes in graveyard root are not returned.
 	 * @returns {Array.<Object>} Diff between old and new model tree state.
 	 */
-	getChanges( includeChangesInGraveyard = false ) {
+	getChanges( options = { includeChangesInGraveyard: false } ) {
 		if ( this._cachedChanges ) {
 			// If there are cached changes, just return them instead of calculating changes again.
-			if ( !includeChangesInGraveyard ) {
+			if ( !options.includeChangesInGraveyard ) {
 				// Filter out graveyard changes.
 				return this._cachedChanges.slice().filter( _changesInGraveyardFilter );
 			}
@@ -360,7 +362,7 @@ export default class Differ {
 		// Cache all changes (even those in graveyard).
 		this._cachedChanges = diffSet.slice();
 
-		if ( !includeChangesInGraveyard ) {
+		if ( !options.includeChangesInGraveyard ) {
 			// Return changes without changes in graveyard.
 			return diffSet.filter( _changesInGraveyardFilter );
 		}
