@@ -487,6 +487,33 @@ describe( 'Document', () => {
 		} );
 	} );
 
+	describe( 'destroy()', () => {
+		it( 'should destroy selection instance', () => {
+			const spy = sinon.spy( doc.selection, 'destroy' );
+
+			doc.destroy();
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should stop listening to events', () => {
+			const spy = sinon.spy();
+
+			doc.listenTo( model, 'something', spy );
+
+			model.fire( 'something' );
+
+			sinon.assert.calledOnce( spy );
+
+			doc.destroy();
+
+			model.fire( 'something' );
+
+			// Still once.
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
 	it( 'should be correctly converted to json', () => {
 		const serialized = jsonParseStringify( doc );
 
