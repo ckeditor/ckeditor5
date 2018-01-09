@@ -139,7 +139,6 @@ export default class Model {
 	 * When the outermost block is done the {@link #event:_change} event is fired.
 	 *
 	 * @see #enqueueChange
-	 * @fires event:_change
 	 * @param {Function} callback Callback function which may modify the model.
 	 * @returns {*} Value returned by the callback.
 	 */
@@ -184,7 +183,6 @@ export default class Model {
 	 *
 	 * `Batch` instance can be obtained from {@link module:engine/model/writer~Writer#batch the writer}.
 	 *
-	 * @fires event:_change
 	 * @param {module:engine/model/batch~Batch|String} batchOrType Batch or batch type should be used in the callback.
 	 * If not defined, a new batch will be created.
 	 * @param {Function} callback Callback function which may modify the model.
