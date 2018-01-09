@@ -439,8 +439,8 @@ export default class Selection {
 	 */
 	setTo( selectable ) {
 		if ( selectable instanceof Selection ) {
-			this._isFake = selectable._isFake;
-			this._fakeSelectionLabel = selectable._fakeSelectionLabel;
+			this._isFake = selectable.isFake;
+			this._fakeSelectionLabel = selectable.fakeSelectionLabel;
 			this.setRanges( selectable.getRanges(), selectable.isBackward );
 		} else if ( selectable instanceof Range ) {
 			this.setRanges( [ selectable ] );

@@ -302,7 +302,7 @@ export default class Selection {
 	 * @param {module:engine/model/selection~Selection|module:engine/model/position~Position|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
 	 */
-	setTo( selectable, isLastBackward = false ) {
+	setTo( selectable, backwardSelectionOrOffset ) {
 		if ( !selectable ) {
 			this.removeAllRanges();
 		} else if ( selectable instanceof Selection ) {
@@ -311,10 +311,12 @@ export default class Selection {
 			this.setRanges( [ selectable ] );
 		} else if ( isIterable( selectable ) ) {
 			// We assume that the selectable is an iterable of ranges.
-			this.setRanges( selectable, isLastBackward );
+			this.setRanges( selectable, backwardSelectionOrOffset );
 		} else if ( selectable instanceof Position ) {
 			// We assume that the selectable is a position.
 			this.setRanges( [ new Range( selectable ) ] );
+		} else if ( selectable instanceof Element ) {
+			this.setRanges( Position.createAt( selectable, backwardSelectionOrOffset ) );
 		} else {
 			throw new CKEditorError( 'model-selection-added-not-selectable' );
 		}

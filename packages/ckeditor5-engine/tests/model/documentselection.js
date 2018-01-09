@@ -239,7 +239,7 @@ describe( 'DocumentSelection', () => {
 			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
 			selection._setTo( root );
 
-			expect( spy.calledTwice ).to.be.true;
+			sinon.assert.calledTwice( spy.calledTwice ).to.be.true;
 		} );
 	} );
 

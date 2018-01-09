@@ -464,6 +464,18 @@ export default class DocumentSelection {
 		return this._selection.hasAttribute( key );
 	}
 
+	getSelectedBlocks() {
+		return this._selection.getSelectedBlocks.call( this );
+	}
+
+	containsEntireContent() {
+		return this._selection.containsEntireContent.call( this );
+	}
+
+	getLastPosition() {
+		return this._selection.getLastPosition.call( this );
+	}
+
 	/**
 	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
 	 *
