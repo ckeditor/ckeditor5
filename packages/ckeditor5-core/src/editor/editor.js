@@ -239,6 +239,12 @@ mix( Editor, ObservableMixin );
  * Fired when {@link #event:pluginsReady plugins}, {@link #event:uiReady UI} and {@link #event:dataReady data} and all additional
  * editor components are ready.
  *
+ * Note: This event is most useful for plugin developers. When integrating the editor with your website or
+ * application you do not have to listen to `editor#ready` because when the promise returned by the static
+ * {@link #create `Editor.create()`} event is resolved, the editor is already ready. In fact, since the first moment
+ * when the editor instance is available to you is inside `then()`'s callback, you cannot even add a listener to
+ * the `editor#ready` event.
+ *
  * @event ready
  */
 
