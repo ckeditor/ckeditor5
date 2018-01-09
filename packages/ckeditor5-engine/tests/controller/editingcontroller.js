@@ -20,8 +20,6 @@ import ModelPosition from '../../src/model/position';
 import ModelRange from '../../src/model/range';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-
 import { parse, getData as getModelData } from '../../src/dev-utils/model';
 import { getData as getViewData } from '../../src/dev-utils/view';
 
@@ -55,71 +53,17 @@ describe( 'EditingController', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
-	} );
 
-	describe( 'createRoot()', () => {
-		let model, modelRoot, editing;
+		it( 'should bind view roots to model roots', () => {
+			expect( model.document.roots ).to.length( 1 ); // $graveyard
+			expect( editing.view.roots ).to.length( 0 );
 
-		beforeEach( () => {
-			model = new Model();
-			modelRoot = model.document.createRoot();
-			model.document.createRoot( '$root', 'header' );
+			const modelRoot = model.document.createRoot();
 
-			editing = new EditingController( model );
-		} );
+			expect( model.document.roots ).to.length( 2 );
+			expect( editing.view.roots ).to.length( 1 );
 
-		afterEach( () => {
-			editing.destroy();
-			model.markers.destroy();
-		} );
-
-		it( 'should create root', () => {
-			const domRoot = createElement( document, 'div', null, createElement( document, 'p' ) );
-
-			const viewRoot = editing.createRoot( domRoot );
-
-			expect( viewRoot ).to.equal( editing.view.getRoot() );
-			expect( domRoot ).to.equal( editing.view.getDomRoot() );
-
-			expect( editing.view.domConverter.mapViewToDom( viewRoot ) ).to.equal( domRoot );
-			expect( editing.view.renderer.markedChildren.has( viewRoot ) ).to.be.true;
-
-			expect( editing.mapper.toModelElement( viewRoot ) ).to.equal( modelRoot );
-			expect( editing.mapper.toViewElement( modelRoot ) ).to.equal( viewRoot );
-		} );
-
-		it( 'should create root with given name', () => {
-			const domRoot = createElement( document, 'div', null, createElement( document, 'p' ) );
-
-			const viewRoot = editing.createRoot( domRoot, 'header' );
-
-			expect( viewRoot ).to.equal( editing.view.getRoot( 'header' ) );
-			expect( domRoot ).to.equal( editing.view.getDomRoot( 'header' ) );
-
-			expect( editing.view.domConverter.mapViewToDom( viewRoot ) ).to.equal( domRoot );
-			expect( editing.view.renderer.markedChildren.has( viewRoot ) ).to.be.true;
-
-			expect( editing.mapper.toModelElement( viewRoot ) ).to.equal( model.document.getRoot( 'header' ) );
-			expect( editing.mapper.toViewElement( model.document.getRoot( 'header' ) ) ).to.equal( viewRoot );
-		} );
-
-		it( 'should be possible to attach DOM element later', () => {
-			const domRoot = createElement( document, 'div', null, createElement( document, 'p' ) );
-
-			const viewRoot = editing.createRoot( 'div' );
-
-			expect( viewRoot ).to.equal( editing.view.getRoot() );
-			expect( editing.view.getDomRoot() ).to.be.undefined;
-
-			editing.view.attachDomRoot( domRoot );
-
-			expect( domRoot ).to.equal( editing.view.getDomRoot() );
-
-			expect( editing.view.domConverter.mapViewToDom( viewRoot ) ).to.equal( domRoot );
-			expect( editing.view.renderer.markedChildren.has( viewRoot ) ).to.be.true;
-
-			expect( editing.mapper.toModelElement( viewRoot ) ).to.equal( modelRoot );
-			expect( editing.mapper.toViewElement( modelRoot ) ).to.equal( viewRoot );
+			expect( editing.view.getRoot().name ).to.equal( modelRoot.name ).to.equal( '$root' );
 		} );
 	} );
 
@@ -138,7 +82,9 @@ describe( 'EditingController', () => {
 			domRoot.contentEditable = true;
 
 			document.body.appendChild( domRoot );
-			viewRoot = editing.createRoot( domRoot );
+
+			viewRoot = editing.view.getRoot();
+			editing.view.attachDomRoot( domRoot );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );

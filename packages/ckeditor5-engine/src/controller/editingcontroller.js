@@ -7,6 +7,7 @@
  * @module engine/controller/editingcontroller
  */
 
+import RootEditableElement from '../view/rooteditableelement';
 import ModelDiffer from '../model/differ';
 import ViewDocument from '../view/document';
 import Mapper from '../conversion/mapper';
@@ -30,6 +31,8 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
  * including selection handling. It also creates {@link ~EditingController#view view document} which build a
  * browser-independent virtualization over the DOM elements. Editing controller also attach default converters.
+ *
+ * Editing controller binds {@link model:engine/}
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -141,33 +144,22 @@ export default class EditingController {
 		this.modelToView.on( 'selection', clearFakeSelection(), { priority: 'low' } );
 		this.modelToView.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.modelToView.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
-	}
 
-	/**
-	 * {@link module:engine/view/document~Document#createRoot Creates} a view root
-	 * and {@link module:engine/conversion/mapper~Mapper#bindElements binds}
-	 * the model root with view root and and view root with DOM element:
-	 *
-	 *		editing.createRoot( document.querySelector( div#editor ) );
-	 *
-	 * If the DOM element is not available at the time you want to create a view root, for instance it is iframe body
-	 * element, it is possible to create view element and bind the DOM element later:
-	 *
-	 *		editing.createRoot( 'body' );
-	 *		editing.view.attachDomRoot( iframe.contentDocument.body );
-	 *
-	 * @param {Element|String} domRoot DOM root element or the name of view root element if the DOM element will be
-	 * attached later.
-	 * @param {String} [name='main'] Root name.
-	 * @returns {module:engine/view/containerelement~ContainerElement} View root element.
-	 */
-	createRoot( domRoot, name = 'main' ) {
-		const viewRoot = this.view.createRoot( domRoot, name );
-		const modelRoot = this.model.document.getRoot( name );
+		// Bind model and view roots.
+		this.view.roots.bindTo( this.model.document.roots ).using( root => {
+			// $graveyard is a special root that has no reflection in the view.
+			if ( root.rootName == '$graveyard' ) {
+				return null;
+			}
 
-		this.mapper.bindElements( modelRoot, viewRoot );
+			const viewRoot = new RootEditableElement( root.name );
 
-		return viewRoot;
+			viewRoot.rootName = root.rootName;
+			viewRoot.document = this;
+			this.mapper.bindElements( root, viewRoot );
+
+			return viewRoot;
+		} );
 	}
 
 	/**
