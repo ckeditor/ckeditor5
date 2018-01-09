@@ -56,7 +56,6 @@ export default class BalloonEditor extends StandardEditor {
 		this.config.get( 'plugins' ).push( ContextualToolbar );
 		this.config.define( 'contextualToolbar', this.config.get( 'toolbar' ) );
 
-		this.model.document.createRoot();
 		this.data.processor = new HtmlDataProcessor();
 		this.ui = new BalloonEditorUI( this, new BalloonEditorUIView( this.locale, element ) );
 	}

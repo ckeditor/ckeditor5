@@ -19,7 +19,6 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import count from '@ckeditor/ckeditor5-utils/src/count';
 
 testUtils.createSinonSandbox();
 
@@ -53,11 +52,6 @@ describe( 'BalloonEditor', () => {
 			expect( editor.config.get( 'contextualToolbar' ) ).to.have.members( [ 'Bold' ] );
 		} );
 
-		it( 'creates a single document root', () => {
-			expect( count( editor.model.document.getRootNames() ) ).to.equal( 1 );
-			expect( editor.model.document.getRoot() ).to.have.property( 'name', '$root' );
-		} );
-
 		it( 'uses HTMLDataProcessor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
@@ -88,10 +82,6 @@ describe( 'BalloonEditor', () => {
 
 		it( 'attaches editable UI as view\'s DOM root', () => {
 			expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
-		} );
-
-		it( 'creates a single div editable root in the view', () => {
-			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
 		} );
 
 		it( 'creates the UI using BalloonEditorUI classes', () => {
