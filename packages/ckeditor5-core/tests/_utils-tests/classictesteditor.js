@@ -37,13 +37,6 @@ describe( 'ClassicTestEditor', () => {
 			expect( editor.element ).to.equal( editorElement );
 			expect( editor.ui ).to.be.instanceOf( ClassicTestEditorUI );
 			expect( editor.ui.view ).to.be.instanceOf( BoxedEditorUIView );
-		} );
-
-		it( 'creates model and view roots', () => {
-			const editor = new ClassicTestEditor( editorElement );
-
-			expect( editor.model.document.getRoot() ).to.have.property( 'name', '$root' );
-			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 

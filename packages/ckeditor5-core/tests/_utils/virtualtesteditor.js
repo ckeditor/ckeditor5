@@ -18,11 +18,11 @@ export default class VirtualTestEditor extends StandardEditor {
 	constructor( config ) {
 		super( null, config );
 
-		this.model.document.createRoot();
-
-		this.editing.createRoot( 'div' );
-
 		this.data.processor = new HtmlDataProcessor();
+
+		// Lets change view root element name from $root to div.
+		// This will look more friendly in view tests.
+		this.editing.view.getRoot().name = 'div';
 	}
 
 	/**
