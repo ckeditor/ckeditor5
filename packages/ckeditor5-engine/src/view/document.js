@@ -74,15 +74,15 @@ export default class Document {
 		this.domConverter = new DomConverter();
 
 		/**
-		 * Roots of the view tree. Map of the {module:engine/view/element~Element view elements} with roots names as keys.
+		 * Roots of the view tree. Collection of the {module:engine/view/element~Element view elements}.
 		 *
 		 * View roots are created as a result of binding between {@link module:engine/view/document~Document#roots} and
 		 * {@link module:engine/model/document~Document#roots} and this is handled by
-		 * {@link modeule:engine/controller/editingcontroller~EditingController}, so to create view root we need to create
+		 * {@link module:engine/controller/editingcontroller~EditingController}, so to create view root we need to create
 		 * model root using {@link module:engine/model/document~Document#createRoot}.
 		 *
 		 * @readonly
-		 * @member {Map} module:engine/view/document~Document#roots
+		 * @member {Collection} module:engine/view/document~Document#roots
 		 */
 		this.roots = new Collection( { idProperty: 'rootName' } );
 

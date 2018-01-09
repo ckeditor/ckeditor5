@@ -32,7 +32,9 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * including selection handling. It also creates {@link ~EditingController#view view document} which build a
  * browser-independent virtualization over the DOM elements. Editing controller also attach default converters.
  *
- * Editing controller binds {@link model:engine/}
+ * Editing controller binds {@link module:engine/view/document~Document#roots view roots collection} to
+ * {@link module:engine/model/document~Document#roots model roots collection} so creating model root automatically
+ * creates corresponding view root.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
