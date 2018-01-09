@@ -62,6 +62,7 @@ describe( 'EditingController', () => {
 
 			expect( model.document.roots ).to.length( 2 );
 			expect( editing.view.roots ).to.length( 1 );
+			expect( editing.view.getRoot().document ).to.equal( editing.view );
 
 			expect( editing.view.getRoot().name ).to.equal( modelRoot.name ).to.equal( '$root' );
 		} );
