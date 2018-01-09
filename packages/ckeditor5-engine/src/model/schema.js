@@ -27,9 +27,9 @@ import Range from './range';
  *
  * ## Defining allowed structures
  *
- * When a feature introduces a model element it should registered it in the schema. Besides
+ * When a feature introduces a model element it should register it in the schema. Besides
  * defining that such an element may exist in the model, the feature also needs to define where
- * this element may occur:
+ * this element may be placed:
  *
  *		schema.register( 'myElement', {
  *			allowIn: '$root'
@@ -108,9 +108,9 @@ import Range from './range';
  * ## Defining advanced rules in `checkChild()`'s callbacks
  *
  * The {@link ~Schema#checkChild} method which is the base method used to check whether some element is allowed in a given structure
- * is {@link module:utils/observablemixin~ObservableMixin#decorate decorated} with the {@link ~Schema#event:checkChild} event.
+ * is {@link module:utils/observablemixin~ObservableMixin#decorate a decorated method}.
  * It means that you can add listeners to implement your specific rules which are not limited by the declarative
- * {@link module:engine/model/schema~SchemaItemDefinition} API.
+ * {@link module:engine/model/schema~SchemaItemDefinition API}.
  *
  * The block quote feature defines such a listener to disallow nested `<blockQuote>` structures:
  *
