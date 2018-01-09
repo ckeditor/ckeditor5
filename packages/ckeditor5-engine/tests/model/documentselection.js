@@ -205,13 +205,13 @@ describe( 'DocumentSelection', () => {
 		it( 'should convert added Range to LiveRange', () => {
 			selection._setTo( range );
 
-			expect( selection.getFirstRange() ).to.be.instanceof( LiveRange );
+			expect( selection._selection._ranges[ 0 ] ).to.be.instanceof( LiveRange );
 		} );
 
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection._setTo( { invalid: 'range' } );
-			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
+			} ).to.throw( CKEditorError, /model-selection-set-not-selectable/ );
 		} );
 
 		it( 'should not add a range that is in graveyard', () => {
@@ -219,12 +219,12 @@ describe( 'DocumentSelection', () => {
 
 			selection._setTo( Range.createIn( doc.graveyard ) );
 
-			expect( selection._ranges.length ).to.equal( 0 );
+			expect( selection._selection._ranges.length ).to.equal( 0 );
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'should refresh attributes', () => {
-			const spy = testUtils.sinon.spy( selection, '_updateAttributes' );
+			const spy = testUtils.sinon.spy( selection._selection, '_updateAttributes' );
 
 			selection._setTo( range );
 
@@ -239,7 +239,7 @@ describe( 'DocumentSelection', () => {
 			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
 			selection._setTo( root );
 
-			sinon.assert.calledTwice( spy.calledTwice ).to.be.true;
+			expect( spy.calledTwice ).to.be.true;
 		} );
 	} );
 
@@ -247,7 +247,7 @@ describe( 'DocumentSelection', () => {
 		it( 'should unbind all events', () => {
 			selection._setTo( [ range, liveRange ] );
 
-			const ranges = Array.from( selection.getRanges() );
+			const ranges = Array.from( selection._selection._ranges );
 
 			sinon.spy( ranges[ 0 ], 'detach' );
 			sinon.spy( ranges[ 1 ], 'detach' );
@@ -291,13 +291,12 @@ describe( 'DocumentSelection', () => {
 		let spy, ranges;
 
 		beforeEach( () => {
-			selection._selection.addRange( liveRange );
-			selection._selection.addRange( range );
+			selection._setTo( [ liveRange, range ] );
 
 			spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			ranges = Array.from( selection.getRanges() );
+			ranges = Array.from( selection._selection._ranges );
 
 			sinon.spy( ranges[ 0 ], 'detach' );
 			sinon.spy( ranges[ 1 ], 'detach' );
@@ -322,7 +321,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should refresh attributes', () => {
-			const spy = sinon.spy( selection, '_updateAttributes' );
+			const spy = sinon.spy( selection._selection, '_updateAttributes' );
 
 			selection._removeAllRanges();
 
@@ -340,7 +339,7 @@ describe( 'DocumentSelection', () => {
 		it( 'should detach removed ranges', () => {
 			selection._setTo( [ liveRange, range ] );
 
-			const oldRanges = Array.from( selection.getRanges() );
+			const oldRanges = Array.from( selection._selection._ranges );
 
 			sinon.spy( oldRanges[ 0 ], 'detach' );
 			sinon.spy( oldRanges[ 1 ], 'detach' );
@@ -352,7 +351,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should refresh attributes', () => {
-			const spy = sinon.spy( selection, '_updateAttributes' );
+			const spy = sinon.spy( selection._selection, '_updateAttributes' );
 
 			selection._setTo( [ range ] );
 
@@ -390,16 +389,6 @@ describe( 'DocumentSelection', () => {
 
 			expect( lastRange.start.isEqual( new Position( root, [ 0, 0 ] ) ) );
 			expect( lastRange.end.isEqual( new Position( root, [ 0, 0 ] ) ) );
-		} );
-	} );
-
-	describe( 'createFromSelection()', () => {
-		it( 'should throw', () => {
-			selection._setTo( range, true );
-
-			expect( () => {
-				DocumentSelection.createFromSelection( selection );
-			} ).to.throw( CKEditorError, /^documentselection-cannot-create:/ );
 		} );
 	} );
 

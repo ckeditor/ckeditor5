@@ -295,7 +295,7 @@ export function parse( data, schema, options = {} ) {
 
 		// Create new selection.
 		selection = new ModelSelection();
-		selection.setRanges( ranges, viewSelection.isBackward );
+		selection.setTo( ranges, viewSelection.isBackward );
 
 		// Set attributes to selection if specified.
 		if ( options.selectionAttributes ) {

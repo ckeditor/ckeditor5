@@ -235,7 +235,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setIn()', () => {
+	describe.skip( 'setIn()', () => {
 		it( 'should set selection inside an element', () => {
 			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
 
@@ -250,7 +250,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setOn()', () => {
+	describe.skip( 'setOn()', () => {
 		it( 'should set selection on an item', () => {
 			const textNode1 = new Text( 'foo' );
 			const textNode2 = new Text( 'bar' );
@@ -547,7 +547,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setRanges()', () => {
+	describe( '_setRanges()', () => {
 		let newRanges, spy;
 
 		beforeEach( () => {
@@ -565,31 +565,31 @@ describe( 'Selection', () => {
 
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
-				selection.setRanges( [ { invalid: 'range' } ] );
+				selection._setRanges( [ { invalid: 'range' } ] );
 			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
 		} );
 
 		it( 'should remove all ranges and add given ranges', () => {
-			selection.setRanges( newRanges );
+			selection._setRanges( newRanges );
 
 			const ranges = Array.from( selection.getRanges() );
 			expect( ranges ).to.deep.equal( newRanges );
 		} );
 
 		it( 'should use last range from given array to get anchor and focus position', () => {
-			selection.setRanges( newRanges );
+			selection._setRanges( newRanges );
 			expect( selection.anchor.path ).to.deep.equal( [ 5, 0 ] );
 			expect( selection.focus.path ).to.deep.equal( [ 6, 0 ] );
 		} );
 
 		it( 'should acknowledge backward flag when setting anchor and focus', () => {
-			selection.setRanges( newRanges, true );
+			selection._setRanges( newRanges, true );
 			expect( selection.anchor.path ).to.deep.equal( [ 6, 0 ] );
 			expect( selection.focus.path ).to.deep.equal( [ 5, 0 ] );
 		} );
 
 		it( 'should fire exactly one change:range event', () => {
-			selection.setRanges( newRanges );
+			selection._setRanges( newRanges );
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
@@ -598,18 +598,18 @@ describe( 'Selection', () => {
 				expect( data.directChange ).to.be.true;
 			} );
 
-			selection.setRanges( newRanges );
+			selection._setRanges( newRanges );
 		} );
 
 		it( 'should not fire change:range event if given ranges are the same', () => {
-			selection.setRanges( [ liveRange, range ] );
+			selection._setRanges( [ liveRange, range ] );
 			expect( spy.calledOnce ).to.be.false;
 		} );
 	} );
 
 	describe( 'setTo()', () => {
-		it( 'should set selection to be same as given selection, using setRanges method', () => {
-			const spy = sinon.spy( selection, 'setRanges' );
+		it( 'should set selection to be same as given selection, using _setRanges method', () => {
+			const spy = sinon.spy( selection, '_setRanges' );
 
 			const otherSelection = new Selection();
 			otherSelection.addRange( range1 );
@@ -619,34 +619,34 @@ describe( 'Selection', () => {
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
 			expect( selection.isBackward ).to.be.true;
-			expect( selection.setRanges.calledOnce ).to.be.true;
+			expect( selection._setRanges.calledOnce ).to.be.true;
 			spy.restore();
 		} );
 
-		it( 'should set selection on the given Range using setRanges method', () => {
-			const spy = sinon.spy( selection, 'setRanges' );
+		it( 'should set selection on the given Range using _setRanges method', () => {
+			const spy = sinon.spy( selection, '_setRanges' );
 
 			selection.setTo( range1 );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
 			expect( selection.isBackward ).to.be.false;
-			expect( selection.setRanges.calledOnce ).to.be.true;
+			expect( selection._setRanges.calledOnce ).to.be.true;
 			spy.restore();
 		} );
 
-		it( 'should set selection on the given iterable of Ranges using setRanges method', () => {
-			const spy = sinon.spy( selection, 'setRanges' );
+		it( 'should set selection on the given iterable of Ranges using _setRanges method', () => {
+			const spy = sinon.spy( selection, '_setRanges' );
 
 			selection.setTo( new Set( [ range1, range2 ] ) );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
 			expect( selection.isBackward ).to.be.false;
-			expect( selection.setRanges.calledOnce ).to.be.true;
+			expect( selection._setRanges.calledOnce ).to.be.true;
 			spy.restore();
 		} );
 
-		it( 'should set collapsed selection on the given Position using setRanges method', () => {
-			const spy = sinon.spy( selection, 'setRanges' );
+		it( 'should set collapsed selection on the given Position using _setRanges method', () => {
+			const spy = sinon.spy( selection, '_setRanges' );
 			const position = new Position( root, [ 4 ] );
 
 			selection.setTo( position );
@@ -655,7 +655,7 @@ describe( 'Selection', () => {
 			expect( Array.from( selection.getRanges() )[ 0 ].start ).to.deep.equal( position );
 			expect( selection.isBackward ).to.be.false;
 			expect( selection.isCollapsed ).to.be.true;
-			expect( selection.setRanges.calledOnce ).to.be.true;
+			expect( selection._setRanges.calledOnce ).to.be.true;
 			spy.restore();
 		} );
 	} );
@@ -796,7 +796,7 @@ describe( 'Selection', () => {
 
 	describe( 'collapseToStart()', () => {
 		it( 'should collapse to start position and fire change event', () => {
-			selection.setRanges( [ range2, range1, range3 ] );
+			selection._setRanges( [ range2, range1, range3 ] );
 
 			const spy = sinon.spy();
 			selection.on( 'change:range', spy );
@@ -832,7 +832,7 @@ describe( 'Selection', () => {
 
 	describe( 'collapseToEnd()', () => {
 		it( 'should collapse to start position and fire change:range event', () => {
-			selection.setRanges( [ range2, range3, range1 ] );
+			selection._setRanges( [ range2, range3, range1 ] );
 
 			const spy = sinon.spy();
 			selection.on( 'change:range', spy );
@@ -1132,7 +1132,7 @@ describe( 'Selection', () => {
 
 		describe( 'setAttribute()', () => {
 			it( 'should set given attribute on the selection', () => {
-				selection.setRanges( [ rangeInFullP ] );
+				selection._setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
@@ -1167,7 +1167,7 @@ describe( 'Selection', () => {
 
 		describe( 'getAttributes()', () => {
 			it( 'should return an iterator that iterates over all attributes set on selection', () => {
-				selection.setRanges( [ rangeInFullP ] );
+				selection._setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'xyz' );
 
@@ -1179,7 +1179,7 @@ describe( 'Selection', () => {
 
 		describe( 'getAttributeKeys()', () => {
 			it( 'should return iterator that iterates over all attribute keys set on selection', () => {
-				selection.setRanges( [ rangeInFullP ] );
+				selection._setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'xyz' );
 
@@ -1191,7 +1191,7 @@ describe( 'Selection', () => {
 
 		describe( 'hasAttribute()', () => {
 			it( 'should return true if element contains attribute with given key', () => {
-				selection.setRanges( [ rangeInFullP ] );
+				selection._setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
 				expect( selection.hasAttribute( 'foo' ) ).to.be.true;
@@ -1204,7 +1204,7 @@ describe( 'Selection', () => {
 
 		describe( 'clearAttributes()', () => {
 			it( 'should remove all attributes from the element', () => {
-				selection.setRanges( [ rangeInFullP ] );
+				selection._setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'xyz' );
 
@@ -1237,7 +1237,7 @@ describe( 'Selection', () => {
 
 		describe( 'removeAttribute()', () => {
 			it( 'should remove attribute', () => {
-				selection.setRanges( [ rangeInFullP ] );
+				selection._setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 				selection.removeAttribute( 'foo' );
 
@@ -1297,7 +1297,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should not fire change:attribute event if attributes had not changed', () => {
-				selection.setRanges( [ rangeInFullP ] );
+				selection._setRanges( [ rangeInFullP ] );
 				selection.setAttributesTo( { foo: 'bar', xxx: 'yyy' } );
 
 				const spy = sinon.spy();

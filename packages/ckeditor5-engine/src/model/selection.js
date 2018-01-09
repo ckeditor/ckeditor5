@@ -56,7 +56,7 @@ export default class Selection {
 		this._attrs = new Map();
 
 		if ( ranges ) {
-			this.setRanges( ranges, isLastBackward );
+			this._setRanges( ranges, isLastBackward );
 		}
 	}
 
@@ -306,19 +306,19 @@ export default class Selection {
 		if ( !selectable ) {
 			this.removeAllRanges();
 		} else if ( selectable instanceof Selection ) {
-			this.setRanges( selectable.getRanges(), selectable.isBackward );
+			this._setRanges( selectable.getRanges(), selectable.isBackward );
 		} else if ( selectable instanceof Range ) {
-			this.setRanges( [ selectable ] );
+			this._setRanges( [ selectable ] );
 		} else if ( isIterable( selectable ) ) {
 			// We assume that the selectable is an iterable of ranges.
-			this.setRanges( selectable, backwardSelectionOrOffset );
+			this._setRanges( selectable, backwardSelectionOrOffset );
 		} else if ( selectable instanceof Position ) {
 			// We assume that the selectable is a position.
-			this.setRanges( [ new Range( selectable ) ] );
+			this._setRanges( [ new Range( selectable ) ] );
 		} else if ( selectable instanceof Element ) {
-			this.setRanges( Position.createAt( selectable, backwardSelectionOrOffset ) );
+			this._setRanges( Position.createAt( selectable, backwardSelectionOrOffset ) );
 		} else {
-			throw new CKEditorError( 'model-selection-added-not-selectable' );
+			throw new CKEditorError( 'model-selection-set-not-selectable' );
 		}
 	}
 
@@ -333,7 +333,7 @@ export default class Selection {
 	 * @param {Boolean} [isLastBackward=false] Flag describing if last added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`).
 	 */
-	setRanges( newRanges, isLastBackward = false ) {
+	_setRanges( newRanges, isLastBackward = false ) {
 		newRanges = Array.from( newRanges );
 
 		// Check whether there is any range in new ranges set that is different than all already added ranges.
@@ -437,7 +437,7 @@ export default class Selection {
 		const pos = Position.createAt( itemOrPosition, offset );
 		const range = new Range( pos, pos );
 
-		this.setRanges( [ range ] );
+		this._setRanges( [ range ] );
 	}
 
 	/**
@@ -451,7 +451,7 @@ export default class Selection {
 		const startPosition = this.getFirstPosition();
 
 		if ( startPosition !== null ) {
-			this.setRanges( [ new Range( startPosition, startPosition ) ] );
+			this._setRanges( [ new Range( startPosition, startPosition ) ] );
 		}
 	}
 
@@ -466,7 +466,7 @@ export default class Selection {
 		const endPosition = this.getLastPosition();
 
 		if ( endPosition !== null ) {
-			this.setRanges( [ new Range( endPosition, endPosition ) ] );
+			this._setRanges( [ new Range( endPosition, endPosition ) ] );
 		}
 	}
 
