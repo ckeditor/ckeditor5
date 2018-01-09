@@ -550,6 +550,21 @@ describe( 'View converter builder', () => {
 	// 	expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
 	// } );
 
+	it( 'should not set attribute when it is not allowed', () => {
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+		buildViewConverter().for( dispatcher ).fromElement( 'u' ).toAttribute( 'underscore', true );
+
+		const viewElement = new ViewContainerElement( 'p', null,
+			new ViewAttributeElement( 'u', null,
+				new ViewText( 'foo' )
+			)
+		);
+
+		const conversionResult = dispatcher.convert( viewElement, additionalData );
+
+		expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
+	} );
+
 	it( 'should stop to element conversion if creating function returned null', () => {
 		buildViewConverter()
 			.for( dispatcher )
