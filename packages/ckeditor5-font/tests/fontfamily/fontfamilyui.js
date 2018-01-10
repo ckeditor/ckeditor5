@@ -12,11 +12,28 @@ import fontFamilyIcon from '../../theme/icons/font-family.svg';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 
 testUtils.createSinonSandbox();
 
 describe( 'FontFamilyUI', () => {
 	let editor, command, element;
+
+	before( () => {
+		addTranslations( 'en', {
+			'Font Family': 'Font Family',
+			'Default': 'Default'
+		} );
+
+		addTranslations( 'pl', {
+			'Font Family': 'Czcionka',
+			'Default': 'Domyślna'
+		} );
+	} );
+
+	after( () => {
+		clearTranslations();
+	} );
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -80,6 +97,51 @@ describe( 'FontFamilyUI', () => {
 				command.isEnabled = true;
 				expect( dropdown.buttonView.isEnabled ).to.be.true;
 			} );
+		} );
+
+		describe( 'localization', () => {
+			beforeEach( () => {
+				return localizedEditor( [ 'default', 'Arial' ] );
+			} );
+
+			it( 'works for the #buttonView', () => {
+				const buttonView = dropdown.buttonView;
+
+				expect( buttonView.tooltip ).to.equal( 'Czcionka' );
+			} );
+
+			it( 'works for the listView#items in the panel', () => {
+				const listView = dropdown.listView;
+
+				expect( listView.items.map( item => item.label ) ).to.deep.equal( [
+					'Domyślna',
+					'Arial'
+				] );
+			} );
+
+			function localizedEditor( options ) {
+				const editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				return ClassicTestEditor
+					.create( editorElement, {
+						plugins: [ FontFamilyEditing, FontFamilyUI ],
+						toolbar: [ 'fontFamily' ],
+						language: 'pl',
+						fontFamily: {
+							options
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						dropdown = editor.ui.componentFactory.create( 'fontFamily' );
+						command = editor.commands.get( 'fontFamily' );
+
+						editorElement.remove();
+
+						return editor.destroy();
+					} );
+			}
 		} );
 	} );
 } );

@@ -91,6 +91,7 @@ export default class FontSizeUI extends Plugin {
 		const t = editor.t;
 
 		const localizedTitles = {
+			Normal: t( 'Normal' ),
 			Tiny: t( 'Tiny' ),
 			Small: t( 'Small' ),
 			Big: t( 'Big' ),
@@ -103,7 +104,7 @@ export default class FontSizeUI extends Plugin {
 			const title = localizedTitles[ option.title ];
 
 			if ( title && title != option.title ) {
-				// Clone the option to avoid altering the original `config.fontSize.options`.
+				// Clone the option to avoid altering the original `namedPresets` from `./utils.js`.
 				option = Object.assign( {}, option, { title } );
 			}
 

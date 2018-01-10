@@ -95,22 +95,12 @@ export default class FontFamilyUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		const localizedTitles = {
-			Default: t( 'Default' ),
-			Tiny: t( 'Tiny' ),
-			Small: t( 'Small' ),
-			Big: t( 'Big' ),
-			Huge: t( 'Huge' )
-		};
-
 		const options = normalizeOptions( editor.config.get( 'fontFamily.options' ) );
 
 		return options.map( option => {
-			const title = localizedTitles[ option.title ];
-
-			if ( title && title != option.title ) {
-				// Clone the option to avoid altering the original `config.fontFamily.options`.
-				option = Object.assign( {}, option, { title } );
+			// The only title to localize is "Default" others are font names.
+			if ( option.title === 'Default' ) {
+				option.title = t( 'Default' );
 			}
 
 			return option;
