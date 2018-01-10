@@ -746,10 +746,6 @@ export default class Selection {
 	 * @param {module:engine/model/range~Range} range Range to add.
 	 */
 	_pushRange( range ) {
-		if ( !( range instanceof Range ) ) {
-			throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
-		}
-
 		this._checkRange( range );
 		this._ranges.push( Range.createFromRange( range ) );
 	}
@@ -761,6 +757,15 @@ export default class Selection {
 	 * @param {module:engine/model/range~Range} range Range to check.
 	 */
 	_checkRange( range ) {
+		if ( !( range instanceof Range ) ) {
+			/**
+			 * Trying to add an object that is not an instance of Range.
+			 *
+			 * @error model-selection-added-not-range
+			 */
+			throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
+		}
+
 		for ( let i = 0; i < this._ranges.length; i++ ) {
 			if ( range.isIntersecting( this._ranges[ i ] ) ) {
 				/**

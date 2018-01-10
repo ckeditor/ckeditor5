@@ -8,7 +8,6 @@
  */
 
 import Position from './position';
-import Range from './range';
 import LiveRange from './liverange';
 import Text from './text';
 import TextProxy from './textproxy';
@@ -291,14 +290,7 @@ export default class LiveSelection extends Selection {
 	 * @param {module:engine/model/range~Range} range
 	 */
 	_prepareRange( range ) {
-		if ( !( range instanceof Range ) ) {
-			/**
-			 * Trying to add an object that is not an instance of Range.
-			 *
-			 * @error model-selection-added-not-range
-			 */
-			throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
-		}
+		this._checkRange( range );
 
 		if ( range.root == this._document.graveyard ) {
 			/**
@@ -310,8 +302,6 @@ export default class LiveSelection extends Selection {
 
 			return;
 		}
-
-		this._checkRange( range );
 
 		const liveRange = LiveRange.createFromRange( range );
 

@@ -69,6 +69,18 @@ export default class DocumentSelection {
 		return this._selection.getLastRange();
 	}
 
+	getSelectedBlocks() {
+		return this._selection.getSelectedBlocks();
+	}
+
+	containsEntireContent( element ) {
+		return this._selection.containsEntireContent( element );
+	}
+
+	getLastPosition() {
+		return this._selection.getLastPosition();
+	}
+
 	_moveFocusTo( itemOrPosition, offset ) {
 		this._selection.moveFocusTo( itemOrPosition, offset );
 	}
@@ -77,12 +89,12 @@ export default class DocumentSelection {
 		this._selection.setTo( selectable, backwardSelectionOrOffset );
 	}
 
-	_setAttribute( key, value ) {
-		this._selection.setAttribute( key, value );
-	}
-
 	destroy() {
 		this._selection.destroy();
+	}
+
+	getAttributeKeys() {
+		return this._selection.getAttributeKeys();
 	}
 
 	getAttributes() {
@@ -97,16 +109,12 @@ export default class DocumentSelection {
 		return this._selection.hasAttribute( key );
 	}
 
-	getSelectedBlocks() {
-		return this._selection.getSelectedBlocks();
+	_setAttribute( key, value ) {
+		this._selection.setAttribute( key, value );
 	}
 
-	containsEntireContent( element ) {
-		return this._selection.containsEntireContent( element );
-	}
-
-	getLastPosition() {
-		return this._selection.getLastPosition();
+	_removeAttribute( key ) {
+		this._selection.removeAttribute( key );
 	}
 
 	_clearAttributes() {
@@ -115,10 +123,6 @@ export default class DocumentSelection {
 
 	_removeAllRanges() {
 		this._selection.removeAllRanges();
-	}
-
-	_removeAttribute( param ) {
-		this._selection.removeAttribute( param );
 	}
 
 	_getStoredAttributes() {
@@ -144,7 +148,7 @@ export default class DocumentSelection {
 	 * Checks whether the given attribute key is an attribute stored on an element.
 	 *
 	 * @protected
-	 * @param {String} key
+	 * @param {String} storePrefix
 	 * @returns {Boolean}
 	 */
 	static _isStoreAttributeKey( storePrefix ) {

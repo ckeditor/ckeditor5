@@ -19,6 +19,7 @@ import ModelPosition from '../model/position';
 import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
 import ModelSelection from '../model/selection';
 import ModelDocumentFragment from '../model/documentfragment';
+import DocumentSelection from '../model/documentselection';
 
 import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
 import ViewSelection from '../view/selection';
@@ -46,7 +47,7 @@ import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObjec
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
  * be not included in returned string.
- * @param {Boolean} [options.rootName='main'] Name of the root from which data should be stringified. If not provided
+ * @param {String} [options.rootName='main'] Name of the root from which data should be stringified. If not provided
  * default `main` name will be used.
  * @returns {String} The stringified data.
  */
@@ -180,6 +181,8 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	// Get selection from passed selection or position or range if at least one is specified.
 	if ( selectionOrPositionOrRange instanceof ModelSelection ) {
 		selection = selectionOrPositionOrRange;
+	} else if ( selectionOrPositionOrRange instanceof DocumentSelection ) {
+		selection = selectionOrPositionOrRange;
 	} else if ( selectionOrPositionOrRange instanceof ModelRange ) {
 		selection = new ModelSelection();
 		selection.addRange( selectionOrPositionOrRange );
@@ -211,7 +214,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	modelToView.on( 'selection', convertRangeSelection() );
 	modelToView.on( 'selection', convertCollapsedSelection() );
 
-	// Convert model to view.
+	// Convert model to view.w
 	modelToView.convertInsert( range );
 
 	// Convert model selection to view selection.
