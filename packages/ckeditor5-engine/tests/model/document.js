@@ -6,6 +6,7 @@
 import Model from '../../src/model/model';
 import Document from '../../src/model/document';
 import RootElement from '../../src/model/rootelement';
+import Text from '../../src/model/text';
 import Batch from '../../src/model/batch';
 import Delta from '../../src/model/delta/delta';
 import Range from '../../src/model/range';
@@ -532,6 +533,72 @@ describe( 'Document', () => {
 			expect( callA.calledTwice ).to.be.true;
 			expect( callB.calledTwice ).to.be.true;
 			expect( callC.calledOnce ).to.be.true;
+		} );
+	} );
+
+	describe( 'event change', () => {
+		it( 'should be fired if there was a change in a document tree in a change block and have a batch as a param', () => {
+			doc.createRoot();
+			const spy = sinon.spy();
+
+			doc.on( 'change', ( evt, batch ) => {
+				spy();
+				expect( batch ).to.be.instanceof( Batch );
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'foo', doc.getRoot(), 0 );
+			} );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should be fired if there was a change in a document tree in a change block and have a batch as param', () => {
+			doc.createRoot();
+			const spy = sinon.spy();
+
+			doc.on( 'change', ( evt, batch ) => {
+				spy();
+				expect( batch ).to.be.instanceof( Batch );
+			} );
+
+			model.enqueueChange( writer => {
+				writer.insertText( 'foo', doc.getRoot(), 0 );
+			} );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should be fired if there was a selection change in an (enqueue)change block', () => {
+			doc.createRoot();
+			const spy = sinon.spy();
+
+			const root = doc.getRoot();
+			root.appendChildren( new Text( 'foo' ) );
+
+			doc.on( 'change', spy );
+
+			model.change( () => {
+				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 2, root, 2 ) ] );
+			} );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not be fired if writer was used on non-document tree', () => {
+			const spy = sinon.spy();
+
+			doc.on( 'change', ( evt, batch ) => {
+				spy();
+				expect( batch ).to.be.instanceof( Batch );
+			} );
+
+			model.change( writer => {
+				const docFrag = writer.createDocumentFragment();
+				writer.insertText( 'foo', docFrag, 0 );
+			} );
+
+			expect( spy.calledOnce ).to.be.false;
 		} );
 	} );
 

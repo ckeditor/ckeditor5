@@ -152,7 +152,7 @@ export default class Document {
 			if ( !this.differ.isEmpty || hasSelectionChanged ) {
 				this._callPostFixers( writer );
 
-				this.fire( 'change' );
+				this.fire( 'change', writer.batch );
 
 				this.differ.reset();
 				hasSelectionChanged = false;
