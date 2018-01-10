@@ -191,7 +191,9 @@ export default class Document {
 	 * @returns {module:engine/model/rootelement~RootElement} Root registered under given name.
 	 */
 	getRoot( name = 'main' ) {
-		if ( !this.hasRoot( name ) ) {
+		const root = this.roots.get( name );
+
+		if ( !root ) {
 			/**
 			 * Root with specified name does not exist.
 			 *
@@ -204,17 +206,7 @@ export default class Document {
 			);
 		}
 
-		return this.roots.get( name );
-	}
-
-	/**
-	 * Checks if root with given name is defined.
-	 *
-	 * @param {String} name Name of root to check.
-	 * @returns {Boolean}
-	 */
-	hasRoot( name ) {
-		return !!this.roots.get( name );
+		return root;
 	}
 
 	/**

@@ -179,18 +179,6 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'hasRoot()', () => {
-		it( 'should return true when Document has RootElement with given name', () => {
-			doc.createRoot();
-
-			expect( doc.hasRoot( 'main' ) ).to.be.true;
-		} );
-
-		it( 'should return false when Document does not have RootElement with given name', () => {
-			expect( doc.hasRoot( 'noroot' ) ).to.be.false;
-		} );
-	} );
-
 	describe( 'selection', () => {
 		it( 'should get updated attributes whenever attribute operation is applied', () => {
 			sinon.spy( doc.selection, '_updateAttributes' );
