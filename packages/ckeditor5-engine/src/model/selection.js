@@ -21,6 +21,8 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  * `Selection` is a group of {@link module:engine/model/range~Range ranges} which has a direction specified by
  * {@link module:engine/model/selection~Selection#anchor anchor} and {@link module:engine/model/selection~Selection#focus focus}.
  * Additionally, `Selection` may have it's own attributes.
+ *
+ * @mixes {module:utils/emittermixin~EmitterMixin}
  */
 export default class Selection {
 	/**
@@ -35,7 +37,7 @@ export default class Selection {
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
 		 * @private
-		 * @member {Boolean}
+		 * @type {Boolean}
 		 */
 		this._lastRangeBackward = false;
 
@@ -43,7 +45,7 @@ export default class Selection {
 		 * Stores selection ranges.
 		 *
 		 * @protected
-		 * @member {Array.<module:engine/model/range~Range>}
+		 * @type {Array.<module:engine/model/range~Range>}
 		 */
 		this._ranges = [];
 
@@ -51,7 +53,7 @@ export default class Selection {
 		 * List of attributes set on current selection.
 		 *
 		 * @protected
-		 * @member {Map} module:engine/model/selection~Selection#_attrs
+		 * @type {Map}
 		 */
 		this._attrs = new Map();
 
@@ -174,7 +176,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns an iterator that iterates over copies of selection ranges.
+	 * Returns an iterable that iterates over copies of selection ranges.
 	 *
 	 * @returns {Iterable.<module:engine/model/range~Range>}
 	 */
@@ -259,30 +261,6 @@ export default class Selection {
 	}
 
 	/**
-	 * Adds a range to this selection. Added range is copied. This means that passed range is not saved in `Selection`
-	 * instance and operating on it will not change `Selection` state.
-	 *
-	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
-	 * {@link module:engine/model/range~Range#start start} to {@link module:engine/model/range~Range#end end}
-	 * or from {@link module:engine/model/range~Range#end end}
-	 * to {@link module:engine/model/range~Range#start start}.
-	 * The flag is used to set {@link #anchor} and
-	 * {@link #focus} properties.
-	 *
-	 * @protected
-	 * @fires change:range
-	 * @param {module:engine/model/range~Range} range Range to add.
-	 * @param {Boolean} [isBackward=false] Flag describing if added range was selected forward - from start to end (`false`)
-	 * or backward - from end to start (`true`).
-	 */
-	_addRange( range, isBackward = false ) {
-		this._pushRange( range );
-		this._lastRangeBackward = !!isBackward;
-
-		this.fire( 'change:range', { directChange: true } );
-	}
-
-	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
 	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range} or an iterable of {@link module:engine/model/range~Range ranges}.
@@ -290,7 +268,7 @@ export default class Selection {
 	 * @protected
 	 * @param {module:engine/model/selection~Selection|module:engine/model/position~Position|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
-	 * @param {string|boolean|number} [backwardSelectionOrOffset]
+	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
 	 */
 	setTo( selectable, backwardSelectionOrOffset ) {
 		if ( !selectable ) {
@@ -365,53 +343,6 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets collapsed selection at the specified location.
-	 *
-	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
-	 *
-	 * @fires change:range
-	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a {@link module:engine/model/item~Item model item}.
-	 */
-	setCollapsedAt( itemOrPosition, offset ) {
-		const pos = Position.createAt( itemOrPosition, offset );
-		const range = new Range( pos, pos );
-
-		this._setRanges( [ range ] );
-	}
-
-	/**
-	 * Collapses selection to the selection's {@link module:engine/model/selection~Selection#getFirstPosition first position}.
-	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
-	 * inside selection.
-	 *
-	 * @fires change
-	 */
-	collapseToStart() {
-		const startPosition = this.getFirstPosition();
-
-		if ( startPosition !== null ) {
-			this._setRanges( [ new Range( startPosition, startPosition ) ] );
-		}
-	}
-
-	/**
-	 * Collapses selection to the selection's {@link module:engine/model/selection~Selection#getLastPosition last position}.
-	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
-	 * inside selection.
-	 *
-	 * @fires change
-	 */
-	collapseToEnd() {
-		const endPosition = this.getLastPosition();
-
-		if ( endPosition !== null ) {
-			this._setRanges( [ new Range( endPosition, endPosition ) ] );
-		}
-	}
-
-	/**
 	 * Moves {@link module:engine/model/selection~Selection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
@@ -446,10 +377,14 @@ export default class Selection {
 		}
 
 		if ( newFocus.compareWith( anchor ) == 'before' ) {
-			this._addRange( new Range( newFocus, anchor ), true );
+			this._pushRange( new Range( newFocus, anchor ) );
+			this._lastRangeBackward = true;
 		} else {
-			this._addRange( new Range( anchor, newFocus ) );
+			this._pushRange( new Range( anchor, newFocus ) );
+			this._lastRangeBackward = false;
 		}
+
+		this.fire( 'change:range', { directChange: true } );
 	}
 
 	/**
@@ -463,7 +398,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns iterator that iterates over this selection's attributes.
+	 * Returns iterable that iterates over this selection's attributes.
 	 *
 	 * Attributes are returned as arrays containing two items. First one is attribute key and second is attribute value.
 	 * This format is accepted by native `Map` object and also can be passed in `Node` constructor.
@@ -475,7 +410,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns iterator that iterates over this selection's attribute keys.
+	 * Returns iterable that iterates over this selection's attribute keys.
 	 *
 	 * @returns {Iterable.<String>}
 	 */

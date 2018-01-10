@@ -161,84 +161,6 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe.skip( 'addRange()', () => {
-		it( 'should copy added ranges and store multiple ranges', () => {
-			selection.addRange( liveRange );
-			selection.addRange( range );
-
-			const ranges = selection._ranges;
-
-			expect( ranges.length ).to.equal( 2 );
-			expect( ranges[ 0 ].isEqual( liveRange ) ).to.be.true;
-			expect( ranges[ 1 ].isEqual( range ) ).to.be.true;
-			expect( ranges[ 0 ] ).not.to.be.equal( liveRange );
-			expect( ranges[ 1 ] ).not.to.be.equal( range );
-		} );
-
-		it( 'should set anchor and focus to the start and end of the most recently added range', () => {
-			selection.addRange( liveRange );
-
-			expect( selection.anchor.path ).to.deep.equal( [ 0 ] );
-			expect( selection.focus.path ).to.deep.equal( [ 1 ] );
-
-			selection.addRange( range );
-
-			expect( selection.anchor.path ).to.deep.equal( [ 2 ] );
-			expect( selection.focus.path ).to.deep.equal( [ 2, 2 ] );
-		} );
-
-		it( 'should set anchor and focus to the end and start of the most recently added range if backward flag was used', () => {
-			selection.addRange( liveRange, true );
-
-			expect( selection.anchor.path ).to.deep.equal( [ 1 ] );
-			expect( selection.focus.path ).to.deep.equal( [ 0 ] );
-
-			selection.addRange( range, true );
-
-			expect( selection.anchor.path ).to.deep.equal( [ 2, 2 ] );
-			expect( selection.focus.path ).to.deep.equal( [ 2 ] );
-		} );
-
-		it( 'should return a copy of (not a reference to) array of stored ranges', () => {
-			selection.addRange( liveRange );
-
-			const ranges = Array.from( selection.getRanges() );
-
-			selection.addRange( range );
-
-			expect( ranges.length ).to.equal( 1 );
-			expect( ranges[ 0 ].isEqual( liveRange ) ).to.be.true;
-		} );
-
-		it( 'should fire change:range event when adding a range', () => {
-			const spy = sinon.spy();
-			selection.on( 'change:range', spy );
-
-			selection.addRange( range );
-
-			expect( spy.called ).to.be.true;
-		} );
-
-		it( 'should throw an error when range is invalid', () => {
-			expect( () => {
-				selection.addRange( { invalid: 'range' } );
-			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
-		} );
-
-		it( 'should throw an error if added range intersects with already stored range', () => {
-			selection.addRange( liveRange );
-
-			expect( () => {
-				selection.addRange(
-					new Range(
-						new Position( root, [ 0, 4 ] ),
-						new Position( root, [ 1, 2 ] )
-					)
-				);
-			} ).to.throw( CKEditorError, /model-selection-range-intersects/ );
-		} );
-	} );
-
 	describe( 'setTo()', () => {
 		it( 'should set selection inside an element', () => {
 			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
@@ -382,7 +304,7 @@ describe( 'Selection', () => {
 			const startPos = Position.createAt( root, 1 );
 			const endPos = Position.createAt( root, 2 );
 
-			selection.setCollapsedAt( startPos );
+			selection.setTo( startPos );
 
 			selection.moveFocusTo( endPos );
 
@@ -394,7 +316,7 @@ describe( 'Selection', () => {
 			const startPos = Position.createAt( root, 1 );
 			const endPos = Position.createAt( root, 0 );
 
-			selection.setCollapsedAt( startPos );
+			selection.setTo( startPos );
 
 			selection.moveFocusTo( endPos );
 
@@ -780,14 +702,14 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe.skip( 'collapseToStart()', () => {
+	describe( 'setTo - used to collapse at start', () => {
 		it( 'should collapse to start position and fire change event', () => {
-			selection._setRanges( [ range2, range1, range3 ] );
+			selection.setTo( [ range2, range1, range3 ] );
 
 			const spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			selection.collapseToStart();
+			selection.setTo( selection.getFirstPosition() );
 
 			expect( selection.rangeCount ).to.equal( 1 );
 			expect( selection.isCollapsed ).to.be.true;
@@ -796,11 +718,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should do nothing if selection was already collapsed', () => {
-			selection.setCollapsedAt( range1.start );
+			selection.setTo( range1.start );
 
 			const spy = sinon.spy( selection, 'fire' );
 
-			selection.collapseToStart();
+			selection.setTo( selection.getFirstPosition() );
 
 			expect( spy.notCalled ).to.be.true;
 			spy.restore();
@@ -809,21 +731,21 @@ describe( 'Selection', () => {
 		it( 'should do nothing if no ranges present', () => {
 			const spy = sinon.spy( selection, 'fire' );
 
-			selection.collapseToStart();
+			selection.setTo( selection.getFirstPosition() );
 
 			spy.restore();
 			expect( spy.notCalled ).to.be.true;
 		} );
 	} );
 
-	describe.skip( 'collapseToEnd()', () => {
+	describe( 'setTo - used to collapse at end', () => {
 		it( 'should collapse to start position and fire change:range event', () => {
-			selection._setRanges( [ range2, range3, range1 ] );
+			selection.setTo( [ range2, range3, range1 ] );
 
 			const spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			selection.collapseToEnd();
+			selection.setTo( selection.getLastPosition() );
 
 			expect( selection.rangeCount ).to.equal( 1 );
 			expect( selection.isCollapsed ).to.be.true;
@@ -832,11 +754,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should do nothing if selection was already collapsed', () => {
-			selection.setCollapsedAt( range1.start );
+			selection.setTo( range1.start );
 
 			const spy = sinon.spy( selection, 'fire' );
 
-			selection.collapseToEnd();
+			selection.setTo( selection.getLastPosition() );
 
 			expect( spy.notCalled ).to.be.true;
 			spy.restore();
@@ -845,7 +767,7 @@ describe( 'Selection', () => {
 		it( 'should do nothing if selection has no ranges', () => {
 			const spy = sinon.spy( selection, 'fire' );
 
-			selection.collapseToEnd();
+			selection.setTo( selection.getLastPosition() );
 
 			expect( spy.notCalled ).to.be.true;
 			spy.restore();
