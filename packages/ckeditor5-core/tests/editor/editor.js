@@ -153,7 +153,7 @@ describe( 'Editor', () => {
 		it( 'should create main root element', () => {
 			const editor = new Editor();
 
-			expect( editor.model.document.hasRoot( 'main' ) ).to.true;
+			expect( editor.model.document.getRoot( 'main' ) ).to.ok;
 		} );
 
 		it( 'should activate #keystrokes', () => {
