@@ -158,16 +158,8 @@ export default class LiveSelection extends Selection {
 	/**
 	 * @inheritDoc
 	 */
-	addRange( range, isBackward = false ) {
-		super.addRange( range, isBackward );
-		this.refreshAttributes();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	removeAllRanges() {
-		super.removeAllRanges();
+	_addRange( range, isBackward = false ) {
+		super._addRange( range, isBackward );
 		this.refreshAttributes();
 	}
 

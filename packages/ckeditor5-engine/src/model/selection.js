@@ -283,18 +283,6 @@ export default class Selection {
 	}
 
 	/**
-	 * Removes all ranges that were added to the selection.
-	 *
-	 * @fires change:range
-	 */
-	removeAllRanges() {
-		if ( this._ranges.length > 0 ) {
-			this._removeAllRanges();
-			this.fire( 'change:range', { directChange: true } );
-		}
-	}
-
-	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
 	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range} or an iterable of {@link module:engine/model/range~Range ranges}.
@@ -302,10 +290,11 @@ export default class Selection {
 	 * @protected
 	 * @param {module:engine/model/selection~Selection|module:engine/model/position~Position|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {string|boolean|number} [backwardSelectionOrOffset]
 	 */
 	setTo( selectable, backwardSelectionOrOffset ) {
 		if ( !selectable ) {
-			this.removeAllRanges();
+			this._setRanges( [] );
 		} else if ( selectable instanceof Selection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 		} else if ( selectable instanceof Range ) {
@@ -313,7 +302,7 @@ export default class Selection {
 		} else if ( selectable instanceof Position ) {
 			this._setRanges( [ new Range( selectable ) ] );
 		} else if ( selectable instanceof Element ) {
-			this._setRanges( Position.createAt( selectable, backwardSelectionOrOffset ) );
+			this._setRanges( [ Range.createCollapsedAt( selectable, backwardSelectionOrOffset ) ] );
 		} else if ( isIterable( selectable ) ) {
 			// We assume that the selectable is an iterable of ranges.
 			this._setRanges( selectable, backwardSelectionOrOffset );
@@ -363,65 +352,17 @@ export default class Selection {
 		this.fire( 'change:range', { directChange: true } );
 	}
 
-<<<<<<< HEAD
 	/**
-	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range} or an iterable of {@link module:engine/model/range~Range ranges}.
+	 * Deletes ranges from internal range array. Uses {@link #_popRange _popRange} to
+	 * ensure proper ranges removal.
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/position~Position|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range} selectable
+	 * @private
 	 */
-	setTo( selectable ) {
-		if ( selectable instanceof Selection ) {
-			this.setRanges( selectable.getRanges(), selectable.isBackward );
-		} else if ( selectable instanceof Range ) {
-			this.setRanges( [ selectable ] );
-		} else if ( isIterable( selectable ) ) {
-			// We assume that the selectable is an iterable of ranges.
-			this.setRanges( selectable );
-		} else {
-			// We assume that the selectable is a position.
-			this.setRanges( [ new Range( selectable ) ] );
+	_removeAllRanges() {
+		while ( this._ranges.length > 0 ) {
+			this._popRange();
 		}
 	}
-
-	/**
-	 * Sets this selection in the provided element.
-	 *
-	 * @param {module:engine/model/element~Element} element
-	 */
-	setIn( element ) {
-		this.setRanges( [ Range.createIn( element ) ] );
-	}
-
-	/**
-	 * Sets this selection on the provided item.
-	 *
-	 * @param {module:engine/model/item~Item} item
-	 */
-	setOn( item ) {
-		this.setRanges( [ Range.createOn( item ) ] );
-	}
-=======
-	// /**
-	//  * Sets this selection in the provided element.
-	//  *
-	//  * @param {module:engine/model/element~Element} element
-	//  */
-	// setIn( element ) {
-	// 	this.setRanges( [ Range.createIn( element ) ] );
-	// }
-
-	// /**
-	//  * Sets this selection on the provided item.
-	//  *
-	//  * @param {module:engine/model/item~Item} item
-	//  */
-	// setOn( item ) {
-	// 	this.setRanges( [ Range.createOn( item ) ] );
-	// }
->>>>>>> WIP - DocumentSelection. part 2.
 
 	/**
 	 * Sets collapsed selection at the specified location.
@@ -790,18 +731,6 @@ export default class Selection {
 	 */
 	_popRange() {
 		this._ranges.pop();
-	}
-
-	/**
-	 * Deletes ranges from internal range array. Uses {@link #_popRange _popRange} to
-	 * ensure proper ranges removal.
-	 *
-	 * @private
-	 */
-	_removeAllRanges() {
-		while ( this._ranges.length > 0 ) {
-			this._popRange();
-		}
 	}
 
 	/**

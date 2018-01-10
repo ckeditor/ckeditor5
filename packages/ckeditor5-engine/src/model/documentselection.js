@@ -122,7 +122,7 @@ export default class DocumentSelection {
 	}
 
 	_removeAllRanges() {
-		this._selection.removeAllRanges();
+		this._selection.setTo( null );
 	}
 
 	_getStoredAttributes() {

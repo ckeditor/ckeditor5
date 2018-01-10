@@ -185,10 +185,10 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 		selection = selectionOrPositionOrRange;
 	} else if ( selectionOrPositionOrRange instanceof ModelRange ) {
 		selection = new ModelSelection();
-		selection.addRange( selectionOrPositionOrRange );
+		selection._addRange( selectionOrPositionOrRange );
 	} else if ( selectionOrPositionOrRange instanceof ModelPosition ) {
 		selection = new ModelSelection();
-		selection.addRange( new ModelRange( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
+		selection._addRange( new ModelRange( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
 	}
 
 	// Setup model to view converter.

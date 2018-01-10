@@ -272,19 +272,19 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setCollapsedAt()', () => {
+	describe( 'setTo - set to position or item', () => {
 		it( 'fires change:range', () => {
 			const spy = sinon.spy();
 
 			selection.on( 'change:range', spy );
 
-			selection.setCollapsedAt( root );
+			selection.setTo( root );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'sets selection at the 0 offset if second parameter not passed', () => {
-			selection.setCollapsedAt( root );
+			selection.setTo( root );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -294,7 +294,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'sets selection at given offset in given parent', () => {
-			selection.setCollapsedAt( root, 3 );
+			selection.setTo( root, 3 );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -304,7 +304,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'sets selection at the end of the given parent', () => {
-			selection.setCollapsedAt( root, 'end' );
+			selection.setTo( root, 'end' );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -314,7 +314,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'sets selection before the specified element', () => {
-			selection.setCollapsedAt( root.getChild( 1 ), 'before' );
+			selection.setTo( root.getChild( 1 ), 'before' );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -324,7 +324,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'sets selection after the specified element', () => {
-			selection.setCollapsedAt( root.getChild( 1 ), 'after' );
+			selection.setTo( root.getChild( 1 ), 'after' );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -336,7 +336,7 @@ describe( 'Selection', () => {
 		it( 'sets selection at the specified position', () => {
 			const pos = Position.createFromParentAndOffset( root, 3 );
 
-			selection.setCollapsedAt( pos );
+			selection.setTo( pos );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -518,7 +518,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'removeAllRanges()', () => {
+	describe( 'setTo - selection set to null', () => {
 		let spy;
 
 		it( 'should remove all stored ranges', () => {
@@ -1117,7 +1117,7 @@ describe( 'Selection', () => {
 
 		describe( 'setAttribute()', () => {
 			it( 'should set given attribute on the selection', () => {
-				selection._setRanges( [ rangeInFullP ] );
+				selection.setTo( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
@@ -1152,7 +1152,7 @@ describe( 'Selection', () => {
 
 		describe( 'getAttributes()', () => {
 			it( 'should return an iterator that iterates over all attributes set on selection', () => {
-				selection._setRanges( [ rangeInFullP ] );
+				selection.setTo( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'xyz' );
 
@@ -1164,7 +1164,7 @@ describe( 'Selection', () => {
 
 		describe( 'getAttributeKeys()', () => {
 			it( 'should return iterator that iterates over all attribute keys set on selection', () => {
-				selection._setRanges( [ rangeInFullP ] );
+				selection.setTo( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'xyz' );
 
@@ -1176,7 +1176,7 @@ describe( 'Selection', () => {
 
 		describe( 'hasAttribute()', () => {
 			it( 'should return true if element contains attribute with given key', () => {
-				selection._setRanges( [ rangeInFullP ] );
+				selection.setTo( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
 				expect( selection.hasAttribute( 'foo' ) ).to.be.true;
@@ -1189,7 +1189,7 @@ describe( 'Selection', () => {
 
 		describe( 'clearAttributes()', () => {
 			it( 'should remove all attributes from the element', () => {
-				selection._setRanges( [ rangeInFullP ] );
+				selection.setTo( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'xyz' );
 
@@ -1222,7 +1222,7 @@ describe( 'Selection', () => {
 
 		describe( 'removeAttribute()', () => {
 			it( 'should remove attribute', () => {
-				selection._setRanges( [ rangeInFullP ] );
+				selection.setTo( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 				selection.removeAttribute( 'foo' );
 
@@ -1282,7 +1282,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should not fire change:attribute event if attributes had not changed', () => {
-				selection._setRanges( [ rangeInFullP ] );
+				selection.setTo( [ rangeInFullP ] );
 				selection.setAttributesTo( { foo: 'bar', xxx: 'yyy' } );
 
 				const spy = sinon.spy();
