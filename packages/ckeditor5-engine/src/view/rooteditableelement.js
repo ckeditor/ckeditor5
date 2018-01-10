@@ -58,8 +58,9 @@ export default class RootEditableElement extends EditableElement {
 
 	/**
 	 * Overrides old element name and sets new one.
-	 * This is needed because name of view root has to be changed as the same as dom root name
-	 * when dom root is attached to view root.
+	 * This is needed because view roots are created before they are attached to the DOM.
+	 * The name of the root element is temporary at this stage. It has to be changed when the
+	 * view root element is attached to the DOM element.
 	 *
 	 * @protected
 	 * @param {String} name The new name of element.

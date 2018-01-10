@@ -32,10 +32,6 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * including selection handling. It also creates {@link ~EditingController#view view document} which build a
  * browser-independent virtualization over the DOM elements. Editing controller also attach default converters.
  *
- * Editing controller binds {@link module:engine/view/document~Document#roots view roots collection} to
- * {@link module:engine/model/document~Document#roots model roots collection} so creating model root automatically
- * creates corresponding view root.
- *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class EditingController {
@@ -147,7 +143,9 @@ export default class EditingController {
 		this.modelToView.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.modelToView.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 
-		// Bind model and view roots.
+		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
+		// {@link module:engine/model/document~Document#roots model roots collection} so creating
+		// model root automatically creates corresponding view root.
 		this.view.roots.bindTo( this.model.document.roots ).using( root => {
 			// $graveyard is a special root that has no reflection in the view.
 			if ( root.rootName == '$graveyard' ) {

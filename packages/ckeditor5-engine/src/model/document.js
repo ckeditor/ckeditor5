@@ -149,10 +149,6 @@ export default class Document {
 	/**
 	 * Creates a new top-level root.
 	 *
-	 * **Note**: Creating model root automatically creates corresponding
-	 * {@link module:engine/view/document~Document#roots view root} with the same name. Name of view root
-	 * will be hanged later on when dom root will be {@link module:engine/view/document~Document#attachDomRoot attached}.
-	 *
 	 * @param {String} [elementName='$root'] Element name. Defaults to `'$root'` which also have
 	 * some basic schema defined (`$block`s are allowed inside the `$root`). Make sure to define a proper
 	 * schema if you use a different name.
