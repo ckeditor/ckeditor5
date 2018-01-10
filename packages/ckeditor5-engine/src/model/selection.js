@@ -269,12 +269,13 @@ export default class Selection {
 	 * The flag is used to set {@link #anchor} and
 	 * {@link #focus} properties.
 	 *
+	 * @protected
 	 * @fires change:range
 	 * @param {module:engine/model/range~Range} range Range to add.
 	 * @param {Boolean} [isBackward=false] Flag describing if added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`).
 	 */
-	addRange( range, isBackward = false ) {
+	_addRange( range, isBackward = false ) {
 		this._pushRange( range );
 		this._lastRangeBackward = !!isBackward;
 
@@ -308,15 +309,14 @@ export default class Selection {
 		} else if ( selectable instanceof Selection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 		} else if ( selectable instanceof Range ) {
-			this._setRanges( [ selectable ] );
-		} else if ( isIterable( selectable ) ) {
-			// We assume that the selectable is an iterable of ranges.
-			this._setRanges( selectable, backwardSelectionOrOffset );
+			this._setRanges( [ selectable ], backwardSelectionOrOffset );
 		} else if ( selectable instanceof Position ) {
-			// We assume that the selectable is a position.
 			this._setRanges( [ new Range( selectable ) ] );
 		} else if ( selectable instanceof Element ) {
 			this._setRanges( Position.createAt( selectable, backwardSelectionOrOffset ) );
+		} else if ( isIterable( selectable ) ) {
+			// We assume that the selectable is an iterable of ranges.
+			this._setRanges( selectable, backwardSelectionOrOffset );
 		} else {
 			throw new CKEditorError( 'model-selection-set-not-selectable' );
 		}
@@ -505,9 +505,9 @@ export default class Selection {
 		}
 
 		if ( newFocus.compareWith( anchor ) == 'before' ) {
-			this.addRange( new Range( newFocus, anchor ), true );
+			this._addRange( new Range( newFocus, anchor ), true );
 		} else {
-			this.addRange( new Range( anchor, newFocus ) );
+			this._addRange( new Range( anchor, newFocus ) );
 		}
 	}
 

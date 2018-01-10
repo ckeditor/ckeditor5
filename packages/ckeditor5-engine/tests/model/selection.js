@@ -77,20 +77,22 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return true when there is single collapsed ranges', () => {
-			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+			selection.setTo( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
 
 			expect( selection.isCollapsed ).to.be.true;
 		} );
 
 		it( 'should return false when there are multiple ranges', () => {
-			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
-			selection.addRange( new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) );
+			selection.setTo( [
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ),
+				new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) )
+			] );
 
 			expect( selection.isCollapsed ).to.be.false;
 		} );
 
 		it( 'should return false when there is not collapsed range', () => {
-			selection.addRange( range );
+			selection.setTo( range );
 
 			expect( selection.isCollapsed ).to.be.false;
 		} );
@@ -100,11 +102,14 @@ describe( 'Selection', () => {
 		it( 'should return proper range count', () => {
 			expect( selection.rangeCount ).to.equal( 0 );
 
-			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+			selection.setTo( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
 
 			expect( selection.rangeCount ).to.equal( 1 );
 
-			selection.addRange( new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) );
+			selection.setTo( [
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ),
+				new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) )
+			] );
 
 			expect( selection.rangeCount ).to.equal( 2 );
 		} );
@@ -112,52 +117,51 @@ describe( 'Selection', () => {
 
 	describe( 'isBackward', () => {
 		it( 'is defined by the last added range', () => {
-			selection.addRange( range, true );
+			selection.setTo( [ range ], true );
 			expect( selection ).to.have.property( 'isBackward', true );
 
-			selection.addRange( liveRange );
+			selection.setTo( liveRange );
 			expect( selection ).to.have.property( 'isBackward', false );
 		} );
 
 		it( 'is false when last range is collapsed', () => {
 			const pos = Position.createAt( root, 0 );
 
-			selection.addRange( new Range( pos, pos ), true );
+			selection.setTo( [ new Range( pos, pos ) ], true );
 
 			expect( selection.isBackward ).to.be.false;
 		} );
 	} );
 
 	describe( 'focus', () => {
-		let r3;
+		let r1, r2, r3;
 
 		beforeEach( () => {
-			const r1 = Range.createFromParentsAndOffsets( root, 2, root, 4 );
-			const r2 = Range.createFromParentsAndOffsets( root, 4, root, 6 );
+			r1 = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+			r2 = Range.createFromParentsAndOffsets( root, 4, root, 6 );
 			r3 = Range.createFromParentsAndOffsets( root, 1, root, 2 );
-			selection.addRange( r1 );
-			selection.addRange( r2 );
+			selection.setTo( [ r1, r2 ] );
 		} );
 
 		it( 'should return correct focus when last added range is not backward one', () => {
-			selection.addRange( r3 );
+			selection.setTo( [ r1, r2, r3 ] );
 
 			expect( selection.focus.isEqual( r3.end ) ).to.be.true;
 		} );
 
 		it( 'should return correct focus when last added range is backward one', () => {
-			selection.addRange( r3, true );
+			selection.setTo( [ r1, r2, r3 ], true );
 
 			expect( selection.focus.isEqual( r3.start ) ).to.be.true;
 		} );
 
 		it( 'should return null if no ranges in selection', () => {
-			selection.removeAllRanges();
+			selection.setTo( null );
 			expect( selection.focus ).to.be.null;
 		} );
 	} );
 
-	describe( 'addRange()', () => {
+	describe.skip( 'addRange()', () => {
 		it( 'should copy added ranges and store multiple ranges', () => {
 			selection.addRange( liveRange );
 			selection.addRange( range );
@@ -235,11 +239,11 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe.skip( 'setIn()', () => {
+	describe( 'setTo()', () => {
 		it( 'should set selection inside an element', () => {
 			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
 
-			selection.setIn( element );
+			selection.setTo( Range.createIn( element ) );
 
 			const ranges = Array.from( selection.getRanges() );
 			expect( ranges.length ).to.equal( 1 );
@@ -250,14 +254,14 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe.skip( 'setOn()', () => {
+	describe( 'setTo()', () => {
 		it( 'should set selection on an item', () => {
 			const textNode1 = new Text( 'foo' );
 			const textNode2 = new Text( 'bar' );
 			const textNode3 = new Text( 'baz' );
 			const element = new Element( 'p', null, [ textNode1, textNode2, textNode3 ] );
 
-			selection.setOn( textNode2 );
+			selection.setTo( Range.createOn( textNode2 ) );
 
 			const ranges = Array.from( selection.getRanges() );
 			expect( ranges.length ).to.equal( 1 );
@@ -344,8 +348,7 @@ describe( 'Selection', () => {
 
 	describe( 'moveFocusTo()', () => {
 		it( 'keeps all existing ranges and fires no change:range when no modifications needed', () => {
-			selection.addRange( range );
-			selection.addRange( liveRange );
+			selection.setTo( [ range, liveRange ] );
 
 			const spy = sinon.spy();
 			selection.on( 'change:range', spy );
@@ -357,7 +360,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'fires change:range', () => {
-			selection.addRange( range );
+			selection.setTo( range );
 
 			const spy = sinon.spy();
 			selection.on( 'change:range', spy );
@@ -405,7 +408,7 @@ describe( 'Selection', () => {
 			const endPos = Position.createAt( root, 2 );
 			const newEndPos = Position.createAt( root, 3 );
 
-			selection.addRange( new Range( startPos, endPos ) );
+			selection.setTo( new Range( startPos, endPos ) );
 
 			selection.moveFocusTo( newEndPos );
 
@@ -418,7 +421,7 @@ describe( 'Selection', () => {
 			const endPos = Position.createAt( root, 2 );
 			const newEndPos = Position.createAt( root, 0 );
 
-			selection.addRange( new Range( startPos, endPos ) );
+			selection.setTo( new Range( startPos, endPos ) );
 
 			selection.moveFocusTo( newEndPos );
 
@@ -432,7 +435,7 @@ describe( 'Selection', () => {
 			const endPos = Position.createAt( root, 2 );
 			const newEndPos = Position.createAt( root, 3 );
 
-			selection.addRange( new Range( startPos, endPos ), true );
+			selection.setTo( new Range( startPos, endPos ), true );
 
 			selection.moveFocusTo( newEndPos );
 
@@ -446,7 +449,7 @@ describe( 'Selection', () => {
 			const endPos = Position.createAt( root, 2 );
 			const newEndPos = Position.createAt( root, 0 );
 
-			selection.addRange( new Range( startPos, endPos ), true );
+			selection.setTo( new Range( startPos, endPos ), true );
 
 			selection.moveFocusTo( newEndPos );
 
@@ -464,8 +467,10 @@ describe( 'Selection', () => {
 
 			const newEndPos = Position.createAt( root, 0 );
 
-			selection.addRange( new Range( startPos1, endPos1 ) );
-			selection.addRange( new Range( startPos2, endPos2 ) );
+			selection.setTo( [
+				new Range( startPos1, endPos1 ),
+				new Range( startPos2, endPos2 )
+			] );
 
 			const spy = sinon.spy();
 
@@ -490,7 +495,7 @@ describe( 'Selection', () => {
 			const startPos = Position.createAt( root, 1 );
 			const endPos = Position.createAt( root, 2 );
 
-			selection.addRange( new Range( startPos, endPos ) );
+			selection.setTo( new Range( startPos, endPos ) );
 
 			selection.moveFocusTo( startPos );
 
@@ -504,7 +509,7 @@ describe( 'Selection', () => {
 			const newEndPos = Position.createAt( root, 4 );
 			const spy = testUtils.sinon.stub( Position, 'createAt' ).returns( newEndPos );
 
-			selection.addRange( new Range( startPos, endPos ) );
+			selection.setTo( new Range( startPos, endPos ) );
 
 			selection.moveFocusTo( root, 'end' );
 
@@ -517,22 +522,20 @@ describe( 'Selection', () => {
 		let spy;
 
 		it( 'should remove all stored ranges', () => {
-			selection.addRange( liveRange );
-			selection.addRange( range );
+			selection.setTo( [ liveRange, range ] );
 
-			selection.removeAllRanges();
+			selection.setTo( null );
 
 			expect( Array.from( selection.getRanges() ).length ).to.equal( 0 );
 		} );
 
 		it( 'should fire exactly one change:range event', () => {
-			selection.addRange( liveRange );
-			selection.addRange( range );
+			selection.setTo( [ liveRange, range ] );
 
 			spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			selection.removeAllRanges();
+			selection.setTo( null );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
@@ -541,7 +544,7 @@ describe( 'Selection', () => {
 			spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			selection.removeAllRanges();
+			selection.setTo( null );
 
 			expect( spy.called ).to.be.false;
 		} );
@@ -556,8 +559,7 @@ describe( 'Selection', () => {
 				new Range( new Position( root, [ 5, 0 ] ), new Position( root, [ 6, 0 ] ) )
 			];
 
-			selection.addRange( liveRange );
-			selection.addRange( range );
+			selection.setTo( [ liveRange, range ] );
 
 			spy = sinon.spy();
 			selection.on( 'change:range', spy );
@@ -611,9 +613,7 @@ describe( 'Selection', () => {
 		it( 'should set selection to be same as given selection, using _setRanges method', () => {
 			const spy = sinon.spy( selection, '_setRanges' );
 
-			const otherSelection = new Selection();
-			otherSelection.addRange( range1 );
-			otherSelection.addRange( range2, true );
+			const otherSelection = new Selection( [ range1, range2 ], true );
 
 			selection.setTo( otherSelection );
 
@@ -666,14 +666,14 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return a range which start position is before all other ranges\' start positions', () => {
-			// This will not be the first range despite being added as first
-			selection.addRange( range2 );
-
-			// This should be the first range.
-			selection.addRange( range1 );
-
-			// A random range that is not first.
-			selection.addRange( range3 );
+			selection.setTo( [
+				// This will not be the first range despite being added as first
+				range2,
+				// This should be the first range.
+				range1,
+				// A random range that is not first.
+				range3
+			] );
 
 			const range = selection.getFirstRange();
 
@@ -688,14 +688,14 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return a position that is in selection and is before any other position from the selection', () => {
-			// This will not be the first range despite being added as first
-			selection.addRange( range2 );
-
-			// This should be the first range.
-			selection.addRange( range1 );
-
-			// A random range that is not first.
-			selection.addRange( range3 );
+			selection.setTo( [
+				// This will not be the first range despite being added as first
+				range2,
+				// This should be the first range.
+				range1,
+				// A random range that is not first.
+				range3
+			] );
 
 			const position = selection.getFirstPosition();
 
@@ -709,9 +709,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return a range which start position is before all other ranges\' start positions', () => {
-			selection.addRange( range3 );
-			selection.addRange( range1 );
-			selection.addRange( range2 );
+			selection.setTo( [ range3, range1, range2 ] );
 
 			const range = selection.getLastRange();
 
@@ -726,9 +724,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return a position that is in selection and is before any other position from the selection', () => {
-			selection.addRange( range3 );
-			selection.addRange( range1 );
-			selection.addRange( range2 );
+			selection.setTo( [ range3, range1, range2 ] );
 
 			const position = selection.getLastPosition();
 
@@ -738,21 +734,17 @@ describe( 'Selection', () => {
 
 	describe( 'isEqual()', () => {
 		it( 'should return true if selections equal', () => {
-			selection.addRange( range1 );
-			selection.addRange( range2 );
+			selection.setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection();
-			otherSelection.addRange( range1 );
-			otherSelection.addRange( range2 );
+			const otherSelection = new Selection( [ range1, range2 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
 
 		it( 'should return true if backward selections equal', () => {
-			selection.addRange( range1, true );
+			selection.setTo( [ range1 ], true );
 
-			const otherSelection = new Selection();
-			otherSelection.addRange( range1, true );
+			const otherSelection = new Selection( [ range1 ], true );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
@@ -764,37 +756,31 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return false if ranges count does not equal', () => {
-			selection.addRange( range1 );
-			selection.addRange( range2 );
+			selection.setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection();
-			otherSelection.addRange( range2 );
+			const otherSelection = new Selection( [ range2 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return false if ranges (other than the last added range) do not equal', () => {
-			selection.addRange( range1 );
-			selection.addRange( range3 );
+			selection.setTo( [ range1, range3 ] );
 
-			const otherSelection = new Selection();
-			otherSelection.addRange( range2 );
-			otherSelection.addRange( range3 );
+			const otherSelection = new Selection( [ range2, range3 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return false if directions do not equal', () => {
-			selection.addRange( range1 );
+			selection.setTo( range1 );
 
-			const otherSelection = new Selection();
-			otherSelection.addRange( range1, true );
+			const otherSelection = new Selection( [ range1 ], true );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 	} );
 
-	describe( 'collapseToStart()', () => {
+	describe.skip( 'collapseToStart()', () => {
 		it( 'should collapse to start position and fire change event', () => {
 			selection._setRanges( [ range2, range1, range3 ] );
 
@@ -830,7 +816,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'collapseToEnd()', () => {
+	describe.skip( 'collapseToEnd()', () => {
 		it( 'should collapse to start position and fire change:range event', () => {
 			selection._setRanges( [ range2, range3, range1 ] );
 
@@ -868,8 +854,7 @@ describe( 'Selection', () => {
 
 	describe( 'createFromSelection()', () => {
 		it( 'should return a Selection instance with same ranges and direction as given selection', () => {
-			selection.addRange( liveRange );
-			selection.addRange( range, true );
+			selection.setTo( [ liveRange, range ], true );
 
 			const snapshot = Selection.createFromSelection( selection );
 
