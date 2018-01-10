@@ -188,25 +188,11 @@ export default class Document {
 	 * Returns top-level root by its name.
 	 *
 	 * @param {String} [name='main'] Unique root name.
-	 * @returns {module:engine/model/rootelement~RootElement} Root registered under given name.
+	 * @returns {module:engine/model/rootelement~RootElement|null} Root registered under given name or null when
+	 * there is no root of given name.
 	 */
 	getRoot( name = 'main' ) {
-		const root = this.roots.get( name );
-
-		if ( !root ) {
-			/**
-			 * Root with specified name does not exist.
-			 *
-			 * @error model-document-getRoot-root-not-exist
-			 * @param {String} name
-			 */
-			throw new CKEditorError(
-				'model-document-getRoot-root-not-exist: Root with specified name does not exist.',
-				{ name }
-			);
-		}
-
-		return root;
+		return this.roots.get( name );
 	}
 
 	/**

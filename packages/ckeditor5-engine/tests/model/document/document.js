@@ -163,19 +163,20 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'getRoot()', () => {
-		it( 'should return a RootElement previously created with given name', () => {
-			const newRoot = doc.createRoot();
-			const getRoot = doc.getRoot();
+		it( 'should return a RootElement with default "main" name', () => {
+			const newRoot = doc.createRoot( 'main' );
 
-			expect( getRoot ).to.equal( newRoot );
+			expect( doc.getRoot() ).to.equal( newRoot );
 		} );
 
-		it( 'should throw an error when trying to get non-existent root', () => {
-			expect(
-				() => {
-					doc.getRoot( 'root' );
-				}
-			).to.throw( CKEditorError, /model-document-getRoot-root-not-exist/ );
+		it( 'should return a RootElement with custom name', () => {
+			const newRoot = doc.createRoot( 'custom', 'custom' );
+
+			expect( doc.getRoot( 'custom' ) ).to.equal( newRoot );
+		} );
+
+		it( 'should return null when trying to get non-existent root', () => {
+			expect( doc.getRoot( 'not-existing' ) ).to.null;
 		} );
 	} );
 

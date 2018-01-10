@@ -160,6 +160,10 @@ describe( 'Document', () => {
 
 			expect( viewDocument.getRoot( 'header' ) ).to.equal( viewDocument.roots.get( 'header' ) );
 		} );
+
+		it( 'should return null when trying to get non-existent root', () => {
+			expect( viewDocument.getRoot( 'not-existing' ) ).to.null;
+		} );
 	} );
 
 	describe( 'addObserver()', () => {

@@ -217,7 +217,8 @@ export default class Document {
 	 * specific "main" root is returned.
 	 *
 	 * @param {String} [name='main'] Name of the root.
-	 * @returns {module:engine/view/rooteditableelement~RootEditableElement} The view root element with the specified name.
+	 * @returns {module:engine/view/rooteditableelement~RootEditableElement|null} The view root element with the specified name
+	 * or null when there is no root of given name.
 	 */
 	getRoot( name = 'main' ) {
 		return this.roots.get( name );
