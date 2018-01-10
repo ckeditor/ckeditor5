@@ -20,14 +20,9 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Class representing editor. It contains basic editor architecture and provides API needed by plugins
- * like {@link module:engine/controller/editingcontroller~EditingController editing pipeline},
- * {@link module:engine/controller/datacontroller~DataController data pipeline} and
- * {module:core/editingkeystrokehandler~EditingKeystrokeHandler keystroke handler}.
- *
- * Besides it creates main {@link module:engine/model/rootelement~RootElement} using
- * {@link module:engine/model/document~Document#createRoot createRoot} method what automatically creates
- * corresponding {@link module:engine/view/rooteditableelement~RootEditableElement view root} element.
+ * Class representing the base of the editor. It is the API all plugins can expect to get when using editor property.
+ * Editors implementation (like Classic Editor or Inline Editor) should extend this class. They can add their own
+ * methods and properties.
  *
  * See also {@link module:core/editor/standardeditor~StandardEditor}.
  *

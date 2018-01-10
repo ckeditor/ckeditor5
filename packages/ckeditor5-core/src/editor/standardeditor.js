@@ -14,7 +14,10 @@ import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromele
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
 /**
- * Class provides API methods for getting and setting data.
+ * The standard editor class, extending base editor by adding methods needed in the typical
+ * editor implementations: editor with a single editable area created based on the DOM element.
+ * It provides base API to manage data and to integrate the editor with the form when it is
+ * initialized on the textarea element.
  *
  * @extends module:core/editor/editor~Editor
  */
