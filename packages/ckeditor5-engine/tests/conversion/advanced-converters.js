@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document */
-
 import Model from '../../src/model/model';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
@@ -42,8 +40,11 @@ describe( 'advanced-converters', () => {
 
 		const editing = new EditingController( model );
 
-		editing.view.attachDomRoot( document.createElement( 'div' ) );
 		viewRoot = editing.view.getRoot();
+
+		// Set name of view root the same as dom root.
+		// This is a mock of attaching view root to dom root.
+		viewRoot._name = 'div';
 
 		viewDispatcher = new ViewConversionDispatcher( model, { schema: { checkChild: () => true } } );
 		viewDispatcher.on( 'text', convertText() );

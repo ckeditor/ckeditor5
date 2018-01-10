@@ -682,7 +682,9 @@ describe( 'view test utils', () => {
 function createAttachedRoot( viewDocument, element ) {
 	const root = createViewRoot( viewDocument );
 
-	viewDocument.attachDomRoot( element );
+	// Set name of view root the same as dom root.
+	// This is a mock of attaching view root to dom root.
+	root._name = element.tagName.toLowerCase();
 
 	return root;
 }
