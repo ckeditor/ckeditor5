@@ -80,8 +80,6 @@ export default class FontFamilyEditing extends Plugin {
  * @property {module:engine/view/viewelementdefinition~ViewElementDefinition} view View element configuration.
  * @property {Array.<module:engine/view/viewelementdefinition~ViewElementDefinition>} [acceptAlso] An array with all matched elements that
  * view to model conversion should also accept.
- * @property {String} [uiStyle] The style which will be added to the dropdown item representing this option.
- * Defaults to `view.style[ 'font-family' ]`.
  */
 
 /**
