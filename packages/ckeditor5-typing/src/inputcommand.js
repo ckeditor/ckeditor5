@@ -33,7 +33,7 @@ export default class InputCommand extends Command {
 		 * @private
 		 * @member {module:typing/changebuffer~ChangeBuffer} #_buffer
 		 */
-		this._buffer = new ChangeBuffer( editor.model.document, undoStepSize );
+		this._buffer = new ChangeBuffer( editor.model, undoStepSize );
 	}
 
 	/**

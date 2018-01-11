@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window, document */
+/* globals window, document, setTimeout */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -43,7 +43,7 @@ describe( 'Typing – spellchecking integration', () => {
 
 	beforeEach( () => {
 		if ( onChangesDone ) {
-			editor.model.document.off( 'changesDone', onChangesDone );
+			editor.model.document.off( 'change', onChangesDone );
 			onChangesDone = null;
 		}
 
@@ -253,6 +253,7 @@ function emulateSpellcheckerInsertText( editor, nodeIndex, rangeStart, rangeEnd,
 	const model = editor.model;
 	const modelRoot = model.document.getRoot();
 
+	window.focus();
 	editor.editing.view.focus();
 
 	model.change( () => {
@@ -261,7 +262,9 @@ function emulateSpellcheckerInsertText( editor, nodeIndex, rangeStart, rangeEnd,
 		] );
 	} );
 
-	editor.model.document.once( 'changesDone', onChangesDoneCallback, { priority: 'low' } );
+	model.document.once( 'change', () => {
+		setTimeout( onChangesDoneCallback, 100 );
+	}, { priority: 'low' } );
 
 	window.document.execCommand( 'insertText', false, text );
 }
@@ -270,4 +273,3 @@ function expectContent( editor, expectedModel, expectedView ) {
 	expect( getModelData( editor.model ) ).to.equal( expectedModel );
 	expect( getViewData( editor.editing.view ) ).to.equal( expectedView );
 }
-

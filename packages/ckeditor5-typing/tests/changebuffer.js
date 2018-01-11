@@ -15,19 +15,19 @@ describe( 'ChangeBuffer', () => {
 		model = new Model();
 		doc = model.document;
 		root = doc.createRoot();
-		buffer = new ChangeBuffer( doc, CHANGE_LIMIT );
+		buffer = new ChangeBuffer( model, CHANGE_LIMIT );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'sets all properties', () => {
-			expect( buffer ).to.have.property( 'document', doc );
+			expect( buffer ).to.have.property( 'model', model );
 			expect( buffer ).to.have.property( 'limit', CHANGE_LIMIT );
 			expect( buffer ).to.have.property( 'size', 0 );
 			expect( buffer ).to.have.property( 'isLocked', false );
 		} );
 
 		it( 'sets limit property according to default value', () => {
-			buffer = new ChangeBuffer( doc );
+			buffer = new ChangeBuffer( model );
 
 			expect( buffer ).to.have.property( 'limit', 20 );
 		} );

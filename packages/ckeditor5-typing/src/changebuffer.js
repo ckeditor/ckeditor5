@@ -7,7 +7,6 @@
  * @module typing/changebuffer
  */
 
-import count from '@ckeditor/ckeditor5-utils/src/count';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 
 /**
@@ -21,7 +20,7 @@ import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
  *
  * To use the change buffer you need to let it know about the number of changes that were added to the batch:
  *
- *		const buffer = new ChangeBuffer( document, LIMIT );
+ *		const buffer = new ChangeBuffer( model, LIMIT );
  *
  *		// Later on in your feature:
  *		buffer.batch.insert( pos, insertedCharacters );
@@ -35,14 +34,14 @@ export default class ChangeBuffer {
 	 * @param {module:engine/model/document~Document} doc
 	 * @param {Number} [limit=20] The maximum number of atomic changes which can be contained in one batch.
 	 */
-	constructor( doc, limit = 20 ) {
+	constructor( model, limit = 20 ) {
 		/**
-		 * The document instance.
+		 * The model instance.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/document~Document} #document
+		 * @member {module:engine/model/model~Model} #model
 		 */
-		this.document = doc;
+		this.model = model;
 
 		/**
 		 * The number of atomic changes in the buffer. Once it exceeds the {@link #limit},
@@ -69,19 +68,26 @@ export default class ChangeBuffer {
 		 */
 		this.isLocked = false;
 
-		this._changeCallback = ( evt, type, changes, batch ) => {
-			this._onBatch( batch );
+		// The function to be called in order to notify the buffer about batches which appeared in the document.
+		// The callback will check whether it is a new batch and in that case the buffer will be flushed.
+		//
+		// The reason why the buffer needs to be flushed whenever a new batch appears is that the changes added afterwards
+		// should be added to a new batch. For instance, when the  user types, then inserts an image, and then types again,
+		// the characters typed after inserting the image should be added to a different batch than the characters typed before.
+		this._changeCallback = ( evt, batch ) => {
+			if ( batch.type != 'transparent' && batch !== this._batch ) {
+				this._reset( true );
+			}
 		};
 
 		this._selectionChangeCallback = () => {
 			this._reset();
 		};
 
-		doc.on( 'change', this._changeCallback );
+		this.model.document.on( 'change', this._changeCallback );
 
-		doc.selection.on( 'change:range', this._selectionChangeCallback );
-
-		doc.selection.on( 'change:attribute', this._selectionChangeCallback );
+		this.model.document.selection.on( 'change:range', this._selectionChangeCallback );
+		this.model.document.selection.on( 'change:attribute', this._selectionChangeCallback );
 
 		/**
 		 * The current batch instance.
@@ -151,27 +157,9 @@ export default class ChangeBuffer {
 	 * Destroys the buffer.
 	 */
 	destroy() {
-		this.document.off( 'change', this._changeCallback );
-		this.document.selection.off( 'change:range', this._selectionChangeCallback );
-		this.document.selection.off( 'change:attribute', this._selectionChangeCallback );
-	}
-
-	/**
-	 * The method to be called in order to notify the buffer about batches which appeared in the document.
-	 * The method will check whether it is a new batch and in that case the buffer will be flushed.
-	 *
-	 * The reason why the buffer needs to be flushed whenever a new batch appears is that the changes added afterwards
-	 * should be added to a new batch. For instance, when the  user types, then inserts an image, and then types again,
-	 * the characters typed after inserting the image should be added to a different batch than the characters typed before.
-	 *
-	 * @private
-	 * @param {module:engine/model/batch~Batch} batch The batch which appears in the document.
-	 */
-	_onBatch( batch ) {
-		// One operation means a newly created batch.
-		if ( batch.type != 'transparent' && batch !== this._batch && count( batch.getOperations() ) <= 1 ) {
-			this._reset( true );
-		}
+		this.model.document.off( 'change', this._changeCallback );
+		this.model.document.selection.off( 'change:range', this._selectionChangeCallback );
+		this.model.document.selection.off( 'change:attribute', this._selectionChangeCallback );
 	}
 
 	/**
