@@ -5,21 +5,27 @@
 
 @import "../tooltip/mixins/_tooltip.css";
 
+:root {
+	--ck-dropdown-icon-size: 10px;
+}
+
 .ck-dropdown {
 	display: inline-block;
 	position: relative;
 
 	/* A triangle displayed to indicate this is actually a dropdown. */
-	&::after {
-		content: '';
-		width: 0;
-		height: 0;
+	& .ck-dropdown__icon {
 		pointer-events: none;
 		z-index: var(--ck-z-default);
 
 		position: absolute;
-		top: 50%;
-		transform: translate3d( 0, -50%, 0 );
+		top: 55%;
+		transform: translate3d( 0, -55%, 0 );
+
+		width: var(--ck-dropdown-icon-size);
+		height: var(--ck-dropdown-icon-size);
+		min-width: var(--ck-dropdown-icon-size);
+		min-height: var(--ck-dropdown-icon-size);
 	}
 
 	/* Dropdown button should span horizontally, e.g. in vertical toolbars */
