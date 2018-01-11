@@ -18,10 +18,20 @@ The ready–to–use builds of CKEditor like {@link examples/builds/classic-edit
 
 ```js
 // Basic classes to create an editor.
-import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
+
+// Interfaces to extend basic Editor API.
+import DataInterface from '@ckeditor/ckeditor5-core/src/editor/utils/datainterface';
+import ElementInterface from '@ckeditor/ckeditor5-core/src/editor/utils/elementinterface';
+
+// Helper function for adding interfaces to the Editor class.
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+
+// Helper function that binds editor with HTMLForm element.
+import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 
 // Basic features that every editor should enable.
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
@@ -45,16 +55,16 @@ import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
 	This split between the engine and the UI part of features is not perfect yet. At the current stage, the UI part introduces some vital functionality, such as keystroke definitions (e.g. <kbd>Ctrl</kbd>+<kbd>B</kbd> to "bold"). This means that by dropping the UI part of features you also lose keystrokes. We [plan to improve](https://github.com/ckeditor/ckeditor5/issues/488) this situation.
 </info-box>
 
-Having imported the very basic editor components, you can define the custom `BootstrapEditor` class that extends the {@link module:core/editor/standardeditor~StandardEditor `StandardEditor`}:
+Having imported the very basic editor components, you can define the custom `BootstrapEditor` class that extends the {@link module:core/editor/editor~Editor `Editor`}:
 
 ```js
-// Extending the StandardEditor that brings lots of essential API.
-export default class BootstrapEditor extends StandardEditor {
+// Extending the Editor, which brings base editor API.
+export default class BootstrapEditor extends Editor {
 	constructor( element, config ) {
 		super( element, config );
 
 		// Create the ("main") root element of the model tree.
-		this.document.createRoot();
+		this.model.document.createRoot();
 
 		// Use the HTML data processor in this editor.
 		this.data.processor = new HtmlDataProcessor();
@@ -64,11 +74,15 @@ export default class BootstrapEditor extends StandardEditor {
 
 		// A helper to easily replace the editor#element with editor.editable#element.
 		this._elementReplacer = new ElementReplacer();
+
+		// When editor#element is a textarea inside a form element
+		// then content of this textarea will be updated on form submit.
+		attachToForm( this );
 	}
 
 	destroy() {
 		// When destroyed, editor sets the output of editor#getData() into editor#element...
-		this.updateEditorElement();
+		this.updateElement();
 
 		// ...and restores editor#element.
 		this._elementReplacer.restore();
@@ -107,7 +121,7 @@ export default class BootstrapEditor extends StandardEditor {
 					} )
 					// Bind the editor editing layer to the editable in DOM.
 					.then( () => editor.editing.view.attachDomRoot( editable.element ) )
-					.then( () => editor.loadDataFromEditorElement() )
+					.then( () => editor.loadDataFromElement() )
 					// Fire the events that announce that the editor is complete and ready to use.
 					.then( () => {
 						editor.fire( 'dataReady' );
@@ -118,6 +132,10 @@ export default class BootstrapEditor extends StandardEditor {
 		} );
 	}
 }
+
+// Mixing interfaces, which extends basic editor API.
+mix( BootstrapEditor, DataInterface );
+mix( BootstrapEditor, ElementInterface );
 ```
 
 ## Creating the Bootstrap UI
