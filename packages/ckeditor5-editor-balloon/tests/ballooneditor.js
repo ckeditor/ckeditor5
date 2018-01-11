@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
+/* globals document, Event */
 
 import BalloonEditorUI from '../src/ballooneditorui';
 import BalloonEditorUIView from '../src/ballooneditoruiview';
@@ -17,6 +17,9 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
+import DataInterface from '@ckeditor/ckeditor5-core/src/editor/utils/datainterface';
+import ElementInterface from '@ckeditor/ckeditor5-core/src/editor/utils/elementinterface';
+import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -54,6 +57,49 @@ describe( 'BalloonEditor', () => {
 
 		it( 'uses HTMLDataProcessor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
+		} );
+
+		it( 'has a Data Interface', () => {
+			testUtils.isMixed( BalloonEditor, DataInterface );
+		} );
+
+		it( 'has a Element Interface', () => {
+			testUtils.isMixed( BalloonEditor, ElementInterface );
+		} );
+
+		it( 'creates main root element', () => {
+			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+		} );
+
+		it( 'handles form element', () => {
+			const form = document.createElement( 'form' );
+			const textarea = document.createElement( 'textarea' );
+			form.appendChild( textarea );
+			document.body.appendChild( form );
+
+			// Prevents page realods in Firefox ;|
+			form.addEventListener( 'submit', evt => {
+				evt.preventDefault();
+			} );
+
+			return BalloonEditor.create( textarea, {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( textarea.value ).to.equal( '' );
+
+				editor.setData( '<p>Foo</p>' );
+
+				form.dispatchEvent( new Event( 'submit', {
+					// We need to be able to do preventDefault() to prevent page reloads in Firefox.
+					cancelable: true
+				} ) );
+
+				expect( textarea.value ).to.equal( '<p>Foo</p>' );
+
+				return editor.destroy().then( () => {
+					form.remove();
+				} );
+			} );
 		} );
 	} );
 

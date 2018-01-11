@@ -7,12 +7,16 @@
  * @module editor-balloon/ballooneditor
  */
 
-import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
 import BalloonEditorUI from './ballooneditorui';
 import BalloonEditorUIView from './ballooneditoruiview';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
+import DataInterface from '@ckeditor/ckeditor5-core/src/editor/utils/datainterface';
+import ElementInterface from '@ckeditor/ckeditor5-core/src/editor/utils/elementinterface';
+import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * The {@glink builds/guides/overview#Balloon-editor balloon editor} implementation (Medium-like editor).
@@ -36,9 +40,11 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`}.
  *
- * @extends module:core/editor/standardeditor~StandardEditor
+ * @mixes module:core/editor/utils/datainterface~DataInterface
+ * @mixes module:core/editor/utils/elementinterface~ElementInterface
+ * @extends module:core/editor/editor~Editor
  */
-export default class BalloonEditor extends StandardEditor {
+export default class BalloonEditor extends Editor {
 	/**
 	 * Creates an instance of the balloon editor.
 	 *
@@ -51,13 +57,20 @@ export default class BalloonEditor extends StandardEditor {
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
 	constructor( element, config ) {
-		super( element, config );
+		super( config );
+
+		this.element = element;
 
 		this.config.get( 'plugins' ).push( ContextualToolbar );
 		this.config.define( 'contextualToolbar', this.config.get( 'toolbar' ) );
 
 		this.data.processor = new HtmlDataProcessor();
+
+		this.model.document.createRoot();
+
 		this.ui = new BalloonEditorUI( this, new BalloonEditorUIView( this.locale, element ) );
+
+		attachToForm( this );
 	}
 
 	/**
@@ -128,7 +141,7 @@ export default class BalloonEditor extends StandardEditor {
 						editor.ui.init();
 						editor.fire( 'uiReady' );
 					} )
-					.then( () => editor.loadDataFromEditorElement() )
+					.then( () => editor.loadDataFromElement() )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
@@ -138,3 +151,6 @@ export default class BalloonEditor extends StandardEditor {
 		} );
 	}
 }
+
+mix( BalloonEditor, DataInterface );
+mix( BalloonEditor, ElementInterface );
