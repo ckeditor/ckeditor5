@@ -584,144 +584,145 @@ export function viewToModelPosition( evt, data ) {
  *		<listItem type="bulleted" indent=1>Item 3</listItem>   <--- note that indent got post-fixed.
  *
  * @param {module:engine/model/model~Model} model The data model.
- * @returns {Function} A callback to be attached to the {@link module:engine/model/document~Document#event:change document change event}.
+ * @param {module:engine/model/writer~Writer} writer The writer to do changes with.
+ * @returns {Boolean} `true` if any change has been applied, `false` otherwise.
  */
-export function modelChangePostFixer( model ) {
-	return ( evt, type, changes, batch ) => {
-		if ( batch.type == 'transparent' ) {
-			return;
-		}
+export function modelChangePostFixer( model, writer ) {
+	const changes = model.document.differ.getChanges();
+	const itemToListHead = new Map();
 
-		if ( type == 'remove' ) {
-			const howMany = changes.range.end.offset - changes.range.start.offset;
-			const sourcePos = changes.sourcePosition._getTransformedByInsertion( changes.range.start, howMany, true );
+	let applied = false;
 
-			// Fix list items after the cut-out range.
-			// This fix is needed if items in model after cut-out range have now wrong indents compared to their previous siblings.
-			_fixItemsIndent( sourcePos, model, batch );
-			// This fix is needed if two different nested lists got merged, change types of list items "below".
-			_fixItemsType( sourcePos, model, batch );
-		} else if ( type == 'move' ) {
-			const howMany = changes.range.end.offset - changes.range.start.offset;
-			const sourcePos = changes.sourcePosition._getTransformedByInsertion( changes.range.start, howMany, true );
+	for ( const entry of changes ) {
+		if ( entry.type == 'insert' && entry.name == 'listItem' ) {
+			_addListToFix( entry.position );
+		} else if ( entry.type == 'insert' && entry.name != 'listItem' ) {
+			if ( entry.name != '$text' ) {
+				// In case of renamed element.
+				const item = entry.position.nodeAfter;
 
-			// Fix list items after the cut-out range.
-			// This fix is needed if items in model after cut-out range have now wrong indents compared to their previous siblings.
-			_fixItemsIndent( sourcePos, model, batch );
-			// This fix is needed if two different nested lists got merged, change types of list items "below".
-			_fixItemsType( sourcePos, model, batch );
+				if ( item.hasAttribute( 'indent' ) ) {
+					writer.removeAttribute( 'indent', item );
 
-			// Fix items in moved range.
-			// This fix is needed if inserted items are too deeply intended.
-			_fixItemsIndent( changes.range.start, model, batch );
-			// This fix is needed if one or more first inserted items have different type.
-			_fixItemsType( changes.range.start, model, batch );
-
-			// Fix list items after inserted range.
-			// This fix is needed if items in model after inserted range have wrong indents.
-			_fixItemsIndent( changes.range.end, model, batch );
-			// This fix is needed if one or more last inserted items have different type.
-			_fixItemsType( changes.range.end, model, batch );
-		} else if ( type == 'rename' && changes.oldName == 'listItem' && changes.newName != 'listItem' ) {
-			const element = changes.element;
-
-			// Element name is changed from list to something else. Remove useless attributes.
-			model.enqueueChange( batch, writer => {
-				writer.removeAttribute( 'indent', element );
-				writer.removeAttribute( 'type', element );
-			} );
-
-			const changePos = ModelPosition.createAfter( changes.element );
-
-			// Fix list items after the renamed element.
-			// This fix is needed if there are items after renamed element, those items should start from indent = 0.
-			_fixItemsIndent( changePos, model, batch );
-		} else if ( type == 'insert' ) {
-			// Fix list items in inserted range.
-			// This fix is needed if inserted items are too deeply intended.
-			_fixItemsIndent( changes.range.start, model, batch );
-			// This fix is needed if one or more first inserted items have different type.
-			_fixItemsType( changes.range.start, model, batch );
-
-			// Fix list items after inserted range.
-			// This fix is needed if items in model after inserted range have wrong indents.
-			_fixItemsIndent( changes.range.end, model, batch );
-			// This fix is needed if one or more last inserted items have different type.
-			_fixItemsType( changes.range.end, model, batch );
-		} else if ( type == 'changeAttribute' && changes.key == 'indent' ) {
-			_fixItemsType( changes.range.start, model, batch );
-		}
-	};
-}
-
-// Helper function for post fixer callback. Performs fixing of model `listElement` items indent attribute. Checks the model at the
-// `changePosition`. Looks at the node before position where change occurred and uses that node as a reference for following list items.
-function _fixItemsIndent( changePosition, model, batch ) {
-	let nextItem = changePosition.nodeAfter;
-
-	if ( nextItem && nextItem.name == 'listItem' ) {
-		model.enqueueChange( batch, writer => {
-			const prevItem = nextItem.previousSibling;
-			// This is the maximum indent that following model list item may have.
-			const maxIndent = prevItem && prevItem.is( 'listItem' ) ? prevItem.getAttribute( 'indent' ) + 1 : 0;
-
-			// Check how much the next item needs to be outdented.
-			let outdentBy = nextItem.getAttribute( 'indent' ) - maxIndent;
-			const items = [];
-
-			while ( nextItem && nextItem.name == 'listItem' && nextItem.getAttribute( 'indent' ) > maxIndent ) {
-				if ( outdentBy > nextItem.getAttribute( 'indent' ) ) {
-					outdentBy = nextItem.getAttribute( 'indent' );
+					applied = true;
 				}
 
-				const newIndent = nextItem.getAttribute( 'indent' ) - outdentBy;
+				if ( item.hasAttribute( 'type' ) ) {
+					writer.removeAttribute( 'type', item );
 
-				items.push( { item: nextItem, indent: newIndent } );
-
-				nextItem = nextItem.nextSibling;
-			}
-
-			if ( items.length > 0 ) {
-				// Since we are outdenting list items, it is safer to start from the last one (it will maintain correct model state).
-				for ( const item of items.reverse() ) {
-					writer.setAttribute( 'indent', item.indent, item.item );
+					applied = true;
 				}
 			}
-		} );
-	}
-}
 
-// Helper function for post fixer callback. Performs fixing of model nested `listElement` items type attribute.
-// Checks the model at the `changePosition`. Looks at nodes after/before that position and changes those items type
-// to the same as node before/after `changePosition`.
-function _fixItemsType( changePosition, model, batch ) {
-	let item = changePosition.nodeAfter;
+			const posAfter = entry.position.getShiftedBy( entry.length );
 
-	if ( !item || !item.is( 'listItem' ) || item.getAttribute( 'indent' ) === 0 ) {
-		// !item - when last item got removed.
-		// !item.is( 'listItem' ) - when first element to fix is not a list item already.
-		// indent === 0 - do not fix if changes are done on top level lists.
-		return;
-	}
-
-	model.enqueueChange( batch, writer => {
-		const refItem = _getBoundaryItemOfSameList( item );
-		const refIndent = refItem.getAttribute( 'indent' );
-
-		if ( refIndent === 0 ) {
-			return;
+			_addListToFix( posAfter );
+		} else if ( entry.type == 'remove' && entry.name == 'listItem' ) {
+			_addListToFix( entry.position );
+		} else if ( entry.type == 'attribute' && entry.attributeKey == 'indent' ) {
+			_addListToFix( entry.range.start );
+		} else if ( entry.type == 'attribute' && entry.attributeKey == 'type' ) {
+			_addListToFix( entry.range.start );
 		}
+	}
 
-		const refType = refItem.getAttribute( 'type' );
+	for ( const listHead of itemToListHead.values() ) {
+		_fixListIndents( listHead );
+		_fixListTypes( listHead );
+	}
 
-		while ( item && item.is( 'listItem' ) && item.getAttribute( 'indent' ) >= refIndent ) {
-			if ( item.getAttribute( 'type' ) != refType && item.getAttribute( 'indent' ) == refIndent ) {
-				writer.setAttribute( 'type', refType, item );
+	return applied;
+
+	function _addListToFix( position ) {
+		const prev = position.nodeBefore;
+
+		if ( !prev || !prev.is( 'listItem' ) ) {
+			const item = position.nodeAfter;
+
+			if ( item && item.is( 'listItem' ) ) {
+				itemToListHead.set( item, item );
+			}
+		} else {
+			let listHead = prev;
+
+			if ( itemToListHead.has( listHead ) ) {
+				return;
+			}
+
+			while ( listHead.previousSibling && listHead.previousSibling.is( 'listItem' ) ) {
+				listHead = listHead.previousSibling;
+
+				if ( itemToListHead.has( listHead ) ) {
+					return;
+				}
+			}
+
+			itemToListHead.set( position.nodeBefore, listHead );
+		}
+	}
+
+	function _fixListIndents( item ) {
+		let maxIndent = 0;
+		let fixBy = null;
+
+		while ( item && item.is( 'listItem' ) ) {
+			const itemIndent = item.getAttribute( 'indent' );
+
+			if ( itemIndent > maxIndent ) {
+				let newIndent;
+
+				if ( fixBy === null ) {
+					fixBy = itemIndent - maxIndent;
+					newIndent = maxIndent;
+				} else {
+					if ( fixBy > itemIndent ) {
+						fixBy = itemIndent;
+					}
+
+					newIndent = itemIndent - fixBy;
+				}
+
+				writer.setAttribute( 'indent', newIndent, item );
+
+				applied = true;
+			} else {
+				fixBy = null;
+				maxIndent = item.getAttribute( 'indent' ) + 1;
 			}
 
 			item = item.nextSibling;
 		}
-	} );
+	}
+
+	function _fixListTypes( item ) {
+		let typesStack = [];
+		let prev = null;
+
+		while ( item && item.is( 'listItem' ) ) {
+			const itemIndent = item.getAttribute( 'indent' );
+
+			if ( prev && prev.getAttribute( 'indent' ) > itemIndent ) {
+				typesStack = typesStack.slice( 0, itemIndent + 1 );
+			}
+
+			if ( itemIndent != 0 ) {
+				if ( typesStack[ itemIndent ] ) {
+					const type = typesStack[ itemIndent ];
+
+					if ( item.getAttribute( 'type' ) != type ) {
+						writer.setAttribute( 'type', type, item );
+
+						applied = true;
+					}
+				} else {
+					typesStack[ itemIndent ] = item.getAttribute( 'type' );
+				}
+			}
+
+			prev = item;
+			item = item.nextSibling;
+		}
+	}
 }
 
 /**
@@ -1019,26 +1020,6 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 			mergeViewLists( child.previousSibling, child );
 		}
 	}
-}
-
-// Helper function to obtain the first or the last model list item which is in on the same indent level as given `item`.
-function _getBoundaryItemOfSameList( item ) {
-	const indent = item.getAttribute( 'indent' );
-
-	let result = item;
-	let prev = item.previousSibling;
-
-	while ( prev && prev.is( 'listItem' ) && prev.getAttribute( 'indent' ) >= indent ) {
-		item = item.previousSibling;
-
-		if ( item.getAttribute( 'indent' ) == indent ) {
-			result = item;
-		}
-
-		prev = item.previousSibling;
-	}
-
-	return result;
 }
 
 // Helper function that for given `view.Position`, returns a `view.Position` that is after all `view.UIElement`s that

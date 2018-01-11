@@ -62,7 +62,7 @@ export default class ListEngine extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
-		editor.model.document.on( 'change', modelChangePostFixer( editor.model ), { priority: 'high' } );
+		editor.model.document.registerPostFixer( writer => modelChangePostFixer( editor.model, writer ) );
 
 		editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
