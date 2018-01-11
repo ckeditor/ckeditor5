@@ -25,7 +25,16 @@ const glob = require( 'glob' );
 const minimatch = require( 'minimatch' );
 const fs = require( 'fs' );
 
-glob( '!(node_modules|build|coverage|packages)/**/*', ( err, fileNames ) => {
+const includeDotFiles = {
+	dot: true
+};
+
+glob( '!(build|coverage|node_modules|packages)/**', updateYear );
+
+// LICENSE.md, .eslintrc.js, etc.
+glob( '*', includeDotFiles, updateYear );
+
+function updateYear( err, fileNames ) {
 	const filteredFileNames = fileNames.filter( fileName => {
 		// Filter out stuff from ckeditor5-utils/src/lib.
 		if ( minimatch( fileName, '**/src/lib/**' ) ) {
@@ -44,7 +53,7 @@ glob( '!(node_modules|build|coverage|packages)/**/*', ( err, fileNames ) => {
 			data = data.toString();
 
 			const year = new Date().getFullYear();
-			const regexp = /Copyright \(c\) 2003-\d{4}/;
+			const regexp = /Copyright \(c\) 2003-\d{4}/g;
 			const updatedData = data.replace( regexp, 'Copyright (c) 2003-' + year );
 
 			if ( data == updatedData ) {
@@ -58,4 +67,4 @@ glob( '!(node_modules|build|coverage|packages)/**/*', ( err, fileNames ) => {
 			}
 		} );
 	} );
-} );
+}
