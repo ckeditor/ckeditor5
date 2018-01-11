@@ -7,5 +7,5 @@
  * Default border-radius value.
  */
 :root{
-	--ck-border-radius: 2px;
+	--ck-border-radius: 1px;
 }

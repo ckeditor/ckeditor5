@@ -20,7 +20,7 @@ a.ck-button {
 	white-space: nowrap;
 	cursor: default;
 	vertical-align: middle;
-	padding: var(--ck-spacing-small);
+	padding: var(--ck-spacing-tiny);
 	text-align: center;
 
 	/* Enable font size inheritance, which allows fluid UI scaling. */
@@ -44,7 +44,7 @@ a.ck-button {
 	}
 
 	&.ck-button_with-text {
-		padding: var(--ck-spacing-small) var(--ck-spacing-standard);
+		padding: var(--ck-spacing-tiny) var(--ck-spacing-standard);
 
 		@mixin ck-button-icon {
 			margin-left: calc(-1 * var(--ck-spacing-small));

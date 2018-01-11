@@ -31,23 +31,14 @@
 	}
 
 	& > .ck-button,
-	& .ck-buttondropdown .ck-dropdown__button {
+	& .ck-dropdown__button {
 		&:not(:hover):not(:focus):not(.ck-on),
 		&.ck-disabled {
-			background: var(--ck-color-editor-toolbar-background);
+			background: transparent;
 		}
 
 		&.ck-on {
 			@mixin ck-button-colors --ck-color-editor-toolbar-button-on;
-		}
-	}
-
-	/* Exclude main button dropdown button */
-	& .ck-dropdown:not(.ck-buttondropdown) .ck-dropdown__button {
-		border-width: 1px;
-
-		&:not(:hover):not(:focus):not(.ck-on) {
-			background: var(--ck-color-editor-dropdown-background);
 		}
 	}
 
@@ -59,12 +50,12 @@
 /* https://github.com/ckeditor/ckeditor5-theme-lark/issues/111 */
 .ck-toolbar-container.ck-editor-toolbar-container[class*="arrow_n"] {
 	&::after {
-		border-bottom-color: var(--ck-color-editor-toolbar-background);
+		border-bottom-color: var(--ck-color-base-foreground);
 	}
 }
 
 .ck-toolbar-container.ck-editor-toolbar-container[class*="arrow_s"] {
 	&::after {
-		border-top-color: var(--ck-color-editor-toolbar-background);
+		border-top-color: var(--ck-color-base-foreground);
 	}
 }

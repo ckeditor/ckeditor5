@@ -12,15 +12,12 @@
 	font-size: inherit;
 
 	/* A triangle displayed to indicate this is actually a dropdown. */
-	&::after {
-		border-style: solid;
-		border-width: .4em .35em 0 .35em;
-		border-color: var(--ck-color-dropdown-symbol) transparent;
-		right: var(--ck-spacing-standard);
+	& .ck-dropdown__icon {
+		right: var(--ck-spacing-medium);
 	}
 
-	&.ck-disabled::after {
-		border-color: var(--ck-color-dropdown-symbol-disabled) transparent;
+	&.ck-disabled .ck-dropdown__icon {
+		@mixin ck-disabled;
 	}
 
 	& .ck-button.ck-dropdown__button {

@@ -5,9 +5,9 @@
 			line-height: 3em;
 		}
 
-		*[id^="icon"] .ck-icon + .ck-icon,
-		*[id^="button"] .ck-button + .ck-button,
-		*[id^="dropdown"] .ck-dropdown + .ck-dropdown {
+		*[id*="icon"] .ck-icon + .ck-icon,
+		*[id*="button"] .ck-button + .ck-button,
+		*[id*="dropdown"] .ck-dropdown + .ck-dropdown {
 			margin-left: 0.3em;
 		}
 
@@ -73,7 +73,10 @@
 <h2>Dropdown</h2>
 
 	<h3>ListDropdown</h3>
-	<div id="dropdown" class="ck-reset_all"></div>
+	<div id="list-dropdown" class="ck-reset_all"></div>
+
+	<h3>ButtonDropdown</h3>
+	<div id="button-dropdown" class="ck-reset_all"></div>
 
 <hr/>
 
