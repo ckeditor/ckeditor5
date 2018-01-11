@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ModelTreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
@@ -35,7 +34,6 @@ export default class ImageCaptionEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const document = editor.model.document;
 		const viewDocument = editor.editing.view;
 		const schema = editor.model.schema;
 		const data = editor.data;
@@ -66,7 +64,7 @@ export default class ImageCaptionEngine extends Plugin {
 		} );
 
 		// Add caption element to each image inserted without it.
-		document.on( 'change', ( evt, type, data, batch ) => this._insertMissingModelCaptionElement( type, data, batch ) );
+		editor.model.document.registerPostFixer( writer => this._insertMissingModelCaptionElement( writer ) );
 
 		// View to model converter for the data pipeline.
 		buildViewConverter()
@@ -157,31 +155,22 @@ export default class ImageCaptionEngine extends Plugin {
 	 * If there is none - adds it to the image element.
 	 *
 	 * @private
-	 * @param {String} changeType Type of change.
-	 * @param {Object} data Change data.
-	 * @param {module:engine/model/batch} batch Bath to with changed will be added.
+	 * @param {module:engine/model/writer~Writer} writer Writer to make changes with.
+	 * @returns {Boolean} `true` if any change has been applied, `false` otherwise.
 	 */
-	_insertMissingModelCaptionElement( changeType, data, batch ) {
-		if ( changeType !== 'insert' ) {
-			return;
-		}
+	_insertMissingModelCaptionElement( writer ) {
+		const model = this.editor.model;
+		const changes = model.document.differ.getChanges();
 
-		const walker = new ModelTreeWalker( {
-			boundaries: data.range,
-			ignoreElementEnd: true
-		} );
+		for ( const entry of changes ) {
+			if ( entry.type == 'insert' && entry.name == 'image' ) {
+				const item = entry.position.nodeAfter;
 
-		for ( const value of walker ) {
-			const item = value.item;
+				if ( !getCaptionFromImage( item ) ) {
+					writer.appendElement( 'caption', item );
 
-			if ( value.type == 'elementStart' && isImage( item ) && !getCaptionFromImage( item ) ) {
-				this.editor.model.enqueueChange( batch, writer => {
-					// Make sure that the image does not have caption already.
-					// https://github.com/ckeditor/ckeditor5-image/issues/78
-					if ( !getCaptionFromImage( item ) ) {
-						writer.appendElement( 'caption', item );
-					}
-				} );
+					return true;
+				}
 			}
 		}
 	}
