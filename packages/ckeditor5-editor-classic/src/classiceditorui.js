@@ -52,10 +52,6 @@ export default class ClassicEditorUI {
 		 * @private
 		 */
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
-
-		// RootEditableElement should be created together with the editor structure.
-		// See https://github.com/ckeditor/ckeditor5/issues/647.
-		editor.editing.createRoot( 'div' );
 	}
 
 	/**
