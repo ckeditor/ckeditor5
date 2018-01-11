@@ -11,13 +11,14 @@ import Element from '@ckeditor/ckeditor5-engine/src/view/element';
 import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 import Position from '@ckeditor/ckeditor5-engine/src/view/position';
 import DataTransfer from '../src/datatransfer';
+import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 
 describe( 'ClipboardObserver', () => {
 	let doc, observer, root, el, range, eventSpy, preventDefaultSpy;
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'div' );
+		root = createViewRoot( doc );
 
 		// Create view and DOM structures.
 		el = new Element( 'p' );
