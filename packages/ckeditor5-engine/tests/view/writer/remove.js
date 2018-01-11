@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { remove } from '../../../src/view/writer';
+import Writer from '../../../src/view/writer';
 import ContainerElement from '../../../src/view/containerelement';
 import Range from '../../../src/view/range';
 import DocumentFragment from '../../../src/view/documentfragment';
@@ -13,31 +13,35 @@ import EmptyElement from '../../../src/view/emptyelement';
 import UIElement from '../../../src/view/uielement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-describe( 'writer', () => {
-	/**
-	 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
-	 * test ranges.
-	 *
-	 * @param {String} input
-	 * @param {String} expectedResult
-	 * @param {String} expectedRemoved
-	 */
-	function test( input, expectedResult, expectedRemoved ) {
-		const { view, selection } = parse( input );
+describe( 'Writer', () => {
+	describe( 'remove()', () => {
+		let writer;
 
-		const range = selection.getFirstRange();
-		const removed = remove( range );
-		expect( stringify( view, range, { showType: true, showPriority: true } ) ).to.equal( expectedResult );
-		expect( stringify( removed, null, { showType: true, showPriority: true } ) ).to.equal( expectedRemoved );
-	}
+		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+		// test ranges.
+		//
+		// @param {String} input
+		// @param {String} expectedResult
+		// @param {String} expectedRemoved
+		function test( input, expectedResult, expectedRemoved ) {
+			const { view, selection } = parse( input );
 
-	describe( 'remove', () => {
+			const range = selection.getFirstRange();
+			const removed = writer.remove( range );
+			expect( stringify( view, range, { showType: true, showPriority: true } ) ).to.equal( expectedResult );
+			expect( stringify( removed, null, { showType: true, showPriority: true } ) ).to.equal( expectedRemoved );
+		}
+
+		before( () => {
+			writer = new Writer();
+		} );
+
 		it( 'should throw when range placed in two containers', () => {
 			const p1 = new ContainerElement( 'p' );
 			const p2 = new ContainerElement( 'p' );
 
 			expect( () => {
-				remove( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
+				writer.remove( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 
@@ -45,14 +49,14 @@ describe( 'writer', () => {
 			const el = new AttributeElement( 'b' );
 
 			expect( () => {
-				remove( Range.createFromParentsAndOffsets( el, 0, el, 0 ) );
+				writer.remove( Range.createFromParentsAndOffsets( el, 0, el, 0 ) );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 
 		it( 'should return empty DocumentFragment when range is collapsed', () => {
 			const p = new ContainerElement( 'p' );
 			const range = Range.createFromParentsAndOffsets( p, 0, p, 0 );
-			const fragment = remove( range );
+			const fragment = writer.remove( range );
 
 			expect( fragment ).to.be.instanceof( DocumentFragment );
 			expect( fragment.childCount ).to.equal( 0 );
@@ -126,7 +130,7 @@ describe( 'writer', () => {
 			const range = Range.createFromParentsAndOffsets( emptyElement, 0, attributeElement, 0 );
 
 			expect( () => {
-				remove( range );
+				writer.remove( range );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
 
@@ -145,7 +149,7 @@ describe( 'writer', () => {
 			const range = Range.createFromParentsAndOffsets( uiElement, 0, attributeElement, 0 );
 
 			expect( () => {
-				remove( range );
+				writer.remove( range );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 		} );
 	} );

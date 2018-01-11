@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { breakAttributes } from '../../../src/view/writer';
+import Writer from '../../../src/view/writer';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
@@ -13,8 +13,14 @@ import Range from '../../../src/view/range';
 import Position from '../../../src/view/position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-describe( 'writer', () => {
-	describe( 'breakAttributes', () => {
+describe( 'Writer', () => {
+	describe( 'breakAttributes()', () => {
+		let writer;
+
+		before( () => {
+			writer = new Writer();
+		} );
+
 		describe( 'break position', () => {
 			/**
 			 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
@@ -26,7 +32,7 @@ describe( 'writer', () => {
 			function test( input, expected ) {
 				const { view, selection } = parse( input );
 
-				const newPosition = breakAttributes( selection.getFirstPosition() );
+				const newPosition = writer.breakAttributes( selection.getFirstPosition() );
 				expect( stringify( view.root, newPosition, {
 					showType: true,
 					showPriority: true
@@ -138,7 +144,7 @@ describe( 'writer', () => {
 			function test( input, expected ) {
 				const { view, selection } = parse( input );
 
-				const newRange = breakAttributes( selection.getFirstRange() );
+				const newRange = writer.breakAttributes( selection.getFirstRange() );
 				expect( stringify( view.root, newRange, { showType: true } ) ).to.equal( expected );
 			}
 
@@ -147,7 +153,7 @@ describe( 'writer', () => {
 				const p2 = new ContainerElement( 'p' );
 
 				expect( () => {
-					breakAttributes( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
+					writer.breakAttributes( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
 				} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 			} );
 
@@ -155,7 +161,7 @@ describe( 'writer', () => {
 				const el = new AttributeElement( 'b' );
 
 				expect( () => {
-					breakAttributes( Range.createFromParentsAndOffsets( el, 0, el, 0 ) );
+					writer.breakAttributes( Range.createFromParentsAndOffsets( el, 0, el, 0 ) );
 				} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 			} );
 
@@ -237,7 +243,7 @@ describe( 'writer', () => {
 				const position = new Position( img, 0 );
 
 				expect( () => {
-					breakAttributes( position );
+					writer.breakAttributes( position );
 				} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 			} );
 
@@ -248,7 +254,7 @@ describe( 'writer', () => {
 				const range = Range.createFromParentsAndOffsets( img, 0, b, 0 );
 
 				expect( () => {
-					breakAttributes( range );
+					writer.breakAttributes( range );
 				} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 			} );
 
@@ -258,7 +264,7 @@ describe( 'writer', () => {
 				const position = new Position( span, 0 );
 
 				expect( () => {
-					breakAttributes( position );
+					writer.breakAttributes( position );
 				} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 			} );
 
@@ -269,7 +275,7 @@ describe( 'writer', () => {
 				const range = Range.createFromParentsAndOffsets( span, 0, b, 0 );
 
 				expect( () => {
-					breakAttributes( range );
+					writer.breakAttributes( range );
 				} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 			} );
 		} );

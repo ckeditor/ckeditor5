@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { clear } from '../../../src/view/writer';
+import Writer from '../../../src/view/writer';
 import Range from '../../../src/view/range';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import ContainerElement from '../../../src/view/containerelement';
@@ -12,27 +12,33 @@ import EmptyElement from '../../../src/view/emptyelement';
 import UIElement from '../../../src/view/uielement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-describe( 'writer', () => {
-	// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create ranges.
-	//
-	// @param {Object} elementToRemove
-	// @param {String} input
-	// @param {String} expectedResult
-	function test( elementToRemove, input, expectedResult ) {
-		const { view, selection } = parse( input );
+describe( 'Writer', () => {
+	describe( 'clear()', () => {
+		let writer;
 
-		clear( selection.getFirstRange(), elementToRemove );
+		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create ranges.
+		//
+		// @param {Object} elementToRemove
+		// @param {String} input
+		// @param {String} expectedResult
+		function test( elementToRemove, input, expectedResult ) {
+			const { view, selection } = parse( input );
 
-		expect( stringify( view, null, { showType: true } ) ).to.equal( expectedResult );
-	}
+			writer.clear( selection.getFirstRange(), elementToRemove );
 
-	describe( 'clear', () => {
+			expect( stringify( view, null, { showType: true } ) ).to.equal( expectedResult );
+		}
+
+		before( () => {
+			writer = new Writer();
+		} );
+
 		it( 'should throw when range placed in two containers', () => {
 			const p1 = new ContainerElement( 'p' );
 			const p2 = new ContainerElement( 'p' );
 
 			expect( () => {
-				clear( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
+				writer.clear( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 
@@ -40,7 +46,7 @@ describe( 'writer', () => {
 			const el = new AttributeElement( 'b' );
 
 			expect( () => {
-				clear( Range.createFromParentsAndOffsets( el, 0, el, 0 ) );
+				writer.clear( Range.createFromParentsAndOffsets( el, 0, el, 0 ) );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 

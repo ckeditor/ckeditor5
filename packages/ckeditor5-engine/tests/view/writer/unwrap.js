@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { unwrap } from '../../../src/view/writer';
+import Writer from '../../../src/view/writer';
 import Element from '../../../src/view/element';
 import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
@@ -15,22 +15,26 @@ import Text from '../../../src/view/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { stringify, parse } from '../../../src/dev-utils/view';
 
-describe( 'writer', () => {
-	/**
-	 * Executes test using `parse` and `stringify` utils functions.
-	 *
-	 * @param {String} input
-	 * @param {String} unwrapAttribute
-	 * @param {String} expected
-	 */
-	function test( input, unwrapAttribute, expected ) {
-		const { view, selection } = parse( input );
+describe( 'Writer', () => {
+	describe( 'unwrap()', () => {
+		let writer;
 
-		const newRange = unwrap( selection.getFirstRange(), parse( unwrapAttribute ) );
-		expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
-	}
+		// Executes test using `parse` and `stringify` utils functions.
+		//
+		// @param {String} input
+		// @param {String} unwrapAttribute
+		// @param {String} expected
+		function test( input, unwrapAttribute, expected ) {
+			const { view, selection } = parse( input );
 
-	describe( 'unwrap', () => {
+			const newRange = writer.unwrap( selection.getFirstRange(), parse( unwrapAttribute ) );
+			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+		}
+
+		before( () => {
+			writer = new Writer();
+		} );
+
 		it( 'should do nothing on collapsed ranges', () => {
 			test(
 				'<container:p>f{}oo</container:p>',
@@ -56,7 +60,7 @@ describe( 'writer', () => {
 			const b = new Element( 'b' );
 
 			expect( () => {
-				unwrap( range, b );
+				writer.unwrap( range, b );
 			} ).to.throw( CKEditorError, 'view-writer-unwrap-invalid-attribute' );
 		} );
 
@@ -70,7 +74,7 @@ describe( 'writer', () => {
 			const b = new AttributeElement( 'b' );
 
 			expect( () => {
-				unwrap( range, b );
+				writer.unwrap( range, b );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 
@@ -79,7 +83,7 @@ describe( 'writer', () => {
 			const b = new AttributeElement( 'b' );
 
 			expect( () => {
-				unwrap( Range.createFromParentsAndOffsets( el, 0, el, 0 ), b );
+				writer.unwrap( Range.createFromParentsAndOffsets( el, 0, el, 0 ), b );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 
@@ -345,7 +349,7 @@ describe( 'writer', () => {
 			const range = Range.createFromParentsAndOffsets( empty, 0, container, 2 );
 
 			expect( () => {
-				unwrap( range, attribute );
+				writer.unwrap( range, attribute );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
 
@@ -364,7 +368,7 @@ describe( 'writer', () => {
 			const range = Range.createFromParentsAndOffsets( uiElement, 0, container, 2 );
 
 			expect( () => {
-				unwrap( range, attribute );
+				writer.unwrap( range, attribute );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 		} );
 	} );

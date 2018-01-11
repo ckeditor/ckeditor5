@@ -732,7 +732,7 @@ export default class Writer {
 	// @param {Number} startOffset
 	// @param {Number} endOffset
 	// @param {module:engine/view/element~Element} attribute
-	wrapChildren( parent, startOffset, endOffset, attribute ) {
+	_wrapChildren( parent, startOffset, endOffset, attribute ) {
 		let i = startOffset;
 		const wrapPositions = [];
 
@@ -757,7 +757,7 @@ export default class Writer {
 			}
 			// If other nested attribute is found start wrapping there.
 			else if ( isAttribute ) {
-				this.wrapChildren( child, 0, child.childCount, attribute );
+				this._wrapChildren( child, 0, child.childCount, attribute );
 			}
 
 			i++;
