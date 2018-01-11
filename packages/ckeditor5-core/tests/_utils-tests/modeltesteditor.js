@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -21,15 +21,22 @@ describe( 'ModelTestEditor', () => {
 			const editor = new ModelTestEditor( { foo: 1 } );
 
 			expect( editor ).to.be.instanceof( Editor );
-
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
+			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 
-		it( 'creates model and view roots', () => {
+		it( 'creates model root', () => {
 			const editor = new ModelTestEditor( { foo: 1 } );
 
 			expect( editor.model.document.getRoot() ).to.have.property( 'name', '$root' );
-			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
+		} );
+
+		it( 'should disable editing pipeline and clear main root', () => {
+			const editor = new ModelTestEditor( { foo: 1 } );
+
+			editor.model.document.createRoot( 'second', 'second' );
+
+			expect( Array.from( editor.editing.view.roots ) ).to.length( 0 );
 		} );
 	} );
 

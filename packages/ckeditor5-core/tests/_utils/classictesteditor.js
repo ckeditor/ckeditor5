@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -23,8 +23,6 @@ export default class ClassicTestEditor extends StandardEditor {
 	constructor( element, config ) {
 		super( element, config );
 
-		this.model.document.createRoot();
-		this.editing.createRoot( 'div' );
 		this.data.processor = new HtmlDataProcessor();
 
 		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );

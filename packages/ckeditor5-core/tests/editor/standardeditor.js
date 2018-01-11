@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -10,8 +10,6 @@ import StandardEditor from '../../src/editor/standardeditor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
-import EditingKeystrokeHandler from '../../src/editingkeystrokehandler';
 import Plugin from '../../src/plugin';
 
 describe( 'StandardEditor', () => {
@@ -27,27 +25,6 @@ describe( 'StandardEditor', () => {
 			const editor = new StandardEditor( editorElement, { foo: 1 } );
 
 			expect( editor ).to.have.property( 'element', editorElement );
-			expect( editor.editing ).to.be.instanceof( EditingController );
-			expect( editor.keystrokes ).to.be.instanceof( EditingKeystrokeHandler );
-		} );
-
-		it( 'should bind editing.view#isReadOnly to the editor', () => {
-			const editor = new StandardEditor( editorElement, { foo: 1 } );
-
-			editor.isReadOnly = false;
-
-			expect( editor.editing.view.isReadOnly ).to.false;
-
-			editor.isReadOnly = true;
-
-			expect( editor.editing.view.isReadOnly ).to.true;
-		} );
-
-		it( 'activates #keystrokes', () => {
-			const spy = sinon.spy( EditingKeystrokeHandler.prototype, 'listenTo' );
-			const editor = new StandardEditor( editorElement, { foo: 1 } );
-
-			sinon.assert.calledWith( spy, editor.editing.view );
 		} );
 
 		it( 'sets config', () => {
@@ -62,30 +39,6 @@ describe( 'StandardEditor', () => {
 			const editor = new StandardEditor( editorElement, { foo: 1 } );
 
 			expect( editor.destroy() ).to.be.an.instanceof( Promise );
-		} );
-
-		it( 'destroys the #keystrokes', () => {
-			const editor = new StandardEditor( editorElement, { foo: 1 } );
-			const spy = sinon.spy( editor.keystrokes, 'destroy' );
-
-			sinon.assert.notCalled( spy );
-
-			return editor.destroy()
-				.then( () => {
-					sinon.assert.calledOnce( spy );
-				} );
-		} );
-
-		it( 'destroys the #editing', () => {
-			const editor = new StandardEditor( editorElement, { foo: 1 } );
-			const spy = sinon.spy( editor.editing, 'destroy' );
-
-			sinon.assert.notCalled( spy );
-
-			return editor.destroy()
-				.then( () => {
-					sinon.assert.calledOnce( spy );
-				} );
 		} );
 
 		it( 'destroys the parent', () => {
@@ -153,11 +106,7 @@ describe( 'StandardEditor', () => {
 		} );
 
 		it( 'should set data of the first root', () => {
-			editor.model.document.createRoot();
 			editor.model.document.createRoot( '$root', 'secondRoot' );
-
-			editor.editing.createRoot( 'div' );
-			editor.editing.createRoot( 'div', 'secondRoot' );
 
 			editor.setData( 'foo' );
 
@@ -180,11 +129,7 @@ describe( 'StandardEditor', () => {
 		} );
 
 		it( 'should get data of the first root', () => {
-			editor.model.document.createRoot();
 			editor.model.document.createRoot( '$root', 'secondRoot' );
-
-			editor.editing.createRoot( 'div' );
-			editor.editing.createRoot( 'div', 'secondRoot' );
 
 			setData( editor.model, 'foo' );
 
