@@ -4,6 +4,7 @@
  */
 
 import Editor from '../../src/editor/editor';
+import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import ModelTestEditor from '../../tests/_utils/modeltesteditor';
 
 import Plugin from '../../src/plugin';
@@ -27,12 +28,13 @@ describe( 'ModelTestEditor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 
-		it( 'should disable editing pipeline and clear main root', () => {
+		it( 'should disable editing pipeline', () => {
+			const spy = sinon.spy( EditingController.prototype, 'destroy' );
 			const editor = new ModelTestEditor( { foo: 1 } );
 
-			editor.model.document.createRoot( 'second', 'second' );
+			sinon.assert.calledOnce( spy );
 
-			expect( Array.from( editor.editing.view.roots ) ).to.length( 0 );
+			return editor.destroy();
 		} );
 
 		it( 'creates main root element', () => {

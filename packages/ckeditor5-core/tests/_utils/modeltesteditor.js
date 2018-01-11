@@ -23,7 +23,7 @@ export default class ModelTestEditor extends Editor {
 		// Use the HTML data processor in this editor.
 		this.data.processor = new HtmlDataProcessor();
 
-		// Disable editing pipeline for model editor.
+		// Disable editing pipeline.
 		this.editing.destroy();
 
 		// Create the ("main") root element of the model tree.
