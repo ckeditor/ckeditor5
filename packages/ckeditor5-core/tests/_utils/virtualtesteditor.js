@@ -18,10 +18,6 @@ export default class VirtualTestEditor extends StandardEditor {
 	constructor( config ) {
 		super( null, config );
 
-		this.model.document.createRoot();
-
-		this.editing.createRoot( 'div' );
-
 		this.data.processor = new HtmlDataProcessor();
 	}
 

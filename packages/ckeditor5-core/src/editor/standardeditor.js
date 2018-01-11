@@ -8,16 +8,16 @@
  */
 
 import Editor from './editor';
-import EditingKeystrokeHandler from '../editingkeystrokehandler';
-import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import isFunction from '@ckeditor/ckeditor5-utils/src/lib/lodash/isFunction';
 
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
 /**
- * Class representing a typical browser-based editor. It handles a single source element and
- * uses {@link module:engine/controller/editingcontroller~EditingController}.
+ * The standard editor class, extending base editor by adding methods needed in the typical
+ * editor implementations: editor with a single editable area created based on the DOM element.
+ * It provides base API to manage data and to integrate the editor with the form when it is
+ * initialized on the textarea element.
  *
  * @extends module:core/editor/editor~Editor
  */
@@ -40,18 +40,6 @@ export default class StandardEditor extends Editor {
 		 */
 		this.element = element;
 
-		// Documented in Editor.
-		this.editing = new EditingController( this.model );
-		this.editing.view.bind( 'isReadOnly' ).to( this );
-
-		/**
-		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:core/editingkeystrokehandler~EditingKeystrokeHandler}
-		 */
-		this.keystrokes = new EditingKeystrokeHandler( this );
-
 		/**
 		 * Editor UI instance.
 		 *
@@ -63,19 +51,7 @@ export default class StandardEditor extends Editor {
 		 * @member {module:core/editor/editorui~EditorUI} #ui
 		 */
 
-		this.keystrokes.listenTo( this.editing.view );
-
 		this._attachToForm();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		return Promise.resolve()
-			.then( () => this.keystrokes.destroy() )
-			.then( () => this.editing.destroy() )
-			.then( super.destroy() );
 	}
 
 	/**

@@ -8,17 +8,21 @@
  */
 
 import Config from '@ckeditor/ckeditor5-utils/src/config';
+import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import PluginCollection from '../plugincollection';
 import CommandCollection from '../commandcollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Class representing a basic editor. It contains a base architecture, without much additional logic.
+ * Class representing the base of the editor. It is the API all plugins can expect to get when using editor property.
+ * Editors implementation (like Classic Editor or Inline Editor) should extend this class. They can add their own
+ * methods and properties.
  *
  * See also {@link module:core/editor/standardeditor~StandardEditor}.
  *
@@ -74,30 +78,6 @@ export default class Editor {
 		this.t = this.locale.t;
 
 		/**
-		 * The editor's model.
-		 *
-		 * The center of the editor's abstract data model.
-		 *
-		 * Besides the model, the editor usually contains two controllers –
-		 * {@link #data data controller} and {@link #editing editing controller}.
-		 * The former is used e.g. when setting or retrieving editor data and contains a useful
-		 * set of methods for operating on the content. The latter controls user input and rendering
-		 * the content for editing.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/model~Model}
-		 */
-		this.model = new Model();
-
-		/**
-		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
-		 *
-		 * @readonly
-		 * @member {module:engine/controller/datacontroller~DataController}
-		 */
-		this.data = new DataController( this.model );
-
-		/**
 		 * Defines whether this editor is in read-only mode.
 		 *
 		 * In read-only mode the editor {@link #commands commands} are disabled so it is not possible
@@ -109,17 +89,45 @@ export default class Editor {
 		this.set( 'isReadOnly', false );
 
 		/**
-		 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.
+		 * The editor's model.
 		 *
-		 * This property is set by more specialized editor classes (such as {@link module:core/editor/standardeditor~StandardEditor}),
-		 * however, it's required for features to work as their engine-related parts will try to connect converters.
-		 *
-		 * When defining a virtual editor class, like one working in Node.js, it's possible to plug a virtual
-		 * editing controller which only instantiates necessary properties, but without any observers and listeners.
+		 * The center of the editor's abstract data model.
 		 *
 		 * @readonly
-		 * @member {module:engine/controller/editingcontroller~EditingController} #editing
+		 * @member {module:engine/model/model~Model}
 		 */
+		this.model = new Model();
+
+		// Creates main root.
+		this.model.document.createRoot();
+
+		/**
+		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
+		 * Used e.g. for setting or retrieving editor data.
+		 *
+		 * @readonly
+		 * @member {module:engine/controller/datacontroller~DataController}
+		 */
+		this.data = new DataController( this.model );
+
+		/**
+		 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.
+		 * Controls user input and rendering the content for editing.
+		 *
+		 * @readonly
+		 * @member {module:engine/controller/editingcontroller~EditingController}
+		 */
+		this.editing = new EditingController( this.model );
+		this.editing.view.bind( 'isReadOnly' ).to( this );
+
+		/**
+		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:core/editingkeystrokehandler~EditingKeystrokeHandler}
+		 */
+		this.keystrokes = new EditingKeystrokeHandler( this );
+		this.keystrokes.listenTo( this.editing.view );
 	}
 
 	/**
@@ -173,6 +181,8 @@ export default class Editor {
 			.then( () => {
 				this.model.destroy();
 				this.data.destroy();
+				this.editing.destroy();
+				this.keystrokes.destroy();
 			} );
 	}
 

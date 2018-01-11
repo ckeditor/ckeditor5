@@ -23,8 +23,6 @@ export default class ClassicTestEditor extends StandardEditor {
 	constructor( element, config ) {
 		super( element, config );
 
-		this.model.document.createRoot();
-		this.editing.createRoot( 'div' );
 		this.data.processor = new HtmlDataProcessor();
 
 		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );

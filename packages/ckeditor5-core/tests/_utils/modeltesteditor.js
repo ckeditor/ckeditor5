@@ -18,9 +18,11 @@ export default class ModelTestEditor extends Editor {
 	constructor( config ) {
 		super( config );
 
-		this.model.document.createRoot();
-
 		this.data.processor = new HtmlDataProcessor();
+
+		// Disable editing pipeline for model editor.
+		this.editing.destroy();
+		this.editing.view.roots.clear();
 	}
 
 	/**
