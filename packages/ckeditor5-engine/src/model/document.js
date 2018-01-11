@@ -13,6 +13,7 @@ import RootElement from './rootelement';
 import History from './history';
 import DocumentSelection from './documentselection';
 import TreeWalker from './treewalker';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -76,9 +77,9 @@ export default class Document {
 		 * {@link #getRoot} to manipulate it.
 		 *
 		 * @readonly
-		 * @member {Map}
+		 * @member {module:utils/collection~Collection}
 		 */
-		this.roots = new Map();
+		this.roots = new Collection( { idProperty: 'rootName' } );
 
 		// Add events that will ensure selection correctness.
 		this.selection.on( 'change:range', () => {
@@ -155,7 +156,7 @@ export default class Document {
 	 * @returns {module:engine/model/rootelement~RootElement} Created root.
 	 */
 	createRoot( elementName = '$root', rootName = 'main' ) {
-		if ( this.roots.has( rootName ) ) {
+		if ( this.roots.get( rootName ) ) {
 			/**
 			 * Root with specified name already exists.
 			 *
@@ -170,7 +171,7 @@ export default class Document {
 		}
 
 		const root = new RootElement( this, elementName, rootName );
-		this.roots.set( rootName, root );
+		this.roots.add( root );
 
 		return root;
 	}
@@ -187,33 +188,11 @@ export default class Document {
 	 * Returns top-level root by its name.
 	 *
 	 * @param {String} [name='main'] Unique root name.
-	 * @returns {module:engine/model/rootelement~RootElement} Root registered under given name.
+	 * @returns {module:engine/model/rootelement~RootElement|null} Root registered under given name or null when
+	 * there is no root of given name.
 	 */
 	getRoot( name = 'main' ) {
-		if ( !this.roots.has( name ) ) {
-			/**
-			 * Root with specified name does not exist.
-			 *
-			 * @error model-document-getRoot-root-not-exist
-			 * @param {String} name
-			 */
-			throw new CKEditorError(
-				'model-document-getRoot-root-not-exist: Root with specified name does not exist.',
-				{ name }
-			);
-		}
-
 		return this.roots.get( name );
-	}
-
-	/**
-	 * Checks if root with given name is defined.
-	 *
-	 * @param {String} name Name of root to check.
-	 * @returns {Boolean}
-	 */
-	hasRoot( name ) {
-		return this.roots.has( name );
 	}
 
 	/**
@@ -222,7 +201,7 @@ export default class Document {
 	 * @returns {Array.<String>} Roots names.
 	 */
 	getRootNames() {
-		return Array.from( this.roots.keys() ).filter( name => name != graveyardName );
+		return Array.from( this.roots, root => root.rootName ).filter( name => name != graveyardName );
 	}
 
 	/**
@@ -301,7 +280,7 @@ export default class Document {
 	 * @returns {module:engine/model/rootelement~RootElement} The default root for this document.
 	 */
 	_getDefaultRoot() {
-		for ( const root of this.roots.values() ) {
+		for ( const root of this.roots ) {
 			if ( root !== this.graveyard ) {
 				return root;
 			}

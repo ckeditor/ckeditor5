@@ -6,6 +6,7 @@
 import ViewDocument from '../../src/view/document';
 import ViewSelection from '../../src/view/selection';
 import ViewRange from '../../src/view/range';
+import createViewRoot from '../view/_utils/createroot';
 
 import Model from '../../src/model/model';
 
@@ -26,7 +27,7 @@ describe( 'convertSelectionChange', () => {
 		modelSetData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 		view = new ViewDocument();
-		viewRoot = view.createRoot( 'div' );
+		viewRoot = createViewRoot( view, 'div', 'main' );
 
 		viewSetData( view, '<p>foo</p><p>bar</p>' );
 

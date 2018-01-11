@@ -168,7 +168,7 @@ export default class RootAttributeOperation extends Operation {
 	 * @returns {module:engine/model/operation/rootattributeoperation~RootAttributeOperation}
 	 */
 	static fromJSON( json, document ) {
-		if ( !document.hasRoot( json.root ) ) {
+		if ( !document.getRoot( json.root ) ) {
 			/**
 			 * Cannot create RootAttributeOperation for document. Root with specified name does not exist.
 			 *

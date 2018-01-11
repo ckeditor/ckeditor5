@@ -19,6 +19,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { parse, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import createViewRoot from './_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import { unwrap, insert, remove } from '../../src/view/writer';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
@@ -1880,7 +1881,8 @@ describe( 'Renderer', () => {
 			viewDoc = new ViewDocument();
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );
-			viewRoot = viewDoc.createRoot( domRoot );
+			viewRoot = createViewRoot( viewDoc );
+			viewDoc.attachDomRoot( domRoot );
 			converter = viewDoc.domConverter;
 		} );
 

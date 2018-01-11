@@ -764,7 +764,7 @@ export default class Position {
 			return new Position( doc.graveyard, json.path );
 		}
 
-		if ( !doc.hasRoot( json.root ) ) {
+		if ( !doc.getRoot( json.root ) ) {
 			/**
 			 * Cannot create position for document. Root with specified name does not exist.
 			 *

@@ -12,6 +12,7 @@ import ViewDocument from '../../../src/view/document';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 
 testUtils.createSinonSandbox();
@@ -27,7 +28,8 @@ describe( 'SelectionObserver', () => {
 		domDocument.body.appendChild( domRoot );
 
 		viewDocument = new ViewDocument();
-		viewDocument.createRoot( domMain );
+		createViewRoot( viewDocument );
+		viewDocument.attachDomRoot( domMain );
 
 		selectionObserver = viewDocument.getObserver( SelectionObserver );
 
@@ -83,7 +85,8 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should add only one listener to one document', done => {
 		// Add second roots to ensure that listener is added once.
-		viewDocument.createRoot( domDocument.getElementById( 'additional' ), 'additional' );
+		createViewRoot( viewDocument, 'div', 'additional' );
+		viewDocument.attachDomRoot( domDocument.getElementById( 'additional' ), 'additional' );
 
 		viewDocument.on( 'selectionChange', () => {
 			done();

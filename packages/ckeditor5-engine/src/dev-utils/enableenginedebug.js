@@ -679,7 +679,7 @@ class DebugPlugin extends Plugin {
 function dumpTrees( document, version ) {
 	let string = '';
 
-	for ( const root of document.roots.values() ) {
+	for ( const root of document.roots ) {
 		string += root.printTree() + '\n';
 	}
 

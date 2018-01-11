@@ -34,6 +34,7 @@ import {
 	removeHighlight
 } from '../../src/conversion/model-to-view-converters';
 
+import createViewRoot from '../view/_utils/createroot';
 import { stringify as stringifyView } from '../../src/dev-utils/view';
 import { setData as setModelData } from '../../src/dev-utils/model';
 
@@ -49,7 +50,7 @@ describe( 'model-selection-to-view-converters', () => {
 		model.schema.extend( '$text', { allowIn: '$root' } );
 
 		viewDoc = new ViewDocument();
-		viewRoot = viewDoc.createRoot( 'div' );
+		viewRoot = createViewRoot( viewDoc );
 		viewSelection = viewDoc.selection;
 
 		mapper = new Mapper();

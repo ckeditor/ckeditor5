@@ -5,6 +5,7 @@
 
 /* globals document */
 
+import RootEditableElement from '../../../src/view/rooteditableelement';
 import Document from '../../../src/view/document';
 import ViewElement from '../../../src/view/element';
 import { isBlockFiller, BR_FILLER } from '../../../src/view/filler';
@@ -19,7 +20,9 @@ describe( 'Document integration', () => {
 		] );
 
 		const viewDocument = new Document();
-		viewDocument.createRoot( domDiv );
+
+		createRoot( 'div', 'main', viewDocument );
+		viewDocument.attachDomRoot( domDiv );
 		viewDocument.render();
 
 		expect( domDiv.childNodes.length ).to.equal( 1 );
@@ -32,7 +35,8 @@ describe( 'Document integration', () => {
 		const domDiv = document.createElement( 'div' );
 
 		const viewDocument = new Document();
-		viewDocument.createRoot( domDiv );
+		createRoot( 'div', 'main', viewDocument );
+		viewDocument.attachDomRoot( domDiv );
 
 		viewDocument.getRoot().appendChildren( new ViewElement( 'p' ) );
 		viewDocument.render();
@@ -47,7 +51,9 @@ describe( 'Document integration', () => {
 		const domRoot = document.createElement( 'div' );
 
 		const viewDocument = new Document();
-		const viewRoot = viewDocument.createRoot( domRoot );
+		const viewRoot = createRoot( 'div', 'main', viewDocument );
+
+		viewDocument.attachDomRoot( domRoot );
 
 		const viewP = new ViewElement( 'p', { class: 'foo' } );
 		viewRoot.appendChildren( viewP );
@@ -65,3 +71,13 @@ describe( 'Document integration', () => {
 		viewDocument.destroy();
 	} );
 } );
+
+function createRoot( name, rootName, viewDoc ) {
+	const viewRoot = new RootEditableElement( name );
+
+	viewRoot.rootName = rootName;
+	viewRoot.document = viewDoc;
+	viewDoc.roots.add( viewRoot );
+
+	return viewRoot;
+}

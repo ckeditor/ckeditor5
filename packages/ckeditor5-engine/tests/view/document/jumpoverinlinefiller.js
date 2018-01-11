@@ -9,6 +9,7 @@ import ViewRange from '../../../src/view/range';
 import ViewDocument from '../../../src/view/document';
 import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '../../../src/view/filler';
 
+import createViewRoot from '../_utils/createroot';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
@@ -24,7 +25,8 @@ describe( 'Document', () => {
 		document.body.appendChild( domRoot );
 
 		viewDocument = new ViewDocument();
-		viewDocument.createRoot( domRoot );
+		createViewRoot( viewDocument );
+		viewDocument.attachDomRoot( domRoot );
 
 		document.getSelection().removeAllRanges();
 

@@ -9,6 +9,7 @@ import DomEventObserver from '../../../src/view/observer/domeventobserver';
 import Observer from '../../../src/view/observer/observer';
 import ViewDocument from '../../../src/view/document';
 import UIElement from '../../../src/view/uielement';
+import createViewRoot from '../_utils/createroot';
 
 class ClickObserver extends DomEventObserver {
 	constructor( document ) {
@@ -66,7 +67,8 @@ describe( 'DomEventObserver', () => {
 		const domEvent = new MouseEvent( 'click' );
 		const evtSpy = sinon.spy();
 
-		viewDocument.createRoot( domElement, 'root' );
+		createViewRoot( viewDocument );
+		viewDocument.attachDomRoot( domElement );
 		viewDocument.addObserver( ClickObserver );
 		viewDocument.on( 'click', evtSpy );
 
@@ -88,7 +90,8 @@ describe( 'DomEventObserver', () => {
 		const evtSpy1 = sinon.spy();
 		const evtSpy2 = sinon.spy();
 
-		viewDocument.createRoot( domElement, 'root' );
+		createViewRoot( viewDocument );
+		viewDocument.attachDomRoot( domElement );
 		viewDocument.addObserver( MultiObserver );
 		viewDocument.on( 'evt1', evtSpy1 );
 		viewDocument.on( 'evt2', evtSpy2 );
@@ -105,7 +108,8 @@ describe( 'DomEventObserver', () => {
 		const domEvent = new MouseEvent( 'click' );
 		const evtSpy = sinon.spy();
 
-		viewDocument.createRoot( domElement, 'root' );
+		createViewRoot( viewDocument );
+		viewDocument.attachDomRoot( domElement );
 		const testObserver = viewDocument.addObserver( ClickObserver );
 		viewDocument.on( 'click', evtSpy );
 
@@ -121,7 +125,8 @@ describe( 'DomEventObserver', () => {
 		const domEvent = new MouseEvent( 'click' );
 		const evtSpy = sinon.spy();
 
-		viewDocument.createRoot( domElement, 'root' );
+		createViewRoot( viewDocument );
+		viewDocument.attachDomRoot( domElement );
 		const testObserver = viewDocument.addObserver( ClickObserver );
 		viewDocument.on( 'click', evtSpy );
 
@@ -143,7 +148,8 @@ describe( 'DomEventObserver', () => {
 		const childDomElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );
 		domElement.appendChild( childDomElement );
-		viewDocument.createRoot( domElement, 'root' );
+		createViewRoot( viewDocument );
+		viewDocument.attachDomRoot( domElement );
 		viewDocument.addObserver( ClickCapturingObserver );
 
 		viewDocument.on( 'click', ( evt, domEventData ) => {
@@ -168,7 +174,8 @@ describe( 'DomEventObserver', () => {
 
 		beforeEach( () => {
 			domRoot = document.createElement( 'div' );
-			const viewRoot = viewDocument.createRoot( domRoot, 'root' );
+			const viewRoot = createViewRoot( viewDocument );
+			viewDocument.attachDomRoot( domRoot );
 			uiElement = new MyUIElement( 'p' );
 			viewRoot.appendChildren( uiElement );
 			viewDocument.render();

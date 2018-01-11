@@ -9,6 +9,7 @@ import RootElement from '../../../src/model/rootelement';
 import Batch from '../../../src/model/batch';
 import Delta from '../../../src/model/delta/delta';
 import Range from '../../../src/model/range';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import { jsonParseStringify } from '../../../tests/model/_utils/utils';
@@ -31,8 +32,8 @@ describe( 'Document', () => {
 			const doc = new Document( model );
 
 			expect( doc ).to.have.property( 'model' ).to.equal( model );
-			expect( doc ).to.have.property( 'roots' ).that.is.instanceof( Map );
-			expect( doc.roots.size ).to.equal( 1 );
+			expect( doc ).to.have.property( 'roots' ).that.is.instanceof( Collection );
+			expect( doc.roots.length ).to.equal( 1 );
 			expect( doc.graveyard ).to.be.instanceof( RootElement );
 			expect( doc.graveyard.maxOffset ).to.equal( 0 );
 			expect( count( doc.selection.getRanges() ) ).to.equal( 1 );
@@ -133,7 +134,7 @@ describe( 'Document', () => {
 		it( 'should create a new RootElement with default element and root names, add it to roots map and return it', () => {
 			const root = doc.createRoot();
 
-			expect( doc.roots.size ).to.equal( 2 );
+			expect( doc.roots.length ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.maxOffset ).to.equal( 0 );
 			expect( root ).to.have.property( 'name', '$root' );
@@ -143,7 +144,7 @@ describe( 'Document', () => {
 		it( 'should create a new RootElement with custom element and root names, add it to roots map and return it', () => {
 			const root = doc.createRoot( 'customElementName', 'customRootName' );
 
-			expect( doc.roots.size ).to.equal( 2 );
+			expect( doc.roots.length ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.maxOffset ).to.equal( 0 );
 			expect( root ).to.have.property( 'name', 'customElementName' );
@@ -162,31 +163,20 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'getRoot()', () => {
-		it( 'should return a RootElement previously created with given name', () => {
-			const newRoot = doc.createRoot();
-			const getRoot = doc.getRoot();
+		it( 'should return a RootElement with default "main" name', () => {
+			const newRoot = doc.createRoot( 'main' );
 
-			expect( getRoot ).to.equal( newRoot );
+			expect( doc.getRoot() ).to.equal( newRoot );
 		} );
 
-		it( 'should throw an error when trying to get non-existent root', () => {
-			expect(
-				() => {
-					doc.getRoot( 'root' );
-				}
-			).to.throw( CKEditorError, /model-document-getRoot-root-not-exist/ );
-		} );
-	} );
+		it( 'should return a RootElement with custom name', () => {
+			const newRoot = doc.createRoot( 'custom', 'custom' );
 
-	describe( 'hasRoot()', () => {
-		it( 'should return true when Document has RootElement with given name', () => {
-			doc.createRoot();
-
-			expect( doc.hasRoot( 'main' ) ).to.be.true;
+			expect( doc.getRoot( 'custom' ) ).to.equal( newRoot );
 		} );
 
-		it( 'should return false when Document does not have RootElement with given name', () => {
-			expect( doc.hasRoot( 'noroot' ) ).to.be.false;
+		it( 'should return null when trying to get non-existent root', () => {
+			expect( doc.getRoot( 'not-existing' ) ).to.null;
 		} );
 	} );
 
@@ -483,6 +473,33 @@ describe( 'Document', () => {
 			doc.createRoot( '$root', 'rootC' );
 
 			expect( doc._getDefaultRoot() ).to.equal( rootA );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy selection instance', () => {
+			const spy = sinon.spy( doc.selection, 'destroy' );
+
+			doc.destroy();
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should stop listening to events', () => {
+			const spy = sinon.spy();
+
+			doc.listenTo( model, 'something', spy );
+
+			model.fire( 'something' );
+
+			sinon.assert.calledOnce( spy );
+
+			doc.destroy();
+
+			model.fire( 'something' );
+
+			// Still once.
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 

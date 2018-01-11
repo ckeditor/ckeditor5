@@ -40,7 +40,11 @@ describe( 'advanced-converters', () => {
 
 		const editing = new EditingController( model );
 
-		viewRoot = editing.createRoot( 'div' );
+		viewRoot = editing.view.getRoot();
+
+		// Set name of view root the same as dom root.
+		// This is a mock of attaching view root to dom root.
+		viewRoot._name = 'div';
 
 		viewDispatcher = new ViewConversionDispatcher( model, { schema: { checkChild: () => true } } );
 		viewDispatcher.on( 'text', convertText() );

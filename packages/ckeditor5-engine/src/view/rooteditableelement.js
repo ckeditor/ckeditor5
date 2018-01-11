@@ -23,7 +23,6 @@ export default class RootEditableElement extends EditableElement {
 	/**
 	 * Creates root editable element.
 	 *
-	 * @param {module:engine/view/document~Document} document {@link module:engine/view/document~Document} that is an owner of the root.
 	 * @param {String} name Node name.
 	 */
 	constructor( name ) {
@@ -55,5 +54,18 @@ export default class RootEditableElement extends EditableElement {
 
 	set rootName( rootName ) {
 		this.setCustomProperty( rootNameSymbol, rootName );
+	}
+
+	/**
+	 * Overrides old element name and sets new one.
+	 * This is needed because view roots are created before they are attached to the DOM.
+	 * The name of the root element is temporary at this stage. It has to be changed when the
+	 * view root element is attached to the DOM element.
+	 *
+	 * @protected
+	 * @param {String} name The new name of element.
+	 */
+	set _name( name ) {
+		this.name = name;
 	}
 }

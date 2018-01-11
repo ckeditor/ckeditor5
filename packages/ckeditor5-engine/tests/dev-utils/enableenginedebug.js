@@ -46,6 +46,7 @@ import ViewTextProxy from '../../src/view/textproxy';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewElement from '../../src/view/element';
 
+import createViewRoot from '../view/_utils/createroot';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
@@ -104,14 +105,7 @@ describe( 'disableEngineDebug', () => {
 describe( 'debug tools', () => {
 	let DebugPlugin, log, error;
 
-	class TestEditor extends StandardEditor {
-		constructor( ...args ) {
-			super( ...args );
-
-			this.model.document.createRoot( 'main' );
-			this.editing.createRoot( this.element, 'main' );
-		}
-	}
+	class TestEditor extends StandardEditor {}
 
 	before( () => {
 		log = sinon.spy();
@@ -707,7 +701,7 @@ describe( 'debug tools', () => {
 
 		it( 'for view', () => {
 			const viewDoc = new ViewDocument();
-			const viewRoot = viewDoc.createRoot( 'div' );
+			const viewRoot = createViewRoot( viewDoc );
 
 			viewRoot.appendChildren( [
 				new ViewContainerElement( 'p', { foo: 'bar' }, [
@@ -849,14 +843,14 @@ describe( 'debug tools', () => {
 
 			viewDoc.log( 0 );
 			expectLog(
-				'<div></div>'
+				'<$root></$root>'
 			);
 
 			viewDoc.log( 2 );
 			expectLog(
-				'<div>' +
+				'<$root>' +
 				'\n\tfbar' +
-				'\n</div>'
+				'\n</$root>'
 			);
 
 			sinon.spy( modelDoc, 'log' );
