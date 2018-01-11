@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -34,10 +34,10 @@ describe( 'Command', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'adds a listener which refreshed the command on editor.model.document#changesDone', () => {
+		it( 'adds a listener which refreshes the command on editor.model.Document#event:change', () => {
 			sinon.spy( command, 'refresh' );
 
-			editor.model.document.fire( 'changesDone' );
+			editor.model.document.fire( 'change' );
 
 			expect( command.refresh.calledOnce ).to.be.true;
 		} );
