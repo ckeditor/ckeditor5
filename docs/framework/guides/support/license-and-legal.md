@@ -10,7 +10,7 @@ order: 20
 
 The following legal notices apply to CKEditor 5 Framework and all software from the CKEditor 5 Ecosystem included with it.
 
-Copyright (c) 2003-2017, CKSource Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2018, CKSource Frederico Knabben. All rights reserved.
 
 Licensed under the terms of any of the following licenses at your choice:
 
