@@ -383,7 +383,7 @@ describe( 'Document', () => {
 
 		it( 'should log warning when no selection', () => {
 			const logSpy = testUtils.sinon.stub( log, 'warn' );
-			viewDocument.selection.removeAllRanges();
+			viewDocument.selection.setTo( null );
 
 			viewDocument.focus();
 			expect( logSpy.calledOnce ).to.be.true;

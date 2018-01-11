@@ -116,7 +116,7 @@ export function setData( model, data, options = {} ) {
 
 		// Clean up previous document selection.
 		model.document.selection._clearAttributes();
-		model.document.selection._removeAllRanges();
+		model.document.selection._setTo( null );
 
 		// Update document selection if specified.
 		if ( selection ) {

@@ -13,6 +13,7 @@ import Position from './position';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import Element from './element';
+import Text from './text';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
@@ -74,7 +75,7 @@ export default class Selection {
 		this._fakeSelectionLabel = '';
 
 		if ( ranges ) {
-			this.setRanges( ranges, isLastBackward );
+			this._setRanges( ranges, isLastBackward );
 		}
 	}
 
@@ -211,7 +212,7 @@ export default class Selection {
 	 * @param {module:engine/view/range~Range} range
 	 * @param {Boolean} isBackward
 	 */
-	addRange( range, isBackward ) {
+	_addRange( range, isBackward ) {
 		if ( !( range instanceof Range ) ) {
 			throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
 		}
@@ -397,10 +398,42 @@ export default class Selection {
 	 *
 	 * @fires change
 	 */
-	removeAllRanges() {
+	_removeAllRanges() {
 		if ( this._ranges.length ) {
 			this._ranges = [];
 			this.fire( 'change' );
+		}
+	}
+
+	/**
+	 * Sets this selection's ranges and direction to the specified location based on the given
+	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
+	 * {@link module:engine/view/range~Range range} or an iterable of {@link module:engine/view/range~Range ranges}.
+	 *
+	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
+	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range} selectable
+	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 */
+	setTo( selectable, backwardSelectionOrOffset ) {
+		if ( !selectable ) {
+			this._removeAllRanges();
+		} else if ( selectable instanceof Selection ) {
+			this._isFake = selectable.isFake;
+			this._fakeSelectionLabel = selectable.fakeSelectionLabel;
+			this._setRanges( selectable.getRanges(), selectable.isBackward );
+		} else if ( selectable instanceof Range ) {
+			this._setRanges( [ selectable ], backwardSelectionOrOffset );
+		} else if ( selectable instanceof Position ) {
+			this._setRanges( [ new Range( selectable ) ] );
+		} else if ( selectable instanceof Text ) {
+			this._setRanges( [ Range.createCollapsedAt( selectable, backwardSelectionOrOffset ) ] );
+		} else if ( selectable instanceof Element ) {
+			this._setRanges( [ Range.createCollapsedAt( selectable, backwardSelectionOrOffset ) ] );
+		} else if ( isIterable( selectable ) ) {
+			// We assume that the selectable is an iterable of ranges.
+			this._setRanges( selectable, backwardSelectionOrOffset );
+		} else {
+			throw new CKEditorError( 'model-selection-set-not-selectable' );
 		}
 	}
 
@@ -409,12 +442,13 @@ export default class Selection {
 	 * is treated like the last added range and is used to set {@link #anchor anchor} and {@link #focus focus}.
 	 * Accepts a flag describing in which way the selection is made (see {@link #addRange addRange}).
 	 *
+	 * @protected
 	 * @fires change
 	 * @param {Iterable.<module:engine/view/range~Range>} newRanges Iterable object of ranges to set.
 	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end
 	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
 	 */
-	setRanges( newRanges, isLastBackward ) {
+	_setRanges( newRanges, isLastBackward ) {
 		this._ranges = [];
 
 		for ( const range of newRanges ) {
@@ -427,95 +461,6 @@ export default class Selection {
 
 		this._lastRangeBackward = !!isLastBackward;
 		this.fire( 'change' );
-	}
-
-	/**
-	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
-	 * {@link module:engine/view/range~Range range} or an iterable of {@link module:engine/view/range~Range ranges}.
-	 *
-	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
-	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range} selectable
-	 */
-	setTo( selectable ) {
-		if ( selectable instanceof Selection ) {
-			this._isFake = selectable.isFake;
-			this._fakeSelectionLabel = selectable.fakeSelectionLabel;
-			this.setRanges( selectable.getRanges(), selectable.isBackward );
-		} else if ( selectable instanceof Range ) {
-			this.setRanges( [ selectable ] );
-		} else if ( isIterable( selectable ) ) {
-			// We assume that the selectable is an iterable of ranges.
-			this.setRanges( selectable );
-		} else {
-			// We assume that the selectable is a position.
-			this.setRanges( [ new Range( selectable ) ] );
-		}
-	}
-
-	/**
-	 * Sets this selection in the provided element.
-	 *
-	 * @param {module:engine/view/element~Element} element
-	 */
-	setIn( element ) {
-		this.setRanges( [ Range.createIn( element ) ] );
-	}
-
-	/**
-	 * Sets this selection on the provided item.
-	 *
-	 * @param {module:engine/view/item~Item} item
-	 */
-	setOn( item ) {
-		this.setRanges( [ Range.createOn( item ) ] );
-	}
-
-	/**
-	 * Sets collapsed selection at the specified location.
-	 *
-	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
-	 *
-	 * @fires change
-	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a {@link module:engine/view/item~Item view item}.
-	 */
-	setCollapsedAt( itemOrPosition, offset ) {
-		const pos = Position.createAt( itemOrPosition, offset );
-		const range = new Range( pos, pos );
-
-		this.setRanges( [ range ] );
-	}
-
-	/**
-	 * Collapses selection to the selection's {@link #getFirstPosition first position}.
-	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
-	 * inside selection.
-	 *
-	 * @fires change
-	 */
-	collapseToStart() {
-		const startPosition = this.getFirstPosition();
-
-		if ( startPosition !== null ) {
-			this.setRanges( [ new Range( startPosition, startPosition ) ] );
-		}
-	}
-
-	/**
-	 * Collapses selection to the selection's {@link #getLastPosition last position}.
-	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
-	 * inside selection.
-	 *
-	 * @fires change
-	 */
-	collapseToEnd() {
-		const endPosition = this.getLastPosition();
-
-		if ( endPosition !== null ) {
-			this.setRanges( [ new Range( endPosition, endPosition ) ] );
-		}
 	}
 
 	/**
@@ -551,9 +496,9 @@ export default class Selection {
 		this._ranges.pop();
 
 		if ( newFocus.compareWith( anchor ) == 'before' ) {
-			this.addRange( new Range( newFocus, anchor ), true );
+			this._addRange( new Range( newFocus, anchor ), true );
 		} else {
-			this.addRange( new Range( anchor, newFocus ) );
+			this._addRange( new Range( anchor, newFocus ) );
 		}
 	}
 

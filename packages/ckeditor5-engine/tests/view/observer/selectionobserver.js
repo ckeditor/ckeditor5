@@ -41,7 +41,7 @@ describe( 'SelectionObserver', () => {
 
 		viewDocument.render();
 
-		viewDocument.selection.removeAllRanges();
+		viewDocument.selection.setTo( null );
 		domDocument.getSelection().removeAllRanges();
 
 		viewDocument.isFocused = true;

@@ -35,7 +35,7 @@ export function convertRangeSelection() {
 			return;
 		}
 
-		conversionApi.viewSelection.removeAllRanges();
+		conversionApi.viewSelection.setTo( null );
 
 		for ( const range of selection.getRanges() ) {
 			const viewRange = conversionApi.mapper.toViewRange( range );
@@ -82,8 +82,7 @@ export function convertCollapsedSelection() {
 		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
 		const brokenPosition = viewWriter.breakAttributes( viewPosition );
 
-		conversionApi.viewSelection.removeAllRanges();
-		conversionApi.viewSelection.addRange( new ViewRange( brokenPosition, brokenPosition ) );
+		conversionApi.viewSelection.setTo( new ViewRange( brokenPosition, brokenPosition ) );
 	};
 }
 
@@ -122,7 +121,7 @@ export function clearAttributes() {
 				}
 			}
 		}
-		conversionApi.viewSelection.removeAllRanges();
+		conversionApi.viewSelection.setTo( null );
 	};
 }
 

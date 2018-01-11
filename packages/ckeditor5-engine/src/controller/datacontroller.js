@@ -194,8 +194,8 @@ export default class DataController {
 		this.model.enqueueChange( 'transparent', writer => {
 			// Clearing selection is a workaround for ticket #569 (LiveRange loses position after removing data from document).
 			// After fixing it this code should be removed.
-			this.model.document.selection.removeAllRanges();
-			this.model.document.selection.clearAttributes();
+			this.model.document.selection._setTo( null );
+			this.model.document.selection._clearAttributes();
 
 			writer.remove( ModelRange.createIn( modelRoot ) );
 			writer.insert( this.parse( data ), modelRoot );

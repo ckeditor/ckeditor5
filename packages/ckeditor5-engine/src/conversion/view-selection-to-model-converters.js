@@ -41,7 +41,7 @@ export function convertSelectionChange( model, mapper ) {
 
 		if ( !modelSelection.isEqual( model.document.selection ) ) {
 			model.change( () => {
-				model.document.selection.setTo( modelSelection );
+				model.document.selection._setTo( modelSelection );
 			} );
 		}
 	};

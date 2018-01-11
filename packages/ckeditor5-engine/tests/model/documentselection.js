@@ -287,7 +287,7 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'removeAllRanges()', () => {
+	describe( 'setTo - removeAllRanges', () => {
 		let spy, ranges;
 
 		beforeEach( () => {
@@ -301,7 +301,7 @@ describe( 'DocumentSelection', () => {
 			sinon.spy( ranges[ 0 ], 'detach' );
 			sinon.spy( ranges[ 1 ], 'detach' );
 
-			selection._removeAllRanges();
+			selection._setTo( null );
 		} );
 
 		afterEach( () => {
@@ -323,7 +323,7 @@ describe( 'DocumentSelection', () => {
 		it( 'should refresh attributes', () => {
 			const spy = sinon.spy( selection._selection, '_updateAttributes' );
 
-			selection._removeAllRanges();
+			selection._setTo( null );
 
 			expect( spy.called ).to.be.true;
 		} );

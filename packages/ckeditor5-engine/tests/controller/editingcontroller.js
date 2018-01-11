@@ -94,7 +94,7 @@ describe( 'EditingController', () => {
 			buildModelConverter().for( editing.modelToView ).fromMarker( 'marker' ).toHighlight( {} );
 
 			// Note: The below code is highly overcomplicated due to #455.
-			model.document.selection.removeAllRanges();
+			model.document.selection._setTo( null );
 			modelRoot.removeChildren( 0, modelRoot.childCount );
 
 			viewRoot.removeChildren( 0, viewRoot.childCount );
@@ -180,7 +180,7 @@ describe( 'EditingController', () => {
 			editing.view.render();
 
 			const domSelection = document.getSelection();
-			domSelection.removeAllRanges();
+			domSelection.setTo( null );
 			const domBar = domRoot.childNodes[ 2 ].childNodes[ 0 ];
 			const domRange = document.createRange();
 			domRange.setStart( domBar, 1 );
