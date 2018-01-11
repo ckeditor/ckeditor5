@@ -41,6 +41,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  * @mixes module:core/editor/utils/datainterface~DataInterface
  * @mixes module:core/editor/utils/elementinterface~ElementInterface
+ * @implements module:core/editor/editorwithui~EditorWithUI
  * @extends module:core/editor/editor~Editor
  */
 export default class ClassicEditor extends Editor {
