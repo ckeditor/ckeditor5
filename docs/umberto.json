@@ -5,7 +5,7 @@
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~ObservableMixin",
 	"scripts": {
-		"snippet-adapter": "../scripts/docs/snippet-adapter/snippetadapter",
+		"snippet-adapter": "../scripts/docs/snippetadapter",
 		"import-path": "../scripts/docs/getrealimportpath"
 	},
 	"docsearch": {

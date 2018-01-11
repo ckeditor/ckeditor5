@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -9,11 +9,7 @@
 
 const path = require( 'path' );
 
-const assertIsInstalled = require( './../utils/assertisinstalled' );
-
 module.exports = function buildApiDocs() {
-	assertIsInstalled( '@ckeditor/ckeditor5-dev-docs' );
-
 	const ckeditor5Docs = require( '@ckeditor/ckeditor5-dev-docs' );
 
 	return ckeditor5Docs
