@@ -181,7 +181,6 @@ describe( 'Paragraph feature – integration', () => {
 					const doc = editor.model.document;
 					const root = doc.getRoot();
 					const otherRoot = doc.createRoot( '$root', 'otherRoot' );
-					editor.editing.createRoot( 'div', 'otherRoot' );
 
 					editor.data.set( '<p>Foobar.</p>', 'main' );
 					editor.data.set( '<p>Foobar.</p>', 'otherRoot' );
