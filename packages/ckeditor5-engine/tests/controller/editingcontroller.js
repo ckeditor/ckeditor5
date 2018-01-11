@@ -352,7 +352,6 @@ describe( 'EditingController', () => {
 			domRoot.contentEditable = true;
 
 			document.body.appendChild( domRoot );
-			editing.createRoot( domRoot );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
