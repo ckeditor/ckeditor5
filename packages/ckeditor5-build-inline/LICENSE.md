@@ -2,7 +2,7 @@ Software License Agreement
 ==========================
 
 **CKEditor 5 inline editor build** – https://github.com/ckeditor/ckeditor5-build-inline <br>
-Copyright (c) 2003-2017, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2018, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of any of the following licenses at your choice:
 
