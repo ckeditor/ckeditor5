@@ -22,6 +22,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
@@ -214,7 +215,7 @@ describe( 'ImageUploadEngine', () => {
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		doc.once( 'changesDone', () => {
+		model.once( '_change', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[<figure class="ck-widget image" contenteditable="false">' +
 				`<img src="${ base64Sample }"></img>` +
@@ -234,8 +235,8 @@ describe( 'ImageUploadEngine', () => {
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		doc.once( 'changesDone', () => {
-			doc.once( 'changesDone', () => {
+		model.document.once( 'change', () => {
+			model.document.once( 'change', () => {
 				expect( getViewData( viewDocument ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
 				);
@@ -309,8 +310,8 @@ describe( 'ImageUploadEngine', () => {
 
 		editor.execute( 'imageUpload', { file } );
 
-		doc.once( 'changesDone', () => {
-			doc.once( 'changesDone', () => {
+		model.document.once( 'change', () => {
+			model.document.once( 'change', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
 				sinon.assert.calledOnce( spy );
 
@@ -325,6 +326,7 @@ describe( 'ImageUploadEngine', () => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
+
 		const abortSpy = testUtils.sinon.spy( loader, 'abort' );
 
 		expect( loader.status ).to.equal( 'reading' );
@@ -339,6 +341,24 @@ describe( 'ImageUploadEngine', () => {
 		sinon.assert.calledOnce( abortSpy );
 	} );
 
+	it( 'should not abort and not restart upload when image is moved', () => {
+		const file = createNativeFileMock();
+		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'imageUpload', { file } );
+
+		const abortSpy = testUtils.sinon.spy( loader, 'abort' );
+		const loadSpy = testUtils.sinon.spy( loader, 'read' );
+
+		const image = doc.getRoot().getChild( 0 );
+
+		model.change( writer => {
+			writer.move( Range.createOn( image ), Position.createAt( doc.getRoot(), 2 ) );
+		} );
+
+		expect( abortSpy.called ).to.be.false;
+		expect( loadSpy.called ).to.be.false;
+	} );
+
 	it( 'image should be permanently removed if it is removed by user during upload', done => {
 		const file = createNativeFileMock();
 		const notification = editor.plugins.get( Notification );
@@ -351,13 +371,13 @@ describe( 'ImageUploadEngine', () => {
 
 		editor.execute( 'imageUpload', { file } );
 
-		doc.once( 'changesDone', () => {
+		model.document.once( 'change', () => {
 			// This is called after "manual" remove.
-			doc.once( 'changesDone', () => {
+			model.document.once( 'change', () => {
 				// This is called after attributes are removed.
 				let undone = false;
 
-				doc.once( 'changesDone', () => {
+				model.document.once( 'change', () => {
 					if ( !undone ) {
 						undone = true;
 
@@ -376,6 +396,7 @@ describe( 'ImageUploadEngine', () => {
 		} );
 
 		const image = doc.getRoot().getChild( 0 );
+
 		model.change( writer => {
 			writer.remove( image );
 		} );
@@ -386,8 +407,8 @@ describe( 'ImageUploadEngine', () => {
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		doc.once( 'changesDone', () => {
-			doc.once( 'changesDone', () => {
+		model.document.once( 'change', () => {
+			model.document.once( 'change', () => {
 				expect( getViewData( viewDocument ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false">' +
 						'<img sizes="100vw" src="image.png" srcset="image-500.png 500w, image-800.png 800w" width="800"></img>' +
