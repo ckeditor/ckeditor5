@@ -4,6 +4,7 @@
  */
 
 import testUtils from '../_utils/utils';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 testUtils.createSinonSandbox();
 
@@ -43,6 +44,39 @@ describe( 'utils', () => {
 
 			testUtils.checkAssertions( assertionRed, assertionGreen );
 			expect( assertionGreen.called ).to.equal( false );
+		} );
+	} );
+
+	describe( 'isMixed()', () => {
+		let mixin, CustomClass;
+
+		beforeEach( () => {
+			CustomClass = class {};
+			mixin = {
+				foo() {
+					return 'bar';
+				}
+			};
+		} );
+
+		it( 'should return true when given mixin is mixed to target class', () => {
+			mix( CustomClass, mixin );
+
+			expect( testUtils.isMixed( CustomClass, mixin ) ).to.true;
+		} );
+
+		it( 'should return false when given mixin is not mixed to target class', () => {
+			expect( testUtils.isMixed( CustomClass, mixin ) ).to.false;
+		} );
+
+		it( 'should return false when class has mixin like interface', () => {
+			CustomClass = class {
+				foo() {
+					return 'biz';
+				}
+			};
+
+			expect( testUtils.isMixed( CustomClass, mixin ) ).to.false;
 		} );
 	} );
 } );

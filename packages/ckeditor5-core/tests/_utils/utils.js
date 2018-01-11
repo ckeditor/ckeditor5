@@ -73,6 +73,27 @@ const utils = {
 		}
 
 		throw new Error( errors.join( '\n\n' ) );
+	},
+
+	/**
+	 * Checks if given mixin i mixed to given class using {@link module:utils/mix mix} util.
+	 *
+	 * @param {Function} targetClass Class to check.
+	 * @param {Object} mixin Mixin to check.
+	 * @returns {Boolean} `True` when mixin is mixed to to target class, `false` otherwise.
+	 */
+	isMixed( targetClass, mixin ) {
+		let isValid = true;
+
+		for ( const property in mixin ) {
+			if ( mixin.hasOwnProperty( property ) ) {
+				if ( targetClass.prototype[ property ] !== mixin[ property ] ) {
+					isValid = false;
+				}
+			}
+		}
+
+		return isValid;
 	}
 };
 
