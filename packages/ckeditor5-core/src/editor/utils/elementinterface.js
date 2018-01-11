@@ -20,7 +20,7 @@ const ElementInterface = {
 	 * The element on which the editor has been initialized.
 	 *
 	 * @readonly
-	 * @property module:core/editor/utils/elementinterface~ElementInterface#element
+	 * @property #element
 	 * @type {HTMLElement}
 	 */
 	element: null,
@@ -28,7 +28,7 @@ const ElementInterface = {
 	/**
 	 * Updates the {@link #element editor element}'s content with the data.
 	 *
-	 * @method module:core/editor/utils/elementinterface~ElementInterface#updateElement
+	 * @method #updateElement
 	 */
 	updateElement() {
 		setDataInElement( this.element, this.data.get() );
@@ -37,7 +37,7 @@ const ElementInterface = {
 	/**
 	 * Loads the data from the {@link #element editor element} to the main root.
 	 *
-	 * @method module:core/utils/elementinterface~ElementInterface#loadDataFromElement
+	 * @method #loadDataFromElement
 	 */
 	loadDataFromElement() {
 		this.data.set( getDataFromElement( this.element ) );

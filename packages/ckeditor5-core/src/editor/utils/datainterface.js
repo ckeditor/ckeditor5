@@ -17,7 +17,7 @@ const DataInterface = {
 	/**
 	 * Sets the data in the editor's main root.
 	 *
-	 * @method module:core/editor/utils/datainterface~DataInterface#setData
+	 * @method #setData
 	 * @param {*} data The data to load.
 	 */
 	setData( data ) {
@@ -27,7 +27,7 @@ const DataInterface = {
 	/**
 	 * Gets the data from the editor's main root.
 	 *
-	 * @method module:core/editor/utils/datainterface~DataInterface#getData
+	 * @method #getData
 	 */
 	getData() {
 		return this.data.get();
