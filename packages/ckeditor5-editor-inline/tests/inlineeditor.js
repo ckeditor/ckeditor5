@@ -18,7 +18,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import count from '@ckeditor/ckeditor5-utils/src/count';
 
 testUtils.createSinonSandbox();
 
@@ -39,19 +38,6 @@ describe( 'InlineEditor', () => {
 	describe( 'constructor()', () => {
 		beforeEach( () => {
 			editor = new InlineEditor( editorElement );
-		} );
-
-		it( 'creates a single div editable root in the view', () => {
-			editor.ui.init();
-
-			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
-
-			editor.ui.destroy();
-		} );
-
-		it( 'creates a single document root', () => {
-			expect( count( editor.model.document.getRootNames() ) ).to.equal( 1 );
-			expect( editor.model.document.getRoot() ).to.have.property( 'name', '$root' );
 		} );
 
 		it( 'creates the UI using BoxedEditorUI classes', () => {

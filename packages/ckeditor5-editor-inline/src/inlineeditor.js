@@ -52,7 +52,6 @@ export default class InlineEditor extends StandardEditor {
 	constructor( element, config ) {
 		super( element, config );
 
-		this.model.document.createRoot();
 		this.data.processor = new HtmlDataProcessor();
 		this.ui = new InlineEditorUI( this, new InlineEditorUIView( this.locale, element ) );
 	}
