@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
@@ -87,8 +86,5 @@ export default class HeadingCommand extends Command {
 // @param {module:engine/model/schema~Schema} schema The schema of the document.
 // @returns {Boolean}
 function checkCanBecomeHeading( block, heading, schema ) {
-	return schema.check( {
-		name: heading,
-		inside: Position.createBefore( block )
-	} );
+	return schema.checkChild( block.parent, heading ) && !schema.isObject( block );
 }
