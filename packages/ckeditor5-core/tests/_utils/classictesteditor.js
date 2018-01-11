@@ -26,8 +26,10 @@ export default class ClassicTestEditor extends Editor {
 	constructor( element, config ) {
 		super( config );
 
+		// The element on which the editor has been initialized.
 		this.element = element;
 
+		// Use the HTML data processor in this editor.
 		this.data.processor = new HtmlDataProcessor();
 
 		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );
@@ -37,8 +39,10 @@ export default class ClassicTestEditor extends Editor {
 		this.ui.view.main.add( this.ui.view.editable );
 		this.ui.view.editableElement = this.ui.view.editable.element;
 
+		// A helper to easily replace the editor#element with editor.editable#element.
 		this._elementReplacer = new ElementReplacer();
 
+		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
 	}
 

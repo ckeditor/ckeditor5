@@ -20,15 +20,17 @@ export default class VirtualTestEditor extends Editor {
 	constructor( config ) {
 		super( config );
 
+		// Use the HTML data processor in this editor.
 		this.data.processor = new HtmlDataProcessor();
 
+		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
 	}
 
 	/**
 	 * Creates a virtual, element-less editor instance.
 	 *
-	 * @param {Object} config See {@link core.editor.StandardEditor}'s param.
+	 * @param {Object} config See {@link core.editor.Editor}'s param.
 	 * @returns {Promise} Promise resolved once editor is ready.
 	 * @returns {core.editor.VirtualTestEditor} return.editor The editor instance.
 	 */

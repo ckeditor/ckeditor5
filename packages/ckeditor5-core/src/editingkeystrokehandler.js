@@ -11,7 +11,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
  * A keystroke handler for editor editing. Its instance is available
- * in {@link module:core/editor/standardeditor~StandardEditor#keystrokes} so plugins
+ * in {@link module:core/editor/editor~Editor#keystrokes} so plugins
  * can register their keystrokes.
  *
  * E.g. an undo plugin would do this:
