@@ -73,6 +73,10 @@ a.ck-button {
 		font-weight: inherit;
 		color: inherit;
 		cursor: inherit;
+
+		/* Must be consistent with .ck-icon's vertical align. Otherwise, buttons with and
+		without labels (but with icons) have different sizes in Chrome */
+		vertical-align: top;
 	}
 }
 
