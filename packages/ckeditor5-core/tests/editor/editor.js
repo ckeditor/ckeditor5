@@ -150,12 +150,6 @@ describe( 'Editor', () => {
 			expect( editor.editing.view.isReadOnly ).to.true;
 		} );
 
-		it( 'should create main root element', () => {
-			const editor = new Editor();
-
-			expect( editor.model.document.getRoot( 'main' ) ).to.ok;
-		} );
-
 		it( 'should activate #keystrokes', () => {
 			const spy = sinon.spy( EditingKeystrokeHandler.prototype, 'listenTo' );
 			const editor = new Editor();

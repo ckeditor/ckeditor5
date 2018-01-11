@@ -24,8 +24,6 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Editors implementation (like Classic Editor or Inline Editor) should extend this class. They can add their own
  * methods and properties.
  *
- * See also {@link module:core/editor/standardeditor~StandardEditor}.
- *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Editor {
@@ -98,9 +96,6 @@ export default class Editor {
 		 */
 		this.model = new Model();
 
-		// Creates main root.
-		this.model.document.createRoot();
-
 		/**
 		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
 		 * Used e.g. for setting or retrieving editor data.
@@ -128,6 +123,17 @@ export default class Editor {
 		 */
 		this.keystrokes = new EditingKeystrokeHandler( this );
 		this.keystrokes.listenTo( this.editing.view );
+
+		/**
+		 * Editor UI instance.
+		 *
+		 * This property is set by more specialized editor constructors. However, it's required
+		 * for plugins to work (their UI-related part will try to interact with editor UI),
+		 * so every editor class which is meant to work with default plugins should set this property.
+		 *
+		 * @readonly
+		 * @member {module:core/editor/editorui~EditorUI} #ui
+		 */
 	}
 
 	/**
