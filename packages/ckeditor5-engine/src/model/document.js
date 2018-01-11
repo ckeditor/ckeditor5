@@ -426,6 +426,7 @@ export default class Document {
 	 * during that block execution.
 	 *
 	 * @event change
+	 * @param {@link module:engine/model/batch~Batch} batch Batch which was used in the executed changes block.
 	 */
 }
 
