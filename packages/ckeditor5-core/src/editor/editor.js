@@ -21,8 +21,9 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Class representing the base of the editor. It is the API all plugins can expect to get when using editor property.
- * Editors implementation (like Classic Editor or Inline Editor) should extend this class. They can add their own
- * methods and properties.
+ * Editors implementation (like {@link module:editor-classic/classiceditor~ClassicEditor Classic Editor} or
+ * {@link module:editor-inline/inlineeditor~InlineEditor Inline Editor}) should extend this class. They can add their
+ * own methods and properties.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
