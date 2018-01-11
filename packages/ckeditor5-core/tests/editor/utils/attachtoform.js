@@ -62,7 +62,7 @@ describe( 'attachToForm()', () => {
 			cancelable: true
 		} ) );
 
-		expect( textarea.value, 2 ).to.equal( 'foo bar' );
+		expect( textarea.value ).to.equal( 'foo bar' );
 	} );
 
 	it( 'should update editor#element after calling the submit() method', () => {
