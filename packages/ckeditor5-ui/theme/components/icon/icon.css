@@ -5,7 +5,11 @@
 
 svg.ck-icon {
 	font-size: 1em;
-	vertical-align: middle;
+
+	/* Must be consistent with .ck-button__label's vertical align. Otherwise, buttons with and
+	without labels (but with icons) have different sizes in Chrome */
+	vertical-align: top;
+
 	color: inherit;
 
 	/* Inherit cursor style (#5). */
