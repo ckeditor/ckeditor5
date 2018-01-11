@@ -18,662 +18,773 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
-/**
- * Contains functions used for composing view tree.
- *
- * @namespace writer
- */
-
-const writer = {
-	breakAttributes,
-	breakContainer,
-	mergeAttributes,
-	mergeContainers,
-	insert,
-	remove,
-	clear,
-	move,
-	wrap,
-	wrapPosition,
-	unwrap,
-	rename
-};
-
-export default writer;
-
-/**
- * Breaks attribute nodes at provided position or at boundaries of provided range. It breaks attribute elements inside
- * up to a container element.
- *
- * In following examples `<p>` is a container, `<b>` and `<u>` are attribute nodes:
- *
- *		<p>foo<b><u>bar{}</u></b></p> -> <p>foo<b><u>bar</u></b>[]</p>
- *		<p>foo<b><u>{}bar</u></b></p> -> <p>foo{}<b><u>bar</u></b></p>
- *		<p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
- *		<p><b>fo{o</b><u>ba}r</u></p> -> <p><b>fo</b><b>o</b><u>ba</u><u>r</u></b></p>
- *
- * **Note:** {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
- *
- * **Note:** Difference between {@link module:engine/view/writer~writer.breakAttributes breakAttributes} and
- * {@link module:engine/view/writer~writer.breakContainer breakContainer} is that `breakAttributes` breaks all
- * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of given `position`, up to the first
- * encountered {@link module:engine/view/containerelement~ContainerElement container element}. `breakContainer` assumes that given
- * `position`
- * is directly in container element and breaks that container element.
- *
- * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container`
- * when {@link module:engine/view/range~Range#start start}
- * and {@link module:engine/view/range~Range#end end} positions of a passed range are not placed inside same parent container.
- *
- * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element`
- * when trying to break attributes
- * inside {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
- *
- * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-ui-element`
- * when trying to break attributes
- * inside {@link module:engine/view/uielement~UIElement UIElement}.
- *
- * @see module:engine/view/attributeelement~AttributeElement
- * @see module:engine/view/containerelement~ContainerElement
- * @see module:engine/view/writer~writer.breakContainer
- * @function module:engine/view/writer~writer.breakAttributes
- * @param {module:engine/view/position~Position|module:engine/view/range~Range} positionOrRange Position where to break attribute elements.
- * @returns {module:engine/view/position~Position|module:engine/view/range~Range} New position or range, after breaking the attribute
- * elements.
- */
-export function breakAttributes( positionOrRange ) {
-	if ( positionOrRange instanceof Position ) {
-		return _breakAttributes( positionOrRange );
-	} else {
-		return _breakAttributesRange( positionOrRange );
-	}
-}
-
-/**
- * Breaks {@link module:engine/view/containerelement~ContainerElement container view element} into two, at the given position. Position
- * has to be directly inside container element and cannot be in root. Does not break if position is at the beginning
- * or at the end of it's parent element.
- *
- *		<p>foo^bar</p> -> <p>foo</p><p>bar</p>
- *		<div><p>foo</p>^<p>bar</p></div> -> <div><p>foo</p></div><div><p>bar</p></div>
- *		<p>^foobar</p> -> ^<p>foobar</p>
- *		<p>foobar^</p> -> <p>foobar</p>^
- *
- * **Note:** Difference between {@link module:engine/view/writer~writer.breakAttributes breakAttributes} and
- * {@link module:engine/view/writer~writer.breakContainer breakContainer} is that `breakAttributes` breaks all
- * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of given `position`, up to the first
- * encountered {@link module:engine/view/containerelement~ContainerElement container element}. `breakContainer` assumes that given
- * `position`
- * is directly in container element and breaks that container element.
- *
- * @see module:engine/view/attributeelement~AttributeElement
- * @see module:engine/view/containerelement~ContainerElement
- * @see module:engine/view/writer~writer.breakAttributes
- * @function module:engine/view/writer~writer.breakContainer
- * @param {module:engine/view/position~Position} position Position where to break element.
- * @returns {module:engine/view/position~Position} Position between broken elements. If element has not been broken, the returned position
- * is placed either before it or after it.
- */
-export function breakContainer( position ) {
-	const element = position.parent;
-
-	if ( !( element.is( 'containerElement' ) ) ) {
-		/**
-		 * Trying to break an element which is not a container element.
-		 *
-		 * @error view-writer-break-non-container-element
-		 */
-		throw new CKEditorError( 'view-writer-break-non-container-element: Trying to break an element which is not a container element.' );
+// TODO: check all docs
+// TODO: writer should be protected
+// TODO: check errors/event descriptions if everything is up to date
+export default class Writer {
+	/**
+	 * Breaks attribute nodes at provided position or at boundaries of provided range. It breaks attribute elements inside
+	 * up to a container element.
+	 *
+	 * In following examples `<p>` is a container, `<b>` and `<u>` are attribute nodes:
+	 *
+	 *		<p>foo<b><u>bar{}</u></b></p> -> <p>foo<b><u>bar</u></b>[]</p>
+	 *		<p>foo<b><u>{}bar</u></b></p> -> <p>foo{}<b><u>bar</u></b></p>
+	 *		<p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
+	 *		<p><b>fo{o</b><u>ba}r</u></p> -> <p><b>fo</b><b>o</b><u>ba</u><u>r</u></b></p>
+	 *
+	 * **Note:** {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
+	 *
+	 * **Note:** Difference between {@link module:engine/view/writer~writer.breakAttributes breakAttributes} and
+	 * {@link module:engine/view/writer~writer.breakContainer breakContainer} is that `breakAttributes` breaks all
+	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of given `position`,
+	 * up to the first encountered {@link module:engine/view/containerelement~ContainerElement container element}.
+	 * `breakContainer` assumes that given `position` is directly in container element and breaks that container element.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container`
+	 * when {@link module:engine/view/range~Range#start start}
+	 * and {@link module:engine/view/range~Range#end end} positions of a passed range are not placed inside same parent container.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element`
+	 * when trying to break attributes
+	 * inside {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-ui-element`
+	 * when trying to break attributes
+	 * inside {@link module:engine/view/uielement~UIElement UIElement}.
+	 *
+	 * @see module:engine/view/attributeelement~AttributeElement
+	 * @see module:engine/view/containerelement~ContainerElement
+	 * @see module:engine/view/writer~writer.breakContainer
+	 * @function module:engine/view/writer~writer.breakAttributes
+	 * @param {module:engine/view/position~Position|module:engine/view/range~Range} positionOrRange Position where to break
+	 * attribute elements.
+	 * @returns {module:engine/view/position~Position|module:engine/view/range~Range} New position or range, after breaking the attribute
+	 * elements.
+	 */
+	breakAttributes( positionOrRange ) {
+		if ( positionOrRange instanceof Position ) {
+			return _breakAttributes( positionOrRange );
+		} else {
+			return _breakAttributesRange( positionOrRange );
+		}
 	}
 
-	if ( !element.parent ) {
-		/**
-		 * Trying to break root element.
-		 *
-		 * @error view-writer-break-root
-		 */
-		throw new CKEditorError( 'view-writer-break-root: Trying to break root element.' );
+	/**
+	 * Breaks {@link module:engine/view/containerelement~ContainerElement container view element} into two, at the given position. Position
+	 * has to be directly inside container element and cannot be in root. Does not break if position is at the beginning
+	 * or at the end of it's parent element.
+	 *
+	 *		<p>foo^bar</p> -> <p>foo</p><p>bar</p>
+	 *		<div><p>foo</p>^<p>bar</p></div> -> <div><p>foo</p></div><div><p>bar</p></div>
+	 *		<p>^foobar</p> -> ^<p>foobar</p>
+	 *		<p>foobar^</p> -> <p>foobar</p>^
+	 *
+	 * **Note:** Difference between {@link module:engine/view/writer~writer.breakAttributes breakAttributes} and
+	 * {@link module:engine/view/writer~writer.breakContainer breakContainer} is that `breakAttributes` breaks all
+	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of given `position`,
+	 * up to the first encountered {@link module:engine/view/containerelement~ContainerElement container element}.
+	 * `breakContainer` assumes that given `position` is directly in container element and breaks that container element.
+	 *
+	 * @see module:engine/view/attributeelement~AttributeElement
+	 * @see module:engine/view/containerelement~ContainerElement
+	 * @see module:engine/view/writer~writer.breakAttributes
+	 * @function module:engine/view/writer~writer.breakContainer
+	 * @param {module:engine/view/position~Position} position Position where to break element.
+	 * @returns {module:engine/view/position~Position} Position between broken elements. If element has not been broken,
+	 * the returned position is placed either before it or after it.
+	 */
+	breakContainer( position ) {
+		const element = position.parent;
+
+		if ( !( element.is( 'containerElement' ) ) ) {
+			/**
+			 * Trying to break an element which is not a container element.
+			 *
+			 * @error view-writer-break-non-container-element
+			 */
+			throw new CKEditorError(
+				'view-writer-break-non-container-element: Trying to break an element which is not a container element.'
+			);
+		}
+
+		if ( !element.parent ) {
+			/**
+			 * Trying to break root element.
+			 *
+			 * @error view-writer-break-root
+			 */
+			throw new CKEditorError( 'view-writer-break-root: Trying to break root element.' );
+		}
+
+		if ( position.isAtStart ) {
+			return Position.createBefore( element );
+		} else if ( !position.isAtEnd ) {
+			const newElement = element.clone( false );
+
+			this.insert( Position.createAfter( element ), newElement );
+
+			const sourceRange = new Range( position, Position.createAt( element, 'end' ) );
+			const targetPosition = new Position( newElement, 0 );
+
+			this.move( sourceRange, targetPosition );
+		}
+
+		return Position.createAfter( element );
 	}
 
-	if ( position.isAtStart ) {
-		return Position.createBefore( element );
-	} else if ( !position.isAtEnd ) {
-		const newElement = element.clone( false );
+	/**
+	 * Merges {@link module:engine/view/attributeelement~AttributeElement attribute elements}. It also merges text nodes if needed.
+	 * Only {@link module:engine/view/attributeelement~AttributeElement#isSimilar similar} attribute elements can be merged.
+	 *
+	 * In following examples `<p>` is a container and `<b>` is an attribute element:
+	 *
+	 *		<p>foo[]bar</p> -> <p>foo{}bar</p>
+	 *		<p><b>foo</b>[]<b>bar</b></p> -> <p><b>foo{}bar</b></p>
+	 *		<p><b foo="bar">a</b>[]<b foo="baz">b</b></p> -> <p><b foo="bar">a</b>[]<b foo="baz">b</b></p>
+	 *
+	 * It will also take care about empty attributes when merging:
+	 *
+	 *		<p><b>[]</b></p> -> <p>[]</p>
+	 *		<p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
+	 *
+	 * **Note:** Difference between {@link module:engine/view/writer~writer.mergeAttributes mergeAttributes} and
+	 * {@link module:engine/view/writer~writer.mergeContainers mergeContainers} is that `mergeAttributes` merges two
+	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} or {@link module:engine/view/text~Text text nodes}
+	 * while `mergeContainer` merges two {@link module:engine/view/containerelement~ContainerElement container elements}.
+	 *
+	 * @see module:engine/view/attributeelement~AttributeElement
+	 * @see module:engine/view/containerelement~ContainerElement
+	 * @see module:engine/view/writer~writer.mergeContainers
+	 * @function module:engine/view/writer~writer.mergeAttributes
+	 * @param {module:engine/view/position~Position} position Merge position.
+	 * @returns {module:engine/view/position~Position} Position after merge.
+	 */
+	mergeAttributes( position ) {
+		const positionOffset = position.offset;
+		const positionParent = position.parent;
 
-		insert( Position.createAfter( element ), newElement );
+		// When inside text node - nothing to merge.
+		if ( positionParent.is( 'text' ) ) {
+			return position;
+		}
 
-		const sourceRange = new Range( position, Position.createAt( element, 'end' ) );
-		const targetPosition = new Position( newElement, 0 );
+		// When inside empty attribute - remove it.
+		if ( positionParent.is( 'attributeElement' ) && positionParent.childCount === 0 ) {
+			const parent = positionParent.parent;
+			const offset = positionParent.index;
+			positionParent.remove();
 
-		move( sourceRange, targetPosition );
-	}
+			return this.mergeAttributes( new Position( parent, offset ) );
+		}
 
-	return Position.createAfter( element );
-}
+		const nodeBefore = positionParent.getChild( positionOffset - 1 );
+		const nodeAfter = positionParent.getChild( positionOffset );
 
-/**
- * Merges {@link module:engine/view/attributeelement~AttributeElement attribute elements}. It also merges text nodes if needed.
- * Only {@link module:engine/view/attributeelement~AttributeElement#isSimilar similar} attribute elements can be merged.
- *
- * In following examples `<p>` is a container and `<b>` is an attribute element:
- *
- *		<p>foo[]bar</p> -> <p>foo{}bar</p>
- *		<p><b>foo</b>[]<b>bar</b></p> -> <p><b>foo{}bar</b></p>
- *		<p><b foo="bar">a</b>[]<b foo="baz">b</b></p> -> <p><b foo="bar">a</b>[]<b foo="baz">b</b></p>
- *
- * It will also take care about empty attributes when merging:
- *
- *		<p><b>[]</b></p> -> <p>[]</p>
- *		<p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
- *
- * **Note:** Difference between {@link module:engine/view/writer~writer.mergeAttributes mergeAttributes} and
- * {@link module:engine/view/writer~writer.mergeContainers mergeContainers} is that `mergeAttributes` merges two
- * {@link module:engine/view/attributeelement~AttributeElement attribute elements} or {@link module:engine/view/text~Text text nodes}
- * while `mergeContainer` merges two {@link module:engine/view/containerelement~ContainerElement container elements}.
- *
- * @see module:engine/view/attributeelement~AttributeElement
- * @see module:engine/view/containerelement~ContainerElement
- * @see module:engine/view/writer~writer.mergeContainers
- * @function module:engine/view/writer~writer.mergeAttributes
- * @param {module:engine/view/position~Position} position Merge position.
- * @returns {module:engine/view/position~Position} Position after merge.
- */
-export function mergeAttributes( position ) {
-	const positionOffset = position.offset;
-	const positionParent = position.parent;
+		// Position should be placed between two nodes.
+		if ( !nodeBefore || !nodeAfter ) {
+			return position;
+		}
 
-	// When inside text node - nothing to merge.
-	if ( positionParent.is( 'text' ) ) {
+		// When position is between two text nodes.
+		if ( nodeBefore.is( 'text' ) && nodeAfter.is( 'text' ) ) {
+			return mergeTextNodes( nodeBefore, nodeAfter );
+		}
+		// When selection is between two same attribute elements.
+		else if ( nodeBefore.is( 'attributeElement' ) && nodeAfter.is( 'attributeElement' ) && nodeBefore.isSimilar( nodeAfter ) ) {
+			// Move all children nodes from node placed after selection and remove that node.
+			const count = nodeBefore.childCount;
+			nodeBefore.appendChildren( nodeAfter.getChildren() );
+			nodeAfter.remove();
+
+			// New position is located inside the first node, before new nodes.
+			// Call this method recursively to merge again if needed.
+			return this.mergeAttributes( new Position( nodeBefore, count ) );
+		}
+
 		return position;
 	}
 
-	// When inside empty attribute - remove it.
-	if ( positionParent.is( 'attributeElement' ) && positionParent.childCount === 0 ) {
-		const parent = positionParent.parent;
-		const offset = positionParent.index;
-		positionParent.remove();
+	/**
+	 * Merges two {@link module:engine/view/containerelement~ContainerElement container elements} that are before and after given position.
+	 * Precisely, the element after the position is removed and it's contents are moved to element before the position.
+	 *
+	 *		<p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
+	 *		<div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
+	 *
+	 * **Note:** Difference between {@link module:engine/view/writer~writer.mergeAttributes mergeAttributes} and
+	 * {@link module:engine/view/writer~writer.mergeContainers mergeContainers} is that `mergeAttributes` merges two
+	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} or {@link module:engine/view/text~Text text nodes}
+	 * while `mergeContainer` merges two {@link module:engine/view/containerelement~ContainerElement container elements}.
+	 *
+	 * @see module:engine/view/attributeelement~AttributeElement
+	 * @see module:engine/view/containerelement~ContainerElement
+	 * @see module:engine/view/writer~writer.mergeAttributes
+	 * @function module:engine/view/writer~writer.mergeContainers
+	 * @param {module:engine/view/position~Position} position Merge position.
+	 * @returns {module:engine/view/position~Position} Position after merge.
+	 */
+	mergeContainers( position ) {
+		const prev = position.nodeBefore;
+		const next = position.nodeAfter;
 
-		return mergeAttributes( new Position( parent, offset ) );
-	}
-
-	const nodeBefore = positionParent.getChild( positionOffset - 1 );
-	const nodeAfter = positionParent.getChild( positionOffset );
-
-	// Position should be placed between two nodes.
-	if ( !nodeBefore || !nodeAfter ) {
-		return position;
-	}
-
-	// When position is between two text nodes.
-	if ( nodeBefore.is( 'text' ) && nodeAfter.is( 'text' ) ) {
-		return mergeTextNodes( nodeBefore, nodeAfter );
-	}
-	// When selection is between two same attribute elements.
-	else if ( nodeBefore.is( 'attributeElement' ) && nodeAfter.is( 'attributeElement' ) && nodeBefore.isSimilar( nodeAfter ) ) {
-		// Move all children nodes from node placed after selection and remove that node.
-		const count = nodeBefore.childCount;
-		nodeBefore.appendChildren( nodeAfter.getChildren() );
-		nodeAfter.remove();
-
-		// New position is located inside the first node, before new nodes.
-		// Call this method recursively to merge again if needed.
-		return mergeAttributes( new Position( nodeBefore, count ) );
-	}
-
-	return position;
-}
-
-/**
- * Merges two {@link module:engine/view/containerelement~ContainerElement container elements} that are before and after given position.
- * Precisely, the element after the position is removed and it's contents are moved to element before the position.
- *
- *		<p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
- *		<div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
- *
- * **Note:** Difference between {@link module:engine/view/writer~writer.mergeAttributes mergeAttributes} and
- * {@link module:engine/view/writer~writer.mergeContainers mergeContainers} is that `mergeAttributes` merges two
- * {@link module:engine/view/attributeelement~AttributeElement attribute elements} or {@link module:engine/view/text~Text text nodes}
- * while `mergeContainer` merges two {@link module:engine/view/containerelement~ContainerElement container elements}.
- *
- * @see module:engine/view/attributeelement~AttributeElement
- * @see module:engine/view/containerelement~ContainerElement
- * @see module:engine/view/writer~writer.mergeAttributes
- * @function module:engine/view/writer~writer.mergeContainers
- * @param {module:engine/view/position~Position} position Merge position.
- * @returns {module:engine/view/position~Position} Position after merge.
- */
-export function mergeContainers( position ) {
-	const prev = position.nodeBefore;
-	const next = position.nodeAfter;
-
-	if ( !prev || !next || !prev.is( 'containerElement' ) || !next.is( 'containerElement' ) ) {
-		/**
-		 * Element before and after given position cannot be merged.
-		 *
-		 * @error view-writer-merge-containers-invalid-position
-		 */
-		throw new CKEditorError( 'view-writer-merge-containers-invalid-position: ' +
-			'Element before and after given position cannot be merged.' );
-	}
-
-	const lastChild = prev.getChild( prev.childCount - 1 );
-	const newPosition = lastChild instanceof Text ? Position.createAt( lastChild, 'end' ) : Position.createAt( prev, 'end' );
-
-	move( Range.createIn( next ), Position.createAt( prev, 'end' ) );
-	remove( Range.createOn( next ) );
-
-	return newPosition;
-}
-
-/**
- * Insert node or nodes at specified position. Takes care about breaking attributes before insertion
- * and merging them afterwards.
- *
- * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
- * contains instances that are not {@link module:engine/view/text~Text Texts},
- * {@link module:engine/view/attributeelement~AttributeElement AttributeElements},
- * {@link module:engine/view/containerelement~ContainerElement ContainerElements},
- * {@link module:engine/view/emptyelement~EmptyElement EmptyElements} or
- * {@link module:engine/view/uielement~UIElement UIElements}.
- *
- * @function insert
- * @param {module:engine/view/position~Position} position Insertion position.
- * @param {module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement|
- * module:engine/view/containerelement~ContainerElement|module:engine/view/emptyelement~EmptyElement|
- * module:engine/view/uielement~UIElement|Iterable.<module:engine/view/text~Text|
- * module:engine/view/attributeelement~AttributeElement|module:engine/view/containerelement~ContainerElement|
- * module:engine/view/emptyelement~EmptyElement|module:engine/view/uielement~UIElement>} nodes Node or nodes to insert.
- * @returns {module:engine/view/range~Range} Range around inserted nodes.
- */
-export function insert( position, nodes ) {
-	nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
-
-	// Check if nodes to insert are instances of AttributeElements, ContainerElements, EmptyElements, UIElements or Text.
-	validateNodesToInsert( nodes );
-
-	const container = getParentContainer( position );
-
-	if ( !container ) {
-		/**
-		 * Position's parent container cannot be found.
-		 *
-		 * @error view-writer-invalid-position-container
-		 */
-		throw new CKEditorError( 'view-writer-invalid-position-container' );
-	}
-
-	const insertionPosition = _breakAttributes( position, true );
-
-	const length = container.insertChildren( insertionPosition.offset, nodes );
-	const endPosition = insertionPosition.getShiftedBy( length );
-	const start = mergeAttributes( insertionPosition );
-
-	// When no nodes were inserted - return collapsed range.
-	if ( length === 0 ) {
-		return new Range( start, start );
-	} else {
-		// If start position was merged - move end position.
-		if ( !start.isEqual( insertionPosition ) ) {
-			endPosition.offset--;
+		if ( !prev || !next || !prev.is( 'containerElement' ) || !next.is( 'containerElement' ) ) {
+			/**
+			 * Element before and after given position cannot be merged.
+			 *
+			 * @error view-writer-merge-containers-invalid-position
+			 */
+			throw new CKEditorError( 'view-writer-merge-containers-invalid-position: ' +
+				'Element before and after given position cannot be merged.' );
 		}
 
-		const end = mergeAttributes( endPosition );
+		const lastChild = prev.getChild( prev.childCount - 1 );
+		const newPosition = lastChild instanceof Text ? Position.createAt( lastChild, 'end' ) : Position.createAt( prev, 'end' );
 
-		return new Range( start, end );
-	}
-}
+		this.move( Range.createIn( next ), Position.createAt( prev, 'end' ) );
+		this.remove( Range.createOn( next ) );
 
-/**
- * Removes provided range from the container.
- *
- * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
- * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
- * same parent container.
- *
- * @function module:engine/view/writer~writer.remove
- * @param {module:engine/view/range~Range} range Range to remove from container. After removing, it will be updated
- * to a collapsed range showing the new position.
- * @returns {module:engine/view/documentfragment~DocumentFragment} Document fragment containing removed nodes.
- */
-export function remove( range ) {
-	validateRangeContainer( range );
-
-	// If range is collapsed - nothing to remove.
-	if ( range.isCollapsed ) {
-		return new DocumentFragment();
+		return newPosition;
 	}
 
-	// Break attributes at range start and end.
-	const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
-	const parentContainer = breakStart.parent;
+	/**
+	 * Insert node or nodes at specified position. Takes care about breaking attributes before insertion
+	 * and merging them afterwards.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
+	 * contains instances that are not {@link module:engine/view/text~Text Texts},
+	 * {@link module:engine/view/attributeelement~AttributeElement AttributeElements},
+	 * {@link module:engine/view/containerelement~ContainerElement ContainerElements},
+	 * {@link module:engine/view/emptyelement~EmptyElement EmptyElements} or
+	 * {@link module:engine/view/uielement~UIElement UIElements}.
+	 *
+	 * @function insert
+	 * @param {module:engine/view/position~Position} position Insertion position.
+	 * @param {module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement|
+	 * module:engine/view/containerelement~ContainerElement|module:engine/view/emptyelement~EmptyElement|
+	 * module:engine/view/uielement~UIElement|Iterable.<module:engine/view/text~Text|
+	 * module:engine/view/attributeelement~AttributeElement|module:engine/view/containerelement~ContainerElement|
+	 * module:engine/view/emptyelement~EmptyElement|module:engine/view/uielement~UIElement>} nodes Node or nodes to insert.
+	 * @returns {module:engine/view/range~Range} Range around inserted nodes.
+	 */
+	insert( position, nodes ) {
+		nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
 
-	const count = breakEnd.offset - breakStart.offset;
+		// Check if nodes to insert are instances of AttributeElements, ContainerElements, EmptyElements, UIElements or Text.
+		validateNodesToInsert( nodes );
 
-	// Remove nodes in range.
-	const removed = parentContainer.removeChildren( breakStart.offset, count );
+		const container = getParentContainer( position );
 
-	// Merge after removing.
-	const mergePosition = mergeAttributes( breakStart );
-	range.start = mergePosition;
-	range.end = Position.createFromPosition( mergePosition );
-
-	// Return removed nodes.
-	return new DocumentFragment( removed );
-}
-
-/**
- * Removes matching elements from given range.
- *
- * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
- * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
- * same parent container.
- *
- * @function module:engine/view/writer~writer.clear
- * @param {module:engine/view/range~Range} range Range to clear.
- * @param {module:engine/view/element~Element} element Element to remove.
- */
-export function clear( range, element ) {
-	validateRangeContainer( range );
-
-	// Create walker on given range.
-	// We walk backward because when we remove element during walk it modifies range end position.
-	const walker = range.getWalker( {
-		direction: 'backward',
-		ignoreElementEnd: true
-	} );
-
-	// Let's walk.
-	for ( const current of walker ) {
-		const item = current.item;
-		let rangeToRemove;
-
-		// When current item matches to the given element.
-		if ( item.is( 'element' ) && element.isSimilar( item ) ) {
-			// Create range on this element.
-			rangeToRemove = Range.createOn( item );
-			// When range starts inside Text or TextProxy element.
-		} else if ( !current.nextPosition.isAfter( range.start ) && item.is( 'textProxy' ) ) {
-			// We need to check if parent of this text matches to given element.
-			const parentElement = item.getAncestors().find( ancestor => {
-				return ancestor.is( 'element' ) && element.isSimilar( ancestor );
-			} );
-
-			// If it is then create range inside this element.
-			if ( parentElement ) {
-				rangeToRemove = Range.createIn( parentElement );
-			}
+		if ( !container ) {
+			/**
+			 * Position's parent container cannot be found.
+			 *
+			 * @error view-writer-invalid-position-container
+			 */
+			throw new CKEditorError( 'view-writer-invalid-position-container' );
 		}
 
-		// If we have found element to remove.
-		if ( rangeToRemove ) {
-			// We need to check if element range stick out of the given range and truncate if it is.
-			if ( rangeToRemove.end.isAfter( range.end ) ) {
-				rangeToRemove.end = range.end;
+		const insertionPosition = _breakAttributes( position, true );
+
+		const length = container.insertChildren( insertionPosition.offset, nodes );
+		const endPosition = insertionPosition.getShiftedBy( length );
+		const start = this.mergeAttributes( insertionPosition );
+
+		// When no nodes were inserted - return collapsed range.
+		if ( length === 0 ) {
+			return new Range( start, start );
+		} else {
+			// If start position was merged - move end position.
+			if ( !start.isEqual( insertionPosition ) ) {
+				endPosition.offset--;
 			}
 
-			if ( rangeToRemove.start.isBefore( range.start ) ) {
-				rangeToRemove.start = range.start;
-			}
-
-			// At the end we remove range with found element.
-			remove( rangeToRemove );
-		}
-	}
-}
-
-/**
- * Moves nodes from provided range to target position.
- *
- * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
- * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
- * same parent container.
- *
- * @function module:engine/view/writer~writer.move
- * @param {module:engine/view/range~Range} sourceRange Range containing nodes to move.
- * @param {module:engine/view/position~Position} targetPosition Position to insert.
- * @returns {module:engine/view/range~Range} Range in target container. Inserted nodes are placed between
- * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions.
- */
-export function move( sourceRange, targetPosition ) {
-	let nodes;
-
-	if ( targetPosition.isAfter( sourceRange.end ) ) {
-		targetPosition = _breakAttributes( targetPosition, true );
-
-		const parent = targetPosition.parent;
-		const countBefore = parent.childCount;
-
-		sourceRange = _breakAttributesRange( sourceRange, true );
-
-		nodes = remove( sourceRange );
-
-		targetPosition.offset += ( parent.childCount - countBefore );
-	} else {
-		nodes = remove( sourceRange );
-	}
-
-	return insert( targetPosition, nodes );
-}
-
-/**
- * Wraps elements within range with provided {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
- *
- * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-invalid-range-container`
- * when {@link module:engine/view/range~Range#start}
- * and {@link module:engine/view/range~Range#end} positions are not placed inside same parent container.
- * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
- * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
- *
- * @function module:engine/view/writer~writer.wrap
- * @param {module:engine/view/range~Range} range Range to wrap.
- * @param {module:engine/view/attributeelement~AttributeElement} attribute Attribute element to use as wrapper.
- */
-export function wrap( range, attribute ) {
-	if ( !( attribute instanceof AttributeElement ) ) {
-		throw new CKEditorError( 'view-writer-wrap-invalid-attribute' );
-	}
-
-	validateRangeContainer( range );
-
-	// If range is collapsed - nothing to wrap.
-	if ( range.isCollapsed ) {
-		return range;
-	}
-
-	// Range is inside single attribute and spans on all children.
-	if ( rangeSpansOnAllChildren( range ) && wrapAttributeElement( attribute, range.start.parent ) ) {
-		const parent = range.start.parent;
-
-		const end = mergeAttributes( Position.createAfter( parent ) );
-		const start = mergeAttributes( Position.createBefore( parent ) );
-
-		return new Range( start, end );
-	}
-
-	// Break attributes at range start and end.
-	const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
-
-	// Range around one element.
-	if ( breakEnd.isEqual( breakStart.getShiftedBy( 1 ) ) ) {
-		const node = breakStart.nodeAfter;
-
-		if ( node instanceof AttributeElement && wrapAttributeElement( attribute, node ) ) {
-			const start = mergeAttributes( breakStart );
-
-			if ( !start.isEqual( breakStart ) ) {
-				breakEnd.offset--;
-			}
-
-			const end = mergeAttributes( breakEnd );
+			const end = this.mergeAttributes( endPosition );
 
 			return new Range( start, end );
 		}
 	}
 
-	const parentContainer = breakStart.parent;
+	/**
+	 * Removes provided range from the container.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
+	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
+	 * same parent container.
+	 *
+	 * @function module:engine/view/writer~writer.remove
+	 * @param {module:engine/view/range~Range} range Range to remove from container. After removing, it will be updated
+	 * to a collapsed range showing the new position.
+	 * @returns {module:engine/view/documentfragment~DocumentFragment} Document fragment containing removed nodes.
+	 */
+	remove( range ) {
+		validateRangeContainer( range );
 
-	// Unwrap children located between break points.
-	const unwrappedRange = unwrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
+		// If range is collapsed - nothing to remove.
+		if ( range.isCollapsed ) {
+			return new DocumentFragment();
+		}
 
-	// Wrap all children with attribute.
-	const newRange = wrapChildren( parentContainer, unwrappedRange.start.offset, unwrappedRange.end.offset, attribute );
+		// Break attributes at range start and end.
+		const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
+		const parentContainer = breakStart.parent;
 
-	// Merge attributes at the both ends and return a new range.
-	const start = mergeAttributes( newRange.start );
+		const count = breakEnd.offset - breakStart.offset;
 
-	// If start position was merged - move end position back.
-	if ( !start.isEqual( newRange.start ) ) {
-		newRange.end.offset--;
-	}
-	const end = mergeAttributes( newRange.end );
+		// Remove nodes in range.
+		const removed = parentContainer.removeChildren( breakStart.offset, count );
 
-	return new Range( start, end );
-}
+		// Merge after removing.
+		const mergePosition = this.mergeAttributes( breakStart );
+		range.start = mergePosition;
+		range.end = Position.createFromPosition( mergePosition );
 
-/**
- * Wraps position with provided attribute. Returns new position after wrapping. This method will also merge newly
- * added attribute with its siblings whenever possible.
- *
- * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
- * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
- *
- * @param {module:engine/view/position~Position} position
- * @param {module:engine/view/attributeelement~AttributeElement} attribute
- * @returns {module:engine/view/position~Position} New position after wrapping.
- */
-export function wrapPosition( position, attribute ) {
-	if ( !( attribute instanceof AttributeElement ) ) {
-		throw new CKEditorError( 'view-writer-wrap-invalid-attribute' );
-	}
-
-	// Return same position when trying to wrap with attribute similar to position parent.
-	if ( attribute.isSimilar( position.parent ) ) {
-		return movePositionToTextNode( Position.createFromPosition( position ) );
+		// Return removed nodes.
+		return new DocumentFragment( removed );
 	}
 
-	// When position is inside text node - break it and place new position between two text nodes.
-	if ( position.parent.is( 'text' ) ) {
-		position = breakTextNode( position );
-	}
+	/**
+	 * Removes matching elements from given range.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
+	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
+	 * same parent container.
+	 *
+	 * @function module:engine/view/writer~writer.clear
+	 * @param {module:engine/view/range~Range} range Range to clear.
+	 * @param {module:engine/view/element~Element} element Element to remove.
+	 */
+	clear( range, element ) {
+		validateRangeContainer( range );
 
-	// Create fake element that will represent position, and will not be merged with other attributes.
-	const fakePosition = new AttributeElement();
-	fakePosition.priority = Number.POSITIVE_INFINITY;
-	fakePosition.isSimilar = () => false;
+		// Create walker on given range.
+		// We walk backward because when we remove element during walk it modifies range end position.
+		const walker = range.getWalker( {
+			direction: 'backward',
+			ignoreElementEnd: true
+		} );
 
-	// Insert fake element in position location.
-	position.parent.insertChildren( position.offset, fakePosition );
+		// Let's walk.
+		for ( const current of walker ) {
+			const item = current.item;
+			let rangeToRemove;
 
-	// Range around inserted fake attribute element.
-	const wrapRange = new Range( position, position.getShiftedBy( 1 ) );
+			// When current item matches to the given element.
+			if ( item.is( 'element' ) && element.isSimilar( item ) ) {
+				// Create range on this element.
+				rangeToRemove = Range.createOn( item );
+				// When range starts inside Text or TextProxy element.
+			} else if ( !current.nextPosition.isAfter( range.start ) && item.is( 'textProxy' ) ) {
+				// We need to check if parent of this text matches to given element.
+				const parentElement = item.getAncestors().find( ancestor => {
+					return ancestor.is( 'element' ) && element.isSimilar( ancestor );
+				} );
 
-	// Wrap fake element with attribute (it will also merge if possible).
-	wrap( wrapRange, attribute );
-
-	// Remove fake element and place new position there.
-	const newPosition = new Position( fakePosition.parent, fakePosition.index );
-	fakePosition.remove();
-
-	// If position is placed between text nodes - merge them and return position inside.
-	const nodeBefore = newPosition.nodeBefore;
-	const nodeAfter = newPosition.nodeAfter;
-
-	if ( nodeBefore instanceof Text && nodeAfter instanceof Text ) {
-		return mergeTextNodes( nodeBefore, nodeAfter );
-	}
-
-	// If position is next to text node - move position inside.
-	return movePositionToTextNode( newPosition );
-}
-
-/**
- * Unwraps nodes within provided range from attribute element.
- *
- * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
- * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
- * same parent container.
- *
- * @param {module:engine/view/range~Range} range
- * @param {module:engine/view/attributeelement~AttributeElement} attribute
- */
-export function unwrap( range, attribute ) {
-	if ( !( attribute instanceof AttributeElement ) ) {
-		/**
-		 * Attribute element need to be instance of attribute element.
-		 *
-		 * @error view-writer-unwrap-invalid-attribute
-		 */
-		throw new CKEditorError( 'view-writer-unwrap-invalid-attribute' );
-	}
-
-	validateRangeContainer( range );
-
-	// If range is collapsed - nothing to unwrap.
-	if ( range.isCollapsed ) {
-		return range;
-	}
-
-	// Break attributes at range start and end.
-	const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
-
-	// Range around one element - check if AttributeElement can be unwrapped partially when it's not similar.
-	// For example:
-	// <b class="foo bar" title="baz"></b> unwrap with:	<b class="foo"></p> result: <b class"bar" title="baz"></b>
-	if ( breakEnd.isEqual( breakStart.getShiftedBy( 1 ) ) ) {
-		const node = breakStart.nodeAfter;
-
-		// Unwrap single attribute element.
-		if ( !attribute.isSimilar( node ) && node instanceof AttributeElement && unwrapAttributeElement( attribute, node ) ) {
-			const start = mergeAttributes( breakStart );
-
-			if ( !start.isEqual( breakStart ) ) {
-				breakEnd.offset--;
+				// If it is then create range inside this element.
+				if ( parentElement ) {
+					rangeToRemove = Range.createIn( parentElement );
+				}
 			}
 
-			const end = mergeAttributes( breakEnd );
+			// If we have found element to remove.
+			if ( rangeToRemove ) {
+				// We need to check if element range stick out of the given range and truncate if it is.
+				if ( rangeToRemove.end.isAfter( range.end ) ) {
+					rangeToRemove.end = range.end;
+				}
 
-			return new Range( start, end );
+				if ( rangeToRemove.start.isBefore( range.start ) ) {
+					rangeToRemove.start = range.start;
+				}
+
+				// At the end we remove range with found element.
+				this.remove( rangeToRemove );
+			}
 		}
 	}
 
-	const parentContainer = breakStart.parent;
+	/**
+	 * Moves nodes from provided range to target position.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
+	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
+	 * same parent container.
+	 *
+	 * @function module:engine/view/writer~writer.move
+	 * @param {module:engine/view/range~Range} sourceRange Range containing nodes to move.
+	 * @param {module:engine/view/position~Position} targetPosition Position to insert.
+	 * @returns {module:engine/view/range~Range} Range in target container. Inserted nodes are placed between
+	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions.
+	 */
+	move( sourceRange, targetPosition ) {
+		let nodes;
 
-	// Unwrap children located between break points.
-	const newRange = unwrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
+		if ( targetPosition.isAfter( sourceRange.end ) ) {
+			targetPosition = _breakAttributes( targetPosition, true );
 
-	// Merge attributes at the both ends and return a new range.
-	const start = mergeAttributes( newRange.start );
+			const parent = targetPosition.parent;
+			const countBefore = parent.childCount;
 
-	// If start position was merged - move end position back.
-	if ( !start.isEqual( newRange.start ) ) {
-		newRange.end.offset--;
+			sourceRange = _breakAttributesRange( sourceRange, true );
+
+			nodes = this.remove( sourceRange );
+
+			targetPosition.offset += ( parent.childCount - countBefore );
+		} else {
+			nodes = this.remove( sourceRange );
+		}
+
+		return this.insert( targetPosition, nodes );
 	}
 
-	const end = mergeAttributes( newRange.end );
+	/**
+	 * Wraps elements within range with provided {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-invalid-range-container`
+	 * when {@link module:engine/view/range~Range#start}
+	 * and {@link module:engine/view/range~Range#end} positions are not placed inside same parent container.
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
+	 * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
+	 *
+	 * @function module:engine/view/writer~writer.wrap
+	 * @param {module:engine/view/range~Range} range Range to wrap.
+	 * @param {module:engine/view/attributeelement~AttributeElement} attribute Attribute element to use as wrapper.
+	 */
+	wrap( range, attribute ) {
+		if ( !( attribute instanceof AttributeElement ) ) {
+			throw new CKEditorError( 'view-writer-wrap-invalid-attribute' );
+		}
 
-	return new Range( start, end );
-}
+		validateRangeContainer( range );
 
-/**
- * Renames element by creating a copy of renamed element but with changed name and then moving contents of the
- * old element to the new one. Keep in mind that this will invalidate all {@link module:engine/view/position~Position positions} which
- * has renamed element as {@link module:engine/view/position~Position#parent a parent}.
- *
- * New element has to be created because `Element#tagName` property in DOM is readonly.
- *
- * Since this function creates a new element and removes the given one, the new element is returned to keep reference.
- *
- * @param {module:engine/view/containerelement~ContainerElement} viewElement Element to be renamed.
- * @param {String} newName New name for element.
- */
-export function rename( viewElement, newName ) {
-	const newElement = new ContainerElement( newName, viewElement.getAttributes() );
+		// If range is collapsed - nothing to wrap.
+		if ( range.isCollapsed ) {
+			return range;
+		}
 
-	insert( Position.createAfter( viewElement ), newElement );
-	move( Range.createIn( viewElement ), Position.createAt( newElement ) );
-	remove( Range.createOn( viewElement ) );
+		// Range is inside single attribute and spans on all children.
+		if ( rangeSpansOnAllChildren( range ) && wrapAttributeElement( attribute, range.start.parent ) ) {
+			const parent = range.start.parent;
 
-	return newElement;
+			const end = this.mergeAttributes( Position.createAfter( parent ) );
+			const start = this.mergeAttributes( Position.createBefore( parent ) );
+
+			return new Range( start, end );
+		}
+
+		// Break attributes at range start and end.
+		const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
+
+		// Range around one element.
+		if ( breakEnd.isEqual( breakStart.getShiftedBy( 1 ) ) ) {
+			const node = breakStart.nodeAfter;
+
+			if ( node instanceof AttributeElement && wrapAttributeElement( attribute, node ) ) {
+				const start = this.mergeAttributes( breakStart );
+
+				if ( !start.isEqual( breakStart ) ) {
+					breakEnd.offset--;
+				}
+
+				const end = this.mergeAttributes( breakEnd );
+
+				return new Range( start, end );
+			}
+		}
+
+		const parentContainer = breakStart.parent;
+
+		// Unwrap children located between break points.
+		const unwrappedRange = this._unwrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
+
+		// Wrap all children with attribute.
+		const newRange = this._wrapChildren( parentContainer, unwrappedRange.start.offset, unwrappedRange.end.offset, attribute );
+
+		// Merge attributes at the both ends and return a new range.
+		const start = this.mergeAttributes( newRange.start );
+
+		// If start position was merged - move end position back.
+		if ( !start.isEqual( newRange.start ) ) {
+			newRange.end.offset--;
+		}
+		const end = this.mergeAttributes( newRange.end );
+
+		return new Range( start, end );
+	}
+
+	/**
+	 * Wraps position with provided attribute. Returns new position after wrapping. This method will also merge newly
+	 * added attribute with its siblings whenever possible.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
+	 * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
+	 *
+	 * @param {module:engine/view/position~Position} position
+	 * @param {module:engine/view/attributeelement~AttributeElement} attribute
+	 * @returns {module:engine/view/position~Position} New position after wrapping.
+	 */
+	wrapPosition( position, attribute ) {
+		if ( !( attribute instanceof AttributeElement ) ) {
+			throw new CKEditorError( 'view-writer-wrap-invalid-attribute' );
+		}
+
+		// Return same position when trying to wrap with attribute similar to position parent.
+		if ( attribute.isSimilar( position.parent ) ) {
+			return movePositionToTextNode( Position.createFromPosition( position ) );
+		}
+
+		// When position is inside text node - break it and place new position between two text nodes.
+		if ( position.parent.is( 'text' ) ) {
+			position = breakTextNode( position );
+		}
+
+		// Create fake element that will represent position, and will not be merged with other attributes.
+		const fakePosition = new AttributeElement();
+		fakePosition.priority = Number.POSITIVE_INFINITY;
+		fakePosition.isSimilar = () => false;
+
+		// Insert fake element in position location.
+		position.parent.insertChildren( position.offset, fakePosition );
+
+		// Range around inserted fake attribute element.
+		const wrapRange = new Range( position, position.getShiftedBy( 1 ) );
+
+		// Wrap fake element with attribute (it will also merge if possible).
+		this.wrap( wrapRange, attribute );
+
+		// Remove fake element and place new position there.
+		const newPosition = new Position( fakePosition.parent, fakePosition.index );
+		fakePosition.remove();
+
+		// If position is placed between text nodes - merge them and return position inside.
+		const nodeBefore = newPosition.nodeBefore;
+		const nodeAfter = newPosition.nodeAfter;
+
+		if ( nodeBefore instanceof Text && nodeAfter instanceof Text ) {
+			return mergeTextNodes( nodeBefore, nodeAfter );
+		}
+
+		// If position is next to text node - move position inside.
+		return movePositionToTextNode( newPosition );
+	}
+
+	/**
+	 * Unwraps nodes within provided range from attribute element.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
+	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
+	 * same parent container.
+	 *
+	 * @param {module:engine/view/range~Range} range
+	 * @param {module:engine/view/attributeelement~AttributeElement} attribute
+	 */
+	unwrap( range, attribute ) {
+		if ( !( attribute instanceof AttributeElement ) ) {
+			/**
+			 * Attribute element need to be instance of attribute element.
+			 *
+			 * @error view-writer-unwrap-invalid-attribute
+			 */
+			throw new CKEditorError( 'view-writer-unwrap-invalid-attribute' );
+		}
+
+		validateRangeContainer( range );
+
+		// If range is collapsed - nothing to unwrap.
+		if ( range.isCollapsed ) {
+			return range;
+		}
+
+		// Break attributes at range start and end.
+		const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
+
+		// Range around one element - check if AttributeElement can be unwrapped partially when it's not similar.
+		// For example:
+		// <b class="foo bar" title="baz"></b> unwrap with:	<b class="foo"></p> result: <b class"bar" title="baz"></b>
+		if ( breakEnd.isEqual( breakStart.getShiftedBy( 1 ) ) ) {
+			const node = breakStart.nodeAfter;
+
+			// Unwrap single attribute element.
+			if ( !attribute.isSimilar( node ) && node instanceof AttributeElement && unwrapAttributeElement( attribute, node ) ) {
+				const start = this.mergeAttributes( breakStart );
+
+				if ( !start.isEqual( breakStart ) ) {
+					breakEnd.offset--;
+				}
+
+				const end = this.mergeAttributes( breakEnd );
+
+				return new Range( start, end );
+			}
+		}
+
+		const parentContainer = breakStart.parent;
+
+		// Unwrap children located between break points.
+		const newRange = this._unwrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
+
+		// Merge attributes at the both ends and return a new range.
+		const start = this.mergeAttributes( newRange.start );
+
+		// If start position was merged - move end position back.
+		if ( !start.isEqual( newRange.start ) ) {
+			newRange.end.offset--;
+		}
+
+		const end = this.mergeAttributes( newRange.end );
+
+		return new Range( start, end );
+	}
+
+	/**
+	 * Renames element by creating a copy of renamed element but with changed name and then moving contents of the
+	 * old element to the new one. Keep in mind that this will invalidate all {@link module:engine/view/position~Position positions} which
+	 * has renamed element as {@link module:engine/view/position~Position#parent a parent}.
+	 *
+	 * New element has to be created because `Element#tagName` property in DOM is readonly.
+	 *
+	 * Since this function creates a new element and removes the given one, the new element is returned to keep reference.
+	 *
+	 * @param {module:engine/view/containerelement~ContainerElement} viewElement Element to be renamed.
+	 * @param {String} newName New name for element.
+	 */
+	rename( viewElement, newName ) {
+		const newElement = new ContainerElement( newName, viewElement.getAttributes() );
+
+		this.insert( Position.createAfter( viewElement ), newElement );
+		this.move( Range.createIn( viewElement ), Position.createAt( newElement ) );
+		this.remove( Range.createOn( viewElement ) );
+
+		return newElement;
+	}
+
+	// Unwraps children from provided `attribute`. Only children contained in `parent` element between
+	// `startOffset` and `endOffset` will be unwrapped.
+	//
+	// @param {module:engine/view/element~Element} parent
+	// @param {Number} startOffset
+	// @param {Number} endOffset
+	// @param {module:engine/view/element~Element} attribute
+	_unwrapChildren( parent, startOffset, endOffset, attribute ) {
+		let i = startOffset;
+		const unwrapPositions = [];
+
+		// Iterate over each element between provided offsets inside parent.
+		while ( i < endOffset ) {
+			const child = parent.getChild( i );
+
+			// If attributes are the similar, then unwrap.
+			if ( child.isSimilar( attribute ) ) {
+				const unwrapped = child.getChildren();
+				const count = child.childCount;
+
+				// Replace wrapper element with its children
+				child.remove();
+				parent.insertChildren( i, unwrapped );
+
+				// Save start and end position of moved items.
+				unwrapPositions.push(
+					new Position( parent, i ),
+					new Position( parent, i + count )
+				);
+
+				// Skip elements that were unwrapped. Assuming that there won't be another element to unwrap in child
+				// elements.
+				i += count;
+				endOffset += count - 1;
+			} else {
+				// If other nested attribute is found start unwrapping there.
+				if ( child.is( 'attributeElement' ) ) {
+					this._unwrapChildren( child, 0, child.childCount, attribute );
+				}
+
+				i++;
+			}
+		}
+
+		// Merge at each unwrap.
+		let offsetChange = 0;
+
+		for ( const position of unwrapPositions ) {
+			position.offset -= offsetChange;
+
+			// Do not merge with elements outside selected children.
+			if ( position.offset == startOffset || position.offset == endOffset ) {
+				continue;
+			}
+
+			const newPosition = this.mergeAttributes( position );
+
+			// If nodes were merged - other merge offsets will change.
+			if ( !newPosition.isEqual( position ) ) {
+				offsetChange++;
+				endOffset--;
+			}
+		}
+
+		return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+	}
+
+	// Wraps children with provided `attribute`. Only children contained in `parent` element between
+	// `startOffset` and `endOffset` will be wrapped.
+	//
+	// @param {module:engine/view/element~Element} parent
+	// @param {Number} startOffset
+	// @param {Number} endOffset
+	// @param {module:engine/view/element~Element} attribute
+	wrapChildren( parent, startOffset, endOffset, attribute ) {
+		let i = startOffset;
+		const wrapPositions = [];
+
+		while ( i < endOffset ) {
+			const child = parent.getChild( i );
+			const isText = child.is( 'text' );
+			const isAttribute = child.is( 'attributeElement' );
+			const isEmpty = child.is( 'emptyElement' );
+			const isUI = child.is( 'uiElement' );
+
+			// Wrap text, empty elements, ui elements or attributes with higher or equal priority.
+			if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( attribute, child ) ) ) {
+				// Clone attribute.
+				const newAttribute = attribute.clone();
+
+				// Wrap current node with new attribute;
+				child.remove();
+				newAttribute.appendChildren( child );
+				parent.insertChildren( i, newAttribute );
+
+				wrapPositions.push(	new Position( parent, i ) );
+			}
+			// If other nested attribute is found start wrapping there.
+			else if ( isAttribute ) {
+				this.wrapChildren( child, 0, child.childCount, attribute );
+			}
+
+			i++;
+		}
+
+		// Merge at each wrap.
+		let offsetChange = 0;
+
+		for ( const position of wrapPositions ) {
+			position.offset -= offsetChange;
+
+			// Do not merge with elements outside selected children.
+			if ( position.offset == startOffset ) {
+				continue;
+			}
+
+			const newPosition = this.mergeAttributes( position );
+
+			// If nodes were merged - other merge offsets will change.
+			if ( !newPosition.isEqual( position ) ) {
+				offsetChange++;
+				endOffset--;
+			}
+		}
+
+		return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+	}
 }
 
 /**
@@ -829,134 +940,6 @@ function _breakAttributes( position, forceSplitText = false ) {
 
 		return _breakAttributes( newPosition, forceSplitText );
 	}
-}
-
-// Unwraps children from provided `attribute`. Only children contained in `parent` element between
-// `startOffset` and `endOffset` will be unwrapped.
-//
-// @param {module:engine/view/element~Element} parent
-// @param {Number} startOffset
-// @param {Number} endOffset
-// @param {module:engine/view/element~Element} attribute
-function unwrapChildren( parent, startOffset, endOffset, attribute ) {
-	let i = startOffset;
-	const unwrapPositions = [];
-
-	// Iterate over each element between provided offsets inside parent.
-	while ( i < endOffset ) {
-		const child = parent.getChild( i );
-
-		// If attributes are the similar, then unwrap.
-		if ( child.isSimilar( attribute ) ) {
-			const unwrapped = child.getChildren();
-			const count = child.childCount;
-
-			// Replace wrapper element with its children
-			child.remove();
-			parent.insertChildren( i, unwrapped );
-
-			// Save start and end position of moved items.
-			unwrapPositions.push(
-				new Position( parent, i ),
-				new Position( parent, i + count )
-			);
-
-			// Skip elements that were unwrapped. Assuming that there won't be another element to unwrap in child
-			// elements.
-			i += count;
-			endOffset += count - 1;
-		} else {
-			// If other nested attribute is found start unwrapping there.
-			if ( child.is( 'attributeElement' ) ) {
-				unwrapChildren( child, 0, child.childCount, attribute );
-			}
-
-			i++;
-		}
-	}
-
-	// Merge at each unwrap.
-	let offsetChange = 0;
-
-	for ( const position of unwrapPositions ) {
-		position.offset -= offsetChange;
-
-		// Do not merge with elements outside selected children.
-		if ( position.offset == startOffset || position.offset == endOffset ) {
-			continue;
-		}
-
-		const newPosition = mergeAttributes( position );
-
-		// If nodes were merged - other merge offsets will change.
-		if ( !newPosition.isEqual( position ) ) {
-			offsetChange++;
-			endOffset--;
-		}
-	}
-
-	return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
-}
-
-// Wraps children with provided `attribute`. Only children contained in `parent` element between
-// `startOffset` and `endOffset` will be wrapped.
-//
-// @param {module:engine/view/element~Element} parent
-// @param {Number} startOffset
-// @param {Number} endOffset
-// @param {module:engine/view/element~Element} attribute
-function wrapChildren( parent, startOffset, endOffset, attribute ) {
-	let i = startOffset;
-	const wrapPositions = [];
-
-	while ( i < endOffset ) {
-		const child = parent.getChild( i );
-		const isText = child.is( 'text' );
-		const isAttribute = child.is( 'attributeElement' );
-		const isEmpty = child.is( 'emptyElement' );
-		const isUI = child.is( 'uiElement' );
-
-		// Wrap text, empty elements, ui elements or attributes with higher or equal priority.
-		if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( attribute, child ) ) ) {
-			// Clone attribute.
-			const newAttribute = attribute.clone();
-
-			// Wrap current node with new attribute;
-			child.remove();
-			newAttribute.appendChildren( child );
-			parent.insertChildren( i, newAttribute );
-
-			wrapPositions.push(	new Position( parent, i ) );
-		}
-		// If other nested attribute is found start wrapping there.
-		else if ( isAttribute ) {
-			wrapChildren( child, 0, child.childCount, attribute );
-		}
-
-		i++;
-	}
-
-	// Merge at each wrap.
-	let offsetChange = 0;
-
-	for ( const position of wrapPositions ) {
-		position.offset -= offsetChange;
-
-		// Do not merge with elements outside selected children.
-		if ( position.offset == startOffset ) {
-			continue;
-		}
-
-		const newPosition = mergeAttributes( position );
-
-		// If nodes were merged - other merge offsets will change.
-		if ( !newPosition.isEqual( position ) ) {
-			offsetChange++;
-			endOffset--;
-		}
-	}
-
-	return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
 }
 
 // Checks if first {@link module:engine/view/attributeelement~AttributeElement AttributeElement} provided to the function
