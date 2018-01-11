@@ -11,7 +11,7 @@
  * Interface provides methods for setting and getting data to/from editor main root element of the model tree
  * using {@link module:core/editor/editor~Editor#data data pipeline}.
  *
- * @mixin module:core/editor/utils/datainterface~DataInterface
+ * @mixin DataInterface
  */
 const DataInterface = {
 	/**

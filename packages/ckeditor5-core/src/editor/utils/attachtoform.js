@@ -7,7 +7,7 @@ import isFunction from '@ckeditor/ckeditor5-utils/src/lib/lodash/isFunction';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * @module core/editor/utils
+ * @module core/editor/utils/attachtoform
  */
 
 /**
@@ -16,7 +16,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * This helper requires {@link module:core/editor/utils/elementinterface~ElementInterface ElementInterface}.
  *
- * @param {module:core/editor/editor} editor Editor instance.
+ * @param {module:core/editor/editor~Editor} editor Editor instance.
  */
 export default function attachToForm( editor ) {
 	if ( !isFunction( editor.updateElement ) ) {
