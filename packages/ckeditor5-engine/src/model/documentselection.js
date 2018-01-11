@@ -84,22 +84,48 @@ export default class DocumentSelection extends Selection {
 		 */
 		this._attributePriority = new Map();
 
-		this.listenTo( this._document, 'change', ( evt, type, changes, batch ) => {
+		// Add events that will ensure selection correctness.
+		this.on( 'change:range', () => {
+			for ( const range of this.getRanges() ) {
+				if ( !this._document._validateSelectionRange( range ) ) {
+					/**
+					 * Range from {@link module:engine/model/documentselection~DocumentSelection document selection}
+					 * starts or ends at incorrect position.
+					 *
+					 * @error document-selection-wrong-position
+					 * @param {module:engine/model/range~Range} range
+					 */
+					throw new CKEditorError(
+						'document-selection-wrong-position: Range from document selection starts or ends at incorrect position.',
+						{ range }
+					);
+				}
+			}
+		} );
+
+		this.listenTo( this._model, 'applyOperation', ( evt, args ) => {
+			const operation = args[ 0 ];
+
+			if ( !operation.isDocumentOperation ) {
+				return;
+			}
+
 			// Whenever attribute operation is performed on document, update selection attributes.
 			// This is not the most efficient way to update selection attributes, but should be okay for now.
-			if ( attrOpTypes.has( type ) ) {
+			if ( attrOpTypes.has( operation.type ) ) {
 				this._updateAttributes( false );
 			}
 
+			const batch = operation.delta.batch;
+
 			// Batch may not be passed to the document#change event in some tests.
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/1001#issuecomment-314202352
-			// Ignore also transparent batches because they are... transparent.
-			if ( batch && batch.type !== 'transparent' ) {
+			if ( batch ) {
 				// Whenever element which had selection's attributes stored in it stops being empty,
 				// the attributes need to be removed.
-				clearAttributesStoredInElement( changes, this._model, batch );
+				clearAttributesStoredInElement( operation, this._model, batch );
 			}
-		} );
+		}, { priority: 'low' } );
 	}
 
 	/**
@@ -710,10 +736,6 @@ export default class DocumentSelection extends Selection {
 	}
 }
 
-/**
- * @event change:attribute
- */
-
 // Helper function for {@link module:engine/model/documentselection~DocumentSelection#_updateAttributes}.
 //
 // It takes model item, checks whether it is a text node (or text proxy) and, if so, returns it's attributes. If not, returns `null`.
@@ -729,11 +751,15 @@ function getAttrsIfCharacter( node ) {
 }
 
 // Removes selection attributes from element which is not empty anymore.
-function clearAttributesStoredInElement( changes, model, batch ) {
-	const changeParent = changes.range && changes.range.start.parent;
+function clearAttributesStoredInElement( operation, model, batch ) {
+	let changeParent = null;
 
-	// `changes.range` is not set in case of rename, root and marker operations.
-	// None of them may lead to the element becoming non-empty.
+	if ( operation.type == 'insert' ) {
+		changeParent = operation.position.parent;
+	} else if ( operation.type == 'move' || operation.type == 'reinsert' || operation.type == 'remove' ) {
+		changeParent = operation.getMovedRangeStart().parent;
+	}
+
 	if ( !changeParent || changeParent.isEmpty ) {
 		return;
 	}

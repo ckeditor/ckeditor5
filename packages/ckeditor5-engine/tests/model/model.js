@@ -196,87 +196,71 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should be possible to nest enqueueChange in enqueueChange event', () => {
-			model.once( 'change', () => {
+			model.once( '_change', () => {
+				changes += 'B';
+			} );
+
+			model.enqueueChange( () => {
 				model.enqueueChange( () => {
 					changes += 'C';
 				} );
 
-				changes += 'B';
-			} );
-
-			model.on( 'changesDone', () => {
-				changes += 'D';
-			} );
-
-			model.enqueueChange( () => {
 				changes += 'A';
 			} );
 
-			expect( changes ).to.equal( 'ABCD' );
+			expect( changes ).to.equal( 'ABC' );
 		} );
 
 		it( 'should be possible to nest enqueueChange in changes event', () => {
-			model.once( 'change', () => {
+			model.once( '_change', () => {
+				changes += 'B';
+			} );
+
+			model.change( () => {
 				model.enqueueChange( () => {
 					changes += 'C';
+				} );
+
+				changes += 'A';
+			} );
+
+			expect( changes ).to.equal( 'ABC' );
+		} );
+
+		it( 'should be possible to nest changes in enqueueChange event', () => {
+			model.once( '_change', () => {
+				changes += 'C';
+			} );
+
+			model.enqueueChange( () => {
+				model.change( () => {
+					changes += 'A';
 				} );
 
 				changes += 'B';
 			} );
 
-			model.on( 'changesDone', () => {
-				changes += 'D';
-			} );
-
-			model.change( () => {
-				changes += 'A';
-			} );
-
-			expect( changes ).to.equal( 'ABCD' );
-		} );
-
-		it( 'should be possible to nest changes in enqueueChange event', () => {
-			model.once( 'change', () => {
-				model.change( () => {
-					changes += 'B';
-				} );
-
-				changes += 'C';
-			} );
-
-			model.on( 'changesDone', () => {
-				changes += 'D';
-			} );
-
-			model.enqueueChange( () => {
-				changes += 'A';
-			} );
-
-			expect( changes ).to.equal( 'ABCD' );
+			expect( changes ).to.equal( 'ABC' );
 		} );
 
 		it( 'should be possible to nest changes in changes event', () => {
-			model.once( 'change', () => {
-				model.change( () => {
-					changes += 'B';
-				} );
-
+			model.once( '_change', () => {
 				changes += 'C';
 			} );
 
-			model.on( 'changesDone', () => {
-				changes += 'D';
-			} );
-
 			model.change( () => {
-				changes += 'A';
+				model.change( () => {
+					changes += 'A';
+				} );
+
+				changes += 'B';
 			} );
 
-			expect( changes ).to.equal( 'ABCD' );
+			expect( changes ).to.equal( 'ABC' );
 		} );
 
 		it( 'should let mix blocks', () => {
-			model.once( 'change', () => {
+			model.once( '_change', () => {
 				model.change( () => {
 					changes += 'B';
 
@@ -290,15 +274,11 @@ describe( 'Model', () => {
 				changes += 'D';
 			} );
 
-			model.on( 'changesDone', () => {
-				changes += 'F';
-			} );
-
 			model.change( () => {
 				changes += 'A';
 			} );
 
-			expect( changes ).to.equal( 'ABCDEF' );
+			expect( changes ).to.equal( 'ABCDE' );
 
 			function nestedEnqueue() {
 				model.enqueueChange( () => {
@@ -344,18 +324,15 @@ describe( 'Model', () => {
 	} );
 
 	describe( 'applyOperation()', () => {
-		it( 'should execute provided operation end return the result of operation', () => {
-			const returnValue = { foo: 'bar' };
-
+		it( 'should execute provided operation', () => {
 			const operation = {
-				_execute: sinon.stub().returns( returnValue ),
+				_execute: sinon.spy(),
 				_validate: () => true
 			};
 
 			model.applyOperation( operation );
 
 			sinon.assert.calledOnce( operation._execute );
-			expect( model.applyOperation( operation ) ).to.equal( returnValue );
 		} );
 	} );
 

@@ -70,13 +70,6 @@ export default class RemoveOperation extends MoveOperation {
 	/**
 	 * @inheritDoc
 	 */
-	_execute() {
-		return super._execute();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	static get className() {
 		return 'engine.model.operation.RemoveOperation';
 	}

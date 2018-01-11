@@ -656,7 +656,8 @@ class DebugPlugin extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		const modelDocument = this.editor.model.document;
+		const model = this.editor.model;
+		const modelDocument = model.document;
 		const viewDocument = this.editor.editing.view;
 
 		modelDocument[ treeDump ] = [];
@@ -665,11 +666,11 @@ class DebugPlugin extends Plugin {
 		dumpTrees( modelDocument, modelDocument.version );
 		dumpTrees( viewDocument, modelDocument.version );
 
-		modelDocument.on( 'change', () => {
+		model.on( 'applyOperation', () => {
 			dumpTrees( modelDocument, modelDocument.version );
 		}, { priority: 'lowest' } );
 
-		modelDocument.on( 'changesDone', () => {
+		model.document.on( 'change', () => {
 			dumpTrees( viewDocument, modelDocument.version );
 		}, { priority: 'lowest' } );
 	}

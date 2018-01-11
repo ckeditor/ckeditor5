@@ -230,7 +230,6 @@ describe( 'Differ', () => {
 			remove( position, 1 );
 
 			expectChanges( [
-				{ type: 'insert', name: 'paragraph', length: 1, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'remove', name: 'paragraph', length: 1, position }
 			] );
 		} );
@@ -241,8 +240,6 @@ describe( 'Differ', () => {
 			remove( position, 2 );
 
 			expectChanges( [
-				{ type: 'insert', name: 'paragraph', length: 1, position: Position.createAt( doc.graveyard, 0 ) },
-				{ type: 'insert', name: 'paragraph', length: 1, position: Position.createAt( doc.graveyard, 1 ) },
 				{ type: 'remove', name: 'paragraph', length: 1, position },
 				{ type: 'remove', name: 'paragraph', length: 1, position }
 			] );
@@ -254,8 +251,6 @@ describe( 'Differ', () => {
 			remove( position, 1 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 1, position: Position.createAt( doc.graveyard, 0 ) },
-
 				{ type: 'remove', name: '$text', length: 1, position: new Position( root, [ 0, 1 ] ) }
 			] );
 		} );
@@ -266,7 +261,6 @@ describe( 'Differ', () => {
 			remove( position, 2 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 2, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'remove', name: '$text', length: 2, position }
 			] );
 		} );
@@ -279,7 +273,6 @@ describe( 'Differ', () => {
 			remove( position, 1 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 3, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'remove', name: '$text', length: 3, position }
 			] );
 		} );
@@ -291,7 +284,6 @@ describe( 'Differ', () => {
 			remove( position.getShiftedBy( 1 ), 1 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 2, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'remove', name: '$text', length: 1, position },
 				{ type: 'remove', name: '$text', length: 1, position: position.getShiftedBy( 1 ) }
 			] );
@@ -306,7 +298,6 @@ describe( 'Differ', () => {
 			remove( removePosition, 1 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 1, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'remove', name: '$text', length: 1, position: removePosition },
 				{ type: 'insert', name: '$text', length: 1, position: removePosition }
 			] );
@@ -320,7 +311,6 @@ describe( 'Differ', () => {
 			remove( removePosition, 2 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 2, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'remove', name: '$text', length: 1, position: removePosition },
 				{ type: 'insert', name: '$text', length: 2, position: removePosition }
 			] );
@@ -334,7 +324,6 @@ describe( 'Differ', () => {
 			remove( removePosition, 3 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 3, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'insert', name: '$text', length: 1, position: insertPosition },
 				{ type: 'remove', name: '$text', length: 1, position: removePosition }
 			] );
@@ -348,7 +337,6 @@ describe( 'Differ', () => {
 			remove( removePosition, 4 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 4, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'remove', name: '$text', length: 2, position: removePosition }
 			] );
 		} );
@@ -361,7 +349,6 @@ describe( 'Differ', () => {
 			remove( removePositionB, 1 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 2, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'remove', name: '$text', length: 1, position: removePositionB },
 				{ type: 'remove', name: '$text', length: 1, position: new Position( root, [ 0, 1 ] ) }
 			] );
@@ -375,7 +362,6 @@ describe( 'Differ', () => {
 			remove( removePositionB, 2 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 3, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'remove', name: '$text', length: 3, position: removePositionB },
 			] );
 		} );
@@ -392,7 +378,6 @@ describe( 'Differ', () => {
 			const newRange = Range.createFromParentsAndOffsets( p1, 1, p1, 2 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 1, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'remove', name: '$text', length: 1, position },
 				{ type: 'attribute', range: newRange, attributeKey: 'bold', attributeOldValue: null, attributeNewValue: true }
 			] );
@@ -410,7 +395,6 @@ describe( 'Differ', () => {
 			const newRange = Range.createFromParentsAndOffsets( p1, 0, p1, 1 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 2, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'remove', name: '$text', length: 2, position },
 				{ type: 'attribute', range: newRange, attributeKey: 'bold', attributeOldValue: null, attributeNewValue: true }
 			] );
@@ -429,7 +413,6 @@ describe( 'Differ', () => {
 			const rangeAfter = Range.createFromParentsAndOffsets( p1, 1, p1, 2 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 1, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'attribute', range: rangeBefore, attributeKey: 'bold', attributeOldValue: null, attributeNewValue: true },
 				{ type: 'remove', name: '$text', length: 1, position },
 				{ type: 'attribute', range: rangeAfter, attributeKey: 'bold', attributeOldValue: null, attributeNewValue: true }
@@ -448,7 +431,6 @@ describe( 'Differ', () => {
 			const newRange = Range.createFromParentsAndOffsets( p1, 0, p1, 1 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 2, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'attribute', range: newRange, attributeKey: 'bold', attributeOldValue: null, attributeNewValue: true },
 				{ type: 'remove', name: '$text', length: 2, position }
 			] );
@@ -464,7 +446,6 @@ describe( 'Differ', () => {
 			remove( position, 1 );
 
 			expectChanges( [
-				{ type: 'insert', name: '$text', length: 1, position: Position.createAt( doc.graveyard, 0 ) },
 				{ type: 'attribute', range, attributeKey: 'bold', attributeOldValue: null, attributeNewValue: true },
 				{ type: 'remove', name: '$text', length: 1, position }
 			] );
@@ -521,7 +502,6 @@ describe( 'Differ', () => {
 			move( sourcePosition, 1, targetPosition );
 
 			expectChanges( [
-				{ type: 'remove', name: 'listItem', length: 1, position: sourcePosition },
 				{ type: 'insert', name: 'listItem', length: 1, position: targetPosition }
 			] );
 		} );
@@ -675,7 +655,7 @@ describe( 'Differ', () => {
 			] );
 		} );
 
-		it( 'over all inserted nodes and some old nodes', () => {
+		it( 'only on inserted nodes', () => {
 			const position = new Position( root, [ 0, 1 ] );
 
 			const p1 = root.getChild( 0 );
@@ -689,7 +669,7 @@ describe( 'Differ', () => {
 			] );
 		} );
 
-		it( 'only on inserted nodes', () => {
+		it( 'on some inserted nodes and old nodes', () => {
 			const position = new Position( root, [ 0, 1 ] );
 
 			const p1 = root.getChild( 0 );
@@ -706,7 +686,7 @@ describe( 'Differ', () => {
 			] );
 		} );
 
-		it( 'on some inserted nodes and old nodes', () => {
+		it( 'over all inserted nodes and some old nodes', () => {
 			const position = new Position( root, [ 0, 1 ] );
 
 			const p1 = root.getChild( 0 );
@@ -905,6 +885,83 @@ describe( 'Differ', () => {
 		} );
 	} );
 
+	describe( 'getChanges()', () => {
+		let position, p1, rangeAttrChange;
+
+		beforeEach( () => {
+			position = new Position( root, [ 0, 1 ] );
+			p1 = root.getChild( 0 );
+
+			const range = Range.createFromParentsAndOffsets( p1, 2, p1, 4 );
+			rangeAttrChange = Range.createFromParentsAndOffsets( p1, 3, p1, 4 );
+
+			insert( new Text( 'xx' ), position );
+			attribute( range, 'key', null, 'foo' );
+		} );
+
+		it( 'should return changes in graveyard if a flag was set up', () => {
+			const removePosition = new Position( root, [ 1 ] );
+			remove( removePosition, 1 );
+
+			expectChanges( [
+				{ type: 'insert', name: 'paragraph', length: 1, position: new Position( doc.graveyard, [ 0 ] ) },
+				{ type: 'insert', name: '$text', length: 2, position },
+				{ type: 'attribute', range: rangeAttrChange, attributeKey: 'key', attributeOldValue: null, attributeNewValue: 'foo' },
+				{ type: 'remove', name: 'paragraph', position: removePosition, length: 1 }
+			], true );
+		} );
+
+		// Below tests test caching.
+		it( 'should return same change set if was called twice in a row', () => {
+			const changesA = differ.getChanges();
+			const changesB = differ.getChanges();
+
+			expect( changesA ).to.deep.equal( changesB );
+		} );
+
+		it( 'should return same change set if was called twice in a row - graveyard changes', () => {
+			const removePosition = new Position( root, [ 1 ] );
+			remove( removePosition, 1 );
+
+			const changesA = differ.getChanges( { includeChangesInGraveyard: true } );
+			const changesB = differ.getChanges( { includeChangesInGraveyard: true } );
+
+			expect( changesA ).to.deep.equal( changesB );
+		} );
+
+		it( 'should return correct changes if change happened between getChanges() calls', () => {
+			expectChanges( [
+				{ type: 'insert', name: '$text', length: 2, position },
+				{ type: 'attribute', range: rangeAttrChange, attributeKey: 'key', attributeOldValue: null, attributeNewValue: 'foo' }
+			] );
+
+			const removePosition = new Position( root, [ 1 ] );
+			remove( removePosition, 1 );
+
+			expectChanges( [
+				{ type: 'insert', name: '$text', length: 2, position },
+				{ type: 'attribute', range: rangeAttrChange, attributeKey: 'key', attributeOldValue: null, attributeNewValue: 'foo' },
+				{ type: 'remove', name: 'paragraph', position: removePosition, length: 1 }
+			] );
+		} );
+
+		it( 'should return correct changes if reset happened between getChanges() calls', () => {
+			expectChanges( [
+				{ type: 'insert', name: '$text', length: 2, position },
+				{ type: 'attribute', range: rangeAttrChange, attributeKey: 'key', attributeOldValue: null, attributeNewValue: 'foo' }
+			] );
+
+			differ.reset();
+
+			const removePosition = new Position( root, [ 1 ] );
+			remove( removePosition, 1 );
+
+			expectChanges( [
+				{ type: 'remove', name: 'paragraph', position: removePosition, length: 1 }
+			] );
+		} );
+	} );
+
 	function insert( item, position ) {
 		const operation = new InsertOperation( position, item, doc.version );
 
@@ -946,8 +1003,8 @@ describe( 'Differ', () => {
 		model.applyOperation( wrapInDelta( operation ) );
 	}
 
-	function expectChanges( expected ) {
-		const changes = differ.getChanges();
+	function expectChanges( expected, includeChangesInGraveyard = false ) {
+		const changes = differ.getChanges( { includeChangesInGraveyard } );
 
 		for ( let i = 0; i < expected.length; i++ ) {
 			for ( const key in expected[ i ] ) {

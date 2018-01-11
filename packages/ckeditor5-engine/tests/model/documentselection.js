@@ -996,7 +996,11 @@ describe( 'DocumentSelection', () => {
 		describe( 'parent element\'s attributes', () => {
 			it( 'are set using a normal batch', () => {
 				const batchTypes = [];
-				doc.on( 'change', ( event, type, changes, batch ) => {
+
+				model.on( 'applyOperation', ( event, args ) => {
+					const operation = args[ 0 ];
+					const batch = operation.delta.batch;
+
 					batchTypes.push( batch.type );
 				} );
 
@@ -1015,7 +1019,10 @@ describe( 'DocumentSelection', () => {
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'bar' );
 
-				doc.on( 'change', ( event, type, changes, batch ) => {
+				model.on( 'applyOperation', ( event, args ) => {
+					const operation = args[ 0 ];
+					const batch = operation.delta.batch;
+
 					batchTypes.set( batch, batch.type );
 				} );
 
@@ -1121,20 +1128,6 @@ describe( 'DocumentSelection', () => {
 				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
 			} );
 
-			it( 'are not removed on transparent batches', () => {
-				selection.setRanges( [ rangeInEmptyP ] );
-				selection.setAttribute( 'foo', 'bar' );
-
-				model.enqueueChange( 'transparent', writer => {
-					sinon.spy( model, 'enqueueChange' );
-
-					writer.insertText( 'x', rangeInEmptyP.start );
-
-					expect( model.enqueueChange.called ).to.be.false;
-					expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
-				} );
-			} );
-
 			// Rename and some other deltas don't specify range in doc#change event.
 			// So let's see if there's no crash or something.
 			it( 'are not removed on rename', () => {
@@ -1151,5 +1144,47 @@ describe( 'DocumentSelection', () => {
 				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 			} );
 		} );
+	} );
+
+	it( 'should throw if one of ranges starts or ends inside surrogate pair', () => {
+		root.removeChildren( 0, root.childCount );
+		root.appendChildren( '\uD83D\uDCA9' );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 0, root, 1 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 2 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+	} );
+
+	it( 'should throw if one of ranges starts or ends between base character and combining mark', () => {
+		root.removeChildren( 0, root.childCount );
+		root.appendChildren( 'foo̻̐ͩbar' );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 3, root, 9 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 4, root, 9 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 5, root, 9 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 3 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 4 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+		expect( () => {
+			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 5 ) ] );
+		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 	} );
 } );

@@ -117,8 +117,6 @@ export default class RenameOperation extends Operation {
 		const element = this.position.nodeAfter;
 
 		element.name = this.newName;
-
-		return { element, oldName: this.oldName };
 	}
 
 	/**

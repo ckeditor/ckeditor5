@@ -68,11 +68,13 @@ export default class Writer {
 	 */
 	constructor( model, batch ) {
 		/**
+		 * @readonly
 		 * @type {module:engine/model/model~Model}
 		 */
 		this.model = model;
 
 		/**
+		 * @readonly
 		 * @type {module:engine/model/batch~Batch}
 		 */
 		this.batch = batch;
@@ -143,8 +145,8 @@ export default class Writer {
 	 * If you want to move {@link module:engine/model/range~Range range} instead of an
 	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move move}.
 	 *
-	 * @param {module:engine/model/item~Item|module:engine/model/documentfragment~DocumentFragment}
-	 * item Item or document fragment to insert.
+	 * @param {module:engine/model/item~Item|module:engine/model/documentfragment~DocumentFragment} item Item or document
+	 * fragment to insert.
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * second parameter is a {@link module:engine/model/item~Item model item}.

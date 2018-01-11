@@ -73,12 +73,10 @@ export default class Operation {
 		 */
 
 		/**
-		 * Executes the operation - modifications described by the operation attributes will be applied to the tree model.
+		 * Executes the operation - modifications described by the operation properties will be applied to the model tree.
 		 *
 		 * @protected
 		 * @method #_execute
-		 * @returns {Object} Object with additional information about the applied changes. It properties depends on the
-		 * operation type.
 		 */
 	}
 

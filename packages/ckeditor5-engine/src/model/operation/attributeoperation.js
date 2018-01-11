@@ -157,8 +157,6 @@ export default class AttributeOperation extends Operation {
 			// Execution.
 			_setAttribute( this.range, this.key, this.newValue );
 		}
-
-		return { range: this.range, key: this.key, oldValue: this.oldValue, newValue: this.newValue };
 	}
 
 	/**

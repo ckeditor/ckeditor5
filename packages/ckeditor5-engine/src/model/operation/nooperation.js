@@ -54,11 +54,7 @@ export default class NoOperation extends Operation {
 		return new NoOperation( this.baseVersion + 1 );
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	_execute() {
-		return {};
 	}
 
 	/**
