@@ -34,6 +34,7 @@ describe( 'ModelTestEditor', () => {
 
 			sinon.assert.calledOnce( spy );
 
+			spy.restore();
 			return editor.destroy();
 		} );
 
