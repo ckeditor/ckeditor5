@@ -7,11 +7,15 @@
  * @module editor-inline/inlineeditor
  */
 
-import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import DataInterface from '@ckeditor/ckeditor5-core/src/editor/utils/datainterface';
+import ElementInterface from '@ckeditor/ckeditor5-core/src/editor/utils/elementinterface';
+import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import InlineEditorUI from './inlineeditorui';
 import InlineEditorUIView from './inlineeditoruiview';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * The {@glink builds/guides/overview#Inline-editor inline editor} implementation.
@@ -35,9 +39,11 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`}.
  *
- * @extends module:core/editor/standardeditor~StandardEditor
+ * @mixes module:core/editor/utils/datainterface~DataInterface
+ * @mixes module:core/editor/utils/elementinterface~ElementInterface
+ * @extends module:core/editor/editor~Editor
  */
-export default class InlineEditor extends StandardEditor {
+export default class InlineEditor extends Editor {
 	/**
 	 * Creates an instance of the inline editor.
 	 *
@@ -50,10 +56,17 @@ export default class InlineEditor extends StandardEditor {
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
 	constructor( element, config ) {
-		super( element, config );
+		super( config );
+
+		this.element = element;
 
 		this.data.processor = new HtmlDataProcessor();
+
+		this.model.document.createRoot();
+
 		this.ui = new InlineEditorUI( this, new InlineEditorUIView( this.locale, element ) );
+
+		attachToForm( this );
 	}
 
 	/**
@@ -124,7 +137,7 @@ export default class InlineEditor extends StandardEditor {
 						editor.ui.init();
 						editor.fire( 'uiReady' );
 					} )
-					.then( () => editor.loadDataFromEditorElement() )
+					.then( () => editor.loadDataFromElement() )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
@@ -134,3 +147,6 @@ export default class InlineEditor extends StandardEditor {
 		} );
 	}
 }
+
+mix( InlineEditor, DataInterface );
+mix( InlineEditor, ElementInterface );
