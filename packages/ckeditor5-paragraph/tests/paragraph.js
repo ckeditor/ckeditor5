@@ -407,32 +407,6 @@ describe( 'Paragraph feature', () => {
 			expect( doc.getRoot().getChild( 0 ).is( 'paragraph' ) ).to.be.true;
 		} );
 
-		it( 'should not fix root if it got content during changesDone event', () => {
-			// "Autoheading feature".
-			model.schema.register( 'heading', { inheritAllFrom: '$block' } );
-
-			buildModelConverter().for( editor.editing.modelToView, editor.data.modelToView )
-				.fromElement( 'heading' )
-				.toElement( 'h1' );
-
-			doc.on( 'changesDone', () => {
-				const root = doc.getRoot();
-
-				if ( root.isEmpty ) {
-					model.change( writer => {
-						writer.insertElement( 'heading', root );
-					} );
-				}
-			} );
-
-			model.change( writer => {
-				writer.remove( ModelRange.createIn( root ) );
-			} );
-
-			expect( doc.getRoot().childCount ).to.equal( 1 );
-			expect( doc.getRoot().getChild( 0 ).name ).to.equal( 'heading' );
-		} );
-
 		it( 'should not fix root which does not allow paragraph', () => {
 			model.schema.on( 'checkChild', ( evt, args ) => {
 				const def = model.schema.getDefinition( args[ 1 ] );
@@ -444,16 +418,6 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			model.change( writer => {
-				writer.remove( ModelRange.createIn( root ) );
-			} );
-
-			expect( editor.getData() ).to.equal( '' );
-		} );
-
-		it( 'should not fix root if change was in transparent batch', () => {
-			editor.setData( '<p>Foobar</p>' );
-
-			model.enqueueChange( 'transparent', writer => {
 				writer.remove( ModelRange.createIn( root ) );
 			} );
 
