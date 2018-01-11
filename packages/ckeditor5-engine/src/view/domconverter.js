@@ -480,7 +480,7 @@ export default class DomConverter {
 			const viewRange = this.domRangeToView( domRange );
 
 			if ( viewRange ) {
-				viewSelection.addRange( viewRange, isBackward );
+				viewSelection.setTo( viewRange, isBackward );
 			}
 		}
 

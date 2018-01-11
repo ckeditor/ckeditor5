@@ -10,6 +10,7 @@
 import LivePosition from '../liveposition';
 import Position from '../position';
 import Range from '../range';
+import DocumentSelection from '../documentselection';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
@@ -82,7 +83,11 @@ export default function deleteContent( model, selection, options = {} ) {
 			schema.removeDisallowedAttributes( startPos.parent.getChildren(), writer );
 		}
 
-		selection.setCollapsedAt( startPos );
+		if ( selection instanceof DocumentSelection ) {
+			selection._setTo( startPos );
+		} else {
+			selection.setTo( startPos );
+		}
 
 		// 4. Autoparagraphing.
 		// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
@@ -186,7 +191,12 @@ function insertParagraph( writer, position, selection ) {
 	const paragraph = writer.createElement( 'paragraph' );
 
 	writer.insert( paragraph, position );
-	selection.setCollapsedAt( paragraph );
+
+	if ( selection instanceof DocumentSelection ) {
+		selection._setTo( paragraph );
+	} else {
+		selection.setTo( paragraph );
+	}
 }
 
 function replaceEntireContentWithParagraph( writer, selection ) {

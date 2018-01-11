@@ -271,7 +271,7 @@ describe( 'DomConverter', () => {
 			viewElement = new ViewElement();
 			domEl = document.createElement( 'div' );
 			selection = new ViewSelection();
-			selection.addRange( ViewRange.createIn( viewElement ) );
+			selection.setTo( ViewRange.createIn( viewElement ) );
 			converter.bindFakeSelection( domEl, selection );
 		} );
 
@@ -284,7 +284,7 @@ describe( 'DomConverter', () => {
 		it( 'should keep a copy of selection', () => {
 			const selectionCopy = ViewSelection.createFromSelection( selection );
 
-			selection.addRange( ViewRange.createIn( new ViewElement() ), true );
+			selection.setTo( ViewRange.createIn( new ViewElement() ), true );
 			const bindSelection = converter.fakeSelectionToView( domEl );
 
 			expect( bindSelection ).to.not.equal( selection );

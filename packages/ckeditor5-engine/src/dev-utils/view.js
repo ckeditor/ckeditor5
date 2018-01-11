@@ -126,7 +126,7 @@ setData._parse = parse;
  *		const b = new Element( 'b', null, text );
  *		const p = new Element( 'p', null, b );
  *		const selection = new Selection();
- *		selection.addRange( Range.createFromParentsAndOffsets( p, 0, p, 1 ) );
+ *		selection.setTo( Range.createFromParentsAndOffsets( p, 0, p, 1 ) );
  *
  *		stringify( p, selection ); // '<p>[<b>foobar</b>]</p>'
  *
@@ -136,7 +136,7 @@ setData._parse = parse;
  *		const b = new Element( 'b', null, text );
  *		const p = new Element( 'p', null, b );
  *		const selection = new Selection();
- *		selection.addRange( Range.createFromParentsAndOffsets( text, 1, text, 5 ) );
+ *		selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 5 ) );
  *
  *		stringify( p, selection ); // '<p><b>f{ooba}r</b></p>'
  *
@@ -148,8 +148,8 @@ setData._parse = parse;
  *
  *		const text = new Text( 'foobar' );
  *		const selection = new Selection();
- *		selection.addRange( Range.createFromParentsAndOffsets( text, 0, text, 1 ) );
- *		selection.addRange( Range.createFromParentsAndOffsets( text, 3, text, 5 ) );
+ *		selection.setTo( Range.createFromParentsAndOffsets( text, 0, text, 1 ) );
+ *		selection.setTo( Range.createFromParentsAndOffsets( text, 3, text, 5 ) );
  *
  *		stringify( text, selection ); // '{f}oo{ba}r'
  *
@@ -211,10 +211,10 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
 
 	if ( selectionOrPositionOrRange instanceof Position ) {
 		selection = new Selection();
-		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
+		selection.setTo( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
 	} else if ( selectionOrPositionOrRange instanceof Range ) {
 		selection = new Selection();
-		selection.addRange( selectionOrPositionOrRange );
+		selection.setTo( selectionOrPositionOrRange );
 	} else {
 		selection = selectionOrPositionOrRange;
 	}

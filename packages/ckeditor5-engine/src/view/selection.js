@@ -210,9 +210,9 @@ export default class Selection {
 	 *
 	 * @fires change
 	 * @param {module:engine/view/range~Range} range
-	 * @param {Boolean} isBackward
+	 * @param {Boolean} [isBackward]
 	 */
-	_addRange( range, isBackward ) {
+	_addRange( range, isBackward = false ) {
 		if ( !( range instanceof Range ) ) {
 			throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
 		}

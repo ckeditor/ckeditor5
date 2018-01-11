@@ -335,7 +335,7 @@ describe( 'DataController utils', () => {
 						new Position( doc.getRoot(), [ 1, 0, 0, 1 ] ) // b]ar
 					);
 
-					doc.selection.setRanges( [ range ] );
+					doc.selection._setTo( range );
 
 					deleteContent( model, doc.selection );
 
@@ -380,7 +380,7 @@ describe( 'DataController utils', () => {
 						new Position( doc.getRoot(), [ 1, 1 ] ) // b]om
 					);
 
-					doc.selection.setRanges( [ range ] );
+					doc.selection._setTo( range );
 
 					deleteContent( model, doc.selection );
 
@@ -423,7 +423,7 @@ describe( 'DataController utils', () => {
 						new Position( doc.getRoot(), [ 1, 0, 0, 3 ] ) // bar]
 					);
 
-					doc.selection.setRanges( [ range ] );
+					doc.selection._setTo( range );
 
 					deleteContent( model, doc.selection );
 

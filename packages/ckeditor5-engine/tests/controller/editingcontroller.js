@@ -109,7 +109,7 @@ describe( 'EditingController', () => {
 			model.change( writer => {
 				writer.insert( modelData, model.document.getRoot() );
 
-				model.document.selection.addRange( ModelRange.createFromParentsAndOffsets(
+				writer.setSelection( ModelRange.createFromParentsAndOffsets(
 					modelRoot.getChild( 0 ), 1, modelRoot.getChild( 0 ), 1 )
 				);
 			} );
@@ -131,9 +131,9 @@ describe( 'EditingController', () => {
 			model.change( writer => {
 				writer.split( model.document.selection.getFirstPosition() );
 
-				model.document.selection.setRanges( [
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets(	modelRoot.getChild( 1 ), 0, modelRoot.getChild( 1 ), 0 )
-				] );
+				);
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>f</p><p>{}oo</p><p></p><p>bar</p>' );
@@ -155,9 +155,9 @@ describe( 'EditingController', () => {
 					ModelRange.createFromPositionAndShift( model.document.selection.getFirstPosition(), 1 )
 				);
 
-				model.document.selection.setRanges( [
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 1, modelRoot.getChild( 0 ), 1 )
-				] );
+				);
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>f{}o</p><p></p><p>bar</p>' );
@@ -180,7 +180,7 @@ describe( 'EditingController', () => {
 			editing.view.render();
 
 			const domSelection = document.getSelection();
-			domSelection.setTo( null );
+			domSelection.removeAllRanges();
 			const domBar = domRoot.childNodes[ 2 ].childNodes[ 0 ];
 			const domRange = document.createRange();
 			domRange.setStart( domBar, 1 );
@@ -189,38 +189,38 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should convert collapsed selection', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 1, modelRoot.getChild( 2 ), 1 )
-				] );
+				);
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
 		} );
 
 		it( 'should convert not collapsed selection', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 1, modelRoot.getChild( 2 ), 2 )
-				] );
+				);
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{a}r</p>' );
 		} );
 
 		it( 'should clear previous selection', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 1, modelRoot.getChild( 2 ), 1 )
-				] );
+				);
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
 
-			model.change( () => {
-				model.document.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 2, modelRoot.getChild( 2 ), 2 )
-				] );
+				);
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>ba{}r</p>' );

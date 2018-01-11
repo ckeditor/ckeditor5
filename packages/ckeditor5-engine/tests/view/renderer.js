@@ -1573,7 +1573,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo<attribute:b>{}bar</attribute:b></container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewB.getChild( 0 ), 0 ), new ViewPosition( viewB.getChild( 0 ), 0 ) )
 				] );
 
@@ -1612,7 +1612,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{}<attribute:b></attribute:b></container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewP.getChild( 0 ), 3 ) )
 				] );
 
@@ -1652,7 +1652,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>fo{o<attribute:b>b}ar</attribute:b></container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 2 ), new ViewPosition( viewB.getChild( 0 ), 1 ) )
 				] );
 
@@ -1733,7 +1733,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{<attribute:b>ba}r</attribute:b></container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewB.getChild( 0 ), 2 ) )
 				] );
 
@@ -1771,7 +1771,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo<attribute:b>b{ar</attribute:b>}baz</container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewB.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) )
 				] );
 
@@ -1809,7 +1809,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{<attribute:b><attribute:i>ba}r</attribute:i></attribute:b></container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewI.getChild( 0 ), 2 ) )
 				] );
 
@@ -1846,7 +1846,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>f{oo<attribute:b><attribute:i>bar</attribute:i></attribute:b>}baz</container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) )
 				] );
 

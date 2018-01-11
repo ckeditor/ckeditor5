@@ -391,7 +391,9 @@ describe( 'Document', () => {
 				if ( expected === null ) {
 					expect( range ).to.be.null;
 				} else {
-					selection.setRanges( [ range ] );
+					model.change( writer => {
+						writer.setSelection( range );
+					} );
 					expect( getData( model ) ).to.equal( expected );
 				}
 			} );

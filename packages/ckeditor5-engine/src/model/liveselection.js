@@ -157,6 +157,7 @@ export default class LiveSelection extends Selection {
 
 	/**
 	 * @inheritDoc
+	 * TODO:
 	 */
 	_setRanges( newRanges, isLastBackward = false ) {
 		super._setRanges( newRanges, isLastBackward );

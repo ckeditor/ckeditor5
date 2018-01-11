@@ -53,6 +53,15 @@ export default class DocumentSelection {
 		return this._selection.isBackward;
 	}
 
+	/**
+	 * Used for Selection.isEqual fn.
+	 *
+	 * @protected
+	*/
+	get _ranges() {
+		return this._selection._ranges;
+	}
+
 	getRanges() {
 		return this._selection.getRanges();
 	}

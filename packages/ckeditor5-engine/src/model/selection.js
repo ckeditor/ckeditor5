@@ -16,6 +16,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import mapsEqual from '@ckeditor/ckeditor5-utils/src/mapsequal';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import DocumentSelection from './documentselection';
 
 /**
  * `Selection` is a group of {@link module:engine/model/range~Range ranges} which has a direction specified by
@@ -275,6 +276,8 @@ export default class Selection {
 			this._setRanges( [] );
 		} else if ( selectable instanceof Selection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
+		} else if ( selectable instanceof DocumentSelection ) {
+			this._setRanges( selectable.getRanges(), selectable.isBackward );
 		} else if ( selectable instanceof Range ) {
 			this._setRanges( [ selectable ], backwardSelectionOrOffset );
 		} else if ( selectable instanceof Position ) {
@@ -292,8 +295,7 @@ export default class Selection {
 	/**
 	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
 	 * is treated like the last added range and is used to set {@link module:engine/model/selection~Selection#anchor} and
-	 * {@link module:engine/model/selection~Selection#focus}. Accepts a flag describing in which direction the selection is made
-	 * (see {@link module:engine/model/selection~Selection#addRange}).
+	 * {@link module:engine/model/selection~Selection#focus}. Accepts a flag describing in which direction the selection is made.
 	 *
 	 * @fires change:range
 	 * @param {Iterable.<module:engine/model/range~Range>} newRanges Ranges to set.

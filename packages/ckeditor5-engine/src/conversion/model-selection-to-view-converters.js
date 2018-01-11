@@ -39,7 +39,7 @@ export function convertRangeSelection() {
 
 		for ( const range of selection.getRanges() ) {
 			const viewRange = conversionApi.mapper.toViewRange( range );
-			conversionApi.viewSelection.addRange( viewRange, selection.isBackward );
+			conversionApi.viewSelection.setTo( viewRange, selection.isBackward );
 		}
 	};
 }

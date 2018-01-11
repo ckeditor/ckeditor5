@@ -860,7 +860,7 @@ describe( 'DomConverter', () => {
 			document.body.appendChild( domContainer );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.addRange( ViewRange.createIn( new ViewElement() ) );
+			viewSelection.setTo( ViewRange.createIn( new ViewElement() ) );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
 			const domRange = document.createRange();
@@ -882,7 +882,7 @@ describe( 'DomConverter', () => {
 			document.body.appendChild( domContainer );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.addRange( ViewRange.createIn( new ViewElement() ) );
+			viewSelection.setTo( ViewRange.createIn( new ViewElement() ) );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
 			const domRange = document.createRange();

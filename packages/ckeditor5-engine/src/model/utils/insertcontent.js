@@ -12,6 +12,7 @@ import LivePosition from '../liveposition';
 import Element from '../element';
 import Range from '../range';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import DocumentSelection from '../documentselection';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste
@@ -54,7 +55,13 @@ export default function insertContent( model, content, selection ) {
 
 		/* istanbul ignore else */
 		if ( newRange ) {
-			selection.setRanges( [ newRange ] );
+			// TODO:
+
+			if ( selection instanceof DocumentSelection ) {
+				selection._setTo( newRange );
+			} else {
+				selection.setTo( newRange );
+			}
 		} else {
 			// We are not testing else because it's a safe check for unpredictable edge cases:
 			// an insertion without proper range to select.

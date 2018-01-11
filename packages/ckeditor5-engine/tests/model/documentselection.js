@@ -22,8 +22,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { wrapInDelta } from '../../tests/model/_utils/utils';
 import { setData, getData } from '../../src/dev-utils/model';
 
-import log from '@ckeditor/ckeditor5-utils/src/log';
-
 testUtils.createSinonSandbox();
 
 describe( 'DocumentSelection', () => {
@@ -201,38 +199,7 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'addRange()', () => {
-		it( 'should convert added Range to LiveRange', () => {
-			selection._setTo( range );
-
-			expect( selection._selection._ranges[ 0 ] ).to.be.instanceof( LiveRange );
-		} );
-
-		it( 'should throw an error when range is invalid', () => {
-			expect( () => {
-				selection._setTo( { invalid: 'range' } );
-			} ).to.throw( CKEditorError, /model-selection-set-not-selectable/ );
-		} );
-
-		it( 'should not add a range that is in graveyard', () => {
-			const spy = testUtils.sinon.stub( log, 'warn' );
-
-			selection._setTo( Range.createIn( doc.graveyard ) );
-
-			expect( selection._selection._ranges.length ).to.equal( 0 );
-			expect( spy.calledOnce ).to.be.true;
-		} );
-
-		it( 'should refresh attributes', () => {
-			const spy = testUtils.sinon.spy( selection._selection, '_updateAttributes' );
-
-			selection._setTo( range );
-
-			expect( spy.called ).to.be.true;
-		} );
-	} );
-
-	describe( 'setCollapsedAt()', () => {
+	describe( 'setTo - set collapsed at', () => {
 		it( 'detaches all existing ranges', () => {
 			selection._setTo( [ range, liveRange ] );
 
@@ -329,7 +296,8 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'setRanges()', () => {
+	// TODO - merge with setTo
+	describe( 'setRanges() - TODO', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection._setTo( [ { invalid: 'range' } ] );
@@ -1117,8 +1085,6 @@ describe( 'DocumentSelection', () => {
 				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
 			} );
 
-<<<<<<< HEAD
-=======
 			it( 'are not removed on transparent batches', () => {
 				selection._setTo( [ rangeInEmptyP ] );
 				selection._setAttribute( 'foo', 'bar' );
@@ -1133,7 +1099,6 @@ describe( 'DocumentSelection', () => {
 				} );
 			} );
 
->>>>>>> WIP - DocumentSelection. part 2.
 			// Rename and some other deltas don't specify range in doc#change event.
 			// So let's see if there's no crash or something.
 			it( 'are not removed on rename', () => {

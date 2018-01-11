@@ -11,6 +11,7 @@ import Position from '../position';
 import TreeWalker from '../treewalker';
 import Range from '../range';
 import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
+import DocumentSelection from '../documentselection';
 
 /**
  * Modifies the selection. Currently, the supported modifications are:
@@ -64,7 +65,11 @@ export default function modifySelection( model, selection, options = {} ) {
 		const position = tryExtendingTo( data, next.value );
 
 		if ( position ) {
-			selection.moveFocusTo( position );
+			if ( selection instanceof DocumentSelection ) {
+				selection._moveFocusTo( position );
+			} else {
+				selection.moveFocusTo( position );
+			}
 
 			return;
 		}
