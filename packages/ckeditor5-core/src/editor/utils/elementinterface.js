@@ -14,6 +14,7 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
  * Interface provides method for setting and getting data from/to element on which editor has been initialized.
  *
  * @mixin ElementInterface
+ * @implements module:core/editor/utils/elementinterface~Element
  */
 const ElementInterface = {
 	/**
@@ -44,3 +45,9 @@ const ElementInterface = {
 };
 
 export default ElementInterface;
+
+/**
+ * Interface representing classes which mix in {@link module:core/editor/utils/elementinterface~ElementInterface}.
+ *
+ * @interface Element
+ */

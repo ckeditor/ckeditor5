@@ -12,6 +12,7 @@
  * using {@link module:core/editor/editor~Editor#data data pipeline}.
  *
  * @mixin DataInterface
+ * @implements module:core/editor/utils/datainterface~Data
  */
 const DataInterface = {
 	/**
@@ -35,3 +36,9 @@ const DataInterface = {
 };
 
 export default DataInterface;
+
+/**
+ * Interface representing classes which mix in {@link module:core/editor/utils/datainterface~DataInterface}.
+ *
+ * @interface Data
+ */

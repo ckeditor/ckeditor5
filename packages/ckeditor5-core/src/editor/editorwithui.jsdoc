@@ -1,0 +1,27 @@
+/**
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module core/editor/editorwithui
+ */
+
+/**
+ * Interface that is required for plugins to work (their UI-related part will try to interact with editor UI).
+ *
+ * @interface EditorWithUI
+ */
+
+/**
+ * Editor UI instance.
+ *
+ * @readonly
+ * @member {module:core/editor/editorui~EditorUI} #ui
+ */
+
+/**
+ * Fired when the editor UI is ready.
+ *
+ * @event uiReady
+ */

@@ -124,17 +124,6 @@ export default class Editor {
 		 */
 		this.keystrokes = new EditingKeystrokeHandler( this );
 		this.keystrokes.listenTo( this.editing.view );
-
-		/**
-		 * Editor UI instance.
-		 *
-		 * This property is set by more specialized editor constructors. However, it's required
-		 * for plugins to work (their UI-related part will try to interact with editor UI),
-		 * so every editor class which is meant to work with default plugins should set this property.
-		 *
-		 * @readonly
-		 * @member {module:core/editor/editorui~EditorUI} #ui
-		 */
 	}
 
 	/**
@@ -240,12 +229,6 @@ mix( Editor, ObservableMixin );
  */
 
 /**
- * Fired when the editor UI is ready. This event won't be fired if the editor has no UI.
- *
- * @event uiReady
- */
-
-/**
  * Fired when the data loaded to the editor is ready. If a specific editor doesn't load
  * any data initially, this event will be fired right before {@link #event:ready}.
  *
@@ -253,7 +236,7 @@ mix( Editor, ObservableMixin );
  */
 
 /**
- * Fired when {@link #event:pluginsReady plugins}, {@link #event:uiReady UI} and {@link #event:dataReady data} and all additional
+ * Fired when {@link #event:pluginsReady plugins}, and {@link #event:dataReady data} and all additional
  * editor components are ready.
  *
  * Note: This event is most useful for plugin developers. When integrating the editor with your website or
