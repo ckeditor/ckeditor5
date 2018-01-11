@@ -1,3 +1,8 @@
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
 import MarkdownDataProcessor from '../../src/gfmdataprocessor';
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
