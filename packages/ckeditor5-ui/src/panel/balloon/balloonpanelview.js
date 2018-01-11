@@ -410,7 +410,7 @@ BalloonPanelView.arrowHorizontalOffset = 30;
  * @default 15
  * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowVerticalOffset
  */
-BalloonPanelView.arrowVerticalOffset = 15;
+BalloonPanelView.arrowVerticalOffset = 10;
 
 /**
  * A default set of positioning functions used by the balloon panel view
