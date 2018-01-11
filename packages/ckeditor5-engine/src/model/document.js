@@ -322,17 +322,15 @@ export default class Document {
 	 *			const changes = document.differ.getChanges();
 	 *
 	 *			// Check if the changes lead to an empty root in an editor.
-	 *			let applied = false;
-	 *
 	 *			for ( const entry of changes ) {
 	 *				if ( entry.type == 'remove' && entry.position.root.isEmpty ) {
 	 *					writer.insertElement( 'paragraph', entry.position.root, 0 );
 	 *
-	 *					applied = true;
+	 *					// It is fine to return early, even if multiple roots would need to be fixed.
+	 *					// All post-fixers will be fired again, so if there more empty roots, those will be fixed too.
+	 *					return true;
 	 *				}
 	 *			}
-	 *
-	 *			return applied;
 	 *		} );
 	 *
 	 * @param {Function} postFixer
