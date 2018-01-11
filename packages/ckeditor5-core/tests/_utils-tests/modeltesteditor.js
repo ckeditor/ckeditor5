@@ -8,6 +8,8 @@ import ModelTestEditor from '../../tests/_utils/modeltesteditor';
 
 import Plugin from '../../src/plugin';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import DataInterface from '../../src/editor/utils/datainterface';
+import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -25,18 +27,22 @@ describe( 'ModelTestEditor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 
-		it( 'creates model root', () => {
-			const editor = new ModelTestEditor( { foo: 1 } );
-
-			expect( editor.model.document.getRoot() ).to.have.property( 'name', '$root' );
-		} );
-
 		it( 'should disable editing pipeline and clear main root', () => {
 			const editor = new ModelTestEditor( { foo: 1 } );
 
 			editor.model.document.createRoot( 'second', 'second' );
 
 			expect( Array.from( editor.editing.view.roots ) ).to.length( 0 );
+		} );
+
+		it( 'creates main root element', () => {
+			const editor = new ModelTestEditor();
+
+			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+		} );
+
+		it( 'mixes DataInterface', () => {
+			expect( testUtils.isMixed( ModelTestEditor, DataInterface ) ).to.true;
 		} );
 	} );
 

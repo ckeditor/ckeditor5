@@ -3,25 +3,30 @@
  * For licensing, see LICENSE.md.
  */
 
-import StandardEditor from '../../src/editor/standardeditor';
+import Editor from '../../src/editor/editor';
+import ElementInterface from '../../src/editor/utils/elementinterface';
+import DataInterface from '../../src/editor/utils/datainterface';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ClassicTestEditorUI from './classictesteditorui';
 import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * A simplified classic editor. Useful for testing features.
  *
  * @memberOf tests.core._utils
- * @extends core.editor.StandardEditor
+ * @extends core.editor.Editor
  */
-export default class ClassicTestEditor extends StandardEditor {
+export default class ClassicTestEditor extends Editor {
 	/**
 	 * @inheritDoc
 	 */
 	constructor( element, config ) {
-		super( element, config );
+		super( config );
+
+		this.element = element;
 
 		this.data.processor = new HtmlDataProcessor();
 
@@ -33,6 +38,8 @@ export default class ClassicTestEditor extends StandardEditor {
 		this.ui.view.editableElement = this.ui.view.editable.element;
 
 		this._elementReplacer = new ElementReplacer();
+
+		this.model.document.createRoot();
 	}
 
 	/**
@@ -60,7 +67,7 @@ export default class ClassicTestEditor extends StandardEditor {
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
-					.then( () => editor.loadDataFromEditorElement() )
+					.then( () => editor.loadDataFromElement() )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
@@ -70,3 +77,6 @@ export default class ClassicTestEditor extends StandardEditor {
 		} );
 	}
 }
+
+mix( ClassicTestEditor, DataInterface );
+mix( ClassicTestEditor, ElementInterface );

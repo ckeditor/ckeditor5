@@ -4,7 +4,9 @@
  */
 
 import Editor from '../../src/editor/editor';
+import DataInterface from '../../src/editor/utils/datainterface';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * A simple editor implementation with a functional model part of the engine (the document).
@@ -23,22 +25,9 @@ export default class ModelTestEditor extends Editor {
 		// Disable editing pipeline for model editor.
 		this.editing.destroy();
 		this.editing.view.roots.clear();
-	}
 
-	/**
-	 * Sets the data in the editor's main root.
-	 *
-	 * @param {*} data The data to load.
-	 */
-	setData( data ) {
-		this.data.set( data );
-	}
-
-	/**
-	 * Gets the data from the editor's main root.
-	 */
-	getData() {
-		return this.data.get();
+		// Create main root.
+		this.model.document.createRoot();
 	}
 
 	/**
@@ -63,3 +52,5 @@ export default class ModelTestEditor extends Editor {
 		} );
 	}
 }
+
+mix( ModelTestEditor, DataInterface );

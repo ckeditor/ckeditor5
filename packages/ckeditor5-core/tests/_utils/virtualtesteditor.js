@@ -3,8 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import StandardEditor from '../../src/editor/standardeditor';
+import Editor from '../../src/editor/editor';
+import DataInterface from '../../src/editor/utils/datainterface';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * A simple editor implementation useful for testing the engine part of the features.
@@ -14,11 +16,13 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  *
  * @memberOf tests.core._utils
  */
-export default class VirtualTestEditor extends StandardEditor {
+export default class VirtualTestEditor extends Editor {
 	constructor( config ) {
-		super( null, config );
+		super( config );
 
 		this.data.processor = new HtmlDataProcessor();
+
+		this.model.document.createRoot();
 	}
 
 	/**
@@ -43,3 +47,5 @@ export default class VirtualTestEditor extends StandardEditor {
 		} );
 	}
 }
+
+mix( VirtualTestEditor, DataInterface );
