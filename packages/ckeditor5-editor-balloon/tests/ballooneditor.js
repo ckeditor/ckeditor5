@@ -17,8 +17,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
-import DataInterface from '@ckeditor/ckeditor5-core/src/editor/utils/datainterface';
-import ElementInterface from '@ckeditor/ckeditor5-core/src/editor/utils/elementinterface';
+import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
+import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -60,11 +60,11 @@ describe( 'BalloonEditor', () => {
 		} );
 
 		it( 'has a Data Interface', () => {
-			testUtils.isMixed( BalloonEditor, DataInterface );
+			testUtils.isMixed( BalloonEditor, DataApiMixin );
 		} );
 
 		it( 'has a Element Interface', () => {
-			testUtils.isMixed( BalloonEditor, ElementInterface );
+			testUtils.isMixed( BalloonEditor, ElementApiMixin );
 		} );
 
 		it( 'creates main root element', () => {

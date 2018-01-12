@@ -13,8 +13,8 @@ import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/con
 import BalloonEditorUI from './ballooneditorui';
 import BalloonEditorUIView from './ballooneditoruiview';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
-import DataInterface from '@ckeditor/ckeditor5-core/src/editor/utils/datainterface';
-import ElementInterface from '@ckeditor/ckeditor5-core/src/editor/utils/elementinterface';
+import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
+import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
@@ -40,8 +40,8 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`}.
  *
- * @mixes module:core/editor/utils/datainterface~DataInterface
- * @mixes module:core/editor/utils/elementinterface~ElementInterface
+ * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
+ * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
  * @implements module:core/editor/editorwithui~EditorWithUI
  * @extends module:core/editor/editor~Editor
  */
@@ -153,5 +153,5 @@ export default class BalloonEditor extends Editor {
 	}
 }
 
-mix( BalloonEditor, DataInterface );
-mix( BalloonEditor, ElementInterface );
+mix( BalloonEditor, DataApiMixin );
+mix( BalloonEditor, ElementApiMixin );
