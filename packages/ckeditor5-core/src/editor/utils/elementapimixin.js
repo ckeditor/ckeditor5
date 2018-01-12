@@ -18,18 +18,14 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
  */
 const ElementApiMixin = {
 	/**
-	 * Updates the {@link #element editor element}'s content with the data.
-	 *
-	 * @method #updateElement
+	 * @inheritDoc
 	 */
 	updateElement() {
 		setDataInElement( this.element, this.data.get() );
 	},
 
 	/**
-	 * Loads the data from the {@link #element editor element} to the main root.
-	 *
-	 * @method #loadDataFromElement
+	 * @inheritDoc
 	 */
 	loadDataFromElement() {
 		this.data.set( getDataFromElement( this.element ) );
@@ -49,4 +45,16 @@ export default ElementApiMixin;
  *
  * @readonly
  * @member {HTMLElement} #element
+ */
+
+/**
+ * Updates the {@link #element editor element}'s content with the data.
+ *
+ * @method #updateElement
+ */
+
+/**
+ * Loads the data from the {@link #element editor element} to the main root.
+ *
+ * @method #loadDataFromElement
  */

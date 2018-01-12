@@ -16,19 +16,14 @@
  */
 const DataApiMixin = {
 	/**
-	 * Sets the data in the editor's main root.
-	 *
-	 * @method #setData
-	 * @param {*} data The data to load.
+	 * @inheritDoc
 	 */
 	setData( data ) {
 		this.data.set( data );
 	},
 
 	/**
-	 * Gets the data from the editor's main root.
-	 *
-	 * @method #getData
+	 * @inheritDoc
 	 */
 	getData() {
 		return this.data.get();
@@ -41,4 +36,18 @@ export default DataApiMixin;
  * Interface representing classes which mix in {@link module:core/editor/utils/dataapimixin~DataApiMixin}.
  *
  * @interface DataApi
+ */
+
+/**
+ * Sets the data in the editor's main root.
+ *
+ * @method #setData
+ * @param {String} data Input data.
+ */
+
+/**
+ * Gets the data from the editor's main root.
+ *
+ * @method #getData
+ * @returns {String} Output data.
  */
