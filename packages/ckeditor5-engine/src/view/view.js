@@ -68,6 +68,18 @@ export default class View {
 		 */
 		this._observers = new Map();
 
+		/**
+		 * True if view is focused.
+		 *
+		 * This property is updated by the {@link module:engine/view/observer/focusobserver~FocusObserver}.
+		 * If the {@link module:engine/view/observer/focusobserver~FocusObserver} is disabled this property will not change.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} module:engine/view/document~Document#isFocused
+		 */
+		this.set( 'isFocused', false );
+
 		// Add default observers.
 		this.addObserver( MutationObserver );
 		this.addObserver( SelectionObserver );
