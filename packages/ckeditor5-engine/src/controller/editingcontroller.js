@@ -9,7 +9,7 @@
 
 import RootEditableElement from '../view/rooteditableelement';
 import ModelDiffer from '../model/differ';
-import ViewDocument from '../view/document';
+import View from '../view/view';
 import Mapper from '../conversion/mapper';
 import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
 import {
@@ -50,12 +50,12 @@ export default class EditingController {
 		this.model = model;
 
 		/**
-		 * View document.
+		 * Editing view.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/document~Document}
+		 * @member {module:engine/view/view~View}
 		 */
-		this.view = new ViewDocument();
+		this.view = new View();
 
 		/**
 		 * Mapper which describes model-view binding.
@@ -81,7 +81,7 @@ export default class EditingController {
 		 */
 		this.modelToView = new ModelConversionDispatcher( this.model, {
 			mapper: this.mapper,
-			viewSelection: this.view.selection
+			viewSelection: this.view.document.selection
 		} );
 
 		// Model differ object. It's role is to buffer changes done on model and then calculates a diff of those changes.
@@ -131,7 +131,7 @@ export default class EditingController {
 		}, { priority: 'low' } );
 
 		// Convert selection from view to model.
-		this.listenTo( this.view, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
+		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
 		// Attach default model converters.
 		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
@@ -146,7 +146,7 @@ export default class EditingController {
 		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
 		// {@link module:engine/model/document~Document#roots model roots collection} so creating
 		// model root automatically creates corresponding view root.
-		this.view.roots.bindTo( this.model.document.roots ).using( root => {
+		this.view.document.roots.bindTo( this.model.document.roots ).using( root => {
 			// $graveyard is a special root that has no reflection in the view.
 			if ( root.rootName == '$graveyard' ) {
 				return null;
@@ -155,7 +155,7 @@ export default class EditingController {
 			const viewRoot = new RootEditableElement( root.name );
 
 			viewRoot.rootName = root.rootName;
-			viewRoot.document = this.view;
+			viewRoot.document = this.view.document;
 			this.mapper.bindElements( root, viewRoot );
 
 			return viewRoot;

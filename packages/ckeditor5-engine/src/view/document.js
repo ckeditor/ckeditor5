@@ -23,6 +23,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 
+// todo: check the docs
 /**
  * Document class creates an abstract layer over the content editable area.
  * It combines the actual tree of view elements, tree of DOM elements,
@@ -64,16 +65,6 @@ export default class Document {
 		this.selection = new Selection();
 
 		/**
-		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} use by
-		 * {@link module:engine/view/document~Document#renderer renderer}
-		 * and {@link module:engine/view/observer/observer~Observer observers}.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/document~Document#domConverter
-		 */
-		this.domConverter = new DomConverter();
-
-		/**
 		 * Roots of the view tree. Collection of the {module:engine/view/element~Element view elements}.
 		 *
 		 * View roots are created as a result of binding between {@link module:engine/view/document~Document#roots} and
@@ -109,15 +100,6 @@ export default class Document {
 		this.set( 'isFocused', false );
 
 		/**
-		 * Instance of the {@link module:engine/view/document~Document#renderer renderer}.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/renderer~Renderer} module:engine/view/document~Document#renderer
-		 */
-		this.renderer = new Renderer( this.domConverter, this.selection );
-		this.renderer.bind( 'isFocused' ).to( this );
-
-		/**
 		 * Map of registered {@link module:engine/view/observer/observer~Observer observers}.
 		 *
 		 * @private
@@ -134,8 +116,6 @@ export default class Document {
 
 		injectQuirksHandling( this );
 		injectUiElementHandling( this );
-
-		this.decorate( 'render' );
 	}
 
 	/**
@@ -232,18 +212,6 @@ export default class Document {
 	 */
 	getDomRoot( name = 'main' ) {
 		return this.domRoots.get( name );
-	}
-
-	/**
-	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
-	 * before rendering and re-enabled after that.
-	 *
-	 * @fires render
-	 */
-	render() {
-		this.disableObservers();
-		this.renderer.render();
-		this.enableObservers();
 	}
 
 	/**
