@@ -4,17 +4,17 @@
  */
 
 /**
- * @module core/editor/utils/datainterface
+ * @module core/editor/utils/dataapimixin
  */
 
 /**
- * Interface provides methods for setting and getting data to/from editor main root element of the model tree
+ * Mixin provides methods for setting and getting data to/from editor main root element of the model tree
  * using {@link module:core/editor/editor~Editor#data data pipeline}.
  *
- * @mixin DataInterface
- * @implements module:core/editor/utils/datainterface~Data
+ * @mixin DataApiMixin
+ * @implements module:core/editor/utils/dataapimixin~DataApi
  */
-const DataInterface = {
+const DataApiMixin = {
 	/**
 	 * Sets the data in the editor's main root.
 	 *
@@ -35,10 +35,10 @@ const DataInterface = {
 	}
 };
 
-export default DataInterface;
+export default DataApiMixin;
 
 /**
- * Interface representing classes which mix in {@link module:core/editor/utils/datainterface~DataInterface}.
+ * Interface representing classes which mix in {@link module:core/editor/utils/dataapimixin~DataApiMixin}.
  *
- * @interface Data
+ * @interface DataApi
  */

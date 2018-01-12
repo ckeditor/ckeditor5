@@ -14,18 +14,18 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * Checks if editor is initialized on textarea element that belongs to a form. If yes - updates editor's element
  * contents before submitting the form.
  *
- * This helper requires {@link module:core/editor/utils/elementinterface~ElementInterface ElementInterface}.
+ * This helper requires {@link module:core/editor/utils/elementapimixin~ElementApi ElementApi interface}.
  *
  * @param {module:core/editor/editor~Editor} editor Editor instance.
  */
 export default function attachToForm( editor ) {
 	if ( !isFunction( editor.updateElement ) ) {
 		/**
-		 * {@link module:core/editor/utils/elementinterface~ElementInterface ElementInterface} is required.
+		 * {@link module:core/editor/utils/elementapimixin~ElementApi ElementApi interface} is required.
 		 *
-		 * @error attachtoform-missing-elementinterface
+		 * @error attachtoform-missing-elementapi-interface
 		 */
-		throw new CKEditorError( 'attachtoform-missing-elementinterface: Element interface is required.' );
+		throw new CKEditorError( 'attachtoform-missing-elementapi-interface: ElementApi interface is required.' );
 	}
 
 	const element = editor.element;

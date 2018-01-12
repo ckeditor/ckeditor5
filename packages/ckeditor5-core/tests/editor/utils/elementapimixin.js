@@ -5,17 +5,17 @@
 
 /* global document */
 
-import ElementInterface from '../../../src/editor/utils/elementinterface';
+import ElementApiMixin from '../../../src/editor/utils/elementapimixin';
 import Editor from '../../../src/editor/editor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
-describe( 'ElementInterface', () => {
+describe( 'ElementApiMixin', () => {
 	let editor;
 
 	beforeEach( () => {
 		class CustomEditor extends Editor {}
-		mix( CustomEditor, ElementInterface );
+		mix( CustomEditor, ElementApiMixin );
 
 		editor = new CustomEditor();
 		editor.data.processor = new HtmlDataProcessor();
@@ -25,10 +25,6 @@ describe( 'ElementInterface', () => {
 
 	afterEach( () => {
 		editor.destroy();
-	} );
-
-	it( 'should add #element property to editor', () => {
-		expect( editor ).have.property( 'element', null );
 	} );
 
 	describe( 'loadDataFromElement()', () => {

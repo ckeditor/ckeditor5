@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
-import DataInterface from '../../../src/editor/utils/datainterface';
+import DataApiMixin from '../../../src/editor/utils/dataapimixin';
 import Editor from '../../../src/editor/editor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'DataInterface', () => {
+describe( 'DataApiMixin', () => {
 	let editor;
 
 	beforeEach( () => {
 		class CustomEditor extends Editor {}
-		mix( CustomEditor, DataInterface );
+		mix( CustomEditor, DataApiMixin );
 
 		editor = new CustomEditor();
 		editor.data.processor = new HtmlDataProcessor();

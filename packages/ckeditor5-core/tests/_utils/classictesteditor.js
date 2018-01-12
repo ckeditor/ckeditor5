@@ -4,8 +4,8 @@
  */
 
 import Editor from '../../src/editor/editor';
-import ElementInterface from '../../src/editor/utils/elementinterface';
-import DataInterface from '../../src/editor/utils/datainterface';
+import ElementApiMixin from '../../src/editor/utils/elementapimixin';
+import DataApiMixin from '../../src/editor/utils/dataapimixin';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ClassicTestEditorUI from './classictesteditorui';
 import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
@@ -82,5 +82,5 @@ export default class ClassicTestEditor extends Editor {
 	}
 }
 
-mix( ClassicTestEditor, DataInterface );
-mix( ClassicTestEditor, ElementInterface );
+mix( ClassicTestEditor, DataApiMixin );
+mix( ClassicTestEditor, ElementApiMixin );

@@ -4,7 +4,7 @@
  */
 
 import Editor from '../../src/editor/editor';
-import DataInterface from '../../src/editor/utils/datainterface';
+import DataApiMixin from '../../src/editor/utils/dataapimixin';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
@@ -50,4 +50,4 @@ export default class VirtualTestEditor extends Editor {
 	}
 }
 
-mix( VirtualTestEditor, DataInterface );
+mix( VirtualTestEditor, DataApiMixin );

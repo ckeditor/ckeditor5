@@ -7,24 +7,16 @@ import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromele
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
 /**
- * @module core/editor/utils/elementinterface
+ * @module core/editor/utils/elementapimixin
  */
 
 /**
- * Interface provides method for setting and getting data from/to element on which editor has been initialized.
+ * Mixin provides method for setting and getting data from/to element on which editor has been initialized.
  *
- * @mixin ElementInterface
- * @implements module:core/editor/utils/elementinterface~Element
+ * @mixin ElementApiMixin
+ * @implements module:core/editor/utils/elementapimixin~ElementApi
  */
-const ElementInterface = {
-	/**
-	 * The element on which the editor has been initialized.
-	 *
-	 * @readonly
-	 * @member {HTMLElement} #element
-	 */
-	element: null,
-
+const ElementApiMixin = {
 	/**
 	 * Updates the {@link #element editor element}'s content with the data.
 	 *
@@ -44,10 +36,17 @@ const ElementInterface = {
 	}
 };
 
-export default ElementInterface;
+export default ElementApiMixin;
 
 /**
- * Interface representing classes which mix in {@link module:core/editor/utils/elementinterface~ElementInterface}.
+ * Interface representing classes which mix in {@link module:core/editor/utils/elementapimixin~ElementApiMixin}.
  *
- * @interface Element
+ * @interface ElementApi
+ */
+
+/**
+ * The element on which the editor has been initialized.
+ *
+ * @readonly
+ * @member {HTMLElement} #element
  */

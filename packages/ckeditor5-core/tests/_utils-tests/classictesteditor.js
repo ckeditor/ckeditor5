@@ -15,8 +15,8 @@ import ClassicTestEditorUI from '../../tests/_utils/classictesteditorui';
 import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 
-import DataInterface from '../../src/editor/utils/datainterface';
-import ElementInterface from '../../src/editor/utils/elementinterface';
+import DataApiMixin from '../../src/editor/utils/dataapimixin';
+import ElementApiMixin from '../../src/editor/utils/elementapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -59,12 +59,12 @@ describe( 'ClassicTestEditor', () => {
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
 		} );
 
-		it( 'mixes DataInterface', () => {
-			expect( testUtils.isMixed( ClassicTestEditor, DataInterface ) ).to.true;
+		it( 'mixes DataApiMixin', () => {
+			expect( testUtils.isMixed( ClassicTestEditor, DataApiMixin ) ).to.true;
 		} );
 
-		it( 'mixes ElementInterface', () => {
-			expect( testUtils.isMixed( ClassicTestEditor, ElementInterface ) ).to.true;
+		it( 'mixes ElementApiMixin', () => {
+			expect( testUtils.isMixed( ClassicTestEditor, ElementApiMixin ) ).to.true;
 		} );
 	} );
 

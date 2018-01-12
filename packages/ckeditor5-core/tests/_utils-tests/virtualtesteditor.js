@@ -8,7 +8,7 @@ import VirtualTestEditor from '../../tests/_utils/virtualtesteditor';
 
 import Plugin from '../../src/plugin';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import DataInterface from '../../src/editor/utils/datainterface';
+import DataApiMixin from '../../src/editor/utils/dataapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '../../tests/_utils/utils';
@@ -31,8 +31,8 @@ describe( 'VirtualTestEditor', () => {
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
 		} );
 
-		it( 'mixes DataInterface', () => {
-			expect( testUtils.isMixed( VirtualTestEditor, DataInterface ) ).to.true;
+		it( 'mixes DataApiMixin', () => {
+			expect( testUtils.isMixed( VirtualTestEditor, DataApiMixin ) ).to.true;
 		} );
 	} );
 
