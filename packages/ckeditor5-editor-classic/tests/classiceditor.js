@@ -14,8 +14,8 @@ import ClassicEditor from '../src/classiceditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import DataInterface from '@ckeditor/ckeditor5-core/src/editor/utils/datainterface';
-import ElementInterface from '@ckeditor/ckeditor5-core/src/editor/utils/elementinterface';
+import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
+import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -46,11 +46,11 @@ describe( 'ClassicEditor', () => {
 		} );
 
 		it( 'has a Data Interface', () => {
-			testUtils.isMixed( ClassicEditor, DataInterface );
+			testUtils.isMixed( ClassicEditor, DataApiMixin );
 		} );
 
 		it( 'has a Element Interface', () => {
-			testUtils.isMixed( ClassicEditor, ElementInterface );
+			testUtils.isMixed( ClassicEditor, ElementApiMixin );
 		} );
 
 		it( 'creates main root element', () => {

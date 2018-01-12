@@ -8,8 +8,8 @@
  */
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import DataInterface from '@ckeditor/ckeditor5-core/src/editor/utils/datainterface';
-import ElementInterface from '@ckeditor/ckeditor5-core/src/editor/utils/elementinterface';
+import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
+import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ClassicEditorUI from './classiceditorui';
@@ -39,8 +39,8 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`}.
  *
- * @mixes module:core/editor/utils/datainterface~DataInterface
- * @mixes module:core/editor/utils/elementinterface~ElementInterface
+ * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
+ * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
  * @implements module:core/editor/editorwithui~EditorWithUI
  * @extends module:core/editor/editor~Editor
  */
@@ -156,5 +156,5 @@ export default class ClassicEditor extends Editor {
 	}
 }
 
-mix( ClassicEditor, DataInterface );
-mix( ClassicEditor, ElementInterface );
+mix( ClassicEditor, DataApiMixin );
+mix( ClassicEditor, ElementApiMixin );
