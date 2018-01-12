@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -61,6 +61,40 @@ export default class Differ {
 		 * @type {Number}
 		 */
 		this._changeCount = 0;
+
+		/**
+		 * For efficiency purposes, `Differ` stores the change set returned by the differ after {@link #getChanges} call.
+		 * Cache is reset each time a new operation is buffered. If the cache has not been reset, {@link #getChanges} will
+		 * return the cached value instead of calculating it again.
+		 *
+		 * This property stores those changes that did not take place in graveyard root.
+		 *
+		 * @private
+		 * @type {Array.<Object>|null}
+		 */
+		this._cachedChanges = null;
+
+		/**
+		 * For efficiency purposes, `Differ` stores the change set returned by the differ after {@link #getChanges} call.
+		 * Cache is reset each time a new operation is buffered. If the cache has not been reset, {@link #getChanges} will
+		 * return the cached value instead of calculating it again.
+		 *
+		 * This property stores all changes evaluated by `Differ`, also those that took place in graveyard.
+		 *
+		 * @private
+		 * @type {Array.<Object>|null}
+		 */
+		this._cachedChangesWithGraveyard = null;
+	}
+
+	/**
+	 * Informs whether there are any changes buffered in `Differ`.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
+	get isEmpty() {
+		return this._changesInElement.size == 0 && this._changedMarkers.size == 0;
 	}
 
 	/**
@@ -98,6 +132,9 @@ export default class Differ {
 
 				break;
 		}
+
+		// Clear cache after each buffered operation as it is no longer valid.
+		this._cachedChanges = null;
 	}
 
 	/**
@@ -168,9 +205,24 @@ export default class Differ {
 	 * the position on which the change happened. If a position {@link module:engine/model/position~Position#isBefore is before}
 	 * another one, it will be on an earlier index in the diff set.
 	 *
+	 * Because calculating diff is a costly operation, the result is cached. If no new operation was buffered since the
+	 * previous {@link #getChanges} call, the next call with return the cached value.
+	 *
+	 * @param {Object} options Additional options.
+	 * @param {Boolean} [options.includeChangesInGraveyard=false] If set to `true`, also changes that happened
+	 * in graveyard root will be returned. By default, changes in graveyard root are not returned.
 	 * @returns {Array.<Object>} Diff between old and new model tree state.
 	 */
-	getChanges() {
+	getChanges( options = { includeChangesInGraveyard: false } ) {
+		// If there are cached changes, just return them instead of calculating changes again.
+		if ( this._cachedChanges ) {
+			if ( options.includeChangesInGraveyard ) {
+				return this._cachedChangesWithGraveyard.slice();
+			} else {
+				return this._cachedChanges.slice();
+			}
+		}
+
 		// Will contain returned results.
 		const diffSet = [];
 
@@ -320,7 +372,15 @@ export default class Differ {
 
 		this._changeCount = 0;
 
-		return diffSet;
+		// Cache changes.
+		this._cachedChangesWithGraveyard = diffSet.slice();
+		this._cachedChanges = diffSet.slice().filter( _changesInGraveyardFilter );
+
+		if ( options.includeChangesInGraveyard ) {
+			return this._cachedChangesWithGraveyard;
+		} else {
+			return this._cachedChanges;
+		}
 	}
 
 	/**
@@ -330,6 +390,7 @@ export default class Differ {
 		this._changesInElement.clear();
 		this._elementSnapshots.clear();
 		this._changedMarkers.clear();
+		this._cachedChanges = null;
 	}
 
 	/**
@@ -864,4 +925,12 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 	}
 
 	return actions;
+}
+
+// Filter callback for Array.filter that filters out change entries that are in graveyard.
+function _changesInGraveyardFilter( entry ) {
+	const posInGy = entry.position && entry.position.root.rootName == '$graveyard';
+	const rangeInGy = entry.range && entry.range.root.rootName == '$graveyard';
+
+	return !posInGy && !rangeInGy;
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,7 +8,6 @@
  */
 
 import RootEditableElement from '../view/rooteditableelement';
-import ModelDiffer from '../model/differ';
 import View from '../view/view';
 import Mapper from '../conversion/mapper';
 import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
@@ -84,47 +83,15 @@ export default class EditingController {
 			viewSelection: this.view.document.selection
 		} );
 
-		// Model differ object. It's role is to buffer changes done on model and then calculates a diff of those changes.
-		// The diff is then passed to model conversion dispatcher which generates proper events and kicks-off conversion.
-		const modelDiffer = new ModelDiffer();
-
-		// Before an operation is applied on model, buffer the change in differ.
-		this.listenTo( this.model, 'applyOperation', ( evt, args ) => {
-			const operation = args[ 0 ];
-
-			if ( operation.isDocumentOperation ) {
-				modelDiffer.bufferOperation( operation );
-			}
-		}, { priority: 'high' } );
-
-		// Buffer marker changes.
-		// This is not covered in buffering operations because markers may change outside of them (when they
-		// are modified using `model.document.markers` collection, not through `MarkerOperation`).
-		this.listenTo( this.model.markers, 'add', ( evt, marker ) => {
-			// Whenever a new marker is added, buffer that change.
-			modelDiffer.bufferMarkerChange( marker.name, null, marker.getRange() );
-
-			// Whenever marker changes, buffer that.
-			marker.on( 'change', ( evt, oldRange ) => {
-				modelDiffer.bufferMarkerChange( marker.name, oldRange, marker.getRange() );
-			} );
-		} );
-
-		this.listenTo( this.model.markers, 'remove', ( evt, marker ) => {
-			// Whenever marker is removed, buffer that change.
-			modelDiffer.bufferMarkerChange( marker.name, marker.getRange(), null );
-		} );
+		const doc = this.model.document;
 
 		// When all changes are done, get the model diff containing all the changes and convert them to view and then render to DOM.
-		this.listenTo( this.model, 'changesDone', () => {
+		this.listenTo( doc, 'change', () => {
 			// Convert changes stored in `modelDiffer`.
-			this.modelToView.convertChanges( modelDiffer );
-
-			// Reset model diff object. When next operation is applied, new diff will be created.
-			modelDiffer.reset();
+			this.modelToView.convertChanges( doc.differ );
 
 			// After the view is ready, convert selection from model to view.
-			this.modelToView.convertSelection( this.model.document.selection );
+			this.modelToView.convertSelection( doc.selection );
 
 			// When everything is converted to the view, render it to DOM.
 			this.view.render();

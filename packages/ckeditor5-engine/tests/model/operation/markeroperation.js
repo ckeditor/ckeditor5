@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -31,13 +31,6 @@ describe( 'MarkerOperation', () => {
 
 	it( 'should add marker to document marker collection', () => {
 		sinon.spy( model.markers, 'set' );
-		sinon.spy( doc, 'fire' );
-
-		doc.on( 'change', ( evt, type, changes ) => {
-			expect( type ).to.equal( 'marker' );
-			expect( changes.name ).to.equal( 'name' );
-			expect( changes.type ).to.equal( 'set' );
-		} );
 
 		model.applyOperation( wrapInDelta(
 			new MarkerOperation( 'name', null, range, model.markers, doc.version )
@@ -46,7 +39,6 @@ describe( 'MarkerOperation', () => {
 		expect( doc.version ).to.equal( 1 );
 		expect( model.markers.set.calledWith( 'name', matchRange( range ) ) );
 		expect( model.markers.get( 'name' ).getRange().isEqual( range ) ).to.be.true;
-		expect( doc.fire.called ).to.be.true;
 	} );
 
 	it( 'should update marker in document marker collection', () => {
@@ -57,7 +49,6 @@ describe( 'MarkerOperation', () => {
 		const range2 = Range.createFromParentsAndOffsets( root, 0, root, 3 );
 
 		sinon.spy( model.markers, 'set' );
-		sinon.spy( doc, 'fire' );
 
 		model.applyOperation( wrapInDelta(
 			new MarkerOperation( 'name', range, range2, model.markers, doc.version )
@@ -66,7 +57,6 @@ describe( 'MarkerOperation', () => {
 		expect( doc.version ).to.equal( 2 );
 		expect( model.markers.set.calledWith( 'name', matchRange( range2 ) ) );
 		expect( model.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
-		expect( doc.fire.called ).to.be.true;
 	} );
 
 	it( 'should remove marker from document marker collection', () => {
@@ -75,13 +65,6 @@ describe( 'MarkerOperation', () => {
 		) );
 
 		sinon.spy( model.markers, 'remove' );
-		sinon.spy( doc, 'fire' );
-
-		doc.on( 'change', ( evt, type, changes ) => {
-			expect( type ).to.equal( 'marker' );
-			expect( changes.name ).to.equal( 'name' );
-			expect( changes.type ).to.equal( 'remove' );
-		} );
 
 		model.applyOperation( wrapInDelta(
 			new MarkerOperation( 'name', range, null, model.markers, doc.version )
@@ -90,44 +73,27 @@ describe( 'MarkerOperation', () => {
 		expect( doc.version ).to.equal( 2 );
 		expect( model.markers.remove.calledWith( 'name' ) );
 		expect( model.markers.get( 'name' ) ).to.be.null;
-		expect( doc.fire.called ).to.be.true;
 	} );
 
-	it( 'should fire document change event but not document markers remove event if removing non-existing range', () => {
-		sinon.spy( doc, 'fire' );
+	it( 'should not fire document markers remove event if removing non-existing range', () => {
 		sinon.spy( model.markers, 'fire' );
-
-		doc.on( 'change', ( evt, type, changes ) => {
-			expect( type ).to.equal( 'marker' );
-			expect( changes.name ).to.equal( 'name' );
-			expect( changes.type ).to.equal( 'remove' );
-		} );
 
 		model.applyOperation( wrapInDelta(
 			new MarkerOperation( 'name', null, null, model.markers, doc.version )
 		) );
 
-		expect( doc.fire.calledWith( 'change', 'marker' ) ).to.be.true;
 		expect( model.markers.fire.notCalled ).to.be.true;
 	} );
 
-	it( 'should fire document change event but not document markers set event if newRange is same as current marker range', () => {
+	it( 'should not fire document markers set event if newRange is same as current marker range', () => {
 		model.markers.set( 'name', range );
 
-		sinon.spy( doc, 'fire' );
 		sinon.spy( model.markers, 'fire' );
-
-		doc.on( 'change', ( evt, type, changes ) => {
-			expect( type ).to.equal( 'marker' );
-			expect( changes.name ).to.equal( 'name' );
-			expect( changes.type ).to.equal( 'set' );
-		} );
 
 		model.applyOperation( wrapInDelta(
 			new MarkerOperation( 'name', range, range, model.markers, doc.version )
 		) );
 
-		expect( doc.fire.calledWith( 'change', 'marker' ) ).to.be.true;
 		expect( model.markers.fire.notCalled ).to.be.true;
 	} );
 

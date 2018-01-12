@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -189,12 +189,7 @@ export default class MoveOperation extends Operation {
 	 * @inheritDoc
 	 */
 	_execute() {
-		const range = _move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
-
-		return {
-			sourcePosition: this.sourcePosition,
-			range
-		};
+		_move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
 	}
 
 	/**

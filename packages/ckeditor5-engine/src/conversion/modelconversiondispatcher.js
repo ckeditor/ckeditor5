@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -135,11 +135,6 @@ export default class ModelConversionDispatcher {
 
 		// Convert changes that happened on model tree.
 		for ( const entry of differ.getChanges() ) {
-			// Skip all the changes that happens in graveyard. These are not converted.
-			if ( _isInGraveyard( entry ) ) {
-				continue;
-			}
-
 			if ( entry.type == 'insert' ) {
 				this.convertInsert( Range.createFromPositionAndShift( entry.position, entry.length ) );
 			} else if ( entry.type == 'remove' ) {
@@ -595,10 +590,4 @@ function shouldMarkerChangeBeConverted( modelPosition, marker, mapper ) {
 	} );
 
 	return !hasCustomHandling;
-}
-
-// Checks whether entry change describes changes that happen in graveyard.
-function _isInGraveyard( entry ) {
-	return ( entry.position && entry.position.root.rootName == '$graveyard' ) ||
-		( entry.range && entry.range.root.rootName == '$graveyard' );
 }

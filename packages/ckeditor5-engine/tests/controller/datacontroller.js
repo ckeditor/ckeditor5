@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -156,11 +156,11 @@ describe( 'DataController', () => {
 			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 1 );
 		} );
 
-		it( 'should fire #changesDone', () => {
+		it( 'should cause firing change event', () => {
 			const spy = sinon.spy();
 
 			schema.extend( '$text', { allowIn: '$root' } );
-			modelDocument.on( 'changesDone', spy );
+			model.document.on( 'change', spy );
 
 			data.set( 'foo' );
 

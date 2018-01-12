@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -117,8 +117,6 @@ export default class RenameOperation extends Operation {
 		const element = this.position.nodeAfter;
 
 		element.name = this.newName;
-
-		return { element, oldName: this.oldName };
 	}
 
 	/**

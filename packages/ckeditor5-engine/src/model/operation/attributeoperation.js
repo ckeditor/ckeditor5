@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -157,8 +157,6 @@ export default class AttributeOperation extends Operation {
 			// Execution.
 			_setAttribute( this.range, this.key, this.newValue );
 		}
-
-		return { range: this.range, key: this.key, oldValue: this.oldValue, newValue: this.newValue };
 	}
 
 	/**

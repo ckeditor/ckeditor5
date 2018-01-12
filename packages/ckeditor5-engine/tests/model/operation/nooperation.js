@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -18,10 +18,6 @@ describe( 'NoOperation', () => {
 
 	it( 'should not throw an error when applied', () => {
 		expect( () => model.applyOperation( wrapInDelta( noop ) ) ).to.not.throw( Error );
-	} );
-
-	it( 'should return empty object when executed', () => {
-		expect( noop._execute() ).to.deep.equal( {} );
 	} );
 
 	it( 'should create a NoOperation as a reverse', () => {

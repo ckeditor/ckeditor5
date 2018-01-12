@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -113,9 +113,7 @@ export default class InsertOperation extends Operation {
 		const originalNodes = this.nodes;
 		this.nodes = new NodeList( [ ...originalNodes ].map( node => node.clone( true ) ) );
 
-		const range = _insert( this.position, originalNodes );
-
-		return { range };
+		_insert( this.position, originalNodes );
 	}
 
 	/**

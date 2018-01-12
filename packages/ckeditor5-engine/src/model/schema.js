@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -871,12 +871,21 @@ export class SchemaContext {
 	 */
 	constructor( context ) {
 		if ( Array.isArray( context ) ) {
-			this._items = context.map( mapContextItem );
+			if ( context[ 0 ] && typeof context[ 0 ] != 'string' && context[ 0 ].is( 'documentFragment' ) ) {
+				context.shift();
+			}
 		}
-		// Item or position (PS. It's ok that Position#getAncestors() doesn't accept params).
 		else {
-			this._items = context.getAncestors( { includeSelf: true } ).map( mapContextItem );
+			// `context` is item or position.
+			// Position#getAncestors() doesn't accept any parameters but it works just fine here.
+			context = context.getAncestors( { includeSelf: true } );
+
+			if ( context[ 0 ].is( 'documentFragment' ) ) {
+				context.shift();
+			}
 		}
+
+		this._items = context.map( mapContextItem );
 	}
 
 	/**

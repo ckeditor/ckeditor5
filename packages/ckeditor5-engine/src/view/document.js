@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,8 +8,6 @@
  */
 
 import Selection from './selection';
-import Renderer from './renderer';
-import DomConverter from './domconverter';
 import { injectQuirksHandling } from './filler';
 import { injectUiElementHandling } from './uielement';
 import log from '@ckeditor/ckeditor5-utils/src/log';

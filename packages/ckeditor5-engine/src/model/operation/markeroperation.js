@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -112,8 +112,6 @@ export default class MarkerOperation extends Operation {
 		const type = this.newRange ? 'set' : 'remove';
 
 		this._markers[ type ]( this.name, this.newRange );
-
-		return { name: this.name, type };
 	}
 
 	/**
