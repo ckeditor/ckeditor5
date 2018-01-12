@@ -12,9 +12,10 @@ import FontFamilyEditing from './fontfamily/fontfamilyediting';
 import FontFamilyUI from './fontfamily/fontfamilyui';
 
 /**
- * The Font Family plugin.
+ * The Font family plugin.
  *
- * It requires {@link module:font/fontfamilyediting~FontFamilyEditing} and {@link module:font/fontfamilyui~FontFamilyUI} plugins.
+ * It requires {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} and
+ * {@link module:font/fontfamily/fontfamilyui~FontFamilyUI} plugins.
  *
  * @extends module:core/plugin~Plugin
  */
