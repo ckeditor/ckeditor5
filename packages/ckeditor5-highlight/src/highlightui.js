@@ -17,8 +17,8 @@ import highlightRemoveIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision
 
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import createSplitButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/createsplitbuttondropdown';
-import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownItemsOnArrows } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import ButtonGroupView from '@ckeditor/ckeditor5-ui/src/buttongroup/buttongroupview';
+import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownContentsOnArrows } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 
 /**
  * The default Highlight UI plugin.
@@ -192,21 +192,32 @@ export default class HighlightUI extends Plugin {
 				( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
 			);
 
+			model.set( 'buttons', buttons );
+
 			// TODO: Temporary group as UI not fully defined yet. Also duplicates button dropdown
 			// Group buttons for dropdown.
-			const buttonGroupView = dropdownView.buttonGroupView = new ButtonGroupView( { isVertical: false } );
-			buttons.map( buttonView => buttonGroupView.items.add( buttonView ) );
+			const toolbarView = dropdownView.toolbarView = new ToolbarView();
 
-			dropdownView.panelView.children.add( buttonGroupView );
+			toolbarView.bind( 'isVertical', 'className' ).to( model, 'isVertical', 'toolbarClassName' );
+
+			model.buttons.map( view => toolbarView.items.add( view ) );
+
+			dropdownView.extendTemplate( {
+				attributes: {
+					class: [ 'ck-buttondropdown' ]
+				}
+			} );
+
+			dropdownView.panelView.children.add( toolbarView );
 
 			closeDropdownOnBlur( dropdownView );
-			closeDropdownOnExecute( dropdownView, buttonGroupView.items );
-			focusDropdownItemsOnArrows( dropdownView, buttonGroupView );
+			closeDropdownOnExecute( dropdownView, toolbarView.items );
+			focusDropdownContentsOnArrows( dropdownView, toolbarView );
 
 			// Focus button group upon opening dropdown view
 			dropdownView.buttonView.on( 'select', () => {
 				if ( dropdownView.buttonView.buttonView.isEnabled && dropdownView.isOpen ) {
-					buttonGroupView.focus();
+					// buttonGroupView.focus();
 				}
 			}, { priority: 'low' } );
 		} );

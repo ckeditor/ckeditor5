@@ -37,35 +37,33 @@ export default class HighlightCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const doc = this.editor.document;
+		const model = this.editor.model;
+		const doc = model.document;
 
 		this.value = doc.selection.getAttribute( 'highlight' ) === this.className;
-		this.isEnabled = doc.schema.checkAttributeInSelection( doc.selection, 'highlight' );
+		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'highlight' );
 	}
 
 	/**
 	 * Executes the command.
 	 *
 	 * @protected
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps.
-	 * A new batch will be created if this option is not set.
 	 */
-	execute( options = {} ) {
-		const doc = this.editor.document;
-		const selection = doc.selection;
+	execute() {
+		const model = this.editor.model;
+		const document = model.document;
+		const selection = document.selection;
 
 		// Do not apply highlight on collapsed selection.
 		if ( selection.isCollapsed ) {
 			return;
 		}
 
-		doc.enqueueChanges( () => {
-			const ranges = doc.schema.getValidRanges( selection.getRanges(), 'highlight' );
-			const batch = options.batch || doc.batch();
+		model.change( writer => {
+			const ranges = model.schema.getValidRanges( selection.getRanges(), 'highlight' );
 
 			for ( const range of ranges ) {
-				batch.setAttribute( range, 'highlight', this.className );
+				writer.setAttribute( 'highlight', this.className, range );
 			}
 		} );
 	}
