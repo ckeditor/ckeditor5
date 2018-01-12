@@ -8,8 +8,6 @@
  */
 
 import Selection from './selection';
-import { injectQuirksHandling } from './filler';
-import { injectUiElementHandling } from './uielement';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -81,9 +79,6 @@ export default class Document {
 		 * @member {Boolean} module:engine/view/document~Document#isFocused
 		 */
 		this.set( 'isFocused', false );
-
-		injectQuirksHandling( this );
-		injectUiElementHandling( this );
 	}
 
 	/**
@@ -111,11 +106,4 @@ mix( Document, ObservableMixin );
  * * `text` - for text nodes changes.
  *
  * @typedef {String} module:engine/view/document~ChangeType
- */
-
-/**
- * Fired when {@link #render render} method is called. Actual rendering is executed as a listener to
- * this event with default priority. This way other listeners can be used to run code before or after rendering.
- *
- * @event render
  */

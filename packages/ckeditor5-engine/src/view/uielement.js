@@ -90,10 +90,10 @@ export default class UIElement extends Element {
  * The callback handles the situation when right arrow key is pressed and selection is collapsed before a UI element.
  * Without this handler, it would be impossible to "jump over" UI element using right arrow key.
  *
- * @param {module:engine/view/document~Document} document Document to which the quirks handling will be injected.
+ * @param {module:engine/view/view~View} view View controller to which the quirks handling will be injected.
  */
-export function injectUiElementHandling( document ) {
-	document.on( 'keydown', ( evt, data ) => jumpOverUiElement( evt, data, document.domConverter ) );
+export function injectUiElementHandling( view ) {
+	view.on( 'keydown', ( evt, data ) => jumpOverUiElement( evt, data, view.domConverter ) );
 }
 
 // Returns `null` because block filler is not needed for UIElements.

@@ -22,6 +22,8 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
+import { injectUiElementHandling } from './uielement';
+import { injectQuirksHandling } from './filler';
 
 export default class View {
 	constructor() {
@@ -49,7 +51,6 @@ export default class View {
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
 		this._renderer.bind( 'isFocused' ).to( this.document );
-		// this.decorate( 'render' );
 
 		/**
 		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
@@ -73,6 +74,9 @@ export default class View {
 		this.addObserver( FocusObserver );
 		this.addObserver( KeyObserver );
 		this.addObserver( FakeSelectionObserver );
+
+		injectQuirksHandling( this );
+		injectUiElementHandling( this );
 
 		this._ongoingChange = false;
 		this._renderingInProgress = false;
@@ -228,10 +232,11 @@ export default class View {
 			 */
 			log.warn(
 				'applying-view-changes-on-rendering: ' +
-				'Attempting to make changes in the view during rendering process. ' +
-				'Your changes will not be rendered in DOM.'
+				'Attempting to make changes in the view during rendering process.' +
+				'This may cause some unexpected behaviour and inconsistency between the DOM and the view.'
 			);
 		}
+
 		// If other changes are in progress wait with rendering until every ongoing change is over.
 		if ( this._ongoingChange ) {
 			callback( this._writer );
@@ -242,24 +247,18 @@ export default class View {
 			this._render();
 
 			this._ongoingChange = false;
+
+			// TODO: docs for the event.
+			this.fire( 'change' );
 		}
 	}
 
-	/**
-	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
-	 * before rendering and re-enabled after that.
-	 *
-	 * @private
-	 * @fires render
-	 */
-	_render() {
-		this._renderingInProgress = true;
-
-		this.document.disableObservers();
-		this._renderer.render();
-		this.document.enableObservers();
-
-		this._renderingInProgress = false;
+	render() {
+		// Render only if no ongoing changes in progress. If there are some, view document will be rendered after all
+		// changes are done. This way view document will not be rendered in the middle of some changes.
+		if ( !this._ongoingChange ) {
+			this._render();
+		}
 	}
 
 	destroy() {
@@ -269,6 +268,22 @@ export default class View {
 
 		this.document.destroy();
 		this.stopListening();
+	}
+
+	/**
+	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
+	 * before rendering and re-enabled after that.
+	 *
+	 * @private
+	 */
+	_render() {
+		this._renderingInProgress = true;
+
+		this.document.disableObservers();
+		this._renderer.render();
+		this.document.enableObservers();
+
+		this._renderingInProgress = false;
 	}
 }
 
