@@ -16,8 +16,8 @@ import InlineEditor from '../src/inlineeditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import DataInterface from '@ckeditor/ckeditor5-core/src/editor/utils/datainterface';
-import ElementInterface from '@ckeditor/ckeditor5-core/src/editor/utils/elementinterface';
+import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
+import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -53,11 +53,11 @@ describe( 'InlineEditor', () => {
 		} );
 
 		it( 'has a Data Interface', () => {
-			testUtils.isMixed( InlineEditor, DataInterface );
+			testUtils.isMixed( InlineEditor, DataApiMixin );
 		} );
 
 		it( 'has a Element Interface', () => {
-			testUtils.isMixed( InlineEditor, ElementInterface );
+			testUtils.isMixed( InlineEditor, ElementApiMixin );
 		} );
 
 		it( 'creates main root element', () => {
