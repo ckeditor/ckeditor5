@@ -581,7 +581,7 @@ describe( 'Document', () => {
 			doc.on( 'change', spy );
 
 			model.change( () => {
-				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 2, root, 2 ) ] );
+				doc.selection._setTo( Range.createFromParentsAndOffsets( root, 2, root, 2 ) );
 			} );
 
 			expect( spy.calledOnce ).to.be.true;

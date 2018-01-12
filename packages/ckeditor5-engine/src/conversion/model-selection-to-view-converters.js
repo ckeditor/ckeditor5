@@ -35,12 +35,14 @@ export function convertRangeSelection() {
 			return;
 		}
 
-		conversionApi.viewSelection.setTo( null );
+		const viewRanges = [];
 
 		for ( const range of selection.getRanges() ) {
 			const viewRange = conversionApi.mapper.toViewRange( range );
-			conversionApi.viewSelection.setTo( viewRange, selection.isBackward );
+			viewRanges.push( viewRange );
 		}
+
+		conversionApi.viewSelection.setTo( viewRanges, selection.isBackward );
 	};
 }
 

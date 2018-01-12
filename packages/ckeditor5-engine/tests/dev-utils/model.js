@@ -21,7 +21,7 @@ describe( 'model test utils', () => {
 		root = document.createRoot();
 		selection = document.selection;
 		sandbox = sinon.sandbox.create();
-		selection.removeAllRanges();
+		selection._setTo( null );
 
 		model.schema.register( 'a', {
 			allowWhere: '$text',
@@ -64,7 +64,7 @@ describe( 'model test utils', () => {
 		it( 'should use stringify method with selection', () => {
 			const stringifySpy = sandbox.spy( getData, '_stringify' );
 			root.appendChildren( new Element( 'b', null, new Text( 'btext' ) ) );
-			document.selection.setTo( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+			document.selection._setTo( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
 
 			expect( getData( model ) ).to.equal( '[<b>btext</b>]' );
 			sinon.assert.calledOnce( stringifySpy );
@@ -278,7 +278,7 @@ describe( 'model test utils', () => {
 
 			it( 'writes selection in an empty root', () => {
 				const root = document.createRoot( '$root', 'empty' );
-				selection.setTo( root );
+				selection._setTo( root );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'[]'
@@ -286,7 +286,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed in an element', () => {
-				selection.setTo( root );
+				selection._setTo( root );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'[]<a></a>foo<$text bold="true">bar</$text><b></b>'
@@ -294,7 +294,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed in a text', () => {
-				selection.setTo( root, 3 );
+				selection._setTo( root, 3 );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>fo[]o<$text bold="true">bar</$text><b></b>'
@@ -302,7 +302,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed at the text left boundary', () => {
-				selection.setTo( elA, 'after' );
+				selection._setTo( elA, 'after' );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>[]foo<$text bold="true">bar</$text><b></b>'
@@ -310,7 +310,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed at the text right boundary', () => {
-				selection.setTo( elB, 'before' );
+				selection._setTo( elB, 'before' );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">bar[]</$text><b></b>'
@@ -318,10 +318,10 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed at the end of the root', () => {
-				selection.setTo( root, 'end' );
+				selection._setTo( root, 'end' );
 
 				// Needed due to https://github.com/ckeditor/ckeditor5-engine/issues/320.
-				selection.clearAttributes();
+				selection._clearAttributes();
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">bar</$text><b></b>[]'
@@ -329,7 +329,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed selection in a text with attributes', () => {
-				selection.setTo( root, 5 );
+				selection._setTo( root, 5 );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">b[]ar</$text><b></b>'
@@ -337,7 +337,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes flat selection containing couple of nodes', () => {
-				selection.setTo(
+				selection._setTo(
 					Range.createFromParentsAndOffsets( root, 0, root, 4 )
 				);
 
@@ -347,7 +347,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes flat selection within text', () => {
-				selection.setTo(
+				selection._setTo(
 					Range.createFromParentsAndOffsets( root, 2, root, 3 )
 				);
 
@@ -357,7 +357,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes multi-level selection', () => {
-				selection.setTo(
+				selection._setTo(
 					Range.createFromParentsAndOffsets( elA, 0, elB, 0 )
 				);
 
@@ -367,7 +367,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection when is backward', () => {
-				selection.setTo(
+				selection._setTo(
 					Range.createFromParentsAndOffsets( elA, 0, elB, 0 ),
 					true
 				);
@@ -381,7 +381,7 @@ describe( 'model test utils', () => {
 				const root = document.createRoot( '$root', 'empty' );
 
 				root.appendChildren( new Text( 'நிலைக்கு' ) );
-				selection.setTo( Range.createFromParentsAndOffsets( root, 2, root, 6 ) );
+				selection._setTo( Range.createFromParentsAndOffsets( root, 2, root, 6 ) );
 
 				expect( stringify( root, selection ) ).to.equal( 'நி[லைக்]கு' );
 			} );

@@ -972,7 +972,7 @@ describe( 'DocumentSelection', () => {
 				// Dedupe batches by using a map (multiple change events will be fired).
 				const batchTypes = new Map();
 
-				selection._setTo( [ rangeInEmptyP ] );
+				selection._setTo( rangeInEmptyP );
 				selection._setAttribute( 'foo', 'bar' );
 				selection._setAttribute( 'abc', 'bar' );
 
@@ -994,7 +994,7 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'are removed when any content is moved into', () => {
-				selection._setTo( [ rangeInEmptyP ] );
+				selection._setTo( rangeInEmptyP );
 				selection._setAttribute( 'foo', 'bar' );
 
 				model.change( writer => {
@@ -1085,20 +1085,6 @@ describe( 'DocumentSelection', () => {
 				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
 			} );
 
-			it( 'are not removed on transparent batches', () => {
-				selection._setTo( [ rangeInEmptyP ] );
-				selection._setAttribute( 'foo', 'bar' );
-
-				model.enqueueChange( 'transparent', writer => {
-					sinon.spy( model, 'enqueueChange' );
-
-					writer.insertText( 'x', rangeInEmptyP.start );
-
-					expect( model.enqueueChange.called ).to.be.false;
-					expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
-				} );
-			} );
-
 			// Rename and some other deltas don't specify range in doc#change event.
 			// So let's see if there's no crash or something.
 			it( 'are not removed on rename', () => {
@@ -1122,11 +1108,11 @@ describe( 'DocumentSelection', () => {
 		root.appendChildren( '\uD83D\uDCA9' );
 
 		expect( () => {
-			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 0, root, 1 ) ] );
+			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 		expect( () => {
-			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 2 ) ] );
+			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 1, root, 2 ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 	} );
 
@@ -1135,27 +1121,27 @@ describe( 'DocumentSelection', () => {
 		root.appendChildren( 'foo̻̐ͩbar' );
 
 		expect( () => {
-			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 3, root, 9 ) ] );
+			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 3, root, 9 ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 		expect( () => {
-			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 4, root, 9 ) ] );
+			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 4, root, 9 ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 		expect( () => {
-			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 5, root, 9 ) ] );
+			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 5, root, 9 ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 		expect( () => {
-			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 3 ) ] );
+			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 1, root, 3 ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 		expect( () => {
-			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 4 ) ] );
+			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 1, root, 4 ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 		expect( () => {
-			doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 5 ) ] );
+			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 1, root, 5 ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 	} );
 } );
