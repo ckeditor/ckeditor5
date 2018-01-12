@@ -42,7 +42,7 @@ export default class Widget extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const viewDocument = this.editor.editing.view;
+		const viewDocument = this.editor.editing.view.document;
 
 		/**
 		 * Holds previously selected widgets.
