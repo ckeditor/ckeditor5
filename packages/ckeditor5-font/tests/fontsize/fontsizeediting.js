@@ -8,7 +8,7 @@ import FontSizeEditing from './../../src/fontsize/fontsizeediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, setData as setModelData } from '../../../ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'FontSizeEditing', () => {
 	let editor, doc;
