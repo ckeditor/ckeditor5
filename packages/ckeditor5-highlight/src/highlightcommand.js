@@ -16,13 +16,12 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  * @extends module:core/command~Command
  */
 export default class HighlightCommand extends Command {
-	constructor( editor, className ) {
-		super( editor );
-
-		/**
-		 * Name of marker class that is used by associated highlighter.
-		 */
-		this.className = className;
+	/**
+	 * @inheritDoc
+	 */
+	refresh() {
+		const model = this.editor.model;
+		const doc = model.document;
 
 		/**
 		 * A flag indicating whether the command is active, which means that the selection has highlight attribute set.
@@ -31,16 +30,7 @@ export default class HighlightCommand extends Command {
 		 * @readonly
 		 * @member {undefined|String} module:highlight/highlightcommand~HighlightCommand#value
 		 */
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	refresh() {
-		const model = this.editor.model;
-		const doc = model.document;
-
-		this.value = doc.selection.getAttribute( 'highlight' ) === this.className;
+		this.value = doc.selection.getAttribute( 'highlight' );
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'highlight' );
 	}
 
@@ -48,8 +38,12 @@ export default class HighlightCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @protected
+	 * @param {Object} [options] Options for the executed command.
+	 * @param {String} [options.value] a value to apply.
+	 *
+	 * @fires execute
 	 */
-	execute() {
+	execute( options = {} ) {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
@@ -59,11 +53,17 @@ export default class HighlightCommand extends Command {
 			return;
 		}
 
+		const value = options.value;
+
 		model.change( writer => {
 			const ranges = model.schema.getValidRanges( selection.getRanges(), 'highlight' );
 
 			for ( const range of ranges ) {
-				writer.setAttribute( 'highlight', this.className, range );
+				if ( value ) {
+					writer.setAttribute( 'highlight', value, range );
+				} else {
+					writer.removeAttribute( 'highlight', range );
+				}
 			}
 		} );
 	}

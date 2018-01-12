@@ -9,7 +9,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe.skip( 'HighlightCommand', () => {
+describe( 'HighlightCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
@@ -37,7 +37,7 @@ describe.skip( 'HighlightCommand', () => {
 
 	describe( 'value', () => {
 		it( 'is set to highlight attribute value when selection is in text with highlight attribute', () => {
-			setData( model, '<paragraph><$text highlight="marker">fo[]o</$text></paragraph>' );
+			setData( model, '<paragraph><$text highlight="marker">fo[o]</$text></paragraph>' );
 
 			expect( command ).to.have.property( 'value', 'marker' );
 		} );
@@ -63,7 +63,7 @@ describe.skip( 'HighlightCommand', () => {
 
 			expect( command.value ).to.be.undefined;
 
-			command.execute( { class: 'marker' } );
+			command.execute( { value: 'marker' } );
 
 			expect( command.value ).to.equal( 'marker' );
 
@@ -78,7 +78,7 @@ describe.skip( 'HighlightCommand', () => {
 				'<paragraph>barbar]bar</paragraph>'
 			);
 
-			command.execute( { class: 'marker' } );
+			command.execute( { value: 'marker' } );
 
 			expect( command.value ).to.equal( 'marker' );
 
@@ -94,7 +94,7 @@ describe.skip( 'HighlightCommand', () => {
 
 			expect( command.value ).to.equal( 'marker' );
 
-			command.execute( { class: 'foo' } );
+			command.execute( { value: 'foo' } );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>abc[<$text highlight="foo">foo</$text>]<$text highlight="marker">bar</$text>xyz</paragraph>'

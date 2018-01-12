@@ -15,7 +15,6 @@ import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/build
 import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
 
 import HighlightCommand from './highlightcommand';
-import RemoveHighlightCommand from './removehighlightcommand';
 
 /**
  * The highlight editing feature. It introduces `highlight` command which allow to highlight selected text with defined 'marker' or 'pen'.
@@ -71,9 +70,10 @@ export default class HighlightEditing extends Plugin {
 
 		editor.config
 			.get( 'highlight' )
+			// TODO: change as in Font
 			.map( highlighter => editor.commands.add( highlighter.name, new HighlightCommand( editor, highlighter.class ) ) );
 
-		editor.commands.add( 'removeHighlight', new RemoveHighlightCommand( editor ) );
+		editor.commands.add( 'removeHighlight', new HighlightCommand( editor ) );
 	}
 }
 
