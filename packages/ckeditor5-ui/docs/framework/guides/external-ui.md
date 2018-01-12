@@ -24,8 +24,8 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 
 // Interfaces to extend basic Editor API.
-import DataInterface from '@ckeditor/ckeditor5-core/src/editor/utils/datainterface';
-import ElementInterface from '@ckeditor/ckeditor5-core/src/editor/utils/elementinterface';
+import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
+import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 
 // Helper function for adding interfaces to the Editor class.
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -134,8 +134,8 @@ export default class BootstrapEditor extends Editor {
 }
 
 // Mixing interfaces, which extends basic editor API.
-mix( BootstrapEditor, DataInterface );
-mix( BootstrapEditor, ElementInterface );
+mix( BootstrapEditor, DataApiMixin );
+mix( BootstrapEditor, ElementApiMixin );
 ```
 
 ## Creating the Bootstrap UI
