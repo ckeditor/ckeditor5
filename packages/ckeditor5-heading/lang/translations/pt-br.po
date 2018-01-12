@@ -1,4 +1,4 @@
-# Copyright (c) Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
 "Language: pt_BR\n"
