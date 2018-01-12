@@ -31,7 +31,7 @@ import isWindow from './iswindow';
  *			console.log( evt, domEvt );
  *		} );
  *
- * @mixin module:utils/dom/emittermixin~EmitterMixin
+ * @mixin EmitterMixin
  * @mixes module:utils/emittermixin~EmitterMixin
  * @implements module:utils/dom/emittermixin~Emitter
  */
@@ -40,7 +40,6 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.
 	 * It is backwards compatible with {@link module:utils/emittermixin~EmitterMixin#listenTo}.
 	 *
-	 * @method module:utils/dom/emittermixin~EmitterMixin#listenTo
 	 * @param {module:utils/emittermixin~Emitter|Node} emitter The object that fires the event.
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
@@ -75,7 +74,6 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * * To stop listening to all events fired by a specific object.
 	 * * To stop listening to all events fired by all object.
 	 *
-	 * @method module:utils/dom/emittermixin~EmitterMixin#stopListening
 	 * @param {module:utils/emittermixin~Emitter|Node} [emitter] The object to stop listening to. If omitted, stops it for all objects.
 	 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
 	 * for all events from `emitter`.
@@ -106,9 +104,9 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	/**
 	 * Retrieves ProxyEmitter instance for given DOM Node residing in this Host.
 	 *
+	 * @pivate
 	 * @param {Node} node DOM Node of the ProxyEmitter.
-	 * @method module:utils/dom/emittermixin~EmitterMixin#_getProxyEmitter
-	 * @return {module:utils/dom/emittermixin~ProxyEmitter} ProxyEmitter instance or null.
+	 * @returns {module:utils/dom/emittermixin~ProxyEmitter} ProxyEmitter instance or null.
 	 */
 	_getProxyEmitter( node ) {
 		return _getEmitterListenedTo( this, getNodeUID( node ) );
