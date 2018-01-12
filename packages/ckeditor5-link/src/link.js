@@ -52,7 +52,7 @@ export default class Link extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		editor.editing.view.addObserver( ClickObserver );
+		editor.editing.view.document.addObserver( ClickObserver );
 
 		/**
 		 * The form view displayed inside the balloon.
