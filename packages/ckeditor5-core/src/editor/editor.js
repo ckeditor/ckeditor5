@@ -20,8 +20,11 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Class representing the base of the editor. It is the API all plugins can expect to get when using editor property.
- * Editors implementation (like {@link module:editor-classic/classiceditor~ClassicEditor} or
+ * Class representing the base of the editor. It is the API all plugins can expect to get when using `editor` property.
+ * It should be enough to implement editing part of feature (schema definition, conversion, commands, keystrokes, etc.).
+ * However it does not define editor UI, which is defined in {@link module:core/editor/editorwithui~EditorWithUI}.
+ *
+ * All editors implementation (like {@link module:editor-classic/classiceditor~ClassicEditor} or
  * {@link module:editor-inline/inlineeditor~InlineEditor}) should extend this class. They can add their
  * own methods and properties.
  *

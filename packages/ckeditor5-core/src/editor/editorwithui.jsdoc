@@ -8,7 +8,8 @@
  */
 
 /**
- * Interface that is required for plugins to work (their UI-related part will try to interact with editor UI).
+ * Interface defining UI part of the editor. Most editor (like {@link module:editor-classic/classiceditor~ClassicEditor} or
+ * {@link module:editor-inline/inlineeditor~InlineEditor}) implements this interface, however it is not required to do so. Editors with external UI (i.e. Bootstrap based) or headless editor may not implement this interface. Keep it in mind when developing features.
  *
  * @interface EditorWithUI
  */
@@ -22,6 +23,9 @@
 
 /**
  * Fired when the editor UI is ready.
+ *
+ * Fired after {@link module:core/editor/editor~Editor#event:pluginsReady}, before
+ * {@link module:core/editor/editor~Editor#event:dataReady}.
  *
  * @event uiReady
  */

@@ -11,7 +11,7 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
  */
 
 /**
- * Mixin provides method for setting and getting data from/to element on which editor has been initialized.
+ * Implementation of the {@link module:core/editor/utils/elementapimixin~ElementApi}.
  *
  * @mixin ElementApiMixin
  * @implements module:core/editor/utils/elementapimixin~ElementApi
@@ -35,7 +35,7 @@ const ElementApiMixin = {
 export default ElementApiMixin;
 
 /**
- * Interface representing classes which mix in {@link module:core/editor/utils/elementapimixin~ElementApiMixin}.
+ * Mixin provides method for setting and getting data from/to element on which editor has been initialized.
  *
  * @interface ElementApi
  */
