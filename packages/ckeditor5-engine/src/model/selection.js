@@ -54,7 +54,7 @@ export default class Selection {
 		 * List of attributes set on current selection.
 		 *
 		 * @protected
-		 * @type {Map}
+		 * @type {Map.<String,*>}
 		 */
 		this._attrs = new Map();
 
@@ -124,6 +124,7 @@ export default class Selection {
 	/**
 	 * Returns number of ranges in selection.
 	 *
+	 * @readonly
 	 * @type {Number}
 	 */
 	get rangeCount() {
@@ -134,6 +135,7 @@ export default class Selection {
 	 * Specifies whether the {@link #focus}
 	 * precedes {@link #anchor}.
 	 *
+	 * @readonly
 	 * @type {Boolean}
 	 */
 	get isBackward() {
@@ -264,10 +266,38 @@ export default class Selection {
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
 	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range} or an iterable of {@link module:engine/model/range~Range ranges}.
+	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
 	 *
-	 * @protected
-	 * @param {module:engine/model/selection~Selection|module:engine/model/position~Position|
+	 *		// Sets to a range.
+	 *		const range = new Range( start, end );
+	 *		selection.setTo( range, isBackwardSelection );
+	 *
+	 *		// Sets to an iterable of ranges.
+	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		selection.setTo( range, isBackwardSelection );
+	 *
+	 *		// Sets to other selection.
+	 *		const otherSelection = new Selection();
+	 *		selection.setTo( otherSelection );
+	 *
+	 * 		// Sets to a document selection.
+	 *		const documentSelection = new DocumentSelection( doc );
+	 *		selection.setTo( documentSelection );
+	 *
+	 * 		// Sets to a position.
+	 *		const position = new Position();
+	 *		selection.setTo( position );
+	 *
+	 * 		// Sets to an element.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		selection.setTo( paragraph, offset );
+	 *
+	 * 		// Removes all ranges.
+	 *		selection.setTo( null );
+	 *
+	 * @param {module:engine/model/selection~Selection|module:engine/model/selection~DocumentSelection|
+	 * module:engine/model/position~Position|module:engine/model/element~Element|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
 	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
 	 */
