@@ -23,6 +23,10 @@ a.ck-button {
 	padding: var(--ck-spacing-extra-tiny);
 	text-align: center;
 
+	/* Normalize the height of the line. Removing this will break consistent height
+	among text and text-less buttons (with icons). */
+	line-height: 1;
+
 	/* Enable font size inheritance, which allows fluid UI scaling. */
 	font-size: inherit;
 
@@ -68,17 +72,15 @@ a.ck-button {
 		@mixin ck-button-icon {
 			/* This margin is neccessary for icons in label-less buttons to stretch
 			the button properly. When there's no text in the button, browsers render
-			them too narrow. */
-			margin: .2em;
+			them too small. It's a really tricky topic, when browsers render svg as an inline
+			content and line size (character width) measurement and alignment kicks in. */
+			margin: 0.16em;
 		}
 	}
 
 	& .ck-button__label {
 		/* Enable font size inheritance, which allows fluid UI scaling. */
 		font-size: inherit;
-
-		height: var(--ck-line-height-base)em;
-		line-height: inherit;
 		font-weight: inherit;
 		color: inherit;
 		cursor: inherit;
