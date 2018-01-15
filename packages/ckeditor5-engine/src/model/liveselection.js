@@ -146,7 +146,7 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Unbinds all events previously bound by document selection.
+	 * Unbinds all events previously bound by live selection.
 	 */
 	destroy() {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
@@ -179,15 +179,6 @@ export default class LiveSelection extends Selection {
 	 */
 	getLastRange() {
 		return super.getLastRange() || this._document._getDefaultRange();
-	}
-
-	/**
-	 * @inheritDoc
-	 * TODO:
-	 */
-	_setRanges( newRanges, isLastBackward = false ) {
-		super._setRanges( newRanges, isLastBackward );
-		this.refreshAttributes();
 	}
 
 	/**
