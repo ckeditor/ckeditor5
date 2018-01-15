@@ -27,7 +27,7 @@ The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckedito
 
 ### Editor classes
 
-{@link module:core/editor/editor~Editor} class representing the base of the editor. It is the API all plugins can expect to get when using `editor` property.
+{@link module:core/editor/editor~Editor} class representing the base of the editor.
 
 The editor is a root object, gluing all other components. It holds a couple of properties that you need to know:
 
@@ -49,7 +49,7 @@ You can also extend the editor interface using API interfaces:
 * {@link module:core/editor/utils/elementapimixin~ElementApi} &ndash; A way to retrieve and set data from/to element on which editor has been initialized.
 * {@link module:core/editor/utils/dataapimixin~DataApi} &ndash; A way to retrieve data from the editor and set data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (it can be e.g. JSON if you implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See, for example, how to {@link features/markdown produce Markdown output}.
 
-The editor classes are a base to implement your own editors. CKEditor 5 Framework comes with a few editor types (for example, {@link module:editor-classic/classiceditor~ClassicEditor classic}, {@link module:editor-inline/inlineeditor~InlineEditor inline} and {@link module:editor-balloon/ballooneditor~BalloonEditor balloon}) but you can freely implement editors which work and look completely different. The only requirement is that you implement the {@link module:core/editor/editor~Editor} interface.
+The editor class is a base to implement your own editors. CKEditor 5 Framework comes with a few editor types (for example, {@link module:editor-classic/classiceditor~ClassicEditor classic}, {@link module:editor-inline/inlineeditor~InlineEditor inline} and {@link module:editor-balloon/ballooneditor~BalloonEditor balloon}) but you can freely implement editors which work and look completely different. The only requirement is that you implement the {@link module:core/editor/editor~Editor} interface.
 
 ### Plugins
 
