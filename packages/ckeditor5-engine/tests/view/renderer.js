@@ -5,7 +5,7 @@
 
 /* globals document, window, NodeFilter */
 
-import ViewDocument from '../../src/view/document';
+import View from '../../src/view/view';
 import ViewElement from '../../src/view/element';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewAttributeElement from '../../src/view/attributeelement';
@@ -21,15 +21,16 @@ import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '.
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import createViewRoot from './_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import { unwrap, insert, remove } from '../../src/view/writer';
+import Writer from '../../src/view/writer';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 testUtils.createSinonSandbox();
 
 describe( 'Renderer', () => {
-	let selection, domConverter, renderer;
+	let selection, domConverter, renderer, writer;
 
 	beforeEach( () => {
+		writer = new Writer();
 		selection = new Selection();
 		domConverter = new DomConverter();
 		renderer = new Renderer( domConverter, selection );
@@ -1875,15 +1876,16 @@ describe( 'Renderer', () => {
 	} );
 
 	describe( '#922', () => {
-		let viewDoc, viewRoot, domRoot, converter;
+		let view, viewDoc, viewRoot, domRoot, converter;
 
 		beforeEach( () => {
-			viewDoc = new ViewDocument();
+			view = new View();
+			viewDoc = view.document;
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );
 			viewRoot = createViewRoot( viewDoc );
-			viewDoc.attachDomRoot( domRoot );
-			converter = viewDoc.domConverter;
+			view.attachDomRoot( domRoot );
+			converter = view.domConverter;
 		} );
 
 		it( 'should properly render unwrapped attributes #1', () => {
@@ -1897,14 +1899,14 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			viewDoc.render();
+			view.render();
 
 			// Unwrap italic attribute element.
-			unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+			writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
 			expect( getViewData( viewDoc ) ).to.equal( '<p>[<strong>foo</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
-			viewDoc.render();
+			view.render();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>foo</strong></p>' );
@@ -1920,15 +1922,15 @@ describe( 'Renderer', () => {
 				'</container:p>' );
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			viewDoc.render();
+			view.render();
 
 			// Unwrap italic attribute element and change text inside.
-			unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+			writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
 			viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ).data = 'bar';
 			expect( getViewData( viewDoc ) ).to.equal( '<p>[<strong>bar</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
-			viewDoc.render();
+			view.render();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>bar</strong></p>' );
@@ -1941,16 +1943,16 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			viewDoc.render();
+			view.render();
 
 			// Change text and insert new element into paragraph.
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
 			textNode.data = 'foobar';
-			insert( ViewPosition.createAfter( textNode ), new ViewAttributeElement( 'img' ) );
+			writer.insert( ViewPosition.createAfter( textNode ), new ViewAttributeElement( 'img' ) );
 			expect( getViewData( viewDoc ) ).to.equal( '<p>foobar<img></img></p>' );
 
 			// Re-render changes in view to DOM.
-			viewDoc.render();
+			view.render();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>foobar<img></img></p>' );
@@ -1963,16 +1965,16 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			viewDoc.render();
+			view.render();
 
 			// Change text and insert new element into paragraph.
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
 			textNode.data = 'foobar';
-			insert( ViewPosition.createBefore( textNode ), new ViewAttributeElement( 'img' ) );
+			writer.insert( ViewPosition.createBefore( textNode ), new ViewAttributeElement( 'img' ) );
 			expect( getViewData( viewDoc ) ).to.equal( '<p><img></img>foobar</p>' );
 
 			// Re-render changes in view to DOM.
-			viewDoc.render();
+			view.render();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><img></img>foobar</p>' );
@@ -1989,18 +1991,18 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			viewDoc.render();
+			view.render();
 
 			// Remove first element and reinsert it at the end.
 			const container = viewRoot.getChild( 0 );
 			const firstElement = container.getChild( 0 );
 
-			remove( ViewRange.createOn( firstElement ) );
-			insert( new ViewPosition( container, 2 ), firstElement );
+			writer.remove( ViewRange.createOn( firstElement ) );
+			writer.insert( new ViewPosition( container, 2 ), firstElement );
 			expect( getViewData( viewDoc ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
 
 			// Re-render changes in view to DOM.
-			viewDoc.render();
+			view.render();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><i></i><span></span><b></b></p>' );

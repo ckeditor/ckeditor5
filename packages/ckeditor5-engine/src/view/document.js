@@ -67,6 +67,18 @@ export default class Document {
 		 * @member {Boolean} #isReadOnly
 		 */
 		this.set( 'isReadOnly', false );
+
+		/**
+		 * True if document is focused.
+		 *
+		 * This property is updated by the {@link module:engine/view/observer/focusobserver~FocusObserver}.
+		 * If the {@link module:engine/view/observer/focusobserver~FocusObserver} is disabled this property will not change.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} module:engine/view/document~Document#isFocused
+		 */
+		this.set( 'isFocused', false );
 	}
 
 	/**

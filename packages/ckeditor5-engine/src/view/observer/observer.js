@@ -21,16 +21,18 @@ export default class Observer {
 	/**
 	 * Creates an instance of the observer.
 	 *
-	 * @param {module:engine/view/document~Document} document
+	 * @param {module:engine/view/view~View} view
 	 */
-	constructor( document ) {
+	constructor( view ) {
+		this.view = view;
+
 		/**
 		 * Reference to the {@link module:engine/view/document~Document} object.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/document~Document}
 		 */
-		this.document = document;
+		this.document = view.document;
 
 		/**
 		 * State of the observer. If it is disabled events will not be fired.

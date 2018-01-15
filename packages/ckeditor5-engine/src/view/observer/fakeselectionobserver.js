@@ -25,10 +25,10 @@ export default class FakeSelectionObserver extends Observer {
 	/**
 	 * Creates new FakeSelectionObserver instance.
 	 *
-	 * @param {module:engine/view/document~Document} document
+	 * @param {module:engine/view/view~View} view
 	 */
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		/**
 		 * Fires debounced event `selectionChangeDone`. It uses `lodash#debounce` method to delay function call.

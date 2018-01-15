@@ -5,21 +5,22 @@
 
 /* globals document */
 import FocusObserver from '../../../src/view/observer/focusobserver';
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 import ViewRange from '../../../src/view/range';
 import createViewRoot from '../_utils/createroot';
 import { setData } from '../../../src/dev-utils/view';
 
 describe( 'FocusObserver', () => {
-	let viewDocument, observer;
+	let view, viewDocument, observer;
 
 	beforeEach( () => {
-		viewDocument = new ViewDocument();
-		observer = viewDocument.getObserver( FocusObserver );
+		view = new View();
+		viewDocument = view.document;
+		observer = view.getObserver( FocusObserver );
 	} );
 
 	afterEach( () => {
-		viewDocument.destroy();
+		view.destroy();
 	} );
 
 	it( 'should define domEventType', () => {
@@ -58,7 +59,7 @@ describe( 'FocusObserver', () => {
 		} );
 
 		it( 'should render document after blurring', () => {
-			const renderSpy = sinon.spy( viewDocument, 'render' );
+			const renderSpy = sinon.spy( view, 'render' );
 
 			observer.onDomEvent( { type: 'blur', target: document.body } );
 
@@ -74,7 +75,7 @@ describe( 'FocusObserver', () => {
 			domHeader = document.createElement( 'h1' );
 
 			viewMain = createViewRoot( viewDocument );
-			viewDocument.attachDomRoot( domMain );
+			view.attachDomRoot( domMain );
 		} );
 
 		it( 'should set isFocused to true on focus', () => {
@@ -118,7 +119,7 @@ describe( 'FocusObserver', () => {
 		} );
 
 		it( 'should delay rendering by 50ms', () => {
-			const renderSpy = sinon.spy( viewDocument, 'render' );
+			const renderSpy = sinon.spy( view, 'render' );
 			const clock = sinon.useFakeTimers();
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
@@ -130,7 +131,7 @@ describe( 'FocusObserver', () => {
 		} );
 
 		it( 'should not call render if destroyed', () => {
-			const renderSpy = sinon.spy( viewDocument, 'render' );
+			const renderSpy = sinon.spy( view, 'render' );
 			const clock = sinon.useFakeTimers();
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
@@ -150,11 +151,12 @@ describe( 'FocusObserver', () => {
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );
 
-			viewDocument = new ViewDocument();
+			view = new View();
+			viewDocument = view.document;
 			createViewRoot( viewDocument );
-			viewDocument.attachDomRoot( domRoot );
+			view.attachDomRoot( domRoot );
 
-			observer = viewDocument.getObserver( FocusObserver );
+			observer = view.getObserver( FocusObserver );
 		} );
 
 		it( 'should always render document after selectionChange event', done => {
@@ -162,12 +164,12 @@ describe( 'FocusObserver', () => {
 			const renderSpy = sinon.spy();
 
 			setData( viewDocument, '<div contenteditable="true">foo bar</div>' );
-			viewDocument.render();
+			view.render();
 
 			viewDocument.on( 'selectionChange', selectionChangeSpy );
-			viewDocument.on( 'render', renderSpy, { priority: 'low' } );
+			view.renderer.on( 'render', renderSpy, { priority: 'low' } );
 
-			viewDocument.on( 'render', () => {
+			view.renderer.on( 'render', () => {
 				sinon.assert.callOrder( selectionChangeSpy, renderSpy );
 				done();
 			}, { priority: 'low' } );
@@ -183,13 +185,13 @@ describe( 'FocusObserver', () => {
 			const renderSpy = sinon.spy();
 
 			setData( viewDocument, '<div contenteditable="true">foo bar</div>' );
-			viewDocument.render();
+			view.render();
 			const domEditable = domRoot.childNodes[ 0 ];
 
 			viewDocument.on( 'selectionChange', selectionChangeSpy );
-			viewDocument.on( 'render', renderSpy, { priority: 'low' } );
+			view.renderer.on( 'render', renderSpy, { priority: 'low' } );
 
-			viewDocument.on( 'render', () => {
+			view.renderer.on( 'render', () => {
 				sinon.assert.notCalled( selectionChangeSpy );
 				sinon.assert.called( renderSpy );
 

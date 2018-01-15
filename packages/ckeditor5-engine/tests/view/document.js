@@ -6,10 +6,10 @@
 /* globals document */
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import Document from '../../../src/view/document';
+import Document from '../../src/view/document';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
-import createViewRoot from '../_utils/createroot';
+import createViewRoot from './_utils/createroot';
 
 testUtils.createSinonSandbox();
 

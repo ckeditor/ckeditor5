@@ -18,8 +18,8 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class KeyObserver extends DomEventObserver {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		this.domEventType = [ 'keydown', 'keyup' ];
 	}

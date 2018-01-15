@@ -109,6 +109,9 @@ export default class Renderer {
 		 * @type {null|HTMLElement}
 		 */
 		this._fakeSelectionContainer = null;
+
+		// TODO: document rend er event.
+		this.decorate( 'render' );
 	}
 
 	/**

@@ -31,8 +31,8 @@ import isEqualWith from '@ckeditor/ckeditor5-utils/src/lib/lodash/isEqualWith';
  * @extends module:engine/view/observer/observer~Observer
  */
 export default class MutationObserver extends Observer {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		/**
 		 * Native mutation observer config.
@@ -52,14 +52,14 @@ export default class MutationObserver extends Observer {
 		 *
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
-		this.domConverter = document.domConverter;
+		this.domConverter = view.domConverter;
 
 		/**
 		 * Reference to the {@link module:engine/view/document~Document#renderer}.
 		 *
 		 * @member {module:engine/view/renderer~Renderer}
 		 */
-		this.renderer = document.renderer;
+		this.renderer = view.renderer;
 
 		/**
 		 * Observed DOM elements.
@@ -249,7 +249,7 @@ export default class MutationObserver extends Observer {
 
 		// If nothing changes on `mutations` event, at this point we have "dirty DOM" (changed) and de-synched
 		// view (which has not been changed). In order to "reset DOM" we render the view again.
-		this.document.render();
+		this.view.render();
 
 		function sameNodes( child1, child2 ) {
 			// First level of comparison (array of children vs array of children) – use the Lodash's default behavior.

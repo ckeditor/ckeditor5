@@ -31,7 +31,10 @@ export default class View {
 		this._writer = new Writer();
 
 		// TODO: check docs
-		// TODO: move render event description to this file.
+		// TODO: move change event description to this file.
+		// TODO: check import path
+		// TODO: check where render() is used and eventually switch to change() where possible
+		// TODO: observers docs fixes
 
 		/**
 		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} use by
@@ -49,8 +52,8 @@ export default class View {
 		 * @readonly
 		 * @member {module:engine/view/renderer~Renderer} module:engine/view/view~View#renderer
 		 */
-		this._renderer = new Renderer( this.domConverter, this.document.selection );
-		this._renderer.bind( 'isFocused' ).to( this.document );
+		this.renderer = new Renderer( this.domConverter, this.document.selection );
+		this.renderer.bind( 'isFocused' ).to( this.document );
 
 		/**
 		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
@@ -67,18 +70,6 @@ export default class View {
 		 * @member {Map.<Function, module:engine/view/observer/observer~Observer>} module:engine/view/view~View#_observers
 		 */
 		this._observers = new Map();
-
-		/**
-		 * True if view is focused.
-		 *
-		 * This property is updated by the {@link module:engine/view/observer/focusobserver~FocusObserver}.
-		 * If the {@link module:engine/view/observer/focusobserver~FocusObserver} is disabled this property will not change.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} module:engine/view/document~Document#isFocused
-		 */
-		this.set( 'isFocused', false );
 
 		// Add default observers.
 		this.addObserver( MutationObserver );
@@ -113,12 +104,12 @@ export default class View {
 
 		this.domRoots.set( name, domRoot );
 		this.domConverter.bindElements( domRoot, viewRoot );
-		this._renderer.markToSync( 'children', viewRoot );
-		this._renderer.domDocuments.add( domRoot.ownerDocument );
+		this.renderer.markToSync( 'children', viewRoot );
+		this.renderer.domDocuments.add( domRoot.ownerDocument );
 
-		viewRoot.on( 'change:children', ( evt, node ) => this._renderer.markToSync( 'children', node ) );
-		viewRoot.on( 'change:attributes', ( evt, node ) => this._renderer.markToSync( 'attributes', node ) );
-		viewRoot.on( 'change:text', ( evt, node ) => this._renderer.markToSync( 'text', node ) );
+		viewRoot.on( 'change:children', ( evt, node ) => this.renderer.markToSync( 'children', node ) );
+		viewRoot.on( 'change:attributes', ( evt, node ) => this.renderer.markToSync( 'attributes', node ) );
+		viewRoot.on( 'change:text', ( evt, node ) => this.renderer.markToSync( 'text', node ) );
 
 		for ( const observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
@@ -217,7 +208,7 @@ export default class View {
 	 */
 	focus() {
 		if ( !this.document.isFocused ) {
-			const editable = this.doocument.selection.editableElement;
+			const editable = this.document.selection.editableElement;
 
 			if ( editable ) {
 				this.domConverter.focus( editable );
@@ -278,7 +269,6 @@ export default class View {
 			observer.destroy();
 		}
 
-		this.document.destroy();
 		this.stopListening();
 	}
 
@@ -291,9 +281,9 @@ export default class View {
 	_render() {
 		this._renderingInProgress = true;
 
-		this.document.disableObservers();
-		this._renderer.render();
-		this.document.enableObservers();
+		this.disableObservers();
+		this.renderer.render();
+		this.enableObservers();
 
 		this._renderingInProgress = false;
 	}

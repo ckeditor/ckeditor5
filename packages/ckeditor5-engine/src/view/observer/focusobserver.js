@@ -22,11 +22,12 @@ import DomEventObserver from './domeventobserver';
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class FocusObserver extends DomEventObserver {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		this.domEventType = [ 'focus', 'blur' ];
 		this.useCapture = true;
+		const document = this.document;
 
 		document.on( 'focus', () => {
 			document.isFocused = true;
@@ -36,7 +37,7 @@ export default class FocusObserver extends DomEventObserver {
 			// overwrite new DOM selection with selection from the view.
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/795 for more details.
 			// Long timeout is needed to solve #676 and https://github.com/ckeditor/ckeditor5-engine/issues/1157 issues.
-			this._renderTimeoutId = setTimeout( () => document.render(), 50 );
+			this._renderTimeoutId = setTimeout( () => view.render(), 50 );
 		} );
 
 		document.on( 'blur', ( evt, data ) => {
@@ -46,7 +47,7 @@ export default class FocusObserver extends DomEventObserver {
 				document.isFocused = false;
 
 				// Re-render the document to update view elements.
-				document.render();
+				view.render();
 			}
 		} );
 

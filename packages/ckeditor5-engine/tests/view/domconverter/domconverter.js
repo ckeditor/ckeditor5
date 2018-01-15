@@ -53,7 +53,6 @@ describe( 'DomConverter', () => {
 		afterEach( () => {
 			converter.unbindDomElement( domEditable );
 			document.body.removeChild( domEditableParent );
-			viewDocument.destroy();
 
 			document.body.focus();
 		} );

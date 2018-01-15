@@ -16,18 +16,20 @@ import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
  */
 export default class DomEventData {
 	/**
-	 * @param {module:engine/view/document~Document} document The instance of the tree view Document.
+	 * @param {module:engine/view/view~view} view The instance of the tree view controller.
 	 * @param {Event} domEvent The DOM event.
 	 * @param {Object} [additionalData] Additional properties that the instance should contain.
 	 */
-	constructor( document, domEvent, additionalData ) {
+	constructor( view, domEvent, additionalData ) {
+		this.view = view;
+
 		/**
 		 * The instance of the document.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/document~Document} module:engine/view/observer/observer~Observer.DomEvent#view
 		 */
-		this.document = document;
+		this.document = view.document;
 
 		/**
 		 * The DOM event.
@@ -55,7 +57,7 @@ export default class DomEventData {
 	 * @type module:engine/view/element~Element
 	 */
 	get target() {
-		return this.document.domConverter.mapDomToView( this.domTarget );
+		return this.view.domConverter.mapDomToView( this.domTarget );
 	}
 
 	/**

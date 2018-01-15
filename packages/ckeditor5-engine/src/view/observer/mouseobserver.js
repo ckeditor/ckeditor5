@@ -19,8 +19,8 @@ import DomEventObserver from './domeventobserver';
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class MouseObserver extends DomEventObserver {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		this.domEventType = 'mousedown';
 	}

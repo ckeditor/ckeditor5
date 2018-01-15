@@ -6,31 +6,33 @@
 /* globals document */
 
 import DomEventData from '../../../src/view/observer/domeventdata';
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 
 describe( 'DomEventData', () => {
-	let viewDocument, viewBody, domRoot;
+	let view, viewDocument, viewBody, domRoot;
 
 	beforeEach( () => {
-		viewDocument = new ViewDocument();
+		view = new View();
+		viewDocument = view.document;
 
 		domRoot = document.createElement( 'div' );
 		domRoot.innerHTML = '<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>';
 		document.body.appendChild( domRoot );
 
-		viewBody = viewDocument.domConverter.domToView( document.body, { bind: true } );
+		viewBody = view.domConverter.domToView( document.body, { bind: true } );
 	} );
 
 	afterEach( () => {
 		domRoot.parentElement.removeChild( domRoot );
-		viewDocument.destroy();
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'sets properties', () => {
 			const domEvt = { target: document.body };
-			const data = new DomEventData( viewDocument, domEvt, { foo: 1, bar: true } );
+			const data = new DomEventData( view, domEvt, { foo: 1, bar: true } );
 
+			expect( data ).to.have.property( 'view', view );
 			expect( data ).to.have.property( 'document', viewDocument );
 			expect( data ).to.have.property( 'domEvent', domEvt );
 			expect( data ).to.have.property( 'domTarget', document.body );
@@ -43,7 +45,7 @@ describe( 'DomEventData', () => {
 	describe( 'target', () => {
 		it( 'returns bound element', () => {
 			const domEvt = { target: document.body };
-			const data = new DomEventData( viewDocument, domEvt );
+			const data = new DomEventData( view, domEvt );
 
 			expect( data ).to.have.property( 'target', viewBody );
 		} );

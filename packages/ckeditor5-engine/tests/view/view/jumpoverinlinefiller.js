@@ -6,7 +6,7 @@
 /* globals document */
 
 import ViewRange from '../../../src/view/range';
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '../../../src/view/filler';
 
 import createViewRoot from '../_utils/createroot';
@@ -15,8 +15,8 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 import { parse, setData } from '../../../src/dev-utils/view';
 
-describe( 'Document', () => {
-	let viewDocument, domRoot;
+describe( 'View', () => {
+	let view, viewDocument, domRoot;
 
 	beforeEach( () => {
 		domRoot = createElement( document, 'div', {
@@ -24,17 +24,18 @@ describe( 'Document', () => {
 		} );
 		document.body.appendChild( domRoot );
 
-		viewDocument = new ViewDocument();
+		view = new View();
+		viewDocument = view.document;
 		createViewRoot( viewDocument );
-		viewDocument.attachDomRoot( domRoot );
+		view.attachDomRoot( domRoot );
 
 		document.getSelection().removeAllRanges();
 
-		viewDocument.isFocused = true;
+		view.isFocused = true;
 	} );
 
 	afterEach( () => {
-		viewDocument.destroy();
+		view.destroy();
 
 		domRoot.parentElement.removeChild( domRoot );
 	} );
@@ -42,9 +43,9 @@ describe( 'Document', () => {
 	describe( 'jump over inline filler hack', () => {
 		it( 'should jump over inline filler when left arrow is pressed after inline filler', () => {
 			setData( viewDocument, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
-			viewDocument.render();
+			view.render();
 
-			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: viewDocument.domRoots.get( 'main' ) } );
+			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: view.domRoots.get( 'main' ) } );
 
 			const domSelection = document.getSelection();
 
@@ -64,9 +65,9 @@ describe( 'Document', () => {
 
 		it( 'should do nothing when another key is pressed', () => {
 			setData( viewDocument, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
-			viewDocument.render();
+			view.render();
 
-			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: viewDocument.domRoots.get( 'main' ) } );
+			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: view.domRoots.get( 'main' ) } );
 
 			const domSelection = document.getSelection();
 
@@ -77,9 +78,9 @@ describe( 'Document', () => {
 
 		it( 'should do nothing if range is not collapsed', () => {
 			setData( viewDocument, '<container:p>foo<attribute:b>{x}</attribute:b>bar</container:p>' );
-			viewDocument.render();
+			view.render();
 
-			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: viewDocument.domRoots.get( 'main' ) } );
+			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: view.domRoots.get( 'main' ) } );
 
 			const domSelection = document.getSelection();
 
@@ -105,7 +106,7 @@ describe( 'Document', () => {
 
 		it( 'should do nothing if caret is not directly before the filler', () => {
 			setData( viewDocument, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
-			viewDocument.render();
+			view.render();
 
 			// Insert a letter to the <b>: '<container:p>foo<attribute:b>x{}</attribute:b>bar</container:p>'
 			// Do this both in the view and in the DOM to simulate typing and to avoid rendering (which would remove the filler).
@@ -115,7 +116,7 @@ describe( 'Document', () => {
 			viewDocument.selection.removeAllRanges();
 			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewTextX, 1, viewTextX, 1 ) );
 
-			const domB = viewDocument.getDomRoot( 'main' ).querySelector( 'b' );
+			const domB = view.getDomRoot( 'main' ).querySelector( 'b' );
 			const domSelection = document.getSelection();
 			domB.childNodes[ 0 ].data += 'x';
 
@@ -125,9 +126,9 @@ describe( 'Document', () => {
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
 
-			viewDocument.render();
+			view.render();
 
-			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: viewDocument.domRoots.get( 'main' ) } );
+			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: view.domRoots.get( 'main' ) } );
 
 			expect( startsWithFiller( domSelection.anchorNode ) ).to.be.true;
 			expect( domSelection.anchorOffset ).to.equal( INLINE_FILLER_LENGTH + 1 );

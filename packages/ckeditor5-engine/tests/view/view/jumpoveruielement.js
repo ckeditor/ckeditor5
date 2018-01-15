@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 import UIElement from '../../../src/view/uielement';
 import ViewContainerElement from '../../../src/view/containerelement';
 import ViewAttribtueElement from '../../../src/view/attributeelement';
@@ -18,7 +18,7 @@ import { setData as setViewData } from '../../../src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Document', () => {
-	let viewDocument, domRoot, domSelection, viewRoot, foo, bar, ui, ui2;
+	let view, viewDocument, domRoot, domSelection, viewRoot, foo, bar, ui, ui2;
 
 	class MyUIElement extends UIElement {
 		render( domDocument ) {
@@ -35,14 +35,15 @@ describe( 'Document', () => {
 		} );
 		document.body.appendChild( domRoot );
 
-		viewDocument = new ViewDocument();
+		view = new View();
+		viewDocument = view.document;
 		viewRoot = createViewRoot( viewDocument );
-		viewDocument.attachDomRoot( domRoot );
+		view.attachDomRoot( domRoot );
 
 		domSelection = document.getSelection();
 		domSelection.removeAllRanges();
 
-		viewDocument.isFocused = true;
+		view.isFocused = true;
 
 		foo = new ViewText( 'foo' );
 		bar = new ViewText( 'bar' );
@@ -54,15 +55,15 @@ describe( 'Document', () => {
 	} );
 
 	afterEach( () => {
-		viewDocument.destroy();
+		view.destroy();
 
 		domRoot.parentElement.removeChild( domRoot );
 	} );
 
 	function renderAndFireKeydownEvent( options ) {
-		viewDocument.render();
+		view.render();
 
-		const eventData = Object.assign( { keyCode: keyCodes.arrowright, domTarget: viewDocument.domRoots.get( 'main' ) }, options );
+		const eventData = Object.assign( { keyCode: keyCodes.arrowright, domTarget: view.domRoots.get( 'main' ) }, options );
 		viewDocument.fire( 'keydown', eventData );
 	}
 
@@ -416,14 +417,14 @@ describe( 'Document', () => {
 			} );
 		} );
 
-		it( 'should do nothing if dom position cannot be converted to view position', () => {
+		it( 'should do nothing if DOM position cannot be converted to view position', () => {
 			const newDiv = document.createElement( 'div' );
 			const domSelection = document.getSelection();
 
 			document.body.appendChild( newDiv );
 			domSelection.collapse( newDiv, 0 );
 
-			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: viewDocument.domRoots.get( 'main' ) } );
+			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: view.domRoots.get( 'main' ) } );
 		} );
 	} );
 } );
