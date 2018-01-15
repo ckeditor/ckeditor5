@@ -30,7 +30,9 @@
 		border-width: 0;
 	}
 
+	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/120 */
 	& > .ck-button,
+	& > * > .ck-button,
 	& .ck-dropdown__button {
 		&:not(:hover):not(:focus):not(.ck-on),
 		&.ck-disabled {
