@@ -19,7 +19,7 @@
 		z-index: var(--ck-z-default);
 
 		position: absolute;
-		top: 55%;
+		top: 52%;
 		transform: translate3d( 0, -55%, 0 );
 
 		width: var(--ck-dropdown-icon-size);
