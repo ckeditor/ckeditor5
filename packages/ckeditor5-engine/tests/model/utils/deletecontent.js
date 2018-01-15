@@ -335,7 +335,9 @@ describe( 'DataController utils', () => {
 						new Position( doc.getRoot(), [ 1, 0, 0, 1 ] ) // b]ar
 					);
 
-					doc.selection._setTo( range );
+					model.change( writer => {
+						writer.setSelection( range );
+					} );
 
 					deleteContent( model, doc.selection );
 
@@ -380,7 +382,9 @@ describe( 'DataController utils', () => {
 						new Position( doc.getRoot(), [ 1, 1 ] ) // b]om
 					);
 
-					doc.selection._setTo( range );
+					model.change( writer => {
+						writer.setSelection( range );
+					} );
 
 					deleteContent( model, doc.selection );
 
@@ -423,7 +427,9 @@ describe( 'DataController utils', () => {
 						new Position( doc.getRoot(), [ 1, 0, 0, 3 ] ) // bar]
 					);
 
-					doc.selection._setTo( range );
+					model.change( writer => {
+						writer.setSelection( range );
+					} );
 
 					deleteContent( model, doc.selection );
 

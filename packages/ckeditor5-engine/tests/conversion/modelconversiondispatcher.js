@@ -239,10 +239,12 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.off( 'selection' );
 
 			root.appendChildren( new ModelText( 'foobar' ) );
-			doc.selection._setTo( [
-				new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ),
-				new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) )
-			] );
+			model.change( writer => {
+				writer.setSelection( [
+					new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ),
+					new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) )
+				] );
+			} );
 		} );
 
 		it( 'should fire selection event', () => {
@@ -362,8 +364,8 @@ describe( 'ModelConversionDispatcher', () => {
 			const viewFigure = new ViewContainerElement( 'figure', null, viewCaption );
 
 			// Create custom highlight handler mock.
-			viewFigure.setCustomProperty( 'addHighlight', () => {} );
-			viewFigure.setCustomProperty( 'removeHighlight', () => {} );
+			viewFigure.setCustomProperty( 'addHighlight', () => { } );
+			viewFigure.setCustomProperty( 'removeHighlight', () => { } );
 
 			// Create mapper mock.
 			dispatcher.conversionApi.mapper = {
@@ -377,8 +379,9 @@ describe( 'ModelConversionDispatcher', () => {
 			};
 
 			model.markers.set( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 1 ) );
-			doc.selection._setTo( ModelRange.createFromParentsAndOffsets( caption, 1, caption, 1 ) );
-
+			model.change( writer => {
+				writer.setSelection( ModelRange.createFromParentsAndOffsets( caption, 1, caption, 1 ) );
+			} );
 			sinon.spy( dispatcher, 'fire' );
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );

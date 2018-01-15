@@ -94,7 +94,10 @@ describe( 'EditingController', () => {
 			buildModelConverter().for( editing.modelToView ).fromMarker( 'marker' ).toHighlight( {} );
 
 			// Note: The below code is highly overcomplicated due to #455.
-			model.document.selection._setTo( null );
+			model.change( writer => {
+				writer.setSelection( null );
+			} );
+
 			modelRoot.removeChildren( 0, modelRoot.childCount );
 
 			viewRoot.removeChildren( 0, viewRoot.childCount );

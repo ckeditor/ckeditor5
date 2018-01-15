@@ -40,8 +40,8 @@ export function convertSelectionChange( model, mapper ) {
 		modelSelection.setTo( ranges, viewSelection.isBackward );
 
 		if ( !modelSelection.isEqual( model.document.selection ) ) {
-			model.change( () => {
-				model.document.selection._setTo( modelSelection );
+			model.change( writer => {
+				writer.setSelection( modelSelection );
 			} );
 		}
 	};

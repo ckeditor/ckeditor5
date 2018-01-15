@@ -429,7 +429,9 @@ describe( 'model-selection-to-view-converters', () => {
 				);
 
 				const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
-				modelDoc.selection._setTo( modelRange );
+				model.change( writer => {
+					writer.setSelection( modelRange );
+				} );
 
 				dispatcher.convertSelection( modelDoc.selection, [] );
 
@@ -451,7 +453,9 @@ describe( 'model-selection-to-view-converters', () => {
 				mergeAttributes( viewSelection.getFirstPosition() );
 
 				const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
-				modelDoc.selection._setTo( modelRange );
+				model.change( writer => {
+					writer.setSelection( modelRange );
+				} );
 
 				dispatcher.convertSelection( modelDoc.selection, [] );
 
@@ -556,21 +560,20 @@ describe( 'model-selection-to-view-converters', () => {
 		const endPos = new ModelPosition( modelRoot, endPath );
 
 		const isBackward = selectionPaths[ 2 ] === 'backward';
-		docSelection._setTo( new ModelRange( startPos, endPos ), isBackward );
+		model.change( writer => {
+			writer.setSelection( new ModelRange( startPos, endPos ), isBackward );
 
-		// Update selection attributes according to model.
-		// TODO: docSelection.refreshAttributes();
+			// And add or remove passed attributes.
+			for ( const key in selectionAttributes ) {
+				const value = selectionAttributes[ key ];
 
-		// And add or remove passed attributes.
-		for ( const key in selectionAttributes ) {
-			const value = selectionAttributes[ key ];
-
-			if ( value ) {
-				docSelection._setAttribute( key, value );
-			} else {
-				docSelection._removeAttribute( key );
+				if ( value ) {
+					writer.setSelectionAttribute( key, value );
+				} else {
+					writer.removeSelectionAttribute( key );
+				}
 			}
-		}
+		} );
 
 		// Remove view children manually (without firing additional conversion).
 		viewRoot.removeChildren( 0, viewRoot.childCount );

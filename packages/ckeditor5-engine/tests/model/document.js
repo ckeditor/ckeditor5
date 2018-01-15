@@ -580,8 +580,8 @@ describe( 'Document', () => {
 
 			doc.on( 'change', spy );
 
-			model.change( () => {
-				doc.selection._setTo( Range.createFromParentsAndOffsets( root, 2, root, 2 ) );
+			model.change( writer => {
+				writer.setSelection( Range.createFromParentsAndOffsets( root, 2, root, 2 ) );
 			} );
 
 			expect( spy.calledOnce ).to.be.true;
