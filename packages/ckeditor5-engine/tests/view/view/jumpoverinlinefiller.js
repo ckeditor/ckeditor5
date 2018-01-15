@@ -31,7 +31,7 @@ describe( 'View', () => {
 
 		document.getSelection().removeAllRanges();
 
-		view.isFocused = true;
+		viewDocument.isFocused = true;
 	} );
 
 	afterEach( () => {

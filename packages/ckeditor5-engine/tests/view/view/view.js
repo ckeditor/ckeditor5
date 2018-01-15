@@ -30,6 +30,8 @@ describe( 'view', () => {
 			contenteditable: 'true'
 		} );
 
+		document.body.appendChild( domRoot );
+
 		view = new View();
 		viewDocument = view.document;
 
@@ -61,6 +63,7 @@ describe( 'view', () => {
 	} );
 
 	afterEach( () => {
+		domRoot.remove();
 		view.destroy();
 	} );
 
@@ -238,7 +241,7 @@ describe( 'view', () => {
 			sinon.assert.notCalled( stub );
 		} );
 
-		it.only( 'scrolls to the first range in selection with an offset', () => {
+		it( 'scrolls to the first range in selection with an offset', () => {
 			const root = createViewRoot( viewDocument, 'div', 'main' );
 			const stub = testUtils.sinon.stub( global.window, 'scrollTo' );
 			const range = ViewRange.createIn( root );

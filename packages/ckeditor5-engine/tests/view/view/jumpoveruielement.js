@@ -43,7 +43,7 @@ describe( 'Document', () => {
 		domSelection = document.getSelection();
 		domSelection.removeAllRanges();
 
-		view.isFocused = true;
+		viewDocument.isFocused = true;
 
 		foo = new ViewText( 'foo' );
 		bar = new ViewText( 'bar' );
