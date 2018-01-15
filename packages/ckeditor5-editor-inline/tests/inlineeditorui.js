@@ -117,7 +117,7 @@ describe( 'InlineEditorUI', () => {
 			let editable;
 
 			beforeEach( () => {
-				editable = editor.editing.view.getRoot();
+				editable = editor.editing.view.document.getRoot();
 			} );
 
 			it( 'registers view.editable#element in editor focus tracker', () => {

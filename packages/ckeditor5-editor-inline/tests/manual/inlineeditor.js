@@ -28,7 +28,7 @@ function initEditors() {
 				console.log( 'It has been added to global `editors` and `editables`.' );
 
 				window.editors[ selector ] = editor;
-				window.editables.push( editor.editing.view.getRoot() );
+				window.editables.push( editor.editing.view.document.getRoot() );
 
 				const observer = testUtils.createObserver();
 
