@@ -790,7 +790,94 @@ export default class Writer {
 	}
 
 	/**
-	 * Throws `writer-incorrect-use` error when the writer is used outside the `change()` block.
+	 * Sets this selection's ranges and direction to the specified location based on the given
+	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
+	 *
+	 * Uses internally {@link module:engine/model/documentselection~DocumentSelection#_setTo}.
+	 *
+	 *		// Sets ranges from the given range.
+	 *		const range = new Range( start, end );
+	 *		selection.setTo( range, isBackwardSelection );
+	 *
+	 *		// Sets ranges from the iterable of ranges.
+	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		selection.setTo( range, isBackwardSelection );
+	 *
+	 *		// Sets ranges from the other selection.
+	 *		const otherSelection = new Selection();
+	 *		selection.setTo( otherSelection );
+	 *
+	 * 		// Sets ranges from the given document selection's ranges.
+	 *		const documentSelection = new DocumentSelection( doc );
+	 *		selection.setTo( documentSelection );
+	 *
+	 * 		// Sets range at the given position.
+	 *		const position = new Position( root, path );
+	 *		selection.setTo( position );
+	 *
+	 * 		// Sets range at the given element.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		selection.setTo( paragraph, offset );
+	 *
+	 * 		// Removes all ranges.
+	 *		selection.setTo( null );
+	 *
+	 * @param {module:engine/model/selection~Selection|module:engine/model/selection~DocumentSelection|
+	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 */
+	setSelection( selectable, backwardSelectionOrOffset ) {
+		this._assertWriterUsedCorrectly();
+
+		this.model.document.selection._setTo( selectable, backwardSelectionOrOffset );
+	}
+
+	/**
+	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
+	 *
+	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 */
+	setSelectionFocus( itemOrPosition, offset ) {
+		this._assertWriterUsedCorrectly();
+
+		this.model.document.selection._moveFocusTo( itemOrPosition, offset );
+	}
+
+	/**
+	 * Sets attribute on the selection. If attribute with the same key already is set, it's value is overwritten.
+	 *
+	 * @param {String} key Key of the attribute to set.
+	 * @param {*} value Attribute value.
+	 */
+	setSelectionAttribute( key, value ) {
+		this._assertWriterUsedCorrectly();
+
+		this.model.document.selection._setAttribute( key, value );
+	}
+
+	/**
+	 * Removes an attribute with given key from the selection.
+	 *
+	 * If the given attribute was set on the selection, fires the {@link #event:change} event with
+	 * removed attribute key.
+	 *
+	 * @param {String} key Key of the attribute to remove.
+	 */
+	removeSelectionAttribute( key ) {
+		this._assertWriterUsedCorrectly();
+
+		this.model.document.selection._removeAttribute( key );
+	}
+
+	/**
+	 * Throws `writer-detached-writer-tries-to-modify-model` error when the writer is used outside of the `change()` block.
 	 *
 	 * @private
 	 */
@@ -807,22 +894,6 @@ export default class Writer {
 		if ( this.model._currentWriter !== this ) {
 			throw new CKEditorError( 'writer-incorrect-use: Trying to use a writer outside the change() block.' );
 		}
-	}
-
-	setSelection( selectable ) {
-		this.model.document.selection._setTo( selectable );
-	}
-
-	setSelectionFocus( itemOrPosition, offset ) {
-		this.model.document.selection._moveFocusTo( itemOrPosition, offset );
-	}
-
-	setSelectionAttribute( key, value ) {
-		this.model.document.selection._setAttribute( key, value );
-	}
-
-	removeSelectionAttribute( key ) {
-		this.model.document.selection._removeAttribute( key );
 	}
 }
 

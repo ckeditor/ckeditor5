@@ -268,28 +268,28 @@ export default class Selection {
 	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
-	 *
-	 *		// Sets to a range.
+	*
+	 *		// Sets ranges from the given range.
 	 *		const range = new Range( start, end );
 	 *		selection.setTo( range, isBackwardSelection );
 	 *
-	 *		// Sets to an iterable of ranges.
+	 *		// Sets ranges from the iterable of ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
 	 *		selection.setTo( range, isBackwardSelection );
 	 *
-	 *		// Sets to other selection.
+	 *		// Sets ranges from the other selection.
 	 *		const otherSelection = new Selection();
 	 *		selection.setTo( otherSelection );
 	 *
-	 * 		// Sets to a document selection.
+	 * 		// Sets ranges from the given document selection's ranges.
 	 *		const documentSelection = new DocumentSelection( doc );
 	 *		selection.setTo( documentSelection );
 	 *
-	 * 		// Sets to a position.
-	 *		const position = new Position();
+	 * 		// Sets range at the given position.
+	 *		const position = new Position( root, path );
 	 *		selection.setTo( position );
 	 *
-	 * 		// Sets to an element.
+	 * 		// Sets range at the given element.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, offset );
 	 *
