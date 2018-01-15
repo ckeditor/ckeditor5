@@ -12,15 +12,11 @@ a.ck-button {
 	@mixin ck-unselectable;
 	@mixin ck-tooltip_enabled;
 
-	display: inline-flex;
-	flex-flow: row nowrap;
-	align-items: center;
 	position: relative;
-	justify-content: center;
 
 	&.ck-button_with-text {
 		& .ck-button__label {
-			display: inline;
+			display: inline-block;
 		}
 	}
 
