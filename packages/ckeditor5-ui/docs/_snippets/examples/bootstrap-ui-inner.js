@@ -6,10 +6,20 @@
 /* globals $, window, console:false */
 
 // Basic classes to create an editor.
-import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
+
+// Interfaces to extend basic Editor API.
+import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
+import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
+
+// Helper function for adding interfaces to the Editor class.
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+
+// Helper function that binds editor with HTMLForm element.
+import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 
 // Basic features that every editor should enable.
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
@@ -24,13 +34,15 @@ import ItalicEngine from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
 import UnderlineEngine from '@ckeditor/ckeditor5-basic-styles/src/underlineengine';
 import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
 
-// Extending the StandardEditor, which brings lots of essential API.
-export default class BootstrapEditor extends StandardEditor {
+// Extending the Editor, which brings base editor API.
+export default class BootstrapEditor extends Editor {
 	constructor( element, config ) {
-		super( element, config );
+		super( config );
+
+		this.element = element;
 
 		// Create the ("main") root element of the model tree.
-		this.document.createRoot();
+		this.model.document.createRoot();
 
 		// Use the HTML data processor in this editor.
 		this.data.processor = new HtmlDataProcessor();
@@ -40,11 +52,15 @@ export default class BootstrapEditor extends StandardEditor {
 
 		// A helper to easily replace the editor#element with editor.editable#element.
 		this._elementReplacer = new ElementReplacer();
+
+		// When editor#element is a textarea inside a form element
+		// then content of this textarea will be updated on form submit.
+		attachToForm( this );
 	}
 
 	destroy() {
 		// When destroyed, editor sets the output of editor#getData() into editor#element...
-		this.updateEditorElement();
+		this.updateElement();
 
 		// ...and restores editor#element.
 		this._elementReplacer.restore();
@@ -83,7 +99,7 @@ export default class BootstrapEditor extends StandardEditor {
 					} )
 					// Bind the editor editing layer to the editable in DOM.
 					.then( () => editor.editing.view.attachDomRoot( editable.element ) )
-					.then( () => editor.loadDataFromEditorElement() )
+					.then( () => editor.loadDataFromElement() )
 					// Fire the events that announce that the editor is complete and ready to use.
 					.then( () => {
 						editor.fire( 'dataReady' );
@@ -94,6 +110,10 @@ export default class BootstrapEditor extends StandardEditor {
 		} );
 	}
 }
+
+// Mixing interfaces, which extends basic editor API.
+mix( BootstrapEditor, DataApiMixin );
+mix( BootstrapEditor, ElementApiMixin );
 
 // This function activates Bold, Italic, Underline, Undo and Redo buttons in the toolbar.
 function setupButtons( editor ) {
