@@ -82,13 +82,25 @@ describe( 'HighlightEditing', () => {
 
 	describe( 'config', () => {
 		describe( 'default value', () => {
-			it.skip( 'should be set', () => {
+			it( 'should be set', () => {
 				expect( editor.config.get( 'highlight' ) ).to.deep.equal( [
-					{ class: 'marker', title: 'Marker', color: '#ffff66', type: 'marker' },
-					{ class: 'marker-green', title: 'Green Marker', color: '#66ff00', type: 'marker' },
-					{ class: 'marker-pink', title: 'Pink Marker', color: '#ff6fff', type: 'marker' },
-					{ class: 'pen-red', title: 'Red Pen', color: '#ff0000', type: 'pen' },
-					{ class: 'pen-blue', title: 'Blue Pen', color: '#0000ff', type: 'pen' }
+					{ model: 'marker', view: { name: 'mark', class: 'marker' }, title: 'Marker', color: '#ffff66', type: 'marker' },
+					{
+						model: 'greenMarker',
+						view: { name: 'mark', class: 'marker-green' },
+						title: 'Green Marker',
+						color: '#66ff00',
+						type: 'marker'
+					},
+					{
+						model: 'pinkMarker',
+						view: { name: 'mark', class: 'marker-pink' },
+						title: 'Pink Marker',
+						color: '#ff6fff',
+						type: 'marker'
+					},
+					{ model: 'redPen', view: { name: 'mark', class: 'pen-red' }, title: 'Red Pen', color: '#ff2929', type: 'pen' },
+					{ model: 'bluePen', view: { name: 'mark', class: 'pen-blue' }, title: 'Blue Pen', color: '#0091ff', type: 'pen' }
 				] );
 			} );
 		} );
