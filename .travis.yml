@@ -15,14 +15,14 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 install:
-  - npm install mgit2 lerna @ckeditor/ckeditor5-dev-tests @ckeditor/ckeditor5-dev-docs
+  - npm install mgit2 lerna
   - mgit bootstrap --resolver-url-template="https://github.com/\${ path }.git"
   - lerna bootstrap
 script:
   - npm t -- --reporter=dots
   - npm run docs:api -- --validate-only
 after_success:
-  - travis_wait npm t docs:build-and-publish-nightly
+  - travis_wait npm run docs:build-and-publish-nightly
 notifications:
   slack:
     rooms:
