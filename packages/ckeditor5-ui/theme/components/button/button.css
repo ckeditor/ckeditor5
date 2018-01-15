@@ -12,16 +12,14 @@ a.ck-button {
 	@mixin ck-unselectable;
 	@mixin ck-tooltip_enabled;
 
-	display: inline-block;
+	display: inline-flex;
+	flex-flow: row nowrap;
+	align-items: center;
 	position: relative;
-
-	@mixin ck-button-icon {
-		display: inline-block;
-	}
 
 	&.ck-button_with-text {
 		& .ck-button__label {
-			display: inline-block;
+			display: inline;
 		}
 	}
 

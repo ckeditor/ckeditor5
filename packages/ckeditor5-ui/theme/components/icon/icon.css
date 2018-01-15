@@ -4,11 +4,12 @@
  */
 
 svg.ck-icon {
-	font-size: 1em;
+	/* Multiplied by the height of the line in "px" should give SVG "viewport" dimensions */
+	font-size: 0.833333em;
 
 	/* Must be consistent with .ck-button__label's vertical align. Otherwise, buttons with and
 	without labels (but with icons) have different sizes in Chrome */
-	vertical-align: top;
+	vertical-align: middle;
 
 	color: inherit;
 
