@@ -65,7 +65,7 @@
     "style-loader": "^0.19.1",
     "umberto": "^0.3.48",
     "webpack": "^3.10.0",
-    "webpack-sources": "^1.1.0"
+    "webpack-sources": "1.0.1"
   },
   "engines": {
     "node": ">=6.0.0",
