@@ -198,6 +198,14 @@ export default class LiveSelection extends Selection {
 	/**
 	 * @inheritDoc
 	 */
+	setTo( selectable, backwardSelectionOrOffset ) {
+		super.setTo( selectable, backwardSelectionOrOffset );
+		this.refreshAttributes();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	setAttribute( key, value ) {
 		// Store attribute in parent element if the selection is collapsed in an empty node.
 		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
