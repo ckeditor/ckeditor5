@@ -37,14 +37,13 @@ describe( 'HighlightEditing', () => {
 		expect( editor.model.schema.checkAttribute( [ '$block' ], 'highlight' ) ).to.be.false;
 	} );
 
-	it.skip( 'adds highlight commands', () => {
+	it( 'adds highlight command', () => {
 		expect( editor.commands.get( 'highlight' ) ).to.be.instanceOf( HighlightCommand );
 	} );
 
-	describe.skip( 'data pipeline conversions', () => {
+	describe( 'data pipeline conversions', () => {
 		it( 'should convert defined marker classes', () => {
 			const data = '<p>f<mark class="marker">o</mark>o</p>';
-
 			editor.setData( data );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>[]f<$text highlight="marker">o</$text>o</paragraph>' );
@@ -54,8 +53,8 @@ describe( 'HighlightEditing', () => {
 		it( 'should convert only one defined marker classes', () => {
 			editor.setData( '<p>f<mark class="marker-green marker">o</mark>o</p>' );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>[]f<$text highlight="marker-green">o</$text>o</paragraph>' );
-			expect( editor.getData() ).to.equal( '<p>f<mark class="marker-green">o</mark>o</p>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]f<$text highlight="marker">o</$text>o</paragraph>' );
+			expect( editor.getData() ).to.equal( '<p>f<mark class="marker">o</mark>o</p>' );
 		} );
 
 		it( 'should not convert undefined marker classes', () => {
@@ -73,7 +72,7 @@ describe( 'HighlightEditing', () => {
 		} );
 	} );
 
-	describe.skip( 'editing pipeline conversion', () => {
+	describe( 'editing pipeline conversion', () => {
 		it( 'should convert mark element with defined class', () => {
 			setModelData( model, '<paragraph>f<$text highlight="marker">o</$text>o</paragraph>' );
 

@@ -8,11 +8,10 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-
-import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
+import {
+	modelAttributeToViewAttributeElement,
+	viewToModelAttribute
+} from '@ckeditor/ckeditor5-engine/src/conversion/definition-based-converters';
 
 import HighlightCommand from './highlightcommand';
 
@@ -29,11 +28,17 @@ export default class HighlightEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'highlight', [
-			{ name: 'marker', class: 'marker', title: 'Marker', color: '#ffff66', type: 'marker' },
-			{ name: 'greenMarker', class: 'marker-green', title: 'Green Marker', color: '#66ff00', type: 'marker' },
-			{ name: 'pinkMarker', class: 'marker-pink', title: 'Pink Marker', color: '#ff6fff', type: 'marker' },
-			{ name: 'redPen', class: 'pen-red', title: 'Red Pen', color: '#ff0000', type: 'pen' },
-			{ name: 'bluePen', class: 'pen-blue', title: 'Blue Pen', color: '#0000ff', type: 'pen' }
+			{ model: 'marker', view: { name: 'mark', class: 'marker' }, title: 'Marker', color: '#ffff66', type: 'marker' },
+			{
+				model: 'greenMarker',
+				view: { name: 'mark', class: 'marker-green' },
+				title: 'Green Marker',
+				color: '#66ff00',
+				type: 'marker'
+			},
+			{ model: 'pinkMarker', view: { name: 'mark', class: 'marker-pink' }, title: 'Pink Marker', color: '#ff6fff', type: 'marker' },
+			{ model: 'redPen', view: { name: 'mark', class: 'pen-red' }, title: 'Red Pen', color: '#ff0000', type: 'pen' },
+			{ model: 'bluePen', view: { name: 'mark', class: 'pen-blue' }, title: 'Blue Pen', color: '#0000ff', type: 'pen' }
 		] );
 	}
 
@@ -45,45 +50,30 @@ export default class HighlightEditing extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
-		// Allow fontSize attribute on text nodes.
+		// Allow highlight attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'highlight' } );
 
-		// Convert highlight attribute to a mark element with associated class.
-		buildModelConverter()
-			.for( data.modelToView, editing.modelToView )
-			.fromAttribute( 'highlight' )
-			.toElement( data => new AttributeElement( 'mark', { class: data } ) );
+		const options = editor.config.get( 'highlight' );
 
-		const configuredClasses = editor.config.get( 'highlight' ).map( config => config.class );
+		// Define view to model conversion.
+		for ( const option of options ) {
+			viewToModelAttribute( 'highlight', option, [ data.viewToModel ] );
+		}
 
-		// Convert `mark` attribute with class name to model's highlight attribute.
-		buildViewConverter()
-			.for( data.viewToModel )
-			.fromElement( 'mark' )
-			.toAttribute( viewElement => {
-				for ( const className of viewElement.getClassNames() ) {
-					if ( configuredClasses.indexOf( className ) > -1 ) {
-						return { key: 'highlight', value: className };
-					}
-				}
-			} );
+		// Define model to view conversion.
+		modelAttributeToViewAttributeElement( 'highlight', options, [ data.modelToView, editing.modelToView ] );
 
-		editor.config
-			.get( 'highlight' )
-			// TODO: change as in Font
-			.map( highlighter => editor.commands.add( highlighter.name, new HighlightCommand( editor, highlighter.class ) ) );
-
-		editor.commands.add( 'removeHighlight', new HighlightCommand( editor ) );
+		editor.commands.add( 'highlight', new HighlightCommand( editor ) );
 	}
 }
 
 /**
- * Highlight option descriptor.
+ * Highlight option descriptor. Compatible with {@link module:engine/conversion/definition-based-converters~ConverterDefinition}.
  *
  * @typedef {Object} module:highlight/highlightediting~HighlightOption
- * @property {String} class The class which is used to differentiate highlighters.
  * @property {String} title The user-readable title of the option.
- * @property {String} color Color used for highlighter. Should be coherent with CSS class definition.
+ * @property {String} model Attribute's unique value in the model.
+ * @property {String} color Color used for highlighter. Should be coherent with view definition.
  * @property {'marker'|'pen'} type The type of highlighter:
  * - "marker" - will use #color as background,
  * - "pen" - will use #color as font color.
