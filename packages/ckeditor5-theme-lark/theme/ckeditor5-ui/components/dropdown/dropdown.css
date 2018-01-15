@@ -13,7 +13,7 @@
 
 	/* A triangle displayed to indicate this is actually a dropdown. */
 	& .ck-dropdown__icon {
-		right: var(--ck-spacing-medium);
+		right: var(--ck-spacing-standard);
 	}
 
 	&.ck-disabled .ck-dropdown__icon {
