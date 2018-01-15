@@ -249,135 +249,6 @@ extend( ObservableMixin, EmitterMixin );
 
 export default ObservableMixin;
 
-/**
- * Interface which adds "observable properties" and data binding functionality.
- *
- * Can be easily implemented by a class by mixing the {@link module:utils/observablemixin~ObservableMixin} mixin.
- *
- * @interface Observable
- */
-
-/**
- * Fired when a property changed value.
- *
- *		observable.set( 'prop', 1 );
- *
- *		observable.on( 'change:prop', ( evt, propertyName, newValue, oldValue ) => {
- *			console.log( `${ propertyName } has changed from ${ oldValue } to ${ newValue }` );
- *		} )
- *
- *		observable.prop = 2; // -> 'prop has changed from 1 to 2'
- *
- * @event #change:{property}
- * @param {String} name The property name.
- * @param {*} value The new property value.
- * @param {*} oldValue The previous property value.
- */
-
-/**
- * Creates and sets the value of an observable property of this object. Such an property becomes a part
- * of the state and is be observable.
- *
- * It accepts also a single object literal containing key/value pairs with propertys to be set.
- *
- * This method throws the `observable-set-cannot-override` error if the observable instance already
- * have a property with the given property name. This prevents from mistakenly overriding existing
- * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
- *
- * @method #set
- * @param {String} name The attributes name.
- * @param {*} value The attributes value.
- */
-
-/**
- * Binds observable properties to another objects implementing {@link module:utils/observablemixin~Observable}
- * interface (like {@link module:ui/model~Model}).
- *
- * Once bound, the observable will immediately share the current state of properties
- * of the observable it is bound to and react to the changes to these properties
- * in the future.
- *
- * **Note**: To release the binding use {@link module:utils/observablemixin~Observable#unbind}.
- *
- *		A.bind( 'a' ).to( B );
- *		A.bind( 'a' ).to( B, 'b' );
- *		A.bind( 'a', 'b' ).to( B, 'c', 'd' );
- *		A.bind( 'a' ).to( B, 'b', C, 'd', ( b, d ) => b + d );
- *
- * @method #bind
- * @param {...String} bindAttrs Observable properties that will be bound to another observable(s).
- * @returns {Object} The bind chain with the `to()` method.
- */
-
-/**
- * Removes the binding created with {@link #bind}.
- *
- *		A.unbind( 'a' );
- *		A.unbind();
- *
- * @method #unbind
- * @param {...String} [unbindAttrs] Observable properties to be unbound. All the bindings will
- * be released if no properties provided.
- */
-
-/**
- * Turns the given methods of this object into event-based ones. This means that the new method will fire an event
- * (named after the method) and the original action will be plugged as a listener to that event.
- *
- * This is a very simplified method decoration. Itself it doesn't change the behavior of a method (expect adding the event),
- * but it allows to modify it later on by listening to the method's event.
- *
- * For example, in order to cancel the method execution one can stop the event:
- *
- *		class Foo {
- *			constructor() {
- *				this.decorate( 'method' );
- *			}
- *
- *			method() {
- *				console.log( 'called!' );
- *			}
- *		}
- *
- *		const foo = new Foo();
- *		foo.on( 'method', ( evt ) => {
- *			evt.stop();
- *		}, { priority: 'high' } );
- *
- *		foo.method(); // Nothing is logged.
- *
- *
- * Note: we used a high priority listener here to execute this callback before the one which
- * calls the orignal method (which used the default priority).
- *
- * It's also possible to change the return value:
- *
- *		foo.on( 'method', ( evt ) => {
- *			evt.return = 'Foo!';
- *		} );
- *
- *		foo.method(); // -> 'Foo'
- *
- * Finally, it's possible to access and modify the parameters:
- *
- *		method( a, b ) {
- *			console.log( `${ a }, ${ b }`  );
- *		}
- *
- *		// ...
- *
- *		foo.on( 'method', ( evt, args ) => {
- *			args[ 0 ] = 3;
- *
- *			console.log( args[ 1 ] ); // -> 2
- *		}, { priority: 'high' } );
- *
- *		foo.method( 1, 2 ); // -> '3, 2'
- *
- * @method #decorate
- * @param {String} methodName Name of the method to decorate.
- */
-
 // Init symbol properties needed to for the observable mechanism to work.
 //
 // @private
@@ -737,3 +608,132 @@ function attachBindToListeners( observable, toBindings ) {
 		}
 	} );
 }
+
+/**
+ * Interface which adds "observable properties" and data binding functionality.
+ *
+ * Can be easily implemented by a class by mixing the {@link module:utils/observablemixin~ObservableMixin} mixin.
+ *
+ * @interface Observable
+ */
+
+/**
+ * Fired when a property changed value.
+ *
+ *		observable.set( 'prop', 1 );
+ *
+ *		observable.on( 'change:prop', ( evt, propertyName, newValue, oldValue ) => {
+ *			console.log( `${ propertyName } has changed from ${ oldValue } to ${ newValue }` );
+ *		} )
+ *
+ *		observable.prop = 2; // -> 'prop has changed from 1 to 2'
+ *
+ * @event #change:{property}
+ * @param {String} name The property name.
+ * @param {*} value The new property value.
+ * @param {*} oldValue The previous property value.
+ */
+
+/**
+ * Creates and sets the value of an observable property of this object. Such an property becomes a part
+ * of the state and is be observable.
+ *
+ * It accepts also a single object literal containing key/value pairs with propertys to be set.
+ *
+ * This method throws the `observable-set-cannot-override` error if the observable instance already
+ * have a property with the given property name. This prevents from mistakenly overriding existing
+ * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
+ *
+ * @method #set
+ * @param {String} name The attributes name.
+ * @param {*} value The attributes value.
+ */
+
+/**
+ * Binds observable properties to another objects implementing {@link module:utils/observablemixin~Observable}
+ * interface (like {@link module:ui/model~Model}).
+ *
+ * Once bound, the observable will immediately share the current state of properties
+ * of the observable it is bound to and react to the changes to these properties
+ * in the future.
+ *
+ * **Note**: To release the binding use {@link module:utils/observablemixin~Observable#unbind}.
+ *
+ *		A.bind( 'a' ).to( B );
+ *		A.bind( 'a' ).to( B, 'b' );
+ *		A.bind( 'a', 'b' ).to( B, 'c', 'd' );
+ *		A.bind( 'a' ).to( B, 'b', C, 'd', ( b, d ) => b + d );
+ *
+ * @method #bind
+ * @param {...String} bindAttrs Observable properties that will be bound to another observable(s).
+ * @returns {Object} The bind chain with the `to()` method.
+ */
+
+/**
+ * Removes the binding created with {@link #bind}.
+ *
+ *		A.unbind( 'a' );
+ *		A.unbind();
+ *
+ * @method #unbind
+ * @param {...String} [unbindAttrs] Observable properties to be unbound. All the bindings will
+ * be released if no properties provided.
+ */
+
+/**
+ * Turns the given methods of this object into event-based ones. This means that the new method will fire an event
+ * (named after the method) and the original action will be plugged as a listener to that event.
+ *
+ * This is a very simplified method decoration. Itself it doesn't change the behavior of a method (expect adding the event),
+ * but it allows to modify it later on by listening to the method's event.
+ *
+ * For example, in order to cancel the method execution one can stop the event:
+ *
+ *		class Foo {
+ *			constructor() {
+ *				this.decorate( 'method' );
+ *			}
+ *
+ *			method() {
+ *				console.log( 'called!' );
+ *			}
+ *		}
+ *
+ *		const foo = new Foo();
+ *		foo.on( 'method', ( evt ) => {
+ *			evt.stop();
+ *		}, { priority: 'high' } );
+ *
+ *		foo.method(); // Nothing is logged.
+ *
+ *
+ * Note: we used a high priority listener here to execute this callback before the one which
+ * calls the orignal method (which used the default priority).
+ *
+ * It's also possible to change the return value:
+ *
+ *		foo.on( 'method', ( evt ) => {
+ *			evt.return = 'Foo!';
+ *		} );
+ *
+ *		foo.method(); // -> 'Foo'
+ *
+ * Finally, it's possible to access and modify the parameters:
+ *
+ *		method( a, b ) {
+ *			console.log( `${ a }, ${ b }`  );
+ *		}
+ *
+ *		// ...
+ *
+ *		foo.on( 'method', ( evt, args ) => {
+ *			args[ 0 ] = 3;
+ *
+ *			console.log( args[ 1 ] ); // -> 2
+ *		}, { priority: 'high' } );
+ *
+ *		foo.method( 1, 2 ); // -> '3, 2'
+ *
+ * @method #decorate
+ * @param {String} methodName Name of the method to decorate.
+ */
