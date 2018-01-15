@@ -14,12 +14,13 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, Highlight ],
 		toolbar: [
 			'headings',
-			'highlight:marker',
-			'highlight:greenMarker',
-			'highlight:pinkMarker',
-			'highlight:bluePen',
-			'highlight:redPen',
-			'removeHighlight',
+			'highlightDropdown',
+			// 'highlight:marker',
+			// 'highlight:greenMarker',
+			// 'highlight:pinkMarker',
+			// 'highlight:bluePen',
+			// 'highlight:redPen',
+			// 'removeHighlight',
 			'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		]
 	} )

@@ -135,68 +135,55 @@ export default class HighlightUI extends Plugin {
 	/**
 	 * Creates split button drop down UI from provided highlight options.
 	 *
-	 * @param {Array.<module:highlight/highlightediting~HighlightOption>} highlighters
+	 * @param {Array.<module:highlight/highlightediting~HighlightOption>} options
 	 * @private
 	 */
-	_addDropdown( highlighters ) {
-		if ( true ) {
-			return;
-		}
-
+	_addDropdown( options ) {
 		const editor = this.editor;
 		const t = editor.t;
 		const componentFactory = editor.ui.componentFactory;
 
-		const startingHighlighter = highlighters[ 0 ];
+		const startingHighlighter = options[ 0 ];
 
 		componentFactory.add( 'highlightDropdown', locale => {
-			const commandName = startingHighlighter.name;
-
 			const model = new Model( {
 				label: t( 'Highlight' ),
 				withText: false,
+				isVertical: false,
 				icon: markerIcon,
 				type: startingHighlighter.type,
 				color: startingHighlighter.color,
-				command: commandName
+				commandValue: startingHighlighter.model
 			} );
 
-			bindModelToCommand( model, editor, commandName );
+			bindModelToCommand( model, editor, 'highlight' );
 
 			const dropdownView = createSplitButtonDropdown( model, locale );
 
 			bindIconStyle( dropdownView, model );
 
 			dropdownView.buttonView.on( 'execute', () => {
-				editor.execute( model.command );
+				editor.execute( 'highlight', { value: model.commandValue } );
 				editor.editing.view.focus();
 			} );
 
 			// Add highlighters buttons to dropdown
-			const buttons = highlighters.map( highlighter => {
-				const buttonView = componentFactory.create( highlighter.name );
-				const commandName = highlighter.name;
+			const buttons = options.map( option => {
+				const buttonView = componentFactory.create( 'highlight:' + option.model );
 
 				this.listenTo( buttonView, 'execute', () => changeToolbarButton( editor, model, {
-					type: highlighter.type,
-					color: highlighter.color,
-					command: commandName,
+					type: option.type,
+					color: option.color,
+					command: 'highlight',
+					commandValue: option.model,
 					icon: markerIcon
 				} ) );
 
 				return buttonView;
 			} );
-
 			// Add rubber button to dropdown.
 			const rubberButton = componentFactory.create( 'removeHighlight' );
 			buttons.push( rubberButton );
-
-			this.listenTo( rubberButton, 'execute', () => changeToolbarButton( editor, model, {
-				type: 'remove',
-				color: undefined,
-				command: 'removeHighlight',
-				icon: rubberIcon
-			} ) );
 
 			// Make toolbar button enabled when any button in dropdown is enabled.
 			model.bind( 'isEnabled' ).to(
@@ -218,10 +205,9 @@ export default class HighlightUI extends Plugin {
 
 			dropdownView.extendTemplate( {
 				attributes: {
-					class: [ 'ck-buttondropdown' ]
+					class: [ 'ck-highlight_button', 'ck-buttondropdown' ]
 				}
 			} );
-
 			dropdownView.panelView.children.add( toolbarView );
 
 			closeDropdownOnBlur( dropdownView );
@@ -234,6 +220,8 @@ export default class HighlightUI extends Plugin {
 					// buttonGroupView.focus();
 				}
 			}, { priority: 'low' } );
+
+			return dropdownView;
 		} );
 	}
 }
