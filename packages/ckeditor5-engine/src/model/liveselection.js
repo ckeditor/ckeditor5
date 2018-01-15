@@ -23,6 +23,20 @@ const attrOpTypes = new Set(
 	[ 'addAttribute', 'removeAttribute', 'changeAttribute', 'addRootAttribute', 'removeRootAttribute', 'changeRootAttribute' ]
 );
 
+/**
+ * `LiveSelection` is used internally by {@link module:engine/model/documentselection~DocumentSelection} and shouldn't be used directly.
+ *
+ * LiveSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
+ * to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.
+ *
+ * Differences between {@link module:engine/model/selection~Selection} and `LiveSelection` are:
+ * * there is always a range in `LiveSelection` - even if no ranges were added there is a "default range"
+ * present in the selection,
+ * * ranges added to this selection updates automatically when the document changes,
+ * * attributes of `LiveSelection` are updated automatically according to selection ranges.
+ *
+ * @extends module:engine/model/selection~Selection
+ */
 export default class LiveSelection extends Selection {
 	/**
 	 * Creates an empty live selection for given {@link module:engine/model/document~Document}.

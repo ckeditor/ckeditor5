@@ -11,6 +11,32 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import LiveSelection from './liveselection';
 
+/**
+ * `DocumentSelection` is a special selection which is used as the
+ * {@link module:engine/model/document~Document#selection document's selection}.
+ * There can be only one instance of `DocumentSelection` per document.
+ *
+ * `DocumentSelection` is a proxy to {@link module:engine/model/liveselection~LiveSelection} that provides
+ * all getters to the original selection and delegate all events.
+ * All selection modifiers should be used from the {@link module:engine/model/writer~Writer} instance
+ * inside the {@link module:engine/model/model~Model#change} block, as it provides a secure way to modify model.
+ *
+ * `DocumentSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
+ * to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.
+ *
+ * Differences between {@link module:engine/model/selection~Selection} and `DocumentSelection` are:
+ * * there is always a range in `DocumentSelection` - even if no ranges were added there is a "default range"
+ * present in the selection,
+ * * ranges added to this selection updates automatically when the document changes,
+ * * attributes of `DocumentSelection` are updated automatically according to selection ranges.
+ *
+ * Since `DocumentSelection` uses {@link module:engine/model/liverange~LiveRange live ranges}
+ * and is updated when {@link module:engine/model/document~Document document}
+ * changes, it cannot be set on {@link module:engine/model/node~Node nodes}
+ * that are inside {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
+ * If you need to represent a selection in document fragment,
+ * use {@link module:engine/model/selection~Selection Selection class} instead.
+ */
 export default class DocumentSelection {
 	/**
 	 * Creates an empty live selection for given {@link module:engine/model/document~Document}.
@@ -40,10 +66,31 @@ export default class DocumentSelection {
 		return this._selection.isCollapsed;
 	}
 
+	/**
+	 * Selection anchor. Anchor may be described as a position where the most recent part of the selection starts.
+	 * Together with {@link #focus} they define the direction of selection, which is important
+	 * when expanding/shrinking selection. Anchor is always {@link module:engine/model/range~Range#start start} or
+	 * {@link module:engine/model/range~Range#end end} position of the most recently added range.
+	 *
+	 * Is set to `null` if there are no ranges in selection.
+	 *
+	 * @see #focus
+	 * @readonly
+	 * @type {module:engine/model/position~Position|null}
+	 */
 	get anchor() {
 		return this._selection.anchor;
 	}
 
+	/**
+	 * Selection focus. Focus is a position where the selection ends.
+	 *
+	 * Is set to `null` if there are no ranges in selection.
+	 *
+	 * @see #anchor
+	 * @readonly
+	 * @type {module:engine/model/position~Position|null}
+	 */
 	get focus() {
 		return this._selection.focus;
 	}
@@ -58,6 +105,13 @@ export default class DocumentSelection {
 		return this._selection.rangeCount;
 	}
 
+	/**
+	 * Describes whether `Documentselection` has own range(s) set, or if it is defaulted to
+	 * {@link module:engine/model/document~Document#_getDefaultRange document's default range}.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
 	get hasOwnRange() {
 		return this._selection.hasOwnRange;
 	}
