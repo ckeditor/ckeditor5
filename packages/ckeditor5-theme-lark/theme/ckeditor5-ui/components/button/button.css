@@ -57,7 +57,12 @@ a.ck-button {
 		@mixin ck-button-colors --ck-color-button-on;
 	}
 
-	& .ck-icon {
+	@mixin ck-button-icon {
+		/* This margin is neccessary for icons in label-less buttons to stretch
+		the button properly. When there's no text in the button, browsers render
+		them too narrow. */
+		margin: .2em;
+
 		use,
 		use * {
 			color: inherit;
@@ -76,7 +81,7 @@ a.ck-button {
 
 		/* Must be consistent with .ck-icon's vertical align. Otherwise, buttons with and
 		without labels (but with icons) have different sizes in Chrome */
-		vertical-align: top;
+		vertical-align: middle;
 	}
 }
 

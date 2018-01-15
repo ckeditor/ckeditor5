@@ -3,19 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/**
- * Default width/height of an icon. Note that it equals the default
- * height of the line of text, so e.g. it matches the height of the
- * button's label.
- */
-:root {
-	--ck-icon-min-size: calc(var(--ck-font-size-base) * var(--ck-line-height-base));
-}
-
 svg.ck-icon {
 	width: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));
 	height: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));
-
-	min-width: var(--ck-icon-min-size);
-	min-height: var(--ck-icon-min-size);
 }

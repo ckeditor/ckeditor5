@@ -4,7 +4,7 @@
  */
 
 :root {
-	--ck-spacing-unit: 						0.8em;
+	--ck-spacing-unit: 						0.6em;
 	--ck-spacing-large: 					calc(var(--ck-spacing-unit) * 1.5);
 	--ck-spacing-standard: 					var(--ck-spacing-unit);
 	--ck-spacing-medium: 					calc(var(--ck-spacing-unit) * 0.8);
