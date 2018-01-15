@@ -12,13 +12,16 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import HighlightEditing from './highlightediting';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import highlightIcon from '@ckeditor/ckeditor5-core/theme/icons/input.svg';
-import highlightRemoveIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
+import markerIcon from './../theme/icons/marker.svg';
+import penIcon from './../theme/icons/pen.svg';
+import rubberIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import createSplitButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/createsplitbuttondropdown';
 import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownContentsOnArrows } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+
+import './../theme/highlight.css';
 
 /**
  * The default Highlight UI plugin.
@@ -44,15 +47,15 @@ export default class HighlightUI extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const highlighters = this.editor.config.get( 'highlight' );
+		const options = this.editor.config.get( 'highlight' );
 
-		for ( const highlighter of highlighters ) {
-			this._addHighlighterButton( highlighter );
+		for ( const option of options ) {
+			this._addHighlighterButton( option );
 		}
 
 		this._addRemoveHighlightButton();
 
-		this._addDropdown( highlighters );
+		this._addDropdown( options );
 	}
 
 	/**
@@ -63,27 +66,34 @@ export default class HighlightUI extends Plugin {
 	_addRemoveHighlightButton() {
 		const t = this.editor.t;
 
-		this._addButton( 'removeHighlight', t( 'Remove highlighting' ), highlightRemoveIcon );
+		this._addButton( 'removeHighlight', t( 'Remove highlighting' ), rubberIcon );
 	}
 
 	/**
 	 * Creates toolbar button from provided highlight option.
 	 *
-	 * @param {module:highlight/highlightediting~HighlightOption} highlighter
+	 * @param {module:highlight/highlightediting~HighlightOption} option
 	 * @private
 	 */
-	_addHighlighterButton( highlighter ) {
-		const name = highlighter.name;
-		const command = this.editor.commands.get( name );
+	_addHighlighterButton( option ) {
+		const command = this.editor.commands.get( 'highlight' );
 
-		this._addButton( name, highlighter.title, highlightIcon, decorateHighlightButton );
+		const icon = option.type === 'marker' ? markerIcon : penIcon;
+
+		this._addButton( 'highlight:' + option.model, option.title, icon, option.model, decorateHighlightButton );
 
 		function decorateHighlightButton( button ) {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
+			button.extendTemplate( {
+				attributes: {
+					class: 'ck-highlight_button'
+				}
+			} );
+
 			button.iconView.extendTemplate( {
 				attributes: {
-					style: getIconStyleForHighlighter( highlighter.type, highlighter.color )
+					style: `color: ${ option.color }`
 				}
 			} );
 		}
@@ -98,7 +108,7 @@ export default class HighlightUI extends Plugin {
 	 * @param {Function} [decorateButton=()=>{}] Additional method for extending button.
 	 * @private
 	 */
-	_addButton( name, label, icon, decorateButton = () => {} ) {
+	_addButton( name, label, icon, value, decorateButton = () => {} ) {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( name, locale => {
@@ -111,7 +121,7 @@ export default class HighlightUI extends Plugin {
 			} );
 
 			buttonView.on( 'execute', () => {
-				editor.execute( name );
+				editor.execute( 'highlight', { value } );
 				editor.editing.view.focus();
 			} );
 
@@ -129,6 +139,10 @@ export default class HighlightUI extends Plugin {
 	 * @private
 	 */
 	_addDropdown( highlighters ) {
+		if ( true ) {
+			return;
+		}
+
 		const editor = this.editor;
 		const t = editor.t;
 		const componentFactory = editor.ui.componentFactory;
@@ -141,7 +155,7 @@ export default class HighlightUI extends Plugin {
 			const model = new Model( {
 				label: t( 'Highlight' ),
 				withText: false,
-				icon: highlightIcon,
+				icon: markerIcon,
 				type: startingHighlighter.type,
 				color: startingHighlighter.color,
 				command: commandName
@@ -167,7 +181,7 @@ export default class HighlightUI extends Plugin {
 					type: highlighter.type,
 					color: highlighter.color,
 					command: commandName,
-					icon: highlightIcon
+					icon: markerIcon
 				} ) );
 
 				return buttonView;
@@ -181,7 +195,7 @@ export default class HighlightUI extends Plugin {
 				type: 'remove',
 				color: undefined,
 				command: 'removeHighlight',
-				icon: highlightRemoveIcon
+				icon: rubberIcon
 			} ) );
 
 			// Make toolbar button enabled when any button in dropdown is enabled.
@@ -229,18 +243,6 @@ function getBindingTargets( buttons, attribute ) {
 	return Array.prototype.concat( ...buttons.map( button => [ button, attribute ] ) );
 }
 
-// Returns style definition for highlighter button
-// @param {String} type Type of highlighter. One of: "marker", "pen", "remove".
-// @param {String} color Color of highlighter.
-function getIconStyleForHighlighter( type, color ) {
-	// Only return type for defined types "marker"/"pen". Return empty style otherwise (ie. for "remove" type).
-	if ( type === 'pen' ) {
-		return 'color:' + color;
-	} else if ( type === 'marker' ) {
-		return 'background-color:' + color;
-	}
-}
-
 // Rebinds model values to a new command.
 function bindModelToCommand( model, editor, commandName ) {
 	model.unbind( 'isOn' );
@@ -266,5 +268,5 @@ function bindIconStyle( dropdownView, model ) {
 		}
 	} );
 
-	iconView.bind( 'style' ).to( model, 'type', model, 'color', getIconStyleForHighlighter );
+	iconView.bind( 'style' ).to( model, 'color', color => `color:${ color }` );
 }
