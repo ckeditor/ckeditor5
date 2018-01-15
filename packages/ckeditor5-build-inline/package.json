@@ -18,8 +18,8 @@
     "@ckeditor/ckeditor5-autoformat": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-basic-styles": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-block-quote": "^1.0.0-alpha.2",
-    "@ckeditor/ckeditor5-dev-utils": "^7.0.0",
-    "@ckeditor/ckeditor5-dev-webpack-plugin": "^3.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^7.0.3",
+    "@ckeditor/ckeditor5-dev-webpack-plugin": "^3.0.4",
     "@ckeditor/ckeditor5-easy-image": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-editor-inline": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-essentials": "^1.0.0-alpha.2",
@@ -31,11 +31,11 @@
     "@ckeditor/ckeditor5-theme-lark": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-upload": "^1.0.0-alpha.2",
     "babel-minify-webpack-plugin": "^0.2.0",
-    "postcss-loader": "^2.0.8",
+    "postcss-loader": "^2.0.10",
     "raw-loader": "^0.5.1",
-    "style-loader": "^0.18.2",
-    "webpack": "^3.6.0",
-    "webpack-sources": "1.0.1"
+    "style-loader": "^0.19.1",
+    "webpack": "^3.10.0",
+    "webpack-sources": "^1.1.0"
   },
   "engines": {
     "node": ">=6.0.0",
