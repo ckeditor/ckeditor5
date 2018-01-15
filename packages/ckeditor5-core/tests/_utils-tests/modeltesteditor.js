@@ -4,10 +4,13 @@
  */
 
 import Editor from '../../src/editor/editor';
+import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import ModelTestEditor from '../../tests/_utils/modeltesteditor';
 
 import Plugin from '../../src/plugin';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import DataApiMixin from '../../src/editor/utils/dataapimixin';
+import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -25,18 +28,24 @@ describe( 'ModelTestEditor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 
-		it( 'creates model root', () => {
+		it( 'should disable editing pipeline', () => {
+			const spy = sinon.spy( EditingController.prototype, 'destroy' );
 			const editor = new ModelTestEditor( { foo: 1 } );
 
-			expect( editor.model.document.getRoot() ).to.have.property( 'name', '$root' );
+			sinon.assert.calledOnce( spy );
+
+			spy.restore();
+			return editor.destroy();
 		} );
 
-		it( 'should disable editing pipeline and clear main root', () => {
-			const editor = new ModelTestEditor( { foo: 1 } );
+		it( 'creates main root element', () => {
+			const editor = new ModelTestEditor();
 
-			editor.model.document.createRoot( 'second', 'second' );
+			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+		} );
 
-			expect( Array.from( editor.editing.view.roots ) ).to.length( 0 );
+		it( 'mixes DataApiMixin', () => {
+			expect( testUtils.isMixed( ModelTestEditor, DataApiMixin ) ).to.true;
 		} );
 	} );
 

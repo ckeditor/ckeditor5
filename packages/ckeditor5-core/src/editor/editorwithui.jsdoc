@@ -1,0 +1,31 @@
+/**
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module core/editor/editorwithui
+ */
+
+/**
+ * Interface defining UI part of the editor. Most editor (like {@link module:editor-classic/classiceditor~ClassicEditor} or
+ * {@link module:editor-inline/inlineeditor~InlineEditor}) implements this interface, however it is not required to do so. Editors with external UI (i.e. Bootstrap based) or headless editor may not implement this interface. Keep it in mind when developing features.
+ *
+ * @interface EditorWithUI
+ */
+
+/**
+ * Editor UI instance.
+ *
+ * @readonly
+ * @member {module:core/editor/editorui~EditorUI} #ui
+ */
+
+/**
+ * Fired when the editor UI is ready.
+ *
+ * Fired after {@link module:core/editor/editor~Editor#event:pluginsReady}, before
+ * {@link module:core/editor/editor~Editor#event:dataReady}.
+ *
+ * @event uiReady
+ */

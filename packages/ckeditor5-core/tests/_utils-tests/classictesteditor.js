@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import StandardEditor from '../../src/editor/standardeditor';
+import Editor from '../../src/editor/editor';
 import ClassicTestEditor from '../../tests/_utils/classictesteditor';
 
 import Plugin from '../../src/plugin';
@@ -14,6 +14,10 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 import ClassicTestEditorUI from '../../tests/_utils/classictesteditorui';
 import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
+
+import DataApiMixin from '../../src/editor/utils/dataapimixin';
+import ElementApiMixin from '../../src/editor/utils/elementapimixin';
+import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '../../tests/_utils/utils';
@@ -32,7 +36,7 @@ describe( 'ClassicTestEditor', () => {
 		it( 'creates an instance of editor', () => {
 			const editor = new ClassicTestEditor( editorElement, { foo: 1 } );
 
-			expect( editor ).to.be.instanceof( StandardEditor );
+			expect( editor ).to.be.instanceof( Editor );
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
 			expect( editor.element ).to.equal( editorElement );
 			expect( editor.ui ).to.be.instanceOf( ClassicTestEditorUI );
@@ -48,6 +52,20 @@ describe( 'ClassicTestEditor', () => {
 			expect( editor.ui.view.editableElement.tagName ).to.equal( 'DIV' );
 			expect( editor.ui.view.editableElement ).to.equal( editor.ui.view.editable.element );
 		} );
+
+		it( 'creates main root element', () => {
+			const editor = new ClassicTestEditor( editorElement );
+
+			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+		} );
+
+		it( 'mixes DataApiMixin', () => {
+			expect( testUtils.isMixed( ClassicTestEditor, DataApiMixin ) ).to.true;
+		} );
+
+		it( 'mixes ElementApiMixin', () => {
+			expect( testUtils.isMixed( ClassicTestEditor, ElementApiMixin ) ).to.true;
+		} );
 	} );
 
 	describe( 'create()', () => {
@@ -61,7 +79,7 @@ describe( 'ClassicTestEditor', () => {
 				} );
 		} );
 
-		it( 'creates and initilizes the UI', () => {
+		it( 'creates and initializes the UI', () => {
 			return ClassicTestEditor.create( editorElement, { foo: 1 } )
 				.then( editor => {
 					expect( editor.ui ).to.be.instanceOf( ClassicTestEditorUI );
@@ -134,7 +152,7 @@ describe( 'ClassicTestEditor', () => {
 		it( 'destroys UI and calls super.destroy()', () => {
 			return ClassicTestEditor.create( editorElement, { foo: 1 } )
 				.then( editor => {
-					const superSpy = testUtils.sinon.spy( StandardEditor.prototype, 'destroy' );
+					const superSpy = testUtils.sinon.spy( Editor.prototype, 'destroy' );
 					const uiSpy = sinon.spy( editor.ui, 'destroy' );
 
 					return editor.destroy()
