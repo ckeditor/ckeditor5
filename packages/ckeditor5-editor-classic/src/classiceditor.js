@@ -7,11 +7,15 @@
  * @module editor-classic/classiceditor
  */
 
-import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
+import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
+import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * The {@glink builds/guides/overview#Classic-editor classic editor} implementation.
@@ -35,9 +39,12 @@ import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`}.
  *
- * @extends module:core/editor/standardeditor~StandardEditor
+ * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
+ * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
+ * @implements module:core/editor/editorwithui~EditorWithUI
+ * @extends module:core/editor/editor~Editor
  */
-export default class ClassicEditor extends StandardEditor {
+export default class ClassicEditor extends Editor {
 	/**
 	 * Creates an instance of the classic editor.
 	 *
@@ -50,10 +57,7 @@ export default class ClassicEditor extends StandardEditor {
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
 	constructor( element, config ) {
-		super( element, config );
-
-		this.data.processor = new HtmlDataProcessor();
-		this.ui = new ClassicEditorUI( this, new ClassicEditorUIView( this.locale ) );
+		super( config );
 
 		/**
 		 * The element replacer instance used to hide the editor element.
@@ -62,6 +66,16 @@ export default class ClassicEditor extends StandardEditor {
 		 * @member {module:utils/elementreplacer~ElementReplacer}
 		 */
 		this._elementReplacer = new ElementReplacer();
+
+		this.element = element;
+
+		this.data.processor = new HtmlDataProcessor();
+
+		this.model.document.createRoot();
+
+		this.ui = new ClassicEditorUI( this, new ClassicEditorUIView( this.locale ) );
+
+		attachToForm( this );
 	}
 
 	/**
@@ -72,7 +86,7 @@ export default class ClassicEditor extends StandardEditor {
 	 * @returns {Promise}
 	 */
 	destroy() {
-		this.updateEditorElement();
+		this.updateElement();
 		this._elementReplacer.restore();
 		this.ui.destroy();
 
@@ -131,7 +145,7 @@ export default class ClassicEditor extends StandardEditor {
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
-					.then( () => editor.loadDataFromEditorElement() )
+					.then( () => editor.loadDataFromElement() )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
@@ -141,3 +155,6 @@ export default class ClassicEditor extends StandardEditor {
 		} );
 	}
 }
+
+mix( ClassicEditor, DataApiMixin );
+mix( ClassicEditor, ElementApiMixin );
