@@ -1,10 +1,17 @@
-// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
-// For licensing, see LICENSE.md or http://ckeditor.com/license
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+.ck-splitbutton-dropdown {
+	&::after {
+		display: none;
+	}
+}
 
 .ck-splitbutton-arrow {
-	// padding-right: var(--ck-spacing-small);
+	padding-right: var(--ck-spacing-medium);
 
-	& svg  {
+	& svg {
 		width: 0;
 		min-width: 0;
 	}
