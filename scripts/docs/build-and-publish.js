@@ -7,6 +7,14 @@
 
 /* eslint-env node */
 
+/*
+
+This script allows manually publishing docs on https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/.
+
+It assumes that ckeditor5.github.io is cloned next to ckeditor5.
+
+*/
+
 'use strict';
 
 const path = require( 'path' );
