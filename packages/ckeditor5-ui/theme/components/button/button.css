@@ -16,6 +16,7 @@ a.ck-button {
 	flex-flow: row nowrap;
 	align-items: center;
 	position: relative;
+	justify-content: center;
 
 	&.ck-button_with-text {
 		& .ck-button__label {
