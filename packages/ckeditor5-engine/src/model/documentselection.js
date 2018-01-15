@@ -252,7 +252,7 @@ export default class DocumentSelection {
 	 *
 	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
 	 *
-	 * @see {module:engine/model/writer~Writer#setSelectionFocus}
+	 * @see module:engine/model/writer~Writer#setSelectionFocus
 	 * @protected
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
@@ -269,9 +269,9 @@ export default class DocumentSelection {
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelection} method.
 	 *
-	 * @see {module:engine/model/writer~Writer#setTo}
+	 * @see module:engine/model/writer~Writer#setSelection
 	 * @protected
-	 * @param {module:engine/model/selection~Selection|module:engine/model/selection~DocumentSelection|
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/element~Element|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
 	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
@@ -327,7 +327,7 @@ export default class DocumentSelection {
 	 * Sets attribute on the selection. If attribute with the same key already is set, it's value is overwritten.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionAttribute} method.
 	 *
-	 * @see {module:engine/model/writer~Writer#setSelectionAttribute}
+	 * @see module:engine/model/writer~Writer#setSelectionAttribute
 	 * @protected
 	 * @param {String} key Key of the attribute to set.
 	 * @param {*} value Attribute value.
@@ -338,11 +338,11 @@ export default class DocumentSelection {
 
 	/**
 	 * Removes an attribute with given key from the selection.
-	 * If the given attribute was set on the selection, fires the {@link #event:change} event with
-	 * removed attribute key.
+	 * If the given attribute was set on the selection, fires the {@link module:engine/model/liveselection~LiveSelection#event:change}
+	 * event with removed attribute key.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#removeSelectionAttribute} method.
 	 *
-	 * @see {module:engine/model/writer~Writer#removeSelectionAttribute}
+	 * @see module:engine/model/writer~Writer#removeSelectionAttribute
 	 * @protected
 	 * @param {String} key Key of the attribute to remove.
 	 */

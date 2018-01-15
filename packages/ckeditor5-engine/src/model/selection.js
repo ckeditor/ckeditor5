@@ -296,7 +296,7 @@ export default class Selection {
 	 * 		// Removes all ranges.
 	 *		selection.setTo( null );
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/selection~DocumentSelection|
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/element~Element|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
 	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]

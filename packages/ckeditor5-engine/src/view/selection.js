@@ -20,10 +20,9 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 /**
  * Class representing selection in tree view.
  *
- * Selection can consist of {@link module:engine/view/range~Range ranges} that can be added using
- * {@link module:engine/view/selection~Selection#addRange addRange}
- * and {@link module:engine/view/selection~Selection#setRanges setRanges} methods.
- * Both methods create copies of provided ranges and store those copies internally. Further modifications to passed
+ * Selection can consist of {@link module:engine/view/range~Range ranges} that can be set using
+ * {@link module:engine/view/selection~Selection#setTo} method.
+ * That method create copies of provided ranges and store those copies internally. Further modifications to passed
  * ranges will not change selection's state.
  * Selection's ranges can be obtained via {@link module:engine/view/selection~Selection#getRanges getRanges},
  * {@link module:engine/view/selection~Selection#getFirstRange getFirstRange}
@@ -440,7 +439,7 @@ export default class Selection {
 	/**
 	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
 	 * is treated like the last added range and is used to set {@link #anchor anchor} and {@link #focus focus}.
-	 * Accepts a flag describing in which way the selection is made (see {@link #addRange addRange}).
+	 * Accepts a flag describing in which way the selection is made.
 	 *
 	 * @protected
 	 * @fires change

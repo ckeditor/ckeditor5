@@ -200,7 +200,7 @@ export default class LiveSelection extends Selection {
 	 */
 	setTo( selectable, backwardSelectionOrOffset ) {
 		super.setTo( selectable, backwardSelectionOrOffset );
-		this.refreshAttributes();
+		this._refreshAttributes();
 	}
 
 	/**
@@ -263,8 +263,10 @@ export default class LiveSelection extends Selection {
 
 	/**
 	 * Removes all attributes from the selection and sets attributes according to the surrounding nodes.
+	 *
+	 * @protected
 	 */
-	refreshAttributes() {
+	_refreshAttributes() {
 		this._updateAttributes( true );
 	}
 
