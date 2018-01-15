@@ -115,8 +115,11 @@ export function setData( model, data, options = {} ) {
 		writer.insert( modelDocumentFragment, modelRoot );
 
 		// Clean up previous document selection.
-		model.document.selection._clearAttributes();
-		model.document.selection._setTo( null );
+		for ( const key of model.document.selection.getAttributeKeys() ) {
+			writer.removeSelectionAttribute( key );
+		}
+
+		writer.setSelection( null );
 
 		// Update document selection if specified.
 		if ( selection ) {
@@ -129,10 +132,12 @@ export function setData( model, data, options = {} ) {
 				ranges.push( new ModelRange( start, end ) );
 			}
 
-			model.document.selection._setTo( ranges, selection.isBackward );
+			writer.setSelection( ranges, selection.isBackward );
 
 			if ( options.selectionAttributes ) {
-				model.document.selection._setAttributesTo( selection.getAttributes() );
+				for ( const [ key, value ] of selection.getAttributes() ) {
+					writer.setSelectionAttribute( key, value );
+				}
 			}
 		}
 	} );
@@ -188,7 +193,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 		selection.setTo( selectionOrPositionOrRange );
 	} else if ( selectionOrPositionOrRange instanceof ModelPosition ) {
 		selection = new ModelSelection();
-		selection.setTo( new ModelRange( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
+		selection.setTo( selectionOrPositionOrRange );
 	}
 
 	// Setup model to view converter.

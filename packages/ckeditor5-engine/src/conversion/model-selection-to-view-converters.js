@@ -3,7 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
+<<<<<<< HEAD
 import ViewRange from '../view/range';
+=======
+import ViewElement from '../view/element';
+>>>>>>> Simplified setTo calls and used Writer API instead of DocumentSelection.
 import viewWriter from '../view/writer';
 
 /**
@@ -84,7 +88,7 @@ export function convertCollapsedSelection() {
 		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
 		const brokenPosition = viewWriter.breakAttributes( viewPosition );
 
-		conversionApi.viewSelection.setTo( new ViewRange( brokenPosition, brokenPosition ) );
+		conversionApi.viewSelection.setTo( brokenPosition );
 	};
 }
 

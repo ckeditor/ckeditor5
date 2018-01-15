@@ -209,10 +209,10 @@ setData._parse = parse;
 export function stringify( node, selectionOrPositionOrRange = null, options = {} ) {
 	let selection;
 
-	if ( selectionOrPositionOrRange instanceof Position ) {
-		selection = new Selection();
-		selection.setTo( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
-	} else if ( selectionOrPositionOrRange instanceof Range ) {
+	if (
+		selectionOrPositionOrRange instanceof Position ||
+		selectionOrPositionOrRange instanceof Range
+	) {
 		selection = new Selection();
 		selection.setTo( selectionOrPositionOrRange );
 	} else {
