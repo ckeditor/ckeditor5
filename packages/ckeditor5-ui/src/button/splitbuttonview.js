@@ -13,6 +13,9 @@ import ButtonView from './buttonview';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
+import arrowIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
+import './../../theme/components/button/splitbutton.css';
+
 /**
  * TODO
  */
@@ -92,7 +95,7 @@ export default class SplitButtonView extends View {
 	_createArrowView() {
 		const selectView = new ButtonView();
 
-		selectView.icon = 'TODO';
+		selectView.icon = arrowIcon;
 
 		selectView.extendTemplate( {
 			attributes: {
