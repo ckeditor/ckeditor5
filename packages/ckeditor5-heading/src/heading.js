@@ -162,19 +162,6 @@ function getCommandsBindingTargets( commands, attribute ) {
 }
 
 /**
- * Heading option descriptor. Compatible with {@link module:engine/conversion/definition-based-converters~ConverterDefinition}.
- *
- * @typedef {Object} module:heading/heading~HeadingOption
- * @property {String} model Element's name in the model.
- * @property {module:engine/view/viewelementdefinition~ViewElementDefinition} view The name of the view element
- * or {@link module:engine/view/viewelementdefinition~ViewElementDefinition} that will be used to represent the model element in the view.
- * @property {String} title The user-readable title of the option.
- * @property {String} class The class which will be added to the dropdown item representing this option.
- * @property {Array.<module:engine/view/viewelementdefinition~ViewElementDefinition>} acceptAlso An array with all matched elements that
- * view to model conversion should also accept.
- */
-
-/**
  * The configuration of the heading feature. Introduced by the {@link module:heading/headingengine~HeadingEngine} feature.
  *
  * Read more in {@link module:heading/heading~HeadingConfig}.
@@ -223,6 +210,9 @@ function getCommandsBindingTargets( commands, attribute ) {
  * the {@link module:paragraph/paragraph~Paragraph} feature (which is required by
  * the {@link module:heading/headingengine~HeadingEngine} feature).
  *
+ * You can **read more** about configuring heading levels and **see more examples** in
+ * the {@glink features/headings Headings} guide.
+ *
  * Note: In the model you should always start from `heading1`, regardless of how the headings are represented in the view.
  * That's assumption is used by features like {@link module:autoformat/autoformat~Autoformat} to know which element
  * they should use when applying the first level heading.
@@ -233,4 +223,16 @@ function getCommandsBindingTargets( commands, attribute ) {
  *		editor.execute( 'heading1' );
  *
  * @member {Array.<module:heading/heading~HeadingOption>} module:heading/heading~HeadingConfig#options
+ */
+
+/**
+ * Heading option descriptor.
+ *
+ * This format is compatible with {@link module:engine/conversion/definition-based-converters~ConverterDefinition}
+ * and adds to additional properties: `title` and `class`.
+ *
+ * @typedef {Object} module:heading/heading~HeadingOption
+ * @extends module:engine/conversion/definition-based-converters~ConverterDefinition
+ * @property {String} title The user-readable title of the option.
+ * @property {String} class The class which will be added to the dropdown item representing this option.
  */
