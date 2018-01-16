@@ -16,14 +16,14 @@ This script is to be used on CI to automatically update https://ckeditor5.github
 */
 
 // Build the documentation only when master branch is updated.
-// if ( process.env.TRAVIS_BRANCH !== 'master' ) {
-// 	process.exit();
-// }
+if ( process.env.TRAVIS_BRANCH !== 'master' ) {
+	process.exit();
+}
 
 // Build the documentation only when a cron task triggered the CI.
-// if ( process.env.TRAVIS_EVENT_TYPE !== 'cron' ) {
-// 	process.exit();
-// }
+if ( process.env.TRAVIS_EVENT_TYPE !== 'cron' ) {
+	process.exit();
+}
 
 const path = require( 'path' );
 const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
