@@ -4,33 +4,30 @@
  */
 
 /**
- * @module link/ui/linkformview
+ * @module link/ui/linkactionsview
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
-import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-import '../../theme/linkform.css';
+import unlinkIcon from '../../theme/icons/unlink.svg';
+import linkIcon from '../../theme/icons/link.svg';
+import '../../theme/linkactions.css';
 
 /**
- * The link form view controller class.
- *
- * See {@link module:link/ui/linkformview~LinkFormView}.
+ * The link actions view class. This view displays link preview, allows
+ * unlinking or editing the link.
  *
  * @extends module:ui/view~View
  */
-export default class LinkFormView extends View {
+export default class LinkActionsView extends View {
 	/**
 	 * @inheritDoc
 	 */
@@ -40,7 +37,7 @@ export default class LinkFormView extends View {
 		const t = locale.t;
 
 		/**
-		 * Tracks information about DOM focus in the form.
+		 * Tracks information about DOM focus in the actions.
 		 *
 		 * @readonly
 		 * @member {module:utils/focustracker~FocusTracker}
@@ -56,29 +53,28 @@ export default class LinkFormView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
-		 * The URL input view.
+		 * The href preview view.
 		 *
-		 * @member {module:ui/labeledinput/labeledinputview~LabeledInputView}
+		 * @member {module:ui/view~View}
 		 */
-		this.urlInputView = this._createUrlInput();
+		this.preView = this._createPreView();
 
 		/**
-		 * The Save button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
-		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon );
-		this.saveButtonView.type = 'submit';
-
-		/**
-		 * The Cancel button view.
+		 * The unlink button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'cancel' );
+		this.unlinkButtonView = this._createButton( t( 'Unlink' ), unlinkIcon, 'unlink' );
 
 		/**
-		 * A collection of views which can be focused in the form.
+		 * The edit link button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this.editButtonView = this._createButton( t( 'Edit' ), linkIcon, 'edit' );
+
+		/**
+		 * A collection of views which can be focused in the view.
 		 *
 		 * @readonly
 		 * @protected
@@ -87,7 +83,7 @@ export default class LinkFormView extends View {
 		this._focusables = new ViewCollection();
 
 		/**
-		 * Helps cycling over {@link #_focusables} in the form.
+		 * Helps cycling over {@link #_focusables} in the view.
 		 *
 		 * @readonly
 		 * @protected
@@ -98,28 +94,20 @@ export default class LinkFormView extends View {
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
-				// Navigate form fields backwards using the Shift + Tab keystroke.
+				// Navigate fields backwards using the Shift + Tab keystroke.
 				focusPrevious: 'shift + tab',
 
-				// Navigate form fields forwards using the Tab key.
+				// Navigate fields forwards using the Tab key.
 				focusNext: 'tab'
 			}
 		} );
 
-		this.saveButtonView.extendTemplate( {
-			attributes: {
-				class: [
-					'ck-button-action'
-				]
-			}
-		} );
-
 		this.setTemplate( {
-			tag: 'form',
+			tag: 'div',
 
 			attributes: {
 				class: [
-					'ck-link-form',
+					'ck-link-actions',
 				],
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
@@ -127,9 +115,9 @@ export default class LinkFormView extends View {
 			},
 
 			children: [
-				this.urlInputView,
-				this.cancelButtonView,
-				this.saveButtonView
+				this.preView,
+				this.editButtonView,
+				this.unlinkButtonView
 			]
 		} );
 	}
@@ -145,9 +133,9 @@ export default class LinkFormView extends View {
 		} );
 
 		const childViews = [
-			this.urlInputView,
-			this.cancelButtonView,
-			this.saveButtonView
+			this.preView,
+			this.editButtonView,
+			this.unlinkButtonView
 		];
 
 		childViews.forEach( v => {
@@ -163,27 +151,10 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Focuses the fist {@link #_focusables} in the form.
+	 * Focuses the fist {@link #_focusables} in the actions.
 	 */
 	focus() {
 		this._focusCycler.focusFirst();
-	}
-
-	/**
-	 * Creates a labeled input view.
-	 *
-	 * @private
-	 * @returns {module:ui/labeledinput/labeledinputview~LabeledInputView} Labeled input view instance.
-	 */
-	_createUrlInput() {
-		const t = this.locale.t;
-
-		const labeledInput = new LabeledInputView( this.locale, InputTextView );
-
-		labeledInput.label = t( 'Link URL' );
-		labeledInput.inputView.placeholder = 'https://example.com';
-
-		return labeledInput;
 	}
 
 	/**
@@ -210,17 +181,52 @@ export default class LinkFormView extends View {
 
 		return button;
 	}
+
+	/**
+	 * Creates a link href preview view.
+	 *
+	 * @private
+	 * @returns {module:ui/view~View} The href preview view instance.
+	 */
+	_createPreView() {
+		const preView = new View( this.locale );
+		const bind = preView.bindTemplate;
+
+		preView.set( 'href' );
+
+		preView.setTemplate( {
+			tag: 'a',
+			attributes: {
+				class: [
+					'ck-link-actions__preview'
+				],
+				target: '_blank',
+				href: bind.to( 'href' ),
+				tabindex: -1
+			},
+			children: [
+				{
+					text: bind.to( 'href' )
+				}
+			]
+		} );
+
+		preView.focus = function() {
+			this.element.focus();
+		};
+
+		return preView;
+	}
 }
 
 /**
- * Fired when the form view is submitted (when one of the children triggered the submit event),
- * e.g. click on {@link #saveButtonView}.
+ * Fired when the {@link #editButtonView} is clicked.
  *
- * @event submit
+ * @event edit
  */
 
 /**
- * Fired when the form view is canceled, e.g. click on {@link #cancelButtonView}.
+ * Fired when the {@link #unlinkButtonView} is clicked.
  *
- * @event cancel
+ * @event unlink
  */
