@@ -89,7 +89,6 @@ export default class HeadingEngine extends Plugin {
 		const options = editor.config.get( 'heading.options' );
 
 		if ( enterCommand ) {
-			// @TODO This should be handled by a post-fixer.
 			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
 				const positionParent = editor.model.document.selection.getFirstPosition().parent;
 				const isHeading = options.some( option => positionParent.is( option.modelElement ) );
