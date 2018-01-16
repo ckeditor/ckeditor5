@@ -7,15 +7,23 @@
 
 /* eslint-env node */
 
+'use strict';
+
 /*
 
-This script allows manually publishing docs on https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/.
-
-It assumes that ckeditor5.github.io is cloned next to ckeditor5.
+This script is to be used on CI to automatically update https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/.
 
 */
 
-'use strict';
+// Build the documentation only when master branch is updated.
+if ( process.env.TRAVIS_BRANCH !== 'master' ) {
+	process.exit();
+}
+
+// Build the documentation only when a cron task triggered the CI.
+if ( process.env.TRAVIS_EVENT_TYPE !== 'cron' ) {
+	process.exit();
+}
 
 const path = require( 'path' );
 const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
@@ -25,26 +33,32 @@ const mainRepoUrl = 'https://github.com/CKEditor5/ckeditor5.github.io';
 // The assumption here is that the script is called from ckeditor5/.
 const projectVersion = require( path.join( process.cwd(), 'package.json' ) ).version;
 
-console.log( 'Updating your ckeditor5.github.io clone...' );
-exec( 'cd ../ckeditor5.github.io && git pull && cd -' );
+// Clone the CKEditor 5 page.
+console.log( 'Cloning ckeditor5.github.io repository...' );
+exec( `git clone ${ mainRepoUrl }.git` );
 
+// Build the documentation.
 console.log( 'Building documentation...' );
 exec( 'npm run docs -- --production' );
 
 console.log( 'Copying files...' );
 
 // Remove existing documentation.
-exec( `rm -rf ../ckeditor5.github.io/docs/nightly/ckeditor5/${ projectVersion }` );
-exec( 'rm -rf ../ckeditor5.github.io/docs/nightly/ckeditor5/latest' );
+exec( `rm -rf ckeditor5.github.io/docs/nightly/ckeditor5/${ projectVersion }` );
+exec( 'rm -rf ckeditor5.github.io/docs/nightly/ckeditor5/latest' );
 
 // Copy built documentation to the new destination.
-exec( 'cp -R build/docs/* ../ckeditor5.github.io/docs/nightly/' );
+exec( 'cp -R build/docs/* ckeditor5.github.io/docs/nightly/' );
 
 // Copy the versioned documentation to latest/.
-exec( 'mkdir ../ckeditor5.github.io/docs/nightly/ckeditor5/latest' );
-exec( `cp -R ../ckeditor5.github.io/docs/nightly/ckeditor5/${ projectVersion }/* ../ckeditor5.github.io/docs/nightly/ckeditor5/latest` );
+exec( 'mkdir ckeditor5.github.io/docs/nightly/ckeditor5/latest' );
+exec( `cp -R ckeditor5.github.io/docs/nightly/ckeditor5/${ projectVersion }/* ckeditor5.github.io/docs/nightly/ckeditor5/latest` );
 
-process.chdir( path.join( process.cwd(), '..', 'ckeditor5.github.io' ) );
+// Change work directory in order to make a commit in CKEditor 5 page's repository.
+process.chdir( path.join( process.cwd(), 'ckeditor5.github.io' ) );
+
+exec( `echo "https://${ process.env.GITHUB_TOKEN }:@github.com" > .git/credentials 2> /dev/null` );
+exec( 'git config credential.helper "store --file=.git/credentials"' );
 
 // Commit the documentation.
 if ( exec( 'git diff --name-only docs/' ).trim().length ) {
@@ -57,8 +71,6 @@ if ( exec( 'git diff --name-only docs/' ).trim().length ) {
 } else {
 	console.log( 'Nothing to commit. Documentation is up to date.' );
 }
-
-process.chdir( path.join( process.cwd(), '..', 'ckeditor5' ) );
 
 function exec( command ) {
 	return tools.shExec( command, { verbosity: 'error' } );
