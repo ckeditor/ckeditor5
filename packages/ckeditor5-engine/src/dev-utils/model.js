@@ -219,12 +219,12 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	modelToView.on( 'selection', convertRangeSelection() );
 	modelToView.on( 'selection', convertCollapsedSelection() );
 
-	// Convert model to view.w
+	// Convert model to view.
 	modelToView.convertInsert( range );
 
 	// Convert model selection to view selection.
 	if ( selection ) {
-		modelToView.convertSelection( selection, [] );
+		modelToView.convertSelection( selection );
 	}
 
 	// Parse view to data string.
