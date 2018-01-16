@@ -34,7 +34,7 @@ describe( 'Bug ckeditor5-engine#699', () => {
 				editor.setData( '<widget></widget><p>foo</p>' );
 
 				expect( getModelData( editor.model ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
-				expect( getViewData( editor.editing.view ) ).to.equal( '[<widget></widget>]<p>foo</p>' );
+				expect( getViewData( editor.editing.view.document ) ).to.equal( '[<widget></widget>]<p>foo</p>' );
 
 				return editor.destroy();
 			} );
