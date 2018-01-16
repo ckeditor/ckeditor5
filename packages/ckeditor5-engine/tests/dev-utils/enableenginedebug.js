@@ -5,7 +5,7 @@
 
 import { default as enableEngineDebug, disableEngineDebug } from '../../src/dev-utils/enableenginedebug';
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ModelPosition from '../../src/model/position';
@@ -50,8 +50,6 @@ import createViewRoot from '../view/_utils/createroot';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
-
-/* global document */
 
 describe( 'enableEngineDebug', () => {
 	afterEach( () => {
@@ -104,8 +102,6 @@ describe( 'disableEngineDebug', () => {
 
 describe( 'debug tools', () => {
 	let DebugPlugin, log, error;
-
-	class TestEditor extends StandardEditor {}
 
 	before( () => {
 		log = sinon.spy();
@@ -781,9 +777,7 @@ describe( 'debug tools', () => {
 		let editor;
 
 		beforeEach( () => {
-			const div = document.createElement( 'div' );
-
-			return TestEditor.create( div, {
+			return VirtualTestEditor.create( {
 				plugins: [ DebugPlugin ]
 			} ).then( _editor => {
 				editor = _editor;

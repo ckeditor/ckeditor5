@@ -75,7 +75,7 @@ ClassicEditor
 		toolbar: [ 'undo', 'redo' ]
 	} )
 	.then( editor => {
-		editor.model.document.on( 'changesDone', () => {
+		editor.model.document.on( 'change', () => {
 			printModelContents( editor );
 		} );
 

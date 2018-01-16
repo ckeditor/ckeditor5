@@ -120,7 +120,7 @@ describe( 'convertSelectionChange', () => {
 
 		const spy = sinon.spy();
 
-		model.on( 'changesDone', spy );
+		model.on( 'change', spy );
 
 		convertSelection( null, { newSelection: viewSelection } );
 
