@@ -296,8 +296,8 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	// TODO - merge with setTo
-	describe( 'setRanges() - TODO', () => {
+	// TODO - merge with other setTo's
+	describe( 'setTo()', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection._setTo( [ { invalid: 'range' } ] );
@@ -713,13 +713,11 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		describe( '_setAttribute()', () => {
-			it( 'should store attribute if the selection is in empty node', () => {
+			it( 'should set attribute', () => {
 				selection._setTo( [ rangeInEmptyP ] );
 				selection._setAttribute( 'foo', 'bar' );
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
-
-				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 			} );
 		} );
 
@@ -730,18 +728,6 @@ describe( 'DocumentSelection', () => {
 				selection._removeAttribute( 'foo' );
 
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
-
-				expect( fullP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
-			} );
-
-			it( 'should remove stored attribute if the selection is in empty node', () => {
-				selection._setTo( [ rangeInEmptyP ] );
-				selection._setAttribute( 'foo', 'bar' );
-				selection._removeAttribute( 'foo' );
-
-				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
-
-				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 			} );
 		} );
 
@@ -924,7 +910,10 @@ describe( 'DocumentSelection', () => {
 				} );
 
 				selection._setTo( [ rangeInEmptyP ] );
-				selection._setAttribute( 'foo', 'bar' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'foo', 'bar' );
+				} );
 
 				expect( batchTypes ).to.deep.equal( [ 'default' ] );
 				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
@@ -1015,9 +1004,9 @@ describe( 'DocumentSelection', () => {
 
 			it( 'uses model change to clear attributes', () => {
 				selection._setTo( [ rangeInEmptyP ] );
-				selection._setAttribute( 'foo', 'bar' );
 
 				model.change( writer => {
+					writer.setSelectionAttribute( 'foo', 'bar' );
 					writer.insertText( 'x', rangeInEmptyP.start );
 
 					// `emptyP` still has the attribute, because attribute clearing is in enqueued block.
@@ -1050,8 +1039,10 @@ describe( 'DocumentSelection', () => {
 			// Rename and some other deltas don't specify range in doc#change event.
 			// So let's see if there's no crash or something.
 			it( 'are not removed on rename', () => {
-				selection._setTo( [ rangeInEmptyP ] );
-				selection._setAttribute( 'foo', 'bar' );
+				model.change( writer => {
+					writer.setSelection( rangeInEmptyP );
+					writer.setSelectionAttribute( 'foo', 'bar' );
+				} );
 
 				sinon.spy( model, 'enqueueChange' );
 

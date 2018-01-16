@@ -207,11 +207,6 @@ export default class LiveSelection extends Selection {
 	 * @inheritDoc
 	 */
 	setAttribute( key, value ) {
-		// Store attribute in parent element if the selection is collapsed in an empty node.
-		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
-			this._storeAttribute( key, value );
-		}
-
 		if ( this._setAttribute( key, value ) ) {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
@@ -223,11 +218,6 @@ export default class LiveSelection extends Selection {
 	 * @inheritDoc
 	 */
 	removeAttribute( key ) {
-		// Remove stored attribute from parent element if the selection is collapsed in an empty node.
-		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
-			this._removeStoredAttribute( key );
-		}
-
 		if ( this._removeAttribute( key ) ) {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
@@ -240,7 +230,7 @@ export default class LiveSelection extends Selection {
 	 */
 	clearAttributes() {
 		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
-			this._setStoredAttributesTo( [] );
+			this.removeStoredAttributes();
 		}
 
 		const changed = this._setAttributesTo( new Map() );
@@ -532,41 +522,11 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Removes attribute with given key from attributes stored in current selection's parent node.
-	 *
-	 * @private
-	 * @param {String} key Key of attribute to remove.
-	 */
-	_removeStoredAttribute( key ) {
-		const storeKey = LiveSelection._getStoreAttributeKey( key );
-
-		this._model.change( writer => {
-			writer.removeAttribute( storeKey, this.anchor.parent );
-		} );
-	}
-
-	/**
-	 * Stores given attribute key and value in current selection's parent node.
-	 *
-	 * @private
-	 * @param {String} key Key of attribute to set.
-	 * @param {*} value Attribute value.
-	 */
-	_storeAttribute( key, value ) {
-		const storeKey = LiveSelection._getStoreAttributeKey( key );
-
-		this._model.change( writer => {
-			writer.setAttribute( storeKey, value, this.anchor.parent );
-		} );
-	}
-
-	/**
 	 * Sets selection attributes stored in current selection's parent node to given set of attributes.
 	 *
 	 * @private
-	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
 	 */
-	_setStoredAttributesTo( attrs ) {
+	removeStoredAttributes() {
 		const selectionParent = this.anchor.parent;
 
 		this._model.change( writer => {
@@ -574,12 +534,6 @@ export default class LiveSelection extends Selection {
 				const storeKey = LiveSelection._getStoreAttributeKey( oldKey );
 
 				writer.removeAttribute( storeKey, selectionParent );
-			}
-
-			for ( const [ key, value ] of attrs ) {
-				const storeKey = LiveSelection._getStoreAttributeKey( key );
-
-				writer.setAttribute( storeKey, value, selectionParent );
 			}
 		} );
 	}

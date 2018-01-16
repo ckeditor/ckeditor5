@@ -17,8 +17,8 @@ import Range from '../../src/model/range';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-
 import { getNodesAndText } from '../../tests/model/_utils/utils';
+import DocumentSelection from '../../src/model/documentselection';
 
 describe( 'Writer', () => {
 	let model, doc, batch;
@@ -2026,6 +2026,137 @@ describe( 'Writer', () => {
 		} );
 	} );
 
+	describe( 'setSelection()', () => {
+		let root;
+
+		beforeEach( () => {
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'p', { allowIn: '$root' } );
+
+			root = doc.createRoot();
+			root.appendChildren( [
+				new Element( 'p' ),
+				new Element( 'p' ),
+				new Element( 'p', [], new Text( 'foo' ) )
+			] );
+		} );
+
+		it( 'should use DocumentSelection#_setTo method', () => {
+			const firstParagraph = root.getNodeByPath( [ 1 ] );
+
+			const setToSpy = sinon.spy( DocumentSelection.prototype, '_setTo' );
+			setSelection( firstParagraph );
+
+			expect( setToSpy.calledOnce ).to.be.true;
+			setToSpy.restore();
+		} );
+
+		it( 'should change document selection ranges', () => {
+			const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 2 ] ) );
+
+			setSelection( range, true );
+
+			expect( model.document.selection._ranges.length ).to.equal( 1 );
+			expect( model.document.selection._ranges[ 0 ].start.path ).to.deep.equal( [ 1 ] );
+			expect( model.document.selection._ranges[ 0 ].end.path ).to.deep.equal( [ 2, 2 ] );
+			expect( model.document.selection.isBackward ).to.be.true;
+		} );
+	} );
+
+	describe( 'setSelectionFocus()', () => {
+		let root;
+
+		beforeEach( () => {
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'p', { allowIn: '$root' } );
+
+			root = doc.createRoot();
+			root.appendChildren( [
+				new Element( 'p' ),
+				new Element( 'p' ),
+				new Element( 'p', [], new Text( 'foo' ) )
+			] );
+		} );
+
+		it( 'should use DocumentSelection#_setFocus method', () => {
+			const firstParagraph = root.getNodeByPath( [ 1 ] );
+
+			const setFocusSpy = sinon.spy( DocumentSelection.prototype, '_setFocus' );
+			setSelectionFocus( firstParagraph );
+
+			expect( setFocusSpy.calledOnce ).to.be.true;
+			setFocusSpy.restore();
+		} );
+
+		it( 'should change document selection ranges', () => {
+			setSelection( new Position( root, [ 1 ] ) );
+			setSelectionFocus( new Position( root, [ 2, 2 ] ) );
+
+			expect( model.document.selection._ranges.length ).to.equal( 1 );
+			expect( model.document.selection._ranges[ 0 ].start.path ).to.deep.equal( [ 1 ] );
+			expect( model.document.selection._ranges[ 0 ].end.path ).to.deep.equal( [ 2, 2 ] );
+		} );
+	} );
+
+	describe( 'setSelectionAttribute()', () => {
+		const fooStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'foo' );
+		let root, rangeInEmptyP, emptyP;
+
+		beforeEach( () => {
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'p', { allowIn: '$root' } );
+
+			root = doc.createRoot();
+			root.appendChildren( [
+				new Element( 'p', [], [] ),
+				new Element( 'p' ),
+				new Element( 'p', [], new Text( 'foo' ) )
+			] );
+
+			rangeInEmptyP = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) );
+			emptyP = root.getChild( 0 );
+		} );
+
+		it( 'should store attribute if the selection is in empty node', () => {
+			setSelection( rangeInEmptyP );
+			setSelectionAttribute( 'foo', 'bar' );
+
+			expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+
+			expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+		} );
+	} );
+
+	describe( 'removeSelectionAttribute()', () => {
+		const fooStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'foo' );
+		let root, rangeInEmptyP, emptyP;
+
+		beforeEach( () => {
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'p', { allowIn: '$root' } );
+
+			root = doc.createRoot();
+			root.appendChildren( [
+				new Element( 'p', [], [] ),
+				new Element( 'p' ),
+				new Element( 'p', [], new Text( 'foo' ) )
+			] );
+
+			rangeInEmptyP = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) );
+			emptyP = root.getChild( 0 );
+		} );
+
+		it( 'should remove stored attribute if the selection is in empty node', () => {
+			setSelection( rangeInEmptyP );
+			setSelectionAttribute( 'foo', 'bar' );
+			removeSelectionAttribute( 'foo' );
+
+			expect( model.document.selection.getAttribute( 'foo' ) ).to.be.undefined;
+
+			expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+		} );
+	} );
+
 	function createText( data, attributes ) {
 		return model.change( writer => {
 			return writer.createText( data, attributes );
@@ -2155,6 +2286,30 @@ describe( 'Writer', () => {
 	function removeMarker( markerOrName ) {
 		model.enqueueChange( batch, writer => {
 			writer.removeMarker( markerOrName );
+		} );
+	}
+
+	function setSelection( selectable, backwardSelectionOrOffset ) {
+		model.enqueueChange( batch, writer => {
+			writer.setSelection( selectable, backwardSelectionOrOffset );
+		} );
+	}
+
+	function setSelectionFocus( itemOrPosition, offset ) {
+		model.enqueueChange( batch, writer => {
+			writer.setSelectionFocus( itemOrPosition, offset );
+		} );
+	}
+
+	function setSelectionAttribute( key, value ) {
+		model.enqueueChange( batch, writer => {
+			writer.setSelectionAttribute( key, value );
+		} );
+	}
+
+	function removeSelectionAttribute( key ) {
+		model.enqueueChange( batch, writer => {
+			writer.removeSelectionAttribute( key );
 		} );
 	}
 } );

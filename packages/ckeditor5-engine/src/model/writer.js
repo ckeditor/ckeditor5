@@ -35,6 +35,7 @@ import Element from './element';
 import RootElement from './rootelement';
 import Position from './position';
 import Range from './range.js';
+import DocumentSelection from './documentselection';
 
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
@@ -859,7 +860,16 @@ export default class Writer {
 	setSelectionAttribute( key, value ) {
 		this._assertWriterUsedCorrectly();
 
-		this.model.document.selection._setAttribute( key, value );
+		const selection = this.model.document.selection;
+
+		// Store attribute in parent element if the selection is collapsed in an empty node.
+		if ( selection.isCollapsed && selection.anchor.parent.isEmpty ) {
+			const storeKey = DocumentSelection._getStoreAttributeKey( key );
+
+			this.setAttribute( storeKey, value, selection.anchor.parent );
+		}
+
+		selection._setAttribute( key, value );
 	}
 
 	/**
@@ -870,7 +880,16 @@ export default class Writer {
 	removeSelectionAttribute( key ) {
 		this._assertWriterUsedCorrectly();
 
-		this.model.document.selection._removeAttribute( key );
+		const selection = this.model.document.selection;
+
+		// Remove stored attribute from parent element if the selection is collapsed in an empty node.
+		if ( selection.isCollapsed && selection.anchor.parent.isEmpty ) {
+			const storeKey = DocumentSelection._getStoreAttributeKey( key );
+
+			this.removeAttribute( storeKey, selection.anchor.parent );
+		}
+
+		selection._removeAttribute( key );
 	}
 
 	/**
