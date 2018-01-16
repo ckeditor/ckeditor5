@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import findAttributeRange from './findattributerange';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 /**
  * The highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}
@@ -64,13 +64,22 @@ export default class HighlightCommand extends Command {
 
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'highlight' ) ) {
-					// Then update `highlight` value.
-					const linkRange = findAttributeRange( position, 'highlight', selection.getAttribute( 'highlight' ) );
+					const highlightStart = position.getLastMatchingPosition(
+						val => val.item.hasAttribute( 'highlight' ) && val.item.getAttribute( 'highlight' ) === value,
+						{ direction: 'backward' }
+					);
 
-					writer.setAttribute( 'highlight', value, linkRange );
+					const highlightEnd = position.getLastMatchingPosition(
+						val => val.item.hasAttribute( 'highlight' ) && val.item.getAttribute( 'highlight' ) === value
+					);
+
+					const highlightRange = new Range( highlightStart, highlightEnd );
+
+					// Then update `highlight` value.
+					writer.setAttribute( 'highlight', value, highlightRange );
 
 					// Create new range wrapping changed link.
-					selection.setRanges( [ linkRange ] );
+					selection.setRanges( [ highlightRange ] );
 				} else {
 					// TODO
 				}
