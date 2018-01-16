@@ -4,7 +4,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#2fdf565",
     "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment#755a990",
-    "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#cdca42f",
+    "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#1570e9c",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#6ea4f08",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#4a4cea0",
     "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon#07f522d",
@@ -32,6 +32,6 @@
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#e1cb122",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#1c447ae",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#a7ecac5",
-    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#9667506"
+    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#12c51b2"
   }
 }
