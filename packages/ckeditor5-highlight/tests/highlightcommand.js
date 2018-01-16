@@ -115,16 +115,16 @@ describe( 'HighlightCommand', () => {
 			expect( command.value ).to.be.undefined;
 		} );
 
-		it( 'should do nothing on collapsed range', () => {
+		it( 'should change entire highlight on collapsed range when inside highlighted text', () => {
 			setData( model, '<paragraph>abc<$text highlight="marker">foo[]bar</$text>xyz</paragraph>' );
 
 			expect( command.value ).to.equal( 'marker' );
 
-			command.execute();
+			command.execute( { value: 'greenMarker' } );
 
-			expect( getData( model ) ).to.equal( '<paragraph>abc<$text highlight="marker">foo[]bar</$text>xyz</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>abc[<$text highlight="greenMarker">foobar</$text>]xyz</paragraph>' );
 
-			expect( command.value ).to.equal( 'marker' );
+			expect( command.value ).to.equal( 'greenMarker' );
 		} );
 	} );
 } );
