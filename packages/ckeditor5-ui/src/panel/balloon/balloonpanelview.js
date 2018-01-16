@@ -391,7 +391,7 @@ function getDomElement( object ) {
  * @default 30
  * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowHorizontalOffset
  */
-BalloonPanelView.arrowHorizontalOffset = 30;
+BalloonPanelView.arrowHorizontalOffset = 25;
 
 /**
  * A vertical offset of the arrow from the edge of the balloon. Controlled by CSS.
