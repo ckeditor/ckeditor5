@@ -3,8 +3,21 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-link-form {
+.ck-link-actions {
 	padding: var(--ck-spacing-standard);
+
+	& .ck-link-actions__preview {
+		color: var(--ck-color-link-default);
+		text-overflow: ellipsis;
+		max-width: 20em;
+		min-width: 3em;
+		margin: 0 var(--ck-spacing-standard);
+		cursor: pointer;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
 
 	&:focus {
 		/* https://github.com/ckeditor/ckeditor5-link/issues/90 */
@@ -13,10 +26,5 @@
 
 	& > :not(:first-child) {
 		margin-left: var(--ck-spacing-standard);
-	}
-
-	& .ck-input-text {
-		/* https://github.com/ckeditor/ckeditor5-link/issues/145 */
-		min-width: 18em;
 	}
 }
