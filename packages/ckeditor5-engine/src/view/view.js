@@ -35,6 +35,8 @@ export default class View {
 		// TODO: check import path
 		// TODO: check where render() is used and eventually switch to change() where possible
 		// TODO: observers docs fixes
+		// TODO: check where writer instance is created and it should be returned by change() method only (converters!)
+		// TODO: manual tests
 
 		/**
 		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} use by

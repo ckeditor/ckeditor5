@@ -8,11 +8,11 @@ import ModelElement from '../../src/model/element';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 
-import ViewDocument from '../../src/view/document';
+import View from '../../src/view/view';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewUIElement from '../../src/view/uielement';
-import { mergeAttributes } from '../../src/view/writer';
+import ViewWriter from '../../src/view/writer';
 
 import Mapper from '../../src/conversion/mapper';
 import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
@@ -39,7 +39,7 @@ import { stringify as stringifyView } from '../../src/dev-utils/view';
 import { setData as setModelData } from '../../src/dev-utils/model';
 
 describe( 'model-selection-to-view-converters', () => {
-	let dispatcher, mapper, model, modelDoc, modelRoot, modelSelection, viewDoc, viewRoot, viewSelection, highlightDescriptor;
+	let dispatcher, mapper, model, view, modelDoc, modelRoot, modelSelection, viewDoc, viewRoot, viewSelection, highlightDescriptor;
 
 	beforeEach( () => {
 		model = new Model();
@@ -49,7 +49,8 @@ describe( 'model-selection-to-view-converters', () => {
 
 		model.schema.extend( '$text', { allowIn: '$root' } );
 
-		viewDoc = new ViewDocument();
+		view = new View();
+		viewDoc = view.document;
 		viewRoot = createViewRoot( viewDoc );
 		viewSelection = viewDoc.selection;
 
@@ -74,7 +75,7 @@ describe( 'model-selection-to-view-converters', () => {
 	} );
 
 	afterEach( () => {
-		viewDoc.destroy();
+		view.destroy();
 	} );
 
 	describe( 'default converters', () => {
@@ -501,7 +502,8 @@ describe( 'model-selection-to-view-converters', () => {
 				);
 
 				// Remove <b></b> manually.
-				mergeAttributes( viewSelection.getFirstPosition() );
+				const viewWriter = new ViewWriter();
+				viewWriter.mergeAttributes( viewSelection.getFirstPosition() );
 
 				const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
 				modelDoc.selection.setRanges( [ modelRange ] );

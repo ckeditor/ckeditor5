@@ -9,7 +9,9 @@ import ViewElement from '../view/element';
 import ViewAttributeElement from '../view/attributeelement';
 import ViewText from '../view/text';
 import ViewRange from '../view/range';
-import viewWriter from '../view/writer';
+import WiewWriter from '../view/writer';
+
+const viewWriter = new WiewWriter();
 
 /**
  * Contains model to view converters for

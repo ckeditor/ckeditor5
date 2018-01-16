@@ -66,12 +66,12 @@ describe( 'Model converter builder', () => {
 
 		// Set name of view root the same as dom root.
 		// This is a mock of attaching view root to dom root.
-		controller.view.getRoot()._name = 'div';
+		controller.view.document.getRoot()._name = 'div';
 
 		dispatcher = controller.modelToView;
 
-		viewRoot = controller.view.getRoot();
-		viewSelection = controller.view.selection;
+		viewRoot = controller.view.document.getRoot();
+		viewSelection = controller.view.document.selection;
 
 		buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
 	} );

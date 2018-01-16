@@ -15,7 +15,7 @@ import ViewElement from '../../src/view/element';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewText from '../../src/view/text';
-import viewWriter from '../../src/view/writer';
+import ViewWriter from '../../src/view/writer';
 import ViewPosition from '../../src/view/position';
 import ViewRange from '../../src/view/range';
 
@@ -31,16 +31,17 @@ import {
 import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
 
 describe( 'advanced-converters', () => {
-	let model, modelDoc, modelRoot, viewRoot, modelDispatcher, viewDispatcher;
+	let model, modelDoc, modelRoot, viewWriter, viewRoot, modelDispatcher, viewDispatcher;
 
 	beforeEach( () => {
 		model = new Model();
 		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
+		viewWriter = new ViewWriter();
 
 		const editing = new EditingController( model );
 
-		viewRoot = editing.view.getRoot();
+		viewRoot = editing.view.document.getRoot();
 
 		// Set name of view root the same as dom root.
 		// This is a mock of attaching view root to dom root.

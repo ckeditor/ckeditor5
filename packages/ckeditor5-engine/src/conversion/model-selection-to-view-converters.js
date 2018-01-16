@@ -5,8 +5,10 @@
 
 import ViewElement from '../view/element';
 import ViewRange from '../view/range';
-import viewWriter from '../view/writer';
+import ViewWriter from '../view/writer';
 import { createViewElementFromHighlightDescriptor } from './model-to-view-converters';
+
+const viewWriter = new ViewWriter();
 
 /**
  * Contains {@link module:engine/model/selection~Selection model selection} to
@@ -207,7 +209,6 @@ function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElem
 		viewPosition = viewPosition.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
 	}
 	// End of hack.
-
 	viewPosition = viewWriter.wrapPosition( viewPosition, viewElement );
 
 	viewSelection.removeAllRanges();

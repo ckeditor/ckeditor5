@@ -115,9 +115,9 @@ describe( 'definition-based-converters', () => {
 
 		// Set name of view root the same as dom root.
 		// This is a mock of attaching view root to dom root.
-		controller.view.getRoot()._name = 'div';
+		controller.view.document.getRoot()._name = 'div';
 
-		viewRoot = controller.view.getRoot();
+		viewRoot = controller.view.document.getRoot();
 		dispatcher = controller.modelToView;
 	}
 

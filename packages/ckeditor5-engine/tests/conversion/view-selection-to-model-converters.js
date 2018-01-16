@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewDocument from '../../src/view/document';
+import View from '../../src/view/view';
 import ViewSelection from '../../src/view/selection';
 import ViewRange from '../../src/view/range';
 import createViewRoot from '../view/_utils/createroot';
@@ -17,7 +17,7 @@ import { setData as modelSetData, getData as modelGetData } from '../../src/dev-
 import { setData as viewSetData } from '../../src/dev-utils/view';
 
 describe( 'convertSelectionChange', () => {
-	let model, view, mapper, convertSelection, modelRoot, viewRoot;
+	let model, view, viewDocument, mapper, convertSelection, modelRoot, viewRoot;
 
 	beforeEach( () => {
 		model = new Model();
@@ -26,10 +26,11 @@ describe( 'convertSelectionChange', () => {
 
 		modelSetData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-		view = new ViewDocument();
-		viewRoot = createViewRoot( view, 'div', 'main' );
+		view = new View();
+		viewDocument = view.document;
+		viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
-		viewSetData( view, '<p>foo</p><p>bar</p>' );
+		viewSetData( viewDocument, '<p>foo</p><p>bar</p>' );
 
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
@@ -56,7 +57,7 @@ describe( 'convertSelectionChange', () => {
 
 	it( 'should support unicode', () => {
 		modelSetData( model, '<paragraph>நிலைக்கு</paragraph>' );
-		viewSetData( view, '<p>நிலைக்கு</p>' );
+		viewSetData( viewDocument, '<p>நிலைக்கு</p>' );
 
 		// Re-bind elements that were just re-set.
 		mapper.bindElements( modelRoot.getChild( 0 ), viewRoot.getChild( 0 ) );
