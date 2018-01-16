@@ -20,11 +20,13 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Class representing the base of the editor. It is the API all plugins can expect to get when using editor property.
- * Editors implementation (like Classic Editor or Inline Editor) should extend this class. They can add their own
- * methods and properties.
+ * Class representing the base of the editor. It is the API all plugins can expect to get when using `editor` property.
+ * It should be enough to implement editing part of feature (schema definition, conversion, commands, keystrokes, etc.).
+ * However it does not define editor UI, which is defined in {@link module:core/editor/editorwithui~EditorWithUI}.
  *
- * See also {@link module:core/editor/standardeditor~StandardEditor}.
+ * All editors implementation (like {@link module:editor-classic/classiceditor~ClassicEditor} or
+ * {@link module:editor-inline/inlineeditor~InlineEditor}) should extend this class. They can add their
+ * own methods and properties.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -97,9 +99,6 @@ export default class Editor {
 		 * @member {module:engine/model/model~Model}
 		 */
 		this.model = new Model();
-
-		// Creates main root.
-		this.model.document.createRoot();
 
 		/**
 		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
@@ -233,12 +232,6 @@ mix( Editor, ObservableMixin );
  */
 
 /**
- * Fired when the editor UI is ready. This event won't be fired if the editor has no UI.
- *
- * @event uiReady
- */
-
-/**
  * Fired when the data loaded to the editor is ready. If a specific editor doesn't load
  * any data initially, this event will be fired right before {@link #event:ready}.
  *
@@ -246,7 +239,7 @@ mix( Editor, ObservableMixin );
  */
 
 /**
- * Fired when {@link #event:pluginsReady plugins}, {@link #event:uiReady UI} and {@link #event:dataReady data} and all additional
+ * Fired when {@link #event:pluginsReady plugins}, and {@link #event:dataReady data} and all additional
  * editor components are ready.
  *
  * Note: This event is most useful for plugin developers. When integrating the editor with your website or

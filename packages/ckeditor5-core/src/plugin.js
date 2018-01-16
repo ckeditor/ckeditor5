@@ -24,6 +24,16 @@ export default class Plugin {
 		/**
 		 * The editor instance.
 		 *
+		 * Note that most editors implements {@link module:core/editor/editorwithui~EditorWithUI} interface in addition
+		 * to the base {@link module:core/editor/editor~Editor} interface. However, editors with external UI
+		 * (i.e. Bootstrap based) or headless editor may not implement {@link module:core/editor/editorwithui~EditorWithUI}
+		 * interface.
+		 *
+		 * Because of above, to make plugins more universal, it is recommended to split features into:
+		 *  - "Editing" part which use only {@link module:core/editor/editor~Editor} interface,
+		 *  - "UI" part which use both {@link module:core/editor/editor~Editor} interface and
+		 *  {@link module:core/editor/editorwithui~EditorWithUI} interface.
+		 *
 		 * @readonly
 		 * @member {module:core/editor/editor~Editor} #editor
 		 */

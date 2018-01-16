@@ -3,8 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import StandardEditor from '../../src/editor/standardeditor';
+import Editor from '../../src/editor/editor';
+import DataApiMixin from '../../src/editor/utils/dataapimixin';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * A simple editor implementation useful for testing the engine part of the features.
@@ -14,17 +16,21 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  *
  * @memberOf tests.core._utils
  */
-export default class VirtualTestEditor extends StandardEditor {
+export default class VirtualTestEditor extends Editor {
 	constructor( config ) {
-		super( null, config );
+		super( config );
 
+		// Use the HTML data processor in this editor.
 		this.data.processor = new HtmlDataProcessor();
+
+		// Create the ("main") root element of the model tree.
+		this.model.document.createRoot();
 	}
 
 	/**
 	 * Creates a virtual, element-less editor instance.
 	 *
-	 * @param {Object} config See {@link core.editor.StandardEditor}'s param.
+	 * @param {Object} config See {@link core.editor.Editor}'s param.
 	 * @returns {Promise} Promise resolved once editor is ready.
 	 * @returns {core.editor.VirtualTestEditor} return.editor The editor instance.
 	 */
@@ -43,3 +49,5 @@ export default class VirtualTestEditor extends StandardEditor {
 		} );
 	}
 }
+
+mix( VirtualTestEditor, DataApiMixin );

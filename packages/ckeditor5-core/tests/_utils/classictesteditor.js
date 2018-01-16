@@ -3,26 +3,33 @@
  * For licensing, see LICENSE.md.
  */
 
-import StandardEditor from '../../src/editor/standardeditor';
+import Editor from '../../src/editor/editor';
+import ElementApiMixin from '../../src/editor/utils/elementapimixin';
+import DataApiMixin from '../../src/editor/utils/dataapimixin';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ClassicTestEditorUI from './classictesteditorui';
 import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * A simplified classic editor. Useful for testing features.
  *
  * @memberOf tests.core._utils
- * @extends core.editor.StandardEditor
+ * @extends core.editor.Editor
  */
-export default class ClassicTestEditor extends StandardEditor {
+export default class ClassicTestEditor extends Editor {
 	/**
 	 * @inheritDoc
 	 */
 	constructor( element, config ) {
-		super( element, config );
+		super( config );
 
+		// The element on which the editor has been initialized.
+		this.element = element;
+
+		// Use the HTML data processor in this editor.
 		this.data.processor = new HtmlDataProcessor();
 
 		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );
@@ -32,7 +39,11 @@ export default class ClassicTestEditor extends StandardEditor {
 		this.ui.view.main.add( this.ui.view.editable );
 		this.ui.view.editableElement = this.ui.view.editable.element;
 
+		// A helper to easily replace the editor#element with editor.editable#element.
 		this._elementReplacer = new ElementReplacer();
+
+		// Create the ("main") root element of the model tree.
+		this.model.document.createRoot();
 	}
 
 	/**
@@ -60,7 +71,7 @@ export default class ClassicTestEditor extends StandardEditor {
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
-					.then( () => editor.loadDataFromEditorElement() )
+					.then( () => editor.loadDataFromElement() )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
@@ -70,3 +81,6 @@ export default class ClassicTestEditor extends StandardEditor {
 		} );
 	}
 }
+
+mix( ClassicTestEditor, DataApiMixin );
+mix( ClassicTestEditor, ElementApiMixin );
