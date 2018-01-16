@@ -190,6 +190,8 @@ export default class View {
 		 * @private
 		 * @member {Object} #_bindTemplate
 		 */
+
+		this.decorate( 'render' );
 	}
 
 	/**
@@ -492,6 +494,15 @@ export default class View {
 
 		this._viewCollections.map( c => c.destroy() );
 	}
+
+	/**
+	 * Event fired by the {@link #render} method. Actual rendering is executed as a listener to
+	 * this event with the default priority.
+	 *
+	 * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
+	 *
+	 * @event render
+	 */
 }
 
 mix( View, DomEmitterMixin );

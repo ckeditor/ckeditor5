@@ -106,7 +106,7 @@ describe( 'createListDropdown', () => {
 			view.isOpen = true;
 
 			// Fire event from outside of the dropdown.
-			document.body.dispatchEvent( new Event( 'click', {
+			document.body.dispatchEvent( new Event( 'mousedown', {
 				bubbles: true
 			} ) );
 
@@ -114,7 +114,7 @@ describe( 'createListDropdown', () => {
 			expect( view.isOpen ).to.be.false;
 
 			// Fire event from outside of the dropdown.
-			document.body.dispatchEvent( new Event( 'click', {
+			document.body.dispatchEvent( new Event( 'mousedown', {
 				bubbles: true
 			} ) );
 
@@ -127,7 +127,7 @@ describe( 'createListDropdown', () => {
 			view.isOpen = true;
 
 			// Event from view.element should be discarded.
-			view.element.dispatchEvent( new Event( 'click', {
+			view.element.dispatchEvent( new Event( 'mousedown', {
 				bubbles: true
 			} ) );
 
@@ -138,7 +138,7 @@ describe( 'createListDropdown', () => {
 			const child = document.createElement( 'div' );
 			view.element.appendChild( child );
 
-			child.dispatchEvent( new Event( 'click', {
+			child.dispatchEvent( new Event( 'mousedown', {
 				bubbles: true
 			} ) );
 
