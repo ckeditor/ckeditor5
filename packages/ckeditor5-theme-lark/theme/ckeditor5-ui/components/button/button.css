@@ -74,7 +74,7 @@ a.ck-button {
 			the button properly. When there's no text in the button, browsers render
 			them too small. It's a really tricky topic, when browsers render svg as an inline
 			content and line size (character width) measurement and alignment kicks in. */
-			margin: 0.16em;
+			margin: var(--ck-spacing-tiny);
 		}
 	}
 

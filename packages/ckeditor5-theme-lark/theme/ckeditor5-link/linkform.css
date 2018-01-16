@@ -4,36 +4,26 @@
  */
 
 .ck-link-form {
-	padding: var(--ck-spacing-large);
+	padding: var(--ck-spacing-standard);
+	display: flex;
+	flex-flow: row nowrap;
+	align-content: center;
 
 	&:focus {
 		/* https://github.com/ckeditor/ckeditor5-link/issues/90 */
 		outline: none;
 	}
 
+	& > :not(:first-child) {
+		margin-left: var(--ck-spacing-standard);
+	}
+
 	& .ck-input-text {
 		/* https://github.com/ckeditor/ckeditor5-link/issues/145 */
-		width: 100%;
+		min-width: 18em;
 	}
 
 	& .ck-label {
-		margin-bottom: var(--ck-spacing-tiny);
-	}
-}
-
-.ck-link-form__actions {
-	padding-top: var(--ck-spacing-large);
-
-	& .ck-button {
-		/* "Save" and "Cancel" buttons. */
-		& + .ck-button {
-			margin-right: var(--ck-spacing-medium);
-		}
-
-		/* The "Unlink" button.*/
-		&:last-child {
-			/* https://github.com/ckeditor/ckeditor5-link/issues/145 */
-			margin-right: calc(4 * var(--ck-spacing-medium));
-		}
+		display: none;
 	}
 }
