@@ -3,19 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-link-form {
-	overflow: hidden;
-}
-
-.ck-link-form__actions {
-	clear: both;
-
-	& .ck-button {
-		float: right;
-
-		/* The "Unlink" button.*/
-		&:last-child {
-			float: left;
-		}
-	}
-}
+/*
+ * Note: This file should contain the wireframe styles only. But since there are no such styles,
+ * it acts as a message to the builder telling that it should look for the corresponding styles
+ * **in the theme** when compiling the editor.
+ */

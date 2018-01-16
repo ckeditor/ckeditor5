@@ -86,14 +86,14 @@ export default class Link extends Plugin {
 		const editor = this.editor;
 		const formView = new LinkFormView( editor.locale );
 		const linkCommand = editor.commands.get( 'link' );
-		const unlinkCommand = editor.commands.get( 'unlink' );
+		// const unlinkCommand = editor.commands.get( 'unlink' );
 
 		formView.urlInputView.bind( 'value' ).to( linkCommand, 'value' );
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		formView.urlInputView.bind( 'isReadOnly' ).to( linkCommand, 'isEnabled', value => !value );
 		formView.saveButtonView.bind( 'isEnabled' ).to( linkCommand );
-		formView.unlinkButtonView.bind( 'isEnabled' ).to( unlinkCommand );
+		// formView.unlinkButtonView.bind( 'isEnabled' ).to( unlinkCommand );
 
 		// Execute link command after clicking on formView `Save` button.
 		this.listenTo( formView, 'submit', () => {
@@ -102,10 +102,10 @@ export default class Link extends Plugin {
 		} );
 
 		// Execute unlink command after clicking on formView `Unlink` button.
-		this.listenTo( formView, 'unlink', () => {
-			editor.execute( 'unlink' );
-			this._hidePanel( true );
-		} );
+		// this.listenTo( formView, 'unlink', () => {
+		// 	editor.execute( 'unlink' );
+		// 	this._hidePanel( true );
+		// } );
 
 		// Hide the panel after clicking on formView `Cancel` button.
 		this.listenTo( formView, 'cancel', () => this._hidePanel( true ) );
@@ -218,7 +218,7 @@ export default class Link extends Plugin {
 	_showPanel( focusInput ) {
 		const editor = this.editor;
 		const linkCommand = editor.commands.get( 'link' );
-		const unlinkCommand = editor.commands.get( 'unlink' );
+		// const unlinkCommand = editor.commands.get( 'unlink' );
 		const editing = editor.editing;
 		const showViewDocument = editing.view;
 		const showIsCollapsed = showViewDocument.selection.isCollapsed;
@@ -265,7 +265,7 @@ export default class Link extends Plugin {
 		}
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/53
-		this.formView.unlinkButtonView.isVisible = unlinkCommand.isEnabled;
+		// this.formView.unlinkButtonView.isVisible = unlinkCommand.isEnabled;
 
 		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 		// the command. If the user typed in the input, then canceled the balloon (`urlInputView#value` stays
