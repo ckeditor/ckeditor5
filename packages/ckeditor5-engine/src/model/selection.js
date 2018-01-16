@@ -316,7 +316,12 @@ export default class Selection {
 			// We assume that the selectable is an iterable of ranges.
 			this._setRanges( selectable, backwardSelectionOrOffset );
 		} else {
-			throw new CKEditorError( 'model-selection-set-not-selectable' );
+			/**
+			 * Cannot set selection to given place.
+			 *
+			 * @error model-selection-setTo-not-selectable
+			 */
+			throw new CKEditorError( 'model-selection-setTo-not-selectable: Cannot set selection to given place.' );
 		}
 	}
 

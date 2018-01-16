@@ -161,7 +161,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setTo()', () => {
+	describe( 'setTo() - setting selection inside element', () => {
 		it( 'should set selection inside an element', () => {
 			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
 
@@ -176,7 +176,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setTo()', () => {
+	describe( 'setTo() - setting selection on item', () => {
 		it( 'should set selection on an item', () => {
 			const textNode1 = new Text( 'foo' );
 			const textNode2 = new Text( 'bar' );
@@ -194,7 +194,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setTo - set to position or item', () => {
+	describe( 'setTo() - setting selection to position or item', () => {
 		it( 'fires change:range', () => {
 			const spy = sinon.spy();
 
@@ -579,6 +579,12 @@ describe( 'Selection', () => {
 			expect( selection.isCollapsed ).to.be.true;
 			expect( selection._setRanges.calledOnce ).to.be.true;
 			spy.restore();
+		} );
+
+		it( 'should throw an error when trying to set selection to not selectable', () => {
+			expect( () => {
+				selection.setTo( {} );
+			} ).to.throw( /model-selection-setTo-not-selectable/ );
 		} );
 	} );
 
