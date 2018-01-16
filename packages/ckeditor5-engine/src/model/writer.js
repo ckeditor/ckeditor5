@@ -847,7 +847,7 @@ export default class Writer {
 	setSelectionFocus( itemOrPosition, offset ) {
 		this._assertWriterUsedCorrectly();
 
-		this.model.document.selection._moveFocusTo( itemOrPosition, offset );
+		this.model.document.selection._setFocus( itemOrPosition, offset );
 	}
 
 	/**

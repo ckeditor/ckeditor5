@@ -241,7 +241,7 @@ export default class MutationObserver extends Observer {
 			if ( viewSelectionAnchor && viewSelectionFocus ) {
 				viewSelection = new ViewSelection();
 				viewSelection.setTo( viewSelectionAnchor );
-				viewSelection.moveFocusTo( viewSelectionFocus );
+				viewSelection.setFocus( viewSelectionFocus );
 			}
 		}
 

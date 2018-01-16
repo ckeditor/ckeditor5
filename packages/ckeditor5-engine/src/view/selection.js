@@ -472,15 +472,15 @@ export default class Selection {
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	moveFocusTo( itemOrPosition, offset ) {
+	setFocus( itemOrPosition, offset ) {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
 			 *
-			 * @error view-selection-moveFocusTo-no-ranges
+			 * @error view-selection-setFocus-no-ranges
 			 */
 			throw new CKEditorError(
-				'view-selection-moveFocusTo-no-ranges: Cannot set selection focus if there are no ranges in selection.'
+				'view-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.'
 			);
 		}
 

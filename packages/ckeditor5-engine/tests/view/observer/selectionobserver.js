@@ -320,7 +320,7 @@ describe( 'SelectionObserver', () => {
 			const viewFocus = viewDocument.domConverter.domPositionToView( sel.focusNode, sel.focusOffset );
 
 			viewSel.setTo( viewAnchor );
-			viewSel.moveFocusTo( viewFocus );
+			viewSel.setFocus( viewFocus );
 
 			viewDocument.render();
 		} );

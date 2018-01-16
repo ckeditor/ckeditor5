@@ -258,8 +258,8 @@ export default class DocumentSelection {
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
-	_moveFocusTo( itemOrPosition, offset ) {
-		this._selection.moveFocusTo( itemOrPosition, offset );
+	_setFocus( itemOrPosition, offset ) {
+		this._selection.setFocus( itemOrPosition, offset );
 	}
 
 	/**
