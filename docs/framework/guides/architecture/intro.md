@@ -27,28 +27,29 @@ The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckedito
 
 ### Editor classes
 
-{@link module:core/editor/editor~Editor} and {@link module:core/editor/standardeditor~StandardEditor} are, respectively, the base editor class and its more typical implementation.
+{@link module:core/editor/editor~Editor} class representing the base of the editor.
 
 The editor is a root object, gluing all other components. It holds a couple of properties that you need to know:
 
 * {@link module:core/editor/editor~Editor#config} &ndash; The configuration object.
 * {@link module:core/editor/editor~Editor#plugins} and {@link module:core/editor/editor~Editor#commands} &ndash; The collection of loaded plugins and commands.
 * {@link module:core/editor/editor~Editor#document} &ndash; The document. It is the editing engine's entry point.
-* {@link module:core/editor/editor~Editor#data} &ndash; The data controller (there is also the {@link module:core/editor/editor~Editor#editing editing controller} but [we plan to merge it](https://github.com/ckeditor/ckeditor5-engine/issues/678) into the data controller). It is a set of high-level utilities to work on the document,
-* {@link module:core/editor/standardeditor~StandardEditor#keystrokes} &ndash; The keystroke handler. It allows to bind keystrokes to actions.
+* {@link module:core/editor/editor~Editor#data} &ndash; The data controller. It controls how data is retrieved from the document and set inside it.
+* {@link module:core/editor/editor~Editor#editing} &ndash; The editing controller. It controls {@link module:engine/controller/editingcontroller~EditingController#document document} rendering, including selection handling.
+* {@link module:core/editor/editor~Editor#keystrokes} &ndash; The keystroke handler. It allows to bind keystrokes to actions.
 
 Besides that, the editor exposes a few of methods:
 
 * {@link module:core/editor/editor~Editor.create `create()`} &ndash; The static `create()` method. Editor constructors are protected and you should create editors using this static method. It allows the initialization process to be asynchronous.
 * {@link module:core/editor/editor~Editor#destroy `destroy()`} &ndash; Destroys the editor.
-* {@link module:core/editor/editor~Editor#setData `setData()`} and {@link module:core/editor/editor~Editor#getData `getData()`} &ndash; A way to retrieve data from the editor and set data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (it can be e.g. JSON if you implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See, for example, how to {@link features/markdown produce Markdown output}.
 * {@link module:core/editor/editor~Editor#execute `execute()`} &ndash; Executes the given command.
 
-The editor classes are a base to implement your own editors. CKEditor 5 Framework comes with a few editor types (for example, {@link module:editor-classic/classiceditor~ClassicEditor classic}, {@link module:editor-inline/inlineeditor~InlineEditor inline} and {@link module:editor-balloon/ballooneditor~BalloonEditor balloon}) but you can freely implement editors which work and look completely different. The only requirement is that you implement the {@link module:core/editor/editor~Editor} and {@link module:core/editor/standardeditor~StandardEditor} interfaces.
+You can also extend the editor interface using API interfaces:
 
-<info-box>
-	You are right &mdash; the editors mentioned above are classes, not interfaces. This is a part of API that [needs to be improved](https://github.com/ckeditor/ckeditor5/issues/327). Less inheritance, more interfaces and composition. It should also be clear which interfaces a feature requires to work (at the moment it is half of the `StandardEditor`).
-</info-box>
+* {@link module:core/editor/utils/elementapimixin~ElementApi} &ndash; A way to retrieve and set data from/to element on which editor has been initialized.
+* {@link module:core/editor/utils/dataapimixin~DataApi} &ndash; A way to retrieve data from the editor and set data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (it can be e.g. JSON if you implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See, for example, how to {@link features/markdown produce Markdown output}.
+
+The editor class is a base to implement your own editors. CKEditor 5 Framework comes with a few editor types (for example, {@link module:editor-classic/classiceditor~ClassicEditor classic}, {@link module:editor-inline/inlineeditor~InlineEditor inline} and {@link module:editor-balloon/ballooneditor~BalloonEditor balloon}) but you can freely implement editors which work and look completely different. The only requirement is that you implement the {@link module:core/editor/editor~Editor} interface.
 
 ### Plugins
 
@@ -721,7 +722,7 @@ keystrokeHandler.set( 'Tab', ( keyEvtData, cancel ) => {
 <info-box>
 	There is also an {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler `EditingKeystrokeHandler`} class which has the same API as `KeystrokeHandler` but it offers direct keystroke bindings to editor commands.
 
-	Usually, the editor provides such keystroke handler under the {@link module:core/editor/standardeditor~StandardEditor#keystrokes `editor.keystrokes`} property so any plugin can register keystrokes associated with editor commands. For example, the {@link module:undo/undo~Undo `Undo`} plugin registers `editor.keystrokes.set( 'Ctrl+Z', 'undo' );` to execute its "undo" command.
+	The editor provides such keystroke handler under the {@link module:core/editor/editor~Editor#keystrokes `editor.keystrokes`} property so any plugin can register keystrokes associated with editor commands. For example, the {@link module:undo/undo~Undo `Undo`} plugin registers `editor.keystrokes.set( 'Ctrl+Z', 'undo' );` to execute its "undo" command.
 </info-box>
 
 When multiple callbacks are assigned to the same keystroke, priorities can be used to decide which one should be handled first and whether other callbacks should be executed at all:

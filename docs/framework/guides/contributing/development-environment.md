@@ -85,7 +85,7 @@ Finally, link them:
 lerna bootstrap
 ```
 
-Running Lerna may take a while because it installs all package dependencies.
+Running Lerna may take a while because it installs all package dependencies. It will also warn you about circular dependencies between packages which you can ignore.
 
 Now, all CKEditor packages (except the [dev tools](https://github.com/ckeditor/ckeditor5-dev)) should be cross-symlinked:
 
@@ -139,7 +139,7 @@ Lerna does pretty complicated things on already complicated npm ecosystem. If yo
 
 * Look for `npm-debug.log` files in the main package and subpackages. They may point to an obvious issue like a typo in some `package.json`.
 * Sometimes repeating `lerna bootstrap` may help.
-* If nothing else works, do `lerna clean && npm i && lerna bootstrap`. Mind that without running `npm i` first, `lerna bootstrap` may fail with some meaningless errors (at least it happened to us).
+* If nothing else works, do `lerna clean && lerna bootstrap`.
 
 ### Final word about mgit and Lerna
 
@@ -177,13 +177,7 @@ You can read more about the {@link framework/guides/contributing/testing-environ
 
 ## Generating documentation
 
-In order to generate the documentation, you first need to install optional dependencies, such as our documentation generator [Umberto](https://www.npmjs.com/package/umberto). In order to do that run:
-
-```bash
-npm run install-optional-dependencies
-```
-
-Then you can run the `docs` task:
+To build the documentation you need to run the `docs` task:
 
 ```bash
 npm run docs
@@ -195,6 +189,7 @@ This task accepts two arguments which can speed up the process:
 
 * `--skip-api` &ndash; Skips building API docs (which takes the majority of the total time).
 * `--skip-snippets` &ndash; Skips building live snippets.
+* `--skip-validation` &ndash; Skips the final links validation.
 
 Note: These arguments must be passed after additional `--`: `npm run docs -- --skip-api`.
 
