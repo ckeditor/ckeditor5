@@ -13,8 +13,6 @@ import Range from './range';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import mapsEqual from '@ckeditor/ckeditor5-utils/src/mapsequal';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import DocumentSelection from './documentselection';
 
@@ -509,35 +507,6 @@ export default class Selection {
 			this._attrs.set( key, value );
 
 			this.fire( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
-		}
-	}
-
-	/**
-	 * Removes all attributes from the selection and sets given attributes.
-	 *
-	 * If given set of attributes is different than set of attributes already added to selection, fires
-	 * {@link #event:change change event} with keys of attributes that changed.
-	 *
-	 * @fires event:change:attribute
-	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
-	 */
-	setAttributesTo( attrs ) {
-		attrs = toMap( attrs );
-
-		if ( !mapsEqual( attrs, this._attrs ) ) {
-			// Create a set from keys of old and new attributes.
-			const changed = new Set( Array.from( attrs.keys() ).concat( Array.from( this._attrs.keys() ) ) );
-
-			for ( const [ key, value ] of attrs ) {
-				// If the attribute remains unchanged, remove it from changed set.
-				if ( this._attrs.get( key ) === value ) {
-					changed.delete( key );
-				}
-			}
-
-			this._attrs = attrs;
-
-			this.fire( 'change:attribute', { attributeKeys: Array.from( changed ), directChange: true } );
 		}
 	}
 

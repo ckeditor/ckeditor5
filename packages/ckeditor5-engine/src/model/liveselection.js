@@ -238,27 +238,18 @@ export default class LiveSelection extends Selection {
 	/**
 	 * @inheritDoc
 	 */
-	setAttributesTo( attrs ) {
-		attrs = toMap( attrs );
-
+	clearAttributes() {
 		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
-			this._setStoredAttributesTo( attrs );
+			this._setStoredAttributesTo( [] );
 		}
 
-		const changed = this._setAttributesTo( attrs );
+		const changed = this._setAttributesTo( new Map() );
 
 		if ( changed.size > 0 ) {
 			// Fire event with exact data (fire only if anything changed).
 			const attributeKeys = Array.from( changed );
 			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
 		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	clearAttributes() {
-		this.setAttributesTo( [] );
 	}
 
 	/**
@@ -488,7 +479,7 @@ export default class LiveSelection extends Selection {
 	 * `directChange` parameter).
 	 *
 	 * @private
-	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
+	 * @param {Map.<String,*>} attrs Iterable object containing attributes to be set.
 	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
 	 * is caused by `Batch` API.
 	 * @returns {Set.<String>} Changed attribute keys.

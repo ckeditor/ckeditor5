@@ -307,7 +307,10 @@ export function parse( data, schema, options = {} ) {
 
 		// Set attributes to selection if specified.
 		if ( options.selectionAttributes ) {
-			selection.setAttributesTo( options.selectionAttributes );
+			for ( const key in options.selectionAttributes ) {
+				const value = options.selectionAttributes[ key ];
+				selection.setAttribute( key, value );
+			}
 		}
 	}
 

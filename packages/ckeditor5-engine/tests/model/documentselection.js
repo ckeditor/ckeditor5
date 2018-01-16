@@ -723,44 +723,6 @@ describe( 'DocumentSelection', () => {
 			} );
 		} );
 
-		describe( '_setAttributesTo()', () => {
-			it( 'should fire change:attribute event with correct parameters', done => {
-				selection._setAttributesTo( { foo: 'bar', abc: 'def' } );
-
-				selection.on( 'change:attribute', ( evt, data ) => {
-					expect( data.directChange ).to.be.true;
-					expect( data.attributeKeys ).to.deep.equal( [ 'abc', 'xxx' ] );
-
-					done();
-				} );
-
-				selection._setAttributesTo( { foo: 'bar', xxx: 'yyy' } );
-			} );
-
-			it( 'should not fire change:attribute event if same attributes are set', () => {
-				selection._setAttributesTo( { foo: 'bar', abc: 'def' } );
-
-				const spy = sinon.spy();
-				selection.on( 'change:attribute', spy );
-
-				selection._setAttributesTo( { foo: 'bar', abc: 'def' } );
-
-				expect( spy.called ).to.be.false;
-			} );
-
-			it( 'should remove all stored attributes and store the given ones if the selection is in empty node', () => {
-				selection._setTo( [ rangeInEmptyP ] );
-				selection._setAttribute( 'abc', 'xyz' );
-				selection._setAttributesTo( { foo: 'bar' } );
-
-				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
-				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
-
-				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
-				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
-			} );
-		} );
-
 		describe( 'removeAttribute()', () => {
 			it( 'should remove attribute set on the text fragment', () => {
 				selection._setTo( [ rangeInFullP ] );

@@ -357,15 +357,11 @@ export default class DocumentSelection {
 		this._selection.clearAttributes();
 	}
 
-	_getStoredAttributes() {
-		return this._selection._getStoredAttributes();
-	}
-
 	/**
 	 * @protected
 	*/
-	_setAttributesTo( attrs ) {
-		return this._selection.setAttributesTo( attrs );
+	_getStoredAttributes() {
+		return this._selection._getStoredAttributes();
 	}
 
 	/**

@@ -1171,50 +1171,6 @@ describe( 'Selection', () => {
 				expect( spy.called ).to.be.false;
 			} );
 		} );
-
-		describe( 'setAttributesTo()', () => {
-			it( 'should remove all attributes set on element and set the given ones', () => {
-				selection.setAttribute( 'abc', 'xyz' );
-				selection.setAttributesTo( { foo: 'bar' } );
-
-				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
-				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
-			} );
-
-			it( 'should fire only one change:attribute event', () => {
-				selection.setAttributesTo( { foo: 'bar', xxx: 'yyy' } );
-
-				const spy = sinon.spy();
-				selection.on( 'change:attribute', spy );
-
-				selection.setAttributesTo( { foo: 'bar', abc: 'def' } );
-
-				expect( spy.calledOnce ).to.be.true;
-			} );
-
-			it( 'should fire change:attribute event with correct parameters', () => {
-				selection.setAttributesTo( { foo: 'bar', xxx: 'yyy' } );
-
-				selection.on( 'change:attribute', ( evt, data ) => {
-					expect( data.directChange ).to.be.true;
-					expect( data.attributeKeys ).to.deep.equal( [ 'abc', 'xxx' ] );
-				} );
-
-				selection.setAttributesTo( { foo: 'bar', abc: 'def' } );
-			} );
-
-			it( 'should not fire change:attribute event if attributes had not changed', () => {
-				selection.setTo( [ rangeInFullP ] );
-				selection.setAttributesTo( { foo: 'bar', xxx: 'yyy' } );
-
-				const spy = sinon.spy();
-				selection.on( 'change:attribute', spy );
-
-				selection.setAttributesTo( { xxx: 'yyy', foo: 'bar' } );
-
-				expect( spy.called ).to.be.false;
-			} );
-		} );
 	} );
 
 	describe( 'containsEntireContent()', () => {
