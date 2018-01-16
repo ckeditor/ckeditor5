@@ -515,8 +515,6 @@ describe( 'Position', () => {
 			const position = new Position( p, 0 );
 
 			expect( position.editableElement ).to.equal( editable );
-
-			document.destroy();
 		} );
 	} );
 
