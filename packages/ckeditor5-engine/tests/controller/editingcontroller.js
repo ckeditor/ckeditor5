@@ -9,7 +9,7 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 import EditingController from '../../src/controller/editingcontroller';
 
-import ViewDocument from '../../src/view/document';
+import View from '../../src/view/view';
 
 import Mapper from '../../src/conversion/mapper';
 import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
@@ -38,7 +38,7 @@ describe( 'EditingController', () => {
 
 		it( 'should create controller with properties', () => {
 			expect( editing ).to.have.property( 'model' ).that.equals( model );
-			expect( editing ).to.have.property( 'view' ).that.is.instanceof( ViewDocument );
+			expect( editing ).to.have.property( 'view' ).that.is.instanceof( View );
 			expect( editing ).to.have.property( 'mapper' ).that.is.instanceof( Mapper );
 			expect( editing ).to.have.property( 'modelToView' ).that.is.instanceof( ModelConversionDispatcher );
 
@@ -56,15 +56,15 @@ describe( 'EditingController', () => {
 
 		it( 'should bind view roots to model roots', () => {
 			expect( model.document.roots ).to.length( 1 ); // $graveyard
-			expect( editing.view.roots ).to.length( 0 );
+			expect( editing.view.document.roots ).to.length( 0 );
 
 			const modelRoot = model.document.createRoot();
 
 			expect( model.document.roots ).to.length( 2 );
-			expect( editing.view.roots ).to.length( 1 );
-			expect( editing.view.getRoot().document ).to.equal( editing.view );
+			expect( editing.view.document.roots ).to.length( 1 );
+			expect( editing.view.document.getRoot().document ).to.equal( editing.view.document );
 
-			expect( editing.view.getRoot().name ).to.equal( modelRoot.name ).to.equal( '$root' );
+			expect( editing.view.document.getRoot().name ).to.equal( modelRoot.name ).to.equal( '$root' );
 		} );
 	} );
 
@@ -84,7 +84,7 @@ describe( 'EditingController', () => {
 
 			document.body.appendChild( domRoot );
 
-			viewRoot = editing.view.getRoot();
+			viewRoot = editing.view.document.getRoot();
 			editing.view.attachDomRoot( domRoot );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
@@ -122,11 +122,11 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should convert insertion', () => {
-			expect( getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
+			expect( getViewData( editing.view.document ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert split', () => {
-			expect( getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
+			expect( getViewData( editing.view.document ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
 
 			model.change( writer => {
 				writer.split( model.document.selection.getFirstPosition() );
@@ -136,17 +136,17 @@ describe( 'EditingController', () => {
 				] );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<p>f</p><p>{}oo</p><p></p><p>bar</p>' );
+			expect( getViewData( editing.view.document ) ).to.equal( '<p>f</p><p>{}oo</p><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert rename', () => {
-			expect( getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
+			expect( getViewData( editing.view.document ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
 
 			model.change( writer => {
 				writer.rename( modelRoot.getChild( 0 ), 'div' );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<div>f{}oo</div><p></p><p>bar</p>' );
+			expect( getViewData( editing.view.document ) ).to.equal( '<div>f{}oo</div><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert delete', () => {
@@ -160,11 +160,11 @@ describe( 'EditingController', () => {
 				] );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<p>f{}o</p><p></p><p>bar</p>' );
+			expect( getViewData( editing.view.document ) ).to.equal( '<p>f{}o</p><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert selection from view to model', done => {
-			listener.listenTo( editing.view, 'selectionChange', () => {
+			listener.listenTo( editing.view.document, 'selectionChange', () => {
 				setTimeout( () => {
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>foo</paragraph>' +
@@ -173,10 +173,10 @@ describe( 'EditingController', () => {
 					);
 
 					done();
-				} );
+				}, 1 );
 			} );
 
-			editing.view.isFocused = true;
+			editing.view.document.isFocused = true;
 			editing.view.render();
 
 			const domSelection = document.getSelection();
@@ -195,7 +195,7 @@ describe( 'EditingController', () => {
 				] );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
+			expect( getViewData( editing.view.document ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
 		} );
 
 		it( 'should convert not collapsed selection', () => {
@@ -205,7 +205,7 @@ describe( 'EditingController', () => {
 				] );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{a}r</p>' );
+			expect( getViewData( editing.view.document ) ).to.equal( '<p>foo</p><p></p><p>b{a}r</p>' );
 		} );
 
 		it( 'should clear previous selection', () => {
@@ -215,7 +215,7 @@ describe( 'EditingController', () => {
 				] );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
+			expect( getViewData( editing.view.document ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
 
 			model.change( () => {
 				model.document.selection.setRanges( [
@@ -223,7 +223,7 @@ describe( 'EditingController', () => {
 				] );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>ba{}r</p>' );
+			expect( getViewData( editing.view.document ) ).to.equal( '<p>foo</p><p></p><p>ba{}r</p>' );
 		} );
 
 		it( 'should convert adding marker', () => {
@@ -233,7 +233,7 @@ describe( 'EditingController', () => {
 				model.markers.set( 'marker', range );
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
 				.to.equal( '<p>f<span>oo</span></p><p></p><p><span>ba</span>r</p>' );
 		} );
 
@@ -248,7 +248,7 @@ describe( 'EditingController', () => {
 				model.markers.remove( 'marker' );
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
 				.to.equal( '<p>foo</p><p></p><p>bar</p>' );
 		} );
 
@@ -265,7 +265,7 @@ describe( 'EditingController', () => {
 				model.markers.set( 'marker', range2 );
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
 				.to.equal( '<p><span>fo</span>o</p><p></p><p>bar</p>' );
 		} );
 
@@ -280,7 +280,7 @@ describe( 'EditingController', () => {
 				writer.insertText( 'xyz', new ModelPosition( modelRoot, [ 1, 0 ] ) );
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
 				.to.equal( '<p>f<span>oo</span></p><p><span>xyz</span></p><p><span>ba</span>r</p>' );
 		} );
 
@@ -298,7 +298,7 @@ describe( 'EditingController', () => {
 				);
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
 				.to.equal( '<p>f<span>oor</span></p><p></p><p><span>ba</span></p>' );
 		} );
 
@@ -316,7 +316,7 @@ describe( 'EditingController', () => {
 				);
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
 				.to.equal( '<p>f</p><p></p><p><span>ba</span>roo</p>' );
 		} );
 
@@ -334,7 +334,7 @@ describe( 'EditingController', () => {
 				);
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
 				.to.equal( '<p></p><p>f<span>oo</span></p><p>bar</p>' );
 		} );
 	} );

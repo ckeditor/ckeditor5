@@ -44,7 +44,7 @@ describe( 'DataController', () => {
 	} );
 
 	describe( 'parse()', () => {
-		it.only( 'should set text', () => {
+		it( 'should set text', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			const output = data.parse( '<p>foo<b>bar</b></p>' );
 
