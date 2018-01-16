@@ -203,6 +203,11 @@ export default class LiveSelection extends Selection {
 		this._refreshAttributes();
 	}
 
+	setFocus( itemOrPosition, offset ) {
+		super.setFocus( itemOrPosition, offset );
+		this._refreshAttributes();
+	}
+
 	/**
 	 * @inheritDoc
 	 */

@@ -252,6 +252,14 @@ describe( 'DocumentSelection', () => {
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
+
+		it( 'refreshes attributes', () => {
+			const spy = sinon.spy( selection._selection, '_updateAttributes' );
+
+			selection._setFocus( Position.createAt( root, 1 ) );
+
+			expect( spy.called ).to.be.true;
+		} );
 	} );
 
 	describe( 'setTo - removeAllRanges', () => {
