@@ -29,7 +29,7 @@ describe( 'FontFamilyCommand', () => {
 		expect( command ).to.be.instanceOf( FontCommand );
 	} );
 
-	it( 'opeartes on fontFamily attribute', () => {
-		expect( command ).to.have.property( 'attribute', 'fontFamily' );
+	it( 'operates on fontFamily attribute', () => {
+		expect( command ).to.have.property( 'attributeKey', 'fontFamily' );
 	} );
 } );

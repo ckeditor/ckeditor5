@@ -19,13 +19,13 @@ export default class FontCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {String} attribute Name of an model attribute on which this command operates.
+	 * @param {String} attributeKey Name of an model attribute on which this command operates.
 	 */
-	constructor( editor, attribute ) {
+	constructor( editor, attributeKey ) {
 		super( editor );
 
 		/**
-		 * If is set it means that selection has `attribute` set.
+		 * If is set it means that selection has `attributeKey` set to that value.
 		 *
 		 * @observable
 		 * @readonly
@@ -36,9 +36,9 @@ export default class FontCommand extends Command {
 		 * A model attribute on which this command operates.
 		 *
 		 * @readonly
-		 * @member {Boolean} module:font/fontcommand~FontCommand#attribute
+		 * @member {Boolean} module:font/fontcommand~FontCommand#attributeKey
 		 */
-		this.attribute = attribute;
+		this.attributeKey = attributeKey;
 	}
 
 	/**
@@ -48,8 +48,8 @@ export default class FontCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		this.value = doc.selection.getAttribute( this.attribute );
-		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, this.attribute );
+		this.value = doc.selection.getAttribute( this.attributeKey );
+		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, this.attributeKey );
 	}
 
 	/**
@@ -66,21 +66,24 @@ export default class FontCommand extends Command {
 		const document = model.document;
 		const selection = document.selection;
 
-		// Do not apply value on collapsed selection.
-		if ( selection.isCollapsed ) {
-			return;
-		}
-
 		const value = options.value;
 
 		model.change( writer => {
-			const ranges = model.schema.getValidRanges( selection.getRanges(), this.attribute );
-
-			for ( const range of ranges ) {
+			if ( selection.isCollapsed ) {
 				if ( value ) {
-					writer.setAttribute( this.attribute, value, range );
+					selection.setAttribute( this.attributeKey, value );
 				} else {
-					writer.removeAttribute( this.attribute, range );
+					selection.removeAttribute( this.attributeKey );
+				}
+			} else {
+				const ranges = model.schema.getValidRanges( selection.getRanges(), this.attributeKey );
+
+				for ( const range of ranges ) {
+					if ( value ) {
+						writer.setAttribute( this.attributeKey, value, range );
+					} else {
+						writer.removeAttribute( this.attributeKey, range );
+					}
 				}
 			}
 		} );

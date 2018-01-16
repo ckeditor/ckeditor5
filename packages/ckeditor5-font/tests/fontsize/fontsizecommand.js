@@ -29,7 +29,7 @@ describe( 'FontSizeCommand', () => {
 		expect( command ).to.be.instanceOf( FontCommand );
 	} );
 
-	it( 'opeartes on fontSize attribute', () => {
-		expect( command ).to.have.property( 'attribute', 'fontSize' );
+	it( 'operates on fontSize attribute', () => {
+		expect( command ).to.have.property( 'attributeKey', 'fontSize' );
 	} );
 } );
