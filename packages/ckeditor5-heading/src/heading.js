@@ -52,9 +52,9 @@ export default class Heading extends Plugin {
 		const dropdownTooltip = t( 'Heading' );
 
 		for ( const option of options ) {
-			const command = editor.commands.get( option.modelElement );
+			const command = editor.commands.get( option.model );
 			const itemModel = new Model( {
-				commandName: option.modelElement,
+				commandName: option.model,
 				label: option.title,
 				class: option.class
 			} );
@@ -162,16 +162,6 @@ function getCommandsBindingTargets( commands, attribute ) {
 }
 
 /**
- * Heading option descriptor.
- *
- * @typedef {Object} module:heading/heading~HeadingOption
- * @property {String} modelElement Element's name in the model.
- * @property {String} viewElement The name of the view element that will be used to represent the model element in the view.
- * @property {String} title The user-readable title of the option.
- * @property {String} class The class which will be added to the dropdown item representing this option.
- */
-
-/**
  * The configuration of the heading feature. Introduced by the {@link module:heading/headingengine~HeadingEngine} feature.
  *
  * Read more in {@link module:heading/heading~HeadingConfig}.
@@ -202,10 +192,10 @@ function getCommandsBindingTargets( commands, attribute ) {
  *
  *		const headingConfig = {
  *			options: [
- *				{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
- *				{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
- *				{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
- *				{ modelElement: 'heading3', viewElement: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
+ *				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+ *				{ model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
+ *				{ model: 'heading2', view: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
+ *				{ model: 'heading3', view: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
  *			]
  *		};
  *
@@ -220,6 +210,9 @@ function getCommandsBindingTargets( commands, attribute ) {
  * the {@link module:paragraph/paragraph~Paragraph} feature (which is required by
  * the {@link module:heading/headingengine~HeadingEngine} feature).
  *
+ * You can **read more** about configuring heading levels and **see more examples** in
+ * the {@glink features/headings Headings} guide.
+ *
  * Note: In the model you should always start from `heading1`, regardless of how the headings are represented in the view.
  * That's assumption is used by features like {@link module:autoformat/autoformat~Autoformat} to know which element
  * they should use when applying the first level heading.
@@ -230,4 +223,16 @@ function getCommandsBindingTargets( commands, attribute ) {
  *		editor.execute( 'heading1' );
  *
  * @member {Array.<module:heading/heading~HeadingOption>} module:heading/heading~HeadingConfig#options
+ */
+
+/**
+ * Heading option descriptor.
+ *
+ * This format is compatible with {@link module:engine/conversion/definition-based-converters~ConverterDefinition}
+ * and adds to additional properties: `title` and `class`.
+ *
+ * @typedef {Object} module:heading/heading~HeadingOption
+ * @extends module:engine/conversion/definition-based-converters~ConverterDefinition
+ * @property {String} title The user-readable title of the option.
+ * @property {String} class The class which will be added to the dropdown item representing this option.
  */

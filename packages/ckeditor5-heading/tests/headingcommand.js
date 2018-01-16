@@ -10,9 +10,9 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 const options = [
-	{ modelElement: 'heading1', viewElement: 'h2', title: 'H2' },
-	{ modelElement: 'heading2', viewElement: 'h3', title: 'H3' },
-	{ modelElement: 'heading3', viewElement: 'h4', title: 'H4' }
+	{ model: 'heading1', view: { name: 'h2' }, title: 'H2' },
+	{ model: 'heading2', view: { name: 'h3' }, title: 'H3' },
+	{ model: 'heading3', view: { name: 'h4' }, title: 'H4' }
 ];
 
 describe( 'HeadingCommand', () => {
@@ -30,8 +30,8 @@ describe( 'HeadingCommand', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			for ( const option of options ) {
-				commands[ option.modelElement ] = new HeadingCommand( editor, option.modelElement );
-				schema.register( option.modelElement, { inheritAllFrom: '$block' } );
+				commands[ option.model ] = new HeadingCommand( editor, option.model );
+				schema.register( option.model, { inheritAllFrom: '$block' } );
 			}
 
 			schema.register( 'notBlock' );
@@ -59,7 +59,7 @@ describe( 'HeadingCommand', () => {
 			test( option );
 		}
 
-		function test( { modelElement } ) {
+		function test( { model: modelElement } ) {
 			it( `equals ${ modelElement } when collapsed selection is placed inside ${ modelElement } element`, () => {
 				setData( model, `<${ modelElement }>foobar</${ modelElement }>` );
 				const element = root.getChild( 0 );
@@ -200,11 +200,11 @@ describe( 'HeadingCommand', () => {
 			} );
 
 			function test( from, to ) {
-				it( `converts ${ from.modelElement } to ${ to.modelElement } on collapsed selection`, () => {
-					setData( model, `<${ from.modelElement }>foo[]bar</${ from.modelElement }>` );
-					commands[ to.modelElement ].execute();
+				it( `converts ${ from.model } to ${ to.model } on collapsed selection`, () => {
+					setData( model, `<${ from.model }>foo[]bar</${ from.model }>` );
+					commands[ to.model ].execute();
 
-					expect( getData( model ) ).to.equal( `<${ to.modelElement }>foo[]bar</${ to.modelElement }>` );
+					expect( getData( model ) ).to.equal( `<${ to.model }>foo[]bar</${ to.model }>` );
 				} );
 			}
 		} );
@@ -245,7 +245,7 @@ describe( 'HeadingCommand', () => {
 				);
 			} );
 
-			function test( { modelElement: fromElement }, { modelElement: toElement } ) {
+			function test( { model: fromElement }, { model: toElement } ) {
 				it( `converts ${ fromElement } to ${ toElement } on non-collapsed selection`, () => {
 					setData(
 						model,
@@ -264,7 +264,7 @@ describe( 'HeadingCommand', () => {
 
 	describe( 'isEnabled', () => {
 		for ( const option of options ) {
-			test( option.modelElement );
+			test( option.model );
 		}
 
 		function test( modelElement ) {

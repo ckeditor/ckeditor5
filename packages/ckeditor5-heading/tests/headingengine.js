@@ -75,6 +75,48 @@ describe( 'HeadingEngine', () => {
 		expect( editor.getData() ).to.equal( '<h4>foobar</h4>' );
 	} );
 
+	describe( 'user defined', () => {
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ HeadingEngine ],
+					heading: {
+						options: [
+							{ model: 'paragraph', title: 'paragraph' },
+							{
+								model: 'heading1',
+								view: 'h1',
+								acceptsAlso: [
+									{ name: 'p', attribute: { 'data-heading': 'h1' }, priority: 'high' }
+								],
+								title: 'User H1'
+							}
+						]
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+				} );
+		} );
+
+		it( 'should convert from defined h element', () => {
+			editor.setData( '<h1>foobar</h1>' );
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<heading1>foobar</heading1>' );
+			expect( editor.getData() ).to.equal( '<h1>foobar</h1>' );
+		} );
+
+		it( 'should convert from defined paragraph with attributes', () => {
+			editor.setData( '<p data-heading="h1">foobar</p><p>Normal paragraph</p>' );
+
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<heading1>foobar</heading1><paragraph>Normal paragraph</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<h1>foobar</h1><p>Normal paragraph</p>' );
+		} );
+	} );
+
 	it( 'should not blow up if there\'s no enter command in the editor', () => {
 		return VirtualTestEditor
 			.create( {
@@ -87,18 +129,18 @@ describe( 'HeadingEngine', () => {
 			describe( 'default value', () => {
 				it( 'should be set', () => {
 					expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
-						{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-						{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
-						{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
-						{ modelElement: 'heading3', viewElement: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
+						{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+						{ model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
+						{ model: 'heading2', view: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
+						{ model: 'heading3', view: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
 					] );
 				} );
 			} );
 
 			it( 'should customize options', () => {
 				const options = [
-					{ modelElement: 'paragraph', title: 'Paragraph' },
-					{ modelElement: 'h4', viewElement: 'h4', title: 'H4' }
+					{ model: 'paragraph', title: 'Paragraph' },
+					{ model: 'h4', view: { name: 'h4' }, title: 'H4' }
 				];
 
 				return VirtualTestEditor
@@ -125,3 +167,4 @@ describe( 'HeadingEngine', () => {
 		} );
 	} );
 } );
+

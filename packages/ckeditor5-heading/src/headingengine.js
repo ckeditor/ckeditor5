@@ -8,9 +8,12 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import {
+	modelElementToViewContainerElement,
+	viewToModelElement
+} from '@ckeditor/ckeditor5-engine/src/conversion/definition-based-converters';
+
 import HeadingCommand from './headingcommand';
 
 const defaultModelElement = 'paragraph';
@@ -30,10 +33,10 @@ export default class HeadingEngine extends Plugin {
 
 		editor.config.define( 'heading', {
 			options: [
-				{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-				{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
-				{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
-				{ modelElement: 'heading3', viewElement: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
+				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+				{ model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
+				{ model: 'heading2', view: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
+				{ model: 'heading3', view: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
 			]
 		} );
 	}
@@ -56,24 +59,20 @@ export default class HeadingEngine extends Plugin {
 
 		for ( const option of options ) {
 			// Skip paragraph - it is defined in required Paragraph feature.
-			if ( option.modelElement !== defaultModelElement ) {
+			if ( option.model !== defaultModelElement ) {
 				// Schema.
-				editor.model.schema.register( option.modelElement, {
+				editor.model.schema.register( option.model, {
 					inheritAllFrom: '$block'
 				} );
 
 				// Build converter from model to view for data and editing pipelines.
-				buildModelConverter().for( data.modelToView, editing.modelToView )
-					.fromElement( option.modelElement )
-					.toElement( option.viewElement );
+				modelElementToViewContainerElement( option, [ data.modelToView, editing.modelToView ] );
 
 				// Build converter from view to model for data pipeline.
-				buildViewConverter().for( data.viewToModel )
-					.fromElement( option.viewElement )
-					.toElement( option.modelElement );
+				viewToModelElement( option, [ data.viewToModel ] );
 
 				// Register the heading command for this option.
-				editor.commands.add( option.modelElement, new HeadingCommand( editor, option.modelElement ) );
+				editor.commands.add( option.model, new HeadingCommand( editor, option.model ) );
 			}
 		}
 	}
@@ -91,7 +90,7 @@ export default class HeadingEngine extends Plugin {
 		if ( enterCommand ) {
 			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
 				const positionParent = editor.model.document.selection.getFirstPosition().parent;
-				const isHeading = options.some( option => positionParent.is( option.modelElement ) );
+				const isHeading = options.some( option => positionParent.is( option.model ) );
 
 				if ( isHeading && !positionParent.is( defaultModelElement ) && positionParent.childCount === 0 ) {
 					data.writer.rename( positionParent, defaultModelElement );
