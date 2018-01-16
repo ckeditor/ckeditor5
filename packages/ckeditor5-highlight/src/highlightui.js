@@ -14,7 +14,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import markerIcon from './../theme/icons/marker.svg';
 import penIcon from './../theme/icons/pen.svg';
-import rubberIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
+import eraserIcon from './../theme/icons/eraser.svg';
 
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import createSplitButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/createsplitbuttondropdown';
@@ -66,7 +66,7 @@ export default class HighlightUI extends Plugin {
 	_addRemoveHighlightButton() {
 		const t = this.editor.t;
 
-		this._addButton( 'removeHighlight', t( 'Remove highlighting' ), rubberIcon );
+		this._addButton( 'removeHighlight', t( 'Remove highlighting' ), eraserIcon );
 	}
 
 	/**
@@ -181,9 +181,9 @@ export default class HighlightUI extends Plugin {
 
 				return buttonView;
 			} );
-			// Add rubber button to dropdown.
-			const rubberButton = componentFactory.create( 'removeHighlight' );
-			buttons.push( rubberButton );
+			// Add eraser button to dropdown.
+			const eraserButton = componentFactory.create( 'removeHighlight' );
+			buttons.push( eraserButton );
 
 			// Make toolbar button enabled when any button in dropdown is enabled.
 			model.bind( 'isEnabled' ).to(
