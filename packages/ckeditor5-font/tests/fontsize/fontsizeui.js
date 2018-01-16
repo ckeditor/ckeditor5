@@ -80,8 +80,6 @@ describe( 'FontSizeUI', () => {
 		} );
 
 		it( 'should add custom CSS class to dropdown', () => {
-			const dropdown = editor.ui.componentFactory.create( 'fontSize' );
-
 			dropdown.render();
 
 			expect( dropdown.element.classList.contains( 'ck-font-size-dropdown' ) ).to.be.true;
@@ -89,12 +87,25 @@ describe( 'FontSizeUI', () => {
 
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
-			const dropdown = editor.ui.componentFactory.create( 'fontSize' );
 
 			dropdown.commandName = 'fontSize';
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
+		} );
+
+		it( 'should activate current option in dropdown', () => {
+			const listView = dropdown.listView;
+
+			command.value = undefined;
+
+			// The third item is 'normal' font size.
+			expect( listView.items.map( item => item.isActive ) ).to.deep.equal( [ false, false, true, false, false ] );
+
+			command.value = 'tiny';
+
+			// The first item is 'tiny' font size.
+			expect( listView.items.map( item => item.isActive ) ).to.deep.equal( [ true, false, false, false, false ] );
 		} );
 
 		describe( 'model to command binding', () => {
@@ -116,11 +127,11 @@ describe( 'FontSizeUI', () => {
 			it( 'does not alter normalizeOptions() internals', () => {
 				const options = normalizeOptions( [ 'tiny', 'small', 'normal', 'big', 'huge' ] );
 				expect( options ).to.deep.equal( [
-					{ title: 'Tiny', model: 'text-tiny', view: { name: 'span', class: 'text-tiny' } },
-					{ title: 'Small', model: 'text-small', view: { name: 'span', class: 'text-small' } },
+					{ title: 'Tiny', model: 'tiny', view: { name: 'span', class: 'text-tiny' } },
+					{ title: 'Small', model: 'small', view: { name: 'span', class: 'text-small' } },
 					{ title: 'Normal', model: undefined },
-					{ title: 'Big', model: 'text-big', view: { name: 'span', class: 'text-big' } },
-					{ title: 'Huge', model: 'text-huge', view: { name: 'span', class: 'text-huge' } }
+					{ title: 'Big', model: 'big', view: { name: 'span', class: 'text-big' } },
+					{ title: 'Huge', model: 'huge', view: { name: 'span', class: 'text-huge' } }
 				] );
 			} );
 

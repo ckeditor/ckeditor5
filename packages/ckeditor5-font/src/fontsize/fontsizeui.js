@@ -39,6 +39,8 @@ export default class FontSizeUI extends Plugin {
 				class: option.class
 			} );
 
+			itemModel.bind( 'isActive' ).to( command, 'value', value => value === option.model );
+
 			// Add the option to the collection.
 			dropdownItems.add( itemModel );
 		}

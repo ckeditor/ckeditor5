@@ -28,11 +28,11 @@ describe( 'FontSizeEditing Utils', () => {
 		describe( 'named presets', () => {
 			it( 'should return defined presets', () => {
 				expect( normalizeOptions( [ 'tiny', 'small', 'normal', 'big', 'huge' ] ) ).to.deep.equal( [
-					{ title: 'Tiny', model: 'text-tiny', view: { name: 'span', class: 'text-tiny' } },
-					{ title: 'Small', model: 'text-small', view: { name: 'span', class: 'text-small' } },
+					{ title: 'Tiny', model: 'tiny', view: { name: 'span', class: 'text-tiny' } },
+					{ title: 'Small', model: 'small', view: { name: 'span', class: 'text-small' } },
 					{ title: 'Normal', model: undefined },
-					{ title: 'Big', model: 'text-big', view: { name: 'span', class: 'text-big' } },
-					{ title: 'Huge', model: 'text-huge', view: { name: 'span', class: 'text-huge' } }
+					{ title: 'Big', model: 'big', view: { name: 'span', class: 'text-big' } },
+					{ title: 'Huge', model: 'huge', view: { name: 'span', class: 'text-huge' } }
 				] );
 			} );
 		} );

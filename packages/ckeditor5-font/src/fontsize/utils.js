@@ -26,7 +26,7 @@ export function normalizeOptions( configuredOptions ) {
 const namedPresets = {
 	tiny: {
 		title: 'Tiny',
-		model: 'text-tiny',
+		model: 'tiny',
 		view: {
 			name: 'span',
 			class: 'text-tiny'
@@ -34,7 +34,7 @@ const namedPresets = {
 	},
 	small: {
 		title: 'Small',
-		model: 'text-small',
+		model: 'small',
 		view: {
 			name: 'span',
 			class: 'text-small'
@@ -42,7 +42,7 @@ const namedPresets = {
 	},
 	big: {
 		title: 'Big',
-		model: 'text-big',
+		model: 'big',
 		view: {
 			name: 'span',
 			class: 'text-big'
@@ -50,7 +50,7 @@ const namedPresets = {
 	},
 	huge: {
 		title: 'Huge',
-		model: 'text-huge',
+		model: 'huge',
 		view: {
 			name: 'span',
 			class: 'text-huge'

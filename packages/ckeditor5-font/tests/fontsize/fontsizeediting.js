@@ -80,7 +80,7 @@ describe( 'FontSizeEditing', () => {
 		} );
 
 		it( 'should convert fontSize attribute to predefined named preset', () => {
-			setModelData( doc, '<paragraph>f<$text fontSize="text-tiny">o</$text>o</paragraph>' );
+			setModelData( doc, '<paragraph>f<$text fontSize="tiny">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<span class="text-tiny">o</span>o</p>' );
 		} );
@@ -152,7 +152,7 @@ describe( 'FontSizeEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="text-tiny">o</$text>o</paragraph>' );
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="tiny">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<span class="text-tiny">o</span>o</p>' );
 		} );

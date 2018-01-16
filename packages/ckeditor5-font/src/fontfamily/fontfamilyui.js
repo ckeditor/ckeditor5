@@ -37,8 +37,10 @@ export default class FontFamilyUI extends Plugin {
 			const itemModel = new Model( {
 				commandName: 'fontFamily',
 				commandParam: option.model,
-				label: option.title,
+				label: option.title
 			} );
+
+			itemModel.bind( 'isActive' ).to( command, 'value', value => value === option.model );
 
 			// Try to set a dropdown list item style.
 			if ( option.view && option.view.style ) {

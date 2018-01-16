@@ -88,6 +88,22 @@ describe( 'FontFamilyUI', () => {
 			sinon.assert.calledOnce( focusSpy );
 		} );
 
+		it( 'should activate current option in dropdown', () => {
+			const listView = dropdown.listView;
+
+			command.value = undefined;
+
+			// The first item is 'default' font family.
+			expect( listView.items.map( item => item.isActive ) )
+				.to.deep.equal( [ true, false, false, false, false, false, false, false, false ] );
+
+			command.value = 'Arial';
+
+			// The second item is 'Arial' font family.
+			expect( listView.items.map( item => item.isActive ) )
+				.to.deep.equal( [ false, true, false, false, false, false, false, false, false ] );
+		} );
+
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
