@@ -28,7 +28,7 @@
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#8decb82",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#1bdec45",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#e3c2d2e",
-    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#ca6c636",
+    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#269e97b",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#e1cb122",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#1c447ae",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#a7ecac5",
