@@ -41,8 +41,9 @@ export default class Matcher {
 	 *
 	 *		matcher.add( {
 	 *			attribute: {
-	 *				title: 'foobar',
-	 *				foo: /^\w+/
+	 *				title: 'foobar',	// Attribute title should equal 'foobar'.
+	 *				foo: /^\w+/,		// Attribute foo should match /^\w+/ regexp.
+	 *				bar: true			// Attribute bar should be set (can be empty).
 	 *			}
 	 *		} );
 	 *
@@ -95,8 +96,10 @@ export default class Matcher {
 	 * {@link module:engine/view/matcher~Matcher#match match} or {@link module:engine/view/matcher~Matcher#matchAll matchAll} methods.
 	 * @param {String|RegExp} [pattern.name] Name or regular expression to match element's name.
 	 * @param {Object} [pattern.attribute] Object with key-value pairs representing attributes to match. Each object key
-	 * represents attribute name. Value under that key can be either a string or a regular expression and it will be
-	 * used to match attribute value.
+	 * represents attribute name. Value under that key can be either:
+	 * * `true` - then attribute is just required (can be empty),
+	 * * a string - then attribute has to be equal, or
+	 * * a regular expression - then attribute has to match the expression.
 	 * @param {String|RegExp|Array} [pattern.class] Class name or array of class names to match. Each name can be
 	 * provided in a form of string or regular expression.
 	 * @param {Object} [pattern.style] Object with key-value pairs representing styles to match. Each object key
@@ -295,7 +298,9 @@ function matchAttributes( patterns, element ) {
 		if ( element.hasAttribute( name ) ) {
 			const attribute = element.getAttribute( name );
 
-			if ( pattern instanceof RegExp ) {
+			if ( pattern === true ) {
+				match.push( name );
+			} else if ( pattern instanceof RegExp ) {
 				if ( pattern.test( attribute ) ) {
 					match.push( name );
 				} else {
