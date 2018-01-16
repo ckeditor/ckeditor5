@@ -430,6 +430,12 @@ describe( 'Element', () => {
 				expect( el._attrs.get( 'foo' ) ).to.equal( 'bar' );
 			} );
 
+			it( 'should cast attribute value to a string', () => {
+				el.setAttribute( 'foo', true );
+
+				expect( el._attrs.get( 'foo' ) ).to.equal( 'true' );
+			} );
+
 			it( 'should fire change event with attributes type', done => {
 				el.once( 'change:attributes', eventInfo => {
 					expect( eventInfo.source ).to.equal( el );

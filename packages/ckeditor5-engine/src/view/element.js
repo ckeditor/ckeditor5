@@ -329,6 +329,8 @@ export default class Element extends Node {
 	 * @fires module:engine/view/node~Node#change
 	 */
 	setAttribute( key, value ) {
+		value = String( value );
+
 		this._fireChange( 'attributes', this );
 
 		if ( key == 'class' ) {
