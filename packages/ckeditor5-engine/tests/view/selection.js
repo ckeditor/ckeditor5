@@ -575,6 +575,15 @@ describe( 'Selection', () => {
 
 			selection._setRanges( [ range2, range3 ] );
 		} );
+
+		it( 'should throw when range is intersecting with already added range', () => {
+			const text = el.getChild( 0 );
+			const range2 = Range.createFromParentsAndOffsets( text, 7, text, 15 );
+
+			expect( () => {
+				selection._setRanges( [ range1, range2 ] );
+			} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
+		} );
 	} );
 
 	describe( 'setTo()', () => {
@@ -649,6 +658,14 @@ describe( 'Selection', () => {
 
 			expect( selection.isFake ).to.be.true;
 			expect( selection.fakeSelectionLabel ).to.equal( label );
+		} );
+
+		it( 'should throw an error when trying to set to not selectable', () => {
+			const otherSelection = new Selection();
+
+			expect( () => {
+				otherSelection.setTo( {} );
+			} ).to.throw( /view-selection-setTo-not-selectable/ );
 		} );
 	} );
 

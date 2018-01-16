@@ -407,14 +407,38 @@ export default class Selection {
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
 	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
-	 * {@link module:engine/view/range~Range range} or an iterable of {@link module:engine/view/range~Range ranges}.
+	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
+	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
+	 *		// Sets ranges from the given range.
+	 *		const range = new Range( start, end );
+	 *		selection.setTo( range, isBackwardSelection );
+	 *
+	 *		// Sets ranges from the iterable of ranges.
+	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		selection.setTo( range, isBackwardSelection );
+	 *
+	 *		// Sets ranges from the other selection.
+	 *		const otherSelection = new Selection();
+	 *		selection.setTo( otherSelection );
+	 *
+	 * 		// Sets collapsed range at the given position.
+	 *		const position = new Position( root, path );
+	 *		selection.setTo( position );
+	 *
+	 * 		// Sets collapsed range on the given item.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		selection.setTo( paragraph, offset );
+	 *
+	 * 		// Removes all ranges.
+	 *		selection.setTo( null );
+
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
-	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range} selectable
+	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
 	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
 	 */
 	setTo( selectable, backwardSelectionOrOffset ) {
-		if ( !selectable ) {
+		if ( selectable == null ) {
 			this._removeAllRanges();
 		} else if ( selectable instanceof Selection ) {
 			this._isFake = selectable.isFake;
@@ -432,7 +456,12 @@ export default class Selection {
 			// We assume that the selectable is an iterable of ranges.
 			this._setRanges( selectable, backwardSelectionOrOffset );
 		} else {
-			throw new CKEditorError( 'model-selection-set-not-selectable' );
+			/**
+			 * Cannot set selection to given place.
+			 *
+			 * @error view-selection-setTo-not-selectable
+			 */
+			throw new CKEditorError( 'view-selection-setTo-not-selectable: Cannot set selection to given place.' );
 		}
 	}
 
