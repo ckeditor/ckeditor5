@@ -381,8 +381,8 @@ describe( 'Autoformat', () => {
 					plugins: [ Enter, Paragraph, Autoformat, ListEngine, HeadingEngine ],
 					heading: {
 						options: [
-							{ modelElement: 'paragraph' },
-							{ modelElement: 'heading1', viewElement: 'h2' }
+							{ model: 'paragraph' },
+							{ model: 'heading1', view: 'h2' }
 						]
 					}
 				} )
