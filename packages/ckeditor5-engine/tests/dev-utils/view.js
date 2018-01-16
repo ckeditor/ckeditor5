@@ -16,7 +16,7 @@ import UIElement from '../../src/view/uielement';
 import Text from '../../src/view/text';
 import Selection from '../../src/view/selection';
 import Range from '../../src/view/range';
-import Document from '../../src/view/document';
+import View from '../../src/view/view';
 import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor';
 import createViewRoot from '../view/_utils/createroot';
 
@@ -36,7 +36,8 @@ describe( 'view test utils', () => {
 			it( 'should use stringify method', () => {
 				const element = document.createElement( 'div' );
 				const stringifySpy = sandbox.spy( getData, '_stringify' );
-				const viewDocument = new Document();
+				const view = new View();
+				const viewDocument = view.document;
 				const options = { showType: false, showPriority: false, withoutSelection: true };
 				const root = createAttachedRoot( viewDocument, element );
 				root.appendChildren( new Element( 'p' ) );
@@ -50,13 +51,14 @@ describe( 'view test utils', () => {
 				expect( stringifyOptions ).to.have.property( 'showPriority' ).that.equals( false );
 				expect( stringifyOptions ).to.have.property( 'ignoreRoot' ).that.equals( true );
 
-				viewDocument.destroy();
+				view.destroy();
 			} );
 
 			it( 'should use stringify method with selection', () => {
 				const element = document.createElement( 'div' );
 				const stringifySpy = sandbox.spy( getData, '_stringify' );
-				const viewDocument = new Document();
+				const view = new View();
+				const viewDocument = view.document;
 				const options = { showType: false, showPriority: false };
 				const root = createAttachedRoot( viewDocument, element );
 				root.appendChildren( new Element( 'p' ) );
@@ -72,7 +74,7 @@ describe( 'view test utils', () => {
 				expect( stringifyOptions ).to.have.property( 'showPriority' ).that.equals( false );
 				expect( stringifyOptions ).to.have.property( 'ignoreRoot' ).that.equals( true );
 
-				viewDocument.destroy();
+				view.destroy();
 			} );
 
 			it( 'should throw an error when passing invalid document', () => {
@@ -84,7 +86,8 @@ describe( 'view test utils', () => {
 
 		describe( 'setData', () => {
 			it( 'should use parse method', () => {
-				const viewDocument = new Document();
+				const view = new View();
+				const viewDocument = view.document;
 				const data = 'foobar<b>baz</b>';
 				const parseSpy = sandbox.spy( setData, '_parse' );
 
@@ -98,11 +101,12 @@ describe( 'view test utils', () => {
 				expect( args[ 1 ] ).to.be.an( 'object' );
 				expect( args[ 1 ].rootElement ).to.equal( viewDocument.getRoot() );
 
-				viewDocument.destroy();
+				view.destroy();
 			} );
 
 			it( 'should use parse method with selection', () => {
-				const viewDocument = new Document();
+				const view = new View();
+				const viewDocument = view.document;
 				const data = '[<b>baz</b>]';
 				const parseSpy = sandbox.spy( setData, '_parse' );
 
@@ -115,7 +119,7 @@ describe( 'view test utils', () => {
 				expect( args[ 1 ] ).to.be.an( 'object' );
 				expect( args[ 1 ].rootElement ).to.equal( viewDocument.getRoot() );
 
-				viewDocument.destroy();
+				view.destroy();
 			} );
 
 			it( 'should throw an error when passing invalid document', () => {

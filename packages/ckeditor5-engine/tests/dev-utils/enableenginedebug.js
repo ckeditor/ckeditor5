@@ -794,7 +794,8 @@ describe( 'debug tools', () => {
 			const model = editor.model;
 			const modelDoc = model.document;
 			const modelRoot = modelDoc.getRoot();
-			const viewDoc = editor.editing.view;
+			const view = editor.editing.view;
+			const viewDoc = view.document;
 
 			model.change( () => {
 				const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), 0 );
