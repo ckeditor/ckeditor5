@@ -18,7 +18,7 @@ import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 import unlinkIcon from '../../theme/icons/unlink.svg';
-import linkIcon from '../../theme/icons/link.svg';
+import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
 import '../../theme/linkactions.css';
 
 /**
@@ -71,7 +71,7 @@ export default class LinkActionsView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.editButtonView = this._createButton( t( 'Edit' ), linkIcon, 'edit' );
+		this.editButtonView = this._createButton( t( 'Edit link' ), pencilIcon, 'edit' );
 
 		/**
 		 * A collection of views which can be focused in the view.

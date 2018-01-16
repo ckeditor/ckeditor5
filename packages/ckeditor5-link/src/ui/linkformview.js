@@ -128,8 +128,8 @@ export default class LinkFormView extends View {
 
 			children: [
 				this.urlInputView,
-				this.cancelButtonView,
-				this.saveButtonView
+				this.saveButtonView,
+				this.cancelButtonView
 			]
 		} );
 	}
@@ -146,8 +146,8 @@ export default class LinkFormView extends View {
 
 		const childViews = [
 			this.urlInputView,
-			this.cancelButtonView,
-			this.saveButtonView
+			this.saveButtonView,
+			this.cancelButtonView
 		];
 
 		childViews.forEach( v => {
