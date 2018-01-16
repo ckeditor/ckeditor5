@@ -6,6 +6,10 @@
 .ck-link-form {
 	padding: var(--ck-spacing-standard);
 
+	& .ck-button {
+		border-width: 0;
+	}
+
 	&:focus {
 		/* https://github.com/ckeditor/ckeditor5-link/issues/90 */
 		outline: none;

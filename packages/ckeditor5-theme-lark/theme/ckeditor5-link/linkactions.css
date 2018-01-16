@@ -6,6 +6,10 @@
 .ck-link-actions {
 	padding: var(--ck-spacing-standard);
 
+	& .ck-button {
+		border-width: 0;
+	}
+
 	& .ck-link-actions__preview {
 		color: var(--ck-color-link-default);
 		text-overflow: ellipsis;
