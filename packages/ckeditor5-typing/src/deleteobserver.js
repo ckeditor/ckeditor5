@@ -44,7 +44,17 @@ export default class DeleteObserver extends Observer {
 			deleteData.unit = data.altKey ? 'word' : deleteData.unit;
 			deleteData.sequence = ++sequence;
 
+			// Save the event object to check later if it was stopped or not.
+			let event;
+			document.once( 'delete', evt => ( event = evt ), { priority: 'highest' } );
+
 			document.fire( 'delete', new DomEventData( document, data.domEvent, deleteData ) );
+
+			// Stop `keydown` event if `delete` event was stopped.
+			// https://github.com/ckeditor/ckeditor5/issues/753
+			if ( event && event.stop.called ) {
+				evt.stop();
+			}
 		} );
 	}
 
