@@ -17,7 +17,6 @@ import FileRepository from '../src/filerepository';
 import { AdapterMock, createNativeFileMock, NativeFileReaderMock } from './_utils/mocks';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import svgPlaceholder from '../theme/icons/image_placeholder.svg';
 
@@ -159,7 +158,7 @@ describe( 'ImageUploadProgress', () => {
 
 	it( 'should not process attribute change if it is already consumed', () => {
 		editor.editing.modelToView.on( 'attribute:uploadStatus:image', ( evt, data, consumable ) => {
-			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
+			consumable.consume( data.item, evt.name );
 		}, { priority: 'highest' } );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );

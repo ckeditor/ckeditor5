@@ -20,7 +20,6 @@ import { AdapterMock, createNativeFileMock, NativeFileReaderMock } from './_util
 
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
@@ -199,7 +198,7 @@ describe( 'ImageUploadEngine', () => {
 
 	it( 'should not convert image\'s uploadId attribute if is consumed already', () => {
 		editor.editing.modelToView.on( 'attribute:uploadId:image', ( evt, data, consumable ) => {
-			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
+			consumable.consume( data.item, evt.name );
 		}, { priority: 'high' } );
 
 		setModelData( model, '<image uploadId="1234"></image>' );
