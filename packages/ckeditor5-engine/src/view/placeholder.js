@@ -45,7 +45,7 @@ export function attachPlaceholder( element, placeholderText, checkFunction ) {
 	// Single listener per document.
 	if ( !documentPlaceholders.has( document ) ) {
 		documentPlaceholders.set( document, new Map() );
-		listener.listenTo( document, 'render', () => updateAllPlaceholders( document ), { priority: 'high' } );
+		listener.listenTo( document, 'change', () => updateAllPlaceholders( document ) );
 	}
 
 	// Store text in element's data attribute.

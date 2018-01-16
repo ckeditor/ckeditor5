@@ -6,15 +6,16 @@
 import { attachPlaceholder, detachPlaceholder } from '../../src/view/placeholder';
 import createViewRoot from './_utils/createroot';
 import ViewContainerElement from '../../src/view/containerelement';
-import ViewDocument from '../../src/view/document';
+import View from '../../src/view/view';
 import ViewRange from '../../src/view/range';
 import { setData } from '../../src/dev-utils/view';
 
 describe( 'placeholder', () => {
-	let viewDocument, viewRoot;
+	let view, viewDocument, viewRoot;
 
 	beforeEach( () => {
-		viewDocument = new ViewDocument();
+		view = new View();
+		viewDocument = view.document;
 		viewRoot = createViewRoot( viewDocument );
 		viewDocument.isFocused = true;
 	} );
@@ -100,8 +101,9 @@ describe( 'placeholder', () => {
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 
-			viewDocument.selection.setRanges( [ ViewRange.createIn( element ) ] );
-			viewDocument.render();
+			view.change( () => {
+				viewDocument.selection.setRanges( [ ViewRange.createIn( element ) ] );
+			} );
 
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
@@ -124,13 +126,15 @@ describe( 'placeholder', () => {
 			attachPlaceholder( element, 'foo bar baz' );
 			setData( viewDocument, '<p>paragraph</p>' );
 
-			viewDocument.render();
+			view.render();
 		} );
 
 		it( 'should allow to add placeholder to elements from different documents', () => {
 			setData( viewDocument, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
-			const secondDocument = new ViewDocument();
+
+			const secondView = new View();
+			const secondDocument = secondView.document;
 			secondDocument.isFocused = true;
 			const secondRoot = createViewRoot( secondDocument );
 			setData( secondDocument, '<div></div><div>{another div}</div>' );
@@ -146,12 +150,13 @@ describe( 'placeholder', () => {
 			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			// Move selection to the elements with placeholders.
-			viewDocument.selection.setRanges( [ ViewRange.createIn( element ) ] );
-			secondDocument.selection.setRanges( [ ViewRange.createIn( secondElement ) ] );
+			view.change( () => {
+				viewDocument.selection.setRanges( [ ViewRange.createIn( element ) ] );
+			} );
 
-			// Render changes.
-			viewDocument.render();
-			secondDocument.render();
+			secondView.change( () => {
+				secondDocument.selection.setRanges( [ ViewRange.createIn( secondElement ) ] );
+			} );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
