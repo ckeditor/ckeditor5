@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,6 +8,7 @@
 import DeleteObserver from '../src/deleteobserver';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'DeleteObserver', () => {
@@ -21,7 +22,8 @@ describe( 'DeleteObserver', () => {
 	// See ckeditor/ckeditor5-enter#10.
 	it( 'can be initialized', () => {
 		expect( () => {
-			viewDocument.createRoot( document.createElement( 'div' ) );
+			createViewRoot( viewDocument );
+			viewDocument.attachDomRoot( document.createElement( 'div' ) );
 		} ).to.not.throw();
 	} );
 

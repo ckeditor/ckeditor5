@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -33,7 +33,7 @@ export default class InputCommand extends Command {
 		 * @private
 		 * @member {module:typing/changebuffer~ChangeBuffer} #_buffer
 		 */
-		this._buffer = new ChangeBuffer( editor.model.document, undoStepSize );
+		this._buffer = new ChangeBuffer( editor.model, undoStepSize );
 	}
 
 	/**
