@@ -48,10 +48,6 @@ describe( 'TreeWalker', () => {
 		rootEnding = new Position( root, 2 );
 	} );
 
-	afterEach( () => {
-		doc.destroy();
-	} );
-
 	describe( 'constructor()', () => {
 		it( 'should throw if neither boundaries nor starting position is set', () => {
 			expect( () => {
