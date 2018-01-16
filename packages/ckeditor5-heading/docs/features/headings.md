@@ -53,14 +53,16 @@ ClassicEditor
 
 ### Configuring custom heading elements
 
-It is also possible to define custom elements for headings using {@link module:engine/view/viewelementdefinition~ViewElementDefinition}.
+It is also possible to define fully custom elements for headings by using the {@link module:engine/view/viewelementdefinition~ViewElementDefinition advanced format} of the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option.
 
-For example, the following editor will support `heading2fancy` that differs from `heading2` in view by extra `class` property: 
+For example, the following editor will support the following two heading options at the same time: `<h2 class="fancy">` and `<h2>`:
 
 ```html
 <style>
-	.fancy {
+	// Style for the heading in the content and for the dropdown item.
+	h2.fancy, .ck-heading_heading2_fancy {
 		color: #ff0050;
+		font-size: 1.3em;
 	}
 </style>
 
@@ -70,7 +72,6 @@ For example, the following editor will support `heading2fancy` that differs from
 	<h2 class="fancy">Fancy Heading 2</h2>
 	<p>This is <a href="https://ckeditor5.github.io">CKEditor 5</a>.</p>
 </div>
-
 ```
 
 ```js
@@ -82,14 +83,16 @@ ClassicEditor
 				{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
 				{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
 				{
-					model: 'heading2fancy',
+					model: 'headingFancy',
 					view: {
 						name: 'h2',
 						class: 'fancy',
+
+						// It needs to be converted before the standard 'heading2'.
 						priority: 'high'
 					},
 					title: 'Heading 2 (fancy)',
-					class: 'ck-heading_heading2 fancy'
+					class: 'ck-heading_heading2_fancy'
 				}
 			]
 		}
