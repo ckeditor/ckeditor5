@@ -13,6 +13,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import codeIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/code.svg';
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
+import editIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
 import strikethroughIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg';
 import underlineIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/underline.svg';
 import unlinkIcon from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
@@ -27,6 +28,18 @@ class FakeIcons extends Plugin {
 			view.set( {
 				label: 'Code',
 				icon: codeIcon,
+				tooltip: true
+			} );
+
+			return view;
+		} );
+
+		editor.ui.componentFactory.add( 'edit', locale => {
+			const view = new ButtonView( locale );
+
+			view.set( {
+				label: 'Edit link',
+				icon: editIcon,
 				tooltip: true
 			} );
 
@@ -89,8 +102,8 @@ ClassicEditor
 			ArticlePluginSet, FakeIcons
 		],
 		toolbar: [
-			'headings', 'bold', 'italic', 'strikethrough', 'underline', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockquote',
-			'code', 'undo', 'redo', 'imagestylefull', 'imagestyleside', 'imagetextalternative', 'insertImage'
+			'headings', 'bold', 'italic', 'strikethrough', 'underline', 'link', 'unlink', 'edit', 'bulletedList', 'numberedList',
+			'blockquote', 'code', 'undo', 'redo', 'imagestylefull', 'imagestyleside', 'imagetextalternative', 'insertImage'
 		]
 	} )
 	.then( editor => {
