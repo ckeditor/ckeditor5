@@ -2,6 +2,7 @@
  * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
+
 .ck-splitbutton-dropdown {
 	&::after {
 		display: none;
@@ -11,6 +12,10 @@
 .ck-rounded-corners .ck-splitbutton > .ck-button:not(.ck-splitbutton-arrow) {
 	border-top-right-radius: unset;
 	border-bottom-right-radius: unset;
+
+	&:focus {
+		z-index: calc(var(--ck-z-default) + 1);
+	}
 }
 
 .ck-rounded-corners .ck-splitbutton > .ck-splitbutton-arrow {
