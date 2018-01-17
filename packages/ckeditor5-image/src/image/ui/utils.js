@@ -43,7 +43,11 @@ export function getBalloonPositionData( editor ) {
 		target: editingView.domConverter.viewToDom( editingView.selection.getSelectedElement() ),
 		positions: [
 			defaultPositions.northArrowSouth,
-			defaultPositions.southArrowNorth
+			defaultPositions.northArrowSouthWest,
+			defaultPositions.northArrowSouthEast,
+			defaultPositions.southArrowNorth,
+			defaultPositions.southArrowNorthWest,
+			defaultPositions.southArrowNorthEast
 		]
 	};
 }
