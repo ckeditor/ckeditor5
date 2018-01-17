@@ -196,32 +196,6 @@ export default class Selection {
 	}
 
 	/**
-	 * Adds a range to the selection. Added range is copied. This means that passed range is not saved in the
-	 * selection instance and you can safely operate on it.
-	 *
-	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
-	 * {@link module:engine/view/range~Range#start start} to {@link module:engine/view/range~Range#end end}
-	 * or from {@link module:engine/view/range~Range#end end} to {@link module:engine/view/range~Range#start start}.
-	 * The flag is used to set {@link #anchor anchor} and {@link #focus focus} properties.
-	 *
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
-	 * with ranges already stored in Selection instance.
-	 *
-	 * @fires change
-	 * @param {module:engine/view/range~Range} range
-	 * @param {Boolean} [isBackward]
-	 */
-	_addRange( range, isBackward = false ) {
-		if ( !( range instanceof Range ) ) {
-			throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
-		}
-
-		this._pushRange( range );
-		this._lastRangeBackward = !!isBackward;
-		this.fire( 'change' );
-	}
-
-	/**
 	 * Returns an iterable that contains copies of all ranges added to the selection.
 	 *
 	 * @returns {Iterable.<module:engine/view/range~Range>}
@@ -480,11 +454,7 @@ export default class Selection {
 		this._ranges = [];
 
 		for ( const range of newRanges ) {
-			if ( !( range instanceof Range ) ) {
-				throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
-			}
-
-			this._pushRange( range );
+			this._addRange( range );
 		}
 
 		this._lastRangeBackward = !!isLastBackward;
@@ -528,6 +498,8 @@ export default class Selection {
 		} else {
 			this._addRange( new Range( anchor, newFocus ) );
 		}
+
+		this.fire( 'change' );
 	}
 
 	/**
@@ -561,6 +533,32 @@ export default class Selection {
 		selection.setTo( otherSelection );
 
 		return selection;
+	}
+
+	/**
+	 * Adds a range to the selection. Added range is copied. This means that passed range is not saved in the
+	 * selection instance and you can safely operate on it.
+	 *
+	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
+	 * {@link module:engine/view/range~Range#start start} to {@link module:engine/view/range~Range#end end}
+	 * or from {@link module:engine/view/range~Range#end end} to {@link module:engine/view/range~Range#start start}.
+	 * The flag is used to set {@link #anchor anchor} and {@link #focus focus} properties.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
+	 * with ranges already stored in Selection instance.
+	 *
+	 * @private
+	 * @fires change
+	 * @param {module:engine/view/range~Range} range
+	 * @param {Boolean} [isBackward]
+	 */
+	_addRange( range, isBackward = false ) {
+		if ( !( range instanceof Range ) ) {
+			throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
+		}
+
+		this._pushRange( range );
+		this._lastRangeBackward = !!isBackward;
 	}
 
 	/**
