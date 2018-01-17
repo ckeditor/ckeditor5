@@ -9,7 +9,7 @@
 	@mixin ck-unselectable;
 
 	display: flex;
-	flex-flow: row nowrap; /** TODO: wrap vs nowrap */
+	flex-flow: row wrap;
 	align-items: center;
 
 	&.ck-toolbar_vertical {

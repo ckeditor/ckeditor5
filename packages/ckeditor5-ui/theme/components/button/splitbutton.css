@@ -8,8 +8,18 @@
 	}
 }
 
+.ck-rounded-corners .ck-splitbutton > .ck-button:not(.ck-splitbutton-arrow) {
+	border-top-right-radius: unset;
+	border-bottom-right-radius: unset;
+}
+
+.ck-rounded-corners .ck-splitbutton > .ck-splitbutton-arrow {
+	border-top-left-radius: unset;
+	border-bottom-left-radius: unset;
+}
+
 .ck-splitbutton-arrow {
-	padding-right: var(--ck-spacing-medium);
+	padding-right: var(--ck-spacing-standard);
 
 	& svg {
 		width: 0;
@@ -25,6 +35,8 @@
 
 		position: absolute;
 		top: 50%;
-		transform: translate3d(-50%, -50%, 0);
+		/* To make the triangle appear in the middle of split button the translation in X-axis
+		 * should be adjusted by the half of its width. */
+		transform: translate3d(calc(-50% + 0.2em), -50%, 0);
 	}
 }
