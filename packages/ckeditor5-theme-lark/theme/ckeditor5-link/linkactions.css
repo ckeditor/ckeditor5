@@ -13,10 +13,13 @@
 	& .ck-link-actions__preview {
 		color: var(--ck-color-link-default);
 		text-overflow: ellipsis;
-		max-width: 20em;
-		min-width: 3em;
-		margin: 0 var(--ck-spacing-standard);
 		cursor: pointer;
+
+		/* Match the box model of the link editor form's input so the balloon
+		does not change width when moving between actions and the form. */
+		padding: 0 var(--ck-spacing-medium);
+		max-width: 18em;
+		min-width: 3em;
 
 		&:hover {
 			text-decoration: underline;
