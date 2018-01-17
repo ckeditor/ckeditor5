@@ -54,7 +54,7 @@ export default class HighlightCommand extends Command {
 			return;
 		}
 
-		const value = options.value;
+		const highlighter = options.value;
 
 		model.change( writer => {
 			const ranges = model.schema.getValidRanges( selection.getRanges(), 'highlight' );
@@ -64,19 +64,17 @@ export default class HighlightCommand extends Command {
 
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'highlight' ) ) {
-					const highlightStart = position.getLastMatchingPosition(
-						val => val.item.hasAttribute( 'highlight' ) && val.item.getAttribute( 'highlight' ) === value,
-						{ direction: 'backward' }
-					);
+					const isSameHighlight = value => {
+						return value.item.hasAttribute( 'highlight' ) && value.item.getAttribute( 'highlight' ) === this.value;
+					};
 
-					const highlightEnd = position.getLastMatchingPosition(
-						val => val.item.hasAttribute( 'highlight' ) && val.item.getAttribute( 'highlight' ) === value
-					);
+					const highlightStart = position.getLastMatchingPosition( isSameHighlight, { direction: 'backward' } );
+					const highlightEnd = position.getLastMatchingPosition( isSameHighlight );
 
 					const highlightRange = new Range( highlightStart, highlightEnd );
 
 					// Then update `highlight` value.
-					writer.setAttribute( 'highlight', value, highlightRange );
+					writer.setAttribute( 'highlight', highlighter, highlightRange );
 
 					// Create new range wrapping changed link.
 					selection.setRanges( [ highlightRange ] );
@@ -85,8 +83,8 @@ export default class HighlightCommand extends Command {
 				}
 			} else {
 				for ( const range of ranges ) {
-					if ( value ) {
-						writer.setAttribute( 'highlight', value, range );
+					if ( highlighter ) {
+						writer.setAttribute( 'highlight', highlighter, range );
 					} else {
 						writer.removeAttribute( 'highlight', range );
 					}
