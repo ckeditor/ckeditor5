@@ -22,6 +22,8 @@ import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownContentsOnArr
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 
 import './../theme/highlight.css';
+// TODO: dirty hack to make toolbar look nice in dropdown.
+import '@ckeditor/ckeditor5-ui/theme/components/dropdown/buttondropdown.css';
 
 /**
  * The default Highlight UI plugin.
