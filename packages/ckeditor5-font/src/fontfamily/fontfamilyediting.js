@@ -78,7 +78,7 @@ export default class FontFamilyEditing extends Plugin {
  * @property {String} title The user-readable title of the option.
  * @property {String} model Attribute's unique value in the model.
  * @property {module:engine/view/viewelementdefinition~ViewElementDefinition} view View element configuration.
- * @property {Array.<module:engine/view/viewelementdefinition~ViewElementDefinition>} [acceptAlso] An array with all matched elements that
+ * @property {Array.<module:engine/view/viewelementdefinition~ViewElementDefinition>} [acceptsAlso] An array with all matched elements that
  * view to model conversion should also accept.
  */
 
@@ -130,7 +130,7 @@ export default class FontFamilyEditing extends Plugin {
  * used as dropdown item description in UI. The family names that consist spaces should not have quotes (as opposed to CSS standard).
  * Appropriate quotes will be added in the view. For example, for the "Lucida Sans Unicode" the editor will render:
  *
- * 		<span style="font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif">...</span>
+ * 		<span style="font-family:'Lucida Sans Unicode', 'Lucida Grande', sans-serif">...</span>
  *
  * The "default" option is used to remove fontFamily from selection. In such case the text will
  * be represented in view using default content CSS font-family.

@@ -62,21 +62,7 @@ function generateFontPreset( fontDefinition ) {
 	const firstFontName = fontNames[ 0 ];
 
 	// CSS-compatible font names.
-	const cssFontNames = fontNames.map( normalizeFontNameForCSS );
-
-	// TODO: Maybe we can come with something better here?
-	// TODO: Also document this behavior in engine as it uses matcher~Pattern not ViewElementDefinition.
-	// TODO: Maybe a better solution will be a callback here? (also needs documentation)
-	// This will match any quote type with whitespace.
-	const quotesMatch = '("|\'|&qout;|\\W){0,2}';
-	// Full regex will catch any style of quotation used in view.
-	// Example:
-	// from string: "Font Foo Foo, Font Bar"
-	// it will create a regex that will match any quotation mix:
-	//     - "Font Foo Foo", Font Bar
-	//     - 'Font Foo Foo', "Font Bar"
-	//     - ... etc.
-	const regexString = `${ quotesMatch }${ fontNames.map( n => n.trim() ).join( `${ quotesMatch },${ quotesMatch }` ) }${ quotesMatch }`;
+	const cssFontNames = fontNames.map( normalizeFontNameForCSS ).join( ', ' );
 
 	return {
 		title: firstFontName,
@@ -84,17 +70,9 @@ function generateFontPreset( fontDefinition ) {
 		view: {
 			name: 'span',
 			style: {
-				'font-family': cssFontNames.join( ', ' )
+				'font-family': cssFontNames
 			}
-		},
-		acceptsAlso: [
-			{
-				name: 'span',
-				style: {
-					'font-family': new RegExp( regexString )
-				}
-			}
-		]
+		}
 	};
 }
 

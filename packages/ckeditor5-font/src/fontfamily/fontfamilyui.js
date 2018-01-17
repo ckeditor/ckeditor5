@@ -44,7 +44,7 @@ export default class FontFamilyUI extends Plugin {
 
 			// Try to set a dropdown list item style.
 			if ( option.view && option.view.style ) {
-				itemModel.set( 'style', 'font-family:' + option.view.style[ 'font-family' ] );
+				itemModel.set( 'style', `font-family: ${ option.view.style[ 'font-family' ] }` );
 			}
 
 			dropdownItems.add( itemModel );

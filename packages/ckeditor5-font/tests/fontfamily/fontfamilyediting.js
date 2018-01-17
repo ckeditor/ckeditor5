@@ -197,25 +197,5 @@ describe( 'FontFamilyEditing', () => {
 				'<p>b<span class="text-complex">a</span>z</p>'
 			);
 		} );
-
-		it( 'should convert from various inline style definitions', () => {
-			editor.setData(
-				'<p>f<span style="font-family:\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif;">o</span>o</p>' +
-				'<p>f<span style="font-family:Lucida Sans Unicode, Lucida Grande, sans-serif;">o</span>o</p>' +
-				'<p>f<span style="font-family:&quot;Lucida Sans Unicode&quot;, &quot;Lucida Grande&quot;, sans-serif;">o</span>o</p>'
-			);
-
-			expect( getModelData( doc ) ).to.equal(
-				'<paragraph>[]f<$text fontFamily="Lucida Sans Unicode">o</$text>o</paragraph>' +
-				'<paragraph>f<$text fontFamily="Lucida Sans Unicode">o</$text>o</paragraph>' +
-				'<paragraph>f<$text fontFamily="Lucida Sans Unicode">o</$text>o</paragraph>'
-			);
-
-			expect( editor.getData() ).to.equal(
-				'<p>f<span style="font-family:\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif;">o</span>o</p>' +
-				'<p>f<span style="font-family:\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif;">o</span>o</p>' +
-				'<p>f<span style="font-family:\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif;">o</span>o</p>'
-			);
-		} );
 	} );
 } );

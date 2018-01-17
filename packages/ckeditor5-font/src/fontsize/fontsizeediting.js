@@ -77,7 +77,7 @@ export default class FontSizeEditing extends Plugin {
  * @property {String} title The user-readable title of the option.
  * @property {String} model Attribute's unique value in the model.
  * @property {module:engine/view/viewelementdefinition~ViewElementDefinition} view View element configuration.
- * @property {Array.<module:engine/view/viewelementdefinition~ViewElementDefinition>} [acceptAlso] An array with all matched elements that
+ * @property {Array.<module:engine/view/viewelementdefinition~ViewElementDefinition>} [acceptsAlso] An array with all matched elements that
  * view to model conversion should also accept.
  */
 

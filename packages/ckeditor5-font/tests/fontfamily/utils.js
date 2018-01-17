@@ -57,15 +57,7 @@ describe( 'FontFamily utils', () => {
 							style: {
 								'font-family': 'Arial'
 							}
-						},
-						acceptsAlso: [
-							{
-								name: 'span',
-								style: {
-									'font-family': new RegExp( '("|\'|&qout;|\\W){0,2}Arial("|\'|&qout;|\\W){0,2}' )
-								}
-							}
-						]
+						}
 					},
 					{
 						title: 'Comic Sans MS',
@@ -75,18 +67,7 @@ describe( 'FontFamily utils', () => {
 							style: {
 								'font-family': '\'Comic Sans MS\', sans-serif'
 							}
-						},
-						acceptsAlso: [
-							{
-								name: 'span',
-								style: {
-									'font-family': new RegExp(
-										'("|\'|&qout;|\\W){0,2}Comic Sans MS("|\'|&qout;|\\W){0,2},' +
-										'("|\'|&qout;|\\W){0,2}sans-serif("|\'|&qout;|\\W){0,2}'
-									)
-								}
-							}
-						]
+						}
 					},
 					{
 						title: 'Lucida Console',
@@ -96,20 +77,7 @@ describe( 'FontFamily utils', () => {
 							style: {
 								'font-family': '\'Lucida Console\', \'Courier New\', Courier, monospace'
 							}
-						},
-						acceptsAlso: [
-							{
-								name: 'span',
-								style: {
-									'font-family': new RegExp(
-										'("|\'|&qout;|\\W){0,2}Lucida Console("|\'|&qout;|\\W){0,2},' +
-										'("|\'|&qout;|\\W){0,2}Courier New("|\'|&qout;|\\W){0,2},' +
-										'("|\'|&qout;|\\W){0,2}Courier("|\'|&qout;|\\W){0,2},' +
-										'("|\'|&qout;|\\W){0,2}monospace("|\'|&qout;|\\W){0,2}'
-									)
-								}
-							}
-						]
+						}
 					}
 				] );
 			} );
