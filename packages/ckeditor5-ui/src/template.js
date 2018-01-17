@@ -237,7 +237,7 @@ export default class Template {
 	 *			console.log( view );
 	 *		}
 	 *
-	 * @returns {Iterator.<module:ui/view~View>}
+	 * @returns {Iterable.<module:ui/view~View>}
 	 */
 	* getViews() {
 		function* search( def ) {
