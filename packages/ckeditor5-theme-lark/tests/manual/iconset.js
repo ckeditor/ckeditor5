@@ -88,7 +88,10 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet, FakeIcons
 		],
-		toolbar: [ 'headings', 'bold', 'italic', 'strikethrough', 'underline', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockquote', 'code', 'undo', 'redo', 'imagestylefull', 'imagestyleside', 'imagetextalternative', 'insertImage' ]
+		toolbar: [
+			'headings', 'bold', 'italic', 'strikethrough', 'underline', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockquote',
+			'code', 'undo', 'redo', 'imagestylefull', 'imagestyleside', 'imagetextalternative', 'insertImage'
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;
