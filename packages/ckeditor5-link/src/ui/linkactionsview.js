@@ -11,7 +11,6 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import TooltipView from '@ckeditor/ckeditor5-ui/src/tooltip/tooltipview';
 
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
@@ -58,7 +57,7 @@ export default class LinkActionsView extends View {
 		 *
 		 * @member {module:ui/view~View}
 		 */
-		this.preView = this._createPreView();
+		this.previewButton = this._createPreviewButton();
 
 		/**
 		 * The unlink button view.
@@ -73,6 +72,14 @@ export default class LinkActionsView extends View {
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.editButtonView = this._createButton( t( 'Edit link' ), pencilIcon, 'edit' );
+
+		/**
+		 * Value of the "href" attribute of the link to use in the {@link #previewButton}.
+		 *
+		 * @observable
+		 * @member {String}
+		 */
+		this.set( 'href' );
 
 		/**
 		 * A collection of views which can be focused in the view.
@@ -116,7 +123,7 @@ export default class LinkActionsView extends View {
 			},
 
 			children: [
-				this.preView,
+				this.previewButton,
 				this.editButtonView,
 				this.unlinkButtonView
 			]
@@ -134,7 +141,7 @@ export default class LinkActionsView extends View {
 		} );
 
 		const childViews = [
-			this.preView,
+			this.previewButton,
 			this.editButtonView,
 			this.unlinkButtonView
 		];
@@ -184,53 +191,41 @@ export default class LinkActionsView extends View {
 	}
 
 	/**
-	 * Creates a link href preview view.
+	 * Creates a link href preview button.
 	 *
 	 * @private
-	 * @returns {module:ui/view~View} The href preview view instance.
+	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
 	 */
-	_createPreView() {
-		const preView = new View( this.locale );
-		const tooltipView = new TooltipView();
-		const bind = preView.bindTemplate;
+	_createPreviewButton() {
+		const button = new ButtonView( this.locale );
+		const bind = this.bindTemplate;
 		const t = this.t;
 
-		tooltipView.set( 'text', t( 'Open link in new tab' ) );
-		preView.set( 'href' );
+		button.set( {
+			withText: true,
+			tooltip: t( 'Open link in new tab' )
+		} );
 
-		preView.setTemplate( {
-			tag: 'a',
+		button.extendTemplate( {
 			attributes: {
 				class: [
 					'ck-link-actions__preview'
 				],
-				target: '_blank',
 				href: bind.to( 'href' ),
-				tabindex: -1
-			},
-			children: [
-				{
-					tag: 'span',
-					attributes: {
-						class: [
-							'ck-link-actions__preview__text'
-						]
-					},
-					children: [
-						{
-							text: bind.to( 'href' ),
-						}
-					]
-				},
-				tooltipView
-			]
+				target: '_blank'
+			}
 		} );
 
-		preView.focus = function() {
-			this.element.focus();
-		};
+		button.bind( 'label' ).to( this, 'href', href => {
+			return href || t( 'This link has no URL' );
+		} );
 
-		return preView;
+		button.bind( 'isEnabled' ).to( this, 'href', href => !!href );
+
+		button.template.tag = 'a';
+		button.template.eventListeners = {};
+
+		return button;
 	}
 }
 

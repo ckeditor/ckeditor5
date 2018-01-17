@@ -95,7 +95,7 @@ export default class Link extends Plugin {
 		const actionsView = new LinkActionsView( editor.locale );
 		const linkCommand = editor.commands.get( 'link' );
 
-		actionsView.preView.bind( 'href' ).to( linkCommand, 'value' );
+		actionsView.bind( 'href' ).to( linkCommand, 'value' );
 
 		// Execute unlink command after clicking on the "Unlink" button.
 		this.listenTo( actionsView, 'edit', () => {
