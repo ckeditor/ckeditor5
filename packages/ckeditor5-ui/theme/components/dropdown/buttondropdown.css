@@ -6,6 +6,12 @@
 .ck-buttondropdown {
 	& .ck-toolbar {
 		flex-wrap: nowrap;
+
+		& .ck-toolbar__separator {
+			height: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));
+			margin-top: 0;
+			margin-left: var(--ck-spacing-small);
+		}
 	}
 
 	& .ck-dropdown__panel .ck-button {
