@@ -11,6 +11,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import TooltipView from '@ckeditor/ckeditor5-ui/src/tooltip/tooltipview';
 
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
@@ -190,8 +191,11 @@ export default class LinkActionsView extends View {
 	 */
 	_createPreView() {
 		const preView = new View( this.locale );
+		const tooltipView = new TooltipView();
 		const bind = preView.bindTemplate;
+		const t = this.t;
 
+		tooltipView.set( 'text', t( 'Open link in new tab' ) );
 		preView.set( 'href' );
 
 		preView.setTemplate( {
@@ -206,8 +210,19 @@ export default class LinkActionsView extends View {
 			},
 			children: [
 				{
-					text: bind.to( 'href' )
-				}
+					tag: 'span',
+					attributes: {
+						class: [
+							'ck-link-actions__preview__text'
+						]
+					},
+					children: [
+						{
+							text: bind.to( 'href' ),
+						}
+					]
+				},
+				tooltipView
 			]
 		} );
 

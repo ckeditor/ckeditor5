@@ -6,6 +6,10 @@
 .ck-link-actions {
 	& .ck-link-actions__preview {
 		display: inline-block;
-		overflow: hidden;
+
+		& .ck-link-actions__preview__text {
+			display: inline-block;
+			overflow: hidden;
+		}
 	}
 }
