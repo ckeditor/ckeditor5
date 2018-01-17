@@ -54,7 +54,7 @@ export default class DocumentFragment {
 	/**
 	 * Returns an iterator that iterates over all nodes contained inside this document fragment.
 	 *
-	 * @returns {Iterator.<module:engine/model/node~Node>}
+	 * @returns {Iterable.<module:engine/model/node~Node>}
 	 */
 	[ Symbol.iterator ]() {
 		return this.getChildren();

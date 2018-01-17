@@ -39,9 +39,11 @@ export default class MarkerCollection {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link ~Marker markers} added to the collection.
+	 * Iterable interface.
 	 *
-	 * @returns {Iterator}
+	 * Iterates over all {@link ~Marker markers} added to the collection.
+	 *
+	 * @returns {Iterable}
 	 */
 	[ Symbol.iterator ]() {
 		return this._markers.values();
@@ -131,7 +133,7 @@ export default class MarkerCollection {
 	 * Returns iterator that iterates over all markers, which ranges contain given {@link module:engine/model/position~Position position}.
 	 *
 	 * @param {module:engine/model/position~Position} position
-	 * @returns {Iterator.<module:engine/model/markercollection~Marker>}
+	 * @returns {Iterable.<module:engine/model/markercollection~Marker>}
 	 */
 	* getMarkersAtPosition( position ) {
 		for ( const marker of this ) {
@@ -165,7 +167,7 @@ export default class MarkerCollection {
 	 *		Array.from( markersCollection.getMarkersGroup( 'a' ) ); // []
 	 *
 	 * @param prefix
-	 * @returns {Iterator.<module:engine/model/markercollection~Marker>}
+	 * @returns {Iterable.<module:engine/model/markercollection~Marker>}
 	 */
 	* getMarkersGroup( prefix ) {
 		for ( const marker of this._markers.values() ) {

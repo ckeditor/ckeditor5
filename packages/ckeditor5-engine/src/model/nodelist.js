@@ -36,9 +36,11 @@ export default class NodeList {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all nodes contained inside this node list.
+	 * Iterable interface.
 	 *
-	 * @returns {Iterator.<module:engine/model/node~Node>}
+	 * Iterates over all nodes contained inside this node list.
+	 *
+	 * @returns {Iterable.<module:engine/model/node~Node>}
 	 */
 	[ Symbol.iterator ]() {
 		return this._nodes[ Symbol.iterator ]();

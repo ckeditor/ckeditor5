@@ -324,7 +324,7 @@ export default class Node {
 	/**
 	 * Returns iterator that iterates over this node's attribute keys.
 	 *
-	 * @returns {Iterator.<String>}
+	 * @returns {Iterable.<String>}
 	 */
 	getAttributeKeys() {
 		return this._attrs.keys();

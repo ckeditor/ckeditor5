@@ -521,7 +521,7 @@ export default class DocumentSelection extends Selection {
 	 * `directChange` parameter).
 	 *
 	 * @private
-	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
+	 * @param {Map} attrs Iterable object containing attributes to be set.
 	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
 	 * is caused by `Batch` API.
 	 * @returns {Set.<String>} Changed attribute keys.
@@ -606,7 +606,7 @@ export default class DocumentSelection extends Selection {
 	 * Sets selection attributes stored in current selection's parent node to given set of attributes.
 	 *
 	 * @private
-	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
+	 * @param {Iterable} attrs Iterable object containing attributes to be set.
 	 */
 	_setStoredAttributesTo( attrs ) {
 		const selectionParent = this.anchor.parent;
@@ -741,7 +741,7 @@ export default class DocumentSelection extends Selection {
 // It takes model item, checks whether it is a text node (or text proxy) and, if so, returns it's attributes. If not, returns `null`.
 //
 // @param {module:engine/model/item~Item|null}  node
-// @returns {Boolean}
+// @returns {Boolean|Iterable}
 function getAttrsIfCharacter( node ) {
 	if ( node instanceof TextProxy || node instanceof Text ) {
 		return node.getAttributes();

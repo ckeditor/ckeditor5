@@ -224,7 +224,7 @@ export default class Selection {
 	/**
 	 * Returns an iterator that contains copies of all ranges added to the selection.
 	 *
-	 * @returns {Iterator.<module:engine/view/range~Range>}
+	 * @returns {Iterable.<module:engine/view/range~Range>}
 	 */
 	* getRanges() {
 		for ( const range of this._ranges ) {

@@ -323,11 +323,14 @@ function createViewElementFromDefinition( viewElementDefinition, ViewElementClas
 }
 
 /**
- * Defines conversion details. It is used in configuration based converters:
- * - {@link module:engine/conversion/definition-based-converters~modelAttributeToViewAttributeElement}
- * - {@link module:engine/conversion/definition-based-converters~modelElementToViewContainerElement}
- * - {@link module:engine/conversion/definition-based-converters~viewToModelAttribute}
- * - {@link module:engine/conversion/definition-based-converters~viewToModelElement}
+ * Defines conversion details. It is used in configuration-based converters:
+ *
+ * * {@link module:engine/conversion/definition-based-converters~modelAttributeToViewAttributeElement}
+ * * {@link module:engine/conversion/definition-based-converters~modelElementToViewContainerElement}
+ * * {@link module:engine/conversion/definition-based-converters~viewToModelAttribute}
+ * * {@link module:engine/conversion/definition-based-converters~viewToModelElement}
+ *
+ * See the above converters for examples how to use the converter definition.
  *
  * @typedef {Object} ConverterDefinition
  * @property {String} model Defines to model conversion. When using to element conversion
