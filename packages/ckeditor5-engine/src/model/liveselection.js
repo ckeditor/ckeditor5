@@ -507,7 +507,7 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Returns an iterator that iterates through all selection attributes stored in current selection's parent.
+	 * Returns an iterable that iterates through all selection attributes stored in current selection's parent.
 	 *
 	 * @private
 	 * @returns {Iterable.<*>}

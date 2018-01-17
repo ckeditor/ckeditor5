@@ -222,7 +222,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns an iterator that contains copies of all ranges added to the selection.
+	 * Returns an iterable that contains copies of all ranges added to the selection.
 	 *
 	 * @returns {Iterable.<module:engine/view/range~Range>}
 	 */
