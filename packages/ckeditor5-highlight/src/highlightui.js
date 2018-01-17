@@ -20,6 +20,7 @@ import Model from '@ckeditor/ckeditor5-ui/src/model';
 import createSplitButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/createsplitbuttondropdown';
 import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownContentsOnArrows } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 
 import './../theme/highlight.css';
 // TODO: dirty hack to make toolbar look nice in dropdown.
@@ -185,6 +186,7 @@ export default class HighlightUI extends Plugin {
 			} );
 			// Add eraser button to dropdown.
 			const eraserButton = componentFactory.create( 'removeHighlight' );
+			buttons.push( new ToolbarSeparatorView() );
 			buttons.push( eraserButton );
 
 			// Make toolbar button enabled when any button in dropdown is enabled.

@@ -21,7 +21,7 @@ ClassicEditor
 			// 'highlight:bluePen',
 			// 'highlight:redPen',
 			// 'removeHighlight',
-			'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
+			'bold', '|', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		]
 	} )
 	.then( editor => {
