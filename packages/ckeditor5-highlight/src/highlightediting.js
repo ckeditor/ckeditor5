@@ -27,43 +27,15 @@ export default class HighlightEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		editor.config.define( 'highlight', [
-			{
-				model: 'marker',
-				view: { name: 'mark', class: 'marker' },
-				title: 'Marker',
-				color: '#ffff66',
-				type: 'marker'
-			},
-			{
-				model: 'greenMarker',
-				view: { name: 'mark', class: 'marker-green' },
-				title: 'Green Marker',
-				color: '#66ff00',
-				type: 'marker'
-			},
-			{
-				model: 'pinkMarker',
-				view: { name: 'mark', class: 'marker-pink' },
-				title: 'Pink Marker',
-				color: '#ff6fff',
-				type: 'marker'
-			},
-			{
-				model: 'redPen',
-				view: { name: 'mark', class: 'pen-red' },
-				title: 'Red Pen',
-				color: '#ff2929',
-				type: 'pen'
-			},
-			{
-				model: 'bluePen',
-				view: { name: 'mark', class: 'pen-blue' },
-				title: 'Blue Pen',
-				color: '#0091ff',
-				type: 'pen'
-			}
-		] );
+		editor.config.define( 'highlight', {
+			options: [
+				{ model: 'marker', class: 'marker', title: 'Marker', color: '#ffff66', type: 'marker' },
+				{ model: 'greenMarker', class: 'marker-green', title: 'Green Marker', color: '#66ff00', type: 'marker' },
+				{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink Marker', color: '#ff6fff', type: 'marker' },
+				{ model: 'redPen', class: 'pen-red', title: 'Red Pen', color: '#ff2929', type: 'pen' },
+				{ model: 'bluePen', class: 'pen-blue', title: 'Blue Pen', color: '#0091ff', type: 'pen' }
+			]
+		} );
 	}
 
 	/**
@@ -77,27 +49,32 @@ export default class HighlightEditing extends Plugin {
 		// Allow highlight attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'highlight' } );
 
-		const options = editor.config.get( 'highlight' );
+		const options = editor.config.get( 'highlight.options' );
 
 		// Define view to model conversion.
 		for ( const option of options ) {
-			viewToModelAttribute( 'highlight', option, [ data.viewToModel ] );
+			viewToModelAttribute( 'highlight', _getConverterDefinition( option ), [ data.viewToModel ] );
 		}
 
 		// Define model to view conversion.
-		modelAttributeToViewAttributeElement( 'highlight', options, [ data.modelToView, editing.modelToView ] );
+		modelAttributeToViewAttributeElement(
+			'highlight',
+			options.map( _getConverterDefinition ),
+			[ data.modelToView, editing.modelToView ]
+		);
 
 		editor.commands.add( 'highlight', new HighlightCommand( editor ) );
 	}
 }
 
 /**
- * Highlight option descriptor. Compatible with {@link module:engine/conversion/definition-based-converters~ConverterDefinition}.
+ * Highlight option descriptor.
  *
  * @typedef {Object} module:highlight/highlightediting~HighlightOption
  * @property {String} title The user-readable title of the option.
  * @property {String} model Attribute's unique value in the model.
- * @property {String} color Color used for highlighter. Should be coherent with view definition.
+ * @property {String} color Color used for highlighter. Should be coherent with `class` CSS setting.
+ * @property {String} class CSS Class used on `mark` element in view. Should be coherent with `color` setting.
  * @property {'marker'|'pen'} type The type of highlighter:
  * - "marker" - will use #color as background,
  * - "pen" - will use #color as font color.
@@ -138,3 +115,18 @@ export default class HighlightEditing extends Plugin {
  *
  * @member {Array.<module:heading/heading~HighlightOption>} module:heading/heading~HeadingConfig#options
  */
+
+// Converts {@link module:highlight/highlightediting~HighlightOption}
+// to {@link module:engine/conversion/definition-based-converters~ConverterDefinition}
+//
+// @param {module:highlight/highlightediting~HighlightOption} option
+// @returns {module:engine/conversion/definition-based-converters~ConverterDefinition}
+function _getConverterDefinition( option ) {
+	return {
+		model: option.model,
+		view: {
+			name: 'mark',
+			class: option.class
+		}
+	};
+}

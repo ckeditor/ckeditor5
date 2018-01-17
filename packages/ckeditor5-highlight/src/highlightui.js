@@ -47,7 +47,7 @@ export default class HighlightUI extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const options = this.editor.config.get( 'highlight' );
+		const options = this.editor.config.get( 'highlight.options' );
 
 		for ( const option of options ) {
 			this._addHighlighterButton( option );
