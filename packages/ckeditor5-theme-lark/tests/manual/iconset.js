@@ -12,6 +12,7 @@ import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
+import codeIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/code.svg';
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 import strikethroughIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg';
 import underlineIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/underline.svg';
@@ -19,7 +20,19 @@ import unlinkIcon from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
 
 class FakeIcons extends Plugin {
     init() {
-        const editor = this.editor;
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( 'code', locale => {
+            const view = new ButtonView( locale );
+
+            view.set( {
+                label: 'Code',
+                icon: codeIcon,
+                tooltip: true
+            } );
+
+            return view;
+		} );
 
         editor.ui.componentFactory.add( 'insertImage', locale => {
             const view = new ButtonView( locale );
@@ -76,7 +89,7 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet, FakeIcons
 		],
-		toolbar: [ 'headings', 'bold', 'italic', 'strikethrough', 'underline', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockquote', 'undo', 'redo', 'imagestylefull', 'imagestyleside', 'imagetextalternative', 'insertImage' ]
+		toolbar: [ 'headings', 'bold', 'italic', 'strikethrough', 'underline', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockquote', 'code', 'undo', 'redo', 'imagestylefull', 'imagestyleside', 'imagetextalternative', 'insertImage' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

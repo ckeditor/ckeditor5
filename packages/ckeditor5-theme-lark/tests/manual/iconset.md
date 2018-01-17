@@ -11,6 +11,7 @@ Check out icons in toolbar:
 * bulleted list
 * numbered list
 * blockquote
+* code
 * undo
 * redo
 * image full style
