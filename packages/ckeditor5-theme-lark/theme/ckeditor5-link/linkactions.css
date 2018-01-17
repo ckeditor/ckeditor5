@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/components/tooltip/mixins/_tooltip.css";
+
 .ck-link-actions {
 	padding: var(--ck-spacing-standard);
 
@@ -11,15 +13,33 @@
 	}
 
 	& .ck-link-actions__preview {
-		color: var(--ck-color-link-default);
-		text-overflow: ellipsis;
-		max-width: 20em;
-		min-width: 3em;
-		margin: 0 var(--ck-spacing-standard);
-		cursor: pointer;
+		/* Enable the tooltip */
+		@mixin ck-tooltip_enabled;
+		position: relative;
 
 		&:hover {
-			text-decoration: underline;
+			@mixin ck-tooltip_visible;
+		}
+
+		/* Get rid of the native focus outline around the tooltip when focused (but not :hover). */
+		&:focus:not(:hover) {
+			@mixin ck-tooltip_disabled;
+		}
+
+		& .ck-link-actions__preview__text {
+			color: var(--ck-color-link-default);
+			text-overflow: ellipsis;
+			cursor: pointer;
+
+			/* Match the box model of the link editor form's input so the balloon
+			does not change width when moving between actions and the form. */
+			padding: 0 var(--ck-spacing-medium);
+			max-width: 18em;
+			min-width: 3em;
+
+			&:hover {
+				text-decoration: underline;
+			}
 		}
 	}
 
