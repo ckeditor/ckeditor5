@@ -75,8 +75,8 @@ export default class HighlightCommand extends Command {
 					const highlightRange = new Range( highlightStart, highlightEnd );
 
 					// Then depending on current value...
-					if ( this.value === highlighter ) {
-						// ...remove attribute.
+					if ( !highlighter || this.value === highlighter ) {
+						// ...remove attribute when passing highlighter different then current or executing "eraser".
 						writer.removeAttribute( 'highlight', highlightRange );
 					} else {
 						// ...update `highlight` value.

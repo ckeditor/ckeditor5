@@ -58,85 +58,121 @@ describe( 'HighlightCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should add highlight attribute on selected nodes nodes when passed as parameter', () => {
-			setData( model, '<paragraph>a[bc<$text highlight="marker">fo]obar</$text>xyz</paragraph>' );
+		describe( 'with option.value set', () => {
+			describe( 'on collapsed range', () => {
+				it( 'should change entire highlight when inside highlighted text', () => {
+					setData( model, '<paragraph>abc<$text highlight="marker">foo[]bar</$text>xyz</paragraph>' );
 
-			expect( command.value ).to.be.undefined;
+					expect( command.value ).to.equal( 'marker' );
 
-			command.execute( { value: 'marker' } );
+					command.execute( { value: 'greenMarker' } );
 
-			expect( command.value ).to.equal( 'marker' );
+					expect( getData( model ) ).to.equal( '<paragraph>abc[<$text highlight="greenMarker">foobar</$text>]xyz</paragraph>' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>a[<$text highlight="marker">bcfo]obar</$text>xyz</paragraph>' );
+					expect( command.value ).to.equal( 'greenMarker' );
+				} );
+
+				it( 'should remove entire highlight when inside highlighted text of the same value', () => {
+					setData( model, '<paragraph>abc<$text highlight="marker">foo[]bar</$text>xyz</paragraph>' );
+
+					expect( command.value ).to.equal( 'marker' );
+
+					command.execute( { value: 'marker' } );
+
+					expect( getData( model ) ).to.equal( '<paragraph>abcfoo[]barxyz</paragraph>' );
+
+					expect( command.value ).to.be.undefined;
+				} );
+
+				it( 'should change entire highlight when inside highlighted text', () => {
+					setData( model, '<paragraph>abc<$text highlight="marker">foo[]bar</$text>xyz</paragraph>' );
+
+					expect( command.value ).to.equal( 'marker' );
+
+					command.execute( { value: 'greenMarker' } );
+
+					expect( getData( model ) ).to.equal( '<paragraph>abc[<$text highlight="greenMarker">foobar</$text>]xyz</paragraph>' );
+
+					expect( command.value ).to.equal( 'greenMarker' );
+				} );
+			} );
+
+			describe( 'on not collapsed range', () => {
+				it( 'should set highlight attribute on selected node when passed as parameter', () => {
+					setData( model, '<paragraph>a[bc<$text highlight="marker">fo]obar</$text>xyz</paragraph>' );
+
+					expect( command.value ).to.be.undefined;
+
+					command.execute( { value: 'marker' } );
+
+					expect( command.value ).to.equal( 'marker' );
+
+					expect( getData( model ) ).to.equal( '<paragraph>a[<$text highlight="marker">bcfo]obar</$text>xyz</paragraph>' );
+				} );
+
+				it( 'should set highlight attribute on selected node when passed as parameter (multiple nodes)', () => {
+					setData(
+						model,
+						'<paragraph>abcabc[abc</paragraph>' +
+						'<paragraph>foofoofoo</paragraph>' +
+						'<paragraph>barbar]bar</paragraph>'
+					);
+
+					command.execute( { value: 'marker' } );
+
+					expect( command.value ).to.equal( 'marker' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>abcabc[<$text highlight="marker">abc</$text></paragraph>' +
+						'<paragraph><$text highlight="marker">foofoofoo</$text></paragraph>' +
+						'<paragraph><$text highlight="marker">barbar</$text>]bar</paragraph>'
+					);
+				} );
+
+				it( 'should set highlight attribute on selected nodes when passed as parameter only on selected characters', () => {
+					setData( model, '<paragraph>abc[<$text highlight="marker">foo]bar</$text>xyz</paragraph>' );
+
+					expect( command.value ).to.equal( 'marker' );
+
+					command.execute( { value: 'foo' } );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>abc[<$text highlight="foo">foo</$text>]<$text highlight="marker">bar</$text>xyz</paragraph>'
+					);
+
+					expect( command.value ).to.equal( 'foo' );
+				} );
+			} );
 		} );
 
-		it( 'should add highlight attribute on selected nodes nodes when passed as parameter (multiple nodes)', () => {
-			setData(
-				model,
-				'<paragraph>abcabc[abc</paragraph>' +
-				'<paragraph>foofoofoo</paragraph>' +
-				'<paragraph>barbar]bar</paragraph>'
-			);
+		describe( 'with undefined option.value', () => {
+			describe( 'on collapsed range', () => {
+				it( 'should remove entire highlight when inside highlighted text', () => {
+					setData( model, '<paragraph>abc<$text highlight="marker">foo[]bar</$text>xyz</paragraph>' );
 
-			command.execute( { value: 'marker' } );
+					expect( command.value ).to.equal( 'marker' );
 
-			expect( command.value ).to.equal( 'marker' );
+					command.execute();
 
-			expect( getData( model ) ).to.equal(
-				'<paragraph>abcabc[<$text highlight="marker">abc</$text></paragraph>' +
-				'<paragraph><$text highlight="marker">foofoofoo</$text></paragraph>' +
-				'<paragraph><$text highlight="marker">barbar</$text>]bar</paragraph>'
-			);
-		} );
+					expect( getData( model ) ).to.equal( '<paragraph>abcfoo[]barxyz</paragraph>' );
 
-		it( 'should set highlight attribute on selected nodes when passed as parameter', () => {
-			setData( model, '<paragraph>abc[<$text highlight="marker">foo]bar</$text>xyz</paragraph>' );
+					expect( command.value ).to.be.undefined;
+				} );
+			} );
 
-			expect( command.value ).to.equal( 'marker' );
+			describe( 'on not collapsed range', () => {
+				it( 'should remove highlight attribute on selected node when undefined passed as parameter', () => {
+					setData( model, '<paragraph>abc[<$text highlight="marker">foo]bar</$text>xyz</paragraph>' );
 
-			command.execute( { value: 'foo' } );
+					expect( command.value ).to.equal( 'marker' );
 
-			expect( getData( model ) ).to.equal(
-				'<paragraph>abc[<$text highlight="foo">foo</$text>]<$text highlight="marker">bar</$text>xyz</paragraph>'
-			);
+					command.execute();
 
-			expect( command.value ).to.equal( 'foo' );
-		} );
+					expect( getData( model ) ).to.equal( '<paragraph>abc[foo]<$text highlight="marker">bar</$text>xyz</paragraph>' );
 
-		it( 'should remove highlight attribute on selected nodes nodes when undefined passed as parameter', () => {
-			setData( model, '<paragraph>abc[<$text highlight="marker">foo]bar</$text>xyz</paragraph>' );
-
-			expect( command.value ).to.equal( 'marker' );
-
-			command.execute();
-
-			expect( getData( model ) ).to.equal( '<paragraph>abc[foo]<$text highlight="marker">bar</$text>xyz</paragraph>' );
-
-			expect( command.value ).to.be.undefined;
-		} );
-
-		it( 'should change entire highlight on collapsed range when inside highlighted text', () => {
-			setData( model, '<paragraph>abc<$text highlight="marker">foo[]bar</$text>xyz</paragraph>' );
-
-			expect( command.value ).to.equal( 'marker' );
-
-			command.execute( { value: 'greenMarker' } );
-
-			expect( getData( model ) ).to.equal( '<paragraph>abc[<$text highlight="greenMarker">foobar</$text>]xyz</paragraph>' );
-
-			expect( command.value ).to.equal( 'greenMarker' );
-		} );
-
-		it( 'should remove entire highlight on collapsed range when inside highlighted text of the same value', () => {
-			setData( model, '<paragraph>abc<$text highlight="marker">foo[]bar</$text>xyz</paragraph>' );
-
-			expect( command.value ).to.equal( 'marker' );
-
-			command.execute( { value: 'marker' } );
-
-			expect( getData( model ) ).to.equal( '<paragraph>abcfoo[]barxyz</paragraph>' );
-
-			expect( command.value ).to.be.undefined;
+					expect( command.value ).to.be.undefined;
+				} );
+			} );
 		} );
 	} );
 } );
