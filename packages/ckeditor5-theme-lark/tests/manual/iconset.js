@@ -7,7 +7,6 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -19,69 +18,69 @@ import underlineIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/underlin
 import unlinkIcon from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
 
 class FakeIcons extends Plugin {
-    init() {
+	init() {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'code', locale => {
-            const view = new ButtonView( locale );
+			const view = new ButtonView( locale );
 
-            view.set( {
-                label: 'Code',
-                icon: codeIcon,
-                tooltip: true
-            } );
+			view.set( {
+				label: 'Code',
+				icon: codeIcon,
+				tooltip: true
+			} );
 
-            return view;
+			return view;
 		} );
 
-        editor.ui.componentFactory.add( 'insertImage', locale => {
-            const view = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'insertImage', locale => {
+			const view = new ButtonView( locale );
 
-            view.set( {
-                label: 'Insert image',
-                icon: imageIcon,
-                tooltip: true
-            } );
+			view.set( {
+				label: 'Insert image',
+				icon: imageIcon,
+				tooltip: true
+			} );
 
-            return view;
+			return view;
 		} );
 
 		editor.ui.componentFactory.add( 'strikethrough', locale => {
-            const view = new ButtonView( locale );
+			const view = new ButtonView( locale );
 
-            view.set( {
-                label: 'Strikethrough',
-                icon: strikethroughIcon,
-                tooltip: true
-            } );
+			view.set( {
+				label: 'Strikethrough',
+				icon: strikethroughIcon,
+				tooltip: true
+			} );
 
-            return view;
+			return view;
 		} );
 
 		editor.ui.componentFactory.add( 'underline', locale => {
-            const view = new ButtonView( locale );
+			const view = new ButtonView( locale );
 
-            view.set( {
-                label: 'Underline',
-                icon: underlineIcon,
-                tooltip: true
-            } );
+			view.set( {
+				label: 'Underline',
+				icon: underlineIcon,
+				tooltip: true
+			} );
 
-            return view;
+			return view;
 		} );
 
 		editor.ui.componentFactory.add( 'unlink', locale => {
-            const view = new ButtonView( locale );
+			const view = new ButtonView( locale );
 
-            view.set( {
-                label: 'Unlink',
-                icon: unlinkIcon,
-                tooltip: true
-            } );
+			view.set( {
+				label: 'Unlink',
+				icon: unlinkIcon,
+				tooltip: true
+			} );
 
-            return view;
+			return view;
 		} );
-    }
+	}
 }
 
 ClassicEditor
