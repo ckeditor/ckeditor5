@@ -603,7 +603,9 @@ export default class Collection {
 	}
 
 	/**
-	 * Collection iterator.
+	 * Iterable interface.
+	 *
+	 * @returns {Iterable.<*>}
 	 */
 	[ Symbol.iterator ]() {
 		return this._items[ Symbol.iterator ]();
