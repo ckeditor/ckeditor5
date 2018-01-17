@@ -81,9 +81,7 @@ export default class HighlightUI extends Plugin {
 	_addHighlighterButton( option ) {
 		const command = this.editor.commands.get( 'highlight' );
 
-		const icon = option.type === 'marker' ? markerIcon : penIcon;
-
-		this._addButton( 'highlight:' + option.model, option.title, icon, option.model, decorateHighlightButton );
+		this._addButton( 'highlight:' + option.model, option.title, getIconForType( option.type ), option.model, decorateHighlightButton );
 
 		function decorateHighlightButton( button ) {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
@@ -170,7 +168,7 @@ export default class HighlightUI extends Plugin {
 			// Dropdown button changes to selection (command.value).
 			// If selection is in highlight it get active highlight appearance (icon, color).
 			// Otherwise it gets appearance (icon, color) of last executed highlight.
-			model.bind( 'icon' ).to( command, 'value', value => getActiveOption( value, 'type' ) === 'marker' ? markerIcon : penIcon );
+			model.bind( 'icon' ).to( command, 'value', value => getIconForType( getActiveOption( value, 'type' ) ) );
 			model.bind( 'color' ).to( command, 'value', value => getActiveOption( value, 'color' ) );
 			model.bind( 'commandValue' ).to( command, 'value', value => getActiveOption( value, 'model' ) );
 
@@ -267,4 +265,9 @@ function bindIconStyle( dropdownView, model ) {
 	} );
 
 	iconView.bind( 'style' ).to( model, 'color', color => `color:${ color }` );
+}
+
+// Returns icon for given highlighter type.
+function getIconForType( type ) {
+	return type === 'marker' ? markerIcon : penIcon;
 }
