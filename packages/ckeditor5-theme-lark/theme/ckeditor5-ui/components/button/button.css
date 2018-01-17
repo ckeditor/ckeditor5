@@ -96,14 +96,7 @@ a.ck-button {
 a.ck-button-action {
 	@mixin ck-button-colors --ck-color-button-action;
 
-	text-shadow: 0 -1px var(--ck-color-button-action-border);
 	color: var(--ck-color-button-action-text);
-
-	&:hover,
-	&:focus,
-	&:active {
-		text-shadow: 0 -1px var(--ck-color-button-action-active-border);
-	}
 }
 
 .ck-button-bold,
