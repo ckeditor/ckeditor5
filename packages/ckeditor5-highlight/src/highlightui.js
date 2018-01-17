@@ -148,18 +148,31 @@ export default class HighlightUI extends Plugin {
 
 		const startingHighlighter = options[ 0 ];
 
+		const optionsMap = options.reduce( ( retVal, option ) => {
+			retVal[ option.model ] = option;
+
+			return retVal;
+		}, {} );
+
 		componentFactory.add( 'highlightDropdown', locale => {
+			const command = editor.commands.get( 'highlight' );
+
 			const model = new Model( {
 				label: t( 'Highlight' ),
 				withText: false,
 				isVertical: false,
-				icon: markerIcon,
-				type: startingHighlighter.type,
-				color: startingHighlighter.color,
+				// Holds last executed highlighter.
+				lastExecuted: startingHighlighter.model,
+				// Holds current highlighter to execute (might be different then last used).
 				commandValue: startingHighlighter.model
 			} );
 
-			bindModelToCommand( model, editor, 'highlight' );
+			// Dropdown button changes to selection (command.value).
+			// If selection is in highlight it get active highlight appearance (icon, color).
+			// Otherwise it gets appearance (icon, color) of last executed highlight.
+			model.bind( 'icon' ).to( command, 'value', value => getActiveOption( value, 'type' ) === 'marker' ? markerIcon : penIcon );
+			model.bind( 'color' ).to( command, 'value', value => getActiveOption( value, 'color' ) );
+			model.bind( 'commandValue' ).to( command, 'value', value => getActiveOption( value, 'model' ) );
 
 			const dropdownView = createSplitButtonDropdown( model, locale );
 
@@ -170,22 +183,19 @@ export default class HighlightUI extends Plugin {
 				editor.editing.view.focus();
 			} );
 
-			// Add highlighters buttons to dropdown
+			// Add highlighters buttons to dropdown.
 			const buttons = options.map( option => {
 				const buttonView = componentFactory.create( 'highlight:' + option.model );
 
-				this.listenTo( buttonView, 'execute', () => changeToolbarButton( editor, model, {
-					type: option.type,
-					color: option.color,
-					command: 'highlight',
-					commandValue: option.model,
-					icon: markerIcon
-				} ) );
+				// Update lastExecutedHighlight on execute.
+				this.listenTo( buttonView, 'execute', () => model.set( { lastExecuted: option.model } ) );
 
 				return buttonView;
 			} );
+
 			// Add eraser button to dropdown.
 			const eraserButton = componentFactory.create( 'removeHighlight' );
+
 			buttons.push( new ToolbarSeparatorView() );
 			buttons.push( eraserButton );
 
@@ -221,9 +231,18 @@ export default class HighlightUI extends Plugin {
 			// Focus button group upon opening dropdown view
 			dropdownView.buttonView.on( 'select', () => {
 				if ( dropdownView.buttonView.buttonView.isEnabled && dropdownView.isOpen ) {
-					// buttonGroupView.focus();
+					toolbarView.focus();
 				}
 			}, { priority: 'low' } );
+
+			// Returns active highlighter option depending on current command value.
+			// If current is not set or it is the same as last execute this method will return the option key (like icon or color)
+			// of last executed highlighter. Otherwise it will return option key for current one.
+			function getActiveOption( current, key ) {
+				const whichHighlighter = !current || current === model.lastExecuted ? model.lastExecuted : current;
+
+				return optionsMap[ whichHighlighter ][ key ];
+			}
 
 			return dropdownView;
 		} );
@@ -233,19 +252,6 @@ export default class HighlightUI extends Plugin {
 // TODO: this is duplicated in various places (dropdowns)
 function getBindingTargets( buttons, attribute ) {
 	return Array.prototype.concat( ...buttons.map( button => [ button, attribute ] ) );
-}
-
-// Rebinds model values to a new command.
-function bindModelToCommand( model, editor, commandName ) {
-	model.unbind( 'isOn' );
-	model.bind( 'isOn' ).to( editor.commands.get( commandName ), 'value' );
-}
-
-// Updates toolbar dropdown button with last selected highlighter.
-function changeToolbarButton( editor, model, iconData ) {
-	model.set( iconData );
-
-	bindModelToCommand( model, editor, iconData.command );
 }
 
 // Extends split button icon style to reflect last used button style.
