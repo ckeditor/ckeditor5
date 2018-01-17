@@ -330,6 +330,7 @@ export default class Selection {
 	 * is treated like the last added range and is used to set {@link module:engine/model/selection~Selection#anchor} and
 	 * {@link module:engine/model/selection~Selection#focus}. Accepts a flag describing in which direction the selection is made.
 	 *
+	 * @protected
 	 * @fires change:range
 	 * @param {Iterable.<module:engine/model/range~Range>} newRanges Ranges to set.
 	 * @param {Boolean} [isLastBackward=false] Flag describing if last added range was selected forward - from start to end (`false`)
@@ -639,15 +640,6 @@ export default class Selection {
 	 * @param {module:engine/model/range~Range} range Range to check.
 	 */
 	_checkRange( range ) {
-		if ( !( range instanceof Range ) ) {
-			/**
-			 * Trying to add an object that is not an instance of Range.
-			 *
-			 * @error model-selection-added-not-range
-			 */
-			throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
-		}
-
 		for ( let i = 0; i < this._ranges.length; i++ ) {
 			if ( range.isIntersecting( this._ranges[ i ] ) ) {
 				/**

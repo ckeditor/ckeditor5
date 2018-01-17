@@ -69,6 +69,18 @@ describe( 'Selection', () => {
 
 			expect( selection.isBackward ).to.be.true;
 		} );
+
+		it( 'should uses internal _setRanges() method to set ranges', () => {
+			const ranges = [ range1, range2, range3 ];
+			const spy = sinon.spy( Selection.prototype, '_setRanges' );
+
+			const selection = new Selection( ranges );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( ranges );
+
+			spy.restore();
+		} );
 	} );
 
 	describe( 'isCollapsed', () => {
@@ -529,6 +541,32 @@ describe( 'Selection', () => {
 			selection._setRanges( [ liveRange, range ] );
 			expect( spy.calledOnce ).to.be.false;
 		} );
+
+		it( 'should copy added ranges and store multiple ranges', () => {
+			selection._setRanges( [ liveRange, range ] );
+
+			const ranges = selection._ranges;
+
+			expect( ranges.length ).to.equal( 2 );
+			expect( ranges[ 0 ].isEqual( liveRange ) ).to.be.true;
+			expect( ranges[ 1 ].isEqual( range ) ).to.be.true;
+			expect( ranges[ 0 ] ).not.to.be.equal( liveRange );
+			expect( ranges[ 1 ] ).not.to.be.equal( range );
+		} );
+
+		it( 'should set anchor and focus to the start and end of the last added range', () => {
+			selection._setRanges( [ liveRange, range ] );
+
+			expect( selection.anchor.path ).to.deep.equal( [ 2 ] );
+			expect( selection.focus.path ).to.deep.equal( [ 2, 2 ] );
+		} );
+
+		it( 'should set anchor and focus to the end and start of the most recently added range if backward flag was used', () => {
+			selection._setRanges( [ liveRange, range ], true );
+
+			expect( selection.anchor.path ).to.deep.equal( [ 2 ] );
+			expect( selection.focus.path ).to.deep.equal( [ 2, 2 ] );
+		} );
 	} );
 
 	describe( 'setTo()', () => {
@@ -579,6 +617,18 @@ describe( 'Selection', () => {
 			expect( selection.isCollapsed ).to.be.true;
 			expect( selection._setRanges.calledOnce ).to.be.true;
 			spy.restore();
+		} );
+
+		it( 'should throw an error if added ranges intersects', () => {
+			expect( () => {
+				selection.setTo( [
+					liveRange,
+					new Range(
+						new Position( root, [ 0, 4 ] ),
+						new Position( root, [ 1, 2 ] )
+					)
+				] );
+			} ).to.throw( CKEditorError, /model-selection-range-intersects/ );
 		} );
 
 		it( 'should throw an error when trying to set selection to not selectable', () => {
