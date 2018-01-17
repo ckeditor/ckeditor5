@@ -126,5 +126,17 @@ describe( 'HighlightCommand', () => {
 
 			expect( command.value ).to.equal( 'greenMarker' );
 		} );
+
+		it( 'should remove entire highlight on collapsed range when inside highlighted text of the same value', () => {
+			setData( model, '<paragraph>abc<$text highlight="marker">foo[]bar</$text>xyz</paragraph>' );
+
+			expect( command.value ).to.equal( 'marker' );
+
+			command.execute( { value: 'marker' } );
+
+			expect( getData( model ) ).to.equal( '<paragraph>abcfoo[]barxyz</paragraph>' );
+
+			expect( command.value ).to.be.undefined;
+		} );
 	} );
 } );

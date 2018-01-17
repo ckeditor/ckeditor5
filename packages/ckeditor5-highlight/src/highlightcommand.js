@@ -62,8 +62,9 @@ export default class HighlightCommand extends Command {
 			if ( selection.isCollapsed ) {
 				const position = selection.getFirstPosition();
 
-				// When selection is inside text with `linkHref` attribute.
+				// When selection is inside text with `highlight` attribute.
 				if ( selection.hasAttribute( 'highlight' ) ) {
+					// Find the full highlighted range.
 					const isSameHighlight = value => {
 						return value.item.hasAttribute( 'highlight' ) && value.item.getAttribute( 'highlight' ) === this.value;
 					};
@@ -73,11 +74,17 @@ export default class HighlightCommand extends Command {
 
 					const highlightRange = new Range( highlightStart, highlightEnd );
 
-					// Then update `highlight` value.
-					writer.setAttribute( 'highlight', highlighter, highlightRange );
+					// Then depending on current value...
+					if ( this.value === highlighter ) {
+						// ...remove attribute.
+						writer.removeAttribute( 'highlight', highlightRange );
+					} else {
+						// ...update `highlight` value.
+						writer.setAttribute( 'highlight', highlighter, highlightRange );
 
-					// Create new range wrapping changed link.
-					selection.setRanges( [ highlightRange ] );
+						// And create new range wrapping changed highlighter.
+						selection.setRanges( [ highlightRange ] );
+					}
 				} else {
 					// TODO
 				}
