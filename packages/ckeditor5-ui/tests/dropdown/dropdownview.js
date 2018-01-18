@@ -71,7 +71,7 @@ describe( 'DropdownView', () => {
 		} );
 
 		describe( 'bindings', () => {
-			describe( 'view#isOpen to view.buttonView#execute', () => {
+			describe( 'view#isOpen to view.buttonView#select', () => {
 				it( 'is activated', () => {
 					const values = [];
 
@@ -79,9 +79,9 @@ describe( 'DropdownView', () => {
 						values.push( view.isOpen );
 					} );
 
-					view.buttonView.fire( 'execute' );
-					view.buttonView.fire( 'execute' );
-					view.buttonView.fire( 'execute' );
+					view.buttonView.fire( 'select' );
+					view.buttonView.fire( 'select' );
+					view.buttonView.fire( 'select' );
 
 					expect( values ).to.have.members( [ true, false, true ] );
 				} );

@@ -86,6 +86,9 @@ export default function createButtonDropdown( model, locale ) {
 
 	model.buttons.map( view => toolbarView.items.add( view ) );
 
+	// TODO: better:
+	dropdownView.buttonView.delegate( 'execute' ).to( dropdownView.buttonView, 'select' );
+
 	dropdownView.extendTemplate( {
 		attributes: {
 			class: [ 'ck-buttondropdown' ]

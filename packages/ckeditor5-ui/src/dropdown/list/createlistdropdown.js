@@ -65,6 +65,9 @@ export default function createListDropdown( model, locale ) {
 
 	dropdownView.panelView.children.add( listView );
 
+	// TODO: better:
+	dropdownView.buttonView.delegate( 'execute' ).to( dropdownView.buttonView, 'select' );
+
 	closeDropdownOnBlur( dropdownView );
 	closeDropdownOnExecute( dropdownView, listView.items );
 	focusDropdownContentsOnArrows( dropdownView, listView );
