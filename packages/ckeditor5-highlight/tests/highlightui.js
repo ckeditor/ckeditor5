@@ -121,6 +121,48 @@ describe( 'HighlightUI', () => {
 			expect( toolbar.items.map( item => item.isOn ) ).to.deep.equal( [ false, true, false, false, false, undefined, false ] );
 		} );
 
+		describe( 'toolbar button behavior', () => {
+			let button, buttons, options;
+
+			beforeEach( () => {
+				button = dropdown.buttonView;
+				buttons = dropdown.toolbarView.items.map( b => b );
+				options = editor.config.get( 'highlight.options' );
+			} );
+
+			function validateButton( which ) {
+				expect( button.icon ).to.equal( buttons[ which ].icon );
+				expect( button.buttonView.iconView.color ).to.equal( options[ which ].color );
+			}
+
+			it( 'should have properties of first defined highlighter', () => {
+				validateButton( 0 );
+			} );
+
+			it( 'should change button on selection', () => {
+				command.value = 'redPen';
+
+				validateButton( 3 );
+
+				command.value = undefined;
+
+				validateButton( 0 );
+			} );
+
+			it( 'should change button on execute option', () => {
+				command.value = 'marker';
+				validateButton( 0 );
+
+				buttons[ 4 ].fire( 'execute' );
+				command.value = 'bluePen';
+
+				// Simulate selection moved to not highlighted text.
+				command.value = undefined;
+
+				validateButton( 4 );
+			} );
+		} );
+
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;

@@ -262,11 +262,11 @@ function bindIconStyle( dropdownView, model ) {
 
 	iconView.extendTemplate( {
 		attributes: {
-			style: bind.to( 'style' )
+			style: bind.to( 'color', color => `color:${ color }` )
 		}
 	} );
 
-	iconView.bind( 'style' ).to( model, 'color', color => `color:${ color }` );
+	iconView.bind( 'color' ).to( model, 'color' );
 }
 
 // Returns icon for given highlighter type.
