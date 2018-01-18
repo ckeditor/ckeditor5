@@ -12,12 +12,12 @@
     "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline#8fb7764",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#9f6d80e",
     "@ckeditor/ckeditor5-cloudservices": "ckeditor/ckeditor5-cloudservices#1807d67",
-    "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#30a07ac",
+    "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#ea108d3",
     "@ckeditor/ckeditor5-easy-image": "ckeditor/ckeditor5-easy-image#9fa2c0f",
     "@ckeditor/ckeditor5-editor-balloon": "ckeditor/ckeditor5-editor-balloon#946b686",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#91ce912",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#bdae9bc",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#e55814b",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#ee88389",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#b9a7a1e",
     "@ckeditor/ckeditor5-essentials": "ckeditor/ckeditor5-essentials#5c2db3e",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#afeddd0",
@@ -28,10 +28,10 @@
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#8decb82",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#1bdec45",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#479d043",
-    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#269e97b",
+    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#c5cea07",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#e1cb122",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#1c447ae",
-    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#a7ecac5",
+    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#78e54f1",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#12c51b2"
   }
 }
