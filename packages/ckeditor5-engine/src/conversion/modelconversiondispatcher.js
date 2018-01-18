@@ -128,11 +128,6 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/differ~Differ} differ Differ object with buffered changes.
 	 */
 	convertChanges( differ ) {
-		// First, before changing view structure, remove all markers that has changed.
-		for ( const change of differ.getMarkersToRemove() ) {
-			this.convertMarkerRemove( change.name, change.range );
-		}
-
 		// Convert changes that happened on model tree.
 		for ( const entry of differ.getChanges() ) {
 			if ( entry.type == 'insert' ) {

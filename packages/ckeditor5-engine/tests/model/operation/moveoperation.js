@@ -6,7 +6,6 @@
 import Model from '../../../src/model/model';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
-import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -257,32 +256,6 @@ describe( 'MoveOperation', () => {
 		expect( clone.targetPosition.isEqual( targetPosition ) ).to.be.true;
 		expect( clone.howMany ).to.equal( howMany );
 		expect( clone.baseVersion ).to.equal( baseVersion );
-	} );
-
-	describe( 'isDocumentOperation', () => {
-		it( 'should return root when operation is executed on attached items', () => {
-			const op = new MoveOperation(
-				new Position( root, [ 0, 0 ] ),
-				1,
-				new Position( root, [ 1, 0 ] ),
-				doc.version
-			);
-
-			expect( op.isDocumentOperation ).to.true;
-		} );
-
-		it( 'should return false when operation is executed on detached items', () => {
-			const docFrag = new DocumentFragment( [ new Text( 'abc' ) ] );
-
-			const op = new MoveOperation(
-				new Position( docFrag, [ 0 ] ),
-				1,
-				new Position( docFrag, [ 2 ] ),
-				doc.version
-			);
-
-			expect( op.isDocumentOperation ).to.false;
-		} );
 	} );
 
 	describe( 'getMovedRangeStart', () => {

@@ -17,7 +17,9 @@ import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 export default class Operation {
 	/**
 	 * Base operation constructor.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which the operation can be applied.
+	 *
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( baseVersion ) {
 		/**
@@ -29,6 +31,14 @@ export default class Operation {
 		 * @member {Number}
 		 */
 		this.baseVersion = baseVersion;
+
+		/**
+		 * Defines whether operation is executed on attached or detached {@link module:engine/model/item~Item items}.
+		 *
+		 * @readonly
+		 * @member {Boolean} #isDocumentOperation
+		 */
+		this.isDocumentOperation = this.baseVersion !== null;
 
 		/**
 		 * Operation type.
@@ -43,13 +53,6 @@ export default class Operation {
 		 * {@link module:engine/model/delta/delta~Delta#addOperation} method.
 		 *
 		 * @member {module:engine/model/delta/delta~Delta} #delta
-		 */
-
-		/**
-		 * Defines whether operation is executed on attached or detached {@link module:engine/model/item~Item items}.
-		 *
-		 * @readonly
-		 * @member {Boolean} #isDocumentOperation
 		 */
 
 		/**

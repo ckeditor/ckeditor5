@@ -19,7 +19,8 @@ export default class MarkerOperation extends Operation {
 	 * @param {module:engine/model/range~Range} oldRange Marker range before the change.
 	 * @param {module:engine/model/range~Range} newRange Marker range after the change.
 	 * @param {module:engine/model/markercollection~MarkerCollection} markers Marker collection on which change should be executed.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which the operation can be applied.
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( name, oldRange, newRange, markers, baseVersion ) {
 		super( baseVersion );
@@ -55,11 +56,6 @@ export default class MarkerOperation extends Operation {
 		 * @member {module:engine/model/markercollection~MarkerCollection}
 		 */
 		this._markers = markers;
-
-		/**
-		 * @inheritDoc
-		 */
-		this.isDocumentOperation = this._isDocumentOperation();
 	}
 
 	/**
@@ -67,24 +63,6 @@ export default class MarkerOperation extends Operation {
 	 */
 	get type() {
 		return 'marker';
-	}
-
-	/**
-	 * Checks if operation is executed on document or document fragment nodes.
-	 *
-	 * @private
-	 */
-	_isDocumentOperation() {
-		if ( this.newRange ) {
-			return !!this.newRange.root.document;
-		}
-
-		if ( this.oldRange ) {
-			return !!this.oldRange.root.document;
-		}
-
-		// This is edge and might happen only on data from the server.
-		return true;
 	}
 
 	/**

@@ -27,7 +27,8 @@ export default class InsertOperation extends Operation {
 	 *
 	 * @param {module:engine/model/position~Position} position Position of insertion.
 	 * @param {module:engine/model/node~NodeSet} nodes The list of nodes to be inserted.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which operation can be applied.
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( position, nodes, baseVersion ) {
 		super( baseVersion );
@@ -47,11 +48,6 @@ export default class InsertOperation extends Operation {
 		 * @member {module:engine/model/nodelist~NodeList} module:engine/model/operation/insertoperation~InsertOperation#nodeList
 		 */
 		this.nodes = new NodeList( _normalizeNodes( nodes ) );
-
-		/**
-		 * @inheritDoc
-		 */
-		this.isDocumentOperation = !!this.position.root.document;
 	}
 
 	/**

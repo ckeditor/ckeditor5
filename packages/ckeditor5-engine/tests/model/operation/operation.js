@@ -26,6 +26,20 @@ describe( 'Operation', () => {
 		expect( parsedOutside.delta ).to.be.undefined;
 	} );
 
+	describe( 'isDocumentOperation', () => {
+		it( 'operation is a document operation if it has base version set', () => {
+			const op = new Operation( 0 );
+
+			expect( op.isDocumentOperation ).to.be.true;
+		} );
+
+		it( 'operation is not a document operation if base version is null', () => {
+			const op = new Operation( null );
+
+			expect( op.isDocumentOperation ).to.be.false;
+		} );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
 			const op = new Operation( 4 );

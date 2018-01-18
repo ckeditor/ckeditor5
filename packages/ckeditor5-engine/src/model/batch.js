@@ -50,14 +50,20 @@ export default class Batch {
 	}
 
 	/**
-	 * Returns this batch base version, which is equal to the base version of first delta in the batch.
-	 * If there are no deltas in the batch, it returns `null`.
+	 * Returns this batch base version, which is equal to the base version of first delta (which has base version set)
+	 * in the batch. If there are no deltas in the batch or neither delta has base version set, it returns `null`.
 	 *
 	 * @readonly
 	 * @type {Number|null}
 	 */
 	get baseVersion() {
-		return this.deltas.length > 0 ? this.deltas[ 0 ].baseVersion : null;
+		for ( const delta of this.deltas ) {
+			if ( delta.baseVersion !== null ) {
+				return delta.baseVersion;
+			}
+		}
+
+		return null;
 	}
 
 	/**

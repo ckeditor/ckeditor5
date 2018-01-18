@@ -31,7 +31,8 @@ export default class RootAttributeOperation extends Operation {
 	 * @param {String} key Key of an attribute to change or remove.
 	 * @param {*} oldValue Old value of the attribute with given key or `null` if adding a new attribute.
 	 * @param {*} newValue New value to set for the attribute. If `null`, then the operation just removes the attribute.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which the operation can be applied.
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( root, key, oldValue, newValue, baseVersion ) {
 		super( baseVersion );
@@ -67,11 +68,6 @@ export default class RootAttributeOperation extends Operation {
 		 * @member {*}
 		 */
 		this.newValue = newValue;
-
-		/**
-		 * @inheritDoc
-		 */
-		this.isDocumentOperation = !!this.root.document;
 	}
 
 	/**
@@ -109,6 +105,21 @@ export default class RootAttributeOperation extends Operation {
 	 * @inheritDoc
 	 */
 	_validate() {
+		if ( this.root != this.root.root || this.root.is( 'documentFragment' ) ) {
+			/**
+			 * The element to change is not a root element.
+			 *
+			 * @error rootattribute-operation-not-a-root
+			 * @param {module:engine/model/rootelement~RootElement} root
+			 * @param {String} key
+			 * @param {*} value
+			 */
+			throw new CKEditorError(
+				'rootattribute-operation-not-a-root: The element to change is not a root element.',
+				{ root: this.root, key: this.key }
+			);
+		}
+
 		if ( this.oldValue !== null && this.root.getAttribute( this.key ) !== this.oldValue ) {
 			/**
 			 * The attribute which should be removed does not exists for the given node.

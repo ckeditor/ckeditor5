@@ -26,7 +26,8 @@ export default class RenameOperation extends Operation {
 	 * @param {module:engine/model/position~Position} position Position before an element to change.
 	 * @param {String} oldName Current name of the element.
 	 * @param {String} newName New name for the element.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which the operation can be applied.
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( position, oldName, newName, baseVersion ) {
 		super( baseVersion );
@@ -51,11 +52,6 @@ export default class RenameOperation extends Operation {
 		 * @member {String} module:engine/model/operation/renameoperation~RenameOperation#newName
 		 */
 		this.newName = newName;
-
-		/**
-		 * @inheritDoc
-		 */
-		this.isDocumentOperation = !!this.position.root.document;
 	}
 
 	/**
