@@ -175,7 +175,7 @@ export default class Writer {
 			}
 		}
 
-		const version = position.root.document ? this.model.document.version : null;
+		const version = position.root.document ? position.root.document.version : null;
 
 		const insert = new InsertOperation( position, item, version );
 
@@ -451,7 +451,7 @@ export default class Writer {
 		const delta = new MoveDelta();
 		this.batch.addDelta( delta );
 
-		const version = range.root.document ? this.model.document.version : null;
+		const version = range.root.document ? range.root.document.version : null;
 
 		const operation = new MoveOperation( range.start, range.end.offset - range.start.offset, position, version );
 		delta.addOperation( operation );
@@ -525,7 +525,7 @@ export default class Writer {
 		const positionAfter = Position.createFromParentAndOffset( nodeAfter, 0 );
 		const positionBefore = Position.createFromParentAndOffset( nodeBefore, nodeBefore.maxOffset );
 
-		const moveVersion = position.root.document ? this.model.document.version : null;
+		const moveVersion = position.root.document ? position.root.document.version : null;
 
 		const move = new MoveOperation(
 			positionAfter,
@@ -564,7 +564,7 @@ export default class Writer {
 		const delta = new RenameDelta();
 		this.batch.addDelta( delta );
 
-		const version = element.root.document ? this.model.document.version : null;
+		const version = element.root.document ? element.root.document.version : null;
 
 		const renameOperation = new RenameOperation( Position.createBefore( element ), element.name, newName, version );
 		delta.addOperation( renameOperation );
@@ -597,7 +597,7 @@ export default class Writer {
 		}
 
 		const copy = new Element( splitElement.name, splitElement.getAttributes() );
-		const insertVersion = splitElement.root.document ? this.model.document.version : null;
+		const insertVersion = splitElement.root.document ? splitElement.root.document.version : null;
 
 		const insert = new InsertOperation(
 			Position.createAfter( splitElement ),
@@ -665,7 +665,7 @@ export default class Writer {
 		const delta = new WrapDelta();
 		this.batch.addDelta( delta );
 
-		const insertVersion = range.root.document ? this.model.document.version : null;
+		const insertVersion = range.root.document ? range.root.document.version : null;
 
 		const insert = new InsertOperation( range.end, element, insertVersion );
 		delta.addOperation( insert );
@@ -706,7 +706,7 @@ export default class Writer {
 		this.batch.addDelta( delta );
 
 		const sourcePosition = Position.createFromParentAndOffset( element, 0 );
-		const moveVersion = sourcePosition.root.document ? this.model.document.version : null;
+		const moveVersion = sourcePosition.root.document ? sourcePosition.root.document.version : null;
 
 		const move = new MoveOperation(
 			sourcePosition,
@@ -952,9 +952,9 @@ function addRemoveOperation( position, howMany, delta, model ) {
 
 	if ( position.root.document ) {
 		const doc = model.document;
-		const gyPosition = new Position( doc.graveyard, [ 0 ] );
+		const graveyardPosition = new Position( doc.graveyard, [ 0 ] );
 
-		operation = new RemoveOperation( position, howMany, gyPosition, doc.version );
+		operation = new RemoveOperation( position, howMany, graveyardPosition, doc.version );
 	} else {
 		operation = new DetachOperation( position, howMany );
 	}

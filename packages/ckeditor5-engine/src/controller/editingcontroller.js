@@ -109,11 +109,10 @@ export default class EditingController {
 
 		// Convert markers removal.
 		//
-		// Markers should be removed from the view before changes to model are applied. This is because otherwise
-		// it would be impossible to map some markers to view (if, for example, marker boundary parent got removed).
+		// Markers should be removed from the view before changes to the model are applied. This is because otherwise
+		// it would be impossible to map some markers to the view (if, for example, the marker's boundary parent got removed).
 		//
 		// `removedMarkers` keeps information which markers already has been removed to prevent removing them twice.
-		// (The second remove would not be at "the soonest moment" and it could crash.)
 		const removedMarkers = new Set();
 
 		this.listenTo( model, 'applyOperation', ( evt, args ) => {
@@ -138,12 +137,6 @@ export default class EditingController {
 				}
 			}
 		}, { priority: 'high' } );
-
-		// If a marker with given name was added again, remove it from `removedMarkers`. This is to prevent a bug in
-		// a situation when marker is removed, then added, then removed again (would not got removed if it is saved in `removedMarkers`).
-		this.listenTo( model.markers, 'add', ( evt, marker ) => {
-			removedMarkers.delete( marker.name );
-		} );
 
 		// If a marker is removed through `model.Model#markers` directly (not through operation), just remove it (if
 		// it was not removed already).

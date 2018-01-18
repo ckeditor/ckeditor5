@@ -162,8 +162,8 @@ export default class DataController {
 		this.modelToView.convertInsert( modelRange );
 
 		if ( !modelElementOrFragment.is( 'documentFragment' ) ) {
-			// Then, if document element is converted, convert markers.
-			// Get only those markers that contain or are contained by the element.
+			// Then, if a document element is converted, convert markers.
+			// From all document markers, get those, which "intersect" with the converter element.
 			const markers = _getMarkersRelativeToElement( modelElementOrFragment );
 
 			for ( const [ name, range ] of markers ) {

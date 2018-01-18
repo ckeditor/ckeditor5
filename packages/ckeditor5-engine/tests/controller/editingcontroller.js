@@ -524,6 +524,34 @@ describe( 'EditingController', () => {
 
 			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>aaaf<span>o</span>o</p><p>bar</p>' );
 		} );
+
+		it( 'should not crash if marker is removed, added and removed #1', () => {
+			model.change( writer => {
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ) );
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'a', p1, 0 );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 3, p1, 4 ) );
+				writer.insertText( 'a', p1, 0 );
+			} );
+
+			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>aafo<span>o</span></p><p>bar</p>' );
+		} );
+
+		it( 'should not crash if marker is removed, added and removed #2', () => {
+			model.change( writer => {
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ) );
+			} );
+
+			model.change( writer => {
+				writer.removeMarker( 'marker' );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 0, p1, 1 ) );
+				writer.removeMarker( 'marker' );
+			} );
+
+			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
+		} );
 	} );
 
 	describe( 'destroy()', () => {
