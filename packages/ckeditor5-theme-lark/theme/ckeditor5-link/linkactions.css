@@ -24,7 +24,6 @@
 		&:active {
 			background: none;
 			border: 0;
-			box-shadow: none;
 		}
 
 		&:focus {
