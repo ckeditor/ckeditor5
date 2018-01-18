@@ -13,6 +13,8 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import codeIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/code.svg';
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
+import imageLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
+import imageCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import editIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
 import strikethroughIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg';
 import underlineIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/underline.svg';
@@ -52,6 +54,30 @@ class FakeIcons extends Plugin {
 			view.set( {
 				label: 'Insert image',
 				icon: imageIcon,
+				tooltip: true
+			} );
+
+			return view;
+		} );
+
+		editor.ui.componentFactory.add( 'imageLeft', locale => {
+			const view = new ButtonView( locale );
+
+			view.set( {
+				label: 'Left-sided image',
+				icon: imageLeftIcon,
+				tooltip: true
+			} );
+
+			return view;
+		} );
+
+		editor.ui.componentFactory.add( 'imageCenter', locale => {
+			const view = new ButtonView( locale );
+
+			view.set( {
+				label: 'Centered image',
+				icon: imageCenterIcon,
 				tooltip: true
 			} );
 
@@ -103,7 +129,8 @@ ClassicEditor
 		],
 		toolbar: [
 			'headings', 'bold', 'italic', 'strikethrough', 'underline', 'link', 'unlink', 'edit', 'bulletedList', 'numberedList',
-			'blockquote', 'code', 'undo', 'redo', 'imagestylefull', 'imagestyleside', 'imagetextalternative', 'insertImage'
+			'blockquote', 'code', 'undo', 'redo', 'imagestylefull', 'imagestyleside', 'imageLeft', 'imageCenter', 'imagetextalternative',
+			'insertImage'
 		]
 	} )
 	.then( editor => {
