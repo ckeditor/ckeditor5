@@ -222,8 +222,10 @@ export default class BalloonPanelView extends View {
 		const positionOptions = Object.assign( {}, {
 			element: this.element,
 			positions: [
+				defaultPositions.southArrowNorth,
 				defaultPositions.southArrowNorthWest,
 				defaultPositions.southArrowNorthEast,
+				defaultPositions.northArrowSouth,
 				defaultPositions.northArrowSouthWest,
 				defaultPositions.northArrowSouthEast
 			],
