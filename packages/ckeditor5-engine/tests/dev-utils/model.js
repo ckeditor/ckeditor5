@@ -334,10 +334,10 @@ describe( 'model test utils', () => {
 			it( 'writes selection collapsed at the end of the root', () => {
 				model.change( writer => {
 					writer.setSelection( root, 'end' );
-				} );
 
-				// Needed due to https://github.com/ckeditor/ckeditor5-engine/issues/320.
-				selection._clearAttributes();
+					// Needed due to https://github.com/ckeditor/ckeditor5-engine/issues/320.
+					writer.clearSelectionAttributes();
+				} );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">bar</$text><b></b>[]'

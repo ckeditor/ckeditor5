@@ -234,10 +234,6 @@ export default class LiveSelection extends Selection {
 	 * @inheritDoc
 	 */
 	clearAttributes() {
-		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
-			this.removeStoredAttributes();
-		}
-
 		const changed = this._setAttributesTo( new Map() );
 
 		if ( changed.size > 0 ) {
@@ -524,23 +520,6 @@ export default class LiveSelection extends Selection {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Sets selection attributes stored in current selection's parent node to given set of attributes.
-	 *
-	 * @private
-	 */
-	removeStoredAttributes() {
-		const selectionParent = this.anchor.parent;
-
-		this._model.change( writer => {
-			for ( const [ oldKey ] of this._getStoredAttributes() ) {
-				const storeKey = LiveSelection._getStoreAttributeKey( oldKey );
-
-				writer.removeAttribute( storeKey, selectionParent );
-			}
-		} );
 	}
 
 	/**

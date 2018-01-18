@@ -115,11 +115,8 @@ export function setData( model, data, options = {} ) {
 		writer.insert( modelDocumentFragment, modelRoot );
 
 		// Clean up previous document selection.
-		for ( const key of model.document.selection.getAttributeKeys() ) {
-			writer.removeSelectionAttribute( key );
-		}
-
 		writer.setSelection( null );
+		writer.clearSelectionAttributes();
 
 		// Update document selection if specified.
 		if ( selection ) {
