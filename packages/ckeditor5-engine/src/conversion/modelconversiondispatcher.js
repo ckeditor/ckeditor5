@@ -105,7 +105,7 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/model~Model} model Data model.
 	 * @param {Object} [conversionApi] Interface passed by dispatcher to the events calls.
 	 */
-	constructor( model, conversionApi = {} ) {
+	constructor( model, view, conversionApi = {} ) {
 		/**
 		 * Data model instance bound with this dispatcher.
 		 *
@@ -113,6 +113,8 @@ export default class ModelConversionDispatcher {
 		 * @member {module:engine/model/model~Model}
 		 */
 		this._model = model;
+
+		this._view = view;
 
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
@@ -128,27 +130,31 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/differ~Differ} differ Differ object with buffered changes.
 	 */
 	convertChanges( differ ) {
-		// First, before changing view structure, remove all markers that has changed.
-		for ( const change of differ.getMarkersToRemove() ) {
-			this.convertMarkerRemove( change.name, change.range );
-		}
+		this._view.change( writer => {
+			this.conversionApi.writer = writer;
 
-		// Convert changes that happened on model tree.
-		for ( const entry of differ.getChanges() ) {
-			if ( entry.type == 'insert' ) {
-				this.convertInsert( Range.createFromPositionAndShift( entry.position, entry.length ) );
-			} else if ( entry.type == 'remove' ) {
-				this.convertRemove( entry.position, entry.length, entry.name );
-			} else {
-				// entry.type == 'attribute'.
-				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue );
+			// First, before changing view structure, remove all markers that has changed.
+			for ( const change of differ.getMarkersToRemove() ) {
+				this.convertMarkerRemove( change.name, change.range );
 			}
-		}
 
-		// After the view is updated, convert markers which has changed.
-		for ( const change of differ.getMarkersToAdd() ) {
-			this.convertMarkerAdd( change.name, change.range );
-		}
+			// Convert changes that happened on model tree.
+			for ( const entry of differ.getChanges() ) {
+				if ( entry.type == 'insert' ) {
+					this.convertInsert( Range.createFromPositionAndShift( entry.position, entry.length ) );
+				} else if ( entry.type == 'remove' ) {
+					this.convertRemove( entry.position, entry.length, entry.name );
+				} else {
+					// entry.type == 'attribute'.
+					this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue );
+				}
+			}
+
+			// After the view is updated, convert markers which has changed.
+			for ( const change of differ.getMarkersToAdd() ) {
+				this.convertMarkerAdd( change.name, change.range );
+			}
+		} );
 	}
 
 	/**
@@ -162,31 +168,35 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/range~Range} range Inserted range.
 	 */
 	convertInsert( range ) {
-		// Create a list of things that can be consumed, consisting of nodes and their attributes.
-		const consumable = this._createInsertConsumable( range );
+		this._view.change( writer => {
+			this.conversionApi.writer = writer;
 
-		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( const value of range ) {
-			const item = value.item;
-			const itemRange = Range.createFromPositionAndShift( value.previousPosition, value.length );
-			const data = {
-				item,
-				range: itemRange
-			};
+			// Create a list of things that can be consumed, consisting of nodes and their attributes.
+			const consumable = this._createInsertConsumable( range );
 
-			this._testAndFire( 'insert', data, consumable );
+			// Fire a separate insert event for each node and text fragment contained in the range.
+			for ( const value of range ) {
+				const item = value.item;
+				const itemRange = Range.createFromPositionAndShift( value.previousPosition, value.length );
+				const data = {
+					item,
+					range: itemRange
+				};
 
-			// Fire a separate addAttribute event for each attribute that was set on inserted items.
-			// This is important because most attributes converters will listen only to add/change/removeAttribute events.
-			// If we would not add this part, attributes on inserted nodes would not be converted.
-			for ( const key of item.getAttributeKeys() ) {
-				data.attributeKey = key;
-				data.attributeOldValue = null;
-				data.attributeNewValue = item.getAttribute( key );
+				this._testAndFire( 'insert', data, consumable );
 
-				this._testAndFire( `attribute:${ key }`, data, consumable );
+				// Fire a separate addAttribute event for each attribute that was set on inserted items.
+				// This is important because most attributes converters will listen only to add/change/removeAttribute events.
+				// If we would not add this part, attributes on inserted nodes would not be converted.
+				for ( const key of item.getAttributeKeys() ) {
+					data.attributeKey = key;
+					data.attributeOldValue = null;
+					data.attributeNewValue = item.getAttribute( key );
+
+					this._testAndFire( `attribute:${ key }`, data, consumable );
+				}
 			}
-		}
+		} );
 	}
 
 	/**
@@ -197,7 +207,11 @@ export default class ModelConversionDispatcher {
 	 * @param {String} name Name of removed node.
 	 */
 	convertRemove( position, length, name ) {
-		this.fire( 'remove:' + name, { position, length }, this.conversionApi );
+		this._view.change( writer => {
+			this.conversionApi.writer = writer;
+
+			this.fire( 'remove:' + name, { position, length }, this.conversionApi );
+		} );
 	}
 
 	/**
@@ -212,23 +226,27 @@ export default class ModelConversionDispatcher {
 	 * @param {*} newValue New attribute value or `null` if the attribute has been removed.
 	 */
 	convertAttribute( range, key, oldValue, newValue ) {
-		// Create a list with attributes to consume.
-		const consumable = this._createConsumableForRange( range, `attribute:${ key }` );
+		this._view.change( writer => {
+			this.conversionApi.writer = writer;
 
-		// Create a separate attribute event for each node in the range.
-		for ( const value of range ) {
-			const item = value.item;
-			const itemRange = Range.createFromPositionAndShift( value.previousPosition, value.length );
-			const data = {
-				item,
-				range: itemRange,
-				attributeKey: key,
-				attributeOldValue: oldValue,
-				attributeNewValue: newValue
-			};
+			// Create a list with attributes to consume.
+			const consumable = this._createConsumableForRange( range, `attribute:${ key }` );
 
-			this._testAndFire( `attribute:${ key }`, data, consumable );
-		}
+			// Create a separate attribute event for each node in the range.
+			for ( const value of range ) {
+				const item = value.item;
+				const itemRange = Range.createFromPositionAndShift( value.previousPosition, value.length );
+				const data = {
+					item,
+					range: itemRange,
+					attributeKey: key,
+					attributeOldValue: oldValue,
+					attributeNewValue: newValue
+				};
+
+				this._testAndFire( `attribute:${ key }`, data, consumable );
+			}
+		} );
 	}
 
 	/**
@@ -242,41 +260,44 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
 	 */
 	convertSelection( selection ) {
-		const markers = Array.from( this._model.markers.getMarkersAtPosition( selection.getFirstPosition() ) );
-		const consumable = this._createSelectionConsumable( selection, markers );
+		this._view.change( writer => {
+			this.conversionApi.writer = writer;
+			const markers = Array.from( this._model.markers.getMarkersAtPosition( selection.getFirstPosition() ) );
+			const consumable = this._createSelectionConsumable( selection, markers );
 
-		this.fire( 'selection', { selection }, consumable, this.conversionApi );
+			this.fire( 'selection', { selection }, consumable, this.conversionApi );
 
-		for ( const marker of markers ) {
-			const markerRange = marker.getRange();
+			for ( const marker of markers ) {
+				const markerRange = marker.getRange();
 
-			if ( !shouldMarkerChangeBeConverted( selection.getFirstPosition(), marker, this.conversionApi.mapper ) ) {
-				continue;
+				if ( !shouldMarkerChangeBeConverted( selection.getFirstPosition(), marker, this.conversionApi.mapper ) ) {
+					continue;
+				}
+
+				const data = {
+					selection,
+					markerName: marker.name,
+					markerRange
+				};
+
+				if ( consumable.test( selection, 'selectionMarker:' + marker.name ) ) {
+					this.fire( 'selectionMarker:' + marker.name, data, consumable, this.conversionApi );
+				}
 			}
 
-			const data = {
-				selection,
-				markerName: marker.name,
-				markerRange
-			};
+			for ( const key of selection.getAttributeKeys() ) {
+				const data = {
+					selection,
+					key,
+					value: selection.getAttribute( key )
+				};
 
-			if ( consumable.test( selection, 'selectionMarker:' + marker.name ) ) {
-				this.fire( 'selectionMarker:' + marker.name, data, consumable, this.conversionApi );
+				// Do not fire event if the attribute has been consumed.
+				if ( consumable.test( selection, 'selectionAttribute:' + data.key ) ) {
+					this.fire( 'selectionAttribute:' + data.key, data, consumable, this.conversionApi );
+				}
 			}
-		}
-
-		for ( const key of selection.getAttributeKeys() ) {
-			const data = {
-				selection,
-				key,
-				value: selection.getAttribute( key )
-			};
-
-			// Do not fire event if the attribute has been consumed.
-			if ( consumable.test( selection, 'selectionAttribute:' + data.key ) ) {
-				this.fire( 'selectionAttribute:' + data.key, data, consumable, this.conversionApi );
-			}
-		}
+		} );
 	}
 
 	/**
@@ -293,36 +314,40 @@ export default class ModelConversionDispatcher {
 			return;
 		}
 
-		// In markers' case, event name == consumable name.
-		const eventName = 'addMarker:' + markerName;
+		this._view.change( writer => {
+			this.conversionApi.writer = writer;
 
-		// When range is collapsed - fire single event with collapsed range in consumable.
-		if ( markerRange.isCollapsed ) {
-			const consumable = new Consumable();
-			consumable.add( markerRange, eventName );
+			// In markers' case, event name == consumable name.
+			const eventName = 'addMarker:' + markerName;
 
-			this.fire( eventName, {
-				markerName,
-				markerRange
-			}, consumable, this.conversionApi );
+			// When range is collapsed - fire single event with collapsed range in consumable.
+			if ( markerRange.isCollapsed ) {
+				const consumable = new Consumable();
+				consumable.add( markerRange, eventName );
 
-			return;
-		}
+				this.fire( eventName, {
+					markerName,
+					markerRange
+				}, consumable, this.conversionApi );
 
-		// Create consumable for each item in range.
-		const consumable = this._createConsumableForRange( markerRange, eventName );
-
-		// Create separate event for each node in the range.
-		for ( const item of markerRange.getItems() ) {
-			// Do not fire event for already consumed items.
-			if ( !consumable.test( item, eventName ) ) {
-				continue;
+				return;
 			}
 
-			const data = { item, range: Range.createOn( item ), markerName, markerRange };
+			// Create consumable for each item in range.
+			const consumable = this._createConsumableForRange( markerRange, eventName );
 
-			this.fire( eventName, data, consumable, this.conversionApi );
-		}
+			// Create separate event for each node in the range.
+			for ( const item of markerRange.getItems() ) {
+				// Do not fire event for already consumed items.
+				if ( !consumable.test( item, eventName ) ) {
+					continue;
+				}
+
+				const data = { item, range: Range.createOn( item ), markerName, markerRange };
+
+				this.fire( eventName, data, consumable, this.conversionApi );
+			}
+		} );
 	}
 
 	/**
@@ -338,7 +363,11 @@ export default class ModelConversionDispatcher {
 			return;
 		}
 
-		this.fire( 'removeMarker:' + markerName, { markerName, markerRange }, this.conversionApi );
+		this._view.change( writer => {
+			this.conversionApi.writer = writer;
+
+			this.fire( 'removeMarker:' + markerName, { markerName, markerRange }, this.conversionApi );
+		} );
 	}
 
 	/**

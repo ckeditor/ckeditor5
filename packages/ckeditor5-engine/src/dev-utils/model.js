@@ -20,6 +20,7 @@ import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
 import ModelSelection from '../model/selection';
 import ModelDocumentFragment from '../model/documentfragment';
 
+import View from '../view/view';
 import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
 import ViewSelection from '../view/selection';
 import ViewDocumentFragment from '../view/documentfragment';
@@ -159,6 +160,7 @@ setData._parse = parse;
  */
 export function stringify( node, selectionOrPositionOrRange = null ) {
 	const model = new Model();
+	const view = new View();
 	const mapper = new Mapper();
 	let selection, range;
 
@@ -192,7 +194,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	// Setup model to view converter.
 	const viewDocumentFragment = new ViewDocumentFragment();
 	const viewSelection = new ViewSelection();
-	const modelToView = new ModelConversionDispatcher( model, { mapper, viewSelection } );
+	const modelToView = new ModelConversionDispatcher( model, view, { mapper, viewSelection } );
 
 	// Bind root elements.
 	mapper.bindElements( node.root, viewDocumentFragment );

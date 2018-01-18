@@ -78,7 +78,7 @@ export default class EditingController {
 		 * @readonly
 		 * @member {module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher} #modelToView
 		 */
-		this.modelToView = new ModelConversionDispatcher( this.model, {
+		this.modelToView = new ModelConversionDispatcher( this.model, this.view, {
 			mapper: this.mapper,
 			viewSelection: this.view.document.selection
 		} );
@@ -92,9 +92,6 @@ export default class EditingController {
 
 			// After the view is ready, convert selection from model to view.
 			this.modelToView.convertSelection( doc.selection );
-
-			// When everything is converted to the view, render it to DOM.
-			this.view.render();
 		}, { priority: 'low' } );
 
 		// Convert selection from view to model.

@@ -59,7 +59,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 		highlightDescriptor = { class: 'marker', priority: 1 };
 
-		dispatcher = new ModelConversionDispatcher( model, { mapper, viewSelection } );
+		dispatcher = new ModelConversionDispatcher( model, view, { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'attribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );

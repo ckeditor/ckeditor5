@@ -9,9 +9,6 @@ import ViewElement from '../view/element';
 import ViewAttributeElement from '../view/attributeelement';
 import ViewText from '../view/text';
 import ViewRange from '../view/range';
-import WiewWriter from '../view/writer';
-
-const viewWriter = new WiewWriter();
 
 /**
  * Contains model to view converters for
@@ -65,7 +62,7 @@ export function insertElement( elementCreator ) {
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
-		viewWriter.insert( viewPosition, viewElement );
+		conversionApi.writer.insert( viewPosition, viewElement );
 	};
 }
 
@@ -88,7 +85,7 @@ export function insertText() {
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 		const viewText = new ViewText( data.item.data );
 
-		viewWriter.insert( viewPosition, viewText );
+		conversionApi.writer.insert( viewPosition, viewText );
 	};
 }
 
@@ -110,7 +107,7 @@ export function remove() {
 		const viewRange = new ViewRange( viewStart, viewEnd );
 
 		// Trim the range to remove in case some UI elements are on the view range boundaries.
-		const removed = viewWriter.remove( viewRange.getTrimmed() );
+		const removed = conversionApi.writer.remove( viewRange.getTrimmed() );
 
 		// After the range is removed, unbind all view elements from the model.
 		// Range inside view document fragment is used to unbind deeply.
@@ -172,13 +169,14 @@ export function insertUIElement( elementCreator ) {
 		}
 
 		const mapper = conversionApi.mapper;
+		const writer = conversionApi.writer;
 
 		// Add "opening" element.
-		viewWriter.insert( mapper.toViewPosition( markerRange.start ), viewStartElement );
+		writer.insert( mapper.toViewPosition( markerRange.start ), viewStartElement );
 
 		// Add "closing" element only if range is not collapsed.
 		if ( !markerRange.isCollapsed ) {
-			viewWriter.insert( mapper.toViewPosition( markerRange.end ), viewEndElement );
+			writer.insert( mapper.toViewPosition( markerRange.end ), viewEndElement );
 		}
 
 		evt.stop();
@@ -215,15 +213,16 @@ export function removeUIElement( elementCreator ) {
 		}
 
 		const markerRange = data.markerRange;
+		const writer = conversionApi.writer;
 
 		// When removing the ui elements, we map the model range to view twice, because that view range
 		// may change after the first clearing.
 		if ( !markerRange.isCollapsed ) {
-			viewWriter.clear( conversionApi.mapper.toViewRange( markerRange ).getEnlarged(), viewEndElement );
+			writer.clear( conversionApi.mapper.toViewRange( markerRange ).getEnlarged(), viewEndElement );
 		}
 
 		// Remove "opening" element.
-		viewWriter.clear( conversionApi.mapper.toViewRange( markerRange ).getEnlarged(), viewStartElement );
+		writer.clear( conversionApi.mapper.toViewRange( markerRange ).getEnlarged(), viewStartElement );
 
 		evt.stop();
 	};
@@ -329,15 +328,16 @@ export function wrap( elementCreator ) {
 		}
 
 		let viewRange = conversionApi.mapper.toViewRange( data.range );
+		const writer = conversionApi.writer;
 
 		// First, unwrap the range from current wrapper.
 		if ( data.attributeOldValue !== null ) {
-			viewRange = viewWriter.unwrap( viewRange, oldViewElement );
+			viewRange = writer.unwrap( viewRange, oldViewElement );
 		}
 
 		// Then wrap with the new wrapper.
 		if ( data.attributeNewValue !== null ) {
-			viewWriter.wrap( viewRange, newViewElement );
+			writer.wrap( viewRange, newViewElement );
 		}
 	};
 }
@@ -379,7 +379,7 @@ export function highlightText( highlightDescriptor ) {
 		const viewElement = createViewElementFromHighlightDescriptor( descriptor );
 		const viewRange = conversionApi.mapper.toViewRange( data.range );
 
-		viewWriter.wrap( viewRange, viewElement );
+		conversionApi.writer.wrap( viewRange, viewElement );
 	};
 }
 
@@ -496,7 +496,7 @@ export function removeHighlight( highlightDescriptor ) {
 
 		for ( const item of Array.from( items ).reverse() ) {
 			if ( item.is( 'textProxy' ) ) {
-				viewWriter.unwrap( ViewRange.createOn( item ), viewHighlightElement );
+				conversionApi.writer.unwrap( ViewRange.createOn( item ), viewHighlightElement );
 			}
 		}
 	};

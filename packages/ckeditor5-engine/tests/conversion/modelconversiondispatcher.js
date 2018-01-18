@@ -10,15 +10,17 @@ import ModelElement from '../../src/model/element';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 
+import View from '../../src/view/view';
 import ViewContainerElement from '../../src/view/containerelement';
 
 describe( 'ModelConversionDispatcher', () => {
-	let dispatcher, doc, root, differStub, model;
+	let dispatcher, doc, root, differStub, model, view;
 
 	beforeEach( () => {
 		model = new Model();
+		view = new View();
 		doc = model.document;
-		dispatcher = new ModelConversionDispatcher( model );
+		dispatcher = new ModelConversionDispatcher( model, view );
 		root = doc.createRoot();
 
 		differStub = {
@@ -31,7 +33,7 @@ describe( 'ModelConversionDispatcher', () => {
 	describe( 'constructor()', () => {
 		it( 'should create ModelConversionDispatcher with given api', () => {
 			const apiObj = {};
-			const dispatcher = new ModelConversionDispatcher( model, { apiObj } );
+			const dispatcher = new ModelConversionDispatcher( model, view, { apiObj } );
 
 			expect( dispatcher.conversionApi.apiObj ).to.equal( apiObj );
 		} );

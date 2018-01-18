@@ -5,10 +5,7 @@
 
 import ViewElement from '../view/element';
 import ViewRange from '../view/range';
-import ViewWriter from '../view/writer';
 import { createViewElementFromHighlightDescriptor } from './model-to-view-converters';
-
-const viewWriter = new ViewWriter();
 
 /**
  * Contains {@link module:engine/model/selection~Selection model selection} to
@@ -86,7 +83,7 @@ export function convertCollapsedSelection() {
 
 		const modelPosition = selection.getFirstPosition();
 		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
-		const brokenPosition = viewWriter.breakAttributes( viewPosition );
+		const brokenPosition = conversionApi.writer.breakAttributes( viewPosition );
 
 		conversionApi.viewSelection.removeAllRanges();
 		conversionApi.viewSelection.addRange( new ViewRange( brokenPosition, brokenPosition ) );
@@ -153,7 +150,14 @@ export function convertSelectionAttribute( elementCreator ) {
 
 		const consumableName = 'selectionAttribute:' + data.key;
 
-		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
+		wrapCollapsedSelectionPosition(
+			data.selection,
+			conversionApi.viewSelection,
+			viewElement,
+			consumable,
+			consumableName,
+			conversionApi.writer
+		);
 	};
 }
 
@@ -185,12 +189,19 @@ export function convertSelectionMarker( highlightDescriptor ) {
 		const viewElement = createViewElementFromHighlightDescriptor( descriptor );
 		const consumableName = 'selectionMarker:' + data.markerName;
 
-		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
+		wrapCollapsedSelectionPosition(
+			data.selection,
+			conversionApi.viewSelection,
+			viewElement,
+			consumable,
+			consumableName,
+			conversionApi.writer
+		);
 	};
 }
 
 // Helper function for `convertSelectionAttribute` and `convertSelectionMarker`, which perform similar task.
-function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElement, consumable, consumableName ) {
+function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElement, consumable, consumableName, writer ) {
 	if ( !modelSelection.isCollapsed ) {
 		return;
 	}
@@ -209,7 +220,7 @@ function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElem
 		viewPosition = viewPosition.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
 	}
 	// End of hack.
-	viewPosition = viewWriter.wrapPosition( viewPosition, viewElement );
+	viewPosition = writer.wrapPosition( viewPosition, viewElement );
 
 	viewSelection.removeAllRanges();
 	viewSelection.addRange( new ViewRange( viewPosition, viewPosition ) );
@@ -260,7 +271,7 @@ export function clearAttributes() {
 			if ( range.isCollapsed ) {
 				// Position might be in the node removed by the view writer.
 				if ( range.end.parent.document ) {
-					viewWriter.mergeAttributes( range.start );
+					conversionApi.writer.mergeAttributes( range.start );
 				}
 			}
 		}
