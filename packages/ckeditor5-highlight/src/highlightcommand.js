@@ -33,6 +33,10 @@ export default class HighlightCommand extends Command {
 		 */
 		this.value = doc.selection.getAttribute( 'highlight' );
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'highlight' );
+		// Alternate:
+		// const selection = doc.selection;
+		// this.isEnabled = ( !selection.isCollapsed || selection.hasAttribute( 'highlight' ) )
+		// 		&& model.schema.checkAttributeInSelection( doc.selection, 'highlight' );
 	}
 
 	/**

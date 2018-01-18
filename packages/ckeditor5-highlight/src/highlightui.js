@@ -85,6 +85,7 @@ export default class HighlightUI extends Plugin {
 
 		function decorateHighlightButton( button ) {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
+			button.bind( 'isOn' ).to( command, 'value', value => value === option.model );
 
 			button.extendTemplate( {
 				attributes: {
@@ -134,7 +135,7 @@ export default class HighlightUI extends Plugin {
 	}
 
 	/**
-	 * Creates split button drop down UI from provided highlight options.
+	 * Creates split button dropdown UI from provided highlight options.
 	 *
 	 * @param {Array.<module:highlight/highlightediting~HighlightOption>} options
 	 * @private
@@ -156,7 +157,7 @@ export default class HighlightUI extends Plugin {
 			const command = editor.commands.get( 'highlight' );
 
 			const model = new Model( {
-				label: t( 'Highlight' ),
+				tooltip: t( 'Highlight' ),
 				withText: false,
 				isVertical: false,
 				// Holds last executed highlighter.
@@ -194,9 +195,6 @@ export default class HighlightUI extends Plugin {
 			// Add eraser button to dropdown.
 			const eraserButton = componentFactory.create( 'removeHighlight' );
 
-			buttons.push( new ToolbarSeparatorView() );
-			buttons.push( eraserButton );
-
 			// Make toolbar button enabled when any button in dropdown is enabled.
 			model.bind( 'isEnabled' ).to(
 				// Bind to #isEnabled of each command...
@@ -205,9 +203,12 @@ export default class HighlightUI extends Plugin {
 				( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
 			);
 
+			// Add those buttons after binding isEnabled to toolbar button.
+			buttons.push( new ToolbarSeparatorView() );
+			buttons.push( eraserButton );
+
 			model.set( 'buttons', buttons );
 
-			// TODO: Temporary group as UI not fully defined yet. Also duplicates button dropdown
 			// Group buttons for dropdown.
 			const toolbarView = dropdownView.toolbarView = new ToolbarView();
 
@@ -215,9 +216,10 @@ export default class HighlightUI extends Plugin {
 
 			model.buttons.map( view => toolbarView.items.add( view ) );
 
+			// TODO: fix classes in dropdown
 			dropdownView.extendTemplate( {
 				attributes: {
-					class: [ 'ck-highlight_button', 'ck-buttondropdown' ]
+					class: [ 'ck-highlight_button', 'ck-buttondropdown', 'ck-highlight-dropdown' ]
 				}
 			} );
 			dropdownView.panelView.children.add( toolbarView );
