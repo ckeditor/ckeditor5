@@ -9,8 +9,11 @@
 
 import ListView from '../../list/listview';
 import ListItemView from '../../list/listitemview';
-import createDropdown from '../createdropdown';
-import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownContentsOnArrows } from '../utils';
+
+import {
+	closeDropdownOnBlur, closeDropdownOnExecute, createButtonForDropdown, createDropdownView,
+	focusDropdownContentsOnArrows
+} from '../utils';
 
 /**
  * Creates an instance of {@link module:ui/dropdown/list/listdropdownview~ListDropdownView} class using
@@ -51,7 +54,9 @@ import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownContentsOnArr
  * @returns {module:ui/dropdown/list/listdropdownview~ListDropdownView} The list dropdown view instance.
  */
 export default function createListDropdown( model, locale ) {
-	const dropdownView = createDropdown( model, locale );
+	const buttonView = createButtonForDropdown( model, locale );
+	const dropdownView = createDropdownView( model, buttonView, locale );
+
 	const listView = dropdownView.listView = new ListView( locale );
 
 	listView.items.bindTo( model.items ).using( itemModel => {

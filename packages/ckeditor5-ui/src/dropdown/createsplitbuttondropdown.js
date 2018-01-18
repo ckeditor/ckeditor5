@@ -7,9 +7,7 @@
  * @module ui/dropdown/createsplitbuttondropdown
  */
 
-import SplitButtonView from '../button/splitbuttonview';
-import DropdownPanelView from './dropdownpanelview';
-import DropdownView from './dropdownview';
+import { createDropdownView, createSplitButtonForDropdown } from './utils';
 
 /**
  * Create a dropdown that have a split button as button.
@@ -17,14 +15,12 @@ import DropdownView from './dropdownview';
  * TODO: docs
  */
 export default function createSplitButtonDropdown( model, locale ) {
-	const splitButtonView = new SplitButtonView( locale );
+	const splitButtonView = createSplitButtonForDropdown( model, locale );
 
-	splitButtonView.bind( 'label', 'isOn', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
 	splitButtonView.buttonView.bind( 'isOn' ).to( model );
 	splitButtonView.buttonView.bind( 'tooltip' ).to( model );
 
-	const panelView = new DropdownPanelView( locale );
-	const dropdownView = new DropdownView( locale, splitButtonView, panelView );
+	const dropdownView = createDropdownView( model, splitButtonView, locale );
 
 	// Extend template to hide arrow from dropdown.
 	// TODO: enable this on normal button instead of hiding it

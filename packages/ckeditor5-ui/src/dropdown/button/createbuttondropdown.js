@@ -7,10 +7,14 @@
  * @module ui/dropdown/button/createbuttondropdown
  */
 
-import createDropdown from '../createdropdown';
-
 import ToolbarView from '../../toolbar/toolbarview';
-import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownContentsOnArrows } from '../utils';
+import {
+	closeDropdownOnBlur,
+	closeDropdownOnExecute,
+	createButtonForDropdown,
+	createDropdownView,
+	focusDropdownContentsOnArrows
+} from '../utils';
 
 import '../../../theme/components/dropdown/buttondropdown.css';
 
@@ -78,8 +82,9 @@ export default function createButtonDropdown( model, locale ) {
 			}
 		);
 	}
+	const buttonView = createButtonForDropdown( model, locale );
+	const dropdownView = createDropdownView( model, buttonView, locale );
 
-	const dropdownView = createDropdown( model, locale );
 	const toolbarView = dropdownView.toolbarView = new ToolbarView();
 
 	toolbarView.bind( 'isVertical', 'className' ).to( model, 'isVertical', 'toolbarClassName' );

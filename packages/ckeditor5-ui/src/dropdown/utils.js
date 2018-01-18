@@ -8,6 +8,10 @@
  */
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler';
+import SplitButtonView from '../button/splitbuttonview';
+import ButtonView from '../button/buttonview';
+import DropdownPanelView from './dropdownpanelview';
+import DropdownView from './dropdownview';
 
 /**
  * Adds a behavior to a dropdownView that focuses dropdown panel view contents on keystrokes.
@@ -67,4 +71,37 @@ export function closeDropdownOnBlur( dropdownView ) {
 			contextElements: [ dropdownView.element ]
 		} );
 	} );
+}
+
+/** TODO: new methods below - refactor to own files later */
+
+export function createButtonForDropdown( model, locale ) {
+	const buttonView = new ButtonView( locale );
+
+	buttonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
+
+	return buttonView;
+}
+
+export function createSplitButtonForDropdown( model, locale ) {
+	const buttonView = new SplitButtonView( locale );
+
+	// TODO: check 'isOn' binding.
+	buttonView.bind( 'label', 'isOn', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
+
+	return buttonView;
+}
+
+export function createDropdownView( model, buttonView, locale ) {
+	const panelView = new DropdownPanelView( locale );
+	const dropdownView = new DropdownView( locale, buttonView, panelView );
+
+	dropdownView.bind( 'isEnabled' ).to( model );
+
+	// TODO: check 'isOn' binding.
+	// buttonView.bind( 'isOn' ).to( model, 'isOn', dropdownView, 'isOpen', ( isOn, isOpen ) => {
+	// 	return isOn || isOpen;
+	// } );
+
+	return dropdownView;
 }

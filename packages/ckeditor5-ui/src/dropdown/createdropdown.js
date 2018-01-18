@@ -7,9 +7,7 @@
  * @module ui/dropdown/createdropdown
  */
 
-import ButtonView from '../button/buttonview';
-import DropdownView from './dropdownview';
-import DropdownPanelView from './dropdownpanelview';
+import { createButtonForDropdown, createDropdownView } from './utils';
 
 /**
  * A helper which creates an instance of {@link module:ui/dropdown/dropdownview~DropdownView} class using
@@ -38,17 +36,9 @@ import DropdownPanelView from './dropdownpanelview';
  * @param {module:ui/dropdown/dropdownmodel~DropdownModel} model Model of this dropdown.
  * @param {module:utils/locale~Locale} locale The locale instance.
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
+ *
+ * TODO: only used in tests.
  */
 export default function createDropdown( model, locale ) {
-	const buttonView = new ButtonView( locale );
-	const panelView = new DropdownPanelView( locale );
-	const dropdownView = new DropdownView( locale, buttonView, panelView );
-
-	dropdownView.bind( 'isEnabled' ).to( model );
-	buttonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
-	buttonView.bind( 'isOn' ).to( model, 'isOn', dropdownView, 'isOpen', ( isOn, isOpen ) => {
-		return isOn || isOpen;
-	} );
-
-	return dropdownView;
+	return createDropdownView( model, createButtonForDropdown( model, locale ), locale );
 }
