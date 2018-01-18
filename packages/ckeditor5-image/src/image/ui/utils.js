@@ -7,7 +7,6 @@
  * @module image/image/ui/utils
  */
 
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import { isImageWidgetSelected } from '../utils';
 
 /**
@@ -37,17 +36,8 @@ export function repositionContextualBalloon( editor ) {
  */
 export function getBalloonPositionData( editor ) {
 	const editingView = editor.editing.view;
-	const defaultPositions = BalloonPanelView.defaultPositions;
 
 	return {
-		target: editingView.domConverter.viewToDom( editingView.selection.getSelectedElement() ),
-		positions: [
-			defaultPositions.northArrowSouth,
-			defaultPositions.northArrowSouthWest,
-			defaultPositions.northArrowSouthEast,
-			defaultPositions.southArrowNorth,
-			defaultPositions.southArrowNorthWest,
-			defaultPositions.southArrowNorthEast
-		]
+		target: editingView.domConverter.viewToDom( editingView.selection.getSelectedElement() )
 	};
 }
