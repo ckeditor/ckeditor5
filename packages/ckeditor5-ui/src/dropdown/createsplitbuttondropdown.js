@@ -21,11 +21,13 @@ export default function createSplitButtonDropdown( model, locale ) {
 
 	splitButtonView.bind( 'label', 'isOn', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
 	splitButtonView.buttonView.bind( 'isOn' ).to( model );
+	splitButtonView.buttonView.bind( 'tooltip' ).to( model );
 
 	const panelView = new DropdownPanelView( locale );
 	const dropdownView = new SplitButtonDropdownView( locale, splitButtonView, panelView );
 
 	// Extend template to hide arrow from dropdown.
+	// TODO: enable this on normal button instead of hiding it
 	dropdownView.extendTemplate( {
 		attributes: {
 			class: 'ck-splitbutton-dropdown'

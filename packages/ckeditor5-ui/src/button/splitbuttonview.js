@@ -90,6 +90,9 @@ export default class SplitButtonView extends View {
 
 		buttonView.delegate( 'execute' ).to( this );
 
+		buttonView.bind( 'isEnabled' ).to( this );
+		buttonView.bind( 'label' ).to( this );
+
 		return buttonView;
 	}
 
@@ -105,6 +108,8 @@ export default class SplitButtonView extends View {
 		} );
 
 		selectView.delegate( 'execute' ).to( this, 'select' );
+
+		selectView.bind( 'isEnabled' ).to( this );
 
 		return selectView;
 	}

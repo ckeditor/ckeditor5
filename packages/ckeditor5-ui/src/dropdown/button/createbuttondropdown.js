@@ -56,10 +56,11 @@ export default function createButtonDropdown( model, locale ) {
 		( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
 	);
 
-	// If defined `staticIcon` use the `defautlIcon` without binding it to active a button.
+	// If defined `staticIcon` use the `defaultIcon` without binding it to active a button.
 	if ( model.staticIcon ) {
 		model.bind( 'icon' ).to( model, 'defaultIcon' );
 	} else {
+		// TODO: move to alignment
 		// Make dropdown icon as any active button.
 		model.bind( 'icon' ).to(
 			// Bind to #isOn of each button...
