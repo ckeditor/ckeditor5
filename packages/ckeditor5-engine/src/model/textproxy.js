@@ -256,7 +256,7 @@ export default class TextProxy {
 	/**
 	 * Returns iterator that iterates over this node's attribute keys.
 	 *
-	 * @returns {Iterator.<String>}
+	 * @returns {Iterable.<String>}
 	 */
 	getAttributeKeys() {
 		return this.textNode.getAttributeKeys();

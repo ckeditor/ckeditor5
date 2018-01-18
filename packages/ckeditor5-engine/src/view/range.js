@@ -39,7 +39,9 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link module:engine/view/item~Item view items} that are in this range and returns
+	 * Iterable interface.
+	 *
+	 * Iterates over all {@link module:engine/view/item~Item view items} that are in this range and returns
 	 * them together with additional information like length or {@link module:engine/view/position~Position positions},
 	 * grouped as {@link module:engine/view/treewalker~TreeWalkerValue}.
 	 *

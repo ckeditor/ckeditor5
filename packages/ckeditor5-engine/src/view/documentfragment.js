@@ -38,7 +38,11 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Iterates over nodes added to this DocumentFragment.
+	 * Iterable interface.
+	 *
+	 * Iterates over nodes added to this document fragment.
+	 *
+	 * @returns {Iterable.<module:engine/view/node~Node>}
 	 */
 	[ Symbol.iterator ]() {
 		return this._children[ Symbol.iterator ]();

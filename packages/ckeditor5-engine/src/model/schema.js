@@ -907,9 +907,11 @@ export class SchemaContext {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all context items.
+	 * Iterable interface.
 	 *
-	 * @returns {Iterator.<module:engine/model/schema~SchemaContextItem>}
+	 * Iterates over all context items.
+	 *
+	 * @returns {Iterable.<module:engine/model/schema~SchemaContextItem>}
 	 */
 	[ Symbol.iterator ]() {
 		return this._items[ Symbol.iterator ]();
@@ -927,7 +929,7 @@ export class SchemaContext {
 	/**
 	 * Returns the names of items.
 	 *
-	 * @returns {Iterator.<String>}
+	 * @returns {Iterable.<String>}
 	 */
 	* getNames() {
 		yield* this._items.map( item => item.name );

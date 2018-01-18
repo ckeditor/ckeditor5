@@ -176,7 +176,7 @@ export default class Selection {
 	/**
 	 * Returns an iterator that iterates over copies of selection ranges.
 	 *
-	 * @returns {Iterator.<module:engine/model/range~Range>}
+	 * @returns {Iterable.<module:engine/model/range~Range>}
 	 */
 	* getRanges() {
 		for ( const range of this._ranges ) {
@@ -487,7 +487,7 @@ export default class Selection {
 	/**
 	 * Returns iterator that iterates over this selection's attribute keys.
 	 *
-	 * @returns {Iterator.<String>}
+	 * @returns {Iterable.<String>}
 	 */
 	getAttributeKeys() {
 		return this._attrs.keys();
@@ -629,7 +629,7 @@ export default class Selection {
 	 *		<paragraph>b</paragraph>
 	 *		<paragraph>]c</paragraph> // this block will not be returned
 	 *
-	 * @returns {Iterator.<module:engine/model/element~Element>}
+	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
 	* getSelectedBlocks() {
 		const visited = new WeakSet();

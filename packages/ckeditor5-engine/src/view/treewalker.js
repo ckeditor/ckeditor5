@@ -132,7 +132,9 @@ export default class TreeWalker {
 	}
 
 	/**
-	 * Iterator interface.
+	 * Iterable interface.
+	 *
+	 * @returns {Iterable.<module:engine/view/treewalker~TreeWalkerValue>}
 	 */
 	[ Symbol.iterator ]() {
 		return this;
@@ -165,10 +167,10 @@ export default class TreeWalker {
 	}
 
 	/**
-	 * Iterator interface method.
-	 * Detects walking direction and makes step forward or backward.
+	 * Gets the next tree walker's value.
 	 *
-	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
+	 * @returns {module:engine/view/treewalker~TreeWalkerValue} Object implementing iterator interface, returning
+	 * information about taken step.
 	 */
 	next() {
 		if ( this.direction == 'forward' ) {
