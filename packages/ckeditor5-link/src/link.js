@@ -170,9 +170,7 @@ export default class Link extends Plugin {
 			// Prevent focusing the search bar in FF and opening new tab in Edge. #153, #154.
 			cancel();
 
-			if ( linkCommand.isEnabled ) {
-				this._showForm( true );
-			}
+			this._showUI();
 		} );
 
 		editor.ui.componentFactory.add( 'link', locale => {
@@ -188,9 +186,7 @@ export default class Link extends Plugin {
 			button.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
 			// Show the panel on button click.
-			this.listenTo( button, 'execute', () => {
-				this._showForm( true );
-			} );
+			this.listenTo( button, 'execute', () => this._showUI() );
 
 			return button;
 		} );
@@ -299,6 +295,27 @@ export default class Link extends Plugin {
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
 		this.formView.urlInputView.inputView.element.value = linkCommand.value || '';
+	}
+
+	/**
+	 * Shows the right kind of the UI for current state of the command. It's either
+	 * {@link #formView} or {@link #actionsView}.
+	 *
+	 * @private
+	 */
+	_showUI() {
+		const editor = this.editor;
+		const linkCommand = editor.commands.get( 'link' );
+
+		if ( !linkCommand.isEnabled ) {
+			return;
+		}
+
+		if ( linkCommand.value ) {
+			this._showActions();
+		} else {
+			this._showForm( true );
+		}
 	}
 
 	/**
