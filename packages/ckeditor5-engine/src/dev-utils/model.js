@@ -22,10 +22,10 @@ import ModelDocumentFragment from '../model/documentfragment';
 import DocumentSelection from '../model/documentselection';
 
 import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
-import ViewSelection from '../view/selection';
-import ViewDocumentFragment from '../view/documentfragment';
+import ViewDocument from '../view/document';
 import ViewContainerElement from '../view/containerelement';
 import ViewAttributeElement from '../view/attributeelement';
+import ViewRootEditableElement from '../view/rooteditableelement';
 
 import Mapper from '../conversion/mapper';
 import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
@@ -190,13 +190,21 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 		selection = new ModelSelection( selectionOrPositionOrRange );
 	}
 
-	// Setup model to view converter.
-	const viewDocumentFragment = new ViewDocumentFragment();
-	const viewSelection = new ViewSelection();
-	const modelToView = new ModelConversionDispatcher( model, { mapper, viewSelection } );
+	// Set up conversion.
+	// Create a temporary view document.
+	const viewDocument = new ViewDocument();
+	const viewRoot = new ViewRootEditableElement( 'div' );
+
+	// Create a temporary root element in view document.
+	viewRoot.document = viewDocument;
+	viewRoot.rootName = 'main';
+	viewDocument.roots.add( viewRoot );
+
+	// Create and setup model to view converter.
+	const modelToView = new ModelConversionDispatcher( model, { mapper, viewSelection: viewDocument.selection } );
 
 	// Bind root elements.
-	mapper.bindElements( node.root, viewDocumentFragment );
+	mapper.bindElements( node.root, viewRoot );
 
 	modelToView.on( 'insert:$text', insertText() );
 	modelToView.on( 'attribute', wrap( ( value, data ) => {
@@ -222,7 +230,12 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	}
 
 	// Parse view to data string.
-	const data = viewStringify( viewDocumentFragment, viewSelection, { sameSelectionCharacters: true } );
+	let data = viewStringify( viewRoot, viewDocument.selection, { sameSelectionCharacters: true } );
+
+	// Removing unneccessary <div> and </div> added because `viewRoot` was also stringified alongside input data.
+	data = data.substr( 5, data.length - 11 );
+
+	viewDocument.destroy();
 
 	// Replace valid XML `model-text-with-attributes` element name to `$text`.
 	return data.replace( new RegExp( 'model-text-with-attributes', 'g' ), '$text' );
