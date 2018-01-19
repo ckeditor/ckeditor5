@@ -55,7 +55,11 @@ export default class PluginCollection {
 	}
 
 	/**
-	 * Collection iterator. Returns `[ PluginConstructor, pluginInstance ]` pairs.
+	 * Iterable interface.
+	 *
+	 * Returns `[ PluginConstructor, pluginInstance ]` pairs.
+	 *
+	 * @returns {Iterable.<Array>}
 	 */
 	* [ Symbol.iterator ]() {
 		for ( const entry of this._plugins ) {
