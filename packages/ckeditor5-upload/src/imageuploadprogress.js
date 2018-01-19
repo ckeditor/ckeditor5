@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 import FileRepository from './filerepository';
 import uploadingPlaceholder from '../theme/icons/image_placeholder.svg';
 import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
@@ -61,7 +60,7 @@ export default class ImageUploadProgress extends Plugin {
 		const modelImage = data.item;
 		const uploadId = modelImage.getAttribute( 'uploadId' );
 
-		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) || !uploadId ) {
+		if ( !consumable.consume( data.item, evt.name ) || !uploadId ) {
 			return;
 		}
 
