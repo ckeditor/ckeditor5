@@ -125,9 +125,12 @@ export default class ModelConsumable {
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
 	 * Model item, range or selection that has the consumable.
-	 * @param {String} type Consumable type.
+	 * @param {String} type Consumable type. Will be normalized to a proper form, that is either `<word>` or `<part>:<part>`.
+	 * Second colon and everything after will be cut. Passing event name is a safe and good practice.
 	 */
 	add( item, type ) {
+		type = _normalizeConsumableType( type );
+
 		if ( item instanceof TextProxy ) {
 			item = this._getSymbolForTextProxy( item );
 		}
@@ -151,10 +154,13 @@ export default class ModelConsumable {
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
 	 * Model item, range or selection from which consumable will be consumed.
-	 * @param {String} type Consumable type.
+	 * @param {String} type Consumable type. Will be normalized to a proper form, that is either `<word>` or `<part>:<part>`.
+	 * Second colon and everything after will be cut. Passing event name is a safe and good practice.
 	 * @returns {Boolean} `true` if consumable value was available and was consumed, `false` otherwise.
 	 */
 	consume( item, type ) {
+		type = _normalizeConsumableType( type );
+
 		if ( item instanceof TextProxy ) {
 			item = this._getSymbolForTextProxy( item );
 		}
@@ -180,11 +186,14 @@ export default class ModelConsumable {
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
 	 * Model item, range or selection to be tested.
-	 * @param {String} type Consumable type.
+	 * @param {String} type Consumable type. Will be normalized to a proper form, that is either `<word>` or `<part>:<part>`.
+	 * Second colon and everything after will be cut. Passing event name is a safe and good practice.
 	 * @returns {null|Boolean} `null` if such consumable was never added, `false` if the consumable values was
 	 * already consumed or `true` if it was added and not consumed yet.
 	 */
 	test( item, type ) {
+		type = _normalizeConsumableType( type );
+
 		if ( item instanceof TextProxy ) {
 			item = this._getSymbolForTextProxy( item );
 		}
@@ -221,6 +230,8 @@ export default class ModelConsumable {
 	 * never been added.
 	 */
 	revert( item, type ) {
+		type = _normalizeConsumableType( type );
+
 		if ( item instanceof TextProxy ) {
 			item = this._getSymbolForTextProxy( item );
 		}
@@ -301,4 +312,16 @@ export default class ModelConsumable {
 
 		return symbol;
 	}
+}
+
+// Returns a normalized consumable type name from given string. A normalized consumable type name is a string that has
+// at most one colon, for example: `insert` or `addMarker:highlight`. If string to normalize has more "parts" (more colons),
+// the other parts are dropped, for example: `addAttribute:bold:$text` -> `addAttribute:bold`.
+//
+// @param {String} type Consumable type.
+// @returns {String} Normalized consumable type.
+function _normalizeConsumableType( type ) {
+	const parts = type.split( ':' );
+
+	return parts.length > 1 ? parts[ 0 ] + ':' + parts[ 1 ] : parts[ 0 ];
 }

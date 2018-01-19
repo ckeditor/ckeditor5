@@ -40,6 +40,17 @@ describe( 'ModelConsumable', () => {
 
 			expect( modelConsumable.test( modelTextProxy, 'type' ) ).to.be.true;
 		} );
+
+		it( 'should normalize type name', () => {
+			modelConsumable.add( modelElement, 'foo:bar:baz:abc' );
+
+			expect( modelConsumable.test( modelElement, 'foo:bar:baz:abc' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'foo:bar:baz' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'foo:bar' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'foo:bar:xxx' ) ).to.be.true;
+
+			expect( modelConsumable.test( modelElement, 'foo:xxx' ) ).to.be.null;
+		} );
 	} );
 
 	describe( 'consume', () => {
@@ -73,6 +84,17 @@ describe( 'ModelConsumable', () => {
 
 			expect( result ).to.be.true;
 			expect( modelConsumable.test( proxy1To4, 'type' ) ).to.be.false;
+		} );
+
+		it( 'should normalize type name', () => {
+			modelConsumable.add( modelElement, 'foo:bar:baz:abc' );
+			const result = modelConsumable.consume( modelElement, 'foo:bar:baz' );
+
+			expect( result ).to.be.true;
+
+			expect( modelConsumable.test( modelElement, 'foo:bar:baz:abc' ) ).to.be.false;
+			expect( modelConsumable.test( modelElement, 'foo:bar:baz' ) ).to.be.false;
+			expect( modelConsumable.test( modelElement, 'foo:bar' ) ).to.be.false;
 		} );
 	} );
 
@@ -111,6 +133,19 @@ describe( 'ModelConsumable', () => {
 
 			expect( result ).to.be.true;
 			expect( modelConsumable.test( modelTextProxy, 'type' ) ).to.be.true;
+		} );
+
+		it( 'should normalize type name', () => {
+			modelConsumable.add( modelElement, 'foo:bar:baz:abc' );
+			modelConsumable.consume( modelElement, 'foo:bar:baz' );
+
+			const result = modelConsumable.revert( modelElement, 'foo:bar:baz' );
+
+			expect( result ).to.be.true;
+
+			expect( modelConsumable.test( modelElement, 'foo:bar:baz:abc' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'foo:bar:baz' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'foo:bar' ) ).to.be.true;
 		} );
 	} );
 

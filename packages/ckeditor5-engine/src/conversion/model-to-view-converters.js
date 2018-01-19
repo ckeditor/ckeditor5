@@ -153,18 +153,17 @@ export function insertUIElement( elementCreator ) {
 		}
 
 		const markerRange = data.markerRange;
-		const eventName = evt.name;
 
 		// Marker that is collapsed has consumable build differently that non-collapsed one.
 		// For more information see `addMarker` event description.
 		// If marker's range is collapsed - check if it can be consumed.
-		if ( markerRange.isCollapsed && !consumable.consume( markerRange, eventName ) ) {
+		if ( markerRange.isCollapsed && !consumable.consume( markerRange, evt.name ) ) {
 			return;
 		}
 
 		// If marker's range is not collapsed - consume all items inside.
 		for ( const value of markerRange ) {
-			if ( !consumable.consume( value.item, eventName ) ) {
+			if ( !consumable.consume( value.item, evt.name ) ) {
 				return;
 			}
 		}
@@ -263,7 +262,7 @@ export function changeAttribute( attributeCreator ) {
 	attributeCreator = attributeCreator || ( ( value, key ) => ( { value, key } ) );
 
 	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
+		if ( !consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -322,7 +321,7 @@ export function wrap( elementCreator ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
+		if ( !consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -522,18 +521,6 @@ function _prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 	}
 
 	return descriptor;
-}
-
-/**
- * Returns the consumable type that is to be consumed in an event, basing on that event name.
- *
- * @param {String} evtName Event name.
- * @returns {String} Consumable type.
- */
-export function eventNameToConsumableType( evtName ) {
-	const parts = evtName.split( ':' );
-
-	return parts[ 0 ] + ':' + parts[ 1 ];
 }
 
 /**

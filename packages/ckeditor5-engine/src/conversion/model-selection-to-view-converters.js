@@ -181,19 +181,18 @@ export function convertSelectionMarker( highlightDescriptor ) {
 		}
 
 		const viewElement = createViewElementFromHighlightDescriptor( descriptor );
-		const consumableName = 'selectionMarker:' + data.markerName;
 
-		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
+		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, evt.name );
 	};
 }
 
 // Helper function for `convertSelectionAttribute` and `convertSelectionMarker`, which perform similar task.
-function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElement, consumable, consumableName ) {
+function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElement, consumable, eventName ) {
 	if ( !modelSelection.isCollapsed ) {
 		return;
 	}
 
-	if ( !consumable.consume( modelSelection, consumableName ) ) {
+	if ( !consumable.consume( modelSelection, eventName ) ) {
 		return;
 	}
 
