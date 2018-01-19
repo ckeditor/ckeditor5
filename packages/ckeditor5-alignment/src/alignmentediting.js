@@ -7,12 +7,10 @@
  * @module alignment/alignmentediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
-
 import AlignmentCommand, { commandNameFromStyle } from './alignmentcommand';
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -98,7 +96,7 @@ export function isSupported( style ) {
 // @private
 function convertStyle() {
 	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
+		if ( !consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 

@@ -10,7 +10,6 @@ import ListEngine from '@ckeditor/ckeditor5-list/src/listengine';
 import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 
 import AlignmentCommand from '../src/alignmentcommand';
 
@@ -227,6 +226,6 @@ describe( 'AlignmentEditing', () => {
 
 function blockDefaultConversion( dispatcher ) {
 	dispatcher.on( 'attribute:alignment', ( evt, data, consumable ) => {
-		consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
+		consumable.consume( data.item, evt.name );
 	}, { 'priority': 'high' } );
 }
