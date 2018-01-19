@@ -21,3 +21,11 @@ Check out icons in toolbar:
 17. image centered
 18. alternative text
 19. image
+20. align left
+21. align center
+22. align right
+23. font family
+24. font size
+25. marker
+26. pen
+27. eraser
