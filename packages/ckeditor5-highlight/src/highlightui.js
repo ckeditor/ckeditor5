@@ -17,9 +17,12 @@ import penIcon from './../theme/icons/pen.svg';
 import eraserIcon from './../theme/icons/eraser.svg';
 
 import Model from '@ckeditor/ckeditor5-ui/src/model';
-import createSplitButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/createsplitbuttondropdown';
-import { closeDropdownOnBlur, closeDropdownOnExecute, focusDropdownContentsOnArrows } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import {
+	addDefaultBehavior,
+	addToolbarToDropdown,
+	createSplitButtonDropdown,
+	enableModelIfOneIsEnabled
+} from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 
 import './../theme/highlight.css';
@@ -173,17 +176,9 @@ export default class HighlightUI extends Plugin {
 			model.bind( 'color' ).to( command, 'value', value => getActiveOption( value, 'color' ) );
 			model.bind( 'commandValue' ).to( command, 'value', value => getActiveOption( value, 'model' ) );
 
-			const dropdownView = createSplitButtonDropdown( model, locale );
-
-			bindIconStyle( dropdownView, model );
-
-			dropdownView.buttonView.on( 'execute', () => {
-				editor.execute( 'highlight', { value: model.commandValue } );
-				editor.editing.view.focus();
-			} );
-
-			// Add highlighters buttons to dropdown.
+			// Create buttons array.
 			const buttons = options.map( option => {
+				// Get existing highlighter button.
 				const buttonView = componentFactory.create( 'highlight:' + option.model );
 
 				// Update lastExecutedHighlight on execute.
@@ -192,48 +187,35 @@ export default class HighlightUI extends Plugin {
 				return buttonView;
 			} );
 
-			// Add eraser button to dropdown.
-			const eraserButton = componentFactory.create( 'removeHighlight' );
+			// Make toolbar button enabled when any button in dropdown is enabled before adding separator and eraser.
+			enableModelIfOneIsEnabled( model, buttons );
 
-			// Make toolbar button enabled when any button in dropdown is enabled.
-			model.bind( 'isEnabled' ).to(
-				// Bind to #isEnabled of each command...
-				...getBindingTargets( buttons, 'isEnabled' ),
-				// ...and set it true if any command #isEnabled is true.
-				( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
-			);
-
-			// Add those buttons after binding isEnabled to toolbar button.
+			// Add separator and eraser buttons to dropdown.
 			buttons.push( new ToolbarSeparatorView() );
-			buttons.push( eraserButton );
+			buttons.push( componentFactory.create( 'removeHighlight' ) );
 
 			model.set( 'buttons', buttons );
 
-			// Group buttons for dropdown.
-			const toolbarView = dropdownView.toolbarView = new ToolbarView();
+			const dropdownView = createSplitButtonDropdown( model, locale );
 
-			toolbarView.bind( 'isVertical', 'className' ).to( model, 'isVertical', 'toolbarClassName' );
+			bindIconStyle( dropdownView, model );
 
-			model.buttons.map( view => toolbarView.items.add( view ) );
+			dropdownView.buttonView.on( 'execute', () => {
+				editor.execute( 'highlight', { value: model.commandValue } );
+				// TODO: execute focus should be defined elsewhere
+				editor.editing.view.focus();
+			} );
+
+			addToolbarToDropdown( dropdownView, model );
 
 			// TODO: fix classes in dropdown
 			dropdownView.extendTemplate( {
 				attributes: {
-					class: [ 'ck-highlight_button', 'ck-buttondropdown', 'ck-highlight-dropdown' ]
+					class: [ 'ck-highlight_button', 'ck-highlight-dropdown' ]
 				}
 			} );
-			dropdownView.panelView.children.add( toolbarView );
 
-			closeDropdownOnBlur( dropdownView );
-			closeDropdownOnExecute( dropdownView, toolbarView.items );
-			focusDropdownContentsOnArrows( dropdownView, toolbarView );
-
-			// Focus button group upon opening dropdown view
-			dropdownView.buttonView.on( 'select', () => {
-				if ( dropdownView.buttonView.buttonView.isEnabled && dropdownView.isOpen ) {
-					toolbarView.focus();
-				}
-			}, { priority: 'low' } );
+			addDefaultBehavior( dropdownView );
 
 			// Returns active highlighter option depending on current command value.
 			// If current is not set or it is the same as last execute this method will return the option key (like icon or color)
@@ -247,11 +229,6 @@ export default class HighlightUI extends Plugin {
 			return dropdownView;
 		} );
 	}
-}
-
-// TODO: this is duplicated in various places (dropdowns)
-function getBindingTargets( buttons, attribute ) {
-	return Array.prototype.concat( ...buttons.map( button => [ button, attribute ] ) );
 }
 
 // Extends split button icon style to reflect last used button style.
