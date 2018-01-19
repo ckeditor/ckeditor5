@@ -233,7 +233,7 @@ export default class HighlightUI extends Plugin {
 
 // Extends split button icon style to reflect last used button style.
 function bindIconStyle( dropdownView, model ) {
-	const iconView = dropdownView.buttonView.buttonView.iconView;
+	const iconView = dropdownView.buttonView.actionView.iconView;
 
 	const bind = iconView.bindTemplate;
 
