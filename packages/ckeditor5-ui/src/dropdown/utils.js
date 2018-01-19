@@ -85,16 +85,16 @@ export function createButtonForDropdown( model, locale ) {
 }
 
 export function createSplitButtonForDropdown( model, locale ) {
-	const buttonView = new SplitButtonView( locale );
+	const splitButtonView = new SplitButtonView( locale );
 
 	// TODO: check 'isOn' binding.
-	buttonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
+	splitButtonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
 
 	// TODO: something wierd with binding
-	buttonView.buttonView.bind( 'isOn' ).to( model );
-	buttonView.buttonView.bind( 'tooltip' ).to( model );
+	splitButtonView.actionView.bind( 'isOn' ).to( model );
+	splitButtonView.actionView.bind( 'tooltip' ).to( model );
 
-	return buttonView;
+	return splitButtonView;
 }
 
 export function createDropdownView( model, buttonView, locale ) {

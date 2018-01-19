@@ -13,6 +13,7 @@ import ButtonView from './buttonview';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
+// TODO: temporary hack...
 import arrowIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 
 import './../../theme/components/button/splitbutton.css';
@@ -29,8 +30,8 @@ export default class SplitButtonView extends View {
 
 		this.children = this.createCollection();
 
-		this.buttonView = this._createButtonView();
-		this.selectView = this._createArrowView();
+		this.actionView = this._createActionView();
+		this.selectView = this._createSelectView();
 
 		this.keystrokes = new KeystrokeHandler();
 		this.focusTracker = new FocusTracker();
@@ -52,17 +53,17 @@ export default class SplitButtonView extends View {
 	render() {
 		super.render();
 
-		this.children.add( this.buttonView );
+		this.children.add( this.actionView );
 		this.children.add( this.selectView );
 
-		this.focusTracker.add( this.buttonView.element );
+		this.focusTracker.add( this.actionView.element );
 		this.focusTracker.add( this.selectView.element );
 
 		this.keystrokes.listenTo( this.element );
 
 		// Overrides toolbar focus cycling behavior
 		this.keystrokes.set( 'arrowright', ( evt, cancel ) => {
-			if ( this.focusTracker.focusedElement === this.buttonView.element ) {
+			if ( this.focusTracker.focusedElement === this.actionView.element ) {
 				this.selectView.focus();
 
 				cancel();
@@ -72,7 +73,7 @@ export default class SplitButtonView extends View {
 		// Overrides toolbar focus cycling behavior
 		this.keystrokes.set( 'arrowleft', ( evt, cancel ) => {
 			if ( this.focusTracker.focusedElement === this.selectView.element ) {
-				this.buttonView.focus();
+				this.actionView.focus();
 
 				cancel();
 			}
@@ -80,23 +81,20 @@ export default class SplitButtonView extends View {
 	}
 
 	focus() {
-		this.buttonView.focus();
+		this.actionView.focus();
 	}
 
-	_createButtonView() {
+	_createActionView() {
 		const buttonView = new ButtonView();
 
-		buttonView.bind( 'icon' ).to( this, 'icon' );
+		buttonView.bind( 'icon', 'isEnabled', 'label' ).to( this );
 
 		buttonView.delegate( 'execute' ).to( this );
-
-		buttonView.bind( 'isEnabled' ).to( this );
-		buttonView.bind( 'label' ).to( this );
 
 		return buttonView;
 	}
 
-	_createArrowView() {
+	_createSelectView() {
 		const selectView = new ButtonView();
 
 		selectView.icon = arrowIcon;
@@ -107,9 +105,9 @@ export default class SplitButtonView extends View {
 			}
 		} );
 
-		selectView.delegate( 'execute' ).to( this, 'select' );
-
 		selectView.bind( 'isEnabled' ).to( this );
+
+		selectView.delegate( 'execute' ).to( this, 'select' );
 
 		return selectView;
 	}
