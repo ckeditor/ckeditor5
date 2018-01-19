@@ -57,11 +57,9 @@ export function convertRangeSelection() {
  *		   <p><strong>f^oo<strong>bar</p>
  *		-> <p><strong>f</strong>^<strong>oo</strong>bar</p>
  *
- * By breaking attribute elements like `<strong>`, selection is in correct element. See also complementary
- * {@link module:engine/conversion/model-selection-to-view-converters~convertSelectionAttribute attribute converter}
- * for selection attributes,
- * which wraps collapsed selection into view elements. Those converters together ensure, that selection ends up in
- * appropriate attribute elements.
+ * By breaking attribute elements like `<strong>`, selection is in correct element. Then, when selection attribute is
+ * converted, the broken attributes might be merged again, or the position where the selection is may be wrapped
+ * in different, appropriate attribute elements.
  *
  * See also {@link module:engine/conversion/model-selection-to-view-converters~clearAttributes} which does a clean-up
  * by merging attributes.
