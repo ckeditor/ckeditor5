@@ -66,7 +66,7 @@ export default class ImageEngine extends Plugin {
 
 		// Build converter for view img element to model image element.
 		buildViewConverter().for( data.viewToModel )
-			.from( { name: 'img', attribute: { src: /./ } } )
+			.from( { name: 'img', attribute: { src: true } } )
 			.toElement( viewImage => new ModelElement( 'image', { src: viewImage.getAttribute( 'src' ) } ) );
 
 		data.viewToModel.on( 'element:img', convertHoistableImage, { priority: 'low' } );
@@ -76,13 +76,13 @@ export default class ImageEngine extends Plugin {
 		// Note that by default attribute converters are added with `low` priority.
 		// This converter will be thus fired after `convertHoistableImage` converter.
 		buildViewConverter().for( data.viewToModel )
-			.from( { name: 'img', attribute: { alt: /./ } } )
+			.from( { name: 'img', attribute: { alt: true } } )
 			.consuming( { attribute: [ 'alt' ] } )
 			.toAttribute( viewImage => ( { key: 'alt', value: viewImage.getAttribute( 'alt' ) } ) );
 
 		// Build converter for srcset attribute.
 		buildViewConverter().for( data.viewToModel )
-			.from( { name: 'img', attribute: { srcset: /./ } } )
+			.from( { name: 'img', attribute: { srcset: true } } )
 			.consuming( { attribute: [ 'srcset' ] } )
 			.toAttribute( viewImage => {
 				const value = {
