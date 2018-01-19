@@ -57,7 +57,7 @@ export default class DropdownView extends View {
 		this.buttonView = buttonView;
 
 		/**
-		 * Panel of the dropdown. It opens when the {@link #actionView} is
+		 * Panel of the dropdown. It opens when the {@link #buttonView} is
 		 * {@link module:ui/button/buttonview~ButtonView#event:execute executed} (i.e. clicked).
 		 *
 		 * Child views can be added to the panel's `children` collection:
@@ -158,7 +158,7 @@ export default class DropdownView extends View {
 		super.render();
 
 		// Toggle the the dropdown when it's button has been clicked.
-		this.listenTo( this.butstonView, 'select', () => {
+		this.listenTo( this.buttonView, 'select', () => {
 			this.isOpen = !this.isOpen;
 		} );
 
@@ -201,7 +201,7 @@ export default class DropdownView extends View {
 	}
 
 	/**
-	 * Focuses the {@link #actionView}.
+	 * Focuses the {@link #buttonView}.
 	 */
 	focus() {
 		this.buttonView.focus();
