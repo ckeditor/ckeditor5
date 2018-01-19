@@ -59,7 +59,7 @@ export default class ComponentFactory {
 	/**
 	 * Returns an iterator of registered component names. Names are returned in lower case.
 	 *
-	 * @returns {Iterator.<String>}
+	 * @returns {Iterable.<String>}
 	 */
 	* names() {
 		yield* this._components.keys();
