@@ -16,10 +16,10 @@
 	"@ckeditor/ckeditor5-engine": "^1.0.0-alpha.2",
 	"@ckeditor/ckeditor5-link": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-utils": "^1.0.0-alpha.2",
-    "eslint": "^4.8.0",
+    "eslint": "^4.15.0",
     "eslint-config-ckeditor5": "^1.0.7",
     "husky": "^0.14.3",
-    "lint-staged": "^4.2.3"
+    "lint-staged": "^6.0.0"
   },
   "engines": {
     "node": ">=6.0.0",

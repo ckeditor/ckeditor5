@@ -32,14 +32,13 @@
 
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/120 */
 	& > .ck-button,
-	& > * > .ck-button,
-	& .ck-dropdown__button {
+	& > * > .ck-button {
 		&:not(:hover):not(:focus):not(.ck-on),
 		&.ck-disabled {
 			background: transparent;
 		}
 
-		&.ck-on {
+		&.ck-on:not(.ck-button_with-text) {
 			@mixin ck-button-colors --ck-color-editor-toolbar-button-on;
 		}
 	}
