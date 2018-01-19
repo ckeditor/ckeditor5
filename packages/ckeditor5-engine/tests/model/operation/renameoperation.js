@@ -4,7 +4,6 @@
  */
 
 import Model from '../../../src/model/model';
-import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import RenameOperation from '../../../src/model/operation/renameoperation';
 import Position from '../../../src/model/position';
@@ -102,21 +101,6 @@ describe( 'RenameOperation', () => {
 		expect( clone.position.isEqual( op.position ) ).to.be.true;
 		expect( clone.oldName ).to.equal( oldName );
 		expect( clone.newName ).to.equal( newName );
-	} );
-
-	describe( 'isDocumentOperation', () => {
-		it( 'should be true when target item is in the document', () => {
-			const op = new RenameOperation( position, oldName, newName, doc.version );
-
-			expect( op.isDocumentOperation ).to.true;
-		} );
-
-		it( 'should be false when target item is not in the document', () => {
-			const docFrag = new DocumentFragment( [ new Element( 'element' ) ] );
-			const op = new RenameOperation( Position.createAt( docFrag ), oldName, newName, doc.version );
-
-			expect( op.isDocumentOperation ).to.false;
-		} );
 	} );
 
 	describe( 'toJSON', () => {

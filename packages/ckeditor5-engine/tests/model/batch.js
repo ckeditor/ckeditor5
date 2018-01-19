@@ -38,6 +38,21 @@ describe( 'Batch', () => {
 
 			expect( batch.baseVersion ).to.be.null;
 		} );
+
+		it( 'should return null if all deltas in batch have base version set to null', () => {
+			const batch = new Batch();
+
+			const deltaA = new Delta();
+			deltaA.addOperation( new Operation( null ) );
+
+			const deltaB = new Delta();
+			deltaB.addOperation( new Operation( null ) );
+
+			batch.addDelta( deltaA );
+			batch.addDelta( deltaB );
+
+			expect( batch.baseVersion ).to.equal( null );
+		} );
 	} );
 
 	describe( 'addDelta()', () => {

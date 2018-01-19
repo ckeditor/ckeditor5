@@ -4,6 +4,7 @@
  */
 
 import Model from '../../src/model/model';
+import Range from '../../src/model/range';
 import DataController from '../../src/controller/datacontroller';
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 
@@ -15,7 +16,7 @@ import ModelDocumentFragment from '../../src/model/documentfragment';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 
 import { getData, setData, stringify, parse as parseModel } from '../../src/dev-utils/model';
-import { parse as parseView } from '../../src/dev-utils/view';
+import { parse as parseView, stringify as stringifyView } from '../../src/dev-utils/view';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
 
@@ -310,6 +311,45 @@ describe( 'DataController', () => {
 			expect( viewElement.name ).to.equal( 'p' );
 			expect( viewElement.childCount ).to.equal( 1 );
 			expect( viewElement.getChild( 0 ).data ).to.equal( 'foo' );
+		} );
+
+		it( 'should correctly convert document markers #1', () => {
+			const modelElement = parseModel( '<div><paragraph>foobar</paragraph></div>', schema );
+			const modelRoot = model.document.getRoot();
+
+			buildModelConverter().for( data.modelToView ).fromMarker( 'marker:a' ).toHighlight( { class: 'a' } );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRoot, 0 );
+				writer.setMarker( 'marker:a', Range.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
+			} );
+
+			const viewDocumentFragment = data.toView( modelElement );
+			const viewElement = viewDocumentFragment.getChild( 0 );
+
+			expect( stringifyView( viewElement ) ).to.equal( '<p><span class="a">foobar</span></p>' );
+		} );
+
+		it( 'should correctly convert document markers #2', () => {
+			const modelElement = parseModel( '<div><paragraph>foo</paragraph><paragraph>bar</paragraph></div>', schema );
+			const modelRoot = model.document.getRoot();
+
+			buildModelConverter().for( data.modelToView ).fromMarker( 'marker:a' ).toHighlight( { class: 'a' } );
+			buildModelConverter().for( data.modelToView ).fromMarker( 'marker:b' ).toHighlight( { class: 'b' } );
+
+			const modelP1 = modelElement.getChild( 0 );
+			const modelP2 = modelElement.getChild( 1 );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRoot, 0 );
+
+				writer.setMarker( 'marker:a', Range.createFromParentsAndOffsets( modelP1, 1, modelP1, 3 ) );
+				writer.setMarker( 'marker:b', Range.createFromParentsAndOffsets( modelP2, 0, modelP2, 2 ) );
+			} );
+
+			const viewDocumentFragment = data.toView( modelP1 );
+
+			expect( stringifyView( viewDocumentFragment ) ).to.equal( 'f<span class="a">oo</span>' );
 		} );
 
 		it( 'should convert a document fragment', () => {

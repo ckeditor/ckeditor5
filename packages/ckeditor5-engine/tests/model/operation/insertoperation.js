@@ -6,7 +6,6 @@
 import Model from '../../../src/model/model';
 import NodeList from '../../../src/model/nodelist';
 import Element from '../../../src/model/element';
-import DocumentFragment from '../../../src/model/documentfragment';
 import InsertOperation from '../../../src/model/operation/insertoperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 import Position from '../../../src/model/position';
@@ -207,30 +206,6 @@ describe( 'InsertOperation', () => {
 		expect( element.childCount ).to.equal( 1 );
 
 		expect( op2.nodes.getNode( 0 ) ).not.to.equal( text );
-	} );
-
-	describe( 'isDocumentOperation', () => {
-		it( 'should return true when element is inserted to the document', () => {
-			const op = new InsertOperation(
-				new Position( root, [ 0 ] ),
-				new Text( 'x' ),
-				doc.version
-			);
-
-			expect( op.isDocumentOperation ).to.true;
-		} );
-
-		it( 'should return false when element is inserted to document fragment', () => {
-			const docFrag = new DocumentFragment();
-
-			const op = new InsertOperation(
-				new Position( docFrag, [ 0 ] ),
-				new Text( 'x' ),
-				doc.version
-			);
-
-			expect( op.isDocumentOperation ).to.false;
-		} );
 	} );
 
 	describe( '_validate()', () => {

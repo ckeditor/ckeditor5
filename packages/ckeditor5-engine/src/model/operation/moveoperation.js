@@ -29,7 +29,8 @@ export default class MoveOperation extends Operation {
 	 * @param {Number} howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
 	 * `sourcePosition` with offset shifted by `howMany`.
 	 * @param {module:engine/model/position~Position} targetPosition Position at which moved nodes will be inserted.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which operation can be applied.
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( sourcePosition, howMany, targetPosition, baseVersion ) {
 		super( baseVersion );
@@ -64,17 +65,6 @@ export default class MoveOperation extends Operation {
 		 * @member {Boolean} module:engine/model/operation/moveoperation~MoveOperation#isSticky
 		 */
 		this.isSticky = false;
-
-		/**
-		 * Defines whether operation is executed on attached or detached {@link module:engine/model/item~Item items}.
-		 *
-		 * Note that range cannot be moved within different documents e.g. from docFrag to document root so
-		 * root of source and target positions is always the same.
-		 *
-		 * @readonly
-		 * @member {Boolean} #isDocumentOperation
-		 */
-		this.isDocumentOperation = !!this.targetPosition.root.document;
 	}
 
 	/**

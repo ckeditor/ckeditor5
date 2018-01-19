@@ -22,13 +22,13 @@ describe( 'DetachOperation', () => {
 	} );
 
 	it( 'should have type equal to detach', () => {
-		const op = new DetachOperation( Position.createBefore( element ), 1, doc.version );
+		const op = new DetachOperation( Position.createBefore( element ), 1 );
 
 		expect( op.type ).to.equal( 'detach' );
 	} );
 
 	it( 'should remove given element from parent', () => {
-		const op = new DetachOperation( Position.createBefore( element ), 1, doc.version );
+		const op = new DetachOperation( Position.createBefore( element ), 1 );
 
 		model.applyOperation( wrapInDelta( op ) );
 
@@ -42,7 +42,7 @@ describe( 'DetachOperation', () => {
 
 			root.appendChildren( [ element ] );
 
-			const op = new DetachOperation( Position.createBefore( element ), 1, doc.version );
+			const op = new DetachOperation( Position.createBefore( element ), 1 );
 
 			expect( () => {
 				op._validate();
@@ -51,7 +51,7 @@ describe( 'DetachOperation', () => {
 	} );
 
 	it( 'should be not a document operation', () => {
-		const op = new DetachOperation( Position.createBefore( element ), 1, doc.version );
+		const op = new DetachOperation( Position.createBefore( element ), 1 );
 
 		expect( op.isDocumentOperation ).to.false;
 	} );
@@ -59,13 +59,13 @@ describe( 'DetachOperation', () => {
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
 			const position = Position.createBefore( element );
-			const op = new DetachOperation( position, 1, doc.version );
+			const op = new DetachOperation( position, 1 );
 
 			const serialized = jsonParseStringify( op );
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.model.operation.DetachOperation',
-				baseVersion: 0,
+				baseVersion: null,
 				sourcePosition: jsonParseStringify( position ),
 				howMany: 1
 			} );

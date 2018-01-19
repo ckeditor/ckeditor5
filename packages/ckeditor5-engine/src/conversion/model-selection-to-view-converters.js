@@ -187,26 +187,25 @@ export function convertSelectionMarker( highlightDescriptor ) {
 		}
 
 		const viewElement = createViewElementFromHighlightDescriptor( descriptor );
-		const consumableName = 'selectionMarker:' + data.markerName;
 
 		wrapCollapsedSelectionPosition(
 			data.selection,
 			conversionApi.viewSelection,
 			viewElement,
 			consumable,
-			consumableName,
+			evt.name,
 			conversionApi.writer
 		);
 	};
 }
 
 // Helper function for `convertSelectionAttribute` and `convertSelectionMarker`, which perform similar task.
-function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElement, consumable, consumableName, writer ) {
+function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElement, consumable, eventName, writer ) {
 	if ( !modelSelection.isCollapsed ) {
 		return;
 	}
 
-	if ( !consumable.consume( modelSelection, consumableName ) ) {
+	if ( !consumable.consume( modelSelection, eventName ) ) {
 		return;
 	}
 
@@ -220,6 +219,7 @@ function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElem
 		viewPosition = viewPosition.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
 	}
 	// End of hack.
+
 	viewPosition = writer.wrapPosition( viewPosition, viewElement );
 
 	viewSelection.removeAllRanges();

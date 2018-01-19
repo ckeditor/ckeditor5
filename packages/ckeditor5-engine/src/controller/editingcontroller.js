@@ -85,13 +85,14 @@ export default class EditingController {
 
 		const doc = this.model.document;
 
-		// When all changes are done, get the model diff containing all the changes and convert them to view and then render to DOM.
 		this.listenTo( doc, 'change', () => {
 			this.view.change( writer => {
-				// Convert changes stored in `modelDiffer`.
 				this.modelToView.convertChanges( doc.differ, writer );
+			} );
+		}, { priority: 'low' } );
 
-				// After the view is ready, convert selection from model to view.
+		this.listenTo( model, '_change', () => {
+			this.view.change( writer => {
 				this.modelToView.convertSelection( doc.selection, writer );
 			} );
 		}, { priority: 'low' } );
@@ -108,6 +109,55 @@ export default class EditingController {
 		this.modelToView.on( 'selection', clearFakeSelection(), { priority: 'low' } );
 		this.modelToView.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.modelToView.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
+
+		// Convert markers removal.
+		//
+		// Markers should be removed from the view before changes to the model are applied. This is because otherwise
+		// it would be impossible to map some markers to the view (if, for example, the marker's boundary parent got removed).
+		//
+		// `removedMarkers` keeps information which markers already has been removed to prevent removing them twice.
+		const removedMarkers = new Set();
+
+		this.listenTo( model, 'applyOperation', ( evt, args ) => {
+			// Before operation is applied...
+			const operation = args[ 0 ];
+
+			for ( const marker of model.markers ) {
+				// Check all markers, that aren't already removed...
+				if ( removedMarkers.has( marker.name ) ) {
+					continue;
+				}
+
+				const markerRange = marker.getRange();
+
+				if ( _operationAffectsMarker( operation, marker ) ) {
+					// And if the operation in any way modifies the marker, remove the marker from the view.
+					removedMarkers.add( marker.name );
+					this.view.change( writer => {
+						this.modelToView.convertMarkerRemove( marker.name, markerRange, writer );
+					} );
+
+					// TODO: This stinks but this is the safest place to have this code.
+					this.model.document.differ.bufferMarkerChange( marker.name, markerRange, markerRange );
+				}
+			}
+		}, { priority: 'high' } );
+
+		// If a marker is removed through `model.Model#markers` directly (not through operation), just remove it (if
+		// it was not removed already).
+		this.listenTo( model.markers, 'remove', ( evt, marker ) => {
+			if ( !removedMarkers.has( marker.name ) ) {
+				removedMarkers.add( marker.name );
+				this.view.change( writer => {
+					this.modelToView.convertMarkerRemove( marker.name, marker.getRange(), writer );
+				} );
+			}
+		} );
+
+		// When all changes are done, clear `removedMarkers` set.
+		this.listenTo( model, '_change', () => {
+			removedMarkers.clear();
+		}, { priority: 'low' } );
 
 		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
 		// {@link module:engine/model/document~Document#roots model roots collection} so creating
@@ -139,3 +189,23 @@ export default class EditingController {
 }
 
 mix( EditingController, ObservableMixin );
+
+// Helper function which checks whether given operation will affect given marker after the operation is applied.
+function _operationAffectsMarker( operation, marker ) {
+	const range = marker.getRange();
+
+	if ( operation.type == 'insert' || operation.type == 'rename' ) {
+		return _positionAffectsRange( operation.position, range );
+	} else if ( operation.type == 'move' || operation.type == 'remove' || operation.type == 'reinsert' ) {
+		return _positionAffectsRange( operation.targetPosition, range ) || _positionAffectsRange( operation.sourcePosition, range );
+	} else if ( operation.type == 'marker' && operation.name == marker.name ) {
+		return true;
+	}
+
+	return false;
+}
+
+// Helper function which checks whether change at given position affects given range.
+function _positionAffectsRange( position, range ) {
+	return range.containsPosition( position ) || !range.start._getTransformedByInsertion( position, 1, true ).isEqual( range.start );
+}

@@ -4,6 +4,7 @@
  */
 
 import Model from '../../../src/model/model';
+import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -53,34 +54,6 @@ describe( 'RootAttributeOperation', () => {
 			);
 
 			expect( op.type ).to.equal( 'changeRootAttribute' );
-		} );
-	} );
-
-	describe( 'isDocumentOperation', () => {
-		it( 'should be true when root is in the document', () => {
-			const operation = new RootAttributeOperation(
-				root,
-				'isNew',
-				null,
-				true,
-				doc.version
-			);
-
-			expect( operation.isDocumentOperation ).to.true;
-		} );
-
-		it( 'should be false when root is not in the document', () => {
-			const element = new Element( 'element' );
-
-			const operation = new RootAttributeOperation(
-				element,
-				'isNew',
-				null,
-				true,
-				doc.version
-			);
-
-			expect( operation.isDocumentOperation ).to.false;
 		} );
 	} );
 
@@ -204,7 +177,39 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	describe( '_validate()', () => {
-		it( 'should throw an error when one try to remove and the attribute does not exists', () => {
+		it( 'should throw an error when trying to change non-root element', () => {
+			const child = new Element( 'p' );
+			const parent = new Element( 'p' );
+			parent.appendChildren( child );
+
+			expect( () => {
+				const op = new RootAttributeOperation(
+					child,
+					'foo',
+					null,
+					'bar',
+					null
+				);
+
+				op._validate();
+			} ).to.throw( CKEditorError, /rootattribute-operation-not-a-root/ );
+		} );
+
+		it( 'should throw an error when trying to change document fragment', () => {
+			expect( () => {
+				const op = new RootAttributeOperation(
+					new DocumentFragment(),
+					'foo',
+					null,
+					'bar',
+					null
+				);
+
+				op._validate();
+			} ).to.throw( CKEditorError, /rootattribute-operation-not-a-root/ );
+		} );
+
+		it( 'should throw an error when trying to remove an attribute that does not exists', () => {
 			expect( () => {
 				const op = new RootAttributeOperation(
 					root,
@@ -218,7 +223,7 @@ describe( 'RootAttributeOperation', () => {
 			} ).to.throw( CKEditorError, /rootattribute-operation-wrong-old-value/ );
 		} );
 
-		it( 'should throw an error when one try to insert and the attribute already exists', () => {
+		it( 'should throw an error when trying to add an attribute that already exists', () => {
 			root.setAttribute( 'x', 1 );
 
 			expect( () => {

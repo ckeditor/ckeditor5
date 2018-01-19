@@ -175,7 +175,9 @@ export default class Writer {
 			}
 		}
 
-		const insert = new InsertOperation( position, item, this.model.document.version );
+		const version = position.root.document ? position.root.document.version : null;
+
+		const insert = new InsertOperation( position, item, version );
 
 		this.batch.addDelta( delta );
 		delta.addOperation( insert );
@@ -322,9 +324,9 @@ export default class Writer {
 		this._assertWriterUsageCorrectness();
 
 		if ( itemOrRange instanceof Range ) {
-			setAttributeToRange( this, key, value, itemOrRange );
+			setAttributeOnRange( this, key, value, itemOrRange );
 		} else {
-			setAttributeToItem( this, key, value, itemOrRange );
+			setAttributeOnItem( this, key, value, itemOrRange );
 		}
 	}
 
@@ -359,9 +361,9 @@ export default class Writer {
 		this._assertWriterUsageCorrectness();
 
 		if ( itemOrRange instanceof Range ) {
-			setAttributeToRange( this, key, null, itemOrRange );
+			setAttributeOnRange( this, key, null, itemOrRange );
 		} else {
-			setAttributeToItem( this, key, null, itemOrRange );
+			setAttributeOnItem( this, key, null, itemOrRange );
 		}
 	}
 
@@ -449,7 +451,9 @@ export default class Writer {
 		const delta = new MoveDelta();
 		this.batch.addDelta( delta );
 
-		const operation = new MoveOperation( range.start, range.end.offset - range.start.offset, position, this.model.document.version );
+		const version = range.root.document ? range.root.document.version : null;
+
+		const operation = new MoveOperation( range.start, range.end.offset - range.start.offset, position, version );
 		delta.addOperation( operation );
 		this.model.applyOperation( operation );
 	}
@@ -465,19 +469,8 @@ export default class Writer {
 		const addRemoveDelta = ( position, howMany ) => {
 			const delta = new RemoveDelta();
 			this.batch.addDelta( delta );
-			let operation;
 
-			if ( position.root.document ) {
-				const graveyard = this.model.document.graveyard;
-				const gyPosition = new Position( graveyard, [ 0 ] );
-
-				operation = new RemoveOperation( position, howMany, gyPosition, this.model.document.version );
-			} else {
-				operation = new DetachOperation( position, howMany, this.model.document.version );
-			}
-
-			delta.addOperation( operation );
-			this.model.applyOperation( operation );
+			addRemoveOperation( position, howMany, delta, this.model );
 		};
 
 		if ( itemOrRange instanceof Range ) {
@@ -532,23 +525,20 @@ export default class Writer {
 		const positionAfter = Position.createFromParentAndOffset( nodeAfter, 0 );
 		const positionBefore = Position.createFromParentAndOffset( nodeBefore, nodeBefore.maxOffset );
 
+		const moveVersion = position.root.document ? position.root.document.version : null;
+
 		const move = new MoveOperation(
 			positionAfter,
 			nodeAfter.maxOffset,
 			positionBefore,
-			this.model.document.version
+			moveVersion
 		);
 
 		move.isSticky = true;
 		delta.addOperation( move );
 		this.model.applyOperation( move );
 
-		const graveyard = this.model.document.graveyard;
-		const gyPosition = new Position( graveyard, [ 0 ] );
-
-		const remove = new RemoveOperation( position, 1, gyPosition, this.model.document.version );
-		delta.addOperation( remove );
-		this.model.applyOperation( remove );
+		addRemoveOperation( position, 1, delta, this.model );
 	}
 
 	/**
@@ -574,7 +564,9 @@ export default class Writer {
 		const delta = new RenameDelta();
 		this.batch.addDelta( delta );
 
-		const renameOperation = new RenameOperation( Position.createBefore( element ), element.name, newName, this.model.document.version );
+		const version = element.root.document ? element.root.document.version : null;
+
+		const renameOperation = new RenameOperation( Position.createBefore( element ), element.name, newName, version );
 		delta.addOperation( renameOperation );
 		this.model.applyOperation( renameOperation );
 	}
@@ -605,21 +597,24 @@ export default class Writer {
 		}
 
 		const copy = new Element( splitElement.name, splitElement.getAttributes() );
+		const insertVersion = splitElement.root.document ? splitElement.root.document.version : null;
 
 		const insert = new InsertOperation(
 			Position.createAfter( splitElement ),
 			copy,
-			this.model.document.version
+			insertVersion
 		);
 
 		delta.addOperation( insert );
 		this.model.applyOperation( insert );
 
+		const moveVersion = insertVersion !== null ? insertVersion + 1 : null;
+
 		const move = new MoveOperation(
 			position,
 			splitElement.maxOffset - position.offset,
 			Position.createFromParentAndOffset( copy, 0 ),
-			this.model.document.version
+			moveVersion
 		);
 		move.isSticky = true;
 
@@ -670,16 +665,20 @@ export default class Writer {
 		const delta = new WrapDelta();
 		this.batch.addDelta( delta );
 
-		const insert = new InsertOperation( range.end, element, this.model.document.version );
+		const insertVersion = range.root.document ? range.root.document.version : null;
+
+		const insert = new InsertOperation( range.end, element, insertVersion );
 		delta.addOperation( insert );
 		this.model.applyOperation( insert );
+
+		const moveVersion = insertVersion !== null ? insertVersion + 1 : null;
 
 		const targetPosition = Position.createFromParentAndOffset( element, 0 );
 		const move = new MoveOperation(
 			range.start,
 			range.end.offset - range.start.offset,
 			targetPosition,
-			this.model.document.version
+			moveVersion
 		);
 		delta.addOperation( move );
 		this.model.applyOperation( move );
@@ -707,26 +706,20 @@ export default class Writer {
 		this.batch.addDelta( delta );
 
 		const sourcePosition = Position.createFromParentAndOffset( element, 0 );
+		const moveVersion = sourcePosition.root.document ? sourcePosition.root.document.version : null;
 
 		const move = new MoveOperation(
 			sourcePosition,
 			element.maxOffset,
 			Position.createBefore( element ),
-			this.model.document.version
+			moveVersion
 		);
 
 		move.isSticky = true;
 		delta.addOperation( move );
 		this.model.applyOperation( move );
 
-		// Computing new position because we moved some nodes before `element`.
-		// If we would cache `Position.createBefore( element )` we remove wrong node.
-		const graveyard = this.model.document.graveyard;
-		const gyPosition = new Position( graveyard, [ 0 ] );
-
-		const remove = new RemoveOperation( Position.createBefore( element ), 1, gyPosition, this.model.document.version );
-		delta.addOperation( remove );
-		this.model.applyOperation( remove );
+		addRemoveOperation( Position.createBefore( element ), 1, delta, this.model );
 	}
 
 	/**
@@ -824,7 +817,7 @@ export default class Writer {
 // @param {String} key Attribute key.
 // @param {*} value Attribute new value.
 // @param {module:engine/model/range~Range} range Model range on which the attribute will be set.
-function setAttributeToRange( writer, key, value, range ) {
+function setAttributeOnRange( writer, key, value, range ) {
 	const delta = new AttributeDelta();
 	const model = writer.model;
 	const doc = model.document;
@@ -873,7 +866,8 @@ function setAttributeToRange( writer, key, value, range ) {
 		}
 
 		const range = new Range( lastSplitPosition, position );
-		const operation = new AttributeOperation( range, key, valueBefore, value, doc.version );
+		const version = range.root.document ? doc.version : null;
+		const operation = new AttributeOperation( range, key, valueBefore, value, version );
 
 		delta.addOperation( operation );
 		model.applyOperation( operation );
@@ -887,19 +881,23 @@ function setAttributeToRange( writer, key, value, range ) {
 // @param {String} key Attribute key.
 // @param {*} value Attribute new value.
 // @param {module:engine/model/item~Item} item Model item on which the attribute will be set.
-function setAttributeToItem( writer, key, value, item ) {
+function setAttributeOnItem( writer, key, value, item ) {
 	const model = writer.model;
 	const doc = model.document;
 	const previousValue = item.getAttribute( key );
 	let range, operation;
 
 	if ( previousValue != value ) {
-		const delta = item.root === item ? new RootAttributeDelta() : new AttributeDelta();
+		const isRootChanged = item.root === item;
+
+		const delta = isRootChanged ? new RootAttributeDelta() : new AttributeDelta();
 		writer.batch.addDelta( delta );
 
-		if ( item.root === item ) {
+		if ( isRootChanged ) {
 			// If we change attributes of root element, we have to use `RootAttributeOperation`.
-			operation = new RootAttributeOperation( item, key, previousValue, value, doc.version );
+			const version = item.document ? doc.version : null;
+
+			operation = new RootAttributeOperation( item, key, previousValue, value, version );
 		} else {
 			if ( item.is( 'element' ) ) {
 				// If we change the attribute of the element, we do not want to change attributes of its children, so
@@ -912,7 +910,9 @@ function setAttributeToItem( writer, key, value, item ) {
 				range = new Range( Position.createBefore( item ), Position.createAfter( item ) );
 			}
 
-			operation = new AttributeOperation( range, key, previousValue, value, doc.version );
+			const version = range.root.document ? doc.version : null;
+
+			operation = new AttributeOperation( range, key, previousValue, value, version );
 		}
 
 		delta.addOperation( operation );
@@ -935,6 +935,30 @@ function addMarkerOperation( writer, name, oldRange, newRange ) {
 	const operation = new MarkerOperation( name, oldRange, newRange, model.markers, doc.version );
 
 	writer.batch.addDelta( delta );
+	delta.addOperation( operation );
+	model.applyOperation( operation );
+}
+
+// Creates `RemoveOperation` or `DetachOperation` that removes `howMany` nodes starting from `position`.
+// The operation will be applied on given model instance and added to given delta instance.
+//
+// @private
+// @param {module:engine/model/position~Position} position Position from which nodes are removed.
+// @param {Number} howMany Number of nodes to remove.
+// @param {module:engine/model/delta~Delta} delta Delta to add new operation to.
+// @param {module:engine/model/model~Model} model Model instance on which operation will be applied.
+function addRemoveOperation( position, howMany, delta, model ) {
+	let operation;
+
+	if ( position.root.document ) {
+		const doc = model.document;
+		const graveyardPosition = new Position( doc.graveyard, [ 0 ] );
+
+		operation = new RemoveOperation( position, howMany, graveyardPosition, doc.version );
+	} else {
+		operation = new DetachOperation( position, howMany );
+	}
+
 	delta.addOperation( operation );
 	model.applyOperation( operation );
 }

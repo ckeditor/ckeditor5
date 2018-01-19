@@ -130,11 +130,6 @@ export default class ModelConversionDispatcher {
 	convertChanges( differ, writer ) {
 		this.conversionApi.writer = writer;
 
-		// First, before changing view structure, remove all markers that has changed.
-		for ( const change of differ.getMarkersToRemove() ) {
-			this.convertMarkerRemove( change.name, change.range, writer );
-		}
-
 		// Convert changes that happened on model tree.
 		for ( const entry of differ.getChanges() ) {
 			if ( entry.type == 'insert' ) {

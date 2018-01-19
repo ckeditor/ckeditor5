@@ -136,10 +136,10 @@ export default class DataController {
 	 * @returns {String} Output data.
 	 */
 	stringify( modelElementOrFragment ) {
-		// model -> view
+		// Model -> view.
 		const viewDocumentFragment = this.toView( modelElementOrFragment );
 
-		// view -> data
+		// View -> data.
 		return this.processor.toData( viewDocumentFragment );
 	}
 
@@ -154,13 +154,26 @@ export default class DataController {
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Output view DocumentFragment.
 	 */
 	toView( modelElementOrFragment ) {
+		// First, convert elements.
 		const modelRange = ModelRange.createIn( modelElementOrFragment );
 
 		const viewDocumentFragment = new ViewDocumentFragment();
+		const viewWriter = new ViewWriter();
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
-		this.modelToView.convertInsert( modelRange, new ViewWriter() );
+		this.modelToView.convertInsert( modelRange, viewWriter );
 
+		if ( !modelElementOrFragment.is( 'documentFragment' ) ) {
+			// Then, if a document element is converted, convert markers.
+			// From all document markers, get those, which "intersect" with the converter element.
+			const markers = _getMarkersRelativeToElement( modelElementOrFragment );
+
+			for ( const [ name, range ] of markers ) {
+				this.modelToView.convertMarkerAdd( name, range, viewWriter );
+			}
+		}
+
+		// Clear bindings so the next call to this method gives correct results.
 		this.mapper.clearBindings();
 
 		return viewDocumentFragment;
@@ -235,3 +248,28 @@ export default class DataController {
 }
 
 mix( DataController, ObservableMixin );
+
+// Helper function for converting part of a model to view.
+//
+// Takes a document element (element that is added to a model document) and checks which markers are inside it
+// and which markers are containing it. If the marker is intersecting with element, the intersection is returned.
+function _getMarkersRelativeToElement( element ) {
+	const result = [];
+	const doc = element.root.document;
+
+	if ( !doc ) {
+		return [];
+	}
+
+	const elementRange = ModelRange.createIn( element );
+
+	for ( const marker of doc.model.markers ) {
+		const intersection = elementRange.getIntersection( marker.getRange() );
+
+		if ( intersection ) {
+			result.push( [ marker.name, intersection ] );
+		}
+	}
+
+	return result;
+}

@@ -27,10 +27,9 @@ export default class DetachOperation extends Operation {
 	 * Position before the first {@link module:engine/model/item~Item model item} to move.
 	 * @param {Number} howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
 	 * `sourcePosition` with offset shifted by `howMany`.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which operation can be applied.
 	 */
-	constructor( sourcePosition, howMany, baseVersion ) {
-		super( baseVersion );
+	constructor( sourcePosition, howMany ) {
+		super( null );
 
 		/**
 		 * Position before the first {@link module:engine/model/item~Item model item} to detach.
@@ -45,11 +44,6 @@ export default class DetachOperation extends Operation {
 		 * @member {Number} #howMany
 		 */
 		this.howMany = howMany;
-
-		/**
-		 * @inheritDoc
-		 */
-		this.isDocumentOperation = false;
 	}
 
 	/**
