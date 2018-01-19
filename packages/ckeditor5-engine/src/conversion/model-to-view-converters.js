@@ -329,18 +329,19 @@ export function wrap( elementCreator ) {
 			return;
 		}
 
-		let viewRange = conversionApi.mapper.toViewRange( data.range );
+		if ( data.item instanceof ModelSelection ) {
+			// Selection attribute conversion.
+			viewWriter.wrap( conversionApi.viewSelection.getFirstRange(), newViewElement, conversionApi.viewSelection );
+		} else {
+			// Node attribute conversion.
+			let viewRange = conversionApi.mapper.toViewRange( data.range );
 
-		// First, unwrap the range from current wrapper.
-		if ( data.attributeOldValue !== null ) {
-			viewRange = viewWriter.unwrap( viewRange, oldViewElement );
-		}
+			// First, unwrap the range from current wrapper.
+			if ( data.attributeOldValue !== null ) {
+				viewRange = viewWriter.unwrap( viewRange, oldViewElement );
+			}
 
-		// Then wrap with the new wrapper.
-		if ( data.attributeNewValue !== null ) {
-			if ( data.item instanceof ModelSelection ) {
-				viewWriter.wrap( conversionApi.viewSelection.getFirstRange(), newViewElement, conversionApi.viewSelection );
-			} else {
+			if ( data.attributeNewValue !== null ) {
 				viewWriter.wrap( viewRange, newViewElement );
 			}
 		}

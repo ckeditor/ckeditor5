@@ -503,15 +503,18 @@ export default class ModelConversionDispatcher {
 	 * `addMarker:foo:bar` events.
 	 *
 	 * If the marker range is not collapsed:
+	 *
 	 * * the event is fired for each item in the marker range one by one,
 	 * * consumables object includes each item of the marker range and the consumable value is same as event name.
 	 *
 	 * If the marker range is collapsed:
+	 *
 	 * * there is only one event,
 	 * * consumables object includes marker range with event name.
 	 *
 	 * If selection inside a marker is converted:
-	 * * the is only one event,
+	 *
+	 * * there is only one event,
 	 * * consumables object includes selection instance with event name.
 	 *
 	 * @event addMarker
