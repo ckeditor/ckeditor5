@@ -143,8 +143,8 @@ describe( 'advanced-converters', () => {
 	describe( 'custom attribute handling for given element', () => {
 		beforeEach( () => {
 			// Normal model-to-view converters for links.
-			modelDispatcher.on( 'attribute:linkHref', wrap( value => new ViewAttributeElement( 'a', { href: value } ) ) );
-			modelDispatcher.on( 'attribute:linkTitle', wrap( value => new ViewAttributeElement( 'a', { title: value } ) ) );
+			modelDispatcher.on( 'attribute:linkHref', wrap( value => value ? new ViewAttributeElement( 'a', { href: value } ) : null ) );
+			modelDispatcher.on( 'attribute:linkTitle', wrap( value => value ? new ViewAttributeElement( 'a', { title: value } ) : null ) );
 
 			// Normal view-to-model converters for links.
 			viewDispatcher.on( 'element:a', ( evt, data, consumable, conversionApi ) => {

@@ -19,8 +19,6 @@ import ModelConversionDispatcher from '../../src/conversion/modelconversiondispa
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
-	convertSelectionAttribute,
-	convertSelectionMarker,
 	clearAttributes,
 	clearFakeSelection
 } from '../../src/conversion/model-selection-to-view-converters';
@@ -78,13 +76,6 @@ describe( 'model-selection-to-view-converters', () => {
 	} );
 
 	describe( 'default converters', () => {
-		beforeEach( () => {
-			// Selection converters for selection attributes.
-			dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'strong' ) ) );
-			dispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
-			dispatcher.on( 'selectionMarker:marker', convertSelectionMarker( highlightDescriptor ) );
-		} );
-
 		describe( 'range selection', () => {
 			it( 'in same container', () => {
 				test(
@@ -201,24 +192,6 @@ describe( 'model-selection-to-view-converters', () => {
 				);
 			} );
 
-			it( 'in container with extra attributes', () => {
-				test(
-					[ 1, 1 ],
-					'foobar',
-					'f<em>[]</em>oobar',
-					{ italic: true }
-				);
-			} );
-
-			it( 'in attribute with extra attributes', () => {
-				test(
-					[ 3, 3 ],
-					'f<$text bold="true">ooba</$text>r',
-					'f<strong>oo</strong><em><strong>[]</strong></em><strong>ba</strong>r',
-					{ italic: true }
-				);
-			} );
-
 			it( 'in attribute and marker', () => {
 				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
 				const marker = model.markers.set( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
@@ -271,34 +244,9 @@ describe( 'model-selection-to-view-converters', () => {
 			} );
 
 			it( 'in marker - using highlight descriptor creator', () => {
-				dispatcher.on( 'selectionMarker:marker2', convertSelectionMarker(
+				dispatcher.on( 'addMarker:marker2', highlightText(
 					data => ( { 'class': data.markerName } )
 				) );
-
-				setModelData( model, 'foobar' );
-				const marker = model.markers.set( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
-
-				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
-
-				// Remove view children manually (without firing additional conversion).
-				viewRoot.removeChildren( 0, viewRoot.childCount );
-
-				// Convert model to view.
-				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
-				dispatcher.convertMarkerAdd( marker.name, marker.getRange() );
-
-				const markers = Array.from( model.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
-				dispatcher.convertSelection( modelSelection, markers );
-
-				// Stringify view and check if it is same as expected.
-				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
-					.to.equal( '<div>foo<span class="marker2">[]</span>bar</div>' );
-			} );
-
-			it( 'in marker - should merge with the rest of attribute elements', () => {
-				dispatcher.on( 'addMarker:marker2', highlightText( data => ( { 'class': data.markerName } ) ) );
-				dispatcher.on( 'addMarker:marker2', highlightElement( data => ( { 'class': data.markerName } ) ) );
-				dispatcher.on( 'selectionMarker:marker2', convertSelectionMarker( data => ( { 'class': data.markerName } ) ) );
 
 				setModelData( model, 'foobar' );
 				const marker = model.markers.set( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
@@ -321,9 +269,7 @@ describe( 'model-selection-to-view-converters', () => {
 			} );
 
 			it( 'should do nothing if creator return null', () => {
-				dispatcher.on( 'selectionMarker:marker3', convertSelectionMarker( () => {
-
-				} ) );
+				dispatcher.on( 'addMarker:marker3', highlightText( () => null ) );
 
 				setModelData( model, 'foobar' );
 				const marker = model.markers.set( 'marker3', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
@@ -415,15 +361,15 @@ describe( 'model-selection-to-view-converters', () => {
 					expect( consumable.consume( data.selection, 'selection' ) ).to.be.true;
 				}, { priority: 'high' } );
 
-				dispatcher.on( 'selectionAttribute:bold', ( evt, data, consumable ) => {
-					expect( consumable.consume( data.selection, 'selectionAttribute:bold' ) ).to.be.true;
+				dispatcher.on( 'attribute:bold', ( evt, data, consumable ) => {
+					expect( consumable.consume( data.item, 'attribute:bold' ) ).to.be.true;
 				}, { priority: 'high' } );
 
 				// Similar test case as above.
 				test(
 					[ 3, 3 ],
 					'f<$text bold="true">ooba</$text>r',
-					'f<strong>ooba</strong>r' // No selection in view.
+					'foobar' // No selection in view and no attribute.
 				);
 			} );
 		} );
@@ -468,13 +414,10 @@ describe( 'model-selection-to-view-converters', () => {
 
 		describe( 'clearAttributes', () => {
 			it( 'should remove all ranges before adding new range', () => {
-				dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'b' ) ) );
-				dispatcher.on( 'attribute:style', wrap( new ViewAttributeElement( 'b' ) ) );
-
 				test(
 					[ 3, 3 ],
 					'foobar',
-					'foo<b>[]</b>bar',
+					'foo<strong>[]</strong>bar',
 					{ bold: 'true' }
 				);
 
@@ -490,17 +433,14 @@ describe( 'model-selection-to-view-converters', () => {
 			} );
 
 			it( 'should do nothing if the attribute element had been already removed', () => {
-				dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'b' ) ) );
-				dispatcher.on( 'attribute:style', wrap( new ViewAttributeElement( 'b' ) ) );
-
 				test(
 					[ 3, 3 ],
 					'foobar',
-					'foo<b>[]</b>bar',
+					'foo<strong>[]</strong>bar',
 					{ bold: 'true' }
 				);
 
-				// Remove <b></b> manually.
+				// Remove <strong></strong> manually.
 				mergeAttributes( viewSelection.getFirstPosition() );
 
 				const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
@@ -523,115 +463,6 @@ describe( 'model-selection-to-view-converters', () => {
 				dispatcher.convertSelection( modelSelection, [] );
 
 				expect( viewSelection.isFake ).to.be.false;
-			} );
-		} );
-	} );
-
-	describe( 'using element creator for attributes conversion', () => {
-		beforeEach( () => {
-			function themeElementCreator( themeValue ) {
-				if ( themeValue == 'important' ) {
-					return new ViewAttributeElement( 'strong', { style: 'text-transform:uppercase' } );
-				} else if ( themeValue == 'gold' ) {
-					return new ViewAttributeElement( 'span', { style: 'color:yellow' } );
-				}
-			}
-
-			dispatcher.on( 'selectionAttribute:theme', convertSelectionAttribute( themeElementCreator ) );
-			dispatcher.on( 'attribute:theme', wrap( themeElementCreator ) );
-
-			dispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
-		} );
-
-		describe( 'range selection', () => {
-			it( 'in same container, over attribute', () => {
-				test(
-					[ 1, 5 ],
-					'fo<$text theme="gold">ob</$text>ar',
-					'f{o<span style="color:yellow">ob</span>a}r'
-				);
-			} );
-
-			it( 'in same attribute', () => {
-				test(
-					[ 2, 4 ],
-					'f<$text theme="gold">ooba</$text>r',
-					'f<span style="color:yellow">o{ob}a</span>r'
-				);
-			} );
-
-			it( 'in same attribute, selection same as attribute', () => {
-				test(
-					[ 2, 4 ],
-					'fo<$text theme="important">ob</$text>ar',
-					'fo{<strong style="text-transform:uppercase">ob</strong>}ar'
-				);
-			} );
-
-			it( 'starts in attribute, ends in text node', () => {
-				test(
-					[ 3, 5 ],
-					'fo<$text theme="important">ob</$text>ar',
-					'fo<strong style="text-transform:uppercase">o{b</strong>a}r'
-				);
-			} );
-		} );
-
-		describe( 'collapsed selection', () => {
-			it( 'in attribute', () => {
-				test(
-					[ 3, 3 ],
-					'f<$text theme="gold">ooba</$text>r',
-					'f<span style="color:yellow">oo{}ba</span>r'
-				);
-			} );
-
-			it( 'in container with theme attribute', () => {
-				test(
-					[ 1, 1 ],
-					'foobar',
-					'f<strong style="text-transform:uppercase">[]</strong>oobar',
-					{ theme: 'important' }
-				);
-			} );
-
-			it( 'in theme attribute with extra attributes #1', () => {
-				test(
-					[ 3, 3 ],
-					'f<$text theme="gold">ooba</$text>r',
-					'f<span style="color:yellow">oo</span>' +
-					'<em><span style="color:yellow">[]</span></em>' +
-					'<span style="color:yellow">ba</span>r',
-					{ italic: true }
-				);
-			} );
-
-			it( 'in theme attribute with extra attributes #2', () => {
-				// In contrary to test above, we don't have strong + span on the selection.
-				// This is because strong and span are both created by the same attribute.
-				// Since style="important" overwrites style="gold" on selection, we have only strong element.
-				// In example above, selection has both style and italic attribute.
-				test(
-					[ 3, 3 ],
-					'f<$text theme="gold">ooba</$text>r',
-					'f<span style="color:yellow">oo</span>' +
-					'<strong style="text-transform:uppercase">[]</strong>' +
-					'<span style="color:yellow">ba</span>r',
-					{ theme: 'important' }
-				);
-			} );
-
-			it( 'convertSelectionAttribute should do nothing if creator return null', () => {
-				dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( () => {
-
-				} ) );
-
-				test(
-					[ 3, 3 ],
-					'foobar',
-					'foo{}bar',
-					{ bold: 'true' }
-				);
 			} );
 		} );
 	} );

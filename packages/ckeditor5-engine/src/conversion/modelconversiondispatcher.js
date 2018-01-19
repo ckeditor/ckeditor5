@@ -59,9 +59,9 @@ import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
  *
  * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:selection}
  * which converts selection from model to view,
- * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:selectionAttribute}
+ * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:attribute}
  * which is fired for every selection attribute,
- * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:selectionMarker}
+ * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker}
  * which is fired for every marker which contains selection.
  *
  * Unlike model tree and markers, events for selection are not fired for changes but for selection state.
@@ -232,8 +232,8 @@ export default class ModelConversionDispatcher {
 	 * Fires events for given {@link module:engine/model/selection~Selection selection} to start selection conversion.
 	 *
 	 * @fires selection
-	 * @fires selectionMarker
-	 * @fires selectionAttribute
+	 * @fires addMarker
+	 * @fires attribute
 	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
 	 */
 	convertSelection( selection ) {
@@ -241,6 +241,10 @@ export default class ModelConversionDispatcher {
 		const consumable = this._createSelectionConsumable( selection, markers );
 
 		this.fire( 'selection', { selection }, consumable, this.conversionApi );
+
+		if ( !selection.isCollapsed ) {
+			return;
+		}
 
 		for ( const marker of markers ) {
 			const markerRange = marker.getRange();
@@ -250,26 +254,28 @@ export default class ModelConversionDispatcher {
 			}
 
 			const data = {
-				selection,
+				item: selection,
 				markerName: marker.name,
 				markerRange
 			};
 
-			if ( consumable.test( selection, 'selectionMarker:' + marker.name ) ) {
-				this.fire( 'selectionMarker:' + marker.name, data, consumable, this.conversionApi );
+			if ( consumable.test( selection, 'addMarker:' + marker.name ) ) {
+				this.fire( 'addMarker:' + marker.name, data, consumable, this.conversionApi );
 			}
 		}
 
 		for ( const key of selection.getAttributeKeys() ) {
 			const data = {
-				selection,
-				key,
-				value: selection.getAttribute( key )
+				item: selection,
+				range: selection.getFirstRange(),
+				attributeKey: key,
+				attributeOldValue: null,
+				attributeNewValue: selection.getAttribute( key )
 			};
 
 			// Do not fire event if the attribute has been consumed.
-			if ( consumable.test( selection, 'selectionAttribute:' + data.key ) ) {
-				this.fire( 'selectionAttribute:' + data.key, data, consumable, this.conversionApi );
+			if ( consumable.test( selection, 'attribute:' + data.attributeKey ) ) {
+				this.fire( 'attribute:' + data.attributeKey, data, consumable, this.conversionApi );
 			}
 		}
 	}
@@ -392,11 +398,11 @@ export default class ModelConversionDispatcher {
 		consumable.add( selection, 'selection' );
 
 		for ( const marker of markers ) {
-			consumable.add( selection, 'selectionMarker:' + marker.name );
+			consumable.add( selection, 'addMarker:' + marker.name );
 		}
 
 		for ( const key of selection.getAttributeKeys() ) {
-			consumable.add( selection, 'selectionAttribute:' + key );
+			consumable.add( selection, 'attribute:' + key );
 		}
 
 		return consumable;
@@ -458,7 +464,7 @@ export default class ModelConversionDispatcher {
 	 */
 
 	/**
-	 * Fired when attribute has been added/changed/removed from a node.
+	 * Fired when attribute has been added/changed/removed from a node. Also fired when collapsed model selection attribute is converted.
 	 *
 	 * `attribute` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `attribute:attributeKey:name`. `attributeKey` is the key of added/changed/removed attribute.
@@ -469,10 +475,11 @@ export default class ModelConversionDispatcher {
 	 *
 	 * @event attribute
 	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/item~Item} data.item Changed item.
-	 * @param {module:engine/model/range~Range} data.range Range spanning over changed item.
+	 * @param {module:engine/model/item~Item|module:engine/model/documentselection~DocumentSelection} data.item Changed item
+	 * or converted selection.
+	 * @param {module:engine/model/range~Range} data.range Range spanning over changed item or selection range.
 	 * @param {String} data.attributeKey Attribute key.
-	 * @param {*} data.attributeOldValue Attribute value before the change.
+	 * @param {*} data.attributeOldValue Attribute value before the change. This is `null` when selection attribute is converted.
 	 * @param {*} data.attributeNewValue New attribute value.
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
@@ -488,38 +495,7 @@ export default class ModelConversionDispatcher {
 	 */
 
 	/**
-	 * Fired for {@link module:engine/model/selection~Selection selection} attributes changes.
-	 *
-	 * `selectionAttribute` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `selectionAttribute:attributeKey`. `attributeKey` is the key of selection attribute. This way it is possible to listen to
-	 * certain attribute, i.e. `selectionAttribute:bold`.
-	 *
-	 * @event selectionAttribute
-	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/selection~Selection} data.selection Selection that is converted.
-	 * @param {String} data.attributeKey Key of changed attribute.
-	 * @param {*} data.attributeValue Value of changed attribute.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
-	 */
-
-	/**
-	 * Fired for markers containing {@link module:engine/model/selection~Selection selection}.
-	 *
-	 * `selectionMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `selectionMarker:markerName`. `markerName` is the name of the marker containing selection. This way it is possible to listen to
-	 * certain marker, i.e. `selectionAttribute:highlight`.
-	 *
-	 * @event selectionMarker
-	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/selection~Selection} data.selection Selection that is converted.
-	 * @param {module:engine/model/range~Range} data.markerRange Marker range.
-	 * @param {String} data.markerName Marker name.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
-	 */
-
-	/**
-	 * Fired when a new marker is added to the model.
+	 * Fired when a new marker is added to the model. Also fired when collapsed model selection that is inside marker is converted.
 	 *
 	 * `addMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `addMarker:markerName`. By specifying certain marker names, you can make the events even more gradual. For example,
@@ -527,17 +503,25 @@ export default class ModelConversionDispatcher {
 	 * `addMarker:foo:bar` events.
 	 *
 	 * If the marker range is not collapsed:
+	 *
 	 * * the event is fired for each item in the marker range one by one,
 	 * * consumables object includes each item of the marker range and the consumable value is same as event name.
 	 *
 	 * If the marker range is collapsed:
+	 *
 	 * * there is only one event,
 	 * * consumables object includes marker range with event name.
 	 *
+	 * If selection inside a marker is converted:
+	 *
+	 * * there is only one event,
+	 * * consumables object includes selection instance with event name.
+	 *
 	 * @event addMarker
 	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/item~Item} data.item Item inside the new marker.
-	 * @param {module:engine/model/range~Range} [data.range] Range spanning over converted item. Available only if
+	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection} data.item Item inside the new marker or
+	 * the selection that is being converted.
+	 * @param {module:engine/model/range~Range} [data.range] Range spanning over converted item. Available only in marker conversion, if
 	 * the marker range was not collapsed.
 	 * @param {module:engine/model/range~Range} data.markerRange Marker range.
 	 * @param {String} data.markerName Marker name.
