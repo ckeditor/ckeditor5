@@ -18,10 +18,7 @@ import { isImage } from '../image/utils';
  */
 export function modelToViewStyleAttribute( styles ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const eventType = evt.name.split( ':' )[ 0 ];
-		const consumableType = eventType + ':imageStyle';
-
-		if ( !consumable.consume( data.item, consumableType ) ) {
+		if ( !consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
