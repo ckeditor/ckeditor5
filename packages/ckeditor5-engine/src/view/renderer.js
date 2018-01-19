@@ -576,7 +576,9 @@ export default class Renderer {
 			Object.assign( container.style, {
 				position: 'fixed',
 				top: 0,
-				left: '-9999px'
+				left: '-9999px',
+				// See https://github.com/ckeditor/ckeditor5/issues/752.
+				width: '42px'
 			} );
 
 			// Fill it with a text node so we can update it later.
