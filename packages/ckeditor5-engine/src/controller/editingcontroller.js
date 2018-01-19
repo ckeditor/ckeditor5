@@ -78,7 +78,7 @@ export default class EditingController {
 		 * @readonly
 		 * @member {module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher} #modelToView
 		 */
-		this.modelToView = new ModelConversionDispatcher( this.model, this.view, {
+		this.modelToView = new ModelConversionDispatcher( this.model, {
 			mapper: this.mapper,
 			viewSelection: this.view.document.selection
 		} );
@@ -87,11 +87,13 @@ export default class EditingController {
 
 		// When all changes are done, get the model diff containing all the changes and convert them to view and then render to DOM.
 		this.listenTo( doc, 'change', () => {
-			// Convert changes stored in `modelDiffer`.
-			this.modelToView.convertChanges( doc.differ );
+			this.view.change( writer => {
+				// Convert changes stored in `modelDiffer`.
+				this.modelToView.convertChanges( doc.differ, writer );
 
-			// After the view is ready, convert selection from model to view.
-			this.modelToView.convertSelection( doc.selection );
+				// After the view is ready, convert selection from model to view.
+				this.modelToView.convertSelection( doc.selection, writer );
+			} );
 		}, { priority: 'low' } );
 
 		// Convert selection from view to model.

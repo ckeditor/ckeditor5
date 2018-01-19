@@ -20,7 +20,7 @@ describe( 'ModelConversionDispatcher', () => {
 		model = new Model();
 		view = new View();
 		doc = model.document;
-		dispatcher = new ModelConversionDispatcher( model, view );
+		dispatcher = new ModelConversionDispatcher( model );
 		root = doc.createRoot();
 
 		differStub = {
@@ -33,7 +33,7 @@ describe( 'ModelConversionDispatcher', () => {
 	describe( 'constructor()', () => {
 		it( 'should create ModelConversionDispatcher with given api', () => {
 			const apiObj = {};
-			const dispatcher = new ModelConversionDispatcher( model, view, { apiObj } );
+			const dispatcher = new ModelConversionDispatcher( model, { apiObj } );
 
 			expect( dispatcher.conversionApi.apiObj ).to.equal( apiObj );
 		} );
@@ -48,7 +48,9 @@ describe( 'ModelConversionDispatcher', () => {
 
 			differStub.getChanges = () => [ { type: 'insert', position, length: 1 } ];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertInsert.calledOnce ).to.be.true;
 			expect( dispatcher.convertInsert.firstCall.args[ 0 ].isEqual( range ) ).to.be.true;
@@ -61,7 +63,9 @@ describe( 'ModelConversionDispatcher', () => {
 
 			differStub.getChanges = () => [ { type: 'remove', position, length: 2, name: '$text' } ];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertRemove.calledWith( position, 2, '$text' ) ).to.be.true;
 		} );
@@ -76,7 +80,9 @@ describe( 'ModelConversionDispatcher', () => {
 				{ type: 'attribute', position, range, attributeKey: 'key', attributeOldValue: null, attributeNewValue: 'foo' }
 			];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertAttribute.calledWith( range, 'key', null, 'foo' ) ).to.be.true;
 		} );
@@ -96,7 +102,9 @@ describe( 'ModelConversionDispatcher', () => {
 				{ type: 'insert', position, length: 3 },
 			];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertInsert.calledTwice ).to.be.true;
 			expect( dispatcher.convertRemove.calledOnce ).to.be.true;
@@ -114,7 +122,9 @@ describe( 'ModelConversionDispatcher', () => {
 				{ name: 'bar', range: barRange }
 			];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertMarkerAdd.calledWith( 'foo', fooRange ) );
 			expect( dispatcher.convertMarkerAdd.calledWith( 'bar', barRange ) );
@@ -131,7 +141,9 @@ describe( 'ModelConversionDispatcher', () => {
 				{ name: 'bar', range: barRange }
 			];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertMarkerRemove.calledWith( 'foo', fooRange ) );
 			expect( dispatcher.convertMarkerRemove.calledWith( 'bar', barRange ) );

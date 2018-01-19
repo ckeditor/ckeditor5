@@ -20,7 +20,7 @@ import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
 import ModelSelection from '../model/selection';
 import ModelDocumentFragment from '../model/documentfragment';
 
-import View from '../view/view';
+import ViewWriter from '../view/writer';
 import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
 import ViewSelection from '../view/selection';
 import ViewDocumentFragment from '../view/documentfragment';
@@ -160,7 +160,6 @@ setData._parse = parse;
  */
 export function stringify( node, selectionOrPositionOrRange = null ) {
 	const model = new Model();
-	const view = new View();
 	const mapper = new Mapper();
 	let selection, range;
 
@@ -194,7 +193,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	// Setup model to view converter.
 	const viewDocumentFragment = new ViewDocumentFragment();
 	const viewSelection = new ViewSelection();
-	const modelToView = new ModelConversionDispatcher( model, view, { mapper, viewSelection } );
+	const modelToView = new ModelConversionDispatcher( model, { mapper, viewSelection } );
 
 	// Bind root elements.
 	mapper.bindElements( node.root, viewDocumentFragment );
@@ -218,11 +217,12 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	} ) );
 
 	// Convert model to view.
-	modelToView.convertInsert( range );
+	const writer = new ViewWriter();
+	modelToView.convertInsert( range, writer );
 
 	// Convert model selection to view selection.
 	if ( selection ) {
-		modelToView.convertSelection( selection, [] );
+		modelToView.convertSelection( selection, writer );
 	}
 
 	// Parse view to data string.

@@ -513,7 +513,7 @@ describe( 'advanced-converters', () => {
 			] );
 
 			modelRoot.appendChildren( modelElement );
-			modelDispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+			modelDispatcher.convertInsert( ModelRange.createIn( modelRoot ), viewWriter );
 
 			expect( viewToString( viewRoot ) ).to.equal(
 				'<div>' +

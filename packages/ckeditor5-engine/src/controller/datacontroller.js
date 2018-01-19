@@ -19,6 +19,7 @@ import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
 import { convertText, convertToModelFragment } from '../conversion/view-to-model-converters';
 
 import ViewDocumentFragment from '../view/documentfragment';
+import ViewWriter from '../view/writer';
 
 import ModelRange from '../model/range';
 
@@ -158,7 +159,7 @@ export default class DataController {
 		const viewDocumentFragment = new ViewDocumentFragment();
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
-		this.modelToView.convertInsert( modelRange );
+		this.modelToView.convertInsert( modelRange, new ViewWriter() );
 
 		this.mapper.clearBindings();
 
