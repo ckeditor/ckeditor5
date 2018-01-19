@@ -34,7 +34,6 @@ const writer = {
 	clear,
 	move,
 	wrap,
-	wrapPosition,
 	unwrap,
 	rename
 };
@@ -457,29 +456,64 @@ export function move( sourceRange, targetPosition ) {
 
 /**
  * Wraps elements within range with provided {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
+ * If a collapsed range is provided, it will be wrapped only if it is equal to view selection.
  *
  * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-invalid-range-container`
  * when {@link module:engine/view/range~Range#start}
  * and {@link module:engine/view/range~Range#end} positions are not placed inside same parent container.
+ *
  * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
  * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
+ *
+ * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-nonselection-collapsed-range` when passed range
+ * is collapsed and different than view selection.
  *
  * @function module:engine/view/writer~writer.wrap
  * @param {module:engine/view/range~Range} range Range to wrap.
  * @param {module:engine/view/attributeelement~AttributeElement} attribute Attribute element to use as wrapper.
+ * @param {module:engine/view/selection~Selection} [viewSelection=null] View selection to change, required when
+ * wrapping collapsed range.
+ * @returns {module:engine/view/range~Range} range Range after wrapping, spanning over wrapping attribute element.
  */
-export function wrap( range, attribute ) {
+export function wrap( range, attribute, viewSelection = null ) {
 	if ( !( attribute instanceof AttributeElement ) ) {
 		throw new CKEditorError( 'view-writer-wrap-invalid-attribute' );
 	}
 
 	validateRangeContainer( range );
 
-	// If range is collapsed - nothing to wrap.
-	if ( range.isCollapsed ) {
-		return range;
-	}
+	if ( !range.isCollapsed ) {
+		// Non-collapsed range. Wrap it with the attribute element.
+		return _wrapRange( range, attribute );
+	} else {
+		// Collapsed range. Wrap position.
+		let position = range.start;
 
+		if ( position.parent.is( 'element' ) && !_hasNonUiChildren( position.parent ) ) {
+			position = position.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
+		}
+
+		position = _wrapPosition( position, attribute );
+
+		// If wrapping position is equal to view selection, move view selection inside wrapping attribute element.
+		if ( viewSelection && viewSelection.isCollapsed && viewSelection.getFirstPosition().isEqual( range.start ) ) {
+			viewSelection.setRanges( [ new Range( position ) ] );
+		}
+
+		return new Range( position );
+	}
+}
+
+// Helper function for `view.writer.wrap`. Wraps range with provided attribute element.
+// This method will also merge newly added attribute element with its siblings whenever possible.
+//
+// Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
+// an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
+//
+// @param {module:engine/view/range~Range} range
+// @param {module:engine/view/attributeelement~AttributeElement} attribute
+// @returns {module:engine/view/range~Range} New range after wrapping, spanning over wrapping attribute element.
+function _wrapRange( range, attribute ) {
 	// Range is inside single attribute and spans on all children.
 	if ( rangeSpansOnAllChildren( range ) && wrapAttributeElement( attribute, range.start.parent ) ) {
 		const parent = range.start.parent;
@@ -530,22 +564,16 @@ export function wrap( range, attribute ) {
 	return new Range( start, end );
 }
 
-/**
- * Wraps position with provided attribute. Returns new position after wrapping. This method will also merge newly
- * added attribute with its siblings whenever possible.
- *
- * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
- * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
- *
- * @param {module:engine/view/position~Position} position
- * @param {module:engine/view/attributeelement~AttributeElement} attribute
- * @returns {module:engine/view/position~Position} New position after wrapping.
- */
-export function wrapPosition( position, attribute ) {
-	if ( !( attribute instanceof AttributeElement ) ) {
-		throw new CKEditorError( 'view-writer-wrap-invalid-attribute' );
-	}
-
+// Helper function for `view.writer.wrap`. Wraps position with provided attribute element.
+// This method will also merge newly added attribute element with its siblings whenever possible.
+//
+// Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
+// an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
+//
+// @param {module:engine/view/position~Position} position
+// @param {module:engine/view/attributeelement~AttributeElement} attribute
+// @returns {module:engine/view/position~Position} New position after wrapping.
+function _wrapPosition( position, attribute ) {
 	// Return same position when trying to wrap with attribute similar to position parent.
 	if ( attribute.isSimilar( position.parent ) ) {
 		return movePositionToTextNode( Position.createFromPosition( position ) );
@@ -584,6 +612,11 @@ export function wrapPosition( position, attribute ) {
 
 	// If position is next to text node - move position inside.
 	return movePositionToTextNode( newPosition );
+}
+
+// Helper function for `view.writer.wrap`. Checks if given element has any children that are not ui elements.
+function _hasNonUiChildren( parent ) {
+	return Array.from( parent.getChildren() ).some( child => !child.is( 'uiElement' ) );
 }
 
 /**

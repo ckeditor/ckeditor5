@@ -4,6 +4,8 @@
  */
 
 import ModelRange from '../model/range';
+import ModelSelection from '../model/selection';
+import ModelElement from '../model/element';
 
 import ViewElement from '../view/element';
 import ViewAttributeElement from '../view/attributeelement';
@@ -278,6 +280,8 @@ export function changeAttribute( attributeCreator ) {
 
 /**
  * Function factory, creates a converter that converts set/change/remove attribute changes from the model to the view.
+ * Also can be used to convert selection attributes. In that case, an empty attribute element will be created and the
+ * selection will be put inside it.
  *
  * Attributes from model are converted to a view element that will be wrapping those view nodes that are bound to
  * model elements having given attribute. This is useful for attributes like `bold`, which may be set on text nodes in model
@@ -334,7 +338,11 @@ export function wrap( elementCreator ) {
 
 		// Then wrap with the new wrapper.
 		if ( data.attributeNewValue !== null ) {
-			viewWriter.wrap( viewRange, newViewElement );
+			if ( data.item instanceof ModelSelection ) {
+				viewWriter.wrap( conversionApi.viewSelection.getFirstRange(), newViewElement, conversionApi.viewSelection );
+			} else {
+				viewWriter.wrap( viewRange, newViewElement );
+			}
 		}
 	};
 }
@@ -343,6 +351,9 @@ export function wrap( elementCreator ) {
  * Function factory, creates converter that converts text inside marker's range. Converter wraps the text with
  * {@link module:engine/view/attributeelement~AttributeElement} created from provided descriptor.
  * See {link module:engine/conversion/model-to-view-converters~createViewElementFromHighlightDescriptor}.
+ *
+ * Also can be used to convert selection that is inside a marker. In that case, an empty attribute element will be
+ * created and the selection will be put inside it.
  *
  * If the highlight descriptor will not provide `priority` property, `10` will be used.
  *
@@ -357,9 +368,7 @@ export function highlightText( highlightDescriptor ) {
 			return;
 		}
 
-		const modelItem = data.item;
-
-		if ( !modelItem.is( 'textProxy' ) ) {
+		if ( !( data.item instanceof ModelSelection ) && !data.item.is( 'textProxy' ) ) {
 			return;
 		}
 
@@ -369,14 +378,18 @@ export function highlightText( highlightDescriptor ) {
 			return;
 		}
 
-		if ( !consumable.consume( modelItem, evt.name ) ) {
+		if ( !consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
 		const viewElement = createViewElementFromHighlightDescriptor( descriptor );
-		const viewRange = conversionApi.mapper.toViewRange( data.range );
 
-		viewWriter.wrap( viewRange, viewElement );
+		if ( data.item instanceof ModelSelection ) {
+			viewWriter.wrap( conversionApi.viewSelection.getFirstRange(), viewElement, conversionApi.viewSelection );
+		} else {
+			const viewRange = conversionApi.mapper.toViewRange( data.range );
+			viewWriter.wrap( viewRange, viewElement );
+		}
 	};
 }
 
@@ -403,9 +416,7 @@ export function highlightElement( highlightDescriptor ) {
 			return;
 		}
 
-		const modelItem = data.item;
-
-		if ( !modelItem.is( 'element' ) ) {
+		if ( !( data.item instanceof ModelElement ) ) {
 			return;
 		}
 
@@ -415,18 +426,18 @@ export function highlightElement( highlightDescriptor ) {
 			return;
 		}
 
-		if ( !consumable.test( modelItem, evt.name ) ) {
+		if ( !consumable.test( data.item, evt.name ) ) {
 			return;
 		}
 
-		const viewElement = conversionApi.mapper.toViewElement( modelItem );
+		const viewElement = conversionApi.mapper.toViewElement( data.item );
 
 		if ( viewElement && viewElement.getCustomProperty( 'addHighlight' ) ) {
 			// Consume element itself.
 			consumable.consume( data.item, evt.name );
 
 			// Consume all children nodes.
-			for ( const value of ModelRange.createIn( modelItem ) ) {
+			for ( const value of ModelRange.createIn( data.item ) ) {
 				consumable.consume( value.item, evt.name );
 			}
 
