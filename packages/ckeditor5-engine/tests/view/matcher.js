@@ -126,6 +126,34 @@ describe( 'Matcher', () => {
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
+		it( 'should match if element has given attribute', () => {
+			const pattern = {
+				attribute: {
+					title: true
+				}
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( 'p', { title: 'foobar'	} );
+			const el2 = new Element( 'p', { title: '' } );
+			const el3 = new Element( 'p' );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attribute' ).that.is.an( 'array' );
+			expect( result.match.attribute[ 0 ] ).equal( 'title' );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attribute' ).that.is.an( 'array' );
+			expect( result.match.attribute[ 0 ] ).equal( 'title' );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
 		it( 'should match element class names', () => {
 			const pattern = { class: 'foobar' };
 			const matcher = new Matcher( pattern );
