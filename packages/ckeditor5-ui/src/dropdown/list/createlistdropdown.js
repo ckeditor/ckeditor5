@@ -7,12 +7,10 @@
  * @module ui/dropdown/list/createlistdropdown
  */
 
-import ListView from '../../list/listview';
-import ListItemView from '../../list/listitemview';
-
 import {
-	closeDropdownOnBlur, closeDropdownOnExecute, createButtonForDropdown, createDropdownView,
-	focusDropdownContentsOnArrows
+	addDefaultBehavior,
+	addListViewToDropdown,
+	createSingleButtonDropdown
 } from '../utils';
 
 /**
@@ -54,28 +52,10 @@ import {
  * @returns {module:ui/dropdown/list/listdropdownview~ListDropdownView} The list dropdown view instance.
  */
 export default function createListDropdown( model, locale ) {
-	const buttonView = createButtonForDropdown( model, locale );
-	const dropdownView = createDropdownView( model, buttonView, locale );
+	const dropdownView = createSingleButtonDropdown( model, locale );
 
-	const listView = dropdownView.listView = new ListView( locale );
-
-	listView.items.bindTo( model.items ).using( itemModel => {
-		const item = new ListItemView( locale );
-
-		// Bind all attributes of the model to the item view.
-		item.bind( ...Object.keys( itemModel ) ).to( itemModel );
-
-		return item;
-	} );
-
-	dropdownView.panelView.children.add( listView );
-
-	// TODO: better:
-	dropdownView.buttonView.delegate( 'execute' ).to( dropdownView.buttonView, 'select' );
-
-	closeDropdownOnBlur( dropdownView );
-	closeDropdownOnExecute( dropdownView, listView.items );
-	focusDropdownContentsOnArrows( dropdownView, listView );
+	addListViewToDropdown( dropdownView, model, locale );
+	addDefaultBehavior( dropdownView );
 
 	return dropdownView;
 }

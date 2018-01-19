@@ -65,4 +65,18 @@ export default class DropdownPanelView extends View {
 			}
 		} );
 	}
+
+	focus() {
+		if ( this.children.length ) {
+			this.children.first.focus();
+		}
+	}
+
+	// TODO: child might not have focusLast
+	// TODO: maybe adding toolbar/list should somewhat intercept those?
+	focusLast() {
+		if ( this.children.length ) {
+			this.children.last.focusLast();
+		}
+	}
 }

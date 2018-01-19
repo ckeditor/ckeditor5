@@ -36,22 +36,6 @@
  */
 
 /**
- * Disables automatic button icon binding. If set to true dropdown's button {@link #icon} will be set to {@link #defaultIcon}.
- *
- * @observable
- * @member {Boolean} #staticIcon=false
- */
-
-/**
- * Defines default icon which is used when no button is active.
- *
- * Also see {@link #icon}.
- *
- * @observable
- * @member {String} #defaultIcon
- */
-
-/**
  * Button dropdown icon is set from inner button views.
  *
  * Also see {@link #defaultIcon} and {@link #staticIcon}.

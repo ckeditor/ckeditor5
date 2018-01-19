@@ -170,50 +170,5 @@ describe( 'createButtonDropdown', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 		} );
-
-		describe( 'icon', () => {
-			it( 'should be set to first button\'s icon if no defaultIcon defined', () => {
-				expect( view.buttonView.icon ).to.equal( view.toolbarView.items.get( 0 ).icon );
-			} );
-
-			it( 'should be bound to first button that is on', () => {
-				view.toolbarView.items.get( 1 ).isOn = true;
-
-				expect( view.buttonView.icon ).to.equal( view.toolbarView.items.get( 1 ).icon );
-
-				view.toolbarView.items.get( 0 ).isOn = true;
-				view.toolbarView.items.get( 1 ).isOn = false;
-
-				expect( view.buttonView.icon ).to.equal( view.toolbarView.items.get( 0 ).icon );
-			} );
-
-			it( 'should be set to defaultIcon if defined and on button is on', () => {
-				const model = new Model( {
-					defaultIcon: '<svg>baz</svg>',
-					buttons
-				} );
-
-				view = createButtonDropdown( model, locale );
-				view.render();
-
-				expect( view.buttonView.icon ).to.equal( '<svg>baz</svg>' );
-			} );
-
-			it( 'should not bind icons if staticIcon is set', () => {
-				const model = new Model( {
-					defaultIcon: '<svg>baz</svg>',
-					staticIcon: true,
-					buttons
-				} );
-
-				view = createButtonDropdown( model, locale );
-				view.render();
-
-				expect( view.buttonView.icon ).to.equal( '<svg>baz</svg>' );
-				view.toolbarView.items.get( 1 ).isOn = true;
-
-				expect( view.buttonView.icon ).to.equal( '<svg>baz</svg>' );
-			} );
-		} );
 	} );
 } );

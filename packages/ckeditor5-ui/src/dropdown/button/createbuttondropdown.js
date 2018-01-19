@@ -7,13 +7,10 @@
  * @module ui/dropdown/button/createbuttondropdown
  */
 
-import ToolbarView from '../../toolbar/toolbarview';
 import {
-	closeDropdownOnBlur,
-	closeDropdownOnExecute,
-	createButtonForDropdown,
-	createDropdownView,
-	focusDropdownContentsOnArrows
+	addDefaultBehavior,
+	addToolbarToDropdown,
+	createSingleButtonDropdown
 } from '../utils';
 
 import '../../../theme/components/dropdown/buttondropdown.css';
@@ -52,71 +49,10 @@ import '../../../theme/components/dropdown/buttondropdown.css';
  * @returns {module:ui/dropdown/dropdownview~DropdownView}
  */
 export default function createButtonDropdown( model, locale ) {
-	// Make disabled when all buttons are disabled
-	model.bind( 'isEnabled' ).to(
-		// Bind to #isEnabled of each command...
-		...getBindingTargets( model.buttons, 'isEnabled' ),
-		// ...and set it true if any command #isEnabled is true.
-		( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
-	);
+	const dropdownView = createSingleButtonDropdown( model, locale );
 
-	// If defined `staticIcon` use the `defaultIcon` without binding it to active a button.
-	if ( model.staticIcon ) {
-		model.bind( 'icon' ).to( model, 'defaultIcon' );
-	} else {
-		// TODO: move to alignment
-		// Make dropdown icon as any active button.
-		model.bind( 'icon' ).to(
-			// Bind to #isOn of each button...
-			...getBindingTargets( model.buttons, 'isOn' ),
-			// ...and chose the title of the first one which #isOn is true.
-			( ...areActive ) => {
-				const index = areActive.findIndex( value => value );
-
-				// If none of the commands is active, display either defaultIcon or first button icon.
-				if ( index < 0 && model.defaultIcon ) {
-					return model.defaultIcon;
-				}
-
-				return model.buttons[ index < 0 ? 0 : index ].icon;
-			}
-		);
-	}
-	const buttonView = createButtonForDropdown( model, locale );
-	const dropdownView = createDropdownView( model, buttonView, locale );
-
-	const toolbarView = dropdownView.toolbarView = new ToolbarView();
-
-	toolbarView.bind( 'isVertical', 'className' ).to( model, 'isVertical', 'toolbarClassName' );
-
-	model.buttons.map( view => toolbarView.items.add( view ) );
-
-	// TODO: better:
-	dropdownView.buttonView.delegate( 'execute' ).to( dropdownView.buttonView, 'select' );
-
-	dropdownView.extendTemplate( {
-		attributes: {
-			class: [ 'ck-buttondropdown' ]
-		}
-	} );
-
-	dropdownView.panelView.children.add( toolbarView );
-
-	closeDropdownOnBlur( dropdownView );
-	closeDropdownOnExecute( dropdownView, toolbarView.items );
-	focusDropdownContentsOnArrows( dropdownView, toolbarView );
+	addToolbarToDropdown( dropdownView, model );
+	addDefaultBehavior( dropdownView );
 
 	return dropdownView;
-}
-
-// Returns an array of binding components for
-// {@link module:utils/observablemixin~Observable#bind} from a set of iterable
-// buttons.
-//
-// @private
-// @param {Iterable.<module:ui/button/buttonview~ButtonView>} buttons
-// @param {String} attribute
-// @returns {Array.<String>}
-function getBindingTargets( buttons, attribute ) {
-	return Array.prototype.concat( ...buttons.map( button => [ button, attribute ] ) );
 }
