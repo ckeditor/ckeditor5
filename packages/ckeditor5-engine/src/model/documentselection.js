@@ -351,15 +351,24 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * Removes all attributes from the selection.
+	 *
+	 * If there were any attributes in selection, fires the {@link #event:change} event with
+	 * removed attributes' keys.
+	 *
 	 * @protected
-	*/
+	 * @fires change:attribute
+	 */
 	_clearAttributes() {
 		this._selection.clearAttributes();
 	}
 
 	/**
+	 * Returns an iterable that iterates through all selection attributes stored in current selection's parent.
+	 *
 	 * @protected
-	*/
+	 * @returns {Iterable.<*>}
+	 */
 	_getStoredAttributes() {
 		return this._selection._getStoredAttributes();
 	}

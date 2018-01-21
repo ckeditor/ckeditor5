@@ -852,14 +852,30 @@ export default class Writer {
 	}
 
 	/**
-	 * Sets attribute on the selection. If attribute with the same key already is set, it's value is overwritten.
+	 * Sets attribute(s) on the selection. If attribute with the same key already is set, it's value is overwritten.
 	 *
-	 * @param {String} key Key of the attribute to set.
-	 * @param {*} value Attribute value.
+	 * @param {String|Object|Iterable.<*>} keyOrObjectOrIterable Key of the attribute to set
+	 * or object / iterable of key - value attribute pairs.
+	 * @param {*} [value] Attribute value.
 	 */
-	setSelectionAttribute( key, value ) {
+	setSelectionAttribute( keyOrObjectOrIterable, value ) {
 		this._assertWriterUsedCorrectly();
 
+		if ( typeof keyOrObjectOrIterable === 'string' ) {
+			this._setSelectionAttribute( keyOrObjectOrIterable, value );
+		} else {
+			for ( const [ key, value ] of toMap( keyOrObjectOrIterable ) ) {
+				this._setSelectionAttribute( key, value );
+			}
+		}
+	}
+
+	/**
+	 * @private
+	 * @param {String} key
+	 * @param {*} value
+	 */
+	_setSelectionAttribute( key, value ) {
 		const selection = this.model.document.selection;
 
 		// Store attribute in parent element if the selection is collapsed in an empty node.
@@ -875,11 +891,25 @@ export default class Writer {
 	/**
 	 * Removes an attribute with given key from the selection.
 	 *
-	 * @param {String} key Key of the attribute to remove.
+	 * @param {String|Iterable.<String>} keyOrIterableOfKeys Key of the attribute to remove.
 	 */
-	removeSelectionAttribute( key ) {
+	removeSelectionAttribute( keyOrIterableOfKeys ) {
 		this._assertWriterUsedCorrectly();
 
+		if ( typeof keyOrIterableOfKeys === 'string' ) {
+			this._removeSelectionAttribute( keyOrIterableOfKeys );
+		} else {
+			for ( const key of keyOrIterableOfKeys ) {
+				this._removeSelectionAttribute( key );
+			}
+		}
+	}
+
+	/**
+	 * @private
+	 * @param {String} key Key of the attribute to remove.
+	 */
+	_removeSelectionAttribute( key ) {
 		const selection = this.model.document.selection;
 
 		// Remove stored attribute from parent element if the selection is collapsed in an empty node.
