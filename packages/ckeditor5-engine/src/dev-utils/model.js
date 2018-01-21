@@ -116,7 +116,7 @@ export function setData( model, data, options = {} ) {
 
 		// Clean up previous document selection.
 		writer.setSelection( null );
-		writer.clearSelectionAttributes();
+		writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
 
 		// Update document selection if specified.
 		if ( selection ) {

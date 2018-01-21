@@ -336,7 +336,7 @@ describe( 'model test utils', () => {
 					writer.setSelection( root, 'end' );
 
 					// Needed due to https://github.com/ckeditor/ckeditor5-engine/issues/320.
-					writer.clearSelectionAttributes();
+					writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
 				} );
 
 				expect( stringify( root, selection ) ).to.equal(

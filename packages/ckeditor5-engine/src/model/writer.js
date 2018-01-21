@@ -922,25 +922,6 @@ export default class Writer {
 		selection._removeAttribute( key );
 	}
 
-	clearSelectionAttributes() {
-		this._assertWriterUsageCorrectness();
-
-		const selection = this.model.document.selection;
-
-		// Sets selection attributes stored in current selection's parent node to given set of attributes.
-		if ( selection.isCollapsed && selection.anchor.parent.isEmpty ) {
-			const selectionParent = selection.anchor.parent;
-
-			for ( const [ oldKey ] of selection._getStoredAttributes() ) {
-				const storeKey = DocumentSelection._getStoreAttributeKey( oldKey );
-
-				this.removeAttribute( storeKey, selectionParent );
-			}
-		}
-
-		selection._clearAttributes();
-	}
-
 	/**
 	 * Throws `writer-detached-writer-tries-to-modify-model` error when the writer is used outside of the `change()` block.
 	 *

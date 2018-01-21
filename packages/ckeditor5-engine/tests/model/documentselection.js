@@ -739,23 +739,6 @@ describe( 'DocumentSelection', () => {
 			} );
 		} );
 
-		describe( 'clearAttributes()', () => {
-			it( 'should remove all stored attributes if the selection is in empty node', () => {
-				selection._setTo( [ rangeInEmptyP ] );
-				selection._setAttribute( 'foo', 'bar' );
-				selection._setAttribute( 'abc', 'xyz' );
-
-				selection._clearAttributes();
-
-				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
-				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
-
-				// TODO
-				// expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
-				// expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
-			} );
-		} );
-
 		describe( '_getStoredAttributes()', () => {
 			it( 'should return no values if there are no ranges in selection', () => {
 				const values = Array.from( selection._getStoredAttributes() );
