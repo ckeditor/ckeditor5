@@ -203,7 +203,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 
 	modelToView.on( 'insert:$text', insertText() );
 	modelToView.on( 'attribute', wrap( ( value, data ) => {
-		if ( data.item instanceof ModelSelection || data.item.is( 'textProxy' ) ) {
+		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection || data.item.is( 'textProxy' ) ) {
 			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: stringifyAttributeValue( value ) } );
 		}
 	} ) );

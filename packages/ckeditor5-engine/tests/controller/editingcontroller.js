@@ -372,7 +372,7 @@ describe( 'EditingController', () => {
 				writer.insert( modelData, modelRoot );
 				p1 = modelRoot.getChild( 0 );
 
-				model.document.selection.addRange( ModelRange.createFromParentsAndOffsets( p1, 0, p1, 0 ) );
+				writer.setSelection( ModelRange.createFromParentsAndOffsets( p1, 0, p1, 0 ) );
 			} );
 
 			mcd = editing.modelToView;

@@ -3,11 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-<<<<<<< HEAD
-import ViewRange from '../view/range';
-=======
-import ViewElement from '../view/element';
->>>>>>> Simplified setTo calls and used Writer API instead of DocumentSelection.
 import viewWriter from '../view/writer';
 
 /**
