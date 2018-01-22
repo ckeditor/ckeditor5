@@ -198,15 +198,10 @@ export default class HighlightUI extends Plugin {
 
 			const dropdownView = createSplitButtonDropdown( model, locale );
 
-			bindIconStyle( dropdownView, model );
-
-			dropdownView.buttonView.on( 'execute', () => {
-				editor.execute( 'highlight', { value: model.commandValue } );
-				// TODO: execute focus should be defined elsewhere
-				editor.editing.view.focus();
-			} );
-
 			addToolbarToDropdown( dropdownView, model );
+			addDefaultBehavior( dropdownView );
+
+			bindIconStyleToColor( dropdownView, model );
 
 			// TODO: fix classes in dropdown
 			dropdownView.extendTemplate( {
@@ -214,8 +209,6 @@ export default class HighlightUI extends Plugin {
 					class: [ 'ck-highlight_button', 'ck-highlight-dropdown' ]
 				}
 			} );
-
-			addDefaultBehavior( dropdownView );
 
 			// Returns active highlighter option depending on current command value.
 			// If current is not set or it is the same as last execute this method will return the option key (like icon or color)
@@ -232,7 +225,7 @@ export default class HighlightUI extends Plugin {
 }
 
 // Extends split button icon style to reflect last used button style.
-function bindIconStyle( dropdownView, model ) {
+function bindIconStyleToColor( dropdownView, model ) {
 	const iconView = dropdownView.buttonView.actionView.iconView;
 
 	const bind = iconView.bindTemplate;
