@@ -42,7 +42,7 @@ describe( 'view test utils', () => {
 				const root = createAttachedRoot( viewDocument, element );
 				root.appendChildren( new Element( 'p' ) );
 
-				expect( getData( viewDocument, options ) ).to.equal( '<p></p>' );
+				expect( getData( view, options ) ).to.equal( '<p></p>' );
 				sinon.assert.calledOnce( stringifySpy );
 				expect( stringifySpy.firstCall.args[ 0 ] ).to.equal( root );
 				expect( stringifySpy.firstCall.args[ 1 ] ).to.equal( null );
@@ -65,7 +65,7 @@ describe( 'view test utils', () => {
 
 				viewDocument.selection.addRange( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
 
-				expect( getData( viewDocument, options ) ).to.equal( '[<p></p>]' );
+				expect( getData( view, options ) ).to.equal( '[<p></p>]' );
 				sinon.assert.calledOnce( stringifySpy );
 				expect( stringifySpy.firstCall.args[ 0 ] ).to.equal( root );
 				expect( stringifySpy.firstCall.args[ 1 ] ).to.equal( viewDocument.selection );
@@ -79,8 +79,8 @@ describe( 'view test utils', () => {
 
 			it( 'should throw an error when passing invalid document', () => {
 				expect( () => {
-					getData( { invalid: 'document' } );
-				} ).to.throw( TypeError, 'Document needs to be an instance of module:engine/view/document~Document.' );
+					getData( { invalid: 'view' } );
+				} ).to.throw( TypeError, 'View needs to be an instance of module:engine/view/view~View.' );
 			} );
 		} );
 
@@ -92,9 +92,9 @@ describe( 'view test utils', () => {
 				const parseSpy = sandbox.spy( setData, '_parse' );
 
 				createAttachedRoot( viewDocument, document.createElement( 'div' ) );
-				setData( viewDocument, data );
+				setData( view, data );
 
-				expect( getData( viewDocument ) ).to.equal( 'foobar<b>baz</b>' );
+				expect( getData( view ) ).to.equal( 'foobar<b>baz</b>' );
 				sinon.assert.calledOnce( parseSpy );
 				const args = parseSpy.firstCall.args;
 				expect( args[ 0 ] ).to.equal( data );
@@ -111,9 +111,9 @@ describe( 'view test utils', () => {
 				const parseSpy = sandbox.spy( setData, '_parse' );
 
 				createAttachedRoot( viewDocument, document.createElement( 'div' ) );
-				setData( viewDocument, data );
+				setData( view, data );
 
-				expect( getData( viewDocument ) ).to.equal( '[<b>baz</b>]' );
+				expect( getData( view ) ).to.equal( '[<b>baz</b>]' );
 				const args = parseSpy.firstCall.args;
 				expect( args[ 0 ] ).to.equal( data );
 				expect( args[ 1 ] ).to.be.an( 'object' );
@@ -124,8 +124,8 @@ describe( 'view test utils', () => {
 
 			it( 'should throw an error when passing invalid document', () => {
 				expect( () => {
-					setData( { invalid: 'document' } );
-				} ).to.throw( TypeError, 'Document needs to be an instance of module:engine/view/document~Document.' );
+					setData( { invalid: 'view' } );
+				} ).to.throw( TypeError, 'View needs to be an instance of module:engine/view/view~View.' );
 			} );
 		} );
 	} );

@@ -11,7 +11,7 @@
  * Collection of methods for manipulating {@link module:engine/view/view view} for testing purposes.
  */
 
-import Document from '../view/document';
+import View from '../view/view';
 import ViewDocumentFragment from '../view/documentfragment';
 import XmlDataProcessor from '../dataprocessor/xmldataprocessor';
 import ViewElement from '../view/element';
@@ -37,7 +37,7 @@ const allowedTypes = {
 /**
  * Writes the contents of the {@link module:engine/view/document~Document Document} to an HTML-like string.
  *
- * @param {module:engine/view/document~Document} document
+ * @param {module:engine/view/view~View} view
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
  * be not included in returned string.
@@ -49,11 +49,12 @@ const allowedTypes = {
  * (`<span view-priority="12">`, `<b view-priority="10">`).
  * @returns {String} The stringified data.
  */
-export function getData( document, options = {} ) {
-	if ( !( document instanceof Document ) ) {
-		throw new TypeError( 'Document needs to be an instance of module:engine/view/document~Document.' );
+export function getData( view, options = {} ) {
+	if ( !( view instanceof View ) ) {
+		throw new TypeError( 'View needs to be an instance of module:engine/view/view~View.' );
 	}
 
+	const document = view.document;
 	const withoutSelection = !!options.withoutSelection;
 	const rootName = options.rootName || 'main';
 	const root = document.getRoot( rootName );
@@ -74,17 +75,18 @@ getData._stringify = stringify;
 /**
  * Sets the contents of the {@link module:engine/view/document~Document Document} provided as HTML-like string.
  *
- * @param {module:engine/view/document~Document} document
+ * @param {module:engine/view/view~View} view
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
  * @param {String} [options.rootName='main'] Root name where parsed data will be stored. If not provided,
  * default `main` name will be used.
  */
-export function setData( document, data, options = {} ) {
-	if ( !( document instanceof Document ) ) {
-		throw new TypeError( 'Document needs to be an instance of module:engine/view/document~Document.' );
+export function setData( view, data, options = {} ) {
+	if ( !( view instanceof View ) ) {
+		throw new TypeError( 'View needs to be an instance of module:engine/view/view~View.' );
 	}
 
+	const document = view.document;
 	const rootName = options.rootName || 'main';
 	const root = document.getRoot( rootName );
 	const result = setData._parse( data, { rootElement: root } );

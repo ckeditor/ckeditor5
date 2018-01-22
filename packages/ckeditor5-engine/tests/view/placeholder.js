@@ -30,7 +30,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should attach proper CSS class and data attribute', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( element, 'foo bar baz' );
@@ -40,7 +40,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'if element has children set only data attribute', () => {
-			setData( viewDocument, '<div>first div</div><div>{another div}</div>' );
+			setData( view, '<div>first div</div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( element, 'foo bar baz' );
@@ -50,7 +50,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'if element has only ui elements, set CSS class and data attribute', () => {
-			setData( viewDocument, '<div><ui:span></ui:span><ui:span></ui:span></div><div>{another div}</div>' );
+			setData( view, '<div><ui:span></ui:span><ui:span></ui:span></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( element, 'foo bar baz' );
@@ -60,7 +60,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'if element has selection inside set only data attribute', () => {
-			setData( viewDocument, '<div>[]</div><div>another div</div>' );
+			setData( view, '<div>[]</div><div>another div</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( element, 'foo bar baz' );
@@ -70,7 +70,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'if element has selection inside but document is blurred should contain placeholder CSS class', () => {
-			setData( viewDocument, '<div>[]</div><div>another div</div>' );
+			setData( view, '<div>[]</div><div>another div</div>' );
 			const element = viewRoot.getChild( 0 );
 			viewDocument.isFocused = false;
 
@@ -81,7 +81,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'use check function if one is provided', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 			const spy = sinon.spy( () => false );
 
@@ -93,7 +93,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should remove CSS class if selection is moved inside', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( element, 'foo bar baz' );
@@ -109,7 +109,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should change placeholder settings when called twice', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( element, 'foo bar baz' );
@@ -120,24 +120,24 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should not throw when element is no longer in document', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( element, 'foo bar baz' );
-			setData( viewDocument, '<p>paragraph</p>' );
+			setData( view, '<p>paragraph</p>' );
 
 			view.render();
 		} );
 
 		it( 'should allow to add placeholder to elements from different documents', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			const secondView = new View();
 			const secondDocument = secondView.document;
 			secondDocument.isFocused = true;
 			const secondRoot = createViewRoot( secondDocument );
-			setData( secondDocument, '<div></div><div>{another div}</div>' );
+			setData( secondView, '<div></div><div>{another div}</div>' );
 			const secondElement = secondRoot.getChild( 0 );
 
 			attachPlaceholder( element, 'first placeholder' );
@@ -168,7 +168,7 @@ describe( 'placeholder', () => {
 
 	describe( 'detachPlaceholder', () => {
 		it( 'should remove placeholder from element', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( element, 'foo bar baz' );

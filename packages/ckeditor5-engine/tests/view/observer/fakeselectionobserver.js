@@ -191,7 +191,7 @@ describe( 'FakeSelectionObserver', () => {
 				resolve();
 			} );
 
-			setData( viewDocument, initialData );
+			setData( view, initialData );
 			changeFakeSelectionPressing( keyCode );
 		} );
 	}

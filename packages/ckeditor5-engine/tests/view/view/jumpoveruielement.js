@@ -290,42 +290,42 @@ describe( 'Document', () => {
 			} );
 
 			it( 'do nothing if selection is not directly before ui element', () => {
-				setViewData( viewDocument, '<container:p>fo{}o<ui:span></ui:span>bar</container:p>' );
+				setViewData( view, '<container:p>fo{}o<ui:span></ui:span>bar</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 2 );
 			} );
 
 			it( 'do nothing if selection is in attribute element but not before ui element', () => {
-				setViewData( viewDocument, '<container:p><attribute:b>foo{}</attribute:b>bar</container:p>' );
+				setViewData( view, '<container:p><attribute:b>foo{}</attribute:b>bar</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 3 );
 			} );
 
 			it( 'do nothing if selection is before non-empty attribute element', () => {
-				setViewData( viewDocument, '<container:p>fo{}<attribute:b>o</attribute:b><ui:span></ui:span>bar</container:p>' );
+				setViewData( view, '<container:p>fo{}<attribute:b>o</attribute:b><ui:span></ui:span>bar</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'fo', 2 );
 			} );
 
 			it( 'do nothing if selection is before container element - case 1', () => {
-				setViewData( viewDocument, '<container:p>foo{}</container:p><ui:span></ui:span><container:div>bar</container:div>' );
+				setViewData( view, '<container:p>foo{}</container:p><ui:span></ui:span><container:div>bar</container:div>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 3 );
 			} );
 
 			it( 'do nothing if selection is before container element - case 2', () => {
-				setViewData( viewDocument, '<container:div>foo{}<container:p></container:p><ui:span></ui:span></container:div>' );
+				setViewData( view, '<container:div>foo{}<container:p></container:p><ui:span></ui:span></container:div>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 3 );
 			} );
 
 			it( 'do nothing if selection is at the end of last container element', () => {
-				setViewData( viewDocument, '<container:p>foo{}</container:p>' );
+				setViewData( view, '<container:p>foo{}</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 3 );
@@ -334,14 +334,14 @@ describe( 'Document', () => {
 
 		describe( 'non-collapsed selection', () => {
 			it( 'should do nothing', () => {
-				setViewData( viewDocument, '<container:p>f{oo}<ui:span></ui:span>bar</container:p>' );
+				setViewData( view, '<container:p>f{oo}<ui:span></ui:span>bar</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 1, 'foo', 3 );
 			} );
 
 			it( 'should do nothing if selection is not before ui element - shift key pressed', () => {
-				setViewData( viewDocument, '<container:p>f{o}o<ui:span></ui:span>bar</container:p>' );
+				setViewData( view, '<container:p>f{o}o<ui:span></ui:span>bar</container:p>' );
 				renderAndFireKeydownEvent( { shiftKey: true } );
 
 				check( 'foo', 1, 'foo', 2 );

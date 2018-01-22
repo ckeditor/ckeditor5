@@ -122,11 +122,11 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should convert insertion', () => {
-			expect( getViewData( editing.view.document ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
+			expect( getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert split', () => {
-			expect( getViewData( editing.view.document ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
+			expect( getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
 
 			model.change( writer => {
 				writer.split( model.document.selection.getFirstPosition() );
@@ -136,17 +136,17 @@ describe( 'EditingController', () => {
 				] );
 			} );
 
-			expect( getViewData( editing.view.document ) ).to.equal( '<p>f</p><p>{}oo</p><p></p><p>bar</p>' );
+			expect( getViewData( editing.view ) ).to.equal( '<p>f</p><p>{}oo</p><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert rename', () => {
-			expect( getViewData( editing.view.document ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
+			expect( getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
 
 			model.change( writer => {
 				writer.rename( modelRoot.getChild( 0 ), 'div' );
 			} );
 
-			expect( getViewData( editing.view.document ) ).to.equal( '<div>f{}oo</div><p></p><p>bar</p>' );
+			expect( getViewData( editing.view ) ).to.equal( '<div>f{}oo</div><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert delete', () => {
@@ -160,7 +160,7 @@ describe( 'EditingController', () => {
 				] );
 			} );
 
-			expect( getViewData( editing.view.document ) ).to.equal( '<p>f{}o</p><p></p><p>bar</p>' );
+			expect( getViewData( editing.view ) ).to.equal( '<p>f{}o</p><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert selection from view to model', done => {
@@ -195,7 +195,7 @@ describe( 'EditingController', () => {
 				] );
 			} );
 
-			expect( getViewData( editing.view.document ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
+			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
 		} );
 
 		it( 'should convert not collapsed selection', () => {
@@ -205,7 +205,7 @@ describe( 'EditingController', () => {
 				] );
 			} );
 
-			expect( getViewData( editing.view.document ) ).to.equal( '<p>foo</p><p></p><p>b{a}r</p>' );
+			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{a}r</p>' );
 		} );
 
 		it( 'should clear previous selection', () => {
@@ -215,7 +215,7 @@ describe( 'EditingController', () => {
 				] );
 			} );
 
-			expect( getViewData( editing.view.document ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
+			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
 
 			model.change( () => {
 				model.document.selection.setRanges( [
@@ -223,7 +223,7 @@ describe( 'EditingController', () => {
 				] );
 			} );
 
-			expect( getViewData( editing.view.document ) ).to.equal( '<p>foo</p><p></p><p>ba{}r</p>' );
+			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>ba{}r</p>' );
 		} );
 
 		it( 'should convert adding marker', () => {
@@ -233,7 +233,7 @@ describe( 'EditingController', () => {
 				model.markers.set( 'marker', range );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
+			expect( getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>f<span>oo</span></p><p></p><p><span>ba</span>r</p>' );
 		} );
 
@@ -248,7 +248,7 @@ describe( 'EditingController', () => {
 				model.markers.remove( 'marker' );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
+			expect( getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>foo</p><p></p><p>bar</p>' );
 		} );
 
@@ -265,7 +265,7 @@ describe( 'EditingController', () => {
 				model.markers.set( 'marker', range2 );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
+			expect( getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p><span>fo</span>o</p><p></p><p>bar</p>' );
 		} );
 
@@ -280,7 +280,7 @@ describe( 'EditingController', () => {
 				writer.insertText( 'xyz', new ModelPosition( modelRoot, [ 1, 0 ] ) );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
+			expect( getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>f<span>oo</span></p><p><span>xyz</span></p><p><span>ba</span>r</p>' );
 		} );
 
@@ -298,7 +298,7 @@ describe( 'EditingController', () => {
 				);
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
+			expect( getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>f<span>oor</span></p><p></p><p><span>ba</span></p>' );
 		} );
 
@@ -316,7 +316,7 @@ describe( 'EditingController', () => {
 				);
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
+			expect( getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>f</p><p></p><p><span>ba</span>roo</p>' );
 		} );
 
@@ -334,7 +334,7 @@ describe( 'EditingController', () => {
 				);
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) )
+			expect( getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p></p><p>f<span>oo</span></p><p>bar</p>' );
 		} );
 	} );
@@ -389,14 +389,14 @@ describe( 'EditingController', () => {
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
 			model.on( 'applyOperation', () => {
 				expect( mcd.convertMarkerRemove.calledOnce ).to.be.true;
-				expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
+				expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
 			}, { priority: 'high' } );
 
 			model.change( writer => {
 				writer.insertText( 'a', p1, 0 );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>af<span>o</span>o</p><p>bar</p>' );
+			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>af<span>o</span>o</p><p>bar</p>' );
 		} );
 
 		it( 'should remove marker from view if it will be affected by remove operation', () => {
@@ -407,14 +407,14 @@ describe( 'EditingController', () => {
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
 			model.on( 'applyOperation', () => {
 				expect( mcd.convertMarkerRemove.calledOnce ).to.be.true;
-				expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
+				expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
 			}, { priority: 'high' } );
 
 			model.change( writer => {
 				writer.remove( ModelRange.createFromParentsAndOffsets( p1, 0, p1, 1 ) );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p><span>o</span>o</p><p>bar</p>' );
+			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p><span>o</span>o</p><p>bar</p>' );
 		} );
 
 		it( 'should remove marker from view if it will be affected by move operation', () => {
@@ -425,7 +425,7 @@ describe( 'EditingController', () => {
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
 			model.on( 'applyOperation', () => {
 				expect( mcd.convertMarkerRemove.calledOnce ).to.be.true;
-				expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
+				expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
 			}, { priority: 'high' } );
 
 			model.change( writer => {
@@ -434,7 +434,7 @@ describe( 'EditingController', () => {
 				writer.move( ModelRange.createFromParentsAndOffsets( p2, 0, p2, 2 ), p1, 0 );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>baf<span>o</span>o</p><p>r</p>' );
+			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>baf<span>o</span>o</p><p>r</p>' );
 		} );
 
 		it( 'should remove marker from view if it will be affected by rename operation', () => {
@@ -445,14 +445,14 @@ describe( 'EditingController', () => {
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
 			model.on( 'applyOperation', () => {
 				expect( mcd.convertMarkerRemove.calledOnce ).to.be.true;
-				expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
+				expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
 			}, { priority: 'high' } );
 
 			model.change( writer => {
 				writer.rename( p1, 'div' );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<div><span>foo</span></div><p>bar</p>' );
+			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<div><span>foo</span></div><p>bar</p>' );
 		} );
 
 		it( 'should remove marker from view if it will be affected by marker operation', () => {
@@ -463,7 +463,7 @@ describe( 'EditingController', () => {
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
 			model.on( 'applyOperation', () => {
 				expect( mcd.convertMarkerRemove.calledOnce ).to.be.true;
-				expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
+				expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
 			}, { priority: 'high' } );
 
 			model.change( writer => {
@@ -472,7 +472,7 @@ describe( 'EditingController', () => {
 				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p2, 1, p2, 2 ) );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>b<span>a</span>r</p>' );
+			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>b<span>a</span>r</p>' );
 		} );
 
 		it( 'should remove marker from view if it is removed through marker collection', () => {
@@ -483,14 +483,14 @@ describe( 'EditingController', () => {
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
 			model.markers.on( 'remove:marker', () => {
 				expect( mcd.convertMarkerRemove.calledOnce ).to.be.true;
-				expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
+				expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
 			}, { priority: 'low' } );
 
 			model.change( () => {
 				model.markers.remove( 'marker' );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
+			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 
 		it( 'should not remove marker if applied operation is an attribute operation', () => {
@@ -501,14 +501,14 @@ describe( 'EditingController', () => {
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
 			model.on( 'applyOperation', () => {
 				expect( mcd.convertMarkerRemove.calledOnce ).to.be.false;
-				expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>f<span>o</span>o</p><p>bar</p>' );
+				expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>f<span>o</span>o</p><p>bar</p>' );
 			}, { priority: 'high' } );
 
 			model.change( writer => {
 				writer.setAttribute( 'foo', 'bar', ModelRange.createFromParentsAndOffsets( p1, 0, p1, 2 ) );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>f<span>o</span>o</p><p>bar</p>' );
+			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>f<span>o</span>o</p><p>bar</p>' );
 		} );
 
 		it( 'should not crash if multiple operations affect a marker', () => {
@@ -522,7 +522,7 @@ describe( 'EditingController', () => {
 				writer.insertText( 'a', p1, 0 );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>aaaf<span>o</span>o</p><p>bar</p>' );
+			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>aaaf<span>o</span>o</p><p>bar</p>' );
 		} );
 
 		it( 'should not crash if marker is removed, added and removed #1', () => {
@@ -536,7 +536,7 @@ describe( 'EditingController', () => {
 				writer.insertText( 'a', p1, 0 );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>aafo<span>o</span></p><p>bar</p>' );
+			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>aafo<span>o</span></p><p>bar</p>' );
 		} );
 
 		it( 'should not crash if marker is removed, added and removed #2', () => {
@@ -550,7 +550,7 @@ describe( 'EditingController', () => {
 				writer.removeMarker( 'marker' );
 			} );
 
-			expect( getViewData( editing.view.document, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
+			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 	} );
 

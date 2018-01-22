@@ -1889,7 +1889,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should properly render unwrapped attributes #1', () => {
-			setViewData( viewDoc,
+			setViewData( view,
 				'<container:p>' +
 					'[<attribute:italic>' +
 						'<attribute:strong>f</attribute:strong>' +
@@ -1903,7 +1903,7 @@ describe( 'Renderer', () => {
 
 			// Unwrap italic attribute element.
 			writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
-			expect( getViewData( viewDoc ) ).to.equal( '<p>[<strong>foo</strong>]</p>' );
+			expect( getViewData( view ) ).to.equal( '<p>[<strong>foo</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
 			view.render();
@@ -1914,7 +1914,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should properly render unwrapped attributes #2', () => {
-			setViewData( viewDoc,
+			setViewData( view,
 				'<container:p>' +
 					'[<attribute:italic>' +
 						'<attribute:strong>foo</attribute:strong>' +
@@ -1927,7 +1927,7 @@ describe( 'Renderer', () => {
 			// Unwrap italic attribute element and change text inside.
 			writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
 			viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ).data = 'bar';
-			expect( getViewData( viewDoc ) ).to.equal( '<p>[<strong>bar</strong>]</p>' );
+			expect( getViewData( view ) ).to.equal( '<p>[<strong>bar</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
 			view.render();
@@ -1938,7 +1938,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should properly render if text is changed and element is inserted into same node #1', () => {
-			setViewData( viewDoc,
+			setViewData( view,
 				'<container:p>foo</container:p>'
 			);
 
@@ -1949,7 +1949,7 @@ describe( 'Renderer', () => {
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
 			textNode.data = 'foobar';
 			writer.insert( ViewPosition.createAfter( textNode ), new ViewAttributeElement( 'img' ) );
-			expect( getViewData( viewDoc ) ).to.equal( '<p>foobar<img></img></p>' );
+			expect( getViewData( view ) ).to.equal( '<p>foobar<img></img></p>' );
 
 			// Re-render changes in view to DOM.
 			view.render();
@@ -1960,7 +1960,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should properly render if text is changed and element is inserted into same node #2', () => {
-			setViewData( viewDoc,
+			setViewData( view,
 				'<container:p>foo</container:p>'
 			);
 
@@ -1971,7 +1971,7 @@ describe( 'Renderer', () => {
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
 			textNode.data = 'foobar';
 			writer.insert( ViewPosition.createBefore( textNode ), new ViewAttributeElement( 'img' ) );
-			expect( getViewData( viewDoc ) ).to.equal( '<p><img></img>foobar</p>' );
+			expect( getViewData( view ) ).to.equal( '<p><img></img>foobar</p>' );
 
 			// Re-render changes in view to DOM.
 			view.render();
@@ -1982,7 +1982,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not unbind elements that are removed and reinserted to DOM', () => {
-			setViewData( viewDoc,
+			setViewData( view,
 				'<container:p>' +
 					'<attribute:b></attribute:b>' +
 					'<attribute:i></attribute:i>' +
@@ -1999,7 +1999,7 @@ describe( 'Renderer', () => {
 
 			writer.remove( ViewRange.createOn( firstElement ) );
 			writer.insert( new ViewPosition( container, 2 ), firstElement );
-			expect( getViewData( viewDoc ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
+			expect( getViewData( view ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
 
 			// Re-render changes in view to DOM.
 			view.render();

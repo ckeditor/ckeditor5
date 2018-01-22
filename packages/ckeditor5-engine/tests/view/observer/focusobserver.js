@@ -163,7 +163,7 @@ describe( 'FocusObserver', () => {
 			const selectionChangeSpy = sinon.spy();
 			const renderSpy = sinon.spy();
 
-			setData( viewDocument, '<div contenteditable="true">foo bar</div>' );
+			setData( view, '<div contenteditable="true">foo bar</div>' );
 			view.render();
 
 			viewDocument.on( 'selectionChange', selectionChangeSpy );
@@ -184,7 +184,7 @@ describe( 'FocusObserver', () => {
 			const selectionChangeSpy = sinon.spy();
 			const renderSpy = sinon.spy();
 
-			setData( viewDocument, '<div contenteditable="true">foo bar</div>' );
+			setData( view, '<div contenteditable="true">foo bar</div>' );
 			view.render();
 			const domEditable = domRoot.childNodes[ 0 ];
 

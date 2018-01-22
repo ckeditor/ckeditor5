@@ -30,7 +30,7 @@ describe( 'convertSelectionChange', () => {
 		viewDocument = view.document;
 		viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
-		viewSetData( viewDocument, '<p>foo</p><p>bar</p>' );
+		viewSetData( view, '<p>foo</p><p>bar</p>' );
 
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
@@ -57,7 +57,7 @@ describe( 'convertSelectionChange', () => {
 
 	it( 'should support unicode', () => {
 		modelSetData( model, '<paragraph>நிலைக்கு</paragraph>' );
-		viewSetData( viewDocument, '<p>நிலைக்கு</p>' );
+		viewSetData( view, '<p>நிலைக்கு</p>' );
 
 		// Re-bind elements that were just re-set.
 		mapper.bindElements( modelRoot.getChild( 0 ), viewRoot.getChild( 0 ) );

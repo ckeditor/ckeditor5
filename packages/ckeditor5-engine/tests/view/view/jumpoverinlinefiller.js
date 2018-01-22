@@ -42,7 +42,7 @@ describe( 'View', () => {
 
 	describe( 'jump over inline filler hack', () => {
 		it( 'should jump over inline filler when left arrow is pressed after inline filler', () => {
-			setData( viewDocument, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
+			setData( view, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 			view.render();
 
 			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: view.domRoots.get( 'main' ) } );
@@ -64,7 +64,7 @@ describe( 'View', () => {
 		} );
 
 		it( 'should do nothing when another key is pressed', () => {
-			setData( viewDocument, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
+			setData( view, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 			view.render();
 
 			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: view.domRoots.get( 'main' ) } );
@@ -77,7 +77,7 @@ describe( 'View', () => {
 		} );
 
 		it( 'should do nothing if range is not collapsed', () => {
-			setData( viewDocument, '<container:p>foo<attribute:b>{x}</attribute:b>bar</container:p>' );
+			setData( view, '<container:p>foo<attribute:b>{x}</attribute:b>bar</container:p>' );
 			view.render();
 
 			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: view.domRoots.get( 'main' ) } );
@@ -92,7 +92,7 @@ describe( 'View', () => {
 
 		// See #664
 		// it( 'should do nothing if node does not start with the filler', () => {
-		// 	setData( viewDocument, '<container:p>foo<attribute:b>{}x</attribute:b>bar</container:p>' );
+		// 	setData( view, '<container:p>foo<attribute:b>{}x</attribute:b>bar</container:p>' );
 		// 	viewDocument.render();
 
 		// 	viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: viewDocument.domRoots.get( 'main' ) } );
@@ -105,7 +105,7 @@ describe( 'View', () => {
 		// } );
 
 		it( 'should do nothing if caret is not directly before the filler', () => {
-			setData( viewDocument, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
+			setData( view, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 			view.render();
 
 			// Insert a letter to the <b>: '<container:p>foo<attribute:b>x{}</attribute:b>bar</container:p>'
