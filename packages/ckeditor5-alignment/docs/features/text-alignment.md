@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-text-alignment-source}
 
-The {@link module:alignment/alignment~Alignment} feature enables support for alignments.
+The {@link module:alignment/alignment~Alignment} feature enables support for text alignment.
 
 ## Demo
 
