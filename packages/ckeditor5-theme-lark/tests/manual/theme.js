@@ -13,8 +13,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
-import createButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/button/createbuttondropdown';
+import { addDefaultBehavior, addListViewToDropdown, createSingleButtonDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
@@ -408,7 +407,10 @@ function listDropdown( {
 	items = new Collection( { idProperty: 'label' } )
 } = {} ) {
 	const model = new Model( { label, isEnabled, items, isOn, withText } );
-	const dropdown = createListDropdown( model, {} );
+	const dropdown = createSingleButtonDropdown( model, {} );
+
+	addListViewToDropdown( dropdown, model, {} );
+	addDefaultBehavior( dropdown );
 
 	return dropdown;
 }
