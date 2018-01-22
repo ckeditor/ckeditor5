@@ -9,7 +9,6 @@ import Model from '../../../src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 import createDropdown from '../../../src/dropdown/createdropdown';
-import createListDropdown from '../../../src/dropdown/list/createlistdropdown';
 
 import testUtils from '../../_utils/utils';
 
@@ -18,7 +17,7 @@ import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.sv
 import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import ButtonView from '../../../src/button/buttonview';
 
-import createButtonDropdown from '../../../src/dropdown/button/createbuttondropdown';
+import { addDefaultBehavior, addListViewToDropdown, addToolbarToDropdown, createSingleButtonDropdown } from '../../../src/dropdown/utils';
 
 const ui = testUtils.createTestUIView( {
 	dropdown: '#dropdown',
@@ -59,7 +58,10 @@ function testList() {
 		items: collection
 	} );
 
-	const dropdownView = createListDropdown( model );
+	const dropdownView = createSingleButtonDropdown( model, {} );
+
+	addListViewToDropdown( dropdownView, model, {} );
+	addDefaultBehavior( dropdownView );
 
 	dropdownView.on( 'execute', evt => {
 		/* global console */
@@ -127,7 +129,10 @@ function testButton() {
 		buttons: buttonViews
 	} );
 
-	const buttonDropdown = createButtonDropdown( buttonDropdownModel, {} );
+	const buttonDropdown = createSingleButtonDropdown( buttonDropdownModel, {} );
+
+	addToolbarToDropdown( buttonDropdown, buttonDropdownModel );
+	addDefaultBehavior( buttonDropdown );
 
 	ui.buttonDropdown.add( buttonDropdown );
 

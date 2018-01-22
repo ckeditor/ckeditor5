@@ -141,9 +141,48 @@ export function enableModelIfOneIsEnabled( model, observables ) {
 	);
 }
 
+/**
+ * Creates an instance of {@link module:ui/dropdown/list/listdropdownview~ListDropdownView} class using
+ * a provided {@link module:ui/dropdown/list/listdropdownmodel~ListDropdownModel}.
+ *
+ *		const items = new Collection();
+ *
+ *		items.add( new Model( { label: 'First item', style: 'color: red' } ) );
+ *		items.add( new Model( { label: 'Second item', style: 'color: green', class: 'foo' } ) );
+ *
+ *		const model = new Model( {
+ *			isEnabled: true,
+ *			items,
+ *			isOn: false,
+ *			label: 'A dropdown'
+ *		} );
+ *
+ *		const dropdown = createListDropdown( model, locale );
+ *
+ *		// Will render a dropdown labeled "A dropdown" with a list in the panel
+ *		// containing two items.
+ *		dropdown.render()
+ *		document.body.appendChild( dropdown.element );
+ *
+ * The model instance remains in control of the dropdown after it has been created. E.g. changes to the
+ * {@link module:ui/dropdown/dropdownmodel~DropdownModel#label `model.label`} will be reflected in the
+ * dropdown button's {@link module:ui/button/buttonview~ButtonView#label} attribute and in DOM.
+ *
+ * The
+ * {@link module:ui/dropdown/list/listdropdownmodel~ListDropdownModel#items items collection}
+ * of the {@link module:ui/dropdown/list/listdropdownmodel~ListDropdownModel model} also controls the
+ * presence and attributes of respective {@link module:ui/list/listitemview~ListItemView list items}.
+ *
+ * See {@link module:ui/dropdown/createdropdown~createDropdown} and {@link module:list/list~List}.
+ *
+ * @param {module:ui/dropdown/list/listdropdownmodel~ListDropdownModel} model Model of the list dropdown.
+ * @param {module:utils/locale~Locale} locale The locale instance.
+ * @returns {module:ui/dropdown/list/listdropdownview~ListDropdownView} The list dropdown view instance.
+ */
 export function addListViewToDropdown( dropdownView, model, locale ) {
 	const listView = dropdownView.listView = new ListView( locale );
 
+	// TODO: make this param of method instead of model property
 	listView.items.bindTo( model.items ).using( itemModel => {
 		const item = new ListItemView( locale );
 
@@ -155,11 +194,48 @@ export function addListViewToDropdown( dropdownView, model, locale ) {
 
 	dropdownView.panelView.children.add( listView );
 
+	// TODO: make this also on toolbar????
 	listView.items.delegate( 'execute' ).to( dropdownView );
 
 	return listView;
 }
 
+// TODO: where I go??? Make something smart since
+import '../../theme/components/dropdown/buttondropdown.css';
+
+/**
+ * Creates an instance of {@link module:ui/dropdown/button/buttondropdownview~ButtonDropdownView} class using
+ * a provided {@link module:ui/dropdown/button/buttondropdownmodel~ButtonDropdownModel}.
+ *
+ *		const buttons = [];
+ *
+ *		buttons.push( new ButtonView() );
+ *		buttons.push( editor.ui.componentFactory.get( 'someButton' ) );
+ *
+ *		const model = new Model( {
+ *			label: 'A button dropdown',
+ *			isVertical: true,
+ *			buttons
+ *		} );
+ *
+ *		const dropdown = createButtonDropdown( model, locale );
+ *
+ *		// Will render a vertical button dropdown labeled "A button dropdown"
+ *		// with a button group in the panel containing two buttons.
+ *		dropdown.render()
+ *		document.body.appendChild( dropdown.element );
+ *
+ * The model instance remains in control of the dropdown after it has been created. E.g. changes to the
+ * {@link module:ui/dropdown/dropdownmodel~DropdownModel#label `model.label`} will be reflected in the
+ * dropdown button's {@link module:ui/button/buttonview~ButtonView#label} attribute and in DOM.
+ *
+ * See {@link module:ui/dropdown/createdropdown~createDropdown}.
+ *
+ * @param {module:ui/dropdown/button/buttondropdownmodel~ButtonDropdownModel} model Model of the list dropdown.
+ * @param {module:utils/locale~Locale} locale The locale instance.
+ * @returns {module:ui/dropdown/button/buttondropdownview~ButtonDropdownView} The button dropdown view instance.
+ * @returns {module:ui/dropdown/dropdownview~DropdownView}
+ */
 export function addToolbarToDropdown( dropdownView, model ) {
 	const toolbarView = dropdownView.toolbarView = new ToolbarView();
 
@@ -195,6 +271,7 @@ export function addDefaultBehavior( dropdownView ) {
 // @param {Iterable.<module:ui/button/buttonview~ButtonView>} buttons
 // @param {String} attribute
 // @returns {Array.<String>}
-function getBindingTargets( buttons, attribute ) {
+export function getBindingTargets( buttons, attribute ) {
 	return Array.prototype.concat( ...buttons.map( button => [ button, attribute ] ) );
 }
+
