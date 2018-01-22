@@ -11,7 +11,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
-import createButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/button/createbuttondropdown';
+import {
+	addDefaultBehavior,
+	addToolbarToDropdown,
+	createSingleButtonDropdown,
+	enableModelIfOneIsEnabled,
+	getBindingTargets
+} from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import { commandNameFromOptionName } from './alignmentcommand';
 import { isSupported } from './alignmentediting';
@@ -87,17 +93,44 @@ export default class AlignmentUI extends Plugin {
 				return componentFactory.create( commandNameFromOptionName( option ) );
 			} );
 
-			const model = new Model( {
+			const dropdownModel = new Model( {
 				label: t( 'Text alignment' ),
 				defaultIcon: alignLeftIcon,
 				withText: false,
 				isVertical: true,
 				tooltip: true,
+				// TODO: this should be moved
 				toolbarClassName: 'ck-editor-toolbar',
 				buttons
 			} );
 
-			return createButtonDropdown( model, locale );
+			// TODO: binding with callback as in headings
+			// Change icon upon selection
+			dropdownModel.bind( 'icon' ).to(
+				// Bind to #isOn of each button...
+				...getBindingTargets( buttons, 'isOn' ),
+				// ...and chose the title of the first one which #isOn is true.
+				( ...areActive ) => {
+					const index = areActive.findIndex( value => value );
+
+					// If none of the commands is active, display either defaultIcon or first button icon.
+					if ( index < 0 && dropdownModel.defaultIcon ) {
+						return dropdownModel.defaultIcon;
+					}
+
+					return dropdownModel.buttons[ index < 0 ? 0 : index ].icon;
+				}
+			);
+
+			// Add specialised behavior
+			enableModelIfOneIsEnabled( dropdownModel, dropdownModel.buttons );
+
+			const dropdownView = createSingleButtonDropdown( dropdownModel, locale );
+
+			addToolbarToDropdown( dropdownView, dropdownModel );
+			addDefaultBehavior( dropdownView );
+
+			return dropdownView;
 		} );
 	}
 
@@ -135,3 +168,13 @@ export default class AlignmentUI extends Plugin {
 		} );
 	}
 }
+
+/**
+ * TODO: move somewhere
+ * Defines default icon which is used when no button is active.
+ *
+ * Also see {@link #icon}.
+ *
+ * @observable
+ * @member {String} #defaultIcon
+ */
