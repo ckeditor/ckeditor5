@@ -13,11 +13,9 @@ This guide introduces the most important parts of the CKEditor 5 architecture. I
 
 When implementing features you will usually work with these three CKEditor 5 packages:
 
-* [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) &ndash; The core editor architecture. A couple of core classes and interfaces that glue everything together.
-* [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) &ndash; The editing engine. The biggest and by far most complex package, implementing the custom data model, the view layer, conversion mechanisms, rendering engine responsible for [taming `contentEditable`](https://medium.com/content-uneditable/contenteditable-the-good-the-bad-and-the-ugly-261a38555e9c) and a lot more.
-* [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) &ndash; The standard UI library. Simple MVC implementation whose main goal is to best fit CKEditor 5 needs.
-
-<!-- TODO link to package pages once https://github.com/cksource/umberto/issues/303 is resolved -->
+* {@link api/core `@ckeditor/ckeditor5-core`} &ndash; The core editor architecture. A couple of core classes and interfaces that glue everything together.
+* {@link api/engine `@ckeditor/ckeditor5-engine`} &ndash; The editing engine. The biggest and by far most complex package, implementing the custom data model, the view layer, conversion mechanisms, rendering engine responsible for [taming `contentEditable`](https://medium.com/content-uneditable/contenteditable-the-good-the-bad-and-the-ugly-261a38555e9c) and a lot more.
+* {@link api/ui `@ckeditor/ckeditor5-ui`} &ndash; The standard UI library. Simple MVC implementation whose main goal is to best fit CKEditor 5 needs.
 
 These packages will be explained one by one.
 
