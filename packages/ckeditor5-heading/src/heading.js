@@ -11,10 +11,12 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import HeadingEngine from './headingengine';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
-import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
+
+import { enableModelIfOneIsEnabled, getBindingTargets } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 import '../theme/heading.css';
+import { addDefaultBehavior, addListViewToDropdown, createSingleButtonDropdown } from '../../ckeditor5-ui/src/dropdown/utils';
 
 /**
  * The headings feature. It introduces the `headings` drop-down and the `heading1`-`headingN` commands which allow
@@ -74,16 +76,12 @@ export default class Heading extends Plugin {
 			tooltip: dropdownTooltip
 		} );
 
-		dropdownModel.bind( 'isEnabled' ).to(
-			// Bind to #isEnabled of each command...
-			...getCommandsBindingTargets( commands, 'isEnabled' ),
-			// ...and set it true if any command #isEnabled is true.
-			( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
-		);
+		enableModelIfOneIsEnabled( dropdownModel, commands );
 
+		// TODO: might be unified as above but require a callback
 		dropdownModel.bind( 'label' ).to(
 			// Bind to #value of each command...
-			...getCommandsBindingTargets( commands, 'value' ),
+			...getBindingTargets( commands, 'value' ),
 			// ...and chose the title of the first one which #value is true.
 			( ...areActive ) => {
 				const index = areActive.findIndex( value => value );
@@ -95,9 +93,12 @@ export default class Heading extends Plugin {
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'headings', locale => {
-			const dropdown = createListDropdown( dropdownModel, locale );
+			const dropdownView = createSingleButtonDropdown( dropdownModel, locale );
 
-			dropdown.extendTemplate( {
+			addListViewToDropdown( dropdownView, dropdownModel, locale );
+			addDefaultBehavior( dropdownView );
+
+			dropdownView.extendTemplate( {
 				attributes: {
 					class: [
 						'ck-heading-dropdown'
@@ -106,12 +107,12 @@ export default class Heading extends Plugin {
 			} );
 
 			// Execute command when an item from the dropdown is selected.
-			this.listenTo( dropdown, 'execute', evt => {
+			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( evt.source.commandName );
 				editor.editing.view.focus();
 			} );
 
-			return dropdown;
+			return dropdownView;
 		} );
 	}
 
@@ -147,18 +148,6 @@ export default class Heading extends Plugin {
 			return option;
 		} );
 	}
-}
-
-// Returns an array of binding components for
-// {@link module:utils/observablemixin~Observable#bind} from a set of iterable
-// commands.
-//
-// @private
-// @param {Iterable.<module:core/command~Command>} commands
-// @param {String} attribute
-// @returns {Array.<String>}
-function getCommandsBindingTargets( commands, attribute ) {
-	return Array.prototype.concat( ...commands.map( c => [ c, attribute ] ) );
 }
 
 /**
