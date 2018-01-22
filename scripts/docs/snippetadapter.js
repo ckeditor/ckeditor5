@@ -164,7 +164,7 @@ function runWebpack( webpackConfig ) {
 
 function getModuleResolvePaths() {
 	return [
-		path.resolve( __dirname, '..', '..', '..', 'node_modules' ),
+		path.resolve( __dirname, '..', '..', 'node_modules' ),
 		'node_modules'
 	];
 }
