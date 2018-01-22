@@ -13,9 +13,12 @@ import AlignmentEditing from './alignmentediting';
 import AlignmentUI from './alignmentui';
 
 /**
- * The alignment plugin.
+ * The text alignment plugin.
  *
- * It requires {@link module:alignment/alignmentediting~AlignmentEditing} and {@link module:alignment/alignmentui~AlignmentUI} plugins.
+ * It loads the {@link module:alignment/alignmentediting~AlignmentEditing} and
+ * {@link module:alignment/alignmentui~AlignmentUI} plugins.
+ *
+ * Read more about the feature in the {@glink api/alignment text alignment package} page.
  *
  * @extends module:core/plugin~Plugin
  */
