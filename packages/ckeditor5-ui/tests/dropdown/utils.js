@@ -21,6 +21,7 @@ import {
 	createButtonForDropdown,
 	createDropdownView,
 	createSingleButtonDropdown,
+	enableModelIfOneIsEnabled,
 	focusDropdownContentsOnArrows
 } from '../../src/dropdown/utils';
 import ListItemView from '../../src/list/listitemview';
@@ -175,7 +176,30 @@ describe( 'utils', () => {
 
 	describe( 'createSingleButtonDropdown', () => {} );
 
-	describe( 'enableModelIfOneIsEnabled', () => {} );
+	describe( 'enableModelIfOneIsEnabled', () => {
+		it( 'Bind to #isEnabled of each observable  and set it true if any observable #isEnabled is true', () => {
+			const observables = [
+				new Model( { isEnabled: false } ),
+				new Model( { isEnabled: false } ),
+				new Model( { isEnabled: false } )
+			];
+			enableModelIfOneIsEnabled( model, observables );
+
+			expect( model.isEnabled ).to.be.false;
+
+			observables[ 0 ].isEnabled = true;
+
+			expect( model.isEnabled ).to.be.true;
+
+			observables[ 0 ].isEnabled = false;
+
+			expect( model.isEnabled ).to.be.false;
+
+			observables[ 1 ].isEnabled = true;
+
+			expect( model.isEnabled ).to.be.true;
+		} );
+	} );
 
 	describe( 'addListViewToDropdown', () => {
 		let items;
