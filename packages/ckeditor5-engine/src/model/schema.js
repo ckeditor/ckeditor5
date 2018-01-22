@@ -730,7 +730,7 @@ mix( Schema, ObservableMixin );
  *
  * * `isBlock` – whether this item is paragraph-like. Generally speaking, a content is usually made out of blocks
  * like paragraphs, list items, images, headings, etc. All these elements are marked as blocks. A block
- * should not allow another block inside. Note: there's also the `$block` generic item which has `isBlock` set to true.
+ * should not allow another block inside. Note: there's also the `$block` generic item which has `isBlock` set to `true`.
  * Most block type items will inherit from `$block` (through `inheritAllFrom`).
  * * `isLimit` – can be understood as whether this element should not be split by <kbd>Enter</kbd>.
  * Examples of limit elements – `$root`, table cell, image caption, etc. In other words, all actions which happen inside
@@ -765,19 +765,21 @@ mix( Schema, ObservableMixin );
  * Allow `paragraph` in roots and block quotes:
  *
  *		schema.register( 'paragraph', {
- *			allowIn: [ '$root', 'blockQuote' ]
+ *			allowIn: [ '$root', 'blockQuote' ],
+ *			isBlock: true
  *		} );
  *
  * Allow `paragraph` everywhere where `$block` is allowed (i.e. in `$root`):
  *
  *		schema.register( 'paragraph', {
- *			allowWhere: '$block'
+ *			allowWhere: '$block',
+ *			isBlock: true
  *		} );
  *
  * Make `image` a block object, which is allowed everywhere where `$block` is.
  * Also, allow `src` and `alt` attributes on it:
  *
- *		schema.register( 'paragraph', {
+ *		schema.register( 'image', {
  *			allowWhere: '$block',
  *			allowAttributes: [ 'src', 'alt' ],
  *			isBlock: true,
@@ -816,6 +818,8 @@ mix( Schema, ObservableMixin );
  * * If you want to publish your feature so other developers can use it, try to use
  * generic items as much as possible.
  * * Keep your model clean – limit it to the actual data and store information in an normalized way.
+ * * Remember about definining the `is*` properties. They don't affect the allowed structures, but they can
+ * affect how editor features treat your elements.
  *
  * @typedef {Object} module:engine/model/schema~SchemaItemDefinition
  */
