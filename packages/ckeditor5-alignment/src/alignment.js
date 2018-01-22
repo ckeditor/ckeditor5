@@ -37,3 +37,50 @@ export default class Alignment extends Plugin {
 		return 'Alignment';
 	}
 }
+
+/**
+ * The configuration of the {@link module:alignment/alignment~Alignment Alignment feature}.
+ *
+ * Read more in {@link module:alignment/alignment~AlignmentConfig}.
+ *
+ * @member {module:alignment/alignment~AlignmentConfig} module:core/editor/editorconfig~EditorConfig#alignment
+ */
+
+/**
+ * The configuration of the {@link module:alignment/alignment~Alignment Alignment feature}.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ * 				alignment: {
+ *					options: [ 'left', 'right' ]
+ * 				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface AlignmentConfig
+ */
+
+/**
+ * Available alignment options.
+ *
+ * The available options are – `'left'`, `'right'`, `'center'` and `'justify'`. Other values are ignored.
+ *
+ * **Note:** It is recommended to always use `'left'` as it is the default value which the user should
+ * normally be able to choose.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ * 				alignment: {
+ *					options: [ 'left', 'right' ]
+ * 				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See a demo of {@glink features/text-alignment#configuring-alignment-options custom alignment options}.
+ *
+ * @member {Array.<String>} module:alignment/alignment~AlignmentConfig#options
+ */

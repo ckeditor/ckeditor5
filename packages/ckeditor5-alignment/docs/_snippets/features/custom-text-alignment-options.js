@@ -14,7 +14,7 @@ ClassicEditor
 			viewportTopOffset: 60
 		},
 		alignment: {
-			styles: [ 'left', 'right' ]
+			options: [ 'left', 'right' ]
 		}
 	} )
 	.then( editor => {

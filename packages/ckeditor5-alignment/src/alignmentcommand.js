@@ -22,22 +22,22 @@ export default class AlignmentCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {'left'|'right'|'center'|'justify'} type Alignment type to be handled by this command.
-	 * @param {Boolean} isDefault Indicates if command is of default type.
+	 * @param {'left'|'right'|'center'|'justify'} alignment Alignment value to be handled by this command.
+	 * @param {Boolean} isDefault Indicates if the command is the default alignment.
 	 */
-	constructor( editor, type, isDefault ) {
+	constructor( editor, alignment, isDefault ) {
 		super( editor );
 
 		/**
-		 * The type of the list created by the command.
+		 * The alignment value handled by the command.
 		 *
 		 * @readonly
 		 * @member {'left'|'right'|'center'|'justify'}
 		 */
-		this.type = type;
+		this.alignment = alignment;
 
 		/**
-		 * Whether this command has default type.
+		 * Whether this command is the default alignment.
 		 *
 		 * @readonly
 		 * @private
@@ -47,7 +47,7 @@ export default class AlignmentCommand extends Command {
 
 		/**
 		 * A flag indicating whether the command is active, which means that the selection starts in a block
-		 * that has defined alignment of the same type.
+		 * which has the same alignment as {@link #alignment this command}.
 		 *
 		 * @observable
 		 * @readonly
@@ -74,18 +74,18 @@ export default class AlignmentCommand extends Command {
 	execute() {
 		const editor = this.editor;
 		const model = editor.model;
-		const document = model.document;
+		const doc = model.document;
 
 		model.change( writer => {
 			// Get only those blocks from selected that can have alignment set
-			const blocks = Array.from( document.selection.getSelectedBlocks() ).filter( block => this._canBeAligned( block ) );
+			const blocks = Array.from( doc.selection.getSelectedBlocks() ).filter( block => this._canBeAligned( block ) );
 
 			// Remove alignment attribute if current alignment is as selected or is default one.
 			// Default alignment should not be stored in model as it will bloat model data.
 			if ( this.value || this._isDefault ) {
 				removeAlignmentFromSelection( blocks, writer );
 			} else {
-				setAlignmentOnSelection( blocks, writer, this.type );
+				setAlignmentOnSelection( blocks, writer, this.alignment );
 			}
 		} );
 	}
@@ -93,9 +93,9 @@ export default class AlignmentCommand extends Command {
 	/**
 	 * Checks whether block can have aligned set.
 	 *
+	 * @private
 	 * @param {module:engine/model/element~Element} block A block to be checked.
 	 * @returns {Boolean}
-	 * @private
 	 */
 	_canBeAligned( block ) {
 		return this.editor.model.schema.checkAttribute( block, 'alignment' );
@@ -116,20 +116,20 @@ export default class AlignmentCommand extends Command {
 
 		const selectionAlignment = firstBlock.getAttribute( 'alignment' );
 
-		// Command's value will be set when commands type is matched in selection or the selection is default one.
-		return selectionAlignment ? selectionAlignment === this.type : this._isDefault;
+		// Command's value will be on when command's alignment matches the alignment of the current block,
+		// or when it's the default alignment and the block has no alignment set.
+		return selectionAlignment ? selectionAlignment === this.alignment : this._isDefault;
 	}
 }
 
 /**
- * Helper function that returns command name for given style. May produce unknown commands if passed style is not
- * in {@link module:alignment/alignmentediting~AlignmentEditing.supportedStyles}.
+ * Helper function that returns command name for alignment option.
  *
- * @param {String} style
+ * @param {String} option
  * @returns {String}
  */
-export function commandNameFromStyle( style ) {
-	return `align${ upperFirst( style ) }`;
+export function commandNameFromOptionName( option ) {
+	return `align${ upperFirst( option ) }`;
 }
 
 // Removes alignment attribute from blocks.
@@ -142,8 +142,8 @@ function removeAlignmentFromSelection( blocks, writer ) {
 
 // Sets alignment attribute on blocks.
 // @private
-function setAlignmentOnSelection( blocks, writer, type ) {
+function setAlignmentOnSelection( blocks, writer, alignment ) {
 	for ( const block of blocks ) {
-		writer.setAttribute( 'alignment', type, block );
+		writer.setAttribute( 'alignment', alignment, block );
 	}
 }
