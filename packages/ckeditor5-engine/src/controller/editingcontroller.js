@@ -88,11 +88,6 @@ export default class EditingController {
 		this.listenTo( doc, 'change', () => {
 			this.view.change( writer => {
 				this.modelToView.convertChanges( doc.differ, writer );
-			} );
-		}, { priority: 'low' } );
-
-		this.listenTo( model, '_change', () => {
-			this.view.change( writer => {
 				this.modelToView.convertSelection( doc.selection, writer );
 			} );
 		}, { priority: 'low' } );
