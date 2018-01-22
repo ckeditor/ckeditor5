@@ -275,8 +275,7 @@ describe( 'DataController utils', () => {
 				// Disallow paragraph in $root.
 				model.schema.on( 'checkChild', ( evt, args ) => {
 					const ctx = args[ 0 ];
-					const child = args[ 1 ];
-					const childRule = model.schema.getDefinition( child );
+					const childRule = args[ 1 ];
 
 					if ( childRule.name == 'paragraph' && ctx.endsWith( '$root' ) ) {
 						evt.stop();

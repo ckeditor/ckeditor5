@@ -426,7 +426,16 @@ describe( 'Schema', () => {
 			expect( schema.checkChild( root1, new Text( 'foo' ) ) ).to.be.false;
 		} );
 
-		// TODO checks fires event
+		it( 'fires the checkChild event with already normalized params', done => {
+			schema.on( 'checkChild', ( evt, [ ctx, child ] ) => {
+				expect( ctx ).to.be.instanceof( SchemaContext );
+				expect( child ).to.equal( schema.getDefinition( 'paragraph' ) );
+
+				done();
+			}, { priority: 'highest' } );
+
+			schema.checkChild( root1, r1p1 );
+		} );
 	} );
 
 	describe( 'checkAttribute()', () => {
@@ -477,7 +486,16 @@ describe( 'Schema', () => {
 			expect( schema.checkAttribute( contextInText, 'bold' ) ).to.be.true;
 		} );
 
-		// TODO checks fires event
+		it( 'fires the checkAttribute event with already normalized context', done => {
+			schema.on( 'checkAttribute', ( evt, [ ctx, attributeName ] ) => {
+				expect( ctx ).to.be.instanceof( SchemaContext );
+				expect( attributeName ).to.equal( 'bold' );
+
+				done();
+			}, { priority: 'highest' } );
+
+			schema.checkAttribute( r1p1, 'bold' );
+		} );
 	} );
 
 	describe( 'getLimitElement()', () => {
@@ -1634,8 +1652,7 @@ describe( 'Schema', () => {
 				// Disallow blockQuote in blockQuote.
 				schema.on( 'checkChild', ( evt, args ) => {
 					const ctx = args[ 0 ];
-					const child = args[ 1 ];
-					const childRule = schema.getDefinition( child );
+					const childRule = args[ 1 ];
 
 					if ( childRule.name == 'blockQuote' && ctx.endsWith( 'blockQuote' ) ) {
 						evt.stop();

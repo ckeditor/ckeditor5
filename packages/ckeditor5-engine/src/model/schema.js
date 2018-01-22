@@ -116,16 +116,14 @@ import Range from './range';
  *
  *		schema.on( 'checkChild', ( evt, args ) => {
  *			// The checkChild()'s params.
- *			// Note that context is automatically normalized to SchemaContext instance by a highest-priority listener.
+ *			// Note that context is automatically normalized to SchemaContext instance and
+ *			// child to its definition (SchemaCompiledItemDefinition) by a highest-priority listener.
  *			const context = args[ 0 ];
- *			const child = args[ 1 ];
- *
- *			// Pass the child through getDefinition() to normalize it (child can be passed in multiple formats).
- *			const childRule = schema.getDefinition( child );
+ *			const childDefinition = args[ 1 ];
  *
  *			// If checkChild() is called with a context that ends with blockQuote and blockQuote as a child
  *			// to check, make the method return false and stop the event so no other listener will override your decision.
- *			if ( childRule && childRule.name == 'blockQuote' && context.endsWith( 'blockQuote' ) ) {
+ *			if ( childDefinition && childDefinition.name == 'blockQuote' && context.endsWith( 'blockQuote' ) ) {
  *				evt.stop();
  *				evt.return = false;
  *			}
@@ -199,6 +197,7 @@ export default class Schema {
 
 		this.on( 'checkChild', ( evt, args ) => {
 			args[ 0 ] = new SchemaContext( args[ 0 ] );
+			args[ 1 ] = this.getDefinition( args[ 1 ] );
 		}, { priority: 'highest' } );
 	}
 
@@ -378,9 +377,8 @@ export default class Schema {
 	 * @param {module:engine/model/schema~SchemaContextDefinition} context Context in which the child will be checked.
 	 * @param {module:engine/model/node~Node|String} child The child to check.
 	 */
-	checkChild( context, child ) {
-		const def = this.getDefinition( child );
-
+	checkChild( context, def ) {
+		// Note: context and child are already normalized here to a SchemaContext and SchemaCompiledItemDefinition.
 		if ( !def ) {
 			return false;
 		}
@@ -607,22 +605,20 @@ mix( Schema, ObservableMixin );
  *
  *		schema.on( 'checkChild', ( evt, args ) => {
  *			const context = args[ 0 ];
- *			const child = args[ 1 ];
+ *			const childDefinition = args[ 1 ];
  *		}, { priority: 'high' } );
  *
  * The listener is added with a `high` priority to be executed before the default method is really called. The `args` callback
  * parameter contains arguments passed to `checkChild( context, child )`. However, the `context` parameter is already
- * normalized to a {@link module:engine/model/schema~SchemaContext} instance, so you don't have to worry about
- * the various ways how `context` may be passed to `checkChild()`.
+ * normalized to a {@link module:engine/model/schema~SchemaContext} instance and `child` to a
+ * {@link module:engine/model/schema~SchemaCompiledItemDefinition} instance, so you don't have to worry about
+ * the various ways how `context` and `child` may be passed to `checkChild()`.
  *
  * So, in order to implement a rule "disallow `heading1` in `blockQuote`" you can add such a listener:
  *
  *		schema.on( 'checkChild', ( evt, args ) => {
  *			const context = args[ 0 ];
- *			const child = args[ 1 ];
- *
- *			// Normalize child too (it can be a string or a node).
- *			const childDefinition = schema.getDefinition( child );
+ *			const childDefinition = args[ 1 ];
  *
  *			if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'heading1' ) {
  *				// Prevent next listeners from being called.
@@ -638,10 +634,7 @@ mix( Schema, ObservableMixin );
  *
  *		schema.on( 'checkChild', ( evt, args ) => {
  *			const context = args[ 0 ];
- *			const child = args[ 1 ];
- *
- *			// Normalize child too (it can be a string or a node).
- *			const childDefinition = schema.getDefinition( child );
+ *			const childDefinition = args[ 1 ];
  *
  *			if ( context.endsWith( 'bar foo' ) && childDefinition.name == 'listItem' ) {
  *				// Prevent next listeners from being called.

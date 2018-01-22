@@ -65,8 +65,7 @@ describe( 'view-to-model-converters', () => {
 		it( 'should not convert text if it is wrong with schema', () => {
 			schema.on( 'checkChild', ( evt, args ) => {
 				const ctx = args[ 0 ];
-				const child = args[ 1 ];
-				const childRule = schema.getDefinition( child );
+				const childRule = args[ 1 ];
 
 				if ( childRule.name == '$text' && ctx.endsWith( '$root' ) ) {
 					evt.stop();

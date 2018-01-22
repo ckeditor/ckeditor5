@@ -497,8 +497,7 @@ describe( 'View converter builder', () => {
 		// Disallow $root>div.
 		schema.on( 'checkChild', ( evt, args ) => {
 			const ctx = args[ 0 ];
-			const child = args[ 1 ];
-			const childRule = schema.getDefinition( child );
+			const childRule = args[ 1 ];
 
 			if ( childRule.name == 'div' && ctx.endsWith( '$root' ) ) {
 				evt.stop();

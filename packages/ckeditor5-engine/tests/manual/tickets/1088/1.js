@@ -69,9 +69,9 @@ ClassicEditor
 		} );
 
 		schema.on( 'checkChild', ( evt, args ) => {
-			const def = schema.getDefinition( args[ 1 ] );
+			const childRule = args[ 1 ];
 
-			if ( args[ 0 ].endsWith( '$root' ) && def.name == 'heading3' ) {
+			if ( args[ 0 ].endsWith( '$root' ) && childRule.name == 'heading3' ) {
 				evt.stop();
 				evt.return = false;
 			}
