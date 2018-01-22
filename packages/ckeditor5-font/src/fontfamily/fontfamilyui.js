@@ -10,10 +10,10 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
 
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
 import { normalizeOptions } from './utils';
+import { addDefaultBehavior, addListViewToDropdown, createSingleButtonDropdown } from '../../../ckeditor5-ui/src/dropdown/utils';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -62,9 +62,12 @@ export default class FontFamilyUI extends Plugin {
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'fontFamily', locale => {
-			const dropdown = createListDropdown( dropdownModel, locale );
+			const dropdownView = createSingleButtonDropdown( dropdownModel, locale );
 
-			dropdown.extendTemplate( {
+			addListViewToDropdown( dropdownView, dropdownModel, locale );
+			addDefaultBehavior( dropdownView );
+
+			dropdownView.extendTemplate( {
 				attributes: {
 					class: [
 						'ck-font-family-dropdown'
@@ -73,12 +76,12 @@ export default class FontFamilyUI extends Plugin {
 			} );
 
 			// Execute command when an item from the dropdown is selected.
-			this.listenTo( dropdown, 'execute', evt => {
+			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( evt.source.commandName, { value: evt.source.commandParam } );
 				editor.editing.view.focus();
 			} );
 
-			return dropdown;
+			return dropdownView;
 		} );
 	}
 

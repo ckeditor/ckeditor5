@@ -10,11 +10,11 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
 
 import { normalizeOptions } from '../fontsize/utils';
 
 import fontSizeIcon from '../../theme/icons/font-size.svg';
+import { addDefaultBehavior, addListViewToDropdown, createSingleButtonDropdown } from '../../../ckeditor5-ui/src/dropdown/utils';
 
 import '../../theme/fontsize.css';
 
@@ -68,9 +68,12 @@ export default class FontSizeUI extends Plugin {
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'fontSize', locale => {
-			const dropdown = createListDropdown( dropdownModel, locale );
+			const dropdownView = createSingleButtonDropdown( dropdownModel, locale );
 
-			dropdown.extendTemplate( {
+			addListViewToDropdown( dropdownView, dropdownModel, locale );
+			addDefaultBehavior( dropdownView );
+
+			dropdownView.extendTemplate( {
 				attributes: {
 					class: [
 						'ck-font-size-dropdown'
@@ -79,12 +82,12 @@ export default class FontSizeUI extends Plugin {
 			} );
 
 			// Execute command when an item from the dropdown is selected.
-			this.listenTo( dropdown, 'execute', evt => {
+			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( evt.source.commandName, { value: evt.source.commandParam } );
 				editor.editing.view.focus();
 			} );
 
-			return dropdown;
+			return dropdownView;
 		} );
 	}
 
