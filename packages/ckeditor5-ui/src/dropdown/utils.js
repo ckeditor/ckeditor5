@@ -76,8 +76,6 @@ export function closeDropdownOnBlur( dropdownView ) {
 export function createButtonForDropdown( model, locale ) {
 	const buttonView = new ButtonView( locale );
 
-	buttonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
-
 	// Dropdown expects "select" event to show contents.
 	buttonView.delegate( 'execute' ).to( buttonView, 'select' );
 
@@ -87,12 +85,9 @@ export function createButtonForDropdown( model, locale ) {
 export function createSplitButtonForDropdown( model, locale ) {
 	const splitButtonView = new SplitButtonView( locale );
 
-	// TODO: check 'isOn' binding.
-	splitButtonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
-
 	// TODO: something wierd with binding
-	splitButtonView.actionView.bind( 'isOn' ).to( model );
-	splitButtonView.actionView.bind( 'tooltip' ).to( model );
+	splitButtonView.actionView.bind( 'isOn' ).to( splitButtonView );
+	splitButtonView.actionView.bind( 'tooltip' ).to( splitButtonView );
 
 	return splitButtonView;
 }
@@ -104,6 +99,7 @@ export function createDropdownView( model, buttonView, locale ) {
 	dropdownView.bind( 'isEnabled' ).to( model );
 
 	// TODO: check 'isOn' binding.
+	buttonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
 	buttonView.bind( 'isOn' ).to( model, 'isOn', dropdownView, 'isOpen', ( isOn, isOpen ) => {
 		return isOn || isOpen;
 	} );
@@ -275,3 +271,33 @@ export function getBindingTargets( buttons, attribute ) {
 	return Array.prototype.concat( ...buttons.map( button => [ button, attribute ] ) );
 }
 
+/**
+ * A helper which creates an instance of {@link module:ui/dropdown/dropdownview~DropdownView} class using
+ * a provided {@link module:ui/dropdown/dropdownmodel~DropdownModel}.
+ *
+ *		const model = new Model( {
+ *			label: 'A dropdown',
+ *			isEnabled: true,
+ *			isOn: false,
+ *			withText: true
+ *		} );
+ *
+ *		const dropdown = createDropdown( model );
+ *
+ *		dropdown.render();
+ *
+ *		// Will render a dropdown labeled "A dropdown" with an empty panel.
+ *		document.body.appendChild( dropdown.element );
+ *
+ * The model instance remains in control of the dropdown after it has been created. E.g. changes to the
+ * {@link module:ui/dropdown/dropdownmodel~DropdownModel#label `model.label`} will be reflected in the
+ * dropdown button's {@link module:ui/button/buttonview~ButtonView#label} attribute and in DOM.
+ *
+ * Also see {@link module:ui/dropdown/list/createlistdropdown~createListDropdown}.
+ *
+ * @param {module:ui/dropdown/dropdownmodel~DropdownModel} model Model of this dropdown.
+ * @param {module:utils/locale~Locale} locale The locale instance.
+ * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
+ *
+ * TODO: only used in tests.
+ */

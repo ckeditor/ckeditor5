@@ -7,6 +7,9 @@
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import utilsTestUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+
 import Model from '../../src/model';
 
 import View from '../../src/view';
@@ -21,13 +24,17 @@ import {
 	createButtonForDropdown,
 	createDropdownView,
 	createSingleButtonDropdown,
+	createSplitButtonForDropdown,
 	enableModelIfOneIsEnabled,
 	focusDropdownContentsOnArrows
 } from '../../src/dropdown/utils';
 import ListItemView from '../../src/list/listitemview';
 
 import ListView from '../../src/list/listview';
-import Collection from '../../../ckeditor5-utils/src/collection';
+import DropdownView from '../../src/dropdown/dropdownview';
+import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
+
+const assertBinding = utilsTestUtils.assertBinding;
 
 describe( 'utils', () => {
 	let dropdownView, buttonView, model, locale;
@@ -39,7 +46,7 @@ describe( 'utils', () => {
 		dropdownView = createDropdownView( model, buttonView, locale );
 	} );
 
-	describe( 'focusDropdownContentsOnArrows', () => {
+	describe( 'focusDropdownContentsOnArrows()', () => {
 		let panelChildView;
 
 		beforeEach( () => {
@@ -93,7 +100,7 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'closeDropdownOnExecute', () => {
+	describe( 'closeDropdownOnExecute()', () => {
 		beforeEach( () => {
 			closeDropdownOnExecute( dropdownView );
 
@@ -112,7 +119,7 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'closeDropdownOnBlur', () => {
+	describe( 'closeDropdownOnBlur()', () => {
 		beforeEach( () => {
 			closeDropdownOnBlur( dropdownView );
 
@@ -166,17 +173,130 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'createButtonForDropdown', () => {} );
+	describe( 'createButtonForDropdown()', () => {
+		it( 'accepts locale', () => {
+			const buttonView = createButtonForDropdown( model, locale );
 
-	describe( 'createSplitButtonForDropdown', () => {} );
+			expect( buttonView.locale ).to.equal( locale );
+		} );
+	} );
 
-	describe( 'createDropdownView', () => {} );
+	describe( 'createSplitButtonForDropdown()', () => {
+		it( 'accepts locale', () => {
+			const buttonView = createSplitButtonForDropdown( model, locale );
 
-	describe( 'createSplitButtonDropdown', () => {} );
+			expect( buttonView.locale ).to.equal( locale );
+		} );
+	} );
 
-	describe( 'createSingleButtonDropdown', () => {} );
+	describe( 'createDropdownView()', () => {
+		it( 'returns view', () => {
+			model = new Model();
+			buttonView = new ButtonView();
+			dropdownView = createDropdownView( model, buttonView, locale );
 
-	describe( 'enableModelIfOneIsEnabled', () => {
+			expect( dropdownView ).to.be.instanceOf( DropdownView );
+		} );
+
+		it( 'creates dropdown#panelView out of DropdownPanelView', () => {
+			model = new Model();
+			buttonView = new ButtonView();
+			dropdownView = createDropdownView( model, buttonView, locale );
+
+			expect( dropdownView.panelView ).to.be.instanceOf( DropdownPanelView );
+		} );
+
+		it( 'creates dropdown#buttonView out of buttonView', () => {
+			model = new Model();
+			buttonView = new ButtonView();
+			dropdownView = createDropdownView( model, buttonView, locale );
+
+			expect( dropdownView.buttonView ).to.equal( buttonView );
+		} );
+
+		it( 'accepts locale', () => {
+			const buttonView = new ButtonView();
+			dropdownView = createDropdownView( model, buttonView, locale );
+
+			expect( dropdownView.locale ).to.equal( locale );
+			expect( dropdownView.panelView.locale ).to.equal( locale );
+		} );
+
+		it( 'binds button attributes to the model', () => {
+			const modelDef = {
+				label: 'foo',
+				isOn: false,
+				isEnabled: true,
+				withText: false,
+				tooltip: false
+			};
+
+			model = new Model( modelDef );
+			buttonView = new ButtonView();
+			createDropdownView( model, buttonView, locale );
+
+			assertBinding( buttonView,
+				modelDef,
+				[
+					[ model, { label: 'bar', isEnabled: false, isOn: true, withText: true, tooltip: true } ]
+				],
+				{ label: 'bar', isEnabled: false, isOn: true, withText: true, tooltip: true }
+			);
+		} );
+
+		it( 'binds button#isOn do dropdown #isOpen and model #isOn', () => {
+			const modelDef = {
+				label: 'foo',
+				isOn: false,
+				isEnabled: true,
+				withText: false,
+				tooltip: false
+			};
+
+			model = new Model( modelDef );
+			buttonView = new ButtonView();
+			dropdownView = createDropdownView( model, buttonView, locale );
+
+			dropdownView.isOpen = false;
+			expect( buttonView.isOn ).to.be.false;
+
+			model.isOn = true;
+			expect( buttonView.isOn ).to.be.true;
+
+			dropdownView.isOpen = true;
+			expect( buttonView.isOn ).to.be.true;
+
+			model.isOn = false;
+			expect( buttonView.isOn ).to.be.true;
+		} );
+
+		it( 'binds dropdown#isEnabled to the model', () => {
+			const modelDef = {
+				label: 'foo',
+				isEnabled: true,
+				withText: false,
+				tooltip: false
+			};
+
+			model = new Model( modelDef );
+			buttonView = new ButtonView();
+			dropdownView = createDropdownView( model, buttonView, locale );
+
+			assertBinding( dropdownView,
+				{ isEnabled: true },
+				[
+					[ model, { isEnabled: false } ]
+				],
+				{ isEnabled: false }
+			);
+		} );
+	} );
+
+	describe( 'createSplitButtonDropdown()', () => {} );
+
+	describe( 'createSingleButtonDropdown()', () => {} );
+
+	describe( 'enableModelIfOneIsEnabled()', () => {
 		it( 'Bind to #isEnabled of each observable  and set it true if any observable #isEnabled is true', () => {
 			const observables = [
 				new Model( { isEnabled: false } ),
@@ -201,7 +321,7 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'addListViewToDropdown', () => {
+	describe( 'addListViewToDropdown()', () => {
 		let items;
 
 		beforeEach( () => {
@@ -282,7 +402,7 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'addToolbarToDropdown', () => {
+	describe( 'addToolbarToDropdown()', () => {
 		let buttons;
 
 		beforeEach( () => {
@@ -311,57 +431,53 @@ describe( 'utils', () => {
 			dropdownView.element.remove();
 		} );
 
-		describe( 'constructor()', () => {
-			it( 'sets view#locale', () => {
-				expect( dropdownView.locale ).to.equal( locale );
+		it( 'sets view#locale', () => {
+			expect( dropdownView.locale ).to.equal( locale );
+		} );
+
+		describe( 'view#toolbarView', () => {
+			it( 'is created', () => {
+				const panelChildren = dropdownView.panelView.children;
+
+				expect( panelChildren ).to.have.length( 1 );
+				expect( panelChildren.get( 0 ) ).to.equal( dropdownView.toolbarView );
+				expect( dropdownView.toolbarView ).to.be.instanceof( ToolbarView );
 			} );
 
-			describe( 'view#toolbarView', () => {
-				it( 'is created', () => {
-					const panelChildren = dropdownView.panelView.children;
+			it.skip( 'delegates view.toolbarView.items#execute to the view', done => {
+				dropdownView.on( 'execute', evt => {
+					expect( evt.source ).to.equal( dropdownView.toolbarView.items.get( 0 ) );
+					expect( evt.path ).to.deep.equal( [ dropdownView.toolbarView.items.get( 0 ), dropdownView ] );
 
-					expect( panelChildren ).to.have.length( 1 );
-					expect( panelChildren.get( 0 ) ).to.equal( dropdownView.toolbarView );
-					expect( dropdownView.toolbarView ).to.be.instanceof( ToolbarView );
+					done();
 				} );
 
-				it.skip( 'delegates view.toolbarView.items#execute to the view', done => {
-					dropdownView.on( 'execute', evt => {
-						expect( evt.source ).to.equal( dropdownView.toolbarView.items.get( 0 ) );
-						expect( evt.path ).to.deep.equal( [ dropdownView.toolbarView.items.get( 0 ), dropdownView ] );
-
-						done();
-					} );
-
-					dropdownView.toolbarView.items.get( 0 ).fire( 'execute' );
-				} );
-
-				it( 'reacts on model#isVertical', () => {
-					model.isVertical = false;
-					expect( dropdownView.toolbarView.isVertical ).to.be.false;
-
-					model.isVertical = true;
-					expect( dropdownView.toolbarView.isVertical ).to.be.true;
-				} );
-
-				// TODO: remove?
-				it( 'reacts on model#toolbarClassName', () => {
-					expect( dropdownView.toolbarView.className ).to.be.undefined;
-
-					model.set( 'toolbarClassName', 'foo' );
-					expect( dropdownView.toolbarView.className ).to.equal( 'foo' );
-				} );
+				dropdownView.toolbarView.items.get( 0 ).fire( 'execute' );
 			} );
 
-			describe( 'buttons', () => {
-				// TODO: test me!
+			it( 'reacts on model#isVertical', () => {
+				model.isVertical = false;
+				expect( dropdownView.toolbarView.isVertical ).to.be.false;
+
+				model.isVertical = true;
+				expect( dropdownView.toolbarView.isVertical ).to.be.true;
 			} );
+
+			// TODO: remove?
+			it( 'reacts on model#toolbarClassName', () => {
+				expect( dropdownView.toolbarView.className ).to.be.undefined;
+
+				model.set( 'toolbarClassName', 'foo' );
+				expect( dropdownView.toolbarView.className ).to.equal( 'foo' );
+			} );
+		} );
+
+		describe( 'buttons', () => {
+			// TODO: test me!
 		} );
 	} );
 
-	describe( 'addDefaultBehavior', () => {} );
+	describe( 'addDefaultBehavior()', () => {} );
 
-	describe( 'getBindingTargets', () => {} );
-
-	describe.skip( 'to sort', () => {} );
+	describe( 'getBindingTargets()', () => {} );
 } );

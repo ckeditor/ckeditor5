@@ -8,8 +8,6 @@
 import Model from '../../../src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
-import createDropdown from '../../../src/dropdown/createdropdown';
-
 import testUtils from '../../_utils/utils';
 
 import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
@@ -17,7 +15,14 @@ import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.sv
 import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import ButtonView from '../../../src/button/buttonview';
 
-import { addDefaultBehavior, addListViewToDropdown, addToolbarToDropdown, createSingleButtonDropdown } from '../../../src/dropdown/utils';
+import {
+	addDefaultBehavior,
+	addListViewToDropdown,
+	addToolbarToDropdown,
+	createButtonForDropdown,
+	createDropdownView,
+	createSingleButtonDropdown
+} from '../../../src/dropdown/utils';
 
 const ui = testUtils.createTestUIView( {
 	dropdown: '#dropdown',
@@ -28,12 +33,15 @@ const ui = testUtils.createTestUIView( {
 } );
 
 function testEmpty() {
-	const dropdownView = createDropdown( new Model( {
+	const model = new Model( {
 		label: 'Dropdown',
 		isEnabled: true,
 		isOn: false,
 		withText: true
-	} ) );
+	} );
+
+	const buttonView = createButtonForDropdown( model, {} );
+	const dropdownView = createDropdownView( model, buttonView, {} );
 
 	ui.dropdown.add( dropdownView );
 
@@ -83,8 +91,11 @@ function testSharedModel() {
 		withText: true
 	} );
 
-	const dropdownView1 = createDropdown( model );
-	const dropdownView2 = createDropdown( model );
+	const buttonView1 = createButtonForDropdown( model, {} );
+	const buttonView2 = createButtonForDropdown( model, {} );
+
+	const dropdownView1 = createDropdownView( model, buttonView1, {} );
+	const dropdownView2 = createDropdownView( model, buttonView2, {} );
 
 	ui.dropdownShared.add( dropdownView1 );
 	ui.dropdownShared.add( dropdownView2 );
@@ -93,12 +104,15 @@ function testSharedModel() {
 }
 
 function testLongLabel() {
-	const dropdownView = createDropdown( new Model( {
+	const model = new Model( {
 		label: 'Dropdown with a very long label',
 		isEnabled: true,
 		isOn: false,
 		withText: true
-	} ) );
+	} );
+
+	const buttonView = createButtonForDropdown( model, {} );
+	const dropdownView = createDropdownView( model, buttonView, {} );
 
 	ui.dropdownLabel.add( dropdownView );
 
