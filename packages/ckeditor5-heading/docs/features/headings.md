@@ -25,7 +25,6 @@ It is, of course, possible to configure which heading levels the editor should s
 
 For example, the following editor will support only two levels of headings &mdash; `<h1>` and `<h2>`:
 
-
 ```html
 <div id="editor">
 	<h1>Heading 1</h1>
