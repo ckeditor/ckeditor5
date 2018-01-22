@@ -3,300 +3,92 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document, console, window */
+/* global document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 
-import alignLeftIcon from '@ckeditor/ckeditor5-alignment/theme/icons/align-left.svg';
-import alignCenterIcon from '@ckeditor/ckeditor5-alignment/theme/icons/align-center.svg';
-import alignRightIcon from '@ckeditor/ckeditor5-alignment/theme/icons/align-right.svg';
-import alignJustifyIcon from '@ckeditor/ckeditor5-alignment/theme/icons/align-justify.svg';
-import codeIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/code.svg';
-import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
-import imageLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
-import imageCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
-import editIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
-import strikethroughIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg';
-import underlineIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/underline.svg';
-import unlinkIcon from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
-
-import fontFamilyIcon from '@ckeditor/ckeditor5-font/theme/icons/font-family.svg';
-import fontSizeIcon from '@ckeditor/ckeditor5-font/theme/icons/font-size.svg';
-
-import markerIcon from '@ckeditor/ckeditor5-highlight/theme/icons/marker.svg';
-import penIcon from '@ckeditor/ckeditor5-highlight/theme/icons/pen.svg';
-import eraserIcon from '@ckeditor/ckeditor5-highlight/theme/icons/eraser.svg';
-
-class FakeIcons extends Plugin {
-	init() {
-		const editor = this.editor;
-
-		editor.ui.componentFactory.add( 'alignLeft', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Align left',
-				icon: alignLeftIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
-
-		editor.ui.componentFactory.add( 'alignCenter', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Align center',
-				icon: alignCenterIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
-
-		editor.ui.componentFactory.add( 'alignRight', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Align right',
-				icon: alignRightIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
-
-		editor.ui.componentFactory.add( 'alignJustify', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Align justify',
-				icon: alignJustifyIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
-
-		editor.ui.componentFactory.add( 'code', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Code',
-				icon: codeIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
-
-		editor.ui.componentFactory.add( 'edit', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Edit link',
-				icon: editIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
-
-		editor.ui.componentFactory.add( 'eraser', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Erase highlight',
-				icon: eraserIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
+import alignLeft from '@ckeditor/ckeditor5-alignment/theme/icons/align-left.svg';
+import alignCenter from '@ckeditor/ckeditor5-alignment/theme/icons/align-center.svg';
+import alignRight from '@ckeditor/ckeditor5-alignment/theme/icons/align-right.svg';
+import alignJustify from '@ckeditor/ckeditor5-alignment/theme/icons/align-justify.svg';
 
-		editor.ui.componentFactory.add( 'fontFamily', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Font family',
-				icon: fontFamilyIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
+import bold from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
+import italic from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
+import underline from '@ckeditor/ckeditor5-basic-styles/theme/icons/underline.svg';
+import code from '@ckeditor/ckeditor5-basic-styles/theme/icons/code.svg';
+import strikethrough from '@ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg';
 
-		editor.ui.componentFactory.add( 'fontSize', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Font size',
-				icon: fontSizeIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
+import cancel from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
+import check from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+import lowVision from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
+import image from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
+import objectLeft from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
+import objectCenter from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
+import objectRight from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
+import objectFullWidth from '@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg';
+import pencil from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
+import quote from '@ckeditor/ckeditor5-core/theme/icons/quote.svg';
 
-		editor.ui.componentFactory.add( 'insertImage', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Insert image',
-				icon: imageIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
+import fontFamily from '@ckeditor/ckeditor5-font/theme/icons/font-family.svg';
+import fontSize from '@ckeditor/ckeditor5-font/theme/icons/font-size.svg';
 
-		editor.ui.componentFactory.add( 'imageLeft', locale => {
-			const view = new ButtonView( locale );
+import marker from '@ckeditor/ckeditor5-highlight/theme/icons/marker.svg';
+import pen from '@ckeditor/ckeditor5-highlight/theme/icons/pen.svg';
+import eraser from '@ckeditor/ckeditor5-highlight/theme/icons/eraser.svg';
 
-			view.set( {
-				label: 'Left-sided image',
-				icon: imageLeftIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
+import link from '@ckeditor/ckeditor5-link/theme/icons/link.svg';
+import unlink from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
 
-		editor.ui.componentFactory.add( 'imageCenter', locale => {
-			const view = new ButtonView( locale );
+import bulletedList from '@ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg';
+import numberedList from '@ckeditor/ckeditor5-list/theme/icons/numberedlist.svg';
 
-			view.set( {
-				label: 'Centered image',
-				icon: imageCenterIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
+import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
+import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
 
-		editor.ui.componentFactory.add( 'marker', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Marker',
-				icon: markerIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
-
-		editor.ui.componentFactory.add( 'pen', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Pen',
-				icon: penIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
-
-		editor.ui.componentFactory.add( 'strikethrough', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Strikethrough',
-				icon: strikethroughIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
-
-		editor.ui.componentFactory.add( 'underline', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Underline',
-				icon: underlineIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
-
-		editor.ui.componentFactory.add( 'unlink', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Unlink',
-				icon: unlinkIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
-
-		editor.ui.componentFactory.add( 'marker', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Maker',
-				icon: markerIcon,
-				tooltip: true
-			} );
-
-			view.render();
-			view.element.querySelector( '.ck-icon__fill' ).style.color = 'yellow';
-
-			return view;
-		} );
-
-		editor.ui.componentFactory.add( 'pen', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Pen',
-				icon: penIcon,
-				tooltip: true
-			} );
-
-			view.render();
-			view.element.querySelector( '.ck-icon__fill' ).style.color = 'yellow';
-
-			return view;
-		} );
-
-		editor.ui.componentFactory.add( 'eraser', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'Eraser',
-				icon: eraserIcon,
-				tooltip: true
-			} );
-
-			return view;
-		} );
-	}
+import '../../theme/ckeditor5-ui/components/editorui/editorui.css';
+
+const icons = {
+	// alignment
+	alignLeft, alignCenter, alignRight, alignJustify,
+
+	// basic-styles
+	bold, italic, underline, code, strikethrough,
+
+	// core
+	check, cancel, lowVision, quote, image, objectLeft, objectCenter, objectRight, objectFullWidth, pencil,
+
+	// font
+	fontFamily, fontSize,
+
+	// highlight
+	marker, pen, eraser,
+
+	// link
+	link, unlink,
+
+	// list
+	bulletedList, numberedList,
+
+	// undo
+	undo, redo
+};
+
+const toolbar = new ToolbarView();
+
+for ( const i in icons ) {
+	const button = new ButtonView();
+
+	button.set( {
+		label: i,
+		icon: icons[ i ],
+		tooltip: true
+	} );
+
+	toolbar.items.add( button );
 }
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			ArticlePluginSet, FakeIcons
-		],
-		toolbar: [
-			'headings', 'bold', 'italic', 'strikethrough', 'underline', 'link', 'unlink', 'edit', 'bulletedList', 'numberedList',
-			'blockquote', 'code', 'undo', 'redo', 'imagestylefull', 'imagestyleside', 'imageLeft', 'imageCenter', 'imagetextalternative',
-			'insertImage', 'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'fontFamily', 'fontSize', 'marker', 'pen', 'eraser'
-		]
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+toolbar.className = 'ck-editor-toolbar ck-reset_all';
+toolbar.render();
+
+document.body.appendChild( toolbar.element );

@@ -10,11 +10,14 @@
     "@ckeditor/ckeditor5-ui": "^1.0.0-alpha.2"
   },
   "devDependencies": {
-	"@ckeditor/ckeditor5-basic-styles": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-alignment": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-basic-styles": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-core": "^1.0.0-alpha.2",
-	"@ckeditor/ckeditor5-editor-classic": "^1.0.0-alpha.2",
-	"@ckeditor/ckeditor5-engine": "^1.0.0-alpha.2",
-	"@ckeditor/ckeditor5-link": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-font": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-highlight": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-link": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-list": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-undo": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-utils": "^1.0.0-alpha.2",
     "eslint": "^4.15.0",
     "eslint-config-ckeditor5": "^1.0.7",
