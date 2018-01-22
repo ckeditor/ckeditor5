@@ -5,7 +5,7 @@
 # * Point to resources to learn plugin development.
 
 category: builds-development
-order: 40
+order: 20
 ---
 
 # Plugins
@@ -45,4 +45,4 @@ A good understanding of the {@link framework/index CKEditor 5 Framework} is also
 
 A great way to enhance your builds with additional features is by using plugins created by the community. Such plugins are generally available as npm packages, so a quick [search on the "ckeditor5" keyword in npm](https://www.npmjs.com/search?q=ckeditor5) should work as a starting point.
 
-Once you have plugins to be included, {@link builds/guides/development/custom-builds create a custom build} configured to include them.
+Once you have plugins to be included, {@link builds/guides/development/installing-plugins learn how to install them}.

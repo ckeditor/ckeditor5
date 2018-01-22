@@ -67,7 +67,7 @@ In order to customize a build you need to:
 The easiest way to install missing dependencies is by typing:
 
 ```bash
-npm install --save <package-name>
+npm install --save-dev <package-name>
 ```
 
 This will install the package and add it to `package.json`. You can also edit `package.json` manually.
