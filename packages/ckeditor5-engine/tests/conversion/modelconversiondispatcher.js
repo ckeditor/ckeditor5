@@ -278,45 +278,69 @@ describe( 'ModelConversionDispatcher', () => {
 
 			dispatcher.on( 'selection', ( evt, data, consumable ) => {
 				expect( consumable.test( data.selection, 'selection' ) ).to.be.true;
-				expect( consumable.test( data.selection, 'selectionAttribute:bold' ) ).to.be.true;
-				expect( consumable.test( data.selection, 'selectionAttribute:italic' ) ).to.be.null;
+				expect( consumable.test( data.selection, 'attribute:bold' ) ).to.be.true;
+				expect( consumable.test( data.selection, 'attribute:italic' ) ).to.be.null;
 			} );
 
 			dispatcher.convertSelection( doc.selection, [] );
 		} );
 
-		it( 'should fire attributes events for selection', () => {
-			sinon.spy( dispatcher, 'fire' );
-
+		it( 'should not fire attributes events for non-collapsed selection', () => {
 			model.change( writer => {
 				writer.setAttribute( 'bold', true, ModelRange.createIn( root ) );
 				writer.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
 			} );
 
+			sinon.spy( dispatcher, 'fire' );
+
 			dispatcher.convertSelection( doc.selection, [] );
 
-			expect( dispatcher.fire.calledWith( 'selectionAttribute:bold' ) ).to.be.true;
-			expect( dispatcher.fire.calledWith( 'selectionAttribute:italic' ) ).to.be.false;
+			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.false;
+			expect( dispatcher.fire.calledWith( 'attribute:italic' ) ).to.be.false;
+		} );
+
+		it( 'should fire attributes events for collapsed selection', () => {
+			doc.selection.setRanges( [
+				new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2 ] ) )
+			] );
+
+			model.change( writer => {
+				writer.setAttribute( 'bold', true, ModelRange.createIn( root ) );
+			} );
+
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.convertSelection( doc.selection, [] );
+
+			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.true;
 		} );
 
 		it( 'should not fire attributes events if attribute has been consumed', () => {
-			sinon.spy( dispatcher, 'fire' );
-
-			dispatcher.on( 'selection', ( evt, data, consumable ) => {
-				consumable.consume( data.selection, 'selectionAttribute:bold' );
-			} );
+			doc.selection.setRanges( [
+				new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2 ] ) )
+			] );
 
 			model.change( writer => {
 				writer.setAttribute( 'bold', true, ModelRange.createIn( root ) );
 				writer.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
 			} );
 
+			dispatcher.on( 'selection', ( evt, data, consumable ) => {
+				consumable.consume( data.selection, 'attribute:bold' );
+			} );
+
+			sinon.spy( dispatcher, 'fire' );
+
 			dispatcher.convertSelection( doc.selection, [] );
 
-			expect( dispatcher.fire.calledWith( 'selectionAttribute:bold' ) ).to.be.false;
+			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.false;
 		} );
 
-		it( 'should fire events for each marker which contains selection', () => {
+		it( 'should fire events for markers for collapsed selection', () => {
+			doc.selection.setRanges( [
+				new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 1 ] ) )
+			] );
+
 			model.markers.set( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
 
 			sinon.spy( dispatcher, 'fire' );
@@ -324,7 +348,18 @@ describe( 'ModelConversionDispatcher', () => {
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
 			dispatcher.convertSelection( doc.selection, markers );
 
-			expect( dispatcher.fire.calledWith( 'selectionMarker:name' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.true;
+		} );
+
+		it( 'should not fire events for markers for non-collapsed selection', () => {
+			model.markers.set( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
+
+			sinon.spy( dispatcher, 'fire' );
+
+			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
+			dispatcher.convertSelection( doc.selection, markers );
+
+			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.false;
 		} );
 
 		it( 'should not fire event for marker if selection is in a element with custom highlight handling', () => {
@@ -364,24 +399,28 @@ describe( 'ModelConversionDispatcher', () => {
 
 			dispatcher.convertSelection( doc.selection, markers );
 
-			expect( dispatcher.fire.calledWith( 'selectionMarker:name' ) ).to.be.false;
+			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.false;
 		} );
 
 		it( 'should not fire events if information about marker has been consumed', () => {
+			doc.selection.setRanges( [
+				new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 1 ] ) )
+			] );
+
 			model.markers.set( 'foo', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
 			model.markers.set( 'bar', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.on( 'selectionMarker:foo', ( evt, data, consumable ) => {
-				consumable.consume( data.selection, 'selectionMarker:bar' );
+			dispatcher.on( 'addMarker:foo', ( evt, data, consumable ) => {
+				consumable.consume( data.item, 'addMarker:bar' );
 			} );
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
 			dispatcher.convertSelection( doc.selection, markers );
 
-			expect( dispatcher.fire.calledWith( 'selectionMarker:foo' ) ).to.be.true;
-			expect( dispatcher.fire.calledWith( 'selectionMarker:bar' ) ).to.be.false;
+			expect( dispatcher.fire.calledWith( 'addMarker:foo' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'addMarker:bar' ) ).to.be.false;
 		} );
 	} );
 

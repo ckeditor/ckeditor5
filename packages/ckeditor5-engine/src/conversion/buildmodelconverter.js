@@ -18,8 +18,6 @@ import {
 	removeHighlight
 } from './model-to-view-converters';
 
-import { convertSelectionAttribute, convertSelectionMarker } from './model-selection-to-view-converters';
-
 import ViewAttributeElement from '../view/attributeelement';
 import ViewContainerElement from '../view/containerelement';
 import ViewUIElement from '../view/uielement';
@@ -257,7 +255,6 @@ class ModelConverterBuilder {
 				element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
 
 				dispatcher.on( 'attribute:' + this._from.key, wrap( element ), { priority } );
-				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), { priority } );
 			} else {
 				// From marker to element.
 				const priority = this._from.priority === null ? 'normal' : this._from.priority;
@@ -327,8 +324,6 @@ class ModelConverterBuilder {
 			dispatcher.on( 'addMarker:' + this._from.name, highlightElement( highlightDescriptor ), { priority } );
 
 			dispatcher.on( 'removeMarker:' + this._from.name, removeHighlight( highlightDescriptor ), { priority } );
-
-			dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( highlightDescriptor ), { priority } );
 		}
 	}
 

@@ -18,9 +18,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
-// TODO: check all docs
-// TODO: writer should be protected
-// TODO: check errors/event descriptions if everything is up to date
 export default class Writer {
 	/**
 	 * Breaks attribute nodes at provided position or at boundaries of provided range. It breaks attribute elements inside
@@ -28,10 +25,10 @@ export default class Writer {
 	 *
 	 * In following examples `<p>` is a container, `<b>` and `<u>` are attribute nodes:
 	 *
-	 *		<p>foo<b><u>bar{}</u></b></p> -> <p>foo<b><u>bar</u></b>[]</p>
-	 *		<p>foo<b><u>{}bar</u></b></p> -> <p>foo{}<b><u>bar</u></b></p>
-	 *		<p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
-	 *		<p><b>fo{o</b><u>ba}r</u></p> -> <p><b>fo</b><b>o</b><u>ba</u><u>r</u></b></p>
+	 *        <p>foo<b><u>bar{}</u></b></p> -> <p>foo<b><u>bar</u></b>[]</p>
+	 *        <p>foo<b><u>{}bar</u></b></p> -> <p>foo{}<b><u>bar</u></b></p>
+	 *        <p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
+	 *        <p><b>fo{o</b><u>ba}r</u></p> -> <p><b>fo</b><b>o</b><u>ba</u><u>r</u></b></p>
 	 *
 	 * **Note:** {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
 	 *
@@ -57,8 +54,8 @@ export default class Writer {
 	 * @see module:engine/view/containerelement~ContainerElement
 	 * @see module:engine/view/writer~writer.breakContainer
 	 * @function module:engine/view/writer~writer.breakAttributes
-	 * @param {module:engine/view/position~Position|module:engine/view/range~Range} positionOrRange Position where to break
-	 * attribute elements.
+	 * @param {module:engine/view/position~Position|module:engine/view/range~Range} positionOrRange Position where
+	 * to break attribute elements.
 	 * @returns {module:engine/view/position~Position|module:engine/view/range~Range} New position or range, after breaking the attribute
 	 * elements.
 	 */
@@ -75,10 +72,10 @@ export default class Writer {
 	 * has to be directly inside container element and cannot be in root. Does not break if position is at the beginning
 	 * or at the end of it's parent element.
 	 *
-	 *		<p>foo^bar</p> -> <p>foo</p><p>bar</p>
-	 *		<div><p>foo</p>^<p>bar</p></div> -> <div><p>foo</p></div><div><p>bar</p></div>
-	 *		<p>^foobar</p> -> ^<p>foobar</p>
-	 *		<p>foobar^</p> -> <p>foobar</p>^
+	 *        <p>foo^bar</p> -> <p>foo</p><p>bar</p>
+	 *        <div><p>foo</p>^<p>bar</p></div> -> <div><p>foo</p></div><div><p>bar</p></div>
+	 *        <p>^foobar</p> -> ^<p>foobar</p>
+	 *        <p>foobar^</p> -> <p>foobar</p>^
 	 *
 	 * **Note:** Difference between {@link module:engine/view/writer~writer.breakAttributes breakAttributes} and
 	 * {@link module:engine/view/writer~writer.breakContainer breakContainer} is that `breakAttributes` breaks all
@@ -139,14 +136,14 @@ export default class Writer {
 	 *
 	 * In following examples `<p>` is a container and `<b>` is an attribute element:
 	 *
-	 *		<p>foo[]bar</p> -> <p>foo{}bar</p>
-	 *		<p><b>foo</b>[]<b>bar</b></p> -> <p><b>foo{}bar</b></p>
-	 *		<p><b foo="bar">a</b>[]<b foo="baz">b</b></p> -> <p><b foo="bar">a</b>[]<b foo="baz">b</b></p>
+	 *        <p>foo[]bar</p> -> <p>foo{}bar</p>
+	 *        <p><b>foo</b>[]<b>bar</b></p> -> <p><b>foo{}bar</b></p>
+	 *        <p><b foo="bar">a</b>[]<b foo="baz">b</b></p> -> <p><b foo="bar">a</b>[]<b foo="baz">b</b></p>
 	 *
 	 * It will also take care about empty attributes when merging:
 	 *
-	 *		<p><b>[]</b></p> -> <p>[]</p>
-	 *		<p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
+	 *        <p><b>[]</b></p> -> <p>[]</p>
+	 *        <p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
 	 *
 	 * **Note:** Difference between {@link module:engine/view/writer~writer.mergeAttributes mergeAttributes} and
 	 * {@link module:engine/view/writer~writer.mergeContainers mergeContainers} is that `mergeAttributes` merges two
@@ -209,8 +206,8 @@ export default class Writer {
 	 * Merges two {@link module:engine/view/containerelement~ContainerElement container elements} that are before and after given position.
 	 * Precisely, the element after the position is removed and it's contents are moved to element before the position.
 	 *
-	 *		<p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
-	 *		<div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
+	 *        <p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
+	 *        <div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
 	 *
 	 * **Note:** Difference between {@link module:engine/view/writer~writer.mergeAttributes mergeAttributes} and
 	 * {@link module:engine/view/writer~writer.mergeContainers mergeContainers} is that `mergeAttributes` merges two
@@ -440,132 +437,50 @@ export default class Writer {
 	/**
 	 * Wraps elements within range with provided {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
 	 *
+	 * If `viewSelection` was set and a collapsed range was passed, if the range is same as selection, the selection
+	 * will be moved to the inside of the wrapped attribute element.
+	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-invalid-range-container`
 	 * when {@link module:engine/view/range~Range#start}
 	 * and {@link module:engine/view/range~Range#end} positions are not placed inside same parent container.
+	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
 	 * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
 	 *
 	 * @function module:engine/view/writer~writer.wrap
 	 * @param {module:engine/view/range~Range} range Range to wrap.
 	 * @param {module:engine/view/attributeelement~AttributeElement} attribute Attribute element to use as wrapper.
+	 * @param {module:engine/view/selection~Selection} [viewSelection=null] View selection to change, required when
+	 * wrapping collapsed range.
+	 * @returns {module:engine/view/range~Range} range Range after wrapping, spanning over wrapping attribute element.
 	 */
-	wrap( range, attribute ) {
+	wrap( range, attribute, viewSelection = null ) {
 		if ( !( attribute instanceof AttributeElement ) ) {
 			throw new CKEditorError( 'view-writer-wrap-invalid-attribute' );
 		}
 
 		validateRangeContainer( range );
 
-		// If range is collapsed - nothing to wrap.
-		if ( range.isCollapsed ) {
-			return range;
-		}
+		if ( !range.isCollapsed ) {
+			// Non-collapsed range. Wrap it with the attribute element.
+			return this._wrapRange( range, attribute );
+		} else {
+			// Collapsed range. Wrap position.
+			let position = range.start;
 
-		// Range is inside single attribute and spans on all children.
-		if ( rangeSpansOnAllChildren( range ) && wrapAttributeElement( attribute, range.start.parent ) ) {
-			const parent = range.start.parent;
-
-			const end = this.mergeAttributes( Position.createAfter( parent ) );
-			const start = this.mergeAttributes( Position.createBefore( parent ) );
-
-			return new Range( start, end );
-		}
-
-		// Break attributes at range start and end.
-		const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
-
-		// Range around one element.
-		if ( breakEnd.isEqual( breakStart.getShiftedBy( 1 ) ) ) {
-			const node = breakStart.nodeAfter;
-
-			if ( node instanceof AttributeElement && wrapAttributeElement( attribute, node ) ) {
-				const start = this.mergeAttributes( breakStart );
-
-				if ( !start.isEqual( breakStart ) ) {
-					breakEnd.offset--;
-				}
-
-				const end = this.mergeAttributes( breakEnd );
-
-				return new Range( start, end );
+			if ( position.parent.is( 'element' ) && !_hasNonUiChildren( position.parent ) ) {
+				position = position.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
 			}
+
+			position = this._wrapPosition( position, attribute );
+
+			// If wrapping position is equal to view selection, move view selection inside wrapping attribute element.
+			if ( viewSelection && viewSelection.isCollapsed && viewSelection.getFirstPosition().isEqual( range.start ) ) {
+				viewSelection.setRanges( [ new Range( position ) ] );
+			}
+
+			return new Range( position );
 		}
-
-		const parentContainer = breakStart.parent;
-
-		// Unwrap children located between break points.
-		const unwrappedRange = this._unwrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
-
-		// Wrap all children with attribute.
-		const newRange = this._wrapChildren( parentContainer, unwrappedRange.start.offset, unwrappedRange.end.offset, attribute );
-
-		// Merge attributes at the both ends and return a new range.
-		const start = this.mergeAttributes( newRange.start );
-
-		// If start position was merged - move end position back.
-		if ( !start.isEqual( newRange.start ) ) {
-			newRange.end.offset--;
-		}
-		const end = this.mergeAttributes( newRange.end );
-
-		return new Range( start, end );
-	}
-
-	/**
-	 * Wraps position with provided attribute. Returns new position after wrapping. This method will also merge newly
-	 * added attribute with its siblings whenever possible.
-	 *
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
-	 * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
-	 *
-	 * @param {module:engine/view/position~Position} position
-	 * @param {module:engine/view/attributeelement~AttributeElement} attribute
-	 * @returns {module:engine/view/position~Position} New position after wrapping.
-	 */
-	wrapPosition( position, attribute ) {
-		if ( !( attribute instanceof AttributeElement ) ) {
-			throw new CKEditorError( 'view-writer-wrap-invalid-attribute' );
-		}
-
-		// Return same position when trying to wrap with attribute similar to position parent.
-		if ( attribute.isSimilar( position.parent ) ) {
-			return movePositionToTextNode( Position.createFromPosition( position ) );
-		}
-
-		// When position is inside text node - break it and place new position between two text nodes.
-		if ( position.parent.is( 'text' ) ) {
-			position = breakTextNode( position );
-		}
-
-		// Create fake element that will represent position, and will not be merged with other attributes.
-		const fakePosition = new AttributeElement();
-		fakePosition.priority = Number.POSITIVE_INFINITY;
-		fakePosition.isSimilar = () => false;
-
-		// Insert fake element in position location.
-		position.parent.insertChildren( position.offset, fakePosition );
-
-		// Range around inserted fake attribute element.
-		const wrapRange = new Range( position, position.getShiftedBy( 1 ) );
-
-		// Wrap fake element with attribute (it will also merge if possible).
-		this.wrap( wrapRange, attribute );
-
-		// Remove fake element and place new position there.
-		const newPosition = new Position( fakePosition.parent, fakePosition.index );
-		fakePosition.remove();
-
-		// If position is placed between text nodes - merge them and return position inside.
-		const nodeBefore = newPosition.nodeBefore;
-		const nodeAfter = newPosition.nodeAfter;
-
-		if ( nodeBefore instanceof Text && nodeAfter instanceof Text ) {
-			return mergeTextNodes( nodeBefore, nodeAfter );
-		}
-
-		// If position is next to text node - move position inside.
-		return movePositionToTextNode( newPosition );
 	}
 
 	/**
@@ -658,13 +573,80 @@ export default class Writer {
 		return newElement;
 	}
 
-	// Unwraps children from provided `attribute`. Only children contained in `parent` element between
-	// `startOffset` and `endOffset` will be unwrapped.
-	//
-	// @param {module:engine/view/element~Element} parent
-	// @param {Number} startOffset
-	// @param {Number} endOffset
-	// @param {module:engine/view/element~Element} attribute
+	/**
+	 * Wraps children with provided `attribute`. Only children contained in `parent` element between
+	 * `startOffset` and `endOffset` will be wrapped.
+	 *
+	 * @private
+	 * @param {module:engine/view/element~Element} parent
+	 * @param {Number} startOffset
+	 * @param {Number} endOffset
+	 * @param {module:engine/view/element~Element} attribute
+	 */
+	_wrapChildren( parent, startOffset, endOffset, attribute ) {
+		let i = startOffset;
+		const wrapPositions = [];
+
+		while ( i < endOffset ) {
+			const child = parent.getChild( i );
+			const isText = child.is( 'text' );
+			const isAttribute = child.is( 'attributeElement' );
+			const isEmpty = child.is( 'emptyElement' );
+			const isUI = child.is( 'uiElement' );
+
+			// Wrap text, empty elements, ui elements or attributes with higher or equal priority.
+			if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( attribute, child ) ) ) {
+				// Clone attribute.
+				const newAttribute = attribute.clone();
+
+				// Wrap current node with new attribute;
+				child.remove();
+				newAttribute.appendChildren( child );
+				parent.insertChildren( i, newAttribute );
+
+				wrapPositions.push(	new Position( parent, i ) );
+			}
+			// If other nested attribute is found start wrapping there.
+			else if ( isAttribute ) {
+				this._wrapChildren( child, 0, child.childCount, attribute );
+			}
+
+			i++;
+		}
+
+		// Merge at each wrap.
+		let offsetChange = 0;
+
+		for ( const position of wrapPositions ) {
+			position.offset -= offsetChange;
+
+			// Do not merge with elements outside selected children.
+			if ( position.offset == startOffset ) {
+				continue;
+			}
+
+			const newPosition = this.mergeAttributes( position );
+
+			// If nodes were merged - other merge offsets will change.
+			if ( !newPosition.isEqual( position ) ) {
+				offsetChange++;
+				endOffset--;
+			}
+		}
+
+		return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+	}
+
+	/**
+	 * Unwraps children from provided `attribute`. Only children contained in `parent` element between
+	 * `startOffset` and `endOffset` will be unwrapped.
+	 *
+	 * @private
+	 * @param {module:engine/view/element~Element} parent
+	 * @param {Number} startOffset
+	 * @param {Number} endOffset
+	 * @param {module:engine/view/element~Element} attribute
+	 */
 	_unwrapChildren( parent, startOffset, endOffset, attribute ) {
 		let i = startOffset;
 		const unwrapPositions = [];
@@ -725,66 +707,126 @@ export default class Writer {
 		return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
 	}
 
-	// Wraps children with provided `attribute`. Only children contained in `parent` element between
-	// `startOffset` and `endOffset` will be wrapped.
-	//
-	// @param {module:engine/view/element~Element} parent
-	// @param {Number} startOffset
-	// @param {Number} endOffset
-	// @param {module:engine/view/element~Element} attribute
-	_wrapChildren( parent, startOffset, endOffset, attribute ) {
-		let i = startOffset;
-		const wrapPositions = [];
+	/**
+	 * Helper function for `view.writer.wrap`. Wraps range with provided attribute element.
+	 * This method will also merge newly added attribute element with its siblings whenever possible.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
+	 * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
+	 *
+	 * @private
+	 * @param {module:engine/view/range~Range} range
+	 * @param {module:engine/view/attributeelement~AttributeElement} attribute
+	 * @returns {module:engine/view/range~Range} New range after wrapping, spanning over wrapping attribute element.
+	 */
+	_wrapRange( range, attribute ) {
+		// Range is inside single attribute and spans on all children.
+		if ( rangeSpansOnAllChildren( range ) && wrapAttributeElement( attribute, range.start.parent ) ) {
+			const parent = range.start.parent;
 
-		while ( i < endOffset ) {
-			const child = parent.getChild( i );
-			const isText = child.is( 'text' );
-			const isAttribute = child.is( 'attributeElement' );
-			const isEmpty = child.is( 'emptyElement' );
-			const isUI = child.is( 'uiElement' );
+			const end = this.mergeAttributes( Position.createAfter( parent ) );
+			const start = this.mergeAttributes( Position.createBefore( parent ) );
 
-			// Wrap text, empty elements, ui elements or attributes with higher or equal priority.
-			if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( attribute, child ) ) ) {
-				// Clone attribute.
-				const newAttribute = attribute.clone();
-
-				// Wrap current node with new attribute;
-				child.remove();
-				newAttribute.appendChildren( child );
-				parent.insertChildren( i, newAttribute );
-
-				wrapPositions.push(	new Position( parent, i ) );
-			}
-			// If other nested attribute is found start wrapping there.
-			else if ( isAttribute ) {
-				this._wrapChildren( child, 0, child.childCount, attribute );
-			}
-
-			i++;
+			return new Range( start, end );
 		}
 
-		// Merge at each wrap.
-		let offsetChange = 0;
+		// Break attributes at range start and end.
+		const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
 
-		for ( const position of wrapPositions ) {
-			position.offset -= offsetChange;
+		// Range around one element.
+		if ( breakEnd.isEqual( breakStart.getShiftedBy( 1 ) ) ) {
+			const node = breakStart.nodeAfter;
 
-			// Do not merge with elements outside selected children.
-			if ( position.offset == startOffset ) {
-				continue;
-			}
+			if ( node instanceof AttributeElement && wrapAttributeElement( attribute, node ) ) {
+				const start = this.mergeAttributes( breakStart );
 
-			const newPosition = this.mergeAttributes( position );
+				if ( !start.isEqual( breakStart ) ) {
+					breakEnd.offset--;
+				}
 
-			// If nodes were merged - other merge offsets will change.
-			if ( !newPosition.isEqual( position ) ) {
-				offsetChange++;
-				endOffset--;
+				const end = this.mergeAttributes( breakEnd );
+
+				return new Range( start, end );
 			}
 		}
 
-		return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+		const parentContainer = breakStart.parent;
+
+		// Unwrap children located between break points.
+		const unwrappedRange = this._unwrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
+
+		// Wrap all children with attribute.
+		const newRange = this._wrapChildren( parentContainer, unwrappedRange.start.offset, unwrappedRange.end.offset, attribute );
+
+		// Merge attributes at the both ends and return a new range.
+		const start = this.mergeAttributes( newRange.start );
+
+		// If start position was merged - move end position back.
+		if ( !start.isEqual( newRange.start ) ) {
+			newRange.end.offset--;
+		}
+		const end = this.mergeAttributes( newRange.end );
+
+		return new Range( start, end );
 	}
+
+	/**
+	 * Helper function for `view.writer.wrap`. Wraps position with provided attribute element.
+	 * This method will also merge newly added attribute element with its siblings whenever possible.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
+	 * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
+	 *
+	 * @private
+	 * @param {module:engine/view/position~Position} position
+	 * @param {module:engine/view/attributeelement~AttributeElement} attribute
+	 * @returns {module:engine/view/position~Position} New position after wrapping.
+	 */
+	_wrapPosition( position, attribute ) {
+		// Return same position when trying to wrap with attribute similar to position parent.
+		if ( attribute.isSimilar( position.parent ) ) {
+			return movePositionToTextNode( Position.createFromPosition( position ) );
+		}
+
+		// When position is inside text node - break it and place new position between two text nodes.
+		if ( position.parent.is( 'text' ) ) {
+			position = breakTextNode( position );
+		}
+
+		// Create fake element that will represent position, and will not be merged with other attributes.
+		const fakePosition = new AttributeElement();
+		fakePosition.priority = Number.POSITIVE_INFINITY;
+		fakePosition.isSimilar = () => false;
+
+		// Insert fake element in position location.
+		position.parent.insertChildren( position.offset, fakePosition );
+
+		// Range around inserted fake attribute element.
+		const wrapRange = new Range( position, position.getShiftedBy( 1 ) );
+
+		// Wrap fake element with attribute (it will also merge if possible).
+		this.wrap( wrapRange, attribute );
+
+		// Remove fake element and place new position there.
+		const newPosition = new Position( fakePosition.parent, fakePosition.index );
+		fakePosition.remove();
+
+		// If position is placed between text nodes - merge them and return position inside.
+		const nodeBefore = newPosition.nodeBefore;
+		const nodeAfter = newPosition.nodeAfter;
+
+		if ( nodeBefore instanceof Text && nodeAfter instanceof Text ) {
+			return mergeTextNodes( nodeBefore, nodeAfter );
+		}
+
+		// If position is next to text node - move position inside.
+		return movePositionToTextNode( newPosition );
+	}
+}
+
+// Helper function for `view.writer.wrap`. Checks if given element has any children that are not ui elements.
+function _hasNonUiChildren( parent ) {
+	return Array.from( parent.getChildren() ).some( child => !child.is( 'uiElement' ) );
 }
 
 /**
