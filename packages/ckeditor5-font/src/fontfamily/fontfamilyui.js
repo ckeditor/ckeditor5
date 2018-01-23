@@ -14,7 +14,8 @@ import {
 	addListViewToDropdown,
 	closeDropdownOnBlur,
 	closeDropdownOnExecute,
-	createSingleButtonDropdown,
+	createButtonForDropdown,
+	createDropdownView,
 	focusDropdownContentsOnArrows
 } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
@@ -68,7 +69,8 @@ export default class FontFamilyUI extends Plugin {
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'fontFamily', locale => {
-			const dropdownView = createSingleButtonDropdown( dropdownModel, locale );
+			const buttonView = createButtonForDropdown( dropdownModel, locale );
+			const dropdownView = createDropdownView( dropdownModel, buttonView, locale );
 
 			addListViewToDropdown( dropdownView, dropdownModel, locale );
 			closeDropdownOnBlur( dropdownView );
