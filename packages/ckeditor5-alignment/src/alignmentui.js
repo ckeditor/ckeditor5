@@ -15,7 +15,8 @@ import {
 	addToolbarToDropdown,
 	closeDropdownOnBlur,
 	closeDropdownOnExecute,
-	createSingleButtonDropdown,
+	createButtonForDropdown,
+	createDropdownView,
 	enableModelIfOneIsEnabled,
 	focusDropdownContentsOnArrows,
 	getBindingTargets
@@ -125,7 +126,8 @@ export default class AlignmentUI extends Plugin {
 			// Add specialised behavior
 			enableModelIfOneIsEnabled( dropdownModel, dropdownModel.buttons );
 
-			const dropdownView = createSingleButtonDropdown( dropdownModel, locale );
+			const buttonView = createButtonForDropdown( dropdownModel, locale );
+			const dropdownView = createDropdownView( dropdownModel, buttonView, locale );
 
 			addToolbarToDropdown( dropdownView, dropdownModel );
 			closeDropdownOnBlur( dropdownView );
