@@ -18,10 +18,12 @@ import eraserIcon from './../theme/icons/eraser.svg';
 
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import {
-	addDefaultBehavior,
 	addToolbarToDropdown,
+	closeDropdownOnBlur,
+	closeDropdownOnExecute,
 	createSplitButtonDropdown,
-	enableModelIfOneIsEnabled
+	enableModelIfOneIsEnabled,
+	focusDropdownContentsOnArrows
 } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 
@@ -191,7 +193,9 @@ export default class HighlightUI extends Plugin {
 			const dropdownView = createSplitButtonDropdown( model, locale );
 
 			addToolbarToDropdown( dropdownView, model );
-			addDefaultBehavior( dropdownView );
+			closeDropdownOnBlur( dropdownView );
+			closeDropdownOnExecute( dropdownView );
+			focusDropdownContentsOnArrows( dropdownView );
 
 			bindIconStyleToColor( dropdownView, model );
 
