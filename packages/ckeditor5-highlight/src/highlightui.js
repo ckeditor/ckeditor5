@@ -26,8 +26,6 @@ import {
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 
 import './../theme/highlight.css';
-// TODO: dirty hack to make toolbar look nice in dropdown.
-import '@ckeditor/ckeditor5-ui/theme/components/dropdown/buttondropdown.css';
 
 /**
  * The default Highlight UI plugin.
@@ -89,12 +87,6 @@ export default class HighlightUI extends Plugin {
 		function decorateHighlightButton( button ) {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 			button.bind( 'isOn' ).to( command, 'value', value => value === option.model );
-
-			button.extendTemplate( {
-				attributes: {
-					class: 'ck-highlight_button'
-				}
-			} );
 
 			button.iconView.extendTemplate( {
 				attributes: {
@@ -203,10 +195,9 @@ export default class HighlightUI extends Plugin {
 
 			bindIconStyleToColor( dropdownView, model );
 
-			// TODO: fix classes in dropdown
 			dropdownView.extendTemplate( {
 				attributes: {
-					class: [ 'ck-highlight_button', 'ck-highlight-dropdown' ]
+					class: [ 'ck-highlight-dropdown' ]
 				}
 			} );
 
