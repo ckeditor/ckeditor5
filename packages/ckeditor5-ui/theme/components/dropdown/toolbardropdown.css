@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-buttondropdown {
+.ck-toolbar-dropdown {
 	& .ck-toolbar {
 		flex-wrap: nowrap;
 

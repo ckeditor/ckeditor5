@@ -29,7 +29,7 @@ const ui = testUtils.createTestUIView( {
 	listDropdown: '#list-dropdown',
 	dropdownShared: '#dropdown-shared',
 	dropdownLabel: '#dropdown-label',
-	buttonDropdown: '#button-dropown'
+	toolbarDropdown: '#dropdown-toolbar'
 } );
 
 function testEmpty() {
@@ -138,20 +138,20 @@ function testButton() {
 			return buttonView;
 		} );
 
-	const buttonDropdownModel = new Model( {
+	const toolbarDropdownModel = new Model( {
 		isVertical: true,
 		buttons: buttonViews
 	} );
 
-	const buttonDropdown = createSingleButtonDropdown( buttonDropdownModel, {} );
+	const toolbarDropdown = createSingleButtonDropdown( toolbarDropdownModel, {} );
 
-	addToolbarToDropdown( buttonDropdown, buttonDropdownModel );
-	addDefaultBehavior( buttonDropdown );
+	addToolbarToDropdown( toolbarDropdown, toolbarDropdownModel );
+	addDefaultBehavior( toolbarDropdown );
 
-	ui.buttonDropdown.add( buttonDropdown );
+	ui.toolbarDropdown.add( toolbarDropdown );
 
 	window.buttons = buttons;
-	window.buttonDropdownModel = buttonDropdownModel;
+	window.toolbarDropdownModel = toolbarDropdownModel;
 }
 
 testEmpty();

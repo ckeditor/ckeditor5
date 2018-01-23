@@ -16,6 +16,9 @@ import ToolbarView from '../toolbar/toolbarview';
 import ListView from '../list/listview';
 import ListItemView from '../list/listitemview';
 
+// TODO: This should be per-component import AFAIK. It will result in smaller builds that don't use dropdown with toolbar.
+import '../../theme/components/dropdown/toolbardropdown.css';
+
 /**
  * Adds a behavior to a dropdownView that focuses dropdown panel view contents on keystrokes.
  *
@@ -196,9 +199,6 @@ export function addListViewToDropdown( dropdownView, model, locale ) {
 	return listView;
 }
 
-// TODO: where I go??? Make something smart since
-import '../../theme/components/dropdown/buttondropdown.css';
-
 /**
  * Creates an instance of {@link module:ui/dropdown/button/buttondropdownview~ButtonDropdownView} class using
  * a provided {@link module:ui/dropdown/button/buttondropdownmodel~ButtonDropdownModel}.
@@ -235,19 +235,17 @@ import '../../theme/components/dropdown/buttondropdown.css';
 export function addToolbarToDropdown( dropdownView, model ) {
 	const toolbarView = dropdownView.toolbarView = new ToolbarView();
 
-	// TODO verify className binding
 	toolbarView.bind( 'isVertical' ).to( model, 'isVertical' );
 
-	// TODO: verify class names
 	dropdownView.extendTemplate( {
 		attributes: {
-			class: [ 'ck-buttondropdown' ]
+			class: [ 'ck-toolbar-dropdown' ]
 		}
 	} );
 
 	dropdownView.panelView.children.add( toolbarView );
 
-	// TODO: make it as 'items', 'views' ???
+	// TODO: make it as 'items', 'views' or pass them as parameter???
 	model.buttons.map( view => toolbarView.items.add( view ) );
 
 	return toolbarView;
@@ -298,6 +296,4 @@ export function getBindingTargets( buttons, attribute ) {
  * @param {module:ui/dropdown/dropdownmodel~DropdownModel} model Model of this dropdown.
  * @param {module:utils/locale~Locale} locale The locale instance.
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
- *
- * TODO: only used in tests.
  */

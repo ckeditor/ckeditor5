@@ -435,6 +435,10 @@ describe( 'utils', () => {
 			expect( dropdownView.locale ).to.equal( locale );
 		} );
 
+		it( 'sets view class', () => {
+			expect( dropdownView.element.classList.contains( 'ck-toolbar-dropdown' ) ).to.be.true;
+		} );
+
 		describe( 'view#toolbarView', () => {
 			it( 'is created', () => {
 				const panelChildren = dropdownView.panelView.children;
