@@ -63,15 +63,11 @@ describe( 'view-to-model-converters', () => {
 		} );
 
 		it( 'should not convert text if it is wrong with schema', () => {
-			schema.on( 'checkChild', ( evt, args ) => {
-				const ctx = args[ 0 ];
-				const childRule = args[ 1 ];
-
-				if ( childRule.name == '$text' && ctx.endsWith( '$root' ) ) {
-					evt.stop();
-					evt.return = false;
+			schema.addChildCheck( ( ctx, childDef ) => {
+				if ( childDef.name == '$text' && ctx.endsWith( '$root' ) ) {
+					return false;
 				}
-			}, { priority: 'high' } );
+			} );
 
 			const viewText = new ViewText( 'foobar' );
 			dispatcher.on( 'text', convertText() );

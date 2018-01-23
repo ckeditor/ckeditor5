@@ -495,15 +495,11 @@ describe( 'View converter builder', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
 		// Disallow $root>div.
-		schema.on( 'checkChild', ( evt, args ) => {
-			const ctx = args[ 0 ];
-			const childRule = args[ 1 ];
-
-			if ( childRule.name == 'div' && ctx.endsWith( '$root' ) ) {
-				evt.stop();
-				evt.return = false;
+		schema.addChildCheck( ( ctx, childDef ) => {
+			if ( childDef.name == 'div' && ctx.endsWith( '$root' ) ) {
+				return false;
 			}
-		}, { priority: 'high' } );
+		} );
 
 		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 

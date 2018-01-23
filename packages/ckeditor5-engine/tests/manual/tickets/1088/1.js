@@ -68,12 +68,9 @@ ClassicEditor
 			}
 		} );
 
-		schema.on( 'checkChild', ( evt, args ) => {
-			const childRule = args[ 1 ];
-
-			if ( args[ 0 ].endsWith( '$root' ) && childRule.name == 'heading3' ) {
-				evt.stop();
-				evt.return = false;
+		schema.addChildCheck( ( ctx, childDef ) => {
+			if ( ctx.endsWith( '$root' ) && childDef.name == 'heading3' ) {
+				return false;
 			}
 		} );
 	} )

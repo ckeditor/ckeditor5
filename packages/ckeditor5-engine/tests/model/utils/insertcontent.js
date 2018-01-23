@@ -273,13 +273,9 @@ describe( 'DataController utils', () => {
 
 			it( 'not insert autoparagraph when paragraph is disallowed at the current position', () => {
 				// Disallow paragraph in $root.
-				model.schema.on( 'checkChild', ( evt, args ) => {
-					const ctx = args[ 0 ];
-					const childRule = args[ 1 ];
-
-					if ( childRule.name == 'paragraph' && ctx.endsWith( '$root' ) ) {
-						evt.stop();
-						evt.return = false;
+				model.schema.addChildCheck( ( ctx, childDef ) => {
+					if ( childDef.name == 'paragraph' && ctx.endsWith( '$root' ) ) {
+						return false;
 					}
 				} );
 
