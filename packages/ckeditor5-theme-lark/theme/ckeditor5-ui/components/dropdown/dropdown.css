@@ -24,6 +24,11 @@
 		/* A space to accommodate the triangle. */
 		padding-right: calc(2.5 * var(--ck-spacing-standard));
 
+		&:not(.ck-button_with-text) {
+			/* Make sure dropdowns with just an icon have the right inner spacing */
+			padding-left: var(--ck-spacing-small);
+		}
+
 		/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
 		&.ck-disabled .ck-button__label {
 			@mixin ck-disabled;
