@@ -334,7 +334,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.insert( node, root );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -459,7 +459,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.insertText( 'foo', parent );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -580,7 +580,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.insertElement( 'foo', child, 'after' );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -776,7 +776,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.appendText( 'foo', parent );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -829,7 +829,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.appendElement( 'foo', parent );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -889,7 +889,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.setAttribute( 'a', 1, node );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 
@@ -916,7 +916,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.removeAttribute( 'b', node );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 		} );
@@ -1063,7 +1063,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.setAttribute( 'a', 1, getRange( 0, 20 ) );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 
@@ -1146,7 +1146,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.removeAttribute( 'a', getRange( 3, 15 ) );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 		} );
@@ -1205,7 +1205,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.setAttribute( 'a', 1, p );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 
@@ -1228,7 +1228,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.removeAttribute( 'b', root );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 
@@ -1292,7 +1292,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.clearAttributes( element );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 		} );
@@ -1412,7 +1412,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), item );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1468,7 +1468,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.merge( new Position( root, [ 1 ] ) );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1523,7 +1523,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.move( range, new Position( root, [ 1, 3 ] ) );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1600,7 +1600,7 @@ describe( 'Writer', () => {
 
 				expect( () => {
 					writer.remove( range );
-				} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+				} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 			} );
 		} );
 
@@ -1659,7 +1659,7 @@ describe( 'Writer', () => {
 
 				expect( () => {
 					writer.remove( range );
-				} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+				} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 			} );
 		} );
 	} );
@@ -1701,7 +1701,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.rename( p, 'h' );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1795,7 +1795,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.split( new Position( root, [ 0, 3 ] ) );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1872,7 +1872,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.wrap( range, 'p' );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1915,7 +1915,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.unwrap( p );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1982,7 +1982,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.setMarker( marker );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -2013,7 +2013,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.removeMarker( 'name' );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 
 		it( 'should accept marker instance', () => {
