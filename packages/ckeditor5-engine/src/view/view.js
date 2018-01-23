@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/view/document
+ * @module engine/view/view
  */
 
 import Document from './document';
@@ -25,6 +25,28 @@ import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/sc
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
 
+/**
+ * Editor's view controller class.
+ * It combines the actual tree of view elements - {@link module:engine/view/document~Document}, tree of DOM elements,
+ * {@link module:engine/view/domconverter~DomConverter DOM Converter}, {@link module:engine/view/renderer~Renderer renderer} and all
+ * {@link module:engine/view/observer/observer~Observer observers}.
+ *
+ * To modify view nodes use {@link module:engine/view/writer~Writer view writer}, which can be
+ * accessed by using {@link module:engine/view/view~View#change} method.
+ *
+ * If you want to only transform the tree of view elements to the DOM elements you can use the
+ * {@link module:engine/view/domconverter~DomConverter DomConverter}.
+ *
+ * Note that the following observers are added by the class constructor and are always available:
+ *
+ * * {@link module:engine/view/observer/mutationobserver~MutationObserver},
+ * * {@link module:engine/view/observer/selectionobserver~SelectionObserver},
+ * * {@link module:engine/view/observer/focusobserver~FocusObserver},
+ * * {@link module:engine/view/observer/keyobserver~KeyObserver},
+ * * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}.
+ *
+ * @mixes module:utils/observablemixin~ObservableMixin
+ */
 export default class View {
 	constructor() {
 		this.document = new Document();
@@ -37,6 +59,7 @@ export default class View {
 		// TODO: observers docs fixes
 		// TODO: check where writer instance is created and it should be returned by change() method only (converters!)
 		// TODO: manual tests
+		// TODO: placeholder - use change() block
 
 		/**
 		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} use by

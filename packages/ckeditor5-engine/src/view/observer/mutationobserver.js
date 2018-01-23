@@ -26,7 +26,7 @@ import isEqualWith from '@ckeditor/ckeditor5-utils/src/lib/lodash/isEqualWith';
  * mutations on elements which do not have corresponding view elements. Also
  * {@link module:engine/view/observer/mutationobserver~MutatedText text mutation} is fired only if parent element do not change child list.
  *
- * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
  * @extends module:engine/view/observer/observer~Observer
  */
@@ -295,14 +295,13 @@ export default class MutationObserver extends Observer {
 }
 
 /**
- * Fired when mutation occurred. If tree view is not changed on this event, DOM will be reverter to the state before
+ * Fired when mutation occurred. If tree view is not changed on this event, DOM will be reverted to the state before
  * mutation, so all changes which should be applied, should be handled on this event.
  *
  * Introduced by {@link module:engine/view/observer/mutationobserver~MutationObserver}.
  *
  * Note that because {@link module:engine/view/observer/mutationobserver~MutationObserver} is attached by the
- * {@link module:engine/view/document~Document}
- * this event is available by default.
+ * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/mutationobserver~MutationObserver
  * @event module:engine/view/document~Document#event:mutations

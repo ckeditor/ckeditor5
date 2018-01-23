@@ -12,23 +12,9 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
-// todo: check the docs
 /**
- * Document class creates an abstract layer over the content editable area.
- * It combines the actual tree of view elements, tree of DOM elements,
- * {@link module:engine/view/domconverter~DomConverter DOM Converter}, {@link module:engine/view/renderer~Renderer renderer} and all
- * {@link module:engine/view/observer/observer~Observer observers}.
- *
- * If you want to only transform the tree of view elements to the DOM elements you can use the
- * {@link module:engine/view/domconverter~DomConverter DomConverter}.
- *
- * Note that the following observers are added by the class constructor and are always available:
- *
- * * {@link module:engine/view/observer/mutationobserver~MutationObserver},
- * * {@link module:engine/view/observer/selectionobserver~SelectionObserver},
- * * {@link module:engine/view/observer/focusobserver~FocusObserver},
- * * {@link module:engine/view/observer/keyobserver~KeyObserver},
- * * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}.
+ * Document class creates an abstract layer over the content editable area, contains a tree of view elements and
+ * {@link module:engine/view/selection~Selection view selection} associated with this document.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */

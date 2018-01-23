@@ -21,7 +21,7 @@ import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
  * {@link module:engine/view/document~Document#event:selectionChange} event only if selection change was the only change in the document
  * and DOM selection is different then the view selection.
  *
- * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
  * @see module:engine/view/observer/mutationobserver~MutationObserver
  * @extends module:engine/view/observer/observer~Observer
@@ -51,7 +51,7 @@ export default class SelectionObserver extends Observer {
 
 		/* eslint-disable max-len */
 		/**
-		 * Reference to the {@link module:engine/view/document~Document#domConverter}.
+		 * Reference to the {@link module:engine/view/view~View#domConverter}.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/observer/selectionobserver~SelectionObserver#domConverter
@@ -200,8 +200,7 @@ export default class SelectionObserver extends Observer {
  * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
  *
  * Note that because {@link module:engine/view/observer/selectionobserver~SelectionObserver} is attached by the
- * {@link module:engine/view/document~Document}
- * this event is available by default.
+ * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
  * @event module:engine/view/document~Document#event:selectionChange
@@ -218,8 +217,7 @@ export default class SelectionObserver extends Observer {
  * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
  *
  * Note that because {@link module:engine/view/observer/selectionobserver~SelectionObserver} is attached by the
- * {@link module:engine/view/document~Document}
- * this event is available by default.
+ * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
  * @event module:engine/view/document~Document#event:selectionChangeDone

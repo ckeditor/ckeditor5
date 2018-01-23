@@ -16,7 +16,7 @@ import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
  */
 export default class DomEventData {
 	/**
-	 * @param {module:engine/view/view~view} view The instance of the tree view controller.
+	 * @param {module:engine/view/view~view} view The instance of the view controller.
 	 * @param {Event} domEvent The DOM event.
 	 * @param {Object} [additionalData] Additional properties that the instance should contain.
 	 */

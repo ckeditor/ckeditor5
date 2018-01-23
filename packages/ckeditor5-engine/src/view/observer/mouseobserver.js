@@ -13,8 +13,7 @@ import DomEventObserver from './domeventobserver';
  * Mouse events observer.
  *
  * Note that this observer is not available by default. To make it available it needs to be added to
- * {@link module:engine/view/document~Document}
- * by {@link module:engine/view/document~Document#addObserver} method.
+ * {@link module:engine/view/view~View} by {@link module:engine/view/view~View#addObserver} method.
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
@@ -36,7 +35,7 @@ export default class MouseObserver extends DomEventObserver {
  * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *
  * Note that this event is not available by default. To make it available {@link module:engine/view/observer/mouseobserver~MouseObserver}
- * needs to be added to {@link module:engine/view/document~Document} by a {@link module:engine/view/document~Document#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~View} by a {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
  * @event module:engine/view/document~Document#event:mousedown

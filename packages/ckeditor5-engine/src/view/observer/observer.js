@@ -44,8 +44,8 @@ export default class Observer {
 	}
 
 	/**
-	 * Enables the observer. This method is called when then observer is registered to the
-	 * {@link module:engine/view/document~Document} and after {@link module:engine/view/document~Document#render rendering}
+	 * Enables the observer. This method is called when the observer is registered to the
+	 * {@link module:engine/view/view~View} and after {@link module:engine/view/view~View#render rendering}
 	 * (all observers are {@link #disable disabled} before rendering).
 	 *
 	 * A typical use case for disabling observers is that mutation observers need to be disabled for the rendering.
@@ -59,7 +59,7 @@ export default class Observer {
 
 	/**
 	 * Disables the observer. This method is called before
-	 * {@link module:engine/view/document~Document#render rendering} to prevent firing events during rendering.
+	 * {@link module:engine/view/view~View#render rendering} to prevent firing events during rendering.
 	 *
 	 * @see module:engine/view/observer/observer~Observer#enable
 	 */

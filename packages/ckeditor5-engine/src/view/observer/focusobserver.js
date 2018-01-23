@@ -17,7 +17,7 @@ import DomEventObserver from './domeventobserver';
  * Focus observer handle also {@link module:engine/view/rooteditableelement~RootEditableElement#isFocused isFocused} property of the
  * {@link module:engine/view/rooteditableelement~RootEditableElement root elements}.
  *
- * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
@@ -81,8 +81,7 @@ export default class FocusObserver extends DomEventObserver {
  * Introduced by {@link module:engine/view/observer/focusobserver~FocusObserver}.
  *
  * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the
- * {@link module:engine/view/document~Document}
- * this event is available by default.
+ * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
  * @event module:engine/view/document~Document#event:focus
@@ -95,8 +94,7 @@ export default class FocusObserver extends DomEventObserver {
  * Introduced by {@link module:engine/view/observer/focusobserver~FocusObserver}.
  *
  * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the
- * {@link module:engine/view/document~Document}
- * this event is available by default.
+ * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
  * @event module:engine/view/document~Document#event:blur
