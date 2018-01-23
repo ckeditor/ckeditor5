@@ -110,21 +110,6 @@ export function createDropdownView( model, buttonView, locale ) {
 	return dropdownView;
 }
 
-export function createSplitButtonDropdown( model, locale ) {
-	const splitButtonView = createSplitButtonForDropdown( model, locale );
-	const dropdownView = createDropdownView( model, splitButtonView, locale );
-
-	// Extend template to hide arrow from dropdown.
-	// TODO: enable this on normal button instead of hiding it
-	dropdownView.extendTemplate( {
-		attributes: {
-			class: 'ck-splitbutton-dropdown'
-		}
-	} );
-
-	return dropdownView;
-}
-
 export function enableModelIfOneIsEnabled( model, observables ) {
 	model.bind( 'isEnabled' ).to(
 		// Bind to #isEnabled of each observable...

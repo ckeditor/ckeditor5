@@ -327,8 +327,6 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'createSplitButtonDropdown()', () => { } );
-
 	describe( 'enableModelIfOneIsEnabled()', () => {
 		it( 'Bind to #isEnabled of each observable  and set it true if any observable #isEnabled is true', () => {
 			const observables = [
