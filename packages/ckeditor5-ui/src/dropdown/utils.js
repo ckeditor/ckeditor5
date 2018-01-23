@@ -88,7 +88,7 @@ export function createButtonForDropdown( model, locale ) {
 export function createSplitButtonForDropdown( model, locale ) {
 	const splitButtonView = new SplitButtonView( locale );
 
-	// TODO: something wierd with binding
+	// TODO: Check if those binding are in good place (maybe move them to SplitButton) or add tests.
 	splitButtonView.actionView.bind( 'isOn' ).to( splitButtonView );
 	splitButtonView.actionView.bind( 'tooltip' ).to( splitButtonView );
 

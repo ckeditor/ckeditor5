@@ -15,6 +15,11 @@ import Model from '../../src/model';
 import View from '../../src/view';
 import ButtonView from '../../src/button/buttonview';
 import ToolbarView from '../../src/toolbar/toolbarview';
+import ListItemView from '../../src/list/listitemview';
+import ListView from '../../src/list/listview';
+import DropdownView from '../../src/dropdown/dropdownview';
+import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
+import SplitButtonView from '../../src/button/splitbuttonview';
 
 import {
 	addListViewToDropdown,
@@ -28,11 +33,6 @@ import {
 	enableModelIfOneIsEnabled,
 	focusDropdownContentsOnArrows
 } from '../../src/dropdown/utils';
-import ListItemView from '../../src/list/listitemview';
-
-import ListView from '../../src/list/listview';
-import DropdownView from '../../src/dropdown/dropdownview';
-import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 
 const assertBinding = utilsTestUtils.assertBinding;
 
@@ -44,6 +44,10 @@ describe( 'utils', () => {
 		model = new Model();
 		buttonView = createButtonForDropdown( model, locale );
 		dropdownView = createDropdownView( model, buttonView, locale );
+	} );
+
+	afterEach( () => {
+		dropdownView.element.remove();
 	} );
 
 	describe( 'focusDropdownContentsOnArrows()', () => {
@@ -174,18 +178,50 @@ describe( 'utils', () => {
 	} );
 
 	describe( 'createButtonForDropdown()', () => {
-		it( 'accepts locale', () => {
-			const buttonView = createButtonForDropdown( model, locale );
+		beforeEach( () => {
+			buttonView = createButtonForDropdown( new Model(), locale );
+		} );
 
+		it( 'accepts locale', () => {
 			expect( buttonView.locale ).to.equal( locale );
+		} );
+
+		it( 'returns ButtonView instance', () => {
+			expect( buttonView ).to.be.instanceof( ButtonView );
+		} );
+
+		it( 'delegates "execute" to "select" event', () => {
+			const spy = sinon.spy();
+
+			buttonView.on( 'select', spy );
+
+			buttonView.fire( 'exec' );
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
 	describe( 'createSplitButtonForDropdown()', () => {
-		it( 'accepts locale', () => {
-			const buttonView = createSplitButtonForDropdown( model, locale );
+		beforeEach( () => {
+			buttonView = createSplitButtonForDropdown( new Model(), locale );
+		} );
 
+		it( 'accepts locale', () => {
 			expect( buttonView.locale ).to.equal( locale );
+		} );
+
+		it( 'returns SplitButtonView instance', () => {
+			expect( buttonView ).to.be.instanceof( SplitButtonView );
+		} );
+
+		it( 'binds actionView "execute" to "select" event', () => {
+			const spy = sinon.spy();
+
+			buttonView.on( 'select', spy );
+
+			buttonView.fire( 'exec' );
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
@@ -292,7 +328,7 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'createSplitButtonDropdown()', () => {} );
+	describe( 'createSplitButtonDropdown()', () => { } );
 
 	describe( 'createSingleButtonDropdown()', () => {} );
 
@@ -339,10 +375,6 @@ describe( 'utils', () => {
 
 			dropdownView.render();
 			document.body.appendChild( dropdownView.element );
-		} );
-
-		afterEach( () => {
-			dropdownView.element.remove();
 		} );
 
 		it( 'sets view#locale', () => {
@@ -425,10 +457,6 @@ describe( 'utils', () => {
 
 			dropdownView.render();
 			document.body.appendChild( dropdownView.element );
-		} );
-
-		afterEach( () => {
-			dropdownView.element.remove();
 		} );
 
 		it( 'sets view#locale', () => {
