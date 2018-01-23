@@ -462,14 +462,6 @@ describe( 'utils', () => {
 				model.isVertical = true;
 				expect( dropdownView.toolbarView.isVertical ).to.be.true;
 			} );
-
-			// TODO: remove?
-			it( 'reacts on model#toolbarClassName', () => {
-				expect( dropdownView.toolbarView.className ).to.be.undefined;
-
-				model.set( 'toolbarClassName', 'foo' );
-				expect( dropdownView.toolbarView.className ).to.equal( 'foo' );
-			} );
 		} );
 
 		describe( 'buttons', () => {

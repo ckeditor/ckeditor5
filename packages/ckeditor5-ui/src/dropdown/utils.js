@@ -236,7 +236,7 @@ export function addToolbarToDropdown( dropdownView, model ) {
 	const toolbarView = dropdownView.toolbarView = new ToolbarView();
 
 	// TODO verify className binding
-	toolbarView.bind( 'isVertical', 'className' ).to( model, 'isVertical', 'toolbarClassName' );
+	toolbarView.bind( 'isVertical' ).to( model, 'isVertical' );
 
 	// TODO: verify class names
 	dropdownView.extendTemplate( {
