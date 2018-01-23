@@ -12,11 +12,19 @@ import HeadingEngine from './headingengine';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 
-import { enableModelIfOneIsEnabled, getBindingTargets } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import {
+	addListViewToDropdown,
+	closeDropdownOnBlur,
+	closeDropdownOnExecute,
+	createSingleButtonDropdown,
+	enableModelIfOneIsEnabled,
+	focusDropdownContentsOnArrows,
+	getBindingTargets
+} from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 import '../theme/heading.css';
-import { addDefaultBehavior, addListViewToDropdown, createSingleButtonDropdown } from '../../ckeditor5-ui/src/dropdown/utils';
 
 /**
  * The headings feature. It introduces the `headings` drop-down and the `heading1`-`headingN` commands which allow
@@ -96,7 +104,9 @@ export default class Heading extends Plugin {
 			const dropdownView = createSingleButtonDropdown( dropdownModel, locale );
 
 			addListViewToDropdown( dropdownView, dropdownModel, locale );
-			addDefaultBehavior( dropdownView );
+			closeDropdownOnBlur( dropdownView );
+			closeDropdownOnExecute( dropdownView );
+			focusDropdownContentsOnArrows( dropdownView );
 
 			dropdownView.extendTemplate( {
 				attributes: {
