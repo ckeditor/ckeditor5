@@ -501,7 +501,5 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'addDefaultBehavior()', () => {} );
-
 	describe( 'getBindingTargets()', () => {} );
 } );

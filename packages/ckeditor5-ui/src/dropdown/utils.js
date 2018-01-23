@@ -251,12 +251,6 @@ export function addToolbarToDropdown( dropdownView, model ) {
 	return toolbarView;
 }
 
-export function addDefaultBehavior( dropdownView ) {
-	closeDropdownOnBlur( dropdownView );
-	closeDropdownOnExecute( dropdownView );
-	focusDropdownContentsOnArrows( dropdownView );
-}
-
 // Returns an array of binding components for
 // {@link module:utils/observablemixin~Observable#bind} from a set of iterable
 // buttons.
