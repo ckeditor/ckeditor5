@@ -16,7 +16,8 @@ import {
 	addListViewToDropdown,
 	closeDropdownOnBlur,
 	closeDropdownOnExecute,
-	createSingleButtonDropdown,
+	createButtonForDropdown,
+	createDropdownView,
 	enableModelIfOneIsEnabled,
 	focusDropdownContentsOnArrows,
 	getBindingTargets
@@ -101,7 +102,8 @@ export default class Heading extends Plugin {
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'headings', locale => {
-			const dropdownView = createSingleButtonDropdown( dropdownModel, locale );
+			const buttonView = createButtonForDropdown( dropdownModel, locale );
+			const dropdownView = createDropdownView( dropdownModel, buttonView, locale );
 
 			addListViewToDropdown( dropdownView, dropdownModel, locale );
 			closeDropdownOnBlur( dropdownView );
