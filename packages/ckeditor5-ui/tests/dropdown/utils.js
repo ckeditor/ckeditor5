@@ -28,7 +28,6 @@ import {
 	closeDropdownOnExecute,
 	createButtonForDropdown,
 	createDropdownView,
-	createSingleButtonDropdown,
 	createSplitButtonForDropdown,
 	enableModelIfOneIsEnabled,
 	focusDropdownContentsOnArrows
@@ -330,8 +329,6 @@ describe( 'utils', () => {
 
 	describe( 'createSplitButtonDropdown()', () => { } );
 
-	describe( 'createSingleButtonDropdown()', () => {} );
-
 	describe( 'enableModelIfOneIsEnabled()', () => {
 		it( 'Bind to #isEnabled of each observable  and set it true if any observable #isEnabled is true', () => {
 			const observables = [
@@ -369,7 +366,8 @@ describe( 'utils', () => {
 				label: 'foo'
 			} );
 
-			dropdownView = createSingleButtonDropdown( model, locale );
+			const buttonView = createButtonForDropdown( model, locale );
+			const dropdownView = createDropdownView( model, buttonView, locale );
 
 			addListViewToDropdown( dropdownView, model, locale );
 
@@ -451,7 +449,8 @@ describe( 'utils', () => {
 				buttons
 			} );
 
-			dropdownView = createSingleButtonDropdown( model, locale );
+			const buttonView = createButtonForDropdown( model, locale );
+			const dropdownView = createDropdownView( model, buttonView, locale );
 
 			addToolbarToDropdown( dropdownView, model );
 

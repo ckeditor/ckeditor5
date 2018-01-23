@@ -125,12 +125,6 @@ export function createSplitButtonDropdown( model, locale ) {
 	return dropdownView;
 }
 
-export function createSingleButtonDropdown( model, locale ) {
-	const buttonView = createButtonForDropdown( model, locale );
-
-	return createDropdownView( model, buttonView, locale );
-}
-
 export function enableModelIfOneIsEnabled( model, observables ) {
 	model.bind( 'isEnabled' ).to(
 		// Bind to #isEnabled of each observable...

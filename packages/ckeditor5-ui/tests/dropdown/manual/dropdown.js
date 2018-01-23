@@ -22,7 +22,6 @@ import {
 	closeDropdownOnExecute,
 	createButtonForDropdown,
 	createDropdownView,
-	createSingleButtonDropdown,
 	focusDropdownContentsOnArrows,
 } from '../../../src/dropdown/utils';
 
@@ -68,7 +67,8 @@ function testList() {
 		items: collection
 	} );
 
-	const dropdownView = createSingleButtonDropdown( model, {} );
+	const buttonView = createButtonForDropdown( model, {} );
+	const dropdownView = createDropdownView( model, buttonView, {} );
 
 	addListViewToDropdown( dropdownView, model, {} );
 	closeDropdownOnBlur( dropdownView );
@@ -147,7 +147,8 @@ function testButton() {
 		buttons: buttonViews
 	} );
 
-	const toolbarDropdown = createSingleButtonDropdown( toolbarDropdownModel, {} );
+	const buttonView = createButtonForDropdown( toolbarDropdownModel, locale );
+	const toolbarDropdown = createDropdownView( toolbarDropdownModel, buttonView, locale );
 
 	addToolbarToDropdown( toolbarDropdown, toolbarDropdownModel );
 	closeDropdownOnBlur( toolbarDropdown );
