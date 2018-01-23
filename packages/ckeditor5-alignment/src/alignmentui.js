@@ -99,8 +99,6 @@ export default class AlignmentUI extends Plugin {
 				withText: false,
 				isVertical: true,
 				tooltip: true,
-				// TODO: this should be moved
-				toolbarClassName: 'ck-editor-toolbar',
 				buttons
 			} );
 
