@@ -21,7 +21,8 @@ import {
 	addToolbarToDropdown,
 	closeDropdownOnBlur,
 	closeDropdownOnExecute,
-	createSplitButtonDropdown,
+	createDropdownView,
+	createSplitButtonForDropdown,
 	enableModelIfOneIsEnabled,
 	focusDropdownContentsOnArrows
 } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
@@ -190,7 +191,15 @@ export default class HighlightUI extends Plugin {
 
 			model.set( 'buttons', buttons );
 
-			const dropdownView = createSplitButtonDropdown( model, locale );
+			const splitButtonView = createSplitButtonForDropdown( model, locale );
+			const dropdownView = createDropdownView( model, splitButtonView, locale );
+
+			// TODO: Extend template to hide arrow from dropdown. Remove me after changes in theme-lark.
+			dropdownView.extendTemplate( {
+				attributes: {
+					class: 'ck-splitbutton-dropdown'
+				}
+			} );
 
 			addToolbarToDropdown( dropdownView, model );
 			closeDropdownOnBlur( dropdownView );
