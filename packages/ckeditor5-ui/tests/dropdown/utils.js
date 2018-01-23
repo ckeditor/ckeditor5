@@ -46,7 +46,9 @@ describe( 'utils', () => {
 	} );
 
 	afterEach( () => {
-		dropdownView.element.remove();
+		if ( dropdownView.element ) {
+			dropdownView.element.remove();
+		}
 	} );
 
 	describe( 'focusDropdownContentsOnArrows()', () => {
@@ -194,7 +196,7 @@ describe( 'utils', () => {
 
 			buttonView.on( 'select', spy );
 
-			buttonView.fire( 'exec' );
+			buttonView.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
 		} );
@@ -211,16 +213,6 @@ describe( 'utils', () => {
 
 		it( 'returns SplitButtonView instance', () => {
 			expect( buttonView ).to.be.instanceof( SplitButtonView );
-		} );
-
-		it( 'binds actionView "execute" to "select" event', () => {
-			const spy = sinon.spy();
-
-			buttonView.on( 'select', spy );
-
-			buttonView.fire( 'exec' );
-
-			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
@@ -364,17 +356,13 @@ describe( 'utils', () => {
 				label: 'foo'
 			} );
 
-			const buttonView = createButtonForDropdown( model, locale );
-			const dropdownView = createDropdownView( model, buttonView, locale );
+			buttonView = createButtonForDropdown( model, locale );
+			dropdownView = createDropdownView( model, buttonView, locale );
 
 			addListViewToDropdown( dropdownView, model, locale );
 
 			dropdownView.render();
 			document.body.appendChild( dropdownView.element );
-		} );
-
-		it( 'sets view#locale', () => {
-			expect( dropdownView.locale ).to.equal( locale );
 		} );
 
 		describe( 'view#listView', () => {
@@ -447,8 +435,8 @@ describe( 'utils', () => {
 				buttons
 			} );
 
-			const buttonView = createButtonForDropdown( model, locale );
-			const dropdownView = createDropdownView( model, buttonView, locale );
+			buttonView = createButtonForDropdown( model, locale );
+			dropdownView = createDropdownView( model, buttonView, locale );
 
 			addToolbarToDropdown( dropdownView, model );
 
