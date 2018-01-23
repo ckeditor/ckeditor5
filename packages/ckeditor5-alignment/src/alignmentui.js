@@ -12,10 +12,12 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import {
-	addDefaultBehavior,
 	addToolbarToDropdown,
+	closeDropdownOnBlur,
+	closeDropdownOnExecute,
 	createSingleButtonDropdown,
 	enableModelIfOneIsEnabled,
+	focusDropdownContentsOnArrows,
 	getBindingTargets
 } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
@@ -126,7 +128,9 @@ export default class AlignmentUI extends Plugin {
 			const dropdownView = createSingleButtonDropdown( dropdownModel, locale );
 
 			addToolbarToDropdown( dropdownView, dropdownModel );
-			addDefaultBehavior( dropdownView );
+			closeDropdownOnBlur( dropdownView );
+			closeDropdownOnExecute( dropdownView );
+			focusDropdownContentsOnArrows( dropdownView );
 
 			return dropdownView;
 		} );
