@@ -91,7 +91,7 @@ export default class AlignmentCommand extends Command {
 	}
 
 	/**
-	 * Checks whether block can have aligned set.
+	 * Checks whether block can have alignment set.
 	 *
 	 * @private
 	 * @param {module:engine/model/element~Element} block A block to be checked.
