@@ -17,7 +17,8 @@ import {
 	addListViewToDropdown,
 	closeDropdownOnBlur,
 	closeDropdownOnExecute,
-	createSingleButtonDropdown,
+	createButtonForDropdown,
+	createDropdownView,
 	focusDropdownContentsOnArrows,
 } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
@@ -413,7 +414,8 @@ function listDropdown( {
 	items = new Collection( { idProperty: 'label' } )
 } = {} ) {
 	const model = new Model( { label, isEnabled, items, isOn, withText } );
-	const dropdown = createSingleButtonDropdown( model, {} );
+	const buttonView = createButtonForDropdown( model, {} );
+	const dropdown = createDropdownView( model, buttonView, {} );
 
 	addListViewToDropdown( dropdown, model, {} );
 	closeDropdownOnBlur( dropdown );
