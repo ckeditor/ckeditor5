@@ -16,7 +16,7 @@ ClassicEditor
 			'headings', 'bold', 'italic', 'link', 'alignmentDropdown', 'bulletedList', 'numberedList',
 			'blockQuote', 'undo', 'redo'
 		],
-		alignment: { styles: [ 'center', 'justify' ] }
+		alignment: { options: [ 'center', 'justify' ] }
 	} )
 	.then( editor => {
 		window.editor = editor;

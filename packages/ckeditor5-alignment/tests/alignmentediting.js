@@ -200,17 +200,17 @@ describe( 'AlignmentEditing', () => {
 	} );
 
 	describe( 'config', () => {
-		describe( 'styles', () => {
+		describe( 'options', () => {
 			describe( 'default value', () => {
 				it( 'should be set', () => {
-					expect( editor.config.get( 'alignment.styles' ) ).to.deep.equal( [ 'left', 'right', 'center', 'justify' ] );
+					expect( editor.config.get( 'alignment.options' ) ).to.deep.equal( [ 'left', 'right', 'center', 'justify' ] );
 				} );
 			} );
 
 			it( 'should customize commands', () => {
 				return VirtualTestEditor
 					.create( {
-						alignment: { styles: [ 'left', 'right' ] },
+						alignment: { options: [ 'left', 'right' ] },
 						plugins: [ AlignmentEditing, Paragraph ]
 					} )
 					.then( editor => {

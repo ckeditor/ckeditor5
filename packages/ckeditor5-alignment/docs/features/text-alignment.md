@@ -13,7 +13,7 @@ The {@link module:alignment/alignment~Alignment} feature enables support for tex
 
 ## Configuring alignment options
 
-It is, of course, possible to configure which alignment options the editor should support. Use the {@link module:alignment/alignmentediting~AlignmentEditingConfig#styles `alignment.styles`} configuration option to do so (you can choose from `'left'`, `'right'`, `'center'` and `'justify'`,  but `'left'` should be always included).
+It is, of course, possible to configure which alignment options the editor should support. Use the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option to do so (you can choose from `'left'`, `'right'`, `'center'` and `'justify'`,  but `'left'` should be always included).
 
 For example, the following editor will support only two alignment to the left and to the right:
 
@@ -21,7 +21,7 @@ For example, the following editor will support only two alignment to the left an
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		alignment: {
-			styles: [ 'left', 'right' ]
+			options: [ 'left', 'right' ]
 		},
 		toolbar: [
 			'headings', 'bulletedList', 'numberedList', 'alignmentDropdown', 'undo', 'redo'
@@ -35,7 +35,7 @@ ClassicEditor
 
 ## Configuring the toolbar
 
-You can choose to use the alignment dropdown (`'alignmentDropdown'`) or configure the toolbar to use separate buttons for each of the styles:
+You can choose to use the alignment dropdown (`'alignmentDropdown'`) or configure the toolbar to use separate buttons for each of the options:
 
 ```js
 ClassicEditor
@@ -83,7 +83,7 @@ The {@link module:alignment/alignment~Alignment} plugin registers:
 * Dropdown: `'alignmentDropdown'`.
 * Buttons and commands: `'alignLeft'`, `'alignRight'`, `'alignCenter'`, `'alignJustify'`.
 
-	The number of options and their names are based on the {@link module:alignment/alignmentediting~AlignmentEditingConfig#styles `alignment.styles`} configuration option).
+	The number of options and their names are based on the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option).
 
 	You can align the currently selected block(s) by executing one of these commands:
 

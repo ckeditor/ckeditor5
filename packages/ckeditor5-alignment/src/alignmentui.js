@@ -13,7 +13,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import createButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/button/createbuttondropdown';
 
-import { commandNameFromStyle } from './alignmentcommand';
+import { commandNameFromOptionName } from './alignmentcommand';
 import { isSupported } from './alignmentediting';
 
 import alignLeftIcon from '../theme/icons/align-left.svg';
@@ -31,26 +31,27 @@ const icons = new Map( [
 /**
  * The default Alignment UI plugin.
  *
- * It introduces the `'alignLeft'`, `'alignRight'`, `'alignCenter'` and `'alignJustify'` buttons.
+ * It introduces the `'alignLeft'`, `'alignRight'`, `'alignCenter'` and `'alignJustify'` buttons
+ * and the `'alignmentDropdown'` dropdown.
  *
  * @extends module:core/plugin~Plugin
  */
 export default class AlignmentUI extends Plugin {
 	/**
-	 * Returns the localized style titles provided by the plugin.
+	 * Returns the localized option titles provided by the plugin.
 	 *
 	 * The following localized titles corresponding with
-	 * {@link module:alignment/alignmentediting~AlignmentEditingConfig#styles} are available:
+	 * {@link module:alignment/alignment~AlignmentConfig#options} are available:
 	 *
 	 * * `'left'`,
 	 * * `'right'`,
 	 * * `'center'`,
-	 * * `'justify'`
+	 * * `'justify'`.
 	 *
 	 * @readonly
 	 * @type {Object.<String,String>}
 	 */
-	get localizedStylesTitles() {
+	get localizedOptionTitles() {
 		const t = this.editor.t;
 
 		return {
@@ -75,15 +76,15 @@ export default class AlignmentUI extends Plugin {
 		const editor = this.editor;
 		const componentFactory = editor.ui.componentFactory;
 		const t = editor.t;
-		const styles = editor.config.get( 'alignment.styles' );
+		const options = editor.config.get( 'alignment.options' );
 
-		styles
+		options
 			.filter( isSupported )
-			.forEach( style => this._addButton( style ) );
+			.forEach( option => this._addButton( option ) );
 
 		componentFactory.add( 'alignmentDropdown', locale => {
-			const buttons = styles.map( style => {
-				return componentFactory.create( commandNameFromStyle( style ) );
+			const buttons = options.map( option => {
+				return componentFactory.create( commandNameFromOptionName( option ) );
 			} );
 
 			const model = new Model( {
@@ -104,20 +105,20 @@ export default class AlignmentUI extends Plugin {
 	 * Helper method for initializing a button and linking it with an appropriate command.
 	 *
 	 * @private
-	 * @param {String} style The name of style for which add button.
+	 * @param {String} option The name of the alignment option for which to add a button.
 	 */
-	_addButton( style ) {
+	_addButton( option ) {
 		const editor = this.editor;
 
-		const commandName = commandNameFromStyle( style );
+		const commandName = commandNameFromOptionName( option );
 		const command = editor.commands.get( commandName );
 
 		editor.ui.componentFactory.add( commandName, locale => {
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
-				label: this.localizedStylesTitles[ style ],
-				icon: icons.get( style ),
+				label: this.localizedOptionTitles[ option ],
+				icon: icons.get( option ),
 				tooltip: true
 			} );
 

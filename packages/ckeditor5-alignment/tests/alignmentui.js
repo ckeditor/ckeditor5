@@ -34,13 +34,13 @@ describe( 'Alignment UI', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'localizedStylesTitles()', () => {
-		it( 'should return localized titles of styles', () => {
+	describe( 'localizedOptionTitles()', () => {
+		it( 'should return localized titles of options', () => {
 			const editorMock = { t: str => str };
 
 			const plugin = new AlignmentUI( editorMock );
 
-			expect( plugin.localizedStylesTitles ).to.deep.equal( {
+			expect( plugin.localizedOptionTitles ).to.deep.equal( {
 				'left': 'Align left',
 				'right': 'Align right',
 				'center': 'Align center',
@@ -244,7 +244,7 @@ describe( 'Alignment UI', () => {
 				return ClassicTestEditor
 					.create( element, {
 						plugins: [ AlignmentEditing, AlignmentUI ],
-						alignment: { styles: [ 'center', 'justify' ] }
+						alignment: { options: [ 'center', 'justify' ] }
 					} )
 					.then( newEditor => {
 						editor = newEditor;

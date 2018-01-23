@@ -1,7 +1,7 @@
 ### Loading
 
 1. The data should be loaded with:
-  * four paragraphs each with different text-alignemnt set,
+  * four paragraphs each with different text-alignment set,
   * two first paragraphs should be aligned to left,
   * third paragraph should be centered,
   * fourth paragraph should be justified,
@@ -13,7 +13,7 @@
 Alignment dropdown button should change to:
 - "left" icon when text has default (left) alignment,
 - "center" icon when text is centered,
-- "jusifty" icon when text is justified.
+- "justify" icon when text is justified.
 
 "Center" alignment button:
 1. should be highlighted only in third paragraph,
