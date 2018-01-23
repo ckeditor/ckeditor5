@@ -51,9 +51,9 @@ export default class Alignment extends Plugin {
  *
  *		ClassicEditor
  *			.create( editorElement, {
- * 				alignment: {
+ *				alignment: {
  *					options: [ 'left', 'right' ]
- * 				}
+ *				}
  *			} )
  *			.then( ... )
  *			.catch( ... );
@@ -73,9 +73,9 @@ export default class Alignment extends Plugin {
  *
  *		ClassicEditor
  *			.create( editorElement, {
- * 				alignment: {
+ *				alignment: {
  *					options: [ 'left', 'right' ]
- * 				}
+ *				}
  *			} )
  *			.then( ... )
  *			.catch( ... );
