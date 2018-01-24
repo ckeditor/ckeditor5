@@ -25,7 +25,7 @@ The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckedito
 
 ### Editor classes
 
-{@link module:core/editor/editor~Editor} class representing the base of the editor.
+The {@link module:core/editor/editor~Editor} class representing the base of the editor.
 
 The editor is a root object, gluing all other components. It holds a couple of properties that you need to know:
 
@@ -44,7 +44,7 @@ Besides that, the editor exposes a few of methods:
 
 You can also extend the editor interface using API interfaces:
 
-* {@link module:core/editor/utils/elementapimixin~ElementApi} &ndash; A way to retrieve and set data from/to element on which editor has been initialized.
+* {@link module:core/editor/utils/elementapimixin~ElementApi} &ndash; A way to retrieve and set data from/to element on which the editor has been initialized.
 * {@link module:core/editor/utils/dataapimixin~DataApi} &ndash; A way to retrieve data from the editor and set data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (it can be e.g. JSON if you implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See, for example, how to {@link features/markdown produce Markdown output}.
 
 The editor class is a base to implement your own editors. CKEditor 5 Framework comes with a few editor types (for example, {@link module:editor-classic/classiceditor~ClassicEditor classic}, {@link module:editor-inline/inlineeditor~InlineEditor inline} and {@link module:editor-balloon/ballooneditor~BalloonEditor balloon}) but you can freely implement editors which work and look completely different. The only requirement is that you implement the {@link module:core/editor/editor~Editor} interface.
@@ -720,7 +720,7 @@ keystrokeHandler.set( 'Tab', ( keyEvtData, cancel ) => {
 <info-box>
 	There is also an {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler `EditingKeystrokeHandler`} class which has the same API as `KeystrokeHandler` but it offers direct keystroke bindings to editor commands.
 
-	The editor provides such keystroke handler under the {@link module:core/editor/editor~Editor#keystrokes `editor.keystrokes`} property so any plugin can register keystrokes associated with editor commands. For example, the {@link module:undo/undo~Undo `Undo`} plugin registers `editor.keystrokes.set( 'Ctrl+Z', 'undo' );` to execute its "undo" command.
+	The editor provides such keystroke handler under the {@link module:core/editor/editor~Editor#keystrokes `editor.keystrokes`} property so any plugin can register keystrokes associated with editor commands. For example, the {@link module:undo/undo~Undo Undo} plugin registers `editor.keystrokes.set( 'Ctrl+Z', 'undo' );` to execute its `undo` command.
 </info-box>
 
 When multiple callbacks are assigned to the same keystroke, priorities can be used to decide which one should be handled first and whether other callbacks should be executed at all:
