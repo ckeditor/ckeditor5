@@ -800,30 +800,30 @@ export default class Writer {
 	 *
 	 *		// Sets ranges from the given range.
 	 *		const range = new Range( start, end );
-	 *		selection.setTo( range, isBackwardSelection );
+	 *		writer.setSelection( range, isBackwardSelection );
 	 *
 	 *		// Sets ranges from the iterable of ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		selection.setTo( range, isBackwardSelection );
+	 *		writer.setSelection( range, isBackwardSelection );
 	 *
 	 *		// Sets ranges from the other selection.
 	 *		const otherSelection = new Selection();
-	 *		selection.setTo( otherSelection );
+	 *		writer.setSelection( otherSelection );
 	 *
 	 * 		// Sets ranges from the given document selection's ranges.
 	 *		const documentSelection = new DocumentSelection( doc );
-	 *		selection.setTo( documentSelection );
+	 *		writer.setSelection( documentSelection );
 	 *
 	 * 		// Sets range at the given position.
 	 *		const position = new Position( root, path );
-	 *		selection.setTo( position );
+	 *		writer.setSelection( position );
 	 *
 	 * 		// Sets range at the given element.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, offset );
+	 *		writer.setSelection( paragraph, offset );
 	 *
 	 * 		// Removes all ranges.
-	 *		selection.setTo( null );
+	 *		writer.setSelection( null );
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/element~Element|

@@ -66,7 +66,9 @@ export default function modifySelection( model, selection, options = {} ) {
 
 		if ( position ) {
 			if ( selection instanceof DocumentSelection ) {
-				selection._setFocus( position );
+				model.change( writer => {
+					writer.setSelectionFocus( position );
+				} );
 			} else {
 				selection.setFocus( position );
 			}
