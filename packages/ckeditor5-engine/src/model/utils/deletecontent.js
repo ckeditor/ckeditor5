@@ -84,7 +84,7 @@ export default function deleteContent( model, selection, options = {} ) {
 		}
 
 		if ( selection instanceof DocumentSelection ) {
-			selection._setTo( startPos );
+			writer.setSelection( startPos );
 		} else {
 			selection.setTo( startPos );
 		}
@@ -193,7 +193,7 @@ function insertParagraph( writer, position, selection ) {
 	writer.insert( paragraph, position );
 
 	if ( selection instanceof DocumentSelection ) {
-		selection._setTo( paragraph );
+		writer.setSelection( paragraph );
 	} else {
 		selection.setTo( paragraph );
 	}

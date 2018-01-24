@@ -56,7 +56,7 @@ export default function insertContent( model, content, selection ) {
 		/* istanbul ignore else */
 		if ( newRange ) {
 			if ( selection instanceof DocumentSelection ) {
-				selection._setTo( newRange );
+				writer.setSelection( newRange );
 			} else {
 				selection.setTo( newRange );
 			}
