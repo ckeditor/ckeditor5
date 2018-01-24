@@ -88,11 +88,9 @@ describe( 'ImageEngine', () => {
 
 			it( 'should not convert srcset attribute if is already consumed', () => {
 				editor.data.modelToView.on( 'attribute:srcset:image', ( evt, data, consumable ) => {
-					const parts = evt.name.split( ':' );
-					const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
 					const modelImage = data.item;
 
-					consumable.consume( modelImage, consumableType );
+					consumable.consume( modelImage, evt.name );
 				}, { priority: 'high' } );
 
 				setModelData( model,
@@ -559,11 +557,9 @@ describe( 'ImageEngine', () => {
 
 			it( 'should not convert srcset attribute if is already consumed', () => {
 				editor.editing.modelToView.on( 'attribute:srcset:image', ( evt, data, consumable ) => {
-					const parts = evt.name.split( ':' );
-					const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
 					const modelImage = data.item;
 
-					consumable.consume( modelImage, consumableType );
+					consumable.consume( modelImage, evt.name );
 				}, { priority: 'high' } );
 
 				setModelData( model,
