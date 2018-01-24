@@ -465,23 +465,6 @@ export default class Selection {
 	}
 
 	/**
-	 * Removes all attributes from the selection.
-	 *
-	 * If there were any attributes in selection, fires the {@link #event:change} event with
-	 * removed attributes' keys.
-	 *
-	 * @fires change:attribute
-	 */
-	clearAttributes() {
-		if ( this._attrs.size > 0 ) {
-			const attributeKeys = Array.from( this._attrs.keys() );
-			this._attrs.clear();
-
-			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
-		}
-	}
-
-	/**
 	 * Removes an attribute with given key from the selection.
 	 *
 	 * If given attribute was set on the selection, fires the {@link #event:change} event with

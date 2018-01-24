@@ -1165,39 +1165,6 @@ describe( 'Selection', () => {
 			} );
 		} );
 
-		describe( 'clearAttributes()', () => {
-			it( 'should remove all attributes from the element', () => {
-				selection.setTo( [ rangeInFullP ] );
-				selection.setAttribute( 'foo', 'bar' );
-				selection.setAttribute( 'abc', 'xyz' );
-
-				selection.clearAttributes();
-
-				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
-				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
-			} );
-
-			it( 'should fire change:attribute event with correct parameters', () => {
-				selection.setAttribute( 'foo', 'bar' );
-
-				selection.on( 'change:attribute', ( evt, data ) => {
-					expect( data.directChange ).to.be.true;
-					expect( data.attributeKeys ).to.deep.equal( [ 'foo' ] );
-				} );
-
-				selection.clearAttributes();
-			} );
-
-			it( 'should not fire change:attribute event if there were no attributes', () => {
-				const spy = sinon.spy();
-				selection.on( 'change:attribute', spy );
-
-				selection.clearAttributes();
-
-				expect( spy.called ).to.be.false;
-			} );
-		} );
-
 		describe( 'removeAttribute()', () => {
 			it( 'should remove attribute', () => {
 				selection.setTo( [ rangeInFullP ] );

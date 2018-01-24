@@ -231,19 +231,6 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	clearAttributes() {
-		const changed = this._setAttributesTo( new Map() );
-
-		if ( changed.size > 0 ) {
-			// Fire event with exact data (fire only if anything changed).
-			const attributeKeys = Array.from( changed );
-			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
-		}
-	}
-
-	/**
 	 * Removes all attributes from the selection and sets attributes according to the surrounding nodes.
 	 *
 	 * @protected
