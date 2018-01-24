@@ -33,16 +33,12 @@ describe( 'AttributeCommand', () => {
 					isObject: true
 				} );
 
-				model.schema.on( 'checkAttribute', ( evt, args ) => {
-					const ctx = args[ 0 ];
-					const attributeName = args[ 1 ];
-
+				model.schema.addAttributeCheck( ( ctx, attributeName ) => {
 					// Allow 'bold' on p>$text.
 					if ( ctx.endsWith( 'p $text' ) && attributeName == 'bold' ) {
-						evt.stop();
-						evt.return = true;
+						return true;
 					}
-				}, { priority: 'high' } );
+				} );
 			} );
 	} );
 
