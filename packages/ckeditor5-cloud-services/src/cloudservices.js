@@ -105,7 +105,7 @@ CloudServices.Token = Token;
  *					tokenUrl: TOKEN_URL
  *				},
  * 				plugins: [ ArticlePluginSet, EasyImage ],
- *				toolbar: [ 'headings', 'undo', 'redo', 'insertImage' ],
+ *				toolbar: [ 'headings', '|', 'undo', 'redo', 'insertImage' ],
  *				image: {
  *					toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
  *				}
