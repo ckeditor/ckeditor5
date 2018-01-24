@@ -82,8 +82,4 @@ describe( 'addToolbarToDropdown()', () => {
 			expect( dropdownView.toolbarView.isVertical ).to.be.true;
 		} );
 	} );
-
-	describe( 'buttons', () => {
-		// TODO: test me!
-	} );
 } );
