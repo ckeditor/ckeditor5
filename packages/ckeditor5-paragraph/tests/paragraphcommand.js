@@ -109,12 +109,9 @@ describe( 'ParagraphCommand', () => {
 				allowIn: 'restricted'
 			} );
 
-			model.schema.on( 'checkChild', ( evt, args ) => {
-				const def = model.schema.getDefinition( args[ 1 ] );
-
-				if ( args[ 0 ].endsWith( 'restricted' ) && def.name == 'paragraph' ) {
-					evt.stop();
-					evt.return = false;
+			model.schema.addChildCheck( ( ctx, childDef ) => {
+				if ( ctx.endsWith( 'restricted' ) && childDef.name == 'paragraph' ) {
+					return false;
 				}
 			} );
 
