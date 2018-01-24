@@ -18,7 +18,7 @@ window.setInterval( function() {
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Paragraph, Heading ],
-		toolbar: [ 'headings', 'undo', 'redo' ]
+		toolbar: [ 'headings', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -22,7 +22,7 @@ window.setInterval( function() {
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Paragraph, Bold, Italic, Heading ],
-		toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
+		toolbar: [ 'headings', '|', 'bold', 'italic', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -15,7 +15,7 @@ import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 const config = {
 	plugins: [ Essentials, Paragraph, Bold, Italic, Heading ],
-	toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
+	toolbar: [ 'headings', '|', 'bold', 'italic', 'undo', 'redo' ]
 };
 
 window.setInterval( function() {
