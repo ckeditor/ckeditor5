@@ -9,7 +9,7 @@
 
 import ToolbarView from '../../toolbar/toolbarview';
 
-import '../../theme/components/dropdown/toolbardropdown.css';
+import '../../../theme/components/dropdown/toolbardropdown.css';
 
 /**
  * Creates an instance of {@link module:ui/dropdown/button/buttondropdownview~ButtonDropdownView} class using
