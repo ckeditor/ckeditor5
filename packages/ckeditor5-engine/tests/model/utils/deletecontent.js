@@ -466,28 +466,22 @@ describe( 'DataController utils', () => {
 				beforeEach( () => {
 					const schema = model.schema;
 
-					schema.on( 'checkAttribute', ( evt, args ) => {
-						const ctx = args[ 0 ];
-						const attributeName = args[ 1 ];
+					schema.addAttributeCheck( ( ctx, attributeName ) => {
+						// Disallow 'c' on pchild>pchild>$text.
+						if ( ctx.endsWith( 'pchild pchild $text' ) && attributeName == 'c' ) {
+							return false;
+						}
 
 						// Allow 'a' and 'b' on paragraph>$text.
 						if ( ctx.endsWith( 'paragraph $text' ) && [ 'a', 'b' ].includes( attributeName ) ) {
-							evt.stop();
-							evt.return = true;
+							return true;
 						}
 
 						// Allow 'b' and 'c' in pchild>$text.
 						if ( ctx.endsWith( 'pchild $text' ) && [ 'b', 'c' ].includes( attributeName ) ) {
-							evt.stop();
-							evt.return = true;
+							return true;
 						}
-
-						// Disallow 'c' on pchild>pchild>$text.
-						if ( ctx.endsWith( 'pchild pchild $text' ) && attributeName == 'c' ) {
-							evt.stop();
-							evt.return = false;
-						}
-					}, { priority: 'high' } );
+					} );
 
 					schema.extend( 'pchild', { allowIn: 'pchild' } );
 				} );

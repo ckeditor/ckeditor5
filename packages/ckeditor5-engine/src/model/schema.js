@@ -423,8 +423,8 @@ export default class Schema {
 	 * Example:
 	 *
 	 *		// Disallow heading1 directly inside a blockQuote.
-	 *		schema.addChildCheck( ( ctx, childDefinition ) => {
-	 *			if ( ctx.endsWith( 'blockQuote' ) && childDefinition.name == 'heading1' ) {
+	 *		schema.addChildCheck( ( context, childDefinition ) => {
+	 *			if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'heading1' ) {
 	 *				return false;
 	 *			}
 	 *		} );
@@ -459,6 +459,56 @@ export default class Schema {
 			}
 
 			const retValue = callback( ctx, childDef );
+
+			if ( typeof retValue == 'boolean' ) {
+				evt.stop();
+				evt.return = retValue;
+			}
+		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Allows registering a callback to the {@link #checkAttribute} method calls.
+	 *
+	 * Callbacks allow you to implement rules which are not otherwise possible to achieve
+	 * by using the declarative API of {@link module:engine/model/schema~SchemaItemDefinition}.
+	 * For example, by using this method you can disallow attribute if node to which it is applied
+	 * is contained within some other element (e.g. you want to disallow `bold` on `$text` within `heading1`).
+	 *
+	 * This method is a shorthand for using the {@link #event:checkAttribute} event. For even better control,
+	 * you can use that event instead.
+	 *
+	 * Example:
+	 *
+	 *		// Disallow bold on $text inside heading1.
+	 *		schema.addChildCheck( ( context, attributeName ) => {
+	 *			if ( context.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
+	 *				return false;
+	 *			}
+	 *		} );
+	 *
+	 * Which translates to:
+	 *
+	 *		schema.on( 'checkAttribute', ( evt, args ) => {
+	 *			const context = args[ 0 ];
+	 *			const attributeName = args[ 1 ];
+	 *
+	 *			if ( context.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
+	 *				// Prevent next listeners from being called.
+	 *				evt.stop();
+	 *				// Set the checkAttribute()'s return value.
+	 *				evt.return = false;
+	 *			}
+	 *		}, { priority: 'high' } );
+	 *
+	 * @param {Function} callback The callback to be called. It is called with two parameters:
+	 * {@link module:engine/model/schema~SchemaContext} (context) instance and attribute name.
+	 * The callback may return `true/false` to override `checkAttribute()`'s return value. If it does not return
+	 * a boolean value, the default algorithm (or other callbacks) will define `checkAttribute()`'s return value.
+	 */
+	addAttributeCheck( callback ) {
+		this.on( 'checkAttribute', ( evt, [ ctx, attributeName ] ) => {
+			const retValue = callback( ctx, attributeName );
 
 			if ( typeof retValue == 'boolean' ) {
 				evt.stop();
@@ -714,6 +764,10 @@ mix( Schema, ObservableMixin );
  * Event fired when the {@link #checkAttribute} method is called. It allows plugging in
  * additional behavior – e.g. implementing rules which cannot be defined using the declarative
  * {@link module:engine/model/schema~SchemaItemDefinition} interface.
+ *
+ * **Note:** The {@link #addAttributeCheck} method is a more handy way to register callbacks. Internally,
+ * it registers a listener to this event but comes with a simpler API and it is the recommended choice
+ * in most of the cases.
  *
  * The {@link #checkAttribute} method fires an event because it's
  * {@link module:utils/observablemixin~ObservableMixin#decorate decorated} with it. Thanks to that you can

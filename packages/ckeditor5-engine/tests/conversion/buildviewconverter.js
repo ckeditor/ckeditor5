@@ -522,15 +522,11 @@ describe( 'View converter builder', () => {
 	// 	buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
 
 	// 	// Disallow bold in paragraph>$text.
-	// 	schema.on( 'checkAttribute', ( evt, args ) => {
-	// 		const context = args[ 0 ];
-	// 		const attributeName = args[ 1 ];
-
+	// 	schema.addAttributeCheck( ( ctx, attributeName ) => {
 	// 		if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'bold' ) {
-	// 			evt.stop();
-	// 			evt.return = false;
+	// 			return false;
 	// 		}
-	// 	}, { priority: 'high' } );
+	// 	} );
 
 	// 	dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 

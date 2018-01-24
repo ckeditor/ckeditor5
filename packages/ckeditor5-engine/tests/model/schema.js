@@ -576,6 +576,71 @@ describe( 'Schema', () => {
 		} );
 	} );
 
+	describe( 'addAttributeCheck()', () => {
+		beforeEach( () => {
+			schema.register( 'paragraph', {
+				allowAttributes: 'foo'
+			} );
+		} );
+
+		it( 'adds a high-priority listener', () => {
+			const order = [];
+
+			schema.on( 'checkAttribute', () => {
+				order.push( 'checkAttribute:high-before' );
+			}, { priority: 'high' } );
+
+			schema.addAttributeCheck( () => {
+				order.push( 'addAttributeCheck' );
+			} );
+
+			schema.on( 'checkAttribute', () => {
+				order.push( 'checkAttribute:high-after' );
+			}, { priority: 'high' } );
+
+			schema.checkAttribute( r1p1, 'foo' );
+
+			expect( order.join() ).to.equal( 'checkAttribute:high-before,addAttributeCheck,checkAttribute:high-after' );
+		} );
+
+		it( 'stops the event and overrides the return value when callback returned true', () => {
+			expect( schema.checkAttribute( r1p1, 'bar' ) ).to.be.false;
+
+			schema.addAttributeCheck( () => {
+				return true;
+			} );
+
+			schema.on( 'checkAttribute', () => {
+				throw new Error( 'the event should be stopped' );
+			}, { priority: 'high' } );
+
+			expect( schema.checkAttribute( r1p1, 'bar' ) ).to.be.true;
+		} );
+
+		it( 'stops the event and overrides the return value when callback returned false', () => {
+			expect( schema.checkAttribute( r1p1, 'foo' ) ).to.be.true;
+
+			schema.addAttributeCheck( () => {
+				return false;
+			} );
+
+			schema.on( 'checkAttribute', () => {
+				throw new Error( 'the event should be stopped' );
+			}, { priority: 'high' } );
+
+			expect( schema.checkAttribute( r1p1, 'foo' ) ).to.be.false;
+		} );
+
+		it( 'receives context and attribute name as params', () => {
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
+				expect( ctx ).to.be.instanceOf( SchemaContext );
+				expect( attributeName ).to.equal( 'foo' );
+			} );
+
+			expect( schema.checkAttribute( r1p1, 'foo' ) ).to.be.true;
+		} );
+	} );
+
 	describe( 'getLimitElement()', () => {
 		let model, doc, root;
 
@@ -707,22 +772,17 @@ describe( 'Schema', () => {
 				allowAttributes: [ 'name', 'title' ]
 			} );
 
-			schema.on( 'checkAttribute', ( evt, args ) => {
-				const ctx = args[ 0 ];
-				const attributeName = args[ 1 ];
-
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Allow 'bold' on p>$text.
 				if ( ctx.endsWith( 'p $text' ) && attributeName == 'bold' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
 
 				// Allow 'bold' on $root>p.
 				if ( ctx.endsWith( '$root p' ) && attributeName == 'bold' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
-			}, { priority: 'high' } );
+			} );
 		} );
 
 		describe( 'when selection is collapsed', () => {
@@ -797,22 +857,17 @@ describe( 'Schema', () => {
 				allowWhere: '$text'
 			} );
 
-			schema.on( 'checkAttribute', ( evt, args ) => {
-				const ctx = args[ 0 ];
-				const attributeName = args[ 1 ];
-
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Allow 'bold' on p>$text.
 				if ( ctx.endsWith( 'p $text' ) && attributeName == 'bold' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
 
 				// Allow 'bold' on $root>p.
 				if ( ctx.endsWith( '$root p' ) && attributeName == 'bold' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
-			}, { priority: 'high' } );
+			} );
 
 			setData( model, '<p>foo<img />bar</p>' );
 
@@ -848,16 +903,12 @@ describe( 'Schema', () => {
 		it( 'should return three ranges when attribute is not allowed on one element but is allowed on its child', () => {
 			schema.extend( '$text', { allowIn: 'img' } );
 
-			schema.on( 'checkAttribute', ( evt, args ) => {
-				const ctx = args[ 0 ];
-				const attributeName = args[ 1 ];
-
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Allow 'bold' on img>$text.
 				if ( ctx.endsWith( 'img $text' ) && attributeName == 'bold' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
-			}, { priority: 'high' } );
+			} );
 
 			setData( model, '[<p>foo<img>xxx</img>bar</p>]' );
 
@@ -891,16 +942,12 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'should split range into two ranges and omit disallowed element', () => {
-			schema.on( 'checkAttribute', ( evt, args ) => {
-				const ctx = args[ 0 ];
-				const attributeName = args[ 1 ];
-
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Disallow 'bold' on p>img.
 				if ( ctx.endsWith( 'p img' ) && attributeName == 'bold' ) {
-					evt.stop();
-					evt.return = false;
+					return false;
 				}
-			}, { priority: 'high' } );
+			} );
 
 			const result = schema.getValidRanges( ranges, attribute );
 
@@ -960,34 +1007,27 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'should filter out disallowed attributes from all descendants of given nodes', () => {
-			schema.on( 'checkAttribute', ( evt, args ) => {
-				const ctx = args[ 0 ];
-				const attributeName = args[ 1 ];
-
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Allow 'a' on div>$text.
 				if ( ctx.endsWith( 'div $text' ) && attributeName == 'a' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
 
 				// Allow 'b' on div>paragraph>$text.
 				if ( ctx.endsWith( 'div paragraph $text' ) && attributeName == 'b' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
 
 				// Allow 'a' on div>image.
 				if ( ctx.endsWith( 'div image' ) && attributeName == 'a' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
 
 				// Allow 'b' on div>paragraph>image.
 				if ( ctx.endsWith( 'div paragraph image' ) && attributeName == 'b' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
-			}, { priority: 'high' } );
+			} );
 
 			const foo = new Text( 'foo', { a: 1, b: 1 } );
 			const bar = new Text( 'bar', { a: 1, b: 1 } );
@@ -1755,15 +1795,11 @@ describe( 'Schema', () => {
 				} );
 
 				// Disallow bold in heading1.
-				schema.on( 'checkAttribute', ( evt, args ) => {
-					const ctx = args[ 0 ];
-					const attributeName = args[ 1 ];
-
+				schema.addAttributeCheck( ( ctx, attributeName ) => {
 					if ( ctx.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
-						evt.stop();
-						evt.return = false;
+						return false;
 					}
-				}, { priority: 'high' } );
+				} );
 			},
 			() => {
 				schema.extend( '$block', {

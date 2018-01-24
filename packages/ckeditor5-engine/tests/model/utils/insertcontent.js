@@ -613,34 +613,27 @@ describe( 'DataController utils', () => {
 				schema.extend( 'element', { allowIn: 'paragraph' } );
 				schema.extend( 'element', { allowIn: 'heading1' } );
 
-				schema.on( 'checkAttribute', ( evt, args ) => {
-					const ctx = args[ 0 ];
-					const attributeName = args[ 1 ];
-
+				schema.addAttributeCheck( ( ctx, attributeName ) => {
 					// Allow 'b' on paragraph>$text.
 					if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'b' ) {
-						evt.stop();
-						evt.return = true;
+						return true;
 					}
 
 					// Allow 'b' on paragraph>element>$text.
 					if ( ctx.endsWith( 'paragraph element $text' ) && attributeName == 'b' ) {
-						evt.stop();
-						evt.return = true;
+						return true;
 					}
 
 					// Allow 'a' and 'b' on heading1>element>$text.
 					if ( ctx.endsWith( 'heading1 element $text' ) && [ 'a', 'b' ].includes( attributeName ) ) {
-						evt.stop();
-						evt.return = true;
+						return true;
 					}
 
 					// Allow 'b' on element>table>td>$text.
 					if ( ctx.endsWith( 'element table td $text' ) && attributeName == 'b' ) {
-						evt.stop();
-						evt.return = true;
+						return true;
 					}
-				}, { priority: 'high' } );
+				} );
 			} );
 
 			it( 'filters out disallowed elements and leaves out the text', () => {
