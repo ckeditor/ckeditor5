@@ -7,8 +7,6 @@
  * @module list/converters
  */
 
-import ViewListItemElement from './viewlistitemelement';
-
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 
@@ -17,6 +15,7 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import ViewTreeWalker from '@ckeditor/ckeditor5-engine/src/view/treewalker';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
+import { createViewListItemElement } from './utils';
 
 /**
  * A model-to-view converter for `listItem` model element insertion.
@@ -792,7 +791,7 @@ export function modelIndentPasteFixer( evt, [ content, selection ] ) {
 // The function then returns created view list item (<li>).
 function generateLiInUl( modelItem, mapper ) {
 	const listType = modelItem.getAttribute( 'type' ) == 'numbered' ? 'ol' : 'ul';
-	const viewItem = new ViewListItemElement();
+	const viewItem = createViewListItemElement();
 
 	const viewList = new ViewContainerElement( listType, null );
 	viewList.appendChildren( viewItem );
