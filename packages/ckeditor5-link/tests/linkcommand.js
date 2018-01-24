@@ -37,12 +37,11 @@ describe( 'LinkCommand', () => {
 		beforeEach( () => {
 			model.schema.register( 'x', { inheritAllFrom: '$block' } );
 
-			model.schema.on( 'checkAttribute', ( evt, args ) => {
-				if ( args[ 0 ].endsWith( 'x $text' ) && args[ 1 ] == 'linkHref' ) {
-					evt.stop();
-					evt.return = false;
+			model.schema.addAttributeCheck( ( ctx, attributeName ) => {
+				if ( ctx.endsWith( 'x $text' ) && attributeName == 'linkHref' ) {
+					return false;
 				}
-			}, { priority: 'high' } );
+			} );
 		} );
 
 		describe( 'when selection is collapsed', () => {
@@ -238,12 +237,11 @@ describe( 'LinkCommand', () => {
 			} );
 
 			it( 'should not insert text with `linkHref` attribute when is not allowed in parent', () => {
-				model.schema.on( 'checkAttribute', ( evt, args ) => {
-					if ( args[ 0 ].endsWith( 'p $text' ) && args[ 1 ] == 'linkHref' ) {
-						evt.stop();
-						evt.return = false;
+				model.schema.addAttributeCheck( ( ctx, attributeName ) => {
+					if ( ctx.endsWith( 'p $text' ) && attributeName == 'linkHref' ) {
+						return false;
 					}
-				}, { priority: 'high' } );
+				} );
 
 				setData( model, '<p>foo[]bar</p>' );
 
