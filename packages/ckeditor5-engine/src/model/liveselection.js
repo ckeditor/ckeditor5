@@ -338,7 +338,7 @@ export default class LiveSelection extends Selection {
 			}
 		}
 
-		this._setAttributesTo( newAttributes, false );
+		this._setAttributesTo( newAttributes );
 
 		// Let's evaluate which attributes really changed.
 		const changed = [];
@@ -458,11 +458,9 @@ export default class LiveSelection extends Selection {
 	 *
 	 * @private
 	 * @param {Map.<String,*>} attrs Iterable object containing attributes to be set.
-	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
-	 * is caused by `Batch` API.
 	 * @returns {Set.<String>} Changed attribute keys.
 	 */
-	_setAttributesTo( attrs, directChange = true ) {
+	_setAttributesTo( attrs ) {
 		const changed = new Set();
 
 		for ( const [ oldKey, oldValue ] of this.getAttributes() ) {
@@ -472,14 +470,14 @@ export default class LiveSelection extends Selection {
 			}
 
 			// Attribute still might not get removed because of priorities.
-			if ( this._removeAttribute( oldKey, directChange ) ) {
+			if ( this._removeAttribute( oldKey, false ) ) {
 				changed.add( oldKey );
 			}
 		}
 
 		for ( const [ key, value ] of attrs ) {
 			// Attribute may not be set because of attributes or because same key/value is already added.
-			const gotAdded = this._setAttribute( key, value, directChange );
+			const gotAdded = this._setAttribute( key, value, false );
 
 			if ( gotAdded ) {
 				changed.add( key );

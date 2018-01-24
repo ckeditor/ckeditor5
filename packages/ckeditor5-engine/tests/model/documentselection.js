@@ -304,12 +304,26 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	// TODO - merge with other setTo's
 	describe( 'setTo()', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection._setTo( [ { invalid: 'range' } ] );
 			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
+		} );
+
+		it( 'should log a warning when trying to set selection to the graveyard', () => {
+			// eslint-disable-next-line no-undef
+			const warnStub = sinon.stub( console, 'warn' );
+
+			const range = new Range( new Position( model.document.graveyard, [ 0 ] ) );
+			selection._setTo( range );
+
+			expect( warnStub.calledOnce ).to.equal( true );
+			expect( warnStub.getCall( 0 ).args[ 0 ] ).to.match( /model-selection-range-in-graveyard/ );
+
+			expect( selection._ranges ).to.deep.equal( [] );
+
+			warnStub.restore();
 		} );
 
 		it( 'should detach removed ranges', () => {
