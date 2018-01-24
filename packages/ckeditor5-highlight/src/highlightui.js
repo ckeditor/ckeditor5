@@ -17,15 +17,13 @@ import penIcon from './../theme/icons/pen.svg';
 import eraserIcon from './../theme/icons/eraser.svg';
 
 import Model from '@ckeditor/ckeditor5-ui/src/model';
-import {
-	addToolbarToDropdown,
-	closeDropdownOnBlur,
-	closeDropdownOnExecute,
-	createDropdownView,
-	createSplitButtonForDropdown,
-	enableModelIfOneIsEnabled,
-	focusDropdownContentsOnArrows
-} from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import addToolbarToDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/addtoolbartodropdown';
+import closeDropdownOnBlur from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonblur';
+import closeDropdownOnExecute from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonexecute';
+import createDropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/createdropdownview';
+import createSplitButtonForDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/createsplitbuttonfordropdown';
+import enableModelIfOneIsEnabled from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/enablemodelifoneisenabled';
+import focusDropdownContentsOnArrows from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/focusdropdowncontentsonarrows';
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 
 import './../theme/highlight.css';
