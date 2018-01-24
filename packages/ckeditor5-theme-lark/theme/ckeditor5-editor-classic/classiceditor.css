@@ -27,7 +27,8 @@
 	}
 }
 
-.ck-editor__editable {
+/* Note: Use ck-editor__main to make sure these styles don't apply to other editor types */
+.ck-editor__main .ck-editor__editable {
 	@mixin ck-rounded-corners {
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
