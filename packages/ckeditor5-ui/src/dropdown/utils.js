@@ -7,7 +7,6 @@
  * @module ui/dropdown/helpers
  */
 
-import clickOutsideHandler from '../bindings/clickoutsidehandler';
 import SplitButtonView from '../button/splitbuttonview';
 import ButtonView from '../button/buttonview';
 import DropdownPanelView from './dropdownpanelview';
@@ -18,26 +17,6 @@ import ListItemView from '../list/listitemview';
 
 // TODO: This should be per-component import AFAIK. It will result in smaller builds that don't use dropdown with toolbar.
 import '../../theme/components/dropdown/toolbardropdown.css';
-
-/**
- * Adds a behavior to a dropdownView that closes opened dropdown on user click outside the dropdown.
- *
- * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
- */
-export function closeDropdownOnBlur( dropdownView ) {
-	dropdownView.on( 'render', () => {
-		clickOutsideHandler( {
-			emitter: dropdownView,
-			activator: () => dropdownView.isOpen,
-			callback: () => {
-				dropdownView.isOpen = false;
-			},
-			contextElements: [ dropdownView.element ]
-		} );
-	} );
-}
-
-/** TODO: new methods below - refactor to own files later */
 
 export function createButtonForDropdown( model, locale ) {
 	const buttonView = new ButtonView( locale );

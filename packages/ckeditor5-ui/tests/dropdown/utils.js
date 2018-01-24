@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, Event */
+/* globals document */
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import utilsTestUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -21,7 +21,6 @@ import SplitButtonView from '../../src/button/splitbuttonview';
 import {
 	addListViewToDropdown,
 	addToolbarToDropdown,
-	closeDropdownOnBlur,
 	createButtonForDropdown,
 	createDropdownView,
 	createSplitButtonForDropdown,
@@ -44,60 +43,6 @@ describe( 'utils', () => {
 		if ( dropdownView.element ) {
 			dropdownView.element.remove();
 		}
-	} );
-
-	describe( 'closeDropdownOnBlur()', () => {
-		beforeEach( () => {
-			closeDropdownOnBlur( dropdownView );
-
-			dropdownView.render();
-			document.body.appendChild( dropdownView.element );
-		} );
-
-		it( 'listens to view#isOpen and reacts to DOM events (valid target)', () => {
-			// Open the dropdown.
-			dropdownView.isOpen = true;
-
-			// Fire event from outside of the dropdown.
-			document.body.dispatchEvent( new Event( 'mousedown', {
-				bubbles: true
-			} ) );
-
-			// Closed the dropdown.
-			expect( dropdownView.isOpen ).to.be.false;
-
-			// Fire event from outside of the dropdown.
-			document.body.dispatchEvent( new Event( 'mousedown', {
-				bubbles: true
-			} ) );
-
-			// Dropdown is still closed.
-			expect( dropdownView.isOpen ).to.be.false;
-		} );
-
-		it( 'listens to view#isOpen and reacts to DOM events (invalid target)', () => {
-			// Open the dropdown.
-			dropdownView.isOpen = true;
-
-			// Event from view.element should be discarded.
-			dropdownView.element.dispatchEvent( new Event( 'mousedown', {
-				bubbles: true
-			} ) );
-
-			// Dropdown is still open.
-			expect( dropdownView.isOpen ).to.be.true;
-
-			// Event from within view.element should be discarded.
-			const child = document.createElement( 'div' );
-			dropdownView.element.appendChild( child );
-
-			child.dispatchEvent( new Event( 'mousedown', {
-				bubbles: true
-			} ) );
-
-			// Dropdown is still open.
-			expect( dropdownView.isOpen ).to.be.true;
-		} );
 	} );
 
 	describe( 'createButtonForDropdown()', () => {
