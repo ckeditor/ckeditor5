@@ -8,15 +8,19 @@ import HighlightCommand from './../src/highlightcommand';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Position from '../../ckeditor5-engine/src/model/position';
+import Range from '../../ckeditor5-engine/src/model/range';
 
 describe( 'HighlightCommand', () => {
-	let editor, model, command;
+	let editor, model, doc, root, command;
 
 	beforeEach( () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
+				doc = model.document;
+				root = doc.getRoot();
 
 				command = new HighlightCommand( newEditor );
 				editor.commands.add( 'highlight', command );
@@ -82,6 +86,71 @@ describe( 'HighlightCommand', () => {
 					expect( getData( model ) ).to.equal( '<paragraph>abcfoo[]barxyz</paragraph>' );
 
 					expect( command.value ).to.be.undefined;
+				} );
+
+				it( 'should change selection attribute in non-empty parent', () => {
+					setData( model, '<paragraph>a[]bc<$text highlight="marker">foobar</$text>xyz</paragraph>' );
+					expect( command.value ).to.be.undefined;
+
+					command.execute( { value: 'foo' } );
+					expect( command.value ).to.equal( 'foo' );
+
+					expect( doc.selection.hasAttribute( 'highlight' ) ).to.be.true;
+
+					command.execute();
+
+					expect( command.value ).to.be.undefined;
+					expect( doc.selection.hasAttribute( 'highlight' ) ).to.be.false;
+				} );
+
+				it( 'should not store attribute change on selection if selection is collapsed in non-empty parent', () => {
+					setData( model, '<paragraph>a[]bc<$text highlight="marker">foobar</$text>xyz</paragraph>' );
+
+					command.execute( { value: 'foo' } );
+
+					// It should not save that bold was executed at position ( root, [ 0, 1 ] ).
+
+					model.change( () => {
+						// Simulate clicking right arrow key by changing selection ranges.
+						doc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+
+						// Get back to previous selection.
+						doc.selection.setRanges( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
+					} );
+
+					expect( command.value ).to.be.undefined;
+				} );
+
+				it( 'should change selection attribute and store it if selection is collapsed in empty parent', () => {
+					setData( model, '<paragraph>abc<$text highlight="marker">foobar</$text>xyz</paragraph><paragraph>[]</paragraph>' );
+
+					expect( command.value ).to.be.undefined;
+
+					command.execute( { value: 'foo' } );
+
+					expect( command.value ).to.equal( 'foo' );
+					expect( doc.selection.hasAttribute( 'highlight' ) ).to.be.true;
+
+					// Attribute should be stored.
+					// Simulate clicking somewhere else in the editor.
+					model.change( () => {
+						doc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+					} );
+
+					expect( command.value ).to.be.undefined;
+
+					// Go back to where attribute was stored.
+					model.change( () => {
+						doc.selection.setRanges( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
+					} );
+
+					// Attribute should be restored.
+					expect( command.value ).to.equal( 'foo' );
+
+					command.execute();
+
+					expect( command.value ).to.be.undefined;
+					expect( doc.selection.hasAttribute( 'highlight' ) ).to.be.false;
 				} );
 
 				it( 'should change entire highlight when inside highlighted text', () => {

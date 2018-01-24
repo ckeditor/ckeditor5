@@ -25,7 +25,8 @@ export default class HighlightCommand extends Command {
 		const doc = model.document;
 
 		/**
-		 * A flag indicating whether the command is active, which means that the selection has highlight attribute set.
+		 * A value indicating whether the command is active. If the selection has highlight attribute
+		 * set the value will be set to highlight attribute value.
 		 *
 		 * @observable
 		 * @readonly
@@ -33,10 +34,6 @@ export default class HighlightCommand extends Command {
 		 */
 		this.value = doc.selection.getAttribute( 'highlight' );
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'highlight' );
-		// Alternate:
-		// const selection = doc.selection;
-		// this.isEnabled = ( !selection.isCollapsed || selection.hasAttribute( 'highlight' ) )
-		// 		&& model.schema.checkAttributeInSelection( doc.selection, 'highlight' );
 	}
 
 	/**
@@ -53,8 +50,8 @@ export default class HighlightCommand extends Command {
 		const document = model.document;
 		const selection = document.selection;
 
-		// Do not apply highlight on collapsed selection when not inside existing highlight.
-		if ( selection.isCollapsed && !this.value ) {
+		// Do not apply highlight on wrong selection.
+		if ( !this.isEnabled ) {
 			return;
 		}
 
@@ -82,6 +79,7 @@ export default class HighlightCommand extends Command {
 					if ( !highlighter || this.value === highlighter ) {
 						// ...remove attribute when passing highlighter different then current or executing "eraser".
 						writer.removeAttribute( 'highlight', highlightRange );
+						selection.removeAttribute( 'highlight' );
 					} else {
 						// ...update `highlight` value.
 						writer.setAttribute( 'highlight', highlighter, highlightRange );
@@ -89,8 +87,8 @@ export default class HighlightCommand extends Command {
 						// And create new range wrapping changed highlighter.
 						selection.setRanges( [ highlightRange ] );
 					}
-				} else {
-					// TODO
+				} else if ( highlighter ) {
+					selection.setAttribute( 'highlight', highlighter );
 				}
 			} else {
 				for ( const range of ranges ) {
