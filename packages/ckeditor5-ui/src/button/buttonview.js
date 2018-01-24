@@ -178,9 +178,6 @@ export default class ButtonView extends View {
 		 */
 		this.labelView = this._createLabelView();
 
-		// TODO: used for Icon style hack in Highlight UI
-		this.iconView = new IconView();
-
 		/**
 		 * Tooltip of the button bound to the template.
 		 *
@@ -255,7 +252,7 @@ export default class ButtonView extends View {
 		super.render();
 
 		if ( this.icon ) {
-			const iconView = this.iconView;
+			const iconView = this.iconView = new IconView();
 
 			iconView.bind( 'content' ).to( this, 'icon' );
 
