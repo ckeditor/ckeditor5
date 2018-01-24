@@ -163,12 +163,13 @@ export default class HighlightUI extends Plugin {
 				commandValue: startingHighlighter.model
 			} );
 
-			// Dropdown button changes to selection (command.value).
-			// If selection is in highlight it get active highlight appearance (icon, color).
-			// Otherwise it gets appearance (icon, color) of last executed highlight.
+			// Dropdown button changes to selection (command.value):
+			// - If selection is in highlight it get active highlight appearance (icon, color) and is activated.
+			// - Otherwise it gets appearance (icon, color) of last executed highlight.
 			model.bind( 'icon' ).to( command, 'value', value => getIconForType( getActiveOption( value, 'type' ) ) );
 			model.bind( 'color' ).to( command, 'value', value => getActiveOption( value, 'color' ) );
 			model.bind( 'commandValue' ).to( command, 'value', value => getActiveOption( value, 'model' ) );
+			model.bind( 'isOn' ).to( command, 'value', value => !!value );
 
 			// Create buttons array.
 			const buttons = options.map( option => {
