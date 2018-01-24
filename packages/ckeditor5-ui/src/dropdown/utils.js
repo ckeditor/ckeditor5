@@ -14,15 +14,6 @@ import ListItemView from '../list/listitemview';
 // TODO: This should be per-component import AFAIK. It will result in smaller builds that don't use dropdown with toolbar.
 import '../../theme/components/dropdown/toolbardropdown.css';
 
-export function enableModelIfOneIsEnabled( model, observables ) {
-	model.bind( 'isEnabled' ).to(
-		// Bind to #isEnabled of each observable...
-		...getBindingTargets( observables, 'isEnabled' ),
-		// ...and set it true if any observable #isEnabled is true.
-		( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
-	);
-}
-
 /**
  * Creates an instance of {@link module:ui/dropdown/list/listdropdownview~ListDropdownView} class using
  * a provided {@link module:ui/dropdown/list/listdropdownmodel~ListDropdownModel}.
