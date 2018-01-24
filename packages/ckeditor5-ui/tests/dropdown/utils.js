@@ -22,7 +22,6 @@ import {
 	addListViewToDropdown,
 	addToolbarToDropdown,
 	closeDropdownOnBlur,
-	closeDropdownOnExecute,
 	createButtonForDropdown,
 	createDropdownView,
 	createSplitButtonForDropdown,
@@ -45,25 +44,6 @@ describe( 'utils', () => {
 		if ( dropdownView.element ) {
 			dropdownView.element.remove();
 		}
-	} );
-
-	describe( 'closeDropdownOnExecute()', () => {
-		beforeEach( () => {
-			closeDropdownOnExecute( dropdownView );
-
-			dropdownView.render();
-			document.body.appendChild( dropdownView.element );
-		} );
-
-		it( 'changes view#isOpen on view#execute', () => {
-			dropdownView.isOpen = true;
-
-			dropdownView.fire( 'execute' );
-			expect( dropdownView.isOpen ).to.be.false;
-
-			dropdownView.fire( 'execute' );
-			expect( dropdownView.isOpen ).to.be.false;
-		} );
 	} );
 
 	describe( 'closeDropdownOnBlur()', () => {

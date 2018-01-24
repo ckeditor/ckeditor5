@@ -19,10 +19,11 @@ import {
 	addListViewToDropdown,
 	addToolbarToDropdown,
 	closeDropdownOnBlur,
-	closeDropdownOnExecute,
 	createButtonForDropdown,
 	createDropdownView
 } from '../../../src/dropdown/utils';
+
+import closeDropdownOnExecute from '../../../src/dropdown/helpers/closedropdownonexecute';
 import focusDropdownContentsOnArrows from '../../../src/dropdown/helpers/focusdropdowncontentsonarrows';
 
 const ui = testUtils.createTestUIView( {

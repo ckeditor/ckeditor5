@@ -20,18 +20,6 @@ import ListItemView from '../list/listitemview';
 import '../../theme/components/dropdown/toolbardropdown.css';
 
 /**
- * Adds a behavior to a dropdownView that closes dropdown view on any view collection item's "execute" event.
- *
- * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
- */
-export function closeDropdownOnExecute( dropdownView ) {
-	// Close the dropdown when one of the list items has been executed.
-	dropdownView.on( 'execute', () => {
-		dropdownView.isOpen = false;
-	} );
-}
-
-/**
  * Adds a behavior to a dropdownView that closes opened dropdown on user click outside the dropdown.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
