@@ -132,7 +132,7 @@ describe( 'HighlightUI', () => {
 
 			function validateButton( which ) {
 				expect( button.icon ).to.equal( buttons[ which ].icon );
-				expect( button.buttonView.iconView.color ).to.equal( options[ which ].color );
+				expect( button.actionView.color ).to.equal( options[ which ].color );
 			}
 
 			it( 'should have properties of first defined highlighter', () => {

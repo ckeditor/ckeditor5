@@ -83,6 +83,7 @@ export default class HighlightUI extends Plugin {
 	_addHighlighterButton( option ) {
 		const command = this.editor.commands.get( 'highlight' );
 
+		// TODO: change naming
 		this._addButton( 'highlight:' + option.model, option.title, getIconForType( option.type ), option.model, decorateHighlightButton );
 
 		function decorateHighlightButton( button ) {
@@ -210,6 +211,12 @@ export default class HighlightUI extends Plugin {
 				attributes: {
 					class: [ 'ck-highlight-dropdown' ]
 				}
+			} );
+
+			// Execute current action from dropdown's split button action button.
+			dropdownView.buttonView.on( 'execute', () => {
+				editor.execute( 'highlight', { value: model.commandValue } );
+				editor.editing.view.focus();
 			} );
 
 			// Returns active highlighter option depending on current command value.
