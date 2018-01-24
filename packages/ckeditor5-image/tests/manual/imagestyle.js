@@ -29,7 +29,7 @@ ClassicEditor
 			ClipboardPlugin,
 			ImageStyle
 		],
-		toolbar: [ 'headings', 'undo', 'redo' ],
+		toolbar: [ 'headings', '|', 'undo', 'redo' ],
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide' ]
 		}
@@ -54,7 +54,7 @@ ClassicEditor
 			ClipboardPlugin,
 			ImageStyle
 		],
-		toolbar: [ 'headings', 'undo', 'redo' ],
+		toolbar: [ 'headings', '|', 'undo', 'redo' ],
 		image: {
 			styles: [ 'imageStyleAlignLeft', 'imageStyleAlignCenter', 'imageStyleAlignRight' ],
 			toolbar: [ 'imageStyleAlignLeft', 'imageStyleAlignCenter', 'imageStyleAlignRight' ]

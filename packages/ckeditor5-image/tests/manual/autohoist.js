@@ -24,7 +24,7 @@ ClassicEditor
 			Paragraph, Heading, Image, ImageToolbar,
 			ImageCaption, ImageStyle, Bold, Italic, Heading, List
 		],
-		toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ],
+		toolbar: [ 'headings', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ],
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
 		}
