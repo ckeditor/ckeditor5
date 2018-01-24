@@ -21,7 +21,7 @@ function initEditor() {
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
-			toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
+			toolbar: [ 'headings', '|', 'bold', 'italic', 'undo', 'redo' ]
 		} )
 		.then( newEditor => {
 			console.log( 'Editor was initialized', newEditor );
