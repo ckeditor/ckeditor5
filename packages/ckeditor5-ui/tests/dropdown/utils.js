@@ -16,14 +16,12 @@ import ListItemView from '../../src/list/listitemview';
 import ListView from '../../src/list/listview';
 import DropdownView from '../../src/dropdown/dropdownview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
-import SplitButtonView from '../../src/button/splitbuttonview';
 import createButtonForDropdown from '../../src/dropdown/helpers/createbuttonfordropdown';
 
 import {
 	addListViewToDropdown,
 	addToolbarToDropdown,
 	createDropdownView,
-	createSplitButtonForDropdown,
 	enableModelIfOneIsEnabled
 } from '../../src/dropdown/utils';
 
@@ -43,20 +41,6 @@ describe( 'utils', () => {
 		if ( dropdownView.element ) {
 			dropdownView.element.remove();
 		}
-	} );
-
-	describe( 'createSplitButtonForDropdown()', () => {
-		beforeEach( () => {
-			buttonView = createSplitButtonForDropdown( new Model(), locale );
-		} );
-
-		it( 'accepts locale', () => {
-			expect( buttonView.locale ).to.equal( locale );
-		} );
-
-		it( 'returns SplitButtonView instance', () => {
-			expect( buttonView ).to.be.instanceof( SplitButtonView );
-		} );
 	} );
 
 	describe( 'createDropdownView()', () => {

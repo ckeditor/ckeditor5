@@ -7,7 +7,6 @@
  * @module ui/dropdown/helpers
  */
 
-import SplitButtonView from '../button/splitbuttonview';
 import DropdownPanelView from './dropdownpanelview';
 import DropdownView from './dropdownview';
 import ToolbarView from '../toolbar/toolbarview';
@@ -16,16 +15,6 @@ import ListItemView from '../list/listitemview';
 
 // TODO: This should be per-component import AFAIK. It will result in smaller builds that don't use dropdown with toolbar.
 import '../../theme/components/dropdown/toolbardropdown.css';
-
-export function createSplitButtonForDropdown( model, locale ) {
-	const splitButtonView = new SplitButtonView( locale );
-
-	// TODO: Check if those binding are in good place (maybe move them to SplitButton) or add tests.
-	splitButtonView.actionView.bind( 'isOn' ).to( splitButtonView );
-	splitButtonView.actionView.bind( 'tooltip' ).to( splitButtonView );
-
-	return splitButtonView;
-}
 
 export function createDropdownView( model, buttonView, locale ) {
 	const panelView = new DropdownPanelView( locale );
