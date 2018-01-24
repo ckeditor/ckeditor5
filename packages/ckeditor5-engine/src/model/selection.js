@@ -367,18 +367,6 @@ export default class Selection {
 	}
 
 	/**
-	 * Deletes ranges from internal range array. Uses {@link #_popRange _popRange} to
-	 * ensure proper ranges removal.
-	 *
-	 * @private
-	 */
-	_removeAllRanges() {
-		while ( this._ranges.length > 0 ) {
-			this._popRange();
-		}
-	}
-
-	/**
 	 * Moves {@link module:engine/model/selection~Selection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
@@ -637,6 +625,18 @@ export default class Selection {
 					{ addedRange: range, intersectingRange: this._ranges[ i ] }
 				);
 			}
+		}
+	}
+
+	/**
+	 * Deletes ranges from internal range array. Uses {@link #_popRange _popRange} to
+	 * ensure proper ranges removal.
+	 *
+	 * @protected
+	 */
+	_removeAllRanges() {
+		while ( this._ranges.length > 0 ) {
+			this._popRange();
 		}
 	}
 
