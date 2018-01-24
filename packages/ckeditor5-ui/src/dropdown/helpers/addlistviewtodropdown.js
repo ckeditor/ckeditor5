@@ -51,7 +51,7 @@ import ListItemView from '../../list/listitemview';
 export default function addListViewToDropdown( dropdownView, model, locale ) {
 	const listView = dropdownView.listView = new ListView( locale );
 
-	// TODO: make this param of method instead of model property
+	// TODO: make this param of method instead of model property?
 	listView.items.bindTo( model.items ).using( itemModel => {
 		const item = new ListItemView( locale );
 
@@ -62,8 +62,6 @@ export default function addListViewToDropdown( dropdownView, model, locale ) {
 	} );
 
 	dropdownView.panelView.children.add( listView );
-
-	// TODO: make this also on toolbar????
 	listView.items.delegate( 'execute' ).to( dropdownView );
 
 	return listView;

@@ -63,7 +63,7 @@ describe( 'addToolbarToDropdown()', () => {
 			expect( dropdownView.toolbarView ).to.be.instanceof( ToolbarView );
 		} );
 
-		it.skip( 'delegates view.toolbarView.items#execute to the view', done => {
+		it( 'delegates view.toolbarView.items#execute to the view', done => {
 			dropdownView.on( 'execute', evt => {
 				expect( evt.source ).to.equal( dropdownView.toolbarView.items.get( 0 ) );
 				expect( evt.path ).to.deep.equal( [ dropdownView.toolbarView.items.get( 0 ), dropdownView ] );

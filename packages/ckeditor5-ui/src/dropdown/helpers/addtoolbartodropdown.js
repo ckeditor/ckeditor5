@@ -55,10 +55,11 @@ export default function addToolbarToDropdown( dropdownView, model ) {
 		}
 	} );
 
-	dropdownView.panelView.children.add( toolbarView );
-
-	// TODO: make it as 'items', 'views' or pass them as parameter???
+	// TODO: make this param of method instead of model property?
 	model.buttons.map( view => toolbarView.items.add( view ) );
+
+	dropdownView.panelView.children.add( toolbarView );
+	toolbarView.items.delegate( 'execute' ).to( dropdownView );
 
 	return toolbarView;
 }
