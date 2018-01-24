@@ -7,7 +7,7 @@
 
 import Model from '../../../src/model';
 import ButtonView from '../../../src/button/buttonview';
-import { createDropdownView } from '../../../src/dropdown/utils';
+import createDropdownView from '../../../src/dropdown/helpers/createdropdownview';
 import closeDropdownOnBlur from '../../../src/dropdown/helpers/closedropdownonblur';
 
 describe( 'closeDropdownOnBlur()', () => {

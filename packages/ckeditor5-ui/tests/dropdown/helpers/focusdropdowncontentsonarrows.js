@@ -12,7 +12,7 @@ import Model from '../../../src/model';
 import ButtonView from '../../../src/button/buttonview';
 
 import focusDropdownContentsOnArrows from '../../../src/dropdown/helpers/focusdropdowncontentsonarrows';
-import { createDropdownView } from '../../../src/dropdown/utils';
+import createDropdownView from '../../../src/dropdown/helpers/createdropdownview';
 
 describe( 'focusDropdownContentsOnArrows()', () => {
 	let dropdownView;

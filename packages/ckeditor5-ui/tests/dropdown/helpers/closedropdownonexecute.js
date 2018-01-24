@@ -7,7 +7,7 @@
 
 import Model from '../../../src/model';
 import ButtonView from '../../../src/button/buttonview';
-import { createDropdownView } from '../../../src/dropdown/utils';
+import createDropdownView from '../../../src/dropdown/helpers/createdropdownview';
 import closeDropdownOnExecute from '../../../src/dropdown/helpers/closedropdownonexecute';
 
 describe( 'closeDropdownOnExecute()', () => {
