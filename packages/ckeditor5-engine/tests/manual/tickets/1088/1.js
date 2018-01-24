@@ -38,42 +38,31 @@ ClassicEditor
 
 		const schema = editor.model.schema;
 
-		schema.on( 'checkAttribute', ( evt, args ) => {
-			const ctx = args[ 0 ];
-			const attributeName = args[ 1 ];
-
+		schema.addAttributeCheck( ( ctx, attributeName ) => {
 			if ( ctx.endsWith( 'heading1 $text' ) && [ 'linkHref', 'italic' ].includes( attributeName ) ) {
-				evt.stop();
-				evt.return = false;
+				return false;
 			}
 
 			if ( ctx.endsWith( 'heading2 $text' ) && attributeName == 'italic' ) {
-				evt.stop();
-				evt.return = false;
+				return false;
 			}
 
 			if ( ctx.endsWith( 'heading2 $text' ) && attributeName == 'italic' ) {
-				evt.stop();
-				evt.return = false;
+				return false;
 			}
 
 			if ( ctx.endsWith( 'blockQuote listItem $text' ) && attributeName == 'linkHref' ) {
-				evt.stop();
-				evt.return = false;
+				return false;
 			}
 
 			if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'bold' ) {
-				evt.stop();
-				evt.return = false;
+				return false;
 			}
 		} );
 
-		schema.on( 'checkChild', ( evt, args ) => {
-			const def = schema.getDefinition( args[ 1 ] );
-
-			if ( args[ 0 ].endsWith( '$root' ) && def.name == 'heading3' ) {
-				evt.stop();
-				evt.return = false;
+		schema.addChildCheck( ( ctx, childDef ) => {
+			if ( ctx.endsWith( '$root' ) && childDef.name == 'heading3' ) {
+				return false;
 			}
 		} );
 	} )
