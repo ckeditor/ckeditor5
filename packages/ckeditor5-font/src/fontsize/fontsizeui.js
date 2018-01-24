@@ -10,14 +10,13 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import {
-	addListViewToDropdown,
-	closeDropdownOnBlur,
-	closeDropdownOnExecute,
-	createButtonForDropdown,
-	createDropdownView,
-	focusDropdownContentsOnArrows
-} from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+
+import addListViewToDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/addlistviewtodropdown';
+import closeDropdownOnBlur from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonblur';
+import closeDropdownOnExecute from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonexecute';
+import createButtonForDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/createbuttonfordropdown';
+import createDropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/createdropdownview';
+import focusDropdownContentsOnArrows from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/focusdropdowncontentsonarrows';
 
 import { normalizeOptions } from '../fontsize/utils';
 
