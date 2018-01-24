@@ -6,16 +6,21 @@ order: 30
 
 # Installing plugins
 
-CKEditor 5 plugins are distributed through [npm](https://www.npmjs.com) packages and are implemented in a modular way (which means that a single plugin may consists of multiple JavaScript files).
+CKEditor 5 plugins are distributed through [npm](https://www.npmjs.com) packages and are implemented in a modular way, which means that a single plugin may consist of multiple JavaScript files.
 
 In this guide you can learn how to add plugins to your editor in the two most common scenarios:
 
-* when you use an {@link builds/guides/overview editor build},
-* when you {@link framework/guides/quick-start build your editor from source}.
+* When you use an {@link builds/guides/overview editor build},
+* When you {@link framework/guides/quick-start build your editor from source}.
 
 ## Adding a plugin to a build
 
-Adding plugins to existing builds is done through their customization. Editor builds are maintained in their respective git repositories. Therefore, assuming that you want to customize the [classic editor build](https://npmjs.com/package/@ckeditor/ckeditor5-build-classic) you need to: clone the build repository, install the plugin package, add it to the build configuration and bundle the build.
+Adding plugins to existing builds is done through their customization. Editor builds are maintained in their respective GitHub repositories. Therefore, assuming that you want to customize the [classic editor build](https://npmjs.com/package/@ckeditor/ckeditor5-build-classic) you need to:
+
+1. Clone the build repository.
+2. Install the plugin package.
+3. Add it to the build configuration.
+4. Bundle the build.
 
 ```
 git clone -b stable https://github.com/ckeditor/ckeditor5-build-classic.git
@@ -97,7 +102,7 @@ npm run build
 
 If everything worked, the editor build (which is available in the `build/` directory) should be updated.
 
-You can open the `sample/index.html` file in your browser to see whether the plugin was correctly installed.
+You can open the `sample/index.html` file in your browser to see whether the plugin was installed correctly.
 
 This was a quick version of how a build can be customized. Read more about {@link builds/guides/development/custom-builds customizing existing editor builds} in a separate guide.
 
@@ -142,14 +147,14 @@ ClassicEditor
 After rebuilding your project, the new feature will be available in the editor.
 
 <info-box warning>
-	One of a possible mistakes is trying to add (this way) a plugin to an existing (bundled) editor build. Installing an existing build and then trying to add a plugin to it may not work if that plugin needs to import any of the source editor modules.
+	One of the possible mistakes is trying to add a plugin in this way to an existing (bundled) editor build. Installing an existing build and then trying to add a plugin to it may not work if that plugin needs to import any of the source editor modules.
 
-	The reason why this method will not work is that dependencies of the added plugin may duplicate the code already bundled in the used editor build. In the best scenario, this is going to raise the overall code size. In the worst scenario, an application build this way may be unstable.
+	The reason why this method will not work is that dependencies of the added plugin may duplicate the code already bundled in the used editor build. In the best scenario, this is going to raise the overall code size. In the worst scenario, an application built this way may be unstable.
 </info-box>
 
 ## Difference between both methods
 
-What is the difference between adding a plugin to an editor build and adding a plugin by passingthe `config.plugins` option to the static `create()` method?
+What is the difference between adding a plugin to an editor build and adding a plugin by passing the `config.plugins` option to the static `create()` method?
 
 The first method builds the plugin into the editor class. This means that you can then initialize the editor without passing `config.plugins` at all and the editor will automatically enable all built-in plugins:
 
@@ -169,7 +174,7 @@ ClassicEditor
 	} );
 ```
 
-All this works because a typical `src/ckeditor.js` module which you can find in every editor build repository (see e.g. [`@ckeditor/ckeditor5-build-classic`](https://github.com/ckeditor/ckeditor5-build-classic/blob/stable/src/ckeditor.js)), which is created based on the `build-config.js` file and based on which a build is created, looks like this:
+All this works because a typical `src/ckeditor.js` module that you can find in every editor build repository (see e.g. [`@ckeditor/ckeditor5-build-classic`](https://github.com/ckeditor/ckeditor5-build-classic/blob/stable/src/ckeditor.js)), which is created based on the `build-config.js` file and based on which a build is created, looks like this:
 
 ```js
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -206,7 +211,7 @@ ClassicEditor.build = {
 };
 ```
 
-This code imports a source of the classic editor and extends it with a static property `build` in which it defines a set of plugins and configuration to be used by this editor class.
+This code imports the source of the classic editor and extends it with a static property `build` in which it defines a set of plugins and configuration to be used by this editor class.
 
 In this approach, all editor instances created by using this editor build will by default load all these built-in plugins and configuration.
 
@@ -214,7 +219,7 @@ In this approach, all editor instances created by using this editor build will b
 	You can still use the {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`} and {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} options to override the default configuration.
 </info-box>
 
-When building the editor from source and not using a build as a base, you can also use the static `build` property of editor classes. However, in such situation it is usually more convenient to simply pass all the plugins directly to the static `create()` method:
+When building the editor from source and not using a build as a base, you can also use the static `build` property of editor classes. However, in this situation it is usually more convenient to simply pass all the plugins directly to the static `create()` method:
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -236,4 +241,4 @@ ClassicEditor
 	} );
 ```
 
-So, in short, both methods use very similar mechanisms. However, adding a plugin through a static `build` property (which happens in editor builds) lets you automatically enable it in all editor instances created using this editor class, while passing a plugin to `create()` will naturally affect only one instance.
+So, in short, both methods use very similar mechanisms. However, adding a plugin through the static `build` property (which happens in editor builds) lets you automatically enable it in all editor instances created using this editor class, while passing a plugin to `create()` will naturally affect only one instance.
