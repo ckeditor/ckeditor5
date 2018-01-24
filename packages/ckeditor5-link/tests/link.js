@@ -606,14 +606,14 @@ describe( 'Link', () => {
 				sinon.assert.calledWithExactly( spy );
 			} );
 
-			it( 'should open when selection exclusively encloses a LinkElement (#1)', () => {
+			it( 'should open when selection exclusively encloses a link element (#1)', () => {
 				setModelData( editor.model, '[<$text linkHref="url">foo</$text>]' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.calledWithExactly( spy );
 			} );
 
-			it( 'should open when selection exclusively encloses a LinkElement (#2)', () => {
+			it( 'should open when selection exclusively encloses a link element (#2)', () => {
 				setModelData( editor.model, '<$text linkHref="url">[foo]</$text>' );
 
 				observer.fire( 'click', { target: {} } );
@@ -627,35 +627,35 @@ describe( 'Link', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#1)', () => {
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a link element (#1)', () => {
 				setModelData( editor.model, '<$text linkHref="url">f[o]o</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#2)', () => {
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a link element (#2)', () => {
 				setModelData( editor.model, '<$text linkHref="url">[fo]o</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#3)', () => {
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a link element (#3)', () => {
 				setModelData( editor.model, '<$text linkHref="url">f[oo]</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#4)', () => {
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a link element (#4)', () => {
 				setModelData( editor.model, 'ba[r<$text linkHref="url">foo]</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#5)', () => {
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a link element (#5)', () => {
 				setModelData( editor.model, 'ba[r<$text linkHref="url">foo</$text>]' );
 
 				observer.fire( 'click', { target: {} } );

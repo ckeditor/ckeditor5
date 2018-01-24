@@ -10,9 +10,9 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import LinkElement from './linkelement';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
+import { createLinkElement } from './utils';
 
 /**
  * The link engine feature.
@@ -36,14 +36,7 @@ export default class LinkEngine extends Plugin {
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
 			.fromAttribute( 'linkHref' )
-			.toElement( linkHref => {
-				const linkElement = new LinkElement( 'a', { href: linkHref } );
-
-				// https://github.com/ckeditor/ckeditor5-link/issues/121
-				linkElement.priority = 5;
-
-				return linkElement;
-			} );
+			.toElement( linkHref => createLinkElement( linkHref ) );
 
 		// Build converter from view to model for data pipeline.
 		buildViewConverter().for( data.viewToModel )
