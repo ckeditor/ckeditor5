@@ -17,7 +17,8 @@ import DocumentSelection from '../documentselection';
  *
  * @param {module:engine/model/model~Model} model The model in context of which the insertion
  * should be performed.
- * @param {module:engine/model/selection~Selection} selection Selection of which the content should be deleted.
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * Selection of which the content should be deleted.
  * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
  * @param {Object} [options]
  * @param {Boolean} [options.leaveUnmerged=false] Whether to merge elements after removing the content of the selection.

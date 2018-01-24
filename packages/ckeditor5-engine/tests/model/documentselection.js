@@ -262,7 +262,7 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'setTo - removeAllRanges', () => {
+	describe( 'setTo - remove all ranges', () => {
 		let spy, ranges;
 
 		beforeEach( () => {

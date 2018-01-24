@@ -58,7 +58,7 @@ export default class DocumentSelection {
 	 */
 	constructor( doc ) {
 		/**
-		 * Selection used internally by that class. (`DocumentSelection` is a proxy to that selection)
+		 * Selection used internally by that class (`DocumentSelection` is a proxy to that selection).
 		 *
 		 * @protected
 		 */
@@ -351,7 +351,8 @@ export default class DocumentSelection {
 
 	/**
 	 * Removes an attribute with given key from the selection.
-	 * If the given attribute was set on the selection, fires the {@link #event:change} event with removed attribute key.
+	 * If the given attribute was set on the selection, fires the {@link module:engine/model/selection~Selection#event:change}
+	 * event with removed attribute key.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#removeSelectionAttribute} method.
 	 *
 	 * @see module:engine/model/writer~Writer#removeSelectionAttribute
@@ -396,10 +397,6 @@ export default class DocumentSelection {
 }
 
 mix( DocumentSelection, EmitterMixin );
-
-/**
- * @event change:attribute
- */
 
 // `LiveSelection` is used internally by {@link module:engine/model/documentselection~DocumentSelection} and shouldn't be used directly.
 //

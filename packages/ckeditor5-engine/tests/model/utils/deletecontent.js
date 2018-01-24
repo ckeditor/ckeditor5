@@ -6,6 +6,7 @@
 import Model from '../../../src/model/model';
 import Position from '../../../src/model/position';
 import Range from '../../../src/model/range';
+import Selection from '../../../src/model/selection';
 import Element from '../../../src/model/element';
 import deleteContent from '../../../src/model/utils/deletecontent';
 import { setData, getData } from '../../../src/dev-utils/model';
@@ -38,6 +39,22 @@ describe( 'DataController utils', () => {
 
 				schema.register( 'image', { allowWhere: '$text' } );
 				schema.extend( '$text', { allowIn: '$root' } );
+			} );
+
+			it( 'should be able to delete content at custom selection', () => {
+				setData( model, 'a[]bcd' );
+
+				const range = new Range(
+					new Position( doc.getRoot(), [ 2 ] ),
+					new Position( doc.getRoot(), [ 3 ] )
+				);
+
+				const selection = new Selection( [ range ] );
+
+				model.change( () => {
+					deleteContent( model, selection );
+					expect( getData( model ) ).to.equal( 'a[]bd' );
+				} );
 			} );
 
 			test(

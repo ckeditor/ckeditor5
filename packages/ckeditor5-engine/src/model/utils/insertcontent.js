@@ -26,7 +26,8 @@ import DocumentSelection from '../documentselection';
  * @param {module:engine/model/model~Model} model The model in context of which the insertion
  * should be performed.
  * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
- * @param {module:engine/model/selection~Selection} selection Selection into which the content should be inserted.
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * Selection into which the content should be inserted.
  */
 export default function insertContent( model, content, selection ) {
 	model.change( writer => {
