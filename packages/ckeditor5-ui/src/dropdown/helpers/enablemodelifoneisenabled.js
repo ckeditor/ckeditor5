@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { getBindingTargets } from '../utils';
+import getBindingTargets from '../../bindings/getbindingtargets';
 
 /**
  * @module ui/dropdown/helpers/enablemodelifoneisenabled
