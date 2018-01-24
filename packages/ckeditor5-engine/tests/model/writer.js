@@ -2125,6 +2125,22 @@ describe( 'Writer', () => {
 
 			expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 		} );
+
+		it( 'should be able to store attributes from the given object', () => {
+			setSelection( rangeInEmptyP );
+			setSelectionAttribute( { key1: 'foo', key2: 'bar' } );
+
+			expect( model.document.selection.getAttribute( 'key1' ) ).to.equal( 'foo' );
+			expect( model.document.selection.getAttribute( 'key2' ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should be able to store attributes from the given iterable', () => {
+			setSelection( rangeInEmptyP );
+			setSelectionAttribute( new Map( [ [ 'key1', 'foo' ], [ 'key2', 'bar' ] ] ) );
+
+			expect( model.document.selection.getAttribute( 'key1' ) ).to.equal( 'foo' );
+			expect( model.document.selection.getAttribute( 'key2' ) ).to.equal( 'bar' );
+		} );
 	} );
 
 	describe( 'removeSelectionAttribute()', () => {
@@ -2152,6 +2168,30 @@ describe( 'Writer', () => {
 			removeSelectionAttribute( 'foo' );
 
 			expect( model.document.selection.getAttribute( 'foo' ) ).to.be.undefined;
+
+			expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+		} );
+
+		it( 'should remove all attributes from the given iterable', () => {
+			setSelection( rangeInEmptyP );
+			setSelectionAttribute( 'foo', 'bar' );
+			setSelectionAttribute( 'foo2', 'bar2' );
+			removeSelectionAttribute( [ 'foo', 'foo2' ] );
+
+			expect( model.document.selection.getAttribute( 'foo' ) ).to.be.undefined;
+			expect( model.document.selection.getAttribute( 'foo2' ) ).to.be.undefined;
+
+			expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+		} );
+
+		it( 'should do nothing if attribute does not exist in the selection', () => {
+			setSelection( rangeInEmptyP );
+			setSelectionAttribute( 'foo', 'bar' );
+			setSelectionAttribute( 'foo2', 'bar2' );
+			removeSelectionAttribute( [ 'foo', 'baz' ] );
+
+			expect( model.document.selection.getAttribute( 'foo' ) ).to.be.undefined;
+			expect( model.document.selection.getAttribute( 'foo2' ) ).to.equal( 'bar2' );
 
 			expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 		} );
