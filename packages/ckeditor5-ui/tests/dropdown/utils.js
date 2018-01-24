@@ -5,14 +5,11 @@
 
 /* globals document, Event */
 
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import utilsTestUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 import Model from '../../src/model';
 
-import View from '../../src/view';
 import ButtonView from '../../src/button/buttonview';
 import ToolbarView from '../../src/toolbar/toolbarview';
 import ListItemView from '../../src/list/listitemview';
@@ -29,8 +26,7 @@ import {
 	createButtonForDropdown,
 	createDropdownView,
 	createSplitButtonForDropdown,
-	enableModelIfOneIsEnabled,
-	focusDropdownContentsOnArrows
+	enableModelIfOneIsEnabled
 } from '../../src/dropdown/utils';
 
 const assertBinding = utilsTestUtils.assertBinding;
@@ -49,60 +45,6 @@ describe( 'utils', () => {
 		if ( dropdownView.element ) {
 			dropdownView.element.remove();
 		}
-	} );
-
-	describe( 'focusDropdownContentsOnArrows()', () => {
-		let panelChildView;
-
-		beforeEach( () => {
-			panelChildView = new View();
-			panelChildView.setTemplate( { tag: 'div' } );
-			panelChildView.focus = () => {};
-			panelChildView.focusLast = () => {};
-
-			// TODO: describe this as #contentView instaed of #listView and #toolbarView
-			dropdownView.panelView.children.add( panelChildView );
-
-			focusDropdownContentsOnArrows( dropdownView );
-
-			dropdownView.render();
-			document.body.appendChild( dropdownView.element );
-		} );
-
-		it( '"arrowdown" focuses the #innerPanelView if dropdown is open', () => {
-			const keyEvtData = {
-				keyCode: keyCodes.arrowdown,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-			const spy = sinon.spy( panelChildView, 'focus' );
-
-			dropdownView.isOpen = false;
-			dropdownView.keystrokes.press( keyEvtData );
-			sinon.assert.notCalled( spy );
-
-			dropdownView.isOpen = true;
-			dropdownView.keystrokes.press( keyEvtData );
-
-			sinon.assert.calledOnce( spy );
-		} );
-
-		it( '"arrowup" focuses the last #item in #innerPanelView if dropdown is open', () => {
-			const keyEvtData = {
-				keyCode: keyCodes.arrowup,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-			const spy = sinon.spy( panelChildView, 'focusLast' );
-
-			dropdownView.isOpen = false;
-			dropdownView.keystrokes.press( keyEvtData );
-			sinon.assert.notCalled( spy );
-
-			dropdownView.isOpen = true;
-			dropdownView.keystrokes.press( keyEvtData );
-			sinon.assert.calledOnce( spy );
-		} );
 	} );
 
 	describe( 'closeDropdownOnExecute()', () => {

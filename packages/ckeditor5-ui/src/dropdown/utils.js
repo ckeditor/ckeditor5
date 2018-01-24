@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/dropdown/utils
+ * @module ui/dropdown/helpers
  */
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler';
@@ -18,31 +18,6 @@ import ListItemView from '../list/listitemview';
 
 // TODO: This should be per-component import AFAIK. It will result in smaller builds that don't use dropdown with toolbar.
 import '../../theme/components/dropdown/toolbardropdown.css';
-
-/**
- * Adds a behavior to a dropdownView that focuses dropdown panel view contents on keystrokes.
- *
- * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
- */
-export function focusDropdownContentsOnArrows( dropdownView ) {
-	// If the dropdown panel is already open, the arrow down key should
-	// focus the first element in list.
-	dropdownView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
-		if ( dropdownView.isOpen ) {
-			dropdownView.panelView.focus();
-			cancel();
-		}
-	} );
-
-	// If the dropdown panel is already open, the arrow up key should
-	// focus the last element in the list.
-	dropdownView.keystrokes.set( 'arrowup', ( data, cancel ) => {
-		if ( dropdownView.isOpen ) {
-			dropdownView.panelView.focusLast();
-			cancel();
-		}
-	} );
-}
 
 /**
  * Adds a behavior to a dropdownView that closes dropdown view on any view collection item's "execute" event.
