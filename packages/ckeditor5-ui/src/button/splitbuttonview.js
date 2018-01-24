@@ -28,6 +28,34 @@ export default class SplitButtonView extends View {
 	constructor( locale ) {
 		super( locale );
 
+		/**
+		 * Controls whether the button view is enabled, i.e. it can be clicked and execute an action.
+		 *
+		 * To change the "on" state of the button, use {@link #isOn} instead.
+		 *
+		 * @observable
+		 * @member {Boolean} #isEnabled
+		 */
+		this.set( 'isEnabled', true );
+
+		/**
+		 * The label of the button view visible to the user when {@link #withText} is `true`.
+		 * It can also be used to create a {@link #tooltip}.
+		 *
+		 * @observable
+		 * @member {String} #label
+		 */
+		this.set( 'label' );
+
+		/**
+		 * (Optional) An XML {@link module:ui/icon/iconview~IconView#content content} of the icon.
+		 * When defined, an {@link #iconView} will be added to the button.
+		 *
+		 * @observable
+		 * @member {String} #icon
+		 */
+		this.set( 'icon' );
+
 		this.children = this.createCollection();
 
 		this.actionView = this._createActionView();
