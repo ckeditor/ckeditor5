@@ -177,14 +177,11 @@ describe( 'ImageEngine', () => {
 				const editing = editor.editing;
 
 				model.schema.register( 'div', { inheritAllFrom: '$block' } );
-				model.schema.on( 'checkChild', ( evt, args ) => {
-					const def = model.schema.getDefinition( args[ 1 ] );
-
-					if ( args[ 0 ].endsWith( '$root' ) && def.name == 'image' ) {
-						evt.stop();
-						evt.return = false;
+				model.schema.addChildCheck( ( ctx, childDef ) => {
+					if ( ctx.endsWith( '$root' ) && childDef.name == 'image' ) {
+						return false;
 					}
-				}, { priority: 'high' } );
+				} );
 
 				buildModelConverter().for( data.modelToView, editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 				buildViewConverter().for( data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
