@@ -26,6 +26,10 @@
 			border: 0;
 		}
 
+		&:active {
+			box-shadow: none;
+		}
+
 		&:focus {
 			& .ck-button__label {
 				text-decoration: underline;
