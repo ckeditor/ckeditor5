@@ -57,7 +57,7 @@ describe( 'AlignmentCommand', () => {
 			expect( defaultAlignmentCommand ).to.have.property( 'value', true );
 		} );
 
-		it( 'is false when selection is inside block that has different alignment (default style)', () => {
+		it( 'is false when selection is inside block that has different alignment (default option)', () => {
 			setModelData( model, '<paragraph alignment="justify">x[]x</paragraph>' );
 
 			expect( defaultAlignmentCommand ).to.have.property( 'value', false );
