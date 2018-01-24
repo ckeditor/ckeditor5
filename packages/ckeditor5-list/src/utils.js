@@ -6,7 +6,7 @@
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 
 /**
- * @module list/listengine
+ * @module list/utils
  */
 
 /**
