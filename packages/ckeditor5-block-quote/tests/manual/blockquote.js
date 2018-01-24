@@ -15,7 +15,7 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet
 		],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+		toolbar: [ 'headings', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
