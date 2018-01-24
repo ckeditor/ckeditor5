@@ -15,9 +15,8 @@ import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.sv
 import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import ButtonView from '../../../src/button/buttonview';
 
-import { addToolbarToDropdown } from '../../../src/dropdown/utils';
-
 import addListViewToDropdown from '../../../src/dropdown/helpers/addlistviewtodropdown';
+import addToolbarToDropdown from '../../../src/dropdown/helpers/addtoolbartodropdown';
 import createDropdownView from '../../../src/dropdown/helpers/createdropdownview';
 import createButtonForDropdown from '../../../src/dropdown/helpers/createbuttonfordropdown';
 import closeDropdownOnBlur from '../../../src/dropdown/helpers/closedropdownonblur';
