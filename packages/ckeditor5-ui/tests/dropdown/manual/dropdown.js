@@ -18,10 +18,10 @@ import ButtonView from '../../../src/button/buttonview';
 import {
 	addListViewToDropdown,
 	addToolbarToDropdown,
-	createButtonForDropdown,
 	createDropdownView
 } from '../../../src/dropdown/utils';
 
+import createButtonForDropdown from '../../../src/dropdown/helpers/createbuttonfordropdown';
 import closeDropdownOnBlur from '../../../src/dropdown/helpers/closedropdownonblur';
 import closeDropdownOnExecute from '../../../src/dropdown/helpers/closedropdownonexecute';
 import focusDropdownContentsOnArrows from '../../../src/dropdown/helpers/focusdropdowncontentsonarrows';

@@ -8,7 +8,6 @@
  */
 
 import SplitButtonView from '../button/splitbuttonview';
-import ButtonView from '../button/buttonview';
 import DropdownPanelView from './dropdownpanelview';
 import DropdownView from './dropdownview';
 import ToolbarView from '../toolbar/toolbarview';
@@ -17,15 +16,6 @@ import ListItemView from '../list/listitemview';
 
 // TODO: This should be per-component import AFAIK. It will result in smaller builds that don't use dropdown with toolbar.
 import '../../theme/components/dropdown/toolbardropdown.css';
-
-export function createButtonForDropdown( model, locale ) {
-	const buttonView = new ButtonView( locale );
-
-	// Dropdown expects "select" event to show contents.
-	buttonView.delegate( 'execute' ).to( buttonView, 'select' );
-
-	return buttonView;
-}
 
 export function createSplitButtonForDropdown( model, locale ) {
 	const splitButtonView = new SplitButtonView( locale );

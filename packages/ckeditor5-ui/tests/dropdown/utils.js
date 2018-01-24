@@ -17,11 +17,11 @@ import ListView from '../../src/list/listview';
 import DropdownView from '../../src/dropdown/dropdownview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 import SplitButtonView from '../../src/button/splitbuttonview';
+import createButtonForDropdown from '../../src/dropdown/helpers/createbuttonfordropdown';
 
 import {
 	addListViewToDropdown,
 	addToolbarToDropdown,
-	createButtonForDropdown,
 	createDropdownView,
 	createSplitButtonForDropdown,
 	enableModelIfOneIsEnabled
@@ -43,30 +43,6 @@ describe( 'utils', () => {
 		if ( dropdownView.element ) {
 			dropdownView.element.remove();
 		}
-	} );
-
-	describe( 'createButtonForDropdown()', () => {
-		beforeEach( () => {
-			buttonView = createButtonForDropdown( new Model(), locale );
-		} );
-
-		it( 'accepts locale', () => {
-			expect( buttonView.locale ).to.equal( locale );
-		} );
-
-		it( 'returns ButtonView instance', () => {
-			expect( buttonView ).to.be.instanceof( ButtonView );
-		} );
-
-		it( 'delegates "execute" to "select" event', () => {
-			const spy = sinon.spy();
-
-			buttonView.on( 'select', spy );
-
-			buttonView.fire( 'execute' );
-
-			sinon.assert.calledOnce( spy );
-		} );
 	} );
 
 	describe( 'createSplitButtonForDropdown()', () => {
