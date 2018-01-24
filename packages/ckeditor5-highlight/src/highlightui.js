@@ -89,7 +89,7 @@ export default class HighlightUI extends Plugin {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 			button.bind( 'isOn' ).to( command, 'value', value => value === option.model );
 
-			button.iconView.extendTemplate( {
+			button.extendTemplate( {
 				attributes: {
 					style: `color: ${ option.color }`
 				}
@@ -228,17 +228,18 @@ export default class HighlightUI extends Plugin {
 
 // Extends split button icon style to reflect last used button style.
 function bindIconStyleToColor( dropdownView, model ) {
-	const iconView = dropdownView.buttonView.actionView.iconView;
+	const actionView = dropdownView.buttonView.actionView;
 
-	const bind = iconView.bindTemplate;
+	const bind = actionView.bindTemplate;
 
-	iconView.extendTemplate( {
+	// Color will propagate to iconView.
+	actionView.extendTemplate( {
 		attributes: {
 			style: bind.to( 'color', color => `color:${ color }` )
 		}
 	} );
 
-	iconView.bind( 'color' ).to( model, 'color' );
+	actionView.bind( 'color' ).to( model, 'color' );
 }
 
 // Returns icon for given highlighter type.
