@@ -21,7 +21,7 @@
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#t/ckeditor5/645",
     "@ckeditor/ckeditor5-essentials": "ckeditor/ckeditor5-essentials",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#t/ckeditor5/645",
-    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#t/ckeditor5/645#t/ckeditor5/645",
+    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#t/ckeditor5/645",
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#t/ckeditor5/645",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#t/ckeditor5/645",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#t/ckeditor5/645",
