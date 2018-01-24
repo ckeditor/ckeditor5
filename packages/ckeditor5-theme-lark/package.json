@@ -13,6 +13,8 @@
     "@ckeditor/ckeditor5-alignment": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-basic-styles": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-core": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-editor-balloon": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-editor-classic": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-font": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-highlight": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-link": "^1.0.0-alpha.2",
