@@ -73,6 +73,17 @@ export default class UIElement extends Element {
 	 * @return {HTMLElement}
 	 */
 	render( domDocument ) {
+		return this.createDomElement( domDocument );
+	}
+
+	/**
+	 * Creates DOM element based on this view UIElement.
+	 * Note that each time this method is called new DOM element is created.
+	 *
+	 * @param {Document} domDocument
+	 * @returns {HTMLElement}
+	 */
+	createDomElement( domDocument ) {
 		const domElement = domDocument.createElement( this.name );
 
 		for ( const key of this.getAttributeKeys() ) {

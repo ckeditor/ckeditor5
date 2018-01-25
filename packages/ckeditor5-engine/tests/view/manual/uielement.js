@@ -17,26 +17,32 @@ import UIElement from '../../../src/view/uielement';
 import Position from '../../../src/view/position';
 import writer from '../../../src/view/writer';
 
-class EndingUIElement extends UIElement {
-	render( domDocument ) {
-		const root = super.render( domDocument );
+function createEndingUIElement() {
+	const element = new UIElement( 'span' );
 
+	element.render = function( domDocument ) {
+		const root = this.createDomElement( domDocument );
 		root.classList.add( 'ui-element' );
 		root.innerHTML = 'END OF PARAGRAPH';
 
 		return root;
-	}
+	};
+
+	return element;
 }
 
-class MiddleUIElement extends UIElement {
-	render( domDocument ) {
-		const root = super.render( domDocument );
+function createMiddleUIElement() {
+	const element = new UIElement( 'span' );
 
+	element.render = function( domDocument ) {
+		const root = this.createDomElement( domDocument );
 		root.classList.add( 'ui-element' );
 		root.innerHTML = 'X';
 
 		return root;
-	}
+	};
+
+	return element;
 }
 
 class UIElementTestPlugin extends Plugin {
@@ -47,7 +53,7 @@ class UIElementTestPlugin extends Plugin {
 		// Add some UIElement to each paragraph.
 		editing.modelToView.on( 'insert:paragraph', ( evt, data, consumable, conversionApi ) => {
 			const viewP = conversionApi.mapper.toViewElement( data.item );
-			viewP.appendChildren( new EndingUIElement( 'span' ) );
+			viewP.appendChildren( createEndingUIElement() );
 		}, { priority: 'lowest' } );
 	}
 }
@@ -65,10 +71,10 @@ ClassicEditor
 		const viewText1 = viewRoot.getChild( 0 ).getChild( 0 );
 		const viewText2 = viewRoot.getChild( 1 ).getChild( 0 );
 
-		writer.insert( new Position( viewText1, 20 ), new MiddleUIElement( 'span' ) );
-		writer.insert( new Position( viewText1, 20 ), new MiddleUIElement( 'span' ) );
-		writer.insert( new Position( viewText2, 0 ), new MiddleUIElement( 'span' ) );
-		writer.insert( new Position( viewText2, 6 ), new MiddleUIElement( 'span' ) );
+		writer.insert( new Position( viewText1, 20 ), createMiddleUIElement() );
+		writer.insert( new Position( viewText1, 20 ), createMiddleUIElement() );
+		writer.insert( new Position( viewText2, 0 ), createMiddleUIElement() );
+		writer.insert( new Position( viewText2, 6 ), createMiddleUIElement() );
 
 		editor.editing.view.render();
 	} )

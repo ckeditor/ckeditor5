@@ -122,5 +122,27 @@ describe( 'UIElement', () => {
 				expect( domElement.getAttribute( key ) ).to.equal( uiElement.getAttribute( key ) );
 			}
 		} );
+
+		it( 'should allow to change render() method', () => {
+			uiElement.render = function( domDocument ) {
+				return domDocument.createElement( 'b' );
+			};
+
+			expect( uiElement.render( document ).tagName.toLowerCase() ).to.equal( 'b' );
+		} );
+
+		it( 'should allow to add new elements inside', () => {
+			uiElement.render = function( domDocument ) {
+				const element = this.createDomElement( domDocument );
+				const text = domDocument.createTextNode( 'foo bar' );
+				element.appendChild( text );
+
+				return element;
+			};
+
+			const rendered = uiElement.render( document );
+			expect( rendered.tagName.toLowerCase() ).to.equal( 'span' );
+			expect( rendered.textContent ).to.equal( 'foo bar' );
+		} );
 	} );
 } );
