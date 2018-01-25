@@ -34,10 +34,9 @@ export default class ImageUploadCommand extends Command {
 		const editor = this.editor;
 		const doc = editor.model.document;
 		const file = options.file;
-		const selection = doc.selection;
 		const fileRepository = editor.plugins.get( FileRepository );
 
-		editor.model.change( () => {
+		editor.model.change( writer => {
 			const loader = fileRepository.createLoader( file );
 
 			// Do not throw when upload adapter is not set. FileRepository will log an error anyway.
@@ -61,7 +60,7 @@ export default class ImageUploadCommand extends Command {
 
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
-				selection.setRanges( [ ModelRange.createOn( imageElement ) ] );
+				writer.setSelection( ModelRange.createOn( imageElement ) );
 			}
 		} );
 	}
