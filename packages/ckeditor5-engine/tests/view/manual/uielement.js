@@ -21,7 +21,7 @@ function createEndingUIElement() {
 	const element = new UIElement( 'span' );
 
 	element.render = function( domDocument ) {
-		const root = this.createDomElement( domDocument );
+		const root = this.toDomElement( domDocument );
 		root.classList.add( 'ui-element' );
 		root.innerHTML = 'END OF PARAGRAPH';
 
@@ -35,7 +35,7 @@ function createMiddleUIElement() {
 	const element = new UIElement( 'span' );
 
 	element.render = function( domDocument ) {
-		const root = this.createDomElement( domDocument );
+		const root = this.toDomElement( domDocument );
 		root.classList.add( 'ui-element' );
 		root.innerHTML = 'X';
 

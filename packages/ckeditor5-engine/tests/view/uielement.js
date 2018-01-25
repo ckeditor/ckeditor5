@@ -133,7 +133,7 @@ describe( 'UIElement', () => {
 
 		it( 'should allow to add new elements inside', () => {
 			uiElement.render = function( domDocument ) {
-				const element = this.createDomElement( domDocument );
+				const element = this.toDomElement( domDocument );
 				const text = domDocument.createTextNode( 'foo bar' );
 				element.appendChild( text );
 

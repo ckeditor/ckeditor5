@@ -73,7 +73,7 @@ export default class UIElement extends Element {
 	 * @return {HTMLElement}
 	 */
 	render( domDocument ) {
-		return this.createDomElement( domDocument );
+		return this.toDomElement( domDocument );
 	}
 
 	/**
@@ -83,7 +83,7 @@ export default class UIElement extends Element {
 	 * @param {Document} domDocument
 	 * @returns {HTMLElement}
 	 */
-	createDomElement( domDocument ) {
+	toDomElement( domDocument ) {
 		const domElement = domDocument.createElement( this.name );
 
 		for ( const key of this.getAttributeKeys() ) {
