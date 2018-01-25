@@ -50,11 +50,6 @@ export default class HighlightCommand extends Command {
 		const document = model.document;
 		const selection = document.selection;
 
-		// Do not apply highlight on wrong selection.
-		if ( !this.isEnabled ) {
-			return;
-		}
-
 		const highlighter = options.value;
 
 		model.change( writer => {
