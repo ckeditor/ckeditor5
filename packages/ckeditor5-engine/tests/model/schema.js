@@ -663,7 +663,7 @@ describe( 'Schema', () => {
 			} );
 		} );
 
-		it( 'returns false if a block cannot be merged with other block', () => {
+		it( 'returns false if a block cannot be merged with other block (disallowed element is a first children)', () => {
 			const paragraph = new Element( 'paragraph', null, [
 				new Text( 'xyz' )
 			] );
@@ -673,8 +673,36 @@ describe( 'Schema', () => {
 			expect( schema.checkMerge( listItem, blockQuote ) ).to.equal( false );
 		} );
 
+		it( 'returns false if a block cannot be merged with other block (disallowed element is not a first children)', () => {
+			const paragraph = new Element( 'paragraph', null, [
+				new Text( 'foo' )
+			] );
+			const blockQuote = new Element( 'blockQuote', null, [
+				new Text( 'bar', { bold: true } ),
+				new Text( 'xyz' ),
+				paragraph
+			] );
+			const listItem = new Element( 'listItem' );
+
+			expect( schema.checkMerge( listItem, blockQuote ) ).to.equal( false );
+		} );
+
 		it( 'returns true if a block can be merged with other block', () => {
 			const listItem = new Element( 'listItem' );
+			const listItemToMerge = new Element( 'listItem', null, [
+				new Text( 'xyz' )
+			] );
+
+			expect( schema.checkMerge( listItem, listItemToMerge ) ).to.equal( true );
+		} );
+
+		it( 'returns true if element to merge contains a valid content but base element contains disallowed elements', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' ),
+				new Element( 'paragraph', null, [
+					new Text( 'bar' )
+				] )
+			] );
 			const listItemToMerge = new Element( 'listItem', null, [
 				new Text( 'xyz' )
 			] );
