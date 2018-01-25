@@ -63,8 +63,13 @@ describe( 'HeadingCommand', () => {
 			it( `equals ${ modelElement } when collapsed selection is placed inside ${ modelElement } element`, () => {
 				setData( model, `<${ modelElement }>foobar</${ modelElement }>` );
 				const element = root.getChild( 0 );
-				document.selection.addRange( Range.createFromParentsAndOffsets( element, 3, element, 3 ) );
-
+				model.change( writer => {
+					const ranges = [
+						...model.document.selection.getRanges(),
+						Range.createFromParentsAndOffsets( element, 3, element, 3 )
+					];
+					writer.setSelection( ranges );
+				} );
 				expect( commands[ modelElement ].value ).to.be.true;
 			} );
 
@@ -78,8 +83,8 @@ describe( 'HeadingCommand', () => {
 				setData( model, `<${ modelElement }>[foo]</${ modelElement }><notBlock>foo</notBlock>` );
 				const element = document.getRoot().getChild( 1 );
 
-				model.change( () => {
-					document.selection.setRanges( [ Range.createIn( element ) ] );
+				model.change( writer => {
+					writer.setSelection( Range.createIn( element ) );
 				} );
 
 				expect( commands[ modelElement ].value ).to.be.false;
@@ -91,7 +96,7 @@ describe( 'HeadingCommand', () => {
 				const element = document.getRoot().getChild( 1 );
 
 				// Purposely not putting it in `model.change` to update command manually.
-				document.selection.setRanges( [ Range.createIn( element ) ] );
+				model.document.selection._setTo( Range.createIn( element ) );
 
 				expect( command.value ).to.be.true;
 				command.refresh();
