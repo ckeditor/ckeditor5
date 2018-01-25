@@ -20,7 +20,7 @@ import Link from '@ckeditor/ckeditor5-link/src/link';
 
 const config = {
 	plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic, Strikethrough, Code, Link ],
-	toolbar: [ 'headings', '|', 'bold', 'italic', 'strikethrough', 'code', '|', 'link', '|', 'undo', 'redo' ]
+	toolbar: [ 'headings', '|', 'bold', 'italic', 'strikethrough', 'code', 'link', '|', 'undo', 'redo' ]
 };
 
 ClassicEditor
