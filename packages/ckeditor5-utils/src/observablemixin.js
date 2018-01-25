@@ -645,8 +645,8 @@ function attachBindToListeners( observable, toBindings ) {
  * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
  *
  * @method #set
- * @param {String} name The attributes name.
- * @param {*} value The attributes value.
+ * @param {String|Object} name The attribute's name or object with `name=>value` pairs.
+ * @param {*} [value] The attribute's value (if `name` was passed in the first parameter).
  */
 
 /**
