@@ -104,7 +104,7 @@ The {@link module:font/fontfamily~FontFamily} plugin registers:
 	* `'Trebuchet MS'`
 	* `'Verdana'` 
 	
-	passing empty value will remove any `fontFamily` set:
+	passing an empty value will remove any `fontFamily` set:
 	
 	```js
 	editor.execute( 'fontFamily' );
