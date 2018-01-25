@@ -17,6 +17,8 @@ import FontSize from './fontsize';
  *
  * It requires {@link module:font/fontsize~FontSize} and {@link module:font/fontfamily~FontFamily} plugins.
  *
+ * Read more about the feature in the {@glink api/font font package} page.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class Font extends Plugin {
