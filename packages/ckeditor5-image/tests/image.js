@@ -96,9 +96,9 @@ describe( 'Image', () => {
 				'</figure>'
 			);
 
-			model.change( () => {
+			model.change( writer => {
 				const secondImage = document.getRoot().getChild( 1 );
-				document.selection.setRanges( [ ModelRange.createOn( secondImage ) ] );
+				writer.setSelection( ModelRange.createOn( secondImage ) );
 			} );
 
 			expect( getViewData( viewDocument ) ).to.equal(
