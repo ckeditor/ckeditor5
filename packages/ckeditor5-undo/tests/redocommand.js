@@ -50,7 +50,9 @@ describe( 'RedoCommand', () => {
 				 [root]
 				 - {}
 				 */
-				editor.model.document.selection.setRanges( [ r( 0, 0 ) ] );
+				model.change( writer => {
+					writer.setSelection( r( 0, 0 ) );
+				} );
 				batch0 = new Batch();
 				undo.addBatch( batch0 );
 				model.enqueueChange( batch0, writer => {
@@ -67,7 +69,9 @@ describe( 'RedoCommand', () => {
 				 - r{}
 				 */
 				// Let's make things spicy and this time, make a backward selection.
-				editor.model.document.selection.setRanges( [ r( 2, 4 ) ], true );
+				model.change( writer => {
+					writer.setSelection( r( 2, 4 ), true );
+				} );
 				batch1 = new Batch();
 				undo.addBatch( batch1 );
 				model.enqueueChange( batch1, writer => {
@@ -83,7 +87,9 @@ describe( 'RedoCommand', () => {
 				 - a
 				 - r
 				 */
-				editor.model.document.selection.setRanges( [ r( 1, 3 ) ] );
+				model.change( writer => {
+					writer.setSelection( r( 1, 3 ) );
+				} );
 				batch2 = new Batch();
 				undo.addBatch( batch2 );
 				model.enqueueChange( batch2, writer => {

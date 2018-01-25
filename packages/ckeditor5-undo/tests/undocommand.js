@@ -40,7 +40,9 @@ describe( 'UndoCommand', () => {
 				 [root]
 				 - {}
 				 */
-				editor.model.document.selection.setRanges( [ r( 0, 0 ) ] );
+				model.change( writer => {
+					writer.setSelection( r( 0, 0 ) );
+				} );
 				batch0 = new Batch();
 				undo.addBatch( batch0 );
 				model.enqueueChange( batch0, writer => {
@@ -57,7 +59,9 @@ describe( 'UndoCommand', () => {
 				 - r{}
 				 */
 				// Let's make things spicy and this time, make a backward selection.
-				editor.model.document.selection.setRanges( [ r( 2, 4 ) ], true );
+				model.change( writer => {
+					writer.setSelection( r( 2, 4 ), true );
+				} );
 				batch1 = new Batch();
 				undo.addBatch( batch1 );
 				model.enqueueChange( batch1, writer => {
@@ -73,7 +77,9 @@ describe( 'UndoCommand', () => {
 				 - a
 				 - r
 				 */
-				editor.model.document.selection.setRanges( [ r( 1, 3 ) ] );
+				model.change( writer => {
+					writer.setSelection( r( 1, 3 ) );
+				} );
 				batch2 = new Batch();
 				undo.addBatch( batch2 );
 				model.enqueueChange( batch2, writer => {
@@ -89,7 +95,9 @@ describe( 'UndoCommand', () => {
 				 - {o
 				 - o} (key: value)
 				 */
-				editor.model.document.selection.setRanges( [ r( 1, 4 ) ] );
+				model.change( writer => {
+					writer.setSelection( r( 1, 4 ) );
+				} );
 				batch3 = new Batch();
 				undo.addBatch( batch3 );
 				model.enqueueChange( batch3, writer => {
@@ -106,7 +114,9 @@ describe( 'UndoCommand', () => {
 				 - o
 				 - o (key: value)
 				 */
-				editor.model.document.selection.setRanges( [ r( 0, 1 ) ] );
+				model.change( writer => {
+					writer.setSelection( r( 0, 1 ) );
+				} );
 				model.enqueueChange( batch2, writer => {
 					writer.move( r( 0, 1 ), p( 3 ) );
 				} );
@@ -121,7 +131,9 @@ describe( 'UndoCommand', () => {
 				 - f
 				 - o{} (key: value)
 				 */
-				editor.model.document.selection.setRanges( [ r( 4, 4 ) ] );
+				model.change( writer => {
+					writer.setSelection( r( 4, 4 ) );
+				} );
 			} );
 
 			it( 'should revert changes done by deltas from the batch that was most recently added to the command stack', () => {
@@ -303,7 +315,9 @@ describe( 'UndoCommand', () => {
 			root.appendChildren( new Text( 'abcdef' ) );
 			expect( getCaseText( root ) ).to.equal( 'abcdef' );
 
-			editor.model.document.selection.setRanges( [ r( 1, 4 ) ] );
+			model.change( writer => {
+				writer.setSelection( r( 1, 4 ) );
+			} );
 			const batch0 = new Batch();
 			undo.addBatch( batch0 );
 			model.enqueueChange( batch0, writer => {
@@ -311,7 +325,9 @@ describe( 'UndoCommand', () => {
 			} );
 			expect( getCaseText( root ) ).to.equal( 'aBCDef' );
 
-			editor.model.document.selection.setRanges( [ r( 3, 4 ) ] );
+			model.change( writer => {
+				writer.setSelection( r( 3, 4 ) );
+			} );
 			const batch1 = new Batch();
 			undo.addBatch( batch1 );
 			model.enqueueChange( batch1, writer => {
