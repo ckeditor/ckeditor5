@@ -645,13 +645,14 @@ describe( 'Schema', () => {
 		beforeEach( () => {
 			schema.register( '$root' );
 			schema.register( '$block', {
-				allowIn: '$root'
+				allowIn: '$root',
+				isBlock: true
+			} );
+			schema.register( '$text', {
+				allowIn: '$block'
 			} );
 			schema.register( 'paragraph', {
 				allowWhere: '$block'
-			} );
-			schema.register( '$text', {
-				allowIn: 'paragraph'
 			} );
 			schema.register( 'blockQuote', {
 				allowWhere: '$block',
@@ -662,7 +663,7 @@ describe( 'Schema', () => {
 			} );
 		} );
 
-		it( 'returns false if a block is not allowed in other block', () => {
+		it( 'returns false if a block cannot be merged with other block', () => {
 			const paragraph = new Element( 'paragraph', null, [
 				new Text( 'xyz' )
 			] );
@@ -672,13 +673,13 @@ describe( 'Schema', () => {
 			expect( schema.checkMerge( listItem, blockQuote ) ).to.equal( false );
 		} );
 
-		it( 'returns true if a block is allowed in other block', () => {
-			const paragraph = new Element( 'paragraph', null, [
+		it( 'returns true if a block can be merged with other block', () => {
+			const listItem = new Element( 'listItem' );
+			const listItemToMerge = new Element( 'listItem', null, [
 				new Text( 'xyz' )
 			] );
-			const listItem = new Element( 'listItem' );
 
-			expect( schema.checkMerge( listItem, paragraph ) ).to.equal( false );
+			expect( schema.checkMerge( listItem, listItemToMerge ) ).to.equal( true );
 		} );
 	} );
 
