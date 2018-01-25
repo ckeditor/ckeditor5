@@ -1091,6 +1091,15 @@ export class SchemaContext {
 	}
 
 	/**
+	 * Adds new item at the to of the context.
+	 *
+	 * @param {module:engine/model/node~Node|String} item Item to add.
+	 */
+	addItem( item ) {
+		this._items.push( mapContextItem( item ) );
+	}
+
+	/**
 	 * Gets an item on the given index.
 	 *
 	 * @returns {module:engine/model/schema~SchemaContextItem}

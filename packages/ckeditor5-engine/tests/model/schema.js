@@ -2459,6 +2459,36 @@ describe( 'SchemaContext', () => {
 		} );
 	} );
 
+	describe( 'addItem()', () => {
+		it( 'adds new item at the top of the context #text', () => {
+			const node = new Text( 'd' );
+
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			ctx.addItem( node );
+
+			expect( Array.from( ctx ).map( item => item.name ) ).to.deep.equal( [ 'a', 'b', 'c', '$text' ] );
+		} );
+
+		it( 'adds new item at the top of the context #string', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			ctx.addItem( 'd' );
+
+			expect( Array.from( ctx ).map( item => item.name ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+		} );
+
+		it( 'adds new item at the top of the context #node', () => {
+			const node = new Element( 'd' );
+
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			ctx.addItem( node );
+
+			expect( Array.from( ctx ).map( item => item.name ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+		} );
+	} );
+
 	describe( 'getNames()', () => {
 		it( 'returns an iterator', () => {
 			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
