@@ -420,17 +420,21 @@ describe( 'MutationObserver', () => {
 	} );
 
 	describe( 'UIElement integration', () => {
-		class MyUIElement extends UIElement {
-			render( domDocument ) {
-				const root = super.render( domDocument );
+		function createUIElement( name ) {
+			const element = new UIElement( name );
+
+			element.render = function( domDocument ) {
+				const root = this.toDomElement( domDocument );
 				root.innerHTML = 'foo bar';
 
 				return root;
-			}
+			};
+
+			return element;
 		}
 
 		beforeEach( () => {
-			const uiElement = new MyUIElement( 'div' );
+			const uiElement = createUIElement( 'div' );
 			viewRoot.appendChildren( uiElement );
 
 			viewDocument.render();
