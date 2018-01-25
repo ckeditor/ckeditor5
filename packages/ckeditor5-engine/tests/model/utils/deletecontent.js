@@ -605,6 +605,25 @@ describe( 'DataController utils', () => {
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
 			} );
 
+			it( 'creates a paragraph when text is not allowed (custom selection)', () => {
+				setData(
+					model,
+					'[<paragraph>x</paragraph>]<paragraph>yyy</paragraph><paragraph>z</paragraph>',
+					{ rootName: 'bodyRoot' }
+				);
+
+				const root = doc.getRoot( 'bodyRoot' );
+
+				const selection = new Selection( [
+					new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) )
+				] );
+
+				deleteContent( model, selection );
+
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
+					.to.equal( '[<paragraph>x</paragraph>]<paragraph></paragraph><paragraph>z</paragraph>' );
+			} );
+
 			it( 'creates a paragraph when text is not allowed (block widget selected)', () => {
 				setData(
 					model,

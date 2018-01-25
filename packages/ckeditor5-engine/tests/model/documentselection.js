@@ -730,7 +730,7 @@ describe( 'DocumentSelection', () => {
 			rangeInEmptyP = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) );
 
 			// I've lost 30 mins debugging why my tests fail and that was due to the above code reusing
-			// a root which wasn't empty (so the ranges didn't actualy make much sense).
+			// a root which wasn't empty (so the ranges didn't actually make much sense).
 			expect( root.childCount ).to.equal( 2 );
 		} );
 
