@@ -77,7 +77,7 @@ export default class HighlightUI extends Plugin {
 	/**
 	 * Creates toolbar button from provided highlight option.
 	 *
-	 * @param {module:highlight/highlightediting~HighlightOption} option
+	 * @param {module:highlight/highlight~HighlightOption} option
 	 * @private
 	 */
 	_addHighlighterButton( option ) {
@@ -134,7 +134,7 @@ export default class HighlightUI extends Plugin {
 	/**
 	 * Creates split button dropdown UI from provided highlight options.
 	 *
-	 * @param {Array.<module:highlight/highlightediting~HighlightOption>} options
+	 * @param {Array.<module:highlight/highlight~HighlightOption>} options
 	 * @private
 	 */
 	_addDropdown( options ) {
