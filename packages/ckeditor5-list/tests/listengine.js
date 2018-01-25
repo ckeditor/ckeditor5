@@ -8,6 +8,7 @@ import ListCommand from '../src/listcommand';
 
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
@@ -3374,9 +3375,9 @@ describe( 'ListEngine', () => {
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 
-		it( 'view converter should pass model document fragment in data.output', () => {
+		it( 'view converter should pass model range in data.output', () => {
 			editor.data.viewToModel.on( 'element:ul', ( evt, data ) => {
-				expect( data.output ).to.be.instanceof( ModelDocumentFragment );
+				expect( data.output ).to.be.instanceof( ModelRange );
 			}, { priority: 'lowest' } );
 
 			editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
