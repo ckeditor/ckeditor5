@@ -50,20 +50,20 @@ describe( 'AttributeCommand', () => {
 
 	describe( 'value', () => {
 		it( 'is true when selection has the attribute', () => {
-			model.change( () => {
-				doc.selection.setAttribute( attrKey, true );
+			model.change( writer => {
+				writer.setSelectionAttribute( attrKey, true );
 			} );
 
 			expect( command.value ).to.be.true;
 		} );
 
 		it( 'is false when selection does not have the attribute', () => {
-			model.change( () => {
-				doc.selection.setAttribute( attrKey, true );
+			model.change( writer => {
+				writer.setSelectionAttribute( attrKey, true );
 			} );
 
-			model.change( () => {
-				doc.selection.removeAttribute( attrKey );
+			model.change( writer => {
+				writer.removeSelectionAttribute( attrKey );
 			} );
 
 			expect( command.value ).to.be.false;
@@ -202,12 +202,12 @@ describe( 'AttributeCommand', () => {
 
 			// It should not save that bold was executed at position ( root, [ 0, 1 ] ).
 
-			model.change( () => {
+			model.change( writer => {
 				// Simulate clicking right arrow key by changing selection ranges.
-				doc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+				writer.setSelection( new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) );
 
 				// Get back to previous selection.
-				doc.selection.setRanges( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
+				writer.setSelection( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) );
 			} );
 
 			expect( command.value ).to.be.false;
@@ -225,15 +225,15 @@ describe( 'AttributeCommand', () => {
 
 			// Attribute should be stored.
 			// Simulate clicking somewhere else in the editor.
-			model.change( () => {
-				doc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+			model.change( writer => {
+				writer.setSelection( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
 			} );
 
 			expect( command.value ).to.be.false;
 
 			// Go back to where attribute was stored.
-			model.change( () => {
-				doc.selection.setRanges( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
+			model.change( writer => {
+				writer.setSelection( new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) );
 			} );
 
 			// Attribute should be restored.
