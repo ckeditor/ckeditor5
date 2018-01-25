@@ -10,6 +10,7 @@
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
+import Selection from './selection';
 import Position from './position';
 import LiveRange from './liverange';
 import Text from './text';
@@ -17,8 +18,6 @@ import TextProxy from './textproxy';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
-
-import Selection from './selection';
 
 const attrOpTypes = new Set(
 	[ 'addAttribute', 'removeAttribute', 'changeAttribute', 'addRootAttribute', 'removeRootAttribute', 'changeRootAttribute' ]
@@ -411,6 +410,7 @@ mix( DocumentSelection, EmitterMixin );
 //
 // @extends module:engine/model/selection~Selection
 //
+
 class LiveSelection extends Selection {
 	// Creates an empty live selection for given {@link module:engine/model/document~Document}.
 	// @param {module:engine/model/document~Document} doc Document which owns this selection.

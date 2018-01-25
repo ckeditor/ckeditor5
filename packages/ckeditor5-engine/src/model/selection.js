@@ -14,7 +14,6 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
-import DocumentSelection from './documentselection';
 
 /**
  * `Selection` is a group of {@link module:engine/model/range~Range ranges} which has a direction specified by
@@ -304,7 +303,7 @@ export default class Selection {
 			this._setRanges( [] );
 		} else if ( selectable instanceof Selection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
-		} else if ( selectable instanceof DocumentSelection ) {
+		} else if ( selectable._selection && selectable._selection instanceof Selection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 		} else if ( selectable instanceof Range ) {
 			this._setRanges( [ selectable ], backwardSelectionOrOffset );
