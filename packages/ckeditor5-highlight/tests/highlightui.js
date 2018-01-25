@@ -23,21 +23,23 @@ describe( 'HighlightUI', () => {
 
 	before( () => {
 		addTranslations( 'en', {
-			'Font Size': 'Font Size',
-			'Normal': 'Normal',
-			'Tiny': 'Tiny',
-			'Small': 'Small',
-			'Big': 'Big',
-			'Huge': 'Huge'
+			'Highlight': 'Highlight',
+			'Marker': 'Marker',
+			'Green marker': 'Green marker',
+			'Pink marker': 'Pink marker',
+			'Red pen': 'Red pen',
+			'Blue pen': 'Blue pen',
+			'Remove highlighting': 'Remove highlighting'
 		} );
 
 		addTranslations( 'pl', {
-			'Font Size': 'Rozmiar czcionki',
-			'Normal': 'Normalny',
-			'Tiny': 'Tyci',
-			'Small': 'Mały',
-			'Big': 'Duży',
-			'Huge': 'Ogromny'
+			'Highlight': 'Zakreślacz',
+			'Marker': 'Marker',
+			'Green marker': 'Zielony marker',
+			'Pink marker': 'Różowy marker',
+			'Red pen': 'Czerwony długopis',
+			'Blue pen': 'Niebieski długopis',
+			'Remove highlighting': 'Usuń zaznaczenie'
 		} );
 	} );
 
@@ -86,7 +88,7 @@ describe( 'HighlightUI', () => {
 			expect( dropdown.element.classList.contains( 'ck-highlight-dropdown' ) ).to.be.true;
 		} );
 
-		it.skip( 'should focus view after command execution', () => {
+		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
 			dropdown.commandName = 'highlight';
@@ -174,30 +176,31 @@ describe( 'HighlightUI', () => {
 			} );
 		} );
 
-		describe.skip( 'localization', () => {
+		describe( 'localization', () => {
 			beforeEach( () => {
-				return localizedEditor( [ 'tiny', 'small', 'normal', 'big', 'huge' ] );
+				return localizedEditor();
 			} );
 
 			it( 'works for the #buttonView', () => {
 				const buttonView = dropdown.buttonView;
 
-				expect( buttonView.tooltip ).to.equal( 'Rozmiar czcionki' );
+				expect( buttonView.tooltip ).to.equal( 'Zakreślacz' );
 			} );
 
 			it( 'works for the listView#items in the panel', () => {
-				const listView = dropdown.listView;
+				const listView = dropdown.toolbarView;
 
-				expect( listView.items.map( item => item.label ) ).to.deep.equal( [
-					'Tyci',
-					'Mały',
-					'Normalny',
-					'Duży',
-					'Ogromny'
+				expect( listView.items.map( item => item.label ).filter( label => !!label ) ).to.deep.equal( [
+					'Marker',
+					'Zielony marker',
+					'Różowy marker',
+					'Czerwony długopis',
+					'Niebieski długopis',
+					'Usuń zaznaczenie'
 				] );
 			} );
 
-			function localizedEditor( options ) {
+			function localizedEditor() {
 				const editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
 
@@ -205,10 +208,7 @@ describe( 'HighlightUI', () => {
 					.create( editorElement, {
 						plugins: [ HighlightEditing, HighlightUI ],
 						toolbar: [ 'highlight' ],
-						language: 'pl',
-						highlight: {
-							options
-						}
+						language: 'pl'
 					} )
 					.then( newEditor => {
 						editor = newEditor;

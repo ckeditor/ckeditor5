@@ -35,6 +35,33 @@ import './../theme/highlight.css';
  */
 export default class HighlightUI extends Plugin {
 	/**
+	 * Returns the localized option titles provided by the plugin.
+	 *
+	 * The following localized titles corresponding with default
+	 * {@link module:highlight/highlight~HighlightConfig#options} are available:
+	 *
+	 * * `'Marker'`,
+	 * * `'Green marker'`,
+	 * * `'Pink marker'`,
+	 * * `'Blue pen'`.
+	 * * `'Red pen'`.
+	 *
+	 * @readonly
+	 * @type {Object.<String,String>}
+	 */
+	get localizedOptionTitles() {
+		const t = this.editor.t;
+
+		return {
+			'Marker': t( 'Marker' ),
+			'Green marker': t( 'Green marker' ),
+			'Pink marker': t( 'Pink marker' ),
+			'Red pen': t( 'Red pen' ),
+			'Blue pen': t( 'Blue pen' )
+		};
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	static get requires() {
@@ -113,8 +140,10 @@ export default class HighlightUI extends Plugin {
 		editor.ui.componentFactory.add( name, locale => {
 			const buttonView = new ButtonView( locale );
 
+			const localized = this.localizedOptionTitles[ label ] ? this.localizedOptionTitles[ label ] : label;
+
 			buttonView.set( {
-				label,
+				label: localized,
 				icon,
 				tooltip: true
 			} );
@@ -214,8 +243,10 @@ export default class HighlightUI extends Plugin {
 				}
 			} );
 
+			splitButtonView.delegate( 'execute' ).to( dropdownView );
+
 			// Execute current action from dropdown's split button action button.
-			dropdownView.buttonView.on( 'execute', () => {
+			dropdownView.on( 'execute', () => {
 				editor.execute( 'highlight', { value: model.commandValue } );
 				editor.editing.view.focus();
 			} );

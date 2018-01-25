@@ -86,10 +86,10 @@ describe( 'HighlightEditing', () => {
 				expect( editor.config.get( 'highlight' ) ).to.deep.equal( {
 					options: [
 						{ model: 'marker', class: 'marker', title: 'Marker', color: '#ffff66', type: 'marker' },
-						{ model: 'greenMarker', class: 'marker-green', title: 'Green Marker', color: '#66ff00', type: 'marker' },
-						{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink Marker', color: '#ff6fff', type: 'marker' },
-						{ model: 'redPen', class: 'pen-red', title: 'Red Pen', color: '#ff2929', type: 'pen' },
-						{ model: 'bluePen', class: 'pen-blue', title: 'Blue Pen', color: '#0091ff', type: 'pen' }
+						{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: '#66ff00', type: 'marker' },
+						{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: '#ff6fff', type: 'marker' },
+						{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: '#ff2929', type: 'pen' },
+						{ model: 'bluePen', class: 'pen-blue', title: 'Blue pen', color: '#0091ff', type: 'pen' }
 					]
 				} );
 			} );
