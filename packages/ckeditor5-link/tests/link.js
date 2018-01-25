@@ -259,7 +259,7 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
 				// Move selection to foo[].
-				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spy );
@@ -281,7 +281,7 @@ describe( 'Link', () => {
 				const root = viewDocument.getRoot();
 				const text = root.getChild( 0 ).getChild( 0 );
 
-				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spy );
@@ -305,7 +305,7 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 1 );
 
 				// Move selection to b[]ar.
-				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spyHide );
@@ -330,7 +330,7 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 2 ).getChild( 0 );
 
 				// Move selection to b[]az.
-				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spyHide );
@@ -352,7 +352,7 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
 				// Move selection to f[o]o.
-				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 2 ) ], true );
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spyHide );
