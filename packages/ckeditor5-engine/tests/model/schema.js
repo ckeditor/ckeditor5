@@ -641,6 +641,47 @@ describe( 'Schema', () => {
 		} );
 	} );
 
+	describe( 'checkMerge()', () => {
+		beforeEach( () => {
+			schema.register( '$root' );
+			schema.register( '$block', {
+				allowIn: '$root'
+			} );
+			schema.register( 'paragraph', {
+				allowWhere: '$block'
+			} );
+			schema.register( '$text', {
+				allowIn: 'paragraph'
+			} );
+			schema.register( 'blockQuote', {
+				allowWhere: '$block',
+				allowContentOf: '$root'
+			} );
+			schema.register( 'listItem', {
+				inheritAllFrom: '$block'
+			} );
+		} );
+
+		it( 'returns false if a block is not allowed in other block', () => {
+			const paragraph = new Element( 'paragraph', null, [
+				new Text( 'xyz' )
+			] );
+			const blockQuote = new Element( 'blockQuote', null, [ paragraph ] );
+			const listItem = new Element( 'listItem' );
+
+			expect( schema.checkMerge( listItem, blockQuote ) ).to.equal( false );
+		} );
+
+		it( 'returns true if a block is allowed in other block', () => {
+			const paragraph = new Element( 'paragraph', null, [
+				new Text( 'xyz' )
+			] );
+			const listItem = new Element( 'listItem' );
+
+			expect( schema.checkMerge( listItem, paragraph ) ).to.equal( false );
+		} );
+	} );
+
 	describe( 'getLimitElement()', () => {
 		let model, doc, root;
 

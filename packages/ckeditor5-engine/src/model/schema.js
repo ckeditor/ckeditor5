@@ -411,6 +411,23 @@ export default class Schema {
 	}
 
 	/**
+	 * Checks whether given element (`elementToMerge`) can be merged to the specified base element (`baseElement`).
+	 *
+	 * @param {module:engine/model/Element~Element} baseElement The base element which will be merged.
+	 * @param {module:engine/model/Element~Element} elementToMerge The element to check whether can be merged with the base element.
+	 * @returns {Boolean}
+	 */
+	checkMerge( baseElement, elementToMerge ) {
+		for ( const child of elementToMerge.getChildren() ) {
+			if ( !this.checkChild( baseElement, child ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Allows registering a callback to the {@link #checkChild} method calls.
 	 *
 	 * Callbacks allow you to implement rules which are not otherwise possible to achieve
